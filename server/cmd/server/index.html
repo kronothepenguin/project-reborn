@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebSocket Test</title>
+  </head>
+  <body>
+    <button id="connect">Connect</button>
+
+    <div id="log"></div>
+    <div>
+      <input id="message" type="text" />
+      <button id="send">Send</button>
+    </div>
+
+    <script>
+      /** @type WebSocket */
+      let ws;
+
+      const log = document.getElementById("log");
+
+      const connect = document.getElementById("connect");
+      connect.addEventListener("click", function handleConnectClick() {
+        if (ws != null) {
+          ws.close();
+        }
+
+        ws = new WebSocket("ws://localhost:8080/echo");
+        ws.addEventListener("message", function handleMessage(e) {
+          const div = document.createElement("div");
+          div.textContent = e.data;
+          log.appendChild(div);
+        });
+      });
+
+      const send = document.getElementById("send");
+      const message = document.getElementById("message");
+      send.addEventListener("click", function handleSendClick() {
+        ws.send(message.value);
+        message.value = "";
+      });
+    </script>
+  </body>
+</html>
