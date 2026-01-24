@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://5sownwdsyrlr"]
+
+[node name="HabboMessageDialog" type="Panel"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -103.5
+offset_top = -53.5
+offset_right = 103.5
+offset_bottom = 53.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="HabboMessageTextA" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "bold_alert_text"
+
+[node name="HabboMessageTextB" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "normal_alert_text"
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "habbo_message_ok"

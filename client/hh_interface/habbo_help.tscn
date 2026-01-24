@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3 uid="uid://cbf14kuo8qh8b"]
+
+[ext_resource type="Texture2D" uid="uid://bm1y1r7uw6dfh" path="res://hh_interface/87_help_icon.png" id="1_0lnfv"]
+
+[node name="HabboHelp" type="Panel"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -142.0
+offset_top = -121.0
+offset_right = 142.0
+offset_bottom = 121.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HelpBG" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("1_0lnfv")
+
+[node name="HelpBG2" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "trouble?"

@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://caftyvyis3qni"]
+
+[node name="GeneralLoader" type="Panel"]
+offset_left = 265.0
+offset_top = 181.0
+offset_right = 453.0
+offset_bottom = 241.0
+
+[node name="GeneralLoaderText" type="Label" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 102.0
+offset_bottom = 31.0
+theme_override_font_sizes/font_size = 9
+text = "nav_loading"
+
+[node name="GenLoaderbar" type="ProgressBar" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 34.0
+offset_right = 175.0
+offset_bottom = 51.0
+theme_override_font_sizes/font_size = 9

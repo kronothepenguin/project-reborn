@@ -1,0 +1,52 @@
+[gd_scene load_steps=2 format=3 uid="uid://cl1shuydxws5e"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_nqbsn"]
+
+[node name="HabboDecisionDialog" type="Panel"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -103.5
+offset_top = -53.5
+offset_right = 103.5
+offset_bottom = 53.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="HabboDecisionTextA" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "bold_alert_text"
+label_settings = SubResource("LabelSettings_nqbsn")
+
+[node name="HabboDecisionTextB" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "normal_alert_text"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="HabboDecisionCancel" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "cancel"
+
+[node name="HabboDecisionOk" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "ok"

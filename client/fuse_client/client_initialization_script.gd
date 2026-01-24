@@ -6,11 +6,10 @@ func _ready() -> void:
 		stop_client()
 
 func init_core() -> bool:
-	# constructObjectManager
-	# dumpVariableField
-	# resetCastLibs
+	# dumpVariableField("System Props")
+	# resetCastLibs(0, 0)
 	# getResourceManager().preIndexMembers()
-	# dumpTextField
+	# dumpTextField("System Texts")
 	var core_thread := CoreThread.new()
 	get_tree().current_scene.add_child(core_thread)
 	return true
