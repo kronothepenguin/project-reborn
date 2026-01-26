@@ -1,27 +1,31 @@
 package habbo
 
 import (
-	"bytes"
 	"io"
 
 	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
 )
 
-type HabboConnection struct {
+type Connection struct {
 	conn io.ReadWriteCloser
-	buf  bytes.Buffer
+
+	// listeners map[int16]
 }
 
-func NewHabboConnection(conn io.ReadWriteCloser) *HabboConnection {
-	return &HabboConnection{
+func NewHabboConnection(conn io.ReadWriteCloser) *Connection {
+	return &Connection{
 		conn: conn,
 	}
 }
 
-func (c *HabboConnection) Read() (*protocol.Packet, error) {
+func (c *Connection) Connection() io.ReadWriteCloser {
+	return c.conn
+}
+
+func (c *Connection) Read() (*protocol.Packet, error) {
 	return protocol.ReadPacket(c.conn)
 }
 
-func (c *HabboConnection) Write(p *protocol.Packet) error {
+func (c *Connection) Write(p *protocol.Packet) error {
 	return protocol.WritePacket(c.conn, p)
 }

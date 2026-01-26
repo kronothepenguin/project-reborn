@@ -68,8 +68,10 @@ func WritePacket(w io.Writer, p *Packet) error {
 		return err
 	}
 
-	if _, err := buf.Write(p.Message.Bytes()); err != nil {
-		return err
+	if p.Message != nil {
+		if _, err := buf.Write(p.Message.Bytes()); err != nil {
+			return err
+		}
 	}
 
 	if err := buf.WriteByte(1); err != nil {

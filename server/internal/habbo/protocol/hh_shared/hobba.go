@@ -44,14 +44,6 @@ func buildCryForHelp() *protocol.Packet {
 	return protocol.NewPacket(148, message)
 }
 
-// 149
-func buildPickedCry() *protocol.Packet {
-	message := protocol.NewMessage()
-	message.WriteString("") // ID
-	message.WriteString("") // picker
-	return protocol.NewPacket(149, message)
-}
-
 // 273
 func buildDeleteCry() *protocol.Packet {
 	message := protocol.NewMessage()
@@ -66,40 +58,88 @@ func buildCryReply() *protocol.Packet {
 	return protocol.NewPacket(274, message)
 }
 
-// 48
-func handlePickCryForHelp(packet *protocol.Packet) error {
-	packet.Message.ReadString() // ID
-	return nil
+const CRY_FOR_HELP = "CRY_FOR_HELP"
+const PICKED_CRY = "PICKED_CRY"
+const DELETE_CRY = "DELETE_CRY"
+const CRY_REPLY = "CRY_REPLY"
+
+func Register(registry protocol.Registry) {
+	registry.RegisterCommand(CRY_FOR_HELP, 148)
+	registry.RegisterCommand(PICKED_CRY, 149)
+	registry.RegisterCommand(DELETE_CRY, 273)
+	registry.RegisterCommand(CRY_REPLY, 274)
+
+	registry.RegisterListener(48, handlePickCryForHelp)
+	registry.RegisterListener(86, handleCallForHelp)
+	registry.RegisterListener(198, handleChangeCallCategory)
+	registry.RegisterListener(199, handleMessageToCaller)
+	registry.RegisterListener(200, handleModerationAction)
+	registry.RegisterListener(323, handleFollowCryForHelp)
 }
 
-// 86
-func handleCallForHelp(packet *protocol.Packet) error {
-	packet.Message.ReadString() // message
-	packet.Message.ReadInt()    // type
-	return nil
-}
-
-// 198
-func handleChangeCallCategory(packet *protocol.Packet) error {
-	packet.Message.ReadString() // ID
-	packet.Message.ReadInt()    // category
-	return nil
-}
-
-// 199
-func handleMessageToCaller(packet *protocol.Packet) error {
-	packet.Message.ReadString() // ID
-	packet.Message.ReadString() // message
-	return nil
-}
-
-// 200
-func handleModerationAction(packet *protocol.Packet) error {
-	target, err := packet.Message.ReadInt() // target
+func handlePickCryForHelp(ctx protocol.Context, packet *protocol.Packet) error {
+	id, err := packet.Message.ReadString() // ID
 	if err != nil {
 		return err
 	}
-	action, err := packet.Message.ReadInt() // action
+
+	// ctx.Send("PICKED_CRY", StringArg(ID), StringArg(habbo.Name()))
+	return ctx.Send(PICKED_CRY, protocol.String(id), protocol.String("picker"))
+}
+
+func handleCallForHelp(ctx protocol.Context, packet *protocol.Packet) error {
+	msg, err := packet.Message.ReadString()
+	if err != nil {
+		return err
+	}
+
+	typ, err := packet.Message.ReadInt()
+	if err != nil {
+		return err
+	}
+
+	// TODO: ctx.Hotel().Hobbas().Send(CRY_FOR_HELP, ...)
+	return ctx.Send(CRY_FOR_HELP, protocol.String(msg), protocol.Int(typ))
+}
+
+func handleChangeCallCategory(ctx protocol.Context, packet *protocol.Packet) error {
+	id, err := packet.Message.ReadString()
+	if err != nil {
+		return err
+	}
+
+	category, err := packet.Message.ReadInt()
+	if err != nil {
+		return err
+	}
+
+	// TODO: ctx.Hotel().Hobbas().Send(CRY_FOR_HELP, ...)
+	return ctx.Send(CRY_FOR_HELP, protocol.String(id), protocol.Int(category))
+}
+
+func handleMessageToCaller(ctx protocol.Context, packet *protocol.Packet) error {
+	_, err := packet.Message.ReadString() // id
+	if err != nil {
+		return err
+	}
+
+	msg, err := packet.Message.ReadString()
+	if err != nil {
+		return err
+	}
+
+	// TODO: caller := ctx.Hotel().Hobbas().FindCallerOf(id)
+	// TOOD: caller.send(CRY_REPLY, msg)
+	return ctx.Send(CRY_REPLY, protocol.String(msg))
+}
+
+func handleModerationAction(ctx protocol.Context, packet *protocol.Packet) error {
+	target, err := packet.Message.ReadInt()
+	if err != nil {
+		return err
+	}
+
+	action, err := packet.Message.ReadInt()
 	if err != nil {
 		return err
 	}
@@ -113,31 +153,39 @@ func handleModerationAction(packet *protocol.Packet) error {
 		packet.Message.ReadInt()    // hours
 		packet.Message.ReadInt()    // ban computer
 		packet.Message.ReadInt()    // ban ip
+		// TODO: handleBan
 	case target == 0 && action == 0:
 		// alert
 		packet.Message.ReadString() // reason
 		packet.Message.ReadString() // extra info
 		packet.Message.ReadString() // name
+		// TODO: handleAlert
 	case target == 0 && action == 1:
 		// kick
 		packet.Message.ReadString() // reason
 		packet.Message.ReadString() // extra info
 		packet.Message.ReadString() // name
+		// TODO: handleKick
 	case target == 1 && action == 1:
 		// roomkick
 		packet.Message.ReadString() // reason
 		packet.Message.ReadString() // extra info
+		// TODO: handleRoomKick
 	case target == 1 && action == 0:
 		// roomalert
 		packet.Message.ReadString() // reason
 		packet.Message.ReadString() // extra info
+		// TODO: handleRoomAlert
 	}
 
 	return nil
 }
 
-// 323
-func handleFollowCryForHelp(packet *protocol.Packet) error {
-	packet.Message.ReadString() // ID
+func handleFollowCryForHelp(ctx protocol.Context, packet *protocol.Packet) error {
+	_, err := packet.Message.ReadString() // id
+	if err != nil {
+		return err
+	}
+	// TODO: go to room of CFH
 	return nil
 }

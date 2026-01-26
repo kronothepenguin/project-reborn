@@ -2,7 +2,10 @@ package protocol
 
 import (
 	"bytes"
+	"errors"
 )
+
+var ErrInvalidStringLength = errors.New("invalid string length")
 
 type Message struct {
 	buf bytes.Buffer
@@ -48,7 +51,7 @@ func (msg *Message) ReadString() (string, error) {
 	}
 
 	if n != int(length) {
-		// TODO: error
+		return "", ErrInvalidStringLength
 	}
 
 	v := string(b)
