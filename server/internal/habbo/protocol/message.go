@@ -1,8 +1,7 @@
-package habbo
+package protocol
 
 import (
 	"bytes"
-	"io"
 )
 
 type Message struct {
@@ -11,6 +10,24 @@ type Message struct {
 
 func NewMessage() *Message {
 	return &Message{}
+}
+
+func (msg *Message) Bytes() []byte {
+	return msg.buf.Bytes()
+}
+
+func (msg *Message) Write(b []byte) (int, error) {
+	return msg.buf.Write(b)
+}
+
+func (msg *Message) ReadRawString() string {
+	buf := bytes.Clone(msg.buf.Bytes())
+	return string(buf)
+}
+
+func (msg *Message) WriteRawString(v string) error {
+	_, err := msg.buf.WriteString(v)
+	return err
 }
 
 func (msg *Message) ReadString() (string, error) {
@@ -144,82 +161,4 @@ func (msg *Message) WriteBool(v bool) error {
 	} else {
 		return msg.buf.WriteByte(0 | 64)
 	}
-}
-
-type Packet struct {
-	Cmd     int16
-	Message *Message
-}
-
-func NewPacket(cmd int16, msg *Message) *Packet {
-	return &Packet{
-		Cmd:     cmd,
-		Message: msg,
-	}
-}
-
-// TODO: better have own types like HabboReader
-//
-//	this allows keep an internal buffer for every connection
-//	this way we can keep reading up until a full packet is found
-func Read(r io.Reader) (*Packet, error) {
-	buf := make([]byte, 1024)
-	total := 0
-
-again:
-	n, err := r.Read(buf[total:])
-	if err == io.EOF {
-		return nil, err
-	}
-
-	total += n
-	if total < 5 {
-		goto again
-	}
-
-	data := buf[:total]
-
-	// TODO: make sure these three bytes have 64 bit enabled for security
-	l3 := data[0]
-	l2 := data[1]
-	l1 := data[3]
-	length := int(l3&63)*4096 + int(l2&63)*64 + int(l1&63)
-
-	// TODO: better keep reading until length is reached
-	//       once length is reached, check if more data is buffered for the next packet
-	if total < length+3 {
-		goto again
-	}
-
-	b1 := data[4]
-	b2 := data[5]
-	cmd := int16(b1&63)*64 + int16(b2&63)
-
-	msg := data[5 : length+3]
-	message := NewMessage()
-	message.buf.Write(msg)
-
-	return NewPacket(cmd, message), nil
-}
-
-func Write(w io.Writer, p *Packet) error {
-	var buf bytes.Buffer
-
-	if err := buf.WriteByte(byte(p.Cmd/64) | 64); err != nil {
-		return err
-	}
-	if err := buf.WriteByte(byte(p.Cmd&63) | 64); err != nil {
-		return err
-	}
-
-	if _, err := buf.Write(p.Message.buf.Bytes()); err != nil {
-		return err
-	}
-
-	if err := buf.WriteByte(1); err != nil {
-		return err
-	}
-
-	_, err := w.Write(buf.Bytes())
-	return err
 }
