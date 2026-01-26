@@ -18,14 +18,18 @@ func New() *Registry {
 	}
 }
 
-func (r *Registry) RegisterListener(msg int16, fn protocol.Listener) {
+func (r *Registry) RegisterCommand(cmd string, opcode int16) {
+	r.Commands.Register(cmd, opcode)
+}
 
+func (r *Registry) UnregisterCommand(cmd string) {
+	r.Commands.Unregister(cmd)
+}
+
+func (r *Registry) RegisterListener(msg int16, fn protocol.Listener) {
+	r.Messages.Register(msg, fn)
 }
 
 func (r *Registry) UnregisterListener(msg int16) {
-
+	r.Messages.Unregister(msg)
 }
-
-func (r *Registry) RegisterCommand(cmd string, opcode int16) {}
-
-func (r *Registry) UnregisterCommand(cmd string) {}

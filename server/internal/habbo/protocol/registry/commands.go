@@ -15,14 +15,14 @@ type CommandRegistry struct {
 	mu     sync.Mutex
 }
 
-func (r *CommandRegistry) RegisterCommand(cmd string, opcode int16) {
+func (r *CommandRegistry) Register(cmd string, opcode int16) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
 	r.lookup[cmd] = opcode
 }
 
-func (r *CommandRegistry) UnregisterCommand(cmd string) {
+func (r *CommandRegistry) Unregister(cmd string) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 

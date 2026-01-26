@@ -21,7 +21,7 @@ func (r *MessageRegistry) Register(msg int16, fn protocol.Listener) {
 	r.lookup[msg] = fn
 }
 
-func (r *MessageRegistry) UnregisterListener(msg int16) {
+func (r *MessageRegistry) Unregister(msg int16) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 

@@ -48,9 +48,9 @@ type Context interface {
 type Listener func(Context, *Packet) error
 
 type Registry interface {
-	RegisterListener(msg int16, fn Listener)
-	UnregisterListener(msg int16)
-
 	RegisterCommand(cmd string, opcode int16)
 	UnregisterCommand(cmd string)
+
+	RegisterListener(msg int16, fn Listener)
+	UnregisterListener(msg int16)
 }
