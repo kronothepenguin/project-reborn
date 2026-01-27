@@ -3,10 +3,16 @@ package habbo
 import (
 	"net"
 
+	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
+	hhkioskroom "github.com/kronothepenguin/project-reborn/internal/habbo/protocol/hh_kiosk_room"
+	hhroomutils "github.com/kronothepenguin/project-reborn/internal/habbo/protocol/hh_room_utils"
+	hhshared "github.com/kronothepenguin/project-reborn/internal/habbo/protocol/hh_shared"
+	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol/registry"
 	"github.com/kronothepenguin/project-reborn/internal/habbo/transport"
 )
 
 type Server struct {
+	registry *registry.Registry
 }
 
 func NewServer() *Server {
@@ -14,6 +20,11 @@ func NewServer() *Server {
 }
 
 func (s *Server) StartTCP() {
+	s.registry = registry.New()
+	hhshared.Register(s.registry)
+	hhkioskroom.Register(s.registry)
+	hhroomutils.Register(s.registry)
+
 	tcp := transport.NewTCPServer(":1234")
 	tcp.Start()
 	go tcp.Loop(s.handleTCP)
@@ -22,15 +33,16 @@ func (s *Server) StartTCP() {
 func (s *Server) handleTCP(conn net.Conn) {
 	defer conn.Close()
 
-	c := NewHabboConnection(conn)
+	ctx := NewHabboContext(conn, s.registry)
+
 	for {
-		p, err := c.Read()
+		p, err := protocol.ReadPacket(conn)
 		if err != nil {
 			break
 		}
 
-		// TODO: table
-		switch p.Cmd {
+		if err := s.registry.Messages.Handle(ctx, p); err != nil {
+			break
 		}
 	}
 }
