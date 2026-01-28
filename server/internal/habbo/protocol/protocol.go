@@ -1,6 +1,9 @@
 package protocol
 
-import "io"
+import (
+	"io"
+	"log"
+)
 
 type RawString string
 
@@ -43,6 +46,8 @@ type Context interface {
 	Connection() io.ReadWriteCloser
 
 	Send(cmd string, args ...Argument) error
+
+	Logger() *log.Logger
 }
 
 type Listener func(Context, *Packet) error

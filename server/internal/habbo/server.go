@@ -1,6 +1,7 @@
 package habbo
 
 import (
+	"fmt"
 	"net"
 
 	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
@@ -19,7 +20,7 @@ func NewServer() *Server {
 	return &Server{}
 }
 
-func (s *Server) StartTCP() {
+func (s *Server) RunTCP() {
 	s.registry = registry.New()
 	hhshared.Register(s.registry)
 	hhkioskroom.Register(s.registry)
@@ -27,7 +28,7 @@ func (s *Server) StartTCP() {
 
 	tcp := transport.NewTCPServer(":1234")
 	tcp.Start()
-	go tcp.Loop(s.handleTCP)
+	tcp.Loop(s.handleTCP)
 }
 
 func (s *Server) handleTCP(conn net.Conn) {
@@ -38,11 +39,16 @@ func (s *Server) handleTCP(conn net.Conn) {
 	for {
 		p, err := protocol.ReadPacket(conn)
 		if err != nil {
+			ctx.logger.Println(err)
 			break
 		}
 
+		ctx.logger.SetPrefix(fmt.Sprintf("[%d]", p.Cmd))
+		ctx.logger.Println(p.Message.Bytes())
 		if err := s.registry.Messages.Handle(ctx, p); err != nil {
+			ctx.logger.Println(err)
 			break
 		}
+		ctx.logger.SetPrefix("")
 	}
 }
