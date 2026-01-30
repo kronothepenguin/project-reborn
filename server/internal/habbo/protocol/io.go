@@ -45,6 +45,7 @@ func readPacket(r io.Reader, buf *bytes.Buffer, length int) (cmd int16, msg *Mes
 
 func ReadPacket(r io.Reader) (*Packet, error) {
 	buf := getBuf()
+	defer putBuf(buf)
 
 	length, err := readLength(r, buf)
 	if err != nil {
@@ -55,8 +56,6 @@ func ReadPacket(r io.Reader) (*Packet, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	putBuf(buf)
 
 	return NewPacket(cmd, msg), nil
 }
@@ -84,6 +83,7 @@ func writeMessage(w io.Writer, msg *Message) error {
 
 func WritePacket(w io.Writer, p *Packet) error {
 	buf := getBuf()
+	defer putBuf(buf)
 
 	if err := writeCommand(buf, p.Command); err != nil {
 		return err
@@ -98,8 +98,5 @@ func WritePacket(w io.Writer, p *Packet) error {
 	}
 
 	_, err := w.Write(buf.Bytes())
-
-	putBuf(buf)
-
 	return err
 }
