@@ -29,14 +29,14 @@ const ERROR = "ERROR"
 const WEB_SHORTCUT = "WEB_SHORTCUT"
 
 func Register(registry protocol.Registry) {
-	registry.RegisterCommand(FLAT_CREATED, 59)
-	registry.RegisterCommand(ERROR, 33)
-	registry.RegisterCommand(WEB_SHORTCUT, 353)
+	registry.Commands().Register(FLAT_CREATED, 59)
+	registry.Commands().Register(ERROR, 33)
+	registry.Commands().Register(WEB_SHORTCUT, 353)
 
-	registry.RegisterListener(29, handleCreateFlat)
+	registry.Listeners().Register(29, handleCreateFlat)
 }
 
-func handleCreateFlat(ctx protocol.Context, packet *protocol.Packet) error {
+func handleCreateFlat(packet *protocol.Packet) error {
 	raw := packet.Message.ReadRawString()
 	data := strings.Split(raw, "/")
 	strings.TrimSpace(data[1]) // "first floor"
@@ -44,5 +44,5 @@ func handleCreateFlat(ctx protocol.Context, packet *protocol.Packet) error {
 	strings.TrimSpace(data[3]) // marker
 	strings.TrimSpace(data[4]) // door
 	strings.TrimSpace(data[5]) // showOwnerName
-	return ctx.Send(FLAT_CREATED, protocol.RawString("id\nflat_name"))
+	return packet.Context.Send(FLAT_CREATED, protocol.RawString("id\nflat_name"))
 }

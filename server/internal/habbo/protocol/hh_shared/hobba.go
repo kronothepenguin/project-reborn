@@ -64,30 +64,30 @@ const DELETE_CRY = "DELETE_CRY"
 const CRY_REPLY = "CRY_REPLY"
 
 func Register(registry protocol.Registry) {
-	registry.RegisterCommand(CRY_FOR_HELP, 148)
-	registry.RegisterCommand(PICKED_CRY, 149)
-	registry.RegisterCommand(DELETE_CRY, 273)
-	registry.RegisterCommand(CRY_REPLY, 274)
+	registry.Commands().Register(CRY_FOR_HELP, 148)
+	registry.Commands().Register(PICKED_CRY, 149)
+	registry.Commands().Register(DELETE_CRY, 273)
+	registry.Commands().Register(CRY_REPLY, 274)
 
-	registry.RegisterListener(48, handlePickCryForHelp)
-	registry.RegisterListener(86, handleCallForHelp)
-	registry.RegisterListener(198, handleChangeCallCategory)
-	registry.RegisterListener(199, handleMessageToCaller)
-	registry.RegisterListener(200, handleModerationAction)
-	registry.RegisterListener(323, handleFollowCryForHelp)
+	registry.Listeners().Register(48, handlePickCryForHelp)
+	registry.Listeners().Register(86, handleCallForHelp)
+	registry.Listeners().Register(198, handleChangeCallCategory)
+	registry.Listeners().Register(199, handleMessageToCaller)
+	registry.Listeners().Register(200, handleModerationAction)
+	registry.Listeners().Register(323, handleFollowCryForHelp)
 }
 
-func handlePickCryForHelp(ctx protocol.Context, packet *protocol.Packet) error {
+func handlePickCryForHelp(packet *protocol.Packet) error {
 	id, err := packet.Message.ReadString() // ID
 	if err != nil {
 		return err
 	}
 
-	// ctx.Send("PICKED_CRY", StringArg(ID), StringArg(habbo.Name()))
-	return ctx.Send(PICKED_CRY, protocol.String(id), protocol.String("picker"))
+	// packet.Context.Send("PICKED_CRY", StringArg(ID), StringArg(habbo.Name()))
+	return packet.Context.Send(PICKED_CRY, protocol.String(id), protocol.String("picker"))
 }
 
-func handleCallForHelp(ctx protocol.Context, packet *protocol.Packet) error {
+func handleCallForHelp(packet *protocol.Packet) error {
 	msg, err := packet.Message.ReadString()
 	if err != nil {
 		return err
@@ -99,10 +99,10 @@ func handleCallForHelp(ctx protocol.Context, packet *protocol.Packet) error {
 	}
 
 	// TODO: ctx.Hotel().Hobbas().Send(CRY_FOR_HELP, ...)
-	return ctx.Send(CRY_FOR_HELP, protocol.String(msg), protocol.Int(typ))
+	return packet.Context.Send(CRY_FOR_HELP, protocol.String(msg), protocol.Int(typ))
 }
 
-func handleChangeCallCategory(ctx protocol.Context, packet *protocol.Packet) error {
+func handleChangeCallCategory(packet *protocol.Packet) error {
 	id, err := packet.Message.ReadString()
 	if err != nil {
 		return err
@@ -114,10 +114,10 @@ func handleChangeCallCategory(ctx protocol.Context, packet *protocol.Packet) err
 	}
 
 	// TODO: ctx.Hotel().Hobbas().Send(CRY_FOR_HELP, ...)
-	return ctx.Send(CRY_FOR_HELP, protocol.String(id), protocol.Int(category))
+	return packet.Context.Send(CRY_FOR_HELP, protocol.String(id), protocol.Int(category))
 }
 
-func handleMessageToCaller(ctx protocol.Context, packet *protocol.Packet) error {
+func handleMessageToCaller(packet *protocol.Packet) error {
 	_, err := packet.Message.ReadString() // id
 	if err != nil {
 		return err
@@ -130,10 +130,10 @@ func handleMessageToCaller(ctx protocol.Context, packet *protocol.Packet) error 
 
 	// TODO: caller := ctx.Hotel().Hobbas().FindCallerOf(id)
 	// TOOD: caller.send(CRY_REPLY, msg)
-	return ctx.Send(CRY_REPLY, protocol.String(msg))
+	return packet.Context.Send(CRY_REPLY, protocol.String(msg))
 }
 
-func handleModerationAction(ctx protocol.Context, packet *protocol.Packet) error {
+func handleModerationAction(packet *protocol.Packet) error {
 	target, err := packet.Message.ReadInt()
 	if err != nil {
 		return err
@@ -181,7 +181,7 @@ func handleModerationAction(ctx protocol.Context, packet *protocol.Packet) error
 	return nil
 }
 
-func handleFollowCryForHelp(ctx protocol.Context, packet *protocol.Packet) error {
+func handleFollowCryForHelp(packet *protocol.Packet) error {
 	_, err := packet.Message.ReadString() // id
 	if err != nil {
 		return err

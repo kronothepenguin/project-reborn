@@ -13,17 +13,17 @@ const AVAILABILITYTIME = "AVAILABILITYTIME"
 const LOGINFAILEDHOTELCLOSED = "LOGINFAILEDHOTELCLOSED"
 
 func registerOpeningHours(registry protocol.Registry) {
-	registry.RegisterCommand(AVAILABILITYSTATUS, 290)
-	registry.RegisterCommand(INFOHOTELCLOSING, 291)
-	registry.RegisterCommand(INFOHOTELCLOSED, 292)
-	registry.RegisterCommand(AVAILABILITYTIME, 293)
-	registry.RegisterCommand(LOGINFAILEDHOTELCLOSED, 294)
+	registry.Commands().Register(AVAILABILITYSTATUS, 290)
+	registry.Commands().Register(INFOHOTELCLOSING, 291)
+	registry.Commands().Register(INFOHOTELCLOSED, 292)
+	registry.Commands().Register(AVAILABILITYTIME, 293)
+	registry.Commands().Register(LOGINFAILEDHOTELCLOSED, 294)
 
-	registry.RegisterListener(212, handleGetAvailabilityTime)
+	registry.Listeners().Register(212, handleGetAvailabilityTime)
 }
 
-func handleGetAvailabilityTime(ctx protocol.Context, packet *protocol.Packet) error {
+func handleGetAvailabilityTime(packet *protocol.Packet) error {
 	isOpen := 0
 	timeUntil := time.Now().UnixMilli()
-	return ctx.Send(AVAILABILITYTIME, protocol.Int(isOpen), protocol.Int(timeUntil))
+	return packet.Context.Send(AVAILABILITYTIME, protocol.Int(isOpen), protocol.Int(timeUntil))
 }

@@ -5,18 +5,18 @@ import (
 	"log/slog"
 
 	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
-	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol/registry"
 )
 
 type HabboContext struct {
 	conn io.ReadWriteCloser
 
-	registry *registry.Registry
+	registry protocol.Registry
 
 	logger *slog.Logger
 }
 
-func NewHabboContext(conn io.ReadWriteCloser, registry *registry.Registry) *HabboContext {
+func NewHabboContext(conn io.ReadWriteCloser, registry protocol.Registry) *HabboContext {
+	// TODO: multi handler [stdout, file]
 	logger := slog.New(slog.Default().Handler())
 	return &HabboContext{
 		conn:     conn,
@@ -25,12 +25,13 @@ func NewHabboContext(conn io.ReadWriteCloser, registry *registry.Registry) *Habb
 	}
 }
 
-func (ctx *HabboContext) Connection() io.ReadWriteCloser {
-	return ctx.conn
-}
-
 func (ctx *HabboContext) Send(cmd string, args ...protocol.Argument) error {
-	return ctx.registry.Commands.Dispatch(ctx.conn, cmd, args...)
+	p, err := ctx.registry.Commands().Build(cmd, args...)
+	if err != nil {
+		return err
+	}
+
+	return protocol.WritePacket(ctx.conn, p)
 }
 
 func (ctx *HabboContext) Logger() *slog.Logger {

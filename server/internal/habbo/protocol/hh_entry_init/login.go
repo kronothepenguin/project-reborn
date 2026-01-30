@@ -28,53 +28,53 @@ const ACHIEVEMENTNOTIFICATION = "ACHIEVEMENTNOTIFICATION"
 const LATENCYTEST = "LATENCYTEST"
 
 func registerLogin(registry protocol.Registry) {
-	registry.RegisterCommand(DISCONNECT, -1)
-	registry.RegisterCommand(HELLO, 0)
-	registry.RegisterCommand(SERVERSECRETKEY, 1)
-	registry.RegisterCommand(RIGHTS, 2)
-	registry.RegisterCommand(LOGINOK, 3)
-	registry.RegisterCommand(USEROBJ, 5)
-	registry.RegisterCommand(ERR, 33)
-	registry.RegisterCommand(USERBANNED, 35)
-	registry.RegisterCommand(PING, 50)
-	registry.RegisterCommand(EPSNOTIFY, 52)
-	registry.RegisterCommand(SYSTEMBROADCAST, 139)
-	registry.RegisterCommand(CHECKSUM, 141)
-	registry.RegisterCommand(MODALERT, 161)
-	registry.RegisterCommand(AVAILABLEBADGES, 229)
-	registry.RegisterCommand(SESSIONPARAMETERS, 257)
-	registry.RegisterCommand(CRYPTOPARAMETERS, 277)
-	registry.RegisterCommand(ENDOFCRYPTOPARAMS, 278)
-	registry.RegisterCommand(HOTELLOGOUT, 287)
-	registry.RegisterCommand(SOUNDSETTING, 308)
-	registry.RegisterCommand(POSSIBLEACHIEVEMENTS, 436)
-	registry.RegisterCommand(ACHIEVEMENTNOTIFICATION, 437)
-	registry.RegisterCommand(LATENCYTEST, 354)
+	registry.Commands().Register(DISCONNECT, -1)
+	registry.Commands().Register(HELLO, 0)
+	registry.Commands().Register(SERVERSECRETKEY, 1)
+	registry.Commands().Register(RIGHTS, 2)
+	registry.Commands().Register(LOGINOK, 3)
+	registry.Commands().Register(USEROBJ, 5)
+	registry.Commands().Register(ERR, 33)
+	registry.Commands().Register(USERBANNED, 35)
+	registry.Commands().Register(PING, 50)
+	registry.Commands().Register(EPSNOTIFY, 52)
+	registry.Commands().Register(SYSTEMBROADCAST, 139)
+	registry.Commands().Register(CHECKSUM, 141)
+	registry.Commands().Register(MODALERT, 161)
+	registry.Commands().Register(AVAILABLEBADGES, 229)
+	registry.Commands().Register(SESSIONPARAMETERS, 257)
+	registry.Commands().Register(CRYPTOPARAMETERS, 277)
+	registry.Commands().Register(ENDOFCRYPTOPARAMS, 278)
+	registry.Commands().Register(HOTELLOGOUT, 287)
+	registry.Commands().Register(SOUNDSETTING, 308)
+	registry.Commands().Register(POSSIBLEACHIEVEMENTS, 436)
+	registry.Commands().Register(ACHIEVEMENTNOTIFICATION, 437)
+	registry.Commands().Register(LATENCYTEST, 354)
 
-	registry.RegisterListener(756, handleTryLogin)
-	registry.RegisterListener(1170, handleVersionCheck)
-	registry.RegisterListener(813, handleUniqueID)
-	registry.RegisterListener(7, handleGetInfo)
-	registry.RegisterListener(8, handleGetCredits)
-	registry.RegisterListener(47, handleGetPassword)
-	registry.RegisterListener(58, handleLangCheck)
-	registry.RegisterListener(105, handleBTCKS)
-	registry.RegisterListener(157, handleGetAvailableBadges)
-	registry.RegisterListener(159, handleGetSelectedBadges)
-	registry.RegisterListener(1817, handleGetSessionParameters)
-	registry.RegisterListener(196, handlePong)
-	registry.RegisterListener(2002, handleGenerateKey)
-	registry.RegisterListener(204, handleSSO)
-	registry.RegisterListener(206, handleInitCrypto)
-	registry.RegisterListener(207, handleSecretKey)
-	registry.RegisterListener(228, handleGetSoundSettings)
-	registry.RegisterListener(229, handleSetSoundSettings)
-	registry.RegisterListener(370, handleGetPossibleAchievements)
-	registry.RegisterListener(315, handleTestLatency)
-	registry.RegisterListener(316, handleReportLatency)
+	registry.Listeners().Register(756, handleTryLogin)
+	registry.Listeners().Register(1170, handleVersionCheck)
+	registry.Listeners().Register(813, handleUniqueID)
+	registry.Listeners().Register(7, handleGetInfo)
+	registry.Listeners().Register(8, handleGetCredits)
+	registry.Listeners().Register(47, handleGetPassword)
+	registry.Listeners().Register(58, handleLangCheck)
+	registry.Listeners().Register(105, handleBTCKS)
+	registry.Listeners().Register(157, handleGetAvailableBadges)
+	registry.Listeners().Register(159, handleGetSelectedBadges)
+	registry.Listeners().Register(1817, handleGetSessionParameters)
+	registry.Listeners().Register(196, handlePong)
+	registry.Listeners().Register(2002, handleGenerateKey)
+	registry.Listeners().Register(204, handleSSO)
+	registry.Listeners().Register(206, handleInitCrypto)
+	registry.Listeners().Register(207, handleSecretKey)
+	registry.Listeners().Register(228, handleGetSoundSettings)
+	registry.Listeners().Register(229, handleSetSoundSettings)
+	registry.Listeners().Register(370, handleGetPossibleAchievements)
+	registry.Listeners().Register(315, handleTestLatency)
+	registry.Listeners().Register(316, handleReportLatency)
 }
 
-func handleTryLogin(ctx protocol.Context, packet *protocol.Packet) error {
+func handleTryLogin(packet *protocol.Packet) error {
 	username, err := packet.Message.ReadString()
 	if err != nil {
 		return err
@@ -89,10 +89,10 @@ func handleTryLogin(ctx protocol.Context, packet *protocol.Packet) error {
 	if username == "habbo" && password == "1234" {
 	}
 
-	return ctx.Send(LOGINOK)
+	return packet.Context.Send(LOGINOK)
 }
 
-func handleVersionCheck(ctx protocol.Context, packet *protocol.Packet) error {
+func handleVersionCheck(packet *protocol.Packet) error {
 	version, err := packet.Message.ReadInt()
 	if err != nil {
 		return err
@@ -114,7 +114,7 @@ func handleVersionCheck(ctx protocol.Context, packet *protocol.Packet) error {
 	return nil
 }
 
-func handleUniqueID(ctx protocol.Context, packet *protocol.Packet) error {
+func handleUniqueID(packet *protocol.Packet) error {
 	id, err := packet.Message.ReadString()
 	if err != nil {
 		return err
@@ -126,27 +126,27 @@ func handleUniqueID(ctx protocol.Context, packet *protocol.Packet) error {
 	return nil
 }
 
-func handleGetInfo(ctx protocol.Context, packet *protocol.Packet) error {
+func handleGetInfo(packet *protocol.Packet) error {
 	// TODO: send info, session parameters?
 	return nil
 }
 
-func handleGetCredits(ctx protocol.Context, packet *protocol.Packet) error {
+func handleGetCredits(packet *protocol.Packet) error {
 	// TODO: send credits
 	return nil
 }
 
-func handleGetPassword(ctx protocol.Context, packet *protocol.Packet) error {
+func handleGetPassword(packet *protocol.Packet) error {
 	// TODO: send password
 	return nil
 }
 
-func handleLangCheck(ctx protocol.Context, packet *protocol.Packet) error {
-	return ctx.Send(EPSNOTIFY, protocol.RawString(""))
+func handleLangCheck(packet *protocol.Packet) error {
+	return packet.Context.Send(EPSNOTIFY, protocol.RawString(""))
 }
 
 // buy game tickets
-func handleBTCKS(ctx protocol.Context, packet *protocol.Packet) error {
+func handleBTCKS(packet *protocol.Packet) error {
 	chosenAmount, err := packet.Message.ReadInt()
 	if err != nil {
 		return nil
@@ -163,7 +163,7 @@ func handleBTCKS(ctx protocol.Context, packet *protocol.Packet) error {
 	return nil
 }
 
-func handleGetAvailableBadges(ctx protocol.Context, packet *protocol.Packet) error {
+func handleGetAvailableBadges(packet *protocol.Packet) error {
 	// TODO: get available badges from storage
 	badges := []protocol.Argument{}
 	badges = append(badges, protocol.String("VIP"))
@@ -179,15 +179,15 @@ func handleGetAvailableBadges(ctx protocol.Context, packet *protocol.Packet) err
 	args = append(args, protocol.Int(len(chosen)))
 	args = append(args, chosen...)
 
-	return ctx.Send(AVAILABLEBADGES, args...)
+	return packet.Context.Send(AVAILABLEBADGES, args...)
 }
 
-func handleGetSelectedBadges(ctx protocol.Context, packet *protocol.Packet) error {
+func handleGetSelectedBadges(packet *protocol.Packet) error {
 	// TODO: get selected badges
 	return nil
 }
 
-func handleGetSessionParameters(ctx protocol.Context, packet *protocol.Packet) error {
+func handleGetSessionParameters(packet *protocol.Packet) error {
 	parameters := []protocol.Argument{}
 	// 0 - false, 1 - true, 2 - required
 
@@ -235,16 +235,16 @@ func handleGetSessionParameters(ctx protocol.Context, packet *protocol.Packet) e
 	args = append(args, protocol.Int(len(parameters)))
 	args = append(args, parameters...)
 
-	return ctx.Send(SESSIONPARAMETERS, args...)
+	return packet.Context.Send(SESSIONPARAMETERS, args...)
 }
 
-func handlePong(ctx protocol.Context, packet *protocol.Packet) error {
+func handlePong(packet *protocol.Packet) error {
 	// TODO: pong received
-	// ctx.Pong() to enable a timeout for the next PING?
+	// packet.Context.Pong() to enable a timeout for the next PING?
 	return nil
 }
 
-func handleGenerateKey(ctx protocol.Context, packet *protocol.Packet) error {
+func handleGenerateKey(packet *protocol.Packet) error {
 	publicKey, err := packet.Message.ReadString()
 	if err != nil {
 		return err
@@ -257,7 +257,7 @@ func handleGenerateKey(ctx protocol.Context, packet *protocol.Packet) error {
 	return nil
 }
 
-func handleSSO(ctx protocol.Context, packet *protocol.Packet) error {
+func handleSSO(packet *protocol.Packet) error {
 	ticket, err := packet.Message.ReadString()
 	if err != nil {
 		return err
@@ -270,24 +270,24 @@ func handleSSO(ctx protocol.Context, packet *protocol.Packet) error {
 	return nil
 }
 
-func handleInitCrypto(ctx protocol.Context, packet *protocol.Packet) error {
+func handleInitCrypto(packet *protocol.Packet) error {
 	// TODO: crypto
 
 	return nil
 }
 
-func handleSecretKey(ctx protocol.Context, packet *protocol.Packet) error {
+func handleSecretKey(packet *protocol.Packet) error {
 	// TODO: crypto
 
 	return nil
 }
 
-func handleGetSoundSettings(ctx protocol.Context, packet *protocol.Packet) error {
+func handleGetSoundSettings(packet *protocol.Packet) error {
 	state := 0 // 0 - muted, 1 - max
-	return ctx.Send(SOUNDSETTING, protocol.Int(state))
+	return packet.Context.Send(SOUNDSETTING, protocol.Int(state))
 }
 
-func handleSetSoundSettings(ctx protocol.Context, packet *protocol.Packet) error {
+func handleSetSoundSettings(packet *protocol.Packet) error {
 	state, err := packet.Message.ReadInt()
 	if err != nil {
 		return err
@@ -298,7 +298,7 @@ func handleSetSoundSettings(ctx protocol.Context, packet *protocol.Packet) error
 	return nil
 }
 
-func handleGetPossibleAchievements(ctx protocol.Context, packet *protocol.Packet) error {
+func handleGetPossibleAchievements(packet *protocol.Packet) error {
 	// TODO: fetch from storage and loop
 	achievements := []protocol.Argument{}
 
@@ -313,18 +313,18 @@ func handleGetPossibleAchievements(ctx protocol.Context, packet *protocol.Packet
 	args = append(args, protocol.Int(len(achievements)))
 	args = append(args, achievements...)
 
-	return ctx.Send(POSSIBLEACHIEVEMENTS, args...)
+	return packet.Context.Send(POSSIBLEACHIEVEMENTS, args...)
 }
 
-func handleTestLatency(ctx protocol.Context, packet *protocol.Packet) error {
+func handleTestLatency(packet *protocol.Packet) error {
 	id, err := packet.Message.ReadInt()
 	if err != nil {
 		return err
 	}
-	return ctx.Send(LATENCYTEST, protocol.Int(id))
+	return packet.Context.Send(LATENCYTEST, protocol.Int(id))
 }
 
-func handleReportLatency(ctx protocol.Context, packet *protocol.Packet) error {
+func handleReportLatency(packet *protocol.Packet) error {
 	latency, err := packet.Message.ReadInt()
 	if err != nil {
 		return err
@@ -340,7 +340,7 @@ func handleReportLatency(ctx protocol.Context, packet *protocol.Packet) error {
 		return err
 	}
 
-	// TODO: log, ctx.Log() maybe?
+	// TODO: log, packet.Context.Log() maybe?
 	println(latency, latencyCleared, latencyValueCount)
 
 	return nil
