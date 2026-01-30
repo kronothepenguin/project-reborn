@@ -16,7 +16,7 @@ again:
 	}
 
 	bytesRead += n
-	if bytesRead < 3 {
+	if bytesRead < size {
 		goto again
 	}
 
@@ -31,7 +31,7 @@ func readLength(r io.Reader) (int, error) {
 
 	l3 := buf[0]
 	l2 := buf[1]
-	l1 := buf[3]
+	l1 := buf[2]
 
 	length := int(l3&63)*4096 + int(l2&63)*64 + int(l1&63)
 	return length, nil
