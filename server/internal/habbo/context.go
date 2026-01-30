@@ -2,8 +2,7 @@ package habbo
 
 import (
 	"io"
-	"log"
-	"os"
+	"log/slog"
 
 	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
 	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol/registry"
@@ -14,11 +13,11 @@ type HabboContext struct {
 
 	registry *registry.Registry
 
-	logger *log.Logger
+	logger *slog.Logger
 }
 
 func NewHabboContext(conn io.ReadWriteCloser, registry *registry.Registry) *HabboContext {
-	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lmsgprefix)
+	logger := slog.New(slog.Default().Handler())
 	return &HabboContext{
 		conn:     conn,
 		registry: registry,
@@ -34,6 +33,6 @@ func (ctx *HabboContext) Send(cmd string, args ...protocol.Argument) error {
 	return ctx.registry.Commands.Dispatch(ctx.conn, cmd, args...)
 }
 
-func (ctx *HabboContext) Logger() *log.Logger {
+func (ctx *HabboContext) Logger() *slog.Logger {
 	return ctx.logger
 }

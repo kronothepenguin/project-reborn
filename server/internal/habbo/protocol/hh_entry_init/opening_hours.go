@@ -12,7 +12,7 @@ const INFOHOTELCLOSED = "INFOHOTELCLOSED"
 const AVAILABILITYTIME = "AVAILABILITYTIME"
 const LOGINFAILEDHOTELCLOSED = "LOGINFAILEDHOTELCLOSED"
 
-func Register(registry protocol.Registry) {
+func registerOpeningHours(registry protocol.Registry) {
 	registry.RegisterCommand(AVAILABILITYSTATUS, 290)
 	registry.RegisterCommand(INFOHOTELCLOSING, 291)
 	registry.RegisterCommand(INFOHOTELCLOSED, 292)

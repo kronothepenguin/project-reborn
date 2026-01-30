@@ -1,6 +1,9 @@
 package transport
 
-import "net"
+import (
+	"log/slog"
+	"net"
+)
 
 type TCPServer struct {
 	address  string
@@ -36,6 +39,7 @@ func (s *TCPServer) Loop(handle func(net.Conn)) error {
 	for {
 		conn, err := s.listener.Accept()
 		if err != nil {
+			slog.Error("loop", slog.Any("error", err))
 			return err
 		}
 		go handle(conn)

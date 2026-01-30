@@ -2,7 +2,7 @@ package protocol
 
 import (
 	"io"
-	"log"
+	"log/slog"
 )
 
 type RawString string
@@ -47,7 +47,7 @@ type Context interface {
 
 	Send(cmd string, args ...Argument) error
 
-	Logger() *log.Logger
+	Logger() *slog.Logger
 }
 
 type Listener func(Context, *Packet) error

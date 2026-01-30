@@ -27,7 +27,7 @@ const POSSIBLEACHIEVEMENTS = "POSSIBLEACHIEVEMENTS"
 const ACHIEVEMENTNOTIFICATION = "ACHIEVEMENTNOTIFICATION"
 const LATENCYTEST = "LATENCYTEST"
 
-func Registry(registry protocol.Registry) {
+func registerLogin(registry protocol.Registry) {
 	registry.RegisterCommand(DISCONNECT, -1)
 	registry.RegisterCommand(HELLO, 0)
 	registry.RegisterCommand(SERVERSECRETKEY, 1)
