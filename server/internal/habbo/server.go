@@ -1,7 +1,6 @@
 package habbo
 
 import (
-	"fmt"
 	"log/slog"
 	"net"
 
@@ -50,8 +49,8 @@ func (s *Server) handleTCP(conn net.Conn) {
 
 		oldLogger := ctx.logger
 
-		logger := ctx.logger.With(slog.Int("cmd", int(p.Cmd)))
-		logger.Info(fmt.Sprintf("%x", p.Message.Bytes()))
+		logger := ctx.logger.With(slog.Int("cmd", int(p.Command)))
+		logger.Info(p.Message.String())
 		ctx.logger = logger
 		if err := s.registry.Messages.Handle(ctx, p); err != nil {
 			logger.Error("handle", slog.Any("error", err))

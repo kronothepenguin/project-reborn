@@ -32,7 +32,7 @@ func (r *MessageRegistry) Handle(ctx protocol.Context, packet *protocol.Packet) 
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	handle, ok := r.lookup[packet.Cmd]
+	handle, ok := r.lookup[packet.Command]
 	if !ok {
 		return ErrListenerNotFound
 	}

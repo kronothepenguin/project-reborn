@@ -5,73 +5,92 @@ import (
 	"io"
 )
 
-func readFixed(r io.Reader, size int) ([]byte, error) {
-	buf := make([]byte, size)
-	bytesRead := 0
-
-again:
-	n, err := r.Read(buf[bytesRead:])
-	if err != nil {
-		return nil, err
-	}
-
-	bytesRead += n
-	if bytesRead < size {
-		goto again
-	}
-
-	return buf, nil
-}
-
-func readLength(r io.Reader) (int, error) {
-	buf, err := readFixed(r, 3)
+func readLength(r io.Reader, buf *bytes.Buffer) (int, error) {
+	_, err := io.CopyN(buf, r, 3)
 	if err != nil {
 		return 0, err
 	}
 
-	l3 := buf[0]
-	l2 := buf[1]
-	l1 := buf[2]
+	b := buf.Next(3)
+	l3 := b[0]
+	l2 := b[1]
+	l1 := b[2]
 
 	length := int(l3&63)*4096 + int(l2&63)*64 + int(l1&63)
 	return length, nil
 }
 
+func readPacket(r io.Reader, buf *bytes.Buffer, length int) (cmd int16, msg *Message, err error) {
+	_, err = io.CopyN(buf, r, int64(length))
+	if err != nil {
+		return
+	}
+
+	b := buf.Next(length)
+
+	b1 := b[0]
+	b2 := b[1]
+	cmd = int16(b1&63)*64 + int16(b2&63)
+
+	msg = NewMessage()
+	_, err = msg.buf.Write(b[2:])
+
+	if err != nil {
+		msg.Dispose()
+		msg = nil
+	}
+
+	return
+}
+
 func ReadPacket(r io.Reader) (*Packet, error) {
-	length, err := readLength(r)
+	buf := getBuf()
+
+	length, err := readLength(r, buf)
 	if err != nil {
 		return nil, err
 	}
 
-	buf, err := readFixed(r, length)
+	cmd, msg, err := readPacket(r, buf, length)
 	if err != nil {
 		return nil, err
 	}
 
-	b1 := buf[0]
-	b2 := buf[1]
-	cmd := int16(b1&63)*64 + int16(b2&63)
-
-	msg := NewMessage()
-	msg.Write(buf[2:])
+	putBuf(buf)
 
 	return NewPacket(cmd, msg), nil
 }
 
+func writeCommand(w io.ByteWriter, cmd int16) error {
+	if err := w.WriteByte(byte(cmd/64) | 64); err != nil {
+		return err
+	}
+	if err := w.WriteByte(byte(cmd&63) | 64); err != nil {
+		return err
+	}
+	return nil
+}
+
+func writeMessage(w io.Writer, msg *Message) error {
+	if msg == nil {
+		return nil
+	}
+
+	if _, err := w.Write(msg.buf.Bytes()); err != nil {
+		return err
+	}
+	return nil
+}
+
 func WritePacket(w io.Writer, p *Packet) error {
-	var buf bytes.Buffer
+	buf := getBuf()
 
-	if err := buf.WriteByte(byte(p.Cmd/64) | 64); err != nil {
-		return err
-	}
-	if err := buf.WriteByte(byte(p.Cmd&63) | 64); err != nil {
+	if err := writeCommand(buf, p.Command); err != nil {
 		return err
 	}
 
-	if p.Message != nil {
-		if _, err := buf.Write(p.Message.Bytes()); err != nil {
-			return err
-		}
+	if err := writeMessage(buf, p.Message); err != nil {
+		return err
 	}
 
 	if err := buf.WriteByte(1); err != nil {
@@ -79,5 +98,8 @@ func WritePacket(w io.Writer, p *Packet) error {
 	}
 
 	_, err := w.Write(buf.Bytes())
+
+	putBuf(buf)
+
 	return err
 }

@@ -42,6 +42,12 @@ func WriteArgumentsTo(m *Message, args ...Argument) error {
 	return nil
 }
 
+type Connection interface {
+	io.ReadWriteCloser
+
+	Send(cmd string, args ...Argument) error
+}
+
 type Context interface {
 	Connection() io.ReadWriteCloser
 

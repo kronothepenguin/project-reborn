@@ -3,24 +3,29 @@ package protocol
 import (
 	"bytes"
 	"errors"
+	"fmt"
 )
 
 var ErrInvalidStringLength = errors.New("invalid string length")
 
 type Message struct {
-	buf bytes.Buffer
+	buf *bytes.Buffer
 }
 
 func NewMessage() *Message {
-	return &Message{}
+	return &Message{buf: getBuf()}
 }
 
-func (msg *Message) Bytes() []byte {
-	return msg.buf.Bytes()
+func (msg *Message) String() string {
+	if msg.buf == nil {
+		return "nil"
+	}
+	return fmt.Sprintf("%x", msg.buf.Bytes())
 }
 
-func (msg *Message) Write(b []byte) (int, error) {
-	return msg.buf.Write(b)
+func (msg *Message) Dispose() {
+	putBuf(msg.buf)
+	msg.buf = nil
 }
 
 func (msg *Message) ReadRawString() string {

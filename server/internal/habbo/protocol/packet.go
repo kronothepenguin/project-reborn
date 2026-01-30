@@ -1,13 +1,14 @@
 package protocol
 
 type Packet struct {
-	Cmd     int16
+	Command int16
 	Message *Message
+	Context Context
 }
 
 func NewPacket(cmd int16, msg *Message) *Packet {
 	return &Packet{
-		Cmd:     cmd,
+		Command: cmd,
 		Message: msg,
 	}
 }
