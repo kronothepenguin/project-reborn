@@ -5,6 +5,7 @@ import (
 	"net"
 
 	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
+	hhclub "github.com/kronothepenguin/project-reborn/internal/habbo/protocol/hh_club"
 	hhentryinit "github.com/kronothepenguin/project-reborn/internal/habbo/protocol/hh_entry_init"
 	hhkioskroom "github.com/kronothepenguin/project-reborn/internal/habbo/protocol/hh_kiosk_room"
 	hhroomutils "github.com/kronothepenguin/project-reborn/internal/habbo/protocol/hh_room_utils"
@@ -21,13 +22,17 @@ func NewServer() *Server {
 	return &Server{}
 }
 
-func (s *Server) RunTCP() {
-	// TODO: init registry
+func (s *Server) initRegistry() {
 	s.registry = protocol.NewRegistry()
-	hhshared.Register(s.registry)
+	hhclub.Register(s.registry)
+	hhentryinit.Register(s.registry)
 	hhkioskroom.Register(s.registry)
 	hhroomutils.Register(s.registry)
-	hhentryinit.Register(s.registry)
+	hhshared.Register(s.registry)
+}
+
+func (s *Server) RunTCP() {
+	s.initRegistry()
 
 	tcp := transport.NewTCPServer("0.0.0.0:1234")
 	tcp.Start()
@@ -41,8 +46,12 @@ func (s *Server) handleTCP(conn net.Conn) {
 	slog.Info("new client")
 	ctx := NewHabboContext(conn, s.registry)
 
-	err := ctx.Send(hhentryinit.HELLO)
-	if err != nil {
+	if err := ctx.Send(hhentryinit.HELLO); err != nil {
+		slog.Error(err.Error())
+		return
+	}
+
+	if err := ctx.Send(hhentryinit.ENDOFCRYPTOPARAMS); err != nil {
 		slog.Error(err.Error())
 		return
 	}
@@ -53,11 +62,12 @@ func (s *Server) handleTCP(conn net.Conn) {
 			ctx.logger.Error("read packet", slog.Any("error", err))
 			break
 		}
+		p.Context = ctx
 
 		oldLogger := ctx.logger
 
 		logger := ctx.logger.With(slog.Int("cmd", int(p.Command)))
-		logger.Info(p.Message.String())
+		logger.Info("", slog.String("msg", p.Message.String()))
 		ctx.logger = logger
 		if err := s.registry.Listeners().Handle(p); err != nil {
 			logger.Error("handle", slog.Any("error", err))
