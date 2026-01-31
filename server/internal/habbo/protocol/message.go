@@ -7,6 +7,8 @@ import (
 )
 
 var ErrInvalidStringLength = errors.New("invalid string length")
+var ErrInvalidIntLength = errors.New("invalid int length")
+var ErrIncompleteIntRead = errors.New("not enough bytes to read int")
 
 type Message struct {
 	buf *bytes.Buffer
@@ -47,10 +49,17 @@ func (msg *Message) ReadString() (string, error) {
 	if err != nil {
 		return "", err
 	}
+	// fmt.Printf("b1: %x\tb2: %x\t", b1, b2)
 	length := uint16(b1&63)*64 + uint16(b2&63)
+	// fmt.Print(length)
+
+	if length == 0 {
+		return "", nil
+	}
 
 	b := make([]byte, length)
 	n, err := msg.buf.Read(b)
+	// fmt.Println("\tn", n)
 	if err != nil {
 		return "", err
 	}
@@ -99,17 +108,26 @@ func (msg *Message) ReadInt() (int, error) {
 	neg := header&4 == 4
 	bbb := (header & 56) / 8
 
-	b := make([]byte, bbb)
+	if bbb <= 0 {
+		return 0, ErrInvalidIntLength
+	}
+
+	if bbb == 1 {
+		return vv, nil
+	}
+
+	b := make([]byte, bbb-1)
 	n, err := msg.buf.Read(b)
 	if err != nil {
 		return 0, nil
 	}
 
-	if n != int(bbb) {
-		// TODO: error
+	fmt.Printf("vv: %x\tneg: %v\tbbb: %d\tb: %+v\tn: %d\n", vv, neg, bbb, b, n)
+	if n != len(b) {
+		return 0, ErrIncompleteIntRead
 	}
 
-	v := int(vv)
+	v := vv
 	if bbb > 1 {
 		f := 4
 		for _, p := range b {
