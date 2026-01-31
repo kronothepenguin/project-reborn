@@ -1,6 +1,8 @@
 package hhentryinit
 
 import (
+	"log/slog"
+
 	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
 )
 
@@ -108,8 +110,11 @@ func handleVersionCheck(packet *protocol.Packet) error {
 		return err
 	}
 
-	if version == 0 || clientURL == "" || extVarsURL == "" {
-	}
+	packet.Context.Logger().Info("",
+		slog.Int("version", version),
+		slog.String("clientURL", clientURL),
+		slog.String("extVarsURL", extVarsURL),
+	)
 
 	return nil
 }
@@ -174,10 +179,10 @@ func handleGetAvailableBadges(packet *protocol.Packet) error {
 	chosen = append(chosen, protocol.String("VIP"))
 
 	args := make([]protocol.Argument, len(badges)+1+len(chosen)+1)
-	args = append(args, protocol.Int(len(badges)))
-	args = append(args, badges...)
-	args = append(args, protocol.Int(len(chosen)))
-	args = append(args, chosen...)
+	args[0] = protocol.Int(len(badges))
+	copy(args[1:], badges)
+	args[len(badges)+1] = protocol.Int(len(chosen))
+	copy(args[len(badges)+2:], chosen)
 
 	return packet.Context.Send(AVAILABLEBADGES, args...)
 }
@@ -232,8 +237,8 @@ func handleGetSessionParameters(packet *protocol.Packet) error {
 	parameters = append(parameters, protocol.Int(tutorialEnabled))
 
 	args := make([]protocol.Argument, len(parameters)+1)
-	args = append(args, protocol.Int(len(parameters)))
-	args = append(args, parameters...)
+	args[0] = protocol.Int(len(parameters))
+	copy(args[1:], parameters)
 
 	return packet.Context.Send(SESSIONPARAMETERS, args...)
 }
@@ -264,10 +269,11 @@ func handleSSO(packet *protocol.Packet) error {
 	}
 
 	// TODO: sso
-	if ticket == "" {
-	}
+	packet.Context.Logger().Info("sso",
+		slog.String("ticket", ticket),
+	)
 
-	return nil
+	return packet.Context.Send(LOGINOK)
 }
 
 func handleInitCrypto(packet *protocol.Packet) error {
@@ -310,8 +316,8 @@ func handleGetPossibleAchievements(packet *protocol.Packet) error {
 	achievements = append(achievements, protocol.String(badgeID))
 
 	args := make([]protocol.Argument, len(achievements)+1)
-	args = append(args, protocol.Int(len(achievements)))
-	args = append(args, achievements...)
+	args[0] = protocol.Int(len(achievements))
+	copy(args[1:], achievements)
 
 	return packet.Context.Send(POSSIBLEACHIEVEMENTS, args...)
 }
@@ -340,8 +346,11 @@ func handleReportLatency(packet *protocol.Packet) error {
 		return err
 	}
 
-	// TODO: log, packet.Context.Log() maybe?
-	println(latency, latencyCleared, latencyValueCount)
+	packet.Context.Logger().Info("",
+		slog.Int("latency", latency),
+		slog.Int("latencyCleared", latencyCleared),
+		slog.Int("latencyValueCount", latencyValueCount),
+	)
 
 	return nil
 }
