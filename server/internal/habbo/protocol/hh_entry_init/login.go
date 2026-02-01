@@ -132,8 +132,27 @@ func handleUniqueID(packet *protocol.Packet) error {
 }
 
 func handleGetInfo(packet *protocol.Packet) error {
-	// TODO: send info, session parameters?
-	return nil
+	userID := "1"
+	name := "$name"
+	figure := ""
+	sex := "M"
+	customData := ""
+	phTickets := 0
+	phFigure := ""
+	photoFilm := 0
+	directMail := 1
+
+	return packet.Context.Send(USEROBJ,
+		protocol.String(userID),
+		protocol.String(name),
+		protocol.String(figure),
+		protocol.String(sex),
+		protocol.String(customData),
+		protocol.Int(phTickets),
+		protocol.String(phFigure),
+		protocol.Int(photoFilm),
+		protocol.Int(directMail),
+	)
 }
 
 func handleGetCredits(packet *protocol.Packet) error {

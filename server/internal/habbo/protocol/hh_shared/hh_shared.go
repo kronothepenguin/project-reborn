@@ -1,11 +1,8 @@
-package hhphoto
+package hhshared
 
 import "github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
 
-const FILM = "FILM"
-
 func Register(registry protocol.Registry) {
-	registry.Commands().Register(FILM, 4)
+	registerErrorReport(registry)
+	registerHobba(registry)
 }
-
-// TODO: RegisterMUS

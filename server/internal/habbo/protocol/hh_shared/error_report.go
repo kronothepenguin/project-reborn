@@ -2,10 +2,8 @@ package hhshared
 
 import "github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
 
-func buildErrorReport() *protocol.Packet {
-	message := protocol.NewMessage()
-	message.WriteInt(0)     // error id
-	message.WriteInt(0)     // error message id
-	message.WriteString("") // time
-	return protocol.NewPacket(299, message)
+const ERROR_REPORT = "ERROR_REPORT"
+
+func registerErrorReport(registry protocol.Registry) {
+	registry.Commands().Register(ERROR_REPORT, 299)
 }

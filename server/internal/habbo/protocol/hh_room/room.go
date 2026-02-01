@@ -9,27 +9,27 @@ const USERS = "USERS"
 const LOGOUT = "LOGOUT"
 const OBJECTS = "OBJECTS"
 const HEIGHTMAP = "HEIGHTMAP"
-const ACTIVE_OBJECTS = "ACTIVE_OBJECTS"
+const ACTIVEOBJECTS = "ACTIVEOBJECTS"
 const ERROR = "ERROR"
 const STATUS = "STATUS"
 const FLAT_LETIN = "FLAT_LETIN"
 const ITEMS = "ITEMS"
-const ROOM_RIGHTS_CONTROLLER = "ROOM_RIGHTS_CONTROLLER"
 const ROOM_RIGHTS = "ROOM_RIGHTS"
-const FLAT_PROPERTY = "FLAT_PROPERTY"
-const ROOM_RIGHTS_OWNER = "ROOM_RIGHTS_OWNER"
+const ROOM_RIGHTS_2 = "ROOM_RIGHTS_2"
+const FLATPROPERTY = "FLATPROPERTY"
+const ROOM_RIGHTS_3 = "ROOM_RIGHTS_3"
 const IDATA = "IDATA"
-const DOOR_FLAT = "DOOR_FLAT"
-const DOOR_DELETED = "DOOR_DELETED"
-const DOOR_DELETED_2 = "DOOR_DELETED_2"
+const DOORFLAT = "DOORFLAT"
+const DOORDELETED = "DOORDELETED"
+const DOORDELETED_2 = "DOORDELETED_2"
 const ROOM_READY = "ROOM_READY"
-const YOU_ARE_MOD = "YOU_ARE_MOD"
-const SHOW_PROGRAM = "SHOW_PROGRAM"
+const YOUAREMOD = "YOUAREMOD"
+const SHOWPROGRAM = "SHOWPROGRAM"
 const NO_USER_FOR_GIFT = "NO_USER_FOR_GIFT"
 const ITEMS_2 = "ITEMS_2"
-const REMOVE_ITEMS = "REMOVE_ITEMS"
-const UPDATE_ITEMS = "UPDATE_ITEMS"
-const STUFF_DATA_UPDATE = "STUFF_DATA_UPDATE"
+const REMOVEITEM = "REMOVEITEM"
+const UPDATEITEM = "UPDATEITEM"
+const STUFFDATAUPDATE = "STUFFDATAUPDATE"
 const DOOR_OUT = "DOOR_OUT"
 const DICE_VALUE = "DICE_VALUE"
 const DOORBELL_RINGING = "DOORBELL_RINGING"
@@ -83,27 +83,27 @@ func Register(registry protocol.Registry) {
 	registry.Commands().Register(LOGOUT, 29)
 	registry.Commands().Register(OBJECTS, 30)
 	registry.Commands().Register(HEIGHTMAP, 31)
-	registry.Commands().Register(ACTIVE_OBJECTS, 32)
+	registry.Commands().Register(ACTIVEOBJECTS, 32)
 	registry.Commands().Register(ERROR, 33)
 	registry.Commands().Register(STATUS, 34)
 	registry.Commands().Register(FLAT_LETIN, 41)
 	registry.Commands().Register(ITEMS, 45)
-	registry.Commands().Register(ROOM_RIGHTS_CONTROLLER, 42)
-	registry.Commands().Register(ROOM_RIGHTS, 43)
-	registry.Commands().Register(FLAT_PROPERTY, 46)
-	registry.Commands().Register(ROOM_RIGHTS_OWNER, 47)
+	registry.Commands().Register(ROOM_RIGHTS, 42)
+	registry.Commands().Register(ROOM_RIGHTS_2, 43)
+	registry.Commands().Register(FLATPROPERTY, 46)
+	registry.Commands().Register(ROOM_RIGHTS_3, 47)
 	registry.Commands().Register(IDATA, 48)
-	registry.Commands().Register(DOOR_FLAT, 62)
-	registry.Commands().Register(DOOR_DELETED, 63)
-	registry.Commands().Register(DOOR_DELETED_2, 64)
+	registry.Commands().Register(DOORFLAT, 62)
+	registry.Commands().Register(DOORDELETED, 63)
+	registry.Commands().Register(DOORDELETED_2, 64)
 	registry.Commands().Register(ROOM_READY, 69)
-	registry.Commands().Register(YOU_ARE_MOD, 70)
-	registry.Commands().Register(SHOW_PROGRAM, 71)
+	registry.Commands().Register(YOUAREMOD, 70)
+	registry.Commands().Register(SHOWPROGRAM, 71)
 	registry.Commands().Register(NO_USER_FOR_GIFT, 76)
 	registry.Commands().Register(ITEMS_2, 83)
-	registry.Commands().Register(REMOVE_ITEMS, 84)
-	registry.Commands().Register(UPDATE_ITEMS, 85)
-	registry.Commands().Register(STUFF_DATA_UPDATE, 88)
+	registry.Commands().Register(REMOVEITEM, 84)
+	registry.Commands().Register(UPDATEITEM, 85)
+	registry.Commands().Register(STUFFDATAUPDATE, 88)
 	registry.Commands().Register(DOOR_OUT, 89)
 	registry.Commands().Register(DICE_VALUE, 90)
 	registry.Commands().Register(DOORBELL_RINGING, 91)
@@ -149,58 +149,151 @@ func Register(registry protocol.Registry) {
 	registry.Commands().Register(IGNORE_USER_RESULT, 419)
 	registry.Commands().Register(IGNORE_LIST, 420)
 
-	registry.Listeners().Register(2, handleRoomDirectory)
-	registry.Listeners().Register(28, handleGetDoorFlat)
-	registry.Listeners().Register(52, handleChat)
-	// TODO: other packets
+	registry.Listeners().Register(2, handleroom_directory)
+	registry.Listeners().Register(28, handleGETDOORFLAT)
+	registry.Listeners().Register(52, handleCHAT)
+	registry.Listeners().Register(55, handleSHOUT)
+	registry.Listeners().Register(56, handleWHISPER)
+	registry.Listeners().Register(53, handleQUIT)
+	registry.Listeners().Register(54, handleGOVIADOOR)
+	registry.Listeners().Register(57, handleTRYFLAT)
+	registry.Listeners().Register(59, handleGOTOFLAT)
+	registry.Listeners().Register(60, handleG_HMAP)
+	registry.Listeners().Register(61, handleG_USRS)
+	registry.Listeners().Register(62, handleG_OBJS)
+	registry.Listeners().Register(63, handleG_ITEMS)
+	registry.Listeners().Register(64, handleG_STAT)
+	registry.Listeners().Register(65, handleGETSTRIP)
+	registry.Listeners().Register(66, handleFLATPROPBYITEM)
+	registry.Listeners().Register(67, handleADDSTRIPITEM)
+	registry.Listeners().Register(68, handleTRADE_UNACCEPT)
+	registry.Listeners().Register(69, handleTRADE_ACCEPT)
+	registry.Listeners().Register(70, handleTRADE_CLOSE)
+	registry.Listeners().Register(71, handleTRADE_OPEN)
+	registry.Listeners().Register(72, handleTRADE_ADDITEM)
+	registry.Listeners().Register(73, handleMOVESTUFF)
+	registry.Listeners().Register(74, handleSETSTUFFDATA)
+	registry.Listeners().Register(75, handleMOVE)
+	registry.Listeners().Register(76, handleTHROW_DICE)
+	registry.Listeners().Register(77, handleDICE_OFF)
+	registry.Listeners().Register(78, handlePRESENTOPEN)
+	registry.Listeners().Register(79, handleLOOKTO)
+	registry.Listeners().Register(80, handleCARRYDRINK)
+	registry.Listeners().Register(81, handleINTODOOR)
+	registry.Listeners().Register(82, handleDOORGOIN)
+	registry.Listeners().Register(83, handleG_IDATA)
+	registry.Listeners().Register(84, handleSETITEMDATA)
+	registry.Listeners().Register(85, handleREMOVEITEM)
+	registry.Listeners().Register(87, handleCARRYITEM)
+	registry.Listeners().Register(88, handleSTOP)
+	registry.Listeners().Register(89, handleUSEITEM)
+	registry.Listeners().Register(90, handlePLACESTUFF)
+	registry.Listeners().Register(93, handleDANCE)
+	registry.Listeners().Register(94, handleWAVE)
+	registry.Listeners().Register(95, handleKICKUSER)
+	registry.Listeners().Register(96, handleASSIGNRIGHTS)
+	registry.Listeners().Register(97, handleREMOVERIGHTS)
+	registry.Listeners().Register(98, handleLETUSERIN)
+	registry.Listeners().Register(99, handleREMOVESTUFF)
+	registry.Listeners().Register(115, handleGOAWAY)
+	registry.Listeners().Register(126, handleGETROOMAD)
+	registry.Listeners().Register(128, handleGETPETSTAT)
+	registry.Listeners().Register(158, handleSETBADGE)
+	registry.Listeners().Register(182, handleGETINTERST)
+	registry.Listeners().Register(183, handleCONVERT_FURNI_TO_CREDITS)
+	registry.Listeners().Register(211, handleROOM_QUEUE_CHANGE)
+	registry.Listeners().Register(214, handleSETITEMSTATE)
+	registry.Listeners().Register(216, handleGET_SPECTATOR_AMOUNT)
+	registry.Listeners().Register(230, handleGET_GROUP_BADGES)
+	registry.Listeners().Register(231, handleGET_GROUP_DETAILS)
+	registry.Listeners().Register(247, handleSPIN_WHEEL_OF_FORTUNE)
+	registry.Listeners().Register(261, handleRATEFLAT)
+	registry.Listeners().Register(263, handleGET_USER_TAGS)
+	registry.Listeners().Register(314, handleSET_RANDOM_STATE)
+	registry.Listeners().Register(317, handleUSER_START_TYPING)
+	registry.Listeners().Register(318, handleUSER_CANCEL_TYPING)
+	registry.Listeners().Register(319, handleIGNOREUSER)
+	registry.Listeners().Register(320, handleBANUSER)
+	registry.Listeners().Register(321, handleGET_IGNORE_LIST)
+	registry.Listeners().Register(322, handleUNIGNORE_USER)
+	registry.Listeners().Register(345, handleCAN_CREATE_ROOMEVENT)
+	registry.Listeners().Register(346, handleCREATE_ROOMEVENT)
+	registry.Listeners().Register(347, handleQUIT_ROOMEVENT)
+	registry.Listeners().Register(348, handleEDIT_ROOMEVENT)
+	registry.Listeners().Register(349, handleGET_ROOMEVENT_TYPE_COUNT)
+	registry.Listeners().Register(350, handleGET_ROOMEVENTS_BY_TYPE)
 }
 
-func handleRoomDirectory(packet *protocol.Packet) error {
-	isPublic, err := packet.Message.ReadBool()
-	if err != nil {
-		return err
-	}
-
-	roomID, err := packet.Message.ReadInt()
-	if err != nil {
-		return err
-	}
-
-	doorID, err := packet.Message.ReadInt()
-	if err != nil {
-		return err
-	}
-
-	if doorID == 0 {
-		// not a teleport?
-	}
-
-	// FIXME: REMOVE THIS
-	if isPublic {
-	}
-	if roomID == 1 {
-	}
-
-	return nil
-}
-
-func handleGetDoorFlat(packet *protocol.Packet) error {
-	teleID, err := packet.Message.ReadInt()
-	if err != nil {
-		return err
-	}
-	roomID := 0
-	//TODO: verify teleport id
-	return packet.Context.Send(DOOR_FLAT, protocol.Int(teleID), protocol.Int(roomID))
-}
-
-func handleChat(packet *protocol.Packet) error {
-	chat, err := packet.Message.ReadString()
-	if err != nil {
-		return err
-	}
-	// TODO: broadcast chat
-	if chat == "" {
-	}
-	return nil
-}
+func handleroom_directory(*protocol.Packet) error           { return nil }
+func handleGETDOORFLAT(*protocol.Packet) error              { return nil }
+func handleCHAT(*protocol.Packet) error                     { return nil }
+func handleSHOUT(*protocol.Packet) error                    { return nil }
+func handleWHISPER(*protocol.Packet) error                  { return nil }
+func handleQUIT(*protocol.Packet) error                     { return nil }
+func handleGOVIADOOR(*protocol.Packet) error                { return nil }
+func handleTRYFLAT(*protocol.Packet) error                  { return nil }
+func handleGOTOFLAT(*protocol.Packet) error                 { return nil }
+func handleG_HMAP(*protocol.Packet) error                   { return nil }
+func handleG_USRS(*protocol.Packet) error                   { return nil }
+func handleG_OBJS(*protocol.Packet) error                   { return nil }
+func handleG_ITEMS(*protocol.Packet) error                  { return nil }
+func handleG_STAT(*protocol.Packet) error                   { return nil }
+func handleGETSTRIP(*protocol.Packet) error                 { return nil }
+func handleFLATPROPBYITEM(*protocol.Packet) error           { return nil }
+func handleADDSTRIPITEM(*protocol.Packet) error             { return nil }
+func handleTRADE_UNACCEPT(*protocol.Packet) error           { return nil }
+func handleTRADE_ACCEPT(*protocol.Packet) error             { return nil }
+func handleTRADE_CLOSE(*protocol.Packet) error              { return nil }
+func handleTRADE_OPEN(*protocol.Packet) error               { return nil }
+func handleTRADE_ADDITEM(*protocol.Packet) error            { return nil }
+func handleMOVESTUFF(*protocol.Packet) error                { return nil }
+func handleSETSTUFFDATA(*protocol.Packet) error             { return nil }
+func handleMOVE(*protocol.Packet) error                     { return nil }
+func handleTHROW_DICE(*protocol.Packet) error               { return nil }
+func handleDICE_OFF(*protocol.Packet) error                 { return nil }
+func handlePRESENTOPEN(*protocol.Packet) error              { return nil }
+func handleLOOKTO(*protocol.Packet) error                   { return nil }
+func handleCARRYDRINK(*protocol.Packet) error               { return nil }
+func handleINTODOOR(*protocol.Packet) error                 { return nil }
+func handleDOORGOIN(*protocol.Packet) error                 { return nil }
+func handleG_IDATA(*protocol.Packet) error                  { return nil }
+func handleSETITEMDATA(*protocol.Packet) error              { return nil }
+func handleREMOVEITEM(*protocol.Packet) error               { return nil }
+func handleCARRYITEM(*protocol.Packet) error                { return nil }
+func handleSTOP(*protocol.Packet) error                     { return nil }
+func handleUSEITEM(*protocol.Packet) error                  { return nil }
+func handlePLACESTUFF(*protocol.Packet) error               { return nil }
+func handleDANCE(*protocol.Packet) error                    { return nil }
+func handleWAVE(*protocol.Packet) error                     { return nil }
+func handleKICKUSER(*protocol.Packet) error                 { return nil }
+func handleASSIGNRIGHTS(*protocol.Packet) error             { return nil }
+func handleREMOVERIGHTS(*protocol.Packet) error             { return nil }
+func handleLETUSERIN(*protocol.Packet) error                { return nil }
+func handleREMOVESTUFF(*protocol.Packet) error              { return nil }
+func handleGOAWAY(*protocol.Packet) error                   { return nil }
+func handleGETROOMAD(*protocol.Packet) error                { return nil }
+func handleGETPETSTAT(*protocol.Packet) error               { return nil }
+func handleSETBADGE(*protocol.Packet) error                 { return nil }
+func handleGETINTERST(*protocol.Packet) error               { return nil }
+func handleCONVERT_FURNI_TO_CREDITS(*protocol.Packet) error { return nil }
+func handleROOM_QUEUE_CHANGE(*protocol.Packet) error        { return nil }
+func handleSETITEMSTATE(*protocol.Packet) error             { return nil }
+func handleGET_SPECTATOR_AMOUNT(*protocol.Packet) error     { return nil }
+func handleGET_GROUP_BADGES(*protocol.Packet) error         { return nil }
+func handleGET_GROUP_DETAILS(*protocol.Packet) error        { return nil }
+func handleSPIN_WHEEL_OF_FORTUNE(*protocol.Packet) error    { return nil }
+func handleRATEFLAT(*protocol.Packet) error                 { return nil }
+func handleGET_USER_TAGS(*protocol.Packet) error            { return nil }
+func handleSET_RANDOM_STATE(*protocol.Packet) error         { return nil }
+func handleUSER_START_TYPING(*protocol.Packet) error        { return nil }
+func handleUSER_CANCEL_TYPING(*protocol.Packet) error       { return nil }
+func handleIGNOREUSER(*protocol.Packet) error               { return nil }
+func handleBANUSER(*protocol.Packet) error                  { return nil }
+func handleGET_IGNORE_LIST(*protocol.Packet) error          { return nil }
+func handleUNIGNORE_USER(*protocol.Packet) error            { return nil }
+func handleCAN_CREATE_ROOMEVENT(*protocol.Packet) error     { return nil }
+func handleCREATE_ROOMEVENT(*protocol.Packet) error         { return nil }
+func handleQUIT_ROOMEVENT(*protocol.Packet) error           { return nil }
+func handleEDIT_ROOMEVENT(*protocol.Packet) error           { return nil }
+func handleGET_ROOMEVENT_TYPE_COUNT(*protocol.Packet) error { return nil }
+func handleGET_ROOMEVENTS_BY_TYPE(*protocol.Packet) error   { return nil }

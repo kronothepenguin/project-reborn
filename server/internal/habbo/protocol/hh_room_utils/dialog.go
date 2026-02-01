@@ -2,22 +2,6 @@ package hhroomutils
 
 import "github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
 
-func buildGetPendingResponse() *protocol.Packet {
-	message := protocol.NewMessage()
-	message.WriteInt(0) // count
-	return protocol.NewPacket(319, message)
-}
-
-func buildPendingCallsForHelpDeleted() *protocol.Packet {
-	return protocol.NewPacket(320, protocol.NewMessage())
-}
-
-func buildCallForHelpSendingResponse() *protocol.Packet {
-	message := protocol.NewMessage()
-	message.WriteInt(0) // status
-	return protocol.NewPacket(321, message)
-}
-
 const GET_PENDING_RESPONSE = "GET_PENDING_RESPONSE"
 const PENDING_CFHS_DELETED = "PENDING_CFHS_DELETED"
 const CFH_SENDING_RESPONSE = "CFH_SENDING_RESPONSE"
