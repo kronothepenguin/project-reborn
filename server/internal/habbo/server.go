@@ -68,6 +68,7 @@ func (s *Server) RunTCP() {
 func (s *Server) handleTCP(conn net.Conn) {
 	defer conn.Close()
 
+	slog.SetLogLoggerLevel(slog.LevelDebug)
 	// TODO: server logger
 	slog.Info("new client")
 	ctx := NewHabboContext(conn, s.registry)
