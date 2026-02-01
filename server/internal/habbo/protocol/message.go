@@ -49,17 +49,14 @@ func (msg *Message) ReadString() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	// fmt.Printf("b1: %x\tb2: %x\t", b1, b2)
-	length := uint16(b1&63)*64 + uint16(b2&63)
-	// fmt.Print(length)
 
+	length := uint16(b1&63)*64 + uint16(b2&63)
 	if length == 0 {
 		return "", nil
 	}
 
 	b := make([]byte, length)
 	n, err := msg.buf.Read(b)
-	// fmt.Println("\tn", n)
 	if err != nil {
 		return "", err
 	}
@@ -122,7 +119,6 @@ func (msg *Message) ReadInt() (int, error) {
 		return 0, nil
 	}
 
-	fmt.Printf("vv: %x\tneg: %v\tbbb: %d\tb: %+v\tn: %d\n", vv, neg, bbb, b, n)
 	if n != len(b) {
 		return 0, ErrIncompleteIntRead
 	}
