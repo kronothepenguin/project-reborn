@@ -1,7 +1,10 @@
 package hhentryinit
 
 import (
+	"crypto/rand"
+	"fmt"
 	"log/slog"
+	"math/big"
 
 	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
 )
@@ -274,11 +277,27 @@ func handleGenerateKey(packet *protocol.Packet) error {
 		return err
 	}
 
-	// TODO: crypto
-	if publicKey == "" {
+	packet.Context.Logger().Debug(
+		"handleGenerateKey",
+		slog.String("publicKey", publicKey),
+	)
+
+	clientPublicKey := new(big.Int)
+	if _, err := fmt.Sscanf(publicKey, "%X", clientPublicKey); err != nil {
+		return err
 	}
 
-	return nil
+	b, err := rand.Int(rand.Reader, protocol.P())
+	if err != nil {
+		return err
+	}
+
+	shared := new(big.Int).Exp(clientPublicKey, b, protocol.P())
+	packet.Context.Crypto().Init(shared)
+
+	serverPublicKey := new(big.Int).Exp(protocol.G(), b, protocol.P())
+	content := fmt.Sprintf("%X", serverPublicKey)
+	return packet.Context.Send(SERVERSECRETKEY, protocol.RawString(content))
 }
 
 func handleSSO(packet *protocol.Packet) error {
@@ -296,9 +315,9 @@ func handleSSO(packet *protocol.Packet) error {
 }
 
 func handleInitCrypto(packet *protocol.Packet) error {
-	// TODO: crypto
+	serverToClientSecurity := 0
 
-	return nil
+	return packet.Context.Send(CRYPTOPARAMETERS, protocol.Int(serverToClientSecurity))
 }
 
 func handleSecretKey(packet *protocol.Packet) error {
@@ -371,5 +390,12 @@ func handleReportLatency(packet *protocol.Packet) error {
 		slog.Int("latencyValueCount", latencyValueCount),
 	)
 
+	return nil
+}
+
+func SendInitialCommands(ctx protocol.Context) error {
+	if err := ctx.Send(HELLO); err != nil {
+		return err
+	}
 	return nil
 }

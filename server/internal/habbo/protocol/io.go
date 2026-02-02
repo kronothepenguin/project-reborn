@@ -3,15 +3,20 @@ package protocol
 import (
 	"bytes"
 	"io"
+	"log/slog"
 )
 
-func readLength(r io.Reader, buf *bytes.Buffer) (int, error) {
+func readLength(r io.Reader, c *Crypto, buf *bytes.Buffer) (int, error) {
 	_, err := io.CopyN(buf, r, 3)
 	if err != nil {
 		return 0, err
 	}
 
 	b := buf.Next(3)
+	if c.decoder != nil {
+		b = c.Decode(b)
+	}
+
 	l3 := b[0]
 	l2 := b[1]
 	l1 := b[2]
@@ -20,13 +25,16 @@ func readLength(r io.Reader, buf *bytes.Buffer) (int, error) {
 	return length, nil
 }
 
-func readPacket(r io.Reader, buf *bytes.Buffer, length int) (cmd int16, msg *Message, err error) {
+func readPacket(r io.Reader, c *Crypto, buf *bytes.Buffer, length int) (cmd int16, msg *Message, err error) {
 	_, err = io.CopyN(buf, r, int64(length))
 	if err != nil {
 		return
 	}
 
 	b := buf.Next(length)
+	if c.decoder != nil {
+		b = c.Decode(b)
+	}
 
 	b1 := b[0]
 	b2 := b[1]
@@ -43,16 +51,17 @@ func readPacket(r io.Reader, buf *bytes.Buffer, length int) (cmd int16, msg *Mes
 	return
 }
 
-func ReadPacket(r io.Reader) (*Packet, error) {
+func ReadPacket(r io.Reader, c *Crypto) (*Packet, error) {
 	buf := getBuf()
 	defer putBuf(buf)
 
-	length, err := readLength(r, buf)
+	length, err := readLength(r, c, buf)
 	if err != nil {
 		return nil, err
 	}
+	slog.Debug("ReadPacket", slog.Int("length", length))
 
-	cmd, msg, err := readPacket(r, buf, length)
+	cmd, msg, err := readPacket(r, c, buf, length)
 	if err != nil {
 		return nil, err
 	}

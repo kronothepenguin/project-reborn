@@ -60,6 +60,8 @@ func (s *Server) initRegistry() {
 func (s *Server) RunTCP() {
 	s.initRegistry()
 
+	slog.SetLogLoggerLevel(slog.LevelDebug)
+
 	tcp := transport.NewTCPServer("0.0.0.0:1234")
 	tcp.Start()
 	tcp.Loop(s.handleTCP)
@@ -68,39 +70,32 @@ func (s *Server) RunTCP() {
 func (s *Server) handleTCP(conn net.Conn) {
 	defer conn.Close()
 
-	slog.SetLogLoggerLevel(slog.LevelDebug)
-	// TODO: server logger
-	slog.Info("new client")
 	ctx := NewHabboContext(conn, s.registry)
 
-	if err := ctx.Send(hhentryinit.HELLO); err != nil {
-		slog.Error(err.Error())
-		return
-	}
-
-	if err := ctx.Send(hhentryinit.ENDOFCRYPTOPARAMS); err != nil {
-		slog.Error(err.Error())
+	if err := hhentryinit.SendInitialCommands(ctx); err != nil {
+		ctx.logger.Error("handle", slog.String("err", err.Error()))
 		return
 	}
 
 	for {
-		p, err := protocol.ReadPacket(conn)
+		p, err := protocol.ReadPacket(conn, ctx.Crypto())
 		if err != nil {
 			ctx.logger.Error("read packet", slog.Any("error", err))
 			break
 		}
 		p.Context = ctx
 
-		oldLogger := ctx.logger
+		// oldLogger := ctx.logger
 
-		logger := ctx.logger.With(slog.Int("cmd", int(p.Command)))
-		logger.Info("", slog.String("msg", p.Message.String()))
-		ctx.logger = logger
+		// logger := ctx.logger.With(slog.Int("cmd", int(p.Command)))
+		// logger.Info("<<", slog.String("msg", p.Message.String()))
+		// ctx.logger = logger
+		ctx.logger.Info("<<", slog.Int("cmd", int(p.Command)), slog.String("msg", p.Message.String()))
 		if err := s.registry.Listeners().Handle(p); err != nil {
-			logger.Error("handle", slog.Any("error", err))
+			ctx.logger.Error("handle", slog.Any("error", err))
 			break
 		}
 
-		ctx.logger = oldLogger
+		// ctx.logger = oldLogger
 	}
 }

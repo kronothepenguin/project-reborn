@@ -13,6 +13,8 @@ type HabboContext struct {
 	registry protocol.Registry
 
 	logger *slog.Logger
+
+	crypto protocol.Crypto
 }
 
 func NewHabboContext(conn io.ReadWriteCloser, registry protocol.Registry) *HabboContext {
@@ -31,9 +33,15 @@ func (ctx *HabboContext) Send(cmd string, args ...protocol.Argument) error {
 		return err
 	}
 
+	ctx.logger.Info(">>", slog.Int("cmd", int(p.Command)), slog.String("msg", p.Message.String()))
+
 	return protocol.WritePacket(ctx.conn, p)
 }
 
 func (ctx *HabboContext) Logger() *slog.Logger {
 	return ctx.logger
+}
+
+func (ctx *HabboContext) Crypto() *protocol.Crypto {
+	return &ctx.crypto
 }

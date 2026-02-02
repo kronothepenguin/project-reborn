@@ -9,5 +9,7 @@ type Context interface {
 
 	Logger() *slog.Logger
 
+	Crypto() *Crypto
+
 	// TODO: virtual hotel
 }
