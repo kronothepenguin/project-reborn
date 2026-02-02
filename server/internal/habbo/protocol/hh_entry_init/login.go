@@ -1,10 +1,9 @@
 package hhentryinit
 
 import (
-	"crypto/rand"
+	"errors"
 	"fmt"
 	"log/slog"
-	"math/big"
 
 	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
 )
@@ -90,11 +89,13 @@ func handleTryLogin(packet *protocol.Packet) error {
 		return err
 	}
 
-	// TODO: verify credentials, better use bcrypt for password
-	if username == "habbo" && password == "1234" {
-	}
+	packet.Context.Logger().Debug(
+		"handleTryLogin",
+		slog.String("username", username),
+		slog.String("password", password),
+	)
 
-	return packet.Context.Send(LOGINOK)
+	return packet.Context.Send(ERR)
 }
 
 func handleVersionCheck(packet *protocol.Packet) error {
@@ -113,7 +114,8 @@ func handleVersionCheck(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Info("",
+	packet.Context.Logger().Debug(
+		"handleVersionCheck",
 		slog.Int("version", version),
 		slog.String("clientURL", clientURL),
 		slog.String("extVarsURL", extVarsURL),
@@ -123,13 +125,17 @@ func handleVersionCheck(packet *protocol.Packet) error {
 }
 
 func handleUniqueID(packet *protocol.Packet) error {
-	id, err := packet.Message.ReadString()
+	machineID, err := packet.Message.ReadString()
 	if err != nil {
 		return err
 	}
 
-	if id == "" {
-	}
+	packet.Context.Logger().Debug(
+		"handleUniqueID",
+		slog.String("machineID", machineID),
+	)
+
+	// TODO: verify ban
 
 	return nil
 }
@@ -137,38 +143,81 @@ func handleUniqueID(packet *protocol.Packet) error {
 func handleGetInfo(packet *protocol.Packet) error {
 	userID := "1"
 	name := "$name"
-	figure := ""
+	figure := "hd-180-1.ch-876-62.lg-280-62.sh-300-62"
 	sex := "M"
-	customData := ""
+	customData := "$customData"
 	phTickets := 0
 	phFigure := ""
 	photoFilm := 0
 	directMail := 1
 
-	return packet.Context.Send(USEROBJ,
-		protocol.String(userID),
-		protocol.String(name),
-		protocol.String(figure),
-		protocol.String(sex),
-		protocol.String(customData),
-		protocol.Int(phTickets),
-		protocol.String(phFigure),
-		protocol.Int(photoFilm),
-		protocol.Int(directMail),
+	packet.Context.Logger().Debug(
+		"handleGetInfo",
+		slog.String("userID", userID),
+		slog.String("name", name),
+		slog.String("figure", figure),
+		slog.String("sex", sex),
+		slog.String("customData", customData),
+		slog.Int("phTickets", phTickets),
+		slog.String("phFigure", phFigure),
+		slog.Int("photoFilm", photoFilm),
+		slog.Int("directMail", directMail),
+	)
+
+	rights := []protocol.Argument{
+		protocol.String("fuse_trade"), protocol.String("fuse_buy_credits"), protocol.String("fuse_any_room_controller"),
+		protocol.String("fuse_remove_stickies"), protocol.String("fuse_use_special_room_layouts"), protocol.String("fuse_see_flat_ids"),
+		protocol.String("fuse_remove_photos"), protocol.String("fuse_habbo_chooser"), protocol.String("fuse_furni_chooser"),
+		protocol.String("fuse_performance_panel"), protocol.String("fuse_catalog_editor"), protocol.String("fuse_debug_window"),
+		protocol.String("fuse_cancel_roomevent"), protocol.String("fuse_use_club_dance"), protocol.String("can_buy_credits"),
+		protocol.String("fuse_kick"), protocol.String("fuse_see_chat_log_link"), protocol.String("fuse_alert"),
+	}
+
+	return errors.Join(
+		packet.Context.Send(RIGHTS, []protocol.Argument(rights)...),
+		packet.Context.Send(
+			USEROBJ,
+			protocol.String(userID),
+			protocol.String(name),
+			protocol.String(figure),
+			protocol.String(sex),
+			protocol.String(customData),
+			protocol.Int(phTickets),
+			protocol.String(phFigure),
+			protocol.Int(photoFilm),
+			protocol.Int(directMail),
+		),
 	)
 }
 
 func handleGetCredits(packet *protocol.Packet) error {
-	// TODO: send credits
-	return nil
+	credits := "9999"
+
+	packet.Context.Logger().Debug(
+		"handleGetCredits",
+		slog.String("credits", credits),
+	)
+
+	return packet.Context.Send("PURSE", protocol.RawString(credits))
 }
 
 func handleGetPassword(packet *protocol.Packet) error {
-	// TODO: send password
-	return nil
+	packet.Context.Logger().Debug("handleGetPassword")
+
+	return packet.Context.Send(ERR)
 }
 
 func handleLangCheck(packet *protocol.Packet) error {
+	word, err := packet.Message.ReadString()
+	if err != nil {
+		return err
+	}
+
+	packet.Context.Logger().Debug(
+		"handleLangCheck",
+		slog.String("word", word),
+	)
+
 	return packet.Context.Send(EPSNOTIFY, protocol.RawString(""))
 }
 
@@ -184,8 +233,11 @@ func handleBTCKS(packet *protocol.Packet) error {
 		return nil
 	}
 
-	if chosenAmount == 0 || name == "" {
-	}
+	packet.Context.Logger().Debug(
+		"handleBTCKS",
+		slog.Int("chosenAmount", chosenAmount),
+		slog.String("name", name),
+	)
 
 	return nil
 }
@@ -193,12 +245,18 @@ func handleBTCKS(packet *protocol.Packet) error {
 func handleGetAvailableBadges(packet *protocol.Packet) error {
 	// TODO: get available badges from storage
 	badges := []protocol.Argument{}
-	badges = append(badges, protocol.String("VIP"))
+	badges = append(badges, protocol.String("ADM"))
 
 	chosen := []protocol.Argument{}
-	index := 1
+	index := 0
 	chosen = append(chosen, protocol.Int(index))
-	chosen = append(chosen, protocol.String("VIP"))
+	chosen = append(chosen, protocol.String("ADM"))
+
+	packet.Context.Logger().Debug(
+		"handleGetAvailableBadges",
+		slog.String("badges", fmt.Sprint(badges)),
+		slog.String("chosen", fmt.Sprint(chosen)),
+	)
 
 	args := make([]protocol.Argument, len(badges)+1+len(chosen)+1)
 	args[0] = protocol.Int(len(badges))
@@ -210,7 +268,8 @@ func handleGetAvailableBadges(packet *protocol.Packet) error {
 }
 
 func handleGetSelectedBadges(packet *protocol.Packet) error {
-	// TODO: get selected badges
+	packet.Context.Logger().Debug("handleGetSelectedBadges")
+
 	return nil
 }
 
@@ -258,6 +317,11 @@ func handleGetSessionParameters(packet *protocol.Packet) error {
 	parameters = append(parameters, protocol.Int(9))
 	parameters = append(parameters, protocol.Int(tutorialEnabled))
 
+	packet.Context.Logger().Debug(
+		"handleGetSessionParameters",
+		slog.String("parameters", fmt.Sprint(parameters)),
+	)
+
 	args := make([]protocol.Argument, len(parameters)+1)
 	args[0] = protocol.Int(len(parameters))
 	copy(args[1:], parameters)
@@ -268,6 +332,8 @@ func handleGetSessionParameters(packet *protocol.Packet) error {
 func handlePong(packet *protocol.Packet) error {
 	// TODO: pong received
 	// packet.Context.Pong() to enable a timeout for the next PING?
+	packet.Context.Logger().Debug("handlePong")
+
 	return nil
 }
 
@@ -282,22 +348,24 @@ func handleGenerateKey(packet *protocol.Packet) error {
 		slog.String("publicKey", publicKey),
 	)
 
-	clientPublicKey := new(big.Int)
-	if _, err := fmt.Sscanf(publicKey, "%X", clientPublicKey); err != nil {
-		return err
-	}
+	return packet.Context.Send(ENDOFCRYPTOPARAMS)
 
-	b, err := rand.Int(rand.Reader, protocol.P())
-	if err != nil {
-		return err
-	}
+	// clientPublicKey := new(big.Int)
+	// if _, err := fmt.Sscanf(publicKey, "%X", clientPublicKey); err != nil {
+	// 	return err
+	// }
 
-	shared := new(big.Int).Exp(clientPublicKey, b, protocol.P())
-	packet.Context.Crypto().Init(shared)
+	// b, err := rand.Int(rand.Reader, protocol.P())
+	// if err != nil {
+	// 	return err
+	// }
 
-	serverPublicKey := new(big.Int).Exp(protocol.G(), b, protocol.P())
-	content := fmt.Sprintf("%X", serverPublicKey)
-	return packet.Context.Send(SERVERSECRETKEY, protocol.RawString(content))
+	// shared := new(big.Int).Exp(clientPublicKey, b, protocol.P())
+	// packet.Context.Crypto().Init(shared)
+
+	// serverPublicKey := new(big.Int).Exp(protocol.G(), b, protocol.P())
+	// content := fmt.Sprintf("%X", serverPublicKey)
+	// return packet.Context.Send(SERVERSECRETKEY, protocol.RawString(content))
 }
 
 func handleSSO(packet *protocol.Packet) error {
@@ -306,8 +374,8 @@ func handleSSO(packet *protocol.Packet) error {
 		return err
 	}
 
-	// TODO: sso
-	packet.Context.Logger().Info("sso",
+	packet.Context.Logger().Debug(
+		"handleSSO",
 		slog.String("ticket", ticket),
 	)
 
@@ -317,17 +385,29 @@ func handleSSO(packet *protocol.Packet) error {
 func handleInitCrypto(packet *protocol.Packet) error {
 	serverToClientSecurity := 0
 
+	packet.Context.Logger().Debug(
+		"handleInitCrypto",
+		slog.Int("serverToClientSecurity", serverToClientSecurity),
+	)
+
 	return packet.Context.Send(CRYPTOPARAMETERS, protocol.Int(serverToClientSecurity))
 }
 
 func handleSecretKey(packet *protocol.Packet) error {
 	// TODO: crypto
+	packet.Context.Logger().Debug("handleSecretKey")
 
 	return nil
 }
 
 func handleGetSoundSettings(packet *protocol.Packet) error {
 	state := 0 // 0 - muted, 1 - max
+
+	packet.Context.Logger().Debug(
+		"handleGetSoundSettings",
+		slog.Int("state", state),
+	)
+
 	return packet.Context.Send(SOUNDSETTING, protocol.Int(state))
 }
 
@@ -336,9 +416,12 @@ func handleSetSoundSettings(packet *protocol.Packet) error {
 	if err != nil {
 		return err
 	}
-	// TODO: store sound state
-	if state == 0 {
-	}
+
+	packet.Context.Logger().Debug(
+		"handleSetSoundSettings",
+		slog.Int("state", state),
+	)
+
 	return nil
 }
 
@@ -350,8 +433,13 @@ func handleGetPossibleAchievements(packet *protocol.Packet) error {
 	achievements = append(achievements, protocol.Int(typeID))
 	level := 1
 	achievements = append(achievements, protocol.Int(level))
-	badgeID := "trade"
+	badgeID := "AG1"
 	achievements = append(achievements, protocol.String(badgeID))
+
+	packet.Context.Logger().Debug(
+		"handleGetPossibleAchievements",
+		slog.String("achievements", fmt.Sprint(achievements)),
+	)
 
 	args := make([]protocol.Argument, len(achievements)+1)
 	args[0] = protocol.Int(len(achievements))
@@ -365,6 +453,12 @@ func handleTestLatency(packet *protocol.Packet) error {
 	if err != nil {
 		return err
 	}
+
+	packet.Context.Logger().Debug(
+		"handleTestLatency",
+		slog.Int("id", id),
+	)
+
 	return packet.Context.Send(LATENCYTEST, protocol.Int(id))
 }
 
@@ -384,7 +478,8 @@ func handleReportLatency(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Info("",
+	packet.Context.Logger().Debug(
+		"handleReportLatency",
 		slog.Int("latency", latency),
 		slog.Int("latencyCleared", latencyCleared),
 		slog.Int("latencyValueCount", latencyValueCount),
