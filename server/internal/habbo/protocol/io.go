@@ -3,7 +3,6 @@ package protocol
 import (
 	"bytes"
 	"io"
-	"log/slog"
 )
 
 func readLength(r io.Reader, c *Crypto, buf *bytes.Buffer) (int, error) {
@@ -59,7 +58,6 @@ func ReadPacket(r io.Reader, c *Crypto) (*Packet, error) {
 	if err != nil {
 		return nil, err
 	}
-	slog.Debug("ReadPacket", slog.Int("length", length))
 
 	cmd, msg, err := readPacket(r, c, buf, length)
 	if err != nil {
