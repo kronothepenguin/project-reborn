@@ -1,6 +1,10 @@
 package hhnavigator
 
-import "github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
+import (
+	"log/slog"
+
+	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
+)
 
 const FLAT_RESULTS = "FLAT_RESULTS"
 const ERROR = "ERROR"
@@ -61,21 +65,119 @@ func Register(registry protocol.Registry) {
 	registry.Listeners().Register(264, handleGET_RECOMMENDED_ROOMS)
 }
 
-func handleSBUSYF(*protocol.Packet) error                { return nil }
-func handleSUSERF(*protocol.Packet) error                { return nil }
-func handleSRCHF(*protocol.Packet) error                 { return nil }
-func handleGETFVRF(*protocol.Packet) error               { return nil }
-func handleADD_FAVORITE_ROOM(*protocol.Packet) error     { return nil }
-func handleDEL_FAVORITE_ROOM(*protocol.Packet) error     { return nil }
-func handleGETFLATINFO(*protocol.Packet) error           { return nil }
-func handleDELETEFLAT(*protocol.Packet) error            { return nil }
-func handleUPDATEFLAT(*protocol.Packet) error            { return nil }
-func handleSETFLATINFO(*protocol.Packet) error           { return nil }
-func handleNAVIGATE(*protocol.Packet) error              { return nil }
-func handleGETUSERFLATCATS(*protocol.Packet) error       { return nil }
-func handleGETFLATCAT(*protocol.Packet) error            { return nil }
-func handleSETFLATCAT(*protocol.Packet) error            { return nil }
-func handleGETSPACENODEUSERS(*protocol.Packet) error     { return nil }
-func handleREMOVEALLRIGHTS(*protocol.Packet) error       { return nil }
-func handleGETPARENTCHAIN(*protocol.Packet) error        { return nil }
-func handleGET_RECOMMENDED_ROOMS(*protocol.Packet) error { return nil }
+func handleSBUSYF(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleSBUSYF")
+	return nil
+}
+
+func handleSUSERF(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleSUSERF")
+	return nil
+}
+
+func handleSRCHF(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleSRCHF")
+	return nil
+}
+
+func handleGETFVRF(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleGETFVRF")
+	return nil
+}
+
+func handleADD_FAVORITE_ROOM(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleADD_FAVORITE_ROOM")
+	return nil
+}
+
+func handleDEL_FAVORITE_ROOM(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleDEL_FAVORITE_ROOM")
+	return nil
+}
+
+func handleGETFLATINFO(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleGETFLATINFO")
+	return nil
+}
+
+func handleDELETEFLAT(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleDELETEFLAT")
+	return nil
+}
+
+func handleUPDATEFLAT(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleUPDATEFLAT")
+	return nil
+}
+
+func handleSETFLATINFO(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleSETFLATINFO")
+	return nil
+}
+
+func handleNAVIGATE(packet *protocol.Packet) error {
+	nodeMask, err := packet.Message.ReadInt()
+	if err != nil {
+		return err
+	}
+
+	nodeId, err := packet.Message.ReadInt()
+	if err != nil {
+		return err
+	}
+
+	depth, err := packet.Message.ReadInt()
+	if err != nil {
+		return err
+	}
+
+	packet.Context.Logger().Debug(
+		"handleNAVIGATE",
+		slog.Int("nodeMask", nodeMask),
+		slog.Int("nodeId", nodeId),
+		slog.Int("depth", depth),
+	)
+
+	return nil
+}
+
+func handleGETUSERFLATCATS(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleGETUSERFLATCATS")
+	return nil
+}
+
+func handleGETFLATCAT(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleGETFLATCAT")
+	return nil
+}
+
+func handleSETFLATCAT(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleSETFLATCAT")
+	return nil
+}
+
+func handleGETSPACENODEUSERS(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleGETSPACENODEUSERS")
+	return nil
+}
+
+func handleREMOVEALLRIGHTS(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleREMOVEALLRIGHTS")
+	return nil
+}
+
+func handleGETPARENTCHAIN(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleGETPARENTCHAIN")
+	return nil
+}
+
+func handleGET_RECOMMENDED_ROOMS(packet *protocol.Packet) error {
+	numOfRooms := 0
+
+	packet.Context.Logger().Debug(
+		"handleGET_RECOMMENDED_ROOMS",
+		slog.Int("numOfRooms", numOfRooms),
+	)
+
+	return packet.Context.Send(RECOMMENDED_ROOM_LIST, protocol.Int(numOfRooms))
+}

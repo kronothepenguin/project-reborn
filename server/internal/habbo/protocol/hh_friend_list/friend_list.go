@@ -1,6 +1,10 @@
 package hhfriendlist
 
-import "github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
+import (
+	"log/slog"
+
+	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
+)
 
 const OK = "OK"
 const FRIENDLISTINIT = "FRIENDLISTINIT"
@@ -39,13 +43,77 @@ func Register(registry protocol.Registry) {
 	registry.Listeners().Register(262, handleFOLLOW_FRIEND)
 }
 
-func handleFRIENDLIST_INIT(*protocol.Packet) error              { return nil }
-func handleFRIENDLIST_UPDATE(*protocol.Packet) error            { return nil }
-func handleFRIENDLIST_GETOFFLINEFRIENDS(*protocol.Packet) error { return nil }
-func handleFRIENDLIST_REMOVEFRIEND(*protocol.Packet) error      { return nil }
-func handleMESSENGER_HABBOSEARCH(*protocol.Packet) error        { return nil }
-func handleFRIENDLIST_ACCEPTFRIEND(*protocol.Packet) error      { return nil }
-func handleFRIENDLIST_DECLINEFRIEND(*protocol.Packet) error     { return nil }
-func handleFRIENDLIST_FRIENDREQUEST(*protocol.Packet) error     { return nil }
-func handleFRIENDLIST_GETFRIENDREQUESTS(*protocol.Packet) error { return nil }
-func handleFOLLOW_FRIEND(*protocol.Packet) error                { return nil }
+func handleFRIENDLIST_INIT(packet *protocol.Packet) error {
+	userLimit := 25
+	normalLimit := 25
+	extendedLimit := 0
+	categoryCount := 0
+	friendCount := 0
+	friendRequestLimit := 5
+	friendRequestCount := 0
+
+	packet.Context.Logger().Debug(
+		"handleFRIENDLIST_INIT",
+		slog.Int("userLimit", userLimit),
+		slog.Int("normalLimit", normalLimit),
+		slog.Int("extendedLimit", extendedLimit),
+		slog.Int("categoryCount", categoryCount),
+		slog.Int("friendCount", friendCount),
+		slog.Int("friendRequestLimit", friendRequestLimit),
+		slog.Int("friendRequestCount", friendRequestCount),
+	)
+
+	return packet.Context.Send(FRIENDLISTINIT,
+		protocol.Int(userLimit),
+		protocol.Int(normalLimit),
+		protocol.Int(extendedLimit),
+		protocol.Int(categoryCount),
+		protocol.Int(friendCount),
+		protocol.Int(friendRequestLimit),
+		protocol.Int(friendRequestCount))
+}
+
+func handleFRIENDLIST_UPDATE(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleFRIENDLIST_UPDATE")
+	return nil
+}
+
+func handleFRIENDLIST_GETOFFLINEFRIENDS(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleFRIENDLIST_GETOFFLINEFRIENDS")
+	return nil
+}
+
+func handleFRIENDLIST_REMOVEFRIEND(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleFRIENDLIST_REMOVEFRIEND")
+	return nil
+}
+
+func handleMESSENGER_HABBOSEARCH(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleMESSENGER_HABBOSEARCH")
+	return nil
+}
+
+func handleFRIENDLIST_ACCEPTFRIEND(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleFRIENDLIST_ACCEPTFRIEND")
+	return nil
+}
+
+func handleFRIENDLIST_DECLINEFRIEND(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleFRIENDLIST_DECLINEFRIEND")
+	return nil
+}
+
+func handleFRIENDLIST_FRIENDREQUEST(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleFRIENDLIST_FRIENDREQUEST")
+	return nil
+}
+
+func handleFRIENDLIST_GETFRIENDREQUESTS(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleFRIENDLIST_GETFRIENDREQUESTS")
+	return nil
+}
+
+func handleFOLLOW_FRIEND(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleFOLLOW_FRIEND")
+	return nil
+}

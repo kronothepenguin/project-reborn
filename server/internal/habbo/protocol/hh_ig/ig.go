@@ -1,6 +1,10 @@
 package hhig
 
-import "github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
+import (
+	"log/slog"
+
+	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
+)
 
 const DIRECTORY_STATUS = "DIRECTORY_STATUS"
 const ENTER_ARENA_FAILED = "ENTER_ARENA_FAILED"
@@ -86,26 +90,123 @@ func Register(registry protocol.Registry) {
 	registry.Listeners().Register(299, handleIGExitGame)
 }
 
-func handleIGCheckDirectoryStatus(*protocol.Packet) error { return nil }
-func handleIGRoomGameStatus(*protocol.Packet) error       { return nil }
-func handleIGPlayAgain(*protocol.Packet) error            { return nil }
-func handleGameChat(*protocol.Packet) error               { return nil }
-func handleIGCreateGame(*protocol.Packet) error           { return nil }
-func handleIGGetGameList(*protocol.Packet) error          { return nil }
-func handleIGGetCreateGameInfo(*protocol.Packet) error    { return nil }
-func handleIGChangeParameters(*protocol.Packet) error     { return nil }
-func handleIGListPossibleInvites(*protocol.Packet) error  { return nil }
-func handleIGInviteUser(*protocol.Packet) error           { return nil }
-func handleIGKickUser(*protocol.Packet) error             { return nil }
-func handleIGStartGame(*protocol.Packet) error            { return nil }
-func handleIGCancelGame(*protocol.Packet) error           { return nil }
-func handleIGJoinGame(*protocol.Packet) error             { return nil }
-func handleIGLeaveGame(*protocol.Packet) error            { return nil }
-func handleIGStartObservingGame(*protocol.Packet) error   { return nil }
-func handleIGStopObservingGame(*protocol.Packet) error    { return nil }
-func handleIGGetLevelHallOfFame(*protocol.Packet) error   { return nil }
-func handleIGAcceptInviteRequest(*protocol.Packet) error  { return nil }
-func handleIGDeclineInviteRequest(*protocol.Packet) error { return nil }
-func handleIGLoadStageReady(*protocol.Packet) error       { return nil }
-func handleMSGPlayerInput(*protocol.Packet) error         { return nil }
-func handleIGExitGame(*protocol.Packet) error             { return nil }
+func handleIGCheckDirectoryStatus(packet *protocol.Packet) error {
+	code := 0
+
+	packet.Context.Logger().Debug(
+		"handleIGCheckDirectoryStatus",
+		slog.Int("code", code),
+	)
+
+	return packet.Context.Send(DIRECTORY_STATUS)
+}
+
+func handleIGRoomGameStatus(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGRoomGameStatus")
+	return nil
+}
+
+func handleIGPlayAgain(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGPlayAgain")
+	return nil
+}
+
+func handleGameChat(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleGameChat")
+	return nil
+}
+
+func handleIGCreateGame(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGCreateGame")
+	return nil
+}
+
+func handleIGGetGameList(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGGetGameList")
+	return nil
+}
+
+func handleIGGetCreateGameInfo(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGGetCreateGameInfo")
+	return nil
+}
+
+func handleIGChangeParameters(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGChangeParameters")
+	return nil
+}
+
+func handleIGListPossibleInvites(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGListPossibleInvites")
+	return nil
+}
+
+func handleIGInviteUser(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGInviteUser")
+	return nil
+}
+
+func handleIGKickUser(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGKickUser")
+	return nil
+}
+
+func handleIGStartGame(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGStartGame")
+	return nil
+}
+
+func handleIGCancelGame(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGCancelGame")
+	return nil
+}
+
+func handleIGJoinGame(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGJoinGame")
+	return nil
+}
+
+func handleIGLeaveGame(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGLeaveGame")
+	return nil
+}
+
+func handleIGStartObservingGame(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGStartObservingGame")
+	return nil
+}
+
+func handleIGStopObservingGame(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGStopObservingGame")
+	return nil
+}
+
+func handleIGGetLevelHallOfFame(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGGetLevelHallOfFame")
+	return nil
+}
+
+func handleIGAcceptInviteRequest(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGAcceptInviteRequest")
+	return nil
+}
+
+func handleIGDeclineInviteRequest(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGDeclineInviteRequest")
+	return nil
+}
+
+func handleIGLoadStageReady(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGLoadStageReady")
+	return nil
+}
+
+func handleMSGPlayerInput(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleMSGPlayerInput")
+	return nil
+}
+
+func handleIGExitGame(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleIGExitGame")
+	return nil
+}

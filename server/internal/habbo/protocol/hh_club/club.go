@@ -21,13 +21,14 @@ func Register(registry protocol.Registry) {
 }
 
 func handleSCRGetUserInfo(packet *protocol.Packet) error {
-	str, err := packet.Message.ReadString()
+	product, err := packet.Message.ReadString()
 	if err != nil {
 		return err
 	}
 
-	packet.Context.Logger().Info("debug",
-		slog.String("str", str),
+	packet.Context.Logger().Debug(
+		"handleSCRGetUserInfo",
+		slog.String("product", product),
 	)
 
 	productName := "club_habbo"

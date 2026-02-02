@@ -1,6 +1,10 @@
 package hhrecycler
 
-import "github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
+import (
+	"log/slog"
+
+	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
+)
 
 const RECYCLER_CONFIGURATION = "RECYCLER_CONFIGURATION"
 const RECYCLER_STATUS = "RECYCLER_STATUS"
@@ -22,8 +26,55 @@ func Register(registry protocol.Registry) {
 	registry.Listeners().Register(226, handleCONFIRM_FURNI_RECYCLING)
 }
 
-func handleGET_FURNI_RECYCLER_CONFIGURATION(*protocol.Packet) error { return nil }
-func handleGET_FURNI_RECYCLER_STATUS(*protocol.Packet) error        { return nil }
-func handleAPPROVE_RECYCLED_FURNI(*protocol.Packet) error           { return nil }
-func handleSTART_FURNI_RECYCLING(*protocol.Packet) error            { return nil }
-func handleCONFIRM_FURNI_RECYCLING(*protocol.Packet) error          { return nil }
+func handleGET_FURNI_RECYCLER_CONFIGURATION(packet *protocol.Packet) error {
+	serviceEnabled := 0
+	quarantineMinutes := 0
+	recyclingMinutes := 0
+	minutesToTimeout := 0
+	numOfRewardItems := 0
+
+	// TODO: reward items
+
+	packet.Context.Logger().Debug(
+		"handleGET_FURNI_RECYCLER_CONFIGURATION",
+		slog.Int("serviceEnabled", serviceEnabled),
+		slog.Int("quarantineMinutes", quarantineMinutes),
+		slog.Int("recyclingMinutes", recyclingMinutes),
+		slog.Int("minutesToTimeout", minutesToTimeout),
+		slog.Int("numOfRewardItems", numOfRewardItems),
+	)
+
+	return packet.Context.Send(RECYCLER_CONFIGURATION,
+		protocol.Int(serviceEnabled),
+		protocol.Int(quarantineMinutes),
+		protocol.Int(recyclingMinutes),
+		protocol.Int(minutesToTimeout),
+		protocol.Int(numOfRewardItems))
+}
+
+func handleGET_FURNI_RECYCLER_STATUS(packet *protocol.Packet) error {
+	status := 0 // 0 - open, 1 - progress, 2 - ready, 3 - timeout
+
+	packet.Context.Logger().Debug(
+		"handleGET_FURNI_RECYCLER_STATUS",
+		slog.Int("status", status),
+	)
+
+	return packet.Context.Send(RECYCLER_STATUS,
+		protocol.Int(status))
+}
+
+func handleAPPROVE_RECYCLED_FURNI(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleAPPROVE_RECYCLED_FURNI")
+	return nil
+}
+
+func handleSTART_FURNI_RECYCLING(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleSTART_FURNI_RECYCLING")
+	return nil
+}
+
+func handleCONFIRM_FURNI_RECYCLING(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleCONFIRM_FURNI_RECYCLING")
+	return nil
+}
