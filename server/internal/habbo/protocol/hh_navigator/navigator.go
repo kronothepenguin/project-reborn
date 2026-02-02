@@ -55,7 +55,7 @@ func Register(registry protocol.Registry) {
 	registry.Listeners().Register(23, handleDELETEFLAT)
 	registry.Listeners().Register(24, handleUPDATEFLAT)
 	registry.Listeners().Register(25, handleSETFLATINFO)
-	registry.Listeners().Register(150, handleNAVIGATE)
+	registry.Listeners().Register(150, handleNavigate)
 	registry.Listeners().Register(151, handleGETUSERFLATCATS)
 	registry.Listeners().Register(152, handleGETFLATCAT)
 	registry.Listeners().Register(153, handleSETFLATCAT)
@@ -115,12 +115,13 @@ func handleSETFLATINFO(packet *protocol.Packet) error {
 	return nil
 }
 
-func handleNAVIGATE(packet *protocol.Packet) error {
+func handleNavigate(packet *protocol.Packet) error {
 	nodeMask, err := packet.Message.ReadInt()
 	if err != nil {
 		return err
 	}
 
+	// 4 - private, 3 - public
 	nodeId, err := packet.Message.ReadInt()
 	if err != nil {
 		return err
@@ -132,12 +133,137 @@ func handleNAVIGATE(packet *protocol.Packet) error {
 	}
 
 	packet.Context.Logger().Debug(
-		"handleNAVIGATE",
+		"handleNavigate",
 		slog.Int("nodeMask", nodeMask),
 		slog.Int("nodeId", nodeId),
 		slog.Int("depth", depth),
 	)
 
+	var nodeType int // 0 - category, 1 - public?, 2 - private
+	var name string
+	var userCount int
+	var maxUsers int
+	var parentId int
+	var extra []protocol.Argument
+
+	switch nodeId {
+	case 3:
+		//TODO: public
+		nodeType = 0
+		name = "$public_title"
+		userCount = 0
+		maxUsers = 25
+		parentId = 0
+
+		extra = append(extra,
+			protocol.Int(100),           // nodeId
+			protocol.Int(1),             // nodeType
+			protocol.String("$public1"), // name
+			protocol.Int(0),             // userCount
+			protocol.Int(25),            // maxUsers
+			protocol.Int(nodeId),        // parentId
+
+			// nodeType == 1
+			protocol.String("$unitStrId"),  // unitStrId
+			protocol.Int(0),                // port
+			protocol.Int(0),                // door
+			protocol.String("hh_room_bar"), // casts
+			protocol.Int(0),                // usersInQueue
+			protocol.Bool(true),            // isVisible
+		)
+
+		extra = append(extra,
+			protocol.Int(101),           // nodeId
+			protocol.Int(2),             // nodeType
+			protocol.String("$public2"), // name
+			protocol.Int(0),             // userCount
+			protocol.Int(25),            // maxUsers
+			protocol.Int(nodeId),        // parentId
+
+			// nodeType == 2
+			protocol.Int(1),                 // flatCount
+			protocol.Int(102),               // flatID
+			protocol.String("$public2_102"), // name
+			protocol.String("$owner"),       // owner
+			protocol.String("$door"),        // door
+			protocol.Int(0),                 // userCount
+			protocol.Int(25),                // maxUsers
+			protocol.String("$description"), // description
+		)
+
+		extra = append(extra,
+			protocol.Int(103),           // nodeId
+			protocol.Int(1),             // nodeType
+			protocol.String("$public3"), // name
+			protocol.Int(0),             // userCount
+			protocol.Int(25),            // maxUsers
+			protocol.Int(101),           // parentId
+
+			// nodeType == 1
+			protocol.String("$public3_unitStrId"),
+			protocol.Int(0),                 // port
+			protocol.Int(0),                 // door
+			protocol.String("hh_room_pool"), // casts
+			protocol.Int(0),                 // usersInQueue
+			protocol.Bool(true),             // isVisible
+		)
+
+	case 4:
+		//TODO: private
+		nodeType = 0
+		name = "$private_title"
+		userCount = 0
+		maxUsers = 25
+		parentId = 0
+
+		extra = append(extra,
+			protocol.Int(200),            // nodeId
+			protocol.Int(1),              // nodeType
+			protocol.String("$private1"), // name
+			protocol.Int(0),              // userCount
+			protocol.Int(25),             // maxUsers
+			protocol.Int(nodeId),         // parentId
+
+			// nodeType == 1
+			protocol.String("$unitStrId"),
+			protocol.Int(0),                    // port
+			protocol.Int(0),                    // door
+			protocol.String("hh_room_rooftop"), // casts
+			protocol.Int(0),                    // usersInQueue
+			protocol.Bool(true),                // isVisible
+		)
+
+		extra = append(extra,
+			protocol.Int(201),            // nodeId
+			protocol.Int(2),              // nodeType
+			protocol.String("$private2"), // name
+			protocol.Int(0),              // userCount
+			protocol.Int(25),             // maxUsers
+			protocol.Int(nodeId),         // parentId
+
+			// nodeType == 2
+			protocol.Int(1),                  // flatCount
+			protocol.Int(202),                // flatID
+			protocol.String("$private2_102"), // name
+			protocol.String("$owner"),        // owner
+			protocol.String("$door"),         // door
+			protocol.Int(0),                  // userCount
+			protocol.Int(25),                 // maxUsers
+			protocol.String("$description"),  // description
+		)
+	}
+
+	var args []protocol.Argument
+	args = append(args, protocol.Int(nodeMask))
+	args = append(args, protocol.Int(nodeId))
+	args = append(args, protocol.Int(nodeType))
+	args = append(args, protocol.String(name))
+	args = append(args, protocol.Int(userCount))
+	args = append(args, protocol.Int(maxUsers))
+	args = append(args, protocol.Int(parentId))
+	args = append(args, extra...)
+
+	// return packet.Context.Send(NAVNODEINFO, args...)
 	return nil
 }
 
