@@ -20,14 +20,14 @@ type HabboContext struct {
 	hotel *virtual.Hotel
 }
 
-func NewHabboContext(conn io.ReadWriteCloser, registry protocol.Registry) *HabboContext {
+func NewHabboContext(conn io.ReadWriteCloser, registry protocol.Registry, hotel *virtual.Hotel) *HabboContext {
 	// TODO: multi handler [stdout, file]
 	logger := slog.New(slog.Default().Handler())
 	return &HabboContext{
 		conn:     conn,
 		registry: registry,
 		logger:   logger,
-		hotel:    virtual.NewHotel(),
+		hotel:    hotel,
 	}
 }
 

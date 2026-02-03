@@ -23,12 +23,14 @@ import (
 	hhroomutils "github.com/kronothepenguin/project-reborn/internal/habbo/protocol/hh_room_utils"
 	hhshared "github.com/kronothepenguin/project-reborn/internal/habbo/protocol/hh_shared"
 	hhtutorial "github.com/kronothepenguin/project-reborn/internal/habbo/protocol/hh_tutorial"
-
 	"github.com/kronothepenguin/project-reborn/internal/habbo/transport"
+	"github.com/kronothepenguin/project-reborn/internal/habbo/virtual"
 )
 
 type Server struct {
 	registry protocol.Registry
+
+	hotel *virtual.Hotel
 }
 
 func NewServer() *Server {
@@ -60,6 +62,10 @@ func (s *Server) initRegistry() {
 func (s *Server) RunTCP() {
 	s.initRegistry()
 
+	s.hotel = virtual.NewHotel()
+	// TODO: load from storage
+	s.hotel.Load()
+
 	slog.SetLogLoggerLevel(slog.LevelDebug)
 
 	tcp := transport.NewTCPServer("0.0.0.0:1234")
@@ -70,10 +76,7 @@ func (s *Server) RunTCP() {
 func (s *Server) handleTCP(conn net.Conn) {
 	defer conn.Close()
 
-	ctx := NewHabboContext(conn, s.registry)
-	// TODO: load from storage
-	// TODO: lightweight hotel reference
-	ctx.Hotel().Load()
+	ctx := NewHabboContext(conn, s.registry, s.hotel)
 
 	if err := hhentryinit.SendInitialCommands(ctx); err != nil {
 		ctx.logger.Error("handle", slog.String("err", err.Error()))
