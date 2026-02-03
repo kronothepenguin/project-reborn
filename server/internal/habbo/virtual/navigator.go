@@ -100,6 +100,18 @@ func (n *navigator) loadMockData() {
 						IsVisible:    true,
 					},
 				},
+				{
+					NodeID:    101,
+					NodeType:  int(nodeCategory),
+					Name:      "Category",
+					UserCount: 0,
+					MaxUsers:  100,
+					ParentId:  n.RootUnitCatId,
+
+					Node: &NavigatorCategoryNode{
+						Children: []*navigatorInfo{},
+					},
+				},
 			},
 		},
 	}

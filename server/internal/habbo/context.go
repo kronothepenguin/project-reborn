@@ -18,6 +18,7 @@ type HabboContext struct {
 	crypto protocol.Crypto
 
 	hotel *virtual.Hotel
+	habbo *virtual.Habbo
 }
 
 func NewHabboContext(conn io.ReadWriteCloser, registry protocol.Registry, hotel *virtual.Hotel) *HabboContext {
@@ -52,4 +53,12 @@ func (ctx *HabboContext) Crypto() *protocol.Crypto {
 
 func (ctx *HabboContext) Hotel() *virtual.Hotel {
 	return ctx.hotel
+}
+
+func (ctx *HabboContext) Habbo() *virtual.Habbo {
+	return ctx.habbo
+}
+
+func (ctx *HabboContext) SetHabbo(habbo *virtual.Habbo) {
+	ctx.habbo = habbo
 }

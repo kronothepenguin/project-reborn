@@ -14,4 +14,7 @@ type Context interface {
 	Crypto() *Crypto
 
 	Hotel() *virtual.Hotel
+
+	Habbo() *virtual.Habbo
+	SetHabbo(*virtual.Habbo)
 }

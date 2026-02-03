@@ -142,7 +142,7 @@ func handleNavigate(packet *protocol.Packet) error {
 		slog.Int("depth", depth),
 	)
 
-	node, ok := packet.Context.Hotel().Navigator().Nodes[nodeId]
+	node, ok := packet.Context.Hotel().Navigator.Nodes[nodeId]
 	if !ok {
 		return fmt.Errorf("handleNavigate node type %d not found", nodeId)
 	}

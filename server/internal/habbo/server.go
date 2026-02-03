@@ -62,7 +62,7 @@ func (s *Server) initRegistry() {
 func (s *Server) RunTCP() {
 	s.initRegistry()
 
-	s.hotel = virtual.NewHotel()
+	s.hotel = virtual.NewHotel(nil)
 	// TODO: load from storage
 	s.hotel.Load()
 

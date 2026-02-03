@@ -141,51 +141,43 @@ func handleUniqueID(packet *protocol.Packet) error {
 }
 
 func handleGetInfo(packet *protocol.Packet) error {
-	userID := "1"
-	name := "$name"
-	figure := "hd-180-1.ch-876-62.lg-280-62.sh-300-62"
-	sex := "M"
-	customData := "$customData"
-	phTickets := 0
-	phFigure := ""
-	photoFilm := 0
-	directMail := 1
+	// TODO: better use Hotel().GetHabbo(ctx.HabboID()) to keep in sync
+	habbo := packet.Context.Habbo()
+	if habbo == nil {
+		return errors.New("handleGetInfo habbo is nil")
+	}
 
 	packet.Context.Logger().Debug(
 		"handleGetInfo",
-		slog.String("userID", userID),
-		slog.String("name", name),
-		slog.String("figure", figure),
-		slog.String("sex", sex),
-		slog.String("customData", customData),
-		slog.Int("phTickets", phTickets),
-		slog.String("phFigure", phFigure),
-		slog.Int("photoFilm", photoFilm),
-		slog.Int("directMail", directMail),
+		slog.String("userID", habbo.ID),
+		slog.String("name", habbo.Name),
+		slog.String("figure", habbo.Figure),
+		slog.String("sex", habbo.Sex),
+		slog.String("customData", habbo.CustomData),
+		slog.Int("phTickets", habbo.PHTickets),
+		slog.String("phFigure", habbo.PHFigure),
+		slog.Int("photoFilm", habbo.PhotoFilm),
+		slog.Int("directMail", habbo.DirectMail),
 	)
 
-	rights := []protocol.Argument{
-		protocol.String("fuse_trade"), protocol.String("fuse_buy_credits"), protocol.String("fuse_any_room_controller"),
-		protocol.String("fuse_remove_stickies"), protocol.String("fuse_use_special_room_layouts"), protocol.String("fuse_see_flat_ids"),
-		protocol.String("fuse_remove_photos"), protocol.String("fuse_habbo_chooser"), protocol.String("fuse_furni_chooser"),
-		protocol.String("fuse_performance_panel"), protocol.String("fuse_catalog_editor"), protocol.String("fuse_debug_window"),
-		protocol.String("fuse_cancel_roomevent"), protocol.String("fuse_use_club_dance"), protocol.String("can_buy_credits"),
-		protocol.String("fuse_kick"), protocol.String("fuse_see_chat_log_link"), protocol.String("fuse_alert"),
+	var rights []protocol.Argument
+	for _, fuse := range habbo.Rights {
+		rights = append(rights, protocol.String(fuse))
 	}
 
 	return errors.Join(
 		packet.Context.Send(RIGHTS, []protocol.Argument(rights)...),
 		packet.Context.Send(
 			USEROBJ,
-			protocol.String(userID),
-			protocol.String(name),
-			protocol.String(figure),
-			protocol.String(sex),
-			protocol.String(customData),
-			protocol.Int(phTickets),
-			protocol.String(phFigure),
-			protocol.Int(photoFilm),
-			protocol.Int(directMail),
+			protocol.String(habbo.ID),
+			protocol.String(habbo.Name),
+			protocol.String(habbo.Figure),
+			protocol.String(habbo.Sex),
+			protocol.String(habbo.CustomData),
+			protocol.Int(habbo.PHTickets),
+			protocol.String(habbo.PHFigure),
+			protocol.Int(habbo.PhotoFilm),
+			protocol.Int(habbo.DirectMail),
 		),
 	)
 }
@@ -378,6 +370,12 @@ func handleSSO(packet *protocol.Packet) error {
 		"handleSSO",
 		slog.String("ticket", ticket),
 	)
+
+	habbo, err := packet.Context.Hotel().LoadHabboBySSO(ticket)
+	if err != nil {
+		return err
+	}
+	packet.Context.SetHabbo(habbo)
 
 	return packet.Context.Send(LOGINOK)
 }

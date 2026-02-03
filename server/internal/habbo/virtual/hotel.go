@@ -1,22 +1,62 @@
 package virtual
 
+import "sync"
+
 type Hotel struct {
-	navigator *navigator
+	Navigator *navigator
+
+	habbos   map[string]*Habbo
+	habbosMu sync.RWMutex
+
+	storage Storage
 }
 
-func NewHotel() *Hotel {
+func NewHotel(storage Storage) *Hotel {
 	return &Hotel{
-		navigator: newNavigator(),
+		Navigator: newNavigator(),
+
+		storage: storage,
 	}
 }
 
-// TODO: storage
 func (h *Hotel) Load() error {
-	h.navigator.loadMockData()
+	// TODO: storage
+	h.Navigator.loadMockData()
 
 	return nil
 }
 
-func (h *Hotel) Navigator() *navigator {
-	return h.navigator
+func (h *Hotel) setHabbo(id string, habbo *Habbo) {
+	h.habbosMu.Lock()
+	defer h.habbosMu.Unlock()
+
+	h.habbos[id] = habbo
+}
+
+func (h *Hotel) LoadHabboBySSO(sso string) (*Habbo, error) {
+	// TODO: load from storage
+	habbo := Habbo{
+		ID:         "1",
+		Name:       "$name",
+		Figure:     "hd-180-1.ch-876-62.lg-280-62.sh-300-62",
+		Sex:        "M",
+		CustomData: "$customData",
+		PHTickets:  500,
+		PHFigure:   "",
+		PhotoFilm:  100,
+		DirectMail: 1,
+
+		Rights: []string{
+			"fuse_trade", "fuse_buy_credits", "fuse_any_room_controller",
+			"fuse_remove_stickies", "fuse_use_special_room_layouts", "fuse_see_flat_ids",
+			"fuse_remove_photos", "fuse_habbo_chooser", "fuse_furni_chooser",
+			"fuse_performance_panel", "fuse_catalog_editor", "fuse_debug_window",
+			"fuse_cancel_roomevent", "fuse_use_club_dance", "can_buy_credits",
+			"fuse_kick", "fuse_see_chat_log_link", "fuse_alert",
+		},
+	}
+
+	h.setHabbo(habbo.ID, &habbo)
+
+	return &habbo, nil
 }

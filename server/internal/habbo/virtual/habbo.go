@@ -1,7 +1,15 @@
 package virtual
 
-import "io"
+type Habbo struct {
+	ID         string
+	Name       string
+	Figure     string
+	Sex        string
+	CustomData string
+	PHTickets  int
+	PHFigure   string
+	PhotoFilm  int
+	DirectMail int
 
-type Habbo interface {
-	Connection() io.ReadWriteCloser
+	Rights []string
 }
