@@ -71,6 +71,9 @@ func (s *Server) handleTCP(conn net.Conn) {
 	defer conn.Close()
 
 	ctx := NewHabboContext(conn, s.registry)
+	// TODO: load from storage
+	// TODO: lightweight hotel reference
+	ctx.Hotel().Load()
 
 	if err := hhentryinit.SendInitialCommands(ctx); err != nil {
 		ctx.logger.Error("handle", slog.String("err", err.Error()))

@@ -1,9 +1,12 @@
 package hhnavigator
 
 import (
+	"fmt"
 	"log/slog"
+	"strings"
 
 	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
+	"github.com/kronothepenguin/project-reborn/internal/habbo/virtual"
 )
 
 const FLAT_RESULTS = "FLAT_RESULTS"
@@ -139,132 +142,65 @@ func handleNavigate(packet *protocol.Packet) error {
 		slog.Int("depth", depth),
 	)
 
-	var nodeType int // 0 - category, 1 - public?, 2 - private
-	var name string
-	var userCount int
-	var maxUsers int
-	var parentId int
-	var extra []protocol.Argument
-
-	switch nodeId {
-	case 3:
-		//TODO: public
-		nodeType = 0
-		name = "$public_title"
-		userCount = 0
-		maxUsers = 25
-		parentId = 0
-
-		extra = append(extra,
-			protocol.Int(100),           // nodeId
-			protocol.Int(1),             // nodeType
-			protocol.String("$public1"), // name
-			protocol.Int(0),             // userCount
-			protocol.Int(25),            // maxUsers
-			protocol.Int(nodeId),        // parentId
-
-			// nodeType == 1
-			protocol.String("$unitStrId"),  // unitStrId
-			protocol.Int(0),                // port
-			protocol.Int(0),                // door
-			protocol.String("hh_room_bar"), // casts
-			protocol.Int(0),                // usersInQueue
-			protocol.Bool(true),            // isVisible
-		)
-
-		extra = append(extra,
-			protocol.Int(101),           // nodeId
-			protocol.Int(2),             // nodeType
-			protocol.String("$public2"), // name
-			protocol.Int(0),             // userCount
-			protocol.Int(25),            // maxUsers
-			protocol.Int(nodeId),        // parentId
-
-			// nodeType == 2
-			protocol.Int(1),                 // flatCount
-			protocol.Int(102),               // flatID
-			protocol.String("$public2_102"), // name
-			protocol.String("$owner"),       // owner
-			protocol.String("$door"),        // door
-			protocol.Int(0),                 // userCount
-			protocol.Int(25),                // maxUsers
-			protocol.String("$description"), // description
-		)
-
-		extra = append(extra,
-			protocol.Int(103),           // nodeId
-			protocol.Int(1),             // nodeType
-			protocol.String("$public3"), // name
-			protocol.Int(0),             // userCount
-			protocol.Int(25),            // maxUsers
-			protocol.Int(101),           // parentId
-
-			// nodeType == 1
-			protocol.String("$public3_unitStrId"),
-			protocol.Int(0),                 // port
-			protocol.Int(0),                 // door
-			protocol.String("hh_room_pool"), // casts
-			protocol.Int(0),                 // usersInQueue
-			protocol.Bool(true),             // isVisible
-		)
-
-	case 4:
-		//TODO: private
-		nodeType = 0
-		name = "$private_title"
-		userCount = 0
-		maxUsers = 25
-		parentId = 0
-
-		extra = append(extra,
-			protocol.Int(200),            // nodeId
-			protocol.Int(1),              // nodeType
-			protocol.String("$private1"), // name
-			protocol.Int(0),              // userCount
-			protocol.Int(25),             // maxUsers
-			protocol.Int(nodeId),         // parentId
-
-			// nodeType == 1
-			protocol.String("$unitStrId"),
-			protocol.Int(0),                    // port
-			protocol.Int(0),                    // door
-			protocol.String("hh_room_rooftop"), // casts
-			protocol.Int(0),                    // usersInQueue
-			protocol.Bool(true),                // isVisible
-		)
-
-		extra = append(extra,
-			protocol.Int(201),            // nodeId
-			protocol.Int(2),              // nodeType
-			protocol.String("$private2"), // name
-			protocol.Int(0),              // userCount
-			protocol.Int(25),             // maxUsers
-			protocol.Int(nodeId),         // parentId
-
-			// nodeType == 2
-			protocol.Int(1),                  // flatCount
-			protocol.Int(202),                // flatID
-			protocol.String("$private2_102"), // name
-			protocol.String("$owner"),        // owner
-			protocol.String("$door"),         // door
-			protocol.Int(0),                  // userCount
-			protocol.Int(25),                 // maxUsers
-			protocol.String("$description"),  // description
-		)
+	node, ok := packet.Context.Hotel().Navigator().Nodes[nodeId]
+	if !ok {
+		return fmt.Errorf("handleNavigate node type %d not found", nodeId)
 	}
 
 	var args []protocol.Argument
-	args = append(args, protocol.Int(nodeMask))
-	args = append(args, protocol.Int(nodeId))
-	args = append(args, protocol.Int(nodeType))
-	args = append(args, protocol.String(name))
-	args = append(args, protocol.Int(userCount))
-	args = append(args, protocol.Int(maxUsers))
-	args = append(args, protocol.Int(parentId))
-	args = append(args, extra...)
+	args = append(
+		args,
+		protocol.Int(nodeMask),
+		protocol.Int(node.NodeID),
+		protocol.Int(node.NodeType),
+		protocol.String(node.Name),
+		protocol.Int(node.UserCount),
+		protocol.Int(node.MaxUsers),
+		protocol.Int(node.ParentId),
+	)
 
-	// return packet.Context.Send(NAVNODEINFO, args...)
-	return nil
+	children := node.Node.(*virtual.NavigatorCategoryNode).Children
+	for _, child := range children {
+		args = append(
+			args,
+			protocol.Int(child.NodeID),
+			protocol.Int(child.NodeType),
+			protocol.String(child.Name),
+			protocol.Int(child.UserCount),
+			protocol.Int(child.MaxUsers),
+			protocol.Int(child.ParentId),
+		)
+
+		switch n := child.Node.(type) {
+		case *virtual.NavigatorUnitNode:
+			args = append(
+				args,
+				protocol.String(n.UnitStrID),
+				protocol.Int(n.Port),
+				protocol.Int(n.Door),
+				protocol.String(strings.Join(n.Casts, ",")),
+				protocol.Int(n.UsersInQueue),
+				protocol.Bool(n.IsVisible),
+			)
+
+		case *virtual.NavigatorFlatCategoryNode:
+			args = append(args, protocol.Int(len(n.FlatList)))
+			for _, flat := range n.FlatList {
+				args = append(
+					args,
+					protocol.Int(flat.FlatID),
+					protocol.String(flat.Name),
+					protocol.String(flat.Owner),
+					protocol.String(flat.Door),
+					protocol.Int(flat.UserCount),
+					protocol.Int(flat.MaxUsers),
+					protocol.String(flat.Description),
+				)
+			}
+		}
+	}
+
+	return packet.Context.Send(NAVNODEINFO, args...)
 }
 
 func handleGETUSERFLATCATS(packet *protocol.Packet) error {

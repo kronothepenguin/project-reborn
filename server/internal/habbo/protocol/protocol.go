@@ -2,6 +2,8 @@ package protocol
 
 import (
 	"log/slog"
+
+	"github.com/kronothepenguin/project-reborn/internal/habbo/virtual"
 )
 
 type Context interface {
@@ -11,5 +13,5 @@ type Context interface {
 
 	Crypto() *Crypto
 
-	// TODO: virtual hotel
+	Hotel() *virtual.Hotel
 }

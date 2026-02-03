@@ -5,6 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
+	"github.com/kronothepenguin/project-reborn/internal/habbo/virtual"
 )
 
 type HabboContext struct {
@@ -15,6 +16,8 @@ type HabboContext struct {
 	logger *slog.Logger
 
 	crypto protocol.Crypto
+
+	hotel *virtual.Hotel
 }
 
 func NewHabboContext(conn io.ReadWriteCloser, registry protocol.Registry) *HabboContext {
@@ -24,6 +27,7 @@ func NewHabboContext(conn io.ReadWriteCloser, registry protocol.Registry) *Habbo
 		conn:     conn,
 		registry: registry,
 		logger:   logger,
+		hotel:    virtual.NewHotel(),
 	}
 }
 
@@ -44,4 +48,8 @@ func (ctx *HabboContext) Logger() *slog.Logger {
 
 func (ctx *HabboContext) Crypto() *protocol.Crypto {
 	return &ctx.crypto
+}
+
+func (ctx *HabboContext) Hotel() *virtual.Hotel {
+	return ctx.hotel
 }
