@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"strconv"
 
 	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
 )
@@ -95,7 +96,8 @@ func handleTryLogin(packet *protocol.Packet) error {
 		slog.String("password", password),
 	)
 
-	return packet.Context.Send(ERR)
+	// do not allow client login for now, only sso is available
+	return packet.Context.Send(ERR, protocol.RawString("login incorrect"))
 }
 
 func handleVersionCheck(packet *protocol.Packet) error {
@@ -121,6 +123,8 @@ func handleVersionCheck(packet *protocol.Packet) error {
 		slog.String("extVarsURL", extVarsURL),
 	)
 
+	// TODO: check version and send packet.Context.Send(ERR, protocol.RawString("Version not correct"))
+
 	return nil
 }
 
@@ -135,13 +139,12 @@ func handleUniqueID(packet *protocol.Packet) error {
 		slog.String("machineID", machineID),
 	)
 
-	// TODO: verify ban
+	// TODO: verify ban and save machineID in context
 
 	return nil
 }
 
 func handleGetInfo(packet *protocol.Packet) error {
-	// TODO: better use Hotel().GetHabbo(ctx.HabboID()) to keep in sync
 	habbo := packet.Context.Habbo()
 	if habbo == nil {
 		return errors.New("handleGetInfo habbo is nil")
@@ -183,7 +186,12 @@ func handleGetInfo(packet *protocol.Packet) error {
 }
 
 func handleGetCredits(packet *protocol.Packet) error {
-	credits := "9999"
+	habbo := packet.Context.Habbo()
+	if habbo == nil {
+		return errors.New("handleGetCredits habbo is nil")
+	}
+
+	credits := strconv.Itoa(habbo.Credits)
 
 	packet.Context.Logger().Debug(
 		"handleGetCredits",
@@ -194,9 +202,11 @@ func handleGetCredits(packet *protocol.Packet) error {
 }
 
 func handleGetPassword(packet *protocol.Packet) error {
+	// client doesn't even send this command
+
 	packet.Context.Logger().Debug("handleGetPassword")
 
-	return packet.Context.Send(ERR)
+	return errors.New("handleGetPassword this command doesn't exists")
 }
 
 func handleLangCheck(packet *protocol.Packet) error {
@@ -210,12 +220,12 @@ func handleLangCheck(packet *protocol.Packet) error {
 		slog.String("word", word),
 	)
 
-	return packet.Context.Send(EPSNOTIFY, protocol.RawString(""))
+	return nil
 }
 
-// buy game tickets
 func handleBTCKS(packet *protocol.Packet) error {
-	chosenAmount, err := packet.Message.ReadInt()
+	// TODO: it seems this is a dead code in the lingo source
+	amount, err := packet.Message.ReadInt()
 	if err != nil {
 		return nil
 	}
@@ -227,96 +237,147 @@ func handleBTCKS(packet *protocol.Packet) error {
 
 	packet.Context.Logger().Debug(
 		"handleBTCKS",
-		slog.Int("chosenAmount", chosenAmount),
+		slog.Int("amount", amount),
 		slog.String("name", name),
 	)
 
+	// TODO: if name != my name then gift
+	habbo := packet.Context.Habbo()
+	if habbo == nil {
+		return errors.New("handleBTCKS habbo is nil")
+	}
+
+	// TODO: verify credits vs ticket price
+	habbo.PHTickets += amount
+
+	// packet.Context.Send("PURSE", protocol.RawString(strconv.Itoa(credits)))
 	return nil
 }
 
 func handleGetAvailableBadges(packet *protocol.Packet) error {
-	// TODO: get available badges from storage
-	badges := []protocol.Argument{}
-	badges = append(badges, protocol.String("ADM"))
+	// badges := []protocol.Argument{}
+	// badges = append(badges, protocol.String("ADM"))
 
-	chosen := []protocol.Argument{}
-	index := 0
-	chosen = append(chosen, protocol.Int(index))
-	chosen = append(chosen, protocol.String("ADM"))
+	// chosen := []protocol.Argument{}
+	// index := 0
+	// chosen = append(chosen, protocol.Int(index))
+	// chosen = append(chosen, protocol.String("ADM"))
+
+	// packet.Context.Logger().Debug(
+	// 	"handleGetAvailableBadges",
+	// 	slog.String("badges", fmt.Sprint(badges)),
+	// 	slog.String("chosen", fmt.Sprint(chosen)),
+	// )
+
+	// args := make([]protocol.Argument, len(badges)+1+len(chosen)+1)
+	// args[0] = protocol.Int(len(badges))
+	// copy(args[1:], badges)
+	// args[len(badges)+1] = protocol.Int(len(chosen))
+	// copy(args[len(badges)+2:], chosen)
+
+	habbo := packet.Context.Habbo()
+	if habbo == nil {
+		return errors.New("handleGetAvailableBadges habbo is nil")
+	}
 
 	packet.Context.Logger().Debug(
 		"handleGetAvailableBadges",
-		slog.String("badges", fmt.Sprint(badges)),
-		slog.String("chosen", fmt.Sprint(chosen)),
+		slog.String("badges", fmt.Sprint(habbo.Badges)),
 	)
 
-	args := make([]protocol.Argument, len(badges)+1+len(chosen)+1)
-	args[0] = protocol.Int(len(badges))
-	copy(args[1:], badges)
-	args[len(badges)+1] = protocol.Int(len(chosen))
-	copy(args[len(badges)+2:], chosen)
+	var args []protocol.Argument
+	args = append(args, protocol.Int(len(habbo.Badges)))
+	for _, badgeID := range habbo.Badges {
+		args = append(args, protocol.String(badgeID))
+	}
+
+	// chosen badges seems to be code for the next version
+	args = append(args, protocol.Int(0))
 
 	return packet.Context.Send(AVAILABLEBADGES, args...)
 }
 
 func handleGetSelectedBadges(packet *protocol.Packet) error {
+	// client calls this when receive ACHIEVEMENTNOTIFICATION
 	packet.Context.Logger().Debug("handleGetSelectedBadges")
 
 	return nil
 }
 
 func handleGetSessionParameters(packet *protocol.Packet) error {
-	parameters := []protocol.Argument{}
+	// parameters := []protocol.Argument{}
 	// 0 - false, 1 - true, 2 - required
 
-	coppa := 2 // 0
-	parameters = append(parameters, protocol.Int(0))
-	parameters = append(parameters, protocol.Int(coppa))
+	// coppa := 2 // 0
+	// parameters = append(parameters, protocol.Int(0))
+	// parameters = append(parameters, protocol.Int(coppa))
 
-	voucher := 1 // 1
-	parameters = append(parameters, protocol.Int(1))
-	parameters = append(parameters, protocol.Int(voucher))
+	// voucher := 1 // 1
+	// parameters = append(parameters, protocol.Int(1))
+	// parameters = append(parameters, protocol.Int(voucher))
 
-	parentEmailRequest := 1 // 2
-	parameters = append(parameters, protocol.Int(2))
-	parameters = append(parameters, protocol.Int(parentEmailRequest))
+	// parentEmailRequest := 1 // 2
+	// parameters = append(parameters, protocol.Int(2))
+	// parameters = append(parameters, protocol.Int(parentEmailRequest))
 
-	parentEmailRequestReregistration := 1 // 3
-	parameters = append(parameters, protocol.Int(3))
-	parameters = append(parameters, protocol.Int(parentEmailRequestReregistration))
+	// parentEmailRequestReregistration := 1 // 3
+	// parameters = append(parameters, protocol.Int(3))
+	// parameters = append(parameters, protocol.Int(parentEmailRequestReregistration))
 
-	allowDirectMail := 1 // 4
-	parameters = append(parameters, protocol.Int(4))
-	parameters = append(parameters, protocol.Int(allowDirectMail))
+	// allowDirectMail := 1 // 4
+	// parameters = append(parameters, protocol.Int(4))
+	// parameters = append(parameters, protocol.Int(allowDirectMail))
 
-	dateFormat := "dd-mm-yyyy" // 5
-	parameters = append(parameters, protocol.Int(5))
-	parameters = append(parameters, protocol.String(dateFormat))
+	// dateFormat := "dd-mm-yyyy" // 5
+	// parameters = append(parameters, protocol.Int(5))
+	// parameters = append(parameters, protocol.String(dateFormat))
 
-	partnerIntegration := 1 // 6
-	parameters = append(parameters, protocol.Int(6))
-	parameters = append(parameters, protocol.Int(partnerIntegration))
+	// partnerIntegration := 1 // 6
+	// parameters = append(parameters, protocol.Int(6))
+	// parameters = append(parameters, protocol.Int(partnerIntegration))
 
-	profileEditing := 1 // 7
-	parameters = append(parameters, protocol.Int(7))
-	parameters = append(parameters, protocol.Int(profileEditing))
+	// profileEditing := 1 // 7
+	// parameters = append(parameters, protocol.Int(7))
+	// parameters = append(parameters, protocol.Int(profileEditing))
 
-	trackingHeader := "" // 8
-	parameters = append(parameters, protocol.Int(8))
-	parameters = append(parameters, protocol.String(trackingHeader))
+	// trackingHeader := "" // 8
+	// parameters = append(parameters, protocol.Int(8))
+	// parameters = append(parameters, protocol.String(trackingHeader))
 
-	tutorialEnabled := 1 // 9
-	parameters = append(parameters, protocol.Int(9))
-	parameters = append(parameters, protocol.Int(tutorialEnabled))
+	// tutorialEnabled := 1 // 9
+	// parameters = append(parameters, protocol.Int(9))
+	// parameters = append(parameters, protocol.Int(tutorialEnabled))
+
+	// packet.Context.Logger().Debug(
+	// 	"handleGetSessionParameters",
+	// 	slog.String("parameters", fmt.Sprint(parameters)),
+	// )
+
+	// args := make([]protocol.Argument, len(parameters)+1)
+	// args[0] = protocol.Int(len(parameters))
+	// copy(args[1:], parameters)
+
+	config := packet.Context.Hotel().Config
 
 	packet.Context.Logger().Debug(
 		"handleGetSessionParameters",
-		slog.String("parameters", fmt.Sprint(parameters)),
+		slog.String("parameters", fmt.Sprintf("%+v", config)),
 	)
 
-	args := make([]protocol.Argument, len(parameters)+1)
-	args[0] = protocol.Int(len(parameters))
-	copy(args[1:], parameters)
+	var args []protocol.Argument
+	args = append(
+		args,
+		protocol.Int(0), protocol.Int(config.Coppa),
+		protocol.Int(1), protocol.Int(config.Voucher),
+		protocol.Int(2), protocol.Int(config.ParentEmailRequest),
+		protocol.Int(3), protocol.Int(config.ParentEmailRequestReregistration),
+		protocol.Int(4), protocol.Int(config.AllowDirectMail),
+		protocol.Int(5), protocol.String(config.DateFormat),
+		protocol.Int(6), protocol.Int(config.PartnerIntegration),
+		protocol.Int(7), protocol.Int(config.ProfileEditing),
+		protocol.Int(8), protocol.String(config.TrackingHeader),
+		protocol.Int(9), protocol.Int(config.TutorialEnabled),
+	)
 
 	return packet.Context.Send(SESSIONPARAMETERS, args...)
 }
@@ -381,6 +442,7 @@ func handleSSO(packet *protocol.Packet) error {
 }
 
 func handleInitCrypto(packet *protocol.Packet) error {
+	// shockwave client has dead code and missing ccts it will fail if serverToClient equals 1
 	serverToClientSecurity := 0
 
 	packet.Context.Logger().Debug(
@@ -399,14 +461,17 @@ func handleSecretKey(packet *protocol.Packet) error {
 }
 
 func handleGetSoundSettings(packet *protocol.Packet) error {
-	state := 0 // 0 - muted, 1 - max
+	habbo := packet.Context.Habbo()
+	if habbo == nil {
+		return errors.New("handleGetSoundSettings habbo is nil")
+	}
 
 	packet.Context.Logger().Debug(
 		"handleGetSoundSettings",
-		slog.Int("state", state),
+		slog.Int("state", habbo.SoundState),
 	)
 
-	return packet.Context.Send(SOUNDSETTING, protocol.Int(state))
+	return packet.Context.Send(SOUNDSETTING, protocol.Int(habbo.SoundState))
 }
 
 func handleSetSoundSettings(packet *protocol.Packet) error {
@@ -420,28 +485,50 @@ func handleSetSoundSettings(packet *protocol.Packet) error {
 		slog.Int("state", state),
 	)
 
+	habbo := packet.Context.Habbo()
+	if habbo == nil {
+		return errors.New("handleSetSoundSettings habbo is nil")
+	}
+
+	habbo.SoundState = state
+
 	return nil
 }
 
 func handleGetPossibleAchievements(packet *protocol.Packet) error {
-	// TODO: fetch from storage and loop
-	achievements := []protocol.Argument{}
+	// achievements := []protocol.Argument{}
 
-	typeID := 1
-	achievements = append(achievements, protocol.Int(typeID))
-	level := 1
-	achievements = append(achievements, protocol.Int(level))
-	badgeID := "AG1"
-	achievements = append(achievements, protocol.String(badgeID))
+	// typeID := 1
+	// achievements = append(achievements, protocol.Int(typeID))
+	// level := 1
+	// achievements = append(achievements, protocol.Int(level))
+	// badgeID := "AG1"
+	// achievements = append(achievements, protocol.String(badgeID))
+
+	// args := make([]protocol.Argument, len(achievements)+1)
+	// args[0] = protocol.Int(len(achievements))
+	// copy(args[1:], achievements)
+
+	habbo := packet.Context.Habbo()
+	if habbo == nil {
+		return errors.New("handleGetPossibleAchievements habbo is nil")
+	}
 
 	packet.Context.Logger().Debug(
 		"handleGetPossibleAchievements",
-		slog.String("achievements", fmt.Sprint(achievements)),
+		slog.String("achievements", fmt.Sprint(habbo.Achievements)),
 	)
 
-	args := make([]protocol.Argument, len(achievements)+1)
-	args[0] = protocol.Int(len(achievements))
-	copy(args[1:], achievements)
+	var args []protocol.Argument
+	args = append(args, protocol.Int(len(habbo.Achievements)))
+	for _, achievement := range habbo.Achievements {
+		args = append(
+			args,
+			protocol.Int(achievement.TypeID),
+			protocol.Int(achievement.Level),
+			protocol.String(achievement.BadgeID),
+		)
+	}
 
 	return packet.Context.Send(POSSIBLEACHIEVEMENTS, args...)
 }

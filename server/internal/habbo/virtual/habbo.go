@@ -6,10 +6,21 @@ type Habbo struct {
 	Figure     string
 	Sex        string
 	CustomData string
-	PHTickets  int
-	PHFigure   string
-	PhotoFilm  int
+
+	Credits int
+
+	PHTickets int
+	PHFigure  string
+
+	PhotoFilm int
+
 	DirectMail int
 
+	SoundState int
+
 	Rights []string
+
+	Badges []string
+
+	Achievements []*Achievement
 }
