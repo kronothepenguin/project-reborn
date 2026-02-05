@@ -5,7 +5,7 @@ import "sync"
 type Hotel struct {
 	Config *Config
 
-	Navigator *navigator
+	Navigator *Navigator
 
 	habbos   map[string]*Habbo
 	habbosMu sync.RWMutex

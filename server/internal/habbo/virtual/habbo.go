@@ -23,4 +23,6 @@ type Habbo struct {
 	Badges []string
 
 	Achievements []*Achievement
+
+	Flats []*NavigatorFlat
 }

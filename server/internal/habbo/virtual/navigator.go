@@ -8,13 +8,13 @@ const (
 	nodeFlatCategory
 )
 
-type navigatorNode interface {
+type NavigatorNode interface {
 	info()
 }
 
 // NodeType = 0
 type NavigatorCategoryNode struct {
-	Children []*navigatorInfo
+	Children []*NavigatorInfo
 }
 
 func (*NavigatorCategoryNode) info() {}
@@ -33,12 +33,12 @@ func (*NavigatorUnitNode) info() {}
 
 // NodeType = 2
 type NavigatorFlatCategoryNode struct {
-	FlatList []navigatorFlat
+	FlatList []NavigatorFlat
 }
 
 func (*NavigatorFlatCategoryNode) info() {}
 
-type navigatorFlat struct {
+type NavigatorFlat struct {
 	FlatID      int
 	Name        string
 	Owner       string
@@ -48,32 +48,52 @@ type navigatorFlat struct {
 	Description string
 }
 
-type navigatorInfo struct {
+type NavigatorInfo struct {
 	NodeID    int
 	NodeType  int
 	Name      string
 	UserCount int
 	MaxUsers  int
 	ParentId  int
-	Node      navigatorNode
+	Node      NavigatorNode
 }
 
-type navigator struct {
-	Nodes map[int]*navigatorInfo
+type Navigator struct {
+	Nodes map[int]*NavigatorInfo
 
 	RootUnitCatId int
 	RootFlatCatId int
 }
 
-func newNavigator() *navigator {
-	return &navigator{
-		Nodes: make(map[int]*navigatorInfo),
+func newNavigator() *Navigator {
+	return &Navigator{
+		Nodes: make(map[int]*NavigatorInfo),
 	}
 }
 
-func (n *navigator) loadMockData() {
+func (n *Navigator) setNode(id int, info *NavigatorInfo) {
+	n.Nodes[id] = info
+
+	if info.ParentId == 0 {
+		return
+	}
+
+	parent, ok := n.Nodes[info.ParentId]
+	if !ok {
+		return
+	}
+
+	parentNode, ok := parent.Node.(*NavigatorCategoryNode)
+	if !ok {
+		return
+	}
+
+	parentNode.Children = append(parentNode.Children, info)
+}
+
+func (n *Navigator) loadMockData() {
 	n.RootUnitCatId = 3
-	n.Nodes[n.RootUnitCatId] = &navigatorInfo{
+	n.setNode(n.RootUnitCatId, &NavigatorInfo{
 		NodeID:    n.RootUnitCatId,
 		NodeType:  int(nodeCategory),
 		Name:      "nav_publicRooms",
@@ -81,43 +101,38 @@ func (n *navigator) loadMockData() {
 		MaxUsers:  500,
 		ParentId:  0,
 
-		Node: &NavigatorCategoryNode{
-			Children: []*navigatorInfo{
-				{
-					NodeID:    100,
-					NodeType:  int(nodeUnit),
-					Name:      "nav_venue_ballroom_name",
-					UserCount: 0,
-					MaxUsers:  25,
-					ParentId:  n.RootUnitCatId,
+		Node: &NavigatorCategoryNode{Children: []*NavigatorInfo{}},
+	})
+	n.setNode(100, &NavigatorInfo{
+		NodeID:    100,
+		NodeType:  int(nodeUnit),
+		Name:      "nav_venue_ballroom_name",
+		UserCount: 0,
+		MaxUsers:  25,
+		ParentId:  n.RootUnitCatId,
 
-					Node: &NavigatorUnitNode{
-						UnitStrID:    "nav_venue_ballroom_name",
-						Port:         0,
-						Door:         0,
-						Casts:        []string{"hh_room_ballroom"},
-						UsersInQueue: 0,
-						IsVisible:    true,
-					},
-				},
-				{
-					NodeID:    101,
-					NodeType:  int(nodeCategory),
-					Name:      "Category",
-					UserCount: 0,
-					MaxUsers:  100,
-					ParentId:  n.RootUnitCatId,
-
-					Node: &NavigatorCategoryNode{
-						Children: []*navigatorInfo{},
-					},
-				},
-			},
+		Node: &NavigatorUnitNode{
+			UnitStrID:    "nav_venue_ballroom_name",
+			Port:         0,
+			Door:         0,
+			Casts:        []string{"hh_room_ballroom"},
+			UsersInQueue: 0,
+			IsVisible:    true,
 		},
-	}
+	})
+	n.setNode(101, &NavigatorInfo{
+		NodeID:    101,
+		NodeType:  int(nodeCategory),
+		Name:      "Category",
+		UserCount: 0,
+		MaxUsers:  100,
+		ParentId:  n.RootUnitCatId,
+
+		Node: &NavigatorCategoryNode{Children: []*NavigatorInfo{}},
+	})
 
 	n.RootFlatCatId = 4
-	n.Nodes[n.RootFlatCatId] = &navigatorInfo{
+	n.setNode(n.RootFlatCatId, &NavigatorInfo{
 		NodeID:    n.RootFlatCatId,
 		NodeType:  int(nodeCategory),
 		Name:      "nav_privateRooms",
@@ -125,31 +140,28 @@ func (n *navigator) loadMockData() {
 		MaxUsers:  500,
 		ParentId:  0,
 
-		Node: &NavigatorCategoryNode{
-			Children: []*navigatorInfo{
-				{
-					NodeID:    1000,
-					NodeType:  int(nodeFlatCategory),
-					Name:      "Category 1",
-					UserCount: 0,
-					MaxUsers:  50,
-					ParentId:  n.RootFlatCatId,
+		Node: &NavigatorCategoryNode{Children: []*NavigatorInfo{}},
+	})
+	n.setNode(1000, &NavigatorInfo{
+		NodeID:    1000,
+		NodeType:  int(nodeFlatCategory),
+		Name:      "Category 1",
+		UserCount: 0,
+		MaxUsers:  50,
+		ParentId:  n.RootFlatCatId,
 
-					Node: &NavigatorFlatCategoryNode{
-						FlatList: []navigatorFlat{
-							{
-								FlatID:      10000,
-								Name:        "$name",
-								Owner:       "$owner",
-								Door:        "$door",
-								UserCount:   0,
-								MaxUsers:    25,
-								Description: "$description",
-							},
-						},
-					},
+		Node: &NavigatorFlatCategoryNode{
+			FlatList: []NavigatorFlat{
+				{
+					FlatID:      10000,
+					Name:        "$name",
+					Owner:       "$owner",
+					Door:        "$door",
+					UserCount:   0,
+					MaxUsers:    25,
+					Description: "$description",
 				},
 			},
 		},
-	}
+	})
 }
