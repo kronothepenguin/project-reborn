@@ -1,5 +1,7 @@
 package virtual
 
+import "io"
+
 type Habbo struct {
 	ID         string
 	Name       string
@@ -25,4 +27,9 @@ type Habbo struct {
 	Achievements []*Achievement
 
 	Flats []*NavigatorFlat
+
+	FriendList *FriendList
+}
+
+func (*Habbo) Send(cmd string, args ...io.Writer) {
 }

@@ -1,6 +1,10 @@
 package hhroom
 
-import "github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
+import (
+	"log/slog"
+
+	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
+)
 
 const DISCONNECT = "DISCONNECT"
 const CLC = "CLC"
@@ -149,7 +153,7 @@ func Register(registry protocol.Registry) {
 	registry.Commands().Register(IGNORE_USER_RESULT, 419)
 	registry.Commands().Register(IGNORE_LIST, 420)
 
-	registry.Listeners().Register(2, handleroom_directory)
+	registry.Listeners().Register(2, handleRoomDirectory)
 	registry.Listeners().Register(28, handleGETDOORFLAT)
 	registry.Listeners().Register(52, handleCHAT)
 	registry.Listeners().Register(55, handleSHOUT)
@@ -224,8 +228,30 @@ func Register(registry protocol.Registry) {
 	registry.Listeners().Register(350, handleGET_ROOMEVENTS_BY_TYPE)
 }
 
-func handleroom_directory(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleroom_directory")
+// #room_directory
+func handleRoomDirectory(packet *protocol.Packet) error {
+	isPublic, err := packet.Message.ReadBool()
+	if err != nil {
+		return err
+	}
+
+	roomID, err := packet.Message.ReadInt()
+	if err != nil {
+		return err
+	}
+
+	doorID, err := packet.Message.ReadInt()
+	if err != nil {
+		return err
+	}
+
+	packet.Context.Logger().Debug(
+		"handleRoomDirectory",
+		slog.Bool("isPublic", isPublic),
+		slog.Int("roomID", roomID),
+		slog.Int("doorID", doorID),
+	)
+
 	return nil
 }
 

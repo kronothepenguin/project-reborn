@@ -52,6 +52,8 @@ func (h *Hotel) LoadHabboBySSO(sso string) (*Habbo, error) {
 		PhotoFilm:  100,
 		DirectMail: 1,
 
+		Credits: 500,
+
 		SoundState: 1,
 
 		Rights: []string{
@@ -69,6 +71,16 @@ func (h *Hotel) LoadHabboBySSO(sso string) (*Habbo, error) {
 
 		Achievements: []*Achievement{
 			{TypeID: 1, Level: 1, BadgeID: "AG1"},
+		},
+
+		FriendList: &FriendList{
+			ExtendedLimit: 0,
+
+			Categories: []FriendListCategory{},
+
+			Friends: []Friend{},
+
+			Requests: []FriendRequest{},
 		},
 	}
 

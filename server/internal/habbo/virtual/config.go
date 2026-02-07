@@ -19,6 +19,9 @@ type Config struct {
 	TrackingHeader string
 
 	TutorialEnabled int
+
+	FriendListLimit    int
+	FriendRequestLimit int
 }
 
 func newConfig() *Config {
@@ -36,4 +39,6 @@ func (c *Config) loadMockData() {
 	c.ProfileEditing = 1
 	c.TrackingHeader = "/"
 	c.TutorialEnabled = 1
+	c.FriendListLimit = 50
+	c.FriendRequestLimit = 50
 }
