@@ -1,8 +1,12 @@
 package virtual
 
-import "io"
+import "sync"
 
 type Habbo struct {
+	Connection
+
+	Mu sync.RWMutex
+
 	ID         string
 	Name       string
 	Figure     string
@@ -29,7 +33,4 @@ type Habbo struct {
 	Flats []*NavigatorFlat
 
 	FriendList *FriendList
-}
-
-func (*Habbo) Send(cmd string, args ...io.Writer) {
 }
