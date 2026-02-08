@@ -90,6 +90,9 @@ func handleGetOwnFlats(packet *protocol.Packet) error {
 		return errors.New("handleGetOwnFlats habbo is nil")
 	}
 
+	habbo.Mu.RLock()
+	defer habbo.Mu.RUnlock()
+
 	if name != habbo.Name {
 		return errors.New("handleGetOwnFlats name is not habbo's name")
 	}
@@ -171,6 +174,9 @@ func handleAddFavoriteFlat(packet *protocol.Packet) error {
 	if habbo == nil {
 		return errors.New("handleAddFavoriteFlat habbo is nil")
 	}
+
+	habbo.Mu.RLock()
+	defer habbo.Mu.RUnlock()
 
 	// TODO: msgID instead of 19, should the messages within a connection be counted?
 	return packet.Context.Send(SUCCESS, protocol.Int(19))
@@ -353,7 +359,7 @@ func handleNavigate(packet *protocol.Packet) error {
 func handleGetUserFlatCategories(packet *protocol.Packet) error {
 	packet.Context.Logger().Debug("handleGetUserFlatCategories")
 
-	navigator := packet.Context.Hotel().Navigator
+	navigator := &packet.Context.Hotel().Navigator
 	// TODO: reliable source of flat categories
 	flatCats := navigator.Nodes[navigator.RootFlatCatId]
 	cats := flatCats.Node.(*virtual.NavigatorCategoryNode).Children

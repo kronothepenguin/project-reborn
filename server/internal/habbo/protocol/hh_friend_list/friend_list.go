@@ -54,6 +54,9 @@ func handleFriendListInit(packet *protocol.Packet) error {
 		return errors.New("handleFriendListInit habbo is nil")
 	}
 
+	habbo.Mu.RLock()
+	defer habbo.Mu.RUnlock()
+
 	packet.Context.Logger().Debug("handleFriendListInit")
 
 	var args []protocol.Argument
@@ -85,6 +88,9 @@ func handleFriendListUpdate(packet *protocol.Packet) error {
 	if habbo == nil {
 		return errors.New("handleFriendListUpdate habbo is nil")
 	}
+
+	habbo.Mu.RLock()
+	defer habbo.Mu.RUnlock()
 
 	packet.Context.Logger().Debug("handleFriendListUpdate")
 

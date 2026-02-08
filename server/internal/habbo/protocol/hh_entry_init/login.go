@@ -150,6 +150,9 @@ func handleGetInfo(packet *protocol.Packet) error {
 		return errors.New("handleGetInfo habbo is nil")
 	}
 
+	habbo.Mu.RLock()
+	defer habbo.Mu.RUnlock()
+
 	habboID := strconv.Itoa(habbo.ID)
 
 	packet.Context.Logger().Debug(
@@ -192,6 +195,9 @@ func handleGetCredits(packet *protocol.Packet) error {
 	if habbo == nil {
 		return errors.New("handleGetCredits habbo is nil")
 	}
+
+	habbo.Mu.RLock()
+	defer habbo.Mu.RUnlock()
 
 	credits := strconv.Itoa(habbo.Credits)
 
@@ -249,38 +255,23 @@ func handleBTCKS(packet *protocol.Packet) error {
 		return errors.New("handleBTCKS habbo is nil")
 	}
 
-	// TODO: verify credits vs ticket price
-	habbo.PHTickets += amount
+	habbo.Mu.Lock()
+	defer habbo.Mu.Unlock()
 
-	// packet.Context.Send("PURSE", protocol.RawString(strconv.Itoa(credits)))
-	return nil
+	habbo.PHTickets += amount
+	habbo.Credits -= amount // TODO: amount*ticketPrice
+
+	return packet.Context.Send("PURSE", protocol.RawString(strconv.Itoa(habbo.Credits)))
 }
 
 func handleGetAvailableBadges(packet *protocol.Packet) error {
-	// badges := []protocol.Argument{}
-	// badges = append(badges, protocol.String("ADM"))
-
-	// chosen := []protocol.Argument{}
-	// index := 0
-	// chosen = append(chosen, protocol.Int(index))
-	// chosen = append(chosen, protocol.String("ADM"))
-
-	// packet.Context.Logger().Debug(
-	// 	"handleGetAvailableBadges",
-	// 	slog.String("badges", fmt.Sprint(badges)),
-	// 	slog.String("chosen", fmt.Sprint(chosen)),
-	// )
-
-	// args := make([]protocol.Argument, len(badges)+1+len(chosen)+1)
-	// args[0] = protocol.Int(len(badges))
-	// copy(args[1:], badges)
-	// args[len(badges)+1] = protocol.Int(len(chosen))
-	// copy(args[len(badges)+2:], chosen)
-
 	habbo := packet.Context.Habbo()
 	if habbo == nil {
 		return errors.New("handleGetAvailableBadges habbo is nil")
 	}
+
+	habbo.Mu.RLock()
+	defer habbo.Mu.RUnlock()
 
 	packet.Context.Logger().Debug(
 		"handleGetAvailableBadges",
@@ -468,6 +459,9 @@ func handleGetSoundSettings(packet *protocol.Packet) error {
 		return errors.New("handleGetSoundSettings habbo is nil")
 	}
 
+	habbo.Mu.RLock()
+	defer habbo.Mu.RUnlock()
+
 	packet.Context.Logger().Debug(
 		"handleGetSoundSettings",
 		slog.Int("state", habbo.SoundState),
@@ -492,29 +486,22 @@ func handleSetSoundSettings(packet *protocol.Packet) error {
 		return errors.New("handleSetSoundSettings habbo is nil")
 	}
 
+	habbo.Mu.RLock()
+	defer habbo.Mu.RUnlock()
+
 	habbo.SoundState = state
 
 	return nil
 }
 
 func handleGetPossibleAchievements(packet *protocol.Packet) error {
-	// achievements := []protocol.Argument{}
-
-	// typeID := 1
-	// achievements = append(achievements, protocol.Int(typeID))
-	// level := 1
-	// achievements = append(achievements, protocol.Int(level))
-	// badgeID := "AG1"
-	// achievements = append(achievements, protocol.String(badgeID))
-
-	// args := make([]protocol.Argument, len(achievements)+1)
-	// args[0] = protocol.Int(len(achievements))
-	// copy(args[1:], achievements)
-
 	habbo := packet.Context.Habbo()
 	if habbo == nil {
 		return errors.New("handleGetPossibleAchievements habbo is nil")
 	}
+
+	habbo.Mu.RLock()
+	defer habbo.Mu.RUnlock()
 
 	packet.Context.Logger().Debug(
 		"handleGetPossibleAchievements",
