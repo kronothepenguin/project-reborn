@@ -1,8 +1,11 @@
 package virtual
 
 import (
+	"errors"
 	"sync"
 )
+
+var ErrFavoriteNodeNotExists = errors.New("favorite flat doesn't exists")
 
 type Habbo struct {
 	Connection
@@ -35,12 +38,59 @@ type Habbo struct {
 	Flats []*NavigatorFlat
 
 	FriendList *FriendList
+
+	navigator           *Navigator
+	favoriteFlatsNodeId int
 }
 
-func newHabbo() *Habbo {
+func newHabbo(navigator *Navigator) *Habbo {
 	return &Habbo{
 		Connection: &nopConnection{},
+
+		navigator: navigator,
 	}
+}
+
+func (h *Habbo) FavoriteFlats() *NavigatorInfo {
+	return h.navigator.getNode(h.favoriteFlatsNodeId)
+}
+
+func (h *Habbo) AddFavoriteFlat(nodeID int) error {
+	h.Mu.Lock()
+	if h.favoriteFlatsNodeId == 0 {
+		h.favoriteFlatsNodeId = h.navigator.AddNode(&NavigatorInfo{
+			NodeType:  int(nodeCategory),
+			Name:      "favorite flats",
+			UserCount: 0,
+			MaxUsers:  500,
+			Node:      &NavigatorCategoryNode{},
+		})
+	}
+	h.Mu.Unlock()
+
+	h.navigator.Mu.RLock()
+	info, exists := h.navigator.Nodes[nodeID]
+	h.navigator.Mu.RUnlock()
+	if !exists {
+		return ErrFavoriteNodeNotExists
+	}
+
+	h.navigator.Mu.RLock()
+	category := h.navigator.Nodes[h.favoriteFlatsNodeId]
+	h.navigator.Mu.RUnlock()
+
+	categoryNode := category.Node.(*NavigatorCategoryNode)
+
+	// FIXME: removed nodes would be kept by favorite lists
+	categoryNode.Mu.Lock()
+	categoryNode.Children = append(categoryNode.Children, info)
+	categoryNode.Mu.Unlock()
+
+	return nil
+}
+
+func (h *Habbo) RemoveFavoriteFlat(nodeID int) error {
+	return nil
 }
 
 func (h *Habbo) loadFuseRights(storage Storage) ([]string, error) {

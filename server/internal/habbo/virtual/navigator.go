@@ -1,6 +1,7 @@
 package virtual
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
 	"maps"
@@ -8,6 +9,8 @@ import (
 	"strings"
 	"sync"
 )
+
+var ErrNavigatorNodeNotExists = errors.New("node not exists")
 
 type navigatorNodeType int
 
@@ -82,6 +85,9 @@ type Navigator struct {
 
 	RootUnitCatId int
 	RootFlatCatId int
+
+	insertId int
+	maxId    int
 }
 
 func (n *Navigator) Recommended() []*NavigatorFlat {
@@ -150,19 +156,88 @@ func (n *Navigator) getFlats() []*NavigatorFlat {
 	return flats
 }
 
+func (n *Navigator) AddNode(info *NavigatorInfo) int {
+	n.setNode(n.insertId, info)
+	id := n.insertId
+
+	n.Mu.RLock()
+	minId := 0
+	if n.RootUnitCatId > n.RootFlatCatId {
+		minId = n.RootUnitCatId + 1
+	} else {
+		minId = n.RootFlatCatId + 1
+	}
+	n.Mu.RUnlock()
+
+	n.Mu.Lock()
+	n.insertId++
+	if n.insertId < 0 {
+		n.insertId = minId
+	}
+	for i := minId; i <= n.maxId; i++ {
+		if _, exists := n.Nodes[i]; !exists {
+			n.insertId = i
+			break
+		}
+	}
+	n.Mu.Unlock()
+
+	return id
+}
+
+func (n *Navigator) RemoveNode(id int) error {
+	info := n.getNode(id)
+	if info == nil {
+		return ErrNavigatorNodeNotExists
+	}
+
+	n.Mu.Lock()
+	delete(n.Nodes, id)
+	if n.maxId == id {
+		n.maxId = id - 1
+	}
+	n.Mu.Unlock()
+
+	info.Mu.Lock()
+	info.NodeID = 0
+	info.Mu.Unlock()
+
+	parent := n.getParentNode(info)
+	if parent == nil {
+		return nil
+	}
+
+	parentNode, ok := parent.Node.(*NavigatorCategoryNode)
+	if !ok {
+		return nil
+	}
+
+	parentNode.Mu.Lock()
+	parentNode.Children = slices.DeleteFunc(parentNode.Children, func(child *NavigatorInfo) bool {
+		return child == info
+	})
+	parentNode.Mu.Unlock()
+
+	return nil
+}
+
 func (n *Navigator) setNode(id int, info *NavigatorInfo) {
 	n.Mu.Lock()
 	n.Nodes[id] = info
 	n.Mu.Unlock()
 
-	if info.ParentId == 0 {
-		return
+	info.Mu.Lock()
+	info.NodeID = id
+	info.Mu.Unlock()
+
+	if id > n.maxId {
+		n.maxId = id
 	}
 
 	n.Mu.RLock()
-	parent, ok := n.Nodes[info.ParentId]
+	parent, exists := n.Nodes[info.ParentId]
 	n.Mu.RUnlock()
-	if !ok {
+	if !exists {
 		return
 	}
 
@@ -176,10 +251,37 @@ func (n *Navigator) setNode(id int, info *NavigatorInfo) {
 	parentNode.Mu.Unlock()
 }
 
+func (n *Navigator) getNode(id int) *NavigatorInfo {
+	n.Mu.RLock()
+	defer n.Mu.RUnlock()
+
+	info, exists := n.Nodes[id]
+	if !exists {
+		return nil
+	}
+
+	return info
+}
+
+func (n *Navigator) getParentNode(info *NavigatorInfo) *NavigatorInfo {
+	n.Mu.RLock()
+	defer n.Mu.RUnlock()
+
+	parent, exists := n.Nodes[info.ParentId]
+	if !exists {
+		return nil
+	}
+
+	return parent
+}
+
 func (n *Navigator) load(storage Storage) {
 	n.Nodes = make(map[int]*NavigatorInfo)
 
 	n.RootUnitCatId = 3
+	n.RootFlatCatId = 4
+	n.insertId = 5
+
 	n.setNode(n.RootUnitCatId, &NavigatorInfo{
 		NodeID:    n.RootUnitCatId,
 		NodeType:  int(nodeCategory),
@@ -190,8 +292,18 @@ func (n *Navigator) load(storage Storage) {
 
 		Node: &NavigatorCategoryNode{Children: []*NavigatorInfo{}},
 	})
-	n.setNode(100, &NavigatorInfo{
-		NodeID:    100,
+	n.setNode(n.RootFlatCatId, &NavigatorInfo{
+		NodeID:    n.RootFlatCatId,
+		NodeType:  int(nodeCategory),
+		Name:      "nav_privateRooms",
+		UserCount: 0,
+		MaxUsers:  500,
+		ParentId:  0,
+
+		Node: &NavigatorCategoryNode{Children: []*NavigatorInfo{}},
+	})
+
+	n.AddNode(&NavigatorInfo{
 		NodeType:  int(nodeUnit),
 		Name:      "nav_venue_ballroom_name",
 		UserCount: 0,
@@ -207,8 +319,7 @@ func (n *Navigator) load(storage Storage) {
 			IsVisible:    true,
 		},
 	})
-	n.setNode(101, &NavigatorInfo{
-		NodeID:    101,
+	n.AddNode(&NavigatorInfo{
 		NodeType:  int(nodeCategory),
 		Name:      "Category",
 		UserCount: 0,
@@ -217,20 +328,7 @@ func (n *Navigator) load(storage Storage) {
 
 		Node: &NavigatorCategoryNode{Children: []*NavigatorInfo{}},
 	})
-
-	n.RootFlatCatId = 4
-	n.setNode(n.RootFlatCatId, &NavigatorInfo{
-		NodeID:    n.RootFlatCatId,
-		NodeType:  int(nodeCategory),
-		Name:      "nav_privateRooms",
-		UserCount: 0,
-		MaxUsers:  500,
-		ParentId:  0,
-
-		Node: &NavigatorCategoryNode{Children: []*NavigatorInfo{}},
-	})
-	n.setNode(1000, &NavigatorInfo{
-		NodeID:    1000,
+	n.AddNode(&NavigatorInfo{
 		NodeType:  int(nodeFlatCategory),
 		Name:      "Category 1",
 		UserCount: 0,

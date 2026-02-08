@@ -79,29 +79,6 @@ func handleSBUSYF(packet *protocol.Packet) error {
 	return errors.New("handleSBUSYF this command doesn't exists")
 }
 
-func serializeFlatResults(flats []*virtual.NavigatorFlat) string {
-	var result strings.Builder
-	for _, flat := range flats {
-		flat.Mu.RLock()
-		line := strings.Join([]string{
-			strconv.Itoa(flat.FlatID),
-			flat.Name,
-			flat.Owner,
-			flat.Door,
-			"0", // port
-			strconv.Itoa(flat.UserCount),
-			strconv.Itoa(flat.MaxUsers),
-			"", // filter, unused
-			flat.Description,
-		}, "\t")
-		flat.Mu.RUnlock()
-
-		result.WriteString(line)
-		result.WriteByte('\r')
-	}
-	return result.String()
-}
-
 // SUSERF
 func handleGetOwnFlats(packet *protocol.Packet) error {
 	name := packet.Message.ReadRawString()
@@ -154,7 +131,28 @@ func handleGetFavoriteFlats(packet *protocol.Packet) error {
 
 	packet.Context.Logger().Debug("handleGetFavoriteFlats")
 
-	return packet.Context.Send(FAVOURITEROOMRESULTS)
+	habbo := packet.Context.Habbo()
+	if habbo == nil {
+		return errors.New("handleGetFavoriteFlats habbo is nil")
+	}
+
+	info := habbo.FavoriteFlats()
+
+	var args []protocol.Argument
+	args = append(
+		args,
+		protocol.Int(0),
+		protocol.Int(info.NodeID),
+		protocol.Int(info.NodeType),
+		protocol.String(info.Name),
+		protocol.Int(info.UserCount),
+		protocol.Int(info.MaxUsers),
+		protocol.Int(info.ParentId),
+	)
+
+	args = slices.Concat(args, serializeNavigatorNode(info.Node, 1))
+
+	return packet.Context.Send(FAVOURITEROOMRESULTS, args...)
 }
 
 // ADD_FAVORITE_ROOM
@@ -180,10 +178,8 @@ func handleAddFavoriteFlat(packet *protocol.Packet) error {
 		return errors.New("handleAddFavoriteFlat habbo is nil")
 	}
 
-	habbo.Mu.RLock()
-	defer habbo.Mu.RUnlock()
+	habbo.AddFavoriteFlat(nodeID)
 
-	// TODO: msgID instead of 19, should the messages within a connection be counted?
 	return packet.Context.Send(SUCCESS, protocol.Int(19))
 }
 
@@ -257,62 +253,6 @@ func handleSetFlatInfo(packet *protocol.Packet) error {
 	packet.Context.Logger().Debug("handleSetFlatInfo", slog.String("msg", msg))
 
 	return packet.Context.Send(SUCCESS, protocol.Int(25))
-}
-
-func serializeNavigatorNode(node virtual.NavigatorNode, depth int) []protocol.Argument {
-	if depth < 0 {
-		return nil
-	}
-
-	var args []protocol.Argument
-
-	switch n := node.(type) {
-	case *virtual.NavigatorCategoryNode:
-		children := n.Children
-		for _, child := range children {
-			args = append(
-				args,
-				protocol.Int(child.NodeID),
-				protocol.Int(child.NodeType),
-				protocol.String(child.Name),
-				protocol.Int(child.UserCount),
-				protocol.Int(child.MaxUsers),
-				protocol.Int(child.ParentId),
-			)
-
-			// FIXME: wont work with subcategories
-			args = slices.Concat(args, serializeNavigatorNode(child.Node, depth-1))
-		}
-
-	case *virtual.NavigatorUnitNode:
-		args = append(
-			args,
-			protocol.String(n.UnitStrID),
-			protocol.Int(n.Port),
-			protocol.Int(n.Door),
-			protocol.String(strings.Join(n.Casts, ",")),
-			protocol.Int(n.UsersInQueue),
-			protocol.Bool(n.IsVisible),
-		)
-
-	case *virtual.NavigatorFlatCategoryNode:
-		args = append(args, protocol.Int(len(n.FlatList)))
-		for i := range n.FlatList {
-			flat := &n.FlatList[i]
-			args = append(
-				args,
-				protocol.Int(flat.FlatID),
-				protocol.String(flat.Name),
-				protocol.String(flat.Owner),
-				protocol.String(flat.Door),
-				protocol.Int(flat.UserCount),
-				protocol.Int(flat.MaxUsers),
-				protocol.String(flat.Description),
-			)
-		}
-	}
-
-	return args
 }
 
 func handleNavigate(packet *protocol.Packet) error {
@@ -484,4 +424,83 @@ func handleGetRecommendedRooms(packet *protocol.Packet) error {
 	}
 
 	return packet.Context.Send(RECOMMENDED_ROOM_LIST, args...)
+}
+
+func serializeFlatResults(flats []*virtual.NavigatorFlat) string {
+	var result strings.Builder
+	for _, flat := range flats {
+		flat.Mu.RLock()
+		line := strings.Join([]string{
+			strconv.Itoa(flat.FlatID),
+			flat.Name,
+			flat.Owner,
+			flat.Door,
+			"0", // port
+			strconv.Itoa(flat.UserCount),
+			strconv.Itoa(flat.MaxUsers),
+			"", // filter, unused
+			flat.Description,
+		}, "\t")
+		flat.Mu.RUnlock()
+
+		result.WriteString(line)
+		result.WriteByte('\r')
+	}
+	return result.String()
+}
+
+func serializeNavigatorNode(node virtual.NavigatorNode, depth int) []protocol.Argument {
+	if depth < 0 {
+		return nil
+	}
+
+	var args []protocol.Argument
+
+	switch n := node.(type) {
+	case *virtual.NavigatorCategoryNode:
+		children := n.Children
+		for _, child := range children {
+			args = append(
+				args,
+				protocol.Int(child.NodeID),
+				protocol.Int(child.NodeType),
+				protocol.String(child.Name),
+				protocol.Int(child.UserCount),
+				protocol.Int(child.MaxUsers),
+				protocol.Int(child.ParentId),
+			)
+
+			// FIXME: wont work with subcategories
+			args = slices.Concat(args, serializeNavigatorNode(child.Node, depth-1))
+		}
+
+	case *virtual.NavigatorUnitNode:
+		args = append(
+			args,
+			protocol.String(n.UnitStrID),
+			protocol.Int(n.Port),
+			protocol.Int(n.Door),
+			protocol.String(strings.Join(n.Casts, ",")),
+			protocol.Int(n.UsersInQueue),
+			protocol.Bool(n.IsVisible),
+		)
+
+	case *virtual.NavigatorFlatCategoryNode:
+		args = append(args, protocol.Int(len(n.FlatList)))
+		for i := range n.FlatList {
+			flat := &n.FlatList[i]
+			args = append(
+				args,
+				protocol.Int(flat.FlatID),
+				protocol.String(flat.Name),
+				protocol.String(flat.Owner),
+				protocol.String(flat.Door),
+				protocol.Int(flat.UserCount),
+				protocol.Int(flat.MaxUsers),
+				protocol.String(flat.Description),
+			)
+		}
+	}
+
+	return args
 }
