@@ -79,6 +79,29 @@ func handleSBUSYF(packet *protocol.Packet) error {
 	return errors.New("handleSBUSYF this command doesn't exists")
 }
 
+func serializeFlatResults(flats []*virtual.NavigatorFlat) string {
+	var result strings.Builder
+	for _, flat := range flats {
+		flat.Mu.RLock()
+		line := strings.Join([]string{
+			strconv.Itoa(flat.FlatID),
+			flat.Name,
+			flat.Owner,
+			flat.Door,
+			"0", // port
+			strconv.Itoa(flat.UserCount),
+			strconv.Itoa(flat.MaxUsers),
+			"", // filter, unused
+			flat.Description,
+		}, "\t")
+		flat.Mu.RUnlock()
+
+		result.WriteString(line)
+		result.WriteByte('\r')
+	}
+	return result.String()
+}
+
 // SUSERF
 func handleGetOwnFlats(packet *protocol.Packet) error {
 	name := packet.Message.ReadRawString()
@@ -98,36 +121,11 @@ func handleGetOwnFlats(packet *protocol.Packet) error {
 	}
 
 	if len(habbo.Flats) > 0 {
-		var result strings.Builder
-		for _, flat := range habbo.Flats {
-			line := strings.Join([]string{
-				strconv.Itoa(packet.Context.Hotel().Navigator.RootFlatCatId),
-				strconv.Itoa(flat.FlatID),
-				flat.Name,
-				flat.Owner,
-				flat.Door,
-				"0", // port
-				strconv.Itoa(flat.UserCount),
-				strconv.Itoa(flat.MaxUsers),
-				"", // filter
-				flat.Description,
-			}, "\t")
-
-			result.WriteString(line)
-		}
-
-		return packet.Context.Send(OWN_FLAT_RESULTS, protocol.RawString("$id\t$flatID\t$name\t$owner\t$door\t$port\t$userCount"))
+		result := serializeFlatResults(habbo.Flats)
+		return packet.Context.Send(OWN_FLAT_RESULTS, protocol.RawString(result))
 	}
 
 	return packet.Context.Send(NOFLATSFORUSER)
-
-	// var args []protocol.Argument
-	// args = append(args, protocol.Int(len(habbo.Flats)))
-	// for _, flat := range habbo.Flats {
-	// 	args = append(args, protocol.Int(flat.NodeID), protocol.String(flat.Name))
-	// }
-
-	// return packet.Context.Send(USERFLATCATS, args...)
 }
 
 // SRCHF
@@ -136,7 +134,14 @@ func handleSearchFlats(packet *protocol.Packet) error {
 
 	packet.Context.Logger().Debug("handleSearchFlats", slog.String("query", query))
 
-	// return packet.Context.Send(SRC_FLAT_RESULTS, protocol.RawString(""))
+	navigator := &packet.Context.Hotel().Navigator
+
+	flats := navigator.Filter(query)
+	if len(flats) > 0 {
+		result := serializeFlatResults(flats)
+		return packet.Context.Send(SRC_FLAT_RESULTS, protocol.RawString(result))
+	}
+
 	return packet.Context.Send(NOFLATS)
 }
 
@@ -292,7 +297,8 @@ func serializeNavigatorNode(node virtual.NavigatorNode, depth int) []protocol.Ar
 
 	case *virtual.NavigatorFlatCategoryNode:
 		args = append(args, protocol.Int(len(n.FlatList)))
-		for _, flat := range n.FlatList {
+		for i := range n.FlatList {
+			flat := &n.FlatList[i]
 			args = append(
 				args,
 				protocol.Int(flat.FlatID),

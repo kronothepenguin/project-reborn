@@ -1,8 +1,11 @@
 package virtual
 
 import (
+	"fmt"
+	"log/slog"
 	"maps"
 	"slices"
+	"strings"
 	"sync"
 )
 
@@ -20,6 +23,8 @@ type NavigatorNode interface {
 
 // NodeType = 0
 type NavigatorCategoryNode struct {
+	Mu sync.RWMutex
+
 	Children []*NavigatorInfo
 }
 
@@ -39,22 +44,28 @@ func (*NavigatorUnitNode) info() {}
 
 // NodeType = 2
 type NavigatorFlatCategoryNode struct {
+	Mu sync.RWMutex
+
 	FlatList []NavigatorFlat
 }
 
 func (*NavigatorFlatCategoryNode) info() {}
 
 type NavigatorFlat struct {
+	Mu sync.RWMutex
+
 	FlatID      int
 	Name        string
 	Owner       string
-	Door        string
+	Door        string // "open", "closed", "password"
 	UserCount   int
 	MaxUsers    int
 	Description string
 }
 
 type NavigatorInfo struct {
+	Mu sync.RWMutex
+
 	NodeID    int
 	NodeType  int
 	Name      string
@@ -73,17 +84,84 @@ type Navigator struct {
 	RootFlatCatId int
 }
 
+func (n *Navigator) Recommended() []*NavigatorFlat {
+	flats := n.getFlats()
+	var result []*NavigatorFlat
+	for _, flat := range flats {
+		if flat.UserCount > 0 {
+			result = append(result, flat)
+		}
+	}
+	slices.SortFunc(result, func(a *NavigatorFlat, b *NavigatorFlat) int {
+		return -(a.UserCount - b.UserCount)
+	})
+	return result
+}
+
+func (n *Navigator) Filter(query string) []*NavigatorFlat {
+	flats := n.getFlats()
+	slog.Debug("flats", slog.String("flats", fmt.Sprintf("%+v", flats)))
+	var result []*NavigatorFlat
+	for _, flat := range flats {
+		if flat.Owner == query || strings.Contains(flat.Name, query) {
+			result = append(result, flat)
+		}
+	}
+	return result
+}
+
+func (n *Navigator) getFlats() []*NavigatorFlat {
+	root := n.Nodes[n.RootFlatCatId]
+	root.Mu.RLock()
+	rootNode := root.Node.(*NavigatorCategoryNode)
+	root.Mu.RUnlock()
+
+	rootNode.Mu.RLock()
+	defer rootNode.Mu.RUnlock()
+	nodes := slices.Clone(rootNode.Children)
+	i := 0
+
+	flatSet := make(map[*NavigatorFlat]struct{})
+	for {
+		if i >= len(nodes) {
+			break
+		}
+
+		info := nodes[i]
+		i += 1
+
+		switch n := info.Node.(type) {
+		case *NavigatorCategoryNode:
+			n.Mu.RLock()
+			defer n.Mu.RUnlock()
+			nodes = slices.Concat(nodes, n.Children)
+
+		case *NavigatorFlatCategoryNode:
+			for j := range n.FlatList {
+				flat := &n.FlatList[j]
+				flat.Mu.RLock()
+				flatSet[flat] = struct{}{}
+				flat.Mu.RUnlock()
+			}
+		}
+	}
+
+	flats := slices.Collect(maps.Keys(flatSet))
+	return flats
+}
+
 func (n *Navigator) setNode(id int, info *NavigatorInfo) {
 	n.Mu.Lock()
-	defer n.Mu.Unlock()
-
 	n.Nodes[id] = info
+	n.Mu.Unlock()
 
 	if info.ParentId == 0 {
 		return
 	}
 
+	n.Mu.RLock()
 	parent, ok := n.Nodes[info.ParentId]
+	n.Mu.RUnlock()
 	if !ok {
 		return
 	}
@@ -93,7 +171,9 @@ func (n *Navigator) setNode(id int, info *NavigatorInfo) {
 		return
 	}
 
+	parentNode.Mu.Lock()
 	parentNode.Children = append(parentNode.Children, info)
+	parentNode.Mu.Unlock()
 }
 
 func (n *Navigator) load(storage Storage) {
@@ -171,41 +251,4 @@ func (n *Navigator) load(storage Storage) {
 			},
 		},
 	})
-}
-
-func (n *Navigator) Recommended() []*NavigatorFlat {
-	rootNode := n.Nodes[n.RootFlatCatId].Node.(*NavigatorCategoryNode)
-
-	nodes := slices.Clone(rootNode.Children)
-	i := 0
-
-	flatSet := make(map[*NavigatorFlat]struct{})
-	for {
-		if i >= len(nodes) {
-			break
-		}
-
-		info := nodes[i]
-		i += 1
-
-		switch n := info.Node.(type) {
-		case *NavigatorCategoryNode:
-			nodes = slices.Concat(nodes, n.Children)
-
-		case *NavigatorFlatCategoryNode:
-			for j := range n.FlatList {
-				flat := &n.FlatList[j]
-				if flat.UserCount > 0 {
-					flatSet[flat] = struct{}{}
-				}
-			}
-		}
-	}
-
-	flats := slices.Collect(maps.Keys(flatSet))
-	slices.SortFunc(flats, func(a *NavigatorFlat, b *NavigatorFlat) int {
-		return -(a.UserCount - b.UserCount)
-	})
-
-	return flats
 }
