@@ -1,6 +1,10 @@
 package virtual
 
-import "sync"
+import (
+	"maps"
+	"slices"
+	"sync"
+)
 
 type navigatorNodeType int
 
@@ -167,4 +171,41 @@ func (n *Navigator) load(storage Storage) {
 			},
 		},
 	})
+}
+
+func (n *Navigator) Recommended() []*NavigatorFlat {
+	rootNode := n.Nodes[n.RootFlatCatId].Node.(*NavigatorCategoryNode)
+
+	nodes := slices.Clone(rootNode.Children)
+	i := 0
+
+	flatSet := make(map[*NavigatorFlat]struct{})
+	for {
+		if i >= len(nodes) {
+			break
+		}
+
+		info := nodes[i]
+		i += 1
+
+		switch n := info.Node.(type) {
+		case *NavigatorCategoryNode:
+			nodes = slices.Concat(nodes, n.Children)
+
+		case *NavigatorFlatCategoryNode:
+			for j := range n.FlatList {
+				flat := &n.FlatList[j]
+				if flat.UserCount > 0 {
+					flatSet[flat] = struct{}{}
+				}
+			}
+		}
+	}
+
+	flats := slices.Collect(maps.Keys(flatSet))
+	slices.SortFunc(flats, func(a *NavigatorFlat, b *NavigatorFlat) int {
+		return -(a.UserCount - b.UserCount)
+	})
+
+	return flats
 }

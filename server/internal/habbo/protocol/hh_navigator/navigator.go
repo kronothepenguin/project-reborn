@@ -450,8 +450,12 @@ func handleGetParentChain(packet *protocol.Packet) error {
 
 // GET_RECOMMENDED_ROOMS
 func handleGetRecommendedRooms(packet *protocol.Packet) error {
-	// TODO: Navigator.Recommended
-	var recommended []virtual.NavigatorFlat
+	navigator := &packet.Context.Hotel().Navigator
+
+	navigator.Mu.RLock()
+	defer navigator.Mu.RUnlock()
+
+	recommended := navigator.Recommended()
 
 	packet.Context.Logger().Debug(
 		"handleGetRecommendedRooms",
