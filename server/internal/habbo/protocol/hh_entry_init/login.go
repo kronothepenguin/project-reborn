@@ -152,25 +152,33 @@ func handleGetInfo(packet *protocol.Packet) error {
 	}
 
 	habbo.Mu.RLock()
-	defer habbo.Mu.RUnlock()
-
 	habboID := strconv.Itoa(habbo.ID)
+	habboName := habbo.Name
+	habboFigure := habbo.Figure
+	habboSex := habbo.Sex
+	habboCustomData := habbo.CustomData
+	habboPHTickets := habbo.PHTickets
+	habboPHFigure := habbo.PHFigure
+	habboPhotoFilm := habbo.PhotoFilm
+	habboDirectMail := habbo.DirectMail
+	habboRights := habbo.Rights
+	habbo.Mu.RUnlock()
 
 	packet.Context.Logger().Debug(
 		"handleGetInfo",
 		slog.String("userID", habboID),
-		slog.String("name", habbo.Name),
-		slog.String("figure", habbo.Figure),
-		slog.String("sex", habbo.Sex),
-		slog.String("customData", habbo.CustomData),
-		slog.Int("phTickets", habbo.PHTickets),
-		slog.String("phFigure", habbo.PHFigure),
-		slog.Int("photoFilm", habbo.PhotoFilm),
-		slog.Int("directMail", habbo.DirectMail),
+		slog.String("name", habboName),
+		slog.String("figure", habboFigure),
+		slog.String("sex", habboSex),
+		slog.String("customData", habboCustomData),
+		slog.Int("phTickets", habboPHTickets),
+		slog.String("phFigure", habboPHFigure),
+		slog.Int("photoFilm", habboPhotoFilm),
+		slog.Int("directMail", habboDirectMail),
 	)
 
 	var rights []io.WriterTo
-	for _, fuse := range habbo.Rights {
+	for _, fuse := range habboRights {
 		rights = append(rights, protocol.String(fuse))
 	}
 
@@ -179,14 +187,14 @@ func handleGetInfo(packet *protocol.Packet) error {
 		packet.Context.Send(
 			USEROBJ,
 			protocol.String(habboID),
-			protocol.String(habbo.Name),
-			protocol.String(habbo.Figure),
-			protocol.String(habbo.Sex),
-			protocol.String(habbo.CustomData),
-			protocol.Int(habbo.PHTickets),
-			protocol.String(habbo.PHFigure),
-			protocol.Int(habbo.PhotoFilm),
-			protocol.Int(habbo.DirectMail),
+			protocol.String(habboName),
+			protocol.String(habboFigure),
+			protocol.String(habboSex),
+			protocol.String(habboCustomData),
+			protocol.Int(habboPHTickets),
+			protocol.String(habboPHFigure),
+			protocol.Int(habboPhotoFilm),
+			protocol.Int(habboDirectMail),
 		),
 	)
 }
@@ -198,9 +206,8 @@ func handleGetCredits(packet *protocol.Packet) error {
 	}
 
 	habbo.Mu.RLock()
-	defer habbo.Mu.RUnlock()
-
 	credits := strconv.Itoa(habbo.Credits)
+	habbo.Mu.RUnlock()
 
 	packet.Context.Logger().Debug(
 		"handleGetCredits",
@@ -257,10 +264,9 @@ func handleBTCKS(packet *protocol.Packet) error {
 	}
 
 	habbo.Mu.Lock()
-	defer habbo.Mu.Unlock()
-
 	habbo.PHTickets += amount
 	habbo.Credits -= amount // TODO: amount*ticketPrice
+	habbo.Mu.Unlock()
 
 	return packet.Context.Send("PURSE", protocol.RawString(strconv.Itoa(habbo.Credits)))
 }
@@ -272,16 +278,17 @@ func handleGetAvailableBadges(packet *protocol.Packet) error {
 	}
 
 	habbo.Mu.RLock()
-	defer habbo.Mu.RUnlock()
+	habboBadges := habbo.Badges
+	habbo.Mu.RUnlock()
 
 	packet.Context.Logger().Debug(
 		"handleGetAvailableBadges",
-		slog.String("badges", fmt.Sprint(habbo.Badges)),
+		slog.String("badges", fmt.Sprint(habboBadges)),
 	)
 
 	var args []io.WriterTo
-	args = append(args, protocol.Int(len(habbo.Badges)))
-	for _, badgeID := range habbo.Badges {
+	args = append(args, protocol.Int(len(habboBadges)))
+	for _, badgeID := range habboBadges {
 		args = append(args, protocol.String(badgeID))
 	}
 
@@ -299,58 +306,6 @@ func handleGetSelectedBadges(packet *protocol.Packet) error {
 }
 
 func handleGetSessionParameters(packet *protocol.Packet) error {
-	// parameters := []io.WriterTo{}
-	// 0 - false, 1 - true, 2 - required
-
-	// coppa := 2 // 0
-	// parameters = append(parameters, protocol.Int(0))
-	// parameters = append(parameters, protocol.Int(coppa))
-
-	// voucher := 1 // 1
-	// parameters = append(parameters, protocol.Int(1))
-	// parameters = append(parameters, protocol.Int(voucher))
-
-	// parentEmailRequest := 1 // 2
-	// parameters = append(parameters, protocol.Int(2))
-	// parameters = append(parameters, protocol.Int(parentEmailRequest))
-
-	// parentEmailRequestReregistration := 1 // 3
-	// parameters = append(parameters, protocol.Int(3))
-	// parameters = append(parameters, protocol.Int(parentEmailRequestReregistration))
-
-	// allowDirectMail := 1 // 4
-	// parameters = append(parameters, protocol.Int(4))
-	// parameters = append(parameters, protocol.Int(allowDirectMail))
-
-	// dateFormat := "dd-mm-yyyy" // 5
-	// parameters = append(parameters, protocol.Int(5))
-	// parameters = append(parameters, protocol.String(dateFormat))
-
-	// partnerIntegration := 1 // 6
-	// parameters = append(parameters, protocol.Int(6))
-	// parameters = append(parameters, protocol.Int(partnerIntegration))
-
-	// profileEditing := 1 // 7
-	// parameters = append(parameters, protocol.Int(7))
-	// parameters = append(parameters, protocol.Int(profileEditing))
-
-	// trackingHeader := "" // 8
-	// parameters = append(parameters, protocol.Int(8))
-	// parameters = append(parameters, protocol.String(trackingHeader))
-
-	// tutorialEnabled := 1 // 9
-	// parameters = append(parameters, protocol.Int(9))
-	// parameters = append(parameters, protocol.Int(tutorialEnabled))
-
-	// packet.Context.Logger().Debug(
-	// 	"handleGetSessionParameters",
-	// 	slog.String("parameters", fmt.Sprint(parameters)),
-	// )
-
-	// args := make([]io.WriterTo, len(parameters)+1)
-	// args[0] = protocol.Int(len(parameters))
-	// copy(args[1:], parameters)
-
 	config := packet.Context.Hotel().Settings
 
 	packet.Context.Logger().Debug(
@@ -461,14 +416,15 @@ func handleGetSoundSettings(packet *protocol.Packet) error {
 	}
 
 	habbo.Mu.RLock()
-	defer habbo.Mu.RUnlock()
+	state := habbo.SoundState
+	habbo.Mu.RUnlock()
 
 	packet.Context.Logger().Debug(
 		"handleGetSoundSettings",
-		slog.Int("state", habbo.SoundState),
+		slog.Int("state", state),
 	)
 
-	return packet.Context.Send(SOUNDSETTING, protocol.Int(habbo.SoundState))
+	return packet.Context.Send(SOUNDSETTING, protocol.Int(state))
 }
 
 func handleSetSoundSettings(packet *protocol.Packet) error {
@@ -487,10 +443,9 @@ func handleSetSoundSettings(packet *protocol.Packet) error {
 		return errors.New("handleSetSoundSettings habbo is nil")
 	}
 
-	habbo.Mu.RLock()
-	defer habbo.Mu.RUnlock()
-
+	habbo.Mu.Lock()
 	habbo.SoundState = state
+	habbo.Mu.Unlock()
 
 	return nil
 }
@@ -502,16 +457,17 @@ func handleGetPossibleAchievements(packet *protocol.Packet) error {
 	}
 
 	habbo.Mu.RLock()
-	defer habbo.Mu.RUnlock()
+	habboAchievements := habbo.Achievements
+	habbo.Mu.RUnlock()
 
 	packet.Context.Logger().Debug(
 		"handleGetPossibleAchievements",
-		slog.String("achievements", fmt.Sprint(habbo.Achievements)),
+		slog.String("achievements", fmt.Sprint(habboAchievements)),
 	)
 
 	var args []io.WriterTo
-	args = append(args, protocol.Int(len(habbo.Achievements)))
-	for _, achievement := range habbo.Achievements {
+	args = append(args, protocol.Int(len(habboAchievements)))
+	for _, achievement := range habboAchievements {
 		args = append(
 			args,
 			protocol.Int(achievement.TypeID),
