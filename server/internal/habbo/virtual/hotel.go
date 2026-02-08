@@ -34,9 +34,9 @@ func (h *Hotel) setHabbo(id int, habbo *Habbo) {
 	h.habbos[id] = habbo
 }
 
-func (h *Hotel) LoadHabboBySSO(ticket string) (*Habbo, error) {
+func (h *Hotel) Login(ticket string) (*Habbo, error) {
 	habbo := newHabbo(&h.Navigator)
-	if err := habbo.loadBySSO(h.storage, ticket); err != nil {
+	if err := habbo.load(h.storage, ticket); err != nil {
 		return nil, err
 	}
 	h.setHabbo(habbo.ID, habbo)

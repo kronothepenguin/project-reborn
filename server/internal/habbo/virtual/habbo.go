@@ -110,7 +110,7 @@ func (h *Habbo) loadBadges(storage Storage) ([]string, error) {
 	}, nil
 }
 
-func (h *Habbo) loadBySSO(storage Storage, ticket string) error {
+func (h *Habbo) load(storage Storage, ticket string) error {
 	h.ID = 1
 	h.Name = "$name"
 	h.Figure = "hd-180-1.ch-876-62.lg-280-62.sh-300-62"

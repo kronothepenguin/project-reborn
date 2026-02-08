@@ -425,7 +425,7 @@ func handleSSO(packet *protocol.Packet) error {
 		slog.String("ticket", ticket),
 	)
 
-	habbo, err := packet.Context.Hotel().LoadHabboBySSO(ticket)
+	habbo, err := packet.Context.Hotel().Login(ticket)
 	if err != nil {
 		return err
 	}
