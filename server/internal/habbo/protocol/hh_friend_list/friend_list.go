@@ -59,8 +59,8 @@ func handleFriendListInit(packet *protocol.Packet) error {
 	var args []protocol.Argument
 	args = append(
 		args,
-		protocol.Int(hotel.Config.FriendListLimit+habbo.FriendList.ExtendedLimit),
-		protocol.Int(hotel.Config.FriendListLimit),
+		protocol.Int(hotel.Settings.FriendListLimit+habbo.FriendList.ExtendedLimit),
+		protocol.Int(hotel.Settings.FriendListLimit),
 		protocol.Int(habbo.FriendList.ExtendedLimit),
 	)
 
@@ -72,7 +72,7 @@ func handleFriendListInit(packet *protocol.Packet) error {
 
 	args = append(
 		args,
-		protocol.Int(hotel.Config.FriendRequestLimit),
+		protocol.Int(hotel.Settings.FriendRequestLimit),
 		protocol.Int(len(habbo.FriendList.Requests)),
 	)
 

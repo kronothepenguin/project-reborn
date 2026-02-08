@@ -1,5 +1,7 @@
 package virtual
 
+import "sync"
+
 type navigatorNodeType int
 
 const (
@@ -59,19 +61,18 @@ type NavigatorInfo struct {
 }
 
 type Navigator struct {
+	Mu sync.RWMutex
+
 	Nodes map[int]*NavigatorInfo
 
 	RootUnitCatId int
 	RootFlatCatId int
 }
 
-func newNavigator() *Navigator {
-	return &Navigator{
-		Nodes: make(map[int]*NavigatorInfo),
-	}
-}
-
 func (n *Navigator) setNode(id int, info *NavigatorInfo) {
+	n.Mu.Lock()
+	defer n.Mu.Unlock()
+
 	n.Nodes[id] = info
 
 	if info.ParentId == 0 {
@@ -91,7 +92,9 @@ func (n *Navigator) setNode(id int, info *NavigatorInfo) {
 	parentNode.Children = append(parentNode.Children, info)
 }
 
-func (n *Navigator) loadMockData() {
+func (n *Navigator) load(storage Storage) {
+	n.Nodes = make(map[int]*NavigatorInfo)
+
 	n.RootUnitCatId = 3
 	n.setNode(n.RootUnitCatId, &NavigatorInfo{
 		NodeID:    n.RootUnitCatId,

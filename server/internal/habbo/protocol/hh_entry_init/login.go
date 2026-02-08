@@ -150,9 +150,11 @@ func handleGetInfo(packet *protocol.Packet) error {
 		return errors.New("handleGetInfo habbo is nil")
 	}
 
+	habboID := strconv.Itoa(habbo.ID)
+
 	packet.Context.Logger().Debug(
 		"handleGetInfo",
-		slog.String("userID", habbo.ID),
+		slog.String("userID", habboID),
 		slog.String("name", habbo.Name),
 		slog.String("figure", habbo.Figure),
 		slog.String("sex", habbo.Sex),
@@ -172,7 +174,7 @@ func handleGetInfo(packet *protocol.Packet) error {
 		packet.Context.Send(RIGHTS, []protocol.Argument(rights)...),
 		packet.Context.Send(
 			USEROBJ,
-			protocol.String(habbo.ID),
+			protocol.String(habboID),
 			protocol.String(habbo.Name),
 			protocol.String(habbo.Figure),
 			protocol.String(habbo.Sex),
@@ -357,7 +359,7 @@ func handleGetSessionParameters(packet *protocol.Packet) error {
 	// args[0] = protocol.Int(len(parameters))
 	// copy(args[1:], parameters)
 
-	config := packet.Context.Hotel().Config
+	config := packet.Context.Hotel().Settings
 
 	packet.Context.Logger().Debug(
 		"handleGetSessionParameters",

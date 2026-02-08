@@ -62,8 +62,8 @@ func (s *Server) initRegistry() {
 func (s *Server) RunTCP() {
 	s.initRegistry()
 
+	// TODO: virtual.Storage
 	s.hotel = virtual.NewHotel(nil)
-	// TODO: load from storage
 	s.hotel.Load()
 
 	slog.SetLogLoggerLevel(slog.LevelDebug)

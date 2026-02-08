@@ -1,6 +1,6 @@
 package virtual
 
-type Config struct {
+type Settings struct {
 	Coppa int
 
 	Voucher int
@@ -24,11 +24,7 @@ type Config struct {
 	FriendRequestLimit int
 }
 
-func newConfig() *Config {
-	return &Config{}
-}
-
-func (c *Config) loadMockData() {
+func (c *Settings) load(storage Storage) {
 	c.Coppa = 2
 	c.Voucher = 1
 	c.ParentEmailRequest = 1

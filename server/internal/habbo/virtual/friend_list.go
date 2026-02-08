@@ -32,3 +32,15 @@ type FriendList struct {
 
 	Requests []FriendRequest
 }
+
+func loadFriendList(storage Storage, habboID int) (*FriendList, error) {
+	return &FriendList{
+		ExtendedLimit: 0,
+
+		Categories: []FriendListCategory{},
+
+		Friends: []Friend{},
+
+		Requests: []FriendRequest{},
+	}, nil
+}
