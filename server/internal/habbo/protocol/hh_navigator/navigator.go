@@ -3,6 +3,7 @@ package hhnavigator
 import (
 	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"slices"
 	"strconv"
@@ -138,7 +139,7 @@ func handleGetFavoriteFlats(packet *protocol.Packet) error {
 
 	info := habbo.FavoriteFlats()
 
-	var args []protocol.Argument
+	var args []io.WriterTo
 	args = append(
 		args,
 		protocol.Int(0),
@@ -284,7 +285,7 @@ func handleNavigate(packet *protocol.Packet) error {
 		return fmt.Errorf("handleNavigate node type %d not found", nodeId)
 	}
 
-	var args []protocol.Argument
+	var args []io.WriterTo
 	args = append(
 		args,
 		protocol.Int(nodeMask),
@@ -310,7 +311,7 @@ func handleGetUserFlatCategories(packet *protocol.Packet) error {
 	flatCats := navigator.Nodes[navigator.RootFlatCatId]
 	cats := flatCats.Node.(*virtual.NavigatorCategoryNode).Children
 
-	var args []protocol.Argument
+	var args []io.WriterTo
 	args = append(args, protocol.Int(len(cats)))
 	for _, flatCat := range cats {
 		args = append(
@@ -408,7 +409,7 @@ func handleGetRecommendedRooms(packet *protocol.Packet) error {
 		slog.String("recommended", fmt.Sprintf("%+v", recommended)),
 	)
 
-	var args []protocol.Argument
+	var args []io.WriterTo
 	args = append(args, protocol.Int(len(recommended)))
 	for _, room := range recommended {
 		args = append(
@@ -449,12 +450,12 @@ func serializeFlatResults(flats []*virtual.NavigatorFlat) string {
 	return result.String()
 }
 
-func serializeNavigatorNode(node virtual.NavigatorNode, depth int) []protocol.Argument {
+func serializeNavigatorNode(node virtual.NavigatorNode, depth int) []io.WriterTo {
 	if depth < 0 {
 		return nil
 	}
 
-	var args []protocol.Argument
+	var args []io.WriterTo
 
 	switch n := node.(type) {
 	case *virtual.NavigatorCategoryNode:

@@ -2,8 +2,6 @@ package protocol
 
 import "io"
 
-type Argument io.WriterTo
-
 type RawString string
 
 func (r RawString) WriteTo(w io.Writer) (int64, error) {

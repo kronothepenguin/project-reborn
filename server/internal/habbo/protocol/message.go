@@ -3,6 +3,7 @@ package protocol
 import (
 	"bytes"
 	"fmt"
+	"io"
 )
 
 type Message struct {
@@ -66,7 +67,7 @@ func (msg *Message) WriteBool(v bool) error {
 	return err
 }
 
-func WriteArgumentsTo(m *Message, args ...Argument) error {
+func WriteArgumentsTo(m *Message, args ...io.WriterTo) error {
 	for _, arg := range args {
 		if _, err := arg.WriteTo(m.buf); err != nil {
 			return err

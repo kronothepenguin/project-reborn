@@ -32,7 +32,7 @@ func NewHabboContext(conn io.ReadWriteCloser, registry protocol.Registry, hotel 
 	}
 }
 
-func (ctx *HabboContext) Send(cmd string, args ...protocol.Argument) error {
+func (ctx *HabboContext) Send(cmd string, args ...io.WriterTo) error {
 	p, err := ctx.registry.Commands().Build(cmd, args...)
 	if err != nil {
 		return err

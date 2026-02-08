@@ -6,15 +6,24 @@ import (
 	"github.com/kronothepenguin/project-reborn/internal/habbo/virtual"
 )
 
-type Context interface {
-	Send(cmd string, args ...Argument) error
-
+type LoggerProvider interface {
 	Logger() *slog.Logger
+}
 
-	Crypto() *Crypto
-
+type HotelProvider interface {
 	Hotel() *virtual.Hotel
+}
 
+type HabboContainer interface {
 	Habbo() *virtual.Habbo
 	SetHabbo(*virtual.Habbo)
+}
+
+type Context interface {
+	virtual.Connection
+
+	LoggerProvider
+	HotelProvider
+
+	HabboContainer
 }

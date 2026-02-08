@@ -2,6 +2,7 @@ package hhfriendlist
 
 import (
 	"errors"
+	"io"
 	"slices"
 
 	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
@@ -59,7 +60,7 @@ func handleFriendListInit(packet *protocol.Packet) error {
 
 	packet.Context.Logger().Debug("handleFriendListInit")
 
-	var args []protocol.Argument
+	var args []io.WriterTo
 	args = append(
 		args,
 		protocol.Int(hotel.Settings.FriendListLimit+habbo.FriendList.ExtendedLimit),
@@ -94,7 +95,7 @@ func handleFriendListUpdate(packet *protocol.Packet) error {
 
 	packet.Context.Logger().Debug("handleFriendListUpdate")
 
-	var args []protocol.Argument
+	var args []io.WriterTo
 
 	args = slices.Concat(
 		args,
@@ -127,7 +128,7 @@ func handleFRIENDLIST_REMOVEFRIEND(packet *protocol.Packet) error {
 
 	packet.Context.Logger().Debug("handleFRIENDLIST_REMOVEFRIEND")
 
-	var args []protocol.Argument
+	var args []io.WriterTo
 	args = append(
 		args,
 		protocol.Int(0),  // do not update categories
@@ -170,8 +171,8 @@ func handleFOLLOW_FRIEND(packet *protocol.Packet) error {
 	return nil
 }
 
-func serializeCategories(categories []virtual.FriendListCategory) []protocol.Argument {
-	var args []protocol.Argument
+func serializeCategories(categories []virtual.FriendListCategory) []io.WriterTo {
+	var args []io.WriterTo
 	args = append(args, protocol.Int(len(categories)))
 	for _, category := range categories {
 		args = append(args, protocol.Int(category.ID), protocol.String(category.Name))
@@ -179,8 +180,8 @@ func serializeCategories(categories []virtual.FriendListCategory) []protocol.Arg
 	return args
 }
 
-func serializeFriends(friends []virtual.Friend) []protocol.Argument {
-	var args []protocol.Argument
+func serializeFriends(friends []virtual.Friend) []io.WriterTo {
+	var args []io.WriterTo
 	args = append(args, protocol.Int(len(friends)))
 	for _, friend := range friends {
 		args = append(
@@ -199,8 +200,8 @@ func serializeFriends(friends []virtual.Friend) []protocol.Argument {
 	return args
 }
 
-func serializeUpdateFriends(friends []virtual.Friend, updateType int) []protocol.Argument {
-	var args []protocol.Argument
+func serializeUpdateFriends(friends []virtual.Friend, updateType int) []io.WriterTo {
+	var args []io.WriterTo
 	args = append(args, protocol.Int(len(friends)))
 	for _, friend := range friends {
 		args = append(

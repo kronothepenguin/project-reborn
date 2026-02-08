@@ -3,6 +3,7 @@ package hhentryinit
 import (
 	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"strconv"
 
@@ -168,13 +169,13 @@ func handleGetInfo(packet *protocol.Packet) error {
 		slog.Int("directMail", habbo.DirectMail),
 	)
 
-	var rights []protocol.Argument
+	var rights []io.WriterTo
 	for _, fuse := range habbo.Rights {
 		rights = append(rights, protocol.String(fuse))
 	}
 
 	return errors.Join(
-		packet.Context.Send(RIGHTS, []protocol.Argument(rights)...),
+		packet.Context.Send(RIGHTS, []io.WriterTo(rights)...),
 		packet.Context.Send(
 			USEROBJ,
 			protocol.String(habboID),
@@ -278,7 +279,7 @@ func handleGetAvailableBadges(packet *protocol.Packet) error {
 		slog.String("badges", fmt.Sprint(habbo.Badges)),
 	)
 
-	var args []protocol.Argument
+	var args []io.WriterTo
 	args = append(args, protocol.Int(len(habbo.Badges)))
 	for _, badgeID := range habbo.Badges {
 		args = append(args, protocol.String(badgeID))
@@ -298,7 +299,7 @@ func handleGetSelectedBadges(packet *protocol.Packet) error {
 }
 
 func handleGetSessionParameters(packet *protocol.Packet) error {
-	// parameters := []protocol.Argument{}
+	// parameters := []io.WriterTo{}
 	// 0 - false, 1 - true, 2 - required
 
 	// coppa := 2 // 0
@@ -346,7 +347,7 @@ func handleGetSessionParameters(packet *protocol.Packet) error {
 	// 	slog.String("parameters", fmt.Sprint(parameters)),
 	// )
 
-	// args := make([]protocol.Argument, len(parameters)+1)
+	// args := make([]io.WriterTo, len(parameters)+1)
 	// args[0] = protocol.Int(len(parameters))
 	// copy(args[1:], parameters)
 
@@ -357,7 +358,7 @@ func handleGetSessionParameters(packet *protocol.Packet) error {
 		slog.String("parameters", fmt.Sprintf("%+v", config)),
 	)
 
-	var args []protocol.Argument
+	var args []io.WriterTo
 	args = append(
 		args,
 		protocol.Int(0), protocol.Int(config.Coppa),
@@ -508,7 +509,7 @@ func handleGetPossibleAchievements(packet *protocol.Packet) error {
 		slog.String("achievements", fmt.Sprint(habbo.Achievements)),
 	)
 
-	var args []protocol.Argument
+	var args []io.WriterTo
 	args = append(args, protocol.Int(len(habbo.Achievements)))
 	for _, achievement := range habbo.Achievements {
 		args = append(

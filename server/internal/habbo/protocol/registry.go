@@ -2,6 +2,7 @@ package protocol
 
 import (
 	"errors"
+	"io"
 	"sync"
 )
 
@@ -9,7 +10,7 @@ type CommandRegistry interface {
 	Register(cmd string, opcode int16)
 	Unregister(cmd string)
 
-	Build(cmd string, args ...Argument) (*Packet, error)
+	Build(cmd string, args ...io.WriterTo) (*Packet, error)
 }
 
 var ErrCommandNotFound = errors.New("command not found")
@@ -39,7 +40,7 @@ func (r *commandRegistryImpl) Unregister(cmd string) {
 	delete(r.lookup, cmd)
 }
 
-func (r *commandRegistryImpl) Build(cmd string, args ...Argument) (*Packet, error) {
+func (r *commandRegistryImpl) Build(cmd string, args ...io.WriterTo) (*Packet, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
