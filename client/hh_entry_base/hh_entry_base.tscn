@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://5qxt6hhs3le7"]
+
+[ext_resource type="Script" uid="uid://d34bpjb410o4f" path="res://hh_entry_base/hh_entry_base.gd" id="1_hj80s"]
+
+[node name="EntryBase" type="Node2D"]
+script = ExtResource("1_hj80s")

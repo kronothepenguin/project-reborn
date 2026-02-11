@@ -6,10 +6,16 @@ func _ready() -> void:
 		stop_client()
 
 func init_core() -> bool:
-	# dumpVariableField("System Props")
+	VariableContainer.dump("res://System Props.txt")
+	
+	# Unload PCK maybe?
 	# resetCastLibs(0, 0)
+	
+	# Looks like director specific stuff to reserve memory
 	# getResourceManager().preIndexMembers()
+	
 	# dumpTextField("System Texts")
+	
 	var core_thread := CoreThread.new()
 	get_tree().current_scene.add_child(core_thread)
 	return true

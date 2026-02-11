@@ -17,7 +17,6 @@ var logo_start_time: int
 var external_variables: Resource
 
 func _ready() -> void:
-	print("ready")
 	construct()
 
 func _notification(what: int) -> void:
@@ -28,20 +27,30 @@ func _process(_delta: float) -> void:
 	update()
 
 func construct():
-	#var session: Dictionary = {
-		#"client_startdate": Time.get_date_string_from_system(true),
-		#"client_starttime": Time.get_time_string_from_system(true),
-		#"client_version": "",
-		#"client_url": "",
-		#"client_lastclick": null,
-	#}
-	EventBrokerBehavior.request_hotel_view.connect(init_transfer_to_hotel_view)
+	var session := {}
+	session["client_startdate"] = Time.get_date_string_from_system(true)
+	session["client_starttime"] = Time.get_unix_time_from_system()
+	session["client_version"] = VariableContainer.get_var("system.version")
+	session["client_url"] = "" # JavaScript.Eval
+	session["client_lastclick"] = null
+	get_tree().root.set_meta("session", session)
+	
+	#createObject(#headers, getClassVariable("variable.manager.class"))
+	#createObject(#classes, getClassVariable("variable.manager.class"))
+	#createObject(#cache, getClassVariable("variable.manager.class"))
+	
+	EventBroker.request_hotel_view.connect(init_transfer_to_hotel_view)
+	
+	# TODO: better use godot natives
 	fading_logo = false
 	logo_start_time = 0
 	return self.update_state(State.LOAD_VARIABLES)
 
 func deconstruct():
 	#TODO: timeout
+	
+	EventBroker.request_hotel_view.disconnect(init_transfer_to_hotel_view)
+	
 	return self.hide_logo()
 
 func show_logo():
@@ -77,9 +86,6 @@ func init_update():
 	fading_logo = true
 	set_process(true)
 
-func invalidate_crap_fixer():
-	pass
-
 func update():
 	if fading_logo:
 		var blend := 0.0
@@ -90,7 +96,7 @@ func update():
 			set_process(false)
 			fading_logo = false
 			self.hide_logo()
-			EventBrokerBehavior.show_hotel_view.emit()
+			EventBroker.show_hotel_view.emit()
 			if OS.has_feature("web"):
 				JavaScriptBridge.eval("clientReady()", true)
 
@@ -115,7 +121,19 @@ func update_state(state: State):
 		State.LOAD_VARIABLES:
 			self.show_logo()
 			for i in range(1, 10):
-				print(System.external_param_value("sw" + str(i)))
+				var param_bundle := Director.external_param_value("sw" + str(i))
+				if param_bundle.length() == 0:
+					continue
+				for param in param_bundle.split(";"):
+					var index := param.find("=")
+					if index == -1:
+						continue
+					var key = param.substr(0, index)
+					var value = param.substr(index + 1)
+					match key:
+						"client.fatal.error.url", "client.allow.cross.domain", "client.notify.cross.domain", "external.variables.txt", "processlog.url", "account_id":
+							VariableContainer.set_var(key, value)
+			
 			#TODO: dynamic load external vars
 			#external_variables = load("res://external_variables.txt")
 			#TODO: return registerDownloadCallback(tMemNum, #assetDownloadCallbacks, me.getID(), tstate)
@@ -123,18 +141,21 @@ func update_state(state: State):
 		State.LOAD_PARAMS:
 			VariableContainer.dump("res://external_variables.txt")
 			for i in range(1, 10):
-				var ext_param := System.external_param_value("sw" + str(i))
-				var params := ext_param.split(";")
-				for param in params:
-					var idx := param.find("=")
-					if idx == -1:
+				var param_bundle := Director.external_param_value("sw" + str(i))
+				if param_bundle.length() == 0:
+					continue
+				for param in param_bundle.split(";"):
+					var index := param.find("=")
+					if index == -1:
 						continue
-					var key := param.substr(0, idx)
-					var value := param.substr(idx + 1)
+					var key := param.substr(0, index)
+					var value := param.substr(index + 1)
 					VariableContainer.set_var(key, value)
-			#if variableExists("client.reload.url") then
-				#getObject(#session).set("client_url", obfuscate(getVariable("client.reload.url")))
-	  		#end if
+			
+			var session: Dictionary = get_tree().root.get_meta("session")
+			if VariableContainer.exists("client.reload.url"):
+				session["client_url"] = VariableContainer.get_var("client.reload.url")
+			
 			self.update_state(State.LOAD_TEXTS)
 		State.LOAD_TEXTS:
 			#tURL = getVariable("external.texts.txt")
@@ -157,31 +178,57 @@ func update_state(state: State):
 				i = i + 1
 			print(cast_list)
 			if cast_list.size() > 0:
-				for cast in cast_list:
-					var path: String = "res://" + cast + "/" + cast + ".tscn"
-					if !FileAccess.file_exists(path):
-						continue
-					var scene := load(path)
-					var instance = scene.instantiate()
-					get_tree().current_scene.add_child(instance)
 				#tLoadID = startCastLoad(tCastList, 1, VOID, VOID, 1)
 				#if getVariable("loading.bar.active") then
 				  #showLoadingBar(tLoadID, [#buffer: #window, #locY: 500, #width: 300])
 				#end if
+				
+				return asset_download_callbacks(state, true)
 				#return registerCastloadCallback(tLoadID, #assetDownloadCallbacks, me.getID(), tstate)
-				pass
 			else:
 				return self.update_state(State.INIT_THREADS)
 		State.VALIDATE_RESOURCES:
 			#TODO: check for cast.entry.#
-			if 0 > 0:
+			var cast_list := []
+			var i := 1
+			while true:
+				if not VariableContainer.exists("cast.entry." + str(i)):
+					break
+				var filename: String = VariableContainer.get_var("cast.entry." + str(i))
+				cast_list.append(filename)
+				i = i + 1
+			
+			var new_list := cast_list
+			#if count(tCastList) > 0 then
+				#repeat with tCast in tCastList
+				  #if not castExists(tCast) then
+					#tNewList.add(tCast)
+				  #end if
+				#end repeat
+			#end if
+			
+			if new_list.size() > 0:
 				#TODO: return registerCastloadCallback(tLoadID, #assetDownloadCallbacks, me.getID(), tstate)
-				pass
+				return self.update_state(State.INIT_THREADS)
 			else:
 				return self.update_state(State.INIT_THREADS)
 		State.INIT_THREADS:
-			#TODO: getThreadManager().initAll()
-			EventBrokerBehavior.initialize.emit("initialize")
-	
-func fullscreen_refresh():
-	pass
+			var cast_list := []
+			var i := 1
+			while true:
+				if not VariableContainer.exists("cast.entry." + str(i)):
+					break
+				var filename: String = VariableContainer.get_var("cast.entry." + str(i))
+				cast_list.append(filename)
+				i = i + 1
+			
+			# equivalent of getThreadManager().initAll()
+			for cast in cast_list:
+				var path: String = "res://" + cast + "/" + cast + ".tscn"
+				if !FileAccess.file_exists(path):
+					continue
+				var node := load(path)
+				var instance = node.instantiate()
+				get_tree().current_scene.add_child(instance)
+			
+			EventBroker.initialize.emit("initialize")

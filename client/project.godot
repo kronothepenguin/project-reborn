@@ -17,8 +17,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-EventBrokerBehavior="*res://fuse_client/event_broker_behavior.gd"
-System="*res://system.gd"
+Director="*res://director/director.gd"
+EventBroker="*res://fuse_client/event_broker_behavior.gd"
 
 [display]
 
