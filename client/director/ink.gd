@@ -1,4 +1,5 @@
 @tool
+class_name ImageInk
 extends Image
 
 enum Ink {
@@ -10,22 +11,16 @@ enum Ink {
 
 @export var texture: Texture2D:
 	set(value):
-		if texture == value:
-			return
 		texture = value
 		_apply()
 
 @export var ink: Ink:
 	set(value):
-		if ink == value:
-			return
 		ink = value
 		_apply()
 
 @export var background: Color:
 	set(value):
-		if background == value:
-			return
 		background = value
 		_apply()
 

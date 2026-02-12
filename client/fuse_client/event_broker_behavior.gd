@@ -16,3 +16,6 @@ signal update_club_status
 
 signal message_update_request
 signal buddy_update_request
+
+signal enter_room
+signal leave_room

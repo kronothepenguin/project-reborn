@@ -1,0 +1,17 @@
+[gd_resource type="Image" load_steps=3 format=4 uid="uid://c3iqrquw68waf"]
+
+[ext_resource type="Script" uid="uid://dmyv0ycuygdmp" path="res://director/ink.gd" id="1_y71o5"]
+[ext_resource type="Texture2D" uid="uid://ct36yrenl0pdw" path="res://hh_entry_uk/34_cloud_1_left.png" id="2_n88sh"]
+
+[resource]
+data = {
+"data": PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAAP/u7u7/7u7u/+7u7v/u7u7/7u7u/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/7u7u/+7u7v///////////////////////////+7u7v8AAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/u7u7//////////////////////////////////////+7u7v8AAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/+7u7v///////////////////////////////////////////+7u7v8AAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/7u7u/////////////////////////////////////////////////+7u7v8AAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//////////////////////////////////////////////////////7u7u/8AAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/u7u7//////////////////////////////////////////////////////wAAAP//////AAAA/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//////////////////////////////////////////////////////u7u7/wAAAP8AAAD/7u7u/+7u7v8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////////////////////////////////////////////////+7u7v/AAAA/+7u7v///////////+7u7v8AAAAAAAAAAAAAAAAAAAAAAAAA/+7u7v///////////////////////////////////////////7u7u////////////////////////////+7u7v8AAAAAAAAAAAAAAAAAAAAAAAAA/+7u7v///////////////////////////////////////////////////////////////////////////7u7u/8AAAAAAAAAAAAAAAAAAAAAAAAA/7u7u//u7u7/////////////////////////////////////////////////////////////////u7u7/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAA/wAAAP+7u7v/u7u7/7u7u////////////////////////////////////////////7u7u/+7u7v/AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAD/7u7u//////////////////////////////////////+7u7v/u7u7/wAAAP8AAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAA/+7u7v//////////////////////////////////////u7u7/7u7u/8AAAD/AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/u7u7//////////////////////////////////////7u7u/+7u7v/AAAA/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////////////////////////////////+7u7v/u7u7/wAAAP8AAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAO7u7v//////////////////////u7u7/7u7u/8AAAD/AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///////////////7u7u/+7u7v/AAAA/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALu7u/+7u7v/u7u7/wAAAP8AAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
+"format": "RGBA8",
+"height": 22,
+"mipmaps": false,
+"width": 21
+}
+script = ExtResource("1_y71o5")
+texture = ExtResource("2_n88sh")
+ink = 8
+background = Color(1, 1, 1, 1)

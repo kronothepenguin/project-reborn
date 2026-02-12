@@ -15,21 +15,38 @@ func _process(delta: float) -> void:
 	pass
 
 func construct():
+	# Interface
 	EventBroker.user_login.connect(show_entry_bar)
 	EventBroker.show_hotel_view.connect(show_hotel)
 	EventBroker.im_state_changed.connect(update_im_icon)
 	
 	EventBroker.request_hotel_view.emit()
+	
+	# Component
+	EventBroker.enter_room.connect(leave_entry)
+	EventBroker.leave_room.connect(enter_entry)
+	EventBroker.initialize.connect(update_state)
 
 func deconstruct():
+	# Interface
 	EventBroker.user_login.disconnect(show_entry_bar)
 	EventBroker.show_hotel_view.disconnect(show_hotel)
 	EventBroker.im_state_changed.disconnect(update_im_icon)
+	
+	# Component
+	EventBroker.enter_room.disconnect(leave_entry)
+	EventBroker.leave_room.disconnect(enter_entry)
+	EventBroker.initialize.disconnect(update_state)
+	
+	#update_state("reset")
+	hide_hotel()
+	hide_entry_bar()
 
 func show_hotel():
-	var scene := VisualizerManager.load("entry.visual")
-	entry_view = scene.instantiate()
-	get_tree().root.add_child(entry_view)
+	if entry_view == null:
+		var scene := VisualizerManager.load("entry.visual")
+		entry_view = scene.instantiate()
+		get_tree().root.add_child(entry_view)
 	
 	await get_tree().create_timer(0.5).timeout
 	var player := entry_view.get_node("AnimationPlayer") as AnimationPlayer
@@ -122,3 +139,25 @@ func update_entry_bar():
 
 func update_im_icon():
 	pass
+
+# Component
+func enter_entry():
+	#update_state("hotel_view")
+	#update_state("entry_bar")
+	show_hotel()
+	show_entry_bar()
+	
+func leave_entry():
+	#update_state("reset")
+	hide_hotel()
+	hide_entry_bar()
+	
+func update_state(state: String):
+	match state:
+		"reset":
+			hide_hotel()
+			hide_entry_bar()
+		"hotel_view", "initialize":
+			show_hotel()
+		"entry_bar":
+			show_entry_bar()
