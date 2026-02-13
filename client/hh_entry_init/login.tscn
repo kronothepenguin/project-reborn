@@ -1,29 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://b84sxpr23y41b"]
+[gd_scene load_steps=2 format=3 uid="uid://b84sxpr23y41b"]
 
 [ext_resource type="Script" uid="uid://bwkavjacrtx8j" path="res://hh_entry_init/login.gd" id="1_vsuh3"]
-[ext_resource type="PackedScene" uid="uid://dpgyeb26l48r3" path="res://hh_interface/habbo_simple.tscn" id="2_r1ksu"]
-[ext_resource type="PackedScene" uid="uid://bsjoplkyapmgx" path="res://hh_interface/habbo_content.tscn" id="3_nmv1i"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_vsuh3")
-
-[node name="Control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="HabboSimple" parent="Control" instance=ExtResource("2_r1ksu")]
-layout_mode = 1
-offset_left = 400.0
-offset_top = 213.0
-offset_right = 588.0
-offset_bottom = 390.0
-
-[node name="HabboContent" parent="Control/HabboSimple" instance=ExtResource("3_nmv1i")]
-layout_mode = 0
-offset_top = 17.0
-offset_right = 188.0
-offset_bottom = 181.0

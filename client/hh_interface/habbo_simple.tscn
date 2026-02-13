@@ -7,7 +7,7 @@
 [ext_resource type="Image" uid="uid://nht2hscijmg" path="res://hh_interface/7_window.middle.left.png" id="5_3417x"]
 [ext_resource type="Image" uid="uid://b2bniaapt60i8" path="res://hh_interface/8_window.middle.middle.png" id="6_0oam3"]
 [ext_resource type="Image" uid="uid://wn1vdmakqoa1" path="res://hh_interface/9_window.middle.right.png" id="7_1ihnk"]
-[ext_resource type="Script" uid="uid://bee0q3tul6kcn" path="res://director/nine_patch_atlas_composer.gd" id="8_436fk"]
+[ext_resource type="Script" uid="uid://bee0q3tul6kcn" path="res://director/nine_patch_composed_texture.gd" id="8_436fk"]
 [ext_resource type="Image" uid="uid://dfqeqdlxbo3th" path="res://hh_interface/4_window.top.left.png" id="9_be0tq"]
 [ext_resource type="Image" uid="uid://cwdhjul1pwi6" path="res://hh_interface/5_window.top.middle.png" id="10_0xkdb"]
 [ext_resource type="Image" uid="uid://dwm2yggqeojg4" path="res://hh_interface/6_window.top.right.png" id="11_q204n"]
@@ -93,9 +93,10 @@ texture_margin_left = 11.0
 texture_margin_top = 11.0
 texture_margin_right = 11.0
 texture_margin_bottom = 11.0
+expand_margin_left = 12.0
+expand_margin_top = 12.0
+expand_margin_right = 12.0
+expand_margin_bottom = 12.0
 
 [node name="HabboSimple" type="Panel"]
-custom_minimum_size = Vector2(23, 23)
-offset_right = 23.0
-offset_bottom = 23.0
 theme_override_styles/panel = SubResource("StyleBoxTexture_21hof")

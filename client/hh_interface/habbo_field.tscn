@@ -1,0 +1,63 @@
+[gd_scene load_steps=11 format=4 uid="uid://ch1u6khta2fpt"]
+
+[ext_resource type="Image" uid="uid://cgibehkoxiy6w" path="res://hh_interface/39_field.left.png" id="2_1e5kf"]
+[ext_resource type="Script" uid="uid://d0aye0rhdfx6f" path="res://director/ink_image.gd" id="3_msyyy"]
+[ext_resource type="Image" uid="uid://bnim5srf7aa87" path="res://hh_interface/40_field.middle.png" id="4_sx5cp"]
+[ext_resource type="Image" uid="uid://bokjrgvk5hhx3" path="res://hh_interface/41_field.right.png" id="5_bxuer"]
+[ext_resource type="Script" uid="uid://bj2423p4ha3vs" path="res://director/three_slice_composed_texture.gd" id="6_esekb"]
+
+[sub_resource type="Image" id="Image_2eqpp"]
+data = {
+"data": PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAA/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAD/7+/v/+/v7//v7+//AAAA/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//AAAA/wAAAAAAAAAAAAAAAAAAAP/v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/AAAAAAAAAAAAAAD/7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//AAAA/wAAAAAAAAD/7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/AAAA/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//AAAA/wAAAP/v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/wAAAP8AAAD/7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/AAAA/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//AAAA/wAAAP/v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/wAAAP8AAAD/7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/AAAAAAAAAP/v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/AAAAAAAAAAAAAAD/7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//AAAA/wAAAAAAAAAAAAAAAAAAAP/v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAAP/v7+//7+/v/+/v7/8AAAD/AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAAP8AAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+"format": "RGBA8",
+"height": 17,
+"mipmaps": false,
+"width": 13
+}
+
+[sub_resource type="Image" id="Image_ejivb"]
+data = {
+"data": PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAAAAAAAAAAAAAAAAAA/wAAAP/v7+//AAAAAAAAAAAAAAD/7+/v/+/v7//v7+//AAAAAAAAAP/v7+//7+/v/+/v7//v7+//AAAAAAAAAP/v7+//7+/v/+/v7//v7+//AAAA/+/v7//v7+//7+/v/+/v7//v7+//AAAA/+/v7//v7+//7+/v/+/v7//v7+//AAAA/+/v7//v7+//7+/v/+/v7//v7+//AAAA/+/v7//v7+//7+/v/+/v7//v7+//AAAA/+/v7//v7+//7+/v/+/v7//v7+//AAAA/+/v7//v7+//7+/v/+/v7//v7+//AAAA/+/v7//v7+//7+/v/+/v7//v7+//AAAAAAAAAP/v7+//7+/v/+/v7//v7+//AAAAAAAAAP/v7+//7+/v/+/v7//v7+//AAAAAAAAAAAAAAD/7+/v/+/v7//v7+//AAAAAAAAAAAAAAAAAAAA/wAAAP/v7+//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/"),
+"format": "RGBA8",
+"height": 17,
+"mipmaps": false,
+"width": 6
+}
+script = ExtResource("3_msyyy")
+base = ExtResource("2_1e5kf")
+ink = 14
+metadata/_custom_type_script = "uid://d0aye0rhdfx6f"
+
+[sub_resource type="Image" id="Image_1e5kf"]
+data = {
+"data": PackedByteArray("AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAA7+/v/wAAAP8AAAD/AAAAAAAAAAAAAAAA7+/v/+/v7//v7+//AAAA/wAAAAAAAAAA7+/v/+/v7//v7+//7+/v/wAAAP8AAAAA7+/v/+/v7//v7+//7+/v/wAAAP8AAAAA7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/7+/v/+/v7//v7+//7+/v/wAAAP8AAAAA7+/v/+/v7//v7+//7+/v/wAAAP8AAAAA7+/v/+/v7//v7+//AAAA/wAAAAAAAAAA7+/v/wAAAP8AAAD/AAAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAA"),
+"format": "RGBA8",
+"height": 17,
+"mipmaps": false,
+"width": 6
+}
+script = ExtResource("3_msyyy")
+base = ExtResource("5_bxuer")
+ink = 14
+metadata/_custom_type_script = "uid://d0aye0rhdfx6f"
+
+[sub_resource type="ImageTexture" id="ImageTexture_msyyy"]
+image = SubResource("Image_2eqpp")
+script = ExtResource("6_esekb")
+left = SubResource("Image_ejivb")
+middle = ExtResource("4_sx5cp")
+right = SubResource("Image_1e5kf")
+metadata/_custom_type_script = "uid://bj2423p4ha3vs"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sx5cp"]
+texture = SubResource("ImageTexture_msyyy")
+texture_margin_left = 6.0
+texture_margin_top = 3.0
+texture_margin_right = 6.0
+texture_margin_bottom = 3.0
+
+[node name="HabboField" type="PanelContainer"]
+custom_minimum_size = Vector2(13, 17)
+offset_right = 13.0
+offset_bottom = 17.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_sx5cp")

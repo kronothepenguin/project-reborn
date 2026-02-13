@@ -1,0 +1,68 @@
+[gd_scene load_steps=12 format=4 uid="uid://dafqqg6rsm4tf"]
+
+[ext_resource type="Image" uid="uid://cgibehkoxiy6w" path="res://hh_interface/39_field.left.png" id="1_2cj1o"]
+[ext_resource type="FontFile" uid="uid://d1pp75ywv8xtt" path="res://hh_interface/CourierPrime-Regular.ttf" id="1_7gs8x"]
+[ext_resource type="Script" uid="uid://d0aye0rhdfx6f" path="res://director/ink_image.gd" id="2_rxkyo"]
+[ext_resource type="Image" uid="uid://bnim5srf7aa87" path="res://hh_interface/40_field.middle.png" id="3_qwo8u"]
+[ext_resource type="Image" uid="uid://bokjrgvk5hhx3" path="res://hh_interface/41_field.right.png" id="4_d6yyb"]
+[ext_resource type="Script" uid="uid://bj2423p4ha3vs" path="res://director/three_slice_composed_texture.gd" id="5_f7awc"]
+
+[sub_resource type="Image" id="Image_v6x1k"]
+data = {
+"data": PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAA/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAD/7+/v/+/v7//v7+//AAAA/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//AAAA/wAAAAAAAAAAAAAAAAAAAP/v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/AAAAAAAAAAAAAAD/7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//AAAA/wAAAAAAAAD/7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/AAAA/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//AAAA/wAAAP/v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/wAAAP8AAAD/7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/AAAA/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//AAAA/wAAAP/v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/wAAAP8AAAD/7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/AAAAAAAAAP/v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/AAAAAAAAAAAAAAD/7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//AAAA/wAAAAAAAAAAAAAAAAAAAP/v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAAP/v7+//7+/v/+/v7/8AAAD/AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAAP8AAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+"format": "RGBA8",
+"height": 17,
+"mipmaps": false,
+"width": 13
+}
+
+[sub_resource type="Image" id="Image_ykqxq"]
+data = {
+"data": PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAAAAAAAAAAAAAAAAAA/wAAAP/v7+//AAAAAAAAAAAAAAD/7+/v/+/v7//v7+//AAAAAAAAAP/v7+//7+/v/+/v7//v7+//AAAAAAAAAP/v7+//7+/v/+/v7//v7+//AAAA/+/v7//v7+//7+/v/+/v7//v7+//AAAA/+/v7//v7+//7+/v/+/v7//v7+//AAAA/+/v7//v7+//7+/v/+/v7//v7+//AAAA/+/v7//v7+//7+/v/+/v7//v7+//AAAA/+/v7//v7+//7+/v/+/v7//v7+//AAAA/+/v7//v7+//7+/v/+/v7//v7+//AAAA/+/v7//v7+//7+/v/+/v7//v7+//AAAAAAAAAP/v7+//7+/v/+/v7//v7+//AAAAAAAAAP/v7+//7+/v/+/v7//v7+//AAAAAAAAAAAAAAD/7+/v/+/v7//v7+//AAAAAAAAAAAAAAAAAAAA/wAAAP/v7+//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/"),
+"format": "RGBA8",
+"height": 17,
+"mipmaps": false,
+"width": 6
+}
+script = ExtResource("2_rxkyo")
+base = ExtResource("1_2cj1o")
+ink = 14
+metadata/_custom_type_script = "uid://d0aye0rhdfx6f"
+
+[sub_resource type="Image" id="Image_lr4yb"]
+data = {
+"data": PackedByteArray("AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAA7+/v/wAAAP8AAAD/AAAAAAAAAAAAAAAA7+/v/+/v7//v7+//AAAA/wAAAAAAAAAA7+/v/+/v7//v7+//7+/v/wAAAP8AAAAA7+/v/+/v7//v7+//7+/v/wAAAP8AAAAA7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/7+/v/+/v7//v7+//7+/v/wAAAP8AAAAA7+/v/+/v7//v7+//7+/v/wAAAP8AAAAA7+/v/+/v7//v7+//AAAA/wAAAAAAAAAA7+/v/wAAAP8AAAD/AAAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAA"),
+"format": "RGBA8",
+"height": 17,
+"mipmaps": false,
+"width": 6
+}
+script = ExtResource("2_rxkyo")
+base = ExtResource("4_d6yyb")
+ink = 14
+metadata/_custom_type_script = "uid://d0aye0rhdfx6f"
+
+[sub_resource type="ImageTexture" id="ImageTexture_8ja80"]
+image = SubResource("Image_v6x1k")
+script = ExtResource("5_f7awc")
+left = SubResource("Image_ykqxq")
+middle = ExtResource("3_qwo8u")
+right = SubResource("Image_lr4yb")
+metadata/_custom_type_script = "uid://bj2423p4ha3vs"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5kmrv"]
+texture = SubResource("ImageTexture_8ja80")
+texture_margin_left = 6.0
+texture_margin_top = 2.9898746
+texture_margin_right = 6.0
+texture_margin_bottom = 3.0101256
+
+[node name="HabboTextEdit" type="TextEdit"]
+custom_minimum_size = Vector2(13, 17)
+offset_right = 13.0
+offset_bottom = 17.0
+theme_override_colors/caret_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_7gs8x")
+theme_override_font_sizes/font_size = 9
+theme_override_styles/normal = SubResource("StyleBoxTexture_5kmrv")

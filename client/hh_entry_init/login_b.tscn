@@ -1,0 +1,109 @@
+[gd_scene load_steps=9 format=3 uid="uid://bj7b5pml56dcl"]
+
+[ext_resource type="PackedScene" uid="uid://dpgyeb26l48r3" path="res://hh_interface/habbo_simple.tscn" id="1_5ifc2"]
+[ext_resource type="FontFile" uid="uid://bxdih1pbhq1eb" path="res://hh_interface/CourierPrime-Bold.ttf" id="2_xkihc"]
+[ext_resource type="PackedScene" uid="uid://bsjoplkyapmgx" path="res://hh_interface/habbo_content.tscn" id="3_ffdub"]
+[ext_resource type="FontFile" uid="uid://d1pp75ywv8xtt" path="res://hh_interface/CourierPrime-Regular.ttf" id="4_o773w"]
+[ext_resource type="PackedScene" uid="uid://ch1u6khta2fpt" path="res://hh_interface/habbo_field.tscn" id="5_4v4po"]
+[ext_resource type="PackedScene" uid="uid://cngmb765jlden" path="res://hh_interface/habbo_button1.tscn" id="6_jj6s7"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_h2sko"]
+font = ExtResource("2_xkihc")
+font_size = 9
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_h5d0j"]
+font = ExtResource("4_o773w")
+font_size = 9
+font_color = Color(0, 0, 0, 1)
+
+[node name="LoginB" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="HabboSimple" parent="." instance=ExtResource("1_5ifc2")]
+layout_mode = 0
+offset_left = 400.0
+offset_top = 213.0
+offset_right = 588.0
+offset_bottom = 390.0
+
+[node name="WhatsHabboCalled" type="Label" parent="HabboSimple"]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 178.0
+offset_bottom = 12.0
+size_flags_vertical = 0
+text = "login_whatsHabboCalled"
+label_settings = SubResource("LabelSettings_h2sko")
+
+[node name="HabboContent" parent="HabboSimple" instance=ExtResource("3_ffdub")]
+layout_mode = 0
+offset_top = 17.0
+offset_right = 188.0
+offset_bottom = 181.0
+
+[node name="EntryName" type="Label" parent="HabboSimple/HabboContent"]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 11.0
+offset_right = 166.0
+offset_bottom = 23.0
+size_flags_vertical = 0
+text = "entry_nameOfYourHabbo"
+label_settings = SubResource("LabelSettings_h5d0j")
+
+[node name="ReferenceRect" type="ReferenceRect" parent="HabboSimple/HabboContent"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 0
+offset_left = 11.0
+offset_top = 27.0
+offset_right = 176.0
+offset_bottom = 61.0
+
+[node name="HabboField" parent="HabboSimple/HabboContent/ReferenceRect" instance=ExtResource("5_4v4po")]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+
+[node name="EntryPassword" type="Label" parent="HabboSimple/HabboContent"]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 68.0
+offset_right = 167.0
+offset_bottom = 80.0
+size_flags_vertical = 0
+text = "entry_password"
+label_settings = SubResource("LabelSettings_h5d0j")
+
+[node name="ReferenceRect2" type="ReferenceRect" parent="HabboSimple/HabboContent"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 83.0
+offset_right = 176.0
+offset_bottom = 117.0
+
+[node name="HabboField" parent="HabboSimple/HabboContent/ReferenceRect2" instance=ExtResource("5_4v4po")]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+
+[node name="HabboButton1" parent="HabboSimple/HabboContent" instance=ExtResource("6_jj6s7")]
+layout_mode = 0
+offset_left = 73.0
+offset_top = 126.0
+offset_right = 113.0
+offset_bottom = 149.0
+text = "OK"

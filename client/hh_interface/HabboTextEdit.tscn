@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://dafqqg6rsm4tf"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5kmrv"]
-
-[node name="HabboTextEdit" type="TextEdit"]
-theme_override_styles/normal = SubResource("StyleBoxTexture_5kmrv")

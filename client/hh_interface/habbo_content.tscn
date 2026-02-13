@@ -1,7 +1,7 @@
 [gd_scene load_steps=19 format=4 uid="uid://bsjoplkyapmgx"]
 
 [ext_resource type="Image" uid="uid://cjvvablm6t6rq" path="res://hh_interface/23_content.bottom.left.png" id="1_03eae"]
-[ext_resource type="Script" uid="uid://bee0q3tul6kcn" path="res://director/nine_patch_atlas_composer.gd" id="1_jpuvr"]
+[ext_resource type="Script" uid="uid://bee0q3tul6kcn" path="res://director/nine_patch_composed_texture.gd" id="1_jpuvr"]
 [ext_resource type="Image" uid="uid://cptjdean5hrbv" path="res://hh_interface/17_content.top.left.png" id="2_0sgxw"]
 [ext_resource type="Script" uid="uid://d0aye0rhdfx6f" path="res://director/ink_image.gd" id="3_2vrfk"]
 [ext_resource type="Image" uid="uid://b1yb4vudkh2ea" path="res://hh_interface/24_content.bottom.middle.png" id="3_qqeg6"]
@@ -95,8 +95,5 @@ texture_margin_top = 6.0
 texture_margin_right = 7.0
 texture_margin_bottom = 7.0
 
-[node name="HabboContent" type="PanelContainer"]
-custom_minimum_size = Vector2(13, 13)
-offset_right = 13.0
-offset_bottom = 13.0
+[node name="HabboContent" type="Panel"]
 theme_override_styles/panel = SubResource("StyleBoxTexture_0sgxw")

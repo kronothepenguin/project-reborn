@@ -25,7 +25,3 @@ EventBroker="*res://fuse_client/event_broker_behavior.gd"
 window/size/viewport_width=720
 window/size/viewport_height=540
 window/stretch/mode="viewport"
-
-[gui]
-
-theme/custom="uid://bhvrrt26tr57l"
