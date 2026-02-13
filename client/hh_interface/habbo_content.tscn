@@ -1,0 +1,102 @@
+[gd_scene load_steps=19 format=4 uid="uid://bsjoplkyapmgx"]
+
+[ext_resource type="Image" uid="uid://cjvvablm6t6rq" path="res://hh_interface/23_content.bottom.left.png" id="1_03eae"]
+[ext_resource type="Script" uid="uid://bee0q3tul6kcn" path="res://director/nine_patch_atlas_composer.gd" id="1_jpuvr"]
+[ext_resource type="Image" uid="uid://cptjdean5hrbv" path="res://hh_interface/17_content.top.left.png" id="2_0sgxw"]
+[ext_resource type="Script" uid="uid://d0aye0rhdfx6f" path="res://director/ink_image.gd" id="3_2vrfk"]
+[ext_resource type="Image" uid="uid://b1yb4vudkh2ea" path="res://hh_interface/24_content.bottom.middle.png" id="3_qqeg6"]
+[ext_resource type="Image" uid="uid://uuc3oxiemo81" path="res://hh_interface/25_content.bottom.right.png" id="3_xxdnj"]
+[ext_resource type="Image" uid="uid://c0raln201jtgb" path="res://hh_interface/19_content.top.right.png" id="4_2vrfk"]
+[ext_resource type="Image" uid="uid://dfn734ikbaakw" path="res://hh_interface/20_content.middle.left.png" id="5_v131u"]
+[ext_resource type="Image" uid="uid://bmho0n4kbr2e1" path="res://hh_interface/21_content.middle.middle.png" id="6_vyknr"]
+[ext_resource type="Image" uid="uid://covoquke3nbpu" path="res://hh_interface/22_content.middle.right.png" id="7_o6itq"]
+[ext_resource type="Image" uid="uid://rb0ce70fni7e" path="res://hh_interface/18_content.top.middle.png" id="10_o8ulh"]
+
+[sub_resource type="Image" id="Image_afsv1"]
+data = {
+"data": PackedByteArray("AAAA/+/v7//v7+//7+/v/+/v7//v7+//NF5v/wAAAP/v7+//7+/v/+/v7//v7+//AAAAAAAAAP/v7+//7+/v/+/v7//v7+//AAAAADReb/8AAAD/7+/v/+/v7//v7+//AAAAAAAAAAA0Xm//AAAA/wAAAP/v7+//AAAAAAAAAAAAAAAANF5v/zReb/8AAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAA0Xm//"),
+"format": "RGBA8",
+"height": 7,
+"mipmaps": false,
+"width": 6
+}
+script = ExtResource("3_2vrfk")
+base = ExtResource("1_03eae")
+ink = 14
+metadata/_custom_type_script = "uid://d0aye0rhdfx6f"
+
+[sub_resource type="Image" id="Image_l6vpr"]
+data = {
+"data": PackedByteArray("7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/NF5v/+/v7//v7+//7+/v/+/v7/8AAAD/NF5v/zReb//v7+//7+/v/+/v7//v7+//AAAA/zReb/8AAAAA7+/v/+/v7//v7+//AAAA/zReb/80Xm//AAAAAO/v7/8AAAD/AAAA/zReb/80Xm//AAAAAAAAAAAAAAD/NF5v/zReb/80Xm//AAAAAAAAAAAAAAAANF5v/zReb/8AAAAAAAAAAAAAAAAAAAAAAAAAAA=="),
+"format": "RGBA8",
+"height": 7,
+"mipmaps": false,
+"width": 7
+}
+script = ExtResource("3_2vrfk")
+base = ExtResource("3_xxdnj")
+ink = 14
+metadata/_custom_type_script = "uid://d0aye0rhdfx6f"
+
+[sub_resource type="Image" id="Image_qqeg6"]
+data = {
+"data": PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAA/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAA/+/v7//v7+//7+/v/wAAAP8AAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/AAAAAAAAAAAAAAAAAAAAAAAAAP/v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/AAAAAAAAAAAAAAAAAAAA/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/wAAAP80Xm//AAAAAAAAAP/v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/wAAAP8AAAAAAAAA/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//AAAA/zReb/8AAAD/7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/NF5v/zReb/8AAAD/7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//AAAA/zReb/80Xm//AAAAAAAAAP/v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/NF5v/wAAAAAAAAAANF5v/wAAAP/v7+//7+/v/+/v7//v7+//7+/v/+/v7//v7+//AAAA/zReb/80Xm//AAAAAAAAAAAAAAAANF5v/wAAAP8AAAD/7+/v/+/v7//v7+//AAAA/wAAAP80Xm//NF5v/wAAAAAAAAAAAAAAAAAAAAAAAAAANF5v/zReb/8AAAD/AAAA/wAAAP80Xm//NF5v/zReb/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADReb/80Xm//NF5v/zReb/8AAAAAAAAAAAAAAAAAAAAAAAAAAA=="),
+"format": "RGBA8",
+"height": 14,
+"mipmaps": false,
+"width": 14
+}
+
+[sub_resource type="Image" id="Image_03eae"]
+data = {
+"data": PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAAAAAAAAAAAAAAAAAA/wAAAP/v7+//AAAAAAAAAAAAAAD/7+/v/+/v7//v7+//AAAAAAAAAP/v7+//7+/v/+/v7//v7+//AAAAAAAAAP/v7+//7+/v/+/v7//v7+//AAAA/+/v7//v7+//7+/v/+/v7//v7+//"),
+"format": "RGBA8",
+"height": 6,
+"mipmaps": false,
+"width": 6
+}
+script = ExtResource("3_2vrfk")
+base = ExtResource("2_0sgxw")
+ink = 14
+metadata/_custom_type_script = "uid://d0aye0rhdfx6f"
+
+[sub_resource type="Image" id="Image_xxdnj"]
+data = {
+"data": PackedByteArray("AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAA7+/v/wAAAP8AAAD/AAAAAAAAAAAAAAAA7+/v/+/v7//v7+//AAAA/wAAAAAAAAAA7+/v/+/v7//v7+//7+/v/wAAAP8AAAAA7+/v/+/v7//v7+//7+/v/wAAAP80Xm//7+/v/+/v7//v7+//7+/v/+/v7/8AAAD/"),
+"format": "RGBA8",
+"height": 6,
+"mipmaps": false,
+"width": 6
+}
+script = ExtResource("3_2vrfk")
+base = ExtResource("4_2vrfk")
+ink = 14
+metadata/_custom_type_script = "uid://d0aye0rhdfx6f"
+
+[sub_resource type="ImageTexture" id="ImageTexture_nnihf"]
+image = SubResource("Image_qqeg6")
+script = ExtResource("1_jpuvr")
+top_left = SubResource("Image_03eae")
+top_middle = ExtResource("10_o8ulh")
+top_right = SubResource("Image_xxdnj")
+middle_left = ExtResource("5_v131u")
+middle_middle = ExtResource("6_vyknr")
+middle_right = ExtResource("7_o6itq")
+bottom_left = SubResource("Image_afsv1")
+bottom_middle = ExtResource("3_qqeg6")
+bottom_right = SubResource("Image_l6vpr")
+mininfy = false
+metadata/_custom_type_script = "uid://bee0q3tul6kcn"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0sgxw"]
+texture = SubResource("ImageTexture_nnihf")
+texture_margin_left = 6.0
+texture_margin_top = 6.0
+texture_margin_right = 7.0
+texture_margin_bottom = 7.0
+
+[node name="HabboContent" type="PanelContainer"]
+custom_minimum_size = Vector2(13, 13)
+offset_right = 13.0
+offset_bottom = 13.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_0sgxw")
