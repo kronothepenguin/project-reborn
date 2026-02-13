@@ -1,25 +1,26 @@
 class_name EntryBarControl
 extends ColorRect
 
-@onready var friend_list_button: TextureButton = %FriendListButton
+var _friend_list_icon: InkTexture2D = InkTexture2D.new(load("res://hh_interface/579_friend_list_icon.png"), InkTexture2D.Ink.MATTE_8, Color.WHITE)
+var _friend_list_icon_notification: InkTexture2D = InkTexture2D.new(load("res://hh_interface/579_friend_list_icon.png"), InkTexture2D.Ink.MATTE_8, Color.WHITE)
 
 func set_own_habbo_name_text(name: String):
-	%OwnHabboNameText.text = name
+	%OwnHabboNameLabel.text = name
 
 func set_own_habbo_mission_text(text: String):
-	%OwnHabboMissionText.text = text
+	%OwnHabboMissionLabel.text = text
 
 func set_update_habbo_id_text(text: String):
-	%UpdateHabboIdText.text = text
+	%UpdateHabboIdLabel.text = text
 
 func set_club_bottom_bar_text1(text: String):
-	%ClubBottomBarText1.text = text
+	%ClubBottomBarLabel1.text = text
 	
 func set_club_bottom_bar_text2(text: String):
-	%ClubBottomBarText2.text = text
+	%ClubBottomBarLabel2.text = text
 
 func set_friend_list_icon(active: bool):
 	if active:
-		%FriendListButton.texture_normal = ImageTexture.create_from_image(load("res://hh_entry_init/friend_list_icon_notification.tres"))
+		%FriendListButton.texture_normal = _friend_list_icon_notification
 	else:
-		%FriendListButton.texture_normal = ImageTexture.create_from_image(load("res://hh_entry_init/friend_list_icon.tres"))
+		%FriendListButton.texture_normal = _friend_list_icon

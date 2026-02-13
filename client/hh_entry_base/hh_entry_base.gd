@@ -46,9 +46,8 @@ func show_hotel():
 	if entry_view == null:
 		var scene := VisualizerManager.load("entry.visual")
 		entry_view = scene.instantiate()
-		get_tree().root.add_child(entry_view)
+		get_tree().current_scene.add_child(entry_view)
 	
-	await get_tree().create_timer(0.5).timeout
 	var player := entry_view.get_node("AnimationPlayer") as AnimationPlayer
 	player.play("open_view")
 

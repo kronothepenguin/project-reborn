@@ -9,24 +9,40 @@ enum Ink {
 	DARKEST_39, LIGHTEN_40, DARKEN_41
 }
 
+var _image: Image
 @export var image: Image:
 	set(value):
 		value.convert(Image.FORMAT_RGBA8)
-		image = value
-		_ink()
+		_image = value
+		_apply()
+	get():
+		return _image
 
+var _ink: Ink
 @export var ink: Ink:
 	set(value):
-		ink = value
-		_ink()
+		_ink = value
+		_apply()
+	get():
+		return _ink
 
+var _color_key: Color = Color.WHITE
 @export var color_key: Color:
 	set(value):
-		color_key = value
-		_ink()
+		_color_key = value
+		_apply()
+	get():
+		return _color_key
 
-func _ink():
+func _init(image: Image = null, ink: Ink = Ink.COPY_0, color_key: Color = Color.WHITE):
+	self._image = image
+	self._ink = ink
+	self._color_key = color_key
+	self._apply()
+
+func _apply():
 	if not image:
+		set_image(Image.create_empty(1, 1, false, Image.FORMAT_RGBA8))
 		return
 	
 	match ink:
@@ -92,4 +108,7 @@ func _ink41_darken() -> void:
 		for y in range(height):
 			var current := Vector2i(x, y)
 			if image.get_pixelv(current).is_equal_approx(color_key):
-				image.set_pixelv(current, Color(0, 0, 0, 0))
+				pass
+				#image.set_pixelv(current, Color(0, 0, 0, 0))
+			else:
+				image.set_pixelv(current, image.get_pixelv(current).darkened(1))

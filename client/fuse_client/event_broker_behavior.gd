@@ -19,3 +19,13 @@ signal buddy_update_request
 
 signal enter_room
 signal leave_room
+
+signal alert(props: Dictionary)
+
+## DEAD CODE
+
+#signal open_connection
+#signal close_connection
+
+#signal perform_login
+#signal login_is_ok
