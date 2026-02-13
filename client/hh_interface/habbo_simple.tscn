@@ -1,8 +1,103 @@
-[gd_scene format=3 uid="uid://8nalyxdt5mri"]
+[gd_scene load_steps=19 format=4 uid="uid://dpgyeb26l48r3"]
 
-[node name="HabboSimple" type="Panel"]
+[ext_resource type="Image" uid="uid://cbjeri0wf66dd" path="res://hh_interface/10_window.bottom.left.png" id="1_s4y4n"]
+[ext_resource type="Script" uid="uid://d0aye0rhdfx6f" path="res://director/ink_image.gd" id="2_06egy"]
+[ext_resource type="Image" uid="uid://cuobyvyvmni2p" path="res://hh_interface/11_window.bottom.middle.png" id="3_lnew7"]
+[ext_resource type="Image" uid="uid://b2dya8l6cvifs" path="res://hh_interface/12_window.bottom.right.png" id="4_gqi7n"]
+[ext_resource type="Image" uid="uid://nht2hscijmg" path="res://hh_interface/7_window.middle.left.png" id="5_3417x"]
+[ext_resource type="Image" uid="uid://b2bniaapt60i8" path="res://hh_interface/8_window.middle.middle.png" id="6_0oam3"]
+[ext_resource type="Image" uid="uid://wn1vdmakqoa1" path="res://hh_interface/9_window.middle.right.png" id="7_1ihnk"]
+[ext_resource type="Script" uid="uid://bee0q3tul6kcn" path="res://director/nine_patch_atlas_composer.gd" id="8_436fk"]
+[ext_resource type="Image" uid="uid://dfqeqdlxbo3th" path="res://hh_interface/4_window.top.left.png" id="9_be0tq"]
+[ext_resource type="Image" uid="uid://cwdhjul1pwi6" path="res://hh_interface/5_window.top.middle.png" id="10_0xkdb"]
+[ext_resource type="Image" uid="uid://dwm2yggqeojg4" path="res://hh_interface/6_window.top.right.png" id="11_q204n"]
+
+[sub_resource type="Image" id="Image_tj5wo"]
+data = {
+"data": PackedByteArray("AAAA/2eUp/95rsT/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/8AAAD/Z5Sn/3muxP9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/wAAAP9nlKf/ea7E/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/AAAAAAAAAP9nlKf/ea7E/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/8AAAAAAAAA/zReb/95rsT/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/wAAAAAAAAAAAAAA/zReb/95rsT/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/AAAAAAAAAAAAAAAAAAAA/zReb/95rsT/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/8AAAAAAAAAAAAAAAAAAAAAAAAA/zReb/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/zReb/80Xm//Z5Sn/2eUp/9nlKf/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAAP80Xm//NF5v/zReb/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAD/AAAA/w=="),
+"format": "RGBA8",
+"height": 11,
+"mipmaps": false,
+"width": 11
+}
+script = ExtResource("2_06egy")
+base = ExtResource("1_s4y4n")
+ink = 14
+metadata/_custom_type_script = "uid://d0aye0rhdfx6f"
+
+[sub_resource type="Image" id="Image_w881a"]
+data = {
+"data": PackedByteArray("Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/NF5v/wAAAP9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/80Xm//AAAA/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/zReb/8AAAD/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/80Xm//AAAA/wAAAABnlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/zReb/8AAAD/AAAAAGeUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/80Xm//AAAA/wAAAAAAAAAAZ5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/NF5v/wAAAP8AAAAAAAAAAAAAAABnlKf/Z5Sn/2eUp/9nlKf/Z5Sn/zReb/8AAAD/AAAAAAAAAAAAAAAAAAAAAGeUp/9nlKf/Z5Sn/zReb/80Xm//AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAANF5v/zReb/80Xm//AAAA/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAA/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="),
+"format": "RGBA8",
+"height": 11,
+"mipmaps": false,
+"width": 11
+}
+script = ExtResource("2_06egy")
+base = ExtResource("4_gqi7n")
+ink = 14
+metadata/_custom_type_script = "uid://d0aye0rhdfx6f"
+
+[sub_resource type="Image" id="Image_s4y4n"]
+data = {
+"data": PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAA/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/8AAAD/AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/2eUp/9nlKf/ea7E/3muxP95rsT/ea7E/3muxP95rsT/ea7E/2eUp/9nlKf/AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP9nlKf/ea7E/3muxP9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/ea7E/3muxP9nlKf/AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/Z5Sn/3muxP9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/3muxP9nlKf/AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/2eUp/95rsT/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/3muxP9nlKf/AAAA/wAAAAAAAAAAAAAAAAAAAP9nlKf/ea7E/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/3muxP80Xm//AAAA/wAAAAAAAAAAAAAA/2eUp/95rsT/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/8AAAD/AAAAAAAAAP9nlKf/ea7E/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/zReb/8AAAD/AAAA/2eUp/95rsT/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/NF5v/wAAAP8AAAD/Z5Sn/3muxP9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/AAAA/wAAAP9nlKf/ea7E/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/zReb/8AAAD/AAAA/2eUp/95rsT/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/NF5v/wAAAP8AAAD/Z5Sn/3muxP9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/80Xm//AAAA/wAAAP9nlKf/ea7E/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/zReb/8AAAD/AAAAAAAAAP9nlKf/ea7E/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/80Xm//AAAA/wAAAAAAAAAAAAAA/zReb/95rsT/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/zReb/8AAAD/AAAAAAAAAAAAAAAAAAAA/zReb/95rsT/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/80Xm//AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/zReb/95rsT/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/NF5v/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/zReb/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/zReb/8AAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/zReb/80Xm//Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/zReb/80Xm//AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAAP80Xm//NF5v/zReb/80Xm//NF5v/zReb/80Xm//AAAA/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="),
+"format": "RGBA8",
+"height": 23,
+"mipmaps": false,
+"width": 23
+}
+
+[sub_resource type="Image" id="Image_pj6pa"]
+data = {
+"data": PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAA/wAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAA/2eUp/9nlKf/Z5Sn/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/2eUp/9nlKf/ea7E/3muxP95rsT/AAAAAAAAAAAAAAAAAAAAAAAAAP9nlKf/ea7E/3muxP9nlKf/Z5Sn/2eUp/8AAAAAAAAAAAAAAAAAAAD/Z5Sn/3muxP9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/wAAAAAAAAAAAAAA/2eUp/95rsT/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/AAAAAAAAAP9nlKf/ea7E/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/8AAAAAAAAA/2eUp/95rsT/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/wAAAP9nlKf/ea7E/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/AAAA/2eUp/95rsT/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/8AAAD/Z5Sn/3muxP9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/w=="),
+"format": "RGBA8",
+"height": 11,
+"mipmaps": false,
+"width": 11
+}
+script = ExtResource("2_06egy")
+base = ExtResource("9_be0tq")
+ink = 14
+metadata/_custom_type_script = "uid://d0aye0rhdfx6f"
+
+[sub_resource type="Image" id="Image_21hof"]
+data = {
+"data": PackedByteArray("AAAA/wAAAP8AAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABnlKf/Z5Sn/2eUp/8AAAD/AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHmuxP95rsT/ea7E/2eUp/9nlKf/AAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAZ5Sn/2eUp/9nlKf/ea7E/3muxP9nlKf/AAAA/wAAAAAAAAAAAAAAAAAAAABnlKf/Z5Sn/2eUp/9nlKf/Z5Sn/3muxP9nlKf/AAAA/wAAAAAAAAAAAAAAAGeUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/3muxP9nlKf/AAAA/wAAAAAAAAAAZ5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/3muxP80Xm//AAAA/wAAAABnlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/8AAAD/AAAAAGeUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/zReb/8AAAD/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/NF5v/wAAAP9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/Z5Sn/2eUp/9nlKf/AAAA/w=="),
+"format": "RGBA8",
+"height": 11,
+"mipmaps": false,
+"width": 11
+}
+script = ExtResource("2_06egy")
+base = ExtResource("11_q204n")
+ink = 14
+metadata/_custom_type_script = "uid://d0aye0rhdfx6f"
+
+[sub_resource type="ImageTexture" id="ImageTexture_1a3ev"]
+image = SubResource("Image_s4y4n")
+script = ExtResource("8_436fk")
+top_left = SubResource("Image_pj6pa")
+top_middle = ExtResource("10_0xkdb")
+top_right = SubResource("Image_21hof")
+middle_left = ExtResource("5_3417x")
+middle_middle = ExtResource("6_0oam3")
+middle_right = ExtResource("7_1ihnk")
+bottom_left = SubResource("Image_tj5wo")
+bottom_middle = ExtResource("3_lnew7")
+bottom_right = SubResource("Image_w881a")
+metadata/_custom_type_script = "uid://bee0q3tul6kcn"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_21hof"]
+texture = SubResource("ImageTexture_1a3ev")
+texture_margin_left = 11.0
+texture_margin_top = 11.0
+texture_margin_right = 11.0
+texture_margin_bottom = 11.0
+
+[node name="Panel" type="Panel"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_21hof")
