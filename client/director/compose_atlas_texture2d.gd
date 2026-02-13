@@ -18,44 +18,47 @@ var _columns: int = 3
 	get():
 		return _columns
 
-func _compose():
-	var width := 0
-	var height := 0
-	
+func _compose():	
 	var matrix := []
 	
 	var row: int = 0
 	var col: int = 0
 	for part in parts:
+		if matrix.get(row) == null:
+			matrix.append([])
+			matrix[row] = []
+		
+		matrix[row].append(part)
 		col += 1
+		
 		if col >= _columns:
-			row += 1
 			col = 0
+			row += 1
 	
-	for part in parts:
-		var image := part.image
-		# TODO: flip
-		image.convert(Image.FORMAT_RGBA8)
-		
-		if row == 0:
-			width += image.get_width()
-			height = max(height, image.get_height())
-		else:
-			width = max(width, )
-		
-		col += 1
-		if col >= _columns:
-			row += 1
-			col = 0
+	var width := 0
+	var height := 0
+	for parts in matrix:
+		var row_width := 0
+		var row_height := 0
+		for part in parts:
+			row_width += part.image.get_width()
+			row_height = max(row_height, part.image.get_height())
+		width = max(width, row_width)
+		height += row_height
 	
 	var image := Image.create_empty(width, height, false, Image.FORMAT_RGBA8)
-	var offset_x := 0
-	for part in parts:
-		image.blit_rect(
-			part.image, 
-			Rect2i(0, 0, part.image.get_width(), part.image.get_height()),
-			Vector2i(offset_x, 0),
-		)
-		offset_x += part.image.get_width()
+	var offset_y := 0
+	for parts in matrix:
+		var offset_x := 0
+		var row_height := 0
+		for part in parts:
+			row_height = max(row_height, part.image.get_height())
+			image.blit_rect(
+				part.image, 
+				Rect2i(0, 0, part.image.get_width(), part.image.get_height()),
+				Vector2i(offset_x, offset_y),
+			)
+			offset_x += part.image.get_width()
+		offset_y += row_height
 		
 	set_image(image)
