@@ -4,7 +4,7 @@ extends Node
 var transport_layer: TransportLayer
 
 func _process(delta: float) -> void:
-	if transport_layer == null:
+	if not transport_layer:
 		return
 	
 	transport_layer.poll()
@@ -21,16 +21,55 @@ func connect_to(uri: String) -> Error:
 		transport_layer = WebSocketTransport.new()
 	return transport_layer.connect_to(uri)
 
+func send(cmd: String, msg: Variant):
+	if not transport_layer:
+		return
+	
+	var packet := Packet.new(0, [])
+	match typeof(msg):
+		TYPE_STRING:
+			packet.message.put_content(msg)
+		TYPE_ARRAY:
+			for arg in msg:
+				if not arg:
+					continue
+				
+				match typeof(arg):
+					TYPE_BOOL:
+						packet.message.put_bool(arg)
+					TYPE_OBJECT:
+						if arg.get_class() == "Short":
+							packet.message.put_short(arg.value())
+					TYPE_INT:
+						packet.message.put_int(arg)
+					TYPE_STRING:
+						packet.message.put_string(arg)
+	
+	transport_layer.write_packet(packet)
+
+class Short:
+	var _val: int
+	
+	func _init(val: int) -> void:
+		_val = val
+	
+	func value() -> int:
+		return _val
+
 class Message:
 	var _buf: PackedByteArray
 	
 	func _init(buf: PackedByteArray) -> void:
 		_buf = buf
 	
-	func content() -> String:
+	func get_content() -> String:
 		var r := _buf.get_string_from_utf8()
 		_buf.clear()
 		return r
+	
+	func put_content(c: String) -> void:
+		var msg := c.to_utf8_buffer()
+		_buf.append_array(msg)
 	
 	func get_bool() -> bool:
 		var b := _buf.get(0) & 63
@@ -87,14 +126,14 @@ class Message:
 	
 	func get_string() -> String:
 		var length := _buf.find(2)
-		var str := ""
+		var s := ""
 		if length > -1:
-			str = _buf.slice(0, length).get_string_from_utf8()
+			s = _buf.slice(0, length).get_string_from_utf8()
 			_buf = _buf.slice(length + 1)
-		return str
+		return s
 	
-	func put_string(str: String) -> void:
-		var msg := str.to_utf8_buffer()
+	func put_string(s: String) -> void:
+		var msg := s.to_utf8_buffer()
 		var b1 := (msg.size() / 64) | 64
 		var b2 := (msg.size() & 63) | 64
 		_buf.append(b1)
@@ -127,8 +166,6 @@ class TransportLayer:
 	func read_packet() -> Packet:
 		assert(true, "read_packet not implemented yet")
 		return null
-	func write_packet(packet: Packet):
-		assert(true, "write_packet not implemented yet")
 	func _read_packet() -> Packet:
 		if _buf.size() < 2:
 			return null
@@ -143,6 +180,21 @@ class TransportLayer:
 		_buf = _buf.slice(length + 1)
 		
 		return Packet.new(cmd, msg)
+	func write_packet(packet: Packet):
+		assert(true, "write_packet not implemented yet")
+	func _write_packet(packet: Packet) -> PackedByteArray:
+		var buf: PackedByteArray = []
+		
+		var length := 2 + packet.message._buf.size()
+		buf.append(((length / 4096) & 63) | 64)
+		buf.append(((length / 64) & 63) | 64)
+		buf.append((length & 63) | 64)
+		
+		buf.append(((packet.command / 64) & 63) | 64)
+		buf.append((packet.command & 63) | 64)
+		buf.append_array(packet.message._buf)
+		
+		return buf
 
 class TCPTransport extends TransportLayer:
 	var _peer: StreamPeerTCP
@@ -182,6 +234,10 @@ class TCPTransport extends TransportLayer:
 			_buf.append_array(data[1])
 		
 		return _read_packet()
+	
+	func write_packet(packet: Packet):
+		var data := _write_packet(packet)
+		_peer.put_data(data)
 
 class WebSocketTransport extends TransportLayer:
 	var _peer: WebSocketPeer
@@ -220,6 +276,10 @@ class WebSocketTransport extends TransportLayer:
 			available_packets -= 1
 		
 		return _read_packet()
+	
+	func write_packet(packet: Packet):
+		var data := _write_packet(packet)
+		_peer.put_packet(data)
 
 class URI:
 	var protocol: String
