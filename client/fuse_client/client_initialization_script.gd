@@ -1,6 +1,11 @@
 extends Node
 
 func _ready() -> void:
+	var conn := Connection.new()
+	add_child(conn)
+	
+	get_tree().root.set_meta("info", conn)
+	
 	var ok := init_core()
 	if not ok:
 		stop_client()

@@ -3,6 +3,9 @@ extends Node
 
 var transport_layer: TransportLayer
 
+var _messages: Dictionary[int, Array] = {}
+var _commands: Dictionary[String, int] = {}
+
 func _process(delta: float) -> void:
 	if not transport_layer:
 		return
@@ -12,7 +15,14 @@ func _process(delta: float) -> void:
 		transport_layer.dispose()
 		transport_layer = null
 	
-	transport_layer.read_packet()
+	var packet := transport_layer.read_packet()
+	if not _messages.has(packet.command):
+		# TODO: log
+		return
+	
+	var listeners: Array[Callable] = _messages.get(packet.command)
+	for cb in listeners:
+		cb.call(self, packet)
 
 func connect_to(uri: String) -> Error:
 	if uri.begins_with("tcp://"):
@@ -21,11 +31,16 @@ func connect_to(uri: String) -> Error:
 		transport_layer = WebSocketTransport.new()
 	return transport_layer.connect_to(uri)
 
-func send(cmd: String, msg: Variant):
+func send(cmd: String, msg: Variant = []):
 	if not transport_layer:
 		return
 	
-	var packet := Packet.new(0, [])
+	if not _commands.has(cmd):
+		return
+	
+	var opcode: int = _commands.get(cmd)
+	
+	var packet := Packet.new(opcode, [])
 	match typeof(msg):
 		TYPE_STRING:
 			packet.message.put_content(msg)
@@ -46,6 +61,15 @@ func send(cmd: String, msg: Variant):
 						packet.message.put_string(arg)
 	
 	transport_layer.write_packet(packet)
+
+func register_message(cmd: int, cb: Callable):
+	if _messages.has(cmd):
+		_messages.get(cmd).append(cb)
+	else:
+		_messages.set(cmd, [cb])
+
+func register_command(cmd: String, opcode: int):
+	_commands.set(cmd, opcode)
 
 class Short:
 	var _val: int
