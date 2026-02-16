@@ -18,10 +18,16 @@ config/icon="res://icon.svg"
 [autoload]
 
 Director="*res://director/director.gd"
-EventBroker="*res://fuse_client/event_broker_behavior.gd"
+VariableContainer="*res://fuse_client/variable_container_class.gd"
+ErrorManager="*res://fuse_client/error_manager_class.gd"
+ClientInitialization="*res://fuse_client/client_initialization_script.gd"
+NodeManager="*res://fuse_client/thread_manager_class.gd"
+BrokerManager="*res://fuse_client/broker_manager_class.gd"
+SpecialServices="*res://fuse_client/special_services_class.gd"
 
 [display]
 
 window/size/viewport_width=720
 window/size/viewport_height=540
 window/stretch/mode="viewport"
+window/vsync/vsync_mode=0

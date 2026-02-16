@@ -1,28 +1,23 @@
 extends Node
 
-func _ready() -> void:
-	var conn := Connection.new()
-	add_child(conn)
-	
-	get_tree().root.set_meta("info", conn)
-	
-	var ok := init_core()
-	if not ok:
-		stop_client()
-
 func init_core() -> bool:
 	VariableContainer.dump("res://System Props.txt")
 	
 	# Unload PCK maybe?
 	# resetCastLibs(0, 0)
 	
-	# Looks like director specific stuff to reserve memory
-	# getResourceManager().preIndexMembers()
+	# Can be use to check already downloaded files and clean local cache
+	#if not getResourceManager().preIndexMembers() then
+		#return stopClient()
+	#end if
 	
 	# dumpTextField("System Texts")
 	
-	var core_thread := CoreThread.new()
-	get_tree().current_scene.add_child(core_thread)
+	#if not getThreadManager().create(#core, #core) then
+		#return stopClient()
+	#end if
+	NodeManager.create(&"core")
+	
 	return true
 
 func stop_client() -> void:

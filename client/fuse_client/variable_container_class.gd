@@ -1,20 +1,26 @@
-class_name VariableContainer
+extends Node
 
-static var _item_list := {}
+var _item_list := {}
 
-static func set_var(variable: String, value):
+func set_var(variable: String, value):
 	_item_list[variable] = value
 
-static func get_var(variable: String, default = null):
+func get_var(variable: String, default = null):
 	if _item_list.has(variable):
 		return _item_list[variable]
+	var err := "Variable not found: \"%s\"" % variable
+	err += " Using given default: %s" % str(default) if default != null else ""
+	ErrorManager.error(self, err, &"get_var", ErrorManager.Level.MINOR)
 	return default
 
-static func exists(variable: String) -> bool:
+func exists(variable: String) -> bool:
 	return _item_list.has(variable)
 
-static func dump(path: String, delimiter := "\n", override := true) -> void:
+func dump(path: String, delimiter := "\n", override := true) -> void:
 	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return
+	
 	while not file.eof_reached():
 		var line := file.get_line().strip_edges()
 		
@@ -33,7 +39,7 @@ static func dump(path: String, delimiter := "\n", override := true) -> void:
 			_item_list[key] = value
 	file.close()
 
-static func _parse_value(v: String):
+func _parse_value(v: String):
 	if v.begins_with("#"):
 		return StringName(v.substr(1))
 	if v.is_valid_int():

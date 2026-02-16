@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://dns8yk1vo0ghb"]
+
+[node name="ExternalLink" type="Node2D"]

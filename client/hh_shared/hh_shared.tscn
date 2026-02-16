@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cj4iyfhvh8sx2"]
+
+[ext_resource type="Script" uid="uid://8htnuok4bqwk" path="res://hh_shared/hh_shared.gd" id="1_ip61g"]
+
+[node name="Root" type="Node"]
+script = ExtResource("1_ip61g")

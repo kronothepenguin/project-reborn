@@ -1,5 +1,5 @@
 class_name CoreThread
-extends Node
+extends NodeInstance
 
 enum State {
 	LOAD_VARIABLES,
@@ -8,25 +8,22 @@ enum State {
 	LOAD_CASTS,
 	VALIDATE_RESOURCES,
 	INIT_THREADS,
+	DONE,
 }
 
+var state: State = State.LOAD_VARIABLES
 var logo: Sprite2D
 var fading_logo: bool
 var logo_start_time: int
 
 var external_variables: Resource
 
-func _ready() -> void:
-	construct()
-
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_PREDELETE:
-		deconstruct()
-
 func _process(_delta: float) -> void:
+	if state != State.DONE:
+		update_state()
 	update()
 
-func construct():
+func construct() -> void:
 	var session := {}
 	session["client_startdate"] = Time.get_date_string_from_system(true)
 	session["client_starttime"] = Time.get_unix_time_from_system()
@@ -39,17 +36,17 @@ func construct():
 	#createObject(#classes, getClassVariable("variable.manager.class"))
 	#createObject(#cache, getClassVariable("variable.manager.class"))
 	
-	EventBroker.request_hotel_view.connect(init_transfer_to_hotel_view)
+	BrokerManager.create(&"Initialize")
+	
+	BrokerManager.register(&"requestHotelView", init_transfer_to_hotel_view)
 	
 	# TODO: better use godot natives
 	fading_logo = false
 	logo_start_time = 0
-	return self.update_state(State.LOAD_VARIABLES)
+	#return self.update_state(State.LOAD_VARIABLES)
 
-func deconstruct():
-	#TODO: timeout
-	
-	EventBroker.request_hotel_view.disconnect(init_transfer_to_hotel_view)
+func deconstruct() -> void:
+	BrokerManager.unregister(&"requestHotelView", init_transfer_to_hotel_view)
 	
 	return self.hide_logo()
 
@@ -84,7 +81,7 @@ func init_transfer_to_hotel_view():
 
 func init_update():
 	fading_logo = true
-	set_process(true)
+	#set_process(true)
 
 func update():
 	if fading_logo:
@@ -93,10 +90,10 @@ func update():
 			logo.modulate.a -= 0.1
 			blend = logo.modulate.a
 		if blend <= 0:
-			set_process(false)
+			#set_process(false)
 			fading_logo = false
 			self.hide_logo()
-			EventBroker.show_hotel_view.emit()
+			BrokerManager.execute(&"showHotelView")
 			if OS.has_feature("web"):
 				JavaScriptBridge.eval("clientReady()", true)
 
@@ -108,15 +105,19 @@ func asset_download_callbacks(asset_id: State, success: bool):
 				pass
 	match asset_id:
 		State.LOAD_VARIABLES:
-			self.update_state(State.LOAD_PARAMS)
+			#self.update_state(State.LOAD_PARAMS)
+			state = State.LOAD_PARAMS
 		State.LOAD_TEXTS:
-			self.update_state(State.LOAD_CASTS)
+			#self.update_state(State.LOAD_CASTS)
+			state = State.LOAD_CASTS
 		State.LOAD_CASTS:
-			self.update_state(State.VALIDATE_RESOURCES)
+			#self.update_state(State.VALIDATE_RESOURCES)
+			state = State.VALIDATE_RESOURCES
 		State.VALIDATE_RESOURCES:
-			self.update_state(State.VALIDATE_RESOURCES)
+			#self.update_state(State.VALIDATE_RESOURCES)
+			state = State.VALIDATE_RESOURCES
 
-func update_state(state: State):
+func update_state():
 	match state:
 		State.LOAD_VARIABLES:
 			self.show_logo()
@@ -133,11 +134,11 @@ func update_state(state: State):
 					match key:
 						"client.fatal.error.url", "client.allow.cross.domain", "client.notify.cross.domain", "external.variables.txt", "processlog.url", "account_id":
 							VariableContainer.set_var(key, value)
-			
+			SpecialServices.send_process_tracking(9)
 			#TODO: dynamic load external vars
 			#external_variables = load("res://external_variables.txt")
 			#TODO: return registerDownloadCallback(tMemNum, #assetDownloadCallbacks, me.getID(), tstate)
-			return self.asset_download_callbacks(state, true)
+			self.asset_download_callbacks(state, true)
 		State.LOAD_PARAMS:
 			VariableContainer.dump("res://external_variables.txt")
 			for i in range(1, 10):
@@ -152,11 +153,14 @@ func update_state(state: State):
 					var value := param.substr(index + 1)
 					VariableContainer.set_var(key, value)
 			
-			var session: Dictionary = get_tree().root.get_meta("session")
+			ErrorManager.set_debug_level(0)
+			
 			if VariableContainer.exists("client.reload.url"):
+				var session: Dictionary = get_tree().root.get_meta("session")
 				session["client_url"] = VariableContainer.get_var("client.reload.url")
 			
-			self.update_state(State.LOAD_TEXTS)
+			#self.update_state(State.LOAD_TEXTS)
+			state = State.LOAD_TEXTS
 		State.LOAD_TEXTS:
 			#tURL = getVariable("external.texts.txt")
 			#tMemName = tURL
@@ -164,10 +168,12 @@ func update_state(state: State):
 			#return me.updateState("load_casts")
 			#end if
 			#tMemNum = queueDownload(tURL, tMemName, #field)
+			SpecialServices.send_process_tracking(12)
 			#TODO: return registerDownloadCallback(tMemNum, #assetDownloadCallbacks, me.getID(), tstate)
 			self.asset_download_callbacks(state, true)
 		State.LOAD_CASTS:
 			#TODO: dump texts
+			SpecialServices.send_process_tracking(23)
 			var cast_list := []
 			var i := 1
 			while true:
@@ -186,7 +192,8 @@ func update_state(state: State):
 				return asset_download_callbacks(state, true)
 				#return registerCastloadCallback(tLoadID, #assetDownloadCallbacks, me.getID(), tstate)
 			else:
-				return self.update_state(State.INIT_THREADS)
+				#return self.update_state(State.INIT_THREADS)
+				state = State.INIT_THREADS
 		State.VALIDATE_RESOURCES:
 			#TODO: check for cast.entry.#
 			var cast_list := []
@@ -206,23 +213,6 @@ func update_state(state: State):
 				  #end if
 				#end repeat
 			#end if
-			
-			if new_list.size() > 0:
-				#TODO: return registerCastloadCallback(tLoadID, #assetDownloadCallbacks, me.getID(), tstate)
-				return self.update_state(State.INIT_THREADS)
-			else:
-				return self.update_state(State.INIT_THREADS)
-		State.INIT_THREADS:
-			var cast_list := []
-			var i := 1
-			while true:
-				if not VariableContainer.exists("cast.entry." + str(i)):
-					break
-				var filename: String = VariableContainer.get_var("cast.entry." + str(i))
-				cast_list.append(filename)
-				i = i + 1
-			
-			# equivalent of getThreadManager().initAll()
 			for cast in cast_list:
 				var path: String = "res://" + cast + "/" + cast + ".tscn"
 				if !FileAccess.file_exists(path):
@@ -231,4 +221,15 @@ func update_state(state: State):
 				var instance = node.instantiate()
 				get_tree().current_scene.add_child(instance)
 			
-			EventBroker.initialize.emit("initialize")
+			if new_list.size() > 0:
+				#TODO: return registerCastloadCallback(tLoadID, #assetDownloadCallbacks, me.getID(), tstate)
+				#return self.update_state(State.INIT_THREADS)
+				state = State.INIT_THREADS
+			else:
+				#return self.update_state(State.INIT_THREADS)
+				state = State.INIT_THREADS
+		State.INIT_THREADS:
+			SpecialServices.send_process_tracking(24)
+			hide_logo()
+			NodeManager.init_all()
+			BrokerManager.execute(&"Initialize", "initialize")
