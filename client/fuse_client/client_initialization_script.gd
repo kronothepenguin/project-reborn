@@ -2,6 +2,7 @@ extends Node
 
 func init_core() -> bool:
 	VariableContainer.dump("res://System Props.txt")
+	DownloadManager.setup()
 	
 	# Unload PCK maybe?
 	# resetCastLibs(0, 0)

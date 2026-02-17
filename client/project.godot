@@ -25,6 +25,7 @@ NodeManager="*res://fuse_client/thread_manager_class.gd"
 BrokerManager="*res://fuse_client/broker_manager_class.gd"
 SpecialServices="*res://fuse_client/special_services_class.gd"
 DownloadManager="*res://fuse_client/download_manager_class.gd"
+PCKLoadManager="*res://fuse_client/castload_manager.gd"
 
 [display]
 
@@ -32,3 +33,8 @@ window/size/viewport_width=720
 window/size/viewport_height=540
 window/stretch/mode="viewport"
 window/vsync/vsync_mode=0
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

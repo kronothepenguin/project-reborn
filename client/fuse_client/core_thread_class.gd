@@ -8,7 +8,9 @@ enum State {
 	LOAD_CASTS,
 	VALIDATE_RESOURCES,
 	INIT_THREADS,
+	WAIT,
 	DONE,
+	ERROR,
 }
 
 var state: State = State.LOAD_VARIABLES
@@ -101,16 +103,24 @@ func asset_download_callbacks(asset_id: State, success: bool):
 	if not success:
 		match asset_id:
 			State.LOAD_VARIABLES, State.LOAD_TEXTS, State.LOAD_CASTS:
-				#TODO: fatal
+				push_error("error ", asset_id)
 				pass
 	match asset_id:
 		State.LOAD_VARIABLES:
+			print("[callback] LOAD_VARIABLES -> LOAD_PARAMS")
+			
 			state = State.LOAD_PARAMS
 		State.LOAD_TEXTS:
+			print("[callback] LOAD_TEXTS -> LOAD_CASTS")
+			
 			state = State.LOAD_CASTS
 		State.LOAD_CASTS:
+			print("[callback] LOAD_CASTS -> VALIDATE_RESOURCES")
+			
 			state = State.VALIDATE_RESOURCES
 		State.VALIDATE_RESOURCES:
+			print("[callback] VALIDATE_RESOURCES -> VALIDATE_RESOURCES")
+			
 			state = State.VALIDATE_RESOURCES
 
 func update_state():
@@ -133,10 +143,14 @@ func update_state():
 			var url := SpecialServices.get_ext_var_path()
 			var mem_num := DownloadManager.queue(url, url, &"field", true)
 			SpecialServices.send_process_tracking(9)
-			if mem_num == 0:
+			if mem_num == ResourceUID.INVALID_ID:
 				push_error("error ", state)
+				print("LOAD_VARIABLES -> ERROR")
+				state = State.ERROR
 			else:
-				DownloadManager.register_callback(mem_num, asset_download_callbacks, state)
+				print("LOAD_VARIABLES -> WAIT")
+				state = State.WAIT
+				DownloadManager.register_callback(mem_num, asset_download_callbacks, State.LOAD_VARIABLES)
 		State.LOAD_PARAMS:
 			VariableContainer.dump(SpecialServices.get_ext_var_path())
 			Director.remove_member(SpecialServices.get_ext_var_path())
@@ -158,6 +172,7 @@ func update_state():
 				var session: Dictionary = get_tree().root.get_meta("session")
 				session["client_url"] = VariableContainer.get_var("client.reload.url")
 			
+			print("LOAD_PARAMS -> LOAD_TEXTS")
 			state = State.LOAD_TEXTS
 		State.LOAD_TEXTS:
 			#tURL = getVariable("external.texts.txt")
@@ -169,6 +184,7 @@ func update_state():
 			SpecialServices.send_process_tracking(12)
 			#TODO: return registerDownloadCallback(tMemNum, #assetDownloadCallbacks, me.getID(), tstate)
 			state = State.LOAD_CASTS
+			print("LOAD_TEXTS -> LOAD_CASTS")
 		State.LOAD_CASTS:
 			#TODO: dump texts
 			SpecialServices.send_process_tracking(23)
@@ -195,8 +211,11 @@ func update_state():
 				  #showLoadingBar(tLoadID, [#buffer: #window, #locY: 500, #width: 300])
 				#end if
 				#return registerCastloadCallback(tLoadID, #assetDownloadCallbacks, me.getID(), tstate)
-				return asset_download_callbacks(state, true)
+				print("LOAD_CASTS -> WAIT")
+				state = State.WAIT
+				asset_download_callbacks(State.LOAD_CASTS, true)
 			else:
+				print("LOAD_CASTS -> INIT_THREADS")
 				state = State.INIT_THREADS
 		State.VALIDATE_RESOURCES:
 			#TODO: check for cast.entry.#
@@ -226,3 +245,4 @@ func update_state():
 			hide_logo()
 			NodeManager.init_all()
 			BrokerManager.execute(&"Initialize", "initialize")
+			state = State.DONE

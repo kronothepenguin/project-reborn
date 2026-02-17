@@ -2,8 +2,7 @@ extends Node
 
 var _params := {}
 
-var _members_num_map := {}
-var _members := []
+var _members := {}
 
 func _init():
 	if OS.has_feature("web"):
@@ -34,27 +33,49 @@ func external_param_value(key: String, default = "") -> String:
 		return _params[key]
 	return default
 
+func _get_member_id(memname: String) -> int:
+	var id: Variant = _members.find_key(memname)
+	if id is int:
+		return id
+	var uid := ResourceUID.path_to_uid(memname)
+	return ResourceUID.text_to_id(uid)
+
+func _get_member_name(memnum: int) -> String:
+	if _members.has(memnum):
+		return _members[memnum]
+	return ""
+
 func member_exists(memname: String) -> bool:
-	#if name.begins_with("res://"):
-		#return FileAccess.file_exists(name)
-	return _members_num_map.has(memname)
+	return _members.find_key(memname) != null or ResourceUID.path_to_uid(memname) != memname
 
 func getmemnum(memname: String) -> int:
-	return _members_num_map.get(memname) if _members_num_map.has(memname) else 0
+	if not member_exists(memname):
+		return ResourceUID.INVALID_ID
+	return _get_member_id(memname)
 
 func create_member(memname: String, type: StringName) -> int:
-	var m := Member.new()
-	m.type = type
-	_members.append(m)
-	var memnum := _members.size()
-	return _members_num_map.set(memname, memnum)
+	if member_exists(memname):
+		return _get_member_id(memname)
+	var id := ResourceUID.create_id()
+	ResourceUID.add_id(id, memname)
+	_members[id] = memname
+	return id
 
-func remove_member(name: StringName) -> void:
-	pass
+func remove_member(memname: StringName) -> void:
+	if not member_exists(memname):
+		return
+	var id := _get_member_id(memname)
+	if ResourceUID.has_id(id):
+		ResourceUID.remove_id(id)
+	_members.erase(id)
 
-func member(num: int) -> Member:
-	return _members.get(num - 1) if _members.size() > num - 1 else null
-
-class Member:
-	var name: String
-	var type: StringName
+func member(memnum: int) -> Resource:
+	var r := Resource.new()
+	var memname: String
+	if _members.has(memnum):
+		memname = _members[memnum]
+	elif ResourceUID.has_id(memnum):
+		var uid := ResourceUID.id_to_text(memnum)
+		memname = ResourceUID.uid_to_path(uid)
+	r.resource_name = memname
+	return r

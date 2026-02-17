@@ -1,4 +1,4 @@
-extends Node
+extends RefCounted
 
 func _init() -> void:
 	pass

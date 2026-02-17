@@ -9,7 +9,7 @@ var _complete_tasks := []
 
 var _http_requests := []
 
-func _ready() -> void:
+func setup():
 	var count: int = VariableContainer.get_var("net.operation.count")
 	for i in range(count):
 		var request := HTTPRequest.new()
@@ -24,16 +24,16 @@ func queue(uri: String, mem_name: String = uri, type: StringName = &"", force: b
 		ErrorManager.error(self, "File already downloading: %s" % mem_name, &"queue", ErrorManager.Level.MINOR)
 		return -1
 	
-	var mem_num: int
+	var mem_num: int = ResourceUID.INVALID_ID
 	if Director.member_exists(mem_name):
 		if force:
 			mem_num = Director.getmemnum(mem_name)
 		else:
 			return Director.getmemnum(mem_name)
 	else:
-		Director.create_member(mem_name, type)
+		mem_num = Director.create_member(mem_name, type)
 	
-	if mem_num < 1:
+	if mem_num == ResourceUID.INVALID_ID:
 		ErrorManager.error(self, "Failed to create member!", &"queue", ErrorManager.Level.MAJOR)
 		return mem_num
 	
@@ -52,8 +52,9 @@ func queue(uri: String, mem_name: String = uri, type: StringName = &"", force: b
 	return mem_num
 
 func register_callback(mem_name_or_num: Variant, method: Callable, argument: Variant):
-	var task_data: Dictionary = search_task(mem_name_or_num)
+	var task_data = search_task(mem_name_or_num)
 	if not task_data:
+		method.call(argument, false)
 		return
 	
 	match task_data["status"]:
@@ -77,7 +78,7 @@ func search_task(mem_name_or_num: Variant):
 			task_data["status"] = &"complete"
 		return task_data
 	elif mem_name_or_num is int:
-		return search_task(Director.member(mem_name_or_num).name)
+		return search_task(Director.member(mem_name_or_num).resource_name)
 	ErrorManager.error(self, "Member's name or number expected: %s" % mem_name_or_num, &"search_task", ErrorManager.Level.MINOR)
 	return {}
 
