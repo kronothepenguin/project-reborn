@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bfwpmelnakntj"]
-
-[ext_resource type="Script" uid="uid://dh40ofqv3ni65" path="res://hh_interface/button.gd" id="1_fqr2p"]
-
-[node name="Button" type="Button"]
-script = ExtResource("1_fqr2p")

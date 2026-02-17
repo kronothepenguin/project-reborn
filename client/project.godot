@@ -24,6 +24,7 @@ ClientInitialization="*res://fuse_client/client_initialization_script.gd"
 NodeManager="*res://fuse_client/thread_manager_class.gd"
 BrokerManager="*res://fuse_client/broker_manager_class.gd"
 SpecialServices="*res://fuse_client/special_services_class.gd"
+DownloadManager="*res://fuse_client/download_manager_class.gd"
 
 [display]
 

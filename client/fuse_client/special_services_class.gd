@@ -2,6 +2,20 @@ extends Node
 
 var _process_list: Array = []
 
+func get_predefined_url(url: String) -> String:
+	if VariableContainer.exists("url.prefix"):
+		var prefix: String = VariableContainer.get_var("url.prefix")
+		if prefix.ends_with("/"):
+			return url.replace("http://%predefined%/", prefix).replace("https://%predefined%/", prefix)
+		else:
+			return url.replace("http://%predefined%", prefix).replace("https://%predefined%", prefix)
+	return url
+
+func get_ext_var_path() -> String:
+	if OS.has_feature("editor"):
+		return "res://external_variables.txt"
+	return VariableContainer.get_var("external.variables.txt")
+
 func send_process_tracking(step_value):
 	_process_list.append(step_value)
 	if VariableContainer.exists("processlog.url"):

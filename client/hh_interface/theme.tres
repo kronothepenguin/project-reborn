@@ -1,23 +1,5 @@
-[gd_resource type="Theme" load_steps=5 format=3 uid="uid://bhvrrt26tr57l"]
-
-[ext_resource type="FontFile" uid="uid://d1pp75ywv8xtt" path="res://hh_interface/CourierPrime-Regular.ttf" id="1_n12qn"]
-[ext_resource type="StyleBox" uid="uid://bqa3pelagvxhv" path="res://hh_interface/button_a_active.tres" id="2_ihw0r"]
-[ext_resource type="StyleBox" uid="uid://qogmoywn5n7i" path="res://hh_interface/button_a_pressed.tres" id="3_cl8gw"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cl8gw"]
-bg_color = Color(0, 0, 0, 0)
+[gd_resource type="Theme" format=3 uid="uid://bhvrrt26tr57l"]
 
 [resource]
-Button/colors/font_color = Color(0, 0, 0, 1)
-Button/colors/font_focus_color = Color(0, 0, 0, 1)
-Button/colors/font_hover_color = Color(0, 0, 0, 1)
-Button/colors/font_hover_pressed_color = Color(0, 0, 0, 1)
-Button/colors/font_pressed_color = Color(0, 0, 0, 1)
-Button/font_sizes/font_size = 9
-Button/fonts/font = ExtResource("1_n12qn")
-Button/styles/focus = SubResource("StyleBoxFlat_cl8gw")
-Button/styles/hover = ExtResource("2_ihw0r")
-Button/styles/hover_pressed = ExtResource("3_cl8gw")
-Button/styles/normal = ExtResource("2_ihw0r")
-Button/styles/pressed = ExtResource("3_cl8gw")
-Panel/styles/panel = null
+Button1/base_type = &"Button"
+Button1/colors/font_color = Color(0.5868075, 0.13747555, 0.22755149, 1)

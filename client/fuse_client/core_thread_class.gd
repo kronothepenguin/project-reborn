@@ -105,16 +105,12 @@ func asset_download_callbacks(asset_id: State, success: bool):
 				pass
 	match asset_id:
 		State.LOAD_VARIABLES:
-			#self.update_state(State.LOAD_PARAMS)
 			state = State.LOAD_PARAMS
 		State.LOAD_TEXTS:
-			#self.update_state(State.LOAD_CASTS)
 			state = State.LOAD_CASTS
 		State.LOAD_CASTS:
-			#self.update_state(State.VALIDATE_RESOURCES)
 			state = State.VALIDATE_RESOURCES
 		State.VALIDATE_RESOURCES:
-			#self.update_state(State.VALIDATE_RESOURCES)
 			state = State.VALIDATE_RESOURCES
 
 func update_state():
@@ -134,13 +130,16 @@ func update_state():
 					match key:
 						"client.fatal.error.url", "client.allow.cross.domain", "client.notify.cross.domain", "external.variables.txt", "processlog.url", "account_id":
 							VariableContainer.set_var(key, value)
+			var url := SpecialServices.get_ext_var_path()
+			var mem_num := DownloadManager.queue(url, url, &"field", true)
 			SpecialServices.send_process_tracking(9)
-			#TODO: dynamic load external vars
-			#external_variables = load("res://external_variables.txt")
-			#TODO: return registerDownloadCallback(tMemNum, #assetDownloadCallbacks, me.getID(), tstate)
-			self.asset_download_callbacks(state, true)
+			if mem_num == 0:
+				push_error("error ", state)
+			else:
+				DownloadManager.register_callback(mem_num, asset_download_callbacks, state)
 		State.LOAD_PARAMS:
-			VariableContainer.dump("res://external_variables.txt")
+			VariableContainer.dump(SpecialServices.get_ext_var_path())
+			Director.remove_member(SpecialServices.get_ext_var_path())
 			for i in range(1, 10):
 				var param_bundle := Director.external_param_value("sw" + str(i))
 				if param_bundle.length() == 0:
@@ -159,7 +158,6 @@ func update_state():
 				var session: Dictionary = get_tree().root.get_meta("session")
 				session["client_url"] = VariableContainer.get_var("client.reload.url")
 			
-			#self.update_state(State.LOAD_TEXTS)
 			state = State.LOAD_TEXTS
 		State.LOAD_TEXTS:
 			#tURL = getVariable("external.texts.txt")
@@ -170,7 +168,7 @@ func update_state():
 			#tMemNum = queueDownload(tURL, tMemName, #field)
 			SpecialServices.send_process_tracking(12)
 			#TODO: return registerDownloadCallback(tMemNum, #assetDownloadCallbacks, me.getID(), tstate)
-			self.asset_download_callbacks(state, true)
+			state = State.LOAD_CASTS
 		State.LOAD_CASTS:
 			#TODO: dump texts
 			SpecialServices.send_process_tracking(23)
@@ -182,21 +180,28 @@ func update_state():
 				var filename: String = VariableContainer.get_var("cast.entry." + str(i))
 				cast_list.append(filename)
 				i = i + 1
+			
 			print(cast_list)
+			for cast in cast_list:
+				var path: String = "res://" + cast + "/" + cast + ".gd"
+				if !FileAccess.file_exists(path):
+					continue
+				var script: GDScript = load(path)
+				script.new()
+			
 			if cast_list.size() > 0:
 				#tLoadID = startCastLoad(tCastList, 1, VOID, VOID, 1)
 				#if getVariable("loading.bar.active") then
 				  #showLoadingBar(tLoadID, [#buffer: #window, #locY: 500, #width: 300])
 				#end if
-				
-				return asset_download_callbacks(state, true)
 				#return registerCastloadCallback(tLoadID, #assetDownloadCallbacks, me.getID(), tstate)
+				return asset_download_callbacks(state, true)
 			else:
-				#return self.update_state(State.INIT_THREADS)
 				state = State.INIT_THREADS
 		State.VALIDATE_RESOURCES:
 			#TODO: check for cast.entry.#
 			var cast_list := []
+			var new_list := []
 			var i := 1
 			while true:
 				if not VariableContainer.exists("cast.entry." + str(i)):
@@ -204,29 +209,17 @@ func update_state():
 				var filename: String = VariableContainer.get_var("cast.entry." + str(i))
 				cast_list.append(filename)
 				i = i + 1
-			
-			var new_list := cast_list
-			#if count(tCastList) > 0 then
-				#repeat with tCast in tCastList
-				  #if not castExists(tCast) then
-					#tNewList.add(tCast)
-				  #end if
-				#end repeat
-			#end if
 			for cast in cast_list:
-				var path: String = "res://" + cast + "/" + cast + ".tscn"
-				if !FileAccess.file_exists(path):
-					continue
-				var node := load(path)
-				var instance = node.instantiate()
-				get_tree().current_scene.add_child(instance)
-			
-			if new_list.size() > 0:
-				#TODO: return registerCastloadCallback(tLoadID, #assetDownloadCallbacks, me.getID(), tstate)
-				#return self.update_state(State.INIT_THREADS)
+				if not DirAccess.dir_exists_absolute("res://" + cast):
+					new_list.append(cast)
+			if len(new_list) > 0:
+				#tLoadID = startCastLoad(tNewList, 1, VOID, VOID, 1)
+				#if getVariable("loading.bar.active") then
+				  #showLoadingBar(tLoadID, [#buffer: #window, #locY: 500, #width: 300])
+				#end if
+				#return registerCastloadCallback(tLoadID, #assetDownloadCallbacks, me.getID(), tstate)
 				state = State.INIT_THREADS
 			else:
-				#return self.update_state(State.INIT_THREADS)
 				state = State.INIT_THREADS
 		State.INIT_THREADS:
 			SpecialServices.send_process_tracking(24)

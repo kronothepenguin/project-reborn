@@ -1,5 +1,5 @@
 @abstract class_name NodeInstance
-extends Node2D
+extends Node
 
 func _ready() -> void:
 	self.construct()

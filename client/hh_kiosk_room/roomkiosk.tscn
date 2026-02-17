@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b8wcewggi373r"]
+
+[ext_resource type="Script" uid="uid://bxusxx6ugybp5" path="res://hh_kiosk_room/roomkiosk.gd" id="1_281li"]
+
+[node name="Root" type="Node"]
+script = ExtResource("1_281li")
