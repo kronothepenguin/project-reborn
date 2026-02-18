@@ -2,6 +2,13 @@ extends Node
 
 var _process_list: Array = []
 
+func get_movie_path():
+	if OS.has_feature("editor"):
+		return ""
+	if OS.has_feature("web"):
+		return str(JavaScriptBridge.eval("window.location.origin"))
+	return ""
+
 func get_predefined_url(url: String) -> String:
 	if VariableContainer.exists("url.prefix"):
 		var prefix: String = VariableContainer.get_var("url.prefix")

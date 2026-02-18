@@ -149,8 +149,8 @@ func update_state():
 				state = State.ERROR
 			else:
 				print("LOAD_VARIABLES -> WAIT")
-				state = State.WAIT
 				DownloadManager.register_callback(mem_num, asset_download_callbacks, State.LOAD_VARIABLES)
+				state = State.WAIT
 		State.LOAD_PARAMS:
 			VariableContainer.dump(SpecialServices.get_ext_var_path())
 			Director.remove_member(SpecialServices.get_ext_var_path())
@@ -183,8 +183,8 @@ func update_state():
 			#tMemNum = queueDownload(tURL, tMemName, #field)
 			SpecialServices.send_process_tracking(12)
 			#TODO: return registerDownloadCallback(tMemNum, #assetDownloadCallbacks, me.getID(), tstate)
-			state = State.LOAD_CASTS
 			print("LOAD_TEXTS -> LOAD_CASTS")
+			state = State.LOAD_CASTS
 		State.LOAD_CASTS:
 			#TODO: dump texts
 			SpecialServices.send_process_tracking(23)
@@ -197,23 +197,24 @@ func update_state():
 				cast_list.append(filename)
 				i = i + 1
 			
-			print(cast_list)
-			for cast in cast_list:
-				var path: String = "res://" + cast + "/" + cast + ".gd"
-				if !FileAccess.file_exists(path):
-					continue
-				var script: GDScript = load(path)
-				script.new()
+			#for cast in cast_list:
+				#var path: String = "res://" + cast + "/" + cast + ".gd"
+				#if !FileAccess.file_exists(path):
+					#continue
+				#var script: GDScript = load(path)
+				#script.new()
 			
 			if cast_list.size() > 0:
+				var id := PCKLoadManager.start_pck_load(cast_list, 1, null, null, 1)
 				#tLoadID = startCastLoad(tCastList, 1, VOID, VOID, 1)
 				#if getVariable("loading.bar.active") then
 				  #showLoadingBar(tLoadID, [#buffer: #window, #locY: 500, #width: 300])
 				#end if
 				#return registerCastloadCallback(tLoadID, #assetDownloadCallbacks, me.getID(), tstate)
+				PCKLoadManager.register_callback(id, asset_download_callbacks, State.LOAD_CASTS)
 				print("LOAD_CASTS -> WAIT")
 				state = State.WAIT
-				asset_download_callbacks(State.LOAD_CASTS, true)
+				#asset_download_callbacks(State.LOAD_CASTS, true)
 			else:
 				print("LOAD_CASTS -> INIT_THREADS")
 				state = State.INIT_THREADS

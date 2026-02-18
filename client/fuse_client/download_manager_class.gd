@@ -59,7 +59,7 @@ func register_callback(mem_name_or_num: Variant, method: Callable, argument: Var
 	
 	match task_data["status"]:
 		&"complete":
-			method.call(argument, true)
+			method.call_deferred(argument, true)
 		&"queue":
 			_task_queue[task_data["name"]]["callback"] = { &"method": method, &"argument": argument }
 		&"Active":
@@ -86,10 +86,6 @@ func update_queue():
 	if _task_queue.size() == 0:
 		return
 	
-	var requet: HTTPRequest = _http_requests.pop_back()
-	if requet == null:
-		return
-	
 	var mem_name: String = _task_queue.keys()[0]
 	var task_data: Dictionary = _task_queue[mem_name]
 	_task_queue.erase(mem_name)
@@ -97,6 +93,10 @@ func update_queue():
 	var uri: String = task_data["uri"]
 	if uri.begins_with("res://"):
 		_complete_tasks.append(mem_name)
+		return
+	
+	var requet: HTTPRequest = _http_requests.pop_back()
+	if requet == null:
 		return
 	
 	if task_data["downloadMethod"] == DOWNLOAD_HTTP_COOKIE:
@@ -149,4 +149,5 @@ class HTTPDownload extends RefCounted:
 	
 	func _on_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray):
 		# TODO: write file
+		_request.request_completed.disconnect(_on_request_completed)
 		DownloadManager.remove_active_task(_mem_name, _callback, result == HTTPRequest.RESULT_SUCCESS)
