@@ -1,7 +1,9 @@
 package hhroom
 
 import (
+	"errors"
 	"log/slog"
+	"strings"
 
 	"github.com/kronothepenguin/project-reborn/internal/habbo/protocol"
 )
@@ -162,9 +164,9 @@ func Register(registry protocol.Registry) {
 	registry.Listeners().Register(54, handleGOVIADOOR)
 	registry.Listeners().Register(57, handleTRYFLAT)
 	registry.Listeners().Register(59, handleGOTOFLAT)
-	registry.Listeners().Register(60, handleG_HMAP)
-	registry.Listeners().Register(61, handleG_USRS)
-	registry.Listeners().Register(62, handleG_OBJS)
+	registry.Listeners().Register(60, handleGetHeightMap)
+	registry.Listeners().Register(61, handleGetUsers)
+	registry.Listeners().Register(62, handleGetObjects)
 	registry.Listeners().Register(63, handleG_ITEMS)
 	registry.Listeners().Register(64, handleG_STAT)
 	registry.Listeners().Register(65, handleGETSTRIP)
@@ -189,7 +191,7 @@ func Register(registry protocol.Registry) {
 	registry.Listeners().Register(84, handleSETITEMDATA)
 	registry.Listeners().Register(85, handleREMOVEITEM)
 	registry.Listeners().Register(87, handleCARRYITEM)
-	registry.Listeners().Register(88, handleSTOP)
+	registry.Listeners().Register(88, handleStop)
 	registry.Listeners().Register(89, handleUSEITEM)
 	registry.Listeners().Register(90, handlePLACESTUFF)
 	registry.Listeners().Register(93, handleDANCE)
@@ -200,10 +202,10 @@ func Register(registry protocol.Registry) {
 	registry.Listeners().Register(98, handleLETUSERIN)
 	registry.Listeners().Register(99, handleREMOVESTUFF)
 	registry.Listeners().Register(115, handleGOAWAY)
-	registry.Listeners().Register(126, handleGETROOMAD)
+	registry.Listeners().Register(126, handleGetRoomAd)
 	registry.Listeners().Register(128, handleGETPETSTAT)
 	registry.Listeners().Register(158, handleSETBADGE)
-	registry.Listeners().Register(182, handleGETINTERST)
+	registry.Listeners().Register(182, handleGetInterstitial)
 	registry.Listeners().Register(183, handleCONVERT_FURNI_TO_CREDITS)
 	registry.Listeners().Register(211, handleROOM_QUEUE_CHANGE)
 	registry.Listeners().Register(214, handleSETITEMSTATE)
@@ -252,7 +254,24 @@ func handleRoomDirectory(packet *protocol.Packet) error {
 		slog.Int("doorID", doorID),
 	)
 
-	return nil
+	var errs []error
+
+	errs = append(errs, packet.Context.Send(OPC_OK)) // ??? from Holograph
+	if doorID == 0 {
+		// TODO: not allowed to enter locked rooms or room is full
+		// 1: tError = "nav_error_room_full"
+		// 2: tError = "nav_error_room_closed"
+		// 3: tError = "queue_set." & tConn.GetStrFrom() & ".alert"
+		// 4: tError = "nav_room_banned"
+		// packet.Context.Send("CANTCONNECT", protocol.Int())
+		// packet.Context.Send("SYSTEMBROADCAST") // Looks like not needed at all
+	}
+
+	if isPublic {
+		errs = append(errs, packet.Context.Send(ROOM_READY, protocol.RawString("ballroom"))) // marker e.han. ballroom.room
+	}
+
+	return errors.Join(errs...)
 }
 
 func handleGETDOORFLAT(packet *protocol.Packet) error {
@@ -295,19 +314,74 @@ func handleGOTOFLAT(packet *protocol.Packet) error {
 	return nil
 }
 
-func handleG_HMAP(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleG_HMAP")
-	return nil
+// G_HMAP
+func handleGetHeightMap(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleGetHeightMap")
+
+	var hmap strings.Builder
+	hmap.WriteString("xxxxxxxxxxxxxxxxxxxxxxxx\r")
+	hmap.WriteString("xxxx5555555555555555555x\r")
+	hmap.WriteString("xxxx5555555555555555555x\r")
+	hmap.WriteString("xxxx5555555555555555555x\r")
+	hmap.WriteString("xxxxDDD3333555553333DDDx\r")
+	hmap.WriteString("xxxxCCC3333333333333CCCx\r")
+	hmap.WriteString("xxxx3333333000003333333x\r")
+	hmap.WriteString("xxxx3333333000003333333x\r")
+	hmap.WriteString("xxxxBBBxxxx00000xxxxBBBx\r")
+	hmap.WriteString("xxxxAAA0000000000000AAAx\r")
+	hmap.WriteString("00000000000000000000000x\r")
+	hmap.WriteString("00000000000000000000000x\r")
+	hmap.WriteString("00000000000000000000000x\r")
+	hmap.WriteString("00000000000000000000000x\r")
+	hmap.WriteString("00000000000000000000000x\r")
+	hmap.WriteString("00000000000000000000000x\r")
+	hmap.WriteString("00000000000000000000000x\r")
+	hmap.WriteString("00000000000000000000000x\r")
+	hmap.WriteString("00000000000000000000000x\r")
+	hmap.WriteString("xxxxx0000AAAAAAAAA0000xx\r")
+	hmap.WriteString("xxxxxx0001111A111A000xxx\r")
+	hmap.WriteString("xxxxxxx0011111111A00xxxx\r")
+	hmap.WriteString("xxxxxxxx011111111A0xxxxx\r")
+	hmap.WriteString("xxxxxxxxx11111111Axxxxxx\r")
+	hmap.WriteString("xxxxxxxxxxxxxxxxxxxxxxxx\r")
+
+	return packet.Context.Send(HEIGHTMAP, protocol.RawString(hmap.String()))
 }
 
-func handleG_USRS(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleG_USRS")
-	return nil
+// G_USRS
+func handleGetUsers(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleGetUsers")
+
+	var users strings.Builder
+	users.WriteString("i:10\r")                                     // user id
+	users.WriteString("n:$hname\r")                                 // name
+	users.WriteString("f:hd-180-1.ch-876-62.lg-280-62.sh-300-62\r") // figure
+	users.WriteString("l:2 2 1\r")                                  // x y h
+	users.WriteString("c:$customData\r")                            // custom data
+	users.WriteString("s:M\r")                                      // sex
+
+	// users.WriteString("p:\r")                                       // pool?
+
+	users.WriteString("b:1:ADM\r") // badges
+	users.WriteString("a:10\r")    // web id
+
+	// users.WriteString("g:1\r")     // group id
+	// users.WriteString("t:0\r")     // group status
+
+	users.WriteString("x:100\r") // xp?
+	// TODO: much more properties at hh_room/Room Handler Class.ls:142
+
+	return packet.Context.Send(USERS, protocol.RawString(users.String()))
 }
 
-func handleG_OBJS(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleG_OBJS")
-	return nil
+// G_OBJS
+func handleGetObjects(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleGetObjects")
+
+	return errors.Join(
+		packet.Context.Send(OBJECTS, protocol.RawString("")),
+		packet.Context.Send(ACTIVEOBJECTS, protocol.Int(0)),
+	)
 }
 
 func handleG_ITEMS(packet *protocol.Packet) error {
@@ -430,8 +504,12 @@ func handleCARRYITEM(packet *protocol.Packet) error {
 	return nil
 }
 
-func handleSTOP(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleSTOP")
+// STOP
+func handleStop(packet *protocol.Packet) error {
+	what := packet.Message.ReadRawString()
+
+	packet.Context.Logger().Debug("handleStop", slog.String("what", what))
+
 	return nil
 }
 
@@ -485,9 +563,12 @@ func handleGOAWAY(packet *protocol.Packet) error {
 	return nil
 }
 
-func handleGETROOMAD(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGETROOMAD")
-	return nil
+// GETROOMAD
+func handleGetRoomAd(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleGetRoomAd")
+
+	// Room ads raw"{src}\t{target}"
+	return packet.Context.Send(ROOMAD, protocol.RawString(""))
 }
 
 func handleGETPETSTAT(packet *protocol.Packet) error {
@@ -500,9 +581,12 @@ func handleSETBADGE(packet *protocol.Packet) error {
 	return nil
 }
 
-func handleGETINTERST(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGETINTERST")
-	return nil
+// GETINTERST
+func handleGetInterstitial(packet *protocol.Packet) error {
+	packet.Context.Logger().Debug("handleGetInterstitial")
+
+	// Ads when entering a room raw"{src}\t{target}"
+	return packet.Context.Send(INTERSTITIALDATA, protocol.RawString(""))
 }
 
 func handleCONVERT_FURNI_TO_CREDITS(packet *protocol.Packet) error {

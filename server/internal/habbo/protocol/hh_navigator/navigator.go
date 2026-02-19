@@ -202,16 +202,42 @@ func handleDelFavoriteFlat(packet *protocol.Packet) error {
 		slog.Int("nodeID", nodeID),
 	)
 
-	return nil
+	habbo := packet.Context.Habbo()
+	if habbo == nil {
+		return errors.New("handleDelFavoriteFlat habbo is nil")
+	}
+
+	habbo.DeleteFavoriteFlat(nodeID)
+
+	return packet.Context.Send(SUCCESS, protocol.Int(20))
 }
 
 // GETFLATINFO
 func handleGetFlatInfo(packet *protocol.Packet) error {
-	flatID := packet.Message.ReadRawString()
+	flatIDRaw := packet.Message.ReadRawString()
 
-	packet.Context.Logger().Debug("handleGetFlatInfo", slog.String("flatID", flatID))
+	packet.Context.Logger().Debug("handleGetFlatInfo", slog.String("flatID", flatIDRaw))
 
-	return packet.Context.Send(FLATINFO)
+	flatID, err := strconv.Atoi(flatIDRaw)
+	if err != nil {
+		return err
+	}
+
+	return packet.Context.Send(
+		FLATINFO,
+		protocol.Int(1),                 // ableothersmovefurniture
+		protocol.Int(0),                 // door
+		protocol.Int(flatID),            // flatID
+		protocol.String("$owner"),       // owner
+		protocol.String("$marker"),      // marker
+		protocol.String("$name"),        // name
+		protocol.String("$description"), // description
+		protocol.Int(1),                 // showownername
+		protocol.Int(1),                 // trading
+		protocol.Int(1),                 // alert
+		protocol.Int(25),                // maxVisitors
+		protocol.Int(25),                // absoluteMaxVisitors
+	)
 }
 
 // DELETEFLAT

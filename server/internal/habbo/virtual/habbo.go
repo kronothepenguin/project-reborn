@@ -89,7 +89,7 @@ func (h *Habbo) AddFavoriteFlat(nodeID int) error {
 	return nil
 }
 
-func (h *Habbo) RemoveFavoriteFlat(nodeID int) error {
+func (h *Habbo) DeleteFavoriteFlat(nodeID int) error {
 	return nil
 }
 
