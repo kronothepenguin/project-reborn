@@ -1,0 +1,19 @@
+version: "2"
+cloud:
+    organization: ""
+    project: ""
+    hostname: ""
+servers: []
+sql:
+    - engine: "sqlite"
+      schema: "internal/app/habbo/storage/schema"
+      queries: "internal/app/habbo/storage/schema"
+      gen:
+        go:
+            package: "storage"
+            out: "internal/app/habbo/storage/schema"
+overrides:
+    go: null
+plugins: []
+rules: []
+options: {}
