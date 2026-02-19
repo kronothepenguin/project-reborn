@@ -2,7 +2,7 @@ extends Node
 
 var _process_list: Array = []
 
-func get_movie_path():
+func get_movie_path() -> String:
 	if OS.has_feature("editor"):
 		return ""
 	if OS.has_feature("web"):

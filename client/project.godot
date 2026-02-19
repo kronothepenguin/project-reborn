@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+HTTPRequestPool="*res://fuse_client/http_request_pool.gd"
 Director="*res://director/director.gd"
 VariableContainer="*res://fuse_client/variable_container_class.gd"
 ErrorManager="*res://fuse_client/error_manager_class.gd"

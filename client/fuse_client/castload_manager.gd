@@ -1,46 +1,69 @@
 extends Node
 
-var _wait_list := {}
+const INVALID_ID = 0
+
 var _task_list := {}
-var _last_task_id := 0
+var _id_count := 0
 
-var _request_pool = []
-
-func _ready() -> void:
-	var count: int = VariableContainer.get_var("net.operation.count", 2)
-	for i in range(count):
-		var request := HTTPRequest.new()
-		add_child(request)
-		_request_pool.append(request)
+enum { _STATUS_LOADING, _STATUS_COMPLETED }
 
 func start_pck_load(pcks: Array[String], permanent: bool = false, add = false, do_indexing = true) -> int:
 	if len(pcks) == 0:
-		return 0
+		return INVALID_ID
 	
-	var wait_list = []
-	for pck in pcks:
-		wait_list.append(pck)
-	
-	var id := _last_task_id + 1
-	_last_task_id = id
-	_wait_list[id] = wait_list
+	_id_count = _id_count + 1 if _id_count + 1 != INVALID_ID else _id_count + 2
+	var id := _id_count
 	
 	var task = {
 		id = id,
-		status = &"loading",
-		casts = wait_list,
+		status = _STATUS_LOADING if not OS.has_feature("editor") else _STATUS_COMPLETED,
+		pcks = pcks.duplicate(),
 		callback = null,
 		permanent = permanent,
 	}
 	_task_list[id] = task
 	
-	_add_next_download()
+	if not OS.has_feature("editor"):
+		for pck in task["pcks"]:
+			var url := _create_url(pck)
+			HTTPRequestPool.request(url, _on_request_completed.bind(task, pck))
 	
-	return 1
+	return id
 
 func register_callback(id: int, method: Callable, argument: Variant):
+	if not _task_list.has(id):
+		return
 	pass
 
-func _add_next_download():
-	var request: HTTPRequest = _request_pool.pop_back()
-	request.request_completed.connect()
+func _create_url(pck: String) -> String:
+	var filename := pck.trim_prefix("/")
+	var extension := ".pck"
+	
+	var index := filename.rfind(".")
+	if index > 0:
+		filename = filename.substr(0, index)
+		extension = filename.substr(index)
+	
+	var base := SpecialServices.get_movie_path()
+	
+	return base + filename + extension
+
+func _on_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray, task: Dictionary, pck: String):
+	var success: bool = result == HTTPRequest.RESULT_SUCCESS and response_code == 200
+	
+	var filepath := "user://" + pck + ".pck"
+	var file := FileAccess.open(filepath, FileAccess.WRITE)
+	if file:
+		file.store_buffer(body)
+		file.close()
+		ProjectSettings.load_resource_pack(filepath)
+	
+	task["pcks"].erase(pck)
+	if len(task["pcks"]) == 0:
+		task["status"] = &"completed"
+		_on_task_completed.call_deferred(task, success)
+
+func _on_task_completed(task: Dictionary, success: bool):
+	var callback = task["callback"]
+	if callback is Dictionary:
+		callback["method"].call(callback["argument"], success)
