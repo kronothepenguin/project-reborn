@@ -1,7 +1,6 @@
 extends Node
 
-var entry_view: Node2D
-var entry_bar: EntryBarControl
+var _entry_view: Node2D
 
 func _ready() -> void:
 	construct_interface()
@@ -17,11 +16,6 @@ func construct_interface():
 	MessageBus.register(&"IMStateChanged", update_im_icon)
 	MessageBus.execute(&"requestHotelView")
 
-func construct_component():
-	MessageBus.register(&"enterRoom", leave_entry)
-	MessageBus.register(&"leaveRoom", enter_entry)
-	MessageBus.register(&"Initialize", update_state)
-
 func deconstruct_interface():
 	MessageBus.unregister(&"userlogin", show_entry_bar)
 	MessageBus.unregister(&"showHotelView", show_hotel)
@@ -29,69 +23,83 @@ func deconstruct_interface():
 	
 	hide_all()
 
+func construct_component():
+	MessageBus.register(&"enterRoom", leave_entry)
+	MessageBus.register(&"leaveRoom", enter_entry)
+	MessageBus.register(&"Initialize", update_state)
+
 func deconstruct_component():
 	MessageBus.unregister(&"enterRoom", leave_entry)
 	MessageBus.unregister(&"leaveRoom", enter_entry)
 	MessageBus.unregister(&"Initialize", update_state)
 
 func show_hotel():
-	if entry_view == null:
+	if _entry_view == null:
 		var path: String = VariableContainer.get_var("entry.visual")
 		var scene: PackedScene = load(path)
-		entry_view = scene.instantiate()
-		add_child(entry_view)
-		#get_tree().current_scene.add_child(entry_view)
+		_entry_view = scene.instantiate()
+		add_child(_entry_view)
+		move_child(_entry_view, %Rect.get_index())
 	
-	var player := entry_view.get_node("AnimationPlayer") as AnimationPlayer
-	player.play("open_view")
+	%EntryAnimationPlayer.play("open_view")
 
 func hide_hotel():
-	if entry_view != null:
-		var player := entry_view.get_node("AnimationPlayer") as AnimationPlayer
-		player.play("close_view")
-		await player.animation_finished
+	if _entry_view != null:
+		%EntryAnimationPlayer.play("close_view")
+		await %EntryAnimationPlayer.animation_finished
 		
-		entry_view.queue_free()
-		entry_view = null
+		_entry_view.queue_free()
+		_entry_view = null
 
 func show_entry_bar():
-	var scene = load("res://hh_entry_init/entry_bar.tscn")
-	entry_bar = scene.instantiate()
-	get_tree().current_scene.add_child(entry_bar)
-	#tWndObj.registerProcedure(#eventProcEntryBar, me.getID(), #mouseUp)
-	#me.addAnimTask(#animEntryBar)
+	if not %EntryBar.is_visible_in_tree():
+		%EntryBar.show()
+		%EntryBarAnimationPlayer.play("animate_entry_bar")
+	
+	# TODO: disable events
 	
 	update_im_icon()
-	
-	#EventBroker.update_credit_count.connect(update_credit_count)
-	#EventBroker.update_friend_list_icon.connect(update_friend_list_icon)
-	#EventBroker.update_figure_data.connect(update_figure_data)
-	#EventBroker.update_club_status.connect(update_club_status)
-	
+	# TODO: room icon bar manager
+	MessageBus.register(&"updateCreditCount", update_credit_count)
+	MessageBus.register(&"updateFriendListIcon", update_friend_list_icon)
+	MessageBus.register(&"updateFigureData", update_entry_bar)
+	MessageBus.register(&"updateClubStatus", update_club_status)
 	update_entry_bar()
 	
 func hide_entry_bar():
-	#EventBroker.update_credit_count.disconnect(update_credit_count)
-	#EventBroker.update_friend_list_icon.disconnect(update_friend_list_icon)
-	#EventBroker.update_figure_data.disconnect(update_figure_data)
-	#EventBroker.update_club_status.disconnect(update_club_status)
+	MessageBus.unregister(&"updateCreditCount", update_credit_count)
+	MessageBus.unregister(&"updateFriendListIcon", update_friend_list_icon)
+	MessageBus.unregister(&"updateFigureData", update_entry_bar)
+	MessageBus.unregister(&"updateClubStatus", update_club_status)
 	
-	if entry_bar != null:
-		entry_bar.queue_free()
-		entry_bar = null
+	%EntryBar.hide()
+	
+	# TODO: room icon bar manager	
 
 func hide_all():
 	hide_hotel()
 	hide_entry_bar()
 
-func update_credit_count(count: int):
-	pass
-
-func update_friend_list_icon(active: bool):
-	entry_bar.set_friend_list_icon(active)
-
-func update_figure_data():
+func update_entry_bar():
+	var session := SpecialServices.get_session()
+	var username: String = session["user_name"]
+	var text: String = session["user_customData"]
+	var credits: int = session["user_walletbalance"] if session.has("user_walletbalance") else "loading"
+	var club: Dictionary = session["club_status"] if session.has("club_status") else "loading"
+	
+	%EntryBar.set_own_habbo_name_text(username)
+	%EntryBar.set_own_habbo_mission_text(text)
+	
+	# TODO: deactive all icons if first init
+	
+	update_credit_count(credits)
+	MessageBus.execute(&"messageUpdateRequest")
+	MessageBus.execute(&"buddyUpdateRequest")
+	update_club_status(club)
 	create_my_head_icon()
+
+func update_credit_count(_count: int):
+	pass
 
 func update_club_status(status: Dictionary):
 	if status is not Dictionary:
@@ -105,35 +113,28 @@ func update_club_status(status: Dictionary):
 	var days: int = days_left + 31 * prepaid_periods
 	
 	if prepaid_periods < 0:
-		entry_bar.set_club_bottom_bar_text1("club_habbo.bottombar.text.member")
-		entry_bar.set_club_bottom_bar_text2("club_member")
+		%EntryBar.set_club_bottom_bar_text1("club_habbo.bottombar.text.member")
+		%EntryBar.set_club_bottom_bar_text2("club_member")
 	elif days == 0:
-		entry_bar.set_club_bottom_bar_text1("club_habbo.bottombar.text.notmember")
-		entry_bar.set_club_bottom_bar_text2("club_habbo.bottombar.link.notmember")
+		%EntryBar.set_club_bottom_bar_text1("club_habbo.bottombar.text.notmember")
+		%EntryBar.set_club_bottom_bar_text2("club_habbo.bottombar.link.notmember")
 	else:
-		entry_bar.set_club_bottom_bar_text1("club_habbo.bottombar.text.member")
-		entry_bar.set_club_bottom_bar_text2("club_habbo.bottombar.link.member")
+		%EntryBar.set_club_bottom_bar_text1("club_habbo.bottombar.text.member")
+		%EntryBar.set_club_bottom_bar_text2("club_habbo.bottombar.link.member")
+
+func update_friend_list_icon(active: bool):
+	%EntryBar.set_friend_list_icon(active)
+
+func bounce_im_icon():
+	pass
 
 func create_my_head_icon():
 	pass
 
-func update_entry_bar():
-	var session: Dictionary = get_tree().root.get_meta("session")
-	var username: String = session["user_name"]
-	var text: String = session["user_customData"]
-	var credits: int = session["user_walletbalance"] if session.has("user_walletbalance") else "loading"
-	var club: Dictionary = session["club_status"] if session.has("club_status") else "loading"
-	
-	entry_bar.set_own_habbo_name_text(username)
-	entry_bar.set_own_habbo_mission_text(text)
-	
-	update_credit_count(credits)
-	MessageBus.execute(&"messageUpdateRequest")
-	MessageBus.execute(&"buddyUpdateRequest")
-	update_club_status(club)
-	create_my_head_icon()
-
 func update_im_icon():
+	pass
+
+func flash_im_icon():
 	pass
 
 # Component

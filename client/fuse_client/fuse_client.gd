@@ -132,6 +132,7 @@ func _load_resource_packs() -> _State:
 		var filename: String = VariableContainer.get_var("cast.entry." + str(i))
 		pack_list.append(filename)
 		i = i + 1
+	print(pack_list)
 	
 	if len(pack_list) > 0:
 		_loaded = false

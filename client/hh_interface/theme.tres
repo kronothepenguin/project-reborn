@@ -1,5 +1,0 @@
-[gd_resource type="Theme" format=3 uid="uid://bhvrrt26tr57l"]
-
-[resource]
-Button1/base_type = &"Button"
-Button1/colors/font_color = Color(0.5868075, 0.13747555, 0.22755149, 1)

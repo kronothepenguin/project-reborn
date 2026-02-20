@@ -5,44 +5,37 @@
 
 [sub_resource type="ImageTexture" id="ImageTexture_i6fm1"]
 script = ExtResource("2_5mcio")
-ink = null
-color_key = null
+color_key = Color(1, 1, 1, 1)
 metadata/_custom_type_script = "uid://4mkkqqxbamyt"
 
 [sub_resource type="ImageTexture" id="ImageTexture_8pgrj"]
 script = ExtResource("2_5mcio")
-ink = null
-color_key = null
+color_key = Color(1, 1, 1, 1)
 metadata/_custom_type_script = "uid://4mkkqqxbamyt"
 
 [sub_resource type="ImageTexture" id="ImageTexture_j8hlq"]
 script = ExtResource("2_5mcio")
-ink = null
-color_key = null
+color_key = Color(1, 1, 1, 1)
 metadata/_custom_type_script = "uid://4mkkqqxbamyt"
 
 [sub_resource type="ImageTexture" id="ImageTexture_fd0al"]
 script = ExtResource("2_5mcio")
-ink = null
-color_key = null
+color_key = Color(1, 1, 1, 1)
 metadata/_custom_type_script = "uid://4mkkqqxbamyt"
 
 [sub_resource type="ImageTexture" id="ImageTexture_557lt"]
 script = ExtResource("2_5mcio")
-ink = null
-color_key = null
+color_key = Color(1, 1, 1, 1)
 metadata/_custom_type_script = "uid://4mkkqqxbamyt"
 
 [sub_resource type="ImageTexture" id="ImageTexture_d8db8"]
 script = ExtResource("2_5mcio")
-ink = null
-color_key = null
+color_key = Color(1, 1, 1, 1)
 metadata/_custom_type_script = "uid://4mkkqqxbamyt"
 
 [sub_resource type="ImageTexture" id="ImageTexture_qbs2m"]
 script = ExtResource("2_5mcio")
-ink = null
-color_key = null
+color_key = Color(1, 1, 1, 1)
 metadata/_custom_type_script = "uid://4mkkqqxbamyt"
 
 [node name="EntryBar" type="ColorRect"]
@@ -193,6 +186,12 @@ layout_mode = 2
 custom_minimum_size = Vector2(29, 0)
 layout_mode = 2
 
+[node name="IMButton" type="TextureButton" parent="MarginContainer/HBoxContainer/HBoxContainer3/IM"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
 [node name="FriendList" type="ReferenceRect" parent="MarginContainer/HBoxContainer/HBoxContainer3"]
 custom_minimum_size = Vector2(27, 0)
 layout_mode = 2
@@ -312,3 +311,12 @@ offset_bottom = 15.0
 grow_horizontal = 2
 grow_vertical = 2
 texture_normal = SubResource("ImageTexture_qbs2m")
+
+[connection signal="pressed" from="MarginContainer/HBoxContainer/HBoxContainer2/Club/ClubButton" to="." method="_on_club_button_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/HBoxContainer3/IM/IMButton" to="." method="_on_im_button_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/HBoxContainer3/FriendList/FriendListButton" to="." method="_on_friend_list_button_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/HBoxContainer3/HotelNavigation/HotelNavigationButton" to="." method="_on_hotel_navigation_button_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/HBoxContainer3/Events/EventsButton" to="." method="_on_events_button_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/HBoxContainer3/Catalogue/CatalogueButton" to="." method="_on_catalogue_button_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/HBoxContainer3/Controller/ControllerButton" to="." method="_on_controller_button_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/HBoxContainer3/Help/HelpButton" to="." method="_on_help_button_pressed"]
