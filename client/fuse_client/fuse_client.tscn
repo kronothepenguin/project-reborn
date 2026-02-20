@@ -1,6 +1,93 @@
-[gd_scene load_steps=2 format=3 uid="uid://ckj3dxljr8n0t"]
+[gd_scene load_steps=6 format=3 uid="uid://ckj3dxljr8n0t"]
 
 [ext_resource type="Script" uid="uid://4w3u4buivfwt" path="res://fuse_client/fuse_client.gd" id="1_nwe6n"]
+[ext_resource type="Texture2D" uid="uid://fosjltjjht6u" path="res://Internal_4_Logo.png" id="2_ixlla"]
+
+[sub_resource type="Animation" id="Animation_ny4ad"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("LogoCanvasLayer:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("LogoCanvasLayer/TextureRect:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_ixlla"]
+resource_name = "fade_logo"
+length = 0.3333
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("LogoCanvasLayer:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("LogoCanvasLayer/TextureRect:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_d51nw"]
+_data = {
+&"RESET": SubResource("Animation_ny4ad"),
+&"fade_logo": SubResource("Animation_ixlla")
+}
 
 [node name="FuseClient" type="Node2D"]
 script = ExtResource("1_nwe6n")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+libraries = {
+&"": SubResource("AnimationLibrary_d51nw")
+}
+
+[node name="LogoCanvasLayer" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
+
+[node name="TextureRect" type="TextureRect" parent="LogoCanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -29.5
+offset_top = -23.0
+offset_right = 29.5
+offset_bottom = 23.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_ixlla")
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

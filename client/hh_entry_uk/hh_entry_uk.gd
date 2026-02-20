@@ -1,4 +1,4 @@
-extends Node2D
+extends RefCounted
 
 func _init() -> void:
-	VisualizerManager.set_visual("entry.visual", "res://hh_entry_uk/entry.tscn")
+	VariableContainer.set_var("entry.visual", "res://hh_entry_uk/entry.tscn")

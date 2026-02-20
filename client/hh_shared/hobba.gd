@@ -1,18 +1,24 @@
-extends NodeInstance
+extends Node
+
+func _ready() -> void:
+	construct()
+
+func _exit_tree() -> void:
+	deconstruct()
 
 func construct() -> void:
-	BrokerManager.register(&"enterRoom", show_mod_tool_button)
-	BrokerManager.register(&"leaveRoom", hide_mod_tool_button)
-	BrokerManager.register(&"userClicked", userClicked)
-	BrokerManager.register(&"gamesystem_constructed", hide_mod_tool_button)
-	BrokerManager.register(&"gamesystem_deconstructed", hide_mod_tool_button)
+	MessageBus.register(&"enterRoom", show_mod_tool_button)
+	MessageBus.register(&"leaveRoom", hide_mod_tool_button)
+	MessageBus.register(&"userClicked", userClicked)
+	MessageBus.register(&"gamesystem_constructed", hide_mod_tool_button)
+	MessageBus.register(&"gamesystem_deconstructed", hide_mod_tool_button)
 	
 func deconstruct() -> void:
-	BrokerManager.unregister(&"enterRoom", show_mod_tool_button)
-	BrokerManager.unregister(&"leaveRoom", hide_mod_tool_button)
-	BrokerManager.unregister(&"userClicked", userClicked)
-	BrokerManager.unregister(&"gamesystem_constructed", hide_mod_tool_button)
-	BrokerManager.unregister(&"gamesystem_deconstructed", hide_mod_tool_button)
+	MessageBus.unregister(&"enterRoom", show_mod_tool_button)
+	MessageBus.unregister(&"leaveRoom", hide_mod_tool_button)
+	MessageBus.unregister(&"userClicked", userClicked)
+	MessageBus.unregister(&"gamesystem_constructed", hide_mod_tool_button)
+	MessageBus.unregister(&"gamesystem_deconstructed", hide_mod_tool_button)
 
 func show_mod_tool_button():
 	if not get_tree().root.get_meta(&"session").has("user_rights"):

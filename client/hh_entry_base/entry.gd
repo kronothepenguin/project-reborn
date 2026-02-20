@@ -1,39 +1,46 @@
-extends NodeInstance
+extends Node
 
 var entry_view: Node2D
 var entry_bar: EntryBarControl
 
-func construct():
-	print("entry")
-	# Interface
-	BrokerManager.register(&"userlogin", show_entry_bar)
-	BrokerManager.register(&"showHotelView", show_hotel)
-	BrokerManager.register(&"IMStateChanged", update_im_icon)
-	BrokerManager.execute(&"requestHotelView")
-	
-	# Component
-	BrokerManager.register(&"enterRoom", leave_entry)
-	BrokerManager.register(&"leaveRoom", enter_entry)
-	BrokerManager.register(&"Initialize", update_state)
+func _ready() -> void:
+	construct_interface()
+	construct_component()
 
-func deconstruct():
-	# Interface
-	BrokerManager.unregister(&"userlogin", show_entry_bar)
-	BrokerManager.unregister(&"showHotelView", show_hotel)
-	BrokerManager.unregister(&"IMStateChanged", update_im_icon)
+func _exit_tree() -> void:
+	deconstruct_interface()
+	deconstruct_component()
+
+func construct_interface():
+	MessageBus.register(&"userlogin", show_entry_bar)
+	MessageBus.register(&"showHotelView", show_hotel)
+	MessageBus.register(&"IMStateChanged", update_im_icon)
+	MessageBus.execute(&"requestHotelView")
+
+func construct_component():
+	MessageBus.register(&"enterRoom", leave_entry)
+	MessageBus.register(&"leaveRoom", enter_entry)
+	MessageBus.register(&"Initialize", update_state)
+
+func deconstruct_interface():
+	MessageBus.unregister(&"userlogin", show_entry_bar)
+	MessageBus.unregister(&"showHotelView", show_hotel)
+	MessageBus.unregister(&"IMStateChanged", update_im_icon)
 	
 	hide_all()
-	
-	# Component
-	BrokerManager.unregister(&"enterRoom", leave_entry)
-	BrokerManager.unregister(&"leaveRoom", enter_entry)
-	BrokerManager.unregister(&"Initialize", update_state)
+
+func deconstruct_component():
+	MessageBus.unregister(&"enterRoom", leave_entry)
+	MessageBus.unregister(&"leaveRoom", enter_entry)
+	MessageBus.unregister(&"Initialize", update_state)
 
 func show_hotel():
 	if entry_view == null:
-		var scene := VisualizerManager.load("entry.visual")
+		var path: String = VariableContainer.get_var("entry.visual")
+		var scene: PackedScene = load(path)
 		entry_view = scene.instantiate()
-		get_tree().current_scene.add_child(entry_view)
+		add_child(entry_view)
+		#get_tree().current_scene.add_child(entry_view)
 	
 	var player := entry_view.get_node("AnimationPlayer") as AnimationPlayer
 	player.play("open_view")
@@ -48,7 +55,7 @@ func hide_hotel():
 		entry_view = null
 
 func show_entry_bar():
-	var scene = WindowManager.load("entry_bar.window")
+	var scene = load("res://hh_entry_init/entry_bar.tscn")
 	entry_bar = scene.instantiate()
 	get_tree().current_scene.add_child(entry_bar)
 	#tWndObj.registerProcedure(#eventProcEntryBar, me.getID(), #mouseUp)
@@ -121,13 +128,10 @@ func update_entry_bar():
 	entry_bar.set_own_habbo_mission_text(text)
 	
 	update_credit_count(credits)
-	BrokerManager.execute(&"messageUpdateRequest")
-	BrokerManager.execute(&"buddyUpdateRequest")
+	MessageBus.execute(&"messageUpdateRequest")
+	MessageBus.execute(&"buddyUpdateRequest")
 	update_club_status(club)
 	create_my_head_icon()
-	
-	#EventBroker.message_update_request.emit()
-	#EventBroker.buddy_update_request.emit()
 
 func update_im_icon():
 	pass

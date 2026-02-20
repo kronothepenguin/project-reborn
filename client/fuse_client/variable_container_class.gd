@@ -2,10 +2,10 @@ extends Node
 
 var _item_list := {}
 
-func set_var(variable: String, value):
+func set_var(variable: String, value) -> void:
 	_item_list[variable] = value
 
-func get_var(variable: String, default = null):
+func get_var(variable: String, default = null) -> Variant:
 	if _item_list.has(variable):
 		return _item_list[variable]
 	var err := "Variable not found: \"%s\"" % variable
@@ -39,7 +39,7 @@ func dump(path: String, delimiter := "\n", override := true) -> void:
 			_item_list[key] = value
 	file.close()
 
-func _parse_value(v: String):
+func _parse_value(v: String) -> Variant:
 	if v.begins_with("#"):
 		return StringName(v.substr(1))
 	if v.is_valid_int():

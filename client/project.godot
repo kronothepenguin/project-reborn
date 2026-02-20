@@ -20,13 +20,11 @@ config/icon="res://icon.svg"
 HTTPRequestPool="*res://fuse_client/http_request_pool.gd"
 Director="*res://director/director.gd"
 VariableContainer="*res://fuse_client/variable_container_class.gd"
+MessageBus="*res://fuse_client/message_bus.gd"
 ErrorManager="*res://fuse_client/error_manager_class.gd"
-ClientInitialization="*res://fuse_client/client_initialization_script.gd"
-NodeManager="*res://fuse_client/thread_manager_class.gd"
-BrokerManager="*res://fuse_client/broker_manager_class.gd"
-SpecialServices="*res://fuse_client/special_services_class.gd"
-DownloadManager="*res://fuse_client/download_manager_class.gd"
-PCKLoadManager="*res://fuse_client/castload_manager.gd"
+ResourcePackManager="*res://fuse_client/resource_pack_manager.gd"
+ResourcePackLoader="*res://fuse_client/resource_pack_loader.gd"
+SpecialServices="*res://fuse_client/special_services.gd"
 
 [display]
 
@@ -39,3 +37,4 @@ window/vsync/vsync_mode=0
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)

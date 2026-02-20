@@ -34,3 +34,19 @@ func send_process_tracking(step_value):
 			var account_id: int = VariableContainer.get_var("account_id", 0)
 			var http := HTTPRequest.new()
 			http.request(report_url, [], HTTPClient.METHOD_POST, "step=%d&account_id=%d" % [step_value, account_id])
+
+func init_session() -> void:
+	var session := {}
+	session["client_startdate"] = Time.get_date_string_from_system(true)
+	session["client_starttime"] = Time.get_unix_time_from_system()
+	session["client_version"] = VariableContainer.get_var("system.version")
+	session["client_url"] = "" # JavaScript.Eval
+	session["client_lastclick"] = null
+	get_tree().root.set_meta("session", session)
+
+func get_session() -> Dictionary:
+	return get_tree().root.get_meta("session")
+
+func set_session_data(key: String, value: Variant) -> void:
+	var session := get_session()
+	session[key] = value
