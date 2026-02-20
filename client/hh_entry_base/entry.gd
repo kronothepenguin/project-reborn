@@ -10,6 +10,7 @@ func _exit_tree() -> void:
 	deconstruct_interface()
 	deconstruct_component()
 
+# Interface
 func construct_interface():
 	MessageBus.register(&"userlogin", show_entry_bar)
 	MessageBus.register(&"showHotelView", show_hotel)
@@ -22,16 +23,6 @@ func deconstruct_interface():
 	MessageBus.unregister(&"IMStateChanged", update_im_icon)
 	
 	hide_all()
-
-func construct_component():
-	MessageBus.register(&"enterRoom", leave_entry)
-	MessageBus.register(&"leaveRoom", enter_entry)
-	MessageBus.register(&"Initialize", update_state)
-
-func deconstruct_component():
-	MessageBus.unregister(&"enterRoom", leave_entry)
-	MessageBus.unregister(&"leaveRoom", enter_entry)
-	MessageBus.unregister(&"Initialize", update_state)
 
 func show_hotel():
 	if _entry_view == null:
@@ -138,6 +129,17 @@ func flash_im_icon():
 	pass
 
 # Component
+func construct_component():
+	MessageBus.register(&"enterRoom", leave_entry)
+	MessageBus.register(&"leaveRoom", enter_entry)
+	MessageBus.register(&"Initialize", update_state)
+
+func deconstruct_component():
+	MessageBus.unregister(&"enterRoom", leave_entry)
+	MessageBus.unregister(&"leaveRoom", enter_entry)
+	MessageBus.unregister(&"Initialize", update_state)
+	update_state("reset")
+
 func enter_entry():
 	update_state(&"hotelView")
 	update_state(&"entryBar")
