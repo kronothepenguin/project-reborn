@@ -58,18 +58,20 @@ func (h *HabboApp) Run() error {
 		// Set cms handler if enabled
 		// Set game server websocket endpoint if enabled
 
-		log.Println("Setting up storage...")
-		if err := h.setupStorage(); err != nil {
+		db, err := sql.Open("sqlite3", "file:habbo.db?_fk=true&_journal=WAL")
+		if err != nil {
 			cancel()
 			log.Fatalln(err)
 		}
 
-		if h.shouldInstall() {
+		if shouldInstall(db) {
 			log.Println("Installation in progress...")
 			done := make(chan struct{})
-			h.httpServer.Handler = createInstallationHandler(done)
+			h.httpServer.Handler = createInstallationHandler(db, done)
 			<-done
 		}
+
+		h.storage = storage.New(db)
 	}()
 
 	sigchan := make(chan os.Signal, 1)
@@ -95,19 +97,4 @@ loop:
 	}
 
 	return nil
-}
-
-func (h *HabboApp) setupStorage() error {
-	db, err := sql.Open("sqlite3", "file:habbo.db?_fk=true&_journal=WAL")
-	if err != nil {
-		return err
-	}
-
-	h.storage = storage.New(db)
-
-	return nil
-}
-
-func (h *HabboApp) shouldInstall() bool {
-	return true
 }

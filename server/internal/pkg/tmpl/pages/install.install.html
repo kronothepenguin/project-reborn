@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Reborn ~ Installation</title>
+  </head>
+  <body>
+    <h1>Installation</h1>
+    <p></p>
+
+    <form method="post" action="/install/database">
+      <section>
+        <header>
+          <h2>Database</h2>
+        </header>
+        <p>
+          Install database modules. This will execute SQL queries and return an
+          error if something goes wrong.
+        </p>
+        <div>
+          <div id="database-user-module">
+            <span>Users</span>
+            <progress value="50" max="100"></progress>
+            <details>
+              <summary>Error</summary>
+            </details>
+          </div>
+        </div>
+        <footer>
+          <button>Execute</button>
+        </footer>
+      </section>
+    </form>
+
+    <form method="post" action="/install/settings">
+      <section>
+        <header>
+          <h2>Settings</h2>
+        </header>
+        <p>
+          These are the initial settings for your retro. Don't worry about
+          mistakes, you can modify these values later or you can always delete
+          the .db file and start again.
+        </p>
+        <div>
+          <div>
+            <label>
+              <span>Retro Name</span>
+              <input name="settings-retro-name" />
+            </label>
+          </div>
+        </div>
+        <footer>
+          <button>Save</button>
+        </footer>
+      </section>
+    </form>
+
+    <form method="post" action="/install/administrator">
+      <section>
+        <header>
+          <h2>Administrator</h2>
+        </header>
+        <p>
+          Let's create your administrator user, this will be helpful to manage
+          the retro. You can use it as your day to day user.
+        </p>
+        <div>
+          <div>
+            <label>
+              <span>Username</span>
+              <input name="administrator-username" />
+            </label>
+          </div>
+          <div>
+            <label>
+              <span>Password</span>
+              <input type="password" name="administrator-password" />
+            </label>
+          </div>
+        </div>
+        <footer>
+          <button>Register</button>
+        </footer>
+      </section>
+    </form>
+  </body>
+</html>
