@@ -17,6 +17,8 @@ var _state: _State = _State.LOAD_VARIABLES
 var _loaded: bool = false
 var _err: Error = OK
 
+var _resource_packs_task_id: int
+
 func _ready() -> void:
 	VariableContainer.dump("res://System Props.txt")
 	
@@ -116,7 +118,7 @@ func _wait_variables_state() -> _State:
 func _load_text_state() -> _State:
 	return _State.ERROR
 
-func _on_resource_packs_success(id: int) -> void:
+func _on_resource_packs_success(_id: int) -> void:
 	_loaded = true
 
 func _on_resource_packs_failure(pck: String, err: ResourcePackLoader.Error, code: Variant) -> void:
@@ -136,7 +138,8 @@ func _load_resource_packs() -> _State:
 	
 	if len(pack_list) > 0:
 		_loaded = false
-		ResourcePackLoader.load_batch(pack_list, _on_resource_packs_success, _on_resource_packs_failure)
+		_resource_packs_task_id = ResourcePackLoader.load_batch(pack_list, _on_resource_packs_success, _on_resource_packs_failure)
+		%ProgressBar.show()
 		return _State.WAIT_RESOURCE_PACKS
 	
 	return _State.INIT_MODULES
@@ -145,8 +148,13 @@ func _wait_resource_packs() -> _State:
 	if _err != OK:
 		return _State.ERROR
 	
+	var progress := ResourcePackLoader.fetch_task_progress(_resource_packs_task_id)
+	%ProgressBar.set_value_no_signal(progress)
+	
 	if not _loaded:
 		return _State.WAIT_RESOURCE_PACKS
+	
+	%ProgressBar.hide()
 	
 	return _State.INIT_MODULES
 
