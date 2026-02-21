@@ -50,3 +50,39 @@ func get_session() -> Dictionary:
 func set_session_data(key: String, value: Variant) -> void:
 	var session := get_session()
 	session[key] = value
+
+func build_tcp_uri(host: String, port: int) -> String:
+	return "tcp://%s:%d" % [host, port]
+
+func parse_uri(uri: String) -> URI:
+	var result := URI.new()
+	var parts := uri.split("://")
+	if parts.size() != 2:
+		return result
+	
+	result.protocol = parts[0]
+	var p1 := parts[1].split("/")
+	if p1.size() < 1:
+		return result
+	elif p1.size() > 1:
+		result.path = "/" + "/".join(p1.slice(1))
+	
+	var domain := p1[0]
+	if domain.find(":") == -1:
+		result.host = domain
+		return result
+	
+	var d := domain.split(":")
+	if d.size() != 2:
+		return result
+	
+	result.host = d[0]
+	result.port = int(d[1])
+	
+	return result
+
+class URI extends RefCounted:
+	var protocol: String
+	var host: String
+	var port: int
+	var path: String

@@ -1,4 +1,3 @@
-class_name Connection
 extends Node
 
 var transport_layer: TransportLayer

@@ -19,12 +19,13 @@ config/icon="res://icon.svg"
 
 HTTPRequestPool="*res://fuse_client/http_request_pool.gd"
 Director="*res://director/director.gd"
-VariableContainer="*res://fuse_client/variable_container_class.gd"
 MessageBus="*res://fuse_client/message_bus.gd"
+VariableContainer="*res://fuse_client/variable_container.gd"
 ErrorManager="*res://fuse_client/error_manager_class.gd"
+SpecialServices="*res://fuse_client/special_services.gd"
+ConnectionManager="*res://fuse_client/connection_manager.gd"
 ResourcePackManager="*res://fuse_client/resource_pack_manager.gd"
 ResourcePackLoader="*res://fuse_client/resource_pack_loader.gd"
-SpecialServices="*res://fuse_client/special_services.gd"
 
 [display]
 

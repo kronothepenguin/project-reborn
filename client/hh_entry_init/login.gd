@@ -15,13 +15,15 @@ var _latency_report_delta: int = 100
 var _latency_reported: int = 0
 
 func _ready() -> void:
-	construct()
+	construct_component()
+	construct_handler()
 
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_PREDELETE:
-		deconstruct()
+func _exit_tree() -> void:
+	deconstruct_component()
+	deconstruct_handler()
 
-func construct():
+# Component
+func construct_component():
 	if VariableContainer.exists("latencytest.interval"):
 		_latency_test_interval = VariableContainer.get_var("latencytest.interval")
 	if VariableContainer.exists("latencytest.report.index"):
@@ -41,21 +43,23 @@ func construct():
 	#if not objectExists(#dateFormatter) then
 		#createObject(#dateFormatter, ["Date Class"])
 	#end if
+	## /REFERENCE - useless stuff ##
+	
+	# TODO: figure system
 	#if not objectExists("Figure_System") then
 		#if createObject("Figure_System", ["Figure System Class"]) <> 0 then
 			#tURL = getVariable("external.figurepartlist.txt")
 			#getObject("Figure_System").define(["type": "url", "source": tURL])
 		#end if
 	#end if
+	# TODO: figure preview
 	#if not objectExists("Figure_Preview") then
 		#createObject("Figure_Preview", ["Figure Preview Class"])
 	#end if
-	## /REFERENCE - useless stuff ##
 	
-	var session: Dictionary = get_tree().root.get_meta("session")
+	var session := SpecialServices.get_session()
 	session["user_rights"] = []
-	
-	EventBroker.initialize.connect(init_a)
+	MessageBus.register(&"Initialize", init_a)
 	
 	## REFERENCE - useless stuff ##
 	#if not objectExists("Help_Tooltip_Manager") then
@@ -67,128 +71,68 @@ func construct():
 	#if not objectExists("Oneclick_Buy_Window_Manager") then
 		#createObject("Oneclick_Buy_Window_Manager", "Game Oneclick Buy Window Manager Class")
 	#end if
-	
-	#EventBroker.open_connection.connect(open_connection)
-	#EventBroker.close_connection.connect(close_connection)
-	#EventBroker.perform_login.connect(send_login)
-	#EventBroker.login_is_ok.connect(set_login_ok)
 	## /REFERENCE - useless stuff ##
 	
-	# handler
-	var conn: Connection = get_tree().root.get_meta("info")
+	MessageBus.register(&"openConnection", open_connection)
+	MessageBus.register(&"closeConnection", close_connection)
+	MessageBus.register(&"performLogin", send_login)
+	#MessageBus.register(&"loginIsOk", set_login_ok)
 	
-	conn.register_message(-1, handle_disconnect)
-	conn.register_message(0, handle_hello)
-	conn.register_message(1, handle_server_secret_key)
-	conn.register_message(2, handle_rights)
-	conn.register_message(3, handle_login_ok)
-	conn.register_message(5, handle_user_obj)
-	conn.register_message(33, handle_err)
-	conn.register_message(35, handle_user_banned)
-	conn.register_message(50, handle_ping)
-	conn.register_message(52, handle_eps_notify)
-	conn.register_message(139, handle_system_broadcast)
-	conn.register_message(141, handle_checksum)
-	conn.register_message(161, handle_mod_alert)
-	conn.register_message(229, handle_available_badges)
-	conn.register_message(257, handle_session_parameters)
-	conn.register_message(277, handle_crypto_parameters)
-	conn.register_message(278, handle_end_of_crypto_params)
-	conn.register_message(287, handle_hotel_logout)
-	conn.register_message(308, handle_sound_setting)
-	conn.register_message(436, handle_possible_achievements)
-	conn.register_message(437, handle_achievement_notification)
-	conn.register_message(354, handle_latency_test)
-	
-	conn.register_command("TRY_LOGIN", 756)
-	conn.register_command("VERSIONCHECK", 1170)
-	conn.register_command("UNIQUEID", 813)
-	conn.register_command("GET_INFO", 7)
-	conn.register_command("GET_CREDITS", 8)
-	conn.register_command("GET_PASSWORD", 47)
-	conn.register_command("LANGCHECK", 58)
-	conn.register_command("BTCKS", 105)
-	conn.register_command("GETAVAILABLEBADGES", 157)
-	conn.register_command("GETSELECTEDBADGES", 159)
-	conn.register_command("GET_SESSION_PARAMETERS", 1817)
-	conn.register_command("PONG", 196)
-	conn.register_command("GENERATEKEY", 2002)
-	conn.register_command("SSO", 204)
-	conn.register_command("INIT_CRYPTO", 206)
-	conn.register_command("SECRETKEY", 207)
-	conn.register_command("GET_SOUND_SETTING", 228)
-	conn.register_command("SET_SOUND_SETTING", 229)
-	conn.register_command("GET_POSSIBLE_ACHIEVEMENTS", 370)
-	conn.register_command("TEST_LATENCY", 315)
-	conn.register_command("REPORT_LATENCY", 316)
-	
-func deconstruct():
+func deconstruct_component():
 	_ok_to_login = false
 	
-	EventBroker.initialize.disconnect(init_a)
+	MessageBus.unregister(&"openConnection", open_connection)
+	MessageBus.unregister(&"closeConnection", close_connection)
+	MessageBus.unregister(&"performLogin", send_login)
+	#MessageBus.unregister(&"loginIsOk", set_login_ok)
 	
 	#if connectionExists(getVariable("connection.info.id", #Info)) then
 		#return me.disconnect()
-	
-	#EventBroker.open_connection.disconnect(open_connection)
-	#EventBroker.close_connection.disconnect(close_connection)
-	#EventBroker.perform_login.disconnect(send_login)
-	#EventBroker.login_is_ok.disconnect(set_login_ok)
 
-## Interface
-func show_login():
-	var session: Dictionary = get_tree().root.get_meta("session")
-	session["username"] = ""
-	session["password"] = ""
-
-## Component
-func init_a():
+func init_a(_1 = null):
 	# TODO: wait for figurepartlist.loaded
 	
 	await get_tree().create_timer(1).timeout
 	init_b()
 
-func init_b():
+func init_b() -> void:
 	var use_sso := false
 	if VariableContainer.exists("use.sso.ticket"):
 		use_sso = VariableContainer.get_var("use.sso.ticket")
 		if use_sso and VariableContainer.exists("sso.ticket"):
 			var sso_ticket: String = VariableContainer.get_var("sso.ticket")
 			if sso_ticket.length() > 1:
-				var session: Dictionary = get_tree().root.get_meta("session")
+				var session := SpecialServices.get_session()
 				session["sso_ticket"] = sso_ticket
-				return open_connection()
+				open_connection()
+				return
 	if not use_sso:
-		return show_login()
-	EventBroker.alert.emit({ "msg": "Alert_generic_login_error" })
+		# TODO: return show_login()
+		print("show login")
+		return
+	MessageBus.execute(&"alert", { &"Msg": "Alert_generic_login_error" })
+
+func send_login():
+	pass
 
 func open_connection():
 	var host: String = VariableContainer.get_var("connection.info.host", "")
 	var url: String = VariableContainer.get_var("connection.info.url", "")
 	if host.is_empty() and url.is_empty():
-		printerr("Invalid server parameters")
+		push_error("Invalid server parameters")
 		return
 		
 	var uri: String
 	if not host.is_empty():
 		var port: int = VariableContainer.get_var("connection.info.port", 0)
-		uri = Connection.build_tcp_uri(host, port)
+		uri = SpecialServices.build_tcp_uri(host, port)
 	else:
 		uri = url
 	
-	var conn: Connection = get_tree().root.get_meta("info")
-	var err := conn.connect_to(uri)
-	if err != OK:
-		printerr("Failed to connect!")
-		return
+	if not ConnectionManager.create(ConnectionManager.ID_INFO, uri):
+		push_error("failed to connect info")
 
 func close_connection():
-	pass
-
-func send_login():
-	pass
-
-func set_login_ok():
 	pass
 
 func init_latency_test():
@@ -200,24 +144,32 @@ func init_latency_test():
 		%LatencyTimer.start()
 
 func send_latency_test():
-	var conn: Connection = get_tree().get_meta("info")
+	var conn := ConnectionManager.get_connection(ConnectionManager.ID_INFO)
 	conn.send("TEST_LATENCY", [_latency_test_id])
 	_latency_test_timestamp_list[_latency_test_id] = Time.get_unix_time_from_system()
 	_latency_test_id += 1
 
-## Handler
-func handle_disconnect(conn: Connection, packet: Connection.Packet):
+# Handler
+func construct_handler():
+	network(true)
+	
+	#MessageBus.register(&"hideLogin", hide_login)
+
+func deconstruct_handler():
+	network(false)
+
+func handle_disconnect(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
 	
-func handle_hello(conn: Connection, packet: Connection.Packet):
+func handle_hello(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	conn.send("INIT_CRYPTO")
 	
-func handle_server_secret_key(conn: Connection, packet: Connection.Packet):
+func handle_server_secret_key(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
-func handle_rights(conn: Connection, packet: Connection.Packet):
+func handle_rights(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
 
-func handle_login_ok(conn: Connection, packet: Connection.Packet):
+func handle_login_ok(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	conn.send("GET_INFO")
 	conn.send("GET_CREDITS")
 	conn.send("GETAVAILABLEBADGES")
@@ -227,28 +179,28 @@ func handle_login_ok(conn: Connection, packet: Connection.Packet):
 	var session: Dictionary = get_tree().root.get_meta("session")
 	session["user_logged_in"] = true
 	
-func handle_user_obj(conn: Connection, packet: Connection.Packet):
+func handle_user_obj(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
-func handle_err(conn: Connection, packet: Connection.Packet):
+func handle_err(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
-func handle_user_banned(conn: Connection, packet: Connection.Packet):
+func handle_user_banned(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
 	
-func handle_ping(conn: Connection, packet: Connection.Packet):
+func handle_ping(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	conn.send("PONG")
 	
-func handle_eps_notify(conn: Connection, packet: Connection.Packet):
+func handle_eps_notify(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
-func handle_system_broadcast(conn: Connection, packet: Connection.Packet):
+func handle_system_broadcast(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
-func handle_checksum(conn: Connection, packet: Connection.Packet):
+func handle_checksum(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
-func handle_mod_alert(conn: Connection, packet: Connection.Packet):
+func handle_mod_alert(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
-func handle_available_badges(conn: Connection, packet: Connection.Packet):
+func handle_available_badges(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
 
-func handle_session_parameters(conn: Connection, packet: Connection.Packet):
+func handle_session_parameters(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	var pairs_count := packet.message.get_int()
 	if pairs_count > 0:
 		var session: Dictionary = get_tree().root.get_meta("session")
@@ -289,20 +241,20 @@ func handle_session_parameters(conn: Connection, packet: Connection.Packet):
 					session["tutorial_enabled"] =  value
 	send_login()
 
-func handle_crypto_parameters(conn: Connection, packet: Connection.Packet):
+func handle_crypto_parameters(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
-func handle_end_of_crypto_params(conn: Connection, packet: Connection.Packet):
+func handle_end_of_crypto_params(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
-func handle_hotel_logout(conn: Connection, packet: Connection.Packet):
+func handle_hotel_logout(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
-func handle_sound_setting(conn: Connection, packet: Connection.Packet):
+func handle_sound_setting(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
-func handle_possible_achievements(conn: Connection, packet: Connection.Packet):
+func handle_possible_achievements(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
-func handle_achievement_notification(conn: Connection, packet: Connection.Packet):
+func handle_achievement_notification(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
 	
-func handle_latency_test(conn: Connection, packet: Connection.Packet):
+func handle_latency_test(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	var id := packet.message.get_int()
 	if not _latency_test_timestamp_list.has(id):
 		return
@@ -323,3 +275,60 @@ func handle_latency_test(conn: Connection, packet: Connection.Packet):
 			_latency_reported = latency
 			conn.send("REPORT_LATENCY", [latency, latency_cleared, _latency_value_count])
 		_latency_value_list = []
+
+func network(active: bool) -> void:
+	var messages: Dictionary[int, Callable] = {
+		-1: handle_disconnect,
+		0: handle_hello,
+		1: handle_server_secret_key,
+		2: handle_rights,
+		3: handle_login_ok,
+		5: handle_user_obj,
+		33: handle_err,
+		35: handle_user_banned,
+		50: handle_ping,
+		52: handle_eps_notify,
+		139: handle_system_broadcast,
+		141: handle_checksum,
+		161: handle_mod_alert,
+		229: handle_available_badges,
+		257: handle_session_parameters,
+		277: handle_crypto_parameters,
+		278: handle_end_of_crypto_params,
+		287: handle_hotel_logout,
+		308: handle_sound_setting,
+		436: handle_possible_achievements,
+		437: handle_achievement_notification,
+		354: handle_latency_test,
+	}
+	
+	var commands: Dictionary[String, int] = {
+		"TRY_LOGIN": 756,
+		"VERSIONCHECK": 1170,
+		"UNIQUEID": 813,
+		"GET_INFO": 7,
+		"GET_CREDITS": 8,
+		"GET_PASSWORD": 47,
+		"LANGCHECK": 58,
+		"BTCKS": 105,
+		"GETAVAILABLEBADGES": 157,
+		"GETSELECTEDBADGES": 159,
+		"GET_SESSION_PARAMETERS": 1817,
+		"PONG": 196,
+		"GENERATEKEY": 2002,
+		"SSO": 204,
+		"INIT_CRYPTO": 206,
+		"SECRETKEY": 207,
+		"GET_SOUND_SETTING": 228,
+		"SET_SOUND_SETTING": 229,
+		"GET_POSSIBLE_ACHIEVEMENTS": 370,
+		"TEST_LATENCY": 315,
+		"REPORT_LATENCY": 316,
+	}
+	
+	if active:
+		ConnectionManager.register_listeners(ConnectionManager.ID_INFO, messages)
+		ConnectionManager.register_commands(ConnectionManager.ID_INFO, commands)
+	else:
+		ConnectionManager.unregister_listeners(ConnectionManager.ID_INFO, messages)
+		ConnectionManager.unregister_commands(ConnectionManager.ID_INFO, commands)

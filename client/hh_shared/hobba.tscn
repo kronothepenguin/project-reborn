@@ -33,7 +33,6 @@ offset_bottom = 540.0
 
 [node name="ModToolButton" type="TextureButton" parent="Control"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 0
 offset_left = 75.0
 offset_top = 5.0
@@ -42,6 +41,7 @@ offset_bottom = 5.0
 texture_normal = SubResource("ImageTexture_an6y5")
 
 [node name="Alert" parent="Control" instance=ExtResource("3_2vqib")]
+visible = false
 layout_mode = 0
 offset_left = 218.0
 offset_top = 159.0
