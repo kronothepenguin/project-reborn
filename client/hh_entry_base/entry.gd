@@ -29,8 +29,7 @@ func show_hotel():
 		var path: String = VariableContainer.get_var("entry.visual")
 		var scene: PackedScene = load(path)
 		_entry_view = scene.instantiate()
-		add_child(_entry_view)
-		move_child(_entry_view, %Rect.get_index())
+		%EntryPlaceholder.add_child(_entry_view)
 	
 	%EntryAnimationPlayer.play("open_view")
 

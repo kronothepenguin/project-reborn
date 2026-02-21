@@ -22,6 +22,14 @@ func _exit_tree() -> void:
 	deconstruct_component()
 	deconstruct_handler()
 
+# Interface
+func show_login() -> void:
+	var session := SpecialServices.get_session()
+	session[&"userName"] = ""
+	session[&"Password"] = ""
+	
+	%LoginB.show()
+
 # Component
 func construct_component():
 	if VariableContainer.exists("latencytest.interval"):
@@ -107,8 +115,7 @@ func init_b() -> void:
 				open_connection()
 				return
 	if not use_sso:
-		# TODO: return show_login()
-		print("show login")
+		show_login()
 		return
 	MessageBus.execute(&"alert", { &"Msg": "Alert_generic_login_error" })
 
