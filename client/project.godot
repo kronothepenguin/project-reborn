@@ -34,6 +34,10 @@ window/size/viewport_height=540
 window/stretch/mode="viewport"
 window/vsync/vsync_mode=0
 
+[editor]
+
+run/main_run_args="--sw1=\"use.sso.ticket=1;sso.ticket=$myticket\" --sw2=\"connection.info.host=127.0.0.1;connection.info.port=1234\""
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

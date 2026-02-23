@@ -106,7 +106,7 @@ func init_a(_1 = null):
 func init_b() -> void:
 	var use_sso := false
 	if VariableContainer.exists("use.sso.ticket"):
-		use_sso = VariableContainer.get_var("use.sso.ticket")
+		use_sso = SpecialServices.parse_bool(VariableContainer.get_var("use.sso.ticket"))
 		if use_sso and VariableContainer.exists("sso.ticket"):
 			var sso_ticket: String = VariableContainer.get_var("sso.ticket")
 			if sso_ticket.length() > 1:
@@ -120,7 +120,16 @@ func init_b() -> void:
 	MessageBus.execute(&"alert", { &"Msg": "Alert_generic_login_error" })
 
 func send_login():
-	pass
+	var conn := ConnectionManager.get_connection(ConnectionManager.ID_INFO)
+	
+	var session := SpecialServices.get_session()
+	if not session.has("sso_ticket"):
+		return
+	
+	var sso_ticket := str(session["sso_ticket"])
+	conn.send("SSO", [sso_ticket])
+	
+	# TODO: login user + pass
 
 func open_connection():
 	var host: String = VariableContainer.get_var("connection.info.host", "")
@@ -131,7 +140,7 @@ func open_connection():
 		
 	var uri: String
 	if not host.is_empty():
-		var port: int = VariableContainer.get_var("connection.info.port", 0)
+		var port: int = int(VariableContainer.get_var("connection.info.port", 0))
 		uri = SpecialServices.build_tcp_uri(host, port)
 	else:
 		uri = url
@@ -183,8 +192,10 @@ func handle_login_ok(conn: ConnectionManager.Connection, packet: ConnectionManag
 	conn.send("GET_POSSIBLE_ACHIEVEMENTS")
 	conn.send("GET_SOUND_SETTING")
 	init_latency_test()
-	var session: Dictionary = get_tree().root.get_meta("session")
-	session["user_logged_in"] = true
+	var session := SpecialServices.get_session()
+	session["userLoggedIn"] = true
+	MessageBus.execute(&"userloggedin")
+	MessageBus.execute(&"sendTrackingPoint", "/client/loggedin")
 	
 func handle_user_obj(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
@@ -210,7 +221,7 @@ func handle_available_badges(conn: ConnectionManager.Connection, packet: Connect
 func handle_session_parameters(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	var pairs_count := packet.message.get_int()
 	if pairs_count > 0:
-		var session: Dictionary = get_tree().root.get_meta("session")
+		var session := SpecialServices.get_session()
 		for i in range(pairs_count):
 			var id := packet.message.get_int()
 			match id:
@@ -249,9 +260,11 @@ func handle_session_parameters(conn: ConnectionManager.Connection, packet: Conne
 	send_login()
 
 func handle_crypto_parameters(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
-	pass
+	conn.send("GENERATEKEY", ["public_key"])
+	
 func handle_end_of_crypto_params(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
-	pass
+	start_new_session()
+	
 func handle_hotel_logout(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
 func handle_sound_setting(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
@@ -260,7 +273,16 @@ func handle_possible_achievements(conn: ConnectionManager.Connection, packet: Co
 	pass
 func handle_achievement_notification(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	pass
+
+func start_new_session():
+	var client_url := SpecialServices.get_movie_path()
+	var ext_vars_url := SpecialServices.get_ext_var_path()
 	
+	var conn := ConnectionManager.get_connection(ConnectionManager.ID_INFO)
+	conn.send("VERSIONCHECK", [int(VariableContainer.get_var("client.version.id")), client_url, ext_vars_url])
+	conn.send("UNIQUEID", [SpecialServices.get_machine_id()])
+	conn.send("GET_SESSION_PARAMETERS")
+
 func handle_latency_test(conn: ConnectionManager.Connection, packet: ConnectionManager.Packet):
 	var id := packet.message.get_int()
 	if not _latency_test_timestamp_list.has(id):

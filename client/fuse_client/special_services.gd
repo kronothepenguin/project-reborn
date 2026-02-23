@@ -2,6 +2,22 @@ extends Node
 
 var _process_list: Array = []
 
+func get_machine_id() -> String:
+	#TODO: store machine id
+	return generate_machine_id()
+	
+func generate_machine_id() -> String:
+	var milliseconds := str(Time.get_ticks_msec())
+	var time_dict := Time.get_time_dict_from_system(true)
+	var time := str(time_dict["hour"]) + str(time_dict["minute"]) + str(time_dict["second"])
+	var date_dict := Time.get_date_dict_from_system(true)
+	var date := str(date_dict["year"]) + str(date_dict["month"]) + str(date_dict["day"])
+
+	var raw_machine_id := milliseconds + time + date
+	var max_length := int(VariableContainer.get_var("machine.id.max.length"))
+	var machine_id := raw_machine_id.substr(0, max_length)
+	return machine_id
+
 func get_movie_path() -> String:
 	if OS.has_feature("editor"):
 		return ""
@@ -53,6 +69,14 @@ func set_session_data(key: String, value: Variant) -> void:
 
 func build_tcp_uri(host: String, port: int) -> String:
 	return "tcp://%s:%d" % [host, port]
+
+func parse_bool(s: String) -> bool:
+	match s.to_lower():
+		"f", "false", "no", "0", "off":
+			return false
+		_:
+			return true
+		
 
 func parse_uri(uri: String) -> URI:
 	var result := URI.new()

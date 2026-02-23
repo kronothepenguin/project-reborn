@@ -20,6 +20,7 @@ func _process_connection(id: int) -> void:
 	conn._transport.poll()
 	
 	if conn._transport.get_status() == Transport.Status.ERROR:
+		ErrorManager.error(self, "connection lost " + str(id), &"_process_connection", ErrorManager.Level.CRITICAL)
 		remove(id)
 		return
 	
@@ -28,10 +29,12 @@ func _process_connection(id: int) -> void:
 		return
 	
 	if not _listeners.has(id):
+		ErrorManager.error(self, "missing listeners " + str(id), &"_process_connection", ErrorManager.Level.MINOR)
 		return
 	
 	var handlers: Dictionary[int, Array] = _listeners[id]
-	if handlers.has(packet.command):
+	if not handlers.has(packet.command):
+		ErrorManager.error(self, "missing handlers " + str(packet.command), &"_process_connection", ErrorManager.Level.MINOR)
 		return
 	
 	var callback_list: Array[Callable] = handlers[packet.command]
@@ -96,7 +99,7 @@ func register_listeners(id: int, messages: Dictionary[int, Callable]) -> void:
 	for msg in messages:
 		var callback := messages[msg]
 		if not prev.has(msg):
-			prev[msg] = []
+			prev[msg] = [] as Array[Callable]
 		prev[msg].append(callback)
 
 func unregister_listeners(id: int, messages: Dictionary[int, Callable]) -> void:
@@ -258,7 +261,7 @@ class TCPTransport extends Transport:
 		
 	func dispose() -> void:
 		_peer.disconnect_from_host()
-		_peer.free()
+		#_peer.free()
 		_peer = null
 	
 	func poll() -> void:
@@ -299,7 +302,7 @@ class WebSocketTransport extends Transport:
 	
 	func dispose() -> void:
 		_peer.close()
-		_peer.free()
+		#_peer.free()
 		_peer = null
 	
 	func poll() -> void:
@@ -338,6 +341,8 @@ class WebSocketTransport extends Transport:
 	@abstract func read_packet() -> Packet
 	
 	@abstract func write_packet(packet: Packet) -> void
+	
+	@abstract func send(cmd: String, msg: Variant = []) -> void
 
 class ConnectionInstace extends Connection:
 	func read_packet() -> Packet:
@@ -373,10 +378,41 @@ class ConnectionInstace extends Connection:
 		buf.append_array(packet.message._buf)
 		
 		_transport.write_bytes(buf)
+	
+	func send(cmd: String, msg: Variant = []) -> void:
+		if not _transport:
+			return
+		
+		var commands := ConnectionManager._commands[ID_INFO]
+		if not commands.has(cmd):
+			return
+		
+		var opcode: int = commands[cmd]
+		var packet := Packet.new(opcode, [])
+		match typeof(msg):
+			TYPE_STRING:
+				packet.message.put_content(msg)
+			TYPE_ARRAY:
+				for arg in msg:
+					match typeof(arg):
+						TYPE_BOOL:
+							packet.message.put_bool(arg)
+						TYPE_OBJECT:
+							if arg.get_class() == "Short":
+								packet.message.put_short(arg.value())
+						TYPE_INT:
+							packet.message.put_int(arg)
+						TYPE_STRING:
+							packet.message.put_string(arg)
+		
+		write_packet(packet)
 
 class MultiuserInstance extends Connection:
 	func read_packet() -> Packet:
 		return null
 	
 	func write_packet(_packet: Packet) -> void:
+		return
+	
+	func send(cmd: String, msg: Variant = []) -> void:
 		return

@@ -11,18 +11,28 @@ func _init():
 		_read_from_cmdline()
 
 func _read_from_cmdline():
+	var last_key: String
+	var waiting_for_value: bool
 	for arg in OS.get_cmdline_args():
-		if arg.contains("="):
-			var pair = arg.split("=")
-			_params[pair[0].trim_prefix("--")] = pair[1]
-		else:
-			#TODO: parse "--key value" properly
-			_params[arg.trim_prefix("--")] = ""
+		if arg.begins_with("-") or arg.begins_with("--"):
+			waiting_for_value = false
+			arg = arg.trim_prefix("--").trim_prefix("-")
+			var index := arg.find("=")
+			if index > -1:
+				var key := arg.substr(0, index).strip_edges()
+				var value := arg.substr(index + 1).strip_edges().trim_prefix('"').trim_suffix('"')
+				_params[key] = value
+			else:
+				last_key = arg
+				_params[last_key] = true
+		elif waiting_for_value:
+			waiting_for_value = false
+			_params[last_key] = arg
 
 func _read_from_json():
 	var s: String = JavaScriptBridge.eval("JSON.stringify(PARAMS || {})", true)
 	if s == null or s == "":
-		return
+		return[]
 	
 	var json: Dictionary = JSON.parse_string(s)
 	for key in json:

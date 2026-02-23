@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://bu6v0wme3mcb"]
+
+[ext_resource type="Script" uid="uid://npuxxyrk6wck" path="res://hh_human/human.gd" id="1_l7esr"]
+
+[node name="Root" type="Node2D"]
+script = ExtResource("1_l7esr")
+figure = "hd-123-1.fc-456-2.ey-789-3.hr-101-4.he-202-5.ch-300-6.lg-400-7.sh-500-8"

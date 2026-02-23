@@ -13,7 +13,7 @@ enum _State {
 	DONE,
 }
 
-var _state: _State = _State.LOAD_VARIABLES
+var _state: _State = _State.LOAD_PARAMS
 var _loaded: bool = false
 var _err: Error = OK
 

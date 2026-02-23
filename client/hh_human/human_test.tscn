@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://nmjlxwjhd0gb"]
+
+[ext_resource type="Script" uid="uid://qt5q836yoon4" path="res://hh_human/human_test.gd" id="1_td2jw"]
+
+[node name="Root" type="Node"]
+script = ExtResource("1_td2jw")
+animationpath = "res://animation.xml"
+draworderpath = "res://draworder.xml"
+figuredatapath = "res://figuredata.xml"
+partsetspath = "res://partsets.xml"
