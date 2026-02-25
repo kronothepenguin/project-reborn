@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/kronothepenguin/project-reborn/internal/pkg/tmpl"
 )
 
 func watch(dir string) {
@@ -52,6 +53,9 @@ func watch(dir string) {
 
 			if (event.Has(fsnotify.Write) || event.Has(fsnotify.Create)) && strings.HasSuffix(event.Name, ".html") {
 				log.Println("\033[32m[reload]\033[0m", event.Name)
+				if err := tmpl.ReloadFS(os.DirFS(dir)); err != nil {
+					log.Println("\033[31m", err, "\033[0m")
+				}
 				broadcast(event.Name)
 			}
 
