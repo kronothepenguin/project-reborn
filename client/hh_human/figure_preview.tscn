@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3q2jkmanpbtj"]
+
+[ext_resource type="Script" uid="uid://byrkh0f4ta4wh" path="res://hh_human/figure_preview.gd" id="1_s3pnr"]
+[ext_resource type="PackedScene" uid="uid://bu6v0wme3mcb" path="res://hh_human/human.tscn" id="2_h4swk"]
+
+[node name="Root" type="Node"]
+script = ExtResource("1_s3pnr")
+
+[node name="Human" parent="." instance=ExtResource("2_h4swk")]

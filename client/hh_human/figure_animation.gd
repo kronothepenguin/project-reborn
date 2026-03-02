@@ -2,7 +2,7 @@
 class_name FigureAnimation
 extends RefCounted
 
-var animation_set: AnimationSet
+var action_dict: Dictionary[String, Action]
 
 func parse(path: String) -> bool:
 	var parser := XMLParser.new()
@@ -13,37 +13,34 @@ func parse(path: String) -> bool:
 	if dom.build_from(parser) != OK:
 		return false
 	
-	animation_set = _parse_animation_set(dom)
-	if animation_set == null:
-		return false
-	return true
+	return _parse_animation_set(dom)
 	
-func _parse_animation_set(dom: XMLDocumentObjectModel) -> AnimationSet:
+func _parse_animation_set(dom: XMLDocumentObjectModel) -> bool:
 	var element: XMLDocumentObjectModel._Element
 	for node in dom.root.children:
 		if node is XMLDocumentObjectModel._Element and node.name == "animationSet":
 			element = node
 			break
-	if element == null:
-		return null
 	
-	var animationSet := AnimationSet.new()
-	animationSet.action_dict = _parse_action_elements(element)
-	return animationSet
+	if element == null:
+		push_error("Missing <animationSet> element")
+		return false
+	
+	return _parse_action_elements(element)
 
-func _parse_action_elements(animationSet: XMLDocumentObjectModel._Element) -> Dictionary[String, Action]:
-	var action_dict: Dictionary[String, Action] = {}
-	for element in animationSet.children:
-		if element is XMLDocumentObjectModel._Element and element.name == "action":
-			if not element.attributes.has("id"):
+func _parse_action_elements(animationSet: XMLDocumentObjectModel._Element) -> bool:
+	action_dict = {}
+	for node in animationSet.children:
+		if node is XMLDocumentObjectModel._Element and node.name == "action":
+			if not node.attributes.has("id"):
 				continue
 			
 			var action := Action.new()
-			action.id = element.attributes["id"]
-			action.part_list = _parse_part_elements(element)
+			action.id = node.attributes["id"]
+			action.part_list = _parse_part_elements(node)
 			action_dict[action.id] = action
 		# else return error
-	return action_dict
+	return true
 
 func _parse_part_elements(action: XMLDocumentObjectModel._Element) -> Array:
 	var part_list: Array[Part]
@@ -71,9 +68,6 @@ func _parse_frame_elements(part: XMLDocumentObjectModel._Element) -> Array[Frame
 			frame_list.append(frame)
 	return frame_list
 
-class AnimationSet extends RefCounted:
-	var action_dict: Dictionary[String, Action]
-	
 class Action extends RefCounted:
 	var id: String
 	var part_list: Array[Part]

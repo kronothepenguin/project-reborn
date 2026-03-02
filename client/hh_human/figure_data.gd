@@ -1,181 +1,242 @@
+# figuredata.xml
 class_name FigureData
 extends RefCounted
+	
+var colors: Colors
+var sets: Sets
 
-static var _palettes: Dictionary[int, Dictionary] = {}
-static var _colors: Dictionary[int, Color] = {}
-static var _sets: Dictionary[int, Dictionary] = {}
-static var _settypes: Dictionary[String, Dictionary] = {}
-
-static func reset() -> void:
-	pass
-
-static func parse_data(buffer: PackedByteArray) -> bool:
-	reset()	
+func parse(path: String) -> bool:
 	var parser := XMLParser.new()
-	parser.open_buffer(buffer)
-	var element_stack: Array[Dictionary] = []
-	while parser.read() != ERR_FILE_EOF:
-		var data = null
-		match parser.get_node_type():
-			XMLParser.NODE_ELEMENT:
-				var element := { 
-					"name": parser.get_node_name(),
-					"attributes": {} as Dictionary[String, String],
-				} as Dictionary[String, Variant]
-				for index in range(parser.get_attribute_count()):
-					element["attributes"][parser.get_attribute_name(index)] = parser.get_attribute_value(index)
-				element_stack.push_back(element)
-			XMLParser.NODE_ELEMENT_END:
-				var last_element: Dictionary[String, Variant] = element_stack.pop_back()
-				if last_element["name"] != parser.get_node_name():
-					# Malformed XML
-					reset()
-					return false
-			XMLParser.NODE_TEXT:
-				data = parser.get_node_data()
-		
-		if len(element_stack) < 3:
-			continue
-		
-		var is_valid := false
-		if element_stack[0]["name"] == "figuredata" and element_stack[1]["name"] == "colors":
-			is_valid = parse_colors(element_stack.slice(2), data)
-		if element_stack[0]["name"] == "figuredata" and element_stack[1]["name"] == "sets":
-			is_valid = parse_sets(element_stack.slice(2), data)
-		
-		if not is_valid:
-			reset()
-			return false
-		
-	return true
+	if parser.open(path) != OK:
+		push_error("Failed to open file: " + path)
+		return false
+	
+	var dom := XMLDocumentObjectModel.new()
+	if dom.build_from(parser) != OK:
+		push_error("Failed to parse XML from: " + path)
+		return false
+	
+	return _parse_figuredata(dom)
 
-static func parse_colors(element_stack: Array[Dictionary], data: Variant) -> bool:
-	var palette_element: Dictionary[String, Variant] = element_stack[0]
-	if palette_element["name"] != "palette":
-		return false
-	if not palette_element["attributes"].has("id"):
-		return false
+func _parse_figuredata(dom: XMLDocumentObjectModel) -> bool:
+	var figuredata_element: XMLDocumentObjectModel._Element
+	for node in dom.root.children:
+		if node is XMLDocumentObjectModel._Element and node.name == "figuredata":
+			figuredata_element = node
+			break
 	
-	if len(element_stack) < 2:
-		return true
-	
-	var color_element: Dictionary[String, Variant] = element_stack[1]
-	if color_element["name"] != "color":
-		return false
-	if not color_element["attributes"].has("id"):
+	if figuredata_element == null:
+		push_error("Missing <figuredata> element")
 		return false
 	
-	if data == null:
-		return true
-	
-	var color_attributes: Dictionary[String, String] = color_element["attributes"]
-	var color_id := color_attributes["id"].to_int()
-	if _colors.has(color_id):
+	if not _parse_colors(figuredata_element):
 		return false
-	
-	var color := Color(data)
-	_colors[color_id] = color
-	
-	var palette_attributes: Dictionary[String, String] = palette_element["attributes"]
-	var palette_id := palette_attributes["id"].to_int()
-	if not _palettes.has(palette_id):
-		_palettes[palette_id] = {} as Dictionary[int, Color]
-	_palettes[palette_id].set(color_id, color)
+		
+	if not _parse_sets(figuredata_element):
+		return false
 	
 	return true
 
-static func parse_sets(element_stack: Array[Dictionary], data: Variant) -> bool:
-	var settype_element: Dictionary[String, Variant] = element_stack[0]
-	if settype_element["name"] != "settype":
-		return false
-	if not settype_element["attributes"].has("type"):
-		return false
-	if not settype_element["attributes"].has("paletteid"):
-		return false
+func _parse_colors(figuredata_element: XMLDocumentObjectModel._Element) -> bool:
+	var colors_element: XMLDocumentObjectModel._Element = null
+	for node in figuredata_element.children:
+		if node is XMLDocumentObjectModel._Element and node.name == "colors":
+			colors_element = node
+			break
 	
-	if len(element_stack) < 2:
-		return true
-	
-	var set_element: Dictionary[String, Variant] = element_stack[1]
-	if set_element["name"] != "set":
-		return false
-	if not set_element["attributes"].has("id"):
-		return false
-	if not set_element["attributes"].has("colorable"):
+	if colors_element == null:
+		push_error("Missing <colors> element")
 		return false
 	
-	if len(element_stack) < 3:
-		return true
-	
-	var element: Dictionary[String, Variant] = element_stack[2]
-	var set_data: Dictionary[String, Variant]
-	match element["name"]:
-		"part":
-			if not element["attributes"].has("id"):
-				return false
-			if not element["attributes"].has("type"):
-				return false
-			if not element["attributes"].has("colorable"):
-				return false
-			var element_attributes: Dictionary[String, String] = element["attributes"]
-			var part_id := element_attributes["id"].to_int()
-			var part_type := element_attributes["type"]
-			var part_colorable := SpecialServices.parse_bool(element_attributes["colorable"])
-			set_data["part"] = {
-				"id": part_id,
-				"type": part_type,
-				"colorable": part_colorable,
-			} as Dictionary[String, Variant]
-		"hiddenlayers":
-			if len(element_stack) < 4:
-				return true
-			
-			var layer_element = element_stack[3]
-			if layer_element["name"] != "layer":
-				return false
-			if not layer_element["attributes"].has("parttype"):
-				return false
-				
-			var layer_attributes: Dictionary[String, String] = layer_element["attributes"]
-			var layer_parttype := layer_attributes["parttype"]
-			set_data["hiddenlayer"] = layer_parttype
-		_:
-			return false
-	
-	var settype_attributes: Dictionary[String, String] = settype_element["attributes"]
-	var settype_type := settype_attributes["type"]
-	if not _settypes.has(settype_type):
-		_settypes[settype_type] = {}
-	
-	var set_attributes: Dictionary[String, String] = set_element["attributes"]
-	var set_id := set_attributes["id"].to_int()
-	if not _sets.has(set_id):
-		_sets[set_id] = {} as Dictionary[String, Variant]
-	var setv := _sets[set_id]
-	setv["settype"] = settype_type
-	if not setv.has("parts"):
-		setv["parts"] = [] as Array[Dictionary]
-	if set_data.has("part"):
-		setv["parts"].append(set_data["part"])
-	if not setv.has("hiddenlayers"):
-		setv["hiddenlayers"] = [] as Array[String]
-	if set_data.has("hiddenlayer"):
-		setv["hiddenlayers"].append(set_data["hiddenlayer"])
-	
-	var settype_paletteid := settype_attributes["paletteid"].to_int()
-	var settype: Dictionary[String, Variant] = {
-		"paletteid": settype_paletteid
-	}
-	_settypes[settype_type] = settype
+	colors = Colors.new()
+	colors.palette_dict = _parse_palette_elements(colors_element)
 	
 	return true
 
-#var parser = XMLParser.new()
-#parser.open("path/to/file.svg")
-#while parser.read() != ERR_FILE_EOF:
-	#if parser.get_node_type() == XMLParser.NODE_ELEMENT:
-		#var node_name = parser.get_node_name()
-		#var attributes_dict = {}
-		#for idx in range(parser.get_attribute_count()):
-			#attributes_dict[parser.get_attribute_name(idx)] = parser.get_attribute_value(idx)
-		#print("The ", node_name, " element has the following attributes: ", attributes_dict)
+func _parse_palette_elements(colors_element: XMLDocumentObjectModel._Element) -> Dictionary[int, Palette]:
+	var palette_dict: Dictionary[int, Palette] = {}
+	for node in colors_element.children:
+		if node is XMLDocumentObjectModel._Element and node.name == "palette":
+			if not node.attributes.has("id"):
+				push_error("Palette element missing 'id' attribute")
+				continue
+			var palette := _parse_palette(node)
+			if palette != null:
+				colors.palette_dict[palette.id] = palette
+	return palette_dict
+
+func _parse_palette(palette_node: XMLDocumentObjectModel._Element) -> Palette:
+	var palette := Palette.new()
+	palette.id = palette_node.attributes["id"].to_int()
+	palette.color_dict = {}
+	
+	for node in palette_node.children:
+		if node is XMLDocumentObjectModel._Element and node.name == "color":
+			var color := _parse_palette_color(node)
+			if color != null:
+				palette.color_dict[color.id] = color
+	
+	return palette
+
+func _parse_palette_color(color_node: XMLDocumentObjectModel._Element) -> PaletteColor:
+	if not color_node.attributes.has("id") or not color_node.attributes.has("index"):
+		push_error("Color element missing required attributes")
+		return null
+	
+	var color := PaletteColor.new()
+	color.id = color_node.attributes["id"].to_int()
+	color.index = color_node.attributes["index"].to_int()
+	color.club = color_node.attributes.get("club", "0") == "1"
+	color.selectable = color_node.attributes.get("selectable", "0") == "1"
+	
+	for child in color_node.children:
+		if child is XMLDocumentObjectModel._TextNode:
+			var hex_color: String = child.data
+			if hex_color.length() == 6:
+				color.color = Color("#" + hex_color)
+			else:
+				push_warning("Invalid color format: " + hex_color)
+				color.color = Color.WHITE
+	
+	return color
+
+func _parse_sets(figuredata_element: XMLDocumentObjectModel._Element) -> bool:
+	var sets_node: XMLDocumentObjectModel._Element = null
+	for node in figuredata_element.children:
+		if node is XMLDocumentObjectModel._Element and node.name == "sets":
+			sets_node = node
+			break
+	
+	if sets_node == null:
+		push_error("Missing <sets> element")
+		return false
+	
+	sets = Sets.new()
+	sets.settype_list = []
+	
+	for node in sets_node.children:
+		if node is XMLDocumentObjectModel._Element and node.name == "settype":
+			var settype := _parse_settype(node)
+			if settype != null:
+				sets.settype_list.append(settype)
+	
+	return true
+
+func _parse_settype(settype_node: XMLDocumentObjectModel._Element) -> SetType:
+	if not settype_node.attributes.has("type"):
+		push_error("Settype element missing 'type' attribute")
+		return null
+	
+	var settype := SetType.new()
+	settype.type = settype_node.attributes["type"]
+	settype.paletteid = settype_node.attributes.get("paletteid", "0").to_int()
+	settype.mandatory = settype_node.attributes.get("mandatory", "0") == "1"
+	settype.set_dict = {}
+	
+	for node in settype_node.children:
+		if node is XMLDocumentObjectModel._Element and node.name == "set":
+			var set_ := _parse_set(node)
+			if set_ != null:
+				settype.set_dict[set_.id] = set_
+	
+	return settype
+
+func _parse_set(set_node: XMLDocumentObjectModel._Element) -> Set:
+	if not set_node.attributes.has("id"):
+		push_error("Set element missing 'id' attribute")
+		return null
+	
+	var set_ := Set.new()
+	set_.id = set_node.attributes["id"].to_int()
+	set_.gender = set_node.attributes.get("gender", "U")
+	set_.club = set_node.attributes.get("club", "0") == "1"
+	set_.colorable = set_node.attributes.get("colorable", "0") == "1"
+	set_.selectable = set_node.attributes.get("selectable", "0") == "1"
+	set_.part_list = []
+	set_.hiddenlayers = null
+	
+	# Parsear las partes y hiddenlayers
+	for node in set_node.children:
+		if node is XMLDocumentObjectModel._Element:
+			if node.name == "part":
+				var part := _parse_part(node)
+				if part != null:
+					set_.part_list.append(part)
+			elif node.name == "hiddenlayers":
+				set_.hiddenlayers = _parse_hiddenlayers(node)
+	
+	return set_
+
+func _parse_part(part_node: XMLDocumentObjectModel._Element) -> Part:
+	if not part_node.attributes.has("id") or not part_node.attributes.has("type"):
+		push_error("Part element missing required attributes")
+		return null
+	
+	var part := Part.new()
+	part.id = part_node.attributes["id"].to_int()
+	part.type = part_node.attributes["type"]
+	part.colorable = part_node.attributes.get("colorable", "0") == "1"
+	
+	# Manejar el atributo index si está presente
+	if part_node.attributes.has("index"):
+		part.index = part_node.attributes["index"].to_int()
+	
+	return part
+
+func _parse_hiddenlayers(hiddenlayers_node: XMLDocumentObjectModel._Element) -> HiddenLayers:
+	var hiddenlayers := HiddenLayers.new()
+	hiddenlayers.layer_list = []
+	
+	for node in hiddenlayers_node.children:
+		if node is XMLDocumentObjectModel._Element and node.name == "layer":
+			if node.attributes.has("parttype"):
+				var layer := Layer.new()
+				layer.parttype = node.attributes["parttype"]
+				hiddenlayers.layer_list.append(layer)
+	
+	return hiddenlayers
+
+class Colors extends RefCounted:
+	var palette_dict: Dictionary[int, Palette]
+
+class Palette extends RefCounted:
+	var id: int
+	var color_dict: Dictionary[int, PaletteColor]
+
+# <color>
+class PaletteColor extends RefCounted:
+	var id: int
+	var index: int
+	var club: bool
+	var selectable: bool
+	var color: Color # text content
+
+class Sets extends RefCounted:
+	var settype_list: Array[SetType]
+
+class SetType extends RefCounted:
+	var type: String
+	var paletteid: int
+	var mandatory: bool
+	var set_dict: Dictionary[int, Set]
+
+class Set extends RefCounted:
+	var id: int
+	var gender: String
+	var club: bool
+	var colorable: bool
+	var selectable: bool
+	var part_list: Array[Part]
+	var hiddenlayers: HiddenLayers
+
+class Part extends RefCounted:
+	var id: int
+	var type: String
+	var colorable: bool
+	var index: int
+
+class HiddenLayers extends RefCounted:
+	var layer_list: Array[Layer]
+
+class Layer extends RefCounted:
+	var parttype: String

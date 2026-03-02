@@ -12,7 +12,7 @@ func is_element(node: _Node) -> bool:
 	return node is _Element
 
 func build_from(parser: XMLParser) -> Error:
-	while parser.read():
+	while parser.read() != ERR_FILE_EOF:
 		var err := _read(parser)
 		if err != OK:
 			return err
@@ -29,7 +29,8 @@ func _read(parser: XMLParser) -> Error:
 					parser.get_attribute_value(i)
 				)
 			_append_child(element)
-			_current = element
+			if not parser.is_empty():
+				_current = element
 		
 		XMLParser.NODE_ELEMENT_END:
 			var name := parser.get_node_name()
@@ -40,7 +41,7 @@ func _read(parser: XMLParser) -> Error:
 			_current = _current.parent
 		
 		XMLParser.NODE_TEXT:
-			var node := _Node.new()
+			var node := _TextNode.new()
 			node.data = parser.get_node_data()
 			_append_child(node)
 	

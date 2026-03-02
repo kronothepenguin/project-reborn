@@ -1,21 +1,23 @@
-class_name FigurePreview
 extends Node
 
-enum PartList {
-	HEAD
-}
+var animation: FigureAnimation
+var figuredata: FigureData
+var draworder: FigureDrawOrder
+var partsets: FigurePartSets
 
-func create_template_human(figure: Dictionary, size: String, dir: int):
-	pass
-
-func get_human_part_img(part_list: PartList, figure: Dictionary = {}, dir: int = 3, size: String = "h") -> Image:
-	if figure.is_empty():
-		figure = get_tree().root.get_meta("session").get("user_figure") as Dictionary
-	create_template_human(figure, size, dir)
-	var image := Image.create_empty(64, 102, false, Image.FORMAT_RGB565)
+func _ready() -> void:
+	animation = FigureAnimation.new()
+	animation.parse("res://animation.xml")
+	figuredata = FigureData.new()
+	figuredata.parse("res://figuredata.xml")
+	draworder = FigureDrawOrder.new()
+	draworder.parse("res://draworder.xml")
+	partsets = FigurePartSets.new()
+	partsets.parse("res://partsets.xml")
 	
-	return image
-
-#    getObject("Figure_Preview").createHumanPartPreview(pBottomBar, "ownhabbo_icon_image", #head)
-func create_human_part_preview():
-	pass
+	$Human.animation = animation
+	$Human.figuredata = figuredata
+	$Human.draworder = draworder
+	$Human.partsets = partsets
+	
+	$Human.set_figure("hd-620-1.fc-456-2.ey-789-3.hr-101-4.he-202-5.ch-300-6.lg-400-7.sh-500-8")
