@@ -98,6 +98,7 @@ func injectLiveReloadScript(next http.Handler) http.Handler {
 func start(server *http.Server) {
 	mux := http.NewServeMux()
 	mux.HandleFunc(liveReloadPattern, liveReload)
+	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServerFS(os.DirFS("./internal/pkg/static"))))
 	mux.Handle("/", injectLiveReloadScript(server.Handler))
 	server.Handler = mux
 

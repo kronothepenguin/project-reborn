@@ -1,6 +1,7 @@
 package game
 
 import (
+	"log"
 	"log/slog"
 	"net"
 
@@ -68,6 +69,7 @@ func (s *Server) RunTCP() {
 
 	slog.SetLogLoggerLevel(slog.LevelDebug)
 
+	log.Println("running 0.0.0.0:1234")
 	tcp := transport.NewTCPServer("0.0.0.0:1234")
 	tcp.Start()
 	tcp.Loop(s.handleTCP)
@@ -78,6 +80,7 @@ func (s *Server) handleTCP(conn net.Conn) {
 
 	ctx := NewHabboContext(conn, s.registry, s.hotel)
 
+	ctx.logger.Info("new connection")
 	if err := hhentryinit.SendInitialCommands(ctx); err != nil {
 		ctx.logger.Error("handle", slog.String("err", err.Error()))
 		return

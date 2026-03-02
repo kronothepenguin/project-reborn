@@ -1,0 +1,28 @@
+.card {
+  flex: 1 1 auto;
+  padding: 0.25rem;
+}
+
+.card__header {
+  padding: 0.25rem;
+  border-radius: 4px;
+}
+
+.card__header h2 {
+  margin: 0;
+  text-align: center;
+}
+
+.card__content {
+}
+
+.card--gray {
+  background-color: #b4b4ae;
+  border: 1px solid #ccc;
+  border-bottom-width: 3px;
+  border-radius: 8px;
+}
+
+.card--gray .card__header {
+  background-color: #6b6b6b;
+}

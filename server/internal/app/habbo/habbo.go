@@ -12,6 +12,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/kronothepenguin/project-reborn/internal/app/habbo/cms"
 	"github.com/kronothepenguin/project-reborn/internal/app/habbo/storage"
 	"github.com/kronothepenguin/project-reborn/internal/pkg/dotenv"
 	_ "github.com/mattn/go-sqlite3"
@@ -64,14 +65,15 @@ func (h *HabboApp) Run() error {
 			log.Fatalln(err)
 		}
 
-		if shouldInstall(db) {
-			log.Println("Installation in progress...")
-			done := make(chan struct{})
-			h.httpServer.Handler = createInstallationHandler(db, done)
-			<-done
-		}
+		// if shouldInstall(db) {
+		// 	log.Println("Installation in progress...")
+		// 	done := make(chan struct{})
+		// 	h.httpServer.Handler = createInstallationHandler(db, done)
+		// 	<-done
+		// }
 
 		h.storage = storage.New(db)
+		h.httpServer.Handler = cms.ServeMux()
 	}()
 
 	sigchan := make(chan os.Signal, 1)
