@@ -73,7 +73,7 @@ func injectLiveReloadScript(next http.Handler) http.Handler {
 		next.ServeHTTP(recorder, r)
 
 		if strings.Contains(recorder.Header().Get("Content-Type"), "text/html") {
-			index := bytes.IndexAny(recorder.Body.Bytes(), "</body>")
+			index := bytes.Index(recorder.Body.Bytes(), []byte("</body>"))
 			if index > -1 {
 				buf := bytes.Replace(recorder.Body.Bytes(), []byte("</body>"), []byte(liveReloadScript), 1)
 				recorder.Body.Reset()
