@@ -12,9 +12,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/kronothepenguin/project-reborn/internal/app/habbo/cms"
-	"github.com/kronothepenguin/project-reborn/internal/app/habbo/storage"
+	"github.com/kronothepenguin/project-reborn/internal/app/cms"
 	"github.com/kronothepenguin/project-reborn/internal/pkg/dotenv"
+	"github.com/kronothepenguin/project-reborn/internal/pkg/storage"
 	_ "github.com/mattn/go-sqlite3"
 )
 

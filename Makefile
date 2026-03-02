@@ -9,6 +9,7 @@ cms:
 
 build:
 	mkdir -p ./bin
+# go run ./tools/build	
 	go build -o ./bin/main ./cmd/habbo
 
 generate:
