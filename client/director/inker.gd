@@ -7,7 +7,7 @@ enum Ink {
 	DARKEST_39, LIGHTEN_40, DARKEN_41
 }
 
-static func apply_ink(image: Image, ink: Ink, color_key: Color):
+static func apply_ink(image: Image, ink: Ink, color_key: Color) -> void:
 	match ink:
 		Ink.MATTE_8:
 			_apply_ink8_matte(image, color_key)

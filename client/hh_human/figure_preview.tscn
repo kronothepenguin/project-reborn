@@ -7,3 +7,4 @@
 script = ExtResource("1_s3pnr")
 
 [node name="Human" parent="." instance=ExtResource("2_h4swk")]
+position = Vector2(200, 200)

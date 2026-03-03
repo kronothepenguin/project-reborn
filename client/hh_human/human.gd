@@ -9,6 +9,10 @@ var partsets: FigurePartSets
 
 var _figure: String
 var _body_parts: Array[_BodyPart]
+var _textures: Array[ImageTexture]
+var _rects: Array[Rect2]
+var _colors: Array[Color]
+var _offsets_cache: Dictionary[String, Dictionary]
 
 var action: String = "std"
 var direction: int = 3
@@ -38,23 +42,34 @@ var _settype_dir_map: Dictionary[String, String] = {
 }
 
 func _draw() -> void:
+	for i in _textures.size():
+		draw_texture_rect(_textures[i], _rects[i], false, _colors[i])
+
+func _build_textures() -> void:
+	_textures.clear()
+	_rects.clear()
 	for body_part in _body_parts:
 		if not _settype_dir_map.has(body_part.settype.type):
 			continue
 		var part := body_part.part
 		var dir := _settype_dir_map[part.type]
-		#var settype := body_part.settype.type
-		#var setid := body_part.set_.id
 		var frame := 0
 		
 		var filepath := "%s/h_%s_%s_%d_%d_%d.png" % [dir, action, part.type, part.id, direction, frame]
 		if not FileAccess.file_exists(filepath):
 			push_error("Unknown body part %s" % filepath)
 			continue
-		
-		var image: CompressedTexture2D = load(filepath)
-		
-		draw_texture(image, Vector2(0, 0), body_part.color)
+
+		var image := Image.load_from_file(filepath)
+		if image.get_format() != Image.FORMAT_RGBA8:
+			image.convert(Image.FORMAT_RGBA8)
+		Inker.apply_ink(image, Inker.Ink.MATTE_8, Color.WHITE)
+		var texture := ImageTexture.create_from_image(image)
+		var name := "h_%s_%s_%d_%d_%d" % [action, part.type, part.id, direction, frame]
+		var offset := _get_offset(dir, name)
+		_textures.append(texture)
+		_rects.append(Rect2(offset.x, offset.y, image.get_width(), image.get_height()))
+		_colors.append(body_part.color)
 
 func set_figure(figure: String) -> void:
 	if _parse_figure(figure):
@@ -111,16 +126,30 @@ func _parse_figure(value: String) -> bool:
 	
 	next_body_parts.sort_custom(_sort_body_parts)
 	_body_parts = next_body_parts
-	
+	_build_textures()
 	queue_redraw()
 	return true
 
 func _sort_body_parts(a: _BodyPart, b : _BodyPart):
 	var current_action := draworder.action_dict[action]
 	var current_direction := current_action.direction_dict[direction]
-	var index1 := current_direction.part_list.part_list.find_custom(_find_part.bind(a.settype.type))
-	var index2 := current_direction.part_list.part_list.find_custom(_find_part.bind(b.settype.type))
+	var index1 := current_direction.part_list.part_list.find_custom(_find_part.bind(a.part.type))
+	var index2 := current_direction.part_list.part_list.find_custom(_find_part.bind(b.part.type))
 	return index1 < index2
+
+func _get_offset(dir: String, name: String) -> Vector2:
+	if not _offsets_cache.has(dir):
+		var json_path := dir + "/offsets.json"
+		var json_text := FileAccess.get_file_as_string(json_path)
+		if json_text.is_empty():
+			_offsets_cache[dir] = {}
+		else:
+			_offsets_cache[dir] = JSON.parse_string(json_text)
+	var offsets: Dictionary = _offsets_cache[dir]
+	if offsets.has(name):
+		var arr: Array = offsets[name]
+		return Vector2(-arr[0], -arr[1])
+	return Vector2.ZERO
 
 func _find_part(part: FigureDrawOrder.Part, target: String) -> bool:
 	return part.settype == target
