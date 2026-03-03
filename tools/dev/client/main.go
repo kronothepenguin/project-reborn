@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"io/fs"
 	"log"
 	"net/http"
@@ -17,6 +18,45 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/kronothepenguin/project-reborn/internal/pkg/dotenv"
 )
+
+const cacheFile = ".client-cache.json"
+
+// buildCache stores the last build time per preset to skip unchanged presets.
+type buildCache map[string]time.Time
+
+func loadCache() buildCache {
+	c := make(buildCache)
+	data, err := os.ReadFile(cacheFile)
+	if err != nil {
+		return c
+	}
+	json.Unmarshal(data, &c)
+	return c
+}
+
+func (c buildCache) save() {
+	data, _ := json.Marshal(c)
+	os.WriteFile(cacheFile, data, 0644)
+}
+
+// latestMtime returns the most recent modification time of files in a directory.
+func latestMtime(dir string) time.Time {
+	var latest time.Time
+	filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return nil
+		}
+		ext := filepath.Ext(path)
+		if ext == ".import" || ext == ".uid" {
+			return nil
+		}
+		if info, err := d.Info(); err == nil && info.ModTime().After(latest) {
+			latest = info.ModTime()
+		}
+		return nil
+	})
+	return latest
+}
 
 func main() {
 	dotenv.Load()
@@ -33,37 +73,79 @@ func main() {
 }
 
 func exportAll(godotBin string, presets []string) {
-	log.Println("Building main project...")
-	out, err := godotExport(godotBin, "--export-debug", "main")
-	if err != nil {
-		log.Printf("\033[31m[error]\033[0m main:\n%s", out)
-		log.Fatalf("Main export failed: %v", err)
+	cache := loadCache()
+
+	// Build main: check fuse_client/, director/, and root files in client/.
+	mainDirs := []string{"client/fuse_client", "client/director"}
+	var mainLatest time.Time
+	for _, d := range mainDirs {
+		if t := latestMtime(d); t.After(mainLatest) {
+			mainLatest = t
+		}
 	}
-	log.Printf("\033[32m[ok]\033[0m main")
+	// Also check root-level files in client/ (main.tscn, project.godot, etc.)
+	entries, _ := os.ReadDir("client")
+	for _, e := range entries {
+		if e.IsDir() {
+			continue
+		}
+		if info, err := e.Info(); err == nil && info.ModTime().After(mainLatest) {
+			mainLatest = info.ModTime()
+		}
+	}
+
+	if lastBuild, ok := cache["main"]; ok && !mainLatest.After(lastBuild) {
+		log.Printf("\033[36m[cached]\033[0m main")
+	} else {
+		log.Println("Building main project...")
+		out, err := godotExport(godotBin, "--export-debug", "main")
+		if err != nil {
+			log.Printf("\033[31m[error]\033[0m main:\n%s", out)
+			log.Fatalf("Main export failed: %v", err)
+		}
+		log.Printf("\033[32m[ok]\033[0m main")
+		cache["main"] = time.Now()
+	}
 
 	pckPresets := presets[1:]
 	workers := max(runtime.NumCPU()-1, 1)
 	log.Printf("Building %d PCKs (%d workers)...", len(pckPresets), workers)
-	log.Println(pckPresets)
 
 	sem := make(chan struct{}, workers)
 	var wg sync.WaitGroup
+	var mu sync.Mutex
 	for _, preset := range pckPresets {
 		wg.Go(func() {
 			sem <- struct{}{}
+			defer func() { <-sem }()
 
-			out, err := godotExport(godotBin, "--export-pack", preset)
-			if err != nil {
-				log.Printf("\033[31m[error]\033[0m %s.pck:\n%s", preset, out)
+			dir := filepath.Join("client", preset)
+			mtime := latestMtime(dir)
+
+			mu.Lock()
+			lastBuild, ok := cache[preset]
+			mu.Unlock()
+
+			if ok && !mtime.After(lastBuild) {
+				log.Printf("\033[36m[cached]\033[0m %s.pck", preset)
 				return
 			}
-			log.Printf("\033[32m[ok]\033[0m %s.pck", preset)
 
-			<-sem
+			out, err := godotExport(godotBin, "--export-pack", preset)
+
+			mu.Lock()
+			if err != nil {
+				log.Printf("\033[31m[error]\033[0m %s.pck:\n%s", preset, out)
+			} else {
+				log.Printf("\033[32m[ok]\033[0m %s.pck", preset)
+				cache[preset] = time.Now()
+			}
+			mu.Unlock()
 		})
 	}
 	wg.Wait()
-	close(sem)
+
+	cache.save()
 	log.Println("Build complete.")
 }
 
@@ -74,6 +156,13 @@ func godotExport(godotBin, mode, preset string) ([]byte, error) {
 	cmd.Stderr = &buf
 	err := cmd.Run()
 	return buf.Bytes(), err
+}
+
+// ignoredExts are file extensions that Godot generates/modifies during export.
+// Changes to these should not trigger a rebuild.
+var ignoredExts = map[string]bool{
+	".import": true,
+	".uid":    true,
 }
 
 func watch(godotBin string, presets []string) {
@@ -93,11 +182,17 @@ func watch(godotBin string, presets []string) {
 			return err
 		}
 		if d.IsDir() {
+			name := d.Name()
+			// Skip .godot/ and .godot subdirectories — Godot writes to these during export.
+			if name == ".godot" {
+				return filepath.SkipDir
+			}
 			watcher.Add(path)
 		}
 		return nil
 	})
 
+	cache := loadCache()
 	timers := make(map[string]*time.Timer)
 	var mu sync.Mutex
 
@@ -110,7 +205,9 @@ func watch(godotBin string, presets []string) {
 
 			if event.Has(fsnotify.Create) {
 				if info, err := os.Stat(event.Name); err == nil && info.IsDir() {
-					watcher.Add(event.Name)
+					if filepath.Base(event.Name) != ".godot" {
+						watcher.Add(event.Name)
+					}
 				}
 			}
 			if event.Has(fsnotify.Remove) {
@@ -118,6 +215,11 @@ func watch(godotBin string, presets []string) {
 			}
 
 			if !event.Has(fsnotify.Write) && !event.Has(fsnotify.Create) {
+				continue
+			}
+
+			// Ignore Godot-generated files to prevent rebuild loops.
+			if ignoredExts[filepath.Ext(event.Name)] {
 				continue
 			}
 
@@ -130,8 +232,8 @@ func watch(godotBin string, presets []string) {
 			if t, ok := timers[preset]; ok {
 				t.Stop()
 			}
-			timers[preset] = time.AfterFunc(500*time.Millisecond, func() {
-				rebuildPreset(godotBin, preset)
+			timers[preset] = time.AfterFunc(time.Second, func() {
+				rebuildPreset(godotBin, preset, &cache, &mu)
 			})
 			mu.Unlock()
 
@@ -170,7 +272,7 @@ func resolvePreset(path string, pckPresets map[string]bool) string {
 	return ""
 }
 
-func rebuildPreset(godotBin, preset string) {
+func rebuildPreset(godotBin, preset string, cache *buildCache, mu *sync.Mutex) {
 	if preset == "main" {
 		log.Printf("\033[33m[rebuild]\033[0m %s", preset)
 		out, err := godotExport(godotBin, "--export-debug", preset)
@@ -187,6 +289,11 @@ func rebuildPreset(godotBin, preset string) {
 		}
 	}
 	log.Printf("\033[32m[ok]\033[0m %s", preset)
+
+	mu.Lock()
+	(*cache)[preset] = time.Now()
+	cache.save()
+	mu.Unlock()
 }
 
 func readPresetNames(path string) []string {

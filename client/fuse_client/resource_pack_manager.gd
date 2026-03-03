@@ -5,7 +5,7 @@ var _instances: Dictionary[StringName, Variant] = {}
 
 func init_resource_pack(pck: String) -> void:
 	var path := "res://" + pck + "/" + pck.get_file() + ".gd"
-	if not FileAccess.file_exists(path):
+	if not ResourceLoader.exists(path):
 		return
 	var script: GDScript = load(path)
 	script.new()
