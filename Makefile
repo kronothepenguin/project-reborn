@@ -15,10 +15,10 @@ build:
 # go run ./tools/build	
 	go build -o ./bin/main ./cmd/habbo
 
-generate:
+sqlc:
 	go tool sqlc generate
 
-generate-presets:
-	go run ./tools/generate/presets
+presets:
+	go run ./tools/presets
 
-.PHONY: dev client cms build generate generate-presets
+.PHONY: dev client cms build sqlc presets
