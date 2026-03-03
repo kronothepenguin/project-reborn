@@ -48,13 +48,12 @@ func _parse_colors(figuredata_element: XMLDocumentObjectModel._Element) -> bool:
 		push_error("Missing <colors> element")
 		return false
 	
-	colors = Colors.new()
-	colors.palette_dict = _parse_palette_elements(colors_element)
+	self.colors = Colors.new()
+	_parse_palette_elements(colors_element)
 	
 	return true
 
-func _parse_palette_elements(colors_element: XMLDocumentObjectModel._Element) -> Dictionary[int, Palette]:
-	var palette_dict: Dictionary[int, Palette] = {}
+func _parse_palette_elements(colors_element: XMLDocumentObjectModel._Element) -> bool:
 	for node in colors_element.children:
 		if node is XMLDocumentObjectModel._Element and node.name == "palette":
 			if not node.attributes.has("id"):
@@ -62,8 +61,8 @@ func _parse_palette_elements(colors_element: XMLDocumentObjectModel._Element) ->
 				continue
 			var palette := _parse_palette(node)
 			if palette != null:
-				colors.palette_dict[palette.id] = palette
-	return palette_dict
+				self.colors.palette_dict[palette.id] = palette
+	return true
 
 func _parse_palette(palette_node: XMLDocumentObjectModel._Element) -> Palette:
 	var palette := Palette.new()
@@ -111,14 +110,14 @@ func _parse_sets(figuredata_element: XMLDocumentObjectModel._Element) -> bool:
 		push_error("Missing <sets> element")
 		return false
 	
-	sets = Sets.new()
-	sets.settype_list = []
+	self.sets = Sets.new()
+	self.sets.settype_list = []
 	
 	for node in sets_node.children:
 		if node is XMLDocumentObjectModel._Element and node.name == "settype":
 			var settype := _parse_settype(node)
 			if settype != null:
-				sets.settype_list.append(settype)
+				self.sets.settype_list.append(settype)
 	
 	return true
 

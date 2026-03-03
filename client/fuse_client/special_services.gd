@@ -36,7 +36,7 @@ func get_predefined_url(url: String) -> String:
 
 func get_ext_var_path() -> String:
 	if OS.has_feature("editor"):
-		return "res://external_variables.txt"
+		return "res://external/external_variables.txt"
 	return VariableContainer.get_var("external.variables.txt")
 
 func send_process_tracking(step_value):

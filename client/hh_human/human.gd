@@ -41,17 +41,18 @@ func _draw() -> void:
 	for body_part in _body_parts:
 		if not _settype_dir_map.has(body_part.settype.type):
 			continue
-		var dir := _settype_dir_map[body_part.settype.type]
-		var settype := body_part.settype.type
-		var setid := body_part.set_.id
+		var part := body_part.part
+		var dir := _settype_dir_map[part.type]
+		#var settype := body_part.settype.type
+		#var setid := body_part.set_.id
 		var frame := 0
 		
-		var filepath := "%s/h_%s_%s_%d_%d_%d" % [dir, action, settype, setid, direction, frame]
+		var filepath := "%s/h_%s_%s_%d_%d_%d.png" % [dir, action, part.type, part.id, direction, frame]
 		if not FileAccess.file_exists(filepath):
 			push_error("Unknown body part %s" % filepath)
 			continue
 		
-		var image: ImageTexture = load(filepath)
+		var image: CompressedTexture2D = load(filepath)
 		
 		draw_texture(image, Vector2(0, 0), body_part.color)
 
@@ -87,7 +88,9 @@ func _parse_figure(value: String) -> bool:
 		var set_ := settype.set_dict[setid]
 		var color: Color
 		if set_.colorable:
-			# TODO: verify palette id of settype at parse time
+			if not figuredata.colors.palette_dict.has(settype.paletteid):
+				return false
+			
 			var palette := figuredata.colors.palette_dict[settype.paletteid]
 			
 			var colorid := colorid_str.to_int()
@@ -98,11 +101,13 @@ func _parse_figure(value: String) -> bool:
 		else:
 			color = Color.WHITE
 		
-		var body_part := _BodyPart.new()
-		body_part.settype = settype
-		body_part.set_ = set_
-		body_part.color = color
-		next_body_parts.append(body_part)
+		for p in set_.part_list:
+			var body_part := _BodyPart.new()
+			body_part.part = p
+			body_part.settype = settype
+			body_part.set_ = set_
+			body_part.color = color
+			next_body_parts.append(body_part)
 	
 	next_body_parts.sort_custom(_sort_body_parts)
 	_body_parts = next_body_parts
@@ -122,5 +127,6 @@ func _find_part(part: FigureDrawOrder.Part, target: String) -> bool:
 
 class _BodyPart extends RefCounted:
 	var settype: FigureData.SetType
+	var part: FigureData.Part
 	var set_: FigureData.Set
 	var color: Color

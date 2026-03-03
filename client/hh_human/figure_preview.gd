@@ -7,17 +7,17 @@ var partsets: FigurePartSets
 
 func _ready() -> void:
 	animation = FigureAnimation.new()
-	animation.parse("res://animation.xml")
+	animation.parse("res://external/animation.xml")
 	figuredata = FigureData.new()
-	figuredata.parse("res://figuredata.xml")
+	figuredata.parse("res://external/figuredata.xml")
 	draworder = FigureDrawOrder.new()
-	draworder.parse("res://draworder.xml")
+	draworder.parse("res://external/draworder.xml")
 	partsets = FigurePartSets.new()
-	partsets.parse("res://partsets.xml")
+	partsets.parse("res://external/partsets.xml")
 	
 	$Human.animation = animation
 	$Human.figuredata = figuredata
 	$Human.draworder = draworder
 	$Human.partsets = partsets
 	
-	$Human.set_figure("hd-620-1.fc-456-2.ey-789-3.hr-101-4.he-202-5.ch-300-6.lg-400-7.sh-500-8")
+	$Human.set_figure("hd-620-1")
