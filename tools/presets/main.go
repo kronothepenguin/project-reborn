@@ -62,6 +62,57 @@ threads/emscripten_pool_size=8
 threads/godot_pool_size=4
 `
 
+const figurepreviewPresetTemplate = `
+[preset.1]
+
+name="figurepreview"
+platform="Web"
+runnable=false
+advanced_options=false
+dedicated_server=false
+custom_features=""
+export_filter="all_resources"
+export_files=PackedStringArray()
+include_filter="%s"
+exclude_filter=""
+export_path="../web/figurepreview/index.html"
+patches=PackedStringArray()
+encryption_include_filters=""
+encryption_exclude_filters=""
+seed=0
+encrypt_pck=false
+encrypt_directory=false
+script_export_mode=2
+
+[preset.1.options]
+
+custom_template/debug=""
+custom_template/release=""
+variant/extensions_support=false
+variant/thread_support=false
+vram_texture_compression/for_desktop=true
+vram_texture_compression/for_mobile=false
+html/export_icon=true
+html/custom_html_shell=""
+html/head_include="<script>
+var PARAMS = {};
+</script>"
+html/canvas_resize_policy=1
+html/focus_canvas_on_start=true
+html/experimental_virtual_keyboard=false
+progressive_web_app/enabled=false
+progressive_web_app/ensure_cross_origin_isolation_headers=true
+progressive_web_app/offline_page=""
+progressive_web_app/display=1
+progressive_web_app/orientation=0
+progressive_web_app/icon_144x144=""
+progressive_web_app/icon_180x180=""
+progressive_web_app/icon_512x512=""
+progressive_web_app/background_color=Color(0, 0, 0, 1)
+threads/emscripten_pool_size=8
+threads/godot_pool_size=4
+`
+
 const pckPresetTemplate = `
 [preset.%d]
 
@@ -119,10 +170,21 @@ func main() {
 	}
 	sort.Strings(dirs)
 
+	// Build figurepreview include filter: figurepreview/*, director/*, hh_human/*, hh_human_*/*
+	var fpIncludes []string
+	fpIncludes = append(fpIncludes, "figurepreview/*", "director/*", "fuse_client/http_request_pool.gd")
+	for _, dir := range dirs {
+		name := filepath.Base(dir)
+		if strings.HasPrefix(name, "hh_human") {
+			fpIncludes = append(fpIncludes, name+"/*")
+		}
+	}
+
 	var sb strings.Builder
 	sb.WriteString(mainPreset)
+	sb.WriteString(fmt.Sprintf(figurepreviewPresetTemplate, strings.Join(fpIncludes, ", ")))
 
-	idx := 1
+	idx := 2
 	for _, dir := range dirs {
 		name := filepath.Base(dir)
 		sb.WriteString(fmt.Sprintf(pckPresetTemplate, idx, name, name, name, idx))
@@ -134,5 +196,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Generated %d presets (1 main + %d pck)\n", idx, idx-1)
+	pckCount := idx - 2
+	fmt.Printf("Generated %d presets (1 main + 1 figurepreview + %d pck)\n", idx, pckCount)
 }

@@ -56,7 +56,7 @@ func _build_textures() -> void:
 		var frame := 0
 		
 		var filepath := "%s/h_%s_%s_%d_%d_%d.png" % [dir, action, part.type, part.id, direction, frame]
-		if not FileAccess.file_exists(filepath):
+		if not ResourceLoader.exists(filepath):
 			push_error("Unknown body part %s" % filepath)
 			continue
 

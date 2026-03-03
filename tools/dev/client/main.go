@@ -58,15 +58,28 @@ func latestMtime(dir string) time.Time {
 	return latest
 }
 
+// skipPresets are non-PCK presets that this tool should not build.
+var skipPresets = map[string]bool{
+	"main":          true,
+	"figurepreview": true,
+}
+
 func main() {
 	dotenv.Load()
 
 	godotBin := dotenv.GetenvString("GODOT_BIN", "godot")
-	presets := readPresetNames("client/export_presets.cfg")
+	allPresets := readPresetNames("client/export_presets.cfg")
 
-	exportAll(godotBin, presets)
+	var pckPresets []string
+	for _, p := range allPresets {
+		if !skipPresets[p] {
+			pckPresets = append(pckPresets, p)
+		}
+	}
 
-	go watch(godotBin, presets)
+	exportAll(godotBin, pckPresets)
+
+	go watch(godotBin, pckPresets)
 
 	log.Println("Serving web/client on http://localhost:8080")
 	log.Fatal(http.ListenAndServe("localhost:8080", http.FileServer(http.Dir("web/client"))))
@@ -107,14 +120,13 @@ func exportAll(godotBin string, presets []string) {
 		cache["main"] = time.Now()
 	}
 
-	pckPresets := presets[1:]
 	workers := max(runtime.NumCPU()-1, 1)
-	log.Printf("Building %d PCKs (%d workers)...", len(pckPresets), workers)
+	log.Printf("Building %d PCKs (%d workers)...", len(presets), workers)
 
 	sem := make(chan struct{}, workers)
 	var wg sync.WaitGroup
 	var mu sync.Mutex
-	for _, preset := range pckPresets {
+	for _, preset := range presets {
 		wg.Go(func() {
 			sem <- struct{}{}
 			defer func() { <-sem }()
@@ -173,7 +185,7 @@ func watch(godotBin string, presets []string) {
 	defer watcher.Close()
 
 	pckPresets := make(map[string]bool)
-	for _, p := range presets[1:] {
+	for _, p := range presets {
 		pckPresets[p] = true
 	}
 

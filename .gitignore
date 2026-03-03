@@ -1,6 +1,9 @@
 web/client/*
 !web/client/.keep
 
+web/figurepreview/*
+!web/figurepreview/.keep
+
 bin/
 tmp/
 .env

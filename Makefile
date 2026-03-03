@@ -10,6 +10,9 @@ client:
 cms:
 	go tool air -c .air.cms.toml
 
+figurepreview:
+	go run ./tools/dev/figurepreview
+
 build:
 	mkdir -p ./bin
 # go run ./tools/build	
@@ -21,4 +24,4 @@ sqlc:
 presets:
 	go run ./tools/presets
 
-.PHONY: dev client cms build sqlc presets
+.PHONY: dev client cms figurepreview build sqlc presets
