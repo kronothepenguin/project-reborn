@@ -38,7 +38,7 @@ func _start_pck_load(id: int, pck: String):
 		filename = pck.substr(0, index)
 		extension = pck.substr(index)
 	
-	var base_url := SpecialServices.get_movie_path()
+	var base_url := Director.the_movie_path()
 	var url := base_url + filename + extension
 	
 	if url.begins_with("http"):
