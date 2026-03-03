@@ -1,3 +1,6 @@
+web/client/*
+!web/client/.keep
+
 bin/
 tmp/
 .env

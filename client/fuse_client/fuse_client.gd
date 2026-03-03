@@ -95,12 +95,19 @@ func _load_variables_state() -> _State:
 	if url.begins_with("res://"):
 		VariableContainer.dump(url)
 		return _State.LOAD_RESOURCE_PACKS # TODO: load texts
-	elif url.begins_with("http"):
+
+	if not url.begins_with("http://") and not url.begins_with("https://"):
+		if url.begins_with("/"):
+			url = Director.the_base_path() + url.lstrip("/")
+		else:
+			url = Director.the_movie_path() + url.lstrip("./")
+
+	if url.begins_with("http"):
 		_loaded = false
 		HTTPRequestPool.request(url, _on_external_variables_request_completed)
 		return _State.WAIT_VARIABLES
-	
-	push_error("error ", _state)
+
+	push_error("error ", _state, "\t, url: ", url)
 	return _State.ERROR
 
 func _wait_variables_state() -> _State:

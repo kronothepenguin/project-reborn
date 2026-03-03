@@ -4,11 +4,24 @@ var _params := {}
 
 var _members := {}
 
+var _the_movie_path := ""
+var _the_base_path := ""
+
 func _init():
 	if OS.has_feature("web"):
+		_the_movie_path = JavaScriptBridge.eval("window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1)")
+		_the_base_path = JavaScriptBridge.eval("window.location.origin + '/'")
 		_read_from_json()
 	else:
+		_the_movie_path = OS.get_executable_path().get_base_dir() + "/"
+		_the_base_path = _the_movie_path
 		_read_from_cmdline()
+
+func the_movie_path() -> String:
+	return _the_movie_path
+
+func the_base_path() -> String:
+	return _the_base_path
 
 func _read_from_cmdline():
 	var last_key: String

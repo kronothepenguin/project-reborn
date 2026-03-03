@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Habbo"
+config/name="Reborn"
 run/main_scene="uid://clj8c5o3kbtqp"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 
