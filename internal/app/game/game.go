@@ -25,7 +25,7 @@ import (
 	hhshared "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_shared"
 	hhtutorial "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_tutorial"
 	"github.com/kronothepenguin/project-reborn/internal/app/game/transport"
-	"github.com/kronothepenguin/project-reborn/internal/app/habbo/virtual"
+	"github.com/kronothepenguin/project-reborn/internal/pkg/virtual"
 )
 
 type Server struct {

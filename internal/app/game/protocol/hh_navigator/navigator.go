@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/kronothepenguin/project-reborn/internal/app/game/protocol"
-	"github.com/kronothepenguin/project-reborn/internal/app/habbo/virtual"
+	"github.com/kronothepenguin/project-reborn/internal/pkg/virtual"
 )
 
 const OWN_FLAT_RESULTS = "OWN_FLAT_RESULTS"

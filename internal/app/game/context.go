@@ -5,7 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/kronothepenguin/project-reborn/internal/app/game/protocol"
-	"github.com/kronothepenguin/project-reborn/internal/app/habbo/virtual"
+	"github.com/kronothepenguin/project-reborn/internal/pkg/virtual"
 )
 
 type HabboContext struct {
