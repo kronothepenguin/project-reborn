@@ -3,16 +3,22 @@ package cms
 import (
 	"net/http"
 
-	"github.com/kronothepenguin/project-reborn/internal/app/cms/pages"
+	"github.com/kronothepenguin/project-reborn/internal/pkg/tmpl"
 )
 
-func ServeMux() *http.ServeMux {
-	mux := http.NewServeMux()
+type CMS struct {
+	resolve tmpl.Resolver
+}
 
-	mux.HandleFunc("GET /{$}", pages.IndexView)
-	mux.HandleFunc("POST /login", pages.HandleLogin)
+func New(resolver tmpl.Resolver) *CMS {
+	return &CMS{resolve: resolver}
+}
 
-	mux.HandleFunc("GET /me", pages.MeView)
+func (c *CMS) Mount(mux *http.ServeMux) {
+	with := tmpl.WithTemplates(c.resolve)
 
-	return mux
+	mux.Handle("GET /{$}", with(http.HandlerFunc(c.handleIndexView)))
+	mux.HandleFunc("POST /login", c.handleLogin)
+
+	mux.Handle("GET /me", with(http.HandlerFunc(c.handleMeView)))
 }

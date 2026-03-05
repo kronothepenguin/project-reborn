@@ -1,4 +1,4 @@
-package pages
+package cms
 
 import (
 	"fmt"
@@ -7,11 +7,11 @@ import (
 	"github.com/kronothepenguin/project-reborn/internal/pkg/tmpl"
 )
 
-func IndexView(w http.ResponseWriter, r *http.Request) {
-	tmpl.Lookup("index.html").Execute(w, nil)
+func (c *CMS) handleIndexView(w http.ResponseWriter, r *http.Request) {
+	tmpl.ExecuteTemplate(r.Context(), w, "index.page.html", nil)
 }
 
-func HandleLogin(w http.ResponseWriter, r *http.Request) {
+func (c *CMS) handleLogin(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.FormValue("username"), r.FormValue("password"), r.FormValue("remember"))
 	http.Redirect(w, r, "/me", http.StatusFound)
 }

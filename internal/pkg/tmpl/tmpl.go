@@ -1,30 +1,43 @@
 package tmpl
 
 import (
-	"embed"
-	"fmt"
+	"context"
+	"errors"
 	"html/template"
+	"io"
 	"io/fs"
 )
 
-//go:embed components/*.html pages/*.html
-var tmplFS embed.FS
+var ErrNoFilesFound = errors.New("no files were found")
 
-var tmpl = template.Must(template.New("").ParseFS(tmplFS, "components/*.html", "pages/*.html"))
+type Resolver func() (*template.Template, error)
 
-func init() {
-	fmt.Println(tmpl.DefinedTemplates())
-}
+func ParseAllFS(fsys fs.FS) (*template.Template, error) {
+	var paths []string
+	err := fs.WalkDir(fsys, ".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
 
-func ReloadFS(fsys fs.FS) error {
-	parsed, err := template.New("").ParseFS(fsys, "components/*.html", "pages/*.html")
+		if d.IsDir() {
+			return nil
+		}
+
+		paths = append(paths, path)
+
+		return nil
+	})
 	if err != nil {
-		return err
+		return nil, err
 	}
-	tmpl = parsed
-	return nil
+
+	if len(paths) == 0 {
+		return nil, ErrNoFilesFound
+	}
+
+	return template.ParseFS(fsys, paths...)
 }
 
-func Lookup(name string) *template.Template {
-	return tmpl.Lookup(name)
+func ExecuteTemplate(ctx context.Context, w io.Writer, name string, data any) {
+	From(ctx).ExecuteTemplate(w, name, data)
 }
