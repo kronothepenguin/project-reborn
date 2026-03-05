@@ -1,9 +1,9 @@
 package game
 
 import (
-	"log"
 	"log/slog"
 	"net"
+	"net/http"
 
 	"github.com/kronothepenguin/project-reborn/internal/app/game/protocol"
 	hhentryinit "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_entry_init"
@@ -23,7 +23,7 @@ func New() *Game {
 	}
 }
 
-func (g *Game) handle(conn transport.Connection) {
+func (g *Game) handleInfo(conn transport.Connection) {
 	defer conn.Close()
 
 	for {
@@ -36,17 +36,21 @@ func (g *Game) handle(conn transport.Connection) {
 	}
 }
 
-func (s *Game) Start() {
+func (s *Game) Mount(mux *http.ServeMux) {
+	ws := transport.NewWebSocket()
+	ws.Handle(s.handleInfo)
+	ws.Mount(mux, "/client/info")
+	// TODO: wsMus.Mount(mux, "/client/mus")
+}
+
+func (s *Game) ListenAndServe(addr string) error {
 	// TODO: virtual.Storage
 	s.hotel = virtual.NewHotel(nil)
 	s.hotel.Load()
 
-	slog.SetLogLoggerLevel(slog.LevelDebug)
-
-	log.Println("running 0.0.0.0:1234")
-	tcp := transport.NewTCP("0.0.0.0:1234")
-	tcp.Handle(s.handle)
-	tcp.Listen()
+	tcp := transport.NewTCP(addr)
+	tcp.Handle(s.handleInfo)
+	return tcp.Listen()
 }
 
 func (s *Game) handleTCP(conn net.Conn) {
