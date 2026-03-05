@@ -48,17 +48,14 @@ func Register(registry protocol.Registry) {
 
 // FRIENDLIST_INIT
 func handleFriendListInit(packet *protocol.Packet) error {
-	hotel := packet.Context.Hotel()
+	hotel := packet.Session.Hotel
 
-	habbo := packet.Context.Habbo()
-	if habbo == nil {
-		return errors.New("handleFriendListInit habbo is nil")
-	}
+	habbo := packet.Session.Habbo
 
 	habbo.Mu.RLock()
 	defer habbo.Mu.RUnlock()
 
-	packet.Context.Logger().Debug("handleFriendListInit")
+	packet.Session.Logger.Debug("handleFriendListInit")
 
 	var args []io.WriterTo
 	args = append(
@@ -80,20 +77,17 @@ func handleFriendListInit(packet *protocol.Packet) error {
 		protocol.Int(len(habbo.FriendList.Requests)),
 	)
 
-	return packet.Context.Send(FRIENDLISTINIT, args...)
+	return packet.Session.Send(FRIENDLISTINIT, args...)
 }
 
 // FRIENDLIST_UPDATE
 func handleFriendListUpdate(packet *protocol.Packet) error {
-	habbo := packet.Context.Habbo()
-	if habbo == nil {
-		return errors.New("handleFriendListUpdate habbo is nil")
-	}
+	habbo := packet.Session.Habbo
 
 	habbo.Mu.RLock()
 	defer habbo.Mu.RUnlock()
 
-	packet.Context.Logger().Debug("handleFriendListUpdate")
+	packet.Session.Logger.Debug("handleFriendListUpdate")
 
 	var args []io.WriterTo
 
@@ -103,14 +97,14 @@ func handleFriendListUpdate(packet *protocol.Packet) error {
 		serializeUpdateFriends(habbo.FriendList.Friends, 0), // TODO: only send pending friends
 	)
 
-	return packet.Context.Send(FRIENDLISTUPDATE)
+	return packet.Session.Send(FRIENDLISTUPDATE)
 }
 
 // FRIENDLIST_GETOFFLINEFRIENDS
 func handleFriendListGetOfflineFriends(packet *protocol.Packet) error {
 	// client doesn't call this
 
-	packet.Context.Logger().Debug("handleFriendListGetOfflineFriends")
+	packet.Session.Logger.Debug("handleFriendListGetOfflineFriends")
 
 	return errors.New("unknown")
 }
@@ -126,7 +120,7 @@ func handleFRIENDLIST_REMOVEFRIEND(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug("handleFRIENDLIST_REMOVEFRIEND")
+	packet.Session.Logger.Debug("handleFRIENDLIST_REMOVEFRIEND")
 
 	var args []io.WriterTo
 	args = append(
@@ -138,36 +132,36 @@ func handleFRIENDLIST_REMOVEFRIEND(packet *protocol.Packet) error {
 	)
 
 	// TODO: send other habbo update if online
-	return packet.Context.Send(FRIENDLISTUPDATE, args...)
+	return packet.Session.Send(FRIENDLISTUPDATE, args...)
 }
 
 func handleMESSENGER_HABBOSEARCH(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleMESSENGER_HABBOSEARCH")
+	packet.Session.Logger.Debug("handleMESSENGER_HABBOSEARCH")
 	return nil
 }
 
 func handleFRIENDLIST_ACCEPTFRIEND(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleFRIENDLIST_ACCEPTFRIEND")
+	packet.Session.Logger.Debug("handleFRIENDLIST_ACCEPTFRIEND")
 	return nil
 }
 
 func handleFRIENDLIST_DECLINEFRIEND(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleFRIENDLIST_DECLINEFRIEND")
+	packet.Session.Logger.Debug("handleFRIENDLIST_DECLINEFRIEND")
 	return nil
 }
 
 func handleFRIENDLIST_FRIENDREQUEST(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleFRIENDLIST_FRIENDREQUEST")
+	packet.Session.Logger.Debug("handleFRIENDLIST_FRIENDREQUEST")
 	return nil
 }
 
 func handleFRIENDLIST_GETFRIENDREQUESTS(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleFRIENDLIST_GETFRIENDREQUESTS")
+	packet.Session.Logger.Debug("handleFRIENDLIST_GETFRIENDREQUESTS")
 	return nil
 }
 
 func handleFOLLOW_FRIEND(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleFOLLOW_FRIEND")
+	packet.Session.Logger.Debug("handleFOLLOW_FRIEND")
 	return nil
 }
 

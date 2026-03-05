@@ -27,11 +27,11 @@ func handleGetAvailabilityTime(packet *protocol.Packet) error {
 	isOpen := 0
 	timeUntil := time.Now().UnixMilli()
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleGetAvailabilityTime",
 		slog.Int("isOpen", isOpen),
 		slog.Int("timeUntil", int(timeUntil)),
 	)
 
-	return packet.Context.Send(AVAILABILITYTIME, protocol.Int(isOpen), protocol.Int(timeUntil))
+	return packet.Session.Send(AVAILABILITYTIME, protocol.Int(isOpen), protocol.Int(timeUntil))
 }

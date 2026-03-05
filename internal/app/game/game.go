@@ -2,7 +2,6 @@ package game
 
 import (
 	"log/slog"
-	"net"
 	"net/http"
 
 	"github.com/kronothepenguin/project-reborn/internal/app/game/protocol"
@@ -12,14 +11,16 @@ import (
 )
 
 type Game struct {
-	registry protocol.Registry
+	loginRegistry protocol.Registry
+	gameRegistry  protocol.Registry
 
 	hotel *virtual.Hotel
 }
 
 func New() *Game {
 	return &Game{
-		registry: createRegistry(),
+		loginRegistry: createLoginRegistry(),
+		gameRegistry:  createGameRegistry(),
 	}
 }
 
@@ -36,53 +37,68 @@ func (g *Game) handleInfo(conn transport.Connection) {
 	}
 }
 
-func (s *Game) Mount(mux *http.ServeMux) {
+func (g *Game) Mount(mux *http.ServeMux) {
 	ws := transport.NewWebSocket()
-	ws.Handle(s.handleInfo)
+	ws.Handle(g.handleInfo)
 	ws.Mount(mux, "/client/info")
 	// TODO: wsMus.Mount(mux, "/client/mus")
 }
 
-func (s *Game) ListenAndServe(addr string) error {
+func (g *Game) ListenAndServe(addr string) error {
 	// TODO: virtual.Storage
-	s.hotel = virtual.NewHotel(nil)
-	s.hotel.Load()
+	g.hotel = virtual.NewHotel(nil)
+	g.hotel.Load()
 
 	tcp := transport.NewTCP(addr)
-	tcp.Handle(s.handleInfo)
+	tcp.Handle(g.handle)
 	return tcp.Listen()
 }
 
-func (s *Game) handleTCP(conn net.Conn) {
+func (g *Game) handle(conn transport.Connection) {
 	defer conn.Close()
 
-	ctx := NewHabboContext(conn, s.registry, s.hotel)
+	logger := slog.New(slog.Default().Handler())
+	sess := protocol.NewSession(conn, g.loginRegistry.Commands(), g.hotel, logger)
 
-	ctx.logger.Info("new connection")
-	if err := hhentryinit.SendInitialCommands(ctx); err != nil {
-		ctx.logger.Error("handle", slog.String("err", err.Error()))
+	sess.Logger.Info("new connection")
+	if err := hhentryinit.SendInitialCommands(sess); err != nil {
+		sess.Logger.Error("handle", slog.String("err", err.Error()))
 		return
 	}
 
+	// Phase 1: pre-login
 	for {
-		p, err := protocol.ReadPacket(conn, ctx.Crypto())
+		p, err := sess.ReadPacket()
 		if err != nil {
-			ctx.logger.Error("read packet", slog.Any("error", err))
-			break
-		}
-		p.Context = ctx
-
-		// oldLogger := ctx.logger
-
-		// logger := ctx.logger.With(slog.Int("cmd", int(p.Command)))
-		// logger.Info("<<", slog.String("msg", p.Message.String()))
-		// ctx.logger = logger
-		ctx.logger.Info("<<", slog.Int("cmd", int(p.Command)), slog.String("msg", p.Message.String()))
-		if err := s.registry.Listeners().Handle(p); err != nil {
-			ctx.logger.Error("handle", slog.Any("error", err))
-			break
+			sess.Logger.Error("read packet", slog.Any("error", err))
+			return
 		}
 
-		// ctx.logger = oldLogger
+		sess.Logger.Info("<<", slog.Int("cmd", int(p.Command)), slog.String("msg", p.Message.String()))
+		if err := g.loginRegistry.Listeners().Handle(p); err != nil {
+			sess.Logger.Error("handle", slog.Any("error", err))
+			return
+		}
+
+		if sess.Habbo != nil {
+			break
+		}
+	}
+
+	// Phase 2: post-login (Habbo guaranteed != nil)
+	sess.SetCommands(g.gameRegistry.Commands())
+
+	for {
+		p, err := sess.ReadPacket()
+		if err != nil {
+			sess.Logger.Error("read packet", slog.Any("error", err))
+			break
+		}
+
+		sess.Logger.Info("<<", slog.Int("cmd", int(p.Command)), slog.String("msg", p.Message.String()))
+		if err := g.gameRegistry.Listeners().Handle(p); err != nil {
+			sess.Logger.Error("handle", slog.Any("error", err))
+			break
+		}
 	}
 }

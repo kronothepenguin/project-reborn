@@ -26,7 +26,7 @@ func handleSCRGetUserInfo(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleSCRGetUserInfo",
 		slog.String("product", product),
 	)
@@ -37,7 +37,7 @@ func handleSCRGetUserInfo(packet *protocol.Packet) error {
 	prepaidPeriods := 0
 	responseFlag := 0 // 2 - show dialog, 3 - ended
 
-	return packet.Context.Send(SCR_SINFO, protocol.String(productName), protocol.Int(daysLeft), protocol.Int(elapsedPeriods), protocol.Int(prepaidPeriods), protocol.Int(responseFlag))
+	return packet.Session.Send(SCR_SINFO, protocol.String(productName), protocol.Int(daysLeft), protocol.Int(elapsedPeriods), protocol.Int(prepaidPeriods), protocol.Int(responseFlag))
 }
 
 func handleSCRBuy(*protocol.Packet) error { return nil }

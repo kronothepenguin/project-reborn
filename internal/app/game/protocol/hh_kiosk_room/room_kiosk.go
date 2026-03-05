@@ -26,5 +26,5 @@ func handleCreateFlat(packet *protocol.Packet) error {
 	strings.TrimSpace(data[3]) // marker
 	strings.TrimSpace(data[4]) // door
 	strings.TrimSpace(data[5]) // showOwnerName
-	return packet.Context.Send(FLATCREATED, protocol.RawString("id\nflat_name"))
+	return packet.Session.Send(FLATCREATED, protocol.RawString("id\nflat_name"))
 }

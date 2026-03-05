@@ -75,7 +75,7 @@ func Register(registry protocol.Registry) {
 func handleSBUSYF(packet *protocol.Packet) error {
 	// client doesn't send this command
 
-	packet.Context.Logger().Debug("handleSBUSYF")
+	packet.Session.Logger.Debug("handleSBUSYF")
 
 	return errors.New("handleSBUSYF this command doesn't exists")
 }
@@ -84,12 +84,9 @@ func handleSBUSYF(packet *protocol.Packet) error {
 func handleGetOwnFlats(packet *protocol.Packet) error {
 	name := packet.Message.ReadRawString()
 
-	packet.Context.Logger().Debug("handleGetOwnFlats", slog.String("name", name))
+	packet.Session.Logger.Debug("handleGetOwnFlats", slog.String("name", name))
 
-	habbo := packet.Context.Habbo()
-	if habbo == nil {
-		return errors.New("handleGetOwnFlats habbo is nil")
-	}
+	habbo := packet.Session.Habbo
 
 	habbo.Mu.RLock()
 	defer habbo.Mu.RUnlock()
@@ -100,27 +97,27 @@ func handleGetOwnFlats(packet *protocol.Packet) error {
 
 	if len(habbo.Flats) > 0 {
 		result := serializeFlatResults(habbo.Flats)
-		return packet.Context.Send(OWN_FLAT_RESULTS, protocol.RawString(result))
+		return packet.Session.Send(OWN_FLAT_RESULTS, protocol.RawString(result))
 	}
 
-	return packet.Context.Send(NOFLATSFORUSER)
+	return packet.Session.Send(NOFLATSFORUSER)
 }
 
 // SRCHF
 func handleSearchFlats(packet *protocol.Packet) error {
 	query := packet.Message.ReadRawString()
 
-	packet.Context.Logger().Debug("handleSearchFlats", slog.String("query", query))
+	packet.Session.Logger.Debug("handleSearchFlats", slog.String("query", query))
 
-	navigator := &packet.Context.Hotel().Navigator
+	navigator := &packet.Session.Hotel.Navigator
 
 	flats := navigator.Filter(query)
 	if len(flats) > 0 {
 		result := serializeFlatResults(flats)
-		return packet.Context.Send(SRC_FLAT_RESULTS, protocol.RawString(result))
+		return packet.Session.Send(SRC_FLAT_RESULTS, protocol.RawString(result))
 	}
 
-	return packet.Context.Send(NOFLATS)
+	return packet.Session.Send(NOFLATS)
 }
 
 // GETFVRF
@@ -130,12 +127,9 @@ func handleGetFavoriteFlats(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug("handleGetFavoriteFlats")
+	packet.Session.Logger.Debug("handleGetFavoriteFlats")
 
-	habbo := packet.Context.Habbo()
-	if habbo == nil {
-		return errors.New("handleGetFavoriteFlats habbo is nil")
-	}
+	habbo := packet.Session.Habbo
 
 	info := habbo.FavoriteFlats()
 
@@ -153,7 +147,7 @@ func handleGetFavoriteFlats(packet *protocol.Packet) error {
 
 	args = slices.Concat(args, serializeNavigatorNode(info.Node, 1))
 
-	return packet.Context.Send(FAVOURITEROOMRESULTS, args...)
+	return packet.Session.Send(FAVOURITEROOMRESULTS, args...)
 }
 
 // ADD_FAVORITE_ROOM
@@ -168,20 +162,17 @@ func handleAddFavoriteFlat(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleAddFavoriteFlat",
 		slog.Int("nodeType", nodeType),
 		slog.Int("nodeID", nodeID),
 	)
 
-	habbo := packet.Context.Habbo()
-	if habbo == nil {
-		return errors.New("handleAddFavoriteFlat habbo is nil")
-	}
+	habbo := packet.Session.Habbo
 
 	habbo.AddFavoriteFlat(nodeID)
 
-	return packet.Context.Send(SUCCESS, protocol.Int(19))
+	return packet.Session.Send(SUCCESS, protocol.Int(19))
 }
 
 // DEL_FAVORITE_ROOM
@@ -196,34 +187,31 @@ func handleDelFavoriteFlat(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleDelFavoriteFlat",
 		slog.Int("nodeType", nodeType),
 		slog.Int("nodeID", nodeID),
 	)
 
-	habbo := packet.Context.Habbo()
-	if habbo == nil {
-		return errors.New("handleDelFavoriteFlat habbo is nil")
-	}
+	habbo := packet.Session.Habbo
 
 	habbo.DeleteFavoriteFlat(nodeID)
 
-	return packet.Context.Send(SUCCESS, protocol.Int(20))
+	return packet.Session.Send(SUCCESS, protocol.Int(20))
 }
 
 // GETFLATINFO
 func handleGetFlatInfo(packet *protocol.Packet) error {
 	flatIDRaw := packet.Message.ReadRawString()
 
-	packet.Context.Logger().Debug("handleGetFlatInfo", slog.String("flatID", flatIDRaw))
+	packet.Session.Logger.Debug("handleGetFlatInfo", slog.String("flatID", flatIDRaw))
 
 	flatID, err := strconv.Atoi(flatIDRaw)
 	if err != nil {
 		return err
 	}
 
-	return packet.Context.Send(
+	return packet.Session.Send(
 		FLATINFO,
 		protocol.Int(1),                 // ableothersmovefurniture
 		protocol.Int(0),                 // door
@@ -244,9 +232,9 @@ func handleGetFlatInfo(packet *protocol.Packet) error {
 func handleDeleteFlat(packet *protocol.Packet) error {
 	flatID := packet.Message.ReadRawString()
 
-	packet.Context.Logger().Debug("handleDeleteFlat", slog.String("flatID", flatID))
+	packet.Session.Logger.Debug("handleDeleteFlat", slog.String("flatID", flatID))
 
-	return packet.Context.Send(SUCCESS, protocol.Int(23))
+	return packet.Session.Send(SUCCESS, protocol.Int(23))
 }
 
 // UPDATEFLAT
@@ -262,7 +250,7 @@ func handleUpdateFlatInfo(packet *protocol.Packet) error {
 	door := data[2]
 	showOwnerName := data[3]
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleUpdateFlatInfo",
 		slog.String("flatID", flatID),
 		slog.String("name", name),
@@ -270,16 +258,16 @@ func handleUpdateFlatInfo(packet *protocol.Packet) error {
 		slog.String("showOwnerName", showOwnerName),
 	)
 
-	return packet.Context.Send(SUCCESS, protocol.Int(24))
+	return packet.Session.Send(SUCCESS, protocol.Int(24))
 }
 
 // SETFLATINFO
 func handleSetFlatInfo(packet *protocol.Packet) error {
 	msg := packet.Message.ReadRawString()
 
-	packet.Context.Logger().Debug("handleSetFlatInfo", slog.String("msg", msg))
+	packet.Session.Logger.Debug("handleSetFlatInfo", slog.String("msg", msg))
 
-	return packet.Context.Send(SUCCESS, protocol.Int(25))
+	return packet.Session.Send(SUCCESS, protocol.Int(25))
 }
 
 func handleNavigate(packet *protocol.Packet) error {
@@ -299,14 +287,14 @@ func handleNavigate(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleNavigate",
 		slog.Int("nodeMask", nodeMask),
 		slog.Int("nodeId", nodeId),
 		slog.Int("depth", depth),
 	)
 
-	node, ok := packet.Context.Hotel().Navigator.Nodes[nodeId]
+	node, ok := packet.Session.Hotel.Navigator.Nodes[nodeId]
 	if !ok {
 		return fmt.Errorf("handleNavigate node type %d not found", nodeId)
 	}
@@ -325,14 +313,14 @@ func handleNavigate(packet *protocol.Packet) error {
 
 	args = slices.Concat(args, serializeNavigatorNode(node.Node, depth))
 
-	return packet.Context.Send(NAVNODEINFO, args...)
+	return packet.Session.Send(NAVNODEINFO, args...)
 }
 
 // GETUSERFLATCATS
 func handleGetUserFlatCategories(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGetUserFlatCategories")
+	packet.Session.Logger.Debug("handleGetUserFlatCategories")
 
-	navigator := &packet.Context.Hotel().Navigator
+	navigator := &packet.Session.Hotel.Navigator
 	// TODO: reliable source of flat categories
 	flatCats := navigator.Nodes[navigator.RootFlatCatId]
 	cats := flatCats.Node.(*virtual.NavigatorCategoryNode).Children
@@ -347,7 +335,7 @@ func handleGetUserFlatCategories(packet *protocol.Packet) error {
 		)
 	}
 
-	return packet.Context.Send(USERFLATCATS, args...)
+	return packet.Session.Send(USERFLATCATS, args...)
 }
 
 // GETFLATCAT
@@ -357,10 +345,10 @@ func handleGetFlatCategory(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug("handleGetFlatCategory", slog.Int("flatID", flatID))
+	packet.Session.Logger.Debug("handleGetFlatCategory", slog.Int("flatID", flatID))
 
 	// TODO: fetch flat's category
-	return packet.Context.Send(FLATCAT, protocol.Int(flatID), protocol.Int(packet.Context.Hotel().Navigator.RootFlatCatId))
+	return packet.Session.Send(FLATCAT, protocol.Int(flatID), protocol.Int(packet.Session.Hotel.Navigator.RootFlatCatId))
 }
 
 // SETFLATCAT
@@ -375,7 +363,7 @@ func handleSetFlatCategory(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleSetFlatCategory",
 		slog.Int("flatID", flatID),
 		slog.Int("categoryID", categoryID),
@@ -391,9 +379,9 @@ func handleGetSpaceNodeUsers(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug("handleGetSpaceNodeUsers", slog.Int("nodeID", nodeID))
+	packet.Session.Logger.Debug("handleGetSpaceNodeUsers", slog.Int("nodeID", nodeID))
 
-	return packet.Context.Send(SPACENODEUSERS, protocol.Int(nodeID), protocol.Int(1), protocol.String("$name"))
+	return packet.Session.Send(SPACENODEUSERS, protocol.Int(nodeID), protocol.Int(1), protocol.String("$name"))
 }
 
 // REMOVEALLRIGHTS
@@ -403,9 +391,9 @@ func handleRemoveAllRights(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug("handleRemoveAllRights", slog.Int("flatID", flatID))
+	packet.Session.Logger.Debug("handleRemoveAllRights", slog.Int("flatID", flatID))
 
-	return packet.Context.Send(SUCCESS, protocol.Int(155))
+	return packet.Session.Send(SUCCESS, protocol.Int(155))
 }
 
 // GETPARENTCHAIN
@@ -415,22 +403,22 @@ func handleGetParentChain(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug("handleGetParentChain", slog.Int("flatID", flatID))
+	packet.Session.Logger.Debug("handleGetParentChain", slog.Int("flatID", flatID))
 
-	// return packet.Context.Send(PARENTCHAIN)
+	// return packet.Session.Send(PARENTCHAIN)
 	return nil
 }
 
 // GET_RECOMMENDED_ROOMS
 func handleGetRecommendedRooms(packet *protocol.Packet) error {
-	navigator := &packet.Context.Hotel().Navigator
+	navigator := &packet.Session.Hotel.Navigator
 
 	navigator.Mu.RLock()
 	defer navigator.Mu.RUnlock()
 
 	recommended := navigator.Recommended()
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleGetRecommendedRooms",
 		slog.String("recommended", fmt.Sprintf("%+v", recommended)),
 	)
@@ -450,7 +438,7 @@ func handleGetRecommendedRooms(packet *protocol.Packet) error {
 		)
 	}
 
-	return packet.Context.Send(RECOMMENDED_ROOM_LIST, args...)
+	return packet.Session.Send(RECOMMENDED_ROOM_LIST, args...)
 }
 
 func serializeFlatResults(flats []*virtual.NavigatorFlat) string {

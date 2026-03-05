@@ -93,120 +93,120 @@ func Register(registry protocol.Registry) {
 func handleIGCheckDirectoryStatus(packet *protocol.Packet) error {
 	code := 0
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleIGCheckDirectoryStatus",
 		slog.Int("code", code),
 	)
 
-	return packet.Context.Send(DIRECTORY_STATUS)
+	return packet.Session.Send(DIRECTORY_STATUS)
 }
 
 func handleIGRoomGameStatus(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGRoomGameStatus")
+	packet.Session.Logger.Debug("handleIGRoomGameStatus")
 	return nil
 }
 
 func handleIGPlayAgain(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGPlayAgain")
+	packet.Session.Logger.Debug("handleIGPlayAgain")
 	return nil
 }
 
 func handleGameChat(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGameChat")
+	packet.Session.Logger.Debug("handleGameChat")
 	return nil
 }
 
 func handleIGCreateGame(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGCreateGame")
+	packet.Session.Logger.Debug("handleIGCreateGame")
 	return nil
 }
 
 func handleIGGetGameList(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGGetGameList")
+	packet.Session.Logger.Debug("handleIGGetGameList")
 	return nil
 }
 
 func handleIGGetCreateGameInfo(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGGetCreateGameInfo")
+	packet.Session.Logger.Debug("handleIGGetCreateGameInfo")
 	return nil
 }
 
 func handleIGChangeParameters(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGChangeParameters")
+	packet.Session.Logger.Debug("handleIGChangeParameters")
 	return nil
 }
 
 func handleIGListPossibleInvites(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGListPossibleInvites")
+	packet.Session.Logger.Debug("handleIGListPossibleInvites")
 	return nil
 }
 
 func handleIGInviteUser(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGInviteUser")
+	packet.Session.Logger.Debug("handleIGInviteUser")
 	return nil
 }
 
 func handleIGKickUser(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGKickUser")
+	packet.Session.Logger.Debug("handleIGKickUser")
 	return nil
 }
 
 func handleIGStartGame(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGStartGame")
+	packet.Session.Logger.Debug("handleIGStartGame")
 	return nil
 }
 
 func handleIGCancelGame(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGCancelGame")
+	packet.Session.Logger.Debug("handleIGCancelGame")
 	return nil
 }
 
 func handleIGJoinGame(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGJoinGame")
+	packet.Session.Logger.Debug("handleIGJoinGame")
 	return nil
 }
 
 func handleIGLeaveGame(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGLeaveGame")
+	packet.Session.Logger.Debug("handleIGLeaveGame")
 	return nil
 }
 
 func handleIGStartObservingGame(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGStartObservingGame")
+	packet.Session.Logger.Debug("handleIGStartObservingGame")
 	return nil
 }
 
 func handleIGStopObservingGame(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGStopObservingGame")
+	packet.Session.Logger.Debug("handleIGStopObservingGame")
 	return nil
 }
 
 func handleIGGetLevelHallOfFame(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGGetLevelHallOfFame")
+	packet.Session.Logger.Debug("handleIGGetLevelHallOfFame")
 	return nil
 }
 
 func handleIGAcceptInviteRequest(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGAcceptInviteRequest")
+	packet.Session.Logger.Debug("handleIGAcceptInviteRequest")
 	return nil
 }
 
 func handleIGDeclineInviteRequest(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGDeclineInviteRequest")
+	packet.Session.Logger.Debug("handleIGDeclineInviteRequest")
 	return nil
 }
 
 func handleIGLoadStageReady(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGLoadStageReady")
+	packet.Session.Logger.Debug("handleIGLoadStageReady")
 	return nil
 }
 
 func handleMSGPlayerInput(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleMSGPlayerInput")
+	packet.Session.Logger.Debug("handleMSGPlayerInput")
 	return nil
 }
 
 func handleIGExitGame(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGExitGame")
+	packet.Session.Logger.Debug("handleIGExitGame")
 	return nil
 }

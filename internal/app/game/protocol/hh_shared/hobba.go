@@ -27,8 +27,8 @@ func handlePickCryForHelp(packet *protocol.Packet) error {
 		return err
 	}
 
-	// packet.Context.Send("PICKED_CRY", StringArg(ID), StringArg(habbo.Name()))
-	return packet.Context.Send(PICKED_CRY, protocol.String(id), protocol.String("picker"))
+	// packet.Session.Send("PICKED_CRY", StringArg(ID), StringArg(habbo.Name()))
+	return packet.Session.Send(PICKED_CRY, protocol.String(id), protocol.String("picker"))
 }
 
 func handleCallForHelp(packet *protocol.Packet) error {
@@ -43,7 +43,7 @@ func handleCallForHelp(packet *protocol.Packet) error {
 	}
 
 	// TODO: ctx.Hotel().Hobbas().Send(CRY_FOR_HELP, ...)
-	return packet.Context.Send(CRYFORHELP, protocol.String(msg), protocol.Int(typ))
+	return packet.Session.Send(CRYFORHELP, protocol.String(msg), protocol.Int(typ))
 }
 
 func handleChangeCallCategory(packet *protocol.Packet) error {
@@ -58,7 +58,7 @@ func handleChangeCallCategory(packet *protocol.Packet) error {
 	}
 
 	// TODO: ctx.Hotel().Hobbas().Send(CRY_FOR_HELP, ...)
-	return packet.Context.Send(CRYFORHELP, protocol.String(id), protocol.Int(category))
+	return packet.Session.Send(CRYFORHELP, protocol.String(id), protocol.Int(category))
 }
 
 func handleMessageToCaller(packet *protocol.Packet) error {
@@ -74,7 +74,7 @@ func handleMessageToCaller(packet *protocol.Packet) error {
 
 	// TODO: caller := ctx.Hotel().Hobbas().FindCallerOf(id)
 	// TOOD: caller.send(CRY_REPLY, msg)
-	return packet.Context.Send(CRY_REPLY, protocol.String(msg))
+	return packet.Session.Send(CRY_REPLY, protocol.String(msg))
 }
 
 func handleModerationAction(packet *protocol.Packet) error {

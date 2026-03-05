@@ -22,13 +22,19 @@ import (
 	hhtutorial "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_tutorial"
 )
 
-func createRegistry() protocol.Registry {
+func createLoginRegistry() protocol.Registry {
 	registry := protocol.NewRegistry()
+	hhentryinit.RegisterLogin(registry)
+	return registry
+}
+
+func createGameRegistry() protocol.Registry {
+	registry := protocol.NewRegistry()
+	hhentryinit.RegisterSession(registry)
 	hhbuffer.Register(registry)
 	hhcatcode.Register(registry)
 	hhclub.Register(registry)
 	hhdynamicdownloader.Register(registry)
-	hhentryinit.Register(registry)
 	hhfriendlist.Register(registry)
 	hhguide.Register(registry)
 	hhig.Register(registry)

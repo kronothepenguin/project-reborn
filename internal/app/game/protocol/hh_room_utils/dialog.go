@@ -18,10 +18,10 @@ func Register(registry protocol.Registry) {
 func handleGetPendingCallsForHelp(packet *protocol.Packet) error {
 	// TODO: pending cfh
 	// protocol.Int(count), protocol.Int(id), protocol.String(timestamp), protocol.String(cfh)
-	return packet.Context.Send(GET_PENDING_RESPONSE, protocol.Int(0))
+	return packet.Session.Send(GET_PENDING_RESPONSE, protocol.Int(0))
 }
 
 func handleDeletePendingCallsForHelp(packet *protocol.Packet) error {
 	// TODO: delete pending cfh
-	return packet.Context.Send(PENDING_CFHS_DELETED)
+	return packet.Session.Send(PENDING_CFHS_DELETED)
 }

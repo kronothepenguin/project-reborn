@@ -247,7 +247,7 @@ func handleRoomDirectory(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleRoomDirectory",
 		slog.Bool("isPublic", isPublic),
 		slog.Int("roomID", roomID),
@@ -256,67 +256,67 @@ func handleRoomDirectory(packet *protocol.Packet) error {
 
 	var errs []error
 
-	errs = append(errs, packet.Context.Send(OPC_OK)) // ??? from Holograph
+	errs = append(errs, packet.Session.Send(OPC_OK)) // ??? from Holograph
 	if doorID == 0 {
 		// TODO: not allowed to enter locked rooms or room is full
 		// 1: tError = "nav_error_room_full"
 		// 2: tError = "nav_error_room_closed"
 		// 3: tError = "queue_set." & tConn.GetStrFrom() & ".alert"
 		// 4: tError = "nav_room_banned"
-		// packet.Context.Send("CANTCONNECT", protocol.Int())
-		// packet.Context.Send("SYSTEMBROADCAST") // Looks like not needed at all
+		// packet.Session.Send("CANTCONNECT", protocol.Int())
+		// packet.Session.Send("SYSTEMBROADCAST") // Looks like not needed at all
 	}
 
 	if isPublic {
-		errs = append(errs, packet.Context.Send(ROOM_READY, protocol.RawString("ballroom"))) // marker e.han. ballroom.room
+		errs = append(errs, packet.Session.Send(ROOM_READY, protocol.RawString("ballroom"))) // marker e.han. ballroom.room
 	}
 
 	return errors.Join(errs...)
 }
 
 func handleGETDOORFLAT(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGETDOORFLAT")
+	packet.Session.Logger.Debug("handleGETDOORFLAT")
 	return nil
 }
 
 func handleCHAT(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleCHAT")
+	packet.Session.Logger.Debug("handleCHAT")
 	return nil
 }
 
 func handleSHOUT(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleSHOUT")
+	packet.Session.Logger.Debug("handleSHOUT")
 	return nil
 }
 
 func handleWHISPER(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleWHISPER")
+	packet.Session.Logger.Debug("handleWHISPER")
 	return nil
 }
 
 func handleQUIT(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleQUIT")
+	packet.Session.Logger.Debug("handleQUIT")
 	return nil
 }
 
 func handleGOVIADOOR(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGOVIADOOR")
+	packet.Session.Logger.Debug("handleGOVIADOOR")
 	return nil
 }
 
 func handleTRYFLAT(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleTRYFLAT")
+	packet.Session.Logger.Debug("handleTRYFLAT")
 	return nil
 }
 
 func handleGOTOFLAT(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGOTOFLAT")
+	packet.Session.Logger.Debug("handleGOTOFLAT")
 	return nil
 }
 
 // G_HMAP
 func handleGetHeightMap(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGetHeightMap")
+	packet.Session.Logger.Debug("handleGetHeightMap")
 
 	var hmap strings.Builder
 	hmap.WriteString("xxxxxxxxxxxxxxxxxxxxxxxx\r")
@@ -345,12 +345,12 @@ func handleGetHeightMap(packet *protocol.Packet) error {
 	hmap.WriteString("xxxxxxxxx11111111Axxxxxx\r")
 	hmap.WriteString("xxxxxxxxxxxxxxxxxxxxxxxx\r")
 
-	return packet.Context.Send(HEIGHTMAP, protocol.RawString(hmap.String()))
+	return packet.Session.Send(HEIGHTMAP, protocol.RawString(hmap.String()))
 }
 
 // G_USRS
 func handleGetUsers(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGetUsers")
+	packet.Session.Logger.Debug("handleGetUsers")
 
 	var users strings.Builder
 	users.WriteString("i:10\r")                                     // user id
@@ -371,136 +371,136 @@ func handleGetUsers(packet *protocol.Packet) error {
 	users.WriteString("x:100\r") // xp?
 	// TODO: much more properties at hh_room/Room Handler Class.ls:142
 
-	return packet.Context.Send(USERS, protocol.RawString(users.String()))
+	return packet.Session.Send(USERS, protocol.RawString(users.String()))
 }
 
 // G_OBJS
 func handleGetObjects(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGetObjects")
+	packet.Session.Logger.Debug("handleGetObjects")
 
 	return errors.Join(
-		packet.Context.Send(OBJECTS, protocol.RawString("")),
-		packet.Context.Send(ACTIVEOBJECTS, protocol.Int(0)),
+		packet.Session.Send(OBJECTS, protocol.RawString("")),
+		packet.Session.Send(ACTIVEOBJECTS, protocol.Int(0)),
 	)
 }
 
 func handleG_ITEMS(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleG_ITEMS")
+	packet.Session.Logger.Debug("handleG_ITEMS")
 	return nil
 }
 
 func handleG_STAT(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleG_STAT")
+	packet.Session.Logger.Debug("handleG_STAT")
 	return nil
 }
 
 func handleGETSTRIP(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGETSTRIP")
+	packet.Session.Logger.Debug("handleGETSTRIP")
 	return nil
 }
 
 func handleFLATPROPBYITEM(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleFLATPROPBYITEM")
+	packet.Session.Logger.Debug("handleFLATPROPBYITEM")
 	return nil
 }
 
 func handleADDSTRIPITEM(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleADDSTRIPITEM")
+	packet.Session.Logger.Debug("handleADDSTRIPITEM")
 	return nil
 }
 
 func handleTRADE_UNACCEPT(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleTRADE_UNACCEPT")
+	packet.Session.Logger.Debug("handleTRADE_UNACCEPT")
 	return nil
 }
 
 func handleTRADE_ACCEPT(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleTRADE_ACCEPT")
+	packet.Session.Logger.Debug("handleTRADE_ACCEPT")
 	return nil
 }
 
 func handleTRADE_CLOSE(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleTRADE_CLOSE")
+	packet.Session.Logger.Debug("handleTRADE_CLOSE")
 	return nil
 }
 
 func handleTRADE_OPEN(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleTRADE_OPEN")
+	packet.Session.Logger.Debug("handleTRADE_OPEN")
 	return nil
 }
 
 func handleTRADE_ADDITEM(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleTRADE_ADDITEM")
+	packet.Session.Logger.Debug("handleTRADE_ADDITEM")
 	return nil
 }
 
 func handleMOVESTUFF(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleMOVESTUFF")
+	packet.Session.Logger.Debug("handleMOVESTUFF")
 	return nil
 }
 
 func handleSETSTUFFDATA(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleSETSTUFFDATA")
+	packet.Session.Logger.Debug("handleSETSTUFFDATA")
 	return nil
 }
 
 func handleMOVE(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleMOVE")
+	packet.Session.Logger.Debug("handleMOVE")
 	return nil
 }
 
 func handleTHROW_DICE(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleTHROW_DICE")
+	packet.Session.Logger.Debug("handleTHROW_DICE")
 	return nil
 }
 
 func handleDICE_OFF(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleDICE_OFF")
+	packet.Session.Logger.Debug("handleDICE_OFF")
 	return nil
 }
 
 func handlePRESENTOPEN(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handlePRESENTOPEN")
+	packet.Session.Logger.Debug("handlePRESENTOPEN")
 	return nil
 }
 
 func handleLOOKTO(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleLOOKTO")
+	packet.Session.Logger.Debug("handleLOOKTO")
 	return nil
 }
 
 func handleCARRYDRINK(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleCARRYDRINK")
+	packet.Session.Logger.Debug("handleCARRYDRINK")
 	return nil
 }
 
 func handleINTODOOR(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleINTODOOR")
+	packet.Session.Logger.Debug("handleINTODOOR")
 	return nil
 }
 
 func handleDOORGOIN(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleDOORGOIN")
+	packet.Session.Logger.Debug("handleDOORGOIN")
 	return nil
 }
 
 func handleG_IDATA(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleG_IDATA")
+	packet.Session.Logger.Debug("handleG_IDATA")
 	return nil
 }
 
 func handleSETITEMDATA(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleSETITEMDATA")
+	packet.Session.Logger.Debug("handleSETITEMDATA")
 	return nil
 }
 
 func handleREMOVEITEM(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleREMOVEITEM")
+	packet.Session.Logger.Debug("handleREMOVEITEM")
 	return nil
 }
 
 func handleCARRYITEM(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleCARRYITEM")
+	packet.Session.Logger.Debug("handleCARRYITEM")
 	return nil
 }
 
@@ -508,193 +508,193 @@ func handleCARRYITEM(packet *protocol.Packet) error {
 func handleStop(packet *protocol.Packet) error {
 	what := packet.Message.ReadRawString()
 
-	packet.Context.Logger().Debug("handleStop", slog.String("what", what))
+	packet.Session.Logger.Debug("handleStop", slog.String("what", what))
 
 	return nil
 }
 
 func handleUSEITEM(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleUSEITEM")
+	packet.Session.Logger.Debug("handleUSEITEM")
 	return nil
 }
 
 func handlePLACESTUFF(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handlePLACESTUFF")
+	packet.Session.Logger.Debug("handlePLACESTUFF")
 	return nil
 }
 
 func handleDANCE(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleDANCE")
+	packet.Session.Logger.Debug("handleDANCE")
 	return nil
 }
 
 func handleWAVE(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleWAVE")
+	packet.Session.Logger.Debug("handleWAVE")
 	return nil
 }
 
 func handleKICKUSER(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleKICKUSER")
+	packet.Session.Logger.Debug("handleKICKUSER")
 	return nil
 }
 
 func handleASSIGNRIGHTS(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleASSIGNRIGHTS")
+	packet.Session.Logger.Debug("handleASSIGNRIGHTS")
 	return nil
 }
 
 func handleREMOVERIGHTS(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleREMOVERIGHTS")
+	packet.Session.Logger.Debug("handleREMOVERIGHTS")
 	return nil
 }
 
 func handleLETUSERIN(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleLETUSERIN")
+	packet.Session.Logger.Debug("handleLETUSERIN")
 	return nil
 }
 
 func handleREMOVESTUFF(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleREMOVESTUFF")
+	packet.Session.Logger.Debug("handleREMOVESTUFF")
 	return nil
 }
 
 func handleGOAWAY(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGOAWAY")
+	packet.Session.Logger.Debug("handleGOAWAY")
 	return nil
 }
 
 // GETROOMAD
 func handleGetRoomAd(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGetRoomAd")
+	packet.Session.Logger.Debug("handleGetRoomAd")
 
 	// Room ads raw"{src}\t{target}"
-	return packet.Context.Send(ROOMAD, protocol.RawString(""))
+	return packet.Session.Send(ROOMAD, protocol.RawString(""))
 }
 
 func handleGETPETSTAT(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGETPETSTAT")
+	packet.Session.Logger.Debug("handleGETPETSTAT")
 	return nil
 }
 
 func handleSETBADGE(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleSETBADGE")
+	packet.Session.Logger.Debug("handleSETBADGE")
 	return nil
 }
 
 // GETINTERST
 func handleGetInterstitial(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGetInterstitial")
+	packet.Session.Logger.Debug("handleGetInterstitial")
 
 	// Ads when entering a room raw"{src}\t{target}"
-	return packet.Context.Send(INTERSTITIALDATA, protocol.RawString(""))
+	return packet.Session.Send(INTERSTITIALDATA, protocol.RawString(""))
 }
 
 func handleCONVERT_FURNI_TO_CREDITS(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleCONVERT_FURNI_TO_CREDITS")
+	packet.Session.Logger.Debug("handleCONVERT_FURNI_TO_CREDITS")
 	return nil
 }
 
 func handleROOM_QUEUE_CHANGE(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleROOM_QUEUE_CHANGE")
+	packet.Session.Logger.Debug("handleROOM_QUEUE_CHANGE")
 	return nil
 }
 
 func handleSETITEMSTATE(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleSETITEMSTATE")
+	packet.Session.Logger.Debug("handleSETITEMSTATE")
 	return nil
 }
 
 func handleGET_SPECTATOR_AMOUNT(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGET_SPECTATOR_AMOUNT")
+	packet.Session.Logger.Debug("handleGET_SPECTATOR_AMOUNT")
 	return nil
 }
 
 func handleGET_GROUP_BADGES(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGET_GROUP_BADGES")
+	packet.Session.Logger.Debug("handleGET_GROUP_BADGES")
 	return nil
 }
 
 func handleGET_GROUP_DETAILS(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGET_GROUP_DETAILS")
+	packet.Session.Logger.Debug("handleGET_GROUP_DETAILS")
 	return nil
 }
 
 func handleSPIN_WHEEL_OF_FORTUNE(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleSPIN_WHEEL_OF_FORTUNE")
+	packet.Session.Logger.Debug("handleSPIN_WHEEL_OF_FORTUNE")
 	return nil
 }
 
 func handleRATEFLAT(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleRATEFLAT")
+	packet.Session.Logger.Debug("handleRATEFLAT")
 	return nil
 }
 
 func handleGET_USER_TAGS(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGET_USER_TAGS")
+	packet.Session.Logger.Debug("handleGET_USER_TAGS")
 	return nil
 }
 
 func handleSET_RANDOM_STATE(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleSET_RANDOM_STATE")
+	packet.Session.Logger.Debug("handleSET_RANDOM_STATE")
 	return nil
 }
 
 func handleUSER_START_TYPING(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleUSER_START_TYPING")
+	packet.Session.Logger.Debug("handleUSER_START_TYPING")
 	return nil
 }
 
 func handleUSER_CANCEL_TYPING(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleUSER_CANCEL_TYPING")
+	packet.Session.Logger.Debug("handleUSER_CANCEL_TYPING")
 	return nil
 }
 
 func handleIGNOREUSER(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleIGNOREUSER")
+	packet.Session.Logger.Debug("handleIGNOREUSER")
 	return nil
 }
 
 func handleBANUSER(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleBANUSER")
+	packet.Session.Logger.Debug("handleBANUSER")
 	return nil
 }
 
 func handleGET_IGNORE_LIST(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGET_IGNORE_LIST")
+	packet.Session.Logger.Debug("handleGET_IGNORE_LIST")
 	return nil
 }
 
 func handleUNIGNORE_USER(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleUNIGNORE_USER")
+	packet.Session.Logger.Debug("handleUNIGNORE_USER")
 	return nil
 }
 
 func handleCAN_CREATE_ROOMEVENT(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleCAN_CREATE_ROOMEVENT")
+	packet.Session.Logger.Debug("handleCAN_CREATE_ROOMEVENT")
 	return nil
 }
 
 func handleCREATE_ROOMEVENT(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleCREATE_ROOMEVENT")
+	packet.Session.Logger.Debug("handleCREATE_ROOMEVENT")
 	return nil
 }
 
 func handleQUIT_ROOMEVENT(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleQUIT_ROOMEVENT")
+	packet.Session.Logger.Debug("handleQUIT_ROOMEVENT")
 	return nil
 }
 
 func handleEDIT_ROOMEVENT(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleEDIT_ROOMEVENT")
+	packet.Session.Logger.Debug("handleEDIT_ROOMEVENT")
 	return nil
 }
 
 func handleGET_ROOMEVENT_TYPE_COUNT(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGET_ROOMEVENT_TYPE_COUNT")
+	packet.Session.Logger.Debug("handleGET_ROOMEVENT_TYPE_COUNT")
 	return nil
 }
 
 func handleGET_ROOMEVENTS_BY_TYPE(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleGET_ROOMEVENTS_BY_TYPE")
+	packet.Session.Logger.Debug("handleGET_ROOMEVENTS_BY_TYPE")
 	return nil
 }

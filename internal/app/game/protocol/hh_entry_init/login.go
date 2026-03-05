@@ -33,53 +33,6 @@ const POSSIBLEACHIEVEMENTS = "POSSIBLEACHIEVEMENTS"
 const ACHIEVEMENTNOTIFICATION = "ACHIEVEMENTNOTIFICATION"
 const LATENCYTEST = "LATENCYTEST"
 
-func registerLogin(registry protocol.Registry) {
-	registry.Commands().Register(DISCONNECT, -1)
-	registry.Commands().Register(HELLO, 0)
-	registry.Commands().Register(SERVERSECRETKEY, 1)
-	registry.Commands().Register(RIGHTS, 2)
-	registry.Commands().Register(LOGINOK, 3)
-	registry.Commands().Register(USEROBJ, 5)
-	registry.Commands().Register(ERR, 33)
-	registry.Commands().Register(USERBANNED, 35)
-	registry.Commands().Register(PING, 50)
-	registry.Commands().Register(EPSNOTIFY, 52)
-	registry.Commands().Register(SYSTEMBROADCAST, 139)
-	registry.Commands().Register(CHECKSUM, 141)
-	registry.Commands().Register(MODALERT, 161)
-	registry.Commands().Register(AVAILABLEBADGES, 229)
-	registry.Commands().Register(SESSIONPARAMETERS, 257)
-	registry.Commands().Register(CRYPTOPARAMETERS, 277)
-	registry.Commands().Register(ENDOFCRYPTOPARAMS, 278)
-	registry.Commands().Register(HOTELLOGOUT, 287)
-	registry.Commands().Register(SOUNDSETTING, 308)
-	registry.Commands().Register(POSSIBLEACHIEVEMENTS, 436)
-	registry.Commands().Register(ACHIEVEMENTNOTIFICATION, 437)
-	registry.Commands().Register(LATENCYTEST, 354)
-
-	registry.Listeners().Register(756, handleTryLogin)
-	registry.Listeners().Register(1170, handleVersionCheck)
-	registry.Listeners().Register(813, handleUniqueID)
-	registry.Listeners().Register(7, handleGetInfo)
-	registry.Listeners().Register(8, handleGetCredits)
-	registry.Listeners().Register(47, handleGetPassword)
-	registry.Listeners().Register(58, handleLangCheck)
-	registry.Listeners().Register(105, handleBTCKS)
-	registry.Listeners().Register(157, handleGetAvailableBadges)
-	registry.Listeners().Register(159, handleGetSelectedBadges)
-	registry.Listeners().Register(1817, handleGetSessionParameters)
-	registry.Listeners().Register(196, handlePong)
-	registry.Listeners().Register(2002, handleGenerateKey)
-	registry.Listeners().Register(204, handleSSO)
-	registry.Listeners().Register(206, handleInitCrypto)
-	registry.Listeners().Register(207, handleSecretKey)
-	registry.Listeners().Register(228, handleGetSoundSettings)
-	registry.Listeners().Register(229, handleSetSoundSettings)
-	registry.Listeners().Register(370, handleGetPossibleAchievements)
-	registry.Listeners().Register(315, handleTestLatency)
-	registry.Listeners().Register(316, handleReportLatency)
-}
-
 func handleTryLogin(packet *protocol.Packet) error {
 	username, err := packet.Message.ReadString()
 	if err != nil {
@@ -91,14 +44,14 @@ func handleTryLogin(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleTryLogin",
 		slog.String("username", username),
 		slog.String("password", password),
 	)
 
 	// do not allow client login for now, only sso is available
-	return packet.Context.Send(ERR, protocol.RawString("login incorrect"))
+	return packet.Session.Send(ERR, protocol.RawString("login incorrect"))
 }
 
 func handleVersionCheck(packet *protocol.Packet) error {
@@ -117,14 +70,14 @@ func handleVersionCheck(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleVersionCheck",
 		slog.Int("version", version),
 		slog.String("clientURL", clientURL),
 		slog.String("extVarsURL", extVarsURL),
 	)
 
-	// TODO: check version and send packet.Context.Send(ERR, protocol.RawString("Version not correct"))
+	// TODO: check version and send packet.Session.Send(ERR, protocol.RawString("Version not correct"))
 
 	return nil
 }
@@ -135,21 +88,18 @@ func handleUniqueID(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleUniqueID",
 		slog.String("machineID", machineID),
 	)
 
-	// TODO: verify ban and save machineID in context
+	// TODO: verify ban and save machineID in session
 
 	return nil
 }
 
 func handleGetInfo(packet *protocol.Packet) error {
-	habbo := packet.Context.Habbo()
-	if habbo == nil {
-		return errors.New("handleGetInfo habbo is nil")
-	}
+	habbo := packet.Session.Habbo
 
 	habbo.Mu.RLock()
 	habboID := strconv.Itoa(habbo.ID)
@@ -164,7 +114,7 @@ func handleGetInfo(packet *protocol.Packet) error {
 	habboRights := habbo.Rights
 	habbo.Mu.RUnlock()
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleGetInfo",
 		slog.String("userID", habboID),
 		slog.String("name", habboName),
@@ -183,8 +133,8 @@ func handleGetInfo(packet *protocol.Packet) error {
 	}
 
 	return errors.Join(
-		packet.Context.Send(RIGHTS, []io.WriterTo(rights)...),
-		packet.Context.Send(
+		packet.Session.Send(RIGHTS, []io.WriterTo(rights)...),
+		packet.Session.Send(
 			USEROBJ,
 			protocol.String(habboID),
 			protocol.String(habboName),
@@ -200,27 +150,24 @@ func handleGetInfo(packet *protocol.Packet) error {
 }
 
 func handleGetCredits(packet *protocol.Packet) error {
-	habbo := packet.Context.Habbo()
-	if habbo == nil {
-		return errors.New("handleGetCredits habbo is nil")
-	}
+	habbo := packet.Session.Habbo
 
 	habbo.Mu.RLock()
 	credits := strconv.Itoa(habbo.Credits)
 	habbo.Mu.RUnlock()
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleGetCredits",
 		slog.String("credits", credits),
 	)
 
-	return packet.Context.Send("PURSE", protocol.RawString(credits))
+	return packet.Session.Send("PURSE", protocol.RawString(credits))
 }
 
 func handleGetPassword(packet *protocol.Packet) error {
 	// client doesn't even send this command
 
-	packet.Context.Logger().Debug("handleGetPassword")
+	packet.Session.Logger.Debug("handleGetPassword")
 
 	return errors.New("handleGetPassword this command doesn't exists")
 }
@@ -231,7 +178,7 @@ func handleLangCheck(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleLangCheck",
 		slog.String("word", word),
 	)
@@ -251,37 +198,31 @@ func handleBTCKS(packet *protocol.Packet) error {
 		return nil
 	}
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleBTCKS",
 		slog.Int("amount", amount),
 		slog.String("name", name),
 	)
 
 	// TODO: if name != my name then gift
-	habbo := packet.Context.Habbo()
-	if habbo == nil {
-		return errors.New("handleBTCKS habbo is nil")
-	}
+	habbo := packet.Session.Habbo
 
 	habbo.Mu.Lock()
 	habbo.PHTickets += amount
 	habbo.Credits -= amount // TODO: amount*ticketPrice
 	habbo.Mu.Unlock()
 
-	return packet.Context.Send("PURSE", protocol.RawString(strconv.Itoa(habbo.Credits)))
+	return packet.Session.Send("PURSE", protocol.RawString(strconv.Itoa(habbo.Credits)))
 }
 
 func handleGetAvailableBadges(packet *protocol.Packet) error {
-	habbo := packet.Context.Habbo()
-	if habbo == nil {
-		return errors.New("handleGetAvailableBadges habbo is nil")
-	}
+	habbo := packet.Session.Habbo
 
 	habbo.Mu.RLock()
 	habboBadges := habbo.Badges
 	habbo.Mu.RUnlock()
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleGetAvailableBadges",
 		slog.String("badges", fmt.Sprint(habboBadges)),
 	)
@@ -295,20 +236,20 @@ func handleGetAvailableBadges(packet *protocol.Packet) error {
 	// chosen badges seems to be code for the next version
 	args = append(args, protocol.Int(0))
 
-	return packet.Context.Send(AVAILABLEBADGES, args...)
+	return packet.Session.Send(AVAILABLEBADGES, args...)
 }
 
 func handleGetSelectedBadges(packet *protocol.Packet) error {
 	// client calls this when receive ACHIEVEMENTNOTIFICATION
-	packet.Context.Logger().Debug("handleGetSelectedBadges")
+	packet.Session.Logger.Debug("handleGetSelectedBadges")
 
 	return nil
 }
 
 func handleGetSessionParameters(packet *protocol.Packet) error {
-	config := packet.Context.Hotel().Settings
+	config := packet.Session.Hotel.Settings
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleGetSessionParameters",
 		slog.String("parameters", fmt.Sprintf("%+v", config)),
 	)
@@ -328,13 +269,12 @@ func handleGetSessionParameters(packet *protocol.Packet) error {
 		protocol.Int(9), protocol.Int(config.TutorialEnabled),
 	)
 
-	return packet.Context.Send(SESSIONPARAMETERS, args...)
+	return packet.Session.Send(SESSIONPARAMETERS, args...)
 }
 
 func handlePong(packet *protocol.Packet) error {
 	// TODO: pong received
-	// packet.Context.Pong() to enable a timeout for the next PING?
-	packet.Context.Logger().Debug("handlePong")
+	packet.Session.Logger.Debug("handlePong")
 
 	return nil
 }
@@ -345,12 +285,12 @@ func handleGenerateKey(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleGenerateKey",
 		slog.String("publicKey", publicKey),
 	)
 
-	return packet.Context.Send(ENDOFCRYPTOPARAMS)
+	return packet.Session.Send(ENDOFCRYPTOPARAMS)
 
 	// clientPublicKey := new(big.Int)
 	// if _, err := fmt.Sscanf(publicKey, "%X", clientPublicKey); err != nil {
@@ -363,11 +303,11 @@ func handleGenerateKey(packet *protocol.Packet) error {
 	// }
 
 	// shared := new(big.Int).Exp(clientPublicKey, b, protocol.P())
-	// packet.Context.Crypto().Init(shared)
+	// packet.Session.Crypto.Init(shared)
 
 	// serverPublicKey := new(big.Int).Exp(protocol.G(), b, protocol.P())
 	// content := fmt.Sprintf("%X", serverPublicKey)
-	// return packet.Context.Send(SERVERSECRETKEY, protocol.RawString(content))
+	// return packet.Session.Send(SERVERSECRETKEY, protocol.RawString(content))
 }
 
 func handleSSO(packet *protocol.Packet) error {
@@ -376,55 +316,52 @@ func handleSSO(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleSSO",
 		slog.String("ticket", ticket),
 	)
 
-	habbo, err := packet.Context.Hotel().Login(ticket)
+	habbo, err := packet.Session.Hotel.Login(ticket)
 	if err != nil {
 		return err
 	}
-	packet.Context.SetHabbo(habbo)
+	packet.Session.Habbo = habbo
 
-	return packet.Context.Send(LOGINOK)
+	return packet.Session.Send(LOGINOK)
 }
 
 func handleInitCrypto(packet *protocol.Packet) error {
 	// shockwave client has dead code and missing ccts it will fail if serverToClient equals 1
 	serverToClientSecurity := 0
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleInitCrypto",
 		slog.Int("serverToClientSecurity", serverToClientSecurity),
 	)
 
-	return packet.Context.Send(CRYPTOPARAMETERS, protocol.Int(serverToClientSecurity))
+	return packet.Session.Send(CRYPTOPARAMETERS, protocol.Int(serverToClientSecurity))
 }
 
 func handleSecretKey(packet *protocol.Packet) error {
 	// TODO: crypto
-	packet.Context.Logger().Debug("handleSecretKey")
+	packet.Session.Logger.Debug("handleSecretKey")
 
 	return nil
 }
 
 func handleGetSoundSettings(packet *protocol.Packet) error {
-	habbo := packet.Context.Habbo()
-	if habbo == nil {
-		return errors.New("handleGetSoundSettings habbo is nil")
-	}
+	habbo := packet.Session.Habbo
 
 	habbo.Mu.RLock()
 	state := habbo.SoundState
 	habbo.Mu.RUnlock()
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleGetSoundSettings",
 		slog.Int("state", state),
 	)
 
-	return packet.Context.Send(SOUNDSETTING, protocol.Int(state))
+	return packet.Session.Send(SOUNDSETTING, protocol.Int(state))
 }
 
 func handleSetSoundSettings(packet *protocol.Packet) error {
@@ -433,15 +370,12 @@ func handleSetSoundSettings(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleSetSoundSettings",
 		slog.Int("state", state),
 	)
 
-	habbo := packet.Context.Habbo()
-	if habbo == nil {
-		return errors.New("handleSetSoundSettings habbo is nil")
-	}
+	habbo := packet.Session.Habbo
 
 	habbo.Mu.Lock()
 	habbo.SoundState = state
@@ -451,16 +385,13 @@ func handleSetSoundSettings(packet *protocol.Packet) error {
 }
 
 func handleGetPossibleAchievements(packet *protocol.Packet) error {
-	habbo := packet.Context.Habbo()
-	if habbo == nil {
-		return errors.New("handleGetPossibleAchievements habbo is nil")
-	}
+	habbo := packet.Session.Habbo
 
 	habbo.Mu.RLock()
 	habboAchievements := habbo.Achievements
 	habbo.Mu.RUnlock()
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleGetPossibleAchievements",
 		slog.String("achievements", fmt.Sprint(habboAchievements)),
 	)
@@ -476,7 +407,7 @@ func handleGetPossibleAchievements(packet *protocol.Packet) error {
 		)
 	}
 
-	return packet.Context.Send(POSSIBLEACHIEVEMENTS, args...)
+	return packet.Session.Send(POSSIBLEACHIEVEMENTS, args...)
 }
 
 func handleTestLatency(packet *protocol.Packet) error {
@@ -485,12 +416,12 @@ func handleTestLatency(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleTestLatency",
 		slog.Int("id", id),
 	)
 
-	return packet.Context.Send(LATENCYTEST, protocol.Int(id))
+	return packet.Session.Send(LATENCYTEST, protocol.Int(id))
 }
 
 func handleReportLatency(packet *protocol.Packet) error {
@@ -509,7 +440,7 @@ func handleReportLatency(packet *protocol.Packet) error {
 		return err
 	}
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleReportLatency",
 		slog.Int("latency", latency),
 		slog.Int("latencyCleared", latencyCleared),
@@ -519,9 +450,6 @@ func handleReportLatency(packet *protocol.Packet) error {
 	return nil
 }
 
-func SendInitialCommands(ctx protocol.Context) error {
-	if err := ctx.Send(HELLO); err != nil {
-		return err
-	}
-	return nil
+func SendInitialCommands(sess *protocol.Session) error {
+	return sess.Send(HELLO)
 }

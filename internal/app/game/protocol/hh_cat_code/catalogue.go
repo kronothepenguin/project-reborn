@@ -45,7 +45,7 @@ func handleGPRC(packet *protocol.Packet) error {
 	extra := order[4]
 	gift := order[5]
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleGPRC",
 		slog.String("editMode", editMode),
 		slog.String("lastPageID", lastPageID),
@@ -69,7 +69,7 @@ func handleGCIX(packet *protocol.Packet) error {
 	editMode := content[0]
 	language := content[1]
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleGCIX",
 		slog.String("editMode", editMode),
 		slog.String("language", language),
@@ -85,7 +85,7 @@ func handleGCIX(packet *protocol.Packet) error {
 		"\n",
 	)
 
-	return packet.Context.Send(CATALOGINDEX, protocol.RawString(data))
+	return packet.Session.Send(CATALOGINDEX, protocol.RawString(data))
 }
 
 func handleGCAP(packet *protocol.Packet) error {
@@ -100,7 +100,7 @@ func handleGCAP(packet *protocol.Packet) error {
 	pageID := content[1]
 	language := content[2]
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleGCAP",
 		slog.String("editMode", editMode),
 		slog.String("pageID", pageID),
@@ -129,5 +129,5 @@ func handleGCAP(packet *protocol.Packet) error {
 		"\n",
 	)
 
-	return packet.Context.Send(CATALOGPAGE, protocol.RawString(data))
+	return packet.Session.Send(CATALOGPAGE, protocol.RawString(data))
 }

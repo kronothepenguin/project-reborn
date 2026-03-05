@@ -3,7 +3,7 @@ package protocol
 type Packet struct {
 	Command int16
 	Message *Message
-	Context Context
+	Session *Session
 }
 
 func NewPacket(cmd int16, msg *Message) *Packet {

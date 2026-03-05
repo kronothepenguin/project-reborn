@@ -35,7 +35,7 @@ func handleGET_FURNI_RECYCLER_CONFIGURATION(packet *protocol.Packet) error {
 
 	// TODO: reward items
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleGET_FURNI_RECYCLER_CONFIGURATION",
 		slog.Int("serviceEnabled", serviceEnabled),
 		slog.Int("quarantineMinutes", quarantineMinutes),
@@ -44,7 +44,7 @@ func handleGET_FURNI_RECYCLER_CONFIGURATION(packet *protocol.Packet) error {
 		slog.Int("numOfRewardItems", numOfRewardItems),
 	)
 
-	return packet.Context.Send(RECYCLER_CONFIGURATION,
+	return packet.Session.Send(RECYCLER_CONFIGURATION,
 		protocol.Int(serviceEnabled),
 		protocol.Int(quarantineMinutes),
 		protocol.Int(recyclingMinutes),
@@ -55,26 +55,26 @@ func handleGET_FURNI_RECYCLER_CONFIGURATION(packet *protocol.Packet) error {
 func handleGET_FURNI_RECYCLER_STATUS(packet *protocol.Packet) error {
 	status := 0 // 0 - open, 1 - progress, 2 - ready, 3 - timeout
 
-	packet.Context.Logger().Debug(
+	packet.Session.Logger.Debug(
 		"handleGET_FURNI_RECYCLER_STATUS",
 		slog.Int("status", status),
 	)
 
-	return packet.Context.Send(RECYCLER_STATUS,
+	return packet.Session.Send(RECYCLER_STATUS,
 		protocol.Int(status))
 }
 
 func handleAPPROVE_RECYCLED_FURNI(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleAPPROVE_RECYCLED_FURNI")
+	packet.Session.Logger.Debug("handleAPPROVE_RECYCLED_FURNI")
 	return nil
 }
 
 func handleSTART_FURNI_RECYCLING(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleSTART_FURNI_RECYCLING")
+	packet.Session.Logger.Debug("handleSTART_FURNI_RECYCLING")
 	return nil
 }
 
 func handleCONFIRM_FURNI_RECYCLING(packet *protocol.Packet) error {
-	packet.Context.Logger().Debug("handleCONFIRM_FURNI_RECYCLING")
+	packet.Session.Logger.Debug("handleCONFIRM_FURNI_RECYCLING")
 	return nil
 }
