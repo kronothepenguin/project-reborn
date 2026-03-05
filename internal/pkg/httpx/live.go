@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/fsnotify/fsnotify"
 )
@@ -107,6 +108,8 @@ func (lr *liveReload) watchAll(dir string) {
 		return nil
 	})
 
+	var debounce *time.Timer
+
 	for {
 		select {
 		case event, ok := <-watcher.Events:
@@ -129,9 +132,13 @@ func (lr *liveReload) watchAll(dir string) {
 			}
 
 			if event.Has(fsnotify.Write) || event.Has(fsnotify.Create) {
-				fmt.Println(event)
-				log.Println("\033[32m[reload]\033[0m", event.Name)
-				lr.broadcast()
+				if debounce != nil {
+					debounce.Stop()
+				}
+				debounce = time.AfterFunc(50*time.Millisecond, func() {
+					log.Println("\033[32m[reload]\033[0m", event.Name)
+					lr.broadcast()
+				})
 			}
 
 		case err, ok := <-watcher.Errors:

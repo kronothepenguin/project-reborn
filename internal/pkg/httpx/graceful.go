@@ -14,7 +14,6 @@ import (
 
 func ListenAndServeWithGracefulShutdown(server *http.Server) (err error) {
 	g := new(errgroup.Group)
-
 	g.Go(func() error {
 		err := server.ListenAndServe()
 		if errors.Is(err, http.ErrServerClosed) {

@@ -32,5 +32,7 @@ func main() {
 
 	log.Println("Watching:", tmplpath)
 	log.Printf("Starting HTTP server at http://%s\n", server.Addr)
-	httpx.ListenAndServeWithGracefulShutdown(&server)
+	if err := httpx.ListenAndServeWithGracefulShutdown(&server); err != nil {
+		log.Fatalln(err)
+	}
 }
