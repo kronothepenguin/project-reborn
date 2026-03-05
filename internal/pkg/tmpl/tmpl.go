@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"io"
 	"io/fs"
+	"net/http"
 )
 
 var ErrNoFilesFound = errors.New("no files were found")
@@ -39,5 +40,12 @@ func ParseAllFS(fsys fs.FS) (*template.Template, error) {
 }
 
 func ExecuteTemplate(ctx context.Context, w io.Writer, name string, data any) {
-	From(ctx).ExecuteTemplate(w, name, data)
+	err := From(ctx).ExecuteTemplate(w, name, data)
+	if err != nil {
+		if w, ok := w.(http.ResponseWriter); ok {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		io.WriteString(w, err.Error())
+	}
 }

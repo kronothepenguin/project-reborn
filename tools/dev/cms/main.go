@@ -7,27 +7,30 @@ import (
 	"os"
 
 	"github.com/kronothepenguin/project-reborn/internal/app/cms"
+	"github.com/kronothepenguin/project-reborn/internal/pkg/httpx"
 	"github.com/kronothepenguin/project-reborn/internal/pkg/tmpl"
 )
 
 func main() {
-	tmplpath := "./internal/app/cms/templates"
-	go watch(tmplpath)
-
 	log.Println("CMS dev server starting...")
-	log.Println("Watching:", tmplpath)
 
+	tmplpath := "./internal/app/cms/templates"
 	fsys := os.DirFS(tmplpath)
+	mux := http.NewServeMux()
+
 	c := cms.New(func() (*template.Template, error) {
 		return tmpl.ParseAllFS(fsys)
 	})
-
-	mux := http.NewServeMux()
 	c.Mount(mux)
+
+	with := httpx.WithLiveReload(httpx.WithWatchAll(tmplpath))
 
 	server := http.Server{
 		Addr:    "localhost:31337",
-		Handler: mux,
+		Handler: with(mux),
 	}
-	start(&server)
+
+	log.Println("Watching:", tmplpath)
+	log.Printf("Starting HTTP server at http://%s\n", server.Addr)
+	httpx.ListenAndServeWithGracefulShutdown(&server)
 }
