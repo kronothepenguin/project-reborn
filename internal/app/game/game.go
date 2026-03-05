@@ -6,63 +6,37 @@ import (
 	"net"
 
 	"github.com/kronothepenguin/project-reborn/internal/app/game/protocol"
-	hhbuffer "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_buffer"
-	hhcatcode "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_cat_code"
-	hhclub "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_club"
-	hhdynamicdownloader "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_dynamic_downloader"
 	hhentryinit "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_entry_init"
-	hhfriendlist "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_friend_list"
-	hhguide "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_guide"
-	hhig "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_ig"
-	hhinstantmessenger "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_instant_messenger"
-	hhkioskroom "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_kiosk_room"
-	hhnavigator "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_navigator"
-	hhphoto "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_photo"
-	hhpoll "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_poll"
-	hhrecycler "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_recycler"
-	hhroom "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_room"
-	hhroomutils "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_room_utils"
-	hhshared "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_shared"
-	hhtutorial "github.com/kronothepenguin/project-reborn/internal/app/game/protocol/hh_tutorial"
 	"github.com/kronothepenguin/project-reborn/internal/app/game/transport"
 	"github.com/kronothepenguin/project-reborn/internal/pkg/virtual"
 )
 
-type Server struct {
+type Game struct {
 	registry protocol.Registry
 
 	hotel *virtual.Hotel
 }
 
-func NewServer() *Server {
-	return &Server{}
+func New() *Game {
+	return &Game{
+		registry: createRegistry(),
+	}
 }
 
-func (s *Server) initRegistry() {
-	s.registry = protocol.NewRegistry()
-	hhbuffer.Register(s.registry)
-	hhcatcode.Register(s.registry)
-	hhclub.Register(s.registry)
-	hhdynamicdownloader.Register(s.registry)
-	hhentryinit.Register(s.registry)
-	hhfriendlist.Register(s.registry)
-	hhguide.Register(s.registry)
-	hhig.Register(s.registry)
-	hhinstantmessenger.Register(s.registry)
-	hhkioskroom.Register(s.registry)
-	hhnavigator.Register(s.registry)
-	hhphoto.Register(s.registry)
-	hhpoll.Register(s.registry)
-	hhrecycler.Register(s.registry)
-	hhroom.Register(s.registry)
-	hhroomutils.Register(s.registry)
-	hhshared.Register(s.registry)
-	hhtutorial.Register(s.registry)
+func (g *Game) handle(conn transport.Connection) {
+	defer conn.Close()
+
+	for {
+		p, err := protocol.ReadPacket(conn, nil)
+		if err != nil {
+			break
+		}
+
+		slog.Default().Info("<<", slog.Int("cmd", int(p.Command)), slog.String("msg", p.Message.String()))
+	}
 }
 
-func (s *Server) RunTCP() {
-	s.initRegistry()
-
+func (s *Game) Start() {
 	// TODO: virtual.Storage
 	s.hotel = virtual.NewHotel(nil)
 	s.hotel.Load()
@@ -70,12 +44,12 @@ func (s *Server) RunTCP() {
 	slog.SetLogLoggerLevel(slog.LevelDebug)
 
 	log.Println("running 0.0.0.0:1234")
-	tcp := transport.NewTCPServer("0.0.0.0:1234")
-	tcp.Start()
-	tcp.Loop(s.handleTCP)
+	tcp := transport.NewTCP("0.0.0.0:1234")
+	tcp.Handle(s.handle)
+	tcp.Listen()
 }
 
-func (s *Server) handleTCP(conn net.Conn) {
+func (s *Game) handleTCP(conn net.Conn) {
 	defer conn.Close()
 
 	ctx := NewHabboContext(conn, s.registry, s.hotel)

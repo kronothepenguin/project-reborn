@@ -2,9 +2,13 @@ package transport
 
 import "io"
 
-type Transport interface {
-	Init()
-	Dispose()
+type Handler func(Connection)
 
-	Handle(io.ReadWriter)
+type Transport interface {
+	Handle(handler Handler)
+}
+
+type Connection interface {
+	io.ReadWriteCloser
+	RemoteAddr() string
 }
