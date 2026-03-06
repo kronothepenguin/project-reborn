@@ -8,6 +8,8 @@ import (
 var ErrFavoriteNodeNotExists = errors.New("favorite flat doesn't exists")
 
 type Habbo struct {
+	Connection
+
 	Mu sync.RWMutex
 
 	ID         int
@@ -43,7 +45,8 @@ type Habbo struct {
 
 func newHabbo(navigator *Navigator) *Habbo {
 	return &Habbo{
-		navigator: navigator,
+		Connection: NopConnection(),
+		navigator:  navigator,
 	}
 }
 

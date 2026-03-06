@@ -17,23 +17,12 @@ type Game struct {
 	hotel *virtual.Hotel
 }
 
-func New() *Game {
+func New(hotel *virtual.Hotel) *Game {
 	return &Game{
 		loginRegistry: createLoginRegistry(),
 		gameRegistry:  createGameRegistry(),
-	}
-}
 
-func (g *Game) handleInfo(conn transport.Connection) {
-	defer conn.Close()
-
-	for {
-		p, err := protocol.ReadPacket(conn, nil)
-		if err != nil {
-			break
-		}
-
-		slog.Default().Info("<<", slog.Int("cmd", int(p.Command)), slog.String("msg", p.Message.String()))
+		hotel: hotel,
 	}
 }
 
@@ -45,59 +34,55 @@ func (g *Game) Mount(mux *http.ServeMux) {
 }
 
 func (g *Game) ListenAndServe(addr string) error {
-	// TODO: virtual.Storage
-	g.hotel = virtual.NewHotel(nil)
-	g.hotel.Load()
-
 	tcp := transport.NewTCP(addr)
-	tcp.Handle(g.handle)
+	tcp.Handle(g.handleInfo)
 	return tcp.Listen()
 }
 
-func (g *Game) handle(conn transport.Connection) {
+func (g *Game) handleInfo(conn transport.Connection) {
 	defer conn.Close()
 
 	logger := slog.New(slog.Default().Handler())
-	sess := protocol.NewSession(conn, g.loginRegistry.Commands(), g.hotel, logger)
+	session := protocol.NewSession(conn, g.loginRegistry.Commands(), g.hotel, logger)
 
-	sess.Logger.Info("new connection")
-	if err := hhentryinit.SendInitialCommands(sess); err != nil {
-		sess.Logger.Error("handle", slog.String("err", err.Error()))
+	if err := hhentryinit.SendInitialCommands(session); err != nil {
+		session.Logger.Error("handleInfo", slog.String("err", err.Error()))
 		return
 	}
 
-	// Phase 1: pre-login
 	for {
-		p, err := sess.ReadPacket()
+		p, err := session.ReadPacket()
 		if err != nil {
-			sess.Logger.Error("read packet", slog.Any("error", err))
+			session.Logger.Error("read packet", slog.Any("error", err))
 			return
 		}
 
-		sess.Logger.Info("<<", slog.Int("cmd", int(p.Command)), slog.String("msg", p.Message.String()))
+		session.Logger.Info("<<", slog.Int("cmd", int(p.Command)), slog.String("msg", p.Message.String()))
 		if err := g.loginRegistry.Listeners().Handle(p); err != nil {
-			sess.Logger.Error("handle", slog.Any("error", err))
+			session.Logger.Error("handle", slog.Any("error", err))
 			return
 		}
 
-		if sess.Habbo != nil {
+		if session.Habbo != nil {
 			break
 		}
 	}
 
-	// Phase 2: post-login (Habbo guaranteed != nil)
-	sess.SetCommands(g.gameRegistry.Commands())
+	session.Habbo.Connection = session
+	defer func() { session.Habbo.Connection = virtual.NopConnection() }()
+
+	session.SetCommands(g.gameRegistry.Commands())
 
 	for {
-		p, err := sess.ReadPacket()
+		p, err := session.ReadPacket()
 		if err != nil {
-			sess.Logger.Error("read packet", slog.Any("error", err))
+			session.Logger.Error("read packet", slog.Any("error", err))
 			break
 		}
 
-		sess.Logger.Info("<<", slog.Int("cmd", int(p.Command)), slog.String("msg", p.Message.String()))
+		session.Logger.Info("<<", slog.Int("cmd", int(p.Command)), slog.String("msg", p.Message.String()))
 		if err := g.gameRegistry.Listeners().Handle(p); err != nil {
-			sess.Logger.Error("handle", slog.Any("error", err))
+			session.Logger.Error("handle", slog.Any("error", err))
 			break
 		}
 	}
