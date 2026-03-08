@@ -15,7 +15,13 @@
   </head>
   <body>
     <div class="main">
-      <div class="main__header"></div>
+      <header class="main__header">
+        <h1 class="main__logo"><a href="/">{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}</a></h1>
+        <span class="main__stats font-xs">
+          <strong>{{.OnlineCount}}</strong> users online now
+        </span>
+        <img src="/static/images/{{if .ServerStatus}}{{.ServerStatus}}{{else}}offline{{end}}.gif" alt="Server Status" />
+      </header>
       <div class="main__content">
         <div class="registration"></div>
 

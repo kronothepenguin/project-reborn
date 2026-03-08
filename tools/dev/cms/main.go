@@ -22,7 +22,7 @@ func main() {
 
 	staticpath := "./web/static"
 	staticfs := os.DirFS(staticpath)
-	s := http.StripPrefix("/static/", http.FileServerFS(staticfs))
+	s := http.StripPrefix("/static/", httpx.NoCache(http.FileServerFS(staticfs)))
 
 	mux := http.NewServeMux()
 	c.Mount(mux)

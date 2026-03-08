@@ -1,4 +1,7 @@
 .main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   width: 100%;
   max-width: 768px;
   margin: 2rem auto;
@@ -14,6 +17,20 @@
   display: flex;
   justify-content: space-between;
   align-items: end;
+}
+
+.main__logo a {
+  color: #f5c518;
+  text-shadow: 2px 2px 0 #b8860b;
+  text-decoration: none;
+}
+
+.main__stats {
+  color: var(--color-accent);
+}
+
+.main__stats strong {
+  color: var(--color-text);
 }
 
 .main__content {
