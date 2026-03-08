@@ -6,7 +6,7 @@ type Achievement struct {
 	BadgeID string
 }
 
-func loadAchivements(storage Storage, habboID int) ([]Achievement, error) {
+func loadAchivements(habboID int) ([]Achievement, error) {
 	return []Achievement{
 		{TypeID: 1, Level: 1, BadgeID: "AG1"},
 	}, nil

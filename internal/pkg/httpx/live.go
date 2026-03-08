@@ -150,7 +150,7 @@ func (lr *liveReload) watchAll(dir string) {
 	}
 }
 
-func WithLiveReload(opts ...LiveReloadOption) func(http.Handler) http.Handler {
+func LiveReload(opts ...LiveReloadOption) func(http.Handler) http.Handler {
 	lr := &liveReload{
 		pattern: "/@live/client",
 
@@ -201,7 +201,7 @@ func WithLiveReload(opts ...LiveReloadOption) func(http.Handler) http.Handler {
 				}
 			}
 			w.WriteHeader(recorder.Code)
-			w.Write(recorder.Body.Bytes())
+			recorder.Body.WriteTo(w)
 		})
 	}
 }

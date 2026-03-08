@@ -15,15 +15,20 @@ func main() {
 	log.Println("CMS dev server starting...")
 
 	tmplpath := "./internal/app/cms/templates"
-	fsys := os.DirFS(tmplpath)
-	mux := http.NewServeMux()
-
+	tmplfs := os.DirFS(tmplpath)
 	c := cms.New(func() (*template.Template, error) {
-		return tmpl.ParseAllFS(fsys)
+		return tmpl.ParseAllFS(tmplfs)
 	})
-	c.Mount(mux)
 
-	with := httpx.WithLiveReload(httpx.WithWatchAll(tmplpath))
+	staticpath := "./web/static"
+	staticfs := os.DirFS(staticpath)
+	s := http.StripPrefix("/static/", http.FileServerFS(staticfs))
+
+	mux := http.NewServeMux()
+	c.Mount(mux)
+	mux.Handle("/", httpx.RootHandler(httpx.WithStatic(s)))
+
+	with := httpx.LiveReload(httpx.WithWatchAll(tmplpath), httpx.WithWatchAll(staticpath))
 
 	server := http.Server{
 		Addr:    "localhost:31337",

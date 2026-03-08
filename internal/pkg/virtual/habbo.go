@@ -92,7 +92,7 @@ func (h *Habbo) DeleteFavoriteFlat(nodeID int) error {
 	return nil
 }
 
-func (h *Habbo) loadFuseRights(storage Storage) ([]string, error) {
+func (h *Habbo) loadFuseRights() ([]string, error) {
 	return []string{
 		"fuse_trade", "fuse_buy_credits", "fuse_any_room_controller",
 		"fuse_remove_stickies", "fuse_use_special_room_layouts", "fuse_see_flat_ids",
@@ -103,13 +103,13 @@ func (h *Habbo) loadFuseRights(storage Storage) ([]string, error) {
 	}, nil
 }
 
-func (h *Habbo) loadBadges(storage Storage) ([]string, error) {
+func (h *Habbo) loadBadges() ([]string, error) {
 	return []string{
 		"ADM",
 	}, nil
 }
 
-func (h *Habbo) load(storage Storage, ticket string) error {
+func (h *Habbo) load(ticket string) error {
 	h.ID = 1
 	h.Name = "$name"
 	h.Figure = "hd-180-1.ch-876-62.lg-280-62.sh-300-62"
