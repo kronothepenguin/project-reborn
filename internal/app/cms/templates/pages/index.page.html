@@ -4,187 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <style>
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        background-color: #bce0ee;
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
-      }
+    <title>{{.SiteName}}</title>
 
-      .font-xs {
-        font-size: 0.75rem;
-      }
-
-      .font-sm {
-        font-size: 0.875rem;
-      }
-
-      .font-base {
-        font-size: 1rem;
-      }
-
-      .font-lg {
-        font-size: 1.125rem;
-      }
-
-      .main {
-        width: 100%;
-        max-width: 768px;
-
-        margin: 2rem auto;
-        padding: 2rem;
-
-        background-color: #fff;
-        color: #000;
-
-        border: 1px solid #93b0bb;
-        border-bottom-width: 3px;
-        border-radius: 4px;
-      }
-
-      .main__header {
-        display: flex;
-        justify-content: space-between;
-        align-items: end;
-      }
-
-      .content {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .registration {
-        flex: 1.5 1 auto;
-      }
-
-      .login {
-        flex: 1 1 auto;
-
-        padding: 0.25rem;
-
-        background-color: #b4b4ae;
-        color: #fff;
-
-        border: 1px solid #ccc;
-        border-bottom-width: 3px;
-        border-radius: 8px;
-      }
-
-      .login__header {
-        padding: 0.25rem;
-
-        background-color: #6b6b6b;
-
-        border-radius: 4px;
-      }
-
-      .login__header h2 {
-        margin: 0;
-
-        text-align: center;
-      }
-
-      .login__form {
-        padding: 0.5rem 1rem;
-
-        display: grid;
-        grid-template-columns: 1fr 1.5fr 1fr;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      .login__label {
-        grid-column-start: 1;
-
-        min-width: 4rem;
-      }
-
-      .login__input {
-        box-sizing: border-box;
-
-        grid-column-start: 2;
-
-        width: 100%;
-        padding: 0.125rem 0.25rem;
-
-        border: 1px solid #555555;
-      }
-
-      .login__submit {
-        box-sizing: border-box;
-
-        grid-column-start: 3;
-
-        width: fit-content;
-        padding: 0.125rem 0.75rem;
-
-        /* background-color: transparent; */
-        background-color: #ccc;
-
-        border: 2px solid black;
-        border-radius: 4px;
-
-        font-weight: 500;
-
-        position: relative;
-        z-index: 10;
-      }
-
-      .login__submit::before {
-        content: "";
-        position: absolute;
-        top: 1px;
-        left: 1px;
-        right: 1px;
-        bottom: 50%;
-        background-color: #fff;
-        z-index: -10;
-      }
-
-      .login__submit:hover {
-        background-color: #eaeaea;
-      }
-
-      .login__checkbox {
-        grid-column-start: 2;
-        grid-column-end: span 2;
-
-        display: flex;
-        gap: 0.25rem;
-        align-items: center;
-      }
-
-      .login__link {
-        grid-column-start: 2;
-        grid-column-end: span 2;
-
-        color: #333;
-      }
-
-      .login__link:hover {
-        color: #fff;
-      }
-
-      .login__link--bold {
-        font-weight: bold;
-      }
-    </style>
+    <link rel="stylesheet" href="/static/styles/reset.css" />
+    <link rel="stylesheet" href="/static/styles/commons.css" />
+    <link rel="stylesheet" href="/static/styles/fonts.css" />
+    <link rel="stylesheet" href="/static/styles/cards.css" />
+    <link rel="stylesheet" href="/static/styles/buttons.css" />
+    <link rel="stylesheet" href="/static/styles/index.css" />
   </head>
   <body>
-    <style></style>
     <div class="main">
       <div class="main__header"></div>
-      <div class="content">
+      <div class="main__content">
         <div class="registration"></div>
 
-        <section class="login">
-          <header class="login__header">
+        <section class="card card--gray login">
+          <header class="card__header">
             <h2 class="font-lg">Sign in</h2>
           </header>
 
-          <form class="login__form" action="/login" method="post">
+          <form class="card__content login__form" action="/login" method="post">
             <label class="login__label font-sm" for="login-username-input"
               >Username</label
             >
@@ -205,7 +45,7 @@
               name="password"
             />
 
-            <button class="login__submit font-sm">Sign in</button>
+            <button class="btn btn--gray font-sm">Sign in</button>
 
             <label class="login__checkbox">
               <input type="checkbox" name="remember" />

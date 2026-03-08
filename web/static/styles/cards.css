@@ -14,15 +14,17 @@
 }
 
 .card__content {
+  padding: 0.5rem 1rem;
 }
 
 .card--gray {
-  background-color: #b4b4ae;
-  border: 1px solid #ccc;
+  background-color: var(--color-gray);
+  color: var(--color-text-white);
+  border: 1px solid var(--color-border-light);
   border-bottom-width: 3px;
   border-radius: 8px;
 }
 
 .card--gray .card__header {
-  background-color: #6b6b6b;
+  background-color: var(--color-gray-dark);
 }
