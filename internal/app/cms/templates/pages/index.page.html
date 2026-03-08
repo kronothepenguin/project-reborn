@@ -23,7 +23,15 @@
         <img src="/static/images/{{if .ServerStatus}}{{.ServerStatus}}{{else}}offline{{end}}.gif" alt="Server Status" />
       </header>
       <div class="main__content">
-        <div class="registration"></div>
+        <section class="card registration">
+          <header class="card__header card__header--image">
+            <img src="/static/images/landing_group.png" alt="Join {{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}" />
+          </header>
+          <div class="card__content registration__content">
+            <a href="/register" class="registration__btn">Join now, it's free &raquo;</a>
+            <p class="font-sm">{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}} is a virtual world where you can meet and make friends.</p>
+          </div>
+        </section>
 
         <section class="card card--gray login">
           <header class="card__header">
@@ -51,7 +59,7 @@
               name="password"
             />
 
-            <button class="btn btn--gray font-sm">Sign in</button>
+            <button class="btn btn--gray font-xs">Sign in</button>
 
             <label class="login__checkbox">
               <input type="checkbox" name="remember" />
@@ -67,9 +75,19 @@
           </form>
         </section>
 
-        <div class="banner"></div>
+        <a class="banner" href="/register">
+          <img src="/static/images/uk_party_frontpage_image.gif" alt="Create your Habbo now and join the party!" />
+        </a>
       </div>
-      <div></div>
+
+      <footer class="main__footer">
+        <div class="tag-cloud">
+          <span class="tag-cloud__title font-base">{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}s Like..</span>
+          {{range .Tags}}
+            <a class="tag-cloud__tag" href="/tags/{{.}}">{{.}}</a>
+          {{end}}
+        </div>
+      </footer>
     </div>
   </body>
 </html>

@@ -28,3 +28,15 @@
 .card--gray .card__header {
   background-color: var(--color-gray-dark);
 }
+
+.card__header--image {
+  padding: 0;
+  border-radius: 4px 4px 0 0;
+  overflow: hidden;
+}
+
+.card__header--image img {
+  display: block;
+  object-fit: cover;
+  object-position: top;
+}

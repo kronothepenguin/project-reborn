@@ -35,7 +35,27 @@
 
 .main__content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 0.5rem;
+  align-items: start;
+}
+
+.registration {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+.login {
+  box-sizing: border-box;
+  grid-column: 2;
+  grid-row: 1;
+  max-width: 310px;
+}
+
+.banner {
+  grid-column: 2;
+  grid-row: 2;
 }
 
 .login__form {
@@ -78,4 +98,67 @@
 
 .login__link--bold {
   font-weight: bold;
+}
+
+.registration .card__header--image img {
+  width: 100%;
+  image-rendering: crisp-edges;
+  height: 270px;
+}
+
+.registration__content {
+  text-align: center;
+  background-color: #e3e3db;
+  border-radius: 0 0 4px 4px;
+  border: 1px solid #cccccc;
+  border-bottom-width: 3px;
+}
+
+.registration__btn {
+  box-sizing: border-box;
+  border: 2px solid #1f5700;
+  padding: 0.5rem 4rem;
+  transform: translateY(-50%);
+  position: relative;
+  top: -0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--color-text-white);
+  background-color: #3ba800;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.registration__btn::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #93d10f;
+  height: 4px;
+}
+
+.banner img {
+  display: block;
+  /* max-width: 310px; */
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.tag-cloud__title {
+  font-weight: bold;
+  color: orange;
+}
+
+.tag-cloud__tag {
+  color: var(--color-accent);
+  font-size: 0.75rem;
 }
