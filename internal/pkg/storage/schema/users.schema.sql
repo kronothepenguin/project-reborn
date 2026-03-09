@@ -1,4 +1,21 @@
 CREATE TABLE IF NOT EXISTS users(
     id INT PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL
+    email VARCHAR(50) NOT NULL,
+    password TEXT NOT NULL, -- bcrypt hash
+    dob DATE NOT NULL,
+    newsletter BOOLEAN NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS users_avatars(
+    id INT PRIMARY KEY AUTOINCREMENT,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(25) NOT NULL,
+    credits INT NOT NULL,
+    figure TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS users_sessions(
+    user_id INT PRIMARY KEY,
+    token TEXT UNIQUE NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

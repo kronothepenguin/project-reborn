@@ -4,12 +4,32 @@
 
 package storage
 
+import (
+	"time"
+)
+
 type Room struct {
 	ID   int64
 	Name string
 }
 
 type User struct {
-	ID   int64
-	Name string
+	ID         int64
+	Email      string
+	Password   string
+	Dob        time.Time
+	Newsletter bool
+}
+
+type UsersAvatar struct {
+	ID      int64
+	UserID  int64
+	Name    string
+	Credits int64
+	Figure  string
+}
+
+type UsersSession struct {
+	UserID int64
+	Token  string
 }

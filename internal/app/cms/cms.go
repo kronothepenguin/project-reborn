@@ -1,21 +1,26 @@
 package cms
 
 import (
+	"database/sql"
 	"net/http"
 
+	"github.com/kronothepenguin/project-reborn/internal/pkg/httpx"
 	"github.com/kronothepenguin/project-reborn/internal/pkg/tmpl"
 )
 
 type CMS struct {
 	resolve tmpl.Resolver
+	data    map[string]any
 
-	data map[string]any
+	db *sql.DB
 }
 
-func New(resolver tmpl.Resolver) *CMS {
+func New(resolver tmpl.Resolver, db *sql.DB) *CMS {
 	return &CMS{
 		resolve: resolver,
 		data:    map[string]any{},
+
+		db: db,
 	}
 }
 
@@ -24,13 +29,15 @@ func (c *CMS) Set(key string, value any) {
 }
 
 func (c *CMS) Mount(mux *http.ServeMux) {
-	with := tmpl.WithTemplates(c.resolve)
+	withTemplates := tmpl.WithTemplates(c.resolve)
+	withGuard := guard(c.db)
+	withAuthRedirect := authRedirect(c.db)
 
-	mux.Handle("GET /{$}", with(http.HandlerFunc(c.handleIndexView)))
-	mux.Handle("POST /login", http.MaxBytesHandler(http.HandlerFunc(c.handleLogin), 1024))
+	mux.Handle("GET /{$}", httpx.With(http.HandlerFunc(c.handleIndexView), withTemplates, withAuthRedirect))
+	mux.Handle("POST /{$}", httpx.With(http.HandlerFunc(c.handleLogin), httpx.MaxBytes(256)))
 
-	mux.Handle("GET /register", with(http.HandlerFunc(c.handleRegisterView)))
-	mux.Handle("POST /register", http.MaxBytesHandler(http.HandlerFunc(c.handleRegister), 1024))
+	mux.Handle("GET /register", httpx.With(http.HandlerFunc(c.handleRegisterView), withTemplates, withAuthRedirect))
+	mux.Handle("POST /register", httpx.With(http.HandlerFunc(c.handleRegister), httpx.MaxBytes(512)))
 
-	mux.Handle("GET /me", with(http.HandlerFunc(c.handleMeView)))
+	mux.Handle("GET /me", httpx.With(http.HandlerFunc(c.handleMeView), withTemplates, withGuard))
 }

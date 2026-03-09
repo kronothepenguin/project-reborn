@@ -7,15 +7,83 @@ package storage
 
 import (
 	"context"
+	"time"
 )
 
+const createUser = `-- name: CreateUser :execlastid
+INSERT INTO users(email, password, dob, newsletter) VALUES(?, ?, ?, ?)
+`
+
+type CreateUserParams struct {
+	Email      string
+	Password   string
+	Dob        time.Time
+	Newsletter bool
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, createUser,
+		arg.Email,
+		arg.Password,
+		arg.Dob,
+		arg.Newsletter,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.LastInsertId()
+}
+
+const createUserAvatar = `-- name: CreateUserAvatar :exec
+INSERT INTO users_avatars(user_id, name, credits, figure) VALUES(?, ?, ?, ?)
+`
+
+type CreateUserAvatarParams struct {
+	UserID  int64
+	Name    string
+	Credits int64
+	Figure  string
+}
+
+func (q *Queries) CreateUserAvatar(ctx context.Context, arg CreateUserAvatarParams) error {
+	_, err := q.db.ExecContext(ctx, createUserAvatar,
+		arg.UserID,
+		arg.Name,
+		arg.Credits,
+		arg.Figure,
+	)
+	return err
+}
+
 const getUser = `-- name: GetUser :one
-SELECT id, name FROM users WHERE id = ? LIMIT 1
+SELECT id, email, password, dob, newsletter FROM users WHERE id = ? LIMIT 1
 `
 
 func (q *Queries) GetUser(ctx context.Context, id int64) (User, error) {
 	row := q.db.QueryRowContext(ctx, getUser, id)
 	var i User
-	err := row.Scan(&i.ID, &i.Name)
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Password,
+		&i.Dob,
+		&i.Newsletter,
+	)
 	return i, err
+}
+
+const verifySession = `-- name: VerifySession :one
+SELECT EXISTS(SELECT 1 FROM users_sessions JOIN users ON users_sessions.user_id = users.id WHERE users_sessions.token = ? AND users.email = ?)
+`
+
+type VerifySessionParams struct {
+	Token string
+	Email string
+}
+
+func (q *Queries) VerifySession(ctx context.Context, arg VerifySessionParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, verifySession, arg.Token, arg.Email)
+	var column_1 int64
+	err := row.Scan(&column_1)
+	return column_1, err
 }

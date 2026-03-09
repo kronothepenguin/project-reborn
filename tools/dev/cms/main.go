@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"html/template"
 	"log"
 	"net/http"
@@ -9,16 +10,22 @@ import (
 	"github.com/kronothepenguin/project-reborn/internal/app/cms"
 	"github.com/kronothepenguin/project-reborn/internal/pkg/httpx"
 	"github.com/kronothepenguin/project-reborn/internal/pkg/tmpl"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
-	log.Println("CMS dev server starting...")
+	log.Println("Starting database connection...")
+	db, err := sql.Open("sqlite3", "habbo.db?_foreign_keys=on&_journal_mode=WAL")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer db.Close()
 
 	tmplpath := "./internal/app/cms/templates"
 	tmplfs := os.DirFS(tmplpath)
 	c := cms.New(func() (*template.Template, error) {
 		return tmpl.ParseAllFS(tmplfs)
-	})
+	}, db)
 
 	staticpath := "./web/static"
 	staticfs := os.DirFS(staticpath)
@@ -30,13 +37,13 @@ func main() {
 	mux.Handle("/", httpx.RootHandler(httpx.WithStatic(s)))
 
 	with := httpx.LiveReload(httpx.WithWatchAll(tmplpath), httpx.WithWatchAll(staticpath))
+	log.Println("Watching:", tmplpath, staticpath)
 
 	server := http.Server{
 		Addr:    "localhost:31337",
 		Handler: with(mux),
 	}
 
-	log.Println("Watching:", tmplpath)
 	log.Printf("Starting HTTP server at http://%s\n", server.Addr)
 	if err := httpx.ListenAndServeWithGracefulShutdown(&server); err != nil {
 		log.Fatalln(err)
