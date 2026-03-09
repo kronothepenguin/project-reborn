@@ -1,8 +1,6 @@
 package cms
 
 import (
-	"context"
-	"database/sql"
 	"errors"
 	"maps"
 	"net/http"
@@ -10,7 +8,6 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/internal/app/cms/validator"
-	"github.com/kronothepenguin/project-reborn/internal/pkg/storage"
 	"github.com/kronothepenguin/project-reborn/internal/pkg/tmpl"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -44,7 +41,6 @@ func (c *CMS) handleRegister(w http.ResponseWriter, r *http.Request) {
 	}
 	errs["email"] = email.Validate()
 
-	// newsletter := r.FormValue("newsletter")
 	tos := r.FormValue("terms")
 	if tos != "true" {
 		errs["tos"] = errors.New("accept_tos")
@@ -84,39 +80,10 @@ func (c *CMS) handleRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := login(c.db, email.Value, password.Value); err != nil {
+	if err := createSession(c.db, r.Context(), w, email.Value, false); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	http.Redirect(w, r, "/me", http.StatusFound)
-}
-
-func register(db *sql.DB, ctx context.Context, name, email, password string, dob time.Time) error {
-	tx, err := db.BeginTx(ctx, &sql.TxOptions{})
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback()
-
-	queries := storage.New(tx)
-	id, err := queries.CreateUser(ctx, storage.CreateUserParams{
-		Email:    email,
-		Password: password,
-		Dob:      dob,
-	})
-	if err != nil {
-		return err
-	}
-	err = queries.CreateUserAvatar(ctx, storage.CreateUserAvatarParams{
-		UserID:  id,
-		Name:    name,
-		Credits: 500, // TODO: from settings
-		Figure:  "",  // TODO: from settings
-	})
-	if err != nil {
-		return err
-	}
-
-	return tx.Commit()
 }

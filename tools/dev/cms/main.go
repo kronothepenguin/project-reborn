@@ -31,9 +31,10 @@ func main() {
 	staticfs := os.DirFS(staticpath)
 	s := http.StripPrefix("/static/", httpx.NoCache(http.FileServerFS(staticfs)))
 
-	mux := http.NewServeMux()
+	mux := httpx.NewServeMux()
 	c.Mount(mux)
 	loadData(c)
+
 	mux.Handle("/", httpx.RootHandler(httpx.WithStatic(s)))
 
 	with := httpx.LiveReload(httpx.WithWatchAll(tmplpath), httpx.WithWatchAll(staticpath))

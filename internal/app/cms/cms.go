@@ -2,7 +2,6 @@ package cms
 
 import (
 	"database/sql"
-	"net/http"
 
 	"github.com/kronothepenguin/project-reborn/internal/pkg/httpx"
 	"github.com/kronothepenguin/project-reborn/internal/pkg/tmpl"
@@ -28,16 +27,16 @@ func (c *CMS) Set(key string, value any) {
 	c.data[key] = value
 }
 
-func (c *CMS) Mount(mux *http.ServeMux) {
+func (c *CMS) Mount(mux *httpx.ServeMux) {
 	withTemplates := tmpl.WithTemplates(c.resolve)
 	withGuard := guard(c.db)
 	withAuthRedirect := authRedirect(c.db)
 
-	mux.Handle("GET /{$}", httpx.With(http.HandlerFunc(c.handleIndexView), withTemplates, withAuthRedirect))
-	mux.Handle("POST /{$}", httpx.With(http.HandlerFunc(c.handleLogin), httpx.MaxBytes(256)))
+	mux.HandleFuncWith("GET /{$}", c.handleIndexView, withTemplates, withAuthRedirect)
+	mux.HandleFuncWith("POST /{$}", c.handleLogin, httpx.MaxBytes(256))
 
-	mux.Handle("GET /register", httpx.With(http.HandlerFunc(c.handleRegisterView), withTemplates, withAuthRedirect))
-	mux.Handle("POST /register", httpx.With(http.HandlerFunc(c.handleRegister), httpx.MaxBytes(512)))
+	mux.HandleFuncWith("GET /register", c.handleRegisterView, withTemplates, withAuthRedirect)
+	mux.HandleFuncWith("POST /register", c.handleRegister, httpx.MaxBytes(512))
 
-	mux.Handle("GET /me", httpx.With(http.HandlerFunc(c.handleMeView), withTemplates, withGuard))
+	mux.HandleFuncWith("GET /me", c.handleMeView, withTemplates, withGuard)
 }

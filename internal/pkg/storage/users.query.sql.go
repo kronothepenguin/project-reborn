@@ -10,6 +10,20 @@ import (
 	"time"
 )
 
+const createSession = `-- name: CreateSession :exec
+INSERT OR REPLACE INTO users_sessions(user_id, token) VALUES(?, ?)
+`
+
+type CreateSessionParams struct {
+	UserID int64
+	Token  string
+}
+
+func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) error {
+	_, err := q.db.ExecContext(ctx, createSession, arg.UserID, arg.Token)
+	return err
+}
+
 const createUser = `-- name: CreateUser :execlastid
 INSERT INTO users(email, password, dob, newsletter) VALUES(?, ?, ?, ?)
 `
@@ -55,12 +69,38 @@ func (q *Queries) CreateUserAvatar(ctx context.Context, arg CreateUserAvatarPara
 	return err
 }
 
+const deleteSession = `-- name: DeleteSession :exec
+DELETE FROM users_sessions WHERE token = ?
+`
+
+func (q *Queries) DeleteSession(ctx context.Context, token string) error {
+	_, err := q.db.ExecContext(ctx, deleteSession, token)
+	return err
+}
+
 const getUser = `-- name: GetUser :one
 SELECT id, email, password, dob, newsletter FROM users WHERE id = ? LIMIT 1
 `
 
 func (q *Queries) GetUser(ctx context.Context, id int64) (User, error) {
 	row := q.db.QueryRowContext(ctx, getUser, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Password,
+		&i.Dob,
+		&i.Newsletter,
+	)
+	return i, err
+}
+
+const getUserByEmail = `-- name: GetUserByEmail :one
+SELECT id, email, password, dob, newsletter FROM users WHERE email = ? LIMIT 1
+`
+
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
 	var i User
 	err := row.Scan(
 		&i.ID,
