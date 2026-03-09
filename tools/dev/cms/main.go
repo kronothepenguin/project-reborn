@@ -26,6 +26,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	c.Mount(mux)
+	loadData(c)
 	mux.Handle("/", httpx.RootHandler(httpx.WithStatic(s)))
 
 	with := httpx.LiveReload(httpx.WithWatchAll(tmplpath), httpx.WithWatchAll(staticpath))
@@ -40,4 +41,11 @@ func main() {
 	if err := httpx.ListenAndServeWithGracefulShutdown(&server); err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func loadData(c *cms.CMS) {
+	c.Set("SiteName", "Reborn")
+	c.Set("AvatarName", "Avatar")
+	c.Set("OnlineCount", 0)
+	c.Set("ServerStatus", "online")
 }

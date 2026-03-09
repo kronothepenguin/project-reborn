@@ -17,7 +17,7 @@
     <div class="main">
       <header class="main__header">
         <h1 class="main__logo"><a href="/">{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}</a></h1>
-        <span class="main__stats font-xs">
+        <span class="main__stats text-xs">
           <strong>{{.OnlineCount}}</strong> users online now
         </span>
         <img src="/static/images/{{if .ServerStatus}}{{.ServerStatus}}{{else}}offline{{end}}.gif" alt="Server Status" />
@@ -29,47 +29,47 @@
           </header>
           <div class="card__content registration__content">
             <a href="/register" class="registration__btn">Join now, it's free &raquo;</a>
-            <p class="font-sm">{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}} is a virtual world where you can meet and make friends.</p>
+            <p class="text-sm">{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}} is a virtual world where you can meet and make friends.</p>
           </div>
         </section>
 
         <section class="card card--gray login">
           <header class="card__header">
-            <h2 class="font-lg">Sign in</h2>
+            <h2 class="text-lg">Sign in</h2>
           </header>
 
           <form class="card__content login__form" action="/login" method="post">
-            <label class="login__label font-sm" for="login-username-input"
+            <label class="login__label text-sm" for="login-username-input"
               >Username</label
             >
             <input
               id="login-username-input"
-              class="login__input font-base"
+              class="login__input text-base"
               type="text"
               name="username"
             />
 
-            <label class="login__label font-sm" for="login-username-password"
+            <label class="login__label text-sm" for="login-username-password"
               >Password</label
             >
             <input
               id="login-username-password"
-              class="login__input font-base"
+              class="login__input text-base"
               type="password"
               name="password"
             />
 
-            <button class="btn btn--gray font-xs">Sign in</button>
+            <button class="btn btn--gray text-xs">Sign in</button>
 
             <label class="login__checkbox">
               <input type="checkbox" name="remember" />
-              <span class="font-xs">Remember me</span>
+              <span class="text-xs">Remember me</span>
             </label>
 
-            <a class="login__link login__link--bold font-xs" href="/register"
+            <a class="login__link login__link--bold text-xs" href="/register"
               >Register for free</a
             >
-            <a class="login__link font-xs" href="/forgot"
+            <a class="login__link text-xs" href="/forgot"
               >I forgot my password/username</a
             >
           </form>
@@ -82,7 +82,7 @@
 
       <footer class="main__footer">
         <div class="tag-cloud">
-          <span class="tag-cloud__title font-base">{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}s Like..</span>
+          <span class="tag-cloud__title text-base">{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}s Like..</span>
           {{range .Tags}}
             <a class="tag-cloud__tag" href="/tags/{{.}}">{{.}}</a>
           {{end}}

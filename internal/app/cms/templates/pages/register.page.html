@@ -4,7 +4,417 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>{{.SiteName}} ~ Register</title>
+    <title>{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}} ~ Register</title>
+
+    <link rel="stylesheet" href="/static/styles/reset.css" />
+    <link rel="stylesheet" href="/static/styles/commons.css" />
+    <link rel="stylesheet" href="/static/styles/buttons.css" />
+    <link rel="stylesheet" href="/static/styles/landing.css" />
+    <link rel="stylesheet" href="/static/styles/fonts.css" />
+    <link rel="stylesheet" href="/static/styles/cards.css" />
+    <link rel="stylesheet" href="/static/styles/paper.css" />
+    <link rel="stylesheet" href="/static/styles/forms.css" />
+    <link rel="stylesheet" href="/static/styles/register.css" />
+    <link rel="stylesheet" href="/static/styles/flexbox.css" />
+    <link rel="stylesheet" href="/static/styles/spacing.css" />
   </head>
-  <body></body>
+  <body>
+    <div class="main">
+      <header class="main__header">
+        <h1 class="main__logo">
+          <a href="/">{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}</a>
+        </h1>
+        <span class="main__stats text-xs">
+          <strong>{{.OnlineCount}}</strong> users online now
+        </span>
+        <img
+          src="/static/images/{{if .ServerStatus}}{{.ServerStatus}}{{else}}offline{{end}}.gif"
+          alt="Server Status"
+        />
+      </header>
+
+      <form method="post" action="/register" class="register">
+        <div class="register__form-column">
+          <section class="paper paper--blue">
+            <header class="paper__header register__header">
+              <span class="text-lg">1.</span>
+              <h2 class="text-lg">Choose Your Name</h2>
+            </header>
+            <div class="register__username">
+              <label class="form__label text-xs" for="register-name"
+                >{{if .AvatarName}}{{.AvatarName}}{{else}}Avatar{{end}}
+                name</label
+              >
+              <div class="flex justify-between gap-2">
+                <input
+                  id="register-name"
+                  class="form__input text-sm"
+                  type="text"
+                  name="username"
+                />
+                <button
+                  id="check-username"
+                  class="btn btn--gray btn--icon"
+                  type="button"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="16px"
+                    viewBox="0 -960 960 960"
+                    width="16px"
+                    fill="#000"
+                  >
+                    <path
+                      d="M765-144 526-383q-30 22-65.79 34.5-35.79 12.5-76.18 12.5Q284-336 214-406t-70-170q0-100 70-170t170-70q100 0 170 70t70 170.03q0 40.39-12.5 76.18Q599-464 577-434l239 239-51 51ZM384-408q70 0 119-49t49-119q0-70-49-119t-119-49q-70 0-119 49t-49 119q0 70 49 119t119 49Z"
+                    />
+                    testa
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section class="card card--gray register__section">
+            <header class="card__header register__header">
+              <span>2.</span>
+              <h2 class="text-lg">Your Details</h2>
+            </header>
+            <div class="card__content register__details">
+              <div class="field">
+                <label class="form__label text-xs" for="register-password"
+                  >My password will be:</label
+                >
+                <input
+                  id="register-password"
+                  class="form__input"
+                  type="password"
+                  name="password"
+                />
+              </div>
+
+              <div class="field">
+                <label class="form__label text-xs" for="register-password2"
+                  >Confirm password</label
+                >
+                <input
+                  id="register-password2"
+                  class="form__input"
+                  type="password"
+                  name="password_confirm"
+                />
+              </div>
+
+              <div class="field">
+                <label class="form__label text-xs">I was born on:</label>
+                <div class="register__birthday">
+                  <select
+                    id="register-day"
+                    class="form__select text-sm"
+                    name="day"
+                  >
+                    <option value="">Day</option>
+                  </select>
+                  <select
+                    id="register-month"
+                    class="form__select text-sm"
+                    name="month"
+                  >
+                    <option value="">Month</option>
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                  </select>
+                  <select
+                    id="register-year"
+                    class="form__select text-sm"
+                    name="year"
+                  >
+                    <option value="">Year</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="form__label text-xs" for="register-email"
+                  >And my email address is:</label
+                >
+                <input
+                  id="register-email"
+                  class="form__input"
+                  type="email"
+                  name="email"
+                />
+              </div>
+
+              <div class="field">
+                <label class="form__label text-xs" for="register-email2"
+                  >Retype your email address</label
+                >
+                <input
+                  id="register-email2"
+                  class="form__input"
+                  type="email"
+                  name="email_confirm"
+                />
+              </div>
+
+              <label class="register__checkbox">
+                <input type="checkbox" name="newsletter" value="true" checked />
+                <span class="text-xs"
+                  >Yes, send me {{if
+                  .SiteName}}{{.SiteName}}{{else}}Reborn{{end}} updates and
+                  newsletter!</span
+                >
+              </label>
+
+              <div class="register__terms">
+                <p>
+                  <a href="/terms" class="register__terms-link text-xs"
+                    >Terms of Service</a
+                  >
+                </p>
+                <label class="register__checkbox">
+                  <input
+                    id="register-terms"
+                    type="checkbox"
+                    name="terms"
+                    value="true"
+                  />
+                  <span class="text-xs"
+                    >By clicking on continue, I confirm that I have read and
+                    accept the Terms of Use and Privacy Policy.</span
+                  >
+                </label>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="register__avatar-column">
+          <section class="register__avatar">
+            <header class="register__header register__avatar-title">
+              <span>3.</span>
+              <h2 class="text-lg">
+                Create Your {{if
+                .AvatarName}}{{.AvatarName}}{{else}}Avatar{{end}}
+              </h2>
+            </header>
+            <div class="register__avatar-editor">
+              <div id="figure-preview">
+                <strong class="text-lg">WORK IN PROGRESS</strong>
+              </div>
+            </div>
+          </section>
+
+          <div class="register__buttons">
+            <a href="/" class="register__cancel text-xs">Exit registration</a>
+            <button id="submit" class="register__submit text-xs" type="submit">
+              Continue <span class="text-lg">&raquo;</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      function joinErrors(errs) {
+        errs = errs.filter((err) => err != null);
+        if (errs.length === 0) {
+          return null;
+        }
+        let messages = [];
+        for (const err of errs) {
+          messages.push(err.message);
+        }
+        return new Error(messages.join("\n"));
+      }
+
+      function verifyUsername(nameInput) {
+        if (nameInput.value === "") {
+          nameInput.classList.add("invalid");
+          return new Error("empty username");
+        }
+        return null;
+      }
+
+      function verifyPassword(passwordInput) {
+        if (passwordInput.value === "") {
+          passwordInput.classList.add("error");
+          return new Error("empty password");
+        }
+        return null;
+      }
+
+      function verifyPasswordRetype(passwordInput, password2Input) {
+        if (passwordInput.value !== password2Input.value) {
+          password2Input.classList.add("error");
+          return new Error("password mismatch");
+        }
+        return null;
+      }
+
+      function verifyDate(daySelect, monthSelect, yearSelect) {
+        let errs = [];
+        if (daySelect.value === "") {
+          daySelect.classList.add("error");
+          errs.push(new Error("empty day"));
+        }
+        if (monthSelect.value === "") {
+          monthSelect.classList.add("error");
+          errs.push(new Error("empty month"));
+        }
+        if (yearSelect.value === "") {
+          yearSelect.classList.add("error");
+          errs.push(new Error("empty year"));
+        }
+        return joinErrors(errs);
+      }
+
+      function verifyEmail(emailInput) {
+        if (emailInput.value === "") {
+          emailInput.classList.add("error");
+          return new Error("empty email");
+        }
+        return null;
+      }
+
+      function verifyEmailRetype(emailInput, email2Input) {
+        if (emailInput.value !== email2Input.value) {
+          email2Input.classList.add("error");
+          return new Error("email mismatch");
+        }
+        return null;
+      }
+
+      function verifyTerms(termsCheckbox) {
+        if (!termsCheckbox.checked) {
+          termsCheckbox.parentElement.classList.add("error");
+          return new Error("terms not checked");
+        }
+        return null;
+      }
+
+      function populateYearSelect(yearSelect) {
+        const currentYear = new Date().getUTCFullYear();
+        const minYear = 1900;
+        const yearFragment = document.createDocumentFragment();
+        for (let year = currentYear; year > minYear; year--) {
+          const option = document.createElement("option");
+          option.value = String(year);
+          option.textContent = String(year);
+          yearFragment.appendChild(option);
+        }
+        yearSelect.append(yearFragment);
+      }
+
+      function populateDaySelect(daySelect) {
+        const dayFragment = document.createDocumentFragment();
+        for (let day = 1; day < 32; day++) {
+          const option = document.createElement("option");
+          option.value = String(day);
+          option.textContent = String(day);
+          dayFragment.appendChild(option);
+        }
+        daySelect.append(dayFragment);
+      }
+
+      const nameInput = document.getElementById("register-name");
+      nameInput.addEventListener("input", () => {
+        nameInput.classList.remove("valid", "invalid");
+      });
+      const nameCheckButton = document.getElementById("check-username");
+      nameCheckButton.addEventListener("click", () => {
+        const data = new FormData();
+        data.append("username", nameInput.value);
+        fetch("/register/namecheck", {
+          method: "POST",
+          body: data,
+        })
+          .then((response) => {
+            if (response.ok()) {
+              nameInput.classList.remove("invalid");
+              nameInput.classList.add("valid");
+            } else {
+              nameInput.classList.remove("valid");
+              nameInput.classList.add("invalid");
+            }
+          })
+          .catch((reason) => {
+            // TODO: alert about missing internet connection or server status down
+            nameInput.classList.add("invalid");
+          });
+      });
+
+      const passwordInput = document.getElementById("register-password");
+      passwordInput.addEventListener("input", () => {
+        passwordInput.classList.remove("error");
+      });
+
+      const password2Input = document.getElementById("register-password2");
+      password2Input.addEventListener("input", () => {
+        password2Input.classList.remove("error");
+      });
+      password2Input.addEventListener("blur", () => {
+        verifyPasswordRetype(passwordInput, password2Input);
+      });
+
+      const daySelect = document.getElementById("register-day");
+      populateDaySelect(daySelect);
+      daySelect.addEventListener("change", () => {
+        daySelect.classList.remove("error");
+      });
+      const monthSelect = document.getElementById("register-month");
+      monthSelect.addEventListener("change", () => {
+        monthSelect.classList.remove("error");
+      });
+      const yearSelect = document.getElementById("register-year");
+      populateYearSelect(yearSelect);
+      yearSelect.addEventListener("change", () => {
+        yearSelect.classList.remove("error");
+      });
+
+      const emailInput = document.getElementById("register-email");
+      emailInput.addEventListener("input", () => {
+        emailInput.classList.remove("error");
+      });
+      const email2Input = document.getElementById("register-email2");
+      email2Input.addEventListener("input", () => {
+        email2Input.classList.remove("error");
+      });
+      email2Input.addEventListener("blur", () => {
+        verifyEmailRetype(emailInput, email2Input);
+      });
+
+      const termsCheckbox = document.getElementById("register-terms");
+      termsCheckbox.addEventListener("change", () => {
+        termsCheckbox.parentElement.classList.remove("error");
+      });
+
+      const submitButton = document.getElementById("submit");
+      submitButton.addEventListener("click", (e) => {
+        const errs = [];
+        errs.push(verifyUsername(nameInput));
+        errs.push(verifyPassword(passwordInput));
+        errs.push(verifyPasswordRetype(passwordInput, password2Input));
+        errs.push(verifyDate(daySelect, monthSelect, yearSelect));
+        errs.push(verifyEmail(emailInput));
+        errs.push(verifyEmailRetype(emailInput, email2Input));
+        errs.push(verifyTerms(termsCheckbox));
+
+        const err = joinErrors(errs);
+        if (err != null) {
+          e.preventDefault();
+        }
+      });
+    </script>
+  </body>
 </html>

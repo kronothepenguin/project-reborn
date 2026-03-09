@@ -8,7 +8,7 @@ import (
 )
 
 func (c *CMS) handleIndexView(w http.ResponseWriter, r *http.Request) {
-	tmpl.ExecuteTemplate(r.Context(), w, "index.page.html", nil)
+	tmpl.ExecuteTemplate(r.Context(), w, "index.page.html", c.data)
 }
 
 func (c *CMS) handleLogin(w http.ResponseWriter, r *http.Request) {

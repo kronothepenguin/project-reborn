@@ -1,0 +1,10 @@
+.paper {
+  box-sizing: border-box;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+}
+
+.paper--blue {
+  background-color: #3399cc;
+  color: var(--color-text-white);
+}

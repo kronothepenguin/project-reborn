@@ -1,0 +1,146 @@
+.register {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 0.5rem;
+  /* align-items: start; */
+  /* place-items: stretch; */
+}
+
+.register .form__label {
+  color: var(--color-text);
+}
+
+.register .form__input {
+  border-color: #fff;
+}
+
+.register .field {
+  text-align: center;
+}
+
+.register input.error {
+  background-color: #f18f9b;
+}
+
+.register select.error,
+.register .register__checkbox.error {
+  box-sizing: border-box;
+  border: 2px solid #f18f9b;
+}
+
+.register__header {
+  text-align: center;
+  /* text-transform: uppercase; */
+  display: flex;
+}
+
+.register__header span {
+  font-weight: bold;
+}
+
+.register__header h2 {
+  display: inline-block;
+  flex-grow: 1;
+}
+
+.register__form-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.register__avatar-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  /* align-self: stretch; */
+}
+
+.register__username {
+  text-align: center;
+}
+
+.register__username .form__label {
+  color: var(--color-text-white);
+  text-align: center;
+}
+
+.register__username .form__input.invalid {
+  background-color: #f18f9b;
+}
+
+.register__details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.register__birthday {
+  margin: 0 auto;
+  display: flex;
+  gap: 0.25rem;
+  justify-content: center;
+}
+
+.register__checkbox {
+  display: flex;
+  gap: 0.25rem;
+  align-items: start;
+}
+
+.register__terms {
+  background-color: var(--color-gray-dark);
+  border-radius: 4px;
+  padding: 0.25rem 1rem;
+}
+
+.register__terms-link {
+  color: var(--color-text-white);
+}
+
+.register__avatar {
+  flex-grow: 1;
+}
+
+.register__avatar-title {
+  background-color: #663300;
+  color: var(--color-text-white);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+}
+
+.register__avatar-editor {
+  /* min-height: 400px; */
+  text-align: center;
+  flex: 1 1 auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.register__buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.register__submit {
+  padding: 0.125rem 0.5rem;
+  background-color: #3ba800;
+  color: var(--color-text-white);
+  border: 2px solid #194800;
+  border-bottom-width: 4px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 0.75rem;
+}
+
+.register__submit:hover {
+  background-color: #4cc200;
+}
+
+.register__cancel {
+  color: var(--color-accent);
+}
