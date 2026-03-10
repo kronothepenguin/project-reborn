@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"embed"
 	"html/template"
 	"log"
 	"net/http"
@@ -9,17 +10,29 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/internal/app/cms"
 	"github.com/kronothepenguin/project-reborn/internal/pkg/httpx"
+	"github.com/kronothepenguin/project-reborn/internal/pkg/storage"
 	"github.com/kronothepenguin/project-reborn/internal/pkg/tmpl"
 	_ "github.com/mattn/go-sqlite3"
 )
 
+//go:embed *.sql
+var seedFS embed.FS
+
 func main() {
 	log.Println("Starting database connection...")
-	db, err := sql.Open("sqlite3", "habbo.db?_foreign_keys=on&_journal_mode=WAL")
+	db, err := sql.Open("sqlite3", ":memory:?_foreign_keys=on&_journal_mode=WAL&mode=memory")
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer db.Close()
+
+	if err := storage.ExecSchema(db); err != nil {
+		log.Fatalln(err)
+	}
+	if err := storage.ExecFS(db, seedFS); err != nil {
+		log.Fatalln(err)
+	}
+	// TODO: exec seed.sql
 
 	tmplpath := "./internal/app/cms/templates"
 	tmplfs := os.DirFS(tmplpath)

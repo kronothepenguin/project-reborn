@@ -35,8 +35,12 @@
 
       <form method="post" action="/register" class="register">
         <div class="register__form-column">
+          {{if .Error}}{{with index .Error "name"}}
+          <div class="paper paper--red">{{.}}</div>
+          {{end}}{{end}}
+
           <section class="paper paper--blue">
-            <header class="paper__header register__header">
+            <header class="register__header">
               <span class="text-lg">1.</span>
               <h2 class="text-lg">Choose Your Name</h2>
             </header>
@@ -51,6 +55,7 @@
                   class="form__input text-sm"
                   type="text"
                   name="username"
+                  {{if .Value}}{{with index .Value "name"}}value="{{.}}"{{end}}{{end}}
                 />
                 <button
                   id="check-username"
@@ -67,7 +72,6 @@
                     <path
                       d="M765-144 526-383q-30 22-65.79 34.5-35.79 12.5-76.18 12.5Q284-336 214-406t-70-170q0-100 70-170t170-70q100 0 170 70t70 170.03q0 40.39-12.5 76.18Q599-464 577-434l239 239-51 51ZM384-408q70 0 119-49t49-119q0-70-49-119t-119-49q-70 0-119 49t-49 119q0 70 49 119t119 49Z"
                     />
-                    testa
                   </svg>
                 </button>
               </div>
@@ -80,6 +84,10 @@
               <h2 class="text-lg">Your Details</h2>
             </header>
             <div class="card__content register__details">
+              {{if .Error}}{{with index .Error "password"}}
+              <div class="paper paper--red">{{.}}</div>
+              {{end}}{{end}}
+
               <div class="field">
                 <label class="form__label text-xs" for="register-password"
                   >My password will be:</label
@@ -104,6 +112,10 @@
                 />
               </div>
 
+              {{if .Error}}{{with index .Error "dob"}}
+              <div class="paper paper--red">{{.}}</div>
+              {{end}}{{end}}
+
               <div class="field">
                 <label class="form__label text-xs">I was born on:</label>
                 <div class="register__birthday">
@@ -111,6 +123,7 @@
                     id="register-day"
                     class="form__select text-sm"
                     name="day"
+                    {{if .Value}}{{with index .Value "day"}}value="{{.}}"{{end}}{{end}}
                   >
                     <option value="">Day</option>
                   </select>
@@ -118,30 +131,36 @@
                     id="register-month"
                     class="form__select text-sm"
                     name="month"
+                    {{if .Value}}{{with index .Value "month"}}value="{{.}}"{{end}}{{end}}
                   >
                     <option value="">Month</option>
-                    <option value="0">January</option>
-                    <option value="1">February</option>
-                    <option value="2">March</option>
-                    <option value="3">April</option>
-                    <option value="4">May</option>
-                    <option value="5">June</option>
-                    <option value="6">July</option>
-                    <option value="7">August</option>
-                    <option value="8">September</option>
-                    <option value="9">October</option>
-                    <option value="10">November</option>
-                    <option value="11">December</option>
+                    <option value="01">January</option>
+                    <option value="02">February</option>
+                    <option value="03">March</option>
+                    <option value="04">April</option>
+                    <option value="05">May</option>
+                    <option value="06">June</option>
+                    <option value="07">July</option>
+                    <option value="08">August</option>
+                    <option value="09">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
                   </select>
                   <select
                     id="register-year"
                     class="form__select text-sm"
                     name="year"
+                    {{if .Value}}{{with index .Value "year"}}value="{{.}}"{{end}}{{end}}
                   >
                     <option value="">Year</option>
                   </select>
                 </div>
               </div>
+
+              {{if .Error}}{{with index .Error "email"}}
+              <div class="paper paper--red">{{.}}</div>
+              {{end}}{{end}}
 
               <div class="field">
                 <label class="form__label text-xs" for="register-email"
@@ -152,6 +171,7 @@
                   class="form__input"
                   type="email"
                   name="email"
+                  {{if .Value}}{{with index .Value "email"}}value="{{.}}"{{end}}{{end}}
                 />
               </div>
 
@@ -164,6 +184,7 @@
                   class="form__input"
                   type="email"
                   name="email_confirm"
+                  {{if .Value}}{{with index .Value "email2"}}value="{{.}}"{{end}}{{end}}
                 />
               </div>
 
@@ -175,6 +196,10 @@
                   newsletter!</span
                 >
               </label>
+
+              {{if .Error}}{{with index .Error "tos"}}
+              <div class="paper paper--red">{{.}}</div>
+              {{end}}{{end}}
 
               <div class="register__terms">
                 <p>

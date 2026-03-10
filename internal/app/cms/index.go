@@ -1,6 +1,9 @@
 package cms
 
 import (
+	"errors"
+	"log"
+	"maps"
 	"net/http"
 
 	"github.com/kronothepenguin/project-reborn/internal/pkg/tmpl"
@@ -16,12 +19,17 @@ func (c *CMS) handleLogin(w http.ResponseWriter, r *http.Request) {
 	remember := r.FormValue("remember") == "true"
 
 	if err := login(c.db, r.Context(), email, password); err != nil {
-		http.Error(w, "invalid credentials", http.StatusUnauthorized)
+		log.Println(err)
+		data := maps.Clone(c.data)
+		data["Error"] = errors.New("wrong_credentials")
+		tmpl.ExecuteTemplate(r.Context(), w, "index.page.html", data)
 		return
 	}
 
 	if err := createSession(c.db, r.Context(), w, email, remember); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		data := maps.Clone(c.data)
+		data["Error"] = errors.New("session_failed")
+		tmpl.ExecuteTemplate(r.Context(), w, "index.page.html", data)
 		return
 	}
 

@@ -43,19 +43,17 @@
 
 .registration {
   grid-column: 1;
-  grid-row: 1 / span 2;
+  grid-row: 1 / span 3;
 }
 
 .login {
   box-sizing: border-box;
   grid-column: 2;
-  grid-row: 1;
   max-width: 310px;
 }
 
 .banner {
   grid-column: 2;
-  grid-row: 2;
 }
 
 .login__form {
@@ -137,6 +135,10 @@
   bottom: 0;
   background-color: #93d10f;
   height: 4px;
+}
+
+.error {
+  grid-column-start: 2;
 }
 
 .banner img {

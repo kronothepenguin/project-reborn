@@ -10,35 +10,53 @@
     <link rel="stylesheet" href="/static/styles/commons.css" />
     <link rel="stylesheet" href="/static/styles/fonts.css" />
     <link rel="stylesheet" href="/static/styles/cards.css" />
+    <link rel="stylesheet" href="/static/styles/paper.css">
     <link rel="stylesheet" href="/static/styles/buttons.css" />
     <link rel="stylesheet" href="/static/styles/index.css" />
   </head>
   <body>
     <div class="main">
       <header class="main__header">
-        <h1 class="main__logo"><a href="/">{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}</a></h1>
+        <h1 class="main__logo">
+          <a href="/">{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}</a>
+        </h1>
         <span class="main__stats text-xs">
           <strong>{{.OnlineCount}}</strong> users online now
         </span>
-        <img src="/static/images/{{if .ServerStatus}}{{.ServerStatus}}{{else}}offline{{end}}.gif" alt="Server Status" />
+        <img
+          src="/static/images/{{if .ServerStatus}}{{.ServerStatus}}{{else}}offline{{end}}.gif"
+          alt="Server Status"
+        />
       </header>
       <div class="main__content">
         <section class="card registration">
           <header class="card__header card__header--image">
-            <img src="/static/images/landing_group.png" alt="Join {{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}" />
+            <img
+              src="/static/images/landing_group.png"
+              alt="Join {{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}"
+            />
           </header>
           <div class="card__content registration__content">
-            <a href="/register" class="registration__btn">Join now, it's free &raquo;</a>
-            <p class="text-sm">{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}} is a virtual world where you can meet and make friends.</p>
+            <a href="/register" class="registration__btn"
+              >Join now, it's free &raquo;</a
+            >
+            <p class="text-sm">
+              {{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}} is a virtual
+              world where you can meet and make friends.
+            </p>
           </div>
         </section>
+
+        {{if .Error}}{{with .Error}}
+        <div class="paper paper--red error">{{.}}</div>
+        {{end}}{{end}}
 
         <section class="card card--gray login">
           <header class="card__header">
             <h2 class="text-lg">Sign in</h2>
           </header>
 
-          <form class="card__content login__form" action="/login" method="post">
+          <form class="card__content login__form" action="/" method="post">
             <label class="login__label text-sm" for="login-username-input"
               >Username</label
             >
@@ -76,15 +94,20 @@
         </section>
 
         <a class="banner" href="/register">
-          <img src="/static/images/uk_party_frontpage_image.gif" alt="Create your Habbo now and join the party!" />
+          <img
+            src="/static/images/uk_party_frontpage_image.gif"
+            alt="Create your Habbo now and join the party!"
+          />
         </a>
       </div>
 
       <footer class="main__footer">
         <div class="tag-cloud">
-          <span class="tag-cloud__title text-base">{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}s Like..</span>
+          <span class="tag-cloud__title text-base"
+            >{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}s Like..</span
+          >
           {{range .Tags}}
-            <a class="tag-cloud__tag" href="/tags/{{.}}">{{.}}</a>
+          <a class="tag-cloud__tag" href="/tags/{{.}}">{{.}}</a>
           {{end}}
         </div>
       </footer>

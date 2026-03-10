@@ -33,10 +33,10 @@ func (c *CMS) Mount(mux *httpx.ServeMux) {
 	withAuthRedirect := authRedirect(c.db)
 
 	mux.HandleFuncWith("GET /{$}", c.handleIndexView, withTemplates, withAuthRedirect)
-	mux.HandleFuncWith("POST /{$}", c.handleLogin, httpx.MaxBytes(256))
+	mux.HandleFuncWith("POST /{$}", c.handleLogin, withTemplates, httpx.MaxBytes(256))
 
 	mux.HandleFuncWith("GET /register", c.handleRegisterView, withTemplates, withAuthRedirect)
-	mux.HandleFuncWith("POST /register", c.handleRegister, httpx.MaxBytes(512))
+	mux.HandleFuncWith("POST /register", c.handleRegister, withTemplates, httpx.MaxBytes(512))
 
 	mux.HandleFuncWith("GET /me", c.handleMeView, withTemplates, withGuard)
 }

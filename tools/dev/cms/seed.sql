@@ -1,0 +1,2 @@
+INSERT INTO users(email, password, dob, newsletter) VALUES('admin@example.com', '$2a$10$8MZyv8NqoWEzIfa2nxz0beG1c6N8afOcIwqfzw8dyIrat6g7UC6yy', '1995-01-10', FALSE);
+INSERT INTO users_avatars(user_id, name, credits, figure) VALUES(last_insert_rowid(), 'admin', 500, '');

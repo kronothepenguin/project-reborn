@@ -33,7 +33,7 @@ func (c *CMS) handleRegister(w http.ResponseWriter, r *http.Request) {
 		Month: r.FormValue("month"),
 		Year:  r.FormValue("year"),
 	}
-	errs["date"] = date.Validate()
+	errs["dob"] = date.Validate()
 
 	email := &validator.Email{
 		Value:   r.FormValue("email"),
@@ -50,13 +50,13 @@ func (c *CMS) handleRegister(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		data := maps.Clone(c.data)
 		data["Value"] = map[string]any{
-			"name":     name,
-			"password": password.Value,
-			"day":      date.Day,
-			"month":    date.Month,
-			"year":     date.Year,
-			"email":    email.Value,
-			"tos":      tos,
+			"name":   name,
+			"day":    date.Day,
+			"month":  date.Month,
+			"year":   date.Year,
+			"email":  email.Value,
+			"email2": email.Confirm,
+			"tos":    tos,
 		}
 		data["Error"] = errs
 		tmpl.ExecuteTemplate(r.Context(), w, "register.page.html", data)
