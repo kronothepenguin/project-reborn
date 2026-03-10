@@ -95,6 +95,23 @@ func (q *Queries) GetUser(ctx context.Context, id int64) (User, error) {
 	return i, err
 }
 
+const getUserByAvatarName = `-- name: GetUserByAvatarName :one
+SELECT users.id, users.email, users.password, users.dob, users.newsletter FROM users JOIN users_avatars ON users_avatars.user_id = users.id WHERE users_avatars.name = ? LIMIT 1
+`
+
+func (q *Queries) GetUserByAvatarName(ctx context.Context, name string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByAvatarName, name)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Password,
+		&i.Dob,
+		&i.Newsletter,
+	)
+	return i, err
+}
+
 const getUserByEmail = `-- name: GetUserByEmail :one
 SELECT id, email, password, dob, newsletter FROM users WHERE email = ? LIMIT 1
 `

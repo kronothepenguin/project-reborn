@@ -47,10 +47,18 @@ func register(db *sql.DB, ctx context.Context, name, email, password string, dob
 	return tx.Commit()
 }
 
-func login(db *sql.DB, ctx context.Context, email, password string) error {
+func resolveUser(db *sql.DB, ctx context.Context, username string) (storage.User, error) {
 	queries := storage.New(db)
 
-	user, err := queries.GetUserByEmail(ctx, email)
+	user, err := queries.GetUserByEmail(ctx, username)
+	if err != nil {
+		return queries.GetUserByAvatarName(ctx, username)
+	}
+	return user, nil
+}
+
+func login(db *sql.DB, ctx context.Context, username, password string) error {
+	user, err := resolveUser(db, ctx, username)
 	if err != nil {
 		return err
 	}
@@ -58,10 +66,10 @@ func login(db *sql.DB, ctx context.Context, email, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 }
 
-func createSession(db *sql.DB, ctx context.Context, w http.ResponseWriter, email string, remember bool) error {
+func createSession(db *sql.DB, ctx context.Context, w http.ResponseWriter, username string, remember bool) error {
 	queries := storage.New(db)
 
-	user, err := queries.GetUserByEmail(ctx, email)
+	user, err := resolveUser(db, ctx, username)
 	if err != nil {
 		return err
 	}
@@ -82,7 +90,7 @@ func createSession(db *sql.DB, ctx context.Context, w http.ResponseWriter, email
 	if remember {
 		maxAge = cookieMaxAge
 	}
-	setSessionCookies(w, email, token, maxAge)
+	setSessionCookies(w, user.Email, token, maxAge)
 
 	return nil
 }
