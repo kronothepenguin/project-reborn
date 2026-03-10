@@ -6,31 +6,39 @@
 
     <title>{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}} ~ Register</title>
 
-    <link rel="stylesheet" href="/static/styles/reset.css" />
-    <link rel="stylesheet" href="/static/styles/commons.css" />
+    {{template "styles.partial.html"}}
+
+    <link rel="stylesheet" href="/static/styles/atoms.css" />
+
+    <link rel="stylesheet" href="/static/styles/container.css" />
+    <link rel="stylesheet" href="/static/styles/layout.css" />
+
     <link rel="stylesheet" href="/static/styles/buttons.css" />
-    <link rel="stylesheet" href="/static/styles/landing.css" />
-    <link rel="stylesheet" href="/static/styles/fonts.css" />
     <link rel="stylesheet" href="/static/styles/cards.css" />
     <link rel="stylesheet" href="/static/styles/paper.css" />
     <link rel="stylesheet" href="/static/styles/forms.css" />
-    <link rel="stylesheet" href="/static/styles/register.css" />
-    <link rel="stylesheet" href="/static/styles/flexbox.css" />
-    <link rel="stylesheet" href="/static/styles/spacing.css" />
+    
+    <link rel="stylesheet" href="/static/styles/cms/register.css" />
   </head>
   <body>
-    <div class="main">
-      <header class="main__header">
-        <h1 class="main__logo">
-          <a href="/">{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}</a>
+    <div class="container">
+     <header class="flex flex-col gap-2">
+        <h1>
+          <a href="/">LOGO</a>
         </h1>
-        <span class="main__stats text-xs">
-          <strong>{{.OnlineCount}}</strong> users online now
-        </span>
-        <img
-          src="/static/images/{{if .ServerStatus}}{{.ServerStatus}}{{else}}offline{{end}}.gif"
-          alt="Server Status"
-        />
+
+        <div class="flex justify-between text-xs">
+          <span class="text-bold"></span>
+
+          <span>
+            <span class="text-bold">{{.OnlineCount}}</span> users online now
+          </span>
+
+          <img
+            src="/static/images/{{if .ServerStatus}}{{.ServerStatus}}{{else}}offline{{end}}.gif"
+            alt="Server Status"
+          />
+        </div>
       </header>
 
       <form method="post" action="/register" class="register">
@@ -39,10 +47,9 @@
           <div class="paper paper--red">{{.}}</div>
           {{end}}{{end}}
 
-          <section class="paper paper--blue">
+          <section class="paper paper--blue flex flex-col gap-2">
             <header class="register__header">
-              <span class="text-lg">1.</span>
-              <h2 class="text-lg">Choose Your Name</h2>
+              <h2 class="register__title">Choose Your Name</h2>
             </header>
             <div class="register__username">
               <label class="form__label text-xs" for="register-name"
@@ -55,7 +62,7 @@
                   class="form__input text-sm"
                   type="text"
                   name="username"
-                  {{if .Value}}{{with index .Value "name"}}value="{{.}}"{{end}}{{end}}
+                  value="{{if .Value}}{{with index .Value "name"}}{{.}}{{end}}{{end}}"
                 />
                 <button
                   id="check-username"
@@ -78,10 +85,10 @@
             </div>
           </section>
 
-          <section class="card card--gray register__section">
-            <header class="card__header register__header">
-              <span>2.</span>
-              <h2 class="text-lg">Your Details</h2>
+          <section class="card card--gray card--fill-gray">
+            <header class="card__header">
+              <!-- <span>2.</span> -->
+              <h2 class="card__title">Your Details</h2>
             </header>
             <div class="card__content register__details">
               {{if .Error}}{{with index .Error "password"}}
@@ -201,7 +208,7 @@
               <div class="paper paper--red">{{.}}</div>
               {{end}}{{end}}
 
-              <div class="register__terms">
+              <div class="paper paper--gray">
                 <p>
                   <a href="/terms" class="register__terms-link text-xs"
                     >Terms of Service</a
@@ -226,9 +233,9 @@
 
         <div class="register__avatar-column">
           <section class="register__avatar">
-            <header class="register__header register__avatar-title">
-              <span>3.</span>
-              <h2 class="text-lg">
+            <header class="register__header paper paper--brown">
+              <!-- <span>3.</span> -->
+              <h2 class="register__title">
                 Create Your {{if
                 .AvatarName}}{{.AvatarName}}{{else}}Avatar{{end}}
               </h2>
@@ -241,9 +248,9 @@
           </section>
 
           <div class="register__buttons">
-            <a href="/" class="register__cancel text-xs">Exit registration</a>
-            <button id="submit" class="register__submit text-xs" type="submit">
-              Continue <span class="text-lg">&raquo;</span>
+            <a href="/" class="register__cancel">Exit registration</a>
+            <button id="submit" class="register__submit" type="submit">
+              Continue &raquo;
             </button>
           </div>
         </div>

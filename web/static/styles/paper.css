@@ -7,11 +7,22 @@
 }
 
 .paper.paper--blue {
-  --paper-color: #3399cc;
-  --paper-color-inverted: #fff;
+  --paper-color: var(--color-blue-500);
+  --paper-color-inverted: var(--color-white);
 }
 
 .paper.paper--red {
-  --paper-color: #e2001a;
-  --paper-color-inverted: #fff;
+  --paper-color: var(--color-red-400);
+  --paper-color-inverted: var(--color-white);
 }
+
+.paper.paper--gray {
+  --paper-color: var(--color-gray-700);
+  --paper-color-inverted: var(--color-white);
+}
+
+.paper.paper--brown {
+  --paper-color: var(--color-brown-900);
+  --paper-color-inverted: var(--color-white);
+}
+
