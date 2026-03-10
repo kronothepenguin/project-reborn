@@ -1,21 +1,45 @@
 :root {
   --color-black: #000;
   --color-white: #fff;
-  --color-dark-blue: #2767a7;
-  --color-light-blue: #3399cc;
-  --color-orange: #f66200;
-  --color-light-orange: #f29400;
-  --color-green: #4ab501;
-  --color-light-green: #3ba800;
-  --color-red: #d64242;
-  --color-light-red: #e2001a;
-  --color-dark-red: #c73c3c;
-  --color-brown: #a67a3e;
-  --color-light-brown: #cf9c44;
 
-  --color-error: #e2001a;
-  --color-confirmation: #4bb601;
-  --color-settings: #595959;
+  --color-blue-900: #134787; /* header, border */
+  --color-blue-700: #2767a7; /* card header */
+  --color-blue-500: #3399cc; /* paper */
+  --color-blue-400: #559edc; /* card light */
+  --color-blue-300: #76c7e6; /* decorative */
+  --color-blue-100: #bce0ee; /* body bg */
+
+  --color-green-900: #194800; /* button border */
+  --color-green-800: #1f5700; /* button border alt */
+  --color-green-600: #3ba800; /* button bg */
+  --color-green-500: #4ab501; /* card header */
+  --color-green-400: #4bb601; /* confirmation */
+  --color-green-300: #4bcd00; /* bright */
+  --color-green-200: #4cc200; /* button hover */
+  --color-green-100: #93d10f; /* button accent */
+
+  --color-red-700: #c73c3c; /* card dark */
+  --color-red-500: #d64242; /* card */
+  --color-red-400: #e2001a; /* error */
+  --color-red-100: #f18f9b; /* error input bg */
+
+  --color-orange-700: #f66200; /* card header */
+  --color-orange-600: #fc6204; /* accent */
+  --color-orange-400: #ff9900; /* card light */
+  --color-orange-100: #ffcd0a; /* yellow */
+
+  --color-brown-900: #663300; /* avatar title */
+  --color-brown-700: #8b6914; /* base */
+  --color-brown-500: #a67a3e; /* card header */
+  --color-brown-300: #cf9c44; /* card light */
+
+  --color-gray-900: #333333;
+  --color-gray-700: #555555;
+  --color-gray-600: #6b6b6b;
+  --color-gray-400: #b4b4ae;
+  --color-gray-300: #cccccc;
+  --color-gray-200: #e3e3db;
+  --color-gray-100: #f1f1f1;
 
   --spacing: 0.25rem;
 
