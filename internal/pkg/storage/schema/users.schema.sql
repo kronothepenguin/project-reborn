@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS users(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL UNIQUE,
     password TEXT NOT NULL, -- bcrypt hash
     dob DATE NOT NULL,
     newsletter BOOLEAN NOT NULL

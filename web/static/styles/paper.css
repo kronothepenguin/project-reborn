@@ -1,15 +1,15 @@
 .paper {
   box-sizing: border-box;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
+  border-radius: var(--rounded-lg);
+  padding: var(--s2) var(--s4);
 }
 
-.paper--blue {
+.paper.paper--blue {
   background-color: #3399cc;
   color: var(--color-text-white);
 }
 
-.paper--red {
+.paper.paper--red {
   background-color: #e2001a;
   color: var(--color-text-white);
 }

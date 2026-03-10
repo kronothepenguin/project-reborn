@@ -5,6 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>{{.SiteName}} ~ {{.Username}}</title>
+
+    <link rel="stylesheet" href="/static/styles/reset.css" />
+    <link rel="stylesheet" href="/static/styles/commons.css" />
+    <link rel="stylesheet" href="/static/styles/atoms.css">
+    <link rel="stylesheet" href="/static/styles/fonts.css" />
+    <link rel="stylesheet" href="/static/styles/cards.css" />
+    <link rel="stylesheet" href="/static/styles/community.css" />
   </head>
-  <body></body>
+  <body>
+    <header>
+      <div>
+        <nav>
+          <ul>
+            <li>My Friends</li>
+            <li>My Groups</li>
+            <li>My Rooms</li>
+          </ul>
+        </nav>
+        <div></div>
+      </div>
+      <nav></nav>
+    </header>
+
+    <main class="main">
+      <div class="main__left">
+        <section class="card card--light-blue">
+          <header class="card__header">
+            <h2 class="card__title">My Messages</h2>
+          </header>
+          <div class="py-2">
+            <div class="card__tabs">
+              <div class="card__tab card__tab--active">Inbox</div>
+              <div class="card__tab">Sent</div>
+              <div class="card__tab">Trash</div>
+            </div>
+          </div>
+          <div></div>
+        </section>
+
+        <section class="card card--light-orange">
+          <header class="card__header card__header--tabbed">
+            <h2 class="card__title">Holos</h2>
+            <div class="card__tabs">
+              <button class="card__tab card__tab--active">Invite Friends</button>
+              <button class="card__tab">Search Holos</button>
+            </div>
+          </header>
+        </section>
+      </div>
+
+      <div class="main__right"></div>
+    </main>
+
+    <footer></footer>
+  </body>
 </html>

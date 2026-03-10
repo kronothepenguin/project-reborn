@@ -1,0 +1,21 @@
+.main {
+    display: flex;
+    gap: var(--s2);
+    justify-content: center;
+    background-color: #e3e3db;
+    flex-grow: 1;
+    padding: var(--s4);
+}
+
+.main__left {
+    flex-grow: 1.5;
+    max-width: 450px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+}
+
+.main__right {
+    flex-grow: 1;
+    max-width: 300px;
+}
