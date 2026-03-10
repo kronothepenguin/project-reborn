@@ -42,7 +42,7 @@
 }
 
 .card .card__header.card__header--tabbed::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: var(--s1);
   left: calc(-1 * var(--s1));
@@ -155,13 +155,13 @@
 }
 
 /* Login/Register */
-.card--gray {
-  background-color: var(--color-gray);
-  color: var(--color-text-white);
+.card.card--gray {
+  --card-color: var(--color-gray-600);
+  --card-color-inverted: var(--color-white);
 }
 
-.card--gray .card__header {
-  background-color: var(--color-gray-dark);
+.card.card--fill-gray {
+  --card-bg-color: var(--color-gray-400);
 }
 
 /* Header Image */

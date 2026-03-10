@@ -1,15 +1,13 @@
 .btn {
   box-sizing: border-box;
   width: fit-content;
-  padding: 0.25rem 1rem;
+  padding: var(--s1) var(--s4);
   min-width: max-content;
   border: 2px solid transparent;
-  border-radius: 4px;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  background-color: transparent;
-  color: inherit;
+  border-radius: var(--rounded-sm);
+  font-weight: bold;
+  font-size: var(--text-sm);
+  line-height: var(--text-sm-line-height);
 }
 
 .btn--gray {

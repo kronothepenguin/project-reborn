@@ -1,0 +1,31 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+.layout .layout__left,
+.layout .layout__right {
+  display: contents;
+}
+
+@media (min-width: 48rem) {
+  .layout {
+    flex-direction: row;
+  }
+
+  .layout .layout__left,
+  .layout .layout__right {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s2);
+  }
+
+  .layout .layout__left {
+    flex: 1.5 1 auto;
+  }
+
+  .layout .layout__right {
+    flex: 1 1 auto;
+  }
+}

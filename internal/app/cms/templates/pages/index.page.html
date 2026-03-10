@@ -6,111 +6,131 @@
 
     <title>{{.SiteName}}</title>
 
-    <link rel="stylesheet" href="/static/styles/reset.css" />
-    <link rel="stylesheet" href="/static/styles/base.css" />
-    <link rel="stylesheet" href="/static/styles/fonts.css" />
+    {{template "styles.partial.html"}}
+
+    <link rel="stylesheet" href="/static/styles/atoms.css" />
+
+    <link rel="stylesheet" href="/static/styles/container.css" />
+    <link rel="stylesheet" href="/static/styles/layout.css" />
+
     <link rel="stylesheet" href="/static/styles/cards.css" />
-    <link rel="stylesheet" href="/static/styles/paper.css">
+    <link rel="stylesheet" href="/static/styles/paper.css" />
     <link rel="stylesheet" href="/static/styles/buttons.css" />
-    <link rel="stylesheet" href="/static/styles/index.css" />
+
+    <link rel="stylesheet" href="/static/styles/cms/index.css" />
+
+    <!-- <link rel="stylesheet" href="/static/styles/index.css" /> -->
   </head>
   <body>
-    <div class="main">
-      <header class="main__header">
-        <h1 class="main__logo">
-          <a href="/">{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}</a>
+    <div class="container">
+      <header class="flex flex-col gap-2">
+        <h1>
+          <a href="/">LOGO</a>
         </h1>
-        <span class="main__stats text-xs">
-          <strong>{{.OnlineCount}}</strong> users online now
-        </span>
-        <img
-          src="/static/images/{{if .ServerStatus}}{{.ServerStatus}}{{else}}offline{{end}}.gif"
-          alt="Server Status"
-        />
-      </header>
-      <div class="main__content">
-        <section class="card registration">
-          <header class="card__header card__header--image">
-            <img
-              src="/static/images/landing_group.png"
-              alt="Join {{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}"
-            />
-          </header>
-          <div class="card__content registration__content">
-            <a href="/register" class="registration__btn"
-              >Join now, it's free &raquo;</a
-            >
-            <p class="text-sm">
-              {{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}} is a virtual
-              world where you can meet and make friends.
-            </p>
-          </div>
-        </section>
 
-        {{if .Error}}{{with .Error}}
-        <div class="paper paper--red error">{{.}}</div>
-        {{end}}{{end}}
+        <div class="flex justify-between text-xs">
+          <span class="text-bold">hangout for teens</span>
 
-        <section class="card card--gray login">
-          <header class="card__header">
-            <h2 class="text-lg">Sign in</h2>
-          </header>
+          <span>
+            <span class="text-bold">{{.OnlineCount}}</span> users online now
+          </span>
 
-          <form class="card__content login__form" action="/" method="post">
-            <label class="login__label text-sm" for="login-username-input"
-              >Username</label
-            >
-            <input
-              id="login-username-input"
-              class="login__input text-base"
-              type="text"
-              name="username"
-            />
-
-            <label class="login__label text-sm" for="login-username-password"
-              >Password</label
-            >
-            <input
-              id="login-username-password"
-              class="login__input text-base"
-              type="password"
-              name="password"
-            />
-
-            <button class="btn btn--gray text-xs">Sign in</button>
-
-            <label class="login__checkbox">
-              <input type="checkbox" name="remember" />
-              <span class="text-xs">Remember me</span>
-            </label>
-
-            <a class="login__link login__link--bold text-xs" href="/register"
-              >Register for free</a
-            >
-            <a class="login__link text-xs" href="/forgot"
-              >I forgot my password/username</a
-            >
-          </form>
-        </section>
-
-        <a class="banner" href="/register">
           <img
-            src="/static/images/uk_party_frontpage_image.gif"
-            alt="Create your Habbo now and join the party!"
+            src="/static/images/{{if .ServerStatus}}{{.ServerStatus}}{{else}}offline{{end}}.gif"
+            alt="Server Status"
           />
-        </a>
-      </div>
-
-      <footer class="main__footer">
-        <div class="tag-cloud">
-          <span class="tag-cloud__title text-base"
-            >{{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}s Like..</span
-          >
-          {{range .Tags}}
-          <a class="tag-cloud__tag" href="/tags/{{.}}">{{.}}</a>
-          {{end}}
         </div>
-      </footer>
+      </header>
+
+      <main class="layout">
+        <div class="layout__left">
+          <section class="registration">
+            <header class="registration__header">
+              <img
+                src="/static/images/landing_group.png"
+                alt="Join {{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}}"
+              />
+            </header>
+            <div class="registration__content">
+              <a href="/register" class="registration__btn">
+                Join now, it's free &raquo;
+              </a>
+              <p class="text-sm">
+                {{if .SiteName}}{{.SiteName}}{{else}}Reborn{{end}} is a virtual
+                world where you can meet and make friends.
+              </p>
+            </div>
+          </section>
+        </div>
+
+        <div class="layout__right">
+          {{if .Error}}{{with .Error}}
+          <div class="paper paper--red error">{{.}}</div>
+          {{end}}{{end}}
+
+          <section class="card card--gray card--fill-gray login">
+            <header class="card__header">
+              <h2 class="card__title">Sign in</h2>
+            </header>
+
+            <form class="card__content login__form" action="/" method="post">
+              <label class="login__label text-sm" for="login-username-input"
+                >Username</label
+              >
+              <input
+                id="login-username-input"
+                class="login__input text-base"
+                type="text"
+                name="username"
+              />
+
+              <label class="login__label text-sm" for="login-username-password"
+                >Password</label
+              >
+              <input
+                id="login-username-password"
+                class="login__input text-base"
+                type="password"
+                name="password"
+              />
+
+              <button class="btn btn--gray text-xs">Sign in</button>
+
+              <label class="login__checkbox">
+                <input type="checkbox" name="remember" />
+                <span class="text-xs">Remember me</span>
+              </label>
+
+              <a class="login__link login__link--bold text-xs" href="/register"
+                >Register for free</a
+              >
+              <a class="login__link text-xs" href="/forgot"
+                >I forgot my password/username</a
+              >
+            </form>
+          </section>
+
+          <a class="banner" href="/register">
+            <img
+              src="/static/images/uk_party_frontpage_image.gif"
+              alt="Create your Habbo now and join the party!"
+            />
+          </a>
+        </div>
+      </main>
+
+      <section class="tags">
+        <header>
+          <h2 class="tags__title">{{if .AvatarName}}{{.AvatarName}}{{else}}Avatar{{end}}s Like..</h2>
+        </header>
+        <div class="tags__content">
+          {{if .Tags}}{{range .Tags}}
+          <a class="tags__tag" href="/tags/{{.}}">{{.}}</a>
+          {{end}}{{else}}<span class="tags__tag">No tags to display</span>{{end}}
+        </div>
+      </section>
+
+      <footer></footer>
     </div>
   </body>
 </html>

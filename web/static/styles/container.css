@@ -1,0 +1,12 @@
+.container {
+  background-color: var(--color-white);
+  border: 1px solid #96b3be;
+  border-bottom-width: 3px;
+  border-radius: var(--rounded-lg);
+  max-width: var(--breakpoint-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  margin: var(--s8) auto;
+  padding: var(--s8);
+}

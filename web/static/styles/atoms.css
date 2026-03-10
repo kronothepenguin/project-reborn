@@ -129,3 +129,19 @@
   font-size: var(--text-2xl);
   line-height: var(--text-2xl--line-height);
 }
+
+.text-bold {
+  font-weight: bold;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
