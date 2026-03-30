@@ -12,6 +12,7 @@
 @media (min-width: 48rem) {
   .layout {
     flex-direction: row;
+    justify-content: center;
   }
 
   .layout .layout__left,
@@ -27,5 +28,12 @@
 
   .layout .layout__right {
     flex: 1 1 auto;
+  }
+
+  .layout.layout--community .layout__left {
+    max-width: 450px;
+  }
+  .layout.layout--community .layout__right {
+    max-width: 300px;
   }
 }
