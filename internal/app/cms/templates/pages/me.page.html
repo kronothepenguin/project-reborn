@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="/static/styles/cards.css" />
 
     <link rel="stylesheet" href="/static/styles/cms/community.css" />
+    <link rel="stylesheet" href="/static/styles/cms/info.css" />
   </head>
   <body>
     <header class="community__header">
@@ -55,6 +56,28 @@
 
     <main class="layout layout--community community__content">
       <div class="layout__left">
+        <section class="info">
+          <header class="info__header">
+            <div class="enter_hotel">
+              <a href="#">Enter</a>
+            </div>
+          </header>
+          <div class="info__content">
+            <div></div>
+            <div>
+              <a href="#">Change looks &raquo;</a>
+              <span>
+                <a href="#">{{.Credits}}</a>
+                credits
+              </span>
+              <a href="#">Join Club &raquo;</a>
+            </div>
+          </div>
+          <footer class="info__footer">
+            <p>Last signed in: {{.LastSignedIn}}</p>
+          </footer>
+        </section>
+
         <section class="card card--light-blue">
           <header class="card__header">
             <h2 class="card__title">My Messages</h2>

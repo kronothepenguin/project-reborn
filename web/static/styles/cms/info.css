@@ -1,0 +1,80 @@
+.info {
+  background-color: var(--color-gray-400);
+  border-radius: var(--rounded-sm);
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+}
+
+.info__header {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+.info__header .enter_hotel {
+  background: transparent url(/static/images/personal_info/orange_thing.png)
+    no-repeat 50% 0;
+  min-width: 79px;
+  min-height: 105px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 40px;
+}
+
+.info__header .enter_hotel a {
+  color: var(--color-white);
+  background-color: var(--color-green-600);
+  border: 2px solid var(--color-black);
+  border-radius: var(--rounded-md);
+  outline: 2px solid var(--color-white);
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
+  padding: var(--s2) var(--s4);
+  z-index: 10;
+  position: relative;
+  text-decoration: none;
+}
+
+.info__header .enter_hotel a:hover {
+  background-color: var(--color-green-200);
+}
+
+.info__header .enter_hotel a::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border: 2px solid var(--color-green-300);
+  border-radius: var(--rounded-sm);
+  border-top-left-radius: 0;
+  border-top: 0;
+  border-right: 0;
+  z-index: -10;
+}
+
+.info__content {
+  padding: var(--s1) var(--s4);
+  background-color: var(--color-gray-500);
+  display: flex;
+  flex-direction: column;
+}
+
+.info__content a {
+  color: var(--color-white);
+  text-decoration: none;
+}
+
+.info__content a:hover {
+  text-decoration: underline;
+}
+
+.info__content div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.info__footer {
+  padding: var(--s1) var(--s4);
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+}
