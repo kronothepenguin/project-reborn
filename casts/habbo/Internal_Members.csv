@@ -1,0 +1,5 @@
+Number,Type,Name,Registration Point,Filename
+1,script,Initialization,"(0, 0)",
+2,script,Init,"(0, 0)",
+3,script,Loop,"(0, 0)",
+4,bitmap,Logo,"(29, 23)",

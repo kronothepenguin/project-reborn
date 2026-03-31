@@ -1,0 +1,12 @@
+Number,Type,Name,Registration Point,Filename
+1,field,thread.index,"(0, 0)",
+2,field,variable.index,"(0, 0)",
+3,script,Poll Interface Class,"(0, 0)",
+4,script,Poll Component Class,"(0, 0)",
+5,script,Poll Handler Class,"(0, 0)",
+7,field,poll_question_main.window,"(0, 0)",
+8,field,poll_question_open.window,"(0, 0)",
+9,field,poll_question_selection_1.window,"(0, 0)",
+10,field,poll_offer.window,"(0, 0)",
+11,field,poll_thank_you.window,"(0, 0)",
+12,field,poll_purkka.window,"(0, 0)",

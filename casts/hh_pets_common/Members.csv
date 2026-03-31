@@ -1,0 +1,12 @@
+Number,Type,Name,Registration Point,Filename
+1,script,Pet Class,"(0, 0)",
+2,script,Petpart Class,"(0, 0)",
+3,field,pet.definitions,"(0, 0)",
+4,field,petColors_dog,"(0, 0)",
+5,field,petColors_cat,"(0, 0)",
+6,field,petColors_croco,"(0, 0)",
+7,field,petstatus.window,"(0, 0)",
+8,field,offset.dogcat.large,"(0, 0)",
+9,field,offset.dogcat.small,"(0, 0)",
+10,field,offset.croco.large,"(0, 0)",
+11,field,offset.croco.small,"(0, 0)",

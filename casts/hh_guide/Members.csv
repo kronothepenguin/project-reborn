@@ -1,0 +1,13 @@
+Number,Type,Name,Registration Point,Filename
+1,field,thread.index,"(0, 0)",
+2,field,variable.index,"(0, 0)",
+3,script,Guide Interface Class,"(0, 0)",
+4,script,Guide Component Class,"(0, 0)",
+5,script,Guide Handler Class,"(0, 0)",
+7,script,Guide Tool Icon Class,"(0, 0)",
+25,field,guide_tool_start.window,"(0, 0)",
+26,field,guide_tool_waiting.window,"(0, 0)",
+27,field,guide_tool_invite.window,"(0, 0)",
+29,bitmap,guide_tool_icon_normal,"(0, 0)",
+30,bitmap,guide_tool_icon_black,"(-2, -2)",
+37,sound,invitation.received.alert,"(0, 0)",

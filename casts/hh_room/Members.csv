@@ -1,0 +1,13 @@
+Number,Type,Name,Registration Point,Filename
+1,field,thread.index,"(0, 0)",
+2,field,variable.index,"(0, 0)",
+3,script,Room Interface Class,"(0, 0)",
+4,script,Room Component Class,"(0, 0)",
+5,script,Room Handler Class,"(0, 0)",
+6,script,Spectator System Class,"(0, 0)",
+7,script,Room Geometry Class,"(0, 0)",
+8,script,Room Hiliter Class,"(0, 0)",
+9,field,room_loader.window,"(0, 0)",
+10,field,room_loader_2.window,"(0, 0)",
+11,field,room_loader_small.window,"(0, 0)",
+12,field,room_bar_spectator.window,"(0, 0)",

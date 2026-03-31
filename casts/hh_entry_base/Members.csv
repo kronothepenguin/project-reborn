@@ -1,0 +1,6 @@
+Number,Type,Name,Registration Point,Filename
+1,field,thread.index,"(0, 0)",
+2,field,variable.index,"(0, 0)",
+3,script,Entry Interface Class,"(0, 0)",
+4,script,Entry Component Class,"(0, 0)",
+5,script,Swap Animation Class,"(0, 0)",
