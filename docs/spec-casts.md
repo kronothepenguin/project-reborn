@@ -113,6 +113,15 @@ The Thread Manager (`/casts/fuse_client/29_Thread Manager Class.ls`) loads and u
 
 **For the remake:** Handler classes contain the protocol logic worth porting. Interface and Component classes describe behavior that maps to Godot nodes and signals.
 
+### Cross-cast communication
+Casts are not isolated modules. They communicate freely via `executeMessage` (global event bus) and via shared objects from the Object Manager. A Handler in one cast can trigger behavior in another cast's Interface or Component. Common patterns:
+
+- `executeMessage(#updateCreditCount, tCredits)` — fired by `hh_cat_code` Handler, consumed by `hh_cat_gfx_all` Interface.
+- `executeMessage(#userloggedin)` — fired by `hh_entry_init` Handler on login success, consumed by multiple casts (navigator, IM, friend list) to initialize themselves.
+- `getObject(#session)` — a shared session object used by virtually every cast to read/write player state.
+
+**Implication when reading the source:** To fully understand a feature, you may need to trace `executeMessage` calls across multiple casts. The Handler `.ls` file for a cast is the starting point, but the full picture often spans 2–3 casts.
+
 ---
 
 ## 6. fuse_client Framework

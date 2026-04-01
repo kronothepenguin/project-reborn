@@ -146,3 +146,25 @@ Each registry holds:
 | `hh_ig` | In-game system |
 | `hh_tutorial` | Tutorial |
 | `hh_shared` | Shared messages: error_report, hobba |
+
+---
+
+## Mapping Lingo Casts to Go Packages
+
+The Lingo cast name is a starting point, not an architecture boundary. Two things to keep in mind:
+
+### Casts communicate across boundaries
+In the original source, casts call each other via `executeMessage` (global event bus) and shared objects (`getObject(#session)`). A single game action may involve handlers across multiple casts. Example: `PURSE` (server→client, ID 6) is handled by `hh_cat_code`, but it is also sent by the server in response to `GET_CREDITS` from the login flow. The cast that registers a listener in `regMsgList` owns the handler — not the cast whose name matches the command.
+
+**Rule:** Before implementing a Go handler, read the `regMsgList` of the corresponding Lingo Handler class to identify exactly which command IDs it owns.
+
+### What to map 1:1 and what to skip
+| Lingo | Go server | Godot client |
+|---|---|---|
+| Handler class `regMsgList` + callbacks | Go handler functions in a package per feature | GDScript handling server messages |
+| Protocol command IDs | Registered in `protocol.Registry` | Packet dispatch in connection manager |
+| Object Manager / Thread Manager | Not ported — Go uses plain structs | Not ported — Godot uses autoloads and nodes |
+| Interface Class | Not applicable | Rebuilt as `.tscn` scene + Control nodes |
+| Component Class | Not applicable | Scene script or autoload |
+| `.window.txt` layouts | Not applicable | Reference only — recreate as Godot scenes |
+| `executeMessage` event bus | Not applicable | Godot signals |
