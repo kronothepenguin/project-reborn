@@ -12,7 +12,7 @@
 ### P0 — Core Engine (Foundation)
 | # | Task | Status | Source | Details |
 |---|------|--------|--------|---------|
-| 00 | [fuse_client-core](00-fuse_client-core.md) | 🟡 In Progress | 72 .ls, 5 windows, system props | Translated: Object, Thread, Resource, Connection, CastLoad, Window APIs + RC4. Remaining: Download, Sprite, Timeout, Text, String, Broker, Variable, Write, Binary, Special, Multiuser APIs + Manager/Instance classes + Window wrappers |
+| 00 | [fuse_client-core](00-fuse_client-core.md) | 🟡 In Progress | 72 .ls, 5 windows, system props | Translated: Object, Thread, Resource, Download, Connection, CastLoad, Timeout, Window, Broker, Variable, Special Services, Multiuser APIs + Manager classes. Remaining: Sprite, Text, String Services, Visualizer, Write, Binary, Manager Template, Method Manager, Error Manager, Window wrappers, Layout Parser, Element wrappers (buttons, scrollbars, dropdowns), Thread Instance, Loading Bar, Event Agent, FPS Test, Core Thread, BigInt, HttpCookie, JS Proxy, UTF8 Locale, RC4 standard |
 
 ### P1 — Shared Foundation (Used by ALL other casts)
 | # | Task | Status | Source | Details |
@@ -109,36 +109,44 @@
 ✅ src/casts/fuse_client/event-broker.js — 3_Event Broker Behavior.ls
 ✅ src/casts/fuse_client/resource-api.js — 9_Resource API.ls
 ✅ src/casts/fuse_client/resource-manager-class.js — 30_Resource Manager Class.ls
+✅ src/casts/fuse_client/download-api.js — 11_Download API.ls
+✅ src/casts/fuse_client/download-manager-class.js — 31_Download Manager Class.ls
 ✅ src/casts/fuse_client/connection-api.js — 12_Connection API.ls
 ✅ src/casts/fuse_client/connection-manager-class.js — 33_Connection Manager Class.ls
 ✅ src/casts/fuse_client/connection-instance-class.js — 51_Connection Instance Class.ls
 ✅ src/casts/fuse_client/castload-api.js — 10_CastLoad API.ls
 ✅ src/casts/fuse_client/castload-manager-class.js — 32_CastLoad Manager Class.ls
+✅ src/casts/fuse_client/timeout-api.js — 14_Timeout API.ls
+✅ src/casts/fuse_client/timeout-manager-class.js — 35_Timeout Manager Class.ls
 ✅ src/casts/fuse_client/window-api.js — 18_Window API.ls
 ✅ src/casts/fuse_client/window-manager-class.js — 39_Window Manager Class.ls
 ✅ src/casts/fuse_client/window-instance-class.js — 55_Window Instance Class.ls
+✅ src/casts/fuse_client/broker-api.js — 19_Broker Manager API.ls
+✅ src/casts/fuse_client/broker-manager-class.js — 40_Broker Manager Class.ls
+✅ src/casts/fuse_client/variable-api.js — 20_Variable API.ls
+✅ src/casts/fuse_client/variable-container-class.js — 47_Variable Container Class.ls
+✅ src/casts/fuse_client/special-services-api.js — 23_Special Services API.ls
+✅ src/casts/fuse_client/special-services-class.js — 44_Special Services Class.ls
+✅ src/casts/fuse_client/multiuser-api.js — 24_Multiuser API.ls
 ✅ src/casts/fuse_client/index.js  — fuse_client cast entry point
 ✅ src/index.js                    — Main entry + mount() export
 ```
 
-### Remaining fuse_client Files (~55 files)
+### Remaining fuse_client Files (~35 files)
 ```
-🔴 11_Download API.ls + 31_Download Manager Class.ls + 48_Download Instance Class.ls
 🔴 13_Sprite API.ls + 34_Sprite Manager Class.ls
-🔴 14_Timeout API.ls + 35_Timeout Manager Class.ls
 🔴 15_Text API.ls + 36_Text Manager Class.ls
 🔴 16_String Services API.ls + 37_String Services Class.ls
 🔴 17_Visualizer API.ls + 38_Visualizer Manager Class.ls + 54_Visualizer Instance Class.ls
-🔴 19_Broker Manager API.ls + 40_Broker Manager Class.ls
-🔴 20_Variable API.ls + 47_Variable Container Class.ls
 🔴 21_Write API.ls + 43_Writer Manager Class.ls + 69_Writer Class.ls
 🔴 22_Binary API.ls + 42_Binary Manager Class.ls
-🔴 23_Special Services API.ls + 44_Special Services Class.ls
-🔴 24_Multiuser API.ls + 45_Multiuser Manager Class.ls + 52_Multiuser Instance Class.ls
 🔴 25_DropDown Class.ls
 🔴 26_Manager Template Class.ls
 🔴 28_Error Manager Class.ls
 🔴 41_Method Manager Class.ls
+🔴 45_Multiuser Manager Class.ls + 52_Multiuser Instance Class.ls
+🔴 49_CastLoad Instance Class.ls + 50_CastLoad Task Class.ls
+🔴 48_Download Instance Class.ls
 🔴 53_Layout Parser Class.ls
 🔴 56_Element Wrapper Class.ls + 57_Grouped Element Class.ls + 58_Unique Element Class.ls
 🔴 59_Image Wrapper Class.ls + 60_Text Wrapper Class.ls + 61_Field Wrapper Class.ls
@@ -185,5 +193,5 @@ See individual task files in this directory for class lists and criteria.
 | Total bitmap members | ~3000+ |
 | Total task files | 26 |
 | Priority tiers | 9 (P0-P8) |
-| Script files translated | 31 |
-| Script files remaining | ~700+ |
+| Script files translated | 43 |
+| Script files remaining | ~680+ |

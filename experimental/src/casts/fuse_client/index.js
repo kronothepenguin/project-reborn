@@ -7,7 +7,7 @@
  * In the original Director movie, this is fuse_client.cct.
  */
 
-// Object API
+// ── Object API ───────────────────────────────────────────────────────
 export {
   constructObjectManager,
   deconstructObjectManager,
@@ -34,7 +34,7 @@ export {
   unpauseUpdate,
 } from './object-api.js';
 
-// Thread API
+// ── Thread API ───────────────────────────────────────────────────────
 export {
   constructThreadManager,
   deconstructThreadManager,
@@ -50,7 +50,7 @@ export {
   printThreads,
 } from './thread-api.js';
 
-// Resource API
+// ── Resource API ─────────────────────────────────────────────────────
 export {
   constructResourceManager,
   deconstructResourceManager,
@@ -67,7 +67,20 @@ export {
   printMembers,
 } from './resource-api.js';
 
-// Connection API
+// ── Download API ─────────────────────────────────────────────────────
+export {
+  constructDownloadManager,
+  deconstructDownloadManager,
+  getDownloadManager,
+  queueDownload,
+  abortDownLoad,
+  registerDownloadCallback,
+  getDownLoadPercent,
+  downloadExists,
+  printDownloads,
+} from './download-api.js';
+
+// ── Connection API ───────────────────────────────────────────────────
 export {
   constructConnectionManager,
   deconstructConnectionManager,
@@ -83,7 +96,7 @@ export {
   unregisterCommands,
 } from './connection-api.js';
 
-// CastLoad API
+// ── CastLoad API ─────────────────────────────────────────────────────
 export {
   constructCastLoader,
   deconstructCastLoader,
@@ -97,7 +110,19 @@ export {
   printCasts,
 } from './castload-api.js';
 
-// Window API
+// ── Timeout API ──────────────────────────────────────────────────────
+export {
+  constructTimeoutManager,
+  deconstructTimeoutManager,
+  getTimeoutManager,
+  createTimeout,
+  removeTimeout,
+  getTimeout,
+  timeoutExists,
+  printTimeouts,
+} from './timeout-api.js';
+
+// ── Window API ───────────────────────────────────────────────────────
 export {
   constructWindowManager,
   deconstructWindowManager,
@@ -119,27 +144,104 @@ export {
   printWindows,
 } from './window-api.js';
 
-// Client Initialization
+// ── Broker Manager API ───────────────────────────────────────────────
+export {
+  constructBrokerManager,
+  deconstructBrokerManager,
+  getBrokerManager,
+  createBroker,
+  removeBroker,
+  getBroker,
+  brokerExists,
+  printBrokers,
+  registerMessage,
+  unregisterMessage,
+  executeMessage,
+} from './broker-api.js';
+
+// ── Variable API ─────────────────────────────────────────────────────
+export {
+  constructVariableManager,
+  deconstructVariableManager,
+  getVariableManager,
+  createVariable,
+  setVariable,
+  removeVariable,
+  getVariable,
+  getIntVariable,
+  getStructVariable,
+  getClassVariable,
+  getVariableValue,
+  variableExists,
+  printVariables,
+  dumpVariableField,
+} from './variable-api.js';
+
+// ── Special Services API ─────────────────────────────────────────────
+export {
+  constructSpecialServices,
+  deconstructSpecialServices,
+  getSpecialServices,
+  createToolTip,
+  removeToolTip,
+  setcursor,
+  openNetPage,
+  showLoadingBar,
+  getUniqueID,
+  getMachineID,
+  getPredefinedURL,
+  getDomainPart,
+  getMoviePath,
+  getExtVarPath,
+  sendProcessTracking,
+  getProcessTrackingList,
+  secretDecode,
+  readValueFromField,
+  checkForXtra,
+  performance,
+  printMsg,
+  callJavaScriptFunction,
+  getClientUpTime,
+} from './special-services-api.js';
+
+// ── Multiuser API ────────────────────────────────────────────────────
+export {
+  constructMultiuserManager,
+  deconstructMultiuserManager,
+  getMultiuserManager,
+  createMultiuser,
+  removeMultiuser,
+  getMultiuser,
+  multiuserExists,
+  printMultiusers,
+} from './multiuser-api.js';
+
+// ── Client Initialization ────────────────────────────────────────────
 export { initCore, stopClient, resetClient } from './client-initialization.js';
 
-// Error API
+// ── Error API ────────────────────────────────────────────────────────
 export { error, fatalError, serverError } from './error-api.js';
 
-// Event Broker
+// ── Event Broker ─────────────────────────────────────────────────────
 export { eventBroker, registerEventProcedure, removeEventProcedure, stopEvent, pass } from './event-broker.js';
 
-// Manager Classes
+// ── Manager Classes ──────────────────────────────────────────────────
 export { ObjectManager } from './object-manager-class.js';
 export { ObjectBase } from './object-base-class.js';
 export { ThreadManager } from './thread-manager-class.js';
 export { ResourceManager } from './resource-manager-class.js';
+export { DownloadManager } from './download-manager-class.js';
 export { ConnectionManager } from './connection-manager-class.js';
 export { CastLoadManager } from './castload-manager-class.js';
+export { TimeoutManager } from './timeout-manager-class.js';
 export { WindowManager } from './window-manager-class.js';
+export { BrokerManager } from './broker-manager-class.js';
+export { VariableContainer } from './variable-container-class.js';
+export { SpecialServices } from './special-services-class.js';
 
-// Instance Classes
+// ── Instance Classes ─────────────────────────────────────────────────
 export { ConnectionInstance } from './connection-instance-class.js';
 export { WindowInstance } from './window-instance-class.js';
 
-// Encryption
+// ── Encryption ───────────────────────────────────────────────────────
 export { RC4, RC4Extended } from '../../system/encryption.js';
