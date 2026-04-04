@@ -12,7 +12,7 @@
 ### P0 — Core Engine (Foundation)
 | # | Task | Status | Source | Details |
 |---|------|--------|--------|---------|
-| 00 | [fuse_client-core](00-fuse_client-core.md) | 🟡 In Progress | 72 .ls, 5 windows, system props | Translated: Object, Thread, Resource, Download, Connection, CastLoad, Timeout, Window, Broker, Variable, Special Services, Multiuser APIs + Manager classes. Remaining: Sprite, Text, String Services, Visualizer, Write, Binary, Manager Template, Method Manager, Error Manager, Window wrappers, Layout Parser, Element wrappers (buttons, scrollbars, dropdowns), Thread Instance, Loading Bar, Event Agent, FPS Test, Core Thread, BigInt, HttpCookie, JS Proxy, UTF8 Locale, RC4 standard |
+| 00 | [fuse_client-core](00-fuse_client-core.md) | 🟡 In Progress | 72 .ls, 5 windows, system props | Translated: ALL APIs (Object, Thread, Resource, Download, Connection, CastLoad, Timeout, Window, Broker, Variable, String Services, Write, Binary, Sprite, Text, Special Services, Multiuser). ALL Manager classes. ALL Instance classes. ALL Element wrappers (Button, Scrollbar, Dropdown, Image, Text, Field, Pattern, Grouped, Unique). RC4 + RC4Extended, Layout Parser, Event Agent, Loading Bar, FPS Test, Core Thread, Visualizer Part Wrapper, HttpCookie. Remaining: .window.txt parsing, actual image/Canvas rendering implementations |
 
 ### P1 — Shared Foundation (Used by ALL other casts)
 | # | Task | Status | Source | Details |
@@ -78,104 +78,164 @@
 | Category | Files Done | Files Total | Progress |
 |----------|-----------|-------------|----------|
 | **habbo/** (entry) | 3 | 3 | 100% |
-| **fuse_client/** (core) | 9 | 72+ | ~12% |
+| **fuse_client/** (core) | 63 | 72+ | ~88% |
 | **hh_*/** (features) | 0 | ~600+ | 0% |
 | **core/** (runtime) | 3 | 3 | 100% |
 | **engine/** (rendering) | 2 | 2 | 100% |
 | **system/** (services) | 2 | 2 | 100% |
-| **ALL** | ~19 | ~700+ | ~3% |
+| **ALL** | ~73 | ~700+ | ~10% |
 
-### Translated Files (Complete List)
+### Translated Files (Complete List — 73 files)
+
+#### Core Runtime (3)
 ```
-✅ src/core/lingo-runtime.js       — VOID, property lists, type helpers, messages
-✅ src/core/stage.js               — Canvas stage emulation
-✅ src/core/frame-loop.js          — requestAnimationFrame loop + tempo
-✅ src/system/network.js           — postNetText, preloadNetThing, netDone
-✅ src/system/system-props.js      — System props as structured data
-✅ src/system/encryption.js        — RC4 + RC4Extended (triple-swap)
-✅ src/engine/sprite-manager.js    — Sprite channels + Canvas rendering
-✅ src/engine/visualizer.js        — Visualizer instances + manager
-✅ src/casts/habbo/initialization.js — Internal_1_Initialization.ls
-✅ src/casts/habbo/init.js         — Internal_2_Init.ls
-✅ src/casts/habbo/loop.js         — Internal_3_Loop.ls
-✅ src/casts/habbo/index.js        — habbo cast entry point
-✅ src/casts/fuse_client/object-api.js — 6_Object API.ls
-✅ src/casts/fuse_client/object-manager-class.js — 27_Object Manager Class.ls
-✅ src/casts/fuse_client/object-base-class.js — 46_Object Base Class.ls
-✅ src/casts/fuse_client/thread-api.js — 8_Core Thread API.ls
-✅ src/casts/fuse_client/thread-manager-class.js — 29_Thread Manager Class.ls
-✅ src/casts/fuse_client/client-initialization.js — 4_Client Initialization Script.ls
-✅ src/casts/fuse_client/error-api.js — 7_Error API.ls
-✅ src/casts/fuse_client/event-broker.js — 3_Event Broker Behavior.ls
-✅ src/casts/fuse_client/resource-api.js — 9_Resource API.ls
-✅ src/casts/fuse_client/resource-manager-class.js — 30_Resource Manager Class.ls
-✅ src/casts/fuse_client/download-api.js — 11_Download API.ls
-✅ src/casts/fuse_client/download-manager-class.js — 31_Download Manager Class.ls
-✅ src/casts/fuse_client/connection-api.js — 12_Connection API.ls
-✅ src/casts/fuse_client/connection-manager-class.js — 33_Connection Manager Class.ls
-✅ src/casts/fuse_client/connection-instance-class.js — 51_Connection Instance Class.ls
-✅ src/casts/fuse_client/castload-api.js — 10_CastLoad API.ls
-✅ src/casts/fuse_client/castload-manager-class.js — 32_CastLoad Manager Class.ls
-✅ src/casts/fuse_client/timeout-api.js — 14_Timeout API.ls
-✅ src/casts/fuse_client/timeout-manager-class.js — 35_Timeout Manager Class.ls
-✅ src/casts/fuse_client/window-api.js — 18_Window API.ls
-✅ src/casts/fuse_client/window-manager-class.js — 39_Window Manager Class.ls
-✅ src/casts/fuse_client/window-instance-class.js — 55_Window Instance Class.ls
-✅ src/casts/fuse_client/broker-api.js — 19_Broker Manager API.ls
-✅ src/casts/fuse_client/broker-manager-class.js — 40_Broker Manager Class.ls
-✅ src/casts/fuse_client/variable-api.js — 20_Variable API.ls
-✅ src/casts/fuse_client/variable-container-class.js — 47_Variable Container Class.ls
-✅ src/casts/fuse_client/special-services-api.js — 23_Special Services API.ls
-✅ src/casts/fuse_client/special-services-class.js — 44_Special Services Class.ls
-✅ src/casts/fuse_client/multiuser-api.js — 24_Multiuser API.ls
-✅ src/casts/fuse_client/index.js  — fuse_client cast entry point
-✅ src/index.js                    — Main entry + mount() export
+✅ src/core/lingo-runtime.js
+✅ src/core/stage.js
+✅ src/core/frame-loop.js
 ```
 
-### Remaining fuse_client Files (~35 files)
+#### System (2)
 ```
-🔴 13_Sprite API.ls + 34_Sprite Manager Class.ls
-🔴 15_Text API.ls + 36_Text Manager Class.ls
-🔴 16_String Services API.ls + 37_String Services Class.ls
-🔴 17_Visualizer API.ls + 38_Visualizer Manager Class.ls + 54_Visualizer Instance Class.ls
-🔴 21_Write API.ls + 43_Writer Manager Class.ls + 69_Writer Class.ls
-🔴 22_Binary API.ls + 42_Binary Manager Class.ls
-🔴 25_DropDown Class.ls
-🔴 26_Manager Template Class.ls
-🔴 28_Error Manager Class.ls
-🔴 41_Method Manager Class.ls
-🔴 45_Multiuser Manager Class.ls + 52_Multiuser Instance Class.ls
-🔴 49_CastLoad Instance Class.ls + 50_CastLoad Task Class.ls
-🔴 48_Download Instance Class.ls
-🔴 53_Layout Parser Class.ls
-🔴 56_Element Wrapper Class.ls + 57_Grouped Element Class.ls + 58_Unique Element Class.ls
-🔴 59_Image Wrapper Class.ls + 60_Text Wrapper Class.ls + 61_Field Wrapper Class.ls
-🔴 62_Pattern Wrapper Class.ls
-🔴 63_Common Button Class.ls + 64_Image Button Class.ls + 65_Icon Button Class.ls
-🔴 66_Scrollbar Class.ls
-🔴 67_Event Agent Class.ls
-🔴 68_Loading Bar Class.ls
-🔴 70_Thread Instance Class.ls
-🔴 71_FPS Test Class.ls
-🔴 72_RC4 Class.ls (standard — extended version is done)
-🔴 74_Core Thread Class.ls
-🔴 80_Visualizer Part Wrapper Class.ls
-🔴 81_HttpCookie Instance Class.ls
-🔴 82_CBigInt16.ls + 83_JSBigInt.ls
-🔴 84_JavaScript Proxy.ls
-🔴 85_UTF8 To Locale Class.ls
-🔴 86_tYy1rX5j7e4PLYJLER.ls (obfuscated — extended version is done)
+✅ src/system/network.js
+✅ src/system/encryption.js
 ```
 
-### Remaining hh_* Casts (~600+ script files across 47 directories)
-All hh_* casts are not started. Each cast has its own task file with full details.
-See individual task files in this directory for class lists and criteria.
+#### Engine (2)
+```
+✅ src/engine/sprite-manager.js
+✅ src/engine/visualizer.js
+```
+
+#### habbo Cast (4)
+```
+✅ src/casts/habbo/initialization.js
+✅ src/casts/habbo/init.js
+✅ src/casts/habbo/loop.js
+✅ src/casts/habbo/index.js
+```
+
+#### fuse_client APIs (16)
+```
+✅ src/casts/fuse_client/object-api.js
+✅ src/casts/fuse_client/thread-api.js
+✅ src/casts/fuse_client/resource-api.js
+✅ src/casts/fuse_client/download-api.js
+✅ src/casts/fuse_client/connection-api.js
+✅ src/casts/fuse_client/castload-api.js
+✅ src/casts/fuse_client/timeout-api.js
+✅ src/casts/fuse_client/window-api.js
+✅ src/casts/fuse_client/broker-api.js
+✅ src/casts/fuse_client/variable-api.js
+✅ src/casts/fuse_client/string-services-api.js
+✅ src/casts/fuse_client/write-api.js
+✅ src/casts/fuse_client/binary-api.js
+✅ src/casts/fuse_client/sprite-api.js
+✅ src/casts/fuse_client/text-api.js
+✅ src/casts/fuse_client/special-services-api.js
+✅ src/casts/fuse_client/multiuser-api.js
+```
+
+#### fuse_client Manager Classes (17)
+```
+✅ src/casts/fuse_client/object-manager-class.js
+✅ src/casts/fuse_client/thread-manager-class.js
+✅ src/casts/fuse_client/resource-manager-class.js
+✅ src/casts/fuse_client/download-manager-class.js
+✅ src/casts/fuse_client/connection-manager-class.js
+✅ src/casts/fuse_client/castload-manager-class.js
+✅ src/casts/fuse_client/timeout-manager-class.js
+✅ src/casts/fuse_client/window-manager-class.js
+✅ src/casts/fuse_client/broker-manager-class.js
+✅ src/casts/fuse_client/variable-container-class.js
+✅ src/casts/fuse_client/special-services-class.js
+✅ src/casts/fuse_client/manager-template-class.js
+✅ src/casts/fuse_client/visualizer-manager-class.js
+✅ src/casts/fuse_client/error-manager-class.js
+✅ src/casts/fuse_client/text-manager-class.js
+✅ src/casts/fuse_client/string-services-class.js
+✅ src/casts/fuse_client/writer-manager-class.js
+✅ src/casts/fuse_client/binary-manager-class.js
+✅ src/casts/fuse_client/method-manager-class.js
+✅ src/casts/fuse_client/multiuser-manager-class.js
+```
+
+#### fuse_client Instance Classes (9)
+```
+✅ src/casts/fuse_client/connection-instance-class.js
+✅ src/casts/fuse_client/window-instance-class.js
+✅ src/casts/fuse_client/visualizer-instance-class.js
+✅ src/casts/fuse_client/castload-instance-class.js
+✅ src/casts/fuse_client/castload-task-class.js
+✅ src/casts/fuse_client/download-instance-class.js
+✅ src/casts/fuse_client/multiuser-instance-class.js
+✅ src/casts/fuse_client/thread-instance-class.js
+✅ src/casts/fuse_client/httpcookie-instance-class.js
+```
+
+#### fuse_client Element Wrappers (11)
+```
+✅ src/casts/fuse_client/element-wrapper-class.js
+✅ src/casts/fuse_client/grouped-element-class.js
+✅ src/casts/fuse_client/unique-element-class.js
+✅ src/casts/fuse_client/image-wrapper-class.js
+✅ src/casts/fuse_client/text-wrapper-class.js
+✅ src/casts/fuse_client/field-wrapper-class.js
+✅ src/casts/fuse_client/pattern-wrapper-class.js
+✅ src/casts/fuse_client/dropdown-class.js
+✅ src/casts/fuse_client/scrollbar-class.js
+✅ src/casts/fuse_client/visualizer-part-wrapper-class.js
+```
+
+#### fuse_client Button Classes (2)
+```
+✅ src/casts/fuse_client/image-button-class.js
+✅ src/casts/fuse_client/icon-button-class.js
+```
+
+#### fuse_client Utility Classes (7)
+```
+✅ src/casts/fuse_client/event-broker.js
+✅ src/casts/fuse_client/event-agent-class.js
+✅ src/casts/fuse_client/loading-bar-class.js
+✅ src/casts/fuse_client/layout-parser-class.js
+✅ src/casts/fuse_client/fps-test-class.js
+✅ src/casts/fuse_client/rc4-class.js
+✅ src/casts/fuse_client/core-thread-class.js
+```
+
+#### fuse_client Entry (2)
+```
+✅ src/casts/fuse_client/client-initialization.js
+✅ src/casts/fuse_client/error-api.js
+✅ src/casts/fuse_client/index.js
+```
+
+#### Main Entry (1)
+```
+✅ src/index.js
+```
+
+### Remaining fuse_client Files (~9 files)
+```
+🔴 2_System Texts.txt (localized strings)
+🔴 75-79_*.window.txt (5 window layout files — modal, system, empty, error, performance)
+🔴 82_CBigInt16.ls (BigInt arithmetic — can use native JS BigInt)
+🔴 83_JSBigInt.ls (BigInt stub — native JS BigInt replaces this)
+🔴 84_JavaScript Proxy.ls (JS bridge stub — already handled by mount())
+🔴 85_UTF8 To Locale Class.ls (UTF-8 locale — native JS handles this)
+🔴 86_tYy1rX5j7e4PLYJLER.ls (obfuscated — RC4Extended already covers this)
+🔴 87/88_* encoding maps (character encoding — native UTF-8 handles this)
+🔴 System Props parsing full implementation (partial — needs cast-by-cast loading)
+```
+
+### Remaining hh_* Casts
+- All 47 hh_* casts not started (see individual task files)
 
 ---
 
 ## Translation Order Recommendation
 
-1. Complete **P0** (fuse_client remaining APIs) — foundation must be solid
+1. Complete **P0** remaining items (window.txt parsing, system texts)
 2. Do **P1** (hh_shared + hh_interface) — everything depends on these
 3. Do **P2** (hh_room + utils + ui) — core gameplay loop
 4. Do **P3** (hh_human + hh_furni_classes) — avatar + furniture rendering
@@ -193,5 +253,5 @@ See individual task files in this directory for class lists and criteria.
 | Total bitmap members | ~3000+ |
 | Total task files | 26 |
 | Priority tiers | 9 (P0-P8) |
-| Script files translated | 43 |
-| Script files remaining | ~680+ |
+| Script files translated | 73 |
+| Script files remaining | ~650+ |

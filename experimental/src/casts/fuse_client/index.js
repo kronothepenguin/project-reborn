@@ -1,222 +1,117 @@
 /**
  * fuse_client cast entry point
- * 
- * This file serves as the module entry point for the fuse_client cast.
- * It re-exports all public APIs from the core FuseClient framework.
- * 
- * In the original Director movie, this is fuse_client.cct.
+ * Re-exports ALL public APIs from the core FuseClient framework.
  */
 
-// ── Object API ───────────────────────────────────────────────────────
+// ── APIs ─────────────────────────────────────────────────────────────
 export {
-  constructObjectManager,
-  deconstructObjectManager,
-  getObjectManager,
-  createObject,
-  removeObject,
-  getObject,
-  objectExists,
-  printObjects,
-  registerObject,
-  unregisterObject,
-  createManager,
-  removeManager,
-  getManager,
-  managerExists,
-  printManagers,
-  registerManager,
-  unregisterManager,
-  receivePrepare,
-  removePrepare,
-  receiveUpdate,
-  removeUpdate,
-  pauseUpdate,
-  unpauseUpdate,
+  constructObjectManager, deconstructObjectManager, getObjectManager,
+  createObject, removeObject, getObject, objectExists, printObjects,
+  registerObject, unregisterObject, createManager, removeManager,
+  getManager, managerExists, printManagers, registerManager, unregisterManager,
+  receivePrepare, removePrepare, receiveUpdate, removeUpdate, pauseUpdate, unpauseUpdate,
 } from './object-api.js';
 
-// ── Thread API ───────────────────────────────────────────────────────
 export {
-  constructThreadManager,
-  deconstructThreadManager,
-  getThreadManager,
-  createThread,
-  removeThread,
-  getThread,
-  threadExists,
-  initThread,
-  initExistingThreads,
-  closeThread,
-  closeExistingThreads,
-  printThreads,
+  constructThreadManager, deconstructThreadManager, getThreadManager,
+  createThread, removeThread, getThread, threadExists, initThread,
+  initExistingThreads, closeThread, closeExistingThreads, printThreads,
 } from './thread-api.js';
 
-// ── Resource API ─────────────────────────────────────────────────────
 export {
-  constructResourceManager,
-  deconstructResourceManager,
-  getResourceManager,
-  createMember,
-  removeMember,
-  getMember,
-  updateMember,
-  registerMember,
-  unregisterMember,
-  replaceMember,
-  memberExists,
-  getmemnum,
-  printMembers,
+  constructResourceManager, deconstructResourceManager, getResourceManager,
+  createMember, removeMember, getMember, updateMember, registerMember,
+  unregisterMember, replaceMember, memberExists, getmemnum, printMembers,
 } from './resource-api.js';
 
-// ── Download API ─────────────────────────────────────────────────────
 export {
-  constructDownloadManager,
-  deconstructDownloadManager,
-  getDownloadManager,
-  queueDownload,
-  abortDownLoad,
-  registerDownloadCallback,
-  getDownLoadPercent,
-  downloadExists,
-  printDownloads,
+  constructDownloadManager, deconstructDownloadManager, getDownloadManager,
+  queueDownload, abortDownLoad, registerDownloadCallback,
+  getDownLoadPercent, downloadExists, printDownloads,
 } from './download-api.js';
 
-// ── Connection API ───────────────────────────────────────────────────
 export {
-  constructConnectionManager,
-  deconstructConnectionManager,
-  getConnectionManager,
-  createConnection,
-  removeConnection,
-  getConnection,
-  connectionExists,
-  printConnections,
-  registerListener,
-  unregisterListener,
-  registerCommands,
-  unregisterCommands,
+  constructConnectionManager, deconstructConnectionManager, getConnectionManager,
+  createConnection, removeConnection, getConnection, connectionExists,
+  printConnections, registerListener, unregisterListener,
+  registerCommands, unregisterCommands,
 } from './connection-api.js';
 
-// ── CastLoad API ─────────────────────────────────────────────────────
 export {
-  constructCastLoader,
-  deconstructCastLoader,
-  getCastLoadManager,
-  startCastLoad,
-  registerCastloadCallback,
-  resetCastLibs,
-  getCastLoadPercent,
-  FindCastNumber,
-  castExists,
-  printCasts,
+  constructCastLoader, deconstructCastLoader, getCastLoadManager,
+  startCastLoad, registerCastloadCallback, resetCastLibs,
+  getCastLoadPercent, FindCastNumber, castExists, printCasts,
 } from './castload-api.js';
 
-// ── Timeout API ──────────────────────────────────────────────────────
 export {
-  constructTimeoutManager,
-  deconstructTimeoutManager,
-  getTimeoutManager,
-  createTimeout,
-  removeTimeout,
-  getTimeout,
-  timeoutExists,
-  printTimeouts,
+  constructTimeoutManager, deconstructTimeoutManager, getTimeoutManager,
+  createTimeout, removeTimeout, getTimeout, timeoutExists, printTimeouts,
 } from './timeout-api.js';
 
-// ── Window API ───────────────────────────────────────────────────────
 export {
-  constructWindowManager,
-  deconstructWindowManager,
-  getWindowManager,
-  createWindow,
-  removeWindow,
-  getWindow,
-  getWindowIDList,
-  windowExists,
-  mergeWindow,
-  activateWindowObj,
-  deactivateWindowObj,
-  registerClient,
-  registerProcedure,
-  showWindows,
-  hideWindows,
-  lockWindowLayering,
-  unlockWindowLayering,
-  printWindows,
+  constructWindowManager, deconstructWindowManager, getWindowManager,
+  createWindow, removeWindow, getWindow, getWindowIDList, windowExists,
+  mergeWindow, activateWindowObj, deactivateWindowObj,
+  registerClient, registerProcedure, showWindows, hideWindows,
+  lockWindowLayering, unlockWindowLayering, printWindows,
 } from './window-api.js';
 
-// ── Broker Manager API ───────────────────────────────────────────────
 export {
-  constructBrokerManager,
-  deconstructBrokerManager,
-  getBrokerManager,
-  createBroker,
-  removeBroker,
-  getBroker,
-  brokerExists,
-  printBrokers,
-  registerMessage,
-  unregisterMessage,
-  executeMessage,
+  constructBrokerManager, deconstructBrokerManager, getBrokerManager,
+  createBroker, removeBroker, getBroker, brokerExists, printBrokers,
+  registerMessage, unregisterMessage, executeMessage,
 } from './broker-api.js';
 
-// ── Variable API ─────────────────────────────────────────────────────
 export {
-  constructVariableManager,
-  deconstructVariableManager,
-  getVariableManager,
-  createVariable,
-  setVariable,
-  removeVariable,
-  getVariable,
-  getIntVariable,
-  getStructVariable,
-  getClassVariable,
-  getVariableValue,
-  variableExists,
-  printVariables,
-  dumpVariableField,
+  constructVariableManager, deconstructVariableManager, getVariableManager,
+  createVariable, setVariable, removeVariable, getVariable, getIntVariable,
+  getStructVariable, getClassVariable, getVariableValue,
+  variableExists, printVariables, dumpVariableField,
 } from './variable-api.js';
 
-// ── Special Services API ─────────────────────────────────────────────
 export {
-  constructSpecialServices,
-  deconstructSpecialServices,
-  getSpecialServices,
-  createToolTip,
-  removeToolTip,
-  setcursor,
-  openNetPage,
-  showLoadingBar,
-  getUniqueID,
-  getMachineID,
-  getPredefinedURL,
-  getDomainPart,
-  getMoviePath,
-  getExtVarPath,
-  sendProcessTracking,
-  getProcessTrackingList,
-  secretDecode,
-  readValueFromField,
-  checkForXtra,
-  performance,
-  printMsg,
-  callJavaScriptFunction,
-  getClientUpTime,
+  constructStringServices, deconstructStringServices, getStringServices,
+  convertToPropList, convertToLowerCase, convertToHigherCase,
+  convertSpecialChars, convertIntToHex, convertHexToInt,
+  explode, implode, replaceChars, replaceChunks,
+  urlEncode, obfuscate, deobfuscate, getLocalFloat, encodeUTF8, decodeUTF8,
+} from './string-services-api.js';
+
+export {
+  constructWriterManager, deconstructWriterManager, getWriterManager,
+  createWriter, removeWriter, getWriter, writerExists, printWriters,
+} from './write-api.js';
+
+export {
+  constructBinaryManager, deconstructBinaryManager, getBinaryManager,
+  retrieveBinaryData, storeBinaryData, addMessageToBinaryQueue,
+} from './binary-api.js';
+
+export {
+  constructSpriteManager, deconstructSpriteManager, getSpriteManager,
+  reserveSprite, releaseSprite, setEventBroker, removeEventBroker, printSprites,
+} from './sprite-api.js';
+
+export {
+  constructTextManager, deconstructTextManager, getTextManager,
+  createText, removeText, setText, getText, textExists, printTexts, dumpTextField,
+} from './text-api.js';
+
+export {
+  constructSpecialServices, deconstructSpecialServices, getSpecialServices,
+  createToolTip, removeToolTip, setcursor, openNetPage, showLoadingBar,
+  getUniqueID, getMachineID, getPredefinedURL, getDomainPart,
+  getMoviePath, getExtVarPath, sendProcessTracking, getProcessTrackingList,
+  secretDecode, readValueFromField, checkForXtra, performance,
+  printMsg, callJavaScriptFunction, getClientUpTime,
 } from './special-services-api.js';
 
-// ── Multiuser API ────────────────────────────────────────────────────
 export {
-  constructMultiuserManager,
-  deconstructMultiuserManager,
-  getMultiuserManager,
-  createMultiuser,
-  removeMultiuser,
-  getMultiuser,
-  multiuserExists,
-  printMultiusers,
+  constructMultiuserManager, deconstructMultiuserManager, getMultiuserManager,
+  createMultiuser, removeMultiuser, getMultiuser, multiuserExists, printMultiusers,
 } from './multiuser-api.js';
 
-// ── Client Initialization ────────────────────────────────────────────
+// ── Initialization ───────────────────────────────────────────────────
 export { initCore, stopClient, resetClient } from './client-initialization.js';
 
 // ── Error API ────────────────────────────────────────────────────────
@@ -238,10 +133,49 @@ export { WindowManager } from './window-manager-class.js';
 export { BrokerManager } from './broker-manager-class.js';
 export { VariableContainer } from './variable-container-class.js';
 export { SpecialServices } from './special-services-class.js';
+export { ManagerTemplate } from './manager-template-class.js';
+export { VisualizerManager } from './visualizer-manager-class.js';
+export { ErrorManager } from './error-manager-class.js';
+export { TextManager } from './text-manager-class.js';
+export { StringServices } from './string-services-class.js';
+export { WriterManager } from './writer-manager-class.js';
+export { BinaryManager } from './binary-manager-class.js';
+export { MethodManager } from './method-manager-class.js';
+export { MultiuserManager } from './multiuser-manager-class.js';
 
 // ── Instance Classes ─────────────────────────────────────────────────
 export { ConnectionInstance } from './connection-instance-class.js';
 export { WindowInstance } from './window-instance-class.js';
+export { VisualizerInstance } from './visualizer-instance-class.js';
+export { CastLoadInstance } from './castload-instance-class.js';
+export { CastLoadTask } from './castload-task-class.js';
+export { DownloadInstance } from './download-instance-class.js';
+export { MultiuserInstance } from './multiuser-instance-class.js';
+export { ThreadInstance } from './thread-instance-class.js';
+export { HttpCookieInstance } from './httpcookie-instance-class.js';
+
+// ── Element Wrappers ─────────────────────────────────────────────────
+export { ElementWrapper } from './element-wrapper-class.js';
+export { GroupedElement } from './grouped-element-class.js';
+export { UniqueElement } from './unique-element-class.js';
+export { ImageWrapper } from './image-wrapper-class.js';
+export { TextWrapper } from './text-wrapper-class.js';
+export { FieldWrapper } from './field-wrapper-class.js';
+export { PatternWrapper } from './pattern-wrapper-class.js';
+export { DropDown } from './dropdown-class.js';
+export { Scrollbar } from './scrollbar-class.js';
+export { VisualizerPartWrapper } from './visualizer-part-wrapper-class.js';
+
+// ── Button Classes ───────────────────────────────────────────────────
+export { ImageButton } from './image-button-class.js';
+export { IconButton } from './icon-button-class.js';
+
+// ── Utility Classes ──────────────────────────────────────────────────
+export { EventAgent } from './event-agent-class.js';
+export { LoadingBar } from './loading-bar-class.js';
+export { FPSTest } from './fps-test-class.js';
+export { LayoutParser } from './layout-parser-class.js';
+export { CoreThread } from './core-thread-class.js';
 
 // ── Encryption ───────────────────────────────────────────────────────
 export { RC4, RC4Extended } from '../../system/encryption.js';

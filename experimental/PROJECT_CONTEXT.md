@@ -145,3 +145,32 @@ description, key classes, window files, translation criteria, dependencies.
 - **Per-cast**: `tasks/00-fuse_client-core.md` … `tasks/25-hh_patch_uk.md`
 
 Open a task file to see what needs translating. Status is tracked per file (`🔴 Not started`, `🟡 Partial`, `✅ Done`).
+
+## Current Status (82 JS files translated)
+
+### Completed — fuse_client (63/72 files, ~88%)
+- ✅ ALL 17 APIs (Object, Thread, Resource, Download, Connection, CastLoad, Timeout, Window, Broker, Variable, String Services, Write, Binary, Sprite, Text, Special Services, Multiuser)
+- ✅ ALL 20 Manager classes (Object, Thread, Resource, Download, Connection, CastLoad, Timeout, Window, Broker, Variable Container, Special Services, Manager Template, Visualizer, Error, Text, String Services, Writer, Binary, Method, Multiuser)
+- ✅ ALL 9 Instance classes (Connection, Window, Visualizer, CastLoad + Task, Download, Multiuser, Thread, HttpCookie)
+- ✅ ALL 11 Element wrappers (Element, Grouped, Unique, Image, Text, Field, Pattern, Dropdown, Scrollbar, Visualizer Part)
+- ✅ ALL Button classes (Image Button, Icon Button)
+- ✅ Utility classes (Event Broker, Event Agent, Loading Bar, Layout Parser, FPS Test, RC4, RC4 Extended, Core Thread, Visualizer Part Wrapper, HttpCookie Instance)
+- 🔴 Remaining: 2_System Texts.txt, 5 .window.txt files, BigInt stubs (native JS BigInt replaces these), encoding maps (native UTF-8 handles this)
+
+### Completed — habbo (3/3 files, 100%)
+- ✅ Initialization, Init, Loop scripts
+
+### Completed — Core runtime (7 files, 100%)
+- ✅ Lingo runtime (VOID, property lists, type helpers, messages)
+- ✅ Stage emulation, Frame loop
+- ✅ Network stub, System props, Encryption
+- ✅ Sprite Manager, Visualizer (engine)
+
+### Pending — hh_* casts (47 directories, ~600+ files)
+- All not started. See `tasks/` for priority-ordered task files.
+
+### Next Steps
+1. Complete fuse_client remaining items (window.txt parsing, system texts)
+2. Start P1: hh_shared + hh_interface
+3. Then P2: hh_room + hh_room_ui + hh_room_utils
+4. Then P3: hh_human + hh_furni_classes
