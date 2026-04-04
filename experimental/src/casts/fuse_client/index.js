@@ -50,6 +50,75 @@ export {
   printThreads,
 } from './thread-api.js';
 
+// Resource API
+export {
+  constructResourceManager,
+  deconstructResourceManager,
+  getResourceManager,
+  createMember,
+  removeMember,
+  getMember,
+  updateMember,
+  registerMember,
+  unregisterMember,
+  replaceMember,
+  memberExists,
+  getmemnum,
+  printMembers,
+} from './resource-api.js';
+
+// Connection API
+export {
+  constructConnectionManager,
+  deconstructConnectionManager,
+  getConnectionManager,
+  createConnection,
+  removeConnection,
+  getConnection,
+  connectionExists,
+  printConnections,
+  registerListener,
+  unregisterListener,
+  registerCommands,
+  unregisterCommands,
+} from './connection-api.js';
+
+// CastLoad API
+export {
+  constructCastLoader,
+  deconstructCastLoader,
+  getCastLoadManager,
+  startCastLoad,
+  registerCastloadCallback,
+  resetCastLibs,
+  getCastLoadPercent,
+  FindCastNumber,
+  castExists,
+  printCasts,
+} from './castload-api.js';
+
+// Window API
+export {
+  constructWindowManager,
+  deconstructWindowManager,
+  getWindowManager,
+  createWindow,
+  removeWindow,
+  getWindow,
+  getWindowIDList,
+  windowExists,
+  mergeWindow,
+  activateWindowObj,
+  deactivateWindowObj,
+  registerClient,
+  registerProcedure,
+  showWindows,
+  hideWindows,
+  lockWindowLayering,
+  unlockWindowLayering,
+  printWindows,
+} from './window-api.js';
+
 // Client Initialization
 export { initCore, stopClient, resetClient } from './client-initialization.js';
 
@@ -59,7 +128,18 @@ export { error, fatalError, serverError } from './error-api.js';
 // Event Broker
 export { eventBroker, registerEventProcedure, removeEventProcedure, stopEvent, pass } from './event-broker.js';
 
-// Object Manager Class (for registration)
+// Manager Classes
 export { ObjectManager } from './object-manager-class.js';
 export { ObjectBase } from './object-base-class.js';
 export { ThreadManager } from './thread-manager-class.js';
+export { ResourceManager } from './resource-manager-class.js';
+export { ConnectionManager } from './connection-manager-class.js';
+export { CastLoadManager } from './castload-manager-class.js';
+export { WindowManager } from './window-manager-class.js';
+
+// Instance Classes
+export { ConnectionInstance } from './connection-instance-class.js';
+export { WindowInstance } from './window-instance-class.js';
+
+// Encryption
+export { RC4, RC4Extended } from '../../system/encryption.js';
