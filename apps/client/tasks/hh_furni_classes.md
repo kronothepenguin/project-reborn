@@ -1,0 +1,53 @@
+# hh_furni_classes Cast
+
+- [ ] 10_Habbo Wheel Class.ls
+- [ ] 21_PostIt Item Class.ls
+- [ ] 22_PostIt Manager Class.ls
+- [ ] 23_Pet Toy Class.ls
+- [ ] 24_Credit Redeem Confirmation Class.ls
+- [ ] 25_Credit Furni Class.ls
+- [ ] 26_Furniture Holo Class.ls
+- [ ] 27_Furniture Fridge Class.ls
+- [ ] 28_Furniture Toilet Class.ls
+- [ ] 29_Furniture Sink Class.ls
+- [ ] 30_Furniture Luxus TV Class.ls
+- [ ] 31_Furniture Teleport Class.ls
+- [ ] 32_Furniture Divider Class.ls
+- [ ] 33_Furniture Samovar Class.ls
+- [ ] 34_Furniture Edicehc Class.ls
+- [ ] 35_Furniture Score Class.ls
+- [ ] 36_Furniture Hockeylight Class.ls
+- [ ] 37_Trophy Class.ls
+- [ ] 38_Plate Class.ls
+- [ ] 39_Watermatic Class.ls
+- [ ] 3_Active Object Class.ls
+- [ ] 40_Furniture Food Class.ls
+- [ ] 41_Furniture Waterbowl Class.ls
+- [ ] 42_Furniture IcecreamMachine Class.ls
+- [ ] 43_Queue Class.ls
+- [ ] 44_Queue Public Class.ls
+- [ ] 45_Furniture Scifirocket Class.ls
+- [ ] 46_Furniture Scifidoor Class.ls
+- [ ] 47_Furniture Scifiport Class.ls
+- [ ] 48_Furniture Club TV Class.ls
+- [ ] 49_Furniture Traffic Light Class.ls
+- [ ] 4_Passive Object Class.ls
+- [ ] 50_Furniture Barrier Class.ls
+- [ ] 51_Furniture StudyDesk Class.ls
+- [ ] 52_Furniture Solarium Class.ls
+- [ ] 53_Furniture Bottle Class.ls
+- [ ] 54_Furniture Red TV Class.ls
+- [ ] 55_E-Dice Class.ls
+- [ ] 56_Birdie Class.ls
+- [ ] 57_Furniture Present Class.ls
+- [ ] 58_Package Card Class.ls
+- [ ] 59_Furniture OneWayDoor Class.ls
+- [ ] 5_Item Object Class.ls
+- [ ] 63_Crossfade Furni Class.ls
+- [ ] 64_FadeAnimation Furni Class.ls
+- [ ] 65_Valentine Randomizer Class.ls
+- [ ] 66_Fortune Class.ls
+- [ ] 67_Window Class.ls
+- [ ] 6_Active Object Extension Class.ls
+- [ ] 7_Item Object Extension Class.ls
+- [ ] 8_Preview Renderer Class.ls
