@@ -1,60 +1,184 @@
-import './style.css'
-import javascriptLogo from './assets/javascript.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import { setupCounter } from './counter.js'
+// main.js - Entry point for Habbo Hotel client
+// Creates canvas, initializes runtime, starts game loop
 
-document.querySelector('#app').innerHTML = `
-<section id="center">
-  <div class="hero">
-    <img src="${heroImg}" class="base" width="170" height="179">
-    <img src="${javascriptLogo}" class="framework" alt="JavaScript logo"/>
-    <img src=${viteLogo} class="vite" alt="Vite logo" />
-  </div>
-  <div>
-    <h1>Get started</h1>
-    <p>Edit <code>src/main.js</code> and save to test <code>HMR</code></p>
-  </div>
-  <button id="counter" type="button" class="counter"></button>
-</section>
+import {
+  setStage,
+  setMouseLoc,
+  setKeyDown,
+  registerMovieHandler,
+  getMovieHandlers,
+  theMilliSeconds,
+  externalParamValue,
+  registerExternalParam,
+  clearMovieHandlers,
+} from './core/lingo-runtime.js'
 
-<div class="ticks"></div>
+// Import casts (side-effects register handlers and members)
+import './habbo/index.js'
+import './fuse_client/index.js'
 
-<section id="next-steps">
-  <div id="docs">
-    <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#documentation-icon"></use></svg>
-    <h2>Documentation</h2>
-    <p>Your questions, answered</p>
-    <ul>
-      <li>
-        <a href="https://vite.dev/" target="_blank">
-          <img class="logo" src=${viteLogo} alt="" />
-          Explore Vite
-        </a>
-      </li>
-      <li>
-        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-          <img class="button-icon" src="${javascriptLogo}" alt="">
-          Learn more
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div id="social">
-    <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#social-icon"></use></svg>
-    <h2>Connect with us</h2>
-    <p>Join the Vite community</p>
-    <ul>
-      <li><a href="https://github.com/vitejs/vite" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#github-icon"></use></svg>GitHub</a></li>
-      <li><a href="https://chat.vite.dev/" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#discord-icon"></use></svg>Discord</a></li>
-      <li><a href="https://x.com/vite_js" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#x-icon"></use></svg>X.com</a></li>
-      <li><a href="https://bsky.app/profile/vite.dev" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#bluesky-icon"></use></svg>Bluesky</a></li>
-    </ul>
-  </div>
-</section>
+const STAGE_WIDTH = 720
+const STAGE_HEIGHT = 540
 
-<div class="ticks"></div>
-<section id="spacer"></section>
-`
+let canvas = null
+let ctx = null
+let animFrameId = null
+let running = false
 
-setupCounter(document.querySelector('#counter'))
+// ── Mount API ──────────────────────────────────────────────────────────────
+
+export function mount(element, params = {}) {
+  if (canvas) {
+    unmount()
+  }
+
+  // Setup external params
+  for (const [key, value] of Object.entries(params)) {
+    registerExternalParam(key, value)
+  }
+
+  // Dev mode: read from .env
+  if (import.meta.env.DEV) {
+    if (!params.serverHost && import.meta.env.VITE_SERVER_HOST) {
+      registerExternalParam('serverHost', import.meta.env.VITE_SERVER_HOST)
+    }
+    if (!params.serverPort && import.meta.env.VITE_SERVER_PORT) {
+      registerExternalParam('serverPort', import.meta.env.VITE_SERVER_PORT)
+    }
+    if (!params.debug && import.meta.env.VITE_DEBUG_MODE === 'true') {
+      registerExternalParam('debug', true)
+    }
+  }
+
+  // Create canvas
+  canvas = document.createElement('canvas')
+  canvas.width = STAGE_WIDTH
+  canvas.height = STAGE_HEIGHT
+  canvas.style.display = 'block'
+  canvas.style.width = '100%'
+  canvas.style.height = '100%'
+  canvas.style.cursor = 'default'
+
+  // Clear element and append canvas
+  element.innerHTML = ''
+  element.appendChild(canvas)
+
+  ctx = canvas.getContext('2d')
+  setStage({ canvas, ctx, width: STAGE_WIDTH, height: STAGE_HEIGHT })
+
+  // Setup event listeners
+  setupEvents()
+
+  // Call prepareMovie handlers
+  for (const handler of getMovieHandlers('prepareMovie')) {
+    handler.fn()
+  }
+
+  // Start game loop
+  running = true
+  gameLoop()
+
+  return { canvas, ctx, unmount }
+}
+
+export function unmount() {
+  running = false
+  if (animFrameId) {
+    cancelAnimationFrame(animFrameId)
+    animFrameId = null
+  }
+
+  // Call stopMovie handlers
+  for (const handler of getMovieHandlers('stopMovie')) {
+    handler.fn()
+  }
+
+  clearMovieHandlers()
+
+  if (canvas && canvas.parentNode) {
+    canvas.parentNode.removeChild(canvas)
+  }
+  canvas = null
+  ctx = null
+}
+
+// ── Event Handling ─────────────────────────────────────────────────────────
+
+function setupEvents() {
+  if (!canvas) return
+
+  canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect()
+    const scaleX = STAGE_WIDTH / rect.width
+    const scaleY = STAGE_HEIGHT / rect.height
+    const x = Math.floor((e.clientX - rect.left) * scaleX)
+    const y = Math.floor((e.clientY - rect.top) * scaleY)
+    setMouseLoc(x, y)
+  })
+
+  canvas.addEventListener('mousedown', (e) => {
+    setMouseLocFromEvent(e)
+    // TODO: dispatch to sprite handlers
+  })
+
+  canvas.addEventListener('mouseup', (e) => {
+    setMouseLocFromEvent(e)
+    // TODO: dispatch to sprite handlers
+  })
+
+  canvas.addEventListener('mouseenter', () => {
+    // TODO: dispatch to sprite handlers
+  })
+
+  canvas.addEventListener('mouseleave', () => {
+    setMouseLoc(-1, -1)
+    // TODO: dispatch to sprite handlers
+  })
+
+  window.addEventListener('keydown', (e) => {
+    setKeyDown(true)
+    // TODO: dispatch to sprite handlers
+  })
+
+  window.addEventListener('keyup', (e) => {
+    setKeyDown(false)
+    // TODO: dispatch to sprite handlers
+  })
+}
+
+function setMouseLocFromEvent(e) {
+  const rect = canvas.getBoundingClientRect()
+  const scaleX = STAGE_WIDTH / rect.width
+  const scaleY = STAGE_HEIGHT / rect.height
+  const x = Math.floor((e.clientX - rect.left) * scaleX)
+  const y = Math.floor((e.clientY - rect.top) * scaleY)
+  setMouseLoc(x, y)
+}
+
+// ── Game Loop ──────────────────────────────────────────────────────────────
+
+function gameLoop() {
+  if (!running) return
+
+  // Call exitFrame handlers
+  for (const handler of getMovieHandlers('exitFrame')) {
+    handler.fn()
+  }
+
+  // TODO: render sprites to canvas
+  // ctx.clearRect(0, 0, STAGE_WIDTH, STAGE_HEIGHT)
+  // for each visible sprite: draw member image at sprite position
+
+  animFrameId = requestAnimationFrame(gameLoop)
+}
+
+// ── Dev mode auto-mount ────────────────────────────────────────────────────
+
+if (import.meta.env.DEV) {
+  window.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('game')
+    if (container) {
+      mount(container)
+    }
+  })
+}

@@ -46,9 +46,18 @@ Each cast has a `.md` file in `tasks/` with a TODO checklist:
 
 ### Asset Handling
 
-- Use relative imports from casts: `import img from "../../../../casts/fuse_client/1_Logo.png"`
-- If Vite has issues with extensions, copy assets to local folder preserving Members.csv names
-- Keep `.txt` extension if needed: `System Props.txt`
+**Assets must be copied from `./casts/<cast>/` to `./src/<cast>/`** preserving `Members.csv` names. Vite imports return URLs (not base64) for files >4KB, which are optimized and hashed.
+
+```js
+// In cast's index.js - import asset and register as member
+import logoImg from './1_Logo.png'  // Vite returns URL string
+registerMember('Logo', 4, 'bitmap', 'fuse_client', logoImg)
+```
+
+- Bitmap assets: copy `.png` files to `src/<cast>/` folder
+- Text assets: keep `.txt` extension (e.g., `System Props.txt`)
+- Vite optimizes and generates hashed URLs in build
+- Do NOT use `public/` folder - assets in `src/` get optimized
 
 ## Code Style
 
@@ -148,6 +157,53 @@ import './loop.js'            // registers exitFrame
 - `src/core/lingo-runtime.js` - incremental Director function implementations
 - `src/main.js` - entry point, exports `mount(el, params)`
 
+### Canvas Runtime
+
+**Stage dimensions: 720x540** (Director MX 2004 default). Everything renders on a single `<canvas>` element. No DOM overlays.
+
+#### Game Loop (`main.js`)
+
+```
+mount(element, params)
+  ↓
+Create canvas (720x540), set as stage
+  ↓
+Setup mouse/keyboard event listeners
+  ↓
+Call prepareMovie handlers (registered by casts)
+  ↓
+Start requestAnimationFrame loop:
+  └─ Each frame: call exitFrame handlers → render sprites
+```
+
+#### Lifecycle Callbacks
+
+| Director Handler | When it fires | JS Implementation |
+|-----------------|---------------|-------------------|
+| `prepareMovie` | Once at startup | Called by `mount()` before game loop |
+| `stopMovie` | On unmount | Called by `unmount()` |
+| `exitFrame` | Every frame | Called in `requestAnimationFrame` loop |
+| `beginSprite` | When sprite becomes visible | TODO: sprite system |
+| `endSprite` | When sprite is removed | TODO: sprite system |
+
+#### Mouse/Keyboard Tracking
+
+```js
+// Runtime globals (updated by canvas event listeners)
+the mouseLoc   → { locH: x, locV: y }
+the mouseH     → x coordinate
+the mouseV     → y coordinate
+the keyDown    → boolean
+the milliSeconds → Date.now()
+```
+
+Events are tracked on the canvas element. Sprite-level event dispatch (mouseDown, mouseUp, etc.) is not yet implemented.
+
+#### Build vs Dev
+
+- **Dev**: `mount()` auto-calls on `DOMContentLoaded`, params from `.env.development`
+- **Build**: exports `mount(element, params)` function for host page to call
+
 ### Runtime Lingo (`core/lingo-runtime.js`)
 
 Implement functions **incrementally** as they are encountered during translation:
@@ -181,18 +237,22 @@ See `CAST-LOADING.md` for detailed documentation.
 
 ```
 src/
-├── main.js              # mount(el, params) entry point
+├── main.js              # mount(el, params) entry point, game loop, events
 ├── core/
 │   └── lingo-runtime.js # Director functions (incremental)
 ├── habbo/               # Boot cast
-│   └── index.js
+│   ├── index.js         # Member registration + handler imports
+│   └── *.js             # Translated .ls files
 ├── fuse_client/         # Core framework
-│   └── index.js
+│   ├── index.js         # Member registration + handler imports
+│   └── *.js             # Translated .ls files
 └── hh_*/                # Feature casts
-    └── index.js
+    ├── index.js
+    └── *.js
 ```
 
 - `main.js` exports `mount(element, params)` for build mode
-- Dev mode reads params from `.env.development`
-- Each cast's `index.js` re-exports all translated files
+- Dev mode auto-mounts on `DOMContentLoaded`, reads params from `.env.development`
+- Each cast's `index.js` registers members and imports translated files (side-effects)
 - Dynamic loading via `import()` for casts not in initial bundle
+- Stage: 720x540 canvas, `image-rendering: pixelated`
