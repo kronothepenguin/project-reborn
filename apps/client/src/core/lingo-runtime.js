@@ -56,6 +56,37 @@ export function string(x) {
   return String(x)
 }
 
+// ── Type Check Helpers ───────────────────────────────────────────────────
+
+// Lingo-style symbol with global registry: Symbol.for('#name') === Symbol.for('#name')
+export function symbol(name) {
+  return Symbol.for(name)
+}
+
+export function stringp(x) {
+  return typeof x === 'string'
+}
+
+export function symbolp(x) {
+  return typeof x === 'symbol'
+}
+
+export function listp(x) {
+  return Array.isArray(x)
+}
+
+export function integerp(x) {
+  return typeof x === 'number' && Number.isInteger(x)
+}
+
+export function objectp(x) {
+  return typeof x === 'object' && x !== null
+}
+
+export function floatp(x) {
+  return typeof x === 'number'
+}
+
 export function value(s) {
   // Lingo's value() parses a string into a value
   if (s === 'VOID') return null
@@ -330,32 +361,129 @@ export function sendAllSprites(msg, ...args) {
 }
 
 // ── Member System ────────────────────────────────────────────────────────
+// Members are registered by casts based on their Members.csv files.
+// Each cast exports its members and registers them with the runtime.
+
+const _membersByName = {}
+const _membersByNum = {}
+let _memberCounter = 0
+
+export function registerMember(name, num, type, castName) {
+  const member = { name, number: num, type, castName, image: null, text: '', rect: null }
+  _membersByName[name] = member
+  _membersByNum[num] = member
+  _memberCounter = Math.max(_memberCounter, num)
+  return member
+}
+
+export function unregisterMember(nameOrNum) {
+  if (typeof nameOrNum === 'number') {
+    const mem = _membersByNum[nameOrNum]
+    if (mem) delete _membersByName[mem.name]
+    delete _membersByNum[nameOrNum]
+  } else {
+    const mem = _membersByName[nameOrNum]
+    if (mem) delete _membersByNum[mem.number]
+    delete _membersByName[nameOrNum]
+  }
+}
 
 export function member(nameOrNum) {
-  // Returns member from cast
-  return null // Placeholder
+  if (typeof nameOrNum === 'number') {
+    return _membersByNum[nameOrNum] || null
+  }
+  return _membersByName[nameOrNum] || null
 }
 
 export function memberExists(name) {
-  return false // Placeholder
+  return name in _membersByName
 }
 
 export function getmemnum(name) {
-  return 0 // Placeholder
+  const mem = _membersByName[name]
+  return mem ? mem.number : 0
 }
 
 export function removeMember(name) {
-  // Placeholder
+  unregisterMember(name)
+}
+
+export function createMember(name, type) {
+  _memberCounter++
+  return registerMember(name, _memberCounter, type)
 }
 
 // ── Cast System ──────────────────────────────────────────────────────────
 
+const _castLibsByName = {}
+const _castLibsByNum = {}
+let _castLibCounter = 0
+
+export function registerCastLib(name, num, fileName) {
+  const castLib = { name, number: num, fileName, preloadMode: 0 }
+  _castLibsByName[name] = castLib
+  _castLibsByNum[num] = castLib
+  _castLibCounter = Math.max(_castLibCounter, num)
+  return castLib
+}
+
 export function castLib(nameOrNum) {
-  return { name: '', fileName: '', number: 0, preloadMode: 0 }
+  if (typeof nameOrNum === 'number') {
+    return _castLibsByNum[nameOrNum] || { name: '', fileName: '', number: 0, preloadMode: 0 }
+  }
+  return _castLibsByName[nameOrNum] || { name: '', fileName: '', number: 0, preloadMode: 0 }
 }
 
 export function castExists(name) {
-  return false // Placeholder
+  return name in _castLibsByName
+}
+
+export function theNumberOfCastLibs() {
+  return _castLibCounter
+}
+
+// ── Network System ───────────────────────────────────────────────────────
+
+const _netResults = {}
+const _netDone = {}
+const _netErrors = {}
+let _netCounter = 0
+
+export function preloadNetThing(url) {
+  const id = ++_netCounter
+  _netDone[id] = false
+  _netErrors[id] = ''
+  fetch(url)
+    .then(r => {
+      if (!r.ok) throw new Error('HTTP ' + r.status)
+      return r.blob()
+    })
+    .then(blob => {
+      _netResults[id] = blob
+      _netDone[id] = true
+    })
+    .catch(err => {
+      _netErrors[id] = err.message
+      _netDone[id] = true
+    })
+  return id
+}
+
+export function netDone(id) {
+  return _netDone[id] || false
+}
+
+export function netError(id) {
+  return _netErrors[id] || 'OK'
+}
+
+export function netTextResult(id) {
+  return _netResults[id] || ''
+}
+
+export function getStreamStatus(id) {
+  // Simplified - in Director this returns bytesSoFar, bytesTotal, error
+  return { bytesSoFar: 0, bytesTotal: 0, error: _netErrors[id] || 'OK' }
 }
 
 // ── Timeout System ───────────────────────────────────────────────────────
@@ -463,22 +591,9 @@ export function goToFrame(frame) {
   // In JS, this is handled by the state machine
 }
 
-// ── Network ──────────────────────────────────────────────────────────────
-
-export function preloadNetThing(url) {
-  // Preload a network resource
-}
-
-export function netDone() {
-  return true // Placeholder
-}
-
-export function netError(id) {
-  return 'OK' // Placeholder
-}
+// ── Network (additional helpers) ─────────────────────────────────────────
 
 export function postNetText(url, data) {
-  // POST request
   fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -496,6 +611,54 @@ export function registerExternalParam(key, value) {
 
 export function externalParamValue(key) {
   return _externalParams[key]
+}
+
+// ── Variable System ──────────────────────────────────────────────────────
+// Lingo: setVariable("key", value), getVariable("key"), variableExists("key")
+
+const _variables = {}
+
+export function setVariable(key, value) {
+  _variables[key] = value
+}
+
+export function getVariable(key, defaultValue) {
+  if (key in _variables) {
+    return _variables[key]
+  }
+  return defaultValue !== undefined ? defaultValue : null
+}
+
+export function variableExists(key) {
+  return key in _variables
+}
+
+export function getVariableValue(key, defaultValue) {
+  return getVariable(key, defaultValue)
+}
+
+export function getIntVariable(key, defaultValue) {
+  const val = getVariable(key, defaultValue)
+  return typeof val === 'number' ? val : parseInt(val, 10) || defaultValue
+}
+
+// ── Struct System ────────────────────────────────────────────────────────
+// Lingo: getStructVariable("struct.name") returns a struct (like a propList with special behavior)
+
+const _structs = {}
+
+export function registerStruct(name, data) {
+  _structs[name] = data
+}
+
+export function getStructVariable(name) {
+  if (_structs[name]) {
+    return _structs[name]
+  }
+  // Return empty struct as fallback
+  const empty = createPropList()
+  _structs[name] = empty
+  return empty
 }
 
 // ── Movie Path ───────────────────────────────────────────────────────────
@@ -553,4 +716,125 @@ export function secretDecode(str) {
 
 export function deobfuscate(str) {
   return atob(str)
+}
+
+// UTF8 encoding/decoding
+export function decodeUTF8(str, tForceDecode) {
+  try {
+    return decodeURIComponent(escape(str))
+  } catch (e) {
+    return str
+  }
+}
+
+export function encodeUTF8(str) {
+  try {
+    return unescape(encodeURIComponent(str))
+  } catch (e) {
+    return str
+  }
+}
+
+// ── Field / Script System ────────────────────────────────────────────────
+
+// Lingo: field("name") returns the text content of a field member
+export function field(nameOrNum) {
+  // Placeholder - will be populated when field members are loaded
+  return ''
+}
+
+// Lingo: convertToPropList(fieldText, delimiter) parses key=value text into a propList
+export function convertToPropList(text, delimiter) {
+  const result = createPropList()
+  const lines = text.split(delimiter)
+  for (const line of lines) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) continue
+    const eqIdx = trimmed.indexOf('=')
+    if (eqIdx > 0) {
+      const key = trimmed.substring(0, eqIdx).trim()
+      const valStr = trimmed.substring(eqIdx + 1).trim()
+      result.setaProp(key, value(valStr))
+    }
+  }
+  return result
+}
+
+// Lingo: script("name").new() creates an instance of a script
+const _scriptRegistry = {}
+
+export function registerScript(name, factory) {
+  _scriptRegistry[name] = factory
+}
+
+export function script(nameOrNum) {
+  const name = typeof nameOrNum === 'number' ? String(nameOrNum) : nameOrNum
+  if (!_scriptRegistry[name]) {
+    return {
+      new() {
+        return {}
+      },
+    }
+  }
+  return {
+    new() {
+      return _scriptRegistry[name]()
+    },
+  }
+}
+
+// ── Error / Debug ────────────────────────────────────────────────────────
+
+export function error(me, msg, methodName, severity) {
+  console.error(`[Lingo Error] ${methodName}: ${msg} (${severity})`)
+  return false
+}
+
+export function fatalError(details) {
+  console.error('[Lingo Fatal Error]', details)
+}
+
+export function setDebugLevel(level) {
+  // Placeholder
+}
+
+// ── Special Services (placeholder) ───────────────────────────────────────
+
+let _specialServices = null
+
+export function getSpecialServices() {
+  if (!_specialServices) {
+    _specialServices = {
+      openNetPage(url) {
+        window.open(url, '_blank')
+      },
+      setExtVarPath(path) {
+        // Placeholder
+      },
+    }
+  }
+  return _specialServices
+}
+
+export function registerSpecialServices(services) {
+  _specialServices = services
+}
+
+// ── Event System ─────────────────────────────────────────────────────────
+
+export function stopEvent() {
+  // Placeholder - stops event propagation
+}
+
+export function pass() {
+  // Placeholder - passes event to next handler
+}
+
+// ── Lingo call() function ────────────────────────────────────────────────
+
+export function call(methodName, obj, ...args) {
+  if (obj && typeof obj[methodName] === 'function') {
+    return obj[methodName](...args)
+  }
+  return null
 }

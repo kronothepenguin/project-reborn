@@ -1,79 +1,98 @@
 # fuse_client Cast
 
-- [ ] 10_CastLoad  API.ls
-- [ ] 11_Download API.ls
-- [ ] 12_Connection API.ls
-- [ ] 13_Sprite API.ls
-- [ ] 14_Timeout API.ls
-- [ ] 15_Text API.ls
-- [ ] 16_String Services API.ls
-- [ ] 17_Visualizer API.ls
-- [ ] 18_Window API.ls
-- [ ] 19_Broker Manager API.ls
-- [ ] 20_Variable API.ls
-- [ ] 21_Write API.ls
-- [ ] 22_Binary API.ls
-- [ ] 23_Special Services API.ls
-- [ ] 24_Multiuser API.ls
-- [ ] 25_DropDown Class.ls
-- [ ] 26_Manager Template Class.ls
-- [ ] 27_Object Manager Class.ls
-- [ ] 28_Error Manager Class.ls
-- [ ] 29_Thread Manager Class.ls
-- [ ] 30_Resource Manager Class.ls
-- [ ] 31_Download Manager Class.ls
-- [ ] 32_CastLoad Manager Class.ls
-- [ ] 33_Connection Manager Class.ls
-- [ ] 34_Sprite Manager Class.ls
-- [ ] 35_Timeout Manager Class.ls
-- [ ] 36_Text Manager Class.ls
-- [ ] 37_String Services Class.ls
-- [ ] 38_Visualizer Manager Class.ls
-- [ ] 39_Window Manager Class.ls
-- [ ] 3_Event Broker Behavior.ls
-- [ ] 40_Broker Manager Class.ls
-- [ ] 41_Method Manager Class.ls
-- [ ] 42_Binary Manager Class.ls
-- [ ] 43_Writer Manager Class.ls
-- [ ] 44_Special Services Class.ls
-- [ ] 45_Multiuser Manager Class.ls
-- [ ] 46_Object Base Class.ls
-- [ ] 47_Variable Container Class.ls
-- [ ] 48_Download Instance Class.ls
-- [ ] 49_CastLoad Instance Class.ls
-- [ ] 4_Client Initialization Script.ls
-- [ ] 50_CastLoad Task Class.ls
-- [ ] 51_Connection Instance Class.ls
-- [ ] 52_Multiuser Instance Class.ls
-- [ ] 53_Layout Parser Class.ls
-- [ ] 54_Visualizer Instance Class.ls
-- [ ] 55_Window Instance Class.ls
-- [ ] 56_Element Wrapper Class.ls
-- [ ] 57_Grouped Element Class.ls
-- [ ] 58_Unique Element Class.ls
-- [ ] 59_Image Wrapper Class.ls
-- [ ] 60_Text Wrapper Class.ls
-- [ ] 61_Field Wrapper Class.ls
-- [ ] 62_Pattern Wrapper Class.ls
-- [ ] 63_Common Button Class.ls
-- [ ] 64_Image Button Class.ls
-- [ ] 65_Icon Button Class.ls
-- [ ] 66_Scrollbar Class.ls
-- [ ] 67_Event Agent Class.ls
-- [ ] 68_Loading Bar Class.ls
-- [ ] 69_Writer Class.ls
-- [ ] 6_Object API.ls
-- [ ] 70_Thread Instance Class.ls
-- [ ] 71_FPS Test Class.ls
-- [ ] 72_RC4 Class.ls
-- [ ] 74_Core Thread Class.ls
-- [ ] 7_Error API.ls
-- [ ] 80_Visualizer Part Wrapper Class.ls
-- [ ] 81_HttpCookie Instance Class.ls
-- [ ] 82_CBigInt16.ls
-- [ ] 83_JSBigInt.ls
-- [ ] 84_JavaScript Proxy.ls
-- [ ] 85_UTF8 To Locale Class.ls
-- [ ] 86_tYy1rX5j7e4PLYJLER.ls
-- [ ] 8_Core Thread API.ls
-- [ ] 9_Resource API.ls
+- [x] 3_Event Broker Behavior.ls → event-broker-behavior.js
+- [x] 4_Client Initialization Script.ls → client-initialization.js
+  - [x] Placeholder: `dumpVariableField()` needs variable-api.js ✓ RESOLVED
+  - [x] Placeholder: `resetCastLibs()` needs castload-manager-class.js ✓ RESOLVED
+  - [x] Placeholder: `getResourceManager()` needs resource-api.js ✓ RESOLVED
+  - [x] Placeholder: `dumpTextField()` needs text-api.js ✓ RESOLVED
+  - [x] Placeholder: `getThreadManager()` needs core-thread-api.js ✓ RESOLVED
+  - [x] Placeholder: `deconstructConnectionManager()` needs connection-api.js ✓ RESOLVED
+  - [x] Placeholder: `deconstructErrorManager()` needs error-api.js ✓ RESOLVED
+  - [x] Placeholder: `gotoNetPage()` needs special-services-api.js ✓ RESOLVED
+- [x] 6_Object API.ls → object-api.js
+- [x] 7_Error API.ls → error-api.js
+- [x] 8_Core Thread API.ls → core-thread-api.js
+  - [x] Placeholder: `getClassVariable()` needs variable-api.js ✓ RESOLVED
+- [x] 9_Resource API.ls → resource-api.js
+  - [x] Placeholder: `getClassVariable()` needs variable-api.js ✓ RESOLVED
+- [x] 10_CastLoad API.ls → castload-api.js
+- [x] 11_Download API.ls → download-api.js
+  - [x] Placeholder: `getClassVariable()` needs variable-api.js ✓ RESOLVED
+- [x] 12_Connection API.ls → connection-api.js
+  - [x] Placeholder: `getClassVariable()` needs variable-api.js ✓ RESOLVED
+- [x] 13_Sprite API.ls → sprite-api.js
+  - [x] Placeholder: `getClassVariable()` needs variable-api.js ✓ RESOLVED
+- [x] 14_Timeout API.ls → timeout-api.js
+  - [x] Placeholder: `getClassVariable()` needs variable-api.js ✓ RESOLVED
+- [x] 15_Text API.ls → text-api.js
+  - [x] Placeholder: `getClassVariable()` needs variable-api.js ✓ RESOLVED
+- [x] 16_String Services API.ls → string-services-api.js
+  - [x] Placeholder: `getClassVariable()` needs variable-api.js ✓ RESOLVED
+- [x] 17_Visualizer API.ls → visualizer-api.js
+  - [x] Placeholder: `getClassVariable()` needs variable-api.js ✓ RESOLVED
+- [x] 18_Window API.ls → window-api.js
+  - [x] Placeholder: `getClassVariable()` needs variable-api.js ✓ RESOLVED
+- [x] 19_Broker Manager API.ls → broker-manager-api.js
+  - [x] Placeholder: `getClassVariable()` needs variable-api.js ✓ RESOLVED
+- [x] 20_Variable API.ls → variable-api.js
+- [x] 21_Write API.ls → write-api.js
+- [x] 22_Binary API.ls → binary-api.js
+- [x] 23_Special Services API.ls → special-services-api.js
+- [x] 24_Multiuser API.ls → multiuser-api.js
+- [x] 25_DropDown Class.ls → dropdown-class.js
+- [x] 26_Manager Template Class.ls → manager-template-class.js
+- [x] 27_Object Manager Class.ls → object-manager-class.js
+- [x] 28_Error Manager Class.ls → error-manager-class.js
+- [x] 29_Thread Manager Class.ls → thread-manager-class.js
+- [x] 30_Resource Manager Class.ls → resource-manager-class.js
+- [x] 31_Download Manager Class.ls → download-manager-class.js
+- [x] 32_CastLoad Manager Class.ls → castload-manager-class.js
+- [x] 33_Connection Manager Class.ls → connection-manager-class.js
+- [x] 34_Sprite Manager Class.ls → sprite-manager-class.js
+- [x] 35_Timeout Manager Class.ls → timeout-manager-class.js
+- [x] 36_Text Manager Class.ls → text-manager-class.js
+- [x] 37_String Services Class.ls → string-services-class.js
+- [x] 38_Visualizer Manager Class.ls → visualizer-manager-class.js
+- [x] 39_Window Manager Class.ls → window-manager-class.js
+- [x] 40_Broker Manager Class.ls → broker-manager-class.js
+- [x] 41_Method Manager Class.ls → method-manager-class.js
+- [x] 42_Binary Manager Class.ls → binary-manager-class.js
+- [x] 43_Writer Manager Class.ls → writer-manager-class.js
+- [x] 44_Special Services Class.ls → special-services-class.js
+- [x] 45_Multiuser Manager Class.ls → multiuser-manager-class.js
+- [x] 46_Object Base Class.ls → object-base-class.js
+- [x] 47_Variable Container Class.ls → variable-container-class.js
+- [x] 48_Download Instance Class.ls → download-instance-class.js
+- [x] 49_CastLoad Instance Class.ls → castload-instance-class.js
+- [x] 50_CastLoad Task Class.ls → castload-task-class.js
+- [x] 51_Connection Instance Class.ls → connection-instance-class.js
+- [x] 52_Multiuser Instance Class.ls → multiuser-instance-class.js
+- [x] 53_Layout Parser Class.ls → layout-parser-class.js
+- [x] 54_Visualizer Instance Class.ls → visualizer-instance-class.js
+- [x] 55_Window Instance Class.ls → window-instance-class.js
+- [x] 56_Element Wrapper Class.ls → element-wrapper-class.js
+- [x] 57_Grouped Element Class.ls → grouped-element-class.js
+- [x] 58_Unique Element Class.ls → unique-element-class.js
+- [x] 59_Image Wrapper Class.ls → image-wrapper-class.js
+- [x] 60_Text Wrapper Class.ls → text-wrapper-class.js
+- [x] 61_Field Wrapper Class.ls → field-wrapper-class.js
+- [x] 62_Pattern Wrapper Class.ls → pattern-wrapper-class.js
+- [x] 63_Common Button Class.ls → common-button-class.js
+- [x] 64_Image Button Class.ls → image-button-class.js
+- [x] 65_Icon Button Class.ls → icon-button-class.js
+- [x] 66_Scrollbar Class.ls → scrollbar-class.js
+- [x] 67_Event Agent Class.ls → event-agent-class.js
+- [x] 68_Loading Bar Class.ls → loading-bar-class.js
+- [x] 69_Writer Class.ls → writer-class.js
+- [x] 70_Thread Instance Class.ls → thread-instance-class.js
+- [x] 71_FPS Test Class.ls → fps-test-class.js
+- [x] 72_RC4 Class.ls → rc4-class.js
+- [x] 74_Core Thread Class.ls → core-thread-class.js
+- [x] 80_Visualizer Part Wrapper Class.ls → visualizer-part-wrapper-class.js
+- [x] 81_HttpCookie Instance Class.ls → httpcookie-instance-class.js
+- [x] 82_CBigInt16.ls → c-bigint16-class.js
+- [x] 83_JSBigInt.ls → js-bigint.js
+- [x] 84_JavaScript Proxy.ls → javascript-proxy.js
+- [x] 85_UTF8 To Locale Class.ls → utf8-to-locale-class.js
+- [x] 86_tYy1rX5j7e4PLYJLER.ls → t-yy1r-x5j7e4plyjler.js

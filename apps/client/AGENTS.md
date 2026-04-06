@@ -81,6 +81,67 @@ Each cast has a `.md` file in `tasks/` with a TODO checklist:
 | `return 1` (success) | `return true` |
 | `return 0` (failure) | `return false` |
 
+### Lingo Symbols
+
+Lingo uses symbols like `#mouseEnter`, `#session`, `#null` as identifiers. In JavaScript, use `Symbol.for('#name')` which uses the **global symbol registry** and guarantees identity:
+
+```js
+Symbol.for('#mouseEnter') === Symbol.for('#mouseEnter') // true - same symbol
+Symbol('#mouseEnter') === Symbol('#mouseEnter')         // false - different symbols
+```
+
+Always use `Symbol.for('#name')` (or the `symbol('#name')` helper from runtime) when translating Lingo symbols. The `#` prefix must be preserved to make it clear these come from Lingo.
+
+```js
+import { symbol } from '../core/lingo-runtime.js'
+
+// Correct:
+getObject(symbol('#session'))
+tList.setaProp(symbol('#mouseEnter'), [symbol('#null'), 0])
+
+// WRONG - creates new symbol each call:
+getObject(Symbol('session'))
+```
+
+### Member/CastLib Registry
+
+Each cast's `index.js` registers its members based on the `Members.csv` file from the original `.cct` extraction. This allows `member(name)`, `member(num)`, `getmemnum(name)`, and `castLib(name/num)` to work correctly across casts.
+
+**Registration pattern** (in each cast's `index.js`):
+```js
+import { registerMember, registerCastLib } from '../core/lingo-runtime.js'
+
+registerCastLib('fuse_client', 2, 'fuse_client.cct')
+registerMember('System Props', 1, 'field', 'fuse_client')
+registerMember('Object API', 6, 'script', 'fuse_client')
+registerMember('Logo', 4, 'bitmap', 'fuse_client')
+```
+
+Member types: `script`, `field`, `bitmap`, `text`. Numbers and names must match the original `Members.csv`.
+
+### Director Movie Handlers
+
+`prepareMovie`, `stopMovie`, and `exitFrame` are **special Director movie-level handlers**, not regular functions. They are called by the runtime at specific times, not imported by other code.
+
+**Translation pattern:**
+```js
+// In the translated file:
+import { registerMovieHandler } from '../core/lingo-runtime.js'
+
+function prepareMovie() {
+  // ... translated code
+}
+
+// Register as Director movie handler (side-effect)
+registerMovieHandler('prepareMovie', prepareMovie, 'castName')
+```
+
+The cast's `index.js` imports files for their side-effects (handler registration), not for exports:
+```js
+import './initialization.js'  // registers prepareMovie, stopMovie
+import './loop.js'            // registers exitFrame
+```
+
 ### File Organization
 - All casts in `src/` at root level: `src/fuse_client/`, `src/hh_entry_init/`, etc.
 - Each cast has `index.js` that re-exports everything (simulates Director global scope)
