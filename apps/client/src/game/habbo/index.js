@@ -1,4 +1,15 @@
-import { registerMember } from "../../director";
+import {
+  registerCast,
+  createScriptMember,
+  createBitmapMember,
+} from "../../director";
 import Logo from "./Internal_4_Logo.png";
 
-registerMember("habbo", "Logo", Logo);
+registerCast("Internal", [
+  createScriptMember("Initialization", import("./initialization")),
+//   createScriptMember("Init"),
+//   createScriptMember("Loop"),
+  createBitmapMember("Logo", Logo),
+]);
+
+registerCast("fuse_client", []);
