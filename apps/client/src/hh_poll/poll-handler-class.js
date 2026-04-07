@@ -1,9 +1,9 @@
 // hh_poll/5_Poll Handler Class.ls → poll-handler-class.js
 // Poll handler - handles poll-related server messages
 
-import { symbol } from '../../core/lingo-runtime.js'
-import { getVariable } from '../../fuse_client/variable-api.js'
-import { registerListener, unregisterListener, registerCommands, unregisterCommands } from '../../fuse_client/connection-api.js'
+import { symbol } from '../core/lingo-runtime.js'
+import { getVariable } from '../fuse_client/variable-api.js'
+import { registerListener, unregisterListener, registerCommands, unregisterCommands } from '../fuse_client/connection-api.js'
 
 export class PollHandlerClass {
   constructor() {

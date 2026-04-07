@@ -1,10 +1,10 @@
 // hh_entry_init/13_Opening Hours Handler Class.ls → opening-hours-handler-class.js
 // Opening hours handler - handles hotel availability messages from server
 
-import { symbol } from '../../core/lingo-runtime.js'
-import { getVariable } from '../../fuse_client/variable-api.js'
-import { registerListener, unregisterListener, registerCommands, unregisterCommands } from '../../fuse_client/connection-api.js'
-import { executeMessage } from '../../fuse_client/broker-manager-api.js'
+import { symbol } from '../core/lingo-runtime.js'
+import { getVariable } from '../fuse_client/variable-api.js'
+import { registerListener, unregisterListener, registerCommands, unregisterCommands } from '../fuse_client/connection-api.js'
+import { executeMessage } from '../fuse_client/broker-manager-api.js'
 
 export class OpeningHoursHandlerClass {
   constructor() {

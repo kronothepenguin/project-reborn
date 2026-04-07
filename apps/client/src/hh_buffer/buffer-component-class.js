@@ -7,11 +7,11 @@ import {
   listp,
   integerp,
   EMPTY,
-} from '../../core/lingo-runtime.js'
-import { registerMessage, unregisterMessage, executeMessage } from '../../fuse_client/broker-manager-api.js'
-import { getThread } from '../../fuse_client/core-thread-api.js'
-import { getIntVariable } from '../../fuse_client/variable-api.js'
-import { createTimeout, timeoutExists, removeTimeout } from '../../fuse_client/timeout-api.js'
+} from '../core/lingo-runtime.js'
+import { registerMessage, unregisterMessage, executeMessage } from '../fuse_client/broker-manager-api.js'
+import { getThread } from '../fuse_client/core-thread-api.js'
+import { getIntVariable } from '../fuse_client/variable-api.js'
+import { createTimeout, timeoutExists, removeTimeout } from '../fuse_client/timeout-api.js'
 
 export class BufferComponentClass {
   constructor() {

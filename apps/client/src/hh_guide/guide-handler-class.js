@@ -1,10 +1,10 @@
 // hh_guide/5_Guide Handler Class.ls → guide-handler-class.js
 // Guide handler - handles guide/tutor server messages
 
-import { symbol } from '../../core/lingo-runtime.js'
-import { getVariable } from '../../fuse_client/variable-api.js'
-import { registerListener, unregisterListener, registerCommands, unregisterCommands } from '../../fuse_client/connection-api.js'
-import { executeMessage } from '../../fuse_client/broker-manager-api.js'
+import { symbol } from '../core/lingo-runtime.js'
+import { getVariable } from '../fuse_client/variable-api.js'
+import { registerListener, unregisterListener, registerCommands, unregisterCommands } from '../fuse_client/connection-api.js'
+import { executeMessage } from '../fuse_client/broker-manager-api.js'
 
 export class GuideHandlerClass {
   constructor() {

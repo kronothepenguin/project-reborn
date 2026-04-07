@@ -8,7 +8,7 @@ import {
   memberExists,
   member,
   getmemnum,
-} from '../../core/lingo-runtime.js'
+} from '../core/lingo-runtime.js'
 
 export class FurniturePlaceholderClass {
   constructor() {

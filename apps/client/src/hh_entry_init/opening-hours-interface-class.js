@@ -6,9 +6,9 @@ import {
   voidP,
   string,
   replaceChunks,
-} from '../../core/lingo-runtime.js'
-import { windowExists, createWindow, getWindow, removeWindow } from '../../fuse_client/window-api.js'
-import { getText } from '../../fuse_client/text-api.js'
+} from '../core/lingo-runtime.js'
+import { windowExists, createWindow, getWindow, removeWindow } from '../fuse_client/window-api.js'
+import { getText } from '../fuse_client/text-api.js'
 
 export class OpeningHoursInterfaceClass {
   constructor() {

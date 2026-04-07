@@ -1,12 +1,12 @@
 // hh_photo/4_Photo Handler Class.ls → photo-handler-class.js
 // Photo handler - handles film count updates from server
 
-import { symbol, integer } from '../../core/lingo-runtime.js'
-import { getVariable } from '../../fuse_client/variable-api.js'
-import { registerListener, unregisterListener } from '../../fuse_client/connection-api.js'
-import { getMultiuserManager } from '../../fuse_client/multiuser-api.js'
-import { executeMessage } from '../../fuse_client/broker-manager-api.js'
-import { getObject } from '../../fuse_client/object-api.js'
+import { symbol, integer } from '../core/lingo-runtime.js'
+import { getVariable } from '../fuse_client/variable-api.js'
+import { registerListener, unregisterListener } from '../fuse_client/connection-api.js'
+import { getMultiuserManager } from '../fuse_client/multiuser-api.js'
+import { executeMessage } from '../fuse_client/broker-manager-api.js'
+import { getObject } from '../fuse_client/object-api.js'
 
 export class PhotoHandlerClass {
   constructor() {

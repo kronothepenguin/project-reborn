@@ -1,9 +1,9 @@
 // hh_entry_init/12_Opening Hours Component Class.ls → opening-hours-component-class.js
 // Opening hours component - manages hotel closing/availability status
 
-import { symbol } from '../../core/lingo-runtime.js'
-import { registerMessage, unregisterMessage } from '../../fuse_client/broker-manager-api.js'
-import { getConnection, getVariable } from '../../fuse_client/connection-api.js'
+import { symbol } from '../core/lingo-runtime.js'
+import { registerMessage, unregisterMessage } from '../fuse_client/broker-manager-api.js'
+import { getConnection, getVariable } from '../fuse_client/connection-api.js'
 
 export class OpeningHoursComponentClass {
   constructor() {

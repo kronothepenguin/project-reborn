@@ -19,14 +19,14 @@ import {
   getCastLoadManager,
   startCastLoad,
   registerCastloadCallback,
-} from '../../core/lingo-runtime.js'
-import { getVariable, variableExists, getClassVariable } from '../../fuse_client/variable-api.js'
-import { getConnection, getVariableValue } from '../../fuse_client/connection-api.js'
-import { createObject } from '../../fuse_client/object-api.js'
-import { createTimeout } from '../../fuse_client/timeout-api.js'
-import { getObject } from '../../fuse_client/object-api.js'
-import { getResourceManager } from '../../fuse_client/resource-api.js'
-import { stringp } from '../../core/lingo-runtime.js'
+} from '../core/lingo-runtime.js'
+import { getVariable, variableExists, getClassVariable } from '../fuse_client/variable-api.js'
+import { getConnection, getVariableValue } from '../fuse_client/connection-api.js'
+import { createObject } from '../fuse_client/object-api.js'
+import { createTimeout } from '../fuse_client/timeout-api.js'
+import { getObject } from '../fuse_client/object-api.js'
+import { getResourceManager } from '../fuse_client/resource-api.js'
+import { stringp } from '../core/lingo-runtime.js'
 
 export class DynamicDownloaderComponentClass {
   constructor() {

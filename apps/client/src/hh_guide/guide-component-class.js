@@ -4,10 +4,10 @@
 import {
   symbol,
   voidP,
-} from '../../core/lingo-runtime.js'
-import { registerMessage, unregisterMessage } from '../../fuse_client/broker-manager-api.js'
-import { getVariable } from '../../fuse_client/variable-api.js'
-import { connectionExists, getConnection } from '../../fuse_client/connection-api.js'
+} from '../core/lingo-runtime.js'
+import { registerMessage, unregisterMessage } from '../fuse_client/broker-manager-api.js'
+import { getVariable } from '../fuse_client/variable-api.js'
+import { connectionExists, getConnection } from '../fuse_client/connection-api.js'
 
 export class GuideComponentClass {
   constructor() {

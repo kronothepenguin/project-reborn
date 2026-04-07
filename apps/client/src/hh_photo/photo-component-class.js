@@ -8,15 +8,20 @@ import {
   EMPTY,
   chars,
   getUniqueID,
-} from '../../core/lingo-runtime.js'
-import { registerMessage, unregisterMessage } from '../../fuse_client/broker-manager-api.js'
-import { getConnection } from '../../fuse_client/connection-api.js'
-import { getVariable } from '../../fuse_client/variable-api.js'
-import { getStringServices } from '../../fuse_client/string-services-api.js'
-import { addMessageToBinaryQueue, storeBinaryData, retrieveBinaryData } from '../../fuse_client/binary-api.js'
-import { getObject } from '../../fuse_client/object-api.js'
-import { windowExists, createWindow, getWindow, removeWindow, memberExists, getmemnum, member, createMember, removeMember } from '../../core/lingo-runtime.js'
-import { getWriter, removeWriter, createWriter } from '../../fuse_client/write-api.js'
+  memberExists,
+  getmemnum,
+  member,
+  createMember,
+  removeMember,
+} from '../core/lingo-runtime.js'
+import { registerMessage, unregisterMessage } from '../fuse_client/broker-manager-api.js'
+import { getConnection } from '../fuse_client/connection-api.js'
+import { getVariable } from '../fuse_client/variable-api.js'
+import { getStringServices } from '../fuse_client/string-services-api.js'
+import { addMessageToBinaryQueue, storeBinaryData, retrieveBinaryData } from '../fuse_client/binary-api.js'
+import { getObject } from '../fuse_client/object-api.js'
+import { createWindow, getWindow, windowExists, removeWindow } from '../fuse_client/window-api.js'
+import { getWriter, removeWriter, createWriter } from '../fuse_client/write-api.js'
 
 export class PhotoComponentClass {
   constructor() {

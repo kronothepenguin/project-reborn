@@ -5,12 +5,12 @@ import {
   symbol,
   voidP,
   error,
-} from '../../core/lingo-runtime.js'
-import { getObject } from '../../fuse_client/object-api.js'
-import { getVariable, variableExists } from '../../fuse_client/variable-api.js'
-import { connectionExists, getConnection } from '../../fuse_client/connection-api.js'
-import { createTimeout, timeoutExists, removeTimeout } from '../../fuse_client/timeout-api.js'
-import { executeMessage } from '../../fuse_client/broker-manager-api.js'
+} from '../core/lingo-runtime.js'
+import { getObject } from '../fuse_client/object-api.js'
+import { getVariable, variableExists } from '../fuse_client/variable-api.js'
+import { connectionExists, getConnection } from '../fuse_client/connection-api.js'
+import { createTimeout, timeoutExists, removeTimeout } from '../fuse_client/timeout-api.js'
+import { executeMessage } from '../fuse_client/broker-manager-api.js'
 
 export class ClubComponentClass {
   constructor() {

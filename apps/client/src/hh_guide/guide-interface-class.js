@@ -7,14 +7,14 @@ import {
   objectp,
   value,
   createMember,
-} from '../../core/lingo-runtime.js'
-import { registerMessage, unregisterMessage, executeMessage } from '../../fuse_client/broker-manager-api.js'
-import { getVariable } from '../../fuse_client/variable-api.js'
-import { windowExists, createWindow, getWindow, removeWindow } from '../../fuse_client/window-api.js'
-import { memberExists, getmemnum, member } from '../../fuse_client/resource-api.js'
-import { createObject, removeObject } from '../../fuse_client/object-api.js'
-import { createTimeout, timeoutExists, removeTimeout } from '../../fuse_client/timeout-api.js'
-import { getConnection, connectionExists } from '../../fuse_client/connection-api.js'
+} from '../core/lingo-runtime.js'
+import { registerMessage, unregisterMessage, executeMessage } from '../fuse_client/broker-manager-api.js'
+import { getVariable } from '../fuse_client/variable-api.js'
+import { windowExists, createWindow, getWindow, removeWindow } from '../fuse_client/window-api.js'
+import { memberExists, getmemnum, member } from '../fuse_client/resource-api.js'
+import { createObject, removeObject } from '../fuse_client/object-api.js'
+import { createTimeout, timeoutExists, removeTimeout } from '../fuse_client/timeout-api.js'
+import { getConnection, connectionExists } from '../fuse_client/connection-api.js'
 
 export class GuideInterfaceClass {
   constructor() {

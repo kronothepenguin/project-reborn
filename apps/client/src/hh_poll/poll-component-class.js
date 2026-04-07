@@ -7,10 +7,10 @@ import {
   value,
   EMPTY,
   error,
-} from '../../core/lingo-runtime.js'
-import { registerMessage, unregisterMessage } from '../../fuse_client/broker-manager-api.js'
-import { getVariableValue } from '../../fuse_client/variable-api.js'
-import { getConnection } from '../../fuse_client/connection-api.js'
+} from '../core/lingo-runtime.js'
+import { registerMessage, unregisterMessage } from '../fuse_client/broker-manager-api.js'
+import { getVariableValue } from '../fuse_client/variable-api.js'
+import { getConnection } from '../fuse_client/connection-api.js'
 
 export class PollComponentClass {
   constructor() {

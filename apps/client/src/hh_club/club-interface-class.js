@@ -8,14 +8,14 @@ import {
   string,
   replaceChunks,
   error,
-} from '../../core/lingo-runtime.js'
-import { registerMessage, unregisterMessage, executeMessage } from '../../fuse_client/broker-manager-api.js'
-import { getVariable, variableExists } from '../../fuse_client/variable-api.js'
-import { windowExists, createWindow, getWindow, removeWindow } from '../../fuse_client/window-api.js'
-import { getObject } from '../../fuse_client/object-api.js'
-import { connectionExists, removeConnection } from '../../fuse_client/connection-api.js'
-import { getText } from '../../fuse_client/text-api.js'
-import { openNetPage, urlEncode } from '../../fuse_client/special-services-api.js'
+} from '../core/lingo-runtime.js'
+import { registerMessage, unregisterMessage, executeMessage } from '../fuse_client/broker-manager-api.js'
+import { getVariable, variableExists } from '../fuse_client/variable-api.js'
+import { windowExists, createWindow, getWindow, removeWindow } from '../fuse_client/window-api.js'
+import { getObject } from '../fuse_client/object-api.js'
+import { connectionExists, removeConnection } from '../fuse_client/connection-api.js'
+import { getText } from '../fuse_client/text-api.js'
+import { openNetPage, urlEncode } from '../fuse_client/special-services-api.js'
 
 export class ClubInterfaceClass {
   constructor() {

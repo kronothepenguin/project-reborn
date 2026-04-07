@@ -17,15 +17,15 @@ import {
   length,
   secretDecode,
   getMoviePath,
-} from '../../core/lingo-runtime.js'
-import { registerMessage, unregisterMessage, executeMessage } from '../../fuse_client/broker-manager-api.js'
-import { getVariable } from '../../fuse_client/variable-api.js'
-import { registerListener, unregisterListener, registerCommands, unregisterCommands, getConnection } from '../../fuse_client/connection-api.js'
-import { getObject } from '../../fuse_client/object-api.js'
-import { createObject, objectExists } from '../../fuse_client/object-api.js'
-import { getText } from '../../fuse_client/text-api.js'
-import { openNetPage, fatalError, sendProcessTracking } from '../../fuse_client/special-services-api.js'
-import { getStringServices } from '../../fuse_client/string-services-api.js'
+} from '../core/lingo-runtime.js'
+import { registerMessage, unregisterMessage, executeMessage } from '../fuse_client/broker-manager-api.js'
+import { getVariable } from '../fuse_client/variable-api.js'
+import { registerListener, unregisterListener, registerCommands, unregisterCommands, getConnection } from '../fuse_client/connection-api.js'
+import { getObject } from '../fuse_client/object-api.js'
+import { createObject, objectExists } from '../fuse_client/object-api.js'
+import { getText } from '../fuse_client/text-api.js'
+import { openNetPage, fatalError, sendProcessTracking } from '../fuse_client/special-services-api.js'
+import { getStringServices } from '../fuse_client/string-services-api.js'
 
 export class LoginHandlerClass {
   constructor() {

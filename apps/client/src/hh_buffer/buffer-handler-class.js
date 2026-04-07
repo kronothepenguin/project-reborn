@@ -5,10 +5,10 @@ import {
   symbol,
   voidP,
   listp,
-} from '../../core/lingo-runtime.js'
-import { getVariable } from '../../fuse_client/variable-api.js'
-import { registerListener, unregisterListener, registerCommands, unregisterCommands } from '../../fuse_client/connection-api.js'
-import { getLocalFloat } from '../../fuse_client/string-services-api.js'
+} from '../core/lingo-runtime.js'
+import { getVariable } from '../fuse_client/variable-api.js'
+import { registerListener, unregisterListener, registerCommands, unregisterCommands } from '../fuse_client/connection-api.js'
+import { getLocalFloat } from '../fuse_client/string-services-api.js'
 
 export class BufferHandlerClass {
   constructor() {

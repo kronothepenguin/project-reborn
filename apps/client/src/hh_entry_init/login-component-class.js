@@ -8,13 +8,13 @@ import {
   string,
   EMPTY,
   error,
-} from '../../core/lingo-runtime.js'
-import { registerMessage, unregisterMessage, executeMessage } from '../../fuse_client/broker-manager-api.js'
-import { getVariable, variableExists, getIntVariable } from '../../fuse_client/variable-api.js'
-import { connectionExists, getConnection } from '../../fuse_client/connection-api.js'
-import { createObject, removeObject, objectExists } from '../../fuse_client/object-api.js'
-import { createTimeout, timeoutExists } from '../../fuse_client/timeout-api.js'
-import { sendProcessTracking } from '../../fuse_client/special-services-api.js'
+} from '../core/lingo-runtime.js'
+import { registerMessage, unregisterMessage, executeMessage } from '../fuse_client/broker-manager-api.js'
+import { getVariable, variableExists, getIntVariable } from '../fuse_client/variable-api.js'
+import { connectionExists, getConnection } from '../fuse_client/connection-api.js'
+import { createObject, removeObject, objectExists } from '../fuse_client/object-api.js'
+import { createTimeout, timeoutExists } from '../fuse_client/timeout-api.js'
+import { sendProcessTracking } from '../fuse_client/special-services-api.js'
 
 export class LoginComponentClass {
   constructor() {

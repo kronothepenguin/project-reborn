@@ -21,12 +21,12 @@ import {
   removeUpdate,
   hideWindows,
   showWindows,
-} from '../../core/lingo-runtime.js'
-import { registerMessage, unregisterMessage, executeMessage } from '../../fuse_client/broker-manager-api.js'
-import { windowExists, createWindow, getWindow, removeWindow } from '../../fuse_client/window-api.js'
-import { getConnection, connectionExists } from '../../fuse_client/connection-api.js'
-import { getVariable } from '../../fuse_client/variable-api.js'
-import { getThread, threadExists } from '../../fuse_client/core-thread-api.js'
+} from '../core/lingo-runtime.js'
+import { registerMessage, unregisterMessage, executeMessage } from '../fuse_client/broker-manager-api.js'
+import { windowExists, createWindow, getWindow, removeWindow } from '../fuse_client/window-api.js'
+import { getConnection, connectionExists } from '../fuse_client/connection-api.js'
+import { getVariable } from '../fuse_client/variable-api.js'
+import { getThread, threadExists } from '../fuse_client/core-thread-api.js'
 
 export class PhotoInterfaceClass {
   constructor() {

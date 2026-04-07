@@ -8,9 +8,9 @@ import {
   error,
   offset,
   call,
-} from '../../core/lingo-runtime.js'
-import { createTimeout } from '../../fuse_client/timeout-api.js'
-import { getObject } from '../../fuse_client/object-api.js'
+} from '../core/lingo-runtime.js'
+import { createTimeout } from '../fuse_client/timeout-api.js'
+import { getObject } from '../fuse_client/object-api.js'
 
 export class DynamicDownloadInstance {
   constructor() {

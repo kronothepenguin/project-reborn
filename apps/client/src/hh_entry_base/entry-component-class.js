@@ -1,8 +1,8 @@
 // hh_entry_base/4_Entry Component Class.ls → entry-component-class.js
 // Entry component - manages entry state (hotel view, entry bar, etc.)
 
-import { symbol, error } from '../../core/lingo-runtime.js'
-import { registerMessage, unregisterMessage } from '../../fuse_client/broker-manager-api.js'
+import { symbol, error } from '../core/lingo-runtime.js'
+import { registerMessage, unregisterMessage } from '../fuse_client/broker-manager-api.js'
 
 export class EntryComponentClass {
   constructor() {

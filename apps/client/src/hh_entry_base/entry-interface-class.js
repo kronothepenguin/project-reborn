@@ -44,7 +44,7 @@ import {
   getThread,
   threadExists,
   createPropList,
-} from '../../core/lingo-runtime.js'
+} from '../core/lingo-runtime.js'
 
 export class EntryInterfaceClass {
   constructor() {

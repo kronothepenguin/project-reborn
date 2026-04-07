@@ -1,9 +1,9 @@
 // hh_club/4_Club Handler Class.ls → club-handler-class.js
 // Club handler - handles club-related server messages
 
-import { symbol } from '../../core/lingo-runtime.js'
-import { getVariable } from '../../fuse_client/variable-api.js'
-import { registerListener, unregisterListener, registerCommands, unregisterCommands } from '../../fuse_client/connection-api.js'
+import { symbol } from '../core/lingo-runtime.js'
+import { getVariable } from '../fuse_client/variable-api.js'
+import { registerListener, unregisterListener, registerCommands, unregisterCommands } from '../fuse_client/connection-api.js'
 
 export class ClubHandlerClass {
   constructor() {

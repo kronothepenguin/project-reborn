@@ -12,11 +12,11 @@ import {
   member,
   createMember,
   getmemnum,
-} from '../../core/lingo-runtime.js'
-import { registerMessage, unregisterMessage, executeMessage } from '../../fuse_client/broker-manager-api.js'
-import { windowExists, createWindow, getWindow, removeWindow } from '../../fuse_client/window-api.js'
-import { getText } from '../../fuse_client/text-api.js'
-import { memberExists } from '../../fuse_client/resource-api.js'
+} from '../core/lingo-runtime.js'
+import { registerMessage, unregisterMessage, executeMessage } from '../fuse_client/broker-manager-api.js'
+import { windowExists, createWindow, getWindow, removeWindow } from '../fuse_client/window-api.js'
+import { getText } from '../fuse_client/text-api.js'
+import { memberExists } from '../fuse_client/resource-api.js'
 
 export class PollInterfaceClass {
   constructor() {

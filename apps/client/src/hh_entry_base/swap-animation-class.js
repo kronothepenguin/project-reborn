@@ -12,8 +12,8 @@ import {
   memberExists,
   member,
   EMPTY,
-} from '../../core/lingo-runtime.js'
-import { receiveUpdate, removeUpdate } from '../../fuse_client/object-api.js'
+} from '../core/lingo-runtime.js'
+import { receiveUpdate, removeUpdate } from '../fuse_client/object-api.js'
 
 export class SwapAnimationClass {
   constructor() {

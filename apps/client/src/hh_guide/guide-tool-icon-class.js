@@ -12,10 +12,10 @@ import {
   sprite,
   setEventBroker,
   cursor,
-} from '../../core/lingo-runtime.js'
-import { createTimeout, timeoutExists, removeTimeout } from '../../fuse_client/timeout-api.js'
-import { getVariable } from '../../fuse_client/variable-api.js'
-import { executeMessage } from '../../fuse_client/broker-manager-api.js'
+} from '../core/lingo-runtime.js'
+import { createTimeout, timeoutExists, removeTimeout } from '../fuse_client/timeout-api.js'
+import { getVariable } from '../fuse_client/variable-api.js'
+import { executeMessage } from '../fuse_client/broker-manager-api.js'
 
 export class GuideToolIconClass {
   constructor() {

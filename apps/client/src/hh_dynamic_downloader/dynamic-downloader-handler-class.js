@@ -1,9 +1,9 @@
 // hh_dynamic_downloader/4_Dynamic Downloader Handler Class.ls → dynamic-downloader-handler-class.js
 // Dynamic downloader handler - handles furni revisions and alias list messages
 
-import { symbol, voidP } from '../../core/lingo-runtime.js'
-import { getVariable } from '../../fuse_client/variable-api.js'
-import { registerListener, unregisterListener, registerCommands, unregisterCommands } from '../../fuse_client/connection-api.js'
+import { symbol, voidP } from '../core/lingo-runtime.js'
+import { getVariable } from '../fuse_client/variable-api.js'
+import { registerListener, unregisterListener, registerCommands, unregisterCommands } from '../fuse_client/connection-api.js'
 
 export class DynamicDownloaderHandlerClass {
   constructor() {
