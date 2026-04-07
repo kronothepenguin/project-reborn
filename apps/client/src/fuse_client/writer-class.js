@@ -12,14 +12,12 @@ import {
   error,
   member,
   createMember,
-  getResourceManager,
-  variableExists,
-  getVariable,
-  getStructVariable,
-  executeMessage,
-  getUniqueID,
   createPropList,
 } from '../core/lingo-runtime.js'
+import { getResourceManager } from './resource-api.js'
+import { variableExists, getVariable, getStructVariable } from './variable-api.js'
+import { executeMessage } from './object-api.js'
+import { getUniqueID } from './special-services-api.js'
 
 export class WriterClass {
   constructor() {

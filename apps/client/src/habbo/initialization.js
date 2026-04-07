@@ -14,7 +14,14 @@ import {
   setExitLock,
   puppetTempo,
   registerMovieHandler,
+  reserveSprite,
+  sprite,
+  member,
+  getmemnum,
+  memberExists,
 } from '../core/lingo-runtime.js'
+
+let logoSpriteNum = null
 
 function prepareMovie() {
   const runMode = 'Plugin'
@@ -55,16 +62,37 @@ function prepareMovie() {
 
   setDebugPlaybackEnabled(false)
   castLib(2).preloadMode = 1
-  // preloadNetThing(castLib(2).fileName) - handled by Vite import
 
   moveToFront(theStage())
   setExitLock(true)
   puppetTempo(15)
+
+  // Show logo sprite
+  if (memberExists('Logo')) {
+    logoSpriteNum = reserveSprite('habbo')
+    if (logoSpriteNum) {
+      const sp = sprite(logoSpriteNum)
+      const tmember = member(getmemnum('Logo'))
+      if (tmember) {
+        sp.member = tmember
+        sp.locH = 360  // center of 720
+        sp.locV = 270  // center of 540
+        sp.width = tmember._img?.width || 170
+        sp.height = tmember._img?.height || 179
+        sp.visible = true
+        sp.blend = 90
+        sp.locZ = -20000001
+      }
+    }
+  }
 }
 
 function stopMovie() {
-  // stopClient() - will be implemented when connection system is translated
-  // go(1) - go to frame 1
+  // Hide logo sprite
+  if (logoSpriteNum) {
+    const sp = sprite(logoSpriteNum)
+    if (sp) sp.visible = false
+  }
 }
 
 // Register as Director movie handlers (not regular exports)

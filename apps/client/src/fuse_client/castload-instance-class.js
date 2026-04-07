@@ -8,13 +8,13 @@ import {
   voidP,
   listp,
   error,
-  getIntVariable,
-  getCastLoadManager,
-  getSpecialServices,
-  SystemAlert,
   QUOTE,
   RETURN,
 } from '../core/lingo-runtime.js'
+import { getIntVariable } from './variable-api.js'
+import { getCastLoadManager } from './castload-api.js'
+import { getSpecialServices } from './special-services-api.js'
+import { SystemAlert } from './error-api.js'
 
 export class CastLoadInstanceClass {
   constructor() {

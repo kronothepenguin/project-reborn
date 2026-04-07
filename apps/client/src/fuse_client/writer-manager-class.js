@@ -11,12 +11,10 @@ import {
   listp,
   createPropList,
   error,
-  getObjectManager,
-  createObject,
-  getClassVariable,
-  getStructVariable,
   call,
 } from '../core/lingo-runtime.js'
+import { getObjectManager, createObject } from './object-api.js'
+import { getClassVariable, getStructVariable } from './variable-api.js'
 
 export class WriterManagerClass {
   constructor() {

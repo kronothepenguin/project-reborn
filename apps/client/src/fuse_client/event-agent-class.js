@@ -10,12 +10,11 @@ import {
   getmemnum,
   sprite,
   reserveSprite,
-  getSpriteManager,
-  receivePrepare,
-  removePrepare,
   call,
   createPropList,
 } from '../core/lingo-runtime.js'
+import { getSpriteManager } from './sprite-api.js'
+import { receivePrepare, removePrepare } from './object-api.js'
 
 export class EventAgentClass {
   constructor() {

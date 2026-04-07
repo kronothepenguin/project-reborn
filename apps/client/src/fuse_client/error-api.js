@@ -78,3 +78,6 @@ export function setDebugLevel(tLevel) {
 export function printErrors() {
   return getErrorManager().print()
 }
+
+// Re-export manager classes
+export { ErrorManagerClass } from './error-manager-class.js'

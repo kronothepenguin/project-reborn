@@ -9,7 +9,8 @@ registerCastLib('habbo', 1, 'habbo.dcr')
 registerMember('Initialization', 1, 'script', 'habbo')
 registerMember('Init', 2, 'script', 'habbo')
 registerMember('Loop', 3, 'script', 'habbo')
-registerMember('Logo', 4, 'bitmap', 'habbo')
+import logoImg from './Logo.png'
+registerMember('Logo', 4, 'bitmap', 'habbo', logoImg)
 
 // Re-export all translated modules (simulates Director global scope)
 import './initialization.js'

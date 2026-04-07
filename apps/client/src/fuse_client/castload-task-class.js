@@ -11,13 +11,12 @@ import {
   count,
   createPropList,
   error,
-  objectExists,
-  getObject,
   call,
-  getCastLoadManager,
-  getThreadManager,
   castLib,
 } from '../core/lingo-runtime.js'
+import { objectExists, getObject } from './object-api.js'
+import { getCastLoadManager } from './castload-api.js'
+import { getThreadManager } from './core-thread-api.js'
 
 export class CastLoadTaskClass {
   constructor() {

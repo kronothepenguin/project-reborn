@@ -9,13 +9,11 @@ import {
   voidP,
   rect,
   error,
-  getVariableValue,
-  receivePrepare,
-  removePrepare,
-  removeObject,
-  getCastLoadManager,
-  getDownloadManager,
 } from '../core/lingo-runtime.js'
+import { getVariableValue } from './variable-api.js'
+import { receivePrepare, removePrepare, removeObject } from './object-api.js'
+import { getCastLoadManager } from './castload-api.js'
+import { getDownloadManager } from './download-api.js'
 
 export class LoadingBarClass {
   constructor() {

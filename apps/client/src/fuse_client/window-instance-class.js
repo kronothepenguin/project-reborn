@@ -16,23 +16,16 @@ import {
   call,
   member,
   memberExists,
-  getMember,
   sprite,
   releaseSprite,
   removeMember,
-  receiveUpdate,
-  removeUpdate,
-  receivePrepare,
-  removePrepare,
-  createObject,
-  getObject,
-  objectExists,
-  getClassVariable,
-  getSpriteManager,
-  getResourceManager,
-  variableExists,
   createPropList,
 } from '../core/lingo-runtime.js'
+import { getMember, getResourceManager } from './resource-api.js'
+import { createObject, getObject, objectExists, getClassVariable } from './object-api.js'
+import { receiveUpdate, removeUpdate, receivePrepare, removePrepare } from './object-api.js'
+import { getSpriteManager } from './sprite-api.js'
+import { variableExists } from './variable-api.js'
 
 export class WindowInstanceClass {
   constructor() {

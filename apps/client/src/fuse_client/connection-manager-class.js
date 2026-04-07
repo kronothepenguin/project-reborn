@@ -17,17 +17,11 @@ import {
   getmemnum,
   createMember,
   error,
-  getObject,
-  objectExists,
-  removeObject,
-  createObject,
-  getClassVariable,
-  getStructVariable,
-  getIntVariable,
   rect,
   RETURN,
 } from '../core/lingo-runtime.js'
-import { getObjectManager } from './object-api.js'
+import { getObjectManager, objectExists, removeObject, createObject, getObject } from './object-api.js'
+import { getClassVariable, getStructVariable, getIntVariable } from './variable-api.js'
 
 export class ConnectionManagerClass {
   constructor() {

@@ -15,11 +15,10 @@ import {
   getmemnum,
   error,
   createPropList,
-  createObject,
-  getObjectManager,
-  getResourceManager,
 } from '../core/lingo-runtime.js'
+import { createObject, getObjectManager } from './object-api.js'
 import { getClassVariable, getVariable } from './variable-api.js'
+import { getResourceManager } from './resource-api.js'
 
 export class ThreadManagerClass {
   constructor() {

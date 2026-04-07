@@ -2,8 +2,6 @@
 // Window manager API facade
 
 import {
-  symbol,
-  voidP,
   createManager,
   removeManager,
   getObjectManager,

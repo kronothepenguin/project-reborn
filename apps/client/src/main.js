@@ -11,6 +11,8 @@ import {
   externalParamValue,
   registerExternalParam,
   clearMovieHandlers,
+  renderSprites,
+  preloadMemberImages,
 } from './core/lingo-runtime.js'
 
 // Import casts (side-effects register handlers and members)
@@ -73,6 +75,9 @@ export function mount(element, params = {}) {
   for (const handler of getMovieHandlers('prepareMovie')) {
     handler.fn()
   }
+
+  // Preload member images
+  preloadMemberImages()
 
   // Start game loop
   running = true
@@ -165,9 +170,10 @@ function gameLoop() {
     handler.fn()
   }
 
-  // TODO: render sprites to canvas
-  // ctx.clearRect(0, 0, STAGE_WIDTH, STAGE_HEIGHT)
-  // for each visible sprite: draw member image at sprite position
+  ctx.clearRect(0, 0, STAGE_WIDTH, STAGE_HEIGHT)
+
+  // Render sprites to canvas
+  renderSprites(ctx, STAGE_WIDTH, STAGE_HEIGHT)
 
   animFrameId = requestAnimationFrame(gameLoop)
 }

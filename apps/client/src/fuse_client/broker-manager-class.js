@@ -8,11 +8,10 @@ import {
   voidP,
   createPropList,
   error,
-  objectExists,
-  getObjectManager,
   call,
   EMPTY,
 } from '../core/lingo-runtime.js'
+import { objectExists, getObjectManager } from './object-api.js'
 
 export class BrokerManagerClass {
   constructor() {

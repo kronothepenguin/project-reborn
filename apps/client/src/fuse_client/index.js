@@ -104,7 +104,8 @@ registerMember('Shift JIS to Unicode map', 87, 'text', 'fuse_client')
 registerMember('Windows-1251 to Unicode map', 88, 'text', 'fuse_client')
 
 // Bitmap (memNum 89)
-registerMember('crap.fixer', 89, 'bitmap', 'fuse_client')
+import crapFixerImg from './crap.fixer.png'
+registerMember('crap.fixer', 89, 'bitmap', 'fuse_client', crapFixerImg)
 
 // Re-export all translated modules (simulates Director global scope)
 import './event-broker-behavior.js'

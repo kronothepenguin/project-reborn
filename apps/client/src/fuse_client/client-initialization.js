@@ -5,67 +5,69 @@ import {
   voidP,
   symbol,
   theRunMode,
-  getMoviePath,
-  objectExists,
+} from "../core/lingo-runtime.js";
+import {
+  constructObjectManager,
+  deconstructObjectManager,
   getObject,
-  deobfuscate,
-} from '../core/lingo-runtime.js'
-import { constructObjectManager, deconstructObjectManager } from './object-api.js'
-import { dumpVariableField } from './variable-api.js'
-import { getResourceManager } from './resource-api.js'
-import { dumpTextField } from './text-api.js'
-import { getThreadManager } from './core-thread-api.js'
-import { deconstructConnectionManager } from './connection-api.js'
-import { deconstructErrorManager } from './error-api.js'
-import { openNetPage } from './special-services-api.js'
-import { getCastLoadManager } from './castload-api.js'
+  objectExists,
+} from "./object-api.js";
+import { dumpVariableField } from "./variable-api.js";
+import { getResourceManager } from "./resource-api.js";
+import { dumpTextField } from "./text-api.js";
+import { getThreadManager } from "./core-thread-api.js";
+import { deconstructConnectionManager } from "./connection-api.js";
+import { deconstructErrorManager } from "./error-api.js";
+import { openNetPage, getMoviePath } from "./special-services-api.js";
+import { getCastLoadManager } from "./castload-api.js";
+import { deobfuscate } from "./string-services-api.js";
 
 // ── Translated functions ─────────────────────────────────────────────────
 
 export function initCore() {
   if (!constructObjectManager()) {
-    return false
+    return false;
   }
-  if (!dumpVariableField('System Props')) {
-    return stopClient()
+  if (!dumpVariableField("System Props")) {
+    return stopClient();
   }
   if (!getCastLoadManager().resetCastLibs(0, 0)) {
-    return stopClient()
+    return stopClient();
   }
   if (!getResourceManager().preIndexMembers()) {
-    return stopClient()
+    return stopClient();
   }
-  if (!dumpTextField('System Texts')) {
-    return stopClient()
+  if (!dumpTextField("System Texts")) {
+    return stopClient();
   }
-  if (!getThreadManager().create(symbol('#core'), symbol('#core'))) {
-    return stopClient()
+  if (!getThreadManager().create(symbol("#core"), symbol("#core"))) {
+    return stopClient();
   }
-  return true
+  return true;
 }
 
 export function stopClient() {
-  if (theRunMode().includes('Author')) {
-    if (theRunMode().includes('Author')) {
-      deconstructConnectionManager()
-      deconstructObjectManager()
-      deconstructErrorManager()
+  if (theRunMode().includes("Author")) {
+    if (theRunMode().includes("Author")) {
+      deconstructConnectionManager();
+      deconstructObjectManager();
+      deconstructErrorManager();
     }
   }
-  return false
+  return false;
 }
 
 export function resetClient() {
-  if (theRunMode().includes('Author')) {
-    stopClient()
+  if (theRunMode().includes("Author")) {
+    stopClient();
   } else {
-    let tURL = getMoviePath()
-    if (objectExists(symbol('#session'))) {
-      if (getObject(symbol('#session')).exists('client_url')) {
-        tURL = deobfuscate(getObject(symbol('#session')).GET('client_url'))
+    let tURL = getMoviePath();
+    if (objectExists(symbol("#session"))) {
+      if (getObject(symbol("#session")).exists("client_url")) {
+        tURL = deobfuscate(getObject(symbol("#session")).GET("client_url"));
       }
     }
-    openNetPage(tURL)
+    openNetPage(tURL);
   }
-  return true
+  return true;
 }

@@ -14,20 +14,16 @@ import {
   rect,
   point,
   error,
-  getSpriteManager,
-  getResourceManager,
-  getObjectManager,
-  getMember,
   memberExists,
-  createObject,
-  getClassVariable,
-  receiveUpdate,
-  removeUpdate,
   releaseSprite,
   sprite,
-  getThread,
   createPropList,
 } from '../core/lingo-runtime.js'
+import { getResourceManager, getMember } from './resource-api.js'
+import { getObjectManager, createObject, getClassVariable } from './object-api.js'
+import { receiveUpdate, removeUpdate } from './object-api.js'
+import { getSpriteManager } from './sprite-api.js'
+import { getThread } from './core-thread-api.js'
 
 export class VisualizerInstanceClass {
   constructor() {

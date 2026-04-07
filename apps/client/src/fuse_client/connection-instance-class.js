@@ -21,28 +21,23 @@ import {
   bitAnd,
   createPropList,
   error,
-  fatalError,
-  getIntVariable,
-  getVariable,
-  variableExists,
-  memberExists,
-  getmemnum,
-  member,
-  getObjectManager,
-  getConnectionManager,
-  getStringServices,
-  sendProcessTracking,
-  createTimeout,
-  timeoutExists,
-  removeTimeout,
   call,
-  executeMessage,
   encodeUTF8,
   decodeUTF8,
   RETURN,
   EMPTY,
   TAB,
+  member,
 } from '../core/lingo-runtime.js'
+import { getIntVariable, getVariable, variableExists } from './variable-api.js'
+import { memberExists, getmemnum } from './resource-api.js'
+import { getObjectManager } from './object-api.js'
+import { getConnectionManager } from './connection-api.js'
+import { getStringServices } from './string-services-api.js'
+import { sendProcessTracking } from './special-services-api.js'
+import { fatalError } from '../core/lingo-runtime.js'
+import { createTimeout, timeoutExists, removeTimeout } from './timeout-api.js'
+import { executeMessage } from './broker-manager-api.js'
 
 export class ConnectionInstanceClass {
   constructor() {

@@ -2,8 +2,7 @@
 // Broker manager API facade for message routing
 
 import {
-  symbol,
-  createManager,
+    createManager,
   removeManager,
   getObjectManager,
 } from './object-api.js'

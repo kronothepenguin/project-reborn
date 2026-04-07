@@ -4,10 +4,8 @@
 import {
   symbol,
   theMilliSeconds,
-  receiveUpdate,
-  removeUpdate,
-  removeObject,
 } from '../core/lingo-runtime.js'
+import { receiveUpdate, removeUpdate, removeObject } from './object-api.js'
 
 export class FPSTestClass {
   constructor() {

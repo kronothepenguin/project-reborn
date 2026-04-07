@@ -9,15 +9,15 @@ import {
   voidP,
   createPropList,
   member,
-  sprite,
-  puppetSprite,
   rect,
   error,
-  fatalError,
-  executeMessage,
-  getVariable,
   script,
+  sprite,
+  puppetSprite,
+  fatalError,
 } from '../core/lingo-runtime.js'
+import { executeMessage } from './broker-manager-api.js'
+import { getVariable } from './variable-api.js'
 
 export class SpriteManagerClass {
   constructor() {

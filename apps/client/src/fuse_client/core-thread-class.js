@@ -24,41 +24,21 @@ import {
   externalParamValue,
   getItemDelimiter,
   setItemDelimiter,
-  createObject,
-  removeObject,
-  getClassVariable,
-  getVariable,
-  getVariableManager,
-  variableExists,
-  getVariableValue,
-  getIntVariable,
-  getSpecialServices,
-  getExtVarPath,
-  getMoviePath,
-  queueDownload,
-  registerDownloadCallback,
-  dumpVariableField,
-  removeMember,
-  dumpTextField,
-  setDebugLevel,
-  getStringServices,
-  puppetTempo,
-  obfuscate,
-  startCastLoad,
-  registerCastloadCallback,
-  getThreadManager,
-  executeMessage,
-  receiveUpdate,
-  removeUpdate,
-  createTimeout,
-  timeoutExists,
-  removeTimeout,
-  callJavaScriptFunction,
-  sendProcessTracking,
-  fatalError,
   error,
   createPropList,
+  puppetTempo,
 } from '../core/lingo-runtime.js'
+import { createObject, removeObject, executeMessage, receiveUpdate, removeUpdate } from './object-api.js'
+import { getClassVariable, getVariable, getVariableManager, variableExists, getVariableValue, getIntVariable } from './variable-api.js'
+import { getSpecialServices, getExtVarPath, getMoviePath, setDebugLevel, sendProcessTracking, obfuscate } from './special-services-api.js'
+import { fatalError } from '../core/lingo-runtime.js'
+import { queueDownload, registerDownloadCallback } from './download-api.js'
+import { dumpVariableField, dumpTextField } from './variable-api.js'
+import { getStringServices } from './string-services-api.js'
+import { startCastLoad, registerCastloadCallback } from './castload-api.js'
+import { getThreadManager } from './core-thread-api.js'
+import { createTimeout, timeoutExists, removeTimeout } from './timeout-api.js'
+import { callJavaScriptFunction } from './javascript-proxy.js'
 
 export class CoreThreadClass {
   constructor() {

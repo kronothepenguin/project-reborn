@@ -2,8 +2,7 @@
 // Multiuser manager API facade
 
 import {
-  symbol,
-  createManager,
+    createManager,
   removeManager,
   getObjectManager,
 } from './object-api.js'

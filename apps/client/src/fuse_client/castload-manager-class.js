@@ -12,23 +12,18 @@ import {
   count,
   createPropList,
   castLib,
-  getVariable,
-  getMoviePath,
-  getUniqueID,
-  getIntVariable,
   error,
-  SystemAlert,
-  fatalError,
-  receivePrepare,
-  removePrepare,
-  createObject,
-  getClassVariable,
   replaceChunks,
   QUOTE,
   RETURN,
   EMPTY,
   netError,
 } from '../core/lingo-runtime.js'
+import { getVariable, getIntVariable, getClassVariable } from './variable-api.js'
+import { getMoviePath, getUniqueID, getDomainPart } from './special-services-api.js'
+import { fatalError } from '../core/lingo-runtime.js'
+import { SystemAlert } from './error-api.js'
+import { receivePrepare, removePrepare, createObject } from './object-api.js'
 import { getThreadManager } from './core-thread-api.js'
 import { getResourceManager } from './resource-api.js'
 

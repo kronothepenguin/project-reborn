@@ -19,14 +19,11 @@ import {
   error,
   value,
   float,
-  variableExists,
-  getVariableValue,
-  getObject,
-  objectExists,
-  createObject,
   SPACE,
   EMPTY,
 } from '../core/lingo-runtime.js'
+import { variableExists, getVariableValue } from './variable-api.js'
+import { getObject, objectExists, createObject } from './object-api.js'
 
 export class StringServicesClass {
   constructor() {

@@ -183,8 +183,8 @@ Start requestAnimationFrame loop:
 | `prepareMovie` | Once at startup | Called by `mount()` before game loop |
 | `stopMovie` | On unmount | Called by `unmount()` |
 | `exitFrame` | Every frame | Called in `requestAnimationFrame` loop |
-| `beginSprite` | When sprite becomes visible | TODO: sprite system |
-| `endSprite` | When sprite is removed | TODO: sprite system |
+| `beginSprite` | When sprite becomes visible | Handled by `reserveSprite()` |
+| `endSprite` | When sprite is removed | Handled by `releaseSprite()` |
 
 #### Mouse/Keyboard Tracking
 
@@ -197,7 +197,37 @@ the keyDown    → boolean
 the milliSeconds → Date.now()
 ```
 
-Events are tracked on the canvas element. Sprite-level event dispatch (mouseDown, mouseUp, etc.) is not yet implemented.
+Events are tracked on the canvas element. Sprite-level event dispatch (mouseDown, mouseUp, etc.) routes through `event-broker-behavior.js`.
+
+#### Sprite System
+
+Director's sprite channels (1-1000) are emulated with `sprite(n)` objects:
+
+```js
+// Allocate a sprite channel
+const sprNum = reserveSprite(clientID)
+const sp = sprite(sprNum)
+
+// Configure sprite
+sp.member = member('Logo')        // Assign member (has imageUrl from Vite)
+sp.locH = 100
+sp.locV = 200
+sp.width = sp.member._img?.width || 0
+sp.height = sp.member._img?.height || 0
+sp.visible = true
+sp.blend = 100
+sp.locZ = 500  // render order
+
+// Take control (puppet mode)
+puppetSprite(sprNum, true)
+
+// Release when done
+releaseSprite(sprNum)
+```
+
+**Member images**: When a bitmap member is registered with `imageUrl` (from Vite import), the runtime creates an `Image()` object at `member._img`. The sprite renderer draws this image each frame.
+
+**Rendering**: `renderSprites(ctx, w, h)` in the game loop draws all visible sprites sorted by `locZ`. Supports: blend/opacity, flipH/flipV, position, member images.
 
 #### Build vs Dev
 
@@ -210,6 +240,33 @@ Implement functions **incrementally** as they are encountered during translation
 - Do NOT implement all Director functions upfront
 - Only implement what the current file being translated needs
 - Each function should be a named export
+
+### Import Rules (CRITICAL)
+
+**NEVER import API functions from `lingo-runtime.js`.** Each module has its own exports:
+
+| Import FROM | What to import |
+|-------------|---------------|
+| `../core/lingo-runtime.js` | `symbol`, `voidP`, `objectp`, `listp`, `integerp`, `stringp`, `createPropList`, `rect`, `point`, `member`, `sprite`, `reserveSprite`, `releaseSprite`, `puppetSprite`, `Timeout`, `count`, `error`, `call`, `list`, `add`, `deleteAt`, `getOne`, `findPos`, `sort`, `chars`, `charToNum`, `numToChar`, `bitOr`, `bitAnd`, `bitXor`, `offset`, `length`, `random`, `replaceChars`, `replaceChunks`, `value`, `integer`, `float`, `string`, `EMPTY`, `VOID`, `QUOTE`, `RETURN`, `TAB`, `SPACE`, `cursor`, `encodeUTF8`, `decodeUTF8`, `obfuscate`, `deobfuscate`, `field`, `script`, `castLib`, `memberExists`, `getmemnum`, `createMember`, `removeMember`, `netError`, `preloadNetThing`, `netDone`, `theMilliSeconds`, `theRunMode`, `theDate`, `theLongTime`, `externalParamValue`, `getItemDelimiter`, `setItemDelimiter`, `setStage`, `setMouseLoc`, `setKeyDown`, `registerMovieHandler`, `getMovieHandlers`, `clearMovieHandlers`, `getVisibleSprites`, `renderSprites`, `preloadMemberImages` |
+| `./object-api.js` | `createObject`, `getObject`, `objectExists`, `removeObject`, `getObjectManager`, `executeMessage`, `receiveUpdate`, `removeUpdate`, `receivePrepare`, `removePrepare`, `registerObject`, `unregisterObject` |
+| `./variable-api.js` | `getVariable`, `getIntVariable`, `variableExists`, `setVariable`, `getClassVariable`, `getStructVariable`, `getVariableManager`, `dumpVariableField` |
+| `./special-services-api.js` | `getSpecialServices`, `getMoviePath`, `getDomainPart`, `getPredefinedURL`, `openNetPage`, `sendProcessTracking`, `fatalError`, `getUniqueID`, `urlEncode`, `setDebugLevel` |
+| `./resource-api.js` | `getResourceManager`, `getMember`, `createMember`, `memberExists`, `getmemnum` |
+| `./string-services-api.js` | `getStringServices`, `deobfuscate` |
+| `./sprite-api.js` | `getSpriteManager` |
+| `./castload-api.js` | `getCastLoadManager`, `startCastLoad`, `registerCastloadCallback` |
+| `./download-api.js` | `getDownloadManager`, `queueDownload`, `registerDownloadCallback` |
+| `./core-thread-api.js` | `getThreadManager`, `getThread`, `threadExists` |
+| `./timeout-api.js` | `createTimeout`, `timeoutExists`, `removeTimeout` |
+| `./connection-api.js` | `getConnectionManager`, `getConnection`, `connectionExists`, `deconstructConnectionManager` |
+| `./multiuser-api.js` | `getMultiuserManager`, `getMultiuser`, `multiuserExists`, `createMultiuser`, `removeMultiuser` |
+| `./text-api.js` | `getTextManager`, `dumpTextField`, `getText`, `textExists` |
+| `./error-api.js` | `getErrorManager`, `deconstructErrorManager`, `error`, `SystemAlert`, `fatalError`, `printErrors` |
+| `./window-api.js` | `getWindowManager`, `createWindow`, `getWindow`, `windowExists`, `removeWindow` |
+| `./visualizer-api.js` | `getVisualizerManager`, `createVisualizer`, `getVisualizer`, `visualizerExists`, `removeVisualizer` |
+
+**Wrong:** `import { createObject, getVariable } from '../core/lingo-runtime.js'`
+**Correct:** `import { createObject } from './object-api.js'` + `import { getVariable } from './variable-api.js'`
 
 ### Canvas Rendering
 

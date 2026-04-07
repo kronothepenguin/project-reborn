@@ -11,12 +11,11 @@ import {
   value,
   createPropList,
   error,
-  getObject,
-  getObjectManager,
-  getUniqueID,
   call,
   Timeout,
 } from '../core/lingo-runtime.js'
+import { getObject, getObjectManager } from './object-api.js'
+import { getUniqueID } from './special-services-api.js'
 
 export class TimeoutManagerClass {
   constructor() {

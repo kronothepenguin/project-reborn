@@ -14,13 +14,9 @@ import {
   memberExists,
   createMember,
   error,
-  getObjectManager,
-  objectExists,
-  createObject,
-  getClassVariable,
-  getIntVariable,
-  getVariableValue,
 } from '../core/lingo-runtime.js'
+import { getObjectManager, objectExists, createObject } from './object-api.js'
+import { getClassVariable, getIntVariable, getVariableValue } from './variable-api.js'
 import { ManagerTemplateClass } from './manager-template-class.js'
 
 export class WindowManagerClass extends ManagerTemplateClass {

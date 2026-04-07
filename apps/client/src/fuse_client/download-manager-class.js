@@ -14,23 +14,13 @@ import {
   memberExists,
   getmemnum,
   createMember,
-  getMoviePath,
-  getDomainPart,
-  getPredefinedURL,
-  getVariable,
-  variableExists,
-  value,
-  getIntVariable,
   error,
-  objectExists,
-  getObject,
-  getUniqueID,
-  createObject,
-  getClassVariable,
-  receiveUpdate,
-  removeUpdate,
-  removeMember,
 } from '../core/lingo-runtime.js'
+import { getMoviePath, getDomainPart, getPredefinedURL, getUniqueID } from './special-services-api.js'
+import { getVariable, variableExists, getIntVariable, getClassVariable } from './variable-api.js'
+import { objectExists, getObject, createObject } from './object-api.js'
+import { receiveUpdate, removeUpdate } from './object-api.js'
+import { removeMember } from '../core/lingo-runtime.js'
 
 export class DownloadManagerClass {
   constructor() {

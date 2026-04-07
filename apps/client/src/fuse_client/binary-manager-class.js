@@ -9,23 +9,14 @@ import {
   voidP,
   objectp,
   listp,
-  count,
   createPropList,
   error,
-  getVariable,
-  getIntVariable,
-  getObject,
-  getMultiuserManager,
-  getMultiuser,
-  multiuserExists,
-  createMultiuser,
-  removeMultiuser,
-  createObject,
-  createTimeout,
-  timeoutExists,
-  removeTimeout,
   call,
 } from '../core/lingo-runtime.js'
+import { getVariable, getIntVariable } from './variable-api.js'
+import { getObject, createObject } from './object-api.js'
+import { getMultiuserManager, getMultiuser, multiuserExists, createMultiuser, removeMultiuser } from './multiuser-api.js'
+import { createTimeout, timeoutExists, removeTimeout } from './timeout-api.js'
 
 export class BinaryManagerClass {
   constructor() {

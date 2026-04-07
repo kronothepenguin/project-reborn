@@ -21,28 +21,10 @@ import {
   replaceChunks,
   createPropList,
   error,
-  getIntVariable,
-  getVariable,
-  variableExists,
-  setVariable,
-  getVariableManager,
-  getObject,
-  objectExists,
-  createObject,
-  removeObject,
-  getClassVariable,
-  getText,
-  textExists,
-  reserveSprite,
-  sprite,
-  member,
-  createMember,
-  removeMember,
   rect,
   cursor,
-  deobfuscate,
-  obfuscate,
   field,
+  member,
   getItemDelimiter,
   setItemDelimiter,
   RETURN,
@@ -50,6 +32,13 @@ import {
   EMPTY,
   QUOTE,
 } from '../core/lingo-runtime.js'
+import { getIntVariable, getVariable, variableExists, setVariable, getVariableManager, getClassVariable } from './variable-api.js'
+import { getObject, objectExists, createObject, removeObject } from './object-api.js'
+import { getText, textExists } from './text-api.js'
+import { reserveSprite } from './sprite-api.js'
+import { sprite } from '../core/lingo-runtime.js'
+import { getMember, createMember, removeMember, memberExists, getmemnum } from './resource-api.js'
+import { deobfuscate, obfuscate } from './string-services-api.js'
 
 export class SpecialServicesClass {
   constructor() {

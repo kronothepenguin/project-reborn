@@ -12,22 +12,18 @@ import {
   count,
   createPropList,
   error,
-  objectExists,
-  getObject,
   call,
-  getIntVariable,
-  variableExists,
-  getVariable,
   memberExists,
   getmemnum,
   member,
-  getStringServices,
-  getStructVariable,
-  getObjectManager,
   encodeUTF8,
   RETURN,
   SPACE,
 } from '../core/lingo-runtime.js'
+import { objectExists, getObject, getObjectManager } from './object-api.js'
+import { getIntVariable, variableExists, getVariable } from './variable-api.js'
+import { getStringServices } from './string-services-api.js'
+import { getStructVariable } from './variable-api.js'
 
 export class MultiuserInstanceClass {
   constructor() {

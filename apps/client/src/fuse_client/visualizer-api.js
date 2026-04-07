@@ -1,8 +1,8 @@
 // fuse_client/17_Visualizer API.ls → visualizer-api.js
 // Visualizer manager API facade
 
+import { symbol } from '../core/lingo-runtime.js'
 import {
-  symbol,
   createManager,
   removeManager,
   getObjectManager,

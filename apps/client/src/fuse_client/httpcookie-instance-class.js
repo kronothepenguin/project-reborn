@@ -18,15 +18,12 @@ import {
   memberExists,
   createMember,
   error,
-  getVariable,
-  variableExists,
-  getDomainPart,
-  getMoviePath,
-  openNetPage,
   urlEncode,
   createPropList,
-  getObjectManager,
 } from '../core/lingo-runtime.js'
+import { getVariable, variableExists } from './variable-api.js'
+import { getDomainPart, getMoviePath, openNetPage } from './special-services-api.js'
+import { getObjectManager } from './object-api.js'
 
 export class HttpCookieInstanceClass {
   constructor() {

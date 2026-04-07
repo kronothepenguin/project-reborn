@@ -13,13 +13,12 @@ import {
   castLib,
   field,
   error,
-  getObject,
-  getIntVariable,
-  getVariable,
-  getVariableManager,
   getItemDelimiter,
   setItemDelimiter,
 } from '../core/lingo-runtime.js'
+import { getObject } from './object-api.js'
+import { getIntVariable, getVariable } from './variable-api.js'
+import { getVariableManager } from './variable-api.js'
 
 export class ResourceManagerClass {
   constructor() {

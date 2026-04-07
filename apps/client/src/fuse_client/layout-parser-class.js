@@ -15,11 +15,11 @@ import {
   memberExists,
   rect,
   error,
-  getResourceManager,
-  getStructVariable,
   createPropList,
   EMPTY,
 } from '../core/lingo-runtime.js'
+import { getResourceManager } from './resource-api.js'
+import { getStructVariable } from './variable-api.js'
 
 export class LayoutParserClass {
   constructor() {
