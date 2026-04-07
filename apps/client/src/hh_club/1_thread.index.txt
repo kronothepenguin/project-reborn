@@ -1,1 +1,0 @@
-#club#thread#indexthread.id       = habbo_clubinterface.class = Club Interface Classcomponent.class = Club Component Classhandler.class   = Club Handler Class

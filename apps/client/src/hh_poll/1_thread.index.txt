@@ -1,1 +1,0 @@
-#poll#thread#indexthread.id       = pollinterface.class = Poll Interface Classcomponent.class = Poll Component Classhandler.class   = Poll Handler Class
