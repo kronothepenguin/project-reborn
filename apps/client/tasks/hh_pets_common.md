@@ -1,4 +1,4 @@
 # hh_pets_common Cast
 
-- [ ] 1_Pet Class.ls
-- [ ] 2_Petpart Class.ls
+- [x] 1_Pet Class.ls → pet-class.js
+- [x] 2_Petpart Class.ls → petpart-class.js

@@ -1,5 +1,5 @@
 # hh_poll Cast
 
-- [ ] 3_Poll Interface Class.ls
-- [ ] 4_Poll Component Class.ls
-- [ ] 5_Poll Handler Class.ls
+- [x] 3_Poll Interface Class.ls → poll-interface-class.js
+- [x] 4_Poll Component Class.ls → poll-component-class.js
+- [x] 5_Poll Handler Class.ls → poll-handler-class.js
