@@ -1,31 +1,31 @@
 # hh_room_utils Cast
 
-- [ ] 10_User Chooser Class.ls
-- [ ] 11_Group Info Class.ls
-- [ ] 12_Ad Manager.ls
-- [ ] 13_Interstitial Manager.ls
-- [ ] 14_Badge Effect Class.ls
-- [ ] 15_Furni Chooser Class.ls
-- [ ] 16_Badge Manager Class.ls
-- [ ] 17_Object Mover Class.ls
-- [ ] 18_Container Hand Class.ls
-- [ ] 19_Doorbell Class.ls
-- [ ] 20_Ignore List Class.ls
-- [ ] 21_Shadow Manager.ls
-- [ ] 22_Info Stand Class.ls
-- [ ] 23_OneWayDoor Manager Class.ls
-- [ ] 25_Chat Manager.ls
-- [ ] 26_Chat Display.ls
-- [ ] 27_Chat Bubble Normal.ls
-- [ ] 28_Chat Bubble Unheard.ls
-- [ ] 29_Chat Bubble Info Basic.ls
-- [ ] 31_RoomEvent List Class.ls
-- [ ] 32_RoomEvent Browser Class.ls
-- [ ] 3_Safe Trader Class.ls
-- [ ] 4_HumanExtra Sign Class.ls
-- [ ] 51_Details Bubble Class.ls
-- [ ] 57_Badge List Class.ls
-- [ ] 5_Select Arrow Class.ls
-- [ ] 6_Dialog Thread Class.ls
-- [ ] 7_Dialog Handler Class.ls
-- [ ] 9_Flood Blocking Class.ls
+- [ ] 3_Safe Trader Class.ls → safe-trader-class.js
+- [ ] 4_HumanExtra Sign Class.ls → humanextra-sign-class.js
+- [ ] 5_Select Arrow Class.ls → select-arrow-class.js
+- [ ] 6_Dialog Thread Class.ls → dialog-thread-class.js
+- [ ] 7_Dialog Handler Class.ls → dialog-handler-class.js
+- [ ] 9_Flood Blocking Class.ls → flood-blocking-class.js
+- [ ] 10_User Chooser Class.ls → user-chooser-class.js
+- [ ] 11_Group Info Class.ls → group-info-class.js
+- [ ] 12_Ad Manager.ls → ad-manager.js
+- [ ] 13_Interstitial Manager.ls → interstitial-manager.js
+- [ ] 14_Badge Effect Class.ls → badge-effect-class.js
+- [ ] 15_Furni Chooser Class.ls → furni-chooser-class.js
+- [ ] 16_Badge Manager Class.ls → badge-manager-class.js
+- [ ] 17_Object Mover Class.ls → object-mover-class.js
+- [ ] 18_Container Hand Class.ls → container-hand-class.js
+- [ ] 19_Doorbell Class.ls → doorbell-class.js
+- [ ] 20_Ignore List Class.ls → ignore-list-class.js
+- [ ] 21_Shadow Manager.ls → shadow-manager.js
+- [ ] 22_Info Stand Class.ls → info-stand-class.js
+- [ ] 23_OneWayDoor Manager Class.ls → onewaydoor-manager-class.js
+- [ ] 25_Chat Manager.ls → chat-manager.js
+- [ ] 26_Chat Display.ls → chat-display.js
+- [ ] 27_Chat Bubble Normal.ls → chat-bubble-normal.js
+- [ ] 28_Chat Bubble Unheard.ls → chat-bubble-unheard.js
+- [ ] 29_Chat Bubble Info Basic.ls → chat-bubble-info-basic.js
+- [ ] 31_RoomEvent List Class.ls → roomevent-list-class.js
+- [ ] 32_RoomEvent Browser Class.ls → roomevent-browser-class.js
+- [ ] 51_Details Bubble Class.ls → details-bubble-class.js
+- [ ] 57_Badge List Class.ls → badge-list-class.js

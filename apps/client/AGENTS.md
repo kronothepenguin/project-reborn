@@ -2,29 +2,38 @@
 
 ## Project Overview
 
-Traducción 1:1 de LingoScript (Macromedia Director MX 2004) a JavaScript con Vite.
-Los casts originales están en `./casts/` y se traducen a `./src/`.
+Translation of LingoScript (Macromedia Director MX 2004) to JavaScript with Vite.
+Working directory: `apps/client/`. The original `.cct` cast files have been extracted and their `.ls` scripts live in `apps/client/src/game/`, organized by cast name. Each cast has its own `index.js` that registers members and imports translated files as side-effects.
+
+A Director compatibility layer lives in `apps/client/src/director/`, providing:
+- **`apps/client/src/director/core.js`** — Helpers and abstractions that simulate basic Director behavior for this project (Member, CastLibrary, Sprite, Movie, Player classes, asset loading, cast registration, event system, `loadImage`/`loadModule`/`loadPromise` from loader). **This file is NOT edited by the AI agent.** If the AI determines that `core.js` needs a new helper, class, or modification, it must **stop and notify the user in the chat** with a clear suggestion. The user decides whether to apply the change.
+- **`apps/client/src/director/runtime.js`** — Native Macromedia Director MX 2004 Lingo functions implemented incrementally as they are needed during translation. This file must contain **only Director native functions** (e.g., `castLib`, `puppetTempo`, `member`, `sprite`, `voidP`, etc.). No helpers, no loose variables, no abstractions. If the AI needs a helper or utility that is not a native Director function, it must **stop and notify the user in the chat** to add it to `apps/client/src/director/core.js`.
+- **`apps/client/src/director/index.js`** — Entry point that re-exports `core.js` and `runtime.js`, and initializes `globalThis._global = {}` for Lingo global function registration.
+- **`apps/client/src/director/loader.js`** — Mini HTTP-based asset preloader that simulates Director's cast loading (`loadImage`, `loadModule`, `loadPromise`, progress tracking via `totalObjects()`, `objectsLoaded()`, `finished()`, `addFinishedListener()`).
 
 ## Commands
 
 ```bash
-npm run dev       # Vite dev server con external params desde .env.development
-npm run build     # Exporta funcion mount(el, params) + casts como chunks separados
-npm run preview   # Preview del build
+npm run dev       # Vite dev server with external params from .env.development
+npm run build     # Exports mount(el, params) function + casts as separate chunks
+npm run preview   # Preview the build
 ```
 
 ## Translation Workflow
 
+### Scope
+The AI agent is responsible for translating LingoScript (`.ls`) files from `apps/client/src/game/` to JavaScript (`.js`). Each cast's `.ls` files are translated into `.js` files placed alongside the original assets in the same directory.
+
 ### Order of Translation
 1. **habbo** → entry point (boot sequence)
 2. **fuse_client** → core framework (APIs, managers, runtime)
-3. **hh_* casts** → en orden de `cast.entry.#` desde `client/external/external_variables.txt`
+3. **hh_* casts** → in order of `cast.entry.#` from `client/external/external_variables.txt`
 
 ### Naming Convention
 - `6_Object API.ls` → `object-api.js`
 - `33_Connection Manager Class.ls` → `connection-manager-class.js`
 - `Internal_1_Initialization.ls` → `initialization.js`
-- Lowercase, hyphens, no numbers prefix
+- Lowercase, hyphens, no number prefixes
 
 ### Tasks System (`tasks/` directory)
 
@@ -40,24 +49,9 @@ Each cast has a `.md` file in `tasks/` with a TODO checklist:
 
 **When translating a file:**
 1. Translate the entire `.ls` file → `.js` (not procedure by procedure)
-2. If a Director function is not implemented → add to `core/lingo-runtime.js`
+2. If a Director function is not implemented in `runtime.js` → add it there
 3. If code depends on a not-yet-translated file → create a placeholder + add subtask in the corresponding `tasks/<cast>.md`
 4. After completing a file → check all `tasks/*.md` for placeholders that can now be resolved
-
-### Asset Handling
-
-**Assets must be copied from `./casts/<cast>/` to `./src/<cast>/`** preserving `Members.csv` names. Vite imports return URLs (not base64) for files >4KB, which are optimized and hashed.
-
-```js
-// In cast's index.js - import asset and register as member
-import logoImg from './1_Logo.png'  // Vite returns URL string
-registerMember('Logo', 4, 'bitmap', 'fuse_client', logoImg)
-```
-
-- Bitmap assets: copy `.png` files to `src/<cast>/` folder
-- Text assets: keep `.txt` extension (e.g., `System Props.txt`)
-- Vite optimizes and generates hashed URLs in build
-- Do NOT use `public/` folder - assets in `src/` get optimized
 
 ## Code Style
 
@@ -70,13 +64,11 @@ registerMember('Logo', 4, 'bitmap', 'fuse_client', logoImg)
 | `[ ]` (linear list) | `[]` Array |
 | `voidP(x)` | `x === undefined || x === null` |
 | `x.ilk = #symbol` | `typeof x === 'symbol'` or custom type check |
-| `member("name")` | Asset import or registry lookup |
-| `sprite(n)` | Canvas sprite object |
-| `sendSprite(id, #msg)` | Event dispatch to sprite |
-| `puppetSprite(n, true)` | Take control of sprite |
+| `member("name")` | Member registry lookup via `member()` |
+| `sprite(n)` | Sprite channel object |
 | `the stage` | Canvas/stage singleton |
 | `the mouseLoc` | Mouse position tracker |
-| `timeout().new()` | `new Timeout()` |
+| `timeout().new()` | Timeout manager |
 | `script("name").new()` | Factory function |
 | `setaProp(#key, val)` | `obj.setaProp('key', val)` |
 | `getaProp(#key)` | `obj.getaProp('key')` |
@@ -99,63 +91,104 @@ Symbol.for('#mouseEnter') === Symbol.for('#mouseEnter') // true - same symbol
 Symbol('#mouseEnter') === Symbol('#mouseEnter')         // false - different symbols
 ```
 
-Always use `Symbol.for('#name')` (or the `symbol('#name')` helper from runtime) when translating Lingo symbols. The `#` prefix must be preserved to make it clear these come from Lingo.
-
-```js
-import { symbol } from '../core/lingo-runtime.js'
-
-// Correct:
-getObject(symbol('#session'))
-tList.setaProp(symbol('#mouseEnter'), [symbol('#null'), 0])
-
-// WRONG - creates new symbol each call:
-getObject(Symbol('session'))
-```
-
-### Member/CastLib Registry
-
-Each cast's `index.js` registers its members based on the `Members.csv` file from the original `.cct` extraction. This allows `member(name)`, `member(num)`, `getmemnum(name)`, and `castLib(name/num)` to work correctly across casts.
-
-**Registration pattern** (in each cast's `index.js`):
-```js
-import { registerMember, registerCastLib } from '../core/lingo-runtime.js'
-
-registerCastLib('fuse_client', 2, 'fuse_client.cct')
-registerMember('System Props', 1, 'field', 'fuse_client')
-registerMember('Object API', 6, 'script', 'fuse_client')
-registerMember('Logo', 4, 'bitmap', 'fuse_client')
-```
-
-Member types: `script`, `field`, `bitmap`, `text`. Numbers and names must match the original `Members.csv`.
+Always use `Symbol.for('#name')` when translating Lingo symbols. The `#` prefix must be preserved.
 
 ### Director Movie Handlers
 
-`prepareMovie`, `stopMovie`, and `exitFrame` are **special Director movie-level handlers**, not regular functions. They are called by the runtime at specific times, not imported by other code.
+`prepareMovie`, `stopMovie`, and `exitFrame` are **special Director movie-level handlers**. They are registered using the `on()` helper from the director layer:
 
-**Translation pattern:**
 ```js
-// In the translated file:
-import { registerMovieHandler } from '../core/lingo-runtime.js'
+import { on } from '../../director'
 
 function prepareMovie() {
   // ... translated code
 }
 
-// Register as Director movie handler (side-effect)
-registerMovieHandler('prepareMovie', prepareMovie, 'castName')
-```
+function stopMovie() {
+  // ... translated code
+}
 
-The cast's `index.js` imports files for their side-effects (handler registration), not for exports:
-```js
-import './initialization.js'  // registers prepareMovie, stopMovie
-import './loop.js'            // registers exitFrame
+on('prepareMovie', prepareMovie)
+on('stopMovie', stopMovie)
 ```
 
 ### File Organization
-- All casts in `src/` at root level: `src/fuse_client/`, `src/hh_entry_init/`, etc.
-- Each cast has `index.js` that re-exports everything (simulates Director global scope)
-- `src/core/lingo-runtime.js` - incremental Director function implementations
-- `src/main.js` - entry point, exports `mount(el, params)`
+
+```
+apps/client/
+├── src/
+│   ├── main.js                                  # mount(el, params) entry point, game loop
+│   ├── director/
+│   │   ├── index.js                             # Re-exports core + runtime, initializes globalThis._global
+│   │   ├── core.js                              # Director helpers (Member, CastLibrary, Movie, Player, registerCast, on, etc.)
+│   │   ├── runtime.js                           # Native Lingo functions (castLib, puppetTempo, etc.) — incremental
+│   │   └── loader.js                            # HTTP-based asset preloader (loadImage, loadModule, loadPromise)
+│   └── game/
+│       └── habbo/                               # Boot cast
+│           ├── index.js                         # registerCast() + member registration
+│           ├── *.js                             # Translated .ls files
+│           └── *.png                            # Original assets
+└── tasks/
+    └── *.md                                     # TODO checklists per cast
+```
+
+- Each cast's `index.js` calls `registerCast(name, members)` with script/bitmap members
+- Translated `.js` files live alongside original `.ls` files and assets in `apps/client/src/game/<cast>/`
+- No separate asset copying needed — assets stay in place
+- Dynamic loading via `import()` for casts not in initial bundle
+- Stage: 720x540 canvas, `image-rendering: pixelated`
+
+### Member/Cast Registration
+
+Each cast's `index.js` registers its members using the director layer:
+
+```js
+import { registerCast, createScriptMember, createBitmapMember } from '../../director'
+import Logo from './Internal_4_Logo.png'
+
+registerCast('Internal', [
+  createScriptMember('Initialization', import('./initialization')),
+  createBitmapMember('Logo', Logo),
+])
+```
+
+- `createScriptMember(name, importPromise)` — registers a LingoScript module
+- `createBitmapMember(name, imageUrl)` — registers a bitmap asset (Vite resolves the import to a URL)
+- `registerCast(name, members)` — registers the cast with all its members
+
+### Runtime Lingo (`apps/client/src/director/runtime.js`)
+
+Native Director/Lingo functions are implemented here **incrementally** as they are encountered during translation:
+- Do NOT implement all Director functions upfront
+- Only implement what the current file being translated needs
+- Each function should be a named export
+- **This file must contain ONLY native Director functions** (e.g., `castLib`, `puppetTempo`, `member`, `sprite`, `voidP`, `listp`, `integerp`, `stringp`, etc.)
+- **NO helpers, NO loose variables, NO abstractions** — if you need something that isn't a native Director function, notify the user to add it to `apps/client/src/director/core.js`
+
+### Director Helpers (`apps/client/src/director/core.js`)
+
+Helpers and abstractions that simulate Director behavior live here:
+- `Member`, `CastLibrary`, `Sprite`, `Movie`, `Player` classes
+- `registerCast()`, `createScriptMember()`, `createBitmapMember()`
+- `on(event, callback)` — event registration for movie handlers
+- `_params` — external parameters storage
+- `_movie`, `_player` — singletons for movie and player state
+- Re-exports from `loader.js`: `loadImage`, `loadModule`, `loadPromise`
+
+**IMPORTANT: `apps/client/src/director/core.js` is NOT edited by the AI agent.** If during translation you determine that `core.js` needs a new helper, class, method, or modification, you must **stop and notify the user in the chat** with a clear description of what needs to be added and why. The user decides whether to apply the change. Do not proceed with editing `core.js`.
+
+### Asset Handling
+
+Assets stay in their cast directories (`apps/client/src/game/<cast>/`). Vite imports return URLs (not base64) for files >4KB, which are optimized and hashed.
+
+```js
+import Logo from './Internal_4_Logo.png'  // Vite returns URL string
+```
+
+- Bitmap assets: keep `.png` files in the cast folder
+- Text assets: keep `.txt` extension
+- Vite optimizes and generates hashed URLs in build
+- Do NOT use `public/` folder — assets in `src/` get optimized
 
 ### Canvas Runtime
 
@@ -170,21 +203,11 @@ Create canvas (720x540), set as stage
   ↓
 Setup mouse/keyboard event listeners
   ↓
-Call prepareMovie handlers (registered by casts)
+Dispatch 'prepareMovie' event on canvas
   ↓
 Start requestAnimationFrame loop:
-  └─ Each frame: call exitFrame handlers → render sprites
+  └─ Each frame: dispatch 'exitFrame' → render sprites
 ```
-
-#### Lifecycle Callbacks
-
-| Director Handler | When it fires | JS Implementation |
-|-----------------|---------------|-------------------|
-| `prepareMovie` | Once at startup | Called by `mount()` before game loop |
-| `stopMovie` | On unmount | Called by `unmount()` |
-| `exitFrame` | Every frame | Called in `requestAnimationFrame` loop |
-| `beginSprite` | When sprite becomes visible | Handled by `reserveSprite()` |
-| `endSprite` | When sprite is removed | Handled by `releaseSprite()` |
 
 #### Mouse/Keyboard Tracking
 
@@ -197,119 +220,101 @@ the keyDown    → boolean
 the milliSeconds → Date.now()
 ```
 
-Events are tracked on the canvas element. Sprite-level event dispatch (mouseDown, mouseUp, etc.) routes through `event-broker-behavior.js`.
-
 #### Sprite System
 
-Director's sprite channels (1-1000) are emulated with `sprite(n)` objects:
+Director's sprite channels are emulated with `sprite(n)` objects:
 
 ```js
-// Allocate a sprite channel
 const sprNum = reserveSprite(clientID)
 const sp = sprite(sprNum)
 
-// Configure sprite
-sp.member = member('Logo')        // Assign member (has imageUrl from Vite)
+sp.member = member('Logo')
 sp.locH = 100
 sp.locV = 200
-sp.width = sp.member._img?.width || 0
-sp.height = sp.member._img?.height || 0
 sp.visible = true
 sp.blend = 100
-sp.locZ = 500  // render order
 
-// Take control (puppet mode)
 puppetSprite(sprNum, true)
-
-// Release when done
 releaseSprite(sprNum)
 ```
 
-**Member images**: When a bitmap member is registered with `imageUrl` (from Vite import), the runtime creates an `Image()` object at `member._img`. The sprite renderer draws this image each frame.
+**Member images**: When a bitmap member is registered, the runtime creates an `Image()` object. The sprite renderer draws this image each frame.
 
-**Rendering**: `renderSprites(ctx, w, h)` in the game loop draws all visible sprites sorted by `locZ`. Supports: blend/opacity, flipH/flipV, position, member images.
+**Rendering**: All visible sprites drawn sorted by `locZ`. Supports: blend/opacity, flipH/flipV, position, member images.
 
 #### Build vs Dev
 
 - **Dev**: `mount()` auto-calls on `DOMContentLoaded`, params from `.env.development`
 - **Build**: exports `mount(element, params)` function for host page to call
 
-### Runtime Lingo (`core/lingo-runtime.js`)
+## Dynamic Cast Loading
 
-Implement functions **incrementally** as they are encountered during translation:
-- Do NOT implement all Director functions upfront
-- Only implement what the current file being translated needs
-- Each function should be a named export
+### Current System
 
-### Import Rules (CRITICAL)
+Each cast in `apps/client/src/game/<cast>/` has its own `index.js` that calls `registerCast(name, members)` using the director layer. The cast's members (scripts and bitmaps) are registered at import time:
 
-**NEVER import API functions from `lingo-runtime.js`.** Each module has its own exports:
+```js
+// apps/client/src/game/habbo/index.js
+import { registerCast, createScriptMember, createBitmapMember } from '../../director'
+import Logo from './Internal_4_Logo.png'
+
+registerCast('Internal', [
+  createScriptMember('Initialization', import('./initialization')),
+  createBitmapMember('Logo', Logo),
+])
+```
+
+- **Script members**: `createScriptMember(name, import('./file.js'))` — the import promise is stored and the module is loaded via `apps/client/src/director/loader.js` (`loadModule`)
+- **Bitmap members**: `createBitmapMember(name, imageUrl)` — Vite resolves the image import to a URL, which is passed to `loadImage` from the loader
+- **Cast registration**: `registerCast(name, members)` — creates a `CastLibrary` in `_movie` and registers each `Member`
+
+### Preload Tracking
+
+The loader (`apps/client/src/director/loader.js`) tracks all async loading:
+
+```js
+import { totalObjects, objectsLoaded, finished, addFinishedListener } from '../../director'
+
+// Check progress
+totalObjects()       // total items being loaded
+objectsLoaded()      // items completed
+finished()           // boolean: everything done?
+addFinishedListener(() => { /* all loaded */ })
+```
+
+This simulates Director's `netDone()` and cast loading progress callbacks.
+
+### Future: Unimplemented Casts
+
+Casts not yet translated will be loaded dynamically:
+- `import.meta.glob('./**/index.js', { eager: false })` for auto-discovery at build time
+- Registry generated from `client/external/external_variables.txt`
+- `import()` dynamic with mapped strings (Vite requires static analysis)
+
+### Future: Furni Dynamic Downloads
+
+Furniture `.cct` files loaded at runtime from the game server:
+- Template: `dynamic.download.url + "hh_furni_xx_" + typeid + ".cct"`
+- `fetch(url).then(r => r.blob())` → future WASM extraction
+
+## Import Rules (CRITICAL)
+
+The director layer exports are available via the relative path from each cast folder:
 
 | Import FROM | What to import |
 |-------------|---------------|
-| `../core/lingo-runtime.js` | `symbol`, `voidP`, `objectp`, `listp`, `integerp`, `stringp`, `createPropList`, `rect`, `point`, `member`, `sprite`, `reserveSprite`, `releaseSprite`, `puppetSprite`, `Timeout`, `count`, `error`, `call`, `list`, `add`, `deleteAt`, `getOne`, `findPos`, `sort`, `chars`, `charToNum`, `numToChar`, `bitOr`, `bitAnd`, `bitXor`, `offset`, `length`, `random`, `replaceChars`, `replaceChunks`, `value`, `integer`, `float`, `string`, `EMPTY`, `VOID`, `QUOTE`, `RETURN`, `TAB`, `SPACE`, `cursor`, `encodeUTF8`, `decodeUTF8`, `obfuscate`, `deobfuscate`, `field`, `script`, `castLib`, `memberExists`, `getmemnum`, `createMember`, `removeMember`, `netError`, `preloadNetThing`, `netDone`, `theMilliSeconds`, `theRunMode`, `theDate`, `theLongTime`, `externalParamValue`, `getItemDelimiter`, `setItemDelimiter`, `setStage`, `setMouseLoc`, `setKeyDown`, `registerMovieHandler`, `getMovieHandlers`, `clearMovieHandlers`, `getVisibleSprites`, `renderSprites`, `preloadMemberImages` |
-| `./object-api.js` | `createObject`, `getObject`, `objectExists`, `removeObject`, `getObjectManager`, `executeMessage`, `receiveUpdate`, `removeUpdate`, `receivePrepare`, `removePrepare`, `registerObject`, `unregisterObject` |
-| `./variable-api.js` | `getVariable`, `getIntVariable`, `variableExists`, `setVariable`, `getClassVariable`, `getStructVariable`, `getVariableManager`, `dumpVariableField` |
-| `./special-services-api.js` | `getSpecialServices`, `getMoviePath`, `getDomainPart`, `getPredefinedURL`, `openNetPage`, `sendProcessTracking`, `fatalError`, `getUniqueID`, `urlEncode`, `setDebugLevel` |
-| `./resource-api.js` | `getResourceManager`, `getMember`, `createMember`, `memberExists`, `getmemnum` |
-| `./string-services-api.js` | `getStringServices`, `deobfuscate` |
-| `./sprite-api.js` | `getSpriteManager` |
-| `./castload-api.js` | `getCastLoadManager`, `startCastLoad`, `registerCastloadCallback` |
-| `./download-api.js` | `getDownloadManager`, `queueDownload`, `registerDownloadCallback` |
-| `./core-thread-api.js` | `getThreadManager`, `getThread`, `threadExists` |
-| `./timeout-api.js` | `createTimeout`, `timeoutExists`, `removeTimeout` |
-| `./connection-api.js` | `getConnectionManager`, `getConnection`, `connectionExists`, `deconstructConnectionManager` |
-| `./multiuser-api.js` | `getMultiuserManager`, `getMultiuser`, `multiuserExists`, `createMultiuser`, `removeMultiuser` |
-| `./text-api.js` | `getTextManager`, `dumpTextField`, `getText`, `textExists` |
-| `./error-api.js` | `getErrorManager`, `deconstructErrorManager`, `error`, `SystemAlert`, `fatalError`, `printErrors` |
-| `./window-api.js` | `getWindowManager`, `createWindow`, `getWindow`, `windowExists`, `removeWindow` |
-| `./visualizer-api.js` | `getVisualizerManager`, `createVisualizer`, `getVisualizer`, `visualizerExists`, `removeVisualizer` |
+| `apps/client/src/director/index.js` (as `../../director`) | All exports from `core.js` + `runtime.js`: `registerCast`, `createScriptMember`, `createBitmapMember`, `on`, `_params`, `_movie`, `_player`, `castLib`, `puppetTempo`, etc. |
+| Cast-local API files | `./object-api.js`, `./variable-api.js`, etc. (relative to the cast folder in `apps/client/src/game/<cast>/`) |
 
-**Wrong:** `import { createObject, getVariable } from '../core/lingo-runtime.js'`
-**Correct:** `import { createObject } from './object-api.js'` + `import { getVariable } from './variable-api.js'`
+**`apps/client/src/director/runtime.js`** — Only native Director functions. If you need something that isn't a native Lingo function, notify the user to add it to `apps/client/src/director/core.js`.
 
-### Canvas Rendering
+**`apps/client/src/director/core.js`** — Do NOT edit. Notify the user in the chat if changes are needed.
+
+API functions (object-api, variable-api, etc.) are implemented per-cast and imported relatively, not from the director layer.
+
+## Canvas Rendering
 
 **Everything must be rendered on Canvas.** No DOM overlays.
 - Sprite system emulates Director's sprite channels
 - All UI elements drawn on canvas (text, images, shapes)
 - Mouse/keyboard events routed through canvas
-
-## Dynamic Cast Loading
-
-Original Director behavior:
-1. Load `external_variables.txt` → parse `cast.entry.#` entries
-2. Concatenate each name with `.cct` → `startCastLoad(["hh_entry_uk.cct", ...])`
-3. Director downloads .cct files, mounts them as castLibs, code/assets become globally available
-
-JavaScript translation:
-- `import.meta.glob('./**/index.js', { eager: false })` for implemented casts
-- Registry generated from `external_variables.txt` at build time
-- `import()` dynamic with mapped strings (Vite requires static analysis)
-- Furnis .cct: `fetch(url).then(r => r.blob())` → future WASM extraction
-
-See `CAST-LOADING.md` for detailed documentation.
-
-## Architecture
-
-```
-src/
-├── main.js              # mount(el, params) entry point, game loop, events
-├── core/
-│   └── lingo-runtime.js # Director functions (incremental)
-├── habbo/               # Boot cast
-│   ├── index.js         # Member registration + handler imports
-│   └── *.js             # Translated .ls files
-├── fuse_client/         # Core framework
-│   ├── index.js         # Member registration + handler imports
-│   └── *.js             # Translated .ls files
-└── hh_*/                # Feature casts
-    ├── index.js
-    └── *.js
-```
-
-- `main.js` exports `mount(element, params)` for build mode
-- Dev mode auto-mounts on `DOMContentLoaded`, reads params from `.env.development`
-- Each cast's `index.js` registers members and imports translated files (side-effects)
-- Dynamic loading via `import()` for casts not in initial bundle
-- Stage: 720x540 canvas, `image-rendering: pixelated`

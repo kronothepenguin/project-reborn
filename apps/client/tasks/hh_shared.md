@@ -1,30 +1,30 @@
 # hh_shared Cast
 
-- [ ] 10_CLangTest.ls
-- [ ] 11_Figure Converter Class COPY.ls
-- [ ] 19_Help Tooltip Manager Class.ls
-- [ ] 20_Ticket Window Manager Class.ls
-- [ ] 22_Date Class.ls
-- [ ] 3_Hobba Interface Class.ls
-- [ ] 4_Hobba Component Class.ls
-- [ ] 50_Sound API.ls
-- [ ] 51_Sound Manager Class.ls
-- [ ] 52_Sound Channel Class.ls
-- [ ] 53_Sound Instance Class.ls
-- [ ] 55_Error Report Interface Class.ls
-- [ ] 56_Error Report Component Class.ls
-- [ ] 57_Error Report Handler Class.ls
-- [ ] 5_Hobba Handler Class.ls
-- [ ] 60_Game Oneclick Buy Window Manager Class.ls
-- [ ] 63_Statistics Broker Class.ls
-- [ ] 64_Statistics Broker Javascript Class.ls
-- [ ] 68_External Link Interface Class.ls
-- [ ] 71_OLD Figure System Class.ls
-- [ ] 72_OLD Figure Preview Class.ls
-- [ ] 73_OLD Human Template Class.ls
-- [ ] 74_OLD Bodypart Template Class.ls
-- [ ] 75_OLD Swimmer Template Class.ls
-- [ ] 76_OLD Swimpart Template Class.ls
-- [ ] 7_Server Date Class.ls
-- [ ] 8_Connection Problem Class.ls
-- [ ] 9_Element Bouncer Class.ls
+- [ ] 3_Hobba Interface Class.ls → hobba-interface-class.js
+- [ ] 4_Hobba Component Class.ls → hobba-component-class.js
+- [ ] 5_Hobba Handler Class.ls → hobba-handler-class.js
+- [ ] 7_Server Date Class.ls → server-date-class.js
+- [ ] 8_Connection Problem Class.ls → connection-problem-class.js
+- [ ] 9_Element Bouncer Class.ls → element-bouncer-class.js
+- [ ] 10_CLangTest.ls → clangtest.js
+- [ ] 11_Figure Converter Class COPY.ls → figure-converter-class-copy.js
+- [ ] 19_Help Tooltip Manager Class.ls → help-tooltip-manager-class.js
+- [ ] 20_Ticket Window Manager Class.ls → ticket-window-manager-class.js
+- [ ] 22_Date Class.ls → date-class.js
+- [ ] 50_Sound API.ls → sound-api.js
+- [ ] 51_Sound Manager Class.ls → sound-manager-class.js
+- [ ] 52_Sound Channel Class.ls → sound-channel-class.js
+- [ ] 53_Sound Instance Class.ls → sound-instance-class.js
+- [ ] 55_Error Report Interface Class.ls → error-report-interface-class.js
+- [ ] 56_Error Report Component Class.ls → error-report-component-class.js
+- [ ] 57_Error Report Handler Class.ls → error-report-handler-class.js
+- [ ] 60_Game Oneclick Buy Window Manager Class.ls → game-oneclick-buy-window-manager-class.js
+- [ ] 63_Statistics Broker Class.ls → statistics-broker-class.js
+- [ ] 64_Statistics Broker Javascript Class.ls → statistics-broker-javascript-class.js
+- [ ] 68_External Link Interface Class.ls → external-link-interface-class.js
+- [ ] 71_OLD Figure System Class.ls → old-figure-system-class.js
+- [ ] 72_OLD Figure Preview Class.ls → old-figure-preview-class.js
+- [ ] 73_OLD Human Template Class.ls → old-human-template-class.js
+- [ ] 74_OLD Bodypart Template Class.ls → old-bodypart-template-class.js
+- [ ] 75_OLD Swimmer Template Class.ls → old-swimmer-template-class.js
+- [ ] 76_OLD Swimpart Template Class.ls → old-swimpart-template-class.js
