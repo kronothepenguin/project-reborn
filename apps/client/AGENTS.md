@@ -6,10 +6,11 @@ Translation of LingoScript (Macromedia Director MX 2004) to JavaScript with Vite
 Working directory: `apps/client/`. The original `.cct` cast files have been extracted and their `.ls` scripts live in `apps/client/src/game/`, organized by cast name. Each cast has its own `index.js` that registers members and imports translated files as side-effects.
 
 A Director compatibility layer lives in `apps/client/src/director/`, providing:
-- **`apps/client/src/director/core.js`** — Helpers and abstractions that simulate basic Director behavior for this project (Member, CastLibrary, Sprite, Movie, Player classes, asset loading, cast registration, event system, `loadImage`/`loadModule`/`loadPromise` from loader). **This file is NOT edited by the AI agent.** If the AI determines that `core.js` needs a new helper, class, or modification, it must **stop and notify the user in the chat** with a clear suggestion. The user decides whether to apply the change.
-- **`apps/client/src/director/runtime.js`** — Native Macromedia Director MX 2004 Lingo functions implemented incrementally as they are needed during translation. This file must contain **only Director native functions** (e.g., `castLib`, `puppetTempo`, `member`, `sprite`, `voidP`, etc.). No helpers, no loose variables, no abstractions. If the AI needs a helper or utility that is not a native Director function, it must **stop and notify the user in the chat** to add it to `apps/client/src/director/core.js`.
-- **`apps/client/src/director/index.js`** — Entry point that re-exports `core.js` and `runtime.js`, and initializes `globalThis._global = {}` for Lingo global function registration.
-- **`apps/client/src/director/loader.js`** — Mini HTTP-based asset preloader that simulates Director's cast loading (`loadImage`, `loadModule`, `loadPromise`, progress tracking via `totalObjects()`, `objectsLoaded()`, `finished()`, `addFinishedListener()`).
+- **`apps/client/src/director/core.js`** — Helpers, variables, and abstractions to make the Director API work (`Member`, `CastLibrary`, `Sprite`, `Movie`, `Player`, `List` classes, `_params`).
+- **`apps/client/src/director/runtime.js`** — **ONLY native Director methods and variables** (e.g., `_movie`, `_player`, `_global`, `castLib`, `puppetTempo`, `member`, `sprite`, `voidp`, `list`, `propList`, `call`, `go`, `netDone`, etc.). Imports helpers, variables, or abstractions from `core.js` as needed. **NO helpers, NO extra variables, NO abstractions** — anything non-native goes in `core.js` or `index.js`. If a native Director function is missing, it must be added here. **Special Director syntax that cannot be directly implemented in JS must be reported to the user for discussion.**
+- **`apps/client/src/director/index.js`** — Translation API: functions like `createBitmapMember`, `createScriptMember`, `createFieldMember`, `registerCast`, movie startup, animation loop, `_director` setup. These are the functions, variables, and methods used by translations and users to run director translations or register director assets from JavaScript in the different modules of `apps/client/src/game/`.
+- **`apps/client/src/director/loader.js`** — Preloader that simulates Director's `.cct` preload system. Director fully loaded all `.cct` files before executing. This is simulated in JS: images load via `new Image()`, modules via `import()`, and progress is tracked via `totalObjects()`, `objectsLoaded()`, `finished()`, `addFinishedListener()`. The movie doesn't start until everything is loaded.
+- **`apps/client/src/director/the.js`** — Proxy that translates `the.property` syntax. Since Director's `the` is special syntax (not a normal variable), this proxy intercepts property access and returns values from `_movie`, `_player`, or other global Director objects. It also handles writes back to the underlying objects.
 
 ## Commands
 
@@ -55,21 +56,56 @@ Each cast has a `.md` file in `tasks/` with a TODO checklist:
 
 ## Code Style
 
+### Script Factory Pattern (CRITICAL)
+
+Every translated `.ls` file uses the **factory pattern**: a default export function that returns an object with properties and handlers. The factory is called by the runtime when the script is instantiated.
+
+```js
+// Every translated .ls file:
+export default function () {
+  return {
+    // properties (equivalent to Lingo `property`)
+    id: 0,
+    pSomeValue: null,
+
+    // lifecycle
+    construct() {
+      return true;
+    },
+
+    // event handlers (movie scripts & behaviors)
+    prepareMovie() { /* ... */ },
+    exitFrame() { /* ... */ },
+    mouseEnter() { /* ... */ },
+    mouseUp() { /* ... */ },
+
+    // custom methods
+    someMethod(arg) { /* ... */ },
+  };
+}
+```
+
+The factory returns a **fresh object per call** — each invocation creates an independent instance with its own state. The runtime calls this factory when:
+- **Movie scripts**: once at movie start (single instance, handlers registered globally)
+- **Behavior scripts**: when attached to a sprite (new instance per sprite)
+- **Parent scripts**: when `script("Name").new()` is called (new instance per call)
+
 ### Lingo → JS Mapping
 | Lingo | JavaScript |
 |-------|-----------|
-| `property pFoo` | `this.pFoo` (class) or module-level `let pFoo` |
-| `on construct me` | `constructor()` or `function init()` |
-| `[: ]` (propList) | `{}` or `new Map()` with `setaProp`/`getaProp` helpers |
+| `property pFoo` | `pFoo: null` (property on returned object) |
+| `on construct me` | `construct() { return true; }` |
+| `on methodName me, args` | `methodName(args) { /* ... */ }` |
+| `[: ]` (propList) | `{}` or `propList()` with `setaProp`/`getaProp` helpers |
 | `[ ]` (linear list) | `[]` Array |
-| `voidP(x)` | `x === undefined || x === null` |
-| `x.ilk = #symbol` | `typeof x === 'symbol'` or custom type check |
+| `voidP(x)` | `voidp(x)` |
+| `x.ilk = #symbol` | `typeof x === 'symbol'` or `ilk(x)` |
 | `member("name")` | Member registry lookup via `member()` |
 | `sprite(n)` | Sprite channel object |
 | `the stage` | Canvas/stage singleton |
 | `the mouseLoc` | Mouse position tracker |
 | `timeout().new()` | Timeout manager |
-| `script("name").new()` | Factory function |
+| `script("name").new()` | Factory function via `script()` |
 | `setaProp(#key, val)` | `obj.setaProp('key', val)` |
 | `getaProp(#key)` | `obj.getaProp('key')` |
 | `list.add(x)` | `list.push(x)` |
@@ -81,6 +117,71 @@ Each cast has a `.md` file in `tasks/` with a TODO checklist:
 | `VOID` | `null` |
 | `return 1` (success) | `return true` |
 | `return 0` (failure) | `return false` |
+
+### Script Types
+
+Every script must be declared with its **type** when registered in the cast's `index.js`. The AI agent **must ask the user** what type a script is before translating, as this cannot be inferred from the `.ls` file alone.
+
+| Type | Symbol | Usage |
+|------|--------|-------|
+| **Movie script** | `MOVIE_SCRIPT` | Global handlers (`prepareMovie`, `stopMovie`, etc.). Single instance. Handlers are automatically registered in `_director` namespace at startup. |
+| **Behavior script** | `BEHAVIOR_SCRIPT` | Attached to sprites. New instance per sprite attachment. Event handlers (`mouseEnter`, `mouseUp`, etc.) are dispatched when the sprite receives events. |
+| **Parent script** | `PARENT_SCRIPT` | Class-like, instantiated via `script("Name").new()`. New instance per call. |
+
+**Registration example (`index.js`):**
+
+```js
+import {
+  BEHAVIOR_SCRIPT,
+  MOVIE_SCRIPT,
+  PARENT_SCRIPT,
+  createBitmapMember,
+  createScriptMember,
+  registerCast,
+} from '../../director'
+import Logo from './Internal_4_Logo.png'
+import Initialization from './initialization'    // movie script
+import Init from './init'                          // behavior script
+import SomeParent from './some-parent'            // parent script
+
+registerCast('Internal', [
+  createScriptMember('Initialization', MOVIE_SCRIPT, Initialization),
+  createScriptMember('Init', BEHAVIOR_SCRIPT, Init),
+  createScriptMember('SomeParent', PARENT_SCRIPT, SomeParent),
+  createBitmapMember('Logo', Logo),
+])
+```
+
+### Global Namespace (`_director`)
+
+Movie script handlers are registered in `_director` at startup. When Lingo code calls a function that is defined in a movie script, it resolves as `_director.functionName()`:
+
+```js
+// Movie script translation:
+export default function () {
+  return {
+    initCore() {
+      // ...
+    },
+    prepareMovie() {
+      // ...
+    },
+  };
+}
+
+// When called from another script:
+_director.initCore();
+```
+
+`_global` (in `runtime.js`) is used **only** when the original Lingo code explicitly references `_global`:
+
+```lingo
+_global.myVar = 42
+```
+
+```js
+_global.myVar = 42;
+```
 
 ### Lingo Symbols
 
@@ -95,59 +196,34 @@ Symbol.for("image")
 
 Always use `Symbol.for("name")` (without the `#` prefix) when translating Lingo symbols.
 
-### Function Classification Rules
+### Import Rules
 
-Every Lingo function falls into one of three categories:
-
-| Category | Where it goes | Examples |
-|----------|--------------|----------|
-| **Native Director function** | `runtime.js` ONLY | `castLib`, `puppetTempo`, `go`, `theFrame`, `netDone`, `voidP`, `member`, `sprite` |
-| **Director event handler** | Local function + `on()` in the translated `.js` file | `prepareMovie`, `stopMovie`, `exitFrame`, `beginSprite` |
-| **Custom/game function** | Register in `_global` or ask the user | `initCore`, API functions, manager classes |
-
-**Rules:**
-- `runtime.js` — **ONLY** native Director functions. No variables, no helpers, no abstractions. If you need state (e.g. `_currentFrame`), **stop and ask the user** to add it in `core.js`.
-- Event handlers are local — they do NOT go in `_global`.
-- If a function doesn't belong to the above two categories and you can't find it in the current cast's `.js` files, **ask the user** before implementing.
-
-### Global Function Registration (`_global`)
-
-Every translated `.js` file must register its functions in `_global` (initialized in `apps/client/src/director/index.js` as `globalThis._global = {}`). This simulates Director's global function scope where any handler can call any function across scripts:
+Translated scripts import **only native Director functions** from the director layer:
 
 ```js
-// When a function is called from another cast/script (e.g., initCore from habbo calling fuse_client):
-_global.initCore = function() {
-  // implementation
-};
-
-// Then from any other file:
-_global.initCore();
+import {
+  call,
+  castLib,
+  go,
+  list,
+  member,
+  netDone,
+  propList,
+  puppetTempo,
+  sprite,
+  stopEvent,
+  stringp,
+  symbolp,
+  the,
+  VOID,
+  voidp,
+} from "../../director";
 ```
 
-**Rules:**
-- Each `.js` file registers its public functions in `_global`
-- When calling a function from a not-yet-translated cast, use `_global.functionName()` as a placeholder
-- The actual implementation will be added when that cast/file is translated
-- `_global` is available globally, no need to import it
-
-### Director Movie Handlers
-
-`prepareMovie`, `stopMovie`, and `exitFrame` are **special Director movie-level handlers**. They are registered using the `on()` helper from the director layer:
-
-```js
-import { on } from '../../director'
-
-function prepareMovie() {
-  // ... translated code
-}
-
-function stopMovie() {
-  // ... translated code
-}
-
-on('prepareMovie', prepareMovie)
-on('stopMovie', stopMovie)
-```
+- Import **only what you use** in the current file
+- No need to import `_global` — it's available globally from `runtime.js`
+- No need to import `_director` — it's available globally from `index.js`
+- Cast-local API files: `./object-api.js`, `./variable-api.js` (relative import)
 
 ### File Organization
 
@@ -156,20 +232,22 @@ apps/client/
 ├── src/
 │   ├── main.js                                  # mount(el, params) entry point, game loop
 │   ├── director/
-│   │   ├── index.js                             # Re-exports core + runtime, initializes globalThis._global
-│   │   ├── core.js                              # Director helpers (Member, CastLibrary, Movie, Player, registerCast, on, etc.)
-│   │   ├── runtime.js                           # Native Lingo functions (castLib, puppetTempo, etc.) — incremental
-│   │   └── loader.js                            # HTTP-based asset preloader (loadImage, loadModule, loadPromise)
+│   │   ├── index.js                             # Translation API: barrel exports, createBitmapMember, registerCast, movie startup
+│   │   ├── core.js                              # Helpers, variables, abstractions: Member, CastLibrary, Sprite, Movie, Player, List, _params
+│   │   ├── runtime.js                           # Native Director API: _movie, _player, _global, castLib, member, sprite, voidp, etc.
+│   │   ├── loader.js                            # Preloader simulation: loadImage, loadModule, totalObjects, finished
+│   │   └── the.js                               # `the.property` proxy for Director's special syntax
 │   └── game/
 │       └── habbo/                               # Boot cast
-│           ├── index.js                         # registerCast() + member registration
-│           ├── *.js                             # Translated .ls files
+│           ├── index.js                         # registerCast() with script types (MOVIE_SCRIPT, BEHAVIOR_SCRIPT, etc.)
+│           ├── *.js                             # Translated .ls files (factory pattern)
 │           └── *.png                            # Original assets
 └── tasks/
     └── *.md                                     # TODO checklists per cast
 ```
 
 - Each cast's `index.js` calls `registerCast(name, members)` with script/bitmap members
+- Each translated `.js` file uses `export default function()` returning an object with handlers
 - Translated `.js` files live alongside original `.ls` files and assets in `apps/client/src/game/<cast>/`
 - No separate asset copying needed — assets stay in place
 - Dynamic loading via `import()` for casts not in initial bundle
@@ -180,39 +258,77 @@ apps/client/
 Each cast's `index.js` registers its members using the director layer:
 
 ```js
-import { registerCast, createScriptMember, createBitmapMember } from '../../director'
+import {
+  BEHAVIOR_SCRIPT,
+  MOVIE_SCRIPT,
+  createBitmapMember,
+  createScriptMember,
+  registerCast,
+} from '../../director'
 import Logo from './Internal_4_Logo.png'
+import Initialization from './initialization'
 
 registerCast('Internal', [
-  createScriptMember('Initialization', import('./initialization')),
+  createScriptMember('Initialization', MOVIE_SCRIPT, Initialization),
   createBitmapMember('Logo', Logo),
 ])
 ```
 
-- `createScriptMember(name, importPromise)` — registers a LingoScript module
+- `createScriptMember(name, type, factory)` — registers a LingoScript module with its type and factory function
 - `createBitmapMember(name, imageUrl)` — registers a bitmap asset (Vite resolves the import to a URL)
 - `registerCast(name, members)` — registers the cast with all its members
+- Script types: `MOVIE_SCRIPT`, `BEHAVIOR_SCRIPT`, `PARENT_SCRIPT`
 
 ### Runtime Lingo (`apps/client/src/director/runtime.js`)
 
-Native Director/Lingo functions are implemented here **incrementally** as they are encountered during translation:
-- Do NOT implement all Director functions upfront
-- Only implement what the current file being translated needs
-- Each function should be a named export
-- **This file must contain ONLY native Director functions** (e.g., `castLib`, `puppetTempo`, `member`, `sprite`, `voidP`, `listp`, `integerp`, `stringp`, etc.)
-- **NO helpers, NO loose variables, NO abstractions** — if you need something that isn't a native Director function, notify the user to add it to `apps/client/src/director/core.js`
+**STRICT RULES:** This file must contain **ONLY native Director variables and methods**. Nothing else.
 
-### Director Helpers (`apps/client/src/director/core.js`)
+- `_movie`, `_player`, `_global` — native Director globals
+- Constants: `EMPTY`, `VOID`, `RETURN`, `TAB` — native Lingo constants
+- Native functions: `castLib`, `puppetTempo`, `member`, `sprite`, `voidp`, `list`, `propList`, `call`, `go`, `netDone`, `listp`, `integerp`, `stringp`, `symbolp`, `objectp`, `ilk`, `chars`, `length`, `offset`, `random`, `string`, `value`, `date`, `time`, `put`, `pass`, `stopEvent`, `script`, `field`, `getPref`, `setPref`, `newMember`, `openNetPage`, `gotoNetPage`, `param`, etc.
+- Imports helpers/abstractions from `core.js` as needed (e.g., `Member`, `Movie`, `Sprite`, `List` classes)
+- **NO helpers, NO extra variables, NO abstractions** — anything non-native goes in `core.js` or `index.js`
+- **Special Director syntax** (`the property`, `go to frame`, etc.) that cannot be directly mapped to JS function calls must be **reported to the user for discussion** — do NOT implement workarounds here
 
-Helpers and abstractions that simulate Director behavior live here:
-- `Member`, `CastLibrary`, `Sprite`, `Movie`, `Player` classes
-- `registerCast()`, `createScriptMember()`, `createBitmapMember()`
-- `on(event, callback)` — event registration for movie handlers
+**CRITICAL: When editing `runtime.js`:**
+1. **NEVER overwrite the file** — always read it first, then add only what's missing
+2. **New functions must be added in alphabetical order** by function name
+3. **Never delete existing functions** — if a function needs changes, edit it in place
+4. Internal state variables (`_currentParams`, `_the`, `_timeouts`, etc.) go at the top under `// ── Internal state ──` comment
+5. Constants (`EMPTY`, `VOID`, `RETURN`, `TAB`) go at the top under `// ── Constants ──`
+6. If you accidentally overwrite the file, you MUST restore ALL existing functions before adding new ones
+
+### Director Core (`apps/client/src/director/core.js`)
+
+Helpers, variables, and abstractions to make the Director API work:
 - `_params` — external parameters storage
-- `_movie`, `_player` — singletons for movie and player state
-- Re-exports from `loader.js`: `loadImage`, `loadModule`, `loadPromise`
+- `Member`, `CastLibrary`, `Sprite`, `Movie`, `Player`, `List` classes
+- Other helpers, variables, or abstractions needed to make the Director API work
 
-**IMPORTANT: `apps/client/src/director/core.js` is NOT edited by the AI agent.** If during translation you determine that `core.js` needs a new helper, class, method, or modification, you must **stop and notify the user in the chat** with a clear description of what needs to be added and why. The user decides whether to apply the change. Do not proceed with editing `core.js`.
+### Director Index (`apps/client/src/director/index.js`)
+
+Translation API — functions, variables, and methods used by translations and users to run director translations or register director assets from JavaScript:
+- `createBitmapMember`, `createScriptMember`, `createFieldMember`, `registerCast` — asset registration for cast modules in `apps/client/src/game/`
+- Movie startup logic, `_director` setup, canvas animation loop (`requestAnimationFrame`)
+- Functions that need runtime variables from `runtime.js` but can't live in `core.js` (to avoid circular dependency)
+- Barrel re-exports from `core.js`, `runtime.js`, and `the.js`
+
+### Director Loader (`apps/client/src/director/loader.js`)
+
+Preloader that simulates Director's `.cct` preload system:
+- Director fully loaded all `.cct` files before executing any script
+- Images load via `new Image()` with load/error event tracking
+- Modules load via `import()` with promise tracking
+- Progress tracked via `totalObjects()`, `objectsLoaded()`, `finished()`, `addFinishedListener()`
+- The movie doesn't start until `finished()` returns true
+
+### Director The Proxy (`apps/client/src/director/the.js`)
+
+Proxy that translates Director's `the.property` syntax:
+- `the` is special syntax in Director (not a normal variable)
+- The proxy intercepts property access and returns values from `_movie`, `_player`, or other global Director objects
+- Writes via `the.property = value` are routed back to the underlying objects
+- Examples: `the.frame` → current frame, `the.mouseLoc` → mouse position, `the.keyboardFocusSprite` → focus sprite
 
 ### Asset Handling
 
@@ -292,18 +408,28 @@ Each cast in `apps/client/src/game/<cast>/` has its own `index.js` that calls `r
 
 ```js
 // apps/client/src/game/habbo/index.js
-import { registerCast, createScriptMember, createBitmapMember } from '../../director'
+import {
+  BEHAVIOR_SCRIPT,
+  MOVIE_SCRIPT,
+  createBitmapMember,
+  createScriptMember,
+  registerCast,
+} from '../../director'
 import Logo from './Internal_4_Logo.png'
+import Initialization from './initialization'
+import Init from './init'
 
 registerCast('Internal', [
-  createScriptMember('Initialization', import('./initialization')),
+  createScriptMember('Initialization', MOVIE_SCRIPT, Initialization),
+  createScriptMember('Init', BEHAVIOR_SCRIPT, Init),
   createBitmapMember('Logo', Logo),
 ])
 ```
 
-- **Script members**: `createScriptMember(name, import('./file.js'))` — the import promise is stored and the module is loaded via `apps/client/src/director/loader.js` (`loadModule`)
+- **Script members**: `createScriptMember(name, type, factory)` — the factory function is stored and called by the runtime when the script is instantiated
 - **Bitmap members**: `createBitmapMember(name, imageUrl)` — Vite resolves the image import to a URL, which is passed to `loadImage` from the loader
 - **Cast registration**: `registerCast(name, members)` — creates a `CastLibrary` in `_movie` and registers each `Member`
+- **Script types**: `MOVIE_SCRIPT` (global handlers), `BEHAVIOR_SCRIPT` (sprite-attached), `PARENT_SCRIPT` (class-like)
 
 ### Preload Tracking
 
@@ -340,14 +466,23 @@ The director layer exports are available via the relative path from each cast fo
 
 | Import FROM | What to import |
 |-------------|---------------|
-| `apps/client/src/director/index.js` (as `../../director`) | All exports from `core.js` + `runtime.js`: `registerCast`, `createScriptMember`, `createBitmapMember`, `on`, `_params`, `_movie`, `_player`, `castLib`, `puppetTempo`, etc. |
+| `../../director` (barrel from `index.js`) | All native Director functions from `runtime.js`: `castLib`, `puppetTempo`, `member`, `sprite`, `voidp`, `list`, `propList`, `call`, `go`, `the`, `stopEvent`, `pass`, `netDone`, `ilk`, `stringp`, `symbolp`, `voidp`, `integerp`, `listp`, `objectp`, `field`, `put`, `random`, `string`, `value`, `chars`, `length`, `offset`, `date`, `time`, `timeout`, `script`, `getPref`, `setPref`, `newMember`, `openNetPage`, `gotoNetPage`, `param`, `EMPTY`, `VOID`, `RETURN`, `TAB`, `_global` |
+| `../../director` (from `index.js`) | Translation API: `registerCast`, `createScriptMember`, `createBitmapMember`, `createFieldMember`, `MOVIE_SCRIPT`, `BEHAVIOR_SCRIPT`, `PARENT_SCRIPT` |
 | Cast-local API files | `./object-api.js`, `./variable-api.js`, etc. (relative to the cast folder in `apps/client/src/game/<cast>/`) |
+| `_director` | Available globally — no import needed. Contains movie script handlers registered at startup |
+| `_global` | Available globally from `runtime.js` — no import needed. Only use when Lingo code explicitly references `_global` |
 
-**`apps/client/src/director/runtime.js`** — Only native Director functions. If you need something that isn't a native Lingo function, notify the user to add it to `apps/client/src/director/core.js`.
+**File responsibility rules:**
 
-**`apps/client/src/director/core.js`** — Do NOT edit. Notify the user in the chat if changes are needed.
+- **`core.js`** — Helpers, variables, and abstractions for the Director API (`Member`, `CastLibrary`, `Sprite`, `Movie`, `Player`, `List`, `_params`). Editable.
+- **`runtime.js`** — ONLY native Director variables and methods. Imports from `core.js` as needed. **Special Director syntax that can't be directly implemented in JS must be reported to the user.**
+- **`index.js`** — Translation API: `createBitmapMember`, `createScriptMember`, `createFieldMember`, `registerCast`, movie startup, `_director` setup. Editable.
+- **`loader.js`** — Preloader simulation. Do NOT edit unless you understand the preload system.
+- **`the.js`** — `the.property` proxy. Do NOT edit unless necessary.
 
 API functions (object-api, variable-api, etc.) are implemented per-cast and imported relatively, not from the director layer.
+
+**Translated `.js` files do NOT need to import `_director` or `_global`** — both are globally available.
 
 ## Canvas Rendering
 
