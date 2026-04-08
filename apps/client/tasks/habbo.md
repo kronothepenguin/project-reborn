@@ -11,8 +11,8 @@
 ## Member Registration (Internal cast)
 
 - [x] Register member #1 "Initialization" (script)
-- [ ] Register member #2 "Init" (script)
-- [ ] Register member #3 "Loop" (script)
+- [x] Register member #2 "Init" (script)
+- [x] Register member #3 "Loop" (script)
 - [x] Register member #4 "Logo" (bitmap)
 
 ## Cast Library Setup (from Casts.csv)
