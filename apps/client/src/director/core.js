@@ -1,30 +1,30 @@
-import { loadImage, loadModule, loadPromise } from "./loader";
-
 export const _params = {};
-
-export function setExternalParam(name, value) {
-  _params[name] = value;
-}
 
 class Rect {}
 
-class Member {
+export class Member {
   fileName = "";
   media = new ArrayBuffer();
   name = "";
   regPoint = [0, 0];
 
   /** @type{any} */
-  _obj = null;
+  _raw = null;
 
-  constructor(castLibNum, number, type, name, width, height, rect) {
-    this._castLibNum = castLibNum;
-    this._number = number;
+  _scriptType = Symbol.for("empty");
+  _scriptInstance = null;
+
+  _castLibNum = 0;
+  _number = 0;
+
+  _width = 0;
+  _height = 0;
+
+  _rect = new Rect();
+
+  constructor(type, name) {
     this._type = type;
     this.name = name;
-    this._width = width;
-    this._height = height;
-    this._rect = rect;
   }
 
   get castLibNum() {
@@ -72,7 +72,7 @@ class Member {
   importFileInto() {}
 }
 
-class CastLibrary {
+export class CastLibrary {
   name = "";
   // • 0. Load the cast library when needed. This is the default value.
   // • 1. Load the cast library before frame 1.
@@ -109,14 +109,16 @@ class CastLibrary {
   }
 }
 
-class Sprite {}
+export class Sprite {}
 
-class Movie {
+export class Movie {
   keyboardFocusSprite = -1;
 
   /** @type{Record<any, CastLibrary>} */
   _castRegistry = {};
   _castCount = 0;
+
+  _tempo = 60; // 60 FPS
 
   constructor() {}
 
@@ -129,7 +131,7 @@ class Movie {
   }
 
   puppetSprite(intTempo) {
-    _player._tempo = intTempo;
+    this._tempo = intTempo;
   }
 
   puppetTempo() {}
@@ -145,8 +147,8 @@ class Movie {
       return;
     }
 
-    const castNum = _movie._castCount + 1;
-    _movie._castCount++;
+    const castNum = this._castCount + 1;
+    this._castCount++;
 
     const cast = new CastLibrary(name, castNum);
 
@@ -164,16 +166,10 @@ class Movie {
   }
 }
 
-export const _movie = new Movie();
-
-class Player {
-  /** @type{HTMLCanvasElement|null} */
-  _canvas = null;
-
-  _tempo = 60; // 60 FPS
-  _start = 0;
-
-  constructor() {}
+export class Player {
+  constructor(movie) {
+    this._movie = movie;
+  }
 
   cursor() {}
 
@@ -182,80 +178,8 @@ class Player {
   getPref() {}
 
   setPref() {}
-
-  _play() {
-    this._canvas?.dispatchEvent(new CustomEvent("prepareMovie"));
-    requestAnimationFrame(this._animationFrame);
-  }
-
-  _stop() {}
-
-  _animationFrame = (timestamp) => {
-    if (this._start === 0) {
-      this._start = timestamp;
-    }
-
-    const delta = timestamp - this._start;
-    const target = 1000 / this._tempo;
-
-    if (Math.abs(target - delta) > 1 && delta < target) {
-      requestAnimationFrame(this._animationFrame);
-      return;
-    }
-
-    // TODO: frame
-
-    this._start = timestamp;
-
-    requestAnimationFrame(this._animationFrame);
-  };
 }
 
-export const _player = new Player();
-
-export function createBitmapMember(name, src) {
-  const member = new Member(0, 0, Symbol.for("bitmap"), name, 0, 0, null);
-
-  const img = loadImage(src);
-  img.addEventListener("load", () => {
-    const canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
-    const context = canvas.getContext("2d");
-    context?.drawImage(img, 0, 0);
-
-    const imageData = context?.getImageData(0, 0, img.width, img.height);
-    if (imageData?.data.buffer) {
-      member.media = imageData?.data.buffer;
-    }
-  });
-
-  return member;
-}
-
-export function createScriptMember(name, src) {
-  const member = new Member(0, 0, Symbol.for("script"), name, 0, 0, null);
-
-  if (typeof src === "string") {
-    src = loadModule(src);
-  } else {
-    loadPromise(src);
-  }
-  member._obj = src;
-
-  return member;
-}
-
-/**
- *
- * @param {string} name
- * @param {Member[]} members
- * @returns
- */
-export function registerCast(name, members) {
-  _movie._registerCast(name, members);
-}
-
-export function on(event, callback) {
-  _player._canvas?.addEventListener(event, callback);
+export class List {
+  constructor(...args) {}
 }

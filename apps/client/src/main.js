@@ -1,5 +1,4 @@
-import { _player, setExternalParam } from "./director";
-import { addFinishedListener } from "./director/loader";
+import { setCanvas, setExternalParams } from "./director";
 
 class XParam extends HTMLElement {
   constructor() {
@@ -14,7 +13,7 @@ class XObject extends HTMLElement {
     super();
 
     this.canvas = document.createElement("canvas");
-    _player._canvas = this.canvas;
+    setCanvas(this.canvas);
   }
 
   connectedCallback() {
@@ -26,10 +25,9 @@ class XObject extends HTMLElement {
 
     this.appendChild(this.canvas);
 
-    let src = "";
-
-    const params = this.querySelectorAll("x-param");
-    params.forEach((p) => {
+    const params = {};
+    const children = this.querySelectorAll("x-param");
+    children.forEach((p) => {
       const name = p.getAttribute("name");
       if (!name) {
         return;
@@ -37,20 +35,10 @@ class XObject extends HTMLElement {
 
       const value = p.getAttribute("value");
 
-      if (name === "src") {
-        src = value ?? "";
-      }
-
-      setExternalParam(name, value);
+      params[name] = value;
     });
 
-    if (src) {
-      import(/* @vite-ignore */ src);
-    }
-
-    addFinishedListener(() => {
-      _player._play();
-    });
+    setExternalParams(params);
   }
 }
 

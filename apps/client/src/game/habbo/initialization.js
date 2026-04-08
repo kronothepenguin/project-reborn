@@ -1,12 +1,16 @@
-import { castLib, on, puppetTempo } from "../../director";
+import { castLib, puppetTempo } from "../../director";
 
-function prepareMovie() {
-  castLib(2).preLoadMode = 1;
+export default function () {
+  return {
+    prepareMovie() {
+      // the debugPlaybackEnabled = 0
+      castLib(2).preLoadMode = 1;
+      // preloadNetThing(castLib(2).fileName)
+      // moveToFront(the stage)
+      // set the exitLock to 1
+      puppetTempo(15);
+    },
 
-  puppetTempo(15);
+    stopMovie() {},
+  };
 }
-
-function stopMovie() {}
-
-on("prepareMovie", prepareMovie);
-on("stopMovie", stopMovie);

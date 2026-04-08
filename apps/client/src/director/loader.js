@@ -18,7 +18,7 @@ export function finished() {
 }
 
 export function addFinishedListener(callback) {
-  target.addEventListener("finished", callback);
+  target.addEventListener("finished", callback, { once: true });
 }
 
 function addPending(ref) {

@@ -1,11 +1,13 @@
-import { on, go, theFrame, netDone } from "../../director";
+import { go, netDone, the } from "../../director";
 
-function exitFrame() {
-  if (netDone()) {
-    _global.initCore();
-  } else {
-    go(theFrame());
-  }
+export default function () {
+  return {
+    exitFrame() {
+      if (netDone()) {
+        _director.initCore();
+      } else {
+        go(the.frame);
+      }
+    },
+  };
 }
-
-on("exitFrame", exitFrame);

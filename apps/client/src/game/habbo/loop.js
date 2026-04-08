@@ -1,7 +1,9 @@
-import { on, go, theFrame } from "../../director";
+import { go, the } from "../../director";
 
-function exitFrame() {
-  go(theFrame());
+export default function () {
+  return {
+    exitFrame() {
+      go(the.frame);
+    },
+  };
 }
-
-on("exitFrame", exitFrame);
