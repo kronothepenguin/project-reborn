@@ -95,6 +95,41 @@ Symbol.for("image")
 
 Always use `Symbol.for("name")` (without the `#` prefix) when translating Lingo symbols.
 
+### Function Classification Rules
+
+Every Lingo function falls into one of three categories:
+
+| Category | Where it goes | Examples |
+|----------|--------------|----------|
+| **Native Director function** | `runtime.js` ONLY | `castLib`, `puppetTempo`, `go`, `theFrame`, `netDone`, `voidP`, `member`, `sprite` |
+| **Director event handler** | Local function + `on()` in the translated `.js` file | `prepareMovie`, `stopMovie`, `exitFrame`, `beginSprite` |
+| **Custom/game function** | Register in `_global` or ask the user | `initCore`, API functions, manager classes |
+
+**Rules:**
+- `runtime.js` — **ONLY** native Director functions. No variables, no helpers, no abstractions. If you need state (e.g. `_currentFrame`), **stop and ask the user** to add it in `core.js`.
+- Event handlers are local — they do NOT go in `_global`.
+- If a function doesn't belong to the above two categories and you can't find it in the current cast's `.js` files, **ask the user** before implementing.
+
+### Global Function Registration (`_global`)
+
+Every translated `.js` file must register its functions in `_global` (initialized in `apps/client/src/director/index.js` as `globalThis._global = {}`). This simulates Director's global function scope where any handler can call any function across scripts:
+
+```js
+// When a function is called from another cast/script (e.g., initCore from habbo calling fuse_client):
+_global.initCore = function() {
+  // implementation
+};
+
+// Then from any other file:
+_global.initCore();
+```
+
+**Rules:**
+- Each `.js` file registers its public functions in `_global`
+- When calling a function from a not-yet-translated cast, use `_global.functionName()` as a placeholder
+- The actual implementation will be added when that cast/file is translated
+- `_global` is available globally, no need to import it
+
 ### Director Movie Handlers
 
 `prepareMovie`, `stopMovie`, and `exitFrame` are **special Director movie-level handlers**. They are registered using the `on()` helper from the director layer:

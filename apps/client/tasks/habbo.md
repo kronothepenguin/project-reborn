@@ -4,16 +4,16 @@
 
 ## LingoScript Translation (Internal cast only)
 
-- [ ] Internal_1_Initialization.ls → initialization.js
-- [ ] Internal_2_Init.ls → init.js
-- [ ] Internal_3_Loop.ls → loop.js
+- [x] Internal_1_Initialization.ls → initialization.js
+- [x] Internal_2_Init.ls → init.js
+- [x] Internal_3_Loop.ls → loop.js
 
 ## Member Registration (Internal cast)
 
-- [ ] Register member #1 "Initialization" (script)
+- [x] Register member #1 "Initialization" (script)
 - [ ] Register member #2 "Init" (script)
 - [ ] Register member #3 "Loop" (script)
-- [ ] Register member #4 "Logo" (bitmap)
+- [x] Register member #4 "Logo" (bitmap)
 
 ## Cast Library Setup (from Casts.csv)
 
