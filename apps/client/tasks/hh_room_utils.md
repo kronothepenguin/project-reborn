@@ -1,31 +1,83 @@
 # hh_room_utils Cast
 
-- [ ] 3_Safe Trader Class.ls → safe-trader-class.js
-- [ ] 4_HumanExtra Sign Class.ls → humanextra-sign-class.js
-- [ ] 5_Select Arrow Class.ls → select-arrow-class.js
-- [ ] 6_Dialog Thread Class.ls → dialog-thread-class.js
-- [ ] 7_Dialog Handler Class.ls → dialog-handler-class.js
-- [ ] 9_Flood Blocking Class.ls → flood-blocking-class.js
-- [ ] 10_User Chooser Class.ls → user-chooser-class.js
-- [ ] 11_Group Info Class.ls → group-info-class.js
-- [ ] 12_Ad Manager.ls → ad-manager.js
-- [ ] 13_Interstitial Manager.ls → interstitial-manager.js
-- [ ] 14_Badge Effect Class.ls → badge-effect-class.js
-- [ ] 15_Furni Chooser Class.ls → furni-chooser-class.js
-- [ ] 16_Badge Manager Class.ls → badge-manager-class.js
-- [ ] 17_Object Mover Class.ls → object-mover-class.js
-- [ ] 18_Container Hand Class.ls → container-hand-class.js
-- [ ] 19_Doorbell Class.ls → doorbell-class.js
-- [ ] 20_Ignore List Class.ls → ignore-list-class.js
-- [ ] 21_Shadow Manager.ls → shadow-manager.js
-- [ ] 22_Info Stand Class.ls → info-stand-class.js
-- [ ] 23_OneWayDoor Manager Class.ls → onewaydoor-manager-class.js
-- [ ] 25_Chat Manager.ls → chat-manager.js
-- [ ] 26_Chat Display.ls → chat-display.js
-- [ ] 27_Chat Bubble Normal.ls → chat-bubble-normal.js
-- [ ] 28_Chat Bubble Unheard.ls → chat-bubble-unheard.js
-- [ ] 29_Chat Bubble Info Basic.ls → chat-bubble-info-basic.js
-- [ ] 31_RoomEvent List Class.ls → roomevent-list-class.js
-- [ ] 32_RoomEvent Browser Class.ls → roomevent-browser-class.js
-- [ ] 51_Details Bubble Class.ls → details-bubble-class.js
-- [ ] 57_Badge List Class.ls → badge-list-class.js
+## LingoScript Translation
+
+- [ ] 10_User Chooser Class.ls
+- [ ] 11_Group Info Class.ls
+- [ ] 12_Ad Manager.ls
+- [ ] 13_Interstitial Manager.ls
+- [ ] 14_Badge Effect Class.ls
+- [ ] 15_Furni Chooser Class.ls
+- [ ] 16_Badge Manager Class.ls
+- [ ] 17_Object Mover Class.ls
+- [ ] 18_Container Hand Class.ls
+- [ ] 19_Doorbell Class.ls
+- [ ] 20_Ignore List Class.ls
+- [ ] 21_Shadow Manager.ls
+- [ ] 22_Info Stand Class.ls
+- [ ] 23_OneWayDoor Manager Class.ls
+- [ ] 25_Chat Manager.ls
+- [ ] 26_Chat Display.ls
+- [ ] 27_Chat Bubble Normal.ls
+- [ ] 28_Chat Bubble Unheard.ls
+- [ ] 29_Chat Bubble Info Basic.ls
+- [ ] 31_RoomEvent List Class.ls
+- [ ] 32_RoomEvent Browser Class.ls
+- [ ] 3_Safe Trader Class.ls
+- [ ] 4_HumanExtra Sign Class.ls
+- [ ] 51_Details Bubble Class.ls
+- [ ] 57_Badge List Class.ls
+- [ ] 5_Select Arrow Class.ls
+- [ ] 6_Dialog Thread Class.ls
+- [ ] 7_Dialog Handler Class.ls
+- [ ] 9_Flood Blocking Class.ls
+
+## Member Registration
+
+- [ ] Register member #1 "variable.index" (field)
+- [ ] Register member #2 "thread.index" (field)
+- [ ] Register member #34 "group_info.window" (field)
+- [ ] Register member #35 "room_bar.window" (field)
+- [ ] Register member #36 "info_stand.window" (field)
+- [ ] Register member #37 "object_interface.window" (field)
+- [ ] Register member #38 "habbo_trading.window" (field)
+- [ ] Register member #39 "habbo_hand.visual" (field)
+- [ ] Register member #40 "chooser.window" (field)
+- [ ] Register member #41 "room_doorbell_waiting.window" (field)
+- [ ] Register member #42 "room_doorbell_rejected.window" (field)
+- [ ] Register member #43 "habbo_hand_buttons.window" (field)
+- [ ] Register member #44 "habbo_doorbell.window" (field)
+- [ ] Register member #46 "eventinfo_bubble.window" (field)
+- [ ] Register member #47 "roomevent_info.window" (field)
+- [ ] Register member #48 "roomevent_browser.window" (field)
+- [ ] Register member #49 "roomevent_create.window" (field)
+- [ ] Register member #52 "details_generic.window" (field)
+- [ ] Register member #3 "Safe Trader Class" (script)
+- [ ] Register member #4 "HumanExtra Sign Class" (script)
+- [ ] Register member #5 "Select Arrow Class" (script)
+- [ ] Register member #6 "Dialog Thread Class" (script)
+- [ ] Register member #7 "Dialog Handler Class" (script)
+- [ ] Register member #9 "Flood Blocking Class" (script)
+- [ ] Register member #10 "User Chooser Class" (script)
+- [ ] Register member #11 "Group Info Class" (script)
+- [ ] Register member #12 "Ad Manager" (script)
+- [ ] Register member #13 "Interstitial Manager" (script)
+- [ ] Register member #14 "Badge Effect Class" (script)
+- [ ] Register member #15 "Furni Chooser Class" (script)
+- [ ] Register member #16 "Badge Manager Class" (script)
+- [ ] Register member #17 "Object Mover Class" (script)
+- [ ] Register member #18 "Container Hand Class" (script)
+- [ ] Register member #19 "Doorbell Class" (script)
+- [ ] Register member #20 "Ignore List Class" (script)
+- [ ] Register member #21 "Shadow Manager" (script)
+- [ ] Register member #22 "Info Stand Class" (script)
+- [ ] Register member #23 "OneWayDoor Manager Class" (script)
+- [ ] Register member #25 "Chat Manager" (script)
+- [ ] Register member #26 "Chat Display" (script)
+- [ ] Register member #27 "Chat Bubble Normal" (script)
+- [ ] Register member #28 "Chat Bubble Unheard" (script)
+- [ ] Register member #29 "Chat Bubble Info Basic" (script)
+- [ ] Register member #31 "RoomEvent List Class" (script)
+- [ ] Register member #32 "RoomEvent Browser Class" (script)
+- [ ] Register member #51 "Details Bubble Class" (script)
+- [ ] Register member #57 "Badge List Class" (script)

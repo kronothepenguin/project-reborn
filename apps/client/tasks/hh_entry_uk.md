@@ -1,4 +1,51 @@
 # hh_entry_uk Cast
 
-- [ ] 23_Entry Cloud Class.ls → entry-cloud-class.js
-- [ ] 24_Entry Car Class.ls → entry-car-class.js
+## LingoScript Translation
+
+- [ ] 23_Entry Cloud Class.ls
+- [ ] 24_Entry Car Class.ls
+
+## Member Registration
+
+- [ ] Register member #1 "corner_element" (bitmap)
+- [ ] Register member #2 "corner_element_shadow" (bitmap)
+- [ ] Register member #11 "Habbo UK garden" (bitmap)
+- [ ] Register member #12 "Habbo UK tower" (bitmap)
+- [ ] Register member #13 "citybg_left" (bitmap)
+- [ ] Register member #14 "citybg_right" (bitmap)
+- [ ] Register member #18 "hotel_topwindows1" (bitmap)
+- [ ] Register member #19 "hotel_topwindows2" (bitmap)
+- [ ] Register member #20 "hotel_bottomwindows1" (bitmap)
+- [ ] Register member #21 "hotel_bottomwindows_2" (bitmap)
+- [ ] Register member #22 "hotel_bottomwindows3" (bitmap)
+- [ ] Register member #25 "line_of_trees" (bitmap)
+- [ ] Register member #26 "car1" (bitmap)
+- [ ] Register member #27 "car2" (bitmap)
+- [ ] Register member #28 "bus1" (bitmap)
+- [ ] Register member #29 "bus2" (bitmap)
+- [ ] Register member #30 "cab1" (bitmap)
+- [ ] Register member #31 "cab2" (bitmap)
+- [ ] Register member #32 "cloud_0_left" (bitmap)
+- [ ] Register member #33 "cloud_0_right" (bitmap)
+- [ ] Register member #34 "cloud_1_left" (bitmap)
+- [ ] Register member #35 "cloud_1_right" (bitmap)
+- [ ] Register member #36 "cloud_2_left" (bitmap)
+- [ ] Register member #37 "cloud_2_right" (bitmap)
+- [ ] Register member #38 "cloud_3_left" (bitmap)
+- [ ] Register member #39 "cloud_3_right" (bitmap)
+- [ ] Register member #40 "hotel_flags1" (bitmap)
+- [ ] Register member #41 "hotel_flags2" (bitmap)
+- [ ] Register member #42 "hotel_flags3" (bitmap)
+- [ ] Register member #43 "hotel_flags4" (bitmap)
+- [ ] Register member #44 "hotel_flags5" (bitmap)
+- [ ] Register member #45 "hotel_flags6" (bitmap)
+- [ ] Register member #46 "light1" (bitmap)
+- [ ] Register member #4 "entry.visual" (field)
+- [ ] Register member #8 "citybg_palette" (palette)
+- [ ] Register member #9 "environment_palette" (palette)
+- [ ] Register member #10 "hotel_palette" (palette)
+- [ ] Register member #23 "Entry Cloud Class" (script)
+- [ ] Register member #24 "Entry Car Class" (script)
+- [ ] Register member #15 "skyleft_shape" (shape)
+- [ ] Register member #16 "skyright_shape" (shape)
+- [ ] Register member #17 "box" (shape)

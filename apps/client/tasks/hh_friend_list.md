@@ -1,14 +1,83 @@
 # hh_friend_list Cast
 
-- [ ] 3_Friend List Interface Class.ls → friend-list-interface-class.js
-- [ ] 4_Friend List Component Class.ls → friend-list-component-class.js
-- [ ] 5_Friend List Handler Class.ls → friend-list-handler-class.js
-- [ ] 7_Friend List Container.ls → friend-list-container.js
-- [ ] 8_Friend Request List Container.ls → friend-request-list-container.js
-- [ ] 10_Friend List View Base.ls → friend-list-view-base.js
-- [ ] 11_Friend List Actions Base.ls → friend-list-actions-base.js
-- [ ] 12_Friend Online List View.ls → friend-online-list-view.js
-- [ ] 13_Friend Offline List View.ls → friend-offline-list-view.js
-- [ ] 14_Friend Request List View.ls → friend-request-list-view.js
-- [ ] 15_Friend Search Results View.ls → friend-search-results-view.js
-- [ ] 31_Friend Infobox Class.ls → friend-infobox-class.js
+## LingoScript Translation
+
+- [ ] 10_Friend List View Base.ls
+- [ ] 11_Friend List Actions Base.ls
+- [ ] 12_Friend Online List View.ls
+- [ ] 13_Friend Offline List View.ls
+- [ ] 14_Friend Request List View.ls
+- [ ] 15_Friend Search Results View.ls
+- [ ] 31_Friend Infobox Class.ls
+- [ ] 3_Friend List Interface Class.ls
+- [ ] 4_Friend List Component Class.ls
+- [ ] 5_Friend List Handler Class.ls
+- [ ] 7_Friend List Container.ls
+- [ ] 8_Friend Request List Container.ls
+
+## Member Registration
+
+- [ ] Register member #23 "friend_list_highlighted_bar" (bitmap)
+- [ ] Register member #33 "friend_list_action_bg" (bitmap)
+- [ ] Register member #34 "friend_list_requests_action_bg" (bitmap)
+- [ ] Register member #35 "friend_list_action_offline_bg" (bitmap)
+- [ ] Register member #36 "friend_list_online_bar" (bitmap)
+- [ ] Register member #37 "friend_list_dimmed_bar" (bitmap)
+- [ ] Register member #38 "friend_list_requests_bar" (bitmap)
+- [ ] Register member #39 "friend_list_search_bar" (bitmap)
+- [ ] Register member #40 "friend_list_drag" (bitmap)
+- [ ] Register member #41 "friend_list_minimize" (bitmap)
+- [ ] Register member #42 "friend_list_close" (bitmap)
+- [ ] Register member #43 "friend_list_light_bg" (bitmap)
+- [ ] Register member #44 "friend_list_shadow_top" (bitmap)
+- [ ] Register member #45 "friend_list_shadow_bottom" (bitmap)
+- [ ] Register member #46 "friend_list_bottom_left" (bitmap)
+- [ ] Register member #47 "friend_list_bottom_right" (bitmap)
+- [ ] Register member #48 "friend_list_bottom_middle" (bitmap)
+- [ ] Register member #49 "friend_list_top_left" (bitmap)
+- [ ] Register member #50 "friend_list_top_right" (bitmap)
+- [ ] Register member #51 "friend_list_top_middle" (bitmap)
+- [ ] Register member #52 "friends_preferences_button" (bitmap)
+- [ ] Register member #53 "friends_mini_mail_button_inactive" (bitmap)
+- [ ] Register member #54 "friends_mini_mail_button_active" (bitmap)
+- [ ] Register member #55 "friends_search_button" (bitmap)
+- [ ] Register member #56 "friends_home_icon" (bitmap)
+- [ ] Register member #57 "friends_mail_icon" (bitmap)
+- [ ] Register member #58 "friends_im_icon" (bitmap)
+- [ ] Register member #59 "friends_invite_icon" (bitmap)
+- [ ] Register member #60 "friends_dismiss_all_icon" (bitmap)
+- [ ] Register member #61 "friends_follow_icon" (bitmap)
+- [ ] Register member #62 "friends_mail_list_icon" (bitmap)
+- [ ] Register member #63 "friends_addfriend_icon" (bitmap)
+- [ ] Register member #64 "friends_accept_all_icon" (bitmap)
+- [ ] Register member #65 "friends_cross_icon" (bitmap)
+- [ ] Register member #66 "friends_accept_request" (bitmap)
+- [ ] Register member #67 "friends_reject_request" (bitmap)
+- [ ] Register member #68 "friends_online_panel_bg" (bitmap)
+- [ ] Register member #69 "friends_offline_panel_bg" (bitmap)
+- [ ] Register member #70 "friends_request_panel_bg" (bitmap)
+- [ ] Register member #71 "search_tab_content_bar" (bitmap)
+- [ ] Register member #72 "search_button" (bitmap)
+- [ ] Register member #73 "search_lookingglass" (bitmap)
+- [ ] Register member #1 "thread.index" (field)
+- [ ] Register member #2 "variable.index" (field)
+- [ ] Register member #17 "friends_list_offline.window" (field)
+- [ ] Register member #18 "friends_list_online.window" (field)
+- [ ] Register member #19 "friends_list_base.window" (field)
+- [ ] Register member #20 "friends_list_friend_requests.window" (field)
+- [ ] Register member #21 "friends_list_search.window" (field)
+- [ ] Register member #32 "friendlist_userinfo.window" (field)
+- [ ] Register member #3 "Friend List Interface Class" (script)
+- [ ] Register member #4 "Friend List Component Class" (script)
+- [ ] Register member #5 "Friend List Handler Class" (script)
+- [ ] Register member #7 "Friend List Container" (script)
+- [ ] Register member #8 "Friend Request List Container" (script)
+- [ ] Register member #10 "Friend List View Base" (script)
+- [ ] Register member #11 "Friend List Actions Base" (script)
+- [ ] Register member #12 "Friend Online List View" (script)
+- [ ] Register member #13 "Friend Offline List View" (script)
+- [ ] Register member #14 "Friend Request List View" (script)
+- [ ] Register member #15 "Friend Search Results View" (script)
+- [ ] Register member #31 "Friend Infobox Class" (script)
+- [ ] Register member #24 "con_message_sent" (sound)
+- [ ] Register member #25 "con_new_message" (sound)

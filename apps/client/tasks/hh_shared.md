@@ -1,30 +1,93 @@
 # hh_shared Cast
 
-- [ ] 3_Hobba Interface Class.ls → hobba-interface-class.js
-- [ ] 4_Hobba Component Class.ls → hobba-component-class.js
-- [ ] 5_Hobba Handler Class.ls → hobba-handler-class.js
-- [ ] 7_Server Date Class.ls → server-date-class.js
-- [ ] 8_Connection Problem Class.ls → connection-problem-class.js
-- [ ] 9_Element Bouncer Class.ls → element-bouncer-class.js
-- [ ] 10_CLangTest.ls → clangtest.js
-- [ ] 11_Figure Converter Class COPY.ls → figure-converter-class-copy.js
-- [ ] 19_Help Tooltip Manager Class.ls → help-tooltip-manager-class.js
-- [ ] 20_Ticket Window Manager Class.ls → ticket-window-manager-class.js
-- [ ] 22_Date Class.ls → date-class.js
-- [ ] 50_Sound API.ls → sound-api.js
-- [ ] 51_Sound Manager Class.ls → sound-manager-class.js
-- [ ] 52_Sound Channel Class.ls → sound-channel-class.js
-- [ ] 53_Sound Instance Class.ls → sound-instance-class.js
-- [ ] 55_Error Report Interface Class.ls → error-report-interface-class.js
-- [ ] 56_Error Report Component Class.ls → error-report-component-class.js
-- [ ] 57_Error Report Handler Class.ls → error-report-handler-class.js
-- [ ] 60_Game Oneclick Buy Window Manager Class.ls → game-oneclick-buy-window-manager-class.js
-- [ ] 63_Statistics Broker Class.ls → statistics-broker-class.js
-- [ ] 64_Statistics Broker Javascript Class.ls → statistics-broker-javascript-class.js
-- [ ] 68_External Link Interface Class.ls → external-link-interface-class.js
-- [ ] 71_OLD Figure System Class.ls → old-figure-system-class.js
-- [ ] 72_OLD Figure Preview Class.ls → old-figure-preview-class.js
-- [ ] 73_OLD Human Template Class.ls → old-human-template-class.js
-- [ ] 74_OLD Bodypart Template Class.ls → old-bodypart-template-class.js
-- [ ] 75_OLD Swimmer Template Class.ls → old-swimmer-template-class.js
-- [ ] 76_OLD Swimpart Template Class.ls → old-swimpart-template-class.js
+## LingoScript Translation
+
+- [ ] 10_CLangTest.ls
+- [ ] 11_Figure Converter Class COPY.ls
+- [ ] 19_Help Tooltip Manager Class.ls
+- [ ] 20_Ticket Window Manager Class.ls
+- [ ] 22_Date Class.ls
+- [ ] 3_Hobba Interface Class.ls
+- [ ] 4_Hobba Component Class.ls
+- [ ] 50_Sound API.ls
+- [ ] 51_Sound Manager Class.ls
+- [ ] 52_Sound Channel Class.ls
+- [ ] 53_Sound Instance Class.ls
+- [ ] 55_Error Report Interface Class.ls
+- [ ] 56_Error Report Component Class.ls
+- [ ] 57_Error Report Handler Class.ls
+- [ ] 5_Hobba Handler Class.ls
+- [ ] 60_Game Oneclick Buy Window Manager Class.ls
+- [ ] 63_Statistics Broker Class.ls
+- [ ] 64_Statistics Broker Javascript Class.ls
+- [ ] 68_External Link Interface Class.ls
+- [ ] 71_OLD Figure System Class.ls
+- [ ] 72_OLD Figure Preview Class.ls
+- [ ] 73_OLD Human Template Class.ls
+- [ ] 74_OLD Bodypart Template Class.ls
+- [ ] 75_OLD Swimmer Template Class.ls
+- [ ] 76_OLD Swimpart Template Class.ls
+- [ ] 7_Server Date Class.ls
+- [ ] 8_Connection Problem Class.ls
+- [ ] 9_Element Bouncer Class.ls
+
+## Member Registration
+
+- [ ] Register member #37 "trophyblink1" (bitmap)
+- [ ] Register member #38 "trophyblink2" (bitmap)
+- [ ] Register member #39 "trophyblink3" (bitmap)
+- [ ] Register member #40 "trophyblink4" (bitmap)
+- [ ] Register member #41 "trophyblink5" (bitmap)
+- [ ] Register member #42 "trophyblink6" (bitmap)
+- [ ] Register member #43 "trophyblink7" (bitmap)
+- [ ] Register member #44 "trophyblink8" (bitmap)
+- [ ] Register member #45 "trophyblink9" (bitmap)
+- [ ] Register member #1 "thread.index" (field)
+- [ ] Register member #2 "variable.index" (field)
+- [ ] Register member #23 "DefaultPartList COPY" (field)
+- [ ] Register member #24 "class.index" (field)
+- [ ] Register member #26 "habbo_lang_test.window" (field)
+- [ ] Register member #27 "plate_gold.window" (field)
+- [ ] Register member #28 "plate_silver.window" (field)
+- [ ] Register member #29 "plate_bronze.window" (field)
+- [ ] Register member #30 "habbo_modtool_main.window" (field)
+- [ ] Register member #31 "habbo_modtool_user.window" (field)
+- [ ] Register member #32 "habbo_modtool_room.window" (field)
+- [ ] Register member #33 "habbo_modtool_ban.window" (field)
+- [ ] Register member #34 "habbo_hobba_alert.window" (field)
+- [ ] Register member #35 "habbo_hobba_reply.window" (field)
+- [ ] Register member #58 "error_report_details.window" (field)
+- [ ] Register member #59 "error_report.window" (field)
+- [ ] Register member #69 "tooltip_external_link.window" (field)
+- [ ] Register member #47 "trophyinterface_s palette" (palette)
+- [ ] Register member #48 "trophyinterface_b palette" (palette)
+- [ ] Register member #49 "trophyinterface_g palette" (palette)
+- [ ] Register member #3 "Hobba Interface Class" (script)
+- [ ] Register member #4 "Hobba Component Class" (script)
+- [ ] Register member #5 "Hobba Handler Class" (script)
+- [ ] Register member #7 "Server Date Class" (script)
+- [ ] Register member #8 "Connection Problem Class" (script)
+- [ ] Register member #9 "Element Bouncer Class" (script)
+- [ ] Register member #10 "CLangTest" (script)
+- [ ] Register member #11 "Figure Converter Class COPY" (script)
+- [ ] Register member #19 "Help Tooltip Manager Class" (script)
+- [ ] Register member #20 "Ticket Window Manager Class" (script)
+- [ ] Register member #22 "Date Class" (script)
+- [ ] Register member #50 "Sound API" (script)
+- [ ] Register member #51 "Sound Manager Class" (script)
+- [ ] Register member #52 "Sound Channel Class" (script)
+- [ ] Register member #53 "Sound Instance Class" (script)
+- [ ] Register member #55 "Error Report Interface Class" (script)
+- [ ] Register member #56 "Error Report Component Class" (script)
+- [ ] Register member #57 "Error Report Handler Class" (script)
+- [ ] Register member #60 "Game Oneclick Buy Window Manager Class" (script)
+- [ ] Register member #63 "Statistics Broker Class" (script)
+- [ ] Register member #64 "Statistics Broker Javascript Class" (script)
+- [ ] Register member #68 "External Link Interface Class" (script)
+- [ ] Register member #71 "OLD Figure System Class" (script)
+- [ ] Register member #72 "OLD Figure Preview Class" (script)
+- [ ] Register member #73 "OLD Human Template Class" (script)
+- [ ] Register member #74 "OLD Bodypart Template Class" (script)
+- [ ] Register member #75 "OLD Swimmer Template Class" (script)
+- [ ] Register member #76 "OLD Swimpart Template Class" (script)
+- [ ] Register member #67 "sound_cfh_received" (sound)

@@ -1,7 +1,85 @@
 # hh_navigator Cast
 
-- [ ] 3_Navigator Window Interface Class.ls → navigator-window-interface-class.js
-- [ ] 4_Navigator Roomlist Interface Class.ls → navigator-roomlist-interface-class.js
-- [ ] 5_Navigator Component Class.ls → navigator-component-class.js
-- [ ] 6_Navigator Handler Class.ls → navigator-handler-class.js
-- [ ] 7_Navigator Info Broker Class.ls → navigator-info-broker-class.js
+## LingoScript Translation
+
+- [ ] 3_Navigator Window Interface Class.ls
+- [ ] 4_Navigator Roomlist Interface Class.ls
+- [ ] 5_Navigator Component Class.ls
+- [ ] 6_Navigator Handler Class.ls
+- [ ] 7_Navigator Info Broker Class.ls
+
+## Member Registration
+
+- [ ] Register member #19 "nav_tb_cr" (bitmap)
+- [ ] Register member #20 "nav_tb_tp" (bitmap)
+- [ ] Register member #21 "nav_tb_ed" (bitmap)
+- [ ] Register member #22 "nav_tb_px" (bitmap)
+- [ ] Register member #23 "nav_tb2_cr" (bitmap)
+- [ ] Register member #24 "nav_tb2_tp" (bitmap)
+- [ ] Register member #25 "nav_tb2_ed" (bitmap)
+- [ ] Register member #26 "nav_tb2_px" (bitmap)
+- [ ] Register member #27 "nav_tb3_cr" (bitmap)
+- [ ] Register member #28 "nav_tb3_tp" (bitmap)
+- [ ] Register member #29 "nav_tb3_ed" (bitmap)
+- [ ] Register member #30 "nav_tb3_px" (bitmap)
+- [ ] Register member #31 "nav_sd_cr" (bitmap)
+- [ ] Register member #32 "nav_sd_px" (bitmap)
+- [ ] Register member #33 "nav_sd2_cr" (bitmap)
+- [ ] Register member #34 "nav_sd2_px" (bitmap)
+- [ ] Register member #35 "nav_sd3_cr" (bitmap)
+- [ ] Register member #36 "nav_sd3_px" (bitmap)
+- [ ] Register member #37 "nav_ico_act_pr" (bitmap)
+- [ ] Register member #38 "nav_ico_act_gr" (bitmap)
+- [ ] Register member #39 "nav_ico_act_sr" (bitmap)
+- [ ] Register member #40 "nav_ico_act_or" (bitmap)
+- [ ] Register member #41 "nav_ico_act_fv" (bitmap)
+- [ ] Register member #42 "nav_ico_pr" (bitmap)
+- [ ] Register member #43 "nav_ico_gr" (bitmap)
+- [ ] Register member #44 "nav_ico_sr" (bitmap)
+- [ ] Register member #45 "nav_ico_or" (bitmap)
+- [ ] Register member #46 "nav_ico_fv" (bitmap)
+- [ ] Register member #47 "nav_rw_lf" (bitmap)
+- [ ] Register member #48 "nav_rw_lf1" (bitmap)
+- [ ] Register member #49 "nav_rw_lf2" (bitmap)
+- [ ] Register member #50 "nav_rw_lf3" (bitmap)
+- [ ] Register member #51 "nav_rw_lf4" (bitmap)
+- [ ] Register member #52 "nav_rw_plus" (bitmap)
+- [ ] Register member #53 "nav_bcktb_arr" (bitmap)
+- [ ] Register member #54 "nav_rw_arr" (bitmap)
+- [ ] Register member #55 "door_open" (bitmap)
+- [ ] Register member #56 "door_closed" (bitmap)
+- [ ] Register member #57 "door_password" (bitmap)
+- [ ] Register member #58 "nav_ico_def_pr" (bitmap)
+- [ ] Register member #59 "nav_ico_def_gr" (bitmap)
+- [ ] Register member #60 "nav_ico_def_src" (bitmap)
+- [ ] Register member #61 "nav_ico_def_fav" (bitmap)
+- [ ] Register member #62 "nav_ico_def_own" (bitmap)
+- [ ] Register member #63 "nav_ico_roomomatic" (bitmap)
+- [ ] Register member #79 "nav_plus.Image" (bitmap)
+- [ ] Register member #80 "nav_minus.Image" (bitmap)
+- [ ] Register member #81 "nav_rw_lf5" (bitmap)
+- [ ] Register member #82 "nav_rw_px5" (bitmap)
+- [ ] Register member #83 "nav_ico_gr_rebound" (bitmap)
+- [ ] Register member #1 "thread.index" (field)
+- [ ] Register member #2 "variable.index" (field)
+- [ ] Register member #64 "nav_pr.window" (field)
+- [ ] Register member #65 "nav_gr0.window" (field)
+- [ ] Register member #66 "nav_gr_src.window" (field)
+- [ ] Register member #67 "nav_gr_own.window" (field)
+- [ ] Register member #68 "nav_gr_fav.window" (field)
+- [ ] Register member #69 "nav_gr_mod.window" (field)
+- [ ] Register member #70 "nav_gr_password.window" (field)
+- [ ] Register member #71 "nav_gr_trypassword.window" (field)
+- [ ] Register member #72 "nav_gr_passwordincorrect.window" (field)
+- [ ] Register member #73 "nav_gr_modify_delete1.window" (field)
+- [ ] Register member #74 "nav_gr_modify_delete2.window" (field)
+- [ ] Register member #75 "nav_gr_modify_delete3.window" (field)
+- [ ] Register member #76 "nav_gr_mod2.window" (field)
+- [ ] Register member #77 "nav_remove_rights.window" (field)
+- [ ] Register member #78 "nav_gr_mod_b.window" (field)
+- [ ] Register member #18 "nav_ui_palette" (palette)
+- [ ] Register member #3 "Navigator Window Interface Class" (script)
+- [ ] Register member #4 "Navigator Roomlist Interface Class" (script)
+- [ ] Register member #5 "Navigator Component Class" (script)
+- [ ] Register member #6 "Navigator Handler Class" (script)
+- [ ] Register member #7 "Navigator Info Broker Class" (script)

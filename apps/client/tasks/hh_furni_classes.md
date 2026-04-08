@@ -1,54 +1,119 @@
 # hh_furni_classes Cast
 
-- [ ] 3_Active Object Class.ls → active-object-class.js
-- [ ] 4_Passive Object Class.ls → passive-object-class.js
-- [ ] 5_Item Object Class.ls → item-object-class.js
-- [ ] 6_Active Object Extension Class.ls → active-object-extension-class.js
-- [ ] 7_Item Object Extension Class.ls → item-object-extension-class.js
-- [ ] 8_Preview Renderer Class.ls → preview-renderer-class.js
-- [ ] 10_Habbo Wheel Class.ls → habbo-wheel-class.js
-- [ ] 21_PostIt Item Class.ls → postit-item-class.js
-- [ ] 22_PostIt Manager Class.ls → postit-manager-class.js
-- [ ] 23_Pet Toy Class.ls → pet-toy-class.js
-- [ ] 24_Credit Redeem Confirmation Class.ls → credit-redeem-confirmation-class.js
-- [ ] 25_Credit Furni Class.ls → credit-furni-class.js
-- [ ] 26_Furniture Holo Class.ls → furniture-holo-class.js
-- [ ] 27_Furniture Fridge Class.ls → furniture-fridge-class.js
-- [ ] 28_Furniture Toilet Class.ls → furniture-toilet-class.js
-- [ ] 29_Furniture Sink Class.ls → furniture-sink-class.js
-- [ ] 30_Furniture Luxus TV Class.ls → furniture-luxus-tv-class.js
-- [ ] 31_Furniture Teleport Class.ls → furniture-teleport-class.js
-- [ ] 32_Furniture Divider Class.ls → furniture-divider-class.js
-- [ ] 33_Furniture Samovar Class.ls → furniture-samovar-class.js
-- [ ] 34_Furniture Edicehc Class.ls → furniture-edicehc-class.js
-- [ ] 35_Furniture Score Class.ls → furniture-score-class.js
-- [ ] 36_Furniture Hockeylight Class.ls → furniture-hockeylight-class.js
-- [ ] 37_Trophy Class.ls → trophy-class.js
-- [ ] 38_Plate Class.ls → plate-class.js
-- [ ] 39_Watermatic Class.ls → watermatic-class.js
-- [ ] 40_Furniture Food Class.ls → furniture-food-class.js
-- [ ] 41_Furniture Waterbowl Class.ls → furniture-waterbowl-class.js
-- [ ] 42_Furniture IcecreamMachine Class.ls → furniture-icecreammachine-class.js
-- [ ] 43_Queue Class.ls → queue-class.js
-- [ ] 44_Queue Public Class.ls → queue-public-class.js
-- [ ] 45_Furniture Scifirocket Class.ls → furniture-scifirocket-class.js
-- [ ] 46_Furniture Scifidoor Class.ls → furniture-scifidoor-class.js
-- [ ] 47_Furniture Scifiport Class.ls → furniture-scifiport-class.js
-- [ ] 48_Furniture Club TV Class.ls → furniture-club-tv-class.js
-- [ ] 49_Furniture Traffic Light Class.ls → furniture-traffic-light-class.js
-- [ ] 50_Furniture Barrier Class.ls → furniture-barrier-class.js
-- [ ] 51_Furniture StudyDesk Class.ls → furniture-studydesk-class.js
-- [ ] 52_Furniture Solarium Class.ls → furniture-solarium-class.js
-- [ ] 53_Furniture Bottle Class.ls → furniture-bottle-class.js
-- [ ] 54_Furniture Red TV Class.ls → furniture-red-tv-class.js
-- [ ] 55_E-Dice Class.ls → e-dice-class.js
-- [ ] 56_Birdie Class.ls → birdie-class.js
-- [ ] 57_Furniture Present Class.ls → furniture-present-class.js
-- [ ] 58_Package Card Class.ls → package-card-class.js
-- [ ] 59_Furniture OneWayDoor Class.ls → furniture-onewaydoor-class.js
-- [ ] 60_Furniture StudyDesk Class.ls → furniture-studydesk-class.js
-- [ ] 63_Crossfade Furni Class.ls → crossfade-furni-class.js
-- [ ] 64_FadeAnimation Furni Class.ls → fadeanimation-furni-class.js
-- [ ] 65_Valentine Randomizer Class.ls → valentine-randomizer-class.js
-- [ ] 66_Fortune Class.ls → fortune-class.js
-- [ ] 67_Window Class.ls → window-class.js
+## LingoScript Translation
+
+- [ ] 10_Habbo Wheel Class.ls
+- [ ] 21_PostIt Item Class.ls
+- [ ] 22_PostIt Manager Class.ls
+- [ ] 23_Pet Toy Class.ls
+- [ ] 24_Credit Redeem Confirmation Class.ls
+- [ ] 25_Credit Furni Class.ls
+- [ ] 26_Furniture Holo Class.ls
+- [ ] 27_Furniture Fridge Class.ls
+- [ ] 28_Furniture Toilet Class.ls
+- [ ] 29_Furniture Sink Class.ls
+- [ ] 30_Furniture Luxus TV Class.ls
+- [ ] 31_Furniture Teleport Class.ls
+- [ ] 32_Furniture Divider Class.ls
+- [ ] 33_Furniture Samovar Class.ls
+- [ ] 34_Furniture Edicehc Class.ls
+- [ ] 35_Furniture Score Class.ls
+- [ ] 36_Furniture Hockeylight Class.ls
+- [ ] 37_Trophy Class.ls
+- [ ] 38_Plate Class.ls
+- [ ] 39_Watermatic Class.ls
+- [ ] 3_Active Object Class.ls
+- [ ] 40_Furniture Food Class.ls
+- [ ] 41_Furniture Waterbowl Class.ls
+- [ ] 42_Furniture IcecreamMachine Class.ls
+- [ ] 43_Queue Class.ls
+- [ ] 44_Queue Public Class.ls
+- [ ] 45_Furniture Scifirocket Class.ls
+- [ ] 46_Furniture Scifidoor Class.ls
+- [ ] 47_Furniture Scifiport Class.ls
+- [ ] 48_Furniture Club TV Class.ls
+- [ ] 49_Furniture Traffic Light Class.ls
+- [ ] 4_Passive Object Class.ls
+- [ ] 50_Furniture Barrier Class.ls
+- [ ] 51_Furniture StudyDesk Class.ls
+- [ ] 52_Furniture Solarium Class.ls
+- [ ] 53_Furniture Bottle Class.ls
+- [ ] 54_Furniture Red TV Class.ls
+- [ ] 55_E-Dice Class.ls
+- [ ] 56_Birdie Class.ls
+- [ ] 57_Furniture Present Class.ls
+- [ ] 58_Package Card Class.ls
+- [ ] 59_Furniture OneWayDoor Class.ls
+- [ ] 5_Item Object Class.ls
+- [ ] 63_Crossfade Furni Class.ls
+- [ ] 64_FadeAnimation Furni Class.ls
+- [ ] 65_Valentine Randomizer Class.ls
+- [ ] 66_Fortune Class.ls
+- [ ] 67_Window Class.ls
+- [ ] 6_Active Object Extension Class.ls
+- [ ] 7_Item Object Extension Class.ls
+- [ ] 8_Preview Renderer Class.ls
+
+## Member Registration
+
+- [ ] Register member #11 "room_object_placeholder_sd" (bitmap)
+- [ ] Register member #12 "room_object_placeholder" (bitmap)
+- [ ] Register member #13 "watermatic_a_0_4_0" (bitmap)
+- [ ] Register member #15 "watermatic_sd" (bitmap)
+- [ ] Register member #16 "s_room_object_placeholder" (bitmap)
+- [ ] Register member #17 "no_icon_small" (bitmap)
+- [ ] Register member #1 "variable.index" (field)
+- [ ] Register member #2 "fuse.object.classes" (field)
+- [ ] Register member #61 "package_card.window" (field)
+- [ ] Register member #14 "kiosk palette" (palette)
+- [ ] Register member #3 "Active Object Class" (script)
+- [ ] Register member #4 "Passive Object Class" (script)
+- [ ] Register member #5 "Item Object Class" (script)
+- [ ] Register member #6 "Active Object Extension Class" (script)
+- [ ] Register member #7 "Item Object Extension Class" (script)
+- [ ] Register member #8 "Preview Renderer Class" (script)
+- [ ] Register member #10 "Habbo Wheel Class" (script)
+- [ ] Register member #21 "PostIt Item Class" (script)
+- [ ] Register member #22 "PostIt Manager Class" (script)
+- [ ] Register member #23 "Pet Toy Class" (script)
+- [ ] Register member #24 "Credit Redeem Confirmation Class" (script)
+- [ ] Register member #25 "Credit Furni Class" (script)
+- [ ] Register member #26 "Furniture Holo Class" (script)
+- [ ] Register member #27 "Furniture Fridge Class" (script)
+- [ ] Register member #28 "Furniture Toilet Class" (script)
+- [ ] Register member #29 "Furniture Sink Class" (script)
+- [ ] Register member #30 "Furniture Luxus TV Class" (script)
+- [ ] Register member #31 "Furniture Teleport Class" (script)
+- [ ] Register member #32 "Furniture Divider Class" (script)
+- [ ] Register member #33 "Furniture Samovar Class" (script)
+- [ ] Register member #34 "Furniture Edicehc Class" (script)
+- [ ] Register member #35 "Furniture Score Class" (script)
+- [ ] Register member #36 "Furniture Hockeylight Class" (script)
+- [ ] Register member #37 "Trophy Class" (script)
+- [ ] Register member #38 "Plate Class" (script)
+- [ ] Register member #39 "Watermatic Class" (script)
+- [ ] Register member #40 "Furniture Food Class" (script)
+- [ ] Register member #41 "Furniture Waterbowl Class" (script)
+- [ ] Register member #42 "Furniture IcecreamMachine Class" (script)
+- [ ] Register member #43 "Queue Class" (script)
+- [ ] Register member #44 "Queue Public Class" (script)
+- [ ] Register member #45 "Furniture Scifirocket Class" (script)
+- [ ] Register member #46 "Furniture Scifidoor Class" (script)
+- [ ] Register member #47 "Furniture Scifiport Class" (script)
+- [ ] Register member #48 "Furniture Club TV Class" (script)
+- [ ] Register member #49 "Furniture Traffic Light Class" (script)
+- [ ] Register member #50 "Furniture Barrier Class" (script)
+- [ ] Register member #51 "Furniture StudyDesk Class" (script)
+- [ ] Register member #52 "Furniture Solarium Class" (script)
+- [ ] Register member #53 "Furniture Bottle Class" (script)
+- [ ] Register member #54 "Furniture Red TV Class" (script)
+- [ ] Register member #55 "E-Dice Class" (script)
+- [ ] Register member #56 "Birdie Class" (script)
+- [ ] Register member #57 "Furniture Present Class" (script)
+- [ ] Register member #58 "Package Card Class" (script)
+- [ ] Register member #59 "Furniture OneWayDoor Class" (script)
+- [ ] Register member #63 "Crossfade Furni Class" (script)
+- [ ] Register member #64 "FadeAnimation Furni Class" (script)
+- [ ] Register member #65 "Valentine Randomizer Class" (script)
+- [ ] Register member #66 "Fortune Class" (script)
+- [ ] Register member #67 "Window Class" (script)

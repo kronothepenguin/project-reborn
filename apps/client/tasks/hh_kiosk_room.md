@@ -1,6 +1,73 @@
 # hh_kiosk_room Cast
 
-- [ ] 3_RoomKiosk Interface Class.ls → roomkiosk-interface-class.js
-- [ ] 4_RoomKiosk Component Class.ls → roomkiosk-component-class.js
-- [ ] 5_RoomKiosk Handler Class.ls → roomkiosk-handler-class.js
-- [ ] 39_Roommatic Class.ls → roommatic-class.js
+## LingoScript Translation
+
+- [ ] 39_Roommatic Class.ls
+- [ ] 3_RoomKiosk Interface Class.ls
+- [ ] 4_RoomKiosk Component Class.ls
+- [ ] 5_RoomKiosk Handler Class.ls
+
+## Member Registration
+
+- [ ] Register member #15 "matik_screen" (bitmap)
+- [ ] Register member #16 "matik_upp" (bitmap)
+- [ ] Register member #17 "matik_sids" (bitmap)
+- [ ] Register member #18 "matik_lower" (bitmap)
+- [ ] Register member #19 "matik_lo" (bitmap)
+- [ ] Register member #20 "button.checkbox_green.on" (bitmap)
+- [ ] Register member #21 "button.checkbox_green.off" (bitmap)
+- [ ] Register member #23 "buttonimage_green_left_cancel" (bitmap)
+- [ ] Register member #24 "buttonimage_green_middle" (bitmap)
+- [ ] Register member #25 "buttonimage_green_right" (bitmap)
+- [ ] Register member #26 "grun_pixul" (bitmap)
+- [ ] Register member #27 "buttonimage_green_left_fwd" (bitmap)
+- [ ] Register member #28 "buttonimage_green_left_back" (bitmap)
+- [ ] Register member #29 "roommaticbox1" (bitmap)
+- [ ] Register member #30 "roommaticbox2" (bitmap)
+- [ ] Register member #31 "whitepixel" (bitmap)
+- [ ] Register member #32 "blackpixel" (bitmap)
+- [ ] Register member #33 "roommatic_dot" (bitmap)
+- [ ] Register member #34 "roommatic_figure1" (bitmap)
+- [ ] Register member #35 "roommatic_figure2" (bitmap)
+- [ ] Register member #37 "infokiosk_a_0_4_0" (bitmap)
+- [ ] Register member #38 "infokiosk_sd" (bitmap)
+- [ ] Register member #43 "roomatic_close" (bitmap)
+- [ ] Register member #44 "button.radio_green.on" (bitmap)
+- [ ] Register member #45 "button.radio_green.off" (bitmap)
+- [ ] Register member #46 "rm_model_a_layout" (bitmap)
+- [ ] Register member #47 "rm_model_b_layout" (bitmap)
+- [ ] Register member #48 "rm_model_c_layout" (bitmap)
+- [ ] Register member #49 "rm_model_d_layout" (bitmap)
+- [ ] Register member #50 "rm_model_e_layout" (bitmap)
+- [ ] Register member #51 "rm_model_f_layout" (bitmap)
+- [ ] Register member #52 "rm_model_g_layout" (bitmap)
+- [ ] Register member #53 "rm_model_h_layout" (bitmap)
+- [ ] Register member #54 "rm_model_i_layout" (bitmap)
+- [ ] Register member #55 "rm_model_j_layout" (bitmap)
+- [ ] Register member #56 "rm_model_k_layout" (bitmap)
+- [ ] Register member #57 "rm_model_l_layout" (bitmap)
+- [ ] Register member #58 "rm_model_m_layout" (bitmap)
+- [ ] Register member #59 "rm_model_n_layout" (bitmap)
+- [ ] Register member #60 "rm_model_o_layout" (bitmap)
+- [ ] Register member #61 "rm_model_p_layout" (bitmap)
+- [ ] Register member #62 "rm_model_q_layout" (bitmap)
+- [ ] Register member #63 "rm_model_r_layout" (bitmap)
+- [ ] Register member #64 "rm_arrow_green" (bitmap)
+- [ ] Register member #65 "rm_hcbadge_green" (bitmap)
+- [ ] Register member #1 "thread.index" (field)
+- [ ] Register member #2 "variable.index" (field)
+- [ ] Register member #7 "roomatic1.window" (field)
+- [ ] Register member #8 "roomatic2.window" (field)
+- [ ] Register member #9 "roomatic3.window" (field)
+- [ ] Register member #10 "roomatic4.window" (field)
+- [ ] Register member #11 "roomatic5.window" (field)
+- [ ] Register member #12 "roomatic6.window" (field)
+- [ ] Register member #13 "roomatic7.window" (field)
+- [ ] Register member #40 "memberalias.index" (field)
+- [ ] Register member #42 "roomatic_club.window" (field)
+- [ ] Register member #14 "roomkiosk_palette" (palette)
+- [ ] Register member #36 "Roomkiosk Object Palette" (palette)
+- [ ] Register member #3 "RoomKiosk Interface Class" (script)
+- [ ] Register member #4 "RoomKiosk Component Class" (script)
+- [ ] Register member #5 "RoomKiosk Handler Class" (script)
+- [ ] Register member #39 "Roommatic Class" (script)

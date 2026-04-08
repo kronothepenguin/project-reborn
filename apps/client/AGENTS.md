@@ -84,14 +84,16 @@ Each cast has a `.md` file in `tasks/` with a TODO checklist:
 
 ### Lingo Symbols
 
-Lingo uses symbols like `#mouseEnter`, `#session`, `#null` as identifiers. In JavaScript, use `Symbol.for('#name')` which uses the **global symbol registry** and guarantees identity:
+Lingo uses symbols like `#mouseEnter`, `#session`, `#null` as identifiers. In JavaScript, use `Symbol.for("name")` which uses the **global symbol registry** and guarantees identity. The `#` prefix from Lingo is **removed** when translating:
 
 ```js
-Symbol.for('#mouseEnter') === Symbol.for('#mouseEnter') // true - same symbol
-Symbol('#mouseEnter') === Symbol('#mouseEnter')         // false - different symbols
+// Lingo: #mouseEnter, #session, #image
+Symbol.for("mouseEnter") === Symbol.for("mouseEnter") // true - same symbol
+Symbol.for("session")
+Symbol.for("image")
 ```
 
-Always use `Symbol.for('#name')` when translating Lingo symbols. The `#` prefix must be preserved.
+Always use `Symbol.for("name")` (without the `#` prefix) when translating Lingo symbols.
 
 ### Director Movie Handlers
 

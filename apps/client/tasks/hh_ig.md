@@ -1,81 +1,170 @@
 # hh_ig Cast
 
-- [ ] 3_IG Handler Class.ls → ig-handler-class.js
-- [ ] 4_IG Component Class.ls → ig-component-class.js
-- [ ] 5_IG Interface Class.ls → ig-interface-class.js
-- [ ] 6_IG TooltipManager Class.ls → ig-tooltipmanager-class.js
-- [ ] 11_IGComponent Base Class.ls → igcomponent-base-class.js
-- [ ] 12_IG ListContainer Base Class.ls → ig-listcontainer-base-class.js
-- [ ] 13_IG ItemContainer Base Class.ls → ig-itemcontainer-base-class.js
-- [ ] 14_IGComponentUI Base Class.ls → igcomponentui-base-class.js
-- [ ] 15_IGComponentUI Subcomponent Class.ls → igcomponentui-subcomponent-class.js
-- [ ] 18_IG RoomLoader Class.ls → ig-roomloader-class.js
-- [ ] 19_IG GameAssetImport Class.ls → ig-gameassetimport-class.js
-- [ ] 21_IG Recommended Class.ls → ig-recommended-class.js
-- [ ] 22_IG RecommendedUI Class.ls → ig-recommendedui-class.js
-- [ ] 23_IG Popup Class.ls → ig-popup-class.js
-- [ ] 24_IG HumanIcon Class.ls → ig-humanicon-class.js
-- [ ] 27_IG GameTypes Class.ls → ig-gametypes-class.js
-- [ ] 28_IG Snowwar GameType Class.ls → ig-snowwar-gametype-class.js
-- [ ] 29_IG BB GameType Class.ls → ig-bb-gametype-class.js
-- [ ] 31_IG GameList Class.ls → ig-gamelist-class.js
-- [ ] 32_IG GameInstanceData Class.ls → ig-gameinstancedata-class.js
-- [ ] 34_IG GameListUI Class.ls → ig-gamelistui-class.js
-- [ ] 35_IG GameListUI List Class.ls → ig-gamelistui-list-class.js
-- [ ] 36_IG GameListUI Details Class.ls → ig-gamelistui-details-class.js
-- [ ] 37_IG GameListUI Snowwar Class.ls → ig-gamelistui-snowwar-class.js
-- [ ] 38_IG GameListUI BB Class.ls → ig-gamelistui-bb-class.js
-- [ ] 39_IG GameListUI Highscore Class.ls → ig-gamelistui-highscore-class.js
-- [ ] 41_IG LevelList Class.ls → ig-levellist-class.js
-- [ ] 42_IG LevelInstanceData Class.ls → ig-levelinstancedata-class.js
-- [ ] 44_IG LevelListUI Class.ls → ig-levellistui-class.js
-- [ ] 45_IG LevelListUI List Class.ls → ig-levellistui-list-class.js
-- [ ] 46_IG LevelListUI Details Class.ls → ig-levellistui-details-class.js
-- [ ] 47_IG LevelListUI Snowwar Class.ls → ig-levellistui-snowwar-class.js
-- [ ] 48_IG LevelListUI BB Class.ls → ig-levellistui-bb-class.js
-- [ ] 49_IG LevelListUI Highscore Class.ls → ig-levellistui-highscore-class.js
-- [ ] 51_IG Prejoin Class.ls → ig-prejoin-class.js
-- [ ] 52_IG PrejoinUI Class.ls → ig-prejoinui-class.js
-- [ ] 54_IG GameRulesUI Class.ls → ig-gamerulesui-class.js
-- [ ] 55_IG BottomBarUI Class.ls → ig-bottombarui-class.js
-- [ ] 56_IG ArenaQueueUI Class.ls → ig-arenaqueueui-class.js
-- [ ] 59_IG GameChat Class.ls → ig-gamechat-class.js
-- [ ] 60_IG GameData Class.ls → ig-gamedata-class.js
-- [ ] 61_IG JoinedGame Class.ls → ig-joinedgame-class.js
-- [ ] 62_IG JoinedGameUI Class.ls → ig-joinedgameui-class.js
-- [ ] 64_IG JoinedGameUI Details Class.ls → ig-joinedgameui-details-class.js
-- [ ] 65_IG JoinedGameUI Highscore Class.ls → ig-joinedgameui-highscore-class.js
-- [ ] 66_IG JoinedGameUI Minimized Class.ls → ig-joinedgameui-minimized-class.js
-- [ ] 67_IG JoinedGameUI ChangeTeam Class.ls → ig-joinedgameui-changeteam-class.js
-- [ ] 70_IG TeamUI Subcomponent Class.ls → ig-teamui-subcomponent-class.js
-- [ ] 71_IG PreGame Class.ls → ig-pregame-class.js
-- [ ] 72_IG PreGameUI Class.ls → ig-pregameui-class.js
-- [ ] 74_IG PreGameUI Countdown Class.ls → ig-pregameui-countdown-class.js
-- [ ] 75_IG PreGameUI ProgressBar Class.ls → ig-pregameui-progressbar-class.js
-- [ ] 76_IG PreGameUI Teams Class.ls → ig-pregameui-teams-class.js
-- [ ] 77_IG PreGameUI ShowRulesButton Class.ls → ig-pregameui-showrulesbutton-class.js
-- [ ] 78_IG PreGameUI HideRulesButton Class.ls → ig-pregameui-hiderulesbutton-class.js
-- [ ] 79_IG PreGameUI Rules Class.ls → ig-pregameui-rules-class.js
-- [ ] 81_IG AfterGame Class.ls → ig-aftergame-class.js
-- [ ] 82_IG AfterGameUI Class.ls → ig-aftergameui-class.js
-- [ ] 84_IG AfterGameUI Gameover Class.ls → ig-aftergameui-gameover-class.js
-- [ ] 85_IG AfterGameUI GameScore Class.ls → ig-aftergameui-gamescore-class.js
-- [ ] 86_IG AfterGameUI ReplayQuery Class.ls → ig-aftergameui-replayquery-class.js
-- [ ] 87_IG AfterGameUI HighscoreButton Class.ls → ig-aftergameui-highscorebutton-class.js
-- [ ] 88_IG AfterGameUI GamescoreButton Class.ls → ig-aftergameui-gamescorebutton-class.js
-- [ ] 89_IG AfterGameUI AlltimeScore Class.ls → ig-aftergameui-alltimescore-class.js
-- [ ] 90_IG AfterGameUI Rejoin Class.ls → ig-aftergameui-rejoin-class.js
-- [ ] 91_IG FlagManager Class.ls → ig-flagmanager-class.js
-- [ ] 92_IG UIFlag Class.ls → ig-uiflag-class.js
-- [ ] 93_IG UIFlag AfterGameXP.ls → ig-uiflag-aftergamexp.js
-- [ ] 94_IG UIFlag AfterGameHighscore.ls → ig-uiflag-aftergamehighscore.js
-- [ ] 95_IG UIFlag AfterGameTeamHighscore.ls → ig-uiflag-aftergameteamhighscore.js
-- [ ] 96_IG UIFlag AfterGameTime.ls → ig-uiflag-aftergametime.js
-- [ ] 97_IG UIFlag PreGameUserLeft.ls → ig-uiflag-pregameuserleft.js
-- [ ] 101_Multicomponent Window Wrapper Class.ls → multicomponent-window-wrapper-class.js
-- [ ] 102_Multicomponent Window Wrapper Set Class.ls → multicomponent-window-wrapper-set-class.js
-- [ ] 109_IG Chat Bubble Info.ls → ig-chat-bubble-info.js
-- [ ] 111.ls → 111.js
-- [ ] 114_IG InviteResp Class.ls → ig-inviteresp-class.js
-- [ ] 115_IG InviteSend Class.ls → ig-invitesend-class.js
-- [ ] 128_NOT USED IG LevelListData Class.ls → not-used-ig-levellistdata-class.js
+## LingoScript Translation
+
+- [ ] 101_Multicomponent Window Wrapper Class.ls
+- [ ] 102_Multicomponent Window Wrapper Set Class.ls
+- [ ] 109_IG Chat Bubble Info.ls
+- [ ] 111.ls
+- [ ] 114_IG InviteResp Class.ls
+- [ ] 115_IG InviteSend Class.ls
+- [ ] 11_IGComponent Base Class.ls
+- [ ] 128_NOT USED IG LevelListData Class.ls
+- [ ] 12_IG ListContainer Base Class.ls
+- [ ] 13_IG ItemContainer Base Class.ls
+- [ ] 14_IGComponentUI Base Class.ls
+- [ ] 15_IGComponentUI Subcomponent Class.ls
+- [ ] 18_IG RoomLoader Class.ls
+- [ ] 19_IG GameAssetImport Class.ls
+- [ ] 21_IG Recommended Class.ls
+- [ ] 22_IG RecommendedUI Class.ls
+- [ ] 23_IG Popup Class.ls
+- [ ] 24_IG HumanIcon Class.ls
+- [ ] 27_IG GameTypes Class.ls
+- [ ] 28_IG Snowwar GameType Class.ls
+- [ ] 29_IG BB GameType Class.ls
+- [ ] 31_IG GameList Class.ls
+- [ ] 32_IG GameInstanceData Class.ls
+- [ ] 34_IG GameListUI Class.ls
+- [ ] 35_IG GameListUI List Class.ls
+- [ ] 36_IG GameListUI Details Class.ls
+- [ ] 37_IG GameListUI Snowwar Class.ls
+- [ ] 38_IG GameListUI BB Class.ls
+- [ ] 39_IG GameListUI Highscore Class.ls
+- [ ] 3_IG Handler Class.ls
+- [ ] 41_IG LevelList Class.ls
+- [ ] 42_IG LevelInstanceData Class.ls
+- [ ] 44_IG LevelListUI Class.ls
+- [ ] 45_IG LevelListUI List Class.ls
+- [ ] 46_IG LevelListUI Details Class.ls
+- [ ] 47_IG LevelListUI Snowwar Class.ls
+- [ ] 48_IG LevelListUI BB Class.ls
+- [ ] 49_IG LevelListUI Highscore Class.ls
+- [ ] 4_IG Component Class.ls
+- [ ] 51_IG Prejoin Class.ls
+- [ ] 52_IG PrejoinUI Class.ls
+- [ ] 54_IG GameRulesUI Class.ls
+- [ ] 55_IG BottomBarUI Class.ls
+- [ ] 56_IG ArenaQueueUI Class.ls
+- [ ] 59_IG GameChat Class.ls
+- [ ] 5_IG Interface Class.ls
+- [ ] 60_IG GameData Class.ls
+- [ ] 61_IG JoinedGame Class.ls
+- [ ] 62_IG JoinedGameUI Class.ls
+- [ ] 64_IG JoinedGameUI Details Class.ls
+- [ ] 65_IG JoinedGameUI Highscore Class.ls
+- [ ] 66_IG JoinedGameUI Minimized Class.ls
+- [ ] 67_IG JoinedGameUI ChangeTeam Class.ls
+- [ ] 6_IG TooltipManager Class.ls
+- [ ] 70_IG TeamUI Subcomponent Class.ls
+- [ ] 71_IG PreGame Class.ls
+- [ ] 72_IG PreGameUI Class.ls
+- [ ] 74_IG PreGameUI Countdown Class.ls
+- [ ] 75_IG PreGameUI ProgressBar Class.ls
+- [ ] 76_IG PreGameUI Teams Class.ls
+- [ ] 77_IG PreGameUI ShowRulesButton Class.ls
+- [ ] 78_IG PreGameUI HideRulesButton Class.ls
+- [ ] 79_IG PreGameUI Rules Class.ls
+- [ ] 81_IG AfterGame Class.ls
+- [ ] 82_IG AfterGameUI Class.ls
+- [ ] 84_IG AfterGameUI Gameover Class.ls
+- [ ] 85_IG AfterGameUI GameScore Class.ls
+- [ ] 86_IG AfterGameUI ReplayQuery Class.ls
+- [ ] 87_IG AfterGameUI HighscoreButton Class.ls
+- [ ] 88_IG AfterGameUI GamescoreButton Class.ls
+- [ ] 89_IG AfterGameUI AlltimeScore Class.ls
+- [ ] 90_IG AfterGameUI Rejoin Class.ls
+- [ ] 91_IG FlagManager Class.ls
+- [ ] 92_IG UIFlag Class.ls
+- [ ] 93_IG UIFlag AfterGameXP.ls
+- [ ] 94_IG UIFlag AfterGameHighscore.ls
+- [ ] 95_IG UIFlag AfterGameTeamHighscore.ls
+- [ ] 96_IG UIFlag AfterGameTime.ls
+- [ ] 97_IG UIFlag PreGameUserLeft.ls
+
+## Member Registration
+
+- [ ] Register member #1 "thread.index" (field)
+- [ ] Register member #2 "variable.index" (field)
+- [ ] Register member #3 "IG Handler Class" (script)
+- [ ] Register member #4 "IG Component Class" (script)
+- [ ] Register member #5 "IG Interface Class" (script)
+- [ ] Register member #6 "IG TooltipManager Class" (script)
+- [ ] Register member #11 "IGComponent Base Class" (script)
+- [ ] Register member #12 "IG ListContainer Base Class" (script)
+- [ ] Register member #13 "IG ItemContainer Base Class" (script)
+- [ ] Register member #14 "IGComponentUI Base Class" (script)
+- [ ] Register member #15 "IGComponentUI Subcomponent Class" (script)
+- [ ] Register member #18 "IG RoomLoader Class" (script)
+- [ ] Register member #19 "IG GameAssetImport Class" (script)
+- [ ] Register member #21 "IG Recommended Class" (script)
+- [ ] Register member #22 "IG RecommendedUI Class" (script)
+- [ ] Register member #23 "IG Popup Class" (script)
+- [ ] Register member #24 "IG HumanIcon Class" (script)
+- [ ] Register member #27 "IG GameTypes Class" (script)
+- [ ] Register member #28 "IG Snowwar GameType Class" (script)
+- [ ] Register member #29 "IG BB GameType Class" (script)
+- [ ] Register member #31 "IG GameList Class" (script)
+- [ ] Register member #32 "IG GameInstanceData Class" (script)
+- [ ] Register member #34 "IG GameListUI Class" (script)
+- [ ] Register member #35 "IG GameListUI List Class" (script)
+- [ ] Register member #36 "IG GameListUI Details Class" (script)
+- [ ] Register member #37 "IG GameListUI Snowwar Class" (script)
+- [ ] Register member #38 "IG GameListUI BB Class" (script)
+- [ ] Register member #39 "IG GameListUI Highscore Class" (script)
+- [ ] Register member #41 "IG LevelList Class" (script)
+- [ ] Register member #42 "IG LevelInstanceData Class" (script)
+- [ ] Register member #44 "IG LevelListUI Class" (script)
+- [ ] Register member #45 "IG LevelListUI List Class" (script)
+- [ ] Register member #46 "IG LevelListUI Details Class" (script)
+- [ ] Register member #47 "IG LevelListUI Snowwar Class" (script)
+- [ ] Register member #48 "IG LevelListUI BB Class" (script)
+- [ ] Register member #49 "IG LevelListUI Highscore Class" (script)
+- [ ] Register member #51 "IG Prejoin Class" (script)
+- [ ] Register member #52 "IG PrejoinUI Class" (script)
+- [ ] Register member #54 "IG GameRulesUI Class" (script)
+- [ ] Register member #55 "IG BottomBarUI Class" (script)
+- [ ] Register member #56 "IG ArenaQueueUI Class" (script)
+- [ ] Register member #59 "IG GameChat Class" (script)
+- [ ] Register member #60 "IG GameData Class" (script)
+- [ ] Register member #61 "IG JoinedGame Class" (script)
+- [ ] Register member #62 "IG JoinedGameUI Class" (script)
+- [ ] Register member #64 "IG JoinedGameUI Details Class" (script)
+- [ ] Register member #65 "IG JoinedGameUI Highscore Class" (script)
+- [ ] Register member #66 "IG JoinedGameUI Minimized Class" (script)
+- [ ] Register member #67 "IG JoinedGameUI ChangeTeam Class" (script)
+- [ ] Register member #70 "IG TeamUI Subcomponent Class" (script)
+- [ ] Register member #71 "IG PreGame Class" (script)
+- [ ] Register member #72 "IG PreGameUI Class" (script)
+- [ ] Register member #74 "IG PreGameUI Countdown Class" (script)
+- [ ] Register member #75 "IG PreGameUI ProgressBar Class" (script)
+- [ ] Register member #76 "IG PreGameUI Teams Class" (script)
+- [ ] Register member #77 "IG PreGameUI ShowRulesButton Class" (script)
+- [ ] Register member #78 "IG PreGameUI HideRulesButton Class" (script)
+- [ ] Register member #79 "IG PreGameUI Rules Class" (script)
+- [ ] Register member #81 "IG AfterGame Class" (script)
+- [ ] Register member #82 "IG AfterGameUI Class" (script)
+- [ ] Register member #84 "IG AfterGameUI Gameover Class" (script)
+- [ ] Register member #85 "IG AfterGameUI GameScore Class" (script)
+- [ ] Register member #86 "IG AfterGameUI ReplayQuery Class" (script)
+- [ ] Register member #87 "IG AfterGameUI HighscoreButton Class" (script)
+- [ ] Register member #88 "IG AfterGameUI GamescoreButton Class" (script)
+- [ ] Register member #89 "IG AfterGameUI AlltimeScore Class" (script)
+- [ ] Register member #90 "IG AfterGameUI Rejoin Class" (script)
+- [ ] Register member #91 "IG FlagManager Class" (script)
+- [ ] Register member #92 "IG UIFlag Class" (script)
+- [ ] Register member #93 "IG UIFlag AfterGameXP" (script)
+- [ ] Register member #94 "IG UIFlag AfterGameHighscore" (script)
+- [ ] Register member #95 "IG UIFlag AfterGameTeamHighscore" (script)
+- [ ] Register member #96 "IG UIFlag AfterGameTime" (script)
+- [ ] Register member #97 "IG UIFlag PreGameUserLeft" (script)
+- [ ] Register member #101 "Multicomponent Window Wrapper Class" (script)
+- [ ] Register member #102 "Multicomponent Window Wrapper Set Class" (script)
+- [ ] Register member #109 "IG Chat Bubble Info" (script)
+- [ ] Register member #111 "" (script)
+- [ ] Register member #114 "IG InviteResp Class" (script)
+- [ ] Register member #115 "IG InviteSend Class" (script)
+- [ ] Register member #128 "NOT USED IG LevelListData Class" (script)
+- [ ] Register member #131 "ig-losing" (sound)
+- [ ] Register member #132 "ig-winning" (sound)
+- [ ] Register member #133 "ig-countdown" (sound)
