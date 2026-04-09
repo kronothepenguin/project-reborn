@@ -1,4 +1,4 @@
-import { List, Member, Movie, Player, Sprite } from "./core";
+import { List, Member, Movie, Player, PropList, Sprite, _timeouts, createListProxy, createPropListProxy } from "./core";
 
 // ── Director Core Objects ──
 
@@ -19,11 +19,16 @@ export const TAB = "\t";
 
 export function call(handler, objOrList, ...args) {
   if (!objOrList) return;
-  if (Array.isArray(objOrList) || objOrList._isPropList) {
-    const keys = Array.isArray(objOrList)
-      ? objOrList
-      : Object.keys(objOrList).filter((k) => k !== "_isPropList");
-    for (const item of keys) {
+  if (objOrList instanceof List) {
+    for (const item of objOrList._items) {
+      if (item && typeof item[handler] === "function") {
+        item[handler](...args);
+      }
+    }
+  } else if (objOrList instanceof PropList) {
+    const keys = objOrList.getKeys();
+    for (const key of keys) {
+      const item = objOrList.getaProp(key);
       if (item && typeof item[handler] === "function") {
         item[handler](...args);
       }
@@ -75,10 +80,9 @@ export function gotoNetPage(url) {
 export function ilk(x) {
   if (x === null || x === undefined) return null;
   if (typeof x === "symbol") return Symbol.for("symbol");
-  if (Array.isArray(x)) return Symbol.for("list");
+  if (x instanceof List) return Symbol.for("list");
+  if (x instanceof PropList) return Symbol.for("propList");
   if (typeof x === "object") {
-    if (x instanceof Map) return Symbol.for("propList");
-    if (x._isPropList) return Symbol.for("propList");
     return Symbol.for("instance");
   }
   if (typeof x === "number")
@@ -94,17 +98,18 @@ export function integerp(x) {
 
 export function length(str) {
   if (typeof str === "string") return str.length;
+  if (str instanceof List) return str.count;
   if (Array.isArray(str)) return str.length;
   return 0;
 }
 
 export function list() {
   const args = Array.prototype.slice.call(arguments);
-  return new List(...args);
+  return createListProxy(...args);
 }
 
 export function listp(x) {
-  return Array.isArray(x);
+  return x instanceof List;
 }
 
 export function member(nameOrNum, castLibNum) {
@@ -156,14 +161,18 @@ export function openNetPage(url, target) {
 }
 
 export function param(n) {
-  return _currentParams[n - 1];
+  // Translated to arguments[n - 1] at call site
+  // This function exists for Director API compatibility
+  return undefined;
 }
 
 export function pass() {
   // TODO:
 }
 
-export function propList() {}
+export function propList() {
+  return createPropListProxy();
+}
 
 export function puppetTempo(intTempo) {
   _movie._tempo = intTempo;
@@ -269,36 +278,7 @@ export function value(str) {
   if (trimmed === "EMPTY") return "";
   if (/^-?\d+$/.test(trimmed)) return parseInt(trimmed, 10);
   if (/^-?\d+\.\d+$/.test(trimmed)) return parseFloat(trimmed);
-  if (trimmed.startsWith("[") && trimmed.includes(":")) {
-    return parsePropList(trimmed);
-  }
-  if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
-    try {
-      return JSON.parse(trimmed.replace(/'/g, '"'));
-    } catch {
-      return trimmed;
-    }
-  }
   return trimmed;
-}
-
-function parsePropList(str) {
-  const result = {};
-  result._isPropList = true;
-  const inner = str.slice(1, -1).trim();
-  if (!inner) return result;
-  const pairs = inner.split(",");
-  for (const pair of pairs) {
-    const eqIdx = pair.indexOf(":");
-    if (eqIdx === -1) continue;
-    const key = pair.slice(0, eqIdx).trim().replace(/["#]/g, "");
-    const val = pair
-      .slice(eqIdx + 1)
-      .trim()
-      .replace(/^"|"$/g, "");
-    result[key] = value(val);
-  }
-  return result;
 }
 
 export function voidp(x) {

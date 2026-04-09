@@ -1,5 +1,9 @@
 export const _params = {};
 
+// ── Internal state ──
+
+export const _timeouts = {};
+
 class Rect {}
 
 export class Member {
@@ -181,5 +185,164 @@ export class Player {
 }
 
 export class List {
-  constructor(...args) {}
+  constructor(...args) {
+    this._items = [...args];
+  }
+
+  get count() {
+    return this._items.length;
+  }
+
+  add(item) {
+    this._items.push(item);
+  }
+
+  getAt(index) {
+    return this._items[index - 1];
+  }
+
+  setAt(index, value) {
+    this._items[index - 1] = value;
+  }
+
+  deleteOne(item) {
+    const idx = this._items.indexOf(item);
+    if (idx !== -1) {
+      this._items.splice(idx, 1);
+      return true;
+    }
+    return false;
+  }
+
+  getOne(item) {
+    const idx = this._items.indexOf(item);
+    return idx !== -1 ? idx + 1 : 0;
+  }
+
+  contains(item) {
+    return this._items.includes(item);
+  }
+
+  sort() {
+    this._items.sort();
+    return this;
+  }
+
+  reverse() {
+    this._items.reverse();
+    return this;
+  }
+
+  duplicate() {
+    return createListProxy(...this._items);
+  }
+}
+
+export function createListProxy(...args) {
+  const list = new List(...args);
+
+  return new Proxy(list, {
+    get(target, prop) {
+      if (prop in target) return target[prop];
+      const num = Number(prop);
+      if (Number.isInteger(num) && num > 0) {
+        return target._items[num - 1];
+      }
+      return undefined;
+    },
+    set(target, prop, value) {
+      const num = Number(prop);
+      if (Number.isInteger(num) && num > 0) {
+        target._items[num - 1] = value;
+        return true;
+      }
+      target[prop] = value;
+      return true;
+    },
+    has(target, prop) {
+      const num = Number(prop);
+      if (Number.isInteger(num) && num > 0) {
+        return num - 1 < target._items.length;
+      }
+      return prop in target;
+    },
+    deleteProperty(target, prop) {
+      const num = Number(prop);
+      if (Number.isInteger(num) && num > 0) {
+        target._items.splice(num - 1, 1);
+        return true;
+      }
+      delete target[prop];
+      return true;
+    },
+  });
+}
+
+export class PropList {
+  constructor() {
+    this._props = {};
+  }
+
+  get count() {
+    return Object.keys(this._props).length;
+  }
+
+  setaProp(key, value) {
+    this._props[key] = value;
+  }
+
+  getaProp(key) {
+    return this._props[key];
+  }
+
+  deleteAProp(key) {
+    delete this._props[key];
+  }
+
+  hasProp(key) {
+    return key in this._props;
+  }
+
+  getKeys() {
+    return Object.keys(this._props);
+  }
+
+  getPropList() {
+    return { ...this._props };
+  }
+
+  duplicate() {
+    const pl = createPropListProxy();
+    for (const key of this.getKeys()) {
+      pl.setaProp(key, this.getaProp(key));
+    }
+    return pl;
+  }
+}
+
+export function createPropListProxy() {
+  const pl = new PropList();
+
+  return new Proxy(pl, {
+    get(target, prop) {
+      if (prop in target) return target[prop];
+      if (prop === Symbol.toStringTag) return "PropList";
+      return target._props[prop];
+    },
+    set(target, prop, value) {
+      if (prop in target) {
+        target[prop] = value;
+        return true;
+      }
+      target._props[prop] = value;
+      return true;
+    },
+    has(target, prop) {
+      return prop in target._props || prop in target;
+    },
+    deleteProperty(target, prop) {
+      delete target._props[prop];
+      return true;
+    },
+  });
 }

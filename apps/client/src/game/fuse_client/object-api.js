@@ -4,17 +4,18 @@
 import {
   _global,
   field,
+  list,
   listp,
   objectp,
-  param,
   RETURN,
   script,
   value,
   voidp,
+  VOID,
 } from "../../director";
 
 export default function () {
-  _global.gCore = _global.gCore ?? null;
+  _global.gCore = _global.gCore ?? VOID;
 
   return {
     constructObjectManager() {
@@ -24,7 +25,7 @@ export default function () {
       const tProps = value(
         _director.convertToPropList(field("System Props"), RETURN),
       );
-      const tClass = tProps["object.manager.class"][0];
+      const tClass = tProps["object.manager.class"][1];
       _global.gCore = script(tClass).new();
       _global.gCore.construct();
       return _global.gCore;
@@ -35,7 +36,7 @@ export default function () {
         return 0;
       }
       _global.gCore.deconstruct();
-      _global.gCore = null;
+      _global.gCore = VOID;
       return 1;
     },
 
@@ -47,16 +48,16 @@ export default function () {
     },
 
     createObject(tID) {
-      const tClassList = [];
+      const tClassList = list();
       for (let i = 2; i <= arguments.length; i++) {
-        const tParam = arguments[i];
+        const tParam = arguments[i - 1];
         if (listp(tParam)) {
-          for (const tClass of tParam) {
-            tClassList.push(tClass);
+          for (const tClass of tParam._items) {
+            tClassList.add(tClass);
           }
           continue;
         }
-        tClassList.push(tParam);
+        tClassList.add(tParam);
       }
       return this.getObjectManager().create(tID, tClassList);
     },
@@ -86,16 +87,16 @@ export default function () {
     },
 
     createManager(tID) {
-      const tClassList = [];
+      const tClassList = list();
       for (let i = 2; i <= arguments.length; i++) {
-        const tParam = arguments[i];
+        const tParam = arguments[i - 1];
         if (listp(tParam)) {
-          for (const tClass of tParam) {
-            tClassList.push(tClass);
+          for (const tClass of tParam._items) {
+            tClassList.add(tClass);
           }
           continue;
         }
-        tClassList.push(tParam);
+        tClassList.add(tParam);
       }
       const tObjMngr = this.getObjectManager();
       const tObjInst = tObjMngr.create(tID, tClassList);
