@@ -41,9 +41,9 @@ Working directory: `apps/client/`. The original `.cct` cast files have been extr
 
 | File | Purpose |
 |------|---------|
-| **`core.js`** | Classes (`Member`, `CastLibrary`, `Sprite`, `Movie`, `Player`, `List`, `PropList`), `_params`, helpers, internal state (`_timeouts`, etc.) |
-| **`runtime.js`** | **ONLY native Director functions**: `_global`, `_movie`, `_player`, `EMPTY`, `VOID`, `RETURN`, `TAB`, `castLib`, `member`, `sprite`, `voidp`, `list`, `propList`, `call`, `go`, `field`, `value`, `string`, `put`, `pass`, `netDone`, `ilk`, `stringp`, `symbolp`, `integerp`, `listp`, `objectp`, `chars`, `length`, `offset`, `random`, `date`, `time`, `timeout`, `script`, `getPref`, `setPref`, `newMember`, `openNetPage`, `gotoNetPage`, `puppetTempo`, `stopEvent` |
-| **`syntax.js`** | `the.*` properties (`the.itemDelimiter`, `the.frame`, etc.) + **string syntax helpers**: `itemOf()`, `lineOf()`, `wordOf()`, `charOf()` for 1:1 Lingo string chunk extraction. All use 1-based indexing like Lingo. |
+| **`core.js`** | Classes (`Point`, `Rect`, `Color`, `ImageObject`, `Member`, `CastLibrary`, `Sprite`, `Movie`, `Player`, `List`, `PropList`), `_params`, helpers, internal state (`_timeouts`, etc.) |
+| **`runtime.js`** | **ONLY native Director functions**: `_global`, `_movie`, `_player`, `EMPTY`, `VOID`, `RETURN`, `TAB`, `castLib`, `member`, `sprite`, `voidp`, `list`, `propList`, `call`, `go`, `field`, `value`, `string`, `put`, `pass`, `netDone`, `ilk`, `stringp`, `symbolp`, `integerp`, `listp`, `objectp`, `chars`, `length`, `offset`, `random`, `date`, `time`, `timeout`, `script`, `getPref`, `setPref`, `newMember`, `openNetPage`, `gotoNetPage`, `puppetTempo`, `stopEvent`, `point`, `rect`, `rgb`, `image` |
+| **`syntax.js`** | Lingo syntax helpers: `the.*` properties (`the.itemDelimiter`, `the.mouseV`, `the.mouseH`, etc.) + string chunk extraction: `itemOf()`, `lineOf()`, `wordOf()`, `charOf()`. All use 1-based indexing like Lingo. |
 | **`index.js`** | Translation API (`createBitmapMember`, `createScriptMember`, `registerCast`, etc.), barrel re-exports, `_director` setup. `start()` calls `registerGlobalHandlers()` which copies all movie script factory returns to `_director`. |
 | **`loader.js`** | Preload simulation. Ask user before editing. |
 
@@ -194,6 +194,7 @@ export default function () {
 | Implicit variable (first assignment) | `let tVar = value` |
 | `voidP(x)` | `voidp(x)` |
 | `x.ilk = #symbol` | `ilk(x)` |
+| `x.ilk <> #list` | `ilk(x) !== Symbol.for("list")` |
 | `member("name")` | `member()` |
 | `sprite(n)` | `sprite()` |
 | `timeout().new()` | `timeout()` |
@@ -212,6 +213,7 @@ export default function () {
 | `the paramCount` | `arguments.length` |
 | `param(n)` | `arguments[n - 1]` |
 | `the itemDelimiter` | `the.itemDelimiter` |
+| `the mouseV` | `the.mouseV` |
 | `tString.item[i]` | `itemOf(tString)[i]` |
 | `tString.item.count` | `itemOf(tString).count` |
 | `tString.item[first..last]` | `itemOf(tString).slice(first, last)` |
@@ -224,12 +226,35 @@ export default function () {
 | `tString.char[i]` | `charOf(tString)[i]` |
 | `tString.char.count` | `charOf(tString).count` |
 | `tString.char[first..last]` | `charOf(tString).slice(first, last)` |
+| `tProps[#key]` | `tProps[Symbol.for("key")]` |
+| `#symA && #symB` | `symA.description + symB.description` |
+| `"str1" && "str2"` | `` `str1 str2` `` |
+| `strVar1 && strVar2` | `` `${strVar1} ${strVar2}` `` |
+| `"str" && strVar` | `` `str ${strVar}` `` |
 
 **String chunk helpers** (`itemOf`, `wordOf`, `lineOf`, `charOf`): imported from `../../director`.
 Return a `SplitterProxy` with 1-based numeric access, `.count`, and `.slice(first, last)`
 (1-based, inclusive, rejoins with original delimiter). Lingo has no typed strings — the agent
 **MUST NOT** assume variable types. When Lingo uses `.item`, `.word`, `.char`, or `.line` on any
 variable, use the corresponding helper.
+
+### Implicit Variable Scope
+
+Lingo variables are function-scoped by default. When translating, hoist implicit variables
+to the closure scope before the return object to avoid JS block scope issues:
+
+```js
+export default function () {
+  // Hoisted implicit vars
+  let tOptionalImagesWidth, tStr, tTextMember, tFontDesc;
+
+  return {
+    someMethod() {
+      tStr = EMPTY;  // Works — tStr is closure-scoped
+    },
+  };
+}
+```
 
 ### JavaScript Keyword Conflicts
 
@@ -290,11 +315,23 @@ Symbol.for("session")
 
 | Type | How to use | Example |
 |------|-----------|---------|
-| Native Director function | `import { func } from "../../director"` | `objectp()`, `voidp()`, `script()`, `field()` |
-| Non-native (from another `.ls`) | `_director.funcName()` | `_director.createObject()`, `_director.convertToPropList()` |
+| Native Director function | `import { func } from "../../director"` | `objectp()`, `voidp()`, `script()`, `field()`, `point()`, `rect()`, `rgb()`, `image()` |
+| Non-native (from another `.ls`) | `_director.funcName()` | `_director.createObject()`, `_director.convertToPropList()`, `_director.getmemnum()`, `_director.createMember()` |
 | JS keyword conflict | `_director.keywordFn()` | `_director.tryFn()`, `_director.catchFn()` |
 
 Import **only what you use**.
+
+### Lingo Symbols
+
+Use `Symbol.for("name")`. Strip the `#`:
+
+```js
+// Lingo: #mouseEnter, #session
+Symbol.for("mouseEnter")
+Symbol.for("session")
+```
+
+When accessing symbols as object keys: `tProps[#key]` → `tProps[Symbol.for("key")]`
 
 ---
 
@@ -310,6 +347,30 @@ Import **only what you use**.
 5. Constants under `// ── Constants ──`
 6. **Ask the user** before adding anything
 7. Helpers and non-native logic go in `core.js`, NOT `runtime.js`
+
+---
+
+## ⚠️ core.js Rules
+
+**Classes in `core.js` only expose native Director properties and methods.**
+
+### Property naming convention
+
+| Director property type | JS pattern | Example |
+|----------------------|-----------|---------|
+| **Read-only** | `_prop` private + `get prop()` | `get width() { return this._width; }` |
+| **Read/write** | Public property directly | `locH = 0`, `blend = 100` |
+| **Non-native helper** | `$` prefix | `$customHelper()`, `$customProp` |
+
+### Current native classes
+
+| Class | Read-only | Read/write |
+|-------|-----------|------------|
+| **Point** | — | `locH`, `locV` |
+| **Rect** | `width`, `height` (computed) | `left`, `top`, `right`, `bottom` |
+| **Color** | — | `red`, `green`, `blue` |
+| **ImageObject** | `width`, `height`, `rect`, `depth` | `paletteRef`, `useAlpha` |
+| **Member** | `castLibNum`, `height`, `number`, `rect`, `type`, `width` | `image`, `blend`, `locH`, `locV`, `loc`, `wordWrap`, `font`, `fontStyle`, `fontSize`, `color`, `text`, `fixedLineSpace`, `alignment`, `name`, `fileName`, `regPoint` |
 
 ---
 

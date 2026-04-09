@@ -7,6 +7,8 @@ export const the = new Proxy(
     itemDelimiter: ",",
     keyboardFocusSprite: 0,
     longTime: 0,
+    mouseV: 0,
+    mouseH: 0,
     runMode: "Plugin",
   },
   {

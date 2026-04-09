@@ -1,4 +1,18 @@
-import { List, Member, Movie, Player, PropList, Sprite, _timeouts, createListProxy, createPropListProxy } from "./core";
+import {
+  Color,
+  ImageObject,
+  List,
+  Member,
+  Movie,
+  Player,
+  Point,
+  PropList,
+  Sprite,
+  Rect,
+  _timeouts,
+  createListProxy,
+  createPropListProxy,
+} from "./core";
 
 // ── Director Core Objects ──
 
@@ -14,6 +28,12 @@ export const EMPTY = "";
 export const VOID = null;
 export const RETURN = "\r";
 export const TAB = "\t";
+
+// ── Native Director: image() ──
+
+export function image(width, height, depth, paletteRef) {
+  return new ImageObject(width, height, depth, paletteRef);
+}
 
 // ── Call ──
 
@@ -170,6 +190,10 @@ export function pass() {
   // TODO:
 }
 
+export function point(h, v) {
+  return new Point(h ?? 0, v ?? 0);
+}
+
 export function propList() {
   return createPropListProxy();
 }
@@ -184,6 +208,14 @@ export function put(str) {
 
 export function random(n) {
   return Math.floor(Math.random() * n) + 1;
+}
+
+export function rect(left, top, right, bottom) {
+  return new Rect(left ?? 0, top ?? 0, right ?? 0, bottom ?? 0);
+}
+
+export function rgb(r, g, b) {
+  return new Color(r ?? 0, g ?? 0, b ?? 0);
 }
 
 export function script(nameOrNum) {
@@ -234,7 +266,6 @@ export function stringp(x) {
 }
 
 export function symbol(str) {
-  if (typeof str !== "string") return str;
   return Symbol.for(str);
 }
 
