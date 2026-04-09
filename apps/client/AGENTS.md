@@ -13,7 +13,8 @@ Working directory: `apps/client/`. The original `.cct` cast files have been extr
 2. **The agent does NOT invent functions.** If a handler doesn't exist in the `.ls` file, it does NOT exist in the `.js` output. No `construct()`, no `prepareMovie()`, no extras — only what's literally in the source.
 3. **The agent does NOT search `.ls` files.** Never search across files to find function definitions. All non-native function calls translate to `_director.funcName()` or `_director.keywordFn()`.
 4. **The agent follows the pattern exactly.** No deviations, no "improvements", no "completions".
-5. **The agent MUST ask the user the script type** (`MOVIE_SCRIPT`, `BEHAVIOR_SCRIPT`, `PARENT_SCRIPT`) before translating. The agent cannot determine this on its own.
+5. **The agent MUST ask the user the script type** (`MOVIE_SCRIPT`, `BEHAVIOR_SCRIPT`, `PARENT_SCRIPT`) before registering the script member into module's index.js. The agent cannot determine this on its own.
+6. **Member registration order MUST match `Members.csv` exactly.** Use the `Number` column as the source of truth. Skip unavailable members.
 
 ### Where things go:
 
@@ -370,6 +371,16 @@ When accessing symbols as object keys: `tProps[#key]` → `tProps[Symbol.for("ke
 | **ImageObject** | `width`, `height`, `rect`, `depth` | `paletteRef`, `useAlpha` |
 | **Member** | `castLibNum`, `height`, `number`, `rect`, `type`, `width` | `image`, `blend`, `locH`, `locV`, `loc`, `wordWrap`, `font`, `fontStyle`, `fontSize`, `color`, `text`, `fixedLineSpace`, `alignment`, `name`, `fileName`, `regPoint` |
 
+### List and PropList iteration
+
+`List` implements `Symbol.iterator`. **Always use `for...of` directly** on list variables — never access `._items` or internal fields:
+
+| Lingo | JavaScript | ❌ Wrong |
+|-------|-----------|---------|
+| `repeat with x in myList` | `for (const x of myList)` | `for (const x of myList._items)` |
+
+**`for...of` on List** → iterates values (`_items` elements)
+
 ---
 
 ## Translation Workflow
@@ -389,6 +400,13 @@ Each cast has a `.md` TODO checklist. When translating:
 1. Translate entire `.ls` → `.js`
 2. If dependency not translated → placeholder + add subtask
 3. After completion → check for resolvable placeholders
+
+### Member Registration (`index.js`)
+After translating a script, **register it in the module's `index.js`** via `registerCast`:
+1. Read `Members.csv` to find the member's `Number`, `Type`, and `Name`
+2. Import the translated module at the top of `index.js`
+3. Add the `createScriptMember` / `createBitmapMember` / `createFieldMember` call in the **exact order** of the CSV's `Number` column
+4. **Ask the user** for the script type (`MOVIE_SCRIPT`, `BEHAVIOR_SCRIPT`, `PARENT_SCRIPT`) if unknown
 
 ---
 
