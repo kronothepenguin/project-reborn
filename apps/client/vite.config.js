@@ -4,7 +4,19 @@ import { resolve } from "node:path";
 export default defineConfig(({ command }) => ({
   build: {
     lib: {
-      entry: "src/main.js",
+      entry: {
+        main: resolve(__dirname, "src", "main.js"),
+        habbo: resolve(__dirname, "src", "game", "habbo", "index.js"),
+        fuse_client: resolve(
+          __dirname,
+          "src",
+          "game",
+          "fuse_client",
+          "index.js",
+        ),
+      },
+      name: "_director",
+      fileName: (format, entryName) => `${entryName}.${format}.js`,
     },
   },
 

@@ -12,7 +12,7 @@ export const _player = new Player(_movie);
 
 export const EMPTY = "";
 export const VOID = null;
-export const RETURN = "\n";
+export const RETURN = "\r";
 export const TAB = "\t";
 
 // ── Call ──
@@ -111,10 +111,10 @@ export function member(nameOrNum, castLibNum) {
   if (typeof nameOrNum === "number") {
     const castLib =
       castLibNum !== undefined ? _movie.castLib[castLibNum] : _movie.castLib[1];
-    if (!castLib) return new Member(0, 0, Symbol.for("empty"));
+    if (!castLib) return new Member(Symbol.for("empty"));
     return (
       castLib._memberRegistry[nameOrNum] ||
-      new Member(0, 0, Symbol.for("empty"))
+      new Member(Symbol.for("empty"))
     );
   }
   for (const castNum in _movie.castLib) {
@@ -123,7 +123,7 @@ export function member(nameOrNum, castLibNum) {
       return cast._memberRegistry[nameOrNum];
     }
   }
-  return new Member(0, 0, Symbol.for("empty"));
+  return new Member(Symbol.for("empty"));
 }
 
 export function netDone() {
