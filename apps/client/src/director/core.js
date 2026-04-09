@@ -295,6 +295,16 @@ export class PropList {
     return this._props[key];
   }
 
+  getPropAt(index) {
+    const keys = Object.keys(this._props);
+    return this._props[keys[index - 1]];
+  }
+
+  getKeyAt(index) {
+    const keys = Object.keys(this._props);
+    return keys[index - 1];
+  }
+
   deleteAProp(key) {
     delete this._props[key];
   }
@@ -327,11 +337,23 @@ export function createPropListProxy() {
     get(target, prop) {
       if (prop in target) return target[prop];
       if (prop === Symbol.toStringTag) return "PropList";
+      const num = Number(prop);
+      if (Number.isInteger(num) && num > 0) {
+        return target.getPropAt(num);
+      }
       return target._props[prop];
     },
     set(target, prop, value) {
       if (prop in target) {
         target[prop] = value;
+        return true;
+      }
+      const num = Number(prop);
+      if (Number.isInteger(num) && num > 0) {
+        const key = target.getKeyAt(num);
+        if (key !== undefined) {
+          target._props[key] = value;
+        }
         return true;
       }
       target._props[prop] = value;

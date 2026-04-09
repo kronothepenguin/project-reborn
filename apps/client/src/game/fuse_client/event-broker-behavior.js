@@ -19,13 +19,13 @@ import {
 export default function () {
   return {
     /** @type{any} */
-    id: 0,
+    id: VOID,
     /** @type{any} */
-    pSprite: null,
+    pSprite: VOID,
     /** @type{any} */
-    pLink: null,
+    pLink: VOID,
     /** @type{any} */
-    pProcList: null,
+    pProcList: VOID,
 
     registerProcedure(tMethod, tClientID, tEvent) {
       if (voidp(this.pProcList)) {
@@ -236,14 +236,14 @@ export default function () {
 
     createProcListTemplate() {
       const tList = propList();
-      tList[Symbol.for("mouseEnter")] = [Symbol.for("null"), 0];
-      tList[Symbol.for("mouseLeave")] = [Symbol.for("null"), 0];
-      tList[Symbol.for("mouseWithin")] = [Symbol.for("null"), 0];
-      tList[Symbol.for("mouseDown")] = [Symbol.for("null"), 0];
-      tList[Symbol.for("mouseUp")] = [Symbol.for("null"), 0];
-      tList[Symbol.for("mouseUpOutSide")] = [Symbol.for("null"), 0];
-      tList[Symbol.for("keyDown")] = [Symbol.for("null"), 0];
-      tList[Symbol.for("keyUp")] = [Symbol.for("null"), 0];
+      tList[Symbol.for("mouseEnter")] = list(Symbol.for("null"), 0);
+      tList[Symbol.for("mouseLeave")] = list(Symbol.for("null"), 0);
+      tList[Symbol.for("mouseWithin")] = list(Symbol.for("null"), 0);
+      tList[Symbol.for("mouseDown")] = list(Symbol.for("null"), 0);
+      tList[Symbol.for("mouseUp")] = list(Symbol.for("null"), 0);
+      tList[Symbol.for("mouseUpOutSide")] = list(Symbol.for("null"), 0);
+      tList[Symbol.for("keyDown")] = list(Symbol.for("null"), 0);
+      tList[Symbol.for("keyUp")] = list(Symbol.for("null"), 0);
       return tList;
     },
   };

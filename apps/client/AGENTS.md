@@ -191,6 +191,7 @@ export default function () {
 | `global gVar` | `_global.gVar = _global.gVar ?? VOID` (**import `_global`**) |
 | `[ : ]` (propList) | `propList()` |
 | `[ ]` (linear list) | `list()` |
+| Implicit variable (first assignment) | `let tVar = value` |
 | `voidP(x)` | `voidp(x)` |
 | `x.ilk = #symbol` | `ilk(x)` |
 | `member("name")` | `member()` |
