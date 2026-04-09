@@ -3,7 +3,7 @@ import { addFinishedListener, loadImage, loadModule } from "./loader";
 import { _movie, _player } from "./runtime";
 
 export * from "./runtime";
-export { the } from "./the";
+export * from "./syntax";
 
 export const BEHAVIOR_SCRIPT = Symbol.for("behavior");
 export const MOVIE_SCRIPT = Symbol.for("movie");

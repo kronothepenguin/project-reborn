@@ -43,9 +43,9 @@ Working directory: `apps/client/`. The original `.cct` cast files have been extr
 |------|---------|
 | **`core.js`** | Classes (`Member`, `CastLibrary`, `Sprite`, `Movie`, `Player`, `List`, `PropList`), `_params`, helpers, internal state (`_timeouts`, etc.) |
 | **`runtime.js`** | **ONLY native Director functions**: `_global`, `_movie`, `_player`, `EMPTY`, `VOID`, `RETURN`, `TAB`, `castLib`, `member`, `sprite`, `voidp`, `list`, `propList`, `call`, `go`, `field`, `value`, `string`, `put`, `pass`, `netDone`, `ilk`, `stringp`, `symbolp`, `integerp`, `listp`, `objectp`, `chars`, `length`, `offset`, `random`, `date`, `time`, `timeout`, `script`, `getPref`, `setPref`, `newMember`, `openNetPage`, `gotoNetPage`, `puppetTempo`, `stopEvent` |
+| **`syntax.js`** | `the.*` properties (`the.itemDelimiter`, `the.frame`, etc.) + **string syntax helpers**: `itemOf()`, `lineOf()`, `wordOf()`, `charOf()` for 1:1 Lingo string chunk extraction. All use 1-based indexing like Lingo. |
 | **`index.js`** | Translation API (`createBitmapMember`, `createScriptMember`, `registerCast`, etc.), barrel re-exports, `_director` setup. `start()` calls `registerGlobalHandlers()` which copies all movie script factory returns to `_director`. |
 | **`loader.js`** | Preload simulation. Ask user before editing. |
-| **`the.js`** | `the.property` proxy. Ask user before editing. |
 
 ### How `_director` Works
 
@@ -211,6 +211,25 @@ export default function () {
 | `return 0` (failure) | `return false` |
 | `the paramCount` | `arguments.length` |
 | `param(n)` | `arguments[n - 1]` |
+| `the itemDelimiter` | `the.itemDelimiter` |
+| `tString.item[i]` | `itemOf(tString)[i]` |
+| `tString.item.count` | `itemOf(tString).count` |
+| `tString.item[first..last]` | `itemOf(tString).slice(first, last)` |
+| `tString.word[i]` | `wordOf(tString)[i]` |
+| `tString.word.count` | `wordOf(tString).count` |
+| `tString.word[first..last]` | `wordOf(tString).slice(first, last)` |
+| `tString.line[i]` | `lineOf(tString)[i]` |
+| `tString.line.count` | `lineOf(tString).count` |
+| `tString.line[first..last]` | `lineOf(tString).slice(first, last)` |
+| `tString.char[i]` | `charOf(tString)[i]` |
+| `tString.char.count` | `charOf(tString).count` |
+| `tString.char[first..last]` | `charOf(tString).slice(first, last)` |
+
+**String chunk helpers** (`itemOf`, `wordOf`, `lineOf`, `charOf`): imported from `../../director`.
+Return a `SplitterProxy` with 1-based numeric access, `.count`, and `.slice(first, last)`
+(1-based, inclusive, rejoins with original delimiter). Lingo has no typed strings — the agent
+**MUST NOT** assume variable types. When Lingo uses `.item`, `.word`, `.char`, or `.line` on any
+variable, use the corresponding helper.
 
 ### JavaScript Keyword Conflicts
 
@@ -325,7 +344,7 @@ apps/client/
 │   │   ├── core.js        # Classes, helpers, abstractions
 │   │   ├── runtime.js     # ONLY native Director functions + _global
 │   │   ├── loader.js      # Preload simulation
-│   │   └── the.js         # the.property proxy
+│   │   └── syntax.js      # the.* properties + string chunk helpers (itemOf, wordOf, lineOf, charOf)
 │   └── game/
 │       └── <cast>/
 │           ├── Members.csv   # Source of truth for member order & types
