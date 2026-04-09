@@ -12,7 +12,7 @@ import {
 } from "../../director";
 
 export default function () {
-  _global.gError = _global.gError ?? null;
+  _global.gError = _global.gError ?? VOID;
 
   return {
     constructErrorManager() {
@@ -24,9 +24,9 @@ export default function () {
       )[1];
       _global.gError = script(tClass).new();
       _global.gError.construct();
-      _director.try();
+      _director.tryFn();
       _director.createObject(Symbol.for("error_manager"), _global.gError);
-      _director.catch();
+      _director.catchFn();
       return _global.gError;
     },
 
