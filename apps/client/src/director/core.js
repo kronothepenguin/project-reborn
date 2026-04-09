@@ -4,6 +4,57 @@ export const _params = {};
 
 export const _timeouts = {};
 
+// ── ScriptRef & ScriptObject ──
+
+export function createScriptObject(prototype) {
+  return new Proxy(
+    {
+      _prototype: prototype,
+
+      handler(sym) {
+        const name = typeof sym === "symbol" ? sym.description : sym;
+        return typeof prototype[name] === "function";
+      },
+    },
+    {
+      get(target, prop) {
+        if (prop in target) return target[prop];
+        if (prop === Symbol.toStringTag) return "ScriptObject";
+        const name = typeof prop === "symbol" ? prop.description : prop;
+        const fn = target._prototype[name];
+        return typeof fn === "function" ? fn.bind(target._prototype) : fn;
+      },
+      set(target, prop, value) {
+        if (prop in target) {
+          target[prop] = value;
+          return true;
+        }
+        const name = typeof prop === "symbol" ? prop.description : prop;
+        target._prototype[name] = value;
+        return true;
+      },
+      has(target, prop) {
+        if (prop === "_prototype") return true;
+        const name = typeof prop === "symbol" ? prop.description : prop;
+        return name in target._prototype || prop in target;
+      },
+    },
+  );
+}
+
+export class ScriptRef {
+  _factory = null;
+
+  constructor(member) {
+    this._factory = member._raw;
+  }
+
+  new() {
+    if (typeof this._factory !== "function") return {};
+    return createScriptObject(this._factory());
+  }
+}
+
 // ── Point ──
 
 export class Point {
@@ -264,7 +315,12 @@ export class ImageObject {
   }
 
   duplicate() {
-    const copy = new ImageObject(this.width, this.height, this._depth, this._paletteRef);
+    const copy = new ImageObject(
+      this.width,
+      this.height,
+      this._depth,
+      this._paletteRef,
+    );
     copy._useAlpha = this._useAlpha;
     copy._ctx.drawImage(this._canvas, 0, 0);
     return copy;
@@ -499,6 +555,27 @@ export class List {
     return this._items.includes(item);
   }
 
+  getPos(item) {
+    const idx = this._items.indexOf(item);
+    return idx !== -1 ? idx + 1 : 0;
+  }
+
+  findPos(item) {
+    return this.getPos(item);
+  }
+
+  getLast() {
+    return this._items[this._items.length - 1];
+  }
+
+  append(item) {
+    this._items.push(item);
+  }
+
+  addAt(index, item) {
+    this._items.splice(index - 1, 0, item);
+  }
+
   sort() {
     this._items.sort();
     return this;
@@ -511,6 +588,12 @@ export class List {
 
   duplicate() {
     return createListProxy(...this._items);
+  }
+
+  *[Symbol.iterator]() {
+    for (const item of this._items) {
+      yield item;
+    }
   }
 }
 
@@ -576,7 +659,7 @@ export class PropList {
     return this._props[keys[index - 1]];
   }
 
-  getKeyAt(index) {
+  $getKeyAt(index) {
     const keys = Object.keys(this._props);
     return keys[index - 1];
   }
@@ -585,21 +668,30 @@ export class PropList {
     delete this._props[key];
   }
 
-  hasProp(key) {
+  deleteProp(key) {
+    delete this._props[key];
+  }
+
+  $hasProp(key) {
     return key in this._props;
   }
 
-  getKeys() {
+  $getKeys() {
     return Object.keys(this._props);
   }
 
-  getPropList() {
+  $getPropList() {
     return { ...this._props };
+  }
+
+  sort() {
+    // PropList sorting is a no-op on empty lists, but method must exist
+    return this;
   }
 
   duplicate() {
     const pl = createPropListProxy();
-    for (const key of this.getKeys()) {
+    for (const key of this.$getKeys()) {
       pl.setaProp(key, this.getaProp(key));
     }
     return pl;
@@ -626,7 +718,7 @@ export function createPropListProxy() {
       }
       const num = Number(prop);
       if (Number.isInteger(num) && num > 0) {
-        const key = target.getKeyAt(num);
+        const key = target.$getKeyAt(num);
         if (key !== undefined) {
           target._props[key] = value;
         }

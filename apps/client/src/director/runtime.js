@@ -7,6 +7,7 @@ import {
   Player,
   Point,
   PropList,
+  ScriptRef,
   Sprite,
   Rect,
   _timeouts,
@@ -46,7 +47,7 @@ export function call(handler, objOrList, ...args) {
       }
     }
   } else if (objOrList instanceof PropList) {
-    const keys = objOrList.getKeys();
+    const keys = objOrList.$getKeys();
     for (const key of keys) {
       const item = objOrList.getaProp(key);
       if (item && typeof item[handler] === "function") {
@@ -97,19 +98,30 @@ export function gotoNetPage(url) {
   openNetPage(url, "self");
 }
 
-export function ilk(x) {
-  if (x === null || x === undefined) return null;
-  if (typeof x === "symbol") return Symbol.for("symbol");
-  if (x instanceof List) return Symbol.for("list");
-  if (x instanceof PropList) return Symbol.for("propList");
-  if (typeof x === "object") {
+export function ilk(object, type) {
+  if (typeof type === "symbol") {
+    return ilk(object) === type;
+  }
+
+  if (object === null || object === undefined) return null;
+  if (typeof object === "symbol") return Symbol.for("symbol");
+  if (object instanceof List) return Symbol.for("list");
+  if (object instanceof PropList) return Symbol.for("propList");
+  if (typeof object === "object") {
     return Symbol.for("instance");
   }
-  if (typeof x === "number")
-    return Number.isInteger(x) ? Symbol.for("integer") : Symbol.for("float");
-  if (typeof x === "string") return Symbol.for("string");
-  if (typeof x === "boolean") return Symbol.for("boolean");
+  if (typeof object === "number")
+    return Number.isInteger(object)
+      ? Symbol.for("integer")
+      : Symbol.for("float");
+  if (typeof object === "string") return Symbol.for("string");
+  if (typeof object === "boolean") return Symbol.for("boolean");
   return Symbol.for("unknown");
+}
+
+export function integer(x) {
+  if (typeof x === "string") return parseInt(x, 10);
+  return Math.trunc(x);
 }
 
 export function integerp(x) {
@@ -138,8 +150,7 @@ export function member(nameOrNum, castLibNum) {
       castLibNum !== undefined ? _movie.castLib[castLibNum] : _movie.castLib[1];
     if (!castLib) return new Member(Symbol.for("empty"));
     return (
-      castLib._memberRegistry[nameOrNum] ||
-      new Member(Symbol.for("empty"))
+      castLib._memberRegistry[nameOrNum] || new Member(Symbol.for("empty"))
     );
   }
   for (const castNum in _movie.castLib) {
@@ -218,22 +229,18 @@ export function rgb(r, g, b) {
   return new Color(r ?? 0, g ?? 0, b ?? 0);
 }
 
-export function script(nameOrNum) {
-  const mem = member(nameOrNum);
+export function script(nameOrNum, castNameOrNum) {
+  const mem = member(nameOrNum, castNameOrNum);
+  if (mem._raw && typeof mem._raw === "function") {
+    return new ScriptRef(mem);
+  }
+  console.warn("[script] Script not found:", nameOrNum);
   return {
-    new: function () {
-      if (mem._raw instanceof Promise) {
-        console.warn("[script] Module not yet loaded:", nameOrNum);
-        return {};
-      }
-      if (mem._raw && typeof mem._raw === "object") {
-        const mod = mem._raw;
-        if (typeof mod.default === "function") return new mod.default();
-        if (typeof mod.new === "function") return mod.new();
-        return { ...mod };
-      }
-      console.warn("[script] Script not found:", nameOrNum);
+    new() {
       return {};
+    },
+    handler() {
+      return false;
     },
   };
 }

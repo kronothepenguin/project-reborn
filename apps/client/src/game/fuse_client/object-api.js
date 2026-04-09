@@ -52,7 +52,7 @@ export default function () {
       for (let i = 2; i <= arguments.length; i++) {
         const tParam = arguments[i - 1];
         if (listp(tParam)) {
-          for (const tClass of tParam._items) {
+          for (const tClass of tParam) {
             tClassList.add(tClass);
           }
           continue;
@@ -91,7 +91,7 @@ export default function () {
       for (let i = 2; i <= arguments.length; i++) {
         const tParam = arguments[i - 1];
         if (listp(tParam)) {
-          for (const tClass of tParam._items) {
+          for (const tClass of tParam) {
             tClassList.add(tClass);
           }
           continue;

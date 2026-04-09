@@ -208,8 +208,6 @@ export default function () {
 | `case x of ... end case` | `switch(x) { ... }` |
 | `EMPTY` | `EMPTY` (import from `../../director`) |
 | `VOID` | `VOID` (import from `../../director`) |
-| `return 1` (success) | `return true` |
-| `return 0` (failure) | `return false` |
 | `the paramCount` | `arguments.length` |
 | `param(n)` | `arguments[n - 1]` |
 | `the itemDelimiter` | `the.itemDelimiter` |

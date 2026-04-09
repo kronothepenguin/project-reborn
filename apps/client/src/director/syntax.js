@@ -1,17 +1,30 @@
 import { createListProxy } from "./core";
-import { _player } from "./runtime";
+import { _movie, _player } from "./runtime";
 
 export const the = new Proxy(
   {
+    alertHook: 0,
+    environment: {
+      [Symbol.for("productVersion")]: navigator.userAgent,
+      [Symbol.for("productBuildVersion")]: "",
+      [Symbol.for("osVersion")]: navigator.platform,
+    },
     frame: 1,
     itemDelimiter: ",",
     keyboardFocusSprite: 0,
     longTime: 0,
+    milliSeconds: 0,
     mouseV: 0,
     mouseH: 0,
     runMode: "Plugin",
   },
   {
+    get(target, prop) {
+      if (prop === "milliSeconds") return Date.now();
+      if (prop === "numberOfCastLibs") return Object.keys(_movie._castRegistry).length;
+      if (prop in target) return target[prop];
+      return undefined;
+    },
     set(target, p, newValue, receiver) {
       switch (p) {
         default:
