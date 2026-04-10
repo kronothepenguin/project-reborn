@@ -162,14 +162,25 @@ export function member(nameOrNum, castLibNum) {
   return new Member(Symbol.for("empty"));
 }
 
+export function newMember(type, castLibOrNum) {
+  const castLib =
+    typeof castLibOrNum === "number"
+      ? _movie.castLib[castLibOrNum]
+      : _movie.castLib[1];
+  const member = new Member(type ?? Symbol.for("empty"));
+  if (castLib) {
+    const num = castLib._memberCount + 1;
+    castLib._memberCount = num;
+    member._number = num;
+    member._castLibNum = castLib.number;
+    castLib._registerMember(num, member);
+  }
+  return member;
+}
+
 export function netDone() {
   // TODO: implement when netLingo is translated
   return true;
-}
-
-export function newMember(type, castLib) {
-  console.warn("[new] Dynamic member creation not fully implemented:", type);
-  return member(0);
 }
 
 export function objectp(x) {

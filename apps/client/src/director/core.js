@@ -564,6 +564,10 @@ export class List {
     return this.getPos(item);
   }
 
+  deleteAt(index) {
+    this._items.splice(index - 1, 1);
+  }
+
   getLast() {
     return this._items[this._items.length - 1];
   }

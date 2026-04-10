@@ -34,6 +34,12 @@ export const the = new Proxy(
   },
 );
 
+export function numberOfCastMembersOfCastLib(castLibNum) {
+  const cast = _movie.castLib[castLibNum];
+  if (!cast) return 0;
+  return Object.keys(cast._memberRegistry).filter(k => Number.isInteger(Number(k))).length;
+}
+
 /**
  *
  * @param {string[]} items

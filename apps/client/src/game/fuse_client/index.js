@@ -35,6 +35,8 @@ import managerTemplateClass from "./manager-template-class";
 import objectManagerClass from "./object-manager-class";
 import errorManagerClass from "./error-manager-class";
 import threadManagerClass from "./thread-manager-class";
+import downloadManagerClass from "./download-manager-class";
+import resourceManagerClass from "./resource-manager-class";
 
 registerCast("fuse_client", [
   createFieldMember("System Props", SystemProps),
@@ -69,8 +71,22 @@ registerCast("fuse_client", [
   createScriptMember("Special Services API", MOVIE_SCRIPT, specialServicesApi),
   createScriptMember("Multiuser API", MOVIE_SCRIPT, multiuserApi),
   createScriptMember("DropDown Class", PARENT_SCRIPT, dropDownClass),
-  createScriptMember("Manager Template Class", PARENT_SCRIPT, managerTemplateClass),
+  createScriptMember(
+    "Manager Template Class",
+    PARENT_SCRIPT,
+    managerTemplateClass,
+  ),
   createScriptMember("Object Manager Class", PARENT_SCRIPT, objectManagerClass),
   createScriptMember("Error Manager Class", PARENT_SCRIPT, errorManagerClass),
   createScriptMember("Thread Manager Class", PARENT_SCRIPT, threadManagerClass),
+  createScriptMember(
+    "Resource Manager Class",
+    PARENT_SCRIPT,
+    resourceManagerClass,
+  ),
+  createScriptMember(
+    "Download Manager Class",
+    PARENT_SCRIPT,
+    downloadManagerClass,
+  ),
 ]);

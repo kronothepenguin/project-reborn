@@ -15,6 +15,8 @@ Working directory: `apps/client/`. The original `.cct` cast files have been extr
 4. **The agent follows the pattern exactly.** No deviations, no "improvements", no "completions".
 5. **The agent MUST ask the user the script type** (`MOVIE_SCRIPT`, `BEHAVIOR_SCRIPT`, `PARENT_SCRIPT`) before registering the script member into module's index.js. The agent cannot determine this on its own.
 6. **Member registration order MUST match `Members.csv` exactly.** Use the `Number` column as the source of truth. Skip unavailable members.
+7. **After translating, verify 1:1 with the original.** Read the original `.ls` file and compare every handler, property, and logic line against the translated `.js`. Check: properties declared, all handlers present, `this.` prefix on properties, hoisted locals, `_director.` for non-natives, `return 1/0` matching Lingo. Fix any deviation before finishing.
+8. **NEVER invent a runtime.js function without verifying it's a real Lingo/Director native.** Before adding anything to `runtime.js`, confirm it's an actual built-in function from Macromedia Director MX 2004 documentation. If it's a computed property (e.g. `the number of castMembers of castLib`), translate it via `the.*` proxy or ask the user — don't create standalone `runtime.js` functions for Lingo expressions.
 
 ### Where things go:
 
@@ -194,19 +196,21 @@ export default function () {
 | `[ ]` (linear list) | `list()` |
 | Implicit variable (first assignment) | `let tVar = value` |
 | `voidP(x)` | `voidp(x)` |
-| `x.ilk = #symbol` | `ilk(x)` |
+| `x.ilk = #symbol` | `ilk(x) === Symbol.for("symbol")` |
 | `x.ilk <> #list` | `ilk(x) !== Symbol.for("list")` |
-| `member("name")` | `member()` |
-| `sprite(n)` | `sprite()` |
-| `timeout().new()` | `timeout()` |
-| `script("Name").new()` | `script().new()` |
-| `setaProp(#key, val)` | `obj.setaProp('key', val)` |
-| `getaProp(#key)` | `obj.getaProp('key')` |
-| `list.add(x)` | `list.push(x)` (List class method) |
-| `list.count` | `list.length` (List class property) |
+| `member(tMemNum).type = #bitmap` | `member(tMemNum).type === Symbol.for("bitmap")` (Lingo `=` is comparison) |
+| `tURL contains "http://"` | `tURL.includes("http://")` |
+| `memberExists(tMemName)` | `_director.memberExists(tMemName)` (non-native) |
+| `createMember(tMemName, ttype)` | `_director.createMember(tMemName, ttype)` (non-native) |
+| `getmemnum(tMemName)` | `_director.getmemnum(tMemName)` (non-native) |
+| `setaProp(#key, val)` | `obj.setaProp(Symbol.for("key"), val)` |
+| `getaProp(#key)` | `obj.getaProp(Symbol.for("key"))` |
+| `list.add(x)` | `list.add(x)` (List class method, NOT `.push()`) |
+| `list.count` | `list.count` (List class property, NOT `.length`) |
 | `repeat with i = 1 to n` | `for (let i = 1; i <= n; i++)` |
 | `repeat with x in list` | `for (const x of list)` |
 | `case x of ... end case` | `switch(x) { ... }` |
+| `otherwise:` (in case) | `default:` (in switch) |
 | `EMPTY` | `EMPTY` (import from `../../director`) |
 | `VOID` | `VOID` (import from `../../director`) |
 | `the paramCount` | `arguments.length` |
@@ -230,6 +234,12 @@ export default function () {
 | `"str1" && "str2"` | `` `str1 str2` `` |
 | `strVar1 && strVar2` | `` `${strVar1} ${strVar2}` `` |
 | `"str" && strVar` | `` `str ${strVar}` `` |
+| `str1 & str2` | `str1 + str2` (no space) |
+| `put str` | `put(str)` (import from `../../director`) |
+| `getProperty(#key)` | `obj.getaProp(Symbol.for("key"))` |
+| `call(#handler, obj, args)` | `call(Symbol.for("handler"), obj, args)` (import native `call`) |
+| `return 1` (success) | `return 1` |
+| `return 0` (failure) | `return 0` |
 
 **String chunk helpers** (`itemOf`, `wordOf`, `lineOf`, `charOf`): imported from `../../director`.
 Return a `SplitterProxy` with 1-based numeric access, `.count`, and `.slice(first, last)`
@@ -239,17 +249,26 @@ variable, use the corresponding helper.
 
 ### Implicit Variable Scope
 
-Lingo variables are function-scoped by default. When translating, hoist implicit variables
-to the closure scope before the return object to avoid JS block scope issues:
+Lingo variables are function-scoped by default. **The distinction matters:**
+
+- **`property pFoo`** → `pFoo: VOID` inside the **return object** (persistent state)
+- **Implicit locals** (`tVar = ...` without `property` declaration) → hoisted as `let tVar` in the **closure** before the return object
 
 ```js
+// Lingo: property pThreadList, pIndexField
+// Lingo: tThreadObj = pThreadList[tID]  (implicit local)
+
 export default function () {
-  // Hoisted implicit vars
-  let tOptionalImagesWidth, tStr, tTextMember, tFontDesc;
+  // Hoisted implicit locals ONLY (no `property` declarations here)
+  let tThreadObj, tMemNum;
 
   return {
-    someMethod() {
-      tStr = EMPTY;  // Works — tStr is closure-scoped
+    // Properties go here
+    pThreadList: VOID,
+    pIndexField: VOID,
+
+    GET(tID) {
+      tThreadObj = this.pThreadList[tID];  // Uses closure-scoped local + property on `this`
     },
   };
 }
@@ -384,6 +403,12 @@ When accessing symbols as object keys: `tProps[#key]` → `tProps[Symbol.for("ke
 ---
 
 ## Translation Workflow
+
+**For each script, follow this exact order:**
+
+1. **Translate** the `.ls` script → `.js` file (1:1 literal translation)
+2. **Verify 1:1** — Read the original `.ls` and compare every handler, property, and logic line against the translated `.js`. Check: properties declared, all handlers present, `this.` prefix on properties, hoisted locals, `_director.` for non-natives, `return 1/0` matching Lingo. Fix any deviation before finishing.
+3. **Register in `index.js`** — Add the translated `.js` to the module's `index.js` following the exact order of `Members.csv`'s `Number` column. **Ask the user** for the script type (`MOVIE_SCRIPT`, `BEHAVIOR_SCRIPT`, `PARENT_SCRIPT`) if unknown.
 
 ### Order
 1. **habbo** → entry point

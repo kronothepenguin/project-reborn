@@ -17,3 +17,5 @@ registerCast("Internal", [
   createScriptMember("Loop", BEHAVIOR_SCRIPT, Loop),
   createBitmapMember("Logo", Logo),
 ]);
+
+registerCast("bin", []);
