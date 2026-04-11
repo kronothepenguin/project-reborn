@@ -1,10 +1,631 @@
-export const _params = {};
+// -- Data Types --
+export class Color {}
 
-// ── Internal state ──
+export class List {
+  _values = new Array();
+
+  _sorted = false;
+
+  constructor(...args) {
+    this._values.push(...args);
+  }
+
+  get count() {
+    return this._values.length;
+  }
+
+  *[Symbol.iterator]() {
+    for (const item of this._values) {
+      yield item;
+    }
+  }
+
+  add(value) {
+    if (this._sorted) {
+      const index = this._values.findIndex((other) => value < other);
+      if (index === -1) {
+        this._values.push(value);
+      } else {
+        this._values.splice(index, 0, value);
+      }
+    } else {
+      this._values.push(value);
+    }
+  }
+
+  addAt(position, value) {
+    this._values[position - 1] = value;
+  }
+
+  append(value) {
+    this._values.push(value);
+  }
+
+  deleteAt(number) {
+    if (number > this._values.length) throw SyntaxError("index out of bounds");
+    this._values.splice(number - 1, 1);
+  }
+
+  deleteOne(value) {
+    const index = this._values.indexOf(value);
+    if (index > -1) {
+      this._values.splice(index, 1);
+    }
+  }
+
+  deleteProp(item) {
+    this.deleteAt(item);
+  }
+
+  duplicate() {
+    return new List(...this._values);
+  }
+
+  getaProp(position) {
+    if (position < 1 || position > this._values.length) {
+      return void 0;
+    }
+    return this._values[position - 1];
+  }
+
+  getAt(position) {
+    if (position < this._values.length) {
+      throw SyntaxError("index out of bounds");
+    }
+    return this._values[position - 1];
+  }
+
+  getLast() {
+    return this._values[this._values.length - 1];
+  }
+
+  getOne(value) {
+    return this._values.indexOf(value) + 1;
+  }
+
+  getPos(value) {
+    return this._values.indexOf(value) + 1;
+  }
+
+  setAt(orderNumber, value) {
+    if (orderNumber > this._values.length) {
+      // TODO: expand
+    }
+    this._values[orderNumber - 1] = value;
+  }
+
+  sort() {
+    this._values.sort();
+    this._sorted = true;
+  }
+}
+
+export function createList(...args) {
+  return new Proxy(new List(...args), {
+    get(target, p, receiver) {
+      if (Object.hasOwn(target, p)) {
+        return Reflect.get(target, p, receiver);
+      }
+
+      const n = Number(p);
+      if (Number.isInteger(n)) {
+        return target.getAt(n);
+      }
+
+      return Reflect.get(target, p, receiver);
+    },
+
+    set(target, p, newValue, receiver) {
+      if (Object.hasOwn(target, p)) {
+        return Reflect.set(target, p, newValue, receiver);
+      }
+
+      const n = Number(p);
+      if (Number.isInteger(n)) {
+        target.setAt(n, newValue);
+        return true;
+      }
+
+      return Reflect.set(target, p, newValue, receiver);
+    },
+  });
+}
+
+export class PropList {
+  _keys = new Array();
+  _values = new Array();
+
+  _sorted = false;
+
+  constructor(...args) {
+    for (let i = 0; i < args.length; i += 2) {
+      const key = args[i];
+      const value = args[i + 1];
+
+      this._keys.push(key);
+      this._values.push(value);
+    }
+  }
+
+  get count() {
+    return this._keys.length;
+  }
+
+  addProp(property, value) {
+    if (this._sorted) {
+      const prop =
+        typeof property === "symbol" ? property.description : property;
+      const index = this._keys.findIndex((other) =>
+        typeof other === "symbol"
+          ? prop < String(other.description)
+          : prop < other,
+      );
+      if (index === -1) {
+        this._keys.push(property);
+        this._values.push(value);
+      } else {
+        this._keys.splice(index, 0, property);
+        this._values.splice(index, 0, value);
+      }
+    } else {
+      this._keys.push(property);
+      this._values.push(value);
+    }
+  }
+
+  deleteAt(number) {
+    this._keys.splice(number - 1, 1);
+  }
+
+  deleteOne(value) {
+    const index = this._values.indexOf(value);
+    if (index > -1) {
+      this._keys.splice(index, 1);
+      this._values.splice(index, 1);
+    }
+  }
+
+  deleteProp(item) {
+    const index = this._keys.indexOf(item);
+    if (index > -1) {
+      this._keys.splice(index, 1);
+      this._values.splice(index, 1);
+    }
+  }
+
+  duplicate() {
+    const args = new Array(2 * this._keys.length);
+    for (let i = 0; i < this._keys.length; i++) {
+      args[2 * i] = this._keys[i];
+      args[2 * i + 1] = this._values[i];
+    }
+    return new PropList(...args);
+  }
+
+  findPos(property) {
+    const index = this._keys.indexOf(property);
+    if (index === -1) {
+      return void 0;
+    }
+    return index + 1;
+  }
+
+  getaProp(property) {
+    const index = this._keys.indexOf(property);
+    if (index === -1) {
+      return void 0;
+    }
+    return this._values[index];
+  }
+
+  getLast() {
+    return this._values[this._values.length - 1];
+  }
+
+  getOne(property) {
+    return this._keys.indexOf(property) + 1;
+  }
+
+  getPos(value) {
+    return this._values.indexOf(value) + 1;
+  }
+
+  getProp(property) {
+    const index = this._keys.indexOf(property);
+    if (index === -1) {
+      throw new SyntaxError("index out of bounds");
+    }
+    return this._values[index];
+  }
+
+  getPropAt(index) {
+    if (index < 1 || index > this._keys.length) {
+      throw new SyntaxError("index out of bounds");
+    }
+    return this._values[index - 1];
+  }
+
+  setaProp(property, newValue) {
+    const index = this._keys.indexOf(property);
+    if (index === -1) {
+      this.addProp(property, newValue);
+    } else {
+      this._values[index] = newValue;
+    }
+  }
+
+  setAt(orderNumber, value) {
+    if (orderNumber > this._keys.length) {
+      throw new SyntaxError("index out of bounds");
+    }
+    this._values[orderNumber - 1] = value;
+  }
+
+  sort() {
+    // TODO:
+    this._sorted = true;
+  }
+}
+
+export function createPropList(...args) {
+  return new Proxy(new PropList(...args), {
+    get(target, p, receiver) {
+      return target.getaProp(p);
+    },
+
+    set(target, p, newValue, receiver) {
+      target.setaProp(p, newValue);
+      return true;
+    },
+  });
+}
+
+export class Point {
+  inside(rectangle) {}
+}
+
+export class Rect {}
+
+// -- Director Core Objects
+
+function createIndexedRegistry() {
+  const keys = new Array();
+  const values = new Array();
+
+  return new Proxy(
+    {
+      get count() {
+        return keys.length;
+      },
+    },
+    {
+      get(target, p, receiver) {
+        if (Object.hasOwn(target, p)) {
+          return Reflect.get(target, p, receiver);
+        }
+
+        const n = Number(p);
+        if (Number.isInteger(n)) {
+          return values[n - 1];
+        }
+
+        if (typeof p === "string") {
+          const index = keys.indexOf(p);
+          if (index === -1) {
+            return undefined;
+          }
+          return values[index];
+        }
+
+        return Reflect.get(target, p, receiver);
+      },
+
+      set(target, p, newValue, receiver) {
+        if (keys.indexOf(p) > -1) {
+          return false;
+        }
+
+        newValue._number = keys.push(p);
+        values.push(newValue);
+
+        return true;
+      },
+    },
+  );
+}
+
+export class CastLibrary {
+  _fileName = "";
+
+  _member = createIndexedRegistry();
+
+  name = "";
+
+  _number = 0;
+
+  // • 0. Load the cast library when needed. This is the default value.
+  // • 1. Load the cast library before frame 1.
+  // • 2. Load the cast library after frame 1.
+  preLoadMode = 0;
+
+  get fileName() {
+    return this._fileName;
+  }
+
+  set fileName(name) {
+    // TODO: check for external
+    this._fileName = name;
+  }
+
+  get member() {
+    return Object.freeze(this._member);
+  }
+
+  get number() {
+    return this._number;
+  }
+}
+
+export class Global {
+  clearGlobals() {}
+
+  showGlobals() {}
+}
+
+export class Key {}
+
+export class Member {
+  _castLibNum = 0;
+
+  _height = 0;
+
+  media = Object.create({});
+
+  name = "";
+
+  _number = 0;
+
+  _rect = new Rect();
+
+  regPoint = new Point();
+
+  _type = Symbol.for("empty");
+
+  _width = 0;
+
+  get castLibNum() {
+    return this._castLibNum;
+  }
+
+  get height() {
+    return this._height;
+  }
+
+  get number() {
+    return this._number;
+  }
+
+  get rect() {
+    return this._rect;
+  }
+
+  set rect(r) {
+    if (this._type !== Symbol.for("field"))
+      throw SyntaxError(
+        `trying to assign rect of ${this._type.description} member`,
+      );
+    this._rect = r;
+  }
+
+  get type() {
+    return this._type;
+  }
+
+  get width() {
+    return this._width;
+  }
+
+  duplicate() {
+    return new Member();
+  }
+
+  erase() {
+    // TODO: use _castLibNum to detect this member by _number and replace with #empty Member
+    // this.castLibNum
+  }
+}
+
+export class Mouse {}
+
+export class Movie {
+  _castLib = createIndexedRegistry();
+
+  editShortCutsEnabled = 0;
+
+  exitLock = 0;
+
+  _frame = 0;
+
+  _frameTempo = 0;
+
+  keyboardFocusSprite = Object.create({});
+
+  _lastChannel = 0;
+
+  _name = "";
+
+  _path = "";
+
+  _sprite = createIndexedRegistry();
+
+  _stage = Object.create({});
+
+  _timeoutList = new Array();
+
+  traceScript = 0;
+
+  _xtraList = new Array();
+
+  get castLib() {
+    return Object.freeze(this._castLib);
+  }
+
+  get frame() {
+    return this._frame;
+  }
+
+  get frameTempo() {
+    return this._frameTempo;
+  }
+
+  get lastChannel() {
+    return this._lastChannel;
+  }
+
+  get name() {
+    return this._name;
+  }
+
+  get path() {
+    return this._path;
+  }
+
+  get sprite() {
+    return Object.freeze(this._sprite);
+  }
+
+  get stage() {
+    return this._stage;
+  }
+
+  get xtraList() {
+    return Object.freeze(this._xtraList);
+  }
+
+  go(frameNameOrNum, movieName = "") {}
+
+  puppetSprite(intSpriteNum, flag) {}
+
+  puppetTempo(intTempo) {}
+
+  rollOver(intSpriteNum = 0) {}
+
+  stopEvent() {}
+
+  updateStage() {}
+}
+
+export class Player {
+  alertHook = Object.create({});
+
+  debugPlaybackEnabled = 0;
+
+  _sound = new Array();
+
+  _xtra = new Array();
+
+  get sound() {
+    return this._sound;
+  }
+
+  get xtra() {
+    return this._xtra;
+  }
+
+  externalParamValue() {}
+
+  getPref() {}
+
+  setPref() {}
+}
+
+export class Sound {}
+
+export class SoundChannel {}
+
+export class Sprite {}
+
+export class SpriteChannel {}
+
+export class System {}
+
+export class DirectorWindow {}
+
+// -- Objects --
+
+export class ParserObject {
+  getError() {}
+
+  parseString() {}
+}
+
+export class ScriptObject {
+  handler() {}
+
+  handlers() {}
+}
+
+// -- Object References --
+
+export class MemberObjectRef {
+  charPosToLoc(nthCharacter) {}
+
+  erase() {}
+
+  locToCharPos(location) {}
+}
+
+export class ImageObjectRef {
+  copyPixels(sourceImgObj, destRectOrQuad, sourceRect, paramList) {}
+
+  createMask() {}
+
+  createMatte() {}
+
+  draw() {}
+
+  duplicate() {}
+
+  fill() {}
+
+  getPixel() {}
+
+  setAlpha() {}
+
+  setPixel() {}
+}
+
+export class TimeoutRef {
+  forget() {}
+}
+
+export class SoundChannelObjectRef {
+  getPlayList() {}
+
+  isBusy() {}
+
+  play() {}
+
+  queue() {}
+
+  setPlayList() {}
+
+  stop() {}
+}
+
+export class SpriteObjectRef {
+  print() {}
+}
+
+// -- Helpers --
+
+export const _params = {};
 
 export const _timeouts = {};
 
-// ── ScriptRef & ScriptObject ──
+export function createLinearList() {}
+
+export function createPropertyList() {}
 
 export function createScriptObject(prototype) {
   return new Proxy(
@@ -55,18 +676,6 @@ export class ScriptRef {
   }
 }
 
-// ── Point ──
-
-export class Point {
-  locH = 0;
-  locV = 0;
-
-  constructor(h, v) {
-    this.locH = h ?? 0;
-    this.locV = v ?? 0;
-  }
-}
-
 export function createPointProxy(h, v) {
   return new Proxy(new Point(h, v), {
     get(target, prop) {
@@ -96,48 +705,6 @@ export function createPointProxy(h, v) {
       return true;
     },
   });
-}
-
-// ── Rect ──
-
-export class Rect {
-  left = 0;
-  top = 0;
-  right = 0;
-  bottom = 0;
-
-  constructor(left, top, right, bottom) {
-    this.left = left ?? 0;
-    this.top = top ?? 0;
-    this.right = right ?? 0;
-    this.bottom = bottom ?? 0;
-  }
-
-  get width() {
-    return this.right - this.left;
-  }
-
-  get height() {
-    return this.bottom - this.top;
-  }
-
-  add(other) {
-    return new Rect(
-      this.left + other.left,
-      this.top + other.top,
-      this.right + other.right,
-      this.bottom + other.bottom,
-    );
-  }
-
-  subtract(other) {
-    return new Rect(
-      this.left - other.left,
-      this.top - other.top,
-      this.right - other.right,
-      this.bottom - other.bottom,
-    );
-  }
 }
 
 export function createRectProxy(left, top, right, bottom) {
@@ -190,20 +757,6 @@ export function createRectProxy(left, top, right, bottom) {
       return true;
     },
   });
-}
-
-// ── Color ──
-
-export class Color {
-  red = 0;
-  green = 0;
-  blue = 0;
-
-  constructor(r, g, b) {
-    this.red = r ?? 0;
-    this.green = g ?? 0;
-    this.blue = b ?? 0;
-  }
 }
 
 // ── ImageObject ──
@@ -327,280 +880,6 @@ export class ImageObject {
   }
 }
 
-export class Member {
-  // read/write — public properties
-  name = "";
-  fileName = "";
-  media = new ArrayBuffer();
-  regPoint = [0, 0];
-  image = null;
-  blend = 100;
-  locH = 0;
-  locV = 0;
-  wordWrap = 0;
-  font = "";
-  fontStyle = null;
-  fontSize = 12;
-  color = null;
-  text = "";
-  fixedLineSpace = 0;
-  alignment = Symbol.for("left");
-
-  // read-only — backing fields
-  _castLibNum = 0;
-  _number = 0;
-  _width = 0;
-  _height = 0;
-  _rect = new Rect();
-  _type = Symbol.for("empty");
-  _raw = null;
-  _scriptType = Symbol.for("empty");
-  _scriptInstance = null;
-
-  constructor(type, name) {
-    this._type = type;
-    this.name = name;
-  }
-
-  // read-only getters
-  get castLibNum() {
-    return this._castLibNum;
-  }
-
-  get height() {
-    return this._height;
-  }
-
-  get number() {
-    return this._number;
-  }
-
-  get rect() {
-    return this._rect;
-  }
-
-  get type() {
-    return this._type;
-  }
-
-  get width() {
-    return this._width;
-  }
-
-  get loc() {
-    return createPointProxy(this.locH, this.locV);
-  }
-
-  set loc(p) {
-    this.locH = p.locH;
-    this.locV = p.locV;
-  }
-
-  charPosToLoc(charNum) {
-    // TODO: implement when text rendering is available
-    return createPointProxy(0, 0);
-  }
-
-  duplicate() {}
-
-  erase() {}
-
-  importFileInto() {}
-}
-
-export class CastLibrary {
-  name = "";
-  // • 0. Load the cast library when needed. This is the default value.
-  // • 1. Load the cast library before frame 1.
-  // • 2. Load the cast library after frame 1.
-  preLoadMode = 0;
-
-  /** @type{Record<any, Member>} */
-  _memberRegistry = {};
-  _memberCount = 0;
-
-  constructor(name, number) {
-    this.name = name;
-    this._number = number;
-  }
-
-  get fileName() {
-    return "";
-  }
-
-  get member() {
-    return { ...this._memberRegistry };
-  }
-
-  get number() {
-    return this._number;
-  }
-
-  _registerMember(name, member) {
-    const memNum = this._memberCount + 1;
-    this._memberCount++;
-
-    this._memberRegistry[name] = member;
-    this._memberRegistry[memNum] = member;
-  }
-}
-
-export class Sprite {}
-
-export class Movie {
-  keyboardFocusSprite = -1;
-
-  /** @type{Record<any, CastLibrary>} */
-  _castRegistry = {};
-  _castCount = 0;
-
-  _tempo = 60; // 60 FPS
-
-  constructor() {}
-
-  get castLib() {
-    return { ...this._castRegistry };
-  }
-
-  get lastChannel() {
-    return 0;
-  }
-
-  puppetSprite(intTempo) {
-    this._tempo = intTempo;
-  }
-
-  puppetTempo() {}
-
-  stopEvent() {}
-
-  updateStage() {}
-
-  _registerCast(name, members) {
-    const castLibs = this._castRegistry;
-
-    if (!!castLibs[name]) {
-      return;
-    }
-
-    const castNum = this._castCount + 1;
-    this._castCount++;
-
-    const cast = new CastLibrary(name, castNum);
-
-    for (const member of members) {
-      member._castLibNum = castNum;
-      member._number = cast._memberCount;
-
-      const memberName = member.name;
-
-      cast._registerMember(memberName, member);
-    }
-
-    castLibs[name] = cast;
-    castLibs[castNum] = cast;
-  }
-}
-
-export class Player {
-  constructor(movie) {
-    this._movie = movie;
-  }
-
-  cursor() {}
-
-  externalParamValue() {}
-
-  getPref() {}
-
-  setPref() {}
-}
-
-export class List {
-  constructor(...args) {
-    this._items = [...args];
-  }
-
-  get count() {
-    return this._items.length;
-  }
-
-  add(item) {
-    this._items.push(item);
-  }
-
-  getAt(index) {
-    return this._items[index - 1];
-  }
-
-  setAt(index, value) {
-    this._items[index - 1] = value;
-  }
-
-  deleteOne(item) {
-    const idx = this._items.indexOf(item);
-    if (idx !== -1) {
-      this._items.splice(idx, 1);
-      return true;
-    }
-    return false;
-  }
-
-  getOne(item) {
-    const idx = this._items.indexOf(item);
-    return idx !== -1 ? idx + 1 : 0;
-  }
-
-  contains(item) {
-    return this._items.includes(item);
-  }
-
-  getPos(item) {
-    const idx = this._items.indexOf(item);
-    return idx !== -1 ? idx + 1 : 0;
-  }
-
-  findPos(item) {
-    return this.getPos(item);
-  }
-
-  deleteAt(index) {
-    this._items.splice(index - 1, 1);
-  }
-
-  getLast() {
-    return this._items[this._items.length - 1];
-  }
-
-  append(item) {
-    this._items.push(item);
-  }
-
-  addAt(index, item) {
-    this._items.splice(index - 1, 0, item);
-  }
-
-  sort() {
-    this._items.sort();
-    return this;
-  }
-
-  reverse() {
-    this._items.reverse();
-    return this;
-  }
-
-  duplicate() {
-    return createListProxy(...this._items);
-  }
-
-  *[Symbol.iterator]() {
-    for (const item of this._items) {
-      yield item;
-    }
-  }
-}
-
 export function createListProxy(...args) {
   const list = new List(...args);
 
@@ -639,67 +918,6 @@ export function createListProxy(...args) {
       return true;
     },
   });
-}
-
-export class PropList {
-  constructor() {
-    this._props = {};
-  }
-
-  get count() {
-    return Object.keys(this._props).length;
-  }
-
-  setaProp(key, value) {
-    this._props[key] = value;
-  }
-
-  getaProp(key) {
-    return this._props[key];
-  }
-
-  getPropAt(index) {
-    const keys = Object.keys(this._props);
-    return this._props[keys[index - 1]];
-  }
-
-  $getKeyAt(index) {
-    const keys = Object.keys(this._props);
-    return keys[index - 1];
-  }
-
-  deleteAProp(key) {
-    delete this._props[key];
-  }
-
-  deleteProp(key) {
-    delete this._props[key];
-  }
-
-  $hasProp(key) {
-    return key in this._props;
-  }
-
-  $getKeys() {
-    return Object.keys(this._props);
-  }
-
-  $getPropList() {
-    return { ...this._props };
-  }
-
-  sort() {
-    // PropList sorting is a no-op on empty lists, but method must exist
-    return this;
-  }
-
-  duplicate() {
-    const pl = createPropListProxy();
-    for (const key of this.$getKeys()) {
-      pl.setaProp(key, this.getaProp(key));
-    }
-    return pl;
-  }
 }
 
 export function createPropListProxy() {
