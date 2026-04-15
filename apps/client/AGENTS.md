@@ -1,181 +1,98 @@
-# AGENTS.md - Client Project (LingoScript → JavaScript)
+# AGENTS.md - Client (LingoScript → JavaScript)
 
-## Project Overview
+## Quick Reference
 
-Translation of LingoScript (Macromedia Director MX 2004) to JavaScript with Vite.
-Working directory: `apps/client/`. The original `.cct` cast files have been extracted and their `.ls` scripts live in `apps/client/src/game/`, organized by cast name. Each cast has its own `index.js` that registers members and imports translated files.
+| Need | Solution |
+|------|----------|
+| Import native function | `import { func } from "../../director"` |
+| Call non-native function | `_director.funcName()` |
+| Global variable | `_global.gVar` (import from `../../director`) |
+| Property declaration | `pFoo: VOID` in return object |
+| Local variable | `let tVar` hoisted before return |
+| Symbol `#key` | `Symbol.for("key")` |
+| String chunks `t.item[i]` | `itemOf(t)[i]` |
+
+**Import paths:** `../../director` (native funcs), `./local-file.js` (cast-local)
 
 ---
 
-## ⚠️ AGENT RULES — READ BEFORE ANYTHING
+## ⚠️ AGENT RULES
 
-1. **The agent does NOT make decisions.** It translates LingoScript to JavaScript following the established pattern. Nothing more.
-2. **The agent does NOT invent functions.** If a handler doesn't exist in the `.ls` file, it does NOT exist in the `.js` output. No `construct()`, no `prepareMovie()`, no extras — only what's literally in the source.
-3. **The agent does NOT search `.ls` files.** Never search across files to find function definitions. All non-native function calls translate to `_director.funcName()` or `_director.keywordFn()`.
-4. **The agent follows the pattern exactly.** No deviations, no "improvements", no "completions".
-5. **The agent MUST ask the user the script type** (`MOVIE_SCRIPT`, `BEHAVIOR_SCRIPT`, `PARENT_SCRIPT`) before registering the script member into module's index.js. The agent cannot determine this on its own.
-6. **Member registration order MUST match `Members.csv` exactly.** Use the `Number` column as the source of truth. Skip unavailable members.
-7. **After translating, verify 1:1 with the original.** Read the original `.ls` file and compare every handler, property, and logic line against the translated `.js`. Check: properties declared, all handlers present, `this.` prefix on properties, hoisted locals, `_director.` for non-natives, `return 1/0` matching Lingo. Fix any deviation before finishing.
-8. **NEVER invent a runtime.js function without verifying it's a real Lingo/Director native.** Before adding anything to `runtime.js`, confirm it's an actual built-in function from Macromedia Director MX 2004 documentation. If it's a computed property (e.g. `the number of castMembers of castLib`), translate it via `the.*` proxy or ask the user — don't create standalone `runtime.js` functions for Lingo expressions.
+1. **NO decisions** — translate literally, nothing more
+2. **NO inventing** — if handler not in `.ls`, not in `.js`
+3. **NO file searches** — non-natives become `_director.funcName()`
+4. **NO deviations** — follow pattern exactly, no "improvements"
+5. **Ask user** script type (`MOVIE_SCRIPT`, `BEHAVIOR_SCRIPT`, `PARENT_SCRIPT`) before registration
+6. **Match Members.csv** — use `Number` column for order, register **ALL** members (not just scripts)
+7. **Verify 1:1** — compare original `.ls` to translated `.js` before finishing
+8. **No runtime.js inventions** — only add native Director functions (verify against docs)
 
-### Where things go:
+### Where Things Go
 
 | What | Where |
 |------|-------|
-| Native Director API functions | `runtime.js` — ONLY when user approves adding a missing function |
-| Classes, helpers, internal state | `core.js` — `List`, `PropList`, `Member`, `Sprite`, etc. |
-| User-facing translation API | `index.js` — `createBitmapMember`, `registerCast`, etc. |
-| Special syntax or unknown constructs | **Ask the user. Do NOT implement workarounds.** |
+| Native Director API | `runtime.js` (user approval required) |
+| Classes, helpers, state | `core.js` |
+| User-facing API (member creators) | `index.js` |
+| `the.*` properties + chunks | `syntax.js` |
+| Preload tracking | `loader.js` |
+| Unknown constructs | **Ask user** |
 
 ---
 
-## Director Architecture
+## Architecture
 
 ### Globals
 
-**Only ONE JavaScript global: `_director`** (`globalThis._director = {}`)
+```
+_director  → globalThis (auto-populated)
+_global    → import from ../../director
+```
 
-| Name | Type | How to access |
-|------|------|---------------|
-| `_director` | **JS global** (`globalThis`) | Direct — no import needed. Auto-populated by `registerGlobalHandlers()` in `index.js`. |
-| `_global` | **JS export** from `runtime.js` | **MUST be imported** from `../../director`. Used for shared state (`_global.gCore`, `_global.gError`, etc.). Translates Lingo `global gVar` declarations 1:1. |
-
-### Director Layer Files
+### Director Files
 
 | File | Purpose |
 |------|---------|
-| **`core.js`** | Classes (`Point`, `Rect`, `Color`, `ImageObject`, `Member`, `CastLibrary`, `Sprite`, `Movie`, `Player`, `List`, `PropList`), `_params`, helpers, internal state (`_timeouts`, etc.) |
-| **`runtime.js`** | **ONLY native Director functions**: `_global`, `_movie`, `_player`, `EMPTY`, `VOID`, `RETURN`, `TAB`, `castLib`, `member`, `sprite`, `voidp`, `list`, `propList`, `call`, `go`, `field`, `value`, `string`, `put`, `pass`, `netDone`, `ilk`, `stringp`, `symbolp`, `integerp`, `listp`, `objectp`, `chars`, `length`, `offset`, `random`, `date`, `time`, `timeout`, `script`, `getPref`, `setPref`, `newMember`, `openNetPage`, `gotoNetPage`, `puppetTempo`, `stopEvent`, `point`, `rect`, `rgb`, `image` |
-| **`syntax.js`** | Lingo syntax helpers: `the.*` properties (`the.itemDelimiter`, `the.mouseV`, `the.mouseH`, etc.) + string chunk extraction: `itemOf()`, `lineOf()`, `wordOf()`, `charOf()`. All use 1-based indexing like Lingo. |
-| **`index.js`** | Translation API (`createBitmapMember`, `createScriptMember`, `registerCast`, etc.), barrel re-exports, `_director` setup. `start()` calls `registerGlobalHandlers()` which copies all movie script factory returns to `_director`. |
-| **`loader.js`** | Preload simulation. Ask user before editing. |
+| `index.js` | Translation API (`createBitmapMember`, `registerCast`), barrel exports, `_director` setup |
+| `core.js` | Classes (`Point`, `Rect`, `Color`, `Member`, `Sprite`, `Movie`, `Player`, `List`, `PropList`), internal state |
+| `runtime.js` | Native Director functions (`_movie`, `_player`, `list`, `propList`, `script`, `go`, `field`, `voidp`, `ilk`, etc.) |
+| `syntax.js` | Lingo syntax workarounds: `the.*` properties, chunk helpers (`itemOf`, `wordOf`, `lineOf`, `charOf`), range syntax (`1..5`), string extraction |
+| `loader.js` | Preload tracking (`loadImage`, `loadModule`, `loadPromise`) |
 
 ### How `_director` Works
 
 ```
-index.js start() — called when preload finishes:
-  1. For each MOVIE_SCRIPT:
-     a. factory = member._raw()
-     b. for (const prop in factory) _director[prop] = factory[prop]
+index.js start():
+  1. For each MOVIE_SCRIPT: factory = member._raw(); copy props to _director
   2. Dispatch 'prepareMovie' on canvas
 ```
 
-**Every function returned by a movie script factory is automatically `_director.functionName()`. No manual registration needed.**
+Every movie script factory return becomes `_director.functionName()`.
 
 ---
 
-## Commands
+## Translation Pattern
 
-```bash
-npm run dev       # Vite dev server with external params from .env.development
-npm run build     # Exports mount(el, params) function + casts as separate chunks
-npm run preview   # Preview the build
-```
-
----
-
-## Translation Pattern (1:1 LITERAL TRANSLATION)
-
-### THE ONLY PATTERN
+### Movie Script / Parent Script / Behavior Script
 
 ```js
-// Lingo: 6_Object API.ls
-
-global gCore
-
-on constructObjectManager me
-  if objectp(gCore) then
-    return gCore
-  end if
-  // ... body
-end
-
-on getObjectManager
-  if voidp(gCore) then
-    return constructObjectManager()
-  end if
-  return gCore
-end
-
-on createObject tID
-  // ... body
-end
-```
-
-```js
-// JavaScript: object-api.js
-
-import { _global, field, listp, objectp, RETURN, script, value, voidp } from "../../director";
+// JavaScript (all types same pattern)
+import { _global, objectp, voidp, VOID } from "../../director";
 
 export default function () {
+  // Global declarations
   _global.gCore = _global.gCore ?? VOID;
 
+  // Implicit locals (hoisted)
+  let tVar;
+
   return {
+    // Properties
+    pFoo: VOID,
+
+    // Handlers
     constructObjectManager() {
-      if (objectp(_global.gCore)) {
-        return _global.gCore;
-      }
-      // ... body
-    },
-
-    getObjectManager() {
-      if (voidp(_global.gCore)) {
-        return this.constructObjectManager();
-      }
-      return _global.gCore;
-    },
-
-    createObject(tID) {
-      // ... body
-    },
-  };
-}
-```
-
-**That's it. That's the entire pattern.**
-
-- Every `on handlerName me, args` → method in return object: `handlerName(args) { }`
-- Every `global gVar` → `_global.gVar = _global.gVar ?? VOID` at top of factory
-- `global gVar` accesses → `_global.gVar`
-- Everything else is a direct Lingo → JS translation
-
-### Behavior Script (sprite-attached)
-
-Same pattern. Return object with event handlers:
-
-```js
-import { call, list, listp, pass, propList, sprite, stopEvent, stringp, symbolp, the, VOID, voidp } from "../../director";
-
-export default function () {
-  return {
-    // properties
-    id: VOID,
-    pSprite: VOID,
-
-    // event handlers from .ls file
-    mouseEnter() { /* ... */ },
-    mouseUp() { /* ... */ },
-
-    // custom methods from .ls file
-    redirectEvent(tEvent) { /* ... */ },
-  };
-}
-```
-
-### Parent Script (class-like)
-
-Same pattern. Return object with methods:
-
-```js
-import { list, voidp } from "../../director";
-
-export default function () {
-  return {
-    pData: VOID,
-
-    construct() {
-      this.pData = list();
-      return true;
+      if (objectp(_global.gCore)) return _global.gCore;
     },
 
     someMethod(arg) { /* ... */ },
@@ -183,255 +100,127 @@ export default function () {
 }
 ```
 
----
-
-## Lingo → JS Mapping
+### Lingo → JS Mapping
 
 | Lingo | JavaScript |
 |-------|-----------|
-| `property pFoo` | `pFoo: VOID` (property on returned object) |
-| `on methodName me, args` | `methodName(args) { /* ... */ }` |
-| `global gVar` | `_global.gVar = _global.gVar ?? VOID` (**import `_global`**) |
-| `[ : ]` (propList) | `propList()` |
-| `[ ]` (linear list) | `list()` |
-| Implicit variable (first assignment) | `let tVar = value` |
-| `voidP(x)` | `voidp(x)` |
-| `x.ilk = #symbol` | `ilk(x) === Symbol.for("symbol")` |
-| `x.ilk <> #list` | `ilk(x) !== Symbol.for("list")` |
-| `member(tMemNum).type = #bitmap` | `member(tMemNum).type === Symbol.for("bitmap")` (Lingo `=` is comparison) |
-| `tURL contains "http://"` | `tURL.includes("http://")` |
-| `memberExists(tMemName)` | `_director.memberExists(tMemName)` (non-native) |
-| `createMember(tMemName, ttype)` | `_director.createMember(tMemName, ttype)` (non-native) |
-| `getmemnum(tMemName)` | `_director.getmemnum(tMemName)` (non-native) |
-| `setaProp(#key, val)` | `obj.setaProp(Symbol.for("key"), val)` |
-| `getaProp(#key)` | `obj.getaProp(Symbol.for("key"))` |
-| `list.add(x)` | `list.add(x)` (List class method, NOT `.push()`) |
-| `list.count` | `list.count` (List class property, NOT `.length`) |
+| `property pFoo` | `pFoo: VOID` (return object) |
+| `on handler me, args` | `handler(args) { }` |
+| `global gVar` | `_global.gVar = _global.gVar ?? VOID` |
+| `[ : ]` | `propList()` |
+| `[ ]` | `list()` |
+| `voidp(x)` | `voidp(x)` |
+| `x.ilk = #sym` | `ilk(x) === Symbol.for("sym")` |
+| `t contains "str"` | `t.includes("str")` |
 | `repeat with i = 1 to n` | `for (let i = 1; i <= n; i++)` |
 | `repeat with x in list` | `for (const x of list)` |
-| `case x of ... end case` | `switch(x) { ... }` |
-| `otherwise:` (in case) | `default:` (in switch) |
-| `EMPTY` | `EMPTY` (import from `../../director`) |
-| `VOID` | `VOID` (import from `../../director`) |
+| `case x of ... otherwise: ... end case` | `switch(x) { ... default: ... }` |
+| `EMPTY` / `VOID` | `EMPTY` / `VOID` |
 | `the paramCount` | `arguments.length` |
 | `param(n)` | `arguments[n - 1]` |
-| `the itemDelimiter` | `the.itemDelimiter` |
-| `the mouseV` | `the.mouseV` |
-| `tString.item[i]` | `itemOf(tString)[i]` |
-| `tString.item.count` | `itemOf(tString).count` |
-| `tString.item[first..last]` | `itemOf(tString).slice(first, last)` |
-| `tString.word[i]` | `wordOf(tString)[i]` |
-| `tString.word.count` | `wordOf(tString).count` |
-| `tString.word[first..last]` | `wordOf(tString).slice(first, last)` |
-| `tString.line[i]` | `lineOf(tString)[i]` |
-| `tString.line.count` | `lineOf(tString).count` |
-| `tString.line[first..last]` | `lineOf(tString).slice(first, last)` |
-| `tString.char[i]` | `charOf(tString)[i]` |
-| `tString.char.count` | `charOf(tString).count` |
-| `tString.char[first..last]` | `charOf(tString).slice(first, last)` |
+| `t.item[i]` | `itemOf(t)[i]` |
+| `t.item.count` | `itemOf(t).count` |
+| `t.item[first..last]` | `itemOf(t).slice(first, last)` |
 | `tProps[#key]` | `tProps[Symbol.for("key")]` |
-| `#symA && #symB` | `symA.description + symB.description` |
-| `"str1" && "str2"` | `` `str1 str2` `` |
-| `strVar1 && strVar2` | `` `${strVar1} ${strVar2}` `` |
-| `"str" && strVar` | `` `str ${strVar}` `` |
-| `str1 & str2` | `str1 + str2` (no space) |
-| `put str` | `put(str)` (import from `../../director`) |
-| `getProperty(#key)` | `obj.getaProp(Symbol.for("key"))` |
-| `call(#handler, obj, args)` | `call(Symbol.for("handler"), obj, args)` (import native `call`) |
-| `return 1` (success) | `return 1` |
-| `return 0` (failure) | `return 0` |
+| `"a" && "b"` | `` `a b` `` |
+| `str1 & str2` | `str1 + str2` |
+| `put str` | `put(str)` |
+| `me.method()` | `this.method()` (never call runtime functions on this) |
+| `call(#h, obj, args)` | `call(Symbol.for("h"), obj, args)` |
+| `return 1` / `return 0` | `return 1` / `return 0` |
 
-**String chunk helpers** (`itemOf`, `wordOf`, `lineOf`, `charOf`): imported from `../../director`.
-Return a `SplitterProxy` with 1-based numeric access, `.count`, and `.slice(first, last)`
-(1-based, inclusive, rejoins with original delimiter). Lingo has no typed strings — the agent
-**MUST NOT** assume variable types. When Lingo uses `.item`, `.word`, `.char`, or `.line` on any
-variable, use the corresponding helper.
+### Me Handling
+
+**ALWAYS translate `me.method()` as `this.method()`** — never call native runtime functions on `this`.
+
+```js
+// Lingo: me.getProp(#key)
+// JS: this.getProp(Symbol.for("key"))  ← NOT getProp(...) from runtime
+
+// Lingo: me.construct()
+// JS: this.construct()  ← NOT the native constructor
+```
+
+This applies to ALL methods called on `me`, even if they match native Director function names.
 
 ### Implicit Variable Scope
 
-Lingo variables are function-scoped by default. **The distinction matters:**
+- **`property`** → in return object (persistent)
+- **Implicit local** (`tVar = ...`) → hoisted `let tVar` before return object
 
-- **`property pFoo`** → `pFoo: VOID` inside the **return object** (persistent state)
-- **Implicit locals** (`tVar = ...` without `property` declaration) → hoisted as `let tVar` in the **closure** before the return object
+### JS Keyword Conflicts
 
-```js
-// Lingo: property pThreadList, pIndexField
-// Lingo: tThreadObj = pThreadList[tID]  (implicit local)
+| Lingo Handler | JS Method |
+|---------------|-----------|
+| `on try me` | `tryFn()` |
+| `on catch me` | `catchFn()` |
+| `on delete me` | `deleteFn()` |
 
-export default function () {
-  // Hoisted implicit locals ONLY (no `property` declarations here)
-  let tThreadObj, tMemNum;
-
-  return {
-    // Properties go here
-    pThreadList: VOID,
-    pIndexField: VOID,
-
-    GET(tID) {
-      tThreadObj = this.pThreadList[tID];  // Uses closure-scoped local + property on `this`
-    },
-  };
-}
-```
-
-### JavaScript Keyword Conflicts
-
-When a Lingo handler name collides with a JavaScript keyword, append `Fn` suffix to both the **definition** and the **call**:
-
-| Lingo Handler | JS Method Name | JS Call |
-|---------------|---------------|---------|
-| `on try me` | `tryFn()` | `_director.tryFn()` |
-| `on catch me` | `catchFn()` | `_director.catchFn()` |
-| `on delete me` | `deleteFn()` | `_director.deleteFn()` |
-| `on void me` | `voidFn()` | `_director.voidFn()` |
-
-Native JS operations (`delete obj.prop`, `typeof x`, `void 0`) are used as-is — this rule only applies to Lingo handler definitions and their `_director` calls.
+Use `_director.tryFn()` for calls.
 
 ---
 
 ## Script Types
 
-**The AI agent must ask the user what type a script is before translating.**
+| Type | Usage | Registration |
+|------|-------|--------------|
+| `MOVIE_SCRIPT` | Global handlers, single instance | Auto-registered in `_director` |
+| `BEHAVIOR_SCRIPT` | Sprite-attached, new instance per sprite | Via `createScriptMember` |
+| `PARENT_SCRIPT` | Class-like, `script("Name").new()` | Via `createScriptMember` |
 
-| Type | Usage |
-|------|-------|
-| `MOVIE_SCRIPT` | Global handlers. Single instance. Functions auto-registered in `_director`. |
-| `BEHAVIOR_SCRIPT` | Attached to sprites. New instance per sprite. Event handlers on sprite events. |
-| `PARENT_SCRIPT` | Class-like. Instantiated via `script("Name").new()`. New instance per call. |
+**Ask user** for script type before registration.
 
-### Lingo Symbols
+---
 
-Use `Symbol.for("name")`. Strip the `#`:
+## Import Resolution
 
-```js
-// Lingo: #mouseEnter, #session
-Symbol.for("mouseEnter")
-Symbol.for("session")
+```
+Step 1: Native Director API?     → import from ../../director
+Step 2: Exported in runtime.js? → import from ../../director
+Step 3: NOT native?             → _director.funcName()
+Step 4: Unknown?                → Ask user
 ```
 
----
-
-## Import Rules
-
-| From | What |
-|------|------|
-| `../../director` | Native Director functions (import only what you use) |
-| `../../director` | **`_global`** — shared state (**MUST be imported**) |
-| Cast-local | `./object-api.js`, `./variable-api.js` (relative) |
-
-**`_director` is the only JS global — no import needed.**
-
-### How to resolve any function call
-
-**Step 1:** Is it a native Lingo/Director API function?
-
-**Step 2:** If native → import from `../../director`
-
-**Step 3:** If it's native but NOT exported from `../../director` → ask the user to add it to `runtime.js`
-
-**Step 4:** If NOT native → call via `_director.funcName()` (or `_director.keywordFn()` if it collides with a JS keyword)
-
-| Type | How to use | Example |
-|------|-----------|---------|
-| Native Director function | `import { func } from "../../director"` | `objectp()`, `voidp()`, `script()`, `field()`, `point()`, `rect()`, `rgb()`, `image()` |
-| Non-native (from another `.ls`) | `_director.funcName()` | `_director.createObject()`, `_director.convertToPropList()`, `_director.getmemnum()`, `_director.createMember()` |
-| JS keyword conflict | `_director.keywordFn()` | `_director.tryFn()`, `_director.catchFn()` |
-
-Import **only what you use**.
-
-### Lingo Symbols
-
-Use `Symbol.for("name")`. Strip the `#`:
-
-```js
-// Lingo: #mouseEnter, #session
-Symbol.for("mouseEnter")
-Symbol.for("session")
-```
-
-When accessing symbols as object keys: `tProps[#key]` → `tProps[Symbol.for("key")]`
+| Source | What |
+|--------|------|
+| `../../director` | Native functions + `_global` |
+| Cast-local | `./file.js` (relative) |
+| `globalThis` | `_director` only |
 
 ---
 
-## ⚠️ runtime.js Rules
+## runtime.js vs core.js
 
-**`runtime.js` = ONLY native Director functions.**
+### runtime.js
+- **ONLY native Director functions** (verify against MX 2004 docs)
+- Alphabetical order
+- Constants under `// ── Constants ──`
+- Internal state under `// ── Internal state ──`
+- **Never delete existing functions**
 
-### When editing `runtime.js`:
-1. **NEVER overwrite** — read first, add only what's missing
-2. **Alphabetical order** for new functions
-3. **Never delete** existing functions
-4. Internal state under `// ── Internal state ──`
-5. Constants under `// ── Constants ──`
-6. **Ask the user** before adding anything
-7. Helpers and non-native logic go in `core.js`, NOT `runtime.js`
+### core.js
+- Classes (`List`, `PropList`, `Member`, `Sprite`, etc.)
+- Internal helpers
+- Non-native logic
 
----
-
-## ⚠️ core.js Rules
-
-**Classes in `core.js` only expose native Director properties and methods.**
-
-### Property naming convention
-
-| Director property type | JS pattern | Example |
-|----------------------|-----------|---------|
-| **Read-only** | `_prop` private + `get prop()` | `get width() { return this._width; }` |
-| **Read/write** | Public property directly | `locH = 0`, `blend = 100` |
-| **Non-native helper** | `$` prefix | `$customHelper()`, `$customProp` |
-
-### Current native classes
-
-| Class | Read-only | Read/write |
-|-------|-----------|------------|
-| **Point** | — | `locH`, `locV` |
-| **Rect** | `width`, `height` (computed) | `left`, `top`, `right`, `bottom` |
-| **Color** | — | `red`, `green`, `blue` |
-| **ImageObject** | `width`, `height`, `rect`, `depth` | `paletteRef`, `useAlpha` |
-| **Member** | `castLibNum`, `height`, `number`, `rect`, `type`, `width` | `image`, `blend`, `locH`, `locV`, `loc`, `wordWrap`, `font`, `fontStyle`, `fontSize`, `color`, `text`, `fixedLineSpace`, `alignment`, `name`, `fileName`, `regPoint` |
-
-### List and PropList iteration
-
-`List` implements `Symbol.iterator`. **Always use `for...of` directly** on list variables — never access `._items` or internal fields:
-
-| Lingo | JavaScript | ❌ Wrong |
-|-------|-----------|---------|
-| `repeat with x in myList` | `for (const x of myList)` | `for (const x of myList._items)` |
-
-**`for...of` on List** → iterates values (`_items` elements)
+**Boundary:** If it's in Director docs → `runtime.js`. If it's your helper → `core.js`.
 
 ---
 
-## Translation Workflow
+## Workflow
 
-**For each script, follow this exact order:**
+1. **Read** original `.ls` file completely
+2. **Translate** → `.js` (1:1 literal)
+3. **Verify** → compare every line to original
+4. **Register** in module's `index.js` (order by Members.csv `Number` column)
+5. **Ask user** script type if unknown
 
-1. **Translate** the `.ls` script → `.js` file (1:1 literal translation)
-2. **Verify 1:1** — Read the original `.ls` and compare every handler, property, and logic line against the translated `.js`. Check: properties declared, all handlers present, `this.` prefix on properties, hoisted locals, `_director.` for non-natives, `return 1/0` matching Lingo. Fix any deviation before finishing.
-3. **Register in `index.js`** — Add the translated `.js` to the module's `index.js` following the exact order of `Members.csv`'s `Number` column. **Ask the user** for the script type (`MOVIE_SCRIPT`, `BEHAVIOR_SCRIPT`, `PARENT_SCRIPT`) if unknown.
-
-### Order
-1. **habbo** → entry point
-2. **fuse_client** → core framework
-3. **hh_* casts** → per `client/external/external_variables.txt`
-
-### Naming
+### File Naming
 - `6_Object API.ls` → `object-api.js`
-- `33_Connection Manager Class.ls` → `connection-manager-class.js`
 - Lowercase, hyphens, strip number prefixes
 
-### Tasks (`tasks/` directory)
-Each cast has a `.md` TODO checklist. When translating:
-1. Translate entire `.ls` → `.js`
-2. If dependency not translated → placeholder + add subtask
-3. After completion → check for resolvable placeholders
-
-### Member Registration (`index.js`)
-After translating a script, **register it in the module's `index.js`** via `registerCast`:
-1. Read `Members.csv` to find the member's `Number`, `Type`, and `Name`
-2. Import the translated module at the top of `index.js`
-3. Add the `createScriptMember` / `createBitmapMember` / `createFieldMember` call in the **exact order** of the CSV's `Number` column
-4. **Ask the user** for the script type (`MOVIE_SCRIPT`, `BEHAVIOR_SCRIPT`, `PARENT_SCRIPT`) if unknown
+### Tasks Directory
+Each cast has `.md` checklist. Use as TODO tracker.
 
 ---
 
@@ -442,46 +231,93 @@ apps/client/
 ├── src/
 │   ├── main.js
 │   ├── director/
-│   │   ├── index.js       # Translation API + barrel exports + _director
-│   │   ├── core.js        # Classes, helpers, abstractions
-│   │   ├── runtime.js     # ONLY native Director functions + _global
-│   │   ├── loader.js      # Preload simulation
-│   │   └── syntax.js      # the.* properties + string chunk helpers (itemOf, wordOf, lineOf, charOf)
+│   │   ├── index.js       # API + exports + _director
+│   │   ├── core.js        # Classes, helpers
+│   │   ├── runtime.js     # Native Director functions
+│   │   ├── syntax.js      # the.* + chunk helpers
+│   │   └── loader.js      # Preload
 │   └── game/
 │       └── <cast>/
-│           ├── Members.csv   # Source of truth for member order & types
-│           ├── index.js      # registerCast() — created by user
-│           ├── *.js          # Translated files
-│           └── *.png         # Assets
+│           ├── Members.csv
+│           ├── index.js    # registerCast()
+│           ├── *.js        # Translated
+│           └── *.png       # Assets
 └── tasks/
-    └── *.md                  # TODO checklists
+    └── *.md                # TODO checklists
 ```
 
-### Cast Registration
+### Registration Example
 
 ```js
-import { BEHAVIOR_SCRIPT, MOVIE_SCRIPT, createBitmapMember, createScriptMember, registerCast } from '../../director'
+import { 
+  BEHAVIOR_SCRIPT, MOVIE_SCRIPT, PARENT_SCRIPT,
+  createBitmapMember, createFieldMember, createPaletteMember,
+  createScriptMember, createSoundMember, createTextMember,
+  registerCast 
+} from '../../director'
 
-registerCast('Internal', [
-  createScriptMember('Initialization', MOVIE_SCRIPT, Initialization),
+import Logo from './logo.png'
+import Props from './props.txt?raw'
+
+registerCast('fuse_client', [
+  createFieldMember('System Props', Props),
+  createScriptMember('Event Broker Behavior', BEHAVIOR_SCRIPT, EventBrokerBehavior),
   createBitmapMember('Logo', Logo),
+  // ... ALL members in Members.csv Number order
 ])
 ```
 
-**Member registration order MUST match `Members.csv` exactly.** Use the `Number` column as the source of truth.
+**Order MUST match Members.csv `Number` column.**
+**Register ALL members from Members.csv**, not just scripts.
 
-### Asset Handling
-- Images: `import Logo from './logo.png'` → URL
-- Text: `import Props from './props.txt?raw'` → string
-- Stay in cast directories. No `public/` folder.
+---
 
-### Stage: 720x540 canvas, `image-rendering: pixelated`
+## Member Types
+
+| CSV Type | JS Helper | Import |
+|----------|-----------|--------|
+| `script` | `createScriptMember(name, type, factory)` | Translated `.js` file |
+| `field` | `createFieldMember(name, content)` | Text file with `?raw` |
+| `text` | `createTextMember(name, content)` | Text file with `?raw` (TBD) |
+| `bitmap` | `createBitmapMember(name, src)` | Image import |
+| `palette` | `createPaletteMember(name, src)` | Image import (TBD) |
+| `sound` | `createSoundMember(name, src)` | Audio import (TBD) |
+| `shape` | `createShapeMember(name, shapeType)` | TBD |
+| `font` | `createFontMember(name, fontName)` | TBD |
+
+**(TBD)** = Helper not yet implemented in `index.js`.
+
+---
+
+## Common Pitfalls
+
+| Mistake | Fix |
+|---------|-----|
+| Using `.length` on List | Use `.count` |
+| Using `.push()` on List | Use `.add()` |
+| Forgetting `Symbol.for()` | All symbols need it |
+| Missing `this.` on property access | Properties require `this.pFoo` |
+| Forgetting 1-based indexing | String chunks are 1-based |
+| Using `===` when Lingo uses `=` | Lingo `=` is comparison |
+| Not importing `_global` | Required for `global gVar` |
+
+---
+
+## TBD Patterns
+
+Some Lingo syntax patterns are not yet implemented. See `src/director/TBD.md` for the full list.
+
+Currently missing:
+- `the last char in tName` / `the last word in tStr`
+- `the number of castLibs` / `the number of castMembers of castLib N`
+- `the number of items in tLine` / `the number of lines in tStr`
+
+When translating, use the closest workaround available or **ask user**.
 
 ---
 
 ## Canvas Rendering
 
-**Everything on Canvas.** No DOM overlays.
-- Sprite system emulates Director's sprite channels
-- All UI drawn on canvas
-- Mouse/keyboard events routed through canvas
+Everything on canvas. No DOM overlays. Sprite system emulates Director channels. Mouse/keyboard events route through canvas.
+
+Stage: 720x540, `image-rendering: pixelated`

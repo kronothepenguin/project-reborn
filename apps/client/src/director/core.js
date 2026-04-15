@@ -623,10 +623,6 @@ export const _params = {};
 
 export const _timeouts = {};
 
-export function createLinearList() {}
-
-export function createPropertyList() {}
-
 export function createScriptObject(prototype) {
   return new Proxy(
     {
@@ -878,83 +874,4 @@ export class ImageObject {
     copy._ctx.drawImage(this._canvas, 0, 0);
     return copy;
   }
-}
-
-export function createListProxy(...args) {
-  const list = new List(...args);
-
-  return new Proxy(list, {
-    get(target, prop) {
-      if (prop in target) return target[prop];
-      const num = Number(prop);
-      if (Number.isInteger(num) && num > 0) {
-        return target._items[num - 1];
-      }
-      return undefined;
-    },
-    set(target, prop, value) {
-      const num = Number(prop);
-      if (Number.isInteger(num) && num > 0) {
-        target._items[num - 1] = value;
-        return true;
-      }
-      target[prop] = value;
-      return true;
-    },
-    has(target, prop) {
-      const num = Number(prop);
-      if (Number.isInteger(num) && num > 0) {
-        return num - 1 < target._items.length;
-      }
-      return prop in target;
-    },
-    deleteProperty(target, prop) {
-      const num = Number(prop);
-      if (Number.isInteger(num) && num > 0) {
-        target._items.splice(num - 1, 1);
-        return true;
-      }
-      delete target[prop];
-      return true;
-    },
-  });
-}
-
-export function createPropListProxy() {
-  const pl = new PropList();
-
-  return new Proxy(pl, {
-    get(target, prop) {
-      if (prop in target) return target[prop];
-      if (prop === Symbol.toStringTag) return "PropList";
-      const num = Number(prop);
-      if (Number.isInteger(num) && num > 0) {
-        return target.getPropAt(num);
-      }
-      return target._props[prop];
-    },
-    set(target, prop, value) {
-      if (prop in target) {
-        target[prop] = value;
-        return true;
-      }
-      const num = Number(prop);
-      if (Number.isInteger(num) && num > 0) {
-        const key = target.$getKeyAt(num);
-        if (key !== undefined) {
-          target._props[key] = value;
-        }
-        return true;
-      }
-      target._props[prop] = value;
-      return true;
-    },
-    has(target, prop) {
-      return prop in target._props || prop in target;
-    },
-    deleteProperty(target, prop) {
-      delete target._props[prop];
-      return true;
-    },
-  });
 }

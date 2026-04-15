@@ -1,6 +1,5 @@
 import {
   Color,
-  ImageObject,
   List,
   Member,
   Movie,
@@ -11,8 +10,6 @@ import {
   Sprite,
   Rect,
   _timeouts,
-  createListProxy,
-  createPropListProxy,
   CastLibrary,
   Sound,
   DirectorWindow,
@@ -20,32 +17,44 @@ import {
   ImageObjectRef,
   createList,
   createPropList,
+  Key,
+  Mouse,
+  System,
 } from "./core";
 
 // ── Director Core Objects ──
 
 export const _global = {};
 
+export const _key = new Key();
+
+export const _mouse = new Mouse();
+
 export const _movie = new Movie();
 
-export const _player = new Player(_movie);
+export const _player = new Player();
+
+export const _sound = new Sound();
+
+export const _system = new System();
+
+export const _window = new DirectorWindow();
 
 // ── Constants ──
 
 export const EMPTY = "";
-export const VOID = null;
-export const RETURN = "\r";
-export const TAB = "\t";
-export const SPACE = " ";
+export const PI = Math.PI;
 export const QUOTE = '"';
+export const RETURN = "\r";
+export const SPACE = " ";
+export const TAB = "\t";
+export const VOID = void 0;
 
 // ── Methods ──
 
 export function beep() {}
 
 export function bitAnd() {}
-
-// export function bitNot() {}
 
 export function bitOr() {}
 
@@ -68,7 +77,7 @@ export function charToNum(stringExpression) {
 export function color() {}
 
 export function rgb(r, g, b) {
-  return new Color(r ?? 0, g ?? 0, b ?? 0);
+  return new Color();
 }
 
 export function cos(angle) {
