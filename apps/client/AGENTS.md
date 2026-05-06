@@ -26,6 +26,7 @@
 6. **Match Members.csv** — use `Number` column for order, register **ALL** members (not just scripts)
 7. **Verify 1:1** — compare original `.ls` to translated `.js` before finishing
 8. **No runtime.js inventions** — only add native Director functions (verify against docs)
+9. **Missing source file** — create placeholder with comment indicating pending translation
 
 ### Where Things Go
 
@@ -221,6 +222,23 @@ Step 4: Unknown?                → Ask user
 
 ### Tasks Directory
 Each cast has `.md` checklist. Use as TODO tracker.
+
+### Missing Source Files
+
+If the `.ls` source file is missing but the member exists in `Members.csv`:
+
+```js
+// <Member Name>
+// Translated from: <Number>_<Name>.ls (NOT YET TRANSLATED - PENDING)
+
+export default function () {
+  return {};
+}
+```
+
+- Add comment with original file reference
+- Return empty factory object `return {}`
+- Still register in `index.js` with correct type
 
 ---
 

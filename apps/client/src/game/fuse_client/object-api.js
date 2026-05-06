@@ -22,10 +22,9 @@ export default function () {
       if (objectp(_global.gCore)) {
         return _global.gCore;
       }
-      const tProps = value(
-        _director.convertToPropList(field("System Props"), RETURN),
-      );
-      const tClass = tProps["object.manager.class"][1];
+      const tClass = value(
+        _director.convertToPropList(field("System Props"), RETURN)["object.manager.class"],
+      )[1];
       _global.gCore = script(tClass).new();
       _global.gCore.construct();
       return _global.gCore;

@@ -6,7 +6,7 @@
     "jsx": "preserve",
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": false,
-    "checkJs": false,
+    "checkJs": true,
     "noEmit": true,
     "strict": true
   },

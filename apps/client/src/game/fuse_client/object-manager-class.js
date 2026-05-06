@@ -16,6 +16,8 @@ import {
 } from "../../director";
 
 export default function () {
+  let tObj;
+
   return {
     pObjectList: VOID,
     pUpdateList: VOID,
@@ -153,7 +155,7 @@ export default function () {
     },
 
     Remove(tID) {
-      const tObj = this.pObjectList[tID];
+      tObj = this.pObjectList[tID];
       if (voidp(tObj)) {
         return false;
       }
@@ -228,7 +230,7 @@ export default function () {
           Symbol.for("minor"),
         );
       }
-      const tObj = this.pObjectList[tID];
+      tObj = this.pObjectList[tID];
       this.pObjectList.deleteProp(tID);
       this.pUpdateList.deleteOne(tObj);
       this.pPrepareList.deleteOne(tObj);
