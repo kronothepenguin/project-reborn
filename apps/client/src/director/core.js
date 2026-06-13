@@ -34,7 +34,7 @@ export class List {
   }
 
   addAt(position, value) {
-    this._values[position - 1] = value;
+    this._values.splice(position - 1, 0, value);
   }
 
   append(value) {
@@ -69,8 +69,8 @@ export class List {
   }
 
   getAt(position) {
-    if (position < this._values.length) {
-      throw SyntaxError("index out of bounds");
+    if (position < 1 || position > this._values.length) {
+      throw new Error("Script error: List index out of bounds");
     }
     return this._values[position - 1];
   }
@@ -101,8 +101,16 @@ export class List {
 }
 
 export function createList(...args) {
-  return new Proxy(new List(...args), {
+  const proxy = new Proxy(new List(...args), {
     get(target, p, receiver) {
+      if (typeof p === "symbol") {
+        return Reflect.get(target, p, receiver);
+      }
+
+      if (p === "duplicate") {
+        return () => createList(...target._values);
+      }
+
       if (Object.hasOwn(target, p)) {
         return Reflect.get(target, p, receiver);
       }
@@ -116,6 +124,10 @@ export function createList(...args) {
     },
 
     set(target, p, newValue, receiver) {
+      if (typeof p === "symbol") {
+        return Reflect.set(target, p, newValue, receiver);
+      }
+
       if (Object.hasOwn(target, p)) {
         return Reflect.set(target, p, newValue, receiver);
       }
@@ -129,6 +141,7 @@ export function createList(...args) {
       return Reflect.set(target, p, newValue, receiver);
     },
   });
+  return proxy;
 }
 
 export class PropList {
@@ -268,16 +281,40 @@ export class PropList {
 }
 
 export function createPropList(...args) {
-  return new Proxy(new PropList(...args), {
+  const proxy = new Proxy(new PropList(...args), {
     get(target, p, receiver) {
+      if (typeof p === "symbol") {
+        const idx = target._keys.indexOf(p);
+        if (idx === -1) return undefined;
+        return target._values[idx];
+      }
+
+      if (p === "duplicate") {
+        return () => createPropList(...target._keys.flatMap((k, i) => [k, target._values[i]]));
+      }
+
+      if (p in target) {
+        return Reflect.get(target, p, receiver);
+      }
+
       return target.getaProp(p);
     },
 
     set(target, p, newValue, receiver) {
+      if (typeof p === "symbol") {
+        target.setaProp(p, newValue);
+        return true;
+      }
+
+      if (p in target) {
+        return Reflect.set(target, p, newValue, receiver);
+      }
+
       target.setaProp(p, newValue);
       return true;
     },
   });
+  return proxy;
 }
 
 export class Point {
@@ -321,6 +358,22 @@ function createIndexedRegistry() {
       },
 
       set(target, p, newValue, receiver) {
+        const n = Number(p);
+        if (Number.isInteger(n) && n > 0) {
+          while (values.length < n) {
+            values.push(undefined);
+            keys.push(undefined);
+          }
+          values[n - 1] = newValue;
+          if (newValue && newValue._number === undefined) {
+            newValue._number = n;
+          }
+          if (keys[n - 1] === undefined && newValue && newValue.name) {
+            keys[n - 1] = newValue.name;
+          }
+          return true;
+        }
+
         if (keys.indexOf(p) > -1) {
           return false;
         }
@@ -414,6 +467,11 @@ export class Member {
   _picture = null;
 
   _ink = 0;
+
+  constructor(type, name) {
+    if (type !== undefined) this._type = type;
+    if (name !== undefined) this.name = name;
+  }
 
   get castLibNum() {
     return this._castLibNum;
@@ -603,6 +661,11 @@ export class Movie {
 
   go(frameNameOrNum, movieName = "") {}
 
+  halt() {
+    // Director MX 2004: exits the current handler and stops the movie
+    this._frame = 0;
+  }
+
   puppetSprite(intSpriteNum, flag) {}
 
   puppetTempo(intTempo) {
@@ -648,6 +711,10 @@ export class Player {
   externalParamValue() {}
 
   getPref() {}
+
+  quit() {
+    // Director MX 2004: exits from Director or a projector
+  }
 
   setPref() {}
 }

@@ -104,10 +104,6 @@ export function charToNum(stringExpression) {
 
 export function color() {}
 
-export function contains(string, substring) {
-  return string.includes(substring);
-}
-
 export function copyPixels() {}
 
 export function cos(angle) {
@@ -273,14 +269,6 @@ export function log(number) {
   return Math.log(number);
 }
 
-export function makeSubList(list, start, length) {
-  const result = createList();
-  for (let i = 0; i < length; i++) {
-    result.append(list[start + i]);
-  }
-  return result;
-}
-
 export function max(...args) {
   if (args.length === 1 && args[0] instanceof List) {
     return Math.max(...args[0]._values);
@@ -294,13 +282,13 @@ export function member(nameOrNum, castLibNum) {
       castLibNum !== undefined ? _movie.castLib[castLibNum] : _movie.castLib[1];
     if (!castLib) return new Member(Symbol.for("empty"));
     return (
-      castLib._memberRegistry[nameOrNum] || new Member(Symbol.for("empty"))
+      castLib._member[nameOrNum] || new Member(Symbol.for("empty"))
     );
   }
   for (const castNum in _movie.castLib) {
     const cast = _movie.castLib[castNum];
-    if (cast._memberRegistry[nameOrNum]) {
-      return cast._memberRegistry[nameOrNum];
+    if (cast && cast._member && cast._member[nameOrNum]) {
+      return cast._member[nameOrNum];
     }
   }
   return new Member(Symbol.for("empty"));
@@ -470,10 +458,6 @@ export function sqrt(number) {
   return Math.sqrt(number);
 }
 
-export function starts(string, prefix) {
-  return string.startsWith(prefix);
-}
-
 export function stopEvent() {}
 
 export function string(val) {
@@ -527,21 +511,6 @@ export function timeout(name) {
 }
 
 export function unLoadMember(member) {}
-
-export function union(list1, list2) {
-  const result = createList();
-  for (const item of list1) {
-    if (result.getOne(item) === 0) {
-      result.append(item);
-    }
-  }
-  for (const item of list2) {
-    if (result.getOne(item) === 0) {
-      result.append(item);
-    }
-  }
-  return result;
-}
 
 export function updateStage() {
   _movie.updateStage();

@@ -333,6 +333,15 @@ export const the = new Proxy(
 
         case "editShortcutsEnabled":
           return _player.editShortcutsEnabled || false;
+
+        case "frame":
+          return _movie.frame;
+
+        case "mouseV":
+          return _mouse.mouseV;
+
+        case "mouseH":
+          return _mouse.mouseH;
       }
       return Reflect.get(target, p, receiver);
     },

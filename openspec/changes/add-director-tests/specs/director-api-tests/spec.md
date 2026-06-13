@@ -1,5 +1,16 @@
 ## ADDED Requirements
 
+### Requirement: All tests SHALL verify Director MX 2004 reference compliance
+
+All tests in this suite SHALL verify behavior against the Director MX 2004 scripting reference documentation. Tests MUST:
+- Match Director MX 2004 function signatures and behavior exactly
+- Use Director MX 2004 examples as test cases where available
+- NOT test functions that don't exist in Director MX 2004
+- NOT test behavior that contradicts Director MX 2004 documentation
+- Include TODO comments for unimplemented stub functions
+
+**Reference**: `docs/drmx2004_scripting_ref.txt` (Director MX 2004 Scripting Reference)
+
 ### Requirement: Math functions SHALL be tested against Director MX 2004 reference
 
 The runtime SHALL provide comprehensive tests for all math functions based on Director MX 2004 reference documentation:
