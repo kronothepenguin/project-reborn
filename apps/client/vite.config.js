@@ -6,14 +6,14 @@ export default defineConfig(({ command }) => ({
     lib: {
       entry: {
         main: resolve(__dirname, "src", "main.js"),
-        habbo: resolve(__dirname, "src", "game", "habbo", "index.js"),
-        fuse_client: resolve(
-          __dirname,
-          "src",
-          "game",
-          "fuse_client",
-          "index.js",
-        ),
+        // habbo: resolve(__dirname, "src", "game", "habbo", "index.js"),
+        // fuse_client: resolve(
+        //   __dirname,
+        //   "src",
+        //   "game",
+        //   "fuse_client",
+        //   "index.js",
+        // ),
       },
       name: "_director",
       fileName: (format, entryName) => `${entryName}.${format}.js`,

@@ -51,3 +51,16 @@ go fmt ./...       # Format all Go files
 go vet ./...       # Static analysis
 go mod tidy        # Clean up dependencies
 ```
+
+### JavaScript/Client (pnpm)
+The `apps/client/` project uses **pnpm** for package management (not npm or yarn).
+
+```bash
+cd apps/client
+pnpm install       # Install dependencies
+pnpm dev           # Start dev server
+pnpm build         # Build for production
+pnpm test          # Run tests (vitest)
+```
+
+**Important**: Always use `pnpm` instead of `npm` or `yarn` for JavaScript dependencies.
