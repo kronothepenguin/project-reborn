@@ -372,7 +372,19 @@ export class Global {
   showGlobals() {}
 }
 
-export class Key {}
+export class Key {
+  commandDown = false;
+
+  controlDown = false;
+
+  key = "";
+
+  keyCode = 0;
+
+  optionDown = false;
+
+  shiftDown = false;
+}
 
 export class Member {
   _castLibNum = 0;
@@ -393,16 +405,58 @@ export class Member {
 
   _width = 0;
 
+  _fontSize = 12;
+
+  _font = "Arial";
+
+  _text = "";
+
+  _picture = null;
+
+  _ink = 0;
+
   get castLibNum() {
     return this._castLibNum;
+  }
+
+  get font() {
+    return this._font;
+  }
+
+  set font(value) {
+    this._font = value;
+  }
+
+  get fontSize() {
+    return this._fontSize;
+  }
+
+  set fontSize(value) {
+    this._fontSize = value;
   }
 
   get height() {
     return this._height;
   }
 
+  get ink() {
+    return this._ink;
+  }
+
+  set ink(value) {
+    this._ink = value;
+  }
+
   get number() {
     return this._number;
+  }
+
+  get picture() {
+    return this._picture;
+  }
+
+  set picture(value) {
+    this._picture = value;
   }
 
   get rect() {
@@ -417,6 +471,14 @@ export class Member {
     this._rect = r;
   }
 
+  get text() {
+    return this._text;
+  }
+
+  set text(value) {
+    this._text = value;
+  }
+
   get type() {
     return this._type;
   }
@@ -429,16 +491,29 @@ export class Member {
     return new Member();
   }
 
-  erase() {
-    // TODO: use _castLibNum to detect this member by _number and replace with #empty Member
-    // this.castLibNum
+  erase() {}
+}
+
+export class Mouse {
+  clickOn = 0;
+
+  doubleClick = false;
+
+  mouseH = 0;
+
+  mouseV = 0;
+
+  get mouseLoc() {
+    return new Point(this.mouseH, this.mouseV);
   }
 }
 
-export class Mouse {}
-
 export class Movie {
   _castLib = createIndexedRegistry();
+
+  _castRegistry = {};
+
+  _castCount = 0;
 
   editShortCutsEnabled = 0;
 
@@ -446,7 +521,7 @@ export class Movie {
 
   _frame = 0;
 
-  _frameTempo = 0;
+  _frameTempo = 30;
 
   keyboardFocusSprite = Object.create({});
 
@@ -458,13 +533,21 @@ export class Movie {
 
   _sprite = createIndexedRegistry();
 
-  _stage = Object.create({});
+  _stage = { left: 0, top: 0, right: 640, bottom: 480 };
 
   _timeoutList = new Array();
 
   traceScript = 0;
 
   _xtraList = new Array();
+
+  _actorList = [];
+
+  _moviePath = "";
+
+  get actorList() {
+    return this._actorList;
+  }
 
   get castLib() {
     return Object.freeze(this._castLib);
@@ -480,6 +563,10 @@ export class Movie {
 
   get lastChannel() {
     return this._lastChannel;
+  }
+
+  get moviePath() {
+    return this._moviePath;
   }
 
   get name() {
@@ -502,13 +589,29 @@ export class Movie {
     return Object.freeze(this._xtraList);
   }
 
+  _registerCast(name, members) {
+    this._castCount++;
+    const castLib = new CastLibrary();
+    castLib.name = name;
+    castLib._number = this._castCount;
+    for (const member of members) {
+      castLib._member[member.name] = member;
+    }
+    this._castRegistry[name] = castLib;
+    this._castLib[this._castCount] = castLib;
+  }
+
   go(frameNameOrNum, movieName = "") {}
 
   puppetSprite(intSpriteNum, flag) {}
 
-  puppetTempo(intTempo) {}
+  puppetTempo(intTempo) {
+    this._frameTempo = intTempo;
+  }
 
-  rollOver(intSpriteNum = 0) {}
+  rollOver(intSpriteNum = 0) {
+    return false;
+  }
 
   stopEvent() {}
 
@@ -518,11 +621,21 @@ export class Movie {
 export class Player {
   alertHook = Object.create({});
 
-  debugPlaybackEnabled = 0;
+  debugPlaybackEnabled = false;
+
+  editShortcutsEnabled = false;
+
+  exitLock = false;
+
+  parameters = {};
+
+  runMode = "Plugin";
 
   _sound = new Array();
 
   _xtra = new Array();
+
+  xtraList = [];
 
   get sound() {
     return this._sound;
@@ -543,11 +656,150 @@ export class Sound {}
 
 export class SoundChannel {}
 
-export class Sprite {}
+export class Sprite {
+  _num = 0;
+
+  _member = null;
+
+  _memberNum = 0;
+
+  _castLib = 1;
+
+  _locH = 0;
+
+  _locV = 0;
+
+  _ink = 0;
+
+  _blend = 100;
+
+  _visible = true;
+
+  _foreColor = 0;
+
+  _backColor = 0;
+
+  get blend() {
+    return this._blend;
+  }
+
+  set blend(value) {
+    this._blend = value;
+  }
+
+  get castLib() {
+    return this._castLib;
+  }
+
+  set castLib(value) {
+    this._castLib = value;
+  }
+
+  get foreColor() {
+    return this._foreColor;
+  }
+
+  set foreColor(value) {
+    this._foreColor = value;
+  }
+
+  get backColor() {
+    return this._backColor;
+  }
+
+  set backColor(value) {
+    this._backColor = value;
+  }
+
+  get ink() {
+    return this._ink;
+  }
+
+  set ink(value) {
+    this._ink = value;
+  }
+
+  get loc() {
+    return new Point(this._locH, this._locV);
+  }
+
+  set loc(value) {
+    this._locH = value.x || value.locH || 0;
+    this._locV = value.y || value.locV || 0;
+  }
+
+  get locH() {
+    return this._locH;
+  }
+
+  set locH(value) {
+    this._locH = value;
+  }
+
+  get locV() {
+    return this._locV;
+  }
+
+  set locV(value) {
+    this._locV = value;
+  }
+
+  get member() {
+    return this._member;
+  }
+
+  set member(value) {
+    this._member = value;
+  }
+
+  get memberNum() {
+    return this._memberNum;
+  }
+
+  set memberNum(value) {
+    this._memberNum = value;
+  }
+
+  get num() {
+    return this._num;
+  }
+
+  set num(value) {
+    this._num = value;
+  }
+
+  get rect() {
+    return new Rect(this._locH, this._locV, this._locH + 100, this._locV + 100);
+  }
+
+  get visible() {
+    return this._visible;
+  }
+
+  set visible(value) {
+    this._visible = value;
+  }
+}
 
 export class SpriteChannel {}
 
-export class System {}
+export class System {
+  colorDepth = 32;
+
+  floatPrecision = 6;
+
+  platform = typeof navigator !== "undefined" ? navigator.platform : "";
+
+  randomSeed = 0;
+
+  get milliseconds() {
+    return Date.now();
+  }
+
+  get timer() {
+    return Date.now();
+  }
+}
 
 export class DirectorWindow {}
 
@@ -755,7 +1007,72 @@ export function createRectProxy(left, top, right, bottom) {
   });
 }
 
-// ── ImageObject ──
+// -- Loader --
+
+const _pending = new Set();
+
+let _total = 0;
+let _loaded = 0;
+
+const _loadTarget = new EventTarget();
+
+export function totalObjects() {
+  return _total;
+}
+
+export function objectsLoaded() {
+  return _loaded;
+}
+
+export function finished() {
+  return _pending.size === 0;
+}
+
+export function addFinishedListener(callback) {
+  _loadTarget.addEventListener("finished", callback, { once: true });
+}
+
+function _addPending(ref) {
+  _pending.add(ref);
+  _total++;
+}
+
+function _deletePending(ref) {
+  _pending.delete(ref);
+  _loaded++;
+
+  if (_pending.size === 0) {
+    _loadTarget.dispatchEvent(new CustomEvent("finished"));
+  }
+}
+
+export function loadImage(src) {
+  const img = new Image();
+
+  _addPending(img);
+  img.addEventListener("load", () => _deletePending(img));
+  img.addEventListener("error", () => _deletePending(img));
+
+  img.src = src;
+
+  return img;
+}
+
+export function loadModule(url) {
+  const promise = import(/* @vite-ignore */ url);
+
+  _addPending(promise);
+  promise.finally(() => _deletePending(promise));
+
+  return promise;
+}
+
+export function loadPromise(promise) {
+  _addPending(promise);
+  promise.finally(() => _deletePending(promise));
+}
+
+// -- ImageObject --
 
 export class ImageObject {
   /** @type {OffscreenCanvas} */

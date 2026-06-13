@@ -305,3 +305,30 @@ Handlers named with JavaScript reserved words SHALL be renamed:
 #### Scenario: try handler renamed
 - **WHEN** `on try me` is translated
 - **THEN** becomes `tryFn()`
+
+### Requirement: Naming mismatches between Lingo and JavaScript SHALL be documented
+
+The following naming mismatches exist between Lingo and JavaScript:
+
+| Lingo | JavaScript | Reason |
+|-------|-----------|--------|
+| `voidp` | `voidP` (also exported as `voidp`) | Case-insensitive alias |
+| `integerp` | `integerP` (also exported as `integerp`) | Case-insensitive alias |
+| `floatp` | `floatP` (also exported as `floatp`) | Case-insensitive alias |
+| `listp` | `listP` (also exported as `listp`) | Case-insensitive alias |
+| `objectp` | `objectP` (also exported as `objectp`) | Case-insensitive alias |
+| `stringp` | `stringP` (also exported as `stringp`) | Case-insensitive alias |
+| `symbolp` | `symbolP` (also exported as `symbolp`) | Case-insensitive alias |
+| `rollover` | `rollOver` (also exported as `rollover`) | Case-insensitive alias |
+| `new` | `newFn` | JS reserved word |
+| `delete` | `deleteFn` | JS reserved word |
+| `try` | `tryFn` | JS reserved word |
+| `catch` | `catchFn` | JS reserved word |
+
+#### Scenario: voidp alias works
+- **WHEN** Lingo code uses `voidp(x)`
+- **THEN** it maps to `voidP(x)` in JavaScript (both exported)
+
+#### Scenario: new handler renamed
+- **WHEN** Lingo code uses `on new me`
+- **THEN** it becomes `newFn()` in JavaScript

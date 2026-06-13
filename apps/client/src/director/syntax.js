@@ -1,5 +1,5 @@
 import { Point } from "./core";
-import { _movie, _player } from "./runtime";
+import { _movie, _player, _key, _system, _mouse } from "./api";
 
 // -- Keywords --
 export function range(first, last) {
@@ -239,8 +239,6 @@ export const the = new Proxy(
     mouseH: 0,
     mouseLoc: new Point(),
     runMode: "Plugin",
-    // the last chunk of ( chunkExpression )
-    // the last chunk in (chunkExpression)
     stageBottom: 0,
     stageLeft: 0,
     stageRight: 0,
@@ -256,7 +254,85 @@ export const the = new Proxy(
           return _movie._castCount;
 
         case "mouseLoc":
-          return new Point(); // TODO
+          return new Point();
+
+        case "doubleClick":
+          return _mouse.doubleClick || false;
+
+        case "stage":
+          return _movie.stage || { left: 0, top: 0, right: 640, bottom: 480 };
+
+        case "keyCode":
+          return _key.keyCode || 0;
+
+        case "time":
+          return new Date().toLocaleTimeString();
+
+        case "shiftDown":
+          return _key.shiftDown || false;
+
+        case "rollover":
+          return _movie.rollOver ? _movie.rollOver() : false;
+
+        case "key":
+          return _key.key || "";
+
+        case "selStart":
+          return 0;
+
+        case "selEnd":
+          return 0;
+
+        case "randomSeed":
+          return _system.randomSeed || 0;
+
+        case "optionDown":
+          return _key.optionDown || false;
+
+        case "frameTempo":
+          return _movie.frameTempo || 30;
+
+        case "date":
+          return new Date().toLocaleDateString();
+
+        case "colorDepth":
+          return _system.colorDepth || 32;
+
+        case "timer":
+          return _system.timer || 0;
+
+        case "moviePath":
+          return _movie.moviePath || "";
+
+        case "platform":
+          return _system.platform || navigator.platform;
+
+        case "floatPrecision":
+          return _system.floatPrecision || 6;
+
+        case "debugPlaybackEnabled":
+          return _player.debugPlaybackEnabled || false;
+
+        case "maxinteger":
+          return Number.MAX_SAFE_INTEGER;
+
+        case "commandDown":
+          return _key.commandDown || false;
+
+        case "clickOn":
+          return _mouse.clickOn || 0;
+
+        case "xtraList":
+          return _player.xtraList || [];
+
+        case "parameters":
+          return _player.parameters || {};
+
+        case "exitLock":
+          return _player.exitLock || false;
+
+        case "editShortcutsEnabled":
+          return _player.editShortcutsEnabled || false;
       }
       return Reflect.get(target, p, receiver);
     },
