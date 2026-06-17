@@ -6,3 +6,6 @@ export { List, list } from "./list.js";
 export { Point, point } from "./point.js";
 export { PropList, propList } from "./prop-list.js";
 export { Rect, rect } from "./rect.js";
+export { SoundRef, _sound } from "./sound-ref.js";
+export { PlayerRef, _player } from "./player-ref.js";
+export { MovieRef, _movie } from "./movie-ref.js";
