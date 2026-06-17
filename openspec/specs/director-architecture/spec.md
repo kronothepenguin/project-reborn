@@ -1,4 +1,8 @@
-## ADDED Requirements
+## Purpose
+
+Defines the modular architecture of the Director runtime, organizing it into four distinct modules (api, core, runtime, syntax) with clear responsibilities, visibility rules, and dependency hierarchies for implementing Director MX 2004 compatibility in JavaScript.
+
+## Requirements
 
 ### Requirement: Director runtime SHALL be organized into four modules
 
@@ -176,6 +180,14 @@ core/ (implementation)
 - `syntax/` can import from `core/`
 - `core/` cannot import from `api/`, `runtime/`, or `syntax/`
 - No circular dependencies
+
+#### Scenario: Dependency direction enforced
+- **WHEN** `core/list.js` needs a utility function
+- **THEN** it implements locally or imports from another core file (never from api/, runtime/, or syntax/)
+
+#### Scenario: Cross-module import allowed
+- **WHEN** `api/abs.js` needs List class
+- **THEN** it imports from `core/list.js` (downward dependency allowed)
 
 ### Requirement: Spec files SHALL contain full Director MX 2004 documentation
 
