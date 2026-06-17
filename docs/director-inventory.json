@@ -1,0 +1,7534 @@
+{
+  "source": "docs/drmx2004_scripting_ref.txt",
+  "totalLines": 57648,
+  "chapterBoundaries": {
+    "methods_start": 11735,
+    "operators_start": 30370,
+    "properties_start": 31406
+  },
+  "summary": {
+    "methods": {
+      "total": 486,
+      "byCategory": {
+        "control": 5,
+        "math": 11,
+        "dvd": 15,
+        "list": 27,
+        "3d": 76,
+        "general": 311,
+        "sound": 2,
+        "bitwise": 4,
+        "access": 7,
+        "conversion": 7,
+        "network": 13,
+        "typecheck": 8
+      }
+    },
+    "properties": {
+      "total": 763,
+      "byCategory": {
+        "top-level": 7,
+        "simple": 755,
+        "object-face[index]": 1
+      }
+    }
+  },
+  "methods": [
+    {
+      "name": "abort",
+      "startLine": 11737,
+      "endLine": 11766,
+      "category": "control"
+    },
+    {
+      "name": "abs()",
+      "startLine": 11767,
+      "endLine": 11797,
+      "category": "math"
+    },
+    {
+      "name": "activateAtLoc()",
+      "startLine": 11798,
+      "endLine": 11826,
+      "category": "dvd"
+    },
+    {
+      "name": "activateButton()",
+      "startLine": 11827,
+      "endLine": 11853,
+      "category": "dvd"
+    },
+    {
+      "name": "add",
+      "startLine": 11854,
+      "endLine": 11889,
+      "category": "list"
+    },
+    {
+      "name": "add (3D texture)",
+      "startLine": 11890,
+      "endLine": 11921,
+      "category": "3d"
+    },
+    {
+      "name": "addAt",
+      "startLine": 11922,
+      "endLine": 11945,
+      "category": "list"
+    },
+    {
+      "name": "addBackdrop",
+      "startLine": 11946,
+      "endLine": 11979,
+      "category": "3d"
+    },
+    {
+      "name": "addCamera",
+      "startLine": 11980,
+      "endLine": 12011,
+      "category": "3d"
+    },
+    {
+      "name": "addChild",
+      "startLine": 12012,
+      "endLine": 12062,
+      "category": "3d"
+    },
+    {
+      "name": "addModifier",
+      "startLine": 12063,
+      "endLine": 12106,
+      "category": "3d"
+    },
+    {
+      "name": "addOverlay",
+      "startLine": 12107,
+      "endLine": 12151,
+      "category": "3d"
+    },
+    {
+      "name": "addProp",
+      "startLine": 12152,
+      "endLine": 12187,
+      "category": "list"
+    },
+    {
+      "name": "addToWorld",
+      "startLine": 12188,
+      "endLine": 12220,
+      "category": "3d"
+    },
+    {
+      "name": "addVertex()",
+      "startLine": 12221,
+      "endLine": 12263,
+      "category": "general"
+    },
+    {
+      "name": "alert()",
+      "startLine": 12264,
+      "endLine": 12299,
+      "category": "general"
+    },
+    {
+      "name": "append",
+      "startLine": 12300,
+      "endLine": 12325,
+      "category": "list"
+    },
+    {
+      "name": "appMinimize()",
+      "startLine": 12326,
+      "endLine": 12352,
+      "category": "general"
+    },
+    {
+      "name": "atan()",
+      "startLine": 12353,
+      "endLine": 12395,
+      "category": "math"
+    },
+    {
+      "name": "beep()",
+      "startLine": 12396,
+      "endLine": 12430,
+      "category": "sound"
+    },
+    {
+      "name": "beginRecording()",
+      "startLine": 12431,
+      "endLine": 12497,
+      "category": "general"
+    },
+    {
+      "name": "bitAnd()",
+      "startLine": 12498,
+      "endLine": 12539,
+      "category": "bitwise"
+    },
+    {
+      "name": "bitNot()",
+      "startLine": 12540,
+      "endLine": 12573,
+      "category": "bitwise"
+    },
+    {
+      "name": "bitOr()",
+      "startLine": 12574,
+      "endLine": 12615,
+      "category": "bitwise"
+    },
+    {
+      "name": "bitXor()",
+      "startLine": 12616,
+      "endLine": 12657,
+      "category": "bitwise"
+    },
+    {
+      "name": "breakLoop()",
+      "startLine": 12658,
+      "endLine": 12686,
+      "category": "general"
+    },
+    {
+      "name": "browserName()",
+      "startLine": 12687,
+      "endLine": 12717,
+      "category": "general"
+    },
+    {
+      "name": "build()",
+      "startLine": 12718,
+      "endLine": 12773,
+      "category": "general"
+    },
+    {
+      "name": "cacheDocVerify()",
+      "startLine": 12774,
+      "endLine": 12820,
+      "category": "general"
+    },
+    {
+      "name": "cacheSize()",
+      "startLine": 12821,
+      "endLine": 12862,
+      "category": "general"
+    },
+    {
+      "name": "call",
+      "startLine": 12863,
+      "endLine": 12957,
+      "category": "general"
+    },
+    {
+      "name": "callAncestor",
+      "startLine": 12958,
+      "endLine": 13031,
+      "category": "general"
+    },
+    {
+      "name": "callFrame()",
+      "startLine": 13032,
+      "endLine": 13058,
+      "category": "general"
+    },
+    {
+      "name": "camera()",
+      "startLine": 13059,
+      "endLine": 13090,
+      "category": "general"
+    },
+    {
+      "name": "cameraCount()",
+      "startLine": 13091,
+      "endLine": 13119,
+      "category": "3d"
+    },
+    {
+      "name": "cancelIdleLoad()",
+      "startLine": 13120,
+      "endLine": 13142,
+      "category": "general"
+    },
+    {
+      "name": "castLib()",
+      "startLine": 13143,
+      "endLine": 13172,
+      "category": "access"
+    },
+    {
+      "name": "channel() (Top level)",
+      "startLine": 13173,
+      "endLine": 13199,
+      "category": "general"
+    },
+    {
+      "name": "channel() (Sound)",
+      "startLine": 13200,
+      "endLine": 13221,
+      "category": "general"
+    },
+    {
+      "name": "chapterCount()",
+      "startLine": 13222,
+      "endLine": 13240,
+      "category": "dvd"
+    },
+    {
+      "name": "charPosToLoc()",
+      "startLine": 13241,
+      "endLine": 13265,
+      "category": "general"
+    },
+    {
+      "name": "chars()",
+      "startLine": 13266,
+      "endLine": 13308,
+      "category": "general"
+    },
+    {
+      "name": "charToNum()",
+      "startLine": 13309,
+      "endLine": 13357,
+      "category": "conversion"
+    },
+    {
+      "name": "clearAsObjects()",
+      "startLine": 13358,
+      "endLine": 13397,
+      "category": "general"
+    },
+    {
+      "name": "clearCache",
+      "startLine": 13398,
+      "endLine": 13426,
+      "category": "general"
+    },
+    {
+      "name": "clearError()",
+      "startLine": 13427,
+      "endLine": 13481,
+      "category": "general"
+    },
+    {
+      "name": "clearFrame()",
+      "startLine": 13482,
+      "endLine": 13520,
+      "category": "general"
+    },
+    {
+      "name": "clearGlobals()",
+      "startLine": 13521,
+      "endLine": 13553,
+      "category": "general"
+    },
+    {
+      "name": "clone",
+      "startLine": 13554,
+      "endLine": 13581,
+      "category": "3d"
+    },
+    {
+      "name": "cloneDeep",
+      "startLine": 13582,
+      "endLine": 13606,
+      "category": "3d"
+    },
+    {
+      "name": "cloneModelFromCastmember",
+      "startLine": 13607,
+      "endLine": 13636,
+      "category": "3d"
+    },
+    {
+      "name": "cloneMotionFromCastmember",
+      "startLine": 13637,
+      "endLine": 13657,
+      "category": "3d"
+    },
+    {
+      "name": "close()",
+      "startLine": 13658,
+      "endLine": 13700,
+      "category": "general"
+    },
+    {
+      "name": "closeFile()",
+      "startLine": 13701,
+      "endLine": 13719,
+      "category": "general"
+    },
+    {
+      "name": "closeXlib",
+      "startLine": 13720,
+      "endLine": 13749,
+      "category": "general"
+    },
+    {
+      "name": "color()",
+      "startLine": 13750,
+      "endLine": 13791,
+      "category": "access"
+    },
+    {
+      "name": "constrainH()",
+      "startLine": 13792,
+      "endLine": 13844,
+      "category": "general"
+    },
+    {
+      "name": "constrainV()",
+      "startLine": 13845,
+      "endLine": 13896,
+      "category": "general"
+    },
+    {
+      "name": "copyPixels()",
+      "startLine": 13897,
+      "endLine": 14003,
+      "category": "general"
+    },
+    {
+      "name": "copyToClipBoard()",
+      "startLine": 14004,
+      "endLine": 14037,
+      "category": "general"
+    },
+    {
+      "name": "cos()",
+      "startLine": 14038,
+      "endLine": 14056,
+      "category": "math"
+    },
+    {
+      "name": "count()",
+      "startLine": 14057,
+      "endLine": 14091,
+      "category": "list"
+    },
+    {
+      "name": "createFile()",
+      "startLine": 14092,
+      "endLine": 14105,
+      "category": "general"
+    },
+    {
+      "name": "createMask()",
+      "startLine": 14106,
+      "endLine": 14151,
+      "category": "general"
+    },
+    {
+      "name": "crop() (Image)",
+      "startLine": 14152,
+      "endLine": 14181,
+      "category": "general"
+    },
+    {
+      "name": "crop() (Bitmap)",
+      "startLine": 14182,
+      "endLine": 14211,
+      "category": "general"
+    },
+    {
+      "name": "cross",
+      "startLine": 14212,
+      "endLine": 14234,
+      "category": "general"
+    },
+    {
+      "name": "crossProduct()",
+      "startLine": 14235,
+      "endLine": 14252,
+      "category": "general"
+    },
+    {
+      "name": "cursor()",
+      "startLine": 14253,
+      "endLine": 14581,
+      "category": "general"
+    },
+    {
+      "name": "date() (formats)",
+      "startLine": 14582,
+      "endLine": 14703,
+      "category": "general"
+    },
+    {
+      "name": "date() (System)",
+      "startLine": 14704,
+      "endLine": 14738,
+      "category": "general"
+    },
+    {
+      "name": "delay()",
+      "startLine": 14739,
+      "endLine": 14798,
+      "category": "general"
+    },
+    {
+      "name": "delete()",
+      "startLine": 14799,
+      "endLine": 14813,
+      "category": "general"
+    },
+    {
+      "name": "deleteAt",
+      "startLine": 14814,
+      "endLine": 14847,
+      "category": "list"
+    },
+    {
+      "name": "deleteCamera",
+      "startLine": 14848,
+      "endLine": 14876,
+      "category": "3d"
+    },
+    {
+      "name": "deleteFrame()",
+      "startLine": 14877,
+      "endLine": 14917,
+      "category": "general"
+    },
+    {
+      "name": "deleteGroup",
+      "startLine": 14918,
+      "endLine": 14943,
+      "category": "3d"
+    },
+    {
+      "name": "deleteLight",
+      "startLine": 14944,
+      "endLine": 14963,
+      "category": "3d"
+    },
+    {
+      "name": "deleteModel",
+      "startLine": 14964,
+      "endLine": 14988,
+      "category": "3d"
+    },
+    {
+      "name": "deleteModelResource",
+      "startLine": 14989,
+      "endLine": 15009,
+      "category": "3d"
+    },
+    {
+      "name": "deleteMotion",
+      "startLine": 15010,
+      "endLine": 15033,
+      "category": "3d"
+    },
+    {
+      "name": "deleteOne",
+      "startLine": 15034,
+      "endLine": 15056,
+      "category": "list"
+    },
+    {
+      "name": "deleteProp",
+      "startLine": 15057,
+      "endLine": 15087,
+      "category": "list"
+    },
+    {
+      "name": "deleteShader",
+      "startLine": 15088,
+      "endLine": 15107,
+      "category": "3d"
+    },
+    {
+      "name": "deleteTexture",
+      "startLine": 15108,
+      "endLine": 15131,
+      "category": "3d"
+    },
+    {
+      "name": "deleteVertex()",
+      "startLine": 15132,
+      "endLine": 15153,
+      "category": "general"
+    },
+    {
+      "name": "displayOpen()",
+      "startLine": 15154,
+      "endLine": 15173,
+      "category": "general"
+    },
+    {
+      "name": "displaySave()",
+      "startLine": 15174,
+      "endLine": 15189,
+      "category": "general"
+    },
+    {
+      "name": "do",
+      "startLine": 15190,
+      "endLine": 15215,
+      "category": "general"
+    },
+    {
+      "name": "doneParsing()",
+      "startLine": 15216,
+      "endLine": 15228,
+      "category": "general"
+    },
+    {
+      "name": "dot()",
+      "startLine": 15229,
+      "endLine": 15266,
+      "category": "general"
+    },
+    {
+      "name": "dotProduct()",
+      "startLine": 15267,
+      "endLine": 15300,
+      "category": "general"
+    },
+    {
+      "name": "downloadNetThing",
+      "startLine": 15301,
+      "endLine": 15333,
+      "category": "network"
+    },
+    {
+      "name": "draw()",
+      "startLine": 15334,
+      "endLine": 15406,
+      "category": "general"
+    },
+    {
+      "name": "duplicate() (Image)",
+      "startLine": 15407,
+      "endLine": 15434,
+      "category": "list"
+    },
+    {
+      "name": "duplicate() (list function)",
+      "startLine": 15435,
+      "endLine": 15456,
+      "category": "list"
+    },
+    {
+      "name": "duplicate() (Member)",
+      "startLine": 15457,
+      "endLine": 15494,
+      "category": "list"
+    },
+    {
+      "name": "duplicateFrame()",
+      "startLine": 15495,
+      "endLine": 15540,
+      "category": "general"
+    },
+    {
+      "name": "enableHotSpot()",
+      "startLine": 15541,
+      "endLine": 15556,
+      "category": "general"
+    },
+    {
+      "name": "endRecording()",
+      "startLine": 15557,
+      "endLine": 15615,
+      "category": "general"
+    },
+    {
+      "name": "erase()",
+      "startLine": 15616,
+      "endLine": 15658,
+      "category": "general"
+    },
+    {
+      "name": "error()",
+      "startLine": 15659,
+      "endLine": 15678,
+      "category": "general"
+    },
+    {
+      "name": "externalEvent()",
+      "startLine": 15679,
+      "endLine": 15737,
+      "category": "general"
+    },
+    {
+      "name": "extrude3D",
+      "startLine": 15738,
+      "endLine": 15771,
+      "category": "3d"
+    },
+    {
+      "name": "externalParamName()",
+      "startLine": 15772,
+      "endLine": 15894,
+      "category": "general"
+    },
+    {
+      "name": "externalParamValue()",
+      "startLine": 15895,
+      "endLine": 16018,
+      "category": "general"
+    },
+    {
+      "name": "extractAlpha()",
+      "startLine": 16019,
+      "endLine": 16032,
+      "category": "general"
+    },
+    {
+      "name": "fadeIn()",
+      "startLine": 16033,
+      "endLine": 16065,
+      "category": "general"
+    },
+    {
+      "name": "fadeOut()",
+      "startLine": 16066,
+      "endLine": 16093,
+      "category": "general"
+    },
+    {
+      "name": "fadeTo()",
+      "startLine": 16094,
+      "endLine": 16124,
+      "category": "general"
+    },
+    {
+      "name": "fileName()",
+      "startLine": 16125,
+      "endLine": 16146,
+      "category": "general"
+    },
+    {
+      "name": "fill()",
+      "startLine": 16147,
+      "endLine": 16214,
+      "category": "general"
+    },
+    {
+      "name": "findLabel()",
+      "startLine": 16215,
+      "endLine": 16229,
+      "category": "general"
+    },
+    {
+      "name": "findEmpty()",
+      "startLine": 16230,
+      "endLine": 16258,
+      "category": "general"
+    },
+    {
+      "name": "findPos",
+      "startLine": 16259,
+      "endLine": 16281,
+      "category": "list"
+    },
+    {
+      "name": "findPosNear",
+      "startLine": 16282,
+      "endLine": 16311,
+      "category": "list"
+    },
+    {
+      "name": "finishIdleLoad()",
+      "startLine": 16312,
+      "endLine": 16338,
+      "category": "general"
+    },
+    {
+      "name": "flashToStage()",
+      "startLine": 16339,
+      "endLine": 16383,
+      "category": "general"
+    },
+    {
+      "name": "float()",
+      "startLine": 16384,
+      "endLine": 16416,
+      "category": "conversion"
+    },
+    {
+      "name": "floatP()",
+      "startLine": 16417,
+      "endLine": 16446,
+      "category": "typecheck"
+    },
+    {
+      "name": "flushInputEvents()",
+      "startLine": 16447,
+      "endLine": 16482,
+      "category": "general"
+    },
+    {
+      "name": "forget() (Window)",
+      "startLine": 16483,
+      "endLine": 16511,
+      "category": "general"
+    },
+    {
+      "name": "forget() (Timeout)",
+      "startLine": 16512,
+      "endLine": 16534,
+      "category": "general"
+    },
+    {
+      "name": "framesToHMS()",
+      "startLine": 16535,
+      "endLine": 16590,
+      "category": "general"
+    },
+    {
+      "name": "frameReady() (Movie)",
+      "startLine": 16591,
+      "endLine": 16648,
+      "category": "general"
+    },
+    {
+      "name": "frameStep()",
+      "startLine": 16649,
+      "endLine": 16672,
+      "category": "dvd"
+    },
+    {
+      "name": "freeBlock()",
+      "startLine": 16673,
+      "endLine": 16701,
+      "category": "general"
+    },
+    {
+      "name": "freeBytes()",
+      "startLine": 16702,
+      "endLine": 16729,
+      "category": "general"
+    },
+    {
+      "name": "generateNormals()",
+      "startLine": 16730,
+      "endLine": 16767,
+      "category": "general"
+    },
+    {
+      "name": "getaProp",
+      "startLine": 16768,
+      "endLine": 16814,
+      "category": "list"
+    },
+    {
+      "name": "getAt",
+      "startLine": 16815,
+      "endLine": 16875,
+      "category": "list"
+    },
+    {
+      "name": "getError() (Flash, SWA)",
+      "startLine": 16876,
+      "endLine": 16992,
+      "category": "general"
+    },
+    {
+      "name": "getError() (XML)",
+      "startLine": 16993,
+      "endLine": 17016,
+      "category": "general"
+    },
+    {
+      "name": "getErrorString()",
+      "startLine": 17017,
+      "endLine": 17082,
+      "category": "general"
+    },
+    {
+      "name": "getFinderInfo()",
+      "startLine": 17083,
+      "endLine": 17104,
+      "category": "general"
+    },
+    {
+      "name": "getFlashProperty()",
+      "startLine": 17105,
+      "endLine": 17140,
+      "category": "general"
+    },
+    {
+      "name": "getFrameLabel()",
+      "startLine": 17141,
+      "endLine": 17175,
+      "category": "general"
+    },
+    {
+      "name": "getHardwareInfo()",
+      "startLine": 17176,
+      "endLine": 17217,
+      "category": "general"
+    },
+    {
+      "name": "getHotSpotRect()",
+      "startLine": 17218,
+      "endLine": 17235,
+      "category": "general"
+    },
+    {
+      "name": "getLast()",
+      "startLine": 17236,
+      "endLine": 17254,
+      "category": "list"
+    },
+    {
+      "name": "getLatestNetID",
+      "startLine": 17255,
+      "endLine": 17290,
+      "category": "general"
+    },
+    {
+      "name": "getLength()",
+      "startLine": 17291,
+      "endLine": 17307,
+      "category": "general"
+    },
+    {
+      "name": "getNetText()",
+      "startLine": 17308,
+      "endLine": 17368,
+      "category": "network"
+    },
+    {
+      "name": "getNormalized",
+      "startLine": 17369,
+      "endLine": 17396,
+      "category": "general"
+    },
+    {
+      "name": "getNthFileNameInFolder()",
+      "startLine": 17397,
+      "endLine": 17438,
+      "category": "general"
+    },
+    {
+      "name": "getOne()",
+      "startLine": 17439,
+      "endLine": 17467,
+      "category": "list"
+    },
+    {
+      "name": "getOSDirectory()",
+      "startLine": 17468,
+      "endLine": 17487,
+      "category": "general"
+    },
+    {
+      "name": "getPixel()",
+      "startLine": 17488,
+      "endLine": 17530,
+      "category": "general"
+    },
+    {
+      "name": "getPlayList()",
+      "startLine": 17531,
+      "endLine": 17610,
+      "category": "general"
+    },
+    {
+      "name": "getPosition()",
+      "startLine": 17611,
+      "endLine": 17625,
+      "category": "general"
+    },
+    {
+      "name": "getPref()",
+      "startLine": 17626,
+      "endLine": 17670,
+      "category": "general"
+    },
+    {
+      "name": "getPos()",
+      "startLine": 17671,
+      "endLine": 17696,
+      "category": "list"
+    },
+    {
+      "name": "getPref()",
+      "startLine": 17697,
+      "endLine": 17727,
+      "category": "general"
+    },
+    {
+      "name": "getProp()",
+      "startLine": 17728,
+      "endLine": 17754,
+      "category": "list"
+    },
+    {
+      "name": "getPropAt()",
+      "startLine": 17755,
+      "endLine": 17773,
+      "category": "list"
+    },
+    {
+      "name": "getRendererServices()",
+      "startLine": 17774,
+      "endLine": 17816,
+      "category": "3d"
+    },
+    {
+      "name": "getStreamStatus()",
+      "startLine": 17817,
+      "endLine": 17872,
+      "category": "network"
+    },
+    {
+      "name": "getVariable()",
+      "startLine": 17873,
+      "endLine": 17926,
+      "category": "general"
+    },
+    {
+      "name": "getWorldTransform()",
+      "startLine": 17927,
+      "endLine": 17970,
+      "category": "3d"
+    },
+    {
+      "name": "go()",
+      "startLine": 17971,
+      "endLine": 18040,
+      "category": "control"
+    },
+    {
+      "name": "goLoop()",
+      "startLine": 18041,
+      "endLine": 18074,
+      "category": "general"
+    },
+    {
+      "name": "goNext()",
+      "startLine": 18075,
+      "endLine": 18102,
+      "category": "general"
+    },
+    {
+      "name": "goPrevious()",
+      "startLine": 18103,
+      "endLine": 18131,
+      "category": "general"
+    },
+    {
+      "name": "goToFrame()",
+      "startLine": 18132,
+      "endLine": 18161,
+      "category": "general"
+    },
+    {
+      "name": "gotoNetMovie",
+      "startLine": 18162,
+      "endLine": 18195,
+      "category": "network"
+    },
+    {
+      "name": "gotoNetPage",
+      "startLine": 18196,
+      "endLine": 18239,
+      "category": "network"
+    },
+    {
+      "name": "group()",
+      "startLine": 18240,
+      "endLine": 18258,
+      "category": "general"
+    },
+    {
+      "name": "halt()",
+      "startLine": 18259,
+      "endLine": 18290,
+      "category": "control"
+    },
+    {
+      "name": "handler()",
+      "startLine": 18291,
+      "endLine": 18308,
+      "category": "general"
+    },
+    {
+      "name": "handlers()",
+      "startLine": 18309,
+      "endLine": 18337,
+      "category": "general"
+    },
+    {
+      "name": "hilite (command)",
+      "startLine": 18338,
+      "endLine": 18363,
+      "category": "general"
+    },
+    {
+      "name": "hitTest()",
+      "startLine": 18364,
+      "endLine": 18414,
+      "category": "general"
+    },
+    {
+      "name": "HMStoFrames()",
+      "startLine": 18415,
+      "endLine": 18481,
+      "category": "general"
+    },
+    {
+      "name": "hold()",
+      "startLine": 18482,
+      "endLine": 18520,
+      "category": "general"
+    },
+    {
+      "name": "identity()",
+      "startLine": 18521,
+      "endLine": 18552,
+      "category": "3d"
+    },
+    {
+      "name": "idleLoadDone()",
+      "startLine": 18553,
+      "endLine": 18580,
+      "category": "general"
+    },
+    {
+      "name": "ignoreWhiteSpace()",
+      "startLine": 18581,
+      "endLine": 18643,
+      "category": "general"
+    },
+    {
+      "name": "ilk()",
+      "startLine": 18644,
+      "endLine": 18891,
+      "category": "typecheck"
+    },
+    {
+      "name": "ilk (3D)",
+      "startLine": 18892,
+      "endLine": 19007,
+      "category": "3d"
+    },
+    {
+      "name": "image()",
+      "startLine": 19008,
+      "endLine": 19061,
+      "category": "general"
+    },
+    {
+      "name": "importFileInto()",
+      "startLine": 19062,
+      "endLine": 19140,
+      "category": "general"
+    },
+    {
+      "name": "insertBackdrop",
+      "startLine": 19141,
+      "endLine": 19168,
+      "category": "3d"
+    },
+    {
+      "name": "insertFrame()",
+      "startLine": 19169,
+      "endLine": 19216,
+      "category": "general"
+    },
+    {
+      "name": "insertOverlay",
+      "startLine": 19217,
+      "endLine": 19250,
+      "category": "3d"
+    },
+    {
+      "name": "inside()",
+      "startLine": 19251,
+      "endLine": 19268,
+      "category": "general"
+    },
+    {
+      "name": "installMenu",
+      "startLine": 19269,
+      "endLine": 19302,
+      "category": "general"
+    },
+    {
+      "name": "integer()",
+      "startLine": 19303,
+      "endLine": 19329,
+      "category": "conversion"
+    },
+    {
+      "name": "integerP()",
+      "startLine": 19330,
+      "endLine": 19359,
+      "category": "typecheck"
+    },
+    {
+      "name": "interface()",
+      "startLine": 19360,
+      "endLine": 19380,
+      "category": "general"
+    },
+    {
+      "name": "interpolate()",
+      "startLine": 19381,
+      "endLine": 19402,
+      "category": "general"
+    },
+    {
+      "name": "interpolateTo()",
+      "startLine": 19403,
+      "endLine": 19431,
+      "category": "general"
+    },
+    {
+      "name": "intersect()",
+      "startLine": 19432,
+      "endLine": 19448,
+      "category": "general"
+    },
+    {
+      "name": "inverse()",
+      "startLine": 19449,
+      "endLine": 19476,
+      "category": "general"
+    },
+    {
+      "name": "invert()",
+      "startLine": 19477,
+      "endLine": 19499,
+      "category": "general"
+    },
+    {
+      "name": "isBusy()",
+      "startLine": 19500,
+      "endLine": 19540,
+      "category": "general"
+    },
+    {
+      "name": "isInWorld()",
+      "startLine": 19541,
+      "endLine": 19570,
+      "category": "3d"
+    },
+    {
+      "name": "isPastCuePoint()",
+      "startLine": 19571,
+      "endLine": 19635,
+      "category": "general"
+    },
+    {
+      "name": "keyPressed()",
+      "startLine": 19636,
+      "endLine": 19699,
+      "category": "general"
+    },
+    {
+      "name": "label()",
+      "startLine": 19700,
+      "endLine": 19729,
+      "category": "general"
+    },
+    {
+      "name": "last()",
+      "startLine": 19730,
+      "endLine": 19760,
+      "category": "general"
+    },
+    {
+      "name": "lastClick()",
+      "startLine": 19761,
+      "endLine": 19779,
+      "category": "general"
+    },
+    {
+      "name": "lastEvent()",
+      "startLine": 19780,
+      "endLine": 19801,
+      "category": "general"
+    },
+    {
+      "name": "length()",
+      "startLine": 19802,
+      "endLine": 19831,
+      "category": "general"
+    },
+    {
+      "name": "light()",
+      "startLine": 19832,
+      "endLine": 19857,
+      "category": "general"
+    },
+    {
+      "name": "lineHeight()",
+      "startLine": 19858,
+      "endLine": 19877,
+      "category": "general"
+    },
+    {
+      "name": "linePosToLocV()",
+      "startLine": 19878,
+      "endLine": 19903,
+      "category": "general"
+    },
+    {
+      "name": "linkAs()",
+      "startLine": 19904,
+      "endLine": 19923,
+      "category": "general"
+    },
+    {
+      "name": "list()",
+      "startLine": 19924,
+      "endLine": 19965,
+      "category": "list"
+    },
+    {
+      "name": "listP()",
+      "startLine": 19966,
+      "endLine": 19988,
+      "category": "typecheck"
+    },
+    {
+      "name": "loadFile()",
+      "startLine": 19989,
+      "endLine": 20023,
+      "category": "general"
+    },
+    {
+      "name": "locToCharPos()",
+      "startLine": 20024,
+      "endLine": 20053,
+      "category": "general"
+    },
+    {
+      "name": "locVToLinePos()",
+      "startLine": 20054,
+      "endLine": 20079,
+      "category": "general"
+    },
+    {
+      "name": "log()",
+      "startLine": 20080,
+      "endLine": 20100,
+      "category": "math"
+    },
+    {
+      "name": "makeList()",
+      "startLine": 20101,
+      "endLine": 20150,
+      "category": "general"
+    },
+    {
+      "name": "makeScriptedSprite()",
+      "startLine": 20151,
+      "endLine": 20181,
+      "category": "general"
+    },
+    {
+      "name": "makeSubList()",
+      "startLine": 20182,
+      "endLine": 20207,
+      "category": "list"
+    },
+    {
+      "name": "map()",
+      "startLine": 20208,
+      "endLine": 20240,
+      "category": "general"
+    },
+    {
+      "name": "map (3D)",
+      "startLine": 20241,
+      "endLine": 20262,
+      "category": "3d"
+    },
+    {
+      "name": "mapMemberToStage()",
+      "startLine": 20263,
+      "endLine": 20284,
+      "category": "general"
+    },
+    {
+      "name": "mapStageToMember()",
+      "startLine": 20285,
+      "endLine": 20301,
+      "category": "general"
+    },
+    {
+      "name": "marker()",
+      "startLine": 20302,
+      "endLine": 20349,
+      "category": "general"
+    },
+    {
+      "name": "max()",
+      "startLine": 20350,
+      "endLine": 20387,
+      "category": "math"
+    },
+    {
+      "name": "maximize()",
+      "startLine": 20388,
+      "endLine": 20418,
+      "category": "general"
+    },
+    {
+      "name": "mci",
+      "startLine": 20419,
+      "endLine": 20435,
+      "category": "general"
+    },
+    {
+      "name": "member()",
+      "startLine": 20436,
+      "endLine": 20482,
+      "category": "access"
+    },
+    {
+      "name": "mergeDisplayTemplate()",
+      "startLine": 20483,
+      "endLine": 20512,
+      "category": "general"
+    },
+    {
+      "name": "mergeProps()",
+      "startLine": 20513,
+      "endLine": 20544,
+      "category": "general"
+    },
+    {
+      "name": "mesh (property)",
+      "startLine": 20545,
+      "endLine": 20597,
+      "category": "3d"
+    },
+    {
+      "name": "meshDeform (modifier)",
+      "startLine": 20598,
+      "endLine": 20635,
+      "category": "3d"
+    },
+    {
+      "name": "min",
+      "startLine": 20636,
+      "endLine": 20662,
+      "category": "math"
+    },
+    {
+      "name": "minimize()",
+      "startLine": 20663,
+      "endLine": 20689,
+      "category": "general"
+    },
+    {
+      "name": "model",
+      "startLine": 20690,
+      "endLine": 20727,
+      "category": "3d"
+    },
+    {
+      "name": "modelResource",
+      "startLine": 20728,
+      "endLine": 20765,
+      "category": "3d"
+    },
+    {
+      "name": "modelsUnderLoc",
+      "startLine": 20766,
+      "endLine": 20850,
+      "category": "3d"
+    },
+    {
+      "name": "modelsUnderRay",
+      "startLine": 20851,
+      "endLine": 20933,
+      "category": "3d"
+    },
+    {
+      "name": "modelUnderLoc",
+      "startLine": 20934,
+      "endLine": 20971,
+      "category": "3d"
+    },
+    {
+      "name": "motion()",
+      "startLine": 20972,
+      "endLine": 20993,
+      "category": "3d"
+    },
+    {
+      "name": "move()",
+      "startLine": 20994,
+      "endLine": 21034,
+      "category": "general"
+    },
+    {
+      "name": "moveToBack()",
+      "startLine": 21035,
+      "endLine": 21068,
+      "category": "general"
+    },
+    {
+      "name": "moveToFront()",
+      "startLine": 21069,
+      "endLine": 21098,
+      "category": "general"
+    },
+    {
+      "name": "moveVertex()",
+      "startLine": 21099,
+      "endLine": 21131,
+      "category": "general"
+    },
+    {
+      "name": "moveVertexHandle()",
+      "startLine": 21132,
+      "endLine": 21167,
+      "category": "general"
+    },
+    {
+      "name": "multiply()",
+      "startLine": 21168,
+      "endLine": 21186,
+      "category": "3d"
+    },
+    {
+      "name": "neighbor",
+      "startLine": 21187,
+      "endLine": 21211,
+      "category": "3d"
+    },
+    {
+      "name": "netAbort",
+      "startLine": 21212,
+      "endLine": 21240,
+      "category": "network"
+    },
+    {
+      "name": "netDone()",
+      "startLine": 21241,
+      "endLine": 21304,
+      "category": "network"
+    },
+    {
+      "name": "netError()",
+      "startLine": 21305,
+      "endLine": 21422,
+      "category": "network"
+    },
+    {
+      "name": "netLastModDate()",
+      "startLine": 21423,
+      "endLine": 21465,
+      "category": "network"
+    },
+    {
+      "name": "netMIME()",
+      "startLine": 21466,
+      "endLine": 21529,
+      "category": "network"
+    },
+    {
+      "name": "netStatus",
+      "startLine": 21530,
+      "endLine": 21551,
+      "category": "general"
+    },
+    {
+      "name": "netTextResult()",
+      "startLine": 21552,
+      "endLine": 21596,
+      "category": "network"
+    },
+    {
+      "name": "new()",
+      "startLine": 21597,
+      "endLine": 21747,
+      "category": "general"
+    },
+    {
+      "name": "newCamera",
+      "startLine": 21748,
+      "endLine": 21766,
+      "category": "3d"
+    },
+    {
+      "name": "newCurve()",
+      "startLine": 21767,
+      "endLine": 21794,
+      "category": "general"
+    },
+    {
+      "name": "newGroup",
+      "startLine": 21795,
+      "endLine": 21813,
+      "category": "3d"
+    },
+    {
+      "name": "newLight",
+      "startLine": 21814,
+      "endLine": 21836,
+      "category": "3d"
+    },
+    {
+      "name": "newMember()",
+      "startLine": 21837,
+      "endLine": 21900,
+      "category": "general"
+    },
+    {
+      "name": "newMesh",
+      "startLine": 21901,
+      "endLine": 21973,
+      "category": "3d"
+    },
+    {
+      "name": "newModel",
+      "startLine": 21974,
+      "endLine": 22000,
+      "category": "3d"
+    },
+    {
+      "name": "newModelResource",
+      "startLine": 22001,
+      "endLine": 22053,
+      "category": "3d"
+    },
+    {
+      "name": "newMotion()",
+      "startLine": 22054,
+      "endLine": 22072,
+      "category": "3d"
+    },
+    {
+      "name": "newObject()",
+      "startLine": 22073,
+      "endLine": 22118,
+      "category": "general"
+    },
+    {
+      "name": "newShader",
+      "startLine": 22119,
+      "endLine": 22169,
+      "category": "3d"
+    },
+    {
+      "name": "newTexture",
+      "startLine": 22170,
+      "endLine": 22204,
+      "category": "3d"
+    },
+    {
+      "name": "normalize",
+      "startLine": 22205,
+      "endLine": 22237,
+      "category": "3d"
+    },
+    {
+      "name": "nothing",
+      "startLine": 22238,
+      "endLine": 22295,
+      "category": "general"
+    },
+    {
+      "name": "nudge()",
+      "startLine": 22296,
+      "endLine": 22341,
+      "category": "general"
+    },
+    {
+      "name": "numToChar()",
+      "startLine": 22342,
+      "endLine": 22399,
+      "category": "conversion"
+    },
+    {
+      "name": "objectP()",
+      "startLine": 22400,
+      "endLine": 22433,
+      "category": "typecheck"
+    },
+    {
+      "name": "offset() (string function)",
+      "startLine": 22434,
+      "endLine": 22501,
+      "category": "general"
+    },
+    {
+      "name": "offset() (rectangle function)",
+      "startLine": 22502,
+      "endLine": 22529,
+      "category": "general"
+    },
+    {
+      "name": "open() (Player)",
+      "startLine": 22530,
+      "endLine": 22565,
+      "category": "general"
+    },
+    {
+      "name": "open() (Window)",
+      "startLine": 22566,
+      "endLine": 22606,
+      "category": "general"
+    },
+    {
+      "name": "openFile()",
+      "startLine": 22607,
+      "endLine": 22625,
+      "category": "general"
+    },
+    {
+      "name": "openXlib",
+      "startLine": 22626,
+      "endLine": 22658,
+      "category": "general"
+    },
+    {
+      "name": "param()",
+      "startLine": 22659,
+      "endLine": 22703,
+      "category": "general"
+    },
+    {
+      "name": "paramCount()",
+      "startLine": 22704,
+      "endLine": 22718,
+      "category": "general"
+    },
+    {
+      "name": "parseString()",
+      "startLine": 22719,
+      "endLine": 22743,
+      "category": "general"
+    },
+    {
+      "name": "parseURL()",
+      "startLine": 22744,
+      "endLine": 22866,
+      "category": "general"
+    },
+    {
+      "name": "pass",
+      "startLine": 22867,
+      "endLine": 22912,
+      "category": "general"
+    },
+    {
+      "name": "pasteClipBoardInto()",
+      "startLine": 22913,
+      "endLine": 22947,
+      "category": "general"
+    },
+    {
+      "name": "pause() (DVD)",
+      "startLine": 22948,
+      "endLine": 22969,
+      "category": "dvd"
+    },
+    {
+      "name": "pause() (Sound Channel)",
+      "startLine": 22970,
+      "endLine": 22997,
+      "category": "general"
+    },
+    {
+      "name": "pause() (3D)",
+      "startLine": 22998,
+      "endLine": 23017,
+      "category": "3d"
+    },
+    {
+      "name": "pause() (RealMedia, SWA, Windows Media)",
+      "startLine": 23018,
+      "endLine": 23052,
+      "category": "general"
+    },
+    {
+      "name": "perpendicularTo",
+      "startLine": 23053,
+      "endLine": 23073,
+      "category": "general"
+    },
+    {
+      "name": "pictureP()",
+      "startLine": 23074,
+      "endLine": 23106,
+      "category": "general"
+    },
+    {
+      "name": "play() (3D)",
+      "startLine": 23107,
+      "endLine": 23176,
+      "category": "3d"
+    },
+    {
+      "name": "play() (DVD)",
+      "startLine": 23177,
+      "endLine": 23250,
+      "category": "dvd"
+    },
+    {
+      "name": "play() (Sound Channel)",
+      "startLine": 23251,
+      "endLine": 23348,
+      "category": "general"
+    },
+    {
+      "name": "play() (RealMedia, SWA, Windows Media)",
+      "startLine": 23349,
+      "endLine": 23382,
+      "category": "general"
+    },
+    {
+      "name": "playFile()",
+      "startLine": 23383,
+      "endLine": 23425,
+      "category": "general"
+    },
+    {
+      "name": "playFromToTime()",
+      "startLine": 23426,
+      "endLine": 23451,
+      "category": "general"
+    },
+    {
+      "name": "playNext() (Sound Channel)",
+      "startLine": 23452,
+      "endLine": 23481,
+      "category": "general"
+    },
+    {
+      "name": "playNext() (3D)",
+      "startLine": 23482,
+      "endLine": 23506,
+      "category": "3d"
+    },
+    {
+      "name": "playerParentalLevel()",
+      "startLine": 23507,
+      "endLine": 23522,
+      "category": "dvd"
+    },
+    {
+      "name": "point()",
+      "startLine": 23523,
+      "endLine": 23581,
+      "category": "access"
+    },
+    {
+      "name": "pointAt",
+      "startLine": 23582,
+      "endLine": 23642,
+      "category": "3d"
+    },
+    {
+      "name": "pointInHyperlink()",
+      "startLine": 23643,
+      "endLine": 23663,
+      "category": "general"
+    },
+    {
+      "name": "pointToChar()",
+      "startLine": 23664,
+      "endLine": 23704,
+      "category": "general"
+    },
+    {
+      "name": "pointToItem()",
+      "startLine": 23705,
+      "endLine": 23747,
+      "category": "general"
+    },
+    {
+      "name": "pointToLine()",
+      "startLine": 23748,
+      "endLine": 23790,
+      "category": "general"
+    },
+    {
+      "name": "pointToParagraph()",
+      "startLine": 23791,
+      "endLine": 23833,
+      "category": "general"
+    },
+    {
+      "name": "pointToWord()",
+      "startLine": 23834,
+      "endLine": 23876,
+      "category": "general"
+    },
+    {
+      "name": "postNetText",
+      "startLine": 23877,
+      "endLine": 23943,
+      "category": "network"
+    },
+    {
+      "name": "power()",
+      "startLine": 23944,
+      "endLine": 23957,
+      "category": "math"
+    },
+    {
+      "name": "preLoad() (Member)",
+      "startLine": 23958,
+      "endLine": 24001,
+      "category": "general"
+    },
+    {
+      "name": "preLoad() (Movie)",
+      "startLine": 24002,
+      "endLine": 24057,
+      "category": "general"
+    },
+    {
+      "name": "preLoadBuffer()",
+      "startLine": 24058,
+      "endLine": 24091,
+      "category": "general"
+    },
+    {
+      "name": "preLoadMember()",
+      "startLine": 24092,
+      "endLine": 24126,
+      "category": "general"
+    },
+    {
+      "name": "preLoadMovie()",
+      "startLine": 24127,
+      "endLine": 24152,
+      "category": "general"
+    },
+    {
+      "name": "preloadNetThing()",
+      "startLine": 24153,
+      "endLine": 24190,
+      "category": "network"
+    },
+    {
+      "name": "preMultiply",
+      "startLine": 24191,
+      "endLine": 24217,
+      "category": "general"
+    },
+    {
+      "name": "preRotate",
+      "startLine": 24218,
+      "endLine": 24281,
+      "category": "general"
+    },
+    {
+      "name": "preScale()",
+      "startLine": 24282,
+      "endLine": 24324,
+      "category": "general"
+    },
+    {
+      "name": "preTranslate()",
+      "startLine": 24325,
+      "endLine": 24376,
+      "category": "general"
+    },
+    {
+      "name": "print()",
+      "startLine": 24377,
+      "endLine": 24401,
+      "category": "general"
+    },
+    {
+      "name": "printAsBitmap()",
+      "startLine": 24402,
+      "endLine": 24417,
+      "category": "general"
+    },
+    {
+      "name": "printFrom()",
+      "startLine": 24418,
+      "endLine": 24461,
+      "category": "general"
+    },
+    {
+      "name": "propList()",
+      "startLine": 24462,
+      "endLine": 24514,
+      "category": "list"
+    },
+    {
+      "name": "proxyServer",
+      "startLine": 24515,
+      "endLine": 24542,
+      "category": "general"
+    },
+    {
+      "name": "ptToHotSpotID()",
+      "startLine": 24543,
+      "endLine": 24559,
+      "category": "general"
+    },
+    {
+      "name": "puppetPalette()",
+      "startLine": 24560,
+      "endLine": 24607,
+      "category": "general"
+    },
+    {
+      "name": "puppetSprite()",
+      "startLine": 24608,
+      "endLine": 24661,
+      "category": "general"
+    },
+    {
+      "name": "puppetTempo()",
+      "startLine": 24662,
+      "endLine": 24700,
+      "category": "general"
+    },
+    {
+      "name": "puppetTransition()",
+      "startLine": 24701,
+      "endLine": 24989,
+      "category": "general"
+    },
+    {
+      "name": "put()",
+      "startLine": 24990,
+      "endLine": 25025,
+      "category": "general"
+    },
+    {
+      "name": "qtRegisterAccessKey()",
+      "startLine": 25026,
+      "endLine": 25040,
+      "category": "general"
+    },
+    {
+      "name": "qtUnRegisterAccessKey()",
+      "startLine": 25041,
+      "endLine": 25055,
+      "category": "general"
+    },
+    {
+      "name": "queue()",
+      "startLine": 25056,
+      "endLine": 25148,
+      "category": "general"
+    },
+    {
+      "name": "queue() (3D)",
+      "startLine": 25149,
+      "endLine": 25201,
+      "category": "3d"
+    },
+    {
+      "name": "QuickTimeVersion()",
+      "startLine": 25202,
+      "endLine": 25226,
+      "category": "general"
+    },
+    {
+      "name": "quit()",
+      "startLine": 25227,
+      "endLine": 25258,
+      "category": "control"
+    },
+    {
+      "name": "ramNeeded()",
+      "startLine": 25259,
+      "endLine": 25300,
+      "category": "general"
+    },
+    {
+      "name": "random()",
+      "startLine": 25301,
+      "endLine": 25358,
+      "category": "math"
+    },
+    {
+      "name": "randomVector()",
+      "startLine": 25359,
+      "endLine": 25393,
+      "category": "general"
+    },
+    {
+      "name": "randomVector",
+      "startLine": 25394,
+      "endLine": 25416,
+      "category": "3d"
+    },
+    {
+      "name": "rawNew()",
+      "startLine": 25417,
+      "endLine": 25445,
+      "category": "general"
+    },
+    {
+      "name": "readChar()",
+      "startLine": 25446,
+      "endLine": 25461,
+      "category": "general"
+    },
+    {
+      "name": "readFile()",
+      "startLine": 25462,
+      "endLine": 25483,
+      "category": "general"
+    },
+    {
+      "name": "readLine()",
+      "startLine": 25484,
+      "endLine": 25500,
+      "category": "general"
+    },
+    {
+      "name": "readToken()",
+      "startLine": 25501,
+      "endLine": 25522,
+      "category": "general"
+    },
+    {
+      "name": "readWord()",
+      "startLine": 25523,
+      "endLine": 25538,
+      "category": "general"
+    },
+    {
+      "name": "realPlayerNativeAudio()",
+      "startLine": 25539,
+      "endLine": 25589,
+      "category": "general"
+    },
+    {
+      "name": "realPlayerPromptToInstall()",
+      "startLine": 25590,
+      "endLine": 25637,
+      "category": "general"
+    },
+    {
+      "name": "realPlayerVersion()",
+      "startLine": 25638,
+      "endLine": 25701,
+      "category": "general"
+    },
+    {
+      "name": "recordFont",
+      "startLine": 25702,
+      "endLine": 25755,
+      "category": "general"
+    },
+    {
+      "name": "rect()",
+      "startLine": 25756,
+      "endLine": 25827,
+      "category": "access"
+    },
+    {
+      "name": "registerForEvent()",
+      "startLine": 25828,
+      "endLine": 25913,
+      "category": "3d"
+    },
+    {
+      "name": "registerScript()",
+      "startLine": 25914,
+      "endLine": 26003,
+      "category": "3d"
+    },
+    {
+      "name": "removeBackdrop",
+      "startLine": 26004,
+      "endLine": 26019,
+      "category": "3d"
+    },
+    {
+      "name": "removeFromWorld",
+      "startLine": 26020,
+      "endLine": 26061,
+      "category": "3d"
+    },
+    {
+      "name": "removeModifier",
+      "startLine": 26062,
+      "endLine": 26083,
+      "category": "3d"
+    },
+    {
+      "name": "removeOverlay",
+      "startLine": 26084,
+      "endLine": 26100,
+      "category": "3d"
+    },
+    {
+      "name": "removeScriptedSprite()",
+      "startLine": 26101,
+      "endLine": 26126,
+      "category": "general"
+    },
+    {
+      "name": "resetWorld",
+      "startLine": 26127,
+      "endLine": 26150,
+      "category": "3d"
+    },
+    {
+      "name": "resolveA",
+      "startLine": 26151,
+      "endLine": 26169,
+      "category": "general"
+    },
+    {
+      "name": "resolveB",
+      "startLine": 26170,
+      "endLine": 26185,
+      "category": "general"
+    },
+    {
+      "name": "restart()",
+      "startLine": 26186,
+      "endLine": 26216,
+      "category": "general"
+    },
+    {
+      "name": "restore()",
+      "startLine": 26217,
+      "endLine": 26239,
+      "category": "general"
+    },
+    {
+      "name": "result",
+      "startLine": 26240,
+      "endLine": 26277,
+      "category": "general"
+    },
+    {
+      "name": "resume()",
+      "startLine": 26278,
+      "endLine": 26293,
+      "category": "general"
+    },
+    {
+      "name": "returnToTitle()",
+      "startLine": 26294,
+      "endLine": 26320,
+      "category": "dvd"
+    },
+    {
+      "name": "revertToWorldDefaults",
+      "startLine": 26321,
+      "endLine": 26342,
+      "category": "3d"
+    },
+    {
+      "name": "rewind() (Sound Channel)",
+      "startLine": 26343,
+      "endLine": 26372,
+      "category": "general"
+    },
+    {
+      "name": "rewind() (Windows Media)",
+      "startLine": 26373,
+      "endLine": 26389,
+      "category": "general"
+    },
+    {
+      "name": "rewind() (Animated GIF, Flash)",
+      "startLine": 26390,
+      "endLine": 26434,
+      "category": "general"
+    },
+    {
+      "name": "rollOver()",
+      "startLine": 26435,
+      "endLine": 26500,
+      "category": "general"
+    },
+    {
+      "name": "rootMenu()",
+      "startLine": 26501,
+      "endLine": 26527,
+      "category": "dvd"
+    },
+    {
+      "name": "rotate",
+      "startLine": 26528,
+      "endLine": 26599,
+      "category": "3d"
+    },
+    {
+      "name": "runMode",
+      "startLine": 26600,
+      "endLine": 26642,
+      "category": "general"
+    },
+    {
+      "name": "save castLib",
+      "startLine": 26643,
+      "endLine": 26668,
+      "category": "general"
+    },
+    {
+      "name": "saveMovie()",
+      "startLine": 26669,
+      "endLine": 26695,
+      "category": "general"
+    },
+    {
+      "name": "scale (command)",
+      "startLine": 26696,
+      "endLine": 26745,
+      "category": "general"
+    },
+    {
+      "name": "script()",
+      "startLine": 26746,
+      "endLine": 26783,
+      "category": "access"
+    },
+    {
+      "name": "scrollByLine()",
+      "startLine": 26784,
+      "endLine": 26814,
+      "category": "general"
+    },
+    {
+      "name": "scrollByPage()",
+      "startLine": 26815,
+      "endLine": 26843,
+      "category": "general"
+    },
+    {
+      "name": "seek()",
+      "startLine": 26844,
+      "endLine": 26891,
+      "category": "general"
+    },
+    {
+      "name": "selectAtLoc()",
+      "startLine": 26892,
+      "endLine": 26919,
+      "category": "dvd"
+    },
+    {
+      "name": "selectButton()",
+      "startLine": 26920,
+      "endLine": 26941,
+      "category": "dvd"
+    },
+    {
+      "name": "selectButtonRelative()",
+      "startLine": 26942,
+      "endLine": 26968,
+      "category": "dvd"
+    },
+    {
+      "name": "selection() (function)",
+      "startLine": 26969,
+      "endLine": 26988,
+      "category": "general"
+    },
+    {
+      "name": "sendAllSprites()",
+      "startLine": 26989,
+      "endLine": 27035,
+      "category": "general"
+    },
+    {
+      "name": "sendEvent",
+      "startLine": 27036,
+      "endLine": 27067,
+      "category": "3d"
+    },
+    {
+      "name": "sendSprite()",
+      "startLine": 27068,
+      "endLine": 27106,
+      "category": "general"
+    },
+    {
+      "name": "setAlpha()",
+      "startLine": 27107,
+      "endLine": 27135,
+      "category": "general"
+    },
+    {
+      "name": "setaProp",
+      "startLine": 27136,
+      "endLine": 27185,
+      "category": "list"
+    },
+    {
+      "name": "setAt",
+      "startLine": 27186,
+      "endLine": 27226,
+      "category": "list"
+    },
+    {
+      "name": "setCallback()",
+      "startLine": 27227,
+      "endLine": 27295,
+      "category": "general"
+    },
+    {
+      "name": "setCollisionCallback()",
+      "startLine": 27296,
+      "endLine": 27330,
+      "category": "general"
+    },
+    {
+      "name": "setFilterMask()",
+      "startLine": 27331,
+      "endLine": 27345,
+      "category": "general"
+    },
+    {
+      "name": "setFinderInfo()",
+      "startLine": 27346,
+      "endLine": 27364,
+      "category": "general"
+    },
+    {
+      "name": "setFlashProperty()",
+      "startLine": 27365,
+      "endLine": 27399,
+      "category": "general"
+    },
+    {
+      "name": "setNewLineConversion()",
+      "startLine": 27400,
+      "endLine": 27416,
+      "category": "general"
+    },
+    {
+      "name": "setPixel()",
+      "startLine": 27417,
+      "endLine": 27454,
+      "category": "general"
+    },
+    {
+      "name": "setPlayList()",
+      "startLine": 27455,
+      "endLine": 27531,
+      "category": "general"
+    },
+    {
+      "name": "setPosition()",
+      "startLine": 27532,
+      "endLine": 27545,
+      "category": "general"
+    },
+    {
+      "name": "setPref()",
+      "startLine": 27546,
+      "endLine": 27592,
+      "category": "general"
+    },
+    {
+      "name": "setProp",
+      "startLine": 27593,
+      "endLine": 27625,
+      "category": "general"
+    },
+    {
+      "name": "setScriptList()",
+      "startLine": 27626,
+      "endLine": 27645,
+      "category": "general"
+    },
+    {
+      "name": "settingsPanel()",
+      "startLine": 27646,
+      "endLine": 27685,
+      "category": "general"
+    },
+    {
+      "name": "setPref()",
+      "startLine": 27686,
+      "endLine": 27729,
+      "category": "general"
+    },
+    {
+      "name": "setTrackEnabled()",
+      "startLine": 27730,
+      "endLine": 27762,
+      "category": "general"
+    },
+    {
+      "name": "setVariable()",
+      "startLine": 27763,
+      "endLine": 27792,
+      "category": "general"
+    },
+    {
+      "name": "shader()",
+      "startLine": 27793,
+      "endLine": 27843,
+      "category": "3d"
+    },
+    {
+      "name": "showLocals()",
+      "startLine": 27844,
+      "endLine": 27862,
+      "category": "general"
+    },
+    {
+      "name": "showProps()",
+      "startLine": 27863,
+      "endLine": 27912,
+      "category": "general"
+    },
+    {
+      "name": "showGlobals()",
+      "startLine": 27913,
+      "endLine": 27943,
+      "category": "general"
+    },
+    {
+      "name": "shutDown()",
+      "startLine": 27944,
+      "endLine": 27962,
+      "category": "general"
+    },
+    {
+      "name": "sin()",
+      "startLine": 27963,
+      "endLine": 27984,
+      "category": "math"
+    },
+    {
+      "name": "sort",
+      "startLine": 27985,
+      "endLine": 28009,
+      "category": "list"
+    },
+    {
+      "name": "sound()",
+      "startLine": 28010,
+      "endLine": 28038,
+      "category": "sound"
+    },
+    {
+      "name": "sprite()",
+      "startLine": 28039,
+      "endLine": 28063,
+      "category": "access"
+    },
+    {
+      "name": "spriteSpaceToWorldSpace",
+      "startLine": 28064,
+      "endLine": 28095,
+      "category": "3d"
+    },
+    {
+      "name": "sqrt()",
+      "startLine": 28096,
+      "endLine": 28124,
+      "category": "math"
+    },
+    {
+      "name": "stageBottom",
+      "startLine": 28125,
+      "endLine": 28150,
+      "category": "general"
+    },
+    {
+      "name": "stageLeft",
+      "startLine": 28151,
+      "endLine": 28179,
+      "category": "general"
+    },
+    {
+      "name": "stageRight",
+      "startLine": 28180,
+      "endLine": 28203,
+      "category": "general"
+    },
+    {
+      "name": "stageToFlash()",
+      "startLine": 28204,
+      "endLine": 28251,
+      "category": "general"
+    },
+    {
+      "name": "stageTop",
+      "startLine": 28252,
+      "endLine": 28280,
+      "category": "general"
+    },
+    {
+      "name": "status()",
+      "startLine": 28281,
+      "endLine": 28295,
+      "category": "general"
+    },
+    {
+      "name": "stop() (DVD)",
+      "startLine": 28296,
+      "endLine": 28323,
+      "category": "dvd"
+    },
+    {
+      "name": "stop() (Sound Channel)",
+      "startLine": 28324,
+      "endLine": 28354,
+      "category": "general"
+    },
+    {
+      "name": "stop() (Flash)",
+      "startLine": 28355,
+      "endLine": 28386,
+      "category": "general"
+    },
+    {
+      "name": "stop() (RealMedia, SWA, Windows Media)",
+      "startLine": 28387,
+      "endLine": 28418,
+      "category": "general"
+    },
+    {
+      "name": "stopEvent()",
+      "startLine": 28419,
+      "endLine": 28470,
+      "category": "control"
+    },
+    {
+      "name": "stream()",
+      "startLine": 28471,
+      "endLine": 28532,
+      "category": "general"
+    },
+    {
+      "name": "string()",
+      "startLine": 28533,
+      "endLine": 28555,
+      "category": "conversion"
+    },
+    {
+      "name": "stringP()",
+      "startLine": 28556,
+      "endLine": 28578,
+      "category": "typecheck"
+    },
+    {
+      "name": "subPictureType()",
+      "startLine": 28579,
+      "endLine": 28623,
+      "category": "dvd"
+    },
+    {
+      "name": "substituteFont",
+      "startLine": 28624,
+      "endLine": 28660,
+      "category": "general"
+    },
+    {
+      "name": "swing()",
+      "startLine": 28661,
+      "endLine": 28700,
+      "category": "general"
+    },
+    {
+      "name": "symbol()",
+      "startLine": 28701,
+      "endLine": 28729,
+      "category": "conversion"
+    },
+    {
+      "name": "symbolP()",
+      "startLine": 28730,
+      "endLine": 28751,
+      "category": "typecheck"
+    },
+    {
+      "name": "tan()",
+      "startLine": 28752,
+      "endLine": 28770,
+      "category": "math"
+    },
+    {
+      "name": "tellStreamStatus()",
+      "startLine": 28771,
+      "endLine": 28811,
+      "category": "general"
+    },
+    {
+      "name": "tellTarget()",
+      "startLine": 28812,
+      "endLine": 28872,
+      "category": "general"
+    },
+    {
+      "name": "texture()",
+      "startLine": 28873,
+      "endLine": 28914,
+      "category": "3d"
+    },
+    {
+      "name": "time() (System)",
+      "startLine": 28915,
+      "endLine": 28942,
+      "category": "general"
+    },
+    {
+      "name": "timeout()",
+      "startLine": 28943,
+      "endLine": 28974,
+      "category": "general"
+    },
+    {
+      "name": "titleMenu()",
+      "startLine": 28975,
+      "endLine": 28996,
+      "category": "dvd"
+    },
+    {
+      "name": "top (3D)",
+      "startLine": 28997,
+      "endLine": 29021,
+      "category": "3d"
+    },
+    {
+      "name": "topCap",
+      "startLine": 29022,
+      "endLine": 29039,
+      "category": "3d"
+    },
+    {
+      "name": "topRadius",
+      "startLine": 29040,
+      "endLine": 29062,
+      "category": "3d"
+    },
+    {
+      "name": "trace()",
+      "startLine": 29063,
+      "endLine": 29088,
+      "category": "general"
+    },
+    {
+      "name": "transform (command)",
+      "startLine": 29089,
+      "endLine": 29115,
+      "category": "3d"
+    },
+    {
+      "name": "translate",
+      "startLine": 29116,
+      "endLine": 29182,
+      "category": "3d"
+    },
+    {
+      "name": "union()",
+      "startLine": 29183,
+      "endLine": 29207,
+      "category": "list"
+    },
+    {
+      "name": "unLoad() (Member)",
+      "startLine": 29208,
+      "endLine": 29250,
+      "category": "general"
+    },
+    {
+      "name": "unLoad() (Movie)",
+      "startLine": 29251,
+      "endLine": 29277,
+      "category": "general"
+    },
+    {
+      "name": "unLoadMember()",
+      "startLine": 29278,
+      "endLine": 29329,
+      "category": "general"
+    },
+    {
+      "name": "unLoadMovie()",
+      "startLine": 29330,
+      "endLine": 29371,
+      "category": "general"
+    },
+    {
+      "name": "unregisterAllEvents",
+      "startLine": 29372,
+      "endLine": 29399,
+      "category": "3d"
+    },
+    {
+      "name": "update",
+      "startLine": 29400,
+      "endLine": 29413,
+      "category": "3d"
+    },
+    {
+      "name": "updateFrame()",
+      "startLine": 29414,
+      "endLine": 29475,
+      "category": "general"
+    },
+    {
+      "name": "updateStage()",
+      "startLine": 29476,
+      "endLine": 29511,
+      "category": "general"
+    },
+    {
+      "name": "URLEncode",
+      "startLine": 29512,
+      "endLine": 29542,
+      "category": "general"
+    },
+    {
+      "name": "value()",
+      "startLine": 29543,
+      "endLine": 29607,
+      "category": "conversion"
+    },
+    {
+      "name": "vector()",
+      "startLine": 29608,
+      "endLine": 29642,
+      "category": "general"
+    },
+    {
+      "name": "version()",
+      "startLine": 29643,
+      "endLine": 29662,
+      "category": "general"
+    },
+    {
+      "name": "voiceCount()",
+      "startLine": 29663,
+      "endLine": 29680,
+      "category": "general"
+    },
+    {
+      "name": "voiceGet()",
+      "startLine": 29681,
+      "endLine": 29715,
+      "category": "general"
+    },
+    {
+      "name": "voiceGetAll()",
+      "startLine": 29716,
+      "endLine": 29753,
+      "category": "general"
+    },
+    {
+      "name": "voiceGetPitch()",
+      "startLine": 29754,
+      "endLine": 29779,
+      "category": "general"
+    },
+    {
+      "name": "voiceGetRate()",
+      "startLine": 29780,
+      "endLine": 29811,
+      "category": "general"
+    },
+    {
+      "name": "voiceGetVolume()",
+      "startLine": 29812,
+      "endLine": 29838,
+      "category": "general"
+    },
+    {
+      "name": "voiceInitialize()",
+      "startLine": 29839,
+      "endLine": 29875,
+      "category": "general"
+    },
+    {
+      "name": "voicePause()",
+      "startLine": 29876,
+      "endLine": 29905,
+      "category": "general"
+    },
+    {
+      "name": "voiceResume()",
+      "startLine": 29906,
+      "endLine": 29931,
+      "category": "general"
+    },
+    {
+      "name": "voiceSet()",
+      "startLine": 29932,
+      "endLine": 29956,
+      "category": "general"
+    },
+    {
+      "name": "voiceSetPitch()",
+      "startLine": 29957,
+      "endLine": 29975,
+      "category": "general"
+    },
+    {
+      "name": "voiceSetRate()",
+      "startLine": 29976,
+      "endLine": 30000,
+      "category": "general"
+    },
+    {
+      "name": "voiceSetVolume()",
+      "startLine": 30001,
+      "endLine": 30019,
+      "category": "general"
+    },
+    {
+      "name": "voiceSpeak()",
+      "startLine": 30020,
+      "endLine": 30044,
+      "category": "general"
+    },
+    {
+      "name": "voiceState()",
+      "startLine": 30045,
+      "endLine": 30074,
+      "category": "general"
+    },
+    {
+      "name": "voiceStop()",
+      "startLine": 30075,
+      "endLine": 30108,
+      "category": "general"
+    },
+    {
+      "name": "voiceWordPos()",
+      "startLine": 30109,
+      "endLine": 30145,
+      "category": "general"
+    },
+    {
+      "name": "voidP()",
+      "startLine": 30146,
+      "endLine": 30168,
+      "category": "typecheck"
+    },
+    {
+      "name": "window()",
+      "startLine": 30169,
+      "endLine": 30198,
+      "category": "general"
+    },
+    {
+      "name": "windowPresent()",
+      "startLine": 30199,
+      "endLine": 30229,
+      "category": "general"
+    },
+    {
+      "name": "worldSpaceToSpriteSpace",
+      "startLine": 30230,
+      "endLine": 30255,
+      "category": "3d"
+    },
+    {
+      "name": "writeChar()",
+      "startLine": 30256,
+      "endLine": 30274,
+      "category": "general"
+    },
+    {
+      "name": "writeReturn()",
+      "startLine": 30275,
+      "endLine": 30289,
+      "category": "general"
+    },
+    {
+      "name": "writeString()",
+      "startLine": 30290,
+      "endLine": 30303,
+      "category": "general"
+    },
+    {
+      "name": "xtra()",
+      "startLine": 30304,
+      "endLine": 30331,
+      "category": "general"
+    },
+    {
+      "name": "zoomBox",
+      "startLine": 30332,
+      "endLine": 30369,
+      "category": "general"
+    }
+  ],
+  "properties": [
+    {
+      "name": "_global",
+      "startLine": 31409,
+      "endLine": 31435,
+      "category": "top-level"
+    },
+    {
+      "name": "_key",
+      "startLine": 31436,
+      "endLine": 31466,
+      "category": "top-level"
+    },
+    {
+      "name": "_mouse",
+      "startLine": 31467,
+      "endLine": 31496,
+      "category": "top-level"
+    },
+    {
+      "name": "_movie",
+      "startLine": 31497,
+      "endLine": 31528,
+      "category": "top-level"
+    },
+    {
+      "name": "_player",
+      "startLine": 31529,
+      "endLine": 31554,
+      "category": "top-level"
+    },
+    {
+      "name": "_sound",
+      "startLine": 31555,
+      "endLine": 31584,
+      "category": "top-level"
+    },
+    {
+      "name": "_system",
+      "startLine": 31585,
+      "endLine": 31610,
+      "category": "top-level"
+    },
+    {
+      "name": "aboutInfo",
+      "startLine": 31611,
+      "endLine": 31634,
+      "category": "simple"
+    },
+    {
+      "name": "actionsEnabled",
+      "startLine": 31635,
+      "endLine": 31670,
+      "category": "simple"
+    },
+    {
+      "name": "active3dRenderer",
+      "startLine": 31671,
+      "endLine": 31697,
+      "category": "simple"
+    },
+    {
+      "name": "activeCastLib",
+      "startLine": 31698,
+      "endLine": 31727,
+      "category": "simple"
+    },
+    {
+      "name": "activeWindow",
+      "startLine": 31728,
+      "endLine": 31775,
+      "category": "simple"
+    },
+    {
+      "name": "actorList",
+      "startLine": 31776,
+      "endLine": 31816,
+      "category": "simple"
+    },
+    {
+      "name": "alertHook",
+      "startLine": 31817,
+      "endLine": 31878,
+      "category": "simple"
+    },
+    {
+      "name": "alignment",
+      "startLine": 31879,
+      "endLine": 31912,
+      "category": "simple"
+    },
+    {
+      "name": "allowCustomCaching",
+      "startLine": 31913,
+      "endLine": 31927,
+      "category": "simple"
+    },
+    {
+      "name": "allowGraphicMenu",
+      "startLine": 31928,
+      "endLine": 31944,
+      "category": "simple"
+    },
+    {
+      "name": "allowSaveLocal",
+      "startLine": 31945,
+      "endLine": 31965,
+      "category": "simple"
+    },
+    {
+      "name": "allowTransportControl",
+      "startLine": 31966,
+      "endLine": 31980,
+      "category": "simple"
+    },
+    {
+      "name": "allowVolumeControl",
+      "startLine": 31981,
+      "endLine": 32001,
+      "category": "simple"
+    },
+    {
+      "name": "allowZooming",
+      "startLine": 32002,
+      "endLine": 32018,
+      "category": "simple"
+    },
+    {
+      "name": "alphaThreshold",
+      "startLine": 32019,
+      "endLine": 32035,
+      "category": "simple"
+    },
+    {
+      "name": "ambient",
+      "startLine": 32036,
+      "endLine": 32066,
+      "category": "simple"
+    },
+    {
+      "name": "ambientColor",
+      "startLine": 32067,
+      "endLine": 32083,
+      "category": "simple"
+    },
+    {
+      "name": "ancestor",
+      "startLine": 32084,
+      "endLine": 32148,
+      "category": "simple"
+    },
+    {
+      "name": "angle (3D)",
+      "startLine": 32149,
+      "endLine": 32168,
+      "category": "simple"
+    },
+    {
+      "name": "angle (DVD)",
+      "startLine": 32169,
+      "endLine": 32198,
+      "category": "simple"
+    },
+    {
+      "name": "angleCount",
+      "startLine": 32199,
+      "endLine": 32224,
+      "category": "simple"
+    },
+    {
+      "name": "animationEnabled",
+      "startLine": 32225,
+      "endLine": 32237,
+      "category": "simple"
+    },
+    {
+      "name": "antiAlias",
+      "startLine": 32238,
+      "endLine": 32279,
+      "category": "simple"
+    },
+    {
+      "name": "antiAliasingEnabled",
+      "startLine": 32280,
+      "endLine": 32308,
+      "category": "simple"
+    },
+    {
+      "name": "antiAliasingSupported",
+      "startLine": 32309,
+      "endLine": 32326,
+      "category": "simple"
+    },
+    {
+      "name": "antiAliasThreshold",
+      "startLine": 32327,
+      "endLine": 32346,
+      "category": "simple"
+    },
+    {
+      "name": "appearanceOptions",
+      "startLine": 32347,
+      "endLine": 32414,
+      "category": "simple"
+    },
+    {
+      "name": "applicationName",
+      "startLine": 32415,
+      "endLine": 32436,
+      "category": "simple"
+    },
+    {
+      "name": "applicationPath",
+      "startLine": 32437,
+      "endLine": 32472,
+      "category": "simple"
+    },
+    {
+      "name": "aspectRatio",
+      "startLine": 32473,
+      "endLine": 32493,
+      "category": "simple"
+    },
+    {
+      "name": "attenuation",
+      "startLine": 32494,
+      "endLine": 32515,
+      "category": "simple"
+    },
+    {
+      "name": "attributeName",
+      "startLine": 32516,
+      "endLine": 32538,
+      "category": "simple"
+    },
+    {
+      "name": "attributeValue",
+      "startLine": 32539,
+      "endLine": 32566,
+      "category": "simple"
+    },
+    {
+      "name": "audio (DVD)",
+      "startLine": 32567,
+      "endLine": 32585,
+      "category": "simple"
+    },
+    {
+      "name": "audio (RealMedia)",
+      "startLine": 32586,
+      "endLine": 32629,
+      "category": "simple"
+    },
+    {
+      "name": "audio (Windows Media)",
+      "startLine": 32630,
+      "endLine": 32653,
+      "category": "simple"
+    },
+    {
+      "name": "audioChannelCount",
+      "startLine": 32654,
+      "endLine": 32672,
+      "category": "simple"
+    },
+    {
+      "name": "audioExtension",
+      "startLine": 32673,
+      "endLine": 32715,
+      "category": "simple"
+    },
+    {
+      "name": "audioFormat",
+      "startLine": 32716,
+      "endLine": 32765,
+      "category": "simple"
+    },
+    {
+      "name": "audioSampleRate",
+      "startLine": 32766,
+      "endLine": 32781,
+      "category": "simple"
+    },
+    {
+      "name": "audioStream",
+      "startLine": 32782,
+      "endLine": 32794,
+      "category": "simple"
+    },
+    {
+      "name": "audioStreamCount",
+      "startLine": 32795,
+      "endLine": 32807,
+      "category": "simple"
+    },
+    {
+      "name": "auto",
+      "startLine": 32808,
+      "endLine": 32834,
+      "category": "simple"
+    },
+    {
+      "name": "autoblend",
+      "startLine": 32835,
+      "endLine": 32858,
+      "category": "simple"
+    },
+    {
+      "name": "autoCameraPosition",
+      "startLine": 32859,
+      "endLine": 32881,
+      "category": "simple"
+    },
+    {
+      "name": "autoMask",
+      "startLine": 32882,
+      "endLine": 32915,
+      "category": "simple"
+    },
+    {
+      "name": "autoTab",
+      "startLine": 32916,
+      "endLine": 32935,
+      "category": "simple"
+    },
+    {
+      "name": "axisAngle",
+      "startLine": 32936,
+      "endLine": 32962,
+      "category": "simple"
+    },
+    {
+      "name": "back",
+      "startLine": 32963,
+      "endLine": 32978,
+      "category": "simple"
+    },
+    {
+      "name": "backColor",
+      "startLine": 32979,
+      "endLine": 33022,
+      "category": "simple"
+    },
+    {
+      "name": "backdrop",
+      "startLine": 33023,
+      "endLine": 33076,
+      "category": "simple"
+    },
+    {
+      "name": "backgroundColor",
+      "startLine": 33077,
+      "endLine": 33095,
+      "category": "simple"
+    },
+    {
+      "name": "beepOn",
+      "startLine": 33096,
+      "endLine": 33127,
+      "category": "simple"
+    },
+    {
+      "name": "bevelDepth",
+      "startLine": 33128,
+      "endLine": 33160,
+      "category": "simple"
+    },
+    {
+      "name": "bevelType",
+      "startLine": 33161,
+      "endLine": 33187,
+      "category": "simple"
+    },
+    {
+      "name": "bgColor (Window)",
+      "startLine": 33188,
+      "endLine": 33212,
+      "category": "simple"
+    },
+    {
+      "name": "bgColor (Sprite, 3D Member)",
+      "startLine": 33213,
+      "endLine": 33240,
+      "category": "simple"
+    },
+    {
+      "name": "bias",
+      "startLine": 33241,
+      "endLine": 33267,
+      "category": "simple"
+    },
+    {
+      "name": "bitmapSizes",
+      "startLine": 33268,
+      "endLine": 33288,
+      "category": "simple"
+    },
+    {
+      "name": "bitRate",
+      "startLine": 33289,
+      "endLine": 33319,
+      "category": "simple"
+    },
+    {
+      "name": "bitsPerSample",
+      "startLine": 33320,
+      "endLine": 33340,
+      "category": "simple"
+    },
+    {
+      "name": "blend (3D)",
+      "startLine": 33341,
+      "endLine": 33369,
+      "category": "simple"
+    },
+    {
+      "name": "blend (Sprite)",
+      "startLine": 33370,
+      "endLine": 33402,
+      "category": "simple"
+    },
+    {
+      "name": "blendConstant",
+      "startLine": 33403,
+      "endLine": 33433,
+      "category": "simple"
+    },
+    {
+      "name": "blendConstantList",
+      "startLine": 33434,
+      "endLine": 33471,
+      "category": "simple"
+    },
+    {
+      "name": "blendFactor",
+      "startLine": 33472,
+      "endLine": 33502,
+      "category": "simple"
+    },
+    {
+      "name": "blendFunction",
+      "startLine": 33503,
+      "endLine": 33546,
+      "category": "simple"
+    },
+    {
+      "name": "blendFunctionList",
+      "startLine": 33547,
+      "endLine": 33594,
+      "category": "simple"
+    },
+    {
+      "name": "blendLevel",
+      "startLine": 33595,
+      "endLine": 33609,
+      "category": "simple"
+    },
+    {
+      "name": "blendRange",
+      "startLine": 33610,
+      "endLine": 33642,
+      "category": "simple"
+    },
+    {
+      "name": "blendSource",
+      "startLine": 33643,
+      "endLine": 33677,
+      "category": "simple"
+    },
+    {
+      "name": "blendSourceList",
+      "startLine": 33678,
+      "endLine": 33722,
+      "category": "simple"
+    },
+    {
+      "name": "blendTime",
+      "startLine": 33723,
+      "endLine": 33750,
+      "category": "simple"
+    },
+    {
+      "name": "bone",
+      "startLine": 33751,
+      "endLine": 33767,
+      "category": "simple"
+    },
+    {
+      "name": "bonesPlayer (modifier)",
+      "startLine": 33768,
+      "endLine": 33842,
+      "category": "simple"
+    },
+    {
+      "name": "border",
+      "startLine": 33843,
+      "endLine": 33860,
+      "category": "simple"
+    },
+    {
+      "name": "bottom",
+      "startLine": 33861,
+      "endLine": 33885,
+      "category": "simple"
+    },
+    {
+      "name": "bottom (3D)",
+      "startLine": 33886,
+      "endLine": 33901,
+      "category": "simple"
+    },
+    {
+      "name": "bottomCap",
+      "startLine": 33902,
+      "endLine": 33918,
+      "category": "simple"
+    },
+    {
+      "name": "bottomRadius",
+      "startLine": 33919,
+      "endLine": 33939,
+      "category": "simple"
+    },
+    {
+      "name": "bottomSpacing",
+      "startLine": 33940,
+      "endLine": 33963,
+      "category": "simple"
+    },
+    {
+      "name": "boundary",
+      "startLine": 33964,
+      "endLine": 33985,
+      "category": "simple"
+    },
+    {
+      "name": "boundingSphere",
+      "startLine": 33986,
+      "endLine": 34006,
+      "category": "simple"
+    },
+    {
+      "name": "boxDropShadow",
+      "startLine": 34007,
+      "endLine": 34029,
+      "category": "simple"
+    },
+    {
+      "name": "boxType",
+      "startLine": 34030,
+      "endLine": 34047,
+      "category": "simple"
+    },
+    {
+      "name": "brightness",
+      "startLine": 34048,
+      "endLine": 34070,
+      "category": "simple"
+    },
+    {
+      "name": "broadcastProps",
+      "startLine": 34071,
+      "endLine": 34103,
+      "category": "simple"
+    },
+    {
+      "name": "bufferSize",
+      "startLine": 34104,
+      "endLine": 34137,
+      "category": "simple"
+    },
+    {
+      "name": "buttonCount",
+      "startLine": 34138,
+      "endLine": 34150,
+      "category": "simple"
+    },
+    {
+      "name": "buttonsEnabled",
+      "startLine": 34151,
+      "endLine": 34183,
+      "category": "simple"
+    },
+    {
+      "name": "buttonStyle",
+      "startLine": 34184,
+      "endLine": 34223,
+      "category": "simple"
+    },
+    {
+      "name": "buttonType",
+      "startLine": 34224,
+      "endLine": 34241,
+      "category": "simple"
+    },
+    {
+      "name": "bytesStreamed",
+      "startLine": 34242,
+      "endLine": 34283,
+      "category": "simple"
+    },
+    {
+      "name": "bytesStreamed (3D)",
+      "startLine": 34284,
+      "endLine": 34298,
+      "category": "simple"
+    },
+    {
+      "name": "camera",
+      "startLine": 34299,
+      "endLine": 34337,
+      "category": "simple"
+    },
+    {
+      "name": "cameraPosition",
+      "startLine": 34338,
+      "endLine": 34359,
+      "category": "simple"
+    },
+    {
+      "name": "cameraRotation",
+      "startLine": 34360,
+      "endLine": 34377,
+      "category": "simple"
+    },
+    {
+      "name": "castLib",
+      "startLine": 34378,
+      "endLine": 34405,
+      "category": "simple"
+    },
+    {
+      "name": "castLibNum",
+      "startLine": 34406,
+      "endLine": 34432,
+      "category": "simple"
+    },
+    {
+      "name": "castMemberList",
+      "startLine": 34433,
+      "endLine": 34464,
+      "category": "simple"
+    },
+    {
+      "name": "center",
+      "startLine": 34465,
+      "endLine": 34494,
+      "category": "simple"
+    },
+    {
+      "name": "centerRegPoint",
+      "startLine": 34495,
+      "endLine": 34530,
+      "category": "simple"
+    },
+    {
+      "name": "centerStage",
+      "startLine": 34531,
+      "endLine": 34570,
+      "category": "simple"
+    },
+    {
+      "name": "changeArea",
+      "startLine": 34571,
+      "endLine": 34594,
+      "category": "simple"
+    },
+    {
+      "name": "channelCount",
+      "startLine": 34595,
+      "endLine": 34622,
+      "category": "simple"
+    },
+    {
+      "name": "chapter",
+      "startLine": 34623,
+      "endLine": 34655,
+      "category": "simple"
+    },
+    {
+      "name": "chapterCount",
+      "startLine": 34656,
+      "endLine": 34680,
+      "category": "simple"
+    },
+    {
+      "name": "characterSet",
+      "startLine": 34681,
+      "endLine": 34706,
+      "category": "simple"
+    },
+    {
+      "name": "charSpacing",
+      "startLine": 34707,
+      "endLine": 34738,
+      "category": "simple"
+    },
+    {
+      "name": "checkMark",
+      "startLine": 34739,
+      "endLine": 34768,
+      "category": "simple"
+    },
+    {
+      "name": "child (3D)",
+      "startLine": 34769,
+      "endLine": 34792,
+      "category": "simple"
+    },
+    {
+      "name": "child (XML)",
+      "startLine": 34793,
+      "endLine": 34819,
+      "category": "simple"
+    },
+    {
+      "name": "chunkSize",
+      "startLine": 34820,
+      "endLine": 34838,
+      "category": "simple"
+    },
+    {
+      "name": "clearAtRender",
+      "startLine": 34839,
+      "endLine": 34861,
+      "category": "simple"
+    },
+    {
+      "name": "clearValue",
+      "startLine": 34862,
+      "endLine": 34879,
+      "category": "simple"
+    },
+    {
+      "name": "clickLoc",
+      "startLine": 34880,
+      "endLine": 34912,
+      "category": "simple"
+    },
+    {
+      "name": "clickMode",
+      "startLine": 34913,
+      "endLine": 34966,
+      "category": "simple"
+    },
+    {
+      "name": "clickOn",
+      "startLine": 34967,
+      "endLine": 35015,
+      "category": "simple"
+    },
+    {
+      "name": "closed",
+      "startLine": 35016,
+      "endLine": 35029,
+      "category": "simple"
+    },
+    {
+      "name": "closedCaptions",
+      "startLine": 35030,
+      "endLine": 35063,
+      "category": "simple"
+    },
+    {
+      "name": "collision (modifier)",
+      "startLine": 35064,
+      "endLine": 35093,
+      "category": "simple"
+    },
+    {
+      "name": "collisionData",
+      "startLine": 35094,
+      "endLine": 35135,
+      "category": "simple"
+    },
+    {
+      "name": "collisionNormal",
+      "startLine": 35136,
+      "endLine": 35183,
+      "category": "simple"
+    },
+    {
+      "name": "color()",
+      "startLine": 35184,
+      "endLine": 35257,
+      "category": "simple"
+    },
+    {
+      "name": "color (fog)",
+      "startLine": 35258,
+      "endLine": 35274,
+      "category": "simple"
+    },
+    {
+      "name": "color (light)",
+      "startLine": 35275,
+      "endLine": 35293,
+      "category": "simple"
+    },
+    {
+      "name": "colorBufferDepth",
+      "startLine": 35294,
+      "endLine": 35309,
+      "category": "simple"
+    },
+    {
+      "name": "colorDepth",
+      "startLine": 35310,
+      "endLine": 35404,
+      "category": "simple"
+    },
+    {
+      "name": "colorList",
+      "startLine": 35405,
+      "endLine": 35431,
+      "category": "simple"
+    },
+    {
+      "name": "colorRange",
+      "startLine": 35432,
+      "endLine": 35463,
+      "category": "simple"
+    },
+    {
+      "name": "colors",
+      "startLine": 35464,
+      "endLine": 35511,
+      "category": "simple"
+    },
+    {
+      "name": "colorSteps",
+      "startLine": 35512,
+      "endLine": 35530,
+      "category": "simple"
+    },
+    {
+      "name": "commandDown",
+      "startLine": 35531,
+      "endLine": 35572,
+      "category": "simple"
+    },
+    {
+      "name": "comments",
+      "startLine": 35573,
+      "endLine": 35598,
+      "category": "simple"
+    },
+    {
+      "name": "compressed",
+      "startLine": 35599,
+      "endLine": 35617,
+      "category": "simple"
+    },
+    {
+      "name": "constraint",
+      "startLine": 35618,
+      "endLine": 35667,
+      "category": "simple"
+    },
+    {
+      "name": "controlDown",
+      "startLine": 35668,
+      "endLine": 35714,
+      "category": "simple"
+    },
+    {
+      "name": "controller",
+      "startLine": 35715,
+      "endLine": 35746,
+      "category": "simple"
+    },
+    {
+      "name": "copyrightInfo (Movie)",
+      "startLine": 35747,
+      "endLine": 35760,
+      "category": "simple"
+    },
+    {
+      "name": "copyrightInfo (SWA)",
+      "startLine": 35761,
+      "endLine": 35792,
+      "category": "simple"
+    },
+    {
+      "name": "count",
+      "startLine": 35793,
+      "endLine": 35820,
+      "category": "simple"
+    },
+    {
+      "name": "count (3D)",
+      "startLine": 35821,
+      "endLine": 35890,
+      "category": "simple"
+    },
+    {
+      "name": "cpuHogTicks",
+      "startLine": 35891,
+      "endLine": 35913,
+      "category": "simple"
+    },
+    {
+      "name": "creaseAngle",
+      "startLine": 35914,
+      "endLine": 35939,
+      "category": "simple"
+    },
+    {
+      "name": "creases",
+      "startLine": 35940,
+      "endLine": 35957,
+      "category": "simple"
+    },
+    {
+      "name": "creationDate",
+      "startLine": 35958,
+      "endLine": 35984,
+      "category": "simple"
+    },
+    {
+      "name": "crop",
+      "startLine": 35985,
+      "endLine": 36006,
+      "category": "simple"
+    },
+    {
+      "name": "cuePointNames",
+      "startLine": 36007,
+      "endLine": 36035,
+      "category": "simple"
+    },
+    {
+      "name": "cuePointTimes",
+      "startLine": 36036,
+      "endLine": 36062,
+      "category": "simple"
+    },
+    {
+      "name": "currentLoopState",
+      "startLine": 36063,
+      "endLine": 36086,
+      "category": "simple"
+    },
+    {
+      "name": "currentSpriteNum",
+      "startLine": 36087,
+      "endLine": 36123,
+      "category": "simple"
+    },
+    {
+      "name": "currentTime (3D)",
+      "startLine": 36124,
+      "endLine": 36155,
+      "category": "simple"
+    },
+    {
+      "name": "currentTime (DVD)",
+      "startLine": 36156,
+      "endLine": 36185,
+      "category": "simple"
+    },
+    {
+      "name": "currentTime (QuickTime, AVI)",
+      "startLine": 36186,
+      "endLine": 36221,
+      "category": "simple"
+    },
+    {
+      "name": "currentTime (RealMedia)",
+      "startLine": 36222,
+      "endLine": 36270,
+      "category": "simple"
+    },
+    {
+      "name": "currentTime (Sprite)",
+      "startLine": 36271,
+      "endLine": 36309,
+      "category": "simple"
+    },
+    {
+      "name": "cursor",
+      "startLine": 36310,
+      "endLine": 36607,
+      "category": "simple"
+    },
+    {
+      "name": "cursorSize",
+      "startLine": 36608,
+      "endLine": 36642,
+      "category": "simple"
+    },
+    {
+      "name": "curve",
+      "startLine": 36643,
+      "endLine": 36693,
+      "category": "simple"
+    },
+    {
+      "name": "debug",
+      "startLine": 36694,
+      "endLine": 36711,
+      "category": "simple"
+    },
+    {
+      "name": "debugPlaybackEnabled",
+      "startLine": 36712,
+      "endLine": 36741,
+      "category": "simple"
+    },
+    {
+      "name": "decayMode",
+      "startLine": 36742,
+      "endLine": 36771,
+      "category": "simple"
+    },
+    {
+      "name": "defaultRect",
+      "startLine": 36772,
+      "endLine": 36820,
+      "category": "simple"
+    },
+    {
+      "name": "defaultRectMode",
+      "startLine": 36821,
+      "endLine": 36879,
+      "category": "simple"
+    },
+    {
+      "name": "density",
+      "startLine": 36880,
+      "endLine": 36909,
+      "category": "simple"
+    },
+    {
+      "name": "depth (3D)",
+      "startLine": 36910,
+      "endLine": 36929,
+      "category": "simple"
+    },
+    {
+      "name": "depth (Bitmap)",
+      "startLine": 36930,
+      "endLine": 36983,
+      "category": "simple"
+    },
+    {
+      "name": "depthBufferDepth",
+      "startLine": 36984,
+      "endLine": 36998,
+      "category": "simple"
+    },
+    {
+      "name": "deskTopRectList",
+      "startLine": 36999,
+      "endLine": 37041,
+      "category": "simple"
+    },
+    {
+      "name": "diffuse",
+      "startLine": 37042,
+      "endLine": 37069,
+      "category": "simple"
+    },
+    {
+      "name": "diffuseColor",
+      "startLine": 37070,
+      "endLine": 37091,
+      "category": "simple"
+    },
+    {
+      "name": "diffuseLightMap",
+      "startLine": 37092,
+      "endLine": 37119,
+      "category": "simple"
+    },
+    {
+      "name": "digitalVideoTimeScale",
+      "startLine": 37120,
+      "endLine": 37150,
+      "category": "simple"
+    },
+    {
+      "name": "digitalVideoType",
+      "startLine": 37151,
+      "endLine": 37172,
+      "category": "simple"
+    },
+    {
+      "name": "direction",
+      "startLine": 37173,
+      "endLine": 37196,
+      "category": "simple"
+    },
+    {
+      "name": "directionalColor",
+      "startLine": 37197,
+      "endLine": 37218,
+      "category": "simple"
+    },
+    {
+      "name": "directionalPreset",
+      "startLine": 37219,
+      "endLine": 37253,
+      "category": "simple"
+    },
+    {
+      "name": "directToStage",
+      "startLine": 37254,
+      "endLine": 37296,
+      "category": "simple"
+    },
+    {
+      "name": "disableImagingTransformation",
+      "startLine": 37297,
+      "endLine": 37322,
+      "category": "simple"
+    },
+    {
+      "name": "displayFace",
+      "startLine": 37323,
+      "endLine": 37354,
+      "category": "simple"
+    },
+    {
+      "name": "displayMode",
+      "startLine": 37355,
+      "endLine": 37373,
+      "category": "simple"
+    },
+    {
+      "name": "displayRealLogo",
+      "startLine": 37374,
+      "endLine": 37412,
+      "category": "simple"
+    },
+    {
+      "name": "displayTemplate",
+      "startLine": 37413,
+      "endLine": 37509,
+      "category": "simple"
+    },
+    {
+      "name": "distribution",
+      "startLine": 37510,
+      "endLine": 37528,
+      "category": "simple"
+    },
+    {
+      "name": "dither",
+      "startLine": 37529,
+      "endLine": 37550,
+      "category": "simple"
+    },
+    {
+      "name": "dockingEnabled",
+      "startLine": 37551,
+      "endLine": 37595,
+      "category": "simple"
+    },
+    {
+      "name": "domain",
+      "startLine": 37596,
+      "endLine": 37620,
+      "category": "simple"
+    },
+    {
+      "name": "doubleClick",
+      "startLine": 37621,
+      "endLine": 37650,
+      "category": "simple"
+    },
+    {
+      "name": "drag",
+      "startLine": 37651,
+      "endLine": 37667,
+      "category": "simple"
+    },
+    {
+      "name": "drawRect",
+      "startLine": 37668,
+      "endLine": 37712,
+      "category": "simple"
+    },
+    {
+      "name": "dropShadow",
+      "startLine": 37713,
+      "endLine": 37730,
+      "category": "simple"
+    },
+    {
+      "name": "duration (3D)",
+      "startLine": 37731,
+      "endLine": 37750,
+      "category": "simple"
+    },
+    {
+      "name": "duration (DVD)",
+      "startLine": 37751,
+      "endLine": 37775,
+      "category": "simple"
+    },
+    {
+      "name": "duration (Member)",
+      "startLine": 37776,
+      "endLine": 37821,
+      "category": "simple"
+    },
+    {
+      "name": "duration (RealMedia, SWA)",
+      "startLine": 37822,
+      "endLine": 37850,
+      "category": "simple"
+    },
+    {
+      "name": "editable",
+      "startLine": 37851,
+      "endLine": 37896,
+      "category": "simple"
+    },
+    {
+      "name": "editShortCutsEnabled",
+      "startLine": 37897,
+      "endLine": 37919,
+      "category": "simple"
+    },
+    {
+      "name": "elapsedTime",
+      "startLine": 37920,
+      "endLine": 37954,
+      "category": "simple"
+    },
+    {
+      "name": "emissive",
+      "startLine": 37955,
+      "endLine": 37975,
+      "category": "simple"
+    },
+    {
+      "name": "emitter",
+      "startLine": 37976,
+      "endLine": 38014,
+      "category": "simple"
+    },
+    {
+      "name": "emulateMultibuttonMouse",
+      "startLine": 38015,
+      "endLine": 38041,
+      "category": "simple"
+    },
+    {
+      "name": "enabled",
+      "startLine": 38042,
+      "endLine": 38066,
+      "category": "simple"
+    },
+    {
+      "name": "enabled (collision)",
+      "startLine": 38067,
+      "endLine": 38086,
+      "category": "simple"
+    },
+    {
+      "name": "enabled (fog)",
+      "startLine": 38087,
+      "endLine": 38101,
+      "category": "simple"
+    },
+    {
+      "name": "enabled (sds)",
+      "startLine": 38102,
+      "endLine": 38125,
+      "category": "simple"
+    },
+    {
+      "name": "enableFlashLingo",
+      "startLine": 38126,
+      "endLine": 38153,
+      "category": "simple"
+    },
+    {
+      "name": "endAngle",
+      "startLine": 38154,
+      "endLine": 38192,
+      "category": "simple"
+    },
+    {
+      "name": "endColor",
+      "startLine": 38193,
+      "endLine": 38211,
+      "category": "simple"
+    },
+    {
+      "name": "endFrame",
+      "startLine": 38212,
+      "endLine": 38238,
+      "category": "simple"
+    },
+    {
+      "name": "endTime",
+      "startLine": 38239,
+      "endLine": 38273,
+      "category": "simple"
+    },
+    {
+      "name": "environmentPropList",
+      "startLine": 38274,
+      "endLine": 38345,
+      "category": "simple"
+    },
+    {
+      "name": "error",
+      "startLine": 38346,
+      "endLine": 38364,
+      "category": "simple"
+    },
+    {
+      "name": "eventPassMode",
+      "startLine": 38365,
+      "endLine": 38413,
+      "category": "simple"
+    },
+    {
+      "name": "exitLock",
+      "startLine": 38414,
+      "endLine": 38457,
+      "category": "simple"
+    },
+    {
+      "name": "externalParamCount",
+      "startLine": 38458,
+      "endLine": 38491,
+      "category": "simple"
+    },
+    {
+      "name": "face",
+      "startLine": 38492,
+      "endLine": 38539,
+      "category": "simple"
+    },
+    {
+      "name": "face[ ]",
+      "startLine": 38540,
+      "endLine": 38558,
+      "category": "simple"
+    },
+    {
+      "name": "far (fog)",
+      "startLine": 38559,
+      "endLine": 38580,
+      "category": "simple"
+    },
+    {
+      "name": "fieldOfView",
+      "startLine": 38581,
+      "endLine": 38591,
+      "category": "simple"
+    },
+    {
+      "name": "fieldOfView (3D)",
+      "startLine": 38592,
+      "endLine": 38621,
+      "category": "simple"
+    },
+    {
+      "name": "fileFreeSize",
+      "startLine": 38622,
+      "endLine": 38643,
+      "category": "simple"
+    },
+    {
+      "name": "fileName (Cast)",
+      "startLine": 38644,
+      "endLine": 38704,
+      "category": "simple"
+    },
+    {
+      "name": "fileName (Member)",
+      "startLine": 38705,
+      "endLine": 38749,
+      "category": "simple"
+    },
+    {
+      "name": "fileName (Window)",
+      "startLine": 38750,
+      "endLine": 38796,
+      "category": "simple"
+    },
+    {
+      "name": "fileSize",
+      "startLine": 38797,
+      "endLine": 38817,
+      "category": "simple"
+    },
+    {
+      "name": "fileVersion",
+      "startLine": 38818,
+      "endLine": 38841,
+      "category": "simple"
+    },
+    {
+      "name": "fillColor",
+      "startLine": 38842,
+      "endLine": 38866,
+      "category": "simple"
+    },
+    {
+      "name": "fillCycles",
+      "startLine": 38867,
+      "endLine": 38895,
+      "category": "simple"
+    },
+    {
+      "name": "fillDirection",
+      "startLine": 38896,
+      "endLine": 38911,
+      "category": "simple"
+    },
+    {
+      "name": "filled",
+      "startLine": 38912,
+      "endLine": 38932,
+      "category": "simple"
+    },
+    {
+      "name": "fillMode",
+      "startLine": 38933,
+      "endLine": 38959,
+      "category": "simple"
+    },
+    {
+      "name": "fillOffset",
+      "startLine": 38960,
+      "endLine": 38989,
+      "category": "simple"
+    },
+    {
+      "name": "fillScale",
+      "startLine": 38990,
+      "endLine": 39017,
+      "category": "simple"
+    },
+    {
+      "name": "firstIndent",
+      "startLine": 39018,
+      "endLine": 39040,
+      "category": "simple"
+    },
+    {
+      "name": "fixedLineSpace",
+      "startLine": 39041,
+      "endLine": 39064,
+      "category": "simple"
+    },
+    {
+      "name": "fixedRate",
+      "startLine": 39065,
+      "endLine": 39109,
+      "category": "simple"
+    },
+    {
+      "name": "fixStageSize",
+      "startLine": 39110,
+      "endLine": 39142,
+      "category": "simple"
+    },
+    {
+      "name": "flashRect",
+      "startLine": 39143,
+      "endLine": 39177,
+      "category": "simple"
+    },
+    {
+      "name": "flat",
+      "startLine": 39178,
+      "endLine": 39204,
+      "category": "simple"
+    },
+    {
+      "name": "flipH",
+      "startLine": 39205,
+      "endLine": 39226,
+      "category": "simple"
+    },
+    {
+      "name": "flipV",
+      "startLine": 39227,
+      "endLine": 39252,
+      "category": "simple"
+    },
+    {
+      "name": "floatPrecision",
+      "startLine": 39253,
+      "endLine": 39285,
+      "category": "simple"
+    },
+    {
+      "name": "fog",
+      "startLine": 39286,
+      "endLine": 39308,
+      "category": "simple"
+    },
+    {
+      "name": "folder",
+      "startLine": 39309,
+      "endLine": 39381,
+      "category": "simple"
+    },
+    {
+      "name": "font",
+      "startLine": 39382,
+      "endLine": 39410,
+      "category": "simple"
+    },
+    {
+      "name": "fontSize",
+      "startLine": 39411,
+      "endLine": 39441,
+      "category": "simple"
+    },
+    {
+      "name": "fontStyle",
+      "startLine": 39442,
+      "endLine": 39509,
+      "category": "simple"
+    },
+    {
+      "name": "foreColor",
+      "startLine": 39510,
+      "endLine": 39538,
+      "category": "simple"
+    },
+    {
+      "name": "frame",
+      "startLine": 39539,
+      "endLine": 39562,
+      "category": "simple"
+    },
+    {
+      "name": "frameCount",
+      "startLine": 39563,
+      "endLine": 39589,
+      "category": "simple"
+    },
+    {
+      "name": "frameLabel",
+      "startLine": 39590,
+      "endLine": 39616,
+      "category": "simple"
+    },
+    {
+      "name": "framePalette",
+      "startLine": 39617,
+      "endLine": 39649,
+      "category": "simple"
+    },
+    {
+      "name": "frameRate",
+      "startLine": 39650,
+      "endLine": 39717,
+      "category": "simple"
+    },
+    {
+      "name": "frameRate (DVD)",
+      "startLine": 39718,
+      "endLine": 39755,
+      "category": "simple"
+    },
+    {
+      "name": "frameScript",
+      "startLine": 39756,
+      "endLine": 39786,
+      "category": "simple"
+    },
+    {
+      "name": "frameSound1",
+      "startLine": 39787,
+      "endLine": 39813,
+      "category": "simple"
+    },
+    {
+      "name": "frameSound2",
+      "startLine": 39814,
+      "endLine": 39835,
+      "category": "simple"
+    },
+    {
+      "name": "frameTempo",
+      "startLine": 39836,
+      "endLine": 39861,
+      "category": "simple"
+    },
+    {
+      "name": "frameTransition",
+      "startLine": 39862,
+      "endLine": 39882,
+      "category": "simple"
+    },
+    {
+      "name": "front",
+      "startLine": 39883,
+      "endLine": 39903,
+      "category": "simple"
+    },
+    {
+      "name": "frontWindow",
+      "startLine": 39904,
+      "endLine": 39930,
+      "category": "simple"
+    },
+    {
+      "name": "fullScreen",
+      "startLine": 39931,
+      "endLine": 39949,
+      "category": "simple"
+    },
+    {
+      "name": "getBoneID",
+      "startLine": 39950,
+      "endLine": 39964,
+      "category": "simple"
+    },
+    {
+      "name": "globals",
+      "startLine": 39965,
+      "endLine": 39991,
+      "category": "simple"
+    },
+    {
+      "name": "glossMap",
+      "startLine": 39992,
+      "endLine": 40014,
+      "category": "simple"
+    },
+    {
+      "name": "gravity",
+      "startLine": 40015,
+      "endLine": 40037,
+      "category": "simple"
+    },
+    {
+      "name": "gradientType",
+      "startLine": 40038,
+      "endLine": 40072,
+      "category": "simple"
+    },
+    {
+      "name": "group",
+      "startLine": 40073,
+      "endLine": 40096,
+      "category": "simple"
+    },
+    {
+      "name": "height",
+      "startLine": 40097,
+      "endLine": 40132,
+      "category": "simple"
+    },
+    {
+      "name": "height (3D)",
+      "startLine": 40133,
+      "endLine": 40155,
+      "category": "simple"
+    },
+    {
+      "name": "heightVertices",
+      "startLine": 40156,
+      "endLine": 40181,
+      "category": "simple"
+    },
+    {
+      "name": "highlightPercentage",
+      "startLine": 40182,
+      "endLine": 40203,
+      "category": "simple"
+    },
+    {
+      "name": "highlightStrength",
+      "startLine": 40204,
+      "endLine": 40226,
+      "category": "simple"
+    },
+    {
+      "name": "hilite",
+      "startLine": 40227,
+      "endLine": 40258,
+      "category": "simple"
+    },
+    {
+      "name": "hither",
+      "startLine": 40259,
+      "endLine": 40280,
+      "category": "simple"
+    },
+    {
+      "name": "hotSpot",
+      "startLine": 40281,
+      "endLine": 40315,
+      "category": "simple"
+    },
+    {
+      "name": "hotSpotEnterCallback",
+      "startLine": 40316,
+      "endLine": 40333,
+      "category": "simple"
+    },
+    {
+      "name": "hotSpotExitCallback",
+      "startLine": 40334,
+      "endLine": 40351,
+      "category": "simple"
+    },
+    {
+      "name": "HTML",
+      "startLine": 40352,
+      "endLine": 40378,
+      "category": "simple"
+    },
+    {
+      "name": "hyperlink",
+      "startLine": 40379,
+      "endLine": 40415,
+      "category": "simple"
+    },
+    {
+      "name": "hyperlinkRange",
+      "startLine": 40416,
+      "endLine": 40431,
+      "category": "simple"
+    },
+    {
+      "name": "hyperlinks",
+      "startLine": 40432,
+      "endLine": 40454,
+      "category": "simple"
+    },
+    {
+      "name": "hyperlinkState",
+      "startLine": 40455,
+      "endLine": 40497,
+      "category": "simple"
+    },
+    {
+      "name": "idleHandlerPeriod",
+      "startLine": 40498,
+      "endLine": 40545,
+      "category": "simple"
+    },
+    {
+      "name": "idleLoadMode",
+      "startLine": 40546,
+      "endLine": 40577,
+      "category": "simple"
+    },
+    {
+      "name": "idleLoadPeriod",
+      "startLine": 40578,
+      "endLine": 40605,
+      "category": "simple"
+    },
+    {
+      "name": "idleLoadTag",
+      "startLine": 40606,
+      "endLine": 40627,
+      "category": "simple"
+    },
+    {
+      "name": "idleReadChunkSize",
+      "startLine": 40628,
+      "endLine": 40654,
+      "category": "simple"
+    },
+    {
+      "name": "image (Image)",
+      "startLine": 40655,
+      "endLine": 40695,
+      "category": "simple"
+    },
+    {
+      "name": "image (RealMedia)",
+      "startLine": 40696,
+      "endLine": 40715,
+      "category": "simple"
+    },
+    {
+      "name": "image (Window)",
+      "startLine": 40716,
+      "endLine": 40748,
+      "category": "simple"
+    },
+    {
+      "name": "imageCompression",
+      "startLine": 40749,
+      "endLine": 40797,
+      "category": "simple"
+    },
+    {
+      "name": "imageEnabled",
+      "startLine": 40798,
+      "endLine": 40856,
+      "category": "simple"
+    },
+    {
+      "name": "imageQuality",
+      "startLine": 40857,
+      "endLine": 40883,
+      "category": "simple"
+    },
+    {
+      "name": "immovable",
+      "startLine": 40884,
+      "endLine": 40906,
+      "category": "simple"
+    },
+    {
+      "name": "ink",
+      "startLine": 40907,
+      "endLine": 41020,
+      "category": "simple"
+    },
+    {
+      "name": "inlineImeEnabled",
+      "startLine": 41021,
+      "endLine": 41036,
+      "category": "simple"
+    },
+    {
+      "name": "interval",
+      "startLine": 41037,
+      "endLine": 41074,
+      "category": "simple"
+    },
+    {
+      "name": "invertMask",
+      "startLine": 41075,
+      "endLine": 41104,
+      "category": "simple"
+    },
+    {
+      "name": "isVRMovie",
+      "startLine": 41105,
+      "endLine": 41153,
+      "category": "simple"
+    },
+    {
+      "name": "itemDelimiter",
+      "startLine": 41154,
+      "endLine": 41179,
+      "category": "simple"
+    },
+    {
+      "name": "kerning",
+      "startLine": 41180,
+      "endLine": 41198,
+      "category": "simple"
+    },
+    {
+      "name": "kerningThreshold",
+      "startLine": 41199,
+      "endLine": 41214,
+      "category": "simple"
+    },
+    {
+      "name": "key",
+      "startLine": 41215,
+      "endLine": 41278,
+      "category": "simple"
+    },
+    {
+      "name": "keyboardFocusSprite",
+      "startLine": 41279,
+      "endLine": 41300,
+      "category": "simple"
+    },
+    {
+      "name": "keyCode",
+      "startLine": 41301,
+      "endLine": 41371,
+      "category": "simple"
+    },
+    {
+      "name": "keyDownScript",
+      "startLine": 41372,
+      "endLine": 41468,
+      "category": "simple"
+    },
+    {
+      "name": "keyUpScript",
+      "startLine": 41469,
+      "endLine": 41499,
+      "category": "simple"
+    },
+    {
+      "name": "labelList",
+      "startLine": 41500,
+      "endLine": 41515,
+      "category": "simple"
+    },
+    {
+      "name": "lastChannel",
+      "startLine": 41516,
+      "endLine": 41541,
+      "category": "simple"
+    },
+    {
+      "name": "lastClick",
+      "startLine": 41542,
+      "endLine": 41566,
+      "category": "simple"
+    },
+    {
+      "name": "lastError",
+      "startLine": 41567,
+      "endLine": 41595,
+      "category": "simple"
+    },
+    {
+      "name": "lastEvent",
+      "startLine": 41596,
+      "endLine": 41620,
+      "category": "simple"
+    },
+    {
+      "name": "lastFrame",
+      "startLine": 41621,
+      "endLine": 41644,
+      "category": "simple"
+    },
+    {
+      "name": "lastKey",
+      "startLine": 41645,
+      "endLine": 41669,
+      "category": "simple"
+    },
+    {
+      "name": "lastRoll",
+      "startLine": 41670,
+      "endLine": 41699,
+      "category": "simple"
+    },
+    {
+      "name": "left",
+      "startLine": 41700,
+      "endLine": 41736,
+      "category": "simple"
+    },
+    {
+      "name": "left (3D)",
+      "startLine": 41737,
+      "endLine": 41752,
+      "category": "simple"
+    },
+    {
+      "name": "leftIndent",
+      "startLine": 41753,
+      "endLine": 41768,
+      "category": "simple"
+    },
+    {
+      "name": "length (3D)",
+      "startLine": 41769,
+      "endLine": 41793,
+      "category": "simple"
+    },
+    {
+      "name": "lengthVertices",
+      "startLine": 41794,
+      "endLine": 41816,
+      "category": "simple"
+    },
+    {
+      "name": "level",
+      "startLine": 41817,
+      "endLine": 41842,
+      "category": "simple"
+    },
+    {
+      "name": "lifetime",
+      "startLine": 41843,
+      "endLine": 41859,
+      "category": "simple"
+    },
+    {
+      "name": "light",
+      "startLine": 41860,
+      "endLine": 41883,
+      "category": "simple"
+    },
+    {
+      "name": "lineColor",
+      "startLine": 41884,
+      "endLine": 41901,
+      "category": "simple"
+    },
+    {
+      "name": "lineCount",
+      "startLine": 41902,
+      "endLine": 41924,
+      "category": "simple"
+    },
+    {
+      "name": "lineDirection",
+      "startLine": 41925,
+      "endLine": 41941,
+      "category": "simple"
+    },
+    {
+      "name": "lineHeight",
+      "startLine": 41942,
+      "endLine": 41965,
+      "category": "simple"
+    },
+    {
+      "name": "lineOffset",
+      "startLine": 41966,
+      "endLine": 41985,
+      "category": "simple"
+    },
+    {
+      "name": "lineSize",
+      "startLine": 41986,
+      "endLine": 42016,
+      "category": "simple"
+    },
+    {
+      "name": "linked",
+      "startLine": 42017,
+      "endLine": 42040,
+      "category": "simple"
+    },
+    {
+      "name": "loaded",
+      "startLine": 42041,
+      "endLine": 42076,
+      "category": "simple"
+    },
+    {
+      "name": "loc (backdrop and overlay)",
+      "startLine": 42077,
+      "endLine": 42095,
+      "category": "simple"
+    },
+    {
+      "name": "locH",
+      "startLine": 42096,
+      "endLine": 42121,
+      "category": "simple"
+    },
+    {
+      "name": "lockTranslation",
+      "startLine": 42122,
+      "endLine": 42148,
+      "category": "simple"
+    },
+    {
+      "name": "locV",
+      "startLine": 42149,
+      "endLine": 42174,
+      "category": "simple"
+    },
+    {
+      "name": "locZ",
+      "startLine": 42175,
+      "endLine": 42221,
+      "category": "simple"
+    },
+    {
+      "name": "lod (modifier)",
+      "startLine": 42222,
+      "endLine": 42262,
+      "category": "simple"
+    },
+    {
+      "name": "loop (3D)",
+      "startLine": 42263,
+      "endLine": 42278,
+      "category": "simple"
+    },
+    {
+      "name": "loop (emitter)",
+      "startLine": 42279,
+      "endLine": 42302,
+      "category": "simple"
+    },
+    {
+      "name": "loop (Member)",
+      "startLine": 42303,
+      "endLine": 42320,
+      "category": "simple"
+    },
+    {
+      "name": "loop (Flash)",
+      "startLine": 42321,
+      "endLine": 42351,
+      "category": "simple"
+    },
+    {
+      "name": "loop (Windows Media)",
+      "startLine": 42352,
+      "endLine": 42371,
+      "category": "simple"
+    },
+    {
+      "name": "loopBounds",
+      "startLine": 42372,
+      "endLine": 42415,
+      "category": "simple"
+    },
+    {
+      "name": "loopCount",
+      "startLine": 42416,
+      "endLine": 42461,
+      "category": "simple"
+    },
+    {
+      "name": "loopEndTime",
+      "startLine": 42462,
+      "endLine": 42496,
+      "category": "simple"
+    },
+    {
+      "name": "loopsRemaining",
+      "startLine": 42497,
+      "endLine": 42512,
+      "category": "simple"
+    },
+    {
+      "name": "loopStartTime",
+      "startLine": 42513,
+      "endLine": 42547,
+      "category": "simple"
+    },
+    {
+      "name": "magnitude",
+      "startLine": 42548,
+      "endLine": 42568,
+      "category": "simple"
+    },
+    {
+      "name": "margin",
+      "startLine": 42569,
+      "endLine": 42590,
+      "category": "simple"
+    },
+    {
+      "name": "markerList",
+      "startLine": 42591,
+      "endLine": 42611,
+      "category": "simple"
+    },
+    {
+      "name": "mask",
+      "startLine": 42612,
+      "endLine": 42654,
+      "category": "simple"
+    },
+    {
+      "name": "maxInteger",
+      "startLine": 42655,
+      "endLine": 42682,
+      "category": "simple"
+    },
+    {
+      "name": "maxSpeed",
+      "startLine": 42683,
+      "endLine": 42702,
+      "category": "simple"
+    },
+    {
+      "name": "media",
+      "startLine": 42703,
+      "endLine": 42735,
+      "category": "simple"
+    },
+    {
+      "name": "mediaReady",
+      "startLine": 42736,
+      "endLine": 42770,
+      "category": "simple"
+    },
+    {
+      "name": "mediaStatus (DVD)",
+      "startLine": 42771,
+      "endLine": 42821,
+      "category": "simple"
+    },
+    {
+      "name": "mediaStatus (RealMedia, Windows Media)",
+      "startLine": 42822,
+      "endLine": 42871,
+      "category": "simple"
+    },
+    {
+      "name": "mediaXtraList",
+      "startLine": 42872,
+      "endLine": 42898,
+      "category": "simple"
+    },
+    {
+      "name": "member",
+      "startLine": 42899,
+      "endLine": 42920,
+      "category": "simple"
+    },
+    {
+      "name": "member (Cast)",
+      "startLine": 42921,
+      "endLine": 42948,
+      "category": "simple"
+    },
+    {
+      "name": "member (Movie)",
+      "startLine": 42949,
+      "endLine": 42973,
+      "category": "simple"
+    },
+    {
+      "name": "member (Sound Channel)",
+      "startLine": 42974,
+      "endLine": 43000,
+      "category": "simple"
+    },
+    {
+      "name": "member (Sprite)",
+      "startLine": 43001,
+      "endLine": 43073,
+      "category": "simple"
+    },
+    {
+      "name": "memorySize",
+      "startLine": 43074,
+      "endLine": 43096,
+      "category": "simple"
+    },
+    {
+      "name": "meshDeform (modifier)",
+      "startLine": 43097,
+      "endLine": 43127,
+      "category": "simple"
+    },
+    {
+      "name": "milliseconds",
+      "startLine": 43128,
+      "endLine": 43171,
+      "category": "simple"
+    },
+    {
+      "name": "minSpeed",
+      "startLine": 43172,
+      "endLine": 43196,
+      "category": "simple"
+    },
+    {
+      "name": "missingFonts",
+      "startLine": 43197,
+      "endLine": 43208,
+      "category": "simple"
+    },
+    {
+      "name": "mode (emitter)",
+      "startLine": 43209,
+      "endLine": 43236,
+      "category": "simple"
+    },
+    {
+      "name": "mode (collision)",
+      "startLine": 43237,
+      "endLine": 43259,
+      "category": "simple"
+    },
+    {
+      "name": "model",
+      "startLine": 43260,
+      "endLine": 43294,
+      "category": "simple"
+    },
+    {
+      "name": "modelA",
+      "startLine": 43295,
+      "endLine": 43332,
+      "category": "simple"
+    },
+    {
+      "name": "modelB",
+      "startLine": 43333,
+      "endLine": 43370,
+      "category": "simple"
+    },
+    {
+      "name": "modelResource",
+      "startLine": 43371,
+      "endLine": 43402,
+      "category": "simple"
+    },
+    {
+      "name": "modified",
+      "startLine": 43403,
+      "endLine": 43443,
+      "category": "simple"
+    },
+    {
+      "name": "modifiedBy",
+      "startLine": 43444,
+      "endLine": 43470,
+      "category": "simple"
+    },
+    {
+      "name": "modifiedDate",
+      "startLine": 43471,
+      "endLine": 43492,
+      "category": "simple"
+    },
+    {
+      "name": "modifier",
+      "startLine": 43493,
+      "endLine": 43516,
+      "category": "simple"
+    },
+    {
+      "name": "modifier[]",
+      "startLine": 43517,
+      "endLine": 43533,
+      "category": "simple"
+    },
+    {
+      "name": "modifiers",
+      "startLine": 43534,
+      "endLine": 43548,
+      "category": "simple"
+    },
+    {
+      "name": "mostRecentCuePoint",
+      "startLine": 43549,
+      "endLine": 43586,
+      "category": "simple"
+    },
+    {
+      "name": "motion",
+      "startLine": 43587,
+      "endLine": 43613,
+      "category": "simple"
+    },
+    {
+      "name": "motionQuality",
+      "startLine": 43614,
+      "endLine": 43633,
+      "category": "simple"
+    },
+    {
+      "name": "mouseChar",
+      "startLine": 43634,
+      "endLine": 43676,
+      "category": "simple"
+    },
+    {
+      "name": "mouseDown",
+      "startLine": 43677,
+      "endLine": 43717,
+      "category": "simple"
+    },
+    {
+      "name": "mouseDownScript",
+      "startLine": 43718,
+      "endLine": 43756,
+      "category": "simple"
+    },
+    {
+      "name": "mouseH",
+      "startLine": 43757,
+      "endLine": 43804,
+      "category": "simple"
+    },
+    {
+      "name": "mouseItem",
+      "startLine": 43805,
+      "endLine": 43847,
+      "category": "simple"
+    },
+    {
+      "name": "mouseLevel",
+      "startLine": 43848,
+      "endLine": 43898,
+      "category": "simple"
+    },
+    {
+      "name": "mouseLine",
+      "startLine": 43899,
+      "endLine": 43941,
+      "category": "simple"
+    },
+    {
+      "name": "mouseLoc",
+      "startLine": 43942,
+      "endLine": 43962,
+      "category": "simple"
+    },
+    {
+      "name": "mouseMember",
+      "startLine": 43963,
+      "endLine": 44007,
+      "category": "simple"
+    },
+    {
+      "name": "mouseOverButton",
+      "startLine": 44008,
+      "endLine": 44053,
+      "category": "simple"
+    },
+    {
+      "name": "mouseUp",
+      "startLine": 44054,
+      "endLine": 44096,
+      "category": "simple"
+    },
+    {
+      "name": "mouseUpScript",
+      "startLine": 44097,
+      "endLine": 44130,
+      "category": "simple"
+    },
+    {
+      "name": "mouseV",
+      "startLine": 44131,
+      "endLine": 44180,
+      "category": "simple"
+    },
+    {
+      "name": "mouseWord",
+      "startLine": 44181,
+      "endLine": 44228,
+      "category": "simple"
+    },
+    {
+      "name": "moveableSprite",
+      "startLine": 44229,
+      "endLine": 44261,
+      "category": "simple"
+    },
+    {
+      "name": "movie",
+      "startLine": 44262,
+      "endLine": 44282,
+      "category": "simple"
+    },
+    {
+      "name": "multiSound",
+      "startLine": 44283,
+      "endLine": 44300,
+      "category": "simple"
+    },
+    {
+      "name": "name",
+      "startLine": 44301,
+      "endLine": 44326,
+      "category": "simple"
+    },
+    {
+      "name": "name (3D)",
+      "startLine": 44327,
+      "endLine": 44354,
+      "category": "simple"
+    },
+    {
+      "name": "name (menu property)",
+      "startLine": 44355,
+      "endLine": 44406,
+      "category": "simple"
+    },
+    {
+      "name": "name (Sprite)",
+      "startLine": 44407,
+      "endLine": 44436,
+      "category": "simple"
+    },
+    {
+      "name": "name (Sprite Channel)",
+      "startLine": 44437,
+      "endLine": 44479,
+      "category": "simple"
+    },
+    {
+      "name": "name (timeout)",
+      "startLine": 44480,
+      "endLine": 44501,
+      "category": "simple"
+    },
+    {
+      "name": "name (XML)",
+      "startLine": 44502,
+      "endLine": 44523,
+      "category": "simple"
+    },
+    {
+      "name": "near (fog)",
+      "startLine": 44524,
+      "endLine": 44547,
+      "category": "simple"
+    },
+    {
+      "name": "nearFiltering",
+      "startLine": 44548,
+      "endLine": 44572,
+      "category": "simple"
+    },
+    {
+      "name": "netPresent",
+      "startLine": 44573,
+      "endLine": 44607,
+      "category": "simple"
+    },
+    {
+      "name": "netThrottleTicks",
+      "startLine": 44608,
+      "endLine": 44625,
+      "category": "simple"
+    },
+    {
+      "name": "node",
+      "startLine": 44626,
+      "endLine": 44636,
+      "category": "simple"
+    },
+    {
+      "name": "nodeEnterCallback",
+      "startLine": 44637,
+      "endLine": 44657,
+      "category": "simple"
+    },
+    {
+      "name": "nodeExitCallback",
+      "startLine": 44658,
+      "endLine": 44678,
+      "category": "simple"
+    },
+    {
+      "name": "nodeType",
+      "startLine": 44679,
+      "endLine": 44695,
+      "category": "simple"
+    },
+    {
+      "name": "normalList",
+      "startLine": 44696,
+      "endLine": 44721,
+      "category": "simple"
+    },
+    {
+      "name": "normals",
+      "startLine": 44722,
+      "endLine": 44724,
+      "category": "simple"
+    },
+    {
+      "name": "face[index].normals",
+      "startLine": 44725,
+      "endLine": 44751,
+      "category": "object-face[index]"
+    },
+    {
+      "name": "number (Cast)",
+      "startLine": 44752,
+      "endLine": 44777,
+      "category": "simple"
+    },
+    {
+      "name": "number (characters)",
+      "startLine": 44778,
+      "endLine": 44810,
+      "category": "simple"
+    },
+    {
+      "name": "number (items)",
+      "startLine": 44811,
+      "endLine": 44841,
+      "category": "simple"
+    },
+    {
+      "name": "number (lines)",
+      "startLine": 44842,
+      "endLine": 44868,
+      "category": "simple"
+    },
+    {
+      "name": "number (Member)",
+      "startLine": 44869,
+      "endLine": 44917,
+      "category": "simple"
+    },
+    {
+      "name": "number (menus)",
+      "startLine": 44918,
+      "endLine": 44942,
+      "category": "simple"
+    },
+    {
+      "name": "number (menu items)",
+      "startLine": 44943,
+      "endLine": 44964,
+      "category": "simple"
+    },
+    {
+      "name": "number (Sprite Channel)",
+      "startLine": 44965,
+      "endLine": 44987,
+      "category": "simple"
+    },
+    {
+      "name": "number (system)",
+      "startLine": 44988,
+      "endLine": 45003,
+      "category": "simple"
+    },
+    {
+      "name": "number (words)",
+      "startLine": 45004,
+      "endLine": 45039,
+      "category": "simple"
+    },
+    {
+      "name": "number of members",
+      "startLine": 45040,
+      "endLine": 45055,
+      "category": "simple"
+    },
+    {
+      "name": "number of xtras",
+      "startLine": 45056,
+      "endLine": 45070,
+      "category": "simple"
+    },
+    {
+      "name": "numChannels",
+      "startLine": 45071,
+      "endLine": 45107,
+      "category": "simple"
+    },
+    {
+      "name": "numParticles",
+      "startLine": 45108,
+      "endLine": 45126,
+      "category": "simple"
+    },
+    {
+      "name": "numSegments",
+      "startLine": 45127,
+      "endLine": 45148,
+      "category": "simple"
+    },
+    {
+      "name": "obeyScoreRotation",
+      "startLine": 45149,
+      "endLine": 45174,
+      "category": "simple"
+    },
+    {
+      "name": "optionDown",
+      "startLine": 45175,
+      "endLine": 45214,
+      "category": "simple"
+    },
+    {
+      "name": "organizationName",
+      "startLine": 45215,
+      "endLine": 45249,
+      "category": "simple"
+    },
+    {
+      "name": "originalFont",
+      "startLine": 45250,
+      "endLine": 45270,
+      "category": "simple"
+    },
+    {
+      "name": "originH",
+      "startLine": 45271,
+      "endLine": 45313,
+      "category": "simple"
+    },
+    {
+      "name": "originMode",
+      "startLine": 45314,
+      "endLine": 45357,
+      "category": "simple"
+    },
+    {
+      "name": "originPoint",
+      "startLine": 45358,
+      "endLine": 45406,
+      "category": "simple"
+    },
+    {
+      "name": "originV",
+      "startLine": 45407,
+      "endLine": 45450,
+      "category": "simple"
+    },
+    {
+      "name": "orthoHeight",
+      "startLine": 45451,
+      "endLine": 45476,
+      "category": "simple"
+    },
+    {
+      "name": "overlay",
+      "startLine": 45477,
+      "endLine": 45511,
+      "category": "simple"
+    },
+    {
+      "name": "pageHeight",
+      "startLine": 45512,
+      "endLine": 45535,
+      "category": "simple"
+    },
+    {
+      "name": "palette",
+      "startLine": 45536,
+      "endLine": 45554,
+      "category": "simple"
+    },
+    {
+      "name": "paletteMapping",
+      "startLine": 45555,
+      "endLine": 45593,
+      "category": "simple"
+    },
+    {
+      "name": "paletteRef",
+      "startLine": 45594,
+      "endLine": 45610,
+      "category": "simple"
+    },
+    {
+      "name": "pan",
+      "startLine": 45611,
+      "endLine": 45647,
+      "category": "simple"
+    },
+    {
+      "name": "pan (QTVR property)",
+      "startLine": 45648,
+      "endLine": 45659,
+      "category": "simple"
+    },
+    {
+      "name": "paragraph",
+      "startLine": 45660,
+      "endLine": 45677,
+      "category": "simple"
+    },
+    {
+      "name": "parent",
+      "startLine": 45678,
+      "endLine": 45704,
+      "category": "simple"
+    },
+    {
+      "name": "password",
+      "startLine": 45705,
+      "endLine": 45753,
+      "category": "simple"
+    },
+    {
+      "name": "path (Movie)",
+      "startLine": 45754,
+      "endLine": 45789,
+      "category": "simple"
+    },
+    {
+      "name": "path (3D)",
+      "startLine": 45790,
+      "endLine": 45808,
+      "category": "simple"
+    },
+    {
+      "name": "pathName (Flash member)",
+      "startLine": 45809,
+      "endLine": 45840,
+      "category": "simple"
+    },
+    {
+      "name": "pathStrength",
+      "startLine": 45841,
+      "endLine": 45868,
+      "category": "simple"
+    },
+    {
+      "name": "pattern",
+      "startLine": 45869,
+      "endLine": 45896,
+      "category": "simple"
+    },
+    {
+      "name": "pausedAtStart (Flash, Digital video)",
+      "startLine": 45897,
+      "endLine": 45918,
+      "category": "simple"
+    },
+    {
+      "name": "pausedAtStart (RealMedia, Windows Media)",
+      "startLine": 45919,
+      "endLine": 45989,
+      "category": "simple"
+    },
+    {
+      "name": "percentBuffered",
+      "startLine": 45990,
+      "endLine": 46032,
+      "category": "simple"
+    },
+    {
+      "name": "percentPlayed",
+      "startLine": 46033,
+      "endLine": 46056,
+      "category": "simple"
+    },
+    {
+      "name": "percentStreamed (3D)",
+      "startLine": 46057,
+      "endLine": 46075,
+      "category": "simple"
+    },
+    {
+      "name": "percentStreamed (Member)",
+      "startLine": 46076,
+      "endLine": 46138,
+      "category": "simple"
+    },
+    {
+      "name": "period",
+      "startLine": 46139,
+      "endLine": 46159,
+      "category": "simple"
+    },
+    {
+      "name": "persistent",
+      "startLine": 46160,
+      "endLine": 46188,
+      "category": "simple"
+    },
+    {
+      "name": "picture (Member)",
+      "startLine": 46189,
+      "endLine": 46220,
+      "category": "simple"
+    },
+    {
+      "name": "picture (Window)",
+      "startLine": 46221,
+      "endLine": 46242,
+      "category": "simple"
+    },
+    {
+      "name": "platform",
+      "startLine": 46243,
+      "endLine": 46280,
+      "category": "simple"
+    },
+    {
+      "name": "playBackMode",
+      "startLine": 46281,
+      "endLine": 46315,
+      "category": "simple"
+    },
+    {
+      "name": "playing",
+      "startLine": 46316,
+      "endLine": 46343,
+      "category": "simple"
+    },
+    {
+      "name": "playing (3D)",
+      "startLine": 46344,
+      "endLine": 46365,
+      "category": "simple"
+    },
+    {
+      "name": "playlist",
+      "startLine": 46366,
+      "endLine": 46396,
+      "category": "simple"
+    },
+    {
+      "name": "playRate (3D)",
+      "startLine": 46397,
+      "endLine": 46421,
+      "category": "simple"
+    },
+    {
+      "name": "playRate (DVD)",
+      "startLine": 46422,
+      "endLine": 46435,
+      "category": "simple"
+    },
+    {
+      "name": "playRate (QuickTime, AVI)",
+      "startLine": 46436,
+      "endLine": 46472,
+      "category": "simple"
+    },
+    {
+      "name": "playRate (Windows Media)",
+      "startLine": 46473,
+      "endLine": 46496,
+      "category": "simple"
+    },
+    {
+      "name": "pointAtOrientation",
+      "startLine": 46497,
+      "endLine": 46519,
+      "category": "simple"
+    },
+    {
+      "name": "pointOfContact",
+      "startLine": 46520,
+      "endLine": 46565,
+      "category": "simple"
+    },
+    {
+      "name": "position (transform)",
+      "startLine": 46566,
+      "endLine": 46608,
+      "category": "simple"
+    },
+    {
+      "name": "positionReset",
+      "startLine": 46609,
+      "endLine": 46632,
+      "category": "simple"
+    },
+    {
+      "name": "posterFrame",
+      "startLine": 46633,
+      "endLine": 46657,
+      "category": "simple"
+    },
+    {
+      "name": "preferred3dRenderer",
+      "startLine": 46658,
+      "endLine": 46709,
+      "category": "simple"
+    },
+    {
+      "name": "preLoad (3D)",
+      "startLine": 46710,
+      "endLine": 46737,
+      "category": "simple"
+    },
+    {
+      "name": "preLoad (Member)",
+      "startLine": 46738,
+      "endLine": 46767,
+      "category": "simple"
+    },
+    {
+      "name": "preLoadEventAbort",
+      "startLine": 46768,
+      "endLine": 46794,
+      "category": "simple"
+    },
+    {
+      "name": "preLoadMode",
+      "startLine": 46795,
+      "endLine": 46824,
+      "category": "simple"
+    },
+    {
+      "name": "preLoadRAM",
+      "startLine": 46825,
+      "endLine": 46852,
+      "category": "simple"
+    },
+    {
+      "name": "preLoadTime",
+      "startLine": 46853,
+      "endLine": 46895,
+      "category": "simple"
+    },
+    {
+      "name": "primitives",
+      "startLine": 46896,
+      "endLine": 46909,
+      "category": "simple"
+    },
+    {
+      "name": "productName",
+      "startLine": 46910,
+      "endLine": 46933,
+      "category": "simple"
+    },
+    {
+      "name": "productVersion",
+      "startLine": 46934,
+      "endLine": 46952,
+      "category": "simple"
+    },
+    {
+      "name": "projection",
+      "startLine": 46953,
+      "endLine": 46981,
+      "category": "simple"
+    },
+    {
+      "name": "purgePriority",
+      "startLine": 46982,
+      "endLine": 47022,
+      "category": "simple"
+    },
+    {
+      "name": "quad",
+      "startLine": 47023,
+      "endLine": 47061,
+      "category": "simple"
+    },
+    {
+      "name": "quality",
+      "startLine": 47062,
+      "endLine": 47105,
+      "category": "simple"
+    },
+    {
+      "name": "quality (3D)",
+      "startLine": 47106,
+      "endLine": 47142,
+      "category": "simple"
+    },
+    {
+      "name": "radius",
+      "startLine": 47143,
+      "endLine": 47163,
+      "category": "simple"
+    },
+    {
+      "name": "randomSeed",
+      "startLine": 47164,
+      "endLine": 47181,
+      "category": "simple"
+    },
+    {
+      "name": "recordFont",
+      "startLine": 47182,
+      "endLine": 47232,
+      "category": "simple"
+    },
+    {
+      "name": "rect (camera)",
+      "startLine": 47233,
+      "endLine": 47260,
+      "category": "simple"
+    },
+    {
+      "name": "rect (Image)",
+      "startLine": 47261,
+      "endLine": 47309,
+      "category": "simple"
+    },
+    {
+      "name": "rect (Member)",
+      "startLine": 47310,
+      "endLine": 47340,
+      "category": "simple"
+    },
+    {
+      "name": "rect (Sprite)",
+      "startLine": 47341,
+      "endLine": 47365,
+      "category": "simple"
+    },
+    {
+      "name": "rect (Window)",
+      "startLine": 47366,
+      "endLine": 47389,
+      "category": "simple"
+    },
+    {
+      "name": "ref",
+      "startLine": 47390,
+      "endLine": 47429,
+      "category": "simple"
+    },
+    {
+      "name": "reflectionMap",
+      "startLine": 47430,
+      "endLine": 47460,
+      "category": "simple"
+    },
+    {
+      "name": "reflectivity",
+      "startLine": 47461,
+      "endLine": 47473,
+      "category": "simple"
+    },
+    {
+      "name": "region",
+      "startLine": 47474,
+      "endLine": 47504,
+      "category": "simple"
+    },
+    {
+      "name": "regPoint",
+      "startLine": 47505,
+      "endLine": 47545,
+      "category": "simple"
+    },
+    {
+      "name": "regPoint (3D)",
+      "startLine": 47546,
+      "endLine": 47564,
+      "category": "simple"
+    },
+    {
+      "name": "regPointVertex",
+      "startLine": 47565,
+      "endLine": 47592,
+      "category": "simple"
+    },
+    {
+      "name": "renderer",
+      "startLine": 47593,
+      "endLine": 47616,
+      "category": "simple"
+    },
+    {
+      "name": "rendererDeviceList",
+      "startLine": 47617,
+      "endLine": 47647,
+      "category": "simple"
+    },
+    {
+      "name": "renderFormat",
+      "startLine": 47648,
+      "endLine": 47696,
+      "category": "simple"
+    },
+    {
+      "name": "renderStyle",
+      "startLine": 47697,
+      "endLine": 47717,
+      "category": "simple"
+    },
+    {
+      "name": "resizable",
+      "startLine": 47718,
+      "endLine": 47746,
+      "category": "simple"
+    },
+    {
+      "name": "resolution (3D)",
+      "startLine": 47747,
+      "endLine": 47761,
+      "category": "simple"
+    },
+    {
+      "name": "resolution (DVD)",
+      "startLine": 47762,
+      "endLine": 47785,
+      "category": "simple"
+    },
+    {
+      "name": "resolve",
+      "startLine": 47786,
+      "endLine": 47804,
+      "category": "simple"
+    },
+    {
+      "name": "resource",
+      "startLine": 47805,
+      "endLine": 47828,
+      "category": "simple"
+    },
+    {
+      "name": "right",
+      "startLine": 47829,
+      "endLine": 47849,
+      "category": "simple"
+    },
+    {
+      "name": "right (3D)",
+      "startLine": 47850,
+      "endLine": 47871,
+      "category": "simple"
+    },
+    {
+      "name": "rightIndent",
+      "startLine": 47872,
+      "endLine": 47883,
+      "category": "simple"
+    },
+    {
+      "name": "rightMouseDown",
+      "startLine": 47884,
+      "endLine": 47914,
+      "category": "simple"
+    },
+    {
+      "name": "rightMouseUp",
+      "startLine": 47915,
+      "endLine": 47942,
+      "category": "simple"
+    },
+    {
+      "name": "romanLingo",
+      "startLine": 47943,
+      "endLine": 47967,
+      "category": "simple"
+    },
+    {
+      "name": "rootLock",
+      "startLine": 47968,
+      "endLine": 47982,
+      "category": "simple"
+    },
+    {
+      "name": "rootNode",
+      "startLine": 47983,
+      "endLine": 48005,
+      "category": "simple"
+    },
+    {
+      "name": "rotation",
+      "startLine": 48006,
+      "endLine": 48073,
+      "category": "simple"
+    },
+    {
+      "name": "rotation (backdrop and overlay)",
+      "startLine": 48074,
+      "endLine": 48096,
+      "category": "simple"
+    },
+    {
+      "name": "rotation (engraver shader)",
+      "startLine": 48097,
+      "endLine": 48114,
+      "category": "simple"
+    },
+    {
+      "name": "rotation (transform)",
+      "startLine": 48115,
+      "endLine": 48154,
+      "category": "simple"
+    },
+    {
+      "name": "rotationReset",
+      "startLine": 48155,
+      "endLine": 48174,
+      "category": "simple"
+    },
+    {
+      "name": "RTF",
+      "startLine": 48175,
+      "endLine": 48201,
+      "category": "simple"
+    },
+    {
+      "name": "safePlayer",
+      "startLine": 48202,
+      "endLine": 48239,
+      "category": "simple"
+    },
+    {
+      "name": "sampleCount",
+      "startLine": 48240,
+      "endLine": 48265,
+      "category": "simple"
+    },
+    {
+      "name": "sampleRate",
+      "startLine": 48266,
+      "endLine": 48309,
+      "category": "simple"
+    },
+    {
+      "name": "sampleSize",
+      "startLine": 48310,
+      "endLine": 48341,
+      "category": "simple"
+    },
+    {
+      "name": "scale (3D)",
+      "startLine": 48342,
+      "endLine": 48359,
+      "category": "simple"
+    },
+    {
+      "name": "scale (backdrop and overlay)",
+      "startLine": 48360,
+      "endLine": 48381,
+      "category": "simple"
+    },
+    {
+      "name": "scale (Member)",
+      "startLine": 48382,
+      "endLine": 48439,
+      "category": "simple"
+    },
+    {
+      "name": "scale (transform)",
+      "startLine": 48440,
+      "endLine": 48466,
+      "category": "simple"
+    },
+    {
+      "name": "scaleMode",
+      "startLine": 48467,
+      "endLine": 48529,
+      "category": "simple"
+    },
+    {
+      "name": "score",
+      "startLine": 48530,
+      "endLine": 48550,
+      "category": "simple"
+    },
+    {
+      "name": "scoreColor",
+      "startLine": 48551,
+      "endLine": 48569,
+      "category": "simple"
+    },
+    {
+      "name": "scoreSelection",
+      "startLine": 48570,
+      "endLine": 48638,
+      "category": "simple"
+    },
+    {
+      "name": "script",
+      "startLine": 48639,
+      "endLine": 48667,
+      "category": "simple"
+    },
+    {
+      "name": "scripted",
+      "startLine": 48668,
+      "endLine": 48697,
+      "category": "simple"
+    },
+    {
+      "name": "scriptingXtraList",
+      "startLine": 48698,
+      "endLine": 48719,
+      "category": "simple"
+    },
+    {
+      "name": "scriptInstanceList",
+      "startLine": 48720,
+      "endLine": 48752,
+      "category": "simple"
+    },
+    {
+      "name": "scriptList",
+      "startLine": 48753,
+      "endLine": 48772,
+      "category": "simple"
+    },
+    {
+      "name": "scriptNum",
+      "startLine": 48773,
+      "endLine": 48795,
+      "category": "simple"
+    },
+    {
+      "name": "scriptsEnabled",
+      "startLine": 48796,
+      "endLine": 48815,
+      "category": "simple"
+    },
+    {
+      "name": "scriptText",
+      "startLine": 48816,
+      "endLine": 48845,
+      "category": "simple"
+    },
+    {
+      "name": "scriptType",
+      "startLine": 48846,
+      "endLine": 48858,
+      "category": "simple"
+    },
+    {
+      "name": "scrollTop",
+      "startLine": 48859,
+      "endLine": 48908,
+      "category": "simple"
+    },
+    {
+      "name": "sds (modifier)",
+      "startLine": 48909,
+      "endLine": 48958,
+      "category": "simple"
+    },
+    {
+      "name": "searchCurrentFolder",
+      "startLine": 48959,
+      "endLine": 48991,
+      "category": "simple"
+    },
+    {
+      "name": "searchPathList",
+      "startLine": 48992,
+      "endLine": 49040,
+      "category": "simple"
+    },
+    {
+      "name": "selectedButton",
+      "startLine": 49041,
+      "endLine": 49052,
+      "category": "simple"
+    },
+    {
+      "name": "selectedText",
+      "startLine": 49053,
+      "endLine": 49091,
+      "category": "simple"
+    },
+    {
+      "name": "selection",
+      "startLine": 49092,
+      "endLine": 49117,
+      "category": "simple"
+    },
+    {
+      "name": "selection (text cast member property)",
+      "startLine": 49118,
+      "endLine": 49138,
+      "category": "simple"
+    },
+    {
+      "name": "selEnd",
+      "startLine": 49139,
+      "endLine": 49171,
+      "category": "simple"
+    },
+    {
+      "name": "selStart",
+      "startLine": 49172,
+      "endLine": 49200,
+      "category": "simple"
+    },
+    {
+      "name": "serialNumber",
+      "startLine": 49201,
+      "endLine": 49236,
+      "category": "simple"
+    },
+    {
+      "name": "shader",
+      "startLine": 49237,
+      "endLine": 49290,
+      "category": "simple"
+    },
+    {
+      "name": "shaderList",
+      "startLine": 49291,
+      "endLine": 49334,
+      "category": "simple"
+    },
+    {
+      "name": "shadowPercentage",
+      "startLine": 49335,
+      "endLine": 49359,
+      "category": "simple"
+    },
+    {
+      "name": "shadowStrength",
+      "startLine": 49360,
+      "endLine": 49375,
+      "category": "simple"
+    },
+    {
+      "name": "shapeType",
+      "startLine": 49376,
+      "endLine": 49421,
+      "category": "simple"
+    },
+    {
+      "name": "shininess",
+      "startLine": 49422,
+      "endLine": 49441,
+      "category": "simple"
+    },
+    {
+      "name": "silhouettes",
+      "startLine": 49442,
+      "endLine": 49465,
+      "category": "simple"
+    },
+    {
+      "name": "size",
+      "startLine": 49466,
+      "endLine": 49485,
+      "category": "simple"
+    },
+    {
+      "name": "sizeRange",
+      "startLine": 49486,
+      "endLine": 49515,
+      "category": "simple"
+    },
+    {
+      "name": "sizeState",
+      "startLine": 49516,
+      "endLine": 49559,
+      "category": "simple"
+    },
+    {
+      "name": "skew",
+      "startLine": 49560,
+      "endLine": 49594,
+      "category": "simple"
+    },
+    {
+      "name": "smoothness",
+      "startLine": 49595,
+      "endLine": 49623,
+      "category": "simple"
+    },
+    {
+      "name": "sound (Member)",
+      "startLine": 49624,
+      "endLine": 49654,
+      "category": "simple"
+    },
+    {
+      "name": "sound (Player)",
+      "startLine": 49655,
+      "endLine": 49677,
+      "category": "simple"
+    },
+    {
+      "name": "soundChannel (SWA)",
+      "startLine": 49678,
+      "endLine": 49706,
+      "category": "simple"
+    },
+    {
+      "name": "soundChannel (RealMedia)",
+      "startLine": 49707,
+      "endLine": 49756,
+      "category": "simple"
+    },
+    {
+      "name": "soundDevice",
+      "startLine": 49757,
+      "endLine": 49792,
+      "category": "simple"
+    },
+    {
+      "name": "soundDeviceList",
+      "startLine": 49793,
+      "endLine": 49812,
+      "category": "simple"
+    },
+    {
+      "name": "soundEnabled",
+      "startLine": 49813,
+      "endLine": 49838,
+      "category": "simple"
+    },
+    {
+      "name": "soundKeepDevice",
+      "startLine": 49839,
+      "endLine": 49865,
+      "category": "simple"
+    },
+    {
+      "name": "soundLevel",
+      "startLine": 49866,
+      "endLine": 49907,
+      "category": "simple"
+    },
+    {
+      "name": "soundMixMedia",
+      "startLine": 49908,
+      "endLine": 49932,
+      "category": "simple"
+    },
+    {
+      "name": "source",
+      "startLine": 49933,
+      "endLine": 49952,
+      "category": "simple"
+    },
+    {
+      "name": "sourceFileName",
+      "startLine": 49953,
+      "endLine": 49965,
+      "category": "simple"
+    },
+    {
+      "name": "sourceRect",
+      "startLine": 49966,
+      "endLine": 49991,
+      "category": "simple"
+    },
+    {
+      "name": "specular (light)",
+      "startLine": 49992,
+      "endLine": 50011,
+      "category": "simple"
+    },
+    {
+      "name": "specular (shader)",
+      "startLine": 50012,
+      "endLine": 50036,
+      "category": "simple"
+    },
+    {
+      "name": "specularColor",
+      "startLine": 50037,
+      "endLine": 50056,
+      "category": "simple"
+    },
+    {
+      "name": "specularLightMap",
+      "startLine": 50057,
+      "endLine": 50089,
+      "category": "simple"
+    },
+    {
+      "name": "spotAngle",
+      "startLine": 50090,
+      "endLine": 50105,
+      "category": "simple"
+    },
+    {
+      "name": "spotDecay",
+      "startLine": 50106,
+      "endLine": 50122,
+      "category": "simple"
+    },
+    {
+      "name": "sprite (Movie)",
+      "startLine": 50123,
+      "endLine": 50143,
+      "category": "simple"
+    },
+    {
+      "name": "sprite (Sprite Channel)",
+      "startLine": 50144,
+      "endLine": 50165,
+      "category": "simple"
+    },
+    {
+      "name": "spriteNum",
+      "startLine": 50166,
+      "endLine": 50228,
+      "category": "simple"
+    },
+    {
+      "name": "stage",
+      "startLine": 50229,
+      "endLine": 50250,
+      "category": "simple"
+    },
+    {
+      "name": "startAngle",
+      "startLine": 50251,
+      "endLine": 50273,
+      "category": "simple"
+    },
+    {
+      "name": "startFrame",
+      "startLine": 50274,
+      "endLine": 50299,
+      "category": "simple"
+    },
+    {
+      "name": "startTime",
+      "startLine": 50300,
+      "endLine": 50321,
+      "category": "simple"
+    },
+    {
+      "name": "startTimeList",
+      "startLine": 50322,
+      "endLine": 50358,
+      "category": "simple"
+    },
+    {
+      "name": "state (3D)",
+      "startLine": 50359,
+      "endLine": 50397,
+      "category": "simple"
+    },
+    {
+      "name": "state (Flash, SWA)",
+      "startLine": 50398,
+      "endLine": 50476,
+      "category": "simple"
+    },
+    {
+      "name": "state (RealMedia)",
+      "startLine": 50477,
+      "endLine": 50548,
+      "category": "simple"
+    },
+    {
+      "name": "static",
+      "startLine": 50549,
+      "endLine": 50593,
+      "category": "simple"
+    },
+    {
+      "name": "staticQuality",
+      "startLine": 50594,
+      "endLine": 50605,
+      "category": "simple"
+    },
+    {
+      "name": "status",
+      "startLine": 50606,
+      "endLine": 50666,
+      "category": "simple"
+    },
+    {
+      "name": "stillDown",
+      "startLine": 50667,
+      "endLine": 50695,
+      "category": "simple"
+    },
+    {
+      "name": "stopTime",
+      "startLine": 50696,
+      "endLine": 50713,
+      "category": "simple"
+    },
+    {
+      "name": "stopTimeList",
+      "startLine": 50714,
+      "endLine": 50748,
+      "category": "simple"
+    },
+    {
+      "name": "streamMode",
+      "startLine": 50749,
+      "endLine": 50795,
+      "category": "simple"
+    },
+    {
+      "name": "streamName",
+      "startLine": 50796,
+      "endLine": 50820,
+      "category": "simple"
+    },
+    {
+      "name": "streamSize",
+      "startLine": 50821,
+      "endLine": 50865,
+      "category": "simple"
+    },
+    {
+      "name": "streamSize (3D)",
+      "startLine": 50866,
+      "endLine": 50881,
+      "category": "simple"
+    },
+    {
+      "name": "strokeColor",
+      "startLine": 50882,
+      "endLine": 50906,
+      "category": "simple"
+    },
+    {
+      "name": "strokeWidth",
+      "startLine": 50907,
+      "endLine": 50926,
+      "category": "simple"
+    },
+    {
+      "name": "style",
+      "startLine": 50927,
+      "endLine": 50951,
+      "category": "simple"
+    },
+    {
+      "name": "subdivision",
+      "startLine": 50952,
+      "endLine": 50974,
+      "category": "simple"
+    },
+    {
+      "name": "subPicture",
+      "startLine": 50975,
+      "endLine": 50991,
+      "category": "simple"
+    },
+    {
+      "name": "subPictureCount",
+      "startLine": 50992,
+      "endLine": 51003,
+      "category": "simple"
+    },
+    {
+      "name": "suspendUpdates",
+      "startLine": 51004,
+      "endLine": 51015,
+      "category": "simple"
+    },
+    {
+      "name": "switchColorDepth",
+      "startLine": 51016,
+      "endLine": 51061,
+      "category": "simple"
+    },
+    {
+      "name": "systemTrayIcon",
+      "startLine": 51062,
+      "endLine": 51082,
+      "category": "simple"
+    },
+    {
+      "name": "systemTrayTooltip",
+      "startLine": 51083,
+      "endLine": 51100,
+      "category": "simple"
+    },
+    {
+      "name": "tabCount",
+      "startLine": 51101,
+      "endLine": 51109,
+      "category": "simple"
+    },
+    {
+      "name": "tabs",
+      "startLine": 51110,
+      "endLine": 51141,
+      "category": "simple"
+    },
+    {
+      "name": "target",
+      "startLine": 51142,
+      "endLine": 51158,
+      "category": "simple"
+    },
+    {
+      "name": "targetFrameRate",
+      "startLine": 51159,
+      "endLine": 51181,
+      "category": "simple"
+    },
+    {
+      "name": "tension",
+      "startLine": 51182,
+      "endLine": 51199,
+      "category": "simple"
+    },
+    {
+      "name": "text",
+      "startLine": 51200,
+      "endLine": 51243,
+      "category": "simple"
+    },
+    {
+      "name": "texture",
+      "startLine": 51244,
+      "endLine": 51287,
+      "category": "simple"
+    },
+    {
+      "name": "textureCoordinateList",
+      "startLine": 51288,
+      "endLine": 51314,
+      "category": "simple"
+    },
+    {
+      "name": "textureCoordinates",
+      "startLine": 51315,
+      "endLine": 51328,
+      "category": "simple"
+    },
+    {
+      "name": "textureLayer",
+      "startLine": 51329,
+      "endLine": 51363,
+      "category": "simple"
+    },
+    {
+      "name": "textureList",
+      "startLine": 51364,
+      "endLine": 51384,
+      "category": "simple"
+    },
+    {
+      "name": "textureMember",
+      "startLine": 51385,
+      "endLine": 51406,
+      "category": "simple"
+    },
+    {
+      "name": "textureMode",
+      "startLine": 51407,
+      "endLine": 51428,
+      "category": "simple"
+    },
+    {
+      "name": "textureModeList",
+      "startLine": 51429,
+      "endLine": 51497,
+      "category": "simple"
+    },
+    {
+      "name": "textureRenderFormat",
+      "startLine": 51498,
+      "endLine": 51540,
+      "category": "simple"
+    },
+    {
+      "name": "textureRepeat",
+      "startLine": 51541,
+      "endLine": 51570,
+      "category": "simple"
+    },
+    {
+      "name": "textureRepeatList",
+      "startLine": 51571,
+      "endLine": 51617,
+      "category": "simple"
+    },
+    {
+      "name": "textureTransform",
+      "startLine": 51618,
+      "endLine": 51678,
+      "category": "simple"
+    },
+    {
+      "name": "textureTransformList",
+      "startLine": 51679,
+      "endLine": 51753,
+      "category": "simple"
+    },
+    {
+      "name": "textureType",
+      "startLine": 51754,
+      "endLine": 51777,
+      "category": "simple"
+    },
+    {
+      "name": "thumbNail",
+      "startLine": 51778,
+      "endLine": 51804,
+      "category": "simple"
+    },
+    {
+      "name": "tilt",
+      "startLine": 51805,
+      "endLine": 51815,
+      "category": "simple"
+    },
+    {
+      "name": "time (timeout object)",
+      "startLine": 51816,
+      "endLine": 51844,
+      "category": "simple"
+    },
+    {
+      "name": "timeoutHandler",
+      "startLine": 51845,
+      "endLine": 51862,
+      "category": "simple"
+    },
+    {
+      "name": "timeoutList",
+      "startLine": 51863,
+      "endLine": 51887,
+      "category": "simple"
+    },
+    {
+      "name": "timeScale",
+      "startLine": 51888,
+      "endLine": 51899,
+      "category": "simple"
+    },
+    {
+      "name": "title (DVD)",
+      "startLine": 51900,
+      "endLine": 51925,
+      "category": "simple"
+    },
+    {
+      "name": "title (Window)",
+      "startLine": 51926,
+      "endLine": 51949,
+      "category": "simple"
+    },
+    {
+      "name": "titlebarOptions",
+      "startLine": 51950,
+      "endLine": 52020,
+      "category": "simple"
+    },
+    {
+      "name": "titleCount",
+      "startLine": 52021,
+      "endLine": 52033,
+      "category": "simple"
+    },
+    {
+      "name": "toolXtraList",
+      "startLine": 52034,
+      "endLine": 52059,
+      "category": "simple"
+    },
+    {
+      "name": "toon (modifier)",
+      "startLine": 52060,
+      "endLine": 52121,
+      "category": "simple"
+    },
+    {
+      "name": "top",
+      "startLine": 52122,
+      "endLine": 52150,
+      "category": "simple"
+    },
+    {
+      "name": "topSpacing",
+      "startLine": 52151,
+      "endLine": 52168,
+      "category": "simple"
+    },
+    {
+      "name": "traceLoad",
+      "startLine": 52169,
+      "endLine": 52196,
+      "category": "simple"
+    },
+    {
+      "name": "traceLogFile",
+      "startLine": 52197,
+      "endLine": 52227,
+      "category": "simple"
+    },
+    {
+      "name": "traceScript",
+      "startLine": 52228,
+      "endLine": 52253,
+      "category": "simple"
+    },
+    {
+      "name": "trackCount (Member)",
+      "startLine": 52254,
+      "endLine": 52273,
+      "category": "simple"
+    },
+    {
+      "name": "trackCount (Sprite)",
+      "startLine": 52274,
+      "endLine": 52295,
+      "category": "simple"
+    },
+    {
+      "name": "trackEnabled",
+      "startLine": 52296,
+      "endLine": 52317,
+      "category": "simple"
+    },
+    {
+      "name": "trackNextKeyTime",
+      "startLine": 52318,
+      "endLine": 52342,
+      "category": "simple"
+    },
+    {
+      "name": "trackNextSampleTime",
+      "startLine": 52343,
+      "endLine": 52362,
+      "category": "simple"
+    },
+    {
+      "name": "trackPreviousKeyTime",
+      "startLine": 52363,
+      "endLine": 52386,
+      "category": "simple"
+    },
+    {
+      "name": "trackPreviousSampleTime",
+      "startLine": 52387,
+      "endLine": 52406,
+      "category": "simple"
+    },
+    {
+      "name": "trackStartTime (Member)",
+      "startLine": 52407,
+      "endLine": 52430,
+      "category": "simple"
+    },
+    {
+      "name": "trackStartTime (Sprite)",
+      "startLine": 52431,
+      "endLine": 52452,
+      "category": "simple"
+    },
+    {
+      "name": "trackStopTime (Member)",
+      "startLine": 52453,
+      "endLine": 52473,
+      "category": "simple"
+    },
+    {
+      "name": "trackStopTime (Sprite)",
+      "startLine": 52474,
+      "endLine": 52498,
+      "category": "simple"
+    },
+    {
+      "name": "trackText",
+      "startLine": 52499,
+      "endLine": 52524,
+      "category": "simple"
+    },
+    {
+      "name": "trackType (Member)",
+      "startLine": 52525,
+      "endLine": 52553,
+      "category": "simple"
+    },
+    {
+      "name": "trackType (Sprite)",
+      "startLine": 52554,
+      "endLine": 52585,
+      "category": "simple"
+    },
+    {
+      "name": "trails",
+      "startLine": 52586,
+      "endLine": 52602,
+      "category": "simple"
+    },
+    {
+      "name": "transform (property)",
+      "startLine": 52603,
+      "endLine": 52682,
+      "category": "simple"
+    },
+    {
+      "name": "transitionType",
+      "startLine": 52683,
+      "endLine": 52697,
+      "category": "simple"
+    },
+    {
+      "name": "transitionXtraList",
+      "startLine": 52698,
+      "endLine": 52721,
+      "category": "simple"
+    },
+    {
+      "name": "translation",
+      "startLine": 52722,
+      "endLine": 52768,
+      "category": "simple"
+    },
+    {
+      "name": "transparent",
+      "startLine": 52769,
+      "endLine": 52791,
+      "category": "simple"
+    },
+    {
+      "name": "triggerCallback",
+      "startLine": 52792,
+      "endLine": 52844,
+      "category": "simple"
+    },
+    {
+      "name": "trimWhiteSpace",
+      "startLine": 52845,
+      "endLine": 52860,
+      "category": "simple"
+    },
+    {
+      "name": "tunnelDepth",
+      "startLine": 52861,
+      "endLine": 52886,
+      "category": "simple"
+    },
+    {
+      "name": "tweened",
+      "startLine": 52887,
+      "endLine": 52906,
+      "category": "simple"
+    },
+    {
+      "name": "tweenMode",
+      "startLine": 52907,
+      "endLine": 52928,
+      "category": "simple"
+    },
+    {
+      "name": "type (light)",
+      "startLine": 52929,
+      "endLine": 52956,
+      "category": "simple"
+    },
+    {
+      "name": "type (Member)",
+      "startLine": 52957,
+      "endLine": 53053,
+      "category": "simple"
+    },
+    {
+      "name": "type (model resource)",
+      "startLine": 53054,
+      "endLine": 53091,
+      "category": "simple"
+    },
+    {
+      "name": "type (motion)",
+      "startLine": 53092,
+      "endLine": 53118,
+      "category": "simple"
+    },
+    {
+      "name": "type (shader)",
+      "startLine": 53119,
+      "endLine": 53142,
+      "category": "simple"
+    },
+    {
+      "name": "type (sprite)",
+      "startLine": 53143,
+      "endLine": 53159,
+      "category": "simple"
+    },
+    {
+      "name": "type (texture)",
+      "startLine": 53160,
+      "endLine": 53186,
+      "category": "simple"
+    },
+    {
+      "name": "type (Window)",
+      "startLine": 53187,
+      "endLine": 53245,
+      "category": "simple"
+    },
+    {
+      "name": "updateLock",
+      "startLine": 53246,
+      "endLine": 53266,
+      "category": "simple"
+    },
+    {
+      "name": "updateMovieEnabled",
+      "startLine": 53267,
+      "endLine": 53282,
+      "category": "simple"
+    },
+    {
+      "name": "URL",
+      "startLine": 53283,
+      "endLine": 53310,
+      "category": "simple"
+    },
+    {
+      "name": "useAlpha",
+      "startLine": 53311,
+      "endLine": 53344,
+      "category": "simple"
+    },
+    {
+      "name": "useDiffuseWithTexture",
+      "startLine": 53345,
+      "endLine": 53380,
+      "category": "simple"
+    },
+    {
+      "name": "useFastQuads",
+      "startLine": 53381,
+      "endLine": 53408,
+      "category": "simple"
+    },
+    {
+      "name": "useHypertextStyles",
+      "startLine": 53409,
+      "endLine": 53439,
+      "category": "simple"
+    },
+    {
+      "name": "useLineOffset",
+      "startLine": 53440,
+      "endLine": 53456,
+      "category": "simple"
+    },
+    {
+      "name": "userData",
+      "startLine": 53457,
+      "endLine": 53486,
+      "category": "simple"
+    },
+    {
+      "name": "userName",
+      "startLine": 53487,
+      "endLine": 53521,
+      "category": "simple"
+    },
+    {
+      "name": "userName (RealMedia)",
+      "startLine": 53522,
+      "endLine": 53567,
+      "category": "simple"
+    },
+    {
+      "name": "useTargetFrameRate",
+      "startLine": 53568,
+      "endLine": 53584,
+      "category": "simple"
+    },
+    {
+      "name": "vertex",
+      "startLine": 53585,
+      "endLine": 53622,
+      "category": "simple"
+    },
+    {
+      "name": "vertexList",
+      "startLine": 53623,
+      "endLine": 53671,
+      "category": "simple"
+    },
+    {
+      "name": "vertexList (mesh generator)",
+      "startLine": 53672,
+      "endLine": 53690,
+      "category": "simple"
+    },
+    {
+      "name": "vertexList (mesh deform)",
+      "startLine": 53691,
+      "endLine": 53716,
+      "category": "simple"
+    },
+    {
+      "name": "vertices",
+      "startLine": 53717,
+      "endLine": 53744,
+      "category": "simple"
+    },
+    {
+      "name": "video (QuickTime, AVI)",
+      "startLine": 53745,
+      "endLine": 53763,
+      "category": "simple"
+    },
+    {
+      "name": "video (RealMedia, Windows Media)",
+      "startLine": 53764,
+      "endLine": 53796,
+      "category": "simple"
+    },
+    {
+      "name": "videoFormat",
+      "startLine": 53797,
+      "endLine": 53830,
+      "category": "simple"
+    },
+    {
+      "name": "videoForWindowsPresent",
+      "startLine": 53831,
+      "endLine": 53845,
+      "category": "simple"
+    },
+    {
+      "name": "viewH",
+      "startLine": 53846,
+      "endLine": 53891,
+      "category": "simple"
+    },
+    {
+      "name": "viewPoint",
+      "startLine": 53892,
+      "endLine": 53951,
+      "category": "simple"
+    },
+    {
+      "name": "viewScale",
+      "startLine": 53952,
+      "endLine": 53991,
+      "category": "simple"
+    },
+    {
+      "name": "viewV",
+      "startLine": 53992,
+      "endLine": 54037,
+      "category": "simple"
+    },
+    {
+      "name": "visible",
+      "startLine": 54038,
+      "endLine": 54058,
+      "category": "simple"
+    },
+    {
+      "name": "visible (sprite)",
+      "startLine": 54059,
+      "endLine": 54081,
+      "category": "simple"
+    },
+    {
+      "name": "visibility",
+      "startLine": 54082,
+      "endLine": 54111,
+      "category": "simple"
+    },
+    {
+      "name": "volume (DVD)",
+      "startLine": 54112,
+      "endLine": 54125,
+      "category": "simple"
+    },
+    {
+      "name": "volume (Member)",
+      "startLine": 54126,
+      "endLine": 54144,
+      "category": "simple"
+    },
+    {
+      "name": "volume (Sound Channel)",
+      "startLine": 54145,
+      "endLine": 54176,
+      "category": "simple"
+    },
+    {
+      "name": "volume (Sprite)",
+      "startLine": 54177,
+      "endLine": 54202,
+      "category": "simple"
+    },
+    {
+      "name": "volume (Windows Media)",
+      "startLine": 54203,
+      "endLine": 54223,
+      "category": "simple"
+    },
+    {
+      "name": "warpMode",
+      "startLine": 54224,
+      "endLine": 54246,
+      "category": "simple"
+    },
+    {
+      "name": "width",
+      "startLine": 54247,
+      "endLine": 54288,
+      "category": "simple"
+    },
+    {
+      "name": "width (3D)",
+      "startLine": 54289,
+      "endLine": 54303,
+      "category": "simple"
+    },
+    {
+      "name": "widthVertices",
+      "startLine": 54304,
+      "endLine": 54320,
+      "category": "simple"
+    },
+    {
+      "name": "wind",
+      "startLine": 54321,
+      "endLine": 54340,
+      "category": "simple"
+    },
+    {
+      "name": "window",
+      "startLine": 54341,
+      "endLine": 54363,
+      "category": "simple"
+    },
+    {
+      "name": "windowBehind",
+      "startLine": 54364,
+      "endLine": 54390,
+      "category": "simple"
+    },
+    {
+      "name": "windowInFront",
+      "startLine": 54391,
+      "endLine": 54413,
+      "category": "simple"
+    },
+    {
+      "name": "windowList",
+      "startLine": 54414,
+      "endLine": 54436,
+      "category": "simple"
+    },
+    {
+      "name": "wordWrap",
+      "startLine": 54437,
+      "endLine": 54453,
+      "category": "simple"
+    },
+    {
+      "name": "worldPosition",
+      "startLine": 54454,
+      "endLine": 54478,
+      "category": "simple"
+    },
+    {
+      "name": "worldTransform",
+      "startLine": 54479,
+      "endLine": 54495,
+      "category": "simple"
+    },
+    {
+      "name": "wrapTransform",
+      "startLine": 54496,
+      "endLine": 54521,
+      "category": "simple"
+    },
+    {
+      "name": "wrapTransformList",
+      "startLine": 54522,
+      "endLine": 54550,
+      "category": "simple"
+    },
+    {
+      "name": "x (vector)",
+      "startLine": 54551,
+      "endLine": 54568,
+      "category": "simple"
+    },
+    {
+      "name": "xAxis",
+      "startLine": 54569,
+      "endLine": 54591,
+      "category": "simple"
+    },
+    {
+      "name": "xtra",
+      "startLine": 54592,
+      "endLine": 54616,
+      "category": "simple"
+    },
+    {
+      "name": "xtraList (Movie)",
+      "startLine": 54617,
+      "endLine": 54647,
+      "category": "simple"
+    },
+    {
+      "name": "xtraList (Player)",
+      "startLine": 54648,
+      "endLine": 54683,
+      "category": "simple"
+    },
+    {
+      "name": "y (vector)",
+      "startLine": 54684,
+      "endLine": 54697,
+      "category": "simple"
+    },
+    {
+      "name": "yAxis",
+      "startLine": 54698,
+      "endLine": 54722,
+      "category": "simple"
+    },
+    {
+      "name": "yon",
+      "startLine": 54723,
+      "endLine": 54737,
+      "category": "simple"
+    },
+    {
+      "name": "z (vector)",
+      "startLine": 54738,
+      "endLine": 54755,
+      "category": "simple"
+    },
+    {
+      "name": "zAxis",
+      "startLine": 54756,
+      "endLine": 57648,
+      "category": "simple"
+    }
+  ]
+}
