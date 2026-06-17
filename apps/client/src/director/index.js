@@ -1,3 +1,3 @@
-export * from "./api.js";
-export * from "./runtime.js";
-export * from "./syntax.js";
+export * from "./api/index.js";
+export * from "./runtime/index.js";
+export * from "./syntax/index.js";

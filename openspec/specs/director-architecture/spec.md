@@ -2,61 +2,69 @@
 
 ### Requirement: Director runtime SHALL be organized into four modules
 
-The Director runtime SHALL be organized into four distinct modules with clear responsibilities:
+The Director runtime SHALL be organized into four distinct modules with clear responsibilities, each as a folder with atomic files:
 
-| Module | Visibility | Purpose |
-|--------|-----------|---------|
-| `api.js` | Public | Director API surface (constants, globals, functions from PDF) |
-| `core.js` | Private | Implementation details (classes, loader, registries) |
-| `runtime.js` | Public | Browser plugin replacement (custom elements, mount, run) |
-| `syntax.js` | Public | Lingo syntax helpers (the proxy, chunk expressions) |
+| Module | Visibility | Purpose | Location |
+|--------|-----------|---------|----------|
+| `api/` | Public | Director API surface (constants, globals, functions) | `apps/client/src/director/api/` |
+| `core/` | Private | Implementation details (classes, loader, registries) | `apps/client/src/director/core/` |
+| `runtime/` | Public | Browser plugin replacement (custom elements, mount, run) | `apps/client/src/director/runtime/` |
+| `syntax/` | Public | Lingo syntax helpers (the proxy, chunk expressions) | `apps/client/src/director/syntax/` |
+
+Each module SHALL have:
+- Individual files per method/class
+- Co-located tests in `__tests__/` subfolder
+- Barrel export via `index.js`
 
 #### Scenario: Module separation
 - **WHEN** importing Director API functions
 - **THEN** use `import { voidP, list, member } from "../../director"` (barrel export from index.js)
 
 #### Scenario: Private implementation not exported
-- **WHEN** code tries to import from core.js
-- **THEN** it fails (core.js is not exported from index.js)
+- **WHEN** code tries to import from core
+- **THEN** it uses `import { List } from "../../director/core"` (not exported from main index.js)
 
-### Requirement: api.js SHALL contain Director API surface
+#### Scenario: Atomic file structure
+- **WHEN** looking for abs() implementation
+- **THEN** it exists at `api/abs.js` with test at `api/__tests__/abs.test.js`
 
-`api.js` SHALL contain all Director API elements documented in the PDF:
+### Requirement: api/ SHALL contain Director API surface
 
-**Constants:**
+`api/` SHALL contain all Director API elements documented in the Director MX 2004 reference, organized as atomic files.
+
+**Constants** (in `api/constants.js`):
 - `VOID`, `EMPTY`, `PI`, `RETURN`, `SPACE`, `TAB`, `QUOTE`
-- `TRUE`, `FALSE`, `ENTER`
 
-**Globals:**
+**Globals** (in `api/globals.js`):
 - `_global`, `_movie`, `_player`, `_mouse`, `_key`, `_sound`, `_system`, `_window`
 
-**Functions:**
+**Functions** (each in own file):
 - Type checks: `voidP()`, `integerP()`, `floatP()`, `listP()`, `objectP()`, `stringP()`, `symbolP()`, `ilk()`
 - Data types: `list()`, `propList()`, `point()`, `rect()`, `color()`, `symbol()`
 - Conversions: `integer()`, `float()`, `string()`, `value()`, `charToNum()`, `numToChar()`
 - Math: `abs()`, `sqrt()`, `atan()`, `tan()`, `log()`, `power()`, `max()`, `min()`, `cos()`, `sin()`, `random()`
-- Chunk helpers: `chars()`, `charOf()`, `itemOf()`, `lineOf()`, `wordOf()`
-- Member access: `member()`, `script()`, `sprite()`, `field()`, `castLib()`
+- Member access: `member()`, `script()`, `sprite()`, `castLib()`
 - Network: `getNetText()`, `postNetText()`, `netDone()`, `netError()`, `netTextResult()`, `preloadNetThing()`
-- All other Director API functions from the PDF
+- All other Director API functions from the reference
 
 #### Scenario: api.js exports Director API
 - **WHEN** Lingo code calls `voidP(x)`
-- **THEN** it imports from `api.js` via barrel export
+- **THEN** it imports from `api/void-p.js` via barrel export
 
 #### Scenario: api.js exports globals
 - **WHEN** Lingo code accesses `_global.gVar`
-- **THEN** it imports `_global` from `api.js`
+- **THEN** it imports `_global` from `api/globals.js`
 
-### Requirement: core.js SHALL contain private implementation
+### Requirement: core/ SHALL contain private implementation
 
-`core.js` SHALL contain implementation details used by `api.js`:
+`core/` SHALL contain implementation details used by other modules:
 
-**Classes:**
+**Classes** (each in own file):
 - `List`, `PropList` - Lingo list types with Proxy wrappers
-- `Member`, `Movie`, `Player`, `Sprite`, `Rect`, `Point`, `Color` - Director objects
-- `CastLibrary`, `ScriptRef`, `ScriptObject` - Cast and script management
-- `Sound`, `DirectorWindow`, `TimeoutRef`, `ImageObjectRef` - Media types
+- `MemberRef`, `MovieRef`, `PlayerRef`, `SpriteRef`, `SoundRef` - Director objects (Ref suffix)
+- `CastLibraryRef`, `ScriptRef`, `ScriptObject` - Cast and script management
+- `Rect`, `Point`, `Color` - Geometric and color types
+- `DirectorWindow`, `TimeoutRef`, `ImageObjectRef` - Media types
 
 **Helpers:**
 - `createList()`, `createPropList()` - Factory functions
@@ -65,7 +73,7 @@ The Director runtime SHALL be organized into four distinct modules with clear re
 - `createPointProxy()`, `createRectProxy()` - Geometric proxies
 
 **Loader:**
-- `loadImage()`, `loadModule()`, `loadPromise()` - Asset loading (merged from loader.js)
+- `loadImage()`, `loadModule()`, `loadPromise()` - Asset loading
 - `pending`, `loaded`, `total` - Loading state
 - `addFinishedListener()` - Load completion callback
 
@@ -74,55 +82,38 @@ The Director runtime SHALL be organized into four distinct modules with clear re
 - Script registries
 - Timeout registries (`_timeouts`)
 
-**Canvas:**
-- Canvas reference management
-- Image data handling
+#### Scenario: core/ used by api/
+- **WHEN** `api/` needs to create a List
+- **THEN** it imports `createList` from `core/list.js`
 
-#### Scenario: core.js used by api.js
-- **WHEN** `api.js` needs to create a List
-- **THEN** it imports `createList` from `core.js`
-
-#### Scenario: core.js not exported
+#### Scenario: core/ not exported from main
 - **WHEN** external code tries `import { List } from "../../director"`
-- **THEN** it fails (List is not exported from index.js)
+- **THEN** it fails (List is not in the main barrel export)
 
-### Requirement: runtime.js SHALL provide browser plugin replacement
+### Requirement: runtime/ SHALL provide browser plugin replacement
 
-`runtime.js` SHALL provide the external API for running Director movies in browsers, replacing the deprecated NPAPI Shockwave plugin:
+`runtime/` SHALL provide the external API for running Director movies in browsers:
 
 **Custom Elements:**
 - `<x-object>` - Replaces `<object>` tag for .dcr files
 - `<x-param>` - Replaces `<param>` tag for movie parameters
 
-**Mount/Run Functions:**
+**Functions:**
 - `setCanvas(canvas)` - Set the canvas element
-- `setExternalParams(params)` - Set movie parameters from `<x-param>` elements
-- `load()` - Load cast libraries
-- `start()` - Start movie execution
+- `setExternalParams(params)` - Set movie parameters
 - `registerCast(name, members)` - Register a cast library
 
-**Record/Player:**
-- Movie player abstraction (the "record" where casts execute)
-- Window management (canvas + `window.open` for multiple windows)
-- Animation frame loop
-- Event dispatching (`prepareMovie`, etc.)
-
-**External API:**
-- Functions needed by external code to mount and run translated movies
-- Configuration and initialization
-- Integration with browser environment
+**Event Loop:**
+- Animation frame loop at specified tempo
+- Event dispatching (`prepareMovie`, `enterFrame`, `exitFrame`, etc.)
 
 #### Scenario: Custom element usage
 - **WHEN** HTML contains `<x-object><x-param name="src" value="movie.js"></x-object>`
-- **THEN** runtime.js loads and runs the movie
+- **THEN** runtime loads and runs the movie
 
-#### Scenario: External mount
-- **WHEN** external code calls `setCanvas(canvas)` and `setExternalParams(params)`
-- **THEN** runtime.js initializes the movie player
+### Requirement: syntax/ SHALL contain Lingo syntax helpers
 
-### Requirement: syntax.js SHALL contain Lingo syntax helpers
-
-`syntax.js` SHALL contain helpers for Lingo syntax patterns:
+`syntax/` SHALL contain helpers for Lingo syntax patterns:
 
 **The Proxy:**
 - `the` - Proxy object for system properties (`the.keyCode`, `the.milliSeconds`, etc.)
@@ -130,7 +121,6 @@ The Director runtime SHALL be organized into four distinct modules with clear re
 **Chunk Expressions:**
 - `char()`, `item()`, `line()`, `word()` - Chunk access functions
 - `charOf()`, `itemOf()`, `lineOf()`, `wordOf()` - Chunk helper proxies
-- `range()` - Range helper for chunk expressions
 
 **Utilities:**
 - `numberOfCastMembersOfCastLib()` - Cast member count
@@ -138,28 +128,23 @@ The Director runtime SHALL be organized into four distinct modules with clear re
 
 #### Scenario: The proxy usage
 - **WHEN** Lingo code uses `the.keyCode`
-- **THEN** it imports `the` from `syntax.js`
-
-#### Scenario: Chunk expression usage
-- **WHEN** Lingo code uses `charOf(str)[2]`
-- **THEN** it imports `charOf` from `syntax.js`
+- **THEN** it imports `the` from `syntax/the-proxy.js`
 
 ### Requirement: index.js SHALL export public modules only
 
 `index.js` SHALL be a barrel export file that exports only public modules:
 
 ```javascript
-// Export public API
-export * from "./api.js";
-export * from "./runtime.js";
-export * from "./syntax.js";
+export * from "./api/index.js";
+export * from "./runtime/index.js";
+export * from "./syntax/index.js";
 
-// NOT exported: core.js (private)
+// NOT exported: core/ (private)
 ```
 
 #### Scenario: Barrel export
 - **WHEN** code imports `import { voidP, the, setCanvas } from "../../director"`
-- **THEN** it gets functions from api.js, syntax.js, and runtime.js
+- **THEN** it gets functions from api/, syntax/, and runtime/
 
 #### Scenario: Core not accessible
 - **WHEN** code tries `import { List } from "../../director"`
@@ -172,57 +157,73 @@ Module dependencies SHALL follow this hierarchy:
 ```
 index.js (barrel)
   ↓
-api.js (Director API)
+api/ (Director API)
   ↓
-core.js (implementation)
+core/ (implementation)
   
-runtime.js (browser plugin)
+runtime/ (browser plugin)
   ↓
-core.js (implementation)
+core/ (implementation)
 
-syntax.js (syntax helpers)
+syntax/ (syntax helpers)
   ↓
-core.js (implementation)
+core/ (implementation)
 ```
 
 **Rules:**
-- `api.js` can import from `core.js`
-- `runtime.js` can import from `core.js`
-- `syntax.js` can import from `core.js`
-- `core.js` cannot import from `api.js`, `runtime.js`, or `syntax.js`
+- `api/` can import from `core/`
+- `runtime/` can import from `core/`
+- `syntax/` can import from `core/`
+- `core/` cannot import from `api/`, `runtime/`, or `syntax/`
 - No circular dependencies
 
-#### Scenario: api.js imports from core.js
-- **WHEN** `api.js` needs `createList`
-- **THEN** it imports from `core.js`
+### Requirement: Spec files SHALL contain full Director MX 2004 documentation
 
-#### Scenario: core.js does not import from api.js
-- **WHEN** `core.js` is being implemented
-- **THEN** it does not import anything from `api.js`
+Each method and property spec file SHALL contain the complete documentation from the Director MX 2004 reference, not just line references. This ensures implementations match the official specification exactly.
 
-### Requirement: Migration from current structure SHALL preserve functionality
+**Source**: `docs/drmx2004_scripting_ref.txt`
+**Inventory**: `docs/director-inventory.json`
 
-The migration from the current structure SHALL preserve all existing functionality:
+**Spec file structure**:
+```markdown
+## <name>
 
-**Current → New:**
-- `runtime.js` (constants, globals, functions) → `api.js`
-- `core.js` (classes, helpers) → `core.js` (refactored)
-- `loader.js` → merged into `core.js`
-- `syntax.js` → `syntax.js` (unchanged)
-- `index.js` → `index.js` (updated barrel export)
+**Source**: `docs/drmx2004_scripting_ref.txt` lines <start>-<end>
 
-**Steps:**
-1. Create `api.js` with constants, globals, and API functions from current `runtime.js`
-2. Refactor `core.js` to include loader.js functionality
-3. Refactor `runtime.js` to contain only browser plugin replacement code
-4. Update `index.js` to export api.js, runtime.js, syntax.js (not core.js)
-5. Delete `loader.js` (merged into core.js)
-6. Verify all imports still work
+### Usage
+<exact Lingo syntax from documentation>
 
-#### Scenario: No breaking changes
-- **WHEN** existing code imports `import { voidP, list, member } from "../../director"`
-- **THEN** it still works after migration (via barrel export)
+### Description
+<exact description text from documentation>
 
-#### Scenario: Loader functionality preserved
-- **WHEN** code uses `loadImage()`, `loadModule()`
-- **THEN** these functions are available from `core.js` (used internally by api.js)
+### Parameters
+<exact parameter descriptions from documentation, or "None.">
+
+### Returns
+<return value description if documented>
+
+### Example
+<exact example code from documentation - used for test generation>
+
+### See also
+<related methods/properties from documentation>
+
+### Implementation
+- **File**: `apps/client/src/director/<module>/<file>.js`
+- **Test**: `apps/client/src/director/<module>/__tests__/<file>.test.js`
+- **Dependencies**: <list of core classes or other API functions needed>
+```
+
+**Why full documentation?**
+- Prevents AI hallucination of behavior
+- Ensures exact match with Director MX 2004
+- Provides examples for test generation
+- Allows verification of implementation correctness
+
+#### Scenario: Method spec contains full documentation
+- **WHEN** creating spec for `abs()` method
+- **THEN** spec includes exact Usage, Description, Parameters, Example from lines 11767-11797
+
+#### Scenario: Property spec contains full documentation
+- **WHEN** creating spec for `sprite.blend` property
+- **THEN** spec includes exact Usage, Description from documentation
