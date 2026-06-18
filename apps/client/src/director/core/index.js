@@ -2,7 +2,9 @@
 // Classes, helpers, loader, registries
 export { CastLibraryRef } from "./cast-library-ref.js";
 export { Color, color } from "./color.js";
+export { KeyRef, _key } from "./key-ref.js";
 export { List, list } from "./list.js";
+export { MouseRef, _mouse } from "./mouse-ref.js";
 export { Point, point } from "./point.js";
 export { PropList, propList } from "./prop-list.js";
 export { Rect, rect } from "./rect.js";
