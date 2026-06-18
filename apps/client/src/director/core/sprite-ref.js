@@ -177,6 +177,22 @@ export class SpriteRef {
     return track?.type ?? null;
   }
 
+  callFrame(flashFrameNameOrNum) {
+    this.#currentTime = Number(flashFrameNameOrNum) || 0;
+  }
+
+  goToFrame(frameNameOrNum) {
+    this.#currentTime = Number(frameNameOrNum) || 0;
+  }
+
+  hitTest(_point) {
+    return "background";
+  }
+
+  flashToStage(point) {
+    return point;
+  }
+
   _setTracks(tracks) {
     this.#tracks = Array.isArray(tracks) ? tracks : [];
   }

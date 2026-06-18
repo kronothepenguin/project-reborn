@@ -1,5 +1,8 @@
+import { SoundChannelRef } from "./sound-channel-ref.js";
+
 export class SoundRef {
   #soundEnabled = true;
+  #channels = new Map();
 
   get soundEnabled() {
     return this.#soundEnabled;
@@ -22,6 +25,14 @@ export class SoundRef {
     oscillator.start();
     oscillator.stop(ctx.currentTime + 0.1);
     oscillator.onended = () => ctx.close();
+  }
+
+  channel(channelNumber) {
+    const key = Number(channelNumber);
+    if (!this.#channels.has(key)) {
+      this.#channels.set(key, new SoundChannelRef(key));
+    }
+    return this.#channels.get(key);
   }
 }
 

@@ -22,6 +22,7 @@ export class MovieRef {
   #halted = false;
   #puppetSprites = new Map();
   #puppetTempo = null;
+  #recording = false;
 
   constructor() {
     this.castLib = new Proxy(Object.create(null), {
@@ -261,6 +262,47 @@ export class MovieRef {
     this.#frameTempo = Number(tempo);
   }
 
+  beginRecording() {
+    this.#recording = true;
+    this.#frame = this.#frame + 1;
+  }
+
+  endRecording() {
+    this.#recording = false;
+  }
+
+  insertFrame() {
+    this.#frame = this.#frame + 1;
+  }
+
+  delay(intTicks) {
+    const ticks = Math.max(0, Math.trunc(Number(intTicks) || 0));
+    this.#frame = this.#frame;
+  }
+
+  idleLoadDone(_intLoadTag) {
+    return true;
+  }
+
+  marker(markerNameOrNum) {
+    if (typeof markerNameOrNum === "string") {
+      return this.#frame;
+    }
+    if (typeof markerNameOrNum === "number") {
+      return this.#frame + markerNameOrNum;
+    }
+    return 0;
+  }
+
+  goNext() {
+  }
+
+  goPrevious() {
+  }
+
+  goLoop() {
+  }
+
   rollOver(_sprite) {
     return false;
   }
@@ -331,6 +373,7 @@ export class MovieRef {
     this.#halted = false;
     this.#puppetSprites = new Map();
     this.#puppetTempo = null;
+    this.#recording = false;
   }
 }
 

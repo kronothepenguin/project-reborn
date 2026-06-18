@@ -4,6 +4,7 @@ const PREF_PREFIX = "director_pref_";
 
 export class PlayerRef {
   #alertHook = null;
+  #currentCursor = 0;
   #debugPlaybackEnabled = false;
   #editShortcutsEnabled = false;
   #exitLock = false;
@@ -146,6 +147,54 @@ export class PlayerRef {
     if (typeof globalThis.close === "function") {
       globalThis.close();
     }
+  }
+
+  alert(displayString) {
+    const text = String(displayString ?? "").slice(0, 255);
+    if (typeof this.#alertHook === "function") {
+      this.#alertHook(text);
+      return;
+    }
+    if (typeof globalThis.alert === "function") {
+      globalThis.alert(text);
+    }
+  }
+
+  appMinimize() {
+    if (typeof globalThis.document !== "undefined" && typeof globalThis.document.hidden !== "undefined") {
+      return;
+    }
+  }
+
+  cursor(arg1, arg2) {
+    if (typeof arg1 === "number") {
+      this.#currentCursor = arg1;
+    } else if (typeof arg1 === "object" && arg1 !== null) {
+      this.#currentCursor = arg1;
+    } else if (typeof arg1 === "string") {
+      this.#currentCursor = { memNum: Number(arg1) || 0, maskNum: Number(arg2) || 0 };
+    }
+  }
+
+  get currentCursor() {
+    return this.#currentCursor;
+  }
+
+  externalParamName(paramNameOrNum) {
+    if (this.#parameters && typeof this.#parameters === "object") {
+      const keys = Object.keys(this.#parameters);
+      if (typeof paramNameOrNum === "string") {
+        const match = keys.find((k) => k.toLowerCase() === paramNameOrNum.toLowerCase());
+        return match ?? null;
+      }
+      if (typeof paramNameOrNum === "number") {
+        return keys[paramNameOrNum - 1] ?? null;
+      }
+    }
+    return null;
+  }
+
+  flushInputEvents() {
   }
 }
 
