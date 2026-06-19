@@ -1,0 +1,347 @@
+---
+name: linguoscript-to-javascript
+description: Translate LingoScript (.ls) files from any Macromedia Director version to JavaScript 1:1 using the director runtime shim. Use when translating .ls cast scripts to .js, generating per-cast index.js registrations, or mapping Lingo constructs (symbols, chunks, put, the, script types) to JavaScript. Covers movie/parent/behavior script shapes, Members.csv registration, and the full Lingo to JS construct mapping.
+license: MIT
+compatibility: opencode
+metadata:
+  audience: lingo-translators
+  project: project-reborn
+  reference: docs/drmx2004_scripting_ref.txt
+---
+
+# LingoScript to JavaScript Translation
+
+Translate LingoScript (`.ls`) from any Macromedia Director version (6, 7, 8, 8.5, MX, MX 2004) to JavaScript 1:1 via the director runtime shim. No parser, no AST, no codegen. Translation = copy `.ls`, rewrite syntax to JS, import primitives from `director/`.
+
+## When to use
+
+- Translate a `.ls` file or whole cast to JavaScript.
+- Write or update a per-cast `index.js` registration.
+- Map a Lingo construct to JavaScript.
+- Identify the script type of a `.ls` file.
+
+Not for building the `director/` shim itself — this skill consumes it.
+
+## Hard rules
+
+1. **Lingo symbols → `Symbol.for(name)`**, never `Symbol()`. `PropList` compares keys by `===` identity; `Symbol.for` is globally interned across modules, `Symbol()` is not. `#null` → `Symbol.for("null")`.
+2. **Shape mirrors script type.** `movieScript` → top-level functions. `parentScript` → ES class. `behaviorScript` → ES class with event-handler methods.
+3. **`index.js` owns the script type**, not the `.js` file. Type (`movie` | `parent` | `behavior`) is registration metadata in `createScriptMember({ type })`.
+4. **Preserve handler names verbatim.** `on getID me` → `getID()`, `on getTheID me` → `getTheID()`, `on construct me` → `construct()`. The one exception: `on new me` → `constructor()` (because `new` is a JS reserved word and `script("Foo").new(args)` maps to `new Foo(args)` which auto-fires `constructor`).
+5. **`Members.csv` maps 1:1 to the registration array**, same order. Do not skip, merge, or reorder rows.
+6. **No parser/AST/codegen.** Translation is manual rewrite.
+
+## Procedure (per `.ls` file)
+
+1. **Identify script type** from the header:
+   - No `property`, no `me`, only top-level `on foo` → `movie`.
+   - `property pX, pY` + `on new me` or a custom init like `on construct me` → `parent`.
+   - `property` + `me` + event handlers (`enterFrame`, `mouseDown`, `beginSprite`) → `behavior`.
+   - When unsure, cross-check `Members.csv` `Type` and the cast's existing pattern.
+2. **Get cast + member number** from `Members.csv` (`Number`, `Name`).
+3. **List `property` declarations** → class fields initialised in `constructor` (parent/behavior). Movie scripts have no `property`.
+4. **List handlers (`on ... end`)** → methods (parent/behavior) or exported functions (movie). Preserve names verbatim.
+5. **Translate body** using the mapping tables below.
+6. **Write `.js`** at `apps/client/src/game/<cast>/<NN>_<Name>.js`.
+7. **Update `apps/client/src/game/<cast>/index.js`** with a `createScriptMember(...)` entry.
+
+## Symbol mapping
+
+| Lingo                 | JavaScript                              |
+| --------------------- | --------------------------------------- |
+| `#null`               | `Symbol.for("null")`                    |
+| `#room`               | `Symbol.for("room")`                    |
+| `#foo`                | `Symbol.for("foo")`                     |
+| `if x = #foo then`    | `if (x === Symbol.for("foo"))`          |
+| `case x of #foo: ...` | `switch` with `case Symbol.for("foo"):` |
+
+### `case ... of`
+
+Always `switch`. Lingo symbols become `Symbol.for(name)`, so the switch compares identity via `===`:
+
+```js
+// Lingo: case x of #foo: doFoo() #baz, #qux: doEither() otherwise: doOther() end case
+switch (x) {
+  case Symbol.for("foo"):
+    doFoo();
+    break;
+  case Symbol.for("baz"):
+  case Symbol.for("qux"):   // grouped Lingo cases → fallthrough
+    doEither();
+    break;
+  default:
+    doOther();               // Lingo `otherwise` → JS `default`
+}
+```
+
+- Lingo grouped cases (`#baz, #qux:`) → consecutive JS `case` labels with fallthrough.
+- Non-symbol cases mix freely: `case 5:`, `case "hello":`.
+- Every case body ends with `break;` unless it is a fallthrough label.
+
+## Literal mapping
+
+| Lingo          | JavaScript                              | Source          |
+| -------------- | --------------------------------------- | --------------- |
+| `EMPTY`        | `""`                                    | `director/api`  |
+| `VOID`         | `undefined`                             | `director/api`  |
+| `TRUE`         | `true`                                  | `director/api`  |
+| `FALSE`        | `false`                                 | `director/api`  |
+| `[]`           | `new List()`                            | `director/core` |
+| `[:]`          | `new PropList()`                        | `director/core` |
+| `["a","b"]`    | `new List("a", "b")`                    | `director/core` |
+| `[#k: v]`      | `new PropList(Symbol.for("k"), v)`      | `director/core` |
+| `point(x,y)`   | `new Point(x, y)`                       | `director/core` |
+| `rect(...)`    | `new Rect(...)`                         | `director/core` |
+| `rgb(r,g,b)`   | `new Color(r, g, b)`                    | `director/core` |
+| `member(n)`    | `new MemberRef(n)`                      | `director/core` |
+| `member(n, c)` | `new MemberRef(n, c)`                   | `director/core` |
+
+## Syntax mapping
+
+| Lingo                                          | JavaScript                                              | Source            |
+| ---------------------------------------------- | ------------------------------------------------------- | ----------------- |
+| `property pFoo, pBar`                          | class fields `pFoo; pBar;` (init in `constructor`)      | —                 |
+| `on new me, args`                              | `constructor(args) { /* me = this */ }`                 | —                 |
+| `on construct me`                              | `construct() { /* me = this */ }`                       | —                 |
+| `on handlerName me, a, b`                      | `handlerName(a, b) { /* this = me */ }`                 | —                 |
+| `on handlerName me`                            | `handlerName() { /* this = me */ }`                     | —                 |
+| `me.getID()`                                   | `this.getID()`                                          | —                 |
+| `me.pFoo`                                      | `this.pFoo`                                             | —                 |
+| `put x into y`                                 | `putInto(y, x)`                                         | `director/syntax` |
+| `put x after y`                                | `putAfter(y, x)`                                        | `director/syntax` |
+| `put x before y`                               | `putBefore(y, x)`                                       | `director/syntax` |
+| `the mouseH`                                   | `theProxy.mouseH`                                       | `director/syntax` |
+| `the frame`                                    | `theProxy.frame`                                        | `director/syntax` |
+| `char 2 of "abc"`                              | `char(2, "abc")`                                        | `director/syntax` |
+| `word 2 of "a b c"`                            | `word(2, "a b c")`                                      | `director/syntax` |
+| `item 2 of "a,b,c"`                            | `item(2, "a,b,c")`                                      | `director/syntax` |
+| `line 2 of "a\nb"`                             | `line(2, "a\nb")`                                       | `director/syntax` |
+| `repeat with i = 1 to 10` `  ...` `end repeat` | `for (let i = 1; i <= 10; i++) { ... }`                 | —                 |
+| `repeat with i = 10 down to 1`                 | `for (let i = 10; i >= 1; i--) { ... }`                 | —                 |
+| `repeat while x` `end repeat`                  | `while (x) { ... }`                                     | —                 |
+| `exit repeat`                                  | `break`                                                 | —                 |
+| `abort`                                        | `break` (or labeled break from nested)                  | —                 |
+| `exit`                                         | `return`                                                | —                 |
+| `case x of A: ... end case`                    | `switch (x) { case Symbol.for("A"): ...; break; ... default: ...; }`  | —      |
+| `otherwise`                                    | `default:`                                              | —                 |
+| `if x then` `else` `end if`                    | `if (x) { ... } else { ... }`                           | —                 |
+| `not x`, `x and y`, `x or y`                   | `!x`, `x && y`, `x \|\| y`                              | —                 |
+| `x = 5` (assignment)                           | `x = 5`                                                 | —                 |
+| `if x = 5 then` (comparison)                   | `if (x === 5)`                                          | —                 |
+| `x <> y`                                       | `x !== y`                                               | —                 |
+| `x contains y`                                 | `x.includes(y)`                                         | —                 |
+| `x starts y`                                   | `x.startsWith(y)`                                       | —                 |
+| `x & y`                                        | `x + "" + y`                                            | —                 |
+| `x && y`                                       | `String(x) + " " + String(y)`                           | —                 |
+
+**Comparison vs assignment:** Lingo `=` is both. Use `===` for comparison (in `if`/`case`/`return`), `=` for assignment (statement).
+
+### Version-specific constructs
+
+When a construct is not in the table, check the reference doc for the source version and map to the closest JS equivalent, importing from the shim.
+
+| Version          | Added constructs                                     | Mapping                              |
+| ---------------- | ---------------------------------------------------- | ------------------------------------ |
+| Director 8       | Dot syntax (`sprite(1).loc`), expanded behaviors     | Direct property/method access        |
+| Director 8.5     | 3D Lingo (`member("scene").model("box")`)            | Flag if shim lacks 3D support        |
+| Director MX      | OOP refinements, `ancestor` property                 | `ancestor` → JS `extends` or proxy   |
+| Director MX 2004 | JavaScript syntax option (alongside Lingo)           | Not Lingo — out of scope             |
+
+## API + core imports
+
+```js
+import {
+  abs, atan, cos, sin, sqrt, max, min, random, power, log,
+  getVariable, getVariableValue, setVariable,
+  createObject, getObject, removeObject,
+  getThread, registerMessage, sendNetMessage,
+  getNetText, gotoNetPage, getStreamStatus,
+  alert, beep, delay, go, goLoop, goNext, goPrevious,
+} from "director/api";
+
+import {
+  List, PropList, Point, Rect, Color,
+  MemberRef, SpriteRef, MovieRef, CastLibraryRef, SoundRef,
+} from "director/core";
+
+import {
+  putInto, putAfter, putBefore,
+  char, word, item, line,
+  theProxy,
+} from "director/syntax";
+```
+
+Import from the package root (`director/api`, `director/core`, `director/syntax`), never from individual files. See `apps/client/src/director/api/index.js` for the full list.
+
+## Script-type shapes
+
+### movieScript — top-level functions
+
+```js
+// 1_thread.index.js  (movieScript — no `me`, no `property`)
+export function startMovie() {}
+export function doThing(arg) { return arg + 1; }
+```
+
+```js
+createScriptMember({
+  number: 1,
+  name: "thread.index",
+  type: "movie",
+  module: { startMovie, doThing },   // bagged named exports
+})
+```
+
+### parentScript — ES class
+
+```js
+// 3_Room Interface Class.js  (parentScript)
+// Lingo: property pInfoConnID, pRoomConnID, ...
+//        on construct me
+//          pInfoConnID = getVariable("connection.info.id")
+//          ...
+import { getVariable } from "director/api";
+
+export class RoomInterface {
+  constructor() {
+    // property defaults only
+    this.pInfoConnID = undefined;
+    this.pRoomConnID = undefined;
+  }
+
+  construct() {
+    this.pInfoConnID = getVariable("connection.info.id");
+    this.pRoomConnID = getVariable("connection.room.id");
+    return 1;
+  }
+
+  deconstruct() {}
+  getID() {}
+}
+```
+
+```js
+createScriptMember({
+  number: 3,
+  name: "Room Interface Class",
+  type: "parent",
+  module: RoomInterface,
+})
+```
+
+`script("Foo").new(args)` → `new Foo(args)` (auto-fires `constructor`). `obj.construct()` in Lingo → `obj.construct()` in JS — translate call sites verbatim.
+
+### behaviorScript — ES class with event handlers
+
+```js
+// 7_Badge Behavior.js  (behaviorScript)
+export class BadgeBehavior {
+  constructor() { this.pSprite = undefined; }
+  beginSprite() {}    // this = me
+  enterFrame() {}
+  mouseDown() {}
+}
+```
+
+```js
+createScriptMember({
+  number: 12,
+  name: "Badge Behavior",
+  type: "behavior",
+  module: BadgeBehavior,
+  // attachedTo declared elsewhere (sprite slot / frame binding)
+})
+```
+
+## Per-cast `index.js`
+
+Every cast folder under `apps/client/src/game/<cast>/` gets an `index.js` that imports every translated module and asset, then exports a `defineCast(...)` call. `Members.csv` is the source of truth.
+
+```js
+// apps/client/src/game/hh_room/index.js
+import { defineCast, createFieldMember, createScriptMember, createImageMember } from "director/runtime";
+import { Point } from "director/core";
+
+import threadIndex    from "./1_thread.index.txt";
+import variableIndex  from "./2_variable.index.txt";
+import roomLoaderWin  from "./9_room_loader.window.txt";
+
+import { RoomInterfaceClass } from "./3_Room Interface Class.js";
+import { RoomComponent }      from "./4_Room Component Class.js";
+import { RoomHandler }        from "./5_Room Handler Class.js";
+import { SpectatorSystem }    from "./6_Spectator System Class.js";
+import { RoomGeometry }       from "./7_Room Geometry Class.js";
+import { RoomHiliter }        from "./8_Room Hiliter Class.js";
+
+import roomPng from "./assets/room_loader.png";
+
+export default defineCast("hh_room", 1, [
+  createFieldMember({ number:  1, name: "thread.index",         content: threadIndex }),
+  createFieldMember({ number:  2, name: "variable.index",       content: variableIndex }),
+  createScriptMember({ number: 3, name: "Room Interface Class", type: "parent", module: RoomInterfaceClass }),
+  createScriptMember({ number: 4, name: "Room Component Class",  type: "parent", module: RoomComponent }),
+  createScriptMember({ number: 5, name: "Room Handler Class",    type: "parent", module: RoomHandler }),
+  createScriptMember({ number: 6, name: "Spectator System Class",type: "parent", module: SpectatorSystem }),
+  createScriptMember({ number: 7, name: "Room Geometry Class",   type: "parent", module: RoomGeometry }),
+  createScriptMember({ number: 8, name: "Room Hiliter Class",    type: "parent", module: RoomHiliter }),
+  createFieldMember({ number:  9, name: "room_loader.window",    content: roomLoaderWin }),
+  // ...rest per Members.csv
+]);
+```
+
+### `defineCast` signature
+
+```js
+defineCast(name?: string, number?: number, members: MemberEntry[]): CastLibraryRef
+```
+
+`name` and `number` are optional but recommended explicit (match Director's cast editor). If omitted, `loadCast` falls back to URL basename extraction.
+
+### `create*Member` helpers
+
+| Helper              | Required                            | Optional                |
+| ------------------- | ----------------------------------- | ----------------------- |
+| `createFieldMember` | `number`, `name`, `content`         | `regPoint`              |
+| `createScriptMember`| `number`, `name`, `type`, `module`  | `attachedTo` (behavior) |
+| `createImageMember` | `number`, `name`, `src`             | `regPoint`              |
+
+`type` is `"movie" | "parent" | "behavior"`.
+
+## Reference layout
+
+```
+  apps/client/src/director/                 ← the shim (consume, don't build)
+    api/        top-level Lingo functions   import as "director/api"
+    core/       Director object classes     import as "director/core"
+    syntax/     chunks, put, the-proxy      import as "director/syntax"
+    runtime/    cast-loader, event-loop,    import as "director/runtime"
+                custom-elements, canvas, script-lifecycle
+
+  apps/client/src/game/<cast>/              ← per-cast translation target
+    <NN>_<Name>.ls                           original Lingo (source of truth)
+    <NN>_<Name>.js                           translated JS
+    <NN>_<Name>.txt                          field member content (asset)
+    *.png                                    image assets
+    Members.csv                              cast manifest (1:1 with index.js)
+    index.js                                 defineCast(...) registration
+
+  docs/drmx2004_scripting_ref.txt           ← Lingo reference (MX 2004)
+```
+
+## Pitfalls
+
+- `Symbol()` instead of `Symbol.for()` — breaks PropList lookups.
+- `me` not replaced with `this` in parent/behavior handlers.
+- `=` in `if` not upgraded to `===`.
+- Handler renamed (`getTheID` → `getId`) — preserve verbatim.
+- `type` declared in the `.js` file — it lives in `index.js`.
+- `Members.csv` rows skipped, merged, or reordered.
+- Script types mixed in one file — Director disallows; flag as misclassified.
+- Director version assumed — check source version; MX 2004 dot syntax and 8.5 3D Lingo differ from earlier.
+
+## Escalate
+
+- Lingo construct with no mapping table entry and no reference doc section → flag as shim gap, use a placeholder, document the gap in a `.js` comment.
+- `.ls` mixes script types → flag as misclassified in `Members.csv`.
+- `createObject(name, "ClassName")` references an untranslated class → leave the call, add `// TODO: translate <ClassName>`.
+- Version-specific construct (3D Lingo, `ancestor` chains) with no shim support → flag rather than guess.
