@@ -1,0 +1,10 @@
+{
+  "name": "project-reborn",
+  "private": "true",
+  "scripts": {
+    "dev": "pnpm --filter @project-reborn/client-r26 dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test"
+  },
+  "packageManager": "pnpm@10.30.2"
+}

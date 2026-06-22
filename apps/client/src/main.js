@@ -1,5 +1,3 @@
-import { setCanvas, setExternalParams } from "./director";
-
 class XParam extends HTMLElement {
   constructor() {
     super();
@@ -13,7 +11,7 @@ class XObject extends HTMLElement {
     super();
 
     this.canvas = document.createElement("canvas");
-    setCanvas(this.canvas);
+    // setCanvas(this.canvas);
   }
 
   connectedCallback() {
@@ -38,7 +36,7 @@ class XObject extends HTMLElement {
       params[name] = value;
     });
 
-    setExternalParams(params);
+    // setExternalParams(params);
   }
 }
 

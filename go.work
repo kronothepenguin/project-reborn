@@ -1,0 +1,12 @@
+go 1.26.4
+
+use (
+	./apps/cms
+	./apps/housekeeping
+	./apps/installer
+	./apps/reborn
+	./apps/server
+	./packages/shared
+	./packages/storage
+	./packages/virtual
+)

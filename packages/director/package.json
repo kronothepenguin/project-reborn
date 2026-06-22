@@ -1,0 +1,16 @@
+{
+  "name": "@project-reborn/director",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./api": "./src/api/index.js",
+    "./runtime": "./src/runtime/index.js",
+    "./syntax": "./src/syntax/index.js"
+  },
+  "packageManager": "pnpm@10.30.2"
+}

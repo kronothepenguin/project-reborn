@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "@project-reborn/client-r26",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -8,6 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest"
+  },
+  "dependencies": {
+    "@project-reborn/director": "workspace:*"
   },
   "devDependencies": {
     "jsdom": "^29.1.1",

@@ -1,27 +1,12 @@
 install:
-	go mod tidy
+	go work sync
+	pnpm install
 
 dev:
-	go tool air
-
-client:
-	go run ./tools/dev/client
-
-cms:
-	go tool air -c .air.cms.toml
-
-figurepreview:
-	go run ./tools/dev/figurepreview
+	cd apps/reborn && go tool air
 
 build:
 	mkdir -p ./bin
-# go run ./tools/build	
-	go build -o ./bin/main ./cmd/habbo
+	go build -o ./bin/main ./apps/reborn/cmd
 
-sqlc:
-	go tool sqlc generate
-
-presets:
-	go run ./tools/presets
-
-.PHONY: dev client cms figurepreview build sqlc presets
+.PHONY: dev build
