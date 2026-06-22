@@ -11,7 +11,7 @@ metadata:
 
 # LingoScript to JavaScript Translation
 
-Translate LingoScript (`.ls`) from any Macromedia Director version (6, 7, 8, 8.5, MX, MX 2004) to JavaScript 1:1 via the director runtime shim. No parser, no AST, no codegen. Translation = copy `.ls`, rewrite syntax to JS, import primitives from `director/`.
+Translate LingoScript (`.ls`) from any Macromedia Director version (6, 7, 8, 8.5, MX, MX 2004) to JavaScript 1:1 via the director runtime shim. No parser, no AST, no codegen. Translation = copy `.ls`, rewrite syntax to JS, import primitives from `director/api`, `director/core`, `director/syntax`.
 
 ## When to use
 
@@ -25,25 +25,23 @@ Not for building the `director/` shim itself — this skill consumes it.
 ## Hard rules
 
 1. **Lingo symbols → `Symbol.for(name)`**, never `Symbol()`. `PropList` compares keys by `===` identity; `Symbol.for` is globally interned across modules, `Symbol()` is not. `#null` → `Symbol.for("null")`.
-2. **Shape mirrors script type.** `movieScript` → top-level functions. `parentScript` → ES class. `behaviorScript` → ES class with event-handler methods.
+2. **Shape mirrors `property` block, binary.** No `property` keyword → movie shape (exported functions). Has `property` keyword → class shape (`export default class`). parent↔behavior share the class shape; the difference is `type` metadata in `index.js`, not JS shape.
 3. **`index.js` owns the script type**, not the `.js` file. Type (`movie` | `parent` | `behavior`) is registration metadata in `createScriptMember({ type })`.
-4. **Preserve handler names verbatim.** `on getID me` → `getID()`, `on getTheID me` → `getTheID()`, `on construct me` → `construct()`. The one exception: `on new me` → `constructor()` (because `new` is a JS reserved word and `script("Foo").new(args)` maps to `new Foo(args)` which auto-fires `constructor`).
-5. **`Members.csv` maps 1:1 to the registration array**, same order. Do not skip, merge, or reorder rows.
-6. **No parser/AST/codegen.** Translation is manual rewrite.
+4. **One resolution rule: API import, `this.method`, or `_global.name`.** If a name is imported from `director/api` → call directly. If it's a class method → `this.name()`. Otherwise → `_global.name` (covers Lingo `global`-declared vars AND movie script handler calls). `_global` is `globalThis` direct (live, no snapshot), exported from `director/api`. Only import functions listed in `director/api/index.js` (see API list below) — anything else is a movie handler, call via `_global.name()`.
+5. **Preserve handler names verbatim.** `on getID me` → `getID()`, `on getTheID me` → `getTheID()`, `on construct me` → `construct()`. One exception: `on new me` → `constructor()` (JS reserved word; `script("Foo").new(args)` → `new Foo(args)` auto-fires `constructor`).
+6. **`Members.csv` maps 1:1 to the registration array**, same order. Do not skip, merge, or reorder rows. `Members.csv` `Type` column is `script`/`field`/`palette`/`bitmap` — NOT movie/parent/behavior. Subtype comes from the `.ls` source via `property` keyword.
+7. **No parser/AST/codegen.** Translation is manual rewrite.
 
 ## Procedure (per `.ls` file)
 
-1. **Identify script type** from the header:
-   - No `property`, no `me`, only top-level `on foo` → `movie`.
-   - `property pX, pY` + `on new me` or a custom init like `on construct me` → `parent`.
-   - `property` + `me` + event handlers (`enterFrame`, `mouseDown`, `beginSprite`) → `behavior`.
-   - When unsure, cross-check `Members.csv` `Type` and the cast's existing pattern.
+1. **Determine shape** from the `property` block (binary): no `property` → movie (exported functions); has `property` → class (`export default class`). parent↔behavior is registration metadata only, set `type` in `index.js`. `Members.csv` `Type` is `script`/`field`/`palette`/`bitmap` — not subtype.
 2. **Get cast + member number** from `Members.csv` (`Number`, `Name`).
-3. **List `property` declarations** → class fields initialised in `constructor` (parent/behavior). Movie scripts have no `property`.
-4. **List handlers (`on ... end`)** → methods (parent/behavior) or exported functions (movie). Preserve names verbatim.
-5. **Translate body** using the mapping tables below.
-6. **Write `.js`** at `apps/client/src/game/<cast>/<NN>_<Name>.js`.
-7. **Update `apps/client/src/game/<cast>/index.js`** with a `createScriptMember(...)` entry.
+3. **List `property` declarations** (class shape only) → class fields initialised in `constructor`. Movie shape has none.
+4. **List handlers (`on ... end`)** → class methods (class shape) or `export function` (movie shape). Preserve names verbatim, except `on new me` → `constructor` (class shape only).
+5. **Resolve every name** using the one resolution rule (hard rule 4): imported from `director/api`? → direct call. Class method? → `this.name`. Otherwise → `_global.name` (movie handler or `global`-declared var). When unsure if API, default to `_global.name`.
+6. **Translate body** using the mapping tables below.
+7. **Write `.js`** at `apps/client/src/game/<cast>/<NN>_<Name>.js`.
+8. **Update `apps/client/src/game/<cast>/index.js`** with a `createScriptMember(...)` entry.
 
 ## Symbol mapping
 
@@ -101,7 +99,10 @@ switch (x) {
 | Lingo                                          | JavaScript                                              | Source            |
 | ---------------------------------------------- | ------------------------------------------------------- | ----------------- |
 | `property pFoo, pBar`                          | class fields `pFoo; pBar;` (init in `constructor`)      | —                 |
-| `on new me, args`                              | `constructor(args) { /* me = this */ }`                 | —                 |
+| `global gX, gY`                                | `import { _global } from "director/api"` + `_global.gX` / `_global.gY` references (file-wide, reads + writes) | `director/api` |
+| `getVariable("x")` (not in API list)           | `_global.getVariable("x")`                              | `director/api` |
+| `createObject(tID, "Class")` (not in API)      | `_global.createObject(tID, "Class")`                    | `director/api` |
+| `on new me`                                    | `constructor(args) { /* me = this */ }`                 | —                 |
 | `on construct me`                              | `construct() { /* me = this */ }`                       | —                 |
 | `on handlerName me, a, b`                      | `handlerName(a, b) { /* this = me */ }`                 | —                 |
 | `on handlerName me`                            | `handlerName() { /* this = me */ }`                     | —                 |
@@ -152,11 +153,9 @@ When a construct is not in the table, check the reference doc for the source ver
 ```js
 import {
   abs, atan, cos, sin, sqrt, max, min, random, power, log,
-  getVariable, getVariableValue, setVariable,
-  createObject, getObject, removeObject,
-  getThread, registerMessage, sendNetMessage,
   getNetText, gotoNetPage, getStreamStatus,
   alert, beep, delay, go, goLoop, goNext, goPrevious,
+  _global,
 } from "director/api";
 
 import {
@@ -171,16 +170,30 @@ import {
 } from "director/syntax";
 ```
 
-Import from the package root (`director/api`, `director/core`, `director/syntax`), never from individual files. See `apps/client/src/director/api/index.js` for the full list.
+Only import API functions actually used in the file. `_global` is imported when the file calls movie handlers or uses `global`-declared vars. Import from the package root (`director/api`, `director/core`, `director/syntax`), never from individual files. See `apps/client/src/director/api/index.js` for the full API export list (107 functions).
 
 ## Script-type shapes
 
-### movieScript — top-level functions
+Two shapes, binary discriminator = `property` keyword.
+
+### Movie shape — exported functions (no `property` block)
 
 ```js
-// 1_thread.index.js  (movieScript — no `me`, no `property`)
+// 1_thread.index.js  (no `property` keyword)
+import { _global } from "director/api";   // for movie handler calls / global vars
+
 export function startMovie() {}
-export function doThing(arg) { return arg + 1; }
+export function doThing(arg) {
+  _global.getVariable("key");             // movie handler, not API
+  return arg + 1;
+}
+```
+
+Edge case — movie-shape handler with `me` (no `property`): keep `me` as first parameter, do not use `this`:
+
+```js
+// Lingo: on foo me, arg
+export function foo(me, arg) { /* me is caller-passed, not this */ }
 ```
 
 ```js
@@ -188,30 +201,29 @@ createScriptMember({
   number: 1,
   name: "thread.index",
   type: "movie",
-  module: { startMovie, doThing },   // bagged named exports
+  module: { startMovie, doThing },   // plain object of named exports
 })
 ```
 
-### parentScript — ES class
+Runtime: `Object.assign(globalThis, module)` — handlers accessible via `_global.<name>` from any translated code.
+
+### Class shape — `export default class` (has `property` block)
+
+Used for both `parent` and `behavior` scripts. The distinction is `type` metadata in `createScriptMember`, not JS shape.
 
 ```js
-// 3_Room Interface Class.js  (parentScript)
-// Lingo: property pInfoConnID, pRoomConnID, ...
-//        on construct me
-//          pInfoConnID = getVariable("connection.info.id")
-//          ...
-import { getVariable } from "director/api";
+// 3_Room Interface Class.js  (has `property` block)
+import { _global } from "director/api";
 
-export class RoomInterface {
+export default class {
   constructor() {
-    // property defaults only
     this.pInfoConnID = undefined;
     this.pRoomConnID = undefined;
   }
 
   construct() {
-    this.pInfoConnID = getVariable("connection.info.id");
-    this.pRoomConnID = getVariable("connection.room.id");
+    this.pInfoConnID = _global.getVariable("connection.info.id");
+    this.pRoomConnID = _global.getVariable("connection.room.id");
     return 1;
   }
 
@@ -224,34 +236,12 @@ export class RoomInterface {
 createScriptMember({
   number: 3,
   name: "Room Interface Class",
-  type: "parent",
+  type: "parent",          // or "behavior" — only difference
   module: RoomInterface,
 })
 ```
 
-`script("Foo").new(args)` → `new Foo(args)` (auto-fires `constructor`). `obj.construct()` in Lingo → `obj.construct()` in JS — translate call sites verbatim.
-
-### behaviorScript — ES class with event handlers
-
-```js
-// 7_Badge Behavior.js  (behaviorScript)
-export class BadgeBehavior {
-  constructor() { this.pSprite = undefined; }
-  beginSprite() {}    // this = me
-  enterFrame() {}
-  mouseDown() {}
-}
-```
-
-```js
-createScriptMember({
-  number: 12,
-  name: "Badge Behavior",
-  type: "behavior",
-  module: BadgeBehavior,
-  // attachedTo declared elsewhere (sprite slot / frame binding)
-})
-```
+Runtime: register class in script-by-name registry. `script("Foo").new(args)` → `new module(args)` (auto-fires `constructor`). `obj.construct()` in Lingo → `obj.construct()` in JS — translate call sites verbatim.
 
 ## Per-cast `index.js`
 
@@ -266,19 +256,19 @@ import threadIndex    from "./1_thread.index.txt";
 import variableIndex  from "./2_variable.index.txt";
 import roomLoaderWin  from "./9_room_loader.window.txt";
 
-import { RoomInterfaceClass } from "./3_Room Interface Class.js";
-import { RoomComponent }      from "./4_Room Component Class.js";
-import { RoomHandler }        from "./5_Room Handler Class.js";
-import { SpectatorSystem }    from "./6_Spectator System Class.js";
-import { RoomGeometry }       from "./7_Room Geometry Class.js";
-import { RoomHiliter }        from "./8_Room Hiliter Class.js";
+import RoomInterface  from "./3_Room Interface Class.js";
+import RoomComponent  from "./4_Room Component Class.js";
+import RoomHandler    from "./5_Room Handler Class.js";
+import SpectatorSystem from "./6_Spectator System Class.js";
+import RoomGeometry   from "./7_Room Geometry Class.js";
+import RoomHiliter    from "./8_Room Hiliter Class.js";
 
 import roomPng from "./assets/room_loader.png";
 
 export default defineCast("hh_room", 1, [
   createFieldMember({ number:  1, name: "thread.index",         content: threadIndex }),
   createFieldMember({ number:  2, name: "variable.index",       content: variableIndex }),
-  createScriptMember({ number: 3, name: "Room Interface Class", type: "parent", module: RoomInterfaceClass }),
+  createScriptMember({ number: 3, name: "Room Interface Class", type: "parent", module: RoomInterface }),
   createScriptMember({ number: 4, name: "Room Component Class",  type: "parent", module: RoomComponent }),
   createScriptMember({ number: 5, name: "Room Handler Class",    type: "parent", module: RoomHandler }),
   createScriptMember({ number: 6, name: "Spectator System Class",type: "parent", module: SpectatorSystem }),
@@ -299,13 +289,17 @@ defineCast(name?: string, number?: number, members: MemberEntry[]): CastLibraryR
 
 ### `create*Member` helpers
 
-| Helper              | Required                            | Optional                |
-| ------------------- | ----------------------------------- | ----------------------- |
-| `createFieldMember` | `number`, `name`, `content`         | `regPoint`              |
-| `createScriptMember`| `number`, `name`, `type`, `module`  | `attachedTo` (behavior) |
-| `createImageMember` | `number`, `name`, `src`             | `regPoint`              |
+| Helper              | Required                            | Optional    |
+| ------------------- | ----------------------------------- | ----------- |
+| `createFieldMember` | `number`, `name`, `content`         | `regPoint`  |
+| `createScriptMember`| `number`, `name`, `type`, `module`  | —           |
+| `createImageMember` | `number`, `name`, `src`             | `regPoint`  |
 
-`type` is `"movie" | "parent" | "behavior"`.
+`type` is `"movie" | "parent" | "behavior"`. For movie, `module` is a plain object of named function exports. For parent/behavior, `module` is the class itself.
+
+Runtime branches on `type`:
+- `movie` → `Object.assign(globalThis, module)` (handlers accessible via `_global.<name>`).
+- `parent` / `behavior` → register class in script-by-name registry; `script("Foo").new(args)` → `new module(args)`.
 
 ## Reference layout
 
@@ -327,17 +321,6 @@ defineCast(name?: string, number?: number, members: MemberEntry[]): CastLibraryR
 
   docs/drmx2004_scripting_ref.txt           ← Lingo reference (MX 2004)
 ```
-
-## Pitfalls
-
-- `Symbol()` instead of `Symbol.for()` — breaks PropList lookups.
-- `me` not replaced with `this` in parent/behavior handlers.
-- `=` in `if` not upgraded to `===`.
-- Handler renamed (`getTheID` → `getId`) — preserve verbatim.
-- `type` declared in the `.js` file — it lives in `index.js`.
-- `Members.csv` rows skipped, merged, or reordered.
-- Script types mixed in one file — Director disallows; flag as misclassified.
-- Director version assumed — check source version; MX 2004 dot syntax and 8.5 3D Lingo differ from earlier.
 
 ## Escalate
 
