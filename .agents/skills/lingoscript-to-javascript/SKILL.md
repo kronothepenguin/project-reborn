@@ -11,7 +11,7 @@ metadata:
 
 # LingoScript to JavaScript Translation
 
-Translate LingoScript (`.ls`) from any Macromedia Director version (6, 7, 8, 8.5, MX, MX 2004) to JavaScript 1:1 via the director runtime shim. No parser, no AST, no codegen. Translation = copy `.ls`, rewrite syntax to JS, import primitives from `director/api`, `director/core`, `director/syntax`.
+Translate LingoScript (`.ls`) from any Macromedia Director version (6, 7, 8, 8.5, MX, MX 2004) to JavaScript 1:1 via the `@project-reborn/director` runtime shim. No parser, no AST, no codegen. Translation = copy `.ls`, rewrite syntax to JS, import primitives from `@project-reborn/director/api` and `@project-reborn/director/syntax`. `packages/director/src/core/` is private — translated code must not import from it.
 
 ## When to use
 
@@ -20,14 +20,14 @@ Translate LingoScript (`.ls`) from any Macromedia Director version (6, 7, 8, 8.5
 - Map a Lingo construct to JavaScript.
 - Identify the script type of a `.ls` file.
 
-Not for building the `director/` shim itself — this skill consumes it.
+Not for building the `@project-reborn/director` shim itself — this skill consumes it.
 
 ## Hard rules
 
 1. **Lingo symbols → `Symbol.for(name)`**, never `Symbol()`. `PropList` compares keys by `===` identity; `Symbol.for` is globally interned across modules, `Symbol()` is not. `#null` → `Symbol.for("null")`.
 2. **Shape mirrors `property` block, binary.** No `property` keyword → movie shape (exported functions). Has `property` keyword → class shape (`export default class`). parent↔behavior share the class shape; the difference is `type` metadata in `index.js`, not JS shape.
 3. **`index.js` owns the script type**, not the `.js` file. Type (`movie` | `parent` | `behavior`) is registration metadata in `createScriptMember({ type })`.
-4. **One resolution rule: API import, `this.method`, or `_global.name`.** If a name is imported from `director/api` → call directly. If it's a class method → `this.name()`. Otherwise → `_global.name` (covers Lingo `global`-declared vars AND movie script handler calls). `_global` is `globalThis` direct (live, no snapshot), exported from `director/api`. Only import functions listed in `director/api/index.js` (see API list below) — anything else is a movie handler, call via `_global.name()`.
+4. **One resolution rule: API import, `this.method`, or `_global.name`.** If a name is imported from `@project-reborn/director/api` → call directly. If it's a class method → `this.name()`. Otherwise → `_global.name` (covers Lingo `global`-declared vars AND movie script handler calls). `_global` is `globalThis` direct (live, no snapshot), exported from `@project-reborn/director/api`. Only import functions listed in `packages/director/src/api/index.js` (see API list below) — anything else is a movie handler, call via `_global.name()`.
 5. **Preserve handler names verbatim.** `on getID me` → `getID()`, `on getTheID me` → `getTheID()`, `on construct me` → `construct()`. One exception: `on new me` → `constructor()` (JS reserved word; `script("Foo").new(args)` → `new Foo(args)` auto-fires `constructor`).
 6. **`Members.csv` maps 1:1 to the registration array**, same order. Do not skip, merge, or reorder rows. `Members.csv` `Type` column is `script`/`field`/`palette`/`bitmap` — NOT movie/parent/behavior. Subtype comes from the `.ls` source via `property` keyword.
 7. **No parser/AST/codegen.** Translation is manual rewrite.
@@ -38,7 +38,7 @@ Not for building the `director/` shim itself — this skill consumes it.
 2. **Get cast + member number** from `Members.csv` (`Number`, `Name`).
 3. **List `property` declarations** (class shape only) → class fields initialised in `constructor`. Movie shape has none.
 4. **List handlers (`on ... end`)** → class methods (class shape) or `export function` (movie shape). Preserve names verbatim, except `on new me` → `constructor` (class shape only).
-5. **Resolve every name** using the one resolution rule (hard rule 4): imported from `director/api`? → direct call. Class method? → `this.name`. Otherwise → `_global.name` (movie handler or `global`-declared var). When unsure if API, default to `_global.name`.
+5. **Resolve every name** using the one resolution rule (hard rule 4): imported from `@project-reborn/director/api`? → direct call. Class method? → `this.name`. Otherwise → `_global.name` (movie handler or `global`-declared var). When unsure if API, default to `_global.name`.
 6. **Translate body** using the mapping tables below.
 7. **Write `.js`** at `apps/client/src/game/<cast>/<NN>_<Name>.js`.
 8. **Update `apps/client/src/game/<cast>/index.js`** with a `createScriptMember(...)` entry.
@@ -78,62 +78,62 @@ switch (x) {
 
 ## Literal mapping
 
-| Lingo          | JavaScript                              | Source          |
-| -------------- | --------------------------------------- | --------------- |
-| `EMPTY`        | `""`                                    | `director/api`  |
-| `VOID`         | `undefined`                             | `director/api`  |
-| `TRUE`         | `true`                                  | `director/api`  |
-| `FALSE`        | `false`                                 | `director/api`  |
-| `[]`           | `new List()`                            | `director/core` |
-| `[:]`          | `new PropList()`                        | `director/core` |
-| `["a","b"]`    | `new List("a", "b")`                    | `director/core` |
-| `[#k: v]`      | `new PropList(Symbol.for("k"), v)`      | `director/core` |
-| `point(x,y)`   | `new Point(x, y)`                       | `director/core` |
-| `rect(...)`    | `new Rect(...)`                         | `director/core` |
-| `rgb(r,g,b)`   | `new Color(r, g, b)`                    | `director/core` |
-| `member(n)`    | `new MemberRef(n)`                      | `director/core` |
-| `member(n, c)` | `new MemberRef(n, c)`                   | `director/core` |
+| Lingo          | JavaScript                              | Source                          |
+| -------------- | --------------------------------------- | ------------------------------- |
+| `EMPTY`        | `""`                                    | `@project-reborn/director/api` |
+| `VOID`         | `undefined`                             | `@project-reborn/director/api` |
+| `TRUE`         | `true`                                  | `@project-reborn/director/api` |
+| `FALSE`        | `false`                                 | `@project-reborn/director/api` |
+| `[]`           | `list()`                                | `@project-reborn/director/api` |
+| `[:]`          | `propList()`                            | `@project-reborn/director/api` |
+| `["a","b"]`    | `list("a", "b")`                        | `@project-reborn/director/api` |
+| `[#k: v]`      | `propList(Symbol.for("k"), v)`          | `@project-reborn/director/api` |
+| `point(x,y)`   | `point(x, y)`                           | `@project-reborn/director/api` |
+| `rect(...)`    | `rect(...)`                             | `@project-reborn/director/api` |
+| `rgb(r,g,b)`   | `color(r, g, b)`                        | `@project-reborn/director/api` |
+| `member(n)`    | `member(n)`                             | `@project-reborn/director/api` |
+| `member(n, c)` | `member(n, c)`                          | `@project-reborn/director/api` |
 
 ## Syntax mapping
 
-| Lingo                                          | JavaScript                                              | Source            |
-| ---------------------------------------------- | ------------------------------------------------------- | ----------------- |
-| `property pFoo, pBar`                          | class fields `pFoo; pBar;` (init in `constructor`)      | —                 |
-| `global gX, gY`                                | `import { _global } from "director/api"` + `_global.gX` / `_global.gY` references (file-wide, reads + writes) | `director/api` |
-| `getVariable("x")` (not in API list)           | `_global.getVariable("x")`                              | `director/api` |
-| `createObject(tID, "Class")` (not in API)      | `_global.createObject(tID, "Class")`                    | `director/api` |
-| `on new me`                                    | `constructor(args) { /* me = this */ }`                 | —                 |
-| `on construct me`                              | `construct() { /* me = this */ }`                       | —                 |
-| `on handlerName me, a, b`                      | `handlerName(a, b) { /* this = me */ }`                 | —                 |
-| `on handlerName me`                            | `handlerName() { /* this = me */ }`                     | —                 |
-| `me.getID()`                                   | `this.getID()`                                          | —                 |
-| `me.pFoo`                                      | `this.pFoo`                                             | —                 |
-| `put x into y`                                 | `putInto(y, x)`                                         | `director/syntax` |
-| `put x after y`                                | `putAfter(y, x)`                                        | `director/syntax` |
-| `put x before y`                               | `putBefore(y, x)`                                       | `director/syntax` |
-| `the mouseH`                                   | `theProxy.mouseH`                                       | `director/syntax` |
-| `the frame`                                    | `theProxy.frame`                                        | `director/syntax` |
-| `char 2 of "abc"`                              | `char(2, "abc")`                                        | `director/syntax` |
-| `word 2 of "a b c"`                            | `word(2, "a b c")`                                      | `director/syntax` |
-| `item 2 of "a,b,c"`                            | `item(2, "a,b,c")`                                      | `director/syntax` |
-| `line 2 of "a\nb"`                             | `line(2, "a\nb")`                                       | `director/syntax` |
-| `repeat with i = 1 to 10` `  ...` `end repeat` | `for (let i = 1; i <= 10; i++) { ... }`                 | —                 |
-| `repeat with i = 10 down to 1`                 | `for (let i = 10; i >= 1; i--) { ... }`                 | —                 |
-| `repeat while x` `end repeat`                  | `while (x) { ... }`                                     | —                 |
-| `exit repeat`                                  | `break`                                                 | —                 |
-| `abort`                                        | `break` (or labeled break from nested)                  | —                 |
-| `exit`                                         | `return`                                                | —                 |
-| `case x of A: ... end case`                    | `switch (x) { case Symbol.for("A"): ...; break; ... default: ...; }`  | —      |
-| `otherwise`                                    | `default:`                                              | —                 |
-| `if x then` `else` `end if`                    | `if (x) { ... } else { ... }`                           | —                 |
-| `not x`, `x and y`, `x or y`                   | `!x`, `x && y`, `x \|\| y`                              | —                 |
-| `x = 5` (assignment)                           | `x = 5`                                                 | —                 |
-| `if x = 5 then` (comparison)                   | `if (x === 5)`                                          | —                 |
-| `x <> y`                                       | `x !== y`                                               | —                 |
-| `x contains y`                                 | `x.includes(y)`                                         | —                 |
-| `x starts y`                                   | `x.startsWith(y)`                                       | —                 |
-| `x & y`                                        | `x + "" + y`                                            | —                 |
-| `x && y`                                       | `String(x) + " " + String(y)`                           | —                 |
+| Lingo                                          | JavaScript                                              | Source                              |
+| ---------------------------------------------- | ------------------------------------------------------- | ----------------------------------- |
+| `property pFoo, pBar`                          | class fields `pFoo; pBar;` (init in `constructor`)      | —                                   |
+| `global gX, gY`                                | `import { _global } from "@project-reborn/director/api"` + `_global.gX` / `_global.gY` references (file-wide, reads + writes) | `@project-reborn/director/api` |
+| `getVariable("x")` (not in API list)           | `_global.getVariable("x")`                              | `@project-reborn/director/api` |
+| `createObject(tID, "Class")` (not in API)      | `_global.createObject(tID, "Class")`                    | `@project-reborn/director/api` |
+| `on new me`                                    | `constructor(args) { /* me = this */ }`                 | —                                   |
+| `on construct me`                              | `construct() { /* me = this */ }`                       | —                                   |
+| `on handlerName me, a, b`                      | `handlerName(a, b) { /* this = me */ }`                 | —                                   |
+| `on handlerName me`                            | `handlerName() { /* this = me */ }`                     | —                                   |
+| `me.getID()`                                   | `this.getID()`                                          | —                                   |
+| `me.pFoo`                                      | `this.pFoo`                                             | —                                   |
+| `put x into y`                                 | `putInto(y, x)`                                         | `@project-reborn/director/syntax` |
+| `put x after y`                                | `putAfter(y, x)`                                        | `@project-reborn/director/syntax` |
+| `put x before y`                               | `putBefore(y, x)`                                       | `@project-reborn/director/syntax` |
+| `the mouseH`                                   | `the.mouseH`                                            | `@project-reborn/director/syntax` |
+| `the frame`                                    | `the.frame`                                             | `@project-reborn/director/syntax` |
+| `char 2 of "abc"`                              | `char(2, "abc")`                                        | `@project-reborn/director/syntax` |
+| `word 2 of "a b c"`                            | `word(2, "a b c")`                                      | `@project-reborn/director/syntax` |
+| `item 2 of "a,b,c"`                            | `item(2, "a,b,c")`                                      | `@project-reborn/director/syntax` |
+| `line 2 of "a\nb"`                             | `line(2, "a\nb")`                                       | `@project-reborn/director/syntax` |
+| `repeat with i = 1 to 10` `  ...` `end repeat` | `for (let i = 1; i <= 10; i++) { ... }`                 | —                                   |
+| `repeat with i = 10 down to 1`                 | `for (let i = 10; i >= 1; i--) { ... }`                 | —                                   |
+| `repeat while x` `end repeat`                  | `while (x) { ... }`                                     | —                                   |
+| `exit repeat`                                  | `break`                                                 | —                                   |
+| `abort`                                        | `break` (or labeled break from nested)                  | —                                   |
+| `exit`                                         | `return`                                                | —                                   |
+| `case x of A: ... end case`                    | `switch (x) { case Symbol.for("A"): ...; break; ... default: ...; }`  | —                      |
+| `otherwise`                                    | `default:`                                              | —                                   |
+| `if x then` `else` `end if`                    | `if (x) { ... } else { ... }`                           | —                                   |
+| `not x`, `x and y`, `x or y`                   | `!x`, `x && y`, `x \|\| y`                              | —                                   |
+| `x = 5` (assignment)                           | `x = 5`                                                 | —                                   |
+| `if x = 5 then` (comparison)                   | `if (x === 5)`                                          | —                                   |
+| `x <> y`                                       | `x !== y`                                               | —                                   |
+| `x contains y`                                 | `x.includes(y)`                                         | —                                   |
+| `x starts y`                                   | `x.startsWith(y)`                                       | —                                   |
+| `x & y`                                        | `x + "" + y`                                            | —                                   |
+| `x && y`                                       | `String(x) + " " + String(y)`                           | —                                   |
 
 **Comparison vs assignment:** Lingo `=` is both. Use `===` for comparison (in `if`/`case`/`return`), `=` for assignment (statement).
 
@@ -148,29 +148,26 @@ When a construct is not in the table, check the reference doc for the source ver
 | Director MX      | OOP refinements, `ancestor` property                 | `ancestor` → JS `extends` or proxy   |
 | Director MX 2004 | JavaScript syntax option (alongside Lingo)           | Not Lingo — out of scope             |
 
-## API + core imports
+## API + syntax imports
 
 ```js
 import {
   abs, atan, cos, sin, sqrt, max, min, random, power, log,
   getNetText, gotoNetPage, getStreamStatus,
   alert, beep, delay, go, goLoop, goNext, goPrevious,
-  _global,
-} from "director/api";
-
-import {
-  List, PropList, Point, Rect, Color,
-  MemberRef, SpriteRef, MovieRef, CastLibraryRef, SoundRef,
-} from "director/core";
+  list, propList, point, rect, color, member, sprite, castLib, script,
+  EMPTY, VOID, TRUE, FALSE,
+  _global, _movie,
+} from "@project-reborn/director/api";
 
 import {
   putInto, putAfter, putBefore,
   char, word, item, line,
-  theProxy,
-} from "director/syntax";
+  the,
+} from "@project-reborn/director/syntax";
 ```
 
-Only import API functions actually used in the file. `_global` is imported when the file calls movie handlers or uses `global`-declared vars. Import from the package root (`director/api`, `director/core`, `director/syntax`), never from individual files. See `apps/client/src/director/api/index.js` for the full API export list (107 functions).
+Only import what the file actually uses. `_global` is imported when the file calls movie handlers or uses `global`-declared vars. `_movie` is rarely needed directly (most movie state surfaces through api functions or `the`). Import only from the package subpaths (`@project-reborn/director/api`, `@project-reborn/director/syntax`, `@project-reborn/director/runtime`), never from individual files. `packages/director/src/core/` is private — do not import from it; use the api factory functions (`list()`, `propList()`, `point()`, `rect()`, `color()`, `member()`) instead of the core classes. See `packages/director/src/api/index.js` for the full API export list (107 functions + constants + `_global` + `_movie`).
 
 ## Script-type shapes
 
@@ -180,7 +177,7 @@ Two shapes, binary discriminator = `property` keyword.
 
 ```js
 // 1_thread.index.js  (no `property` keyword)
-import { _global } from "director/api";   // for movie handler calls / global vars
+import { _global } from "@project-reborn/director/api";   // for movie handler calls / global vars
 
 export function startMovie() {}
 export function doThing(arg) {
@@ -213,7 +210,7 @@ Used for both `parent` and `behavior` scripts. The distinction is `type` metadat
 
 ```js
 // 3_Room Interface Class.js  (has `property` block)
-import { _global } from "director/api";
+import { _global } from "@project-reborn/director/api";
 
 export default class {
   constructor() {
@@ -247,10 +244,11 @@ Runtime: register class in script-by-name registry. `script("Foo").new(args)` �
 
 Every cast folder under `apps/client/src/game/<cast>/` gets an `index.js` that imports every translated module and asset, then exports a `defineCast(...)` call. `Members.csv` is the source of truth.
 
+> **Planned, not yet exported.** `defineCast`, `createScriptMember`, `createFieldMember`, `createImageMember` are the target registration API for `@project-reborn/director/runtime`. They are **not yet exported** — `runtime/index.js` currently exposes only `loadCast`, the lifecycle dispatchers, canvas functions, `registerCustomElements`, `_createMovie`, and the event-loop controls. Until the registration helpers land, translated casts cannot run end-to-end; flag this in the Escalate section rather than guessing an alternative shape.
+
 ```js
 // apps/client/src/game/hh_room/index.js
-import { defineCast, createFieldMember, createScriptMember, createImageMember } from "director/runtime";
-import { Point } from "director/core";
+import { defineCast, createFieldMember, createScriptMember, createImageMember } from "@project-reborn/director/runtime";
 
 import threadIndex    from "./1_thread.index.txt";
 import variableIndex  from "./2_variable.index.txt";
@@ -304,22 +302,23 @@ Runtime branches on `type`:
 ## Reference layout
 
 ```
-  apps/client/src/director/                 ← the shim (consume, don't build)
-    api/        top-level Lingo functions   import as "director/api"
-    core/       Director object classes     import as "director/core"
-    syntax/     chunks, put, the-proxy      import as "director/syntax"
-    runtime/    cast-loader, event-loop,    import as "director/runtime"
-                custom-elements, canvas, script-lifecycle
+  packages/director/src/                       ← the shim package (consume, don't build)
+    api/        top-level Lingo functions     import as "@project-reborn/director/api"
+    core/       Director object classes       PRIVATE — do not import from translated code
+    syntax/     chunks, put, the-proxy        import as "@project-reborn/director/syntax"
+    runtime/    cast-loader, event-loop,
+                custom-elements, canvas,
+                script-lifecycle              import as "@project-reborn/director/runtime"
 
-  apps/client/src/game/<cast>/              ← per-cast translation target
-    <NN>_<Name>.ls                           original Lingo (source of truth)
-    <NN>_<Name>.js                           translated JS
-    <NN>_<Name>.txt                          field member content (asset)
-    *.png                                    image assets
-    Members.csv                              cast manifest (1:1 with index.js)
-    index.js                                 defineCast(...) registration
+  apps/client/src/game/<cast>/                ← per-cast translation target (unchanged)
+    <NN>_<Name>.ls                             original Lingo (source of truth)
+    <NN>_<Name>.js                             translated JS
+    <NN>_<Name>.txt                            field member content (asset)
+    *.png                                      image assets
+    Members.csv                                cast manifest (1:1 with index.js)
+    index.js                                   defineCast(...) registration
 
-  docs/drmx2004_scripting_ref.txt           ← Lingo reference (MX 2004)
+  docs/drmx2004_scripting_ref.txt             ← Lingo reference (MX 2004)
 ```
 
 ## Escalate
@@ -328,3 +327,4 @@ Runtime branches on `type`:
 - `.ls` mixes script types → flag as misclassified in `Members.csv`.
 - `createObject(name, "ClassName")` references an untranslated class → leave the call, add `// TODO: translate <ClassName>`.
 - Version-specific construct (3D Lingo, `ancestor` chains) with no shim support → flag rather than guess.
+- Registration helpers (`defineCast`, `createScriptMember`, `createFieldMember`, `createImageMember`) are not yet exported from `@project-reborn/director/runtime` — every cast `index.js` needs them, so flag until they land; do not invent an alternative registration shape.
