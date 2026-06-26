@@ -1,0 +1,2279 @@
+                                                              CHAPTER 10
+                                                        Events and Messages
+
+
+
+   This section provides an alphabetical list of all the events and messages available in Macromedia
+   Director MX 2004.
+
+on activateApplication
+ Usage
+   -- Lingo syntax
+   on activateApplication
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function activateApplication() {
+     statement(s);
+   }
+
+ Description
+
+   Built-in handler; runs when the projector is brought to the foreground. This handler is useful
+   when a projector runs in a window and the user can send it to the background to work with other
+   applications. When the projector is brought back to the foreground, this handler runs. Any
+   MIAWs running in the projector can also make use of this handler.
+   During authoring, this handler is called only if Animate in Background is turned on in
+   General Preferences.
+   On Windows, this handler is not called if the projector is merely minimized and no other
+   application is brought to the foreground.
+
+
+
+
+                                                                                                  159
+  Example
+
+      This handler plays a sound each time the user brings the projector back to the foreground:
+      -- Lingo syntax
+      on activateApplication
+        sound(1).queue(member("openSound"))
+        sound(1).play()
+      end
+
+      // JavaScript syntax
+      function activateApplication() {
+        sound(1).queue(member("openSound"));
+        sound(1).play();
+      }
+
+  See also
+      on deactivateApplication, activeCastLib, on deactivateWindow
+
+on activateWindow
+  Usage
+      -- Lingo syntax
+      on activateWindow
+           statement(s)
+      end
+
+      // JavaScript syntax
+      function activateWindow()
+        statement(s);
+      }
+
+  Description
+
+      System message and event handler; contains statements that run in a movie when the user clicks
+      the inactive window and the window comes to the foreground.
+      You can use an on activateWindow handler in a script that you want executed every time the
+      movie becomes active.
+      Clicking the main movie (the main Stage) does not generate an on activateWindow handler.
+  Example
+
+      This handler plays the sound Hurray when the window that the movie is playing in
+      becomes active:
+      -- Lingo syntax
+      on activateWindow
+        sound(2).play(member("Hurray"))
+      end
+
+      // JavaScript syntax
+      function activateWindow() {
+        sound(2).play(member("Hurray"));
+      }
+
+
+
+
+160    Chapter 10: Events and Messages
+ See also
+   activeWindow, close(), on deactivateWindow, frontWindow, on moveWindow, open()
+   (Window)
+
+on beginSprite
+ Usage
+   -- Lingo syntax
+   on beginSprite
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function beginSprite() {
+     statement(s);
+   }
+
+ Description
+
+   System message and event handler; contains statements that run when the playhead moves to a
+   frame that contains a sprite that was not previously encountered. Like endSprite, this event is
+   generated only one time, even if the playhead loops on a frame, since the trigger is a sprite not
+   previously encountered by the playhead. The event is generated before prepareFrame.
+   Director creates instances of any behavior scripts attached to the sprite when the beginSprite
+   message is sent.
+   The object reference me is passed to this event if it is used in a behavior. The message is sent to
+   behaviors and frame scripts.
+   If a sprite begins in the first frame that plays in the movie, the beginSprite message is sent after
+   the prepareMovie message but before the prepareFrame and startMovie messages.
+   Note: Be aware that some sprite properties, such as the rect sprite property, may not be accessible
+   in a beginSprite handler. This is because the property needs to be calculated, which is not done until
+   the sprite is drawn.
+
+   The go, play, and updateStage commands are disabled in an on beginSprite handler.
+ Example
+
+   This handler plays the sound cast member Stevie Wonder when the sprite begins:
+   -- Lingo syntax
+   on beginSprite me
+     sound(1).play(member("Stevie Wonder"))
+   end
+
+   // JavaScript syntax
+   function beginSprite() {
+     sound(1).play(member("Stevie Wonder"));
+   }
+
+ See also
+   on endSprite, on prepareFrame, scriptInstanceList
+
+
+
+
+                                                                                    on beginSprite    161
+on closeWindow
+  Usage
+      -- Lingo syntax
+      on closeWindow
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function closeWindow() {
+        statement(s);
+      }
+
+  Description
+
+      System message and event handler; contains statements that run when the user closes the window
+      for a movie by clicking the window’s close box.
+      The on closeWindow handler is a good place to put Lingo commands that you want executed
+      every time the movie’s window closes.
+  Example
+
+      This handler tells Director to forget the current window when the user closes the window that
+      the movie is playing in:
+      -- Lingo syntax
+      on closeWindow
+        -- perform general housekeeping here
+        window(1).forget()
+      end
+
+      // JavaScript syntax
+      function closeWindow() {
+        // perform general housekeeping here
+        window(1).forget();
+      }
+
+on cuePassed
+  Usage
+      -- Lingo syntax
+      on cuePassed({me,} channelID, cuePointNumber,cuePointName)
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function cuePassed(channelID, cuePointNumber,cuePointName) {
+        statement(s);
+      }
+
+  Description
+
+      System message and event handler; contains statements that run each time a sound or sprite
+      passes a cue point in its media.
+      • me The optional me parameter is the scriptInstanceRef value of the script being invoked.
+        You must include this parameter when using the message in a behavior. If this parameter is
+        omitted, the other arguments will not be processed correctly.
+
+
+162    Chapter 10: Events and Messages
+   • channelID The number of the sound or sprite channel for the file where the cue
+      point occurred.
+   • cuePointNumber The ordinal number of the cue point that triggers the event in the list of
+     the cast member’s cue points.
+   • cuePointName The name of the cue point that was encountered.
+   The message is passed—in order—to sprite, cast member, frame, and movie scripts. For the sprite
+   to receive the event, it must be the source of the sound, like a QuickTime movie or SWA cast
+   member. Use the isPastCuePoint property to check cues in behaviors on sprites that don’t
+   generate sounds.
+ Example
+
+   This handler placed in a Movie or Frame script reports any cue points in sound channel 1 to the
+   Message window:
+   -- Lingo syntax
+   on cuePassed channel, number, name
+     if (channel = #Sound1) then
+        put("CuePoint" && number && "named" && name && "occurred in sound 1")
+     end if
+   end
+
+   // JavaScript syntax
+   function cuePassed(channel, number, name) {
+     if (channel == symbol("Sound1")) {
+        put("CuePoint " + number + " named " + name + "occurred in sound 1");
+     }
+   }
+
+ See also
+   scriptInstanceList, cuePointNames, cuePointTimes, isPastCuePoint()
+
+on deactivateApplication
+ Usage
+   -- Lingo syntax
+   on deactivateApplication
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function deactivateApplication() {
+     statement(s);
+   }
+
+ Description
+
+   Built-in handler; runs when the projector is sent to the background. This handler is useful when
+   a projector runs in a window and the user can send it to the background to work with other
+   applications. Any MIAWs running in the projector can also make use of this handler.
+   During authoring, this handler is called only if Animate in Background is turned on in
+   General Preferences.
+   On Windows, this handler is not called if the projector is merely minimized and no other
+   application is brought to the foreground.
+
+
+
+                                                                      on deactivateApplication   163
+  Example
+
+      This handler plays a sound each time the user sends the projector to the background:
+      -- Lingo syntax
+      on deactivateApplication
+        sound(1).queue(member("closeSound"))
+        sound(1).play()
+      end
+
+      // JavaScript syntax
+      function deactivateApplication() {
+        sound(1).queue(member("closeSound"));
+        sound(1).play();
+      }
+
+  See also
+      add (3D texture), activeCastLib, on deactivateWindow
+
+on deactivateWindow
+  Usage
+      -- Lingo syntax
+      on deactivateWindow
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function deactivateWindow() {
+        statement(s);
+      }
+
+
+  Description
+
+      System message and event handler; contains statements that run when the window that the movie
+      is playing in is deactivated. The on deactivate event handler is a good place for Lingo that you
+      want executed whenever a window is deactivated.
+  Example
+
+      This handler plays the sound Snore when the window that the movie is playing in is deactivated:
+      -- Lingo syntax
+      on deactivateWindow
+        sound(2).play(member("Snore"))
+      end
+
+      // JavaScript syntax
+      function deactivateWindow() {
+        sound(2).play(member("Snore"));
+      }
+
+
+
+
+164    Chapter 10: Events and Messages
+on DVDeventNotification
+ Usage
+   -- Lingo syntax
+   on DVDeventNotification objectRef, event {, eventArg1} {, eventArg2} {,
+     eventArg3}
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function DVDeventNotification (objectRef, event {, eventArg1} {, eventArg2} {,
+     eventArg3}) {
+     statement(s);
+   }
+
+ Description
+
+   Author-specified DVD event handler. Contains statements that run in response to events that
+   occur while a DVD is playing.
+   This handler can be used to track all DVD events. In the script examples above, objectRef, the
+   first parameter passed to the DVDeventNotification handler, is a reference to the
+   DVDeventNotification object itself. The actual event that occurs is always passed as the second
+   parameter, event. Some events contain additional information about them that is passed as a
+   third parameter, eventArg1. In some cases, a fourth and fifth parameter, eventArg2 and
+   eventArg3, may contain additional event information.
+   The following table lists the events that can occur while a DVD is playing.
+
+   Event                    Description
+   angleChange              Occurs when either the number of available angles changed or the current
+                            user angle number changed.
+                            The following additional information is passed to DVDeventNotification
+                            when this event occurs:
+                            • eventArg2 - An integer that indicates the number of available angles.
+                              When the number of available angles is 1, the current video is not
+                              multiangle.
+                            • eventArg3 - An integer that indicates the current user angle number.
+   audioStreamChange        Occurs when the current user audio stream number changed for the main
+                            title.
+                            The following additional information is passed to DVDeventNotification
+                            when this event occurs:
+                            • eventArg2 - An integer that indicates the new user audio stream number.
+                               Stream 0xFFFFFFFF indicates that no stream is selected.
+   buttonChange             Occurs when either the number of available buttons changed or the
+                            currently selected button number changed.
+                            The following additional information is passed to DVDeventNotification
+                            when this event occurs:
+                            • eventArg2 - An integer that indicates the number of available buttons.
+                            • eventArg3 - An integer that indicates the currently selected button
+                              number. Selected button number 0 implies that no button is selected.
+   chapterAutoStop          Occurs when playback stopped as a result of an automatic stop.
+
+
+
+
+                                                                        on DVDeventNotification    165
+      Event                  Description
+      chapterStart           Occurs when playback of a new program in the title domain starts.
+                             The following additional information is passed to DVDeventNotification
+                             when this event occurs:
+                             • eventArg2 - An integer that indicates the new chapter number.
+      diskEjected            Occurs when a DVD is ejected.
+      diskInserted           Occurs when a DVD is inserted.
+      domainChange           Occurs when the DVD player’s domain changes.
+                             The following additional information is passed to DVDeventNotification
+                             when this event occurs:
+                             • eventArg1. A value that indicates the new domain. The new domain will
+                               be one of the following values.
+                               ■ firstPlay. The DVD Navigator is performing default initialization of a
+                                 DVD.
+                               ■ videoManagerMenu. The DVD Navigator is displaying menus for the
+                                 whole disc.
+                               ■ videoTitleSetMenu. The DVD Navigator is displaying menus for the
+                                 current title set.
+                               ■ title. The DVD Navigator is displaying the current title.
+                               ■ stop. The DVD Navigator is in the stop domain.
+
+      error                  Occurs when a DVD error condition is encountered.
+                             The following additional information is passed to DVDeventNotification
+                             when this event occurs:
+                             • eventArg2. A value that indicates error condition. The error condition will
+                               be one of the following values.
+                               ■ copyProtectFail. Key exchange for DVD copy protection failed.
+                                 Playback is stopped.
+                               ■ invalidDVD1_0Disc. DVD-Video disc is authored incorrectly for
+                                 specification version 1.x. Playback is stopped.
+                               ■ invalidDiscRegion. DVD-Video disc cannot be played because the
+                                 disc is not authored to play in the system region.
+                               ■ lowParentalLevel. Player parental level is lower than the lowest
+                                 parental level available in the DVD content. Playback is stopped.
+                               ■ macrovisionFail. Macrovision distribution failed. Playback stopped.
+                               ■ incompatibleSystemAndDecoderRegions. No discs can be played
+                                 because the system region does not match the decoder region.
+                               ■ incompatibleDiscAndDecoderRegions. The disc cannot be played
+                                 because the disc is not authored to be played in the decoder’s region.
+                               ■ unexpected. Something unexpected happened; perhaps content is
+                                 authored incorrectly. Playback is stopped.
+      karaokeMode            Occurs when the audio mode is set to karaoke.
+      noFirstPlayChain       Occurs when the DVD disc does not have a FP_PGC (First Play Program
+                             Chain) and that the DVD Navigator will not automatically load any PGC
+                             and start playback.
+
+
+
+
+166    Chapter 10: Events and Messages
+Event                 Description
+parentalLevelChange   Occurs when the parental level of the authored content is about to change.
+                      The following additional information is passed to DVDeventNotification
+                      when this event occurs:
+                      • eventArg2. An integer that indicates the new parental level set in the
+                        player.
+playbackStopped       Occurs when playback stops. The DVD Navigator has completed
+                      playback of the PGC and did not find any other branching instruction for
+                      subsequent playback.
+playPeriodAutoStop    Occurs when playback stopped as a result of an automatic stop.
+rateChange            Occurs when the playback rate changes.
+                      The following additional information is passed to DVDeventNotification
+                      when this event occurs:
+                      • eventArg2. An integer that indicates the new playback rate. A value that is
+                        less than (<) 0 indicates reverse playback mode. A value that is greater
+                        than (>) 0 indicates forward playback mode. This value is the actual
+                        playback rate multiplied by 10,000.
+stillOff              Occurs at the end of any still (PGC, Cell, or VOBU).
+stillOn               Occurs at the beginning of any still (PGC, Cell, or VOBU).
+                      The following additional information is passed to DVDeventNotification
+                      when this event occurs:
+                      • eventArg2 - A boolean that indicates whether buttons are available. Zero
+                        (0) indicates buttons are available. One (1) indicates no buttons are
+                        available.
+                      • eventArg3 - An integer or address that indicates the number of seconds
+                        the still will last. 0xFFFFFFFF indicates an infinite still.
+titleChange           Occurs when the current title number changes.
+                      The following additional information is passed to DVDeventNotification
+                      when this event occurs:
+                      • eventArg2 - An integer or address that indicates the new title number.
+
+
+
+
+                                                                   on DVDeventNotification     167
+      Event                    Description
+      UOPchange                Occurs when one of the available playback or search mechanisms has
+                               changed.
+                               The following additional information is passed to DVDeventNotification
+                               when this event occurs:
+                               • eventArg2 - An integer or address that indicates which playback or
+                                 search mechanisms the DVD disc explicitly disabled.
+      warning                  Occurs when a DVD warning condition is encountered.
+                               The following additional information is passed to DVDeventNotification
+                               when this event occurs:
+                               • eventArg2 - An integer or address that indicates the warning condition.
+                                 The warning condition will be one of the following values.
+                                 ■ invalidDVD1_0Disc. DVD-Video disc is authored incorrectly. Playback
+                                   can continue, but unexpected behavior might occur.
+                                 ■ formatNotSupported. A decoder would not support the current format.
+                                   Playback of a stream might not function.
+                                 ■ illegalNavCommand. The internal DVD Navigation command processor
+                                   attempted to process an illegal command.
+                                 ■ open.
+                                 ■ seek.
+                                 ■ read.
+
+  See also
+      DVD
+
+on endSprite
+  Usage
+      -- Lingo syntax
+      on endSprite
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function endSprite() {
+        statement(s);
+      }
+
+  Description
+
+      System message and event handler; contains Lingo that runs when the playhead leaves a sprite
+      and goes to a frame in which the sprite doesn’t exist. It is generated after exitFrame.
+      Place on endSprite handlers in a behavior script.
+      Director destroys instances of any behavior scripts attached to the sprite immediately after the
+      endSprite event occurs.
+
+      The event handler is passed the behavior or frame script reference me if used in a behavior.
+      This endSprite message is sent after the exitFrame message if the playhead plays to the end
+      of the frame.
+      The go(), play(), and updateStage() methods are disabled in an on endSprite handler.
+
+
+
+168    Chapter 10: Events and Messages
+ Example
+
+   This handler runs when the playhead exits a sprite:
+   -- Lingo syntax
+   on endSprite me
+     -- clean up
+     gNumberOfSharks = gNumberOfSharks - 1
+     sound(5).stop()
+   end
+
+   // JavaScript syntax
+   function endSprite() {
+     // clean up
+     gNumberOfSharks--;
+     sound(5).stop();
+   }
+
+ See also
+   on beginSprite, on exitFrame
+
+on enterFrame
+ Usage
+   -- Lingo syntax
+   on enterFrame
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function enterFrame() {
+     statement(s);
+   }
+
+ Description
+
+   System message and event handler; contains statements that run each time the playhead enters
+   the frame.
+   Place on enterFrame handlers in behavior, frame, or movie scripts, as follows:
+   • To assign the handler to an individual sprite, put the handler in a behavior attached to
+      the sprite.
+   • To assign the handler to an individual frame, put the handler in the frame script.
+   • To assign the handler to every frame (unless you explicitly instruct the movie otherwise), put
+      the on enterFrame handler in a movie script. The handler executes every time the playhead
+      enters a frame unless the frame script has its own handler. If the frame script has its own
+      handler, the on enterFrame handler in the frame script overrides the on enterFrame handler
+      in the movie script.
+   The order of frame events is stepFrame, prepareFrame, enterFrame, and exitFrame.
+   This event is passed the object reference me if used in a behavior.
+
+
+
+
+                                                                                on enterFrame   169
+  Example
+
+      This handler turns off the puppet condition for sprites 1 through 5 each time the playhead enters
+      the frame:
+      -- Lingo syntax
+      on enterFrame
+        repeat with i = 1 to 5
+          _movie.puppetSprite(i, FALSE)
+        end repeat
+      end
+
+      // JavaScript syntax
+      function enterFrame() {
+        for (i=1;i<=5;i++) {
+          _movie.puppetSprite(i, false);
+        }
+      }
+
+on EvalScript
+  Usage
+      -- Lingo syntax
+      on EvalScript aParam
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function EvalScript(aParam) {
+        statement(s);
+      }
+
+  Description
+
+      System message and event handler; in a movie with Macromedia Shockwave content, contains
+      statements that run when the handler receives an EvalScript message from a browser. The
+      parameter is a string passed in from the browser.
+      • The EvalScript message can include a string that Director can interpret as a Lingo statement.
+        Lingo cannot accept nested strings. If the handler you are calling expects a string as a
+        parameter, pass the parameter as a symbol.
+      • The on EvalScript handler is called by the EvalScript() scripting method from JavaScript
+        or VBScript in a browser.
+      Include only those behaviors in on EvalScript that you want users to control; for security
+      reasons, don’t give complete access to behaviors.
+      Note: If you place a return at the end of your EvalScript handler, the value returned can be used by
+      JavaScript in the browser.
+
+
+
+
+170    Chapter 10: Events and Messages
+Example
+  This shows how to make the playhead jump to a specific frame depending on what frame is
+  passed in as the parameter:
+  -- Lingo syntax
+  on EvalScript aParam
+    _movie.go(aParam)
+  end
+
+  // JavaScript syntax
+  function EvalScript(aParam) {
+    _movie.go(aParam);
+  }
+  This handler runs the statement _movie.go(aParam) if it receives an EvalScript message that
+  includes dog, cat, or tree as an argument:
+  -- Lingo syntax
+  on EvalScript aParam
+    case aParam of
+       "dog", "cat", "tree": _movie.go(aParam)
+    end case
+  end
+
+  // JavaScript syntax
+  function EvalScript(aParam) {
+    switch(aParam) {
+       case "dog", "cat", "tree": _movie.go(aParam);
+    }
+  }
+  A possible calling statement for this in JavaScript would be EvalScript ("dog").
+  This handler takes an argument that can be a number or symbol:
+  -- Lingo syntax
+  on EvalScript aParam
+    if word 1 of aParam = "myHandler" then
+       _movie.go(aParam)
+    end if
+  end
+
+  // JavaScript syntax
+  function EvalScript(aParam) {
+    if (aParam.indexOf("myHandler",0)) {
+       _movie.go(aParam);
+    }
+  }
+  The following handler normally requires a string as its argument. The argument is received as a
+  symbol and then converted to a string within the handler by the string function:
+  -- Lingo syntax
+  on myHandler aParam
+    _movie.go(string(aParam))
+  end
+
+  // JavaScript syntax
+  function myHandler(aParam) {
+    _movie.go(aParam.toString());
+  }
+See also
+  externalEvent(), return (keyword)
+
+                                                                                on EvalScript   171
+on exitFrame
+  Usage
+      -- Lingo syntax
+      on exitFrame
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function exitFrame() {
+        statement(s);
+      }
+
+  Description
+
+      System message and event handler; contains statements that run each time the playhead exits the
+      frame that the on exitFrame handler is attached to. The on exitFrame handler is a useful place
+      for Lingo that resets conditions that are no longer appropriate after leaving the frame.
+      Place on exitFrame handlers in behavior, frame, or movie scripts, as follows:
+      • To assign the handler to an individual sprite, put the handler in a behavior attached to
+        the sprite.
+      • To assign the handler to an individual frame, put the handler in the frame script.
+      • To assign the handler to every frame unless explicitly instructed otherwise, put the handler in a
+        movie script. The on exitFrame handler then executes every time the playhead exits the frame
+        unless the frame script has its own on exitFrame handler. When the frame script has its own
+        on exitFrame handler, the on exitFrame handler in the frame script overrides the one in the
+        movie script.
+      This event is passed the sprite script or frame script reference me if it is used in a behavior. The
+      order of frame events is prepareFrame, enterFrame, and exitFrame.
+  Example
+
+      This handler turns off all puppet conditions when the playhead exits the frame:
+      -- Lingo syntax
+      on exitFrame me
+        repeat with i = 48 down to 1
+           sprite(i).scripted = FALSE
+        end repeat
+      end
+
+      // JavaScript syntax
+      function exitFrame() {
+        for (i=48; i>=1; i--);
+           sprite(i).scripted = false;
+        }
+      }
+
+
+
+
+172    Chapter 10: Events and Messages
+   This handler branches the playhead to a specified frame if the value in the global variable
+   vTotal exceeds 1000 when the playhead exits the frame:
+   // JavaScript syntax
+   function exitFrame() {
+     if (_global.vTotal > 1000) {
+        _movie.go("Finished");
+     }
+   }
+
+ See also
+   on enterFrame
+
+on getBehaviorDescription
+ Usage
+   -- Lingo syntax
+   on getBehaviorDescription
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function getBehaviorDescription() {
+     statement(s);
+   }
+
+ Description
+
+   System message and event handler; contains Lingo that returns the string that appears in a
+   behavior’s description pane in the Behavior Inspector when the behavior is selected.
+   The description string is optional.
+   Director sends the getBehaviorDescription message to the behaviors attached to a sprite when
+   the Behavior inspector opens. Place the on getBehaviorDescription handler within a behavior.
+   The handler can contain embedded Return characters for formatting multiple-line descriptions.
+ Example
+
+   This statement displays “Vertical Multiline textField Scrollbar” in the description pane:
+   -- Lingo syntax
+   on getBehaviorDescription
+     return "Vertical Multiline textField Scrollbar"
+   end
+
+   // JavaScript syntax
+   function getBehaviorDescription() {
+     return "Vertical Multiline textField Scrollbar";
+   }
+
+ See also
+   on getPropertyDescriptionList, on getBehaviorTooltip, on runPropertyDialog
+
+
+
+
+                                                                      on getBehaviorDescription   173
+on getBehaviorTooltip
+  Usage
+      -- Lingo syntax
+      on getBehaviorTooltip
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function getBehaviorTooltip() {
+        statement(s);
+      }
+
+  Description
+
+      System message and event handler; contains Lingo that returns the string that appears in a tooltip
+      for a script in the Library palette.
+      Director sends the getBehaviorTooltip message to the script when the cursor stops over it in
+      the Library palette. Place the on getBehaviorTooltip handler within the behavior.
+      The use of the handler is optional. If no handler is supplied, the cast member name appears in
+      the tooltip.
+      The handler can contain embedded Return characters for formatting multiple-line descriptions.
+  Example
+
+      This statement displays “Jigsaw puzzle piece” in the description pane:
+      -- Lingo syntax
+      on getBehaviorTooltip
+        return "Jigsaw puzzle piece"
+      end
+
+      // JavaScript syntax
+      function getBehaviorTooltip() {
+        return "Jigsaw puzzle piece";
+      }
+
+  See also
+      on getPropertyDescriptionList, on getBehaviorDescription, on runPropertyDialog
+
+on getPropertyDescriptionList
+  Usage
+      -- Lingo syntax
+      on getPropertyDescriptionList
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function getPropertyDescriptionList() {
+        statement(s);
+      }
+
+
+
+
+174    Chapter 10: Events and Messages
+Description
+
+  System message and event handler; contains Lingo that generates a list of definitions and labels
+  for the parameters that appear in a behavior’s Parameters dialog box.
+  Place the on getPropertyDescriptionList handler within a behavior script. Behaviors that
+  don’t contain an on getPropertyDescriptionList handler don’t appear in the Parameters
+  dialog box and can’t be edited from the Director interface.
+  The on getPropertyDescriptionList message is sent when any action that causes the
+  Behavior Inspector to open occurs: either when the user drags a behavior to the Score or the user
+  double-clicks a behavior in the Behavior inspector.
+  The #default, #format, and #comment settings are mandatory for each parameter. The
+  following are possible values for these settings:
+
+  #default         The parameter’s initial setting.
+  #format          #integer #float #string #symbol #member #bitmap #filmloop #field #palette
+                   #picture #sound #button #shape #movie #digitalvideo #script #richtext
+                   #ole #transition #xtra #frame #marker #ink #boolean
+
+  #comment         A descriptive string that appears to the left of the parameter’s editable field in the
+                   Parameters dialog box.
+
+  #range           A range of possible values that can be assigned to a property. The range is
+                   specified as a linear list with several values or as a minimum and maximum in the
+                   form of a property list: [#min: minValue, #max: maxValue].
+
+Example
+
+  The following handler defines a behavior’s parameters that appear in the Parameters dialog box.
+  Each statement that begins with addProp adds a parameter to the list named description. Each
+  element added to the list defines a property and the property’s #default, #format, and
+  #comment values:
+  on getPropertyDescriptionList
+    description = [:]
+    description.addProp(#dynamic, [#default:1, #format:#boolean, \
+    #comment:"Dynamic"])
+    description.addProp(#fieldNum, [#default:1, #format:#integer, \
+    #comment:"Scroll which sprite:"])
+    description.addProp(#extentSprite, [#default:1,#format:#integer, \
+    #comment: "Extend Sprite:"])
+    description.addProp(#proportional, [#default:1,#format:#boolean, \
+    #comment: "Proportional:"])
+    return description
+  end
+
+See also
+  addProp, on getBehaviorDescription, on runPropertyDialog
+
+
+
+
+                                                                     on getPropertyDescriptionList     175
+on hyperlinkClicked
+  Usage
+      -- Lingo syntax
+      on hyperlinkClicked me, data, range
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function hyperlinkClicked(data, range) {
+        statement(s);
+      }
+
+  Description
+
+      System message and event handler; used to determine when a hyperlink is actually clicked.
+      This event handler has the following parameters:
+      • me Used in a behavior to identify the sprite instance
+      • data The hyperlink data itself; the string entered in the Text inspector when editing the text
+        cast member
+      • range The character range of the hyperlink in the text (It’s possible to get the text of the
+        range itself by using the syntax member Ref.char[range[1]..range[2]]
+      This handler should be attached to a sprite as a behavior script. Avoid placing this handler in a
+      cast member script.
+  Example
+
+      This behavior shows a link examining the hyperlink that was clicked, jump to a URL if needed,
+      then output the text of the link itself to the message window:
+      -- Lingo syntax
+      property spriteNum
+
+      on hyperlinkClicked(me, data, range)
+        if data starts "http://" then
+           gotoNetPage(data)
+        end if
+        currentMember = sprite(spriteNum).member
+        anchorString = currentMember.char[range[1]..range[2]]
+        put("The hyperlink on"&&anchorString&&"was just clicked.")
+      end
+      // JavaScript syntax
+      function hyperlinkClicked(data, range) {
+        var st = data.slice(0,7);
+        var ht = "http://";
+        if (st = ht) {
+           gotoNetPage(data);
+        }
+        var currentMember = sprite(this.spriteNum).member;
+        var r1 = currentMember.getPropRef("char", range[1]).hyperlinkRange;
+        var a = r1[1] - 1;
+        var b = r1[2];
+        var st = new String(currentMember.text);
+        var anchorString = st.slice(a, b);
+        put("The hyperlink on " + anchorString + " was just clicked.");
+      }
+
+
+
+
+176    Chapter 10: Events and Messages
+on idle
+ Usage
+   -- Lingo syntax
+   on idle
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function idle() {
+     statement(s);
+   }
+
+ Description
+
+   System message and event handler; contains statements that run whenever the movie has no other
+   events to handle and is a useful location for Lingo statements that you want to execute as
+   frequently as possible, such as statements that update values in global variables and displays
+   current movie conditions.
+   Because statements in on idle handlers run frequently, it is good practice to avoid placing Lingo
+   that takes a long time to process in an on idle handler.
+   It is often preferable to put on idle handlers in frame scripts instead of movie scripts to take
+   advantage of the on idle handler only when appropriate.
+   Director can load cast members from an internal or external cast during an idle event. However,
+   it cannot load linked cast members during an idle event.
+   The idle message is only sent to frame scripts and movie scripts.
+ Example
+
+   This handler updates the time being displayed in the movie whenever there are no other events to
+   handle:
+   -- Lingo syntax
+   on idle
+     member("Time").text = _system.time()
+   end idle
+
+   // JavaScript syntax
+   function idle() {
+     member("Time").text = _system.time();
+   }
+
+ See also
+   idleHandlerPeriod
+
+
+
+
+                                                                                          on idle     177
+on isOKToAttach
+  Usage
+      -- Lingo syntax
+      on isOKToAttach me, aSpriteType, aSpriteNum
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function isOKToAttach(aSpriteType, aSpriteNum) {
+        statement(s)
+      }
+
+  Description
+
+      Built-in handler; you can add this handler to a behavior in order to check the type of sprite the
+      behavior is being attached to and prevent the behavior from being attached to inappropriate
+      sprite types.
+      When the behavior is attached to a sprite, the handler executes and Director passes to it the type
+      of the sprite and its sprite number. The me argument contains a reference to the behavior that is
+      being attached to the sprite.
+      This handler runs before the on getPropertyDescriptionList handler.
+      The Lingo author can check for two types of sprites. #graphic includes all graphic cast members,
+      such as shapes, bitmaps, digital video, text, and so on. #script indicates the behavior was
+      attached to the script channel. In this case, the spriteNum is 1.
+      For each of these sprite types, the handler must return TRUE or FALSE. A value of TRUE indicates
+      that the behavior can be attached to the sprite. A value of FALSE prevents the behavior from being
+      attached to the sprite.
+      If the behavior contains no on isOKToAttach handler, then the behavior can be attached to any
+      sprite or frame.
+      This handler is called during the initial attachment of the behavior to the sprite or script channel
+      and also when attaching a new behavior to a sprite using the Behavior inspector.
+  Example
+
+      This statement checks the sprite type the behavior is being attached to and returns TRUE for any
+      graphic sprite except a shape and FALSE for the script channel:
+      -- Lingo syntax
+      on isOKToAttach me, aSpriteType, aSpriteNum
+        case aSpriteType of
+           #graphic: -- any graphic sprite type
+             return sprite(aSpriteNum).member.type <> #shape
+             -- works for everything but shape cast members
+           #script: --the frame script channel
+             return FALSE -- doesn't work as a frame script
+        end case
+      end
+
+
+
+
+178    Chapter 10: Events and Messages
+   // JavaScript syntax
+   function isOKToAttach(aSpriteType, aSpriteNum) {
+     switch (aSpriteType) {
+        case symbol("graphic"): // any graphic sprite type
+          return sprite(aSpriteNum).member.type != symbol("shape");
+          // works for everything but shape cast members
+        case symbol("script"): // the frame script channel
+          return false; // doesn't work as a frame script
+     }
+   }
+
+on keyDown
+ Usage
+   -- Lingo syntax
+   on keyDown
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function keyDown() {
+     statement(s);
+   }
+
+ Description
+
+   System message and event handler; contains statements that run when a key is pressed.
+   When a key is pressed, Director searches these locations, in order, for an on keyDown handler:
+   primary event handler, editable field sprite script, field cast member script, frame script, and
+   movie script. For sprites and cast members, on keyDown handlers work only for editable text and
+   field members. A keyDown event on a different type of cast member, such as a bitmap, has no
+   effect. (If pressing a key should have the same response throughout the movie, set
+   keyDownScript.)
+
+   Director stops searching when it reaches the first location that has an on keyDown handler,
+   unless the handler includes the pass command to explicitly pass the keyDown message on to the
+   next location.
+   The on keyDown event handler is a good place to put Lingo that implements keyboard shortcuts
+   or other interface features that you want to occur when the user presses keys.
+   When the movie plays back as an applet, an on keyDown handler always traps key presses, even if
+   the handler is empty. If the user is typing in an editable field, an on keyDown handler attached to
+   the field must include the pass command for the key to appear in the field.
+   Where you place an on keyDown handler can affect when it runs.
+   • To apply the handler to a specific editable field sprite, put the handler in a sprite script.
+   • To apply the handler to an editable field cast member in general, put the handler in a cast
+      member script.
+   • To apply the handler to an entire frame, put the handler in a frame script.
+   • To apply the handler throughout the entire movie, put the handler in a movie script.
+
+
+
+
+                                                                                    on keyDown       179
+      You can override an on keyDown handler by placing an alternative on keyDown handler in a
+      location that Lingo checks before it gets to the handler you want to override. For example, you
+      can override an on keyDown handler assigned to a cast member by placing an on keyDown
+      handler in a sprite script.
+  Example
+
+      This handler checks whether the Return key was pressed and if it was, sends the playhead to
+      another frame:
+      -- Lingo syntax
+      on keyDown
+        if (_key.key = RETURN) then _movie.go("AddSum")
+      end keyDown
+
+      // JavaScript syntax
+      function keyDown() {
+        if (_key.keyCode == 36) {
+           _movie.go("AddSum");
+        }
+      }
+
+  See also
+      charToNum(), keyDownScript, keyUpScript, key, keyCode, keyPressed()
+
+on keyUp
+  Usage
+      -- Lingo syntax
+      on keyUp
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function keyUp() {
+        statement(s);
+      }
+
+  Description
+
+      System message and event handler; contains statements that run when a key is released. The on
+      keyUp handler is similar to the on keyDown handler, except this event occurs after a character
+      appears if a field or text sprite is editable on the screen.
+      When a key is released, Lingo searches these locations, in order, for an on keyUp handler: primary
+      event handler, editable field sprite script, field cast member script, frame script, and movie script.
+      For sprites and cast members, on keyUp handlers work only for editable strings. A keyUp event on
+      a different type of cast member, such as a bitmap, has no effect. If releasing a key should always
+      have the same response throughout the movie, set keyUpScript.
+      Lingo stops searching when it reaches the first location that has an on keyUp handler, unless the
+      handler includes the pass command to explicitly pass the keyUp message on to the next location.
+      The on keyUp event handler is a good place to put Lingo that implements keyboard shortcuts or
+      other interface features that you want to occur when the user releases keys.
+
+
+
+
+180    Chapter 10: Events and Messages
+   When the movie plays back as an applet, an on keyUp handler always traps key presses, even if the
+   handler is empty. If the user is typing in an editable field, an on keyUp handler attached to the
+   field must include the pass command for the key to appear in the field.
+   Where you place an on keyUp handler can affect when it runs, as follows:
+   • To apply the handler to a specific editable field sprite, put it in a behavior.
+   • To apply the handler to an editable field cast member in general, put it in a cast member script.
+   • To apply the handler to an entire frame, put it in a frame script.
+   • To apply the handler throughout the entire movie, put it in a movie script.
+   You can override an on keyUp handler by placing an alternative on keyUp handler in a location
+   that Lingo checks before it gets to the handler you want to override. For example, you can
+   override an on keyUp handler assigned to a cast member by placing an on keyUp handler in a
+   sprite script.
+ Example
+
+   This handler checks whether the Return key was released and if it was, sends the playhead to
+   another frame:
+   -- Lingo syntax
+   on keyUp
+     if (_key.key = RETURN) then _movie.go("AddSum")
+   end keyUp
+
+   // JavaScript syntax
+   function keyUp() {
+     if (_key.keyCode == 36) {
+        _movie.go("AddSum");
+     }
+   }
+
+ See also
+   on keyDown, keyDownScript, keyUpScript
+
+on mouseDown (event handler)
+ Usage
+   -- Lingo syntax
+   on mouseDown
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function mouseDown() {
+     statement(s);
+   }
+
+ Description
+
+   System message and event handler; contains statements that run when the mouse button
+   is pressed.
+
+
+
+
+                                                                  on mouseDown (event handler)     181
+      When the mouse button is pressed, Lingo searches the following locations, in order, for an on
+      mouseDown handler: primary event handler, sprite script, cast member script, frame script, and
+      movie script. Lingo stops searching when it reaches the first location that has an on mouseDown
+      handler, unless the handler includes the pass command to explicitly pass the mouseDown message
+      on to the next location.
+      To have the same response throughout the movie when pressing the mouse button, set
+      mouseDownScript or put a mouseDown handler in a Movie script.
+
+      The on mouseDown event handler is a good place to put Lingo that flashes images, triggers sound
+      effects, or makes sprites move when the user presses the mouse button.
+      Where you place an on mouseDown handler can affect when it runs.
+      • To apply the handler to a specific sprite, put it in a sprite script.
+      • To apply the handler to a cast member in general, put it in a cast member script.
+      • To apply the handler to an entire frame, put it in a frame script.
+      • To apply the handler throughout the entire movie, put it in a movie script.
+      You can override an on mouseDown handler by placing an alternative on mouseDown handler in a
+      location that Lingo checks before it gets to the handler you want to override. For example, you
+      can override an on mouseDown handler assigned to a cast member by placing an on mouseDown
+      handler in a sprite script.
+      If used in a behavior, this event is passed the sprite script or frame script reference me.
+  Example
+
+      This handler checks whether the user clicks anywhere on the Stage and sends the playhead to
+      another frame if a click occurs:
+      -- Lingo syntax
+      on mouseDown
+        if (_mouse.clickOn = 0) then _movie.go("AddSum")
+      end
+
+      // JavaScript syntax
+      function mouseDown() {
+        if (_mouse.clickOn == 0) {
+           _movie.go("AddSum");
+        }
+      }
+      This handler, assigned to a sprite script, plays a sound when the sprite is clicked:
+      -- Lingo syntax
+      on mouseDown
+        sound(1).play(member("Crickets"))
+      end
+
+      // JavaScript syntax
+      function mouseDown() {
+        sound(1).play(member("Crickets"));
+      }
+
+  See also
+      clickOn, mouseDownScript, mouseUpScript
+
+
+
+
+182    Chapter 10: Events and Messages
+on mouseEnter
+ Usage
+   -- Lingo syntax
+   on mouseEnter
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function mouseEnter() {
+     statement(s);
+   }
+
+ Description
+
+   System message and event handler; contains statements that run when the mouse pointer first
+   contacts the active area of the sprite. The mouse button does not have to be pressed.
+   If the sprite is a bitmap cast member with matte ink applied, the active area is the portion of the
+   image that is displayed; otherwise, the active area is the sprite’s bounding rectangle.
+   If used in a behavior, this event is passed the sprite script or frame script reference me.
+ Example
+
+   This example is a simple button behavior that switches the bitmap of the button when the mouse
+   rolls over and then off the button:
+   -- Lingo syntax
+   property spriteNum
+
+   on mouseEnter me
+     -- Determine current cast member and switch to next in cast
+     currentMember = sprite(spriteNum).member.number
+     sprite(spriteNum).member = currentMember + 1
+   end
+
+   on mouseLeave me
+     -- Determine current cast member and switch to previous in cast
+     currentMember = sprite(spriteNum).member.number
+     sprite(spriteNum).member = currentMember - 1
+   end
+
+   // JavaScript syntax
+   var spriteNum;
+
+   function mouseEnter() {
+     // Determine current cast member and switch to next in cast
+     currentMember = sprite(spriteNum).member.number;
+     sprite(spriteNum).member = currentMember + 1;
+   }
+
+   function mouseLeave() {
+     // Determine current cast member and switch to previous in cast
+     currentMember = sprite(spriteNum).member.number;
+     sprite(spriteNum).member = currentMember - 1;
+   }
+
+ See also
+   on mouseLeave, on mouseWithin
+
+
+
+                                                                                    on mouseEnter   183
+on mouseLeave
+  Usage
+      -- Lingo syntax
+      on mouseLeave
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function mouseLeave() {
+        statement(s);
+      }
+
+  Description
+
+      System message and event handler; contains statements that run when the mouse leaves the active
+      area of the sprite. The mouse button does not have to be pressed.
+      If the sprite is a bitmap cast member with the matte ink applied, the active area is the portion of
+      the image that is displayed; otherwise, the active area is the sprite’s bounding rectangle.
+      If used in a behavior, this event is passed the sprite script or frame script reference me.
+  Example
+
+      This statement shows a simple button behavior that switches the bitmap of the button when the
+      mouse pointer rolls over and then back off the button:
+      -- Lingo syntax
+      property spriteNum
+
+      on mouseEnter me
+        -- Determine current cast member and switch to next in cast
+        currentMember = sprite(spriteNum).member.number
+        sprite(spriteNum).member = currentMember + 1
+      end
+
+      on mouseLeave me
+        -- Determine current cast member and switch to previous in cast
+        currentMember = sprite(spriteNum).member.number
+        sprite(spriteNum).member = currentMember - 1
+      end
+
+      // JavaScript syntax
+      var spriteNum;
+
+      function mouseEnter() {
+        // Determine current cast member and switch to next in cast
+        currentMember = sprite(spriteNum).member.number;
+        sprite(spriteNum).member = currentMember + 1;
+      }
+
+      function mouseLeave() {
+        // Determine current cast member and switch to previous in cast
+        currentMember = sprite(spriteNum).member.number;
+        sprite(spriteNum).member = currentMember - 1;
+      }
+
+  See also
+      on mouseEnter, on mouseWithin
+
+
+
+184    Chapter 10: Events and Messages
+on mouseUp (event handler)
+ Usage
+   -- Lingo syntax
+   on mouseUp
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function mouseUp() {
+     statement(s);
+   }
+
+ Description
+
+   System message and event handler; contains statements that are activated when the mouse button
+   is released.
+   When the mouse button is released, Lingo searches the following locations, in order, for an on
+   mouseUp handler: primary event handler, sprite script, cast member script, frame script, and
+   movie script. Lingo stops searching when it reaches the first location that has an on mouseUp
+   handler, unless the handler includes the pass command to explicitly pass the mouseUp message on
+   to the next location.
+   To create the same response throughout the movie when the user releases the mouse button, set
+   the mouseUpScript.
+
+   An on mouseUp event handler is a good place to put Lingo that changes the appearance of
+   objects—such as buttons—after they are clicked. You can do this by switching the cast member
+   assigned to the sprite after the sprite is clicked and the mouse button is released.
+   Where you place an on mouseUp handler can affect when it runs, as follows:
+   • To apply the handler to a specific sprite, put it in a sprite script.
+   • To apply the handler to a cast member in general, put it in a cast member script.
+   • To apply the handler to an entire frame, put it in a frame script.
+   • To apply the handler throughout the entire movie, put it in a movie script.
+   You can override an on mouseUp handler by placing an alternative on mouseUp handler in a
+   location that Lingo checks before it gets to the handler you want to override. For example, you
+   can override an on mouseUp handler assigned to a cast member by placing an on mouseUp
+   handler in a sprite script.
+   If used in a behavior, this event is passed the sprite script or frame script reference me.
+
+
+
+
+                                                                       on mouseUp (event handler)   185
+  Example
+
+      This handler, assigned to sprite 10, switches the cast member assigned to sprite 10 when the user
+      releases the mouse button after clicking the sprite:
+      -- Lingo syntax
+      on mouseUp
+        sprite(10).member = member("Dimmed")
+      end
+
+      // JavaScript syntax
+      function mouseUp() {
+        sprite(10).member = member("Dimmed");
+      }
+
+  See also
+      on mouseDown (event handler)
+
+on mouseUpOutside
+  Usage
+      -- Lingo syntax
+      on mouseUpOutside me
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function mouseUpOutside() {
+        statement(s);
+      }
+
+  Description
+
+      System message and event handler; sent when the user presses the mouse button on a sprite but
+      releases it (away from) the sprite.
+  Example
+
+      This statement plays a sound when the user clicks the mouse button over a sprite and then
+      releases it outside the bounding rectangle of the sprite:
+      -- Lingo syntax
+      on mouseUpOutside me
+        sound(1).play(member("Professor Long Hair"))
+      end
+
+      // JavaScript syntax
+      function mouseUpOutside() {
+        sound(1).play(member("Professor Long Hair"));
+      }
+
+  See also
+      on mouseEnter, on mouseLeave, on mouseWithin
+
+
+
+
+186    Chapter 10: Events and Messages
+on mouseWithin
+ Usage
+   -- Lingo syntax
+   on mouseWithin
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function mouseWithin() {
+     statement(s);
+   }
+
+ Description
+
+   System message and event handler; contains statements that run when the mouse is within the
+   active area of the sprite. The mouse button does not have to be pressed.
+   If the sprite is a bitmap cast member with the matte ink applied, the active area is the portion of
+   the image that is displayed; otherwise, the sprite’s bounding rectangle is the active area.
+   If used in a behavior, this event is passed the sprite script or frame script reference me.
+ Example
+
+   This statement displays the mouse location when the mouse pointer is over a sprite:
+   -- Lingo syntax
+   on mouseWithin
+     member("Display").text = string(_mouse.mouseH)
+   end
+
+   // JavaScript syntax
+   function mouseWithin() {
+     member("Display").text = _mouse.mouseH.toString();
+   }
+
+ See also
+   on mouseEnter, on mouseLeave
+
+on moveWindow
+ Usage
+   -- Lingo syntax
+   on moveWindow
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function moveWindow() {
+     statement(s);
+   }
+
+ Description
+
+   System message and event handler; contains statements that run when a window is moved, such
+   as by dragging a movie to a new location on the Stage, and is a good place to put Lingo that you
+   want executed every time a movie’s window changes location.
+
+
+
+                                                                                  on moveWindow    187
+  Example
+
+      This handler displays a message in the Message window when the window a movie is playing
+      in moves:
+      -- Lingo syntax
+      on moveWindow
+        put("Just moved window containing" && _movie.name)
+      end
+
+      // JavaScript syntax
+      function moveWindow() {
+        put("Just moved window containing " + _movie.name);
+      }
+
+  See also
+      activeWindow, name (3D), windowList
+
+on openWindow
+  Usage
+      -- Lingo syntax
+      on openWindow
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function openWindow() {
+        statement(s);
+      }
+
+  Description
+
+      System message and event handler; contains statements that run when Director opens the movie
+      as a movie in a window and is a good place to put Lingo that you want executed every time the
+      movie opens in a window.
+  Example
+
+      This handler plays the sound file Hurray when the window that the movie is playing in opens:
+      -- Lingo syntax
+      on openWindow
+        sound(2).play(member("Hurray"))
+      end
+
+      // JavaScript syntax
+      function openWindow() {
+        sound(2).play(member("Hurray"));
+      }
+
+
+
+
+188    Chapter 10: Events and Messages
+on prepareFrame
+ Usage
+   -- Lingo syntax
+   on prepareFrame
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function prepareFrame {
+     statement(s);
+   }
+
+ Description
+
+   System message and event handler; contains statements that run immediately before the current
+   frame is drawn.
+   Unlike beginSprite and endSprite events, a prepareFrame event is generated each time the
+   playhead enters a frame.
+   The on prepareFrame handler is a useful place to change sprite properties before the sprite
+   is drawn.
+   If used in a behavior, the on prepareFrame handler receives the reference me.
+   The go, play, and updateStage commands are disabled in an on prepareFrame handler.
+ Example
+
+   This handler sets the locH property of the sprite that the behavior is attached to:
+   -- Lingo syntax
+   on prepareFrame me
+     sprite(me.spriteNum).locH          = _mouse.mouseH
+   end
+
+   // JavaScript syntax
+   function prepareFrame() {
+     sprite(spriteNum).locH = _mouse.mouseH;
+   }
+
+ See also
+   on enterFrame
+
+on prepareMovie
+ Usage
+   -- Lingo syntax
+   on prepareMovie
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function prepareMovie() {
+     statement(s);
+   }
+
+
+
+
+                                                                                on prepareMovie   189
+  Description
+
+      System message and event handler; contains statements that run after the movie preloads cast
+      members but before the movie does the following:
+      • Creates instances of behaviors attached to sprites in the first frame that plays.
+      • Prepares the first frame that plays, including drawing the frame, playing any sounds, and
+         executing transitions and palette effects.
+      New global variables used for sprite behaviors in the first frame should be initialized in the
+      on prepareMovie handler. Global variables already set by the previous movie do not need to
+      be reset.
+      An on prepareMovie handler is a good place to put Lingo that creates global variables, initializes
+      variables, plays a sound while the rest of the movie is loading into memory, or checks and adjusts
+      computer conditions such as color depth.
+      The go, play, and updateStage commands are disabled in an on prepareMovie handler.
+  Example
+
+      This handler creates a global variable when the movie starts:
+      -- Lingo syntax
+      on prepareMovie
+        global currentScore
+        currentScore = 0
+      end
+
+      // JavaScript syntax
+      function prepareMovie() {
+        _global.currentScore = 0;
+      }
+
+  See also
+      on enterFrame, on startMovie
+
+on resizeWindow
+  Usage
+      -- Lingo syntax
+      on resizeWindow
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function resizeWindow() {
+        statement(s);
+      }
+
+  Description
+
+      System message and event handler; contains statements that run when a movie is running as a
+      movie in a window (MIAW) and the user resizes the window by dragging the window’s resize box
+      or one of its edges.
+      An on resizeWindow event handler is a good place to put Lingo related to the window’s
+      dimensions, such as Lingo that positions sprites or crops digital video.
+
+
+
+190     Chapter 10: Events and Messages
+ Example
+
+   This handler moves sprite 3 to the coordinates stored in the variable centerPlace when the
+   window that the movie is playing in is resized:
+   -- Lingo syntax
+   on resizeWindow centerPlace
+     sprite(3).loc = centerPlace
+   end
+
+   // JavaScript syntax
+   function resizeWindow(centerPlace) {
+     sprite(3).loc = centerPlace;
+   }
+
+ See also
+   drawRect, sourceRect
+
+on rightMouseDown (event handler)
+ Usage
+   -- Lingo syntax
+   on rightMousedown
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function rightMouseDown() {
+     statement(s);
+   }
+
+ Description
+
+   System message and event handler; in Windows, specifies statements that run when the right
+   mouse button is pressed. On Macintosh computers, the statements run when the mouse button
+   and Control key are pressed simultaneously and the emulateMultiButtonMouse property is set
+   to TRUE; if this property is set to FALSE, this event handler has no effect on the Macintosh.
+ Example
+
+   This handler opens the window Help when the user clicks the right mouse button in Windows:
+   -- Lingo syntax
+   on rightMousedown
+     window("Help").open()
+   end
+
+   // JavaScript syntax
+   function rightMouseDown() {
+     window("Help").open();
+   }
+
+
+
+
+                                                          on rightMouseDown (event handler)     191
+on rightMouseUp (event handler)
+  Usage
+      -- Lingo syntax
+      on rightMouseUp
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function rightMouseUp() {
+        statement(s);
+      }
+
+  Description
+
+      System message and event handler; in Windows, specifies statements that run when the right
+      mouse button is released. On Macintosh computers, the statements run if the mouse button is
+      released while the Control key is pressed and the emulateMultiButtonMouse property is set to
+      TRUE; if this property is set to FALSE, this event handler has no effect on the Macintosh.
+
+  Example
+
+      This handler opens the Help window when the user releases the right mouse button in Windows:
+      -- Lingo syntax
+      on rightMouseUp
+        window("Help").open()
+      end
+
+      // JavaScript syntax
+      function rightMouseUp() {
+        window("Help").open();
+      }
+
+on runPropertyDialog
+  Usage
+      -- Lingo syntax
+      on runPropertyDialog me, currentInitializerList
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function runPropertyDialog(currentInitializerList) {
+        statement(s);
+      }
+
+  Description
+
+      System message and event handler; contains Lingo that defines specific values for a behavior’s
+      parameters in the Parameters dialog box. The runPropertyDialog message is sent whenever
+      the behavior is attached to a sprite, or when the user changes the initial property values of a
+      sprite’s behavior.
+      The current settings for a behavior’s initial properties are passed to the handler as a property list. If
+      the on runPropertyDialog handler is not defined within the behavior, Director runs a behavior
+      customization dialog box based on the property list returned by the on
+      getPropertyDescriptionList handler.
+
+
+
+
+192    Chapter 10: Events and Messages
+ Example
+
+   The following handler overrides the behavior’s values set in the Parameters dialog box for the
+   behavior. New values are contained in the list currentInitializerList. Normally, the
+   Parameters dialog box allows the user to set the mass and gravitational constants. However, this
+   handler assigns these parameters constant values without displaying a dialog box:
+   -- Lingo syntax
+   property mass
+   property gravitationalConstant
+
+   on runPropertyDialog me, currentInitializerList
+     --force mass to 10
+     currentInitializerList.setaProp(#mass, 10)
+     -- force gravitationalConstant to 9.8
+     currentInitializerList.setaProp(#gravitationalConstant, 9.8)
+     return currentInitializerList
+   end
+
+   // JavaScript syntax
+   function runPropertyDialog(currentInitializerList) {
+     //force mass to 10
+     currentInitializerList.setaProp("mass", 10)
+     //force gravitationalConstant to 9.8
+     currentInitializerList.setaProp("gravitationalConstant", 9.8)
+     return(currentInitializerList)
+   }
+
+ See also
+   on getBehaviorDescription, on getPropertyDescriptionList
+
+on savedLocal
+ Usage
+   -- Lingo syntax
+   on savedLocal
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function savedLocal() {
+     statement(s);
+   }
+
+ Description
+
+   System message and event handler; this property is provided to allow for enhancements in future
+   versions of Shockwave Player.
+ See also
+   allowSaveLocal
+
+
+
+
+                                                                                on savedLocal    193
+on sendXML
+  Usage
+      -- Lingo syntax
+      on sendXML "sendxmlstring", "window", "postdata"
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function sendXML(sendxmlstring, window, postdata) {
+        statement(s);
+      }
+
+  Description
+
+      Event handler; functions much like the getURL scripting method, which is also available using the
+      Macromedia Flash Asset Xtra extension. The on sendXML handler is called in Lingo when the
+      XMLobject.send ActionScript method is executed in a Flash sprite or Flash XML object.
+      In ActionScript, the XMLobject.send method passes two parameters in addition to the XML
+      data in the XML object. These parameters are as follows:
+      • url the URL to send the XML data to. Usually this is the URL of a server script that is
+        waiting to process the XML data.
+      • window the browser window in which to display the server’s response data.
+      The ActionScript XMLobject.send method can be called in Director either by a Flash sprite or by
+      a global Flash XML object created in Lingo. When this happens, the Lingo on sendXML handler
+      is called, and the same parameters are passed to the handler.
+      The following Lingo illustrates how the parameters are received by the on sendXML handler:
+      on sendXML me, theURL, targetWindow, XMLdata
+      These parameters correlate with the XMLobject.send parameters as follows:
+      • theURL the URL to send the XML data to.
+      • targetWindow the browser window in which to display the server’s response.
+      • XMLdata the XML data in the Flash XML object.
+      By creating an on sendXML handler in your Director movie, you enable it to process
+      XMLobject.send events generated in a Flash sprite or a global Flash object.
+      Flash sprites can also load external XML data or parse internal XML data. The Flash Asset
+      Xtra extension handles these functions in the same way as Flash 5 or Flash MX content in
+      your browser.
+  Example
+
+      This Lingo command gets the XMLobject.send method information from a Flash sprite and
+      then directs the browser to the URL and transmits the XML data to the URL:
+      -- Lingo syntax
+      on sendXML me, theURL, targetWindow, xmlData
+        gotoNetPage(theURL, targetWindow)
+        postNetText(theURL, xmlData)
+      end
+
+
+
+
+194    Chapter 10: Events and Messages
+   // JavaScript syntax
+   function sendXML(theURL, targetWindow, xmlData) {
+     gotoNetPage(theURL, targetWindow);
+     postNetText(theURL, xmlData);
+   }
+
+on startMovie
+ Usage
+   -- Lingo syntax
+   on startMovie
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function startMovie() {
+     statement(s);
+   }
+
+ Description
+
+   System message and event handler; contains statements that run just before the playhead enters
+   the first frame of the movie. The startMovie event occurs after the prepareFrame event and
+   before the enterFrame event.
+   An on startMovie handler is a good place to put Lingo that initializes sprites in the first frame of
+   the movie.
+ Example
+
+   This handler makes sprites invisible when the movie starts:
+   -- Lingo syntax
+   on startMovie
+     repeat with counter = 10 to 50
+        sprite(counter).visible = 0
+     end repeat
+   end startMovie
+
+   // JavaScript syntax
+   function startMovie() {
+     for(counter=10;counter<=50;counter++) {
+        sprite(counter).visible = 0;
+     }
+   }
+
+ See also
+   on prepareMovie
+
+
+
+
+                                                                                   on startMovie   195
+on stepFrame
+  Usage
+      -- Lingo syntax
+      on stepFrame
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function stepFrame() {
+        statement(s);
+      }
+
+  Description
+
+      System message and event handler; works in script instances in actorList because these are the
+      only objects that receive on stepFrame messages. This event handler is executed when the
+      playhead enters a frame or the Stage is updated.
+      An on stepFrame handler is a useful location for Lingo that you want to run frequently for a
+      specific set of objects. Assign the objects to actorList when you want Lingo in the on
+      stepFrame handler to run; remove the objects from actorList to prevent Lingo from running.
+      While the objects are in actorList, the objects’ on stepFrame handlers run each time the
+      playhead enters a frame or the updateStage command is issued.
+      The stepFrame message is sent before the prepareFrame message.
+      Assign objects to actorList so they respond to stepFrame messages. Objects must have an on
+      stepFrame handler to use this built-in functionality with actorList.
+
+      The go, play, and updateStage commands are disabled in an on stepFrame handler.
+  Example
+
+      If the child object is assigned to actorList, the on stepFrame handler in this parent script
+      updates the position of the sprite that is stored in the mySprite property each time the playhead
+      enters a frame:
+      -- Lingo syntax
+      property mySprite
+
+      on new me, theSprite
+        mySprite = theSprite
+        return me
+      end
+
+      on stepFrame me
+        sprite(mySprite).loc = point(random(640),random(480))
+      end
+
+      // JavaScript syntax
+      // define a constructor class that contains the mySprite property
+      function Frame(theSprite) {
+        this.mySprite = theSprite;
+      }
+
+      function stepFrame() {
+        var myFrame = new Frame(sprite(spriteName).spriteNum);
+        sprite(myFrame.mySprite).loc = point(random(640),random(480));
+      end
+
+
+
+196    Chapter 10: Events and Messages
+on stopMovie
+ Usage
+   -- Lingo syntax
+   on stopMovie
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function stopMovie() {
+     statement(s);
+   }
+
+ Description
+
+   System message and event handler; contains statements that run when the movie stops playing.
+   An on stopMovie handler is a good place to put Lingo that performs cleanup tasks—such as
+   closing resource files, clearing global variables, erasing fields, and disposing of objects—when the
+   movie is finished.
+   An on stopMovie handler in a MIAW is called only when the movie plays through to the end or
+   branches to another movie. It isn’t called when the window is closed or when the window is
+   deleted by the forget window command.
+ Example
+
+   This handler clears a global variable when the movie stops:
+   -- Lingo syntax
+   global gCurrentScore
+
+   on stopMovie
+     gCurrentScore = 0
+   end
+
+   // JavaScript syntax
+   _global.gCurrentScore;
+
+   function stopMovie() {
+     _global.gCurrentScore = 0;
+   }
+
+ See also
+   on prepareMovie
+
+on streamStatus
+ Usage
+   -- Lingo syntax
+   on streamStatus URL, state, bytesSoFar, bytesTotal, error
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function streamStatus(URL, state, bytesSoFar, bytesTotal, error) {
+     statement(s);
+   }
+
+
+
+
+                                                                                 on streamStatus   197
+  Description
+
+      System message and event handler; called periodically to determine how much of an object has
+      been downloaded from the Internet. The handler is called only if tellStreamStatus (TRUE)
+      has been called, and the handler has been added to a movie script.
+      The on streamStatus event handler has the following parameters:
+
+      URL            Displays the Internet address of the data being retrieved.
+      state          Displays the state of the stream being downloaded. Possible values are Connecting,
+                     Started, InProgress, Complete, and Error.
+
+      bytesSoFar     Displays the number of bytes retrieved from the network so far.
+      bytesTotal     Displays the total number of bytes in the stream, if known. The value may be 0 if the
+                     HTTP server does not include the content length in the MIME header.
+      error          Displays an empty string ("") if the download has not finished; OK (OK) if the
+                     download completed successfully; displays an error code if the download was
+                     unsuccessful.
+
+      These parameters are automatically filled in by Director with information regarding the progress
+      of the download. The handler is called by Director automatically, and there is no way to control
+      when the next call will be. If information regarding a particular operation is needed, call
+      getStreamStatus().
+      You can initiate network streams using Lingo commands, by linking media from a URL, or by
+      using an external cast member from a URL. A streamStatus handler will be called with
+      information about all network streams.
+      Place the streamStatus handler in a movie script.
+  Example
+
+      This handler determines the state of a streamed object and displays the URL of the object:
+      -- Lingo syntax
+      on streamStatus URL, state, bytesSoFar, bytesTotal
+        if state = "Complete" then
+           put(URL && "download finished")
+        end if
+      end streamStatus
+
+      // JavaScript syntax
+      function streamStatus(URL, state, bytesSoFar, bytesTotal) {
+        if (state == "Complete") {
+           put(URL + " download finished");
+        }
+      }
+
+  See also
+      getStreamStatus(), tellStreamStatus()
+
+
+
+
+198    Chapter 10: Events and Messages
+on timeOut
+ Usage
+   -- Lingo syntax
+   on timeOut
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function timeOut() {
+     statement(s);
+   }
+
+ Description
+
+   System message and event handler; contains statements that run when the keyboard or mouse is
+   not used for the time period specified in timeOutLength. Always place an on timeOut handler
+   in a movie script.
+   To have a timeout produce the same response throughout a movie, use the timeoutScript to
+   centrally control timeout behavior.
+ Example
+
+   The following handler plays the movie Attract Loop after users do nothing for the time set in the
+   timeoutLength property. It can be used to respond when users leave the computer.
+   -- Lingo syntax
+   on timeOut
+     _movie.play("Attract Loop")
+   end timeOut
+
+   // JavaScript syntax
+   function timeOut() {
+     _movie.play("Attract Loop");
+   }
+
+trayIconMouseDoubleClick
+ Usage
+   -- Lingo syntax
+   on trayIconMouseDoubleClick
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function trayIconMouseDoubleClick() {
+     statement(s);
+   }
+
+ Description
+
+   Movie and Window event handler (Microsoft Windows only). Contains statements that run
+   when a user double-clicks the system tray icon.
+   The trayIconMouseDoubleClick event is sent to the handler only if the systemTrayIcon
+   property is set to TRUE.
+
+
+
+
+                                                                    trayIconMouseDoubleClick    199
+  Example
+
+      The following handler pauses a movie when a user double-clicks the system tray icon.
+      -- Lingo syntax
+      on trayIconMouseDoubleClick
+        _movie.delay(500)
+      end
+
+      // JavaScript syntax
+      function trayIconMouseDoubleClick() {
+        _movie.delay(500);
+      }
+
+  See also
+      Movie, systemTrayIcon, trayIconMouseDown, trayIconRightMouseDown, Window
+
+trayIconMouseDown
+  Usage
+      -- Lingo syntax
+      on trayIconMouseDown
+        statement(s)
+      end
+
+      // JavaScript syntax
+      function trayIconMouseDown() {
+        statement(s);
+      }
+
+  Description
+
+      Movie and Window event handler (Microsoft Windows only). Contains statements that run
+      when a user single-clicks the system tray icon.
+      The trayIconMouseDown event is sent to the handler only if the systemTrayIcon property is set
+      to TRUE.
+  Example
+
+      The following handler pauses a movie when a user clicks the mouse when the mouse is over the
+      system tray icon.
+      -- Lingo syntax
+      on trayIconMouseDown
+        _movie.delay(500)
+      end
+
+      // JavaScript syntax
+      function trayIconMouseDown() {
+        _movie.delay(500);
+      }
+
+  See also
+      Movie, systemTrayIcon, trayIconMouseDoubleClick, trayIconRightMouseDown,
+      Window
+
+
+
+
+200    Chapter 10: Events and Messages
+trayIconRightMouseDown
+ Usage
+   -- Lingo syntax
+   on trayIconRightMouseDown
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function trayIconRightMouseDown() {
+     statement(s);
+   }
+
+ Description
+
+   Movie and Window event handler (Microsoft Windows only). Contains statements that run
+   when a user right-clicks the system tray icon.
+   The trayIconRightMouseDown event is sent to the handler only if the systemTrayIcon property
+   is set to TRUE.
+ Example
+
+   The following handler pauses a movie when a user right-clicks the system tray icon.
+   -- Lingo syntax
+   on trayIconRightMouseDown
+     _movie.delay(500)
+   end
+
+   // JavaScript syntax
+   function trayIconRightMouseDown() {
+     _movie.delay(500);
+   }
+
+ See also
+   Movie, systemTrayIcon, trayIconMouseDoubleClick, trayIconMouseDown, Window
+
+on zoomWindow
+ Usage
+   -- Lingo syntax
+   on zoomWindow
+     statement(s)
+   end
+
+   // JavaScript syntax
+   function zoomWindow() {
+     statement(s);
+   }
+
+ Description
+
+   System message and event handler; contains statements that execute whenever a movie running as
+   a movie in a window (MIAW) is resized. This happens when the user clicks the Minimize or
+   Maximize button (Windows) or the Zoom button (Macintosh). The operating system determines
+   the dimensions after resizing the window.
+
+
+
+
+                                                                             on zoomWindow   201
+      An on zoomWindow event handler is a good place to put Lingo that rearranges sprites when
+      window dimensions change.
+  Example
+
+      This handler moves sprite 3 to the coordinates stored in the variable centerPlace when the
+      window that the movie is playing in is resized:
+      -- Lingo syntax
+      on zoomWindow
+        centerPlace = point(10, 10)
+        sprite(3).loc = centerPlace
+      end
+
+      // JavaScript syntax
+      function zoomWindow() {
+        var centerPlace = point(10, 10);
+        sprite(3).loc = centerPlace;
+      }
+
+  See also
+      drawRect, sourceRect, on resizeWindow
+
+
+
+
+202    Chapter 10: Events and Messages
+

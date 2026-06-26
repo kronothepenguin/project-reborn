@@ -1,0 +1,1931 @@
+                                                           CHAPTER 2
+                                            Director Scripting Essentials
+
+
+
+   If you are new to scripting in Macromedia Director MX 2004, you may want to take some time
+   to learn the basic scripting concepts that are essential to understanding how to script in Director
+   before you begin. Some of these essentials include definitions of important terms, syntax rules,
+   available data types, and information about the basic elements of scripting in Director—for
+   example, variables, arrays, operators, and so on.
+
+Types of scripts
+   A Director movie can contain four types of scripts: behaviors, movie scripts, parent scripts, and
+   scripts attached to cast members. Behaviors, movie scripts, and parent scripts all appear as
+   independent cast members in the Cast window. A script attached to a cast member is associated
+   with that cast member in the Cast window and does not appear independently.
+   • Behaviors are scripts that are attached to sprites or frames in the Score, and are referred to as
+     sprite behaviors or frame behaviors. The Cast window thumbnail for each behavior contains a
+     behavior icon in the lower right corner.
+     When used in the Director Scripting Reference, the term behavior refers to any script that you
+     attach to a sprite or a frame. This differs from the behaviors that come in the Director Library
+     Palette. For more information on these behaviors, which are built into Director, see the Using
+     Director topics in the Director Help Panel.
+     All behaviors that have been added to a cast library appear in the Behavior inspector’s Behavior
+     pop-up menu. Other types of scripts do not appear there.
+     You can attach the same behavior to more than one location in the Score. When you edit a
+     behavior, the edited version is applied everywhere the behavior is attached in the Score.
+   • Movie scripts contain handlers that are available globally, or on a movie level. Event handlers in
+     a movie script can be called from other scripts in the movie as the movie plays.
+     A movie script icon appears in the lower right corner of the movie script’s Cast window
+     thumbnail.
+     Movie scripts are available to the entire movie, regardless of which frame the movie is in or
+     which sprites the user is interacting with. When a movie plays in a window or as a linked
+     movie, a movie script is available only to its own movie.
+
+
+
+
+                                                                                                         9
+     • Parent scripts are special scripts that contain Lingo that is used to create child objects. You can
+       use parent scripts to generate script objects that behave and respond similarly yet can still
+       operate independently of each other. A parent script icon appears in the lower right corner of
+       the Cast window thumbnail.
+       For information on using parent scripts and child objects, see “Object-oriented programming
+       with Lingo” on page 55.
+       JavaScript syntax does not use parent scripts or child objects; it uses regular JavaScript syntax-
+       style object-oriented programming techniques. For information on object-oriented
+       programming in JavaScript syntax, see “Object-oriented programming with JavaScript syntax”
+       on page 65
+     • Scripts attached to cast members are attached directly to a cast member, independent of the
+       Score. Whenever the cast member is assigned to a sprite, the cast member’s script is available.
+       Unlike behaviors, movie scripts, and parent scripts, cast member scripts do not appear in the
+       Cast window. However, if Show Cast Member Script Icons is selected in the Cast Window
+       Preferences dialog box, cast members that have a script attached display a small script icon in
+       the lower left corner of their thumbnails in the Cast window.
+
+
+
+
+Scripting terminology
+     Both Lingo and JavaScript syntax use some terms that are specific to each language, in addition to
+     some terms that are shared between each language.
+     Important scripting terms are listed here in alphabetical order. These terms are used throughout
+     the Director Scripting Reference, so it will help to understand these terms before moving forward.
+     • Constants are elements whose values do not change. For example, in Lingo, constants such as
+       TAB, EMPTY, and RETURN always have the same values, and cannot be modified. In JavaScript
+       syntax, constants such as Math.PI and Number.MAX_VALUE always have the same values, and
+       cannot be modified. You can also create your own custom constants in JavaScript syntax by
+       using the keyword const.
+       For more information on constants, see “Constants” on page 20.
+     • Events are actions that occur while a movie is playing. Events occur when a movie stops, a
+       sprite starts, the playhead enters a frame, the user types at the keyboard, and so on. All events
+       in Director are predefined, and always have the same meaning.
+       For more information on events, see “Events” on page 33.
+     • Expressions are any part of a statement that produces a value. For example, 2 + 2 is
+       an expression.
+     • Functions refer to either top-level functions or specific types of JavaScript syntax code.
+       A top-level function instructs a movie to do something while the movie is playing or returns a
+       value, but it is not called from any specific object. For example, you would call the top-level
+       list() function by using the syntax list(). Like a function, a method also instructs a movie
+       to do something while the movie is playing or returns a value, but it is always called from
+       an object.
+       A function is used in JavaScript syntax to represent an event handler, a custom object, a custom
+       method, and so on. The use of JavaScript functions in these cases is described in the applicable
+       topics later in this reference.
+
+
+10    Chapter 2: Director Scripting Essentials
+• Handlers, or event handlers, are sets of statements within a script that run in response to a
+  specific event and subsequent message. When an event occurs, Director generates and sends
+  a corresponding message to scripts, and a corresponding handler runs in response to the
+  message. The names of handlers are always the same as the events and messages they
+  respond to.
+  Note: Although in JavaScript syntax an event is actually handled by a function, the term handler is
+  used generically throughout this reference to refer to both Lingo handlers and JavaScript syntax
+  functions that handle events.
+
+  For more information on handlers, see “Handlers” on page 35.
+• Keywords are reserved words that have a special meaning. For example, in Lingo, the keyword
+  end indicates the end of a handler. In JavaScript syntax, the keyword var indicates that the
+  term following it is a variable.
+• Lists (Lingo) or Arrays (JavaScript syntax) are ordered sets of values used to track and update
+  an array of data, such as a series of names or the values assigned to a set of variables. A simple
+  example is a list of numbers such as [1, 4, 2].
+  For more information on using lists in both Lingo and JavaScript syntax, see “Linear lists and
+  property lists” on page 38.
+  For more information on using JavaScript syntax arrays, see “JavaScript syntax arrays”
+  on page 45.
+• Messages are notices that Director sends to scripts when specific events occur in a movie. For
+  example, when the playhead enters a specific frame, the enterFrame event occurs and
+  Directors sends an enterFrame message. If a script contains an enterFrame handler, the
+  statements within that handler will run, because the handler received the enterFrame message.
+  If no scripts contain a handler for a message, the message is ignored in script.
+  For more information on messages, see “Messages” on page 34
+• Methods are terms that either instruct a movie to do something while the movie is playing or
+  return a value, and are called from an object. For example, you would call the insertFrame()
+  method from the Movie object, using the syntax _movie.insertFrame(). Although similar in
+  functionality to top-level functions, methods are always called from an object, and top-level
+  functions are not.
+• Operators are terms that calculate a new value from one or more values. For example, the
+  addition (+) operator adds two or more values together to produce a new value.
+  For more information on operators, see “Operators” on page 25.
+• Parameters are placeholders that let you pass values to scripts. Parameters only apply to
+  methods and event handlers, and not to properties. They are required by some methods and
+  optional for others.
+  For example, the Movie object’s go() method sends the playhead to specific frame, and
+  optionally specifies the name of the movie that frame is in. To perform this task, the go()
+  method requires at least one parameter, and allows for a second parameter. The first required
+  parameter specifies what frame to send the playhead to, and the second optional parameter
+  specifies what movie the frame is in. Because the first parameter is required, a script error will
+  result if it is not present when the go() method is called. Because the second parameter is
+  optional, the method will perform its task even if the parameter is not present.
+
+
+
+
+                                                                         Scripting terminology     11
+     • Properties are attributes that define an object. For example, a sprite in a movie has specific
+       attributes, such as how wide it is, how tall it is, its background color, and so on. To access the
+       values of these three specific attributes, you would use the Sprite object’s width, height, and
+       backColor properties.
+       For more information on assigning properties to variables, see “Storing and updating values in
+       variables” on page 21.
+     • Statements are valid instructions that Director can execute. All scripts are made up of sets of
+       statements. The following Lingo is a single complete statement.
+       _movie.go("Author")
+       For more information on writing script statements, see “Scripting in dot syntax format”
+       on page 50
+     • Variables are elements used to store and update values. Variables must start with a letter, an
+       underscore (_), or the dollar sign ($). Subsequent characters in a variable name can also be
+       digits (0-9). To assign values to variables or change the values of many properties, you use the
+       equals (=) operator.
+       For more information on using variables, see “Variables” on page 21.
+
+Scripting syntax
+     The following are general syntax rules that apply to Lingo and JavaScript syntax.
+     • Comment markers vary between Lingo and JavaScript syntax.
+       All Lingo comments are preceded by double hyphens (--). Each line of a comment that covers
+       multiple lines must be preceded by double hyphens.
+       -- This is a single-line Lingo comment
+
+       -- This is a
+       -- multiple-line Lingo comment
+       JavaScript syntax comments on a single line are preceded by a double-slash (//). Comments
+       that cover multiple lines are preceded with a /* and followed by a */.
+       // This is a single-line JavaScript syntax comment
+
+       /* This is a
+       multiple-line JavaScript syntax comment */
+       You can place a comment on its own line or after any statement. Any text following the
+       comment markers on the same line are ignored.
+       Comments can consist of anything you want, such as notes about a particular script or handler
+       or notes about a statement whose purpose might not be obvious. Comments make it easier for
+       you or someone else to understand a procedure after you’ve been away from it for a while.
+       Adding large numbers of comments does not increase the size of your movie file when it is
+       saved as a compressed DCR or DXR file. Comments are removed from the file during the
+       compression process.
+       Comment markers can also be used to ignore sections of code you want to deactivate for
+       testing or debugging purposes. By adding comment markers rather than removing the code,
+       you can temporarily turn it into comments. Select the code you want to turn on or off, and
+       then use the Comment or Uncomment buttons in the Script window to quickly add or remove
+       comment markers.
+
+
+
+12    Chapter 2: Director Scripting Essentials
+• Parentheses are required after all method and function names. For example, when calling the
+  Sound object’s beep() method, you must include the parentheses after the word beep.
+  Otherwise, a script error will occur.
+  // JavaScript syntax
+  _sound.beep(); // this statement will work properly
+  _sound.beep; // this statement will result in a script error
+  When you call a method, function, or handler from within another method, function, or
+  handler, you must include parentheses in the calling statement. In the following example, the
+  modifySprite() method contains a call to a spriteClicked handler. The call to the
+  spriteClicked handler must include parentheses; otherwise, a script error occurs.
+  // JavaScript syntax
+  function modifySprite() {
+    spriteClicked(); // this call to the handler will work properly
+    spriteClicked; // this call to the handler results in a script error
+  }
+  function spriteClicked() {
+    // handler code here
+  }
+  You can also use parentheses to override the order of precedence in math operations, or to
+  make your statements easier to read. For example, the first math expression below yields a
+  result of 13, while the second expression yields a result of 5:
+  5 * 3 - 2 -- yields 13
+  5 * (3 - 2) -- yields 5
+• Event handler syntax varies between Lingo and JavaScript syntax. In Lingo, handlers use the
+  syntax on handlerName. In JavaScript syntax, handlers are implemented as functions, and use
+  the syntax function handlerName(). For example, the following statements comprise a
+  handler that plays a beep when the mouse button is clicked:
+  -- Lingo syntax
+  on mouseDown
+    _sound.beep()
+  end
+  // JavaScript syntax
+  function mouseDown() {
+    _sound.beep();
+  }
+• Event handler parameter syntax can vary between Lingo and JavaScript syntax. Both Lingo and
+  JavaScript syntax support enclosing parameters passed to a handler within parentheses. If more
+  than one parameter is passed, each parameter is separated by a comma. In Lingo, you can also
+  pass parameters that are not enclosed by parentheses. For example, the following addThem
+  handler receives the two parameters a and b.
+  -- Lingo syntax
+  on addThem a, b -- without parentheses
+    c = a + b
+  end
+
+  on addThem(a, b) -- with parentheses
+    c = a + b
+  end
+
+  // JavaScript syntax
+  function addThem(a, b) {
+    c = a + b;
+  }
+
+
+
+                                                                           Scripting syntax    13
+     • The const keyword can be used in JavaScript syntax to specify a constant whose value does not
+       change. Lingo has its own predefined set of constants (TAB, EMPTY, and so on); therefore, the
+       keyword const does not apply to Lingo.
+       For example, the following statement specifies a constant named intAuthors and sets its value
+       to 12. This value will always be 12, and cannot be changed through script.
+       // JavaScript syntax
+       const intAuthors = 12;
+     • The var keyword in JavaScript syntax can be placed in front of a term to specify that the term
+       is a variable. The following statement creates a variable named startValue.
+       // JavaScript syntax
+       var startValue = 0;
+       Note: Although using var in JavaScript syntax is optional, it is recommended that you always
+       declare local JavaScript syntax variables, or those inside a function, using var. For more
+       information on using variables, see “Variables” on page 21.
+
+     • The line continuation symbol (\) in Lingo indicates that a long line of sample code has been
+       broken into two or more lines. Lines of Lingo that are broken in this way are not separate lines
+       of code. For example, the following code would still run.
+       -- Lingo syntax
+       tTexture = member("3D").model("box") \
+         .shader.texture
+       JavaScript syntax does not include a line continuation symbol. To break multiple lines of
+       JavaScript syntax code, add a carriage return at the end of a line, and then continue the code on
+       the following line.
+     • Semicolons can be used to specify the end of a statement of JavaScript syntax code. Semicolons
+       do not apply to Lingo.
+       Using a semicolon is optional. If used, it is placed at the end of a complete statement. For
+       example, both of the following statements create a variable named startValue.
+       // JavaScript syntax
+       var startValue = 0
+       var startValue = 0;
+       A semicolon does not necessarily specify the end of a line of JavaScript syntax code, and
+       multiple statements can be placed on one line. However, placing separate statements on
+       separate lines is recommended in order to improve readability. For example, the following
+       three statements occupy only one line of code and function properly, but it is difficult to
+       read the code.
+       // JavaScript syntax
+       _movie.go("Author"); var startValue = 0; _sound.beep();
+     • Character spaces within expressions and statements are ignored in both Lingo and JavaScript
+       syntax. In strings of characters surrounded by quotation marks, spaces are treated as characters.
+       If you want spaces in a string, you must insert them explicitly. For example, the first statement
+       below ignores the spaces between the list items, and the second statement includes the spaces.
+       -- Lingo syntax
+       myList1 = ["1",               "2",     "3"] -- yields ["1", "2", "3"]
+       myList2 = [" 1         ", "     2 ", " 3 "] -- yields [" 1 ", " 2                 ", "    3    "]
+
+
+
+
+14    Chapter 2: Director Scripting Essentials
+   • Case-sensitivity can vary between Lingo and JavaScript syntax.
+     Lingo is not case-sensitive in any circumstance—you can use uppercase and lowercase letters
+     however you want. For example, the following four statements are equivalent:
+     -- Lingo syntax
+     member("Cat").hilite = true
+     member("cat").hiLite = True
+     MEMBER("CAT").HILITE = TRUE
+     Member("Cat").Hilite = true
+     Although Lingo is not case-sensitive, it’s a good habit to choose a case convention and use it
+     consistently throughout your scripts. This makes it is easier to identify names of handlers,
+     variables, cast members, and so on.
+     JavaScript syntax is case-sensitive when referring to objects, the top level properties or methods
+     that refer to objects, or when referring to user-defined variables. For example, the top level
+     sprite() method returns a reference to a specific Sprite object, and is implemented in
+     Director with all lowercase letters. The first statement below refers to the name of the first
+     sprite in a movie, while the second and third statements result in a script error.
+     // JavaScript syntax
+     sprite(1).name // This statement functions normally
+     Sprite(1).name // This statement results in a script error
+     SPRITE(1).name // This statement results in a script error
+     Literal strings are always case-sensitive in both Lingo and JavaScript syntax.
+     For more information on using strings, see “Strings” on page 18.
+
+Data types
+   A data type is a set of data with values that have similar, predefined characteristics. Every variable
+   and property value in Director is of a specific data type, and values returned by methods are of a
+   specific data type.
+   For example, consider the following two statements. In the first statement, variable intX is
+   assigned a whole number value of 14, which is an integer. So, the data type of variable intX is
+   integer. In the second statement, variable stringX is assigned a sequence of character values,
+   which is a string. So, the data type of variable stringX is string.
+   -- Lingo syntax
+   intX = 14
+   stringX = "News Headlines"
+
+   // JavaScript syntax
+   var intX = 14;
+   var stringX = "News Headlines";
+   The values that are returned by methods or functions are also of an inherent data type. For
+   example, the Player object’s windowPresent() method returns a value that specifies whether a
+   window is present. The returned value is TRUE (1) or FALSE (0).
+
+
+
+
+                                                                                        Data types    15
+     Some data types are shared between Lingo and JavaScript syntax, and some data types are specific
+     to one language or another. The set of data types that Director supports is fixed and cannot be
+     modified, meaning that new data types cannot be added and existing data types cannot be
+     removed. Director supports the following data types.
+
+     Data type       Description
+
+     # (symbol)      A self-contained unit that can be used to represent a condition or flag. For example,
+                     #list or #word.
+
+     Array           (JavaScript syntax only) Although not literally a data type, an Array object can be
+                     used to work with linear lists of values. The functionality of an Array object is similar
+                     to that of the List data type in Lingo.
+
+     Boolean         A value that is TRUE (1) or FALSE (0). In Lingo, all TRUE or FALSE values are simple
+                     integer constants, 1 for TRUE, 0 for FALSE. In JavaScript syntax, all true or false
+                     values are by default the actual Boolean true or false values, but are converted to
+                     simple integer constants automatically when required in Director.
+                     In Lingo, TRUE and FALSE can be either lowercase or uppercase. In JavaScript
+                     syntax, true and false must always be lowercase.
+
+     Color           Represents an object’s color.
+
+     Constant        A piece of data whose value does not change.
+
+     Date            Although not literally a data type, in JavaScript syntax a Date object can be used to
+                     work with dates. In Lingo, use the date() method to create a Date object and work
+                     with dates.
+
+     Float           (Lingo only) A floating-point number. For example, 2.345 or 45.43.
+
+     Function        (JavaScript syntax only) Although not literally a data type, a Function object can be
+                     used to specify a string of code to run.
+
+     Integer         (Lingo only) A whole number. For example, 5 or 298.
+
+     List            A linear or property list made up of values or property names and values,
+                     respectively.
+     Math            (JavaScript syntax only) Although not literally a data type, a Math object can be
+                     used to perform mathematical functions.
+
+     null            (JavaScript syntax only) Denotes a variable whose value behaves as 0 in numeric
+                     contexts and as FALSE in Boolean contexts.
+
+     Number          (JavaScript syntax only) Although not literally a data type, a Number object can be
+                     used to represent numerical constants, such as a maximum value, not-a-number
+                     (NaN), and infinity.
+
+     Object          Although not literally a data type, an Object object can be used to create a custom
+                     named container that contains data and methods that act on that data.
+     Point           A point on the Stage that has both a horizontal and vertical coordinate.
+
+     Rect            A rectangle on the Stage.
+
+     RegExp          (JavaScript only) A regular expression pattern that is used to match character
+                     combinations in strings.
+
+     String          A contiguous sequence of keyboard symbols or character values. For example,
+                     "Director" or "$5.00".
+
+
+
+
+16    Chapter 2: Director Scripting Essentials
+Data type        Description
+
+undefined        (JavaScript syntax only) Denotes a variable that does not have a value.
+
+Vector           A point in 3D space.
+
+VOID             (Lingo only) Denotes an empty value.
+
+Note: Many of the data types and objects that are specific to JavaScript syntax contain their own set
+of methods and properties that can be used to further manipulate those types. While the Director
+Scripting Reference may refer to some of these methods and properties, it does not include complete
+reference information about them. For more detailed information on these data types and objects,
+and their methods and properties, see one of the many third-party resources on the subject.
+
+The built-in properties in Director, such as the Cast object’s name property, can only be assigned
+values that are the same data type as that of the property’s inherent data type. For example, the
+Cast object’s name property’s inherent data type is a string, so the value must be a string such as
+News Headlines. If you try to assign a value of a different data type to this property, such as the
+integer 20, a script error occurs.
+If you create your own custom properties, their values can be of any data type, regardless of the
+data type of the initial value.
+Both Lingo and JavaScript syntax are dynamically typed. This means that you do not have to
+specify the data type of a variable when you declare it, and data types are automatically converted
+as needed while a script runs.
+For example, the following JavaScript syntax initially sets the variable myMovie to an integer, and
+later in the script it is set to a string. When the script runs, the date type of myMovie is converted
+automatically.
+-- Lingo syntax
+myMovie = 15 -- myMovie is initially set to an integer
+...
+myMovie = "Animations" -- myMovie is later set to a string
+
+// JavaScript syntax
+var myMovie = 15; // myMovie is initially set to an integer
+...
+myMovie = "Animations"; // myMovie is later set to a string
+
+
+
+
+                                                                                     Data types     17
+Literal values
+     A literal value is any part of a statement or expression that is to be used exactly as it is, rather than
+     as a variable or a script element. Literal values that you encounter in script are character strings,
+     integers, decimal numbers, cast member names and numbers, frame and movie names and
+     numbers, symbols, and constants.
+     Each type of literal value has its own rules.
+
+Strings
+     Strings are words or groups of characters that script treats as regular words instead of as variables.
+     Strings must be enclosed in double quotation marks. For example, you might use strings to give
+     messages to the user of your movie or to name cast members. In the following statement, Hello
+     and Greeting are both strings. Hello is the literal text being put into the text cast member;
+     Greeting is the name of the cast member.
+     -- Lingo syntax
+     member("Greeting").text = "Hello"
+     Similarly, if you test a string, double quotation marks must surround each string, as in the
+     following example:
+     -- Lingo syntax
+     if "Hello Mr. Jones" contains "Hello" then soundHandler
+     Both Lingo and JavaScript syntax treat spaces at the beginning or end of a string as a literal part of
+     the string. The following expression includes a space after the word to:
+     // JavaScript syntax
+     trace("My thoughts amount to ");
+     Although Lingo does not distinguish between uppercase and lowercase when referring to cast
+     members, variables, and so on, literal strings are case-sensitive. For example, the following two
+     statements place different text into the specified cast member, because Hello and HELLO are
+     literal strings.
+     -- Lingo syntax
+     member("Greeting").text = "Hello"
+     member("Greeting").text = "HELLO"
+     In Lingo, the string() function can convert a numerical value into a string. In JavaScript syntax,
+     the toString() method can convert a numerical value into a string.
+     Note: Attempting to use the toString() method in JavaScript syntax on a null or undefined value
+     results in a script error. This is in contrast with Lingo, in which the string() function works on all
+     values, including those that are VOID.
+
+Numbers
+     In Lingo, there are two types of numbers: integers and decimals.
+     An integer is a whole number, without any fractions or decimal places, in the range of
+     -2,147,483,648 and +2,147,483,647. Enter integers without using commas. Use a minus (-) sign
+     for negative numbers.
+
+
+
+
+18    Chapter 2: Director Scripting Essentials
+A decimal number, also called a floating-point number, or float, is any number that includes a
+decimal point. In Lingo, the floatPrecision property controls the number of decimal places
+used to display these numbers. Director always uses the complete number, up to 15 significant
+digits, in calculations; Director rounds any number with more than 15 significant digits in
+calculations.
+JavaScript syntax does not distinguish between integers and floating-point numbers, and merely
+uses numbers. For example, the following statements illustrate that the number 1 is an integer in
+Lingo and a number in JavaScript syntax, and that the decimal number 1.05 is a float in Lingo
+and a number in JavaScript syntax:
+-- Lingo syntax
+put(ilk(1)) -- #integer
+put(ilk(1.05)) -- #float
+
+// JavaScript syntax
+trace(typeof(1)) // number
+trace(typeof(1.05)) // number
+In Lingo, you can convert a decimal to an integer by using the integer() function. You can
+also convert an integer to a decimal by performing a mathematical operation on the integer, for
+example, by multiplying an integer by a decimal. In JavaScript syntax, you can convert a string or
+a decimal number to a whole number by using the parseInt() function. As opposed to Lingo’s
+integer() function, parseInt() rounds down. For example, the following statement rounds
+off the decimal number 3.9 and converts it to the integer 4 (Lingo) and the number 3
+(JavaScript syntax).
+-- Lingo syntax
+theNumber = integer(3.9) -- results in a value of 4
+
+// JavaScript syntax
+var theNumber = parseInt(3.9); // results in a value of 3
+In Lingo, the value() function can convert a string into a numerical value.
+You can also use exponential notation with decimal numbers: for example, -1.1234e-100 or
+123.4e+9.
+
+In Lingo, you can convert an integer or string to a decimal number by using the float()
+function. In JavaScript syntax, you can convert a string to a decimal number by using the
+parseFloat() function. For example, the following statement stores the value 3.0000 (Lingo)
+and 3 (JavaScript syntax) in the variable theNumber.
+-- Lingo syntax
+theNumber = float(3) -- results in a value of 3.0000
+
+// JavaScript syntax
+var theNumber = parseFloat(3) // results in a value of 3
+
+
+
+
+                                                                               Literal values    19
+Constants
+     A constant is a named value whose content never changes.
+     In Lingo, the predefined terms TRUE, FALSE, VOID, and EMPTY are constants because their values
+     are always the same. The predefined terms BACKSPACE, ENTER, QUOTE, RETURN, SPACE, and TAB
+     are constants that refer to keyboard characters. For example, to test whether the last key pressed
+     was the Space bar, use the following statement:
+     -- Lingo syntax
+     if _key.keyPressed() = SPACE then beep()
+     In JavaScript syntax, you can access predefined constants using some of the data types that are
+     unique to JavaScript syntax. For example, the Number object contains constants such as
+     Number.MAX_VALUE and Number.NaN, the Math object contains constants such as Math.PI and
+     Math.E, and so on.
+     Note: This reference does not provide in-depth information about the predefined constants in
+     JavaScript syntax. For more information on these constants, see one of the many third-party
+     resources on the subject.
+
+     In JavaScript syntax, you can also define your own custom constants by using the const keyword.
+     For example, the following statement creates a constant named items, and assigns it a value of 20.
+     This value cannot be changed after it has been created.
+     // JavaScript syntax
+     const items = 20;
+     For more information on constants, see Chapter 9, “Constants,” on page 151.
+
+Symbols
+     A symbol is a string or other value in Lingo that begins with the pound (#) sign.
+     Symbols are user-defined constants. Comparisons using symbols can usually be performed very
+     quickly, providing more efficient code.
+     For example, the first statement below runs more quickly than the second statement:
+     -- Lingo syntax
+     userLevel = #novice
+     userLevel = "novice"
+     Symbols cannot contain spaces or punctuation.
+     In both Lingo and JavaScript syntax, convert a string to a symbol by using the symbol() method.
+     -- Lingo syntax
+     x = symbol("novice") -- results in #novice
+
+     // JavaScript syntax
+     var x = symbol("novice"); // results in #novice
+     Convert a symbol back to a string by using the string() function (Lingo) or the toString()
+     method (JavaScript syntax).
+     -- Lingo syntax
+     x = string(#novice) -- results in "novice"
+
+     // JavaScript syntax
+     var x = symbol("novice").toString(); // results in "novice"
+
+
+
+
+20    Chapter 2: Director Scripting Essentials
+    In JavaScript syntax, you cannot compare symbols of the same name to determine whether they
+    refer to the same symbol. To compare symbols of the same name, you must first convert them to
+    strings by using the toString() method, and then perform the comparison.
+
+Variables
+    Director uses variables to store and update values. As the name implies, a variable contains a value
+    that can be changed or updated as a movie plays. By changing the value of a variable as the movie
+    plays, you can do things such as store a URL, track the number of times a user takes part in an
+    online chat session, record whether a network operation is complete, and many more options.
+    It is a good idea always to assign a variable a known value the first time you declare the variable.
+    This is known as initializing a variable. Initializing variables makes it easier to track and compare
+    the variable’s value as the movie plays.
+    Variables can be global or local. A local variable exists only as long as the handler in which it is
+    defined is running. A global variable can exist and retain its value as long as Director is running,
+    including when a movie branches to another movie. A variable can be global within an individual
+    handler, a specific script, or an entire movie; the scope depends on how the global variable is
+    initialized.
+    If you want a variable to be available throughout a movie, it is good practice to declare it in an on
+    prepareMovie (Lingo) or a function prepareMovie() (JavaScript syntax) handler. This
+    ensures that the variable is available from the very start of the movie.
+    For more information on using both global and local variables, see “Using global variables”
+    on page 22 and “Using local variables” on page 24.
+
+Storing and updating values in variables
+    Variables can hold data for any of the data types found in Director, such as integers, strings, TRUE
+    or FALSE values, symbols, lists, or the result of a calculation. Use the equals (=) operator to store
+    the values of properties and variables.
+    As mentioned in the Data types section of this reference, variables in both Lingo and JavaScript
+    syntax are dynamically typed, which means that they can contain different types of data at
+    different times. (The ability to change a variable’s type distinguishes Lingo from other languages
+    such as Java and C++, in which a variable’s type cannot be changed.)
+    For example, the statement x = 1 creates the variable x, which is an integer variable because you
+    assigned the variable an integer. If you subsequently use the statement x = "one", the variable x
+    becomes a string variable, because the variable now contains a string.
+    You can convert a string to a number by using the value() function (Lingo) or the parseInt()
+    method (JavaScript syntax), or a number to a string by using the string() function (Lingo) or
+    the toString() method (JavaScript syntax).
+    The values of some properties can be both set (the value is assigned) and returned (the value is
+    retrieved), and some property values can only be returned. Properties whose values can be both set
+    and returned are called read/write, and those that can only be returned are called read-only.
+    Often these are properties that describe some condition that exists outside the control of Director.
+    For example, you cannot set the numChannels cast member property, which indicates the number
+    of channels within a movie that contains Macromedia Shockwave content. However, you
+    can return the number of channels by referring to the numChannels property of a cast member.
+
+
+
+                                                                                          Variables    21
+     To assign a value to a variable:
+     • Use the equals (=) operator.
+     For example, the following statement assigns a URL to the variable placesToGo:
+     // JavaScript syntax
+     var placesToGo = "http://www.macromedia.com";
+     Variables can also hold the results of mathematical operations. For example, the following
+     statement adds the result of an addition operation to the variable mySum:
+     -- Lingo syntax
+     mySum = 5 + 5 -- this sets mySum equal to 10
+     As another example, the following statement returns the cast member assigned to sprite 2 by
+     retrieving the value of the sprite’s member property and places it into the variable textMember.
+     -- Lingo syntax
+     textMember = sprite(2).member
+     It is good practice to use variable names that indicate what the variable is used for. This makes
+     your scripts easier to read. For example, the variable mySum indicates that the variable contains a
+     sum of numbers.
+     To test the values of properties or variables:
+     • Use the put() or the trace() functions in the Message window or check the values in the
+       Watcher window; (put() and trace() provide identical functionality and are available to
+       both Lingo and JavaScript syntax).
+     For example, the following statement displays the value assigned to the variable myNumber in the
+     Message window.
+     -- Lingo syntax
+     myNumber = 20 * 7
+     put(myNumber) -- displays 140 in the Message window
+
+     // JavaScript syntax
+     var myNumber = 20 * 7;
+     trace(myNumber) // displays 140 in the Message window
+
+Using global variables
+     Global variables can be shared among handlers, scripts, or movies. A global variable exists and
+     retains its value as long as Director is running or until you call the clearGlobals() method.
+     In Macromedia Shockwave Player, global variables persist among movies displayed by the
+     goToNetMovie() method, but not among those displayed by the goToNetPage() method.
+
+     Every handler that declares a variable as global can use the variable’s current value. If the handler
+     changes the variable’s value, the new value is available to every other handler that treats the
+     variable as global.
+     It is good practice to start the names of all global variables with a lowercase g. This helps identify
+     which variables are global when you examine your code.
+     Director provides a way to display all current global variables and their current values and to clear
+     the values of all global variables.
+
+
+
+
+22    Chapter 2: Director Scripting Essentials
+  To display all current global variables and their current values:
+  • Use the Global object’s showGlobals() method in the Message window.
+  For more information on the Message window, see “Debugging in the Message window”
+  on page 87.
+  To clear all current global variables:
+  • Use the Global object’s clearGlobals() method in the Message window to set the value of all
+     global variables to VOID (Lingo) or undefined (JavaScript syntax).
+  To monitor the values of global variables during movie playback, use the Object inspector. For
+  more information on the Object inspector, see “Debugging in the Object inspector” on page 91.
+
+Global variables in Lingo
+  In Lingo, variables are considered local by default, and you do not need to precede the variable
+  name with any keyword. To declare a global variable, you must precede the variable with the
+  keyword global.
+  If you declare a global variable at the top of a script and before any handlers, the variable is
+  available to all handlers in that specific script. If you declare a global variable within a handler, the
+  variable is available only to that handler; however, if you declare a global variable with the same
+  name within two separate handlers, an update to the variable’s value in one handler will also be
+  reflected in the variable in the other handler.
+  The following example illustrates working with two global variables: gScript, which is available
+  to all handlers in the script, and gHandler, which is available within its defining handler and any
+  other handlers that declare it on the first line of the handler.
+  -- Lingo syntax
+  global gScript -- gScript is available to all handlers
+
+  on mouseDown
+    global gHandler
+    gScript = 25
+    gHandler = 30
+  end
+
+  on mouseUp
+    global gHandler
+    trace(gHandler) -- displays 30
+  end
+  In Lingo, when you use the term global to define global variables, the variables automatically
+  have VOID as their initial value.
+
+Global variables in JavaScript syntax
+  In JavaScript syntax, variables are considered global by default. The scope of a global variable can
+  be determined by how and where it is declared.
+  • If you declare a variable within a JavaScript syntax function without preceding the variable
+    name with the keyword var, the variable is available to all functions within its containing
+    script.
+  • If you declare a variable outside a JavaScript syntax function, with or without the keyword var,
+    the variable is available to all functions within its containing script.
+
+
+
+                                                                                           Variables    23
+     • If you declare a variable inside or outside a JavaScript syntax function by using the syntax
+       _global.varName, the variable is available to all scripts within a movie.
+
+     The following example uses the syntax _global.gMovie in one script to declare the variable
+     gMovie as global. This variable is available to all scripts within the movie.
+     // JavaScript syntax
+     _global.gMovie = 1; // Declare gMovie in one script
+
+     // Create a function in a separate script that operates on gMovie
+     function mouseDown() {
+       _global.gMovie++;
+       return(_global.gMovie);
+     }
+     The following example declares the global variable gScript in one script. This variable is
+     available only to functions within that script.
+     // JavaScript syntax
+     var gScript = 1; // Declare gScript in a script
+
+     // gScript is available only to functions in the script that defines it
+     function mouseDown() {
+       gScript++;
+       return(gScript);
+     }
+     In JavaScript syntax, when you define variables before any handlers, the variables automatically
+     have undefined as their initial value.
+
+Using local variables
+     A local variable exists only as long as the handler in which it is defined is running. However, after
+     a local variable is created, you can use the variable in other expressions or change its value while a
+     script is still within the handler that defined the variable.
+     Treating variables as local is a good idea when you want to use a variable only temporarily in one
+     handler. This helps you avoid unintentionally changing the value in another handler that uses the
+     same variable name.
+     To create a local variable:
+     • In Lingo, assign the variable a value using the equals (=) operator.
+     • In JavaScript syntax, inside a function precede the variable name with the keyword var, and
+       then assign the variable a value using the equals operator.
+       Note: Because JavaScript syntax variables are global by default, if you attempt to declare a local
+       variable inside a function without using the keyword var, your script could produce unexpected
+       behavior. Therefore, although using var is optional, it is strongly recommended that you declare all
+       local JavaScript syntax variables using var to avoid any unexpected behavior.
+
+     To display all current local variables in the handler:
+     • In Lingo only, use the showLocals() function.
+     In Lingo, you can use this method in the Message window or in handlers to help with debugging.
+     The result appears in the Message window. The showLocals() method does not apply to
+     JavaScript syntax.
+     To monitor the values of local variables during movie playback, use the Object inspector. For
+     more information on the Object inspector, see “Debugging in the Object inspector” on page 91.
+
+
+24    Chapter 2: Director Scripting Essentials
+Operators
+   Operators are elements that tell Lingo and JavaScript syntax scripts how to combine, compare, or
+   modify the values of an expression. Many of the operators in Director are shared between Lingo
+   and JavaScript syntax, and some are unique to each language.
+   Some types of operators include the following:
+   • Arithmetic operators (such as +, -, /, and *)
+   • Comparison operators (such as <, >, and >=), which compare two arguments
+   • Logical operators (not, and, or), which combine simple conditions into compound ones
+   • String operators (such as &, &&, and +), which join, or concatenate, strings of characters
+   Note: There are many more types of operators in JavaScript syntax than there are in Lingo,
+   and not all of them are covered in this reference. For more information on additional operators
+   in JavaScript 1.5, see one of the many third-party resources on the subject.
+
+   The items that operators act upon are called operands. In Lingo, there are only binary operators.
+   In JavaScript syntax, there are both binary and unary operators. A binary operator requires two
+   operands, one before the operator and one after the operator. A unary operator requires a single
+   operand, either before or after the operator.
+   In the following example, the first statement illustrates a binary operator, where the variables x
+   and y are operands and the plus (+) sign is the operator. The second statement illustrates a unary
+   operator, where the variable i is the operand and ++ is the operator.
+   // JavaScript syntax
+   x + y; // binary operator
+   i++; // unary operator
+   For reference information on operators, see Chapter 13, “Operators,” on page 595.
+
+Understanding operator precedence
+   When two or more operators are used in the same statement, some operators take precedence over
+   others in a precise hierarchy to determine which operators to execute first. This is called the
+   operators’ precedence order. For example, multiplication is always performed before addition.
+   However, items in parentheses take precedence over multiplication. In the following example,
+   without parentheses the multiplication in this statement occurs first:
+   -- Lingo syntax
+   total = 2 + 4 * 3 -- results in a value of 14
+   When parentheses surround the addition operation, addition occurs first:
+   -- Lingo syntax
+   total = (2 + 4) * 3 -- results in a value of 18
+   Descriptions of the types of operators and their precedence order follow. Operators with higher
+   precedence are performed first. For example, an operator whose precedence order is 5 is
+   performed before an operator whose precedence order is 4. Operations that have the same order
+   of precedence are performed left to right.
+
+
+
+
+                                                                                        Operators    25
+Arithmetic operators
+     Arithmetic operators add, subtract, multiply, divide, and perform other arithmetic operations.
+     Parentheses and the minus sign are also arithmetic operators.
+
+     Operator       Effect                                                                    Precedence
+     ( )            Groups operations to control precedence order.                            5
+     -              When placed before a number, reverses the sign of a number.               5
+     *              Performs multiplication.                                                  4
+     mod            (Lingo only) Performs modulo operation.                                   4
+     /              Performs division.                                                        4
+     %              (JavaScript syntax only) Returns the integer remainder of dividing        4
+                    two operands.
+     ++             (JavaScript syntax only) Adds one to its operand. If used as a prefix      4
+                    operator (++x), returns the value of its operand after adding one. If used
+                    as a postfix operator (x++), returns the value of its operand before
+                    adding one.
+     --             (JavaScript syntax only) Subtracts one from its operand. The return       4
+                    value is analogous to that of the increment operator.
+     +              When placed between two numbers, performs addition.                       3
+     -              When placed between two numbers, performs subtraction.                    3
+
+     Note: In Lingo, when only integers are used in an operation, the result is an integer. Using integers
+     and floating-point numbers in the same calculation results in a floating-point number. In JavaScript
+     syntax, all calculations essentially result in floating-point numbers.
+
+     When dividing one integer by another does not result in a whole number, Lingo rounds the result
+     down to the nearest integer. For example, the result of 4/3 is 1. In JavaScript syntax, the actual
+     floating-point value, 1.333, is returned.
+     To force Lingo to calculate a value without rounding the result, use float() on one or more
+     values in an expression. For example, the result of 4/float(3) is 1.333.
+
+Comparison operators
+     Comparison operators compare two values and determine whether the comparison is true or false.
+
+     Operator       Meaning                                                                   Precedence
+     ==             (JavaScript syntax only) Two operands are equal. If the operands are      1
+                    not of the same data type, JavaScript syntax attempts to convert the
+                    operands to an appropriate data type for the comparison.
+     ===            (JavaScript syntax only) Two operands are equal and of the same           1
+                    data type
+     !=             (JavaScript syntax only) Two operands are not equal. If the operands     1
+                    are not of the same data type, JavaScript syntax attempts to convert the
+                    operands to an appropriate data type for the comparison.
+
+
+
+
+26       Chapter 2: Director Scripting Essentials
+    Operator     Meaning                                                                  Precedence
+    !==          (JavaScript syntax only) Two operands are not equal and/or not of the    1
+                 same type
+    <>           (Lingo only) Two operands are not equal                                  1
+    <            The left operand is less than the right operand                          1
+    <=           The left operand is less than or equal to the right operand              1
+    >            The left operand is greater than the right operand                       1
+    >=           The left operand is great than or equal to the right operand             1
+    =            (Lingo only) Two operands are equal                                      1
+
+
+Assignment operators
+    Assignment operators assign a value to its left operand based on the value of its right operand.
+    With the exception of the basic assignment operator, equal (=), all of the following shortcut
+    assignment operators apply only to JavaScript syntax.
+
+    Operator     Meaning                                                                  Precedence
+
+    =            Equal                                                                    1
+
+    x += y       (JavaScript syntax only) x = x + y                                       1
+    x -= y       (JavaScript syntax only) x = x - y                                       1
+
+    x *= y       (JavaScript syntax only) x = x * y                                       1
+
+    x /= y       (JavaScript syntax only) x = x / y                                       1
+
+    x %= y       (JavaScript syntax only) x = x % y                                       1
+
+
+Logical operators
+    Logical operators test whether two logical expressions are true or false.
+    Use care when using logical operators and string operators in Lingo and JavaScript syntax. For
+    example, in JavaScript syntax && is a logical operator that determines whether two expressions are
+    true, but in Lingo, && is a string operator that concatenates two strings and inserts a space
+    between the two expressions.
+
+    Operator     Effect                                                                   Precedence
+    and          (Lingo only) Determines whether both expressions are true                4
+    &&           (JavaScript syntax only) Determines whether both expressions are true 4
+    or           (Lingo only) Determines whether either or both expressions are true      4
+    ||           (JavaScript syntax only) Determines whether either or both expressions 4
+                 are true
+    not          (Lingo only) Negates an expression                                       5
+    !            (JavaScript syntax only) Negates an expression                           5
+
+
+
+
+                                                                                         Operators     27
+     The not (Lingo) or ! (JavaScript syntax) operator is useful for toggling a TRUE or FALSE value to
+     its opposite. For example, the following statement turns on the sound if it’s currently off and
+     turns off the sound if it’s currently on:
+     -- Lingo syntax
+     _sound.soundEnabled = not (_sound.soundEnabled)
+
+     // JavaScript syntax
+     _sound.soundEnabled = !(_sound.soundEnabled);
+
+String operators
+     String operators combine and define strings.
+     Use care when using logical operators and string operators in Lingo and JavaScript syntax. For
+     example, in JavaScript syntax && is a logical operator that determines whether two expressions are
+     true, but in Lingo, && is a string operator that concatenates two strings and inserts a space
+     between the two expressions.
+
+     Operator       Effect                                                                  Precedence
+
+     &              (Lingo only) Concatenates two strings                                   2
+
+     +              (JavaScript syntax only) Concatenates two string values and returns a   2
+                    third string that is the union of the two operands
+     +=             (JavaScript syntax only) Concatenates one string variable and one       2
+                    string value, and assigns the returned value to the string variable
+
+     &&             (Lingo only) Concatenates two strings and inserts a space between       2
+                    the two
+
+     "              Marks the beginning or end of a string.                                 1
+
+
+Conditional constructs
+     By default, Director always executes script statements starting with the first statement and
+     continuing in order until it reaches the final statement or a statement that instructs a script to go
+     somewhere else.
+     The order in which statements are executed affects the order in which you should place
+     statements. For example, if you write a statement that requires some calculated value, you need to
+     put the statement that calculates the value first.
+     The first statement in the following example adds two numbers, and the second statement assigns
+     a string representation of the sum to a field cast member named Answer, which appears on the
+     Stage. The second statement could not be placed before the first statement because the variable x
+     has not yet been defined.
+     -- Lingo syntax
+     x = 2 + 2
+     member("Answer").text = string(x)
+
+     // JavaScript syntax
+     var x = 2 + 2;
+     member("Answer").text = x.toString();
+
+
+
+
+28       Chapter 2: Director Scripting Essentials
+    Both Lingo and JavaScript syntax provide conventions for altering the default execution order or
+    script statements, and for performing actions depending on specific conditions. For example, you
+    may want to do the following in your scripts:
+    • Execute a set of statements if a logical condition is true, or execute alternate statements if the
+      logical condition is false.
+    • Evaluate an expression and attempt to match the expression’s value to a specific condition.
+    • Execute a set of statements repeatedly until a specific condition is met.
+Testing for logical conditions
+    To execute a statement or set of statements if a specified condition is true or false, you use the
+    if...then...else (Lingo) or if...else (JavaScript syntax) structures. For example, you can
+    create an if...then...else or if...then structure that tests whether text has finished
+    downloading from the Internet and, if it has, then attempts to format the text. These structures
+    use the following pattern to test for logical conditions:
+    • In both Lingo and JavaScript syntax, statements that check whether a condition is true or false
+      begin with the term if.
+    • In Lingo, if the condition exists, the statements following the term then are executed. In
+      JavaScript syntax, curly brackets ({ }) take the place of the Lingo term then, and must
+      surround each individual if, else, or else if statement.
+    • In both Lingo and JavaScript syntax, if the condition does not exist, scripts skip to the next
+      statement in the handler using the term else or else if.
+    • In Lingo, the term end if specifies the end of the if test. In JavaScript syntax, the if test ends
+      automatically, so there is no term that explicitly ends the test.
+    To optimize your script’s performance, test for the most likely conditions first.
+    The following statements test several conditions. The term else if specifies alternative tests to
+    perform if previous conditions are false:
+    -- Lingo syntax
+    if _mouse.mouseMember = member(1) then
+      _movie.go("Cairo")
+    else if _mouse.mouseMember = member(2) then
+      _movie.go("Nairobi")
+    else
+      _player.alert("You’re lost.")
+    end if
+
+    // JavaScript syntax
+    if (_mouse.mouseMember = member(1)) {
+      _movie.go("Cairo");
+    }
+    else if (_mouse.mouseMember = member(2)) {
+      _movie.go("Nairobi");
+    }
+    else {
+      _player.alert("You’re lost.");
+    }
+
+
+
+
+                                                                             Conditional constructs   29
+     When writing if...then structures in Lingo, you can place the statement or statements
+     following then in the same line as then, or you can place them on their own line by inserting a
+     carriage return after then. If you insert a carriage return, you must also include an end if
+     statement at the end of the if...then structure.
+     When writing if structures in JavaScript syntax, you can place the statement or statements
+     following if in the same line as if, or you can place them on their own line by inserting a
+     carriage return after if.
+     For example, the following statements are equivalent:
+     -- Lingo syntax
+     if _mouse.mouseMember = member(1) then _movie.go("Cairo")
+
+     if _mouse.mouseMember = member(1) then
+       _movie.go("Cairo")
+     end if
+
+     // JavaScript syntax
+     if (_mouse.mouseMember = member(1)) { _movie.go("Cairo"); }
+
+     if (_mouse.mouseMember = member(1)) {
+       _movie.go("Cairo");
+     }
+     For reference information on using the if...then...else and if...else structures, see “if ”
+     on page 209.
+
+Evaluating and matching expressions
+     The case (Lingo) or switch...case (JavaScript syntax) structures are shorthand alternatives to
+     using if...then...else or if...then structures when setting up multiple branching
+     structures. The case and switch...case structures are often more efficient and easier to read
+     than many if...then...else or if...then structures.
+     In Lingo, the condition to test for follows the term case in the first line of the case structure.
+     The comparison goes through each line in order until Lingo encounters an expression that
+     matches the test condition. When a matching expression is found, Director executes the Lingo
+     that follows the matching expression.
+     In JavaScript syntax, the condition to test for follows the term switch in the first line of the
+     structure. Each comparison in the test follows the term case for each line that contains a test.
+     Each case comparison can be ended by using the optional term break. Including the term break
+     breaks the program out of the switch structure and executes any statements following the
+     structure. If break is omitted, the following case comparison is executed.
+     A case or switch...case structure can use comparisons as the test condition.
+     For example, the following case and switch...case structures test which key the user pressed
+     most recently and responds accordingly.
+     • If the user pressed A, the movie goes to the frame labeled Apple.
+     • If the user pressed B or C, the movie performs the specified transition and then goes to the
+       frame labeled Oranges.
+
+
+
+
+30    Chapter 2: Director Scripting Essentials
+   • If the user pressed any other letter key, the computer beeps.
+     -- Lingo syntax
+     case (_key.key) of
+       "a" : _movie.go("Apple")
+       "b", "c":
+           _movie.puppetTransition(99)
+           _movie.go("Oranges")
+       otherwise: _sound.beep()
+     end case
+
+     // JavaScript syntax
+     switch (_key.key) {
+       case "a" :
+          _movie.go("Apple");
+          break;
+       case "b":
+          _movie.puppetTransition(99);
+          _movie.go("Oranges");
+          break;
+       case "c":
+          _movie.puppetTransition(99);
+          _movie.go("Oranges");
+          break;
+       default: _sound.beep()
+     }
+   Note: In JavaScript syntax, only one comparison can be made per case statement.
+
+   For reference information on using case structures, see “case” on page 203.
+
+Repeating actions
+   In both Lingo and JavaScript syntax, you can repeat an action a specified number of times or
+   while a specific condition exists.
+   In Lingo, to repeat an action a specified number of times you use a repeat with structure.
+   Specify the number of times to repeat as a range following repeat with.
+   In JavaScript syntax, to repeat an action a specified number of times you use the for structure.
+   The for structure takes three parameters: the first parameter typically initializes a counter
+   variable, the second parameter specifies a condition to evaluate each time through the loop, and
+   the third parameter is typically used to update or increment the counter variable.
+   The repeat with and for structures are useful for performing the same operation on a series of
+   objects. For example, the following loop makes Background Transparent the ink for sprites 2
+   through 10:
+   -- Lingo syntax
+   repeat with n = 2 to 10
+     sprite(n).ink = 36
+   end repeat
+
+   // JavaScript syntax
+   for (var n=2; n<=10; n++) {
+     sprite(n).ink = 36;
+   }
+
+
+
+
+                                                                         Conditional constructs   31
+     The following example performs a similar action, but with decreasing numbers:
+     -- Lingo syntax
+     repeat with n = 10 down to 2
+       sprite(n).ink = 36
+     end repeat
+
+     // JavaScript syntax
+     for (var n=10; n>=2; n--) {
+       sprite(n).ink = 36;
+     }
+     In Lingo, to repeat a set of instructions as long as a specific condition exists, use the repeat
+     while structure.
+
+     In JavaScript syntax, to repeat a set of instructions as long as a specific condition exists, use the
+     while structure.
+
+     For example, the following statements instruct a movie to beep continuously whenever the mouse
+     button is being pressed:
+     -- Lingo syntax
+     repeat while _mouse.mouseDown
+       _sound.beep()
+     end repeat
+
+     // JavaScript syntax
+     while (_mouse.mouseDown) {
+       _sound.beep();
+     }
+     Both Lingo and JavaScript syntax scripts continue to loop through the statements inside the loop
+     until the condition is no longer true, or until one of the statements sends the script outside the
+     loop. In the previous example, the script exits the loop when the mouse button is released because
+     the mouseDown condition is no longer true.
+     In Lingo, to exit a loop, use the exit repeat statement.
+     In JavaScript syntax, to exit a loop you can use the term break. A loop also automatically exits
+     when a condition is no longer true.
+     For example, the following statements make a movie beep while the mouse button is pressed,
+     unless the mouse pointer is over sprite 1. If the pointer is over sprite 1, the script exits the
+     loop and stops beeping. The rollover() method indicates whether the pointer is over the
+     specified sprite.
+     -- Lingo syntax
+     repeat while _mouse.stillDown
+       _sound.beep()
+       if _movie.rollOver(1) then exit repeat
+     end repeat
+
+     // JavaScript syntax
+     while (_mouse.stillDown) {
+       _sound.beep();
+       if (_movie.rollOver(1)) {
+          break;
+       }
+     }
+     For reference information on the repeat while and while structures, see “repeat while”
+     on page 220.
+
+
+32    Chapter 2: Director Scripting Essentials
+Events, messages, and handlers
+   A key component to creating powerful, useful scripts is an understanding of the concepts and
+   functionality of events, messages, and handlers. Understanding the order in which events and
+   messages are sent and received will help you determine exactly when specific scripts or parts of
+   scripts should run. It will also help you debug scripts when specific actions are not occurring
+   when you expect them to occur.
+   When a movie plays, the following occurs:
+   1 Events occur in response to either a system or user-defined action
+   2 Messages that correspond to these events are sent to the scripts in a movie
+   3 Handlers within scripts contain the instructions that run when a specific message is received
+   The name of an event corresponds to the name of the message it generates, and the handler that
+   handles the event corresponds to both the event and the message. For example, when the event
+   named mouseDown occurs, Director generates and sends to scripts a message named mouseDown,
+   which would in turn be handled by a handler named mouseDown.
+
+Events
+   There are two categories of events that occur when a movie plays:
+   • System events occur without a user interacting with the movie, and are predefined and
+     named in Director. For example, when the playhead enters a frame, when a sprite is clicked,
+     and so on.
+   • User-defined events occur in response to actions that you define. For example, you could
+     create an event that occurs when the background color of a sprite changes from red to blue,
+     when a sound has played five times, and so on.
+   Many system events, such as prepareFrame, beginSprite, and so on, occur automatically and
+   in a predefined order while a movie is playing. Other system events, particularly mouse events
+   such as mouseDown, mouseUp, and so on, do not necessarily occur automatically while a movie is
+   playing, but rather when a user triggers them.
+   For example, when a movie first starts, the prepareMovie event always occurs first, the
+   prepareFrame event always occurs second, and so on. However, the mouseDown and mouseUp
+   events may never occur in a movie unless a user triggers them by clicking the movie.
+   The following lists illustrate the system events that always occur during a movie, and the order in
+   which they occur.
+   When the movie first starts, events occur in the following order:
+   1 prepareMovie
+   2 prepareFrame       Immediately after the prepareFrame event, Director plays sounds, draws
+     sprites, and performs any transitions or palette effects. This event occurs before the enterFrame
+     event. A prepareFrame handler is a good location for script that you want to run before the
+     frame draws.
+   3 beginSprite This event occurs when the playhead enters a sprite span.
+   4 startMovie This event occurs in the first frame that plays.
+
+
+
+
+                                                                 Events, messages, and handlers    33
+     When the movie encounters a frame, events occur in the following order:
+     1    beginSprite      This event occurs only if new sprites begin in the frame.
+     2    stepFrame
+     3    prepareFrame
+     4    enterFrame     After enterFrame and before exitFrame, Director handles any time delays
+          required by the tempo setting, idle events, and keyboard and mouse events.
+     5 exitFrame
+     6 endSprite         This event occurs only if the playhead exits a sprite in the frame.
+     When a movie stops, events occur in the following order:
+     1 endSprite         This event occurs only if sprites currently exist in the movie.
+     2 stopMovie
+     For reference information on the predefined system events in Director, see Chapter 10, “Events
+     and Messages,” on page 159.
+
+Messages
+     To run the appropriate set of script statements at the right time, Director must determine what is
+     occurring in the movie and which statements to run in response to certain events.
+     Director sends messages to indicate when specific events occur in a movie, such as when sprites
+     are clicked, keyboard keys are pressed, a movie starts, the playhead enters or exits a frame, or a
+     script returns a certain result.
+     The general order in which messages are sent to objects is as follows:
+     1 Messages are sent first to behaviors attached to a sprite involved in the event. If a sprite has more
+       than one behavior attached to it, behaviors respond to the message in the order in which they
+       are attached to the sprite.
+     2 Messages are sent next to a script attached to the cast member assigned to the sprite.
+     3 Messages are then sent to behaviors attached to the current frame.
+     4 Messages are sent last to movie scripts.
+     Although you can define your own message names, most common events that occur in a movie
+     have built-in message names.
+     For reference information on the built-in messages in Director, see Chapter 10, “Events and
+     Messages,” on page 159.
+
+Defining custom messages
+     In addition to using built-in message names, you can define your own messages and
+     corresponding handler names. A custom message can call another script, another handler, or
+     the statement’s own handler. When the called handler stops executing, the handler that called
+     it resumes.
+     A custom message and handler name must meet the following criteria:
+     • It must start with a letter.
+     • It must include alphanumeric characters only (no special characters or punctuation).
+
+
+
+
+34       Chapter 2: Director Scripting Essentials
+   • It must consist of one word or of several words connected by an underscore—no spaces
+     are allowed.
+   • It must be different from the name of any predefined Lingo or JavaScript syntax element.
+   Using predefined Lingo or JavaScript keywords for message and handler names can create
+   confusion. Although it is possible to explicitly replace or extend the functionality of a Lingo or
+   JavaScript element by using it as a message or handler name, this should be done only in certain
+   advanced situations.
+   When you have multiple handlers with similar functions, it is useful to give them names that have
+   similar beginnings so they appear together in an alphabetical listing, such as the listing that can be
+   displayed by the Edit > Find > Handler command.
+
+Handlers
+   A handler is a set of statements within a script that runs in response to a specific event and
+   subsequent message. Although Director contains built-in events and messages, you must create
+   your own custom handlers for each event/message pair that you want to handle.
+
+ Deciding where to place handlers
+   You can place handlers in any type of script, and a script can contain multiple handlers. It’s a good
+   idea to group related handlers in a single place, though, for easier maintenance.
+   The following are some useful guidelines for many common situations:
+   • To associate a handler with a specific sprite, or to have a handler run in response to an action
+     on a specific sprite, put the handler in a behavior attached to the sprite.
+   • To set up a handler that should be available any time the movie is in a specific frame, put the
+     handler in a behavior attached to the frame.
+     For example, to have a handler respond to a mouse click while the playhead is in a frame,
+     regardless of where the click occurs, place a mouseDown or mouseUp handler in the frame
+     behavior rather than in a sprite behavior.
+   • To set up a handler that runs in response to messages about events anywhere in the movie, put
+     the handler in a movie script.
+   • To set up a handler that runs in response to an event that affects a cast member, regardless of
+     which sprites use the cast member, put the handler in a cast member script.
+
+ Determining when handlers receive a message
+   After sending a message to scripts, Director checks for handlers in a definite order.
+   1 Director first checks whether a handler exists in the object from which the message was sent. If
+     a handler is found, the message is intercepted, and the script in the handler runs.
+   2 If no handler is found, Director then checks cast member, in ascending order, for any associated
+     movie scripts that might contain a handler for the message. If a handler is found, the message is
+     intercepted, and the script in the handler runs.
+   3 If no handler is found, Director then checks whether a frame script contains a handler for the
+     message. If a handler is found, the message is intercepted, and the script in the handler runs.
+   4 If no handler is found, Director then checks sprites, in ascending order, for any scripts
+     associated with the sprites that might contain a handler for the message. If a handler is found,
+     the message is intercepted, and the script in the handler runs.
+
+
+                                                                   Events, messages, and handlers     35
+       After a handler intercepts a message, the message does not automatically pass on to the remaining
+       locations. However, in Lingo you can use the pass() method to override this default rule and
+       pass the message to other objects.
+       If no matching handler is found after the message passes to all possible locations, Director ignores
+       the message.
+       The exact order of objects to which Director sends a message depends on the message. For
+       information on the sequence of objects to which Director sends specific messages, see the entry
+       for each message in Chapter 10, “Events and Messages,” on page 159.
+
+     Using parameters to pass values to a handler
+       By using parameters for values, you can give the handler exactly the values that it needs to use at a
+       specific time, regardless of where or when you call the handler in the movie. Parameters can be
+       optional or required, depending on the situation.
+       To create parameters for a handler:
+       • In Lingo, put the parameters after the handler name. In JavaScript syntax, put the parameters
+          within parentheses, and then put them after the handler name. Use commas to separate
+          multiple parameters.
+       When you call a handler, you must provide specific values for the parameters that the handler
+       uses. You can use any type of value, such as a number, a variable that has a value assigned, or a
+       string of characters. Values in the calling statement must be in the order that they follow in the
+       handler’s parameters, and they must be surrounded by parentheses.
+       In the following example, the variable assignment mySum calls the method addThem, which is
+       passed the two values 2 and 4. The addThem handler replaces the parameter placeholders a and b
+       with the two values passed to it, stores the result in the local variable c, and then uses the keyword
+       return to send the result back to the original method, which is then assigned to mySum.
+
+       Because 2 is first in the list of parameters, it is substituted for a in the handler. Likewise, because 4
+       is second in the list of parameters, it is substituted for b in the handler.
+       -- Lingo syntax
+       mySum = addThem(2, 4) -- calling statement
+
+       on addThem a, b -- handler
+         c = a + b
+         return c -- returns the result to the calling statement
+       end
+
+       // JavaScript syntax
+       var mySum = addThem(2, 4); // calling statement
+
+       function addThem(a, b) { // handler
+         c = a + b;
+         return c; // returns the result to the calling statement
+       }
+       In Lingo, when you call a custom method from an object, a reference to the script object in
+       memory is always passed as an implied first parameter to the handler for that method. This means
+       that you must account for the script object reference in your handler.
+
+
+
+
+36      Chapter 2: Director Scripting Essentials
+  For example, consider that you wrote a custom sprite method named jump() that takes a single
+  integer as a parameter, and you placed the method in a behavior. When you call jump() from a
+  sprite object reference, the handler must also include a parameter that represents the script object
+  reference, and not just the single integer. In this case, the implied parameter is represented by the
+  keyword me, but any term will work.
+  -- Lingo syntax
+  myHeight = sprite(2).jump(5)
+
+  on jump(me,a)
+    return a + 15 -- this handler works correctly, and returns 20
+  end
+
+  on jump(a)
+    return a + 15 -- this handler does not work correctly, and returns 0
+  end
+  You can also use expressions as values. For example, the following statement substitutes 3+6 for a
+  and 8>2 (or 1, representing TRUE) for b, and would return 10:
+  -- Lingo syntax
+  mySum = addThem(3+6, 8>2)
+  In Lingo, each handler begins with the word on followed by the message that the handler should
+  respond to. The last line of the handler is the word end. You can repeat the handler’s name after
+  end, but this is optional.
+
+  In JavaScript syntax, each handler begins with the word function followed by the message that
+  the handler should respond to. The statements that comprise the handler are surrounded by
+  opening and closing brackets, as are all JavaScript syntax functions.
+
+Returning results from handlers
+  Often, you want a handler to report some condition or the result of some action.
+  To return results from a handler:
+  • Use the keyword return to have a handler report a condition or the result of an action. For
+    example, the following findColor handler returns the current color of sprite 1:
+    -- Lingo syntax
+    on findColor
+      return sprite(1).foreColor
+    end
+
+    // JavaScript syntax
+    function findColor() {
+      return(sprite(1).foreColor);
+    }
+  You can also use the keyword return by itself to exit from the current handler and return no
+  value. For example, the following jump handler returns nothing if the aVal parameter equals 5;
+  otherwise, it returns a value.
+  -- Lingo syntax
+  on jump(aVal)
+    if aVal = 5 then return
+
+    aVal = aVal + 10
+    return aVal
+  end
+
+
+
+                                                                 Events, messages, and handlers     37
+     // JavaScript syntax
+     function jump(aVal) {
+       if(aVal == 5) {
+          return;
+       }
+       else {
+          aVal = aVal + 10;
+          return(aVal);
+       }
+     }
+     When you define a handler that returns a result, you must use parentheses after the handler when
+     you call it from another handler. For example, the statement put(findColor()) calls the on
+     findColor handler and then displays the result in the Message window.
+
+
+Linear lists and property lists
+     In your scripts, you may want to track and update lists of data, such as a series of names or the
+     values assigned to a set of variables. Both Lingo and JavaScript syntax have access to linear lists
+     and property lists. In a linear list, each element in the list is a single value. In a property list, each
+     element in the list contains two values; the first value is a property name, and the second value is
+     the value associated with that property.
+     Because both Lingo and JavaScript syntax have access to linear and property lists, it is
+     recommended that you use linear lists and property lists if values in your code are shared between
+     Lingo and JavaScript syntax scripts.
+     If values in your code are used only in JavaScript syntax scripts, it is recommended that you use
+     JavaScript Array objects to work with lists of data. For more information on using arrays, see
+     “JavaScript syntax arrays” on page 45.
+
+Creating linear lists
+     You create a linear list in one of the following ways:
+     • In Lingo, use either the top level list() function or the list operator ([ ]), using commas to
+        separate items in the list.
+     • In JavaScript syntax, use the top level list() function, using commas to separate items in
+        the list.
+     The index into a linear list always starts with 1.
+     When you use the top level list() function, you specify the list’s elements as parameters of the
+     function. This function is useful when you use a keyboard that does not provide square brackets.
+     All of the following statements create a linear list of three names and assign it to a variable.
+     -- Lingo syntax
+     workerList = ["Bruno", "Heather", "Carlos"] -- using the Lingo list operator
+     workerList = list("Bruno", "Heather", "Carlos") -- using list()
+
+     // JavaScript syntax
+     var workerList = list("Bruno", "Heather", "Carlos"); // using list()
+
+
+
+
+38     Chapter 2: Director Scripting Essentials
+    You can also create empty linear lists. The following statements create empty linear lists.
+    -- Lingo syntax
+    workerList = [] -- using the Lingo list operator
+    workerList = list() -- using list() with no parameters
+
+    // JavaScript syntax
+    var workerList = list(); // using list() with no parameters
+
+Creating property lists
+    You create a property list in one of the following ways:
+    • In Lingo, use either the top level propList() function or the list operator ([:]). When using
+      the list operator to create a property list, you can use a either a colon to designate name/value
+      elements and commas to separate elements in the list, or commas to both designate name/value
+      elements and to separate elements in the list.
+    • In JavaScript syntax, use the top level propList() function and insert commas to both
+      designate name/value elements and to separate elements in the list.
+    When you use the top level propList() function, you specify the property list’s elements as
+    parameters of the function. This function is useful when you use a keyboard that does not provide
+    square brackets.
+    Properties can appear more than once in a given property list.
+    All of the following statements create a property list with four property names—left, top,
+    right, and bottom—and their corresponding values.
+    -- Lingo syntax
+    sprite1Loc = [#left:100, #top:150, #right:300, #bottom:350]
+    sprite1Loc = ["left",400, "top",550, "right",500, "bottom",750]
+    sprite1Loc = propList("left",400, "top",550, "right",500, "bottom",750)
+
+    // JavaScript syntax
+    var sprite1Loc = propList("left",400, "top",550, "right",500, "bottom",750);
+    You can also create empty property lists. The following statements create empty property lists.
+    -- Lingo syntax
+    sprite1Loc = [:] -- using the Lingo property list operator
+    sprite1Loc = propList() -- using propList() with no parameters
+
+    // JavaScript syntax
+    var sprite1Loc = propList(); // using propList() with no parameters
+
+Setting and retrieving items in lists
+    You can set and retrieve individual items in a list. The syntax differs for linear and property lists.
+    To set a value in a linear list, do one of the following:
+    • Use the equals (=) operator.
+    • Use the setAt() method.
+
+
+
+
+                                                                        Linear lists and property lists   39
+     The following statements illustrate defining the linear list workerList that contains one value,
+     Heather, and then adds Carlos as the second value in the list.
+     -- Lingo syntax
+     workerList = ["Heather"] -- define a linear list
+     workerList[2] = "Carlos" -- set the second value using the equal operator
+     workerList.setAt(2, "Carlos") -- set the second value using setAt()
+
+     // JavaScript syntax
+     var workerList = list("Heather"); // define a linear list
+     workerList[2] = "Carlos"; // set the second value using the equal operator
+     workerList.setAt(2, "Carlos"); // set the second value using setAt()
+
+     To retrieve a value in a linear list:
+     • Use the list variable followed by the number that indicates the value’s position in the list. Place
+       square brackets around the number.
+     • Use the getAt() method.
+     The following statements create the linear list workerList, and then assign the second value in
+     the list to the variable name2.
+     -- Lingo syntax
+     workerList = ["Bruno", "Heather", "Carlos"] -- define a linear list
+     name2 = workerList[2] -- use bracketed access to retrieve "Heather"
+     name2 = workerList.getAt(2) -- use getAt() to retrieve "Heather"
+
+     // JavaScript syntax
+     var workerList = list("Bruno", "Heather", "Carlos");
+     var name2 = workerList[2] // use bracketed access to retrieve "Heather"
+     var name2 = workerList.getAt(2) // use getAt() to retrieve "Heather"
+
+     To set a value in a property list, do one of the following:
+     • Use the equals (=) operator.
+     • In Lingo only, use the setaProp() method.
+     • Use dot syntax.
+     The following Lingo statement uses the equals operator to make sushi the new value associated
+     with the property Bruno.
+     -- Lingo syntax
+     foodList = [:] -- define an empty property list
+     foodList[#Bruno] = "sushi" -- associate sushi with Bruno
+     The following Lingo statement uses setaprop() to make sushi the new value associated with
+     the property Bruno.
+     -- Lingo syntax
+     foodList = [:] -- define an empty property list
+     foodList.setaProp(#Bruno, "sushi") -- use setaProp()
+
+     // JavaScript syntax
+     foodList = propList() -- define an empty property list
+     foodList.setaProp("Bruno", "sushi") -- use setaProp()
+     The following statements use dot syntax to set the value associated with Bruno from sushi to
+     teriyaki.
+
+
+
+
+40    Chapter 2: Director Scripting Essentials
+-- Lingo syntax
+foodList = [#Bruno:"sushi"] -- define a property list
+trace(foodList) -- displays [#Bruno: "sushi"]
+foodList.Bruno = "teriyaki" -- use dot syntax to set the value of Bruno
+trace(foodList) -- displays [#Bruno: "teriyaki"]
+
+// JavaScript syntax
+var foodList = propList("Bruno", "sushi"); // define a property list
+trace(foodList); // displays ["Bruno": "sushi"]
+foodList.Bruno = "teriyaki" // use dot syntax to set the value of Bruno
+trace(foodList) -- displays [#Bruno: "teriyaki"]
+
+To retrieve a value in a property list, do one of the following:
+• Use the list variable followed by the name of the property associated with the value. Place
+  square brackets around the property.
+• Use the getaProp() or getPropAt() methods.
+• Use dot syntax.
+The following statements use bracketed access to retrieve the values associated with the properties
+breakfast and lunch.
+-- Lingo syntax
+-- define a property list
+foodList = [#breakfast:"Waffles", #lunch:"Tofu Burger"]
+trace(foodList[#breakfast]) -- displays "Waffles"
+trace(foodList[#lunch]) -- displays "Tofu Burger"
+
+// JavaScript syntax
+// define a property list
+var foodList = propList("breakfast", "Waffles", "lunch", "Tofu Burger");
+trace(foodList["breakfast"]); // displays Waffles
+trace(foodList["lunch"]); // displays Tofu Burger
+The following statements use getaProp() to retrieve the value associated with the property
+breakfast, and getPropAt() to retrieve the property at the second index position in the list.
+-- Lingo syntax
+-- define a property list
+foodList = [#breakfast:"Waffles", #lunch:"Tofu Burger"]
+trace(foodList.getaProp(#breakfast)) -- displays "Waffles"
+trace(foodList.getPropAt(2)) -- displays #lunch
+
+// JavaScript syntax
+// define a property list
+var foodList = propList("breakfast", "Waffles", "lunch", "Tofu Burger");
+trace(foodList.getaProp("breakfast")) // displays Waffles
+trace(foodList.getPropAt(2)) // displays lunch
+The following statements use dot syntax to access the values associated with properties in a
+property list.
+-- Lingo syntax
+-- define a property list
+foodList = [#breakfast:"Waffles", #lunch:"Tofu Burger"]
+trace(foodList.breakfast) -- displays "Waffles"
+
+// JavaScript syntax
+// define a property list
+var foodList = propList("breakfast", "Waffles", "lunch", "Tofu Burger");
+trace(foodList.lunch); // displays Tofu Burger
+
+
+
+                                                                   Linear lists and property lists   41
+Checking items in lists
+     You can determine the characteristics of a list and the number of items the list contains by
+     using the following methods.
+     • To display the contents of a list, use the put() or trace() functions, passing the variable that
+       contains the list as a parameter.
+     • To determine the number of items in a list, use the count() method (Lingo only) or the
+       count property.
+     • To determine a list’s type, use the ilk() method.
+     • To determine the maximum value in a list, use the max() method.
+     • To determine the minimum value in a list, use the min() function.
+     • To determine the position of a specific property, use the findPos, findPosNear, or
+       getOne command.
+     The following statements use count() and count to display the number of items in a list.
+     -- Lingo syntax
+     workerList = ["Bruno", "Heather", "Carlos"] -- define a linear list
+     trace(workerList.count()) -- displays 3
+     trace(workerList.count) -- displays 3
+
+     // JavaScript syntax
+     var workerList = list("Bruno", "Heather", "Carlos"); // define a linear list
+     trace(workerList.count); // displays 3
+     The following statements use ilk() to determine a list’s type.
+     -- Lingo syntax
+     x = ["1", "2", "3"]
+     trace(x.ilk()) // returns #list
+
+     // JavaScript syntax
+     var x = list("1", "2", "3");
+     trace(x.ilk()) // returns #list
+     The following statements use max() and min() to determine the maximum and minimum values
+     in a list.
+     -- Lingo syntax
+     workerList = ["Bruno", "Heather", "Carlos"] -- define a linear list
+     trace(workerList.max()) -- displays "Heather"
+     trace(workerList.min()) -- displays "Bruno"
+
+     // JavaScript syntax
+     var workerList = list("Bruno", "Heather", "Carlos"); // define a linear list
+     trace(workerList.max()); // displays Heather
+     trace(workerList.min()); // displays Bruno
+     The following statements use findPos to get the index position of a specified property in a
+     property list.
+     -- Lingo syntax
+     -- define a property list
+     foodList = [#breakfast:"Waffles", #lunch:"Tofu Burger"]
+     trace(foodList.findPos(#lunch)) -- displays 2
+
+     // JavaScript syntax
+     // define a property list
+     var foodList = propList("breakfast", "Waffles", "lunch", "Tofu Burger");
+     trace(foodList.findPos("breakfast")); // displays 1
+
+
+
+42    Chapter 2: Director Scripting Essentials
+Adding and deleting items in lists
+    You can add or delete items in a list by using the following methods.
+    • To add an item at the end of a list, use the append() method.
+    • To add an item at its proper position in a sorted list, use the add() or addProp() methods.
+    • To add an item at a specific place in a linear list, use the addAt() method.
+    • To add an item at a specific position in a property list, use the addProp() method.
+    • To delete an item from a list, use the deleteAt(), deleteOne(), or deleteProp() methods.
+    • To replace an item in a list, use the setAt() or setaProp() methods.
+    The following statements use append() to add an item to the end of a list.
+    -- Lingo syntax
+    workerList = ["Bruno", "Heather", "Carlos"] -- define a linear list
+    workerList.append("David")
+    trace(workerList) -- displays ["Bruno", "Heather", "Carlos", "David"]
+
+    // JavaScript syntax
+    var workerList = list("Bruno", "Heather", "Carlos"); // define a linear list
+    workerList.append("David");
+    trace(workerList); // displays ["Bruno", "Heather", "Carlos", "David"]
+    The following statements use addProp() to add a property and an associated value to a
+    property list.
+    -- Lingo syntax
+    -- define a property list
+    foodList = [#breakfast:"Waffles", #lunch:"Tofu Burger"]
+    foodList.addProp(#dinner, "Spaghetti") -- adds [#dinner: "Spaghetti"]
+
+    // JavaScript syntax
+    // define a property list
+    var foodList = propList("breakfast", "Waffles", "lunch", "Tofu Burger");
+    foodList.addProp("dinner", "Spaghetti"); // adds ["dinner": "Spaghetti"]
+    You do not have to explicitly remove lists. Lists are automatically removed when they are no
+    longer referred to by any variable. Other types of objects must be removed explicitly, by setting
+    variables that refer to them to VOID (Lingo) or null (JavaScript syntax).
+
+Copying lists
+    Assigning a list to a variable and then assigning that variable to a second variable does not make a
+    separate copy of the list. For example, the first statement below creates a list that contains the
+    names of two continents, and assigns the list to the variable landList. The second statement
+    assigns the same list to a new variable continentList. In the third statement, adding Australia
+    to landList also automatically adds Australia to the list continentList. This happens
+    because both variable names point to the same list object in memory. The same behavior occurs
+    by using an array in JavaScript syntax.
+    -- Lingo syntax
+    landList = ["Asia", "Africa"]
+    continentList = landList
+    landList.add("Australia") -- this also adds "Australia" to continentList
+
+
+
+
+                                                                      Linear lists and property lists   43
+     To create a copy of a list that is independent of another list:
+     • Use the duplicate() method.
+     For example, the following statements create a list and then make an independent copy of the list.
+     -- Lingo syntax
+     oldList = ["a", "b", "c"]
+     newList = oldList.duplicate() -- makes an independent copy of oldList
+
+     // JavaScript syntax
+     var oldList = list("a", "b", "c");
+     var newList = oldList.duplicate(); // makes an independent copy of oldList
+     After newList is created, editing either oldList or newList has no effect on the other.
+
+Sorting lists
+     Lists are sorted in alphanumeric order, with numbers being sorted before strings. Strings are
+     sorted according to their initial letters, regardless of how many characters they contain. Sorted
+     lists perform slightly faster than unsorted lists.
+     A linear list is sorted according to the values in the list. A property list is sorted according to the
+     property names in the list or array.
+     After the values in a linear or property list are sorted, they will remain sorted, even as values are
+     added to or removed from the lists.
+     To sort a list:
+     • Use the sort() method.
+     For example, the following statements sort a nonsorted alphabetical list.
+     -- Lingo syntax
+     oldList = ["d", "a", "c", "b"]
+     oldList.sort() -- results in ["a", "b", "c", "d"]
+
+     // JavaScript syntax
+     var oldList = list("d", "a", "c", "b");
+     oldList.sort(); // results in ["a", "b", "c", "d"]
+
+Creating multidimensional lists
+     You can also create multidimensional lists that enable you to work with the values of more than
+     one list at a time.
+     In the following example, the first two statements create the separate linear lists list1 and list2.
+     The third statement creates a multidimensional list and assigns it to mdList. To access the values
+     in a multidimensional list, the fourth and fifth statements use brackets to access the values in the
+     list; the first bracket provides access to a specified list, and the second bracket provides access to
+     the value at a specified index position in the list.
+     -- Lingo syntax
+     list1 = list(5,10)
+     list2 = list(15,20)
+     mdList = list(list1, list2)
+     trace(mdList[1][2]) -- displays 10
+     trace(mdList[2][1]) -- displays 15
+
+
+
+
+44    Chapter 2: Director Scripting Essentials
+    // JavaScript syntax
+    var list1 = list(5,10);
+    var list2 = list(15,20);
+    var mdList = list(list1, list2);
+    trace(mdList[1][2]); // displays 10
+    trace(mdList[2][1]); // displays 15
+
+JavaScript syntax arrays
+    JavaScript syntax arrays are similar to Lingo-style linear lists in that each element in an array is a
+    single value. One of the main differences between JavaScript syntax arrays and Lingo-style linear
+    lists is that the index into an array always starts with 0.
+    You create a JavaScript syntax array by using the Array object. You can use either square brackets
+    ([ ]) or the Array constructor to create an array. The following two statements create an array
+    with two values.
+    // JavaScript syntax
+    var myArray = [10, 15]; // using square brackets
+    var myArray = new Array(10, 15); // using the Array constructor
+    You can also create empty arrays. The following two statements create an empty array.
+    // JavaScript syntax
+    var myArray = [];
+    var myArray = new Array();
+    Note: The Director Scripting Reference does not include a complete reference for JavaScript syntax
+    Array objects. For more complete information on using Array objects, see one of the many third-party
+    resources on the subject.
+
+Checking items in arrays
+    You can determine the characteristics of an array and the number of items the array contains by
+    using the following methods.
+    • To display the contents of a list, use the put() or trace() function, passing the variable that
+      contains the list as a parameter.
+    • To determine the number of items in an array, use the Array object’s length property.
+    • To determine an array’s type, use the constructor property.
+      The following example illustrates determining the number of items in an array using the
+      length property, and then returning the type of object using the constructor property.
+      // JavaScript syntax
+      var x = ["1", "2", "3"];
+      trace(x.length) // displays 3
+      trace(x.contructor == Array) // displays true
+
+Adding and deleting items in arrays
+    You can add or delete items in an array by using the following methods:
+    • To add an item at the end of an array, use the Array object’s push() method.
+    • To add an item at its proper position in a sorted array, use the Array object’s splice() method.
+    • To add an item at a specific position in an array, use the Array object’s splice() method.
+
+
+
+
+                                                                            JavaScript syntax arrays   45
+     • To delete an item from an array, use the Array object’s splice() method.
+     • To replace an item in an array, use the Array object’s splice() method.
+     The following example illustrates using the Array object’s splice() method to add items to,
+     delete items from, and replace items in an array.
+     // JavaScript syntax
+     var myArray = new Array("1", "2");
+     trace(myArray); displays 1,2
+
+     myArray.push("5"); // adds the value "5" to the end of myArray
+     trace(myArray); // displays 1,2,5
+
+     myArray.splice(3, 0, "4"); // adds the value "4" after the value "5"
+     trace(myArray); // displays 1,2,5,4
+
+     myArray.sort(); // sort myArray
+     trace(myArray); // displays 1,2,4,5
+
+     myArray.splice(2, 0, "3");
+     trace(myArray); // displays 1,2,3,4,5
+
+     myArray.splice(3, 2); // delete two values at index positions 3 and 4
+     trace(myArray); // displays 1,2,3
+
+     myArray.splice(2, 1, "7"); // replaces one value at index position 2 with "7"
+     trace(myArray); displays 1,2,7
+
+Copying arrays
+     Assigning an array to a variable and then assigning that variable to a second variable does not
+     make a separate copy of the array.
+     For example, the first statement below creates an array that contains the names of two continents,
+     and assigns the array to the variable landList. The second statement assigns the same list to a
+     new variable continentList. In the third statement, adding Australia to landList also
+     automatically adds Australia to the array continentList. This happens because both variable
+     names point to the same Array object in memory.
+     // JavaScript syntax
+     var landArray = new Array("Asia", "Africa");
+     var continentArray = landArray;
+     landArray.push("Australia"); // this also adds "Australia" to continentList
+
+     To create a copy of an array that is independent of another array:
+     • Use the Array object’s slice() method.
+     For example, the following statements create an array and then use slice() to make an
+     independent copy of the array.
+     // JavaScript syntax
+     var oldArray = ["a", "b", "c"];
+     var newArray = oldArray.slice(); // makes an independent copy of oldArray
+     After newArray is created, editing either oldArray or newArray has no effect on the other.
+
+
+
+
+46    Chapter 2: Director Scripting Essentials
+Sorting arrays
+    Arrays are sorted in alphanumeric order, with numbers being sorted before strings. Strings are
+    sorted according to their initial letters, regardless of how many characters they contain.
+    To sort an array:
+    • Use the Array object’s sort() method.
+    The following statements sort a non-sorted alphabetical array.
+    // JavaScript syntax
+    var oldArray = ["d", "a", "c", "b"];
+    oldArray.sort(); // results in a, b, c, d
+    The following statements sort a non-sorted alphanumeric array.
+    // JavaScript syntax
+    var oldArray = [6, "f", 3, "b"];
+    oldArray.sort(); // results in 3, 6, b, f
+    Sorting an array results in a new sorted array.
+
+Creating multidimensional arrays
+    You can also create multidimensional arrays that enable you to work with the values of more than
+    one array at a time.
+    In the following example, the first two statements create the separate arrays array1 and array2.
+    The third statement creates a multidimensional array and assigns it to mdArray. To access the
+    values in a multidimensional array, the fourth and fifth statements use brackets to access the
+    values in the array; the first bracket provides access to a specified array, and the second bracket
+    provides access to value at a specified index position in the array.
+    // JavaScript syntax
+    var array1 = new Array(5,10);
+    var array2 = [15,20];
+    var mdArray = new Array(array1, array2);
+    trace(mdArray[0][1]); // displays 10
+    trace(mdArray[1][0]); // displays 15
+
+
+
+
+                                                                          JavaScript syntax arrays   47
+

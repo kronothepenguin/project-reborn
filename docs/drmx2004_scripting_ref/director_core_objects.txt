@@ -1,0 +1,912 @@
+                                                                    CHAPTER 5
+                                                            Director Core Objects
+
+
+
+    The core objects in Macromedia Director MX 2004 provide access to the core functionality and
+    features available in Director, projectors, and the Macromedia Shockwave Player. Core objects
+    include the Director player engine, movie windows, sprites, sounds, and so on. They represent the
+    base layer through which almost all APIs and other object categories are accessed; the exceptions
+    are the scripting objects, which extend the core functionality of Director.
+    For an illustration of how the core objects relate to each other and to other objects in Director, see
+    “Object model diagrams” on page 53.
+
+Cast Library
+    Represents a single cast library within a movie.
+    A movie can consist of one or more cast libraries. A cast library can consist of one or more cast
+    members, which represent media in a movie, such as sounds, text, graphics, and other movies.
+    You can create a reference to a cast library by using either the top level castLib() function or the
+    Movie object’s castLib property. For example, if a movie contains a cast library named scripts,
+    you could create a reference to this cast library by doing the following:
+    • Use the top level castLib() method.
+      -- Lingo syntax
+      libScript = castLib("scripts")
+
+      // JavaScript syntax
+      var libScript = castLib("scripts");
+    • Use the Movie object’s castLib property.
+      -- Lingo syntax
+      libScript = _movie.castLib["scripts"]
+
+      // JavaScript syntax
+      var libScript = _movie.castLib["scripts"];
+
+Method summary for the Cast Library object
+
+    Method
+    findEmpty()
+
+
+
+
+                                                                                                       101
+Property summary for the Cast Library object
+
+      Property
+      fileName (Cast)
+
+      member (Cast)
+
+      name
+
+      number (Cast)
+
+      preLoadMode
+
+      selection
+
+  See also
+      castLib, castLib(), Member, Movie, Player, Sprite, Window
+
+Global
+      Provides a location to store and access global variables. These variables are available to both Lingo
+      and JavaScript syntax.
+      You can access the Global object by using the top level _global property. You can either assign
+      _global to a variable, or use the _global property directly to access the Global object’s methods
+      and any defined global variables.
+      • Assign _global to a variable.
+        -- Lingo syntax
+        objGlobal = _global
+
+        // JavaScript syntax
+        var objGlobal = _global;
+      • Use the _global property directly.
+        -- Lingo syntax
+        _global.showGlobals()
+
+        // JavaScript syntax
+        _global.showGlobals();
+      • Access a global variable.
+        -- Lingo syntax
+        global gSuccess
+
+        on mouseDown
+          gSuccess = "Congratulations!"
+          put(gSuccess) -- displays "Congratulations!"
+        end
+
+        // JavaScript syntax
+        _global.gSuccess = "Congratulations!";
+
+        function mouseDown() {
+          trace(_global.gSuccess); // displays "Congratulations!"
+        }
+
+
+
+
+102    Chapter 5: Director Core Objects
+Method summary for the Global object
+
+    Method
+    clearGlobals()
+
+    showGlobals()
+
+  See also
+    _global
+
+Key
+    Used to monitor a user’s keyboard activity.
+    You can access the Key object by using the top level _key property. You can either assign _key to
+    a variable, or use the _key property directly to access the Key object’s methods and properties.
+    • Assign _key to a variable.
+      -- Lingo syntax
+      objKey = _key
+
+      // JavaScript syntax
+      var objKey = _key;
+    • Use the _key property directly.
+      -- Lingo syntax
+      isCtrlDown = _key.controlDown
+
+      // JavaScript syntax
+      var isCtrlDown = _key.controlDown;
+
+Method summary for the Key object
+
+    Method
+    keyPressed()
+
+
+Property summary for the Key object
+
+    Property
+    commandDown
+
+    controlDown
+
+    key
+
+    keyCode
+
+    optionDown
+
+    shiftDown
+
+  See also
+    _key
+
+
+
+
+                                                                                           Key   103
+Member
+      Represents a cast member within a cast library. Cast members are the media and script assets in a
+      movie. Media cast members may be text, bitmaps, shapes, and so on. Script cast members include
+      behaviors, movie scripts, and so on.
+      A cast member can be referenced either by number or by name.
+      • When referring to a cast member by number, Director searches a particular cast library for that
+        cast member, and retrieves the member’s data. This method is faster than referring to a cast
+        member by name. However, because Director does not automatically update references to cast
+        member numbers in script, a numbered reference to a cast member that has moved position in
+        its cast library will be broken.
+      • When referring to a cast member by name, Director searches all cast libraries in a movie from
+        first to last, and retrieves the member’s data when it finds the named member. This method is
+        slower than referring to a cast member by number, especially when referring to large movies
+        that contain many cast libraries and cast members. However, a named reference to a cast
+        member allows the reference to remain intact even if the cast member moves position in its
+        cast library.
+      You can create a reference to a cast member by using either the top level member() function, or by
+      using the member property of the Cast, Movie, or Sprite object.
+      The following examples illustrate creating a reference to a cast member.
+      • Use the top level member() function.
+        -- Lingo syntax
+        objTree = member("bmpTree")
+
+        // JavaScript syntax
+        var objTree = member("bmpTree");
+      • Use the Sprite object’s member property.
+        -- Lingo syntax
+        objTree = sprite(1).member;
+
+        // JavaScript syntax
+        var objTree = sprite(1).member;
+
+Method summary for the Member object
+
+      Method
+      copyToClipBoard()
+
+      duplicate() (Member)
+
+      erase()
+
+      importFileInto()
+
+      move()
+
+      pasteClipBoardInto()
+
+      preLoad() (Member)
+
+      unLoad() (Member)
+
+
+
+
+104    Chapter 5: Director Core Objects
+Property summary for the Member object
+
+    Property
+    castLibNum                                      modifiedDate
+
+    comments                                        name
+
+    creationDate                                    number (Member)
+
+    fileName (Member)                               purgePriority
+
+    height                                          rect (Member)
+
+    hilite                                          regPoint
+
+    linked                                          scriptText
+
+    loaded                                          size
+
+    media                                           thumbNail
+
+    mediaReady                                      type (Member)
+
+    modified                                        width
+
+    modifiedBy
+
+ See also
+   Media Types, member(), member (Cast), member (Movie), member (Sprite), Movie,
+   Player, Scripting Objects, Sprite, Window
+
+Mouse
+   Provides access to a user’s mouse activity, including mouse movement and mouse clicks.
+   You can access the Mouse object by using the top level _mouse property. You can either assign
+   _mouse to a variable, or use the _mouse property directly to access the Mouse object’s properties.
+
+   • Assign _mouse to a variable.
+      -- Lingo syntax
+      objMouse = _mouse
+
+      // JavaScript syntax
+      var objMouse = _mouse;
+   • Use the _mouse property directly.
+      -- Lingo syntax
+      isDblClick = _mouse.doubleClick
+
+      // JavaScript syntax
+      var isDblClick = _mouse.doubleClick;
+
+Property summary for the Mouse object
+
+    Property
+    clickLoc                                        mouseLoc
+
+    clickOn                                         mouseMember
+
+    doubleClick                                     mouseUp
+
+
+
+
+                                                                                        Mouse    105
+      Property (continued)
+      mouseChar                                         mouseV
+
+      mouseDown                                         mouseWord
+
+      mouseH                                            rightMouseDown
+
+      mouseItem                                         rightMouseUp
+
+      mouseLine                                         stillDown
+
+  See also
+      _mouse
+
+Movie
+      Represents a movie being played within the Director player.
+      The Director player can contain one or more movies. A movie can consist of one or more cast
+      libraries. A cast library can consist of one or more cast members, which represent the media and
+      script assets in a movie. Media cast members may be text, bitmaps, shapes, and so on. Script cast
+      members include behaviors, movie scripts, and so on. Sprites are created from cast members and
+      are used on the Stage of a movie.
+      You can refer to the currently active movie by using the top level _movie property. You can refer
+      to any movie in the player by using the Window object’s movie property.
+      • Refer to the currently active movie.
+        -- Lingo syntax
+        objMovie = _movie
+
+        // JavaScript syntax
+        var objMovie = _movie;
+      • Use the Window object’s movie property to access the movie in a particular window.
+        -- Lingo syntax
+        objMovie = _player.window[2].movie
+
+        // JavaScript syntax
+        var objMovie = _player.window[2].movie;
+      In Director MX 2004, you can use a movie reference to access not only the methods and
+      properties of a movie itself, you can also call Lingo and JavaScript syntax handlers, and access the
+      movie’s cast members and sprites, including their methods and properties. This differs from
+      previous versions of Director in which you had to use the tell command to work with movies.
+      The Movie object provides a simpler way to work with movies.
+      Note: The tell command is obsolete in Director MX 2004,
+
+Method summary for the Movie object
+
+      Method
+      beginRecording()                                  newMember()
+
+      cancelIdleLoad()                                  preLoad() (Movie)
+
+      clearFrame()                                      preLoadMember()
+
+
+
+
+106    Chapter 5: Director Core Objects
+    Method (continued)
+    constrainH()                        preLoadMovie()
+
+    constrainV()                        printFrom()
+
+    delay()                             puppetPalette()
+
+    deleteFrame()                       puppetSprite()
+
+    duplicateFrame()                    puppetTempo()
+
+    endRecording()                      puppetTransition()
+
+    finishIdleLoad()                    ramNeeded()
+
+    frameReady() (Movie)                rollOver()
+
+    go()                                saveMovie()
+
+    goLoop()                            sendAllSprites()
+
+    goNext()                            sendSprite()
+
+    goPrevious()                        stopEvent()
+
+    idleLoadDone()                      unLoad() (Movie)
+
+    insertFrame()                       unLoadMember()
+
+    label()                             unLoadMovie()
+
+    marker()                            updateFrame()
+
+    mergeDisplayTemplate()              updateStage()
+
+
+Property summary for the Movie object
+
+    Property
+    aboutInfo                           frameTransition
+
+    active3dRenderer                    idleHandlerPeriod
+
+    actorList                           idleLoadMode
+
+    allowCustomCaching                  idleLoadPeriod
+
+    allowGraphicMenu                    idleLoadTag
+
+    allowSaveLocal                      idleReadChunkSize
+
+    allowTransportControl               imageCompression
+
+    allowVolumeControl                  imageQuality
+
+    allowZooming                        keyboardFocusSprite
+
+    beepOn                              lastChannel
+
+    buttonStyle                         lastFrame
+
+    castLib                             markerList
+
+    centerStage                         member (Movie)
+
+    copyrightInfo (Movie)               name
+
+    displayTemplate                     paletteMapping
+
+
+
+
+                                                              Movie   107
+      Property (continued)
+      dockingEnabled                                   path (Movie)
+
+      editShortCutsEnabled                             preferred3dRenderer
+
+      enableFlashLingo                                 preLoadEventAbort
+
+      exitLock                                         score
+
+      fileFreeSize                                     scoreSelection
+
+      fileSize                                         script
+
+      fileVersion                                      sprite (Movie)
+
+      fixStageSize                                     stage
+
+      frame                                            timeoutList
+
+      frameLabel                                       traceLoad
+
+      framePalette                                     traceLogFile
+
+      frameScript                                      traceScript
+
+      frameSound1                                      updateLock
+
+      frameSound2                                      useFastQuads
+
+      frameTempo                                       xtraList (Movie)
+
+  See also
+      _movie, Cast Library, Member, movie, Player, Sprite, Window
+
+Player
+      Represents the core playback engine used to manage and execute the authoring environment,
+      movies in a window (MIAWs), projectors, and Shockwave Player.
+      The Player object provides access to all of the movies and windows that it is managing, in
+      addition to any Xtra extensions that are available.
+      You can create a reference to the Player object by using the top level _player property.
+      • Assign _player to a variable.
+        -- Lingo syntax
+        objPlayer = _player
+
+        // JavaScript syntax
+        var objPlayer = _player;
+      • Use the _player property directly.
+        -- Lingo syntax
+        _player.alert("The movie has ended.")
+
+        // JavaScript syntax
+        _player.alert("The movie has ended.");
+
+
+
+
+108    Chapter 5: Director Core Objects
+Method summary for the Player object
+
+    Method
+    alert()                                getPref()
+
+    appMinimize()                          halt()
+
+    cursor()                               open() (Player)
+
+    externalParamName()                    quit()
+
+    externalParamValue()                   setPref()
+
+    flushInputEvents()                     windowPresent()
+
+
+Property summary for the Player object
+
+    Property
+    activeCastLib                          netPresent
+
+    activeWindow                           netThrottleTicks
+
+    alertHook                              organizationName
+
+    applicationName                        productName
+
+    applicationPath                        productVersion
+
+    currentSpriteNum                       safePlayer
+
+    debugPlaybackEnabled                   scriptingXtraList
+
+    digitalVideoTimeScale                  searchCurrentFolder
+
+    disableImagingTransformation           searchPathList
+
+    emulateMultibuttonMouse                serialNumber
+
+    externalParamCount                     sound (Player)
+
+    frontWindow                            switchColorDepth
+
+    inlineImeEnabled                       toolXtraList
+
+    lastClick                              transitionXtraList
+
+    lastEvent                              userName
+
+    lastKey                                window
+
+    lastRoll                               xtra
+
+    mediaXtraList                          xtraList (Player)
+
+  See also
+    _player, Cast Library, Member, Movie, Sprite, Window
+
+
+
+
+                                                                 Player   109
+Sound
+      Controls audio playback in all eight available sound channels.
+      The Sound object consists of Sound Channel objects, which represent individual sound channels.
+      You can create a reference to the Sound object by using top level _sound property.
+      • Assign _sound to a variable.
+        -- Lingo syntax
+        objSound = _sound
+
+        // JavaScript syntax
+        var objSound = _sound;
+      • Use the _sound property to access the Sound object’s soundDevice property.
+        -- Lingo syntax
+        objDevice = _sound.soundDevice
+
+        // JavaScript syntax
+        var objDevice = _sound.soundDevice;
+
+Method summary for the Sound object
+
+      Method
+      beep()
+
+      channel() (Sound)
+
+
+Property summary for the Sound object
+
+      Property
+      soundDevice
+
+      soundDeviceList
+
+      soundEnabled
+
+      soundKeepDevice
+
+      soundLevel
+
+      soundMixMedia
+
+  See also
+      _sound, Sound Channel
+
+
+
+
+110    Chapter 5: Director Core Objects
+Sound Channel
+   Represents an individual sound channel found within the Sound object.
+   There are eight available sound channels. You can use a Sound Channel object in script to access
+   and modify any of the eight sound channels.
+   Note: You can modify only the first two sound channels in the Score of the Director user interface.
+
+   You can create a reference to a Sound Channel object by using the top level sound() method, the
+   Player object’s sound property, or the Sound object’s channel() method. For example, you can
+   reference sound channel 2 by doing the following:
+   • Use the top level sound() method.
+      -- Lingo syntax
+      objSoundChannel = sound(2)
+
+      // JavaScript syntax
+      var objSoundChannel = sound(2);
+   • Use the Player object’s sound property.
+      -- Lingo syntax
+      objSoundChannel = _player.sound[2]
+
+      // JavaScript syntax
+      var objSoundChannel = _player.sound[2];
+   • Use the Sound object’s channel() method.
+      -- Lingo syntax
+      objSoundChannel = _sound.channel(2)
+
+      // JavaScript syntax
+      var objSoundChannel = _sound.channel(2);
+
+Method summary for the Sound Channel object
+
+    Method
+    breakLoop()                                       play() (Sound Channel)
+
+    fadeIn()                                          playFile()
+
+    fadeOut()                                         playNext() (Sound Channel)
+
+    fadeTo()                                          queue()
+
+    getPlayList()                                     rewind() (Sound Channel)
+
+    isBusy()                                          setPlayList()
+
+    pause() (Sound Channel)                           stop() (Sound Channel)
+
+
+Property summary for the Sound Channel object
+
+    Property
+    channelCount                                      member (Sound Channel)
+
+    elapsedTime                                       pan
+
+    endTime                                           sampleCount
+
+
+
+
+                                                                                  Sound Channel      111
+      Property (continued)
+      loopCount                                         sampleRate
+
+      loopEndTime                                       startTime
+
+      loopsRemaining                                    status
+
+      loopStartTime                                     volume (Sound Channel)
+
+  See also
+      channel() (Sound), sound (Player), sound(), Sound
+
+Sprite
+      Represents an occurrence of a cast member in a sprite channel of the Score.
+      A Sprite object covers a sprite span, which is a range of frames in a given sprite channel. A Sprite
+      Channel object represents an entire sprite channel, regardless of the number of sprites it contains.
+      A sprite can be referenced either by number or by name.
+      • When referring to a sprite by number, Director searches all sprites that exist in the current
+        frame of the Score, starting from the lowest numbered channel, and retrieves the sprite’s data
+        when it finds the numbered sprite. This method is faster than referring to a sprite by name.
+        However, because Director does not automatically update references to sprite numbers in
+        script, a numbered reference to a sprite that has moved position on the Stage will be broken.
+      • When referring to a sprite by name, Director searches all sprites that exist in the current frame
+        of the Score, starting from the lowest numbered channel, and retrieves the sprite’s data when it
+        finds the named sprite. This method is slower than referring to a sprite by number, especially
+        when referring to large movies that contain many cast libraries, cast members, and sprites.
+        However, a named reference to a sprite allows the reference to remain intact even if the sprite
+        moves position on the Stage.
+      You can create a reference to a Sprite object by using the top level sprite() function, the Movie
+      object’s sprite property, or the Sprite Channel object’s sprite property.
+      • Use the top level sprite() function.
+        -- Lingo syntax
+        objSprite = sprite(1)
+
+        // JavaScript syntax
+        var objSprite = sprite(1);
+      • Use the Movie object’s sprite property.
+        -- Lingo syntax
+        objSprite = _movie.sprite["willowTree"]
+
+        // JavaScript syntax
+        var objSprite = _movie.sprite["willowTree"];
+      • Use the Sprite Channel object’s sprite property.
+        -- Lingo syntax
+        objSprite = channel(3).sprite
+
+        // JavaScript syntax
+        var objSprite = channel(3).sprite;
+
+
+
+
+112    Chapter 5: Director Core Objects
+    You can use a reference to a Sprite object to access the cast member from which the sprite was
+    created. Any changes made to the cast member from which a sprite was created are also reflected
+    in the sprite. The following example illustrates changing the text of a text cast member from
+    which sprite 5 was created. This change to the cast member will also be reflected in sprite 5.
+    -- Lingo syntax
+    labelText = sprite(5)
+    labelText.member.text = "Weeping Willow"
+
+    // JavaScript syntax
+    var labelText = sprite(5);
+    labelText.member.text = "Weeping Willow";
+
+Property summary for the Sprite object
+
+    Property
+    backColor                                       locV
+
+    blend (Sprite)                                  locZ
+
+    bottom                                          member (Sprite)
+
+    constraint                                      name (Sprite)
+
+    cursor                                          quad
+
+    editable                                        rect (Sprite)
+
+    endFrame                                        right
+
+    flipH                                           rotation
+
+    flipV                                           skew
+
+    foreColor                                       spriteNum
+
+    height                                          startFrame
+
+    ink                                             top
+
+    left                                            width
+
+    locH
+
+  See also
+    Cast Library, Member, Movie, Player, sprite (Movie), sprite (Sprite Channel),
+    sprite(), Sprite Channel, Window
+
+
+
+
+                                                                                       Sprite   113
+Sprite Channel
+      Represents an individual sprite channel in the Score.
+      A Sprite object covers a sprite span, which is a range of frames in a given sprite channel. A Sprite
+      Channel object represents an entire sprite channel, regardless of the number of sprites it contains.
+      Sprite channels are controlled by the Score by default. Use the Sprite Channel object to switch
+      control of a sprite channel over to script during a Score recording session.
+      A sprite channel can be referenced either by number or by name.
+      • When referring to a sprite channel by number, you access the channel directly. This method is
+        faster than referring to a sprite channel by name. However, because Director does not
+        automatically update references to sprite channel numbers in script, a numbered reference to a
+        sprite channel that has moved position in the Score will be broken.
+      • When referring to a sprite channel by name, Director searches all channels, starting from the
+        lowest numbered channel, and retrieves the sprite channel’s data when it finds the named sprite
+        channel. This method is slower than referring to a sprite channel by number, especially when
+        referring to large movies that contain many cast libraries, cast members, and sprites. However,
+        a named reference to a sprite channel allows the reference to remain intact even if the sprite
+        channel moves position in the Score.
+      You can create a reference to a Sprite Channel object by using the top level channel() method,
+      and referring to either the channel number or name.
+      -- Lingo syntax
+      objSpriteChannel = channel(2) -- numbered reference
+      objSpriteChannel = channel("background") -- named reference
+
+      // JavaScript syntax
+      var objSpriteChannel = channel(2); // numbered reference
+      var objSpriteChannel = channel("background"); // named reference
+      You can use a reference to a Sprite Channel object to access the sprite that is currently being used
+      in a particular sprite channel. The following example illustrates accessing the background color of
+      the sprite that is currently being used in sprite channel 2.
+      -- Lingo syntax
+      labelSprite = channel(2).sprite.backColor
+
+      // JavaScript syntax
+      var labelSprite = channel(2).sprite.backColor;
+
+Method summary for the Sprite Channel object
+
+      Method
+      makeScriptedSprite()
+
+      removeScriptedSprite()
+
+
+
+
+114    Chapter 5: Director Core Objects
+Property summary for the Sprite Channel object
+
+    Property
+    name (Sprite Channel)
+
+    number (Sprite Channel)
+
+    scripted
+
+    sprite (Sprite Channel)
+
+  See also
+    Cast Library, channel() (Top level), Member, Movie, Player, Sprite, Window
+
+System
+    Provides access to system and environment information, including system level methods.
+    You can create a reference to the System object by using the top level _system property.
+    • Assign _system to a variable.
+      -- Lingo syntax
+      objSystem = _system
+
+      // JavaScript syntax
+      var objSystem = _system;
+    • Use the _system property directly.
+      -- Lingo syntax
+      sysDate = _system.date()
+
+      // JavaScript syntax
+      var sysDate = _system.date();
+
+Method summary for the System object
+
+    Method
+    date() (System)
+
+    restart()
+
+    shutDown()
+
+    time() (System)
+
+
+Property summary for the System object
+
+    Property
+    colorDepth
+
+    deskTopRectList
+
+    environmentPropList
+
+    milliseconds
+
+  See also
+    _system
+
+
+
+                                                                                       System   115
+Window
+      Represents a window in which a movie is playing, including the Stage window and any other
+      movies in a window (MIAWs) that are in use.
+      You can create a reference to a Window object by using the top level window() function, the
+      Player object’s window property, or the Player object’s windowList property.
+      • Use the top level window() method.
+        -- Lingo syntax
+        objWindow = window("Sun")
+
+        // JavaScript syntax
+        var objWindow = window("Sun");
+      • Use the Player object’s window property.
+        -- Lingo syntax
+        objWindow = _player.window["Sun"]
+
+        // JavaScript syntax
+        var objWindow = _player.window["Sun"];
+      • Use the Player object’s windowList property.
+        -- Lingo syntax
+        objWindow = _player.windowList[1]
+
+        // JavaScript syntax
+        var objWindow = _player.windowList[1];
+      Note: When creating a named reference to a window by using either the top level window() function
+      or the Player object’s window property, a reference to that window is created only if a window by that
+      name exists. If a window by that name does not exist, the reference contains VOID (Lingo) or null
+      (JavaScript syntax).
+
+      The movie object property scriptExecutionStyle is set to a value of 10 by default, and
+      windowType is deprecated by default in favor of the appearanceOptions and titlebarOptions
+      property lists. If scriptExecutionStyle is set to a value of 9, windowType is fully functional.
+
+Method summary for the Window object
+
+      Method
+      close()                                             moveToBack()
+
+      forget() (Window)                                   moveToFront()
+
+      maximize()                                          open() (Window)
+
+      mergeProps()                                        restore()
+
+      minimize()
+
+
+
+
+116    Chapter 5: Director Core Objects
+Property summary for the Window object
+
+    Property
+    appearanceOptions                     resizable
+
+    bgColor (Window)                      sizeState
+
+    dockingEnabled                        sourceRect
+
+    drawRect                              title (Window)
+
+    fileName (Window)                     titlebarOptions
+
+    image (Window)                        type (Window)
+
+    movie                                 visible
+
+    name                                  windowBehind
+
+    picture (Window)                      windowInFront
+
+    rect (Window)
+
+ See also
+   Cast Library, Member, Movie, Player, Sprite, window(), window, windowList
+
+
+
+
+                                                                     Window    117
+

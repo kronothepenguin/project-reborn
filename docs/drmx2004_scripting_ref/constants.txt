@@ -1,0 +1,377 @@
+                                                                           CHAPTER 9
+                                                                             Constants
+
+
+
+    This section provides an alphabetical list of all the constants available in Macromedia Director
+    MX 2004.
+    The majority of these constants apply only to Lingo. JavaScript syntax does contain some
+    constants that are similar to the Lingo constants listed here; therefore, where appropriate,
+    JavaScript syntax usage and examples are provided to help you map the functionality of Lingo
+    constants with their closest counterparts in JavaScript syntax. For more information about
+    JavaScript syntax constants, see one of the many third-party resources on the subject.
+
+" (string)
+  Usage
+    --Lingo syntax
+    "
+
+    // JavaScript syntax
+    "
+
+  Description
+
+    String constant; when used before and after a string, quotation marks indicate that the string is a
+    literal—not a variable, numerical value, or script element. Quotation marks must always
+    surround literal names of cast members, casts, windows, and external files.
+  Example
+
+    This statement uses quotation marks to indicate that the string “San Francisco” is a literal string,
+    the name of a cast member:
+    --Lingo syntax
+    put member("San Francisco").loaded
+
+    // JavaScript syntax
+    put(member("San Francisco").loaded);
+
+  See also
+    QUOTE
+
+
+
+
+                                                                                                       151
+BACKSPACE
+  Usage
+      -- Lingo syntax
+      BACKSPACE
+
+      // JavaScript syntax
+      51 // value of _key.keyCode
+
+  Description
+
+      Constant; represents the Backspace key. This key is labeled Backspace in Windows and Delete on
+      the Macintosh.
+  Example
+
+      This on keyDown handler checks whether the Backspace key was pressed and, if it was, calls the
+      handler clearEntry:
+      --Lingo syntax
+      on keyDown
+        if (_key.key = BACKSPACE) then clearEntry
+        _movie.stopEvent()
+      end keyDown
+
+      // JavaScript syntax
+      function keyDown() {
+        if (_key.keyCode == 51) {
+           clearEntry();
+           _movie.stopEvent();
+        }
+      }
+
+EMPTY
+  Usage
+      --Lingo syntax
+      EMPTY
+
+      // JavaScript syntax
+      ""
+
+  Description
+
+      Character constant; represents the empty string, "", a string with no characters.
+  Example
+
+      This statement erases all characters in the field cast member Notice by setting the field to EMPTY:
+      --Lingo syntax
+      member("Notice").text = EMPTY
+
+      // JavaScript syntax
+      member("Notice").text = "";
+
+
+
+
+152    Chapter 9: Constants
+ENTER
+ Usage
+   --Lingo syntax
+   ENTER
+
+   // JavaScript syntax
+   3 // value of _key.keyCode
+
+ Description
+
+   Character constant; represents Enter (Windows) or Return (Macintosh) for a carriage return.
+   On PC keyboards, the element ENTER refers only to Enter on the numeric keypad.
+   For a movie that plays back as an applet, use RETURN to specify both Return in Windows and
+   Enter on the Macintosh.
+ Example
+
+   This statement checks whether Enter is pressed and if it is, sends the playhead to the frame
+   addSum:
+   -- Lingo syntax
+   on keyDown
+     if (_key.key = ENTER) then _movie.go("addSum")
+   end
+
+   // JavaScript syntax
+   function keyDown() {
+     if (_key.keyCode == 3) {
+        _movie.go("addSum");
+     }
+   }
+
+ See also
+   RETURN (constant)
+
+
+
+
+                                                                                       ENTER      153
+FALSE
+  Usage
+      -- Lingo syntax
+      FALSE
+
+      // JavaScript syntax
+      false
+
+  Description
+
+      Constant; applies to an expression that is logically FALSE, such as 2 > 3. When treated as a
+      number value, FALSE has the numerical value of 0. Conversely, 0 is treated as FALSE.
+  Example
+
+      This statement turns off the soundEnabled property by setting it to FALSE:
+      -- Lingo syntax
+      _sound.soundEnabled = FALSE
+
+      // JavaScript syntax
+      _sound.soundEnabled = false;
+
+  See also
+      if, not, TRUE
+
+PI
+  Usage
+      -- Lingo syntax
+      PI
+
+      // JavaScript syntax
+      Math.PI
+
+  Description
+
+      Constant; returns the value of pi (π), the ratio of a circle’s circumference to its diameter, as a
+      floating-point number. The value is rounded to the number of decimal places set by the
+      floatPrecision property.
+
+  Example
+
+      This statement uses the PI constant as part of an equation for calculating the area of a circle:
+      -- Lingo syntax
+      vRadius = 3
+      vArea = PI*power(vRadius, 2)
+      trace(vArea) -- results in 28.2743
+
+      // JavaScript syntax
+      var vRadius = 3;
+      vArea = Math.PI*Math.pow(vRadius, 2);
+      trace(vArea); // results in 28.274333882308138
+
+
+
+
+154    Chapter 9: Constants
+QUOTE
+ Usage
+   --Lingo syntax
+   QUOTE
+
+   // JavaScript syntax
+   \"
+
+ Description
+
+   Constant; represents the quotation mark character and refers to the literal quotation mark
+   character in a string, because the quotation mark character itself is used by Lingo scripts to
+   delimit strings.
+ Example
+
+   This statement inserts quotation mark characters in a string:
+   -- Lingo syntax
+   put("Can you spell" && QUOTE & "Macromedia" & QUOTE & "?")
+
+   // JavaScript syntax
+   put("Can you spell \"Macromedia\"?");
+   The result is a set of quotation marks around the word Macromedia:
+   Can you spell "Macromedia"?
+
+
+
+
+                                                                                         QUOTE      155
+RETURN (constant)
+  Usage
+      -- Lingo syntax
+      RETURN
+
+      // JavaScript syntax
+      36 // value of _key.keyCode
+      \n // when used in a string
+
+  Description
+
+      Constant; represents a carriage return.
+  Example
+
+      This statement causes a paused movie to continue when the user presses the carriage return:
+      -- Lingo syntax
+      if (_key.key = RETURN) then _movie.go(_movie.frame + 1)
+
+      // JavaScript syntax
+      if (_key.keyCode == 36) {
+        _movie.go(_movie.frame + 1);
+      }
+      This statement uses the RETURN character constant to insert a carriage return between two lines in
+      an alert message:
+      -- Lingo syntax
+      _player.alert("Last line in the file." & RETURN & "Click OK to exit.")
+
+      // JavaScript syntax
+      _player.alert("Last line in the file.\nClick OK to exit");
+      In Windows, it is standard practice to place an additional line-feed character at the end of
+      each line. This statement creates a two-character string named CRLF that provides the
+      additional line feed:
+      CRLF = RETURN & numToChar(10)
+
+SPACE
+  Usage
+      -- Lingo syntax
+      SPACE
+
+      // JavaScript syntax
+      49 // value of _key.keyCode
+
+  Description
+
+      Constant; read-only, value that represents the space character.
+  Example
+
+      This statement displays “Age Of Aquarius” in the Message window:
+      -- Lingo syntax
+      put("Age"&SPACE&"Of"&SPACE&"Aquarius")
+
+
+
+
+156    Chapter 9: Constants
+TAB
+ Usage
+   -- Lingo syntax
+   TAB
+
+   // JavaScript syntax
+   48 // value of _key.keyCode
+
+ Description
+
+   Constant; represents the Tab key.
+ Example
+
+   This statement checks whether the character typed is the tab character and calls the handler
+   doNextField if it is:
+   -- Lingo syntax
+   if (_key.key = TAB) then doNextField
+
+   // JavaScript syntax
+   if (_key.keyCode == 48) {
+     doNextField();
+   }
+   These statements move the playhead forward or backward, depending on whether the user presses
+   Tab or Shift+Tab:
+   -- Lingo syntax
+   if (_key.key = TAB) then
+     if (_key.shiftDown) then
+       _movie.go(_movie.frame - 1)
+     else
+       _movie.go(_movie.frame + 1)
+     end if
+   end if
+
+   // JavaScript syntax
+   if (_key.keyCode == 48) {
+     if (_key.shiftDown) {
+       _movie.go(_movie.frame - 1);
+     } else {
+       _movie.go(_movie.frame + 1);
+     }
+   }
+
+ See also
+   BACKSPACE, EMPTY, RETURN (constant)
+
+
+
+
+                                                                                         TAB      157
+TRUE
+  Usage
+      -- Lingo syntax
+      TRUE
+
+      // JavaScript syntax
+      true
+
+  Description
+
+      Constant; represents the value of a logically true expression, such as 2 < 3. It has a traditional
+      numerical value of 1, but any nonzero integer evaluates to TRUE in a comparison.
+  Example
+
+      This statement turns on the soundEnabled property by setting it to TRUE:
+      -- Lingo syntax
+      _sound.soundEnabled = TRUE
+
+      // JavaScript syntax
+      _sound.soundEnabled = true;
+
+  See also
+      FALSE, if
+
+VOID
+  Usage
+      -- Lingo syntax
+      VOID
+
+      // JavaScript syntax
+      null
+
+  Description
+
+      Constant; indicates the value VOID.
+  Example
+
+      This statement checks whether the value in the variable currentVariable is VOID:
+      -- Lingo syntax
+      if currentVariable = VOID then
+        put("This variable has no value")
+      end if
+
+      // JavaScript syntax
+      if (currentVariable == null) {
+        put("This variable has no value");
+      }
+
+  See also
+      voidP()
+
+
+
+
+158    Chapter 9: Constants
+

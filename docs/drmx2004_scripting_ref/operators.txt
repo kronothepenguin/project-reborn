@@ -1,0 +1,1103 @@
+                                                                        CHAPTER 13
+                                                                           Operators
+
+
+
+   This section provides an alphabetical list of all the operators available in Macromedia Director
+   MX 2004.
+   The majority of these operators apply only to Lingo. JavaScript syntax does contain some
+   operators that are either similar or identical to the Lingo operators listed here; therefore, where
+   appropriate, JavaScript syntax usage and examples are provided to help you map the functionality
+   of Lingo operators with their closest counterparts in JavaScript syntax. For more information
+   about JavaScript syntax operators, see Chapter 2, “Director Scripting Essentials,” on page 9.
+
+# (symbol)
+ Usage
+   --Lingo syntax
+   #symbolName
+
+   // JavaScript syntax
+   symbol("symbolName");
+
+ Description
+
+   Symbol operator; defines a symbol, a self-contained unit that can be used to represent a condition
+   or flag. The value symbolName begins with an alphabetical character and may be followed by any
+   number of alphabetical or numerical characters.
+   A symbol can do the following:
+   • Assign a value to a variable.
+   • Compare strings, integers, rectangles, and points.
+   • Pass a parameter to a handler or method.
+   • Return a value from a handler or method.
+   A symbol takes up less space than a string and can be manipulated, but unlike a string it does not
+   consist of individual characters. You can convert a symbol to a string for display purposes by using
+   the string function.
+   The following are some important points about symbol syntax:
+   • Symbols are not case-sensitive.
+   • Symbols can’t start with a number.
+   • Spaces may not be used, but you can use underscore characters to simulate them.
+
+                                                                                                   595
+      • Symbols use the 128 ASCII characters, and letters with diacritical or accent marks are treated
+        as their base letter.
+      • Periods may not be used in symbols.
+      All symbols, global variables, and names of parameters passed to global variables are stored in a
+      common lookup table.
+  Example
+
+      This statement sets the state variable to the symbol #Playing:
+      -- Lingo syntax
+      state = #Playing
+
+      // JavaScript syntax
+      var state = symbol("Playing");
+
+  See also
+      ilk(), string(), symbol(), symbolP()
+
+. (dot operator)
+  Usage
+      -- Lingo syntax
+      objectReference.objectProperty
+      textExpression.objectProperty
+      object.commandOrFunction()
+
+      // JavaScript syntax
+      objectReference.objectProperty;
+      textExpression.objectProperty;
+      object.commandOrFunction();
+
+  Description
+
+      Operator; used to test or set properties of objects, or to issue a command or execute a function of
+      the object. The object may be a cast member, a sprite, a property list, a child object of a parent
+      script, or a behavior.
+  Example
+
+      This statement displays the current member contained by the sprite in channel 10:
+      -- Lingo syntax
+      put(sprite(10).member)
+
+      // JavaScript syntax
+      put(sprite(10).member);
+      To use the alternate syntax and call a function, you can use this form:
+      -- Lingo syntax
+      myColorObject = color(124, 22, 233)
+      put(myColorObject.ilk())
+      -- #color
+
+      // JavaScript syntax
+      var myColorObject = color(124, 22, 233);
+      put(myColorObject.ilk());
+      // #color
+
+
+
+596    Chapter 13: Operators
+- (minus)
+ Usage
+   -- Lingo syntax
+   (Negation): -expression
+   (Subtraction): expression1 - expression2
+
+   // JavaScript syntax
+   (Negation): -expression
+   (Subtraction): expression1 - expression2
+
+ Description
+
+   Math operator; when used for negation, - (minus) reverses the sign of the value of expression;
+   when used for subtraction, - (minus) performs an arithmetic subtraction on two numerical
+   expressions, subtracting expression2 from expression1.
+   When used for negation, - (minus) is an arithmetic operator with a precedence level of 5.
+   When used for subtraction, both expressions are integers, the difference is an integer. When either
+   or both expressions are floating-point numbers, the difference is a floating-point number. The
+   - (minus) operator is an arithmetic operator with a precedence level of 3.
+ Example
+
+   (Negation): This statement reverses the sign of the expression 2 + 3:
+   -- Lingo syntax
+   put(-(2 + 3))
+
+   // JavaScript syntax
+   put(-(2 + 3));
+   The result is -5.
+   (Subtraction): This statement subtracts the integer 2 from the integer 5 and displays the result in
+   the Message window:
+   -- Lingo syntax
+   put(5 - 2)
+
+   // JavaScript syntax
+   put(5 - 2);
+   The result is 3, which is an integer.
+   (Subtraction): This statement subtracts the floating-point number 1.5 from the floating-point
+   number 3.25 and displays the result in the Message window:
+   -- Lingo syntax
+   put(3.25 - 1.5)
+
+   // JavaScript syntax
+   put(3.25 - 1.5);
+   The result is 1.75, which is a floating-point number.
+
+
+
+
+                                                                                       - (minus)   597
+-- (comment)
+  Usage
+      -- Lingo syntax
+      -- comment
+
+      // JavaScript syntax
+      // comment
+
+  Description
+
+      Comment delimiter; indicates the beginning of a script comment. On any line, anything that
+      appears between the comment delimiter (double hyphen) and the end-of-line return character is
+      interpreted as a comment rather than a Lingo statement.
+  Example
+
+      This handler uses a double hyphen to make the second, fourth, and sixth lines comments:
+      -- Lingo syntax
+      on resetColors
+        -- This handler resets the sprite’s colors.
+        sprite(1).forecolor = 35
+        -- bright red
+        sprite(1).backcolor = 36
+        -- light blue
+      end
+
+      // JavaScript syntax
+      function resetColors() {
+        // this handler resets the sprite’s colors
+        sprite(1).forecolor = 35;
+        // bright red
+        sprite(1).backcolor = 36;
+        // light blue
+      }
+
+&, + (concatenation operator)
+  Usage
+      -- Lingo syntax
+      expression1 & expression2
+
+      // JavaScript syntax
+      expression1 + expression2
+
+  Description
+
+      String operator; performs a string concatenation of two expressions. If either expression1 or
+      expression2 is a number, it is first converted to a string. The resulting expression is a string.
+      This is a string operator with a precedence level of 2.
+      Lingo allows you to use some commands and functions that take only one argument without
+      parentheses surrounding the argument. When an argument phrase includes an operator, Lingo
+      interprets only the first argument as part of the function, which may confuse Lingo.
+
+
+
+
+598    Chapter 13: Operators
+   Avoid this problem by placing parentheses around the entire phrase that includes an operator.
+   The parentheses clear up Lingo’s confusion by changing the precedence by which Lingo deals
+   with the operator, causing Lingo to treat the two parts of the argument as one complete
+   argument.
+ Example
+
+   This statement concatenates the strings “abra” and “cadabra” and displays the resulting string in
+   the Message window:
+   -- Lingo syntax
+   put("abra" & "cadabra")
+
+   // JavaScript syntax
+   put("abra" + "cadabra");
+   The result is the string “abracadabra”.
+   This statement concatenates the strings “$” and the content of the price variable and then
+   assigns the concatenated string to the Price field cast member:
+   -- Lingo syntax
+   member("Price").text = "$" & price
+
+   // JavaScript syntax
+   member("Price").text = "$" + price;
+
+&&, + (concatenation operator)
+ Usage
+   -- Lingo syntax
+   expression1 && expression2
+
+   // JavaScript syntax
+   expression1 + expression2
+
+ Description
+
+   String operator; concatenates two expressions, inserting a space character between the original
+   string expressions. If either expression1 or expression2 is a number, it is first converted to a
+   string. The resulting expression is a string.
+   This is a string operator with a precedence level of 2.
+ Example
+
+   This statement concatenates the strings “abra” and “cadabra” and inserts a space between the two:
+   -- Lingo syntax
+   put("abra" && "cadabra")
+
+   // JavaScript syntax
+   put("abra " + "cadabra");
+   The result is the string “abra cadabra”.
+
+
+
+
+                                                                  &&, + (concatenation operator)   599
+      This statement concatenates the strings “Today is” and today’s date in the long format and inserts
+      a space between the two:
+      -- Lingo syntax
+      put("Today is" && date())
+
+      // JavaScript syntax
+      put("Today is " + Date());
+
+() (parentheses)
+  Usage
+      -- Lingo syntax
+      (expression)
+
+      // JavaScript syntax
+      (expression)
+
+  Description
+
+      Grouping operator; performs a grouping operation on an expression to control the order of
+      execution of the operators in an expression. This operator overrides the automatic precedence
+      order so that the expression within the parentheses is evaluated first. When parentheses are nested,
+      the contents of the inner parentheses are evaluated before the contents of the outer ones.
+      This is a grouping operator with a precedence level of 5.
+      Be aware that Lingo allows you to use some commands and functions that take only one
+      argument without parentheses surrounding the argument. When an argument phrase includes
+      an operator, Lingo interprets only the first argument as part of the function, which may
+      confuse Lingo.
+      For example, the open window command allows one argument that specifies which window to
+      open. If you use the & operator to define a pathname and filename, Director interprets only the
+      string before the & operator as the filename. For example, Lingo interprets the statement open
+      window the applicationPath & "theMovie" as (open window the applicationPath) &
+      ("theMovie"). Avoid this problem by placing parentheses around the entire phrase that includes
+      an operator, as follows:
+      -- Lingo syntax
+      open window (the applicationPath & "theMovie")
+
+      // JavaScript syntax
+      window(the applicationPath + "theMovie").open();
+
+  Example
+
+      These statements use the grouping operator to change the order in which operations occur (the
+      result appears below each statement):
+      -- Lingo syntax
+      put((2 + 3) * (4 + 5))
+      -- 45
+      put(2 + (3 * (4 + 5)))
+      -- 29
+      put(2 + 3 * 4 + 5)
+      -- 19
+
+
+
+
+600    Chapter 13: Operators
+   // JavaScript syntax
+   put((2 + 3) * (4 + 5));
+   // 45
+   put(2 + (3 * (4 + 5)));
+   // 29
+   put(2 + 3 * 4 + 5);
+   // 19
+
+* (multiplication)
+ Usage
+   -- Lingo syntax
+   expression1 * expression2
+
+   // JavaScript syntax
+   expression1 * expression2
+
+ Description
+
+   Math operator; performs an arithmetic multiplication on two numerical expressions. If both
+   expressions are integers, the product is an integer. If either or both expressions are floating-point
+   numbers, the product is a floating-point number.
+   This is an arithmetic operator with a precedence level of 4.
+ Example
+
+   This statement multiplies the integers 2 and 3 and displays the result in the Message window:
+   -- Lingo syntax
+   put(2 * 3)
+
+   // JavaScript syntax
+   put(2 * 3);
+   The result is 6, which is an integer.
+   This statement multiplies the floating-point numbers 2.0 and 3.1414 and displays the result in
+   the Message window:
+   -- Lingo syntax
+   put(2.0 * 3.1416)
+
+   // JavaScript syntax
+   put(2.0 * 3.1416);
+   The result is 6.2832, which is a floating-point number.
+
+
+
+
+                                                                                  * (multiplication)   601
++ (addition)
+  Usage
+      -- Lingo syntax
+      expression1 + expression2
+
+      // JavaScript syntax
+      expression1 + expression2
+
+  Description
+
+      Math operator; performs an arithmetic sum on two numerical expressions. If both expressions are
+      integers, the sum is an integer. If either or both expressions are floating-point numbers, the sum is
+      a floating-point number.
+      This is an arithmetic operator with a precedence level of 4.
+  Example
+
+      This statement adds the integers 2 and 3 and then displays the result, 5, an integer, in the
+      Message window:
+      -- Lingo syntax
+      put(2 + 3)
+
+      // JavaScript syntax
+      put(2 + 3);
+      This statement adds the floating-point numbers 2.5 and 3.25 and displays the result, 5.7500, a
+      floating-point number, in the Message window:
+      -- Lingo syntax
+      put(2.5 + 3.25)
+
+      // JavaScript syntax
+      put(2.5 + 3.25);
+
++ (addition) (3D)
+  Usage
+      -- Lingo syntax
+      vector1 + vector2
+      vector + scalar
+
+      // JavaScript syntax
+      vector1 + vector2
+      vector + scalar
+
+  Description
+
+      3D vector operator; adds the components of two vectors, or adds the scalar value to each
+      component of the vector and returns a new vector.
+      vector1 + vector2 adds the components of vector1 to the corresponding to components of
+      vector2 and returns a new vector.
+
+      vector + scalar adds the scalar value to each of the components of the vector and returns a
+      new vector.
+
+
+
+
+602    Chapter 13: Operators
+- (subtraction)
+ Usage
+   -- Lingo syntax
+   vector1 - vector2
+   vector - scalar
+
+   // JavaScript syntax
+   vector1 - vector2
+   vector - scalar
+
+ Description
+
+   3D vector operator; subtracts the components of vector2 from the corresponding components
+   of vector1, or subtracts the scalar value from each of the components and returns a new vector.
+   vector1 - vector2 subtracts the values of vector2 from the corresponding components in
+   vector1 and returns a new vector.
+
+   vector - scalar subtracts the value of the scalar from each of the components in the vector and
+   returns a new vector.
+
+* (multiplication)
+ Usage
+   -- Lingo syntax
+   vector1 * vector2
+   vector * scalar
+   transform * vector
+
+   // JavaScript syntax
+   vector1 * vector2
+   vector * scalar
+   transform * vector
+
+ Description
+
+   3D vector operator; multiplies the components of vector1 by the corresponding components in
+   vector2, and returns the dot product, or multiplies each of the components the vector by the
+   scalar value and returns a new vector.
+   vector1 * vector2 returns the dot product of the two vectors, which is not a new vector. This
+   operation is the same as vector1.dotproduct.vector2.
+   vector * scalar multiplies each of the components in the vector by the scalar value and returns
+   a new vector.
+   transform * vector multiplies the transform by the vector and returns a new vector. The new
+   vector is the result of applying the positional and rotational changes defined by transform to the
+   vector. Note that vector * transform is not supported.
+
+ See also
+   dotProduct()
+
+
+
+
+                                                                               * (multiplication)   603
+/ (division)
+  Usage
+      -- Lingo syntax
+      expression1 / expression2
+
+      // JavaScript syntax
+      expression1 / expression2
+
+  Description
+
+      Math operator; performs an arithmetic division on two numerical expressions, dividing
+      expression1 by expression2. If both expressions are integers, the quotient is an integer. If
+      either or both expressions are floating-point numbers, the quotient is a floating-point number.
+      This is an arithmetic operator with a precedence level of 4.
+  Example
+
+      This statement divides the integer 22 by 7 and then displays the result in the Message window:
+      -- Lingo syntax
+      put(22 / 7)
+
+      // JavaScript syntax
+      put(22 / 7);
+      The result is 3. Because both numbers in the division are integers, Lingo rounds the answer down
+      to the nearest integer.
+      This statement divides the floating-point number 22.0 by 7.0 and then displays the result in the
+      Message window:
+      -- Lingo syntax
+      put(22.0 / 7.0)
+
+      // JavaScript syntax
+      put(22.0 / 7.0);
+      The result is 3.1429, which is a floating-point number.
+
+/ (division) (3D)
+  Usage
+      -- Lingo syntax
+      vector / scalar
+
+      // JavaScript syntax
+      vector / scalar
+
+  Description
+
+      3D vector operator; divides each of the vector components by the scalar value and returns a
+      new vector.
+
+
+
+
+604    Chapter 13: Operators
+< (less than)
+ Usage
+   -- Lingo syntax
+   expression1 < expression2
+
+   // JavaScript syntax
+   expression1 < expression2
+
+ Description
+
+   Comparison operator; compares two expressions and determines whether expression1 is less
+   than expression2 (TRUE), or whether expression1 is greater than or equal to expression2
+   (FALSE).
+   This operator can compare strings, integers, floating-point numbers, rects, and points. Be aware
+   that comparisons performed on rects or points are handled as if the terms were lists, with each
+   element of the first list compared to the corresponding element of the second list.
+   This is a comparison operator with a precedence level of 1.
+
+<= (less than or equal to)
+ Usage
+   -- Lingo syntax
+   expression1 <= expression2
+
+   // JavaScript syntax
+   expression1 <= expression2
+
+ Description
+
+   Comparison operator; compares two expressions and determines whether expression1 is less
+   than or equal to expression2 (TRUE), or whether expression1 is greater than expression2
+   (FALSE).
+   This operator can compare strings, integers, floating-point numbers, rects, and points. Be aware
+   that comparisons performed on rects or points are handled as if the terms were lists, with each
+   element of the first list compared to the corresponding element of the second list.
+   This is a comparison operator with a precedence level of 1.
+
+<> (not equal)
+ Usage
+   -- Lingo syntax
+   expression1 <> expression2
+
+   // JavaScript syntax
+   expression1 != expression2
+
+ Description
+
+   Comparison operator; compares two expressions, symbols, or operators and determines whether
+   expression1 is not equal to expression2 (TRUE), or whether expression1 is equal to
+   expression2 (FALSE).
+
+
+
+
+                                                                                  <> (not equal)   605
+      This operator can compare strings, integers, floating-point numbers, rects, and points. Be aware
+      that comparisons performed on rects or points are handled as if the terms were lists, with each
+      element of the first list compared to the corresponding element of the second list.
+      This is a comparison operator with a precedence level of 1.
+
+= (equals)
+  Usage
+      -- Lingo syntax
+      expression1 = expression2
+
+      // JavaScript syntax
+      expression1 = expression2
+
+  Description
+
+      Comparison operator; compares two expressions, symbols, or objects and determines whether
+      expression1 is equal to expression2 (TRUE), or whether expression1 is not equal to
+      expression2 (FALSE).
+
+      This operator can compare strings, integers, floating-point numbers, rects, lists, and points.
+      Lists are compared based on the number of elements in the list. The list with more elements is
+      considered larger than the than the list with fewer elements.
+      This is a comparison operator with a precedence level of 1.
+
+> (greater than)
+  Usage
+      -- Lingo syntax
+      expression1 > expression2
+
+      // JavaScript syntax
+      expression1 > expression2
+
+  Description
+
+      Comparison operator; compares two expressions and determines whether expression1 is greater
+      than expression2 (TRUE), or whether expression1 is less than or equal to expression2
+      (FALSE).
+      This operator can compare strings, integers, floating-point numbers, rects, and points. Be aware
+      that comparisons performed on rects or points are handled as if the terms were lists, with each
+      element of the first list compared to the corresponding element of the second list.
+      This is a comparison operator with a precedence level of 1.
+
+
+
+
+606    Chapter 13: Operators
+>= (greater than or equal to)
+  Usage
+    -- Lingo syntax
+    expression1 >= expression2
+
+    // JavaScript syntax
+    expression1 >= expression2
+
+  Description
+
+    Comparison operator; compares two expressions and determines whether expression1 is greater
+    than or equal to expression2 (TRUE), or whether expression1 is less than expression2
+    (FALSE).
+    This operator can compare strings, integers, floating-point numbers, rects, and points. Be aware
+    that comparisons performed on rectangles or points are handled as if the terms were lists, with
+    each element of the first list compared to the corresponding element of the second list.
+    This is a comparison operator with a precedence level of 1.
+
+[ ] (bracket access)
+  Usage
+    -- Lingo syntax
+    textExpression[chunkNumberBeingAddressed]
+    textExpression[firstChunk..lastChunk]
+
+  Description
+
+    Operator; allows a chunk expression to be addressed by number. Useful for finding the nth
+    chunk in the expression. The chunk can be a word, line, character, paragraph, or other Text cast
+    member chunk.
+  Example
+
+    This outputs the first word of the third line in the text cast member First Names:
+    -- Lingo syntax
+    put(member("First Names").text.line[3].word[1])
+
+    // JavaScript syntax
+    put(member("First Names").getPropRef("line", 1).getProp("word", 1));
+
+[ ] (list)
+  Usage
+    [entry1, entry2, entry3, ...]
+
+  Description
+
+    List operator; specifies that the entries within the brackets are one of four types of lists:
+    • Unsorted linear lists
+    • Sorted linear lists
+    • Unsorted property lists
+    • Sorted property lists
+
+
+                                                                                              [ ] (list)   607
+      Each entry in a linear list is a single value that has no other property associated with it. Each entry
+      in a property list consists of a property and a value. The property appears before the value and is
+      separated from the value by a colon. You cannot store a property in a linear list. When using
+      strings as entries in a list, enclose the string in quotation marks.
+      For example, [6, 3, 8] is a linear list. The numbers have no properties associated with them.
+      However, [#gears:6, #balls:3, #ramps:8] is a property list. Each number has a property—in this
+      case, a type of machinery—associated with it. This property list could be useful for tracking the
+      number of each type of machinery currently on the Stage in a mechanical simulation. Properties
+      can appear more than once in a property list.
+      Lists can be sorted in alphanumeric order. A sorted linear list is ordered by the values in the list. A
+      sorted property list is ordered by the properties in the list. You sort a list by using the appropriate
+      command for a linear list or property list.
+      • In linear lists, symbols and strings are case sensitive.
+      • In property lists, symbols aren’t case-sensitive, but strings are case-sensitive.
+      A linear list or property list can contain no values at all. An empty list consists of two square
+      brackets ([ ]). To create or clear a linear list, set the list to [ ]. To create or clear a property list, set
+      the list to [:].
+      You can modify, test, or read items in a list.
+      Lingo treats an instance of a list as a reference to the list. This means each instance is the same
+      piece of data, and changing it will change the original. Use the duplicate command to create
+      copies of lists.
+      Lists are automatically disposed when they are no longer referred to by any variable. When a list is
+      held within a global variable, it persists from movie to movie.
+      You can initialize a list in the on prepareMovie handler or write the list as a field cast member,
+      assign the list to a variable, and then handle the list by handling the variable.
+      Not all PC keyboards have square brackets. If square brackets aren’t available, use the list
+      function to create a linear list.
+      For a property list, create the list pieces as a string before converting them into a useful list.
+      myListString = numToChar(91) & ":" & numToChar(93)
+      put myListString
+      -- "[:]"
+      myList = myListString.value
+      put myList
+      -- [:]
+      put myList.listP
+      -- 1
+      myList[#name] = "Brynn"
+      put myList
+      -- [#name: "Brynn"]
+
+  Example
+
+      This statement defines a list by making the machinery variable equal to the list:
+      -- Lingo syntax
+      machinery = [#gears:6, #balls:3, #ramps:8]
+
+      // JavaScript syntax
+      var machinery = propList("gears",6, "balls",3, "ramps",8);
+
+
+
+608     Chapter 13: Operators
+   This handler sorts the list aList and then displays the result in the Message window:
+   -- Lingo syntax
+   on sortList aList
+     alist.sort()
+     put(aList)
+   end sortList
+
+   // JavaScript syntax
+   function sortList(aList) {
+     aList.sort();
+     put(aList);
+   }
+   If the movie issues the statement sortList machinery, where machinery is the list in the
+   preceding example, the result is [#balls:3, #gears:6, #ramps:8].
+   The following statements create an empty linear list:
+   -- Lingo syntax
+   x = [ ]
+   x = list()
+
+   // JavaScript syntax
+   var x = list();
+   The following statements create an empty property list:
+   -- Lingo syntax
+   x = [:]
+   x = propList()
+
+   // JavaScript syntax
+   var x = propList();
+
+ See also
+   add, addVertex(), append, count(), deleteAt, duplicate() (list function),
+   findPos, findPosNear, getProp(), getAt, getLast(), getPos(), ilk(), list(),
+   max(), min, setAt, setaProp, sort
+
+@ (pathname)
+ Usage
+   @pathReference
+
+ Description
+
+   Pathname operator; defines the path to the current movie’s folder and is valid on both Windows
+   and Macintosh computers.
+   Identify the current movie’s folder by using the @ symbol followed by one of these pathname
+   separators:
+   • / (forward slash)
+   • \ (backslash)
+   • : (colon)
+   When a movie is queried to determine its location, the string returned will include the @ symbol.
+
+
+
+
+                                                                                  @ (pathname)   609
+      Be sure to use only the @ symbol when navigating between Director movies or changing the
+      source of a linked media cast member. The @ symbol does not work when the Fileio Xtra
+      extension or other functions are used outside those available within Director.
+      You can build on this pathname to specify folders that are one or more levels above or below the
+      current movie’s folder. Keep in mind that the @ portion represents the current movie’s location,
+      not necessarily the location of the projector.
+      • Add an additional pathname separator immediately after the @ symbol to specify a folder one
+        level up in the hierarchy.
+      • Add folder names and filenames (separated by /, \, or :) after the current folder name to
+        specify subfolders and files within folders.
+      You can use relative pathnames in Lingo to indicate the location of a linked file in a folder
+      different than the movie’s folder.
+  Example
+
+      These are equivalent expressions that specify the subfolder bigFolder, which is in the current
+      movie’s folder:
+      @/bigFolder
+      @:bigFolder
+      @\bigFolder
+      These are equivalent expressions that specify the file linkedFile, in the subfolder bigFolder, which
+      is in the current movie’s folder:
+      @:bigFolder:linkedFile
+      @\bigFolder\linkedFile
+      @/bigFolder/linkedFile
+      This expression specifies the file linkedFile, which is located one level up from the current
+      movie’s folder:
+      @//linkedFile
+      This expression specifies the file linkedFile, which is located two levels up from the current
+      movie’s folder:
+      @:::linkedFile
+      These are equivalent expressions that specify the file linkedFile, which is in the folder otherFolder.
+      The otherFolder folder is in the folder one level up from the current movie’s folder.
+      @::otherFolder:linkedFile
+      @\\otherFolder\linkedFile
+      @//otherFolder/linkedFile
+
+  See also
+      searchPathList, fileName (Cast), fileName (Member), fileName (Window)
+
+
+
+
+610    Chapter 13: Operators
+and
+ Usage
+   -- Lingo syntax
+   logicalExpression1 and logicalExpression2
+
+   // JavaScript syntax
+   logicalExpression1 && logicalExpression2
+
+ Description
+
+   Logical operator; determines whether both logicalExpression1 and logicalExpression2 are
+   TRUE (1), or whether either or both expressions are FALSE (0).
+
+   The precedence level of this logical operator is 4.
+ Example
+
+   This statement determines whether both logical expressions are TRUE and displays the result in the
+   Message window:
+   -- Lingo syntax
+   put(1 < 2 and 2 < 3)
+
+   // JavaScript syntax
+   put((1 < 2) && (2 < 3));
+   The result is 1, which is the numerical equivalent of TRUE.
+   The first logical expression in the following statement is TRUE; and the second logical expression is
+   FALSE. Because both logical expressions are not TRUE, the logical operator displays the result 0,
+   which is the numerical equivalent of FALSE.
+   -- Lingo syntax
+   put(1 < 2 and 2 < 1)
+   -- 0
+
+   // JavaScript syntax
+   put((1 < 2) && (2 < 1));
+   // 0
+
+ See also
+   not, or
+
+contains
+ Usage
+   -- Lingo syntax
+   stringExpression1 contains stringExpression2
+
+   // JavaScript syntax
+   stringExpression1.indexOf(stringExpression2);
+
+ Description
+
+   Operator; compares two strings and determines whether stringExpression1 contains
+   stringExpression2 (TRUE) or not (FALSE).
+   The contains comparison operator has a precedence level of 1.
+
+
+
+                                                                                         contains    611
+      The contains comparison operator is useful for checking whether the user types a specific
+      character or string of characters. You can also use the contains operator to search one or more
+      fields for specific strings of characters.
+  Example
+
+      This example determines whether a character passed to it is a digit:
+      -- Lingo syntax
+      on isNumber aLetter
+        digits = "1234567890"
+        if digits contains aLetter then
+           return TRUE
+        else
+           return FALSE
+        end if
+      end
+
+      // JavaScript syntax
+      function isNumber(aLetter) {
+        var digits = "1234567890"
+        if (digits.indexOf(aLetter) >= 0) {
+           return true;
+        } else {
+           return false;
+        }
+      }
+      Note: The string comparison is not sensitive to case or diacritical marks; “a” and Å are treated
+      the same.
+
+  See also
+      offset() (string function), starts
+
+mod
+  Usage
+      -- Lingo syntax
+      integerExpression1 mod integerExpression2
+
+      // JavaScript syntax
+      integerExpression1 % integerExpression2
+
+  Description
+
+      Math operator; performs the arithmetic modulus operation on two integer expressions. In this
+      operation, integerExpression1 is divided by integerExpression2.
+      The resulting value of the entire expression is the integer remainder of the division. It always has
+      the sign of integerExpression1.
+      This is an arithmetic operator with a precedence level of 4.
+  Example
+
+      This statement divides 7 by 4 and then displays the remainder in the Message window:
+      -- Lingo syntax
+      put(7 mod 4)
+
+
+
+
+612    Chapter 13: Operators
+// JavaScript syntax
+put(7 % 4);
+The result is 3.
+The following handler sets the ink effect of all odd-numbered sprites to copy, which is the ink
+effect specified by the number 0. First the handler checks whether the sprite in the variable
+mySprite is an odd-numbered sprite by dividing the sprite number by 2 and then checking
+whether the remainder is 1. If the remainder is 1, the result for an odd-numbered number, the
+handler sets the ink effect to copy.
+-- Lingo syntax
+on setInk
+  repeat with mySprite = 1 to _movie.lastChannel
+     if (mySprite mod 2) = 1 then
+       sprite(mySprite).ink = 0
+     else
+       sprite(mySprite).ink = 8
+     end if
+  end repeat
+end setInk
+
+// JavaScript syntax
+function setInk() {
+  for (mySprite=1; mySprite<=_movie.lastChannel; mySprite++) {
+     if ((mySprite % 2) == 1) {
+       sprite(mySprite).ink = 0;
+     } else {
+       sprite(mySprite).ink = 8;
+     }
+  }
+}
+This handler regularly cycles a sprite’s cast member among a number of bitmaps:
+-- Lingo syntax
+on exitFrame
+  global gCounter
+  -- These are sample values for bitmap cast member numbers
+  theBitmaps = [2,3,4,5,6,7]
+  -- Specify which sprite channel is affected
+  theChannel = 1
+  -- This cycles through the list
+  gCounter = 1 + (gCounter mod theBitmaps.count)
+  sprite(theChannel).memberNum = theBitmaps[gCounter]
+  _movie.go(_movie.frame)
+end
+
+// JavaScript syntax
+function exitFrame() {
+  // these are sample values for bitmap cast member numbers
+  theBitmaps = new Array(2,3,4,5,6,7);
+  // specify which sprite channel is affected
+  theChannel = 1;
+  // this cycles through the list
+  _global.gCounter = 1 + (_global.gCounter % theBitmaps.length);
+  sprite(theChannel).memberNum = theBitmaps[_global.gCounter];
+  _movie.go(_movie.frame);
+}
+
+
+
+
+                                                                                       mod    613
+not
+  Usage
+      -- Lingo syntax
+      not logicalExpression
+
+      // JavaScript syntax
+      ! logicalExpression
+
+  Description
+
+      Operator; performs a logical negation on a logical expression. This is the equivalent of making a
+      TRUE value FALSE, and making a FALSE value TRUE. It is useful when testing to see if a certain
+      known condition is not the case.
+      This logical operator has a precedence level of 5.
+  Example
+
+      This statement determines whether 1 is not less than 2:
+      -- Lingo syntax
+      put(not (1 < 2))
+
+      // JavaScript syntax
+      put(!(1 < 2));
+      Because 1 is less than 2, the result is 0, which indicates that the expression is FALSE.
+      This statement determines whether 1 is not greater than 2:
+      -- Lingo syntax
+      put(not (1 > 2))
+
+      // JavaScript syntax
+      put(!(1 > 2));
+      Because 1 is not greater than 2, the result is 1, which indicates that the expression is TRUE.
+      This handler sets the checkMark menu item property for Bold in the Style menu to the opposite
+      of its current setting:
+      -- Lingo syntax
+      on resetMenuItem
+        menu("Style").menuItem("Bold").checkMark = \
+        not (menu("Style").menuItem("Bold").checkMark)
+      end resetMenuItem
+
+      // JavaScript syntax
+      function resetMenuItem() {
+        menu("Style").menuItem("Bold").checkMark =
+        !(menu("Style").menuItem("Bold").checkMark)
+      }
+
+  See also
+      and, or
+
+
+
+
+614    Chapter 13: Operators
+or
+ Usage
+     -- Lingo syntax
+     logicalExpression1 or logicalExpression2
+
+     // JavaScript syntax
+     logicalExpression1 || logicalExpression2
+
+ Description
+
+     Operator; performs a logical OR operation on two or more logical expressions to determine
+     whether any expression is TRUE.
+     This is a logical operator with a precedence level of 4.
+ Example
+
+     This statement indicates in the Message window whether at least one of the expressions 1 < 2 and
+     1 > 2 is TRUE:
+     -- Lingo syntax
+     put((1 < 2) or (1 > 2))
+
+     // JavaScript syntax
+     put((1 < 2) || (1 > 2));
+     Because the first expression is TRUE, the result is 1, which is the numerical equivalent of TRUE.
+     This Lingo checks whether the content of the field cast member named State is either AK or HI
+     and displays an alert if it is:
+     -- Lingo syntax
+     if member("State").text = "AK" or member("State").text = "HI" then
+       _player.alert("You're off the map!")
+     end if
+
+     // JavaScript syntax
+     if (member("State").text == "AK" || member("State").text == "HI") {
+       _player.alert("You’re off the map!");
+     }
+
+ See also
+     and, not
+
+
+
+
+                                                                                                or   615
+starts
+  Usage
+      -- Lingo syntax
+      string1 starts string2
+
+      // JavaScript syntax
+      string1.indexOf(string2) == 0;
+
+  Description
+
+      Operator; compares to determines whether string1 starts with string2 (TRUE or 1) or not
+      (FALSE or 0).
+      The string comparison is not sensitive to case or diacritical marks; a and Å are considered to be
+      the same.
+      This is a comparison operator with a precedence level of 1.
+  Example
+
+      This statement reports in the Message window whether the word Macromedia starts with the
+      string “Macro”:
+      -- Lingo syntax
+      put("Macromedia" starts "Macro")
+
+      // JavaScript syntax
+      var string1 = "Macromedia";
+      put(string1.indexOf("Macro") == 0);
+      The result is 1, which is the numerical equivalent of TRUE.
+  See also
+      contains
+
+
+
+
+616    Chapter 13: Operators
+

@@ -1,0 +1,177 @@
+                                                                        CHAPTER 7
+                                                                     Scripting Objects
+
+
+
+    The scripting objects, also known as Xtra extensions, in Macromedia Director MX 2004 provide
+    access to the functionality of the software components that are installed with Director and extend
+    core Director functionary. The preexisting Xtra extensions provide capabilities such as importing
+    filters and connecting to the Internet. If you know the C programming language, you can create
+    your own custom Xtra extensions.
+    For an illustration of how the scripting objects relate to each other and to other objects in
+    Director, see “Object model diagrams” on page 53.
+
+Fileio
+    Enables you to perform file input and output operations.
+    You can create a reference to a Fileio object by using the new operator.
+    -- Lingo syntax
+    objFileio = new xtra("fileio")
+
+    // JavaScript syntax
+    var objFileio = new xtra("fileio");
+
+Method summary for the Fileio object
+
+    Method
+    closeFile()                                        readFile()
+
+    createFile()                                       readLine()
+
+    delete()                                           readToken()
+
+    displayOpen()                                      readWord()
+
+    displaySave()                                      setFilterMask()
+
+    error()                                            setFinderInfo()
+
+    fileName()                                         setNewLineConversion()
+
+    getFinderInfo()                                    setPosition()
+
+    getLength()                                        status()
+
+    getOSDirectory()                                   version()
+
+
+
+
+                                                                                                    137
+      Method (continued)
+      getPosition()                                    writeChar()
+
+      openFile()                                       writeReturn()
+
+      readChar()                                       writeString()
+
+
+NetLingo
+      Enables you to perform network operations such as obtaining or streaming media from a
+      network, checking network availability, checking the progress of a network operation, and so on.
+      You can create a reference to a NetLingo object by using the new operator.
+      -- Lingo syntax
+      objNetLingo = new xtra("netlingo")
+
+      // JavaScript syntax
+      var objNetLingo = new xtra("netlingo");
+
+Method summary for the NetLingo object
+
+      Method
+      browserName()                                    netDone()
+
+      cacheDocVerify()                                 netError()
+
+      cacheSize()                                      netLastModDate()
+
+      clearCache                                       netMIME()
+
+      downloadNetThing                                 netStatus
+
+      externalEvent()                                  netTextResult()
+
+      getLatestNetID                                   postNetText
+
+      getNetText()                                     preloadNetThing()
+
+      getStreamStatus()                                proxyServer
+
+      gotoNetMovie                                     tellStreamStatus()
+
+      gotoNetPage                                      URLEncode
+
+      netAbort
+
+
+
+
+138    Chapter 7: Scripting Objects
+SpeechXtra
+   Enables you to add text-to-speech functionality to a movie.
+   You can create a reference to a SpeechXtra object by using the new operator.
+   -- Lingo syntax
+   objSpeech = new xtra("speechxtra")
+
+   // JavaScript syntax
+   var objSpeech = new xtra("speechxtra");
+
+Method summary for the SpeechXtra object
+
+    Method
+    voiceCount()                                    voiceSet()
+
+    voiceGet()                                      voiceSetPitch()
+
+    voiceGetAll()                                   voiceSetRate()
+
+    voiceGetPitch()                                 voiceSetVolume()
+
+    voiceGetRate()                                  voiceSpeak()
+
+    voiceGetVolume()                                voiceState()
+
+    voiceInitialize()                               voiceStop()
+
+    voicePause()                                    voiceWordPos()
+
+    voiceResume()
+
+
+
+
+                                                                                  SpeechXtra   139
+XML Parser
+      Enables you to perform XML parsing.
+      You can create a reference to an XML Parser object by using the new operator.
+      -- Lingo syntax
+      objXml = new xtra("xmlparser")
+
+      // JavaScript syntax
+      var objXml = new xtra("xmlparser");
+
+Method summary for the XML Parser object
+
+      Method
+      count()
+
+      doneParsing()
+
+      getError() (XML)
+
+      ignoreWhiteSpace()
+
+      makeList()
+
+      makeSubList()
+
+      parseString()
+
+      parseURL()
+
+
+Property summary for the XML Parser object
+
+      Property
+      attributeName
+
+      attributeValue
+
+      child (XML)
+
+      name (XML)
+
+
+
+
+140    Chapter 7: Scripting Objects
+

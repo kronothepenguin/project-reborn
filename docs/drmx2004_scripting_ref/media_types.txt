@@ -1,0 +1,971 @@
+                                                                            CHAPTER 6
+                                                                             Media Types
+
+
+
+   The media types in Macromedia Director MX 2004 provide access to the functionality of the
+   various media types, such as RealMedia, DVD, Animated GIF, and so on, that are added to
+   movies as cast members.
+   Literally, media types are not actually objects, but rather cast members that are of a specific type of
+   media. When a media type is added to a movie as a cast member, it not only inherits the
+   functionality of the core Member object, it also extends the Member object by providing
+   additional functionality that is available only to the specified media type. For example, a
+   RealMedia cast member has access to the Member object’s methods and properties, but it also has
+   additional methods and properties that are specific to RealMedia. All other media types also
+   exhibit this behavior.
+   For an illustration of how the cast member media types relate to each other and to other objects in
+   Director, see “Object model diagrams” on page 53.
+
+Animated GIF
+   Represents an animated GIF cast member.
+   You can add an animated GIF cast member to a movie by using the Movie object’s newMember()
+   method.
+   -- Lingo syntax
+   _movie.newMember(#animgif)
+
+   // JavaScript syntax
+   _movie.newMember("animgif");
+   Some of the following methods or properties may apply only to sprites that are created from an
+   animated GIF cast member.
+
+
+
+
+                                                                                                       119
+Method summary for the Animated GIF media type
+
+      Method
+      resume()
+
+      rewind() (Animated GIF, Flash)
+
+
+Property summary for the Animated GIF media type
+
+      Property
+      directToStage
+
+      frameRate
+
+      linked
+
+      path (Movie)
+
+      playBackMode
+
+  See also
+      Member
+
+Bitmap
+      Represents a bitmap cast member.
+      You can use bitmap image objects to perform simple operations that affect the content of an
+      entire bitmap cast member, such as changing the background and foreground colors of the
+      member, or to perform fine manipulations of the pixels of an image, such as cropping, drawing,
+      and copying pixels.
+      You can add a bitmap cast member to a movie by using the Movie object’s newMember() method.
+      -- Lingo syntax
+      _movie.newMember(#bitmap)
+
+      // JavaScript syntax
+      _movie.newMember("bitmap");
+      Some of the following methods or properties may apply only to sprites that are created from a
+      bitmap cast member.
+
+Method summary for the Bitmap media type
+
+      Method
+      crop() (Image)
+
+      pictureP()
+
+
+
+
+120    Chapter 6: Media Types
+Property summary for the Bitmap media type
+
+    Property
+    alphaThreshold                                  imageCompression
+
+    backColor                                       imageQuality
+
+    blend (Sprite)                                  palette
+
+    depth (Bitmap)                                  picture (Member)
+
+    dither                                          rect (Image)
+
+    foreColor                                       trimWhiteSpace
+
+    image (Image)                                   useAlpha
+
+ See also
+   Member
+
+Button
+   Represents a button or check box cast member.
+   You can add a button cast member to a movie by using the Movie object’s newMember() method.
+   -- Lingo syntax
+   _movie.newMember(#button)
+
+   // JavaScript syntax
+   _movie.newMember("button");
+
+Property summary for the Button media type
+
+    Property
+    hilite
+
+ See also
+   Member
+
+Color Palette
+   Represents the color palette associated with a bitmap cast member.
+   A color palette cast member does not have any methods or properties that can be accessed directly
+   from it. The following methods and properties are merely associated with color palettes.
+   You can add a color palette cast member to a movie by using the Movie object’s newMember()
+   method.
+   -- Lingo syntax
+   _movie.newMember(#palette)
+
+   // JavaScript syntax
+   _movie.newMember("palette");
+
+
+
+
+                                                                                 Color Palette   121
+      You can associate a bitmap cast member with a color palette cast member by setting the palette
+      property of the bitmap cast member. The following example sets the palette property of the
+      bitmap cast member bmpMember to the color palette cast member colorPaletteMember. The
+      value of the palette property reflects the number of the color palette cast member.
+      -- Lingo syntax
+      member("bmpMember").palette = member("colorPaletteMember")
+
+      // JavaScript syntax
+      member("bmpMember").palette = member("colorPaletteMember");
+      After you associate a bitmap cast member with a color palette cast member, you cannot delete the
+      color palette cast member until you remove its association with the bitmap cast member.
+
+Method summary for the Color Palette media type
+
+      Method
+      color()
+
+
+Property summary for the Color Palette media type
+
+      Property
+      depth (Bitmap)
+
+      palette
+
+      paletteMapping
+
+  See also
+      Bitmap, Member, palette
+
+Cursor
+      Represents a cursor cast member.
+      You can add a cursor cast member to a movie by using the Movie object’s newMember() method.
+      -- Lingo syntax
+      _movie.newMember(#cursor)
+
+      // JavaScript syntax
+      _movie.newMember("cursor");
+
+Property summary for the Cursor media type
+
+      Property
+      castMemberList
+
+      cursorSize
+
+      hotSpot
+
+      interval
+
+  See also
+      Member
+
+
+
+122    Chapter 6: Media Types
+DVD
+   Represents a DVD cast member.
+   You can add a DVD cast member to a movie by using the Movie object’s newMember() method.
+   -- Lingo syntax
+   _movie.newMember(#dvd)
+
+   // JavaScript syntax
+   _movie.newMember("dvd");
+   Some of the following methods or properties may apply only to sprites that are created from a
+   DVD cast member.
+
+Event summary for the DVD media type
+   The following DVD events are always be handled by a DVDeventNotification event handler.
+   When one of these events occurs, the DVDeventNotification event handler receives the event as
+   a parameter. Some of these events also contain additional information that is passed as a second or
+   third parameter to DVDeventNotification. For more information on using the following events
+   with the DVDeventNotification handler, see “on DVDeventNotification” on page 165.
+
+    Event
+    angleChange                                      noFirstPlayChain
+
+    audioStreamChange                                parentalLevelChange
+
+    buttonChange                                     playbackStopped
+
+    chapterAutoStop                                  playPeriodAutoStop
+
+    chapterStart                                     rateChange
+
+    diskEjected                                      stillOff
+
+    diskInserted                                     stillOn
+
+    domainChange                                     titleChange
+
+    error                                            UOPchange
+
+    karaokeMode                                      warning
+
+
+Method summary for the DVD media type
+
+    Method
+    activateAtLoc()                                  rootMenu()
+
+    activateButton()                                 selectAtLoc()
+
+    frameStep()                                      selectButton()
+
+    chapterCount()                                   selectButtonRelative()
+
+    pause() (DVD)                                    stop() (DVD)
+
+    play() (DVD)                                     subPictureType()
+
+    returnToTitle()                                  titleMenu()
+
+
+
+
+                                                                                          DVD     123
+Property summary for the DVD media type
+
+      Property
+      angle (DVD)                                   duration (DVD)
+
+      angleCount                                    folder
+
+      aspectRatio                                   frameRate (DVD)
+
+      audio (DVD)                                   fullScreen
+
+      audioChannelCount                             mediaStatus (DVD)
+
+      audioExtension                                playRate (DVD)
+
+      audioFormat                                   resolution (DVD)
+
+      audioSampleRate                               selectedButton
+
+      audioStream                                   startTimeList
+
+      audioStreamCount                              stopTimeList
+
+      buttonCount                                   subPicture
+
+      chapter                                       subPictureCount
+
+      chapterCount                                  title (DVD)
+
+      closedCaptions                                titleCount
+
+      currentTime (DVD)                             videoFormat
+
+      domain                                        volume (DVD)
+
+  See also
+      Member
+
+Field
+      Represents a field cast member.
+      You can add a field cast member to a movie by using the Movie object’s newMember() method.
+      -- Lingo syntax
+      _movie.newMember(#field)
+
+      // JavaScript syntax
+      _movie.newMember("field");
+
+Method summary for the Field media type
+
+      Method
+      charPosToLoc()                                pointToItem()
+
+      lineHeight()                                  pointToLine()
+
+      linePosToLocV()                               pointToParagraph()
+
+      locToCharPos()                                pointToWord()
+
+      locVToLinePos()                               scrollByLine()
+
+      pointToChar()                                 scrollByPage()
+
+
+
+
+124    Chapter 6: Media Types
+Property summary for the Field media type
+
+    Property
+    alignment                                       fontStyle
+
+    autoTab                                         lineCount
+
+    border                                          margin
+
+    boxDropShadow                                   pageHeight
+
+    boxType                                         scrollTop
+
+    dropShadow                                      selEnd
+
+    editable                                        selStart
+
+    font                                            text
+
+    fontSize                                        wordWrap
+
+  See also
+    Member
+
+Film Loop
+    Represents a film loop cast member.
+    You can add a film loop cast member to a movie by using the Movie object’s newMember()
+    method.
+    -- Lingo syntax
+    _movie.newMember(#filmloop)
+
+    // JavaScript syntax
+    _movie.newMember("filmloop");
+
+Property summary for the Film Loop media type
+
+    Property
+    media
+
+    regPoint
+
+  See also
+    Member
+
+Flash Component
+    Represents a Macromedia Flash component that is embedded in a cast member or sprite that
+    contains Flash content.
+    A Flash component provides prepackaged functionality that extends the existing functionality of
+    cast members or sprites that contain Flash content. They are created and supported entirely by
+    the Director development community.
+
+
+
+
+                                                                             Flash Component    125
+      Director supports the following Flash components:
+
+      Flash component      Description
+
+      Button               A resizable rectangular user interface button.
+
+      CheckBox             A fundamental part of any form or web application; can be used wherever you
+                           need to gather a set of true or false values that aren’t mutually exclusive.
+
+      DateChooser          A calendar that allows a user to select a date.
+
+      Label                A single line of text.
+
+      List                 A scrollable single- or multiple-selection list box.
+
+      NumericStepper       Allows a user to step through an ordered set of numbers.
+
+      RadioButton          A fundamental part of any form or web application; can be used wherever you
+                           want a user to make one choice from a group of options.
+
+      ScrollPane           Displays movie clips, JPEG files, and SWF files in a scrollable area.
+
+      TextArea             A multiline text field.
+
+      TextInput            A single-line component that wraps the native ActionScript TextField object.
+
+      Tree                 Allows a user to view hierarchical data.
+
+      A Flash component has access to the same APIs that a regular Flash cast member or sprite does, in
+      addition to the functionality that is specific to that component. For more information about
+      using these Flash components, see the Using Director topics in the Director Help Panel.
+      You can add a Flash component cast member to a movie by using the Movie object’s
+      newMember() method.
+      -- Lingo syntax
+      _movie.newMember(#flashcomponent)
+
+      // JavaScript syntax
+      _movie.newMember("flashcomponent");
+
+  See also
+      Flash Movie, Member
+
+
+
+
+126    Chapter 6: Media Types
+Flash Movie
+   Represents a cast member or sprite that contains Flash content.
+   You can add a Flash movie cast member to a movie by using the Movie object’s newMember()
+   method.
+   -- Lingo syntax
+   _movie.newMember(#flash)
+
+   // JavaScript syntax
+   _movie.newMember("flash");
+   A Flash movie cast member or sprite can also contain Flash components. Flash components
+   provide prepackaged functionality that extends the existing functionality of Flash movie cast
+   members or sprites. For more information about the Flash components that Director supports,
+   see “Flash Component” on page 125.
+   Some of the following methods or properties may apply only to sprites that are created from a
+   Flash movie cast member.
+
+Method summary for the Flash Movie media type
+
+    Method
+    callFrame()                                     printAsBitmap()
+
+    clearAsObjects()                                rewind() (Animated GIF, Flash)
+
+    clearError()                                    setCallback()
+
+    findLabel()                                     setFlashProperty()
+
+    flashToStage()                                  settingsPanel()
+
+    getFlashProperty()                              setVariable()
+
+    getVariable()                                   showProps()
+
+    goToFrame()                                     stageToFlash()
+
+    hitTest()                                       stop() (Flash)
+
+    hold()                                          stream()
+
+    newObject()                                     tellTarget()
+
+    print()
+
+
+Property summary for the Flash Movie media type
+
+    Property
+    actionsEnabled                                  originPoint
+
+    broadcastProps                                  originV
+
+    bufferSize                                      playBackMode
+
+    buttonsEnabled                                  playing
+
+    bytesStreamed                                   posterFrame
+
+    centerRegPoint                                  quality
+
+
+
+
+                                                                                 Flash Movie   127
+      Property (continued)
+      clickMode                                     rotation
+
+      defaultRect                                   scale (Member)
+
+      defaultRectMode                               scaleMode
+
+      eventPassMode                                 sound (Member)
+
+      fixedRate                                     static
+
+      flashRect                                     streamMode
+
+      frameCount                                    streamSize
+
+      imageEnabled                                  viewH
+
+      linked                                        viewPoint
+
+      mouseOverButton                               viewScale
+
+      originH                                       viewV
+
+      originMode
+
+  See also
+      Flash Component, Member
+
+Font
+      Represents a font cast member.
+      You can add a font cast member to a movie by using the Movie object’s newMember() method.
+      -- Lingo syntax
+      _movie.newMember(#font)
+
+      // JavaScript syntax
+      _movie.newMember("font");
+
+Property summary for the Font media type
+
+      Property
+      bitmapSizes
+
+      characterSet
+
+      fontStyle
+
+      originalFont
+
+      recordFont
+
+  See also
+      Member
+
+
+
+
+128    Chapter 6: Media Types
+Linked Movie
+   Represents a linked movie cast member.
+   You can add a linked movie cast member to a movie by using the Movie object’s newMember()
+   method.
+   -- Lingo syntax
+   _movie.newMember(#movie)
+
+   // JavaScript syntax
+   _movie.newMember("movie");
+
+Property summary for the Linked Movie media type
+
+    Property
+    scriptsEnabled
+
+ See also
+   Member
+
+QuickTime
+   Represents a QuickTime cast member.
+   You can add a QuickTime cast member to a movie by using the Movie object’s newMember()
+   method.
+   -- Lingo syntax
+   _movie.newMember(#quicktimemedia)
+
+   // JavaScript syntax
+   _movie.newMember("quicktimemedia");
+   Some of the following methods or properties may apply only to sprites that are created from a
+   QuickTime cast member.
+
+Method summary for the QuickTime media type
+
+    Method
+    enableHotSpot()                                qtRegisterAccessKey()
+
+    getHotSpotRect()                               qtUnRegisterAccessKey()
+
+    nudge()                                        setTrackEnabled()
+
+    ptToHotSpotID()                                swing()
+
+    QuickTimeVersion()
+
+
+
+
+                                                                                  QuickTime    129
+Property summary for the QuickTime media type
+
+      Property
+      audio (RealMedia)                               scale (Member)
+
+      currentTime (QuickTime, AVI)                    staticQuality
+
+      fieldOfView                                     tilt
+
+      hotSpotEnterCallback                            trackCount (Member)
+
+      hotSpotExitCallback                             trackCount (Sprite)
+
+      invertMask                                      trackEnabled
+
+      isVRMovie                                       trackNextKeyTime
+
+      loopBounds                                      trackNextSampleTime
+
+      mask                                            trackPreviousKeyTime
+
+      motionQuality                                   trackPreviousSampleTime
+
+      mouseLevel                                      trackStartTime (Member)
+
+      node                                            trackStartTime (Sprite)
+
+      nodeEnterCallback                               trackStopTime (Member)
+
+      nodeExitCallback                                trackStopTime (Sprite)
+
+      nodeType                                        trackText
+
+      pan (QTVR property)                             trackType (Member)
+
+      percentStreamed (Member)                        trackType (Sprite)
+
+      playRate (QuickTime, AVI)                       translation
+
+      preLoad (Member)                                triggerCallback
+
+      rotation                                        warpMode
+
+  See also
+      Member
+
+RealMedia
+      Represents a RealMedia cast member.
+      You can add a RealMedia cast member to a movie by using the Movie object’s newMember()
+      method.
+      -- Lingo syntax
+      _movie.newMember(#realmedia)
+
+      // JavaScript syntax
+      _movie.newMember("realmedia");
+      Some of the following methods or properties may apply only to sprites that are created from a
+      RealMedia cast member.
+
+
+
+
+130    Chapter 6: Media Types
+Method summary for the RealMedia media type
+
+    Method
+    pause() (RealMedia, SWA, Windows Media)
+
+    play() (RealMedia, SWA, Windows Media)
+
+    realPlayerNativeAudio()
+
+    realPlayerPromptToInstall()
+
+    realPlayerVersion()
+
+    seek()
+
+    stop() (RealMedia, SWA, Windows Media)
+
+
+Property summary for the RealMedia media type
+
+    Property
+    audio (RealMedia)                              password
+
+    currentTime (RealMedia)                        pausedAtStart (RealMedia, Windows Media)
+
+    displayRealLogo                                percentBuffered
+
+    duration (RealMedia, SWA)                      soundChannel (RealMedia)
+
+    image (RealMedia)                              state (RealMedia)
+
+    lastError                                      userName (RealMedia)
+
+    mediaStatus (RealMedia, Windows Media)         video (RealMedia, Windows Media)
+
+ See also
+   Member
+
+Shockwave 3D
+   Represents a Macromedia Shockwave 3D cast member.
+   A Shockwave 3D (or simply 3D) cast member differs from other cast members in that a 3D cast
+   member contains a complete 3D world. A 3D world contains a set of objects that are unique to
+   3D cast members, and that enable you to add 3D functionality to a movie.
+   You can add a 3D cast member to a movie by using the Movie object’s newMember() method.
+   -- Lingo syntax
+   _movie.newMember(#shockwave3d)
+
+   // JavaScript syntax
+   _movie.newMember("shockwave3d");
+   For more information on the objects and APIs that are available to 3D cast members, see
+   Chapter 8, “3D Objects,” on page 141.
+ See also
+   Member
+
+
+
+
+                                                                              Shockwave 3D    131
+Shockwave Audio
+      Represents a Shockwave Audio cast member.
+      You can add a Shockwave Audio cast member to a movie by using the Movie object’s
+      newMember() method.
+      -- Lingo syntax
+      _movie.newMember(#swa)
+
+      // JavaScript syntax
+      _movie.newMember("swa");
+
+Event summary for the Shockwave Audio media type
+
+      Event
+      on cuePassed
+
+
+Method summary for the Shockwave Audio media type
+
+      Method
+      getError() (Flash, SWA)
+
+      getErrorString()
+
+      isPastCuePoint()
+
+      pause() (RealMedia, SWA, Windows Media)
+
+      play() (RealMedia, SWA, Windows Media)
+
+      preLoadBuffer()
+
+      stop() (RealMedia, SWA, Windows Media)
+
+
+Property summary for the Shockwave Audio media type
+
+      Property
+      bitRate                                       percentStreamed (Member)
+
+      bitsPerSample                                 preLoadTime
+
+      channelCount                                  sampleRate
+
+      copyrightInfo (SWA)                           sampleSize
+
+      cuePointNames                                 soundChannel (SWA)
+
+      cuePointTimes                                 state (Flash, SWA)
+
+      duration (RealMedia, SWA)                     streamName
+
+      loop (Member)                                 URL
+
+      mostRecentCuePoint                            volume (Member)
+
+      numChannels
+
+  See also
+      Member
+
+
+
+132    Chapter 6: Media Types
+Sound
+   Represents a cast member that is used to store and refer to sound samples.
+   Sound samples are controlled by the core Sound and Sound Channel objects. A sound cast
+   member does not have any APIs of its own, and uses the APIs of the Sound and Sound Channel
+   objects to control its behavior.
+   You can add a sound cast member to a movie by using the Movie object’s newMember() method.
+   -- Lingo syntax
+   _movie.newMember(#sound)
+
+   // JavaScript syntax
+   _movie.newMember("sound");
+   For more information on the objects and APIs you can use to control sound samples, see “Sound”
+   on page 110 and “Sound Channel” on page 111.
+ See also
+   Member
+
+Text
+   Represents a text cast member.
+   You can add a text cast member to a movie by using the Movie object’s newMember() method.
+   -- Lingo syntax
+   _movie.newMember(#text)
+
+   // JavaScript syntax
+   _movie.newMember("text");
+
+Event summary for the Text media type
+
+    Event
+    on hyperlinkClicked
+
+
+Method summary for the Text media type
+
+    Method
+    count()
+
+    pointInHyperlink()
+
+    pointToChar()
+
+    pointToItem()
+
+    pointToLine()
+
+    pointToParagraph()
+
+    pointToWord()
+
+
+
+
+                                                                                      Text   133
+Property summary for the Text media type
+
+      Property
+      antiAlias                                       hyperlink
+
+      antiAliasThreshold                              hyperlinkRange
+
+      bottomSpacing                                   hyperlinks
+
+      charSpacing                                     hyperlinkState
+
+      firstIndent                                     kerning
+
+      fixedLineSpace                                  kerningThreshold
+
+      font                                            RTF
+
+      fontStyle                                       selectedText
+
+      HTML                                            useHypertextStyles
+
+  See also
+      Member
+
+Vector Shape
+      Represents a vector shape cast member.
+      You can add a vector shape cast member to a movie by using the Movie object’s newMember()
+      method.
+      -- Lingo syntax
+      _movie.newMember(#vectorshape)
+
+      // JavaScript syntax
+      _movie.newMember("vectorshape");
+      Some of the following methods or properties may apply only to sprites that are created from a
+      vector shape cast member.
+
+Method summary for the Vector Shape media type
+
+      Method
+      addVertex()
+
+      deleteVertex()
+
+      moveVertex()
+
+      moveVertexHandle()
+
+      newCurve()
+
+      showProps()
+
+
+
+
+134    Chapter 6: Media Types
+Property summary for the Vector Shape media type
+
+    Property
+    antiAlias                                      imageEnabled
+
+    backgroundColor                                originH
+
+    broadcastProps                                 originMode
+
+    centerRegPoint                                 originPoint
+
+    closed                                         originV
+
+    curve                                          regPointVertex
+
+    defaultRect                                    scale (Member)
+
+    defaultRectMode                                scaleMode
+
+    endColor                                       strokeColor
+
+    fillColor                                      strokeWidth
+
+    fillCycles                                     vertex
+
+    fillDirection                                  vertexList
+
+    fillMode                                       viewH
+
+    fillOffset                                     viewPoint
+
+    fillScale                                      viewScale
+
+    flashRect                                      viewV
+
+    gradientType
+
+ See also
+   Member
+
+Windows Media
+   Represents a Windows Media cast member.
+   You can add a Windows Media cast member to a movie by using the Movie object’s newMember()
+   method.
+   -- Lingo syntax
+   _movie.newMember(#windowsmedia)
+
+   // JavaScript syntax
+   _movie.newMember("windowsmedia");
+   Some of the following methods or properties may apply only to sprites that are created from a
+   Windows Media cast member.
+
+
+
+
+                                                                             Windows Media     135
+Method summary for the Windows Media media type
+
+      Method
+      pause() (RealMedia, SWA, Windows Media)
+
+      play() (RealMedia, SWA, Windows Media)
+
+      playFromToTime()
+
+      rewind() (Windows Media)
+
+      stop() (RealMedia, SWA, Windows Media)
+
+
+Property summary for the Windows Media media type
+
+      Property
+      audio (Windows Media)                     pausedAtStart (RealMedia, Windows Media)
+
+      directToStage                             playRate (Windows Media)
+
+      duration (Member)                         video (RealMedia, Windows Media)
+
+      height                                    volume (Windows Media)
+
+      loop (Windows Media)                      width
+
+      mediaStatus (RealMedia, Windows Media)
+
+  See also
+      Member
+
+
+
+
+136    Chapter 6: Media Types
+

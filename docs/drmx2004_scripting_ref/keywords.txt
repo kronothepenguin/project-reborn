@@ -1,0 +1,1186 @@
+                                                                        CHAPTER 11
+                                                                          Keywords
+
+
+
+   This section provides an alphabetical list of all the keywords available in Macromedia Director
+   MX 2004.
+   These keywords apply only to Lingo. JavaScript syntax does contain some keywords and
+   constructs that are similar in function to the following Lingo keywords, but they are not
+   documented here. For more information about JavaScript syntax keywords and constructs, see
+   Chapter 2, “Director Scripting Essentials,” on page 9.
+
+\ (continuation)
+ Usage
+   -- Lingo syntax
+   first part of a statement on this line \
+   second part of the statement \
+   third part of the statement
+
+ Description
+
+   Continuation symbol; when used as the last character in a line, indicates that the statement
+   continues on the next line. Lingo then interprets the lines as one continuous statement.
+ Example
+
+   This statement uses the \ character to wrap the statement onto two lines:
+   -- Lingo syntax
+   if sprite("mySprite").member = member("myMember") then \
+   _player.alert("The sprite was created from myMember")
+
+case
+ Usage
+   -- Lingo syntax
+   case expression of
+     expression1: Statement
+     expression2: Statement(s)
+     expression3, expression4: Statement
+     {otherwise: Statement(s)}
+   end case
+
+
+
+
+                                                                                                  203
+  Description
+
+      Keyword; starts a multiple branching logic structure that is easier to write than repeated
+      if...then statements.
+
+      Lingo compares the value in case expression to the expressions in the lines beneath it, starting
+      at the beginning and continuing through each line in order, until Lingo encounters an expression
+      that matches case expression.
+      When Lingo finds a matching expression, it executes the corresponding statement or statements
+      that follow the colon after the matching expression. When only one statement follows the
+      matching expression, the matching expression and its corresponding statement may appear on
+      the same line. Multiple statements must appear on indented lines immediately below the
+      matching expression.
+      When more than one possible match could cause Lingo to execute the same statements, the
+      expressions must be separated by commas. (The syntax line containing expression3 and
+      expresssion4 is an example of such a situation.)
+
+      After Lingo encounters the first match, it stops testing for additional matches.
+      If the optional otherwise statement is included at the end of the case structure, the statements
+      following otherwise are executed if there are no matches.
+  Example
+
+      The following handler tests which key the user pressed most recently and responds accordingly.
+      • If the user pressed A, the movie goes to the frame labeled Apple.
+      • If the user pressed B or C, the movie performs the specified transition and then goes to the
+        frame labeled Oranges.
+      • If the user pressed any other key, the computer beeps.
+      on keyDown
+        case (_key.key) of
+           "a": _movie.go("Apple")
+           "b", "c":
+              _movie.puppetTransition(99)
+              _movie.go("Oranges")
+           otherwise: _sound.beep()
+        end case
+      end keyDown
+      This case statement tests whether the cursor is over sprite 1, 2, or 3 and runs the corresponding
+      Lingo if it is:
+      case _movie.rollOver() of
+        1: sound(1).play(member("Horn"))
+        2: sound(1).play(member("Drum"))
+        3: sound(1).play(member("Bongos"))
+      end case
+
+
+
+
+204    Chapter 11: Keywords
+char...of
+ Usage
+   -- Lingo syntax
+   textMemberExpression.char[whichCharacter]
+   char whichCharacter of fieldOrStringVariable
+   textMemberExpression.char[firstCharacter..lastCharacter]
+   char firstCharacter to lastCharacter of fieldOrStringVariable
+
+ Description
+
+   Keyword; identifies a character or a range of characters in a chunk expression. A chunk expression
+   is any character, word, item, or line in any source of text (such as field cast members and variables)
+   that holds a string.
+   • An expression using whichCharacter identifies a specific character.
+   • An expression using firstCharacter and lastCharacter identifies a range of characters.
+   The expressions must be integers that specify a character or range of characters in the chunk.
+   Characters include letters, numbers, punctuation marks, spaces, and control characters such as
+   Tab and Return.
+   You can test but not set the char...of keyword. Use the put...into command to modify the
+   characters in a string.
+ Example
+
+   This statement displays the first character of the string $9.00:
+   put(("$9.00").char[1..1])
+   -- "$"
+   This statement displays the entire string $9.00:
+   put(("$9.00").char[1..5])
+   -- "$9.00"
+   This statement changes the first five characters of the second word in the third line of a text
+   cast member:
+   member("quiz").line[3].word[2].char[1..5] = "?????"
+
+ See also
+   mouseMember, mouseItem, mouseLine, mouseWord
+
+
+
+
+                                                                                          char...of   205
+end
+  Usage
+      -- Lingo syntax
+      end
+
+  Description
+
+      Keyword; marks the end of handlers and multiple-line control structures.
+  Example
+
+      The following mouseDown handler ends with an end mouseDown statement.
+      on mouseDown
+        _player.alert("The mouse was pressed")
+      end mouseDown
+
+end case
+  Usage
+      -- Lingo syntax
+      end case
+
+  Description
+
+      Keyword; ends a case statement.
+  Example
+
+      This handler uses the end case keyword to end the case statement:
+      on keyDown
+        case (_key.key) of
+           "a": _movie.go("Apple")
+           "b", "c":
+              _movie.puppetTransition(99)
+              _movie.go("Oranges")
+           otherwise: _sound.beep()
+        end case
+      end keyDown
+
+  See also
+      case
+
+exit
+  Usage
+      -- Lingo syntax
+      exit
+
+  Description
+
+      Keyword; instructs Lingo to leave a handler and return to where the handler was called. If the
+      handler is nested within another handler, Lingo returns to the main handler.
+
+
+
+
+206    Chapter 11: Keywords
+  Example
+
+    The first statement of this script checks whether the monitor is set to black and white and then
+    exits if it is:
+    on setColors
+      if _system.colorDepth = 1 then exit
+      sprite(1).foreColor = 35
+    end
+
+  See also
+    abort, halt(), quit(), pass, return (keyword)
+
+exit repeat
+  Usage
+    -- Lingo syntax
+    exit repeat
+
+  Description
+
+    Keyword; instructs Lingo to leave a repeat loop and go to the statement following the end
+    repeat statement but to remain within the current handler or method.
+
+    The exit repeat keyword is useful for breaking out of a repeat loop when a specified
+    condition—such as two values being equal or a variable being a certain value—exists.
+  Example
+
+    The following handler searches for the position of the first vowel in a string represented by the
+    variable testString. As soon as the first vowel is found, the exit repeat command instructs
+    Lingo to leave the repeat loop and go to the statement return i:
+    on findVowel testString
+      repeat with i = 1 to testString.char[testString.char.count]
+         if "aeiou" contains testString.char[i] then exit repeat
+      end repeat
+      return i
+    end
+
+  See also
+    repeat while, repeat with
+
+field
+  Usage
+    field(whichField)
+
+  Description
+
+    Keyword; refers to the field cast member specified by whichField.
+    • When whichField is a string, it is used as the cast member name.
+    • When whichField is an integer, it is used as the cast member number.
+    Character strings and chunk expressions can be read from or placed in the field.
+
+
+
+
+                                                                                            field   207
+      The term field was used in earlier versions of Director and is maintained for backward
+      compatibility. For new movies, use member to refer to field cast members.
+  Example
+
+      This statement places the characters 5 through 10 of the field name entry in the variable
+      myKeyword:
+      myKeyword = field("entry").char[5..10]
+      This statement checks whether the user entered the word desk and, if so, goes to the frame
+      deskBid:
+      if member("bid") contains "desk" then _movie.go("deskBid")
+
+  See also
+      char...of, item...of, line...of, word...of
+
+global
+  Usage
+      global variable1 {, variable2} {, variable3}...
+
+  Description
+
+      Keyword; defines a variable as a global variable so that other handlers or movies can share it.
+      Every handler that examines or changes the content of a global variable must use the global
+      keyword to identify the variable as global. Otherwise, the handler treats the variable as a local
+      variable, even if it is declared to be global in another handler.
+      Note: To ensure that global variables are available throughout a movie, declare and initialize them in
+      the prepareMovie handler. Then, if you leave and return to the movie from another movie, your global
+      variables will be reset to the initial values unless you first check to see that they aren’t already set.
+
+      A global variable can be declared in any handler or script. Its value can be used by any other
+      handlers or scripts that also declare the variable as global. If the script changes the variable’s value,
+      the new value is available to every other handler that treats the variable as global.
+      A global variable is available in any script or movie, regardless of where it is first declared; it is not
+      automatically cleared when you navigate to another frame, movie, or window.
+      Any variables manipulated in the Message window are automatically global, even though they are
+      not explicitly declared as such.
+      Movies with Macromedia Shockwave content playing on the Internet cannot access global
+      variables within other movies, even movies playing on the same HTML page. The only way
+      movies can share global variables is if an embedded movie navigates to another movie and replaces
+      itself through either goToNetMovie or go movie.
+  Example
+
+      The following example sets the global variable StartingPoint to an initial value of 1 if it doesn’t
+      already contain a value. This allows navigation to and from the movie without loss of stored data.
+      global gStartingPoint
+
+      on prepareMovie
+        if voidP(gStartingPoint) then gStartingPoint = 1
+      end
+
+
+
+208     Chapter 11: Keywords
+     See also
+       showGlobals(), property, gotoNetMovie
+
+if
+     Usage
+       if logicalExpression then statement
+       if logicalExpression then statement
+       else statement
+       end if
+       if logicalExpression then
+            statement(s)
+       end if
+       if logicalExpression then
+            statement(s)
+       else
+            statement(s)
+       end if
+       if logicalExpression1 then
+            statement(s)
+       else if logicalExpression2 then
+            statement(s)
+       else if logicalExpression3 then
+            statement(s)
+       end if
+       if logicalExpression1 then
+            statement(s)
+       else logicalExpression2
+       end if
+
+     Description
+
+       Keyword; if...then structure that evaluates the logical expression specified by
+       logicalExpression.
+
+       • If the condition is TRUE, Lingo executes the statement(s) that follow then.
+       • If the condition is FALSE, Lingo executes the statement(s) following else. If no statements
+          follow else, Lingo exits the if...then structure.
+       • All parts of the condition must be evaluated; execution does not stop at the first condition that
+          is met or not met. Thus, faster code may be created by nesting if...then statements on
+          separate lines instead of placing them all on the first line to be evaluated.
+       When the condition is a property, Lingo automatically checks whether the property is TRUE. You
+       don’t need to explicitly add the phrase = TRUE after the property.
+       The else portion of the statement is optional. To use more than one then-statement or
+       else-statement, you must end with the form end if.
+       The else portion always corresponds to the previous if statement; thus, sometimes you must
+       include an else nothing statement to associate an else keyword with the proper if keyword.
+       Note: A quick way to determine in the script window if a script is paired properly is to press Tab. This
+       forces Director to check the open Script window and show the indentation for the contents. Any
+       mismatches will be immediately apparent.
+
+
+
+
+                                                                                                       if   209
+  Example
+
+      This statement checks whether the carriage return was pressed and then continues if it was:
+      if the key = RETURN then go the frame + 1
+      This handler checks whether the Command and Q keys were pressed simultaneously and, if so,
+      executes the subsequent statements:
+      on keyDown
+        if (_key.commandDown) and (_key.key = "q") then
+           cleanUp
+           quit
+        end if
+      end keyDown
+      Compare the following two constructions and the performance results. The first construction
+      evaluates both conditions, and so must determine the time measurement, which may take a while.
+      The second construction evaluates the first condition; the second condition is checked only if the
+      first condition is TRUE.
+      spriteUnderCursor = rollOver()
+      if (spriteUnderCursor > 25) and MeasureTimeSinceIStarted() then
+        _player.alert("You found the hidden treasure!")
+      end if
+      The alternate, and faster, construction would be as follows:
+      spriteUnderCursor = rollOver()
+      if (spriteUnderCursor > 25) then
+        if MeasureTimeSinceIStarted() then
+           _player.alert("You found the hidden treasure!")
+        end if
+      end if
+
+  See also
+      case
+
+INF
+  Usage
+      -- Lingo syntax
+      INF
+
+  Description
+
+      Return value; indicates that a specified Lingo expression evaluates as an infinite number.
+  See also
+      NAN
+
+item...of
+  Usage
+      -- Lingo syntax
+      textMemberExpression.item[whichItem]
+      item whichItem of fieldOrStringVariable
+      textMemberExpression.item[firstItem..lastItem]
+      item firstItem to lastItem of fieldOrStringVariable
+
+
+
+
+210    Chapter 11: Keywords
+  Description
+
+    Keyword; specifies an item or range of items in a chunk expression. An item in this case is
+    any sequence of characters delimited by the current delimiter as determined by the
+    itemDelimiter property.
+    The terms whichItem, firstItem, and lastItem must be integers or integer expressions that
+    refer to the position of items in the chunk.
+    Chunk expressions refer to any character, word, item, or line in any source of strings. Sources of
+    strings include field and text cast members and variables that hold strings.
+    When the number that specifies the last item is greater than the item’s position in the chunk
+    expression, the actual last item is specified instead.
+  Example
+
+    This statement looks for the third item in the chunk expression that consists of names of colors
+    and then displays the result in the Message window:
+    put("red,yellow,blue green,orange".item[3])
+    -- "blue green"
+    The result is the entire chunk “blue green” because this is the entire chunk between the commas.
+    The following statement looks for the third through fifth items in the chunk expression. Because
+    there are only four items in the chunk expression, only the third item is used and fourth items are
+    returned. The result appears in the Message window.
+    put("red,yellow,blue green,orange".item[3..5])
+    -- "blue green, orange"
+    put item 5 of "red, yellow, blue green, orange"
+    -- ""
+    The following statement inserts the item Desk as the fourth item in the second line of the field
+    cast member All Bids:
+    member("All Bids").line[2].item[4] = "Desk"
+
+  See also
+    char...of, itemDelimiter, number of members, word...of
+
+line...of
+  Usage
+    -- Lingo syntax
+    textMemberExpression.line[whichLine]
+    line whichLine of fieldOrStringVariable
+    textMemberExpression.line[firstLine..lastLine]
+    line firstLine to lastLine of fieldOrStringVariable
+
+  Description
+
+    Keyword; specifies a line or a range of lines in a chunk expression. A line chunk is any sequence of
+    characters delimited by carriage returns, not by line breaks caused by text wrapping.
+    The expressions whichLine, firstLine, and lastLine must be integers that specify a line
+    in the chunk.
+
+
+
+
+                                                                                          line...of   211
+      Chunk expressions refer to any character, word, item, or line in any source of characters. Sources
+      of characters include field cast members and variables that hold strings.
+  Example
+
+      This statement assigns the first four lines of the variable Action to the field cast member To Do:
+      member("To Do").text = Action.line[1..4]
+      This statement inserts the word and after the second word of the third line of the string assigned
+      to the variable Notes:
+      put "and" after Notes.line[3].word[2]
+
+  See also
+      char...of, item...of, word...of, number of members
+
+loop (keyword)
+  Usage
+      -- Lingo syntax
+      _movie.goLoop()
+
+  Description
+
+      Keyword; refers to the marker.
+  Example
+
+      This handler loops the movie between the previous marker and the current frame:
+      on exitFrame
+        _movie.goLoop()
+      end exitFrame
+
+me
+  Usage
+      -- Lingo syntax
+      me
+
+  Description
+
+      Special variable; used within parent scripts and behaviors to refer to the current object that is an
+      instance of the parent script or the behavior or a variable that contains the memory address of
+      the object.
+      The term has no predefined meaning in Lingo. The term me is used by convention.
+      To see an example of me used in a completed movie, see the Parent Scripts movie in the Learning/
+      Lingo Examples folder inside the Director application folder.
+  Example
+
+      The following statement sets the object myBird1 to the script named Bird. The me keyword
+      accepts the parameter script Bird and is used to return that parameter.
+      myBird1 = new script("Bird")
+      This is the on new handler of the Bird script:
+
+
+
+212    Chapter 11: Keywords
+   on new me
+     return me
+   end
+   The following two sets of handlers make up a parent script. The first set uses me to refer to the
+   child object. The second set uses the variable myAddress to refer to the child object. In all other
+   respects, the parent scripts are the same.
+   This is the first set:
+   property myData
+
+   on new me, theData
+     myData = theData
+     return me
+   end
+
+   on stepFrame me
+     ProcessData me
+   end
+   This is the second set:
+   property myData
+
+   on new myAddress, theData
+     myData = theData
+     return myAddress
+   end
+
+   on stepFrame myAddress
+     ProcessData myAddress
+   end
+
+ See also
+   new(), ancestor
+
+menu
+ Usage
+   -- Lingo syntax
+   menu: menuName
+   itemName | script
+   itemName | script
+   ...
+   or
+   menu: menuName
+   itemName | script
+   itemName | script
+   ...
+   [more menus]
+
+ Description
+
+   Keyword; in conjunction with the installMenu command, specifies the actual content of custom
+   menus. Field cast members contain menu definitions; refer to them by the cast member name
+   or number.
+
+
+
+
+                                                                                           menu    213
+      The menu keyword is followed immediately by a colon, a space, and the name of the menu. In
+      subsequent lines, specify the menu items for that menu. You can set a script to execute when the
+      user chooses an item by placing the script after the vertical bar symbol (|). A new menu is defined
+      by the subsequent occurrence of the menu keyword.
+      Note: Menus are not available in Shockwave Player.
+
+      On the Macintosh, you can use special characters to define custom menus. These special
+      characters are case-sensitive. For example, to make a menu item bold, the letter B must be
+      uppercase.
+      Special symbols should follow the item name and precede the vertical bar symbol (|). You can also
+      use more than one special character to define a menu item. Using <B<U, for example, sets the
+      style to Bold and Underline.
+      Avoid special character formatting for cross-platform movies because not all Windows computers
+      support it.
+
+      Symbol Example                  Description
+      @           menu: @             *On the Macintosh, creates the Apple symbol and enables Macintosh
+                                      menu bar items when you define an Apple menu.
+      !Ã          !ÃEasy Select       *On the Macintosh, checks the menu with a check mark (Option+v).
+      <B          Bold<B              *On the Macintosh, sets the menu item’s style to Bold.
+      <I          Italic<I            *On the Macintosh, sets the style to Italic.
+      <U          Underline<U         *On the Macintosh, sets the style to Underline.
+      <O          Outline<O           *On the Macintosh, sets the style to Outline.
+      <S          Shadow<S            *On the Macintosh, sets the style to Shadow.
+      |           Open/O | go to      Associates a script with the menu item.
+                  frame "Open"
+
+      /           Quit/Q              Defines a command-key equivalent.
+      (           Save(               Disables the menu item.
+      (-          (-                  Creates a disabled line in the menu.
+      *    identifies formatting tags that work only on the Macintosh.
+
+  Example
+
+      This example is the text of a field cast member named CustomMenu2 which can be used to
+      specify the content of a custom File menu. To install this menu, use “installMenu
+      member("CustomMenu2")” while the movie is running. The Convert menu item runs the custom
+      handler convertThis.
+      menu: File
+      Open/O | _movie.go("Open")
+      Close/W | _movie.go("Close")
+      Convert/C | convertThis
+        (-
+      Quit/Q | _movie.go("Quit")
+
+  See also
+      installMenu, name, number (menu items), checkMark, enabled, script
+
+
+
+214       Chapter 11: Keywords
+NAN
+ Usage
+   -- Lingo syntax
+   NAN
+
+ Description
+
+   Return value; Indicates that a specified Lingo expression is not a number.
+   This statement attempts to display the square root of -1, which is not a number, in the
+   Message window:
+   -- Lingo syntax
+   put((-1).sqrt) -- NAN
+
+ See also
+   INF
+
+next
+ Usage
+   -- Lingo syntax
+   next
+
+ Description
+
+   Keyword; refers to the next marker in the movie and is equivalent to the phrase the marker
+   (+ 1).
+
+ Example
+
+   This statement sends the playhead to the next marker in the movie:
+   go next
+   This handler moves the movie to the next marker in the Score when the right arrow key is pressed
+   and to the previous marker when the left arrow key is pressed:
+   on keyUp
+     if (_key.keyCode = 124) then _movie.goNext()
+     if (_key.keyCode = 123) then _movie.goPrevious()
+   end keyUp
+
+ See also
+   loop (keyword), goPrevious()
+
+
+
+
+                                                                                         next   215
+next repeat
+  Usage
+      -- Lingo syntax
+      next repeat
+
+  Description
+
+      Keyword; sends Lingo to the next step in a repeat loop in a script. This function differs from that
+      of the exit repeat keyword.
+  Example
+
+      This repeat loop displays only odd numbers in the Message window:
+      repeat with i = 1 to 10
+        if (i mod 2) = 0 then next repeat
+        put(i)
+      end repeat
+
+on
+  Usage
+      -- Lingo syntax
+      on handlerName {argument1}, {arg2}, {arg3} ...
+        statement(s)
+      end handlerName
+
+  Description
+
+      Keyword; indicates the beginning of a handler, a collection of Lingo statements that you can
+      execute by using the handler name. A handler can accept arguments as input values and returns a
+      value as a function result.
+      Handlers can be defined in behaviors, movie scripts, and cast member scripts. A handler in a cast
+      member script can be called only by other handlers in the same script. A handler in a movie script
+      can be called from anywhere.
+      You can use the same handler in more than one movie by putting the handler’s script in a
+      shared cast.
+
+otherwise
+  Usage
+      -- Lingo syntax
+      otherwise statement(s)
+
+  Description
+
+      Keyword; precedes instructions that Lingo performs when none of the earlier conditions in a
+      case statement are met.
+      This keyword can be used to alert users of out-of-bound input or invalid type, and can be very
+      helpful in debugging during development.
+
+
+
+
+216    Chapter 11: Keywords
+ Example
+
+   The following handler tests which key the user pressed most recently and responds accordingly:
+   • If the user pressed A, B, or C, the movie performs the corresponding action following the
+      of keyword.
+   • If the user pressed any other key, the movie executes the statement that follows the otherwise
+      keyword. In this case, the statement is a simple alert.
+      on keyDown
+        case (_key.key) of
+           "a": _movie.go("Apple")
+           "b", "c":
+              _movie.puppetTransition(99)
+              _movie.go("Oranges")
+           otherwise: _player.alert("That is not a valid key.")
+        end case
+      end keyDown
+
+property
+ Usage
+   -- Lingo syntax
+   property {property1}{, property2} {,property3} {...}
+
+ Description
+
+   Keyword; declares the properties specified by property1, property2, and so on as
+   property variables.
+   Declare property variables at the beginning of the parent script or behavior script. You can access
+   them from outside the parent script or behavior script by using the the operator.
+   Note: The spriteNum property is available to all behaviors and simply needs to be declared to be
+   accessed.
+
+   You can refer to a property within a parent script or behavior script without using the me
+   keyword. However, to refer to a property of a parent script’s ancestor, use the form me.property.
+   For behaviors, properties defined in one behavior script are available to other behaviors attached
+   to the same sprite.
+   You can directly manipulate a child object’s property from outside the object’s parent scripts
+   through syntax similar to that for manipulating other properties. For example, this statement sets
+   the motionStyle property of a child object:
+   set the motionStyle of myBouncingObject to #frenetic
+   Use the count function to determine the number of properties within the parent script of a child
+   object. Retrieve the name of these properties by using getPropAt. Add properties to an object by
+   using setaProp().
+   To see an example of property used in a completed movie, see the Parent Scripts movie in the
+   Learning/Lingo Examples folder inside the Director application folder.
+ Example
+
+   This statement lets each child object created from a single parent script have its own location and
+   velocity setting:
+   property location, velocity
+
+
+
+                                                                                        property      217
+      This parent script handler declares pMySpriteNum a property to make it available:
+      -- script Elder
+      property pMyChannel
+      on new me, whichSprite
+        me.pMyChannel = whichSprite
+        return me
+      end
+      The original behavior script sets up the ancestor and passes the spriteNum property to
+      all behaviors:
+      property spriteNum
+      property ancestor
+      on beginSprite me
+        ancestor = new script("Elder", spriteNum)
+      end
+  See also
+      me, ancestor, spriteNum
+
+put...after
+  Usage
+      -- Lingo syntax
+      put expression after chunkExpression
+
+  Description
+
+      Command; evaluates a Lingo expression, converts the value to a string, and inserts the resulting
+      string after a specified chunk in a container, without replacing the container’s contents. (If
+      chunkExpression specifies a nonexistent target chunk, the string value is inserted as appropriate
+      into the container.)
+      Chunk expressions refer to any character, word, item, or line in any container. Containers include
+      field cast members; text cast members; variables that hold strings; and specified characters, words,
+      items, lines, and ranges within containers.
+  Example
+
+      This statement adds the string “fox dog cat” after the contents of the field cast member Animal
+      List:
+      put("fox dog cat") after member("Animal List")
+      The same can be accomplished using this statement:
+      put "fox dog cat" after member("Animal List").line[1]
+
+  See also
+      char...of, item...of, line...of, paragraph, word...of, put...before,
+      put...into
+
+
+
+
+218    Chapter 11: Keywords
+put...before
+ Usage
+   -- Lingo syntax
+   put expression before chunkExpression
+
+ Description
+
+   Command; evaluates a Lingo expression, converts the value to a string, and inserts the resulting
+   string before a specified chunk in a container, without replacing the container’s contents. (If
+   chunkExpression specifies a nonexistent target chunk, the string value is inserted as appropriate
+   into the container.)
+   Chunk expressions refer to any character, word, item, or line in any container. Containers include
+   field cast members; text cast members; variables that hold strings; and specified characters, words,
+   items, lines, and ranges in containers.
+ Example
+
+   This statement sets the variable animalList to the string “fox dog cat” and then inserts the word
+   elk before the second word of the list:
+   put "fox dog cat" into animalList
+   put "elk " before word 2 of animalList
+   The result is the string “fox elk dog cat”.
+   The same can be accomplished using this syntax:
+   put "fox dog cat" into animalList
+   put "elk " before animalList.word[2]
+
+ See also
+   char...of, item...of, line...of, paragraph, word...of, put...after, put...into
+
+put...into
+ Usage
+   -- Lingo syntax
+   put expression into chunkExpression
+
+ Description
+
+   Command; evaluates a Lingo expression, converts the value to a string, and uses the resulting
+   string to replace a specified chunk in a container. (If chunkExpression specifies a nonexistent
+   target chunk, the string value is inserted as appropriate into the container.)
+   Chunk expressions refer to any character, word, item, or line in any container. Containers include
+   field cast members; text cast members; variables that hold strings; and specified characters, words,
+   items, lines, and ranges in containers.
+   When a movie plays back as an applet, the put...into command replaces all text within a
+   container, not chunks of text.
+   To assign values to variables, use the set command.
+
+
+
+
+                                                                                        put...into   219
+  Example
+
+      This statement changes the second line of the field cast member Review Comments to “Reviewed
+      by Agnes Gooch”:
+      put "Reviewed by Agnes Gooch" into line 2 of member("Review Comments")
+      The same can be accomplished with a text cast member using this syntax:
+      put "Reviewed by Agnes Gooch" into member("Review Comments").line[2]
+
+  See also
+      char...of, item...of, line...of, paragraph, word...of, put...before,
+      put...after, set...to, set...=
+
+repeat while
+  Usage
+      -- Lingo syntax
+      repeat while testCondition
+           statement(s)
+      end repeat
+
+  Description
+
+      Keyword; repeatedly executes statement(s) so long as the condition specified by
+      testCondition is TRUE. This structure can be used in Lingo that continues to read strings until
+      the end of a file is reached, checks items until the end of a list is reached, or repeatedly performs
+      an action until the user presses or releases the mouse button.
+      While in a repeat loop, Lingo ignores other events. To check the current key in a repeat loop, use
+      the keyPressed property.
+      Only one handler can run at a time. If Lingo stays in a repeat loop for a long time, other events
+      stack up waiting to be evaluated. Therefore, repeat loops are best used for short, fast operations or
+      when users are idle.
+      If you need to process something for several seconds or more, evaluate the function in a loop with
+      some type of counter or test to track progress.
+      If the stop condition is never reached or there is no exit from the repeat loop, you can force
+      Director to stop by using Control+Alt+period (Windows) or Command+period (Macintosh).
+  Example
+
+      This handler starts the timer counting, resets the timer to 0, and then has the timer count up to
+      60 milliseconds:
+      on countTime
+        _system.milliseconds
+        repeat while _system.milliseconds < 60
+        -- waiting for time
+        end repeat
+      end countTime
+
+  See also
+      exit, exit repeat, repeat with, keyPressed()
+
+
+
+
+220    Chapter 11: Keywords
+repeat with
+ Usage
+   -- Lingo syntax
+   repeat with counter = start to finish
+     statement(s)
+   end repeat
+
+ Description
+
+   Keyword; executes the Lingo specified by statement(s) the number of times specified by
+   counter. The value of counter is the difference between the value specified by start and the
+   value specified by finish. The counter is incremented by 1 each time Lingo cycles through the
+   repeat loop.
+   The repeat with structure is useful for repeatedly applying the same effect to a series of sprites
+   or for calculating a series of numbers to some exponent.
+   While in a repeat loop, Lingo ignores other events. To check the current key in a repeat loop, use
+   the keyPressed property.
+   Only one handler can run at a time. If Lingo stays in a repeat loop for a long time, other events
+   stack up waiting to be evaluated. Therefore, repeat loops are best used for short, fast operations or
+   when users are idle.
+   If you need to process something for several seconds or more, evaluate the function in a loop with
+   some type of counter or test to track progress.
+   If the stop condition is never reached or there is no exit from the repeat loop, you can force
+   Director to stop by using Control+Alt+period (Windows) or Command+period (Macintosh).
+ Example
+
+   This handler turns sprites 1 through 30 into puppets:
+   on puppetize
+     repeat with channel = 1 to 30
+        _movie.puppetSprite(channel, TRUE)
+     end repeat
+   end puppetize
+
+ See also
+   exit, exit repeat, repeat while, repeat with...down to, repeat with...in list
+
+repeat with...down to
+ Usage
+   -- Lingo syntax
+   repeat with variable = startValue down to endValue
+
+ Description
+
+   Keyword; counts down by increments of 1 from startValue to endValue.
+   Only one handler can run at a time. If Lingo stays in a repeat loop for a long time, other events
+   stack up waiting to be evaluated. Therefore, repeat loops are best used for short, fast operations or
+   when you know the user won’t be doing other things.
+
+
+
+
+                                                                             repeat with...down to   221
+      While in a repeat loop, Lingo ignores other events. To check the current key in a repeat loop, use
+      the keyPressed property.
+      If you need to process something for several seconds or more, evaluate the function in a loop with
+      some type of counter or test to track progress.
+      If the stop condition is never reached or there is no exit from the repeat loop, you can force
+      Director to stop by using Control+Alt+period (Windows) or Command+period (Macintosh).
+  Example
+
+      This handler contains a repeat loop that counts down from 20 to 15:
+      on countDown
+        repeat with i = 20 down to 15
+           sprite(6).member = 10 + i
+           _movie.updateStage()
+        end repeat
+      end
+
+repeat with...in list
+  Usage
+      -- Lingo syntax
+      repeat with variable in someList
+
+  Description
+
+      Keyword; assigns successive values from the specified list to the variable.
+      While in a repeat loop, Lingo ignores other events except keypresses. To check the current key in
+      a repeat loop, use the keyPressed property.
+      Only one handler can run at a time. If Lingo stays in a repeat loop for a long time, other events
+      stack up waiting to be evaluated. Therefore, repeat loops are best used for short, fast operations or
+      when users are idle.
+      If you need to process something for several seconds or more, evaluate the function in a loop with
+      some type of counter or test to track progress.
+      If the stop condition is never reached or there is no exit from the repeat loop, you can force
+      Director to stop by using Control+Alt+period (Windows) or Command+period (Macintosh).
+  Example
+
+      This statement displays four values in the Message window:
+      repeat with i in [1, 2, 3, 4]
+        put(i)
+      end repeat
+
+
+
+
+222    Chapter 11: Keywords
+return (keyword)
+ Usage
+   -- Lingo syntax
+   return expression
+
+ Description
+
+   Keyword; returns the value of expression and exits from the handler. The expression
+   argument can be any Lingo value.
+   When calling a handler that serves as a user-defined function and has a return value, you must use
+   parentheses around the argument lists, even if there are no arguments, as in the diceRoll
+   function handler discussed under the entry for the result function.
+   The function of the return keyword is similar to that of the exit command, except that return
+   also returns a value to whatever called the handler. The return command in a handler
+   immediately exits from that handler, but it can return a value to the Lingo that called it.
+   The use of return in object-oriented scripting can be difficult to understand. It’s easier to start by
+   using return to create functions and exit handlers. Later, you will see that the return me line in
+   an on new handler gives you a way to pass back a reference to an object that was created so it can
+   be assigned to a variable name.
+   The return keyword isn’t the same as the character constant RETURN, which indicates a carriage
+   return. The function depends on the context.
+   To retrieve a returned value, use parentheses after the handler name in the calling statement to
+   indicate that the named handler is a function.
+   To see an example of return (keyword) used in a completed movie, see the Parent
+   Scripts movie in the Learning/Lingo Examples folder inside the Director application folder.
+ Example
+
+   This handler returns a random multiple of 5 between 5 and 100:
+   on getRandomScore
+     theScore = 5 * random(20)
+     return theScore
+   end getRandomScore
+   Call this handler with a statement similar to the following:
+   thisScore = getRandomScore()
+   In this example, the variable thisScore is assigned the return value from the function
+   getRandomScore(). A parent script performs the same function: by returning the object
+   reference, the variable name in the calling code provides a handle for subsequent references to
+   that object.
+ See also
+   result, RETURN (constant)
+
+
+
+
+                                                                                  return (keyword)   223
+set...to, set...=
+  Usage
+      -- Lingo syntax
+      lingoProperty = expression
+      variable = expression
+
+  Description
+
+      Command; evaluates an expression and puts the result in the property specified by
+      lingoProperty or the variable specified by variable.
+
+  Example
+
+      This statement sets the name of member 3 to Sunset:
+      member(3).name = "Sunset"
+      The following statement sets the soundEnabled property to the opposite of its current state.
+      When soundEnabled is TRUE (the sound is on), this statement turns it off. When soundEnabled
+      is FALSE (the sound is off ), this statement turns it on.
+      _sound.soundEnabled = not(_sound.soundEnabled)
+      This statement sets the variable vowels to the string “aeiou”:
+      vowels = "aeiou"
+
+  See also
+      property
+
+sprite...intersects
+  Usage
+      -- Lingo syntax
+      sprite(sprite1).intersects(sprite2)
+      sprite sprite1 intersects sprite2
+
+  Description
+
+      Keyword; operator that compares the position of two sprites to determine whether the quad of
+      sprite1 touches (TRUE) or does not touch (FALSE) the quad of sprite2.
+
+      If both sprites have matte ink, their actual outlines, not the quads, are used. A sprite’s outline is
+      defined by the nonwhite pixels that make up its border.
+      This is a comparison operator with a precedence level of 5.
+      Note: The dot operator is required whenever sprite1 is not a simple expression—that is, one that
+      contains a math operation.
+
+  Example
+
+      This statement checks whether two sprites intersect and, if they do, changes the contents of the
+      field cast member Notice to “You placed it correctly.”:
+      if sprite i intersects j then put("You placed it correctly.") \
+        into member("Notice")
+
+  See also
+      sprite...within, quad
+
+
+
+
+224    Chapter 11: Keywords
+sprite...within
+ Usage
+   -- Lingo syntax
+   sprite(sprite1).within(sprite2)
+   sprite sprite1 within sprite2
+
+ Description
+
+   Keyword; operator that compares the position of two sprites and determines whether the quad of
+   sprite1 is entirely inside the quad of sprite2 (TRUE) or not (FALSE).
+
+   If both sprites have matte ink, their actual outlines, not the quads, are used. A sprite’s outline is
+   defined by the nonwhite pixels that make up its border.
+   This is a comparison operator with a precedence level of 5.
+   Note: The dot operator is required whenever sprite1 is not a simple expression—that is, one that
+   contains a math operation.
+
+ Example
+
+   This statement checks whether two sprites intersect and calls the handler doInside if they do:
+   if sprite(3).within(2) then doInside
+
+ See also
+   sprite...intersects, quad
+
+version
+ Usage
+   -- Lingo syntax
+   _player.productVersion
+
+ Description
+
+   Keyword; system variable that contains the version string for Director. The same string appears in
+   the Macintosh Finder’s Info window.
+ Example
+
+   This statement displays the version of Director in the Message window:
+   put(_player.productVersion)
+
+
+
+
+                                                                                            version   225
+word...of
+  Usage
+      -- Lingo syntax
+      member(whichCastMember).word[whichWord]
+      textMemberExpression.word[whichWord]
+      chunkExpression.word[whichWord]
+      word whichWord of fieldOrStringVariable
+      fieldOrStringVariable. word[whichWord]
+      textMemberExpression.word[firstWord..lastWord]
+      member(whichCastMember).word[firstWord..lastWord]
+      word firstWord to lastWord of chunkExpression
+      chunkExpression.word[whichWord..lastWord]
+
+  Description
+
+      Chunk expression; specifies a word or a range of words in a chunk expression. A word chunk is
+      any sequence of characters delimited by spaces. (Any non-visible character, such as a tab or
+      carriage return, is considered a space.)
+      The expressions whichWord, firstWord, and lastWord must evaluate to integers that specify a
+      word in the chunk.
+      Chunk expressions refer to any character, word, item, or line in any source of characters. Sources
+      of characters include field and text cast members and variables that hold strings.
+      To see an example of word...of used in a completed movie, see the Text movie in the Learning/
+      Lingo Examples folder inside the Director application folder.
+  Example
+
+      These statements set the variable named animalList to the string “fox dog cat” and then insert
+      the word elk before the second word of the list:
+      animalList = "fox dog cat"
+      put "elk" before animalList.word[2]
+      The result is the string “fox elk dog cat”.
+      This statement tells Director to display the fifth word of the same string in the Message window:
+      put "fox elk dog cat".word[5]
+      Because there is no fifth word in this string, the Message window displays two quotation marks
+      (""), which indicate an empty string.
+  See also
+      char...of, line...of, item...of, count(), number (words)
+
+
+
+
+226    Chapter 11: Keywords
+
