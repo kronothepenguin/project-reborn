@@ -1,10 +1,6 @@
-// Director runtime - browser plugin replacement
-// Custom elements, canvas, event loop, cast loader, script lifecycle
-
-export {
-  registerCustomElements,
-  _createMovie,
-} from "./custom-elements.js";
+// Director runtime - low-level host-API wrappers
+// Canvas, event loop, cast loader, script lifecycle.
+// Custom elements moved to director-browser (../browser/).
 
 export {
   startEventLoop,

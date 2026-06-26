@@ -5,7 +5,7 @@ import {
   isEventLoopRunning,
   setTempo,
 } from "../event-loop.js";
-import { _createMovie } from "../custom-elements.js";
+import { _createMovie } from "../../browser/custom-elements.js";
 
 describe("event-loop", () => {
   beforeEach(() => {

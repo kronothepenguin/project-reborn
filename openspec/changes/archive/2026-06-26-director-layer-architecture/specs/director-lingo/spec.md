@@ -1,4 +1,12 @@
-## MODIFIED Requirements
+## REMOVED Requirements
+
+### Requirement: director-lingo SHALL be the Ligo-script-facing surface of the package
+
+### Requirement: director-lingo Globals SHALL be stateful singleton Ref instances from director-core
+
+### Requirement: director-lingo SHALL remain the single ligo surface across internal refactors
+
+## ADDED Requirements
 
 ### Requirement: director-lingo SHALL be the public top-level consumer surface for translated Ligo code
 

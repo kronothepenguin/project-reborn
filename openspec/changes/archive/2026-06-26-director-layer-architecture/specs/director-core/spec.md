@@ -1,4 +1,10 @@
-## MODIFIED Requirements
+## REMOVED Requirements
+
+### Requirement: director-core SHALL be the internal simulator layer for Director/Lingo
+
+### Requirement: director-core SHALL remain stable across ligo-surface refactors
+
+## ADDED Requirements
 
 ### Requirement: director-core SHALL be the private Director language-object layer
 

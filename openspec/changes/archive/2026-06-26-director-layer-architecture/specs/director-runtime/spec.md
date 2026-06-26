@@ -1,4 +1,12 @@
-## MODIFIED Requirements
+## REMOVED Requirements
+
+### Requirement: director-runtime SHALL be the host/browser integration surface
+
+### Requirement: director-runtime SHALL provide custom elements that replace Shockwave embedding
+
+### Requirement: director-runtime SHALL remain the host surface across internal refactors
+
+## ADDED Requirements
 
 ### Requirement: director-runtime SHALL be the private low-level host-integration layer
 

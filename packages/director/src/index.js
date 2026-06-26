@@ -1,3 +1,2 @@
-export * from "./api/index.js";
-export * from "./runtime/index.js";
-export * from "./syntax/index.js";
+export * from "./lingo/index.js";
+export * from "./browser/index.js";

@@ -3,22 +3,6 @@
 ## Purpose
 TBD - created by archiving change director-specs-foundation. Update Purpose after archive.
 ## Requirements
-### Requirement: director-lingo SHALL be the Ligo-script-facing surface of the package
-
-`director-lingo` SHALL be the single import surface for everything Ligo script uses: functions, globals, constants, and syntax constructs. It SHALL be exported from `packages/director/package.json` as `./lingo`. It SHALL use `director-core` internally and SHALL NOT re-export `director-core` types.
-
-**Package**: `packages/director/`
-**Source today**: `packages/director/src/api/` + `packages/director/src/syntax/` (a future change may unify these under `packages/director/src/lingo/`; that refactor is out of scope here).
-**Reference**: `docs/director-inventory.json` (methods section — 486 entries, 91 excluded for 3D/DVD), `docs/drmx2004_scripting_ref.txt` (Chapter 12: Methods, lines 11735–30369; Chapter 14: Properties, lines 31406–57648).
-
-#### Scenario: Ligo script imports from one path
-- **WHEN** LigoScript transpiled to JavaScript needs any Director standard-library name (`abs`, `member`, `_movie`, `VOID`, `the`, `putInto`, etc.)
-- **THEN** it imports from `@project-reborn/director/lingo` and only from that path
-
-#### Scenario: Core types are not re-exported
-- **WHEN** a consumer imports from `@project-reborn/director/lingo`
-- **THEN** it cannot reach `director-core` classes (`MovieRef`, `List`, `Color`, …) by that import; core is reachable only internally within the package
-
 ### Requirement: director-lingo Functions SHALL be the Director standard library
 
 `director-lingo` SHALL expose every Director MX 2004 function not excluded for 3D/DVD (486 total − 91 excluded = 395 to implement, per `docs/director-inventory.json`). Each function SHALL behave as documented in `docs/drmx2004_scripting_ref.txt` at the line range recorded in the inventory. Functions SHALL be pure-ish (no hidden global state of their own) and SHALL obtain Director runtime state by reading the Globals (see below) or by receiving explicit arguments.
@@ -36,24 +20,6 @@ TBD - created by archiving change director-specs-foundation. Update Purpose afte
 #### Scenario: Excluded functions are not present
 - **WHEN** a 3D method (76 entries) or DVD method (15 entries) listed in `docs/director-inventory.json` is imported from `@project-reborn/director/lingo`
 - **THEN** it is not available; the excluded set is tracked in `docs/director-inventory.json` and a separate `director-excluded-3d-dvd` concern
-
-### Requirement: director-lingo Globals SHALL be stateful singleton Ref instances from director-core
-
-`director-lingo` SHALL expose the Director globals `_global`, `_movie`, `_player`, `_sound`, `_mouse`, `_key`, `_system`, and `_window`. Each global SHALL be a singleton instance of its corresponding `*Ref` class from `director-core` (`_movie` → `MovieRef`, `_player` → `PlayerRef`, `_sound` → `SoundRef`, etc.). These globals SHALL hold the runtime state that some Functions read implicitly (e.g. `member(1)` with no castLib argument resolves against `_movie`'s current cast library context). This is the architectural coupling point between `director-lingo` and `director-core`.
-
-**Reference**: `docs/drmx2004_scripting_ref.txt` — global object reference chapters.
-
-#### Scenario: Globals are Ref instances, not plain objects
-- **WHEN** `_movie` is inspected at runtime
-- **THEN** it is an instance of `MovieRef` from `director-core`, and `_player`, `_sound`, etc. are instances of their respective `*Ref` classes
-
-#### Scenario: Globals carry state that functions read implicitly
-- **WHEN** `member(1)` is called without a castLib argument while `_movie`'s current cast library context is `1`
-- **THEN** the lookup resolves against cast library `1`, reflecting the implicit coupling between the `member` Function and the `_movie` Global
-
-#### Scenario: Globals are singletons for the package lifetime
-- **WHEN** `_movie` is imported in two different modules
-- **THEN** both imports refer to the same `MovieRef` instance
 
 ### Requirement: director-lingo Constants SHALL be immutable Ligo values
 
@@ -95,11 +61,57 @@ TBD - created by archiving change director-specs-foundation. Update Purpose afte
 - **WHEN** a syntax construct needs a Director data structure or reference object
 - **THEN** it obtains it from `director-core`, never from `director-lingo` Functions; syntax and Functions are sibling sections of the same capability, not layered on each other
 
-### Requirement: director-lingo SHALL remain the single ligo surface across internal refactors
+### Requirement: director-lingo SHALL be the public top-level consumer surface for translated Ligo code
 
-`director-lingo`'s public surface (the set of names importable from `./lingo`) SHALL be defined by the Director MX 2004 reference (Functions + Globals + Constants + Syntax), not by the current `src/api/` and `src/syntax/` folder split. Internal file organization (one-file-per-function, grouped category files, a unified `src/lingo/` tree, etc.) SHALL NOT change the imported surface.
+`director-lingo` SHALL be exported from `packages/director/package.json` as `./lingo`. It SHALL re-export the Director top-level Functions (per MX 2004 Chapter 12; the existing set in `packages/director/src/api/` immediately before this refactor), the Lingo globals (`_global`, `_movie`, `_player`, `_sound`, `_mouse`, `_key`), the Lingo constants actually present before this refactor (`EMPTY`, `VOID`, `TRUE`, `FALSE`), and re-exports of the syntax constructs owned by `director-syntax` (`the`, `char`, `word`, `item`, `line`, `putInto`, `putAfter`, `putBefore`).
 
-#### Scenario: Folder unification does not break consumers
-- **WHEN** `packages/director/src/api/` and `packages/director/src/syntax/` are merged into `packages/director/src/lingo/` with subfolders for functions, globals, constants, and syntax
-- **THEN** existing imports from `@project-reborn/director/lingo` continue to resolve, because the surface is the name set, not the file set
+**Package**: `packages/director/`
+**Source**: `packages/director/src/lingo/` (renamed via `git mv` from `packages/director/src/api/`).
+**Reference**: `docs/drmx2004_scripting_ref/` (`methods.txt`, `constants.txt`), `docs/director-inventory.json`.
+
+This refactor moves the source folder verbatim. It does NOT add new constants, new globals, or new functions. It does NOT rename any function file. The re-exports above are the refactor-state public surface; follow-up changes (`director-lingo-constants`, `director-core-system-window`, future API additions) will extend this requirement with their own deltas.
+
+#### Scenario: Single public import path for translated code
+- **WHEN** translated JS needs any Ligo top-level name (Function, global, constant, or syntax construct) that exists at refactor state
+- **THEN** it imports from `@project-reborn/director/lingo` and only from that path
+
+#### Scenario: api/ folder is renamed, not deleted
+- **WHEN** the `packages/director/src/lingo/` directory is inspected after this refactor
+- **THEN** every method file previously in `packages/director/src/api/` (`member.js`, `sprite.js`, `sound.js`, `castLib.js`, `abs.js`, `_netRegistry.js`, …) is present under `src/lingo/` with identical implementation; only the path changed
+
+#### Scenario: api/ index content migrated verbatim
+- **WHEN** `packages/director/src/lingo/index.js` is inspected after this refactor
+- **THEN** it re-exports every Function the pre-refactor `src/api/index.js` re-exported, with identical source-line content for each re-export
+
+#### Scenario: Syntax constructs are re-exported from lingo
+- **WHEN** translated code imports `the`, `char`, `word`, `item`, `line`, `putInto`, `putAfter`, `putBefore` from `@project-reborn/director/lingo`
+- **THEN** they resolve to the implementations in `packages/director/src/syntax/` via `src/lingo/index.js`
+
+#### Scenario: ./api and ./syntax are no longer public
+- **WHEN** `packages/director/package.json` `exports` is inspected after this refactor
+- **THEN** only `.`, `./lingo`, and `./browser` are present; `./api`, `./syntax`, and `./runtime` are absent
+
+#### Scenario: Existing constants set unchanged in refactor state
+- **WHEN** `EMPTY`, `VOID`, `TRUE`, `FALSE` are imported from `@project-reborn/director/lingo` at refactor state
+- **THEN** their values match the pre-refactor `src/api/index.js` values (`""`, `undefined`, `true`, `false`); no new constants are added by this refactor
+
+### Requirement: director-lingo Globals SHALL be instances of core Director language objects
+
+`director-lingo` SHALL re-export the globals (`_movie`, `_player`, `_sound`, `_mouse`, `_key`, `_global`) as singleton instances constructed in `director-core`. At refactor state these are instances of `MovieRef`, `PlayerRef`, `SoundRef`, `MouseRef`, `KeyRef` respectively, and `_global` is `globalThis`. Follow-up class renames (e.g. `MovieRef` → `MovieObject`) SHALL update this requirement via that change's delta.
+
+#### Scenario: Globals are Ref singleton instances at refactor state
+- **WHEN** `_movie` is inspected at runtime immediately after this refactor
+- **THEN** it is an instance of `MovieRef` from `director-core`; `_player`, `_sound`, `_mouse`, `_key` likewise are instances of `PlayerRef`, `SoundRef`, `MouseRef`, `KeyRef`
+
+#### Scenario: _global is globalThis at refactor state
+- **WHEN** `_global` is inspected at runtime
+- **THEN** it is `globalThis` (a live reference, not a snapshot) so that movie-script handlers assigned via `Object.assign(globalThis, module)` are reachable from any translated code
+
+### Requirement: director-lingo SHALL remain the single Ligo surface across follow-up extensions
+
+Each follow-up change that adds new constants (`PI`, `RETURN`, `TAB`, `SPACE`, `QUOTE`, `BACKSPACE`, `ENTER`, `INF`, `NAN`), new globals (`_system`, `_window`), new functions, or new syntax re-exports SHALL update this requirement via its own delta spec to reflect what it actually adds. This refactor change locks the source-folder location and the public-export contract; it does not add names.
+
+#### Scenario: Follow-up change updates this spec
+- **WHEN** a follow-up change (e.g. `director-lingo-constants`) is archived
+- **THEN** it modifies this `director-lingo` spec via its own delta spec to record the constants it adds; this refactor change does not anticipate those additions
 

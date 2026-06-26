@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { registerCustomElements, _createMovie } from "../custom-elements.js";
-import { setCanvas, resetCanvas, updateStage, getCanvas } from "../canvas.js";
+import { setCanvas, resetCanvas, updateStage, getCanvas } from "../../runtime/canvas.js";
 
 describe("custom-elements", () => {
   beforeEach(() => {

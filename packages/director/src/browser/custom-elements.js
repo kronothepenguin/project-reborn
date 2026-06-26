@@ -1,8 +1,8 @@
 // Custom elements: <x-object> and <x-param>
 // Replaces the legacy Shockwave <object>/<param> embedding.
 
-import { _setCanvas } from "./canvas.js";
-import { startEventLoop, stopEventLoop } from "./event-loop.js";
+import { _setCanvas } from "../runtime/canvas.js";
+import { startEventLoop, stopEventLoop } from "../runtime/event-loop.js";
 
 class XObjectElement extends HTMLElement {
   static get observedAttributes() {
@@ -90,7 +90,7 @@ class XObjectElement extends HTMLElement {
   }
 
   async #loadMovieSrc(src) {
-    const { loadCast } = await import("./cast-loader.js");
+    const { loadCast } = await import("../runtime/cast-loader.js");
     const cast = await loadCast(src);
     this.#castLibs.push(cast);
     this.#movie.dispatchEvent(

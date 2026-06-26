@@ -105,3 +105,16 @@ export { tan } from "./tan.js";
 export { union } from "./union.js";
 export { value } from "./value.js";
 export { voidP } from "./voidP.js";
+
+// Lingo constants
+export const EMPTY = "";
+export const VOID = undefined;
+export const TRUE = true;
+export const FALSE = false;
+
+// Live references used by translated code for global-scope + movie-state access
+export const _global = globalThis;
+export { _movie } from "../core/movie-ref.js";
+
+// Re-export director-syntax constructs so ./lingo is the single public path for translated code
+export { the, char, word, item, line, putInto, putAfter, putBefore } from "../syntax/index.js";

@@ -9,7 +9,7 @@ import {
   getStageSize,
   resetCanvas,
 } from "../canvas.js";
-import { _createMovie } from "../custom-elements.js";
+import { _createMovie } from "../../browser/custom-elements.js";
 
 function createMockContext() {
   const noop = () => {};

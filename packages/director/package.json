@@ -8,9 +8,8 @@
   },
   "exports": {
     ".": "./src/index.js",
-    "./api": "./src/api/index.js",
-    "./runtime": "./src/runtime/index.js",
-    "./syntax": "./src/syntax/index.js"
+    "./lingo": "./src/lingo/index.js",
+    "./browser": "./src/browser/index.js"
   },
   "packageManager": "pnpm@10.30.2"
 }

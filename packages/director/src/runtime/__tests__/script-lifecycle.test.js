@@ -9,7 +9,7 @@ import {
   dispatchAll,
   LIFECYCLE_EVENTS,
 } from "../script-lifecycle.js";
-import { _createMovie } from "../custom-elements.js";
+import { _createMovie } from "../../browser/custom-elements.js";
 
 describe("script-lifecycle", () => {
   let target;

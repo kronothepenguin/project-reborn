@@ -27,7 +27,7 @@
 
 ## 5. Archive
 
-- [ ] 5.1 `openspec archive director-layer-architecture` — syncs deltas into main specs
+- [x] 5.1 `openspec archive director-layer-architecture` — syncs deltas into main specs
 
 ## 6. Mechanical refactor commit
 
