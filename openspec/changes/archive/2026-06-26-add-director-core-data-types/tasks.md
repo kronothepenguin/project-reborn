@@ -1,14 +1,14 @@
 ## 1. Spec corrections (director-core)
 
-- [ ] 1.1 In `openspec/specs/director-core/spec.md`, replace the "director-core SHALL treat Director value data types as a separate concern (transition state)" requirement (remove it) per the delta's REMOVED block
-- [ ] 1.2 Update the "director-core SHALL implement Director data structures" requirement to declare permanent ownership of `List`, `PropList`, `Point`, `Rect`, `Color` in `src/core/` and add the PropList and Color scenarios plus the "Value data types stay in core" scenario
-- [ ] 1.3 Broaden the "director-core SHALL treat Symbol and String as native JavaScript" requirement to cover all native JS-mapped types (`Array`, `Boolean`, `Constant`, `Date`, `Float`, `Function`, `Integer`, `Object`, `String`, `Symbol`) with the added "No wrapper for other native data types" scenario
-- [ ] 1.4 Add the new "director-core SHALL codify the Director data-type set" requirement and the new "director-core SHALL NOT implement Director 3D Vector" requirement
+- [x] 1.1 In `openspec/specs/director-core/spec.md`, replace the "director-core SHALL treat Director value data types as a separate concern (transition state)" requirement (remove it) per the delta's REMOVED block
+- [x] 1.2 Update the "director-core SHALL implement Director data structures" requirement to declare permanent ownership of `List`, `PropList`, `Point`, `Rect`, `Color` in `src/core/` and add the PropList and Color scenarios plus the "Value data types stay in core" scenario
+- [x] 1.3 Broaden the "director-core SHALL treat Symbol and String as native JavaScript" requirement to cover all native JS-mapped types (`Array`, `Boolean`, `Constant`, `Date`, `Float`, `Function`, `Integer`, `Object`, `String`, `Symbol`) with the added "No wrapper for other native data types" scenario
+- [x] 1.4 Add the new "director-core SHALL codify the Director data-type set" requirement and the new "director-core SHALL NOT implement Director 3D Vector" requirement
 
 ## 2. Spec corrections (director-runtime)
 
-- [ ] 2.1 Remove the "director-runtime SHALL host Director value data types after the follow-up move (transition state)" requirement and its scenarios per the delta's REMOVED block
-- [ ] 2.2 Modify the "director-runtime SHALL be the private low-level host-integration layer" requirement: drop the `director-runtime-value-types` follow-up reference, add the "SHALL NOT host Director value data types" sentence and the "Value data types are not in runtime" scenario
+- [x] 2.1 Remove the "director-runtime SHALL host Director value data types after the follow-up move (transition state)" requirement and its scenarios per the delta's REMOVED block
+- [x] 2.2 Modify the "director-runtime SHALL be the private low-level host-integration layer" requirement: drop the `director-runtime-value-types` follow-up reference, add the "SHALL NOT host Director value data types" sentence and the "Value data types are not in runtime" scenario
 
 ## 3. Implementation gap closure (src/core/)
 
