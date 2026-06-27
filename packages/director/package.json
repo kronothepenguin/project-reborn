@@ -4,12 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run"
   },
   "exports": {
     ".": "./src/index.js",
     "./lingo": "./src/lingo/index.js",
     "./browser": "./src/browser/index.js"
   },
-  "packageManager": "pnpm@10.30.2"
+  "packageManager": "pnpm@10.30.2",
+  "devDependencies": {
+    "vitest": "^4.1.8"
+  }
 }

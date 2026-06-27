@@ -42,6 +42,22 @@ export class Rect {
   set bottom(value) {
     this.#bottom = value;
   }
+
+  get width() {
+    return this.#right - this.#left;
+  }
+
+  set width(value) {
+    this.#right = this.#left + value;
+  }
+
+  get height() {
+    return this.#bottom - this.#top;
+  }
+
+  set height(value) {
+    this.#bottom = this.#top + value;
+  }
 }
 
 export function rect(left, top, right, bottom) {

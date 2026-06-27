@@ -24,7 +24,11 @@ importers:
         specifier: ^4.1.8
         version: 4.1.9(jsdom@29.1.1)(vite@8.0.16)
 
-  packages/director: {}
+  packages/director:
+    devDependencies:
+      vitest:
+        specifier: ^4.1.8
+        version: 4.1.9(jsdom@29.1.1)(vite@8.0.16)
 
 packages:
 

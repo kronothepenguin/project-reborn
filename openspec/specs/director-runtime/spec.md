@@ -76,7 +76,9 @@ At refactor state (this change), it SHALL hold the following files (as moved or 
 
 It SHALL NOT host custom-elements registration or movie/cast registration helpers (those live in `director-browser`).
 
-This refactor change locks the layer role and the `_setCanvas` / `startEventLoop` / `stopEventLoop` consumer contract used by `src/browser/custom-elements.js`. Concrete event-loop cadence, canvas rendering behaviour, script-lifecycle semantics are described at high level here; follow-up changes (e.g. `director-runtime-value-types`, future lifecycle work) extend this requirement with their own deltas.
+It SHALL NOT host Director value data types (`List`, `PropList`, `Point`, `Rect`, `Color`); those are owned by `director-core` under `src/core/`.
+
+This refactor change locks the layer role and the `_setCanvas` / `startEventLoop` / `stopEventLoop` consumer contract used by `src/browser/custom-elements.js`. Concrete event-loop cadence, canvas rendering behaviour, script-lifecycle semantics are described at high level here; future lifecycle follow-up changes extend this requirement with their own deltas.
 
 **Package**: `packages/director/`
 **Source**: `packages/director/src/runtime/`
@@ -98,21 +100,9 @@ This refactor change locks the layer role and the `_setCanvas` / `startEventLoop
 - **WHEN** `packages/director/src/runtime/index.js` is inspected after this refactor
 - **THEN** it re-exports `startEventLoop`, `stopEventLoop`, `setTempo`, `isEventLoopRunning` from `./event-loop.js`; `loadCast` from `./cast-loader.js`; `dispatchPrepareMovie`, `dispatchStartMovie`, `dispatchStopMovie`, `dispatchPrepareFrame`, `dispatchEnterFrame`, `dispatchExitFrame`, `dispatchAll`, `LIFECYCLE_EVENTS` from `./script-lifecycle.js`; and the canvas primitives listed above from `./canvas.js`. It does NOT re-export `registerCustomElements` or `_createMovie`.
 
-### Requirement: director-runtime SHALL host Director value data types after the follow-up move (transition state)
-
-`director-runtime` SHALL be the permanent home of Director value data types (`List`, `PropList`, `Point`, `Rect`, `Color`); per the MX 2004 reference these are data types, not core objects (Chapter 5), and belong in the low-level host-integration layer.
-
-At refactor state (this change), the value-type files still physically live in `src/core/` because this refactor is mechanical-only and does not move them. The follow-up change `director-runtime-value-types` moves them to `src/runtime/` and updates this requirement to record the post-move reality.
-
-At refactor state (this change), the value-type files still physically live in `src/core/` because this refactor is mechanical-only and does not move them. The follow-up change `director-runtime-value-types` moves them to `src/runtime/` and updates this requirement to record the post-move reality.
-
-#### Scenario (refactor state): Value types are NOT yet in runtime
-- **WHEN** `packages/director/src/runtime/` is inspected after this refactor
-- **THEN** `list.js`, `prop-list.js`, `point.js`, `rect.js`, `color.js` are NOT present; they remain in `src/core/`
-
-#### Scenario (target state, follow-up): Value types move to runtime
-- **WHEN** the follow-up change `director-runtime-value-types` is archived
-- **THEN** that change's delta updates this requirement to record that the files now live in `src/runtime/`, and the refactor-state scenario above is removed
+#### Scenario: Value data types are not in runtime
+- **WHEN** `packages/director/src/runtime/` is inspected
+- **THEN** `list.js`, `prop-list.js`, `point.js`, `rect.js`, `color.js` are NOT present; they live in `packages/director/src/core/`
 
 ### Requirement: director-runtime SHALL expose `_setCanvas` and event-loop controls to `director-browser`
 

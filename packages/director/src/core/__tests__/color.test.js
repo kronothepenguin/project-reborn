@@ -146,3 +146,109 @@ describe("color() factory", () => {
     expect(c.blue).toBe(128);
   });
 });
+
+describe("Color.hex", () => {
+  it("formats black as #000000", () => {
+    expect(new Color(0, 0, 0).hex).toBe("#000000");
+  });
+
+  it("formats white as #ffffff", () => {
+    expect(new Color(255, 255, 255).hex).toBe("#ffffff");
+  });
+
+  it("formats red as #ff0000", () => {
+    expect(new Color(255, 0, 0).hex).toBe("#ff0000");
+  });
+
+  it("zero-pads single hex digits", () => {
+    expect(new Color(1, 2, 15).hex).toBe("#01020f");
+  });
+
+  it("reflects updates to red/green/blue", () => {
+    const c = new Color(0, 0, 0);
+    c.red = 16;
+    c.green = 32;
+    c.blue = 48;
+    expect(c.hex).toBe("#102030");
+  });
+});
+
+describe("Color.rgb", () => {
+  it("formats black as rgb(0, 0, 0)", () => {
+    expect(new Color(0, 0, 0).rgb).toBe("rgb(0, 0, 0)");
+  });
+
+  it("formats white as rgb(255, 255, 255)", () => {
+    expect(new Color(255, 255, 255).rgb).toBe("rgb(255, 255, 255)");
+  });
+
+  it("formats mixed channels", () => {
+    expect(new Color(124, 22, 233).rgb).toBe("rgb(124, 22, 233)");
+  });
+
+  it("reflects updates to red/green/blue", () => {
+    const c = new Color(10, 20, 30);
+    c.red = 40;
+    expect(c.rgb).toBe("rgb(40, 20, 30)");
+  });
+});
+
+describe("Color.equals", () => {
+  it("returns true for two Colors with the same RGB", () => {
+    const a = new Color(10, 20, 30);
+    const b = new Color(10, 20, 30);
+    expect(a.equals(b)).toBe(true);
+  });
+
+  it("returns false for Colors with different RGB", () => {
+    const a = new Color(10, 20, 30);
+    const b = new Color(10, 20, 31);
+    expect(a.equals(b)).toBe(false);
+  });
+
+  it("returns true for the same instance", () => {
+    const a = new Color(5, 6, 7);
+    expect(a.equals(a)).toBe(true);
+  });
+
+  it("returns false for null or undefined", () => {
+    const a = new Color(0, 0, 0);
+    expect(a.equals(null)).toBe(false);
+    expect(a.equals(undefined)).toBe(false);
+  });
+
+  it("returns true for a plain object with matching red/green/blue", () => {
+    const a = new Color(50, 100, 150);
+    expect(a.equals({ red: 50, green: 100, blue: 150 })).toBe(true);
+  });
+
+  it("returns false for a plain object with mismatched components", () => {
+    const a = new Color(50, 100, 150);
+    expect(a.equals({ red: 50, green: 100, blue: 151 })).toBe(false);
+  });
+
+  it("returns false for objects missing color components", () => {
+    const a = new Color(50, 100, 150);
+    expect(a.equals({ red: 50, green: 100 })).toBe(false);
+    expect(a.equals({})).toBe(false);
+  });
+
+  it("is symmetric", () => {
+    const a = new Color(1, 2, 3);
+    const b = new Color(1, 2, 3);
+    expect(a.equals(b)).toBe(b.equals(a));
+  });
+});
+
+describe("color() factory hex/rgb/equals parity", () => {
+  it("factory returns Color with same hex as constructor", () => {
+    const a = color(10, 20, 30);
+    const b = new Color(10, 20, 30);
+    expect(a.hex).toBe(b.hex);
+    expect(a.rgb).toBe(b.rgb);
+  });
+
+  it("factory returns Color equal to constructor", () => {
+    expect(color(10, 20, 30).equals(new Color(10, 20, 30))).toBe(true);
+  });
+});
