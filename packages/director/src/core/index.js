@@ -1,16 +1,20 @@
 // Director core - private implementation
 // Classes, helpers, loader, registries
-export { CastLibraryRef } from "./cast-library-ref.js";
+export { CastLibraryObject } from "./cast-library-object.js";
 export { Color, color } from "./color.js";
-export { KeyRef, _key } from "./key-ref.js";
+export { GlobalObject, _global } from "./global-object.js";
+export { KeyObject, _key } from "./key-object.js";
 export { List, list } from "./list.js";
-export { MouseRef, _mouse } from "./mouse-ref.js";
+export { MemberObject } from "./member-object.js";
+export { MouseObject, _mouse } from "./mouse-object.js";
+export { MovieObject, _movie } from "./movie-object.js";
+export { PlayerObject, _player } from "./player-object.js";
 export { Point, point } from "./point.js";
 export { PropList, propList } from "./prop-list.js";
 export { Rect, rect } from "./rect.js";
-export { SoundRef, _sound } from "./sound-ref.js";
-export { SoundChannelRef } from "./sound-channel-ref.js";
-export { PlayerRef, _player } from "./player-ref.js";
-export { MovieRef, _movie } from "./movie-ref.js";
-export { SpriteRef } from "./sprite-ref.js";
-export { MemberRef } from "./member-ref.js";
+export { SoundChannelObject } from "./sound-channel-object.js";
+export { SoundObject, _sound } from "./sound-object.js";
+export { SpriteChannelObject } from "./sprite-channel-object.js";
+export { SpriteObject } from "./sprite-object.js";
+export { SystemObject, _system } from "./system-object.js";
+export { WindowObject } from "./window-object.js";

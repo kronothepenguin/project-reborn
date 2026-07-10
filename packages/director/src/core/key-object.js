@@ -1,4 +1,4 @@
-export class KeyRef {
+export class KeyObject {
   #keyCode = 0;
   #key = "";
   #keyPressed = false;
@@ -25,14 +25,6 @@ export class KeyRef {
 
   set key(_value) {
     throw new Error("key is read-only");
-  }
-
-  get keyPressed() {
-    return this.#keyPressed;
-  }
-
-  set keyPressed(_value) {
-    throw new Error("keyPressed is read-only");
   }
 
   get commandDown() {
@@ -99,6 +91,10 @@ export class KeyRef {
     throw new Error("lastKey is read-only");
   }
 
+  keyPressed() {
+    return this.#keyPressed;
+  }
+
   _setKeyCode(value) {
     this.#keyCode = Number(value) || 0;
   }
@@ -158,4 +154,4 @@ export class KeyRef {
   }
 }
 
-export const _key = new KeyRef();
+export const _key = new KeyObject();

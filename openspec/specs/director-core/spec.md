@@ -5,7 +5,7 @@ TBD - created by archiving change director-specs-foundation. Update Purpose afte
 ## Requirements
 ### Requirement: director-core SHALL codify the Director data-type set
 
-`director-core` SHALL be the single source of truth for the categorization of Director data types used by the `@project-reborn/director` runtime and Lingo surface. The data-type set is partitioned into three buckets:
+`director-core` SHALL be the single source of truth for the categorization of Director data types used by the `@project-reborn/director` Lingo surface. The data-type set is partitioned into three buckets:
 
 - **Lingo value data types** — implemented as classes in `director-core` under `src/core/`: `List`, `PropList`, `Point`, `Rect`, `Color`.
 - **Native JavaScript-mapped data types** — NOT wrapped by `director-core`; translated Ligo code uses the JavaScript native equivalent directly: `Array`, `Boolean`, `Constant`, `Date`, `Float`, `Function`, `Integer`, `Object`, `String`, `Symbol`.
@@ -35,8 +35,6 @@ TBD - created by archiving change director-specs-foundation. Update Purpose afte
 
 `director-core` SHALL own and implement the Lingo value data types `List`, `PropList`, `Point`, `Rect`, and `Color` under `src/core/`. These types are permanent residents of `director-core` (they are NOT slated for any move to `director-runtime`). Each SHALL expose the methods and properties documented for its Director MX 2004 counterpart.
 
-**Reference**: `docs/director-inventory.json` — entries whose owning class is a core data structure.
-
 #### Scenario: List behaves as a Director List
 - **WHEN** a `List` instance is constructed and operated on with Director list operations (`add`, `addAt`, `deleteAt`, `getAt`, `count`, `sort`, `duplicate`, etc.)
 - **THEN** its behavior matches the Director MX 2004 List documentation
@@ -60,8 +58,6 @@ TBD - created by archiving change director-specs-foundation. Update Purpose afte
 ### Requirement: director-core SHALL implement reference classes for Director system objects
 
 `director-core` SHALL implement reference classes that represent Director system objects not constructible from Ligo but usable from Ligo: `MemberRef`, `SpriteRef`, `MovieRef`, `PlayerRef`, `SoundRef`, `CastLibraryRef`, `ScriptRef`, and others documented in the MX 2004 reference. Each reference class SHALL expose the properties and methods documented for its Director counterpart.
-
-**Reference**: `docs/director-inventory.json` — properties grouped by owning object type.
 
 #### Scenario: Reference classes are instantiated by core, not by Ligo
 - **WHEN** Ligo script calls `member(1)` or `sprite(5)`

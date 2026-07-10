@@ -1,34 +1,34 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { loadCast } from "../cast-loader.js";
-import { CastLibraryRef } from "../../core/cast-library-ref.js";
+import { CastLibraryObject } from "../../core/cast-library-object.js";
 
 describe("cast-loader", () => {
   beforeEach(() => {
-    CastLibraryRef._reset();
+    CastLibraryObject._reset();
     vi.resetModules();
   });
 
-  it("loads a cast module returning a CastLibraryRef", async () => {
+  it("loads a cast module returning a CastLibraryObject", async () => {
     vi.doMock("/casts/sample.js", () => ({
       default: { name: "sample", members: [] },
     }));
 
     const result = await loadCast("/casts/sample.js");
-    expect(result).toBeInstanceOf(CastLibraryRef);
+    expect(result).toBeInstanceOf(CastLibraryObject);
     expect(result.name).toBe("sample");
   });
 
-  it("registers the cast library in CastLibraryRef.castLib", async () => {
+  it("registers the cast library in CastLibraryObject.castLib", async () => {
     vi.doMock("/casts/reg.js", () => ({
       default: { name: "reg", members: [] },
     }));
 
     const cast = await loadCast("/casts/reg.js");
-    expect(CastLibraryRef.castLib[cast.name]).toBe(cast);
+    expect(CastLibraryObject.castLib[cast.name]).toBe(cast);
   });
 
-  it("accepts a CastLibraryRef instance as the default export", async () => {
-    const ref = new CastLibraryRef({ name: "preset", number: 1 });
+  it("accepts a CastLibraryObject instance as the default export", async () => {
+    const ref = new CastLibraryObject({ name: "preset", number: 1 });
     vi.doMock("/casts/preset.js", () => ({ default: ref }));
 
     const result = await loadCast("/casts/preset.js");
@@ -36,7 +36,7 @@ describe("cast-loader", () => {
   });
 
   it("accepts a factory function as the default export", async () => {
-    const ref = new CastLibraryRef({ name: "factory", number: 2 });
+    const ref = new CastLibraryObject({ name: "factory", number: 2 });
     vi.doMock("/casts/factory.js", () => ({
       default: () => ref,
     }));
@@ -49,7 +49,7 @@ describe("cast-loader", () => {
     vi.doMock("/casts/anon.js", () => ({ default: {} }));
 
     const result = await loadCast("/casts/anon.js");
-    expect(result).toBeInstanceOf(CastLibraryRef);
+    expect(result).toBeInstanceOf(CastLibraryObject);
     expect(result.name).toBe("anon");
   });
 

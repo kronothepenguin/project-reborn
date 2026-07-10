@@ -1,12 +1,13 @@
 // Director "the" proxy
 // Provides access to all system properties via `the.<propertyName>`
 // See: docs/drmx2004_scripting_ref.txt Chapter 14: Properties
-import { _movie } from "../core/movie-ref.js";
-import { _mouse } from "../core/mouse-ref.js";
-import { _key } from "../core/key-ref.js";
-import { _player } from "../core/player-ref.js";
-import { _sound } from "../core/sound-ref.js";
-import { CastLibraryRef } from "../core/cast-library-ref.js";
+import { _movie } from "../core/movie-object.js";
+import { _mouse } from "../core/mouse-object.js";
+import { _key } from "../core/key-object.js";
+import { _player } from "../core/player-object.js";
+import { _sound } from "../core/sound-object.js";
+import { _system } from "../core/system-object.js";
+import { CastLibraryObject } from "../core/cast-library-object.js";
 
 const READ_ONLY = new Set([
   // Movie (read-only)
@@ -105,10 +106,14 @@ const READ_ONLY = new Set([
   "mouseItem",
   "mouseLine",
   "mouseWord",
+  "mouseLoc",
+  "mouseMember",
+  "clickLoc",
+  "clickOn",
+  "rightMouseDown",
+  "rightMouseUp",
   "stillDown",
   "doubleClick",
-  "clickOn",
-  "clickLoc",
   "lastClick",
   "lastEvent",
   // Key (read-only)
@@ -232,9 +237,9 @@ function get(target, prop) {
     case "frame":
       return _movie.frame;
     case "frameLabel":
-      return "";
+      return _movie.frameLabel;
     case "framePalette":
-      return 0;
+      return _movie.framePalette;
     case "frameRate":
       return _movie.frameTempo;
     case "framesEnabled":
@@ -266,7 +271,7 @@ function get(target, prop) {
     case "castLib":
       return _movie.castLib;
     case "numberOfCastLibs":
-      return CastLibraryRef.castLib ? Object.keys(CastLibraryRef.castLib).length : 0;
+      return CastLibraryObject.castLib ? Object.keys(CastLibraryObject.castLib).length : 0;
     case "numberOfMembers":
       return 0;
     case "numberOfXtras":
@@ -282,13 +287,13 @@ function get(target, prop) {
     case "marker":
       return "";
     case "markerList":
-      return [];
+      return _movie.markerList;
     case "label":
       return "";
     case "labelList":
       return [];
     case "frameScript":
-      return "";
+      return _movie.frameScript;
     case "timeoutLapsed":
       return 0;
     case "timeoutKey":
@@ -321,8 +326,16 @@ function get(target, prop) {
       return _mouse.mouseItem;
     case "mouseLine":
       return _mouse.mouseLine;
+    case "mouseLoc":
+      return _mouse.mouseLoc;
+    case "mouseMember":
+      return _mouse.mouseMember;
     case "mouseWord":
       return _mouse.mouseWord;
+    case "rightMouseDown":
+      return _mouse.rightMouseDown;
+    case "rightMouseUp":
+      return _mouse.rightMouseUp;
     case "lastClick":
       return _mouse.lastClick;
     case "lastEvent":
@@ -334,7 +347,7 @@ function get(target, prop) {
     case "keyCode":
       return _key.keyCode;
     case "keyPressed":
-      return _key.keyPressed;
+      return _key.keyPressed();
     case "commandDown":
       return _key.commandDown;
     case "controlDown":
@@ -357,10 +370,18 @@ function get(target, prop) {
       return _player.runMode;
     case "xtraList":
       return _player.xtraList;
+    case "window":
+      return _player.window;
+    case "windowList":
+      return _player.windowList;
 
     // Sound
     case "soundEnabled":
       return _sound.soundEnabled;
+    case "soundDevice":
+      return _sound.soundDevice;
+    case "soundMixer":
+      return _sound.soundMixer;
 
     // Date/time (computed)
     case "date":
@@ -391,7 +412,7 @@ function get(target, prop) {
     case "systemDate":
       return new Date().toString();
     case "systemMilliseconds":
-      return Date.now();
+      return _system.milliseconds;
 
     // Constants
     case "pi":
@@ -425,17 +446,17 @@ function get(target, prop) {
     case "platform":
       return detectPlatform();
     case "productName":
-      return "Director";
+      return _player.productName;
     case "productVersion":
-      return "MX 2004";
+      return _player.productVersion;
     case "version":
-      return "MX 2004";
+      return _player.productVersion;
     case "environment":
       return "Plugin";
     case "colorDepth":
-      return detectColorDepth();
+      return _system.colorDepth;
     case "colorQD":
-      return detectColorDepth() >= 16;
+      return _system.colorDepth >= 16;
     case "netBrowserName":
       return (typeof navigator !== "undefined" && navigator.userAgent) || "";
     case "netBrowserVendor":
@@ -519,21 +540,9 @@ function get(target, prop) {
     case "playing":
       return target.playing;
     case "safePlayer":
-      return true;
-    case "soundDevice":
-      return "";
-    case "soundMixer":
-      return "";
-    case "videoMixer":
-      return "";
-    case "videoForWindowsPresent":
-      return false;
+      return _player.safePlayer;
     case "systemVolume":
       return 0;
-    case "window":
-      return null;
-    case "windowList":
-      return [];
     case "externalEventEnabled":
       return false;
     case "externalParamName":

@@ -1,10 +1,11 @@
-export class CastLibraryRef {
+export class CastLibraryObject {
   #name;
   #number;
   #members = [];
   #membersByName = new Map();
   #fileName = "";
   #preLoadMode = 0;
+  #selection = null;
   #castMemberList = [];
   #castLibNum;
   #broadcastProps = true;
@@ -80,6 +81,14 @@ export class CastLibraryRef {
     this.#preLoadMode = value;
   }
 
+  get selection() {
+    return this.#selection;
+  }
+
+  set selection(value) {
+    this.#selection = value;
+  }
+
   get castMemberList() {
     return this.#castMemberList;
   }
@@ -100,19 +109,26 @@ export class CastLibraryRef {
     this.#broadcastProps = Boolean(value);
   }
 
-  _addMember(memberRef) {
-    this.#members.push(memberRef);
-    if (memberRef && memberRef.name) {
-      this.#membersByName.set(memberRef.name, memberRef);
+  findEmpty() {
+    const used = new Set(this.#members.map((m) => m?.number ?? 0));
+    let slot = 1;
+    while (used.has(slot)) slot++;
+    return slot;
+  }
+
+  _addMember(memberObject) {
+    this.#members.push(memberObject);
+    if (memberObject && memberObject.name) {
+      this.#membersByName.set(memberObject.name, memberObject);
     }
   }
 
-  _removeMember(memberRef) {
-    const idx = this.#members.indexOf(memberRef);
+  _removeMember(memberObject) {
+    const idx = this.#members.indexOf(memberObject);
     if (idx !== -1) {
       this.#members.splice(idx, 1);
-      if (memberRef && memberRef.name) {
-        this.#membersByName.delete(memberRef.name);
+      if (memberObject && memberObject.name) {
+        this.#membersByName.delete(memberObject.name);
       }
     }
   }
@@ -120,11 +136,11 @@ export class CastLibraryRef {
   static #activeCastLib = 1;
 
   static get activeCastLib() {
-    return CastLibraryRef.#activeCastLib;
+    return CastLibraryObject.#activeCastLib;
   }
 
   static set activeCastLib(value) {
-    CastLibraryRef.#activeCastLib = value;
+    CastLibraryObject.#activeCastLib = value;
   }
 
   static #castLibs = [];
@@ -135,53 +151,53 @@ export class CastLibraryRef {
       if (typeof prop === "symbol") return undefined;
       const key = prop;
       if (typeof key === "number" || /^\d+$/.test(key)) {
-        return CastLibraryRef.#castLibs[Number(key) - 1] ?? null;
+        return CastLibraryObject.#castLibs[Number(key) - 1] ?? null;
       }
-      return CastLibraryRef.#castLibsByName.get(key) ?? null;
+      return CastLibraryObject.#castLibsByName.get(key) ?? null;
     },
     set: () => {
       throw new Error("castLib is read-only");
     },
     has: (_target, prop) => {
       if (typeof prop === "number" || /^\d+$/.test(prop)) {
-        return Number(prop) >= 1 && Number(prop) <= CastLibraryRef.#castLibs.length;
+        return Number(prop) >= 1 && Number(prop) <= CastLibraryObject.#castLibs.length;
       }
-      return CastLibraryRef.#castLibsByName.has(prop);
+      return CastLibraryObject.#castLibsByName.has(prop);
     },
     ownKeys: () => {
-      return CastLibraryRef.#castLibs.map((_, i) => String(i + 1));
+      return CastLibraryObject.#castLibs.map((_, i) => String(i + 1));
     },
     getOwnPropertyDescriptor: (_target, prop) => {
       if (typeof prop === "number" || /^\d+$/.test(prop)) {
         const idx = Number(prop) - 1;
-        if (idx >= 0 && idx < CastLibraryRef.#castLibs.length) {
-          return { configurable: true, enumerable: true, value: CastLibraryRef.#castLibs[idx] };
+        if (idx >= 0 && idx < CastLibraryObject.#castLibs.length) {
+          return { configurable: true, enumerable: true, value: CastLibraryObject.#castLibs[idx] };
         }
       }
       return undefined;
     },
   });
 
-  static _register(castLibRef) {
-    CastLibraryRef.#castLibs.push(castLibRef);
-    if (castLibRef && castLibRef.name) {
-      CastLibraryRef.#castLibsByName.set(castLibRef.name, castLibRef);
+  static _register(castLibObject) {
+    CastLibraryObject.#castLibs.push(castLibObject);
+    if (castLibObject && castLibObject.name) {
+      CastLibraryObject.#castLibsByName.set(castLibObject.name, castLibObject);
     }
   }
 
-  static _unregister(castLibRef) {
-    const idx = CastLibraryRef.#castLibs.indexOf(castLibRef);
+  static _unregister(castLibObject) {
+    const idx = CastLibraryObject.#castLibs.indexOf(castLibObject);
     if (idx !== -1) {
-      CastLibraryRef.#castLibs.splice(idx, 1);
-      if (castLibRef && castLibRef.name) {
-        CastLibraryRef.#castLibsByName.delete(castLibRef.name);
+      CastLibraryObject.#castLibs.splice(idx, 1);
+      if (castLibObject && castLibObject.name) {
+        CastLibraryObject.#castLibsByName.delete(castLibObject.name);
       }
     }
   }
 
   static _reset() {
-    CastLibraryRef.#castLibs = [];
-    CastLibraryRef.#castLibsByName = new Map();
-    CastLibraryRef.#activeCastLib = 1;
+    CastLibraryObject.#castLibs = [];
+    CastLibraryObject.#castLibsByName = new Map();
+    CastLibraryObject.#activeCastLib = 1;
   }
 }

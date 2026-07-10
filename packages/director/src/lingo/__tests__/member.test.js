@@ -1,18 +1,18 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { member } from "../member.js";
-import { CastLibraryRef } from "../../core/cast-library-ref.js";
-import { MemberRef } from "../../core/member-ref.js";
+import { CastLibraryObject } from "../../core/cast-library-object.js";
+import { MemberObject } from "../../core/member-object.js";
 
 describe("member", () => {
   beforeEach(() => {
-    CastLibraryRef._reset();
+    CastLibraryObject._reset();
   });
 
   function setupLib(name, count) {
-    const lib = new CastLibraryRef({ number: 1, name });
-    CastLibraryRef._register(lib);
+    const lib = new CastLibraryObject({ number: 1, name });
+    CastLibraryObject._register(lib);
     for (let i = 0; i < count; i++) {
-      const m = new MemberRef(Symbol.for("bitmap"), `name-${i + 1}`);
+      const m = new MemberObject(Symbol.for("bitmap"), `name-${i + 1}`);
       m._setNumber(i + 1);
       m._setCastLibNum(1);
       lib._addMember(m);
@@ -47,11 +47,11 @@ describe("member", () => {
   });
 
   it("accesses from a specific cast library by number", () => {
-    const lib1 = new CastLibraryRef({ number: 1, name: "Internal" });
-    const lib2 = new CastLibraryRef({ number: 2, name: "Transportation" });
-    CastLibraryRef._register(lib1);
-    CastLibraryRef._register(lib2);
-    const m = new MemberRef(Symbol.for("bitmap"), "Planes");
+    const lib1 = new CastLibraryObject({ number: 1, name: "Internal" });
+    const lib2 = new CastLibraryObject({ number: 2, name: "Transportation" });
+    CastLibraryObject._register(lib1);
+    CastLibraryObject._register(lib2);
+    const m = new MemberObject(Symbol.for("bitmap"), "Planes");
     m._setNumber(1);
     m._setCastLibNum(2);
     lib2._addMember(m);
@@ -62,12 +62,12 @@ describe("member", () => {
   });
 
   it("searches all cast libraries when name not found in default", () => {
-    const lib1 = new CastLibraryRef({ number: 1, name: "Internal" });
-    const lib2 = new CastLibraryRef({ number: 2, name: "Transportation" });
-    CastLibraryRef._register(lib1);
-    CastLibraryRef._register(lib2);
+    const lib1 = new CastLibraryObject({ number: 1, name: "Internal" });
+    const lib2 = new CastLibraryObject({ number: 2, name: "Transportation" });
+    CastLibraryObject._register(lib1);
+    CastLibraryObject._register(lib2);
 
-    const m = new MemberRef(Symbol.for("bitmap"), "Planes");
+    const m = new MemberObject(Symbol.for("bitmap"), "Planes");
     m._setNumber(1);
     m._setCastLibNum(2);
     lib2._addMember(m);

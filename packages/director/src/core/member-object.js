@@ -1,7 +1,7 @@
 import { Point, point } from "./point.js";
 import { Rect, rect } from "./rect.js";
 
-export class MemberRef {
+export class MemberObject {
   #type;
   #name;
   #number = 0;
@@ -20,10 +20,23 @@ export class MemberRef {
   #sound = true;
   #scale = 1.0;
   #percentStreamed = 0;
-  #preLoad = false;
   #tracks = [];
   #fileName = "";
   #picture = null;
+  #comments = "";
+  #creationDate = "";
+  #hilite = false;
+  #linked = false;
+  #loaded = false;
+  #media = null;
+  #mediaReady = false;
+  #modified = false;
+  #modifiedBy = "";
+  #modifiedDate = "";
+  #purgePriority = 0;
+  #scriptText = "";
+  #size = 0;
+  #thumbNail = null;
 
   constructor(type, name = "") {
     this.#type = type;
@@ -180,12 +193,149 @@ export class MemberRef {
     throw new Error("percentStreamed is read-only");
   }
 
-  get preLoad() {
-    return this.#preLoad;
+  get comments() {
+    return this.#comments;
   }
 
-  set preLoad(value) {
-    this.#preLoad = Boolean(value);
+  set comments(value) {
+    this.#comments = String(value ?? "");
+  }
+
+  get creationDate() {
+    return this.#creationDate;
+  }
+
+  set creationDate(_value) {
+    throw new Error("creationDate is read-only");
+  }
+
+  get hilite() {
+    return this.#hilite;
+  }
+
+  set hilite(value) {
+    this.#hilite = Boolean(value);
+  }
+
+  get linked() {
+    return this.#linked;
+  }
+
+  set linked(_value) {
+    throw new Error("linked is read-only");
+  }
+
+  get loaded() {
+    return this.#loaded;
+  }
+
+  set loaded(value) {
+    this.#loaded = Boolean(value);
+  }
+
+  get media() {
+    return this.#media;
+  }
+
+  set media(value) {
+    this.#media = value ?? null;
+  }
+
+  get mediaReady() {
+    return this.#mediaReady;
+  }
+
+  set mediaReady(value) {
+    this.#mediaReady = Boolean(value);
+  }
+
+  get modified() {
+    return this.#modified;
+  }
+
+  set modified(value) {
+    this.#modified = Boolean(value);
+  }
+
+  get modifiedBy() {
+    return this.#modifiedBy;
+  }
+
+  set modifiedBy(value) {
+    this.#modifiedBy = String(value ?? "");
+  }
+
+  get modifiedDate() {
+    return this.#modifiedDate;
+  }
+
+  set modifiedDate(value) {
+    this.#modifiedDate = String(value ?? "");
+  }
+
+  get purgePriority() {
+    return this.#purgePriority;
+  }
+
+  set purgePriority(value) {
+    this.#purgePriority = Number(value);
+  }
+
+  get scriptText() {
+    return this.#scriptText;
+  }
+
+  set scriptText(value) {
+    this.#scriptText = String(value ?? "");
+  }
+
+  get size() {
+    return this.#size;
+  }
+
+  set size(value) {
+    this.#size = Number(value);
+  }
+
+  get thumbNail() {
+    return this.#thumbNail;
+  }
+
+  set thumbNail(value) {
+    this.#thumbNail = value ?? null;
+  }
+
+  copyToClipBoard() {
+    return this;
+  }
+
+  duplicate() {
+    return this;
+  }
+
+  erase() {
+    return true;
+  }
+
+  importFileInto() {
+    return true;
+  }
+
+  move(_destination) {
+    return true;
+  }
+
+  pasteClipBoardInto() {
+    return true;
+  }
+
+  preLoad() {
+    this.#loaded = true;
+  }
+
+  unLoad() {
+    this.#loaded = false;
+    return true;
   }
 
   trackCount() {
@@ -245,5 +395,9 @@ export class MemberRef {
 
   _setTracks(tracks) {
     this.#tracks = Array.isArray(tracks) ? tracks : [];
+  }
+
+  _setCreationDate(value) {
+    this.#creationDate = value;
   }
 }

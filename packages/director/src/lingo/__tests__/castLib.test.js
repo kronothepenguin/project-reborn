@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { castLib } from "../castLib.js";
-import { CastLibraryRef } from "../../core/cast-library-ref.js";
+import { CastLibraryObject } from "../../core/cast-library-object.js";
 
 describe("castLib", () => {
   beforeEach(() => {
-    CastLibraryRef._reset();
+    CastLibraryObject._reset();
   });
 
   it("is exported as a function", () => {
@@ -16,29 +16,29 @@ describe("castLib", () => {
   });
 
   it("accesses cast library by number (1-based)", () => {
-    const lib = new CastLibraryRef({ number: 1, name: "Internal" });
-    CastLibraryRef._register(lib);
-    const lib2 = new CastLibraryRef({ number: 2, name: "Transportation" });
-    CastLibraryRef._register(lib2);
+    const lib1 = new CastLibraryObject({ number: 1, name: "Internal" });
+    const lib2 = new CastLibraryObject({ number: 2, name: "Transportation" });
+    CastLibraryObject._register(lib1);
+    CastLibraryObject._register(lib2);
     expect(castLib(2)).toBe(lib2);
     expect(castLib(2).name).toBe("Transportation");
   });
 
   it("accesses cast library by name", () => {
-    const lib = new CastLibraryRef({ number: 1, name: "Internal" });
-    CastLibraryRef._register(lib);
+    const lib = new CastLibraryObject({ number: 1, name: "Internal" });
+    CastLibraryObject._register(lib);
     expect(castLib("Internal")).toBe(lib);
   });
 
   it("returns null for unknown name", () => {
-    const lib = new CastLibraryRef({ number: 1, name: "Internal" });
-    CastLibraryRef._register(lib);
+    const lib = new CastLibraryObject({ number: 1, name: "Internal" });
+    CastLibraryObject._register(lib);
     expect(castLib("Missing")).toBeNull();
   });
 
   it("returns null for out-of-range number", () => {
-    const lib = new CastLibraryRef({ number: 1, name: "Internal" });
-    CastLibraryRef._register(lib);
+    const lib = new CastLibraryObject({ number: 1, name: "Internal" });
+    CastLibraryObject._register(lib);
     expect(castLib(99)).toBeNull();
   });
 });

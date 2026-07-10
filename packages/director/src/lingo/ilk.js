@@ -2,12 +2,13 @@ import { List, PropList } from "../core/index.js";
 import { Color } from "../core/color.js";
 import { Point } from "../core/point.js";
 import { Rect } from "../core/rect.js";
-import { SoundRef } from "../core/sound-ref.js";
-import { PlayerRef } from "../core/player-ref.js";
-import { MovieRef } from "../core/movie-ref.js";
-import { SpriteRef } from "../core/sprite-ref.js";
-import { MemberRef } from "../core/member-ref.js";
-import { CastLibraryRef } from "../core/cast-library-ref.js";
+import { SoundObject } from "../core/sound-object.js";
+import { PlayerObject } from "../core/player-object.js";
+import { MovieObject } from "../core/movie-object.js";
+import { SpriteObject } from "../core/sprite-object.js";
+import { MemberObject } from "../core/member-object.js";
+import { CastLibraryObject } from "../core/cast-library-object.js";
+import { WindowObject } from "../core/window-object.js";
 
 export function ilk(object) {
   if (object === undefined || object === null) return Symbol.for("void");
@@ -22,12 +23,13 @@ export function ilk(object) {
   if (object instanceof Point) return Symbol.for("point");
   if (object instanceof Rect) return Symbol.for("rect");
   if (object instanceof Date) return Symbol.for("date");
-  if (object instanceof SoundRef) return Symbol.for("sound");
-  if (object instanceof CastLibraryRef) return Symbol.for("castlib");
-  if (object instanceof PlayerRef) return Symbol.for("window");
-  if (object instanceof SpriteRef) return Symbol.for("sprite");
-  if (object instanceof MemberRef) return Symbol.for("member");
-  if (object instanceof MovieRef) return Symbol.for("media");
+  if (object instanceof SoundObject) return Symbol.for("sound");
+  if (object instanceof CastLibraryObject) return Symbol.for("castlib");
+  if (object instanceof WindowObject) return Symbol.for("window");
+  if (object instanceof PlayerObject) return Symbol.for("player");
+  if (object instanceof SpriteObject) return Symbol.for("sprite");
+  if (object instanceof MemberObject) return Symbol.for("member");
+  if (object instanceof MovieObject) return Symbol.for("media");
   if (typeof object === "object") return Symbol.for("instance");
   return undefined;
 }

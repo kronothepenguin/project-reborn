@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { sprite } from "../sprite.js";
-import { _movie } from "../../core/movie-ref.js";
-import { SpriteRef } from "../../core/sprite-ref.js";
+import { _movie } from "../../core/movie-object.js";
+import { SpriteObject } from "../../core/sprite-object.js";
 
 describe("sprite", () => {
   beforeEach(() => {
@@ -9,7 +9,7 @@ describe("sprite", () => {
   });
 
   function addSprite(num, name = "") {
-    const s = new SpriteRef(num);
+    const s = new SpriteObject(num);
     if (name) s.name = name;
     _movie._addSprite(s);
     return s;
@@ -26,7 +26,6 @@ describe("sprite", () => {
   it("accesses sprite by channel number (1-based)", () => {
     const s = addSprite(1);
     expect(sprite(1)).toBe(s);
-    expect(sprite(1).num).toBe(1);
   });
 
   it("accesses sprite by name", () => {

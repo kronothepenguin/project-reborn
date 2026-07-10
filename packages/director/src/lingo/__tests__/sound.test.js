@@ -1,15 +1,15 @@
 import { describe, it, expect } from "vitest";
 import { sound } from "../sound.js";
-import { SoundChannelRef } from "../../core/sound-channel-ref.js";
+import { SoundChannelObject } from "../../core/sound-channel-object.js";
 
 describe("sound", () => {
   it("is exported as a function", () => {
     expect(typeof sound).toBe("function");
   });
 
-  it("returns a SoundChannelRef instance", () => {
+  it("returns a SoundChannelObject instance", () => {
     const ch = sound(1);
-    expect(ch).toBeInstanceOf(SoundChannelRef);
+    expect(ch).toBeInstanceOf(SoundChannelObject);
   });
 
   it("exposes the requested channel number", () => {
@@ -33,7 +33,7 @@ describe("sound", () => {
 
   it("coerces a numeric string channel to a number", () => {
     const ch = sound("5");
-    expect(ch).toBeInstanceOf(SoundChannelRef);
+    expect(ch).toBeInstanceOf(SoundChannelObject);
     expect(ch.channel).toBe(5);
   });
 
