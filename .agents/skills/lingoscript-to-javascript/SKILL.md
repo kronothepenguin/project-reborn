@@ -3,6 +3,12 @@ name: lingoscript-to-javascript
 description: Transalate LingoScript (.ls) to JavaScript (.js). Use when translating .ls scripts to .js, mapping Lingo constructs (symbols, chunks, put, the) to JavaScript.
 ---
 
+## Rules
+
+1. WHEN a translation is requested you SHALL translate files manually following these rules.
+
+2. WHEN many files are given for translation you SHALL use a subagent per file AND you MUST ask user the maximum number of subagents to use.
+
 ## File Naming Steps
 
 Create a new file in the same folder as the `.ls` file following these rules:
