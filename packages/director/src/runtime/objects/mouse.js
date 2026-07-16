@@ -1,324 +1,184 @@
+import { Point } from "../../../architecture/core/types/point";
+
 export class MouseObject {
-  #mouseH = 0;
-  #mouseV = 0;
-  #mouseDown = false;
-  #mouseUp = true;
-  #doubleClick = false;
-  #clickOn = 0;
-  #clickLoc = { h: 0, v: 0 };
-  #rightMouseDown = false;
-  #rightMouseUp = true;
-  #stillDown = false;
-  #mouseChar = "";
-  #mouseItem = "";
-  #mouseLine = 0;
-  #mouseMember = 0;
-  #mouseWord = 0;
-  #lastClick = 0;
-  #lastEvent = "mouseUp";
-  #rollover = 0;
-  #cursor = 0;
-  #keyDownScript = "";
-  #keyUpScript = "";
-  #mouseDownScript = "";
-  #mouseUpScript = "";
-  #mouseEnterScript = "";
-  #mouseLeaveScript = "";
-  #mouseWithinScript = "";
-
-  get clickLoc() {
-    return this.#clickLoc;
-  }
-
-  set clickLoc(_value) {
-    throw new Error("clickLoc is read-only");
-  }
-
-  get clickOn() {
-    return this.#clickOn;
-  }
-
-  set clickOn(_value) {
-    throw new Error("clickOn is read-only");
-  }
-
-  get doubleClick() {
-    return this.#doubleClick;
-  }
-
-  set doubleClick(_value) {
-    throw new Error("doubleClick is read-only");
-  }
-
-  get mouseChar() {
-    return this.#mouseChar;
-  }
-
-  set mouseChar(_value) {
-    throw new Error("mouseChar is read-only");
-  }
-
-  get mouseDown() {
-    return this.#mouseDown;
-  }
-
-  set mouseDown(_value) {
-    throw new Error("mouseDown is read-only");
-  }
-
-  get mouseH() {
-    return this.#mouseH;
-  }
-
-  set mouseH(_value) {
-    throw new Error("mouseH is read-only");
-  }
-
-  get mouseItem() {
-    return this.#mouseItem;
-  }
-
-  set mouseItem(_value) {
-    throw new Error("mouseItem is read-only");
-  }
-
-  get mouseLine() {
-    return this.#mouseLine;
-  }
-
-  set mouseLine(_value) {
-    throw new Error("mouseLine is read-only");
-  }
-
-  get mouseLoc() {
-    return { h: this.#mouseH, v: this.#mouseV };
-  }
-
-  set mouseLoc(_value) {
-    throw new Error("mouseLoc is read-only");
-  }
-
-  get mouseMember() {
-    return this.#mouseMember;
-  }
-
-  set mouseMember(_value) {
-    throw new Error("mouseMember is read-only");
-  }
-
-  get mouseUp() {
-    return this.#mouseUp;
-  }
-
-  set mouseUp(_value) {
-    throw new Error("mouseUp is read-only");
-  }
-
-  get mouseV() {
-    return this.#mouseV;
-  }
-
-  set mouseV(_value) {
-    throw new Error("mouseV is read-only");
-  }
-
-  get mouseWord() {
-    return this.#mouseWord;
-  }
-
-  set mouseWord(_value) {
-    throw new Error("mouseWord is read-only");
-  }
-
-  get rightMouseDown() {
-    return this.#rightMouseDown;
-  }
-
-  set rightMouseDown(_value) {
-    throw new Error("rightMouseDown is read-only");
-  }
-
-  get rightMouseUp() {
-    return this.#rightMouseUp;
-  }
-
-  set rightMouseUp(_value) {
-    throw new Error("rightMouseUp is read-only");
-  }
-
-  get stillDown() {
-    return this.#stillDown;
-  }
-
-  set stillDown(_value) {
-    throw new Error("stillDown is read-only");
-  }
-
-  get rollover() {
-    return this.#rollover;
-  }
-
-  set rollover(_value) {
-    throw new Error("rollover is read-only");
-  }
-
-  get cursor() {
-    return this.#cursor;
-  }
-
-  set cursor(value) {
-    this.#cursor = Number(value);
-  }
-
-  get lastClick() {
-    return this.#lastClick;
-  }
-
-  set lastClick(_value) {
-    throw new Error("lastClick is read-only");
-  }
-
-  get lastEvent() {
-    return this.#lastEvent;
-  }
-
-  set lastEvent(_value) {
-    throw new Error("lastEvent is read-only");
-  }
-
-  get keyDownScript() {
-    return this.#keyDownScript;
-  }
-
-  set keyDownScript(value) {
-    this.#keyDownScript = String(value ?? "");
-  }
-
-  get keyUpScript() {
-    return this.#keyUpScript;
-  }
-
-  set keyUpScript(value) {
-    this.#keyUpScript = String(value ?? "");
-  }
-
-  get mouseDownScript() {
-    return this.#mouseDownScript;
-  }
-
-  set mouseDownScript(value) {
-    this.#mouseDownScript = String(value ?? "");
-  }
-
-  get mouseUpScript() {
-    return this.#mouseUpScript;
-  }
-
-  set mouseUpScript(value) {
-    this.#mouseUpScript = String(value ?? "");
-  }
-
-  get mouseEnterScript() {
-    return this.#mouseEnterScript;
-  }
-
-  set mouseEnterScript(value) {
-    this.#mouseEnterScript = String(value ?? "");
-  }
-
-  get mouseLeaveScript() {
-    return this.#mouseLeaveScript;
-  }
-
-  set mouseLeaveScript(value) {
-    this.#mouseLeaveScript = String(value ?? "");
-  }
-
-  get mouseWithinScript() {
-    return this.#mouseWithinScript;
-  }
-
-  set mouseWithinScript(value) {
-    this.#mouseWithinScript = String(value ?? "");
-  }
-
-  _setMouseH(value) {
-    this.#mouseH = Number(value) || 0;
-  }
-
-  _setMouseV(value) {
-    this.#mouseV = Number(value) || 0;
-  }
-
-  _setMouseDown(value) {
-    this.#mouseDown = Boolean(value);
-    this.#mouseUp = !this.#mouseDown;
-    this.#stillDown = this.#mouseDown;
-  }
-
-  _setDoubleClick(value) {
-    this.#doubleClick = Boolean(value);
-  }
-
-  _setClickOn(value) {
-    this.#clickOn = Number(value) || 0;
-  }
-
-  _setClickLoc(h, v) {
-    this.#clickLoc = { h: Number(h) || 0, v: Number(v) || 0 };
-  }
-
-  _setRollover(value) {
-    this.#rollover = Number(value) || 0;
-  }
-
-  _setMouseChar(value) {
-    this.#mouseChar = String(value ?? "");
-  }
-
-  _setMouseItem(value) {
-    this.#mouseItem = String(value ?? "");
-  }
-
-  _setMouseLine(value) {
-    this.#mouseLine = Number(value) || 0;
-  }
-
-  _setMouseMember(value) {
-    this.#mouseMember = Number(value) || 0;
-  }
-
-  _setMouseWord(value) {
-    this.#mouseWord = Number(value) || 0;
-  }
-
-  _setLastClick(value) {
-    this.#lastClick = Number(value) || 0;
-  }
-
-  _setLastEvent(value) {
-    this.#lastEvent = String(value ?? "");
-  }
-
-  _reset() {
-    this.#mouseH = 0;
-    this.#mouseV = 0;
-    this.#mouseDown = false;
-    this.#mouseUp = true;
-    this.#doubleClick = false;
-    this.#clickOn = 0;
-    this.#clickLoc = { h: 0, v: 0 };
-    this.#rightMouseDown = false;
-    this.#rightMouseUp = true;
-    this.#stillDown = false;
-    this.#mouseChar = "";
-    this.#mouseItem = "";
-    this.#mouseLine = 0;
-    this.#mouseMember = 0;
-    this.#mouseWord = 0;
-    this.#lastClick = 0;
-    this.#lastEvent = "mouseUp";
-    this.#rollover = 0;
-    this.#cursor = 0;
-  }
+  /**
+   * Mouse property; identifies as a point the last place on the screen where the mouse was clicked.
+   * Read-only.
+   */
+  clickLoc;
+
+  /**
+   * Mouse property; returns the last active sprite clicked by the user. Read-only.
+   *
+   * An active sprite is a sprite that has a sprite or cast member script associated with it.
+   *
+   * When the user clicks the Stage, clickOn returns 0. To detect whether the user clicks a sprite
+   * with no script, you must assign a mouse event script to it so that it can be detected by clickOn.
+   * For example:
+   * -- Lingo syntax
+   * on mouseUp me
+   *     ...
+   * end
+   *
+   * Buttons, check boxes, and radio buttons are detected by clickOn even if there is no script
+   * attached to them.
+   *
+   * The clickOn property can be checked within a loop. However, neither clickOn nor clickLoc
+   * change value when the handler is running. The value that you obtain is the value from before the
+   * handler started.
+   */
+  clickOn;
+
+  /**
+   * Mouse property; tests whether two mouse clicks within the time set for a double-click occurred as
+   * a double-click rather than two single clicks (TRUE), or if they didn’t occur within the time set,
+   * treats them as single clicks (FALSE). Read-only.
+   */
+  doubleClick;
+
+  /**
+   * Mouse property; for field sprites, contains the number of the character that is under the pointer
+   * when the property is called. Read-only.
+   *
+   * The count is from the beginning of the field. If the mouse pointer is not over a field or is in the
+   * gutter of a field, the result is -1.
+   *
+   * The value of mouseChar can change in a handler or loop. If a handler or loop uses this property
+   * multiple times, it’s usually a good idea to call the property once and assign its value to a
+   * local variable.
+   */
+  mouseChar = -1;
+
+  /**
+   * Mouse property; indicates whether the mouse button is currently being pressed (TRUE) or not
+   * (FALSE). Read-only.
+   */
+  mouseDown = false;
+
+  /**
+   * Mouse property; indicates the horizontal position of the mouse pointer. Read-only.
+   *
+   * The value of mouseH is the number of pixels the cursor is positioned from the left edge of
+   * the Stage.
+   *
+   * The mouseH property is useful for moving sprites to the horizontal position of the mouse pointer
+   * and checking whether the pointer is within a region of the Stage. Using the mouseH and mouseV
+   * properties together, you can determine the cursor’s exact location.
+   */
+  mouseH = 0;
+
+  /**
+   * Mouse property; contains the number of the item under the pointer when the property is called
+   * and the pointer is over a field sprite. Read-only.
+   *
+   * An item is any sequence of characters delimited by the current delimiter as set by the
+   * itemDelimiter property. Counting starts at the beginning of the field. If the mouse pointer is
+   * not over a field, the result is -1.
+   *
+   * The value of the mouseItem property can change in a handler or loop. If a handler or loop relies
+   * on the initial value of mouseItem when the handler or loop begins, call this property once and
+   * assign its value to a local variable.
+   */
+  mouseItem = -1;
+
+  /**
+   * Mouse property; contains the number of the line under the pointer when the property is called
+   * and the pointer is over a field sprite. Read-only.
+   *
+   * Counting starts at the beginning of the field; a line is defined by Return delimiter, not by the
+   * wrapping at the edge of the field. When the mouse pointer is not over a field sprite, the result
+   * is -1.
+   *
+   * The value of the mouseLine property can change in a handler or loop. If a handler or loop uses
+   * this property multiple times, it’s usually a good idea to call the property once and assign its value
+   * to a local variable.
+   */
+  mouseLine = -1;
+
+  /**
+   * Mouse property; returns the current position of the mouse as a point(). Read-only.
+   *
+   * The point location is given as two coordinates, with the horizontal location first, then the
+   * vertical location.
+   */
+  mouseLoc = new Point();
+
+  /**
+   * Mouse property; returns the cast member assigned to the sprite that is under the pointer when the
+   * property is called. Read-only.
+   *
+   * When the pointer is not over a sprite, this property returns the result VOID (Lingo) or null
+   * (JavaScript syntax).
+   *
+   * You can use this property to make a movie perform specific actions when the pointer rolls over a
+   * sprite and the sprite uses a certain cast member.
+   *
+   * The value of the mouseMember property can change frequently. To use this property multiple
+   * times in a handler with a consistent value, assign the mouseMember value to a local variable when
+   * the handler starts and use the variable.
+   */
+  mouseMember = null;
+
+  /**
+   * Mouse property; indicates whether the mouse button is released (TRUE) or is being pressed
+   * (FALSE). Read-only.
+   */
+  mouseUp = false;
+
+  /**
+   * Mouse property; indicates the vertical position of the mouse cursor, in pixels, from the top of the
+   * Stage. Read-only.
+   *
+   * The value of this property increases as the cursor moves down and decreases as the cursor
+   * moves up.
+   *
+   * The mouseV property is useful for moving sprites to the vertical position of the mouse cursor and
+   * checking whether the cursor is within a region of the Stage. Using the mouseH and mouseV
+   * properties together, you can identify the cursor’s exact location.
+   */
+  mouseV = 0;
+
+  /**
+   * Mouse property; contains the number of the word under the pointer when the property is called
+   * and when the pointer is over a field sprite. Read-only.
+   *
+   * Counting starts from the beginning of the field. When the mouse is not over a field, the result
+   * is -1.
+   *
+   * The value of the mouseWord property can change in a handler or loop. If a handler or loop uses
+   * this property multiple times, it’s usually a good idea to call the function once and assign its value
+   * to a local variable.
+   */
+  mouseWord = -1;
+
+  /**
+   * Mouse property; indicates whether the right mouse button (Windows) or the mouse button and
+   * Control key (Macintosh) are being pressed (TRUE) or not (FALSE). Read-only.
+   *
+   * On the Macintosh, rightMouseDown is TRUE only if the emulateMultiButtonMouse property
+   * is TRUE.
+   */
+  rightMouseDown = false;
+
+  /**
+   * Mouse property; indicates whether the right mouse button (Windows) or the mouse button and
+   * Control key (Macintosh) are currently not being pressed (TRUE) or are currently being pressed
+   * (FALSE). Read-only.
+   *
+   * On the Macintosh, rightMouseUp is TRUE only if the emulateMultiButtonMouse property
+   * is TRUE.
+   */
+  rightMouseUp = false;
+
+  /**
+   * Mouse property; indicates whether the user is pressing the mouse button (TRUE) or not (FALSE).
+   * Read-only.
+   *
+   * This function is useful within a mouseDown script to trigger certain events only after the
+   * mouseUp function.
+   *
+   * Script cannot test stillDown when it is used inside a loop. Use the mouseDown function inside
+   * loops instead.
+   */
+  stillDown = false;
 }
