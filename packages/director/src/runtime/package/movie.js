@@ -38,13 +38,14 @@ class MovieBuilder {
   src(v) { this._src = v; return this; }
 
   build() {
-    return {
+    return Object.freeze({
+      kind: "movie",
       name: this._name,
       casts: this._casts,
       tempo: this._tempo,
       width: this._width,
       height: this._height,
       src: this._src,
-    };
+    });
   }
 }
