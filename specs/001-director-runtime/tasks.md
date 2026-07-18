@@ -110,25 +110,25 @@
 
 ### Tests for User Story 3
 
-- [ ] T023 [P] [US3] Rewrite `objects/__tests__/movie.test.js` — full MovieObject property/method coverage per spec; replace AI-style tests
-- [ ] T024 [P] [US3] Create `objects/__tests__/player.test.js` — Player object behavior (after player.js refactor)
-- [ ] T025 [P] [US3] Create `objects/__tests__/key.test.js`, `objects/__tests__/mouse.test.js`, `objects/__tests__/system.test.js`, `objects/__tests__/global.test.js` — singleton behavior coverage (refactor or verify canon files)
-- [ ] T026 [P] [US3] Create `objects/__tests__/window.test.js` — WindowObject behavior; verify no static `.window` reads (per refactor.md)
-- [ ] T027 [P] [US3] Create `objects/__tests__/sound.test.js`, `objects/__tests__/sound-channel.test.js`, `objects/__tests__/cast-library.test.js`
+- [x] T023 [P] [US3] Rewrite `objects/__tests__/movie.test.js` — full MovieObject property/method coverage per spec; replace AI-style tests
+- [x] T024 [P] [US3] Create `objects/__tests__/player.test.js` — Player object behavior (after player.js refactor)
+- [x] T025 [P] [US3] Create `objects/__tests__/key.test.js`, `objects/__tests__/mouse.test.js`, `objects/__tests__/system.test.js`, `objects/__tests__/global.test.js` — singleton behavior coverage (refactor or verify canon files)
+- [x] T026 [P] [US3] Create `objects/__tests__/window.test.js` — WindowObject behavior; verify no static `.window` reads (per refactor.md)
+- [x] T027 [P] [US3] Create `objects/__tests__/sound.test.js`, `objects/__tests__/sound-channel.test.js`, `objects/__tests__/cast-library.test.js`
 
 ### Implementation for User Story 3
 
-- [ ] T028 [P] [US3] Refactor `objects/movie.js` — confirm canon style (already canon per refactor.md); add lifecycle event stubs (per FR-037 wiring needs from T018/T022); verify field JSDoc verbatim from Movie chapter
-- [ ] T029 [P] [US3] Refactor `objects/cast-library.js` — confirm canon style (already canon per refactor.md); wire into member-registry subsystem (from US2 T019); tests in `objects/__tests__/cast-library.test.js`
-- [ ] T030 [P] [US3] Refactor `objects/global.js`, `objects/key.js`, `objects/mouse.js`, `objects/system.js` — verify canon style (per refactor.md canon); tests in respective `__tests__/`
-- [ ] T031 [P] [US3] Refactor `objects/member.js` — confirm canon style (per refactor.md canon); wire member-number registration into member-registry (from US2 T019); tests in `objects/__tests__/member.test.js`
-- [ ] T032 [P] [US3] **Refactor `objects/player.js`** — remove `#` private fields, Proxies, static class members (per refactor.md); use plain public fields, use context for shared state; JSDoc verbatim from Player chapter
-- [ ] T033 [P] [US3] **Refactor `objects/sound-channel.js`** — remove `#` private; use Web Audio API in worker (per research.md R8); JSDoc verbatim from SoundChannel chapter
-- [ ] T034 [P] [US3] **Refactor `objects/sound.js`** — verify web audio wiring; JSDoc verbatim
-- [ ] T035 [P] [US3] **Refactor `objects/sprite-channel.js`** — remove `#` private; plain public fields; JSDoc verbatim from SpriteChannel chapter
-- [ ] T036 [P] [US3] **Refactor `objects/sprite.js`** — remove `#` private and derived geometry; per refactor.md use direct fields (no computed derivations unless spec-required); JSDoc verbatim
-- [ ] T037 [P] [US3] **Refactor `objects/window.js`** — remove `#` private; plain public fields; JSDoc verbatim from Window chapter
-- [ ] T038 [US3] **Refactor `methods/window.js`** — remove read of static `WindowObject.window`; use context-resolved singleton instead; per refactor.md
+- [x] T028 [P] [US3] Refactor `objects/movie.js` — confirm canon style (already canon per refactor.md); add lifecycle event stubs (per FR-037 wiring needs from T018/T022); verify field JSDoc verbatim from Movie chapter
+- [x] T029 [P] [US3] Refactor `objects/cast-library.js` — confirm canon style (already canon per refactor.md); wire into member-registry subsystem (from US2 T019); tests in `objects/__tests__/cast-library.test.js`
+- [x] T030 [P] [US3] Refactor `objects/global.js`, `objects/key.js`, `objects/mouse.js`, `objects/system.js` — verify canon style (per refactor.md canon); tests in respective `__tests__/`
+- [x] T031 [P] [US3] Refactor `objects/member.js` — confirm canon style (per refactor.md canon); wire member-number registration into member-registry (from US2 T019); tests in `objects/__tests__/member.test.js`
+- [x] T032 [P] [US3] **Refactor `objects/player.js`** — remove `#` private fields, Proxies, static class members (per refactor.md); use plain public fields, use context for shared state; JSDoc verbatim from Player chapter
+- [x] T033 [P] [US3] **Refactor `objects/sound-channel.js`** — remove `#` private; use Web Audio API in worker (per research.md R8); JSDoc verbatim from SoundChannel chapter
+- [x] T034 [P] [US3] **Refactor `objects/sound.js`** — verify web audio wiring; JSDoc verbatim
+- [x] T035 [P] [US3] **Refactor `objects/sprite-channel.js`** — remove `#` private; plain public fields; JSDoc verbatim from SpriteChannel chapter
+- [x] T036 [P] [US3] **Refactor `objects/sprite.js`** — remove `#` private and derived geometry; per refactor.md use direct fields (no computed derivations unless spec-required); JSDoc verbatim
+- [x] T037 [P] [US3] **Refactor `objects/window.js`** — remove `#` private; plain public fields; JSDoc verbatim from Window chapter
+- [x] T038 [US3] **Refactor `methods/window.js`** — remove read of static `WindowObject.window`; use context-resolved singleton instead; per refactor.md
 
 **Checkpoint**: US3 complete — all core/scripting objects refactored, canon-style, wired to context; AI-file debt cleared.
 

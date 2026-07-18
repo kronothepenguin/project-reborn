@@ -1050,4 +1050,365 @@ export class MovieObject {
    * @param {symbol | string} symbolOrStringMemberType A string that specifies the type of the new cast member.
    */
   newMember(symbolOrStringMemberType) {}
+
+  /**
+   * Movie method; preloads cast members in the specified frame or range of frames into memory
+   * and stops when memory is full or when all of the specified cast members have been preloaded,
+   * as follows:
+   * • When used without arguments, this method preloads all cast members used from the current
+   *   frame to the last frame of a movie.
+   * • When used with one argument, frameNameOrNum, this method preloads all cast members used
+   *   in the range of frames from the current frame to the frame frameNameOrNum, as specified by
+   *   the frame number or label name.
+   * • When used with two arguments, fromFrameNameOrNum and toFrameNameOrNum, preloads all
+   *   cast members used in the range of frames from the frame fromFrameNameOrNum to the frame
+   *   toFrameNameOrNum, as specified by the frame number or label name.
+   *
+   * The preLoad() method also returns the number of the last frame successfully loaded. To obtain
+   * this value, use the result() method.
+   *
+   * @param {string | number} [frameNameOrNum] Optional. A string that specifies the specific frame to preload, or an integer that
+   * specifies the number of the specific frame to preload.
+   * @param {string | number} [fromFrameNameOrNum] Required if preloading a range of frames. A string that specifies the name
+   * of the label of the first frame in the range of frames to preload, or an integer that specifies the
+   * number of the first frame in the range of frames to preload.
+   * @param {string | number} [toFrameNameOrNum] Required if preloading a range of frames. A string that specifies the name of
+   * the label of the last frame in the range of frames to preload, or an integer that specifies the number
+   * of the last frame in the range of frames to preload.
+   */
+  preLoad(frameNameOrNum, fromFrameNameOrNum, toFrameNameOrNum) {}
+
+  /**
+   * Movie method; preloads cast members and stops when memory is full or when all of the specified
+   * cast members have been preloaded.
+   *
+   * This method returns the cast member number of the last cast member successfully loaded. To
+   * obtain this value, use the result() method.
+   *
+   * When used without arguments, preLoadMember() preloads all cast members in the movie.
+   * When used with the memberObjRef argument, preLoadMember() preloads just that cast member.
+   * If memberObjRef is an integer, only the first cast library is referenced. If memberObjRef is a string,
+   * the first member with the string as its name will be used.
+   * When used with the arguments fromMemNameOrNum and toMemNameOrNum, preLoadMember()
+   * preloads all cast members in the range specified by the cast member numbers or names.
+   *
+   * @param {*} [memberObjRef] Optional. A reference to the cast member to preload.
+   * @param {string | number} [fromMemNameOrNum] Required when preloading a range of cast members. A string or an integer
+   * that specifies the first cast member in the range of cast members to preload.
+   * @param {string | number} [toMemNameOrNum] Required when preloading a range of cast members. A string or an integer that
+   * specifies the first cast member in the range of cast members to preload.
+   */
+  preLoadMember(memberObjRef, fromMemNameOrNum, toMemNameOrNum) {}
+
+  /**
+   * Movie method; preloads the data and cast members associated with the first frame of the specified
+   * movie. Preloading a movie helps it start faster when it is started by the go() or play() methods.
+   *
+   * To preload cast members from a URL, use preloadNetThing() to load the cast members directly
+   * into the cache, or use downloadNetThing() to load a movie on a local disk from which you can
+   * load the movie into memory and minimize downloading time.
+   *
+   * @param {string} stringMovieName Required. A string that specifies the name of the movie to preload.
+   */
+  preLoadMovie(stringMovieName) {}
+
+  /**
+   * Movie method; prints whatever is displayed on the Stage in each frame, whether or not the frame
+   * is selected, starting at the frame specified by startFrame. Optionally, you can supply endFrame
+   * and a reduction (redux) value (100%, 50%, or 25%).
+   *
+   * The frame being printed need not be currently displayed. This command always prints at 72 dots
+   * per inch (dpi), bitmaps everything on the screen (text will not be as smooth in some cases), prints
+   * in portrait (vertical) orientation, and ignores Page Setup settings. For more flexibility when
+   * printing from within Director, see PrintOMatic Lite Xtra, which is on the installation disk.
+   *
+   * @param {string | number} startFrameNameOrNum Required. A string or integer that specifies the name or number of the
+   * first frame to print.
+   * @param {string | number} [endFrameNameOrNum] Optional. A string or integer that specifies the name or number of the last
+   * frame to print.
+   * @param {number} [redux] Optional. An integer that specifies the reduction value. Valid values are 100, 50, or 25.
+   */
+  printFrom(startFrameNameOrNum, endFrameNameOrNum, redux) {}
+
+  /**
+   * Movie method; causes the palette channel to act as a puppet and lets script override the palette
+   * setting in the palette channel of the Score and assign palettes to the movie.
+   *
+   * The puppetPalette() method sets the current palette to the palette cast member specified by
+   * palette. If palette evaluates to a string, it specifies the cast library name of the palette. If
+   * palette evaluates to an integer, it specifies the member number of the palette.
+   *
+   * For best results, use the puppetPalette() method before navigating to the frame on which the
+   * effect will occur so that Director can map to the desired palette before drawing the next frame.
+   *
+   * You can fade in the palette by replacing speed with an integer from 1 (slowest) to 60 (fastest). You
+   * can also fade in the palette over several frames by replacing frames with an integer for the
+   * number of frames.
+   *
+   * A puppet palette remains in effect until you turn it off using the syntax
+   * _movie.puppetPalette(0). No subsequent palette changes in the Score are obeyed when the
+   * puppet palette is in effect.
+   *
+   * Note: The browser controls the palette for the entire Web page. Thus, Shockwave Player always
+   * uses the browser’s palette.
+   *
+   * @param {string | number} palette Required. A string or integer that specifies the name or number of the new palette.
+   * @param {number} [speed] Optional. An integer that specifies the speed of a fade. Valid values range from 1 to 60.
+   * @param {number} [frames] Optional. An integer that specifies the number of frames over which a fade takes place.
+   */
+  puppetPalette(palette, speed, frames) {}
+
+  /**
+   * Movie method; determines whether a sprite channel is a puppet and under script control (TRUE)
+   * or not a puppet and under the control of the Score (FALSE).
+   *
+   * While the playhead is in the same sprite, turning off the sprite channel’s puppetting using the
+   * syntax puppetSprite(intSpriteNum, FALSE) resets the sprite’s properties to those in the Score.
+   * The sprite channel’s initial properties are whatever the channel’s settings are when the
+   * puppetSprite() method is executed. You can use script to change sprite properties as follows:
+   *
+   * • If a sprite channel is a puppet, any changes that script makes to the channel’s sprite properties
+   *   remain in effect after the playhead exits the sprite.
+   * • If a sprite channel is not a puppet, any changes that script makes to a sprite last for the life of
+   *   the current sprite only.
+   *
+   * The channel must contain a sprite when you use the puppetSprite() method.
+   *
+   * Making the sprite channel a puppet lets you control many sprite properties—such as member,
+   * locH, and width—from script after the playhead exits the sprite.
+   *
+   * Use the syntax puppetSprite(intSpriteNum, FALSE) to return control to the Score when you
+   * finish controlling a sprite channel from script and to avoid unpredictable results that may occur
+   * when the playhead is in frames that aren’t intended to be puppets.
+   *
+   * Note: Version 6 of Director introduced autopuppetting, which made it unnecessary to explicitly
+   * puppet a sprite under most circumstances. Explicit control is still useful if you want to retain complete
+   * control over a channel’s contents even after a sprite span has finished playing.
+   *
+   * @param {number} intSpriteNum Required. An integer that specifies the sprite channel to test.
+   * @param {boolean} bool Required. A boolean value that specifies whether a sprite channel is under script control
+   * (TRUE) or under the control of the Score (FALSE).
+   */
+  puppetSprite(intSpriteNum, bool) {}
+
+  /**
+   * Movie method; causes the tempo channel to act as a puppet and sets the tempo to a specified
+   * number of frames.
+   *
+   * When the tempo channel is a puppet, script can override the tempo setting in the Score and
+   * change the tempo assigned to the movie.
+   *
+   * It’s unnecessary to turn off the puppet tempo condition to make subsequent tempo changes in the
+   * Score take effect.
+   *
+   * Note: Although it is theoretically possible to achieve frame rates up to 30,000 frames per second
+   * (fps) with the puppetTempo() method, you could do this only with little animation and a very powerful
+   * machine.
+   *
+   * @param {number} intTempo Required. An integer that specifies the tempo.
+   */
+  puppetTempo(intTempo) {}
+
+  /**
+   * Movie method; performs the specified transition between the current frame and the next frame.
+   *
+   * To use an Xtra transition cast member, use the puppetTransition(memberObjRef) syntax.
+   * To use a built-in Director transition, replace int with a value in the following table. Replace time
+   * with the number of quarter seconds used to complete the transition. The minimum value is 0; the
+   * maximum is 120 (30 seconds). Replace size with the number of pixels in each chunk of the
+   * transition. The minimum value is 1; the maximum is 128. Smaller chunk sizes yield smoother
+   * transitions but are slower.
+   *
+   * Replace area with a value that determines whether the transition occurs only in the changing area
+   * (TRUE) or over the entire Stage (FALSE, default). The area variable is an area within which sprites
+   * have changed.
+   *
+   * @param {*} memberObjRef Required if using an Xtra transition cast member. A reference to the Xtra cast
+   * member to use as the transition.
+   * @param {number} [int] Required if using a built-in Director transition. An integer that specifies the number of the
+   * transition to use.
+   * @param {number} [time] Optional. An integer that specifies that number of quarter seconds used to complete the
+   * transition. Valid values range from 0 to 120.
+   * @param {number} [size] Optional. An integer that specifies the number of pixels in each chunk of the transition.
+   * Valid values range from 1 to 128.
+   * @param {boolean} [area] Optional. A boolean value that specifies whether the transition occurs only in the changing
+   * area (TRUE) or over the entire Stage (FALSE).
+   */
+  puppetTransition(memberObjRef, int, time, size, area) {}
+
+  /**
+   * Movie method; determines the memory needed, in bytes, to display a range of frames. For
+   * example, you can test the size of frames containing 32-bit artwork: if ramNeeded() is larger than
+   * freeBytes(), then go to frames containing 8-bit artwork and divide by 1024 to convert bytes to
+   * kilobytes (K).
+   *
+   * @param {number} intFromFrame Required. An integer that specifies the number of the first frame in the range.
+   * @param {number} intToFrame Required. An integer that specifies the number of the last frame in the range.
+   */
+  ramNeeded(intFromFrame, intToFrame) {}
+
+  /**
+   * Movie method; indicates whether the pointer (cursor) is currently over the bounding rectangle of
+   * a specified sprite (TRUE or 1) or not (FALSE or 0).
+   *
+   * The rollOver() method is typically used in frame scripts and is useful for creating handlers that
+   * perform an action when the user places the pointer over a specific sprite.
+   *
+   * If the user continues to roll the mouse, the value of rollOver() can change while a script is
+   * running a handler, and can result in unexpected behavior. You can make sure that a handler uses
+   * a consistent rollover value by assigning rollOver() to a variable when the handler starts.
+   *
+   * When the pointer is over an area of the Stage where a sprite previously appeared, rollOver() still
+   * occurs and reports the sprite as still being there. Avoid this behavior by not performing rollovers
+   * over these locations, or by moving the sprite above the menu bar before removing it.
+   *
+   * @param {number} [intSpriteNum] Optional. An integer that specifies the sprite number.
+   */
+  rollOver(intSpriteNum) {}
+
+  /**
+   * Movie method; saves the current movie.
+   *
+   * Including the optional stringFilePath parameter saves the movie to the file specified. This
+   * method does not work with compressed files. The specified filename must include the .dir
+   * file extension.
+   *
+   * The saveMovie() method doesn’t support URLs as file references.
+   *
+   * @param {string} [stringFilePath] Optional. A string that specifies the path to and name of the file to which the
+   * movie is saved.
+   */
+  saveMovie(stringFilePath) {}
+
+  /**
+   * Movie method; sends a designated message to all sprites, not just the sprite that was involved in
+   * the event. As with any other message, the message is sent to every script attached to the sprite,
+   * unless the stopEvent() method is used.
+   *
+   * For best results, send the message only to those sprites that will properly handle the message
+   * through the sendSprite() method. No error will occur if the message is sent to all the sprites,
+   * but performance may decrease. There may also be problems if different sprites have the
+   * same handler in a behavior, so avoid conflicts by using unique names for messages that will
+   * be broadcast.
+   *
+   * After the message has been passed to all behaviors, the event follows the regular message
+   * hierarchy: cast member script, frame script, then movie script.
+   *
+   * When you use the sendAllSprites() method, be sure to do the following:
+   * • Replace stringEventMessage with the message.
+   * • Replace args with any arguments to be sent with the message.
+   *
+   * If no sprite has an attached behavior containing the given handler, sendAllSprites()
+   * returns FALSE.
+   *
+   * @param {string} stringEventMessage Required. A string that specifies the message to send to all sprites.
+   * @param {...*} [args] Optional. An argument or arguments to send with the message.
+   */
+  sendAllSprites(stringEventMessage, ...args) {}
+
+  /**
+   * Movie method; sends a message to all scripts attached to a specified sprite.
+   *
+   * Messages sent using sendSprite() are sent to each of the scripts attached to the sprite. The
+   * messages then follow the regular message hierarchy: cast member script, frame script, and
+   * movie script.
+   *
+   * If the given sprite does not have an attached behavior containing the given handler,
+   * sendSprite() returns FALSE.
+   *
+   * @param {string | number} spriteNameOrNum Required. A string or an integer that specifies the name or number of the
+   * sprite that will receive the event.
+   * @param {*} event Required. A symbol or string that specifies the event to send to the specified sprite.
+   * @param {...*} [args] Optional. An argument or arguments to send with the message.
+   */
+  sendSprite(spriteNameOrNum, event, ...args) {}
+
+  /**
+   * Movie method; prevents scripts from passing an event message to subsequent locations in the
+   * message hierarchy.
+   *
+   * This method also applies to sprite scripts.
+   *
+   * Use the stopEvent() method to stop the message in a primary event handler or a sprite script,
+   * thus making the message unavailable for subsequent sprite scripts.
+   *
+   * By default, messages are available first to a primary event handler (if one exists) and then to any
+   * scripts attached to a sprite involved in the event. If more than one script is attached to the sprite,
+   * the message is available to each of the sprite’s scripts. If no sprite script responds to the message,
+   * the message passes to a cast member script, frame script, and movie script, in that order.
+   *
+   * The stopEvent() method applies only to the current event being handled. It does not affect
+   * future events. The stopEvent() method applies only within primary event handlers, handlers
+   * that primary event handlers call, or multiple sprite scripts. It has no effect elsewhere.
+   */
+  stopEvent() {}
+
+  /**
+   * Movie method; removes the specified preloaded movie from memory.
+   *
+   * This command is useful in forcing movies to unload when memory is low.
+   *
+   * You can use a URL as the file reference.
+   *
+   * If the movie isn’t already in RAM, the result is -1.
+   *
+   * @param {number} [intFromFrameNum] Optional. An integer that specifies the number of the first frame in a range to
+   * unload from memory.
+   * @param {number} [intToFrameNum] Optional. An integer that specifies the number of the last frame in a range to
+   * unload from memory.
+   */
+  unLoad(intFromFrameNum, intToFrameNum) {}
+
+  /**
+   * Movie method; forces Director to clear the cast members used in a specified frame from memory.
+   *
+   * Director automatically unloads the least recently used cast members to accommodate preLoad()
+   * methods or normal cast library loading.
+   *
+   * • When used without an argument, the unLoadMember() method clears from memory the cast
+   *   members in all the frames of a movie.
+   * • When used with one argument, memberObjRef, the unLoadMember() method clears from
+   *   memory the cast members in that frame.
+   * • When used with two arguments, fromMemberNameOrNum and toMemberNameOrNum, the
+   *   unLoadMember() method unloads all cast members in the range specified. You can specify a
+   *   range of cast members by frame numbers or frame labels.
+   *
+   * @param {*} [memberObjRef] Optional. A reference to the cast member to unload from memory.
+   * @param {string | number} [fromMemberNameOrNum] Required if clearing a range of cast members. A string or integer that
+   * specifies the name or number of the first cast member in a range to unload from memory.
+   * @param {string | number} [toMemberNameOrNum] Required if clearing a range of cast members. A string or integer that
+   * specifies the name or number of the last cast member in a range to unload from memory.
+   */
+  unLoadMember(memberObjRef, fromMemberNameOrNum, toMemberNameOrNum) {}
+
+  /**
+   * Movie method; removes the specified preloaded movie from memory.
+   *
+   * This command is useful in forcing movies to unload when memory is low.
+   *
+   * You can use a URL as the file reference.
+   *
+   * If the movie isn’t already in RAM, the result is -1.
+   *
+   * @param {string} stringMovieName Required. A string that specifies the name of the movie to unload
+   * from memory.
+   */
+  unLoadMovie(stringMovieName) {}
+
+  /**
+   * Movie method; during Score generation only, enters the changes to the current frame that have
+   * been made during Score recording and moves to the next frame. Any objects that were already in
+   * the frame when the update session started remain in the frame. You must issue an
+   * updateFrame() method for each frame that you are updating.
+   */
+  updateFrame() {}
+
+  /**
+   * Movie method; redraws the Stage immediately instead of only between frames.
+   *
+   * The updateStage() method redraws sprites, performs transitions, plays sounds, sends a
+   * prepareFrame message (affecting movie and behavior scripts), and sends a stepFrame message
+   * (which affects actorList).
+   */
+  updateStage() {}
 }

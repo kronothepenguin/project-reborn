@@ -1,7 +1,22 @@
-import { Point } from "../../../architecture/core/types/point";
-import { Rect } from "../../../architecture/core/types/rect";
+import { Point } from "../types/point.js";
+import { Rect } from "../types/rect.js";
 
 export class MemberObject {
+  /**
+   * Member constructor; sets the optional `type` and `name` of the cast member from the first
+   * two arguments. Both arguments are optional; when omitted, the documented field defaults
+   * (`type = Symbol.for("")`, `name = ""`) apply.
+   *
+   * @param {*} [type] The cast member type, typically a `Symbol.for("…")` value such as
+   * `Symbol.for("bitmap")`. See the `type` property for the full list.
+   * @param {string} [name] The cast member name.
+   */
+  constructor(type, name) {
+    if (type !== undefined) this.type = type;
+    if (name !== undefined) this.name = name;
+  }
+  // TODO(subsystems): route member-number registration through MemberRegistry (US2 T019) when context is active — v1 stub leaves number = 0
+
   /**
    * Member property; determines the number of the cast library that a cast member belongs to.
    * Read-only.

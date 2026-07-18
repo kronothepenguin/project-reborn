@@ -1,4 +1,4 @@
-import { Point } from "../../../architecture/core/types/point";
+import { Point } from "../types/point.js";
 
 export class MouseObject {
   /**

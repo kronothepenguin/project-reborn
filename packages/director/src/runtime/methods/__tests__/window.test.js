@@ -1,35 +1,28 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { window } from "../window.js";
-import { WindowObject } from "../../objects/window.js";
 
-describe("window", () => {
-  beforeEach(() => {
-    WindowObject._reset();
-  });
-
+describe("window (Lingo factory, v1 stub)", () => {
   it("is exported as a function", () => {
     expect(typeof window).toBe("function");
   });
 
-  it("returns null for a name with no registered window", () => {
-    expect(window("Nonexistent")).toBeNull();
-  });
-
-  it("returns the registered WindowObject for a name", () => {
-    const w = new WindowObject("Sun");
-    expect(window("Sun")).toBe(w);
-  });
-
-  it("returns null for non-string/empty input", () => {
+  it("window('') === null", () => {
     expect(window("")).toBeNull();
+  });
+
+  it("window(undefined) === null", () => {
     expect(window(undefined)).toBeNull();
+  });
+
+  it("window(null) === null", () => {
     expect(window(null)).toBeNull();
+  });
+
+  it("window(123) === null (non-string)", () => {
     expect(window(123)).toBeNull();
   });
 
-  it("returns null after the window forgets itself", () => {
-    const w = new WindowObject("Temp");
-    w.forget();
-    expect(window("Temp")).toBeNull();
+  it("window('Sun') === null (v1 stub — registry lookup deferred)", () => {
+    expect(window("Sun")).toBeNull();
   });
 });

@@ -1,0 +1,19 @@
+export { MovieObject } from "./movie.js";
+export { PlayerObject } from "./player.js";
+export { SoundObject } from "./sound.js";
+export { SoundChannelObject } from "./sound-channel.js";
+export { KeyObject } from "./key.js";
+export { MouseObject } from "./mouse.js";
+export { SystemObject } from "./system.js";
+export { GlobalObject } from "./global.js";
+export { MemberObject } from "./member.js";
+export { CastLibraryObject } from "./cast-library.js";
+export { SpriteObject } from "./sprite.js";
+export { SpriteChannelObject } from "./sprite-channel.js";
+export { WindowObject } from "./window.js";
+
+export { List } from "../types/list.js";
+export { PropList } from "../types/prop-list.js";
+export { Point } from "../types/point.js";
+export { Rect } from "../types/rect.js";
+export { Color } from "../types/color.js";
