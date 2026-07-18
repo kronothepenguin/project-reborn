@@ -31,10 +31,10 @@
 
 **Purpose**: Project scaffolding, build config, test harness foundations
 
-- [ ] T001 Verify `vitest` + `jsdom` configuration in `packages/director/package.json` and `vitest.config.*`; add worker-shim, OffscreenCanvas-shim, AudioContext-shim setup files in `packages/director/src/__test-shims__/`
-- [ ] T002 [P] Create `packages/director/src/runtime/subsystems/` folder placeholder (`index.js` re-exports)
-- [ ] T003 [P] Document coding conventions in `packages/director/AGENTS.md`: no `#` private fields (FR-013), no statics/subsystems as class members (FR-005), plain public fields with JSDoc quoted verbatim from `docs/drmx2004_scripting_ref/`, YAGNI/KISS — logic in method body, no premature abstraction
-- [ ] T004 [P] Verify `@/lingo` and `@/browser` subpath exports in `packages/director/package.json` `exports` map (per `plan.md`)
+- [x] T001 Verify `vitest` + `jsdom` configuration in `packages/director/package.json` and `vitest.config.*`; add worker-shim, OffscreenCanvas-shim, AudioContext-shim setup files in `packages/director/src/__test-shims__/`
+- [x] T002 [P] Create `packages/director/src/runtime/subsystems/` folder placeholder (`index.js` re-exports)
+- [x] T003 [P] Document coding conventions in `packages/director/AGENTS.md`: no `#` private fields (FR-013), no statics/subsystems as class members (FR-005), plain public fields with JSDoc quoted verbatim from `docs/drmx2004_scripting_ref/`, YAGNI/KISS — logic in method body, no premature abstraction
+- [x] T004 [P] Verify `@/lingo` and `@/browser` subpath exports in `packages/director/package.json` `exports` map (per `plan.md`)
 
 ---
 
@@ -44,12 +44,12 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete (per spec FR-031, FR-036 deferred items)
 
-- [ ] T005 [P] Refactor existing types/color.js — remove `#` private fields, use plain public fields with JSDoc verbatim from `docs/drmx2004_scripting_ref/` Color chapter; keep RGB clamping behavior in setters; tests in `types/__tests__/color.test.js`
-- [ ] T006 [P] Refactor existing types/list.js — remove `#` private fields (`#items`, `#sorted`), plain public fields; keep Symbol.iterator; tests in `types/__tests__/list.test.js`
-- [ ] T007 [P] Refactor existing types/point.js — remove `#` private fields; tests in `types/__tests__/point.test.js`
-- [ ] T008 [P] Refactor existing types/rect.js — remove `#` private fields; tests in `types/__tests__/rect.test.js`
-- [ ] T009 [P] Refactor existing types/prop-list.js — remove `#` private fields; tests in `types/__tests__/prop-list.test.js`
-- [ ] T010 [P] Verify existing `syntax/` files pass lint after types refactor (char.js, item.js, line.js, word.js, put-*.js, the-proxy.js); no changes unless they use refactored type internals
+- [x] T005 [P] Refactor existing types/color.js — remove `#` private fields, use plain public fields with JSDoc verbatim from `docs/drmx2004_scripting_ref/` Color chapter; keep RGB clamping behavior in setters; tests in `types/__tests__/color.test.js`
+- [x] T006 [P] Refactor existing types/list.js — remove `#` private fields (`#items`, `#sorted`), plain public fields; keep Symbol.iterator; tests in `types/__tests__/list.test.js`
+- [x] T007 [P] Refactor existing types/point.js — remove `#` private fields; tests in `types/__tests__/point.test.js`
+- [x] T008 [P] Refactor existing types/rect.js — remove `#` private fields; tests in `types/__tests__/rect.test.js`
+- [x] T009 [P] Refactor existing types/prop-list.js — remove `#` private fields; tests in `types/__tests__/prop-list.test.js`
+- [x] T010 [P] Verify existing `syntax/` files pass lint after types refactor (char.js, item.js, line.js, word.js, put-*.js, the-proxy.js); no changes unless they use refactored type internals
 
 **Checkpoint**: Foundation ready — Director data-types refactored. User story implementation (US1-US8) can now begin; US2 provides the context + subsystems the remaining stories depend on.
 
@@ -68,10 +68,10 @@
 ### Implementation for User Story 1
 
 - [x] T012 ~~Create `types/symbol.js`~~ — CANCELLED: Lingo `#name` maps directly to native `Symbol.for("name")` (no custom Symbol registry/file needed). PropList test (T014) verifies behavior using `Symbol.for` keys. The public `symbol()` API method is handled in US5 (T047–T053, one of the 108 top-level methods) as a thin wrapper `symbol(name) => Symbol.for(name)`.
-- [ ] T013 [P] [US1] Create `types/__tests__/list.test.js` — exhaustive Lingo List spec coverage (add/delete/append/sort/getAt/getPos/ILK semantics); rewrite from existing if present
-- [ ] T014 [P] [US1] Create `types/__tests__/prop-list.test.js` — PropList spec coverage (aProp/getAProp/setAProp/sorted flag); rewrite from existing if present
-- [ ] T015 [P] [US1] Create `types/__tests__/point.test.js` — Point arithmetic (locH/locV, +, -, distance); rewrite from existing if present
-- [ ] T016 [P] [US1] Create `types/__tests__/rect.test.js` — Rect geometry (left/top/right/bottom, width/height, union/intersect); rewrite from existing if present
+- [x] T013 [P] [US1] Create `types/__tests__/list.test.js` — exhaustive Lingo List spec coverage (add/delete/append/sort/getAt/getPos/ILK semantics); rewrite from existing if present
+- [x] T014 [P] [US1] Create `types/__tests__/prop-list.test.js` — PropList spec coverage (aProp/getAProp/setAProp/sorted flag); rewrite from existing if present
+- [x] T015 [P] [US1] Create `types/__tests__/point.test.js` — Point arithmetic (locH/locV, +, -, distance); rewrite from existing if present
+- [x] T016 [P] [US1] Create `types/__tests__/rect.test.js` — Rect geometry (left/top/right/bottom, width/height, union/intersect); rewrite from existing if present
 
 **Checkpoint**: US1 fully functional — every Director data type round-trips with Lingo semantics.
 
@@ -85,18 +85,18 @@
 
 ### Implementation for User Story 2 — Context Part
 
-- [ ] T017 [US2] Refactor `context.js` — MovieContext per-worker scope (one movie per worker, research.md R2); resolve singletons `_movie`/`_player`/`_key`/`_mouse`/`_system`/`_global`/`_sound`; expose getters for each subsystem registered below; tests in `__tests__/context.test.js`
-- [ ] T018 [US2] Add Score-independent lifecycle hooks in `context.js` (FR-037): `prepareMovie`, `startMovie`, `stopMovie`, `enterFrame`, `exitFrame` — fire regardless of Score sprite placement; event-loop driver wiring defers to US7 (T068); tests in `__tests__/context-lifecycle.test.js`
+- [x] T017 [US2] Refactor `context.js` — MovieContext per-worker scope (one movie per worker, research.md R2); resolve singletons `_movie`/`_player`/`_key`/`_mouse`/`_system`/`_global`/`_sound`; expose getters for each subsystem registered below; tests in `__tests__/context.test.js`
+- [x] T018 [US2] Add Score-independent lifecycle hooks in `context.js` (FR-037): `prepareMovie`, `startMovie`, `stopMovie`, `enterFrame`, `exitFrame` — fire regardless of Score sprite placement; event-loop driver wiring defers to US7 (T068); tests in `__tests__/context-lifecycle.test.js`
 
 ### Implementation for User Story 2 — Subsystems (one task each, parallel)
 
-- [ ] T019 [P] [US2] Create `subsystems/member-registry.js` + `subsystems/__tests__/member-registry.test.js` — singleton: sequential member-number auto-assignment (per FR member-numbers-auto-assigned); lookup by number/name/castLib; cross-castLib sequential numbering
-- [ ] T020 [P] [US2] Create `subsystems/net-state.js` + `subsystems/__tests__/net-state.test.js` — singleton: tracks net-operation state for deferred FR-031 (downloadNetThing etc.); ready for US7 fetch-based net ops (research.md R9)
-- [ ] T021 [P] [US2] Create `subsystems/window-registry.js` + `subsystems/__tests__/window-registry.test.js` — singleton: tracks open MIAW/window instances for deferred FR-036 openMovie; tests verify add/remove/lookup
+- [x] T019 [P] [US2] Create `subsystems/member-registry.js` + `subsystems/__tests__/member-registry.test.js` — singleton: sequential member-number auto-assignment (per FR member-numbers-auto-assigned); lookup by number/name/castLib; cross-castLib sequential numbering
+- [x] T020 [P] [US2] Create `subsystems/net-state.js` + `subsystems/__tests__/net-state.test.js` — singleton: tracks net-operation state for deferred FR-031 (downloadNetThing etc.); ready for US7 fetch-based net ops (research.md R9)
+- [x] T021 [P] [US2] Create `subsystems/window-registry.js` + `subsystems/__tests__/window-registry.test.js` — singleton: tracks open MIAW/window instances for deferred FR-036 openMovie; tests verify add/remove/lookup
 
 ### Implementation for User Story 2 — Wiring
 
-- [ ] T022 [US2] Wire the three subsystems into MovieContext (T017): instantiate member-registry, net-state, window-registry per worker; expose via context getters; integration test in `__tests__/context-subsystems.test.js` covering cross-subsystem lookup + lifecycle dispatch
+- [x] T022 [US2] Wire the three subsystems into MovieContext (T017): instantiate member-registry, net-state, window-registry per worker; expose via context getters; integration test in `__tests__/context-subsystems.test.js` covering cross-subsystem lookup + lifecycle dispatch
 
 **Checkpoint**: US2 complete — context bootstraps singletons + the three subsystem singletons are each independently testable; ready to support US3 core objects.
 

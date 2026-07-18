@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Rect, rect } from "../../types/rect.js";
+import { Rect, rect } from "../rect.js";
 
 describe("Rect", () => {
   describe("constructor", () => {

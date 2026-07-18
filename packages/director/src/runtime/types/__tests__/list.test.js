@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { List, list } from "../../types/list.js";
+import { List, list } from "../list.js";
 
 describe("List", () => {
   describe("constructor", () => {

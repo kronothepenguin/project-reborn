@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { PropList, propList } from "../../types/prop-list.js";
-import { list } from "../../types/list.js";
+import { PropList, propList } from "../prop-list.js";
+import { list } from "../list.js";
 
 describe("PropList", () => {
   describe("constructor", () => {
