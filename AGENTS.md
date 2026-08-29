@@ -1,64 +1,48 @@
-# AGENTS.md - Project Reborn (Habbo Hotel Remake)
+# AGENTS.md — Project Reborn (Habbo Hotel Remake)
 
-## Project Overview
+Habbo Hotel R26 (Shockwave era) remake. JavaScript client, Go backend.
+The project constitution lives at `.specify/memory/constitution.md` and
+prevails on conflict. Follow it: defined-before-built, no silent
+interpretation, spec-driven development, KISS, YAGNI, SOLID.
 
-Habbo Hotel R26 (Shockwave era) remake. Go backend, JS client, Godot client (standby).
+## Architecture
 
-Go workspace (`go.work`) + pnpm workspace (`pnpm-workspace.yaml`). No root Go module.
+Go workspace (`go.work`, no root module) + pnpm workspace
+(`pnpm-workspace.yaml`).
 
-### Go Workspace (`go.work`)
+- `packages/` — implementation: models, logic, handlers. Includes the
+  app packages (client, cms, housekeeping, installer, server) and shared
+  packages (storage = sqlc DB layer, virtual = domain types, shared =
+  ansi/dotenv/httpx/tmpl, director = director runtime).
+- `apps/` — thin executables. An app imports a package and runs it as a
+  singleton: the package exposes `Mount`/`Routes` over an
+  `http.ServeMux`, the app creates the `http.Server`.
+- `apps/reborn/` — orchestrator. Imports every app and serves all of
+  them on one HTTP server; each app can also be run in isolation on its
+  own port.
 
-- `apps/cms/` - Web CMS (auth, pages, templates)
-- `apps/housekeeping/` - Admin dashboard (placeholder)
-- `apps/installer/` - Web installer
-- `apps/reborn/` - Main app orchestrator + `cmd/` entrypoint
-- `apps/server/` - Game server (protocol, transport, registry)
-- `packages/shared/` - Shared Go utilities: `ansi/`, `dotenv/`, `httpx/`, `tmpl/`
-- `packages/storage/` - sqlc-generated DB layer
-- `packages/virtual/` - Domain types (Habbo, Hotel, Room, Navigator, etc.)
+Web apps have two modes:
 
-### pnpm Workspace (`pnpm-workspace.yaml`)
-
-- `apps/client/` - Vite + JS client (`@project-reborn/client-r26`, R26 first; future versions get sibling folders)
-- `packages/director/` - LingoScript → JS runtime + API shim (`@project-reborn/director`)
-
-### Godot (standby)
-
-- `client/` - Godot 4 HTML5 client at repo root
-- `client/tools/` - Separate Go module for Godot dev tooling: `build/`, `dev/{client,figurepreview}/`, `presets/`, `ws/`
-
-### Per-App Layout Convention
-
-```
-apps/<name>/
-├── go.mod
-├── Makefile          # app-specific targets (dev, build, etc.)
-├── .air.toml         # hot reload config (when applicable)
-├── cmd/              # entrypoint (when applicable)
-├── pkg/<name>/       # public app package
-├── internal/         # app-private code (templates, validator, etc.)
-└── tools/dev/        # app-specific dev servers
-```
+- **dev** — `/packages/<app>/cmd/dev/main.go` starts the Go HTTP server
+  and the Astro dev server; the Go server reverse-proxies HTML and
+  scripts from the Astro dev server.
+- **build** — `Astro build → embed → Go build`. A Go file in the app
+  embeds the Astro `dist` folder.
 
 ## Commands
 
 ### Root (`Makefile`)
 
-Generic workspace-level targets.
-
 ```bash
 make install    # go work sync && pnpm install
-make dev        # run reborn app with air (cd apps/reborn && go tool air)
+make dev        # reborn with air (cd apps/reborn && go tool air)
 make build      # build ./bin/main from apps/reborn/cmd
 ```
 
 ### Per-App
 
-Each app owns its Makefile for dev/build targets.
-
 ```bash
 cd apps/reborn && make dev          # reborn with air
-cd apps/cms && make dev             # CMS dev server (go run tools/dev)
 ```
 
 ### Packages
@@ -67,41 +51,31 @@ cd apps/cms && make dev             # CMS dev server (go run tools/dev)
 cd packages/storage && make generate    # sqlc generate
 ```
 
-### JavaScript/Client (pnpm)
+### JavaScript (pnpm)
 
 ```bash
-pnpm install                           # install all workspace deps
+pnpm install                                    # install all workspace deps
 pnpm --filter @project-reborn/client-r26 dev     # Vite dev server
 pnpm --filter @project-reborn/client-r26 build   # production build
 pnpm --filter @project-reborn/client-r26 test    # vitest
-# or from app dir:
-cd apps/client && pnpm dev
-```
-
-### Godot Tools (`client/tools/`)
-
-```bash
-cd client && go run ./tools/dev/client          # Godot client dev server
-cd client && go run ./tools/dev/figurepreview   # figurepreview dev server
-cd client && go run ./tools/presets             # generate export_presets.cfg
-cd client && go run ./tools/ws                  # websocket test server
 ```
 
 ### Go (workspace-wide)
 
-No root module. Run per module or use workspace:
+No root module. Run per module:
 
 ```bash
 go work sync                       # sync workspace
-go test ./...                      # from a module dir, tests that module
+go test ./...                      # from a module dir
 go vet ./...                       # from a module dir
 go fmt ./...                       # from a module dir
 ```
 
 ## Conventions
 
-- Go module paths mirror location: `github.com/kronothepenguin/project-reborn/{apps,packages,client/tools}/<name>`
+- Go module paths mirror location: `github.com/kronothepenguin/project-reborn/{apps,packages}/<name>`
 - JS package scope: `@project-reborn/<name>`
 - Use `pnpm`, never `npm` or `yarn`
-- `air` and `sqlc` declared as `tool` directives in relevant `go.mod` files — no global install needed
+- `air` and `sqlc` declared as `tool` directives in relevant `go.mod` files — no global installs
 - `go.work` committed; `go.work.sum` gitignored
+- Never log or commit secrets
