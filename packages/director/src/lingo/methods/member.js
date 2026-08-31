@@ -1,4 +1,4 @@
-import { _movie } from "../singletons.js";
+import { _movie } from "../../runtime/singletons.js";
 
 export function member(id, castLibNum) {
   if (typeof id === "string" && (castLibNum === undefined || castLibNum === null)) {
