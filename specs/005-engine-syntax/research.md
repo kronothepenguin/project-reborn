@@ -25,7 +25,7 @@ The 005 layer is a **port-and-align** of the eight existing `src/engine/syntax/`
   - empty string or non-string container → `""`, no error
 - **Word delimiter**: spaces, where "any non-visible character, such as a tab or carriage return, is considered a space". Split on `/[ \t\r\n]/`; trailing/consecutive delimiters produce empty chunks.
 - **Line delimiter**: carriage returns only (`"\r"`), not wrapping. **Current line.js splits on `"\n"` and reads `the.lineDelimiter` — both wrong (C8 removes the delimiter; docs say CR).**
-- **Item delimiter**: live `itemDelimiter`, default `","`, resolved at call time from `globalThis.the.itemDelimiter` with `","` fallback (C3); range rejoin uses the delimiter current at call time.
+- **Item delimiter**: live `itemDelimiter`, default `","`, resolved at call time by importing `the` (`the.itemDelimiter`) with `","` fallback (C3); range rejoin uses the delimiter current at call time.
 - **Char splitting**: single ANSI characters per code unit; no surrogate-pair handling (deliberate boundary per docs).
 - **Verified worth porting**: the range clamp logic (`end > parts.length → end = parts.length`; `end < start → ""`) in item.js/char.js is correct and kept; the surface, delimiters, and `start<1` behavior are changed.
 
@@ -55,7 +55,7 @@ The 005 layer is a **port-and-align** of the eight existing `src/engine/syntax/`
 **Decision**: Replace the 874-line hand-written switch with a small data-driven proxy over a **property table** and an **alias map**, delegating reads/writes to the 002 core singleton live bindings (`src/engine/subsystem/singletons.js`), with documented defaults only when a bound field is `undefined`, plus local-owner state for System/script properties the core objects do not carry (`itemDelimiter`, `floatPrecision`, `randomSeed`, selection).
 
 - **Mechanism**:
-  - `globalThis.the = new Proxy({}, { get, set, has, ownKeys, getOwnPropertyDescriptor })` installed at module load (kept — FR-007).
+  - `export const the = new Proxy({}, { get, set, has, ownKeys, getOwnPropertyDescriptor })` — exported from the module and the `@/lingo` barrel; NOT self-installed onto `globalThis` (registering runtime globals is the player runner's job, feature 008, which installs all globals before the movie bundle import — user directive).
   - **get**: symbol → pass-through; resolve alias via `ALIASES` to the canonical key; **function forms** → return the callable; **unknown → throw script error (C6)**; Score/stage-backed (`noopUntil004`) → return the stable documented default; computed → compute from JS (C9); constant → return constant; else read the live singleton binding, and if the field is `=== undefined` return the table default, else the field value.
   - **set**: symbol → internal; alias-resolve; **unknown → throw (C6)**; **read-only → throw (C5)** `Cannot set read-only property: the <name>`; rw → write the singleton field when the core object owns it, else the proxy's local backing, coercing per the table.
   - **has**: `true` only for canonical keys + aliases + function-form names (replaces claim-everything — FR-012). **ownKeys/getOwnPropertyDescriptor**: enumerate canonical keys so `Object.keys(the)` is auditable (FR-013 source).
@@ -76,7 +76,7 @@ The 005 layer is a **port-and-align** of the eight existing `src/engine/syntax/`
 **Decision**: vitest + jsdom (already configured; vitest.config.js unchanged), no package-local shims. Nine new co-located feature test files under `packages/director/src/engine/syntax/__tests__/` (`char`, `item`, `line`, `word`, `put-after`, `put-before`, `put-into`, `the-proxy`, `surface`), plus the existing 7 files from 002 stay green. Red-green per FR-015: write all 9 first, run, observe red, then implement per user story.
 
 - **Observing red with the current code** is concrete and needs no scaffolding: chunk tests fail `char(1).of is not a function`; put tests fail on argument order; line/word fail on delimiters; the-proxy fails on function forms absent, `the.zzz` not throwing, aliases missing, `maxInteger` wrong, `the.void` wrong, decentralized defaults, word/line delimiters present.
-- **No-context observation**: tests import from `src/api/index.js` with no context activation; the singleton slots' default instances back `globalThis.the` reads. Context-swap tested only as a smoke assertion (isolation is 004's boundary).
+- **No-context observation**: tests import from `src/api/index.js` with no context activation; the singleton slots' default instances back `the` reads; importing does not leak `the` onto `globalThis` (player registers globals in 008). Context-swap tested only as a smoke assertion (isolation is 004's boundary).
 
 **Alternatives**: happy-dom (jsdom already configured — rejected); shims (forbidden).
 
@@ -94,7 +94,7 @@ The 005 layer is a **port-and-align** of the eight existing `src/engine/syntax/`
 | `put-after.js` | **Rewrite** | `putAfter(target, value)` contract; whole-container + `ChunkBound` targets; stringify; nonexistent→append. |
 | `put-before.js` | **Rewrite** | same contract. |
 | `put-into.js` | **Rewrite** | same contract; replace semantics. |
-| `the-proxy.js` | **Rewrite** | data-driven property table + alias map + function forms; C5/C6 throws; remove claim-everything `has`; remove word/line delimiters + numberOfSounds/machineType; delegate to live singleton bindings; computed date/time (C9); `maxInteger` 2147483647, `the.void null`, `randomSeed` added; keep `globalThis.the` install + `_reset`. |
+| `the-proxy.js` | **Rewrite** | data-driven property table + alias map + function forms; C5/C6 throws; remove claim-everything `has`; remove word/line delimiters + numberOfSounds/machineType; delegate to live singleton bindings; computed date/time (C9); `maxInteger` 2147483647, `the.void null`, `randomSeed` added; export `the` (no `globalThis` self-install — player registers globals in 008); keep `_reset`. |
 | `index.js` | **NO CHANGE** | 12 export names stable; `chunk-split` not exported. |
 | `api/index.js` | **NO CHANGE** | already re-exports the syntax barrel (`export *`). |
 | persist boundary | — | `.char[...]`/`.item[...]` member forms on text-member expressions are 003/006 member-object syntax, not 005 function-form scope. |

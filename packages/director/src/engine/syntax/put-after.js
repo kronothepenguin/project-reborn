@@ -1,21 +1,13 @@
-// putAfter(value, chunkStart, chunkEnd, str)
+import { resolveChunkTarget, stringifyChunkValue } from "./chunk-split.js";
+
 // Lingo: put expression after chunkExpression
-// Inserts value after the chunk in str. Positions are 1-based and inclusive.
-export function putAfter(value, chunkStart, chunkEnd, str) {
-  if (typeof str !== "string") {
-    return "";
-  }
-  if (typeof value !== "string") {
-    value = String(value ?? "");
-  }
-  if (chunkEnd < chunkStart) {
-    return str;
-  }
-  if (chunkStart < 1) {
-    chunkStart = 1;
-  }
-  if (chunkEnd > str.length) {
-    chunkEnd = str.length;
-  }
-  return str.substring(0, chunkEnd) + value + str.substring(chunkEnd);
+// Inserts value after the target chunk without replacing the container's
+// contents. A plain-string target addresses the whole container. A nonexistent
+// target chunk inserts the value at the end of the container ("as appropriate").
+// Returns the new string (JS strings are immutable).
+export function putAfter(chunk, value) {
+  const { str, start, end } = resolveChunkTarget(chunk);
+  const text = stringifyChunkValue(value);
+  if (start < 0) return str + text;
+  return str.substring(0, end) + text + str.substring(end);
 }

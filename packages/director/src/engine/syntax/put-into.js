@@ -1,21 +1,13 @@
-// putInto(value, chunkStart, chunkEnd, str)
+import { resolveChunkTarget, stringifyChunkValue } from "./chunk-split.js";
+
 // Lingo: put expression into chunkExpression
-// Replaces the chunk in str with value. Positions are 1-based and inclusive.
-export function putInto(value, chunkStart, chunkEnd, str) {
-  if (typeof str !== "string") {
-    return "";
-  }
-  if (typeof value !== "string") {
-    value = String(value ?? "");
-  }
-  if (chunkEnd < chunkStart) {
-    return str;
-  }
-  if (chunkStart < 1) {
-    chunkStart = 1;
-  }
-  if (chunkEnd > str.length) {
-    chunkEnd = str.length;
-  }
-  return str.substring(0, chunkStart - 1) + value + str.substring(chunkEnd);
+// Replaces the target chunk with the (stringified) value. A plain-string target
+// addresses the whole container (its content becomes the value; an empty
+// container becomes the value). A nonexistent target chunk inserts the value at
+// the end of the container ("as appropriate"). Returns the new string.
+export function putInto(chunk, value) {
+  const { str, start, end } = resolveChunkTarget(chunk);
+  const text = stringifyChunkValue(value);
+  if (start < 0) return str + text;
+  return str.substring(0, start) + text + str.substring(end);
 }

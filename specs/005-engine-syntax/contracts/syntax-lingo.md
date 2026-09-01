@@ -10,7 +10,7 @@ The `@project-reborn/director/lingo` entry re-exports the 12 syntax stand-ins un
 | `item(n)` | selector; `itemRange(a,b) ≡ item(a).to(b)` | item split by live `itemDelimiter` (default `","`); range rejoin with then-current delimiter |
 | `line(n)` | selector; `lineRange(a,b) ≡ line(a).to(b)` | CR (`"\r"`) only; range preserves internal `\r` |
 | `word(n)` | selector; `wordRange(a,b) ≡ word(a).to(b)` | whitespace-class `[ \t\r\n]` delimiter |
-| `the` | `globalThis.the` proxy (below) | property table reads/writes + function forms |
+| `the` | proxy (exported from `@/lingo`; player registers `globalThis.the` in 008) | property table reads/writes + function forms |
 | `putInto(chunkTarget, value)` | returns new string | replace target chunk (whole string when target is a plain string) |
 | `putBefore(chunkTarget, value)` | returns new string | insert before target, no replace |
 | `putAfter(chunkTarget, value)` | returns new string | insert after target, no replace |
@@ -20,7 +20,7 @@ The `@project-reborn/director/lingo` entry re-exports the 12 syntax stand-ins un
 
 ## The `the` proxy contract
 
-- Installed as `globalThis.the` at module load with NO activated context (FR-007); reads delegate through the ESM live-binding singleton slots (`src/engine/subsystem/singletons.js`), so an activated context's instances are reflected automatically; no-context defaults otherwise (FR-008).
+- Exported as `the` from the public lingo entry (no `globalThis` self-install — the player/runner in feature 008 registers the runtime globals when booting a movie); used with NO activated context (FR-007); reads delegate through the ESM live-binding singleton slots (`src/engine/subsystem/singletons.js`), so an activated context's instances are reflected automatically; no-context defaults otherwise (FR-008).
 - Reads: alias-resolved; unknown names THROW a script error (C6); read-only is by table row; Score/stage-backed rows return the documented no-op default.
 - Writes: unknown names THROW (C6); read-only rows THROW `Cannot set read-only property: the <name>` (C5); rw rows store (singleton field or proxy-local backing) and reflect on read-back.
 - `has` returns true only for known canonical keys, aliases, and function-form names (FR-012: no claim-everything).

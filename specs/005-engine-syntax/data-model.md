@@ -20,7 +20,7 @@ Entities: the chunk-expression addressing model, the item-delimiter runtime stat
 
 ## Item-delimiter state
 
-Runtime-global delimiter used by item single reads, range rejoins, item counts, and `the.lastItemIn`; default `","`; settable via `the.itemDelimiter` (RW). Owned by the `the`-proxy local backing; item helpers read `globalThis.the.itemDelimiter` with `","` fallback at call time (C3 — live).
+Runtime-global delimiter used by item single reads, range rejoins, item counts, and `the.lastItemIn`; default `","`; settable via `the.itemDelimiter` (RW). Owned by the `the`-proxy local backing; item helpers import `the` and read `the.itemDelimiter` with `","` fallback at call time (C3 — live).
 
 ## The `the` property table (deliverable — 79 rows)
 

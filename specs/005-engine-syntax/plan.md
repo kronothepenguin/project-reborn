@@ -75,7 +75,7 @@ src/engine/syntax/
 ├── put-after.js         # REWRITE: putAfter(chunkTarget, value) return new string
 ├── put-before.js        # REWRITE: putBefore(chunkTarget, value)
 ├── put-into.js          # REWRITE: putInto(chunkTarget, value)
-├── the-proxy.js         # REWRITE: property-table proxy + alias map + function forms + C5/C6 + globalThis.the
+├── the-proxy.js         # REWRITE: property-table proxy (exported `the`; NO globalThis self-install — player registers globals in 008) + alias map + function forms + C5/C6
 └── __tests__/           # NEW (9 files): char/item/line/word/put-after/put-before/put-into/the-proxy/surface
 src/api/index.js         # NO CHANGE — already `export * from "../engine/syntax/index.js"`
 ```

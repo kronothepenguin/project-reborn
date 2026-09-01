@@ -124,7 +124,7 @@ pnpm --filter @project-reborn/director exec vitest run src/engine/syntax/__tests
 ```
 
 Asserts:
-- `globalThis.the` installed with no activated context; row families read defined defaults of documented types (table from data-model.md)
+- `the` imports from the lingo entry with no activated context; importing does not leak `the` onto `globalThis`; row families read defined defaults of documented types (table from data-model.md)
 - read-only rows reject writes (C5 — frame/mouseH/key/maxInteger/milliseconds)
 - RW rows store-and-read-back (itemDelimiter, exitLock, beepOn, centerStage, keyboardFocusSprite, soundLevel, randomSeed, selStart/selEnd)
 - function forms: `the.numberOfCharsIn/ItemsIn/LinesIn/WordsIn`, `lastCharIn/WordIn/ItemIn/LineIn`, live-delim item count (C3), chained `char(1).to(the.numberOfCharsIn(...)).of(...)` (C4)
@@ -149,7 +149,7 @@ Asserts: frame, frameLabel, framePalette, frameTempo, marker, label, markerList,
 pnpm --filter @project-reborn/director exec vitest run src/engine/syntax/__tests__/surface.test.js
 ```
 
-Asserts: all 12 stand-ins (char, charRange, item, itemRange, line, lineRange, word, wordRange, the, putInto, putBefore, putAfter) import from `src/api/index.js`; helper results identical with no context vs default singletons; YAGNI absence — `"zzz" in globalThis.the` is false and reading throws; `numberOfSounds`/`machineType`/`wordDelimiter`/`lineDelimiter` absent.
+Asserts: all 12 stand-ins (char, charRange, item, itemRange, line, lineRange, word, wordRange, the, putInto, putBefore, putAfter) import from `src/api/index.js`; helper results identical with no context vs default singletons; importing does not leak `the` onto `globalThis`; YAGNI absence — `"zzz" in the` is false and reading throws; `numberOfSounds`/`machineType`/`wordDelimiter`/`lineDelimiter` absent.
 
 ## Full gate
 
