@@ -17,6 +17,12 @@ import { MouseObject } from "../core/mouse.js";
 import { SystemObject } from "../core/system.js";
 import { GlobalObject } from "../core/global.js";
 
+// Internal subsystem slot (004): re-exported from score-slot.js (which owns
+// the binding) so MovieObject can read it without a module cycle. NOT a
+// globalThis singleton — only the 7 documented singletons are installed there.
+export { _score } from "./score-slot.js";
+import { _setScore, _resetScore } from "./score-slot.js";
+
 export let _movie = new MovieObject();
 export let _player = new PlayerObject();
 export let _sound = new SoundObject();
@@ -33,6 +39,7 @@ export function _installSingletons(ctx) {
   _mouse = ctx.mouse;
   _system = ctx.system;
   _global = ctx.global;
+  _setScore(ctx.score);
 }
 
 export function _resetSingletons() {
@@ -43,4 +50,5 @@ export function _resetSingletons() {
   _mouse = new MouseObject();
   _system = new SystemObject();
   _global = new GlobalObject();
+  _resetScore();
 }

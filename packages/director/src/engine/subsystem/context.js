@@ -24,6 +24,7 @@ import { GlobalObject } from "../core/global.js";
 import { MemberRegistry } from "./member-registry.js";
 import { NetState } from "./net-state.js";
 import { WindowRegistry } from "./window-registry.js";
+import { Score } from "./score.js";
 import { _installSingletons } from "./singletons.js";
 
 export class DirectorContext extends EventTarget {
@@ -48,6 +49,11 @@ export class DirectorContext extends EventTarget {
     this.memberRegistry = new MemberRegistry();
     this.netState = new NetState();
     this.windowRegistry = new WindowRegistry();
+
+    this.score = new Score({
+      frames: options.score?.frames ?? [],
+      tempo: options.tempo ?? 30,
+    });
 
     this.audioContext = null;
     this.canvas = null;
@@ -116,15 +122,53 @@ export class DirectorContext extends EventTarget {
   }
 
   prepareFrame() {
-    this.dispatchEvent(new CustomEvent("prepareFrame", { detail: { movie: this.movie } }));
+    this.dispatchEvent(new CustomEvent("prepareFrame", { detail: { movie: this.movie, score: this.score, frame: this.score.frame } }));
   }
 
   enterFrame() {
-    this.dispatchEvent(new CustomEvent("enterFrame", { detail: { movie: this.movie } }));
+    this.dispatchEvent(new CustomEvent("enterFrame", { detail: { movie: this.movie, score: this.score, frame: this.score.frame } }));
   }
 
   exitFrame() {
-    this.dispatchEvent(new CustomEvent("exitFrame", { detail: { movie: this.movie } }));
+    this.dispatchEvent(new CustomEvent("exitFrame", { detail: { movie: this.movie, score: this.score, frame: this.score.frame } }));
+  }
+
+  // 004 Score-backed sprite hooks. Deferred while 001 had no Score (FR-031):
+  // now real per populated channel. Live `Sprite` objects joining these events
+  // is 003's job (C3) — 004 dispatches payloads (channel number + cell data).
+  beginSprite(channel, cell) {
+    this.dispatchEvent(
+      new CustomEvent("beginSprite", {
+        detail: { movie: this.movie, score: this.score, frame: this.score.frame, channel, cell },
+      })
+    );
+  }
+
+  endSprite(channel, cell) {
+    this.dispatchEvent(
+      new CustomEvent("endSprite", {
+        detail: { movie: this.movie, score: this.score, frame: this.score.frame, channel, cell },
+      })
+    );
+  }
+
+  // 004 Score-backed frame step (contracts/lifecycle.md; plan R4). The 008
+  // event loop calls this once per timer tick (after prepareMovie/startMovie).
+  // Order: score.advance() → prepareFrame → enterFrame → (beginSprite →
+  // endSprite per populated channel, ascending) → exitFrame. Frame events fire
+  // every tick regardless of score content; sprite events fire only for
+  // populated channels (FR-037 preserved — nothing suppressed).
+  frameStep() {
+    this.score.advance();
+    const channels = this.score.populatedChannels();
+    this.prepareFrame();
+    this.enterFrame();
+    for (const n of channels) {
+      const cell = this.score.channel(n);
+      this.beginSprite(n, cell);
+      this.endSprite(n, cell);
+    }
+    this.exitFrame();
   }
 
   // `on idle` / `on timeout` (FR-037). The event-loop fires `idle` on a tick

@@ -92,7 +92,7 @@ dependencies.
 
 ---
 
-### 005 — engine-syntax
+### 005 — engine-syntax (DONE ✔ — committed `b53b33e0`)
 
 - **Priority**: P1 foundation (pure, independent; unblocks `the`-backed scripts).
 - **Scope**: chunk-expression stand-ins — `char`, `item`, `line`, `word` (+
@@ -368,8 +368,8 @@ chunk ops.
 | # | Spec | Status | Notes |
 |---|------|--------|-------|
 | 002 | engine-base | ✅ complete (`f67f8b4f`) | 73 tests green |
-| 005 | engine-syntax | ⬜ next | port + tests |
-| 004 | engine-subsystem + Score | ⬜ | Score model to verify in Director |
+| 005 | engine-syntax | ✅ complete (`b53b33e0`) | 147 tests green |
+| 004 | engine-subsystem + Score | ⬜ in progress | Score model verified empty-score canonical (C1); doc `score` section per contract when 007 plans |
 | 006 | api | ⬜ | state-tagging audit |
 | 008 | player | ⬜ | co-plan definition with 007 |
 | 007 | pack | ⬜ | virtual files + generator skill |

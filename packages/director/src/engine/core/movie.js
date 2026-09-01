@@ -1,3 +1,5 @@
+import { _score } from "../subsystem/score-slot.js";
+
 export class MovieObject {
   /**
    * Movie property; a string entered during authoring in the Movie Properties dialog box. Read-only.
@@ -906,7 +908,9 @@ export class MovieObject {
    * frameNameOrNum. This value must specify a movie file; if the movie is in another folder,
    * movieName must also specify the path.
    */
-  go(frameNameOrNum, movieName) {}
+  go(frameNameOrNum, movieName) {
+    _score.go(frameNameOrNum);
+  }
 
   /**
    * Movie method; sends the playhead to the previous marker in the movie, either one marker back
@@ -918,7 +922,9 @@ export class MovieObject {
    * • The current frame if the current frame has a marker.
    * • Frame 1 if the movie contains no markers.
    */
-  goLoop() {}
+  goLoop() {
+    _score.goLoop();
+  }
 
   /**
    * Movie method; sends the playhead to the next marker in the movie.
@@ -926,7 +932,9 @@ export class MovieObject {
    * If no markers are to the right of the playhead, the playhead goes to the last marker in the movie or
    * to frame 1 if there are no markers in the movie.
    */
-  goNext() {}
+  goNext() {
+    _score.goNext();
+  }
 
   /**
    * Movie method; sends the playhead to the previous marker in the movie.
@@ -939,7 +947,9 @@ export class MovieObject {
    * • The current frame if the current frame has a marker
    * • Frame 1 if the movie contains no markers
    */
-  goPrevious() {}
+  goPrevious() {
+    _score.goPrevious();
+  }
 
   /**
    * Movie method; reports whether all cast members with the given tag have been loaded (TRUE) or
@@ -1207,7 +1217,9 @@ export class MovieObject {
    *
    * @param {number} intTempo Required. An integer that specifies the tempo.
    */
-  puppetTempo(intTempo) {}
+  puppetTempo(intTempo) {
+    _score.setTempo(intTempo);
+  }
 
   /**
    * Movie method; performs the specified transition between the current frame and the next frame.

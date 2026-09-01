@@ -11,7 +11,7 @@
 // instances serve otherwise. Read-only writes and unknown names throw script
 // errors (C5/C6). Score/stage-backed rows return documented no-op defaults
 // until feature 004.
-import { _movie, _mouse, _key, _player, _sound, _system } from "../subsystem/singletons.js";
+import { _movie, _mouse, _key, _player, _sound, _system, _score } from "../subsystem/singletons.js";
 import { splitChars, splitItems, splitLines, splitWords } from "./chunk-split.js";
 
 const START = Date.now();
@@ -68,9 +68,10 @@ function itemDelimiterValue() {
 // Row kinds:
 //   core     - read/write the named field on the named singleton object
 //   local    - read/write the proxy's own backing (no core object owns it)
+//   score    - read the named field on the Score subsystem (004; rows below)
 //   computed - computed on read (C9)
 //   constant - fixed documented value
-//   noop     - Score/stage-backed: documented stable default until feature 004
+//   noop     - Score/stage-backed: documented stable default until its source lands
 const SINGLETONS = { movie: _movie, player: _player, sound: _sound, key: _key, mouse: _mouse, system: _system };
 
 const TABLE = {
@@ -97,10 +98,10 @@ const TABLE = {
   commandDown: { kind: "core", owner: "key", field: "commandDown", ro: true, def: false },
   optionDown: { kind: "core", owner: "key", field: "optionDown", ro: true, def: false },
 
-  frame: { kind: "noop", ro: true, def: 0 },
-  frameLabel: { kind: "noop", ro: true, def: 0 },
+  frame: { kind: "score", field: "frame", ro: true, def: 0 },
+  frameLabel: { kind: "score", field: "frameLabel", ro: true, def: "" },
   framePalette: { kind: "noop", ro: true, def: 0 },
-  frameTempo: { kind: "core", owner: "movie", field: "frameTempo", ro: true, def: 15 },
+  frameTempo: { kind: "score", field: "tempo", ro: true, def: 30 },
   marker: { kind: "noop", ro: true, def: "" },
   markerList: { kind: "noop", ro: true, def: [] },
   label: { kind: "noop", ro: true, def: "" },
@@ -199,6 +200,8 @@ function read(row, name) {
       return row.get();
     case "noop":
       return row.def;
+    case "score":
+      return _score ? _score[row.field] : row.def;
     case "local":
       return BACKING[name];
     case "core": {
