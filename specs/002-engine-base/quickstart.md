@@ -23,7 +23,7 @@ pnpm --filter @project-reborn/director test
 ```bash
 node --input-type=module -e "
 await import('./src/index.js');
-await import('./src/lingo/index.js');
+await import('./src/api/index.js');
 await import('./src/browser/index.js');
 console.log('ok: 3 entries import with zero module-resolution errors');
 "
@@ -37,7 +37,7 @@ context activation, no import-time side effects; FR-007/FR-008/SC-004.)
 
 ```bash
 node --input-type=module -e "
-import { Color, List, PropList, Point, Rect } from './src/lingo/index.js';
+import { Color, List, PropList, Point, Rect } from './src/api/index.js';
 const documented = {
   Color:    ['red', 'green', 'blue'],
   List:     ['count', 'add', 'addAt', 'append', 'deleteAt', 'deleteOne',
@@ -72,7 +72,7 @@ separately by the unit tests against the contract's field tables.
 
 ```bash
 node --input-type=module -e "
-import { Color } from './src/lingo/index.js';
+import { Color } from './src/api/index.js';
 const c = new Color(-5, 300, 12.9);
 if (c.red !== 0 || c.green !== 255 || c.blue !== 12) throw new Error('ctor clamp');
 c.red = -1; c.green = 256.7; c.blue = 3.5;
@@ -87,7 +87,7 @@ Expected: `ok: channels truncate to integer 0-255 …`
 
 ```bash
 node --input-type=module -e "
-import { List } from './src/lingo/index.js';
+import { List } from './src/api/index.js';
 const l = new List(3, 1, 2);
 l.add(1.5);                        // unsorted → end
 if (l.count !== 4 || l.getAt(1) !== 3) throw new Error('unsorted add must append');
@@ -115,7 +115,7 @@ Expected: `ok: list semantics …`
 
 ```bash
 node --input-type=module -e "
-import { PropList } from './src/lingo/index.js';
+import { PropList } from './src/api/index.js';
 const pl = new PropList('a', 1, 'b', 2);
 pl.addProp('c', 3);
 if (pl.getaProp('c') !== 3) throw new Error('addProp');
@@ -146,7 +146,7 @@ Expected: `ok: proplist semantics`
 
 ```bash
 node --input-type=module -e "
-import { Point, Rect } from './src/lingo/index.js';
+import { Point, Rect } from './src/api/index.js';
 const p = new Point(10, 20);
 if (p.locH !== 10 || p.locV !== 20 || p[1] !== 10 || p[2] !== 20) throw new Error('point');
 p[1] = 30; if (p.locH !== 30) throw new Error('point list-set');
@@ -166,7 +166,7 @@ Expected: `ok: point/rect property+list syntax …`
 ```bash
 node --input-type=module -e "
 import { EMPTY, VOID, RETURN, SPACE, TAB, BACKSPACE, ENTER, QUOTE, TRUE, FALSE, PI }
-  from './src/lingo/index.js';
+  from './src/api/index.js';
 const cases = [
   [EMPTY, ''], [VOID, null], [RETURN, '\r'], [SPACE, ' '], [TAB, '\t'],
   [BACKSPACE, '\b'], [ENTER, '\x03'], [QUOTE, '\"'], [TRUE, true],
@@ -180,7 +180,7 @@ console.log('ok: 11 constants doc-conformant, TRUE/FALSE numeric semantics');
 ```
 
 Expected: `ok: 11 constants doc-conformant, TRUE/FALSE numeric semantics`
-(Note: asserted permanently in `src/runtime/__tests__/constants.test.js`.)
+(Note: asserted permanently in `src/engine/base/__tests__/constants.test.js`.)
 
 ### Scenario 8 — Test command green, no pre-existing failures
 
@@ -198,6 +198,7 @@ not exist. This gates SC-002/SC-003/SC-006.
   (5 type files + constants + entry-points); the one-liners are the manual
   smoke equivalents.
 - Red-green record: before the import fixes, scenario 1/8 fail with
-  module-resolution errors on `../runtime/methods/*`; scenario 2 red on
-  `hex`/`rgb`/`equals`; scenario 7 red on `BACKSPACE` (`"3"` vs `"\b"`); all go
-  green with the plan's fixes.
+  module-resolution errors on the pre-repair imports (`src/api/index.js` →
+  `../runtime/methods/*`, `src/browser/index.js` → `../runtime/creators/*`);
+  scenario 2 red on `hex`/`rgb`/`equals`; scenario 7 red on `BACKSPACE`
+  (`"3"` vs `"\b"`); all go green with the plan's fixes.

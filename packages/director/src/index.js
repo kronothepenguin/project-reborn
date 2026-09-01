@@ -4,5 +4,5 @@
 // builders). Vite tree-shakes unused exports; if you only want the runtime
 // surface, import from `@project-reborn/director/lingo`.
 
-export * from "./lingo/index.js";
+export * from "./api/index.js";
 export * from "./browser/index.js";

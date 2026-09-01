@@ -10,7 +10,7 @@ FR-004 surface audit is mechanical.
 
 ---
 
-## `Color` — `src/engine/types/color.js`
+## `Color` — `src/engine/base/color.js`
 
 | Member | Type | Rules |
 | --- | --- | --- |
@@ -28,7 +28,7 @@ FR-004 surface audit is mechanical.
 - Validation: no validation errors — every value truncates to 0–255.
 - REMOVED surfaced: `hex`, `rgb`, `equals()` (undocumented; clarify Q1).
 
-## `List` — `src/engine/types/list.js`
+## `List` — `src/engine/base/list.js`
 
 | Member | Type | Rules |
 | --- | --- | --- |
@@ -57,7 +57,7 @@ FR-004 surface audit is mechanical.
 - Reference semantics: assignment copies the reference, not the list
   (essentials 1729–1741) — native JS behavior, no work.
 
-## `PropList` — `src/engine/types/prop-list.js`
+## `PropList` — `src/engine/base/prop-list.js`
 
 | Member | Type | Rules |
 | --- | --- | --- |
@@ -94,7 +94,7 @@ FR-004 surface audit is mechanical.
   bracket-read-throws distinction above is per the docs and is asserted in
   tests.
 
-## `Point` — `src/engine/types/point.js`
+## `Point` — `src/engine/base/point.js`
 
 | Member | Type | Rules |
 | --- | --- | --- |
@@ -110,7 +110,7 @@ FR-004 surface audit is mechanical.
   (14222–14224) is impossible with JS operators (no overloading) and out of 002
   scope.
 
-## `Rect` — `src/engine/types/rect.js`
+## `Rect` — `src/engine/base/rect.js`
 
 | Member | Type | Rules |
 | --- | --- | --- |
@@ -127,7 +127,7 @@ FR-004 surface audit is mechanical.
   `width`/`height` members (properties.txt 9062–9096 applies to
   Image/Member/Sprite, not the data type).
 
-## Lingo Constants — `src/runtime/constants.js`
+## Lingo Constants — `src/engine/base/constants.js`
 
 | Constant | Lingo value | JS value | Doc anchor |
 | --- | --- | --- | --- |

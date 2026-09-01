@@ -8,16 +8,17 @@ define the data-type surface completely (with three spec-authorized boundary
 decisions recorded below); the constants ambiguity flagged in the clarify session
 resolves to Lingo character semantics (keyCode columns in constants.txt are the
 JS-syntax ALTERNATIVE spelling, not the constant values); and the package breakage
-is a mechanical, fully-enumerated import-path repair against the post-refactor
-layout — no file moves required. 132 stale test files and the 4 custom shim files
-are deleted; vitest/jsdom remains the environment.
+is a mechanical, fully-enumerated import-path repair against the layer taxonomy
+(folders renamed per user directive, then paths repaired — no rewrites). 132
+stale test files and the 4 custom shim files are deleted; vitest/jsdom remains
+the environment.
 
 ---
 
 ## R1: Data-type representation (Color, List, PropList, Point, Rect)
 
 **Decision**: All five types keep their own class representation in
-`src/engine/types/` (port-with-fixes, see R5). JS natives are reused only for
+`src/engine/base/` (port-with-fixes, see R5). JS natives are reused only for
 VALUES inside the types (strings, numbers, booleans — FR-003). Bracket/list-syntax
 access on `List`, `PropList`, `Point`, `Rect` is provided by the existing
 `Proxy` wrappers, which for `List`/`PropList` must be corrected to doc-defined
@@ -205,47 +206,63 @@ character IS chr(3), and its keyCode is also 3). `RETURN="\r"`, `SPACE=" "`,
 
 ## R3: Package stabilization scope
 
-**Decision**: Keep the CURRENT post-refactor layout as final and repair imports
-in place — no file moves, no rearrange-to-final-layout pass (the refactor already
-established the target: `src/engine/{objects,types}`, `src/runtime/{package,
-subsystems,player,syntax,context,singletons,constants,index}`, `src/lingo/{index,
-methods}`, `src/browser/index.js`, `src/index.js`). Later specs build on this
-layout. Verified broken imports (node resolver over all 42 broken source files):
+**Decision**: Folders are renamed to the layer taxonomy per user directive
+(amendment 2026-08-31) so folders reflect where they belong, then imports are
+repaired against that final layout. Target layout:
 
-| File | Broken path(s) | Correct fix |
+```text
+src/
+├── index.js
+├── engine/{base,core,subsystem,syntax}/    # base=types+constants, core=objects(+media),
+│                                           # subsystem=context+singletons+registries, syntax=chunk+the
+├── api/{index.js,methods/}                 # the @/lingo public surface
+├── player/                                 # runner: event-loop, worker, cast-loader, …
+├── pack/                                   # movie + cast builders
+└── browser/{index.js,custom-elements/}     # browser host + <x-object>/<x-embed>/<x-param>
+```
+
+The post-refactor internals are relocated (no rewrites): `engine/types` →
+`engine/base` (+ `runtime/constants.js`), `engine/objects` → `engine/core`,
+`runtime/{subsystems,context,singletons}` → `engine/subsystem`,
+`runtime/syntax` → `engine/syntax`, `lingo` → `api`, `runtime/package` → `pack`,
+`runtime/player` → `player` (custom-elements → `browser/custom-elements`),
+`runtime/index.js` deleted (superseded by `api/index.js`). Public names stay
+stable: `@/lingo` subpath now resolves to `src/api/index.js`.
+Repairs (resolver-driven, no rewrites; 42 source files):
+
+| File | Broken path(s) | Correct fix (layer layout) |
 | --- | --- | --- |
-| `src/lingo/index.js` | 107 × `../runtime/methods/<X>.js` | `../lingo/methods/<X>.js` (all 107 target files exist — verified) |
-| `src/browser/index.js` | `../runtime/creators/movie.js`, `../runtime/creators/cast.js`, `../runtime/creators/define-movie.js`, `../runtime/creators/define-cast.js` | `../runtime/package/movie.js`, `../runtime/package/cast.js`; **remove** the `defineMovie`/`defineCast` exports — their targets were deliberately deleted by the 001 refactor (refactor.md 211–212, 217, 227 "defineMovie is NOT rebuilt") |
-| `src/runtime/index.js` | 13 × `./objects/*.js`, 5 × `./types/*.js` | `../engine/objects/*.js`, `../engine/types/*.js` (`./constants.js`, `./singletons.js`, `./context.js` already resolve) |
-| `src/runtime/context.js` | 7 × `./objects/*.js` | `../engine/objects/*.js` |
-| `src/runtime/singletons.js` | 7 × `./objects/*.js` | `../engine/objects/*.js` |
-| `src/runtime/player/cast-loader.js` | `../objects/cast-library.js` | `../../engine/objects/cast-library.js` |
-| `src/runtime/syntax/the-proxy.js` | `../objects/cast-library.js` | `../../engine/objects/cast-library.js` |
-| `src/lingo/methods/alert.js`, `appMinimize.js`, `beep.js`, `beginRecording.js`, `breakLoop.js`, `callFrame.js`, `castLib.js`, `cursor.js`, `delay.js`, `externalParamName.js`, `externalParamValue.js`, `flushInputEvents.js`, `go.js`, `goLoop.js`, `goNext.js`, `goPrevious.js`, `halt.js`, `idleLoadDone.js`, `insertFrame.js`, `marker.js`, `quit.js`, `sound.js`, `sprite.js`, `stopEvent.js` | `../singletons.js` | `../../runtime/singletons.js` |
-| `src/lingo/methods/color.js`, `flashToStage.js`, `list.js`, `listP.js`, `makeSubList.js`, `max.js`, `min.js`, `point.js`, `propList.js`, `rect.js` | `../types/<X>.js` | `../../engine/types/<X>.js` |
-| `src/lingo/methods/ilk.js` | 5 × `../types/*.js`, 7 × `../objects/*.js` (incl. `../objects/index.js`) | `../../engine/types/*.js`, `../../engine/objects/*.js` |
+| `src/api/index.js` | 107 × `../runtime/methods/<X>.js`; `../runtime/{constants,syntax,singletons}.*`; `../engine/types/*` | `./methods/<X>.js` (all 107 exist); `../engine/base/constants.js`, `../engine/syntax/index.js`, `../engine/subsystem/singletons.js`; `../engine/base/*`; REMOVE 5 creator re-exports; ADD 5 class exports from `../engine/base/*` |
+| `src/browser/index.js` | `../runtime/creators/movie.js`, `../runtime/creators/cast.js`, `../runtime/creators/define-movie.js`, `../runtime/creators/define-cast.js` | `../pack/movie.js`, `../pack/cast.js`; **remove** the `defineMovie`/`defineCast` exports — their targets were deliberately deleted by the 001 refactor (refactor.md 211–212, 217, 227 "defineMovie is NOT rebuilt") |
+| `src/engine/core/index.js` | 5 × `../types/*.js` | `../base/*.js` (13 object re-exports `./X.js` already correct) |
+| `src/engine/subsystem/context.js` | 7 × `./objects/*.js` | `../core/*.js` |
+| `src/engine/subsystem/singletons.js` | 7 × `./objects/*.js` | `../core/*.js` |
+| `src/player/cast-loader.js` | `../objects/cast-library.js` | `../engine/core/cast-library.js` |
+| `src/engine/syntax/the-proxy.js` | `../objects/cast-library.js` | `../core/cast-library.js` |
+| `src/player/worker-shim.js` | `../context.js` | `../engine/subsystem/context.js` (+ resolver pass over remaining `player/*`) |
+| `src/api/methods/alert.js`, `appMinimize.js`, `beep.js`, `beginRecording.js`, `breakLoop.js`, `callFrame.js`, `castLib.js`, `cursor.js`, `delay.js`, `externalParamName.js`, `externalParamValue.js`, `flushInputEvents.js`, `go.js`, `goLoop.js`, `goNext.js`, `goPrevious.js`, `halt.js`, `idleLoadDone.js`, `insertFrame.js`, `marker.js`, `quit.js`, `sound.js`, `sprite.js`, `stopEvent.js` | `../singletons.js` | `../../engine/subsystem/singletons.js` |
+| `src/api/methods/color.js`, `flashToStage.js`, `list.js`, `listP.js`, `makeSubList.js`, `max.js`, `min.js`, `point.js`, `propList.js`, `rect.js` | `../types/<X>.js` | `../../engine/base/<X>.js` |
+| `src/api/methods/ilk.js` | 5 × `../types/*.js`, 7 × `../objects/*.js` (incl. `../objects/index.js`) | `../../engine/base/*.js`, `../../engine/core/*.js` |
 
 (35 method files carry broken imports — verified by resolver; the task brief said
-45, the verified count is 35 plus `lingo/index.js` itself. 132 test files also
-carry broken imports but are deleted, not fixed.)
+45, the verified count is 35 plus the barrels/glue. 132 test files also carry
+broken imports but are deleted, not fixed.)
 
-Also verified: `src/engine/objects/index.js` already re-exports the 13 objects
-AND the 5 types (lines 15–19) — correct as-is; `src/runtime/syntax/index.js`
-exports everything `@/lingo` expects (verified 1:1); `export * from
-"../runtime/constants.js"` and `../runtime/syntax/index.js` in `lingo/index.js`
-already resolve. `package.json` exports map is already correct (`.` →
-`src/index.js`, `./lingo` → `src/lingo/index.js`, `./browser` →
-`src/browser/index.js`) — NO package.json change. Zero runtime dependencies —
-correct. External consumer: `apps/client/package.json` declares
-`"@project-reborn/director": "workspace:*"` but has no source imports yet
-(verified) — unaffected.
+Also verified: `src/engine/syntax/index.js` exports everything `@/lingo` expects
+(verified 1:1); the types re-export in `src/engine/core/index.js` (lines 15–19)
+needs only the `../types` → `../base` path fix. `package.json` exports map is
+correct EXCEPT the `./lingo` target, which the layer restructure changes from
+`src/lingo/index.js` to `src/api/index.js` (the only package.json change in
+002). Zero runtime dependencies — correct. External consumer:
+`apps/client/package.json` declares `"@project-reborn/director": "workspace:*"`
+but has no source imports yet (verified) — unaffected.
 
 Cleanup mechanics: FULLY delete `src/__test-shims__/` (4 files) — all 9
 `__tests__` directories (132 `*.test.js` files, verified: `src/__tests__` 1,
-`src/engine/types/__tests__` 5, `src/lingo/methods/__tests__` 106,
-`src/runtime/__tests__` 3, `src/runtime/package/__tests__` 1,
-`src/runtime/player/__tests__` 4, `src/runtime/player/custom-elements/__tests__`
-1, `src/runtime/subsystems/__tests__` 3, `src/runtime/syntax/__tests__` 8).
+`src/engine/base/__tests__` 5, `src/api/methods/__tests__` 106,
+`src/runtime/__tests__` 3, `src/pack/__tests__` 1,
+`src/player/__tests__` 4, `src/browser/custom-elements/__tests__`
+1, `src/engine/subsystem/__tests__` 3, `src/engine/syntax/__tests__` 8).
 `vitest.config.js` drops `setupFiles: ["./src/__test-shims__/index.js"]`
 (environment stays `"jsdom"`, include stays `src/**/__tests__/**/*.test.js`).
 Recommended (plan decision, unreferenced dead code — zero importers verified):
@@ -254,20 +271,21 @@ delete `src/engine/packaging/` (2 stub files returning `{}`) and
 target layout; nothing imports them.
 
 **Rationale**: 001's spec named `runtime/objects` with `X…Object` naming and the
-`@/lingo` barrel; the post-refactor layout moved internals to `engine/` while
-keeping every PUBLIC name stable (001's own lingo-public-api.md lists only names,
-not paths). The 002 spec supersedes 001 where conflicting (spec line 149); the
-internal layout is a private implementation detail, so the fix is purely
-mechanical path repair. Moving files again would churn every engine import,
-contradict the "only FIX the broken imports" direction, and add risk for zero
-consumer benefit.
+`@/lingo` barrel; the layer restructure (user directive) renames the internal
+folders to the 002 taxonomy (base/core/subsystem/syntax/api/player/pack/browser)
+while keeping every PUBLIC name stable (001's own lingo-public-api.md lists only
+names, not paths; `@/lingo` and `@/browser` subpaths unchanged). The 002 spec
+supersedes 001 where conflicting (spec line 149); the internal layout is a
+private implementation detail, so the fix is purely mechanical path repair
+against the layer layout — no rewrites, no behavior changes.
 
 **Alternatives considered**:
-- *Rearrange to a cleaned final layout now (e.g. move constants into
-  engine/)*: not required by the spec; the layout is already coherent and later
-  specs build on it; rejected (KISS).
-- *Delete `src/runtime/index.js` (zero importers)*: the task explicitly
-  instructs fixing it; it is the canonical internal barrel for later specs;
+- *Keep the post-refactor `engine/{objects,types}` + `runtime/*` layout (no
+  moves)*: the user directive requires folders to reflect the layer they belong
+  to (engine-base/core/subsystem/syntax, api, player, pack, browser); keeping
+  the old folder names was rejected by the user.
+- *Delete `src/api/index.js` (zero importers)*: the task explicitly
+  instructs fixing it; it is the canonical public barrel for later specs;
   fix-in-place, keep.
 - *Recreate `define-movie.js`/`define-cast.js` as stubs*: refactor.md
   deliberately deleted them and specifies `run()` as the ingest path; stubbing
@@ -281,9 +299,8 @@ consumer benefit.
 vitest.config.js line 5), NO `setupFiles` (remove the shim reference), no
 package-local shims anywhere. All 002-scope tests are pure unit tests (no DOM
 needed; jsdom is harmless and satisfies the spec's "standard DOM environment"
-requirement — FR-010). New test files (7): `src/engine/types/__tests__/`
-{`color`, `list`, `prop-list`, `point`, `rect`}`.test.js`,
-`src/runtime/__tests__/constants.test.js`, and
+requirement — FR-010). New test files (7): `src/engine/base/__tests__/`
+{`color`, `list`, `prop-list`, `point`, `rect`, `constants`}`.test.js`, and
 `src/__tests__/entry-points.test.js` (fresh-process imports of all three public
 entries + surface assertions — regression for FR-007/FR-008/SC-004/SC-007; the
 old `public-barrels.test.js` is deleted with the 132 and its coverage re-expressed
@@ -330,11 +347,14 @@ explicitly forbidden by the clarify session (spec line 17).
   absent).
 - **Constants module**: port-with-one-fix — only `BACKSPACE` changes to chr(8);
   all other ten values verified correct.
-- **Barrels/entries (`lingo/index.js`, `browser/index.js`, `runtime/index.js`,
-  `runtime/context.js`, `runtime/singletons.js`, `cast-loader.js`,
-  `the-proxy.js`, 35 `lingo/methods/*.js`)**: minimal import-path repair — no
-  rewrite, no file moves; plus removal of the 5 creator exports from
-  `@/lingo` (deferred to 006, documented in contract) and the 2 dangling
+- **Barrels/entries (`api/index.js`, `browser/index.js`, `engine/core/index.js`,
+  `engine/subsystem/context.js`, `engine/subsystem/singletons.js`,
+  `player/cast-loader.js`, `player/worker-shim.js`,
+  `engine/syntax/the-proxy.js`, 35 `api/methods/*.js`)**: minimal import-path
+  repair against the layer taxonomy — no rewrites; plus removal of the 5
+  creator exports from
+  `@/lingo` (deferred to 006, documented in contract), deletion of the obsolete
+  `runtime/index.js` barrel, and the 2 dangling
   `defineMovie`/`defineCast` browser exports.
 
 ## Consolidation
