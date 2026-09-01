@@ -32,5 +32,6 @@
 ## Notes
 
 - The Input field quotes the user's feature description verbatim, which by nature references entry-point names and file counts; all requirement bodies stay implementation-free.
-- Two follow-ups flagged for the plan phase (not spec defects): (1) `BACKSPACE`/`ENTER` constant values need doc verification (`src/runtime/constants.js` currently uses char codes 51 and 3, which look wrong); (2) the current `Color` implementation carries undocumented convenience members (`hex`/`rgb` getters, `equals()`) that FR-004 requires removing or reconciling with the docs.
-- [NEEDS CLARIFICATION] none — the change to /speckit.clarify is not required before planning.
+- Clarifications incorporated (session 2026-08-31): (1) Color keeps only the documented surface — undocumented `hex`/`rgb` getters and `equals()` are removed, per doc check (color() at methods.txt:2196, Color type row at essentials:361); a global `rgb()` helper is deferred to the API feature (006); (2) test cleanup scope expanded to also delete the package-local browser-mock shims (`src/__test-shims__/`), with jsdom/happy-dom as the standard DOM test environment; (3) flagged doc ambiguity on key-character constant values (keyCode column vs Lingo character semantics) to be resolved in the plan, not guessed.
+- Two plan-phase follow-ups remain open (not spec defects): (1) BACKSPACE/ENTER constants doc-ambiguity resolution; (2) whether the existing data-type implementations are ported or rewritten.
+- [NEEDS CLARIFICATION] none.

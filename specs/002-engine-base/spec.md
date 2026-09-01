@@ -8,6 +8,15 @@
 
 **Input**: User description: "Build the engine base layer of the Director Shockwave runtime package (`@project-reborn/director`): the five Director MX 2004 data-types (Color, List, PropList, Point, Rect) exactly as documented in the Macromedia Director MX 2004 scripting reference, plus the Lingo constants (EMPTY, VOID, RETURN, SPACE, TAB, BACKSPACE, ENTER, QUOTE, TRUE, FALSE, PI). Also perform Phase 0 stabilization: a recent refactor moved code and left stale internal import paths, so the package currently does not import cleanly through its public entry points — consumers and later specs cannot build on it until fixed. Additionally, delete all existing unit tests in the package (132 stale `*.test.js` files, most of them tied to the old module layout) — they are stale relative to the new implementation and will be rebuilt per-spec under red-green discipline. 002 supersedes conflicting decisions from 001, which stays in place as historical reference."
 
+## Clarifications
+
+### Session 2026-08-31
+
+- Q: The existing `Color` implementation carries undocumented convenience members (`hex`/`rgb` getters, `equals()`). FR-004 forbids undocumented members; keep, mark, or remove them? → A: Check the documentation first, then decide. Doc result: `color()` is the documented top-level function and data type creator (`color(intPaletteIndex)` or `color(intRed, intGreen, intBlue)`, methods.txt line 2196), with all values truncated to the 0–255 range; the data-type table (director_scripting_essentials.txt line 361) describes Color only as "Represents an object's color." No documentation exists for `hex`, `rgb` getters, or `equals()`. Decision: documented surface only — the undocumented convenience members are removed.
+- Q: Is `rgb()` a documented alternative creator for Color? → A: `rgb()` has no dedicated entry in methods.txt or properties.txt; it appears only inside 3D examples as a literal color expression. A global `rgb()` helper's existence is therefore deferred to the API feature (006) and must not be added in 002.
+- Q: Test cleanup scope — delete only the 132 stale `*.test.js` files, or also the custom browser-mock shims (`src/__test-shims__/`)? → A: Delete the shims too. Browser-like behavior in tests is provided by a standard DOM environment (jsdom or happy-dom), not by package-local shims.
+- Note: The key character constants carry a documentation ambiguity. The constants chapter (constants.txt) maps `BACKSPACE`→51, `ENTER`→3, `RETURN`→36, `SPACE`→49, `TAB`→48 in its JavaScript column (keyCode values), while Lingo compares the constants against `_key.key` (the character produced). The current values (`String.fromCharCode(51)` for `BACKSPACE`, `String.fromCharCode(3)` for `ENTER`) mirror the keyCodes, which contradicts Lingo character semantics. The plan must resolve the doc-conformant values (leaning: Lingo character constants — `BACKSPACE` = backspace character, `RETURN` = `\r`, `SPACE` = `" "`, `TAB` = `"\t"` — and document the discrepancy); no silent guessing.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Director Data-Types (Priority: P1)
@@ -67,7 +76,7 @@ A consumer (the client, translated Lingo bundles, the test suite, or a later spe
 
 ### User Story 4 - Test Cleanup - Phase 0 (Priority: P2)
 
-The package's 132 existing unit tests are deleted as the starting move of the rebuild. They assert behavior from the old implementation and old module layout, so they are misleading: they do not describe the new implementation's contract, several reference removed APIs or old import paths, and they obscure the actual state of the package. Removing them gives the package a clean slate on which tests are then rebuilt per-spec under red-green discipline — write the test, observe it fail, then implement.
+The package's 132 existing unit tests and its custom browser-mock shims (`src/__test-shims__/`) are deleted as the starting move of the rebuild. They assert behavior from the old implementation and old module layout, so they are misleading: they do not describe the new implementation's contract, several reference removed APIs or old import paths, and they obscure the actual state of the package. Removing them gives the package a clean slate on which tests are then rebuilt per-spec under red-green discipline — write the test, observe it fail, then implement. Browser-like behavior in tests is provided by a standard DOM environment (jsdom or happy-dom), not by package-local shims.
 
 **Why this priority**: This is deliberately P2 rather than P1: it never blocks consumers (the stale tests do not prevent imports once US3 lands), but it must happen before any new per-spec tests are written so the suite is unambiguous and red-green has a clean starting point. It supports the constitution's Test & Verification Discipline by ensuring no stale assertions survive to mislead later work.
 
@@ -75,7 +84,7 @@ The package's 132 existing unit tests are deleted as the starting move of the re
 
 **Acceptance Scenarios**:
 
-1. **Given** the package's 132 existing unit tests, **When** Phase 0 cleanup completes, **Then** all stale tests have been removed and none remain in the package.
+1. **Given** the package's 132 existing unit tests and its custom test shims, **When** Phase 0 cleanup completes, **Then** all stale tests and package-local shims have been removed and none remain in the package.
 2. **Given** the remaining test tree after cleanup, **When** inspected, **Then** no test file references a removed API, a removed module path, or the pre-refactor layout.
 3. **Given** the deletion, **When** any previously stale test is considered for revival later, **Then** it is rewritten fresh against the new implementation contract under red-green, never silently adapted.
 4. **Given** the package at the end of this feature, **When** the test command runs, **Then** it executes the fresh in-scope tests (data-types and constants) and reports no pre-existing failures.
@@ -108,8 +117,8 @@ The package's 132 existing unit tests are deleted as the starting move of the re
 - **FR-006**: `TRUE` and `FALSE` MUST honor the documented numeric semantics (FALSE = 0; any nonzero integer evaluates to TRUE) in addition to their logical meaning.
 - **FR-007**: All three public entry points (package root, lingo surface, browser host) MUST import successfully in a fresh process with no module-resolution errors, and importing them MUST NOT require an activated runtime context or produce import-time side effects.
 - **FR-008**: The package MUST contain no stale internal import paths in any module reachable from its public entry points — no import may reference a module that is missing, removed, or relocated relative to the current layout.
-- **FR-009**: All stale unit tests — tests asserting removed behavior, referencing removed APIs, or tied to the pre-refactor layout — MUST be removed from the package so the test suite is a clean slate for per-spec red-green rebuilding.
-- **FR-010**: Tests for this feature's scope (the five data-types and the constants, and the public entry points) MUST be introduced first, observed failing, and then made to pass (red-green per the constitution's Test & Verification Discipline); at feature completion the package test command MUST pass with no pre-existing failures.
+- **FR-009**: All stale unit tests — tests asserting removed behavior, referencing removed APIs, or tied to the pre-refactor layout — MUST be removed from the package, along with the package-local browser-mock shims, so the test suite is a clean slate for per-spec red-green rebuilding.
+- **FR-010**: Tests for this feature's scope (the five data-types and the constants, and the public entry points) MUST be introduced first, observed failing, and then made to pass (red-green per the constitution's Test & Verification Discipline); at feature completion the package test command MUST pass with no pre-existing failures. Browser-like behavior in tests MUST come from a standard DOM environment (jsdom or happy-dom), not package-local shims.
 - **FR-011**: Where the documentation is silent, ambiguous, or contradictory about runtime behavior, the system MUST NOT guess: the ambiguity MUST be surfaced and resolved before implementation (No Silent Interpretation).
 
 ### Key Entities *(include if feature involves data)*
@@ -129,7 +138,7 @@ The package's 132 existing unit tests are deleted as the starting move of the re
 - **SC-002**: Every documented operation of the five data-types is exercised by the test suite with doc-defined expected results, and 100% of those assertions pass at feature completion.
 - **SC-003**: All eleven Lingo constants are exported from the lingo entry point with values matching the documentation, verified by test assertions.
 - **SC-004**: The three public entry points import in a fresh process with zero module-resolution errors, and a regression test asserting entry-point importability passes at feature completion.
-- **SC-005**: Zero stale tests remain after cleanup — all 132 pre-existing test files removed — and no remaining test references a removed API or the pre-refactor layout.
+- **SC-005**: Zero stale tests and zero package-local browser-mock shims remain after cleanup — all 132 pre-existing test files and the shims removed — and no remaining test references a removed API or the pre-refactor layout.
 - **SC-006**: `pnpm --filter @project-reborn/director test` completes with no failures attributable to pre-existing package state at feature completion.
 - **SC-007**: A static audit of the module graph reachable from the public entry points finds zero imports referencing missing or relocated modules.
 
@@ -142,5 +151,6 @@ The package's 132 existing unit tests are deleted as the starting move of the re
 - Later specs in the series will cover core objects, context, syntax, the public API, the player, packaging, and browser integration; 002 covers only the data-types, constants, package stabilization, and test cleanup.
 - One worker per movie is the isolation model; interaction between two active contexts is a later spec's concern, and 002 does not change the current isolation semantics.
 - Whether the existing data-type implementations are ported or rewritten is a plan-level decision for the 002 plan; 002's requirement is only that the documented behavior be correct at feature end.
-- Test deletion is confined to the package's stale unit tests; no test suites outside the package are touched by this feature.
+- Test deletion is confined to the package's stale unit tests and package-local shims; no test suites outside the package are touched by this feature.
+- The package test environment uses a standard DOM environment (e.g. jsdom or happy-dom) for any browser-like behavior; no package-local shims are reintroduced.
 - The package test command is the verification gate for this feature's test-related criteria.
