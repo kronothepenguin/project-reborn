@@ -1,3 +1,4 @@
+// @owner top
 export function camera(nameOrNum) {
   const cam = {
     name: nameOrNum == null ? "" : String(nameOrNum),

@@ -1,9 +1,6 @@
-let lastEventTime = 0;
+// @owner player
+import { _getPlayer } from "../../engine/subsystem/singletons.js";
 
 export function lastEvent() {
-  return lastEventTime;
-}
-
-export function _setLastEventForTests(ticks) {
-  lastEventTime = Number(ticks) || 0;
+  return _getPlayer().lastEvent;
 }

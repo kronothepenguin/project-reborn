@@ -1,3 +1,4 @@
+// @owner top
 let browserPath = "";
 let browserEnabled = false;
 

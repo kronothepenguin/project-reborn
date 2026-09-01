@@ -1,9 +1,6 @@
-let lastClickTime = 0;
+// @owner player
+import { _getPlayer } from "../../engine/subsystem/singletons.js";
 
 export function lastClick() {
-  return lastClickTime;
-}
-
-export function _setLastClickForTests(ticks) {
-  lastClickTime = Number(ticks) || 0;
+  return _getPlayer().lastClick;
 }

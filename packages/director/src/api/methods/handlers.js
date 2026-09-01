@@ -1,3 +1,4 @@
+// @owner top
 function asSymbol(name) {
   if (typeof name === "symbol") return name;
   return Symbol(String(name));

@@ -1,11 +1,8 @@
+// @owner net
 // getNetText(url, propertyList?, serverOSString?, characterSet?)
 // Per docs/drmx2004_scripting_ref.txt lines 17308-17368.
 
-import {
-  createTransaction,
-  updateTransaction,
-  setAbortController,
-} from "./_netRegistry.js";
+import { _getNetState } from "../../engine/subsystem/singletons.js";
 
 function encodePropertyList(propertyList) {
   if (propertyList == null) return "";
@@ -24,51 +21,53 @@ export function getNetText(url, propertyList, _serverOSString, _characterSet) {
     throw new Error("getNetText: URL is required");
   }
 
-  const id = createTransaction();
+  const net = _getNetState();
   const encoded = encodePropertyList(propertyList);
   const finalUrl = encoded ? `${url}?${encoded}` : url;
-  updateTransaction(id, { url: finalUrl, state: "Connecting" });
 
   const controller = new AbortController();
-  setAbortController(id, controller);
+  const id = net.begin({ url: finalUrl, abortController: controller });
 
   fetch(finalUrl, { signal: controller.signal })
     .then((response) => {
       if (!response.ok) {
-        updateTransaction(id, {
-          state: "Error",
-          error: `HTTP ${response.status}`,
-        });
+        net.update(id, { status: "error", error: `HTTP ${response.status}` });
         return null;
       }
       const total = Number(response.headers.get("content-length")) || 0;
-      updateTransaction(id, {
-        state: "Started",
+      net.update(id, {
+        status: "inflight",
         bytesTotal: total,
         mime: response.headers.get("content-type") || "",
-        lastModDate: response.headers.get("last-modified") || "",
+        lastMod: parseLastModified(response.headers.get("last-modified")),
       });
       return response.text();
     })
     .then((text) => {
       if (text == null) return;
-      updateTransaction(id, {
-        state: "Complete",
+      net.update(id, {
+        status: "done",
+        data: text,
+        error: null,
         bytesSoFar: text.length,
-        result: text,
-        error: "OK",
       });
     })
     .catch((err) => {
       if (err && err.name === "AbortError") {
-        updateTransaction(id, { state: "Error", error: "4242" });
+        net.update(id, { status: "error", error: "4242" });
       } else {
-        updateTransaction(id, {
-          state: "Error",
+        net.update(id, {
+          status: "error",
           error: err && err.message ? err.message : "Network error",
         });
       }
     });
 
   return id;
+}
+
+function parseLastModified(value) {
+  if (!value) return null;
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? null : d;
 }

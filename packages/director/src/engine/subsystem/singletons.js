@@ -1,14 +1,15 @@
-// Singleton slots
+// Singleton facade (006 C8 retirement).
 //
-// Single live binding per singleton for the entire module graph of this worker.
-// `DirectorContext.activate()` rewrites these slots via `_installSingletons(ctx)`,
-// so any module that imports `_movie` / `_player` / etc. sees the active
-// context's instances. Each worker has its own module graph → its own slot
-// bindings → full per-movie isolation. Default instances keep tests and the
-// no-context case working.
+// The 7 Director core-object instances no longer live as mutable module-level
+// slots rewritten by `_installSingletons`. They are consts ON the active
+// `DirectorContext` (the global state per the user's directive). This module
+// keeps the public names `_movie`/`_player`/`_sound`/`_key`/`_mouse`/`_system`/
+// `_global` importable (API barrel + the-proxy + translated Lingo code) by
+// resolving them to the active context's instances at read time.
 //
-// FR-003/FR-016/FR-027; research.md R3.
-
+// No context active -> fresh default instance per read, keeping no-context
+// reads and tests working.
+import { getActiveDirectorContext } from "./accessor.js";
 import { MovieObject } from "../core/movie.js";
 import { PlayerObject } from "../core/player.js";
 import { SoundObject } from "../core/sound.js";
@@ -16,39 +17,56 @@ import { KeyObject } from "../core/key.js";
 import { MouseObject } from "../core/mouse.js";
 import { SystemObject } from "../core/system.js";
 import { GlobalObject } from "../core/global.js";
+import { NetState } from "./net-state.js";
 
-// Internal subsystem slot (004): re-exported from score-slot.js (which owns
-// the binding) so MovieObject can read it without a module cycle. NOT a
-// globalThis singleton — only the 7 documented singletons are installed there.
-export { _score } from "./score-slot.js";
-import { _setScore, _resetScore } from "./score-slot.js";
+// Internal subsystem slot (004): the Score is owned by the active context
+// (C8); the proxy and MovieObject resolve it via the accessor. NOT a
+// singleton; never installed on globalThis.
 
-export let _movie = new MovieObject();
-export let _player = new PlayerObject();
-export let _sound = new SoundObject();
-export let _key = new KeyObject();
-export let _mouse = new MouseObject();
-export let _system = new SystemObject();
-export let _global = new GlobalObject();
+const _defaults = {
+  movie: new MovieObject(),
+  player: new PlayerObject(),
+  sound: new SoundObject(),
+  key: new KeyObject(),
+  mouse: new MouseObject(),
+  system: new SystemObject(),
+  global: new GlobalObject(),
+};
 
-export function _installSingletons(ctx) {
-  _movie = ctx.movie;
-  _player = ctx.player;
-  _sound = ctx.sound;
-  _key = ctx.key;
-  _mouse = ctx.mouse;
-  _system = ctx.system;
-  _global = ctx.global;
-  _setScore(ctx.score);
+function resolve(name) {
+  const ctx = getActiveDirectorContext();
+  return ctx ? ctx[name] : _defaults[name];
 }
 
-export function _resetSingletons() {
-  _movie = new MovieObject();
-  _player = new PlayerObject();
-  _sound = new SoundObject();
-  _key = new KeyObject();
-  _mouse = new MouseObject();
-  _system = new SystemObject();
-  _global = new GlobalObject();
-  _resetScore();
+export function _getMovie() {
+  return resolve("movie");
 }
+export function _getPlayer() {
+  return resolve("player");
+}
+export function _getSound() {
+  return resolve("sound");
+}
+export function _getKey() {
+  return resolve("key");
+}
+export function _getMouse() {
+  return resolve("mouse");
+}
+export function _getSystem() {
+  return resolve("system");
+}
+export function _getGlobal() {
+  return resolve("global");
+}
+
+const _defaultNetState = new NetState();
+
+// 006 R9: the network registry is a subsystem — the active context's
+// `netState`, or a module-scoped default when no context is active.
+export function _getNetState() {
+  const ctx = getActiveDirectorContext();
+  return ctx ? ctx.netState : _defaultNetState;
+}
+
+export { _getMovie as _movie, _getPlayer as _player, _getSound as _sound, _getKey as _key, _getMouse as _mouse, _getSystem as _system, _getGlobal as _global };

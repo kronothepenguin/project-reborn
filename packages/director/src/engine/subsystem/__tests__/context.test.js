@@ -1,6 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { DirectorContext } from "../context.js";
-import { _score, _movie, _player, _sound, _key, _mouse, _system, _global, _resetSingletons } from "../singletons.js";
+import { _getMovie, _getPlayer, _getSound, _getKey, _getMouse, _getSystem, _getGlobal } from "../singletons.js";
+import { getActiveDirectorContext, setActiveDirectorContext } from "../accessor.js";
 
 describe("DirectorContext — ownership", () => {
   it("owns the seven singletons as instances", () => {
@@ -56,50 +57,40 @@ describe("DirectorContext — ownership", () => {
   });
 });
 
-describe("DirectorContext — activate dual binding", () => {
-  beforeEach(() => _resetSingletons());
+describe("DirectorContext — activate sets the active context (006 C8)", () => {
   afterEach(() => {
-    _resetSingletons();
-    delete globalThis._movie;
-    delete globalThis._player;
-    delete globalThis._sound;
-    delete globalThis._key;
-    delete globalThis._mouse;
-    delete globalThis._system;
-    delete globalThis._global;
+    setActiveDirectorContext(null);
   });
 
-  it("binds both surfaces to the context instances", () => {
+  it("activate() makes the facade resolve this context's core-object consts", () => {
     const ctx = new DirectorContext();
-    const g = {};
-    ctx.activate(g);
-    expect(_movie).toBe(ctx.movie);
-    expect(_player).toBe(ctx.player);
-    expect(_sound).toBe(ctx.sound);
-    expect(_key).toBe(ctx.key);
-    expect(_mouse).toBe(ctx.mouse);
-    expect(_system).toBe(ctx.system);
-    expect(_global).toBe(ctx.global);
-    expect(g._movie).toBe(ctx.movie);
-    expect(g._player).toBe(ctx.player);
-    expect(g._global).toBe(ctx.global);
+    ctx.activate();
+    expect(getActiveDirectorContext()).toBe(ctx);
+    expect(_getMovie()).toBe(ctx.movie);
+    expect(_getPlayer()).toBe(ctx.player);
+    expect(_getSound()).toBe(ctx.sound);
+    expect(_getKey()).toBe(ctx.key);
+    expect(_getMouse()).toBe(ctx.mouse);
+    expect(_getSystem()).toBe(ctx.system);
+    expect(_getGlobal()).toBe(ctx.global);
   });
 
-  it("binds the _score slot to the context score, and does NOT install it on the global", () => {
+  it("does NOT install anything on globalThis (no _movie/_score globals)", () => {
     const ctx = new DirectorContext();
-    const g = {};
-    ctx.activate(g);
-    expect(_score).toBe(ctx.score);
-    expect("_score" in g).toBe(false);
+    ctx.activate();
+    expect(globalThis._movie).toBeUndefined();
+    expect(globalThis._score).toBeUndefined();
   });
 
-  it("last-activate-wins detaches the first context from both surfaces", () => {
+  it("last-activate-wins; destroy() clears the pointer", () => {
     const a = new DirectorContext({ name: "a" });
     const b = new DirectorContext({ name: "b" });
-    a.activate({});
-    b.activate({});
-    expect(_movie).toBe(b.movie);
-    expect(_system).toBe(b.system);
+    a.activate();
+    b.activate();
+    expect(getActiveDirectorContext()).toBe(b);
+    b.destroy();
+    expect(getActiveDirectorContext()).toBeNull();
+    a.destroy();
   });
 });
 

@@ -1,13 +1,15 @@
+// @owner net
+import { _getNetState } from "../../engine/subsystem/singletons.js";
 // getStreamStatus(netID)
 // Per docs/drmx2004_scripting_ref.txt lines 17817-17872.
 // Returns a property list with #URL, #state, #bytesSoFar, #bytesTotal, #error.
 
-import { getTransaction, getLastNetId } from "./_netRegistry.js";
 
 export function getStreamStatus(netID) {
-  const id = netID != null ? netID : getLastNetId();
-  const trans = getTransaction(id);
-  if (!trans) {
+  const ns = _getNetState();
+  const id = netID != null ? netID : ns.lastNetId;
+  const rec = ns.get(id);
+  if (!rec) {
     return {
       URL: "",
       state: "NoInformation",
@@ -17,10 +19,10 @@ export function getStreamStatus(netID) {
     };
   }
   return {
-    URL: trans.url || "",
-    state: trans.state || "NoInformation",
-    bytesSoFar: trans.bytesSoFar || 0,
-    bytesTotal: trans.bytesTotal || 0,
-    error: trans.error || "",
+    URL: rec.url || "",
+    state: rec.status === "done" ? "Complete" : rec.status === "error" ? "Error" : "InProgress",
+    bytesSoFar: rec.bytesSoFar || 0,
+    bytesTotal: rec.bytesTotal || 0,
+    error: ns.errorString(id) === "OK" ? "" : ns.errorString(id),
   };
 }

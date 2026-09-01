@@ -1,43 +1,54 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import {
-  _movie,
-  _player,
-  _sound,
-  _key,
-  _mouse,
-  _system,
-  _global,
-  _score,
-  _installSingletons,
-  _resetSingletons,
+  _getMovie,
+  _getPlayer,
+  _getSound,
+  _getKey,
+  _getMouse,
+  _getSystem,
+  _getGlobal,
 } from "../singletons.js";
+import { setActiveDirectorContext, getActiveDirectorContext } from "../accessor.js";
 import { DirectorContext } from "../context.js";
 
-describe("singletons — live binding slots", () => {
-  beforeEach(() => _resetSingletons());
-  afterEach(() => _resetSingletons());
+describe("singletons facade (006 C8)", () => {
+  afterEach(() => setActiveDirectorContext(null));
 
-  it("exposes default instances without any context", () => {
-    expect(_movie).toBeDefined();
-    expect(_player).toBeDefined();
-    expect(_sound).toBeDefined();
-    expect(_key).toBeDefined();
-    expect(_mouse).toBeDefined();
-    expect(_system).toBeDefined();
-    expect(_global).toBeDefined();
-    expect(_score).toBeDefined();
+  it("all getters exist and return objects without an active context", () => {
+    expect(_getMovie()).toBeDefined();
+    expect(_getPlayer()).toBeDefined();
+    expect(_getSound()).toBeDefined();
+    expect(_getKey()).toBeDefined();
+    expect(_getMouse()).toBeDefined();
+    expect(_getSystem()).toBeDefined();
+    expect(_getGlobal()).toBeDefined();
   });
 
-  it("_installSingletons(ctx) rebinds all eight slots to the context's instances", () => {
+  it("with an active context, getters return the context's core-object consts", () => {
     const ctx = new DirectorContext({ name: "act" });
-    _installSingletons(ctx);
-    expect(_movie).toBe(ctx.movie);
-    expect(_player).toBe(ctx.player);
-    expect(_sound).toBe(ctx.sound);
-    expect(_key).toBe(ctx.key);
-    expect(_mouse).toBe(ctx.mouse);
-    expect(_system).toBe(ctx.system);
-    expect(_global).toBe(ctx.global);
-    expect(_score).toBe(ctx.score);
+    setActiveDirectorContext(ctx);
+    expect(_getMovie()).toBe(ctx.movie);
+    expect(_getPlayer()).toBe(ctx.player);
+    expect(_getSound()).toBe(ctx.sound);
+    expect(_getKey()).toBe(ctx.key);
+    expect(_getMouse()).toBe(ctx.mouse);
+    expect(_getSystem()).toBe(ctx.system);
+    expect(_getGlobal()).toBe(ctx.global);
+  });
+
+  it("activate() makes the facade resolve the context instances", () => {
+    const ctx = new DirectorContext({ name: "b" });
+    ctx.activate();
+    expect(getActiveDirectorContext()).toBe(ctx);
+    expect(_getMovie()).toBe(ctx.movie);
+    ctx.destroy();
+  });
+
+  it("clearing the active context returns fresh defaults", () => {
+    const ctx = new DirectorContext({ name: "c" });
+    ctx.activate();
+    ctx.destroy();
+    expect(getActiveDirectorContext()).toBeNull();
+    expect(_getMovie()).not.toBe(ctx.movie);
   });
 });

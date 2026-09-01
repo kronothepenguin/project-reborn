@@ -1,3 +1,4 @@
+// @owner top
 import { point } from "../../engine/base/point.js";
 
 export function flashToStage(spriteRef, pointInFlashMovie) {

@@ -1,3 +1,4 @@
+// @owner top
 import { member } from "./member.js";
 
 export function script(nameOrNum, castLibNum) {

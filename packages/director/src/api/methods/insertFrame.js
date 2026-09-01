@@ -1,5 +1,6 @@
-import { _movie } from "../../engine/subsystem/singletons.js";
+// @owner movie
+import { _getMovie } from "../../engine/subsystem/singletons.js";
 
 export function insertFrame() {
-  _movie.insertFrame();
+  _getMovie().insertFrame();
 }

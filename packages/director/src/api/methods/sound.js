@@ -1,5 +1,6 @@
-import { _sound } from "../../engine/subsystem/singletons.js";
+// @owner sound
+import { _getSound } from "../../engine/subsystem/singletons.js";
 
 export function sound(intSoundChannel) {
-  return _sound.channel(intSoundChannel);
+  return _getSound().channel(intSoundChannel);
 }

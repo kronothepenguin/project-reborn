@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Color } from "../../../api/index.js";
 
-const documentedMembers = ["red", "green", "blue"];
+const documentedMembers = ["red", "green", "blue", "paletteIndex"];
 
 describe("Color", () => {
   it("exposes exactly the documented prototype surface (FR-004)", () => {

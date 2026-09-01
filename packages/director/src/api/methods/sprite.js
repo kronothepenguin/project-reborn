@@ -1,5 +1,6 @@
-import { _movie } from "../../engine/subsystem/singletons.js";
+// @owner sprite
+import { _getMovie } from "../../engine/subsystem/singletons.js";
 
 export function sprite(nameOrNum) {
-  return _movie.sprite[nameOrNum] ?? null;
+  return _getMovie().sprite[nameOrNum] ?? null;
 }

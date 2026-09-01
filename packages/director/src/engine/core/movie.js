@@ -1,4 +1,10 @@
-import { _score } from "../subsystem/score-slot.js";
+import { getActiveDirectorContext } from "../subsystem/accessor.js";
+import { Score } from "../subsystem/score.js";
+
+function activeScore() {
+  const ctx = getActiveDirectorContext();
+  return ctx ? ctx.score : new Score();
+}
 
 export class MovieObject {
   /**
@@ -909,7 +915,7 @@ export class MovieObject {
    * movieName must also specify the path.
    */
   go(frameNameOrNum, movieName) {
-    _score.go(frameNameOrNum);
+    activeScore().go(frameNameOrNum);
   }
 
   /**
@@ -923,7 +929,7 @@ export class MovieObject {
    * • Frame 1 if the movie contains no markers.
    */
   goLoop() {
-    _score.goLoop();
+    activeScore().goLoop();
   }
 
   /**
@@ -933,7 +939,7 @@ export class MovieObject {
    * to frame 1 if there are no markers in the movie.
    */
   goNext() {
-    _score.goNext();
+    activeScore().goNext();
   }
 
   /**
@@ -948,7 +954,7 @@ export class MovieObject {
    * • Frame 1 if the movie contains no markers
    */
   goPrevious() {
-    _score.goPrevious();
+    activeScore().goPrevious();
   }
 
   /**
@@ -1218,7 +1224,7 @@ export class MovieObject {
    * @param {number} intTempo Required. An integer that specifies the tempo.
    */
   puppetTempo(intTempo) {
-    _score.setTempo(intTempo);
+    activeScore().setTempo(intTempo);
   }
 
   /**

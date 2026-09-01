@@ -11,7 +11,8 @@
 // instances serve otherwise. Read-only writes and unknown names throw script
 // errors (C5/C6). Score/stage-backed rows return documented no-op defaults
 // until feature 004.
-import { _movie, _mouse, _key, _player, _sound, _system, _score } from "../subsystem/singletons.js";
+import { _getMovie, _getPlayer, _getSound, _getKey, _getMouse, _getSystem } from "../subsystem/singletons.js";
+import { getActiveDirectorContext } from "../subsystem/accessor.js";
 import { splitChars, splitItems, splitLines, splitWords } from "./chunk-split.js";
 
 const START = Date.now();
@@ -72,7 +73,7 @@ function itemDelimiterValue() {
 //   computed - computed on read (C9)
 //   constant - fixed documented value
 //   noop     - Score/stage-backed: documented stable default until its source lands
-const SINGLETONS = { movie: _movie, player: _player, sound: _sound, key: _key, mouse: _mouse, system: _system };
+const SINGLETONS = { movie: _getMovie, player: _getPlayer, sound: _getSound, key: _getKey, mouse: _getMouse, system: _getSystem };
 
 const TABLE = {
   itemDelimiter: { kind: "local", ro: false },
@@ -200,12 +201,14 @@ function read(row, name) {
       return row.get();
     case "noop":
       return row.def;
-    case "score":
-      return _score ? _score[row.field] : row.def;
+    case "score": {
+      const ctx = getActiveDirectorContext();
+      return ctx ? ctx.score[row.field] : row.def;
+    }
     case "local":
       return BACKING[name];
     case "core": {
-      const inst = SINGLETONS[row.owner];
+      const inst = SINGLETONS[row.owner]();
       const v = inst ? inst[row.field] : undefined;
       return v === undefined ? row.def : v;
     }
@@ -216,7 +219,7 @@ function write(row, name, value) {
   if (row.kind === "local") {
     BACKING[name] = value;
   } else if (row.kind === "core") {
-    const inst = SINGLETONS[row.owner];
+    const inst = SINGLETONS[row.owner]();
     if (inst && row.field in inst) inst[row.field] = value;
     else BACKING[name] = value;
   }

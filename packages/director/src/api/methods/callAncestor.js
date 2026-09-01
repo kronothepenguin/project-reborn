@@ -1,3 +1,4 @@
+// @owner top
 function handlerName(sym) {
   if (typeof sym === "symbol") return sym.description || "";
   if (typeof sym === "string") return sym.startsWith("#") ? sym.slice(1) : sym;

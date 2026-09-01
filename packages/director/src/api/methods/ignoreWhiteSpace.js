@@ -1,3 +1,4 @@
+// @owner top
 let ignoreWS = true;
 
 export function ignoreWhiteSpace(trueOrFalse) {

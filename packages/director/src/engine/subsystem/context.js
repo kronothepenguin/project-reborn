@@ -3,11 +3,11 @@
 // One `DirectorContext` per worker (one movie per worker — research.md R2).
 // `extends EventTarget` so lifecycle events (`prepareMovie`, `startMovie`,
 // `stopMovie`, `prepareFrame`, `enterFrame`, `exitFrame`, …) are dispatched on
-// the context itself (FR-028/FR-037). `activate()` writes the context's
-// singleton instances into (a) the module-level live-binding slots in
-// `runtime/singletons.js` AND (b) the worker's `globalThis` slots — so both
-// `import { _movie } from "@/lingo"` and unqualified `_movie` reads inside a
-// bundle resolve to this context's instances (FR-003/FR-016/FR-027; R3).
+// the context itself (FR-028/FR-037). `activate()` installs this context as
+// the ACTIVE context (006 C8): the 7 core-object instances live as consts on
+// the context — they ARE the global state. The `the` proxy, the api methods,
+// and the singleton facade resolve the active context through the accessor
+// module; no globalThis installs, no mutable module-level slots.
 //
 // Subsystem instances (`MemberRegistry`, `NetState`, `WindowRegistry`) are
 // instantiated in the constructor and exposed as plain fields (FR-005 — no
@@ -25,7 +25,7 @@ import { MemberRegistry } from "./member-registry.js";
 import { NetState } from "./net-state.js";
 import { WindowRegistry } from "./window-registry.js";
 import { Score } from "./score.js";
-import { _installSingletons } from "./singletons.js";
+import { getActiveDirectorContext, setActiveDirectorContext } from "./accessor.js";
 
 export class DirectorContext extends EventTarget {
   constructor(options = {}) {
@@ -66,16 +66,16 @@ export class DirectorContext extends EventTarget {
     this.destroyed = false;
   }
 
-  activate(globalObject = null) {
-    _installSingletons(this);
-    if (globalObject !== null) {
-      _installSingletonsOnGlobal(this, globalObject);
-    }
+  activate() {
+    setActiveDirectorContext(this);
     return this;
   }
 
   destroy() {
     if (this.destroyed) return this;
+    if (getActiveDirectorContext() === this) {
+      setActiveDirectorContext(null);
+    }
     this.stopMovie();
     if (this.eventLoopHandle) {
       try { this.eventLoopHandle.stop?.(); } catch { /* noop */ }
@@ -181,18 +181,4 @@ export class DirectorContext extends EventTarget {
   timeout() {
     this.dispatchEvent(new CustomEvent("timeout", { detail: { movie: this.movie } }));
   }
-}
-
-// FR-027: install singleton instances onto the worker's globalThis so bundle
-// code that does not import `@/lingo` can resolve `_movie`/`_player`/etc. as
-// unqualified globals. The worker has its own `globalThis`; calling this from
-// the main thread is allowed (it just writes to whatever global is passed).
-function _installSingletonsOnGlobal(ctx, globalObject) {
-  globalObject._movie = ctx.movie;
-  globalObject._player = ctx.player;
-  globalObject._sound = ctx.sound;
-  globalObject._key = ctx.key;
-  globalObject._mouse = ctx.mouse;
-  globalObject._system = ctx.system;
-  globalObject._global = ctx.global;
 }

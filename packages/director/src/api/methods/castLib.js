@@ -1,5 +1,6 @@
-import { _movie } from "../../engine/subsystem/singletons.js";
+// @owner castLib
+import { _getMovie } from "../../engine/subsystem/singletons.js";
 
 export function castLib(castNameOrNum) {
-  return _movie.castLib[castNameOrNum] ?? null;
+  return _getMovie().castLib[castNameOrNum] ?? null;
 }

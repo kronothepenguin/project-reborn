@@ -1,3 +1,4 @@
+// @owner top
 export function image(intWidth, intHeight, intBitDepth) {
   return {
     width: Math.max(0, Math.trunc(Number(intWidth) || 0)),

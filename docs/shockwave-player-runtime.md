@@ -369,8 +369,8 @@ chunk ops.
 |---|------|--------|-------|
 | 002 | engine-base | ✅ complete (`f67f8b4f`) | 73 tests green |
 | 005 | engine-syntax | ✅ complete (`b53b33e0`) | 147 tests green |
-| 004 | engine-subsystem + Score | ⬜ in progress | Score model verified empty-score canonical (C1); doc `score` section per contract when 007 plans |
-| 006 | api | ⬜ | state-tagging audit |
+| 004 | engine-subsystem + Score | ✅ complete | Score live via accessor (006 C8) |
+| 006 | api | ⬜ in progress | method surface + owner registry; singletons retired → active-context |
 | 008 | player | ⬜ | co-plan definition with 007 |
 | 007 | pack | ⬜ | virtual files + generator skill |
 | 009 | browser | ⬜ | thin layer over 008 |

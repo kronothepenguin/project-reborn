@@ -59,3 +59,55 @@ describe("NetState — operation lifecycle", () => {
     expect(ns.takeGotoNetMoviePending()).toBeNull();
   });
 });
+describe("NetState — 006 R9 additions", () => {
+  it("tracks lastNetId for the no-arg net accessors", () => {
+    const ns = new NetState();
+    expect(ns.lastNetId).toBe(0);
+    const a = ns.begin({ url: "/a" });
+    expect(ns.lastNetId).toBe(a);
+    ns.begin();
+    expect(ns.lastNetId).toBe(a + 1);
+  });
+
+  it("hasFinished() is true for done or error, false while inflight/unknown", () => {
+    const ns = new NetState();
+    const id = ns.begin();
+    expect(ns.hasFinished(id)).toBe(false);
+    ns.update(id, { status: "done", data: "x" });
+    expect(ns.hasFinished(id)).toBe(true);
+
+    const err = ns.begin();
+    ns.update(err, { status: "error", error: "boom" });
+    expect(ns.hasFinished(err)).toBe(true);
+    expect(ns.hasFinished(999)).toBe(false);
+  });
+
+  it("errorString() returns OK / error text / '' for unknown", () => {
+    const ns = new NetState();
+    const id = ns.begin();
+    ns.update(id, { status: "done" });
+    expect(ns.errorString(id)).toBe("OK");
+
+    const err = ns.begin();
+    ns.update(err, { status: "error", error: "HTTP 404" });
+    expect(ns.errorString(err)).toBe("HTTP 404");
+
+    const errObj = ns.begin();
+    ns.update(errObj, { status: "error", error: new Error("boom") });
+    expect(ns.errorString(errObj)).toBe("boom");
+
+    expect(ns.errorString(999)).toBe("");
+  });
+
+  it("findByUrl() finds the record by url and get() returns the snapshot", () => {
+    const ns = new NetState();
+    const a = ns.begin({ url: "/x" });
+    const b = ns.begin({ url: "/y" });
+    expect(ns.findByUrl("/y")).toBe(b);
+    expect(ns.findByUrl("/z")).toBeNull();
+    const rec = ns.get(a);
+    expect(rec.url).toBe("/x");
+    expect(rec.status).toBe("inflight");
+    expect(ns.get(999)).toBeNull();
+  });
+});

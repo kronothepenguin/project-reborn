@@ -1,3 +1,4 @@
+// @owner window
 // `window` Lingo factory: returns the registered WindowObject for a name, or null when the
 // named window is not registered. MX 2004 note: a reference to that window is created only
 // if a window by that name exists; otherwise the reference contains VOID (Lingo) or null

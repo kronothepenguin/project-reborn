@@ -1,3 +1,4 @@
+// @owner creator
 import { rect as makeRect } from "../../engine/base/rect.js";
 
 export function rect(intLeft, intTop, intRight, intBottom) {

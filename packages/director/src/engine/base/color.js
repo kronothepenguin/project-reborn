@@ -13,10 +13,47 @@ function clampChannel(value) {
   return n;
 }
 
+// 8-bit palettes (006 C5). The default runtime palette = Web-safe 216 + the
+// gray ramp (a deterministic 256-entry palette). Built-in Director palettes
+// are indicated by symbols (#systemMac, #rainbow, and so on) per paletteRef.
+function buildWebSafePalette() {
+  const pal = [];
+  for (let r = 0; r < 6; r++) {
+    for (let g = 0; g < 6; g++) {
+      for (let b = 0; b < 6; b++) {
+        pal.push([r * 51, g * 51, b * 51]);
+      }
+    }
+  }
+  for (let i = 0; i < 40; i++) {
+    const v = Math.round((i / 39) * 255);
+    pal.push([v, v, v]);
+  }
+  return pal;
+}
+
+export const PALETTES = {
+  default: buildWebSafePalette(),
+  grayscale: Array.from({ length: 256 }, (_, i) => [i, i, i]),
+  [Symbol.for("rainbow")]: buildWebSafePalette(),
+  [Symbol.for("systemMac")]: buildWebSafePalette(),
+  [Symbol.for("systemWin")]: buildWebSafePalette(),
+  [Symbol.for("grayscale")]: Array.from({ length: 256 }, (_, i) => [i, i, i]),
+};
+
+function paletteFor(paletteRef) {
+  if (paletteRef == null || typeof paletteRef === "symbol") {
+    return PALETTES[paletteRef ?? Symbol.for("rainbow")] ?? PALETTES.default;
+  }
+  // a cast-member palette resolves through the movie (008); v1 = default
+  return PALETTES.default;
+}
+
 export class Color {
   _red = 0;
   _green = 0;
   _blue = 0;
+  _paletteIndex = undefined;
 
   /**
    * Top level function and data type. Returns a Color data object using either
@@ -37,6 +74,14 @@ export class Color {
   }
 
   /**
+   * The 8-bit palette index this color was created from (palette form), if any.
+   * Undefined for the RGB form.
+   */
+  get paletteIndex() {
+    return this._paletteIndex;
+  }
+
+  /**
    * Red color component. An integer 0–255; all other values are truncated.
    * Read/write.
    */
@@ -45,6 +90,7 @@ export class Color {
   }
   set red(value) {
     this._red = clampChannel(value);
+    this._paletteIndex = undefined;
   }
 
   /**
@@ -56,6 +102,7 @@ export class Color {
   }
   set green(value) {
     this._green = clampChannel(value);
+    this._paletteIndex = undefined;
   }
 
   /**
@@ -67,6 +114,7 @@ export class Color {
   }
   set blue(value) {
     this._blue = clampChannel(value);
+    this._paletteIndex = undefined;
   }
 }
 
@@ -84,5 +132,13 @@ export class Color {
  * @returns {Color}
  */
 export function color(red, green, blue) {
+  if (arguments.length === 1) {
+    const idx = clampChannel(red);
+    const pal = paletteFor(undefined);
+    const [r, g, b] = pal[idx];
+    const c = new Color(r, g, b);
+    c._paletteIndex = idx;
+    return c;
+  }
   return new Color(red, green, blue);
 }

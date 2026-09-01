@@ -1,22 +1,17 @@
+// @owner net
 // gotoNetPage(url, targetName?)
 // Per docs/drmx2004_scripting_ref.txt lines 18196-18239.
 
-import {
-  createTransaction,
-  updateTransaction,
-  setAbortController,
-} from "./_netRegistry.js";
+import { _getNetState } from "../../engine/subsystem/singletons.js";
 
 export function gotoNetPage(url, targetName) {
   if (typeof url !== "string" || url.length === 0) {
     throw new Error("gotoNetPage: URL is required");
   }
 
-  const id = createTransaction();
-  updateTransaction(id, { url, state: "Connecting" });
-
+  const net = _getNetState();
   const controller = new AbortController();
-  setAbortController(id, controller);
+  const id = net.begin({ url, abortController: controller });
 
   if (typeof window !== "undefined" && window.location) {
     try {
@@ -26,14 +21,11 @@ export function gotoNetPage(url, targetName) {
         window.location.href = url;
       }
     } catch (err) {
-      updateTransaction(id, {
-        state: "Error",
-        error: err && err.message ? err.message : "Navigation failed",
-      });
+      net.update(id, { status: "error", error: err && err.message ? err.message : "Navigation failed" });
       return id;
     }
   }
 
-  updateTransaction(id, { state: "Complete", error: "OK" });
+  net.update(id, { status: "done", error: null });
   return id;
 }

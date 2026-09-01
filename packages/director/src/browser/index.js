@@ -4,13 +4,13 @@
 // movie in JS.
 //
 // `createContext()` is the entry point for any consumer that wants to run a
-// Director movie in the browser (or in a worker). It instantiates a
-// `DirectorContext` and activates it, swapping the module-level singleton slots
-// so any translated Lingo code that imports `_movie` / `_player` / etc. sees
-// this context's instances.
+// Director movie in the browser (or in a worker). It instantiates and
+// activates a `DirectorContext`, making it the active context so any
+// translated Lingo code that imports `_movie` / `_player` / etc. resolves to
+// this context's core-object instances.
 
 import { DirectorContext } from "../engine/subsystem/context.js";
-import { _installSingletons, _resetSingletons } from "../engine/subsystem/singletons.js";
+import { setActiveDirectorContext } from "../engine/subsystem/accessor.js";
 import { registerCustomElements, _createMovie } from "./custom-elements/index.js";
 
 export { registerCustomElements, _createMovie };
@@ -54,8 +54,7 @@ export function createContext(options = {}) {
 /**
  * Tear down a previously-created `DirectorContext`.
  * Stops the event loop and clears canvas/event-loop handles on the context.
- * The singleton slots remain pointing at `ctx` until another `activate()`
- * replaces them (or you call `resetSingletons()`).
+ * The active-context pointer is cleared by `ctx.destroy()`.
  */
 export function destroyContext(ctx) {
   if (!ctx || ctx.destroyed) return;
@@ -63,10 +62,11 @@ export function destroyContext(ctx) {
 }
 
 /**
- * Reset the singleton slots back to fresh default instances.
+ * Reset the active-context pointer back to none (so the singleton facade
+ * resolves fresh default instances).
  * Mainly useful for tests that don't construct a `DirectorContext` and want
  * the original default instances restored.
  */
 export function resetSingletons() {
-  _resetSingletons();
+  setActiveDirectorContext(null);
 }
