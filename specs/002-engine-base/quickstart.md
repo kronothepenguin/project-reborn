@@ -115,8 +115,8 @@ Expected: `ok: list semantics …`
 
 ```bash
 node --input-type=module -e "
-import { PropList } from './src/api/index.js';
-const pl = new PropList('a', 1, 'b', 2);
+import { PropList, propList } from './src/api/index.js';
+const pl = propList('a', 1, 'b', 2);
 pl.addProp('c', 3);
 if (pl.getaProp('c') !== 3) throw new Error('addProp');
 pl.addProp('a', 10);               // duplicate property created
@@ -146,11 +146,11 @@ Expected: `ok: proplist semantics`
 
 ```bash
 node --input-type=module -e "
-import { Point, Rect } from './src/api/index.js';
-const p = new Point(10, 20);
+import { Point, Rect, point, rect } from './src/api/index.js';
+const p = point(10, 20);
 if (p.locH !== 10 || p.locV !== 20 || p[1] !== 10 || p[2] !== 20) throw new Error('point');
 p[1] = 30; if (p.locH !== 30) throw new Error('point list-set');
-const r = new Rect(40, 30, 90, 70);
+const r = rect(40, 30, 90, 70);
 if (r[3] - r[1] !== 50) throw new Error('rect width via list syntax');
 if (r.right - r.left !== 50) throw new Error('rect width via properties');
 r[4] = 100; if (r.bottom !== 100) throw new Error('rect list-set');

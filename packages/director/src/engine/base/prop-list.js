@@ -16,22 +16,23 @@ function symbolToString(sym) {
   return String(sym);
 }
 
-function levenshtein(a, b) {
-  const m = a.length;
-  const n = b.length;
-  const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-  for (let i = 0; i <= m; i++) dp[i][0] = i;
-  for (let j = 0; j <= n; j++) dp[0][j] = j;
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (a[i - 1] === b[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1];
-      } else {
-        dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
-      }
-    }
-  }
-  return dp[m][n];
+// Property names in a property list may be written as a string or as a symbol
+// (Lingo #symbol); e.g. `propList("a", 1)` versus access via `Symbol.for("a")`.
+// Compare them by their string form so both spellings address the same property.
+function eqSymbol(a, b) {
+  return symbolToString(a) === symbolToString(b);
+}
+
+// Well-known symbols (Symbol.iterator etc.) are JS protocol plumbing, not
+// property-list keys; the proxy must let them fall through to Reflect.
+const WELL_KNOWN_SYMBOLS = new Set(
+  Object.getOwnPropertyNames(Symbol)
+    .map((k) => Symbol[k])
+    .filter((s) => typeof s === "symbol")
+);
+
+function isPropertySymbol(prop) {
+  return typeof prop === "symbol" && !WELL_KNOWN_SYMBOLS.has(prop);
 }
 
 export class PropList {
@@ -140,7 +141,7 @@ export class PropList {
    * @param {*} property Required. The item to delete from the list.
    */
   deleteProp(property) {
-    const index = this.entries.findIndex((e) => e.symbol === property);
+    const index = this.entries.findIndex((e) => eqSymbol(e.symbol, property));
     if (index !== -1) {
       this.entries.splice(index, 1);
     }
@@ -172,11 +173,11 @@ export class PropList {
    * findPos command is VOID when the specified property is not in the list.
    *
    * @param {*} property Required. The property whose position is identified.
-   * @returns {number|undefined} The 1-indexed position, or undefined if not found.
+   * @returns {number|null} The 1-indexed position, or VOID (null) if not found.
    */
   findPos(property) {
-    const index = this.entries.findIndex((e) => e.symbol === property);
-    return index === -1 ? undefined : index + 1;
+    const index = this.entries.findIndex((e) => eqSymbol(e.symbol, property));
+    return index === -1 ? null : index + 1;
   }
 
   /**
@@ -188,43 +189,38 @@ export class PropList {
    * @returns {number} The 1-indexed position (1 if the list is empty).
    */
   findPosNear(valueOrProperty) {
-    if (this.entries.length === 0) return 1;
     const name = symbolToString(valueOrProperty);
-    let bestIndex = 0;
-    let bestDist = Infinity;
     for (let i = 0; i < this.entries.length; i++) {
-      const entryName = symbolToString(this.entries[i].symbol);
-      if (entryName === name) return i + 1;
-      const dist = levenshtein(name, entryName);
-      if (dist < bestDist) {
-        bestDist = dist;
-        bestIndex = i;
-      }
+      if (symbolToString(this.entries[i].symbol) >= name) return i + 1;
     }
-    return bestIndex + 1;
+    return this.entries.length + 1;
   }
 
   /**
    * Retrieves the value associated with a property in a property list. Returns
-   * undefined when the property is not in the list.
+   * VOID (null) when the property is not in the list.
    *
    * @param {*} property The property whose value is retrieved.
-   * @returns {*} The value, or undefined.
+   * @returns {*} The value, or VOID (null).
    */
   getaProp(property) {
-    const entry = this.entries.find((e) => e.symbol === property);
-    return entry ? entry.value : undefined;
+    const entry = this.entries.find((e) => eqSymbol(e.symbol, property));
+    return entry ? entry.value : null;
   }
 
   /**
-   * Retrieves the value at a 1-indexed position in the list.
+   * List function; retrieves the specified element of a list. If the property
+   * list contains fewer elements than the specified position, a script error
+   * occurs.
    *
-   * @param {number} position The 1-indexed position.
-   * @returns {*} The value at that position, or undefined if out of range.
+   * @param {number} position Required. An integer specifying the 1-based position of the element to retrieve.
+   * @returns {*}
    */
   getAt(position) {
-    const entry = this.entries[position - 1];
-    return entry ? entry.value : undefined;
+    if (position < 1 || position > this.entries.length) {
+      throw new Error("Script error: the property list does not contain an element at position " + position);
+    }
+    return this.entries[position - 1].value;
   }
 
   /**
@@ -265,7 +261,7 @@ export class PropList {
    * @returns {*} The value associated with the property.
    */
   getProp(property) {
-    const entry = this.entries.find((e) => e.symbol === property);
+    const entry = this.entries.find((e) => eqSymbol(e.symbol, property));
     if (!entry) {
       throw new Error(`Property not found: ${symbolToString(property)}`);
     }
@@ -298,7 +294,7 @@ export class PropList {
    * @param {*} newValue     Required. The new value for the listProperty property.
    */
   setaProp(listProperty, newValue) {
-    const entry = this.entries.find((e) => e.symbol === listProperty);
+    const entry = this.entries.find((e) => eqSymbol(e.symbol, listProperty));
     if (entry) {
       entry.value = newValue;
     } else {
@@ -315,10 +311,10 @@ export class PropList {
    * @param {*} value      The new value.
    */
   setAt(position, value) {
-    const entry = this.entries[position - 1];
-    if (entry) {
-      entry.value = value;
+    if (position < 1 || position > this.entries.length) {
+      throw new Error("Script error: cannot set an element at position " + position);
     }
+    this.entries[position - 1].value = value;
   }
 
   /**
@@ -358,21 +354,36 @@ function createPropListProxy(...pairs) {
   const target = new PropList(...pairs);
   return new Proxy(target, {
     get(t, prop) {
-      if (typeof prop === "symbol") {
+      if (isPropertySymbol(prop)) {
+        if (t.findPos(prop) === null) {
+          throw new Error(
+            "Script error: the specified property is not in the property list: " +
+              String(prop)
+          );
+        }
         return t.getaProp(prop);
       }
       const num = typeof prop === "string" ? Number(prop) : prop;
       if (typeof num === "number" && Number.isInteger(num) && num >= 1) {
         return t.getAt(num);
       }
-      const value = Reflect.get(t, prop);
-      if (typeof value === "function") {
-        return value.bind(t);
+      if (Reflect.has(t, prop)) {
+        const value = Reflect.get(t, prop);
+        if (typeof value === "function") {
+          return value.bind(t);
+        }
+        return value;
       }
-      return value;
+      if (t.findPos(prop) === null) {
+        throw new Error(
+          "Script error: the specified property is not in the property list: " +
+            String(prop)
+        );
+      }
+      return t.getaProp(prop);
     },
     set(t, prop, value) {
-      if (typeof prop === "symbol") {
+      if (isPropertySymbol(prop)) {
         t.setaProp(prop, value);
         return true;
       }
@@ -381,17 +392,21 @@ function createPropListProxy(...pairs) {
         t.setAt(num, value);
         return true;
       }
-      return Reflect.set(t, prop, value);
+      if (Reflect.has(t, prop)) {
+        return Reflect.set(t, prop, value);
+      }
+      t.setaProp(prop, value);
+      return true;
     },
     has(t, prop) {
-      if (typeof prop === "symbol") {
-        return t.findPos(prop) !== undefined;
+      if (isPropertySymbol(prop)) {
+        return t.findPos(prop) !== null;
       }
       const num = typeof prop === "string" ? Number(prop) : prop;
       if (typeof num === "number" && Number.isInteger(num) && num >= 1) {
         return num <= t.count;
       }
-      return Reflect.has(t, prop);
+      return Reflect.has(t, prop) || t.findPos(prop) !== null;
     },
   });
 }

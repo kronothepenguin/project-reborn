@@ -1,4 +1,4 @@
-import { point } from "../types/point.js";
+import { point } from "../../engine/base/point.js";
 
 export function flashToStage(spriteRef, pointInFlashMovie) {
   if (spriteRef && typeof spriteRef.flashToStage === "function") {

@@ -9,7 +9,7 @@
 // explicit `ctx.activate()` switching, since they share the module's singleton
 // slots.
 
-import { DirectorContext } from "../context.js";
+import { DirectorContext } from "../engine/subsystem/context.js";
 
 export class WorkerShim {
   constructor(options = {}) {

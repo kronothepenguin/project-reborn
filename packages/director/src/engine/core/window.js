@@ -1,4 +1,4 @@
-import { Rect } from "../types/rect.js";
+import { Rect } from "../base/rect.js";
 
 export class WindowObject {
   /**

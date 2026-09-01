@@ -7,6 +7,21 @@
 // getter over `items.length`. Symbol.iterator retained. The bracket-access
 // Proxy implements documented JS-syntax indexing (`workerList[2]`, `1 in list`).
 
+// Alphanumeric comparison per the docs (director_scripting_essentials.txt
+// 1759-1761): "sort in alphanumeric order, with numbers being sorted before
+// strings" and "strings are sorted according to their initial letters".
+function compareValues(a, b) {
+  const an = typeof a === "number";
+  const bn = typeof b === "number";
+  if (an && bn) return a - b;
+  if (!an && !bn) {
+    if (a < b) return -1;
+    if (a > b) return 1;
+    return 0;
+  }
+  return an ? -1 : 1;
+}
+
 export class List {
   /**
    * The entries of the linear list. The index into a linear list created with
@@ -62,7 +77,7 @@ export class List {
   add(value) {
     if (this.sorted) {
       let i = 0;
-      while (i < this.items.length && this.items[i] < value) {
+      while (i < this.items.length && compareValues(this.items[i], value) <= 0) {
         i++;
       }
       this.items.splice(i, 0, value);
@@ -102,6 +117,7 @@ export class List {
    * @param {number} position Required. Specifies the position of the item in the list to delete.
    */
   deleteAt(position) {
+    if (position < 1 || position > this.items.length) return;
     this.items.splice(position - 1, 1);
   }
 
@@ -146,12 +162,16 @@ export class List {
   }
 
   /**
-   * Retrieves the value at a 1-indexed position in the list.
+   * List function; retrieves the specified element of a list. If the list
+   * contains fewer elements than the specified position, a script error occurs.
    *
-   * @param {number} position The 1-indexed position.
-   * @returns {*} The value at that position, or undefined if out of range.
+   * @param {number} position Required. An integer specifying the 1-based position of the element to retrieve.
+   * @returns {*}
    */
   getAt(position) {
+    if (position < 1 || position > this.items.length) {
+      throw new Error("Script error: the list does not contain an element at position " + position);
+    }
     return this.items[position - 1];
   }
 
@@ -186,10 +206,10 @@ export class List {
   /**
    * Returns the last value in the list.
    *
-   * @returns {*} The last value, or undefined if the list is empty.
+   * @returns {*} The last value, or VOID (null) if the list is empty.
    */
   getLast() {
-    return this.items[this.items.length - 1];
+    return this.items.length === 0 ? null : this.items[this.items.length - 1];
   }
 
   /**
@@ -214,11 +234,7 @@ export class List {
    * values are added to or removed from the list.
    */
   sort() {
-    this.items.sort((a, b) => {
-      if (a < b) return -1;
-      if (a > b) return 1;
-      return 0;
-    });
+    this.items.sort(compareValues);
     this.sorted = true;
   }
 }
@@ -243,7 +259,7 @@ function createListProxy(...values) {
   return new Proxy(target, {
     get(t, prop) {
       const num = typeof prop === "string" ? Number(prop) : prop;
-      if (typeof num === "number" && Number.isInteger(num) && num >= 1) {
+      if (typeof num === "number" && Number.isInteger(num)) {
         return t.getAt(num);
       }
       const value = Reflect.get(t, prop);

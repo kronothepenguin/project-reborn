@@ -9,13 +9,13 @@
 //
 // FR-003/FR-016/FR-027; research.md R3.
 
-import { MovieObject } from "./objects/movie.js";
-import { PlayerObject } from "./objects/player.js";
-import { SoundObject } from "./objects/sound.js";
-import { KeyObject } from "./objects/key.js";
-import { MouseObject } from "./objects/mouse.js";
-import { SystemObject } from "./objects/system.js";
-import { GlobalObject } from "./objects/global.js";
+import { MovieObject } from "../core/movie.js";
+import { PlayerObject } from "../core/player.js";
+import { SoundObject } from "../core/sound.js";
+import { KeyObject } from "../core/key.js";
+import { MouseObject } from "../core/mouse.js";
+import { SystemObject } from "../core/system.js";
+import { GlobalObject } from "../core/global.js";
 
 export let _movie = new MovieObject();
 export let _player = new PlayerObject();

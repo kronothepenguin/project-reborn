@@ -1,8 +1,8 @@
 // Director "the" proxy
 // Provides access to all system properties via `the.<propertyName>`
 // See: docs/drmx2004_scripting_ref.txt Chapter 14: Properties
-import { _movie, _mouse, _key, _player, _sound, _system } from "../singletons.js";
-import { CastLibraryObject } from "../objects/cast-library.js";
+import { _movie, _mouse, _key, _player, _sound, _system } from "../subsystem/singletons.js";
+import { CastLibraryObject } from "../core/cast-library.js";
 
 const READ_ONLY = new Set([
   // Movie (read-only)

@@ -1,4 +1,4 @@
-import { Point } from "../types/point.js";
+import { Point } from "../base/point.js";
 
 export class MouseObject {
   /**

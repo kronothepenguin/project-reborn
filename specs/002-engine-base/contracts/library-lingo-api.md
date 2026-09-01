@@ -11,16 +11,17 @@ the JSDoc convention that makes the member surface auditable (FR-004/SC-001).
 | Singletons | `_movie`, `_player`, `_sound`, `_key`, `_mouse`, `_system`, `_global` | `../engine/subsystem/singletons.js` (unchanged behavior) |
 | Constants | `EMPTY`, `VOID`, `RETURN`, `SPACE`, `TAB`, `BACKSPACE`, `ENTER`, `QUOTE`, `TRUE`, `FALSE`, `PI` (11) | `../engine/base/constants.js` (moved with the layer restructure; BACKSPACE value fixed) |
 | Data-type classes | `Color`, `List`, `PropList`, `Point`, `Rect` (5) | `../engine/base/{color,list,prop-list,point,rect}.js` (NEW exports in 002) |
+| Data-type creators | `color()`, `list()`, `point()`, `propList()`, `rect()` (5) | re-exported from `../engine/base/{...}.js` (amendment 2026-08-31: creators exported NOW because they are the documented constructors that carry the list/bracket-syntax Proxies — FR-002 reachable) |
 | Syntax stand-ins | `char`, `charRange`, `item`, `itemRange`, `line`, `lineRange`, `word`, `wordRange`, `the`, `putInto`, `putBefore`, `putAfter` | `../engine/syntax/index.js` (moved with the layer restructure) |
-| Top-level methods | all 107 documented method names EXCEPT the 5 creators (102) | `./methods/*.js` (import paths fixed; 006 owns behavior) |
+| Top-level methods | all 107 documented method names EXCEPT the 5 creators, which are now supplied by the engine/base creators above (102) | `./methods/*.js` (import paths fixed; 006 owns behavior) |
 
 ## Removed from the 002 barrel (documented boundary)
 
 | Name | Reason |
 | --- | --- |
-| `color()`, `list()`, `point()`, `propList()`, `rect()` | Top-level creator FUNCTIONS are API surface owned by feature 006 (spec: "later specs will cover … the public API"). The 002 data-type CLASSES are exported (FR-001 consumers need them); the creator modules remain on disk with fixed imports (`src/api/methods/{color,list,point,propList,rect}.js`), dormant until 006 defines and wires them. The engine-level factory functions in `src/engine/base/*.js` remain internal (used by the dormant modules and future specs). |
 | `symbol()`, `value()`, `ilk()` (relationship to types) | Top-level API functions (`ilk()` methods.txt 7064, `value()` 18301); the data-type chapter does not require them as type members — deferred to 006; still exported from `@/lingo` as methods (unchanged). |
 | `rgb()` | No methods.txt/properties.txt entry (only 3D examples); must NOT exist in 002 (clarify Q2) — no module, no export. |
+| `color(paletteIndex)` single-argument palette form | Palette representation is out of 002 scope (spec Key Entities; clarify-session decision); the RGB form `color(r, g, b)` IS exported in 002. The api/methods creator modules remain on disk (imports fixed) and are reconciled in 006. |
 
 `src/browser/index.js` additionally drops `defineMovie`/`defineCast`
 (their modules were deleted by the 001 refactor, refactor.md 211–227); its

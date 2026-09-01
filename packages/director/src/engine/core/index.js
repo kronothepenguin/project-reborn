@@ -12,8 +12,8 @@ export { SpriteObject } from "./sprite.js";
 export { SpriteChannelObject } from "./sprite-channel.js";
 export { WindowObject } from "./window.js";
 
-export { List } from "../types/list.js";
-export { PropList } from "../types/prop-list.js";
-export { Point } from "../types/point.js";
-export { Rect } from "../types/rect.js";
-export { Color } from "../types/color.js";
+export { List } from "../base/list.js";
+export { PropList } from "../base/prop-list.js";
+export { Point } from "../base/point.js";
+export { Rect } from "../base/rect.js";
+export { Color } from "../base/color.js";

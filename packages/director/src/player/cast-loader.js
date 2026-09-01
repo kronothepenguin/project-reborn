@@ -1,6 +1,6 @@
 // Load cast libraries from URLs via dynamic import.
 
-import { CastLibraryObject } from "../objects/cast-library.js";
+import { CastLibraryObject } from "../engine/core/cast-library.js";
 
 export async function loadCast(url, { name = null, number = null } = {}) {
   if (typeof url !== "string" || url.length === 0) {

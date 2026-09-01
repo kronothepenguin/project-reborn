@@ -1,5 +1,5 @@
 import { MemberObject } from "../member.js";
-import { Rect } from "../../types/rect.js";
+import { Rect } from "../../base/rect.js";
 
 /**
  * Bitmap cast member (Chapter 6: Media Types — "Bitmap").

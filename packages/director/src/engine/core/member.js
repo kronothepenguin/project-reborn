@@ -1,5 +1,5 @@
-import { Point } from "../types/point.js";
-import { Rect } from "../types/rect.js";
+import { Point } from "../base/point.js";
+import { Rect } from "../base/rect.js";
 
 export class MemberObject {
   /**

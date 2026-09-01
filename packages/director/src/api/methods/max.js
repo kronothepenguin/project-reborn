@@ -1,4 +1,4 @@
-import { List } from "../types/list.js";
+import { List } from "../../engine/base/list.js";
 
 export function max(value1, ...rest) {
   if (value1 instanceof List) {

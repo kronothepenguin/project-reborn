@@ -1,7 +1,7 @@
 // Director browser - public host integration layer
 // Wires a `DirectorContext` to the DOM (custom elements + canvas + event loop)
-// and exposes the high-level builder API (`movie()`, `cast()`, `defineMovie`,
-// `defineCast`) for assembling a Director movie in JS.
+// and exposes the builder API (`movie()`, `cast()`) for assembling a Director
+// movie in JS.
 //
 // `createContext()` is the entry point for any consumer that wants to run a
 // Director movie in the browser (or in a worker). It instantiates a
@@ -9,17 +9,15 @@
 // so any translated Lingo code that imports `_movie` / `_player` / etc. sees
 // this context's instances.
 
-import { DirectorContext } from "../runtime/context.js";
-import { _installSingletons, _resetSingletons } from "../runtime/singletons.js";
-import { registerCustomElements, _createMovie } from "../runtime/player/custom-elements/index.js";
+import { DirectorContext } from "../engine/subsystem/context.js";
+import { _installSingletons, _resetSingletons } from "../engine/subsystem/singletons.js";
+import { registerCustomElements, _createMovie } from "./custom-elements/index.js";
 
 export { registerCustomElements, _createMovie };
 
 // Creators (chained builder API)
-export { movie } from "../runtime/creators/movie.js";
-export { cast } from "../runtime/creators/cast.js";
-export { defineMovie } from "../runtime/creators/define-movie.js";
-export { defineCast } from "../runtime/creators/define-cast.js";
+export { movie } from "../pack/movie.js";
+export { cast } from "../pack/cast.js";
 
 /**
  * Create and activate a `DirectorContext`.

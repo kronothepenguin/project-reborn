@@ -1,8 +1,12 @@
 /**
  * Constant; represents the Backspace key. This key is labeled Backspace in Windows and Delete on
  * the Macintosh.
+ *
+ * Character value (ANSI char 8) — compared against `_key.key`, which returns the ANSI character.
+ * The keyCode 51 in the docs' JavaScript column is the JS-syntax alternative for `_key.keyCode`,
+ * not this constant's value (research.md R2).
  */
-export const BACKSPACE = String.fromCharCode(51);
+export const BACKSPACE = String.fromCharCode(8);
 
 /**
  * Character constant; represents the empty string, "", a string with no characters.

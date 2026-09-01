@@ -1,4 +1,4 @@
-import { _sound } from "../singletons.js";
+import { _sound } from "../../engine/subsystem/singletons.js";
 
 export function breakLoop(soundChannel) {
   if (soundChannel && typeof soundChannel.breakLoop === "function") {

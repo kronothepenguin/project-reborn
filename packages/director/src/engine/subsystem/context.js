@@ -14,16 +14,16 @@
 // statics on classes; cross-class shared state lives here). Each context owns
 // exactly one of each.
 
-import { MovieObject } from "./objects/movie.js";
-import { PlayerObject } from "./objects/player.js";
-import { SoundObject } from "./objects/sound.js";
-import { KeyObject } from "./objects/key.js";
-import { MouseObject } from "./objects/mouse.js";
-import { SystemObject } from "./objects/system.js";
-import { GlobalObject } from "./objects/global.js";
-import { MemberRegistry } from "./subsystems/member-registry.js";
-import { NetState } from "./subsystems/net-state.js";
-import { WindowRegistry } from "./subsystems/window-registry.js";
+import { MovieObject } from "../core/movie.js";
+import { PlayerObject } from "../core/player.js";
+import { SoundObject } from "../core/sound.js";
+import { KeyObject } from "../core/key.js";
+import { MouseObject } from "../core/mouse.js";
+import { SystemObject } from "../core/system.js";
+import { GlobalObject } from "../core/global.js";
+import { MemberRegistry } from "./member-registry.js";
+import { NetState } from "./net-state.js";
+import { WindowRegistry } from "./window-registry.js";
 import { _installSingletons } from "./singletons.js";
 
 export class DirectorContext extends EventTarget {

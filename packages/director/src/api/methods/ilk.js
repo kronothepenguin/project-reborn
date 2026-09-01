@@ -1,15 +1,15 @@
-import { List } from "../types/list.js";
-import { PropList } from "../types/prop-list.js";
-import { Color } from "../types/color.js";
-import { Point } from "../types/point.js";
-import { Rect } from "../types/rect.js";
-import { SoundObject } from "../objects/sound.js";
-import { PlayerObject } from "../objects/player.js";
-import { MovieObject } from "../objects/index.js";
-import { SpriteObject } from "../objects/sprite.js";
-import { MemberObject } from "../objects/member.js";
-import { CastLibraryObject } from "../objects/cast-library.js";
-import { WindowObject } from "../objects/window.js";
+import { List } from "../../engine/base/list.js";
+import { PropList } from "../../engine/base/prop-list.js";
+import { Color } from "../../engine/base/color.js";
+import { Point } from "../../engine/base/point.js";
+import { Rect } from "../../engine/base/rect.js";
+import { SoundObject } from "../../engine/core/sound.js";
+import { PlayerObject } from "../../engine/core/player.js";
+import { MovieObject } from "../../engine/core/index.js";
+import { SpriteObject } from "../../engine/core/sprite.js";
+import { MemberObject } from "../../engine/core/member.js";
+import { CastLibraryObject } from "../../engine/core/cast-library.js";
+import { WindowObject } from "../../engine/core/window.js";
 
 export function ilk(object) {
   if (object === undefined || object === null) return Symbol.for("void");

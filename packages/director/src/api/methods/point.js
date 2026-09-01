@@ -1,4 +1,4 @@
-import { point as makePoint } from "../types/point.js";
+import { point as makePoint } from "../../engine/base/point.js";
 
 export function point(intH, intV) {
   return makePoint(intH, intV);

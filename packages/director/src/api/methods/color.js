@@ -1,4 +1,4 @@
-import { color as makeColor, Color } from "../types/color.js";
+import { color as makeColor, Color } from "../../engine/base/color.js";
 
 export function color(arg, g, b) {
   if (arguments.length === 1) {

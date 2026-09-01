@@ -13,11 +13,6 @@ function clampChannel(value) {
   return n;
 }
 
-function toHex2(n) {
-  const s = n.toString(16);
-  return s.length === 1 ? "0" + s : s;
-}
-
 export class Color {
   _red = 0;
   _green = 0;
@@ -72,50 +67,6 @@ export class Color {
   }
   set blue(value) {
     this._blue = clampChannel(value);
-  }
-
-  /**
-   * Hex string form of the color, e.g. "#ff0000". Read-only convenience derived
-   * from the red, green, and blue channels.
-   */
-  get hex() {
-    return "#" + toHex2(this._red) + toHex2(this._green) + toHex2(this._blue);
-  }
-
-  /**
-   * CSS rgb() string form of the color, e.g. "rgb(255, 0, 0)". Read-only
-   * convenience derived from the red, green, and blue channels.
-   */
-  get rgb() {
-    return `rgb(${this._red}, ${this._green}, ${this._blue})`;
-  }
-
-  /**
-   * Returns TRUE if the passed object is a Color object whose RGB channels are
-   * equal to this one's, or a plain object with matching red/green/blue
-   * components; otherwise FALSE.
-   *
-   * @param {*} other
-   * @returns {boolean}
-   */
-  equals(other) {
-    if (other == null) return false;
-    if (other instanceof Color) {
-      return (
-        this._red === other._red &&
-        this._green === other._green &&
-        this._blue === other._blue
-      );
-    }
-    if (typeof other === "object") {
-      const r = other.red ?? other.r;
-      const g = other.green ?? other.g;
-      const b = other.blue ?? other.b;
-      if (typeof r === "number" && typeof g === "number" && typeof b === "number") {
-        return this._red === r && this._green === g && this._blue === b;
-      }
-    }
-    return false;
   }
 }
 

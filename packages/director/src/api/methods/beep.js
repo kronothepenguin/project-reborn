@@ -1,4 +1,4 @@
-import { _sound } from "../singletons.js";
+import { _sound } from "../../engine/subsystem/singletons.js";
 
 export function beep(intBeepCount) {
   const count = intBeepCount == null ? 1 : Math.max(0, Math.trunc(Number(intBeepCount)));

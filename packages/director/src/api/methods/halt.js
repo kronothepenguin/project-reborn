@@ -1,4 +1,4 @@
-import { _movie } from "../singletons.js";
+import { _movie } from "../../engine/subsystem/singletons.js";
 
 export function halt() {
   _movie.halt();

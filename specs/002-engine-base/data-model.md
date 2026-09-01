@@ -22,9 +22,10 @@ FR-004 surface audit is mechanical.
 - Constructor: `new Color(red = 0, green = 0, blue = 0)` — omitted/extra
   argument behavior is doc-silent (params marked Required); default 0 recorded
   (D-2 applies by analogy: spec-authorized, harmless, matches current).
-- Creation via `color()` creator function: API-006 boundary (not exported from
-  `@/lingo` in 002); single-argument palette-index form (`color(137)`, 2199)
-  is palette behavior — out of 002 scope.
+- Creation: `color()` creator (RGB form only) IS exported from `@/lingo` in 002
+  (amendment 2026-08-31 — creators are the documented constructors carrying the
+  bracketsyntax Proxies); single-argument palette-index form (`color(137)`, 2199)
+  stays 006-owned (palette representation out of 002 scope).
 - Validation: no validation errors — every value truncates to 0–255.
 - REMOVED surfaced: `hex`, `rgb`, `equals()` (undocumented; clarify Q1).
 
@@ -52,6 +53,9 @@ FR-004 surface audit is mechanical.
 
 - Bracket access (`theList[2]`) via Proxy: get → `getAt` semantics (out-of-range
   → throw); set → `setAt` semantics (beyond end pads); `n in list` → 1 ≤ n ≤ count.
+  Instances with bracket access are created by the `list()` creator (exported
+  from `@/lingo` in 002, amendment 2026-08-31); the `List` class itself is the
+  plain data holder.
 - List-syntax reads/writes are 1-based — never 0-based (the 0-based `[]`
   literal form is Lingo-syntax-only, 8234–8235, not our surface).
 - Reference semantics: assignment copies the reference, not the list
@@ -81,7 +85,8 @@ FR-004 surface audit is mechanical.
 | `setAt(position, value)` | method | replace value at 1-based position; position > count → script error (15731–15740) |
 | `sort()` | method | alphabetical by property names; sets `sorted = true` (16599–16608) |
 
-- Bracket/dot access semantics (doc-grounded, proxy rules):
+- Bracket/dot access semantics (doc-grounded, proxy rules — instances created
+  by the `propList()` creator carry the Proxy; exported from `@/lingo` in 002):
   - READ `pl[#prop]` / `pl["prop"]`: value; missing property → script error
     (note, 5183–5184); integer ≥ 1 → `getAt`.
   - WRITE `pl[#prop] = v` / `pl["prop"] = v`: replace; missing → ADD
@@ -103,7 +108,8 @@ FR-004 surface audit is mechanical.
 
 - Constructor `new Point(locH = 0, locV = 0)` — intH/intV documented Required;
   omission default 0 recorded as D-2-style spec-authorized default.
-- Bracket access via Proxy: `pt[1]` → `locH`, `pt[2]` → `locV` (spec US1
+- Bracket access via Proxy (instances created by the `point()` creator,
+  exported from `@/lingo` in 002): `pt[1]` → `locH`, `pt[2]` → `locV` (spec US1
   scenario 3; operators.txt 520–522 treat point components as list elements).
 - NO arithmetic operators in JS: docs explicitly say JS syntax returns NaN for
   point + point (12018–12031). Surfaced-not-implemented: JS rect arithmetic
@@ -121,7 +127,8 @@ FR-004 surface audit is mechanical.
 
 - Constructor `new Rect(left = 0, top = 0, right = 0, bottom = 0)`; omission
   defaults 0 (D-2-style).
-- Bracket access via Proxy: `[1]…[4]` → left, top, right, bottom (14225,
+- Bracket access via Proxy (instances created by the `rect()` creator, exported
+  from `@/lingo` in 002): `[1]…[4]` → left, top, right, bottom (14225,
   14235). Width/height are CONSUMER-DERIVED per the docs
   (`myRect.right - myRect.left`, `myRect[3] - myRect[1]` — 14234–14235) — no
   `width`/`height` members (properties.txt 9062–9096 applies to
