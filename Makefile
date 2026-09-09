@@ -1,3 +1,5 @@
+.PHONY: dev build
+
 install:
 	go work sync
 	pnpm install
@@ -9,4 +11,8 @@ build:
 	mkdir -p ./bin
 	go build -o ./bin/main ./apps/reborn/cmd
 
-.PHONY: dev build
+
+cms-dev:
+	pnpm --filter @project-reborn/cms dev
+	cd apps/cms
+	go tool air

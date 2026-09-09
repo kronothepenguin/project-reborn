@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "astro-build.astro-vscode",
+    "golang.go",
+    "esbenp.prettier-vscode",
+    "svelte.svelte-vscode",
+    "bradlc.vscode-tailwindcss"
+  ],
+  "unwantedRecommendations": []
+}

@@ -1,0 +1,25 @@
+{
+  "plugins": [
+    "prettier-plugin-astro",
+    "@ianvs/prettier-plugin-sort-imports",
+    "prettier-plugin-svelte",
+    "prettier-plugin-tailwindcss",
+    "prettier-plugin-go-template",
+    "prettier-plugin-sql"
+  ],
+  "overrides": [
+    {
+      "files": "*.astro",
+      "options": {
+        "parser": "astro"
+      }
+    },
+    {
+      "files": "packages/cms/**/*.astro",
+      "options": {
+        "parser": "astro",
+        "tailwindStylesheet": "packages/cms/src/styles/global.css"
+      }
+    }
+  ]
+}
