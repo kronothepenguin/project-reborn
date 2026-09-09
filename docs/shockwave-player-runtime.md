@@ -371,8 +371,8 @@ chunk ops.
 | 005 | engine-syntax | ✅ complete (`b53b33e0`) | 147 tests green |
 | 004 | engine-subsystem + Score | ✅ complete | Score live via accessor (006 C8) |
 | 006 | api | ⬜ in progress | method surface + owner registry; singletons retired → active-context |
-| 008 | player | ⬜ | co-plan definition with 007 |
-| 007 | pack | ⬜ | virtual files + generator skill |
+| 008 | player | ⬜ in progress | runner-core + flat-2D render + audio/net/input; pack ingestion |
+| 007 | pack | ⬜ in progress | C8 definition contract + habbo (73 slots) + fuse_client (89) packs generated |
 | 009 | browser | ⬜ | thin layer over 008 |
 | 003 | engine-core | ⬜ | largest; functional sprites |
 ```

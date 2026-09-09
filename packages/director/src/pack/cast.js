@@ -20,7 +20,7 @@ class CastBuilder {
       kind: "member",
       name,
       mediaType: "bitmap",
-      payload: { pixels: opts.pixels, width: opts.width, height: opts.height },
+      payload: { data: opts.data ?? opts.pixels, width: opts.width, height: opts.height },
     });
     return this;
   }

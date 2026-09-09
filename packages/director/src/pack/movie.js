@@ -1,9 +1,10 @@
 // MovieBuilder
 // `movie(name)` → `.cast(castLib)`.build()`
 // Attaches one or more CastLibraryObject instances to a movie name and applies
-// top-level movie options (tempo, width, height, src). `.build()` returns a
-// `{ name, casts, options }` description that `defineMovie()` (or the runtime)
-// consumes to construct a DirectorContext.
+// top-level movie options (tempo, width, height, src, optional score).
+// `.build()` returns a frozen definition conforming to the C8 contract:
+//   { name, casts: CastDefinition[], options: {tempo,width,height,src},
+//     score?: ScoreDefinition }
 //
 // `movie()` is intentionally NOT a DirectorContext factory — context creation
 // happens via `defineMovie()` or `createContext()` once casts and assets are
@@ -21,6 +22,7 @@ class MovieBuilder {
     this._width = 640;
     this._height = 480;
     this._src = "";
+    this._score = undefined;
   }
 
   cast(castLib) {
@@ -36,16 +38,19 @@ class MovieBuilder {
   width(v) { this._width = v; return this; }
   height(v) { this._height = v; return this; }
   src(v) { this._src = v; return this; }
+  score(v) { this._score = v; return this; }
 
   build() {
     return Object.freeze({
-      kind: "movie",
       name: this._name,
-      casts: this._casts,
-      tempo: this._tempo,
-      width: this._width,
-      height: this._height,
-      src: this._src,
+      casts: Object.freeze(this._casts.map((c) => ({ ...c }))),
+      options: Object.freeze({
+        tempo: this._tempo,
+        width: this._width,
+        height: this._height,
+        src: this._src,
+      }),
+      ...(this._score !== undefined ? { score: Object.freeze(this._score) } : {}),
     });
   }
 }

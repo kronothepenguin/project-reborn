@@ -1,9 +1,13 @@
-// Frame-based event loop driven by requestAnimationFrame.
-// Tempo is frames-per-second.
+// Frame-based event loop driven by setTimeout re-arm (001 contract: "re-arm
+// on tick allows tempo changes mid-playback"). Tempo is frames-per-second.
+//
+// 008 R3: each tick calls `ctx.frameStep()` (004 order: advance → prepareFrame
+// → enterFrame → beginSprite→endSprite per populated channel → exitFrame)
+// instead of the old bespoke `_movie.frame++` + manual dispatches. The render
+// hook (`onFrame`) is invoked after the lifecycle dispatch each tick.
 
 let _running = false;
-let _rafId = 0;
-let _lastFrameTime = 0;
+let _timerId = 0;
 let _frameDuration = 1000 / 30;
 let _movie = null;
 let _onFrame = null;
@@ -19,40 +23,23 @@ export function startEventLoop({ tempo = 30, movie = null, onFrame = null } = {}
   _movie = movie;
   _onFrame = onFrame;
   _frameDuration = 1000 / Math.max(1, Number(tempo) || 30);
-  _lastFrameTime = 0;
   _running = true;
 
-  const tick = (timestamp) => {
+  const tick = () => {
     if (!_running) return;
-    if (_lastFrameTime === 0) {
-      _lastFrameTime = timestamp;
-    }
-    const elapsed = timestamp - _lastFrameTime;
-    if (elapsed >= _frameDuration) {
-      _processFrame();
-      _lastFrameTime = timestamp - (elapsed % _frameDuration);
-    }
-    _rafId = globalThis.requestAnimationFrame?.(tick) ?? 0;
+    _processFrame();
+    _timerId = setTimeout(tick, _frameDuration);
   };
 
-  if (typeof globalThis.requestAnimationFrame === "function") {
-    _rafId = globalThis.requestAnimationFrame(tick);
-  } else {
-    _rafId = setInterval(_processFrame, _frameDuration);
-  }
+  _timerId = setTimeout(tick, _frameDuration);
 }
 
 export function stopEventLoop() {
   _running = false;
-  if (_rafId) {
-    if (typeof globalThis.cancelAnimationFrame === "function") {
-      globalThis.cancelAnimationFrame(_rafId);
-    } else {
-      clearInterval(_rafId);
-    }
-    _rafId = 0;
+  if (_timerId) {
+    clearTimeout(_timerId);
+    _timerId = 0;
   }
-  _lastFrameTime = 0;
 }
 
 export function isEventLoopRunning() {
@@ -61,25 +48,19 @@ export function isEventLoopRunning() {
 
 export function setTempo(tempo) {
   _frameDuration = 1000 / Math.max(1, Number(tempo) || 30);
-  if (_movie) {
-    _movie.frameTempo = Number(tempo);
-  }
 }
 
 function _processFrame() {
   if (!_movie) return;
+  const ctx = _movie;
 
-  _movie.frame = (_movie.frame ?? 1) + 1;
-  _movie.dispatchEvent(new CustomEvent("prepareFrame", { detail: { frame: _movie.frame } }));
-  _movie.dispatchEvent(new CustomEvent("enterFrame", { detail: { frame: _movie.frame } }));
+  ctx.frameStep();
 
   if (typeof _onFrame === "function") {
     try {
-      _onFrame(_movie);
+      _onFrame(ctx);
     } catch (err) {
       console.error("[event-loop] onFrame handler threw", err);
     }
   }
-
-  _movie.dispatchEvent(new CustomEvent("exitFrame", { detail: { frame: _movie.frame } }));
 }
