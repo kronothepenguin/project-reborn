@@ -1,4 +1,6 @@
 .PHONY: dev
 
 dev:
-	go run tools/dev
+	go tool air
+	cd ../../packages/cms
+	pnpm dev

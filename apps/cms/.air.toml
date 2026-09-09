@@ -8,23 +8,17 @@ tmp_dir = "tmp"
 [build]
 args_bin = []
 bin = "./tmp/cms"
-cmd = "go build -o ./tmp/cms ./tools/dev/cms"
+cmd = "go build -o ./tmp/cms ./cmd/cms-dev"
 delay = 1000
 entrypoint = ["./tmp/cms"]
-exclude_dir = [
-  "bin",
-  "client",
-  "cmd",
-  "tmp",
-  "web",
-]
+exclude_dir = ["bin", "tmp"]
 exclude_file = []
 exclude_regex = ["_test.go"]
 exclude_unchanged = false
 follow_symlink = false
 full_bin = ""
 ignore_dangerous_root_dir = false
-include_dir = []
+include_dir = ["../../packages/astro", "../../packages/cms"]
 include_ext = ["go"]
 include_file = [".air.cms.toml"]
 kill_delay = "0s"

@@ -121,12 +121,15 @@
 
       <section class="tags">
         <header>
-          <h2 class="tags__title">{{if .AvatarName}}{{.AvatarName}}{{else}}Avatar{{end}}s Like..</h2>
+          <h2 class="tags__title">
+            {{if .AvatarName}}{{.AvatarName}}{{else}}Avatar{{end}}s Like..
+          </h2>
         </header>
         <div class="tags__content">
           {{if .Tags}}{{range .Tags}}
           <a class="tags__tag" href="/tags/{{.}}">{{.}}</a>
-          {{end}}{{else}}<span class="tags__tag">No tags to display</span>{{end}}
+          {{end}}{{else}}<span class="tags__tag">No tags to display</span
+          >{{end}}
         </div>
       </section>
 
