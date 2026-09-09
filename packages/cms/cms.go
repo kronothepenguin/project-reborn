@@ -30,6 +30,7 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	r := router.New(c.resolve)
 
 	mux.HandleFunc("GET /{$}", r.HandleIndexView)
+	mux.HandleFunc("POST /{$}", r.HandleIndexLogin)
 
 	mux.Handle("/", c.static)
 }
