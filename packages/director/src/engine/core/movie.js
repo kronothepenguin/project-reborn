@@ -1,6 +1,53 @@
 import { getActiveDirectorContext } from "../subsystem/accessor.js";
 import { Score } from "../subsystem/score.js";
 import { syncBounds } from "../subsystem/sprite-hydrate.js";
+import { MemberObject } from "./member.js";
+import {
+  BitmapMember, ButtonMember, ColorPaletteMember, CursorMember,
+  FieldMember, FontMember, SoundMember, TextMember,
+  AnimatedGIFMember, DVDMember, FilmLoopMember, FlashComponentMember,
+  FlashMember, LinkedMovieMember, QuickTimeMember, RealMediaMember,
+  Shockwave3DMember, ShockwaveAudioMember, VectorShapeMember, WindowsMediaMember,
+} from "./media/index.js";
+
+// 010 D1: media-type symbol name → member class for newMember().
+const MEDIA_CLASS_BY_TYPE = {
+  bitmap: BitmapMember,
+  button: ButtonMember,
+  palette: ColorPaletteMember,
+  cursor: CursorMember,
+  field: FieldMember,
+  font: FontMember,
+  sound: SoundMember,
+  text: TextMember,
+  animgif: AnimatedGIFMember,
+  dvd: DVDMember,
+  filmLoop: FilmLoopMember,
+  flash: FlashMember,
+  flashcomponent: FlashComponentMember,
+  movie: LinkedMovieMember,
+  QuickTime: QuickTimeMember,
+  realMedia: RealMediaMember,
+  shockwave3D: Shockwave3DMember,
+  swa: ShockwaveAudioMember,
+  shockwaveAudio: ShockwaveAudioMember,
+  vectorShape: VectorShapeMember,
+  windowsMedia: WindowsMediaMember,
+};
+
+function mediaClassFor(typeSymbol) {
+  const name = typeof typeSymbol === "symbol" ? Symbol.keyFor(typeSymbol) : null;
+  return (name && MEDIA_CLASS_BY_TYPE[name]) || MemberObject;
+}
+
+// 010 D1: smallest positive member number not already taken in the castLib
+// (the registry's per-castLib by-number map is the authority).
+function firstEmptySlot(ctx, lib) {
+  const numberMap = ctx.memberRegistry?.byNumber?.get(lib.name ?? "");
+  let n = 1;
+  while (numberMap?.has(n)) n += 1;
+  return n;
+}
 
 function activeScore() {
   const ctx = getActiveDirectorContext();
@@ -1084,7 +1131,30 @@ export class MovieObject {
    * 
    * @param {symbol | string} symbolOrStringMemberType A string that specifies the type of the new cast member.
    */
-  newMember(symbolOrStringMemberType) {}
+  newMember(symbolOrStringMemberType) {
+    const typeSymbol = typeof symbolOrStringMemberType === "string"
+      ? Symbol.for(symbolOrStringMemberType)
+      : (symbolOrStringMemberType ?? Symbol.for("empty"));
+    const Cls = mediaClassFor(typeSymbol);
+    const member = new Cls();
+    member.type = typeSymbol;
+
+    // 010 D1: register into the first empty cast library slot of the active
+    // context ("After newMember() is called, the new cast member is placed in
+    // the first empty cast library slot.").
+    const ctx = getActiveDirectorContext();
+    if (!ctx) return member; // no active context → member unregistered
+    for (const lib of ctx.castLibs ?? []) {
+      const slot = firstEmptySlot(ctx, lib);
+      if (slot !== null) {
+        member.number = slot;
+        member.castLibNum = lib.number ?? 0;
+        ctx.memberRegistry.register(lib, member);
+        break;
+      }
+    }
+    return member;
+  }
 
   /**
    * Movie method; preloads cast members in the specified frame or range of frames into memory

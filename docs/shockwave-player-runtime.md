@@ -373,6 +373,7 @@ chunk ops.
 | 006 | api | ✅ complete (`45a3d233`) | method surface + owner registry; singletons retired → active-context |
 | 008 | player | ✅ complete (`b5bf80cb`) | worker runner + flat-2D render + audio/net/input; pack ingestion (288 tests) |
 | 007 | pack | ✅ complete (`8c7fe620`) | C8 definition contract + habbo (73 slots) + fuse_client (89) packs + generator skill |
-| 009 | browser | ✅ complete (`in-progress`) | `<x-embed>`/`<x-object>`/`<x-param>` thin over `run()` + real worker bootstrap; 303 tests |
-| 003 | engine-core | ⬜ in progress | **split**: functional sprites (Sprite↔Score, puppet register, hitTest, constraint, live begin/endSprite) DONE — next: 010 member classes, 011 scripting objects |
+| 009 | browser | ✅ complete (`3647b466`) | `<x-embed>`/`<x-object>`/`<x-param>` thin over `run()` + real worker bootstrap; 303 tests |
+| 003 | engine-core | ✅ complete (`d30b042f`) | functional sprites; **split** — member classes → 010, scripting objects → 011 |
+| 010 | member classes | ✅ complete (`pending`) | 8 functional (5 authored: Button/ColorPalette/Cursor/Font/Sound) + 11 stubs; real `newMember`; 342 tests |
 ```
