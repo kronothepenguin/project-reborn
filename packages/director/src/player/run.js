@@ -14,6 +14,12 @@
 
 import { WorkerHost } from "./worker-host.js";
 
+// The dedicated worker runs this entry: it receives `init`, installs the
+// globals, imports the bundle (bundleUrl — C7), ingests the definition, and
+// serves the 001 protocol (009: the worker bootstrap the packs need; a pack is
+// pure data, not a worker entry).
+const WORKER_ENTRY_URL = new URL("./worker-entry.js", import.meta.url).href;
+
 export function run(input, { canvas = null, externalParams = [] } = {}) {
   return new MainThreadImperativeHandle(input, { canvas, externalParams });
 }
@@ -34,12 +40,10 @@ export class MainThreadImperativeHandle extends EventTarget {
 
   _spawn() {
     const isUrl = typeof this._input === "string";
-    const workerUrl = isUrl ? this._input : "data:text/javascript;base64," + btoa("self.onmessage=()=>{}");
 
-    // The host creates the Worker; the worker's own source is the bundle when
-    // a URL is given (the worker imports it), else a stub that accepts the
-    // inline definition via the init message.
-    this._worker = new Worker(workerUrl, { type: "module", name: "director-movie" });
+    // The worker runs the director entry (worker-entry.js); the bundle URL is
+    // passed in the init message — the entry imports it inside the worker.
+    this._worker = new Worker(WORKER_ENTRY_URL, { type: "module", name: "director-movie" });
     this._worker.addEventListener("message", (e) => this._onMessage(e));
 
     const initMsg = {
@@ -77,6 +81,20 @@ export class MainThreadImperativeHandle extends EventTarget {
     }
     if (kind === "error") {
       this.dispatchEvent(new CustomEvent("error", { detail: { message: detail?.message } }));
+      return;
+    }
+    if (kind === "paint") {
+      // Worker-side paint fallback (no OffscreenCanvas path in use): the
+      // renderer posts ImageData; the host (custom element) draws it on the
+      // main-thread canvas. 009 T001.
+      this.dispatchEvent(new CustomEvent("paint", {
+        detail: {
+          imageData: detail?.imageData,
+          width: detail?.width,
+          height: detail?.height,
+          seq: detail?.seq,
+        },
+      }));
       return;
     }
     if (kind === "gotoNetMovie" || kind === "gotoNetPage") {

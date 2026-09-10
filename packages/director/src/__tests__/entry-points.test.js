@@ -106,7 +106,6 @@ describe("public entry points (FR-007/FR-008)", () => {
       "destroyContext",
       "resetSingletons",
       "registerCustomElements",
-      "_createMovie",
       "movie",
       "cast",
     ]) {

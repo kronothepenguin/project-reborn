@@ -32,6 +32,10 @@ export function ingestDefinition(ctx, definition) {
     throw new TypeError("ingestDefinition: definition is required");
   }
 
+  ctx.name = definition.name ?? ctx.name;
+  ctx.movie.name = definition.name ?? ctx.movie.name;
+  ctx.movie.src = definition.options?.src ?? ctx.movie.src ?? ctx.src ?? "";
+
   const casts = Array.isArray(definition.casts) ? definition.casts : [];
   const populated = casts.map((castDef, slotIndex) => {
     const lib = new CastLibraryObject();

@@ -1,273 +1,200 @@
-// Custom elements: <x-object>, <x-embed>, <x-param>
-// Replaces the legacy Shockwave <object>/<param>/<embed> embedding.
+// Custom elements: <x-object>, <x-embed>, <x-param> (009).
+//
+// Thin layers over 008's imperative `run()` — no runtime of their own:
+//   <x-embed src="…/habbo/index.js">
+//     <x-param name="sw1" value="1">
+//   </x-embed>
+// reads src/data + width/height (+ tempo), inserts a <canvas>, snapshots the
+// <x-param>s into externalParams, calls run(src, { canvas, externalParams }),
+// relays handle events (externalEvent/error/gotoNetMovie/gotoNetPage/paint)
+// onto the element, forwards input (stage-translated), and destroys on
+// disconnect. Element ≡ imperative handle (SC-010).
 
-import { _setCanvas } from "../../player/canvas.js";
-import { startEventLoop, stopEventLoop } from "../../player/event-loop.js";
+import { run } from "../../player/run.js";
+
+const STAGE_DEFAULTS = { width: 640, height: 480, tempo: 30 };
+
+const RELAY_EVENTS = ["externalEvent", "error", "gotoNetMovie", "gotoNetPage"];
+
+const INPUT_EVENTS = [
+  "keydown", "keyup", "mousedown", "mouseup", "mousemove", "focus", "blur",
+];
 
 let _registered = false;
 
-class XObjectElement extends HTMLElement {
+function stageSize(el) {
+  const width = Number(el.getAttribute("width"));
+  const height = Number(el.getAttribute("height"));
+  return {
+    width: Number.isFinite(width) && width > 0 ? width : STAGE_DEFAULTS.width,
+    height: Number.isFinite(height) && height > 0 ? height : STAGE_DEFAULTS.height,
+  };
+}
+
+function srcOf(el) {
+  return el.getAttribute("src") ?? el.getAttribute("data") ?? "";
+}
+
+function tempoOf(el) {
+  const tempo = Number(el.getAttribute("tempo"));
+  return Number.isFinite(tempo) && tempo > 0 ? tempo : null;
+}
+
+// element-relative client coords → stage-space pixels (scale by stage/el size;
+// the worker y-flips per Director's bottom-left origin).
+function toStagePoint(el, e, stage) {
+  const rect = el.getBoundingClientRect();
+  const sx = rect.width > 0 ? stage.width / rect.width : 1;
+  const sy = rect.height > 0 ? stage.height / rect.height : 1;
+  return {
+    clientX: Math.trunc((e.clientX - rect.left) * sx),
+    clientY: Math.trunc((e.clientY - rect.top) * sy),
+  };
+}
+
+class XEmbedBaseElement extends HTMLElement {
   static get observedAttributes() {
-    return ["width", "height", "src", "tempo"];
+    return ["src", "data", "width", "height", "tempo"];
   }
 
-  #params = new Map();
-  #movie = null;
-  #castLibs = [];
-  #canvas = null;
-  #started = false;
+  constructor() {
+    super();
+    this._handle = null;
+    this._canvas = null;
+    this._params = [];
+    this._frame = 0;
+    this._connected = false;
+    this._boundInput = (e) => this._forwardInput(e);
+  }
 
   connectedCallback() {
-    this.#collectChildParams();
+    if (this._connected) return;
+    const src = srcOf(this);
+    if (!src) return;
 
-    const src = this.getAttribute("src") ?? this.#params.get("src") ?? "";
-    const tempo = Number(
-      this.getAttribute("tempo") ?? this.#params.get("tempo") ?? 30,
-    );
-    const width = Number(this.getAttribute("width") ?? 640);
-    const height = Number(this.getAttribute("height") ?? 480);
-
+    const stage = stageSize(this);
     this.style.display = "inline-block";
-    this.style.width = `${width}px`;
-    this.style.height = `${height}px`;
+    this.style.width = `${stage.width}px`;
+    this.style.height = `${stage.height}px`;
     this.style.position = "relative";
     this.style.overflow = "hidden";
 
-    this.#canvas = document.createElement("canvas");
-    this.#canvas.width = width;
-    this.#canvas.height = height;
-    this.#canvas.style.display = "block";
-    this.#canvas.style.width = "100%";
-    this.#canvas.style.height = "100%";
-    this.appendChild(this.#canvas);
+    this._canvas = document.createElement("canvas");
+    this._canvas.width = stage.width;
+    this._canvas.height = stage.height;
+    this._canvas.style.display = "block";
+    this._canvas.style.width = "100%";
+    this._canvas.style.height = "100%";
+    this.appendChild(this._canvas);
 
-    this.#movie = _createMovie({ src, tempo, width, height });
-    _setCanvas(this.#canvas, this.#movie);
+    this._params = this.#collectParams(); // C2: snapshot at connect (stale later)
 
-    this.#movie.dispatchEvent(
-      new CustomEvent("prepareMovie", { detail: { src } }),
-    );
+    const handle = run(src, { canvas: this._canvas, externalParams: this._params });
+    this._handle = handle;
 
-    if (src) {
-      this.#loadMovieSrc(src).catch((err) => {
-        console.error("[x-object] failed to load movie", err);
+    for (const type of RELAY_EVENTS) {
+      handle.addEventListener(type, (e) => {
+        this.dispatchEvent(new CustomEvent(type, { detail: e.detail }));
       });
     }
-
-    this.#started = true;
-    this.#movie.dispatchEvent(
-      new CustomEvent("startMovie", { detail: { src } }),
-    );
-    startEventLoop({ tempo, movie: this.#movie });
-  }
-
-  disconnectedCallback() {
-    if (!this.#started) return;
-    this.#movie?.dispatchEvent(new CustomEvent("stopMovie", { detail: {} }));
-    stopEventLoop();
-    this.#movie = null;
-    this.#castLibs = [];
-    this.#canvas = null;
-    this.#started = false;
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (oldValue === newValue || !this.#started) return;
-    if (name === "tempo" && this.#movie) {
-      this.#movie.frameTempo = Number(newValue);
-    }
-  }
-
-  get movie() {
-    return this.#movie;
-  }
-
-  get castLibs() {
-    return [...this.#castLibs];
-  }
-
-  #collectChildParams() {
-    const children = this.querySelectorAll("x-param");
-    children.forEach((child) => {
-      const name = child.getAttribute("name");
-      const value = child.getAttribute("value");
-      if (name) {
-        this.#params.set(name, value ?? "");
+    handle.addEventListener("paint", (e) => this.#paint(e.detail));
+    handle.addEventListener("ready", () => {
+      const tempo = tempoOf(this);
+      if (tempo !== null) {
+        handle.post("setTempo", { tempo });
       }
-    });
-  }
+      handle.start();
+    }, { once: true });
 
-  async #loadMovieSrc(src) {
-    const { loadCast } = await import("../../player/cast-loader.js");
-    const cast = await loadCast(src);
-    this.#castLibs.push(cast);
-    this.#movie.dispatchEvent(
-      new CustomEvent("castLoaded", { detail: { cast, src } }),
-    );
-  }
-}
-
-class XEmbedElement extends HTMLElement {
-  static get observedAttributes() {
-    return ["width", "height", "src", "tempo", "type"];
-  }
-
-  #params = new Map();
-  #movie = null;
-  #castLibs = [];
-  #canvas = null;
-  #started = false;
-
-  connectedCallback() {
-    const src = this.getAttribute("src") ?? "";
-    const tempo = Number(this.getAttribute("tempo") ?? 30);
-    const width = Number(this.getAttribute("width") ?? 640);
-    const height = Number(this.getAttribute("height") ?? 480);
-
-    this.style.display = "inline-block";
-    this.style.width = `${width}px`;
-    this.style.height = `${height}px`;
-    this.style.position = "relative";
-    this.style.overflow = "hidden";
-
-    this.#canvas = document.createElement("canvas");
-    this.#canvas.width = width;
-    this.#canvas.height = height;
-    this.#canvas.style.display = "block";
-    this.#canvas.style.width = "100%";
-    this.#canvas.style.height = "100%";
-    this.appendChild(this.#canvas);
-
-    this.#movie = _createMovie({ src, tempo, width, height });
-    _setCanvas(this.#canvas, this.#movie);
-
-    this.#movie.dispatchEvent(
-      new CustomEvent("prepareMovie", { detail: { src } }),
-    );
-
-    if (src) {
-      this.#loadMovieSrc(src).catch((err) => {
-        console.error("[x-embed] failed to load movie", err);
-      });
+    for (const kind of INPUT_EVENTS) {
+      this.addEventListener(kind, this._boundInput);
     }
 
-    this.#started = true;
-    this.#movie.dispatchEvent(
-      new CustomEvent("startMovie", { detail: { src } }),
-    );
-    startEventLoop({ tempo, movie: this.#movie });
+    this._connected = true;
   }
 
   disconnectedCallback() {
-    if (!this.#started) return;
-    this.#movie?.dispatchEvent(new CustomEvent("stopMovie", { detail: {} }));
-    stopEventLoop();
-    this.#movie = null;
-    this.#castLibs = [];
-    this.#canvas = null;
-    this.#started = false;
+    if (!this._connected) return;
+    this._connected = false;
+    for (const kind of INPUT_EVENTS) {
+      this.removeEventListener(kind, this._boundInput);
+    }
+    this._handle?.destroy();
+    this._handle = null;
+    this._canvas = null;
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (oldValue === newValue || !this.#started) return;
-    if (name === "tempo" && this.#movie) {
-      this.#movie.frameTempo = Number(newValue);
+  _forwardInput(e) {
+    const handle = this._handle;
+    if (!handle || handle.destroyed) return;
+    const kind = e.type;
+    const payload = { kind };
+    if (kind === "keydown" || kind === "keyup") {
+      payload.key = e.key ?? "";
+      payload.keyCode = e.keyCode ?? e.which ?? 0;
+    } else if (kind === "mousedown" || kind === "mouseup" || kind === "mousemove") {
+      const p = toStagePoint(this, e, stageSize(this));
+      payload.clientX = p.clientX;
+      payload.clientY = p.clientY;
+      if (kind === "mousedown" || kind === "mouseup") payload.button = e.button ?? 0;
+    }
+    handle.post(kind, payload);
+  }
+
+  async #paint(detail) {
+    const canvas = this._canvas;
+    if (!canvas || !detail?.imageData) return;
+    this._frame = detail.seq ?? this._frame;
+    const ctx2d = canvas.getContext && canvas.getContext("2d");
+    if (!ctx2d) return;
+    try {
+      ctx2d.putImageData(detail.imageData, 0, 0);
+    } catch {
+      // stale/detached imageData — drop
     }
   }
 
-  get movie() {
-    return this.#movie;
+  #collectParams() {
+    return Array.from(this.querySelectorAll("x-param"))
+      .map((child) => ({
+        name: child.getAttribute("name") ?? "",
+        value: child.getAttribute("value") ?? "",
+      }))
+      .filter((p) => p.name.length > 0);
   }
 
-  get castLibs() {
-    return [...this.#castLibs];
+  get handle() {
+    return this._handle;
   }
 
-  async #loadMovieSrc(src) {
-    const { loadCast } = await import("../../player/cast-loader.js");
-    const cast = await loadCast(src);
-    this.#castLibs.push(cast);
-    this.#movie.dispatchEvent(
-      new CustomEvent("castLoaded", { detail: { cast, src } }),
-    );
+  get movieName() {
+    return srcOf(this);
+  }
+
+  get frame() {
+    return this._frame;
   }
 }
+
+class XEmbedElement extends XEmbedBaseElement {}
+class XObjectElement extends XEmbedBaseElement {}
 
 class XParamElement extends HTMLElement {
   static get observedAttributes() {
     return ["name", "value"];
   }
-
-  attributeChangedCallback(_name, _oldValue, _newValue) {
-    const host = this.parentElement;
-    if (!host || host.tagName.toLowerCase() !== "x-object") {
-      return;
-    }
-    const name = this.getAttribute("name");
-    const value = this.getAttribute("value");
-    if (name) {
-      const detail = { name, value: value ?? "" };
-      host.dispatchEvent(new CustomEvent("xparam", { detail }));
-    }
-  }
-}
-
-export function _createMovie({
-  src = "",
-  tempo = 30,
-  width = 640,
-  height = 480,
-} = {}) {
-  return {
-    src,
-    width,
-    height,
-    tempo,
-    frame: 1,
-    frameTempo: tempo,
-    sprites: [],
-    members: [],
-    castLibs: [],
-    _listeners: new Map(),
-    addEventListener(type, listener) {
-      const list = this._listeners.get(type) ?? [];
-      list.push(listener);
-      this._listeners.set(type, list);
-    },
-    removeEventListener(type, listener) {
-      const list = this._listeners.get(type);
-      if (!list) return;
-      const idx = list.indexOf(listener);
-      if (idx !== -1) list.splice(idx, 1);
-    },
-    dispatchEvent(event) {
-      const list = this._listeners.get(event.type);
-      if (list) {
-        for (const fn of list) fn(event);
-      }
-      return true;
-    },
-  };
 }
 
 export function registerCustomElements() {
   if (_registered) return;
   if (typeof globalThis.customElements === "undefined") return;
-  if (!customElements.get("x-object")) {
-    customElements.define("x-object", XObjectElement);
-  }
-  if (!customElements.get("x-embed")) {
-    customElements.define("x-embed", XEmbedElement);
-  }
-  if (!customElements.get("x-param")) {
-    customElements.define("x-param", XParamElement);
-  }
+  if (!customElements.get("x-object")) customElements.define("x-object", XObjectElement);
+  if (!customElements.get("x-embed")) customElements.define("x-embed", XEmbedElement);
+  if (!customElements.get("x-param")) customElements.define("x-param", XParamElement);
   _registered = true;
 }
 
-// Auto-register on import only when HTMLElement is available (browser).
-// In non-DOM environments (Node, jsdom-less test runners) skip registration
-// so importing this module doesn't throw on `class XObjectElement extends HTMLElement`.
+// Auto-register on import when a DOM with customElements exists (browser/jsdom).
 if (
   typeof globalThis.HTMLElement !== "undefined" &&
   typeof globalThis.customElements !== "undefined"

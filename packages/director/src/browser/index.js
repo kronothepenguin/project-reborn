@@ -11,12 +11,12 @@
 
 import { setActiveDirectorContext } from "../engine/subsystem/accessor.js";
 import { DirectorContext } from "../engine/subsystem/context.js";
-import {
-  _createMovie,
-  registerCustomElements,
-} from "./custom-elements/index.js";
+import { registerCustomElements } from "./custom-elements/index.js";
 
-export { registerCustomElements, _createMovie };
+export { registerCustomElements };
+
+// The declarative path: <x-embed src="…/habbo/index.js">
+// + <x-param> children (009) — a thin layer over `run()` (008).
 
 // Creators (chained builder API)
 export { movie } from "../pack/movie.js";

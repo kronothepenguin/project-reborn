@@ -373,6 +373,6 @@ chunk ops.
 | 006 | api | ✅ complete (`45a3d233`) | method surface + owner registry; singletons retired → active-context |
 | 008 | player | ✅ complete (`b5bf80cb`) | worker runner + flat-2D render + audio/net/input; pack ingestion (288 tests) |
 | 007 | pack | ✅ complete (`8c7fe620`) | C8 definition contract + habbo (73 slots) + fuse_client (89) packs + generator skill |
-| 009 | browser | ⬜ Next | thin custom-elements + equivalence over 008 |
+| 009 | browser | ✅ complete (`in-progress`) | `<x-embed>`/`<x-object>`/`<x-param>` thin over `run()` + real worker bootstrap; 303 tests |
 | 003 | engine-core | ⬜ | largest; functional sprites |
 ```
