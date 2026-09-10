@@ -1,5 +1,6 @@
 import { getActiveDirectorContext } from "../subsystem/accessor.js";
 import { Score } from "../subsystem/score.js";
+import { syncBounds } from "../subsystem/sprite-hydrate.js";
 
 function activeScore() {
   const ctx = getActiveDirectorContext();
@@ -786,7 +787,16 @@ export class MovieObject {
    * @param {number} intPosn An integer to be evaluated against by the horizontal coordinates of the left and
    * right sides of the sprite identified by intSpriteNum.
    */
-  constrainH(intSpriteNum, intPosn) {}
+  constrainH(intSpriteNum, intPosn) {
+    const ctx = getActiveDirectorContext();
+    if (!ctx) return;
+    const constrained = ctx.sprite(intPosn);
+    const target = ctx.sprite(intSpriteNum);
+    if (!constrained || !target) return;
+    constrained.locV = constrained.locV ?? 0;
+    constrained.locH = Math.min(target.right ?? 0, Math.max(target.left ?? 0, constrained.locH));
+    syncBounds(constrained);
+  }
 
   /**
    * Movie method; returns an integer whose value depends on the vertical coordinates of the top and
@@ -809,7 +819,16 @@ export class MovieObject {
    * @param {number} intPosn An integer to be evaluated against by the vertical coordinates of the left and
    * right sides of the sprite identified by intSpriteNum.
    */
-  constrainV(intSpriteNum, intPosn) {}
+  constrainV(intSpriteNum, intPosn) {
+    const ctx = getActiveDirectorContext();
+    if (!ctx) return;
+    const constrained = ctx.sprite(intPosn);
+    const target = ctx.sprite(intSpriteNum);
+    if (!constrained || !target) return;
+    constrained.locH = constrained.locH ?? 0;
+    constrained.locV = Math.min(target.bottom ?? 0, Math.max(target.top ?? 0, constrained.locV));
+    syncBounds(constrained);
+  }
 
   /**
    * Movie method; pauses the playhead for a given amount of time.
@@ -1205,7 +1224,10 @@ export class MovieObject {
    * @param {boolean} bool Required. A boolean value that specifies whether a sprite channel is under script control
    * (TRUE) or under the control of the Score (FALSE).
    */
-  puppetSprite(intSpriteNum, bool) {}
+  puppetSprite(intSpriteNum, bool) {
+    const ctx = getActiveDirectorContext();
+    if (ctx?.puppetSprite) ctx.puppetSprite(intSpriteNum, bool);
+  }
 
   /**
    * Movie method; causes the tempo channel to act as a puppet and sets the tempo to a specified

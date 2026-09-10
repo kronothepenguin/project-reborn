@@ -1,5 +1,6 @@
 import { Point } from "../base/point.js";
 import { Rect } from "../base/rect.js";
+import { getActiveDirectorContext } from "../subsystem/accessor.js";
 
 export class SpriteObject {
   /**
@@ -431,21 +432,40 @@ export class SpriteObject {
   }
 
   /**
-   * Function; indicates which part of a Flash movie is directly over a specific Director Stage location.
-   * The Director Stage location is expressed as a Director point value: for example, point(100,50).
-   * The hitTest function returns these values:
-   * • #background—The specified Stage location falls within the background of the Flash movie
-   * sprite.
-   * • #normal—The specified Stage location falls within a filled object.
-   * • #button—The specified Stage location falls within the active area of a button.
-   * • #editText—The specified Stage location falls within a Flash editable text field.
+   * Function; determines whether a specified point is inside a sprite on the Stage. The function
+   * returns the sprite object that is under the specified point (003 T011). Tests in the active
+   * context: populated visible channels, topmost by (locZ, channel).
    *
    * @param {object} [point] Required. Specifies the point to test.
-   * @returns {symbol}
+   * @returns {object|null}
    */
   hitTest(point) {
-    // TODO(subsystems): route through Flash hit detection.
-    return Symbol.for("background");
+    const ctx = getActiveDirectorContext();
+    if (!ctx || !point || typeof point.h !== "number" || typeof point.v !== "number") {
+      return null;
+    }
+    const { h, v } = point;
+    // candidate channels = Score-populated ∪ puppeted (003 T014)
+    const channels = new Set(ctx.score?.populatedChannels?.() ?? []);
+    for (const n of ctx.puppetSprites?.keys?.() ?? []) channels.add(n);
+    const hits = [];
+    for (const channel of [...channels].sort((a, b) => a - b)) {
+      const candidate = ctx.sprite(channel);
+      if (!candidate || candidate.visible === false) continue;
+      const left = candidate.locH ?? 0;
+      const top = candidate.locV ?? 0;
+      // Bounds derive from loc + size (script moves a sprite via locH/locV/
+      // width/height; left/top/right/bottom are synced mirrors, never the
+      // authority).
+      const right = left + (candidate.width ?? 0);
+      const bottom = top + (candidate.height ?? 0);
+      if (h >= left && h <= right && v >= top && v <= bottom) {
+        hits.push({ candidate, locZ: candidate.locZ ?? channel, channel });
+      }
+    }
+    if (hits.length === 0) return null;
+    hits.sort((a, b) => (a.locZ - b.locZ) || (a.channel - b.channel));
+    return hits[hits.length - 1].candidate;
   }
 
   /**

@@ -80,4 +80,18 @@ describe("run() — runner-core (008 R7/US1)", () => {
     handle.destroy();
     expect(worker.terminated).toBe(true);
   });
+
+  it("relays paint messages as CustomEvent('paint') on the handle (009 T001)", async () => {
+    const handle = run("https://x/habbo/index.js");
+    await vi.waitFor(() => expect(handle.ready).toBe(true));
+    const paint = { kind: "paint", detail: { imageData: { data: [1, 2, 3] }, width: 640, height: 480, seq: 7 } };
+    const onPaint = vi.fn();
+    handle.addEventListener("paint", onPaint);
+    worker.dispatchEvent(new MessageEvent("message", { data: paint }));
+    expect(onPaint).toHaveBeenCalledTimes(1);
+    const ev = onPaint.mock.calls[0][0];
+    expect(ev.type).toBe("paint");
+    expect(ev.detail.imageData.data).toEqual([1, 2, 3]);
+    expect(ev.detail.seq).toBe(7);
+  });
 });

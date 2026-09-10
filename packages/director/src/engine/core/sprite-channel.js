@@ -1,3 +1,8 @@
+// 003: `makeScriptedSprite`/`removeScriptedSprite` route through the active
+// context's puppet register. Fall back to field-level behavior without one.
+
+import { getActiveDirectorContext as activeContext } from "../subsystem/accessor.js";
+
 export class SpriteChannelObject {
   /**
    * Sprite Channel property; returns the number of a sprite channel. Read-only.
@@ -34,6 +39,7 @@ export class SpriteChannelObject {
 
   constructor(number = 0) {
     this.number = number;
+    this._ctx = null;
   }
 
   /**
@@ -45,7 +51,24 @@ export class SpriteChannelObject {
    * @param {object} [loc] Optional. A point that specifies the location on the Stage at which the scripted sprite is placed.
    */
   makeScriptedSprite(memberObjRef, _loc) {
-    // TODO(subsystems): real Score sprite placement deferred per FR-031.
+    const ctx = this._ctx ?? activeContext();
+    if (ctx && ctx.puppetSprite) {
+      const sprite = ctx.puppetSprite(this.number, true);
+      if (memberObjRef) sprite.member = memberObjRef;
+      if (_loc && typeof _loc === "object") {
+        sprite.loc = _loc;
+        if (typeof _loc.h === "number") sprite.locH = _loc.h;
+        if (typeof _loc.v === "number") sprite.locV = _loc.v;
+      } else if (!_loc) {
+        // Providing only this parameter places the sprite in the center of the Stage.
+        sprite.locH = Math.trunc((ctx.width || 640) / 2);
+        sprite.locV = Math.trunc((ctx.height || 480) / 2);
+      }
+      this.sprite = sprite;
+      this.scripted = true;
+      return sprite;
+    }
+    // No active context (pure-surface fallback): keep the old field-level behavior.
     this.sprite = memberObjRef ?? null;
     this.scripted = true;
     return this.sprite;
@@ -55,6 +78,10 @@ export class SpriteChannelObject {
    * Sprite Channel method; switches control of a sprite channel from script back to the Score.
    */
   removeScriptedSprite() {
+    const ctx = this._ctx ?? activeContext();
+    if (ctx && ctx.puppetSprite) {
+      ctx.puppetSprite(this.number, false);
+    }
     this.sprite = null;
     this.scripted = false;
   }

@@ -374,5 +374,5 @@ chunk ops.
 | 008 | player | ✅ complete (`b5bf80cb`) | worker runner + flat-2D render + audio/net/input; pack ingestion (288 tests) |
 | 007 | pack | ✅ complete (`8c7fe620`) | C8 definition contract + habbo (73 slots) + fuse_client (89) packs + generator skill |
 | 009 | browser | ✅ complete (`in-progress`) | `<x-embed>`/`<x-object>`/`<x-param>` thin over `run()` + real worker bootstrap; 303 tests |
-| 003 | engine-core | ⬜ | largest; functional sprites |
+| 003 | engine-core | ⬜ in progress | **split**: functional sprites (Sprite↔Score, puppet register, hitTest, constraint, live begin/endSprite) DONE — next: 010 member classes, 011 scripting objects |
 ```
