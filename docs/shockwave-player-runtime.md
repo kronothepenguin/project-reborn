@@ -372,7 +372,7 @@ chunk ops.
 | 004 | engine-subsystem + Score | ✅ complete | Score live via accessor (006 C8) |
 | 006 | api | ✅ complete (`45a3d233`) | method surface + owner registry; singletons retired → active-context |
 | 008 | player | ✅ complete (`b5bf80cb`) | worker runner + flat-2D render + audio/net/input; pack ingestion (288 tests) |
-| 007 | pack | ⬜ in progress | C8 definition contract + habbo (73 slots) + fuse_client (89) packs generated; spec docs + skill pending |
-| 009 | browser | ⬜ | thin layer over 008 |
+| 007 | pack | ✅ complete (`8c7fe620`) | C8 definition contract + habbo (73 slots) + fuse_client (89) packs + generator skill |
+| 009 | browser | ⬜ Next | thin custom-elements + equivalence over 008 |
 | 003 | engine-core | ⬜ | largest; functional sprites |
 ```
