@@ -370,9 +370,9 @@ chunk ops.
 | 002 | engine-base | ✅ complete (`f67f8b4f`) | 73 tests green |
 | 005 | engine-syntax | ✅ complete (`b53b33e0`) | 147 tests green |
 | 004 | engine-subsystem + Score | ✅ complete | Score live via accessor (006 C8) |
-| 006 | api | ⬜ in progress | method surface + owner registry; singletons retired → active-context |
-| 008 | player | ⬜ in progress | runner-core + flat-2D render + audio/net/input; pack ingestion |
-| 007 | pack | ⬜ in progress | C8 definition contract + habbo (73 slots) + fuse_client (89) packs generated |
+| 006 | api | ✅ complete (`45a3d233`) | method surface + owner registry; singletons retired → active-context |
+| 008 | player | ✅ complete (`b5bf80cb`) | worker runner + flat-2D render + audio/net/input; pack ingestion (288 tests) |
+| 007 | pack | ⬜ in progress | C8 definition contract + habbo (73 slots) + fuse_client (89) packs generated; spec docs + skill pending |
 | 009 | browser | ⬜ | thin layer over 008 |
 | 003 | engine-core | ⬜ | largest; functional sprites |
 ```
