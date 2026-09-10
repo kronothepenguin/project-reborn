@@ -1,16 +1,16 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
+  BACKSPACE,
   EMPTY,
-  VOID,
+  ENTER,
+  FALSE,
+  PI,
+  QUOTE,
   RETURN,
   SPACE,
   TAB,
-  BACKSPACE,
-  ENTER,
-  QUOTE,
   TRUE,
-  FALSE,
-  PI,
+  VOID,
 } from "../../../api/index.js";
 
 describe("Lingo constants", () => {

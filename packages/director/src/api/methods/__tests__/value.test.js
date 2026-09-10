@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { value } from "../value.js";
 
 describe("value() — expression evaluation per docs (006 C7)", () => {

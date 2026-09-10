@@ -1,9 +1,9 @@
 // @owner net
 import { _getNetState } from "../../engine/subsystem/singletons.js";
+
 // getStreamStatus(netID)
 // Per docs/drmx2004_scripting_ref.txt lines 17817-17872.
 // Returns a property list with #URL, #state, #bytesSoFar, #bytesTotal, #error.
-
 
 export function getStreamStatus(netID) {
   const ns = _getNetState();
@@ -20,7 +20,12 @@ export function getStreamStatus(netID) {
   }
   return {
     URL: rec.url || "",
-    state: rec.status === "done" ? "Complete" : rec.status === "error" ? "Error" : "InProgress",
+    state:
+      rec.status === "done"
+        ? "Complete"
+        : rec.status === "error"
+          ? "Error"
+          : "InProgress",
     bytesSoFar: rec.bytesSoFar || 0,
     bytesTotal: rec.bytesTotal || 0,
     error: ns.errorString(id) === "OK" ? "" : ns.errorString(id),

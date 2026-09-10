@@ -1,7 +1,7 @@
-import { describe, it, expect } from "vitest";
-import * as root from "../index.js";
+import { describe, expect, it } from "vitest";
 import * as lingo from "../api/index.js";
 import * as browser from "../browser/index.js";
+import * as root from "../index.js";
 
 describe("public entry points (FR-007/FR-008)", () => {
   it("all three entries import without errors and share the expected symbols", () => {
@@ -57,7 +57,15 @@ describe("public entry points (FR-007/FR-008)", () => {
   });
 
   it("exports the 7 singletons", () => {
-    for (const name of ["_movie", "_player", "_sound", "_key", "_mouse", "_system", "_global"]) {
+    for (const name of [
+      "_movie",
+      "_player",
+      "_sound",
+      "_key",
+      "_mouse",
+      "_system",
+      "_global",
+    ]) {
       expect(name in lingo).toBe(true);
     }
   });

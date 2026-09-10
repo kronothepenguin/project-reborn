@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { color, Color, PALETTES } from "../color.js";
 
 describe("color() palette form (006 C5)", () => {

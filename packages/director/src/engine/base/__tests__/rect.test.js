@@ -1,10 +1,10 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { Rect, rect } from "../../../api/index.js";
 
 describe("Rect", () => {
   it("exposes only the documented edge fields on the prototype surface", () => {
     const protoMembers = Object.getOwnPropertyNames(Rect.prototype).filter(
-      (p) => p !== "constructor"
+      (p) => p !== "constructor",
     );
     expect(protoMembers).toEqual([]);
   });

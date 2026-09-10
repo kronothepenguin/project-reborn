@@ -1,11 +1,11 @@
-import { describe, it, expect } from "vitest";
-import { symbol } from "../symbol.js";
-import { symbolP } from "../symbolP.js";
+import { describe, expect, it } from "vitest";
+import { color } from "../color.js";
 import { ilk } from "../ilk.js";
 import { list } from "../list.js";
-import { propList } from "../propList.js";
 import { point } from "../point.js";
-import { color } from "../color.js";
+import { propList } from "../propList.js";
+import { symbol } from "../symbol.js";
+import { symbolP } from "../symbolP.js";
 
 describe("symbol() / symbolP() (006 US5)", () => {
   it("takes a string and returns the corresponding symbol", () => {

@@ -1,10 +1,10 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { Point, point } from "../../../api/index.js";
 
 describe("Point", () => {
   it("exposes only the documented locH/locV fields on the prototype surface", () => {
     const protoMembers = Object.getOwnPropertyNames(Point.prototype).filter(
-      (p) => p !== "constructor"
+      (p) => p !== "constructor",
     );
     expect(protoMembers).toEqual([]);
   });

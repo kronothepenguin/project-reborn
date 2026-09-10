@@ -23,7 +23,12 @@ function isPropertyList(value) {
   return true;
 }
 
-export function postNetText(url, propertyListOrText, _serverOSString, _serverCharSetString) {
+export function postNetText(
+  url,
+  propertyListOrText,
+  _serverOSString,
+  _serverCharSetString,
+) {
   if (typeof url !== "string" || url.length === 0) {
     throw new Error("postNetText: URL is required");
   }
@@ -62,7 +67,12 @@ export function postNetText(url, propertyListOrText, _serverOSString, _serverCha
     })
     .then((text) => {
       if (text == null) return;
-      net.update(id, { status: "done", data: text, error: null, bytesSoFar: text.length });
+      net.update(id, {
+        status: "done",
+        data: text,
+        error: null,
+        bytesSoFar: text.length,
+      });
     })
     .catch((err) => {
       if (err && err.name === "AbortError") {

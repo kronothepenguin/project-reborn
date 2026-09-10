@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { PropList, propList } from "../../../api/index.js";
 
 const documentedMembers = [
@@ -24,7 +24,7 @@ const documentedMembers = [
 describe("PropList", () => {
   it("exposes exactly the documented prototype surface (FR-004)", () => {
     const protoMembers = Object.getOwnPropertyNames(PropList.prototype).filter(
-      (p) => p !== "constructor" && p !== "Symbol(Symbol.iterator)"
+      (p) => p !== "constructor" && p !== "Symbol(Symbol.iterator)",
     );
     expect(protoMembers.sort()).toEqual([...documentedMembers].sort());
   });

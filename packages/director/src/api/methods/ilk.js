@@ -8,17 +8,17 @@
 //   - symbols are created with Symbol.for(name) — the runtime's symbol registry
 //     (translated Lingo globals compare symbols by identity).
 //   - #void for undefined/null; #integer/#float split numbers.
-import { List } from "../../engine/base/list.js";
-import { PropList } from "../../engine/base/prop-list.js";
 import { Color } from "../../engine/base/color.js";
+import { List } from "../../engine/base/list.js";
 import { Point } from "../../engine/base/point.js";
+import { PropList } from "../../engine/base/prop-list.js";
 import { Rect } from "../../engine/base/rect.js";
-import { SoundObject } from "../../engine/core/sound.js";
-import { PlayerObject } from "../../engine/core/player.js";
-import { MovieObject } from "../../engine/core/index.js";
-import { SpriteObject } from "../../engine/core/sprite.js";
-import { MemberObject } from "../../engine/core/member.js";
 import { CastLibraryObject } from "../../engine/core/cast-library.js";
+import { MovieObject } from "../../engine/core/index.js";
+import { MemberObject } from "../../engine/core/member.js";
+import { PlayerObject } from "../../engine/core/player.js";
+import { SoundObject } from "../../engine/core/sound.js";
+import { SpriteObject } from "../../engine/core/sprite.js";
 import { WindowObject } from "../../engine/core/window.js";
 
 function ilkOf(object) {
@@ -27,7 +27,9 @@ function ilkOf(object) {
   if (typeof object === "string") return Symbol.for("string");
   if (typeof object === "boolean") return Symbol.for("boolean");
   if (typeof object === "number") {
-    return Number.isInteger(object) ? Symbol.for("integer") : Symbol.for("float");
+    return Number.isInteger(object)
+      ? Symbol.for("integer")
+      : Symbol.for("float");
   }
   if (object instanceof PropList) return Symbol.for("proplist");
   if (object instanceof List) return Symbol.for("list");
@@ -74,7 +76,8 @@ const ALIAS_GROUPS = {
 export function ilk(object, type) {
   const sym = ilkOf(object);
   if (type === undefined) return sym;
-  const typeName = typeof type === "symbol" ? Symbol.keyFor(type) : String(type);
+  const typeName =
+    typeof type === "symbol" ? Symbol.keyFor(type) : String(type);
   if (!typeName) return false;
   const actualName = sym ? Symbol.keyFor(sym) : undefined;
   if (!actualName) return false;

@@ -9,9 +9,12 @@
 // translated Lingo code that imports `_movie` / `_player` / etc. resolves to
 // this context's core-object instances.
 
-import { DirectorContext } from "../engine/subsystem/context.js";
 import { setActiveDirectorContext } from "../engine/subsystem/accessor.js";
-import { registerCustomElements, _createMovie } from "./custom-elements/index.js";
+import { DirectorContext } from "../engine/subsystem/context.js";
+import {
+  _createMovie,
+  registerCustomElements,
+} from "./custom-elements/index.js";
 
 export { registerCustomElements, _createMovie };
 

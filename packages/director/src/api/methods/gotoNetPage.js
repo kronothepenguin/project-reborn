@@ -21,7 +21,10 @@ export function gotoNetPage(url, targetName) {
         window.location.href = url;
       }
     } catch (err) {
-      net.update(id, { status: "error", error: err && err.message ? err.message : "Navigation failed" });
+      net.update(id, {
+        status: "error",
+        error: err && err.message ? err.message : "Navigation failed",
+      });
       return id;
     }
   }

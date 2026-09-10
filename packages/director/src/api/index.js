@@ -11,9 +11,15 @@
 // are alias re-exports for translated Lingo code.
 
 // --- Singletons (Chapter 5) ---
-export { _getMovie as _movie, _getPlayer as _player, _getSound as _sound,
-         _getKey as _key, _getMouse as _mouse, _getSystem as _system,
-         _getGlobal as _global } from "../engine/subsystem/singletons.js";
+export {
+  _getMovie as _movie,
+  _getPlayer as _player,
+  _getSound as _sound,
+  _getKey as _key,
+  _getMouse as _mouse,
+  _getSystem as _system,
+  _getGlobal as _global,
+} from "../engine/subsystem/singletons.js";
 
 // --- Constants (Chapter 9) ---
 export * from "../engine/base/constants.js";

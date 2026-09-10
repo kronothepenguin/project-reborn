@@ -1,22 +1,22 @@
-import { describe, it, expect, afterEach } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { setActiveDirectorContext } from "../../../engine/subsystem/accessor.js";
 import { DirectorContext } from "../../../engine/subsystem/context.js";
-import { member } from "../member.js";
+import { alert } from "../alert.js";
+import { beep } from "../beep.js";
 import { castLib } from "../castLib.js";
-import { marker } from "../marker.js";
+import { cursor } from "../cursor.js";
+import { findEmpty } from "../findEmpty.js";
+import { findLabel } from "../findLabel.js";
 import { go } from "../go.js";
 import { halt } from "../halt.js";
-import { beep } from "../beep.js";
-import { alert } from "../alert.js";
-import { cursor } from "../cursor.js";
+import { lastClick } from "../lastClick.js";
+import { marker } from "../marker.js";
+import { member } from "../member.js";
+import { netAbort } from "../netAbort.js";
 import { quit } from "../quit.js";
 import { sound } from "../sound.js";
 import { sprite } from "../sprite.js";
 import { window } from "../window.js";
-import { findEmpty } from "../findEmpty.js";
-import { findLabel } from "../findLabel.js";
-import { lastClick } from "../lastClick.js";
-import { netAbort } from "../netAbort.js";
 
 describe("stateful methods with NO active context (006 R8 neutrals)", () => {
   afterEach(() => setActiveDirectorContext(null));

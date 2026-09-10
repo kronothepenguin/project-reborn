@@ -120,8 +120,21 @@ export const METHODS_OWNERS = {
 };
 
 export const OWNER_CATEGORIES = Object.freeze([
-  "movie", "player", "sound", "key", "mouse", "system", "global",
-  "member", "castLib", "sprite", "channel", "window", "net", "creator", "top",
+  "movie",
+  "player",
+  "sound",
+  "key",
+  "mouse",
+  "system",
+  "global",
+  "member",
+  "castLib",
+  "sprite",
+  "channel",
+  "window",
+  "net",
+  "creator",
+  "top",
 ]);
 
 export function ownerOf(methodName) {

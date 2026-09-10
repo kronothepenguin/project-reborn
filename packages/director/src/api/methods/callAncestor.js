@@ -10,10 +10,17 @@ function resolveScript(target) {
   return [target];
 }
 
-function callAncestorOnInstance(instance, name, args, { raiseIfMissing = true } = {}) {
+function callAncestorOnInstance(
+  instance,
+  name,
+  args,
+  { raiseIfMissing = true } = {},
+) {
   if (instance == null) {
     if (raiseIfMissing) {
-      throw new Error(`Cannot callAncestor "${name}" on a null script instance.`);
+      throw new Error(
+        `Cannot callAncestor "${name}" on a null script instance.`,
+      );
     }
     return undefined;
   }
@@ -22,7 +29,9 @@ function callAncestorOnInstance(instance, name, args, { raiseIfMissing = true } 
     return scope[name].apply(scope, [scope, ...args]);
   }
   if (raiseIfMissing) {
-    throw new Error(`Ancestor handler "${name}" is not defined on the script instance.`);
+    throw new Error(
+      `Ancestor handler "${name}" is not defined on the script instance.`,
+    );
   }
   return undefined;
 }

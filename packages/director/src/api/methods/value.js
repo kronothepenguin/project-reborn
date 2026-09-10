@@ -133,7 +133,8 @@ class Parser {
     if (t.type === TOK_OP && (t.value === "-" || t.value === "+")) {
       this.next();
       const operand = this.factor();
-      if (operand === undefined || typeof operand !== "number") return undefined;
+      if (operand === undefined || typeof operand !== "number")
+        return undefined;
       return t.value === "-" ? -operand : operand;
     }
     if (t.type === TOK_NUM) {

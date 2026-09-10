@@ -1,14 +1,17 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { getNetText } from "../getNetText.js";
-import { postNetText } from "../postNetText.js";
+import { netAbort } from "../netAbort.js";
 import { netDone } from "../netDone.js";
 import { netError } from "../netError.js";
 import { netTextResult } from "../netTextResult.js";
-import { netAbort } from "../netAbort.js";
+import { postNetText } from "../postNetText.js";
 
 describe("net ops fail-soft under vitest (006 C3)", () => {
   it("getNetText with rejecting fetch -> Error tx, netDone true, netError truthy, result ''", async () => {
-    vi.stubGlobal("fetch", vi.fn(() => Promise.reject(new Error("Network error"))));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => Promise.reject(new Error("Network error"))),
+    );
     const id = getNetText("http://x");
     await vi.waitFor(() => expect(netDone(id)).toBe(true));
     expect(netError(id)).toBe("Network error");
@@ -17,7 +20,12 @@ describe("net ops fail-soft under vitest (006 C3)", () => {
   });
 
   it("getNetText with 404 -> netError 'HTTP 404'", async () => {
-    vi.stubGlobal("fetch", vi.fn(() => Promise.resolve({ ok: false, status: 404, text: async () => "" })));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() =>
+        Promise.resolve({ ok: false, status: 404, text: async () => "" }),
+      ),
+    );
     const id = getNetText("http://x");
     await vi.waitFor(() => expect(netDone(id)).toBe(true));
     expect(netError(id)).toBe("HTTP 404");
@@ -25,7 +33,16 @@ describe("net ops fail-soft under vitest (006 C3)", () => {
   });
 
   it("getNetText succeeds -> netTextResult is the body and netError '' ", async () => {
-    vi.stubGlobal("fetch", vi.fn(() => Promise.resolve({ ok: true, text: async () => "hello", headers: new Headers() })));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() =>
+        Promise.resolve({
+          ok: true,
+          text: async () => "hello",
+          headers: new Headers(),
+        }),
+      ),
+    );
     const id = getNetText("http://x");
     await vi.waitFor(() => expect(netDone(id)).toBe(true));
     expect(netTextResult(id)).toBe("hello");
@@ -38,7 +55,10 @@ describe("net ops fail-soft under vitest (006 C3)", () => {
   });
 
   it("postNetText also fail-softs", async () => {
-    vi.stubGlobal("fetch", vi.fn(() => Promise.reject(new Error("offline"))));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => Promise.reject(new Error("offline"))),
+    );
     const id = postNetText("http://x", "a=1");
     await vi.waitFor(() => expect(netDone(id)).toBe(true));
     expect(netError(id)).toMatch(/offline/);

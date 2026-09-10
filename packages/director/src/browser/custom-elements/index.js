@@ -21,7 +21,9 @@ class XObjectElement extends HTMLElement {
     this.#collectChildParams();
 
     const src = this.getAttribute("src") ?? this.#params.get("src") ?? "";
-    const tempo = Number(this.getAttribute("tempo") ?? this.#params.get("tempo") ?? 30);
+    const tempo = Number(
+      this.getAttribute("tempo") ?? this.#params.get("tempo") ?? 30,
+    );
     const width = Number(this.getAttribute("width") ?? 640);
     const height = Number(this.getAttribute("height") ?? 480);
 
@@ -42,7 +44,9 @@ class XObjectElement extends HTMLElement {
     this.#movie = _createMovie({ src, tempo, width, height });
     _setCanvas(this.#canvas, this.#movie);
 
-    this.#movie.dispatchEvent(new CustomEvent("prepareMovie", { detail: { src } }));
+    this.#movie.dispatchEvent(
+      new CustomEvent("prepareMovie", { detail: { src } }),
+    );
 
     if (src) {
       this.#loadMovieSrc(src).catch((err) => {
@@ -51,7 +55,9 @@ class XObjectElement extends HTMLElement {
     }
 
     this.#started = true;
-    this.#movie.dispatchEvent(new CustomEvent("startMovie", { detail: { src } }));
+    this.#movie.dispatchEvent(
+      new CustomEvent("startMovie", { detail: { src } }),
+    );
     startEventLoop({ tempo, movie: this.#movie });
   }
 
@@ -96,7 +102,7 @@ class XObjectElement extends HTMLElement {
     const cast = await loadCast(src);
     this.#castLibs.push(cast);
     this.#movie.dispatchEvent(
-      new CustomEvent("castLoaded", { detail: { cast, src } })
+      new CustomEvent("castLoaded", { detail: { cast, src } }),
     );
   }
 }
@@ -135,7 +141,9 @@ class XEmbedElement extends HTMLElement {
     this.#movie = _createMovie({ src, tempo, width, height });
     _setCanvas(this.#canvas, this.#movie);
 
-    this.#movie.dispatchEvent(new CustomEvent("prepareMovie", { detail: { src } }));
+    this.#movie.dispatchEvent(
+      new CustomEvent("prepareMovie", { detail: { src } }),
+    );
 
     if (src) {
       this.#loadMovieSrc(src).catch((err) => {
@@ -144,7 +152,9 @@ class XEmbedElement extends HTMLElement {
     }
 
     this.#started = true;
-    this.#movie.dispatchEvent(new CustomEvent("startMovie", { detail: { src } }));
+    this.#movie.dispatchEvent(
+      new CustomEvent("startMovie", { detail: { src } }),
+    );
     startEventLoop({ tempo, movie: this.#movie });
   }
 
@@ -178,7 +188,7 @@ class XEmbedElement extends HTMLElement {
     const cast = await loadCast(src);
     this.#castLibs.push(cast);
     this.#movie.dispatchEvent(
-      new CustomEvent("castLoaded", { detail: { cast, src } })
+      new CustomEvent("castLoaded", { detail: { cast, src } }),
     );
   }
 }
@@ -202,7 +212,12 @@ class XParamElement extends HTMLElement {
   }
 }
 
-export function _createMovie({ src = "", tempo = 30, width = 640, height = 480 } = {}) {
+export function _createMovie({
+  src = "",
+  tempo = 30,
+  width = 640,
+  height = 480,
+} = {}) {
   return {
     src,
     width,
@@ -253,6 +268,9 @@ export function registerCustomElements() {
 // Auto-register on import only when HTMLElement is available (browser).
 // In non-DOM environments (Node, jsdom-less test runners) skip registration
 // so importing this module doesn't throw on `class XObjectElement extends HTMLElement`.
-if (typeof globalThis.HTMLElement !== "undefined" && typeof globalThis.customElements !== "undefined") {
+if (
+  typeof globalThis.HTMLElement !== "undefined" &&
+  typeof globalThis.customElements !== "undefined"
+) {
   registerCustomElements();
 }

@@ -39,7 +39,12 @@ export function downloadNetThing(url, localFile) {
     })
     .then((blob) => {
       if (blob == null) return;
-      net.update(id, { status: "done", data: blob, error: null, bytesSoFar: blob.size });
+      net.update(id, {
+        status: "done",
+        data: blob,
+        error: null,
+        bytesSoFar: blob.size,
+      });
     })
     .catch((err) => {
       if (err && err.name === "AbortError") {

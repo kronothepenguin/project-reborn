@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { Color } from "../../../api/index.js";
 
 const documentedMembers = ["red", "green", "blue", "paletteIndex"];
@@ -6,7 +6,7 @@ const documentedMembers = ["red", "green", "blue", "paletteIndex"];
 describe("Color", () => {
   it("exposes exactly the documented prototype surface (FR-004)", () => {
     const protoMembers = Object.getOwnPropertyNames(Color.prototype).filter(
-      (p) => p !== "constructor"
+      (p) => p !== "constructor",
     );
     expect(protoMembers.sort()).toEqual([...documentedMembers].sort());
   });

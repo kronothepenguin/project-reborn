@@ -77,7 +77,10 @@ export class List {
   add(value) {
     if (this.sorted) {
       let i = 0;
-      while (i < this.items.length && compareValues(this.items[i], value) <= 0) {
+      while (
+        i < this.items.length &&
+        compareValues(this.items[i], value) <= 0
+      ) {
         i++;
       }
       this.items.splice(i, 0, value);
@@ -153,7 +156,7 @@ export class List {
    */
   duplicate() {
     const copy = this.items.map((item) =>
-      item instanceof List ? item.duplicate() : item
+      item instanceof List ? item.duplicate() : item,
     );
     const newList = new List();
     newList.items = copy;
@@ -170,7 +173,10 @@ export class List {
    */
   getAt(position) {
     if (position < 1 || position > this.items.length) {
-      throw new Error("Script error: the list does not contain an element at position " + position);
+      throw new Error(
+        "Script error: the list does not contain an element at position " +
+          position,
+      );
     }
     return this.items[position - 1];
   }

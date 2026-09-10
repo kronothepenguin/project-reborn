@@ -10,7 +10,12 @@ function resolveScript(target) {
   return [target];
 }
 
-function callOnInstance(instance, name, args, { requireAncestor = false, raiseIfMissing = true } = {}) {
+function callOnInstance(
+  instance,
+  name,
+  args,
+  { requireAncestor = false, raiseIfMissing = true } = {},
+) {
   if (instance == null) {
     if (raiseIfMissing) {
       throw new Error(`Cannot call "${name}" on a null script instance.`);
@@ -24,7 +29,12 @@ function callOnInstance(instance, name, args, { requireAncestor = false, raiseIf
   if (scope && typeof scope === "object" && typeof scope[name] === "function") {
     return scope[name].apply(scope, [scope, ...args]);
   }
-  if (requireAncestor && scope !== instance && instance && typeof instance[name] === "function") {
+  if (
+    requireAncestor &&
+    scope !== instance &&
+    instance &&
+    typeof instance[name] === "function"
+  ) {
     return instance[name].apply(instance, [instance, ...args]);
   }
   if (raiseIfMissing) {
