@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://clj8c5o3kbtqp"]
-
-[ext_resource type="PackedScene" uid="uid://ckj3dxljr8n0t" path="res://fuse_client/fuse_client.tscn" id="1_ig7tw"]
-
-[node name="Node2D" type="Node2D"]
-
-[node name="FuseClient" parent="." instance=ExtResource("1_ig7tw")]
