@@ -17,14 +17,20 @@ Author the 4 scripting Xtra objects missing from `src/engine/core/`, surface ver
   lightweight regex tokenizer is overkill — decided at clarify, likely real for parse/child via
   DOMParser when available else stub).
 
-## Decisions pending at clarify
+## Decisions (confirmed at clarify)
 
-- Minimal real (user decision from 003): full documented surface + deterministic v1 returns;
-  Fileio no-ops documented (worker has no FS); NetLingo delegates to NetState.
-- `new xtra("type")` factory — do we implement `xtra()` in api (006 owner) or a constructor
-  helper exported from engine/core? Resolve at clarify.
+- **D1**: `xtra()` is a top-level api method (`@owner top`, registry entry) →
+  `new xtra("fileio")` returns FileioObject; unknown → null.
+- **D2 (user directive)**: NetLingo **implements** the net methods — net state
+  + logic live on `NetLingoObject` (over the NetState registry as internal
+  state); the top-level 006 net api methods **delegate to it**.
+- **D3**: full documented surface for all 4; Fileio (no FS) + SpeechXtra (no
+  TTS) deterministic stubs; XMLParser minimal real (DOMParser when available);
+  NetLingo real where possible (URLEncode, status accessors over NetState).
 
 ## Verification
 
-- New `scripting-objects.test.js` — creation via documented form, documented returns, NetLingo
-  delegation where applicable; gate green (303+).
+- `scripting-objects.test.js` (8 tests): xtra creation, Fileio/SpeechXtra
+  surfaces, XML parsing (incl. malformed), NetLingo net flow through the ctx +
+  top-level delegates, context ownership of exactly one NetLingo.
+- Gate `pnpm --filter @project-reborn/director test` — 350 green.

@@ -1,14 +1,16 @@
 // @owner net
-import { _getNetState } from "../../engine/subsystem/singletons.js";
-
 // netAbort(url, netID?)
 // Per docs/drmx2004_scripting_ref.txt lines 21212-21240.
 // Cancels a network operation by netID if provided, otherwise by URL.
+// 011: delegates to the active context's NetLingo object (the net owner).
+
+import { _getNetLingo } from "../../engine/subsystem/singletons.js";
 
 export function netAbort(url, netID) {
-  const ns = _getNetState();
+  const nl = _getNetLingo();
+
   if (netID != null) {
-    ns.abort(netID);
+    nl.netAbort(netID);
     return;
   }
 
@@ -16,7 +18,7 @@ export function netAbort(url, netID) {
     throw new Error("netAbort: URL is required when netID is not provided");
   }
 
-  const id = ns.findByUrl(url);
+  const id = nl.netState.findByUrl(url);
   if (id == null) return;
-  ns.abort(id);
+  nl.netAbort(id);
 }

@@ -43,6 +43,7 @@ export const METHODS_OWNERS = {
   externalEvent: "top",
   externalParamName: "player",
   externalParamValue: "player",
+  xtra: "top",
   findEmpty: "castLib",
   findLabel: "movie",
   flashToStage: "top",

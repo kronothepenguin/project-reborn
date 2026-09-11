@@ -60,6 +60,7 @@ export { duplicate } from "./methods/duplicate.js";
 export { externalEvent } from "./methods/externalEvent.js";
 export { externalParamName } from "./methods/externalParamName.js";
 export { externalParamValue } from "./methods/externalParamValue.js";
+export { xtra } from "./methods/xtra.js";
 export { findEmpty } from "./methods/findEmpty.js";
 export { findLabel } from "./methods/findLabel.js";
 export { flashToStage } from "./methods/flashToStage.js";

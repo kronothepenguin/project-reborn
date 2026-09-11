@@ -22,13 +22,13 @@ import { MouseObject } from "../core/mouse.js";
 import { SystemObject } from "../core/system.js";
 import { GlobalObject } from "../core/global.js";
 import { MemberRegistry } from "./member-registry.js";
-import { NetState } from "./net-state.js";
 import { WindowRegistry } from "./window-registry.js";
 import { Score } from "./score.js";
 import { getActiveDirectorContext, setActiveDirectorContext } from "./accessor.js";
 import { hydrateSprite } from "./sprite-hydrate.js";
 import { SpriteObject } from "../core/sprite.js";
 import { SpriteChannelObject } from "../core/sprite-channel.js";
+import { NetLingoObject } from "../core/scripting/net-lingo.js";
 
 export class DirectorContext extends EventTarget {
   constructor(options = {}) {
@@ -50,7 +50,8 @@ export class DirectorContext extends EventTarget {
     this.castLibs = [];
 
     this.memberRegistry = new MemberRegistry();
-    this.netState = new NetState();
+    this.netLingo = new NetLingoObject();
+    this.netState = this.netLingo.netState; // compat alias (006 R9 → 011)
     this.windowRegistry = new WindowRegistry();
 
     this.score = new Score({

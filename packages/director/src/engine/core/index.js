@@ -15,6 +15,10 @@ export { WindowObject } from "./window.js";
 // 010: member media classes (19 media types).
 export * from "./media/index.js";
 
+// 011: scripting objects (4 Xtra classes + the xtra-name → class map).
+export { FileioObject, NetLingoObject, SpeechXtraObject, XMLParserObject } from "./scripting/index.js";
+export { XTRA_CLASSES } from "./scripting/index.js";
+
 export { List } from "../base/list.js";
 export { PropList } from "../base/prop-list.js";
 export { Point } from "../base/point.js";

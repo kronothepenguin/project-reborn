@@ -18,6 +18,7 @@ import { MouseObject } from "../core/mouse.js";
 import { SystemObject } from "../core/system.js";
 import { GlobalObject } from "../core/global.js";
 import { NetState } from "./net-state.js";
+import { NetLingoObject } from "../core/scripting/net-lingo.js";
 
 // Internal subsystem slot (004): the Score is owned by the active context
 // (C8); the proxy and MovieObject resolve it via the accessor. NOT a
@@ -61,12 +62,21 @@ export function _getGlobal() {
 }
 
 const _defaultNetState = new NetState();
+const _defaultNetLingo = new NetLingoObject();
 
-// 006 R9: the network registry is a subsystem — the active context's
-// `netState`, or a module-scoped default when no context is active.
+// 011: the active context's NetLingo object IS the net subsystem (state +
+// logic live on it). Falls back to a module-scoped default when no context
+// is active.
+export function _getNetLingo() {
+  const ctx = getActiveDirectorContext();
+  return ctx && ctx.netLingo ? ctx.netLingo : _defaultNetLingo;
+}
+
+// 006 R9 compat: the net transaction registry is the NetLingo object's
+// internal `netState`.
 export function _getNetState() {
   const ctx = getActiveDirectorContext();
-  return ctx ? ctx.netState : _defaultNetState;
+  return ctx && ctx.netLingo ? ctx.netLingo.netState : _defaultNetState;
 }
 
 export { _getMovie as _movie, _getPlayer as _player, _getSound as _sound, _getKey as _key, _getMouse as _mouse, _getSystem as _system, _getGlobal as _global };
