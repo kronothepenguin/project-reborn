@@ -2,14 +2,8 @@ go 1.27.0
 
 use (
 	./apps/cms
-	./apps/installer
-	./apps/reborn
-	./apps/server
 	./packages/astro
 	./packages/auth
 	./packages/cms
-	./packages/shared
-	./packages/storage
-	./packages/virtual
 	./tools/create
 )
