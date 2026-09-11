@@ -1,0 +1,13 @@
+package router
+
+import (
+	"github.com/kronothepenguin/project-reborn/packages/astro"
+)
+
+type Router struct {
+	resolve astro.Resolver
+}
+
+func New(resolver astro.Resolver) *Router {
+	return &Router{resolve: resolver}
+}

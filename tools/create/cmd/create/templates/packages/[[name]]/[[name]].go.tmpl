@@ -1,0 +1,47 @@
+package {{.Name}}
+
+import (
+	"embed"
+	"net/http"
+
+	"github.com/kronothepenguin/project-reborn/packages/astro"
+	"github.com/kronothepenguin/project-reborn/packages/{{.Name}}/internal/router"
+)
+
+//go:embed dist/*
+var DistFS embed.FS
+
+type {{.Name}} struct {
+	static  http.Handler
+	resolve astro.Resolver
+}
+
+type Option func(*{{.Name}})
+
+func New(opts ...Option) *{{.Name}} {
+	c := &{{.Name}}{}
+	for _, opt := range opts {
+		opt(c)
+	}
+	return c
+}
+
+func (c *{{.Name}}) Mount(mux *http.ServeMux) {
+	r := router.New(c.resolve)
+
+	mux.HandleFunc("GET /{$}", r.HandleIndex)
+
+	mux.Handle("/", c.static)
+}
+
+func WithStatic(h http.Handler) Option {
+	return func(c *{{.Name}}) {
+		c.static = h
+	}
+}
+
+func WithResolver(r astro.Resolver) Option {
+	return func(c *{{.Name}}) {
+		c.resolve = r
+	}
+}

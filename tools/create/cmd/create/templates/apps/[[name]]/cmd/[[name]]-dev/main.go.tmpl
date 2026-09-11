@@ -1,0 +1,37 @@
+package main
+
+import (
+	"log"
+	"net/http"
+	"net/http/httputil"
+	"net/url"
+
+	"github.com/kronothepenguin/project-reborn/packages/astro"
+	"github.com/kronothepenguin/project-reborn/packages/{{.Name}}"
+)
+
+func main() {
+	baseURL, err := url.Parse("http://localhost:{{.AstroPort}}")
+	if err != nil {
+		panic(err)
+	}
+
+	resolver := astro.MakeServerResolver(baseURL)
+	proxy := httputil.NewSingleHostReverseProxy(baseURL)
+
+	c := {{.Name}}.New(
+		{{.Name}}.WithResolver(resolver),
+		{{.Name}}.WithStatic(proxy),
+	)
+
+	mux := http.NewServeMux()
+	c.Mount(mux)
+
+	server := http.Server{
+		Addr:    "localhost:{{.AppPort}}",
+		Handler: mux,
+	}
+
+	log.Println("{{.Name}} dev on http://localhost:{{.AppPort}}")
+	server.ListenAndServe()
+}

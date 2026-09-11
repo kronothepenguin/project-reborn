@@ -1,8 +1,22 @@
 {
+  "files.associations": {
+    "*.go.tmpl": "go",
+    "*.js.tmpl": "javascript",
+    "*.mjs.tmpl": "javascript",
+    "*.json.tmpl": "json",
+    "*.toml.tmpl": "toml",
+    "*.astro.tmpl": "astro",
+    "*.svelte.tmpl": "svelte",
+    "*.css.tmpl": "css",
+    "*.html.tmpl": "html",
+    "*.md.tmpl": "markdown"
+  },
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "prettier.documentSelectors": ["**/*.astro"],
   "[astro]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[go]": {
+    "editor.defaultFormatter": "golang.go"
   }
 }

@@ -2,7 +2,6 @@ go 1.27.0
 
 use (
 	./apps/cms
-	./apps/housekeeping
 	./apps/installer
 	./apps/reborn
 	./apps/server
@@ -12,4 +11,5 @@ use (
 	./packages/shared
 	./packages/storage
 	./packages/virtual
+	./tools/create
 )

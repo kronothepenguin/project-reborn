@@ -1,0 +1,21 @@
+---
+import "../styles/global.css";
+import Counter from "../components/counter.svelte";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{{.Name}}</title>
+  </head>
+  <body class="bg-sky-200 flex min-h-screen items-center justify-center">
+    <main class="rounded-xl border border-sky-300 bg-white p-6 shadow-sm">
+      <h1 class="text-3xl font-bold tracking-tight">{{.Name}}</h1>
+      <p class="mt-2 text-sm text-zinc-600">
+        Injected by the Go handler: <span class="font-mono">[[.Title]]</span>
+      </p>
+      <Counter />
+    </main>
+  </body>
+</html>

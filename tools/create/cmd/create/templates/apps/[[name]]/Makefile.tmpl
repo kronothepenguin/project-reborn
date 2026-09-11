@@ -1,0 +1,11 @@
+.PHONY: dev web stop
+
+dev:
+	cd ../../packages/{{.Name}} && pnpm astro dev --background
+	go tool air
+
+web:
+	pnpm --filter @project-reborn/{{.Name}} dev
+
+stop:
+	cd ../../packages/{{.Name}} && pnpm astro dev stop

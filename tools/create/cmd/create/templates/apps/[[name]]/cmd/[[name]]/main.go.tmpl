@@ -1,0 +1,36 @@
+package main
+
+import (
+	"io/fs"
+	"log"
+	"net/http"
+
+	"github.com/kronothepenguin/project-reborn/packages/astro"
+	"github.com/kronothepenguin/project-reborn/packages/{{.Name}}"
+)
+
+func main() {
+	distFS, err := fs.Sub({{.Name}}.DistFS, "dist")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	resolver := astro.MakeFSResolver(distFS)
+	fileServer := http.FileServerFS(distFS)
+
+	c := {{.Name}}.New(
+		{{.Name}}.WithResolver(resolver),
+		{{.Name}}.WithStatic(fileServer),
+	)
+
+	mux := http.NewServeMux()
+	c.Mount(mux)
+
+	server := http.Server{
+		Addr:    "localhost:{{.AppPort}}",
+		Handler: mux,
+	}
+
+	log.Println("{{.Name}} on http://localhost:{{.AppPort}}")
+	server.ListenAndServe()
+}

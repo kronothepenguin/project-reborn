@@ -1,0 +1,51 @@
+# {{.Name}} — web app package
+
+Astro (Svelte + Tailwind) frontend embedded in a Go module. The Go app struct
+(`{{.Name}}` struct) registers a router over `packages/astro` resolvers and
+serves the built frontend from the embedded `dist/`.
+
+## Ports
+
+- App (Go HTTP server): **{{.AppPort}}** — baked in `apps/{{.Name}}/cmd/{{.Name}}`
+  and `apps/{{.Name}}/cmd/{{.Name}}-dev`
+- Astro dev server: **{{.AstroPort}}** — baked in `astro.config.mjs`
+
+## Development
+
+Recommended: run through the app runner in `apps/{{.Name}}`:
+
+```sh
+cd apps/{{.Name}}
+make dev    # astro (background) + air hot reload → http://localhost:{{.AppPort}}
+make web    # astro dev server only → http://localhost:{{.AstroPort}}
+make stop   # stop the background astro server
+```
+
+Or run the astro dev server directly from this directory:
+
+```
+astro dev --background
+```
+
+Manage the background server with `astro dev stop`, `astro dev status`, and
+`astro dev logs`. Astro page edits are hot-reloaded; the Go router fetches
+the rendered page fresh on every request in dev mode.
+
+## Production build
+
+1. `pnpm build` — renders `dist/`
+2. `cd apps/{{.Name}} && go build -o tmp/{{.Name}} ./cmd/{{.Name}} && ./tmp/{{.Name}}`
+
+The placeholder in `dist/index.html` exists so the package compiles before the
+first `pnpm build`.
+
+## Documentation
+
+Full documentation: https://docs.astro.build
+
+Consult these guides before working on related tasks:
+
+- [Adding pages, dynamic routes, or middleware](https://docs.astro.build/en/guides/routing/)
+- [Working with Astro components](https://docs.astro.build/en/guides/routing/)
+- [Using React, Vue, Svelte, or other framework components](https://docs.astro.build/en/guides/framework-components/)
+- [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
