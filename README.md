@@ -29,7 +29,7 @@ project-reborn/
 ├── packages/                      # implementation (models, logic, handlers)
 │   ├── client/                    # JavaScript client (@project-reborn/client-r26)
 │   ├── director/                  # director runtime (@project-reborn/director)
-│   ├── storage/                   # sqlc-generated DB layer (Go)
+│   ├── store/                     # persistence infrastructure: SQLite + sqlc-generated DB layer (Go)
 │   ├── virtual/                   # domain types (Go)
 │   └── shared/                    # ansi, dotenv, httpx, tmpl utilities (Go)
 ├── apps/                          # thin executables (process, port, entrypoint)
@@ -81,11 +81,13 @@ make build          # compiles ./bin/main from apps/reborn/cmd
 
 ## Database
 
-The Go query code in `packages/storage/` is generated from SQL with sqlc. Run this after changing any `.sql` files.
+The persistence infrastructure lives in `packages/store/`: it owns the SQLite file, applies the declared schemas on every open, and exposes typed operations generated from SQL with sqlc. Run the generator after changing any `.sql` files.
 
 ```bash
-cd packages/storage && make generate
+cd packages/store && go tool sqlc generate
 ```
+
+New persisted data is added with the `adding-data-persistence` skill and documented in the OKF bundle under `packages/store/knowledge/` with the `documenting-with-okf` skill.
 
 ---
 
