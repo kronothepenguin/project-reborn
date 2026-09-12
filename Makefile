@@ -1,4 +1,4 @@
-.PHONY: install dev build tools create
+.PHONY: install dev build tools create tw-color
 
 install:
 	go work sync
@@ -25,6 +25,9 @@ tools:
 
 create: tools
 	./tools/create/bin/create $(if $(dry-run),-dry-run) $(if $(app-port),-app-port=$(app-port)) $(if $(astro-port),-astro-port=$(astro-port)) $(name)
+
+tw-color:
+	node tools/tw-color/tw-color.mjs
 
 cms-dev:
 	pnpm --filter @project-reborn/cms dev
