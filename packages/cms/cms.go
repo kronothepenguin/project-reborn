@@ -27,7 +27,7 @@ func New(opts ...Option) *CMS {
 }
 
 func (c *CMS) Mount(mux *http.ServeMux) {
-	r := router.New(c.resolve)
+	r := router.New(router.Deps{Resolver: c.resolve})
 
 	mux.HandleFunc("GET /{$}", r.HandleIndexView)
 	mux.HandleFunc("POST /{$}", r.HandleIndexLogin)

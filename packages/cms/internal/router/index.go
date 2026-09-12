@@ -6,12 +6,14 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 )
 
-func (router *Router) HandleIndexView(w http.ResponseWriter, r *http.Request) {
-	astro.WriteTemplate(w, router.resolve, "index.html", nil)
+// HandleIndexView renders GET /{$}.
+func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
+	astro.WriteTemplate(w, r.deps.Resolver, "index.html", nil)
 }
 
-func (router *Router) HandleIndexLogin(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
+// HandleIndexLogin handles the POST /{$} login action.
+func (r *Router) HandleIndexLogin(w http.ResponseWriter, req *http.Request) {
+	_ = req.ParseForm()
 
-	astro.WriteTemplate(w, router.resolve, "index.html", nil)
+	astro.WriteTemplate(w, r.deps.Resolver, "index.html", nil)
 }

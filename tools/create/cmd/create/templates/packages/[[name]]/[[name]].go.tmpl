@@ -27,9 +27,9 @@ func New(opts ...Option) *{{.Name}} {
 }
 
 func (c *{{.Name}}) Mount(mux *http.ServeMux) {
-	r := router.New(c.resolve)
+	r := router.New(router.Deps{Resolver: c.resolve})
 
-	mux.HandleFunc("GET /{$}", r.HandleIndex)
+	mux.HandleFunc("GET /{$}", r.HandleIndexView)
 
 	mux.Handle("/", c.static)
 }

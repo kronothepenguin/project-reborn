@@ -10,6 +10,7 @@ type page struct {
 	Title string
 }
 
-func (r *Router) HandleIndex(w http.ResponseWriter, req *http.Request) {
-	astro.WriteTemplate(w, r.resolve, "index.html", page{Title: "Hello from Go"})
+// HandleIndexView renders GET /{$}.
+func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
+	astro.WriteTemplate(w, r.deps.Resolver, "index.html", page{Title: "Hello from Go"})
 }

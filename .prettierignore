@@ -1,3 +1,5 @@
 ./apps/client/src/game/*
 
 dist/
+
+tools/create/cmd/create/templates/

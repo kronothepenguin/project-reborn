@@ -4,10 +4,15 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 )
 
-type Router struct {
-	resolve astro.Resolver
+// Deps are the shared services every handler can use.
+type Deps struct {
+	Resolver astro.Resolver
 }
 
-func New(resolver astro.Resolver) *Router {
-	return &Router{resolve: resolver}
+type Router struct {
+	deps Deps
+}
+
+func New(deps Deps) *Router {
+	return &Router{deps: deps}
 }
