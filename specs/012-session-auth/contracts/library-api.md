@@ -114,6 +114,7 @@ func WithCookieSecure(secure bool) Option
 func WithIdleTimeout(d time.Duration) Option
 func WithAbsoluteTimeout(d time.Duration) Option
 func WithRememberTimeout(d time.Duration) Option
+func WithRemember(remember bool) Option
 func WithTouchInterval(d time.Duration) Option
 func WithTokenBytes(n int) Option
 func WithCSRFHeader(name string) Option
@@ -124,7 +125,7 @@ func WithUnauthorizedHandler(h http.Handler) Option
 func WithForbiddenHandler(h http.Handler) Option
 ```
 
-- Defaults: `__Host-session`, path `/`, host-only, `Secure=true` (`WithCookieSecure`), `SameSite=Strict`, idle `30m`, absolute `12h`, remember `30d`, touch `1m`, 32 token bytes, `X-CSRF-Token`/`csrf_token`, real clock, `slog.Default()` sink, generic 401/403 handlers.
+- Defaults: `__Host-session`, path `/`, host-only, `Secure=true` (`WithCookieSecure`), `SameSite=Strict`, idle `30m`, absolute `12h`, remember `30d` (`WithRemember` default `false`), touch `1m`, 32 token bytes, `X-CSRF-Token`/`csrf_token`, real clock, `slog.Default()` sink, generic 401/403 handlers.
 - Transport security (TLS) is deployment-owned (spec C3): the library never requires, inspects, or rejects based on transport. `WithCookieSecure` controls only the cookie `Secure` attribute (browser-side cookie hardening).
 - Invalid values yield `ErrConfig` (returned by error-returning functions; `Protect` panics at construction time, since it cannot return an error — see below).
 
@@ -151,7 +152,7 @@ func PasswordChanged(w http.ResponseWriter, r *http.Request, a *Auth, accountRev
 
 - Requires explicit application call after credential verification (spec C1/FR-001); passwords never reach the library.
 - Reads any credential the client presents, derives its digest, and revokes it through `revoker` (idempotent) **before** creating the new record; the client-supplied value is never adopted (FR-002, US2.2–2.3).
-- Unconditionally generates a fresh credential (configurable entropy, ≥128 bits), computes `CreatedAt`/`LastSeenAt`/`IdleExpiresAt`/`AbsoluteExpiresAt`, persists via `creator`, sets the hardened cookie, records `created`.
+- Unconditionally generates a fresh credential (configurable entropy, ≥128 bits), computes `CreatedAt`/`LastSeenAt`/`IdleExpiresAt`/`AbsoluteExpiresAt` (`WithRemember(true)` selects `WithRememberTimeout` and a persistent cookie), persists via `creator`, sets the hardened cookie, records `created`.
 - On any failure no record is stored and no cookie is set; if `revoker` fails the call aborts (fail closed).
 - Errors: `ErrConfig`, wrapped store errors.
 

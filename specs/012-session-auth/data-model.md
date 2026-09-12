@@ -100,6 +100,7 @@ Every function applies these defaults first; options are optional by constructio
 | `WithIdleTimeout(time.Duration)` | `30m` | Sliding inactivity window |
 | `WithAbsoluteTimeout(time.Duration)` | `12h` | Hard session lifetime |
 | `WithRememberTimeout(time.Duration)` | `30 * 24h` | Hard lifetime + cookie max-age for "remember me" |
+| `WithRemember(bool)` | `false` | `Create` marks the session "remember me": persistent cookie + remember absolute deadline |
 | `WithTouchInterval(time.Duration)` | `1m` | Minimum spacing between activity writes |
 | `WithTokenBytes(int)` | `32` | Credential entropy; minimum 16 (128 bits) |
 | `WithCSRFHeader(string)` | `X-CSRF-Token` | Accepted anti-forgery header |
