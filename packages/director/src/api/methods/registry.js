@@ -4,8 +4,9 @@
 //           castLib | sprite | channel | window | net | creator | top
 //
 // Built from director_core_objects.txt method summaries (see
-// specs/006-api/research.md) + the api/methods file set. The audit test
-// asserts: every file in methods/ has an entry,
+// specs/archive/006-api/research.md) + the api/methods file set; the
+// consolidated contract is specs/015-director-runtime/spec.md (FR-043/R-24).
+// The audit test asserts: every file in methods/ has an entry,
 // the entry matches the `// @owner` header at the top of the file, and the set
 // is exactly the files present (no strays).
 

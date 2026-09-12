@@ -1,8 +1,19 @@
-# Director Shockwave Player Simulator — Build Plan (specs 002–009)
+# Director Shockwave Player Simulator — Build Plan & Roadmap (specs 002–011)
+
+> **Historical build plan.** This document moved from
+> `docs/shockwave-player-runtime.md` into the consolidated spec's `contracts/`
+> directory. It records how the runtime was built (specs 002–011) and is kept for
+> context. Where it conflicts with `../spec.md` — mechanisms, paths, status —
+> `../spec.md` and its Supersession Matrix (Appendix B) win. In particular, the
+> singleton live-binding model described below was retired by ruling R-02
+> (core-object consts on `DirectorContext` + a single active-context accessor),
+> and `the` is registered by the player runner, not at import (R-26). The original
+> feature specs are archived under `../../archive/` and remain the rationale
+> record.
 
 **Goal**: Rebuild the Macromedia Director MX 2004 / Shockwave runtime as a
 browser "Shockwave player simulator" in JavaScript. Every `.ls` LingoScript that
-was translated to JS (in `apps/client/src/game/`) runs unmodified in the browser.
+was translated to JS (in `packages/client-r26/src/game/`) runs unmodified in the browser.
 
 **Definition**: NOT a reimplementation of Director UI, NOT a binary `.dcr/.dir/
 .cct/.cst` player. Everything is translated JavaScript; movies and casts are
@@ -54,8 +65,8 @@ Your 8 target layers map to the specs as follows (folder = layer; 002–009):
 
 - **No `#` private** on documented members; **no `static`** members; **one class
   per module**; **verbatim JSDoc** quoted from `docs/drmx2004_scripting_ref/`
-  (methods.txt / properties.txt / essentials); no fabricated behavior (package
-  AGENTS.md rules 1–8; FR-013/014).
+  (methods.txt / properties.txt / essentials); no fabricated behavior
+  (consolidated spec FR-004/FR-005/FR-014).
 - **Red-green tests** (vitest + jsdom, no custom shims): write tests → observe
   FAIL → implement → green. Gate: `pnpm --filter @project-reborn/director test`.
 - **Spec-driven**: every feature flows through speckit: `/speckit.specify` →
@@ -67,10 +78,10 @@ Your 8 target layers map to the specs as follows (folder = layer; 002–009):
 - LP-sized specs **may split during planning** (speckit rule). Natural seams
   noted per spec below; splits become new sequential feature numbers.
 - Constitution v2.0.0 is the governing charter (Defined-Before-Built, No Silent
-  Interpretation, KISS/YAGNI/SOLID, Test Discipline). `specs/001-director-runtime/`
-  stays as historical reference; where these specs supersede its decisions, that
-  is recorded in each spec (001 has no spearate deprecation step — speckit leaves
-  specs in place).
+  Interpretation, KISS/YAGNI/SOLID, Test Discipline). The original specs
+  (`specs/archive/001-director-runtime/` … `specs/archive/011-scripting-objects/`)
+  are archived historical records; `specs/015-director-runtime/spec.md` is the
+  consolidated contract that supersedes them (including 001's decisions).
 
 ---
 
@@ -78,7 +89,8 @@ Your 8 target layers map to the specs as follows (folder = layer; 002–009):
 
 Each entry records: status, priority, scope, size, what already exists (to reuse),
 key decisions already agreed, open items for clarify, supersedes-from-001,
-dependencies.
+dependencies. The "open for clarify" items were resolved in the archived specs
+and consolidated in `spec.md`; they are retained here as planning history.
 
 ---
 
@@ -88,7 +100,7 @@ dependencies.
   package stabilization (broken imports) + test cleanup (132 stale tests, shims).
 - **Status**: complete. 7 test files / 73 tests green; empty-tree layout in place;
   `@/lingo` exports classes + creators (amendment: `color()` RGB-only, palette→006).
-- **Supersedes 001**: experts the creators into 002 (were 006); layer taxonomy.
+- **Supersedes 001**: exports the creators into 002 (were 006); layer taxonomy.
 
 ---
 
@@ -260,7 +272,7 @@ dependencies.
   - **The `director-cast-to-javascript` skill becomes real**: it is currently a
     placeholder; 007 defines what it generates — per-cast `index.js` from
     `Members.csv`, movie `index.js` from `Casts.csv` aggregating the cast modules.
-    Then generate packs for the 63 cast folders under `apps/client/src/game/`
+    Then generate packs for the 63 cast folders under `packages/client-r26/src/game/`
     (habbo first: Internal members + fuse_client + empty slots).
 - **Size**: M (generation spec + generated output is large but mechanical).
 - **Open for clarify**: exact pack schema (scope of the skill's generated code vs
@@ -360,13 +372,15 @@ chunk ops.
    each phase boundary / at least before pushing).
 4. LP-specs that split during planning (003, 006, 008) spawn new sequential
    feature numbers and re-run the pipeline per split.
-5. `specs/001-director-runtime/` remains untouched as reference; each new spec
-   records which 001 FRs it supersedes.
+5. `specs/015-director-runtime/spec.md` is the consolidated contract; the
+   archived 001–011 specs (`specs/archive/`) remain the rationale record. Each
+   archived spec records which earlier FRs it superseded.
 
 ## Status
 
 | # | Spec | Status | Notes |
 |---|------|--------|-------|
+| 015 | director-runtime (consolidated) | ✅ contract | Merged 001–011; source dirs archived under `specs/archive/`; consistency pass driven by `/speckit.analyze` |
 | 002 | engine-base | ✅ complete (`f67f8b4f`) | 73 tests green |
 | 005 | engine-syntax | ✅ complete (`b53b33e0`) | 147 tests green |
 | 004 | engine-subsystem + Score | ✅ complete | Score live via accessor (006 C8) |
@@ -376,5 +390,5 @@ chunk ops.
 | 009 | browser | ✅ complete (`3647b466`) | `<x-embed>`/`<x-object>`/`<x-param>` thin over `run()` + real worker bootstrap; 303 tests |
 | 003 | engine-core | ✅ complete (`d30b042f`) | functional sprites; **split** — member classes → 010, scripting objects → 011 |
 | 010 | member classes | ✅ complete (`3edde81e`) | 8 functional (5 authored: Button/ColorPalette/Cursor/Font/Sound) + 11 stubs; real `newMember` |
-| 011 | scripting objects | ✅ complete (`pending`) | Fileio/NetLingo/SpeechXtra/XMLParser + `xtra()` factory; net logic+state on NetLingo; 350 tests |
+| 011 | scripting objects | ✅ complete (`5eada905`) | Fileio/NetLingo/SpeechXtra/XMLParser + `xtra()` factory; net logic+state on NetLingo; 350 tests |
 ```
