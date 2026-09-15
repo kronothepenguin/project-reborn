@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="40" viewBox="0 0 180 40" role="img" aria-label="Habbo Hotel">
+  <rect x="2" y="10" width="24" height="22" rx="3" fill="#3aa700" stroke="#1f5700" stroke-width="2" />
+  <path d="M2 12 L14 2 L26 12" fill="none" stroke="#1f5700" stroke-width="3" stroke-linejoin="round" />
+  <text x="34" y="28" font-family="Verdana, Geneva, sans-serif" font-size="20" font-weight="bold" fill="#333333">Habbo</text>
+  <text x="112" y="28" font-family="Verdana, Geneva, sans-serif" font-size="14" fill="#666666">Hotel</text>
+</svg>

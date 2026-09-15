@@ -15,7 +15,7 @@ func MakeServerResolver(baseURL *url.URL) Resolver {
 	return func(name string) (*template.Template, error) {
 		name = strings.TrimSuffix(name, "/index.html")
 		name = strings.TrimSuffix(name, ".html")
-		if name == "" {
+		if name == "" || name == "index" {
 			name = "/"
 		}
 

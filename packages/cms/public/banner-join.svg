@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="280" viewBox="0 0 600 280" role="img" aria-label="Join the hotel">
+  <rect width="600" height="280" fill="#bce0ee" />
+  <rect x="12" y="12" width="576" height="256" rx="8" fill="#e3e3db" stroke="#cccccc" stroke-width="2" />
+  <circle cx="300" cy="110" r="52" fill="#3aa700" opacity="0.85" />
+  <path d="M278 110 L300 82 L322 110 Z" fill="#ffffff" />
+  <text x="300" y="200" text-anchor="middle" font-family="Verdana, Geneva, sans-serif" font-size="24" font-weight="bold" fill="#333333">Welcome to the hotel</text>
+  <text x="300" y="228" text-anchor="middle" font-family="Verdana, Geneva, sans-serif" font-size="16" fill="#666666">Meet friends and make a home</text>
+</svg>
