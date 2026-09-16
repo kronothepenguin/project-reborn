@@ -5,6 +5,7 @@ use (
 	./packages/astro
 	./packages/auth
 	./packages/cms
+	./packages/config
 	./packages/store
 	./tools/create
 )
