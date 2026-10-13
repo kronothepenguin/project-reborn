@@ -23,10 +23,4 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Closed: Story = { args: { label: "Account", items } };
-export const Open: Story = {
-  args: { label: "Account", items },
-  play: async ({ canvasElement }) => {
-    canvasElement.querySelector("button")?.click();
-  },
-};
+export const Default: Story = { args: { label: "Account", items } };

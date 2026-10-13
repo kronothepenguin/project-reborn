@@ -101,28 +101,28 @@ description: "Task list for the Design System (Slice 1)"
 
 ---
 
-## Phase 4: User Story 2 - Review every component and state in one catalogue (Priority: P2)
+## Phase 4: User Story 2 - Review every component in one catalogue (Priority: P2)
 
-**Goal**: Storybook renders every baseline component in every documented state, each with a usage note.
+**Goal**: Storybook shows every baseline component with one entry per documented prop-driven state, each with a usage note.
 
-**Independent Test**: Run Storybook and confirm every component from `data-model.md` appears under Components with one story per state and a usage note, and that nothing documented is missing.
+**Independent Test**: Run Storybook and confirm every component from `data-model.md` appears under Components with one story per prop-driven state and a usage note, and that nothing documented is missing.
 
 ### Implementation for User Story 2
 
-- [X] T037 [P] [US2] Add Button stories covering every state in `packages/components/src/components/button.stories.ts`
-- [X] T038 [P] [US2] Add Link stories covering every state in `packages/components/src/components/link.stories.ts`
-- [X] T039 [P] [US2] Add Paper stories in `packages/components/src/components/paper.stories.ts`
-- [X] T040 [P] [US2] Add Card stories in `packages/components/src/components/card.stories.ts`
-- [X] T041 [P] [US2] Add Input stories covering empty/focused/filled/disabled/invalid in `packages/components/src/components/input.stories.ts`
-- [X] T042 [P] [US2] Add Form field stories covering empty/focused/filled/disabled/invalid in `packages/components/src/components/form-field.stories.ts`
-- [X] T043 [P] [US2] Add Menu stories covering closed/open in `packages/components/src/components/menu.stories.ts`
-- [X] T044 [P] [US2] Add Menu item stories covering default/hover/focus/selected/disabled in `packages/components/src/components/menu-item.stories.ts`
-- [X] T045 [P] [US2] Add Tabs stories covering multiple selected indexes in `packages/components/src/components/tabs.stories.ts`
-- [X] T046 [P] [US2] Add Tab stories covering default/hover/focus/selected/disabled in `packages/components/src/components/tab.stories.ts`
-- [X] T047 [P] [US2] Add Tab panel stories covering hidden/shown in `packages/components/src/components/tab-panel.stories.ts`
-- [X] T048 [P] [US2] Add Dialog stories covering closed/open in `packages/components/src/components/dialog.stories.ts`
+- [X] T037 [P] [US2] Replace the per-state Button stories with a single default story with a usage note in `packages/components/src/components/button.stories.ts`
+- [X] T038 [P] [US2] Replace the per-state Link stories with a single default story with a usage note in `packages/components/src/components/link.stories.ts`
+- [X] T039 [P] [US2] Replace the Paper stories with a single default story with a usage note in `packages/components/src/components/paper.stories.ts`
+- [X] T040 [P] [US2] Replace the Card stories with a single default story with a usage note in `packages/components/src/components/card.stories.ts`
+- [X] T041 [P] [US2] Replace the per-state Input stories with a single default story with a usage note in `packages/components/src/components/input.stories.ts`
+- [X] T042 [P] [US2] Replace the per-state Form field stories with a single default story with a usage note in `packages/components/src/components/form-field.stories.ts`
+- [X] T043 [P] [US2] Replace the closed/open Menu stories with a single default story with a usage note in `packages/components/src/components/menu.stories.ts`
+- [X] T044 [P] [US2] Replace the per-state Menu item stories with a single default story with a usage note in `packages/components/src/components/menu-item.stories.ts`
+- [X] T045 [P] [US2] Replace the multiple-selection Tabs stories with a single default story with a usage note in `packages/components/src/components/tabs.stories.ts`
+- [X] T046 [P] [US2] Replace the per-state Tab stories with a single default story with a usage note in `packages/components/src/components/tab.stories.ts`
+- [X] T047 [P] [US2] Replace the hidden/shown Tab panel stories with a single default story with a usage note in `packages/components/src/components/tab-panel.stories.ts`
+- [X] T048 [P] [US2] Replace the closed/open Dialog stories with Closed and Open stories, each with a usage note, in `packages/components/src/components/dialog.stories.ts`
 - [X] T049 [US2] Add the catalogue overview page with a composed example (a sign-in card built from Card, Form field, Input, and Button) in `packages/components/src/stories/catalogue.mdx` (FR-020, SC-002)
-- [X] T050 [US2] Verify completeness against `data-model.md` (every component + every state has an entry) and run `pnpm --filter @project-reborn/components build-storybook`
+- [X] T050 [US2] Verify completeness against `data-model.md` (every component + every documented prop-driven state has an entry) and run `pnpm --filter @project-reborn/components build-storybook`
 
 **Checkpoint**: The catalogue is complete and builds cleanly (FR-016, FR-017, SC-001, SC-005).
 
@@ -223,6 +223,7 @@ Task: "Implement Input in packages/components/src/components/input.svelte"
 
 - [P] tasks touch different files and have no incomplete dependency
 - [Story] labels map tasks to the spec's user stories (US1, US2)
+- The catalogue unit is the "entry" (spec/data-model); a Storybook "story" implements one entry
 - Variants and the look & feel are intentionally absent — they are visual-only and belong to Slice 2
 - Commit after each task or logical group; never commit secrets
 - Run the quickstart validation before declaring the slice done

@@ -22,7 +22,7 @@ Decisions resolved before design. Each entry records the decision, why it was ch
 
 ## 4. Catalogue = Storybook
 
-- **Decision**: Storybook with the Svelte + Vite framework (`@storybook/svelte-vite`) is the catalogue. Every component gets one story per state; a catalogue MDX page introduces the system. `.storybook/preview.ts` imports `src/styles.css`.
+- **Decision**: Storybook with the Svelte + Vite framework (`@storybook/svelte-vite`) is the catalogue. Every component gets one story per prop-driven state that cannot be produced by interacting with the page (a single default story for most components; Closed and Open for Dialog); a catalogue MDX page introduces the system. `.storybook/preview.ts` imports `src/styles.css`.
 - **Rationale**: The user named Storybook as the catalogue; it renders real components, is the natural dev server for a component library, and its stories map one-to-one to the spec's catalogue requirement (FR-016, FR-017, SC-001, SC-005).
 - **Alternatives considered**: A hand-built Astro catalogue page (extra app to maintain, and contradicts the directive); Vitest snapshots alone (not browsable, not a catalogue).
 

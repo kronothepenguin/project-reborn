@@ -22,7 +22,7 @@ pnpm --filter @project-reborn/components dev
 # Storybook at http://localhost:6006
 ```
 
-Every baseline component appears under Components, with one story per state.
+Every baseline component appears under Components, each with a story per documented prop-driven state.
 
 ## Build the catalogue
 
@@ -50,7 +50,7 @@ Vitest runs in browser mode so the native APIs behave as in production.
 | FR-012 Dialog | Open shows a modal centered overlay; the page behind is inert; Esc, backdrop, or a `method="dialog"` form closes it. |
 | FR-005 Form field | A Form field wraps any control (`<Input>`, `<select>`, `<textarea>`) with a label, optional help, and an error message; the label associates by wrapping, so no caller-supplied id is needed. |
 | FR-021 keyboard/focus | Keyboard-only walk-through reaches and operates every interactive component. |
-| FR-016/FR-017/SC-001/SC-005 catalogue | Each component has an entry in every documented state, each with a usage note. |
+| FR-016/FR-017/SC-001/SC-005 catalogue | Each component has an entry with a usage note; Dialog has Closed and Open entries. |
 | FR-020/SC-002 reuse | A representative page can be assembled in Storybook from components alone, with no bespoke markup. |
 | FR-018 catalogue reachable | The catalogue is reachable at the Storybook URL. |
 

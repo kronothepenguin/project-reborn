@@ -6,9 +6,9 @@
 
 ## Summary
 
-Deliver the project's design system as a reusable Svelte 5 package in `packages/components`. The first slice (this branch) ships the twelve baseline components as fully functional, unstyled Svelte components with accessible behaviour built on modern web APIs — native `<dialog>` for Dialog, the Popover API for Menu, and the WAI-ARIA tabs pattern (roving tabindex) for Tabs/Tab/Tab panel — plus a Storybook catalogue that renders every component and every state, and Vitest component tests that prove the behaviour. Variants (visual only) and the flat/surface look & feel are a later slice; they change appearance, not behaviour.
+Deliver the project's design system as a reusable Svelte 5 package in `packages/components`. The first slice (this branch) ships the twelve baseline components as fully functional, unstyled Svelte components with accessible behaviour built on modern web APIs — native `<dialog>` for Dialog, the Popover API for Menu, and the WAI-ARIA tabs pattern (roving tabindex) for Tabs/Tab/Tab panel — plus a Storybook catalogue that renders every component and its prop-driven states, and Vitest component tests that prove the behaviour. Variants (visual only) and the flat/surface look & feel are a later slice; they change appearance, not behaviour.
 
-Components ship as Svelte source through the package `exports` map, so a consuming Astro/Svelte app compiles them with its own Svelte toolchain and scans their utility classes by adding the package source to its Tailwind entry (`@source`). Storybook is the catalogue the spec's acceptance refers to: a story per component per state (FR-016, FR-017, SC-001, SC-005).
+Components ship as Svelte source through the package `exports` map, so a consuming Astro/Svelte app compiles them with its own Svelte toolchain and scans their utility classes by adding the package source to its Tailwind entry (`@source`). Storybook is the catalogue the spec's acceptance refers to: a story per component per prop-driven state (FR-016, FR-017, SC-001, SC-005).
 
 ## Technical Context
 
@@ -18,7 +18,7 @@ Components ship as Svelte source through the package `exports` map, so a consumi
 
 **Storage**: N/A — the package has no persistence.
 
-**Testing**: `pnpm --filter @project-reborn/components test` (Vitest in browser mode with `@testing-library/svelte`) covering each component's states and interactions (Dialog open/close, Menu open/select/dismiss, Tabs selection, Form field error, keyboard focus). The Storybook catalogue is the manual acceptance surface, verified with `pnpm --filter @project-reborn/components build-storybook`.
+**Testing**: `pnpm --filter @project-reborn/components test` (Vitest in browser mode with `@testing-library/svelte`) covering each component's behaviour and interactions (Dialog open/close, Menu open/select/dismiss, Tabs selection, Form field error, keyboard focus). The Storybook catalogue is the manual acceptance surface, verified with `pnpm --filter @project-reborn/components build-storybook`.
 
 **Target Platform**: modern evergreen browsers (the game client and CMS already require them); components are consumed by Astro/Svelte applications.
 
@@ -36,7 +36,7 @@ Components ship as Svelte source through the package `exports` map, so a consumi
 
 | Principle | Verdict | Evidence |
 |---|---|---|
-| I. Defined Before Built (NON-NEGOTIABLE) | PASS | Every component, its public API, and its states are fixed by spec.md and `contracts/` before implementation; Svelte/Tailwind/Storybook choices come from the user's implementation directives and `research.md`. |
+| I. Defined Before Built (NON-NEGOTIABLE) | PASS | Every component, its public API, and its prop-driven states are fixed by spec.md and `contracts/` before implementation; Svelte/Tailwind/Storybook choices come from the user's implementation directives and `research.md`. |
 | II. No Silent Interpretation (NON-NEGOTIABLE) | PASS | Open decisions — package location/name, Svelte 5, Tailwind sharing, Storybook as catalogue, modern web APIs, component API shape (HTML attribute extension, generic Form field), unstyled first slice, deferred variants/look & feel — are recorded in `research.md` with rationale; none silently guessed. |
 | III. Specification-Driven Development (NON-NEGOTIABLE) | PASS | Artifacts live under `specs/017-design-system/`; delivery slices map to the spec's user stories; the spec stays implementation-free while this plan owns the how. |
 | IV. Test & Verification Discipline | PASS | Vitest component tests ship with Slice 1, written before the behaviour; gates are `pnpm --filter @project-reborn/components test` and a clean `build-storybook`. |
@@ -55,7 +55,7 @@ Components ship as Svelte source through the package `exports` map, so a consumi
 
 Each slice is independently deliverable: Slice 1 gives working, catalogued components that a page can already use; Slice 2 adds appearance without changing behaviour.
 
-**Requirement coverage**: Slice 1 satisfies FR-001–FR-012 (states; FR-003's variant clause is Slice 2), FR-016 (states), FR-017–FR-021. Slice 2 adds the look & feel and variants (FR-003 variant clause, FR-013–FR-015, FR-022) and variant colours in the catalogue (FR-016).
+**Requirement coverage**: Slice 1 satisfies FR-001–FR-012 (prop-driven states; FR-003's variant clause is Slice 2), FR-016 (prop-driven states), FR-017–FR-021. Slice 2 adds the look & feel and variants (FR-003 variant clause, FR-013–FR-015, FR-022) and variant colours in the catalogue (FR-016).
 
 ## Project Structure
 

@@ -70,4 +70,4 @@ An app declares a workspace dependency and imports components:
 
 ## Gates
 
-Slice 1 is accepted when `pnpm --filter @project-reborn/components test` passes and `pnpm --filter @project-reborn/components build-storybook` builds cleanly with every baseline component and every state catalogued.
+Slice 1 is accepted when `pnpm --filter @project-reborn/components test` passes and `pnpm --filter @project-reborn/components build-storybook` builds cleanly with every baseline component and every documented prop-driven state catalogued.

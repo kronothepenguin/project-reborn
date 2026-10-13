@@ -1,6 +1,6 @@
 # Phase 1 Data Model: Design System
 
-The design system has no persisted data. Its "model" is the set of components, the states each can be in, and the catalogue entries that must exist for acceptance. This file is the bridge between spec.md (Key Entities and requirements) and the component contracts.
+The design system has no persisted data. Its "model" is the set of components, the prop-driven states each can be in, and the catalogue entries that must exist for acceptance. This file is the bridge between spec.md (Key Entities and requirements) and the component contracts.
 
 ## Entities
 
@@ -15,36 +15,36 @@ A reusable UI element with a single documented purpose. Fields:
 | purpose | What it does, in one sentence | Required; used for the component's `Key Entities`/catalogue note |
 | family | primitive \| container \| form \| navigation \| overlay | One per component |
 | api | Props, snippets, callbacks | Defined in `contracts/components.md` |
-| states | States it must render | From the state table below |
+| states | Prop-driven states it must render | From the state table below |
 | composes | Components it uses or coordinates | See relationships |
 | context | Context it provides/consumes | Only Tabs and Menu |
 
 ### State
 
-A condition a component can be in. Behavioural states are in the spec (FR-004, FR-005, FR-009, FR-011); visual states belong to the variants slice.
+A condition a component can be in. A **browser-interaction state** is produced by interacting with the page and is not a separate catalogue entry; a **prop-driven state** is produced only by setting a prop and is the only kind shown as its own entry (FR-004). Visual states belong to the variants slice. The baseline `default` entry is required by FR-016 and is not a state.
 
-| Component | States |
+| Component | Catalogue entries |
 |---|---|
-| Button | default, hover, focus-visible, active, disabled |
-| Link | default, hover, focus-visible, active, disabled |
-| Input | empty, focused, filled, disabled, invalid |
-| Form field | empty, focused, filled, disabled, invalid (error) |
-| Menu | closed, open |
-| Menu item | default, hover, focus, selected, disabled |
-| Tabs | selected index |
-| Tab | default, hover, focus, selected, disabled |
-| Tab panel | hidden, shown |
+| Button | default |
+| Link | default |
+| Input | default |
+| Form field | default |
+| Menu | default |
+| Menu item | default |
+| Tabs | default |
+| Tab | default |
+| Tab panel | default |
 | Dialog | closed, open |
 | Card / Paper | default (visual only; deferred) |
 
 ### Catalogue entry (Story)
 
-One Storybook story per component per state, plus a usage note. This is the acceptance surface.
+One Storybook story per component per prop-driven state, plus a usage note. This is the acceptance surface.
 
 | Field | Meaning | Constraint |
 |---|---|---|
 | component | The component shown | One entry per baseline component (FR-016, SC-005) |
-| state | The state rendered | Every documented state covered (FR-017, SC-001) |
+| state | The prop-driven state rendered | Every documented prop-driven state covered (FR-017, SC-001) |
 | note | Short "when to use it" text | Required |
 
 ### Variant and look & feel (visual; Slice 2)
@@ -92,14 +92,12 @@ Dialog ──contains─▶ arbitrary content (overlay — FR-012)
 
 | From | Event | To | Notes |
 |---|---|---|---|
-| empty | value entered | filled | |
 | any | invalid submission | invalid | error message shown, `aria-invalid` set (FR-005) |
-| any | disabled attribute set | disabled | non-interactive, still recognisable (Edge Cases) |
 
 ## Validation rules (from the spec)
 
 - Every baseline component MUST have a catalogue entry with a usage note (FR-016, SC-005).
-- Every documented state MUST appear in the catalogue (FR-017, SC-001).
+- Every documented prop-driven state MUST appear in the catalogue (FR-017, SC-001).
 - Interactive components MUST be keyboard operable with visible focus (FR-021, SC-003).
-- A component used outside its documented states falls back to a sensible default (Edge Cases).
+- A component used outside its documented prop states falls back to a sensible default (Edge Cases).
 - An application using a subset of components/variants is unaffected by ones it does not use (Edge Cases).

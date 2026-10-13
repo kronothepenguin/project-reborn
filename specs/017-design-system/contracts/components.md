@@ -8,7 +8,7 @@ Conventions:
 - Components that map to a single element extend that element's Svelte attribute type and forward the remaining attributes to it (`HTMLButtonAttributes`, `HTMLAnchorAttributes`, `HTMLInputAttributes`, `HTMLAttributes<HTMLDivElement>`, …). Callers therefore get `aria-*`, `data-*`, `class`, and event handlers for free; the tables below list only the design system's own props.
 - Text renders inside a `<span>` unless a more specific element is required.
 - Form field is a generic labeled wrapper: it takes its control as children rather than owning a specific control.
-- Every interactive component is keyboard operable and exposes its states (see `data-model.md`).
+- Every interactive component is keyboard operable and exposes its prop-driven states (see `data-model.md`).
 - Slice 1 has no visual variants; props that only affect appearance arrive in Slice 2.
 
 ## Button
@@ -74,8 +74,8 @@ A generic labeled wrapper (FR-005). It renders `<label>` wrapping a label `<span
 | label | prop | `string` | yes | visible label text (rendered in a `<span>`) |
 | help | prop | `string` | no | help text (rendered in a `<span>`) |
 | error | prop | `string` | no | when set, the field is invalid and the message is shown |
-| disabled | prop | `boolean` | no | reflects the disabled state on the wrapper |
-| invalid | prop | `boolean` | no | reflects the invalid state on the wrapper |
+| disabled | prop | `boolean` | no | reflects the disabled attribute on the wrapper |
+| invalid | prop | `boolean` | no | reflects invalid status on the wrapper |
 | children | snippet | — | yes | the form control |
 
 Extends `HTMLAttributes<HTMLLabelElement>`; additional attributes (class, data-*, aria-*) are forwarded to the `<label>`.

@@ -21,7 +21,3 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = { args: { children: label } };
-export const Hover: Story = { args: { children: label } };
-export const Focus: Story = { args: { children: label, autofocus: true } };
-export const Active: Story = { args: { children: label } };
-export const Disabled: Story = { args: { children: label, disabled: true } };

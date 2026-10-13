@@ -12,7 +12,7 @@
 
 Project Reborn remakes Habbo Hotel as it was around 2008. The project builds several applications, and their interfaces must share one set of components. Without it, every application reinvents its buttons, cards, and forms, and behaviour drifts.
 
-This specification defines the project's design system: the reusable UI components, the variants and look & feel they support, and the catalogue page that shows every component in every state. It is one shared system; applications differ by their look & feel and the variants they select, not by forking components. It defines what the components are and how they must behave; it does not define how they are built, which language, framework, or styling approach is used.
+This specification defines the project's design system: the reusable UI components, the variants and look & feel they support, and the catalogue page that shows every component and its prop-driven states. It is one shared system; applications differ by their look & feel and the variants they select, not by forking components. It defines what the components are and how they must behave; it does not define how they are built, which language, framework, or styling approach is used.
 
 ## Scope
 
@@ -36,10 +36,16 @@ Any look & feel combines with any variant. Applications choose their look & feel
 - Q: Should Badge and Dialog remain part of the baseline? → A: Keep Dialog only; drop Badge.
 - Q: What does the "Paper" component represent, and how does it differ from "Card"? → A: Paper is the plain surface/background primitive; Card is a structured content container built on Paper.
 - Q: What does the "Form field" component cover relative to "Input"? → A: Form field is a generic wrapper: it provides the label, optional help text, and the error message, and takes any form control (input, Input, select, textarea) as its child; the label associates by wrapping, so no caller-supplied id is needed.
-- Q: How should Menu, Menu item, and Tab behave? → A: All are interactive; Menu item is selectable and Tab selects among sibling panels, with hover/focus/selected/disabled states.
+- Q: How should Menu, Menu item, and Tab behave? → A: All are interactive; Menu item is selectable and Tab selects among sibling panels.
 - Q: Should a parent Tabs component own selection and its panels, or should pages wire up Tab behaviour? → A: Add a parent Tabs component that owns selection, keyboard navigation, and its panels; Tab and its panel are children.
 - Q: Should the design system stay scoped to the CMS, or be generic across the project's applications? → A: Generic; drop all CMS references, keep one shared system, and let each application differ by its look & feel and variants.
 - Q: Should component variants (visual/colour changes) be listed in the spec? → A: No; the spec defines what variants and look & feel mean but does not list per-component variants or colours, and stays focused on what each component does.
+
+### Session 2026-10-13
+
+- Q: Which component states should be separate catalogue entries? → A: Only prop-driven states that cannot be produced by interacting with the page; states produced by page interaction MUST NOT have their own entry.
+- Q: How should the catalogue treat each baseline component? → A: Button, Link, Card, Paper, Input, Form field, Menu, Menu item, Tabs, Tab, and Tab panel each have a single default entry; Dialog has Closed and Open entries.
+- Q: Which artifacts should reflect this? → A: spec.md, data-model.md, research.md, plan.md, tasks.md, quickstart.md, and contracts/.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -55,23 +61,23 @@ A person building an application interface reaches for an existing component (a 
 
 1. **Given** the design system's component set, **When** a builder assembles a page, **Then** every UI element on that page comes from the component set and no page-specific UI code is required.
 2. **Given** the same component used in two different places, **When** both are used, **Then** they behave identically.
-3. **Given** a component in different states, **When** each state is used, **Then** it renders as documented without changing the component's structure.
+3. **Given** a component with different props, **When** it renders, **Then** it renders as documented without changing the component's structure.
 
 ---
 
-### User Story 2 - Review every component and state in one catalogue (Priority: P2)
+### User Story 2 - Review every component in one catalogue (Priority: P2)
 
-A person building or reviewing interfaces opens a single catalogue page that shows every component in every state, with a short note on when to use it, so they can compare, choose, and spot anything missing.
+A person building or reviewing interfaces opens a single catalogue page that shows every component and its prop-driven states, with a short note on when to use it, so they can compare, choose, and spot anything missing.
 
 **Why this priority**: The catalogue is how the design system is discovered, reviewed, and verified; it turns the component set into something usable and testable.
 
-**Independent Test**: Open the catalogue page and confirm that every component appears, in every documented state, each with a usage note, and that nothing documented is missing.
+**Independent Test**: Open the catalogue page and confirm that every component appears with a usage note, and that nothing documented is missing.
 
 **Acceptance Scenarios**:
 
-1. **Given** the catalogue page, **When** it loads, **Then** it shows every component, each in all its documented states.
-2. **Given** a component added to the design system, **When** the catalogue is reviewed, **Then** that component and its states are present, and a component missing from the catalogue is treated as a defect.
-3. **Given** a component entry, **When** it is read, **Then** it shows the component, its states, and a short note describing when to use it.
+1. **Given** the catalogue page, **When** it loads, **Then** it shows every component, each with a usage note.
+2. **Given** a component added to the design system, **When** the catalogue is reviewed, **Then** that component and its prop-driven states are present, and a component missing from the catalogue is treated as a defect.
+3. **Given** a component entry, **When** it is read, **Then** it shows the component, its prop-driven states, and a short note describing when to use it.
 
 ---
 
@@ -92,10 +98,10 @@ A person building an interface relies on one shared look & feel — edges and co
 
 ### Edge Cases
 
-- A component is used with an undefined or unsupported state: it must fall back to a sensible default rather than break or render unstyled.
+- A component is used with an undefined or unsupported prop value: it must fall back to a sensible default rather than break or render unstyled.
 - Content longer than expected inside a card, menu item, or button: overflow MUST be handled by wrapping or truncation rather than breaking the layout.
-- A component in a disabled or non-interactive state must not respond to interaction but must remain recognisable.
-- A component that should appear in the catalogue is absent, or a documented state is not shown: this is a catalogue defect and fails acceptance.
+- A disabled or non-interactive component must not respond to interaction but must remain recognisable.
+- A component that should appear in the catalogue is absent: this is a catalogue defect and fails acceptance.
 - An application selects only some variants and one look & feel: components or variants it does not use are simply absent and must not affect the ones it does use.
 
 ## Requirements *(mandatory)*
@@ -106,13 +112,13 @@ A person building an interface relies on one shared look & feel — edges and co
 
 - **FR-001**: The design system MUST provide a documented, reusable set of UI components shared across the project's applications.
 - **FR-002**: The baseline component set MUST include at least: Button, Link, Card, Paper, Input, Form field, Menu, Menu item, Tabs, Tab, Tab panel, and Dialog.
-- **FR-003**: Each component MUST render every state it documents. A variant MUST change only a component's colours, never its behaviour or structure.
-- **FR-004**: Interactive components MUST support at least the states: default, hover, focus, active, and disabled.
-- **FR-005**: Form field MUST provide a visible label, a control area that accepts any form control, optional help text, and an error message, and MUST support at least the states: empty, focused, filled, disabled, and invalid (error). The label MUST be associated with the control without requiring a caller-supplied identifier.
+- **FR-003**: Each component MUST render correctly in its baseline and in each documented prop-driven state. A variant MUST change only a component's colours, never its behaviour or structure.
+- **FR-004**: A state produced by interacting with the page MUST NOT be a separate catalogue entry; only a prop-driven state that cannot be produced by interaction MUST be shown as its own entry. This rule governs the catalogue (FR-016, FR-017).
+- **FR-005**: Form field MUST provide a visible label, a control area that accepts any form control, optional help text, and an error message. The label MUST be associated with the control without requiring a caller-supplied identifier.
 - **FR-006**: Paper MUST provide the plain surface/background primitive.
 - **FR-007**: Card MUST present a structured container for grouped content and MUST sit on Paper.
 - **FR-008**: Menu MUST present a list of Menu items.
-- **FR-009**: Menu item MUST be a selectable entry and MUST support hover, focus, selected, and disabled states.
+- **FR-009**: Menu item MUST be a selectable entry.
 - **FR-010**: Tabs MUST be the parent component that groups its Tab children, owns which Tab is selected, and provides keyboard navigation among them.
 - **FR-011**: Tab MUST select among sibling panels and MUST expose a selected state; Tab panel MUST show the content linked to its Tab and MUST be shown only while its Tab is selected.
 - **FR-012**: Dialog MUST support open and closed, MUST be dismissible, and MUST NOT allow interaction with the page behind it while open.
@@ -125,8 +131,8 @@ A person building an interface relies on one shared look & feel — edges and co
 
 #### Catalogue
 
-- **FR-016**: Every component MUST have a catalogue entry showing it in all its states, with a short note on when to use it (SC-001, SC-005). Once variants are defined, the catalogue MUST also show their colours.
-- **FR-017**: The design system MUST provide a single catalogue page that renders every component in every state.
+- **FR-016**: Every component MUST have a catalogue entry showing it and its documented prop-driven states, with a short note on when to use it (SC-001, SC-005). Once variants are defined, the catalogue MUST also show their colours.
+- **FR-017**: The design system MUST provide a single catalogue page that renders every component and its documented prop-driven states.
 - **FR-018**: The catalogue page MUST be reachable for the people building the project's interfaces.
 - **FR-019**: A component that exists in the design system but is missing from the catalogue MUST be treated as a defect.
 
@@ -140,15 +146,15 @@ A person building an interface relies on one shared look & feel — edges and co
 
 - **Component**: a reusable UI element with a single documented purpose (for example Button or Card).
 - **Variant**: a named set of colours that gives a component a meaning (for example `primary`, `secondary`, `danger`); shared across applications.
-- **State**: a condition a component can be in (for example hover, focused, disabled, or invalid).
+- **State**: a condition a component can be in. A **browser-interaction state** is produced by interacting with the page and is not a separate catalogue entry; a **prop-driven state** is produced only by setting a prop and is the only kind shown as its own entry.
 - **Look & feel token**: a named shared value for edges, borders, elevation, or typography feel that components consume.
-- **Catalogue entry**: the documentation and live preview for one component, covering all its states (and its variant colours once defined).
+- **Catalogue entry**: the documentation and live preview for one component, covering its documented prop-driven states (and its variant colours once defined).
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
-- **SC-001**: 100% of the baseline components appear on the catalogue page in every documented state.
+- **SC-001**: 100% of the baseline components appear on the catalogue page, each with its documented prop-driven states.
 - **SC-002**: A representative page (for example a sign-in card built from Card, Form field, Input, and Button) is assembled using only design-system components, with zero page-specific UI code, and works functionally.
 - **SC-003**: 100% of interactive components are operable by keyboard and show a visible focus indicator.
 - **SC-004**: 100% of text and text-on-colour combinations meet the WCAG AA minimum contrast, verified by human review of the catalogue.

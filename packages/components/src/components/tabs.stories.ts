@@ -23,6 +23,4 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const FirstSelected: Story = { args: { tabs, value: "one" } };
-export const SecondSelected: Story = { args: { tabs, value: "two" } };
-export const ThirdSelected: Story = { args: { tabs, value: "three" } };
+export const Default: Story = { args: { tabs, value: "one" } };

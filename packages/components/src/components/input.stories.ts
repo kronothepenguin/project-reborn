@@ -17,8 +17,4 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Empty: Story = { args: { placeholder: "you@example.com" } };
-export const Focused: Story = { args: { placeholder: "you@example.com", autofocus: true } };
-export const Filled: Story = { args: { value: "you@example.com" } };
-export const Disabled: Story = { args: { value: "you@example.com", disabled: true } };
-export const Invalid: Story = { args: { value: "not-an-email", "aria-invalid": true } };
+export const Default: Story = { args: { placeholder: "you@example.com" } };

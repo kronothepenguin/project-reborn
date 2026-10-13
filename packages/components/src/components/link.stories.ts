@@ -21,9 +21,3 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = { args: { children: label, href: "#" } };
-export const Hover: Story = { args: { children: label, href: "#" } };
-export const Focus: Story = { args: { children: label, href: "#", autofocus: true } };
-export const Active: Story = { args: { children: label, href: "#" } };
-export const Disabled: Story = {
-  args: { children: label, "aria-disabled": true, tabindex: -1 },
-};

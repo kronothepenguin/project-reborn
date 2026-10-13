@@ -1,10 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/svelte-vite";
-import MenuItem from "../components/menu-item.svelte";
 import Menu from "./__fixtures__/menu.svelte";
 
 const meta = {
   title: "Components/Menu item",
-  component: MenuItem,
+  component: Menu,
   parameters: {
     docs: {
       description: {
@@ -13,29 +12,9 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof MenuItem>;
+} satisfies Meta<typeof Menu>;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: () => ({ Component: Menu, props: { label: "Menu", items: [{ value: "a", label: "Item" }] } }),
-};
-export const Hover: Story = {
-  render: () => ({ Component: Menu, props: { label: "Menu", items: [{ value: "a", label: "Item" }] } }),
-};
-export const Focus: Story = {
-  render: () => ({ Component: Menu, props: { label: "Menu", items: [{ value: "a", label: "Item" }] } }),
-};
-export const Selected: Story = {
-  render: () => ({
-    Component: Menu,
-    props: { label: "Menu", items: [{ value: "a", label: "Item", selected: true }] },
-  }),
-};
-export const Disabled: Story = {
-  render: () => ({
-    Component: Menu,
-    props: { label: "Menu", items: [{ value: "a", label: "Item", disabled: true }] },
-  }),
-};
+export const Default: Story = { args: { label: "Menu", items: [{ value: "a", label: "Item" }] } };

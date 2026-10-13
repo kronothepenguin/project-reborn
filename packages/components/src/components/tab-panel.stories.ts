@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/svelte-vite";
-import TabPanel from "../components/tab-panel.svelte";
 import Tabs from "./__fixtures__/tabs.svelte";
 
 const tabs = [
@@ -9,7 +8,7 @@ const tabs = [
 
 const meta = {
   title: "Components/Tab panel",
-  component: TabPanel,
+  component: Tabs,
   parameters: {
     docs: {
       description: {
@@ -18,14 +17,9 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof TabPanel>;
+} satisfies Meta<typeof Tabs>;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
-export const Shown: Story = {
-  render: () => ({ Component: Tabs, props: { tabs, value: "one" } }),
-};
-export const Hidden: Story = {
-  render: () => ({ Component: Tabs, props: { tabs, value: "two" } }),
-};
+export const Default: Story = { args: { tabs, value: "one" } };
