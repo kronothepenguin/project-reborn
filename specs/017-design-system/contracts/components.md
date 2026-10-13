@@ -9,7 +9,7 @@ Conventions:
 - Text renders inside a `<span>` unless a more specific element is required.
 - Form field is a generic labeled wrapper: it takes its control as children rather than owning a specific control.
 - Every interactive component is keyboard operable and exposes its prop-driven states (see `data-model.md`).
-- Slice 1 has no visual variants; props that only affect appearance arrive in Slice 2.
+- Slice 2 styles Button only: it adds the optional `variant` and `size` props and the surface theme. Every other component remains unstyled; their variants arrive later.
 
 ## Button
 
@@ -18,9 +18,13 @@ Renders `<button>`. Extends `HTMLButtonAttributes`; every additional attribute i
 | Name | Kind | Type | Required | Notes |
 |---|---|---|---|---|
 | type | prop | `"button" \| "submit" \| "reset"` | no | default `"button"` |
+| variant | prop | `"default" \| "green" \| "dark" \| "red"` | no | default `"default"`; selects the colour set |
+| size | prop | `"wide" \| "compact"` | no | default `"wide"`; selects the horizontal padding (`wide` 16px, `compact` 8px) |
 | children | snippet | — | yes | button label/content |
 
 `disabled`, `onclick`, `class`, `aria-*`, and all other button attributes are native and forwarded.
+
+**Surface theme (Slice 2)**: the button renders as a raised 3D control — a base colour (bg-1) fills the button and a lighter face (bg-2) fills the upper half, inset 1px from the border (drawn with `::before`), with a 2px solid black border and a 4px radius. In the surface theme the button uses 4px vertical padding, 16px/8px horizontal padding (`wide`/`compact`), and 12px bold text. Colours come from the variant's Tailwind class set and horizontal padding from the size's Tailwind class (see `data-model.md`); `variant` is optional and omitted renders `default`, and `size` is optional and omitted renders `wide`. `size` changes only the horizontal padding — never the vertical padding, typography, colours, behaviour, or structure. States: **hover** uses the variant's hover colours; **focus** shows a 2px offset black outline; **active** inverts the bevel; **disabled** removes the face, flattens to the base colour, and dims. A variant or size changes only appearance, never behaviour.
 
 ## Link
 
@@ -32,7 +36,7 @@ Renders `<a>`. Extends `HTMLAnchorAttributes` (`href`, `target`, `rel`, … are 
 
 ## Paper
 
-Renders the plain surface container (FR-006) and extends `HTMLAttributes<HTMLDivElement>`. Paper defines no elevation; elevation belongs to the look & feel (Slice 2).
+Renders the plain surface container (FR-006) and extends `HTMLAttributes<HTMLDivElement>`. Paper defines no elevation; elevation belongs to the theme (Slice 2).
 
 | Name | Kind | Type | Required | Notes |
 |---|---|---|---|---|

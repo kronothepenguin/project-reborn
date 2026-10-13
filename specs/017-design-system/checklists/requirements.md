@@ -31,6 +31,6 @@
 
 ## Notes
 
-- Spec validated: 22 functional requirements, 5 success criteria, 5 edge cases, 3 prioritized user stories.
-- Variants (named colour sets) and look & feel (also called the theme: application styling of edges, borders, elevation, typography feel) are defined in the spec but not enumerated per component; their colours are visual and deferred to a later slice.
+- Spec validated: 24 functional requirements, 5 success criteria, 5 edge cases, 3 prioritized user stories.
+- Variants are defined per component and their `variant` is optional; Button's surface variants (`default`, `green`, `dark`, `red`) and colours are enumerated, the other components' variants are decided later. The application-level styling is the *theme* (described as the look & feel: edges, borders, elevation, typography feel); each component defines its own styles to match it.
 - SC-004 (contrast) is a human catalogue review; looks are judged by people, not automated tests.

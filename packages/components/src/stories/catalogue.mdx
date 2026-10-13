@@ -1,5 +1,5 @@
-import { Meta } from "@storybook/addon-docs/blocks";
-import SignInCard from "./sign-in-card.svelte";
+import { Canvas, Meta } from "@storybook/addon-docs/blocks";
+import * as SignInCardStories from "./sign-in-card.stories";
 
 <Meta title="Catalogue" />
 
@@ -7,15 +7,22 @@ import SignInCard from "./sign-in-card.svelte";
 
 The design system is one shared set of components for the project's applications. This
 catalogue shows every baseline component in every documented state, each with a short note on
-when to use it. Components are functional and unstyled in this first slice; variants and the
-look & feel arrive in a later slice.
+when to use it.
+
+**Button** now carries the `surface` theme: a base colour with a lighter raised face, a 2px
+black border, and a 4px radius, with visible hover, focus, active, and disabled states. It has
+four variants — **Default**, **Green**, **Dark**, and **Red** — each shown as its own catalogue
+entry. In the surface theme it uses 4px vertical padding and 12px bold text, and its two sizes —
+**Wide** (16px horizontal padding, the default) and **Compact** (8px) — each have their own
+catalogue entry. The remaining components are still functional and unstyled; their variants and
+the `flat` theme arrive in a later slice.
 
 ## Components
 
 Browse **Components** in the sidebar. Every baseline component appears with one story per
 documented state:
 
-- **Button**, **Link**, **Paper**, **Card**
+- **Button** (Default, Green, Dark, Red, Wide, Compact), **Link**, **Paper**, **Card**
 - **Input**, **Form field**
 - **Menu**, **Menu item**
 - **Tabs**, **Tab**, **Tab panel**
@@ -26,4 +33,4 @@ documented state:
 The card below is built using only design-system components — Card, Form field, Input, and
 Button — with no page-specific UI code (FR-020, SC-002).
 
-<SignInCard />
+<Canvas of={SignInCardStories.Default} />

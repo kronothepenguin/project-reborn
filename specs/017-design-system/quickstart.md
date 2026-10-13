@@ -1,4 +1,4 @@
-# Quickstart: Design System (Slice 1)
+# Quickstart: Design System
 
 How to run, build, and validate the design-system package. Commands run from the repository root unless noted.
 
@@ -22,7 +22,7 @@ pnpm --filter @project-reborn/components dev
 # Storybook at http://localhost:6006
 ```
 
-Every baseline component appears under Components, each with a story per documented prop-driven state.
+Every baseline component appears under Components, each with a story per documented prop-driven state (a story is one catalogue entry).
 
 ## Build the catalogue
 
@@ -30,7 +30,7 @@ Every baseline component appears under Components, each with a story per documen
 pnpm --filter @project-reborn/components build-storybook
 ```
 
-Produces the static catalogue in `packages/components/storybook-static/`. Slice 1 is accepted when this builds cleanly.
+Produces the static catalogue in `packages/components/storybook-static/`. The slice is accepted when this builds cleanly.
 
 ## Test
 
@@ -77,7 +77,23 @@ Vitest runs in browser mode so the native APIs behave as in production.
    <Button type="submit">Sign in</Button>
    ```
 
-## Not validated in Slice 1 (deferred to Slice 2)
+## Validate Slice 2 against the spec
 
-- SC-004 minimum contrast and the look & feel/variants (flat/surface) — visual; belong to Slice 2.
-- Variant and look & feel definitions — visual only; no behaviour change.
+Run Storybook (`pnpm --filter @project-reborn/components dev`) and open **Components/Button**.
+
+| Spec requirement | How to validate |
+|---|---|
+| FR-023 Button variants | Button renders four variants (`Default`, `Green`, `Dark`, `Red`); each shows a base colour with a lighter upper-half face, a 2px black border, and a 4px radius; switching variant changes only colours. |
+| FR-024 surface treatment + states | Hover changes the base and face colours; keyboard focus shows a 2px offset black outline; pressing inverts the bevel; `disabled` removes the face, flattens to the base colour, and dims. |
+| FR-025 Button size | Button uses 4px vertical padding and 12px bold text; the default (`wide`) horizontal padding is 16px and `compact` is 8px; switching size changes only the horizontal padding. |
+| FR-016 variant and size colours in the catalogue | Each variant has its own story with a usage note, and each size (`Wide`, `Compact`) has its own story with a usage note, so all variant colours and sizes are visible in the catalogue. |
+| FR-015 / SC-004 contrast | The label sits on the base colour (bg-1); each variant's text-on-base pair meets WCAG AA — default 13.88:1, green 4.96:1, dark 6.91:1, red 6.42:1 (Tailwind token values). For the surface theme the face (bg-2) is a decorative highlight and is not measured; a future theme may require base and face together. |
+| FR-021 / SC-003 focus | Tab to a Button: the focus outline is visible and the button is operable by keyboard. |
+| FR-003 variant changes only appearance | Compare behaviour across variants: behaviour and structure are identical. |
+
+Variant colours are the nearest Tailwind palette tokens (see `data-model.md`); the consuming app's Tailwind build emits them because the classes are static literals in `button.svelte`.
+
+## Deferred (later slices)
+
+- The `flat` theme, variants for the remaining components, and contrast acceptance beyond Button — Slice 3.
+- CSS anchor positioning of the Menu popover to its trigger — visual refinement.

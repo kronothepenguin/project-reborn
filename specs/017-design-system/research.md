@@ -32,7 +32,7 @@ Decisions resolved before design. Each entry records the decision, why it was ch
 - **Menu / Menu item** — the HTML Popover API (`popover` attribute, `showPopover()`/`hidePopover()`/`togglePopover()`) for the list, with built-in light-dismiss; menu items are selectable entries.
 - **Tabs / Tab / Tab panel** — the WAI-ARIA tabs pattern: `role="tablist"/"tab"/"tabpanel"`, `aria-selected`, `aria-controls`/`aria-labelledby`, roving `tabindex`, and Arrow/Home/End keyboard handling (there is no native element).
 - **Input / Form field** — Input wraps the native `<input>`. Form field is a generic wrapper: its `<label>` wraps the label text and the control passed as children (`<FormField><Input/></FormField>`, `<select>`, `<textarea>`), so no caller-supplied id is needed; help and error render as `<span>` elements.
-- **Button / Link / Paper / Card** — native `<button>`, `<a>`, and semantic containers; Paper is the plain surface and Card is layout built on it. Elevation is not defined here; it belongs to the look & feel.
+- **Button / Link / Paper / Card** — native `<button>`, `<a>`, and semantic containers; Paper is the plain surface and Card is layout built on it. Elevation is not defined here; it belongs to the theme.
 - **Rationale**: Native primitives give correct accessibility, focus management, and dismissal with the least code (KISS), and this is the user's explicit "use modern web APIs" directive.
 - **Alternatives considered**: Custom JS overlays and manual focus traps (more code, easy to get wrong); hand-rolled popover positioning (the Popover API handles top-layer and light-dismiss). CSS anchor positioning to attach the menu to its trigger is noted as a later visual enhancement, not a Slice 1 requirement.
 
@@ -56,8 +56,8 @@ Decisions resolved before design. Each entry records the decision, why it was ch
 
 ## 9. Unstyled first-slice boundary
 
-- **Decision**: Slice 1 components are structurally and behaviourally complete but carry no visual design: no colour, typography, spacing scale, or elevation tokens. Storybook shows them in the browser's default rendering. Variants (colour sets) and the flat/surface look & feel are deferred to Slice 2.
-- **Rationale**: The user directed the first slice to be unstyled; variants and the look & feel do not change behaviour, so they can be added later without reworking the components. Visual work (variants, the look & feel, contrast) is explicitly Slice 2; Slice 1's success criteria are behavioural.
+- **Decision**: Slice 1 components are structurally and behaviourally complete but carry no visual design: no colour, typography, spacing scale, or elevation tokens. Storybook shows them in the browser's default rendering. Variants (colour sets) and the `flat`/`surface` themes are deferred to Slice 2.
+- **Rationale**: The user directed the first slice to be unstyled; variants and the theme do not change behaviour, so they can be added later without reworking the components. Visual work (variants, the theme, contrast) is explicitly Slice 2; Slice 1's success criteria are behavioural.
 - **Alternatives considered**: Styling components now (contradicts the directive and would bake in visuals before variants exist).
 
 ## 10. Package scripts and gates
@@ -72,8 +72,43 @@ Decisions resolved before design. Each entry records the decision, why it was ch
 - **Rationale**: callers get every native attribute (`aria-*`, `data-*`, `class`, event handlers) for free and the declared surface stays small; this is the idiomatic Svelte 5 pattern and keeps components thin (KISS, YAGNI).
 - **Alternatives considered**: listing attributes explicitly (incomplete and high-maintenance); typing everything as `HTMLAttributes` (loses element-specific attributes such as button `type` or anchor `href`).
 
-## Deferred (not Slice 1)
+## 12. Slice 2: surface theme and Button variants
 
-- Variants and the flat/surface look & feel (visual only) — Slice 2.
+- **Decision**: Button gains an optional `variant` prop (`"default" | "green" | "dark" | "red"`) that selects a set of **static Tailwind class strings**; omitting it renders the `default` look. Variants are defined **per component**, not shared across components. The raised face is drawn with a `::before` pseudo-element; the final colours are the nearest Tailwind palette tokens from `tools/tw-color` (the spec's hex values are the original reference). Button also gains an optional `size` prop (`"wide" | "compact"`) that selects a **static horizontal-padding class**; omitting it renders `wide`. In the surface theme Button uses `4px` vertical padding and `12px` bold typography, fixed for both sizes.
+- **Rationale**: Tailwind class strings are how the package ships styling (its source is scanned by the consumer's Tailwind build via `@source`); static literals are required for the scanner to detect them. A `::before` box gives an exact inset (1px from the border) independent of text metrics and background sizing.
+- **Alternatives considered**: a hard-stop background gradient (brittle background sizing around the border and radius); a shared theme stylesheet of CSS custom properties consumed through arbitrary `var()` values (a layer the spec does not need while only Button is styled — can arrive with the `Theme` component); composing class strings at runtime (Tailwind cannot see them).
+
+### Variant colour tokens
+
+The final values are the nearest Tailwind palette tokens (from `tools/tw-color`, Tailwind v4.3.3); the spec's hex values are the original reference. `base` = bg-1, `face` = bg-2.
+
+| Variant | Text | Base (bg-1) | Base (bg-1) hover | Face (bg-2) | Face (bg-2) hover |
+|---|---|---|---|---|---|
+| default | black | mauve-300 | olive-200 | olive-200 | white |
+| green | white | lime-700 | green-600 | lime-600 | lime-500 |
+| dark | white | olive-600 | neutral-500 | olive-500 | mist-400 |
+| red | white | red-700 | red-600 | red-600 | red-500 |
+
+Two source colours match poorly (`#888888`→`olive-500`, ΔE .056; `#45cb00`→`lime-500`, ΔE .046) and may read differently from the original hex.
+
+### Surface treatment and states
+
+- Border `2px solid black`, radius `4px`; the base colour (bg-1) fills the button and a lighter face (bg-2) fills the upper half, inset 1px from the border, via `::before`.
+- Padding and typography: `4px` vertical padding, `16px`/`8px` horizontal padding (`wide`/`compact`), and `12px` bold text, fixed for the surface theme.
+- Contrast is measured against the base colour; for the surface theme the face is a decorative highlight (FR-015). A future theme may require base and face together to meet AA.
+- States (classic bevel): **hover** uses each variant's hover colours; **focus** is a 2px offset black outline (`focus-visible`); **active (pressed)** inverts the bevel, moving the face to the lower half; **disabled** removes the face, flattens to the base colour, dims, and shows a not-allowed cursor.
+- Catalogue: one Button story per prop-driven state — each variant (`Default`, `Green`, `Dark`, `Red`) and each size (`Wide`, `Compact`) — each with a usage note. A story is one catalogue entry (FR-016, SC-001, SC-005).
+- **Alternatives considered** for the states: simple darken-on-active (less faithful to the raised 3D look); browser-default focus (rejected — FR-021 wants a visible, designed indicator).
+
+### Button size and typography
+
+- **Decision**: Button has an optional `size` prop with values `wide` (16px horizontal padding) and `compact` (8px); omitting it renders `wide`. `size` changes only the horizontal padding — never the vertical padding, typography, colours, behaviour, or structure. Vertical padding is `4px` for both sizes, and the label is `12px` bold. These values belong to the surface theme's Button description (FR-025); a future theme defines its own.
+- **Rationale**: Horizontal padding is the only dimension that varies between the two sizes, so a static `size`→class map mirrors the `variant`→class map and keeps the class strings literal for Tailwind's scanner (KISS, YAGNI). Defaulting to `wide` matches the spec's stated default horizontal padding of 16px.
+- **Alternatives considered**: a numeric `padding` prop (arbitrary values Tailwind cannot scan, and no spec need); scaling font size or vertical padding with `size` (the spec fixes them for the surface theme); a shared size scale for all components (no other component has sizes yet — YAGNI).
+
+## Deferred (not this slice)
+
+- The `flat` theme, variants for the remaining components, and contrast acceptance beyond Button — Slice 3.
+- A `Theme` component that shares the theme through context — a later addition.
 - CSS anchor positioning of the Menu popover to its trigger — visual refinement.
-- A package-level Tailwind theme/token layer — arrives with variants.
+- A package-level Tailwind theme/token layer — arrives when more components need shared variant tokens.

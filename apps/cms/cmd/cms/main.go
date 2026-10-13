@@ -8,9 +8,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/kronothepenguin/project-reborn/apps/cms/internal/config"
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/cms"
+	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
