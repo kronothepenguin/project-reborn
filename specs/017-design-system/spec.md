@@ -22,9 +22,8 @@ The design system is one shared system for the project's applications. Each appl
 
 The design system separates what a component is (its behaviour and states) from how it is presented, through two independent visual axes. Neither changes a component's behaviour or structure.
 
-- **Variant** — a named set of colours defined per component that gives it a meaning. Different components have their own variant sets (for example, Button's are `default`, `green`, `dark`, and `red`). The `variant` is optional: when it is omitted the component renders its `default` look. A variant changes only colours, never behaviour or structure. Because a component is shared across applications, its variants are the same in every application.
-- **Theme** (the look & feel) — the application-level styling: edges and corners, borders, elevation, and typography feel. Themes are `flat` (flat surfaces, sharp edges) and `surface` (raised, 3D hotel style). A theme is a description of how components should look; it has no shared variables, and each component defines its own edges, borders, elevation, and typography to match it. A `Theme` component that shares the theme through context is a later addition; this slice builds the `surface` theme only.
-- **Elevation** — how raised a surface appears (its shadow). Elevation is part of the theme.
+- **Variant** — a named set of colours defined per component that gives it a meaning. Different components have their own variant sets (for example, Button's are `default`, `green`, `dark`, and `red`, and Paper's are `default`, `login`, `gray`, `black`, `hc`, `yellow`, `lightgreen`, `blue`, and `room pattern`). The `variant` is optional: when it is omitted the component renders its `default` look. A variant changes only colours, never behaviour or structure. Because a component is shared across applications, its variants are the same in every application.
+- **Theme** (the look & feel) — the application-level styling: edges and corners, borders, and typography feel. Themes are `flat` (flat surfaces, sharp edges) and `surface` (3D hotel style). A theme is a description of how components should look; it has no shared variables, and each component defines its own edges, borders, and typography to match it. A `Theme` component that shares the theme through context is a later addition; this slice builds the `surface` theme only.
 
 Any theme combines with any variant. Applications choose their theme and their variants; components and their behaviour stay the same.
 
@@ -51,6 +50,26 @@ Button's surface-theme typography is 12px bold. Button also has an optional `siz
 | compact | 4px | 8px |
 
 A button's label sits on the base colour. For the surface theme the face is a decorative highlight, so contrast is measured against the base colour (FR-015); a future theme may require the base and face together to meet text-on-colour contrast.
+
+### Paper variants and the surface theme
+
+Paper is the plain flat surface container. It never has elevation or a shadow. In the surface theme, Paper has a 1px solid `#000000/20` border and an 8px corner radius, with the bottom border thickened to 3px in the same colour. The hex values are the original reference; the implementation uses the nearest Tailwind palette tokens (see the plan).
+
+Paper defines nine variants. The `variant` is optional; when it is omitted Paper renders its `default` variant.
+
+| Variant | Background |
+|---|---|
+| default | #ffffff |
+| login | #b4b4ae |
+| gray | #94948b |
+| black | #110e14 |
+| hc | #ffe8b7 |
+| yellow | #ffcd0a |
+| lightgreen | #d5e7d8 |
+| blue | #9ed1e4 |
+| room pattern | #4596a9 |
+
+The `room pattern` variant is a flat `#4596a9` background, not a pattern image.
 
 ## Clarifications
 
@@ -82,6 +101,12 @@ A button's label sits on the base colour. For the surface theme the face is a de
 - Q: When Button's `size` prop is omitted, which horizontal padding should it use, and what are the two size value names? → A: Omitted behaves like `wide` (16px); values are `wide` and `compact` (8px).
 - Q: How should Button's `size` values appear in the catalogue relative to its four variant entries? → A: Four variant entries, plus separate entries showing each `size` value.
 - Q: Should Button's new padding and typography apply in every theme or surface theme only? → A: Surface-theme-specific; they are part of the surface theme's Button description.
+- Q: Should removing shadows drop elevation only from Paper, or from the theme entirely? → A: Remove elevation from the theme and the design system entirely; the design system uses no shadows.
+- Q: Does Paper carry a corner radius, and what value? → A: Yes; 8px, defined by the surface theme's Paper description (this slice defines the surface theme only).
+- Q: Which background colours do Paper's variants use? → A: default `#ffffff`, login `#b4b4ae`, gray `#94948b`, black `#110e14`, hc `#ffe8b7`, yellow `#ffcd0a`, lightgreen `#d5e7d8`, blue `#9ed1e4`, room pattern `#4596a9`.
+- Q: For the `room pattern` variant, is `#4596a9` a flat background colour or a base colour behind a repeating room pattern image? → A: Flat background colour `#4596a9`; it is not a pattern image.
+- Q: Are Paper's border and 8px radius fixed in every theme or part of the surface theme's Paper description? → A: Part of the surface theme's Paper description, like Button's surface styling; this slice defines the surface theme only.
+- Q: Is the 3px bottom border the same `#000000/20` colour as the other three sides, or a different colour? → A: Same `#000000/20` on all four sides; only the bottom is 3px.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -119,15 +144,15 @@ A person building or reviewing interfaces opens a single catalogue page that sho
 
 ### User Story 3 - Apply a consistent theme (Priority: P3)
 
-A person building an interface relies on one shared theme — edges and corners, borders, elevation, and typography feel — so interfaces feel like the same product, while each application can still look different.
+A person building an interface relies on one shared theme — edges and corners, borders, and typography feel — so interfaces feel like the same product, while each application can still look different.
 
 **Why this priority**: A consistent theme is what makes the components look like one family; it refines the components but the components still deliver value without it.
 
-**Independent Test**: Render components from different places and confirm each follows the same theme's edges, borders, elevation, and typography feel.
+**Independent Test**: Render components from different places and confirm each follows the same theme's edges, borders, and typography feel.
 
 **Acceptance Scenarios**:
 
-1. **Given** a theme, **When** a component is rendered, **Then** it presents the theme's edges, borders, elevation, and typography feel.
+1. **Given** a theme, **When** a component is rendered, **Then** it presents the theme's edges, borders, and typography feel.
 2. **Given** two components of the same kind in different places, **When** they are compared, **Then** their theme looks identical.
 
 ---
@@ -151,7 +176,7 @@ A person building an interface relies on one shared theme — edges and corners,
 - **FR-003**: Each component MUST render correctly in its baseline and in each documented prop-driven state. A variant MUST change only a component's colours, never its behaviour or structure.
 - **FR-004**: A state produced by interacting with the page MUST NOT be a separate catalogue entry; only a prop-driven state that cannot be produced by interaction MUST be shown as its own catalogue entry. This rule governs the catalogue (FR-016, FR-017).
 - **FR-005**: Form field MUST provide a visible label, a control area that accepts any form control, optional help text, and an error message. The label MUST be associated with the control without requiring a caller-supplied identifier.
-- **FR-006**: Paper MUST provide the plain surface/background primitive.
+- **FR-006**: Paper MUST provide the plain flat surface/background primitive and MUST NOT use elevation or a shadow in any theme.
 - **FR-007**: Card MUST present a structured container for grouped content and MUST sit on Paper.
 - **FR-008**: Menu MUST present a list of Menu items.
 - **FR-009**: Menu item MUST be a selectable entry.
@@ -161,8 +186,8 @@ A person building an interface relies on one shared theme — edges and corners,
 
 #### Variants and themes
 
-- **FR-013**: The design system MUST define a theme covering edges and corners, borders, elevation, and typography feel. A theme describes how components look and MUST NOT change component behaviour.
-- **FR-014**: Components MUST present the selected theme's look & feel — each component defines its own edges, borders, elevation, and typography to match the theme (no shared theme variables exist yet) — and variant colours MUST come from the component's own defined variants rather than ad-hoc values.
+- **FR-013**: The design system MUST define a theme covering edges and corners, borders, and typography feel. A theme describes how components look and MUST NOT change component behaviour.
+- **FR-014**: Components MUST present the selected theme's look & feel — each component defines its own edges, borders, and typography to match the theme (no shared theme variables exist yet) — and variant colours MUST come from the component's own defined variants rather than ad-hoc values.
 - **FR-015**: Text and text-on-colour combinations MUST meet the WCAG AA minimum contrast defined in Assumptions. For the surface theme, the label is measured against the base colour (bg-1) and the lighter face (bg-2) is a decorative highlight; a future theme MAY require the base and face together to meet text-on-colour contrast.
 
 #### Catalogue
@@ -180,14 +205,15 @@ A person building an interface relies on one shared theme — edges and corners,
 - **FR-023**: Button MUST support its variants (`default`, `green`, `dark`, `red`) defined in "Button variants and the surface theme"; `variant` MUST be optional and default to `default`, and changing variant MUST change only colours.
 - **FR-024**: In the surface theme, Button MUST render the raised two-colour treatment (base colour plus a lighter upper-half face, 2px solid black border, 4px corner radius), MUST use 4px vertical padding and 12px bold typography, and MUST show visually distinct hover, focus, active (pressed), and disabled states.
 - **FR-025**: Button MUST support an optional `size` prop that changes only its horizontal padding; in the surface theme the values are `wide` (16px) and `compact` (8px). `size` MUST default to `wide` when omitted, and changing it MUST NOT change the vertical padding, typography, colours, behaviour, or structure. A future theme MAY define different size values.
+- **FR-026**: In the surface theme, Paper MUST render a 1px solid `#000000/20` border, an 8px corner radius, and a 3px bottom border; Paper MUST support its variants (`default`, `login`, `gray`, `black`, `hc`, `yellow`, `lightgreen`, `blue`, `room pattern`) defined in "Paper variants and the surface theme", MUST make `variant` optional defaulting to `default`, and MUST let changing variant change only the background colour.
 
 ### Key Entities
 
 - **Component**: a reusable UI element with a single documented purpose (for example Button or Card).
-- **Variant**: a named set of colours defined per component that gives it a meaning (Button's are `default`, `green`, `dark`, `red`); the `variant` is optional and omitting it gives the component's `default` look.
+- **Variant**: a named set of colours defined per component that gives it a meaning (Button's are `default`, `green`, `dark`, `red`; Paper's are `default`, `login`, `gray`, `black`, `hc`, `yellow`, `lightgreen`, `blue`, `room pattern`); the `variant` is optional and omitting it gives the component's `default` look.
 - **Size**: a named horizontal-padding value for Button (`wide`, `compact`); the `size` is optional and omitting it gives the `wide` look.
 - **State**: a condition a component can be in. A **browser-interaction state** is produced by interacting with the page and is not a separate catalogue entry; a **prop-driven state** is produced only by setting a prop and is the only kind shown as its own catalogue entry.
-- **Theme**: a documented description of how components look — edges, borders, elevation, and typography feel — that each component's own styles follow. No shared theme values exist yet.
+- **Theme**: a documented description of how components look — edges, borders, and typography feel — that each component's own styles follow. No shared theme values exist yet.
 - **Catalogue entry**: the documentation and live preview for one component prop-driven state, covering its documented states and, once defined, its variant colours.
 
 ## Success Criteria *(mandatory)*

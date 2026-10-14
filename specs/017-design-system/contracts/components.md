@@ -9,7 +9,7 @@ Conventions:
 - Text renders inside a `<span>` unless a more specific element is required.
 - Form field is a generic labeled wrapper: it takes its control as children rather than owning a specific control.
 - Every interactive component is keyboard operable and exposes its prop-driven states (see `data-model.md`).
-- Slice 2 styles Button only: it adds the optional `variant` and `size` props and the surface theme. Every other component remains unstyled; their variants arrive later.
+- Slice 2 styles Button and Paper: Button adds the optional `variant` and `size` props and the surface theme; Paper adds the optional `variant` prop and its surface-theme look. Every other component remains unstyled; their variants arrive later.
 
 ## Button
 
@@ -36,11 +36,14 @@ Renders `<a>`. Extends `HTMLAnchorAttributes` (`href`, `target`, `rel`, … are 
 
 ## Paper
 
-Renders the plain surface container (FR-006) and extends `HTMLAttributes<HTMLDivElement>`. Paper defines no elevation; elevation belongs to the theme (Slice 2).
+Renders the plain flat surface container (FR-006) and extends `HTMLAttributes<HTMLDivElement>`. Paper has no elevation or shadow.
 
 | Name | Kind | Type | Required | Notes |
 |---|---|---|---|---|
+| variant | prop | `"default" \| "login" \| "gray" \| "black" \| "hc" \| "yellow" \| "lightgreen" \| "blue" \| "room pattern"` | no | default `"default"`; selects the background colour set |
 | children | snippet | — | yes | surface content |
+
+**Surface theme (Slice 2)**: Paper is a flat surface with a 1px solid `black/20` border, an 8px corner radius, and a 3px bottom border in the same colour. The background colour comes from the variant's Tailwind class (see `data-model.md`); `variant` is optional and omitted renders `default`. Changing variant changes only the background colour, never behaviour or structure. The `room pattern` variant is a flat background, not a pattern image.
 
 ## Card
 

@@ -79,19 +79,21 @@ Vitest runs in browser mode so the native APIs behave as in production.
 
 ## Validate Slice 2 against the spec
 
-Run Storybook (`pnpm --filter @project-reborn/components dev`) and open **Components/Button**.
+Run Storybook (`pnpm --filter @project-reborn/components dev`) and open **Components/Button** and **Components/Paper**.
 
 | Spec requirement | How to validate |
 |---|---|
 | FR-023 Button variants | Button renders four variants (`Default`, `Green`, `Dark`, `Red`); each shows a base colour with a lighter upper-half face, a 2px black border, and a 4px radius; switching variant changes only colours. |
 | FR-024 surface treatment + states | Hover changes the base and face colours; keyboard focus shows a 2px offset black outline; pressing inverts the bevel; `disabled` removes the face, flattens to the base colour, and dims. |
 | FR-025 Button size | Button uses 4px vertical padding and 12px bold text; the default (`wide`) horizontal padding is 16px and `compact` is 8px; switching size changes only the horizontal padding. |
-| FR-016 variant and size colours in the catalogue | Each variant has its own story with a usage note, and each size (`Wide`, `Compact`) has its own story with a usage note, so all variant colours and sizes are visible in the catalogue. |
-| FR-015 / SC-004 contrast | The label sits on the base colour (bg-1); each variant's text-on-base pair meets WCAG AA — default 13.88:1, green 4.96:1, dark 6.91:1, red 6.42:1 (Tailwind token values). For the surface theme the face (bg-2) is a decorative highlight and is not measured; a future theme may require base and face together. |
+| FR-006 / FR-026 Paper surface | Paper renders as a flat surface with no shadow, a 1px `black/20` border, an 8px radius, and a 3px `black/20` bottom border. |
+| FR-026 Paper variants | Paper renders nine variants (`Default`, `Login`, `Gray`, `Black`, `HC`, `Yellow`, `Light Green`, `Blue`, `Room Pattern`); each shows its background colour; `Room Pattern` is a flat background, not an image; switching variant changes only the background colour. |
+| FR-016 variant and size colours in the catalogue | Each Button variant has its own story with a usage note, each Button size (`Wide`, `Compact`) has its own story with a usage note, and each Paper variant has its own story with a usage note, so all variant colours and sizes are visible in the catalogue. |
+| FR-015 / SC-004 contrast | For Button the label sits on the base colour (bg-1); each variant's text-on-base pair meets WCAG AA — default 13.88:1, green 4.96:1, dark 6.91:1, red 6.42:1 (Tailwind token values). For the surface theme the face (bg-2) is a decorative highlight and is not measured; a future theme may require base and face together. Paper renders no text of its own, so its backgrounds are not measured. |
 | FR-021 / SC-003 focus | Tab to a Button: the focus outline is visible and the button is operable by keyboard. |
 | FR-003 variant changes only appearance | Compare behaviour across variants: behaviour and structure are identical. |
 
-Variant colours are the nearest Tailwind palette tokens (see `data-model.md`); the consuming app's Tailwind build emits them because the classes are static literals in `button.svelte`.
+Variant colours are the nearest Tailwind palette tokens (see `data-model.md`); the consuming app's Tailwind build emits them because the classes are static literals in `button.svelte` and `paper.svelte`.
 
 ## Deferred (later slices)
 

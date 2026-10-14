@@ -1,9 +1,8 @@
 <script lang="ts">
-  import type { Snippet } from "svelte";
-  import type { HTMLAttributes } from "svelte/elements";
+  import type { ComponentProps, Snippet } from "svelte";
   import Paper from "./paper.svelte";
 
-  interface Props extends HTMLAttributes<HTMLDivElement> {
+  interface Props extends ComponentProps<typeof Paper> {
     header?: Snippet;
     children: Snippet;
   }

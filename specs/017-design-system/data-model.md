@@ -35,7 +35,8 @@ A condition a component can be in. A **browser-interaction state** is produced b
 | Tab | default |
 | Tab panel | default |
 | Dialog | closed, open |
-| Card / Paper | default (visual only; deferred) |
+| Paper | default, login, gray, black, hc, yellow, lightgreen, blue, room pattern (one catalogue entry per variant) |
+| Card | default (visual only; deferred) |
 
 ### Catalogue entry (story)
 
@@ -49,9 +50,9 @@ One Storybook story per component per prop-driven state, plus a usage note. A st
 
 ### Variant and theme (visual)
 
-- **Variant** — a named set of colours defined per component that gives it a meaning. Button's variants are `default`, `green`, `dark`, and `red`; a component's `variant` is optional and omitting it gives its `default` look. A variant changes colours only, never behaviour or structure.
+- **Variant** — a named set of colours defined per component that gives it a meaning. Button's variants are `default`, `green`, `dark`, and `red`; Paper's are `default`, `login`, `gray`, `black`, `hc`, `yellow`, `lightgreen`, `blue`, and `room pattern`. A component's `variant` is optional and omitting it gives its `default` look. A variant changes colours only, never behaviour or structure.
 - **Size** — a named horizontal-padding value for Button: `wide` (16px) and `compact` (8px). The `size` is optional and omitting it gives the `wide` look; it changes only horizontal padding, never the vertical padding, typography, colours, behaviour, or structure (FR-025).
-- **Theme** — the application-level styling: edges/corners, borders, elevation, and typography feel (`flat`, `surface`). A theme is a description; each component defines its own styles to match it, and no shared theme variables exist yet. Slice 2 implements `surface` for Button only.
+- **Theme** — the application-level styling: edges/corners, borders, and typography feel (`flat`, `surface`). A theme is a description; each component defines its own styles to match it, and no shared theme variables exist yet. Slice 2 implements `surface` for Button and Paper. The design system uses no elevation or shadows in any theme.
 
 #### Button variant colour set
 
@@ -97,6 +98,35 @@ The label sits on the base colour; for the surface theme contrast is measured ag
 | red | white on red-700 | 6.42:1 | ✔ |
 
 All four variants pass AA on the base colour; the face (bg-2) is a decorative highlight and is not measured for the surface theme.
+
+#### Paper variant colour set
+
+Each Paper variant defines its background colour. The final values are the nearest Tailwind palette tokens (`tools/tw-color`, Tailwind v4.3.3); the spec's hex values are the original reference. The `variant` is optional and omitted renders `default` (FR-026).
+
+| Variant | Background |
+|---|---|
+| default | white |
+| login | olive-400 |
+| gray | neutral-400 |
+| black | olive-950 |
+| hc | amber-100 |
+| yellow | amber-300 |
+| lightgreen | mist-200 |
+| blue | sky-300 |
+| room pattern | cyan-600 |
+
+The `room pattern` variant is a flat `cyan-600` background, not a pattern image. Paper defines backgrounds only and renders no text of its own, so the FR-015 text-contrast measurement does not apply to Paper; contrast is judged when text is placed on it.
+
+#### Paper surface (surface theme)
+
+| Property | Value |
+|---|---|
+| Border | 1px solid `black/20` on all four sides |
+| Bottom border | 3px solid `black/20` (same colour) |
+| Corner radius | 8px |
+| Elevation | none — Paper never has a shadow |
+
+A Paper `variant` changes only its background colour, never its border, radius, behaviour, or structure.
 
 ## Relationships
 
@@ -145,5 +175,5 @@ Dialog ──contains─▶ arbitrary content (overlay — FR-012)
 - Every component prop-driven state MUST have a catalogue entry with a usage note (FR-016, SC-005).
 - Every documented prop-driven state MUST appear in the catalogue (FR-017, SC-001).
 - Interactive components MUST be keyboard operable with visible focus (FR-021, SC-003).
-- A component used outside its documented prop states falls back to a sensible default (Edge Cases).
+- A component used outside its documented prop states falls back to a sensible default (Edge Cases): Button falls back to `default`/`wide`, Paper falls back to `default`.
 - An application using a subset of components/variants is unaffected by ones it does not use (Edge Cases).
