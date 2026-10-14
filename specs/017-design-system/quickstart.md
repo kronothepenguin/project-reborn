@@ -93,9 +93,24 @@ Run Storybook (`pnpm --filter @project-reborn/components dev`) and open **Compon
 | FR-021 / SC-003 focus | Tab to a Button: the focus outline is visible and the button is operable by keyboard. |
 | FR-003 variant changes only appearance | Compare behaviour across variants: behaviour and structure are identical. |
 
-Variant colours are the nearest Tailwind palette tokens (see `data-model.md`); the consuming app's Tailwind build emits them because the classes are static literals in `button.svelte` and `paper.svelte`.
+Variant colours are the nearest Tailwind palette tokens (see `data-model.md`); the consuming app's Tailwind build emits them because the classes are static literals in `button.svelte`, `paper.svelte`, `input.svelte`, and `link.svelte`.
+
+## Validate Slice 3 against the spec
+
+Run Storybook (`pnpm --filter @project-reborn/components dev`) and open **Components/Input** and **Components/Link**.
+
+| Spec requirement | How to validate |
+|---|---|
+| FR-027 Input variants | Input renders two variants (`Default` with no border, `Border` with a 1px solid `#555` border); switching variant changes only the border. |
+| FR-028 Input normal + invalid | Input's normal state is a white background with black text; the `Invalid` entry shows the `#f18f9b` (`rose-300`) background while the border, padding, and text colour stay unchanged. |
+| FR-029 Input size | Input uses 2px padding on all four sides by default and 4px for `lg`; the `lg` size has its own entry (`Large`) while the default size is shown by the `Default` entry; switching size changes only the padding. |
+| FR-030 Link variants | Link renders six variants (`Default`, `White`, `Personal Info`, `Nav`, `Settings`, `Yellow`); each shows its colour and text decoration (only `Personal Info`, `Nav`, and `Settings` remove the underline); switching variant changes only the colour and text decoration. |
+| FR-031 states | Hover, focus, and active behave (Input also disabled); focus shows the shared `focus-visible` outline; browser-interaction states have no catalogue entries. |
+| FR-015 / SC-004 Link exception | Link's reference colours that fall below AA (for example default `#fc6204` and `yellow` `#ffcc00`) are kept as documented. |
+| FR-016 variant, size, and invalid entries | Each Input variant, each Input `size`, Input's `invalid`, and each Link variant has its own story with a usage note. |
+| FR-003 variant changes only appearance | Compare behaviour across Input and Link variants: behaviour and structure are identical. |
 
 ## Deferred (later slices)
 
-- The `flat` theme, variants for the remaining components, and contrast acceptance beyond Button — Slice 3.
+- The `flat` theme, variants for the remaining components, and contrast acceptance beyond Button, Paper, Input, and Link — Slice 4.
 - CSS anchor positioning of the Menu popover to its trigger — visual refinement.

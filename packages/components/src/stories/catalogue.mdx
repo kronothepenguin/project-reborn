@@ -23,14 +23,28 @@ border, an 8px radius, and a 3px `black/20` bottom border. It has nine variants 
 Pattern** — each shown as its own catalogue entry; a variant changes only the background colour,
 and **Room Pattern** is a flat background, not an image.
 
+**Input** now carries the `surface` theme: a white background with black text, 2px padding on all
+four sides, and the shared focus outline. It has two variants — **Default** (no border) and
+**Border** (1px solid `#555`) — a **Large** size (4px padding, with the default 2px size shown by
+the **Default** entry), and an **Invalid** state (a `#f18f9b` background); each is its own
+catalogue entry, and changing variant, size, or invalid changes only the border, padding, or
+background.
+
+**Link** now carries the `surface` theme: colour plus text decoration, with the shared focus
+outline. It has six variants — **Default**, **White**, **Personal Info**, **Nav**, **Settings**,
+and **Yellow** — each shown as its own catalogue entry; only **Personal Info**, **Nav**, and
+**Settings** remove the underline. Link is an explicit WCAG AA exception: its reference colours
+are kept where they fall below AA (FR-015/SC-004).
+
 ## Components
 
 Browse **Components** in the sidebar. Every baseline component appears with one story per
 documented state:
 
-- **Button** (Default, Green, Dark, Red, Wide, Compact), **Link**, **Paper** (Default, Login,
-  Gray, Black, HC, Yellow, Light Green, Blue, Room Pattern), **Card**
-- **Input**, **Form field**
+- **Button** (Default, Green, Dark, Red, Wide, Compact), **Link** (Default, White, Personal Info,
+  Nav, Settings, Yellow), **Paper** (Default, Login, Gray, Black, HC, Yellow, Light Green, Blue,
+  Room Pattern), **Card**
+- **Input** (Default, Border, Large, Invalid), **Form field**
 - **Menu**, **Menu item**
 - **Tabs**, **Tab**, **Tab panel**
 - **Dialog**

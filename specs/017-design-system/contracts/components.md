@@ -9,7 +9,7 @@ Conventions:
 - Text renders inside a `<span>` unless a more specific element is required.
 - Form field is a generic labeled wrapper: it takes its control as children rather than owning a specific control.
 - Every interactive component is keyboard operable and exposes its prop-driven states (see `data-model.md`).
-- Slice 2 styles Button and Paper: Button adds the optional `variant` and `size` props and the surface theme; Paper adds the optional `variant` prop and its surface-theme look. Every other component remains unstyled; their variants arrive later.
+- Slice 2 styles Button and Paper: Button adds the optional `variant` and `size` props and the surface theme; Paper adds the optional `variant` prop and its surface-theme look. Slice 3 styles Input and Link: Input adds the optional `variant` and `size` props and the optional `invalid` prop; Link adds the optional `variant` prop. Every other component remains unstyled; their variants arrive later.
 
 ## Button
 
@@ -32,7 +32,10 @@ Renders `<a>`. Extends `HTMLAnchorAttributes` (`href`, `target`, `rel`, … are 
 
 | Name | Kind | Type | Required | Notes |
 |---|---|---|---|---|
+| variant | prop | `"default" \| "white" \| "personal-info" \| "nav" \| "settings" \| "yellow"` | no | default `"default"`; selects the colour + text-decoration set |
 | children | snippet | — | yes | link label/content |
+
+**Surface theme (Slice 3)**: Link's `default` look is `#fc6204` text with an underline. The colour and text-decoration come from the variant's static Tailwind class (see `data-model.md`); `variant` is optional and omitted renders `default`. A variant changes only the colour and text decoration, never behaviour or structure. Link has no `disabled` state, because an anchor cannot be natively disabled. Link defines hover, focus, and active as browser-interaction states; it reuses Button's `focus-visible` outline, and its hover and active colours are not fixed in this slice. Link is an explicit WCAG AA exception (FR-015): its reference colours are kept where they fall below AA.
 
 ## Paper
 
@@ -61,10 +64,15 @@ Renders `<input>`. Extends `HTMLInputAttributes` (`type`, `name`, `placeholder`,
 | Name | Kind | Type | Required | Notes |
 |---|---|---|---|---|
 | value | prop (`bind:`) | `string` | no | two-way; forwards to the element |
+| variant | prop | `"default" \| "border"` | no | default `"default"`; selects the border (`default` none, `border` 1px solid `#555`) |
+| size | prop | `"default" \| "lg"` | no | default `"default"`; selects the padding on all four sides (`default` 2px, `lg` 4px) |
+| invalid | prop | `boolean` | no | default `false`; when true the background is `#f18f9b` |
+
+**Surface theme (Slice 3)**: Input renders a white background with black text in its normal state. The border comes from the `variant`'s static Tailwind class and the padding from the `size`'s static class (see `data-model.md`); `variant` and `size` are optional and omitted render `default`, and `invalid` is optional and omitted renders `false`. `variant` changes only the border, `size` changes only the padding (all four sides), and `invalid` changes only the background — none changes the others, the text colour, behaviour, or structure. Input defines hover, focus, active, and disabled as browser-interaction states; it reuses Button's `focus-visible` outline, and its hover, active, and disabled colours are not fixed in this slice.
 
 ## Form field
 
-A generic labeled wrapper (FR-005). It renders `<label>` wrapping a label `<span>` and the control passed as children, so no caller-supplied id is needed; help and error render as `<span>` elements. The control may be anything: `<input>`, `<Input>`, `<select>`, `<textarea>`.
+A generic labeled wrapper (FR-005). It is a layout helper — it keeps the label, the control, and the help/error message together; it is not a state manager. It renders `<label>` wrapping a label `<span>` and the control passed as children, so no caller-supplied id is needed; help and error render as `<span>` elements. The control may be anything: `<input>`, `<Input>`, `<select>`, `<textarea>`.
 
 ```svelte
 <FormField label="Email" help="We never share it">
@@ -82,7 +90,6 @@ A generic labeled wrapper (FR-005). It renders `<label>` wrapping a label `<span
 | help | prop | `string` | no | help text (rendered in a `<span>`) |
 | error | prop | `string` | no | when set, the field is invalid and the message is shown |
 | disabled | prop | `boolean` | no | reflects the disabled attribute on the wrapper |
-| invalid | prop | `boolean` | no | reflects invalid status on the wrapper |
 | children | snippet | — | yes | the form control |
 
 Extends `HTMLAttributes<HTMLLabelElement>`; additional attributes (class, data-*, aria-*) are forwarded to the `<label>`.

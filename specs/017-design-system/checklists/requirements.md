@@ -31,6 +31,6 @@
 
 ## Notes
 
-- Spec validated: 24 functional requirements, 5 success criteria, 5 edge cases, 3 prioritized user stories.
-- Variants are defined per component and their `variant` is optional; Button's surface variants (`default`, `green`, `dark`, `red`) and colours are enumerated, the other components' variants are decided later. The application-level styling is the *theme* (described as the look & feel: edges, borders, elevation, typography feel); each component defines its own styles to match it.
+- Spec validated: 31 functional requirements, 5 success criteria, 5 edge cases, 3 prioritized user stories.
+- Variants are defined per component and their `variant` is optional; Button's, Paper's, Input's, and Link's variants and colours are enumerated, the remaining components' variants are decided later. The application-level styling is the *theme* (described as the look & feel: edges, borders, typography feel); each component defines its own styles to match it, and the design system uses no elevation or shadows.
 - SC-004 (contrast) is a human catalogue review; looks are judged by people, not automated tests.

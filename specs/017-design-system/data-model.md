@@ -26,8 +26,8 @@ A condition a component can be in. A **browser-interaction state** is produced b
 | Component | Catalogue entries |
 |---|---|
 | Button | default, green, dark, red (one catalogue entry per variant), wide, compact (one catalogue entry per size) |
-| Link | default |
-| Input | default |
+| Link | default, white, personal-info, nav, settings, yellow (one catalogue entry per variant) |
+| Input | default and border (one catalogue entry per variant: `Default`, `Border`), lg (one catalogue entry for the large size: `Large`; the `default` size is already shown by the `Default` entry), invalid (the prop-driven `invalid` state: `Invalid`) |
 | Form field | default |
 | Menu | default |
 | Menu item | default |
@@ -50,9 +50,9 @@ One Storybook story per component per prop-driven state, plus a usage note. A st
 
 ### Variant and theme (visual)
 
-- **Variant** — a named set of colours defined per component that gives it a meaning. Button's variants are `default`, `green`, `dark`, and `red`; Paper's are `default`, `login`, `gray`, `black`, `hc`, `yellow`, `lightgreen`, `blue`, and `room pattern`. A component's `variant` is optional and omitting it gives its `default` look. A variant changes colours only, never behaviour or structure.
-- **Size** — a named horizontal-padding value for Button: `wide` (16px) and `compact` (8px). The `size` is optional and omitting it gives the `wide` look; it changes only horizontal padding, never the vertical padding, typography, colours, behaviour, or structure (FR-025).
-- **Theme** — the application-level styling: edges/corners, borders, and typography feel (`flat`, `surface`). A theme is a description; each component defines its own styles to match it, and no shared theme variables exist yet. Slice 2 implements `surface` for Button and Paper. The design system uses no elevation or shadows in any theme.
+- **Variant** — a named set of appearance values (colours, border, text decoration) defined per component that gives it a meaning. Button's variants are `default`, `green`, `dark`, and `red`; Paper's are `default`, `login`, `gray`, `black`, `hc`, `yellow`, `lightgreen`, `blue`, and `room pattern`; Input's are `default` and `border`; Link's are `default`, `white`, `personal-info`, `nav`, `settings`, and `yellow`. A component's `variant` is optional and omitting it gives its `default` look. A variant changes appearance only, never behaviour or structure.
+- **Size** — a named padding value, optional, whose omission gives the component's default look: Button's are `wide` (16px horizontal) and `compact` (8px horizontal); Input's are `default` (2px, all four sides) and `lg` (4px, all four sides). It changes only padding, never the other properties, behaviour, or structure (FR-025, FR-029).
+- **Theme** — the application-level styling: edges/corners, borders, and typography feel (`flat`, `surface`). A theme is a description; each component defines its own styles to match it, and no shared theme variables exist yet. Slices 2 and 3 implement `surface` for Button, Paper, Input, and Link. The design system uses no elevation or shadows in any theme.
 
 #### Button variant colour set
 
@@ -128,6 +128,46 @@ The `room pattern` variant is a flat `cyan-600` background, not a pattern image.
 
 A Paper `variant` changes only its background colour, never its border, radius, behaviour, or structure.
 
+#### Input variant, size, and invalid sets
+
+The final values are the nearest Tailwind palette tokens (`tools/tw-color`, Tailwind v4.3.3); the spec's hex values are the original reference. The `variant` is optional and omitted renders `default` (FR-027); the `size` is optional and omitted renders `default` (FR-029); `invalid` is an optional boolean (FR-028).
+
+| Variant | Border |
+|---|---|
+| default | none |
+| border | 1px solid `neutral-600` (spec `#555555`) |
+
+| Size | Padding (all four sides) |
+|---|---|
+| default (default when omitted) | `p-0.5` (2px) |
+| lg | `p-1` (4px) |
+
+| `invalid` | Background |
+|---|---|
+| false (normal) | `white` |
+| true | `rose-300` (spec `#f18f9b`) |
+
+Input's normal state also uses `text-black`. A `variant` changes only the border, a `size` changes only the padding, and `invalid` changes only the background; none changes the others, behaviour, or structure.
+
+#### Input surface (surface theme)
+
+Input reuses Button's `focus-visible` outline. Input defines hover, focus, active, and disabled as browser-interaction states, so none is a catalogue entry (FR-004); the concrete hover, active, and disabled appearances are deferred to the theme (FR-031).
+
+#### Link variant colour set
+
+The final values are the nearest Tailwind palette tokens (`tools/tw-color`, Tailwind v4.3.3); the spec's hex values are the original reference. The `variant` is optional and omitted renders `default` (`#fc6204`, underlined) (FR-030). Link is an explicit WCAG AA exception (FR-015): the reference colours are kept where they fall below AA.
+
+| Variant | Colour | Text decoration | Tailwind classes |
+|---|---|---|---|
+| default | `#fc6204` | underline | `text-orange-500 underline` |
+| white | `#ffffff` | underline | `text-white underline` |
+| personal-info | `#ffffff` | none | `text-white no-underline` |
+| nav | `#134787` | none | `text-blue-900 no-underline` |
+| settings | `#333333` | none | `text-olive-800 no-underline` |
+| yellow | `#ffcc00` | underline | `text-amber-300 underline` |
+
+A Link `variant` changes only its colour and text decoration, never behaviour or structure. Link defines hover, focus, and active as browser-interaction states (no disabled — an anchor cannot be natively disabled), so none is a catalogue entry (FR-004, FR-031); it reuses Button's `focus-visible` outline and defers its hover and active appearances to the theme.
+
 ## Relationships
 
 ```text
@@ -169,11 +209,12 @@ Dialog ──contains─▶ arbitrary content (overlay — FR-012)
 | From | Event | To | Notes |
 |---|---|---|---|
 | any | invalid submission | invalid | error message shown, `aria-invalid` set (FR-005) |
+| any | `invalid` prop true | invalid | background `rose-300`; border, padding, and text colour unchanged (FR-028) |
 
 ## Validation rules (from the spec)
 
 - Every component prop-driven state MUST have a catalogue entry with a usage note (FR-016, SC-005).
 - Every documented prop-driven state MUST appear in the catalogue (FR-017, SC-001).
 - Interactive components MUST be keyboard operable with visible focus (FR-021, SC-003).
-- A component used outside its documented prop states falls back to a sensible default (Edge Cases): Button falls back to `default`/`wide`, Paper falls back to `default`.
+- A component used outside its documented prop states falls back to a sensible default (Edge Cases): Button falls back to `default`/`wide`, Paper falls back to `default`, Input falls back to `default`/`default`, and Link falls back to `default`.
 - An application using a subset of components/variants is unaffected by ones it does not use (Edge Cases).

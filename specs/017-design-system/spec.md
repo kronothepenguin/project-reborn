@@ -22,7 +22,7 @@ The design system is one shared system for the project's applications. Each appl
 
 The design system separates what a component is (its behaviour and states) from how it is presented, through two independent visual axes. Neither changes a component's behaviour or structure.
 
-- **Variant** — a named set of colours defined per component that gives it a meaning. Different components have their own variant sets (for example, Button's are `default`, `green`, `dark`, and `red`, and Paper's are `default`, `login`, `gray`, `black`, `hc`, `yellow`, `lightgreen`, `blue`, and `room pattern`). The `variant` is optional: when it is omitted the component renders its `default` look. A variant changes only colours, never behaviour or structure. Because a component is shared across applications, its variants are the same in every application.
+- **Variant** — a named set of appearance values (colours, border, text decoration) defined per component that gives it a meaning. Different components have their own variant sets (for example, Button's are `default`, `green`, `dark`, and `red`, Paper's are `default`, `login`, `gray`, `black`, `hc`, `yellow`, `lightgreen`, `blue`, and `room pattern`, Input's are `default` and `border`, and Link's are `default`, `white`, `personal-info`, `nav`, `settings`, and `yellow`). The `variant` is optional: when it is omitted the component renders its `default` look. A variant changes only appearance (colours, border, text decoration), never behaviour or structure. Because a component is shared across applications, its variants are the same in every application.
 - **Theme** (the look & feel) — the application-level styling: edges and corners, borders, and typography feel. Themes are `flat` (flat surfaces, sharp edges) and `surface` (3D hotel style). A theme is a description of how components should look; it has no shared variables, and each component defines its own edges, borders, and typography to match it. A `Theme` component that shares the theme through context is a later addition; this slice builds the `surface` theme only.
 
 Any theme combines with any variant. Applications choose their theme and their variants; components and their behaviour stay the same.
@@ -71,6 +71,47 @@ Paper defines nine variants. The `variant` is optional; when it is omitted Paper
 
 The `room pattern` variant is a flat `#4596a9` background, not a pattern image.
 
+### Input variants, sizes, and the surface theme
+
+Input is a single-line form control. In the surface theme its normal state has a white background and black text, and it has no border unless its `border` variant is selected. The hex values are the original reference; the implementation uses the nearest Tailwind palette tokens (see the plan).
+
+Input defines two variants. The `variant` is optional; when it is omitted Input renders its `default` variant (no border).
+
+| Variant | Border |
+|---|---|
+| default | none |
+| border | 1px solid #555 |
+
+Input has an optional boolean `invalid` prop. When `invalid` is true the background is `#f18f9b`; the border, padding, and text colour are unchanged. Because `invalid` is prop-driven and cannot be produced by interacting with the page, it is its own catalogue entry.
+
+Input also has an optional `size` prop that changes only its padding, on all four sides; it never changes the border, colours, typography, behaviour, or structure. When `size` is omitted Input behaves like `default`:
+
+| Size | Padding (all four sides) |
+|---|---|
+| default (default when omitted) | 2px |
+| lg | 4px |
+
+Input defines hover, focus, active, and disabled as browser-interaction states. These are produced by interacting with the page, so they are not their own catalogue entries (FR-004). A visible focus indicator is required (FR-021); the concrete hover, active, and disabled appearances are part of the surface theme and are not given as fixed colours in this slice.
+
+### Link variants and the surface theme
+
+Link renders an anchor. Its `default` look is `#fc6204` text with an underline. The hex values are the original reference; the implementation uses the nearest Tailwind palette tokens (see the plan). Because Link appears on many surfaces, these colours are chosen for their intended background; Link is an explicit exception to the WCAG AA contrast rule where the reference colours fall below it (FR-015).
+
+Link defines six variants. The `variant` is optional; when it is omitted Link renders its `default` variant.
+
+| Variant | Colour | Text decoration |
+|---|---|---|
+| default | #fc6204 | underline |
+| white | #ffffff | underline |
+| personal-info | #ffffff | none |
+| nav | #134787 | none |
+| settings | #333333 | none |
+| yellow | #ffcc00 | underline |
+
+A `variant` changes only the colour and text decoration, never behaviour or structure.
+
+Link defines hover, focus, and active as browser-interaction states. They are not their own catalogue entries (FR-004). A visible focus indicator is required (FR-021); the concrete hover and active appearances are part of the surface theme and are not given as fixed colours in this slice. Link has no disabled state, because an anchor cannot be natively disabled.
+
 ## Clarifications
 
 ### Session 2026-10-10
@@ -107,6 +148,18 @@ The `room pattern` variant is a flat `#4596a9` background, not a pattern image.
 - Q: For the `room pattern` variant, is `#4596a9` a flat background colour or a base colour behind a repeating room pattern image? → A: Flat background colour `#4596a9`; it is not a pattern image.
 - Q: Are Paper's border and 8px radius fixed in every theme or part of the surface theme's Paper description? → A: Part of the surface theme's Paper description, like Button's surface styling; this slice defines the surface theme only.
 - Q: Is the 3px bottom border the same `#000000/20` colour as the other three sides, or a different colour? → A: Same `#000000/20` on all four sides; only the bottom is 3px.
+
+### Session 2026-10-14
+
+- Q: For Input's `size` prop, which padding does each value change — all four sides, or only the horizontal padding like Button's `size`? → A: All four sides; `default` is 2px, `lg` is 4px, and omitting `size` renders `default`.
+- Q: Link's default colour `#fc6204` and `yellow` `#ffcc00` fail WCAG AA on light backgrounds, which conflicts with FR-015 and SC-004 — how should Link be treated for contrast? → A: Keep the reference hexes and add a documented AA exception for Link in FR-015/SC-004.
+- Q: What background and text colour should Input render in its normal (non-`invalid`) state? → A: White background, black text.
+- Q: Which interactive states must Input and Link define in this slice? → A: Input: hover, focus, active, and disabled; Link: hover, focus, and active (no disabled — an anchor cannot be natively disabled). All are browser-interaction states, so none get catalogue entries (FR-004).
+- Q: Since Input and Link must define those states but the brief gives no colours for them, how should their appearance be determined? → A: The states must exist and behave; focus uses the FR-021 indicator; concrete hover/active/disabled colours are deferred to the theme (no new hexes).
+- Q: What should Input's `size` values be named? → A: `default` and `lg`, following Tailwind's size naming; the earlier `big` is renamed to `lg`.
+- Q: Should Form field own invalid state? → A: No; `invalid` is removed from Form field. Form field is a layout helper (label + control + help/error message), not a state manager; its `error` prop supplies the message.
+- Q: Does a variant change only colours, or other appearance too? → A: Appearance — colours, border, and text decoration — never behaviour or structure; FR-003 and the `Variant` entity are worded accordingly.
+- Q: How should Input's catalogue entries appear? → A: `Default` and `Border` (one per variant), `Large` (the `lg` size; the `default` size is shown by the `Default` entry, so it has no separate entry), and `Invalid` — one entry per prop-driven state (four entries).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -159,7 +212,7 @@ A person building an interface relies on one shared theme — edges and corners,
 
 ### Edge Cases
 
-- A component is used with an undefined or unsupported prop value: it must fall back to a sensible default rather than break or render unstyled (for Button, an unsupported `variant` falls back to `default` and an unsupported `size` falls back to `wide`).
+- A component is used with an undefined or unsupported prop value: it must fall back to a sensible default rather than break or render unstyled (for Button, an unsupported `variant` falls back to `default` and an unsupported `size` falls back to `wide`; for Input, an unsupported `variant` falls back to `default` and an unsupported `size` falls back to `default`; for Link, an unsupported `variant` falls back to `default`).
 - Content longer than expected inside a card, menu item, or button: overflow MUST be handled by wrapping or truncation rather than breaking the layout.
 - A disabled or non-interactive component must not respond to interaction but must remain recognisable.
 - A component that should appear in the catalogue is absent: this is a catalogue defect and fails acceptance.
@@ -173,7 +226,7 @@ A person building an interface relies on one shared theme — edges and corners,
 
 - **FR-001**: The design system MUST provide a documented, reusable set of UI components shared across the project's applications.
 - **FR-002**: The baseline component set MUST include at least: Button, Link, Card, Paper, Input, Form field, Menu, Menu item, Tabs, Tab, Tab panel, and Dialog.
-- **FR-003**: Each component MUST render correctly in its baseline and in each documented prop-driven state. A variant MUST change only a component's colours, never its behaviour or structure.
+- **FR-003**: Each component MUST render correctly in its baseline and in each documented prop-driven state. A variant MUST change only a component's appearance — its colours, border, and text decoration — never its behaviour or structure.
 - **FR-004**: A state produced by interacting with the page MUST NOT be a separate catalogue entry; only a prop-driven state that cannot be produced by interaction MUST be shown as its own catalogue entry. This rule governs the catalogue (FR-016, FR-017).
 - **FR-005**: Form field MUST provide a visible label, a control area that accepts any form control, optional help text, and an error message. The label MUST be associated with the control without requiring a caller-supplied identifier.
 - **FR-006**: Paper MUST provide the plain flat surface/background primitive and MUST NOT use elevation or a shadow in any theme.
@@ -187,12 +240,12 @@ A person building an interface relies on one shared theme — edges and corners,
 #### Variants and themes
 
 - **FR-013**: The design system MUST define a theme covering edges and corners, borders, and typography feel. A theme describes how components look and MUST NOT change component behaviour.
-- **FR-014**: Components MUST present the selected theme's look & feel — each component defines its own edges, borders, and typography to match the theme (no shared theme variables exist yet) — and variant colours MUST come from the component's own defined variants rather than ad-hoc values.
-- **FR-015**: Text and text-on-colour combinations MUST meet the WCAG AA minimum contrast defined in Assumptions. For the surface theme, the label is measured against the base colour (bg-1) and the lighter face (bg-2) is a decorative highlight; a future theme MAY require the base and face together to meet text-on-colour contrast.
+- **FR-014**: Components MUST present the selected theme's look & feel — each component defines its own edges, borders, and typography to match the theme (no shared theme variables exist yet) — and variant appearance values MUST come from the component's own defined variants rather than ad-hoc values.
+- **FR-015**: Text and text-on-colour combinations MUST meet the WCAG AA minimum contrast defined in Assumptions. For the surface theme, the label is measured against the base colour (bg-1) and the lighter face (bg-2) is a decorative highlight; a future theme MAY require the base and face together to meet text-on-colour contrast. Link is an explicit exception: its reference colours in "Link variants and the surface theme" are kept as documented where they fall below AA.
 
 #### Catalogue
 
-- **FR-016**: Every component MUST have a catalogue entry for each of its documented prop-driven states, each with a short note on when to use it (SC-001, SC-005). Once variants are defined, every variant MUST have its own catalogue entry showing its colours. Button's `size` values MUST each have their own catalogue entry.
+- **FR-016**: Every component MUST have a catalogue entry for each of its documented prop-driven states, each with a short note on when to use it (SC-001, SC-005). Once variants are defined, every variant MUST have its own catalogue entry showing its colours. Button's `size` values, Input's `lg` size, and Input's `invalid` state MUST each have their own catalogue entry (Input's `default` size needs no separate entry because the `Default` entry already shows it).
 - **FR-017**: The design system MUST provide a single catalogue page that renders every component and its documented prop-driven states.
 - **FR-018**: The catalogue page MUST be reachable for the people building the project's interfaces.
 - **FR-019**: A component that exists in the design system but is missing from the catalogue MUST be treated as a defect.
@@ -206,12 +259,17 @@ A person building an interface relies on one shared theme — edges and corners,
 - **FR-024**: In the surface theme, Button MUST render the raised two-colour treatment (base colour plus a lighter upper-half face, 2px solid black border, 4px corner radius), MUST use 4px vertical padding and 12px bold typography, and MUST show visually distinct hover, focus, active (pressed), and disabled states.
 - **FR-025**: Button MUST support an optional `size` prop that changes only its horizontal padding; in the surface theme the values are `wide` (16px) and `compact` (8px). `size` MUST default to `wide` when omitted, and changing it MUST NOT change the vertical padding, typography, colours, behaviour, or structure. A future theme MAY define different size values.
 - **FR-026**: In the surface theme, Paper MUST render a 1px solid `#000000/20` border, an 8px corner radius, and a 3px bottom border; Paper MUST support its variants (`default`, `login`, `gray`, `black`, `hc`, `yellow`, `lightgreen`, `blue`, `room pattern`) defined in "Paper variants and the surface theme", MUST make `variant` optional defaulting to `default`, and MUST let changing variant change only the background colour.
+- **FR-027**: Input MUST support its variants (`default`, `border`) defined in "Input variants, sizes, and the surface theme"; `variant` MUST be optional and default to `default` (no border), and changing variant MUST change only the border.
+- **FR-028**: In the surface theme, Input MUST render a white background and black text in its normal state and MUST support an optional boolean `invalid` prop; when `invalid` is true the background MUST be `#f18f9b` and the border, padding, and text colour MUST be unchanged. `invalid` MUST change only the background. `border` and `invalid` combine independently: a `border` variant keeps its border while `invalid` changes only the background.
+- **FR-029**: Input MUST support an optional `size` prop that changes only its padding on all four sides; in the surface theme the values are `default` (2px) and `lg` (4px). `size` MUST default to `default` when omitted and MUST NOT change the border, colours, typography, behaviour, or structure.
+- **FR-030**: Link MUST support its variants (`default`, `white`, `personal-info`, `nav`, `settings`, `yellow`) defined in "Link variants and the surface theme"; `variant` MUST be optional and default to `default` (`#fc6204`, underlined), and changing variant MUST change only the colour and text decoration.
+- **FR-031**: Input MUST define hover, focus, active, and disabled, and Link MUST define hover, focus, and active, as browser-interaction states; because these are produced by page interaction they MUST NOT have their own catalogue entries (FR-004), and a visible focus indicator is required (FR-021). The concrete hover, active, and disabled appearances are part of the surface theme and are not fixed colours in this slice. Link has no disabled state. The focus indicator reuses the surface theme's focus treatment (shared with Button).
 
 ### Key Entities
 
 - **Component**: a reusable UI element with a single documented purpose (for example Button or Card).
-- **Variant**: a named set of colours defined per component that gives it a meaning (Button's are `default`, `green`, `dark`, `red`; Paper's are `default`, `login`, `gray`, `black`, `hc`, `yellow`, `lightgreen`, `blue`, `room pattern`); the `variant` is optional and omitting it gives the component's `default` look.
-- **Size**: a named horizontal-padding value for Button (`wide`, `compact`); the `size` is optional and omitting it gives the `wide` look.
+- **Variant**: a named set of appearance values (colours, border, text decoration) defined per component that gives it a meaning (Button's are `default`, `green`, `dark`, `red`; Paper's are `default`, `login`, `gray`, `black`, `hc`, `yellow`, `lightgreen`, `blue`, `room pattern`; Input's are `default`, `border`; Link's are `default`, `white`, `personal-info`, `nav`, `settings`, `yellow`); the `variant` is optional and omitting it gives the component's `default` look.
+- **Size**: a named padding value selectable on Button (`wide`, `compact`) and Input (`default`, `lg`); the `size` is optional and omitting it gives the component's default look (`wide` for Button, `default` for Input).
 - **State**: a condition a component can be in. A **browser-interaction state** is produced by interacting with the page and is not a separate catalogue entry; a **prop-driven state** is produced only by setting a prop and is the only kind shown as its own catalogue entry.
 - **Theme**: a documented description of how components look — edges, borders, and typography feel — that each component's own styles follow. No shared theme values exist yet.
 - **Catalogue entry**: the documentation and live preview for one component prop-driven state, covering its documented states and, once defined, its variant colours.
@@ -223,7 +281,7 @@ A person building an interface relies on one shared theme — edges and corners,
 - **SC-001**: 100% of the baseline components appear on the catalogue page, each with its documented prop-driven states.
 - **SC-002**: A representative page (for example a sign-in card built from Card, Form field, Input, and Button) is assembled using only design-system components, with zero page-specific UI code, and works functionally.
 - **SC-003**: 100% of interactive components are operable by keyboard and show a visible focus indicator.
-- **SC-004**: 100% of text and text-on-colour combinations meet the WCAG AA minimum contrast, verified by human review of the catalogue. For the surface theme the label is measured against the base colour; the face is decorative.
+- **SC-004**: 100% of measured text and text-on-colour combinations meet the WCAG AA minimum contrast, verified by human review of the catalogue. For the surface theme the label is measured against the base colour; the face is decorative. Link is an explicit exception (see FR-015): its reference colours are kept where they fall below AA, so combinations it covers are excluded from the measured set.
 - **SC-005**: Every catalogue entry includes a usage note, measured as zero catalogue entries lacking a note.
 
 ## Assumptions

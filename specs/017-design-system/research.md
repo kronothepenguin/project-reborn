@@ -130,9 +130,53 @@ The final values are the nearest Tailwind palette tokens (from `tools/tw-color`,
 
 Three source colours match poorly (`#9ed1e4`→`sky-300`, ΔE .053; `#4596a9`→`cyan-600`, ΔE .049; `#94948b`→`neutral-400`, ΔE .046) and may read differently from the original hex.
 
+## 13. Slice 3: surface theme, Input and Link variants
+
+- **Decision**: Input gains an optional `variant` prop (`"default" | "border"`; omitted renders `default`), an optional `size` prop (`"default" | "lg"`; omitted renders `default`), and an optional boolean `invalid` prop. `variant` selects a **static Tailwind border class** (`border` = `1px solid #555`), `size` selects a **static all-sides padding class**, and `invalid` sets the background to `#f18f9b`; Input's normal state is `bg-white text-black`. Link gains an optional `variant` prop (`"default" | "white" | "personal-info" | "nav" | "settings" | "yellow"`; omitted renders `default`) that selects a **static colour-plus-text-decoration class**; `default` is `#fc6204` underlined. Variant colours are the nearest Tailwind palette tokens from `tools/tw-color` (the spec's hex values are the original reference). Input and Link define hover, focus, and active as browser-interaction states (Input also disabled); they reuse Button's `focus-visible` outline, and their hover/active/disabled colours are not fixed in this slice. Link has no `disabled` state.
+- **Rationale**: Mirrors Button and Paper — the package styles components through static Tailwind class strings that the consumer's Tailwind build can scan via `@source`; static literals are required because composed class names are invisible to the scanner. Reusing Button's focus outline keeps one visible focus treatment across the system (FR-021) with no new abstraction (KISS/YAGNI), and deferring the hover/active/disabled colours avoids inventing values the spec leaves to the theme.
+- **Alternatives considered**: a runtime-composed class string (Tailwind cannot see it); inventing hover/active/darken colours (the spec defers them); a shared theme stylesheet of custom properties (deferred until the `Theme` component arrives); a `disabled` prop on Link (rejected with the user — an `<a>` cannot be natively disabled).
+- **Note**: Input's `invalid` is its own prop. Form field is a layout helper (label + control + help/error message), not a state manager: it has no `invalid` prop and does not reach into its child; its `error` prop supplies the message.
+
+### Input token and class maps
+
+The final values are the nearest Tailwind palette tokens (from `tools/tw-color`, Tailwind v4.3.3); the spec's hex values are the original reference.
+
+| Aspect | Spec value | Tailwind token/class | ΔE |
+|---|---|---|---|
+| Normal background | `#ffffff` | `bg-white` | 0 |
+| Normal text | `#000000` | `text-black` | 0 |
+| `border` variant border | `#555555` | `border border-neutral-600` | .0105 |
+| `invalid` background | `#f18f9b` | `bg-rose-300` | .0541 |
+| `size` `default` padding | `2px` (all sides) | `p-0.5` | — |
+| `size` `lg` padding | `4px` (all sides) | `p-1` | — |
+
+The `invalid` background matches poorly (`#f18f9b`→`rose-300`, ΔE .0541) and may read differently from the original hex.
+
+### Link token and class maps
+
+The final values are the nearest Tailwind palette tokens (from `tools/tw-color`, Tailwind v4.3.3); the spec's hex values are the original reference. Link is an explicit WCAG AA exception (FR-015): the reference colours are kept where they fall below AA.
+
+| Variant | Colour | Text decoration | Tailwind classes | ΔE |
+|---|---|---|---|---|
+| default | `#fc6204` | underline | `text-orange-500 underline` | .0279 |
+| white | `#ffffff` | underline | `text-white underline` | 0 |
+| personal-info | `#ffffff` | none | `text-white no-underline` | 0 |
+| nav | `#134787` | none | `text-blue-900 no-underline` | .0412 |
+| settings | `#333333` | none | `text-olive-800 no-underline` | .0386 |
+| yellow | `#ffcc00` | underline | `text-amber-300 underline` | .0163 |
+
+Three colours match moderately (`#134787`→`blue-900`, ΔE .0412; `#333333`→`olive-800`, ΔE .0386; `#fc6204`→`orange-500`, ΔE .0279) and may read slightly differently from the original hex.
+
+### Catalogue entries
+
+- Input: `Default` and `Border` (one per variant), `Large` (the `lg` size; the `default` size needs no separate entry because the `Default` entry already shows it), and `Invalid` (the prop-driven `invalid` state) — four entries.
+- Link: `Default`, `White`, `Personal Info`, `Nav`, `Settings`, `Yellow` — one per variant, six entries.
+
+Each entry carries a usage note (FR-016, SC-001, SC-005). Browser-interaction states (hover, focus, active, and Input's disabled) get no entries (FR-004).
+
 ## Deferred (not this slice)
 
-- The `flat` theme, variants for the remaining components, and contrast acceptance beyond Button and Paper — Slice 3.
+- The `flat` theme, variants for the remaining components, and contrast acceptance beyond Button/Paper/Input/Link — Slice 4.
 - A `Theme` component that shares the theme through context — a later addition.
 - CSS anchor positioning of the Menu popover to its trigger — visual refinement.
 - A package-level Tailwind theme/token layer — arrives when more components need shared variant tokens.
