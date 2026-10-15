@@ -1,5 +1,7 @@
 ---
-import Paper from "../components/paper.astro";
+import { Link, Paper } from "@project-reborn/components";
+import offlineGif from "../assets/offline.gif";
+import onlineGif from "../assets/online.gif";
 import Document from "./document.astro";
 
 interface Props {
@@ -11,50 +13,54 @@ const { title } = Astro.props;
 
 <Document title={title}>
   <div class="flex min-h-screen items-center justify-center p-2">
-    <Paper class="w-full max-w-189 rounded-md border border-mist-400 p-4 shadow-[0_3px_0_var(--color-mist-400)]">
-      <header class="flex items-center justify-between gap-2 p-2">
-        <img src="/logo.svg" alt="Habbo Hotel" width="180" height="40" />
-        <p class="text-sm">
-          <span class="font-bold">[[ .Online ]]</span>
-          <span class="text-orange-500">users online now</span>
-        </p>
-        [[ if .IsUp ]]
-        <p class="flex items-center gap-1.5 text-sm font-bold text-green-600">
-          <span class="inline-block h-2.5 w-2.5 rounded-full bg-green-500"></span>
-          Hotel online
-        </p>
-        [[ else ]]
-        <p class="flex items-center gap-1.5 text-sm font-bold text-red-600">
-          <span class="inline-block h-2.5 w-2.5 rounded-full bg-red-500"></span>
-          Hotel offline
-        </p>
-        [[ end ]]
-      </header>
+    <div class="w-full max-w-189 p-4">
+      <Paper>
+        <div class="p-4">
+          <header class="flex items-end justify-between gap-2">
+            <img src="/habbo.png" alt="Habbo Hotel" />
+            <p class="text-xs space-x-1">
+              <span class="font-bold">[[ .Online ]]</span>
+              <span class="text-orange-500">users online now</span>
+            </p>
+            [[ if .IsUp ]]
+            <img
+              src={onlineGif.src}
+              width={onlineGif.width}
+              height={onlineGif.height}
+            />
+            [[ else ]]
+            <img
+              src={offlineGif.src}
+              width={offlineGif.width}
+              height={offlineGif.height}
+            />
+            [[ end ]]
+          </header>
 
-      <slot />
+          <slot />
 
-      <footer class="border-t border-mist-400 p-2 text-center text-xs">
-        <p>
-          <a href="/" class="text-sky-700 underline">
-            Homepage
-          </a>
-          <span class="text-mist-400">|</span>
-          <a href="[[ .TermsURL ]]" class="text-sky-700 underline">
-            Terms of Service
-          </a>
-          <span class="text-mist-400">|</span>
-          <a href="[[ .PrivacyURL ]]" class="text-sky-700 underline">
-            Privacy Policy
-          </a>
-        </p>
-        <p class="mt-1 text-neutral-600">
-          Powered by ProjectReborn &copy; 2008 Meth0d &amp; Parts by Yifan,
-          sisija.
-          <br />
-          HABBO is a registered trademark of Sulake Corporation. All rights
-          reserved to their respective owner(s).
-        </p>
-      </footer>
-    </Paper>
+          <footer class="text-center text-xs space-y-2">
+            <div class="space-x-1">
+              <Link variant="black" href="/">
+                Homepage
+              </Link>
+              <Link variant="black" href="/disclaimer">
+                Terms of Service
+              </Link>
+              <Link variant="black" href="/privacy">
+                Privacy Policy
+              </Link>
+            </div>
+            <div class="text-neutral-500">
+              <p>Powered by Project Reborn &copy;</p>
+              <p>
+                HABBO is a registered trademark of Sulake Corporation. All
+                rights reserved to their respective owner(s).
+              </p>
+            </div>
+          </footer>
+        </div>
+      </Paper>
+    </div>
   </div>
 </Document>

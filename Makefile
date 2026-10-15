@@ -28,8 +28,3 @@ create: tools
 
 tw-color:
 	node tools/tw-color/tw-color.mjs
-
-cms-dev:
-	pnpm --filter @project-reborn/cms dev
-	cd apps/cms
-	go tool air

@@ -1,20 +1,12 @@
 ---
-import Card from "../components/card.astro";
-import Paper from "../components/paper.astro";
+import { Button, Card } from "@project-reborn/components";
 import SignedOut from "../layouts/signed-out.astro";
 ---
 
 <SignedOut title="Habbo Hotel">
-  <main class="flex gap-2 py-2">
+  <main class="flex gap-2 py-4">
     <div class="flex-3">
       <Card>
-        <img
-          slot="title"
-          src="/banner-join.svg"
-          alt="Join the hotel"
-          class="h-40 w-full rounded-sm object-cover"
-        />
-
         <div class="flex flex-col items-center gap-2">
           <a
             href="/register"
@@ -29,22 +21,22 @@ import SignedOut from "../layouts/signed-out.astro";
       </Card>
     </div>
 
-    <div class="flex-2 flex flex-col gap-2">
+    <div class="flex-2 flex flex-col gap-2 min-w-72">
       [[ if or .Errors.General .Errors.Username .Errors.Password ]]
-      <Paper background="bg-red-600" class="p-1 text-cente text-sm text-center">
+      <div class="bg-red-600 p-1 text-sm text-center rounded">
         <p class="font-bold text-white">
           [[ or .Errors.General .Errors.Username .Errors.Password ]]
         </p>
-      </Paper>
+      </div>
       [[ end ]]
-      <Card variant="login">
-        <span slot="title">Sign In</span>
+      <Card variant="login" color="loginbox">
+        <span slot="header">Sign In</span>
 
         <form
           method="post"
           class="grid grid-cols-[1fr_1fr_1fr] items-center gap-2 text-sm"
         >
-          <label for="username" class="font-bold">
+          <label for="username" class="text-white">
             Username
           </label>
           <input
@@ -52,48 +44,40 @@ import SignedOut from "../layouts/signed-out.astro";
             name="username"
             type="text"
             value="[[ .Values.Username ]]"
-            class="rounded border bg-white w-36 border-neutral-600 px-2 py-1 text-neutral-900"
+            class="bg-white border min-w-24 w-full border-neutral-600 px-2 py-1"
           />
-          <span></span>
-          <label for="password" class="font-bold">
+
+          <label for="password" class="text-white col-start-1">
             Password
           </label>
           <input
             id="password"
             name="password"
             type="password"
-            class="rounded border bg-white border-neutral-600 w-36 px-2 py-1 text-neutral-900"
+            class="border bg-white border-neutral-600 min-w-24 w-full px-2 py-1"
           />
-          <button
-            type="submit"
-            class="whitespace-nowrap rounded border-2 border-black bg-linear-to-b from-white from-50% to-mauve-300 to-50% px-4 py-1 text-sm font-bold text-black hover:to-olive-200"
-          >
-            Sign In
-          </button>
-          <span></span>
-          <label class="col-span-2 flex items-center gap-1 text-xs">
+          <Button type="submit">Sign In</Button>
+
+          <label class="col-start-2 col-span-2 flex items-center gap-1 text-xs text-white">
             <input type="checkbox" name="remember" />
             Remember me
           </label>
-          <span></span>
+
           <a
             href="/register"
-            class="col-span-2 underline text-xs font-bold text-olive-800 hover:text-white"
+            class="col-start-2 col-span-2 underline text-xs font-bold text-olive-800 hover:text-white"
           >
             Register for free
           </a>
-          <span></span>
+
           <a
             href="/forgot"
-            class="col-span-2 text-xs underline text-olive-800 hover:text-white"
+            class="col-start-2 col-span-2 text-xs underline text-olive-800 hover:text-white"
           >
             I forgot my password/username
           </a>
         </form>
       </Card>
-      <div class="overflow-hidden rounded-md shadow-md">
-        <img src="/login-promo.svg" alt="Hotel promotion" class="w-full" />
-      </div>
     </div>
   </main>
 </SignedOut>

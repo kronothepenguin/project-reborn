@@ -36,7 +36,7 @@
 
 <button
   {type}
-  class="relative inline-flex items-center justify-center rounded border-2 border-black py-1 text-xs font-bold before:absolute before:inset-x-px before:top-px before:h-1/2 before:rounded-t-[3px] before:content-[''] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:before:inset-x-px active:before:top-auto active:before:bottom-px active:before:rounded-t-none active:before:rounded-b-[3px] disabled:cursor-not-allowed disabled:opacity-50 disabled:before:hidden {variantClasses[
+  class="relative inline-flex items-center justify-center rounded border-2 border-black py-1 text-xs font-bold whitespace-nowrap before:absolute before:inset-x-px before:top-px before:h-1/2 before:rounded-t-[3px] before:content-[''] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:before:inset-x-px active:before:top-auto active:before:bottom-px active:before:rounded-t-none active:before:rounded-b-[3px] disabled:cursor-not-allowed disabled:opacity-50 disabled:before:hidden {variantClasses[
     variant
   ]} {sizeClasses[size]}"
   {...rest}

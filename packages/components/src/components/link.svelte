@@ -3,7 +3,13 @@
   import type { HTMLAnchorAttributes } from "svelte/elements";
 
   type Variant =
-    "default" | "white" | "personal-info" | "nav" | "settings" | "yellow";
+    | "default"
+    | "white"
+    | "black"
+    | "personal-info"
+    | "nav"
+    | "settings"
+    | "yellow";
 
   interface Props extends HTMLAnchorAttributes {
     variant?: Variant;
@@ -13,6 +19,7 @@
   const variantClasses: Record<Variant, string> = {
     default: "text-orange-500 underline",
     white: "text-white underline",
+    black: "text-black underline",
     "personal-info": "text-white no-underline",
     nav: "text-blue-900 no-underline",
     settings: "text-olive-800 no-underline",
