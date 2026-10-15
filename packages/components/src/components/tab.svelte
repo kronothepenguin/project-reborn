@@ -28,6 +28,7 @@
 
 <button
   {...rest}
+  class="rounded-t border-t border-r border-l px-3 pt-1.5"
   bind:this={element}
   type="button"
   role="tab"

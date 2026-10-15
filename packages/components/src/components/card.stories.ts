@@ -3,7 +3,9 @@ import { createRawSnippet } from "svelte";
 import Card from "../components/card.svelte";
 
 const header = createRawSnippet(() => ({ render: () => "<h2>Profile</h2>" }));
-const body = createRawSnippet(() => ({ render: () => "<p>Card body content.</p>" }));
+const body = createRawSnippet(() => ({
+  render: () => "<p>Card body content.</p>",
+}));
 
 const meta = {
   title: "Components/Card",
@@ -21,4 +23,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = { args: { header, children: body } };
+export const Default: Story = {
+  args: {
+    header,
+    children: body,
+    color: "lightblue",
+  },
+};
