@@ -1,6 +1,11 @@
 module github.com/kronothepenguin/project-reborn/apps/cms
 
-go 1.26.4
+go 1.27.0
+
+require (
+	github.com/kronothepenguin/project-reborn/packages/astro v0.0.0-20260912005148-7f680146541b
+	github.com/kronothepenguin/project-reborn/packages/cms v0.0.0-20260912005148-7f680146541b
+)
 
 require (
 	dario.cat/mergo v1.0.2 // indirect
@@ -11,7 +16,7 @@ require (
 	github.com/bits-and-blooms/bitset v1.24.5 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/fatih/color v1.18.0 // indirect
-	github.com/fsnotify/fsnotify v1.10.1 // indirect
+	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gohugoio/hashstructure v0.6.0 // indirect
 	github.com/gohugoio/hugo v0.164.0 // indirect
