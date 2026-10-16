@@ -1,4 +1,4 @@
-.PHONY: dev
+.PHONY: dev web stop
 
 dev:
 	@trap 'kill 0' 0 2 15; \

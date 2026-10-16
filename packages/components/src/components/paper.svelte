@@ -34,7 +34,7 @@
 </script>
 
 <div
-  class="rounded-lg border border-b-[3px] border-black/20 shadow-none {variantClasses[
+  class="rounded-lg border border-b-[3px] border-black/20 {variantClasses[
     variant
   ] ?? variantClasses.default}"
   {...rest}
