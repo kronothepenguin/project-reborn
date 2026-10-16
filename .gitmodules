@@ -1,0 +1,3 @@
+[submodule "vendor/HabboWidgets"]
+	path = vendor/HabboWidgets
+	url = https://github.com/Quackster/HabboWidgets.git
