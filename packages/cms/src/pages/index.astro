@@ -5,7 +5,7 @@ import SignedOut from "../layouts/signed-out.astro";
 
 <SignedOut title="Habbo Hotel">
   <main class="flex gap-2 py-4">
-    <div class="flex-3">
+    <div class="flex-3 w-96">
       <Card>
         <div class="flex flex-col items-center gap-2">
           <a href="/register" class="relative w-72 h-10 flex">
@@ -110,7 +110,7 @@ import SignedOut from "../layouts/signed-out.astro";
       </Card>
     </div>
 
-    <div class="flex-2 flex flex-col gap-2 min-w-72">
+    <div class="flex-2 flex flex-col gap-2 w-72">
       [[ if .Error ]]
       <div class="bg-red-600 p-1 text-sm text-center rounded">
         <p class="font-bold text-white">[[ .Error ]]</p>

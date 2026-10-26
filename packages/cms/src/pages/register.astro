@@ -1,0 +1,147 @@
+---
+import { Button, Input, Link } from "@project-reborn/components";
+import Icon from "../components/icon.svelte";
+import RegisterFormField from "../components/register/register-form-field.svelte";
+import SignedOut from "../layouts/signed-out.astro";
+---
+
+<SignedOut>
+  <form class="flex pt-2 pb-4 gap-4">
+    <div class="flex flex-col gap-2 flex-1">
+      <section class="bg-cyan-600 rounded-md px-4 py-2">
+        <header class="text-white flex">
+          <span class="font-bold">1.</span>
+          <h2 class="font-bold text-center w-full">Choose Your Name</h2>
+        </header>
+        <div>
+          <label class="flex flex-col items-center gap-1">
+            <span class="text-xs text-white font-bold">Avatar Name</span>
+            <div class="flex gap-2 items-center">
+              <Input name="name" />
+              <Button size="compact" type="button">
+                <Icon />
+              </Button>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <section class="bg-neutral-400 rounded-md p-1 w-full">
+        <header class="bg-olive-800 text-white flex font-bold rounded p-1">
+          <span>2.</span>
+          <h2 class="text-center w-full">Your Details</h2>
+        </header>
+        <div class="flex flex-col gap-2 px-3 py-2">
+          <RegisterFormField label="My password will be:">
+            <input type="password" name="password" />
+          </RegisterFormField>
+
+          <RegisterFormField label="Confirm password">
+            <input type="password" />
+          </RegisterFormField>
+
+          <div>
+            <RegisterFormField label="I was born on:">
+              <div>
+                <select name="day"></select>
+                <select name="month"></select>
+                <select name="year"></select>
+              </div>
+            </RegisterFormField>
+          </div>
+
+          <RegisterFormField label="And my email address is:">
+            <input type="password" />
+          </RegisterFormField>
+
+          <RegisterFormField label="Retype your email address">
+            <input type="password" />
+          </RegisterFormField>
+
+          <label>
+            <input type="checkbox" name="newsletter" />
+            <span class="text-sm text-white">
+              Yes, please send me updates, including the newsletter!
+            </span>
+          </label>
+
+          <div class="flex flex-col gap-4 bg-mist-600 px-4 py-2 text-white rounded">
+            <a class="text-sm" href="/disclaimer">
+              Terms of Service
+            </a>
+            <label>
+              <input type="checkbox" name="terms" />
+              <span class="text-sm">
+                By clicking on continue, I confirm that I have read and accept
+                the Terms of Use and Privacy Policy.
+              </span>
+            </label>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="grow space-y-2">
+      <header class="rounded bg-yellow-900 text-white flex px-4 py-2">
+        <span class="font-bold">3.</span>
+        <h2 class="font-bold text-center w-full">Create Your Avatar</h2>
+      </header>
+
+      <div id="editor-container"></div>
+
+      <script>
+        declare global {
+          interface Window {
+            HabboEditor: any;
+            HabboEditorConfig: any;
+          }
+        }
+
+        window.HabboEditor = {
+          setGenderAndFigure: function (gender, figure) {
+            // Called whenever the figure or gender changes.
+            // gender: 'M' or 'F'
+            // figure: Habbo figure string, e.g. 'hd-180-1.ch-215-82.lg-270-82'
+          },
+          setAllowedToProceed: function (allowed) {
+            // Called to indicate whether the current figure is valid for submission.
+            // allowed: true/false
+          },
+          setEditorState: function (state) {
+            // Called with a serialised menu state string for save/restore.
+          },
+          showHabboClubNotice: function () {
+            // Called when the user selects a Habbo Club item they don't own.
+          },
+          hideHabboClubNotice: function () {
+            // Called when the user deselects the Habbo Club item.
+          },
+          showOldFigureNotice: function () {
+            // Called when the provided figure string can't be fully parsed.
+          },
+        };
+
+        // Editor config
+        window.HabboEditorConfig = {
+          // figure: 'hd-180-1.ch-215-82.lg-270-82',
+          // gender: 'M',
+          userHasClub: false,
+          showClubSelections: true,
+          assetsPath: "",
+          assetBundlePath: "assets.zip",
+        };
+      </script>
+      <script src="/habbo-editor.iife.js" is:inline></script>
+      <div class="flex justify-between text-xs">
+        <Link href="/">Exit Registration</Link>
+
+        <button
+          class="border-2 border-b-4 rounded border-green-900 bg-lime-600 text-white font-bold px-2"
+          type="submit"
+        >
+          Continue
+        </button>
+      </div>
+    </div>
+  </form>
+</SignedOut>

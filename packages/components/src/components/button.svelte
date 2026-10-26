@@ -41,5 +41,7 @@
   ]} {sizeClasses[size]}"
   {...rest}
 >
-  <span class="relative">{@render children()}</span>
+  <span class="z-10">
+    {@render children()}
+  </span>
 </button>

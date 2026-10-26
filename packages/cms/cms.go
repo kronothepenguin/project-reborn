@@ -32,6 +32,9 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.HandleFunc("GET /{$}", r.HandleIndexView)
 	mux.HandleFunc("POST /{$}", r.HandleIndexLogin)
 
+	mux.HandleFunc("GET /register", r.HandleRegisterView)
+	mux.HandleFunc("POST /register", r.HandleRegister)
+
 	mux.Handle("/", c.static)
 }
 
