@@ -13,56 +13,54 @@ const { title } = Astro.props;
 
 <Document title={title}>
   <div class="flex min-h-screen items-center justify-center p-2">
-    <div class="w-full max-w-189 p-4">
-      <Paper>
-        <div class="p-4">
-          <header class="flex items-end justify-between gap-2">
-            <img src="/habbo.png" alt="Habbo Hotel" />
-            <p class="text-xs space-x-1">
-              <span class="font-bold">
-                [[ if .Online ]] [[ .OnlineCount ]] [[ else ]] 0 [[ end ]]
-              </span>
-              <span class="text-orange-500">users online now</span>
+    <Paper>
+      <div class="w-full p-4">
+        <header class="flex items-end justify-between gap-2">
+          <img src="/habbo.png" alt="Habbo Hotel" />
+          <p class="text-xs space-x-1">
+            <span class="font-bold">
+              [[ if .Online ]] [[ .OnlineCount ]] [[ else ]] 0 [[ end ]]
+            </span>
+            <span class="text-orange-500">users online now</span>
+          </p>
+          [[ if .Online ]]
+          <img
+            src={onlineGif.src}
+            width={onlineGif.width}
+            height={onlineGif.height}
+          />
+          [[ else ]]
+          <img
+            src={offlineGif.src}
+            width={offlineGif.width}
+            height={offlineGif.height}
+          />
+          [[ end ]]
+        </header>
+
+        <slot />
+
+        <footer class="text-center text-xs space-y-2">
+          <div class="space-x-1">
+            <Link variant="black" href="/">
+              Homepage
+            </Link>
+            <Link variant="black" href="/disclaimer">
+              Terms of Service
+            </Link>
+            <Link variant="black" href="/privacy">
+              Privacy Policy
+            </Link>
+          </div>
+          <div class="text-neutral-500">
+            <p>Powered by Project Reborn &copy;</p>
+            <p>
+              HABBO is a registered trademark of Sulake Corporation. All rights
+              reserved to their respective owner(s).
             </p>
-            [[ if .Online ]]
-            <img
-              src={onlineGif.src}
-              width={onlineGif.width}
-              height={onlineGif.height}
-            />
-            [[ else ]]
-            <img
-              src={offlineGif.src}
-              width={offlineGif.width}
-              height={offlineGif.height}
-            />
-            [[ end ]]
-          </header>
-
-          <slot />
-
-          <footer class="text-center text-xs space-y-2">
-            <div class="space-x-1">
-              <Link variant="black" href="/">
-                Homepage
-              </Link>
-              <Link variant="black" href="/disclaimer">
-                Terms of Service
-              </Link>
-              <Link variant="black" href="/privacy">
-                Privacy Policy
-              </Link>
-            </div>
-            <div class="text-neutral-500">
-              <p>Powered by Project Reborn &copy;</p>
-              <p>
-                HABBO is a registered trademark of Sulake Corporation. All
-                rights reserved to their respective owner(s).
-              </p>
-            </div>
-          </footer>
-        </div>
-      </Paper>
-    </div>
+          </div>
+        </footer>
+      </div>
+    </Paper>
   </div>
 </Document>
