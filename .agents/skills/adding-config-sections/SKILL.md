@@ -52,11 +52,14 @@ Decide where the setting belongs:
 
    func (c *Config) Validate() error {
        if err := c.<Section>.Validate(); err != nil {
-           return err
+           return fmt.Errorf("<lowerCamelSection>.%w", err)
        }
        return nil
    }
    ```
+
+   The section prefix makes every error name the full key path (`cms.port`), the same path a `settings` row uses
+   to override the value.
 
 3. Add `packages/config/<section>/<section>_test.go` covering the unit behavior: `Default<Field>()` satisfies `Validate<Field>()`, `Validate<Field>()` accepts and rejects representative values, and the struct round-trips its lowerCamelCase `json` tags.
 

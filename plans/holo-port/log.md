@@ -2,6 +2,10 @@
 
 ## 2026-10-27
 
+- **Done** [p0-07](/tasks/p0-07-config-sections.md): `packages/config` declares `settingsRefreshSeconds` and the
+  `store`, `cms`, `auth` and `site` sections (15 keys) plus `Create`; 122 test results pass. Errors now carry the
+  full key path (`cms.port`).
+- **Start** [p0-07](/tasks/p0-07-config-sections.md).
 - **Done** [p0-06](/tasks/p0-06-p0-queries.md): nine query files with 41 operations and their concepts; 36 store
   tests pass. Also added `_timezone=UTC` to `store.Open` and a sqlc nullability gotcha to the persistence skill.
 - **Start** [p0-06](/tasks/p0-06-p0-queries.md).

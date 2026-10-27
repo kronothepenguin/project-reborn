@@ -70,16 +70,20 @@ func TestLoadCreatesFileWhenAbsent(t *testing.T) {
 	if cfg == nil {
 		t.Fatal("Load() returned nil config")
 	}
-	if *cfg != (Config{}) {
-		t.Errorf("Load() = %+v, want defaults %+v", *cfg, Config{})
+	if *cfg != *defaults() {
+		t.Errorf("Load() = %+v, want defaults %+v", *cfg, *defaults())
 	}
 
 	data, err := os.ReadFile(configFilename)
 	if err != nil {
 		t.Fatalf("read created %s: %v", configFilename, err)
 	}
-	if string(data) != "{}\n" {
-		t.Errorf("created file = %q, want %q", data, "{}\n")
+	want, err := encode(defaults())
+	if err != nil {
+		t.Fatalf("encode defaults: %v", err)
+	}
+	if !bytes.Equal(data, want) {
+		t.Errorf("created file = %q, want %q", data, want)
 	}
 
 	info, err := os.Stat(configFilename)
