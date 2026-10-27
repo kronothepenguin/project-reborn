@@ -121,7 +121,7 @@ or a non-owner role, gets a role prefix; `ON DELETE CASCADE` for owned data and 
 | --- | --- | --- | --- |
 | `users` | `users` | id, email `NOCASE`, born_on DATE, newsletter BOOLEAN, created_ip, created_at, updated_at | `idx_users_email` UNIQUE, `idx_users_created_ip_created_at` |
 | `auth` | `credentials` | user_id PK→users, password_hash, updated_at | |
-| | `sessions` | id TEXT PK (token digest), user_id, avatar_id (active habbo), remember BOOLEAN, ip, user_agent, created_at, last_seen_at, expires_at | `idx_sessions_user_id`, `idx_sessions_expires_at` |
+| | `sessions` | id TEXT PK (token digest), user_id, avatar_id (active habbo), remember BOOLEAN, ip, user_agent, created_at, last_seen_at, expires_at | `idx_sessions_user_id`, `idx_sessions_avatar_id`, `idx_sessions_expires_at` |
 | | `login_attempts` | id, user_id NULL, avatar_id NULL, ip, succeeded BOOLEAN, created_at | `(ip, created_at)`, `(user_id, created_at)`, `(avatar_id, created_at)` |
 | | `password_resets` | id TEXT PK (digest), user_id, created_at, expires_at | `idx_password_resets_user_id` |
 | | `sso_tickets` | id TEXT PK (digest), avatar_id, ip, created_at, expires_at | `idx_sso_tickets_avatar_id` |

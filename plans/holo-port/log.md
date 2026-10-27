@@ -2,6 +2,10 @@
 
 ## 2026-10-27
 
+- **Done** [p0-04](/tasks/p0-04-identity-schema.md): six identity schema files (14 tables) with schema, table and
+  entity concepts; constraint tests pass. Also added `idx_sessions_avatar_id` and sqlc `initialisms` (see the task
+  notes).
+- **Start** [p0-04](/tasks/p0-04-identity-schema.md).
 - **Done** [p0-03](/tasks/p0-03-persistence-skill-updates.md): `adding-data-persistence` and
   `documenting-with-okf` describe the new store API, native types, the foreign-key parent rule and the
   `tables/`/`entities/` concepts; both pass the strict skill validator.

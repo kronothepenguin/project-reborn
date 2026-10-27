@@ -4,7 +4,7 @@ title: Store
 description: Persistence infrastructure that opens the SQLite file, applies the declared schemas and provides the generated typed operations.
 resource: packages/store
 tags: [store, sqlite, go]
-timestamp: 2026-10-27T21:01:41+00:00
+timestamp: 2026-10-27T21:17:19+00:00
 ---
 
 # Overview
@@ -64,7 +64,12 @@ domain tables: features contribute schema and query files incrementally.
 Typed operations are generated from the files under `packages/store/queries/`:
 the [`Ping`](/queries/ping.md) smoke query and every future feature operation.
 Regenerate with `go tool sqlc generate` after changing SQL; generated files are
-committed and never edited by hand.
+committed and never edited by hand. Generated Go names upper-case the
+initialisms `ID`, `IP`, `SSO` and `URL` (`initialisms` in `sqlc.yaml`), so the
+`created_ip` column becomes `CreatedIP` and `sso_tickets` becomes `SSOTicket`.
+
+The schema is documented per [entity](/entities/index.md), per
+[table](/tables/index.md) and per [schema file](/schemas/index.md).
 
 # Examples
 

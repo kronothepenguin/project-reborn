@@ -3,3 +3,122 @@
 //   sqlc v1.31.1
 
 package store
+
+import (
+	"database/sql"
+	"time"
+)
+
+type AccessGroup struct {
+	ID          int64
+	Name        string
+	Description string
+	StaffListed bool
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+type AccessGroupAttribute struct {
+	AccessGroupID int64
+	Attribute     string
+}
+
+type AccessGroupMember struct {
+	AccessGroupID   int64
+	UserID          int64
+	DisplayAvatarID sql.NullInt64
+	GrantedAt       time.Time
+	GrantedByUserID sql.NullInt64
+}
+
+type Avatar struct {
+	ID        int64
+	UserID    int64
+	Name      string
+	Figure    string
+	Gender    string
+	Motto     string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+type AvatarBadge struct {
+	AvatarID  int64
+	Code      string
+	Worn      bool
+	GrantedAt time.Time
+}
+
+type Credential struct {
+	UserID       int64
+	PasswordHash string
+	UpdatedAt    time.Time
+}
+
+type LoginAttempt struct {
+	ID        int64
+	UserID    sql.NullInt64
+	AvatarID  sql.NullInt64
+	IP        string
+	Succeeded bool
+	CreatedAt time.Time
+}
+
+type PasswordReset struct {
+	ID        string
+	UserID    int64
+	CreatedAt time.Time
+	ExpiresAt time.Time
+}
+
+type Referral struct {
+	ReferredUserID   int64
+	ReferrerAvatarID sql.NullInt64
+	CreatedAt        time.Time
+	RewardedAt       sql.NullTime
+}
+
+type SSOTicket struct {
+	ID        string
+	AvatarID  int64
+	IP        string
+	CreatedAt time.Time
+	ExpiresAt time.Time
+}
+
+type Session struct {
+	ID         string
+	UserID     int64
+	AvatarID   int64
+	Remember   bool
+	IP         string
+	UserAgent  string
+	CreatedAt  time.Time
+	LastSeenAt time.Time
+	ExpiresAt  time.Time
+}
+
+type Setting struct {
+	Key             string
+	Value           string
+	UpdatedAt       time.Time
+	UpdatedByUserID sql.NullInt64
+}
+
+type User struct {
+	ID         int64
+	Email      string
+	BornOn     time.Time
+	Newsletter bool
+	CreatedIP  string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+}
+
+type WardrobeOutfit struct {
+	AvatarID  int64
+	Slot      int64
+	Figure    string
+	Gender    string
+	UpdatedAt time.Time
+}

@@ -10,9 +10,17 @@ Concepts for `packages/store`, the project's persistence infrastructure.
 
 - [Store](store.md) — Persistence infrastructure that opens the SQLite file, applies the declared schemas and provides the generated typed operations.
 
+## Entities
+
+- [Entities](entities/index.md) — Index of the domain entities with their invariants, lifecycle and relations.
+
 ## Schemas
 
 - [Schemas](schemas/index.md) — Index of the declared SQLite schema files.
+
+## Tables
+
+- [Tables](tables/index.md) — Index of the declared tables with their columns and keys.
 
 ## Queries
 

@@ -1,6 +1,0 @@
--- Reserved schema namespace placeholder.
---
--- This file is intentionally comment-only. It exists because //go:embed fails
--- the build when schema/ contains no embeddable files, and because sqlc needs
--- a non-empty schema set. It declares no structures and executes as a no-op.
--- Features add their own additive, idempotent schema files next to it.
