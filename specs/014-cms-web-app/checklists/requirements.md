@@ -31,9 +31,6 @@
 
 ## Notes
 
-- All three clarifications resolved on 2026-09-12 and recorded in the spec's Clarifications section:
-  - C1 — scope: homepage, registration, sign-in/sign-out, recovery, both layouts, basic personal page; content cards deferred.
-  - C2 — recovery included as a signed-out forgot view with a neutral confirmation card.
-  - C3 — game-dependent areas omitted; signed-in navigation simplified and extended as features arrive.
-- Deferrals are listed explicitly under "Out of Scope (deferred to later specifications)".
-- Spec validated: 30 functional requirements, 11 success criteria, 14 edge cases.
+- Clarifications resolved on 2026-09-16 and recorded in the spec's Clarifications section: index-view scope includes its backend; pages behind the linked routes are not described; link targets enumerated.
+- Amended 2026-09-16: sign-in time target removed; the homepage always presents the game as offline.
+- Spec validated: 14 functional requirements, 4 success criteria, 4 edge cases.

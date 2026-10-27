@@ -113,3 +113,41 @@ packages/store/
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
 | — | — | — |
+
+## Addendum 2026-09-16: process store accessor
+
+**Decision**: the store gains `func Must() *Store`, the single process
+accessor for the deployment database.
+
+- `Must` reads the path from `config.Must().Database.Path`; the `database`
+  section is declared by this addendum under `packages/config/database`
+  (`Path`, default `habbo.db`, non-empty validator).
+- The first call opens with `store.Open` and caches the instance process-wide
+  (`sync.Once`), so every package and app shares one store.
+- A load or open failure panics with the underlying error,
+  `template.Must`/`config.Must` style; there is no fallback and no retry.
+- `Open(path)` stays for tests and tools that need isolated stores.
+- `doc.go` and `knowledge/store.md` document the accessor and the
+  one-store-per-process contract.
+
+**Rationale**: the CMS and the future game server need the deployment store
+without threading a path or `*Store` through constructors. The path is
+deployment configuration, so it lives in the config layer, and the accessor
+mirrors `config.Must`.
+
+**Structure additions**:
+
+```text
+packages/config/
+├── database/database.go          # Path setting, default + validator
+├── database/database_test.go
+└── database_pipeline_test.go     # full-pipeline tests with resetLoadState
+
+packages/store/
+├── store.go                      # Must() over config.Must().Database.Path, sync.Once cache
+└── must_test.go
+```
+
+**Gates**: `packages/config` runs `gofmt -l . && go vet ./... && go test ./...`;
+`packages/store` runs `go vet ./... && go test ./...`, `make check-docs`, and a
+clean `go tool sqlc generate` diff.

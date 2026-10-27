@@ -1,139 +1,125 @@
 # HTTP Contract: CMS Web Application
 
-**Feature**: `014-cms-web-app` | **Date**: 2026-09-12
+**Feature**: `014-cms-web-app` | **Date**: 2026-09-16
 
-The CMS exposes one HTTP surface served by Go on the same origin as its Astro templates. Route registration lives in `packages/cms/cms.go` `Mount`; handlers live one per file in `packages/cms/internal/router/` (routes → files per research R14). Pages are rendered by `astro.WriteTemplate` with the built template name; JSON endpoints return `application/json`.
-
----
+The CMS serves one HTTP surface from Go on the same origin as its Astro
+templates. Route registration lives in `packages/cms/cms.go` `Mount`; handlers
+live one per file in `packages/cms/internal/router/`. Pages render through
+`astro.WriteTemplate` with the built template name; JSON endpoints (Slice 2)
+return `application/json`. The static handler is registered last on `/`.
 
 ## Routes
 
-| Method | Path | Handler | Access | Success | Failure |
-|---|---|---|---|---|---|
-| GET | `/{$}` | `HandleIndexView` | public | `200 index.html` | — |
-| POST | `/{$}` | `HandleIndexLogin` | public + origin check | `303 /me` | `200 index.html` with errors |
-| GET | `/register` | `HandleRegisterView` | public | `200 register.html` | — |
-| POST | `/register` | `HandleRegisterAction` | public + origin check | `303 /me` | `200 register.html` with errors |
-| GET | `/register/username` | `HandleRegisterUsername` | public | `200 JSON` | `400` malformed query |
-| GET | `/forgot` | `HandleForgotView` | public | `200 forgot.html` | — |
-| POST | `/forgot` | `HandleForgotAction` | public + origin check | `200 forgot.html` (confirmation) | `200 forgot.html` with form error |
-| GET | `/reset` | `HandleResetView` | public | `200 reset.html` | `200 reset.html` invalid state |
-| POST | `/reset` | `HandleResetAction` | public + origin check | `303 /` | `200 reset.html` with errors/invalid state |
-| GET | `/me` | `HandleMeView` | session | `200 me.html` | `303 /` |
-| POST | `/me/motto` | `HandleMeMotto` | session + CSRF | `200 JSON` | `401`/`403`/`422 JSON` |
-| POST | `/logout` | `HandleLogout` | session + CSRF | `303 /` | `303 /` |
-| GET | `/client` | `HandleClientView` | session | `200 client.html` | `303 /` |
+| Slice | Method | Path | Handler | Access | Success | Failure |
+|---|---|---|---|---|---|---|
+| 1 | GET | `/{$}` | `HandleIndexView` | public | `200 index.html` | — |
+| 1 | POST | `/{$}` | `HandleIndexLogin` | public + nonce | `303 /me` | `200 index.html` with errors |
+| 2 | GET/POST | `/register` | `HandleRegisterView` / `HandleRegisterAction` | public + nonce | `200` / `303 /me` | re-render with per-field errors |
+| 2 | GET | `/register/username` | `HandleRegisterUsername` | public | `200 JSON` | `400` malformed query |
+| 2 | GET | `/me` | `HandleMeView` | session (`Guard`) | `200 me.html` | `303 /` |
+| 2 | POST | `/me/motto` | `HandleMeMotto` | session + CSRF | `200 JSON` | `401`/`403`/`422 JSON` |
+| 2 | POST | `/logout` | `HandleLogout` | session | `303 /` | `303 /` |
+| 2 | GET | `/client` | `HandleClientView` | session (`Guard`) | `200 client.html` | `303 /` |
+| 3 | GET/POST | `/forgot` | `HandleForgotView` / `HandleForgotAction` | public + nonce | `200` confirmation | re-render with error |
+| 3 | GET | `/reset` | `HandleResetView` | public | `200 reset.html` | `200` invalid-token state |
+| 3 | POST | `/reset` | `HandleResetAction` | public + nonce | `303 /` | re-render with errors |
 
-The static file handler is registered last on `/`.
+Slice 1 implements the first two rows; the rest are the delivery roadmap for
+Slices 2 and 3 and gain their contracts when those slices start.
 
----
+## Cookies
 
-## Middleware
-
-| Middleware | Applied to | Behaviour |
+| Name | Issued | Attributes |
 |---|---|---|
-| Origin check (research R6) | every unsafe public route: `POST /{$}`, `POST /register`, `POST /forgot`, `POST /reset` | When `Origin` (fallback `Referer`) is present and its scheme+host differ from `CMS_BASE_URL`, respond `403` without processing. Absent header passes (non-browser clients). |
-| `protectPage` | `GET /me`, `GET /client`, `POST /logout` | `auth.Protect` with `WithUnauthorizedHandler` redirecting to `/`; POST requests additionally require the session CSRF token; failures render the redirect/forbidden response, never member data. |
-| `protectAPI` | `POST /me/motto` | `auth.Protect` with a JSON `401 {"error":"sign in required"}` unauthorized handler and JSON `403` forbidden handler so Svelte sees JSON, not HTML redirects. |
+| `__Host-session` | successful `POST /{$}` and every `Guard` refresh | `Path=/`, `HttpOnly`, `Secure`, `SameSite=Strict`, no `Domain`; `Max-Age` = 30 d only when `remember`; cleared with a past expiry when invalid or terminal |
+| `__Host-csrf` | `GET /{$}` when absent; also after a failed nonce check | `Path=/`, `HttpOnly`, `Secure`, `SameSite=Strict`, no `Domain`, session cookie |
 
-The page-protection and API-protection closures are configured once in `Mount` (research R15).
+`Secure` works in local development because browsers treat `localhost` as a
+trustworthy origin, so the same hardened cookie serves every deployment.
 
----
+## `GET /{$}`
 
-## Forms
+1. Read the `__Host-csrf` cookie; when absent, generate 32 random bytes, store
+   them base64url in the cookie, and use that value as the nonce.
+2. Render `index.html` with `CSRFToken` set and empty `Values`/`Errors`.
+3. Respond `200`.
 
-All forms post `application/x-www-form-urlencoded`.
+## `POST /{$}`
 
-### Sign in — `POST /{$}`
+The nonce is checked before any credential or throttle work, so a cross-site
+post cannot reach verification.
 
-| Field | Required | Rules |
+1. `req.ParseForm`; a parse failure responds `400`.
+2. Nonce check: the form's `csrf_token` must equal the `__Host-csrf` cookie
+   (`crypto/subtle` compare). Missing or mismatched → re-render the homepage
+   with `Errors.General` = "Sign-in could not be completed. Please try again."
+   and a freshly generated `__Host-csrf` cookie, status `403`. No credential
+   or throttle work happens.
+3. Field checks: empty `username` → `Errors.Username`; empty `password` →
+   `Errors.Password`; either present → re-render `200` with the username
+   echoed and no store access.
+4. Throttle check: `store.GetLoginAttempt(ctx, canonical)`; when the stored
+   lock is still in the future → re-render `200` with `Errors.General` =
+   "Too many attempts. Try again later."
+5. Lazy purge: `store.PurgeSessions(ctx)` removes revoked and past-deadline
+   rows.
+6. Verify: `store.GetUserByUsername(ctx, canonical)`; an absent row is treated
+   as a credential failure while still performing the dummy bcrypt comparison.
+   A present row is checked with `bcrypt.CompareHashAndPassword` against
+   `password_hash`.
+7. Failure path: `store.UpsertLoginFailure` with the canonical key,
+   `now-window`, `now`; re-read the attempt and call
+   `store.LockLoginAttempt(now+lock, key)` when `failures >= 5`. Re-render
+   `200` with `Errors.General` = "Invalid username or password."
+8. Success path: `store.MarkUserSignedIn(now, user.ID)`,
+   `store.ClearLoginAttempt(ctx, key)`, `store.CreateSession` with the digest
+   key and deadlines from [data-model.md](../data-model.md), set the
+   `__Host-session` cookie, and redirect `303` to `/me`. A store failure while
+   creating the session → re-render `200` with `Errors.General` =
+   "Sign-in is unavailable right now. Please try again."
+
+Throttle constants (spec FR-012 defaults, named in `index.go`): window
+15 min, limit 5, lock 15 min.
+
+## `Guard`
+
+`func (r *Router) Guard(next http.Handler) http.Handler` is the session
+gateway for member pages; Slice 1 ships and tests it, and Slice 2 mounts it on
+`/me` and `/client`.
+
+1. Read `__Host-session`; absent, malformed, or when `store.GetSession`
+   reports no row → clear the cookie and redirect `303` to `/`.
+2. Row revoked or `absolute_expires_at <= now` → clear the cookie and
+   redirect `303` to `/`.
+3. `idle_expires_at <= now < absolute_expires_at` → `store.TouchSession(now,
+   now+idle)` refresh, then continue.
+4. Otherwise continue to `next` unchanged; the route reads the account id from
+   the session row.
+5. Purge revoked and expired rows lazily on the same request.
+
+## Error shapes
+
+- Failed sign-in: `200` re-render with page errors; no redirect, no session.
+- Nonce failure: `403` re-render with a general error and a fresh nonce.
+- Malformed form: `400` plain text.
+- Store failure during session creation: `200` re-render with the
+  "unavailable" error; no session row or cookie is left behind.
+- Unknown route: the static handler answers `404`.
+
+No response contains a password, session token, digest, or store error detail
+(spec FR-009, FR-014).
+
+## Template data
+
+| Page | Slice | Data |
 |---|---|---|
-| `username` | yes | Trimmed; used canonically |
-| `password` | yes | Never echoed |
-| `remember` | no | Present (`on`/`true`) → extended recognition (FR-015) |
+| `index.html` | 1 | `CSRFToken`, `Values.Username`, `Errors.Username`, `Errors.Password`, `Errors.General` |
+| `me.html` | 2 | `Username`, `Motto`, `Avatar`, `LastSignedIn`, `IsAdmin`, `CSRF`, `HelpURL` |
+| `client.html` | 2 | `Username` |
+| `forgot.html` | 3 | `Submitted`, `Values.Username`, `Values.Email`, `Errors.Username`, `Errors.Email` |
+| `reset.html` | 3 | `Token`, `Valid`, `Values.*`, `Errors.Password`, `Errors.PasswordConfirm` |
 
-Behaviour: origin check → throttle check (`ip:<address>` and `u:<canonical-username>`) → credential verification → on success clear the account key, update `last_signed_in_at`, `auth.Create`, redirect `303 /me`; on failure record the failure and re-render with the generic message `Invalid username or password.` (never confirming the username exists, FR-013). A locked key renders `Too many attempts. Try again later.` The entered username is echoed back; the password never is.
-
-### Registration — `POST /register`
-
-| Field | Required | Rules |
-|---|---|---|
-| `username` | yes | 3–15 of `[A-Za-z0-9_-]`; available |
-| `password` | yes | 8–72 bytes |
-| `password_confirm` | yes | Matches `password` |
-| `birth_day`, `birth_month`, `birth_year` | yes | Real date, not future, year ≥ 1900 |
-| `email` | yes | Valid address, ≤ 254 chars, unused |
-| `email_confirm` | yes | Matches `email` |
-| `newsletter` | no | Recorded consent |
-| `terms` | yes | Must be accepted |
-| `avatar` | yes | `female` or `male` |
-
-Behaviour: validate all fields and collect per-field errors → on success create the account in one store call, `auth.Create`, redirect `303 /me`; on failure re-render with every message and all entered values except passwords (FR-008).
-
-### Username availability — `GET /register/username?username=…`
-
-Response `200`:
-
-```json
-{ "valid": true, "available": false }
-```
-
-`valid=false` for a rule-breaking name; `available=false` for a taken name. Nothing else is disclosed (FR-007). The endpoint is safe to call repeatedly (no state change).
-
-### Recovery request — `POST /forgot`
-
-| Field | Required | Rules |
-|---|---|---|
-| `username` | yes | Canonical lookup |
-| `email` | yes | Valid address, canonical lookup |
-
-Behaviour: throttle (`ip:` and `r:` keys) → when username and email match one account, delete its previous tokens, store a new token digest, and email the reset link; when they do not match, do nothing. Either way respond `200` with the identical confirmation card (FR-019) containing the link back to `/`. A locked key still renders the confirmation; the request is dropped (never confirms existence, FR-020). A delivery failure after a match is logged internally and never changes the response (FR-021).
-
-### Reset — `GET /reset?token=…` and `POST /reset`
-
-`GET` validates the token: active → reset form; unknown, used, or expired → invalid state with a link back to `/` and to `/forgot`.
-
-`POST` fields: `token` (hidden), `password` (8–72 bytes), `password_confirm` (must match). On success: update the password hash, mark the token used, revoke every session of the account (`auth.RevokeAll`), redirect `303 /` where the signed-out homepage is shown. On failure re-render with errors; an invalid token returns the invalid state. Other sessions are revoked even though this request is unauthenticated (012 FR-011 requires every session to be invalidated on a password change).
-
-### Sign out — `POST /logout`
-
-Field `csrf_token`. Behaviour: `auth.Logout` (revokes the presented session, always clears the cookie), redirect `303 /`. An absent/invalid session still ends at `/`.
-
-### Motto — `POST /me/motto` (AJAX)
-
-Request body `application/json`:
-
-```json
-{ "motto": "hello hotel" }
-```
-
-Header `X-CSRF-Token: <session token>`. Behaviour: trim; reject > 128 characters or control characters with `422 {"error":"…"}`; on success persist and return `200 {"motto":"hello hotel"}`. No session → `401 {"error":"sign in required"}`; bad/missing CSRF → `403 {"error":"invalid request"}`.
-
----
-
-## Redirects and status summary
-
-| Case | Status |
-|---|---|
-| Successful login/registration/logout/reset | `303` (Post/Redirect/Get) |
-| Validation or credential failure | `200` re-render with errors |
-| Unauthenticated page access | `303 /` |
-| Unauthenticated AJAX | `401` JSON |
-| CSRF failure | `403` (JSON on API routes, default forbidden handler on pages) |
-| Cross-site public POST | `403` |
-| Unknown route | static handler (`404`) |
-
-## Template data handed to pages
-
-Every signed-out page also receives the shared layout data `.Online`, `.IsUp`, `.TermsURL`, `.PrivacyURL` (from `status.Provider` and `Deps.Links`); the rows below list page-specific values only. In the index slice, `me.html` renders only the signed-in username; the remaining `me` values arrive with the personal-page slice.
-
-| Page | Data |
-|---|---|
-| `index.html` | `.Online`, `.IsUp`, `.TermsURL`, `.PrivacyURL`, `.Values.Username`, `.Errors.Username`, `.Errors.Password`, `.Errors.General` |
-| `register.html` | `.Online`, `.IsUp`, `.TermsURL`, `.PrivacyURL`, `.Values.*` and `.Errors.*` for every field above, `.AvatarOptions` |
-| `forgot.html` | `.Online`, `.IsUp`, `.Submitted`, `.Values.Username`, `.Values.Email`, `.Errors.Username`, `.Errors.Email`, `.PrivacyURL`, `.TermsURL` |
-| `reset.html` | `.Online`, `.IsUp`, `.TermsURL`, `.PrivacyURL`, `.Token`, `.Valid`, `.Values.*`, `.Errors.Password`, `.Errors.PasswordConfirm` |
-| `me.html` | `.Username`, `.Motto`, `.Avatar`, `.LastSignedIn`, `.IsAdmin`, `.CSRF`, `.HelpURL` |
-| `client.html` | `.Username` |
-
-All runtime values render through `[[ ]]` placeholders only; Svelte components receive no server data through props except simple scalars (research R10).
+The signed-out header (zero online count, hotel offline) and footer routes are
+static markup in `signed-out.astro`; only the values above reach the templates
+through `[[ ]]`. Slice 2 Svelte components receive no server data through
+props except simple scalars.

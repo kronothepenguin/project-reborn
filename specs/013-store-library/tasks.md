@@ -233,3 +233,17 @@ Task: "Create .agents/skills/adding-data-persistence/SKILL.md"
 - Verify tests fail before implementing (constitution IV, red-green).
 - Commit after each task or logical group with conventional messages.
 - Never add domain tables to the store (decision C1) and never hand-edit generated `*.go` files.
+
+---
+
+## Phase: process store accessor (addendum 2026-09-16)
+
+**Purpose**: `store.Must()` gives every consumer the one deployment store
+without constructor threading or optional wiring. See the plan addendum.
+
+- [ ] T038 Declare the `database` section in `packages/config/database/database.go` (`Path`, default `habbo.db`, non-empty validator), register it on `Config`, and add its unit tests per the `adding-config-sections` skill
+- [ ] T039 [P] Add the full-pipeline tests `packages/config/database_pipeline_test.go` (create/defaults, missing key, explicit value, wrong type, empty value) using the `resetLoadState` helper
+- [ ] T040 Implement `store.Must()` in `packages/store/store.go` over `config.Must().Database.Path` with a `sync.Once`-cached instance and panic-on-error semantics
+- [ ] T041 [P] Write `packages/store/must_test.go` covering the accessor returning the opened store, caching across calls, and failure when the configured path cannot be opened
+- [ ] T042 [P] Document the accessor in `packages/store/doc.go` and `packages/store/knowledge/store.md` (`Must()` in the contract, `Open(path)` for isolated stores)
+- [ ] T043 Verify from `packages/config` and `packages/store`: config gates pass, `go vet ./...`/`go test ./...` pass, `make check-docs` exits 0, `go tool sqlc generate` leaves a clean diff
