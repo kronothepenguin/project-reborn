@@ -1,7 +1,0 @@
-CREATE TABLE IF NOT EXISTS widgets (
-    id INTEGER PRIMARY KEY,
-    name TEXT NOT NULL UNIQUE,
-    description TEXT NOT NULL DEFAULT '',
-    is_active INTEGER NOT NULL DEFAULT 1,
-    created_at INTEGER NOT NULL
-);

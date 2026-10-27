@@ -2,6 +2,10 @@
 
 ## 2026-10-27
 
+- **Start** [p0-05](/tasks/p0-05-world-schema.md).
+- **Done** [p0-12](/tasks/p0-12-remove-store-testdata.md): deleted the unused `packages/store/testdata`
+  at the user's request; store tests pass.
+- **Create** [p0-12](/tasks/p0-12-remove-store-testdata.md) from the open question of p0-02.
 - **Done** [p0-04](/tasks/p0-04-identity-schema.md): six identity schema files (14 tables) with schema, table and
   entity concepts; constraint tests pass. Also added `idx_sessions_avatar_id` and sqlc `initialisms` (see the task
   notes).
