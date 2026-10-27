@@ -7,7 +7,7 @@ starts.
 
 - [p0-01 Create the port state bundle and the tracking skill](/tasks/p0-01-port-state-bundle.md) — Seed plans/holo-port from the approved plan and add the tracking-holo-port skill so the port can be resumed in any session. **done**
 - [p0-02 Make store.Open return *sql.DB](/tasks/p0-02-store-open-returns-db.md) — Remove the Store wrapper so store.Open and store.Must return *sql.DB, and add the sqlite time format to the connection string. **done**
-- [p0-03 Update the persistence and OKF skills](/tasks/p0-03-persistence-skill-updates.md) — Align adding-data-persistence and documenting-with-okf with the store API, native types and entity and table concepts. **todo**
+- [p0-03 Update the persistence and OKF skills](/tasks/p0-03-persistence-skill-updates.md) — Align adding-data-persistence and documenting-with-okf with the store API, native types and entity and table concepts. **done**
 - [p0-04 Write the identity schema](/tasks/p0-04-identity-schema.md) — Schema files and OKF concepts for users, auth, avatars, access, settings and referrals. **todo**
 - [p0-05 Write the world schema](/tasks/p0-05-world-schema.md) — Schema files and OKF concepts for profiles, homes, the home store, groups, economy, club, forums, news, moderation and site. **todo**
 - [p0-06 Write the queries P0 needs](/tasks/p0-06-p0-queries.md) — Named sqlc operations for auth, habbo creation, access and settings, with their OKF query concepts. **todo**

@@ -21,6 +21,12 @@ packages/store/knowledge/
 ├── schemas/
 │   ├── index.md
 │   └── <feature>.md    # one concept per schema file
+├── tables/
+│   ├── index.md
+│   └── <table>.md      # one concept per declared table
+├── entities/
+│   ├── index.md
+│   └── <entity>.md     # one concept per domain entity
 └── queries/
     ├── index.md
     └── <feature>.md    # one concept per query file
@@ -28,12 +34,16 @@ packages/store/knowledge/
 
 Concept types by source artifact:
 
-| Source artifact | `type` | Concept location |
-|-----------------|--------|------------------|
-| A declared table | `SQLite Table` | `schemas/<feature>.md` (section per table) or `tables/<table>.md` |
-| A schema file | `SQL Schema File` | `schemas/<feature>.md` |
-| A query file | `SQL Query` | `queries/<feature>.md` (section per operation) |
-| The Go module | `Go Package` | `store.md` |
+| Source artifact | `type` | Concept location | `resource` |
+|-----------------|--------|------------------|------------|
+| A schema file | `SQL Schema File` | `schemas/<feature>.md` | the schema file |
+| A declared table | `SQLite Table` | `tables/<table>.md` | the schema file that declares the table |
+| A domain entity | `Entity` | `entities/<entity>.md` | none: an entity is abstract |
+| A query file | `SQL Query` | `queries/<feature>.md` | the query file |
+| The Go module | `Go Package` | `store.md` | `packages/store` |
+
+Table concepts are named after the table (`club_subscriptions.md`); entity
+concepts after the singular entity in kebab-case (`club-subscription.md`).
 
 `index.md` and `log.md` are reserved filenames and are never concept files.
 Only the root `index.md` carries frontmatter (`okf_version: "0.2"`).
@@ -45,9 +55,9 @@ Only the root `index.md` carries frontmatter (`okf_version: "0.2"`).
 type: <Concept type>        # REQUIRED, non-empty
 title: <Display name>        # recommended
 description: <One line>      # recommended, used by index entries
-resource: <source path>      # recommended: repo-relative path of the documented file
+resource: <source path>      # recommended, except for entities: repo-relative path of the documented file
 tags: [store, sql]           # optional
-timestamp: <ISO 8601>        # optional
+timestamp: <ISO 8601>        # optional; always with an explicit offset, e.g. 2026-10-27T21:00:00+00:00
 ---
 ```
 
@@ -57,13 +67,19 @@ fields are tolerated; a missing `type` is not.
 
 ## Body rules
 
+| Concept | Sections |
+|---------|----------|
+| Schema file | `# Schema`: the tables and indexes the file declares, each table linked to `/tables/<table>.md` |
+| Table | `# Schema`: one row per column (column, type, null, default, description, key or reference); `# Keys`: primary key, unique and plain indexes; links to its entity and to the queries that touch it |
+| Entity | `# Definition`, `# Invariants`, `# Lifecycle`, `# Vocabularies` (allowed values of open `TEXT` columns), `# Relations` (links to other entities); links to its tables and queries |
+| Query file | `# Operations`: one section per operation (name, cardinality, inputs, result, tables touched) |
+
 - Prefer structural markdown over prose.
-- `# Schema` for a column table (column, type, description, key/reference).
-- `# Operations` for query docs (name, cardinality, inputs, result, tables touched).
 - `# Examples` for short usage snippets.
 - `# Citations` for external sources, numbered, at the end.
-- Cross-link concepts with bundle-relative links (`/queries/ping.md`, `/schemas/auth.md`).
-  Broken links are permitted while knowledge is being filled in.
+- Cross-link concepts with bundle-absolute links (`/queries/ping.md`,
+  `/tables/users.md`, `/entities/user.md`). Broken links are permitted while
+  knowledge is being filled in.
 
 ## Index and log rules
 
@@ -75,9 +91,10 @@ fields are tolerated; a missing `type` is not.
 
 ```text
 OKF bundle:
-- [ ] every schema and query file has exactly one concept
+- [ ] every schema file, query file and declared table has exactly one concept
+- [ ] every entity the tables represent has a concept that links its tables and queries
 - [ ] every concept has frontmatter with a non-empty type
-- [ ] resource points at the actual source file (repo-relative)
+- [ ] resource points at the actual source file (repo-relative); entities have none
 - [ ] description is a single sentence
 - [ ] index.md lists every concept with its description
 - [ ] root index.md declares okf_version: "0.2"
@@ -85,7 +102,9 @@ OKF bundle:
 ```
 
 Run `make check-docs` from `packages/store` to verify the conformance rules the
-repository enforces.
+repository enforces: a non-empty `type` in every concept, and every schema and
+query file named by some concept's `resource`. Index listings and the table
+and entity concepts are not checked by it; verify them by hand.
 
 ## Authoritative references
 

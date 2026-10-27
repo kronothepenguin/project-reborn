@@ -2,6 +2,10 @@
 
 ## 2026-10-27
 
+- **Done** [p0-03](/tasks/p0-03-persistence-skill-updates.md): `adding-data-persistence` and
+  `documenting-with-okf` describe the new store API, native types, the foreign-key parent rule and the
+  `tables/`/`entities/` concepts; both pass the strict skill validator.
+- **Start** [p0-03](/tasks/p0-03-persistence-skill-updates.md).
 - **Done** [p0-02](/tasks/p0-02-store-open-returns-db.md): `store.Open` and `store.Must` return `*sql.DB` with
   `_time_format=sqlite`; tests (race) and `make check-docs` pass. The persistence skill still shows the old API
   until p0-03.
