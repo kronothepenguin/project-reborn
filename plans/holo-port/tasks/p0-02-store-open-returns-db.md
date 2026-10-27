@@ -1,0 +1,39 @@
+---
+type: Task
+title: Make store.Open return *sql.DB
+description: Remove the Store wrapper so store.Open and store.Must return *sql.DB, and add the sqlite time format to the connection string.
+status: todo
+phase: p0
+depends_on: []
+packages: [packages/store]
+holo: []
+timestamp: 2026-10-27T20:48:19+00:00
+generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
+---
+
+# Goal
+
+Apply [0011](/decisions/0011-store-returns-sql-db.md) and the time format of
+[0012](/decisions/0012-sqlite-native-types.md) to `packages/store`.
+
+# Steps
+
+- [ ] `packages/store/store.go`: `func Open(path string) (*sql.DB, error)` keeps `foreign_keys(1)`, WAL,
+      `busy_timeout(5000)`, `SetMaxOpenConns(1)`/`SetMaxIdleConns(1)` and `applySchemas`, and adds
+      `_time_format=sqlite` to the DSN.
+- [ ] `func Must(db *sql.DB, err error) *sql.DB`; remove the `Store` struct and `Close`.
+- [ ] Update `store_test.go` and `errors_test.go` to the new API.
+- [ ] `packages/store/knowledge/store.md`: remove `Store` and `Begin`; show `Open` + `store.New(db)`; show a
+      transaction with `db.BeginTx` + `q.WithTx(tx)`; note that inside a transaction only the transaction's queries
+      may be used because the pool has one connection.
+- [ ] `grep -rn "store.Open\|\*store.Store" --include=*.go .` from the repository root finds no other caller left
+      on the old API.
+
+# Verification
+
+```sh
+cd packages/store && gofmt -l . && go vet ./... && go test ./... -race && make check-docs
+cd packages/store && go tool sqlc generate && git diff --exit-code
+```
+
+# Notes
