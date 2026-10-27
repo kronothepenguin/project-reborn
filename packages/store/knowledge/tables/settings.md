@@ -23,3 +23,4 @@ timestamp: 2026-10-27T21:17:19+00:00
 # Related
 
 - Entity: [Setting](/entities/setting.md).
+- Queries: [settings.query.sql](/queries/settings.md).

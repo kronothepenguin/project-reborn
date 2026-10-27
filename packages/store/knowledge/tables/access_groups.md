@@ -28,3 +28,4 @@ timestamp: 2026-10-27T21:17:19+00:00
 - Entity: [Access group](/entities/access-group.md).
 - Referenced by [access_group_attributes](/tables/access_group_attributes.md) and
   [access_group_members](/tables/access_group_members.md).
+- Queries: [access.query.sql](/queries/access.md).

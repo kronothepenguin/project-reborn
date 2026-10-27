@@ -89,6 +89,12 @@ Follow these steps in order. Work from the repository root unless stated.
 - `CURRENT_TIMESTAMP` produces `YYYY-MM-DD HH:MM:SS` without an offset, while the
   store writes `YYYY-MM-DD HH:MM:SS.fffffffff+00:00` (`_time_format=sqlite`);
   mixing the two breaks comparisons and ordering.
+- sqlc gives a parameter the nullability of the column it is compared with or
+  inserted into, even with `sqlc.arg`. Wrap integer and text parameters in
+  `CAST(sqlc.arg(x) AS INTEGER)` or `CAST(sqlc.arg(x) AS TEXT)` to get `int64`
+  or `string`. Never `CAST` a time: `DATETIME` has NUMERIC affinity and turns
+  the text into a number. For a time, compare the parameter with a `NOT NULL`
+  column first, because sqlc types a parameter from its first use.
 
 ## Contribution checklist
 

@@ -32,3 +32,7 @@ None.
 # Tables
 
 - [bans](/tables/bans.md)
+
+# Queries
+
+- [moderation.query.sql](/queries/moderation.md)

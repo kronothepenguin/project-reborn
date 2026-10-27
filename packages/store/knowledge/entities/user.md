@@ -40,3 +40,7 @@ None.
 # Tables
 
 - [users](/tables/users.md)
+
+# Queries
+
+- [users.query.sql](/queries/users.md)

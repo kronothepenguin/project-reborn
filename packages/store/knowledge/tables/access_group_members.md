@@ -25,3 +25,4 @@ timestamp: 2026-10-27T21:17:19+00:00
 # Related
 
 - Entity: [Access group](/entities/access-group.md).
+- Queries: [access.query.sql](/queries/access.md).

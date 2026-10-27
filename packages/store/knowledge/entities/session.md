@@ -39,3 +39,7 @@ None.
 - [sessions](/tables/sessions.md)
 - [login_attempts](/tables/login_attempts.md)
 - [sso_tickets](/tables/sso_tickets.md)
+
+# Queries
+
+- [auth.query.sql](/queries/auth.md)

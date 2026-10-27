@@ -24,3 +24,4 @@ timestamp: 2026-10-27T21:28:26+00:00
 # Related
 
 - Entity: [Wallet](/entities/wallet.md).
+- Queries: [economy.query.sql](/queries/economy.md).

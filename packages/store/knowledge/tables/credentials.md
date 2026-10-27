@@ -22,3 +22,4 @@ timestamp: 2026-10-27T21:17:19+00:00
 # Related
 
 - Entity: [Credential](/entities/credential.md).
+- Queries: [auth.query.sql](/queries/auth.md).

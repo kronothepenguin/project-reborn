@@ -39,3 +39,4 @@ timestamp: 2026-10-27T21:17:19+00:00
   [club_subscriptions](/tables/club_subscriptions.md), [forum_threads](/tables/forum_threads.md),
   [forum_posts](/tables/forum_posts.md), [news_articles](/tables/news_articles.md), [alerts](/tables/alerts.md),
   [help_tickets](/tables/help_tickets.md) and [staff_logs](/tables/staff_logs.md).
+- Queries: [avatars.query.sql](/queries/avatars.md), [auth.query.sql](/queries/auth.md).

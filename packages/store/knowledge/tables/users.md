@@ -34,3 +34,4 @@ timestamp: 2026-10-27T21:17:19+00:00
   [settings](/tables/settings.md), [referrals](/tables/referrals.md), [vouchers](/tables/vouchers.md),
   [bans](/tables/bans.md), [alerts](/tables/alerts.md), [help_tickets](/tables/help_tickets.md) and
   [staff_logs](/tables/staff_logs.md).
+- Queries: [users.query.sql](/queries/users.md).

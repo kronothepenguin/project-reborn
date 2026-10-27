@@ -25,3 +25,4 @@ timestamp: 2026-10-27T21:28:26+00:00
 
 - Entity: [Profile](/entities/profile.md).
 - Referenced by [profile_tags](/tables/profile_tags.md) and [homes](/tables/homes.md).
+- Queries: [profiles.query.sql](/queries/profiles.md).

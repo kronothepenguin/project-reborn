@@ -28,3 +28,4 @@ CHECK: exactly one of `profile_id` and `group_id` is set.
 
 - Entity: [Home](/entities/home.md).
 - Referenced by [home_items](/tables/home_items.md).
+- Queries: [homes.query.sql](/queries/homes.md).

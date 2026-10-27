@@ -40,3 +40,7 @@ explains the balance. Vouchers are codes created by staff that add credits once.
 - [wallets](/tables/wallets.md)
 - [wallet_transactions](/tables/wallet_transactions.md)
 - [vouchers](/tables/vouchers.md)
+
+# Queries
+
+- [economy.query.sql](/queries/economy.md)

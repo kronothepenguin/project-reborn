@@ -46,3 +46,7 @@ motto. A user can own several habbos; club membership, credits and the home page
 - [avatars](/tables/avatars.md)
 - [avatar_badges](/tables/avatar_badges.md)
 - [wardrobe_outfits](/tables/wardrobe_outfits.md)
+
+# Queries
+
+- [avatars.query.sql](/queries/avatars.md)

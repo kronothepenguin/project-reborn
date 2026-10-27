@@ -35,3 +35,7 @@ key at runtime. `packages/virtual` merges the rows over the config values.
 # Tables
 
 - [settings](/tables/settings.md)
+
+# Queries
+
+- [settings.query.sql](/queries/settings.md)

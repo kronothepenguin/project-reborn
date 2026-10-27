@@ -14,8 +14,10 @@ import (
 // for the connection the transaction already holds.
 func Open(path string) (*sql.DB, error) {
 	// Without _time_format=sqlite, modernc writes time.Time with t.String(),
-	// which SQLite date functions and ordering cannot use.
-	dsn := fmt.Sprintf("file:%s?_pragma=foreign_keys(1)&_pragma=journal_mode(WAL)&_pragma=busy_timeout(5000)&_time_format=sqlite", path)
+	// which SQLite date functions and ordering cannot use. _timezone=UTC
+	// converts every written time to UTC, so stored DATETIME text compares in
+	// time order whatever zone the caller used.
+	dsn := fmt.Sprintf("file:%s?_pragma=foreign_keys(1)&_pragma=journal_mode(WAL)&_pragma=busy_timeout(5000)&_time_format=sqlite&_timezone=UTC", path)
 	db, err := sql.Open("sqlite", dsn)
 	if err != nil {
 		return nil, fmt.Errorf("store: open %q: %w", path, err)

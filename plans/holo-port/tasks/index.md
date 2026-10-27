@@ -10,7 +10,7 @@ starts.
 - [p0-03 Update the persistence and OKF skills](/tasks/p0-03-persistence-skill-updates.md) — Align adding-data-persistence and documenting-with-okf with the store API, native types and entity and table concepts. **done**
 - [p0-04 Write the identity schema](/tasks/p0-04-identity-schema.md) — Schema files and OKF concepts for users, auth, avatars, access, settings and referrals. **done**
 - [p0-05 Write the world schema](/tasks/p0-05-world-schema.md) — Schema files and OKF concepts for profiles, homes, the home store, groups, economy, club, forums, news, moderation and site. **done**
-- [p0-06 Write the queries P0 needs](/tasks/p0-06-p0-queries.md) — Named sqlc operations for auth, habbo creation, access and settings, with their OKF query concepts. **todo**
+- [p0-06 Write the queries P0 needs](/tasks/p0-06-p0-queries.md) — Named sqlc operations for auth, habbo creation, access and settings, with their OKF query concepts. **done**
 - [p0-07 Declare the P0 config sections and Create](/tasks/p0-07-config-sections.md) — Add settingsRefreshSeconds and the store, cms, auth and site sections to packages/config, plus Create for the installer. **todo**
 - [p0-08 Build the Settings entity in packages/virtual](/tasks/p0-08-virtual-settings.md) — Create the packages/virtual module with a type-safe Settings wrapper that merges settings rows over config and receives the database. **todo**
 - [p0-09 Rewrite packages/auth](/tasks/p0-09-auth-rewrite.md) — Replace the session-only library with argon2id passwords, habbo-name login with throttling and bans, sessions, middleware, attributes and password reset. **todo**

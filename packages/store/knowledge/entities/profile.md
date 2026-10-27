@@ -35,3 +35,7 @@ None.
 
 - [profiles](/tables/profiles.md)
 - [profile_tags](/tables/profile_tags.md)
+
+# Queries
+
+- [profiles.query.sql](/queries/profiles.md)

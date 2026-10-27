@@ -4,7 +4,7 @@ title: Store
 description: Persistence infrastructure that opens the SQLite file, applies the declared schemas and provides the generated typed operations.
 resource: packages/store
 tags: [store, sqlite, go]
-timestamp: 2026-10-27T21:17:19+00:00
+timestamp: 2026-10-27T21:44:59+00:00
 ---
 
 # Overview
@@ -33,9 +33,11 @@ domain tables: features contribute schema and query files incrementally.
 - **Always-on integrity and journaling.** Every connection enables
   `foreign_keys`, `journal_mode=WAL`, and a five second busy timeout; the pool
   is capped at one connection per process.
-- **SQLite time format.** `time.Time` values are written as
-  `2006-01-02 15:04:05.999999999-07:00` (`_time_format=sqlite`), and `DATE`,
-  `DATETIME` and `TIMESTAMP` columns read back as `time.Time`.
+- **SQLite time format, in UTC.** `time.Time` values are converted to UTC
+  (`_timezone=UTC`) and written as `2006-01-02 15:04:05.999999999-07:00`
+  (`_time_format=sqlite`), so stored text sorts in time order whatever zone
+  the caller used; `DATE`, `DATETIME` and `TIMESTAMP` columns read back as
+  `time.Time`.
 - **Multi-application safety.** Several connections and processes may share one
   database file. Readers see committed data only; conflicting writers wait up
   to the busy timeout, then fail with a busy error for which `IsBusy` is true.
@@ -55,7 +57,7 @@ domain tables: features contribute schema and query files incrementally.
 - The pool has one connection. Inside a transaction use only the queries bound
   to it (`q.WithTx(tx)`); calling `db` or an unbound `Queries` there waits
   forever for the connection the transaction holds.
-- Pass times from Go as UTC `time.Time` and never use `CURRENT_TIMESTAMP`: its
+- Pass times from Go and never use `CURRENT_TIMESTAMP`: its
   `YYYY-MM-DD HH:MM:SS` text has no offset, so it does not compare correctly
   with the stored format.
 

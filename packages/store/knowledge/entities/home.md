@@ -42,3 +42,7 @@ background is a bought background item or the default.
 
 - [homes](/tables/homes.md)
 - [home_items](/tables/home_items.md)
+
+# Queries
+
+- [homes.query.sql](/queries/homes.md)

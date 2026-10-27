@@ -31,3 +31,4 @@ CHECK: `user_id` or `ip` is set.
 # Related
 
 - Entity: [Ban](/entities/ban.md).
+- Queries: [moderation.query.sql](/queries/moderation.md).

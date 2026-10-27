@@ -60,3 +60,7 @@ R26 fuses (`fuse_*`) are a separate catalogue, designed with the game server.
 - [access_groups](/tables/access_groups.md)
 - [access_group_attributes](/tables/access_group_attributes.md)
 - [access_group_members](/tables/access_group_members.md)
+
+# Queries
+
+- [access.query.sql](/queries/access.md)

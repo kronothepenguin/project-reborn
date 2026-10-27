@@ -101,6 +101,27 @@ func TestOpenWritesSQLiteTimeFormat(t *testing.T) {
 	}
 }
 
+func TestOpenStoresTimesInUTC(t *testing.T) {
+	db := openTestDB(t)
+	ctx := t.Context()
+
+	if _, err := db.ExecContext(ctx, "CREATE TABLE events (at DATETIME NOT NULL)"); err != nil {
+		t.Fatalf("create table: %v", err)
+	}
+	at := time.Date(2026, time.October, 27, 18, 1, 41, 0, time.FixedZone("UTC-3", -3*60*60))
+	if _, err := db.ExecContext(ctx, "INSERT INTO events (at) VALUES (?)", at); err != nil {
+		t.Fatalf("insert: %v", err)
+	}
+
+	var stored string
+	if err := db.QueryRowContext(ctx, "SELECT CAST(at AS TEXT) FROM events").Scan(&stored); err != nil {
+		t.Fatalf("read stored text: %v", err)
+	}
+	if want := "2026-10-27 21:01:41+00:00"; stored != want {
+		t.Errorf("stored DATETIME = %q, want %q", stored, want)
+	}
+}
+
 func TestQueriesRunInsideATransaction(t *testing.T) {
 	db := openTestDB(t)
 	ctx := t.Context()

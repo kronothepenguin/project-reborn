@@ -34,3 +34,7 @@ None.
 
 - [credentials](/tables/credentials.md)
 - [password_resets](/tables/password_resets.md)
+
+# Queries
+
+- [auth.query.sql](/queries/auth.md)

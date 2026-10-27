@@ -2,6 +2,9 @@
 
 ## 2026-10-27
 
+- **Done** [p0-06](/tasks/p0-06-p0-queries.md): nine query files with 41 operations and their concepts; 36 store
+  tests pass. Also added `_timezone=UTC` to `store.Open` and a sqlc nullability gotcha to the persistence skill.
+- **Start** [p0-06](/tasks/p0-06-p0-queries.md).
 - **Done** [p0-05](/tasks/p0-05-world-schema.md): ten world schema files (21 tables); the full schema is now
   16 files and 35 tables, documented as 16 schema, 35 table and 20 entity concepts; 26 store tests pass.
 - **Start** [p0-05](/tasks/p0-05-world-schema.md).
