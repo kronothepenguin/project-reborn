@@ -36,6 +36,10 @@ motto. A user can own several habbos; club membership, credits and the home page
 - Active in [sessions](/entities/session.md).
 - Shown for a member of an [access group](/entities/access-group.md) on the staff page.
 - Can refer new users ([referral](/entities/referral.md)).
+- Has a [profile](/entities/profile.md), a [wallet](/entities/wallet.md), [club subscriptions](/entities/club-subscription.md)
+  and a [home store](/entities/home-store.md) inventory.
+- Owns and joins [groups](/entities/group.md); writes [forum threads](/entities/forum-thread.md); receives
+  [alerts](/entities/alert.md).
 
 # Tables
 

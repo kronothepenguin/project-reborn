@@ -27,3 +27,36 @@ Concepts for the tables declared under `packages/store/schema/`, one per table.
 ## Settings
 
 - [settings](settings.md) — Runtime overrides of config values, one JSON literal per config key path.
+
+## Profiles and homes
+
+- [profiles](profiles.md) — One web profile per habbo, the anchor of its home page and tags.
+- [profile_tags](profile_tags.md) — Tags a habbo put on its profile, used by tag search, the tag cloud and tag fight.
+- [homes](homes.md) — A home page owned by exactly one profile or one group, with its background.
+- [home_items](home_items.md) — Stickers, sticky notes and widgets placed on a home, with position, stacking order and skin.
+- [home_store_categories](home_store_categories.md) — Categories of the home store, ordered by position, some reserved for staff.
+- [home_store_items](home_store_items.md) — Stickers, note packs and backgrounds for sale in the home store.
+- [home_inventory](home_inventory.md) — Bought home store items a habbo has not placed yet, with their remaining quantity.
+
+## Community
+
+- [groups](groups.md) — Groups created by habbos, with owner, badge code and access mode.
+- [group_members](group_members.md) — Members, admins and pending membership requests of groups, with each habbo's favourite group.
+- [forum_threads](forum_threads.md) — Threads of the site-wide discussion board, with sticky and locked flags and a view counter.
+- [forum_posts](forum_posts.md) — BBCode posts of a discussion board thread, with their last edit.
+- [news_articles](news_articles.md) — News articles written by staff, with category, top-story image, summary and BBCode body.
+- [banners](banners.md) — Promotional banners with image, link, position and an enabled flag.
+
+## Economy
+
+- [wallets](wallets.md) — The credits, tickets and film of a habbo, which can never go negative.
+- [wallet_transactions](wallet_transactions.md) — The credit ledger, with one signed row per change of a habbo's credits.
+- [vouchers](vouchers.md) — Credit vouchers created by staff, matched ignoring case, and kept after redemption for audit.
+- [club_subscriptions](club_subscriptions.md) — Paid Habbo Club periods of a habbo; the habbo is a member while a period covers the current time.
+
+## Moderation
+
+- [bans](bans.md) — Bans of a user, an IP or both, with reason, expiry and lifting.
+- [alerts](alerts.md) — Staff messages shown in a habbo's feed until dismissed.
+- [help_tickets](help_tickets.md) — Help requests from habbos and forum post reports, picked up and closed by staff.
+- [staff_logs](staff_logs.md) — One row per staff action, with the acting user, the target and the IP.

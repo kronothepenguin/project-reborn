@@ -2,6 +2,8 @@
 
 ## 2026-10-27
 
+- **Done** [p0-05](/tasks/p0-05-world-schema.md): ten world schema files (21 tables); the full schema is now
+  16 files and 35 tables, documented as 16 schema, 35 table and 20 entity concepts; 26 store tests pass.
 - **Start** [p0-05](/tasks/p0-05-world-schema.md).
 - **Done** [p0-12](/tasks/p0-12-remove-store-testdata.md): deleted the unused `packages/store/testdata`
   at the user's request; store tests pass.

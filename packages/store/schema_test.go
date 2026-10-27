@@ -52,7 +52,7 @@ func countRows(t *testing.T, db *sql.DB, query string, args ...any) int {
 	return n
 }
 
-func TestOpenCreatesIdentityTables(t *testing.T) {
+func TestOpenCreatesEveryTable(t *testing.T) {
 	db := openTestDB(t)
 
 	rows, err := db.QueryContext(t.Context(), `SELECT name FROM sqlite_schema WHERE type = 'table' ORDER BY name`)
@@ -76,6 +76,11 @@ func TestOpenCreatesIdentityTables(t *testing.T) {
 		"access_group_attributes", "access_group_members", "access_groups",
 		"avatar_badges", "avatars", "credentials", "login_attempts", "password_resets",
 		"referrals", "sessions", "settings", "sso_tickets", "users", "wardrobe_outfits",
+		"profiles", "profile_tags", "homes", "home_items",
+		"home_store_categories", "home_store_items", "home_inventory",
+		"groups", "group_members", "wallets", "wallet_transactions", "vouchers", "club_subscriptions",
+		"forum_threads", "forum_posts", "news_articles",
+		"bans", "alerts", "help_tickets", "staff_logs", "banners",
 	} {
 		if !slices.Contains(tables, want) {
 			t.Errorf("table %s was not created; tables: %v", want, tables)

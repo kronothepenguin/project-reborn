@@ -31,6 +31,15 @@ type AccessGroupMember struct {
 	GrantedByUserID sql.NullInt64
 }
 
+type Alert struct {
+	ID           int64
+	AvatarID     int64
+	SenderUserID sql.NullInt64
+	Message      string
+	CreatedAt    time.Time
+	DismissedAt  sql.NullTime
+}
+
 type Avatar struct {
 	ID        int64
 	UserID    int64
@@ -49,10 +58,142 @@ type AvatarBadge struct {
 	GrantedAt time.Time
 }
 
+type Ban struct {
+	ID             int64
+	UserID         sql.NullInt64
+	IP             sql.NullString
+	Reason         string
+	IssuedByUserID sql.NullInt64
+	CreatedAt      time.Time
+	ExpiresAt      sql.NullTime
+	LiftedAt       sql.NullTime
+	LiftedByUserID sql.NullInt64
+}
+
+type Banner struct {
+	ID        int64
+	Title     string
+	ImageURL  string
+	LinkURL   string
+	Enabled   bool
+	Position  int64
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+type ClubSubscription struct {
+	ID        int64
+	AvatarID  int64
+	StartsAt  time.Time
+	EndsAt    time.Time
+	CreatedAt time.Time
+}
+
 type Credential struct {
 	UserID       int64
 	PasswordHash string
 	UpdatedAt    time.Time
+}
+
+type ForumPost struct {
+	ID               int64
+	ForumThreadID    int64
+	AvatarID         sql.NullInt64
+	Body             string
+	CreatedAt        time.Time
+	EditedAt         sql.NullTime
+	EditedByAvatarID sql.NullInt64
+}
+
+type ForumThread struct {
+	ID        int64
+	AvatarID  sql.NullInt64
+	Title     string
+	Sticky    bool
+	Locked    bool
+	Views     int64
+	CreatedAt time.Time
+}
+
+type Group struct {
+	ID          int64
+	AvatarID    int64
+	Name        string
+	Description string
+	Badge       string
+	Access      string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+type GroupMember struct {
+	GroupID     int64
+	AvatarID    int64
+	Role        string
+	Favourite   bool
+	RequestedAt time.Time
+	JoinedAt    sql.NullTime
+}
+
+type HelpTicket struct {
+	ID               int64
+	AvatarID         sql.NullInt64
+	ForumPostID      sql.NullInt64
+	Subject          string
+	Message          string
+	IP               string
+	CreatedAt        time.Time
+	PickedUpByUserID sql.NullInt64
+	PickedUpAt       sql.NullTime
+	ClosedAt         sql.NullTime
+}
+
+type Home struct {
+	ID                        int64
+	ProfileID                 sql.NullInt64
+	GroupID                   sql.NullInt64
+	BackgroundHomeStoreItemID sql.NullInt64
+	UpdatedAt                 time.Time
+}
+
+type HomeInventory struct {
+	AvatarID        int64
+	HomeStoreItemID int64
+	Quantity        int64
+}
+
+type HomeItem struct {
+	ID                int64
+	HomeID            int64
+	Kind              string
+	HomeStoreItemID   sql.NullInt64
+	Widget            sql.NullString
+	Skin              string
+	Body              string
+	X                 int64
+	Y                 int64
+	Z                 int64
+	CreatedByAvatarID sql.NullInt64
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
+}
+
+type HomeStoreCategory struct {
+	ID        int64
+	Name      string
+	StaffOnly bool
+	Position  int64
+}
+
+type HomeStoreItem struct {
+	ID                  int64
+	HomeStoreCategoryID int64
+	Kind                string
+	Asset               string
+	Name                string
+	Price               int64
+	Quantity            int64
+	Enabled             bool
 }
 
 type LoginAttempt struct {
@@ -64,11 +205,37 @@ type LoginAttempt struct {
 	CreatedAt time.Time
 }
 
+type NewsArticle struct {
+	ID          int64
+	AvatarID    sql.NullInt64
+	Title       string
+	Category    string
+	ImageURL    string
+	Summary     string
+	Body        string
+	PublishedAt time.Time
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
 type PasswordReset struct {
 	ID        string
 	UserID    int64
 	CreatedAt time.Time
 	ExpiresAt time.Time
+}
+
+type Profile struct {
+	ID        int64
+	AvatarID  int64
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+type ProfileTag struct {
+	ProfileID int64
+	Tag       string
+	CreatedAt time.Time
 }
 
 type Referral struct {
@@ -105,6 +272,17 @@ type Setting struct {
 	UpdatedByUserID sql.NullInt64
 }
 
+type StaffLog struct {
+	ID             int64
+	UserID         sql.NullInt64
+	TargetUserID   sql.NullInt64
+	TargetAvatarID sql.NullInt64
+	Action         string
+	Detail         string
+	IP             string
+	CreatedAt      time.Time
+}
+
 type User struct {
 	ID         int64
 	Email      string
@@ -113,6 +291,32 @@ type User struct {
 	CreatedIP  string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+}
+
+type Voucher struct {
+	Code               string
+	Credits            int64
+	CreatedByUserID    sql.NullInt64
+	CreatedAt          time.Time
+	RedeemedByAvatarID sql.NullInt64
+	RedeemedAt         sql.NullTime
+}
+
+type Wallet struct {
+	AvatarID  int64
+	Credits   int64
+	Tickets   int64
+	Film      int64
+	UpdatedAt time.Time
+}
+
+type WalletTransaction struct {
+	ID        int64
+	AvatarID  int64
+	Credits   int64
+	Reason    string
+	Detail    string
+	CreatedAt time.Time
 }
 
 type WardrobeOutfit struct {

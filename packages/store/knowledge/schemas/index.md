@@ -17,3 +17,25 @@ lexicographic filename order on every `store.Open`.
 ## Settings
 
 - [settings.schema.sql](settings.md) — Declares the settings table, runtime overrides of config values keyed by config key path.
+
+## Profiles and homes
+
+- [profiles.schema.sql](profiles.md) — Declares the habbo profiles and their tags.
+- [homes.schema.sql](homes.md) — Declares the home pages of profiles and groups and the items placed on them.
+- [home-store.schema.sql](home-store.md) — Declares the home store catalogue and the inventory of bought, unplaced items.
+
+## Community
+
+- [groups.schema.sql](groups.md) — Declares the groups habbos create and their memberships.
+- [forums.schema.sql](forums.md) — Declares the site-wide discussion board threads and posts.
+- [news.schema.sql](news.md) — Declares the news articles written in housekeeping.
+- [site.schema.sql](site.md) — Declares the promotional banners shown on the Me and community pages.
+
+## Economy
+
+- [economy.schema.sql](economy.md) — Declares habbo wallets, the credit ledger and vouchers.
+- [club.schema.sql](club.md) — Declares the Habbo Club subscription periods of habbos.
+
+## Moderation
+
+- [moderation.schema.sql](moderation.md) — Declares bans, staff alerts, help tickets and the staff log.

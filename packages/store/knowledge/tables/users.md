@@ -31,4 +31,6 @@ timestamp: 2026-10-27T21:17:19+00:00
 - Referenced by [credentials](/tables/credentials.md), [sessions](/tables/sessions.md),
   [login_attempts](/tables/login_attempts.md), [password_resets](/tables/password_resets.md),
   [avatars](/tables/avatars.md), [access_group_members](/tables/access_group_members.md),
-  [settings](/tables/settings.md) and [referrals](/tables/referrals.md).
+  [settings](/tables/settings.md), [referrals](/tables/referrals.md), [vouchers](/tables/vouchers.md),
+  [bans](/tables/bans.md), [alerts](/tables/alerts.md), [help_tickets](/tables/help_tickets.md) and
+  [staff_logs](/tables/staff_logs.md).

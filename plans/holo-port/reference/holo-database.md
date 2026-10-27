@@ -144,8 +144,8 @@ or a non-owner role, gets a role prefix; `ON DELETE CASCADE` for owned data and 
 | | `group_members` | group_id, avatar_id, role (member/admin), favourite BOOLEAN, requested_at, joined_at NULL (= pending) | PK (group_id, avatar_id), `idx_group_members_avatar_id`, UNIQUE (avatar_id) WHERE favourite |
 | `economy` | `wallets` | avatar_id PK, credits ≥ 0, tickets ≥ 0, film ≥ 0, updated_at | |
 | | `wallet_transactions` | id, avatar_id, credits (signed), reason, detail, created_at | `(avatar_id, created_at)` |
-| | `vouchers` | code TEXT PK, credits > 0, created_by_user_id, created_at, redeemed_by_avatar_id, redeemed_at | |
-| `club` | `club_subscriptions` | id, avatar_id, starts_at, ends_at, created_at | `(avatar_id, ends_at)` |
+| | `vouchers` | code TEXT `NOCASE` PK, credits > 0, created_by_user_id, created_at, redeemed_by_avatar_id, redeemed_at | |
+| `club` | `club_subscriptions` | id, avatar_id, starts_at, ends_at (CHECK > starts_at), created_at | `(avatar_id, ends_at)` |
 | `forums` | `forum_threads` | id, avatar_id, title, sticky BOOLEAN, locked BOOLEAN, views, created_at | `idx_forum_threads_created_at` |
 | | `forum_posts` | id, forum_thread_id, avatar_id, body (BBCode), created_at, edited_at, edited_by_avatar_id | `(forum_thread_id, created_at)`, `idx_forum_posts_avatar_id` |
 | `news` | `news_articles` | id, avatar_id, title, category, image_url, summary, body (BBCode), published_at, created_at, updated_at | `idx_news_articles_published_at` |

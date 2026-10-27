@@ -31,5 +31,11 @@ timestamp: 2026-10-27T21:17:19+00:00
 - Entity: [Habbo](/entities/habbo.md).
 - Referenced by [sessions](/tables/sessions.md), [login_attempts](/tables/login_attempts.md),
   [sso_tickets](/tables/sso_tickets.md), [avatar_badges](/tables/avatar_badges.md),
-  [wardrobe_outfits](/tables/wardrobe_outfits.md), [access_group_members](/tables/access_group_members.md)
-  and [referrals](/tables/referrals.md).
+  [wardrobe_outfits](/tables/wardrobe_outfits.md), [access_group_members](/tables/access_group_members.md),
+  [referrals](/tables/referrals.md), [profiles](/tables/profiles.md), [home_items](/tables/home_items.md),
+  [home_inventory](/tables/home_inventory.md), [groups](/tables/groups.md),
+  [group_members](/tables/group_members.md), [wallets](/tables/wallets.md),
+  [wallet_transactions](/tables/wallet_transactions.md), [vouchers](/tables/vouchers.md),
+  [club_subscriptions](/tables/club_subscriptions.md), [forum_threads](/tables/forum_threads.md),
+  [forum_posts](/tables/forum_posts.md), [news_articles](/tables/news_articles.md), [alerts](/tables/alerts.md),
+  [help_tickets](/tables/help_tickets.md) and [staff_logs](/tables/staff_logs.md).

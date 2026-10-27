@@ -17,3 +17,28 @@ Domain entities represented by the store's tables: their meaning, invariants, li
 ## Settings
 
 - [Setting](setting.md) — A runtime override of one config value, edited from housekeeping and merged over config.json.
+
+## Profiles and homes
+
+- [Profile](profile.md) — A habbo's web presence, which anchors its home page and its tags.
+- [Home](home.md) — A decorated home page owned by a profile or a group, with stickers, sticky notes, widgets and a background.
+- [Home store](home-store.md) — The catalogue of stickers, note packs and backgrounds for homes, and each habbo's inventory of bought items.
+
+## Community
+
+- [Group](group.md) — A group bought by a habbo, with a badge, an access mode, members, admins, pending requests and a home.
+- [Forum thread](forum-thread.md) — A thread of the site-wide discussion board with its BBCode posts.
+- [News article](news-article.md) — A news article written by staff, shown on the news pages and the news promo.
+- [Banner](banner.md) — A promotional banner shown in the side column of the Me and community pages.
+
+## Economy
+
+- [Wallet](wallet.md) — A habbo's credits, tickets and film, the ledger of every credit change, and the vouchers that add credits.
+- [Club subscription](club-subscription.md) — A paid Habbo Club period of a habbo; club membership is a habbo property, not an access attribute.
+
+## Moderation
+
+- [Ban](ban.md) — A ban of a user (all their habbos), an IP or both, with reason, optional expiry and early lifting.
+- [Alert](alert.md) — A staff message shown in a habbo's Me feed until the habbo dismisses it.
+- [Help ticket](help-ticket.md) — A help request from a habbo or a report of a forum post, handled by staff in housekeeping.
+- [Staff log](staff-log.md) — The audit trail of every staff action, with the acting user, the target user or habbo, and the IP.
