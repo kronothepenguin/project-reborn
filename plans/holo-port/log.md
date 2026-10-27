@@ -2,6 +2,10 @@
 
 ## 2026-10-27
 
+- **Done** [p0-02](/tasks/p0-02-store-open-returns-db.md): `store.Open` and `store.Must` return `*sql.DB` with
+  `_time_format=sqlite`; tests (race) and `make check-docs` pass. The persistence skill still shows the old API
+  until p0-03.
+- **Start** [p0-02](/tasks/p0-02-store-open-returns-db.md).
 - **Done** [p0-01](/tasks/p0-01-port-state-bundle.md): this bundle and the `tracking-holo-port` skill were created
   from the approved plan.
 - **Update** Open questions recorded in the phases: the group badge tint exception to the Tailwind colour rule

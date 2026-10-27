@@ -4,7 +4,7 @@ title: ping.query.sql
 description: Connectivity smoke query returning 1.
 resource: packages/store/queries/ping.query.sql
 tags: [store, query, smoke]
-timestamp: 2026-09-12
+timestamp: 2026-10-27T21:01:41+00:00
 ---
 
 # Operations
@@ -18,20 +18,20 @@ timestamp: 2026-09-12
 | Result | `int64` constant `1` |
 | Tables touched | none |
 
-`Ping` proves connectivity through the store: if it returns `1`, the database
-file opened, the connection is live, and the generated operation is bound to
-the store. It carries no domain meaning.
+`Ping` proves connectivity: if it returns `1`, the database file opened, the
+connection is live, and the generated operation is bound to it. It carries no
+domain meaning.
 
 # Examples
 
 ```go
-s, err := store.Open("habbo.db")
+db, err := store.Open("habbo.db")
 if err != nil {
     return err
 }
-defer s.Close()
+defer db.Close()
 
-if _, err := s.Ping(ctx); err != nil {
+if _, err := store.New(db).Ping(ctx); err != nil {
     return err
 }
 ```

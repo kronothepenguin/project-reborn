@@ -8,7 +8,7 @@ Concepts for `packages/store`, the project's persistence infrastructure.
 
 ## Infrastructure
 
-- [Store](store.md) — Single database owner that applies declared schemas on every open and exposes generated typed operations.
+- [Store](store.md) — Persistence infrastructure that opens the SQLite file, applies the declared schemas and provides the generated typed operations.
 
 ## Schemas
 

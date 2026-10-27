@@ -41,7 +41,7 @@ The CMS then starts on top of it with sessions, attributes, live settings and cr
 # Tasks
 
 - [p0-01 Port state bundle and tracking skill](/tasks/p0-01-port-state-bundle.md) — done
-- [p0-02 Store returns *sql.DB](/tasks/p0-02-store-open-returns-db.md) — todo
+- [p0-02 Store returns *sql.DB](/tasks/p0-02-store-open-returns-db.md) — done
 - [p0-03 Persistence and OKF skill updates](/tasks/p0-03-persistence-skill-updates.md) — todo
 - [p0-04 Identity schema](/tasks/p0-04-identity-schema.md) — todo
 - [p0-05 World schema](/tasks/p0-05-world-schema.md) — todo
