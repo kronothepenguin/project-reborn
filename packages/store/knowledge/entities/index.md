@@ -16,7 +16,7 @@ Domain entities represented by the store's tables: their meaning, invariants, li
 
 ## Settings
 
-- [Setting](setting.md) — A runtime override of one config value, edited from housekeeping and merged over config.json.
+- [Setting](setting.md) — One runtime value declared in the packages/virtual catalogue, stored as a JSON literal and edited from the installer and housekeeping.
 
 ## Profiles and homes
 

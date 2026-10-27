@@ -21,8 +21,8 @@ foreign keys, no transactions and no secondary indexes.
 | `users_club` | club start (string), months left/expired | `club_subscriptions` |
 | `cms_alerts` | staff messages shown on me.php | `alerts` |
 | `cms_banners` | banners on me and community | `banners` |
-| `cms_content` | key/value texts and toggles, no PK | config keys + `settings` |
-| `cms_system` | single-row site settings, no PK | config keys + `settings` |
+| `cms_content` | key/value texts and toggles, no PK | `settings` |
+| `cms_system` | single-row site settings, no PK | `settings` |
 | `system_config` | emulator settings | deferred (game server) except the web keys |
 | `cms_forum_threads`, `cms_forum_posts` | site-wide discussion board | `forum_threads`, `forum_posts` |
 | `cms_help` | help tickets and post reports | `help_tickets` |
@@ -92,7 +92,10 @@ foreign keys, no transactions and no secondary indexes.
 
 # Holo settings
 
-| Holo source | Key | New config key |
+Every new key below is a setting declared in `packages/virtual`; `config.json` holds only startup keys
+([0023](/decisions/0023-config-holds-startup-keys.md)).
+
+| Holo source | Key | New setting key |
 | --- | --- | --- |
 | `cms_system` | `sitename`, `shortname` | `site.name`, `site.shortName` |
 | `cms_system` | `site_closed` | `site.maintenance` |
@@ -131,7 +134,7 @@ or a non-owner role, gets a role prefix; `ON DELETE CASCADE` for owned data and 
 | `access` | `access_groups` | id, name `NOCASE`, description, staff_listed BOOLEAN, created_at, updated_at | `idx_access_groups_name` UNIQUE |
 | | `access_group_attributes` | access_group_id, attribute | PK (access_group_id, attribute) |
 | | `access_group_members` | access_group_id, user_id, display_avatar_id NULL, granted_at, granted_by_user_id | PK (access_group_id, user_id), `idx_access_group_members_user_id` |
-| `settings` | `settings` | key TEXT PK (config key path), value TEXT (JSON literal), updated_at, updated_by_user_id | |
+| `settings` | `settings` | key TEXT PK (setting key path), value TEXT (JSON literal), updated_at, updated_by_user_id | |
 | `referrals` | `referrals` | referred_user_id PK→users, referrer_avatar_id NULL, created_at, rewarded_at NULL | `idx_referrals_referrer_avatar_id` |
 | `profiles` | `profiles` | id, avatar_id UNIQUE, created_at, updated_at | |
 | | `profile_tags` | profile_id, tag, created_at | PK (profile_id, tag), `idx_profile_tags_tag` |

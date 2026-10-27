@@ -26,7 +26,7 @@ Concepts for the tables declared under `packages/store/schema/`, one per table.
 
 ## Settings
 
-- [settings](settings.md) — Runtime overrides of config values, one JSON literal per config key path.
+- [settings](settings.md) — Runtime settings, one JSON literal per declared setting key path.
 
 ## Profiles and homes
 

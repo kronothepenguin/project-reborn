@@ -1,32 +1,32 @@
 ---
 type: Entity
 title: Setting
-description: A runtime override of one config value, edited from housekeeping and merged over config.json.
+description: One runtime value declared in the packages/virtual catalogue, stored as a JSON literal and edited from the installer and housekeeping.
 tags: [store, entity, settings]
-timestamp: 2026-10-27T21:17:19+00:00
+timestamp: 2026-10-27T23:04:08+00:00
 ---
 
 # Definition
 
-`packages/config` declares every key with its type, default and validator; a setting row replaces the value of one
-key at runtime. `packages/virtual` merges the rows over the config values.
+`packages/virtual` declares every setting with its key path, type, default and validator. A row stores a value that
+differs from the declared default. `config.json` keys are never settings.
 
 # Invariants
 
-- `key` is a declared config key path; rows with an undeclared key are ignored.
-- `value` is a JSON literal that decodes into the key's type and passes its validator; an invalid row is ignored.
-- A row equal to the config value is deleted instead of stored.
-- Startup-only keys (`store.path`, `cms.port`, `housekeeping.port`) are never stored.
+- `key` is a declared setting key path; a row with an undeclared key or a `config.json` key is ignored.
+- `value` is a JSON literal of the declared type that passes the setting's validator and the rules between
+  settings; an invalid row is ignored.
+- A value equal to the declared default is deleted instead of stored.
 
 # Lifecycle
 
-- Written by `virtual.Settings.Update` from the installer and from housekeeping.
-- Deleting a row restores the config value.
-- Read once at startup and again on `Reload`.
+- Written by `virtual.Settings.Set`, one key at a time, from the installer and from housekeeping.
+- Deleting a row restores the declared default.
+- Read when a program starts and again on `Reload`.
 
 # Vocabularies
 
-- `key`: the key paths declared in `packages/config` (`site.name`, `club.price1Month`, …).
+- `key`: the key paths declared in the `packages/virtual` catalogue (`site.name`, `cms.refresh`, …).
 
 # Relations
 

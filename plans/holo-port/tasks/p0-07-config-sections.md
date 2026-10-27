@@ -81,3 +81,8 @@ Changes made on purpose:
 - `Load`'s create-when-absent path and `Create` share one encoder.
 - Bool keys have no out-of-range value, so they skip the fifth pipeline check.
 - The installer must call `Create` before anything calls `Load`; this is documented in the README and on `Create`.
+
+Later:
+
+- [0023](/decisions/0023-config-holds-startup-keys.md) moved `site`, `auth` and `settingsRefreshSeconds` out of
+  config; see [p0-13](/tasks/p0-13-settings-catalogue.md).

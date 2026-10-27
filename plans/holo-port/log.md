@@ -2,6 +2,23 @@
 
 ## 2026-10-27
 
+- **Done** [p0-13](/tasks/p0-13-settings-catalogue.md): `config.json` holds `store.path` and `cms.port`;
+  `virtual.Settings` is a map of the declared defaults, the config values and the rows, with typed getters, `…Or`
+  getters, `Set` and `Reload`. 33 config and 26 virtual test results pass (virtual with `-race`).
+- **Start** [p0-13](/tasks/p0-13-settings-catalogue.md).
+- **Create** [p0-13](/tasks/p0-13-settings-catalogue.md) to implement 0023 and 0024.
+- **Update** The P0 scope, tasks p0-09 to p0-11, phases P1, P2, P3, P5, P6 and HK-A and the database reference
+  follow 0023 and 0024: runtime values are settings, written with `Set`. HK-A gets an open question about the
+  reload interval of a housekeeping running alone.
+- **Decision** [0024](/decisions/0024-settings-catalogue-and-getters.md) supersedes
+  [0010](/decisions/0010-virtual-settings-entity.md): settings are a map of declared keys with typed getters,
+  `…Or` variants and `Set`.
+- **Decision** [0023](/decisions/0023-config-holds-startup-keys.md) supersedes
+  [0009](/decisions/0009-config-is-static-types.md): `config.json` holds only the startup keys.
+- **Done** [p0-08](/tasks/p0-08-virtual-settings.md): the `packages/virtual` module with the `Settings` entity
+  (`LoadSettings`, `Config`, `Base`, `Update`, `Reload`) and a README; 21 test results pass with `-race`. Open for
+  p0-11: whether the `Reload` ticker follows a changed `settingsRefreshSeconds`.
+- **Start** [p0-08](/tasks/p0-08-virtual-settings.md).
 - **Done** [p0-07](/tasks/p0-07-config-sections.md): `packages/config` declares `settingsRefreshSeconds` and the
   `store`, `cms`, `auth` and `site` sections (15 keys) plus `Create`; 122 test results pass. Errors now carry the
   full key path (`cms.port`).

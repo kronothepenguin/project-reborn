@@ -26,7 +26,7 @@ A signed-in user sees Holo's community chrome, their Me page and account setting
 - Layout grids: 460/310/160 (`body#home`) and 210/560/160 (`#news`, `#tags`); see
   [pages](/reference/holo-pages.md).
 - Primitives: Textarea, Bubble, Spinner.
-- Config: `features.birthdayNotifications`.
+- Settings: `features.birthdayNotifications`.
 
 # Exit criteria
 

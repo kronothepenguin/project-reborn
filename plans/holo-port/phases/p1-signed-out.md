@@ -29,7 +29,7 @@ forgotten password. The landing, legal and maintenance pages match Holo's proces
   transaction (`registration.startCredits`) and an optional referral (`referral.reward`). It enforces
   `registration.maxPerIp` per `registration.ipWindowHours`. An email that already exists gets "sign in and add a
   habbo".
-- Config sections: `registration`, `mail`, `imaging`, `referral`, `features.landingPromo`.
+- Settings: `registration.*`, `mail.*`, `imaging.*`, `referral.*`, `features.landingPromo`.
 - Primitives: Checkbox, Select, Notice, Avatar, Icon (moved from `packages/cms/src/components/icon.svelte`).
 - Queries: registration, referrals, the promo habbos, password resets.
 

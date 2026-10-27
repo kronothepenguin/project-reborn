@@ -14,7 +14,7 @@ func TestCreateWritesTheConfig(t *testing.T) {
 	resetLoadState(t)
 	cfg := defaults()
 	cfg.CMS.Port = 8080
-	cfg.Site.Name = "Reborn Hotel"
+	cfg.Store.Path = "data/reborn.db"
 
 	if err := Create(cfg); err != nil {
 		t.Fatalf("Create() error = %v", err)

@@ -125,16 +125,3 @@ func runKeyCases(t *testing.T, cases []keyCase) {
 		})
 	}
 }
-
-func TestRootKeys(t *testing.T) {
-	runKeyCases(t, []keyCase{{
-		key:        "settingsRefreshSeconds",
-		value:      func(c *Config) any { return c.SettingsRefreshSeconds },
-		def:        1,
-		explicit:   `{"settingsRefreshSeconds": 5}`,
-		want:       5,
-		wrongType:  `{"settingsRefreshSeconds": "5"}`,
-		typeName:   "int",
-		outOfRange: `{"settingsRefreshSeconds": 0}`,
-	}})
-}

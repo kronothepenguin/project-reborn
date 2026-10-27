@@ -23,7 +23,7 @@ Habbos see their credits and transactions, redeem vouchers, buy club months and 
 
 - A club purchase adds a `club_subscriptions` period starting at the later of now and the current end, debits
   credits with a ledger row, and grants the club badge on the first purchase.
-- Config: `club.*`, `creditsPage.*`.
+- Settings: `club.*`, `creditsPage.*`.
 
 # Exit criteria
 

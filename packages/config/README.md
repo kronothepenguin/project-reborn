@@ -1,6 +1,6 @@
 # config
 
-Shared configuration layer for Project Reborn. `config.json` in the process working directory is the project's only configuration source; environment variables are never consulted. The types here describe that file; runtime overrides stored in the database (the `settings` table) are merged over them by `packages/virtual`, not here.
+Shared configuration layer for Project Reborn. `config.json` in the process working directory is the project's only configuration source; environment variables are never consulted. It holds only the values a program needs before the database opens, such as the database path and the ports. Values that can change while a program runs (site name, maintenance, limits) are settings: they are declared in `packages/virtual` and stored in the database, never here.
 
 ## Usage
 
@@ -34,31 +34,20 @@ Loading is the first thing a program does. An unreadable file, invalid JSON, or 
 
 | Key | Type | Default | Allowed |
 | --- | --- | --- | --- |
-| `settingsRefreshSeconds` | int | 1 | 1–3600 |
 | `store.path` | string | `habbo.db` | non-empty, no `?` or `#` |
 | `cms.port` | int | 17387 | 1–65535 |
-| `auth.secureCookies` | bool | true | |
-| `auth.sessionIdleMinutes` | int | 30 | 5–1440 |
-| `auth.rememberDays` | int | 100 | 1–365 |
-| `auth.loginMaxFailures` | int | 5 | 1–100 |
-| `auth.loginWindowMinutes` | int | 15 | 1–1440 |
-| `auth.passwordMinLength` | int | 6 | 6–128 |
-| `auth.passwordMaxLength` | int | 25 | 6–1024, at least `auth.passwordMinLength` |
-| `auth.resetTokenMinutes` | int | 60 | 5–1440 |
-| `site.name` | string | `Holo Hotel` | 1–30 characters |
-| `site.shortName` | string | `Holo` | 1–30 characters |
-| `site.url` | string | `http://localhost:17387` | http or https origin without a path |
-| `site.maintenance` | bool | false | |
 
-## Declaring settings
+`virtual.Settings` exposes these values under the same key paths (`GetInt("cms.port")`), and a settings row never overrides them.
 
-Components add sections and shared root settings, one declaration at a time, each with its own default and validation rule. The step-by-step workflow, worked example, tests, and gotchas live in the `adding-config-sections` skill at `.agents/skills/adding-config-sections/SKILL.md`.
+## Declaring keys
+
+A key belongs here only when a program reads it before the database opens. Components add sections and shared root keys, one declaration at a time, each with its own default and validation rule. The step-by-step workflow, worked example, tests, and gotchas live in the `adding-config-sections` skill at `.agents/skills/adding-config-sections/SKILL.md`.
 
 Conventions:
 
 - Default per field: `func Default<Field>() <Type>`.
 - Validation per field: `func Validate<Field>(value <Type>) error`; the section's `Validate()` prefixes the field key and `Config.Validate()` prefixes the section key, so errors carry the full key path.
-- A section lives in its own package under `packages/config/<section>` and registers on `Config` in `config.go`; a shared setting is declared directly on `Config`.
+- A section lives in its own package under `packages/config/<section>` and registers on `Config` in `config.go`; a shared key is declared directly on `Config`.
 - Defaults must satisfy their own validators.
 
 Gates, from `packages/config`:

@@ -2,7 +2,8 @@
 type: Decision
 title: Settings entity in packages/virtual
 description: packages/virtual holds a Settings entity, a type-safe wrapper over config with the settings rows merged in, which receives the database instead of holding it.
-status: accepted
+status: superseded
+superseded_by: "0024"
 timestamp: 2026-10-27T20:48:19+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [virtual, config, settings]

@@ -26,7 +26,7 @@ Every habbo has a home page that guests can read and the owner can decorate with
 - Club skins (hc_machine, hc_pillow) need the habbo's active club subscription; the staff category and the staff
   skin need `homes.staffItems`.
 - Playground: 922 px wide for group homes and club owners, 752 px otherwise, by 1360 px high.
-- Primitives: Badge, Tag. Config: `homes.*`.
+- Primitives: Badge, Tag. Settings: `homes.*`.
 
 # Exit criteria
 

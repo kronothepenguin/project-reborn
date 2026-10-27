@@ -8,9 +8,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/kronothepenguin/project-reborn/packages/config/auth"
 	"github.com/kronothepenguin/project-reborn/packages/config/cms"
-	"github.com/kronothepenguin/project-reborn/packages/config/site"
 	"github.com/kronothepenguin/project-reborn/packages/config/store"
 )
 
@@ -23,65 +21,25 @@ var (
 )
 
 type Config struct {
-	SettingsRefreshSeconds int         `json:"settingsRefreshSeconds"`
-	Store                  store.Store `json:"store"`
-	CMS                    cms.CMS     `json:"cms"`
-	Auth                   auth.Auth   `json:"auth"`
-	Site                   site.Site   `json:"site"`
-}
-
-func DefaultSettingsRefreshSeconds() int {
-	return 1
-}
-
-func ValidateSettingsRefreshSeconds(value int) error {
-	if value < 1 || value > 3600 {
-		return fmt.Errorf("must be between 1 and 3600, got %d", value)
-	}
-	return nil
+	Store store.Store `json:"store"`
+	CMS   cms.CMS     `json:"cms"`
 }
 
 func defaults() *Config {
 	return &Config{
-		SettingsRefreshSeconds: DefaultSettingsRefreshSeconds(),
-		Store:                  store.Store{Path: store.DefaultPath()},
-		CMS:                    cms.CMS{Port: cms.DefaultPort()},
-		Auth: auth.Auth{
-			SecureCookies:      auth.DefaultSecureCookies(),
-			SessionIdleMinutes: auth.DefaultSessionIdleMinutes(),
-			RememberDays:       auth.DefaultRememberDays(),
-			LoginMaxFailures:   auth.DefaultLoginMaxFailures(),
-			LoginWindowMinutes: auth.DefaultLoginWindowMinutes(),
-			PasswordMinLength:  auth.DefaultPasswordMinLength(),
-			PasswordMaxLength:  auth.DefaultPasswordMaxLength(),
-			ResetTokenMinutes:  auth.DefaultResetTokenMinutes(),
-		},
-		Site: site.Site{
-			Name:        site.DefaultName(),
-			ShortName:   site.DefaultShortName(),
-			URL:         site.DefaultURL(),
-			Maintenance: site.DefaultMaintenance(),
-		},
+		Store: store.Store{Path: store.DefaultPath()},
+		CMS:   cms.CMS{Port: cms.DefaultPort()},
 	}
 }
 
 // Validate prefixes each error with the full key path (cms.port), the same path
-// a settings row uses to override the value.
+// virtual.Settings uses for the value.
 func (c *Config) Validate() error {
-	if err := ValidateSettingsRefreshSeconds(c.SettingsRefreshSeconds); err != nil {
-		return fmt.Errorf("settingsRefreshSeconds: %w", err)
-	}
 	if err := c.Store.Validate(); err != nil {
 		return fmt.Errorf("store.%w", err)
 	}
 	if err := c.CMS.Validate(); err != nil {
 		return fmt.Errorf("cms.%w", err)
-	}
-	if err := c.Auth.Validate(); err != nil {
-		return fmt.Errorf("auth.%w", err)
-	}
-	if err := c.Site.Validate(); err != nil {
-		return fmt.Errorf("site.%w", err)
 	}
 	return nil
 }

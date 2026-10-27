@@ -25,4 +25,4 @@ Concepts for the query files under `packages/store/queries/`.
 
 ## Settings
 
-- [settings.query.sql](settings.md) — Settings operations to list, upsert and delete the runtime overrides of config values.
+- [settings.query.sql](settings.md) — Settings operations to list, upsert and delete the stored runtime settings.

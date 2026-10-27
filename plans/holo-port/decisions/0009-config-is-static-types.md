@@ -2,7 +2,8 @@
 type: Decision
 title: Config is static types; settings map onto config keys
 description: packages/config holds static types describing config.json, and database settings rows override config keys at runtime.
-status: accepted
+status: superseded
+superseded_by: "0023"
 timestamp: 2026-10-27T20:48:19+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [config, settings]

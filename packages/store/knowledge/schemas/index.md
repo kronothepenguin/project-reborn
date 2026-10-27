@@ -16,7 +16,7 @@ lexicographic filename order on every `store.Open`.
 
 ## Settings
 
-- [settings.schema.sql](settings.md) — Declares the settings table, runtime overrides of config values keyed by config key path.
+- [settings.schema.sql](settings.md) — Declares the settings table, the runtime settings keyed by declared key path.
 
 ## Profiles and homes
 

@@ -12,12 +12,13 @@ starts.
 - [p0-05 Write the world schema](/tasks/p0-05-world-schema.md) — Schema files and OKF concepts for profiles, homes, the home store, groups, economy, club, forums, news, moderation and site. **done**
 - [p0-06 Write the queries P0 needs](/tasks/p0-06-p0-queries.md) — Named sqlc operations for auth, habbo creation, access and settings, with their OKF query concepts. **done**
 - [p0-07 Declare the P0 config sections and Create](/tasks/p0-07-config-sections.md) — Add settingsRefreshSeconds and the store, cms, auth and site sections to packages/config, plus Create for the installer. **done**
-- [p0-08 Build the Settings entity in packages/virtual](/tasks/p0-08-virtual-settings.md) — Create the packages/virtual module with a type-safe Settings wrapper that merges settings rows over config and receives the database. **todo**
+- [p0-08 Build the Settings entity in packages/virtual](/tasks/p0-08-virtual-settings.md) — Create the packages/virtual module with a type-safe Settings wrapper that merges settings rows over config and receives the database. **done**
 - [p0-09 Rewrite packages/auth](/tasks/p0-09-auth-rewrite.md) — Replace the session-only library with argon2id passwords, habbo-name login with throttling and bans, sessions, middleware, attributes and password reset. **todo**
 - [p0-10 Scaffold and build the installer](/tasks/p0-10-installer.md) — Create packages/installer and apps/installer with tools/create and build the status, config, site and administrator steps. **todo**
 - [p0-11 Wire the CMS to config, store, settings and auth](/tasks/p0-11-cms-wiring.md) — The CMS runners open config, store, settings and auth, and the router gets its dependencies, cross-origin protection, sessions and maintenance mode. **todo**
 
 - [p0-12 Remove the unused store test data](/tasks/p0-12-remove-store-testdata.md) — Delete packages/store/testdata, stale schema files from the store refactor that no code references. **done**
+- [p0-13 Move runtime values into the settings catalogue](/tasks/p0-13-settings-catalogue.md) — Reduce packages/config to the startup keys and rewrite virtual.Settings as a map filled from declared defaults, config.json and the settings rows, with typed getters and Set. **done**
 
 ## Later phases
 

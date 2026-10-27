@@ -21,13 +21,13 @@ read the staff log; every change is logged.
 - Layout `src/layouts/housekeeping.astro`: tab strip, left menu and content, in the
   [housekeeping colours](/reference/colours.md#housekeeping).
 - One helper writes a `staff_logs` row for every mutation.
-- Config: `housekeeping.port`, `housekeeping.note`.
+- Config: `housekeeping.port`. Settings: `housekeeping.note`.
 
 | Holo `?p=` | Route under `/housekeeping` | Attribute / notes |
 | --- | --- | --- |
 | login, logout | none (shared session) | non-staff get 403 |
-| dashboard | `GET /{$}`, `POST /note` | counts (habbos, groups, active bans, logs), holders of `housekeeping.accessGroups`, shared note saved with `Settings.Update` |
-| site, maintenance, cms_config, content | `GET /settings`, `POST /settings/{section}` | `housekeeping.settings`; one typed form per config section; overrides shown by comparing `Config()` with `Base()`; revert sets the field back to `Base()`; `mail.password` masked |
+| dashboard | `GET /{$}`, `POST /note` | counts (habbos, groups, active bans, logs), holders of `housekeeping.accessGroups`, shared note saved with `Settings.Set` |
+| site, maintenance, cms_config, content | `GET /settings`, `POST /settings/{section}` | `housekeeping.settings`; forms over the declared settings, saved with `Settings.Set`; a value set back to its default deletes the row; `mail.password` masked |
 | ranktool | `GET/POST /access-groups`, `GET/POST /access-groups/{id}`, `POST /users/{id}/access-groups` | `housekeeping.accessGroups`; attribute checkboxes, `staff_listed`, display habbo, last-holder guard |
 | logs | `GET /logs` | `housekeeping.logs` |
 
@@ -40,3 +40,7 @@ read the staff log; every change is logged.
 # Tasks
 
 Created when the phase starts.
+
+# Open questions
+
+- Which setting a housekeeping running alone reads for its reload interval ([0024](/decisions/0024-settings-catalogue-and-getters.md)).

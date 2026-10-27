@@ -23,9 +23,10 @@ generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
   3. `virtual.LoadSettings`.
   4. `auth.New(db, s)`.
   5. `cms.New(..., WithDB, WithSettings, WithAuth)`.
-  6. `http.Server` on `s.Config().CMS.Port` with
+  6. `http.Server` on `cfg.CMS.Port` with
      `http.NewCrossOriginProtection().Handler(a.Sessions(mux))`.
-  7. A `Reload` ticker every `settingsRefreshSeconds`.
+  7. When the CMS runs alone, `Reload` every `cms.refresh` seconds, reading the interval again after each
+     reload; in one binary with housekeeping nothing reloads ([0024](/decisions/0024-settings-catalogue-and-getters.md)).
 - [ ] `packages/cms/internal/router/router.go`:
       `Deps{Resolver, DB, Queries, Auth, Settings}`; handlers use `r.deps`.
 - [ ] Maintenance middleware: while `site.maintenance` is on and the user lacks `site.maintenanceBypass`, serve

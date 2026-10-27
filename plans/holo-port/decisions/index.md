@@ -17,10 +17,12 @@ change supersedes a decision with a new one.
 
 - [0004 Fresh start without Holo data](/decisions/0004-fresh-start.md) — No data is imported from a Holo or Holograph MySQL database, so the schema keeps no legacy ids, formats or hashes.
 - [0007 Store knowledge documents entities and tables](/decisions/0007-store-okf-entities-and-tables.md) — The store's OKF bundle adds entities/ and tables/ concepts next to the required schemas/ and queries/ concepts.
-- [0009 Config is static types; settings map onto config keys](/decisions/0009-config-is-static-types.md) — packages/config holds static types describing config.json, and database settings rows override config keys at runtime.
-- [0010 Settings entity in packages/virtual](/decisions/0010-virtual-settings-entity.md) — packages/virtual holds a Settings entity, a type-safe wrapper over config with the settings rows merged in, which receives the database instead of holding it.
+- [0009 Config is static types; settings map onto config keys](/decisions/0009-config-is-static-types.md) — packages/config holds static types describing config.json, and database settings rows override config keys at runtime. **Superseded by [0023](/decisions/0023-config-holds-startup-keys.md).**
+- [0010 Settings entity in packages/virtual](/decisions/0010-virtual-settings-entity.md) — packages/virtual holds a Settings entity, a type-safe wrapper over config with the settings rows merged in, which receives the database instead of holding it. **Superseded by [0024](/decisions/0024-settings-catalogue-and-getters.md).**
 - [0011 store.Open returns *sql.DB](/decisions/0011-store-returns-sql-db.md) — The Store wrapper is removed; store.Open returns *sql.DB and callers run the sqlc queries on a db or a transaction.
 - [0012 Native SQLite date and boolean types](/decisions/0012-sqlite-native-types.md) — Columns use DATETIME for instants, DATE for birth dates and BOOLEAN with TRUE/FALSE instead of unix-second integers and 0/1.
+- [0023 config.json holds only startup keys](/decisions/0023-config-holds-startup-keys.md) — packages/config declares only the values a program needs before the database opens; every other value is a setting declared in packages/virtual.
+- [0024 Settings are declared keys read through typed getters](/decisions/0024-settings-catalogue-and-getters.md) — packages/virtual holds Settings, a map of key paths filled from declared defaults, config.json and the settings rows, read with typed getters and written one key at a time.
 
 ## Scope
 

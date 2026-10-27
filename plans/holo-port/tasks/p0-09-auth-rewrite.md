@@ -4,7 +4,7 @@ title: Rewrite packages/auth
 description: Replace the session-only library with argon2id passwords, habbo-name login with throttling and bans, sessions, middleware, attributes and password reset.
 status: todo
 phase: p0
-depends_on: [p0-06, p0-08]
+depends_on: [p0-06, p0-13]
 packages: [packages/auth]
 holo: [source/holo/includes/inc.crypt.php, source/holo/index.php, source/holo/logout.php, source/holo/security_check.php, source/holo/forgot.php, source/holo/core.php]
 timestamp: 2026-10-27T20:48:19+00:00
@@ -49,3 +49,5 @@ cd packages/auth && gofmt -l . && go vet ./... && go test ./... -race
 # Notes
 
 - SSO tickets are built with the deferred client page ([0013](/decisions/0013-defer-game-server-features.md)).
+- Limits come from the settings getters, such as `s.GetInt("auth.rememberDays")` and
+  `s.GetBool("auth.secureCookies")` ([0024](/decisions/0024-settings-catalogue-and-getters.md)).

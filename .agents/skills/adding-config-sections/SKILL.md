@@ -1,18 +1,19 @@
 ---
 name: adding-config-sections
-description: Adds a configuration section or shared root setting to the layer in packages/config: section package layout, lowerCamelCase json tags, per-field default and validate functions, root registration on Config, and the mandatory tests. Use when a component needs settings from config.json, when extending packages/config, or when a project-wide setting must be declared.
+description: Adds a startup key to config.json through packages/config: section package layout, lowerCamelCase json tags, per-field default and validate functions, root registration on Config, and the mandatory tests. Use when a program needs a value before the database opens (a path, a port) or when extending packages/config. Values that can change at runtime are settings declared in the packages/virtual catalogue instead.
 ---
 
 # Adding configuration sections
 
-Every setting goes through the shared layer; no consumer parses `config.json` or reads environment variables. Read `packages/config/README.md` for the file contract.
+`config.json` holds only the values a program needs before the database opens, such as the database path and the ports. A value that can change while the program runs (site name, maintenance, limits, toggles) is a setting: declare it in the catalogue of `packages/virtual` (see `packages/virtual/README.md`), not here. No consumer parses `config.json` or reads environment variables. Read `packages/config/README.md` for the file contract.
 
-Decide where the setting belongs:
+Decide where the key belongs:
 
-| Setting | Home |
+| Key | Home |
 | --- | --- |
-| Belongs to one component or feature | Section package `packages/config/<section>` |
-| Belongs to the whole project | Field directly on `Config` in `packages/config/config.go` |
+| Read before the database opens, by one component | Section package `packages/config/<section>` |
+| Read before the database opens, by the whole project | Field directly on `Config` in `packages/config/config.go` |
+| Can change while the program runs | Not config: a setting in the `packages/virtual` catalogue |
 
 ## Workflow: add a section
 
@@ -58,8 +59,8 @@ Decide where the setting belongs:
    }
    ```
 
-   The section prefix makes every error name the full key path (`cms.port`), the same path a `settings` row uses
-   to override the value.
+   The section prefix makes every error name the full key path (`cms.port`), the same path `virtual.Settings` uses
+   for the value (`GetInt("cms.port")`).
 
 3. Add `packages/config/<section>/<section>_test.go` covering the unit behavior: `Default<Field>()` satisfies `Validate<Field>()`, `Validate<Field>()` accepts and rejects representative values, and the struct round-trips its lowerCamelCase `json` tags.
 
@@ -71,7 +72,7 @@ Decide where the setting belongs:
    gofmt -l . && go vet ./... && go test ./...
    ```
 
-## Workflow: add a shared root setting
+## Workflow: add a shared root key
 
 1. In `packages/config/config.go`, add the field to `Config` with a lowerCamelCase `json` tag, and declare `Default<Field>()` and `Validate<Field>()` beside it.
 2. Compose the default in `defaults()` and call `Validate<Field>(c.<Field>)` in `Config.Validate()`, prefixing the key in the returned error.
@@ -81,7 +82,7 @@ Decide where the setting belongs:
 
 Full-pipeline tests (package `config`):
 
-- Create and defaults: with no `config.json`, `Load()` succeeds, the setting holds its declared default, and the created file contains that default.
+- Create and defaults: with no `config.json`, `Load()` succeeds, the key holds its declared default, and the created file contains that default.
 - Missing key: an existing file without the key returns the default; the file stays byte-identical.
 - Explicit value: a value in the file wins over the default.
 - Wrong type: a string where a number is declared fails; the error names `config.json` and the key with the expected type.
@@ -115,7 +116,7 @@ New configuration declaration:
 - No environment variables: `config.json` in the working directory is the only source.
 - Defaults must satisfy their own validators; a bad default is a programming error the tests catch.
 - Keys are lowerCamelCase, for section names and field tags alike.
-- One declaration per setting: every consumer uses the same `Default<Field>` and `Validate<Field>`.
+- One declaration per key: every consumer uses the same `Default<Field>` and `Validate<Field>`.
 - Sections never import package `config`; the dependency direction is parent to section.
 - Adding a declaration changes no existing declaration, default, or rule.
 - Loading happens once per process through `sync.Once`; only tests in package `config` can reset that state with the `resetLoadState` helper.
