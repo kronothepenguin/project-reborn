@@ -3,6 +3,7 @@ package config
 import (
 	"bytes"
 	"os"
+	"reflect"
 	"strings"
 	"sync"
 	"testing"
@@ -70,7 +71,7 @@ func TestLoadCreatesFileWhenAbsent(t *testing.T) {
 	if cfg == nil {
 		t.Fatal("Load() returned nil config")
 	}
-	if *cfg != *defaults() {
+	if !reflect.DeepEqual(cfg, defaults()) {
 		t.Errorf("Load() = %+v, want defaults %+v", *cfg, *defaults())
 	}
 

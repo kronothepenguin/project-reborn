@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"os"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -57,7 +58,7 @@ func runKeyCases(t *testing.T, cases []keyCase) {
 				if err != nil {
 					t.Fatalf("Load() error = %v", err)
 				}
-				if got := c.value(cfg); got != c.def {
+				if got := c.value(cfg); !reflect.DeepEqual(got, c.def) {
 					t.Errorf("%s = %v, want default %v", c.key, got, c.def)
 				}
 				data, err := os.ReadFile(configFilename)
@@ -74,7 +75,7 @@ func runKeyCases(t *testing.T, cases []keyCase) {
 				if err != nil {
 					t.Fatalf("Load() error = %v", err)
 				}
-				if got := c.value(cfg); got != c.def {
+				if got := c.value(cfg); !reflect.DeepEqual(got, c.def) {
 					t.Errorf("%s = %v, want default %v", c.key, got, c.def)
 				}
 				data, err := os.ReadFile(configFilename)
@@ -91,7 +92,7 @@ func runKeyCases(t *testing.T, cases []keyCase) {
 				if err != nil {
 					t.Fatalf("Load() error = %v", err)
 				}
-				if got := c.value(cfg); got != c.want {
+				if got := c.value(cfg); !reflect.DeepEqual(got, c.want) {
 					t.Errorf("%s = %v, want %v", c.key, got, c.want)
 				}
 			})

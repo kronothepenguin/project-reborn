@@ -2,6 +2,13 @@
 
 ## 2026-10-28
 
+- **Done** [p0-16](/tasks/p0-16-trusted-proxies.md): the `proxy` section in `packages/config` and the
+  `auth.RealIP` middleware; config, auth, virtual and installer tests pass, and three deliberate trust bugs were
+  each caught by the tests.
+- **Start** [p0-16](/tasks/p0-16-trusted-proxies.md).
+- **Create** [p0-16](/tasks/p0-16-trusted-proxies.md) to implement 0028.
+- **Decision** [0028](/decisions/0028-trusted-proxies-in-config.md): a `proxy` section in `config.json`, off
+  by default, makes `auth.RealIP` take the client IP from `X-Forwarded-For` of trusted proxies.
 - **Done** [p0-15](/tasks/p0-15-runners-from-root.md): `make dev` starts air from the repository root for the
   installer and the CMS, and `tools/create` generates apps that way; both runners were checked running from the
   root.

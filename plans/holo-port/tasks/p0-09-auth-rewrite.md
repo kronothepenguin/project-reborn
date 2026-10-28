@@ -114,6 +114,8 @@ Open:
 
 - The client IP is the connection's peer. Behind a reverse proxy every request has the proxy's IP, so IP throttling
   and IP bans would hit everyone. Trusting `X-Forwarded-For` needs the user's decision.
+  Later: [0028](/decisions/0028-trusted-proxies-in-config.md) settled it with `auth.RealIP`
+  ([p0-16](/tasks/p0-16-trusted-proxies.md)).
 - The last holder of `housekeeping.accessGroups` is guarded in HK-A, where access groups are edited.
 - SSO tickets are built with the deferred client page ([0013](/decisions/0013-defer-game-server-features.md)).
 - Limits come from the settings getters, such as `s.GetInt("auth.rememberDays")` and

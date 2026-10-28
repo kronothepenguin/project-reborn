@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/kronothepenguin/project-reborn/packages/config/cms"
+	"github.com/kronothepenguin/project-reborn/packages/config/proxy"
 	"github.com/kronothepenguin/project-reborn/packages/config/store"
 )
 
@@ -23,12 +24,14 @@ var (
 type Config struct {
 	Store store.Store `json:"store"`
 	CMS   cms.CMS     `json:"cms"`
+	Proxy proxy.Proxy `json:"proxy"`
 }
 
 func defaults() *Config {
 	return &Config{
 		Store: store.Store{Path: store.DefaultPath()},
 		CMS:   cms.CMS{Port: cms.DefaultPort()},
+		Proxy: proxy.Proxy{Enabled: proxy.DefaultEnabled(), Trusted: proxy.DefaultTrusted()},
 	}
 }
 
@@ -40,6 +43,9 @@ func (c *Config) Validate() error {
 	}
 	if err := c.CMS.Validate(); err != nil {
 		return fmt.Errorf("cms.%w", err)
+	}
+	if err := c.Proxy.Validate(); err != nil {
+		return fmt.Errorf("proxy.%w", err)
 	}
 	return nil
 }

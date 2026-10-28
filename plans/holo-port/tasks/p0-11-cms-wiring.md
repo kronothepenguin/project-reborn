@@ -24,7 +24,8 @@ generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
   4. `auth.New(db, s)`.
   5. `cms.New(..., WithDB, WithSettings, WithAuth)`.
   6. `http.Server` on `cfg.CMS.Port` with
-     `http.NewCrossOriginProtection().Handler(a.Sessions(mux))`.
+     `http.NewCrossOriginProtection().Handler(a.Sessions(mux))`, wrapped in `auth.RealIP(cfg.Proxy)`
+     ([0028](/decisions/0028-trusted-proxies-in-config.md)).
   7. When the CMS runs alone, `Reload` every `cms.refresh` seconds, reading the interval again after each
      reload; in one binary with housekeeping nothing reloads ([0024](/decisions/0024-settings-catalogue-and-getters.md)).
 - [ ] `packages/cms/internal/router/router.go`:

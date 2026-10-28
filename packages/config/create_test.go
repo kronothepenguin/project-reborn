@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io/fs"
 	"os"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -43,7 +44,7 @@ func TestCreateWritesTheConfig(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Load() after Create() error = %v", err)
 	}
-	if *loaded != *cfg {
+	if !reflect.DeepEqual(loaded, cfg) {
 		t.Errorf("Load() = %+v, want the created %+v", *loaded, *cfg)
 	}
 }

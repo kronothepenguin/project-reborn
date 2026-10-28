@@ -176,9 +176,11 @@ func TestLoadSettingsWithoutRowsHoldsDefaultsAndConfig(t *testing.T) {
 			t.Errorf("%s = %#v, want the default %#v", key, values[key], d.def)
 		}
 	}
-	assertValues(t, s, map[string]any{"cms.port": 18000, "store.path": "habbo.db"})
-	if len(values) != len(catalogue)+2 {
-		t.Errorf("the map holds %d keys, want the %d declared settings and the 2 config keys", len(values), len(catalogue))
+	assertValues(t, s, map[string]any{"cms.port": 18000, "store.path": "habbo.db", "proxy.enabled": false})
+	fromConfig := make(map[string]any)
+	dump("", reflect.ValueOf(*testConfig), fromConfig)
+	if len(values) != len(catalogue)+len(fromConfig) {
+		t.Errorf("the map holds %d keys, want the %d declared settings and the %d config keys", len(values), len(catalogue), len(fromConfig))
 	}
 }
 
@@ -452,7 +454,7 @@ func TestSetRefusals(t *testing.T) {
 			if rows := listRows(t, db); len(rows) != 0 {
 				t.Errorf("rows written despite the refusal: %+v", rows)
 			}
-			if !maps.Equal(*s.values.Load(), before) {
+			if !reflect.DeepEqual(*s.values.Load(), before) {
 				t.Errorf("the values changed despite the refusal")
 			}
 		})

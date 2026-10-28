@@ -66,10 +66,14 @@ The `Attribute` constants and `Catalogue()` (name and description) follow decisi
 - The caller builds the link (`site.url` + `/reset/<token>`) and sends the mail.
 - `ResetPassword(ctx, token, password)` validates the password, then sets it once: every reset of the user is deleted and every session of the user ends. An unknown, used or expired token gives `ErrInvalidReset`.
 
+## Behind a reverse proxy
+
+`RealIP(cfg.Proxy)` returns a middleware for the runners to put in front of everything. With `proxy.enabled` in `config.json`, a request whose connection comes from an address or range in `proxy.trusted` gets the client's address as its `RemoteAddr`, taken from `X-Forwarded-For`: read from the right, skipping trusted proxies, because entries further left come from the client and can be forged. Any other request keeps the connection's address, and with `proxy.enabled` false nothing changes.
+
 ## Gotchas
 
 - `RequireSession`, `RequireAttribute` and `SwitchHabbo` read the session that `Sessions` put in the context, so `Sessions` must wrap them.
-- The client IP is the connection's peer and `X-Forwarded-For` is ignored. Behind a reverse proxy every request has the proxy's IP, so IP throttling and IP bans would hit everyone.
+- Behind a reverse proxy without `RealIP`, or with `proxy.enabled` false, every request has the proxy's IP, so IP throttling and IP bans would hit everyone.
 - JSON callers must send `Accept: application/json` to get 401 instead of a redirect.
 - The store's pool has one connection, so calling `auth` while holding a transaction blocks forever.
 

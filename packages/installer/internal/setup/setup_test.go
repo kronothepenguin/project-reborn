@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"reflect"
 	"slices"
 	"strings"
 	"testing"
@@ -16,12 +17,17 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/config/cms"
+	"github.com/kronothepenguin/project-reborn/packages/config/proxy"
 	storeconfig "github.com/kronothepenguin/project-reborn/packages/config/store"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 func testConfig(path string, port int) *config.Config {
-	return &config.Config{Store: storeconfig.Store{Path: path}, CMS: cms.CMS{Port: port}}
+	return &config.Config{
+		Store: storeconfig.Store{Path: path},
+		CMS:   cms.CMS{Port: port},
+		Proxy: proxy.Proxy{Enabled: proxy.DefaultEnabled(), Trusted: proxy.DefaultTrusted()},
+	}
 }
 
 func testAdministrator() Administrator {
@@ -90,7 +96,7 @@ func TestConfigureWritesConfigAndCreatesTheDatabase(t *testing.T) {
 	if err := json.Unmarshal(data, &written); err != nil {
 		t.Fatalf("decode %s: %v", configFile, err)
 	}
-	if written != *testConfig("habbo.db", 17400) {
+	if !reflect.DeepEqual(written, *testConfig("habbo.db", 17400)) {
 		t.Errorf("%s = %+v", configFile, written)
 	}
 	if _, err := os.Stat("habbo.db"); err != nil {

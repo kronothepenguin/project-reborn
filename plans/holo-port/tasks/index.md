@@ -21,6 +21,7 @@ starts.
 - [p0-13 Move runtime values into the settings catalogue](/tasks/p0-13-settings-catalogue.md) — Reduce packages/config to the startup keys and rewrite virtual.Settings as a map filled from declared defaults, config.json and the settings rows, with typed getters and Set. **done**
 - [p0-14 Generate dotfile templates in tools/create](/tasks/p0-14-create-dotfile-templates.md) — tools/create embeds templates/* without all:, so the .air.toml template is never generated and make dev of a new app has no air config. **done**
 - [p0-15 Run the dev runners from the repository root](/tasks/p0-15-runners-from-root.md) — make dev starts air from the repository root, so the installer and the CMS read and write the root config.json; tools/create generates new apps the same way. **done**
+- [p0-16 Take the client IP from trusted proxies](/tasks/p0-16-trusted-proxies.md) — Add the proxy section to packages/config and the auth.RealIP middleware, which reads X-Forwarded-For only from trusted proxies when enabled. **done**
 
 ## Later phases
 

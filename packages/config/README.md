@@ -36,8 +36,12 @@ Loading is the first thing a program does. An unreadable file, invalid JSON, or 
 | --- | --- | --- | --- |
 | `store.path` | string | `habbo.db` | non-empty, no `?` or `#` |
 | `cms.port` | int | 17387 | 1–65535 |
+| `proxy.enabled` | bool | false | |
+| `proxy.trusted` | []string | `["127.0.0.1", "::1"]` | IP addresses or CIDR ranges, at least one when `proxy.enabled` |
 
-`virtual.Settings` exposes these values under the same key paths (`GetInt("cms.port")`), and a settings row never overrides them.
+`proxy` is for a hotel behind a reverse proxy: production enables it in its `config.json`, and `auth.RealIP` then takes the client IP from the `X-Forwarded-For` header of requests that come from a trusted address or range.
+
+`virtual.Settings` exposes these values under the same key paths (`GetInt("cms.port")`; it has no getter for lists such as `proxy.trusted`), and a settings row never overrides them.
 
 ## Declaring keys
 
