@@ -1,88 +1,137 @@
 package auth
 
 import (
-	"crypto/hmac"
+	"context"
 	"crypto/rand"
 	"crypto/sha256"
+	"database/sql"
 	"encoding/base64"
-	"fmt"
+	"encoding/hex"
+	"errors"
 	"log/slog"
+	"net/http"
 	"time"
+
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
-// AccountID identifies the account a session belongs to. It is opaque to the
-// library and matches the project's existing account identifiers.
-type AccountID = int64
+const cookieName = "reborn_session"
 
-const (
-	// minTokenBytes is the hard lower bound for credential entropy (128 bits).
-	minTokenBytes = 16
-	// csrfMessage is the fixed message bound into the synchronizer token.
-	csrfMessage = "project-reborn/auth/csrf/v1"
-)
+// touchEvery bounds how often a request writes the sliding expiry.
+const touchEvery = time.Minute
 
-// Session is the persisted session record. It never carries the raw
-// credential; ID is a one-way digest of it.
 type Session struct {
-	ID                string
-	AccountID         AccountID
-	CreatedAt         time.Time
-	LastSeenAt        time.Time
-	IdleExpiresAt     time.Time
-	AbsoluteExpiresAt time.Time
-	Remember          bool
-	RevokedAt         time.Time
-	UserAgent         string
-	Address           string
+	id        string
+	UserID    int64
+	AvatarID  int64
+	Remember  bool
+	ExpiresAt time.Time
 }
 
-// Auth is the validated per-request view of a session. Session is the persisted
-// record and CSRF is the derived synchronizer token; both are safe to render
-// same-origin. The raw credential stays unexported and is redacted from all
-// formatting and logging.
-type Auth struct {
-	Session Session
-	CSRF    string
+type contextKey struct{}
 
-	credential string
+// FromContext returns the session Sessions found for the request.
+func FromContext(ctx context.Context) (Session, bool) {
+	session, ok := ctx.Value(contextKey{}).(Session)
+	return session, ok
 }
 
-// String renders the Auth without revealing the credential.
-func (a Auth) String() string {
-	return fmt.Sprintf("auth.Auth{account_id:%d session_id:%s csrf:%s credential:[REDACTED]}",
-		a.Session.AccountID, a.Session.ID, a.CSRF)
+// newToken returns a cookie value of 32 random bytes and its digest, the only
+// form the database stores.
+func newToken() (token, id string) {
+	raw := make([]byte, 32)
+	rand.Read(raw)
+	sum := sha256.Sum256(raw)
+	return base64.RawURLEncoding.EncodeToString(raw), hex.EncodeToString(sum[:])
 }
 
-// LogValue renders the Auth for structured logging without revealing the
-// credential.
-func (a Auth) LogValue() slog.Value {
-	return slog.GroupValue(
-		slog.Int64("account_id", int64(a.Session.AccountID)),
-		slog.String("session_id", a.Session.ID),
-	)
-}
-
-// newCredential returns a fresh credential of n random bytes, encoded with
-// base64url without padding.
-func newCredential(n int) (string, error) {
-	buf := make([]byte, n)
-	if _, err := rand.Read(buf); err != nil {
-		return "", fmt.Errorf("auth: read random bytes: %w", err)
+func digest(token string) (string, bool) {
+	raw, err := base64.RawURLEncoding.DecodeString(token)
+	if err != nil || len(raw) != 32 {
+		return "", false
 	}
-	return base64.RawURLEncoding.EncodeToString(buf), nil
+	sum := sha256.Sum256(raw)
+	return hex.EncodeToString(sum[:]), true
 }
 
-// digest returns the base64url-encoded SHA-256 digest of a credential. Only
-// this value is ever persisted or handed to stores.
-func digest(credential string) string {
-	sum := sha256.Sum256([]byte(credential))
-	return base64.RawURLEncoding.EncodeToString(sum[:])
+// Sessions puts the request's active session in the context for FromContext
+// and slides its expiry forward, writing at most once a minute. A cookie
+// without an active session is cleared.
+func (a *Auth) Sessions(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		session, ok, err := a.session(w, r)
+		if err != nil {
+			slog.Error("auth: session", "err", err)
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			return
+		}
+		if ok {
+			r = r.WithContext(context.WithValue(r.Context(), contextKey{}, session))
+		}
+		next.ServeHTTP(w, r)
+	})
 }
 
-// deriveCSRF derives the per-session synchronizer token from the raw
-// credential with HMAC-SHA256.
-func deriveCSRF(credential string) string {
-	mac := hmac.New(sha256.New, []byte(credential))
-	mac.Write([]byte(csrfMessage))
-	return base64.RawURLEncoding.EncodeToString(mac.Sum(nil))
+func (a *Auth) session(w http.ResponseWriter, r *http.Request) (Session, bool, error) {
+	cookie, err := r.Cookie(cookieName)
+	if err != nil {
+		return Session{}, false, nil
+	}
+	id, ok := digest(cookie.Value)
+	if !ok {
+		a.clearCookie(w)
+		return Session{}, false, nil
+	}
+
+	ctx := r.Context()
+	now := a.now().UTC()
+	q := store.New(a.db)
+	row, err := q.GetActiveSession(ctx, store.GetActiveSessionParams{ID: id, Now: now})
+	if errors.Is(err, sql.ErrNoRows) {
+		a.clearCookie(w)
+		return Session{}, false, nil
+	}
+	if err != nil {
+		return Session{}, false, err
+	}
+
+	if now.Sub(row.LastSeenAt) >= touchEvery {
+		lifetime := a.lifetime(row.Remember)
+		row.LastSeenAt, row.ExpiresAt = now, now.Add(lifetime)
+		if err := q.TouchSession(ctx, store.TouchSessionParams{LastSeenAt: row.LastSeenAt, ExpiresAt: row.ExpiresAt, ID: id}); err != nil {
+			return Session{}, false, err
+		}
+		if row.Remember {
+			a.setCookie(w, cookie.Value, true, lifetime)
+		}
+	}
+	return Session{id: id, UserID: row.UserID, AvatarID: row.AvatarID, Remember: row.Remember, ExpiresAt: row.ExpiresAt}, true, nil
+}
+
+// setCookie writes the session cookie. Only a remember-me cookie outlives the
+// browser, so only it carries a Max-Age.
+func (a *Auth) setCookie(w http.ResponseWriter, token string, remember bool, lifetime time.Duration) {
+	cookie := &http.Cookie{
+		Name:     cookieName,
+		Value:    token,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   a.settings.GetBool("auth.secureCookies"),
+		SameSite: http.SameSiteLaxMode,
+	}
+	if remember {
+		cookie.MaxAge = int(lifetime / time.Second)
+	}
+	http.SetCookie(w, cookie)
+}
+
+func (a *Auth) clearCookie(w http.ResponseWriter) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     cookieName,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   a.settings.GetBool("auth.secureCookies"),
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   -1,
+	})
 }

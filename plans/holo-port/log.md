@@ -1,7 +1,16 @@
 # Log
 
+## 2026-10-28
+
+- **Decision** [0025](/decisions/0025-settings-reads-never-wait.md): `virtual.Settings` keeps the atomic pointer for
+  lock-free reads and the mutex only writers use; a comment on the type now explains why.
+
 ## 2026-10-27
 
+- **Done** [p0-09](/tasks/p0-09-auth-rewrite.md): the new `packages/auth` with argon2id passwords, habbo-name login
+  with throttling and bans, hashed session tokens with sliding expiry, middleware, the attribute catalogue and
+  password resets; 38 test results pass with `-race`. Open: client IPs behind a reverse proxy.
+- **Start** [p0-09](/tasks/p0-09-auth-rewrite.md).
 - **Done** [p0-13](/tasks/p0-13-settings-catalogue.md): `config.json` holds `store.path` and `cms.port`;
   `virtual.Settings` is a map of the declared defaults, the config values and the rows, with typed getters, `…Or`
   getters, `Set` and `Reload`. 33 config and 26 virtual test results pass (virtual with `-race`).

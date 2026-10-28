@@ -23,6 +23,13 @@ import (
 
 // Settings maps key paths to values: the declared defaults, then every
 // config.json value, then the rows of the settings table.
+//
+// Set and Reload never edit the map the getters read: they build a copy with the
+// new values and swap it in with one atomic store, so a getter always sees the
+// latest values without taking a lock. mu only serializes Set and Reload, which
+// hold it while they use the database. With an RWMutex the getters would wait on
+// that database call, and a request reading a setting while it holds the store's
+// only connection would deadlock.
 type Settings struct {
 	base   map[string]any
 	values atomic.Pointer[map[string]any]
@@ -47,27 +54,27 @@ func LoadSettings(ctx context.Context, cfg *config.Config, db *sql.DB) (*Setting
 }
 
 func (s *Settings) GetInt(key string) int {
-	return get[int](s, key)
+	return s.get[int](key)
 }
 
 func (s *Settings) GetBool(key string) bool {
-	return get[bool](s, key)
+	return s.get[bool](key)
 }
 
 func (s *Settings) GetString(key string) string {
-	return get[string](s, key)
+	return s.get[string](key)
 }
 
 func (s *Settings) GetIntOr(key string, fallback int) int {
-	return getOr(s, key, fallback)
+	return s.getOr(key, fallback)
 }
 
 func (s *Settings) GetBoolOr(key string, fallback bool) bool {
-	return getOr(s, key, fallback)
+	return s.getOr(key, fallback)
 }
 
 func (s *Settings) GetStringOr(key string, fallback string) string {
-	return getOr(s, key, fallback)
+	return s.getOr(key, fallback)
 }
 
 func (s *Settings) Reload(ctx context.Context, db *sql.DB) error {
@@ -175,7 +182,7 @@ func (s *Settings) decode(row store.Setting) (any, error) {
 	return value, nil
 }
 
-func get[T int | bool | string](s *Settings, key string) T {
+func (s *Settings) get[T int | bool | string](key string) T {
 	value, ok := (*s.values.Load())[key].(T)
 	if !ok {
 		slog.Warn("virtual: setting is missing or of another type", "key", key, "want", fmt.Sprintf("%T", value))
@@ -183,7 +190,7 @@ func get[T int | bool | string](s *Settings, key string) T {
 	return value
 }
 
-func getOr[T int | bool | string](s *Settings, key string, fallback T) T {
+func (s *Settings) getOr[T int | bool | string](key string, fallback T) T {
 	if value, ok := (*s.values.Load())[key].(T); ok {
 		return value
 	}

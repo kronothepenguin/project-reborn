@@ -49,7 +49,7 @@ The CMS then starts on top of it with sessions, attributes, live settings and cr
 - [p0-06 P0 queries](/tasks/p0-06-p0-queries.md) — done
 - [p0-07 Config sections and Create](/tasks/p0-07-config-sections.md) — done
 - [p0-08 Virtual settings](/tasks/p0-08-virtual-settings.md) — done
-- [p0-09 Auth rewrite](/tasks/p0-09-auth-rewrite.md) — todo
+- [p0-09 Auth rewrite](/tasks/p0-09-auth-rewrite.md) — done
 - [p0-10 Installer](/tasks/p0-10-installer.md) — todo
 - [p0-11 CMS wiring](/tasks/p0-11-cms-wiring.md) — todo
 - [p0-12 Remove the unused store test data](/tasks/p0-12-remove-store-testdata.md) — done
