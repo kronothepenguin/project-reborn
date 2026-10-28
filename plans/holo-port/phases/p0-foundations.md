@@ -21,8 +21,9 @@ The CMS then starts on top of it with sessions, attributes, live settings and cr
   theirs. OKF concepts follow [0007](/decisions/0007-store-okf-entities-and-tables.md).
 - `packages/config`: the startup keys `store.path` and `cms.port`, and `Create`
   ([0023](/decisions/0023-config-holds-startup-keys.md)).
-- `packages/virtual`: the `Settings` catalogue with `cms.refresh`, `site.*` and `auth.*`
-  ([0024](/decisions/0024-settings-catalogue-and-getters.md)).
+- `packages/virtual`: the `Settings` catalogue with `cms.refresh`, `site.*`, `auth.*` and
+  `registration.startCredits` ([0024](/decisions/0024-settings-catalogue-and-getters.md),
+  [0026](/decisions/0026-installer-administrator-and-names.md)).
 - `packages/auth`: full rewrite (passwords, login with throttling and bans, sessions, middleware, attributes,
   password reset) ([0005](/decisions/0005-argon2id-passwords.md),
   [0014](/decisions/0014-attribute-based-access.md), [0015](/decisions/0015-attribute-names-and-fuses.md)).
@@ -50,7 +51,8 @@ The CMS then starts on top of it with sessions, attributes, live settings and cr
 - [p0-07 Config sections and Create](/tasks/p0-07-config-sections.md) — done
 - [p0-08 Virtual settings](/tasks/p0-08-virtual-settings.md) — done
 - [p0-09 Auth rewrite](/tasks/p0-09-auth-rewrite.md) — done
-- [p0-10 Installer](/tasks/p0-10-installer.md) — todo
+- [p0-10 Installer](/tasks/p0-10-installer.md) — done
 - [p0-11 CMS wiring](/tasks/p0-11-cms-wiring.md) — todo
 - [p0-12 Remove the unused store test data](/tasks/p0-12-remove-store-testdata.md) — done
 - [p0-13 Settings catalogue](/tasks/p0-13-settings-catalogue.md) — done
+- [p0-14 Generate dotfile templates in tools/create](/tasks/p0-14-create-dotfile-templates.md) — todo

@@ -2,6 +2,15 @@
 
 ## 2026-10-28
 
+- **Done** [p0-10](/tasks/p0-10-installer.md): `packages/installer` and `apps/installer` with the status, config,
+  site, administrator and done steps; 10 test results pass with `-race`, and an end-to-end run in an empty
+  directory produced `config.json`, the database and an administrator with every attribute. Open for p0-11: where
+  the runners run in development.
+- **Create** [p0-14](/tasks/p0-14-create-dotfile-templates.md) from p0-10: `tools/create` never writes the
+  `.air.toml` template.
+- **Start** [p0-10](/tasks/p0-10-installer.md).
+- **Decision** [0026](/decisions/0026-installer-administrator-and-names.md): `registration.startCredits` is
+  declared in P0; the administrator step also asks the birth date; habbo names take Habbo's wider set.
 - **Decision** [0025](/decisions/0025-settings-reads-never-wait.md): `virtual.Settings` keeps the atomic pointer for
   lock-free reads and the mutex only writers use; a comment on the type now explains why.
 

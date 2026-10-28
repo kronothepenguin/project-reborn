@@ -2,10 +2,12 @@ go 1.27.0
 
 use (
 	./apps/cms
+	./apps/installer
 	./packages/astro
 	./packages/auth
 	./packages/cms
 	./packages/config
+	./packages/installer
 	./packages/store
 	./packages/virtual
 	./tools/create

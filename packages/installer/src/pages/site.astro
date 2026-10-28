@@ -1,0 +1,68 @@
+---
+import { Button, FormField, Input } from "@project-reborn/components";
+import FormError from "../components/form-error.astro";
+import Setup from "../layouts/setup.astro";
+---
+
+<Setup title="Site" step="site">
+  <FormError />
+  <form method="post" action="/site" class="space-y-3">
+    <FormField label="Site name" class="flex flex-col gap-1 text-sm">
+      <Input
+        name="name"
+        value="[[ .Name ]]"
+        maxlength="30"
+        variant="border"
+        required
+      />
+    </FormField>
+    <FormField label="Short name" class="flex flex-col gap-1 text-sm">
+      <Input
+        name="shortName"
+        value="[[ .ShortName ]]"
+        maxlength="30"
+        variant="border"
+        required
+      />
+    </FormField>
+    <FormField
+      label="Site URL"
+      help="The address players open, without a path."
+      class="flex flex-col gap-1 text-sm"
+    >
+      <Input
+        name="url"
+        type="url"
+        value="[[ .URL ]]"
+        variant="border"
+        required
+      />
+    </FormField>
+    <FormField
+      label="Start credits"
+      help="Credits every new habbo receives."
+      class="flex flex-col gap-1 text-sm"
+    >
+      <Input
+        name="startCredits"
+        type="number"
+        min="0"
+        max="1000000"
+        value="[[ .StartCredits ]]"
+        variant="border"
+        required
+      />
+    </FormField>
+    <label class="flex items-center gap-2 text-sm">
+      [[ if .SecureCookies ]]
+      <input type="checkbox" name="secureCookies" value="on" checked />
+      [[ else ]]
+      <input type="checkbox" name="secureCookies" value="on" />
+      [[ end ]]
+      <span>Secure cookies: the site is served over HTTPS</span>
+    </label>
+    <div class="flex justify-end">
+      <Button type="submit" variant="green">Save and continue</Button>
+    </div>
+  </form>
+</Setup>

@@ -1,0 +1,51 @@
+---
+import { Paper } from "@project-reborn/components";
+import Document from "./document.astro";
+
+type Step = "status" | "config" | "site" | "admin" | "done";
+
+interface Props {
+  title: string;
+  step: Step;
+}
+
+const { title, step } = Astro.props;
+
+const steps: { id: Step; label: string }[] = [
+  { id: "config", label: "1. Configuration" },
+  { id: "site", label: "2. Site" },
+  { id: "admin", label: "3. Administrator" },
+];
+---
+
+<Document title={`${title} - Project Reborn installer`}>
+  <div class="flex min-h-screen items-center justify-center p-2">
+    <div class="w-full max-w-md">
+      <Paper>
+        <div class="space-y-4 p-4">
+          <header class="space-y-2">
+            <h1 class="text-xl font-bold">Project Reborn installer</h1>
+            <ol class="flex flex-wrap gap-2 text-xs">
+              {
+                steps.map(({ id, label }) => (
+                  <li
+                    class:list={[
+                      "rounded px-2 py-1",
+                      id === step
+                        ? "bg-sky-700 font-bold text-white"
+                        : "bg-sky-200",
+                    ]}
+                  >
+                    {label}
+                  </li>
+                ))
+              }
+            </ol>
+          </header>
+          <h2 class="text-lg font-bold">{title}</h2>
+          <slot />
+        </div>
+      </Paper>
+    </div>
+  </div>
+</Document>

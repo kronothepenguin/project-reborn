@@ -24,6 +24,8 @@ var catalogue = map[string]declaration{
 	"auth.passwordMinLength":  declare(6, between(6, 128)),
 	"auth.passwordMaxLength":  declare(25, between(6, 1024)),
 	"auth.resetTokenMinutes":  declare(60, between(5, 1440)),
+
+	"registration.startCredits": declare(500, between(0, 1_000_000)),
 }
 
 // rules check settings that depend on each other. keys lists every setting a

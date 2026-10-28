@@ -1,0 +1,22 @@
+---
+import Setup from "../layouts/setup.astro";
+---
+
+<Setup title="Installed" step="done">
+  <p class="text-sm">The hotel is installed.</p>
+  <dl class="space-y-2 text-sm">
+    <div>
+      <dt class="font-bold">Configuration</dt>
+      <dd class="font-mono break-all">[[ .ConfigPath ]]</dd>
+    </div>
+    <div>
+      <dt class="font-bold">Database</dt>
+      <dd class="font-mono break-all">[[ .DatabasePath ]]</dd>
+    </div>
+  </dl>
+  <p class="text-sm">
+    Stop the installer, start the hotel from <span class="font-mono break-all"
+      >[[ .Dir ]]</span
+    > and sign in with your habbo name and password.
+  </p>
+</Setup>

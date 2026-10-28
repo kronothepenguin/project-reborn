@@ -3,7 +3,7 @@ type: Entity
 title: Wallet
 description: A habbo's credits, tickets and film, the ledger of every credit change, and the vouchers that add credits.
 tags: [store, entity, economy]
-timestamp: 2026-10-27T21:28:26+00:00
+timestamp: 2026-10-28T01:30:19+00:00
 ---
 
 # Definition
@@ -21,6 +21,8 @@ explains the balance. Vouchers are codes created by staff that add credits once.
 # Lifecycle
 
 - Created with the habbo, with `registration.startCredits` and a `registration` ledger row.
+- The installer creates the administrator's wallet with 5000 credits and a `registration` row whose detail is
+  `installer`.
 - Redeemed vouchers keep their row with `redeemed_by_avatar_id` and `redeemed_at`.
 - Deleted with the habbo, with its ledger.
 

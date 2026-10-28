@@ -1,0 +1,64 @@
+---
+import { Button, FormField, Input } from "@project-reborn/components";
+import FormError from "../components/form-error.astro";
+import Setup from "../layouts/setup.astro";
+---
+
+<Setup title="Administrator" step="admin">
+  <p class="text-sm">
+    Creates your user, your first habbo and the Administrators group, which
+    holds every attribute.
+  </p>
+  <FormError />
+  <form method="post" action="/admin" class="space-y-3">
+    <FormField
+      label="Habbo name"
+      help="1 to 24 letters, digits or - = ? ! @ : . ,"
+      class="flex flex-col gap-1 text-sm"
+    >
+      <Input
+        name="name"
+        value="[[ .Name ]]"
+        maxlength="24"
+        variant="border"
+        required
+      />
+    </FormField>
+    <FormField label="Email" class="flex flex-col gap-1 text-sm">
+      <Input
+        name="email"
+        type="email"
+        value="[[ .Email ]]"
+        variant="border"
+        required
+      />
+    </FormField>
+    <FormField label="Birth date" class="flex flex-col gap-1 text-sm">
+      <Input
+        name="bornOn"
+        type="date"
+        value="[[ .BornOn ]]"
+        variant="border"
+        required
+      />
+    </FormField>
+    <FormField
+      label="Password"
+      help="[[ .PasswordHelp ]]"
+      class="flex flex-col gap-1 text-sm"
+    >
+      <Input name="password" type="password" variant="border" required />
+    </FormField>
+    <FormField label="Confirm password" class="flex flex-col gap-1 text-sm">
+      <Input
+        name="passwordConfirm"
+        type="password"
+        variant="border"
+        required
+      />
+    </FormField>
+    <div class="flex justify-end">
+      <Button type="submit" variant="green">Create administrator</Button>
+    </div>
+  </form>
+</Setup>

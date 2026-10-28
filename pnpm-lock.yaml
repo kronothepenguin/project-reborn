@@ -139,6 +139,30 @@ importers:
         specifier: ^4.1.8
         version: 4.1.9(@types/node@24.19.2)(@vitest/browser-playwright@4.1.9)(jsdom@29.1.1)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0))
 
+  packages/installer:
+    dependencies:
+      '@astrojs/svelte':
+        specifier: ^9.0.1
+        version: 9.0.1(@types/node@24.19.2)(astro@7.3.2(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.19.2)(jiti@2.7.0))(esbuild@0.28.2)(jiti@2.7.0)(svelte@5.57.0)(typescript@6.0.3)
+      '@project-reborn/components':
+        specifier: workspace:*
+        version: link:../components
+      '@tailwindcss/vite':
+        specifier: ^4.3.3
+        version: 4.3.3(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0))
+      astro:
+        specifier: ^7.3.2
+        version: 7.3.2(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.19.2)(jiti@2.7.0)
+      svelte:
+        specifier: ^5.57.0
+        version: 5.57.0
+      tailwindcss:
+        specifier: ^4.3.3
+        version: 4.3.3
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
 packages:
 
   '@adobe/css-tools@4.5.0':
