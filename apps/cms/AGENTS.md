@@ -27,14 +27,16 @@ make stop       # stop the background astro server
 ```sh
 cd ../../packages/cms
 pnpm build
-cd ../../apps/cms
-go build -o ./tmp/cms ./cmd/cms
-./tmp/cms   # → http://localhost:17387
+cd ../..
+go build -o ./apps/cms/tmp/cms ./apps/cms/cmd/cms
+./apps/cms/tmp/cms   # → http://localhost:17387, reads ./config.json
 ```
 
 ## Dev-mode notes
 
-- Air watches `packages/astro` and `packages/cms` (`.go` only) and
+- `make dev` starts air from the repository root, so the runner reads and
+  writes the root `config.json`.
+- Air watches `apps/cms`, `packages/astro` and `packages/cms` (`.go` only) and
   rebuilds the dev runner on Go changes.
 - Astro page edits are hot-reloaded by the astro dev server; the runner
   re-fetches pages on every request, so no Go restart is needed for

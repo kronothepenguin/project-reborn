@@ -44,3 +44,6 @@ After running the installer: start `apps/cms`, `curl -i localhost:17387/` return
 `curl -i -X POST localhost:17387/ -H 'Sec-Fetch-Site: cross-site'` returns 403.
 
 # Notes
+
+- In development the runners run from the repository root and read the root `config.json`
+  ([0027](/decisions/0027-runners-run-from-the-root.md)).

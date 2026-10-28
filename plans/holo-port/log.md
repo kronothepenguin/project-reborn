@@ -2,6 +2,16 @@
 
 ## 2026-10-28
 
+- **Done** [p0-15](/tasks/p0-15-runners-from-root.md): `make dev` starts air from the repository root for the
+  installer and the CMS, and `tools/create` generates apps that way; both runners were checked running from the
+  root.
+- **Done** [p0-14](/tasks/p0-14-create-dotfile-templates.md): `tools/create` embeds `all:templates`, so it
+  writes `.air.toml`; a new test renders the templates.
+- **Start** [p0-15](/tasks/p0-15-runners-from-root.md).
+- **Create** [p0-15](/tasks/p0-15-runners-from-root.md) to implement 0027.
+- **Decision** [0027](/decisions/0027-runners-run-from-the-root.md): in development the runners run from the
+  repository root, so they share the root `config.json`.
+- **Start** [p0-14](/tasks/p0-14-create-dotfile-templates.md).
 - **Done** [p0-10](/tasks/p0-10-installer.md): `packages/installer` and `apps/installer` with the status, config,
   site, administrator and done steps; 10 test results pass with `-race`, and an end-to-end run in an empty
   directory produced `config.json`, the database and an administrator with every attribute. Open for p0-11: where

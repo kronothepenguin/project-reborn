@@ -27,9 +27,9 @@ resolvers and serves the built frontend from the embedded `dist/`.
 ## Working directory
 
 `config.json`, and the database when its path is relative, land in the
-directory the installer runs from; run the hotel from the same directory. Only
-the repository root's `/config.json` is gitignored, so `make dev` in
-`apps/installer` leaves an unignored `apps/installer/config.json`.
+directory the installer runs from, and the hotel reads them from its own.
+`make dev` runs every runner from the repository root, so they share the root
+`config.json` and database, both gitignored.
 
 ## Ports
 
@@ -61,7 +61,8 @@ the rendered page fresh on every request in dev mode.
 ## Production build
 
 1. `pnpm build` — renders `dist/`
-2. `cd apps/installer && go build -o tmp/installer ./cmd/installer && ./tmp/installer`
+2. From the repository root:
+   `go build -o apps/installer/tmp/installer ./apps/installer/cmd/installer && ./apps/installer/tmp/installer`
 
 The placeholder in `dist/index.html` exists so the package compiles before the
 first `pnpm build`.

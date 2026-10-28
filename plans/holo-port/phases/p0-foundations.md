@@ -55,4 +55,5 @@ The CMS then starts on top of it with sessions, attributes, live settings and cr
 - [p0-11 CMS wiring](/tasks/p0-11-cms-wiring.md) — todo
 - [p0-12 Remove the unused store test data](/tasks/p0-12-remove-store-testdata.md) — done
 - [p0-13 Settings catalogue](/tasks/p0-13-settings-catalogue.md) — done
-- [p0-14 Generate dotfile templates in tools/create](/tasks/p0-14-create-dotfile-templates.md) — todo
+- [p0-14 Generate dotfile templates in tools/create](/tasks/p0-14-create-dotfile-templates.md) — done
+- [p0-15 Run the dev runners from the repository root](/tasks/p0-15-runners-from-root.md) — done

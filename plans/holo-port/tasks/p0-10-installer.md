@@ -111,3 +111,8 @@ Open for p0-11:
 - The installer writes `config.json` in its working directory, and the CMS reads it from its own. `make dev` runs in
   `apps/installer` and `apps/cms` respectively, so the two do not meet. Only the root `/config.json` is gitignored.
   Where the runners run in development needs the user's decision.
+
+Later:
+
+- [0027](/decisions/0027-runners-run-from-the-root.md) settled it: runners run from the repository root in
+  development ([p0-15](/tasks/p0-15-runners-from-root.md)).

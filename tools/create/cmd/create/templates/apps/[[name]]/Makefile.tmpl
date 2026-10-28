@@ -1,8 +1,9 @@
 .PHONY: dev web stop
 
+# air runs from the repository root, so the runner reads the root config.json.
 dev:
 	cd ../../packages/{{.Name}} && pnpm astro dev --background
-	go tool air
+	cd ../.. && go tool air -c apps/{{.Name}}/.air.toml
 
 web:
 	pnpm --filter @project-reborn/{{.Name}} dev

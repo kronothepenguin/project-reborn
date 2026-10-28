@@ -1,24 +1,26 @@
 #:schema https://json.schemastore.org/any.json
 
+# make dev starts air from the repository root, so the runner reads the root
+# config.json; every path below is relative to the root.
 env_files = []
 root = "."
 testdata_dir = "testdata"
-tmp_dir = "tmp"
+tmp_dir = "apps/installer/tmp"
 
 [build]
 args_bin = []
-bin = "./tmp/installer"
-cmd = "go build -o ./tmp/installer ./cmd/installer-dev"
+bin = "./apps/installer/tmp/installer"
+cmd = "go build -o ./apps/installer/tmp/installer ./apps/installer/cmd/installer-dev"
 delay = 1000
-entrypoint = ["./tmp/installer"]
-exclude_dir = ["bin", "tmp"]
+entrypoint = ["./apps/installer/tmp/installer"]
+exclude_dir = ["apps/installer/tmp", "packages/installer/node_modules", "packages/installer/dist"]
 exclude_file = []
 exclude_regex = ["_test.go"]
 exclude_unchanged = false
 follow_symlink = false
 full_bin = ""
 ignore_dangerous_root_dir = false
-include_dir = ["../../packages/astro", "../../packages/installer"]
+include_dir = ["apps/installer", "packages/astro", "packages/auth", "packages/config", "packages/installer", "packages/store", "packages/virtual"]
 include_ext = ["go"]
 include_file = []
 kill_delay = "0s"

@@ -34,7 +34,8 @@ the rendered page fresh on every request in dev mode.
 ## Production build
 
 1. `pnpm build` — renders `dist/`
-2. `cd apps/cms && go build -o tmp/cms ./cmd/cms && ./tmp/cms`
+2. From the repository root:
+   `go build -o apps/cms/tmp/cms ./apps/cms/cmd/cms && ./apps/cms/tmp/cms`
 
 The placeholder in `dist/index.html` exists so the package compiles before the
 first `pnpm build`.

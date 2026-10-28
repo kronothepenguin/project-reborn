@@ -1,26 +1,28 @@
 #:schema https://json.schemastore.org/any.json
 
+# make dev starts air from the repository root, so the runner reads the root
+# config.json; every path below is relative to the root.
 env_files = []
 root = "."
 testdata_dir = "testdata"
-tmp_dir = "tmp"
+tmp_dir = "apps/cms/tmp"
 
 [build]
 args_bin = []
-bin = "./tmp/cms"
-cmd = "go build -o ./tmp/cms ./cmd/cms-dev"
+bin = "./apps/cms/tmp/cms"
+cmd = "go build -o ./apps/cms/tmp/cms ./apps/cms/cmd/cms-dev"
 delay = 1000
-entrypoint = ["./tmp/cms"]
-exclude_dir = ["bin", "tmp"]
+entrypoint = ["./apps/cms/tmp/cms"]
+exclude_dir = ["apps/cms/tmp", "packages/cms/node_modules", "packages/cms/dist"]
 exclude_file = []
 exclude_regex = ["_test.go"]
 exclude_unchanged = false
 follow_symlink = false
 full_bin = ""
 ignore_dangerous_root_dir = false
-include_dir = ["../../packages/astro", "../../packages/cms"]
+include_dir = ["apps/cms", "packages/astro", "packages/cms"]
 include_ext = ["go"]
-include_file = [".air.cms.toml"]
+include_file = []
 kill_delay = "0s"
 log = "build-errors.log"
 poll = false

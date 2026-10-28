@@ -10,7 +10,9 @@ import (
 	"text/template"
 )
 
-//go:embed templates/*
+// all: keeps templates whose names start with a dot, such as .air.toml.tmpl.
+//
+//go:embed all:templates
 var templatesFS embed.FS
 
 func write(root, name string, appPort, astroPort int) (err error) {
