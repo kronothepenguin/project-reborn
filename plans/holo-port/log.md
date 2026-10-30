@@ -2,6 +2,11 @@
 
 ## 2026-10-30
 
+- **Done** [p1-08](/tasks/p1-08-landing-promo.md): the landing page shows the HabboWidgets promo, built from
+  `vendor/HabboWidgets`, with random habbos from `/xml/promo-habbos.xml`. Its button carries the chosen look into the
+  avatar editor on `/register`, and the join button stays for `features.landingPromo` off and for visitors without
+  JavaScript.
+- **Start** [p1-08](/tasks/p1-08-landing-promo.md).
 - **Done** [p1-07](/tasks/p1-07-legal-pages.md): `/disclaimer` and `/privacy` serve Holo's texts with the site names
   from the settings, so the footer and registration links work.
 - **Start** [p1-07](/tasks/p1-07-legal-pages.md).

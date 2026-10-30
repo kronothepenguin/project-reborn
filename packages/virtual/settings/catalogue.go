@@ -43,6 +43,8 @@ var catalogue = map[string]declaration{
 	"mail.from":     declare("", mailbox),
 
 	"imaging.avatarUrl": declare("https://www.habbo.com/habbo-imaging/avatarimage", imager),
+
+	"features.landingPromo": declare(true, nil),
 }
 
 // rules check settings that depend on each other. keys lists every setting a

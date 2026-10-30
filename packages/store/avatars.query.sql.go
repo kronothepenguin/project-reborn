@@ -93,6 +93,44 @@ func (q *Queries) GetAvatarByName(ctx context.Context, name string) (Avatar, err
 	return i, err
 }
 
+const listRandomAvatars = `-- name: ListRandomAvatars :many
+SELECT id, user_id, name, figure, gender, motto, created_at, updated_at FROM avatars
+ORDER BY RANDOM()
+LIMIT ?1
+`
+
+func (q *Queries) ListRandomAvatars(ctx context.Context, count int64) ([]Avatar, error) {
+	rows, err := q.db.QueryContext(ctx, listRandomAvatars, count)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Avatar
+	for rows.Next() {
+		var i Avatar
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.Name,
+			&i.Figure,
+			&i.Gender,
+			&i.Motto,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listUserAvatars = `-- name: ListUserAvatars :many
 SELECT id, user_id, name, figure, gender, motto, created_at, updated_at FROM avatars
 WHERE user_id = ?1

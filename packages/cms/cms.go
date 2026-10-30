@@ -61,6 +61,7 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	guestPage := func(h http.HandlerFunc) http.Handler { return page(router.Guest(h)) }
 
 	mux.Handle("GET /{$}", guestPage(r.HandleIndexView))
+	mux.Handle("GET /xml/promo-habbos.xml", page(http.HandlerFunc(r.HandleXMLPromoHabbos)))
 	// Signing in and out stays open during maintenance, for staff.
 	mux.Handle("POST /{$}", c.protect(router.Guest(http.HandlerFunc(r.HandleIndexLogin))))
 	mux.Handle("POST /logout", c.protect(http.HandlerFunc(r.HandleLogout)))

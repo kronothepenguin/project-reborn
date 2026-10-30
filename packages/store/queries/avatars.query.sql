@@ -16,3 +16,8 @@ SELECT * FROM avatars WHERE name = sqlc.arg(name);
 SELECT * FROM avatars
 WHERE user_id = sqlc.arg(user_id)
 ORDER BY created_at, id;
+
+-- name: ListRandomAvatars :many
+SELECT * FROM avatars
+ORDER BY RANDOM()
+LIMIT sqlc.arg(count);

@@ -33,7 +33,7 @@ starts.
 - [p1-05 Pay referrals at registration](/tasks/p1-05-referrals.md) — Read the refer link at registration, write the referral in the registration transaction and pay referral.reward to the referring habbo. **done**
 - [p1-06 Reset a forgotten password by email](/tasks/p1-06-forgot-and-reset.md) — Add the mail settings and the internal mail package, and the forgot and reset pages built on auth.CreateReset and auth.ResetPassword. **done**
 - [p1-07 Add the legal pages](/tasks/p1-07-legal-pages.md) — Serve the terms of service and the privacy policy with Holo's texts, so the footer links and the registration terms link work. **done**
-- [p1-08 Add the landing promo widget](/tasks/p1-08-landing-promo.md) — Serve the promo habbos as XML and show the HabboWidgets landing widget on the landing page when features.landingPromo is on, with the join button otherwise. **todo**
+- [p1-08 Add the landing promo widget](/tasks/p1-08-landing-promo.md) — Serve the promo habbos as XML and show the HabboWidgets landing widget on the landing page when features.landingPromo is on, with the join button otherwise. **done**
 - [p1-09 Verify the P1 exit criteria](/tasks/p1-09-exit-check.md) — Run the whole signed-out flow end to end on the production binaries and close the phase. **todo**
 
 ## Later phases

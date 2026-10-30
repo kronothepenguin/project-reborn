@@ -355,6 +355,7 @@ func TestMaintenance(t *testing.T) {
 		{"guest forgot form", "POST", "/forgot", nil, 503, "maintenance.html"},
 		{"guest reset page", "GET", "/reset/token", nil, 503, "maintenance.html"},
 		{"guest reset form", "POST", "/reset/token", nil, 503, "maintenance.html"},
+		{"guest promo feed", "GET", "/xml/promo-habbos.xml", nil, 503, "maintenance.html"},
 		{"guest terms of service", "GET", "/disclaimer", nil, 503, "maintenance.html"},
 		{"guest privacy policy", "GET", "/privacy", nil, 503, "maintenance.html"},
 		{"static file", "GET", "/favicon.svg", nil, 200, "static"},

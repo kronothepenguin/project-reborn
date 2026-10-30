@@ -1,7 +1,7 @@
 ---
 type: SQL Query
 title: avatars.query.sql
-description: Habbo operations for creation, lookup by id or name, and the habbos of a user.
+description: Habbo operations for creation, lookup by id or name, the habbos of a user and random habbos.
 resource: packages/store/queries/avatars.query.sql
 tags: [store, query, habbo]
 timestamp: 2026-10-27T21:44:59+00:00
@@ -35,6 +35,13 @@ timestamp: 2026-10-27T21:44:59+00:00
 - Cardinality: `:many`
 - Inputs: `user_id`
 - Result: the user's habbos, oldest first (`ORDER BY created_at, id`)
+- Tables: `avatars`
+
+## ListRandomAvatars
+
+- Cardinality: `:many`
+- Inputs: `count`
+- Result: up to `count` habbos in random order, for the landing promo
 - Tables: `avatars`
 
 # Related

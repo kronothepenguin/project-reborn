@@ -151,6 +151,24 @@ func TestReferrals(t *testing.T) {
 	}
 }
 
+func TestListRandomAvatarsHonoursTheCount(t *testing.T) {
+	db := openTestDB(t)
+	q := New(db)
+	for _, name := range []string{"One", "Two", "Three"} {
+		createUserWithHabbo(t, q, name+"@example.com", name)
+	}
+
+	for count, want := range map[int64]int{0: 0, 2: 2, 10: 3} {
+		avatars, err := q.ListRandomAvatars(t.Context(), count)
+		if err != nil {
+			t.Fatalf("ListRandomAvatars(%d): %v", count, err)
+		}
+		if len(avatars) != want {
+			t.Errorf("ListRandomAvatars(%d) = %d habbos, want %d", count, len(avatars), want)
+		}
+	}
+}
+
 func TestLoginLookupIgnoresCase(t *testing.T) {
 	q := New(openTestDB(t))
 	user, avatar := createUserWithHabbo(t, q, "krono@example.com", "Krono")

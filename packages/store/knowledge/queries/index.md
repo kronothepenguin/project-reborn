@@ -9,7 +9,7 @@ Concepts for the query files under `packages/store/queries/`.
 ## Identity
 
 - [users.query.sql](users.md) — User operations for creation, lookup by id or email, and registrations per IP.
-- [avatars.query.sql](avatars.md) — Habbo operations for creation, lookup by id or name, and the habbos of a user.
+- [avatars.query.sql](avatars.md) — Habbo operations for creation, lookup by id or name, the habbos of a user and random habbos.
 - [profiles.query.sql](profiles.md) — Profile operations, currently the creation of a habbo's profile.
 - [homes.query.sql](homes.md) — Home operations, currently the creation of a profile's home.
 

@@ -13,13 +13,24 @@ import (
 
 type indexPage struct {
 	hotelStatus
-	Username string
-	Error    string
+	Name         string
+	ShortName    string
+	LandingPromo bool
+	Username     string
+	Error        string
+}
+
+func newIndexPage() indexPage {
+	return indexPage{
+		Name:         settings.GetString("site.name"),
+		ShortName:    settings.GetString("site.shortName"),
+		LandingPromo: settings.GetBool("features.landingPromo"),
+	}
 }
 
 // HandleIndexView renders GET /{$}.
 func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
-	astro.WriteTemplate(w, r.deps.Resolver, "index.html", indexPage{})
+	astro.WriteTemplate(w, r.deps.Resolver, "index.html", newIndexPage())
 }
 
 // HandleIndexLogin handles the POST /{$} login action.
@@ -60,7 +71,9 @@ func (r *Router) loginFailed(w http.ResponseWriter, username, message string) {
 		r.writeMaintenance(w, maintenancePage{Username: username, Error: message})
 		return
 	}
-	r.invalid(w, "index.html", indexPage{Username: username, Error: message})
+	page := newIndexPage()
+	page.Username, page.Error = username, message
+	r.invalid(w, "index.html", page)
 }
 
 func banMessage(ban *auth.BanError) string {
