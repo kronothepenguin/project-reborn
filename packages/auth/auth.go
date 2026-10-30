@@ -55,9 +55,9 @@ func sessionLifetime(remember bool) time.Duration {
 	return minutes("auth.sessionIdleMinutes")
 }
 
-// clientIP is the address of the connection's peer. Behind a reverse proxy,
+// ClientIP is the address of the connection's peer. Behind a reverse proxy,
 // RealIP must run first so that it is the client's address.
-func clientIP(r *http.Request) string {
+func ClientIP(r *http.Request) string {
 	host, _, err := net.SplitHostPort(r.RemoteAddr)
 	if err != nil {
 		return r.RemoteAddr

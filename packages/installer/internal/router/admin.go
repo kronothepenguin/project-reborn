@@ -59,7 +59,7 @@ func (r *Router) HandleAdminCreate(w http.ResponseWriter, req *http.Request) {
 		Email:    page.Email,
 		BornOn:   bornOn,
 		Password: password,
-		IP:       clientIP(req),
+		IP:       auth.ClientIP(req),
 	})
 	switch {
 	case err == nil:
@@ -68,11 +68,11 @@ func (r *Router) HandleAdminCreate(w http.ResponseWriter, req *http.Request) {
 	case errors.Is(err, setup.ErrInstalled):
 		http.Redirect(w, req, "/", http.StatusSeeOther)
 		return
-	case errors.Is(err, setup.ErrHabboName):
+	case errors.Is(err, auth.ErrHabboName):
 		page.Error = "Habbo names are 1 to 24 letters, digits or - = ? ! @ : . ,"
-	case errors.Is(err, setup.ErrEmail):
+	case errors.Is(err, auth.ErrEmail):
 		page.Error = "Enter a valid email address."
-	case errors.Is(err, setup.ErrBornOn):
+	case errors.Is(err, auth.ErrBornOn):
 		page.Error = "The birth date must be a past date after 1900."
 	case errors.Is(err, auth.ErrPasswordLength):
 		page.Error = "Passwords are " + page.PasswordHelp + "."

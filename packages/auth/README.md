@@ -54,6 +54,33 @@ case errors.Is(err, auth.ErrBanned):
 
 The `Attribute` constants and `Catalogue()` (name and description) follow decision 0015 of the port bundle. `Attributes(ctx, db, userID)` is the union of the attributes of the user's access groups.
 
+## Accounts
+
+Registration and the installer create accounts the same way.
+
+- `ValidateHabboName(name)`, `ValidateEmail(email)` and `ValidateBornOn(bornOn)` give `ErrHabboName`, `ErrEmail` and `ErrBornOn`. Names are 1 to 24 ASCII letters, digits or `- = ? ! @ : . ,`, and those starting with `MOD-` are refused, ignoring case. An email is a bare address, and a birth date is a past date from 1900.
+- `CreateAccount(ctx, q, account)` writes the user, the credentials and the first habbo, and returns `userID, avatarID`.
+- `CreateHabbo(ctx, q, userID, habbo)` writes a habbo with its profile, home and wallet, plus a `registration` ledger row when it starts with credits.
+
+Both take `*store.Queries` so that the caller keeps its own transaction, and neither validates. A taken email or name comes back as an error that `store.IsConflict` recognises.
+
+```go
+hash := auth.HashPassword(password) // before the transaction: argon2 is slow and the pool has one connection
+tx, err := db.BeginTx(ctx, nil)
+if err != nil {
+	return err
+}
+defer tx.Rollback()
+userID, avatarID, err := auth.CreateAccount(ctx, store.New(tx), auth.Account{
+	Email: email, BornOn: bornOn, IP: auth.ClientIP(r), PasswordHash: hash,
+	Habbo: auth.Habbo{Name: name, Figure: figure, Gender: gender, Credits: 500, Detail: "Welcome!"},
+})
+if err != nil {
+	return err
+}
+return tx.Commit()
+```
+
 ## Password reset
 
 - `CreateReset(ctx, db, email)` returns the token to email, valid for `auth.resetTokenMinutes`. For an unknown email it returns `""` without an error, so the page answers the same way. Expired resets are purged first.
@@ -66,6 +93,7 @@ The `Attribute` constants and `Catalogue()` (name and description) follow decisi
 
 ## Gotchas
 
+- `ClientIP(r)` is the connection's address, so it needs `RealIP` in front of it behind a reverse proxy.
 - `RequireSession`, `RequireAttribute` and `SwitchHabbo` read the session that `Sessions` put in the context, so `Sessions` must wrap them.
 - Behind a reverse proxy without `RealIP`, or with `proxy.enabled` false, every request has the proxy's IP, so IP throttling and IP bans would hit everyone.
 - JSON callers must send `Accept: application/json` to get 401 instead of a redirect.

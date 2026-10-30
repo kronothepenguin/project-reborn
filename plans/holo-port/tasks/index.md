@@ -28,7 +28,7 @@ starts.
 
 - [p1-01 Add the P1 primitives](/tasks/p1-01-primitives.md) — Add Checkbox, Select, Notice and Avatar to packages/components and move Icon there from packages/cms, each with a story, a test and an export. **done**
 - [p1-02 Sign in and sign out](/tasks/p1-02-sign-in-and-out.md) — Make POST / sign in with auth.Login, add POST /logout and the minimal GET /me page, and send signed-in visitors from / to /me. **done**
-- [p1-03 Move account creation into packages/auth](/tasks/p1-03-account-helpers.md) — Move the habbo name, email and birth-date rules and the writes of a user and a habbo from the installer into auth helpers that take sqlc queries. **todo**
+- [p1-03 Move account creation into packages/auth](/tasks/p1-03-account-helpers.md) — Move the habbo name, email and birth-date rules and the writes of a user and a habbo from the installer into auth helpers that take sqlc queries. **done**
 - [p1-04 Build registration](/tasks/p1-04-registration.md) — Make /register create an account with the avatar editor, the live name check and the per-IP limit, then sign the visitor in. **todo**
 - [p1-05 Pay referrals at registration](/tasks/p1-05-referrals.md) — Read the refer link at registration, write the referral in the registration transaction and pay referral.reward to the referring habbo. **todo**
 - [p1-06 Reset a forgotten password by email](/tasks/p1-06-forgot-and-reset.md) — Add the mail settings and the internal mail package, and the forgot and reset pages built on auth.CreateReset and auth.ResetPassword. **todo**

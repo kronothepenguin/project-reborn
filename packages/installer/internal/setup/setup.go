@@ -8,10 +8,8 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	"net/mail"
 	"os"
 	"path/filepath"
-	"regexp"
 	"sync"
 	"time"
 
@@ -28,15 +26,10 @@ const (
 	adminCredits = 5000
 )
 
-var habboName = regexp.MustCompile(`^[A-Za-z0-9\-=?!@:.,]{1,24}$`)
-
 var (
 	ErrConfigured    = errors.New("setup: config.json is already written")
 	ErrNotConfigured = errors.New("setup: config.json is not written yet")
 	ErrInstalled     = errors.New("setup: the hotel already has an administrator")
-	ErrHabboName     = errors.New("setup: invalid habbo name")
-	ErrEmail         = errors.New("setup: invalid email address")
-	ErrBornOn        = errors.New("setup: invalid birth date")
 )
 
 type Installation struct {
@@ -161,7 +154,7 @@ func (s *State) CreateAdministrator(ctx context.Context, admin Administrator) er
 		return ErrNotConfigured
 	}
 	now := time.Now().UTC()
-	if err := admin.validate(now); err != nil {
+	if err := admin.validate(); err != nil {
 		return err
 	}
 	q := store.New(db)
@@ -189,46 +182,18 @@ func (s *State) CreateAdministrator(ctx context.Context, admin Administrator) er
 }
 
 func createAdministrator(ctx context.Context, q *store.Queries, admin Administrator, hash string, now time.Time) error {
-	user, err := q.CreateUser(ctx, store.CreateUserParams{
-		Email:     admin.Email,
-		BornOn:    admin.BornOn,
-		CreatedIP: admin.IP,
-		CreatedAt: now,
-		UpdatedAt: now,
-	})
-	if err != nil {
-		return err
-	}
-	if err := q.UpsertCredential(ctx, store.UpsertCredentialParams{UserID: user.ID, PasswordHash: hash, UpdatedAt: now}); err != nil {
-		return err
-	}
-	avatar, err := q.CreateAvatar(ctx, store.CreateAvatarParams{
-		UserID:    user.ID,
-		Name:      admin.Name,
-		Figure:    adminFigure,
-		Gender:    adminGender,
-		CreatedAt: now,
-		UpdatedAt: now,
-	})
-	if err != nil {
-		return err
-	}
-	profile, err := q.CreateProfile(ctx, store.CreateProfileParams{AvatarID: avatar.ID, CreatedAt: now, UpdatedAt: now})
-	if err != nil {
-		return err
-	}
-	if _, err := q.CreateProfileHome(ctx, store.CreateProfileHomeParams{ProfileID: profile.ID, UpdatedAt: now}); err != nil {
-		return err
-	}
-	if err := q.CreateWallet(ctx, store.CreateWalletParams{AvatarID: avatar.ID, Credits: adminCredits, UpdatedAt: now}); err != nil {
-		return err
-	}
-	err = q.CreateWalletTransaction(ctx, store.CreateWalletTransactionParams{
-		AvatarID:  avatar.ID,
-		Credits:   adminCredits,
-		Reason:    "registration",
-		Detail:    "installer",
-		CreatedAt: now,
+	userID, avatarID, err := auth.CreateAccount(ctx, q, auth.Account{
+		Email:        admin.Email,
+		BornOn:       admin.BornOn,
+		IP:           admin.IP,
+		PasswordHash: hash,
+		Habbo: auth.Habbo{
+			Name:    admin.Name,
+			Figure:  adminFigure,
+			Gender:  adminGender,
+			Credits: adminCredits,
+			Detail:  "installer",
+		},
 	})
 	if err != nil {
 		return err
@@ -251,21 +216,21 @@ func createAdministrator(ctx context.Context, q *store.Queries, admin Administra
 	}
 	return q.AddAccessGroupMember(ctx, store.AddAccessGroupMemberParams{
 		AccessGroupID:   group.ID,
-		UserID:          user.ID,
-		DisplayAvatarID: sql.NullInt64{Int64: avatar.ID, Valid: true},
+		UserID:          userID,
+		DisplayAvatarID: sql.NullInt64{Int64: avatarID, Valid: true},
 		GrantedAt:       now,
 	})
 }
 
-func (a Administrator) validate(now time.Time) error {
-	if !habboName.MatchString(a.Name) {
-		return ErrHabboName
+func (a Administrator) validate() error {
+	if err := auth.ValidateHabboName(a.Name); err != nil {
+		return err
 	}
-	if address, err := mail.ParseAddress(a.Email); err != nil || address.Address != a.Email {
-		return ErrEmail
+	if err := auth.ValidateEmail(a.Email); err != nil {
+		return err
 	}
-	if a.BornOn.Year() < 1900 || a.BornOn.After(now) {
-		return ErrBornOn
+	if err := auth.ValidateBornOn(a.BornOn); err != nil {
+		return err
 	}
 	return auth.ValidatePassword(a.Password)
 }

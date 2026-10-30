@@ -19,7 +19,7 @@ import (
 // who knows the password.
 func Login(w http.ResponseWriter, r *http.Request, db *sql.DB, habboName, password string, remember bool) (Session, error) {
 	now := clock().UTC()
-	ip := clientIP(r)
+	ip := ClientIP(r)
 	login, err := authenticate(r.Context(), db, habboName, password, ip, now)
 	if err != nil {
 		return Session{}, err

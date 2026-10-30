@@ -2,7 +2,6 @@ package router
 
 import (
 	"log/slog"
-	"net"
 	"net/http"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
@@ -52,12 +51,4 @@ func (r *Router) invalid(w http.ResponseWriter, name string, data any) {
 func (r *Router) fail(w http.ResponseWriter, err error) {
 	slog.Error("installer", "err", err)
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-}
-
-func clientIP(req *http.Request) string {
-	host, _, err := net.SplitHostPort(req.RemoteAddr)
-	if err != nil {
-		return req.RemoteAddr
-	}
-	return host
 }

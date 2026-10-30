@@ -202,13 +202,13 @@ func TestCreateAdministratorValidates(t *testing.T) {
 		change func(*Administrator)
 		want   error
 	}{
-		"empty name":          {func(a *Administrator) { a.Name = "" }, ErrHabboName},
-		"name with a space":   {func(a *Administrator) { a.Name = "Admin One" }, ErrHabboName},
-		"long name":           {func(a *Administrator) { a.Name = strings.Repeat("a", 25) }, ErrHabboName},
-		"malformed email":     {func(a *Administrator) { a.Email = "admin" }, ErrEmail},
-		"email with a name":   {func(a *Administrator) { a.Email = "Admin <admin@example.com>" }, ErrEmail},
-		"future birth date":   {func(a *Administrator) { a.BornOn = time.Now().AddDate(1, 0, 0) }, ErrBornOn},
-		"birth date pre-1900": {func(a *Administrator) { a.BornOn = time.Date(1899, time.December, 31, 0, 0, 0, 0, time.UTC) }, ErrBornOn},
+		"empty name":          {func(a *Administrator) { a.Name = "" }, auth.ErrHabboName},
+		"name with a space":   {func(a *Administrator) { a.Name = "Admin One" }, auth.ErrHabboName},
+		"long name":           {func(a *Administrator) { a.Name = strings.Repeat("a", 25) }, auth.ErrHabboName},
+		"malformed email":     {func(a *Administrator) { a.Email = "admin" }, auth.ErrEmail},
+		"email with a name":   {func(a *Administrator) { a.Email = "Admin <admin@example.com>" }, auth.ErrEmail},
+		"future birth date":   {func(a *Administrator) { a.BornOn = time.Now().AddDate(1, 0, 0) }, auth.ErrBornOn},
+		"birth date pre-1900": {func(a *Administrator) { a.BornOn = time.Date(1899, time.December, 31, 0, 0, 0, 0, time.UTC) }, auth.ErrBornOn},
 		"short password":      {func(a *Administrator) { a.Password = "short" }, auth.ErrPasswordLength},
 	} {
 		admin := testAdministrator()
@@ -219,25 +219,6 @@ func TestCreateAdministratorValidates(t *testing.T) {
 	}
 	if installed, err := s.Installed(t.Context()); err != nil || installed {
 		t.Errorf("Installed() = %t, %v after rejected administrators, want false", installed, err)
-	}
-}
-
-func TestHabboNames(t *testing.T) {
-	for name, valid := range map[string]bool{
-		"Admin":                 true,
-		"a":                     true,
-		"Admin-1":               true,
-		"-=?!@:.,":              true,
-		strings.Repeat("a", 24): true,
-		strings.Repeat("a", 25): false,
-		"":                      false,
-		"two words":             false,
-		"ñandú":                 false,
-		"under_score":           false,
-	} {
-		if habboName.MatchString(name) != valid {
-			t.Errorf("habbo name %q: valid = %t, want %t", name, !valid, valid)
-		}
 	}
 }
 

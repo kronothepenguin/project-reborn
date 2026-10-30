@@ -2,6 +2,10 @@
 
 ## 2026-10-30
 
+- **Done** [p1-03](/tasks/p1-03-account-helpers.md): the name, email and birth-date rules and the writes of an account
+  and a habbo moved from the installer into `packages/auth`, as [0030](/decisions/0030-accounts-created-in-auth.md)
+  says; the installer's end-to-end run still works.
+- **Start** [p1-03](/tasks/p1-03-account-helpers.md).
 - **Done** [p1-02](/tasks/p1-02-sign-in-and-out.md): `POST /` signs in with `auth.Login`, `POST /logout` signs out, and
   `/me` shows the active habbo. On the production binaries, with `curl` and a real Chromium, the whole flow worked,
   including a failed sign-in during maintenance and the throttle.
