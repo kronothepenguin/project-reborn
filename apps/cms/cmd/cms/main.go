@@ -1,12 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"io/fs"
 	"log"
 	"net/http"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/cms"
+	"github.com/kronothepenguin/project-reborn/packages/config"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 func main() {
@@ -14,11 +17,13 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	resolver := astro.MakeFSResolver(distFS)
 	fileServer := http.FileServerFS(distFS)
 
-	c := cms.New(
+	cfg := config.Get()
+	db := store.FromConfig()
+
+	c := cms.New(db,
 		cms.WithResolver(resolver),
 		cms.WithStatic(fileServer),
 	)
@@ -27,10 +32,10 @@ func main() {
 	c.Mount(mux)
 
 	server := http.Server{
-		Addr:    "localhost:17387",
+		Addr:    fmt.Sprintf("localhost:%d", cfg.CMS.Port),
 		Handler: mux,
 	}
 
-	log.Println("cms on http://localhost:17387")
-	server.ListenAndServe()
+	log.Println("cms on http://" + server.Addr)
+	log.Fatalln(server.ListenAndServe())
 }

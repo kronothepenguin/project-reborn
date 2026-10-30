@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -8,6 +9,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/cms"
+	"github.com/kronothepenguin/project-reborn/packages/config"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 func main() {
@@ -15,11 +18,13 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
 	resolver := astro.MakeServerResolver(baseURL)
 	proxy := httputil.NewSingleHostReverseProxy(baseURL)
 
-	c := cms.New(
+	cfg := config.Get()
+	db := store.FromConfig()
+
+	c := cms.New(db,
 		cms.WithResolver(resolver),
 		cms.WithStatic(proxy),
 	)
@@ -28,10 +33,10 @@ func main() {
 	c.Mount(mux)
 
 	server := http.Server{
-		Addr:    "localhost:17387",
+		Addr:    fmt.Sprintf("localhost:%d", cfg.CMS.Port),
 		Handler: mux,
 	}
 
-	log.Println("cms dev on http://localhost:17387")
-	server.ListenAndServe()
+	log.Println("cms dev on http://" + server.Addr)
+	log.Fatalln(server.ListenAndServe())
 }

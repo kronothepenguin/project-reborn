@@ -6,8 +6,10 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 )
 
-func (router *Router) HandleRegisterView(w http.ResponseWriter, r *http.Request) {
-	astro.WriteTemplate(w, router.Resolve, "register.html", nil)
+// HandleRegisterView renders GET /register.
+func (r *Router) HandleRegisterView(w http.ResponseWriter, req *http.Request) {
+	astro.WriteTemplate(w, r.deps.Resolver, "register.html", nil)
 }
 
-func (router *Router) HandleRegister(w http.ResponseWriter, r *http.Request) {}
+// HandleRegister handles the POST /register action.
+func (r *Router) HandleRegister(w http.ResponseWriter, req *http.Request) {}

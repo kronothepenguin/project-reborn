@@ -1,13 +1,23 @@
 package router
 
 import (
+	"database/sql"
+
 	"github.com/kronothepenguin/project-reborn/packages/astro"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
-type Router struct {
-	Resolve astro.Resolver
+// Deps are the shared services every handler can use.
+type Deps struct {
+	Resolver astro.Resolver
+	DB       *sql.DB
+	Queries  *store.Queries
 }
 
-func New(resolver astro.Resolver) *Router {
-	return &Router{Resolve: resolver}
+type Router struct {
+	deps Deps
+}
+
+func New(deps Deps) *Router {
+	return &Router{deps: deps}
 }

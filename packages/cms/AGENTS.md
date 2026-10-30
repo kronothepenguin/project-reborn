@@ -6,9 +6,21 @@ serves the built frontend from the embedded `dist/`.
 
 ## Ports
 
-- App (Go HTTP server): **17387** — baked in `apps/cms/cmd/cms`
-  and `apps/cms/cmd/cms-dev`
+- App (Go HTTP server): `cms.port` in `config.json`, 17387 by default
 - Astro dev server: **22827** — baked in `astro.config.mjs`
+
+## Runtime
+
+- `cms.New(db, WithResolver(…), WithStatic(…))` takes the db the runner opened
+  with `store.FromConfig()` and loads the settings (`virtual/settings`),
+  panicking when it cannot. Only the resolver and the static handler are
+  options, because they differ between the production and development runners.
+- `Mount` wraps every CMS route with `auth.RealIP`, cross-origin protection and
+  `auth.Sessions`, so the CMS stays protected on a mux it shares with other apps.
+- While `site.maintenance` is on, every page route serves
+  `maintenance.html` with 503, except `POST /` (sign in) and the static
+  files; users holding `site.maintenanceBypass` see the site.
+- Nothing reloads the settings for now.
 
 ## Development
 

@@ -1,0 +1,46 @@
+---
+import { Paper } from "@project-reborn/components";
+import frank from "../assets/maintenance/frank_habbo_down.gif";
+import workman from "../assets/maintenance/workman_habbo_down.gif";
+import LoginBox from "../components/landing/login-box.astro";
+import Document from "../layouts/document.astro";
+---
+
+<Document title="[[ .ShortName ]]">
+  <main
+    class="flex min-h-screen flex-col items-center justify-center gap-4 bg-cyan-950 p-2"
+  >
+    <Paper variant="blue">
+      <div class="flex max-w-2xl flex-col gap-6 p-4 sm:flex-row">
+        <figure class="flex flex-1 flex-col items-center gap-2">
+          <p class="rounded-lg border border-black/20 bg-white p-3 text-sm font-bold">
+            I think you hit the wrong switch, Greggers! All of [[ .ShortName ]]
+            just vanished!
+          </p>
+          <img
+            src={frank.src}
+            width={frank.width}
+            height={frank.height}
+            alt="Frank"
+          />
+        </figure>
+        <figure class="flex flex-1 flex-col items-center gap-2">
+          <p class="rounded-lg border border-black/20 bg-white p-3 text-sm">
+            Oh, calm down Frank. Sparky and I are just in the process of fixing
+            something in [[ .ShortName ]] and had to take the website down while
+            we work. We will return soon so check back in a little while.
+          </p>
+          <img
+            src={workman.src}
+            width={workman.width}
+            height={workman.height}
+            alt="Greggers"
+          />
+        </figure>
+      </div>
+    </Paper>
+    <div class="w-72">
+      <LoginBox links={false} />
+    </div>
+  </main>
+</Document>

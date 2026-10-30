@@ -14,7 +14,7 @@ and `install.php` becomes `packages/installer`.
 2. Read the newest entries of the [log](/log.md).
 3. Open the [task index](/tasks/index.md): in-progress tasks first, then the todo tasks of the current phase.
 
-Current phase: [P0 Foundations](/phases/p0-foundations.md).
+Current phase: [P1 Signed-out site](/phases/p1-signed-out.md).
 
 ## Contents
 

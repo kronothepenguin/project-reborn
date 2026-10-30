@@ -2,6 +2,22 @@
 
 ## 2026-10-28
 
+- **Update** P0 is done again and P1 is active; P1 gets its tasks when its work starts.
+- **Done** [p0-17](/tasks/p0-17-package-level-settings-and-auth.md): settings live in the `virtual/settings`
+  singleton, auth is helpers receiving the db, `cms.New(db, …)` loads the settings and protects its own routes,
+  and runners open the db with `store.FromConfig()`; all gates pass and the installer-then-CMS run works.
+- **Start** [p0-17](/tasks/p0-17-package-level-settings-and-auth.md); P0 is active again and P1 waits.
+- **Create** [p0-17](/tasks/p0-17-package-level-settings-and-auth.md) to implement 0029.
+- **Decision** [0029](/decisions/0029-package-level-settings-and-auth.md) supersedes
+  [0024](/decisions/0024-settings-catalogue-and-getters.md): settings are a package-level singleton in
+  `virtual/settings`, auth is helpers receiving the db, and apps take the db on creation. The user also ruled
+  that `apps/**/cmd/**` changes only on request.
+- **Update** P0 is done and P1 is active; P1 gets its tasks when its work starts.
+- **Done** [p0-11](/tasks/p0-11-cms-wiring.md): the CMS runners open config, store, settings and auth, put
+  `RealIP`, cross-origin protection and sessions in front of the routes, reload settings every `cms.refresh`
+  seconds and gate the pages behind maintenance. End to end, after the installer the CMS served `/`, refused a
+  cross-site POST with 403, and showed or lifted maintenance about a second after its row changed.
+- **Start** [p0-11](/tasks/p0-11-cms-wiring.md).
 - **Done** [p0-16](/tasks/p0-16-trusted-proxies.md): the `proxy` section in `packages/config` and the
   `auth.RealIP` middleware; config, auth, virtual and installer tests pass, and three deliberate trust bugs were
   each caught by the tests.

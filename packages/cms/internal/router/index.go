@@ -7,23 +7,25 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 )
 
-func (router *Router) HandleIndexView(w http.ResponseWriter, r *http.Request) {
-	astro.WriteTemplate(w, router.Resolve, "index.html", nil)
+// HandleIndexView renders GET /{$}.
+func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
+	astro.WriteTemplate(w, r.deps.Resolver, "index.html", nil)
 }
 
-func (router *Router) HandleIndexLogin(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
+// HandleIndexLogin handles the POST /{$} login action.
+func (r *Router) HandleIndexLogin(w http.ResponseWriter, req *http.Request) {
+	if err := req.ParseForm(); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		astro.WriteTemplate(w, router.Resolve, "index.html", nil)
+		astro.WriteTemplate(w, r.deps.Resolver, "index.html", nil)
 		return
 	}
 
-	username := strings.TrimSpace(r.PostFormValue("username"))
-	password := r.PostFormValue("password")
-	// remember := r.PostFormValue("remember") != ""
+	username := strings.TrimSpace(req.PostFormValue("username"))
+	password := req.PostFormValue("password")
+	// remember := req.PostFormValue("remember") != ""
 
 	if username == "" || password == "" {
-		astro.WriteTemplate(w, router.Resolve, "index.html", map[string]any{
+		astro.WriteTemplate(w, r.deps.Resolver, "index.html", map[string]any{
 			"Error": "Invalid username or password",
 		})
 		return

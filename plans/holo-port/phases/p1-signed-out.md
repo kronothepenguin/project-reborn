@@ -2,8 +2,8 @@
 type: Phase
 title: P1 Signed-out site
 description: Landing and login, registration with referrals, logout, forgot and reset password, legal pages and maintenance.
-status: planned
-timestamp: 2026-10-27T20:48:19+00:00
+status: active
+timestamp: 2026-10-28T02:51:32+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p1, cms]
 ---

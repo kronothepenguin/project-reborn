@@ -10,7 +10,8 @@ lives entirely in the package; this module only serves it.
 
 ## Ports
 
-- App (Go HTTP server): **17387** — baked in both runners
+- App (Go HTTP server): `cms.port` in `config.json`, 17387 by default, read
+  by both runners
 - Astro dev server: **22827** — baked in `packages/cms/astro.config.mjs`
 
 ## Run
@@ -36,8 +37,12 @@ go build -o ./apps/cms/tmp/cms ./apps/cms/cmd/cms
 
 - `make dev` starts air from the repository root, so the runner reads and
   writes the root `config.json`.
-- Air watches `apps/cms`, `packages/astro` and `packages/cms` (`.go` only) and
-  rebuilds the dev runner on Go changes.
+- Air watches the `.go` files of `apps/cms`, `packages/astro`, `packages/cms`
+  and the packages the CMS imports (`auth`, `config`, `store`, `virtual`),
+  and rebuilds the dev runner on Go changes.
+- Run the installer first: the runners open the database with
+  `store.FromConfig()`, and `config.Get` writes a default `config.json` when it
+  is missing.
 - Astro page edits are hot-reloaded by the astro dev server; the runner
   re-fetches pages on every request, so no Go restart is needed for
   frontend-only changes.
