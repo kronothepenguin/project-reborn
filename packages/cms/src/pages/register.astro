@@ -1,27 +1,59 @@
 ---
-import { Button, Icon, Input, Link } from "@project-reborn/components";
+import {
+  Checkbox,
+  Input,
+  Link,
+  Notice,
+  Select,
+} from "@project-reborn/components";
+import AvatarEditor from "../components/habbo/avatar-editor.svelte";
+import NameCheck from "../components/register/name-check.svelte";
 import RegisterFormField from "../components/register/register-form-field.svelte";
 import SignedOut from "../layouts/signed-out.astro";
 ---
 
 <SignedOut>
-  <form class="flex pt-2 pb-4 gap-4">
+  [[ with .Errors.form ]]
+  <div class="pt-2"><Notice>[[ . ]]</Notice></div>
+  [[ end ]]
+
+  <form method="post" action="/register" class="flex pt-2 pb-4 gap-4">
+    <input
+      type="hidden"
+      id="register-figure"
+      name="figure"
+      value="[[ .Figure ]]"
+    />
+    <input
+      type="hidden"
+      id="register-gender"
+      name="gender"
+      value="[[ .Gender ]]"
+    />
+    <input
+      type="hidden"
+      id="register-editor-state"
+      name="editorState"
+      value="[[ .EditorState ]]"
+    />
+
     <div class="flex flex-col gap-2 flex-1">
       <section class="bg-cyan-600 rounded-md px-4 py-2">
         <header class="text-white flex">
           <span class="font-bold">1.</span>
           <h2 class="font-bold text-center w-full">Choose Your Name</h2>
         </header>
-        <div>
-          <label class="flex flex-col items-center gap-1">
-            <span class="text-xs text-white font-bold">Avatar Name</span>
-            <div class="flex gap-2 items-center">
-              <Input name="name" />
-              <Button size="compact" type="button">
-                <Icon />
-              </Button>
-            </div>
+        <div class="flex flex-col items-center gap-1">
+          <label for="register-name" class="text-xs text-white font-bold">
+            Avatar Name
           </label>
+          <div class="flex flex-wrap gap-2 items-center justify-center">
+            <Input id="register-name" name="name" value="[[ .Name ]]" />
+            <NameCheck client:only="svelte" input="register-name" />
+          </div>
+          [[ with .Errors.name ]]
+          <Notice>[[ . ]]</Notice>
+          [[ end ]]
         </div>
       </section>
 
@@ -31,50 +63,88 @@ import SignedOut from "../layouts/signed-out.astro";
           <h2 class="text-center w-full">Your Details</h2>
         </header>
         <div class="flex flex-col gap-2 px-3 py-2">
+          [[ with .Errors.password ]]
+          <Notice>[[ . ]]</Notice>
+          [[ end ]]
           <RegisterFormField label="My password will be:">
-            <input type="password" name="password" />
+            <Input type="password" name="password" />
           </RegisterFormField>
 
           <RegisterFormField label="Confirm password">
-            <input type="password" />
+            <Input type="password" name="passwordConfirm" />
           </RegisterFormField>
 
-          <div>
-            <RegisterFormField label="I was born on:">
-              <div>
-                <select name="day"></select>
-                <select name="month"></select>
-                <select name="year"></select>
-              </div>
-            </RegisterFormField>
-          </div>
+          [[ with .Errors.bornOn ]]
+          <Notice>[[ . ]]</Notice>
+          [[ end ]]
+          <RegisterFormField label="I was born on:">
+            <div class="flex justify-center gap-1">
+              <Select name="day" aria-label="Day">
+                <option value="">Day</option>
+                [[ range .Days ]][[ if .Selected ]]
+                <option value="[[ .Value ]]" selected>[[ .Label ]]</option>
+                [[ else ]]
+                <option value="[[ .Value ]]">[[ .Label ]]</option>
+                [[ end ]][[ end ]]
+              </Select>
+              <Select name="month" aria-label="Month">
+                <option value="">Month</option>
+                [[ range .Months ]][[ if .Selected ]]
+                <option value="[[ .Value ]]" selected>[[ .Label ]]</option>
+                [[ else ]]
+                <option value="[[ .Value ]]">[[ .Label ]]</option>
+                [[ end ]][[ end ]]
+              </Select>
+              <Select name="year" aria-label="Year">
+                <option value="">Year</option>
+                [[ range .Years ]][[ if .Selected ]]
+                <option value="[[ .Value ]]" selected>[[ .Label ]]</option>
+                [[ else ]]
+                <option value="[[ .Value ]]">[[ .Label ]]</option>
+                [[ end ]][[ end ]]
+              </Select>
+            </div>
+          </RegisterFormField>
 
+          [[ with .Errors.email ]]
+          <Notice>[[ . ]]</Notice>
+          [[ end ]]
           <RegisterFormField label="And my email address is:">
-            <input type="password" />
+            <Input type="email" name="email" value="[[ .Email ]]" />
           </RegisterFormField>
 
           <RegisterFormField label="Retype your email address">
-            <input type="password" />
+            <Input type="email" name="emailConfirm" />
           </RegisterFormField>
 
-          <label>
-            <input type="checkbox" name="newsletter" />
-            <span class="text-sm text-white">
-              Yes, please send me updates, including the newsletter!
-            </span>
-          </label>
+          [[ if .Newsletter ]]
+          <Checkbox name="newsletter" checked class="text-sm text-white">
+            Yes, please send me updates, including the newsletter!
+          </Checkbox>
+          [[ else ]]
+          <Checkbox name="newsletter" class="text-sm text-white">
+            Yes, please send me updates, including the newsletter!
+          </Checkbox>
+          [[ end ]]
 
-          <div class="flex flex-col gap-4 bg-mist-600 px-4 py-2 text-white rounded">
-            <a class="text-sm" href="/disclaimer">
-              Terms of Service
-            </a>
-            <label>
-              <input type="checkbox" name="terms" />
-              <span class="text-sm">
-                By clicking on continue, I confirm that I have read and accept
-                the Terms of Use and Privacy Policy.
-              </span>
-            </label>
+          [[ with .Errors.terms ]]
+          <Notice>[[ . ]]</Notice>
+          [[ end ]]
+          <div
+            class="flex flex-col gap-4 bg-mist-600 px-4 py-2 text-white rounded"
+          >
+            <a class="text-sm" href="/disclaimer">Terms of Service</a>
+            [[ if .Terms ]]
+            <Checkbox name="terms" checked class="text-sm">
+              By clicking on continue, I confirm that I have read and accept the
+              Terms of Use and Privacy Policy.
+            </Checkbox>
+            [[ else ]]
+            <Checkbox name="terms" class="text-sm">
+              By clicking on continue, I confirm that I have read and accept the
+              Terms of Use and Privacy Policy.
+            </Checkbox>
+            [[ end ]]
           </div>
         </div>
       </section>
@@ -86,56 +156,23 @@ import SignedOut from "../layouts/signed-out.astro";
         <h2 class="font-bold text-center w-full">Create Your Avatar</h2>
       </header>
 
-      <div id="editor-container"></div>
+      [[ with .Errors.look ]]
+      <Notice>[[ . ]]</Notice>
+      [[ end ]]
+      <AvatarEditor
+        client:only="svelte"
+        figureInput="register-figure"
+        genderInput="register-gender"
+        stateInput="register-editor-state"
+        submitButton="register-submit"
+      />
 
-      <script>
-        declare global {
-          interface Window {
-            HabboEditor: any;
-            HabboEditorConfig: any;
-          }
-        }
-
-        window.HabboEditor = {
-          setGenderAndFigure: function (gender, figure) {
-            // Called whenever the figure or gender changes.
-            // gender: 'M' or 'F'
-            // figure: Habbo figure string, e.g. 'hd-180-1.ch-215-82.lg-270-82'
-          },
-          setAllowedToProceed: function (allowed) {
-            // Called to indicate whether the current figure is valid for submission.
-            // allowed: true/false
-          },
-          setEditorState: function (state) {
-            // Called with a serialised menu state string for save/restore.
-          },
-          showHabboClubNotice: function () {
-            // Called when the user selects a Habbo Club item they don't own.
-          },
-          hideHabboClubNotice: function () {
-            // Called when the user deselects the Habbo Club item.
-          },
-          showOldFigureNotice: function () {
-            // Called when the provided figure string can't be fully parsed.
-          },
-        };
-
-        // Editor config
-        window.HabboEditorConfig = {
-          // figure: 'hd-180-1.ch-215-82.lg-270-82',
-          // gender: 'M',
-          userHasClub: false,
-          showClubSelections: true,
-          assetsPath: "",
-          assetBundlePath: "assets.zip",
-        };
-      </script>
-      <script src="/habbo-editor.iife.js" is:inline></script>
       <div class="flex justify-between text-xs">
         <Link href="/">Exit Registration</Link>
 
         <button
-          class="border-2 border-b-4 rounded border-green-900 bg-lime-600 text-white font-bold px-2"
+          id="register-submit"
+          class="border-2 border-b-4 rounded border-green-900 bg-lime-600 text-white font-bold px-2 disabled:opacity-50"
           type="submit"
         >
           Continue

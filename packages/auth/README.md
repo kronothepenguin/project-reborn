@@ -58,7 +58,10 @@ The `Attribute` constants and `Catalogue()` (name and description) follow decisi
 
 Registration and the installer create accounts the same way.
 
-- `ValidateHabboName(name)`, `ValidateEmail(email)` and `ValidateBornOn(bornOn)` give `ErrHabboName`, `ErrEmail` and `ErrBornOn`. Names are 1 to 24 ASCII letters, digits or `- = ? ! @ : . ,`, and those starting with `MOD-` are refused, ignoring case. An email is a bare address, and a birth date is a past date from 1900.
+- `ValidateHabboName(name)`, `ValidateEmail(email)`, `ValidateBornOn(bornOn)` and `ValidateLook(figure, gender)` give `ErrHabboName`, `ErrEmail`, `ErrBornOn` and `ErrLook`.
+  - Names are 1 to 24 ASCII letters, digits or `- = ? ! @ : . ,`, and those starting with `MOD-` are refused, ignoring case. `ErrHabboNameEmpty`, `ErrHabboNameTooLong` and `ErrHabboNameReserved` say why, and all of them match `ErrHabboName`.
+  - An email is a bare address of at most 254 bytes, and a birth date is a past date from 1900.
+  - A figure is the dot format of the v2 avatar editor (`hd-180-1.ch-215-82.lg-270-82`), whose parts can leave the colour empty (`ha-1018-`), and the gender is `M` or `F`.
 - `CreateAccount(ctx, q, account)` writes the user, the credentials and the first habbo, and returns `userID, avatarID`.
 - `CreateHabbo(ctx, q, userID, habbo)` writes a habbo with its profile, home and wallet, plus a `registration` ledger row when it starts with credits.
 

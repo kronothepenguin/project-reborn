@@ -40,7 +40,13 @@ func (r *Router) HandleIndexLogin(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	_, err := auth.Login(w, req, r.deps.DB, username, password, req.PostFormValue("remember") != "")
+	r.signIn(w, req, username, password, req.PostFormValue("remember") != "")
+}
+
+// signIn starts a session and redirects to /me, or shows the sign-in form again
+// with the reason.
+func (r *Router) signIn(w http.ResponseWriter, req *http.Request, username, password string, remember bool) {
+	_, err := auth.Login(w, req, r.deps.DB, username, password, remember)
 	ban, banned := errors.AsType[*auth.BanError](err)
 	switch {
 	case err == nil:

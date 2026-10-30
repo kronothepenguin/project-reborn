@@ -55,6 +55,50 @@ func TestValidateHabboName(t *testing.T) {
 	}
 }
 
+func TestValidateHabboNameSaysWhy(t *testing.T) {
+	for name, want := range map[string]error{
+		"":                      ErrHabboNameEmpty,
+		strings.Repeat("a", 25): ErrHabboNameTooLong,
+		"MOD-Bob":               ErrHabboNameReserved,
+	} {
+		if err := ValidateHabboName(name); !errors.Is(err, want) || !errors.Is(err, ErrHabboName) {
+			t.Errorf("ValidateHabboName(%q) = %v, want %v matching ErrHabboName", name, err, want)
+		}
+	}
+}
+
+func TestValidateLook(t *testing.T) {
+	for _, c := range []struct {
+		figure string
+		gender string
+		valid  bool
+	}{
+		{"hd-180-1.ch-215-82.lg-270-82", "M", true},
+		{"hd-180-1", "F", true},
+		{"hr-505-39.ha-1001-.ea-1401-84", "F", true},
+		{"hd-180-1-2.ch-215", "M", true},
+		{"hd-180-1", "U", false},
+		{"hd-180-1", "", false},
+		{"hd-180-1", "m", false},
+		{"", "M", false},
+		{"hd", "M", false},
+		{"hd-180-1.", "M", false},
+		{"hd-180-1..ch-215-82", "M", false},
+		{"HD-180-1", "M", false},
+		{"hd-180-1&size=l", "M", false},
+		{"1750118022210132810129003", "M", false},
+		{"hd-180-1." + strings.Repeat("ch-215-82.", 25) + "lg-270-82", "M", false},
+	} {
+		err := ValidateLook(c.figure, c.gender)
+		if c.valid != (err == nil) {
+			t.Errorf("ValidateLook(%q, %q) = %v, want valid %t", c.figure, c.gender, err, c.valid)
+		}
+		if err != nil && !errors.Is(err, ErrLook) {
+			t.Errorf("ValidateLook(%q, %q) = %v, want ErrLook", c.figure, c.gender, err)
+		}
+	}
+}
+
 func TestValidateEmail(t *testing.T) {
 	for email, valid := range map[string]bool{
 		"admin@example.com":         true,
@@ -64,6 +108,7 @@ func TestValidateEmail(t *testing.T) {
 		"admin@":                    false,
 		"Admin <admin@example.com>": false,
 		"<admin@example.com>":       false,
+		strings.Repeat("a", 243) + "@example.com": false,
 	} {
 		err := ValidateEmail(email)
 		if valid != (err == nil) {

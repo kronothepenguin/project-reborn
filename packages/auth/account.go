@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
@@ -16,21 +17,49 @@ var (
 	ErrHabboName = errors.New("auth: invalid habbo name")
 	ErrEmail     = errors.New("auth: invalid email address")
 	ErrBornOn    = errors.New("auth: invalid birth date")
+	ErrLook      = errors.New("auth: invalid figure or gender")
 )
 
-var habboName = regexp.MustCompile(`^[A-Za-z0-9\-=?!@:.,]{1,24}$`)
+// These say why a name is invalid; each of them matches ErrHabboName.
+var (
+	ErrHabboNameEmpty    = fmt.Errorf("%w: empty", ErrHabboName)
+	ErrHabboNameTooLong  = fmt.Errorf("%w: too long", ErrHabboName)
+	ErrHabboNameReserved = fmt.Errorf("%w: reserved", ErrHabboName)
+)
+
+const (
+	maxHabboNameLength = 24
+	maxEmailLength     = 254
+	maxFigureLength    = 255
+)
+
+var (
+	habboName = regexp.MustCompile(`^[A-Za-z0-9\-=?!@:.,]+$`)
+	// A part can leave its colour empty, as in ha-1001-.
+	figureFormat = regexp.MustCompile(`^[a-z]{2}-\d+(-\d*)*(\.[a-z]{2}-\d+(-\d*)*)*$`)
+)
 
 // ValidateHabboName checks a new habbo's name. Names starting with MOD- are
 // refused because they would pass for moderators.
 func ValidateHabboName(name string) error {
-	if !habboName.MatchString(name) || strings.HasPrefix(strings.ToUpper(name), "MOD-") {
+	switch {
+	case name == "":
+		return ErrHabboNameEmpty
+	case utf8.RuneCountInString(name) > maxHabboNameLength:
+		return ErrHabboNameTooLong
+	case !habboName.MatchString(name):
 		return ErrHabboName
+	case strings.HasPrefix(strings.ToUpper(name), "MOD-"):
+		return ErrHabboNameReserved
 	}
 	return nil
 }
 
 // ValidateEmail accepts a bare address, without a display name.
 func ValidateEmail(email string) error {
+	if len(email) > maxEmailLength {
+		return ErrEmail
+	}
 	if address, err := mail.ParseAddress(email); err != nil || address.Address != email {
 		return ErrEmail
 	}
@@ -40,6 +69,15 @@ func ValidateEmail(email string) error {
 func ValidateBornOn(bornOn time.Time) error {
 	if bornOn.Year() < 1900 || bornOn.After(clock()) {
 		return ErrBornOn
+	}
+	return nil
+}
+
+// ValidateLook checks a figure in the dot format of the v2 avatar editor, such as
+// hd-180-1.ch-215-82.lg-270-82, and a gender of M or F.
+func ValidateLook(figure, gender string) error {
+	if len(figure) > maxFigureLength || !figureFormat.MatchString(figure) || (gender != "M" && gender != "F") {
+		return ErrLook
 	}
 	return nil
 }

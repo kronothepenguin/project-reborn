@@ -2,6 +2,10 @@
 
 ## 2026-10-30
 
+- **Done** [p1-04](/tasks/p1-04-registration.md): `/register` creates an account with the avatar editor, whose look
+  reaches the backend through hidden inputs, with the live name check and the per-IP limit, and signs the visitor in.
+  A real Chromium registered end to end, and the database held the editor's exact figure.
+- **Start** [p1-04](/tasks/p1-04-registration.md).
 - **Done** [p1-03](/tasks/p1-03-account-helpers.md): the name, email and birth-date rules and the writes of an account
   and a habbo moved from the installer into `packages/auth`, as [0030](/decisions/0030-accounts-created-in-auth.md)
   says; the installer's end-to-end run still works.

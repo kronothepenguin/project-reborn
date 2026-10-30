@@ -308,7 +308,7 @@ func TestCrossSitePostsAreRefused(t *testing.T) {
 	db, mux := newSite(t)
 	habbo(t, db, "admin@example.com", "Admin")
 
-	for _, path := range []string{"/", "/logout", "/register"} {
+	for _, path := range []string{"/", "/logout", "/register", "/register/check-name"} {
 		r := httptest.NewRequest("POST", path, strings.NewReader(credentials("Admin", "secret123").Encode()))
 		r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 		r.Header.Set("Sec-Fetch-Site", "cross-site")
@@ -342,6 +342,7 @@ func TestMaintenance(t *testing.T) {
 		{"guest me", "GET", "/me", nil, 503, "maintenance.html"},
 		{"guest registration", "GET", "/register", nil, 503, "maintenance.html"},
 		{"guest registration form", "POST", "/register", nil, 503, "maintenance.html"},
+		{"guest name check", "POST", "/register/check-name", nil, 503, "maintenance.html"},
 		{"static file", "GET", "/favicon.svg", nil, 200, "static"},
 		{"player without the bypass", "GET", "/", player, 503, "maintenance.html"},
 		{"player's me without the bypass", "GET", "/me", player, 503, "maintenance.html"},

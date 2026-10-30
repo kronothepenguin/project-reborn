@@ -45,7 +45,7 @@ forgotten password. The landing, legal and maintenance pages match Holo's proces
 - [p1-01 Add the P1 primitives](/tasks/p1-01-primitives.md) — done
 - [p1-02 Sign in and sign out](/tasks/p1-02-sign-in-and-out.md) — done
 - [p1-03 Move account creation into packages/auth](/tasks/p1-03-account-helpers.md) — done
-- [p1-04 Build registration](/tasks/p1-04-registration.md) — todo
+- [p1-04 Build registration](/tasks/p1-04-registration.md) — done
 - [p1-05 Pay referrals at registration](/tasks/p1-05-referrals.md) — todo
 - [p1-06 Reset a forgotten password by email](/tasks/p1-06-forgot-and-reset.md) — todo
 - [p1-07 Add the legal pages](/tasks/p1-07-legal-pages.md) — todo

@@ -22,6 +22,13 @@ serves the built frontend from the embedded `dist/`.
   static files; users holding `site.maintenanceBypass` see the site. A failed
   sign-in stays on the maintenance page.
 - Signing in lands on `/me`, and `/` sends signed-in visitors there.
+- `POST /register` creates the account in one transaction through
+  `auth.CreateAccount`, up to `registration.maxPerIp` per
+  `registration.ipWindowHours` from one address, and signs the visitor in.
+- Islands get no `[[ ]]` values, so the page keeps the name and the look in
+  inputs that Go fills in. `habbo/avatar-editor` reads the hidden `figure`,
+  `gender` and `editorState` inputs on start and writes every change back, which
+  is how the look reaches the backend. `/register` also takes `?gender=…&figure=…`.
 - A form that fails answers 422 with the page it came from.
 - Page structs on the `signed-out` layout embed `hotelStatus`, because the layout
   reads `.Online` and `.OnlineCount` and rendering fails without them.

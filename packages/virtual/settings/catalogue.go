@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"slices"
 	"unicode/utf8"
 )
 
@@ -25,7 +26,11 @@ var catalogue = map[string]declaration{
 	"auth.passwordMaxLength":  declare(25, between(6, 1024)),
 	"auth.resetTokenMinutes":  declare(60, between(5, 1440)),
 
-	"registration.startCredits": declare(500, between(0, 1_000_000)),
+	"registration.startCredits":  declare(500, between(0, 1_000_000)),
+	"registration.maxPerIp":      declare(5, between(1, 1000)),
+	"registration.ipWindowHours": declare(24, between(1, 8760)),
+	"registration.defaultFigure": declare("hr-802-61.hd-190-1.ch-260-62.lg-280-110.sh-295-91.fa-1207-103", length(1, 255)),
+	"registration.defaultGender": declare("M", oneOf("M", "F")),
 
 	"imaging.avatarUrl": declare("https://www.habbo.com/habbo-imaging/avatarimage", imager),
 }
@@ -97,6 +102,15 @@ func length(low, high int) func(string) error {
 	return func(value string) error {
 		if n := utf8.RuneCountInString(value); n < low || n > high {
 			return fmt.Errorf("must be %d to %d characters, got %d", low, high, n)
+		}
+		return nil
+	}
+}
+
+func oneOf(allowed ...string) func(string) error {
+	return func(value string) error {
+		if !slices.Contains(allowed, value) {
+			return fmt.Errorf("must be one of %v, got %q", allowed, value)
 		}
 		return nil
 	}
