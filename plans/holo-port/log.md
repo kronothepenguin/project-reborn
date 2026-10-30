@@ -2,6 +2,11 @@
 
 ## 2026-10-30
 
+- **Update** P1 is done and P2 is active; P2 gets its tasks when its work starts. P1's phase file lists four open
+  questions for the user's review.
+- **Done** [p1-09](/tasks/p1-09-exit-check.md): all exit criteria hold on a clean build: a new visitor went from a
+  referral link through registration, signing out and in, and a mailed password reset in a real Chromium, with the
+  referrer paid. P1 is done.
 - **Done** [p1-10](/tasks/p1-10-register-page-title.md): `/register` has a title, in Holo's `Reborn ~ Register` form,
   and the legal pages use the same form.
 - **Start** [p1-10](/tasks/p1-10-register-page-title.md), found while reviewing P1 before closing it.

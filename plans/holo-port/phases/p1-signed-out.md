@@ -2,8 +2,8 @@
 type: Phase
 title: P1 Signed-out site
 description: Landing and login, registration with referrals, logout, forgot and reset password, legal pages and maintenance.
-status: active
-timestamp: 2026-10-30T21:10:07+00:00
+status: done
+timestamp: 2026-10-30T22:42:25+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p1, cms]
 ---
@@ -50,5 +50,17 @@ forgotten password. The landing, legal and maintenance pages match Holo's proces
 - [p1-06 Reset a forgotten password by email](/tasks/p1-06-forgot-and-reset.md) — done
 - [p1-07 Add the legal pages](/tasks/p1-07-legal-pages.md) — done
 - [p1-08 Add the landing promo widget](/tasks/p1-08-landing-promo.md) — done
-- [p1-09 Verify the P1 exit criteria](/tasks/p1-09-exit-check.md) — todo
+- [p1-09 Verify the P1 exit criteria](/tasks/p1-09-exit-check.md) — done
 - [p1-10 Give the register page a title](/tasks/p1-10-register-page-title.md) — done
+
+# Open questions
+
+For the user's review of P1. The plan answers none of them, so the code follows the plan and adds nothing.
+
+- `POST /forgot` has no limit, so anyone can make the hotel send repeated mail to one address. Holo had the same problem.
+- Nothing stops a person from farming credits with their own referral link, up to `registration.maxPerIp` per window.
+  Holo never paid referrals, so it has no answer to port.
+- `POST /logout` only redirects to `/`, while Holo showed "You have successfully signed out" with an OK button. The phase
+  lists no page for it.
+- The setting `cms.refresh` has had no reader since [p0-17](/tasks/p0-17-package-level-settings-and-auth.md) removed
+  reloading.
