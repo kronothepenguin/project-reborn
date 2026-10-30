@@ -104,7 +104,7 @@ func TestLogoutEndsTheSession(t *testing.T) {
 	r := httptest.NewRequest(http.MethodPost, "/logout", nil)
 	r.AddCookie(cookie)
 	rec := httptest.NewRecorder()
-	if err := f.auth.Logout(rec, r); err != nil {
+	if err := Logout(rec, r, f.db); err != nil {
 		t.Fatalf("Logout: %v", err)
 	}
 	if cleared := sessionCookie(rec); cleared == nil || cleared.MaxAge >= 0 {
@@ -126,7 +126,7 @@ func TestLogoutEverywhereEndsEverySessionOfTheUser(t *testing.T) {
 	second := f.mustLogin(t, "Admin", true)
 	other := f.mustLogin(t, "Other", false)
 
-	if err := f.auth.LogoutEverywhere(t.Context(), userID); err != nil {
+	if err := LogoutEverywhere(t.Context(), f.db, userID); err != nil {
 		t.Fatalf("LogoutEverywhere: %v", err)
 	}
 	for name, cookie := range map[string]*http.Cookie{"first": first, "second": second} {
@@ -148,19 +148,19 @@ func TestSwitchHabbo(t *testing.T) {
 	session, _, _ := f.visit(t, cookie)
 	ctx := context.WithValue(t.Context(), contextKey{}, session)
 
-	if err := f.auth.SwitchHabbo(ctx, second); err != nil {
+	if err := SwitchHabbo(ctx, f.db, second); err != nil {
 		t.Fatalf("SwitchHabbo to an own habbo: %v", err)
 	}
 	if got, _, _ := f.visit(t, cookie); got.AvatarID != second {
 		t.Errorf("active habbo = %d, want %d", got.AvatarID, second)
 	}
-	if err := f.auth.SwitchHabbo(ctx, foreign); !errors.Is(err, ErrNotOwner) {
+	if err := SwitchHabbo(ctx, f.db, foreign); !errors.Is(err, ErrNotOwner) {
 		t.Errorf("SwitchHabbo to another user's habbo = %v, want ErrNotOwner", err)
 	}
 	if got, _, _ := f.visit(t, cookie); got.AvatarID != second {
 		t.Errorf("active habbo = %d after a refused switch, want %d", got.AvatarID, second)
 	}
-	if err := f.auth.SwitchHabbo(t.Context(), second); !errors.Is(err, ErrNoSession) {
+	if err := SwitchHabbo(t.Context(), f.db, second); !errors.Is(err, ErrNoSession) {
 		t.Errorf("SwitchHabbo without a session = %v, want ErrNoSession", err)
 	}
 }
@@ -169,7 +169,7 @@ func TestRequireSession(t *testing.T) {
 	f := newFixture(t)
 	f.habbo(t, "admin@example.com", "Admin", testPassword)
 	cookie := f.mustLogin(t, "Admin", false)
-	handler := f.auth.Sessions(RequireSession(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := Sessions(f.db)(RequireSession(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 	})))
 

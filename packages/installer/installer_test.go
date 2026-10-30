@@ -8,6 +8,8 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+
+	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // printData stands in for the built pages: it prints the page data, so the
@@ -106,11 +108,9 @@ func TestInstallation(t *testing.T) {
 		}
 	}
 
-	installation, _ := i.setup.Current()
-	s := installation.Settings
-	if s.GetString("site.name") != "Reborn Hotel" || s.GetString("site.url") != "https://hotel.example.com" ||
-		s.GetInt("registration.startCredits") != 750 || s.GetBool("auth.secureCookies") {
+	if settings.GetString("site.name") != "Reborn Hotel" || settings.GetString("site.url") != "https://hotel.example.com" ||
+		settings.GetInt("registration.startCredits") != 750 || settings.GetBool("auth.secureCookies") {
 		t.Errorf("settings after the site step: name %q, url %q, start credits %d, secure cookies %t",
-			s.GetString("site.name"), s.GetString("site.url"), s.GetInt("registration.startCredits"), s.GetBool("auth.secureCookies"))
+			settings.GetString("site.name"), settings.GetString("site.url"), settings.GetInt("registration.startCredits"), settings.GetBool("auth.secureCookies"))
 	}
 }

@@ -20,7 +20,7 @@ differs from the declared default. `config.json` keys are never settings.
 
 # Lifecycle
 
-- Written by `virtual.Settings.Set`, one key at a time, from the installer and from housekeeping.
+- Written by `settings.Set` (`packages/virtual/settings`), one key at a time, from the installer and from housekeeping.
 - Deleting a row restores the declared default.
 - Read when a program starts and again on `Reload`.
 

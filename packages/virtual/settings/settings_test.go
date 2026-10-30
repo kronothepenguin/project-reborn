@@ -1,8 +1,9 @@
-package virtual
+package settings
 
 import (
 	"bytes"
 	"database/sql"
+	"errors"
 	"log"
 	"log/slog"
 	"maps"
@@ -91,21 +92,19 @@ func createUser(t *testing.T, db *sql.DB) int64 {
 	return user.ID
 }
 
-func load(t *testing.T, db *sql.DB) *Settings {
+func load(t *testing.T, db *sql.DB) {
 	t.Helper()
-	s, err := LoadSettings(t.Context(), testConfig, db)
-	if err != nil {
-		t.Fatalf("LoadSettings: %v", err)
+	if err := Load(t.Context(), testConfig, db); err != nil {
+		t.Fatalf("Load: %v", err)
 	}
-	return s
 }
 
-func assertValues(t *testing.T, s *Settings, want map[string]any) {
+func assertValues(t *testing.T, want map[string]any) {
 	t.Helper()
-	values := *s.values.Load()
+	loaded := current()
 	for key, value := range want {
-		if values[key] != value {
-			t.Errorf("%s = %#v, want %#v", key, values[key], value)
+		if loaded[key] != value {
+			t.Errorf("%s = %#v, want %#v", key, loaded[key], value)
 		}
 	}
 }
@@ -167,29 +166,29 @@ func TestCatalogueKeysAreNotConfigKeys(t *testing.T) {
 	}
 }
 
-func TestLoadSettingsWithoutRowsHoldsDefaultsAndConfig(t *testing.T) {
-	s := load(t, openDB(t))
+func TestLoadWithoutRowsHoldsDefaultsAndConfig(t *testing.T) {
+	load(t, openDB(t))
 
-	values := *s.values.Load()
+	loaded := current()
 	for key, d := range catalogue {
-		if values[key] != d.def {
-			t.Errorf("%s = %#v, want the default %#v", key, values[key], d.def)
+		if loaded[key] != d.def {
+			t.Errorf("%s = %#v, want the default %#v", key, loaded[key], d.def)
 		}
 	}
-	assertValues(t, s, map[string]any{"cms.port": 18000, "store.path": "habbo.db", "proxy.enabled": false})
+	assertValues(t, map[string]any{"cms.port": 18000, "store.path": "habbo.db", "proxy.enabled": false})
 	fromConfig := make(map[string]any)
 	dump("", reflect.ValueOf(*testConfig), fromConfig)
-	if len(values) != len(catalogue)+len(fromConfig) {
-		t.Errorf("the map holds %d keys, want the %d declared settings and the %d config keys", len(values), len(catalogue), len(fromConfig))
+	if len(loaded) != len(catalogue)+len(fromConfig) {
+		t.Errorf("the map holds %d keys, want the %d declared settings and the %d config keys", len(loaded), len(catalogue), len(fromConfig))
 	}
 }
 
-func TestLoadSettingsRefusesAnInvalidConfig(t *testing.T) {
+func TestLoadRefusesAnInvalidConfig(t *testing.T) {
 	invalid := *testConfig
 	invalid.CMS.Port = 0
-	_, err := LoadSettings(t.Context(), &invalid, openDB(t))
+	err := Load(t.Context(), &invalid, openDB(t))
 	if err == nil || !strings.Contains(err.Error(), "cms.port") {
-		t.Fatalf("LoadSettings() error = %v, want a cms.port error", err)
+		t.Fatalf("Load() error = %v, want a cms.port error", err)
 	}
 }
 
@@ -201,9 +200,9 @@ func TestRowsOverrideDefaults(t *testing.T) {
 		"auth.rememberDays": `7`,
 		"cms.refresh":       `5`,
 	})
-	s := load(t, db)
+	load(t, db)
 
-	assertValues(t, s, map[string]any{
+	assertValues(t, map[string]any{
 		"site.maintenance":  true,
 		"site.name":         "Row Hotel",
 		"auth.rememberDays": 7,
@@ -215,15 +214,15 @@ func TestRowsOverrideDefaults(t *testing.T) {
 func TestDeletedRowRestoresTheDefault(t *testing.T) {
 	db := openDB(t)
 	putRows(t, db, map[string]string{"site.name": `"Row Hotel"`})
-	s := load(t, db)
+	load(t, db)
 
 	if err := store.New(db).DeleteSetting(t.Context(), "site.name"); err != nil {
 		t.Fatalf("DeleteSetting: %v", err)
 	}
-	if err := s.Reload(t.Context(), db); err != nil {
+	if err := Reload(t.Context(), db); err != nil {
 		t.Fatalf("Reload: %v", err)
 	}
-	assertValues(t, s, map[string]any{"site.name": "Holo Hotel"})
+	assertValues(t, map[string]any{"site.name": "Holo Hotel"})
 }
 
 func TestInvalidRowsAreIgnoredAndLogged(t *testing.T) {
@@ -236,9 +235,9 @@ func TestInvalidRowsAreIgnoredAndLogged(t *testing.T) {
 		"site.maintenance":        `null`,
 		"site.url":                `"https://hotel.example.com"`,
 	})
-	s := load(t, db)
+	load(t, db)
 
-	assertValues(t, s, map[string]any{
+	assertValues(t, map[string]any{
 		"auth.rememberDays":       100,
 		"auth.sessionIdleMinutes": 30,
 		"site.shortName":          "Holo",
@@ -260,11 +259,11 @@ func TestUndeclaredAndConfigRowsAreIgnoredAndLogged(t *testing.T) {
 		"store.path":  `"other.db"`,
 		"cms.port":    `8080`,
 	})
-	s := load(t, db)
+	load(t, db)
 
-	assertValues(t, s, map[string]any{"site.name": "Holo Hotel", "store.path": "habbo.db", "cms.port": 18000})
+	assertValues(t, map[string]any{"site.name": "Holo Hotel", "store.path": "habbo.db", "cms.port": 18000})
 	for _, key := range []string{"site.colour", "site"} {
-		if _, ok := (*s.values.Load())[key]; ok {
+		if _, ok := current()[key]; ok {
 			t.Errorf("the undeclared %s row was loaded", key)
 		}
 	}
@@ -283,9 +282,9 @@ func TestRowsBreakingARuleGoBackToTheirDefaults(t *testing.T) {
 		"auth.passwordMinLength": `30`,
 		"auth.passwordMaxLength": `20`,
 	})
-	s := load(t, db)
+	load(t, db)
 
-	assertValues(t, s, map[string]any{"auth.passwordMinLength": 6, "auth.passwordMaxLength": 25})
+	assertValues(t, map[string]any{"auth.passwordMinLength": 6, "auth.passwordMaxLength": 25})
 	assertWarned(t, warnings, "auth.passwordMinLength", "auth.passwordMaxLength")
 }
 
@@ -293,9 +292,9 @@ func TestRowBreakingARuleWithADefaultIsIgnored(t *testing.T) {
 	warnings := captureWarnings(t)
 	db := openDB(t)
 	putRows(t, db, map[string]string{"auth.passwordMinLength": `30`})
-	s := load(t, db)
+	load(t, db)
 
-	assertValues(t, s, map[string]any{"auth.passwordMinLength": 6, "auth.passwordMaxLength": 25})
+	assertValues(t, map[string]any{"auth.passwordMinLength": 6, "auth.passwordMaxLength": 25})
 	assertWarned(t, warnings, "auth.passwordMinLength")
 	if strings.Contains(warnings.String(), "key=auth.passwordMaxLength ") {
 		t.Errorf("auth.passwordMaxLength has no row but was logged as ignored:\n%s", warnings)
@@ -308,39 +307,39 @@ func TestRowsSatisfyingARuleTogetherAreKept(t *testing.T) {
 		"auth.passwordMinLength": `30`,
 		"auth.passwordMaxLength": `40`,
 	})
-	s := load(t, db)
+	load(t, db)
 
-	assertValues(t, s, map[string]any{"auth.passwordMinLength": 30, "auth.passwordMaxLength": 40})
+	assertValues(t, map[string]any{"auth.passwordMinLength": 30, "auth.passwordMaxLength": 40})
 }
 
 func TestGettersReturnTheValues(t *testing.T) {
-	s := load(t, openDB(t))
+	load(t, openDB(t))
 
-	if got := s.GetInt("cms.port"); got != 18000 {
+	if got := GetInt("cms.port"); got != 18000 {
 		t.Errorf(`GetInt("cms.port") = %d, want 18000`, got)
 	}
-	if got := s.GetBool("auth.secureCookies"); !got {
+	if got := GetBool("auth.secureCookies"); !got {
 		t.Error(`GetBool("auth.secureCookies") = false, want true`)
 	}
-	if got := s.GetString("site.name"); got != "Holo Hotel" {
+	if got := GetString("site.name"); got != "Holo Hotel" {
 		t.Errorf(`GetString("site.name") = %q, want "Holo Hotel"`, got)
 	}
 }
 
 func TestGettersReturnZeroAndWarnForUnknownKeysAndOtherTypes(t *testing.T) {
 	warnings := captureWarnings(t)
-	s := load(t, openDB(t))
+	load(t, openDB(t))
 
-	if got := s.GetInt("site.colour"); got != 0 {
+	if got := GetInt("site.colour"); got != 0 {
 		t.Errorf(`GetInt("site.colour") = %d, want 0`, got)
 	}
-	if got := s.GetInt("site.name"); got != 0 {
+	if got := GetInt("site.name"); got != 0 {
 		t.Errorf(`GetInt("site.name") = %d, want 0`, got)
 	}
-	if got := s.GetBool("cms.port"); got {
+	if got := GetBool("cms.port"); got {
 		t.Error(`GetBool("cms.port") = true, want false`)
 	}
-	if got := s.GetString("site.maintenance"); got != "" {
+	if got := GetString("site.maintenance"); got != "" {
 		t.Errorf(`GetString("site.maintenance") = %q, want ""`, got)
 	}
 	assertWarned(t, warnings, "site.colour", "site.name", "cms.port", "site.maintenance")
@@ -348,24 +347,24 @@ func TestGettersReturnZeroAndWarnForUnknownKeysAndOtherTypes(t *testing.T) {
 
 func TestOrGettersReturnTheFallbackWithoutWarning(t *testing.T) {
 	warnings := captureWarnings(t)
-	s := load(t, openDB(t))
+	load(t, openDB(t))
 
-	if got := s.GetIntOr("site.colour", 7); got != 7 {
+	if got := GetIntOr("site.colour", 7); got != 7 {
 		t.Errorf(`GetIntOr("site.colour", 7) = %d, want 7`, got)
 	}
-	if got := s.GetIntOr("cms.port", 7); got != 18000 {
+	if got := GetIntOr("cms.port", 7); got != 18000 {
 		t.Errorf(`GetIntOr("cms.port", 7) = %d, want 18000`, got)
 	}
-	if got := s.GetBoolOr("site.name", true); !got {
+	if got := GetBoolOr("site.name", true); !got {
 		t.Error(`GetBoolOr("site.name", true) = false, want true`)
 	}
-	if got := s.GetBoolOr("site.maintenance", true); got {
+	if got := GetBoolOr("site.maintenance", true); got {
 		t.Error(`GetBoolOr("site.maintenance", true) = true, want the value false`)
 	}
-	if got := s.GetStringOr("cms.port", "fallback"); got != "fallback" {
+	if got := GetStringOr("cms.port", "fallback"); got != "fallback" {
 		t.Errorf(`GetStringOr("cms.port", "fallback") = %q, want "fallback"`, got)
 	}
-	if got := s.GetStringOr("site.shortName", "fallback"); got != "Holo" {
+	if got := GetStringOr("site.shortName", "fallback"); got != "Holo" {
 		t.Errorf(`GetStringOr("site.shortName", "fallback") = %q, want "Holo"`, got)
 	}
 	if warnings.Len() != 0 {
@@ -376,15 +375,15 @@ func TestOrGettersReturnTheFallbackWithoutWarning(t *testing.T) {
 func TestSetWritesTheRowAndAppliesAtOnce(t *testing.T) {
 	db := openDB(t)
 	userID := createUser(t, db)
-	s := load(t, db)
+	load(t, db)
 
 	for key, value := range map[string]any{"site.maintenance": true, "site.name": "Reborn Hotel", "auth.rememberDays": 7} {
-		if err := s.Set(t.Context(), db, userID, key, value); err != nil {
+		if err := Set(t.Context(), db, userID, key, value); err != nil {
 			t.Fatalf("Set %s: %v", key, err)
 		}
 	}
 
-	assertValues(t, s, map[string]any{"site.maintenance": true, "site.name": "Reborn Hotel", "auth.rememberDays": 7})
+	assertValues(t, map[string]any{"site.maintenance": true, "site.name": "Reborn Hotel", "auth.rememberDays": 7})
 	rows := listRows(t, db)
 	if len(rows) != 3 {
 		t.Errorf("rows = %+v, want the 3 settings that were set", rows)
@@ -399,9 +398,9 @@ func TestSetWritesTheRowAndAppliesAtOnce(t *testing.T) {
 
 func TestSetWithoutUserRecordsNoUser(t *testing.T) {
 	db := openDB(t)
-	s := load(t, db)
+	load(t, db)
 
-	if err := s.Set(t.Context(), db, 0, "site.maintenance", true); err != nil {
+	if err := Set(t.Context(), db, 0, "site.maintenance", true); err != nil {
 		t.Fatalf("Set: %v", err)
 	}
 	if row := listRows(t, db)["site.maintenance"]; row.Value != "true" || row.UpdatedByUserID.Valid {
@@ -412,9 +411,9 @@ func TestSetWithoutUserRecordsNoUser(t *testing.T) {
 func TestSetToTheDefaultDeletesTheRow(t *testing.T) {
 	db := openDB(t)
 	putRows(t, db, map[string]string{"site.name": `"Row Hotel"`, "site.maintenance": `true`})
-	s := load(t, db)
+	load(t, db)
 
-	if err := s.Set(t.Context(), db, 0, "site.name", "Holo Hotel"); err != nil {
+	if err := Set(t.Context(), db, 0, "site.name", "Holo Hotel"); err != nil {
 		t.Fatalf("Set: %v", err)
 	}
 
@@ -425,7 +424,7 @@ func TestSetToTheDefaultDeletesTheRow(t *testing.T) {
 	if _, ok := rows["site.maintenance"]; !ok {
 		t.Error("the untouched site.maintenance row was deleted")
 	}
-	assertValues(t, s, map[string]any{"site.name": "Holo Hotel", "site.maintenance": true})
+	assertValues(t, map[string]any{"site.name": "Holo Hotel", "site.maintenance": true})
 }
 
 func TestSetRefusals(t *testing.T) {
@@ -444,17 +443,17 @@ func TestSetRefusals(t *testing.T) {
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			db := openDB(t)
-			s := load(t, db)
-			before := maps.Clone(*s.values.Load())
+			load(t, db)
+			before := maps.Clone(current())
 
-			err := s.Set(t.Context(), db, 0, c.key, c.value)
+			err := Set(t.Context(), db, 0, c.key, c.value)
 			if err == nil || !strings.Contains(err.Error(), c.want) {
 				t.Fatalf("Set() error = %v, want it to contain %q", err, c.want)
 			}
 			if rows := listRows(t, db); len(rows) != 0 {
 				t.Errorf("rows written despite the refusal: %+v", rows)
 			}
-			if !reflect.DeepEqual(*s.values.Load(), before) {
+			if !reflect.DeepEqual(current(), before) {
 				t.Errorf("the values changed despite the refusal")
 			}
 		})
@@ -463,43 +462,69 @@ func TestSetRefusals(t *testing.T) {
 
 func TestReloadAppliesRowsWrittenElsewhere(t *testing.T) {
 	db := openDB(t)
-	s := load(t, db)
+	load(t, db)
 	putRows(t, db, map[string]string{"site.maintenance": `true`})
 
-	if s.GetBool("site.maintenance") {
-		t.Fatal("a row written after LoadSettings applied before Reload")
+	if GetBool("site.maintenance") {
+		t.Fatal("a row written after Load applied before Reload")
 	}
-	if err := s.Reload(t.Context(), db); err != nil {
+	if err := Reload(t.Context(), db); err != nil {
 		t.Fatalf("Reload: %v", err)
 	}
-	if !s.GetBool("site.maintenance") {
+	if !GetBool("site.maintenance") {
 		t.Error("site.maintenance = false after Reload, want the row value true")
 	}
 }
 
 func TestGettersDuringSets(t *testing.T) {
 	db := openDB(t)
-	s := load(t, db)
+	load(t, db)
 
 	var wg sync.WaitGroup
 	for range 4 {
 		wg.Go(func() {
 			for range 100 {
-				_ = s.GetBool("site.maintenance")
+				_ = GetBool("site.maintenance")
 			}
 		})
 	}
 	for i := range 10 {
-		if err := s.Set(t.Context(), db, 0, "site.maintenance", i%2 == 0); err != nil {
+		if err := Set(t.Context(), db, 0, "site.maintenance", i%2 == 0); err != nil {
 			t.Errorf("Set: %v", err)
 		}
 	}
 	wg.Wait()
 
-	if s.GetBool("site.maintenance") {
+	if GetBool("site.maintenance") {
 		t.Error("site.maintenance = true after the last Set put back the default")
 	}
 	if rows := listRows(t, db); len(rows) != 0 {
 		t.Errorf("rows = %+v, want none once the value is back to the default", rows)
+	}
+}
+
+func TestReloadAndSetNeedLoad(t *testing.T) {
+	mu.Lock()
+	savedBase, savedValues := base, values.Load()
+	base = nil
+	values.Store(nil)
+	mu.Unlock()
+	t.Cleanup(func() {
+		mu.Lock()
+		base = savedBase
+		values.Store(savedValues)
+		mu.Unlock()
+	})
+	captureWarnings(t)
+	db := openDB(t)
+
+	if err := Reload(t.Context(), db); !errors.Is(err, errNotLoaded) {
+		t.Errorf("Reload() before Load = %v, want errNotLoaded", err)
+	}
+	if err := Set(t.Context(), db, 0, "site.maintenance", true); !errors.Is(err, errNotLoaded) {
+		t.Errorf("Set() before Load = %v, want errNotLoaded", err)
+	}
+	if GetBool("auth.secureCookies") {
+		t.Error("GetBool() before Load = true, want the zero value")
 	}
 }

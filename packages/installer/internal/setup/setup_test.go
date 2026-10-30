@@ -20,6 +20,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/config/proxy"
 	storeconfig "github.com/kronothepenguin/project-reborn/packages/config/store"
 	"github.com/kronothepenguin/project-reborn/packages/store"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 func testConfig(path string, port int) *config.Config {
@@ -78,26 +79,26 @@ func TestOpenWithoutConfigWritesNothing(t *testing.T) {
 	if _, ok := s.Current(); ok {
 		t.Error("Current() reports a configuration without config.json")
 	}
-	assertAbsent(t, configFile)
+	assertAbsent(t, config.Filename)
 }
 
 func TestConfigureWritesConfigAndCreatesTheDatabase(t *testing.T) {
 	s := configure(t)
 
 	installation, ok := s.Current()
-	if !ok || installation.Config.CMS.Port != 17400 || installation.Settings == nil {
+	if !ok || installation.Config.CMS.Port != 17400 || settings.GetInt("cms.port") != 17400 {
 		t.Fatalf("Current() = %+v, %t, want the written configuration", installation, ok)
 	}
-	data, err := os.ReadFile(configFile)
+	data, err := os.ReadFile(config.Filename)
 	if err != nil {
-		t.Fatalf("read %s: %v", configFile, err)
+		t.Fatalf("read %s: %v", config.Filename, err)
 	}
 	var written config.Config
 	if err := json.Unmarshal(data, &written); err != nil {
-		t.Fatalf("decode %s: %v", configFile, err)
+		t.Fatalf("decode %s: %v", config.Filename, err)
 	}
 	if !reflect.DeepEqual(written, *testConfig("habbo.db", 17400)) {
-		t.Errorf("%s = %+v", configFile, written)
+		t.Errorf("%s = %+v", config.Filename, written)
 	}
 	if _, err := os.Stat("habbo.db"); err != nil {
 		t.Errorf("database file: %v", err)
@@ -113,7 +114,7 @@ func TestConfigureRefusesAnInvalidConfig(t *testing.T) {
 	if err == nil || !strings.Contains(err.Error(), "cms.port") {
 		t.Fatalf("Configure() = %v, want a cms.port error", err)
 	}
-	assertAbsent(t, configFile, "habbo.db")
+	assertAbsent(t, config.Filename, "habbo.db")
 }
 
 func TestConfigureLeavesNoConfigWhenTheDatabaseCannotOpen(t *testing.T) {
@@ -121,7 +122,7 @@ func TestConfigureLeavesNoConfigWhenTheDatabaseCannotOpen(t *testing.T) {
 	if err := s.Configure(t.Context(), testConfig(filepath.Join("missing", "habbo.db"), 17400)); err == nil {
 		t.Fatal("Configure() created a database in a missing directory")
 	}
-	assertAbsent(t, configFile)
+	assertAbsent(t, config.Filename)
 	if _, ok := s.Current(); ok {
 		t.Error("Current() reports a configuration after a failed Configure")
 	}
@@ -138,13 +139,12 @@ func TestCreateAdministrator(t *testing.T) {
 	}
 
 	installation, _ := s.Current()
-	a := auth.New(installation.DB, installation.Settings)
 	r := httptest.NewRequest(http.MethodPost, "/", nil)
-	session, err := a.Login(httptest.NewRecorder(), r, "admin-1", admin.Password, false)
+	session, err := auth.Login(httptest.NewRecorder(), r, installation.DB, "admin-1", admin.Password, false)
 	if err != nil {
 		t.Fatalf("the administrator cannot sign in: %v", err)
 	}
-	attributes, err := a.Attributes(t.Context(), session.UserID)
+	attributes, err := auth.Attributes(t.Context(), installation.DB, session.UserID)
 	if err != nil {
 		t.Fatalf("Attributes: %v", err)
 	}

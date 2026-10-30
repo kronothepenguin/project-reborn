@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/store"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 const cookieName = "reborn_session"
@@ -54,41 +55,43 @@ func digest(token string) (string, bool) {
 	return hex.EncodeToString(sum[:]), true
 }
 
-// Sessions puts the request's active session in the context for FromContext
-// and slides its expiry forward, writing at most once a minute. A cookie
-// without an active session is cleared.
-func (a *Auth) Sessions(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		session, ok, err := a.session(w, r)
-		if err != nil {
-			slog.Error("auth: session", "err", err)
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			return
-		}
-		if ok {
-			r = r.WithContext(context.WithValue(r.Context(), contextKey{}, session))
-		}
-		next.ServeHTTP(w, r)
-	})
+// Sessions returns a middleware that puts the request's active session in the
+// context for FromContext and slides its expiry forward, writing at most once
+// a minute. A cookie without an active session is cleared.
+func Sessions(db *sql.DB) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			session, ok, err := loadSession(w, r, db)
+			if err != nil {
+				slog.Error("auth: session", "err", err)
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+				return
+			}
+			if ok {
+				r = r.WithContext(context.WithValue(r.Context(), contextKey{}, session))
+			}
+			next.ServeHTTP(w, r)
+		})
+	}
 }
 
-func (a *Auth) session(w http.ResponseWriter, r *http.Request) (Session, bool, error) {
+func loadSession(w http.ResponseWriter, r *http.Request, db *sql.DB) (Session, bool, error) {
 	cookie, err := r.Cookie(cookieName)
 	if err != nil {
 		return Session{}, false, nil
 	}
 	id, ok := digest(cookie.Value)
 	if !ok {
-		a.clearCookie(w)
+		clearCookie(w)
 		return Session{}, false, nil
 	}
 
 	ctx := r.Context()
-	now := a.now().UTC()
-	q := store.New(a.db)
+	now := clock().UTC()
+	q := store.New(db)
 	row, err := q.GetActiveSession(ctx, store.GetActiveSessionParams{ID: id, Now: now})
 	if errors.Is(err, sql.ErrNoRows) {
-		a.clearCookie(w)
+		clearCookie(w)
 		return Session{}, false, nil
 	}
 	if err != nil {
@@ -96,13 +99,13 @@ func (a *Auth) session(w http.ResponseWriter, r *http.Request) (Session, bool, e
 	}
 
 	if now.Sub(row.LastSeenAt) >= touchEvery {
-		lifetime := a.lifetime(row.Remember)
+		lifetime := sessionLifetime(row.Remember)
 		row.LastSeenAt, row.ExpiresAt = now, now.Add(lifetime)
 		if err := q.TouchSession(ctx, store.TouchSessionParams{LastSeenAt: row.LastSeenAt, ExpiresAt: row.ExpiresAt, ID: id}); err != nil {
 			return Session{}, false, err
 		}
 		if row.Remember {
-			a.setCookie(w, cookie.Value, true, lifetime)
+			setCookie(w, cookie.Value, true, lifetime)
 		}
 	}
 	return Session{id: id, UserID: row.UserID, AvatarID: row.AvatarID, Remember: row.Remember, ExpiresAt: row.ExpiresAt}, true, nil
@@ -110,13 +113,13 @@ func (a *Auth) session(w http.ResponseWriter, r *http.Request) (Session, bool, e
 
 // setCookie writes the session cookie. Only a remember-me cookie outlives the
 // browser, so only it carries a Max-Age.
-func (a *Auth) setCookie(w http.ResponseWriter, token string, remember bool, lifetime time.Duration) {
+func setCookie(w http.ResponseWriter, token string, remember bool, lifetime time.Duration) {
 	cookie := &http.Cookie{
 		Name:     cookieName,
 		Value:    token,
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   a.settings.GetBool("auth.secureCookies"),
+		Secure:   settings.GetBool("auth.secureCookies"),
 		SameSite: http.SameSiteLaxMode,
 	}
 	if remember {
@@ -125,12 +128,12 @@ func (a *Auth) setCookie(w http.ResponseWriter, token string, remember bool, lif
 	http.SetCookie(w, cookie)
 }
 
-func (a *Auth) clearCookie(w http.ResponseWriter) {
+func clearCookie(w http.ResponseWriter) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     cookieName,
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   a.settings.GetBool("auth.secureCookies"),
+		Secure:   settings.GetBool("auth.secureCookies"),
 		SameSite: http.SameSiteLaxMode,
 		MaxAge:   -1,
 	})

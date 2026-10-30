@@ -2,7 +2,8 @@
 type: Decision
 title: Settings are declared keys read through typed getters
 description: packages/virtual holds Settings, a map of key paths filled from declared defaults, config.json and the settings rows, read with typed getters and written one key at a time.
-status: accepted
+status: superseded
+superseded_by: "0029"
 timestamp: 2026-10-27T22:57:14+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T22:57:14+00:00"}
 tags: [virtual, settings]

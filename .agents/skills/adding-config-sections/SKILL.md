@@ -59,8 +59,8 @@ Decide where the key belongs:
    }
    ```
 
-   The section prefix makes every error name the full key path (`cms.port`), the same path `virtual.Settings` uses
-   for the value (`GetInt("cms.port")`).
+   The section prefix makes every error name the full key path (`cms.port`), the same path the settings package
+   uses for the value (`settings.GetInt("cms.port")`).
 
 3. Add `packages/config/<section>/<section>_test.go` covering the unit behavior: `Default<Field>()` satisfies `Validate<Field>()`, `Validate<Field>()` accepts and rejects representative values, and the struct round-trips its lowerCamelCase `json` tags.
 

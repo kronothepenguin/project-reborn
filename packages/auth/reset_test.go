@@ -11,7 +11,7 @@ func TestCreateResetForAnUnknownEmailDoesNothing(t *testing.T) {
 	f := newFixture(t)
 	f.habbo(t, "admin@example.com", "Admin", testPassword)
 
-	token, err := f.auth.CreateReset(t.Context(), "nobody@example.com")
+	token, err := CreateReset(t.Context(), f.db, "nobody@example.com")
 	if err != nil || token != "" {
 		t.Errorf("CreateReset() = %q, %v, want no token and no error", token, err)
 	}
@@ -25,7 +25,7 @@ func TestResetPasswordWorksOnce(t *testing.T) {
 	f.habbo(t, "admin@example.com", "Admin", testPassword)
 	cookie := f.mustLogin(t, "Admin", false)
 
-	token, err := f.auth.CreateReset(t.Context(), "ADMIN@example.com")
+	token, err := CreateReset(t.Context(), f.db, "ADMIN@example.com")
 	if err != nil || token == "" {
 		t.Fatalf("CreateReset() = %q, %v, want a token", token, err)
 	}
@@ -35,7 +35,7 @@ func TestResetPasswordWorksOnce(t *testing.T) {
 		t.Error("the reset is not stored under the digest of its token")
 	}
 
-	if err := f.auth.ResetPassword(t.Context(), token, "new-secret"); err != nil {
+	if err := ResetPassword(t.Context(), f.db, token, "new-secret"); err != nil {
 		t.Fatalf("ResetPassword: %v", err)
 	}
 	if _, ok, _ := f.visit(t, cookie); ok {
@@ -47,7 +47,7 @@ func TestResetPasswordWorksOnce(t *testing.T) {
 	if _, _, err := f.login(t, "10.0.0.1", "Admin", "new-secret", false); err != nil {
 		t.Errorf("Login with the new password = %v, want a session", err)
 	}
-	if err := f.auth.ResetPassword(t.Context(), token, "another-secret"); !errors.Is(err, ErrInvalidReset) {
+	if err := ResetPassword(t.Context(), f.db, token, "another-secret"); !errors.Is(err, ErrInvalidReset) {
 		t.Errorf("a second ResetPassword with the token = %v, want ErrInvalidReset", err)
 	}
 }
@@ -55,13 +55,13 @@ func TestResetPasswordWorksOnce(t *testing.T) {
 func TestResetPasswordEndsTheOtherResetsOfTheUser(t *testing.T) {
 	f := newFixture(t)
 	f.habbo(t, "admin@example.com", "Admin", testPassword)
-	first, _ := f.auth.CreateReset(t.Context(), "admin@example.com")
-	second, _ := f.auth.CreateReset(t.Context(), "admin@example.com")
+	first, _ := CreateReset(t.Context(), f.db, "admin@example.com")
+	second, _ := CreateReset(t.Context(), f.db, "admin@example.com")
 
-	if err := f.auth.ResetPassword(t.Context(), second, "new-secret"); err != nil {
+	if err := ResetPassword(t.Context(), f.db, second, "new-secret"); err != nil {
 		t.Fatalf("ResetPassword: %v", err)
 	}
-	if err := f.auth.ResetPassword(t.Context(), first, "another-secret"); !errors.Is(err, ErrInvalidReset) {
+	if err := ResetPassword(t.Context(), f.db, first, "another-secret"); !errors.Is(err, ErrInvalidReset) {
 		t.Errorf("ResetPassword with an older token = %v, want ErrInvalidReset", err)
 	}
 }
@@ -69,13 +69,13 @@ func TestResetPasswordEndsTheOtherResetsOfTheUser(t *testing.T) {
 func TestResetTokensExpire(t *testing.T) {
 	f := newFixture(t)
 	f.habbo(t, "admin@example.com", "Admin", testPassword)
-	token, _ := f.auth.CreateReset(t.Context(), "admin@example.com")
+	token, _ := CreateReset(t.Context(), f.db, "admin@example.com")
 
 	f.advance(60*time.Minute + time.Second)
-	if err := f.auth.ResetPassword(t.Context(), token, "new-secret"); !errors.Is(err, ErrInvalidReset) {
+	if err := ResetPassword(t.Context(), f.db, token, "new-secret"); !errors.Is(err, ErrInvalidReset) {
 		t.Errorf("ResetPassword after 60 minutes = %v, want ErrInvalidReset", err)
 	}
-	if _, err := f.auth.CreateReset(t.Context(), "admin@example.com"); err != nil {
+	if _, err := CreateReset(t.Context(), f.db, "admin@example.com"); err != nil {
 		t.Fatalf("CreateReset: %v", err)
 	}
 	if n := f.count(t, `SELECT COUNT(*) FROM password_resets`); n != 1 {
@@ -86,12 +86,12 @@ func TestResetTokensExpire(t *testing.T) {
 func TestResetPasswordChecksThePasswordFirst(t *testing.T) {
 	f := newFixture(t)
 	f.habbo(t, "admin@example.com", "Admin", testPassword)
-	token, _ := f.auth.CreateReset(t.Context(), "admin@example.com")
+	token, _ := CreateReset(t.Context(), f.db, "admin@example.com")
 
-	if err := f.auth.ResetPassword(t.Context(), token, "short"); !errors.Is(err, ErrPasswordLength) {
+	if err := ResetPassword(t.Context(), f.db, token, "short"); !errors.Is(err, ErrPasswordLength) {
 		t.Errorf("ResetPassword with a short password = %v, want ErrPasswordLength", err)
 	}
-	if err := f.auth.ResetPassword(t.Context(), token, "long enough"); err != nil {
+	if err := ResetPassword(t.Context(), f.db, token, "long enough"); err != nil {
 		t.Errorf("the token stopped working after a rejected password: %v", err)
 	}
 }
@@ -99,7 +99,7 @@ func TestResetPasswordChecksThePasswordFirst(t *testing.T) {
 func TestResetPasswordRejectsMalformedTokens(t *testing.T) {
 	f := newFixture(t)
 	for _, token := range []string{"", "not-a-token", base64.RawURLEncoding.EncodeToString(make([]byte, 32))} {
-		if err := f.auth.ResetPassword(t.Context(), token, "long enough"); !errors.Is(err, ErrInvalidReset) {
+		if err := ResetPassword(t.Context(), f.db, token, "long enough"); !errors.Is(err, ErrInvalidReset) {
 			t.Errorf("ResetPassword(%q) = %v, want ErrInvalidReset", token, err)
 		}
 	}

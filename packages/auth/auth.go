@@ -1,17 +1,16 @@
 // Package auth signs users in with a habbo name and the owner's password,
 // keeps their sessions, checks their access attributes and resets forgotten
-// passwords. Its limits are settings read from packages/virtual.
+// passwords. Its helpers receive the database, and its limits are settings.
 package auth
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
 	"net"
 	"net/http"
 	"time"
 
-	"github.com/kronothepenguin/project-reborn/packages/virtual"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 var (
@@ -42,30 +41,22 @@ func (e *BanError) Is(target error) bool {
 	return target == ErrBanned
 }
 
-type Auth struct {
-	db       *sql.DB
-	settings *virtual.Settings
-	// now is the clock; tests replace it.
-	now func() time.Time
+// clock is the time source; tests replace it.
+var clock = time.Now
+
+func minutes(key string) time.Duration {
+	return time.Duration(settings.GetInt(key)) * time.Minute
 }
 
-func New(db *sql.DB, settings *virtual.Settings) *Auth {
-	return &Auth{db: db, settings: settings, now: time.Now}
-}
-
-func (a *Auth) minutes(key string) time.Duration {
-	return time.Duration(a.settings.GetInt(key)) * time.Minute
-}
-
-func (a *Auth) lifetime(remember bool) time.Duration {
+func sessionLifetime(remember bool) time.Duration {
 	if remember {
-		return time.Duration(a.settings.GetInt("auth.rememberDays")) * 24 * time.Hour
+		return time.Duration(settings.GetInt("auth.rememberDays")) * 24 * time.Hour
 	}
-	return a.minutes("auth.sessionIdleMinutes")
+	return minutes("auth.sessionIdleMinutes")
 }
 
-// clientIP is the address of the connection's peer. X-Forwarded-For is not
-// trusted, so behind a reverse proxy every request has the proxy's address.
+// clientIP is the address of the connection's peer. Behind a reverse proxy,
+// RealIP must run first so that it is the client's address.
 func clientIP(r *http.Request) string {
 	host, _, err := net.SplitHostPort(r.RemoteAddr)
 	if err != nil {

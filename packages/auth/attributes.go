@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"slices"
 
@@ -65,8 +66,8 @@ func Catalogue() []CatalogueEntry {
 }
 
 // Attributes returns the union of the attributes of userID's access groups.
-func (a *Auth) Attributes(ctx context.Context, userID int64) ([]Attribute, error) {
-	names, err := store.New(a.db).ListUserAttributes(ctx, userID)
+func Attributes(ctx context.Context, db *sql.DB, userID int64) ([]Attribute, error) {
+	names, err := store.New(db).ListUserAttributes(ctx, userID)
 	if err != nil {
 		return nil, fmt.Errorf("auth: attributes: %w", err)
 	}

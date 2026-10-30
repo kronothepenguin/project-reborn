@@ -18,11 +18,8 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
-
-// configFile is the file packages/config reads from the working directory.
-const configFile = "config.json"
 
 // The administrator's habbo starts as the one Holo's installer created.
 const (
@@ -43,9 +40,8 @@ var (
 )
 
 type Installation struct {
-	Config   *config.Config
-	DB       *sql.DB
-	Settings *virtual.Settings
+	Config *config.Config
+	DB     *sql.DB
 }
 
 // State holds the installation once config.json exists. The database only
@@ -59,7 +55,7 @@ type State struct {
 // it opens the database the file names. Without one it must not call
 // config.Load, which would write a config.json with the defaults.
 func Open(ctx context.Context) (*State, error) {
-	if _, err := os.Stat(configFile); errors.Is(err, fs.ErrNotExist) {
+	if _, err := os.Stat(config.Filename); errors.Is(err, fs.ErrNotExist) {
 		return &State{}, nil
 	} else if err != nil {
 		return nil, fmt.Errorf("setup: %w", err)
@@ -80,19 +76,18 @@ func open(ctx context.Context, cfg *config.Config) (Installation, error) {
 	if err != nil {
 		return Installation{}, fmt.Errorf("setup: %w", err)
 	}
-	settings, err := virtual.LoadSettings(ctx, cfg, db)
-	if err != nil {
+	if err := settings.Load(ctx, cfg, db); err != nil {
 		db.Close()
 		return Installation{}, fmt.Errorf("setup: %w", err)
 	}
-	return Installation{Config: cfg, DB: db, Settings: settings}, nil
+	return Installation{Config: cfg, DB: db}, nil
 }
 
 // ConfigPath is the absolute path of the config.json the installer writes.
 func ConfigPath() string {
-	path, err := filepath.Abs(configFile)
+	path, err := filepath.Abs(config.Filename)
 	if err != nil {
-		return configFile
+		return config.Filename
 	}
 	return path
 }
@@ -161,12 +156,12 @@ type Administrator struct {
 func (s *State) CreateAdministrator(ctx context.Context, admin Administrator) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	db, settings := s.installation.DB, s.installation.Settings
+	db := s.installation.DB
 	if db == nil {
 		return ErrNotConfigured
 	}
 	now := time.Now().UTC()
-	if err := admin.validate(now, auth.New(db, settings)); err != nil {
+	if err := admin.validate(now); err != nil {
 		return err
 	}
 	q := store.New(db)
@@ -262,7 +257,7 @@ func createAdministrator(ctx context.Context, q *store.Queries, admin Administra
 	})
 }
 
-func (a Administrator) validate(now time.Time, policy *auth.Auth) error {
+func (a Administrator) validate(now time.Time) error {
 	if !habboName.MatchString(a.Name) {
 		return ErrHabboName
 	}
@@ -272,5 +267,5 @@ func (a Administrator) validate(now time.Time, policy *auth.Auth) error {
 	if a.BornOn.Year() < 1900 || a.BornOn.After(now) {
 		return ErrBornOn
 	}
-	return policy.ValidatePassword(a.Password)
+	return auth.ValidatePassword(a.Password)
 }

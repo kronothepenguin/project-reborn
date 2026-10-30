@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/store"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // Login checks habboName and its owner's password and starts a session with
@@ -16,21 +17,21 @@ import (
 // auth.loginMaxFailures within auth.loginWindowMinutes Login returns
 // ErrThrottled, even for the right password. A ban is revealed only to someone
 // who knows the password.
-func (a *Auth) Login(w http.ResponseWriter, r *http.Request, habboName, password string, remember bool) (Session, error) {
-	now := a.now().UTC()
+func Login(w http.ResponseWriter, r *http.Request, db *sql.DB, habboName, password string, remember bool) (Session, error) {
+	now := clock().UTC()
 	ip := clientIP(r)
-	login, err := a.authenticate(r.Context(), habboName, password, ip, now)
+	login, err := authenticate(r.Context(), db, habboName, password, ip, now)
 	if err != nil {
 		return Session{}, err
 	}
-	return a.start(w, r, login, password, remember, ip, now)
+	return start(w, r, db, login, password, remember, ip, now)
 }
 
-func (a *Auth) authenticate(ctx context.Context, habboName, password, ip string, now time.Time) (store.GetLoginByHabboNameRow, error) {
+func authenticate(ctx context.Context, db *sql.DB, habboName, password, ip string, now time.Time) (store.GetLoginByHabboNameRow, error) {
 	var none store.GetLoginByHabboNameRow
-	q := store.New(a.db)
-	since := now.Add(-a.minutes("auth.loginWindowMinutes"))
-	limit := int64(a.settings.GetInt("auth.loginMaxFailures"))
+	q := store.New(db)
+	since := now.Add(-minutes("auth.loginWindowMinutes"))
+	limit := int64(settings.GetInt("auth.loginMaxFailures"))
 
 	failures, err := q.CountFailedLoginsByIP(ctx, store.CountFailedLoginsByIPParams{IP: ip, Since: since})
 	if err != nil {
@@ -78,21 +79,21 @@ func (a *Auth) authenticate(ctx context.Context, habboName, password, ip string,
 	return login, nil
 }
 
-func (a *Auth) start(w http.ResponseWriter, r *http.Request, login store.GetLoginByHabboNameRow, password string, remember bool, ip string, now time.Time) (Session, error) {
+func start(w http.ResponseWriter, r *http.Request, db *sql.DB, login store.GetLoginByHabboNameRow, password string, remember bool, ip string, now time.Time) (Session, error) {
 	ctx := r.Context()
 	var rehashed string
 	if NeedsRehash(login.PasswordHash) {
 		rehashed = HashPassword(password)
 	}
 	token, id := newToken()
-	lifetime := a.lifetime(remember)
+	lifetime := sessionLifetime(remember)
 	session := Session{id: id, UserID: login.UserID, AvatarID: login.AvatarID, Remember: remember, ExpiresAt: now.Add(lifetime)}
 
-	q := store.New(a.db)
+	q := store.New(db)
 	if _, err := q.PurgeExpiredSessions(ctx, now); err != nil {
 		return Session{}, fmt.Errorf("auth: login: %w", err)
 	}
-	tx, err := a.db.BeginTx(ctx, nil)
+	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
 		return Session{}, fmt.Errorf("auth: login: %w", err)
 	}
@@ -132,7 +133,7 @@ func (a *Auth) start(w http.ResponseWriter, r *http.Request, login store.GetLogi
 		return Session{}, fmt.Errorf("auth: login: %w", err)
 	}
 
-	a.setCookie(w, token, remember, lifetime)
+	setCookie(w, token, remember, lifetime)
 	return session, nil
 }
 
@@ -146,8 +147,8 @@ func recordFailure(ctx context.Context, q *store.Queries, ip string, now time.Ti
 
 // Logout ends the session of the request's cookie, if any, and clears the
 // cookie.
-func (a *Auth) Logout(w http.ResponseWriter, r *http.Request) error {
-	a.clearCookie(w)
+func Logout(w http.ResponseWriter, r *http.Request, db *sql.DB) error {
+	clearCookie(w)
 	cookie, err := r.Cookie(cookieName)
 	if err != nil {
 		return nil
@@ -156,14 +157,14 @@ func (a *Auth) Logout(w http.ResponseWriter, r *http.Request) error {
 	if !ok {
 		return nil
 	}
-	if err := store.New(a.db).DeleteSession(r.Context(), id); err != nil {
+	if err := store.New(db).DeleteSession(r.Context(), id); err != nil {
 		return fmt.Errorf("auth: logout: %w", err)
 	}
 	return nil
 }
 
-func (a *Auth) LogoutEverywhere(ctx context.Context, userID int64) error {
-	if err := store.New(a.db).DeleteUserSessions(ctx, userID); err != nil {
+func LogoutEverywhere(ctx context.Context, db *sql.DB, userID int64) error {
+	if err := store.New(db).DeleteUserSessions(ctx, userID); err != nil {
 		return fmt.Errorf("auth: logout everywhere: %w", err)
 	}
 	return nil
@@ -171,12 +172,12 @@ func (a *Auth) LogoutEverywhere(ctx context.Context, userID int64) error {
 
 // SwitchHabbo makes avatarID the active habbo of the session in ctx; the habbo
 // must belong to the session's user.
-func (a *Auth) SwitchHabbo(ctx context.Context, avatarID int64) error {
+func SwitchHabbo(ctx context.Context, db *sql.DB, avatarID int64) error {
 	session, ok := FromContext(ctx)
 	if !ok {
 		return ErrNoSession
 	}
-	n, err := store.New(a.db).SwitchSessionAvatar(ctx, store.SwitchSessionAvatarParams{AvatarID: avatarID, ID: session.id})
+	n, err := store.New(db).SwitchSessionAvatar(ctx, store.SwitchSessionAvatarParams{AvatarID: avatarID, ID: session.id})
 	if err != nil {
 		return fmt.Errorf("auth: switch habbo: %w", err)
 	}

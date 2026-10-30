@@ -11,7 +11,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/installer/internal/setup"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 type adminPage struct {
@@ -24,24 +24,22 @@ type adminPage struct {
 
 // HandleAdminView renders GET /admin.
 func (r *Router) HandleAdminView(w http.ResponseWriter, req *http.Request) {
-	installation, ok := r.step(w, req, true)
-	if !ok {
+	if _, ok := r.step(w, req, true); !ok {
 		return
 	}
-	astro.WriteTemplate(w, r.deps.Resolver, "admin.html", adminPage{PasswordHelp: passwordHelp(installation.Settings)})
+	astro.WriteTemplate(w, r.deps.Resolver, "admin.html", adminPage{PasswordHelp: passwordHelp()})
 }
 
 // HandleAdminCreate handles POST /admin: it creates the administrator.
 func (r *Router) HandleAdminCreate(w http.ResponseWriter, req *http.Request) {
-	installation, ok := r.step(w, req, true)
-	if !ok {
+	if _, ok := r.step(w, req, true); !ok {
 		return
 	}
 	page := adminPage{
 		Name:         strings.TrimSpace(req.PostFormValue("name")),
 		Email:        strings.TrimSpace(req.PostFormValue("email")),
 		BornOn:       strings.TrimSpace(req.PostFormValue("bornOn")),
-		PasswordHelp: passwordHelp(installation.Settings),
+		PasswordHelp: passwordHelp(),
 	}
 	password := req.PostFormValue("password")
 	if password != req.PostFormValue("passwordConfirm") {
@@ -87,6 +85,6 @@ func (r *Router) HandleAdminCreate(w http.ResponseWriter, req *http.Request) {
 	r.invalid(w, "admin.html", page)
 }
 
-func passwordHelp(s *virtual.Settings) string {
-	return fmt.Sprintf("%d to %d characters", s.GetInt("auth.passwordMinLength"), s.GetInt("auth.passwordMaxLength"))
+func passwordHelp() string {
+	return fmt.Sprintf("%d to %d characters", settings.GetInt("auth.passwordMinLength"), settings.GetInt("auth.passwordMaxLength"))
 }

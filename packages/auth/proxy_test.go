@@ -68,7 +68,7 @@ func TestRealIPThrottlesEachClientBehindOneProxy(t *testing.T) {
 	login := func(client, name, password string) error {
 		var err error
 		handler := middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			_, err = f.auth.Login(w, r, name, password, false)
+			_, err = Login(w, r, f.db, name, password, false)
 		}))
 		r := httptest.NewRequest(http.MethodPost, "/", nil)
 		r.RemoteAddr = "127.0.0.1:5000"

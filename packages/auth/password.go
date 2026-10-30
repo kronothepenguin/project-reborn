@@ -10,6 +10,7 @@ import (
 	"sync"
 	"unicode/utf8"
 
+	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 	"golang.org/x/crypto/argon2"
 )
 
@@ -92,8 +93,8 @@ func decodeHash(encoded string) (argonParams, []byte, []byte, error) {
 
 // ValidatePassword checks the length of a new password against
 // auth.passwordMinLength and auth.passwordMaxLength, counted in characters.
-func (a *Auth) ValidatePassword(password string) error {
-	low, high := a.settings.GetInt("auth.passwordMinLength"), a.settings.GetInt("auth.passwordMaxLength")
+func ValidatePassword(password string) error {
+	low, high := settings.GetInt("auth.passwordMinLength"), settings.GetInt("auth.passwordMaxLength")
 	if n := utf8.RuneCountInString(password); n < low || n > high {
 		return fmt.Errorf("%w: must be %d to %d characters", ErrPasswordLength, low, high)
 	}

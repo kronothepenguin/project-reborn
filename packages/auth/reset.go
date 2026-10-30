@@ -12,9 +12,9 @@ import (
 // CreateReset starts a password reset for the user with email and returns the
 // token to send them. For an unknown email it returns "" and no error, so the
 // caller can answer the same way in both cases.
-func (a *Auth) CreateReset(ctx context.Context, email string) (string, error) {
-	now := a.now().UTC()
-	q := store.New(a.db)
+func CreateReset(ctx context.Context, db *sql.DB, email string) (string, error) {
+	now := clock().UTC()
+	q := store.New(db)
 	if _, err := q.PurgeExpiredPasswordResets(ctx, now); err != nil {
 		return "", fmt.Errorf("auth: create reset: %w", err)
 	}
@@ -31,7 +31,7 @@ func (a *Auth) CreateReset(ctx context.Context, email string) (string, error) {
 		ID:        id,
 		UserID:    user.ID,
 		CreatedAt: now,
-		ExpiresAt: now.Add(a.minutes("auth.resetTokenMinutes")),
+		ExpiresAt: now.Add(minutes("auth.resetTokenMinutes")),
 	})
 	if err != nil {
 		return "", fmt.Errorf("auth: create reset: %w", err)
@@ -41,16 +41,16 @@ func (a *Auth) CreateReset(ctx context.Context, email string) (string, error) {
 
 // ResetPassword sets password for the user of token. It works once: the token
 // and the user's other resets stop working, and every session of the user ends.
-func (a *Auth) ResetPassword(ctx context.Context, token, password string) error {
-	if err := a.ValidatePassword(password); err != nil {
+func ResetPassword(ctx context.Context, db *sql.DB, token, password string) error {
+	if err := ValidatePassword(password); err != nil {
 		return err
 	}
 	id, ok := digest(token)
 	if !ok {
 		return ErrInvalidReset
 	}
-	now := a.now().UTC()
-	q := store.New(a.db)
+	now := clock().UTC()
+	q := store.New(db)
 	active := store.GetActivePasswordResetParams{ID: id, Now: now}
 	if _, err := q.GetActivePasswordReset(ctx, active); errors.Is(err, sql.ErrNoRows) {
 		return ErrInvalidReset
@@ -59,7 +59,7 @@ func (a *Auth) ResetPassword(ctx context.Context, token, password string) error 
 	}
 	hash := HashPassword(password)
 
-	tx, err := a.db.BeginTx(ctx, nil)
+	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
 		return fmt.Errorf("auth: reset password: %w", err)
 	}

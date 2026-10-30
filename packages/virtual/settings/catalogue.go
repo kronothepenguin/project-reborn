@@ -1,4 +1,4 @@
-package virtual
+package settings
 
 import (
 	"encoding/json/v2"

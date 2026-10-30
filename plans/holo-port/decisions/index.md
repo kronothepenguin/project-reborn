@@ -22,8 +22,9 @@ change supersedes a decision with a new one.
 - [0011 store.Open returns *sql.DB](/decisions/0011-store-returns-sql-db.md) — The Store wrapper is removed; store.Open returns *sql.DB and callers run the sqlc queries on a db or a transaction.
 - [0012 Native SQLite date and boolean types](/decisions/0012-sqlite-native-types.md) — Columns use DATETIME for instants, DATE for birth dates and BOOLEAN with TRUE/FALSE instead of unix-second integers and 0/1.
 - [0023 config.json holds only startup keys](/decisions/0023-config-holds-startup-keys.md) — packages/config declares only the values a program needs before the database opens; every other value is a setting declared in packages/virtual.
-- [0024 Settings are declared keys read through typed getters](/decisions/0024-settings-catalogue-and-getters.md) — packages/virtual holds Settings, a map of key paths filled from declared defaults, config.json and the settings rows, read with typed getters and written one key at a time.
+- [0024 Settings are declared keys read through typed getters](/decisions/0024-settings-catalogue-and-getters.md) — packages/virtual holds Settings, a map of key paths filled from declared defaults, config.json and the settings rows, read with typed getters and written one key at a time. **Superseded by [0029](/decisions/0029-package-level-settings-and-auth.md).**
 - [0025 Settings reads never wait on writers](/decisions/0025-settings-reads-never-wait.md) — virtual.Settings publishes its values through an atomic pointer read without locks, and a mutex used only by Set and Reload serializes the writers.
+- [0029 Settings and auth are package-level; apps take the db on creation](/decisions/0029-package-level-settings-and-auth.md) — Settings live in virtual/settings as a process-wide singleton read through package functions, auth is a set of helpers that receive the db, and app packages take the db as New's first argument with options only for the resolver and the static handler.
 
 ## Scope
 

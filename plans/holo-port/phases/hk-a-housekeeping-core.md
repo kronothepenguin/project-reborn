@@ -26,8 +26,8 @@ read the staff log; every change is logged.
 | Holo `?p=` | Route under `/housekeeping` | Attribute / notes |
 | --- | --- | --- |
 | login, logout | none (shared session) | non-staff get 403 |
-| dashboard | `GET /{$}`, `POST /note` | counts (habbos, groups, active bans, logs), holders of `housekeeping.accessGroups`, shared note saved with `Settings.Set` |
-| site, maintenance, cms_config, content | `GET /settings`, `POST /settings/{section}` | `housekeeping.settings`; forms over the declared settings, saved with `Settings.Set`; a value set back to its default deletes the row; `mail.password` masked |
+| dashboard | `GET /{$}`, `POST /note` | counts (habbos, groups, active bans, logs), holders of `housekeeping.accessGroups`, shared note saved with `settings.Set` |
+| site, maintenance, cms_config, content | `GET /settings`, `POST /settings/{section}` | `housekeeping.settings`; forms over the declared settings, saved with `settings.Set`; a value set back to its default deletes the row; `mail.password` masked |
 | ranktool | `GET/POST /access-groups`, `GET/POST /access-groups/{id}`, `POST /users/{id}/access-groups` | `housekeeping.accessGroups`; attribute checkboxes, `staff_listed`, display habbo, last-holder guard |
 | logs | `GET /logs` | `housekeeping.logs` |
 

@@ -44,11 +44,11 @@ func TestAttributesAreTheUnionOfTheGroups(t *testing.T) {
 	f.join(t, f.group(t, "Moderators", HousekeepingAccess, ForumEdit), userID)
 	f.join(t, f.group(t, "Writers", ForumEdit, HousekeepingNews), userID)
 
-	got, err := f.auth.Attributes(t.Context(), userID)
+	got, err := Attributes(t.Context(), f.db, userID)
 	if want := []Attribute{ForumEdit, HousekeepingAccess, HousekeepingNews}; err != nil || !slices.Equal(got, want) {
 		t.Errorf("Attributes() = %v, %v, want %v", got, err, want)
 	}
-	if got, err := f.auth.Attributes(t.Context(), outsider); err != nil || len(got) != 0 {
+	if got, err := Attributes(t.Context(), f.db, outsider); err != nil || len(got) != 0 {
 		t.Errorf("Attributes() of a user without groups = %v, %v, want none", got, err)
 	}
 }
@@ -58,7 +58,7 @@ func TestRequireAttribute(t *testing.T) {
 	userID, _ := f.habbo(t, "admin@example.com", "Admin", testPassword)
 	f.habbo(t, "other@example.com", "Other", testPassword)
 	f.join(t, f.group(t, "Staff", HousekeepingAccess), userID)
-	handler := f.auth.Sessions(f.auth.RequireAttribute(HousekeepingAccess)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := Sessions(f.db)(RequireAttribute(f.db, HousekeepingAccess)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 	})))
 

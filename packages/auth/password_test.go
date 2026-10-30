@@ -67,7 +67,7 @@ func TestValidatePassword(t *testing.T) {
 		strings.Repeat("a", 26): false,
 		strings.Repeat("ñ", 25): true,
 	} {
-		err := f.auth.ValidatePassword(password)
+		err := ValidatePassword(password)
 		if valid != (err == nil) {
 			t.Errorf("ValidatePassword(%d characters) = %v, want valid %t", len([]rune(password)), err, valid)
 		}
@@ -77,7 +77,7 @@ func TestValidatePassword(t *testing.T) {
 	}
 
 	f.set(t, "auth.passwordMinLength", 8)
-	if err := f.auth.ValidatePassword("1234567"); !errors.Is(err, ErrPasswordLength) {
+	if err := ValidatePassword("1234567"); !errors.Is(err, ErrPasswordLength) {
 		t.Errorf("ValidatePassword() = %v after raising the minimum to 8, want ErrPasswordLength", err)
 	}
 }

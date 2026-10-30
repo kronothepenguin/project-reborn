@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 type sitePage struct {
@@ -20,17 +21,15 @@ type sitePage struct {
 
 // HandleSiteView renders GET /site with the current settings.
 func (r *Router) HandleSiteView(w http.ResponseWriter, req *http.Request) {
-	installation, ok := r.step(w, req, true)
-	if !ok {
+	if _, ok := r.step(w, req, true); !ok {
 		return
 	}
-	s := installation.Settings
 	astro.WriteTemplate(w, r.deps.Resolver, "site.html", sitePage{
-		Name:          s.GetString("site.name"),
-		ShortName:     s.GetString("site.shortName"),
-		URL:           s.GetString("site.url"),
-		StartCredits:  strconv.Itoa(s.GetInt("registration.startCredits")),
-		SecureCookies: s.GetBool("auth.secureCookies"),
+		Name:          settings.GetString("site.name"),
+		ShortName:     settings.GetString("site.shortName"),
+		URL:           settings.GetString("site.url"),
+		StartCredits:  strconv.Itoa(settings.GetInt("registration.startCredits")),
+		SecureCookies: settings.GetBool("auth.secureCookies"),
 	})
 }
 
@@ -66,7 +65,7 @@ func (r *Router) HandleSiteSave(w http.ResponseWriter, req *http.Request) {
 		{"Start credits", "registration.startCredits", credits},
 		{"Secure cookies", "auth.secureCookies", page.SecureCookies},
 	} {
-		if err := installation.Settings.Set(req.Context(), installation.DB, 0, field.key, field.value); err != nil {
+		if err := settings.Set(req.Context(), installation.DB, 0, field.key, field.value); err != nil {
 			page.Error = field.label + ": " + reason(err)
 			r.invalid(w, "site.html", page)
 			return
@@ -75,7 +74,7 @@ func (r *Router) HandleSiteSave(w http.ResponseWriter, req *http.Request) {
 	http.Redirect(w, req, "/admin", http.StatusSeeOther)
 }
 
-// reason drops what Settings.Set wraps around the validator's message, the
+// reason drops what settings.Set wraps around the validator's message, the
 // setting's key path, since the page names the field instead.
 func reason(err error) string {
 	if inner := errors.Unwrap(err); inner != nil {

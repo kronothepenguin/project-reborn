@@ -12,7 +12,7 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 const testPassword = "secret123"
@@ -40,10 +40,8 @@ func TestMain(m *testing.M) {
 }
 
 type fixture struct {
-	auth     *Auth
-	db       *sql.DB
-	settings *virtual.Settings
-	now      time.Time
+	db  *sql.DB
+	now time.Time
 }
 
 func newFixture(t *testing.T) *fixture {
@@ -53,13 +51,12 @@ func newFixture(t *testing.T) *fixture {
 		t.Fatalf("store.Open: %v", err)
 	}
 	t.Cleanup(func() { db.Close() })
-	settings, err := virtual.LoadSettings(t.Context(), testConfig, db)
-	if err != nil {
-		t.Fatalf("LoadSettings: %v", err)
+	if err := settings.Load(t.Context(), testConfig, db); err != nil {
+		t.Fatalf("settings.Load: %v", err)
 	}
-	f := &fixture{db: db, settings: settings, now: testNow}
-	f.auth = New(db, settings)
-	f.auth.now = func() time.Time { return f.now }
+	f := &fixture{db: db, now: testNow}
+	clock = func() time.Time { return f.now }
+	t.Cleanup(func() { clock = time.Now })
 	return f
 }
 
@@ -69,7 +66,7 @@ func (f *fixture) advance(d time.Duration) {
 
 func (f *fixture) set(t *testing.T, key string, value any) {
 	t.Helper()
-	if err := f.settings.Set(t.Context(), f.db, 0, key, value); err != nil {
+	if err := settings.Set(t.Context(), f.db, 0, key, value); err != nil {
 		t.Fatalf("Set %s: %v", key, err)
 	}
 }
@@ -121,7 +118,7 @@ func (f *fixture) login(t *testing.T, ip, name, password string, remember bool) 
 	r.RemoteAddr = ip + ":51234"
 	r.Header.Set("User-Agent", "test-agent")
 	rec := httptest.NewRecorder()
-	session, err := f.auth.Login(rec, r, name, password, remember)
+	session, err := Login(rec, r, f.db, name, password, remember)
 	return sessionCookie(rec), session, err
 }
 
@@ -149,7 +146,7 @@ func (f *fixture) visit(t *testing.T, cookie *http.Cookie) (Session, bool, *http
 	t.Helper()
 	var session Session
 	var ok bool
-	handler := f.auth.Sessions(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := Sessions(f.db)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		session, ok = FromContext(r.Context())
 	}))
 	r := httptest.NewRequest(http.MethodGet, "/", nil)
