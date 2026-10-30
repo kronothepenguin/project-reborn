@@ -21,9 +21,9 @@ func TestCreateWritesTheConfig(t *testing.T) {
 		t.Fatalf("Create() error = %v", err)
 	}
 
-	data, err := os.ReadFile(configFilename)
+	data, err := os.ReadFile(Filename)
 	if err != nil {
-		t.Fatalf("read %s: %v", configFilename, err)
+		t.Fatalf("read %s: %v", Filename, err)
 	}
 	want, err := encode(cfg)
 	if err != nil {
@@ -32,9 +32,9 @@ func TestCreateWritesTheConfig(t *testing.T) {
 	if !bytes.Equal(data, want) {
 		t.Errorf("written file = %q, want %q", data, want)
 	}
-	info, err := os.Stat(configFilename)
+	info, err := os.Stat(Filename)
 	if err != nil {
-		t.Fatalf("stat %s: %v", configFilename, err)
+		t.Fatalf("stat %s: %v", Filename, err)
 	}
 	if perm := info.Mode().Perm(); perm != 0o644 {
 		t.Errorf("file mode = %o, want %o", perm, 0o644)
@@ -59,12 +59,12 @@ func TestCreateRefusesAnExistingFile(t *testing.T) {
 	if !errors.Is(err, fs.ErrExist) {
 		t.Fatalf("Create() error = %v, want fs.ErrExist", err)
 	}
-	if !strings.Contains(err.Error(), configFilename) {
-		t.Errorf("Create() error = %q, want it to name %s", err, configFilename)
+	if !strings.Contains(err.Error(), Filename) {
+		t.Errorf("Create() error = %q, want it to name %s", err, Filename)
 	}
-	data, readErr := os.ReadFile(configFilename)
+	data, readErr := os.ReadFile(Filename)
 	if readErr != nil {
-		t.Fatalf("read %s: %v", configFilename, readErr)
+		t.Fatalf("read %s: %v", Filename, readErr)
 	}
 	if string(data) != existing {
 		t.Errorf("existing file was changed: %q", data)
@@ -81,12 +81,12 @@ func TestCreateRejectsAnInvalidConfig(t *testing.T) {
 	if err == nil {
 		t.Fatal("Create() error = nil, want a validation error")
 	}
-	for _, want := range []string{configFilename, "cms.port: must"} {
+	for _, want := range []string{Filename, "cms.port: must"} {
 		if !strings.Contains(err.Error(), want) {
 			t.Errorf("Create() error = %q, want it to contain %q", err, want)
 		}
 	}
-	if _, statErr := os.Stat(configFilename); !errors.Is(statErr, fs.ErrNotExist) {
-		t.Errorf("Create() wrote %s for an invalid config (stat: %v)", configFilename, statErr)
+	if _, statErr := os.Stat(Filename); !errors.Is(statErr, fs.ErrNotExist) {
+		t.Errorf("Create() wrote %s for an invalid config (stat: %v)", Filename, statErr)
 	}
 }

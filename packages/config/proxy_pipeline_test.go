@@ -34,7 +34,7 @@ func TestProxyEnabledNeedsATrustedProxy(t *testing.T) {
 	if err == nil {
 		t.Fatal("Load() accepted proxy.enabled without trusted proxies")
 	}
-	for _, want := range []string{configFilename, "proxy.trusted: must list at least one proxy"} {
+	for _, want := range []string{Filename, "proxy.trusted: must list at least one proxy"} {
 		if !strings.Contains(err.Error(), want) {
 			t.Errorf("Load() error = %q, want it to contain %q", err, want)
 		}

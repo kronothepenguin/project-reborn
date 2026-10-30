@@ -13,7 +13,9 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/config/store"
 )
 
-const configFilename = "config.json"
+// Filename is read from the working directory. A program that must not create
+// it, as Load does when it is absent, checks for it first.
+const Filename = "config.json"
 
 var (
 	once    sync.Once
@@ -36,7 +38,7 @@ func defaults() *Config {
 }
 
 // Validate prefixes each error with the full key path (cms.port), the same path
-// virtual.Settings uses for the value.
+// the settings package uses for the value.
 func (c *Config) Validate() error {
 	if err := c.Store.Validate(); err != nil {
 		return fmt.Errorf("store.%w", err)
@@ -74,44 +76,44 @@ func Get() *Config {
 // file with the defaults when it is absent.
 func Create(cfg *Config) error {
 	if err := cfg.Validate(); err != nil {
-		return fmt.Errorf("config: %s: %w", configFilename, err)
+		return fmt.Errorf("config: %s: %w", Filename, err)
 	}
 	data, err := encode(cfg)
 	if err != nil {
-		return fmt.Errorf("config: %s: %w", configFilename, err)
+		return fmt.Errorf("config: %s: %w", Filename, err)
 	}
 
-	f, err := os.OpenFile(configFilename, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
+	f, err := os.OpenFile(Filename, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
 	if err != nil {
-		return fmt.Errorf("config: %s: %w", configFilename, err)
+		return fmt.Errorf("config: %s: %w", Filename, err)
 	}
 	if _, err := f.Write(data); err != nil {
 		f.Close()
-		os.Remove(configFilename)
-		return fmt.Errorf("config: %s: %w", configFilename, err)
+		os.Remove(Filename)
+		return fmt.Errorf("config: %s: %w", Filename, err)
 	}
 	if err := f.Close(); err != nil {
-		os.Remove(configFilename)
-		return fmt.Errorf("config: %s: %w", configFilename, err)
+		os.Remove(Filename)
+		return fmt.Errorf("config: %s: %w", Filename, err)
 	}
 	return nil
 }
 
 func load() (*Config, error) {
-	data, err := os.ReadFile(configFilename)
+	data, err := os.ReadFile(Filename)
 	if errors.Is(err, fs.ErrNotExist) {
 		data, err = create()
 	}
 	if err != nil {
-		return nil, fmt.Errorf("config: %s: %w", configFilename, err)
+		return nil, fmt.Errorf("config: %s: %w", Filename, err)
 	}
 
 	cfg := defaults()
 	if err := json.Unmarshal(data, cfg); err != nil {
-		return nil, fmt.Errorf("config: %s: %w", configFilename, jsonError(err))
+		return nil, fmt.Errorf("config: %s: %w", Filename, jsonError(err))
 	}
 	if err := cfg.Validate(); err != nil {
-		return nil, fmt.Errorf("config: %s: %w", configFilename, err)
+		return nil, fmt.Errorf("config: %s: %w", Filename, err)
 	}
 	return cfg, nil
 }
@@ -136,7 +138,7 @@ func create() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := os.WriteFile(configFilename, data, 0o644); err != nil {
+	if err := os.WriteFile(Filename, data, 0o644); err != nil {
 		return nil, err
 	}
 	return data, nil

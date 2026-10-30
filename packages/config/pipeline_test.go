@@ -33,7 +33,7 @@ func hasKey(t *testing.T, data []byte, key string) bool {
 	t.Helper()
 	var node any
 	if err := json.Unmarshal(data, &node); err != nil {
-		t.Fatalf("decode %s: %v", configFilename, err)
+		t.Fatalf("decode %s: %v", Filename, err)
 	}
 	for part := range strings.SplitSeq(key, ".") {
 		object, ok := node.(map[string]any)
@@ -61,12 +61,12 @@ func runKeyCases(t *testing.T, cases []keyCase) {
 				if got := c.value(cfg); !reflect.DeepEqual(got, c.def) {
 					t.Errorf("%s = %v, want default %v", c.key, got, c.def)
 				}
-				data, err := os.ReadFile(configFilename)
+				data, err := os.ReadFile(Filename)
 				if err != nil {
-					t.Fatalf("read created %s: %v", configFilename, err)
+					t.Fatalf("read created %s: %v", Filename, err)
 				}
 				if !hasKey(t, data, c.key) {
-					t.Errorf("created %s lacks %s:\n%s", configFilename, c.key, data)
+					t.Errorf("created %s lacks %s:\n%s", Filename, c.key, data)
 				}
 			})
 
@@ -78,12 +78,12 @@ func runKeyCases(t *testing.T, cases []keyCase) {
 				if got := c.value(cfg); !reflect.DeepEqual(got, c.def) {
 					t.Errorf("%s = %v, want default %v", c.key, got, c.def)
 				}
-				data, err := os.ReadFile(configFilename)
+				data, err := os.ReadFile(Filename)
 				if err != nil {
-					t.Fatalf("read %s: %v", configFilename, err)
+					t.Fatalf("read %s: %v", Filename, err)
 				}
 				if string(data) != "{}\n" {
-					t.Errorf("%s was rewritten: %q", configFilename, data)
+					t.Errorf("%s was rewritten: %q", Filename, data)
 				}
 			})
 
@@ -102,7 +102,7 @@ func runKeyCases(t *testing.T, cases []keyCase) {
 				if err == nil {
 					t.Fatal("Load() error = nil, want a type error")
 				}
-				for _, want := range []string{configFilename, c.key, "expected " + c.typeName} {
+				for _, want := range []string{Filename, c.key, "expected " + c.typeName} {
 					if !strings.Contains(err.Error(), want) {
 						t.Errorf("Load() error = %q, want it to contain %q", err, want)
 					}
@@ -117,7 +117,7 @@ func runKeyCases(t *testing.T, cases []keyCase) {
 				if err == nil {
 					t.Fatal("Load() error = nil, want a range error")
 				}
-				for _, want := range []string{configFilename, c.key + ": must"} {
+				for _, want := range []string{Filename, c.key + ": must"} {
 					if !strings.Contains(err.Error(), want) {
 						t.Errorf("Load() error = %q, want it to contain %q", err, want)
 					}

@@ -23,8 +23,8 @@ func resetLoadState(t *testing.T) {
 
 func writeConfig(t *testing.T, content string) {
 	t.Helper()
-	if err := os.WriteFile(configFilename, []byte(content), 0o644); err != nil {
-		t.Fatalf("write %s: %v", configFilename, err)
+	if err := os.WriteFile(Filename, []byte(content), 0o644); err != nil {
+		t.Fatalf("write %s: %v", Filename, err)
 	}
 }
 
@@ -75,9 +75,9 @@ func TestLoadCreatesFileWhenAbsent(t *testing.T) {
 		t.Errorf("Load() = %+v, want defaults %+v", *cfg, *defaults())
 	}
 
-	data, err := os.ReadFile(configFilename)
+	data, err := os.ReadFile(Filename)
 	if err != nil {
-		t.Fatalf("read created %s: %v", configFilename, err)
+		t.Fatalf("read created %s: %v", Filename, err)
 	}
 	want, err := encode(defaults())
 	if err != nil {
@@ -87,9 +87,9 @@ func TestLoadCreatesFileWhenAbsent(t *testing.T) {
 		t.Errorf("created file = %q, want %q", data, want)
 	}
 
-	info, err := os.Stat(configFilename)
+	info, err := os.Stat(Filename)
 	if err != nil {
-		t.Fatalf("stat created %s: %v", configFilename, err)
+		t.Fatalf("stat created %s: %v", Filename, err)
 	}
 	if perm := info.Mode().Perm(); perm != 0o644 {
 		t.Errorf("created file mode = %o, want %o", perm, 0o644)
@@ -101,18 +101,18 @@ func TestLoadLeavesExistingFileByteIdentical(t *testing.T) {
 	resetLoadState(t)
 	writeConfig(t, "{\n  \"future\": true\n}\n")
 
-	before, err := os.ReadFile(configFilename)
+	before, err := os.ReadFile(Filename)
 	if err != nil {
-		t.Fatalf("read %s before: %v", configFilename, err)
+		t.Fatalf("read %s before: %v", Filename, err)
 	}
 
 	if _, err := Load(); err != nil {
 		t.Fatalf("Load() error = %v, want nil", err)
 	}
 
-	after, err := os.ReadFile(configFilename)
+	after, err := os.ReadFile(Filename)
 	if err != nil {
-		t.Fatalf("read %s after: %v", configFilename, err)
+		t.Fatalf("read %s after: %v", Filename, err)
 	}
 	if !bytes.Equal(before, after) {
 		t.Errorf("file changed after Load():\nbefore %q\nafter  %q", before, after)
@@ -133,8 +133,8 @@ func TestLoadRejectsInvalidJSON(t *testing.T) {
 			if err == nil {
 				t.Fatal("Load() error = nil, want error")
 			}
-			if !strings.Contains(err.Error(), configFilename) {
-				t.Errorf("Load() error = %q, want it to name %s", err, configFilename)
+			if !strings.Contains(err.Error(), Filename) {
+				t.Errorf("Load() error = %q, want it to name %s", err, Filename)
 			}
 		})
 	}
@@ -143,16 +143,16 @@ func TestLoadRejectsInvalidJSON(t *testing.T) {
 func TestLoadRejectsUnreadableFile(t *testing.T) {
 	t.Chdir(t.TempDir())
 	resetLoadState(t)
-	if err := os.Mkdir(configFilename, 0o755); err != nil {
-		t.Fatalf("mkdir %s: %v", configFilename, err)
+	if err := os.Mkdir(Filename, 0o755); err != nil {
+		t.Fatalf("mkdir %s: %v", Filename, err)
 	}
 
 	_, err := Load()
 	if err == nil {
 		t.Fatal("Load() error = nil, want error")
 	}
-	if !strings.Contains(err.Error(), configFilename) {
-		t.Errorf("Load() error = %q, want it to name %s", err, configFilename)
+	if !strings.Contains(err.Error(), Filename) {
+		t.Errorf("Load() error = %q, want it to name %s", err, Filename)
 	}
 }
 
@@ -209,7 +209,7 @@ func TestFailedLoadIsNotRetried(t *testing.T) {
 	if secondErr != firstErr {
 		t.Errorf("second Load() error = %v, want cached %v", secondErr, firstErr)
 	}
-	if !strings.Contains(firstErr.Error(), configFilename) {
-		t.Errorf("Load() error = %q, want it to name %s", firstErr, configFilename)
+	if !strings.Contains(firstErr.Error(), Filename) {
+		t.Errorf("Load() error = %q, want it to name %s", firstErr, Filename)
 	}
 }
