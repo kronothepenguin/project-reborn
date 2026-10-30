@@ -7,7 +7,7 @@ phase: p1
 depends_on: [p1-01, p1-02, p1-03]
 packages: [packages/auth, packages/virtual, packages/cms]
 holo: [source/holo/register.php, source/holo/ajax_namecheck.php, source/holo/ajax_emailcheck.php, source/holo/ajax_password.php, source/holo/web-gallery/static/js/registration.js]
-timestamp: 2026-10-30T21:10:07+00:00
+timestamp: 2026-10-30T21:44:14+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-30T21:10:07+00:00"}
 ---
 
@@ -25,11 +25,24 @@ A visitor creates an account with a habbo and is signed in on `/me`.
       `Checkbox`es, a `Notice` per section and the entered values kept after an error. The order of the sections
       stays.
 - [ ] ⚡`register/name-check`: wraps the name input and the `Icon` button and calls `POST /register/check-name`.
-- [ ] ⚡`habbo/avatar-editor`: moves the inline script into an island that wraps `public/habbo-editor.iife.js` and
-      fills the hidden `figure` and `gender` inputs. P2's look editor reuses it.
+- [ ] ⚡`habbo/avatar-editor`: replaces the example's inline script with an island around
+      `public/habbo-editor.iife.js`, the HTML5 port of Holo's Flash editor
+      (`vendor/HabboWidgets/habbo-registration/version-2.0/README.md`). The script attaches itself when it loads, so
+      the island first sets `window.HabboEditorConfig` and `window.HabboEditor` and mounts `#editor-container`. P2's
+      look editor reuses it.
+  - `setGenderAndFigure` writes the hidden `figure` and `gender` inputs, which is how the look reaches the backend.
+  - `setEditorState` writes a hidden `editorState` input, passed back as `menuState` when an error shows the form
+    again.
+  - `setAllowedToProceed` enables or disables the submit button.
+  - `showHabboClubNotice` and `hideHabboClubNotice` show and hide a `Notice`; `showClubSelections` is off, as in
+    Holo.
+  - The island reads the starting look from the hidden inputs, since islands get no `[[ ]]` values.
+  - `assetsPath` is `/`, because the default is relative to the page and `/account/looks` would miss the assets.
 - [ ] `POST /register/check-name` (`internal/router/register-check-name.go`): answers JSON with Holo's texts for a
       taken, invalid, too long or empty name.
 - [ ] `GET /register` with a session redirects to `/me`.
+- [ ] `GET /register?gender=…&figure=…`, which the landing widget sends, starts the editor on that look when both
+      are valid.
 - [ ] `POST /register`, in this order:
   1. Refuse when `auth.ClientIP` reached `registration.maxPerIp` within `registration.ipWindowHours`.
   2. Check the fields with Holo's texts: the name, the password and its confirmation, a birth date that exists, the

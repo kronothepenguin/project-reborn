@@ -2,6 +2,13 @@
 
 ## 2026-10-30
 
+- **Done** [p1-01](/tasks/p1-01-primitives.md): Checkbox, Select, Notice, Avatar and Icon are in `packages/components`
+  with stories and tests, and 112 component tests pass. Checking them through the real build also led to a fix in
+  `packages/astro`, which now removes Svelte's `<!>` select marker from built pages.
+- **Start** [p1-01](/tasks/p1-01-primitives.md).
+- **Update** [p1-04](/tasks/p1-04-registration.md) and [p1-08](/tasks/p1-08-landing-promo.md) with the
+  `vendor/HabboWidgets` details: how the editor's look reaches the backend through hidden inputs, how to build the
+  landing widget, and that its button sends `gender` and `figure` to `/register`.
 - **Create** the P1 tasks, [p1-01](/tasks/p1-01-primitives.md) to [p1-09](/tasks/p1-09-exit-check.md).
 - **Decision** [0033](/decisions/0033-commit-each-task-on-main.md): the agent commits each finished task on `main`
   and never pushes. The work of p0-11 and p0-17 went in as four commits, each passing its gates from a clean

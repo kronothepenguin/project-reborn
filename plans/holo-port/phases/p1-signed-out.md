@@ -42,7 +42,7 @@ forgotten password. The landing, legal and maintenance pages match Holo's proces
 
 # Tasks
 
-- [p1-01 Add the P1 primitives](/tasks/p1-01-primitives.md) — todo
+- [p1-01 Add the P1 primitives](/tasks/p1-01-primitives.md) — done
 - [p1-02 Sign in and sign out](/tasks/p1-02-sign-in-and-out.md) — todo
 - [p1-03 Move account creation into packages/auth](/tasks/p1-03-account-helpers.md) — todo
 - [p1-04 Build registration](/tasks/p1-04-registration.md) — todo
