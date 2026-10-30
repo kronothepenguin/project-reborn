@@ -2,6 +2,9 @@
 
 ## 2026-10-30
 
+- **Done** [p1-07](/tasks/p1-07-legal-pages.md): `/disclaimer` and `/privacy` serve Holo's texts with the site names
+  from the settings, so the footer and registration links work.
+- **Start** [p1-07](/tasks/p1-07-legal-pages.md).
 - **Done** [p1-06](/tasks/p1-06-forgot-and-reset.md): `/forgot` mails a single-use reset link in the background and
   answers the same way for every address, and `/reset/{token}` sets the new password. The production binary went
   through the whole reset against a throwaway SMTP server.

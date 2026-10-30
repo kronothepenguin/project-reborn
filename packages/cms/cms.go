@@ -76,6 +76,9 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("GET /reset/{token}", guestPage(r.HandleResetView))
 	mux.Handle("POST /reset/{token}", guestPage(r.HandleReset))
 
+	mux.Handle("GET /disclaimer", page(http.HandlerFunc(r.HandleDisclaimerView)))
+	mux.Handle("GET /privacy", page(http.HandlerFunc(r.HandlePrivacyView)))
+
 	mux.Handle("/", c.static)
 }
 

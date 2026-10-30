@@ -1,0 +1,17 @@
+---
+import { Card } from "@project-reborn/components";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<main class="py-4">
+  <Card color="orange">
+    <span slot="header">{title}</span>
+
+    <div class="text-sm"><slot /></div>
+  </Card>
+</main>
