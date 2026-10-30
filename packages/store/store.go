@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/fs"
 
+	"github.com/kronothepenguin/project-reborn/packages/config"
 	_ "modernc.org/sqlite"
 )
 
@@ -48,4 +49,10 @@ func Must(db *sql.DB, err error) *sql.DB {
 		panic(err)
 	}
 	return db
+}
+
+// FromConfig opens the database that config.json names and panics when it
+// cannot, like Must. Runners use it to get the db they pass to the apps.
+func FromConfig() *sql.DB {
+	return Must(Open(config.Get().Store.Path))
 }

@@ -21,6 +21,7 @@ domain tables: features contribute schema and query files incrementally.
 |----------|-----------|
 | `Open(path string) (*sql.DB, error)` | Opens the SQLite file (creating it when missing) and applies the embedded schemas. |
 | `Must(db *sql.DB, err error) *sql.DB` | Returns `db`, or panics with `err`, like `template.Must`. |
+| `FromConfig() *sql.DB` | Opens the database that `config.json` names (`config.Get().Store.Path`) through `Must`; runners use it to get the db they pass to the apps. |
 | `New(db DBTX) *Queries` | Generated; binds the typed operations to a `*sql.DB` or a `*sql.Tx`. |
 | `(*Queries).WithTx(tx *sql.Tx) *Queries` | Generated; the same operations inside a transaction. |
 | `IsNotFound`, `IsConflict`, `IsForeignKey`, `IsBusy` | Classify the errors the operations return. |
