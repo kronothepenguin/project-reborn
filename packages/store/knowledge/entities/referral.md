@@ -32,3 +32,7 @@ None.
 # Tables
 
 - [referrals](/tables/referrals.md)
+
+# Queries
+
+- [referrals.query.sql](/queries/referrals.md)

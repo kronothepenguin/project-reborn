@@ -2,6 +2,7 @@ package router
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -35,6 +36,7 @@ type registerPage struct {
 	Figure      string
 	Gender      string
 	EditorState string
+	Refer       string
 	Days        []dateOption
 	Months      []dateOption
 	Years       []dateOption
@@ -64,9 +66,9 @@ func (r *Router) HandleRegisterView(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, "/me", http.StatusSeeOther)
 		return
 	}
-	var page registerPage
-	page.setBornOn(0, 0, 0)
 	query := req.URL.Query()
+	page := registerPage{Refer: strings.TrimSpace(query.Get("refer"))}
+	page.setBornOn(0, 0, 0)
 	figure, gender := query.Get("figure"), strings.ToUpper(query.Get("gender"))
 	if auth.ValidateLook(figure, gender) == nil {
 		page.Figure, page.Gender = figure, gender
@@ -96,6 +98,7 @@ func (r *Router) HandleRegister(w http.ResponseWriter, req *http.Request) {
 		Figure:      form.Get("figure"),
 		Gender:      form.Get("gender"),
 		EditorState: form.Get("editorState"),
+		Refer:       strings.TrimSpace(form.Get("refer")),
 		Errors:      map[string]string{},
 	}
 	if page.Figure == "" {
@@ -215,8 +218,9 @@ func (r *Router) createAccount(ctx context.Context, page registerPage, bornOn ti
 		return err
 	}
 	defer tx.Rollback()
+	q := r.deps.Queries.WithTx(tx)
 
-	_, _, err = auth.CreateAccount(ctx, r.deps.Queries.WithTx(tx), auth.Account{
+	userID, _, err := auth.CreateAccount(ctx, q, auth.Account{
 		Email:        page.Email,
 		BornOn:       bornOn,
 		Newsletter:   page.Newsletter,
@@ -233,5 +237,51 @@ func (r *Router) createAccount(ctx context.Context, page registerPage, bornOn ti
 	if err != nil {
 		return err
 	}
+	if err := recordReferral(ctx, q, page.Refer, userID, page.Name); err != nil {
+		return err
+	}
 	return tx.Commit()
+}
+
+// recordReferral writes the referral of a new user when the link named a habbo,
+// and pays the referrer while referrals are enabled. Any other link is ignored,
+// since a stale link must not stop the registration.
+func recordReferral(ctx context.Context, q *store.Queries, refer string, userID int64, name string) error {
+	if refer == "" {
+		return nil
+	}
+	referrer, err := q.GetAvatarByName(ctx, refer)
+	if store.IsNotFound(err) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+
+	now := time.Now().UTC()
+	var rewardedAt sql.NullTime
+	if settings.GetBool("referral.enabled") {
+		rewardedAt = sql.NullTime{Time: now, Valid: true}
+		reward := int64(settings.GetInt("referral.reward"))
+		err := q.AddWalletCredits(ctx, store.AddWalletCreditsParams{Credits: reward, UpdatedAt: now, AvatarID: referrer.ID})
+		if err != nil {
+			return err
+		}
+		err = q.CreateWalletTransaction(ctx, store.CreateWalletTransactionParams{
+			AvatarID:  referrer.ID,
+			Credits:   reward,
+			Reason:    "referral",
+			Detail:    name,
+			CreatedAt: now,
+		})
+		if err != nil {
+			return err
+		}
+	}
+	return q.CreateReferral(ctx, store.CreateReferralParams{
+		ReferredUserID:   userID,
+		ReferrerAvatarID: referrer.ID,
+		CreatedAt:        now,
+		RewardedAt:       rewardedAt,
+	})
 }

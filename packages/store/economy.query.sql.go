@@ -10,6 +10,23 @@ import (
 	"time"
 )
 
+const addWalletCredits = `-- name: AddWalletCredits :exec
+UPDATE wallets
+SET credits = credits + ?1, updated_at = ?2
+WHERE avatar_id = ?3
+`
+
+type AddWalletCreditsParams struct {
+	Credits   int64
+	UpdatedAt time.Time
+	AvatarID  int64
+}
+
+func (q *Queries) AddWalletCredits(ctx context.Context, arg AddWalletCreditsParams) error {
+	_, err := q.db.ExecContext(ctx, addWalletCredits, arg.Credits, arg.UpdatedAt, arg.AvatarID)
+	return err
+}
+
 const createWallet = `-- name: CreateWallet :exec
 INSERT INTO wallets (avatar_id, credits, updated_at)
 VALUES (?1, ?2, ?3)

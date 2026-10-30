@@ -21,7 +21,8 @@ Concepts for the query files under `packages/store/queries/`.
 
 ## Economy
 
-- [economy.query.sql](economy.md) — Wallet operations for creating a habbo's wallet and writing credit ledger rows.
+- [economy.query.sql](economy.md) — Wallet operations for creating a habbo's wallet, adding credits and writing credit ledger rows.
+- [referrals.query.sql](referrals.md) — Referral operations, currently the creation of a referral at registration.
 
 ## Settings
 

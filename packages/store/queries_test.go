@@ -90,6 +90,67 @@ func TestRegistrationThroughGeneratedQueries(t *testing.T) {
 	}
 }
 
+func TestAddWalletCreditsAddsToTheBalance(t *testing.T) {
+	db := openTestDB(t)
+	ctx := t.Context()
+	q := New(db)
+	_, avatar := createUserWithHabbo(t, q, "krono@example.com", "Krono")
+	if err := q.CreateWallet(ctx, CreateWalletParams{AvatarID: avatar.ID, Credits: 500, UpdatedAt: testNow}); err != nil {
+		t.Fatalf("CreateWallet: %v", err)
+	}
+
+	later := testNow.Add(time.Hour)
+	if err := q.AddWalletCredits(ctx, AddWalletCreditsParams{Credits: 50, UpdatedAt: later, AvatarID: avatar.ID}); err != nil {
+		t.Fatalf("AddWalletCredits: %v", err)
+	}
+
+	var wallet Wallet
+	err := db.QueryRowContext(ctx, `SELECT avatar_id, credits, tickets, film, updated_at FROM wallets WHERE avatar_id = ?`, avatar.ID).
+		Scan(&wallet.AvatarID, &wallet.Credits, &wallet.Tickets, &wallet.Film, &wallet.UpdatedAt)
+	if err != nil {
+		t.Fatalf("read the wallet: %v", err)
+	}
+	if wallet.Credits != 550 || !wallet.UpdatedAt.Equal(later) {
+		t.Errorf("wallet = %+v, want 550 credits updated at %v", wallet, later)
+	}
+}
+
+func TestReferrals(t *testing.T) {
+	db := openTestDB(t)
+	ctx := t.Context()
+	q := New(db)
+	_, referrer := createUserWithHabbo(t, q, "krono@example.com", "Krono")
+	paid, _ := createUserWithHabbo(t, q, "paid@example.com", "Paid")
+	unpaid, _ := createUserWithHabbo(t, q, "unpaid@example.com", "Unpaid")
+
+	err := q.CreateReferral(ctx, CreateReferralParams{
+		ReferredUserID:   paid.ID,
+		ReferrerAvatarID: referrer.ID,
+		CreatedAt:        testNow,
+		RewardedAt:       sql.NullTime{Time: testNow, Valid: true},
+	})
+	if err != nil {
+		t.Fatalf("CreateReferral: %v", err)
+	}
+	if err := q.CreateReferral(ctx, CreateReferralParams{ReferredUserID: unpaid.ID, ReferrerAvatarID: referrer.ID, CreatedAt: testNow}); err != nil {
+		t.Fatalf("CreateReferral without a reward: %v", err)
+	}
+
+	var rewarded, total int
+	err = db.QueryRowContext(ctx, `SELECT COUNT(rewarded_at), COUNT(*) FROM referrals WHERE referrer_avatar_id = ?`, referrer.ID).Scan(&rewarded, &total)
+	if err != nil {
+		t.Fatalf("count referrals: %v", err)
+	}
+	if rewarded != 1 || total != 2 {
+		t.Errorf("%d rewarded of %d referrals, want 1 of 2", rewarded, total)
+	}
+
+	err = q.CreateReferral(ctx, CreateReferralParams{ReferredUserID: paid.ID, ReferrerAvatarID: referrer.ID, CreatedAt: testNow})
+	if !IsConflict(err) {
+		t.Errorf("a second referral of one user = %v, want a conflict", err)
+	}
+}
+
 func TestLoginLookupIgnoresCase(t *testing.T) {
 	q := New(openTestDB(t))
 	user, avatar := createUserWithHabbo(t, q, "krono@example.com", "Krono")

@@ -25,6 +25,9 @@ serves the built frontend from the embedded `dist/`.
 - `POST /register` creates the account in one transaction through
   `auth.CreateAccount`, up to `registration.maxPerIp` per
   `registration.ipWindowHours` from one address, and signs the visitor in.
+- `/register?refer=<habbo name>` writes a referral in that transaction and pays
+  `referral.reward` to the habbo while `referral.enabled` is on. A name that does
+  not exist is ignored.
 - Islands get no `[[ ]]` values, so the page keeps the name and the look in
   inputs that Go fills in. `habbo/avatar-editor` reads the hidden `figure`,
   `gender` and `editorState` inputs on start and writes every change back, which

@@ -2,6 +2,10 @@
 
 ## 2026-10-30
 
+- **Done** [p1-05](/tasks/p1-05-referrals.md): `/register?refer=<habbo name>` writes the referral in the registration
+  transaction and pays `referral.reward` to the referrer, with a `referral` ledger row, while `referral.enabled` is
+  on.
+- **Start** [p1-05](/tasks/p1-05-referrals.md).
 - **Done** [p1-04](/tasks/p1-04-registration.md): `/register` creates an account with the avatar editor, whose look
   reaches the backend through hidden inputs, with the live name check and the per-IP limit, and signs the visitor in.
   A real Chromium registered end to end, and the database held the editor's exact figure.

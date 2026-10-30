@@ -351,3 +351,137 @@ func TestCheckName(t *testing.T) {
 		}
 	}
 }
+
+// referred registers the referrer through the site, so that it has a wallet, and
+// returns a form that registers a new user through its link.
+func referred(t *testing.T, mux *http.ServeMux) url.Values {
+	t.Helper()
+	form := registration()
+	form.Set("name", "Referrer")
+	form.Set("email", "referrer@example.com")
+	form.Set("emailConfirm", "referrer@example.com")
+	wantRedirect(t, serve(mux, "POST", "/register", nil, form), "/me")
+
+	form = registration()
+	form.Set("refer", "Referrer")
+	return form
+}
+
+func referrerCredits(t *testing.T, db *sql.DB) int {
+	t.Helper()
+	return count(t, db, `SELECT credits FROM wallets JOIN avatars ON wallets.avatar_id = avatars.id WHERE avatars.name = 'Referrer'`)
+}
+
+func TestReferralPaysTheReferrer(t *testing.T) {
+	db, mux := newSite(t)
+	form := referred(t, mux)
+	form.Set("refer", "rEfErReR")
+
+	wantRedirect(t, serve(mux, "POST", "/register", nil, form), "/me")
+
+	if got := referrerCredits(t, db); got != 550 {
+		t.Errorf("the referrer has %d credits, want 550", got)
+	}
+	if n := count(t, db, `SELECT COUNT(*) FROM wallet_transactions WHERE credits = 50 AND reason = 'referral' AND detail = 'Newbie'`); n != 1 {
+		t.Errorf("%d referral ledger rows, want 1", n)
+	}
+	if n := count(t, db, `SELECT COUNT(*) FROM referrals
+		JOIN users ON referred_user_id = users.id
+		JOIN avatars ON referrer_avatar_id = avatars.id
+		WHERE users.email = 'new@example.com' AND avatars.name = 'Referrer' AND rewarded_at IS NOT NULL`); n != 1 {
+		t.Errorf("%d paid referrals of the new user, want 1", n)
+	}
+}
+
+func TestReferralUsesTheConfiguredReward(t *testing.T) {
+	db, mux := newSite(t)
+	setSetting(t, db, "referral.reward", 75)
+
+	wantRedirect(t, serve(mux, "POST", "/register", nil, referred(t, mux)), "/me")
+	if got := referrerCredits(t, db); got != 575 {
+		t.Errorf("the referrer has %d credits, want 575", got)
+	}
+}
+
+func TestReferralWhileDisabledPaysNothing(t *testing.T) {
+	db, mux := newSite(t)
+	setSetting(t, db, "referral.enabled", false)
+
+	wantRedirect(t, serve(mux, "POST", "/register", nil, referred(t, mux)), "/me")
+
+	if got := referrerCredits(t, db); got != 500 {
+		t.Errorf("the referrer has %d credits, want 500", got)
+	}
+	if n := count(t, db, `SELECT COUNT(*) FROM wallet_transactions WHERE reason = 'referral'`); n != 0 {
+		t.Errorf("%d referral ledger rows, want none", n)
+	}
+	if n := count(t, db, `SELECT COUNT(*) FROM referrals WHERE rewarded_at IS NULL`); n != 1 {
+		t.Errorf("%d unpaid referrals, want 1", n)
+	}
+}
+
+func TestReferralOfAnUnknownHabboIsIgnored(t *testing.T) {
+	db, mux := newSite(t)
+	form := registration()
+	form.Set("refer", "Nobody")
+
+	wantRedirect(t, serve(mux, "POST", "/register", nil, form), "/me")
+	if n := count(t, db, `SELECT COUNT(*) FROM referrals`); n != 0 {
+		t.Errorf("%d referrals, want none", n)
+	}
+	if n := count(t, db, `SELECT COUNT(*) FROM users`); n != 1 {
+		t.Errorf("%d users, want the registration to go on", n)
+	}
+}
+
+func TestReferralComesFromTheLinkThroughTheForm(t *testing.T) {
+	_, mux := newSite(t)
+
+	wantPage(t, serve(mux, "GET", "/register?refer=Referrer", nil, nil), http.StatusOK, "Refer:Referrer")
+
+	form := registration()
+	form.Set("refer", "Referrer")
+	form.Del("terms")
+	wantPage(t, serve(mux, "POST", "/register", nil, form), http.StatusUnprocessableEntity, "Refer:Referrer")
+}
+
+func TestRejectedRegistrationPaysNoReferral(t *testing.T) {
+	db, mux := newSite(t)
+	form := referred(t, mux)
+	form.Del("terms")
+
+	wantPage(t, serve(mux, "POST", "/register", nil, form), http.StatusUnprocessableEntity, "register.html")
+
+	if got := referrerCredits(t, db); got != 500 {
+		t.Errorf("the referrer has %d credits, want 500", got)
+	}
+	if n := count(t, db, `SELECT COUNT(*) FROM referrals`); n != 0 {
+		t.Errorf("%d referrals, want none", n)
+	}
+}
+
+func TestReferralIsPaidOnceForRegistrationsAtOnce(t *testing.T) {
+	db, mux := newSite(t)
+	base := referred(t, mux)
+
+	var wg sync.WaitGroup
+	for i := range 4 {
+		wg.Go(func() {
+			form := url.Values{}
+			for key, values := range base {
+				form[key] = values
+			}
+			form.Set("email", "new"+string(rune('a'+i))+"@example.com")
+			form.Set("emailConfirm", form.Get("email"))
+			serve(mux, "POST", "/register", nil, form)
+		})
+	}
+	wg.Wait()
+
+	if got := referrerCredits(t, db); got != 550 {
+		t.Errorf("the referrer has %d credits, want one reward", got)
+	}
+	if n := count(t, db, `SELECT COUNT(*) FROM referrals`); n != 1 {
+		t.Errorf("%d referrals, want 1", n)
+	}
+}

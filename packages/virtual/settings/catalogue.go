@@ -32,6 +32,9 @@ var catalogue = map[string]declaration{
 	"registration.defaultFigure": declare("hr-802-61.hd-190-1.ch-260-62.lg-280-110.sh-295-91.fa-1207-103", length(1, 255)),
 	"registration.defaultGender": declare("M", oneOf("M", "F")),
 
+	"referral.enabled": declare(true, nil),
+	"referral.reward":  declare(50, between(1, 1_000_000)),
+
 	"imaging.avatarUrl": declare("https://www.habbo.com/habbo-imaging/avatarimage", imager),
 }
 
