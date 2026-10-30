@@ -439,6 +439,8 @@ func TestSetRefusals(t *testing.T) {
 		{"other type", "site.maintenance", "yes", "site.maintenance: expected bool, got string"},
 		{"other integer type", "auth.rememberDays", int64(7), "auth.rememberDays: expected int, got int64"},
 		{"out of range", "auth.sessionIdleMinutes", 1, "auth.sessionIdleMinutes: must be between 5 and 1440, got 1"},
+		{"imager with a query", "imaging.avatarUrl", "https://imager.example/avatar?size=b", "imaging.avatarUrl: must be an http or https URL without a query"},
+		{"imager on another scheme", "imaging.avatarUrl", "ftp://imager.example/avatar", "imaging.avatarUrl: must be an http or https URL without a query"},
 		{"broken rule", "auth.passwordMinLength", 30, "auth.passwordMaxLength: must be at least auth.passwordMinLength (30), got 25"},
 	} {
 		t.Run(c.name, func(t *testing.T) {
@@ -457,6 +459,19 @@ func TestSetRefusals(t *testing.T) {
 				t.Errorf("the values changed despite the refusal")
 			}
 		})
+	}
+}
+
+func TestImagerTakesAPath(t *testing.T) {
+	db := openDB(t)
+	load(t, db)
+
+	const url = "http://localhost:8080/imager/avatar"
+	if err := Set(t.Context(), db, 0, "imaging.avatarUrl", url); err != nil {
+		t.Fatalf("Set: %v", err)
+	}
+	if got := GetString("imaging.avatarUrl"); got != url {
+		t.Errorf("imaging.avatarUrl = %q, want %q", got, url)
 	}
 }
 

@@ -57,13 +57,17 @@ func New(db *sql.DB, opts ...Option) *CMS {
 
 func (c *CMS) Mount(mux *http.ServeMux) {
 	r := router.New(router.Deps{Resolver: c.resolve, DB: c.db, Queries: store.New(c.db)})
+	page := func(h http.Handler) http.Handler { return c.protect(r.Maintenance(h)) }
 
-	mux.Handle("GET /{$}", c.protect(r.Maintenance(r.HandleIndexView)))
-	// The login form stays open during maintenance, so staff can sign in.
+	mux.Handle("GET /{$}", page(http.HandlerFunc(r.HandleIndexView)))
+	// Signing in and out stays open during maintenance, for staff.
 	mux.Handle("POST /{$}", c.protect(http.HandlerFunc(r.HandleIndexLogin)))
+	mux.Handle("POST /logout", c.protect(http.HandlerFunc(r.HandleLogout)))
 
-	mux.Handle("GET /register", c.protect(r.Maintenance(r.HandleRegisterView)))
-	mux.Handle("POST /register", c.protect(r.Maintenance(r.HandleRegister)))
+	mux.Handle("GET /me", page(auth.RequireSession(http.HandlerFunc(r.HandleMeView))))
+
+	mux.Handle("GET /register", page(http.HandlerFunc(r.HandleRegisterView)))
+	mux.Handle("POST /register", page(http.HandlerFunc(r.HandleRegister)))
 
 	mux.Handle("/", c.static)
 }

@@ -18,8 +18,13 @@ serves the built frontend from the embedded `dist/`.
 - `Mount` wraps every CMS route with `auth.RealIP`, cross-origin protection and
   `auth.Sessions`, so the CMS stays protected on a mux it shares with other apps.
 - While `site.maintenance` is on, every page route serves
-  `maintenance.html` with 503, except `POST /` (sign in) and the static
-  files; users holding `site.maintenanceBypass` see the site.
+  `maintenance.html` with 503, except `POST /` (sign in), `POST /logout` and the
+  static files; users holding `site.maintenanceBypass` see the site. A failed
+  sign-in stays on the maintenance page.
+- Signing in lands on `/me`, and `/` sends signed-in visitors there.
+- A form that fails answers 422 with the page it came from.
+- Page structs on the `signed-out` layout embed `hotelStatus`, because the layout
+  reads `.Online` and `.OnlineCount` and rendering fails without them.
 - Nothing reloads the settings for now.
 
 ## Development

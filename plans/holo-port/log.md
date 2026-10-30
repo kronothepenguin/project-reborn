@@ -2,6 +2,10 @@
 
 ## 2026-10-30
 
+- **Done** [p1-02](/tasks/p1-02-sign-in-and-out.md): `POST /` signs in with `auth.Login`, `POST /logout` signs out, and
+  `/me` shows the active habbo. On the production binaries, with `curl` and a real Chromium, the whole flow worked,
+  including a failed sign-in during maintenance and the throttle.
+- **Start** [p1-02](/tasks/p1-02-sign-in-and-out.md).
 - **Done** [p1-01](/tasks/p1-01-primitives.md): Checkbox, Select, Notice, Avatar and Icon are in `packages/components`
   with stories and tests, and 112 component tests pass. Checking them through the real build also led to a fix in
   `packages/astro`, which now removes Svelte's `<!>` select marker from built pages.

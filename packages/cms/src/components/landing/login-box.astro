@@ -1,5 +1,5 @@
 ---
-import { Button, Card } from "@project-reborn/components";
+import { Button, Card, Checkbox, Notice } from "@project-reborn/components";
 
 interface Props {
   links?: boolean;
@@ -8,6 +8,9 @@ interface Props {
 const { links = true } = Astro.props;
 ---
 
+[[ if .Error ]]
+<Notice><p class="font-bold">[[ .Error ]]</p></Notice>
+[[ end ]]
 <Card variant="login" color="loginbox">
   <span slot="header">Sign In</span>
 
@@ -23,6 +26,7 @@ const { links = true } = Astro.props;
       id="username"
       name="username"
       type="text"
+      value="[[ .Username ]]"
       class="bg-white border min-w-24 w-full border-neutral-600 px-2 py-1"
     />
 
@@ -37,12 +41,9 @@ const { links = true } = Astro.props;
     />
     <Button type="submit">Sign In</Button>
 
-    <label
-      class="col-start-2 col-span-2 flex items-center gap-1 text-xs text-white"
-    >
-      <input type="checkbox" name="remember" />
+    <Checkbox name="remember" class="col-start-2 col-span-2 text-xs text-white">
       Remember me
-    </label>
+    </Checkbox>
 
     {
       links && (

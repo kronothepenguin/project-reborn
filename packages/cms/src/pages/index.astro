@@ -112,11 +112,6 @@ import SignedOut from "../layouts/signed-out.astro";
     </div>
 
     <div class="flex-2 flex flex-col gap-2 w-72">
-      [[ if .Error ]]
-      <div class="bg-red-600 p-1 text-sm text-center rounded">
-        <p class="font-bold text-white">[[ .Error ]]</p>
-      </div>
-      [[ end ]]
       <LoginBox />
     </div>
   </main>

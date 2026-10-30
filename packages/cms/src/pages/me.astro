@@ -1,0 +1,24 @@
+---
+import { Avatar, Button, Card } from "@project-reborn/components";
+import SignedOut from "../layouts/signed-out.astro";
+---
+
+<SignedOut title="[[ .Name ]]">
+  <main class="flex justify-center py-4">
+    <div class="w-72">
+      <Card>
+        <div class="flex flex-col items-center gap-2">
+          <Avatar
+            imagingUrl="[[ .ImagingURL ]]"
+            figure="[[ .Figure ]]"
+            alt="[[ .Name ]]"
+          />
+          <p class="font-bold">[[ .Name ]]</p>
+          <form method="post" action="/logout">
+            <Button type="submit">Sign Out</Button>
+          </form>
+        </div>
+      </Card>
+    </div>
+  </main>
+</SignedOut>

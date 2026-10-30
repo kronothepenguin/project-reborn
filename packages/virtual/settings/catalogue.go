@@ -26,6 +26,8 @@ var catalogue = map[string]declaration{
 	"auth.resetTokenMinutes":  declare(60, between(5, 1440)),
 
 	"registration.startCredits": declare(500, between(0, 1_000_000)),
+
+	"imaging.avatarUrl": declare("https://www.habbo.com/habbo-imaging/avatarimage", imager),
 }
 
 // rules check settings that depend on each other. keys lists every setting a
@@ -98,6 +100,17 @@ func length(low, high int) func(string) error {
 		}
 		return nil
 	}
+}
+
+// imager requires a URL without a query because the Avatar primitive appends
+// ?figure=… to it.
+func imager(value string) error {
+	u, err := url.Parse(value)
+	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" ||
+		u.RawQuery != "" || u.Fragment != "" || u.User != nil {
+		return fmt.Errorf("must be an http or https URL without a query, like https://example.com/avatarimage, got %q", value)
+	}
+	return nil
 }
 
 // origin requires a bare origin because links are built by appending a path
