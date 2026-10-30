@@ -29,6 +29,7 @@ type dateOption struct {
 // name, look, password, bornOn, email and terms.
 type registerPage struct {
 	hotelStatus
+	ShortName   string
 	Name        string
 	Email       string
 	Newsletter  bool
@@ -63,7 +64,7 @@ func dateOptions(first, last, selected int, label func(int) string) []dateOption
 // the look of the habbo the visitor picked.
 func (r *Router) HandleRegisterView(w http.ResponseWriter, req *http.Request) {
 	query := req.URL.Query()
-	page := registerPage{Refer: strings.TrimSpace(query.Get("refer"))}
+	page := registerPage{ShortName: settings.GetString("site.shortName"), Refer: strings.TrimSpace(query.Get("refer"))}
 	page.setBornOn(0, 0, 0)
 	figure, gender := query.Get("figure"), strings.ToUpper(query.Get("gender"))
 	if auth.ValidateLook(figure, gender) == nil {
@@ -83,6 +84,7 @@ func (r *Router) HandleRegister(w http.ResponseWriter, req *http.Request) {
 	form := req.PostForm
 	password := form.Get("password")
 	page := registerPage{
+		ShortName:   settings.GetString("site.shortName"),
 		Name:        strings.TrimSpace(form.Get("name")),
 		Email:       strings.TrimSpace(form.Get("email")),
 		Newsletter:  form.Get("newsletter") != "",

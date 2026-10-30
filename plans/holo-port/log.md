@@ -2,6 +2,10 @@
 
 ## 2026-10-30
 
+- **Done** [p1-10](/tasks/p1-10-register-page-title.md): `/register` has a title, in Holo's `Reborn ~ Register` form,
+  and the legal pages use the same form.
+- **Start** [p1-10](/tasks/p1-10-register-page-title.md), found while reviewing P1 before closing it.
+- **Start** [p1-09](/tasks/p1-09-exit-check.md).
 - **Done** [p1-08](/tasks/p1-08-landing-promo.md): the landing page shows the HabboWidgets promo, built from
   `vendor/HabboWidgets`, with random habbos from `/xml/promo-habbos.xml`. Its button carries the chosen look into the
   avatar editor on `/register`, and the join button stays for `features.landingPromo` off and for visitors without

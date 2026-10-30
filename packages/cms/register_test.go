@@ -295,6 +295,15 @@ func TestRegisterPageStartsOnTheLookOfTheLandingWidget(t *testing.T) {
 	wantPage(t, rec, http.StatusOK, "register.html", "Figure: Gender: ")
 }
 
+func TestRegisterPageHasTheShortNameForItsTitle(t *testing.T) {
+	_, mux := newSite(t)
+	form := registration()
+	form.Del("terms")
+
+	wantPage(t, serve(mux, "GET", "/register", nil, nil), http.StatusOK, "ShortName:Holo")
+	wantPage(t, serve(mux, "POST", "/register", nil, form), http.StatusUnprocessableEntity, "ShortName:Holo")
+}
+
 func TestRegisterPageOffersTheDates(t *testing.T) {
 	_, mux := newSite(t)
 	wantPage(t, serve(mux, "GET", "/register", nil, nil), http.StatusOK,

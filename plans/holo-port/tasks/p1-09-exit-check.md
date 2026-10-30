@@ -2,12 +2,12 @@
 type: Task
 title: Verify the P1 exit criteria
 description: Run the whole signed-out flow end to end on the production binaries and close the phase.
-status: todo
+status: in-progress
 phase: p1
 depends_on: [p1-01, p1-02, p1-03, p1-04, p1-05, p1-06, p1-07, p1-08]
 packages: [apps/cms, apps/installer]
 holo: []
-timestamp: 2026-10-30T21:10:07+00:00
+timestamp: 2026-10-30T22:37:07+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-30T21:10:07+00:00"}
 ---
 
