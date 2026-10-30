@@ -31,7 +31,7 @@ starts.
 - [p1-03 Move account creation into packages/auth](/tasks/p1-03-account-helpers.md) — Move the habbo name, email and birth-date rules and the writes of a user and a habbo from the installer into auth helpers that take sqlc queries. **done**
 - [p1-04 Build registration](/tasks/p1-04-registration.md) — Make /register create an account with the avatar editor, the live name check and the per-IP limit, then sign the visitor in. **done**
 - [p1-05 Pay referrals at registration](/tasks/p1-05-referrals.md) — Read the refer link at registration, write the referral in the registration transaction and pay referral.reward to the referring habbo. **done**
-- [p1-06 Reset a forgotten password by email](/tasks/p1-06-forgot-and-reset.md) — Add the mail settings and the internal mail package, and the forgot and reset pages built on auth.CreateReset and auth.ResetPassword. **todo**
+- [p1-06 Reset a forgotten password by email](/tasks/p1-06-forgot-and-reset.md) — Add the mail settings and the internal mail package, and the forgot and reset pages built on auth.CreateReset and auth.ResetPassword. **done**
 - [p1-07 Add the legal pages](/tasks/p1-07-legal-pages.md) — Serve the terms of service and the privacy policy with Holo's texts, so the footer links and the registration terms link work. **todo**
 - [p1-08 Add the landing promo widget](/tasks/p1-08-landing-promo.md) — Serve the promo habbos as XML and show the HabboWidgets landing widget on the landing page when features.landingPromo is on, with the join button otherwise. **todo**
 - [p1-09 Verify the P1 exit criteria](/tasks/p1-09-exit-check.md) — Run the whole signed-out flow end to end on the production binaries and close the phase. **todo**

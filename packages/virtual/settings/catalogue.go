@@ -4,6 +4,7 @@ import (
 	"encoding/json/v2"
 	"errors"
 	"fmt"
+	"net/mail"
 	"net/url"
 	"slices"
 	"unicode/utf8"
@@ -34,6 +35,12 @@ var catalogue = map[string]declaration{
 
 	"referral.enabled": declare(true, nil),
 	"referral.reward":  declare(50, between(1, 1_000_000)),
+
+	"mail.host":     declare("", nil),
+	"mail.port":     declare(587, between(1, 65535)),
+	"mail.username": declare("", nil),
+	"mail.password": declare("", nil),
+	"mail.from":     declare("", mailbox),
 
 	"imaging.avatarUrl": declare("https://www.habbo.com/habbo-imaging/avatarimage", imager),
 }
@@ -108,6 +115,18 @@ func length(low, high int) func(string) error {
 		}
 		return nil
 	}
+}
+
+// mailbox accepts an address with or without a display name, or nothing while
+// no mail is configured.
+func mailbox(value string) error {
+	if value == "" {
+		return nil
+	}
+	if _, err := mail.ParseAddress(value); err != nil {
+		return fmt.Errorf("must be an email address, got %q", value)
+	}
+	return nil
 }
 
 func oneOf(allowed ...string) func(string) error {

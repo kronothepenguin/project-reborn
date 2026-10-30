@@ -62,10 +62,6 @@ func dateOptions(first, last, selected int, label func(int) string) []dateOption
 // HandleRegisterView renders GET /register. The landing widget links here with
 // the look of the habbo the visitor picked.
 func (r *Router) HandleRegisterView(w http.ResponseWriter, req *http.Request) {
-	if _, ok := auth.FromContext(req.Context()); ok {
-		http.Redirect(w, req, "/me", http.StatusSeeOther)
-		return
-	}
 	query := req.URL.Query()
 	page := registerPage{Refer: strings.TrimSpace(query.Get("refer"))}
 	page.setBornOn(0, 0, 0)
@@ -79,10 +75,6 @@ func (r *Router) HandleRegisterView(w http.ResponseWriter, req *http.Request) {
 // HandleRegister handles the POST /register action: it creates the account and
 // signs the visitor in.
 func (r *Router) HandleRegister(w http.ResponseWriter, req *http.Request) {
-	if _, ok := auth.FromContext(req.Context()); ok {
-		http.Redirect(w, req, "/me", http.StatusSeeOther)
-		return
-	}
 	ctx := req.Context()
 	if err := req.ParseForm(); err != nil {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
@@ -166,8 +158,7 @@ func (p *registerPage) validate(form url.Values) {
 	if form.Get("password") != form.Get("passwordConfirm") {
 		p.Errors["password"] = "The passwords do not match. Please try again."
 	} else if auth.ValidatePassword(form.Get("password")) != nil {
-		p.Errors["password"] = fmt.Sprintf("Your password must be %d to %d characters long.",
-			settings.GetInt("auth.passwordMinLength"), settings.GetInt("auth.passwordMaxLength"))
+		p.Errors["password"] = passwordLengthMessage()
 	}
 	if auth.ValidateEmail(p.Email) != nil {
 		p.Errors["email"] = "Please supply a valid e-mail address."
@@ -180,6 +171,11 @@ func (p *registerPage) validate(form url.Values) {
 	if auth.ValidateLook(p.Figure, p.Gender) != nil {
 		p.Errors["look"] = "An unknown error occurred. Please wait for the figure editor to load next time, or refresh if it doesn't."
 	}
+}
+
+func passwordLengthMessage() string {
+	return fmt.Sprintf("Your password must be %d to %d characters long.",
+		settings.GetInt("auth.passwordMinLength"), settings.GetInt("auth.passwordMaxLength"))
 }
 
 func (r *Router) registrationAllowed(ctx context.Context, ip string) (bool, error) {

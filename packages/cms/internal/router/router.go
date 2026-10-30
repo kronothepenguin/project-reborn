@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
+	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
@@ -29,6 +30,17 @@ func New(deps Deps) *Router {
 type hotelStatus struct {
 	Online      bool
 	OnlineCount int
+}
+
+// Guest sends signed-in visitors to /me instead of next.
+func Guest(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		if _, ok := auth.FromContext(req.Context()); ok {
+			http.Redirect(w, req, "/me", http.StatusSeeOther)
+			return
+		}
+		next.ServeHTTP(w, req)
+	})
 }
 
 func (r *Router) invalid(w http.ResponseWriter, name string, data any) {

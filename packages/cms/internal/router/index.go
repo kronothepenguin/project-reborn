@@ -17,22 +17,13 @@ type indexPage struct {
 	Error    string
 }
 
-// HandleIndexView renders GET /{$}; a signed-in visitor goes to /me.
+// HandleIndexView renders GET /{$}.
 func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
-	if _, ok := auth.FromContext(req.Context()); ok {
-		http.Redirect(w, req, "/me", http.StatusSeeOther)
-		return
-	}
 	astro.WriteTemplate(w, r.deps.Resolver, "index.html", indexPage{})
 }
 
 // HandleIndexLogin handles the POST /{$} login action.
 func (r *Router) HandleIndexLogin(w http.ResponseWriter, req *http.Request) {
-	if _, ok := auth.FromContext(req.Context()); ok {
-		http.Redirect(w, req, "/me", http.StatusSeeOther)
-		return
-	}
-
 	username := strings.TrimSpace(req.PostFormValue("username"))
 	password := req.PostFormValue("password")
 	if username == "" || password == "" {

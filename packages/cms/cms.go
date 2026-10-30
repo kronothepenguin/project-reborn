@@ -58,17 +58,23 @@ func New(db *sql.DB, opts ...Option) *CMS {
 func (c *CMS) Mount(mux *http.ServeMux) {
 	r := router.New(router.Deps{Resolver: c.resolve, DB: c.db, Queries: store.New(c.db)})
 	page := func(h http.Handler) http.Handler { return c.protect(r.Maintenance(h)) }
+	guestPage := func(h http.HandlerFunc) http.Handler { return page(router.Guest(h)) }
 
-	mux.Handle("GET /{$}", page(http.HandlerFunc(r.HandleIndexView)))
+	mux.Handle("GET /{$}", guestPage(r.HandleIndexView))
 	// Signing in and out stays open during maintenance, for staff.
-	mux.Handle("POST /{$}", c.protect(http.HandlerFunc(r.HandleIndexLogin)))
+	mux.Handle("POST /{$}", c.protect(router.Guest(http.HandlerFunc(r.HandleIndexLogin))))
 	mux.Handle("POST /logout", c.protect(http.HandlerFunc(r.HandleLogout)))
 
 	mux.Handle("GET /me", page(auth.RequireSession(http.HandlerFunc(r.HandleMeView))))
 
-	mux.Handle("GET /register", page(http.HandlerFunc(r.HandleRegisterView)))
-	mux.Handle("POST /register", page(http.HandlerFunc(r.HandleRegister)))
+	mux.Handle("GET /register", guestPage(r.HandleRegisterView))
+	mux.Handle("POST /register", guestPage(r.HandleRegister))
 	mux.Handle("POST /register/check-name", page(http.HandlerFunc(r.HandleRegisterCheckName)))
+
+	mux.Handle("GET /forgot", guestPage(r.HandleForgotView))
+	mux.Handle("POST /forgot", guestPage(r.HandleForgot))
+	mux.Handle("GET /reset/{token}", guestPage(r.HandleResetView))
+	mux.Handle("POST /reset/{token}", guestPage(r.HandleReset))
 
 	mux.Handle("/", c.static)
 }

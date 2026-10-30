@@ -2,6 +2,10 @@
 
 ## 2026-10-30
 
+- **Done** [p1-06](/tasks/p1-06-forgot-and-reset.md): `/forgot` mails a single-use reset link in the background and
+  answers the same way for every address, and `/reset/{token}` sets the new password. The production binary went
+  through the whole reset against a throwaway SMTP server.
+- **Start** [p1-06](/tasks/p1-06-forgot-and-reset.md).
 - **Done** [p1-05](/tasks/p1-05-referrals.md): `/register?refer=<habbo name>` writes the referral in the registration
   transaction and pays `referral.reward` to the referrer, with a `referral` ledger row, while `referral.enabled` is
   on.

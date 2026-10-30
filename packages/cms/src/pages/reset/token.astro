@@ -1,0 +1,44 @@
+---
+import { Button, Card, FormField, Input, Link, Notice } from "@project-reborn/components";
+import SignedOut from "../../layouts/signed-out.astro";
+---
+
+<SignedOut title="Choose a new password">
+  <main class="flex justify-center py-4">
+    <div class="flex w-96 flex-col gap-2 text-sm">
+      [[ if .Done ]]
+      <Notice variant="green">Your password has been changed.</Notice>
+      <p class="text-center"><Link href="/">Sign in &raquo;</Link></p>
+      [[ else if .Invalid ]]
+      <Notice>This link is invalid or has expired.</Notice>
+      <p class="text-center">
+        <Link href="/forgot">Request a new link &raquo;</Link>
+      </p>
+      [[ else ]]
+      [[ with .Error ]]
+      <Notice>[[ . ]]</Notice>
+      [[ end ]]
+      <Card color="orange">
+        <span slot="header">Choose a new password</span>
+
+        <form method="post" class="flex flex-col gap-2">
+          <FormField label="My password will be:" class="flex flex-col gap-1">
+            <Input type="password" name="password" variant="border" required />
+          </FormField>
+          <FormField label="Confirm password" class="flex flex-col gap-1">
+            <Input
+              type="password"
+              name="passwordConfirm"
+              variant="border"
+              required
+            />
+          </FormField>
+          <div class="self-end">
+            <Button type="submit">Save</Button>
+          </div>
+        </form>
+      </Card>
+      [[ end ]]
+    </div>
+  </main>
+</SignedOut>

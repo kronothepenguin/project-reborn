@@ -69,6 +69,14 @@ func habbo(t *testing.T, db *sql.DB, email, name string) int64 {
 	return user.ID
 }
 
+func secondHabbo(t *testing.T, db *sql.DB, userID int64, name string) {
+	t.Helper()
+	_, err := store.New(db).CreateAvatar(t.Context(), store.CreateAvatarParams{UserID: userID, Name: name, Figure: "hd-180-1", Gender: "M", CreatedAt: testNow, UpdatedAt: testNow})
+	if err != nil {
+		t.Fatalf("CreateAvatar: %v", err)
+	}
+}
+
 func grant(t *testing.T, db *sql.DB, userID int64, attribute auth.Attribute) {
 	t.Helper()
 	q := store.New(db)
@@ -308,7 +316,7 @@ func TestCrossSitePostsAreRefused(t *testing.T) {
 	db, mux := newSite(t)
 	habbo(t, db, "admin@example.com", "Admin")
 
-	for _, path := range []string{"/", "/logout", "/register", "/register/check-name"} {
+	for _, path := range []string{"/", "/logout", "/register", "/register/check-name", "/forgot", "/reset/token"} {
 		r := httptest.NewRequest("POST", path, strings.NewReader(credentials("Admin", "secret123").Encode()))
 		r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 		r.Header.Set("Sec-Fetch-Site", "cross-site")
@@ -343,6 +351,10 @@ func TestMaintenance(t *testing.T) {
 		{"guest registration", "GET", "/register", nil, 503, "maintenance.html"},
 		{"guest registration form", "POST", "/register", nil, 503, "maintenance.html"},
 		{"guest name check", "POST", "/register/check-name", nil, 503, "maintenance.html"},
+		{"guest forgot page", "GET", "/forgot", nil, 503, "maintenance.html"},
+		{"guest forgot form", "POST", "/forgot", nil, 503, "maintenance.html"},
+		{"guest reset page", "GET", "/reset/token", nil, 503, "maintenance.html"},
+		{"guest reset form", "POST", "/reset/token", nil, 503, "maintenance.html"},
 		{"static file", "GET", "/favicon.svg", nil, 200, "static"},
 		{"player without the bypass", "GET", "/", player, 503, "maintenance.html"},
 		{"player's me without the bypass", "GET", "/me", player, 503, "maintenance.html"},

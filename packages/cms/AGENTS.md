@@ -28,6 +28,10 @@ serves the built frontend from the embedded `dist/`.
 - `/register?refer=<habbo name>` writes a referral in that transaction and pays
   `referral.reward` to the habbo while `referral.enabled` is on. A name that does
   not exist is ignored.
+- `POST /forgot` answers the same way for every address and mails the reset link
+  in the background, so neither the page nor the response time reveals an
+  account. An empty `mail.host` means that no mail goes out, and the failure is
+  logged.
 - Islands get no `[[ ]]` values, so the page keeps the name and the look in
   inputs that Go fills in. `habbo/avatar-editor` reads the hidden `figure`,
   `gender` and `editorState` inputs on start and writes every change back, which

@@ -439,6 +439,7 @@ func TestSetRefusals(t *testing.T) {
 		{"other type", "site.maintenance", "yes", "site.maintenance: expected bool, got string"},
 		{"other integer type", "auth.rememberDays", int64(7), "auth.rememberDays: expected int, got int64"},
 		{"out of range", "auth.sessionIdleMinutes", 1, "auth.sessionIdleMinutes: must be between 5 and 1440, got 1"},
+		{"malformed sender", "mail.from", "not an address", `mail.from: must be an email address, got "not an address"`},
 		{"gender outside the list", "registration.defaultGender", "U", `registration.defaultGender: must be one of [M F], got "U"`},
 		{"imager with a query", "imaging.avatarUrl", "https://imager.example/avatar?size=b", "imaging.avatarUrl: must be an http or https URL without a query"},
 		{"imager on another scheme", "imaging.avatarUrl", "ftp://imager.example/avatar", "imaging.avatarUrl: must be an http or https URL without a query"},
