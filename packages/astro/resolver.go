@@ -11,6 +11,14 @@ import (
 
 type Resolver func(string) (*template.Template, error)
 
+// parse removes the marker Svelte's server renderer ends a <select> with when
+// its options come from a snippet. It exists for hydration, which these pages
+// never get, and html/template would escape it into text inside the <select>.
+func parse(name, page string) (*template.Template, error) {
+	page = strings.ReplaceAll(page, "<!>", "")
+	return template.New(name).Delims("[[", "]]").Parse(page)
+}
+
 func MakeServerResolver(baseURL *url.URL) Resolver {
 	return func(name string) (*template.Template, error) {
 		name = strings.TrimSuffix(name, "/index.html")
@@ -32,7 +40,7 @@ func MakeServerResolver(baseURL *url.URL) Resolver {
 			return nil, err
 		}
 
-		return template.New(name).Delims("[[", "]]").Parse(string(body))
+		return parse(name, string(body))
 	}
 }
 
@@ -43,6 +51,6 @@ func MakeFSResolver(fsys fs.FS) Resolver {
 			return nil, err
 		}
 
-		return template.New(name).Delims("[[", "]]").Parse(string(b))
+		return parse(name, string(b))
 	}
 }
