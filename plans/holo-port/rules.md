@@ -2,7 +2,7 @@
 type: Playbook
 title: Port tracking rules
 description: How tasks, decisions, phases and log entries of the HoloCMS port are created and kept up to date.
-timestamp: 2026-10-27T20:48:19+00:00
+timestamp: 2026-10-30T21:10:07+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [process]
 ---
@@ -88,6 +88,7 @@ repository path in backticks (`packages/store/store.go`).
 3. Update `/tasks/index.md` and the phase file. When every task of a phase is done, set the phase to `done`, the
    next phase to `active`, and update the current phase in `/index.md`.
 4. Log `**Done** [<id>](/tasks/<file>)` with one line about the outcome.
+5. Commit the task on `main` without pushing, as [0033](/decisions/0033-commit-each-task-on-main.md) says.
 
 ## Change of scope
 

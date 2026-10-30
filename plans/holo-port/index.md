@@ -44,3 +44,4 @@ They come from the original request and `AGENTS.md` and apply to every task.
 | Environment variables | never, unless the user asks |
 | Architecture | follow the user's decisions; anything not covered is asked before acting |
 | Code comments | only for non-obvious architecture or tricky edge cases |
+| Commits | every finished task on `main`, never pushed |

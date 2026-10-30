@@ -1,5 +1,16 @@
 # Log
 
+## 2026-10-30
+
+- **Create** the P1 tasks, [p1-01](/tasks/p1-01-primitives.md) to [p1-09](/tasks/p1-09-exit-check.md).
+- **Decision** [0033](/decisions/0033-commit-each-task-on-main.md): the agent commits each finished task on `main`
+  and never pushes. The work of p0-11 and p0-17 went in as four commits, each passing its gates from a clean
+  export.
+- **Decision** [0032](/decisions/0032-avatar-imager-default.md): `imaging.avatarUrl` defaults to the habbo.com
+  imager.
+- **Decision** [0031](/decisions/0031-p1-minimal-me-page.md): P1 signs in to a minimal `/me` page.
+- **Decision** [0030](/decisions/0030-accounts-created-in-auth.md): `packages/auth` creates accounts and habbos.
+
 ## 2026-10-28
 
 - **Update** P0 is done again and P1 is active; P1 gets its tasks when its work starts.

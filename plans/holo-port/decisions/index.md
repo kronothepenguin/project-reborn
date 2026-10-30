@@ -12,6 +12,7 @@ change supersedes a decision with a new one.
 - [0014 Attribute-based access control](/decisions/0014-attribute-based-access.md) — Admin-defined access groups carry attributes that belong to the user, and code checks attributes only, never a rank number or a group name.
 - [0015 Dotted attribute names; fuses stay separate](/decisions/0015-attribute-names-and-fuses.md) — Web attributes use dotted names such as forum.edit, while R26 fuses keep their exact fuse_* names in a separate, deferred catalogue.
 - [0018 Password reset by email](/decisions/0018-password-reset-by-email.md) — Forgot password emails a single-use, expiring reset link built on password_resets and the mail settings.
+- [0030 packages/auth creates accounts and habbos](/decisions/0030-accounts-created-in-auth.md) — The helpers that create a user with its first habbo, and a habbo with its profile, home and wallet, live in packages/auth with the name, email and birth-date rules, and take sqlc queries so each caller keeps its own transaction.
 
 ## Configuration and data
 
@@ -33,6 +34,7 @@ change supersedes a decision with a new one.
 - [0019 Staff page shows display habbos](/decisions/0019-staff-page-display-habbo.md) — /staff lists access groups flagged staff_listed and shows, for each member, the display habbo chosen when access was granted.
 - [0020 News bodies in BBCode](/decisions/0020-news-in-bbcode.md) — News article bodies are BBCode rendered by the same renderer as forum posts and sticky notes.
 - [0021 Dropped and kept Holo features](/decisions/0021-dropped-and-kept-features.md) — The captcha, the Dutch and German texts and Holo's admin database tools are dropped; tag fight and refer-a-friend are ported.
+- [0031 P1 signs in to a minimal /me page](/decisions/0031-p1-minimal-me-page.md) — During P1, sign-in and registration redirect to a small GET /me showing the habbo and a sign-out button, and GET / redirects signed-in visitors there, so P2 only fills in the page.
 
 ## Packages and process
 
@@ -43,3 +45,5 @@ change supersedes a decision with a new one.
 - [0026 Installer administrator, start credits and habbo names](/decisions/0026-installer-administrator-and-names.md) — The installer sets registration.startCredits and creates the administrator from a habbo name, email, password and birth date with Holo's figure and 5000 credits; habbo names take letters, digits and - = ? ! @ : . , up to 24 characters.
 - [0027 Runners run from the repository root in development](/decisions/0027-runners-run-from-the-root.md) — In development every app runner runs with the repository root as its working directory, so all of them read the root config.json.
 - [0028 Trusted reverse proxies in config.json](/decisions/0028-trusted-proxies-in-config.md) — config.json has a proxy section, off by default, that lets the runners take the client IP from X-Forwarded-For when the connection comes from a listed proxy address or range.
+- [0032 imaging.avatarUrl defaults to the habbo.com imager](/decisions/0032-avatar-imager-default.md) — The imaging.avatarUrl setting defaults to https://www.habbo.com/habbo-imaging/avatarimage, an external imager that accepts dot-format figures and can be replaced at any time.
+- [0033 Each finished task is committed on main](/decisions/0033-commit-each-task-on-main.md) — The agent commits every finished task on main with a one-line title in the style of the repository's history and never pushes.

@@ -25,6 +25,7 @@ Task:
 - [ ] status: done, timestamp updated, verified: [{by, at}] added
 - [ ] tasks/index.md and the phase file updated
 - [ ] "**Done**" log entry under today's "## YYYY-MM-DD"
+- [ ] committed on main, not pushed (decision 0033)
 ```
 
 - Blocked: `status: blocked`, reason in `# Notes`, `**Blocked**` log entry.
