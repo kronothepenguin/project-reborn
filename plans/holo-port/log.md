@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [p1-11](/tasks/p1-11-signed-out-layout.md): the signed-out pages have Holo's titles, meta tags,
+  registered-users count, logo link and footer separators.
+- **Start** [p1-11](/tasks/p1-11-signed-out-layout.md).
 - **Update** P0 is done again and P1 is active.
 - **Done** [p0-21](/tasks/p0-21-make-install.md): every project and the root have a `make install`, a clean checkout
   compiles after it with no frontend build, and the root targets of the orchestrator are comments that say what they

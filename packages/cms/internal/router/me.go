@@ -10,7 +10,7 @@ import (
 
 type mePage struct {
 	hotelStatus
-	Name       string
+	Habbo      string
 	Figure     string
 	ImagingURL string
 }
@@ -24,8 +24,9 @@ func (r *Router) HandleMeView(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	astro.WriteTemplate(w, r.deps.Resolver, "me.html", mePage{
-		Name:       avatar.Name,
-		Figure:     avatar.Figure,
-		ImagingURL: settings.GetString("imaging.avatarUrl"),
+		hotelStatus: r.hotelStatus(req.Context()),
+		Habbo:       avatar.Name,
+		Figure:      avatar.Figure,
+		ImagingURL:  settings.GetString("imaging.avatarUrl"),
 	})
 }

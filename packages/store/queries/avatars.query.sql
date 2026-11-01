@@ -17,6 +17,9 @@ SELECT * FROM avatars
 WHERE user_id = sqlc.arg(user_id)
 ORDER BY created_at, id;
 
+-- name: CountAvatars :one
+SELECT COUNT(*) FROM avatars;
+
 -- name: ListRandomAvatars :many
 SELECT * FROM avatars
 ORDER BY RANDOM()

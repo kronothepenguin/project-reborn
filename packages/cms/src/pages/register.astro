@@ -49,7 +49,7 @@ import SignedOut from "../layouts/signed-out.astro";
             Avatar Name
           </label>
           <div class="flex flex-wrap gap-2 items-center justify-center">
-            <Input id="register-name" name="name" value="[[ .Name ]]" />
+            <Input id="register-name" name="name" value="[[ .Habbo ]]" />
             <NameCheck client:only="svelte" input="register-name" />
           </div>
           [[ with .Errors.name ]]

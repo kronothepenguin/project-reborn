@@ -187,7 +187,7 @@ func TestSignIn(t *testing.T) {
 	}
 
 	wantPage(t, serve(mux, "GET", "/me", cookie, nil), http.StatusOK,
-		"me.html", "Name:Admin", "Figure:hd-180-1", "ImagingURL:https://www.habbo.com/habbo-imaging/avatarimage")
+		"me.html", "Habbo:Admin", "Figure:hd-180-1", "ImagingURL:https://www.habbo.com/habbo-imaging/avatarimage")
 }
 
 func TestSignInRemembersWhenAsked(t *testing.T) {

@@ -1,8 +1,12 @@
 package router
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/kronothepenguin/project-reborn/packages/astro"
+)
 
 // HandlePrivacyView renders GET /privacy.
 func (r *Router) HandlePrivacyView(w http.ResponseWriter, req *http.Request) {
-	r.writeLegalPage(w, "privacy.html")
+	astro.WriteTemplate(w, r.deps.Resolver, "privacy.html", r.hotelStatus(req.Context()))
 }

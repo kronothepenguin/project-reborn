@@ -44,7 +44,7 @@ serves the built frontend from the embedded `dist/`.
   is how the look reaches the backend. `/register` also takes `?gender=…&figure=…`.
 - A form that fails answers 422 with the page it came from.
 - Page structs on the `signed-out` layout embed `hotelStatus`, because the layout
-  reads `.Online` and `.OnlineCount` and rendering fails without them.
+  reads its names and counts and rendering fails without them.
 - Nothing reloads the settings for now.
 
 ## Development

@@ -37,6 +37,13 @@ timestamp: 2026-10-27T21:44:59+00:00
 - Result: the user's habbos, oldest first (`ORDER BY created_at, id`)
 - Tables: `avatars`
 
+## CountAvatars
+
+- Cardinality: `:one`
+- Inputs: none
+- Result: how many habbos exist, the header's registered users
+- Tables: `avatars`
+
 ## ListRandomAvatars
 
 - Cardinality: `:many`

@@ -57,7 +57,7 @@ func TestRegisterCreatesTheAccountAndSignsIn(t *testing.T) {
 	if cookie == nil {
 		t.Fatal("no session cookie")
 	}
-	wantPage(t, serve(mux, "GET", "/me", cookie, nil), http.StatusOK, "me.html", "Name:Newbie", "Figure:"+newFigure)
+	wantPage(t, serve(mux, "GET", "/me", cookie, nil), http.StatusOK, "me.html", "Habbo:Newbie", "Figure:"+newFigure)
 
 	q := store.New(db)
 	user, err := q.GetUserByEmail(t.Context(), "new@example.com")
@@ -184,7 +184,7 @@ func TestRegisterKeepsWhatWasEntered(t *testing.T) {
 	form.Set("editorState", "hr-1-2")
 
 	rec := serve(mux, "POST", "/register", nil, form)
-	wantPage(t, rec, http.StatusUnprocessableEntity, "Name:Newbie", "Email:new@example.com", "Newsletter:true",
+	wantPage(t, rec, http.StatusUnprocessableEntity, "Habbo:Newbie", "Email:new@example.com", "Newsletter:true",
 		"Figure:"+newFigure, "Gender:F", "EditorState:hr-1-2", "{Value:5 Label:May Selected:true}", "{Value:1990 Label:1990 Selected:true}")
 	if strings.Contains(rec.Body.String(), "secret123") {
 		t.Error("the page repeats the password")

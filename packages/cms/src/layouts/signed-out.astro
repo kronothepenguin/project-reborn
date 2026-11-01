@@ -11,31 +11,41 @@ interface Props {
 const { title } = Astro.props;
 ---
 
-<Document title={title}>
+<Document
+  title={title}
+  description="[[ .Name ]] is a virtual world where you can meet and make friends."
+  keywords="[[ .ShortName ]],[[ .Name ]],virtual world,play games,enter competitions,make friends"
+>
   <div class="flex min-h-screen items-center justify-center p-2">
     <Paper>
       <div class="w-full p-4">
         <header class="flex items-end justify-between gap-2">
-          <img src="/habbo.png" alt="Habbo Hotel" />
-          <p class="text-xs space-x-1">
-            <span class="font-bold">
-              [[ if .Online ]] [[ .OnlineCount ]] [[ else ]] 0 [[ end ]]
-            </span>
-            <span class="text-orange-500">users online now</span>
-          </p>
-          [[ if .Online ]]
-          <img
-            src={onlineGif.src}
-            width={onlineGif.width}
-            height={onlineGif.height}
-          />
-          [[ else ]]
-          <img
-            src={offlineGif.src}
-            width={offlineGif.width}
-            height={offlineGif.height}
-          />
-          [[ end ]]
+          <a href="/"><img src="/habbo.png" alt="Habbo Hotel" /></a>
+          <ul class="text-xs">
+            <li class="flex items-center justify-end gap-1">
+              <span class="font-bold">
+                [[ if .Online ]] [[ .OnlineCount ]] [[ else ]] 0 [[ end ]]
+              </span>
+              <span class="text-orange-500">users online now</span>
+              [[ if .Online ]]
+              <img
+                src={onlineGif.src}
+                width={onlineGif.width}
+                height={onlineGif.height}
+              />
+              [[ else ]]
+              <img
+                src={offlineGif.src}
+                width={offlineGif.width}
+                height={offlineGif.height}
+              />
+              [[ end ]]
+            </li>
+            <li class="flex items-center justify-end gap-1">
+              <span class="font-bold">[[ .RegisteredUsers ]]</span>
+              <span class="text-orange-500">registered users</span>
+            </li>
+          </ul>
         </header>
 
         <slot />
@@ -45,9 +55,11 @@ const { title } = Astro.props;
             <Link variant="black" href="/">
               Homepage
             </Link>
+            <span>|</span>
             <Link variant="black" href="/disclaimer">
               Terms of Service
             </Link>
+            <span>|</span>
             <Link variant="black" href="/privacy">
               Privacy Policy
             </Link>

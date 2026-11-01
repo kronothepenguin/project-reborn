@@ -29,8 +29,7 @@ type dateOption struct {
 // name, look, password, bornOn, email and terms.
 type registerPage struct {
 	hotelStatus
-	ShortName   string
-	Name        string
+	Habbo       string
 	Email       string
 	Newsletter  bool
 	Terms       bool
@@ -64,7 +63,7 @@ func dateOptions(first, last, selected int, label func(int) string) []dateOption
 // the look of the habbo the visitor picked.
 func (r *Router) HandleRegisterView(w http.ResponseWriter, req *http.Request) {
 	query := req.URL.Query()
-	page := registerPage{ShortName: settings.GetString("site.shortName"), Refer: strings.TrimSpace(query.Get("refer"))}
+	page := registerPage{hotelStatus: r.hotelStatus(req.Context()), Refer: strings.TrimSpace(query.Get("refer"))}
 	page.setBornOn(0, 0, 0)
 	figure, gender := query.Get("figure"), strings.ToUpper(query.Get("gender"))
 	if auth.ValidateLook(figure, gender) == nil {
@@ -84,8 +83,8 @@ func (r *Router) HandleRegister(w http.ResponseWriter, req *http.Request) {
 	form := req.PostForm
 	password := form.Get("password")
 	page := registerPage{
-		ShortName:   settings.GetString("site.shortName"),
-		Name:        strings.TrimSpace(form.Get("name")),
+		hotelStatus: r.hotelStatus(ctx),
+		Habbo:       strings.TrimSpace(form.Get("name")),
 		Email:       strings.TrimSpace(form.Get("email")),
 		Newsletter:  form.Get("newsletter") != "",
 		Terms:       form.Get("terms") != "",
@@ -137,7 +136,7 @@ func (r *Router) HandleRegister(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
-	r.signIn(w, req, page.Name, password, false)
+	r.signIn(w, req, page.Habbo, password, false)
 }
 
 // readBornOn fills in the page's date selects from the form. An impossible date
@@ -194,7 +193,7 @@ func (r *Router) registrationAllowed(ctx context.Context, ip string) (bool, erro
 
 // checkTaken reports a name that cannot be used or an email that has an account.
 func (r *Router) checkTaken(ctx context.Context, page *registerPage) error {
-	problem, err := r.nameProblem(ctx, page.Name)
+	problem, err := r.nameProblem(ctx, page.Habbo)
 	if err != nil {
 		return err
 	}
@@ -225,7 +224,7 @@ func (r *Router) createAccount(ctx context.Context, page registerPage, bornOn ti
 		IP:           ip,
 		PasswordHash: hash,
 		Habbo: auth.Habbo{
-			Name:    page.Name,
+			Name:    page.Habbo,
 			Figure:  page.Figure,
 			Gender:  page.Gender,
 			Credits: int64(settings.GetInt("registration.startCredits")),
@@ -235,7 +234,7 @@ func (r *Router) createAccount(ctx context.Context, page registerPage, bornOn ti
 	if err != nil {
 		return err
 	}
-	if err := recordReferral(ctx, q, page.Refer, userID, page.Name); err != nil {
+	if err := recordReferral(ctx, q, page.Refer, userID, page.Habbo); err != nil {
 		return err
 	}
 	return tx.Commit()

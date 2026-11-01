@@ -137,3 +137,19 @@ func TestFailedSignInKeepsTheLanding(t *testing.T) {
 		t.Errorf("the page lost the name: %s", rec.Body)
 	}
 }
+
+// Every signed-out page shows Holo's header: it counts habbos, as Holo's users
+// table held one row per habbo.
+func TestHeaderCountsRegisteredHabbos(t *testing.T) {
+	db, mux := newSite(t)
+	pages := []string{"/", "/register", "/forgot", "/reset/token", "/disclaimer", "/privacy"}
+	for _, path := range pages {
+		wantPage(t, serve(mux, "GET", path, nil, nil), http.StatusOK, "Name:Holo Hotel", "ShortName:Holo", "RegisteredUsers:0")
+	}
+
+	userID := habbo(t, db, "admin@example.com", "Admin")
+	secondHabbo(t, db, userID, "Admin2")
+	for _, path := range pages {
+		wantPage(t, serve(mux, "GET", path, nil, nil), http.StatusOK, "RegisteredUsers:2")
+	}
+}

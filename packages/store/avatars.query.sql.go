@@ -10,6 +10,17 @@ import (
 	"time"
 )
 
+const countAvatars = `-- name: CountAvatars :one
+SELECT COUNT(*) FROM avatars
+`
+
+func (q *Queries) CountAvatars(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countAvatars)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createAvatar = `-- name: CreateAvatar :one
 INSERT INTO avatars (user_id, name, figure, gender, motto, created_at, updated_at)
 VALUES (

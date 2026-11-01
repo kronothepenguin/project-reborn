@@ -21,7 +21,7 @@ type forgotPage struct {
 
 // HandleForgotView renders GET /forgot.
 func (r *Router) HandleForgotView(w http.ResponseWriter, req *http.Request) {
-	astro.WriteTemplate(w, r.deps.Resolver, "forgot.html", forgotPage{})
+	astro.WriteTemplate(w, r.deps.Resolver, "forgot.html", forgotPage{hotelStatus: r.hotelStatus(req.Context())})
 }
 
 // HandleForgot handles the POST /forgot action. It answers the same way for
@@ -35,7 +35,7 @@ func (r *Router) HandleForgot(w http.ResponseWriter, req *http.Request) {
 			slog.Error("cms: password reset", "err", err)
 		}
 	}()
-	astro.WriteTemplate(w, r.deps.Resolver, "forgot.html", forgotPage{Email: email, Sent: true})
+	astro.WriteTemplate(w, r.deps.Resolver, "forgot.html", forgotPage{hotelStatus: r.hotelStatus(req.Context()), Email: email, Sent: true})
 }
 
 // sendReset mails the reset link and the account's habbos, since a habbo name is

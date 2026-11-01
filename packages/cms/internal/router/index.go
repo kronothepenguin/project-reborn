@@ -1,6 +1,7 @@
 package router
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -13,24 +14,18 @@ import (
 
 type indexPage struct {
 	hotelStatus
-	Name         string
-	ShortName    string
 	LandingPromo bool
 	Username     string
 	Error        string
 }
 
-func newIndexPage() indexPage {
-	return indexPage{
-		Name:         settings.GetString("site.name"),
-		ShortName:    settings.GetString("site.shortName"),
-		LandingPromo: settings.GetBool("features.landingPromo"),
-	}
+func (r *Router) newIndexPage(ctx context.Context) indexPage {
+	return indexPage{hotelStatus: r.hotelStatus(ctx), LandingPromo: settings.GetBool("features.landingPromo")}
 }
 
 // HandleIndexView renders GET /{$}.
 func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
-	astro.WriteTemplate(w, r.deps.Resolver, "index.html", newIndexPage())
+	astro.WriteTemplate(w, r.deps.Resolver, "index.html", r.newIndexPage(req.Context()))
 }
 
 // HandleIndexLogin handles the POST /{$} login action.
@@ -38,7 +33,7 @@ func (r *Router) HandleIndexLogin(w http.ResponseWriter, req *http.Request) {
 	username := strings.TrimSpace(req.PostFormValue("username"))
 	password := req.PostFormValue("password")
 	if username == "" || password == "" {
-		r.loginFailed(w, username, "Please do not leave any fields blank.")
+		r.loginFailed(w, req, username, "Please do not leave any fields blank.")
 		return
 	}
 
@@ -54,11 +49,11 @@ func (r *Router) signIn(w http.ResponseWriter, req *http.Request, username, pass
 	case err == nil:
 		http.Redirect(w, req, "/me", http.StatusSeeOther)
 	case banned:
-		r.loginFailed(w, username, banMessage(ban))
+		r.loginFailed(w, req, username, banMessage(ban))
 	case errors.Is(err, auth.ErrInvalidCredentials):
-		r.loginFailed(w, username, "Invalid username or password.")
+		r.loginFailed(w, req, username, "Invalid username or password.")
 	case errors.Is(err, auth.ErrThrottled):
-		r.loginFailed(w, username, "Too many failed attempts. Please try again later.")
+		r.loginFailed(w, req, username, "Too many failed attempts. Please try again later.")
 	default:
 		r.fail(w, err)
 	}
@@ -66,12 +61,12 @@ func (r *Router) signIn(w http.ResponseWriter, req *http.Request, username, pass
 
 // loginFailed shows the form again on the page it came from: during maintenance
 // only the maintenance page has one.
-func (r *Router) loginFailed(w http.ResponseWriter, username, message string) {
+func (r *Router) loginFailed(w http.ResponseWriter, req *http.Request, username, message string) {
 	if settings.GetBool("site.maintenance") {
 		r.writeMaintenance(w, maintenancePage{Username: username, Error: message})
 		return
 	}
-	page := newIndexPage()
+	page := r.newIndexPage(req.Context())
 	page.Username, page.Error = username, message
 	r.invalid(w, "index.html", page)
 }

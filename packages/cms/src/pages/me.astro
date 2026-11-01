@@ -3,7 +3,7 @@ import { Avatar, Button, Card } from "@project-reborn/components";
 import SignedOut from "../layouts/signed-out.astro";
 ---
 
-<SignedOut title="[[ .Name ]]">
+<SignedOut title="[[ .ShortName ]] ~ [[ .Habbo ]]">
   <main class="flex justify-center py-4">
     <div class="w-72">
       <Card>
@@ -11,9 +11,9 @@ import SignedOut from "../layouts/signed-out.astro";
           <Avatar
             imagingUrl="[[ .ImagingURL ]]"
             figure="[[ .Figure ]]"
-            alt="[[ .Name ]]"
+            alt="[[ .Habbo ]]"
           />
-          <p class="font-bold">[[ .Name ]]</p>
+          <p class="font-bold">[[ .Habbo ]]</p>
           <form method="post" action="/logout">
             <Button type="submit">Sign Out</Button>
           </form>

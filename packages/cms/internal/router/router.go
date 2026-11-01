@@ -1,6 +1,7 @@
 package router
 
 import (
+	"context"
 	"database/sql"
 	"log/slog"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/store"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // Deps are the shared services every handler can use.
@@ -28,8 +30,23 @@ func New(deps Deps) *Router {
 // hotelStatus holds what the signed-out layout reads. The hotel stays offline
 // until the game server exists.
 type hotelStatus struct {
-	Online      bool
-	OnlineCount int
+	Name            string
+	ShortName       string
+	Online          bool
+	OnlineCount     int
+	RegisteredUsers int64
+}
+
+func (r *Router) hotelStatus(ctx context.Context) hotelStatus {
+	registered, err := r.deps.Queries.CountAvatars(ctx)
+	if err != nil {
+		slog.Error("cms: count habbos", "err", err)
+	}
+	return hotelStatus{
+		Name:            settings.GetString("site.name"),
+		ShortName:       settings.GetString("site.shortName"),
+		RegisteredUsers: registered,
+	}
 }
 
 // Guest sends signed-in visitors to /me instead of next.
