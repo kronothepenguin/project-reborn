@@ -2,7 +2,7 @@
 type: Phase
 title: P2 Me and account
 description: The community layout and header, the Me page, account settings and owning several habbos.
-status: planned
+status: active
 timestamp: 2026-11-01T18:13:48+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p2, cms]

@@ -2,6 +2,10 @@
 
 ## 2026-11-01
 
+- **Update** P1 is done and P2 is active; P2 gets its tasks when its work starts.
+- **Done** [p1-18](/tasks/p1-18-exit-check-as-holo.md): P1 matches Holo page by page. 141 browser checks and every gate
+  pass from a clean build, and the differences that remain are listed for the user.
+- **Start** [p1-18](/tasks/p1-18-exit-check-as-holo.md).
 - **Done** [p1-19](/tasks/p1-19-text-fixes.md): the join button keeps its text on one line, and the forgot page keeps
   the spaces around `log out`.
 - **Start** [p1-19](/tasks/p1-19-text-fixes.md).

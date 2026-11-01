@@ -2,7 +2,7 @@
 type: Phase
 title: P1 Signed-out site
 description: Landing and login, registration with referrals, logout, forgot and reset password, legal pages and maintenance.
-status: active
+status: done
 timestamp: 2026-11-01T18:13:48+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p1, cms]
@@ -20,7 +20,7 @@ forgotten password. The landing, legal and maintenance pages match Holo's proces
 | `index.php` | `GET /{$}`, `POST /{$}` | `index.astro` (exists) | `landing/login-box`, `landing/join-button` (the existing SVG), ⚡`landing/promo-widget` (`vendor/HabboWidgets/habbos_v2_landing`, `features.landingPromo`) |
 | `xml/promo_habbos.php` | `GET /xml/promo-habbos.xml` | — | random habbos for the promo widget ([protocols](/reference/holo-protocols.md#promo-habbos-xml)) |
 | `register.php`, `ajax_namecheck.php`, `ajax_emailcheck.php`, `ajax_password.php` | `GET /register`, `POST /register`, `POST /register/check-name` | `register.astro` (exists) | ⚡`register/name-check`, ⚡`habbo/avatar-editor` (wraps `public/habbo-editor.iife.js`) |
-| `logout.php` | `POST /logout` | — | sign-out form on `/me` |
+| `logout.php` | `GET /logout`, `POST /logout` | `logout.astro` | sign-out form on `/me` |
 | `me.php`, minimal ([0031](/decisions/0031-p1-minimal-me-page.md)) | `GET /me` | `me.astro` | the active habbo and the sign-out form; P2 fills in the page |
 | `forgot.php` (+ reset) | `GET/POST /forgot`, `GET/POST /reset/{token}` | `forgot.astro`, `reset/token.astro` | `packages/cms/internal/mail` (`net/smtp`) |
 | `disclaimer.php`, `privacy.php` | `GET /disclaimer`, `GET /privacy` | `disclaimer.astro`, `privacy.astro` | `legal/terms` (text from `source/holo/locale/en/policies.php`) |
@@ -61,5 +61,5 @@ forgotten password. The landing, legal and maintenance pages match Holo's proces
 - [p1-15 Match the landing page to Holo](/tasks/p1-15-landing-as-holo.md) — done
 - [p1-16 Match the registration rules and texts to Holo](/tasks/p1-16-registration-rules.md) — done
 - [p1-17 Port Holo's registration flow to the browser](/tasks/p1-17-registration-flow.md) — done
-- [p1-18 Verify P1 against Holo](/tasks/p1-18-exit-check-as-holo.md) — todo
+- [p1-18 Verify P1 against Holo](/tasks/p1-18-exit-check-as-holo.md) — done
 - [p1-19 Fix two texts found by the exit check](/tasks/p1-19-text-fixes.md) — done
