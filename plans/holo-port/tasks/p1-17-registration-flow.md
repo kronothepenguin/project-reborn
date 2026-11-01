@@ -44,7 +44,7 @@ Results (2026-11-01T18:49:59+00:00):
 
 - The CMS builds with its islands, and `gofmt`, `go vet` and `go test -race` pass in `packages/cms`. 116 component tests
   pass.
-- A script drove the production binary in a real Chromium through 65 checks with no failure, no script error and an empty
+- A script drove the production binary in a real Chromium through 66 checks with no failure, no script error and an empty
   server log:
   - step order, title, closed details, overlay and its tooltip, focus on the name;
   - `Done` with no name, a taken name, an invalid one, a reserved one, and `Enter` and `Tab` on a free one;

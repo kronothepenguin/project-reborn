@@ -8,11 +8,7 @@ import SignedOut from "../layouts/signed-out.astro";
   <main class="flex flex-col gap-2 py-4">
     <Notice>
       <form method="post" action="/logout">
-        <strong>
-          Please
-          <button type="submit" class="cursor-pointer underline">log out</button>
-          to use this feature.
-        </strong>
+        <strong>Please <button type="submit" class="cursor-pointer underline">log out</button> to use this feature.</strong>
       </form>
     </Notice>
     <div class="text-center"><Button href="/">Back</Button></div>

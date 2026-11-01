@@ -48,6 +48,7 @@ starts.
 - [p1-16 Match the registration rules and texts to Holo](/tasks/p1-16-registration-rules.md) — Port Holo's email, birth date and age rules, its messages and defaults, and keep the live check's own texts apart.
 - [p1-17 Port Holo's registration flow to the browser](/tasks/p1-17-registration-flow.md) — Rebuild the page in Holo's order and port registration.js with its gated details, tooltips, live checks, submit validation and age bubbles.
 - [p1-18 Verify P1 against Holo](/tasks/p1-18-exit-check-as-holo.md) — Run the whole signed-out flow again on the production binaries, finish the list of differences and close the phase.
+- [p1-19 Fix two texts found by the exit check](/tasks/p1-19-text-fixes.md) — Keep the join button's text on one line, and keep the spaces around the log out button on the forgot page.
 
 ## Later phases
 

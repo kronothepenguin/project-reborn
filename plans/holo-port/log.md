@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [p1-19](/tasks/p1-19-text-fixes.md): the join button keeps its text on one line, and the forgot page keeps
+  the spaces around `log out`.
+- **Start** [p1-19](/tasks/p1-19-text-fixes.md).
 - **Done** [p1-17](/tasks/p1-17-registration-flow.md): `/register` follows Holo's order and `registration.js`, in a
   real Chromium and without JavaScript. This also fixes the `Done` button that a visitor who kept the suggested look
   could not press.

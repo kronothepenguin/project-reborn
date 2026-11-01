@@ -62,3 +62,4 @@ forgotten password. The landing, legal and maintenance pages match Holo's proces
 - [p1-16 Match the registration rules and texts to Holo](/tasks/p1-16-registration-rules.md) — done
 - [p1-17 Port Holo's registration flow to the browser](/tasks/p1-17-registration-flow.md) — done
 - [p1-18 Verify P1 against Holo](/tasks/p1-18-exit-check-as-holo.md) — todo
+- [p1-19 Fix two texts found by the exit check](/tasks/p1-19-text-fixes.md) — done
