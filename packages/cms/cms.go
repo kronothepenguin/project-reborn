@@ -11,6 +11,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/cms/internal/router"
 	"github.com/kronothepenguin/project-reborn/packages/config"
+	"github.com/kronothepenguin/project-reborn/packages/scheduler"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
@@ -52,6 +53,9 @@ func New(db *sql.DB, opts ...Option) *CMS {
 	for _, opt := range opts {
 		opt(c)
 	}
+	scheduler.Every(1, scheduler.Minute, func(ctx context.Context) error {
+		return auth.DeleteExpiredResets(ctx, db)
+	})
 	return c
 }
 

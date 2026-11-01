@@ -132,6 +132,7 @@ timestamp: 2026-10-27T21:44:59+00:00
 - Cardinality: `:execrows`
 - Inputs: `now`
 - Result: number of resets deleted with `expires_at <= now`
+- Run by `auth.DeleteExpiredResets`, on the scheduler
 - Tables: `password_resets`
 
 # Related

@@ -45,8 +45,9 @@ serves the built frontend from the embedded `dist/`.
   every case and works in the background, so neither the page nor the response
   time reveals an account. An empty `mail.host` means that no mail goes out, and
   the failure is logged. While an account holds `auth.resetMaxActive` unexpired
-  links no mail goes out, and the page answers the same way. Signed-in visitors
-  see `Please log out to use this feature.`
+  links no mail goes out, and the page answers the same way. A task on
+  `packages/scheduler` deletes expired links every minute. Signed-in visitors see
+  `Please log out to use this feature.`
 - `landing/promo-widget` is the HTML5 port of Holo's Flash promo, built from
   `vendor/HabboWidgets/habbos_v2_landing` into `public/habbo-widgets/landing/`. It
   reads `GET /xml/promo-habbos.xml`, and its button sends `gender` and `figure` to

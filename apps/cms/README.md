@@ -38,7 +38,8 @@ go build -o ./apps/cms/tmp/cms ./apps/cms/cmd/cms
 - `make dev` starts air from the repository root, so the runner reads and
   writes the root `config.json`.
 - Air watches the `.go` files of `apps/cms`, `packages/astro`, `packages/cms`
-  and the packages the CMS imports (`auth`, `config`, `store`, `virtual`),
+  and the packages the CMS imports (`auth`, `config`, `scheduler`, `store`,
+  `virtual`),
   and rebuilds the dev runner on Go changes.
 - The runners open the database with `store.FromConfig()`, which creates it when
   it does not exist, and `config.Get` writes a default `config.json` when it is

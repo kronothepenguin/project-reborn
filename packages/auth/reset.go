@@ -24,9 +24,6 @@ type Reset struct {
 func CreateReset(ctx context.Context, db *sql.DB, name, email string) (*Reset, error) {
 	now := clock().UTC()
 	q := store.New(db)
-	if _, err := q.PurgeExpiredPasswordResets(ctx, now); err != nil {
-		return nil, fmt.Errorf("auth: create reset: %w", err)
-	}
 	account, err := q.GetResetAccount(ctx, store.GetResetAccountParams{Name: name, Email: email})
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
@@ -50,6 +47,15 @@ func CreateReset(ctx context.Context, db *sql.DB, name, email string) (*Reset, e
 		return nil, nil
 	}
 	return &Reset{Token: token, Name: account.Name, Email: account.Email}, nil
+}
+
+// DeleteExpiredResets removes the links past auth.resetTokenMinutes. A program
+// that offers password resets runs it on the scheduler.
+func DeleteExpiredResets(ctx context.Context, db *sql.DB) error {
+	if _, err := store.New(db).PurgeExpiredPasswordResets(ctx, clock().UTC()); err != nil {
+		return fmt.Errorf("auth: delete expired resets: %w", err)
+	}
+	return nil
 }
 
 // ResetPassword sets password for the user of token. It works once: the token

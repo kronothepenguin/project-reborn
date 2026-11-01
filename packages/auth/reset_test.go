@@ -143,9 +143,31 @@ func TestResetTokensExpire(t *testing.T) {
 	if err := ResetPassword(t.Context(), f.db, token, "new-secret"); !errors.Is(err, ErrInvalidReset) {
 		t.Errorf("ResetPassword after 60 minutes = %v, want ErrInvalidReset", err)
 	}
-	f.reset(t)
+}
+
+func TestDeleteExpiredResets(t *testing.T) {
+	f := newFixture(t)
+	f.habbo(t, "admin@example.com", "Admin", testPassword)
+	expired := f.reset(t)
+	f.advance(30 * time.Minute)
+	live := f.reset(t)
+
+	f.advance(30*time.Minute + time.Second)
+	if n := f.count(t, `SELECT COUNT(*) FROM password_resets`); n != 2 {
+		t.Fatalf("%d resets before the deletion, want 2: only the task deletes them", n)
+	}
+	if err := DeleteExpiredResets(t.Context(), f.db); err != nil {
+		t.Fatalf("DeleteExpiredResets: %v", err)
+	}
+
 	if n := f.count(t, `SELECT COUNT(*) FROM password_resets`); n != 1 {
-		t.Errorf("%d resets stored, want the expired one purged", n)
+		t.Errorf("%d resets left, want the live one", n)
+	}
+	if err := ResetPassword(t.Context(), f.db, expired, "new-secret"); !errors.Is(err, ErrInvalidReset) {
+		t.Errorf("ResetPassword with the deleted link = %v, want ErrInvalidReset", err)
+	}
+	if err := ResetPassword(t.Context(), f.db, live, "new-secret"); err != nil {
+		t.Errorf("ResetPassword with the live link = %v, want it to work", err)
 	}
 }
 

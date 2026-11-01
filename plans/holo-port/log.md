@@ -2,6 +2,11 @@
 
 ## 2026-11-01
 
+- **Update** P1 is done again and P2 is active, with HK-A to run beside it on a feature branch; both get their tasks when
+  their work starts.
+- **Done** [p1-20](/tasks/p1-20-delete-expired-resets.md): a task on `packages/scheduler` deletes reset links once they
+  expire, every minute, in place of the purge in `auth.CreateReset`.
+- **Start** [p1-20](/tasks/p1-20-delete-expired-resets.md).
 - **Update** P0 is done again and P1 is active.
 - **Done** [p0-24](/tasks/p0-24-empty-database.md): the CMS works on an empty database it creates, and the installer
   still works on that database afterwards, once.

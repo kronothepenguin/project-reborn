@@ -2,7 +2,7 @@
 type: Phase
 title: P1 Signed-out site
 description: Landing and login, registration with referrals, logout, forgot and reset password, legal pages and maintenance.
-status: active
+status: done
 timestamp: 2026-11-01T18:13:48+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p1, cms]
@@ -63,4 +63,4 @@ forgotten password. The landing, legal and maintenance pages match Holo's proces
 - [p1-17 Port Holo's registration flow to the browser](/tasks/p1-17-registration-flow.md) — done
 - [p1-18 Verify P1 against Holo](/tasks/p1-18-exit-check-as-holo.md) — done
 - [p1-19 Fix two texts found by the exit check](/tasks/p1-19-text-fixes.md) — done
-- [p1-20 Delete expired reset links on a schedule](/tasks/p1-20-delete-expired-resets.md) — todo
+- [p1-20 Delete expired reset links on a schedule](/tasks/p1-20-delete-expired-resets.md) — done
