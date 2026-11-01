@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [hk-a-07](/tasks/hk-a-07-settings-editor.md): staff with `housekeeping.settings` edit every declared setting
+  in forms with Holo's texts, all or nothing, and a value back at its default deletes the row.
+- **Start** [hk-a-07](/tasks/hk-a-07-settings-editor.md).
 - **Done** [hk-a-06](/tasks/hk-a-06-dashboard.md): staff land on Holo's dashboard, with the counts, the holders of
   `housekeeping.accessGroups` and a shared note saved with `settings.Set`.
 - **Start** [hk-a-06](/tasks/hk-a-06-dashboard.md).

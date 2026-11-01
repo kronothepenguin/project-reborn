@@ -11,7 +11,8 @@ import (
 
 // The actions of staff_logs, listed in the store's staff log entity.
 const (
-	actionNoteUpdate = "note.update"
+	actionNoteUpdate     = "note.update"
+	actionSettingsUpdate = "settings.update"
 )
 
 // staffLog is what a mutation records about itself; the actor, the address and

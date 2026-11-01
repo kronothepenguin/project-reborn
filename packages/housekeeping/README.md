@@ -31,6 +31,18 @@ serves the built frontend from the embedded `dist/`.
   values. Nobody can enter until someone holds `housekeeping.access`, which is what
   the installer's administrator gets.
 - A task on `packages/scheduler` deletes expired sessions every minute.
+- Every mutation writes one `staff_logs` row through `writeLog`, in the mutation's
+  transaction when it has one. `settings.Set` cannot join a transaction, so the row
+  of a settings change goes first: a failed write leaves a row for nothing, never a
+  change without a row. Rows hold the keys that changed, never their values.
+- `GET /settings` and `POST /settings/{section}` are forms over
+  `settings.Declared()`. `internal/router/sections.go` gives them Holo's texts, and
+  a setting it does not name still gets a form, with its key as its label. A post
+  reads only the fields of its section, and saves all of them or none: it checks
+  them together with `settings.Validate`, then writes each with `settings.Set`, so
+  a value back at its default deletes the row.
+- Housekeeping is the single writer of settings. A CMS running alone sees a change
+  at its next start, and on one shared mux at once, because the settings are shared.
 
 ## Design
 

@@ -4,12 +4,14 @@ import (
 	"bytes"
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 	"log/slog"
 	"maps"
 	"os"
 	"path/filepath"
 	"reflect"
+	"slices"
 	"strings"
 	"sync"
 	"testing"
@@ -461,6 +463,82 @@ func TestSetRefusals(t *testing.T) {
 				t.Errorf("the values changed despite the refusal")
 			}
 		})
+	}
+}
+
+func TestValidateChecksValuesTogetherWithoutWriting(t *testing.T) {
+	db := openDB(t)
+	load(t, db)
+	before := maps.Clone(current())
+
+	for _, c := range []struct {
+		name   string
+		values map[string]any
+		want   string
+	}{
+		{"nothing", map[string]any{}, ""},
+		{"good values", map[string]any{"site.name": "Hotel", "site.maintenance": true}, ""},
+		{"limits that hold together", map[string]any{"auth.passwordMinLength": 30, "auth.passwordMaxLength": 40}, ""},
+		{"limits that do not", map[string]any{"auth.passwordMinLength": 30}, "auth.passwordMaxLength: must be at least"},
+		{"one bad value among good ones", map[string]any{"site.name": "Hotel", "auth.sessionIdleMinutes": 1}, "auth.sessionIdleMinutes: must be between 5 and 1440"},
+		{"other type", map[string]any{"site.maintenance": "yes"}, "site.maintenance: expected bool"},
+		{"config key", map[string]any{"cms.port": 8080}, "cms.port: comes from config.json"},
+		{"undeclared key", map[string]any{"site.colour": "red"}, "site.colour: not a declared setting"},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			err := Validate(c.values)
+			switch {
+			case c.want == "" && err != nil:
+				t.Errorf("Validate() = %v, want nil", err)
+			case c.want != "" && (err == nil || !strings.Contains(err.Error(), c.want)):
+				t.Errorf("Validate() = %v, want it to contain %q", err, c.want)
+			}
+		})
+	}
+	if rows := listRows(t, db); len(rows) != 0 {
+		t.Errorf("Validate wrote rows: %+v", rows)
+	}
+	if !reflect.DeepEqual(current(), before) {
+		t.Error("Validate changed the values")
+	}
+}
+
+func TestDeclaredListsTheCatalogueWithoutSecrets(t *testing.T) {
+	db := openDB(t)
+	putRows(t, db, map[string]string{"site.name": `"Row Hotel"`, "mail.password": `"hunter2"`})
+	load(t, db)
+
+	declared := Declared()
+	if len(declared) != len(catalogue) {
+		t.Errorf("Declared() lists %d settings, want %d", len(declared), len(catalogue))
+	}
+	if !slices.IsSortedFunc(declared, func(a, b Setting) int { return strings.Compare(a.Key, b.Key) }) {
+		t.Error("Declared() is not sorted by key")
+	}
+	byKey := make(map[string]Setting, len(declared))
+	for _, setting := range declared {
+		if _, ok := catalogue[setting.Key]; !ok {
+			t.Errorf("%s is not a declared setting", setting.Key)
+		}
+		byKey[setting.Key] = setting
+	}
+	if got := byKey["site.name"]; got.Value != "Row Hotel" || got.Secret {
+		t.Errorf("site.name = %+v, want its current value", got)
+	}
+	if got := byKey["auth.loginMaxFailures"]; got.Value != 5 {
+		t.Errorf("auth.loginMaxFailures = %+v, want an int", got)
+	}
+	if got := byKey["site.maintenance"]; got.Value != false {
+		t.Errorf("site.maintenance = %+v, want a bool", got)
+	}
+	if got := byKey["mail.password"]; !got.Secret || got.Value != nil {
+		t.Errorf("mail.password = %+v, want a secret without its value", got)
+	}
+	if strings.Contains(fmt.Sprintf("%+v", declared), "hunter2") {
+		t.Error("Declared() hands out a secret")
+	}
+	if got := GetString("mail.password"); got != "hunter2" {
+		t.Errorf("GetString(mail.password) = %q, the mailer needs the value", got)
 	}
 }
 

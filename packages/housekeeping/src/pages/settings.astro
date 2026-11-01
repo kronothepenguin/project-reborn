@@ -1,0 +1,50 @@
+---
+import { Checkbox, Input, Select, Table } from "@project-reborn/components";
+import Box from "../components/box.astro";
+import Message from "../components/message.astro";
+import Submit from "../components/submit.astro";
+import Housekeeping from "../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="[[ .Section.Title ]]" tab="site">
+  <Message />
+  <form method="post" action="/housekeeping/settings/[[ .Section.ID ]]">
+    <Box title="[[ .Section.Title ]]">
+      <Table>
+        <tbody>
+          [[ range .Section.Fields ]]
+          <tr>
+            <td class="w-2/5">
+              <label for="[[ .Key ]]"><strong>[[ .Label ]]</strong></label>
+              <div class="text-neutral-500">[[ .Help ]]</div>
+            </td>
+            <td class="w-3/5">
+              [[ if eq .Kind "toggle" ]]
+              <Select id="[[ .Key ]]" name="[[ .Key ]]">
+                [[ if .On ]]
+                <option value="1" selected>[[ .OnLabel ]]</option>
+                <option value="0">[[ .OffLabel ]]</option>
+                [[ else ]]
+                <option value="1">[[ .OnLabel ]]</option>
+                <option value="0" selected>[[ .OffLabel ]]</option>
+                [[ end ]]
+              </Select>
+              [[ else if eq .Kind "number" ]]
+              <Input id="[[ .Key ]]" name="[[ .Key ]]" type="number" value="[[ .Value ]]" variant="border" />
+              [[ else if eq .Kind "password" ]]
+              <Input id="[[ .Key ]]" name="[[ .Key ]]" type="password" autocomplete="new-password" variant="border" />
+              <Checkbox name="[[ .Key ]].clear">Clear it</Checkbox>
+              [[ else ]]
+              <Input id="[[ .Key ]]" name="[[ .Key ]]" value="[[ .Value ]]" variant="border" size="50" />
+              [[ end ]]
+            </td>
+          </tr>
+          [[ end ]]
+        </tbody>
+      </Table>
+      <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+        <Submit>[[ .Section.Button ]]</Submit>
+      </div>
+    </Box>
+  </form>
+</Housekeeping>

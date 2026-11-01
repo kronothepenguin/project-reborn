@@ -72,6 +72,9 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	mux.Handle("GET /housekeeping/{$}", page(http.HandlerFunc(r.HandleIndexView)))
 	mux.Handle("POST /housekeeping/note", page(http.HandlerFunc(r.HandleNoteSave)))
 
+	mux.Handle("GET /housekeeping/settings", holding(auth.HousekeepingSettings, r.HandleSettingsView))
+	mux.Handle("POST /housekeeping/settings/{section}", holding(auth.HousekeepingSettings, r.HandleSettingsSave))
+
 	mux.Handle("GET /housekeeping/logs", holding(auth.HousekeepingLogs, r.HandleLogsView))
 
 	mux.Handle("/housekeeping/", page(http.StripPrefix("/housekeeping", h.static)))

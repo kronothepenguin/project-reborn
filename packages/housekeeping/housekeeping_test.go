@@ -32,6 +32,8 @@ var routes = []struct {
 }{
 	{"GET", "/housekeeping/"},
 	{"POST", "/housekeeping/note"},
+	{"GET", "/housekeeping/settings"},
+	{"POST", "/housekeeping/settings/site"},
 	{"GET", "/housekeeping/logs"},
 	{"GET", "/housekeeping/_astro/page.css"},
 	{"GET", "/housekeeping/index.html"},

@@ -66,7 +66,7 @@ starts.
 - [hk-a-04 Build the housekeeping layout](/tasks/hk-a-04-layout.md) — The layout of docs/hk.png as a new design system, the Table primitive, the previous login and Holo's Access Denied page. **done**
 - [hk-a-05 Write the staff log helper and page](/tasks/hk-a-05-staff-log.md) — One helper writes a staff_logs row for every mutation, and GET /logs reads them with housekeeping.logs. **done**
 - [hk-a-06 Build the dashboard and the shared note](/tasks/hk-a-06-dashboard.md) — GET /housekeeping/ shows the counts, the holders of housekeeping.accessGroups and the note, and POST /note saves it with settings.Set. **done**
-- [hk-a-07 Build the settings editor](/tasks/hk-a-07-settings-editor.md) — GET /settings and POST /settings/{section} give a form over each group of declared settings, saved with settings.Set, all or nothing.
+- [hk-a-07 Build the settings editor](/tasks/hk-a-07-settings-editor.md) — GET /settings and POST /settings/{section} give a form over each group of declared settings, saved with settings.Set, all or nothing. **done**
 - [hk-a-08 Build access groups](/tasks/hk-a-08-access-groups.md) — Create and edit access groups, tick their attributes, add and remove members with a display habbo, and refuse to leave nobody who can manage them.
 - [hk-a-09 Verify the HK-A exit criteria](/tasks/hk-a-09-exit-check.md) — Run housekeeping on the production binaries in a real browser, list the differences from Holo, and run every gate.
 

@@ -1,0 +1,19 @@
+---
+import Box from "./box.astro";
+import MenuLink from "./menu-link.astro";
+---
+
+<Box title="Configuration & Setup">
+  <ul>
+    [[ range .Sections ]][[ if not .Content ]]
+    <MenuLink href="/housekeeping/settings?section=[[ .ID ]]">[[ .Menu ]]</MenuLink>
+    [[ end ]][[ end ]]
+  </ul>
+</Box>
+<Box title="Content Management">
+  <ul>
+    [[ range .Sections ]][[ if .Content ]]
+    <MenuLink href="/housekeeping/settings?section=[[ .ID ]]">[[ .Menu ]]</MenuLink>
+    [[ end ]][[ end ]]
+  </ul>
+</Box>

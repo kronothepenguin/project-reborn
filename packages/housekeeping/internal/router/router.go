@@ -92,12 +92,17 @@ type chrome struct {
 	PreviousLogin string
 	SiteName      string
 	SiteURL       string
+	Sections      []section
 }
 
 func (r *Router) chrome(req *http.Request) chrome {
 	ctx := req.Context()
 	session, _ := auth.FromContext(ctx)
-	page := chrome{SiteName: settings.GetString("site.name"), SiteURL: settings.GetString("site.url")}
+	page := chrome{
+		SiteName: settings.GetString("site.name"),
+		SiteURL:  settings.GetString("site.url"),
+		Sections: sectionsOver(settings.Declared()),
+	}
 
 	avatar, err := r.deps.Queries.GetAvatar(ctx, session.AvatarID)
 	if err != nil {
