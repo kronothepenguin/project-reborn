@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [p0-18](/tasks/p0-18-cms-host.md): the CMS listens on `cms.host` and `cms.port` from `config.json`, with
+  `localhost` as the default, so a pod can set `0.0.0.0`.
+- **Start** [p0-18](/tasks/p0-18-cms-host.md).
 - **Update** the user saved the image of [0041](/decisions/0041-housekeeping-design-system.md) as `docs/hk.png`;
   [HK-A](/phases/hk-a-housekeeping-core.md) describes it.
 - **Update** P0 is active again, then P1, and P2 waits; both get new tasks from the user's review of P1:

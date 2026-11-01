@@ -1,9 +1,29 @@
 package cms
 
-import "fmt"
+import (
+	"fmt"
+	"net"
+	"regexp"
+)
 
 type CMS struct {
-	Port int `json:"port"`
+	Host string `json:"host"`
+	Port int    `json:"port"`
+}
+
+var hostname = regexp.MustCompile(`^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$`)
+
+func DefaultHost() string {
+	return "localhost"
+}
+
+// ValidateHost accepts a hostname or an IP address, such as 0.0.0.0 for every
+// IPv4 interface.
+func ValidateHost(value string) error {
+	if net.ParseIP(value) == nil && !hostname.MatchString(value) {
+		return fmt.Errorf("must be a hostname or an IP address, got %q", value)
+	}
+	return nil
 }
 
 func DefaultPort() int {
@@ -18,6 +38,9 @@ func ValidatePort(value int) error {
 }
 
 func (c CMS) Validate() error {
+	if err := ValidateHost(c.Host); err != nil {
+		return fmt.Errorf("host: %w", err)
+	}
 	if err := ValidatePort(c.Port); err != nil {
 		return fmt.Errorf("port: %w", err)
 	}

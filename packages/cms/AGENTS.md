@@ -6,7 +6,8 @@ serves the built frontend from the embedded `dist/`.
 
 ## Ports
 
-- App (Go HTTP server): `cms.port` in `config.json`, 17387 by default
+- App (Go HTTP server): `cms.host` and `cms.port` in `config.json`, `localhost`
+  and 17387 by default
 - Astro dev server: **22827** — baked in `astro.config.mjs`
 
 ## Runtime

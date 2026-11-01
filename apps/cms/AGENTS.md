@@ -10,8 +10,8 @@ lives entirely in the package; this module only serves it.
 
 ## Ports
 
-- App (Go HTTP server): `cms.port` in `config.json`, 17387 by default, read
-  by both runners
+- App (Go HTTP server): `cms.host` and `cms.port` in `config.json`, `localhost`
+  and 17387 by default, read by both runners. A pod sets `cms.host` to `0.0.0.0`.
 - Astro dev server: **22827** — baked in `packages/cms/astro.config.mjs`
 
 ## Run

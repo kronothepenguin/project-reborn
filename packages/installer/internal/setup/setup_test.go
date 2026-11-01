@@ -26,7 +26,7 @@ import (
 func testConfig(path string, port int) *config.Config {
 	return &config.Config{
 		Store: storeconfig.Store{Path: path},
-		CMS:   cms.CMS{Port: port},
+		CMS:   cms.CMS{Host: cms.DefaultHost(), Port: port},
 		Proxy: proxy.Proxy{Enabled: proxy.DefaultEnabled(), Trusted: proxy.DefaultTrusted()},
 	}
 }

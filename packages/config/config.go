@@ -32,7 +32,7 @@ type Config struct {
 func defaults() *Config {
 	return &Config{
 		Store: store.Store{Path: store.DefaultPath()},
-		CMS:   cms.CMS{Port: cms.DefaultPort()},
+		CMS:   cms.CMS{Host: cms.DefaultHost(), Port: cms.DefaultPort()},
 		Proxy: proxy.Proxy{Enabled: proxy.DefaultEnabled(), Trusted: proxy.DefaultTrusted()},
 	}
 }

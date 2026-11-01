@@ -59,7 +59,7 @@ func (r *Router) HandleConfigWrite(w http.ResponseWriter, req *http.Request) {
 
 	cfg := &config.Config{
 		Store: storeconfig.Store{Path: page.Path},
-		CMS:   cms.CMS{Port: port},
+		CMS:   cms.CMS{Host: cms.DefaultHost(), Port: port},
 		Proxy: proxy.Proxy{Enabled: proxy.DefaultEnabled(), Trusted: proxy.DefaultTrusted()},
 	}
 	switch err := r.deps.Setup.Configure(req.Context(), cfg); {

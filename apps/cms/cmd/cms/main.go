@@ -1,10 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"io/fs"
 	"log"
+	"net"
 	"net/http"
+	"strconv"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/cms"
@@ -32,7 +33,7 @@ func main() {
 	c.Mount(mux)
 
 	server := http.Server{
-		Addr:    fmt.Sprintf("localhost:%d", cfg.CMS.Port),
+		Addr:    net.JoinHostPort(cfg.CMS.Host, strconv.Itoa(cfg.CMS.Port)),
 		Handler: mux,
 	}
 
