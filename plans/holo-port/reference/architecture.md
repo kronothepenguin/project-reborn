@@ -62,6 +62,8 @@ This is how programs run today, and how development works.
   maintenance on shows the maintenance page only then.
 - Housekeeping has no sign-in of its own. A guest goes to `site.url`, and the session cookie reaches housekeeping because
   cookies do not depend on the port.
+- The CMS's Housekeeping links follow `site.housekeepingUrl`, `/housekeeping` by default. Only a shared mux serves that path:
+  running alone, the CMS answers 404 there until the setting names housekeeping's own address.
 
 The open question is how a running CMS learns of a change. [0040](/decisions/0040-housekeeping-writes-settings.md) expects
 IPC between the processes, and its design belongs to [HK-A](/phases/hk-a-housekeeping-core.md).

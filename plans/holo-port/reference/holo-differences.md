@@ -47,7 +47,6 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md).
 | Every page | Real online count | `0` and the offline picture | [0013](/decisions/0013-defer-game-server-features.md) |
 | Every page | `Powered by HoloCMS © 2008 Meth0d.` | `Powered by Project Reborn ©` | [0048](/decisions/0048-footer-names-reborn.md) |
 | After registering | `welcome.php` picks a first room | Goes to `/me` | [0013](/decisions/0013-defer-game-server-features.md) |
-| After signing in | `me.php` | A minimal `/me`, until P2 | [0031](/decisions/0031-p1-minimal-me-page.md) |
 | Header | `Enter <site>` for guests | `<site> is offline` | [0013](/decisions/0013-defer-game-server-features.md) |
 | Me | `Enter <site>` | `Hotel Closed` | [0013](/decisions/0013-defer-game-server-features.md) |
 | Header | One habbo per account | `Switch habbo` with several, and `/account/habbos` | [0001](/decisions/0001-user-owns-many-habbos.md) |
@@ -122,7 +121,7 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Dashboard | `Members` counts users | Counts habbos | [HK-A](/phases/hk-a-housekeeping-core.md) |
 | Dashboard | Administrators are `rank > 6` | They are the holders of `housekeeping.accessGroups`, under their display habbo | [0014](/decisions/0014-attribute-based-access.md) |
 | Rank tool | Ranks 1 to 7 by name or id | Access groups with attributes; the search still takes a name or an id | [0014](/decisions/0014-attribute-based-access.md) |
-| Rank tool | The `$sysadmin` of `config.php` cannot lose his rank, and only he gives rank 7 | No `$sysadmin`: holding `housekeeping.accessGroups` is enough, and its last holder cannot lose it: `Access denied. The last user who can manage access groups must keep housekeeping.access and housekeeping.accessGroups.`, logged as `accessGroups.refused`, as Holo logged its tool's refusals | [0014](/decisions/0014-attribute-based-access.md) |
+| Rank tool | The `$sysadmin` of `config.php` cannot lose that rank, and only that user gives rank 7 | No `$sysadmin`: holding `housekeeping.accessGroups` is enough, and its last holder cannot lose it: `Access denied. The last user who can manage access groups must keep housekeeping.access and housekeeping.accessGroups.`, logged as `accessGroups.refused`, as Holo logged its tool's refusals | [0014](/decisions/0014-attribute-based-access.md) |
 | Configuration | `Enable SSO` and `Language` | Gone: SSO waits for the client page, and only English is left | [Holo's settings](/reference/holo-database.md) |
 | Content tool | Four categories of `cms_content` | A form per group of settings. Those of the staff, credits and forum pages arrive with their phases, and get a form when they are declared | [HK-A](/phases/hk-a-housekeeping-core.md) |
 | Maintenance | `Administrators can still login through Housekeeping.` | `Administrators can still login on that page.` | The plan: staff sign in with the shared session on the maintenance page |

@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Update** HK-A is merged into `main`, and [HK-B](/phases/hk-b-users-moderation.md) comes next.
+- **Done** [hk-a-13](/tasks/hk-a-13-merge-check.md): `main` holds P2 and HK-A together: every gate passes from a clean
+  checkout, with 223 browser checks of P2, 116 of HK-A and 28 across the three programs.
 - **Start** [hk-a-13](/tasks/hk-a-13-merge-check.md).
 - **Done** [hk-a-12](/tasks/hk-a-12-installer-housekeeping-port.md): the installer asks for the housekeeping port and
   writes it to `config.json`.
