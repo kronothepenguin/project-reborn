@@ -1,6 +1,9 @@
 package main
 
 import (
+	"bytes"
+	"go/format"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -26,5 +29,45 @@ func TestWriteRendersTheRunnerFromTheRoot(t *testing.T) {
 		if !strings.Contains(string(data), want) {
 			t.Errorf("the generated %s lacks %q:\n%s", file, want, data)
 		}
+	}
+}
+
+// Generated code passes the same checks as hand-written code, so that
+// make create leaves nothing to fix.
+func TestWriteGeneratesFormattedFiles(t *testing.T) {
+	root := t.TempDir()
+	if err := write(root, "probe", 10001, 20001); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return err
+		}
+		data, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		name, err := filepath.Rel(root, path)
+		if err != nil {
+			return err
+		}
+		if !bytes.HasSuffix(data, []byte("\n")) {
+			t.Errorf("%s does not end with a newline", name)
+		}
+		if filepath.Ext(path) != ".go" {
+			return nil
+		}
+		formatted, err := format.Source(data)
+		if err != nil {
+			t.Errorf("%s does not parse: %v", name, err)
+			return nil
+		}
+		if !bytes.Equal(formatted, data) {
+			t.Errorf("%s is not formatted", name)
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("walk: %v", err)
 	}
 }

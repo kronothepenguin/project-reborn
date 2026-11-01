@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [p0-19](/tasks/p0-19-create-templates.md): every `tools/create` template ends with a newline, and a test
+  checks that a generated project is formatted.
+- **Start** [p0-19](/tasks/p0-19-create-templates.md).
 - **Done** [p0-18](/tasks/p0-18-cms-host.md): the CMS listens on `cms.host` and `cms.port` from `config.json`, with
   `localhost` as the default, so a pod can set `0.0.0.0`.
 - **Start** [p0-18](/tasks/p0-18-cms-host.md).
