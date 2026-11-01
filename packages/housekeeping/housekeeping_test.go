@@ -235,6 +235,25 @@ func TestStaffEnter(t *testing.T) {
 	wantPage(t, serve(mux, "GET", "/housekeeping/", cookie, nil), http.StatusOK, "index.html")
 }
 
+func TestTheLayoutSaysWhoIsLoggedIn(t *testing.T) {
+	db, mux := newSite(t)
+	userID, cookie := staff(t, db, "Admin", auth.HousekeepingAccess)
+	wantPage(t, serve(mux, "GET", "/housekeeping/", cookie, nil), http.StatusOK,
+		"Habbo:Admin", "PreviousLogin: SiteName:Holo Hotel", "SiteURL:http://localhost:17387")
+
+	err := store.New(db).CreateLoginAttempt(t.Context(), store.CreateLoginAttemptParams{
+		UserID:    sql.NullInt64{Int64: userID, Valid: true},
+		IP:        "84.51.55.15",
+		Succeeded: true,
+		CreatedAt: time.Date(2008, time.December, 7, 15, 2, 12, 0, time.UTC),
+	})
+	if err != nil {
+		t.Fatalf("CreateLoginAttempt: %v", err)
+	}
+	wantPage(t, serve(mux, "GET", "/housekeeping/", cookie, nil), http.StatusOK,
+		"PreviousLogin:07-12-2008 15:02:12 from 84.51.55.15")
+}
+
 func TestABannedUserLosesTheSession(t *testing.T) {
 	for _, c := range []struct {
 		name string

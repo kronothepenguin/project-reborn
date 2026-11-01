@@ -57,6 +57,14 @@ DELETE FROM sessions WHERE expires_at <= sqlc.arg(now);
 INSERT INTO login_attempts (user_id, avatar_id, ip, succeeded, created_at)
 VALUES (sqlc.narg(user_id), sqlc.narg(avatar_id), sqlc.arg(ip), sqlc.arg(succeeded), sqlc.arg(created_at));
 
+-- OFFSET 1 skips the newest sign-in, which is the one in use. CAST keeps user_id
+-- a non-null parameter although the column is nullable.
+-- name: GetPreviousLogin :one
+SELECT ip, created_at FROM login_attempts
+WHERE user_id = CAST(sqlc.arg(user_id) AS INTEGER) AND succeeded
+ORDER BY created_at DESC, id DESC
+LIMIT 1 OFFSET 1;
+
 -- name: CountFailedLoginsByIP :one
 SELECT COUNT(*) FROM login_attempts
 WHERE ip = sqlc.arg(ip) AND NOT succeeded AND created_at >= sqlc.arg(since);

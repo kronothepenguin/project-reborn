@@ -304,6 +304,46 @@ func TestFailedLoginsAreCountedInTheWindow(t *testing.T) {
 	}
 }
 
+func TestPreviousLoginIsTheOneBeforeTheNewest(t *testing.T) {
+	db := openTestDB(t)
+	ctx := t.Context()
+	q := New(db)
+	user, _ := createUserWithHabbo(t, q, "krono@example.com", "Krono")
+	other, _ := createUserWithHabbo(t, q, "other@example.com", "Other")
+
+	attempt := func(userID int64, ip string, succeeded bool, at time.Time) {
+		t.Helper()
+		err := q.CreateLoginAttempt(ctx, CreateLoginAttemptParams{
+			UserID:    sql.NullInt64{Int64: userID, Valid: true},
+			IP:        ip,
+			Succeeded: succeeded,
+			CreatedAt: at,
+		})
+		if err != nil {
+			t.Fatalf("CreateLoginAttempt: %v", err)
+		}
+	}
+
+	attempt(user.ID, "10.0.0.1", true, testNow.Add(-3*time.Hour))
+	if _, err := q.GetPreviousLogin(ctx, user.ID); !IsNotFound(err) {
+		t.Fatalf("GetPreviousLogin after one sign-in: %v, want not found", err)
+	}
+
+	attempt(user.ID, "10.0.0.2", true, testNow.Add(-2*time.Hour))
+	attempt(user.ID, "10.0.0.3", false, testNow.Add(-90*time.Minute))
+	attempt(other.ID, "10.0.0.4", true, testNow.Add(-80*time.Minute))
+	attempt(user.ID, "10.0.0.5", true, testNow.Add(-time.Hour))
+	attempt(user.ID, "10.0.0.6", false, testNow.Add(-time.Minute))
+
+	got, err := q.GetPreviousLogin(ctx, user.ID)
+	if err != nil {
+		t.Fatalf("GetPreviousLogin: %v", err)
+	}
+	if got.IP != "10.0.0.2" || !got.CreatedAt.Equal(testNow.Add(-2*time.Hour)) {
+		t.Errorf("GetPreviousLogin = %+v, want the sign-in from 10.0.0.2", got)
+	}
+}
+
 func TestUserAttributesAreTheUnionOfTheirGroups(t *testing.T) {
 	q := New(openTestDB(t))
 	ctx := t.Context()

@@ -32,6 +32,22 @@ serves the built frontend from the embedded `dist/`.
   the installer's administrator gets.
 - A task on `packages/scheduler` deletes expired sessions every minute.
 
+## Design
+
+The look is its own design system (decision 0041 of the port bundle), built from
+`docs/hk.png` and `plans/holo-port/reference/colours.md`. `layouts/housekeeping.astro`
+has the grey bar with who is logged in and their previous login, the tabs over the
+blue strip, the left column of `box` components and the content.
+
+- Page structs embed `chrome`, because the layout reads its fields and rendering
+  fails without them.
+- A staff member missing an attribute gets `access-denied.html` with 403, in the
+  layout. Anyone without `housekeeping.access` gets a plain 403, because the static
+  files are closed to them too.
+- `Table` comes from `packages/components`. A class with `&` in a Svelte component
+  that takes a spread belongs in a script constant, because the server renderer
+  escapes a literal class twice.
+
 ## Development
 
 Recommended: run through the app runner in `apps/housekeeping`:

@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [hk-a-04](/tasks/hk-a-04-layout.md): the layout of `docs/hk.png` is built as its own design system, with the
+  `Table` primitive, the previous login and Holo's Access Denied page.
+- **Start** [hk-a-04](/tasks/hk-a-04-layout.md).
 - **Done** [hk-a-03](/tasks/hk-a-03-scaffold-and-access.md): `packages/housekeeping` and `apps/housekeeping` exist,
   every route under `/housekeeping/` belongs to staff, and `Mount` works alone and on one mux with the CMS.
 - **Start** [hk-a-03](/tasks/hk-a-03-scaffold-and-access.md).
