@@ -76,6 +76,7 @@ starts.
 - [hk-a-08 Build access groups](/tasks/hk-a-08-access-groups.md) — Create and edit access groups, tick their attributes, add and remove members with a display habbo, and refuse to leave nobody who can manage them. **done**
 - [hk-a-09 Verify the HK-A exit criteria](/tasks/hk-a-09-exit-check.md) — Run housekeeping on the production binaries in a real browser, list the differences from Holo, and run every gate. **done**
 - [hk-a-10 Keep a stopped task from running](/tasks/hk-a-10-stopped-task.md) — After stop, a tick that waited out a slow run started another run, because select picks at random.
+- [hk-a-11 Label the settings of P2](/tasks/hk-a-11-p2-setting-labels.md) — Give the three settings P2 declared while HK-A was on its branch real labels on the settings forms.
 
 ## Later phases
 

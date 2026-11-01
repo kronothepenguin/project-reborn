@@ -51,6 +51,7 @@ var forms = []section{
 			{Key: "site.name", Label: "Sitename", Help: "This is the full name of your site, eg. 'Holo Hotel'.", Required: true},
 			{Key: "site.shortName", Label: "Shortname", Help: "This is the 'shortname' of your site, eg. 'Holo'.", Required: true},
 			{Key: "site.url", Label: "Site Address", Help: "This is the address of your site, eg. 'https://hotel.example.com'. Reset mails link to it, and Housekeeping sends guests there to sign in.", Required: true},
+			{Key: "site.housekeepingUrl", Label: "Housekeeping Address", Help: "The address the site's Housekeeping links open: a path when they share a port, eg. '/housekeeping', or a full address when Housekeeping has its own, eg. 'https://hotel.example.com:18465/housekeeping'.", Required: true},
 		},
 	},
 	{
@@ -77,6 +78,7 @@ var forms = []section{
 		ID: "registration", Menu: "Registration", Title: "Registration", Button: defaultButton,
 		Fields: []field{
 			{Key: "registration.startCredits", Label: "Start Credits", Help: "The credits a new habbo starts with."},
+			{Key: "registration.maxHabbosPerUser", Label: "Habbos Per User", Help: "The most habbos one user can own."},
 			{Key: "registration.maxPerIp", Label: "Habbos Per Address", Help: "The most habbos one address can register."},
 			{Key: "registration.ipWindowHours", Label: "Address Window", Help: "The hours during which that limit counts."},
 			{Key: "registration.defaultFigure", Label: "Default Figure", Help: "The look of a habbo registered without one."},
@@ -110,6 +112,7 @@ var forms = []section{
 		ID: "features", Menu: "Manage Site Content", Title: "Manage Content Options", Button: defaultButton, Content: true,
 		Fields: []field{
 			{Key: "features.landingPromo", Label: "Landing Promo Enabled", Help: "This determines whether the promo on the login page will be displayed. If disabled, the join button is shown."},
+			{Key: "features.birthdayNotifications", Label: "Birthday Notifications Enabled", Help: "This will determine whether a 'Happy birthday' message will be shown on a user's birthday."},
 		},
 	},
 }

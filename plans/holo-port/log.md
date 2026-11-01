@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [hk-a-11](/tasks/hk-a-11-p2-setting-labels.md): the three settings of P2 have real labels on the forms, and
+  a test keeps every declared setting labelled.
+- **Start** [hk-a-11](/tasks/hk-a-11-p2-setting-labels.md).
 - **Done** [hk-a-10](/tasks/hk-a-10-stopped-task.md): a stopped task never starts another run, which also ends the flaky
   `TestATaskNeverOverlapsItself`.
 - **Start** [hk-a-10](/tasks/hk-a-10-stopped-task.md).

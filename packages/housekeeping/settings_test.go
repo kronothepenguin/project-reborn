@@ -61,6 +61,29 @@ func TestEverySectionHasAForm(t *testing.T) {
 	}
 }
 
+// The fallback of a key as its label is for a setting declared on another branch,
+// so that a merge does not leave it without a form. It should not last.
+func TestEverySettingHasARealLabel(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
+
+	var pages strings.Builder
+	for _, section := range []string{"site", "maintenance", "auth", "registration", "referral", "mail", "imaging", "features"} {
+		pages.WriteString(serve(mux, "GET", "/housekeeping/settings?section="+section, cookie, nil).Body.String())
+	}
+	for _, setting := range settings.Declared() {
+		if setting.Key == "cms.refresh" || setting.Key == "housekeeping.note" {
+			continue
+		}
+		if !strings.Contains(pages.String(), "Key:"+setting.Key+" ") {
+			t.Errorf("%s has no form", setting.Key)
+		}
+		if strings.Contains(pages.String(), "Label:"+setting.Key+" ") {
+			t.Errorf("%s has its key as its label", setting.Key)
+		}
+	}
+}
+
 func TestSettingsOpenOnTheFirstForm(t *testing.T) {
 	db, mux := newSite(t)
 	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
