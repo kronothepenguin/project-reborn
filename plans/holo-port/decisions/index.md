@@ -13,11 +13,13 @@ change supersedes a decision with a new one.
 - [0015 Dotted attribute names; fuses stay separate](/decisions/0015-attribute-names-and-fuses.md) — Web attributes use dotted names such as forum.edit, while R26 fuses keep their exact fuse_* names in a separate, deferred catalogue.
 - [0035 Reset mail is limited per account](/decisions/0035-reset-mail-limit.md) — An account can hold auth.resetMaxActive unexpired reset links at a time, so nobody can make the hotel send repeated mail to one address.
 - [0044 Expired reset links are deleted when they expire](/decisions/0044-expired-reset-links-deleted.md) — A reset link works for auth.resetTokenMinutes, 60 by default, and a scheduled task deletes it at that age, so that the account can ask for a new one.
+- [0050 Expired sessions are deleted on a schedule](/decisions/0050-expired-sessions-deleted.md) — A task on the scheduler deletes sessions once they expire, in place of the purge at sign-in.
 - [0018 Password reset by email](/decisions/0018-password-reset-by-email.md) — Forgot password emails a single-use, expiring reset link built on password_resets and the mail settings.
 - [0030 packages/auth creates accounts and habbos](/decisions/0030-accounts-created-in-auth.md) — The helpers that create a user with its first habbo, and a habbo with its profile, home and wallet, live in packages/auth with the name, email and birth-date rules, and take sqlc queries so each caller keeps its own transaction.
 
 ## Configuration and data
 
+- [0049 packages/store is the global database](/decisions/0049-store-is-the-global-database.md) — packages/store stays the one access point to one global database with every schema, and programs do not get schemas of their own.
 - [0047 Every program works on an empty database](/decisions/0047-every-program-works-on-an-empty-database.md) — Any program creates and uses an empty database with default values, while the installer merges every schema and seed and lets the administrator change the defaults once.
 - [0004 Fresh start without Holo data](/decisions/0004-fresh-start.md) — No data is imported from a Holo or Holograph MySQL database, so the schema keeps no legacy ids, formats or hashes.
 - [0007 Store knowledge documents entities and tables](/decisions/0007-store-okf-entities-and-tables.md) — The store's OKF bundle adds entities/ and tables/ concepts next to the required schemas/ and queries/ concepts.

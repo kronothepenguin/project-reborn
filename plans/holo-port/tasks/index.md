@@ -54,8 +54,12 @@ starts.
 - [p1-19 Fix two texts found by the exit check](/tasks/p1-19-text-fixes.md) — Keep the join button's text on one line, and keep the spaces around the log out button on the forgot page.
 - [p1-20 Delete expired reset links on a schedule](/tasks/p1-20-delete-expired-resets.md) — Register a task in cms.New that deletes reset links once they expire, in place of the purge in auth.CreateReset.
 
+## P2 Me and account
+
+- [p2-01 Delete expired sessions on a schedule](/tasks/p2-01-delete-expired-sessions.md) — Register a task in cms.New that deletes sessions once they expire, in place of the purge at sign-in.
+
 ## Later phases
 
-[P2](/phases/p2-me-account.md), [HK-A](/phases/hk-a-housekeeping-core.md), [HK-B](/phases/hk-b-users-moderation.md),
+[HK-A](/phases/hk-a-housekeeping-core.md), [HK-B](/phases/hk-b-users-moderation.md),
 [P3](/phases/p3-homes.md), [P4](/phases/p4-community.md), [P5](/phases/p5-groups-forum.md),
 [P6](/phases/p6-economy.md) and [P7](/phases/p7-help.md) get their tasks when they start.

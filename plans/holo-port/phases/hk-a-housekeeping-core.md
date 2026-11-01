@@ -26,7 +26,7 @@ read the staff log; every change is logged.
 - One helper writes a `staff_logs` row for every mutation.
 - Config: `housekeeping.port`. Settings: `housekeeping.note`.
 - Housekeeping creates and uses an empty database, as the CMS does
-  ([0047](/decisions/0047-every-program-works-on-an-empty-database.md)). Its work runs on a feature branch, in parallel with
+  ([0049](/decisions/0049-store-is-the-global-database.md)). Its work runs on a feature branch, in parallel with
   P2 ([0046](/decisions/0046-main-and-feature-branches.md)).
 
 | Holo `?p=` | Route under `/housekeeping` | Attribute / notes |

@@ -2,7 +2,8 @@
 type: Decision
 title: Every program works on an empty database
 description: Any program creates and uses an empty database with default values, while the installer merges every schema and seed and lets the administrator change the defaults once.
-status: accepted
+status: superseded
+superseded_by: "0049"
 timestamp: 2026-11-01T19:50:41+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T19:50:41+00:00"}
 tags: [installer, store, architecture]

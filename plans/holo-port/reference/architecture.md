@@ -31,14 +31,15 @@ Nobody is expected to edit the database by hand.
 
 # An empty database
 
-Every program works on an empty database ([0047](/decisions/0047-every-program-works-on-an-empty-database.md)).
+Every program works on an empty database ([0049](/decisions/0049-store-is-the-global-database.md)).
 
 - The CMS and housekeeping create it when it does not exist, and use the default values.
 - The installer is a merge of every schema and every seed. It lets the administrator change the default values, the first
   time Reborn is opened and only once.
 - The installer still works on a database another program created, which is how such a hotel gets its administrator.
-- The CMS and housekeeping can have their own set of schema and seed. Today `packages/store` applies every schema to every
-  database.
+- `packages/store` is the global access point to the one database, and holds every schema, so a program opens tables it
+  never uses ([0049](/decisions/0049-store-is-the-global-database.md)). A program can have its own seed, which the installer
+  merges.
 
 # Scheduled tasks
 
@@ -48,6 +49,7 @@ tasks in its `New`, written as `scheduler.Every(1, scheduler.Hour, task)`.
 | Task | Program | Every |
 | --- | --- | --- |
 | Delete expired reset links ([0044](/decisions/0044-expired-reset-links-deleted.md)) | CMS | 1 minute |
+| Delete expired sessions ([0050](/decisions/0050-expired-sessions-deleted.md)) | CMS, housekeeping | 1 minute |
 
 # Running alone
 

@@ -21,7 +21,7 @@ Every habbo has a home page that guests can read and the owner can decorate with
 | `store.php?key=*` | `GET /home-store`, `GET /home-store/categories/{id}`, `POST /home-store/items/{id}/purchase`, `GET /me/inventory` | — | ⚡`homes/home-store-dialog`, ⚡`homes/note-editor` (BBCode, `homes.noteMaxLength`) |
 | `tags_ajax.php` (profile) | `POST /me/tags`, `POST /me/tags/{tag}/delete` | — | ⚡ tag panel in the profile widget (`homes.maxTags`) |
 | housekeeping `add_homes_stuff.php` | `/housekeeping/home-store` (GET/POST), `POST /housekeeping/home-store/{id}` | — | `housekeeping.homeStore`; image paths from re-hosted assets, no URL fetch, no CSS writes |
-| `install.php:469-772` | seed of the program that uses it, merged by the installer ([0047](/decisions/0047-every-program-works-on-an-empty-database.md)) | — | Holo's categories and 303 items as `packages/installer/internal/seed` |
+| `install.php:469-772` | seed of the program that uses it, merged by the installer ([0049](/decisions/0049-store-is-the-global-database.md)) | — | Holo's categories and 303 items as `packages/installer/internal/seed` |
 
 - Club skins (hc_machine, hc_pillow) need the habbo's active club subscription; the staff category and the staff
   skin need `homes.staffItems`.

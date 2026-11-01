@@ -2,6 +2,11 @@
 
 ## 2026-11-01
 
+- **Create** [p2-01](/tasks/p2-01-delete-expired-sessions.md).
+- **Decision** [0050](/decisions/0050-expired-sessions-deleted.md): expired sessions are deleted on a schedule.
+- **Decision** [0049](/decisions/0049-store-is-the-global-database.md) supersedes
+  [0047](/decisions/0047-every-program-works-on-an-empty-database.md): `packages/store` is the global database, with every
+  schema.
 - **Update** P1 is done again and P2 is active, with HK-A to run beside it on a feature branch; both get their tasks when
   their work starts.
 - **Done** [p1-20](/tasks/p1-20-delete-expired-resets.md): a task on `packages/scheduler` deletes reset links once they
