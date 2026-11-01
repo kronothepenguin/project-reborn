@@ -34,6 +34,11 @@ func Every(n int, unit time.Duration, task Task) (stop func()) {
 			case <-ctx.Done():
 				return
 			case <-ticker.C:
+				// select picks at random when the stop and a tick are both ready,
+				// as they are after a run that outlasted the stop.
+				if ctx.Err() != nil {
+					return
+				}
 				run(ctx, task)
 			}
 		}

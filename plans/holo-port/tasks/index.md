@@ -75,6 +75,7 @@ starts.
 - [hk-a-07 Build the settings editor](/tasks/hk-a-07-settings-editor.md) — GET /settings and POST /settings/{section} give a form over each group of declared settings, saved with settings.Set, all or nothing. **done**
 - [hk-a-08 Build access groups](/tasks/hk-a-08-access-groups.md) — Create and edit access groups, tick their attributes, add and remove members with a display habbo, and refuse to leave nobody who can manage them. **done**
 - [hk-a-09 Verify the HK-A exit criteria](/tasks/hk-a-09-exit-check.md) — Run housekeeping on the production binaries in a real browser, list the differences from Holo, and run every gate. **done**
+- [hk-a-10 Keep a stopped task from running](/tasks/hk-a-10-stopped-task.md) — After stop, a tick that waited out a slow run started another run, because select picks at random.
 
 ## Later phases
 

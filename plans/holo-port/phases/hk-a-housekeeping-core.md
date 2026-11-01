@@ -54,6 +54,7 @@ read the staff log; every change is logged.
 - [hk-a-07 Build the settings editor](/tasks/hk-a-07-settings-editor.md) — done
 - [hk-a-08 Build access groups](/tasks/hk-a-08-access-groups.md) — done
 - [hk-a-09 Verify the HK-A exit criteria](/tasks/hk-a-09-exit-check.md) — done
+- [hk-a-10 Keep a stopped task from running](/tasks/hk-a-10-stopped-task.md) — done
 
 # Open questions
 

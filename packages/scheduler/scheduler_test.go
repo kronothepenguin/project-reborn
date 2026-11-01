@@ -154,6 +154,29 @@ func TestStopEndsTheTask(t *testing.T) {
 	})
 }
 
+// select picks at random between a stop and a tick that are both ready, so one
+// pass would miss the bug half of the time.
+func TestAPendingTickDoesNotOutliveStop(t *testing.T) {
+	for range 64 {
+		synctest.Test(t, func(t *testing.T) {
+			var runs atomic.Int32
+			stop := Every(1, Minute, func(context.Context) error {
+				runs.Add(1)
+				time.Sleep(90 * time.Second)
+				return nil
+			})
+
+			time.Sleep(Minute + time.Second)
+			stop()
+			time.Sleep(Hour)
+			synctest.Wait()
+			if n := runs.Load(); n != 1 {
+				t.Errorf("%d runs, want only the one under way at the stop", n)
+			}
+		})
+	}
+}
+
 func TestStopCancelsARunInProgress(t *testing.T) {
 	synctest.Test(t, func(t *testing.T) {
 		var cancelled atomic.Bool

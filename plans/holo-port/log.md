@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [hk-a-10](/tasks/hk-a-10-stopped-task.md): a stopped task never starts another run, which also ends the flaky
+  `TestATaskNeverOverlapsItself`.
+- **Start** [hk-a-10](/tasks/hk-a-10-stopped-task.md).
 - **Update** [hk-a-09](/tasks/hk-a-09-exit-check.md): the housekeeping tests create accounts through `auth.CreateAccount`,
   because the CMS of P2 reads what a hand-written habbo lacks.
 - **Update** [hk-a-09](/tasks/hk-a-09-exit-check.md): the list of settings forms has its own name, because `catalogue`
