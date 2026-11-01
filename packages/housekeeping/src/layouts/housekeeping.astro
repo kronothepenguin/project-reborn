@@ -1,9 +1,8 @@
 ---
-import Box from "../components/box.astro";
-import MenuLink from "../components/menu-link.astro";
+import UserMenu from "../components/user-menu.astro";
 import Document from "./document.astro";
 
-type Tab = "dashboard";
+type Tab = "dashboard" | "users";
 
 interface Props {
   title: string;
@@ -14,6 +13,7 @@ const { title, tab } = Astro.props;
 
 const tabs: { id: Tab; label: string; href: string }[] = [
   { id: "dashboard", label: "Dashboard", href: "/housekeeping/" },
+  { id: "users", label: "Users & Moderation", href: "/housekeeping/logs" },
 ];
 ---
 
@@ -47,11 +47,7 @@ const tabs: { id: Tab; label: string; href: string }[] = [
 
     <div class="mt-5 flex flex-col gap-3 sm:flex-row">
       <aside class="flex w-46 shrink-0 flex-col gap-3">
-        <Box title="Housekeeping">
-          <ul>
-            <MenuLink href="/housekeeping/">Dashboard</MenuLink>
-          </ul>
-        </Box>
+        <UserMenu />
       </aside>
       <main class="min-w-0 flex-1">
         <slot />

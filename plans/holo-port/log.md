@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [hk-a-05](/tasks/hk-a-05-staff-log.md): one helper writes the `staff_logs` row of a mutation, and `GET /logs`
+  reads them with `housekeeping.logs`, in pages.
+- **Start** [hk-a-05](/tasks/hk-a-05-staff-log.md).
 - **Done** [hk-a-04](/tasks/hk-a-04-layout.md): the layout of `docs/hk.png` is built as its own design system, with the
   `Table` primitive, the previous login and Holo's Access Denied page.
 - **Start** [hk-a-04](/tasks/hk-a-04-layout.md).

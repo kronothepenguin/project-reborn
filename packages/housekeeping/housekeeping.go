@@ -65,8 +65,13 @@ func New(db *sql.DB, opts ...Option) *Housekeeping {
 func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	r := router.New(router.Deps{Resolver: h.resolve, DB: h.db, Queries: store.New(h.db)})
 	page := func(next http.Handler) http.Handler { return h.protect(r.Staff(next)) }
+	holding := func(attr auth.Attribute, next http.HandlerFunc) http.Handler {
+		return page(r.RequireAttribute(attr)(next))
+	}
 
 	mux.Handle("GET /housekeeping/{$}", page(http.HandlerFunc(r.HandleIndexView)))
+
+	mux.Handle("GET /housekeeping/logs", holding(auth.HousekeepingLogs, r.HandleLogsView))
 
 	mux.Handle("/housekeeping/", page(http.StripPrefix("/housekeeping", h.static)))
 }

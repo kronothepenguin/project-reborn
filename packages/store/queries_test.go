@@ -304,6 +304,55 @@ func TestFailedLoginsAreCountedInTheWindow(t *testing.T) {
 	}
 }
 
+func TestStaffLogsNameTheActorAndTheTarget(t *testing.T) {
+	db := openTestDB(t)
+	ctx := t.Context()
+	q := New(db)
+	actor, first := createUserWithHabbo(t, q, "actor@example.com", "First")
+	if _, err := q.CreateAvatar(ctx, CreateAvatarParams{
+		UserID: actor.ID, Name: "Second", Figure: "hd-180-1", Gender: "M",
+		CreatedAt: testNow.Add(time.Hour), UpdatedAt: testNow.Add(time.Hour),
+	}); err != nil {
+		t.Fatalf("CreateAvatar: %v", err)
+	}
+	target, targetHabbo := createUserWithHabbo(t, q, "target@example.com", "Target")
+
+	write := func(params CreateStaffLogParams) {
+		t.Helper()
+		params.Action, params.IP, params.CreatedAt = "settings.update", "10.0.0.1", testNow
+		if err := q.CreateStaffLog(ctx, params); err != nil {
+			t.Fatalf("CreateStaffLog: %v", err)
+		}
+	}
+	user := func(id int64) sql.NullInt64 { return sql.NullInt64{Int64: id, Valid: true} }
+	write(CreateStaffLogParams{UserID: user(actor.ID)})
+	write(CreateStaffLogParams{UserID: user(actor.ID), TargetUserID: user(target.ID)})
+	write(CreateStaffLogParams{UserID: user(actor.ID), TargetAvatarID: user(first.ID)})
+	write(CreateStaffLogParams{UserID: user(actor.ID), TargetUserID: user(target.ID), TargetAvatarID: user(targetHabbo.ID)})
+
+	count, err := q.CountStaffLogs(ctx)
+	if err != nil || count != 4 {
+		t.Fatalf("CountStaffLogs = %d, %v, want 4", count, err)
+	}
+	rows, err := q.ListStaffLogs(ctx, ListStaffLogsParams{RowLimit: 10})
+	if err != nil {
+		t.Fatalf("ListStaffLogs: %v", err)
+	}
+	var names [][2]string
+	for _, row := range rows {
+		names = append(names, [2]string{row.UserName, row.TargetName})
+	}
+	want := [][2]string{{"First", "Target"}, {"First", "First"}, {"First", "Target"}, {"First", ""}}
+	if !slices.Equal(names, want) {
+		t.Errorf("names newest first = %v, want %v", names, want)
+	}
+
+	page, err := q.ListStaffLogs(ctx, ListStaffLogsParams{RowLimit: 1, RowOffset: 3})
+	if err != nil || len(page) != 1 || page[0].ID != rows[3].ID {
+		t.Errorf("ListStaffLogs with an offset = %+v, %v, want the oldest row", page, err)
+	}
+}
+
 func TestPreviousLoginIsTheOneBeforeTheNewest(t *testing.T) {
 	db := openTestDB(t)
 	ctx := t.Context()
