@@ -91,6 +91,176 @@ func (q *Queries) CreateAccessGroup(ctx context.Context, arg CreateAccessGroupPa
 	return i, err
 }
 
+const getAccessGroup = `-- name: GetAccessGroup :one
+SELECT id, name, description, staff_listed, created_at, updated_at FROM access_groups WHERE id = ?1
+`
+
+func (q *Queries) GetAccessGroup(ctx context.Context, id int64) (AccessGroup, error) {
+	row := q.db.QueryRowContext(ctx, getAccessGroup, id)
+	var i AccessGroup
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.StaffListed,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getAccessGroupMember = `-- name: GetAccessGroupMember :one
+SELECT access_group_id, user_id, display_avatar_id, granted_at, granted_by_user_id FROM access_group_members
+WHERE access_group_id = ?1 AND user_id = ?2
+`
+
+type GetAccessGroupMemberParams struct {
+	AccessGroupID int64
+	UserID        int64
+}
+
+func (q *Queries) GetAccessGroupMember(ctx context.Context, arg GetAccessGroupMemberParams) (AccessGroupMember, error) {
+	row := q.db.QueryRowContext(ctx, getAccessGroupMember, arg.AccessGroupID, arg.UserID)
+	var i AccessGroupMember
+	err := row.Scan(
+		&i.AccessGroupID,
+		&i.UserID,
+		&i.DisplayAvatarID,
+		&i.GrantedAt,
+		&i.GrantedByUserID,
+	)
+	return i, err
+}
+
+const listAccessGroupAttributes = `-- name: ListAccessGroupAttributes :many
+SELECT attribute FROM access_group_attributes
+WHERE access_group_id = ?1
+ORDER BY attribute
+`
+
+func (q *Queries) ListAccessGroupAttributes(ctx context.Context, accessGroupID int64) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, listAccessGroupAttributes, accessGroupID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var attribute string
+		if err := rows.Scan(&attribute); err != nil {
+			return nil, err
+		}
+		items = append(items, attribute)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listAccessGroupMembers = `-- name: ListAccessGroupMembers :many
+SELECT
+    access_group_members.user_id,
+    access_group_members.display_avatar_id,
+    CAST(COALESCE((
+        SELECT avatars.name FROM avatars
+        WHERE avatars.id = access_group_members.display_avatar_id
+    ), (
+        SELECT avatars.name FROM avatars
+        WHERE avatars.user_id = access_group_members.user_id
+        ORDER BY avatars.created_at, avatars.id
+        LIMIT 1
+    ), '') AS TEXT) AS name
+FROM access_group_members
+WHERE access_group_members.access_group_id = ?1
+ORDER BY name
+`
+
+type ListAccessGroupMembersRow struct {
+	UserID          int64
+	DisplayAvatarID sql.NullInt64
+	Name            string
+}
+
+// The name is that of the member's display habbo, or of their first habbo.
+func (q *Queries) ListAccessGroupMembers(ctx context.Context, accessGroupID int64) ([]ListAccessGroupMembersRow, error) {
+	rows, err := q.db.QueryContext(ctx, listAccessGroupMembers, accessGroupID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListAccessGroupMembersRow
+	for rows.Next() {
+		var i ListAccessGroupMembersRow
+		if err := rows.Scan(&i.UserID, &i.DisplayAvatarID, &i.Name); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listAccessGroups = `-- name: ListAccessGroups :many
+SELECT
+    access_groups.id, access_groups.name, access_groups.description, access_groups.staff_listed, access_groups.created_at, access_groups.updated_at,
+    (
+        SELECT COUNT(*) FROM access_group_members
+        WHERE access_group_members.access_group_id = access_groups.id
+    ) AS member_count
+FROM access_groups
+ORDER BY access_groups.name
+`
+
+type ListAccessGroupsRow struct {
+	ID          int64
+	Name        string
+	Description string
+	StaffListed bool
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	MemberCount int64
+}
+
+func (q *Queries) ListAccessGroups(ctx context.Context) ([]ListAccessGroupsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listAccessGroups)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListAccessGroupsRow
+	for rows.Next() {
+		var i ListAccessGroupsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Description,
+			&i.StaffListed,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.MemberCount,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listAttributeHolderDetails = `-- name: ListAttributeHolderDetails :many
 SELECT
     users.id,
@@ -185,6 +355,56 @@ func (q *Queries) ListAttributeHolders(ctx context.Context, attribute string) ([
 	return items, nil
 }
 
+const listStaffMembers = `-- name: ListStaffMembers :many
+SELECT
+    access_group_members.user_id,
+    access_groups.name AS group_name,
+    CAST(COALESCE((
+        SELECT avatars.name FROM avatars
+        WHERE avatars.id = access_group_members.display_avatar_id
+    ), (
+        SELECT avatars.name FROM avatars
+        WHERE avatars.user_id = access_group_members.user_id
+        ORDER BY avatars.created_at, avatars.id
+        LIMIT 1
+    ), '') AS TEXT) AS name
+FROM access_group_members
+JOIN access_groups ON access_groups.id = access_group_members.access_group_id
+ORDER BY name, group_name
+LIMIT ?1
+`
+
+type ListStaffMembersRow struct {
+	UserID    int64
+	GroupName string
+	Name      string
+}
+
+// Holo's list of staff, one row per membership. The name is chosen as in
+// ListAccessGroupMembers.
+func (q *Queries) ListStaffMembers(ctx context.Context, rowLimit int64) ([]ListStaffMembersRow, error) {
+	rows, err := q.db.QueryContext(ctx, listStaffMembers, rowLimit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListStaffMembersRow
+	for rows.Next() {
+		var i ListStaffMembersRow
+		if err := rows.Scan(&i.UserID, &i.GroupName, &i.Name); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listUserAttributes = `-- name: ListUserAttributes :many
 SELECT DISTINCT access_group_attributes.attribute
 FROM access_group_attributes
@@ -243,5 +463,51 @@ type RemoveAccessGroupMemberParams struct {
 
 func (q *Queries) RemoveAccessGroupMember(ctx context.Context, arg RemoveAccessGroupMemberParams) error {
 	_, err := q.db.ExecContext(ctx, removeAccessGroupMember, arg.AccessGroupID, arg.UserID)
+	return err
+}
+
+const updateAccessGroup = `-- name: UpdateAccessGroup :exec
+UPDATE access_groups
+SET
+    name = ?1,
+    description = ?2,
+    staff_listed = ?3,
+    updated_at = ?4
+WHERE id = ?5
+`
+
+type UpdateAccessGroupParams struct {
+	Name        string
+	Description string
+	StaffListed bool
+	UpdatedAt   time.Time
+	ID          int64
+}
+
+func (q *Queries) UpdateAccessGroup(ctx context.Context, arg UpdateAccessGroupParams) error {
+	_, err := q.db.ExecContext(ctx, updateAccessGroup,
+		arg.Name,
+		arg.Description,
+		arg.StaffListed,
+		arg.UpdatedAt,
+		arg.ID,
+	)
+	return err
+}
+
+const updateAccessGroupMemberDisplay = `-- name: UpdateAccessGroupMemberDisplay :exec
+UPDATE access_group_members
+SET display_avatar_id = ?1
+WHERE access_group_id = ?2 AND user_id = ?3
+`
+
+type UpdateAccessGroupMemberDisplayParams struct {
+	DisplayAvatarID sql.NullInt64
+	AccessGroupID   int64
+	UserID          int64
+}
+
+func (q *Queries) UpdateAccessGroupMemberDisplay(ctx context.Context, arg UpdateAccessGroupMemberDisplayParams) error {
+	_, err := q.db.ExecContext(ctx, updateAccessGroupMemberDisplay, arg.DisplayAvatarID, arg.AccessGroupID, arg.UserID)
 	return err
 }

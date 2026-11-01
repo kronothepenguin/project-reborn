@@ -18,7 +18,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
               <label for="[[ .Key ]]"><strong>[[ .Label ]]</strong></label>
               <div class="text-neutral-500">[[ .Help ]]</div>
             </td>
-            <td class="w-3/5">
+            <td class="w-3/5 [&>input]:w-full">
               [[ if eq .Kind "toggle" ]]
               <Select id="[[ .Key ]]" name="[[ .Key ]]">
                 [[ if .On ]]
@@ -35,7 +35,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
               <Input id="[[ .Key ]]" name="[[ .Key ]]" type="password" autocomplete="new-password" variant="border" />
               <Checkbox name="[[ .Key ]].clear">Clear it</Checkbox>
               [[ else ]]
-              <Input id="[[ .Key ]]" name="[[ .Key ]]" value="[[ .Value ]]" variant="border" size="50" />
+              <Input id="[[ .Key ]]" name="[[ .Key ]]" value="[[ .Value ]]" variant="border" />
               [[ end ]]
             </td>
           </tr>

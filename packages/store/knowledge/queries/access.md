@@ -16,6 +16,34 @@ timestamp: 2026-10-27T21:44:59+00:00
 - Result: the created `AccessGroup` (`RETURNING *`); a conflict when the name exists, ignoring case
 - Tables: `access_groups`
 
+## GetAccessGroup
+
+- Cardinality: `:one`
+- Inputs: `id`
+- Result: the `AccessGroup`; not found for an unknown id
+- Tables: `access_groups`
+
+## ListAccessGroups
+
+- Cardinality: `:many`
+- Inputs: none
+- Result: `ListAccessGroupsRow`, every group and its `member_count`, sorted by name
+- Tables: `access_groups`, `access_group_members`
+
+## UpdateAccessGroup
+
+- Cardinality: `:exec`
+- Inputs: `name`, `description`, `staff_listed`, `updated_at`, `id`
+- Result: a conflict when another group has the name, ignoring case
+- Tables: `access_groups`
+
+## ListAccessGroupAttributes
+
+- Cardinality: `:many`
+- Inputs: `access_group_id`
+- Result: the group's attributes, sorted
+- Tables: `access_group_attributes`
+
 ## AddAccessGroupAttribute
 
 - Cardinality: `:exec`
@@ -42,6 +70,35 @@ timestamp: 2026-10-27T21:44:59+00:00
 - Cardinality: `:exec`
 - Inputs: `access_group_id`, `user_id`
 - Tables: `access_group_members`
+
+## GetAccessGroupMember
+
+- Cardinality: `:one`
+- Inputs: `access_group_id`, `user_id`
+- Result: the `AccessGroupMember`; not found when the user is not a member
+- Tables: `access_group_members`
+
+## UpdateAccessGroupMemberDisplay
+
+- Cardinality: `:exec`
+- Inputs: `display_avatar_id` (nullable), `access_group_id`, `user_id`
+- Tables: `access_group_members`
+
+## ListAccessGroupMembers
+
+- Cardinality: `:many`
+- Inputs: `access_group_id`
+- Result: `ListAccessGroupMembersRow` (`user_id`, `display_avatar_id`, `name`), sorted by name. The name is that of the
+  display habbo, or of the member's first habbo.
+- Tables: `access_group_members`, `avatars`
+
+## ListStaffMembers
+
+- Cardinality: `:many`
+- Inputs: `row_limit`
+- Result: `ListStaffMembersRow` (`user_id`, `group_name`, `name`), one row per membership, sorted by name and group. The
+  name is chosen as in [ListAccessGroupMembers](#listaccessgroupmembers).
+- Tables: `access_group_members`, `access_groups`, `avatars`
 
 ## ListUserAttributes
 

@@ -75,6 +75,12 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	mux.Handle("GET /housekeeping/settings", holding(auth.HousekeepingSettings, r.HandleSettingsView))
 	mux.Handle("POST /housekeeping/settings/{section}", holding(auth.HousekeepingSettings, r.HandleSettingsSave))
 
+	mux.Handle("GET /housekeeping/access-groups", holding(auth.HousekeepingAccessGroups, r.HandleAccessGroupsView))
+	mux.Handle("POST /housekeeping/access-groups", holding(auth.HousekeepingAccessGroups, r.HandleAccessGroupsCreate))
+	mux.Handle("GET /housekeeping/access-groups/{id}", holding(auth.HousekeepingAccessGroups, r.HandleAccessGroupView))
+	mux.Handle("POST /housekeeping/access-groups/{id}", holding(auth.HousekeepingAccessGroups, r.HandleAccessGroupSave))
+	mux.Handle("POST /housekeeping/users/{id}/access-groups", holding(auth.HousekeepingAccessGroups, r.HandleUsersAccessGroupsSave))
+
 	mux.Handle("GET /housekeeping/logs", holding(auth.HousekeepingLogs, r.HandleLogsView))
 
 	mux.Handle("/housekeeping/", page(http.StripPrefix("/housekeeping", h.static)))

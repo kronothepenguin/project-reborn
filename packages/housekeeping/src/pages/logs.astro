@@ -21,9 +21,9 @@ import Housekeeping from "../layouts/housekeeping.astro";
         [[ range .Logs ]]
         <tr>
           <td>[[ .Action ]]</td>
-          <td>[[ .User ]]</td>
-          <td>[[ .Target ]]</td>
-          <td class="break-all">[[ .Detail ]]</td>
+          <td class="whitespace-nowrap">[[ .User ]]</td>
+          <td class="whitespace-nowrap">[[ .Target ]]</td>
+          <td class="wrap-anywhere">[[ .Detail ]]</td>
           <td>[[ .IP ]]</td>
           <td class="whitespace-nowrap">[[ .Date ]]</td>
         </tr>

@@ -41,6 +41,11 @@ serves the built frontend from the embedded `dist/`.
   reads only the fields of its section, and saves all of them or none: it checks
   them together with `settings.Validate`, then writes each with `settings.Set`, so
   a value back at its default deletes the row.
+- `/access-groups` manages groups, their attributes and their members. Every change
+  runs in one transaction with its log row and `keepManager`, which refuses a change
+  that leaves nobody holding both `housekeeping.access` and
+  `housekeeping.accessGroups`. A refusal is logged after the rollback, because the
+  pool has one connection.
 - Housekeeping is the single writer of settings. A CMS running alone sees a change
   at its next start, and on one shared mux at once, because the settings are shared.
 

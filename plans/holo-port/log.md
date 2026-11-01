@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [hk-a-08](/tasks/hk-a-08-access-groups.md): staff with `housekeeping.accessGroups` manage groups, attributes
+  and members with display habbos, and a change that would leave nobody able to manage them is refused and logged.
+- **Start** [hk-a-08](/tasks/hk-a-08-access-groups.md).
 - **Done** [hk-a-07](/tasks/hk-a-07-settings-editor.md): staff with `housekeeping.settings` edit every declared setting
   in forms with Holo's texts, all or nothing, and a value back at its default deletes the row.
 - **Start** [hk-a-07](/tasks/hk-a-07-settings-editor.md).

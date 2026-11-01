@@ -33,6 +33,12 @@ many actions).
 |--------|--------|--------|
 | `settings.update` | the keys that changed, never their values | none |
 | `note.update` | none | none |
+| `accessGroups.create` | the group | none |
+| `accessGroups.update` | the group, and the attributes added and removed | none |
+| `accessGroups.addMember` | the group | the user and the display habbo |
+| `accessGroups.setDisplayHabbo` | the group | the user and the display habbo |
+| `accessGroups.removeMember` | the group | the user |
+| `accessGroups.refused` | what was refused, as Holo logged the refusals of its rank tool | the user, when there is one |
 
 # Relations
 
