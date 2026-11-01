@@ -436,10 +436,7 @@ func TestTheDisplayHabboMustBeTheirOwn(t *testing.T) {
 func TestChangingTheDisplayHabbo(t *testing.T) {
 	db, mux := newSite(t)
 	adminID, group, cookie := manager(t, db, "Admin")
-	second, err := store.New(db).CreateAvatar(t.Context(), store.CreateAvatarParams{UserID: adminID, Name: "Staffname", Figure: "hd-180-1", Gender: "M", CreatedAt: testNow, UpdatedAt: testNow})
-	if err != nil {
-		t.Fatalf("CreateAvatar: %v", err)
-	}
+	second := secondHabbo(t, db, adminID, "Staffname")
 
 	form := url.Values{"group": {strconv.FormatInt(group, 10)}, "habbo": {strconv.FormatInt(second.ID, 10)}}
 	wantRedirect(t, serve(mux, "POST", memberURL(adminID), cookie, form), groupURL(group)+"?saved=1")
@@ -508,10 +505,7 @@ func TestEveryMutationWritesOneRow(t *testing.T) {
 	grant(t, db, adminID, auth.HousekeepingSettings)
 	frankID := habbo(t, db, "frank@example.com", "Frank")
 	frank := habboOf(t, db, "Frank")
-	second, err := store.New(db).CreateAvatar(t.Context(), store.CreateAvatarParams{UserID: frankID, Name: "FrankStaff", Figure: "hd-180-1", Gender: "M", CreatedAt: testNow, UpdatedAt: testNow})
-	if err != nil {
-		t.Fatalf("CreateAvatar: %v", err)
-	}
+	second := secondHabbo(t, db, frankID, "FrankStaff")
 	groupID := strconv.FormatInt(group, 10)
 	member := func(habbo int64) url.Values {
 		return url.Values{"group": {groupID}, "habbo": {strconv.FormatInt(habbo, 10)}}

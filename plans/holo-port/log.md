@@ -2,6 +2,8 @@
 
 ## 2026-11-01
 
+- **Update** [hk-a-09](/tasks/hk-a-09-exit-check.md): the housekeeping tests create accounts through `auth.CreateAccount`,
+  because the CMS of P2 reads what a hand-written habbo lacks.
 - **Update** [hk-a-09](/tasks/hk-a-09-exit-check.md): the list of settings forms has its own name, because `catalogue`
   also means the attributes in that package, and `tools/create` names the exported type in the README it writes.
 - **Done** [hk-a-09](/tasks/hk-a-09-exit-check.md): every exit criterion of HK-A holds on the production binaries: 116

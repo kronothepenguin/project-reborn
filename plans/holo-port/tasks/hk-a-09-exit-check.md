@@ -74,5 +74,8 @@ Results (2026-11-01):
 - Vite emits its own paths, such as `/@vite/client`, at the root of the dev server whatever the base, and `Mount` leaves `/`
   alone, so every page of the dev runner lost them. The dev runner proxies `/` to astro; `Mount` is unchanged, and the
   production runner has no such route.
+- `main` moved while this ran, as P2 closed. `go test` on `hk-a` merged with it found what a merge cannot: the fixture of
+  `TestItSharesAMuxWithTheCMS` wrote a habbo by hand, without the wallet P2's `/me` reads, so `GET /me` answered 500. No
+  real account lacks one. The fixture now goes through `auth.CreateAccount`, as a registration does.
 - `go work sync` moves `packages/config` to a direct requirement once the runners import it, so `make create`'s tidy had left
   `go.mod` files that the first `make install` rewrote. They are committed as it leaves them.

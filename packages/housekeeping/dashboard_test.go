@@ -96,17 +96,13 @@ func TestTheDashboardListsTheHoldersOfAccessGroups(t *testing.T) {
 func TestAHolderShowsTheDisplayHabbo(t *testing.T) {
 	db, mux := newSite(t)
 	userID := habbo(t, db, "admin@example.com", "First")
-	q := store.New(db)
-	second, err := q.CreateAvatar(t.Context(), store.CreateAvatarParams{UserID: userID, Name: "Staffname", Figure: "hd-180-1", Gender: "M", CreatedAt: testNow, UpdatedAt: testNow})
-	if err != nil {
-		t.Fatalf("CreateAvatar: %v", err)
-	}
+	second := secondHabbo(t, db, userID, "Staffname")
 	group := grant(t, db, userID, auth.HousekeepingAccess, auth.HousekeepingAccessGroups)
 	cookie := login(t, db, "First")
 
 	wantPage(t, serve(mux, "GET", "/housekeeping/", cookie, nil), http.StatusOK, "Name:First")
 
-	_, err = db.ExecContext(t.Context(), `UPDATE access_group_members SET display_avatar_id = ? WHERE access_group_id = ?`, second.ID, group)
+	_, err := db.ExecContext(t.Context(), `UPDATE access_group_members SET display_avatar_id = ? WHERE access_group_id = ?`, second.ID, group)
 	if err != nil {
 		t.Fatalf("set the display habbo: %v", err)
 	}

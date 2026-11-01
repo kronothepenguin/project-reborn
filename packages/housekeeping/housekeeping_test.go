@@ -92,28 +92,32 @@ func newSite(t *testing.T) (*sql.DB, *http.ServeMux) {
 	return db, mux
 }
 
+// habbo creates an account through auth.CreateAccount, as a registration does, so
+// that it holds everything the CMS reads, such as its wallet.
 func habbo(t *testing.T, db *sql.DB, email, name string) int64 {
 	t.Helper()
-	q := store.New(db)
-	user, err := q.CreateUser(t.Context(), store.CreateUserParams{
-		Email:     email,
-		BornOn:    time.Date(1990, time.May, 1, 0, 0, 0, 0, time.UTC),
-		CreatedIP: "127.0.0.1",
-		CreatedAt: testNow,
-		UpdatedAt: testNow,
+	userID, _, err := auth.CreateAccount(t.Context(), store.New(db), auth.Account{
+		Email:        email,
+		BornOn:       time.Date(1990, time.May, 1, 0, 0, 0, 0, time.UTC),
+		IP:           "127.0.0.1",
+		PasswordHash: auth.HashPassword("secret123"),
+		Habbo:        auth.Habbo{Name: name, Figure: "hd-180-1", Gender: "M"},
 	})
 	if err != nil {
-		t.Fatalf("CreateUser: %v", err)
+		t.Fatalf("CreateAccount %s: %v", name, err)
 	}
-	err = q.UpsertCredential(t.Context(), store.UpsertCredentialParams{UserID: user.ID, PasswordHash: auth.HashPassword("secret123"), UpdatedAt: testNow})
+	return userID
+}
+
+// secondHabbo gives userID another habbo, newer than the first.
+func secondHabbo(t *testing.T, db *sql.DB, userID int64, name string) store.Avatar {
+	t.Helper()
+	later := time.Now().UTC().Add(time.Hour)
+	avatar, err := store.New(db).CreateAvatar(t.Context(), store.CreateAvatarParams{UserID: userID, Name: name, Figure: "hd-180-1", Gender: "M", CreatedAt: later, UpdatedAt: later})
 	if err != nil {
-		t.Fatalf("UpsertCredential: %v", err)
+		t.Fatalf("CreateAvatar %s: %v", name, err)
 	}
-	_, err = q.CreateAvatar(t.Context(), store.CreateAvatarParams{UserID: user.ID, Name: name, Figure: "hd-180-1", Gender: "M", CreatedAt: testNow, UpdatedAt: testNow})
-	if err != nil {
-		t.Fatalf("CreateAvatar: %v", err)
-	}
-	return user.ID
+	return avatar
 }
 
 var groupCount atomic.Int64
