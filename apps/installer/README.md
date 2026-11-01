@@ -37,7 +37,7 @@ go build -o ./apps/installer/tmp/installer ./apps/installer/cmd/installer
 - Both runners wrap the mux in `http.NewCrossOriginProtection` and exit with
   the error when the server cannot start.
 - The installer writes `config.json` in the working directory; see
-  `packages/installer/AGENTS.md`.
+  `packages/installer/README.md`.
 
 ## Dev-mode notes
 

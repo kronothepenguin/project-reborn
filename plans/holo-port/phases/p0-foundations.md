@@ -61,5 +61,5 @@ The CMS then starts on top of it with sessions, attributes, live settings and cr
 - [p0-17 Package-level settings and auth](/tasks/p0-17-package-level-settings-and-auth.md) — done
 - [p0-18 Read the CMS address from config.json](/tasks/p0-18-cms-host.md) — done
 - [p0-19 Fix the tools/create templates](/tasks/p0-19-create-templates.md) — done
-- [p0-20 Replace the project AGENTS.md files with READMEs](/tasks/p0-20-project-readmes.md) — todo
+- [p0-20 Replace the project AGENTS.md files with READMEs](/tasks/p0-20-project-readmes.md) — done
 - [p0-21 Add make install to every project](/tasks/p0-21-make-install.md) — todo

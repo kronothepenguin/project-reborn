@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [p0-20](/tasks/p0-20-project-readmes.md): project folders document themselves in `README.md`, in the
+  repository and in `tools/create`, and one `AGENTS.md` stays at the root.
+- **Start** [p0-20](/tasks/p0-20-project-readmes.md).
 - **Done** [p0-19](/tasks/p0-19-create-templates.md): every `tools/create` template ends with a newline, and a test
   checks that a generated project is formatted.
 - **Start** [p0-19](/tasks/p0-19-create-templates.md).
