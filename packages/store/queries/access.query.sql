@@ -33,6 +33,34 @@ JOIN access_group_members ON access_group_members.access_group_id = access_group
 WHERE access_group_members.user_id = sqlc.arg(user_id)
 ORDER BY access_group_attributes.attribute;
 
+-- The name is that of the habbo shown for the user on the staff page, or of their
+-- first habbo when no group names one.
+-- name: ListAttributeHolderDetails :many
+SELECT
+    users.id,
+    users.email,
+    CAST(COALESCE((
+        SELECT avatars.name FROM access_group_members
+        JOIN avatars ON avatars.id = access_group_members.display_avatar_id
+        WHERE access_group_members.user_id = users.id
+        ORDER BY access_group_members.access_group_id
+        LIMIT 1
+    ), (
+        SELECT avatars.name FROM avatars
+        WHERE avatars.user_id = users.id
+        ORDER BY avatars.created_at, avatars.id
+        LIMIT 1
+    ), '') AS TEXT) AS name
+FROM users
+WHERE users.id IN (
+    SELECT access_group_members.user_id
+    FROM access_group_members
+    JOIN access_group_attributes ON access_group_attributes.access_group_id = access_group_members.access_group_id
+    WHERE access_group_attributes.attribute = sqlc.arg(attribute)
+)
+ORDER BY name
+LIMIT sqlc.arg(row_limit);
+
 -- name: ListAttributeHolders :many
 SELECT DISTINCT access_group_members.user_id
 FROM access_group_members

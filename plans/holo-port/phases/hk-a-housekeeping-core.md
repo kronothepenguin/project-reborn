@@ -50,7 +50,7 @@ read the staff log; every change is logged.
 - [hk-a-03 Scaffold housekeeping and guard its routes](/tasks/hk-a-03-scaffold-and-access.md) — done
 - [hk-a-04 Build the housekeeping layout](/tasks/hk-a-04-layout.md) — done
 - [hk-a-05 Write the staff log helper and page](/tasks/hk-a-05-staff-log.md) — done
-- [hk-a-06 Build the dashboard and the shared note](/tasks/hk-a-06-dashboard.md) — todo
+- [hk-a-06 Build the dashboard and the shared note](/tasks/hk-a-06-dashboard.md) — done
 - [hk-a-07 Build the settings editor](/tasks/hk-a-07-settings-editor.md) — todo
 - [hk-a-08 Build access groups](/tasks/hk-a-08-access-groups.md) — todo
 - [hk-a-09 Verify the HK-A exit criteria](/tasks/hk-a-09-exit-check.md) — todo

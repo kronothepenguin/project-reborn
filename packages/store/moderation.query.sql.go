@@ -11,6 +11,21 @@ import (
 	"time"
 )
 
+const countActiveBans = `-- name: CountActiveBans :one
+SELECT COUNT(*) FROM bans
+WHERE created_at <= ?1
+  AND lifted_at IS NULL
+  AND (expires_at IS NULL OR expires_at > ?1)
+`
+
+// created_at comes first so sqlc types now as a non-null parameter.
+func (q *Queries) CountActiveBans(ctx context.Context, now time.Time) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countActiveBans, now)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const getActiveBan = `-- name: GetActiveBan :one
 SELECT id, user_id, ip, reason, issued_by_user_id, created_at, expires_at, lifted_at, lifted_by_user_id FROM bans
 WHERE created_at <= ?1

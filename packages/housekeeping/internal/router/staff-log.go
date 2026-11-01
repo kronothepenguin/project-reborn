@@ -9,6 +9,11 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
+// The actions of staff_logs, listed in the store's staff log entity.
+const (
+	actionNoteUpdate = "note.update"
+)
+
 // staffLog is what a mutation records about itself; the actor, the address and
 // the time come from the request. A target of 0 means none.
 type staffLog struct {

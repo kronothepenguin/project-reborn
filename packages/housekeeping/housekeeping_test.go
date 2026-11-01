@@ -31,6 +31,7 @@ var routes = []struct {
 	path   string
 }{
 	{"GET", "/housekeeping/"},
+	{"POST", "/housekeeping/note"},
 	{"GET", "/housekeeping/logs"},
 	{"GET", "/housekeeping/_astro/page.css"},
 	{"GET", "/housekeeping/index.html"},
@@ -164,6 +165,24 @@ func serve(mux *http.ServeMux, method, path string, cookie *http.Cookie, form ur
 	if cookie != nil {
 		r.AddCookie(cookie)
 	}
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, r)
+	return rec
+}
+
+// postFrom builds a form post a browser sends from a page on origin.
+func postFrom(origin, path string, cookie *http.Cookie, form url.Values) *http.Request {
+	r := httptest.NewRequest("POST", path, strings.NewReader(form.Encode()))
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	r.Header.Set("Origin", origin)
+	r.Header.Set("Sec-Fetch-Site", "cross-site")
+	if cookie != nil {
+		r.AddCookie(cookie)
+	}
+	return r
+}
+
+func record(mux *http.ServeMux, r *http.Request) *httptest.ResponseRecorder {
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, r)
 	return rec
@@ -320,12 +339,7 @@ func TestAloneItLeavesTheRootAlone(t *testing.T) {
 func TestCrossOriginPostsAreRefused(t *testing.T) {
 	db, mux := newSite(t)
 	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess)
-	r := httptest.NewRequest("POST", "/housekeeping/", nil)
-	r.Header.Set("Sec-Fetch-Site", "cross-site")
-	r.AddCookie(cookie)
-	rec := httptest.NewRecorder()
-	mux.ServeHTTP(rec, r)
-	wantPage(t, rec, http.StatusForbidden)
+	wantPage(t, record(mux, postFrom("https://evil.example.com", "/housekeeping/", cookie, nil)), http.StatusForbidden)
 }
 
 func TestItWorksOnAnEmptyDatabase(t *testing.T) {

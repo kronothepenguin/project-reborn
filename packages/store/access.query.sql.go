@@ -91,6 +91,69 @@ func (q *Queries) CreateAccessGroup(ctx context.Context, arg CreateAccessGroupPa
 	return i, err
 }
 
+const listAttributeHolderDetails = `-- name: ListAttributeHolderDetails :many
+SELECT
+    users.id,
+    users.email,
+    CAST(COALESCE((
+        SELECT avatars.name FROM access_group_members
+        JOIN avatars ON avatars.id = access_group_members.display_avatar_id
+        WHERE access_group_members.user_id = users.id
+        ORDER BY access_group_members.access_group_id
+        LIMIT 1
+    ), (
+        SELECT avatars.name FROM avatars
+        WHERE avatars.user_id = users.id
+        ORDER BY avatars.created_at, avatars.id
+        LIMIT 1
+    ), '') AS TEXT) AS name
+FROM users
+WHERE users.id IN (
+    SELECT access_group_members.user_id
+    FROM access_group_members
+    JOIN access_group_attributes ON access_group_attributes.access_group_id = access_group_members.access_group_id
+    WHERE access_group_attributes.attribute = ?1
+)
+ORDER BY name
+LIMIT ?2
+`
+
+type ListAttributeHolderDetailsParams struct {
+	Attribute string
+	RowLimit  int64
+}
+
+type ListAttributeHolderDetailsRow struct {
+	ID    int64
+	Email string
+	Name  string
+}
+
+// The name is that of the habbo shown for the user on the staff page, or of their
+// first habbo when no group names one.
+func (q *Queries) ListAttributeHolderDetails(ctx context.Context, arg ListAttributeHolderDetailsParams) ([]ListAttributeHolderDetailsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listAttributeHolderDetails, arg.Attribute, arg.RowLimit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListAttributeHolderDetailsRow
+	for rows.Next() {
+		var i ListAttributeHolderDetailsRow
+		if err := rows.Scan(&i.ID, &i.Email, &i.Name); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listAttributeHolders = `-- name: ListAttributeHolders :many
 SELECT DISTINCT access_group_members.user_id
 FROM access_group_members

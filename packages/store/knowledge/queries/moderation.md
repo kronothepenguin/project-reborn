@@ -1,13 +1,20 @@
 ---
 type: SQL Query
 title: moderation.query.sql
-description: Moderation operations, currently the lookup of the active ban on a user or an IP.
+description: Moderation operations, currently the lookup of the active ban on a user or an IP and the count of active bans.
 resource: packages/store/queries/moderation.query.sql
 tags: [store, query, moderation]
 timestamp: 2026-10-27T21:44:59+00:00
 ---
 
 # Operations
+
+## CountActiveBans
+
+- Cardinality: `:one`
+- Inputs: `now`
+- Result: the number of active bans, as [GetActiveBan](#getactiveban) defines them
+- Tables: `bans`
 
 ## GetActiveBan
 

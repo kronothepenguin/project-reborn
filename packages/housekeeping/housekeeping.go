@@ -70,6 +70,7 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	}
 
 	mux.Handle("GET /housekeeping/{$}", page(http.HandlerFunc(r.HandleIndexView)))
+	mux.Handle("POST /housekeeping/note", page(http.HandlerFunc(r.HandleNoteSave)))
 
 	mux.Handle("GET /housekeeping/logs", holding(auth.HousekeepingLogs, r.HandleLogsView))
 

@@ -50,6 +50,14 @@ timestamp: 2026-10-27T21:44:59+00:00
 - Result: the distinct attributes of all the user's groups, sorted
 - Tables: `access_group_attributes`, `access_group_members`
 
+## ListAttributeHolderDetails
+
+- Cardinality: `:many`
+- Inputs: `attribute`, `row_limit`
+- Result: `ListAttributeHolderDetailsRow` (`id`, `email`, `name`) of the users holding the attribute through any group,
+  sorted by name. The name is that of a display habbo, or of the user's first habbo when no group names one.
+- Tables: `users`, `avatars`, `access_group_members`, `access_group_attributes`
+
 ## ListAttributeHolders
 
 - Cardinality: `:many`
