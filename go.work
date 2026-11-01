@@ -8,6 +8,7 @@ use (
 	./packages/cms
 	./packages/config
 	./packages/installer
+	./packages/scheduler
 	./packages/store
 	./packages/virtual
 	./tools/create

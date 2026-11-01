@@ -30,6 +30,7 @@ project-reborn/
 │   ├── client/                    # JavaScript client (@project-reborn/client-r26)
 │   ├── director/                  # director runtime (@project-reborn/director)
 │   ├── store/                     # persistence infrastructure: SQLite + sqlc-generated DB layer (Go)
+│   ├── scheduler/                 # runs timed tasks inside a process (Go)
 │   ├── virtual/                   # domain types (Go)
 │   └── shared/                    # ansi, dotenv, httpx, tmpl utilities (Go)
 ├── apps/                          # thin executables (process, port, entrypoint)

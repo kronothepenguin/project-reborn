@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [p0-23](/tasks/p0-23-scheduler.md): `packages/scheduler` runs tasks written as `scheduler.Every(1,
+  scheduler.Hour, task)`, with one scheduler per process.
+- **Start** [p0-23](/tasks/p0-23-scheduler.md).
 - **Done** [p0-22](/tasks/p0-22-keep-dist-template.md): the placeholder template is back in `tools/create` and tracked
   in git, so a new app has its `dist/index.html` on every machine.
 - **Start** [p0-22](/tasks/p0-22-keep-dist-template.md).

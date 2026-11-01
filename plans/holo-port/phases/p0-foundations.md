@@ -64,5 +64,5 @@ The CMS then starts on top of it with sessions, attributes, live settings and cr
 - [p0-20 Replace the project AGENTS.md files with READMEs](/tasks/p0-20-project-readmes.md) — done
 - [p0-21 Add make install to every project](/tasks/p0-21-make-install.md) — done
 - [p0-22 Keep the dist placeholder template in tools/create](/tasks/p0-22-keep-dist-template.md) — done
-- [p0-23 Build packages/scheduler](/tasks/p0-23-scheduler.md) — todo
+- [p0-23 Build packages/scheduler](/tasks/p0-23-scheduler.md) — done
 - [p0-24 Check that every program works on an empty database](/tasks/p0-24-empty-database.md) — todo
