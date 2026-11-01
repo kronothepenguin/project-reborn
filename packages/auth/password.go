@@ -94,9 +94,12 @@ func decodeHash(encoded string) (argonParams, []byte, []byte, error) {
 // ValidatePassword checks the length of a new password against
 // auth.passwordMinLength and auth.passwordMaxLength, counted in characters.
 func ValidatePassword(password string) error {
-	low, high := settings.GetInt("auth.passwordMinLength"), settings.GetInt("auth.passwordMaxLength")
-	if n := utf8.RuneCountInString(password); n < low || n > high {
-		return fmt.Errorf("%w: must be %d to %d characters", ErrPasswordLength, low, high)
+	n := utf8.RuneCountInString(password)
+	switch {
+	case n < settings.GetInt("auth.passwordMinLength"):
+		return ErrPasswordTooShort
+	case n > settings.GetInt("auth.passwordMaxLength"):
+		return ErrPasswordTooLong
 	}
 	return nil
 }

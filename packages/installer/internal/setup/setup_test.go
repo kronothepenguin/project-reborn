@@ -208,7 +208,7 @@ func TestCreateAdministratorValidates(t *testing.T) {
 		"malformed email":     {func(a *Administrator) { a.Email = "admin" }, auth.ErrEmail},
 		"email with a name":   {func(a *Administrator) { a.Email = "Admin <admin@example.com>" }, auth.ErrEmail},
 		"future birth date":   {func(a *Administrator) { a.BornOn = time.Now().AddDate(1, 0, 0) }, auth.ErrBornOn},
-		"birth date pre-1900": {func(a *Administrator) { a.BornOn = time.Date(1899, time.December, 31, 0, 0, 0, 0, time.UTC) }, auth.ErrBornOn},
+		"birth date pre-1920": {func(a *Administrator) { a.BornOn = time.Date(1919, time.December, 31, 0, 0, 0, 0, time.UTC) }, auth.ErrBornOn},
 		"short password":      {func(a *Administrator) { a.Password = "short" }, auth.ErrPasswordLength},
 	} {
 		admin := testAdministrator()

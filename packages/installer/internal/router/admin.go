@@ -73,7 +73,7 @@ func (r *Router) HandleAdminCreate(w http.ResponseWriter, req *http.Request) {
 	case errors.Is(err, auth.ErrEmail):
 		page.Error = "Enter a valid email address."
 	case errors.Is(err, auth.ErrBornOn):
-		page.Error = "The birth date must be a past date after 1900."
+		page.Error = "The birth date must be a past date from 1920 on."
 	case errors.Is(err, auth.ErrPasswordLength):
 		page.Error = "Passwords are " + page.PasswordHelp + "."
 	case store.IsConflict(err):

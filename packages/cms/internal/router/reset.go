@@ -34,7 +34,7 @@ func (r *Router) HandleReset(w http.ResponseWriter, req *http.Request) {
 	case err == nil:
 		astro.WriteTemplate(w, r.deps.Resolver, "reset/token.html", resetPage{hotelStatus: status, Done: true})
 	case errors.Is(err, auth.ErrPasswordLength):
-		r.invalid(w, "reset/token.html", resetPage{hotelStatus: status, Error: passwordLengthMessage()})
+		r.invalid(w, "reset/token.html", resetPage{hotelStatus: status, Error: passwordLengthMessage(err)})
 	case errors.Is(err, auth.ErrInvalidReset):
 		r.invalid(w, "reset/token.html", resetPage{hotelStatus: status, Invalid: true})
 	default:

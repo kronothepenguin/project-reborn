@@ -60,19 +60,19 @@ func TestNeedsRehash(t *testing.T) {
 
 func TestValidatePassword(t *testing.T) {
 	f := newFixture(t)
-	for password, valid := range map[string]bool{
-		"12345":                 false,
-		"123456":                true,
-		strings.Repeat("a", 25): true,
-		strings.Repeat("a", 26): false,
-		strings.Repeat("ñ", 25): true,
+	for password, want := range map[string]error{
+		"12345":                 ErrPasswordTooShort,
+		"123456":                nil,
+		strings.Repeat("a", 25): nil,
+		strings.Repeat("a", 26): ErrPasswordTooLong,
+		strings.Repeat("ñ", 25): nil,
 	} {
 		err := ValidatePassword(password)
-		if valid != (err == nil) {
-			t.Errorf("ValidatePassword(%d characters) = %v, want valid %t", len([]rune(password)), err, valid)
+		if !errors.Is(err, want) {
+			t.Errorf("ValidatePassword(%d characters) = %v, want %v", len([]rune(password)), err, want)
 		}
-		if err != nil && !errors.Is(err, ErrPasswordLength) {
-			t.Errorf("ValidatePassword() error = %v, want ErrPasswordLength", err)
+		if want != nil && !errors.Is(err, ErrPasswordLength) {
+			t.Errorf("ValidatePassword() error = %v, want it to match ErrPasswordLength", err)
 		}
 	}
 

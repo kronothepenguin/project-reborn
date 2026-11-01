@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net/mail"
 	"regexp"
 	"strings"
 	"time"
@@ -29,12 +28,15 @@ var (
 
 const (
 	maxHabboNameLength = 24
+	minEmailLength     = 6
 	maxEmailLength     = 254
 	maxFigureLength    = 255
+	firstBirthYear     = 1920
 )
 
 var (
-	habboName = regexp.MustCompile(`^[A-Za-z0-9\-=?!@:.,]+$`)
+	habboName   = regexp.MustCompile(`^[A-Za-z0-9\-=?!@:.,]+$`)
+	emailFormat = regexp.MustCompile(`^[A-Za-z0-9_.\-]+@([A-Za-z0-9]+(-+[A-Za-z0-9]+)*\.)+[A-Za-z]{2,7}$`)
 	// A part can leave its colour empty, as in ha-1001-.
 	figureFormat = regexp.MustCompile(`^[a-z]{2}-\d+(-\d*)*(\.[a-z]{2}-\d+(-\d*)*)*$`)
 )
@@ -55,19 +57,16 @@ func ValidateHabboName(name string) error {
 	return nil
 }
 
-// ValidateEmail accepts a bare address, without a display name.
+// ValidateEmail checks an address with Holo's rule.
 func ValidateEmail(email string) error {
-	if len(email) > maxEmailLength {
-		return ErrEmail
-	}
-	if address, err := mail.ParseAddress(email); err != nil || address.Address != email {
+	if len(email) < minEmailLength || len(email) > maxEmailLength || !emailFormat.MatchString(email) {
 		return ErrEmail
 	}
 	return nil
 }
 
 func ValidateBornOn(bornOn time.Time) error {
-	if bornOn.Year() < 1900 || bornOn.After(clock()) {
+	if bornOn.Year() < firstBirthYear || bornOn.After(clock()) {
 		return ErrBornOn
 	}
 	return nil

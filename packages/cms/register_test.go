@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strconv"
 	"strings"
 	"sync"
 	"testing"
@@ -131,20 +132,26 @@ func TestRegisterRejections(t *testing.T) {
 		want   string
 	}{
 		{"no name", func(f url.Values) { f.Del("name") }, "Please enter a username."},
-		{"blank name", func(f url.Values) { f.Set("name", "   ") }, "Please enter a username."},
+		{"spaces for a name", func(f url.Values) { f.Set("name", "   ") }, "Your username is invalid or contains invalid characters."},
+		{"untrimmed name", func(f url.Values) { f.Set("name", " Newbie") }, "Your username is invalid or contains invalid characters."},
 		{"long name", func(f url.Values) { f.Set("name", strings.Repeat("a", 25)) }, "The name you have chosen is too long."},
 		{"invalid name", func(f url.Values) { f.Set("name", "two words") }, "Your username is invalid or contains invalid characters."},
 		{"moderator name", func(f url.Values) { f.Set("name", "mod-Newbie") }, "This name is not allowed."},
 		{"passwords differ", func(f url.Values) { f.Set("passwordConfirm", "other1234") }, "The passwords do not match. Please try again."},
-		{"short password", func(f url.Values) { f.Set("password", "short"); f.Set("passwordConfirm", "short") }, "Your password must be 6 to 25 characters long."},
+		{"short password", func(f url.Values) { f.Set("password", "short"); f.Set("passwordConfirm", "short") }, "Your password is too short."},
+		{"long password", func(f url.Values) {
+			f.Set("password", strings.Repeat("a", 26))
+			f.Set("passwordConfirm", strings.Repeat("a", 26))
+		}, "Passwords may be no longer than 25 characters"},
 		{"no birth date", func(f url.Values) { f.Del("day"); f.Del("month"); f.Del("year") }, "Please supply a valid date of birth."},
 		{"impossible birth date", func(f url.Values) { f.Set("day", "31"); f.Set("month", "2") }, "Please supply a valid date of birth."},
 		{"month out of range", func(f url.Values) { f.Set("month", "13") }, "Please supply a valid date of birth."},
-		{"birth date before 1900", func(f url.Values) { f.Set("year", "1899") }, "Please supply a valid date of birth."},
+		{"birth date before 1920", func(f url.Values) { f.Set("year", "1919") }, "Please supply a valid date of birth."},
 		{"birth date in the future", func(f url.Values) { f.Set("year", "3000") }, "Please supply a valid date of birth."},
 		{"malformed email", func(f url.Values) { f.Set("email", "new"); f.Set("emailConfirm", "new") }, "Please supply a valid e-mail address."},
+		{"plus in the email", func(f url.Values) { f.Set("email", "a+b@example.com"); f.Set("emailConfirm", "a+b@example.com") }, "Please supply a valid e-mail address."},
 		{"emails differ", func(f url.Values) { f.Set("emailConfirm", "other@example.com") }, "The e-mail addresses don&#39;t match."},
-		{"terms not accepted", func(f url.Values) { f.Del("terms") }, "Please read and accept the Terms of Service to register."},
+		{"terms not accepted", func(f url.Values) { f.Del("terms") }, "Please accept the terms of service"},
 		{"malformed figure", func(f url.Values) { f.Set("figure", "not a figure") }, "An unknown error occurred."},
 		{"unknown gender", func(f url.Values) { f.Set("gender", "U") }, "An unknown error occurred."},
 	} {
@@ -165,6 +172,59 @@ func TestRegisterRejections(t *testing.T) {
 	}
 }
 
+// Holo checked the age limit only in the browser, so the server does it here.
+func TestRegisterRefusesTheTooYoung(t *testing.T) {
+	today := time.Now().UTC()
+	for _, c := range []struct {
+		name  string
+		years int
+		want  bool
+	}{
+		{"five", 5, false},
+		{"six", 6, true},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			db, mux := newSite(t)
+			form := registration()
+			born := today.AddDate(-c.years, 0, -1)
+			form.Set("day", strconv.Itoa(born.Day()))
+			form.Set("month", strconv.Itoa(int(born.Month())))
+			form.Set("year", strconv.Itoa(born.Year()))
+
+			rec := serve(mux, "POST", "/register", nil, form)
+			if c.want {
+				wantRedirect(t, rec, "/me")
+				return
+			}
+			wantRedirect(t, rec, "/?ageLimit=true")
+			if n := count(t, db, `SELECT COUNT(*) FROM users`); n != 0 {
+				t.Errorf("%d users after a refused registration", n)
+			}
+		})
+	}
+}
+
+func TestRegisterAgeCountsTheBirthday(t *testing.T) {
+	_, mux := newSite(t)
+	today := time.Now().UTC()
+	born := today.AddDate(-6, 0, 1)
+	form := registration()
+	form.Set("day", strconv.Itoa(born.Day()))
+	form.Set("month", strconv.Itoa(int(born.Month())))
+	form.Set("year", strconv.Itoa(born.Year()))
+
+	wantRedirect(t, serve(mux, "POST", "/register", nil, form), "/?ageLimit=true")
+}
+
+func TestRegisterPageStartsWithTheNewsletterChecked(t *testing.T) {
+	_, mux := newSite(t)
+	wantPage(t, serve(mux, "GET", "/register", nil, nil), http.StatusOK, "Newsletter:true")
+
+	form := registration()
+	form.Del("terms")
+	wantPage(t, serve(mux, "POST", "/register", nil, form), http.StatusUnprocessableEntity, "Newsletter:false")
+}
+
 func TestRegisterShowsEveryProblemAtOnce(t *testing.T) {
 	_, mux := newSite(t)
 	form := registration()
@@ -173,7 +233,7 @@ func TestRegisterShowsEveryProblemAtOnce(t *testing.T) {
 	form.Set("emailConfirm", "other@example.com")
 
 	wantPage(t, serve(mux, "POST", "/register", nil, form), http.StatusUnprocessableEntity,
-		"Your username is invalid", "Please read and accept", "The e-mail addresses don&#39;t match.")
+		"Your username is invalid", "Please accept the terms of service", "The e-mail addresses don&#39;t match.")
 }
 
 func TestRegisterKeepsWhatWasEntered(t *testing.T) {
@@ -335,11 +395,11 @@ func TestCheckName(t *testing.T) {
 
 	for body, want := range map[string]string{
 		`{"name":"Free-1"}`:                    `{"error":""}`,
-		`{"name":"  Free-1 "}`:                 `{"error":""}`,
-		`{"name":"tAkEn"}`:                     `{"error":"This username is in use. Please choose another name."}`,
+		`{"name":"  Free-1 "}`:                 `{"error":"Sorry, but this username contains invalid characters."}`,
+		`{"name":"tAkEn"}`:                     `{"error":"Sorry, but this username is taken. Please choose another one."}`,
 		`{"name":""}`:                          `{"error":"Please enter a username."}`,
-		`{"name":"two words"}`:                 `{"error":"Your username is invalid or contains invalid characters."}`,
-		`{"name":"aaaaaaaaaaaaaaaaaaaaaaaaa"}`: `{"error":"The name you have chosen is too long."}`,
+		`{"name":"two words"}`:                 `{"error":"Sorry, but this username contains invalid characters."}`,
+		`{"name":"aaaaaaaaaaaaaaaaaaaaaaaaa"}`: `{"error":"Sorry, but this username is too long."}`,
 		`{"name":"MOD-Bob"}`:                   `{"error":"This name is not allowed."}`,
 	} {
 		rec := check(body)

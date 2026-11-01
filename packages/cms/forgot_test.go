@@ -142,7 +142,7 @@ func TestResetRejections(t *testing.T) {
 		want string
 	}{
 		{"passwords differ", url.Values{"password": {"brand-new-1"}, "passwordConfirm": {"brand-new-2"}}, "The passwords do not match. Please try again."},
-		{"short password", newPassword("short"), "Your password must be 6 to 25 characters long."},
+		{"short password", newPassword("short"), "Your password is too short."},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			db, mux := newSite(t)

@@ -3,6 +3,7 @@ package router
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -17,7 +18,11 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
-const firstBirthYear = 1900
+// Holo's list starts at 1900, although its rule refuses years before 1920.
+const firstListedBirthYear = 1900
+
+// minRegistrationAge is Holo's age limit. Holo checked it only in the browser.
+const minRegistrationAge = 6
 
 type dateOption struct {
 	Value    int
@@ -47,7 +52,7 @@ func (p *registerPage) setBornOn(day, month, year int) {
 	label := strconv.Itoa
 	p.Days = dateOptions(1, 31, day, label)
 	p.Months = dateOptions(1, 12, month, func(value int) string { return time.Month(value).String() })
-	p.Years = dateOptions(firstBirthYear, time.Now().Year(), year, label)
+	p.Years = dateOptions(firstListedBirthYear, time.Now().Year(), year, label)
 	slices.Reverse(p.Years)
 }
 
@@ -63,7 +68,11 @@ func dateOptions(first, last, selected int, label func(int) string) []dateOption
 // the look of the habbo the visitor picked.
 func (r *Router) HandleRegisterView(w http.ResponseWriter, req *http.Request) {
 	query := req.URL.Query()
-	page := registerPage{hotelStatus: r.hotelStatus(req.Context()), Refer: strings.TrimSpace(query.Get("refer"))}
+	page := registerPage{
+		hotelStatus: r.hotelStatus(req.Context()),
+		Newsletter:  true,
+		Refer:       strings.TrimSpace(query.Get("refer")),
+	}
 	page.setBornOn(0, 0, 0)
 	figure, gender := query.Get("figure"), strings.ToUpper(query.Get("gender"))
 	if auth.ValidateLook(figure, gender) == nil {
@@ -84,8 +93,8 @@ func (r *Router) HandleRegister(w http.ResponseWriter, req *http.Request) {
 	password := form.Get("password")
 	page := registerPage{
 		hotelStatus: r.hotelStatus(ctx),
-		Habbo:       strings.TrimSpace(form.Get("name")),
-		Email:       strings.TrimSpace(form.Get("email")),
+		Habbo:       form.Get("name"),
+		Email:       form.Get("email"),
 		Newsletter:  form.Get("newsletter") != "",
 		Terms:       form.Get("terms") != "",
 		Figure:      form.Get("figure"),
@@ -121,6 +130,10 @@ func (r *Router) HandleRegister(w http.ResponseWriter, req *http.Request) {
 		r.invalid(w, "register.html", page)
 		return
 	}
+	if ageOn(bornOn, time.Now()) < minRegistrationAge {
+		http.Redirect(w, req, "/?ageLimit=true", http.StatusSeeOther)
+		return
+	}
 
 	err = r.createAccount(ctx, page, bornOn, auth.HashPassword(password), ip)
 	if store.IsConflict(err) {
@@ -154,29 +167,39 @@ func (p *registerPage) readBornOn(form url.Values) time.Time {
 	return bornOn
 }
 
+func ageOn(bornOn, day time.Time) int {
+	age := day.Year() - bornOn.Year()
+	if day.Month() < bornOn.Month() || (day.Month() == bornOn.Month() && day.Day() < bornOn.Day()) {
+		age--
+	}
+	return age
+}
+
 // validate checks everything but what needs the database, with Holo's texts.
 func (p *registerPage) validate(form url.Values) {
 	if form.Get("password") != form.Get("passwordConfirm") {
 		p.Errors["password"] = "The passwords do not match. Please try again."
-	} else if auth.ValidatePassword(form.Get("password")) != nil {
-		p.Errors["password"] = passwordLengthMessage()
+	} else if err := auth.ValidatePassword(form.Get("password")); err != nil {
+		p.Errors["password"] = passwordLengthMessage(err)
 	}
 	if auth.ValidateEmail(p.Email) != nil {
 		p.Errors["email"] = "Please supply a valid e-mail address."
-	} else if p.Email != strings.TrimSpace(form.Get("emailConfirm")) {
+	} else if p.Email != form.Get("emailConfirm") {
 		p.Errors["email"] = "The e-mail addresses don't match."
 	}
 	if !p.Terms {
-		p.Errors["terms"] = "Please read and accept the Terms of Service to register."
+		p.Errors["terms"] = "Please accept the terms of service"
 	}
 	if auth.ValidateLook(p.Figure, p.Gender) != nil {
 		p.Errors["look"] = "An unknown error occurred. Please wait for the figure editor to load next time, or refresh if it doesn't."
 	}
 }
 
-func passwordLengthMessage() string {
-	return fmt.Sprintf("Your password must be %d to %d characters long.",
-		settings.GetInt("auth.passwordMinLength"), settings.GetInt("auth.passwordMaxLength"))
+func passwordLengthMessage(err error) string {
+	if errors.Is(err, auth.ErrPasswordTooShort) {
+		return "Your password is too short."
+	}
+	return fmt.Sprintf("Passwords may be no longer than %d characters", settings.GetInt("auth.passwordMaxLength"))
 }
 
 func (r *Router) registrationAllowed(ctx context.Context, ip string) (bool, error) {
@@ -193,7 +216,7 @@ func (r *Router) registrationAllowed(ctx context.Context, ip string) (bool, erro
 
 // checkTaken reports a name that cannot be used or an email that has an account.
 func (r *Router) checkTaken(ctx context.Context, page *registerPage) error {
-	problem, err := r.nameProblem(ctx, page.Habbo)
+	problem, err := r.nameProblem(ctx, page.Habbo, formNameTexts)
 	if err != nil {
 		return err
 	}

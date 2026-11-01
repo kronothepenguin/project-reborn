@@ -120,11 +120,13 @@ import SignedOut from "../layouts/signed-out.astro";
 
           [[ if .Newsletter ]]
           <Checkbox name="newsletter" checked class="text-sm text-white">
-            Yes, please send me updates, including the newsletter!
+            Yes, please send me [[ .ShortName ]] updates, including the
+            newsletter!
           </Checkbox>
           [[ else ]]
           <Checkbox name="newsletter" class="text-sm text-white">
-            Yes, please send me updates, including the newsletter!
+            Yes, please send me [[ .ShortName ]] updates, including the
+            newsletter!
           </Checkbox>
           [[ end ]]
 
@@ -137,13 +139,11 @@ import SignedOut from "../layouts/signed-out.astro";
             <a class="text-sm" href="/disclaimer">Terms of Service</a>
             [[ if .Terms ]]
             <Checkbox name="terms" checked class="text-sm">
-              By clicking on continue, I confirm that I have read and accept the
-              Terms of Use and Privacy Policy.
+              I accept the Terms of Service
             </Checkbox>
             [[ else ]]
             <Checkbox name="terms" class="text-sm">
-              By clicking on continue, I confirm that I have read and accept the
-              Terms of Use and Privacy Policy.
+              I accept the Terms of Service
             </Checkbox>
             [[ end ]]
           </div>

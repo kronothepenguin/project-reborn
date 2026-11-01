@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [p1-16](/tasks/p1-16-registration-rules.md): `/register` follows Holo's email, birth date and age rules,
+  texts and defaults, and the live name check keeps its own texts. The age limit now also runs on the server.
+- **Start** [p1-16](/tasks/p1-16-registration-rules.md).
 - **Done** [p1-15](/tasks/p1-15-landing-as-holo.md): the landing page has Holo's sign-in texts, the remember-me bubble,
   the party advert, the `Enable JavaScript` box and the age-limit message, with a new `Bubble` primitive.
 - **Start** [p1-15](/tasks/p1-15-landing-as-holo.md).

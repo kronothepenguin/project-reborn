@@ -101,13 +101,21 @@ func TestValidateLook(t *testing.T) {
 
 func TestValidateEmail(t *testing.T) {
 	for email, valid := range map[string]bool{
-		"admin@example.com":         true,
-		"a.b+c@mail.example.org":    true,
-		"":                          false,
-		"admin":                     false,
-		"admin@":                    false,
-		"Admin <admin@example.com>": false,
-		"<admin@example.com>":       false,
+		"admin@example.com":          true,
+		"a.b_c-d@mail-1.example.org": true,
+		"ADMIN@EXAMPLE.COM":          true,
+		"a@b.co":                     true,
+		"a@b.c":                      false,
+		"":                           false,
+		"admin":                      false,
+		"admin@":                     false,
+		"admin@example":              false,
+		"a+b@example.com":            false,
+		"admin@example.toolong1":     false,
+		"admin@-example.com":         false,
+		"admin@example.com\n":        false,
+		"Admin <admin@example.com>":  false,
+		"<admin@example.com>":        false,
 		strings.Repeat("a", 243) + "@example.com": false,
 	} {
 		err := ValidateEmail(email)
@@ -126,9 +134,9 @@ func TestValidateBornOn(t *testing.T) {
 		bornOn time.Time
 		valid  bool
 	}{
-		{time.Date(1900, time.January, 1, 0, 0, 0, 0, time.UTC), true},
+		{time.Date(1920, time.January, 1, 0, 0, 0, 0, time.UTC), true},
 		{testNow, true},
-		{time.Date(1899, time.December, 31, 0, 0, 0, 0, time.UTC), false},
+		{time.Date(1919, time.December, 31, 0, 0, 0, 0, time.UTC), false},
 		{testNow.Add(time.Second), false},
 	} {
 		err := ValidateBornOn(c.bornOn)

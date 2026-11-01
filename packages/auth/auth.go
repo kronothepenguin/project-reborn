@@ -20,6 +20,8 @@ var (
 	ErrNoSession          = errors.New("auth: no session")
 	ErrNotOwner           = errors.New("auth: the habbo belongs to another user")
 	ErrPasswordLength     = errors.New("auth: password length out of range")
+	ErrPasswordTooShort   = fmt.Errorf("%w: too short", ErrPasswordLength)
+	ErrPasswordTooLong    = fmt.Errorf("%w: too long", ErrPasswordLength)
 	ErrInvalidReset       = errors.New("auth: invalid or expired reset token")
 )
 

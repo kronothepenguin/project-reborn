@@ -32,7 +32,9 @@ serves the built frontend from the embedded `dist/`.
   `core.php` did: a banned visitor loses the session and sees the ban.
 - `POST /register` creates the account in one transaction through
   `auth.CreateAccount`, up to `registration.maxPerIp` per
-  `registration.ipWindowHours` from one address, and signs the visitor in.
+  `registration.ipWindowHours` from one address, and signs the visitor in. Under
+  the age limit of 6 it goes to `/?ageLimit=true`, which Holo only checked in the
+  browser.
 - `/register?refer=<habbo name>` writes a referral in that transaction and pays
   `referral.reward` to the habbo while `referral.enabled` is on. A name that does
   not exist is ignored.
