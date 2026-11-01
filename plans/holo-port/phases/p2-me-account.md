@@ -21,18 +21,19 @@ A signed-in user sees Holo's community chrome, their Me page and account setting
 | `account.php` tabs 1–5 | `GET/POST /account/looks`, `/account/profile`, `/account/email`, `/account/password`, `GET /account/referral` | `account/{looks,profile,email,password,referral}.astro` | `account/settings-nav`, ⚡`habbo/avatar-editor` |
 | new (one user, many habbos) | `GET /account/habbos`, `POST /account/habbos`, `POST /account/habbos/{id}/switch` | `account/habbos.astro` | ⚡`habbo/avatar-editor`; limit `registration.maxHabbosPerUser` |
 
-- Email and password changes require the current password; Holo's birth-date question is dropped. A password change
-  ends the other sessions.
+- Email and password changes ask for the current password and the birth date, as Holo does: the plan dropped the birth date,
+  and [0034](/decisions/0034-behaviour-matches-holo.md) brought it back. A password change ends every session, because Holo
+  says `You will need to login again.`
 - Layout grids: 460/310/160 (`body#home`) and 210/560/160 (`#news`, `#tags`); see
   [pages](/reference/holo-pages.md).
 - `/account/looks` listens to the editor as Holo's `settings.js` does: `setAllowedToProceed` disables the save button, and
   `showHabboClubNotice` and `showOldFigureNotice` show their notices. `/register` must not, as `registration.js` does not.
 - The header's habbo search leads to `GET /home?name=`, which waits for the deferred [P3](/phases/p3-homes.md)
   ([0045](/decisions/0045-homes-deferred.md)).
-- Primitives: Textarea, Spinner.
+- Primitives: Spinner. Textarea waits for its first use.
 - During maintenance, staff who pass see Holo's `Alert: The site is currently turned off!` in the header and the footer.
 - The signed-out footer shows `Housekeeping` to staff, as Holo's does.
-- Settings: `features.birthdayNotifications`.
+- Settings: `features.birthdayNotifications`, `registration.maxHabbosPerUser`, `site.housekeepingUrl`.
 
 # Exit criteria
 
@@ -42,3 +43,9 @@ A signed-in user sees Holo's community chrome, their Me page and account setting
 # Tasks
 
 - [p2-01 Delete expired sessions on a schedule](/tasks/p2-01-delete-expired-sessions.md) — done
+- [p2-02 Build the community layout](/tasks/p2-02-community-layout.md) — todo
+- [p2-03 Build the Me page](/tasks/p2-03-me-page.md) — todo
+- [p2-04 Build the account pages' frame and Looks](/tasks/p2-04-account-looks.md) — todo
+- [p2-05 Build the motto, email, password and referral tabs](/tasks/p2-05-account-details.md) — todo
+- [p2-06 Own several habbos](/tasks/p2-06-several-habbos.md) — todo
+- [p2-07 Verify the P2 exit criteria](/tasks/p2-07-exit-check.md) — todo

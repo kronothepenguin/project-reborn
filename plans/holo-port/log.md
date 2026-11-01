@@ -2,6 +2,7 @@
 
 ## 2026-11-01
 
+- **Create** the rest of the P2 tasks, [p2-02](/tasks/p2-02-community-layout.md) to [p2-07](/tasks/p2-07-exit-check.md).
 - **Done** [p2-01](/tasks/p2-01-delete-expired-sessions.md): a task on `packages/scheduler` deletes sessions once they
   expire, every minute, in place of the purge at sign-in.
 - **Start** [p2-01](/tasks/p2-01-delete-expired-sessions.md).

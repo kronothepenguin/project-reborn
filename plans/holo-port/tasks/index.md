@@ -57,6 +57,12 @@ starts.
 ## P2 Me and account
 
 - [p2-01 Delete expired sessions on a schedule](/tasks/p2-01-delete-expired-sessions.md) — Register a task in cms.New that deletes sessions once they expire, in place of the purge at sign-in.
+- [p2-02 Build the community layout](/tasks/p2-02-community-layout.md) — Port Holo's community header, main tabs, sub-tabs, habbo search, mini login, footer and maintenance alert into layouts/community.astro.
+- [p2-03 Build the Me page](/tasks/p2-03-me-page.md) — Port the personal info plate, the inline motto editor and the feed with alerts, birthday, last sign-in and the staff help count.
+- [p2-04 Build the account pages' frame and Looks](/tasks/p2-04-account-looks.md) — Port the settings navigation, the Join Club box and the Looks tab, with the editor listening as Holo's settings.js does.
+- [p2-05 Build the motto, email, password and referral tabs](/tasks/p2-05-account-details.md) — Port the other four tabs of account.php with Holo's forms, checks and texts.
+- [p2-06 Own several habbos](/tasks/p2-06-several-habbos.md) — Let a user add habbos up to registration.maxHabbosPerUser and switch the active one.
+- [p2-07 Verify the P2 exit criteria](/tasks/p2-07-exit-check.md) — Run the signed-in flows on the production binaries, list the differences from Holo and close the phase.
 
 ## Later phases
 
