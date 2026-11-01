@@ -1,0 +1,15 @@
+---
+import { Button, Notice } from "@project-reborn/components";
+import SignedOut from "../layouts/signed-out.astro";
+---
+
+<SignedOut title="[[ .ShortName ]] ~ Home">
+  <main class="flex flex-col gap-2 py-4">
+    [[ if .Failed ]]
+    <Notice><b>[[ .Message ]]</b></Notice>
+    [[ else ]]
+    <Notice variant="green"><b>[[ .Message ]]</b></Notice>
+    [[ end ]]
+    <div class="text-center"><Button href="/">OK</Button></div>
+  </main>
+</SignedOut>

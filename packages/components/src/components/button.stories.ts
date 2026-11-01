@@ -20,6 +20,17 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+export const AsLink: Story = {
+  args: { children: label, href: "#" },
+  parameters: {
+    docs: {
+      description: {
+        story: "Set `href` for a button that only navigates, such as OK on a confirmation page. It renders an <a>.",
+      },
+    },
+  },
+};
+
 export const Default: Story = {
   args: { children: label, variant: "default" },
   parameters: {

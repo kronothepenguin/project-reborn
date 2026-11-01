@@ -8,6 +8,7 @@
   interface Props extends HTMLButtonAttributes {
     variant?: Variant;
     size?: Size;
+    href?: string;
     children: Snippet;
   }
 
@@ -29,13 +30,16 @@
     type = "button",
     variant = "default",
     size = "wide",
+    href,
     children,
     ...rest
   }: Props = $props();
 </script>
 
-<button
-  {type}
+<svelte:element
+  this={href ? "a" : "button"}
+  type={href ? undefined : type}
+  {href}
   class="relative inline-flex items-center justify-center rounded border-2 border-black py-1 text-xs font-bold whitespace-nowrap before:absolute before:inset-x-px before:top-px before:h-1/2 before:rounded-t-[3px] before:content-[''] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:before:inset-x-px active:before:top-auto active:before:bottom-px active:before:rounded-t-none active:before:rounded-b-[3px] disabled:cursor-not-allowed disabled:opacity-50 disabled:before:hidden {variantClasses[
     variant
   ]} {sizeClasses[size]}"
@@ -44,4 +48,4 @@
   <span class="z-10">
     {@render children()}
   </span>
-</button>
+</svelte:element>

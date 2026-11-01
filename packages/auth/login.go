@@ -69,14 +69,34 @@ func authenticate(ctx context.Context, db *sql.DB, habboName, password, ip strin
 		return none, recordFailure(ctx, q, ip, now, userID, avatarID, ErrInvalidCredentials)
 	}
 
-	ban, err := q.GetActiveBan(ctx, store.GetActiveBanParams{Now: now, UserID: userID, IP: ip})
-	switch {
-	case err == nil:
-		return none, recordFailure(ctx, q, ip, now, userID, avatarID, &BanError{Reason: ban.Reason, ExpiresAt: ban.ExpiresAt.Time})
-	case !errors.Is(err, sql.ErrNoRows):
+	ban, err := activeBan(ctx, q, userID, ip, now)
+	if err != nil {
 		return none, fmt.Errorf("auth: login: %w", err)
 	}
+	if ban != nil {
+		return none, recordFailure(ctx, q, ip, now, userID, avatarID, ban)
+	}
 	return login, nil
+}
+
+// ActiveBan returns the ban in force on the user or the IP, or nil without one.
+func ActiveBan(ctx context.Context, db *sql.DB, userID int64, ip string) (*BanError, error) {
+	ban, err := activeBan(ctx, store.New(db), sql.NullInt64{Int64: userID, Valid: true}, ip, clock().UTC())
+	if err != nil {
+		return nil, fmt.Errorf("auth: active ban: %w", err)
+	}
+	return ban, nil
+}
+
+func activeBan(ctx context.Context, q *store.Queries, userID sql.NullInt64, ip string, now time.Time) (*BanError, error) {
+	ban, err := q.GetActiveBan(ctx, store.GetActiveBanParams{Now: now, UserID: userID, IP: ip})
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &BanError{Reason: ban.Reason, ExpiresAt: ban.ExpiresAt.Time}, nil
 }
 
 func start(w http.ResponseWriter, r *http.Request, db *sql.DB, login store.GetLoginByHabboNameRow, password string, remember bool, ip string, now time.Time) (Session, error) {

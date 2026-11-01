@@ -203,6 +203,44 @@ func TestLoginRefusesBans(t *testing.T) {
 	}
 }
 
+func TestActiveBan(t *testing.T) {
+	aMinuteAgo := sql.NullTime{Time: testNow.Add(-time.Minute), Valid: true}
+	for _, c := range []struct {
+		name      string
+		ofUser    bool
+		ip        string
+		expiresAt sql.NullTime
+		liftedAt  sql.NullTime
+		banned    bool
+	}{
+		{name: "no ban"},
+		{name: "ban of the user", ofUser: true, banned: true},
+		{name: "ban of the IP", ip: "10.0.0.1", banned: true},
+		{name: "ban of another IP", ip: "10.0.0.2"},
+		{name: "expired ban", ofUser: true, expiresAt: aMinuteAgo},
+		{name: "lifted ban", ofUser: true, liftedAt: aMinuteAgo},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			f := newFixture(t)
+			userID, _ := f.habbo(t, "admin@example.com", "Admin", testPassword)
+			if c.name != "no ban" {
+				f.ban(t, sql.NullInt64{Int64: userID, Valid: c.ofUser}, c.ip, c.expiresAt, c.liftedAt)
+			}
+
+			ban, err := ActiveBan(t.Context(), f.db, userID, "10.0.0.1")
+			if err != nil {
+				t.Fatalf("ActiveBan: %v", err)
+			}
+			if c.banned != (ban != nil) {
+				t.Fatalf("ActiveBan = %+v, want banned %t", ban, c.banned)
+			}
+			if c.banned && ban.Reason != "Scamming" {
+				t.Errorf("reason = %q, want Scamming", ban.Reason)
+			}
+		})
+	}
+}
+
 func TestLoginHidesBansFromWrongPasswords(t *testing.T) {
 	f := newFixture(t)
 	userID, _ := f.habbo(t, "admin@example.com", "Admin", testPassword)

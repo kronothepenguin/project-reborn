@@ -31,6 +31,14 @@ describe("Button", () => {
     expect(button?.classList.contains("primary")).toBe(true);
   });
 
+  it("renders a link with href, for an action that is a plain navigation", () => {
+    const { container } = render(Button, { props: { children: label, href: "/" } });
+    expect(container.querySelector("button")).toBeNull();
+    const link = container.querySelector("a");
+    expect(link?.getAttribute("href")).toBe("/");
+    expect(link?.hasAttribute("type")).toBe(false);
+  });
+
   it("reflects the disabled state", () => {
     const { container } = render(Button, { props: { children: label, disabled: true } });
     expect((container.querySelector("button") as HTMLButtonElement).disabled).toBe(true);

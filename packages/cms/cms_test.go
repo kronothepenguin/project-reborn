@@ -299,7 +299,7 @@ func TestSignOut(t *testing.T) {
 	cookie := login(t, db, "Admin")
 
 	rec := serve(mux, "POST", "/logout", cookie, url.Values{})
-	wantRedirect(t, rec, "/")
+	wantPage(t, rec, http.StatusOK, "logout.html", "Message:You have successfully signed out", "Failed:false")
 	if cleared := sessionCookie(rec); cleared == nil || cleared.MaxAge >= 0 {
 		t.Errorf("session cookie = %+v, want it cleared", cleared)
 	}
@@ -309,7 +309,78 @@ func TestSignOut(t *testing.T) {
 
 func TestSignOutWithoutASession(t *testing.T) {
 	_, mux := newSite(t)
-	wantRedirect(t, serve(mux, "POST", "/logout", nil, url.Values{}), "/")
+	for _, method := range []string{"GET", "POST"} {
+		var form url.Values
+		if method == "POST" {
+			form = url.Values{}
+		}
+		wantPage(t, serve(mux, method, "/logout", nil, form), http.StatusOK, "logout.html", "Message:You are not logged in", "Failed:true")
+	}
+}
+
+// Holo signed out on a GET. Here a link from another site must not do it.
+func TestGetLogoutKeepsTheSession(t *testing.T) {
+	db, mux := newSite(t)
+	habbo(t, db, "admin@example.com", "Admin")
+	cookie := login(t, db, "Admin")
+
+	wantRedirect(t, serve(mux, "GET", "/logout", cookie, nil), "/me")
+	wantPage(t, serve(mux, "GET", "/me", cookie, nil), http.StatusOK, "me.html")
+}
+
+func ban(t *testing.T, db *sql.DB, userID any, ip any) {
+	t.Helper()
+	_, err := db.ExecContext(t.Context(), `INSERT INTO bans (user_id, ip, reason, created_at) VALUES (?, ?, ?, ?)`,
+		userID, ip, "Scamming", time.Now().UTC().Add(-time.Minute))
+	if err != nil {
+		t.Fatalf("insert ban: %v", err)
+	}
+}
+
+func TestBanEndsTheSessionOnTheNextPage(t *testing.T) {
+	for _, c := range []struct {
+		name string
+		ban  func(t *testing.T, db *sql.DB, userID int64)
+	}{
+		{"of the user", func(t *testing.T, db *sql.DB, userID int64) { ban(t, db, userID, nil) }},
+		{"of the address", func(t *testing.T, db *sql.DB, userID int64) { ban(t, db, nil, "192.0.2.1") }},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			db, mux := newSite(t)
+			userID := habbo(t, db, "admin@example.com", "Admin")
+			cookie := login(t, db, "Admin")
+			wantPage(t, serve(mux, "GET", "/me", cookie, nil), http.StatusOK, "me.html")
+
+			c.ban(t, db, userID)
+			rec := serve(mux, "GET", "/me", cookie, nil)
+			wantPage(t, rec, http.StatusForbidden, "logout.html", "The reason for this ban is", "Failed:true")
+			if cleared := sessionCookie(rec); cleared == nil || cleared.MaxAge >= 0 {
+				t.Errorf("session cookie = %+v, want it cleared", cleared)
+			}
+			wantRedirect(t, serve(mux, "GET", "/me", cookie, nil), "/")
+		})
+	}
+}
+
+// Holo's core.php checks the ban first, so maintenance does not hide it.
+func TestBanComesBeforeMaintenance(t *testing.T) {
+	db, mux := newSite(t)
+	userID := habbo(t, db, "admin@example.com", "Admin")
+	cookie := login(t, db, "Admin")
+	ban(t, db, userID, nil)
+	setMaintenance(t, db, true)
+
+	wantPage(t, serve(mux, "GET", "/disclaimer", cookie, nil), http.StatusForbidden, "logout.html", "Scamming")
+}
+
+func TestSigningOutWhileBannedShowsTheBan(t *testing.T) {
+	db, mux := newSite(t)
+	userID := habbo(t, db, "admin@example.com", "Admin")
+	cookie := login(t, db, "Admin")
+	ban(t, db, userID, nil)
+
+	wantPage(t, serve(mux, "POST", "/logout", cookie, url.Values{}), http.StatusForbidden, "logout.html", "Scamming")
+	wantRedirect(t, serve(mux, "GET", "/me", cookie, nil), "/")
 }
 
 func TestCrossSitePostsAreRefused(t *testing.T) {
@@ -391,5 +462,5 @@ func TestSignInDuringMaintenance(t *testing.T) {
 	rec := serve(mux, "POST", "/", nil, credentials("Staff", "secret123"))
 	wantRedirect(t, rec, "/me")
 	wantPage(t, serve(mux, "GET", "/me", sessionCookie(rec), nil), http.StatusOK, "me.html")
-	wantRedirect(t, serve(mux, "POST", "/logout", sessionCookie(rec), url.Values{}), "/")
+	wantPage(t, serve(mux, "POST", "/logout", sessionCookie(rec), url.Values{}), http.StatusOK, "logout.html")
 }

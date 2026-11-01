@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [p1-12](/tasks/p1-12-sign-out-page.md): signing out shows Holo's confirmation or `You are not logged in`,
+  and a banned visitor loses the session on the next page and sees the ban.
+- **Start** [p1-12](/tasks/p1-12-sign-out-page.md).
 - **Done** [p1-11](/tasks/p1-11-signed-out-layout.md): the signed-out pages have Holo's titles, meta tags,
   registered-users count, logo link and footer separators.
 - **Start** [p1-11](/tasks/p1-11-signed-out-layout.md).

@@ -23,6 +23,11 @@ serves the built frontend from the embedded `dist/`.
   static files; users holding `site.maintenanceBypass` see the site. A failed
   sign-in stays on the maintenance page.
 - Signing in lands on `/me`, and `/` sends signed-in visitors there.
+- `POST /logout` shows Holo's confirmation, or `You are not logged in` without a
+  session, as `GET /logout` does for guests. Signing out is a `POST`, unlike
+  Holo's, so that another site cannot do it.
+- `router.Banned` runs on every page before the maintenance check, as Holo's
+  `core.php` did: a banned visitor loses the session and sees the ban.
 - `POST /register` creates the account in one transaction through
   `auth.CreateAccount`, up to `registration.maxPerIp` per
   `registration.ipWindowHours` from one address, and signs the visitor in.
