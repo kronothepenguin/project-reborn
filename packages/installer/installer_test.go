@@ -1,14 +1,17 @@
 package installer
 
 import (
+	"encoding/json"
 	"html/template"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"strings"
 	"testing"
 
+	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
@@ -112,5 +115,17 @@ func TestInstallation(t *testing.T) {
 		settings.GetInt("registration.startCredits") != 750 || settings.GetBool("auth.secureCookies") {
 		t.Errorf("settings after the site step: name %q, url %q, start credits %d, secure cookies %t",
 			settings.GetString("site.name"), settings.GetString("site.url"), settings.GetInt("registration.startCredits"), settings.GetBool("auth.secureCookies"))
+	}
+
+	data, err := os.ReadFile(config.Filename)
+	if err != nil {
+		t.Fatalf("read %s: %v", config.Filename, err)
+	}
+	var written config.Config
+	if err := json.Unmarshal(data, &written); err != nil {
+		t.Fatalf("decode %s: %v", config.Filename, err)
+	}
+	if written.Housekeeping.Host != "localhost" || written.Housekeeping.Port != 18465 {
+		t.Errorf("%s holds housekeeping %+v, want the defaults", config.Filename, written.Housekeeping)
 	}
 }

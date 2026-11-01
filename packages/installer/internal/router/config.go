@@ -9,6 +9,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/config/cms"
+	"github.com/kronothepenguin/project-reborn/packages/config/housekeeping"
 	"github.com/kronothepenguin/project-reborn/packages/config/proxy"
 	storeconfig "github.com/kronothepenguin/project-reborn/packages/config/store"
 	"github.com/kronothepenguin/project-reborn/packages/installer/internal/setup"
@@ -58,9 +59,10 @@ func (r *Router) HandleConfigWrite(w http.ResponseWriter, req *http.Request) {
 	}
 
 	cfg := &config.Config{
-		Store: storeconfig.Store{Path: page.Path},
-		CMS:   cms.CMS{Host: cms.DefaultHost(), Port: port},
-		Proxy: proxy.Proxy{Enabled: proxy.DefaultEnabled(), Trusted: proxy.DefaultTrusted()},
+		Store:        storeconfig.Store{Path: page.Path},
+		CMS:          cms.CMS{Host: cms.DefaultHost(), Port: port},
+		Housekeeping: housekeeping.Housekeeping{Host: housekeeping.DefaultHost(), Port: housekeeping.DefaultPort()},
+		Proxy:        proxy.Proxy{Enabled: proxy.DefaultEnabled(), Trusted: proxy.DefaultTrusted()},
 	}
 	switch err := r.deps.Setup.Configure(req.Context(), cfg); {
 	case errors.Is(err, setup.ErrConfigured):

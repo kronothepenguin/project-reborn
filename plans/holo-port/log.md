@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [hk-a-02](/tasks/hk-a-02-housekeeping-config.md): `housekeeping.host` and `housekeeping.port` are in
+  `packages/config`, and the installer writes their defaults.
+- **Start** [hk-a-02](/tasks/hk-a-02-housekeeping-config.md).
 - **Done** [hk-a-01](/tasks/hk-a-01-create-templates.md): `tools/create` generates runners that open the db with
   `store.FromConfig()` and hand it to `New`, and a generated project compiles and builds.
 - **Start** [hk-a-01](/tasks/hk-a-01-create-templates.md).
