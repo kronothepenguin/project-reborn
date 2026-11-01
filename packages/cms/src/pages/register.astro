@@ -6,10 +6,10 @@ import {
   Input,
   Link,
   Notice,
-  Select,
 } from "@project-reborn/components";
 import termsIcon from "../assets/register/terms-icon.gif";
 import AvatarEditor from "../components/habbo/avatar-editor.svelte";
+import BirthDate from "../components/habbo/birth-date.astro";
 import RegisterFormField from "../components/register/register-form-field.svelte";
 import RegistrationForm from "../components/register/registration-form.svelte";
 import SignedOut from "../layouts/signed-out.astro";
@@ -131,32 +131,7 @@ import SignedOut from "../layouts/signed-out.astro";
             [[ end ]]
             <div class="flex flex-col">
               <span class="text-center text-xs text-white">I was born on:</span>
-              <div id="register-birthday" class="flex justify-center gap-1">
-                <Select id="register-day" name="day" aria-label="Day">
-                  <option value="">Day</option>
-                  [[ range .Days ]][[ if .Selected ]]
-                  <option value="[[ .Value ]]" selected>[[ .Label ]]</option>
-                  [[ else ]]
-                  <option value="[[ .Value ]]">[[ .Label ]]</option>
-                  [[ end ]][[ end ]]
-                </Select>
-                <Select id="register-month" name="month" aria-label="Month">
-                  <option value="">Month</option>
-                  [[ range .Months ]][[ if .Selected ]]
-                  <option value="[[ .Value ]]" selected>[[ .Label ]]</option>
-                  [[ else ]]
-                  <option value="[[ .Value ]]">[[ .Label ]]</option>
-                  [[ end ]][[ end ]]
-                </Select>
-                <Select id="register-year" name="year" aria-label="Year">
-                  <option value="">Year</option>
-                  [[ range .Years ]][[ if .Selected ]]
-                  <option value="[[ .Value ]]" selected>[[ .Label ]]</option>
-                  [[ else ]]
-                  <option value="[[ .Value ]]">[[ .Label ]]</option>
-                  [[ end ]][[ end ]]
-                </Select>
-              </div>
+              <BirthDate id="register-birthday" prefix="register" class="flex justify-center gap-1" />
             </div>
 
             [[ with .Errors.email ]]

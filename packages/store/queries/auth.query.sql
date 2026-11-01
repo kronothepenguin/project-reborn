@@ -8,6 +8,9 @@ FROM avatars
 JOIN credentials ON credentials.user_id = avatars.user_id
 WHERE avatars.name = sqlc.arg(name);
 
+-- name: GetCredential :one
+SELECT * FROM credentials WHERE user_id = sqlc.arg(user_id);
+
 -- name: UpsertCredential :exec
 INSERT INTO credentials (user_id, password_hash, updated_at)
 VALUES (sqlc.arg(user_id), sqlc.arg(password_hash), sqlc.arg(updated_at))

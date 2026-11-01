@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [p2-05](/tasks/p2-05-account-details.md): the motto, email, password and referral tabs work as Holo's do,
+  with the current password and birth date on both forms that change credentials.
+- **Start** [p2-05](/tasks/p2-05-account-details.md).
 - **Done** [p2-04](/tasks/p2-04-account-looks.md): the account pages have Holo's frame, with the settings navigation
   and the Join Club box, and `/account/looks` saves a look with the editor listening as `settings.js` does.
 - **Start** [p2-04](/tasks/p2-04-account-looks.md).

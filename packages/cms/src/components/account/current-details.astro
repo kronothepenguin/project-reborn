@@ -1,0 +1,16 @@
+---
+import { Input } from "@project-reborn/components";
+import BirthDate from "../habbo/birth-date.astro";
+import SettingsStep from "./settings-step.astro";
+---
+
+<SettingsStep number={1} heading="Give your current details">
+  <label class="flex flex-col gap-0.5">
+    <span>Current password:</span>
+    <Input type="password" name="password" maxlength="32" variant="border" />
+  </label>
+  <div class="flex flex-col gap-0.5">
+    <span>Birthdate:</span>
+    <BirthDate id="required-birthday" prefix="details" class="flex gap-1" />
+  </div>
+</SettingsStep>

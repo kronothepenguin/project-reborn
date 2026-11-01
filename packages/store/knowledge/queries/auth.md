@@ -16,6 +16,13 @@ timestamp: 2026-10-27T21:44:59+00:00
 - Result: `GetLoginByHabboNameRow` (avatar id, user id, habbo name, password hash); not found for an unknown name
 - Tables: `avatars`, `credentials`
 
+## GetCredential
+
+- Cardinality: `:one`
+- Inputs: `user_id`
+- Result: the user's password hash
+- Tables: `credentials`
+
 ## UpsertCredential
 
 - Cardinality: `:exec`

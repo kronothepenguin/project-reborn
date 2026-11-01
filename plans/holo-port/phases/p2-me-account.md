@@ -46,6 +46,6 @@ A signed-in user sees Holo's community chrome, their Me page and account setting
 - [p2-02 Build the community layout](/tasks/p2-02-community-layout.md) — done
 - [p2-03 Build the Me page](/tasks/p2-03-me-page.md) — done
 - [p2-04 Build the account pages' frame and Looks](/tasks/p2-04-account-looks.md) — done
-- [p2-05 Build the motto, email, password and referral tabs](/tasks/p2-05-account-details.md) — todo
+- [p2-05 Build the motto, email, password and referral tabs](/tasks/p2-05-account-details.md) — done
 - [p2-06 Own several habbos](/tasks/p2-06-several-habbos.md) — todo
 - [p2-07 Verify the P2 exit criteria](/tasks/p2-07-exit-check.md) — todo

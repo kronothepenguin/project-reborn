@@ -1,0 +1,29 @@
+---
+import { Button, Checkbox, Input } from "@project-reborn/components";
+import CurrentDetails from "../../components/account/current-details.astro";
+import SettingsFrame from "../../components/account/settings-frame.astro";
+import SettingsStep from "../../components/account/settings-step.astro";
+---
+
+<SettingsFrame active="Email" heading="Change Your Email Settings">
+  <form method="post" action="/account/email" class="flex flex-col gap-2">
+    <CurrentDetails />
+    <SettingsStep number={2} heading="Enter your new email address">
+      <p>Make sure you type in your email address correctly!</p>
+      <label class="flex flex-col gap-0.5">
+        <span>Email address:</span>
+        <Input name="email" value="[[ .Email ]]" maxlength="48" variant="border" />
+      </label>
+      [[ if .Newsletter ]]
+      <Checkbox name="newsletter" checked>
+        Yes, please send me [[ .Name ]] updates, including the newsletter!
+      </Checkbox>
+      [[ else ]]
+      <Checkbox name="newsletter">
+        Yes, please send me [[ .Name ]] updates, including the newsletter!
+      </Checkbox>
+      [[ end ]]
+    </SettingsStep>
+    <div><Button type="submit">Save changes</Button></div>
+  </form>
+</SettingsFrame>

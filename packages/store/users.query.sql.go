@@ -104,3 +104,25 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 	)
 	return i, err
 }
+
+const updateUserEmail = `-- name: UpdateUserEmail :exec
+UPDATE users SET email = ?1, newsletter = ?2, updated_at = ?3
+WHERE id = ?4
+`
+
+type UpdateUserEmailParams struct {
+	Email      string
+	Newsletter bool
+	UpdatedAt  time.Time
+	ID         int64
+}
+
+func (q *Queries) UpdateUserEmail(ctx context.Context, arg UpdateUserEmailParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserEmail,
+		arg.Email,
+		arg.Newsletter,
+		arg.UpdatedAt,
+		arg.ID,
+	)
+	return err
+}

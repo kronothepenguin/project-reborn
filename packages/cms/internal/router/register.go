@@ -43,22 +43,31 @@ type registerPage struct {
 	Gender            string
 	EditorState       string
 	Refer             string
-	Days              []dateOption
-	Months            []dateOption
-	Years             []dateOption
-	Errors            map[string]string
+	birthDate
+	Errors map[string]string
 }
 
 func (r *Router) newRegisterPage(ctx context.Context) registerPage {
 	return registerPage{hotelStatus: r.hotelStatus(ctx), PasswordMinLength: settings.GetInt("auth.passwordMinLength")}
 }
 
-func (p *registerPage) setBornOn(day, month, year int) {
+// birthDate holds the options of the birth date selects, with the given date
+// selected.
+type birthDate struct {
+	Days   []dateOption
+	Months []dateOption
+	Years  []dateOption
+}
+
+func newBirthDate(day, month, year int) birthDate {
 	label := strconv.Itoa
-	p.Days = dateOptions(1, 31, day, label)
-	p.Months = dateOptions(1, 12, month, func(value int) string { return time.Month(value).String() })
-	p.Years = dateOptions(firstListedBirthYear, time.Now().Year(), year, label)
-	slices.Reverse(p.Years)
+	date := birthDate{
+		Days:   dateOptions(1, 31, day, label),
+		Months: dateOptions(1, 12, month, func(value int) string { return time.Month(value).String() }),
+		Years:  dateOptions(firstListedBirthYear, time.Now().Year(), year, label),
+	}
+	slices.Reverse(date.Years)
+	return date
 }
 
 func dateOptions(first, last, selected int, label func(int) string) []dateOption {
@@ -76,7 +85,7 @@ func (r *Router) HandleRegisterView(w http.ResponseWriter, req *http.Request) {
 	page := r.newRegisterPage(req.Context())
 	page.Newsletter = true
 	page.Refer = strings.TrimSpace(query.Get("refer"))
-	page.setBornOn(0, 0, 0)
+	page.birthDate = newBirthDate(0, 0, 0)
 	figure, gender := query.Get("figure"), strings.ToUpper(query.Get("gender"))
 	if auth.ValidateLook(figure, gender) == nil {
 		page.Figure, page.Gender = figure, gender
@@ -159,7 +168,7 @@ func (p *registerPage) readBornOn(form url.Values) time.Time {
 	day, _ := strconv.Atoi(form.Get("day"))
 	month, _ := strconv.Atoi(form.Get("month"))
 	year, _ := strconv.Atoi(form.Get("year"))
-	p.setBornOn(day, month, year)
+	p.birthDate = newBirthDate(day, month, year)
 
 	bornOn := time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 	if bornOn.Day() != day || int(bornOn.Month()) != month || auth.ValidateBornOn(bornOn) != nil {

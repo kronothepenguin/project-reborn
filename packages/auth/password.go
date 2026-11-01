@@ -1,8 +1,10 @@
 package auth
 
 import (
+	"context"
 	"crypto/rand"
 	"crypto/subtle"
+	"database/sql"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -10,6 +12,7 @@ import (
 	"sync"
 	"unicode/utf8"
 
+	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 	"golang.org/x/crypto/argon2"
 )
@@ -89,6 +92,45 @@ func decodeHash(encoded string) (argonParams, []byte, []byte, error) {
 		return p, nil, nil, errors.New("auth: malformed argon2 key")
 	}
 	return p, salt, key, nil
+}
+
+// CheckPassword reports whether password is the user's.
+func CheckPassword(ctx context.Context, db *sql.DB, userID int64, password string) (bool, error) {
+	credential, err := store.New(db).GetCredential(ctx, userID)
+	if err != nil {
+		return false, fmt.Errorf("auth: check password: %w", err)
+	}
+	return VerifyPassword(credential.PasswordHash, password)
+}
+
+// ChangePassword sets password for the user and ends every session and open
+// reset of theirs, the visitor's own session included, as a password change did
+// in Holo.
+func ChangePassword(ctx context.Context, db *sql.DB, userID int64, password string) error {
+	if err := ValidatePassword(password); err != nil {
+		return err
+	}
+	hash := HashPassword(password)
+
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("auth: change password: %w", err)
+	}
+	defer tx.Rollback()
+	q := store.New(tx)
+	if err := q.UpsertCredential(ctx, store.UpsertCredentialParams{UserID: userID, PasswordHash: hash, UpdatedAt: clock().UTC()}); err != nil {
+		return fmt.Errorf("auth: change password: %w", err)
+	}
+	if err := q.DeleteUserPasswordResets(ctx, userID); err != nil {
+		return fmt.Errorf("auth: change password: %w", err)
+	}
+	if err := q.DeleteUserSessions(ctx, userID); err != nil {
+		return fmt.Errorf("auth: change password: %w", err)
+	}
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("auth: change password: %w", err)
+	}
+	return nil
 }
 
 // ValidatePassword checks the length of a new password against

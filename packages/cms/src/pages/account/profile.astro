@@ -1,0 +1,22 @@
+---
+import { Button, Input, Link } from "@project-reborn/components";
+import SettingsFrame from "../../components/account/settings-frame.astro";
+---
+
+<SettingsFrame active="Motto & Preferences" heading="Change Your Profile">
+  <form method="post" action="/account/profile" class="flex flex-col gap-2">
+    <h3 class="text-xs font-bold">Your motto</h3>
+    <p>Your motto is seen by everyone, so think carefully!</p>
+    <label class="flex items-center gap-2">
+      <span>Motto:</span>
+      <Input name="motto" value="[[ .Motto ]]" maxlength="32" variant="border" />
+    </label>
+
+    [[ if .ClubDays ]]
+    <h3 class="text-xs font-bold">Club Membership</h3>
+    <p>You are a [[ .ShortName ]] Club member. Your membership will expire in <b>[[ .ClubDays ]]</b> days. If you would like to extend your membership, please click <Link href="/club">here</Link>.</p>
+    [[ end ]]
+
+    <div><Button type="submit">Save changes</Button></div>
+  </form>
+</SettingsFrame>

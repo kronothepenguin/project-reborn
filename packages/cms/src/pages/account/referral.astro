@@ -1,0 +1,46 @@
+---
+import SettingsFrame from "../../components/account/settings-frame.astro";
+---
+
+<SettingsFrame active="Refer Options" heading="Refer Options">
+  <div class="flex flex-col gap-2">
+    <h3 class="text-xs font-bold">Refer users and get credits</h3>
+    <p>
+      Out of credits again? Can't find staff that is willing to fill up your
+      purse? Want to buy that shiny rare but just don't have the credits for it?
+      Don't stress, just get a few friends to sign up on [[ .ShortName ]]! Do
+      that, and your purse will be filled again in no time! Below are a few
+      options you have at your disposal.
+    </p>
+    <h3 class="text-xs font-bold">Referral Options</h3>
+    <p>
+      There are two ways you can use to get refers, and with that, free credits.
+    </p>
+    <p>
+      <b>1. Send your friends a link</b><br />This option is probably as easy as
+      it gets; it basically does step 2, but automatically! You just send your
+      friends an invite with the link shown below, your friends click the link,
+      and if they complete registration, you get free credits! This is your
+      referral link to get some easy credits:
+    </p>
+    <input
+      type="text"
+      disabled
+      value="[[ .ReferralLink ]]"
+      class="w-4/5 border border-neutral-500 bg-gray-200 p-0.5"
+    />
+    <p>
+      <b>2. Let them fill in your name during registration</b><br />During the
+      registration process, users can manually give the username of the person
+      that referred them to the site. If they complete registration, that person
+      gets credits! And that person could be you, if you have some friends that
+      are nice enough to fill in your username.
+    </p>
+    <h3 class="text-xs font-bold">Today's Referral Reward</h3>
+    <p>
+      This is the amount of credits you get per user you refer. This amount may
+      change over time.
+    </p>
+    <p><b>[[ .Reward ]]</b> credits <sup>per refer</sup></p>
+  </div>
+</SettingsFrame>

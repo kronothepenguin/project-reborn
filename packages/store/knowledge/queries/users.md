@@ -37,6 +37,13 @@ timestamp: 2026-10-27T21:44:59+00:00
 - Result: registrations from the IP since `since` (the `registration.maxPerIp` limit)
 - Tables: `users`
 
+## UpdateUserEmail
+
+- Cardinality: `:exec`
+- Inputs: `id`, `email`, `newsletter`, `updated_at`
+- Fails with a conflict when another user has the address
+- Tables: `users`
+
 # Related
 
 - Entity: [User](/entities/user.md).

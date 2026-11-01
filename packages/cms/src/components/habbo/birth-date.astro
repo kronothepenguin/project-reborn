@@ -1,0 +1,38 @@
+---
+import { Select } from "@project-reborn/components";
+
+interface Props {
+  id: string;
+  prefix: string;
+  class?: string;
+}
+
+const { id, prefix, class: className } = Astro.props;
+---
+
+<div id={id} class={className}>
+  <Select id={`${prefix}-day`} name="day" aria-label="Day">
+    <option value="">Day</option>
+    [[ range .Days ]][[ if .Selected ]]
+    <option value="[[ .Value ]]" selected>[[ .Label ]]</option>
+    [[ else ]]
+    <option value="[[ .Value ]]">[[ .Label ]]</option>
+    [[ end ]][[ end ]]
+  </Select>
+  <Select id={`${prefix}-month`} name="month" aria-label="Month">
+    <option value="">Month</option>
+    [[ range .Months ]][[ if .Selected ]]
+    <option value="[[ .Value ]]" selected>[[ .Label ]]</option>
+    [[ else ]]
+    <option value="[[ .Value ]]">[[ .Label ]]</option>
+    [[ end ]][[ end ]]
+  </Select>
+  <Select id={`${prefix}-year`} name="year" aria-label="Year">
+    <option value="">Year</option>
+    [[ range .Years ]][[ if .Selected ]]
+    <option value="[[ .Value ]]" selected>[[ .Label ]]</option>
+    [[ else ]]
+    <option value="[[ .Value ]]">[[ .Label ]]</option>
+    [[ end ]][[ end ]]
+  </Select>
+</div>

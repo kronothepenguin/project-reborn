@@ -15,3 +15,7 @@ SELECT * FROM users WHERE email = sqlc.arg(email);
 -- name: CountUsersCreatedFromIP :one
 SELECT COUNT(*) FROM users
 WHERE created_ip = sqlc.arg(created_ip) AND created_at >= sqlc.arg(since);
+
+-- name: UpdateUserEmail :exec
+UPDATE users SET email = sqlc.arg(email), newsletter = sqlc.arg(newsletter), updated_at = sqlc.arg(updated_at)
+WHERE id = sqlc.arg(id);

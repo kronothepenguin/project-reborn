@@ -226,6 +226,17 @@ func (q *Queries) GetActiveSession(ctx context.Context, arg GetActiveSessionPara
 	return i, err
 }
 
+const getCredential = `-- name: GetCredential :one
+SELECT user_id, password_hash, updated_at FROM credentials WHERE user_id = ?1
+`
+
+func (q *Queries) GetCredential(ctx context.Context, userID int64) (Credential, error) {
+	row := q.db.QueryRowContext(ctx, getCredential, userID)
+	var i Credential
+	err := row.Scan(&i.UserID, &i.PasswordHash, &i.UpdatedAt)
+	return i, err
+}
+
 const getLastSignIn = `-- name: GetLastSignIn :one
 SELECT created_at FROM login_attempts
 WHERE avatar_id = ?1 AND succeeded

@@ -82,6 +82,13 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("GET /account", account(r.HandleAccountView))
 	mux.Handle("GET /account/looks", account(r.HandleAccountLooksView))
 	mux.Handle("POST /account/looks", account(r.HandleAccountLooks))
+	mux.Handle("GET /account/profile", account(r.HandleAccountProfileView))
+	mux.Handle("POST /account/profile", account(r.HandleAccountProfile))
+	mux.Handle("GET /account/email", account(r.HandleAccountEmailView))
+	mux.Handle("POST /account/email", account(r.HandleAccountEmail))
+	mux.Handle("GET /account/password", account(r.HandleAccountPasswordView))
+	mux.Handle("POST /account/password", account(r.HandleAccountPassword))
+	mux.Handle("GET /account/referral", account(r.HandleAccountReferralView))
 
 	mux.Handle("GET /register", guestPage(r.HandleRegisterView))
 	mux.Handle("POST /register", guestPage(r.HandleRegister))
