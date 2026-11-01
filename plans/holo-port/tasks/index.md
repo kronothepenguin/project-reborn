@@ -58,8 +58,20 @@ starts.
 
 - [p2-01 Delete expired sessions on a schedule](/tasks/p2-01-delete-expired-sessions.md) — Register a task in cms.New that deletes sessions once they expire, in place of the purge at sign-in.
 
+## HK-A Housekeeping core
+
+- [hk-a-01 Bring the tools/create templates to the current conventions](/tasks/hk-a-01-create-templates.md) — Generate apps that open the db with store.FromConfig, pass it to New and report a failed server, so that housekeeping is right from its first commit.
+- [hk-a-02 Add the housekeeping section to packages/config](/tasks/hk-a-02-housekeeping-config.md) — Declare housekeeping.host and housekeeping.port, mirroring cms.host and cms.port, and have the installer write their defaults.
+- [hk-a-03 Scaffold housekeeping and guard its routes](/tasks/hk-a-03-scaffold-and-access.md) — Generate packages/housekeeping and apps/housekeeping, mount them under /housekeeping alone and on a shared mux, and keep out guests and non-staff.
+- [hk-a-04 Build the housekeeping layout](/tasks/hk-a-04-layout.md) — The layout of docs/hk.png as a new design system, the Table primitive, the previous login and Holo's Access Denied page.
+- [hk-a-05 Write the staff log helper and page](/tasks/hk-a-05-staff-log.md) — One helper writes a staff_logs row for every mutation, and GET /logs reads them with housekeeping.logs.
+- [hk-a-06 Build the dashboard and the shared note](/tasks/hk-a-06-dashboard.md) — GET /housekeeping/ shows the counts, the holders of housekeeping.accessGroups and the note, and POST /note saves it with settings.Set.
+- [hk-a-07 Build the settings editor](/tasks/hk-a-07-settings-editor.md) — GET /settings and POST /settings/{section} give a form over each group of declared settings, saved with settings.Set, all or nothing.
+- [hk-a-08 Build access groups](/tasks/hk-a-08-access-groups.md) — Create and edit access groups, tick their attributes, add and remove members with a display habbo, and refuse to leave nobody who can manage them.
+- [hk-a-09 Verify the HK-A exit criteria](/tasks/hk-a-09-exit-check.md) — Run housekeeping on the production binaries in a real browser, list the differences from Holo, and run every gate.
+
 ## Later phases
 
-[HK-A](/phases/hk-a-housekeeping-core.md), [HK-B](/phases/hk-b-users-moderation.md),
+[HK-B](/phases/hk-b-users-moderation.md),
 [P3](/phases/p3-homes.md), [P4](/phases/p4-community.md), [P5](/phases/p5-groups-forum.md),
 [P6](/phases/p6-economy.md) and [P7](/phases/p7-help.md) get their tasks when they start.
