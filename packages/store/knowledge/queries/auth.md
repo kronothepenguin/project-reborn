@@ -97,6 +97,14 @@ timestamp: 2026-10-27T21:44:59+00:00
 - Result: failed attempts on the user's habbos since `since`
 - Tables: `login_attempts`
 
+## GetResetAccount
+
+- Cardinality: `:one`
+- Inputs: `name`, `email`, both ignoring case
+- Result: the user's id and address with the habbo's name as stored, when the habbo belongs to the account of that
+  address; not found otherwise
+- Tables: `avatars`, `users`
+
 ## CreatePasswordReset
 
 - Cardinality: `:exec`

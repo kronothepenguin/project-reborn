@@ -9,34 +9,41 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
-// CreateReset starts a password reset for the user with email and returns the
-// token to send them. For an unknown email it returns "" and no error, so the
-// caller can answer the same way in both cases.
-func CreateReset(ctx context.Context, db *sql.DB, email string) (string, error) {
+// Reset is a started password reset, with the habbo and the address as stored.
+type Reset struct {
+	Token string
+	Name  string
+	Email string
+}
+
+// CreateReset starts a password reset for the account of email, when the habbo
+// called name belongs to it. For any other pair it returns nil and no error, so
+// the caller can answer the same way in every case.
+func CreateReset(ctx context.Context, db *sql.DB, name, email string) (*Reset, error) {
 	now := clock().UTC()
 	q := store.New(db)
 	if _, err := q.PurgeExpiredPasswordResets(ctx, now); err != nil {
-		return "", fmt.Errorf("auth: create reset: %w", err)
+		return nil, fmt.Errorf("auth: create reset: %w", err)
 	}
-	user, err := q.GetUserByEmail(ctx, email)
+	account, err := q.GetResetAccount(ctx, store.GetResetAccountParams{Name: name, Email: email})
 	if errors.Is(err, sql.ErrNoRows) {
-		return "", nil
+		return nil, nil
 	}
 	if err != nil {
-		return "", fmt.Errorf("auth: create reset: %w", err)
+		return nil, fmt.Errorf("auth: create reset: %w", err)
 	}
 
 	token, id := newToken()
 	err = q.CreatePasswordReset(ctx, store.CreatePasswordResetParams{
 		ID:        id,
-		UserID:    user.ID,
+		UserID:    account.UserID,
 		CreatedAt: now,
 		ExpiresAt: now.Add(minutes("auth.resetTokenMinutes")),
 	})
 	if err != nil {
-		return "", fmt.Errorf("auth: create reset: %w", err)
+		return nil, fmt.Errorf("auth: create reset: %w", err)
 	}
-	return token, nil
+	return &Reset{Token: token, Name: account.Name, Email: account.Email}, nil
 }
 
 // ResetPassword sets password for the user of token. It works once: the token

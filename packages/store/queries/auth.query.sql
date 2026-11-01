@@ -66,6 +66,12 @@ WHERE ip = sqlc.arg(ip) AND NOT succeeded AND created_at >= sqlc.arg(since);
 SELECT COUNT(*) FROM login_attempts
 WHERE user_id = CAST(sqlc.arg(user_id) AS INTEGER) AND NOT succeeded AND created_at >= sqlc.arg(since);
 
+-- name: GetResetAccount :one
+SELECT users.id AS user_id, users.email, avatars.name
+FROM avatars
+JOIN users ON users.id = avatars.user_id
+WHERE avatars.name = sqlc.arg(name) AND users.email = sqlc.arg(email);
+
 -- name: CreatePasswordReset :exec
 INSERT INTO password_resets (id, user_id, created_at, expires_at)
 VALUES (sqlc.arg(id), sqlc.arg(user_id), sqlc.arg(created_at), sqlc.arg(expires_at));

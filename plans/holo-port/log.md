@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [p1-13](/tasks/p1-13-forgot-as-holo.md): `/forgot` asks for the username and the email as Holo does and
+  mails Holo's reminder, with the link, only when both belong to one account. Signed-in visitors see Holo's page.
+- **Start** [p1-13](/tasks/p1-13-forgot-as-holo.md).
 - **Done** [p1-12](/tasks/p1-12-sign-out-page.md): signing out shows Holo's confirmation or `You are not logged in`,
   and a banned visitor loses the session on the next page and sees the ban.
 - **Start** [p1-12](/tasks/p1-12-sign-out-page.md).

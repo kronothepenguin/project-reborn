@@ -73,8 +73,8 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /register", guestPage(r.HandleRegister))
 	mux.Handle("POST /register/check-name", page(http.HandlerFunc(r.HandleRegisterCheckName)))
 
-	mux.Handle("GET /forgot", guestPage(r.HandleForgotView))
-	mux.Handle("POST /forgot", guestPage(r.HandleForgot))
+	mux.Handle("GET /forgot", page(http.HandlerFunc(r.HandleForgotView)))
+	mux.Handle("POST /forgot", page(http.HandlerFunc(r.HandleForgot)))
 	mux.Handle("GET /reset/{token}", guestPage(r.HandleResetView))
 	mux.Handle("POST /reset/{token}", guestPage(r.HandleReset))
 

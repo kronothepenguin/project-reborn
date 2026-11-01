@@ -247,6 +247,31 @@ func (q *Queries) GetLoginByHabboName(ctx context.Context, name string) (GetLogi
 	return i, err
 }
 
+const getResetAccount = `-- name: GetResetAccount :one
+SELECT users.id AS user_id, users.email, avatars.name
+FROM avatars
+JOIN users ON users.id = avatars.user_id
+WHERE avatars.name = ?1 AND users.email = ?2
+`
+
+type GetResetAccountParams struct {
+	Name  string
+	Email string
+}
+
+type GetResetAccountRow struct {
+	UserID int64
+	Email  string
+	Name   string
+}
+
+func (q *Queries) GetResetAccount(ctx context.Context, arg GetResetAccountParams) (GetResetAccountRow, error) {
+	row := q.db.QueryRowContext(ctx, getResetAccount, arg.Name, arg.Email)
+	var i GetResetAccountRow
+	err := row.Scan(&i.UserID, &i.Email, &i.Name)
+	return i, err
+}
+
 const purgeExpiredPasswordResets = `-- name: PurgeExpiredPasswordResets :execrows
 DELETE FROM password_resets WHERE expires_at <= ?1
 `

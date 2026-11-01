@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"strings"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
@@ -15,60 +14,57 @@ import (
 
 type forgotPage struct {
 	hotelStatus
-	Email string
-	Sent  bool
+	Username string
+	Email    string
+	Sent     bool
+	SignedIn bool
 }
 
 // HandleForgotView renders GET /forgot.
 func (r *Router) HandleForgotView(w http.ResponseWriter, req *http.Request) {
-	astro.WriteTemplate(w, r.deps.Resolver, "forgot.html", forgotPage{hotelStatus: r.hotelStatus(req.Context())})
+	r.writeForgot(w, req, forgotPage{})
 }
 
-// HandleForgot handles the POST /forgot action. It answers the same way for
-// every address, and the reset runs in the background so that the response time
-// does not reveal whether an address has an account either.
+// HandleForgot handles the POST /forgot action. Unlike Holo it answers the same
+// way for every name and address, so that the page does not tell a stranger
+// which of them belong together, and the reset runs in the background so that
+// the response time does not either.
 func (r *Router) HandleForgot(w http.ResponseWriter, req *http.Request) {
-	email := strings.TrimSpace(req.PostFormValue("email"))
+	if _, ok := auth.FromContext(req.Context()); ok {
+		r.writeForgot(w, req, forgotPage{})
+		return
+	}
+	username, email := req.PostFormValue("username"), req.PostFormValue("email")
 	ctx := context.WithoutCancel(req.Context())
 	go func() {
-		if err := r.sendReset(ctx, email); err != nil {
+		if err := r.sendReset(ctx, username, email); err != nil {
 			slog.Error("cms: password reset", "err", err)
 		}
 	}()
-	astro.WriteTemplate(w, r.deps.Resolver, "forgot.html", forgotPage{hotelStatus: r.hotelStatus(req.Context()), Email: email, Sent: true})
+	r.writeForgot(w, req, forgotPage{Username: username, Email: email, Sent: true})
 }
 
-// sendReset mails the reset link and the account's habbos, since a habbo name is
-// what signs in. An unknown address gets nothing.
-func (r *Router) sendReset(ctx context.Context, email string) error {
-	token, err := auth.CreateReset(ctx, r.deps.DB, email)
-	if err != nil || token == "" {
-		return err
-	}
-	user, err := r.deps.Queries.GetUserByEmail(ctx, email)
-	if err != nil {
-		return err
-	}
-	avatars, err := r.deps.Queries.ListUserAvatars(ctx, user.ID)
-	if err != nil {
-		return err
-	}
-	names := make([]string, len(avatars))
-	for i, avatar := range avatars {
-		names[i] = avatar.Name
-	}
+func (r *Router) writeForgot(w http.ResponseWriter, req *http.Request, page forgotPage) {
+	page.hotelStatus = r.hotelStatus(req.Context())
+	_, page.SignedIn = auth.FromContext(req.Context())
+	astro.WriteTemplate(w, r.deps.Resolver, "forgot.html", page)
+}
 
+// sendReset mails Holo's reminder, with the reset link where Holo put the
+// password. Any name and address that do not belong together get nothing.
+func (r *Router) sendReset(ctx context.Context, username, email string) error {
+	reset, err := auth.CreateReset(ctx, r.deps.DB, username, email)
+	if err != nil || reset == nil {
+		return err
+	}
 	subject := settings.GetString("site.shortName") + " - Forgot password"
-	body := fmt.Sprintf(`Hello,
+	body := fmt.Sprintf(`Hello %[1]s,
+This is a password reminder you or someone else requested. If you did not request a password reminder, don't worry, just delete and ignore this e-mail, as no changes will be made that may affect you.
 
-This is a password reset you or someone else requested. If you did not request it, don't worry, just delete and ignore this e-mail, as no changes will be made that may affect you.
-
-Your habbos: %s
-
-Choose a new password here. The link works once, for %d minutes:
-%s/reset/%s
+Username: %[1]s
+Password: choose a new one at %[2]s/reset/%[3]s (this link works once, for %[4]d minutes)
 
 We hope to see you soon!
-`, strings.Join(names, ", "), settings.GetInt("auth.resetTokenMinutes"), settings.GetString("site.url"), token)
-	return mail.Send(ctx, user.Email, subject, body)
+`, reset.Name, settings.GetString("site.url"), reset.Token, settings.GetInt("auth.resetTokenMinutes"))
+	return mail.Send(ctx, reset.Email, subject, body)
 }

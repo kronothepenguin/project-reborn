@@ -34,10 +34,11 @@ serves the built frontend from the embedded `dist/`.
 - `/register?refer=<habbo name>` writes a referral in that transaction and pays
   `referral.reward` to the habbo while `referral.enabled` is on. A name that does
   not exist is ignored.
-- `POST /forgot` answers the same way for every address and mails the reset link
-  in the background, so neither the page nor the response time reveals an
-  account. An empty `mail.host` means that no mail goes out, and the failure is
-  logged.
+- `POST /forgot` takes the username and the email, as Holo's form does, and mails
+  the reset link only when both belong to one account. It answers the same way in
+  every case and works in the background, so neither the page nor the response
+  time reveals an account. An empty `mail.host` means that no mail goes out, and
+  the failure is logged. Signed-in visitors see `Please log out to use this feature.`
 - `landing/promo-widget` is the HTML5 port of Holo's Flash promo, built from
   `vendor/HabboWidgets/habbos_v2_landing` into `public/habbo-widgets/landing/`. It
   reads `GET /xml/promo-habbos.xml`, and its button sends `gender` and `figure` to

@@ -7,16 +7,47 @@ import (
 	"time"
 )
 
-func TestCreateResetForAnUnknownEmailDoesNothing(t *testing.T) {
+func (f *fixture) reset(t *testing.T) string {
+	t.Helper()
+	reset, err := CreateReset(t.Context(), f.db, "Admin", "admin@example.com")
+	if err != nil || reset == nil {
+		t.Fatalf("CreateReset() = %+v, %v, want a reset", reset, err)
+	}
+	return reset.Token
+}
+
+func TestCreateResetNeedsTheNameAndTheAddressOfOneAccount(t *testing.T) {
+	f := newFixture(t)
+	f.habbo(t, "admin@example.com", "Admin", testPassword)
+	f.habbo(t, "other@example.com", "Other", testPassword)
+
+	for _, c := range []struct{ name, email string }{
+		{"Admin", "nobody@example.com"},
+		{"Nobody", "admin@example.com"},
+		{"Other", "admin@example.com"},
+		{"Admin", "other@example.com"},
+		{"", ""},
+	} {
+		reset, err := CreateReset(t.Context(), f.db, c.name, c.email)
+		if err != nil || reset != nil {
+			t.Errorf("CreateReset(%q, %q) = %+v, %v, want no reset and no error", c.name, c.email, reset, err)
+		}
+	}
+	if n := f.count(t, `SELECT COUNT(*) FROM password_resets`); n != 0 {
+		t.Errorf("%d resets stored", n)
+	}
+}
+
+func TestCreateResetReturnsTheStoredNames(t *testing.T) {
 	f := newFixture(t)
 	f.habbo(t, "admin@example.com", "Admin", testPassword)
 
-	token, err := CreateReset(t.Context(), f.db, "nobody@example.com")
-	if err != nil || token != "" {
-		t.Errorf("CreateReset() = %q, %v, want no token and no error", token, err)
+	reset, err := CreateReset(t.Context(), f.db, "aDMIN", "ADMIN@example.com")
+	if err != nil || reset == nil {
+		t.Fatalf("CreateReset() = %+v, %v, want a reset", reset, err)
 	}
-	if n := f.count(t, `SELECT COUNT(*) FROM password_resets`); n != 0 {
-		t.Errorf("%d resets stored for an unknown email", n)
+	if reset.Name != "Admin" || reset.Email != "admin@example.com" {
+		t.Errorf("reset = %+v, want the stored name and address", reset)
 	}
 }
 
@@ -25,10 +56,7 @@ func TestResetPasswordWorksOnce(t *testing.T) {
 	f.habbo(t, "admin@example.com", "Admin", testPassword)
 	cookie := f.mustLogin(t, "Admin", false)
 
-	token, err := CreateReset(t.Context(), f.db, "ADMIN@example.com")
-	if err != nil || token == "" {
-		t.Fatalf("CreateReset() = %q, %v, want a token", token, err)
-	}
+	token := f.reset(t)
 	id, _ := digest(token)
 	if f.count(t, `SELECT COUNT(*) FROM password_resets WHERE id = ?`, id) != 1 ||
 		f.count(t, `SELECT COUNT(*) FROM password_resets WHERE id = ?`, token) != 0 {
@@ -55,8 +83,8 @@ func TestResetPasswordWorksOnce(t *testing.T) {
 func TestResetPasswordEndsTheOtherResetsOfTheUser(t *testing.T) {
 	f := newFixture(t)
 	f.habbo(t, "admin@example.com", "Admin", testPassword)
-	first, _ := CreateReset(t.Context(), f.db, "admin@example.com")
-	second, _ := CreateReset(t.Context(), f.db, "admin@example.com")
+	first := f.reset(t)
+	second := f.reset(t)
 
 	if err := ResetPassword(t.Context(), f.db, second, "new-secret"); err != nil {
 		t.Fatalf("ResetPassword: %v", err)
@@ -69,15 +97,13 @@ func TestResetPasswordEndsTheOtherResetsOfTheUser(t *testing.T) {
 func TestResetTokensExpire(t *testing.T) {
 	f := newFixture(t)
 	f.habbo(t, "admin@example.com", "Admin", testPassword)
-	token, _ := CreateReset(t.Context(), f.db, "admin@example.com")
+	token := f.reset(t)
 
 	f.advance(60*time.Minute + time.Second)
 	if err := ResetPassword(t.Context(), f.db, token, "new-secret"); !errors.Is(err, ErrInvalidReset) {
 		t.Errorf("ResetPassword after 60 minutes = %v, want ErrInvalidReset", err)
 	}
-	if _, err := CreateReset(t.Context(), f.db, "admin@example.com"); err != nil {
-		t.Fatalf("CreateReset: %v", err)
-	}
+	f.reset(t)
 	if n := f.count(t, `SELECT COUNT(*) FROM password_resets`); n != 1 {
 		t.Errorf("%d resets stored, want the expired one purged", n)
 	}
@@ -86,7 +112,7 @@ func TestResetTokensExpire(t *testing.T) {
 func TestResetPasswordChecksThePasswordFirst(t *testing.T) {
 	f := newFixture(t)
 	f.habbo(t, "admin@example.com", "Admin", testPassword)
-	token, _ := CreateReset(t.Context(), f.db, "admin@example.com")
+	token := f.reset(t)
 
 	if err := ResetPassword(t.Context(), f.db, token, "short"); !errors.Is(err, ErrPasswordLength) {
 		t.Errorf("ResetPassword with a short password = %v, want ErrPasswordLength", err)
