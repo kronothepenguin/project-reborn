@@ -62,18 +62,19 @@ func habbo(t *testing.T, db *sql.DB, email, name string) int64 {
 	if err != nil {
 		t.Fatalf("UpsertCredential: %v", err)
 	}
-	_, err = q.CreateAvatar(t.Context(), store.CreateAvatarParams{UserID: user.ID, Name: name, Figure: "hd-180-1", Gender: "M", CreatedAt: testNow, UpdatedAt: testNow})
-	if err != nil {
-		t.Fatalf("CreateAvatar: %v", err)
-	}
+	secondHabbo(t, db, user.ID, name)
 	return user.ID
 }
 
 func secondHabbo(t *testing.T, db *sql.DB, userID int64, name string) {
 	t.Helper()
-	_, err := store.New(db).CreateAvatar(t.Context(), store.CreateAvatarParams{UserID: userID, Name: name, Figure: "hd-180-1", Gender: "M", CreatedAt: testNow, UpdatedAt: testNow})
+	q := store.New(db)
+	avatar, err := q.CreateAvatar(t.Context(), store.CreateAvatarParams{UserID: userID, Name: name, Figure: "hd-180-1", Gender: "M", CreatedAt: testNow, UpdatedAt: testNow})
 	if err != nil {
 		t.Fatalf("CreateAvatar: %v", err)
+	}
+	if err := q.CreateWallet(t.Context(), store.CreateWalletParams{AvatarID: avatar.ID, UpdatedAt: testNow}); err != nil {
+		t.Fatalf("CreateWallet: %v", err)
 	}
 }
 

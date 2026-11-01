@@ -1,13 +1,20 @@
 ---
 type: SQL Query
 title: economy.query.sql
-description: Wallet operations for creating a habbo's wallet, adding credits and writing credit ledger rows.
+description: Wallet operations for reading and creating a habbo's wallet, adding credits and writing credit ledger rows.
 resource: packages/store/queries/economy.query.sql
 tags: [store, query, economy]
 timestamp: 2026-10-27T21:44:59+00:00
 ---
 
 # Operations
+
+## GetWallet
+
+- Cardinality: `:one`
+- Inputs: `avatar_id`
+- Result: the habbo's wallet
+- Tables: `wallets`
 
 ## CreateWallet
 

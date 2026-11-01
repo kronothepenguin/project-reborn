@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [p2-03](/tasks/p2-03-me-page.md): `/me` has Holo's plate, inline motto editor and feed, with alerts,
+  birthday, last sign-in and the staff help count.
+- **Start** [p2-03](/tasks/p2-03-me-page.md).
 - **Done** [p2-02](/tasks/p2-02-community-layout.md): signed-in pages have Holo's header, tabs, footer and maintenance
   alert, for guests and signed-in users, and staff get the Housekeeping tab and footer link.
 - **Start** [p2-02](/tasks/p2-02-community-layout.md).

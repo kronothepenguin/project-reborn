@@ -75,6 +75,8 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("GET /logout", page(http.HandlerFunc(r.HandleLogoutView)))
 
 	mux.Handle("GET /me", page(auth.RequireSession(http.HandlerFunc(r.HandleMeView))))
+	mux.Handle("POST /me/motto", page(auth.RequireSession(http.HandlerFunc(r.HandleMeMotto))))
+	mux.Handle("POST /me/alerts/{id}/dismiss", page(auth.RequireSession(http.HandlerFunc(r.HandleMeAlertDismiss))))
 
 	mux.Handle("GET /register", guestPage(r.HandleRegisterView))
 	mux.Handle("POST /register", guestPage(r.HandleRegister))

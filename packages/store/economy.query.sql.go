@@ -66,3 +66,20 @@ func (q *Queries) CreateWalletTransaction(ctx context.Context, arg CreateWalletT
 	)
 	return err
 }
+
+const getWallet = `-- name: GetWallet :one
+SELECT avatar_id, credits, tickets, film, updated_at FROM wallets WHERE avatar_id = ?1
+`
+
+func (q *Queries) GetWallet(ctx context.Context, avatarID int64) (Wallet, error) {
+	row := q.db.QueryRowContext(ctx, getWallet, avatarID)
+	var i Wallet
+	err := row.Scan(
+		&i.AvatarID,
+		&i.Credits,
+		&i.Tickets,
+		&i.Film,
+		&i.UpdatedAt,
+	)
+	return i, err
+}

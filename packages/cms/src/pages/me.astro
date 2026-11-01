@@ -1,19 +1,12 @@
 ---
-import { Avatar, Card } from "@project-reborn/components";
+import PersonalInfo from "../components/me/personal-info.astro";
 import Community from "../layouts/community.astro";
 ---
 
 <Community title="[[ .ShortName ]] ~ [[ .Habbo ]]" tab="me" sub="Homepage">
-  <div class="w-72">
-    <Card>
-      <div class="flex flex-col items-center gap-2">
-        <Avatar
-          imagingUrl="[[ .ImagingURL ]]"
-          figure="[[ .Figure ]]"
-          alt="[[ .Habbo ]]"
-        />
-        <p class="font-bold">[[ .Habbo ]]</p>
-      </div>
-    </Card>
+  <div class="flex">
+    <div class="w-[460px]"><PersonalInfo /></div>
+    <div class="w-[310px]"></div>
+    <div class="w-[160px]"></div>
   </div>
 </Community>

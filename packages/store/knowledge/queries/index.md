@@ -17,11 +17,12 @@ Concepts for the query files under `packages/store/queries/`.
 
 - [auth.query.sql](auth.md) — Sign-in operations for the habbo-name login lookup, credentials, sessions, login attempts and password resets.
 - [access.query.sql](access.md) — Access operations for groups, their attributes and members, a user's attributes and the holders of an attribute.
-- [moderation.query.sql](moderation.md) — Moderation operations, currently the lookup of the active ban on a user or an IP.
+- [moderation.query.sql](moderation.md) — Moderation operations for the active ban on a user or an IP, a habbo's alerts and the count of open help tickets.
 
 ## Economy
 
-- [economy.query.sql](economy.md) — Wallet operations for creating a habbo's wallet, adding credits and writing credit ledger rows.
+- [economy.query.sql](economy.md) — Wallet operations for reading and creating a habbo's wallet, adding credits and writing credit ledger rows.
+- [club.query.sql](club.md) — Club operations, currently the end of a habbo's running membership.
 - [referrals.query.sql](referrals.md) — Referral operations, currently the creation of a referral at registration.
 
 ## Settings

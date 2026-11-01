@@ -98,6 +98,13 @@ timestamp: 2026-10-27T21:44:59+00:00
 - Result: failed attempts on the user's habbos since `since`
 - Tables: `login_attempts`
 
+## GetLastSignIn
+
+- Cardinality: `:one`
+- Inputs: `avatar_id`
+- Result: when the habbo last signed in; not found when it never did
+- Tables: `login_attempts`
+
 ## GetResetAccount
 
 - Cardinality: `:one`

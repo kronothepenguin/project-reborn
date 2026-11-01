@@ -13,6 +13,7 @@ export { default as MenuItem } from "./components/menu-item.svelte";
 export { default as Notice } from "./components/notice.svelte";
 export { default as Paper } from "./components/paper.svelte";
 export { default as Select } from "./components/select.svelte";
+export { default as Spinner } from "./components/spinner.svelte";
 export { default as Tab } from "./components/tab.svelte";
 export { default as TabPanel } from "./components/tab-panel.svelte";
 export { default as Tabs } from "./components/tabs.svelte";

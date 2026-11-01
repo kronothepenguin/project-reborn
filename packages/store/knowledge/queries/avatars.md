@@ -44,6 +44,12 @@ timestamp: 2026-10-27T21:44:59+00:00
 - Result: how many habbos exist, the header's registered users
 - Tables: `avatars`
 
+## UpdateAvatarMotto
+
+- Cardinality: `:exec`
+- Inputs: `id`, `motto`, `updated_at`
+- Tables: `avatars`
+
 ## ListRandomAvatars
 
 - Cardinality: `:many`

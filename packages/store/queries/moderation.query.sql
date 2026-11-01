@@ -11,3 +11,16 @@ WHERE created_at <= sqlc.arg(now)
   AND (expires_at IS NULL OR expires_at > sqlc.arg(now))
 ORDER BY expires_at IS NULL DESC, expires_at DESC
 LIMIT 1;
+
+-- name: GetOldestAlert :one
+SELECT * FROM alerts
+WHERE avatar_id = sqlc.arg(avatar_id) AND dismissed_at IS NULL
+ORDER BY id
+LIMIT 1;
+
+-- name: DismissAlert :execrows
+UPDATE alerts SET dismissed_at = sqlc.arg(dismissed_at)
+WHERE id = sqlc.arg(id) AND avatar_id = sqlc.arg(avatar_id) AND dismissed_at IS NULL;
+
+-- name: CountOpenHelpTickets :one
+SELECT COUNT(*) FROM help_tickets WHERE picked_up_at IS NULL AND closed_at IS NULL;

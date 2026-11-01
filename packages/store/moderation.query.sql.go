@@ -11,6 +11,36 @@ import (
 	"time"
 )
 
+const countOpenHelpTickets = `-- name: CountOpenHelpTickets :one
+SELECT COUNT(*) FROM help_tickets WHERE picked_up_at IS NULL AND closed_at IS NULL
+`
+
+func (q *Queries) CountOpenHelpTickets(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countOpenHelpTickets)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const dismissAlert = `-- name: DismissAlert :execrows
+UPDATE alerts SET dismissed_at = ?1
+WHERE id = ?2 AND avatar_id = ?3 AND dismissed_at IS NULL
+`
+
+type DismissAlertParams struct {
+	DismissedAt sql.NullTime
+	ID          int64
+	AvatarID    int64
+}
+
+func (q *Queries) DismissAlert(ctx context.Context, arg DismissAlertParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, dismissAlert, arg.DismissedAt, arg.ID, arg.AvatarID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
 const getActiveBan = `-- name: GetActiveBan :one
 SELECT id, user_id, ip, reason, issued_by_user_id, created_at, expires_at, lifted_at, lifted_by_user_id FROM bans
 WHERE created_at <= ?1
@@ -45,6 +75,27 @@ func (q *Queries) GetActiveBan(ctx context.Context, arg GetActiveBanParams) (Ban
 		&i.ExpiresAt,
 		&i.LiftedAt,
 		&i.LiftedByUserID,
+	)
+	return i, err
+}
+
+const getOldestAlert = `-- name: GetOldestAlert :one
+SELECT id, avatar_id, sender_user_id, message, created_at, dismissed_at FROM alerts
+WHERE avatar_id = ?1 AND dismissed_at IS NULL
+ORDER BY id
+LIMIT 1
+`
+
+func (q *Queries) GetOldestAlert(ctx context.Context, avatarID int64) (Alert, error) {
+	row := q.db.QueryRowContext(ctx, getOldestAlert, avatarID)
+	var i Alert
+	err := row.Scan(
+		&i.ID,
+		&i.AvatarID,
+		&i.SenderUserID,
+		&i.Message,
+		&i.CreatedAt,
+		&i.DismissedAt,
 	)
 	return i, err
 }

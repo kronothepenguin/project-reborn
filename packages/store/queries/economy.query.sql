@@ -10,3 +10,6 @@ VALUES (sqlc.arg(avatar_id), sqlc.arg(credits), sqlc.arg(reason), sqlc.arg(detai
 UPDATE wallets
 SET credits = credits + sqlc.arg(credits), updated_at = sqlc.arg(updated_at)
 WHERE avatar_id = sqlc.arg(avatar_id);
+
+-- name: GetWallet :one
+SELECT * FROM wallets WHERE avatar_id = sqlc.arg(avatar_id);

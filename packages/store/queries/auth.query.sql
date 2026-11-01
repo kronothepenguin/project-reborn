@@ -66,6 +66,12 @@ WHERE ip = sqlc.arg(ip) AND NOT succeeded AND created_at >= sqlc.arg(since);
 SELECT COUNT(*) FROM login_attempts
 WHERE user_id = CAST(sqlc.arg(user_id) AS INTEGER) AND NOT succeeded AND created_at >= sqlc.arg(since);
 
+-- name: GetLastSignIn :one
+SELECT created_at FROM login_attempts
+WHERE avatar_id = sqlc.arg(avatar_id) AND succeeded
+ORDER BY created_at DESC
+LIMIT 1;
+
 -- name: GetResetAccount :one
 SELECT users.id AS user_id, users.email, avatars.name
 FROM avatars

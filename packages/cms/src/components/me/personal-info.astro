@@ -1,0 +1,134 @@
+---
+import { Avatar } from "@project-reborn/components";
+import bigIcons from "../../assets/me/big_icons.png";
+import closeMessage from "../../assets/me/close_msg.png";
+import enterButton from "../../assets/me/enter_button.png";
+import hotelView from "../../assets/me/hotel-view.png";
+import infoIcons from "../../assets/me/info_icons.png";
+import orangeThing from "../../assets/me/orange_thing.png";
+import plate from "../../assets/me/info_habbo_plate.png";
+import smallIcons from "../../assets/me/small_icons.png";
+import Feed from "./feed.svelte";
+import MottoEditor from "./motto-editor.svelte";
+
+const sprite = (image: { src: string }, position: string) =>
+  `background: url(${image.src}) no-repeat ${position}`;
+const linkItem = "py-0.5 pl-5 leading-4";
+const feedItem = "min-h-7 border-t border-dotted border-olive-500 py-[7px] pr-[5px] pl-[45px] first:border-t-0";
+---
+
+<div class="relative mr-2 mb-[7px] ml-0.5 w-[450px]">
+  <div
+    class="h-[143px] rounded-t"
+    style={`background: url(${hotelView.src}) no-repeat`}
+  >
+    <div
+      class="absolute top-[15px] right-10 py-7"
+      style={`background: url(${orangeThing.src}) no-repeat 50% 0`}
+    >
+      <div class="flex">
+        <span
+          class="h-[49px] pr-2.5 pl-[19px] text-center text-sm leading-[47px] text-white"
+          style={sprite(enterButton, "-9px -98px")}
+        >
+          Hotel Closed
+        </span>
+        <b
+          class="h-[49px] w-[9px]"
+          style={sprite(enterButton, "0 -98px")}></b>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="group absolute top-12 left-[15px] h-[138px] w-[96px] text-center"
+    style={sprite(plate, "2px -162px")}
+  >
+    <a href="/account/looks">
+      <Avatar
+        imagingUrl="[[ .ImagingURL ]]"
+        figure="[[ .Figure ]]"
+        direction={3}
+        headDirection={3}
+        gesture="sml"
+        alt="[[ .Habbo ]]"
+        width="64"
+        height="110"
+        class="mx-auto"
+      />
+    </a>
+  </div>
+
+  <div class="bg-olive-500 pt-2.5">
+    <div class="relative ml-[120px] flex h-6 w-[323px] items-center rounded bg-white px-[3px]">
+      <strong class="shrink-0 px-2.5">[[ .Habbo ]]:</strong>
+      <div class="min-w-0 flex-1">
+        <span
+          id="motto-text"
+          data-motto="[[ .Motto ]]"
+          class="block truncate text-mist-600"
+        >
+          [[ if .Motto ]][[ .Motto ]][[ else ]]Click here to enter your motto[[ end ]]
+        </span>
+        <MottoEditor client:only="svelte" source="motto-text" />
+      </div>
+    </div>
+  </div>
+
+  <ul class="flex gap-10 bg-olive-500 px-[17px] pt-[7px] pb-[5px] text-white">
+    <li class={linkItem} style={sprite(infoIcons, "0 -976px")}>
+      <a href="/account/looks">Change looks &raquo;</a>
+    </li>
+    <li class={linkItem} style={sprite(infoIcons, "0 -143px")}>
+      <a href="/credits">[[ .Credits ]]</a> credits
+    </li>
+    <li class={linkItem} style={sprite(infoIcons, "0 -95px")}>
+      [[ if .ClubDays ]]
+      <a href="/club">[[ .ClubDays ]]</a> HC days
+      [[ else ]]
+      <a href="/club">Join [[ .ShortName ]] club &raquo;</a>
+      [[ end ]]
+    </li>
+  </ul>
+
+  <div class="rounded-b bg-stone-400">
+    <ul id="feed-items">
+      [[ if .OpenHelp ]]
+      <li class={`${feedItem} text-[10px]`} style={sprite(smallIcons, "15px -456px")}>
+        <strong>Staff Message</strong><br />
+        [[ if .OneOpenHelp ]]There is[[ else ]]There are[[ end ]] <strong><a class="text-white" href="[[ .HousekeepingURL ]]/help">[[ .OpenHelp ]]</a></strong> non-picked up help [[ if .OneOpenHelp ]]query[[ else ]]queries[[ end ]].
+      </li>
+      [[ end ]]
+      [[ range .Alerts ]]
+      <li class={feedItem}>
+        <form method="post" action="/me/alerts/[[ .ID ]]/dismiss" class="float-right">
+          <button
+            type="submit"
+            title="Remove notification"
+            aria-label="Remove notification"
+            class="block h-[13px] w-[13px] cursor-pointer"
+            style={sprite(closeMessage, "0 0")}></button>
+        </form>
+        <div class="mr-[15px]">
+          <b>[[ if .Staff ]]Message from [[ $.ShortName ]] Staff[[ else ]]Notification[[ end ]]</b><br />
+          <span class="whitespace-pre-line">[[ .Message ]]</span>
+        </div>
+      </li>
+      [[ end ]]
+      [[ if .Birthday ]]
+      <li class={`${feedItem} font-bold text-white`} style={sprite(bigIcons, "-3153px 6px")}>
+        <div>
+          Happy [[ .Birthday ]] birthday, [[ .Habbo ]]!<br />We hope you have a
+          great day today.
+        </div>
+      </li>
+      [[ end ]]
+      [[ if .LastSignIn ]]
+      <li class={`${feedItem} text-[10px]`} style={sprite(smallIcons, "15px -297px")}>
+        Last signed in: [[ .LastSignIn ]]
+      </li>
+      [[ end ]]
+    </ul>
+    <Feed client:only="svelte" list="feed-items" />
+  </div>
+</div>

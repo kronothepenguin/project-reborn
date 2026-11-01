@@ -226,6 +226,20 @@ func (q *Queries) GetActiveSession(ctx context.Context, arg GetActiveSessionPara
 	return i, err
 }
 
+const getLastSignIn = `-- name: GetLastSignIn :one
+SELECT created_at FROM login_attempts
+WHERE avatar_id = ?1 AND succeeded
+ORDER BY created_at DESC
+LIMIT 1
+`
+
+func (q *Queries) GetLastSignIn(ctx context.Context, avatarID sql.NullInt64) (time.Time, error) {
+	row := q.db.QueryRowContext(ctx, getLastSignIn, avatarID)
+	var created_at time.Time
+	err := row.Scan(&created_at)
+	return created_at, err
+}
+
 const getLoginByHabboName = `-- name: GetLoginByHabboName :one
 SELECT
     avatars.id AS avatar_id,
