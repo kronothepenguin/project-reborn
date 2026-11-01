@@ -14,7 +14,7 @@ and `install.php` becomes `packages/installer`.
 2. Read the newest entries of the [log](/log.md).
 3. Open the [task index](/tasks/index.md): in-progress tasks first, then the todo tasks of the current phase.
 
-Current phase: [P2 Me and account](/phases/p2-me-account.md).
+Current phase: [P0 Foundations](/phases/p0-foundations.md).
 
 ## Contents
 
@@ -46,4 +46,4 @@ They come from the original request and `AGENTS.md` and apply to every task.
 | Behaviour | exactly as Holo, with new and safest code ([0034](/decisions/0034-behaviour-matches-holo.md)) |
 | Agent docs | one `AGENTS.md` at the root; project folders use `README.md` |
 | Code comments | only for non-obvious architecture or tricky edge cases |
-| Commits | every finished task on `main`, never pushed |
+| Commits | sequential work on `main`, parallel work on feature branches merged later, never pushed ([0046](/decisions/0046-main-and-feature-branches.md)) |

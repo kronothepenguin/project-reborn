@@ -25,6 +25,9 @@ read the staff log; every change is logged.
   blue title bar and `- link` lists, and a plain heading and text as the content.
 - One helper writes a `staff_logs` row for every mutation.
 - Config: `housekeeping.port`. Settings: `housekeeping.note`.
+- Housekeeping creates and uses an empty database, as the CMS does
+  ([0047](/decisions/0047-every-program-works-on-an-empty-database.md)). Its work runs on a feature branch, in parallel with
+  P2 ([0046](/decisions/0046-main-and-feature-branches.md)).
 
 | Holo `?p=` | Route under `/housekeeping` | Attribute / notes |
 | --- | --- | --- |
@@ -48,5 +51,3 @@ Created when the phase starts.
 
 - How a CMS running alone learns of a settings change: the IPC of [0040](/decisions/0040-housekeeping-writes-settings.md),
   and what happens to `cms.refresh`.
-- Whether housekeeping refuses to start without the database. [0016](/decisions/0016-installer.md) says it does, while
-  since [0029](/decisions/0029-package-level-settings-and-auth.md) the CMS creates an empty one.

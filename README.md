@@ -67,6 +67,14 @@ Web apps have two modes:
 
 ---
 
+## Workflow
+
+- Sequential work goes on `main`, one commit per finished task.
+- Parallel work, such as agents building housekeeping beside the CMS, goes on feature branches, one for each line of work,
+  and is merged into `main` once it is done and verified.
+
+---
+
 ## Building
 
 Each app builds on its own; its `README.md` has the steps.

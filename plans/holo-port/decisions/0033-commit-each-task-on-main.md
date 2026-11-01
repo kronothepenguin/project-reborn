@@ -2,7 +2,8 @@
 type: Decision
 title: Each finished task is committed on main
 description: The agent commits every finished task on main with a one-line title in the style of the repository's history and never pushes.
-status: accepted
+status: superseded
+superseded_by: "0046"
 timestamp: 2026-10-30T21:10:07+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-30T21:10:07+00:00"}
 tags: [process, git]

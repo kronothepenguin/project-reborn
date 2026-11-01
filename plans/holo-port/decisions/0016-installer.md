@@ -2,7 +2,8 @@
 type: Decision
 title: Installer package
 description: packages/installer writes the initial config.json and creates the initial database, the first administrator and the seed rows.
-status: accepted
+status: superseded
+superseded_by: "0047"
 timestamp: 2026-10-27T20:48:19+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [installer]

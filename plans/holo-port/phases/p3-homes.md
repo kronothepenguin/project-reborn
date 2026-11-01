@@ -21,7 +21,7 @@ Every habbo has a home page that guests can read and the owner can decorate with
 | `store.php?key=*` | `GET /home-store`, `GET /home-store/categories/{id}`, `POST /home-store/items/{id}/purchase`, `GET /me/inventory` | — | ⚡`homes/home-store-dialog`, ⚡`homes/note-editor` (BBCode, `homes.noteMaxLength`) |
 | `tags_ajax.php` (profile) | `POST /me/tags`, `POST /me/tags/{tag}/delete` | — | ⚡ tag panel in the profile widget (`homes.maxTags`) |
 | housekeeping `add_homes_stuff.php` | `/housekeeping/home-store` (GET/POST), `POST /housekeeping/home-store/{id}` | — | `housekeeping.homeStore`; image paths from re-hosted assets, no URL fetch, no CSS writes |
-| `install.php:469-772` | installer seed step | — | Holo's categories and 303 items as `packages/installer/internal/seed` |
+| `install.php:469-772` | seed of the program that uses it, merged by the installer ([0047](/decisions/0047-every-program-works-on-an-empty-database.md)) | — | Holo's categories and 303 items as `packages/installer/internal/seed` |
 
 - Club skins (hc_machine, hc_pillow) need the habbo's active club subscription; the staff category and the staff
   skin need `homes.staffItems`.
@@ -39,6 +39,8 @@ Created when the phase starts.
 
 # Open questions
 
+- **Deferred:** this phase waits for the art and is not in the phase order ([0045](/decisions/0045-homes-deferred.md)). The user
+  is looking for it.
 - **Art:** Holo hotlinked dead Habbo CDNs for about 430 stickers, 112 backgrounds, the widget skins and the user
   badge images. They must be re-hosted under `packages/cms/public` before this phase; where they come from is not
   decided yet.

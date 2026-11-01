@@ -26,6 +26,8 @@ Habbos buy, join and run groups with decorated group homes and badges, and talk 
 | `newtopic.php`, `savetopic.php`, `savepost.php`, `updatepost.php`, `deletepost.php`, `previewpost.php` | `POST /forum/threads`, `POST /forum/threads/{id}/posts`, `POST /forum/posts/{id}`, `POST /forum/posts/{id}/delete`, `POST /bbcode/preview` | — | ⚡`forum/new-thread`, ⚡`forum/reply-form`; the author or `forum.edit` may edit |
 | `opentopicsettings.php`, `savetopicsettings.php`, `deletetopic.php`, `iot/go.php?do=report` | `POST /forum/threads/{id}/settings`, `POST /forum/threads/{id}/delete`, `POST /forum/posts/{id}/report` | — | ⚡`forum/moderation` (`forum.edit`); a report creates a `help_tickets` row with `forum_post_id` |
 
+- Group homes reuse the home editor, so they wait for the deferred [P3](/phases/p3-homes.md)
+  ([0045](/decisions/0045-homes-deferred.md)).
 - Group badge tints: two palettes, so that the user can pick one ([0042](/decisions/0042-two-badge-palettes.md)).
 - Primitives: GroupBadge, Table. Settings: `groups.*`, `features.forum`, `features.smilies`.
 

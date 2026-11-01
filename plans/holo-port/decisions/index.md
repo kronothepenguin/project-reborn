@@ -12,11 +12,13 @@ change supersedes a decision with a new one.
 - [0014 Attribute-based access control](/decisions/0014-attribute-based-access.md) — Admin-defined access groups carry attributes that belong to the user, and code checks attributes only, never a rank number or a group name.
 - [0015 Dotted attribute names; fuses stay separate](/decisions/0015-attribute-names-and-fuses.md) — Web attributes use dotted names such as forum.edit, while R26 fuses keep their exact fuse_* names in a separate, deferred catalogue.
 - [0035 Reset mail is limited per account](/decisions/0035-reset-mail-limit.md) — An account can hold auth.resetMaxActive unexpired reset links at a time, so nobody can make the hotel send repeated mail to one address.
+- [0044 Expired reset links are deleted when they expire](/decisions/0044-expired-reset-links-deleted.md) — A reset link works for auth.resetTokenMinutes, 60 by default, and a scheduled task deletes it at that age, so that the account can ask for a new one.
 - [0018 Password reset by email](/decisions/0018-password-reset-by-email.md) — Forgot password emails a single-use, expiring reset link built on password_resets and the mail settings.
 - [0030 packages/auth creates accounts and habbos](/decisions/0030-accounts-created-in-auth.md) — The helpers that create a user with its first habbo, and a habbo with its profile, home and wallet, live in packages/auth with the name, email and birth-date rules, and take sqlc queries so each caller keeps its own transaction.
 
 ## Configuration and data
 
+- [0047 Every program works on an empty database](/decisions/0047-every-program-works-on-an-empty-database.md) — Any program creates and uses an empty database with default values, while the installer merges every schema and seed and lets the administrator change the defaults once.
 - [0004 Fresh start without Holo data](/decisions/0004-fresh-start.md) — No data is imported from a Holo or Holograph MySQL database, so the schema keeps no legacy ids, formats or hashes.
 - [0007 Store knowledge documents entities and tables](/decisions/0007-store-okf-entities-and-tables.md) — The store's OKF bundle adds entities/ and tables/ concepts next to the required schemas/ and queries/ concepts.
 - [0009 Config is static types; settings map onto config keys](/decisions/0009-config-is-static-types.md) — packages/config holds static types describing config.json, and database settings rows override config keys at runtime. **Superseded by [0023](/decisions/0023-config-holds-startup-keys.md).**
@@ -30,6 +32,8 @@ change supersedes a decision with a new one.
 
 ## Scope
 
+- [0045 Homes are deferred until the art exists](/decisions/0045-homes-deferred.md) — P3 Homes leaves the phase order and becomes an isolated piece of work for later, because the user has none of the art yet and will look for it.
+- [0048 The footer names Project Reborn](/decisions/0048-footer-names-reborn.md) — The signed-out footer keeps "Powered by Project Reborn ©" instead of Holo's line.
 - [0034 Behaviour matches Holo exactly; the code is new and safest](/decisions/0034-behaviour-matches-holo.md) — Every page behaves exactly as its HoloCMS page does, with new code, and differs only where Holo is unsafe, where a decision says so, or where Holo's behaviour is a bug.
 - [0036 Referral farming stays open for now](/decisions/0036-referral-farming-accepted.md) — Nothing stops a person from earning credits with their own referral link, beyond the per-IP registration limit, until the user asks for it.
 - [0042 Group badges get two palettes](/decisions/0042-two-badge-palettes.md) — P5 builds the group badge tints twice, with Holo's exact colours and with the closest Tailwind colours, and the user picks one once both work.
@@ -42,6 +46,8 @@ change supersedes a decision with a new one.
 
 ## Packages and process
 
+- [0043 packages/scheduler runs timed tasks](/decisions/0043-scheduler.md) — A package-level, cron-like scheduler in packages/scheduler runs tasks written as scheduler.Every(1, scheduler.Hour, task), so a process has one scheduler whether a program runs alone or under the orchestrator.
+- [0046 Sequential work on main, parallel work on feature branches](/decisions/0046-main-and-feature-branches.md) — The agent commits sequential work on main and gives each parallel line of work a feature branch that is merged later, and it never pushes.
 - [0037 The CMS address comes from config.json](/decisions/0037-cms-host-in-config.md) — config.json gains cms.host, and the CMS runners listen on cms.host and cms.port instead of a fixed localhost.
 - [0038 Project folders hold a README and a make install](/decisions/0038-project-docs-and-install.md) — AGENTS.md stays only at the repository root, project folders document themselves in README.md, and every project and the root have a make install.
 - [0039 The orchestrator is a later project](/decisions/0039-orchestrator-is-a-later-project.md) — apps/reborn will run the installer, cms, housekeeping and server from one binary; its old implementation is gone, it is not planned yet, and the work stays on the CMS.

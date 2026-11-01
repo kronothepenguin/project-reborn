@@ -29,6 +29,26 @@ Packages hold the code of each program, and `apps/<name>` is a thin runner aroun
 
 Nobody is expected to edit the database by hand.
 
+# An empty database
+
+Every program works on an empty database ([0047](/decisions/0047-every-program-works-on-an-empty-database.md)).
+
+- The CMS and housekeeping create it when it does not exist, and use the default values.
+- The installer is a merge of every schema and every seed. It lets the administrator change the default values, the first
+  time Reborn is opened and only once.
+- The installer still works on a database another program created, which is how such a hotel gets its administrator.
+- The CMS and housekeeping can have their own set of schema and seed. Today `packages/store` applies every schema to every
+  database.
+
+# Scheduled tasks
+
+`packages/scheduler` is cron-like and lives inside the process ([0043](/decisions/0043-scheduler.md)). A program registers its
+tasks in its `New`, written as `scheduler.Every(1, scheduler.Hour, task)`.
+
+| Task | Program | Every |
+| --- | --- | --- |
+| Delete expired reset links ([0044](/decisions/0044-expired-reset-links-deleted.md)) | CMS | 1 minute |
+
 # Running alone
 
 This is how programs run today, and how development works.
@@ -60,4 +80,5 @@ This is planned, and needs the orchestrator.
 | Database handle | One per process | One, shared |
 | Session cookie | Shared, on one host | Shared |
 | Settings copy | One per process | One |
+| Scheduler | One per process, running that program's tasks | One, running every program's tasks |
 | A settings change reaches the CMS | At its next start; through IPC once it exists | At once |

@@ -25,13 +25,20 @@ Task:
 - [ ] status: done, timestamp updated, verified: [{by, at}] added
 - [ ] tasks/index.md and the phase file updated
 - [ ] "**Done**" log entry under today's "## YYYY-MM-DD"
-- [ ] committed on main, not pushed (decision 0033)
+- [ ] committed, not pushed, on main or on the work's feature branch (decision 0046)
 ```
 
 - Blocked: `status: blocked`, reason in `# Notes`, `**Blocked**` log entry.
 - New work found: create a new task (next free `<phase-id>-<nn>`); never widen the current one silently.
 - Never delete a task: `status: dropped` with the reason.
 - A phase gets its tasks when it starts.
+
+## Branches
+
+- Sequential work goes on `main`, one commit per finished task.
+- Parallel work goes on feature branches, one for each line of work, named after its phase, such as `hk-a`, each in its own
+  worktree. A branch merges into `main` once its work is done and verified.
+- Never push.
 
 ## Decisions
 

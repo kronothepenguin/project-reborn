@@ -2,6 +2,18 @@
 
 ## 2026-11-01
 
+- **Update** P0 is active again, then P1, and P2 waits; both get new tasks from the user's second review:
+  [p0-22](/tasks/p0-22-keep-dist-template.md) to [p0-24](/tasks/p0-24-empty-database.md) and
+  [p1-20](/tasks/p1-20-delete-expired-resets.md).
+- **Decision** [0048](/decisions/0048-footer-names-reborn.md): the footer keeps `Powered by Project Reborn ©`.
+- **Decision** [0047](/decisions/0047-every-program-works-on-an-empty-database.md) supersedes
+  [0016](/decisions/0016-installer.md): every program works on an empty database, and the installer merges every schema and
+  seed.
+- **Decision** [0046](/decisions/0046-main-and-feature-branches.md) supersedes
+  [0033](/decisions/0033-commit-each-task-on-main.md): sequential work on `main`, parallel work on feature branches.
+- **Decision** [0045](/decisions/0045-homes-deferred.md): homes are deferred until the art exists.
+- **Decision** [0044](/decisions/0044-expired-reset-links-deleted.md): reset links are deleted when they expire.
+- **Decision** [0043](/decisions/0043-scheduler.md): `packages/scheduler` runs timed tasks.
 - **Update** P1 is done and P2 is active; P2 gets its tasks when its work starts.
 - **Done** [p1-18](/tasks/p1-18-exit-check-as-holo.md): P1 matches Holo page by page. 141 browser checks and every gate
   pass from a clean build, and the differences that remain are listed for the user.

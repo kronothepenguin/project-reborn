@@ -2,7 +2,7 @@
 type: Phase
 title: P2 Me and account
 description: The community layout and header, the Me page, account settings and owning several habbos.
-status: active
+status: planned
 timestamp: 2026-11-01T18:13:48+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p2, cms]
@@ -27,6 +27,8 @@ A signed-in user sees Holo's community chrome, their Me page and account setting
   [pages](/reference/holo-pages.md).
 - `/account/looks` listens to the editor as Holo's `settings.js` does: `setAllowedToProceed` disables the save button, and
   `showHabboClubNotice` and `showOldFigureNotice` show their notices. `/register` must not, as `registration.js` does not.
+- The header's habbo search leads to `GET /home?name=`, which waits for the deferred [P3](/phases/p3-homes.md)
+  ([0045](/decisions/0045-homes-deferred.md)).
 - Primitives: Textarea, Spinner.
 - During maintenance, staff who pass see Holo's `Alert: The site is currently turned off!` in the header and the footer.
 - The signed-out footer shows `Housekeeping` to staff, as Holo's does.

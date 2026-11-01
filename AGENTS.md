@@ -3,3 +3,4 @@ Rules:
 - DO NOT TAKE ANY DESICION OVER ARCHITECTURE, If I have a plan follow my plan, if it is not on the plan, ask me.
 - IF YOU DON'T KNOW ANYTHING ASK ME, do not make assumptions, do not suppose, always ask me first.
 - WHEN WRITING CODE. Do not include any comments that merely restate what the code does. Only include comments for non-obvious architecture or tricky edge cases.
+- Sequential work goes on main. Parallel work goes on feature branches that are merged later (see README.md).

@@ -27,6 +27,9 @@ starts.
 - [p0-19 Fix the tools/create templates](/tasks/p0-19-create-templates.md) — End every template with a newline, so that a generated project passes gofmt, and test it.
 - [p0-20 Replace the project AGENTS.md files with READMEs](/tasks/p0-20-project-readmes.md) — Rename the AGENTS.md of each project folder to README.md, in the repository and in the tools/create templates, keeping one AGENTS.md at the root.
 - [p0-21 Add make install to every project](/tasks/p0-21-make-install.md) — Give each project a make install that creates folders and installs dependencies, have the root one run them, and comment out the root targets of the orchestrator.
+- [p0-22 Keep the dist placeholder template in tools/create](/tasks/p0-22-keep-dist-template.md) — Restore the placeholder template a new app starts with and track it in git, so that every machine generates it.
+- [p0-23 Build packages/scheduler](/tasks/p0-23-scheduler.md) — Add the package-level scheduler, whose tasks read scheduler.Every(1, scheduler.Hour, task).
+- [p0-24 Check that every program works on an empty database](/tasks/p0-24-empty-database.md) — Prove that the CMS works on a database it creates itself, and that the installer still works on that database afterwards.
 
 ## P1 Signed-out site
 
@@ -49,6 +52,7 @@ starts.
 - [p1-17 Port Holo's registration flow to the browser](/tasks/p1-17-registration-flow.md) — Rebuild the page in Holo's order and port registration.js with its gated details, tooltips, live checks, submit validation and age bubbles.
 - [p1-18 Verify P1 against Holo](/tasks/p1-18-exit-check-as-holo.md) — Run the whole signed-out flow again on the production binaries, finish the list of differences and close the phase.
 - [p1-19 Fix two texts found by the exit check](/tasks/p1-19-text-fixes.md) — Keep the join button's text on one line, and keep the spaces around the log out button on the forgot page.
+- [p1-20 Delete expired reset links on a schedule](/tasks/p1-20-delete-expired-resets.md) — Register a task in cms.New that deletes reset links once they expire, in place of the purge in auth.CreateReset.
 
 ## Later phases
 

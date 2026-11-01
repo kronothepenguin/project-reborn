@@ -42,6 +42,7 @@ here, by reason. This list covers the signed-out pages of [P1](/phases/p1-signed
 | Landing | `Install Flash Player 8 or higher` | Gone with Flash; `Enable JavaScript` stays | [0021](/decisions/0021-dropped-and-kept-features.md) |
 | Landing | Promo feed with name, motto, profile link, badge, online state and group badge | `image`, `figure` and `gender`, the attributes the HTML5 widget reads | [0021](/decisions/0021-dropped-and-kept-features.md) |
 | Every page | Real online count | `0` and the offline picture | [0013](/decisions/0013-defer-game-server-features.md) |
+| Every page | `Powered by HoloCMS © 2008 Meth0d.` | `Powered by Project Reborn ©` | [0048](/decisions/0048-footer-names-reborn.md) |
 | After registering | `welcome.php` picks a first room | Goes to `/me` | [0013](/decisions/0013-defer-game-server-features.md) |
 | After signing in | `me.php` | A minimal `/me`, until P2 | [0031](/decisions/0031-p1-minimal-me-page.md) |
 | Maintenance | An `Administrator Login` link to housekeeping | A sign-in form on the page | The plan: staff sign in with the shared session |
@@ -71,11 +72,6 @@ here, by reason. This list covers the signed-out pages of [P1](/phases/p1-signed
 - The parent's bubble says `under 12` and appears up to the age of 12.
 - `Your password must have at least 6 characters and it must contain both letters and numbers.` promises a rule on
   letters and numbers that Holo never checked, and the port does not either.
-
-# For the user to decide
-
-- **Footer:** the page says `Powered by Project Reborn ©`, from the shell the user wrote. Holo's template asks that its line
-  `Powered by HoloCMS © 2008 Meth0d.` is never removed.
 
 # Waiting for a later phase
 
