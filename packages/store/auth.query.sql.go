@@ -70,9 +70,13 @@ func (q *Queries) CreateLoginAttempt(ctx context.Context, arg CreateLoginAttempt
 	return err
 }
 
-const createPasswordReset = `-- name: CreatePasswordReset :exec
+const createPasswordReset = `-- name: CreatePasswordReset :execrows
 INSERT INTO password_resets (id, user_id, created_at, expires_at)
-VALUES (?1, ?2, ?3, ?4)
+SELECT ?1, ?2, ?3, ?4
+WHERE (
+    SELECT COUNT(*) FROM password_resets AS active
+    WHERE active.user_id = ?2 AND active.expires_at > ?3
+) < ?5
 `
 
 type CreatePasswordResetParams struct {
@@ -80,16 +84,21 @@ type CreatePasswordResetParams struct {
 	UserID    int64
 	CreatedAt time.Time
 	ExpiresAt time.Time
+	MaxActive int64
 }
 
-func (q *Queries) CreatePasswordReset(ctx context.Context, arg CreatePasswordResetParams) error {
-	_, err := q.db.ExecContext(ctx, createPasswordReset,
+func (q *Queries) CreatePasswordReset(ctx context.Context, arg CreatePasswordResetParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, createPasswordReset,
 		arg.ID,
 		arg.UserID,
 		arg.CreatedAt,
 		arg.ExpiresAt,
+		arg.MaxActive,
 	)
-	return err
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
 }
 
 const createSession = `-- name: CreateSession :exec

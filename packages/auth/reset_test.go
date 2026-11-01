@@ -1,8 +1,10 @@
 package auth
 
 import (
+	"context"
 	"encoding/base64"
 	"errors"
+	"sync"
 	"testing"
 	"time"
 )
@@ -48,6 +50,44 @@ func TestCreateResetReturnsTheStoredNames(t *testing.T) {
 	}
 	if reset.Name != "Admin" || reset.Email != "admin@example.com" {
 		t.Errorf("reset = %+v, want the stored name and address", reset)
+	}
+}
+
+func TestCreateResetStopsAtTheLimit(t *testing.T) {
+	f := newFixture(t)
+	f.habbo(t, "admin@example.com", "Admin", testPassword)
+	f.habbo(t, "other@example.com", "Other", testPassword)
+	f.set(t, "auth.resetMaxActive", 2)
+
+	f.reset(t)
+	f.reset(t)
+	reset, err := CreateReset(t.Context(), f.db, "Admin", "admin@example.com")
+	if err != nil || reset != nil {
+		t.Fatalf("CreateReset at the limit = %+v, %v, want no reset and no error", reset, err)
+	}
+	if reset, _ := CreateReset(t.Context(), f.db, "Other", "other@example.com"); reset == nil {
+		t.Error("the limit of one account stopped another")
+	}
+
+	f.advance(60*time.Minute + time.Second)
+	f.reset(t)
+}
+
+func TestCreateResetKeepsTheLimitForRequestsAtOnce(t *testing.T) {
+	f := newFixture(t)
+	f.habbo(t, "admin@example.com", "Admin", testPassword)
+
+	var wg sync.WaitGroup
+	for range 20 {
+		wg.Go(func() {
+			if _, err := CreateReset(context.Background(), f.db, "Admin", "admin@example.com"); err != nil {
+				t.Errorf("CreateReset: %v", err)
+			}
+		})
+	}
+	wg.Wait()
+	if n := f.count(t, `SELECT COUNT(*) FROM password_resets`); n != 3 {
+		t.Errorf("%d resets stored, want the limit of 3", n)
 	}
 }
 

@@ -57,7 +57,7 @@ forgotten password. The landing, legal and maintenance pages match Holo's proces
 - [p1-11 Match the signed-out layout to Holo](/tasks/p1-11-signed-out-layout.md) — done
 - [p1-12 Show Holo's sign-out and ban pages](/tasks/p1-12-sign-out-page.md) — done
 - [p1-13 Match the forgot page to Holo](/tasks/p1-13-forgot-as-holo.md) — done
-- [p1-14 Limit the reset mail](/tasks/p1-14-reset-mail-limit.md) — todo
+- [p1-14 Limit the reset mail](/tasks/p1-14-reset-mail-limit.md) — done
 - [p1-15 Match the landing page to Holo](/tasks/p1-15-landing-as-holo.md) — todo
 - [p1-16 Match the registration rules and texts to Holo](/tasks/p1-16-registration-rules.md) — todo
 - [p1-17 Port Holo's registration flow to the browser](/tasks/p1-17-registration-flow.md) — todo

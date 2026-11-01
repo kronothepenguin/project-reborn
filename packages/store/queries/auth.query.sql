@@ -72,9 +72,13 @@ FROM avatars
 JOIN users ON users.id = avatars.user_id
 WHERE avatars.name = sqlc.arg(name) AND users.email = sqlc.arg(email);
 
--- name: CreatePasswordReset :exec
+-- name: CreatePasswordReset :execrows
 INSERT INTO password_resets (id, user_id, created_at, expires_at)
-VALUES (sqlc.arg(id), sqlc.arg(user_id), sqlc.arg(created_at), sqlc.arg(expires_at));
+SELECT sqlc.arg(id), sqlc.arg(user_id), sqlc.arg(created_at), sqlc.arg(expires_at)
+WHERE (
+    SELECT COUNT(*) FROM password_resets AS active
+    WHERE active.user_id = sqlc.arg(user_id) AND active.expires_at > sqlc.arg(created_at)
+) < sqlc.arg(max_active);
 
 -- name: GetActivePasswordReset :one
 SELECT * FROM password_resets

@@ -26,6 +26,7 @@ var catalogue = map[string]declaration{
 	"auth.passwordMinLength":  declare(6, between(6, 128)),
 	"auth.passwordMaxLength":  declare(25, between(6, 1024)),
 	"auth.resetTokenMinutes":  declare(60, between(5, 1440)),
+	"auth.resetMaxActive":     declare(3, between(1, 100)),
 
 	"registration.startCredits":  declare(500, between(0, 1_000_000)),
 	"registration.maxPerIp":      declare(5, between(1, 1000)),

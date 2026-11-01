@@ -99,6 +99,25 @@ func TestForgotAnswersTheSameForEveryPair(t *testing.T) {
 	}
 }
 
+func TestForgotStopsMailingAtTheLimit(t *testing.T) {
+	db, mux := newSite(t)
+	server := mailServer(t, func(key string, value any) { setSetting(t, db, key, value) })
+	habbo(t, db, "admin@example.com", "Admin")
+	setSetting(t, db, "auth.resetMaxActive", 2)
+
+	for range 4 {
+		wantPage(t, serve(mux, "POST", "/forgot", nil, forgot("Admin", "admin@example.com")), http.StatusOK, "Sent:true")
+	}
+
+	server.Next(t)
+	server.Next(t)
+	select {
+	case message := <-server.Messages:
+		t.Errorf("a third mail went out, to %q", message.To)
+	case <-time.After(200 * time.Millisecond):
+	}
+}
+
 func TestForgotKeepsWhatWasTyped(t *testing.T) {
 	_, mux := newSite(t)
 	wantPage(t, serve(mux, "POST", "/forgot", nil, forgot("Somebody", "some@example.com")), http.StatusOK, "Username:Somebody", "Email:some@example.com")

@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/kronothepenguin/project-reborn/packages/store"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // Reset is a started password reset, with the habbo and the address as stored.
@@ -17,8 +18,9 @@ type Reset struct {
 }
 
 // CreateReset starts a password reset for the account of email, when the habbo
-// called name belongs to it. For any other pair it returns nil and no error, so
-// the caller can answer the same way in every case.
+// called name belongs to it. For any other pair, and while the account holds
+// auth.resetMaxActive unexpired links, it returns nil and no error, so the caller
+// can answer the same way in every case.
 func CreateReset(ctx context.Context, db *sql.DB, name, email string) (*Reset, error) {
 	now := clock().UTC()
 	q := store.New(db)
@@ -34,14 +36,18 @@ func CreateReset(ctx context.Context, db *sql.DB, name, email string) (*Reset, e
 	}
 
 	token, id := newToken()
-	err = q.CreatePasswordReset(ctx, store.CreatePasswordResetParams{
+	created, err := q.CreatePasswordReset(ctx, store.CreatePasswordResetParams{
 		ID:        id,
 		UserID:    account.UserID,
 		CreatedAt: now,
 		ExpiresAt: now.Add(minutes("auth.resetTokenMinutes")),
+		MaxActive: int64(settings.GetInt("auth.resetMaxActive")),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("auth: create reset: %w", err)
+	}
+	if created == 0 {
+		return nil, nil
 	}
 	return &Reset{Token: token, Name: account.Name, Email: account.Email}, nil
 }

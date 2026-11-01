@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [p1-14](/tasks/p1-14-reset-mail-limit.md): an account holds at most `auth.resetMaxActive` unexpired reset
+  links, checked in one statement, and `POST /forgot` answers the same way at the limit.
+- **Start** [p1-14](/tasks/p1-14-reset-mail-limit.md).
 - **Done** [p1-13](/tasks/p1-13-forgot-as-holo.md): `/forgot` asks for the username and the email as Holo does and
   mails Holo's reminder, with the link, only when both belong to one account. Signed-in visitors see Holo's page.
 - **Start** [p1-13](/tasks/p1-13-forgot-as-holo.md).

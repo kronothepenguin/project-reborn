@@ -387,12 +387,36 @@ func TestSettingsUpsertAndDelete(t *testing.T) {
 	}
 }
 
+func TestCreatePasswordResetKeepsTheLimit(t *testing.T) {
+	q := New(openTestDB(t))
+	ctx := t.Context()
+	user, _ := createUserWithHabbo(t, q, "krono@example.com", "Krono")
+	reset := func(id string, at time.Time) int64 {
+		t.Helper()
+		created, err := q.CreatePasswordReset(ctx, CreatePasswordResetParams{ID: id, UserID: user.ID, CreatedAt: at, ExpiresAt: at.Add(time.Hour), MaxActive: 2})
+		if err != nil {
+			t.Fatalf("CreatePasswordReset: %v", err)
+		}
+		return created
+	}
+
+	if reset("first", testNow) != 1 || reset("second", testNow) != 1 {
+		t.Fatal("a reset under the limit did not go in")
+	}
+	if reset("third", testNow) != 0 {
+		t.Error("a reset over the limit went in")
+	}
+	if reset("fourth", testNow.Add(2*time.Hour)) != 1 {
+		t.Error("expired resets still count against the limit")
+	}
+}
+
 func TestPasswordResetsExpire(t *testing.T) {
 	q := New(openTestDB(t))
 	ctx := t.Context()
 	user, _ := createUserWithHabbo(t, q, "krono@example.com", "Krono")
 
-	if err := q.CreatePasswordReset(ctx, CreatePasswordResetParams{ID: "reset-digest", UserID: user.ID, CreatedAt: testNow, ExpiresAt: testNow.Add(time.Hour)}); err != nil {
+	if _, err := q.CreatePasswordReset(ctx, CreatePasswordResetParams{ID: "reset-digest", UserID: user.ID, CreatedAt: testNow, ExpiresAt: testNow.Add(time.Hour), MaxActive: 1}); err != nil {
 		t.Fatalf("CreatePasswordReset: %v", err)
 	}
 	if reset, err := q.GetActivePasswordReset(ctx, GetActivePasswordResetParams{ID: "reset-digest", Now: testNow.Add(time.Minute)}); err != nil || reset.UserID != user.ID {

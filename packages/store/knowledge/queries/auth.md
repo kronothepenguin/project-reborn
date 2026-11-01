@@ -107,8 +107,10 @@ timestamp: 2026-10-27T21:44:59+00:00
 
 ## CreatePasswordReset
 
-- Cardinality: `:exec`
-- Inputs: `id` (token digest), `user_id`, `created_at`, `expires_at`
+- Cardinality: `:execrows`
+- Inputs: `id` (token digest), `user_id`, `created_at`, `expires_at`, `max_active`
+- Result: 1 when the row went in, 0 when the user already holds `max_active` unexpired resets. One statement counts and
+  inserts, so that requests at the same moment cannot pass the limit together
 - Tables: `password_resets`
 
 ## GetActivePasswordReset
