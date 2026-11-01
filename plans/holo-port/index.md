@@ -14,7 +14,7 @@ and `install.php` becomes `packages/installer`.
 2. Read the newest entries of the [log](/log.md).
 3. Open the [task index](/tasks/index.md): in-progress tasks first, then the todo tasks of the current phase.
 
-Current phase: [P2 Me and account](/phases/p2-me-account.md), with [HK-A](/phases/hk-a-housekeeping-core.md) in parallel.
+Current phase: [HK-A Housekeeping core](/phases/hk-a-housekeeping-core.md).
 
 ## Contents
 

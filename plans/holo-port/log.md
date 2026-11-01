@@ -2,6 +2,10 @@
 
 ## 2026-11-01
 
+- **Update** P2 is done, and HK-A runs on the `hk-a` branch.
+- **Done** [p2-07](/tasks/p2-07-exit-check.md): P2 meets its exit criteria from a clean build, with 223 browser checks
+  and every gate passing, and the differences from Holo are listed.
+- **Start** [p2-07](/tasks/p2-07-exit-check.md).
 - **Done** [p2-06](/tasks/p2-06-several-habbos.md): a user can add habbos up to `registration.maxHabbosPerUser` and
   switch the active one.
 - **Start** [p2-06](/tasks/p2-06-several-habbos.md).

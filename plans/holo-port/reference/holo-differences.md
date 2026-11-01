@@ -10,7 +10,7 @@ tags: [holo]
 # How to read this
 
 [0034](/decisions/0034-behaviour-matches-holo.md) makes every page behave exactly as Holo does. Anything else is listed
-here, by reason. This list covers the signed-out pages of [P1](/phases/p1-signed-out.md).
+here, by reason. This list covers [P1](/phases/p1-signed-out.md) and [P2](/phases/p2-me-account.md).
 
 # Safer than Holo
 
@@ -28,6 +28,8 @@ here, by reason. This list covers the signed-out pages of [P1](/phases/p1-signed
 | Register | Posts the parent's address, and ignores it | Asks for it and checks it, and it never leaves the browser | A third person's address has no use here |
 | Register | Refuses requests by their `Referer` | Cross-origin protection on every `POST` | The header is optional and can be forged |
 | Ban | The page answers 200 | The same page answers 403 | The status says what happened; a browser shows no difference |
+| Me | `me.php?do=RemoveFeedItem` removes an alert on a `GET` | Only `POST /me/alerts/{id}/dismiss` does, for the habbo's own alerts | Any site could trigger a `GET`, and Holo took the id from the address |
+| Motto | Stored with `htmlspecialchars` | Stored as typed and escaped when shown | Escaping belongs to the output |
 
 # Changed by a decision
 
@@ -45,6 +47,11 @@ here, by reason. This list covers the signed-out pages of [P1](/phases/p1-signed
 | Every page | `Powered by HoloCMS © 2008 Meth0d.` | `Powered by Project Reborn ©` | [0048](/decisions/0048-footer-names-reborn.md) |
 | After registering | `welcome.php` picks a first room | Goes to `/me` | [0013](/decisions/0013-defer-game-server-features.md) |
 | After signing in | `me.php` | A minimal `/me`, until P2 | [0031](/decisions/0031-p1-minimal-me-page.md) |
+| Header | `Enter <site>` for guests | `<site> is offline` | [0013](/decisions/0013-defer-game-server-features.md) |
+| Me | `Enter <site>` | `Hotel Closed` | [0013](/decisions/0013-defer-game-server-features.md) |
+| Header | One habbo per account | `Switch habbo` with several, and `/account/habbos` | [0001](/decisions/0001-user-owns-many-habbos.md) |
+| Header | Housekeeping is `housekeeping.php` | `site.housekeepingUrl`, because housekeeping can run on its own port | [0003](/decisions/0003-housekeeping-under-prefix.md) |
+| Account | An email can be shared | `This e-mail address already has an account.` | [0001](/decisions/0001-user-owns-many-habbos.md) |
 | Maintenance | An `Administrator Login` link to housekeeping | A sign-in form on the page | The plan: staff sign in with the shared session |
 | Maintenance | Redirects every page to `maintenance.php` | Serves the page on every address with 503 | The plan |
 | A password change | The other session goes to `index.php?error=1`, reading `Invalid username or password.` | The other session just ends | [0018](/decisions/0018-password-reset-by-email.md) ends every session, and the port cannot tell that from an expired one |
@@ -64,6 +71,11 @@ here, by reason. This list covers the signed-out pages of [P1](/phases/p1-signed
 | Texts | `occured`, `refered`, `wich`, `registration progress` | Spelled correctly |
 | Texts | `stored in a secure MySQL database` | `stored in a secure database`, because it is not MySQL |
 | Ban | No text for a ban without an end, which the schema now allows | `This ban does not expire.` |
+| Me | `elseif($age == 3 \|\| $age = 33)` assigns, so most birthdays read `33rd` | The right ordinal |
+| Me | The motto field opens empty, because the script is given `""` | It opens with the motto |
+| Me | Clearing the motto leaves nothing to click | The prompt comes back |
+| Account | The newsletter box on the email form starts unchecked and is ignored | It shows and saves the choice |
+| Texts | `shiney`, `basicly`, `automaticly`, `referal`, `benifits` | Spelled correctly |
 
 # Kept as in Holo, on purpose
 
@@ -72,10 +84,19 @@ here, by reason. This list covers the signed-out pages of [P1](/phases/p1-signed
 - The parent's bubble says `under 12` and appears up to the age of 12.
 - `Your password must have at least 6 characters and it must contain both letters and numbers.` promises a rule on
   letters and numbers that Holo never checked, and the port does not either.
+- The motto allows 38 characters on `/me` and 32 on `/account/profile`.
+- The email and password forms ask for the birth date, which the plan had dropped.
+- `Refer Options` describes a field during registration that exists neither in Holo nor here.
+- A password change ends the visitor's own session too. It also ends open reset links, which Holo did not have.
 
 # Waiting for a later phase
 
 | Holo | Phase |
 | --- | --- |
 | The tag cloud on the landing page | [P4](/phases/p4-community.md) |
-| `Housekeeping` in the footer for staff, and `Alert: The site is currently turned off!` | [P2](/phases/p2-me-account.md) |
+| `My Groups` in the header, and the groups habblet on `/me` | [P5](/phases/p5-groups-forum.md) |
+| `My Friends`, `My Rooms` and the recommended rooms | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
+| The tags habblet, the news promo and the banners on `/me` | [P4](/phases/p4-community.md) |
+| The wardrobe on `/account/looks` | [P6](/phases/p6-economy.md) |
+| The page behind the header's habbo search, `/home?name=` | The deferred [P3](/phases/p3-homes.md) |
+| The pages behind Help, Community and Credits | [P7](/phases/p7-help.md), [P4](/phases/p4-community.md), [P6](/phases/p6-economy.md) |

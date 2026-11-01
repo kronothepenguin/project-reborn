@@ -2,7 +2,7 @@
 type: Phase
 title: P2 Me and account
 description: The community layout and header, the Me page, account settings and owning several habbos.
-status: active
+status: done
 timestamp: 2026-11-01T18:13:48+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p2, cms]
@@ -48,4 +48,4 @@ A signed-in user sees Holo's community chrome, their Me page and account setting
 - [p2-04 Build the account pages' frame and Looks](/tasks/p2-04-account-looks.md) — done
 - [p2-05 Build the motto, email, password and referral tabs](/tasks/p2-05-account-details.md) — done
 - [p2-06 Own several habbos](/tasks/p2-06-several-habbos.md) — done
-- [p2-07 Verify the P2 exit criteria](/tasks/p2-07-exit-check.md) — todo
+- [p2-07 Verify the P2 exit criteria](/tasks/p2-07-exit-check.md) — done
