@@ -43,6 +43,8 @@ go build -o ./apps/housekeeping/tmp/housekeeping ./apps/housekeeping/cmd/houseke
   `store`, `virtual`), and rebuilds the dev runner on Go changes.
 - The runners open the database with `store.FromConfig()`, which creates it when
   it does not exist.
+- `Mount` registers only `/housekeeping/...`, and the dev runner also proxies `/` to the
+  astro dev server, because Vite emits its own paths at the root whatever the base.
 - Astro page edits are hot-reloaded by the astro dev server; the runner
   re-fetches pages on every request, so no Go restart is needed for
   frontend-only changes.

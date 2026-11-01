@@ -42,7 +42,7 @@ Results (2026-11-01):
   with nothing changed, a row holding values, no joint check, no retry of a refused key, a blank password that clears, a
   refused password shown again, and a route without its attribute. `Declared` handing out a secret survives in
   `packages/housekeeping`, because the field masks by the `Secret` flag too, and `packages/virtual` catches it.
-- On the production binaries, in a real Chromium, all 20 checks passed: all 8 forms open, saving and Holo's messages, a
+- On the production binaries, in a real Chromium, all 21 checks passed: all 8 forms open, saving and Holo's messages, a
   refusal with 422 that keeps what was typed, the mail password never on the page, and both password limits rising and
   falling together.
 

@@ -68,7 +68,7 @@ starts.
 - [hk-a-06 Build the dashboard and the shared note](/tasks/hk-a-06-dashboard.md) — GET /housekeeping/ shows the counts, the holders of housekeeping.accessGroups and the note, and POST /note saves it with settings.Set. **done**
 - [hk-a-07 Build the settings editor](/tasks/hk-a-07-settings-editor.md) — GET /settings and POST /settings/{section} give a form over each group of declared settings, saved with settings.Set, all or nothing. **done**
 - [hk-a-08 Build access groups](/tasks/hk-a-08-access-groups.md) — Create and edit access groups, tick their attributes, add and remove members with a display habbo, and refuse to leave nobody who can manage them. **done**
-- [hk-a-09 Verify the HK-A exit criteria](/tasks/hk-a-09-exit-check.md) — Run housekeeping on the production binaries in a real browser, list the differences from Holo, and run every gate.
+- [hk-a-09 Verify the HK-A exit criteria](/tasks/hk-a-09-exit-check.md) — Run housekeeping on the production binaries in a real browser, list the differences from Holo, and run every gate. **done**
 
 ## Later phases
 

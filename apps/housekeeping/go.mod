@@ -4,6 +4,7 @@ go 1.27.0
 
 require (
 	github.com/kronothepenguin/project-reborn/packages/astro v0.0.0-20261030224227-d140f6a6eb43
+	github.com/kronothepenguin/project-reborn/packages/config v0.0.0-20261030224227-d140f6a6eb43
 	github.com/kronothepenguin/project-reborn/packages/store v0.0.0-20261030224227-d140f6a6eb43
 )
 
@@ -23,7 +24,6 @@ require (
 	github.com/gohugoio/hugo v0.164.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
-	github.com/kronothepenguin/project-reborn/packages/config v0.0.0-20261030224227-d140f6a6eb43 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/ncruces/go-strftime v1.0.0 // indirect

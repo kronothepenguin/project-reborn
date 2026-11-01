@@ -15,10 +15,11 @@ import (
 )
 
 func main() {
-	baseURL, err := url.Parse("http://localhost:22177/housekeeping")
+	astroURL, err := url.Parse("http://localhost:22177")
 	if err != nil {
 		panic(err)
 	}
+	baseURL := astroURL.JoinPath("housekeeping")
 	resolver := astro.MakeServerResolver(baseURL)
 	proxy := httputil.NewSingleHostReverseProxy(baseURL)
 
@@ -32,6 +33,10 @@ func main() {
 
 	mux := http.NewServeMux()
 	h.Mount(mux)
+
+	// Vite emits its own paths, such as /@vite/client, at the root of the dev
+	// server whatever the base, and Mount leaves / alone.
+	mux.Handle("/", httputil.NewSingleHostReverseProxy(astroURL))
 
 	server := http.Server{
 		Addr:    net.JoinHostPort(cfg.Housekeeping.Host, strconv.Itoa(cfg.Housekeeping.Port)),

@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [hk-a-09](/tasks/hk-a-09-exit-check.md): every exit criterion of HK-A holds on the production binaries: 116
+  browser checks, 317 Go tests and 120 component tests pass, and the differences from Holo are listed.
+- **Start** [hk-a-09](/tasks/hk-a-09-exit-check.md).
 - **Done** [hk-a-08](/tasks/hk-a-08-access-groups.md): staff with `housekeeping.accessGroups` manage groups, attributes
   and members with display habbos, and a change that would leave nobody able to manage them is refused and logged.
 - **Start** [hk-a-08](/tasks/hk-a-08-access-groups.md).

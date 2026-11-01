@@ -15,7 +15,7 @@ Packages hold the code of each program, and `apps/<name>` is a thin runner aroun
 | --- | --- | --- | --- | --- |
 | Installer | `packages/installer` | `apps/installer` | built | Writes `config.json`, creates the database, the site settings and the first administrator |
 | CMS | `packages/cms` | `apps/cms` | being built | The public site |
-| Housekeeping | `packages/housekeeping` | `apps/housekeeping` | planned | The staff panel |
+| Housekeeping | `packages/housekeeping` | `apps/housekeeping` | HK-A built | The staff panel |
 | Game server | `packages/server` | not decided | deferred ([0013](/decisions/0013-defer-game-server-features.md)) | The hotel itself |
 | Orchestrator | none | `apps/reborn` | later ([0039](/decisions/0039-orchestrator-is-a-later-project.md)) | Runs all of the above from one binary |
 
@@ -55,10 +55,13 @@ tasks in its `New`, written as `scheduler.Every(1, scheduler.Hour, task)`.
 
 This is how programs run today, and how development works.
 
-- Each program has its own process and port, from its runner.
+- Each program has its own process and port, from its runner. The CMS and housekeeping read theirs from `config.json`.
 - Each opens the database named by `config.json` with `store.FromConfig()`.
 - Each holds its own copy of the settings, loaded when it starts (`settings.Load`).
-- A settings change in housekeeping reaches the CMS at the CMS's next start. Nothing polls for changes.
+- A settings change in housekeeping reaches the CMS at the CMS's next start. Nothing polls for changes, so turning
+  maintenance on shows the maintenance page only then.
+- Housekeeping has no sign-in of its own. A guest goes to `site.url`, and the session cookie reaches housekeeping because
+  cookies do not depend on the port.
 
 The open question is how a running CMS learns of a change. [0040](/decisions/0040-housekeeping-writes-settings.md) expects
 IPC between the processes, and its design belongs to [HK-A](/phases/hk-a-housekeeping-core.md).

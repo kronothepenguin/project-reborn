@@ -55,7 +55,9 @@ for every mutation: actor user, target user and/or habbo, action, detail, IP and
 # Layout and UI
 
 - Six tabs (Dashboard, Server, Site & Content, HoloCMS, Users & Moderation, Help), a left menu per tab, and a
-  content column; the new layout keeps the tab strip, left menu and content structure.
+  content column; the new layout keeps the tab strip, left menu and content structure, in the design system of
+  [0041](/decisions/0041-housekeeping-design-system.md). [The differences](/reference/holo-differences.md#housekeeping) list
+  what changed.
 - Reusable pieces: form panel (title bar, label column, input column, sub-header rows), data table, message line,
   dashboard panes.
 - Colours: [housekeeping colours](/reference/colours.md#housekeeping).

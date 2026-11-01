@@ -8,7 +8,7 @@ parallel with P2, on feature branches ([0046](/decisions/0046-main-and-feature-b
 1. [P0 Foundations](/phases/p0-foundations.md) — Store, config, virtual settings, auth, the complete schema, the installer and the CMS wiring that every later phase builds on. **Done.**
 2. [P1 Signed-out site](/phases/p1-signed-out.md) — Landing and login, registration with referrals, logout, forgot and reset password, legal pages and maintenance. **Done.**
 3. [P2 Me and account](/phases/p2-me-account.md) — The community layout and header, the Me page, account settings and owning several habbos. **Active.**
-4. [HK-A Housekeeping core](/phases/hk-a-housekeeping-core.md) — Housekeeping scaffold and layout, dashboard, settings editor, access groups and the staff log. **Active.**
+4. [HK-A Housekeeping core](/phases/hk-a-housekeeping-core.md) — Housekeeping scaffold and layout, dashboard, settings editor, access groups and the staff log. **Done.**
 5. [HK-B Users and moderation](/phases/hk-b-users-moderation.md) — Housekeeping search and editing of users and habbos, credits, badges, bans, alerts and the help queue.
 6. [P4 Community](/phases/p4-community.md) — Community page, news, tags with the tag cloud and tag fight, the staff page and banners, with their housekeeping editors.
 7. [P5 Groups and forum](/phases/p5-groups-forum.md) — Groups with group homes, membership management, the badge editor and renderer, and the site-wide discussion board.
