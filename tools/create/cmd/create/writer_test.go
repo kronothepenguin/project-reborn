@@ -70,6 +70,52 @@ func TestWriteGeneratesThePlaceholder(t *testing.T) {
 	}
 }
 
+// A new app starts in the shape of the apps that exist: the runner opens the
+// database and hands it to New, and a server that cannot start says why.
+func TestWriteGeneratesTheCurrentAppShape(t *testing.T) {
+	root := t.TempDir()
+	if err := write(root, "probe", 10001, 20001); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	for file, wants := range map[string][]string{
+		"apps/probe/cmd/probe/main.go": {
+			"db := store.FromConfig()",
+			"probe.New(db,",
+			"probe.WithResolver(resolver)",
+			"probe.WithStatic(fileServer)",
+			"log.Fatalln(server.ListenAndServe())",
+		},
+		"apps/probe/cmd/probe-dev/main.go": {
+			"db := store.FromConfig()",
+			"probe.New(db,",
+			"probe.WithResolver(resolver)",
+			"probe.WithStatic(proxy)",
+			"log.Fatalln(server.ListenAndServe())",
+		},
+		"packages/probe/probe.go": {
+			"func New(db *sql.DB, opts ...Option) *Probe {",
+			"func (c *Probe) Mount(mux *http.ServeMux) {",
+		},
+		"packages/probe/internal/router/router.go": {"DB       *sql.DB"},
+		"packages/probe/src/pages/index.astro":     {`<Counter client:only="svelte" />`},
+		"packages/probe/src/components/counter.svelte": {
+			"$state(0)",
+			"onclick=",
+		},
+	} {
+		data, err := os.ReadFile(filepath.Join(root, file))
+		if err != nil {
+			t.Errorf("read the generated %s: %v", file, err)
+			continue
+		}
+		for _, want := range wants {
+			if !strings.Contains(string(data), want) {
+				t.Errorf("the generated %s lacks %q:\n%s", file, want, data)
+			}
+		}
+	}
+}
+
 // Generated code passes the same checks as hand-written code, so that
 // make create leaves nothing to fix.
 func TestWriteGeneratesFormattedFiles(t *testing.T) {

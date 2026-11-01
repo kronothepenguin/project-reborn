@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [hk-a-01](/tasks/hk-a-01-create-templates.md): `tools/create` generates runners that open the db with
+  `store.FromConfig()` and hand it to `New`, and a generated project compiles and builds.
+- **Start** [hk-a-01](/tasks/hk-a-01-create-templates.md).
 - **Create** [hk-a-01](/tasks/hk-a-01-create-templates.md) to [hk-a-09](/tasks/hk-a-09-exit-check.md): HK-A is active on the
   `hk-a` branch, beside P2.
 - **Done** [p2-01](/tasks/p2-01-delete-expired-sessions.md): a task on `packages/scheduler` deletes sessions once they

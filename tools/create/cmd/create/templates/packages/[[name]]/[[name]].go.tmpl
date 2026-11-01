@@ -1,33 +1,36 @@
 package {{.Name}}
 
 import (
+	"database/sql"
 	"embed"
 	"net/http"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/{{.Name}}/internal/router"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 //go:embed dist/*
 var DistFS embed.FS
 
-type {{.Name}} struct {
+type {{.Type}} struct {
+	db      *sql.DB
 	static  http.Handler
 	resolve astro.Resolver
 }
 
-type Option func(*{{.Name}})
+type Option func(*{{.Type}})
 
-func New(opts ...Option) *{{.Name}} {
-	c := &{{.Name}}{}
+func New(db *sql.DB, opts ...Option) *{{.Type}} {
+	c := &{{.Type}}{db: db}
 	for _, opt := range opts {
 		opt(c)
 	}
 	return c
 }
 
-func (c *{{.Name}}) Mount(mux *http.ServeMux) {
-	r := router.New(router.Deps{Resolver: c.resolve})
+func (c *{{.Type}}) Mount(mux *http.ServeMux) {
+	r := router.New(router.Deps{Resolver: c.resolve, DB: c.db, Queries: store.New(c.db)})
 
 	mux.HandleFunc("GET /{$}", r.HandleIndexView)
 
@@ -35,13 +38,13 @@ func (c *{{.Name}}) Mount(mux *http.ServeMux) {
 }
 
 func WithStatic(h http.Handler) Option {
-	return func(c *{{.Name}}) {
+	return func(c *{{.Type}}) {
 		c.static = h
 	}
 }
 
 func WithResolver(r astro.Resolver) Option {
-	return func(c *{{.Name}}) {
+	return func(c *{{.Type}}) {
 		c.resolve = r
 	}
 }

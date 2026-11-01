@@ -45,7 +45,7 @@ read the staff log; every change is logged.
 
 # Tasks
 
-- [hk-a-01 Bring the tools/create templates to the current conventions](/tasks/hk-a-01-create-templates.md) — todo
+- [hk-a-01 Bring the tools/create templates to the current conventions](/tasks/hk-a-01-create-templates.md) — done
 - [hk-a-02 Add the housekeeping section to packages/config](/tasks/hk-a-02-housekeeping-config.md) — todo
 - [hk-a-03 Scaffold housekeeping and guard its routes](/tasks/hk-a-03-scaffold-and-access.md) — todo
 - [hk-a-04 Build the housekeeping layout](/tasks/hk-a-04-layout.md) — todo

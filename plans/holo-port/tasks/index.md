@@ -60,7 +60,7 @@ starts.
 
 ## HK-A Housekeeping core
 
-- [hk-a-01 Bring the tools/create templates to the current conventions](/tasks/hk-a-01-create-templates.md) — Generate apps that open the db with store.FromConfig, pass it to New and report a failed server, so that housekeeping is right from its first commit.
+- [hk-a-01 Bring the tools/create templates to the current conventions](/tasks/hk-a-01-create-templates.md) — Generate apps that open the db with store.FromConfig, pass it to New and report a failed server, so that housekeeping is right from its first commit. **done**
 - [hk-a-02 Add the housekeeping section to packages/config](/tasks/hk-a-02-housekeeping-config.md) — Declare housekeeping.host and housekeeping.port, mirroring cms.host and cms.port, and have the installer write their defaults.
 - [hk-a-03 Scaffold housekeeping and guard its routes](/tasks/hk-a-03-scaffold-and-access.md) — Generate packages/housekeeping and apps/housekeeping, mount them under /housekeeping alone and on a shared mux, and keep out guests and non-staff.
 - [hk-a-04 Build the housekeeping layout](/tasks/hk-a-04-layout.md) — The layout of docs/hk.png as a new design system, the Table primitive, the previous login and Holo's Access Denied page.
