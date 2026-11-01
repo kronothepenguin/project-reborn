@@ -60,6 +60,10 @@ serves the built frontend from the embedded `dist/`.
   field states, validates on `Done`, and handles the age limit of 6 and the
   parent's email up to 12, which is never sent. Passwords and addresses are checked
   in the browser, so a password stays on the page until the form is sent.
+- `habbo/avatar-editor` takes `saveButton`, `clubNotice` and `oldFigureNotice` only on
+  `/account/looks`, as only Holo's `settings.js` listens to them. The editor reports
+  that it cannot proceed until it is first touched, so on `/register` that would
+  stop a visitor who keeps the suggested look.
 - Islands get no `[[ ]]` values, so the page keeps the name and the look in
   inputs that Go fills in. `habbo/avatar-editor` reads the hidden `figure`,
   `gender` and `editorState` inputs on start and writes every change back, which

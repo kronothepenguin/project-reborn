@@ -21,7 +21,8 @@
     | "white"
     | "promogray"
     | "loginbox"
-    | "rooms";
+    | "rooms"
+    | "club";
 
   interface Props extends PaperProps {
     variant?: Variant;
@@ -46,6 +47,7 @@
     promogray: "bg-orange-800",
     loginbox: "bg-neutral-500",
     rooms: "bg-cyan-800",
+    club: "bg-amber-300",
     white: "bg-white",
   };
 

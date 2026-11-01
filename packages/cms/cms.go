@@ -78,6 +78,11 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /me/motto", page(auth.RequireSession(http.HandlerFunc(r.HandleMeMotto))))
 	mux.Handle("POST /me/alerts/{id}/dismiss", page(auth.RequireSession(http.HandlerFunc(r.HandleMeAlertDismiss))))
 
+	account := func(h http.HandlerFunc) http.Handler { return page(auth.RequireSession(h)) }
+	mux.Handle("GET /account", account(r.HandleAccountView))
+	mux.Handle("GET /account/looks", account(r.HandleAccountLooksView))
+	mux.Handle("POST /account/looks", account(r.HandleAccountLooks))
+
 	mux.Handle("GET /register", guestPage(r.HandleRegisterView))
 	mux.Handle("POST /register", guestPage(r.HandleRegister))
 	mux.Handle("POST /register/check-name", page(http.HandlerFunc(r.HandleRegisterCheckName)))

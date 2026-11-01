@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [p2-04](/tasks/p2-04-account-looks.md): the account pages have Holo's frame, with the settings navigation
+  and the Join Club box, and `/account/looks` saves a look with the editor listening as `settings.js` does.
+- **Start** [p2-04](/tasks/p2-04-account-looks.md).
 - **Done** [p2-03](/tasks/p2-03-me-page.md): `/me` has Holo's plate, inline motto editor and feed, with alerts,
   birthday, last sign-in and the staff help count.
 - **Start** [p2-03](/tasks/p2-03-me-page.md).

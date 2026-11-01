@@ -180,6 +180,28 @@ func (q *Queries) ListUserAvatars(ctx context.Context, userID int64) ([]Avatar, 
 	return items, nil
 }
 
+const updateAvatarLook = `-- name: UpdateAvatarLook :exec
+UPDATE avatars SET figure = ?1, gender = ?2, updated_at = ?3
+WHERE id = ?4
+`
+
+type UpdateAvatarLookParams struct {
+	Figure    string
+	Gender    string
+	UpdatedAt time.Time
+	ID        int64
+}
+
+func (q *Queries) UpdateAvatarLook(ctx context.Context, arg UpdateAvatarLookParams) error {
+	_, err := q.db.ExecContext(ctx, updateAvatarLook,
+		arg.Figure,
+		arg.Gender,
+		arg.UpdatedAt,
+		arg.ID,
+	)
+	return err
+}
+
 const updateAvatarMotto = `-- name: UpdateAvatarMotto :exec
 UPDATE avatars SET motto = ?1, updated_at = ?2
 WHERE id = ?3

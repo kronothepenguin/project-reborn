@@ -1,0 +1,49 @@
+---
+import { Button, Notice } from "@project-reborn/components";
+import clubSymbol from "../../assets/community/hc_mini.png";
+import SettingsFrame from "../../components/account/settings-frame.astro";
+import AvatarEditor from "../../components/habbo/avatar-editor.svelte";
+---
+
+<SettingsFrame active="Looks" heading="Change your looks">
+  <AvatarEditor
+    client:only="svelte"
+    figureInput="settings-figure"
+    genderInput="settings-gender"
+    stateInput="settings-state"
+    saveButton="settings-submit"
+    clubNotice="settings-hc"
+    oldFigureNotice="settings-oldfigure"
+  />
+
+  <div id="settings-hc" hidden>
+    <Notice>
+      Items marked with the Habbo Club symbol <img class="inline" src={clubSymbol.src} alt="" /> are available only to Habbo Club members. <a class="text-amber-300 underline" href="/club">Join now!</a>
+    </Notice>
+  </div>
+
+  <div id="settings-oldfigure" hidden>
+    <Notice variant="orange">
+      Your Habbo had clothes or colors that are not selectable anymore. Please
+      save your new looks here.
+    </Notice>
+  </div>
+
+  <form method="post" action="/account/looks" class="text-right">
+    <input
+      type="hidden"
+      id="settings-figure"
+      name="figure"
+      value="[[ .Figure ]]"
+      data-club="[[ if .ClubDays ]]true[[ else ]]false[[ end ]]"
+    />
+    <input
+      type="hidden"
+      id="settings-gender"
+      name="gender"
+      value="[[ .Gender ]]"
+    />
+    <input type="hidden" id="settings-state" name="editorState" />
+    <Button id="settings-submit" type="submit" disabled>Save changes</Button>
+  </form>
+</SettingsFrame>

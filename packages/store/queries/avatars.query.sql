@@ -28,3 +28,7 @@ LIMIT sqlc.arg(count);
 -- name: UpdateAvatarMotto :exec
 UPDATE avatars SET motto = sqlc.arg(motto), updated_at = sqlc.arg(updated_at)
 WHERE id = sqlc.arg(id);
+
+-- name: UpdateAvatarLook :exec
+UPDATE avatars SET figure = sqlc.arg(figure), gender = sqlc.arg(gender), updated_at = sqlc.arg(updated_at)
+WHERE id = sqlc.arg(id);

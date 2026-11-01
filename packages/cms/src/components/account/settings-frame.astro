@@ -1,0 +1,89 @@
+---
+import { Card, Link, Notice } from "@project-reborn/components";
+import clubBanner from "../../assets/community/hc_banner.png";
+import Community from "../../layouts/community.astro";
+
+interface Props {
+  active: string;
+  heading: string;
+}
+
+const { active, heading } = Astro.props;
+
+const items = [
+  { label: "Looks", href: "/account/looks" },
+  { label: "Motto & Preferences", href: "/account/profile" },
+  { label: "Email", href: "/account/email" },
+  { label: "Password", href: "/account/password" },
+  { label: "Refer Options", href: "/account/referral" },
+  { label: "Habbos", href: "/account/habbos" },
+];
+---
+
+<Community
+  title="[[ .ShortName ]] ~ Account Settings"
+  tab="me"
+  sub="Account Settings"
+>
+  <div class="flex items-start gap-2.5 pt-2.5">
+    <div class="flex w-[200px] shrink-0 flex-col gap-2">
+      <Card color="settings">
+        <span slot="header">Account Settings</span>
+
+        <ul class="flex flex-col gap-1 text-olive-800">
+          {
+            items.map(({ label, href }) => (
+              <li class:list={[label === active && "font-bold"]}>
+                {label === active ? (
+                  label
+                ) : (
+                  <a class="hover:underline" href={href}>
+                    {label}
+                  </a>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+      </Card>
+
+      [[ if not .ClubDays ]]
+      <Card color="club">
+        <span slot="header">Join [[ .ShortName ]] Club</span>
+
+        <div class="flex flex-col gap-2">
+          <img
+            src={clubBanner.src}
+            width={clubBanner.width}
+            height={clubBanner.height}
+            alt=""
+          />
+          <p>
+            [[ .ShortName ]] Club is our VIP members-only club: absolutely no
+            riff-raff admitted! Members enjoy a wide range of benefits, including
+            exclusive clothes, free gifts and an extended Friend List.
+          </p>
+          <p class="text-center font-bold">
+            <Link variant="yellow" href="/club">Check out [[ .ShortName ]] Club &gt;&gt;</Link>
+          </p>
+        </div>
+      </Card>
+      [[ end ]]
+    </div>
+
+    <div class="w-[550px] shrink-0">
+      <Card color="settings">
+        <span slot="header">{heading}</span>
+
+        <div class="flex flex-col gap-2 text-olive-800">
+          [[ if .Result ]][[ if .Failed ]]
+          <Notice>[[ .Result ]]</Notice>
+          [[ else ]]
+          <Notice variant="green">[[ .Result ]]</Notice>
+          [[ end ]][[ end ]]
+          <slot />
+        </div>
+      </Card>
+    </div>
+  </div>
+</Community>
