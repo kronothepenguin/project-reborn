@@ -2,7 +2,7 @@
 type: Phase
 title: P0 Foundations
 description: Store, config, virtual settings, auth, the complete schema, the installer and the CMS wiring that every later phase builds on.
-status: active
+status: done
 timestamp: 2026-11-01T18:13:48+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p0]
@@ -65,4 +65,4 @@ The CMS then starts on top of it with sessions, attributes, live settings and cr
 - [p0-21 Add make install to every project](/tasks/p0-21-make-install.md) — done
 - [p0-22 Keep the dist placeholder template in tools/create](/tasks/p0-22-keep-dist-template.md) — done
 - [p0-23 Build packages/scheduler](/tasks/p0-23-scheduler.md) — done
-- [p0-24 Check that every program works on an empty database](/tasks/p0-24-empty-database.md) — todo
+- [p0-24 Check that every program works on an empty database](/tasks/p0-24-empty-database.md) — done

@@ -2,6 +2,10 @@
 
 ## 2026-11-01
 
+- **Update** P0 is done again and P1 is active.
+- **Done** [p0-24](/tasks/p0-24-empty-database.md): the CMS works on an empty database it creates, and the installer
+  still works on that database afterwards, once.
+- **Start** [p0-24](/tasks/p0-24-empty-database.md).
 - **Done** [p0-23](/tasks/p0-23-scheduler.md): `packages/scheduler` runs tasks written as `scheduler.Every(1,
   scheduler.Hour, task)`, with one scheduler per process.
 - **Start** [p0-23](/tasks/p0-23-scheduler.md).

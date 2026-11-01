@@ -196,6 +196,37 @@ func TestCreateAdministrator(t *testing.T) {
 	}
 }
 
+// Another program may have created the database and taken registrations before
+// the installer first runs. A registered habbo is no administrator.
+func TestCreateAdministratorOnADatabaseWithUsers(t *testing.T) {
+	s := configure(t)
+	installation, _ := s.Current()
+	now := time.Now().UTC()
+	user, err := store.New(installation.DB).CreateUser(t.Context(), store.CreateUserParams{
+		Email:     "first@example.com",
+		BornOn:    time.Date(1990, time.May, 1, 0, 0, 0, 0, time.UTC),
+		CreatedIP: "127.0.0.1",
+		CreatedAt: now,
+		UpdatedAt: now,
+	})
+	if err != nil {
+		t.Fatalf("CreateUser: %v", err)
+	}
+
+	if done, err := s.Installed(t.Context()); err != nil || done {
+		t.Fatalf("Installed() = %t, %v, want false", done, err)
+	}
+	if err := s.CreateAdministrator(t.Context(), testAdministrator()); err != nil {
+		t.Fatalf("CreateAdministrator: %v", err)
+	}
+	if _, err := store.New(installation.DB).GetUser(t.Context(), user.ID); err != nil {
+		t.Errorf("the registered user is gone: %v", err)
+	}
+	if err := s.CreateAdministrator(t.Context(), testAdministrator()); !errors.Is(err, ErrInstalled) {
+		t.Errorf("a second CreateAdministrator = %v, want ErrInstalled", err)
+	}
+}
+
 func TestCreateAdministratorValidates(t *testing.T) {
 	s := configure(t)
 	for name, c := range map[string]struct {

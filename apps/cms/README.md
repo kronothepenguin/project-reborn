@@ -40,9 +40,10 @@ go build -o ./apps/cms/tmp/cms ./apps/cms/cmd/cms
 - Air watches the `.go` files of `apps/cms`, `packages/astro`, `packages/cms`
   and the packages the CMS imports (`auth`, `config`, `store`, `virtual`),
   and rebuilds the dev runner on Go changes.
-- Run the installer first: the runners open the database with
-  `store.FromConfig()`, and `config.Get` writes a default `config.json` when it
-  is missing.
+- The runners open the database with `store.FromConfig()`, which creates it when
+  it does not exist, and `config.Get` writes a default `config.json` when it is
+  missing. The installer is only needed to change the default values and to
+  create the administrator.
 - Astro page edits are hot-reloaded by the astro dev server; the runner
   re-fetches pages on every request, so no Go restart is needed for
   frontend-only changes.

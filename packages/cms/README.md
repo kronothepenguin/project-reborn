@@ -22,6 +22,8 @@ serves the built frontend from the embedded `dist/`.
   `maintenance.html` with 503, except `POST /` (sign in), `POST /logout` and the
   static files; users holding `site.maintenanceBypass` see the site. A failed
   sign-in stays on the maintenance page.
+- The CMS works on an empty database: `store.FromConfig()` creates it, with the
+  default values, when it does not exist. The installer can still run on it later.
 - Signing in lands on `/me`, and `/` sends signed-in visitors there.
 - `/?ageLimit=true` shows `You are too young to register.`, where the registration's
   age check ends.

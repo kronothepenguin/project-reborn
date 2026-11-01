@@ -20,7 +20,9 @@ resolvers and serves the built frontend from the embedded `dist/`.
   status page.
 - `/site` and `/admin` redirect to `/config` until `config.json` exists.
 - A restarted installer continues: `New` opens the database named by an
-  existing `config.json` (`internal/setup`).
+  existing `config.json` (`internal/setup`). That also covers a database another
+  program created, because every program works on an empty database: the
+  installer then changes its default values and creates the administrator, once.
 - The runners wrap the mux in `http.NewCrossOriginProtection`, so a page on
   another site cannot post the forms to the installer.
 
