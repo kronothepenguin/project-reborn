@@ -89,6 +89,9 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("GET /account/password", account(r.HandleAccountPasswordView))
 	mux.Handle("POST /account/password", account(r.HandleAccountPassword))
 	mux.Handle("GET /account/referral", account(r.HandleAccountReferralView))
+	mux.Handle("GET /account/habbos", account(r.HandleAccountHabbosView))
+	mux.Handle("POST /account/habbos", account(r.HandleAccountHabbos))
+	mux.Handle("POST /account/habbos/{id}/switch", account(r.HandleAccountHabbosSwitch))
 
 	mux.Handle("GET /register", guestPage(r.HandleRegisterView))
 	mux.Handle("POST /register", guestPage(r.HandleRegister))

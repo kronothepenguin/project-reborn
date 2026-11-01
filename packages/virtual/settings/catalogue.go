@@ -31,11 +31,12 @@ var catalogue = map[string]declaration{
 	"auth.resetTokenMinutes":  declare(60, between(5, 1440)),
 	"auth.resetMaxActive":     declare(3, between(1, 100)),
 
-	"registration.startCredits":  declare(500, between(0, 1_000_000)),
-	"registration.maxPerIp":      declare(5, between(1, 1000)),
-	"registration.ipWindowHours": declare(24, between(1, 8760)),
-	"registration.defaultFigure": declare("hr-802-61.hd-190-1.ch-260-62.lg-280-110.sh-295-91.fa-1207-103", length(1, 255)),
-	"registration.defaultGender": declare("M", oneOf("M", "F")),
+	"registration.startCredits":     declare(500, between(0, 1_000_000)),
+	"registration.maxHabbosPerUser": declare(5, between(1, 100)),
+	"registration.maxPerIp":         declare(5, between(1, 1000)),
+	"registration.ipWindowHours":    declare(24, between(1, 8760)),
+	"registration.defaultFigure":    declare("hr-802-61.hd-190-1.ch-260-62.lg-280-110.sh-295-91.fa-1207-103", length(1, 255)),
+	"registration.defaultGender":    declare("M", oneOf("M", "F")),
 
 	"referral.enabled": declare(true, nil),
 	"referral.reward":  declare(50, between(1, 1_000_000)),
@@ -48,7 +49,7 @@ var catalogue = map[string]declaration{
 
 	"imaging.avatarUrl": declare("https://www.habbo.com/habbo-imaging/avatarimage", imager),
 
-	"features.landingPromo":         declare(true, nil),
+	"features.landingPromo":          declare(true, nil),
 	"features.birthdayNotifications": declare(true, nil),
 }
 

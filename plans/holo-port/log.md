@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [p2-06](/tasks/p2-06-several-habbos.md): a user can add habbos up to `registration.maxHabbosPerUser` and
+  switch the active one.
+- **Start** [p2-06](/tasks/p2-06-several-habbos.md).
 - **Done** [p2-05](/tasks/p2-05-account-details.md): the motto, email, password and referral tabs work as Holo's do,
   with the current password and birth date on both forms that change credentials.
 - **Start** [p2-05](/tasks/p2-05-account-details.md).

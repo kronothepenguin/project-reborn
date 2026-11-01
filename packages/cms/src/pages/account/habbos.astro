@@ -1,0 +1,66 @@
+---
+import { Avatar, Button, Input } from "@project-reborn/components";
+import SettingsFrame from "../../components/account/settings-frame.astro";
+import AvatarEditor from "../../components/habbo/avatar-editor.svelte";
+---
+
+<SettingsFrame active="Habbos" heading="Your Habbos">
+  <ul class="flex flex-col divide-y divide-gray-200">
+    [[ range .Habbos ]]
+    <li class="flex items-center gap-3 py-1">
+      <Avatar
+        size="s"
+        imagingUrl="[[ $.ImagingURL ]]"
+        figure="[[ .Figure ]]"
+        direction={4}
+        headDirection={4}
+        gesture="sml"
+        alt="[[ .Name ]]"
+      />
+      <span class="flex-1 font-bold">[[ .Name ]]</span>
+      [[ if .Active ]]
+      <span>Active</span>
+      [[ else ]]
+      <form method="post" action="/account/habbos/[[ .ID ]]/switch">
+        <Button type="submit" size="compact">Switch</Button>
+      </form>
+      [[ end ]]
+    </li>
+    [[ end ]]
+  </ul>
+
+  [[ if .CanAdd ]]
+  <h3 class="pt-2 text-xs font-bold">Add a habbo</h3>
+  <form method="post" action="/account/habbos" class="flex flex-col gap-2">
+    <input
+      type="hidden"
+      id="habbo-figure"
+      name="figure"
+      value="[[ .Figure ]]"
+    />
+    <input
+      type="hidden"
+      id="habbo-gender"
+      name="gender"
+      value="[[ .Gender ]]"
+    />
+    <input
+      type="hidden"
+      id="habbo-state"
+      name="editorState"
+      value="[[ .EditorState ]]"
+    />
+    <label class="flex items-center gap-2">
+      <span>Habbo name</span>
+      <Input name="name" value="[[ .NewName ]]" maxlength="24" variant="border" />
+    </label>
+    <AvatarEditor
+      client:only="svelte"
+      figureInput="habbo-figure"
+      genderInput="habbo-gender"
+      stateInput="habbo-state"
+    />
+    <div><Button type="submit">Add habbo</Button></div>
+  </form>
+  [[ end ]]
+</SettingsFrame>
