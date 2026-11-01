@@ -1,0 +1,17 @@
+---
+import { Link } from "@project-reborn/components";
+---
+
+<ul class="flex items-center gap-2">
+  [[ if .SeveralHabbos ]]
+  <li><Link variant="black" href="/account/habbos">Switch habbo</Link></li>
+  [[ end ]]
+  <li><Link href="/help" target="habbohelp">Help</Link></li>
+  <li>
+    <form method="post" action="/logout">
+      <button type="submit" class="cursor-pointer text-black underline">
+        Sign Out
+      </button>
+    </form>
+  </li>
+</ul>

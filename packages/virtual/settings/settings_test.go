@@ -545,3 +545,20 @@ func TestReloadAndSetNeedLoad(t *testing.T) {
 		t.Error("GetBool() before Load = true, want the zero value")
 	}
 }
+
+func TestHousekeepingURLTakesAPathOrAURL(t *testing.T) {
+	for value, valid := range map[string]bool{
+		"/housekeeping":                  true,
+		"http://localhost:18000/hk":      true,
+		"https://staff.example.com":      true,
+		"":                               false,
+		"housekeeping":                   false,
+		"//evil.example.com":             false,
+		"javascript:alert(1)":            false,
+		"ftp://example.com/housekeeping": false,
+	} {
+		if err := location(value); valid != (err == nil) {
+			t.Errorf("location(%q) = %v, want valid %t", value, err, valid)
+		}
+	}
+}

@@ -1,0 +1,40 @@
+---
+import { Bubble, Button, Checkbox } from "@project-reborn/components";
+
+const label =
+  "hidden w-[120px] pr-4 text-right font-bold text-neutral-300 group-hover/login:block group-focus-within/login:block";
+const field = "w-[128px] border border-neutral-600 bg-white p-[3px] text-black";
+---
+
+<div
+  class="group/login absolute top-[7px] right-0 w-[300px] rounded bg-olive-500 text-white hover:w-[420px] focus-within:w-[420px]"
+>
+  <form method="post" action="/" class="flex flex-col gap-0.5 px-[11px] py-2">
+    <div class="flex items-center">
+      <label for="login-username" class={label}>Username</label>
+      <input id="login-username" type="text" name="username" class={field} />
+      <Button type="submit" size="compact">Sign in</Button>
+    </div>
+    <div class="flex items-center">
+      <label for="login-password" class={label}>Password</label>
+      <input id="login-password" type="password" name="password" class={field} />
+      <div class="group/remember relative pl-1">
+        <Checkbox name="remember">Remember me</Checkbox>
+        <div
+          class="absolute top-full right-0 z-10 mt-2 hidden text-black group-has-checked/remember:block"
+        >
+          <Bubble tail="top">
+            By selecting 'remember me' you will stay signed in on this computer
+            until you click 'Sign Out'. If this is a public computer please do
+            not use this feature.
+          </Bubble>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="flex gap-1 rounded-b bg-olive-600 px-[11px] py-1 text-[10px]">
+    <a href="/forgot" class="text-orange-300">I forgot my password/username</a>
+    <span>|</span>
+    <a href="/register" class="text-white">Register for free</a>
+  </div>
+</div>

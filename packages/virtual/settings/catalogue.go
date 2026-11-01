@@ -7,6 +7,7 @@ import (
 	"net/mail"
 	"net/url"
 	"slices"
+	"strings"
 	"unicode/utf8"
 )
 
@@ -17,6 +18,8 @@ var catalogue = map[string]declaration{
 	"site.shortName":   declare("Holo", length(1, 30)),
 	"site.url":         declare("http://localhost:17387", origin),
 	"site.maintenance": declare(false, nil),
+
+	"site.housekeepingUrl": declare("/housekeeping", location),
 
 	"auth.secureCookies":      declare(true, nil),
 	"auth.sessionIdleMinutes": declare(30, between(5, 1440)),
@@ -148,6 +151,19 @@ func imager(value string) error {
 	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" ||
 		u.RawQuery != "" || u.Fragment != "" || u.User != nil {
 		return fmt.Errorf("must be an http or https URL without a query, like https://example.com/avatarimage, got %q", value)
+	}
+	return nil
+}
+
+// location accepts a path on this site or an http or https URL, because a
+// housekeeping running alone has its own port.
+func location(value string) error {
+	if strings.HasPrefix(value, "/") && !strings.HasPrefix(value, "//") {
+		return nil
+	}
+	u, err := url.Parse(value)
+	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
+		return fmt.Errorf("must be a path or an http or https URL, got %q", value)
 	}
 	return nil
 }

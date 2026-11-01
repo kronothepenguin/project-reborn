@@ -45,14 +45,15 @@ const { links = true } = Astro.props;
       <Checkbox name="remember" class="text-xs text-white">
         Remember me
       </Checkbox>
-      <Bubble
-        tail="top"
-        class="absolute top-full left-0 z-10 mt-2 hidden group-has-checked:block"
+      <div
+        class="absolute top-full left-0 z-10 mt-2 hidden text-black group-has-checked:block"
       >
-        By selecting 'remember me' you will stay signed in on this computer
-        until you click 'Sign Out'. If this is a public computer please do not
-        use this feature.
-      </Bubble>
+        <Bubble tail="top">
+          By selecting 'remember me' you will stay signed in on this computer
+          until you click 'Sign Out'. If this is a public computer please do not
+          use this feature.
+        </Bubble>
+      </div>
     </div>
 
     {

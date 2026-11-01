@@ -63,6 +63,12 @@ const { title } = Astro.props;
             <Link variant="black" href="/privacy">
               Privacy Policy
             </Link>
+            [[ if .Staff ]]
+            <span>|</span>
+            <Link variant="black" href="[[ .HousekeepingURL ]]">
+              <b>Housekeeping</b>
+            </Link>
+            [[ end ]]
           </div>
           <div class="text-neutral-500">
             <p>Powered by Project Reborn &copy;</p>

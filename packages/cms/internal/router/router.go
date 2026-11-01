@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"log/slog"
 	"net/http"
+	"slices"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
@@ -35,6 +36,8 @@ type hotelStatus struct {
 	Online          bool
 	OnlineCount     int
 	RegisteredUsers int64
+	Staff           bool
+	HousekeepingURL string
 }
 
 func (r *Router) hotelStatus(ctx context.Context) hotelStatus {
@@ -46,7 +49,23 @@ func (r *Router) hotelStatus(ctx context.Context) hotelStatus {
 		Name:            settings.GetString("site.name"),
 		ShortName:       settings.GetString("site.shortName"),
 		RegisteredUsers: registered,
+		Staff:           r.holds(ctx, auth.HousekeepingAccess),
+		HousekeepingURL: settings.GetString("site.housekeepingUrl"),
 	}
+}
+
+// holds reports whether the visitor's user holds attribute.
+func (r *Router) holds(ctx context.Context, attribute auth.Attribute) bool {
+	session, ok := auth.FromContext(ctx)
+	if !ok {
+		return false
+	}
+	attributes, err := auth.Attributes(ctx, r.deps.DB, session.UserID)
+	if err != nil {
+		slog.Error("cms: attributes", "err", err)
+		return false
+	}
+	return slices.Contains(attributes, attribute)
 }
 
 // Guest sends signed-in visitors to /me instead of next.

@@ -1,0 +1,95 @@
+---
+import { Link } from "@project-reborn/components";
+import background from "../assets/community/bg.png";
+import ClosedAlert from "../components/header/closed-alert.astro";
+import HabboSearch from "../components/header/habbo-search.astro";
+import HotelStatus from "../components/header/hotel-status.astro";
+import MainTabs from "../components/header/main-tabs.astro";
+import MiniLogin from "../components/header/mini-login.astro";
+import SubTabs, { type CommunityTab } from "../components/header/sub-tabs.astro";
+import UserMenu from "../components/header/user-menu.astro";
+import Document from "./document.astro";
+
+interface Props {
+  title: string;
+  tab: CommunityTab;
+  sub: string;
+}
+
+const { title, tab, sub } = Astro.props;
+---
+
+<Document
+  title={title}
+  description="[[ .Name ]] is a virtual world where you can meet and make friends."
+  keywords="[[ .Name ]],[[ .ShortName ]],virtual world,play games,enter competitions,make friends"
+>
+  <div
+    class="min-h-screen min-w-[950px] bg-taupe-200 text-[11px]"
+    style={`background-image: url(${background.src})`}
+  >
+    <header class="bg-sky-200 px-2.5">
+      <div class="relative mx-auto h-[102px] w-[930px]">
+        <a href="/" class="absolute top-4 left-2.5">
+          <img src="/habbo.png" alt="Habbo Hotel" width="111" height="54" />
+        </a>
+
+        <div class="absolute top-0 left-[190px] w-[572px]">
+          [[ if .SignedIn ]]
+          <div class="flex h-7 items-center justify-end rounded-b bg-white px-3">
+            <UserMenu />
+          </div>
+          <div class="flex items-start justify-between px-3 pt-2.5">
+            <HotelStatus />
+            <HabboSearch />
+          </div>
+          [[ else ]]
+          <div class="px-3 pt-5">
+            <HotelStatus />
+          </div>
+          <MiniLogin />
+          [[ end ]]
+        </div>
+
+        <div class="absolute top-[15px] left-[781px] w-[110px] rounded bg-white p-2.5 text-center text-[10px]">
+          <span>[[ .OnlineCount ]] users online now</span>
+        </div>
+
+        <div class="absolute bottom-0 left-0">
+          <MainTabs active={tab} />
+        </div>
+      </div>
+    </header>
+
+    <div class="px-2.5">
+      <nav class="mx-auto w-[930px]">
+        <div class="w-[760px] rounded-b border-b-2 border-black/20">
+          <SubTabs tab={tab} active={sub} />
+        </div>
+      </nav>
+
+      <ClosedAlert />
+
+      <main class="mx-auto w-[930px] pt-[5px]">
+        <slot />
+      </main>
+
+      <footer class="mx-auto w-[930px] pt-2 pr-[170px] pb-3 text-center">
+        <p class="flex justify-center gap-1">
+          <Link variant="black" href="/">Homepage</Link>
+          <span>|</span>
+          <Link variant="black" href="/disclaimer">Terms of Service</Link>
+          <span>|</span>
+          <Link variant="black" href="/privacy">Privacy Policy</Link>
+        </p>
+        <p class="pt-2 text-[9px] text-neutral-500">
+          Powered by Project Reborn &copy;<br />HABBO is a registered trademark
+          of Sulake Corporation. All rights reserved to their respective
+          owner(s).
+        </p>
+      </footer>
+
+      <ClosedAlert />
+    </div>
+  </div>
+</Document>

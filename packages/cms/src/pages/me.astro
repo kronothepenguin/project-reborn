@@ -1,24 +1,19 @@
 ---
-import { Avatar, Button, Card } from "@project-reborn/components";
-import SignedOut from "../layouts/signed-out.astro";
+import { Avatar, Card } from "@project-reborn/components";
+import Community from "../layouts/community.astro";
 ---
 
-<SignedOut title="[[ .ShortName ]] ~ [[ .Habbo ]]">
-  <main class="flex justify-center py-4">
-    <div class="w-72">
-      <Card>
-        <div class="flex flex-col items-center gap-2">
-          <Avatar
-            imagingUrl="[[ .ImagingURL ]]"
-            figure="[[ .Figure ]]"
-            alt="[[ .Habbo ]]"
-          />
-          <p class="font-bold">[[ .Habbo ]]</p>
-          <form method="post" action="/logout">
-            <Button type="submit">Sign Out</Button>
-          </form>
-        </div>
-      </Card>
-    </div>
-  </main>
-</SignedOut>
+<Community title="[[ .ShortName ]] ~ [[ .Habbo ]]" tab="me" sub="Homepage">
+  <div class="w-72">
+    <Card>
+      <div class="flex flex-col items-center gap-2">
+        <Avatar
+          imagingUrl="[[ .ImagingURL ]]"
+          figure="[[ .Figure ]]"
+          alt="[[ .Habbo ]]"
+        />
+        <p class="font-bold">[[ .Habbo ]]</p>
+      </div>
+    </Card>
+  </div>
+</Community>

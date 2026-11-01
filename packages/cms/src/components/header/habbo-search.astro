@@ -1,0 +1,15 @@
+---
+import { Button, Icon } from "@project-reborn/components";
+---
+
+<form method="get" action="/home" class="flex flex-col items-end gap-1">
+  <Button type="submit" size="compact" aria-label="Search">
+    <Icon />
+  </Button>
+  <input
+    type="text"
+    name="name"
+    placeholder="User Profile.."
+    class="w-44 border border-neutral-500 bg-white px-1.5 py-1 text-black"
+  />
+</form>

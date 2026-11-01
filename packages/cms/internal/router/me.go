@@ -9,24 +9,28 @@ import (
 )
 
 type mePage struct {
-	hotelStatus
-	Habbo      string
+	community
 	Figure     string
 	ImagingURL string
 }
 
 // HandleMeView renders GET /me, which auth.RequireSession guards.
 func (r *Router) HandleMeView(w http.ResponseWriter, req *http.Request) {
-	session, _ := auth.FromContext(req.Context())
-	avatar, err := r.deps.Queries.GetAvatar(req.Context(), session.AvatarID)
+	ctx := req.Context()
+	session, _ := auth.FromContext(ctx)
+	layout, err := r.community(ctx)
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
+	avatar, err := r.deps.Queries.GetAvatar(ctx, session.AvatarID)
 	if err != nil {
 		r.fail(w, err)
 		return
 	}
 	astro.WriteTemplate(w, r.deps.Resolver, "me.html", mePage{
-		hotelStatus: r.hotelStatus(req.Context()),
-		Habbo:       avatar.Name,
-		Figure:      avatar.Figure,
-		ImagingURL:  settings.GetString("imaging.avatarUrl"),
+		community:  layout,
+		Figure:     avatar.Figure,
+		ImagingURL: settings.GetString("imaging.avatarUrl"),
 	})
 }

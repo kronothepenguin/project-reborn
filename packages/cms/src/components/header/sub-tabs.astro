@@ -1,0 +1,52 @@
+---
+export type CommunityTab = "me" | "community" | "credits";
+
+interface Props {
+  tab: CommunityTab;
+  active: string;
+}
+
+const { tab, active } = Astro.props;
+
+const groups: Record<CommunityTab, { label: string; href: string }[]> = {
+  me: [
+    { label: "Homepage", href: "/me" },
+    { label: "My Page", href: "/home?name=[[ .Habbo ]]" },
+    { label: "Account Settings", href: "/account" },
+    { label: "Habbo Club", href: "/club" },
+  ],
+  community: [
+    { label: "Community", href: "/community" },
+    { label: "News", href: "/news" },
+    { label: "Staff", href: "/staff" },
+    { label: "Discussion Board", href: "/forum" },
+    { label: "Tags", href: "/tags" },
+  ],
+  credits: [
+    { label: "Credits", href: "/credits" },
+    { label: "Habbo Club", href: "/club" },
+  ],
+};
+---
+
+<ul class="flex border-t-2 border-black bg-white py-1.5 pl-5 text-xs">
+  {
+    groups[tab].map(({ label, href }, index) => (
+      <li
+        class:list={[
+          "pr-5",
+          index > 0 && "border-l border-gray-200 pl-5",
+          label === active && "font-bold text-black",
+        ]}
+      >
+        {label === active ? (
+          label
+        ) : (
+          <a class="text-blue-900" href={href}>
+            {label}
+          </a>
+        )}
+      </li>
+    ))
+  }
+</ul>

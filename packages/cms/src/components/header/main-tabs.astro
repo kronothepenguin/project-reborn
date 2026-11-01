@@ -1,0 +1,64 @@
+---
+import type { CommunityTab } from "./sub-tabs.astro";
+
+interface Props {
+  active: CommunityTab;
+}
+
+const { active } = Astro.props;
+
+const tab =
+  "block rounded-t-lg border-2 border-b-0 border-black px-5 pt-1 pb-1.5 text-xs";
+const selected = `${tab} bg-white font-bold text-black`;
+const normal = `${tab} bg-sky-700 text-white`;
+const highlighted = `${tab} bg-lime-600 font-bold text-white`;
+---
+
+<ul class="flex gap-1">
+  [[ if .SignedIn ]]
+  {
+    active === "me" ? (
+      <li>
+        <strong class={selected}>[[ .Habbo ]]</strong>
+      </li>
+    ) : (
+      <li>
+        <a class={normal} href="/">
+          [[ .Habbo ]]
+        </a>
+      </li>
+    )
+  }
+  [[ else ]]
+  <li><a class={highlighted} href="/register">Register now!</a></li>
+  [[ end ]]
+  {
+    active === "community" ? (
+      <li>
+        <strong class={selected}>Community</strong>
+      </li>
+    ) : (
+      <li>
+        <a class={normal} href="/community">
+          Community
+        </a>
+      </li>
+    )
+  }
+  {
+    active === "credits" ? (
+      <li>
+        <strong class={selected}>Credits</strong>
+      </li>
+    ) : (
+      <li>
+        <a class={normal} href="/credits">
+          Credits
+        </a>
+      </li>
+    )
+  }
+  [[ if .Staff ]]
+  <li><a class={highlighted} href="[[ .HousekeepingURL ]]">Housekeeping</a></li>
+  [[ end ]]
+</ul>

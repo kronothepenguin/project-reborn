@@ -1,9 +1,7 @@
 package router
 
 import (
-	"log/slog"
 	"net/http"
-	"slices"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
@@ -20,7 +18,7 @@ type maintenancePage struct {
 // site.maintenance is on, except to users holding site.maintenanceBypass.
 func (r *Router) Maintenance(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		if !settings.GetBool("site.maintenance") || r.bypassesMaintenance(req) {
+		if !settings.GetBool("site.maintenance") || r.holds(req.Context(), auth.SiteMaintenanceBypass) {
 			next.ServeHTTP(w, req)
 			return
 		}
@@ -32,17 +30,4 @@ func (r *Router) writeMaintenance(w http.ResponseWriter, page maintenancePage) {
 	page.ShortName = settings.GetString("site.shortName")
 	w.WriteHeader(http.StatusServiceUnavailable)
 	astro.WriteTemplate(w, r.deps.Resolver, "maintenance.html", page)
-}
-
-func (r *Router) bypassesMaintenance(req *http.Request) bool {
-	session, ok := auth.FromContext(req.Context())
-	if !ok {
-		return false
-	}
-	attributes, err := auth.Attributes(req.Context(), r.deps.DB, session.UserID)
-	if err != nil {
-		slog.Error("cms: attributes", "err", err)
-		return false
-	}
-	return slices.Contains(attributes, auth.SiteMaintenanceBypass)
 }
