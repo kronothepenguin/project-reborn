@@ -54,6 +54,22 @@ func TestWriteGeneratesInstallTargets(t *testing.T) {
 	}
 }
 
+// A new project is not in git yet and has no build, so it starts with the
+// placeholder go:embed needs.
+func TestWriteGeneratesThePlaceholder(t *testing.T) {
+	root := t.TempDir()
+	if err := write(root, "probe", 10001, 20001); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	data, err := os.ReadFile(filepath.Join(root, "packages", "probe", "dist", "index.html"))
+	if err != nil {
+		t.Fatalf("read the placeholder: %v", err)
+	}
+	if !strings.Contains(string(data), "<title>probe</title>") {
+		t.Errorf("the placeholder is not rendered:\n%s", data)
+	}
+}
+
 // Generated code passes the same checks as hand-written code, so that
 // make create leaves nothing to fix.
 func TestWriteGeneratesFormattedFiles(t *testing.T) {

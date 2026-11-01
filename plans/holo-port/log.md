@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [p0-22](/tasks/p0-22-keep-dist-template.md): the placeholder template is back in `tools/create` and tracked
+  in git, so a new app has its `dist/index.html` on every machine.
+- **Start** [p0-22](/tasks/p0-22-keep-dist-template.md).
 - **Update** P0 is active again, then P1, and P2 waits; both get new tasks from the user's second review:
   [p0-22](/tasks/p0-22-keep-dist-template.md) to [p0-24](/tasks/p0-24-empty-database.md) and
   [p1-20](/tasks/p1-20-delete-expired-resets.md).
