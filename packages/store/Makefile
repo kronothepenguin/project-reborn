@@ -1,4 +1,7 @@
-.PHONY: generate check-docs test
+.PHONY: install generate check-docs test
+
+install:
+	go mod download
 
 generate:
 	go tool sqlc generate

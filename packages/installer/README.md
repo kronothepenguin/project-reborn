@@ -64,8 +64,8 @@ the rendered page fresh on every request in dev mode.
 2. From the repository root:
    `go build -o apps/installer/tmp/installer ./apps/installer/cmd/installer && ./apps/installer/tmp/installer`
 
-The placeholder in `dist/index.html` exists so the package compiles before the
-first `pnpm build`.
+`make install` writes a placeholder `dist/index.html`, because `go:embed` needs a
+file there before the first `pnpm build`.
 
 ## Documentation
 

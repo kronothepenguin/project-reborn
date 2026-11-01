@@ -1,4 +1,8 @@
-.PHONY: dev web stop
+.PHONY: install dev web stop
+
+install:
+	$(MAKE) -C ../../packages/installer install
+	mkdir -p tmp
 
 # air runs from the repository root, so the runner reads the root config.json.
 dev:

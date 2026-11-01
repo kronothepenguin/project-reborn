@@ -2,6 +2,11 @@
 
 ## 2026-11-01
 
+- **Update** P0 is done again and P1 is active.
+- **Done** [p0-21](/tasks/p0-21-make-install.md): every project and the root have a `make install`, a clean checkout
+  compiles after it with no frontend build, and the root targets of the orchestrator are comments that say what they
+  wait for.
+- **Start** [p0-21](/tasks/p0-21-make-install.md).
 - **Done** [p0-20](/tasks/p0-20-project-readmes.md): project folders document themselves in `README.md`, in the
   repository and in `tools/create`, and one `AGENTS.md` stays at the root.
 - **Start** [p0-20](/tasks/p0-20-project-readmes.md).

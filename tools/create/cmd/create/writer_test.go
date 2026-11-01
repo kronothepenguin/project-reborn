@@ -32,6 +32,28 @@ func TestWriteRendersTheRunnerFromTheRoot(t *testing.T) {
 	}
 }
 
+// make install is what makes a fresh clone compile: the root runs it in every
+// app, and the app runs the one of its package.
+func TestWriteGeneratesInstallTargets(t *testing.T) {
+	root := t.TempDir()
+	if err := write(root, "probe", 10001, 20001); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	for file, want := range map[string]string{
+		"apps/probe/Makefile":     "$(MAKE) -C ../../packages/probe install",
+		"packages/probe/Makefile": "test -e dist/index.html ||",
+	} {
+		data, err := os.ReadFile(filepath.Join(root, file))
+		if err != nil {
+			t.Errorf("read the generated %s: %v", file, err)
+			continue
+		}
+		if !strings.Contains(string(data), want) {
+			t.Errorf("the generated %s lacks %q:\n%s", file, want, data)
+		}
+	}
+}
+
 // Generated code passes the same checks as hand-written code, so that
 // make create leaves nothing to fix.
 func TestWriteGeneratesFormattedFiles(t *testing.T) {

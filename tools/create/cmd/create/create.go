@@ -102,7 +102,7 @@ func scaffold(root, name string, appPort, astroPort uint, dryRun bool) error {
 	if err := run(appDir, "go", "mod", "tidy", "-e"); err != nil {
 		return err
 	}
-	if err := run(pkgDir, "pnpm", "install"); err != nil {
+	if err := run(appDir, "make", "install"); err != nil {
 		return err
 	}
 

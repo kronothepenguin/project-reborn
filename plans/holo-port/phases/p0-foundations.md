@@ -2,7 +2,7 @@
 type: Phase
 title: P0 Foundations
 description: Store, config, virtual settings, auth, the complete schema, the installer and the CMS wiring that every later phase builds on.
-status: active
+status: done
 timestamp: 2026-11-01T18:13:48+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p0]
@@ -62,4 +62,4 @@ The CMS then starts on top of it with sessions, attributes, live settings and cr
 - [p0-18 Read the CMS address from config.json](/tasks/p0-18-cms-host.md) — done
 - [p0-19 Fix the tools/create templates](/tasks/p0-19-create-templates.md) — done
 - [p0-20 Replace the project AGENTS.md files with READMEs](/tasks/p0-20-project-readmes.md) — done
-- [p0-21 Add make install to every project](/tasks/p0-21-make-install.md) — todo
+- [p0-21 Add make install to every project](/tasks/p0-21-make-install.md) — done

@@ -1,16 +1,21 @@
-.PHONY: install dev build tools create tw-color
+.PHONY: install tools create tw-color
 
 install:
 	go work sync
 	pnpm install
+	@for project in apps/*/ packages/store/; do $(MAKE) -C "$$project" install || exit 1; done
 	$(MAKE) tools
 
-dev:
-	cd apps/reborn && go tool air
-
-build:
-	mkdir -p ./bin
-	go build -o ./bin/main ./apps/reborn/cmd
+# apps/reborn is the orchestrator: one binary running the installer, cms,
+# housekeeping and server. Its old implementation was removed and the new one is
+# not planned yet, so these targets wait for it.
+#
+# dev:
+# 	cd apps/reborn && go tool air
+#
+# build:
+# 	mkdir -p ./bin
+# 	go build -o ./bin/main ./apps/reborn/cmd
 
 tools:
 	@for d in tools/*; do \

@@ -74,8 +74,8 @@ the rendered page fresh on every request in dev mode.
 2. From the repository root:
    `go build -o apps/cms/tmp/cms ./apps/cms/cmd/cms && ./apps/cms/tmp/cms`
 
-The placeholder in `dist/index.html` exists so the package compiles before the
-first `pnpm build`.
+`make install` writes a placeholder `dist/index.html`, because `go:embed` needs a
+file there before the first `pnpm build`.
 
 ## Documentation
 

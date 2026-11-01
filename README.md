@@ -33,12 +33,12 @@ project-reborn/
 │   ├── virtual/                   # domain types (Go)
 │   └── shared/                    # ansi, dotenv, httpx, tmpl utilities (Go)
 ├── apps/                          # thin executables (process, port, entrypoint)
-│   ├── reborn/                    # orchestrator: imports everything
+│   ├── reborn/                    # orchestrator, planned: one binary running every app
 │   └── ...
 └── Makefile                       # generic workspace targets
 ```
 
-Packages own the implementation — including the app packages (cms, housekeeping, installer, server). Apps are thin runners: they import a package and execute it as a singleton. For an HTTP app, the package exposes `Mount`/`Routes` against an `http.ServeMux` and the app creates the `http.Server`. `apps/reborn` imports every app and serves all of them on one HTTP server; each app can also be run in isolation on its own port (e.g. cms and housekeeping separately in dev).
+Packages own the implementation — including the app packages (cms, housekeeping, installer, server). Apps are thin runners: they import a package and execute it as a singleton. For an HTTP app, the package exposes `Mount`/`Routes` against an `http.ServeMux` and the app creates the `http.Server`. `apps/reborn`, the orchestrator, will import every app and serve all of them on one HTTP server. Its old implementation was removed and the new one is not planned yet; for now each app runs in isolation on its own port.
 
 ---
 
@@ -47,21 +47,17 @@ Packages own the implementation — including the app packages (cms, housekeepin
 ### 1. Fetch dependencies
 
 ```bash
-make install        # go work sync && pnpm install
+make install        # every project's folders and dependencies, and the tools
 ```
 
-### 2. Run the dev server
+Each project also has its own `make install`, the minimum needed to develop and run it.
 
-```bash
-make dev            # reborn with air (hot reload)
-```
-
-### 3. Run an app's dev server
+### 2. Run an app's dev server
 
 Each app owns its own `Makefile` with app-specific targets.
 
 ```bash
-cd apps/reborn && make dev
+cd apps/cms && make dev
 ```
 
 Web apps have two modes:
@@ -73,8 +69,11 @@ Web apps have two modes:
 
 ## Building
 
+Each app builds on its own; its `README.md` has the steps.
+
 ```bash
-make build          # compiles ./bin/main from apps/reborn/cmd
+pnpm --filter @project-reborn/cms build
+go build -o ./apps/cms/tmp/cms ./apps/cms/cmd/cms
 ```
 
 ---
