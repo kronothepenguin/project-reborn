@@ -1,5 +1,5 @@
 ---
-import { Button, Card, Checkbox, Notice } from "@project-reborn/components";
+import { Bubble, Button, Card, Checkbox, Notice } from "@project-reborn/components";
 
 interface Props {
   links?: boolean;
@@ -12,7 +12,7 @@ const { links = true } = Astro.props;
 <Notice><p class="font-bold">[[ .Error ]]</p></Notice>
 [[ end ]]
 <Card variant="login" color="loginbox">
-  <span slot="header">Sign In</span>
+  <span slot="header">Sign in</span>
 
   <form
     method="post"
@@ -39,11 +39,21 @@ const { links = true } = Astro.props;
       type="password"
       class="border bg-white border-neutral-600 min-w-24 w-full px-2 py-1"
     />
-    <Button type="submit">Sign In</Button>
+    <Button type="submit">Sign in</Button>
 
-    <Checkbox name="remember" class="col-start-2 col-span-2 text-xs text-white">
-      Remember me
-    </Checkbox>
+    <div class="group relative col-start-2 col-span-2">
+      <Checkbox name="remember" class="text-xs text-white">
+        Remember me
+      </Checkbox>
+      <Bubble
+        tail="top"
+        class="absolute top-full left-0 z-10 mt-2 hidden group-has-checked:block"
+      >
+        By selecting 'remember me' you will stay signed in on this computer
+        until you click 'Sign Out'. If this is a public computer please do not
+        use this feature.
+      </Bubble>
+    </div>
 
     {
       links && (
@@ -52,14 +62,14 @@ const { links = true } = Astro.props;
             href="/register"
             class="col-start-2 col-span-2 underline text-xs font-bold text-olive-800 hover:text-white"
           >
-            Register for free
+            Register
           </a>
 
           <a
             href="/forgot"
             class="col-start-2 col-span-2 text-xs underline text-olive-800 hover:text-white"
           >
-            I forgot my password/username
+            I forgot my username/password
           </a>
         </>
       )

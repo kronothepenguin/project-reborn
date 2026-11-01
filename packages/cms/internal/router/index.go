@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
@@ -23,14 +22,19 @@ func (r *Router) newIndexPage(ctx context.Context) indexPage {
 	return indexPage{hotelStatus: r.hotelStatus(ctx), LandingPromo: settings.GetBool("features.landingPromo")}
 }
 
-// HandleIndexView renders GET /{$}.
+// HandleIndexView renders GET /{$}. The registration's age check sends visitors
+// here with ?ageLimit=true.
 func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
-	astro.WriteTemplate(w, r.deps.Resolver, "index.html", r.newIndexPage(req.Context()))
+	page := r.newIndexPage(req.Context())
+	if req.URL.Query().Get("ageLimit") == "true" {
+		page.Error = "You are too young to register."
+	}
+	astro.WriteTemplate(w, r.deps.Resolver, "index.html", page)
 }
 
 // HandleIndexLogin handles the POST /{$} login action.
 func (r *Router) HandleIndexLogin(w http.ResponseWriter, req *http.Request) {
-	username := strings.TrimSpace(req.PostFormValue("username"))
+	username := req.PostFormValue("username")
 	password := req.PostFormValue("password")
 	if username == "" || password == "" {
 		r.loginFailed(w, req, username, "Please do not leave any fields blank.")

@@ -1,4 +1,6 @@
 ---
+import { Card } from "@project-reborn/components";
+import partyAdvert from "../assets/landing/party.gif";
 import JoinButton from "../components/landing/join-button.astro";
 import LoginBox from "../components/landing/login-box.astro";
 import PromoWidget from "../components/landing/promo-widget.svelte";
@@ -15,7 +17,17 @@ import SignedOut from "../layouts/signed-out.astro";
       >
       </div>
       <PromoWidget client:only="svelte" container="habbos-v2-container" />
-      <noscript><JoinButton /></noscript>
+      <noscript>
+        <div class="flex flex-col gap-2">
+          <JoinButton />
+          <Card color="green">
+            <span slot="header">To get most out of [[ .ShortName ]], do this:</span>
+            <ul class="text-sm">
+              <li>Enable JavaScript</li>
+            </ul>
+          </Card>
+        </div>
+      </noscript>
       [[ else ]]
       <JoinButton />
       [[ end ]]
@@ -23,6 +35,14 @@ import SignedOut from "../layouts/signed-out.astro";
 
     <div class="flex-2 flex flex-col gap-2 w-72">
       <LoginBox />
+      <a href="/register">
+        <img
+          src={partyAdvert.src}
+          width={partyAdvert.width}
+          height={partyAdvert.height}
+          alt=""
+        />
+      </a>
     </div>
   </main>
 </SignedOut>

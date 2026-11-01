@@ -1,4 +1,5 @@
 export { default as Avatar } from "./components/avatar.svelte";
+export { default as Bubble } from "./components/bubble.svelte";
 export { default as Button } from "./components/button.svelte";
 export { default as Card } from "./components/card.svelte";
 export { default as Checkbox } from "./components/checkbox.svelte";

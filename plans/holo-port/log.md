@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [p1-15](/tasks/p1-15-landing-as-holo.md): the landing page has Holo's sign-in texts, the remember-me bubble,
+  the party advert, the `Enable JavaScript` box and the age-limit message, with a new `Bubble` primitive.
+- **Start** [p1-15](/tasks/p1-15-landing-as-holo.md).
 - **Done** [p1-14](/tasks/p1-14-reset-mail-limit.md): an account holds at most `auth.resetMaxActive` unexpired reset
   links, checked in one statement, and `POST /forgot` answers the same way at the limit.
 - **Start** [p1-14](/tasks/p1-14-reset-mail-limit.md).

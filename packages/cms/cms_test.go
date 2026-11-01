@@ -176,7 +176,7 @@ func TestSignIn(t *testing.T) {
 	db, mux := newSite(t)
 	habbo(t, db, "admin@example.com", "Admin")
 
-	rec := serve(mux, "POST", "/", nil, credentials("  admin ", "secret123"))
+	rec := serve(mux, "POST", "/", nil, credentials("admin", "secret123"))
 	wantRedirect(t, rec, "/me")
 	cookie := sessionCookie(rec)
 	if cookie == nil {
@@ -209,7 +209,7 @@ func TestSignInFailures(t *testing.T) {
 		want string
 	}{
 		{"no name", url.Values{"password": {"secret123"}}, "Please do not leave any fields blank."},
-		{"blank name", credentials("   ", "secret123"), "Please do not leave any fields blank."},
+		{"spaces for a name", credentials("   ", "secret123"), "Invalid username or password."},
 		{"no password", url.Values{"username": {"Admin"}}, "Please do not leave any fields blank."},
 		{"wrong password", credentials("Admin", "wrong-secret"), "Invalid username or password."},
 		{"unknown habbo", credentials("Nobody", "secret123"), "Invalid username or password."},
@@ -219,7 +219,7 @@ func TestSignInFailures(t *testing.T) {
 			habbo(t, db, "admin@example.com", "Admin")
 
 			rec := serve(mux, "POST", "/", nil, c.form)
-			wantPage(t, rec, http.StatusUnprocessableEntity, "index.html", c.want, "Username:"+strings.TrimSpace(c.form.Get("username")))
+			wantPage(t, rec, http.StatusUnprocessableEntity, "index.html", c.want, "Username:"+c.form.Get("username"))
 			if sessionCookie(rec) != nil {
 				t.Error("a failed sign-in set a cookie")
 			}

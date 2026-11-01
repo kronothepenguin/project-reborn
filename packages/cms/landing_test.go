@@ -138,6 +138,20 @@ func TestFailedSignInKeepsTheLanding(t *testing.T) {
 	}
 }
 
+func TestLandingShowsTheAgeLimit(t *testing.T) {
+	_, mux := newSite(t)
+	wantPage(t, serve(mux, "GET", "/?ageLimit=true", nil, nil), http.StatusOK, "index.html", "Error:You are too young to register.")
+	wantPage(t, serve(mux, "GET", "/?ageLimit=false", nil, nil), http.StatusOK, "index.html", "Error:}")
+	wantPage(t, serve(mux, "GET", "/", nil, nil), http.StatusOK, "index.html", "Error:}")
+}
+
+func TestSignInDoesNotTrimTheUsername(t *testing.T) {
+	db, mux := newSite(t)
+	habbo(t, db, "admin@example.com", "Admin")
+
+	wantPage(t, serve(mux, "POST", "/", nil, credentials(" Admin", "secret123")), http.StatusUnprocessableEntity, "Invalid username or password.")
+}
+
 // Every signed-out page shows Holo's header: it counts habbos, as Holo's users
 // table held one row per habbo.
 func TestHeaderCountsRegisteredHabbos(t *testing.T) {
