@@ -2,6 +2,8 @@
 
 ## 2026-11-01
 
+- **Update** the user saved the image of [0041](/decisions/0041-housekeeping-design-system.md) as `docs/hk.png`;
+  [HK-A](/phases/hk-a-housekeeping-core.md) describes it.
 - **Update** P0 is active again, then P1, and P2 waits; both get new tasks from the user's review of P1:
   [p0-18](/tasks/p0-18-cms-host.md) to [p0-21](/tasks/p0-21-make-install.md) and
   [p1-11](/tasks/p1-11-signed-out-layout.md) to [p1-18](/tasks/p1-18-exit-check-as-holo.md).

@@ -20,7 +20,9 @@ read the staff log; every change is logged.
   `/housekeeping` ([0003](/decisions/0003-housekeeping-under-prefix.md)).
 - Layout `src/layouts/housekeeping.astro`: tab strip, left menu and content, in the
   [housekeeping colours](/reference/colours.md#housekeeping) and the new design system of
-  [0041](/decisions/0041-housekeeping-design-system.md).
+  [0041](/decisions/0041-housekeeping-design-system.md). Its reference is `docs/hk.png`: a grey bar with who is logged in
+  and their previous login, navy tabs with the active one in blue over a blue strip, a left column of white boxes with a
+  blue title bar and `- link` lists, and a plain heading and text as the content.
 - One helper writes a `staff_logs` row for every mutation.
 - Config: `housekeeping.port`. Settings: `housekeeping.note`.
 
@@ -48,4 +50,3 @@ Created when the phase starts.
   and what happens to `cms.refresh`.
 - Whether housekeeping refuses to start without the database. [0016](/decisions/0016-installer.md) says it does, while
   since [0029](/decisions/0029-package-level-settings-and-auth.md) the CMS creates an empty one.
-- The image of [0041](/decisions/0041-housekeeping-design-system.md) has to be saved in the repository.
