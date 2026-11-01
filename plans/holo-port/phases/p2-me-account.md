@@ -41,4 +41,4 @@ A signed-in user sees Holo's community chrome, their Me page and account setting
 
 # Tasks
 
-- [p2-01 Delete expired sessions on a schedule](/tasks/p2-01-delete-expired-sessions.md) — todo
+- [p2-01 Delete expired sessions on a schedule](/tasks/p2-01-delete-expired-sessions.md) — done

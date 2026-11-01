@@ -24,7 +24,8 @@ serves the built frontend from the embedded `dist/`.
   sign-in stays on the maintenance page.
 - The CMS works on an empty database: `store.FromConfig()` creates it, with the
   default values, when it does not exist. The installer can still run on it later.
-- Signing in lands on `/me`, and `/` sends signed-in visitors there.
+- Signing in lands on `/me`, and `/` sends signed-in visitors there. A task on
+  `packages/scheduler` deletes expired sessions every minute.
 - `/?ageLimit=true` shows `You are too young to register.`, where the registration's
   age check ends.
 - `POST /logout` shows Holo's confirmation, or `You are not logged in` without a

@@ -196,3 +196,23 @@ func TestRequireSession(t *testing.T) {
 		}
 	}
 }
+
+func TestDeleteExpiredSessions(t *testing.T) {
+	f := newFixture(t)
+	f.habbo(t, "admin@example.com", "Admin", testPassword)
+	f.mustLogin(t, "Admin", false)
+	f.advance(20 * time.Minute)
+	f.mustLogin(t, "Admin", false)
+
+	f.advance(11 * time.Minute)
+	f.mustLogin(t, "Admin", false)
+	if n := f.count(t, `SELECT COUNT(*) FROM sessions`); n != 3 {
+		t.Fatalf("%d sessions before the deletion, want 3: only the task deletes them", n)
+	}
+	if err := DeleteExpiredSessions(t.Context(), f.db); err != nil {
+		t.Fatalf("DeleteExpiredSessions: %v", err)
+	}
+	if n := f.count(t, `SELECT COUNT(*) FROM sessions`); n != 2 {
+		t.Errorf("%d sessions left, want the 2 that have not expired", n)
+	}
+}

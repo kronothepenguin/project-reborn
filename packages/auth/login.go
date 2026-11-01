@@ -110,9 +110,6 @@ func start(w http.ResponseWriter, r *http.Request, db *sql.DB, login store.GetLo
 	session := Session{id: id, UserID: login.UserID, AvatarID: login.AvatarID, Remember: remember, ExpiresAt: now.Add(lifetime)}
 
 	q := store.New(db)
-	if _, err := q.PurgeExpiredSessions(ctx, now); err != nil {
-		return Session{}, fmt.Errorf("auth: login: %w", err)
-	}
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
 		return Session{}, fmt.Errorf("auth: login: %w", err)

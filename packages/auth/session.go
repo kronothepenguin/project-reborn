@@ -8,6 +8,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"time"
@@ -109,6 +110,15 @@ func loadSession(w http.ResponseWriter, r *http.Request, db *sql.DB) (Session, b
 		}
 	}
 	return Session{id: id, UserID: row.UserID, AvatarID: row.AvatarID, Remember: row.Remember, ExpiresAt: row.ExpiresAt}, true, nil
+}
+
+// DeleteExpiredSessions removes the sessions past their expiry. A program that
+// serves sessions runs it on the scheduler.
+func DeleteExpiredSessions(ctx context.Context, db *sql.DB) error {
+	if _, err := store.New(db).PurgeExpiredSessions(ctx, clock().UTC()); err != nil {
+		return fmt.Errorf("auth: delete expired sessions: %w", err)
+	}
+	return nil
 }
 
 // setCookie writes the session cookie. Only a remember-me cookie outlives the

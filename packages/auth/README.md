@@ -38,7 +38,7 @@ case errors.Is(err, auth.ErrBanned):
 1. It refuses with `ErrThrottled` when the IP, and then the habbo's user, reached `auth.loginMaxFailures` failed attempts within `auth.loginWindowMinutes`. Throttled attempts are not recorded.
 2. It finds the habbo case-insensitively and checks the owner's password. An unknown habbo and a wrong password both give `ErrInvalidCredentials` after the same argon2 work.
 3. Only once the password is right, it refuses an active ban on the user or the IP with a `*BanError`, which matches `ErrBanned`.
-4. It records every attempt in `login_attempts`, purges expired sessions, starts the session with the named habbo active and sets the cookie.
+4. It records every attempt in `login_attempts`, starts the session with the named habbo active and sets the cookie.
 
 ## Sessions
 
@@ -48,6 +48,8 @@ case errors.Is(err, auth.ErrBanned):
 - `Sessions(db)` returns the middleware that puts the session in the context for `FromContext(ctx) (Session, bool)` and clears a cookie without an active session.
 - `RequireSession(next)` redirects a page to `/` and answers 401 when the request's `Accept` header names `application/json`.
 - `RequireAttribute(db, attr)` answers 403 to a user without `attr`.
+- `DeleteExpiredSessions(ctx, db)` removes the sessions past their expiry. Every program that serves sessions runs it on the
+  scheduler; nothing else deletes them.
 - `Logout(w, r, db)` ends the cookie's session, `LogoutEverywhere(ctx, db, userID)` every session of a user, and `SwitchHabbo(ctx, db, avatarID)` changes the active habbo (`ErrNotOwner` for another user's habbo).
 
 ## Attributes

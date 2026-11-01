@@ -2,6 +2,9 @@
 
 ## 2026-11-01
 
+- **Done** [p2-01](/tasks/p2-01-delete-expired-sessions.md): a task on `packages/scheduler` deletes sessions once they
+  expire, every minute, in place of the purge at sign-in.
+- **Start** [p2-01](/tasks/p2-01-delete-expired-sessions.md).
 - **Create** [p2-01](/tasks/p2-01-delete-expired-sessions.md).
 - **Decision** [0050](/decisions/0050-expired-sessions-deleted.md): expired sessions are deleted on a schedule.
 - **Decision** [0049](/decisions/0049-store-is-the-global-database.md) supersedes

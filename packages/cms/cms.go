@@ -56,6 +56,9 @@ func New(db *sql.DB, opts ...Option) *CMS {
 	scheduler.Every(1, scheduler.Minute, func(ctx context.Context) error {
 		return auth.DeleteExpiredResets(ctx, db)
 	})
+	scheduler.Every(1, scheduler.Minute, func(ctx context.Context) error {
+		return auth.DeleteExpiredSessions(ctx, db)
+	})
 	return c
 }
 
