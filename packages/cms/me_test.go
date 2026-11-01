@@ -122,12 +122,18 @@ func TestMeCannotDismissAnotherHabbosAlert(t *testing.T) {
 
 func TestMeBirthday(t *testing.T) {
 	today := time.Now().UTC()
+	// January and March both have every possible day of the month.
+	otherMonth := time.January
+	if today.Month() == time.January {
+		otherMonth = time.March
+	}
 	for _, c := range []struct {
 		name string
 		born time.Time
 		on   bool
 		want string
 	}{
+		{"the same day of another month", time.Date(today.Year()-23, otherMonth, today.Day(), 0, 0, 0, 0, time.UTC), true, "Birthday: "},
 		{"today", today.AddDate(-23, 0, 0), true, "Birthday:23rd"},
 		{"an eleventh", today.AddDate(-11, 0, 0), true, "Birthday:11th"},
 		{"a thirty-first", today.AddDate(-31, 0, 0), true, "Birthday:31st"},
