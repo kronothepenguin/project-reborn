@@ -23,6 +23,10 @@ starts.
 - [p0-15 Run the dev runners from the repository root](/tasks/p0-15-runners-from-root.md) — make dev starts air from the repository root, so the installer and the CMS read and write the root config.json; tools/create generates new apps the same way. **done**
 - [p0-16 Take the client IP from trusted proxies](/tasks/p0-16-trusted-proxies.md) — Add the proxy section to packages/config and the auth.RealIP middleware, which reads X-Forwarded-For only from trusted proxies when enabled. **done**
 - [p0-17 Make settings and auth package-level and pass the db to cms.New](/tasks/p0-17-package-level-settings-and-auth.md) — Move the settings into the virtual/settings singleton, turn auth into helpers that receive the db, give cms.New the db with options only for the resolver and the static handler, and add store.FromConfig. **done**
+- [p0-18 Read the CMS address from config.json](/tasks/p0-18-cms-host.md) — Add cms.host to packages/config, with localhost as its default, and make both CMS runners listen on it.
+- [p0-19 Fix the tools/create templates](/tasks/p0-19-create-templates.md) — End every template with a newline, so that a generated project passes gofmt, and test it.
+- [p0-20 Replace the project AGENTS.md files with READMEs](/tasks/p0-20-project-readmes.md) — Rename the AGENTS.md of each project folder to README.md, in the repository and in the tools/create templates, keeping one AGENTS.md at the root.
+- [p0-21 Add make install to every project](/tasks/p0-21-make-install.md) — Give each project a make install that creates folders and installs dependencies, have the root one run them, and comment out the root targets of the orchestrator.
 
 ## P1 Signed-out site
 
@@ -36,6 +40,14 @@ starts.
 - [p1-08 Add the landing promo widget](/tasks/p1-08-landing-promo.md) — Serve the promo habbos as XML and show the HabboWidgets landing widget on the landing page when features.landingPromo is on, with the join button otherwise. **done**
 - [p1-09 Verify the P1 exit criteria](/tasks/p1-09-exit-check.md) — Run the whole signed-out flow end to end on the production binaries and close the phase. **done**
 - [p1-10 Give the register page a title](/tasks/p1-10-register-page-title.md) — The register page was the only signed-out page with an empty title, found while reviewing the phase before closing it. **done**
+- [p1-11 Match the signed-out layout to Holo](/tasks/p1-11-signed-out-layout.md) — Give the signed-out pages Holo's titles, meta tags, header stats, logo link and footer.
+- [p1-12 Show Holo's sign-out and ban pages](/tasks/p1-12-sign-out-page.md) — Replace the redirect after signing out with Holo's confirmation, and end the session of a banned visitor on the next page with the ban message.
+- [p1-13 Match the forgot page to Holo](/tasks/p1-13-forgot-as-holo.md) — Ask for the username and the email as Holo does, send a reset only when both match, and show Holo's page to signed-in visitors.
+- [p1-14 Limit the reset mail](/tasks/p1-14-reset-mail-limit.md) — Send no reset mail while the account holds auth.resetMaxActive unexpired links, in one atomic insert.
+- [p1-15 Match the landing page to Holo](/tasks/p1-15-landing-as-holo.md) — Give the landing page Holo's sign-in texts, remember-me bubble, advert, no-JavaScript box and age-limit message, with a new Bubble primitive.
+- [p1-16 Match the registration rules and texts to Holo](/tasks/p1-16-registration-rules.md) — Port Holo's email, birth date and age rules, its messages and defaults, and keep the live check's own texts apart.
+- [p1-17 Port Holo's registration flow to the browser](/tasks/p1-17-registration-flow.md) — Rebuild the page in Holo's order and port registration.js with its gated details, tooltips, live checks, submit validation and age bubbles.
+- [p1-18 Verify P1 against Holo](/tasks/p1-18-exit-check-as-holo.md) — Run the whole signed-out flow again on the production binaries, finish the list of differences and close the phase.
 
 ## Later phases
 

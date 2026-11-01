@@ -9,6 +9,11 @@ What HoloCMS (`source/holo/`) contains and where each part goes. These documents
 - [Holo database and the new schema](/reference/holo-database.md) — Holo's tables, the problems found in them, Holo's settings, and the new normalized schema that replaces them.
 - [Holo formats and protocols](/reference/holo-protocols.md) — MUS commands, SSO tickets, group badge codes, promo habbo XML, figure strings, BBCode and the captcha as Holo used them.
 
+## The port
+
+- [How the programs work together](/reference/architecture.md) — Which programs make up Project Reborn, what each one owns, and how they interact when they run alone and when they run together in one process.
+- [Where the port differs from Holo](/reference/holo-differences.md) — Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
+
 ## Design
 
 - [Holo colours mapped to Tailwind](/reference/colours.md) — The closest Tailwind colour for each Holo colour, computed with tools/tw-color, for the public site, BBCode and housekeeping.

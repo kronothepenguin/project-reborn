@@ -11,6 +11,7 @@ change supersedes a decision with a new one.
 - [0006 Profiles belong to each habbo](/decisions/0006-profiles-per-habbo.md) — Each habbo has its own profile, which anchors its home page and its tags.
 - [0014 Attribute-based access control](/decisions/0014-attribute-based-access.md) — Admin-defined access groups carry attributes that belong to the user, and code checks attributes only, never a rank number or a group name.
 - [0015 Dotted attribute names; fuses stay separate](/decisions/0015-attribute-names-and-fuses.md) — Web attributes use dotted names such as forum.edit, while R26 fuses keep their exact fuse_* names in a separate, deferred catalogue.
+- [0035 Reset mail is limited per account](/decisions/0035-reset-mail-limit.md) — An account can hold auth.resetMaxActive unexpired reset links at a time, so nobody can make the hotel send repeated mail to one address.
 - [0018 Password reset by email](/decisions/0018-password-reset-by-email.md) — Forgot password emails a single-use, expiring reset link built on password_resets and the mail settings.
 - [0030 packages/auth creates accounts and habbos](/decisions/0030-accounts-created-in-auth.md) — The helpers that create a user with its first habbo, and a habbo with its profile, home and wallet, live in packages/auth with the name, email and birth-date rules, and take sqlc queries so each caller keeps its own transaction.
 
@@ -29,6 +30,9 @@ change supersedes a decision with a new one.
 
 ## Scope
 
+- [0034 Behaviour matches Holo exactly; the code is new and safest](/decisions/0034-behaviour-matches-holo.md) — Every page behaves exactly as its HoloCMS page does, with new code, and differs only where Holo is unsafe, where a decision says so, or where Holo's behaviour is a bug.
+- [0036 Referral farming stays open for now](/decisions/0036-referral-farming-accepted.md) — Nothing stops a person from earning credits with their own referral link, beyond the per-IP registration limit, until the user asks for it.
+- [0042 Group badges get two palettes](/decisions/0042-two-badge-palettes.md) — P5 builds the group badge tints twice, with Holo's exact colours and with the closest Tailwind colours, and the user picks one once both work.
 - [0013 Game-server features are deferred](/decisions/0013-defer-game-server-features.md) — Everything in Holo that needs the game emulator waits until the game server exists; meanwhile the hotel shows as offline.
 - [0017 Guests can read public pages](/decisions/0017-guest-read-access.md) — Guests can read news, community, staff, tags, homes, group pages, the forum and the club and credits information; acting needs a session.
 - [0019 Staff page shows display habbos](/decisions/0019-staff-page-display-habbo.md) — /staff lists access groups flagged staff_listed and shows, for each member, the display habbo chosen when access was granted.
@@ -38,6 +42,11 @@ change supersedes a decision with a new one.
 
 ## Packages and process
 
+- [0037 The CMS address comes from config.json](/decisions/0037-cms-host-in-config.md) — config.json gains cms.host, and the CMS runners listen on cms.host and cms.port instead of a fixed localhost.
+- [0038 Project folders hold a README and a make install](/decisions/0038-project-docs-and-install.md) — AGENTS.md stays only at the repository root, project folders document themselves in README.md, and every project and the root have a make install.
+- [0039 The orchestrator is a later project](/decisions/0039-orchestrator-is-a-later-project.md) — apps/reborn will run the installer, cms, housekeeping and server from one binary; its old implementation is gone, it is not planned yet, and the work stays on the CMS.
+- [0040 Housekeeping is the single writer of settings](/decisions/0040-housekeeping-writes-settings.md) — Housekeeping alone updates settings, the CMS only reads them, the installer runs once, and programs running alone will be told of a change instead of polling for it.
+- [0041 Housekeeping gets its own simple design system](/decisions/0041-housekeeping-design-system.md) — Housekeeping follows Habbo's original housekeeping, simple tables with white and blue sections, in a new design system.
 - [0003 Housekeeping under /housekeeping](/decisions/0003-housekeeping-under-prefix.md) — Every housekeeping route lives under /housekeeping/ so it can share one mux and the session cookie with the CMS.
 - [0008 Avatar images from a configurable URL](/decisions/0008-configurable-avatar-imaging.md) — Avatar images come from an imaging URL in config and settings, used by an Avatar primitive in packages/components.
 - [0016 Installer package](/decisions/0016-installer.md) — packages/installer writes the initial config.json and creates the initial database, the first administrator and the seed rows.

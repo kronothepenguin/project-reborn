@@ -26,6 +26,7 @@ Habbos buy, join and run groups with decorated group homes and badges, and talk 
 | `newtopic.php`, `savetopic.php`, `savepost.php`, `updatepost.php`, `deletepost.php`, `previewpost.php` | `POST /forum/threads`, `POST /forum/threads/{id}/posts`, `POST /forum/posts/{id}`, `POST /forum/posts/{id}/delete`, `POST /bbcode/preview` | — | ⚡`forum/new-thread`, ⚡`forum/reply-form`; the author or `forum.edit` may edit |
 | `opentopicsettings.php`, `savetopicsettings.php`, `deletetopic.php`, `iot/go.php?do=report` | `POST /forum/threads/{id}/settings`, `POST /forum/threads/{id}/delete`, `POST /forum/posts/{id}/report` | — | ⚡`forum/moderation` (`forum.edit`); a report creates a `help_tickets` row with `forum_post_id` |
 
+- Group badge tints: two palettes, so that the user can pick one ([0042](/decisions/0042-two-badge-palettes.md)).
 - Primitives: GroupBadge, Table. Settings: `groups.*`, `features.forum`, `features.smilies`.
 
 # Exit criteria
@@ -37,9 +38,3 @@ Habbos buy, join and run groups with decorated group homes and badges, and talk 
 # Tasks
 
 Created when the phase starts.
-
-# Open questions
-
-- **Badge tints:** group badge images use the 18 tints shared with the HabboWidgets badge editor. They are pixel
-  data, not CSS, so the plan keeps them as in Holo — the only exception to the Tailwind colour rule. Waiting for the
-  user's confirmation.

@@ -4,9 +4,9 @@ Phases run in this order. The housekeeping phases come right after P2 because th
 
 ## Order
 
-1. [P0 Foundations](/phases/p0-foundations.md) — Store, config, virtual settings, auth, the complete schema, the installer and the CMS wiring that every later phase builds on. **Done.**
-2. [P1 Signed-out site](/phases/p1-signed-out.md) — Landing and login, registration with referrals, logout, forgot and reset password, legal pages and maintenance. **Done.**
-3. [P2 Me and account](/phases/p2-me-account.md) — The community layout and header, the Me page, account settings and owning several habbos. **Active.**
+1. [P0 Foundations](/phases/p0-foundations.md) — Store, config, virtual settings, auth, the complete schema, the installer and the CMS wiring that every later phase builds on. **Active.**
+2. [P1 Signed-out site](/phases/p1-signed-out.md) — Landing and login, registration with referrals, logout, forgot and reset password, legal pages and maintenance.
+3. [P2 Me and account](/phases/p2-me-account.md) — The community layout and header, the Me page, account settings and owning several habbos.
 4. [HK-A Housekeeping core](/phases/hk-a-housekeeping-core.md) — Housekeeping scaffold and layout, dashboard, settings editor, access groups and the staff log.
 5. [HK-B Users and moderation](/phases/hk-b-users-moderation.md) — Housekeeping search and editing of users and habbos, credits, badges, bans, alerts and the help queue.
 6. [P3 Homes](/phases/p3-homes.md) — Habbo home pages with stickers, notes and widgets, the home editor, the home store and inventory, profile tags, and the store seed and admin.

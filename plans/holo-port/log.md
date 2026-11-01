@@ -1,5 +1,24 @@
 # Log
 
+## 2026-11-01
+
+- **Update** P0 is active again, then P1, and P2 waits; both get new tasks from the user's review of P1:
+  [p0-18](/tasks/p0-18-cms-host.md) to [p0-21](/tasks/p0-21-make-install.md) and
+  [p1-11](/tasks/p1-11-signed-out-layout.md) to [p1-18](/tasks/p1-18-exit-check-as-holo.md).
+- **Create** [How the programs work together](/reference/architecture.md) and
+  [Where the port differs from Holo](/reference/holo-differences.md).
+- **Decision** [0042](/decisions/0042-two-badge-palettes.md): group badges get two palettes, and the Tailwind colour rule
+  stays hard.
+- **Decision** [0041](/decisions/0041-housekeeping-design-system.md): housekeeping gets a simple design system of its own.
+- **Decision** [0040](/decisions/0040-housekeeping-writes-settings.md): housekeeping is the single writer of settings.
+- **Decision** [0039](/decisions/0039-orchestrator-is-a-later-project.md): the orchestrator is a later project.
+- **Decision** [0038](/decisions/0038-project-docs-and-install.md): project folders hold a README and a `make install`.
+- **Decision** [0037](/decisions/0037-cms-host-in-config.md): the CMS address comes from `config.json`.
+- **Decision** [0036](/decisions/0036-referral-farming-accepted.md): referral farming stays open for now.
+- **Decision** [0035](/decisions/0035-reset-mail-limit.md): reset mail is limited per account.
+- **Decision** [0034](/decisions/0034-behaviour-matches-holo.md): every behaviour matches Holo exactly, with new and
+  safest code.
+
 ## 2026-10-30
 
 - **Update** P1 is done and P2 is active; P2 gets its tasks when its work starts. P1's phase file lists four open

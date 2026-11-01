@@ -2,8 +2,8 @@
 type: Phase
 title: P2 Me and account
 description: The community layout and header, the Me page, account settings and owning several habbos.
-status: active
-timestamp: 2026-10-30T22:42:25+00:00
+status: planned
+timestamp: 2026-11-01T18:13:48+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p2, cms]
 ---
@@ -25,7 +25,9 @@ A signed-in user sees Holo's community chrome, their Me page and account setting
   ends the other sessions.
 - Layout grids: 460/310/160 (`body#home`) and 210/560/160 (`#news`, `#tags`); see
   [pages](/reference/holo-pages.md).
-- Primitives: Textarea, Bubble, Spinner.
+- Primitives: Textarea, Spinner.
+- During maintenance, staff who pass see Holo's `Alert: The site is currently turned off!` in the header and the footer.
+- The signed-out footer shows `Housekeeping` to staff, as Holo's does.
 - Settings: `features.birthdayNotifications`.
 
 # Exit criteria

@@ -19,7 +19,8 @@ read the staff log; every change is logged.
   `/housekeeping/...` and serves `dist` through `http.StripPrefix`; the dev resolver base includes
   `/housekeeping` ([0003](/decisions/0003-housekeeping-under-prefix.md)).
 - Layout `src/layouts/housekeeping.astro`: tab strip, left menu and content, in the
-  [housekeeping colours](/reference/colours.md#housekeeping).
+  [housekeeping colours](/reference/colours.md#housekeeping) and the new design system of
+  [0041](/decisions/0041-housekeeping-design-system.md).
 - One helper writes a `staff_logs` row for every mutation.
 - Config: `housekeeping.port`. Settings: `housekeeping.note`.
 
@@ -43,4 +44,8 @@ Created when the phase starts.
 
 # Open questions
 
-- Which setting a housekeeping running alone reads for its reload interval ([0024](/decisions/0024-settings-catalogue-and-getters.md)).
+- How a CMS running alone learns of a settings change: the IPC of [0040](/decisions/0040-housekeeping-writes-settings.md),
+  and what happens to `cms.refresh`.
+- Whether housekeeping refuses to start without the database. [0016](/decisions/0016-installer.md) says it does, while
+  since [0029](/decisions/0029-package-level-settings-and-auth.md) the CMS creates an empty one.
+- The image of [0041](/decisions/0041-housekeeping-design-system.md) has to be saved in the repository.

@@ -88,6 +88,7 @@ The renderer emits classes, never inline hex.
 
 # Group badge tints
 
-The 18 badge tints are pixel data shared with the HabboWidgets badge editor and are kept as in Holo; see
-[the protocols](/reference/holo-protocols.md#group-badges). This exception waits for the user's confirmation
-([P5](/phases/p5-groups-forum.md)).
+The 18 badge tints are pixel data shared with the HabboWidgets badge editor; see
+[the protocols](/reference/holo-protocols.md#group-badges). [P5](/phases/p5-groups-forum.md) builds them twice, with
+Holo's exact colours and with the closest Tailwind colours, and the user picks one
+([0042](/decisions/0042-two-badge-palettes.md)).
