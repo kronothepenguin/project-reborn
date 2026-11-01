@@ -62,7 +62,7 @@ starts.
 
 - [hk-a-01 Bring the tools/create templates to the current conventions](/tasks/hk-a-01-create-templates.md) — Generate apps that open the db with store.FromConfig, pass it to New and report a failed server, so that housekeeping is right from its first commit. **done**
 - [hk-a-02 Add the housekeeping section to packages/config](/tasks/hk-a-02-housekeeping-config.md) — Declare housekeeping.host and housekeeping.port, mirroring cms.host and cms.port, and have the installer write their defaults. **done**
-- [hk-a-03 Scaffold housekeeping and guard its routes](/tasks/hk-a-03-scaffold-and-access.md) — Generate packages/housekeeping and apps/housekeeping, mount them under /housekeeping alone and on a shared mux, and keep out guests and non-staff.
+- [hk-a-03 Scaffold housekeeping and guard its routes](/tasks/hk-a-03-scaffold-and-access.md) — Generate packages/housekeeping and apps/housekeeping, mount them under /housekeeping alone and on a shared mux, and keep out guests and non-staff. **done**
 - [hk-a-04 Build the housekeeping layout](/tasks/hk-a-04-layout.md) — The layout of docs/hk.png as a new design system, the Table primitive, the previous login and Holo's Access Denied page.
 - [hk-a-05 Write the staff log helper and page](/tasks/hk-a-05-staff-log.md) — One helper writes a staff_logs row for every mutation, and GET /logs reads them with housekeeping.logs.
 - [hk-a-06 Build the dashboard and the shared note](/tasks/hk-a-06-dashboard.md) — GET /housekeeping/ shows the counts, the holders of housekeeping.accessGroups and the note, and POST /note saves it with settings.Set.
