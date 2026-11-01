@@ -56,6 +56,8 @@ read the staff log; every change is logged.
 - [hk-a-09 Verify the HK-A exit criteria](/tasks/hk-a-09-exit-check.md) — done
 - [hk-a-10 Keep a stopped task from running](/tasks/hk-a-10-stopped-task.md) — done
 - [hk-a-11 Label the settings of P2](/tasks/hk-a-11-p2-setting-labels.md) — done
+- [hk-a-12 Ask for the housekeeping port in the installer](/tasks/hk-a-12-installer-housekeeping-port.md) — done
+- [hk-a-13 Verify HK-A merged with P2](/tasks/hk-a-13-merge-check.md) — todo
 
 # Open questions
 

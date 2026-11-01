@@ -16,11 +16,12 @@ import (
 )
 
 type configPage struct {
-	Written    bool
-	ConfigPath string
-	Path       string
-	Port       string
-	Error      string
+	Written          bool
+	ConfigPath       string
+	Path             string
+	Port             string
+	HousekeepingPort string
+	Error            string
 }
 
 // HandleConfigView renders GET /config.
@@ -30,12 +31,14 @@ func (r *Router) HandleConfigView(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	page := configPage{
-		ConfigPath: setup.ConfigPath(),
-		Path:       storeconfig.DefaultPath(),
-		Port:       strconv.Itoa(cms.DefaultPort()),
+		ConfigPath:       setup.ConfigPath(),
+		Path:             storeconfig.DefaultPath(),
+		Port:             strconv.Itoa(cms.DefaultPort()),
+		HousekeepingPort: strconv.Itoa(housekeeping.DefaultPort()),
 	}
 	if cfg := installation.Config; cfg != nil {
 		page.Written, page.Path, page.Port = true, cfg.Store.Path, strconv.Itoa(cfg.CMS.Port)
+		page.HousekeepingPort = strconv.Itoa(cfg.Housekeeping.Port)
 	}
 	astro.WriteTemplate(w, r.deps.Resolver, "config.html", page)
 }
@@ -47,9 +50,10 @@ func (r *Router) HandleConfigWrite(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	page := configPage{
-		ConfigPath: setup.ConfigPath(),
-		Path:       strings.TrimSpace(req.PostFormValue("path")),
-		Port:       strings.TrimSpace(req.PostFormValue("port")),
+		ConfigPath:       setup.ConfigPath(),
+		Path:             strings.TrimSpace(req.PostFormValue("path")),
+		Port:             strings.TrimSpace(req.PostFormValue("port")),
+		HousekeepingPort: strings.TrimSpace(req.PostFormValue("housekeepingPort")),
 	}
 	port, err := strconv.Atoi(page.Port)
 	if err != nil {
@@ -57,11 +61,17 @@ func (r *Router) HandleConfigWrite(w http.ResponseWriter, req *http.Request) {
 		r.invalid(w, "config.html", page)
 		return
 	}
+	housekeepingPort, err := strconv.Atoi(page.HousekeepingPort)
+	if err != nil {
+		page.Error = "The housekeeping port must be a number."
+		r.invalid(w, "config.html", page)
+		return
+	}
 
 	cfg := &config.Config{
 		Store:        storeconfig.Store{Path: page.Path},
 		CMS:          cms.CMS{Host: cms.DefaultHost(), Port: port},
-		Housekeeping: housekeeping.Housekeeping{Host: housekeeping.DefaultHost(), Port: housekeeping.DefaultPort()},
+		Housekeeping: housekeeping.Housekeeping{Host: housekeeping.DefaultHost(), Port: housekeepingPort},
 		Proxy:        proxy.Proxy{Enabled: proxy.DefaultEnabled(), Trusted: proxy.DefaultTrusted()},
 	}
 	switch err := r.deps.Setup.Configure(req.Context(), cfg); {

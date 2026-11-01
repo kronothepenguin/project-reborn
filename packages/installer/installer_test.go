@@ -70,12 +70,15 @@ func TestInstallation(t *testing.T) {
 		{"site before configuring", "GET", "/site", nil, 303, "/config", ""},
 		{"admin before configuring", "POST", "/admin", admin, 303, "/config", ""},
 		{"done before installing", "GET", "/done", nil, 303, "/", ""},
-		{"config form", "GET", "/config", nil, 200, "", "Path:habbo.db Port:17387"},
-		{"port that is not a number", "POST", "/config", url.Values{"path": {"habbo.db"}, "port": {"abc"}}, 422, "", "The hotel port must be a number."},
-		{"port out of range", "POST", "/config", url.Values{"path": {"habbo.db"}, "port": {"70000"}}, 422, "", "cms.port: must be between 1 and 65535"},
-		{"write config", "POST", "/config", url.Values{"path": {"habbo.db"}, "port": {"17400"}}, 303, "/site", ""},
+		{"config form", "GET", "/config", nil, 200, "", "Path:habbo.db Port:17387 HousekeepingPort:18465"},
+		{"port that is not a number", "POST", "/config", url.Values{"path": {"habbo.db"}, "port": {"abc"}, "housekeepingPort": {"18400"}}, 422, "", "The hotel port must be a number."},
+		{"housekeeping port that is not a number", "POST", "/config", url.Values{"path": {"habbo.db"}, "port": {"17400"}, "housekeepingPort": {"abc"}}, 422, "", "The housekeeping port must be a number."},
+		{"port out of range", "POST", "/config", url.Values{"path": {"habbo.db"}, "port": {"70000"}, "housekeepingPort": {"18400"}}, 422, "", "cms.port: must be between 1 and 65535"},
+		{"housekeeping port out of range", "POST", "/config", url.Values{"path": {"habbo.db"}, "port": {"17400"}, "housekeepingPort": {"70000"}}, 422, "", "housekeeping.port: must be between 1 and 65535"},
+		{"write config", "POST", "/config", url.Values{"path": {"habbo.db"}, "port": {"17400"}, "housekeepingPort": {"18400"}}, 303, "/site", ""},
 		{"config written", "GET", "/config", nil, 200, "", "Written:true"},
-		{"config again", "POST", "/config", url.Values{"path": {"other.db"}, "port": {"17401"}}, 303, "/config", ""},
+		{"config shows the ports", "GET", "/config", nil, 200, "", "Port:17400 HousekeepingPort:18400"},
+		{"config again", "POST", "/config", url.Values{"path": {"other.db"}, "port": {"17401"}, "housekeepingPort": {"18401"}}, 303, "/config", ""},
 		{"site form", "GET", "/site", nil, 200, "", "Name:Holo Hotel ShortName:Holo URL:http://localhost:17387 StartCredits:500 SecureCookies:true"},
 		{"site URL with a path", "POST", "/site", with(site, "url", "https://hotel.example.com/cms"), 422, "", "Site URL: must be an http or https origin"},
 		{"start credits out of range", "POST", "/site", with(site, "startCredits", "-1"), 422, "", "Start credits: must be between 0 and 1000000"},
@@ -125,7 +128,7 @@ func TestInstallation(t *testing.T) {
 	if err := json.Unmarshal(data, &written); err != nil {
 		t.Fatalf("decode %s: %v", config.Filename, err)
 	}
-	if written.Housekeeping.Host != "localhost" || written.Housekeeping.Port != 18465 {
-		t.Errorf("%s holds housekeeping %+v, want the defaults", config.Filename, written.Housekeeping)
+	if written.Housekeeping.Host != "localhost" || written.Housekeeping.Port != 18400 {
+		t.Errorf("%s holds housekeeping %+v, want the default host and the form's port", config.Filename, written.Housekeeping)
 	}
 }

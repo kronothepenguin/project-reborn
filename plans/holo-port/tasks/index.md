@@ -77,6 +77,8 @@ starts.
 - [hk-a-09 Verify the HK-A exit criteria](/tasks/hk-a-09-exit-check.md) — Run housekeeping on the production binaries in a real browser, list the differences from Holo, and run every gate. **done**
 - [hk-a-10 Keep a stopped task from running](/tasks/hk-a-10-stopped-task.md) — After stop, a tick that waited out a slow run started another run, because select picks at random.
 - [hk-a-11 Label the settings of P2](/tasks/hk-a-11-p2-setting-labels.md) — Give the three settings P2 declared while HK-A was on its branch real labels on the settings forms.
+- [hk-a-12 Ask for the housekeeping port in the installer](/tasks/hk-a-12-installer-housekeeping-port.md) — The configuration step asks for both ports, as the plan's wizard does, because it is the one time the administrator sets them.
+- [hk-a-13 Verify HK-A merged with P2](/tasks/hk-a-13-merge-check.md) — Merge hk-a into main and verify the result from a clean checkout, in the browser and with every gate.
 
 ## Later phases
 

@@ -2,6 +2,10 @@
 
 ## 2026-11-01
 
+- **Start** [hk-a-13](/tasks/hk-a-13-merge-check.md).
+- **Done** [hk-a-12](/tasks/hk-a-12-installer-housekeeping-port.md): the installer asks for the housekeeping port and
+  writes it to `config.json`.
+- **Start** [hk-a-12](/tasks/hk-a-12-installer-housekeeping-port.md).
 - **Done** [hk-a-11](/tasks/hk-a-11-p2-setting-labels.md): the three settings of P2 have real labels on the forms, and
   a test keeps every declared setting labelled.
 - **Start** [hk-a-11](/tasks/hk-a-11-p2-setting-labels.md).

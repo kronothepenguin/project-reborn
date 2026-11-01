@@ -11,7 +11,7 @@ resolvers and serves the built frontend from the embedded `dist/`.
 | Route | Page | Does |
 | --- | --- | --- |
 | `GET /{$}` | `index.astro` | Shows the state; says the hotel is installed once an administrator exists |
-| `GET`, `POST /config` | `config.astro` | Database path and hotel port: opens the database (creating it and its schema), then writes `config.json` with `config.Create` |
+| `GET`, `POST /config` | `config.astro` | Database path, hotel port and housekeeping port: opens the database (creating it and its schema), then writes `config.json` with `config.Create` |
 | `GET`, `POST /site` | `site.astro` | Site name, short name, URL, start credits and secure cookies, saved with `settings.Set` and no user |
 | `GET`, `POST /admin` | `admin.astro` | Habbo name, email, birth date and password: one transaction creates, through `auth.CreateAccount`, the user, habbo, profile, home, wallet (5000 credits) and the Administrators group with every attribute |
 | `GET /done` | `done.astro` | Shows where `config.json` and the database are |
