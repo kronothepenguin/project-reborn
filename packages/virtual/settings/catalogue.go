@@ -14,6 +14,8 @@ import (
 var catalogue = map[string]declaration{
 	"cms.refresh": declare(1, between(1, 3600)),
 
+	"housekeeping.note": declare("", nil),
+
 	"site.name":        declare("Holo Hotel", length(1, 30)),
 	"site.shortName":   declare("Holo", length(1, 30)),
 	"site.url":         declare("http://localhost:17387", origin),
@@ -44,7 +46,7 @@ var catalogue = map[string]declaration{
 	"mail.host":     declare("", nil),
 	"mail.port":     declare(587, between(1, 65535)),
 	"mail.username": declare("", nil),
-	"mail.password": declare("", nil),
+	"mail.password": secret(declare("", nil)),
 	"mail.from":     declare("", mailbox),
 
 	"imaging.avatarUrl": declare("https://www.habbo.com/habbo-imaging/avatarimage", imager),
@@ -72,6 +74,7 @@ type declaration struct {
 	def      any
 	decode   func(literal string) (any, error)
 	validate func(value any) error
+	secret   bool
 }
 
 type rule struct {
@@ -105,6 +108,12 @@ func declare[T int | bool | string](def T, valid func(T) error) declaration {
 			return valid(typed)
 		},
 	}
+}
+
+// secret marks a setting whose value Declared never hands out.
+func secret(d declaration) declaration {
+	d.secret = true
+	return d
 }
 
 func between(low, high int) func(int) error {

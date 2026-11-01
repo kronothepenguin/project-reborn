@@ -1,0 +1,59 @@
+---
+import { Table } from "@project-reborn/components";
+import Box from "../components/box.astro";
+import Submit from "../components/submit.astro";
+import Housekeeping from "../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="Dashboard" tab="dashboard">
+  <h1 class="font-sans text-lg font-bold">Project Reborn Housekeeping</h1>
+  <div class="mt-2 grid gap-3 lg:grid-cols-2">
+    <Box title="System Overview">
+      <Table>
+        <tbody>
+          <tr>
+            <td><strong>Members</strong></td>
+            <td>[[ .Habbos ]]</td>
+          </tr>
+          <tr>
+            <td><strong>Groups</strong></td>
+            <td>[[ .Groups ]]</td>
+          </tr>
+          <tr>
+            <td><strong>Stafflog Entries</strong></td>
+            <td>[[ .StaffLogs ]]</td>
+          </tr>
+          <tr>
+            <td><strong>Active Bans</strong></td>
+            <td>[[ .ActiveBans ]]</td>
+          </tr>
+        </tbody>
+      </Table>
+    </Box>
+    <Box title="[[ .SiteName ]] Administrators">
+      <Table>
+        <tbody>
+          [[ range .Administrators ]]
+          <tr>
+            <td><strong>[[ .Name ]]</strong> (ID: [[ .ID ]])</td>
+            <td>[[ if .Email ]]<a href="mailto:[[ .Email ]]" class="text-indigo-900 underline">[[ .Email ]]</a>[[ end ]]</td>
+          </tr>
+          [[ end ]]
+        </tbody>
+      </Table>
+    </Box>
+  </div>
+  <div class="mt-3">
+    <Box title="Housekeeping Notes">
+      <form method="post" action="/housekeeping/note" class="space-y-2 p-2 text-center">
+        <textarea
+          name="notes"
+          rows="8"
+          aria-label="Housekeeping Notes"
+          class="w-full border border-neutral-300 bg-yellow-200 p-1"
+        >[[ .Note ]]</textarea>
+        <Submit>Save Admin Notes</Submit>
+      </form>
+    </Box>
+  </div>
+</Housekeeping>

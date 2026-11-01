@@ -38,6 +38,8 @@ Loading is the first thing a program does. An unreadable file, invalid JSON, or 
 | `store.path` | string | `habbo.db` | non-empty, no `?` or `#` |
 | `cms.host` | string | `localhost` | hostname or IP address; `0.0.0.0` listens on every IPv4 interface, as a pod needs |
 | `cms.port` | int | 17387 | 1–65535 |
+| `housekeeping.host` | string | `localhost` | hostname or IP address, as `cms.host` |
+| `housekeeping.port` | int | 18465 | 1–65535 |
 | `proxy.enabled` | bool | false | |
 | `proxy.trusted` | []string | `["127.0.0.1", "::1"]` | IP addresses or CIDR ranges, at least one when `proxy.enabled` |
 

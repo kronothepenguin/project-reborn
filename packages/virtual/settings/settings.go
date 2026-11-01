@@ -13,6 +13,7 @@ import (
 	"log/slog"
 	"maps"
 	"reflect"
+	"slices"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -118,6 +119,57 @@ func Set(ctx context.Context, db *sql.DB, userID int64, key string, value any) e
 	}
 	values.Store(&next)
 	return nil
+}
+
+// Validate reports why Set would refuse values taken together, and writes
+// nothing, so that a form can refuse all of its values before it writes one.
+func Validate(candidates map[string]any) error {
+	mu.Lock()
+	defer mu.Unlock()
+	if base == nil {
+		return errNotLoaded
+	}
+
+	next := maps.Clone(*values.Load())
+	for _, key := range slices.Sorted(maps.Keys(candidates)) {
+		d, err := lookup(key)
+		if err != nil {
+			return fmt.Errorf("settings: %s: %w", key, err)
+		}
+		if err := d.validate(candidates[key]); err != nil {
+			return fmt.Errorf("settings: %s: %w", key, err)
+		}
+		next[key] = candidates[key]
+	}
+	for _, r := range rules {
+		if err := r.check(next); err != nil {
+			return fmt.Errorf("settings: %w", err)
+		}
+	}
+	return nil
+}
+
+// Setting is one declared setting as a form shows it. Value is an int, a bool or
+// a string, and it is nil for a secret, which never leaves this package.
+type Setting struct {
+	Key    string
+	Value  any
+	Secret bool
+}
+
+// Declared lists the declared settings with their current values, sorted by key,
+// without the values of config.json.
+func Declared() []Setting {
+	loaded := current()
+	declared := make([]Setting, 0, len(catalogue))
+	for _, key := range slices.Sorted(maps.Keys(catalogue)) {
+		setting := Setting{Key: key, Secret: catalogue[key].secret}
+		if !setting.Secret {
+			setting.Value = loaded[key]
+		}
+		declared = append(declared, setting)
+	}
+	return declared
 }
 
 func GetInt(key string) int {

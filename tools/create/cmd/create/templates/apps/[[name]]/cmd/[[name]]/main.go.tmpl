@@ -7,6 +7,7 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/{{.Name}}"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 func main() {
@@ -14,11 +15,12 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	resolver := astro.MakeFSResolver(distFS)
 	fileServer := http.FileServerFS(distFS)
 
-	c := {{.Name}}.New(
+	db := store.FromConfig()
+
+	c := {{.Name}}.New(db,
 		{{.Name}}.WithResolver(resolver),
 		{{.Name}}.WithStatic(fileServer),
 	)
@@ -31,6 +33,6 @@ func main() {
 		Handler: mux,
 	}
 
-	log.Println("{{.Name}} on http://localhost:{{.AppPort}}")
-	server.ListenAndServe()
+	log.Println("{{.Name}} on http://" + server.Addr)
+	log.Fatalln(server.ListenAndServe())
 }

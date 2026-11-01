@@ -91,6 +91,14 @@ timestamp: 2026-10-27T21:44:59+00:00
 - Inputs: `user_id` and `avatar_id` (NULL for an unknown habbo name), `ip`, `succeeded`, `created_at`
 - Tables: `login_attempts`
 
+## GetPreviousLogin
+
+- Cardinality: `:one`
+- Inputs: `user_id`
+- Result: `GetPreviousLoginRow` (`ip`, `created_at`) of the user's sign-in before the newest; not found for a first
+  sign-in
+- Tables: `login_attempts`
+
 ## CountFailedLoginsByIP
 
 - Cardinality: `:one`

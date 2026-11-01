@@ -42,3 +42,7 @@ manage members and the group home.
 
 - [groups](/tables/groups.md)
 - [group_members](/tables/group_members.md)
+
+# Queries
+
+- [groups.query.sql](/queries/groups.md)

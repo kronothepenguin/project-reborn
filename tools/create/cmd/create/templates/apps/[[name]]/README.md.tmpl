@@ -36,8 +36,11 @@ go build -o ./apps/{{.Name}}/tmp/{{.Name}} ./apps/{{.Name}}/cmd/{{.Name}}
 
 - `make dev` starts air from the repository root, so the runner reads and
   writes the root `config.json`.
-- Air watches `apps/{{.Name}}`, `packages/astro` and `packages/{{.Name}}` (`.go` only) and
-  rebuilds the dev runner on Go changes.
+- Air watches the `.go` files of `apps/{{.Name}}`, `packages/astro`, `packages/{{.Name}}`
+  and the packages it imports (`config`, `store`), and rebuilds the dev runner on Go
+  changes.
+- The runners open the database with `store.FromConfig()`, which creates it when
+  it does not exist.
 - Astro page edits are hot-reloaded by the astro dev server; the runner
   re-fetches pages on every request, so no Go restart is needed for
   frontend-only changes.

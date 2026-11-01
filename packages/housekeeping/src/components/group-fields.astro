@@ -1,0 +1,35 @@
+---
+import { Checkbox, Input } from "@project-reborn/components";
+---
+
+<tr>
+  <td class="w-2/5">
+    <label for="group-name"><strong>Name</strong></label>
+    <div class="text-neutral-500">The name of the group. Code never reads it: only its attributes count.</div>
+  </td>
+  <td class="w-3/5 [&>input]:w-full">
+    <Input id="group-name" name="name" value="[[ .Name ]]" variant="border" required />
+  </td>
+</tr>
+<tr>
+  <td>
+    <label for="group-description"><strong>Description</strong></label>
+    <div class="text-neutral-500">What the group is for.</div>
+  </td>
+  <td class="[&>input]:w-full">
+    <Input id="group-description" name="description" value="[[ .Description ]]" variant="border" />
+  </td>
+</tr>
+<tr>
+  <td>
+    <strong>Staff Page</strong>
+    <div class="text-neutral-500">List the group's members on the staff page, with their display habbos.</div>
+  </td>
+  <td>
+    [[ if .StaffListed ]]
+    <Checkbox name="staffListed" value="1" checked>Listed</Checkbox>
+    [[ else ]]
+    <Checkbox name="staffListed" value="1">Listed</Checkbox>
+    [[ end ]]
+  </td>
+</tr>

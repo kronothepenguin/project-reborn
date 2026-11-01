@@ -1,0 +1,64 @@
+---
+import SiteMenu from "../components/site-menu.astro";
+import UserMenu from "../components/user-menu.astro";
+import Document from "./document.astro";
+
+type Tab = "dashboard" | "site" | "users";
+
+interface Props {
+  title: string;
+  tab?: Tab;
+}
+
+const { title, tab } = Astro.props;
+
+const tabs: { id: Tab; label: string; href: string }[] = [
+  { id: "dashboard", label: "Dashboard", href: "/housekeeping/" },
+  { id: "site", label: "Site & Content", href: "/housekeeping/settings" },
+  { id: "users", label: "Users & Moderation", href: "/housekeeping/access-groups" },
+];
+---
+
+<Document title={`Project Reborn Housekeeping | ${title}`}>
+  <div class="p-2">
+    <header class="flex flex-wrap justify-between gap-2 border border-black bg-olive-200 p-1">
+      <p>Logged in as: <strong>[[ .Habbo ]]</strong>[[ if .PreviousLogin ]] (Previous login at [[ .PreviousLogin ]])[[ end ]]</p>
+      <a href="[[ .SiteURL ]]" class="text-indigo-900 underline">Site Home</a>
+    </header>
+
+    <nav class="mt-6 border-b-[7px] border-sky-700">
+      <ul class="flex flex-wrap justify-center gap-x-[15px]">
+        {
+          tabs.map(({ id, label, href }) => (
+            <li>
+              <a
+                {href}
+                aria-current={id === tab ? "page" : undefined}
+                class:list={[
+                  "block w-44 pt-0.5 pb-1 text-center font-bold text-white underline",
+                  id === tab ? "bg-sky-700" : "bg-indigo-900",
+                ]}
+              >
+                {label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+      <aside class="flex w-46 shrink-0 flex-col gap-3">
+        {tab !== "users" && <SiteMenu />}
+        {tab !== "site" && <UserMenu />}
+      </aside>
+      <main class="min-w-0 flex-1">
+        <slot />
+      </main>
+    </div>
+
+    <footer class="mt-6 text-center text-neutral-500">
+      <p>Powered by Project Reborn &copy;</p>
+    </footer>
+  </div>
+</Document>

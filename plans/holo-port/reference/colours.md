@@ -68,6 +68,23 @@ The renderer emits classes, never inline hex.
 
 # Housekeeping
 
+The design system of [0041](/decisions/0041-housekeeping-design-system.md) takes its colours from `docs/hk.png`, measured
+on the image and mapped with `tools/tw-color`:
+
+| Use | Hex | Tailwind | Distance |
+| --- | --- | --- | --- |
+| page, box bodies | #ffffff | white | 0 |
+| text, box borders | #000000 | black | 0 |
+| top bar, table header cells | #ebebeb | olive-200 | 0.0123 |
+| active tab, strip, box title bars | #0066cc | sky-700 | 0.0598 |
+| inactive tabs, links | #000099 / #000094 | indigo-900 | 0.0971 |
+| visited links | #757575 | neutral-500 | 0.0064 |
+
+The distances to `sky-700` and `indigo-900` are the largest in this bundle, so these two are visibly less saturated than the
+image. They are the closest Tailwind colours, which is the rule.
+
+Holo's own panel, which the new design system replaces, used these:
+
 | Use | Hex | Tailwind |
 | --- | --- | --- |
 | body | #f3f3f3 | mist-100 |

@@ -1,3 +1,10 @@
+-- created_at comes first so sqlc types now as a non-null parameter.
+-- name: CountActiveBans :one
+SELECT COUNT(*) FROM bans
+WHERE created_at <= sqlc.arg(now)
+  AND lifted_at IS NULL
+  AND (expires_at IS NULL OR expires_at > sqlc.arg(now));
+
 -- The strongest active ban on the user or the IP: permanent first, then the
 -- latest expiry. user_id is NULL when a login names an unknown habbo. The
 -- CAST and the created_at comparison come first so sqlc types ip and now as

@@ -2,11 +2,13 @@ go 1.27.0
 
 use (
 	./apps/cms
+	./apps/housekeeping
 	./apps/installer
 	./packages/astro
 	./packages/auth
 	./packages/cms
 	./packages/config
+	./packages/housekeeping
 	./packages/installer
 	./packages/scheduler
 	./packages/store

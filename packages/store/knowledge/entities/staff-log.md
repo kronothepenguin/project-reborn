@@ -18,13 +18,27 @@ many actions).
 
 # Lifecycle
 
-- Written in the same transaction as the action it records; read in housekeeping with `housekeeping.logs`.
+- Written in the same transaction as the action it records, except that `settings.Set` cannot join a transaction, so
+  the row of a settings change is written just before it. A failed write leaves a row for a change that did not happen,
+  never a change without a row.
+- Read in housekeeping with `housekeeping.logs`.
 
 # Vocabularies
 
 | Column | Values |
 |--------|--------|
-| `action` | dotted names of the form `<area>.<verb>` (`bans.create`, `credits.give`, `settings.update`); the list is defined with housekeeping |
+| `action` | dotted names of the form `<area>.<verb>`; the table below lists those in use |
+
+| Action | Detail | Target |
+|--------|--------|--------|
+| `settings.update` | the keys that changed, never their values | none |
+| `note.update` | none | none |
+| `accessGroups.create` | the group | none |
+| `accessGroups.update` | the group, and the attributes added and removed | none |
+| `accessGroups.addMember` | the group | the user and the display habbo |
+| `accessGroups.setDisplayHabbo` | the group | the user and the display habbo |
+| `accessGroups.removeMember` | the group | the user |
+| `accessGroups.refused` | what was refused, as Holo logged the refusals of its rank tool | the user, when there is one |
 
 # Relations
 
@@ -33,3 +47,7 @@ many actions).
 # Tables
 
 - [staff_logs](/tables/staff_logs.md)
+
+# Queries
+
+- [staff-logs.query.sql](/queries/staff-logs.md)

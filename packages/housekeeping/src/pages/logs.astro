@@ -1,0 +1,39 @@
+---
+import { Table } from "@project-reborn/components";
+import Box from "../components/box.astro";
+import Housekeeping from "../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="Logs" tab="users">
+  <Box title="[[ .SiteName ]] Staff Logs">
+    <Table>
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>User</th>
+          <th>Target user</th>
+          <th>Message/Details</th>
+          <th>IP</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        [[ range .Logs ]]
+        <tr>
+          <td>[[ .Action ]]</td>
+          <td class="whitespace-nowrap">[[ .User ]]</td>
+          <td class="whitespace-nowrap">[[ .Target ]]</td>
+          <td class="wrap-anywhere">[[ .Detail ]]</td>
+          <td>[[ .IP ]]</td>
+          <td class="whitespace-nowrap">[[ .Date ]]</td>
+        </tr>
+        [[ else ]]
+        <tr>
+          <td colspan="6">No staff logs yet.</td>
+        </tr>
+        [[ end ]]
+      </tbody>
+    </Table>
+  </Box>
+  <p class="mt-2 text-center">[[ if .Newer ]]<a href="/housekeeping/logs?page=[[ .Newer ]]" class="text-indigo-900 underline">Newer</a>[[ end ]] [[ if .Older ]]<a href="/housekeeping/logs?page=[[ .Older ]]" class="text-indigo-900 underline">Older</a>[[ end ]]</p>
+</Housekeeping>

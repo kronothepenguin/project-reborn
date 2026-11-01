@@ -1,0 +1,74 @@
+---
+import { Table } from "@project-reborn/components";
+import Box from "../components/box.astro";
+import GroupFields from "../components/group-fields.astro";
+import Message from "../components/message.astro";
+import Submit from "../components/submit.astro";
+import Housekeeping from "../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="Access Groups" tab="users">
+  <Message />
+  <div class="space-y-3">
+    <Box title="Access Groups">
+      <Table>
+        <thead>
+          <tr>
+            <th>Group</th>
+            <th>Description</th>
+            <th>Members</th>
+            <th>Staff Page</th>
+          </tr>
+        </thead>
+        <tbody>
+          [[ range .Groups ]]
+          <tr>
+            <td><a href="/housekeeping/access-groups/[[ .ID ]]" class="text-indigo-900 underline">[[ .Name ]]</a></td>
+            <td>[[ .Description ]]</td>
+            <td>[[ .Members ]]</td>
+            <td>[[ if .StaffListed ]]Listed[[ end ]]</td>
+          </tr>
+          [[ else ]]
+          <tr>
+            <td colspan="4">No access groups yet.</td>
+          </tr>
+          [[ end ]]
+        </tbody>
+      </Table>
+    </Box>
+
+    <form method="post" action="/housekeeping/access-groups">
+      <Box title="New Group">
+        <Table>
+          <tbody>
+            [[ with .New ]]
+            <GroupFields />
+            [[ end ]]
+          </tbody>
+        </Table>
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+          <Submit>Create Group</Submit>
+        </div>
+      </Box>
+    </form>
+
+    <Box title="Staff Members">
+      <Table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Group</th>
+          </tr>
+        </thead>
+        <tbody>
+          [[ range .Staff ]]
+          <tr>
+            <td>[[ .Name ]] (ID: [[ .UserID ]])</td>
+            <td>[[ .Group ]]</td>
+          </tr>
+          [[ end ]]
+        </tbody>
+      </Table>
+    </Box>
+  </div>
+</Housekeeping>

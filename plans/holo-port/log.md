@@ -2,6 +2,39 @@
 
 ## 2026-11-01
 
+- **Update** [hk-a-09](/tasks/hk-a-09-exit-check.md): the housekeeping tests create accounts through `auth.CreateAccount`,
+  because the CMS of P2 reads what a hand-written habbo lacks.
+- **Update** [hk-a-09](/tasks/hk-a-09-exit-check.md): the list of settings forms has its own name, because `catalogue`
+  also means the attributes in that package, and `tools/create` names the exported type in the README it writes.
+- **Done** [hk-a-09](/tasks/hk-a-09-exit-check.md): every exit criterion of HK-A holds on the production binaries: 116
+  browser checks, 317 Go tests and 120 component tests pass, and the differences from Holo are listed.
+- **Start** [hk-a-09](/tasks/hk-a-09-exit-check.md).
+- **Done** [hk-a-08](/tasks/hk-a-08-access-groups.md): staff with `housekeeping.accessGroups` manage groups, attributes
+  and members with display habbos, and a change that would leave nobody able to manage them is refused and logged.
+- **Start** [hk-a-08](/tasks/hk-a-08-access-groups.md).
+- **Done** [hk-a-07](/tasks/hk-a-07-settings-editor.md): staff with `housekeeping.settings` edit every declared setting
+  in forms with Holo's texts, all or nothing, and a value back at its default deletes the row.
+- **Start** [hk-a-07](/tasks/hk-a-07-settings-editor.md).
+- **Done** [hk-a-06](/tasks/hk-a-06-dashboard.md): staff land on Holo's dashboard, with the counts, the holders of
+  `housekeeping.accessGroups` and a shared note saved with `settings.Set`.
+- **Start** [hk-a-06](/tasks/hk-a-06-dashboard.md).
+- **Done** [hk-a-05](/tasks/hk-a-05-staff-log.md): one helper writes the `staff_logs` row of a mutation, and `GET /logs`
+  reads them with `housekeeping.logs`, in pages.
+- **Start** [hk-a-05](/tasks/hk-a-05-staff-log.md).
+- **Done** [hk-a-04](/tasks/hk-a-04-layout.md): the layout of `docs/hk.png` is built as its own design system, with the
+  `Table` primitive, the previous login and Holo's Access Denied page.
+- **Start** [hk-a-04](/tasks/hk-a-04-layout.md).
+- **Done** [hk-a-03](/tasks/hk-a-03-scaffold-and-access.md): `packages/housekeeping` and `apps/housekeeping` exist,
+  every route under `/housekeeping/` belongs to staff, and `Mount` works alone and on one mux with the CMS.
+- **Start** [hk-a-03](/tasks/hk-a-03-scaffold-and-access.md).
+- **Done** [hk-a-02](/tasks/hk-a-02-housekeeping-config.md): `housekeeping.host` and `housekeeping.port` are in
+  `packages/config`, and the installer writes their defaults.
+- **Start** [hk-a-02](/tasks/hk-a-02-housekeeping-config.md).
+- **Done** [hk-a-01](/tasks/hk-a-01-create-templates.md): `tools/create` generates runners that open the db with
+  `store.FromConfig()` and hand it to `New`, and a generated project compiles and builds.
+- **Start** [hk-a-01](/tasks/hk-a-01-create-templates.md).
+- **Create** [hk-a-01](/tasks/hk-a-01-create-templates.md) to [hk-a-09](/tasks/hk-a-09-exit-check.md): HK-A is active on the
+  `hk-a` branch, beside P2.
 - **Update** P2 is done, and HK-A runs on the `hk-a` branch.
 - **Done** [p2-07](/tasks/p2-07-exit-check.md): P2 meets its exit criteria from a clean build, with 223 browser checks
   and every gate passing, and the differences from Holo are listed.

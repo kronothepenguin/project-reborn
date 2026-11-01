@@ -1,13 +1,20 @@
 ---
 type: SQL Query
 title: moderation.query.sql
-description: Moderation operations for the active ban on a user or an IP, a habbo's alerts and the count of open help tickets.
+description: Moderation operations for the active ban on a user or an IP, the count of active bans, a habbo's alerts and the count of open help tickets.
 resource: packages/store/queries/moderation.query.sql
 tags: [store, query, moderation]
 timestamp: 2026-10-27T21:44:59+00:00
 ---
 
 # Operations
+
+## CountActiveBans
+
+- Cardinality: `:one`
+- Inputs: `now`
+- Result: the number of active bans, as [GetActiveBan](#getactiveban) defines them
+- Tables: `bans`
 
 ## GetActiveBan
 

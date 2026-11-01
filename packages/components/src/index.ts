@@ -16,5 +16,6 @@ export { default as Select } from "./components/select.svelte";
 export { default as Spinner } from "./components/spinner.svelte";
 export { default as Tab } from "./components/tab.svelte";
 export { default as TabPanel } from "./components/tab-panel.svelte";
+export { default as Table } from "./components/table.svelte";
 export { default as Tabs } from "./components/tabs.svelte";
 export type { MenuContext, TabRegistration, TabsContext } from "./context";

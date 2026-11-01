@@ -16,7 +16,8 @@ properties, not attributes.
 
 - The group name is unique, ignoring case.
 - A member's display habbo is one of the member's own habbos (enforced by the application).
-- The last user holding `housekeeping.accessGroups` cannot lose it (enforced by the application).
+- Someone must always hold both `housekeeping.accessGroups` and `housekeeping.access` (enforced by the application),
+  because the first alone opens nothing.
 
 # Lifecycle
 

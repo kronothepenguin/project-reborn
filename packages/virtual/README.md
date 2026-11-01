@@ -25,6 +25,8 @@ err := settings.Set(ctx, db, userID, "site.maintenance", true)
 - `GetInt`, `GetBool` and `GetString(key)` return the value. For an unknown key, a value of another type or settings not loaded yet, they return the zero value and log a warning with `slog`.
 - `GetIntOr`, `GetBoolOr` and `GetStringOr(key, fallback)` return `fallback` in those cases, without a warning.
 - `Set(ctx, db, userID, key, value) error` writes one declared setting. It checks the value's type, the validator and the rules, then upserts the row, or deletes it when `value` equals the default. The values change at once. A `userID` of 0 records no user (the installer writes settings before the first user exists).
+- `Validate(values) error` reports why `Set` would refuse several values taken together, and writes nothing, so that a form can refuse all of them before it writes one. `Set` still writes one key at a time and checks the rules each time.
+- `Declared() []Setting` lists the declared settings with their current values, sorted by key, for housekeeping's forms. A setting declared with `secret(...)` comes without its value, and `GetString` is the only way to read it.
 - `Reload(ctx, db) error` rebuilds the values from the rows. Nothing calls it for now: the apps of one process share the values, and reloading for programs that run apart comes back with housekeeping or the orchestrator.
 - `Set` and `Reload` before any `Load` return an error.
 

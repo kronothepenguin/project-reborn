@@ -30,6 +30,7 @@ func write(root, name string, appPort, astroPort int) (err error) {
 
 	data := map[string]any{
 		"Name":      name,
+		"Type":      strings.ToUpper(name[:1]) + name[1:],
 		"AppPort":   appPort,
 		"AstroPort": astroPort,
 	}

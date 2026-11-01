@@ -2,8 +2,8 @@
 type: Phase
 title: HK-A Housekeeping core
 description: Housekeeping scaffold and layout, dashboard, settings editor, access groups and the staff log.
-status: planned
-timestamp: 2026-10-27T20:48:19+00:00
+status: done
+timestamp: 2026-11-01T21:07:47+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [hk-a, housekeeping]
 ---
@@ -45,9 +45,20 @@ read the staff log; every change is logged.
 
 # Tasks
 
-Created when the phase starts.
+- [hk-a-01 Bring the tools/create templates to the current conventions](/tasks/hk-a-01-create-templates.md) — done
+- [hk-a-02 Add the housekeeping section to packages/config](/tasks/hk-a-02-housekeeping-config.md) — done
+- [hk-a-03 Scaffold housekeeping and guard its routes](/tasks/hk-a-03-scaffold-and-access.md) — done
+- [hk-a-04 Build the housekeeping layout](/tasks/hk-a-04-layout.md) — done
+- [hk-a-05 Write the staff log helper and page](/tasks/hk-a-05-staff-log.md) — done
+- [hk-a-06 Build the dashboard and the shared note](/tasks/hk-a-06-dashboard.md) — done
+- [hk-a-07 Build the settings editor](/tasks/hk-a-07-settings-editor.md) — done
+- [hk-a-08 Build access groups](/tasks/hk-a-08-access-groups.md) — done
+- [hk-a-09 Verify the HK-A exit criteria](/tasks/hk-a-09-exit-check.md) — done
 
 # Open questions
 
 - How a CMS running alone learns of a settings change: the IPC of [0040](/decisions/0040-housekeeping-writes-settings.md),
-  and what happens to `cms.refresh`.
+  and what happens to `cms.refresh`. HK-A does not design it, so the maintenance criterion holds at the CMS's next start,
+  and at once on a shared mux.
+- Whether access groups can be deleted: the phase has no route for it, while
+  `packages/store/knowledge/entities/access-group.md` describes it.

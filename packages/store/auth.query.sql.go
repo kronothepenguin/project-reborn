@@ -281,6 +281,27 @@ func (q *Queries) GetLoginByHabboName(ctx context.Context, name string) (GetLogi
 	return i, err
 }
 
+const getPreviousLogin = `-- name: GetPreviousLogin :one
+SELECT ip, created_at FROM login_attempts
+WHERE user_id = CAST(?1 AS INTEGER) AND succeeded
+ORDER BY created_at DESC, id DESC
+LIMIT 1 OFFSET 1
+`
+
+type GetPreviousLoginRow struct {
+	IP        string
+	CreatedAt time.Time
+}
+
+// OFFSET 1 skips the newest sign-in, which is the one in use. CAST keeps user_id
+// a non-null parameter although the column is nullable.
+func (q *Queries) GetPreviousLogin(ctx context.Context, userID int64) (GetPreviousLoginRow, error) {
+	row := q.db.QueryRowContext(ctx, getPreviousLogin, userID)
+	var i GetPreviousLoginRow
+	err := row.Scan(&i.IP, &i.CreatedAt)
+	return i, err
+}
+
 const getResetAccount = `-- name: GetResetAccount :one
 SELECT users.id AS user_id, users.email, avatars.name
 FROM avatars

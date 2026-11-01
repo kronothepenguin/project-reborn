@@ -1,0 +1,121 @@
+---
+import { Checkbox, Input, Select, Table } from "@project-reborn/components";
+import Box from "../../components/box.astro";
+import GroupFields from "../../components/group-fields.astro";
+import Message from "../../components/message.astro";
+import Submit from "../../components/submit.astro";
+import Housekeeping from "../../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="[[ .Group.Name ]]" tab="users">
+  <Message />
+  <div class="space-y-3">
+    <form method="post" action="/housekeeping/access-groups/[[ .Group.ID ]]">
+      <Box title="[[ .Group.Name ]]">
+        <Table>
+          <tbody>
+            [[ with .Group ]]
+            <GroupFields />
+            [[ end ]]
+          </tbody>
+        </Table>
+        <Table>
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Grants</th>
+            </tr>
+          </thead>
+          <tbody>
+            [[ range .Attributes ]]
+            <tr>
+              <td class="w-2/5">
+                [[ if .Held ]]
+                <Checkbox name="attribute" value="[[ .Name ]]" checked>[[ .Name ]]</Checkbox>
+                [[ else ]]
+                <Checkbox name="attribute" value="[[ .Name ]]">[[ .Name ]]</Checkbox>
+                [[ end ]]
+              </td>
+              <td class="w-3/5 text-neutral-500">[[ .Description ]]</td>
+            </tr>
+            [[ end ]]
+          </tbody>
+        </Table>
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+          <Submit>Save Group</Submit>
+        </div>
+      </Box>
+    </form>
+
+    <Box title="Members">
+      <Table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Display Habbo</th>
+          </tr>
+        </thead>
+        <tbody>
+          [[ range .Members ]]
+          <tr>
+            <td class="w-2/5">[[ .Name ]] (ID: [[ .UserID ]])</td>
+            <td class="w-3/5">
+              <form method="post" action="/housekeeping/users/[[ .UserID ]]/access-groups" class="flex flex-wrap gap-1">
+                <input type="hidden" name="group" value="[[ $.Group.ID ]]" />
+                <Select name="habbo" aria-label="Display Habbo">
+                  [[ range .Habbos ]][[ if .Selected ]]
+                  <option value="[[ .ID ]]" selected>[[ .Name ]]</option>
+                  [[ else ]]
+                  <option value="[[ .ID ]]">[[ .Name ]]</option>
+                  [[ end ]][[ end ]]
+                </Select>
+                <Submit>Save</Submit>
+                <button
+                  type="submit"
+                  name="remove"
+                  value="1"
+                  class="border border-black bg-olive-200 px-2 py-0.5 font-bold hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                >
+                  Remove
+                </button>
+              </form>
+            </td>
+          </tr>
+          [[ else ]]
+          <tr>
+            <td colspan="2">This group has no members.</td>
+          </tr>
+          [[ end ]]
+        </tbody>
+      </Table>
+    </Box>
+
+    <Box title="Add Member">
+      <form method="get" action="/housekeeping/access-groups/[[ .Group.ID ]]" class="flex flex-wrap items-end gap-2 p-1">
+        <div>
+          <label for="habbo-search"><strong>Username</strong></label>
+          <div class="text-neutral-500">The name of one of their habbos, or their user id.</div>
+          <Input id="habbo-search" name="habbo" value="[[ .Search ]]" variant="border" />
+        </div>
+        <Submit>Find User</Submit>
+      </form>
+      [[ if .Found.UserID ]]
+      <form method="post" action="/housekeeping/users/[[ .Found.UserID ]]/access-groups" class="flex flex-wrap items-end gap-2 border-t-2 border-black p-1">
+        <input type="hidden" name="group" value="[[ .Group.ID ]]" />
+        <div>
+          <label for="found-habbo"><strong>Display Habbo</strong></label>
+          <div class="text-neutral-500">The habbo the staff page shows for this user.</div>
+          <Select id="found-habbo" name="habbo">
+            [[ range .Found.Habbos ]][[ if .Selected ]]
+            <option value="[[ .ID ]]" selected>[[ .Name ]]</option>
+            [[ else ]]
+            <option value="[[ .ID ]]">[[ .Name ]]</option>
+            [[ end ]][[ end ]]
+          </Select>
+        </div>
+        <Submit>Add To Group</Submit>
+      </form>
+      [[ end ]]
+    </Box>
+  </div>
+</Housekeeping>
