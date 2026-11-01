@@ -2,6 +2,10 @@
 
 ## 2026-11-01
 
+- **Done** [p1-17](/tasks/p1-17-registration-flow.md): `/register` follows Holo's order and `registration.js`, in a
+  real Chromium and without JavaScript. This also fixes the `Done` button that a visitor who kept the suggested look
+  could not press.
+- **Start** [p1-17](/tasks/p1-17-registration-flow.md).
 - **Done** [p1-16](/tasks/p1-16-registration-rules.md): `/register` follows Holo's email, birth date and age rules,
   texts and defaults, and the live name check keeps its own texts. The age limit now also runs on the server.
 - **Start** [p1-16](/tasks/p1-16-registration-rules.md).

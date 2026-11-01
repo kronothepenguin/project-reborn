@@ -34,18 +34,23 @@ type dateOption struct {
 // name, look, password, bornOn, email and terms.
 type registerPage struct {
 	hotelStatus
-	Habbo       string
-	Email       string
-	Newsletter  bool
-	Terms       bool
-	Figure      string
-	Gender      string
-	EditorState string
-	Refer       string
-	Days        []dateOption
-	Months      []dateOption
-	Years       []dateOption
-	Errors      map[string]string
+	PasswordMinLength int
+	Habbo             string
+	Email             string
+	Newsletter        bool
+	Terms             bool
+	Figure            string
+	Gender            string
+	EditorState       string
+	Refer             string
+	Days              []dateOption
+	Months            []dateOption
+	Years             []dateOption
+	Errors            map[string]string
+}
+
+func (r *Router) newRegisterPage(ctx context.Context) registerPage {
+	return registerPage{hotelStatus: r.hotelStatus(ctx), PasswordMinLength: settings.GetInt("auth.passwordMinLength")}
 }
 
 func (p *registerPage) setBornOn(day, month, year int) {
@@ -68,11 +73,9 @@ func dateOptions(first, last, selected int, label func(int) string) []dateOption
 // the look of the habbo the visitor picked.
 func (r *Router) HandleRegisterView(w http.ResponseWriter, req *http.Request) {
 	query := req.URL.Query()
-	page := registerPage{
-		hotelStatus: r.hotelStatus(req.Context()),
-		Newsletter:  true,
-		Refer:       strings.TrimSpace(query.Get("refer")),
-	}
+	page := r.newRegisterPage(req.Context())
+	page.Newsletter = true
+	page.Refer = strings.TrimSpace(query.Get("refer"))
 	page.setBornOn(0, 0, 0)
 	figure, gender := query.Get("figure"), strings.ToUpper(query.Get("gender"))
 	if auth.ValidateLook(figure, gender) == nil {
@@ -91,18 +94,16 @@ func (r *Router) HandleRegister(w http.ResponseWriter, req *http.Request) {
 	}
 	form := req.PostForm
 	password := form.Get("password")
-	page := registerPage{
-		hotelStatus: r.hotelStatus(ctx),
-		Habbo:       form.Get("name"),
-		Email:       form.Get("email"),
-		Newsletter:  form.Get("newsletter") != "",
-		Terms:       form.Get("terms") != "",
-		Figure:      form.Get("figure"),
-		Gender:      form.Get("gender"),
-		EditorState: form.Get("editorState"),
-		Refer:       strings.TrimSpace(form.Get("refer")),
-		Errors:      map[string]string{},
-	}
+	page := r.newRegisterPage(ctx)
+	page.Habbo = form.Get("name")
+	page.Email = form.Get("email")
+	page.Newsletter = form.Get("newsletter") != ""
+	page.Terms = form.Get("terms") != ""
+	page.Figure = form.Get("figure")
+	page.Gender = form.Get("gender")
+	page.EditorState = form.Get("editorState")
+	page.Refer = strings.TrimSpace(form.Get("refer"))
+	page.Errors = map[string]string{}
 	if page.Figure == "" {
 		page.Figure = settings.GetString("registration.defaultFigure")
 		page.Gender = settings.GetString("registration.defaultGender")

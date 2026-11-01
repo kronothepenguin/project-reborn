@@ -1,2 +1,25 @@
 @import "tailwindcss";
 @import "@project-reborn/components/styles.css";
+
+/* The states register/registration-form sets on the fields, from Holo's
+   registration.css. */
+input[data-state="error"] {
+  @apply bg-rose-300;
+}
+
+input[data-state="ok"] {
+  @apply bg-white bg-no-repeat;
+  background-image: url("../assets/register/ok-icon.gif");
+  background-position: 99% 50%;
+}
+
+input[data-state="loading"] {
+  @apply bg-white bg-no-repeat;
+  background-image: url("../assets/register/progress-bubbles.gif");
+  background-position: 99% 50%;
+}
+
+#register-birthday[data-state="error"] select,
+#register-terms-content[data-state="error"] label {
+  @apply border-2 border-rose-300;
+}

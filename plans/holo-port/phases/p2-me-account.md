@@ -25,6 +25,8 @@ A signed-in user sees Holo's community chrome, their Me page and account setting
   ends the other sessions.
 - Layout grids: 460/310/160 (`body#home`) and 210/560/160 (`#news`, `#tags`); see
   [pages](/reference/holo-pages.md).
+- `/account/looks` listens to the editor as Holo's `settings.js` does: `setAllowedToProceed` disables the save button, and
+  `showHabboClubNotice` and `showOldFigureNotice` show their notices. `/register` must not, as `registration.js` does not.
 - Primitives: Textarea, Spinner.
 - During maintenance, staff who pass see Holo's `Alert: The site is currently turned off!` in the header and the footer.
 - The signed-out footer shows `Housekeeping` to staff, as Holo's does.

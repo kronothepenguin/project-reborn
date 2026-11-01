@@ -1,16 +1,11 @@
 <script lang="ts">
-  import { Notice } from "@project-reborn/components";
   import { onMount } from "svelte";
 
   declare global {
     interface Window {
       HabboEditor: {
         setGenderAndFigure(gender: string, figure: string): void;
-        setAllowedToProceed(allowed: boolean): void;
         setEditorState(state: string): void;
-        showHabboClubNotice(): void;
-        hideHabboClubNotice(): void;
-        showOldFigureNotice(): void;
       };
       HabboEditorConfig: object;
     }
@@ -19,17 +14,17 @@
   // Islands get no [[ ]] values, so the form holds the look in hidden inputs that
   // the server fills in. The editor reads them on start and writes every change
   // back, which is how the look reaches the backend.
+  //
+  // These are the callbacks Holo's registration.js listens to. Its account page
+  // also listens to setAllowedToProceed and the club notices, but the editor
+  // reports false until it is first touched, so they must not reach this form.
   interface Props {
     figureInput: string;
     genderInput: string;
     stateInput: string;
-    submitButton: string;
   }
 
-  let { figureInput, genderInput, stateInput, submitButton }: Props = $props();
-
-  let clubItem = $state(false);
-  let oldFigure = $state(false);
+  let { figureInput, genderInput, stateInput }: Props = $props();
 
   function input(id: string) {
     return document.getElementById(id) as HTMLInputElement;
@@ -39,27 +34,14 @@
     const figure = input(figureInput);
     const gender = input(genderInput);
     const state = input(stateInput);
-    const submit = document.getElementById(submitButton) as HTMLButtonElement;
 
     window.HabboEditor = {
       setGenderAndFigure(newGender, newFigure) {
         gender.value = newGender;
         figure.value = newFigure;
       },
-      setAllowedToProceed(allowed) {
-        submit.disabled = !allowed;
-      },
       setEditorState(newState) {
         state.value = newState;
-      },
-      showHabboClubNotice() {
-        clubItem = true;
-      },
-      hideHabboClubNotice() {
-        clubItem = false;
-      },
-      showOldFigureNotice() {
-        oldFigure = true;
       },
     };
 
@@ -82,10 +64,3 @@
 </script>
 
 <div id="editor-container"></div>
-
-{#if clubItem}
-  <Notice variant="orange">This item is only for Habbo Club members.</Notice>
-{/if}
-{#if oldFigure}
-  <Notice variant="orange">This look could not be loaded completely.</Notice>
-{/if}

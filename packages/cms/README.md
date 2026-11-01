@@ -50,6 +50,12 @@ serves the built frontend from the embedded `dist/`.
   reads `GET /xml/promo-habbos.xml`, and its button sends `gender` and `figure` to
   `/register`. With `features.landingPromo` off the landing shows the join button
   and the feed answers 404.
+- `register/registration-form` is the port of Holo's `registration.js`. The form is
+  plain HTML that works without JavaScript, and the island reads it by id: it
+  keeps step 3 closed until the name passes the check, shows Holo's tooltips and
+  field states, validates on `Done`, and handles the age limit of 6 and the
+  parent's email up to 12, which is never sent. Passwords and addresses are checked
+  in the browser, so a password stays on the page until the form is sent.
 - Islands get no `[[ ]]` values, so the page keeps the name and the look in
   inputs that Go fills in. `habbo/avatar-editor` reads the hidden `figure`,
   `gender` and `editorState` inputs on start and writes every change back, which
