@@ -58,7 +58,10 @@ Results (2026-11-01):
   then finished on that database.
 - With the CMS stopped, so that only housekeeping could do it, an expired session was gone at the task's first run, a live
   one stayed, and the log stayed free of errors.
-- The dev runner served all 6 pages with the astro dev server and no failed request.
+- The dev runner served all 6 pages with the astro dev server and no failed request, and `make dev` itself started both
+  servers, with a guest going to `site.url` and Vite's paths answering through the runner.
+- Each of the 10 commits, exported to an empty folder, passes `go vet` and `go test` in every module of its `go.work`, and
+  the frontend builds in those that have housekeeping.
 - `gofmt`, `go vet` and `go test -race` pass in all 13 modules of `go.work`, with 317 tests. 120 component tests and
   `svelte-check` pass, the frontends of the cms, the installer and housekeeping build, `sqlc generate` changes nothing,
   `make check-docs` passes, and `make install` leaves the tree clean.

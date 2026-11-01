@@ -1,7 +1,7 @@
 # housekeeping — web app package
 
 Astro (Svelte + Tailwind) frontend embedded in a Go module. The Go app struct
-(`housekeeping` struct) registers a router over `packages/astro` resolvers and
+(`Housekeeping` struct) registers a router over `packages/astro` resolvers and
 serves the built frontend from the embedded `dist/`.
 
 ## Ports

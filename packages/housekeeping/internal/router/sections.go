@@ -44,7 +44,7 @@ var hiddenSettings = []string{"cms.refresh", noteKey}
 
 const defaultButton = "Save Settings"
 
-var catalogue = []section{
+var forms = []section{
 	{
 		ID: "site", Menu: "General Configuration", Title: "Project Reborn Configuration", Button: "Save Configuration",
 		Fields: []field{
@@ -114,8 +114,8 @@ var catalogue = []section{
 	},
 }
 
-// sectionsOver lays out declared as forms. A setting the catalogue above does not
-// name still gets a form, with its key as its label, so that one declared later
+// sectionsOver lays out declared as forms. A setting the list above does not name
+// still gets a form, with its key as its label, so that one declared later
 // can be edited at once. Its Kind comes from its declaration, which is also how a
 // secret stays masked: nothing here can show its value.
 func sectionsOver(declared []settings.Setting) []section {
@@ -124,9 +124,9 @@ func sectionsOver(declared []settings.Setting) []section {
 		byKey[setting.Key] = setting
 	}
 
-	sections := make([]section, 0, len(catalogue))
+	sections := make([]section, 0, len(forms))
 	listed := make(map[string]bool)
-	for _, s := range catalogue {
+	for _, s := range forms {
 		fields := make([]field, 0, len(s.Fields))
 		for _, f := range s.Fields {
 			if setting, ok := byKey[f.Key]; ok {
