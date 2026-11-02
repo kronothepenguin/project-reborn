@@ -114,6 +114,7 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Edit User | Takes column names from the form | Reads a fixed list of fields | `name=x` could otherwise reach any column, as it did in Holo |
 | Edit User | Any value goes into the query, with no escaping | The email, the birth date, the figure, the gender, the motto's 38 characters, and tickets and film from 0 to 2147483647 are checked | A value Holo accepted could break the site's pages |
 | Edit User | The email and birth date of anyone can be changed | They take `housekeeping.usersPrivate`, and `housekeeping.usersEdit` alone does not show them or save them | Changing an address nobody may read would hand over the account, through the password reset |
+| Ban tool | Stores any text as the address | An IPv4 or IPv6 address, in the form sign-ins compare | A mistyped address would look like a ban and stop nobody |
 | Give Credits | `is_numeric` lets `1.5` and `1e3` through, and a debit can go below zero | Whole numbers up to 2147483647, and a debit stops at zero with Holo's message | A wallet holds whole credits, and a sum past SQLite's integers would turn into a float |
 | Badge tool | Takes any 3 or 4 characters | Letters and digits, saved in upper case | A code names a file and a segment of a path, and MySQL matched codes ignoring case |
 | User listing | Every administrator sees every email and address | Emails, birth dates and addresses take `housekeeping.usersPrivate`, in the search too | [0053](/decisions/0053-attributes-on-groups-and-users.md) |
@@ -139,6 +140,10 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Configuration | `Enable SSO` and `Language` | Gone: SSO waits for the client page, and only English is left | [Holo's settings](/reference/holo-database.md) |
 | Content tool | Four categories of `cms_content` | A form per group of settings. Those of the staff, credits and forum pages arrive with their phases, and get a form when they are declared | [HK-A](/phases/hk-a-housekeeping-core.md) |
 | Maintenance | `Administrators can still login through Housekeeping.` | `Administrators can still login on that page.` | The plan: staff sign in with the shared session on the maintenance page |
+| Ban tool | `You may not ban the System Administrator!` | `Access denied. You may only act on users below your level.` | [0055](/decisions/0055-staff-levels.md) |
+| Ban tool | `...successfully. An ingame notification has been sent (that is, if the user is online).` | Ends at `successfully.` | The game server is deferred ([0013](/decisions/0013-defer-game-server-features.md)) |
+| Unban tool | `(Mass) Unban` deletes every ban matching a query | `Lift` beside each ban, which stays in the table as history | The plan, and [0063](/decisions/0063-what-housekeeping-can-delete.md) |
+| Ban Listing | Lists expired bans until their user signs in, with a notice saying so | Lists active bans, and the notice is gone | Bans are never deleted here, so expired ones would stay forever. Lifted and expired bans stay readable in the staff log |
 | Edit User | `credits` is a field of the form | Credits move only through `Give Credits`, which writes the ledger | Every change of credits has a ledger row |
 | Edit User | Every column but six can be edited, `hbirth`, `lastvisit`, `postcount` and `noob` too | The fields that still exist as data of their own: motto, figure, gender, email, birth date, newsletter, tickets and film | The others are worked out from history, or are gone |
 | Edit User | `...will also update (poof) ingame, if connected.` | `User updated successfully.` | The game server is deferred ([0013](/decisions/0013-defer-game-server-features.md)) |
@@ -152,6 +157,8 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | A refused form | Forgets what was typed | Keeps it, except a password |
 | A saved form | Answers the post, so a reload posts again | Redirects, and shows the same message |
 | Badge tool | A new badge is current, and the old one stays current too | One worn badge at a time | The old badge was never cleared |
+| Ban tool | Adds hours, days and months by hand, so a ban across the end of a day, a month or a year gets a wrong date | Real dates | The sums ignored month lengths and the year's end |
+| Ban tool | `Invalid ban length!` is written over, and the ban goes through ending now | The ban is refused | The message never showed |
 
 ## Not in Holo
 
@@ -166,6 +173,8 @@ veto.
 | Settings | `mail.password` is never shown: blank keeps it, and `Clear it` removes it | The plan: `mail.password` masked |
 | Edit User | Two forms on the habbo's page, `Save Habbo` and `Save User` | A habbo and its owner are two rows |
 | Edit User | `users.update` and `habbos.update` list the fields saved, never their values | Holo logged `Edited user`, and an address must not reach readers of the log |
+| Ban tool | Takes a habbo's name or a user id, and the habbo's page links to it | Holo took a user id, and here staff see habbos; the rank tool already took both |
+| Ban tool | The form and the list share one page, in the plain rows of Sulake's `Mass banning and kicking`, with the answer under the form | The plan, and [0060](/decisions/0060-housekeeping-components.md) |
 | Give Credits | A form on the habbo's page, not a page asking for a name | The plan: `POST /habbos/{id}/credits` |
 | Transaction logs | The page of a habbo, with a `Habbo` column and 100 rows a page, not a page asking for a user id | The plan, and the wallet is shared ([0056](/decisions/0056-wallet-club-and-inventory-per-user.md)) |
 | Badge tool | The habbo's page lists its badges, each with `Remove`, and the form gives one to that habbo | The plan: `POST /habbos/{id}/badges/{code}/delete`. Holo's tool only gave badges, by username |

@@ -111,6 +111,11 @@ import Housekeeping from "../../layouts/housekeeping.astro";
           <Submit>Save User</Submit>
         </div>
         [[ end ]]
+        [[ if .CanBan ]]
+        <p class="border-t-2 border-black p-1 text-center">
+          <a href="/housekeeping/bans?user=[[ .Target.Name ]]" class="text-indigo-900 underline">Ban this user</a>
+        </p>
+        [[ end ]]
       </Box>
     </form>
 

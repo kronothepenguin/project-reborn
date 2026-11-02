@@ -28,6 +28,35 @@ timestamp: 2026-10-27T21:44:59+00:00
 `ip` is wrapped in `CAST(… AS TEXT)`, and `now` is first compared with the non-null `created_at`, so sqlc types
 them `string` and `time.Time` instead of copying the nullability of `bans.ip` and `bans.expires_at`.
 
+## CreateBan
+
+- Cardinality: `:one`
+- Inputs: `user_id`, `ip`, `reason`, `issued_by_user_id`, `created_at`, `expires_at`
+- Result: the created `Ban` (`RETURNING *`)
+- Tables: `bans`
+
+## GetBan
+
+- Cardinality: `:one`
+- Inputs: `id`
+- Result: `Ban`, active or not; not found for an unknown id
+- Tables: `bans`
+
+## ListActiveBans
+
+- Cardinality: `:many`
+- Inputs: `now`, `row_limit`, `row_offset`
+- Result: the active bans, as [GetActiveBan](#getactiveban) defines them, newest first, each with the first habbo of its
+  user, and a blank name for a ban on an address alone
+- Tables: `bans`, `avatars`
+
+## LiftBan
+
+- Cardinality: `:execrows`
+- Inputs: `id`, `lifted_at`, `lifted_by_user_id`
+- Result: 1 when the ban was lifted, and 0 when it had been already
+- Tables: `bans`
+
 ## GetOldestAlert
 
 - Cardinality: `:one`

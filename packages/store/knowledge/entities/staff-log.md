@@ -43,6 +43,8 @@ many actions).
 | `habbos.update` | the fields saved, never their values | the user and the habbo |
 | `users.update` | the fields saved, never their values | the user and the habbo of the page |
 | `credits.give` | the signed amount | the user and the habbo |
+| `bans.create` | the reason, the end of the ban and the address, if any | the user and the habbo named |
+| `bans.lift` | the ban's id and reason | the user |
 | `badges.give` | the badge | the user and the habbo |
 | `badges.wear` | the badge, which the habbo already had | the user and the habbo |
 | `badges.delete` | the badge | the user and the habbo |

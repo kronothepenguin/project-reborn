@@ -1,0 +1,92 @@
+---
+import { Input, Select, Table } from "@project-reborn/components";
+import Box from "../components/box.astro";
+import Message from "../components/message.astro";
+import Submit from "../components/submit.astro";
+import Housekeeping from "../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="Remote Banning" tab="users">
+  <div class="space-y-3">
+    <form method="post" action="/housekeeping/bans">
+      <Box title="(Remote) Banning">
+        <Table variant="form">
+          <tbody>
+            <tr>
+              <td class="w-2/5">
+                <label for="ban-user"><strong>Username</strong></label>
+                <div class="text-neutral-500">The name of one of their habbos, or their user id. A ban covers all their habbos.</div>
+              </td>
+              <td class="w-3/5"><Input id="ban-user" name="user" value="[[ .Form.User ]]" variant="border" /></td>
+            </tr>
+            <tr>
+              <td>
+                <label for="ban-reason"><strong>Ban Reason</strong></label>
+                <div class="text-neutral-500">The reason for this ban that will be shown to the user.</div>
+              </td>
+              <td><Input id="ban-reason" name="reason" value="[[ .Form.Reason ]]" variant="border" /></td>
+            </tr>
+            <tr>
+              <td>
+                <label for="ban-ip"><strong>IP Address</strong> (Optional)</label>
+                <div class="text-neutral-500">If you want to ban a users IP also, fill in this field.</div>
+              </td>
+              <td><Input id="ban-ip" name="ip" value="[[ .Form.IP ]]" variant="border" /></td>
+            </tr>
+            <tr>
+              <td><label for="ban-length"><strong>Ban Length</strong></label></td>
+              <td>
+                <Select id="ban-length" name="length">
+                  [[ range .Lengths ]][[ if .Selected ]]
+                  <option value="[[ .Value ]]" selected>[[ .Label ]]</option>
+                  [[ else ]]
+                  <option value="[[ .Value ]]">[[ .Label ]]</option>
+                  [[ end ]][[ end ]]
+                </Select>
+              </td>
+            </tr>
+          </tbody>
+        </Table>
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+          <Submit>Ban</Submit>
+        </div>
+      </Box>
+    </form>
+
+    <Message />
+
+    <Box title="Active Ban Listing" color="gold">
+      <Table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Reason</th>
+            <th>Expires on</th>
+            <th>IP Address</th>
+            <th>Lift</th>
+          </tr>
+        </thead>
+        <tbody>
+          [[ range .Bans ]]
+          <tr>
+            <td>[[ if .Habbo ]][[ .Habbo ]] (ID: [[ .UserID ]])[[ else ]]<i>Not a user ban</i>[[ end ]]</td>
+            <td>[[ .Reason ]]</td>
+            <td>[[ .Expires ]]</td>
+            <td>[[ if .IP ]][[ .IP ]][[ else ]]<i>Not an IP Ban</i>[[ end ]]</td>
+            <td>
+              <form method="post" action="/housekeeping/bans/[[ .ID ]]/lift">
+                <Submit>Lift</Submit>
+              </form>
+            </td>
+          </tr>
+          [[ else ]]
+          <tr>
+            <td colspan="5">Nothing found.</td>
+          </tr>
+          [[ end ]]
+        </tbody>
+      </Table>
+    </Box>
+    <p class="text-center">[[ if .Newer ]]<a href="/housekeeping/bans?page=[[ .Newer ]]" class="text-indigo-900 underline">Newer</a>[[ end ]] [[ if .Older ]]<a href="/housekeeping/bans?page=[[ .Older ]]" class="text-indigo-900 underline">Older</a>[[ end ]]</p>
+  </div>
+</Housekeeping>

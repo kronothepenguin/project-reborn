@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [hk-b-05](/tasks/hk-b-05-bans.md): staff ban a user, and their address if they want, with Holo's lengths and
+  real dates; the sessions end at once, and bans are lifted and kept.
+- **Start** [hk-b-05](/tasks/hk-b-05-bans.md).
 - **Done** [hk-b-04](/tasks/hk-b-04-credits.md): staff give or take credits on the wallet with its ledger row, never
   below zero, and read the ledger of the user with the habbo that acted.
 - **Start** [hk-b-04](/tasks/hk-b-04-credits.md).

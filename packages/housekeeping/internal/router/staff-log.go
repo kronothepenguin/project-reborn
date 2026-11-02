@@ -24,6 +24,8 @@ const (
 	actionUsersUpdate           = "users.update"
 	actionUsersRefused          = "users.refused"
 	actionCreditsGive           = "credits.give"
+	actionBansCreate            = "bans.create"
+	actionBansLift              = "bans.lift"
 	actionBadgesGive            = "badges.give"
 	actionBadgesWear            = "badges.wear"
 	actionBadgesDelete          = "badges.delete"

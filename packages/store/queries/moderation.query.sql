@@ -19,6 +19,39 @@ WHERE created_at <= sqlc.arg(now)
 ORDER BY expires_at IS NULL DESC, expires_at DESC
 LIMIT 1;
 
+-- name: CreateBan :one
+INSERT INTO bans (user_id, ip, reason, issued_by_user_id, created_at, expires_at)
+VALUES (
+    sqlc.narg(user_id), sqlc.narg(ip), sqlc.arg(reason), sqlc.narg(issued_by_user_id),
+    sqlc.arg(created_at), sqlc.narg(expires_at)
+)
+RETURNING *;
+
+-- name: GetBan :one
+SELECT * FROM bans WHERE id = sqlc.arg(id);
+
+-- Active as GetActiveBan defines it, newest first, with the user's first habbo to
+-- name them. A ban on an address alone has no habbo.
+-- name: ListActiveBans :many
+SELECT bans.id, bans.user_id, bans.ip, bans.reason, bans.expires_at,
+       CAST(COALESCE((
+           SELECT avatars.name FROM avatars
+           WHERE avatars.user_id = bans.user_id
+           ORDER BY avatars.created_at, avatars.id
+           LIMIT 1
+       ), '') AS TEXT) AS habbo
+FROM bans
+WHERE bans.created_at <= sqlc.arg(now)
+  AND bans.lifted_at IS NULL
+  AND (bans.expires_at IS NULL OR bans.expires_at > sqlc.arg(now))
+ORDER BY bans.id DESC
+LIMIT sqlc.arg(row_limit) OFFSET sqlc.arg(row_offset);
+
+-- A lifted ban stays as history.
+-- name: LiftBan :execrows
+UPDATE bans SET lifted_at = sqlc.arg(lifted_at), lifted_by_user_id = sqlc.narg(lifted_by_user_id)
+WHERE id = sqlc.arg(id) AND lifted_at IS NULL;
+
 -- name: GetOldestAlert :one
 SELECT * FROM alerts
 WHERE avatar_id = sqlc.arg(avatar_id) AND dismissed_at IS NULL

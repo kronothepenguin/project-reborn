@@ -11,7 +11,7 @@ export const prepare = ({ sql }) => {
 };
 
 export default async function (t) {
-  const { check, hk, shot } = t;
+  const { base, check, hk, shot } = t;
 
   const { context, page, problems } = await session(t, "Admin-1");
 
@@ -145,6 +145,68 @@ export default async function (t) {
     ledger,
   );
 
+  const frank = await session(t, "Frank");
+  await page.goto(frankStaffURL);
+  await page.getByRole("link", { name: "Ban this user" }).click();
+  await page.waitForURL(/bans\?user=FrankStaff/);
+  check(
+    "the ban form starts from the habbo",
+    (await page.inputValue('input[name="user"]')) === "FrankStaff",
+  );
+  await page.fill('input[name="reason"]', "Being <rude>");
+  await page.selectOption('select[name="length"]', "2h");
+  await shot(page, "bans");
+  await page.getByRole("button", { name: "Ban", exact: true }).click();
+  await page.waitForURL(/banned=\d+/);
+  check(
+    "the ban says until when",
+    /User FrankStaff has been banned untill \d\d-\d\d-\d{4} /.test(
+      await page.getByRole("status").innerText(),
+    ),
+  );
+  const banList = await page.locator("main table").nth(1).innerText();
+  check(
+    "the ban is listed",
+    banList.includes("Being <rude>") && banList.includes("Not an IP Ban"),
+    banList,
+  );
+
+  await frank.page.goto(`${base}/me`);
+  check(
+    "a banned user is out at once",
+    !frank.page.url().endsWith("/me"),
+    frank.page.url(),
+  );
+  await frank.page.goto(`${base}/`);
+  await frank.page.fill('input[name="username"]', "Frank");
+  await frank.page.fill('input[name="password"]', "secret123");
+  await frank.page.click('button[type="submit"]');
+  await frank.page.waitForLoadState();
+  const refusal = await frank.page.locator("body").innerText();
+  check(
+    "the next login shows the reason and the expiry",
+    refusal.includes('The reason for this ban is "Being <rude>"') &&
+      refusal.includes("The ban will expire at"),
+    refusal,
+  );
+
+  await page.getByRole("button", { name: "Lift" }).click();
+  await page.waitForURL(/lifted=1/);
+  check(
+    "a lifted ban leaves the list",
+    (await page.getByRole("status").innerText()).includes("Affected bans: 1") &&
+      (await page.locator("main table").nth(1).innerText()).includes(
+        "Nothing found.",
+      ),
+  );
+  await frank.page.goto(`${base}/`);
+  await frank.page.fill('input[name="username"]', "Frank");
+  await frank.page.fill('input[name="password"]', "secret123");
+  await frank.page.click('button[type="submit"]');
+  await frank.page.waitForURL("**/me");
+  check("after the lift the user signs in", frank.page.url().endsWith("/me"));
+  await frank.context.close();
+
   await page.goto(`${hk}/habbos?q=Admin-1`);
   await page.getByRole("row", { name: /Admin-1/ }).getByRole("link", { name: "Edit" }).click();
   await page.waitForURL(/habbos\/\d+$/);
@@ -169,6 +231,8 @@ export default async function (t) {
       "badges.give",
       "badges.delete",
       "credits.give",
+      "bans.create",
+      "bans.lift",
     ].every((action) =>
       logs.includes(action),
     ),

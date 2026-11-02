@@ -37,6 +37,48 @@ func (q *Queries) CountOpenHelpTickets(ctx context.Context) (int64, error) {
 	return count, err
 }
 
+const createBan = `-- name: CreateBan :one
+INSERT INTO bans (user_id, ip, reason, issued_by_user_id, created_at, expires_at)
+VALUES (
+    ?1, ?2, ?3, ?4,
+    ?5, ?6
+)
+RETURNING id, user_id, ip, reason, issued_by_user_id, created_at, expires_at, lifted_at, lifted_by_user_id
+`
+
+type CreateBanParams struct {
+	UserID         sql.NullInt64
+	IP             sql.NullString
+	Reason         string
+	IssuedByUserID sql.NullInt64
+	CreatedAt      time.Time
+	ExpiresAt      sql.NullTime
+}
+
+func (q *Queries) CreateBan(ctx context.Context, arg CreateBanParams) (Ban, error) {
+	row := q.db.QueryRowContext(ctx, createBan,
+		arg.UserID,
+		arg.IP,
+		arg.Reason,
+		arg.IssuedByUserID,
+		arg.CreatedAt,
+		arg.ExpiresAt,
+	)
+	var i Ban
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.IP,
+		&i.Reason,
+		&i.IssuedByUserID,
+		&i.CreatedAt,
+		&i.ExpiresAt,
+		&i.LiftedAt,
+		&i.LiftedByUserID,
+	)
+	return i, err
+}
+
 const dismissAlert = `-- name: DismissAlert :execrows
 UPDATE alerts SET dismissed_at = ?1
 WHERE id = ?2 AND avatar_id = ?3 AND dismissed_at IS NULL
@@ -94,6 +136,27 @@ func (q *Queries) GetActiveBan(ctx context.Context, arg GetActiveBanParams) (Ban
 	return i, err
 }
 
+const getBan = `-- name: GetBan :one
+SELECT id, user_id, ip, reason, issued_by_user_id, created_at, expires_at, lifted_at, lifted_by_user_id FROM bans WHERE id = ?1
+`
+
+func (q *Queries) GetBan(ctx context.Context, id int64) (Ban, error) {
+	row := q.db.QueryRowContext(ctx, getBan, id)
+	var i Ban
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.IP,
+		&i.Reason,
+		&i.IssuedByUserID,
+		&i.CreatedAt,
+		&i.ExpiresAt,
+		&i.LiftedAt,
+		&i.LiftedByUserID,
+	)
+	return i, err
+}
+
 const getOldestAlert = `-- name: GetOldestAlert :one
 SELECT id, avatar_id, sender_user_id, message, created_at, dismissed_at FROM alerts
 WHERE avatar_id = ?1 AND dismissed_at IS NULL
@@ -113,4 +176,87 @@ func (q *Queries) GetOldestAlert(ctx context.Context, avatarID int64) (Alert, er
 		&i.DismissedAt,
 	)
 	return i, err
+}
+
+const liftBan = `-- name: LiftBan :execrows
+UPDATE bans SET lifted_at = ?1, lifted_by_user_id = ?2
+WHERE id = ?3 AND lifted_at IS NULL
+`
+
+type LiftBanParams struct {
+	LiftedAt       sql.NullTime
+	LiftedByUserID sql.NullInt64
+	ID             int64
+}
+
+// A lifted ban stays as history.
+func (q *Queries) LiftBan(ctx context.Context, arg LiftBanParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, liftBan, arg.LiftedAt, arg.LiftedByUserID, arg.ID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const listActiveBans = `-- name: ListActiveBans :many
+SELECT bans.id, bans.user_id, bans.ip, bans.reason, bans.expires_at,
+       CAST(COALESCE((
+           SELECT avatars.name FROM avatars
+           WHERE avatars.user_id = bans.user_id
+           ORDER BY avatars.created_at, avatars.id
+           LIMIT 1
+       ), '') AS TEXT) AS habbo
+FROM bans
+WHERE bans.created_at <= ?1
+  AND bans.lifted_at IS NULL
+  AND (bans.expires_at IS NULL OR bans.expires_at > ?1)
+ORDER BY bans.id DESC
+LIMIT ?3 OFFSET ?2
+`
+
+type ListActiveBansParams struct {
+	Now       time.Time
+	RowOffset int64
+	RowLimit  int64
+}
+
+type ListActiveBansRow struct {
+	ID        int64
+	UserID    sql.NullInt64
+	IP        sql.NullString
+	Reason    string
+	ExpiresAt sql.NullTime
+	Habbo     string
+}
+
+// Active as GetActiveBan defines it, newest first, with the user's first habbo to
+// name them. A ban on an address alone has no habbo.
+func (q *Queries) ListActiveBans(ctx context.Context, arg ListActiveBansParams) ([]ListActiveBansRow, error) {
+	rows, err := q.db.QueryContext(ctx, listActiveBans, arg.Now, arg.RowOffset, arg.RowLimit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListActiveBansRow
+	for rows.Next() {
+		var i ListActiveBansRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.IP,
+			&i.Reason,
+			&i.ExpiresAt,
+			&i.Habbo,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

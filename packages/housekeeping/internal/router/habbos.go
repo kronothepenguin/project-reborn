@@ -187,6 +187,7 @@ type habboPage struct {
 	Private bool
 	CanEdit bool
 	CanGive bool
+	CanBan  bool
 	Target  targetHabbo
 	Owner   targetUser
 	Others  []ownedHabbo
@@ -259,6 +260,7 @@ func (r *Router) newHabboPage(req *http.Request, avatar store.Avatar) (habboPage
 	page.Private = slices.Contains(attributes, auth.HousekeepingUsersPrivate)
 	page.CanEdit = slices.Contains(attributes, auth.HousekeepingUsersEdit)
 	page.CanGive = slices.Contains(attributes, auth.HousekeepingCredits)
+	page.CanBan = slices.Contains(attributes, auth.HousekeepingBans)
 
 	page.Target = targetHabbo{
 		ID:       avatar.ID,
