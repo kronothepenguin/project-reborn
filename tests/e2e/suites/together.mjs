@@ -180,10 +180,14 @@ export default async function ({
   sql(
     "UPDATE users SET born_on = date('now', '-30 years') WHERE email = 'admin@example.com'",
   );
-  await page.goto(`${base}/me`);
   check(
     "the birthday message is off",
-    !(await page.locator("main").innerText()).toLowerCase().includes("happy"),
+    await eventually(async () => {
+      await page.goto(`${base}/me`);
+      return !(await page.locator("main").innerText())
+        .toLowerCase()
+        .includes("happy");
+    }),
   );
   await Promise.all([page.waitForURL(`${hk}/`), tab().click()]);
   check(

@@ -33,8 +33,8 @@ func New(deps Deps) *Router {
 
 // Staff lets through only users holding housekeeping.access. Housekeeping has no
 // login: a guest goes to the CMS, at site.url because a housekeeping running
-// alone has no /. A banned user loses the session, as on every CMS page, or a ban
-// would not reach someone who only opens housekeeping.
+// alone has no /. A banned user goes there too, because the CMS ends the session
+// and shows Holo's ban message, on whatever page they open.
 func (r *Router) Staff(next http.Handler) http.Handler {
 	enter := auth.RequireAttribute(r.deps.DB, auth.HousekeepingAccess)(next)
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
@@ -49,11 +49,7 @@ func (r *Router) Staff(next http.Handler) http.Handler {
 			return
 		}
 		if ban != nil {
-			if err := auth.Logout(w, req, r.deps.DB); err != nil {
-				r.fail(w, err)
-				return
-			}
-			http.Error(w, http.StatusText(http.StatusForbidden), http.StatusForbidden)
+			http.Redirect(w, req, settings.GetString("site.url"), http.StatusSeeOther)
 			return
 		}
 		enter.ServeHTTP(w, req)

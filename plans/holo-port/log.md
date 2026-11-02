@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [fx-12](/tasks/fx-12-banned-staff.md): a banned user who opens housekeeping goes to the CMS, which ends the
+  session and shows Holo's message.
+- **Start** [fx-12](/tasks/fx-12-banned-staff.md).
 - **Done** [fx-11](/tasks/fx-11-password-keeps-session.md): a password change keeps the session of the user who made
   it, with a new token, and ends the others.
 - **Start** [fx-11](/tasks/fx-11-password-keeps-session.md).

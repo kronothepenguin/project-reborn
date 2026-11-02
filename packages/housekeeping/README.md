@@ -25,7 +25,7 @@ serves the built frontend from the embedded `dist/`.
 - Every route, the static files too, runs behind `router.Staff`:
   - a guest goes to `site.url` to sign in, because a housekeeping running alone has
     no `/`;
-  - a banned user loses the session and gets 403, as on the CMS's pages;
+  - a banned user goes to `site.url`, where the CMS ends the session and shows the ban;
   - a signed-in user without `housekeeping.access` gets 403.
 - It works on an empty database: `store.FromConfig()` creates it, with the default
   values. Nobody can enter until someone holds `housekeeping.access`, which is what

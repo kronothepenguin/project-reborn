@@ -286,40 +286,24 @@ func TestTheLayoutSaysWhoIsLoggedIn(t *testing.T) {
 		"PreviousLogin:07-12-2008 15:02:12 from 84.51.55.15")
 }
 
-func TestABannedUserLosesTheSession(t *testing.T) {
-	for _, c := range []struct {
-		name string
-		ban  func(userID int64) (sql.NullInt64, sql.NullString)
-	}{
-		{"by user", func(userID int64) (sql.NullInt64, sql.NullString) {
-			return sql.NullInt64{Int64: userID, Valid: true}, sql.NullString{}
-		}},
-	} {
-		t.Run(c.name, func(t *testing.T) {
-			db, mux := newSite(t)
-			userID, cookie := staff(t, db, "Admin", auth.HousekeepingAccess)
-			wantPage(t, serve(mux, "GET", "/housekeeping/", cookie, nil), http.StatusOK)
+func TestABannedUserGoesToTheCMS(t *testing.T) {
+	db, mux := newSite(t)
+	userID, cookie := staff(t, db, "Admin", auth.HousekeepingAccess)
+	wantPage(t, serve(mux, "GET", "/housekeeping/", cookie, nil), http.StatusOK)
 
-			id, ip := c.ban(userID)
-			_, err := db.ExecContext(t.Context(), `INSERT INTO bans (user_id, ip, reason, created_at) VALUES (?, ?, ?, ?)`,
-				id, ip, "Scamming", time.Now().UTC().Add(-time.Minute))
-			if err != nil {
-				t.Fatalf("insert ban: %v", err)
-			}
+	_, err := db.ExecContext(t.Context(), `INSERT INTO bans (user_id, reason, created_at) VALUES (?, 'Scamming', ?)`, userID, time.Now().UTC().Add(-time.Minute))
+	if err != nil {
+		t.Fatalf("insert ban: %v", err)
+	}
 
-			rec := serve(mux, "GET", "/housekeeping/", cookie, nil)
-			wantPage(t, rec, http.StatusForbidden)
-			if ended := sessionCookie(rec); ended == nil || ended.MaxAge >= 0 {
-				t.Errorf("the cookie was not cleared: %+v", ended)
-			}
-			var sessions int
-			if err := db.QueryRowContext(t.Context(), `SELECT COUNT(*) FROM sessions`).Scan(&sessions); err != nil {
-				t.Fatalf("count sessions: %v", err)
-			}
-			if sessions != 0 {
-				t.Errorf("%d sessions are left", sessions)
-			}
-		})
+	rec := serve(mux, "GET", "/housekeeping/", cookie, nil)
+	wantRedirect(t, rec, "http://localhost:17387")
+	var sessions int
+	if err := db.QueryRowContext(t.Context(), `SELECT COUNT(*) FROM sessions`).Scan(&sessions); err != nil {
+		t.Fatalf("count sessions: %v", err)
+	}
+	if sessions != 1 {
+		t.Errorf("%d sessions, want the CMS to end it", sessions)
 	}
 }
 

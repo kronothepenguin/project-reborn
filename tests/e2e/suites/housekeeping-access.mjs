@@ -39,7 +39,7 @@ async function status(hk, page, method, path) {
 }
 
 export default async function (t) {
-  const { base: cms, check, hk, shot } = t;
+  const { base: cms, check, hk, shot, sql } = t;
 
   {
     const { context, page } = await session(t);
@@ -148,6 +148,27 @@ export default async function (t) {
       problems.length === 0,
       problems.join(", "),
     );
+    await context.close();
+  }
+
+  {
+    const { context, page } = await session(t, "Helper");
+    sql(
+      "INSERT INTO bans (user_id, reason, created_at) SELECT id, 'Scamming', '2026-01-01 00:00:00' FROM users WHERE email = 'helper@example.com'",
+    );
+    await page.goto(`${hk}/`);
+    check(
+      "a banned user reads Holo's message on the CMS",
+      page.url().startsWith(cms) &&
+        (await page
+          .getByText(
+            'You have been banned! The reason for this ban is "Scamming".',
+          )
+          .isVisible()),
+      page.url(),
+    );
+    await page.goto(`${cms}/me`);
+    check("and the session has ended", page.url() === `${cms}/`, page.url());
     await context.close();
   }
 }

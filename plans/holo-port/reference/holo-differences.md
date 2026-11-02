@@ -147,7 +147,6 @@ veto.
 | Settings | Forms for `auth`, `registration`, `referral`, `mail` and `imaging`, which Holo kept in `config.php` or nowhere | The plan: forms over the declared settings |
 | Settings | `mail.password` is never shown: blank keeps it, and `Clear it` removes it | The plan: `mail.password` masked |
 | Access groups | The guard also keeps `housekeeping.access` on someone | `housekeeping.accessGroups` opens nothing without it, so the rule as written could still lock everyone out |
-| A banned user | Holo's `core.php` shows the ban's message and ends the session on any page; here the session ends with a plain 403, and the message waits for the next sign-in on the CMS | The ban's page belongs to the CMS, and housekeeping can run without it |
 
 ## Kept as in Holo, on purpose
 
