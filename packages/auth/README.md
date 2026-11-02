@@ -94,8 +94,9 @@ return tx.Commit()
 - `DeleteExpiredResets(ctx, db)` removes the links past `auth.resetTokenMinutes`. A program that offers password resets
   runs it on the scheduler; nothing else deletes them.
 - The caller builds the link (`site.url` + `/reset/<token>`) and sends the mail.
-- `CheckPassword(ctx, db, userID, password)` reports whether a password is the user's, and `ChangePassword(ctx, db, userID,
-  password)` sets a new one and ends every session and open reset of the user, the current session included.
+- `CheckPassword(ctx, db, userID, password)` reports whether a password is the user's.
+- `ChangePassword(w, r, db, password)` sets a new one, keeps the request's session under a new token, and ends every
+  other session and open reset of the user.
 - `ResetPassword(ctx, db, token, password)` validates the password, then sets it once: every reset of the user is deleted and every session of the user ends. An unknown, used or expired token gives `ErrInvalidReset`.
 
 ## Behind a reverse proxy

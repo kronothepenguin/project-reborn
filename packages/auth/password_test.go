@@ -3,6 +3,7 @@ package auth
 import (
 	"errors"
 	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 )
@@ -95,20 +96,50 @@ func TestCheckPassword(t *testing.T) {
 	}
 }
 
-func TestChangePasswordEndsEverySessionAndReset(t *testing.T) {
+// changePassword posts through Sessions, as a signed-in visitor does, and returns
+// the cookie of the answer.
+func (f *fixture) changePassword(t *testing.T, cookie *http.Cookie, password string) (*http.Cookie, error) {
+	t.Helper()
+	var changed error
+	handler := Sessions(f.db)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		changed = ChangePassword(w, r, f.db, password)
+	}))
+	r := httptest.NewRequest(http.MethodPost, "/", nil)
+	r.AddCookie(cookie)
+	rec := httptest.NewRecorder()
+	handler.ServeHTTP(rec, r)
+	cookies := rec.Result().Cookies()
+	if len(cookies) == 0 {
+		return nil, changed
+	}
+	return cookies[len(cookies)-1], changed
+}
+
+func TestChangePasswordKeepsOnlyTheCallersSession(t *testing.T) {
 	f := newFixture(t)
-	userID, _ := f.habbo(t, "admin@example.com", "Admin", testPassword)
-	first := f.mustLogin(t, "Admin", false)
-	second := f.mustLogin(t, "Admin", true)
+	_, avatarID := f.habbo(t, "admin@example.com", "Admin", testPassword)
+	mine := f.mustLogin(t, "Admin", false)
+	other := f.mustLogin(t, "Admin", false)
 	token := f.reset(t)
 
-	if err := ChangePassword(t.Context(), f.db, userID, "brand-new-1"); err != nil {
+	renewed, err := f.changePassword(t, mine, "brand-new-1")
+	if err != nil {
 		t.Fatalf("ChangePassword: %v", err)
 	}
-	for _, cookie := range []*http.Cookie{first, second} {
-		if _, ok, _ := f.visit(t, cookie); ok {
-			t.Error("a session survived the change")
-		}
+	if renewed == nil || renewed.Value == mine.Value {
+		t.Fatalf("the cookie = %+v, want a new token", renewed)
+	}
+	if session, ok, _ := f.visit(t, renewed); !ok || session.AvatarID != avatarID {
+		t.Errorf("the new token = %+v, %t, want the same habbo", session, ok)
+	}
+	if _, ok, _ := f.visit(t, mine); ok {
+		t.Error("the old token still works")
+	}
+	if _, ok, _ := f.visit(t, other); ok {
+		t.Error("another session survived the change")
+	}
+	if n := len(f.sessions(t)); n != 1 {
+		t.Errorf("%d sessions, want 1", n)
 	}
 	if err := ResetPassword(t.Context(), f.db, token, "another-one-2"); !errors.Is(err, ErrInvalidReset) {
 		t.Errorf("ResetPassword after the change = %v, want ErrInvalidReset", err)
@@ -121,12 +152,33 @@ func TestChangePasswordEndsEverySessionAndReset(t *testing.T) {
 	}
 }
 
+func TestChangePasswordKeepsRememberMe(t *testing.T) {
+	f := newFixture(t)
+	f.habbo(t, "admin@example.com", "Admin", testPassword)
+	cookie := f.mustLogin(t, "Admin", true)
+
+	renewed, err := f.changePassword(t, cookie, "brand-new-1")
+	if err != nil {
+		t.Fatalf("ChangePassword: %v", err)
+	}
+	if renewed.MaxAge <= 0 {
+		t.Errorf("MaxAge = %d, want the cookie to outlive the browser", renewed.MaxAge)
+	}
+	if session, ok, _ := f.visit(t, renewed); !ok || !session.Remember {
+		t.Errorf("the session = %+v, %t, want it remembered", session, ok)
+	}
+}
+
 func TestChangePasswordValidates(t *testing.T) {
 	f := newFixture(t)
-	userID, _ := f.habbo(t, "admin@example.com", "Admin", testPassword)
+	f.habbo(t, "admin@example.com", "Admin", testPassword)
+	cookie := f.mustLogin(t, "Admin", false)
 
-	if err := ChangePassword(t.Context(), f.db, userID, "short"); !errors.Is(err, ErrPasswordTooShort) {
+	if _, err := f.changePassword(t, cookie, "short"); !errors.Is(err, ErrPasswordTooShort) {
 		t.Errorf("ChangePassword(short) = %v, want ErrPasswordTooShort", err)
+	}
+	if _, ok, _ := f.visit(t, cookie); !ok {
+		t.Error("a refused change ended the session")
 	}
 	if _, _, err := f.login(t, "10.0.0.1", "Admin", testPassword, false); err != nil {
 		t.Errorf("Login after the refused change = %v, want a session", err)

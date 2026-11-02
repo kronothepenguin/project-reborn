@@ -54,6 +54,7 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md).
 | Account | An email can be shared | `This e-mail address already has an account.` | [0001](/decisions/0001-user-owns-many-habbos.md) |
 | Maintenance | An `Administrator Login` link to housekeeping | A sign-in form on the page | The plan: staff sign in with the shared session |
 | Maintenance | Redirects every page to `maintenance.php` | Serves the page on every address with 503 | The plan |
+| A password change | The session ends, with `You will need to login again.` | The session stays under a new token, and open reset links end | [0059](/decisions/0059-account-forms.md) |
 | A password change | The other session goes to `index.php?error=1`, reading `Invalid username or password.` | The other session just ends | [0018](/decisions/0018-password-reset-by-email.md) ends every session, and the port cannot tell that from an expired one |
 
 # Holo bugs not ported
@@ -87,7 +88,6 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md).
 - The motto allows 38 characters on `/me` and 32 on `/account/profile`.
 - The email and password forms ask for the birth date, which the plan had dropped.
 - `Refer Options` describes a field during registration that exists neither in Holo nor here.
-- A password change ends the visitor's own session too. It also ends open reset links, which Holo did not have.
 
 # Housekeeping
 

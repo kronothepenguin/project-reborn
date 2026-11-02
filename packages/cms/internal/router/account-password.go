@@ -44,7 +44,7 @@ func (r *Router) HandleAccountPassword(w http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	page.Result, page.Failed, err = r.changePassword(req, session.UserID)
+	page.Result, page.Failed, err = r.changePassword(w, req, session.UserID)
 	if err != nil {
 		r.fail(w, err)
 		return
@@ -52,7 +52,7 @@ func (r *Router) HandleAccountPassword(w http.ResponseWriter, req *http.Request)
 	r.answer(w, "account/password.html", page.Failed, page)
 }
 
-func (r *Router) changePassword(req *http.Request, userID int64) (result string, failed bool, err error) {
+func (r *Router) changePassword(w http.ResponseWriter, req *http.Request, userID int64) (result string, failed bool, err error) {
 	match, err := r.detailsMatch(req, userID)
 	if err != nil {
 		return "", false, err
@@ -64,7 +64,7 @@ func (r *Router) changePassword(req *http.Request, userID int64) (result string,
 	if password != req.PostFormValue("confpass") {
 		return "The passwords don't match", true, nil
 	}
-	err = auth.ChangePassword(req.Context(), r.deps.DB, userID, password)
+	err = auth.ChangePassword(w, req, r.deps.DB, password)
 	switch {
 	case errors.Is(err, auth.ErrPasswordTooShort):
 		return fmt.Sprintf("Password is too short, %d characters minimum", settings.GetInt("auth.passwordMinLength")), true, nil
@@ -73,5 +73,5 @@ func (r *Router) changePassword(req *http.Request, userID int64) (result string,
 	case err != nil:
 		return "", false, err
 	}
-	return "Your password has been changed successfully. You will need to login again.", false, nil
+	return "Your password has been changed successfully.", false, nil
 }

@@ -150,10 +150,11 @@ func TestPasswordChanges(t *testing.T) {
 	form := details()
 	form.Set("pass", "brand-new-1")
 	form.Set("confpass", "brand-new-1")
-	wantPage(t, serve(mux, "POST", "/account/password", cookie, form), http.StatusOK,
-		"Result:Your password has been changed successfully. You will need to login again.", "Failed:false")
+	rec := serve(mux, "POST", "/account/password", cookie, form)
+	wantPage(t, rec, http.StatusOK, "Result:Your password has been changed successfully.", "Failed:false")
 
 	wantRedirect(t, serve(mux, "GET", "/me", cookie, nil), "/")
+	wantPage(t, serve(mux, "GET", "/me", sessionCookie(rec), nil), http.StatusOK, "me.html")
 	wantPage(t, serve(mux, "POST", "/", nil, credentials("Newbie", "secret123")), http.StatusUnprocessableEntity, "Invalid username or password.")
 	wantRedirect(t, serve(mux, "POST", "/", nil, credentials("Newbie", "brand-new-1")), "/me")
 }

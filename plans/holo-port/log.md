@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [fx-11](/tasks/fx-11-password-keeps-session.md): a password change keeps the session of the user who made
+  it, with a new token, and ends the others.
+- **Start** [fx-11](/tasks/fx-11-password-keeps-session.md).
 - **Done** [fx-10](/tasks/fx-10-settings-refresh.md): a running CMS reads changed settings every `cms.refresh` seconds,
   with no restart.
 - **Start** [fx-10](/tasks/fx-10-settings-refresh.md).

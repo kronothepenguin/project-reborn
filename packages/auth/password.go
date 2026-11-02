@@ -8,6 +8,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"net/http"
 	"strings"
 	"sync"
 	"unicode/utf8"
@@ -103,14 +104,23 @@ func CheckPassword(ctx context.Context, db *sql.DB, userID int64, password strin
 	return VerifyPassword(credential.PasswordHash, password)
 }
 
-// ChangePassword sets password for the user and ends every session and open
-// reset of theirs, the visitor's own session included, as a password change did
-// in Holo.
-func ChangePassword(ctx context.Context, db *sql.DB, userID int64, password string) error {
+// ChangePassword sets password for the user of the request's session and ends
+// every other session and open reset of theirs. The request's session stays, under a
+// new token, so that a token stolen before the change dies with it. Unlike Holo,
+// which logged the user out, the visitor keeps working.
+func ChangePassword(w http.ResponseWriter, r *http.Request, db *sql.DB, password string) error {
+	ctx := r.Context()
+	session, ok := FromContext(ctx)
+	if !ok {
+		return ErrNoSession
+	}
 	if err := ValidatePassword(password); err != nil {
 		return err
 	}
 	hash := HashPassword(password)
+	now := clock().UTC()
+	token, id := newToken()
+	lifetime := sessionLifetime(session.Remember)
 
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
@@ -118,18 +128,33 @@ func ChangePassword(ctx context.Context, db *sql.DB, userID int64, password stri
 	}
 	defer tx.Rollback()
 	q := store.New(tx)
-	if err := q.UpsertCredential(ctx, store.UpsertCredentialParams{UserID: userID, PasswordHash: hash, UpdatedAt: clock().UTC()}); err != nil {
+	if err := q.UpsertCredential(ctx, store.UpsertCredentialParams{UserID: session.UserID, PasswordHash: hash, UpdatedAt: now}); err != nil {
 		return fmt.Errorf("auth: change password: %w", err)
 	}
-	if err := q.DeleteUserPasswordResets(ctx, userID); err != nil {
+	if err := q.DeleteUserPasswordResets(ctx, session.UserID); err != nil {
 		return fmt.Errorf("auth: change password: %w", err)
 	}
-	if err := q.DeleteUserSessions(ctx, userID); err != nil {
+	if err := q.DeleteUserSessions(ctx, session.UserID); err != nil {
+		return fmt.Errorf("auth: change password: %w", err)
+	}
+	err = q.CreateSession(ctx, store.CreateSessionParams{
+		ID:         id,
+		UserID:     session.UserID,
+		AvatarID:   session.AvatarID,
+		Remember:   session.Remember,
+		IP:         ClientIP(r),
+		UserAgent:  r.UserAgent(),
+		CreatedAt:  now,
+		LastSeenAt: now,
+		ExpiresAt:  now.Add(lifetime),
+	})
+	if err != nil {
 		return fmt.Errorf("auth: change password: %w", err)
 	}
 	if err := tx.Commit(); err != nil {
 		return fmt.Errorf("auth: change password: %w", err)
 	}
+	setCookie(w, token, session.Remember, lifetime)
 	return nil
 }
 

@@ -67,7 +67,7 @@ timestamp: 2026-10-27T21:44:59+00:00
 
 - Cardinality: `:exec`
 - Inputs: `user_id`
-- Result: ends every session of the user (ban, password reset)
+- Result: ends every session of the user (ban, password reset, password change)
 - Tables: `sessions`
 
 ## DeleteOtherUserSessions

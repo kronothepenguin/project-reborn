@@ -46,7 +46,7 @@ starts.
 - [fx-08 Delete access groups](/tasks/fx-08-delete-access-groups.md) — done
 - [fx-09 Ask for the Housekeeping Address in the installer](/tasks/fx-09-housekeeping-address.md) — done
 - [fx-10 Refresh the CMS settings on schedule](/tasks/fx-10-settings-refresh.md) — done
-- [fx-11 Keep the session on a password change](/tasks/fx-11-password-keeps-session.md) — todo
+- [fx-11 Keep the session on a password change](/tasks/fx-11-password-keeps-session.md) — done
 - [fx-12 Send banned staff to the CMS](/tasks/fx-12-banned-staff.md) — todo
 - [fx-13 Give housekeeping components their looks](/tasks/fx-13-housekeeping-components.md) — todo
 - [fx-14 Archive habbos](/tasks/fx-14-archive-habbos.md) — todo

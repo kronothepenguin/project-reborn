@@ -124,18 +124,29 @@ export default async function ({ base, browser, check, shot, sql }) {
     "password short",
     await text("Password is too short, 6 characters minimum"),
   );
+  const other = await (await browser.newContext()).newPage();
+  await other.goto(base + "/");
+  await other.fill("#username", "Admin-1");
+  await other.fill("#password", "secret123");
+  await Promise.all([
+    other.waitForURL("**/me"),
+    other.click('button:has-text("Sign in")'),
+  ]);
   await details();
   await page.fill("input[name=pass]", "brand-new-1");
   await page.fill("input[name=confpass]", "brand-new-1");
   await save();
   check(
     "password changed",
-    await text(
-      "Your password has been changed successfully. You will need to login again.",
-    ),
+    await text("Your password has been changed successfully."),
   );
+  check("no need to log in again", !(await text("login again")));
   await page.goto(base + "/me");
-  check("the session ended", page.url() === base + "/", page.url());
+  check("the session stays", page.url().endsWith("/me"), page.url());
+  await other.goto(base + "/me");
+  check("another session ended", other.url() === base + "/", other.url());
+  await page.locator('button:has-text("Sign Out")').click();
+  await page.goto(base + "/");
   await page.fill("#username", "Admin-1");
   await page.fill("#password", "secret123");
   await page.click('button:has-text("Sign in")');
