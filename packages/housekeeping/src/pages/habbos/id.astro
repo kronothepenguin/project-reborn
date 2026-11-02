@@ -1,37 +1,110 @@
 ---
-import { Table } from "@project-reborn/components";
+import { Checkbox, Input, Select, Table } from "@project-reborn/components";
 import Box from "../../components/box.astro";
 import Message from "../../components/message.astro";
+import Submit from "../../components/submit.astro";
 import Housekeeping from "../../layouts/housekeeping.astro";
 ---
 
 <Housekeeping title="[[ .Target.Name ]]" tab="users">
   <Message />
   <div class="space-y-3">
-    <Box title="[[ .Target.Name ]] (ID: [[ .Target.ID ]])[[ if .Target.Archived ]] - Archived[[ end ]]">
-      <Table variant="form">
-        <tbody>
-          <tr><td class="w-2/5"><strong>Motto</strong></td><td class="w-3/5">[[ .Target.Motto ]]</td></tr>
-          <tr><td><strong>Figure</strong></td><td class="break-all">[[ .Target.Figure ]]</td></tr>
-          <tr><td><strong>Gender</strong></td><td>[[ .Target.Gender ]]</td></tr>
-          <tr><td><strong>Join date</strong></td><td>[[ .Target.Joined ]]</td></tr>
-          <tr><td><strong>Last Activity</strong></td><td>[[ .Target.Activity ]]</td></tr>
-          <tr><td><strong>Credits</strong></td><td>[[ .Owner.Credits ]]</td></tr>
-        </tbody>
-      </Table>
-    </Box>
+    <form method="post" action="/housekeeping/habbos/[[ .Target.ID ]]">
+      <Box title="[[ .Target.Name ]] (ID: [[ .Target.ID ]])[[ if .Target.Archived ]] - Archived[[ end ]]">
+        <Table variant="form">
+          <tbody>
+            [[ if .CanEdit ]]
+            <tr>
+              <td class="w-2/5"><label for="habbo-motto"><strong>Motto</strong></label></td>
+              <td class="w-3/5"><Input id="habbo-motto" name="motto" value="[[ .Target.Motto ]]" variant="border" /></td>
+            </tr>
+            <tr>
+              <td><label for="habbo-figure"><strong>Figure</strong></label></td>
+              <td><Input id="habbo-figure" name="figure" value="[[ .Target.Figure ]]" variant="border" /></td>
+            </tr>
+            <tr>
+              <td><label for="habbo-gender"><strong>Gender</strong></label></td>
+              <td>
+                <Select id="habbo-gender" name="gender">
+                  [[ if eq .Target.Gender "F" ]]
+                  <option value="M">M</option>
+                  <option value="F" selected>F</option>
+                  [[ else ]]
+                  <option value="M" selected>M</option>
+                  <option value="F">F</option>
+                  [[ end ]]
+                </Select>
+              </td>
+            </tr>
+            [[ else ]]
+            <tr><td class="w-2/5"><strong>Motto</strong></td><td class="w-3/5">[[ .Target.Motto ]]</td></tr>
+            <tr><td><strong>Figure</strong></td><td class="break-all">[[ .Target.Figure ]]</td></tr>
+            <tr><td><strong>Gender</strong></td><td>[[ .Target.Gender ]]</td></tr>
+            [[ end ]]
+            <tr><td class="w-2/5"><strong>Join date</strong></td><td class="w-3/5">[[ .Target.Joined ]]</td></tr>
+            <tr><td><strong>Last Activity</strong></td><td>[[ .Target.Activity ]]</td></tr>
+          </tbody>
+        </Table>
+        [[ if .CanEdit ]]
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+          <Submit>Save Habbo</Submit>
+        </div>
+        [[ end ]]
+      </Box>
+    </form>
 
-    <Box title="Owner (User ID: [[ .Owner.ID ]])">
-      <Table variant="form">
-        <tbody>
-          [[ if .Private ]]
-          <tr><td class="w-2/5"><strong>E-Mail Address</strong></td><td class="w-3/5">[[ .Owner.Email ]]</td></tr>
-          <tr><td><strong>Birthdate</strong></td><td>[[ .Owner.BornOn ]]</td></tr>
-          [[ end ]]
-          <tr><td class="w-2/5"><strong>Newsletter</strong></td><td class="w-3/5">[[ if .Owner.Newsletter ]]Yes[[ else ]]No[[ end ]]</td></tr>
-        </tbody>
-      </Table>
-    </Box>
+    <form method="post" action="/housekeeping/users/[[ .Owner.ID ]]">
+      <input type="hidden" name="habbo" value="[[ .Target.ID ]]" />
+      <Box title="Owner (User ID: [[ .Owner.ID ]])">
+        <Table variant="form">
+          <tbody>
+            [[ if and .Private .CanEdit ]]
+            <tr>
+              <td class="w-2/5"><label for="user-email"><strong>E-Mail Address</strong></label></td>
+              <td class="w-3/5"><Input id="user-email" name="email" value="[[ .Owner.Email ]]" variant="border" /></td>
+            </tr>
+            <tr>
+              <td><label for="user-born-on"><strong>Birthdate</strong></label></td>
+              <td><Input id="user-born-on" type="date" name="bornOn" value="[[ .Owner.BornOn ]]" variant="border" /></td>
+            </tr>
+            [[ else if .Private ]]
+            <tr><td class="w-2/5"><strong>E-Mail Address</strong></td><td class="w-3/5">[[ .Owner.Email ]]</td></tr>
+            <tr><td><strong>Birthdate</strong></td><td>[[ .Owner.BornOn ]]</td></tr>
+            [[ end ]]
+            <tr><td class="w-2/5"><strong>Credits</strong></td><td class="w-3/5">[[ .Owner.Credits ]]</td></tr>
+            [[ if .CanEdit ]]
+            <tr>
+              <td><label for="user-tickets"><strong>Tickets</strong></label></td>
+              <td><Input id="user-tickets" name="tickets" value="[[ .Owner.Tickets ]]" variant="border" /></td>
+            </tr>
+            <tr>
+              <td><label for="user-film"><strong>Film</strong></label></td>
+              <td><Input id="user-film" name="film" value="[[ .Owner.Film ]]" variant="border" /></td>
+            </tr>
+            <tr>
+              <td><strong>Newsletter</strong></td>
+              <td>
+                [[ if .Owner.Newsletter ]]
+                <Checkbox name="newsletter" value="1" checked>Newsletter</Checkbox>
+                [[ else ]]
+                <Checkbox name="newsletter" value="1">Newsletter</Checkbox>
+                [[ end ]]
+              </td>
+            </tr>
+            [[ else ]]
+            <tr><td><strong>Tickets</strong></td><td>[[ .Owner.Tickets ]]</td></tr>
+            <tr><td><strong>Film</strong></td><td>[[ .Owner.Film ]]</td></tr>
+            <tr><td><strong>Newsletter</strong></td><td>[[ if .Owner.Newsletter ]]Yes[[ else ]]No[[ end ]]</td></tr>
+            [[ end ]]
+          </tbody>
+        </Table>
+        [[ if .CanEdit ]]
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+          <Submit>Save User</Submit>
+        </div>
+        [[ end ]]
+      </Box>
+    </form>
 
     <Box title="The Owner's Other Habbos" color="gold">
       <Table>

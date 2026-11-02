@@ -37,6 +37,13 @@ timestamp: 2026-10-27T21:44:59+00:00
 - Result: registrations from the IP since `since` (the `registration.maxPerIp` limit)
 - Tables: `users`
 
+## UpdateUser
+
+- Cardinality: `:exec`
+- Inputs: `id`, `email`, `born_on`, `newsletter`, `updated_at`
+- Result: a conflict when the email exists, ignoring case
+- Tables: `users`
+
 ## UpdateUserEmail
 
 - Cardinality: `:exec`

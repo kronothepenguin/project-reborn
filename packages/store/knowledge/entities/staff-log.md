@@ -40,6 +40,9 @@ many actions).
 | `accessGroups.setDisplayHabbo` | the group | the user and the display habbo |
 | `accessGroups.removeMember` | the group | the user |
 | `accessGroups.refused` | what was refused, as Holo logged the refusals of its rank tool | the user, when there is one |
+| `habbos.update` | the fields saved, never their values | the user and the habbo |
+| `users.update` | the fields saved, never their values | the user and the habbo of the page |
+| `users.refused` | what was tried on a user at or above the actor's level | the user and the habbo |
 
 # Relations
 

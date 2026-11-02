@@ -89,3 +89,27 @@ func (q *Queries) GetWallet(ctx context.Context, userID int64) (Wallet, error) {
 	)
 	return i, err
 }
+
+const updateWalletTicketsAndFilm = `-- name: UpdateWalletTicketsAndFilm :exec
+UPDATE wallets
+SET tickets = ?1, film = ?2, updated_at = ?3
+WHERE user_id = ?4
+`
+
+type UpdateWalletTicketsAndFilmParams struct {
+	Tickets   int64
+	Film      int64
+	UpdatedAt time.Time
+	UserID    int64
+}
+
+// Tickets and film have no ledger, which explains credits alone.
+func (q *Queries) UpdateWalletTicketsAndFilm(ctx context.Context, arg UpdateWalletTicketsAndFilmParams) error {
+	_, err := q.db.ExecContext(ctx, updateWalletTicketsAndFilm,
+		arg.Tickets,
+		arg.Film,
+		arg.UpdatedAt,
+		arg.UserID,
+	)
+	return err
+}

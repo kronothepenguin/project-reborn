@@ -14,5 +14,11 @@ UPDATE wallets
 SET credits = credits + sqlc.arg(credits), updated_at = sqlc.arg(updated_at)
 WHERE user_id = sqlc.arg(user_id);
 
+-- Tickets and film have no ledger, which explains credits alone.
+-- name: UpdateWalletTicketsAndFilm :exec
+UPDATE wallets
+SET tickets = sqlc.arg(tickets), film = sqlc.arg(film), updated_at = sqlc.arg(updated_at)
+WHERE user_id = sqlc.arg(user_id);
+
 -- name: GetWallet :one
 SELECT * FROM wallets WHERE user_id = sqlc.arg(user_id);

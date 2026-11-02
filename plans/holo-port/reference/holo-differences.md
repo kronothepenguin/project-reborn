@@ -111,6 +111,9 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Dashboard | Shows every administrator's address to all staff | Takes `housekeeping.users`, which grants seeing emails ([0015](/decisions/0015-attribute-names-and-fuses.md)) | Staff should not get more than their attributes give |
 | Access Denied | Answers 200 | The same page answers 403 | The status says what happened; a browser shows no difference |
 | Staff log | `GET ?do=prune` empties the log for the `$sysadmin` | The page is read-only | A log its readers can empty proves nothing, and a link could trigger it |
+| Edit User | Takes column names from the form | Reads a fixed list of fields | `name=x` could otherwise reach any column, as it did in Holo |
+| Edit User | Any value goes into the query, with no escaping | The email, the birth date, the figure, the gender, the motto's 38 characters, and tickets and film from 0 to 2147483647 are checked | A value Holo accepted could break the site's pages |
+| Edit User | The email and birth date of anyone can be changed | They take `housekeeping.usersPrivate`, and `housekeeping.usersEdit` alone does not show them or save them | Changing an address nobody may read would hand over the account, through the password reset |
 | User listing | Every administrator sees every email and address | Emails, birth dates and addresses take `housekeeping.usersPrivate`, in the search too | [0053](/decisions/0053-attributes-on-groups-and-users.md) |
 
 ## Changed by a decision
@@ -134,6 +137,9 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Configuration | `Enable SSO` and `Language` | Gone: SSO waits for the client page, and only English is left | [Holo's settings](/reference/holo-database.md) |
 | Content tool | Four categories of `cms_content` | A form per group of settings. Those of the staff, credits and forum pages arrive with their phases, and get a form when they are declared | [HK-A](/phases/hk-a-housekeeping-core.md) |
 | Maintenance | `Administrators can still login through Housekeeping.` | `Administrators can still login on that page.` | The plan: staff sign in with the shared session on the maintenance page |
+| Edit User | `credits` is a field of the form | Credits move only through `Give Credits`, which writes the ledger | Every change of credits has a ledger row |
+| Edit User | Every column but six can be edited, `hbirth`, `lastvisit`, `postcount` and `noob` too | The fields that still exist as data of their own: motto, figure, gender, email, birth date, newsletter, tickets and film | The others are worked out from history, or are gone |
+| Edit User | `...will also update (poof) ingame, if connected.` | `User updated successfully.` | The game server is deferred ([0013](/decisions/0013-defer-game-server-features.md)) |
 
 ## Holo bugs not ported
 
@@ -155,6 +161,8 @@ veto.
 | Staff log | An `IP` column in place of `Note`, Holo's name of the PHP file | `staff_logs` has the address and no such note |
 | Settings | Forms for `auth`, `registration`, `referral`, `mail` and `imaging`, which Holo kept in `config.php` or nowhere | The plan: forms over the declared settings |
 | Settings | `mail.password` is never shown: blank keeps it, and `Clear it` removes it | The plan: `mail.password` masked |
+| Edit User | Two forms on the habbo's page, `Save Habbo` and `Save User` | A habbo and its owner are two rows |
+| Edit User | `users.update` and `habbos.update` list the fields saved, never their values | Holo logged `Edited user`, and an address must not reach readers of the log |
 | User listing | Lists habbos, with `(Archived)` beside those archived | A user owns several habbos, and staff must find an archived one to restore it |
 | User listing | 100 habbos a page, with `Older` and `Newer` | Holo listed every user on one page |
 | User listing | One search does the work of `Retrive IP Address`, `Retrive User ID` and the `Clone Checker`, and matches part of a name | The plan: `GET /habbos?q=` |
@@ -165,6 +173,7 @@ veto.
 ## Kept as in Holo, on purpose
 
 - Any staff member can change the shared note.
+- A blank field of `Edit User` keeps its value, so a motto cannot be emptied there.
 - The dashboard shows 20 administrators, and the staff list 50 rows.
 - Every link of the left menu shows to all staff, and a page they lack answers `Access Denied`.
 

@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [hk-b-02](/tasks/hk-b-02-edit-users.md): staff edit the fields of Holo's Edit User from the habbo page,
+  taken from a fixed list, only on users below them.
+- **Start** [hk-b-02](/tasks/hk-b-02-edit-users.md).
 - **Done** [hk-b-01](/tasks/hk-b-01-find-habbos.md): staff find habbos by name or id, and by email or address with
   `housekeeping.usersPrivate`, and read a habbo with its owner, other habbos and IP history.
 - **Start** [hk-b-01](/tasks/hk-b-01-find-habbos.md).

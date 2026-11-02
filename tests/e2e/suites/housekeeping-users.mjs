@@ -51,13 +51,77 @@ export default async function (t) {
   const habboPage = await page.locator("main").innerText();
   check(
     "the habbo page shows the owner and the other habbo",
-    habboPage.includes("frank@example.com") && habboPage.includes("Frank"),
+    (await page.inputValue('input[name="email"]')) === "frank@example.com" &&
+      habboPage.includes("Frank"),
     habboPage,
   );
   check(
     "the habbo page shows the IP history",
     habboPage.includes("10.1.2.3") && habboPage.includes("WHOIS"),
     habboPage,
+  );
+
+  const frankStaffURL = page.url();
+  const motto = 'Seen by <staff> & "friends"';
+  await page.fill('input[name="motto"]', motto);
+  await page.getByRole("button", { name: "Save Habbo" }).click();
+  await page.waitForURL(/saved=1/);
+  check(
+    "a saved habbo says so",
+    (await page.getByRole("status").innerText()).includes(
+      "User updated successfully.",
+    ),
+  );
+  check(
+    "the motto comes back as it was typed",
+    (await page.inputValue('input[name="motto"]')) === motto,
+  );
+
+  await page.fill('input[name="email"]', "frank.new@example.com");
+  await page.fill('input[name="tickets"]', "12");
+  await page.check('input[name="newsletter"]');
+  await page.getByRole("button", { name: "Save User" }).click();
+  await page.waitForURL(/saved=1/);
+  check(
+    "the owner's form saves and comes back to the habbo",
+    page.url().startsWith(frankStaffURL) &&
+      (await page.inputValue('input[name="email"]')) ===
+        "frank.new@example.com" &&
+      (await page.inputValue('input[name="tickets"]')) === "12" &&
+      (await page.isChecked('input[name="newsletter"]')),
+  );
+
+  await page.fill('input[name="figure"]', "not a figure");
+  const refused = page.waitForResponse((r) => r.request().method() === "POST");
+  await page.getByRole("button", { name: "Save Habbo" }).click();
+  check("a bad figure answers 422", (await refused).status() === 422);
+  await page.waitForLoadState();
+  check(
+    "a bad figure is explained",
+    (await page.getByRole("alert").innerText()).includes("not valid"),
+  );
+
+  await page.goto(`${hk}/habbos?q=Admin-1`);
+  await page.getByRole("row", { name: /Admin-1/ }).getByRole("link", { name: "Edit" }).click();
+  await page.waitForURL(/habbos\/\d+$/);
+  await page.fill('input[name="motto"]', "My own");
+  const own = page.waitForResponse((r) => r.request().method() === "POST");
+  await page.getByRole("button", { name: "Save Habbo" }).click();
+  check("nobody edits themselves", (await own).status() === 422);
+  await page.waitForLoadState();
+  check(
+    "the refusal is explained",
+    (await page.getByRole("alert").innerText()).includes("below your level"),
+  );
+
+  await page.goto(`${hk}/logs`);
+  const logs = await page.locator("main table").first().innerText();
+  check(
+    "the staff log has the edits and the refusal",
+    ["habbos.update", "users.update", "users.refused"].every((action) =>
+      logs.includes(action),
+    ),
+    logs,
   );
 
   check(

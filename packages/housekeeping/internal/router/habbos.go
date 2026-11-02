@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
@@ -21,7 +22,15 @@ const (
 	// loginsShown bounds the IP history of one user.
 	loginsShown = 200
 	joinFormat  = "02-01-2006"
-	habboSaved  = "User updated successfully."
+	// maxMottoLength is the longer of the two limits of Holo's site.
+	maxMottoLength = 38
+)
+
+const (
+	habboSaved   = "User updated successfully."
+	mottoTooLong = "Sorry, but the motto you have chosen is too long!"
+	lookInvalid  = "The figure or the gender is not valid."
+	userAbove    = "Access denied. You may only act on users below your level."
 )
 
 // holds reports whether the staff member making the request holds attribute.
@@ -32,6 +41,27 @@ func (r *Router) holds(req *http.Request, attribute auth.Attribute) (bool, error
 		return false, err
 	}
 	return slices.Contains(attributes, attribute), nil
+}
+
+// mayActOn asks whether the staff member outranks the target of an action. A
+// refusal is logged, as Holo logged a try at its System Administrator, and tried
+// says what it was.
+func (r *Router) mayActOn(req *http.Request, tried string, targetUser, targetAvatar int64) (bool, error) {
+	session, _ := auth.FromContext(req.Context())
+	allowed, err := auth.Outranks(req.Context(), r.deps.DB, session.UserID, targetUser)
+	if err != nil || allowed {
+		return allowed, err
+	}
+	entry := staffLog{action: actionUsersRefused, detail: tried, targetUser: targetUser, targetAvatar: targetAvatar}
+	return false, writeLog(req, r.deps.Queries, entry)
+}
+
+// keep is a field of Holo's Edit User, where a blank one changes nothing.
+func keep(posted, current string) string {
+	if posted == "" {
+		return current
+	}
+	return posted
 }
 
 // activity is Holo's Last Activity column.
@@ -154,6 +184,7 @@ func (r *Router) lastIP(ctx context.Context, userID int64) (string, error) {
 type habboPage struct {
 	chrome
 	Private bool
+	CanEdit bool
 	Target  targetHabbo
 	Owner   targetUser
 	Others  []ownedHabbo
@@ -179,6 +210,8 @@ type targetUser struct {
 	BornOn     string
 	Newsletter bool
 	Credits    int64
+	Tickets    int64
+	Film       int64
 }
 
 type ownedHabbo struct {
@@ -210,9 +243,13 @@ func (r *Router) newHabboPage(req *http.Request, avatar store.Avatar) (habboPage
 	if err != nil {
 		return page, err
 	}
-	if page.Private, err = r.holds(req, auth.HousekeepingUsersPrivate); err != nil {
+	session, _ := auth.FromContext(ctx)
+	attributes, err := auth.Attributes(ctx, r.deps.DB, session.UserID)
+	if err != nil {
 		return page, err
 	}
+	page.Private = slices.Contains(attributes, auth.HousekeepingUsersPrivate)
+	page.CanEdit = slices.Contains(attributes, auth.HousekeepingUsersEdit)
 
 	page.Target = targetHabbo{
 		ID:       avatar.ID,
@@ -224,7 +261,13 @@ func (r *Router) newHabboPage(req *http.Request, avatar store.Avatar) (habboPage
 		Activity: seen,
 		Archived: avatar.ArchivedAt.Valid,
 	}
-	page.Owner = targetUser{ID: user.ID, Newsletter: user.Newsletter, Credits: wallet.Credits}
+	page.Owner = targetUser{
+		ID:         user.ID,
+		Newsletter: user.Newsletter,
+		Credits:    wallet.Credits,
+		Tickets:    wallet.Tickets,
+		Film:       wallet.Film,
+	}
 	habbos, err := q.ListAllUserAvatars(ctx, avatar.UserID)
 	if err != nil {
 		return page, err
@@ -288,4 +331,85 @@ func (r *Router) HandleHabboView(w http.ResponseWriter, req *http.Request) {
 		page.Message = habboSaved
 	}
 	astro.WriteTemplate(w, r.deps.Resolver, "habbos/id.html", page)
+}
+
+// refuseHabbo answers a refused change on the habbo's page.
+func (r *Router) refuseHabbo(w http.ResponseWriter, req *http.Request, avatar store.Avatar, message string) {
+	page, err := r.newHabboPage(req, avatar)
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
+	page.Error = message
+	w.WriteHeader(http.StatusUnprocessableEntity)
+	astro.WriteTemplate(w, r.deps.Resolver, "habbos/id.html", page)
+}
+
+// HandleHabboSave handles POST /housekeeping/habbos/{id}, the habbo's half of
+// Holo's Edit User. It reads these fields alone, where Holo took column names from
+// the form, and the name stays out as Holo's form disabled it.
+func (r *Router) HandleHabboSave(w http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
+	avatar, ok := r.habboFromPath(w, req)
+	if !ok {
+		return
+	}
+	allowed, err := r.mayActOn(req, "edit habbo", avatar.UserID, avatar.ID)
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
+	if !allowed {
+		r.refuseHabbo(w, req, avatar, userAbove)
+		return
+	}
+
+	motto := keep(req.PostFormValue("motto"), avatar.Motto)
+	figure := keep(req.PostFormValue("figure"), avatar.Figure)
+	gender := keep(req.PostFormValue("gender"), avatar.Gender)
+	if utf8.RuneCountInString(motto) > maxMottoLength {
+		r.refuseHabbo(w, req, avatar, mottoTooLong)
+		return
+	}
+	if auth.ValidateLook(figure, gender) != nil {
+		r.refuseHabbo(w, req, avatar, lookInvalid)
+		return
+	}
+
+	var changed []string
+	if motto != avatar.Motto {
+		changed = append(changed, "motto")
+	}
+	if figure != avatar.Figure {
+		changed = append(changed, "figure")
+	}
+	if gender != avatar.Gender {
+		changed = append(changed, "gender")
+	}
+	now := time.Now().UTC()
+	err = r.inTx(ctx, func(q *store.Queries) error {
+		err := q.UpdateAvatarMotto(ctx, store.UpdateAvatarMottoParams{ID: avatar.ID, Motto: motto, UpdatedAt: now})
+		if err != nil {
+			return err
+		}
+		look := store.UpdateAvatarLookParams{ID: avatar.ID, Figure: figure, Gender: gender, UpdatedAt: now}
+		if err := q.UpdateAvatarLook(ctx, look); err != nil {
+			return err
+		}
+		return writeLog(req, q, staffLog{
+			action:       actionHabbosUpdate,
+			detail:       strings.Join(changed, ", "),
+			targetUser:   avatar.UserID,
+			targetAvatar: avatar.ID,
+		})
+	})
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
+	http.Redirect(w, req, habboPath(avatar.ID)+"?saved=1", http.StatusSeeOther)
+}
+
+func habboPath(id int64) string {
+	return "/housekeeping/habbos/" + strconv.FormatInt(id, 10)
 }
