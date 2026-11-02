@@ -83,7 +83,7 @@ func (r *Router) saveMember(w http.ResponseWriter, req *http.Request, group stor
 		r.fail(w, err)
 		return
 	}
-	if err != nil || avatar.UserID != userID {
+	if err != nil || avatar.UserID != userID || avatar.ArchivedAt.Valid {
 		r.refuseMember(w, req, group, displayNotOwned)
 		return
 	}

@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [fx-14](/tasks/fx-14-archive-habbos.md): a user archives a habbo with their password, which hides it, frees
+  a slot and keeps its name.
+- **Start** [fx-14](/tasks/fx-14-archive-habbos.md).
 - **Done** [fx-13](/tasks/fx-13-housekeeping-components.md): housekeeping has gold data lists, blue forms, a `Log out`
   link and the clock box, each the same on every page.
 - **Start** [fx-13](/tasks/fx-13-housekeeping-components.md).

@@ -259,7 +259,7 @@ SELECT
     credentials.password_hash
 FROM avatars
 JOIN credentials ON credentials.user_id = avatars.user_id
-WHERE avatars.name = ?1
+WHERE avatars.name = ?1 AND avatars.archived_at IS NULL
 `
 
 type GetLoginByHabboNameRow struct {
@@ -306,7 +306,7 @@ const getResetAccount = `-- name: GetResetAccount :one
 SELECT users.id AS user_id, users.email, avatars.name
 FROM avatars
 JOIN users ON users.id = avatars.user_id
-WHERE avatars.name = ?1 AND users.email = ?2
+WHERE avatars.name = ?1 AND users.email = ?2 AND avatars.archived_at IS NULL
 `
 
 type GetResetAccountParams struct {
@@ -325,6 +325,20 @@ func (q *Queries) GetResetAccount(ctx context.Context, arg GetResetAccountParams
 	var i GetResetAccountRow
 	err := row.Scan(&i.UserID, &i.Email, &i.Name)
 	return i, err
+}
+
+const moveAvatarSessions = `-- name: MoveAvatarSessions :exec
+UPDATE sessions SET avatar_id = ?1 WHERE avatar_id = ?2
+`
+
+type MoveAvatarSessionsParams struct {
+	ToAvatarID int64
+	AvatarID   int64
+}
+
+func (q *Queries) MoveAvatarSessions(ctx context.Context, arg MoveAvatarSessionsParams) error {
+	_, err := q.db.ExecContext(ctx, moveAvatarSessions, arg.ToAvatarID, arg.AvatarID)
+	return err
 }
 
 const purgeExpiredPasswordResets = `-- name: PurgeExpiredPasswordResets :execrows
@@ -357,7 +371,9 @@ SET avatar_id = ?1
 WHERE sessions.id = ?2
   AND EXISTS (
       SELECT 1 FROM avatars
-      WHERE avatars.id = ?1 AND avatars.user_id = sessions.user_id
+      WHERE avatars.id = ?1
+        AND avatars.user_id = sessions.user_id
+        AND avatars.archived_at IS NULL
   )
 `
 

@@ -215,3 +215,52 @@ func SwitchHabbo(ctx context.Context, db *sql.DB, avatarID int64) error {
 	}
 	return nil
 }
+
+// ArchiveHabbo hides a habbo of the session's user. Its rows stay for the audit
+// trail and its name stays taken, so nobody can pose as it. The active habbo
+// cannot go, so a user always keeps one, and sessions open on the archived habbo
+// elsewhere move to this session's.
+func ArchiveHabbo(ctx context.Context, db *sql.DB, avatarID int64) error {
+	session, ok := FromContext(ctx)
+	if !ok {
+		return ErrNoSession
+	}
+	if avatarID == session.AvatarID {
+		return ErrActiveHabbo
+	}
+
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("auth: archive habbo: %w", err)
+	}
+	defer tx.Rollback()
+	q := store.New(tx)
+	owned, err := q.CountGroupsOwnedBy(ctx, avatarID)
+	if err != nil {
+		return fmt.Errorf("auth: archive habbo: %w", err)
+	}
+	if owned > 0 {
+		return ErrHabboOwnsGroup
+	}
+	now := clock().UTC()
+	n, err := q.ArchiveAvatar(ctx, store.ArchiveAvatarParams{
+		ArchivedAt: sql.NullTime{Time: now, Valid: true},
+		UpdatedAt:  now,
+		ID:         avatarID,
+		UserID:     session.UserID,
+	})
+	if err != nil {
+		return fmt.Errorf("auth: archive habbo: %w", err)
+	}
+	if n == 0 {
+		return ErrNotOwner
+	}
+	err = q.MoveAvatarSessions(ctx, store.MoveAvatarSessionsParams{ToAvatarID: session.AvatarID, AvatarID: avatarID})
+	if err != nil {
+		return fmt.Errorf("auth: archive habbo: %w", err)
+	}
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("auth: archive habbo: %w", err)
+	}
+	return nil
+}

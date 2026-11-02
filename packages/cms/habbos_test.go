@@ -1,6 +1,7 @@
 package cms
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -157,6 +158,162 @@ func TestHabbosShareTheWalletAndTheClub(t *testing.T) {
 	}
 	if n := count(t, db, `SELECT COUNT(*) FROM wallet_transactions`); n != 1 {
 		t.Errorf("%d ledger rows, want the welcome credits only", n)
+	}
+}
+
+// habboWithSecond gives a member a second habbo, as the page does.
+func habboWithSecond(t *testing.T, db *sql.DB, mux *http.ServeMux) (*http.Cookie, store.Avatar) {
+	t.Helper()
+	cookie, _, _ := member(t, db, mux)
+	wantPage(t, serve(mux, "POST", "/account/habbos", cookie, newHabbo("Second")), http.StatusOK, "Second is ready to use.")
+	second, err := store.New(db).GetAvatarByName(t.Context(), "Second")
+	if err != nil {
+		t.Fatalf("GetAvatarByName: %v", err)
+	}
+	return cookie, second
+}
+
+func archive(id int64) string {
+	return fmt.Sprintf("/account/habbos/%d/archive", id)
+}
+
+func yourPassword() url.Values {
+	return url.Values{"password": {"secret123"}}
+}
+
+func TestArchivingHidesAHabbo(t *testing.T) {
+	db, mux := newSite(t)
+	cookie, second := habboWithSecond(t, db, mux)
+
+	rec := serve(mux, "POST", archive(second.ID), cookie, yourPassword())
+	wantPage(t, rec, http.StatusOK, "Result:The habbo is archived.", "Failed:false")
+	if strings.Contains(rec.Body.String(), "Name:Second") {
+		t.Error("the list still shows the archived habbo")
+	}
+	if n := count(t, db, `SELECT COUNT(*) FROM avatars WHERE name = 'Second' AND archived_at IS NOT NULL`); n != 1 {
+		t.Errorf("%d archived rows, want the habbo kept", n)
+	}
+	wantPage(t, serve(mux, "POST", "/", nil, credentials("Second", "secret123")), http.StatusUnprocessableEntity, "Invalid username or password")
+	if rec := serve(mux, "POST", fmt.Sprintf("/account/habbos/%d/switch", second.ID), cookie, url.Values{}); rec.Code != http.StatusForbidden {
+		t.Errorf("switching to it: got %d, want 403", rec.Code)
+	}
+	wantPage(t, serve(mux, "GET", "/me", cookie, nil), http.StatusOK, "Habbo:Newbie", "SeveralHabbos:false")
+}
+
+func TestArchivingNeedsThePassword(t *testing.T) {
+	db, mux := newSite(t)
+	cookie, second := habboWithSecond(t, db, mux)
+
+	form := url.Values{"password": {"wrong-one"}}
+	wantPage(t, serve(mux, "POST", archive(second.ID), cookie, form), http.StatusUnprocessableEntity, "That is not your password.")
+	if n := count(t, db, `SELECT COUNT(*) FROM avatars WHERE archived_at IS NOT NULL`); n != 0 {
+		t.Errorf("%d archived, want none", n)
+	}
+}
+
+func TestTheActiveHabboCannotBeArchived(t *testing.T) {
+	db, mux := newSite(t)
+	cookie, avatarID, _ := member(t, db, mux)
+
+	wantPage(t, serve(mux, "POST", archive(avatarID), cookie, yourPassword()), http.StatusUnprocessableEntity, "Switch to another habbo first.")
+	if n := count(t, db, `SELECT COUNT(*) FROM avatars WHERE archived_at IS NOT NULL`); n != 0 {
+		t.Errorf("%d archived, want none", n)
+	}
+}
+
+func TestAHabboOwningAGroupCannotBeArchived(t *testing.T) {
+	db, mux := newSite(t)
+	cookie, second := habboWithSecond(t, db, mux)
+	_, err := db.ExecContext(t.Context(), `INSERT INTO groups (avatar_id, name, badge, created_at, updated_at) VALUES (?, 'Group', 'b0503', ?, ?)`, second.ID, testNow, testNow)
+	if err != nil {
+		t.Fatalf("insert group: %v", err)
+	}
+
+	wantPage(t, serve(mux, "POST", archive(second.ID), cookie, yourPassword()), http.StatusUnprocessableEntity, "owns a group")
+	if n := count(t, db, `SELECT COUNT(*) FROM avatars WHERE archived_at IS NOT NULL`); n != 0 {
+		t.Errorf("%d archived, want none", n)
+	}
+}
+
+func TestAnotherUsersHabboCannotBeArchived(t *testing.T) {
+	db, mux := newSite(t)
+	cookie, _, _ := member(t, db, mux)
+	other, err := store.New(db).ListUserAvatars(t.Context(), habbo(t, db, "other@example.com", "Other"))
+	if err != nil {
+		t.Fatalf("ListUserAvatars: %v", err)
+	}
+
+	if rec := serve(mux, "POST", archive(other[0].ID), cookie, yourPassword()); rec.Code != http.StatusForbidden {
+		t.Errorf("got %d, want 403", rec.Code)
+	}
+	if n := count(t, db, `SELECT COUNT(*) FROM avatars WHERE archived_at IS NOT NULL`); n != 0 {
+		t.Errorf("%d archived, want none", n)
+	}
+}
+
+func TestArchivingAHabboTwiceIsRefused(t *testing.T) {
+	db, mux := newSite(t)
+	cookie, second := habboWithSecond(t, db, mux)
+	wantPage(t, serve(mux, "POST", archive(second.ID), cookie, yourPassword()), http.StatusOK, "The habbo is archived.")
+
+	if rec := serve(mux, "POST", archive(second.ID), cookie, yourPassword()); rec.Code != http.StatusForbidden {
+		t.Errorf("got %d, want 403", rec.Code)
+	}
+}
+
+func TestArchivingFreesASlotButNotTheName(t *testing.T) {
+	db, mux := newSite(t)
+	setSetting(t, db, "registration.maxHabbosPerUser", 2)
+	cookie, second := habboWithSecond(t, db, mux)
+	wantPage(t, serve(mux, "POST", "/account/habbos", cookie, newHabbo("Third")), http.StatusUnprocessableEntity, "You can have 2 habbos at most.")
+
+	wantPage(t, serve(mux, "POST", archive(second.ID), cookie, yourPassword()), http.StatusOK, "The habbo is archived.", "CanAdd:true")
+	wantPage(t, serve(mux, "POST", "/account/habbos", cookie, newHabbo("Second")), http.StatusUnprocessableEntity, "This username is in use.")
+	wantPage(t, serve(mux, "POST", "/account/habbos", cookie, newHabbo("Third")), http.StatusOK, "Third is ready to use.")
+}
+
+func TestOtherSessionsLeaveAnArchivedHabbo(t *testing.T) {
+	db, mux := newSite(t)
+	cookie, second := habboWithSecond(t, db, mux)
+	rec := serve(mux, "POST", "/", nil, credentials("Second", "secret123"))
+	elsewhere := sessionCookie(rec)
+	wantPage(t, serve(mux, "GET", "/me", elsewhere, nil), http.StatusOK, "Habbo:Second")
+
+	wantPage(t, serve(mux, "POST", archive(second.ID), cookie, yourPassword()), http.StatusOK, "The habbo is archived.")
+	wantPage(t, serve(mux, "GET", "/me", elsewhere, nil), http.StatusOK, "Habbo:Newbie")
+}
+
+func TestArchivedHabbosLeaveTheCounts(t *testing.T) {
+	db, mux := newSite(t)
+	cookie, second := habboWithSecond(t, db, mux)
+	wantPage(t, serve(mux, "GET", "/register", nil, nil), http.StatusOK)
+	if n, err := store.New(db).CountAvatars(t.Context()); err != nil || n != 2 {
+		t.Fatalf("CountAvatars = %d, %v", n, err)
+	}
+
+	wantPage(t, serve(mux, "POST", archive(second.ID), cookie, yourPassword()), http.StatusOK, "The habbo is archived.")
+	if n, err := store.New(db).CountAvatars(t.Context()); err != nil || n != 1 {
+		t.Errorf("CountAvatars = %d, %v, want the archived habbo left out", n, err)
+	}
+	avatars, err := store.New(db).ListRandomAvatars(t.Context(), 10)
+	if err != nil || len(avatars) != 1 {
+		t.Errorf("ListRandomAvatars = %d rows, %v, want the archived habbo left out", len(avatars), err)
+	}
+}
+
+func TestAnArchivedHabboEarnsNoReferral(t *testing.T) {
+	db, mux := newSite(t)
+	cookie, second := habboWithSecond(t, db, mux)
+	wantPage(t, serve(mux, "POST", archive(second.ID), cookie, yourPassword()), http.StatusOK, "The habbo is archived.")
+
+	form := registration()
+	form.Set("name", "Friend")
+	form.Set("email", "friend@example.com")
+	form.Set("emailConfirm", "friend@example.com")
+	form.Set("refer", "Second")
+	wantRedirect(t, serve(mux, "POST", "/register", nil, form), "/me")
+	if n := count(t, db, `SELECT COUNT(*) FROM referrals`); n != 0 {
+		t.Errorf("%d referrals, want none", n)
 	}
 }
 

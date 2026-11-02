@@ -681,6 +681,19 @@ func TestTheDisplayHabboMustBeTheirOwn(t *testing.T) {
 	}
 }
 
+func TestAnArchivedHabboIsNoDisplayHabbo(t *testing.T) {
+	db, mux := newSite(t)
+	_, group, cookie := manager(t, db, "Admin")
+	userID := habbo(t, db, "frank@example.com", "Frank")
+	archived := secondHabbo(t, db, userID, "FrankOld")
+	if _, err := db.ExecContext(t.Context(), `UPDATE avatars SET archived_at = ? WHERE id = ?`, testNow, archived.ID); err != nil {
+		t.Fatalf("archive: %v", err)
+	}
+
+	form := url.Values{"group": {strconv.FormatInt(group, 10)}, "habbo": {strconv.FormatInt(archived.ID, 10)}}
+	wantPage(t, serve(mux, "POST", memberURL(userID), cookie, form), http.StatusUnprocessableEntity, "The display habbo must be one of the user")
+}
+
 func TestChangingTheDisplayHabbo(t *testing.T) {
 	db, mux := newSite(t)
 	adminID, group, cookie := manager(t, db, "Admin")

@@ -4,7 +4,7 @@ title: avatars
 description: Habbos, the in-hotel identities owned by a user, with name, figure, gender and motto.
 resource: packages/store/schema/avatars.schema.sql
 tags: [store, table, habbo]
-timestamp: 2026-10-27T21:17:19+00:00
+timestamp: 2026-11-02T02:46:47+00:00
 ---
 
 # Schema
@@ -19,6 +19,7 @@ timestamp: 2026-10-27T21:17:19+00:00
 | `motto` | TEXT | no | `''` | Motto, stored raw | |
 | `created_at` | DATETIME | no | | Creation time (UTC) | |
 | `updated_at` | DATETIME | no | | Last change (UTC) | |
+| `archived_at` | DATETIME | yes | | When the owner archived it (UTC) | |
 
 # Keys
 

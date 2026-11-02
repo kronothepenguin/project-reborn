@@ -42,14 +42,15 @@ type Alert struct {
 }
 
 type Avatar struct {
-	ID        int64
-	UserID    int64
-	Name      string
-	Figure    string
-	Gender    string
-	Motto     string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID         int64
+	UserID     int64
+	Name       string
+	Figure     string
+	Gender     string
+	Motto      string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	ArchivedAt sql.NullTime
 }
 
 type AvatarBadge struct {

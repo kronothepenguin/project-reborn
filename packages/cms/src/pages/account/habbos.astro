@@ -24,6 +24,17 @@ import AvatarEditor from "../../components/habbo/avatar-editor.svelte";
       <form method="post" action="/account/habbos/[[ .ID ]]/switch">
         <Button type="submit" size="compact">Switch</Button>
       </form>
+      <form method="post" action="/account/habbos/[[ .ID ]]/archive" class="flex items-center gap-1">
+        <Input
+          type="password"
+          name="password"
+          placeholder="Your password"
+          aria-label="Your password"
+          maxlength="32"
+          variant="border"
+        />
+        <Button type="submit" size="compact">Archive</Button>
+      </form>
       [[ end ]]
     </li>
     [[ end ]]

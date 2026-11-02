@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -261,6 +262,37 @@ func TestIPBansSkipStaff(t *testing.T) {
 	f.ban(t, sql.NullInt64{Int64: staff, Valid: true}, "", sql.NullTime{}, sql.NullTime{})
 	if ban, err := ActiveBan(t.Context(), f.db, staff, "10.0.0.9"); err != nil || ban == nil {
 		t.Errorf("staff banned by account: %v, %v, want a ban", ban, err)
+	}
+}
+
+func TestArchiveHabbo(t *testing.T) {
+	f := newFixture(t)
+	userID, active := f.habbo(t, "admin@example.com", "Admin", testPassword)
+	second := f.avatar(t, userID, "Second")
+	_, foreign := f.habbo(t, "other@example.com", "Other", testPassword)
+	session, _, _ := f.visit(t, f.mustLogin(t, "Admin", false))
+	ctx := context.WithValue(t.Context(), contextKey{}, session)
+
+	if err := ArchiveHabbo(t.Context(), f.db, second); !errors.Is(err, ErrNoSession) {
+		t.Errorf("without a session = %v, want ErrNoSession", err)
+	}
+	if err := ArchiveHabbo(ctx, f.db, active); !errors.Is(err, ErrActiveHabbo) {
+		t.Errorf("the active habbo = %v, want ErrActiveHabbo", err)
+	}
+	if err := ArchiveHabbo(ctx, f.db, foreign); !errors.Is(err, ErrNotOwner) {
+		t.Errorf("another user's habbo = %v, want ErrNotOwner", err)
+	}
+	if err := ArchiveHabbo(ctx, f.db, second); err != nil {
+		t.Fatalf("ArchiveHabbo: %v", err)
+	}
+	if n := f.count(t, `SELECT COUNT(*) FROM avatars WHERE archived_at IS NOT NULL`); n != 1 {
+		t.Errorf("%d archived habbos, want 1", n)
+	}
+	if _, _, err := f.login(t, "10.0.0.1", "Second", testPassword, false); !errors.Is(err, ErrInvalidCredentials) {
+		t.Errorf("signing in as it = %v, want ErrInvalidCredentials", err)
+	}
+	if err := SwitchHabbo(ctx, f.db, second); !errors.Is(err, ErrNotOwner) {
+		t.Errorf("switching to it = %v, want ErrNotOwner", err)
 	}
 }
 

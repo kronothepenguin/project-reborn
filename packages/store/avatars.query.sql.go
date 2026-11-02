@@ -7,11 +7,37 @@ package store
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
+const archiveAvatar = `-- name: ArchiveAvatar :execrows
+UPDATE avatars SET archived_at = ?1, updated_at = ?2
+WHERE id = ?3 AND user_id = ?4 AND archived_at IS NULL
+`
+
+type ArchiveAvatarParams struct {
+	ArchivedAt sql.NullTime
+	UpdatedAt  time.Time
+	ID         int64
+	UserID     int64
+}
+
+func (q *Queries) ArchiveAvatar(ctx context.Context, arg ArchiveAvatarParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, archiveAvatar,
+		arg.ArchivedAt,
+		arg.UpdatedAt,
+		arg.ID,
+		arg.UserID,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
 const countAvatars = `-- name: CountAvatars :one
-SELECT COUNT(*) FROM avatars
+SELECT COUNT(*) FROM avatars WHERE archived_at IS NULL
 `
 
 func (q *Queries) CountAvatars(ctx context.Context) (int64, error) {
@@ -27,7 +53,7 @@ VALUES (
     ?1, ?2, ?3, ?4, ?5,
     ?6, ?7
 )
-RETURNING id, user_id, name, figure, gender, motto, created_at, updated_at
+RETURNING id, user_id, name, figure, gender, motto, created_at, updated_at, archived_at
 `
 
 type CreateAvatarParams struct {
@@ -60,12 +86,13 @@ func (q *Queries) CreateAvatar(ctx context.Context, arg CreateAvatarParams) (Ava
 		&i.Motto,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ArchivedAt,
 	)
 	return i, err
 }
 
 const getAvatar = `-- name: GetAvatar :one
-SELECT id, user_id, name, figure, gender, motto, created_at, updated_at FROM avatars WHERE id = ?1
+SELECT id, user_id, name, figure, gender, motto, created_at, updated_at, archived_at FROM avatars WHERE id = ?1
 `
 
 func (q *Queries) GetAvatar(ctx context.Context, id int64) (Avatar, error) {
@@ -80,14 +107,16 @@ func (q *Queries) GetAvatar(ctx context.Context, id int64) (Avatar, error) {
 		&i.Motto,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ArchivedAt,
 	)
 	return i, err
 }
 
 const getAvatarByName = `-- name: GetAvatarByName :one
-SELECT id, user_id, name, figure, gender, motto, created_at, updated_at FROM avatars WHERE name = ?1
+SELECT id, user_id, name, figure, gender, motto, created_at, updated_at, archived_at FROM avatars WHERE name = ?1
 `
 
+// It sees archived habbos too, because their names stay taken.
 func (q *Queries) GetAvatarByName(ctx context.Context, name string) (Avatar, error) {
 	row := q.db.QueryRowContext(ctx, getAvatarByName, name)
 	var i Avatar
@@ -100,12 +129,14 @@ func (q *Queries) GetAvatarByName(ctx context.Context, name string) (Avatar, err
 		&i.Motto,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ArchivedAt,
 	)
 	return i, err
 }
 
 const listRandomAvatars = `-- name: ListRandomAvatars :many
-SELECT id, user_id, name, figure, gender, motto, created_at, updated_at FROM avatars
+SELECT id, user_id, name, figure, gender, motto, created_at, updated_at, archived_at FROM avatars
+WHERE archived_at IS NULL
 ORDER BY RANDOM()
 LIMIT ?1
 `
@@ -128,6 +159,7 @@ func (q *Queries) ListRandomAvatars(ctx context.Context, count int64) ([]Avatar,
 			&i.Motto,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.ArchivedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -143,8 +175,8 @@ func (q *Queries) ListRandomAvatars(ctx context.Context, count int64) ([]Avatar,
 }
 
 const listUserAvatars = `-- name: ListUserAvatars :many
-SELECT id, user_id, name, figure, gender, motto, created_at, updated_at FROM avatars
-WHERE user_id = ?1
+SELECT id, user_id, name, figure, gender, motto, created_at, updated_at, archived_at FROM avatars
+WHERE user_id = ?1 AND archived_at IS NULL
 ORDER BY created_at, id
 `
 
@@ -166,6 +198,7 @@ func (q *Queries) ListUserAvatars(ctx context.Context, userID int64) ([]Avatar, 
 			&i.Motto,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.ArchivedAt,
 		); err != nil {
 			return nil, err
 		}

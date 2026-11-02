@@ -6,7 +6,7 @@ SELECT
     credentials.password_hash
 FROM avatars
 JOIN credentials ON credentials.user_id = avatars.user_id
-WHERE avatars.name = sqlc.arg(name);
+WHERE avatars.name = sqlc.arg(name) AND avatars.archived_at IS NULL;
 
 -- name: GetCredential :one
 SELECT * FROM credentials WHERE user_id = sqlc.arg(user_id);
@@ -41,8 +41,13 @@ SET avatar_id = sqlc.arg(avatar_id)
 WHERE sessions.id = sqlc.arg(id)
   AND EXISTS (
       SELECT 1 FROM avatars
-      WHERE avatars.id = sqlc.arg(avatar_id) AND avatars.user_id = sessions.user_id
+      WHERE avatars.id = sqlc.arg(avatar_id)
+        AND avatars.user_id = sessions.user_id
+        AND avatars.archived_at IS NULL
   );
+
+-- name: MoveAvatarSessions :exec
+UPDATE sessions SET avatar_id = sqlc.arg(to_avatar_id) WHERE avatar_id = sqlc.arg(avatar_id);
 
 -- name: DeleteSession :exec
 DELETE FROM sessions WHERE id = sqlc.arg(id);
@@ -87,7 +92,7 @@ LIMIT 1;
 SELECT users.id AS user_id, users.email, avatars.name
 FROM avatars
 JOIN users ON users.id = avatars.user_id
-WHERE avatars.name = sqlc.arg(name) AND users.email = sqlc.arg(email);
+WHERE avatars.name = sqlc.arg(name) AND users.email = sqlc.arg(email) AND avatars.archived_at IS NULL;
 
 -- name: CreatePasswordReset :execrows
 INSERT INTO password_resets (id, user_id, created_at, expires_at)

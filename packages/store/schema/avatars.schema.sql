@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS avatars (
     gender TEXT NOT NULL CHECK (gender IN ('M', 'F')),
     motto TEXT NOT NULL DEFAULT '',
     created_at DATETIME NOT NULL,
-    updated_at DATETIME NOT NULL
+    updated_at DATETIME NOT NULL,
+    archived_at DATETIME
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_avatars_name ON avatars(name);

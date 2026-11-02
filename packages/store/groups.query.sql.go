@@ -19,3 +19,14 @@ func (q *Queries) CountGroups(ctx context.Context) (int64, error) {
 	err := row.Scan(&count)
 	return count, err
 }
+
+const countGroupsOwnedBy = `-- name: CountGroupsOwnedBy :one
+SELECT COUNT(*) FROM groups WHERE avatar_id = ?1
+`
+
+func (q *Queries) CountGroupsOwnedBy(ctx context.Context, avatarID int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countGroupsOwnedBy, avatarID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}

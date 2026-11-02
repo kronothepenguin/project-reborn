@@ -219,10 +219,10 @@ SELECT
     access_group_members.display_avatar_id,
     CAST(COALESCE((
         SELECT avatars.name FROM avatars
-        WHERE avatars.id = access_group_members.display_avatar_id
+        WHERE avatars.id = access_group_members.display_avatar_id AND avatars.archived_at IS NULL
     ), (
         SELECT avatars.name FROM avatars
-        WHERE avatars.user_id = access_group_members.user_id
+        WHERE avatars.user_id = access_group_members.user_id AND avatars.archived_at IS NULL
         ORDER BY avatars.created_at, avatars.id
         LIMIT 1
     ), '') AS TEXT) AS name
@@ -322,12 +322,12 @@ SELECT
     CAST(COALESCE((
         SELECT avatars.name FROM access_group_members
         JOIN avatars ON avatars.id = access_group_members.display_avatar_id
-        WHERE access_group_members.user_id = users.id
+        WHERE access_group_members.user_id = users.id AND avatars.archived_at IS NULL
         ORDER BY access_group_members.access_group_id
         LIMIT 1
     ), (
         SELECT avatars.name FROM avatars
-        WHERE avatars.user_id = users.id
+        WHERE avatars.user_id = users.id AND avatars.archived_at IS NULL
         ORDER BY avatars.created_at, avatars.id
         LIMIT 1
     ), '') AS TEXT) AS name
@@ -423,10 +423,10 @@ SELECT
     access_groups.name AS group_name,
     CAST(COALESCE((
         SELECT avatars.name FROM avatars
-        WHERE avatars.id = access_group_members.display_avatar_id
+        WHERE avatars.id = access_group_members.display_avatar_id AND avatars.archived_at IS NULL
     ), (
         SELECT avatars.name FROM avatars
-        WHERE avatars.user_id = access_group_members.user_id
+        WHERE avatars.user_id = access_group_members.user_id AND avatars.archived_at IS NULL
         ORDER BY avatars.created_at, avatars.id
         LIMIT 1
     ), '') AS TEXT) AS name

@@ -4,7 +4,7 @@ title: auth.query.sql
 description: Sign-in operations for the habbo-name login lookup, credentials, sessions, login attempts and password resets.
 resource: packages/store/queries/auth.query.sql
 tags: [store, query, auth]
-timestamp: 2026-10-27T21:44:59+00:00
+timestamp: 2026-11-02T02:47:29+00:00
 ---
 
 # Operations
@@ -13,7 +13,7 @@ timestamp: 2026-10-27T21:44:59+00:00
 
 - Cardinality: `:one`
 - Inputs: `name` (matched ignoring case)
-- Result: `GetLoginByHabboNameRow` (avatar id, user id, habbo name, password hash); not found for an unknown name
+- Result: `GetLoginByHabboNameRow` (avatar id, user id, habbo name, password hash); not found for an archived habbo or an unknown name
 - Tables: `avatars`, `credentials`
 
 ## GetCredential
@@ -54,8 +54,15 @@ timestamp: 2026-10-27T21:44:59+00:00
 
 - Cardinality: `:execrows`
 - Inputs: `id`, `avatar_id`
-- Result: 1 when the habbo belongs to the session's user, 0 otherwise (nothing changes)
+- Result: 1 when the habbo belongs to the session's user and is not archived, 0 otherwise (nothing changes)
 - Tables: `sessions`, `avatars`
+
+## MoveAvatarSessions
+
+- Cardinality: `:exec`
+- Inputs: `to_avatar_id`, `avatar_id`
+- Result: moves the sessions open on a habbo to another one, when it is archived
+- Tables: `sessions`
 
 ## DeleteSession
 

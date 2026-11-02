@@ -4,7 +4,7 @@ title: avatars.query.sql
 description: Habbo operations for creation, lookup by id or name, the habbos of a user and random habbos.
 resource: packages/store/queries/avatars.query.sql
 tags: [store, query, habbo]
-timestamp: 2026-10-27T21:44:59+00:00
+timestamp: 2026-11-02T02:47:29+00:00
 ---
 
 # Operations
@@ -27,7 +27,14 @@ timestamp: 2026-10-27T21:44:59+00:00
 
 - Cardinality: `:one`
 - Inputs: `name` (matched ignoring case)
-- Result: `Avatar`; not found for an unknown name
+- Result: `Avatar`, archived ones too, because their names stay taken; not found for an unknown name
+- Tables: `avatars`
+
+## ArchiveAvatar
+
+- Cardinality: `:execrows`
+- Inputs: `archived_at`, `updated_at`, `id`, `user_id`
+- Result: 1 when the habbo was the user's and not archived yet, 0 otherwise
 - Tables: `avatars`
 
 ## ListUserAvatars

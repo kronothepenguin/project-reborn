@@ -283,6 +283,9 @@ func recordReferral(ctx context.Context, q *store.Queries, refer string, userID 
 	if err != nil {
 		return err
 	}
+	if referrer.ArchivedAt.Valid {
+		return nil
+	}
 
 	now := time.Now().UTC()
 	var rewardedAt sql.NullTime

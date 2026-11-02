@@ -19,6 +19,8 @@ var (
 	ErrBanned             = errors.New("auth: banned")
 	ErrNoSession          = errors.New("auth: no session")
 	ErrNotOwner           = errors.New("auth: the habbo belongs to another user")
+	ErrActiveHabbo        = errors.New("auth: the habbo is the session's active one")
+	ErrHabboOwnsGroup     = errors.New("auth: the habbo owns a group")
 	ErrPasswordLength     = errors.New("auth: password length out of range")
 	ErrPasswordTooShort   = fmt.Errorf("%w: too short", ErrPasswordLength)
 	ErrPasswordTooLong    = fmt.Errorf("%w: too long", ErrPasswordLength)
