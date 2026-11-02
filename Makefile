@@ -1,4 +1,4 @@
-.PHONY: install tools create tw-color
+.PHONY: install tools create tw-color e2e
 
 install:
 	go work sync
@@ -16,6 +16,10 @@ install:
 # build:
 # 	mkdir -p ./bin
 # 	go build -o ./bin/main ./apps/reborn/cmd
+
+# Builds everything, and runs the browser suites on a throwaway hotel.
+e2e:
+	$(MAKE) -C tests/e2e test
 
 tools:
 	@for d in tools/*; do \

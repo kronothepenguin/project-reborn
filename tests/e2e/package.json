@@ -1,0 +1,12 @@
+{
+  "name": "@project-reborn/e2e",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --disable-warning=ExperimentalWarning run.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.0"
+  }
+}

@@ -36,7 +36,7 @@ starts.
 
 # Tasks
 
-- [fx-01 Move the browser suites into the repository](/tasks/fx-01-browser-suites.md) — todo
+- [fx-01 Move the browser suites into the repository](/tasks/fx-01-browser-suites.md) — done
 - [fx-02 Run every gate on GitHub Actions](/tasks/fx-02-ci-workflow.md) — todo
 - [fx-03 Publish releases on tags](/tasks/fx-03-release-workflow.md) — todo
 - [fx-04 Give the wallet, the club and the home inventory to the user](/tasks/fx-04-user-wallet-club-inventory.md) — todo
