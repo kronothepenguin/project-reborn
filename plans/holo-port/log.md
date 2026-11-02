@@ -2,6 +2,11 @@
 
 ## 2026-11-01
 
+- **Create** [FX Review follow-ups](/phases/fx-review-follow-ups.md), with [fx-01](/tasks/fx-01-browser-suites.md) to
+  [fx-16](/tasks/fx-16-exit-check.md), before [HK-B](/phases/hk-b-users-moderation.md).
+- **Update** the review of P2 and HK-A closed with [0051](/decisions/0051-one-machine-and-a-refresh.md) to
+  [0063](/decisions/0063-what-housekeeping-can-delete.md). They supersede 0014, 0015, 0040 and 0045, and
+  [P3](/phases/p3-homes.md) returns to the order after HK-B.
 - **Update** HK-A is merged into `main`, and [HK-B](/phases/hk-b-users-moderation.md) comes next.
 - **Done** [hk-a-13](/tasks/hk-a-13-merge-check.md): `main` holds P2 and HK-A together: every gate passes from a clean
   checkout, with 223 browser checks of P2, 116 of HK-A and 28 across the three programs.

@@ -19,7 +19,7 @@ tags: [process]
 `index.md` and `log.md` are reserved OKF files: they are never concepts and carry no frontmatter, except the root
 `index.md`, which declares `okf_version: "0.2"`.
 
-Phase ids: `p0` … `p7`, `hk-a`, `hk-b`. Task ids: `<phase-id>-<nn>`, for example `p0-04` or `hk-a-01`.
+Phase ids: `p0` … `p7`, `hk-a`, `hk-b`, `fx`. Task ids: `<phase-id>-<nn>`, for example `p0-04` or `hk-a-01`.
 
 # Frontmatter
 

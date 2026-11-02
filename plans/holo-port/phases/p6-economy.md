@@ -24,6 +24,9 @@ Habbos see their credits and transactions, redeem vouchers, buy club months and 
 - A club purchase adds a `club_subscriptions` period starting at the later of now and the current end, debits
   credits with a ledger row, and grants the club badge on the first purchase.
 - Settings: `club.*`, `creditsPage.*`.
+- The wallet and the club belong to the user ([0056](/decisions/0056-wallet-club-and-inventory-per-user.md)).
+- Staff can delete an unused voucher, with `POST /housekeeping/vouchers/{code}/delete`
+  ([0063](/decisions/0063-what-housekeeping-can-delete.md)).
 
 # Exit criteria
 

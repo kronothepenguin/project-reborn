@@ -31,6 +31,8 @@ Habbos buy, join and run groups with decorated group homes and badges, and talk 
 - Group badge tints: two palettes, so that the user can pick one ([0042](/decisions/0042-two-badge-palettes.md)).
 - Primitives: GroupBadge, Table. Settings: `groups.*`, `features.forum`, `features.smilies`.
 
+- Forum posts of an archived habbo show it as `disabled` ([0058](/decisions/0058-habbos-are-archived.md)).
+
 # Exit criteria
 
 - Buying a group debits credits with a ledger row; join, request, accept, promote, leave and favourite work; the

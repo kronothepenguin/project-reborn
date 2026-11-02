@@ -16,6 +16,11 @@ change supersedes a decision with a new one.
 - [0050 Expired sessions are deleted on a schedule](/decisions/0050-expired-sessions-deleted.md) — A task on the scheduler deletes sessions once they expire, in place of the purge at sign-in.
 - [0018 Password reset by email](/decisions/0018-password-reset-by-email.md) — Forgot password emails a single-use, expiring reset link built on password_resets and the mail settings.
 - [0030 packages/auth creates accounts and habbos](/decisions/0030-accounts-created-in-auth.md) — The helpers that create a user with its first habbo, and a habbo with its profile, home and wallet, live in packages/auth with the name, email and birth-date rules, and take sqlc queries so each caller keeps its own transaction.
+- [0053 Attributes on groups and on users](/decisions/0053-attributes-on-groups-and-users.md) — A user holds the attributes of their access groups and those given to them directly, private user data takes its own attribute, and the guard needs one user holding both keys.
+- [0054 Access groups are Holo's ranks](/decisions/0054-access-groups-are-holos-ranks.md) — The installer creates Holo's staff ranks as access groups with attributes, and admins can create, edit and delete any group.
+- [0055 Staff levels](/decisions/0055-staff-levels.md) — Each access group has a level, staff act only on users below them, IP bans skip housekeeping staff, and a banned user in housekeeping goes to the CMS.
+- [0058 Habbos are archived, not deleted](/decisions/0058-habbos-are-archived.md) — A user can archive a habbo instead of deleting it, which hides the habbo and keeps the audit trail, and staff can restore it.
+- [0059 Account forms keep the birth date and the session](/decisions/0059-account-forms.md) — The email and password forms keep Holo's birth date question, and a password change keeps the session of the user who made it, with a new token.
 
 ## Configuration and data
 
@@ -31,6 +36,8 @@ change supersedes a decision with a new one.
 - [0024 Settings are declared keys read through typed getters](/decisions/0024-settings-catalogue-and-getters.md) — packages/virtual holds Settings, a map of key paths filled from declared defaults, config.json and the settings rows, read with typed getters and written one key at a time. **Superseded by [0029](/decisions/0029-package-level-settings-and-auth.md).**
 - [0025 Settings reads never wait on writers](/decisions/0025-settings-reads-never-wait.md) — virtual.Settings publishes its values through an atomic pointer read without locks, and a mutex used only by Set and Reload serializes the writers.
 - [0029 Settings and auth are package-level; apps take the db on creation](/decisions/0029-package-level-settings-and-auth.md) — Settings live in virtual/settings as a process-wide singleton read through package functions, auth is a set of helpers that receive the db, and app packages take the db as New's first argument with options only for the resolver and the static handler.
+- [0051 One machine, and a refresh instead of IPC](/decisions/0051-one-machine-and-a-refresh.md) — The programs run on one machine while the database is SQLite, and a CMS running alone re-reads the settings every cms.refresh seconds, so no IPC is built.
+- [0056 The wallet, the club and the home inventory belong to the user](/decisions/0056-wallet-club-and-inventory-per-user.md) — One wallet and one club membership per user, and stickers, notes and backgrounds are shared while they are not placed on a home.
 
 ## Scope
 
@@ -45,6 +52,9 @@ change supersedes a decision with a new one.
 - [0020 News bodies in BBCode](/decisions/0020-news-in-bbcode.md) — News article bodies are BBCode rendered by the same renderer as forum posts and sticky notes.
 - [0021 Dropped and kept Holo features](/decisions/0021-dropped-and-kept-features.md) — The captcha, the Dutch and German texts and Holo's admin database tools are dropped; tag fight and refer-a-friend are ported.
 - [0031 P1 signs in to a minimal /me page](/decisions/0031-p1-minimal-me-page.md) — During P1, sign-in and registration redirect to a small GET /me showing the habbo and a sign-out button, and GET / redirects signed-in visitors there, so P2 only fills in the page.
+- [0057 Furni and rooms](/decisions/0057-furni-and-rooms.md) — Furni is split per habbo with a shared inventory per user, and rooms have a creator and an owner, so a user can move a room between their habbos with its furni in place.
+- [0061 The art lives in the repository](/decisions/0061-art-in-the-repository.md) — The home art and user badges are committed under packages/cms/public and embedded in the CMS binary, and P3 Homes returns to the phase order.
+- [0063 What housekeeping can delete](/decisions/0063-what-housekeeping-can-delete.md) — The staff log, credit history and bans stay for audit, help tickets are closed instead of deleted, and unused vouchers can be deleted.
 
 ## Packages and process
 
@@ -64,3 +74,6 @@ change supersedes a decision with a new one.
 - [0028 Trusted reverse proxies in config.json](/decisions/0028-trusted-proxies-in-config.md) — config.json has a proxy section, off by default, that lets the runners take the client IP from X-Forwarded-For when the connection comes from a listed proxy address or range.
 - [0032 imaging.avatarUrl defaults to the habbo.com imager](/decisions/0032-avatar-imager-default.md) — The imaging.avatarUrl setting defaults to https://www.habbo.com/habbo-imaging/avatarimage, an external imager that accepts dot-format figures and can be replaced at any time.
 - [0033 Each finished task is committed on main](/decisions/0033-commit-each-task-on-main.md) — The agent commits every finished task on main with a one-line title in the style of the repository's history and never pushes.
+- [0052 The installer has no modes](/decisions/0052-installer-has-no-modes.md) — The installer has no standalone or orchestrator mode, its fields stay editable with the development ports as defaults, and it asks for the Housekeeping Address.
+- [0060 Housekeeping components have one look each](/decisions/0060-housekeeping-components.md) — Each housekeeping component looks the same on every page, with blue navigation, gold data lists, blue forms and a grey top bar.
+- [0062 CI and releases on GitHub Actions](/decisions/0062-ci-and-releases.md) — GitHub Actions runs every gate and the browser suites, and a version tag publishes prebuilt archives for linux amd64 and aarch64.

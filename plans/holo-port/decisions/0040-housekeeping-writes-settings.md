@@ -2,7 +2,8 @@
 type: Decision
 title: Housekeeping is the single writer of settings
 description: Housekeeping alone updates settings, the CMS only reads them, the installer runs once, and programs running alone will be told of a change instead of polling for it.
-status: accepted
+status: superseded
+superseded_by: "0051"
 timestamp: 2026-11-01T18:13:48+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [settings, housekeeping, architecture]

@@ -26,6 +26,13 @@ handle help tickets.
 
 Holo details: [housekeeping reference](/reference/holo-housekeeping.md).
 
+- Every action on a user works only on users below the actor ([0055](/decisions/0055-staff-levels.md)).
+- The user page gives direct attributes, with `housekeeping.accessGroups`, and emails and IP history take
+  `housekeeping.usersPrivate` ([0053](/decisions/0053-attributes-on-groups-and-users.md)).
+- Credits act on the user's wallet ([0056](/decisions/0056-wallet-club-and-inventory-per-user.md)).
+- Staff restore archived habbos here ([0058](/decisions/0058-habbos-are-archived.md)).
+- The ban page takes its look from Sulake's `Mass banning and kicking` ([0060](/decisions/0060-housekeeping-components.md)).
+
 # Exit criteria
 
 - Every action writes a staff log row with the actor user and the target.

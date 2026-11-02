@@ -65,8 +65,8 @@ This is how programs run today, and how development works.
 - The CMS's Housekeeping links follow `site.housekeepingUrl`, `/housekeeping` by default. Only a shared mux serves that path:
   running alone, the CMS answers 404 there until the setting names housekeeping's own address.
 
-The open question is how a running CMS learns of a change. [0040](/decisions/0040-housekeeping-writes-settings.md) expects
-IPC between the processes, and its design belongs to [HK-A](/phases/hk-a-housekeeping-core.md).
+[0051](/decisions/0051-one-machine-and-a-refresh.md) decides how a running CMS learns of a change: it re-reads the settings
+every `cms.refresh` seconds, and no IPC is built. [fx-10](/tasks/fx-10-settings-refresh.md) builds it.
 
 # Running together
 
@@ -76,7 +76,7 @@ This is planned, and needs the orchestrator.
   ([0029](/decisions/0029-package-level-settings-and-auth.md)).
 - `Mount` keeps each program's routes protected on the shared mux, and housekeeping stays under `/housekeeping`
   ([0003](/decisions/0003-housekeeping-under-prefix.md)).
-- The settings are one process-wide singleton, so a change applies at once and the IPC stays disabled.
+- The settings are one process-wide singleton, so a change applies at once and the refresh does not run.
 
 # Comparison
 
@@ -88,4 +88,4 @@ This is planned, and needs the orchestrator.
 | Session cookie | Shared, on one host | Shared |
 | Settings copy | One per process | One |
 | Scheduler | One per process, running that program's tasks | One, running every program's tasks |
-| A settings change reaches the CMS | At its next start; through IPC once it exists | At once |
+| A settings change reaches the CMS | At its next start; within `cms.refresh` seconds after [fx-10](/tasks/fx-10-settings-refresh.md) | At once |

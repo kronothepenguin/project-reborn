@@ -23,8 +23,12 @@ Every habbo has a home page that guests can read and the owner can decorate with
 | housekeeping `add_homes_stuff.php` | `/housekeeping/home-store` (GET/POST), `POST /housekeeping/home-store/{id}` | — | `housekeeping.homeStore`; image paths from re-hosted assets, no URL fetch, no CSS writes |
 | `install.php:469-772` | seed of the program that uses it, merged by the installer ([0049](/decisions/0049-store-is-the-global-database.md)) | — | Holo's categories and 303 items as `packages/installer/internal/seed` |
 
-- Club skins (hc_machine, hc_pillow) need the habbo's active club subscription; the staff category and the staff
+- Club skins (hc_machine, hc_pillow) need the user's active club membership; the staff category and the staff
   skin need `homes.staffItems`.
+- The art is in the repository ([0061](/decisions/0061-art-in-the-repository.md)).
+- Stickers, notes and backgrounds belong to the user while they are not placed
+  ([0056](/decisions/0056-wallet-club-and-inventory-per-user.md)), and archiving a habbo returns its placed stickers and
+  notes ([0058](/decisions/0058-habbos-are-archived.md)).
 - Playground: 922 px wide for group homes and club owners, 752 px otherwise, by 1360 px high.
 - Primitives: Badge, Tag. Settings: `homes.*`.
 
@@ -36,11 +40,3 @@ Every habbo has a home page that guests can read and the owner can decorate with
 # Tasks
 
 Created when the phase starts.
-
-# Open questions
-
-- **Deferred:** this phase waits for the art and is not in the phase order ([0045](/decisions/0045-homes-deferred.md)). The user
-  is looking for it.
-- **Art:** Holo hotlinked dead Habbo CDNs for about 430 stickers, 112 backgrounds, the widget skins and the user
-  badge images. They must be re-hosted under `packages/cms/public` before this phase; where they come from is not
-  decided yet.

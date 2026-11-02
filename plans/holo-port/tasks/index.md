@@ -80,6 +80,25 @@ starts.
 - [hk-a-12 Ask for the housekeeping port in the installer](/tasks/hk-a-12-installer-housekeeping-port.md) — The configuration step asks for both ports, as the plan's wizard does, because it is the one time the administrator sets them.
 - [hk-a-13 Verify HK-A merged with P2](/tasks/hk-a-13-merge-check.md) — Merge hk-a into main and verify the result from a clean checkout, in the browser and with every gate.
 
+## FX Review follow-ups
+
+- [fx-01 Move the browser suites into the repository](/tasks/fx-01-browser-suites.md) — The Playwright suites and their runner move from a temporary folder into tests/e2e, so they survive and CI can run them.
+- [fx-02 Run every gate on GitHub Actions](/tasks/fx-02-ci-workflow.md) — ci.yml runs every gate and the browser suites on pushes to main and on pull requests.
+- [fx-03 Publish releases on tags](/tasks/fx-03-release-workflow.md) — release.yml publishes archives for linux amd64 and aarch64 when a version tag is pushed.
+- [fx-04 Give the wallet, the club and the home inventory to the user](/tasks/fx-04-user-wallet-club-inventory.md) — Wallets, club periods and the home inventory move from the habbo to the user, as decision 0056 says.
+- [fx-05 Give attributes to users](/tasks/fx-05-user-attributes.md) — Direct attributes join group attributes in every check, the guard counts both, and private user data gets its own attribute.
+- [fx-06 Add levels to access groups](/tasks/fx-06-staff-levels.md) — Each group gets a level, group changes follow it, and IP bans skip housekeeping staff.
+- [fx-07 Seed Holo's ranks in the installer](/tasks/fx-07-seed-ranks.md) — The installer creates Administrator, Moderator, Gold Hobba, Silver Hobba and HabboX as access groups.
+- [fx-08 Delete access groups](/tasks/fx-08-delete-access-groups.md) — Staff with housekeeping.accessGroups can delete a group, unless that breaks the guard.
+- [fx-09 Ask for the Housekeeping Address in the installer](/tasks/fx-09-housekeeping-address.md) — site.housekeepingUrl defaults to the development address, and the installer's site step asks for it.
+- [fx-10 Refresh the CMS settings on schedule](/tasks/fx-10-settings-refresh.md) — A CMS running alone re-reads the settings every cms.refresh seconds, on the scheduler.
+- [fx-11 Keep the session on a password change](/tasks/fx-11-password-keeps-session.md) — A password change keeps the session of the user who made it, with a new token, and ends the others.
+- [fx-12 Send banned staff to the CMS](/tasks/fx-12-banned-staff.md) — A banned user who opens housekeeping goes to site.url, where the CMS shows Holo's ban message.
+- [fx-13 Give housekeeping components their looks](/tasks/fx-13-housekeeping-components.md) — Gold data lists, blue forms, a Log out link and the clock box, as decision 0060 says.
+- [fx-14 Archive habbos](/tasks/fx-14-archive-habbos.md) — A user archives a habbo from /account/habbos, which hides it and frees a slot, and its name stays reserved.
+- [fx-15 Bring the art into the repository](/tasks/fx-15-art-in-the-repository.md) — Fetch the stickers, backgrounds, user badges and missing widget skins once, and commit them.
+- [fx-16 Verify FX](/tasks/fx-16-exit-check.md) — Every exit criterion of FX holds from a clean checkout, in a real browser.
+
 ## Later phases
 
 [HK-B](/phases/hk-b-users-moderation.md),

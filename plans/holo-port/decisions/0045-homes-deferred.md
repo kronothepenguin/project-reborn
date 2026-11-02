@@ -2,7 +2,8 @@
 type: Decision
 title: Homes are deferred until the art exists
 description: P3 Homes leaves the phase order and becomes an isolated piece of work for later, because the user has none of the art yet and will look for it.
-status: accepted
+status: superseded
+superseded_by: "0061"
 timestamp: 2026-11-01T19:50:41+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T19:50:41+00:00"}
 tags: [p3, scope]

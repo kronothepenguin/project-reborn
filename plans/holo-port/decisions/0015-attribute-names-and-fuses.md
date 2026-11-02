@@ -2,7 +2,8 @@
 type: Decision
 title: Dotted attribute names; fuses stay separate
 description: Web attributes use dotted names such as forum.edit, while R26 fuses keep their exact fuse_* names in a separate, deferred catalogue.
-status: accepted
+status: superseded
+superseded_by: "0053"
 timestamp: 2026-10-27T20:48:19+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [auth, access]

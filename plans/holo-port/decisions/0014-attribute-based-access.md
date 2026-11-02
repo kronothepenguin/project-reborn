@@ -2,7 +2,8 @@
 type: Decision
 title: Attribute-based access control
 description: Admin-defined access groups carry attributes that belong to the user, and code checks attributes only, never a rank number or a group name.
-status: accepted
+status: superseded
+superseded_by: "0053"
 timestamp: 2026-10-27T20:48:19+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [auth, access, housekeeping]
