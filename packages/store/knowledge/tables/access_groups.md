@@ -12,7 +12,7 @@ timestamp: 2026-11-02T02:00:12+00:00
 | Column | Type | Null | Default | Description | Key / reference |
 |--------|------|------|---------|-------------|-----------------|
 | `id` | INTEGER | no | rowid | Group id | primary key |
-| `name` | TEXT `COLLATE NOCASE` | no | | Display name ("Administrators", "Moderators") | unique, ignoring case |
+| `name` | TEXT `COLLATE NOCASE` | no | | Display name ("Administrator", "Moderator") | unique, ignoring case |
 | `description` | TEXT | no | `''` | What the group is for | |
 | `staff_listed` | BOOLEAN | no | FALSE | Whether `/staff` lists the group | |
 | `level` | INTEGER | no | 0 | Who its members can act on | CHECK ≥ 0 |

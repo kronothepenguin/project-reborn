@@ -143,9 +143,9 @@ type Administrator struct {
 }
 
 // CreateAdministrator creates, in one transaction, the administrator's user,
-// credentials and habbo with its profile, home and wallet, and the
-// Administrators group, which holds every attribute and shows the habbo on the
-// staff page.
+// credentials and habbo with its profile, home and wallet, and Holo's ranks as
+// access groups. The administrator joins Administrator, which holds every
+// attribute and shows the habbo on the staff page.
 func (s *State) CreateAdministrator(ctx context.Context, admin Administrator) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -194,28 +194,86 @@ func createAdministrator(ctx context.Context, q *store.Queries, admin Administra
 	if err != nil {
 		return err
 	}
-	group, err := q.CreateAccessGroup(ctx, store.CreateAccessGroupParams{
-		Name:        "Administrators",
-		Description: "Holds every attribute. Created by the installer.",
-		StaffListed: true,
-		CreatedAt:   now,
-		UpdatedAt:   now,
-	})
+	administrators, err := createRanks(ctx, q, now)
 	if err != nil {
 		return err
 	}
-	for _, entry := range auth.Catalogue() {
-		err := q.AddAccessGroupAttribute(ctx, store.AddAccessGroupAttributeParams{AccessGroupID: group.ID, Attribute: string(entry.Attribute)})
-		if err != nil {
-			return err
-		}
-	}
 	return q.AddAccessGroupMember(ctx, store.AddAccessGroupMemberParams{
-		AccessGroupID:   group.ID,
+		AccessGroupID:   administrators,
 		UserID:          userID,
 		DisplayAvatarID: sql.NullInt64{Int64: avatarID, Valid: true},
 		GrantedAt:       now,
 	})
+}
+
+// rank is one of Holo's staff ranks, as an access group. Their names come from
+// staff.php, and the Moderator's attributes from the pages housekeeping/index.php
+// does not keep for rank 7, without housekeeping.usersPrivate.
+type rank struct {
+	name        string
+	description string
+	level       int64
+	everything  bool
+	attributes  []auth.Attribute
+}
+
+var ranks = []rank{
+	{name: "Administrator", description: "Holds every attribute.", level: 7, everything: true},
+	{
+		name:        "Moderator",
+		description: "Looks after the hotel and its players.",
+		level:       6,
+		attributes: []auth.Attribute{
+			auth.HousekeepingAccess,
+			auth.HousekeepingUsers,
+			auth.HousekeepingCredits,
+			auth.HousekeepingVouchers,
+			auth.HousekeepingBans,
+			auth.HousekeepingAlerts,
+			auth.HousekeepingAlertsBroadcast,
+			auth.HousekeepingHelp,
+			auth.HousekeepingBanners,
+			auth.HousekeepingHomeStore,
+			auth.ForumEdit,
+			auth.HomesStaffItems,
+			auth.SiteMaintenanceBypass,
+		},
+	},
+	{name: "Gold Hobba", description: "Listed on the staff page.", level: 5},
+	{name: "Silver Hobba", description: "Listed on the staff page.", level: 4},
+	{name: "HabboX", description: "Listed on the staff page.", level: 3},
+}
+
+// createRanks writes the example groups, which the administrator can change or
+// delete, and returns the id of the one holding every attribute.
+func createRanks(ctx context.Context, q *store.Queries, now time.Time) (administrators int64, err error) {
+	for _, r := range ranks {
+		group, err := q.CreateAccessGroup(ctx, store.CreateAccessGroupParams{
+			Name:        r.name,
+			Description: r.description,
+			StaffListed: true,
+			Level:       r.level,
+			CreatedAt:   now,
+			UpdatedAt:   now,
+		})
+		if err != nil {
+			return 0, err
+		}
+		attributes := r.attributes
+		if r.everything {
+			administrators = group.ID
+			for _, entry := range auth.Catalogue() {
+				attributes = append(attributes, entry.Attribute)
+			}
+		}
+		for _, attribute := range attributes {
+			err := q.AddAccessGroupAttribute(ctx, store.AddAccessGroupAttributeParams{AccessGroupID: group.ID, Attribute: string(attribute)})
+			if err != nil {
+				return 0, err
+			}
+		}
+	}
+	return administrators, nil
 }
 
 func (a Administrator) validate() error {

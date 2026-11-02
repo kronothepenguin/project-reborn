@@ -130,6 +130,57 @@ func TestConfigureLeavesNoConfigWhenTheDatabaseCannotOpen(t *testing.T) {
 	}
 }
 
+func TestCreateAdministratorSeedsHolosRanks(t *testing.T) {
+	s := configure(t)
+	if err := s.CreateAdministrator(t.Context(), testAdministrator()); err != nil {
+		t.Fatalf("CreateAdministrator: %v", err)
+	}
+	installation, _ := s.Current()
+	q := store.New(installation.DB)
+	groups, err := q.ListAccessGroups(t.Context())
+	if err != nil {
+		t.Fatalf("ListAccessGroups: %v", err)
+	}
+
+	want := map[string]struct {
+		level, attributes, members int64
+	}{
+		"Administrator": {7, int64(len(auth.Catalogue())), 1},
+		"Moderator":     {6, 13, 0},
+		"Gold Hobba":    {5, 0, 0},
+		"Silver Hobba":  {4, 0, 0},
+		"HabboX":        {3, 0, 0},
+	}
+	if len(groups) != len(want) {
+		t.Fatalf("%d groups, want %d", len(groups), len(want))
+	}
+	for _, group := range groups {
+		rank, ok := want[group.Name]
+		if !ok {
+			t.Errorf("unexpected group %q", group.Name)
+			continue
+		}
+		attributes, err := q.ListAccessGroupAttributes(t.Context(), group.ID)
+		if err != nil {
+			t.Fatalf("ListAccessGroupAttributes: %v", err)
+		}
+		if group.Level != rank.level || int64(len(attributes)) != rank.attributes || group.MemberCount != rank.members || !group.StaffListed {
+			t.Errorf("%s = level %d, %d attributes, %d members, listed %t; want %+v", group.Name, group.Level, len(attributes), group.MemberCount, group.StaffListed, rank)
+		}
+		if group.Name != "Moderator" {
+			continue
+		}
+		for _, kept := range []auth.Attribute{
+			auth.HousekeepingSettings, auth.HousekeepingAccessGroups, auth.HousekeepingNews, auth.HousekeepingUsersEdit,
+			auth.HousekeepingLogs, auth.HousekeepingUsersPrivate,
+		} {
+			if slices.Contains(attributes, string(kept)) {
+				t.Errorf("the Moderator holds %s", kept)
+			}
+		}
+	}
+}
+
 func TestCreateAdministrator(t *testing.T) {
 	s := configure(t)
 	admin := testAdministrator()
@@ -189,7 +240,7 @@ func TestCreateAdministrator(t *testing.T) {
 		`SELECT access_groups.name, access_groups.staff_listed, access_group_members.display_avatar_id
 		 FROM access_groups JOIN access_group_members ON access_group_members.access_group_id = access_groups.id
 		 WHERE access_group_members.user_id = ?`, user.ID).Scan(&name, &staffListed, &display)
-	if err != nil || name != "Administrators" || !staffListed || display != avatar.ID {
+	if err != nil || name != "Administrator" || !staffListed || display != avatar.ID {
 		t.Errorf("membership = %q, staff listed %t, display habbo %d, %v", name, staffListed, display, err)
 	}
 

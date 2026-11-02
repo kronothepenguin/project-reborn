@@ -3,7 +3,7 @@ type: Entity
 title: Access group
 description: An admin-defined group of users that grants attributes; code checks attributes, never group names.
 tags: [store, entity, access]
-timestamp: 2026-11-02T02:00:12+00:00
+timestamp: 2026-11-02T02:10:59+00:00
 ---
 
 # Definition
@@ -23,7 +23,9 @@ it to. Attributes cover security and the permission to modify things; club perks
 
 # Lifecycle
 
-- The installer creates "Administrators" with every attribute and `staff_listed`, and adds the first administrator.
+- The installer creates Holo's staff ranks as groups: Administrator (level 7, every attribute), Moderator (6), Gold Hobba
+  (5), Silver Hobba (4) and HabboX (3), all with `staff_listed`, and adds the first administrator to Administrator. They
+  are examples, and the admin can change or delete them.
 - Housekeeping creates groups, toggles attributes and adds or removes members with a display habbo.
 - Deleting a group deletes its attributes and memberships.
 

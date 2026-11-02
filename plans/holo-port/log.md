@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [fx-07](/tasks/fx-07-seed-ranks.md): the installer creates Holo's staff ranks as access groups, with the
+  first administrator in Administrator.
+- **Start** [fx-07](/tasks/fx-07-seed-ranks.md).
 - **Done** [fx-06](/tasks/fx-06-staff-levels.md): access groups have levels, nobody edits or sets one above their own,
   and IP bans skip holders of `housekeeping.access`.
 - **Start** [fx-06](/tasks/fx-06-staff-levels.md).

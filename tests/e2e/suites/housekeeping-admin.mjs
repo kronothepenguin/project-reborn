@@ -24,10 +24,10 @@ export default async function (t) {
   const listed = await page.locator("main table").first().innerText();
   check(
     "the groups are listed",
-    listed.includes("Administrators") && listed.includes("Helpers"),
+    listed.includes("Administrator") && listed.includes("Moderator") && listed.includes("Helpers"),
   );
 
-  await page.fill('input[name="name"]', "Moderators");
+  await page.fill('input[name="name"]', "Trainers");
   await page.fill('input[name="description"]', 'They <moderate> & "care"');
   await page.getByRole("button", { name: "Create Group" }).click();
   await page.waitForURL(/access-groups\/\d+$/);
@@ -44,7 +44,7 @@ export default async function (t) {
     String(boxes),
   );
 
-  await page.fill('input[name="name"]', "administrators");
+  await page.fill('input[name="name"]', "administrator");
   const taken = page.waitForResponse((r) => r.request().method() === "POST");
   await page.getByRole("button", { name: "Save Group" }).click();
   check("a taken name answers 422", (await taken).status() === 422);
@@ -146,7 +146,7 @@ export default async function (t) {
   );
 
   await page.goto(`${hk}/access-groups`);
-  await page.getByRole("link", { name: "Administrators" }).click();
+  await page.getByRole("link", { name: "Administrator", exact: true }).click();
   await page.waitForURL(/access-groups\/\d+$/);
   await page.uncheck(
     'input[name="attribute"][value="housekeeping.accessGroups"]',
