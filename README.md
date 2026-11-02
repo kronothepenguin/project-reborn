@@ -87,6 +87,17 @@ go build -o ./apps/cms/tmp/cms ./apps/cms/cmd/cms
 
 ---
 
+## Testing
+
+```sh
+make gates          # formatting, vet and tests of every module, frontends, generated code and docs
+make e2e            # real Chromium against the production binaries, see tests/e2e
+```
+
+GitHub Actions runs both on every push to `main` and on pull requests.
+
+---
+
 ## Database
 
 The persistence infrastructure lives in `packages/store/`: it owns the SQLite file, applies the declared schemas on every open, and exposes typed operations generated from SQL with sqlc. Run the generator after changing any `.sql` files.

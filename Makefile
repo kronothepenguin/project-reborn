@@ -1,4 +1,4 @@
-.PHONY: install tools create tw-color e2e
+.PHONY: install tools create tw-color gates e2e frontends
 
 install:
 	go work sync
@@ -16,6 +16,27 @@ install:
 # build:
 # 	mkdir -p ./bin
 # 	go build -o ./bin/main ./apps/reborn/cmd
+
+# The three frontends, which the Go programs embed.
+frontends:
+	pnpm --filter @project-reborn/cms build
+	pnpm --filter @project-reborn/installer build
+	pnpm --filter @project-reborn/housekeeping build
+
+# Every gate but the browser suites: what CI runs on each push.
+gates: frontends
+	@for dir in $$(go list -m -f '{{.Dir}}'); do \
+		echo "== $$dir"; \
+		( cd "$$dir" && \
+			out=$$(gofmt -l $$(git ls-files '*.go')) && \
+			{ [ -z "$$out" ] || { echo "not formatted: $$out"; exit 1; }; } && \
+			go vet ./... && go test ./... -race ) || exit 1; \
+	done
+	pnpm --filter @project-reborn/components test
+	pnpm --filter @project-reborn/components check
+	cd packages/store && go tool sqlc generate && \
+		git diff --exit-code -- db.go models.go '*.query.sql.go' && \
+		$(MAKE) check-docs
 
 # Builds everything, and runs the browser suites on a throwaway hotel.
 e2e:

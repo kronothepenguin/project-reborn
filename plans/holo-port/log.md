@@ -2,9 +2,13 @@
 
 ## 2026-11-02
 
+- **Done** [fx-02](/tasks/fx-02-ci-workflow.md): GitHub Actions runs `make gates` and `make e2e` on pushes to `main`
+  and on pull requests.
+- **Start** [fx-02](/tasks/fx-02-ci-workflow.md).
 - **Done** [fx-01](/tasks/fx-01-browser-suites.md): the browser suites live in `tests/e2e`, and `make e2e` runs all 365
   checks on a throwaway hotel.
 - **Start** [fx-01](/tasks/fx-01-browser-suites.md).
+
 ## 2026-11-01
 
 - **Create** [FX Review follow-ups](/phases/fx-review-follow-ups.md), with [fx-01](/tasks/fx-01-browser-suites.md) to
