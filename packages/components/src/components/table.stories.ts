@@ -28,6 +28,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const List: Story = {
   args: { children: rows },
+};
+
+export const Form: Story = {
+  args: { variant: "form", children: rows },
 };

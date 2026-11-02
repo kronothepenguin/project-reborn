@@ -32,6 +32,7 @@ var routes = []struct {
 }{
 	{"GET", "/housekeeping/"},
 	{"POST", "/housekeeping/note"},
+	{"POST", "/housekeeping/logout"},
 	{"GET", "/housekeeping/settings"},
 	{"POST", "/housekeeping/settings/site"},
 	{"GET", "/housekeeping/access-groups"},
@@ -284,6 +285,34 @@ func TestTheLayoutSaysWhoIsLoggedIn(t *testing.T) {
 	}
 	wantPage(t, serve(mux, "GET", "/housekeeping/", cookie, nil), http.StatusOK,
 		"PreviousLogin:07-12-2008 15:02:12 from 84.51.55.15")
+}
+
+func TestLogOutEndsTheSharedSession(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess)
+
+	rec := serve(mux, "POST", "/housekeeping/logout", cookie, url.Values{})
+	wantRedirect(t, rec, "http://localhost:17387")
+	if ended := sessionCookie(rec); ended == nil || ended.MaxAge >= 0 {
+		t.Errorf("the cookie was not cleared: %+v", ended)
+	}
+	var sessions int
+	if err := db.QueryRowContext(t.Context(), `SELECT COUNT(*) FROM sessions`).Scan(&sessions); err != nil {
+		t.Fatalf("count sessions: %v", err)
+	}
+	if sessions != 0 {
+		t.Errorf("%d sessions are left", sessions)
+	}
+	wantRedirect(t, serve(mux, "GET", "/housekeeping/", cookie, nil), "http://localhost:17387")
+}
+
+func TestTheClockNamesTheServer(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess)
+	if err := settings.Set(t.Context(), db, 0, "site.url", "https://hotel.example.com"); err != nil {
+		t.Fatalf("settings.Set: %v", err)
+	}
+	wantPage(t, serve(mux, "GET", "/housekeeping/", cookie, nil), http.StatusOK, "ServerName:hotel.example.com", "(UTC)")
 }
 
 func TestABannedUserGoesToTheCMS(t *testing.T) {

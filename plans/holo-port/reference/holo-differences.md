@@ -113,7 +113,7 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | --- | --- | --- | --- |
 | Sign-in | A login page of its own and a second session that holds the password hash | The shared session; a guest goes to `site.url` | [0003](/decisions/0003-housekeeping-under-prefix.md) |
 | Sign-in | Non-staff read `Invalid username, password, or access level.` | Non-staff get 403 | [HK-A](/phases/hk-a-housekeeping-core.md) |
-| Header | `Welcome Administrator Name [ Site Home · Log Out ]` | `Logged in as: Name (Previous login at … from …)` and `Site Home`, with no rank and no `Log Out` | [0014](/decisions/0014-attribute-based-access.md), [0003](/decisions/0003-housekeeping-under-prefix.md), [0041](/decisions/0041-housekeeping-design-system.md) |
+| Header | `Welcome Administrator Name [ Site Home · Log Out ]` | `Logged in as: Name (Previous login at … from …)` `Log out` and `Site Home`, with no rank | [0014](/decisions/0014-attribute-based-access.md), [0003](/decisions/0003-housekeeping-under-prefix.md), [0041](/decisions/0041-housekeeping-design-system.md) |
 | Every page | `HoloCMS Housekeeping` and `HoloCMS v… Build …` | `Project Reborn Housekeeping` and `Powered by Project Reborn ©` | [0048](/decisions/0048-footer-names-reborn.md) |
 | Tabs | Six | Dashboard, Site & Content, Users & Moderation; Server waits for the game server, and HoloCMS and Help are dropped | [0013](/decisions/0013-defer-game-server-features.md), [0021](/decisions/0021-dropped-and-kept-features.md) |
 | Dashboard | Rooms, furniture, the online count and `Server Setup` | They wait for the game server | [0013](/decisions/0013-defer-game-server-features.md) |

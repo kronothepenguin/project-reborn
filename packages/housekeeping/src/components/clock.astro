@@ -1,0 +1,30 @@
+<div id="clock" data-now="[[ .ServerMillis ]]" class="border-2 border-black p-1 text-neutral-500">
+  <strong>Local time:</strong>
+  <p id="clock-local-date"></p>
+  <p id="clock-local-time"></p>
+  <strong class="mt-2 block">Server time:</strong>
+  <p>[[ .ServerName ]]</p>
+  <p id="clock-server-date">[[ .ServerDate ]]</p>
+  <p id="clock-server-time">[[ .ServerTime ]]</p>
+</div>
+
+<script>
+  const clock = document.getElementById("clock") as HTMLElement;
+  const text = (id: string, value: string) => {
+    (document.getElementById(id) as HTMLElement).textContent = value;
+  };
+  const date = (at: Date, timeZone?: string) =>
+    at.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone });
+
+  const offset = Number(clock.dataset.now) - Date.now();
+  const tick = () => {
+    const local = new Date();
+    const server = new Date(local.getTime() + offset);
+    text("clock-local-date", date(local));
+    text("clock-local-time", local.toTimeString());
+    text("clock-server-date", date(server, "UTC"));
+    text("clock-server-time", `${server.toLocaleTimeString("en-GB", { timeZone: "UTC" })} GMT+0000 (UTC)`);
+  };
+  tick();
+  setInterval(tick, 1000);
+</script>

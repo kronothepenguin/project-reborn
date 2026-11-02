@@ -10,7 +10,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
   <Message />
   <form method="post" action="/housekeeping/settings/[[ .Section.ID ]]">
     <Box title="[[ .Section.Title ]]">
-      <Table>
+      <Table variant="form">
         <tbody>
           [[ range .Section.Fields ]]
           <tr>

@@ -16,11 +16,19 @@ describe("Table", () => {
     expect(container.querySelector("table")?.classList.contains("w-full")).toBe(true);
   });
 
-  it("marks the header with a grey bar and every second row", () => {
+  it("marks a list's header and every second row in gold", () => {
     const { container } = render(TableFixture);
     const table = container.querySelector("table") as HTMLTableElement;
-    expect(table.classList.contains("[&_th]:bg-olive-200")).toBe(true);
-    expect(table.classList.contains("[&_tbody_tr:nth-child(even)]:bg-neutral-100")).toBe(true);
+    expect(table.classList.contains("[&_th]:bg-amber-300")).toBe(true);
+    expect(table.classList.contains("[&_tbody_tr:nth-child(even)]:bg-amber-100")).toBe(true);
+  });
+
+  it("leaves a form's rows plain", () => {
+    const { container } = render(TableFixture, { props: { variant: "form" } as never });
+    const table = container.querySelector("table") as HTMLTableElement;
+    expect(table.classList.contains("[&_th]:bg-amber-300")).toBe(false);
+    expect(table.classList.contains("[&_tbody_tr:nth-child(even)]:bg-amber-100")).toBe(false);
+    expect(table.classList.contains("[&_td]:p-1")).toBe(true);
   });
 
   it("forwards native attributes", () => {

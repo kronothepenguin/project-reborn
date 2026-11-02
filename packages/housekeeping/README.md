@@ -53,6 +53,10 @@ serves the built frontend from the embedded `dist/`.
 
 ## Design
 
+Each component has one look on every page (decision 0060): blue navigation and forms,
+gold data lists through `Box color="gold"` and `Table`, plain form rows through
+`Table variant="form"`, and a grey top bar with `Log out` beside the clock box.
+
 The look is its own design system (decision 0041 of the port bundle), built from
 `docs/hk.png` and `plans/holo-port/reference/colours.md`. `layouts/housekeeping.astro`
 has the grey bar with who is logged in and their previous login, the tabs over the

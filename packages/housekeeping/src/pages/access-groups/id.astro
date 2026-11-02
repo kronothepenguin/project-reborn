@@ -12,14 +12,14 @@ import Housekeeping from "../../layouts/housekeeping.astro";
   <div class="space-y-3">
     <form method="post" action="/housekeeping/access-groups/[[ .Group.ID ]]">
       <Box title="[[ .Group.Name ]]">
-        <Table>
+        <Table variant="form">
           <tbody>
             [[ with .Group ]]
             <GroupFields />
             [[ end ]]
           </tbody>
         </Table>
-        <Table>
+        <Table variant="form">
           <thead>
             <tr>
               <th>Attribute</th>
@@ -47,7 +47,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
       </Box>
     </form>
 
-    <Box title="Members">
+    <Box title="Members" color="gold">
       <Table>
         <thead>
           <tr>

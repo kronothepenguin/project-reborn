@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { HTMLTableAttributes } from "svelte/elements";
+  import type { ComponentProps } from "svelte";
   import Table from "../table.svelte";
 
-  let { ...rest }: HTMLTableAttributes = $props();
+  let { ...rest }: Omit<ComponentProps<typeof Table>, "children"> = $props();
 </script>
 
 <Table {...rest}>

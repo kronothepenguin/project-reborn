@@ -1,13 +1,21 @@
 ---
+type Color = "blue" | "gold";
+
 interface Props {
   title: string;
+  color?: Color;
 }
 
-const { title } = Astro.props;
+const { title, color = "blue" } = Astro.props;
+
+const colors: Record<Color, string> = {
+  blue: "bg-sky-700 text-white",
+  gold: "bg-amber-300 text-black",
+};
 ---
 
 <section class="border-2 border-black bg-white">
-  <h2 class="border-b-2 border-black bg-sky-700 px-0.5 font-bold text-white">
+  <h2 class:list={["border-b-2 border-black px-0.5 font-bold", colors[color]]}>
     {title}
   </h2>
   <slot />

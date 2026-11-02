@@ -5,7 +5,7 @@ export const programs = ["cms", "housekeeping"];
 export const prepare = ({ sql }) => seedStaff(sql);
 
 export default async function (t) {
-  const { check, hk, shot } = t;
+  const { base, check, hk, shot } = t;
 
   const { context, page, problems } = await session(t, "Admin-1");
 
@@ -252,10 +252,59 @@ export default async function (t) {
     style.padding === "4px" && style.even !== style.odd,
     JSON.stringify(style),
   );
+  const look = await page.evaluate(() => {
+    const color = (selector) =>
+      getComputedStyle(document.querySelector(selector)).backgroundColor;
+    return { title: color("main h2"), menu: color("aside h2") };
+  });
+  check(
+    "a data list is gold and the navigation is blue",
+    look.title !== look.menu,
+    JSON.stringify(look),
+  );
+  await shot(page, "dashboard");
+
+  await page.goto(`${hk}/settings?section=site`);
+  await shot(page, "settings");
+  const form = await page.evaluate(() => ({
+    title: getComputedStyle(document.querySelector("main h2")).backgroundColor,
+    menu: getComputedStyle(document.querySelector("aside h2")).backgroundColor,
+    even: getComputedStyle(document.querySelector("main tbody tr:nth-child(2)"))
+      .backgroundColor,
+    odd: getComputedStyle(document.querySelector("main tbody tr:nth-child(1)"))
+      .backgroundColor,
+  }));
+  check(
+    "a form is blue with plain rows",
+    form.title === form.menu && form.even === form.odd,
+    JSON.stringify(form),
+  );
+
+  const before = await page.locator("#clock-server-time").innerText();
+  check(
+    "the clock shows both times",
+    (await page.locator("#clock-local-time").innerText()).includes("GMT") &&
+      before.includes("(UTC)"),
+    before,
+  );
+  await page.waitForTimeout(1200);
+  check(
+    "the clock ticks",
+    (await page.locator("#clock-server-time").innerText()) !== before,
+  );
+
   check(
     "no page failed for the administrator",
     problems.length === 0,
     problems.join(", "),
+  );
+  await page.getByRole("button", { name: "Log out" }).click();
+  await page.waitForURL(`${base}/`);
+  await page.goto(`${hk}/`);
+  check(
+    "Log out ends the shared session",
+    page.url() === `${base}/`,
+    page.url(),
   );
   await context.close();
 }

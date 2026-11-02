@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [fx-13](/tasks/fx-13-housekeeping-components.md): housekeeping has gold data lists, blue forms, a `Log out`
+  link and the clock box, each the same on every page.
+- **Start** [fx-13](/tasks/fx-13-housekeeping-components.md).
 - **Done** [fx-12](/tasks/fx-12-banned-staff.md): a banned user who opens housekeeping goes to the CMS, which ends the
   session and shows Holo's message.
 - **Start** [fx-12](/tasks/fx-12-banned-staff.md).

@@ -10,7 +10,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
 <Housekeeping title="Access Groups" tab="users">
   <Message />
   <div class="space-y-3">
-    <Box title="Access Groups">
+    <Box title="Access Groups" color="gold">
       <Table>
         <thead>
           <tr>
@@ -41,7 +41,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
 
     <form method="post" action="/housekeeping/access-groups">
       <Box title="New Group">
-        <Table>
+        <Table variant="form">
           <tbody>
             [[ with .New ]]
             <GroupFields />
@@ -54,7 +54,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
       </Box>
     </form>
 
-    <Box title="Staff Members">
+    <Box title="Staff Members" color="gold">
       <Table>
         <thead>
           <tr>

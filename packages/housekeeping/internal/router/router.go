@@ -5,7 +5,9 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"slices"
+	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
@@ -89,15 +91,26 @@ type chrome struct {
 	SiteName      string
 	SiteURL       string
 	Sections      []section
+	ServerName    string
+	ServerDate    string
+	ServerTime    string
+	ServerMillis  int64
 }
 
 func (r *Router) chrome(req *http.Request) chrome {
 	ctx := req.Context()
 	session, _ := auth.FromContext(ctx)
+	now := time.Now().UTC()
 	page := chrome{
-		SiteName: settings.GetString("site.name"),
-		SiteURL:  settings.GetString("site.url"),
-		Sections: sectionsOver(settings.Declared()),
+		SiteName:     settings.GetString("site.name"),
+		SiteURL:      settings.GetString("site.url"),
+		Sections:     sectionsOver(settings.Declared()),
+		ServerDate:   now.Format("January 2, 2006"),
+		ServerTime:   now.Format("15:04:05 GMT-0700 (MST)"),
+		ServerMillis: now.UnixMilli(),
+	}
+	if site, err := url.Parse(page.SiteURL); err == nil {
+		page.ServerName = site.Host
 	}
 
 	avatar, err := r.deps.Queries.GetAvatar(ctx, session.AvatarID)

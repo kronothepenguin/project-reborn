@@ -7,6 +7,7 @@ export const prepare = ({ sql }) => seedStaff(sql);
 const everyRoute = [
   ["GET", "/"],
   ["POST", "/note"],
+  ["POST", "/logout"],
   ["GET", "/settings"],
   ["POST", "/settings/site"],
   ["GET", "/access-groups"],
