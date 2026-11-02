@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [fx-06](/tasks/fx-06-staff-levels.md): access groups have levels, nobody edits or sets one above their own,
+  and IP bans skip holders of `housekeeping.access`.
+- **Start** [fx-06](/tasks/fx-06-staff-levels.md).
 - **Done** [fx-05](/tasks/fx-05-user-attributes.md): a user can hold attributes directly, every check and the guard
   read both, and emails take `housekeeping.usersPrivate`.
 - **Start** [fx-05](/tasks/fx-05-user-attributes.md).

@@ -78,18 +78,19 @@ func (q *Queries) AddUserAttribute(ctx context.Context, arg AddUserAttributePara
 }
 
 const createAccessGroup = `-- name: CreateAccessGroup :one
-INSERT INTO access_groups (name, description, staff_listed, created_at, updated_at)
+INSERT INTO access_groups (name, description, staff_listed, level, created_at, updated_at)
 VALUES (
     ?1, ?2, ?3, ?4,
-    ?5
+    ?5, ?6
 )
-RETURNING id, name, description, staff_listed, created_at, updated_at
+RETURNING id, name, description, staff_listed, level, created_at, updated_at
 `
 
 type CreateAccessGroupParams struct {
 	Name        string
 	Description string
 	StaffListed bool
+	Level       int64
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
@@ -99,6 +100,7 @@ func (q *Queries) CreateAccessGroup(ctx context.Context, arg CreateAccessGroupPa
 		arg.Name,
 		arg.Description,
 		arg.StaffListed,
+		arg.Level,
 		arg.CreatedAt,
 		arg.UpdatedAt,
 	)
@@ -108,6 +110,7 @@ func (q *Queries) CreateAccessGroup(ctx context.Context, arg CreateAccessGroupPa
 		&i.Name,
 		&i.Description,
 		&i.StaffListed,
+		&i.Level,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -115,7 +118,7 @@ func (q *Queries) CreateAccessGroup(ctx context.Context, arg CreateAccessGroupPa
 }
 
 const getAccessGroup = `-- name: GetAccessGroup :one
-SELECT id, name, description, staff_listed, created_at, updated_at FROM access_groups WHERE id = ?1
+SELECT id, name, description, staff_listed, level, created_at, updated_at FROM access_groups WHERE id = ?1
 `
 
 func (q *Queries) GetAccessGroup(ctx context.Context, id int64) (AccessGroup, error) {
@@ -126,6 +129,7 @@ func (q *Queries) GetAccessGroup(ctx context.Context, id int64) (AccessGroup, er
 		&i.Name,
 		&i.Description,
 		&i.StaffListed,
+		&i.Level,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -153,6 +157,21 @@ func (q *Queries) GetAccessGroupMember(ctx context.Context, arg GetAccessGroupMe
 		&i.GrantedByUserID,
 	)
 	return i, err
+}
+
+const getUserLevel = `-- name: GetUserLevel :one
+SELECT CAST(COALESCE(MAX(access_groups.level), 0) AS INTEGER) AS level
+FROM access_group_members
+JOIN access_groups ON access_groups.id = access_group_members.access_group_id
+WHERE access_group_members.user_id = ?1
+`
+
+// The highest level of the user's groups, 0 without a group.
+func (q *Queries) GetUserLevel(ctx context.Context, userID int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getUserLevel, userID)
+	var level int64
+	err := row.Scan(&level)
+	return level, err
 }
 
 const listAccessGroupAttributes = `-- name: ListAccessGroupAttributes :many
@@ -234,7 +253,7 @@ func (q *Queries) ListAccessGroupMembers(ctx context.Context, accessGroupID int6
 
 const listAccessGroups = `-- name: ListAccessGroups :many
 SELECT
-    access_groups.id, access_groups.name, access_groups.description, access_groups.staff_listed, access_groups.created_at, access_groups.updated_at,
+    access_groups.id, access_groups.name, access_groups.description, access_groups.staff_listed, access_groups.level, access_groups.created_at, access_groups.updated_at,
     (
         SELECT COUNT(*) FROM access_group_members
         WHERE access_group_members.access_group_id = access_groups.id
@@ -248,6 +267,7 @@ type ListAccessGroupsRow struct {
 	Name        string
 	Description string
 	StaffListed bool
+	Level       int64
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	MemberCount int64
@@ -267,6 +287,7 @@ func (q *Queries) ListAccessGroups(ctx context.Context) ([]ListAccessGroupsRow, 
 			&i.Name,
 			&i.Description,
 			&i.StaffListed,
+			&i.Level,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.MemberCount,
@@ -522,14 +543,16 @@ SET
     name = ?1,
     description = ?2,
     staff_listed = ?3,
-    updated_at = ?4
-WHERE id = ?5
+    level = ?4,
+    updated_at = ?5
+WHERE id = ?6
 `
 
 type UpdateAccessGroupParams struct {
 	Name        string
 	Description string
 	StaffListed bool
+	Level       int64
 	UpdatedAt   time.Time
 	ID          int64
 }
@@ -539,6 +562,7 @@ func (q *Queries) UpdateAccessGroup(ctx context.Context, arg UpdateAccessGroupPa
 		arg.Name,
 		arg.Description,
 		arg.StaffListed,
+		arg.Level,
 		arg.UpdatedAt,
 		arg.ID,
 	)

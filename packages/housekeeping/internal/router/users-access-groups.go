@@ -39,6 +39,20 @@ func (r *Router) HandleUsersAccessGroupsSave(w http.ResponseWriter, req *http.Re
 		return
 	}
 
+	level, err := r.actorLevel(req)
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
+	if group.Level > level {
+		if err := r.refused(req, group.Name, userID); err != nil {
+			r.fail(w, err)
+			return
+		}
+		r.refuseMember(w, req, group, groupAbove)
+		return
+	}
+
 	if req.PostForm.Has("remove") {
 		r.removeMember(w, req, group, userID)
 		return

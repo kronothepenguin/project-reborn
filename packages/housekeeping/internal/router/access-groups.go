@@ -24,9 +24,15 @@ const (
 	groupNameTaken  = "A group with this name already exists."
 	groupUnknown    = "Only the attributes of the catalogue can be given."
 	lastManager     = "Access denied. The last user who can manage access groups must keep housekeeping.access and housekeeping.accessGroups."
+	groupAbove      = "Access denied. You may not change a group above your level."
+	levelAbove      = "Access denied. You may not set a level above your own."
+	levelInvalid    = "The level must be a number from 0 to 99."
 	userMissing     = "A user with this name/id does not exist!"
 	displayNotOwned = "The display habbo must be one of the user's own habbos."
 )
+
+// maxLevel keeps levels small enough to type. Holo's ranks stop at 7.
+const maxLevel = 99
 
 // errLastManager makes inTx roll back a change the guard refuses.
 var errLastManager = errors.New("housekeeping: the last manager of access groups")
@@ -79,14 +85,25 @@ type groupForm struct {
 	Name        string
 	Description string
 	StaffListed bool
+	Level       int64
 }
 
-func readGroupForm(req *http.Request) groupForm {
-	return groupForm{
+// readGroupForm also says whether the level is one a group can have.
+func readGroupForm(req *http.Request) (groupForm, bool) {
+	level, err := strconv.ParseInt(req.PostFormValue("level"), 10, 64)
+	form := groupForm{
 		Name:        strings.TrimSpace(req.PostFormValue("name")),
 		Description: strings.TrimSpace(req.PostFormValue("description")),
 		StaffListed: req.PostFormValue("staffListed") != "",
+		Level:       level,
 	}
+	return form, err == nil && level >= 0 && level <= maxLevel
+}
+
+// actorLevel is the level of the staff member making the request.
+func (r *Router) actorLevel(req *http.Request) (int64, error) {
+	session, _ := auth.FromContext(req.Context())
+	return auth.Level(req.Context(), r.deps.DB, session.UserID)
 }
 
 func groupPath(id int64) string {
@@ -106,6 +123,7 @@ type groupRow struct {
 	ID          int64
 	Name        string
 	Description string
+	Level       int64
 	Members     int64
 	StaffListed bool
 }
@@ -128,6 +146,7 @@ func (r *Router) newAccessGroupsPage(req *http.Request) (accessGroupsPage, error
 			ID:          group.ID,
 			Name:        group.Name,
 			Description: group.Description,
+			Level:       group.Level,
 			Members:     group.MemberCount,
 			StaffListed: group.StaffListed,
 		})
@@ -155,7 +174,7 @@ func (r *Router) HandleAccessGroupsView(w http.ResponseWriter, req *http.Request
 
 // HandleAccessGroupsCreate handles POST /housekeeping/access-groups.
 func (r *Router) HandleAccessGroupsCreate(w http.ResponseWriter, req *http.Request) {
-	form := readGroupForm(req)
+	form, validLevel := readGroupForm(req)
 	refuse := func(message string) {
 		page, err := r.newAccessGroupsPage(req)
 		if err != nil {
@@ -170,14 +189,32 @@ func (r *Router) HandleAccessGroupsCreate(w http.ResponseWriter, req *http.Reque
 		refuse(groupNameBlank)
 		return
 	}
+	if !validLevel {
+		refuse(levelInvalid)
+		return
+	}
+	level, err := r.actorLevel(req)
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
+	if form.Level > level {
+		if err := r.refused(req, form.Name, 0); err != nil {
+			r.fail(w, err)
+			return
+		}
+		refuse(levelAbove)
+		return
+	}
 
 	var id int64
-	err := r.inTx(req.Context(), func(q *store.Queries) error {
+	err = r.inTx(req.Context(), func(q *store.Queries) error {
 		now := time.Now().UTC()
 		group, err := q.CreateAccessGroup(req.Context(), store.CreateAccessGroupParams{
 			Name:        form.Name,
 			Description: form.Description,
 			StaffListed: form.StaffListed,
+			Level:       form.Level,
 			CreatedAt:   now,
 			UpdatedAt:   now,
 		})
@@ -248,7 +285,7 @@ func (r *Router) newAccessGroupPage(req *http.Request, group store.AccessGroup) 
 	ctx := req.Context()
 	page := accessGroupPage{
 		chrome: r.chrome(req),
-		Group:  groupForm{ID: group.ID, Name: group.Name, Description: group.Description, StaffListed: group.StaffListed},
+		Group:  groupForm{ID: group.ID, Name: group.Name, Description: group.Description, StaffListed: group.StaffListed, Level: group.Level},
 	}
 	held, err := r.deps.Queries.ListAccessGroupAttributes(ctx, group.ID)
 	if err != nil {
@@ -396,7 +433,7 @@ func (r *Router) HandleAccessGroupSave(w http.ResponseWriter, req *http.Request)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
-	form := readGroupForm(req)
+	form, validLevel := readGroupForm(req)
 	form.ID = group.ID
 	refuse := func(message string) {
 		page, err := r.newAccessGroupPage(req, group)
@@ -412,21 +449,42 @@ func (r *Router) HandleAccessGroupSave(w http.ResponseWriter, req *http.Request)
 		refuse(groupNameBlank)
 		return
 	}
+	if !validLevel {
+		refuse(levelInvalid)
+		return
+	}
 	wanted, ok := knownAttributes(req.PostForm["attribute"])
 	if !ok {
 		refuse(groupUnknown)
 		return
 	}
+	level, err := r.actorLevel(req)
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
+	if group.Level > level || form.Level > level {
+		if err := r.refused(req, group.Name, 0); err != nil {
+			r.fail(w, err)
+			return
+		}
+		if group.Level > level {
+			refuse(groupAbove)
+		} else {
+			refuse(levelAbove)
+		}
+		return
+	}
 
 	var detail string
-	err := r.inTx(req.Context(), func(q *store.Queries) error {
+	err = r.inTx(req.Context(), func(q *store.Queries) error {
 		ctx := req.Context()
 		held, err := q.ListAccessGroupAttributes(ctx, group.ID)
 		if err != nil {
 			return err
 		}
 		added, removed := without(wanted, held), without(held, wanted)
-		sameFields := form.Name == group.Name && form.Description == group.Description && form.StaffListed == group.StaffListed
+		sameFields := form.Name == group.Name && form.Description == group.Description && form.StaffListed == group.StaffListed && form.Level == group.Level
 		if sameFields && len(added) == 0 && len(removed) == 0 {
 			return nil
 		}
@@ -437,6 +495,7 @@ func (r *Router) HandleAccessGroupSave(w http.ResponseWriter, req *http.Request)
 			Name:        form.Name,
 			Description: form.Description,
 			StaffListed: form.StaffListed,
+			Level:       form.Level,
 			UpdatedAt:   time.Now().UTC(),
 		})
 		if err != nil {

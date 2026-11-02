@@ -22,6 +22,15 @@ import { Checkbox, Input } from "@project-reborn/components";
 </tr>
 <tr>
   <td>
+    <label for="group-level"><strong>Level</strong></label>
+    <div class="text-neutral-500">Who members can act on: only users below them. Holo's ranks use 3 to 7. You cannot set it above your own.</div>
+  </td>
+  <td>
+    <Input id="group-level" name="level" type="number" min="0" max="99" value="[[ .Level ]]" variant="border" required />
+  </td>
+</tr>
+<tr>
+  <td>
     <strong>Staff Page</strong>
     <div class="text-neutral-500">List the group's members on the staff page, with their display habbos.</div>
   </td>

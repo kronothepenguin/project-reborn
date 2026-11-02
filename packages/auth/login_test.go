@@ -241,6 +241,29 @@ func TestActiveBan(t *testing.T) {
 	}
 }
 
+func TestIPBansSkipStaff(t *testing.T) {
+	f := newFixture(t)
+	staff, _ := f.habbo(t, "staff@example.com", "Staff", testPassword)
+	player, _ := f.habbo(t, "player@example.com", "Player", testPassword)
+	f.join(t, f.group(t, "Staff", HousekeepingAccess), staff)
+	f.ban(t, sql.NullInt64{}, "10.0.0.9", sql.NullTime{}, sql.NullTime{})
+
+	if ban, err := ActiveBan(t.Context(), f.db, player, "10.0.0.9"); err != nil || ban == nil {
+		t.Errorf("a player on the address: %v, %v, want a ban", ban, err)
+	}
+	if ban, err := ActiveBan(t.Context(), f.db, staff, "10.0.0.9"); err != nil || ban != nil {
+		t.Errorf("staff on the address: %v, %v, want none", ban, err)
+	}
+	if _, _, err := f.login(t, "10.0.0.9", "Staff", testPassword, false); err != nil {
+		t.Errorf("staff signing in from the address: %v", err)
+	}
+
+	f.ban(t, sql.NullInt64{Int64: staff, Valid: true}, "", sql.NullTime{}, sql.NullTime{})
+	if ban, err := ActiveBan(t.Context(), f.db, staff, "10.0.0.9"); err != nil || ban == nil {
+		t.Errorf("staff banned by account: %v, %v, want a ban", ban, err)
+	}
+}
+
 func TestLoginHidesBansFromWrongPasswords(t *testing.T) {
 	f := newFixture(t)
 	userID, _ := f.habbo(t, "admin@example.com", "Admin", testPassword)

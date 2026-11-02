@@ -3,21 +3,23 @@ type: Entity
 title: Access group
 description: An admin-defined group of users that grants attributes; code checks attributes, never group names.
 tags: [store, entity, access]
-timestamp: 2026-11-02T01:52:57+00:00
+timestamp: 2026-11-02T02:00:12+00:00
 ---
 
 # Definition
 
-Attribute-based access control: an access group carries attributes, and a user holds the union of the attributes
-of every group they belong to. Attributes cover security and the permission to modify things; club perks are habbo
-properties, not attributes.
+Attribute-based access control: an access group carries attributes, and a user holds those of every group they
+belong to, plus any given to them directly. Attributes say what a user can do, and a group's level says who they can do
+it to. Attributes cover security and the permission to modify things; club perks are not attributes.
 
 # Invariants
 
 - The group name is unique, ignoring case.
 - A member's display habbo is one of the member's own habbos (enforced by the application).
-- Someone must always hold both `housekeeping.accessGroups` and `housekeeping.access` (enforced by the application),
-  because the first alone opens nothing.
+- Someone must always hold both `housekeeping.accessGroups` and `housekeeping.access`, from groups or directly
+  (enforced by the application), because the first alone opens nothing.
+- A user's level is the highest of their groups, and direct attributes do not change it. Nobody edits a group above their
+  level, adds someone to it, or sets a level above their own (enforced by the application).
 
 # Lifecycle
 

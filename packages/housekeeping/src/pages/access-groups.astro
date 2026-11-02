@@ -16,6 +16,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
           <tr>
             <th>Group</th>
             <th>Description</th>
+            <th>Level</th>
             <th>Members</th>
             <th>Staff Page</th>
           </tr>
@@ -25,12 +26,13 @@ import Housekeeping from "../layouts/housekeeping.astro";
           <tr>
             <td><a href="/housekeeping/access-groups/[[ .ID ]]" class="text-indigo-900 underline">[[ .Name ]]</a></td>
             <td>[[ .Description ]]</td>
+            <td>[[ .Level ]]</td>
             <td>[[ .Members ]]</td>
             <td>[[ if .StaffListed ]]Listed[[ end ]]</td>
           </tr>
           [[ else ]]
           <tr>
-            <td colspan="4">No access groups yet.</td>
+            <td colspan="5">No access groups yet.</td>
           </tr>
           [[ end ]]
         </tbody>

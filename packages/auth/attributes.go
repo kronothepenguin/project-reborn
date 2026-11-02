@@ -80,3 +80,30 @@ func Attributes(ctx context.Context, db *sql.DB, userID int64) ([]Attribute, err
 	}
 	return attributes, nil
 }
+
+// Level returns the highest level of userID's access groups, and 0 without a
+// group. Attributes say what a user can do, and the level says who they can do it
+// to. Direct attributes do not change it, so an extra permission never raises
+// anyone.
+func Level(ctx context.Context, db *sql.DB, userID int64) (int64, error) {
+	level, err := store.New(db).GetUserLevel(ctx, userID)
+	if err != nil {
+		return 0, fmt.Errorf("auth: level: %w", err)
+	}
+	return level, nil
+}
+
+// Outranks reports whether actor may act on target, which takes a level strictly
+// above theirs. Every action of staff on a user asks it, so that a moderator cannot
+// ban an administrator or another moderator.
+func Outranks(ctx context.Context, db *sql.DB, actor, target int64) (bool, error) {
+	actorLevel, err := Level(ctx, db, actor)
+	if err != nil {
+		return false, err
+	}
+	targetLevel, err := Level(ctx, db, target)
+	if err != nil {
+		return false, err
+	}
+	return actorLevel > targetLevel, nil
+}

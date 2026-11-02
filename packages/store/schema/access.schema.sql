@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS access_groups (
     name TEXT NOT NULL COLLATE NOCASE,
     description TEXT NOT NULL DEFAULT '',
     staff_listed BOOLEAN NOT NULL DEFAULT FALSE,
+    level INTEGER NOT NULL DEFAULT 0 CHECK (level >= 0),
     created_at DATETIME NOT NULL,
     updated_at DATETIME NOT NULL
 );

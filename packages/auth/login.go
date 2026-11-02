@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/store"
@@ -79,7 +80,9 @@ func authenticate(ctx context.Context, db *sql.DB, habboName, password, ip strin
 	return login, nil
 }
 
-// ActiveBan returns the ban in force on the user or the IP, or nil without one.
+// ActiveBan returns the ban in force on the user or the IP, or nil without one. An
+// IP ban does not apply to a holder of housekeeping.access, or a moderator could
+// lock an administrator out through their address.
 func ActiveBan(ctx context.Context, db *sql.DB, userID int64, ip string) (*BanError, error) {
 	ban, err := activeBan(ctx, store.New(db), sql.NullInt64{Int64: userID, Valid: true}, ip, clock().UTC())
 	if err != nil {
@@ -89,6 +92,15 @@ func ActiveBan(ctx context.Context, db *sql.DB, userID int64, ip string) (*BanEr
 }
 
 func activeBan(ctx context.Context, q *store.Queries, userID sql.NullInt64, ip string, now time.Time) (*BanError, error) {
+	if userID.Valid {
+		attributes, err := q.ListUserAttributes(ctx, userID.Int64)
+		if err != nil {
+			return nil, err
+		}
+		if slices.Contains(attributes, string(HousekeepingAccess)) {
+			ip = ""
+		}
+	}
 	ban, err := q.GetActiveBan(ctx, store.GetActiveBanParams{Now: now, UserID: userID, IP: ip})
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, nil

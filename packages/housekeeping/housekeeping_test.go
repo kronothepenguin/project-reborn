@@ -293,10 +293,6 @@ func TestABannedUserLosesTheSession(t *testing.T) {
 		{"by user", func(userID int64) (sql.NullInt64, sql.NullString) {
 			return sql.NullInt64{Int64: userID, Valid: true}, sql.NullString{}
 		}},
-		// httptest requests come from 192.0.2.1.
-		{"by address", func(int64) (sql.NullInt64, sql.NullString) {
-			return sql.NullInt64{}, sql.NullString{String: "192.0.2.1", Valid: true}
-		}},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			db, mux := newSite(t)
@@ -324,6 +320,18 @@ func TestABannedUserLosesTheSession(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestAnAddressBanDoesNotStopStaff(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess)
+
+	// httptest requests come from 192.0.2.1.
+	_, err := db.ExecContext(t.Context(), `INSERT INTO bans (ip, reason, created_at) VALUES ('192.0.2.1', 'Scamming', ?)`, time.Now().UTC().Add(-time.Minute))
+	if err != nil {
+		t.Fatalf("insert ban: %v", err)
+	}
+	wantPage(t, serve(mux, "GET", "/housekeeping/", cookie, nil), http.StatusOK, "index.html")
 }
 
 func TestStaticFilesLoseThePrefix(t *testing.T) {

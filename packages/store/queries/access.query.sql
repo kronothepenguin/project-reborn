@@ -1,8 +1,8 @@
 -- name: CreateAccessGroup :one
-INSERT INTO access_groups (name, description, staff_listed, created_at, updated_at)
+INSERT INTO access_groups (name, description, staff_listed, level, created_at, updated_at)
 VALUES (
-    sqlc.arg(name), sqlc.arg(description), sqlc.arg(staff_listed), sqlc.arg(created_at),
-    sqlc.arg(updated_at)
+    sqlc.arg(name), sqlc.arg(description), sqlc.arg(staff_listed), sqlc.arg(level),
+    sqlc.arg(created_at), sqlc.arg(updated_at)
 )
 RETURNING *;
 
@@ -25,6 +25,7 @@ SET
     name = sqlc.arg(name),
     description = sqlc.arg(description),
     staff_listed = sqlc.arg(staff_listed),
+    level = sqlc.arg(level),
     updated_at = sqlc.arg(updated_at)
 WHERE id = sqlc.arg(id);
 
@@ -110,6 +111,13 @@ SELECT user_attributes.attribute
 FROM user_attributes
 WHERE user_attributes.user_id = sqlc.arg(user_id)
 ORDER BY attribute;
+
+-- The highest level of the user's groups, 0 without a group.
+-- name: GetUserLevel :one
+SELECT CAST(COALESCE(MAX(access_groups.level), 0) AS INTEGER) AS level
+FROM access_group_members
+JOIN access_groups ON access_groups.id = access_group_members.access_group_id
+WHERE access_group_members.user_id = sqlc.arg(user_id);
 
 -- name: AddUserAttribute :exec
 INSERT INTO user_attributes (user_id, attribute, granted_at, granted_by_user_id)

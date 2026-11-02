@@ -4,7 +4,7 @@ title: access.query.sql
 description: Access operations for groups, their attributes and members, a user's attributes and the holders of an attribute.
 resource: packages/store/queries/access.query.sql
 tags: [store, query, access]
-timestamp: 2026-11-02T01:52:57+00:00
+timestamp: 2026-11-02T02:00:12+00:00
 ---
 
 # Operations
@@ -12,7 +12,7 @@ timestamp: 2026-11-02T01:52:57+00:00
 ## CreateAccessGroup
 
 - Cardinality: `:one`
-- Inputs: `name`, `description`, `staff_listed`, `created_at`, `updated_at`
+- Inputs: `name`, `description`, `staff_listed`, `level`, `created_at`, `updated_at`
 - Result: the created `AccessGroup` (`RETURNING *`); a conflict when the name exists, ignoring case
 - Tables: `access_groups`
 
@@ -33,7 +33,7 @@ timestamp: 2026-11-02T01:52:57+00:00
 ## UpdateAccessGroup
 
 - Cardinality: `:exec`
-- Inputs: `name`, `description`, `staff_listed`, `updated_at`, `id`
+- Inputs: `name`, `description`, `staff_listed`, `level`, `updated_at`, `id`
 - Result: a conflict when another group has the name, ignoring case
 - Tables: `access_groups`
 
@@ -106,6 +106,13 @@ timestamp: 2026-11-02T01:52:57+00:00
 - Inputs: `user_id`
 - Result: the distinct attributes of the user's groups and those given to the user directly, sorted
 - Tables: `access_group_attributes`, `access_group_members`, `user_attributes`
+
+## GetUserLevel
+
+- Cardinality: `:one`
+- Inputs: `user_id`
+- Result: the highest level of the user's groups, 0 without a group
+- Tables: `access_group_members`, `access_groups`
 
 ## AddUserAttribute
 

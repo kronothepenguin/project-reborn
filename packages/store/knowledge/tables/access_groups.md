@@ -4,7 +4,7 @@ title: access_groups
 description: Admin-defined named groups that grant attributes to their members.
 resource: packages/store/schema/access.schema.sql
 tags: [store, table, access]
-timestamp: 2026-10-27T21:17:19+00:00
+timestamp: 2026-11-02T02:00:12+00:00
 ---
 
 # Schema
@@ -15,6 +15,7 @@ timestamp: 2026-10-27T21:17:19+00:00
 | `name` | TEXT `COLLATE NOCASE` | no | | Display name ("Administrators", "Moderators") | unique, ignoring case |
 | `description` | TEXT | no | `''` | What the group is for | |
 | `staff_listed` | BOOLEAN | no | FALSE | Whether `/staff` lists the group | |
+| `level` | INTEGER | no | 0 | Who its members can act on | CHECK ≥ 0 |
 | `created_at` | DATETIME | no | | Creation time (UTC) | |
 | `updated_at` | DATETIME | no | | Last change (UTC) | |
 

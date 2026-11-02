@@ -14,7 +14,12 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
-const lastManager = "Access denied. The last user who can manage access groups must keep housekeeping.access and housekeeping.accessGroups."
+const (
+	lastManager  = "Access denied. The last user who can manage access groups must keep housekeeping.access and housekeeping.accessGroups."
+	groupAbove   = "Access denied. You may not change a group above your level."
+	levelAbove   = "Access denied. You may not set a level above your own."
+	levelInvalid = "The level must be a number from 0 to 99."
+)
 
 func groupURL(id int64) string {
 	return "/housekeeping/access-groups/" + strconv.FormatInt(id, 10)
@@ -53,7 +58,7 @@ func logActions(t *testing.T, db *sql.DB) []string {
 
 // groupForm is what the group's page posts: its fields and the attributes ticked.
 func groupForm(name string, attributes ...auth.Attribute) url.Values {
-	form := url.Values{"name": {name}}
+	form := url.Values{"name": {name}, "level": {"0"}}
 	for _, attribute := range attributes {
 		form.Add("attribute", string(attribute))
 	}
@@ -132,7 +137,7 @@ func TestCreatingAGroup(t *testing.T) {
 		t.Errorf("staff logs = %+v", logs)
 	}
 	wantPage(t, serve(mux, "GET", "/housekeeping/access-groups", cookie, nil), http.StatusOK,
-		"access-groups.html", "Name:Moderators Description:They moderate Members:0 StaffListed:true")
+		"access-groups.html", "Name:Moderators Description:They moderate Level:0 Members:0 StaffListed:true")
 }
 
 func TestAGroupNeedsAFreeName(t *testing.T) {
@@ -383,6 +388,144 @@ func TestTheKeysCanComeFromAGroupAndDirectly(t *testing.T) {
 		t.Fatalf("AddUserAttribute: %v", err)
 	}
 	wantRedirect(t, serve(mux, "POST", groupURL(group), cookie, groupForm("Group")), groupURL(group)+"?saved=1")
+}
+
+func count(t *testing.T, db *sql.DB, query string) int {
+	t.Helper()
+	var n int
+	if err := db.QueryRowContext(t.Context(), query).Scan(&n); err != nil {
+		t.Fatalf("%s: %v", query, err)
+	}
+	return n
+}
+
+func setLevel(t *testing.T, db *sql.DB, group, level int64) {
+	t.Helper()
+	if _, err := db.ExecContext(t.Context(), `UPDATE access_groups SET level = ? WHERE id = ?`, level, group); err != nil {
+		t.Fatalf("set level: %v", err)
+	}
+}
+
+func groupLevel(t *testing.T, db *sql.DB, group int64) int64 {
+	t.Helper()
+	found, err := store.New(db).GetAccessGroup(t.Context(), group)
+	if err != nil {
+		t.Fatalf("GetAccessGroup: %v", err)
+	}
+	return found.Level
+}
+
+// levels gives a hotel with a moderator managing groups at level 6 and the
+// administrators' group at 7.
+func levels(t *testing.T, db *sql.DB) (modID, admins int64, mod *http.Cookie) {
+	t.Helper()
+	adminID := habbo(t, db, "admin@example.com", "Admin")
+	admins = grant(t, db, adminID, auth.HousekeepingAccess, auth.HousekeepingAccessGroups)
+	setLevel(t, db, admins, 7)
+	modID, mods, mod := manager(t, db, "Mod")
+	setLevel(t, db, mods, 6)
+	return modID, admins, mod
+}
+
+func refusals(t *testing.T, db *sql.DB) int {
+	t.Helper()
+	return count(t, db, `SELECT COUNT(*) FROM staff_logs WHERE action = 'accessGroups.refused'`)
+}
+
+func TestAGroupAboveTheEditorCannotBeChanged(t *testing.T) {
+	db, mux := newSite(t)
+	_, admins, mod := levels(t, db)
+
+	wantPage(t, serve(mux, "POST", groupURL(admins), mod, groupForm("Mine")), http.StatusUnprocessableEntity, groupAbove)
+	if got := groupAttributes(t, db, admins); len(got) != 2 {
+		t.Errorf("attributes = %v, want them untouched", got)
+	}
+	if n := refusals(t, db); n != 1 {
+		t.Errorf("%d refusal rows, want 1", n)
+	}
+}
+
+func TestNobodySetsALevelAboveTheirOwn(t *testing.T) {
+	db, mux := newSite(t)
+	modID, _, mod := levels(t, db)
+	own := grant(t, db, modID)
+	setLevel(t, db, own, 6)
+
+	form := groupForm("Own")
+	form.Set("level", "7")
+	wantPage(t, serve(mux, "POST", groupURL(own), mod, form), http.StatusUnprocessableEntity, levelAbove)
+	if got := groupLevel(t, db, own); got != 6 {
+		t.Errorf("level = %d, want 6", got)
+	}
+
+	form = groupForm("New")
+	form.Set("level", "7")
+	wantPage(t, serve(mux, "POST", "/housekeeping/access-groups", mod, form), http.StatusUnprocessableEntity, levelAbove)
+	if n := count(t, db, `SELECT COUNT(*) FROM access_groups WHERE name = 'New'`); n != 0 {
+		t.Errorf("%d new groups, want none", n)
+	}
+	if n := refusals(t, db); n != 2 {
+		t.Errorf("%d refusal rows, want 2", n)
+	}
+}
+
+func TestALevelUpToYourOwnIsAllowed(t *testing.T) {
+	db, mux := newSite(t)
+	modID, _, mod := levels(t, db)
+	own := grant(t, db, modID)
+	found, err := store.New(db).GetAccessGroup(t.Context(), own)
+	if err != nil {
+		t.Fatalf("GetAccessGroup: %v", err)
+	}
+
+	form := groupForm(found.Name)
+	form.Set("level", "6")
+	wantRedirect(t, serve(mux, "POST", groupURL(own), mod, form), groupURL(own)+"?saved=1")
+	if got := groupLevel(t, db, own); got != 6 {
+		t.Errorf("level = %d, want the level alone to change", got)
+	}
+	if n := count(t, db, `SELECT COUNT(*) FROM staff_logs WHERE action = 'accessGroups.update'`); n != 1 {
+		t.Errorf("%d update rows, want the level change logged", n)
+	}
+
+	form.Set("description", "At the editor's own level")
+	wantRedirect(t, serve(mux, "POST", groupURL(own), mod, form), groupURL(own)+"?saved=1")
+}
+
+func TestLevelsAreChecked(t *testing.T) {
+	for _, level := range []string{"", "abc", "-1", "100", "1.5"} {
+		t.Run("level "+level, func(t *testing.T) {
+			db, mux := newSite(t)
+			_, group, cookie := manager(t, db, "Admin")
+			form := groupForm("Group", auth.HousekeepingAccess, auth.HousekeepingAccessGroups)
+			form.Set("level", level)
+
+			wantPage(t, serve(mux, "POST", groupURL(group), cookie, form), http.StatusUnprocessableEntity, levelInvalid)
+			wantPage(t, serve(mux, "POST", "/housekeeping/access-groups", cookie, form), http.StatusUnprocessableEntity, levelInvalid)
+		})
+	}
+}
+
+func TestNobodyJoinsOrLeavesAGroupAboveTheEditor(t *testing.T) {
+	db, mux := newSite(t)
+	modID, admins, mod := levels(t, db)
+	avatar := habboOf(t, db, "Mod")
+
+	form := url.Values{"group": {strconv.FormatInt(admins, 10)}, "habbo": {strconv.FormatInt(avatar.ID, 10)}}
+	wantPage(t, serve(mux, "POST", memberURL(modID), mod, form), http.StatusUnprocessableEntity, groupAbove)
+	if isMember(t, db, admins, modID) {
+		t.Error("the moderator joined the administrators")
+	}
+
+	adminID := habboOf(t, db, "Admin").UserID
+	form = url.Values{"group": {strconv.FormatInt(admins, 10)}, "remove": {"1"}}
+	wantPage(t, serve(mux, "POST", memberURL(adminID), mod, form), http.StatusUnprocessableEntity, groupAbove)
+	if !isMember(t, db, admins, adminID) {
+		t.Error("the moderator removed an administrator")
+	}
+	if n := refusals(t, db); n != 2 {
+		t.Errorf("%d refusal rows, want 2", n)
+	}
 }
 
 func TestAttributesLeaveOneGroupWhenAnotherHoldsThem(t *testing.T) {

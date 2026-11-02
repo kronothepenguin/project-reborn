@@ -14,6 +14,7 @@ type AccessGroup struct {
 	Name        string
 	Description string
 	StaffListed bool
+	Level       int64
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }

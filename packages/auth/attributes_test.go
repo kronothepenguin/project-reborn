@@ -86,6 +86,79 @@ func TestAttributesAddWhatTheUserHolds(t *testing.T) {
 	}
 }
 
+func (f *fixture) setLevel(t *testing.T, group, level int64) {
+	t.Helper()
+	if _, err := f.db.ExecContext(t.Context(), `UPDATE access_groups SET level = ? WHERE id = ?`, level, group); err != nil {
+		t.Fatalf("set level: %v", err)
+	}
+}
+
+func TestLevelIsTheHighestOfTheGroups(t *testing.T) {
+	f := newFixture(t)
+	userID, _ := f.habbo(t, "staff@example.com", "Staff", testPassword)
+	none, _ := f.habbo(t, "player@example.com", "Player", testPassword)
+	low := f.group(t, "Low")
+	high := f.group(t, "High")
+	f.setLevel(t, low, 3)
+	f.setLevel(t, high, 6)
+	f.join(t, low, userID)
+	f.join(t, high, userID)
+
+	if got, err := Level(t.Context(), f.db, userID); err != nil || got != 6 {
+		t.Errorf("Level = %d, %v, want 6", got, err)
+	}
+	if got, err := Level(t.Context(), f.db, none); err != nil || got != 0 {
+		t.Errorf("Level without a group = %d, %v, want 0", got, err)
+	}
+}
+
+func TestDirectAttributesDoNotRaiseTheLevel(t *testing.T) {
+	f := newFixture(t)
+	userID, _ := f.habbo(t, "staff@example.com", "Staff", testPassword)
+	err := store.New(f.db).AddUserAttribute(t.Context(), store.AddUserAttributeParams{UserID: userID, Attribute: string(HousekeepingBans), GrantedAt: testNow})
+	if err != nil {
+		t.Fatalf("AddUserAttribute: %v", err)
+	}
+	if got, err := Level(t.Context(), f.db, userID); err != nil || got != 0 {
+		t.Errorf("Level = %d, %v, want 0", got, err)
+	}
+}
+
+func TestOutranksTakesAHigherLevel(t *testing.T) {
+	f := newFixture(t)
+	admin, _ := f.habbo(t, "admin@example.com", "Admin", testPassword)
+	other, _ := f.habbo(t, "other@example.com", "Other", testPassword)
+	mod, _ := f.habbo(t, "mod@example.com", "Mod", testPassword)
+	player, _ := f.habbo(t, "player@example.com", "Player", testPassword)
+	admins := f.group(t, "Administrator")
+	mods := f.group(t, "Moderator")
+	f.setLevel(t, admins, 7)
+	f.setLevel(t, mods, 6)
+	f.join(t, admins, admin)
+	f.join(t, admins, other)
+	f.join(t, mods, mod)
+
+	for _, c := range []struct {
+		name          string
+		actor, target int64
+		want          bool
+	}{
+		{"an administrator acts on a moderator", admin, mod, true},
+		{"a moderator acts on a player", mod, player, true},
+		{"a moderator cannot reach an administrator", mod, admin, false},
+		{"equals cannot act on each other", admin, other, false},
+		{"nobody acts on themselves", admin, admin, false},
+		{"a player reaches nobody", player, mod, false},
+		{"two players are equals", player, player, false},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			if got, err := Outranks(t.Context(), f.db, c.actor, c.target); err != nil || got != c.want {
+				t.Errorf("Outranks = %t, %v, want %t", got, err, c.want)
+			}
+		})
+	}
+}
+
 func TestRequireAttribute(t *testing.T) {
 	f := newFixture(t)
 	userID, _ := f.habbo(t, "admin@example.com", "Admin", testPassword)
