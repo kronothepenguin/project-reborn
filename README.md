@@ -87,6 +87,22 @@ go build -o ./apps/cms/tmp/cms ./apps/cms/cmd/cms
 
 ---
 
+## Releases
+
+Pushing a tag like `v0.1.0` publishes a GitHub release, once every gate has passed:
+
+- `reborn-<tag>-linux-amd64.tar.gz` and `reborn-<tag>-linux-aarch64.tar.gz`, each with
+  `cms`, `housekeeping` and `installer`;
+- `SHA256SUMS`.
+
+To try one, unpack it in an empty folder, run `./installer` and follow it at
+`http://localhost:17306`. Then stop it and run `./cms` and `./housekeeping` from the
+same folder, which now holds `config.json` and the database.
+
+`make release VERSION=v0.1.0` builds the same archives into `release/`.
+
+---
+
 ## Testing
 
 ```sh

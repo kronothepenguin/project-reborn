@@ -216,3 +216,6 @@ pnpm-debug.log*
 
 # e2e runs
 tests/e2e/.run/
+
+# make release
+/release/

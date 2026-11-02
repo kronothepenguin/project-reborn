@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [fx-03](/tasks/fx-03-release-workflow.md): a tag like `v0.1.0` publishes archives for linux amd64 and
+  aarch64, once every gate has passed.
+- **Start** [fx-03](/tasks/fx-03-release-workflow.md).
 - **Done** [fx-02](/tasks/fx-02-ci-workflow.md): GitHub Actions runs `make gates` and `make e2e` on pushes to `main`
   and on pull requests.
 - **Start** [fx-02](/tasks/fx-02-ci-workflow.md).

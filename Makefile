@@ -1,4 +1,6 @@
-.PHONY: install tools create tw-color gates e2e frontends
+.PHONY: install tools create tw-color gates e2e frontends release
+
+VERSION ?= dev
 
 install:
 	go work sync
@@ -41,6 +43,23 @@ gates: frontends
 # Builds everything, and runs the browser suites on a throwaway hotel.
 e2e:
 	$(MAKE) -C tests/e2e test
+
+# Archives of the three programs for linux amd64 and aarch64, in release/. The
+# database driver is pure Go, so cgo stays off and the binaries are static.
+release: frontends
+	rm -rf release
+	@for target in amd64:amd64 arm64:aarch64; do \
+		goarch=$${target%%:*}; \
+		name=reborn-$(VERSION)-linux-$${target##*:}; \
+		mkdir -p release/$$name; \
+		for program in cms housekeeping installer; do \
+			CGO_ENABLED=0 GOOS=linux GOARCH=$$goarch go build -trimpath -ldflags='-s -w' \
+				-o release/$$name/$$program ./apps/$$program/cmd/$$program || exit 1; \
+		done; \
+		tar -C release -czf release/$$name.tar.gz $$name; \
+		rm -rf release/$$name; \
+	done
+	cd release && sha256sum *.tar.gz > SHA256SUMS
 
 tools:
 	@for d in tools/*; do \
