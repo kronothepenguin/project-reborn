@@ -44,7 +44,7 @@ starts.
 - [fx-06 Add levels to access groups](/tasks/fx-06-staff-levels.md) — done
 - [fx-07 Seed Holo's ranks in the installer](/tasks/fx-07-seed-ranks.md) — done
 - [fx-08 Delete access groups](/tasks/fx-08-delete-access-groups.md) — done
-- [fx-09 Ask for the Housekeeping Address in the installer](/tasks/fx-09-housekeeping-address.md) — todo
+- [fx-09 Ask for the Housekeeping Address in the installer](/tasks/fx-09-housekeeping-address.md) — done
 - [fx-10 Refresh the CMS settings on schedule](/tasks/fx-10-settings-refresh.md) — todo
 - [fx-11 Keep the session on a password change](/tasks/fx-11-password-keeps-session.md) — todo
 - [fx-12 Send banned staff to the CMS](/tasks/fx-12-banned-staff.md) — todo

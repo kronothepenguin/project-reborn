@@ -21,7 +21,7 @@ var catalogue = map[string]declaration{
 	"site.url":         declare("http://localhost:17387", origin),
 	"site.maintenance": declare(false, nil),
 
-	"site.housekeepingUrl": declare("/housekeeping", location),
+	"site.housekeepingUrl": declare("http://localhost:18465/housekeeping", location),
 
 	"auth.secureCookies":      declare(true, nil),
 	"auth.sessionIdleMinutes": declare(30, between(5, 1440)),

@@ -212,6 +212,7 @@ export async function install(dir, ports, mailPort) {
       name: "Reborn Hotel",
       shortName: "Reborn",
       url: `http://localhost:${ports.cms}`,
+      housekeepingUrl: `http://localhost:${ports.housekeeping}/housekeeping`,
       startCredits: "500",
       secureCookies: "on",
     });

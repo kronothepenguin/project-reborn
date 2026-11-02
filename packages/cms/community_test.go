@@ -13,7 +13,7 @@ func TestCommunityShowsTheHousekeepingTabToStaff(t *testing.T) {
 	habbo(t, db, "player@example.com", "Player")
 	grant(t, db, admin, auth.HousekeepingAccess)
 
-	wantPage(t, serve(mux, "GET", "/me", login(t, db, "Admin"), nil), http.StatusOK, "Staff:true", "HousekeepingURL:/housekeeping")
+	wantPage(t, serve(mux, "GET", "/me", login(t, db, "Admin"), nil), http.StatusOK, "Staff:true", "HousekeepingURL:http://localhost:18465/housekeeping")
 	wantPage(t, serve(mux, "GET", "/me", login(t, db, "Player"), nil), http.StatusOK, "Staff:false")
 }
 

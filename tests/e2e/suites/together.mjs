@@ -61,6 +61,11 @@ export default async function ({
     written.slice(0, 200),
   );
   await page.goto(`${installer}/site`);
+  check(
+    "the site step offers housekeeping on the chosen port",
+    (await page.inputValue('input[name="housekeepingUrl"]')) === hk,
+    await page.inputValue('input[name="housekeepingUrl"]'),
+  );
   await page.fill('input[name="name"]', "Reborn Hotel");
   await page.fill('input[name="shortName"]', "Reborn");
   await page.fill('input[name="url"]', base);
@@ -96,8 +101,8 @@ export default async function ({
     page.click('button[type="submit"]'),
   ]);
   check(
-    "the tab starts at /housekeeping",
-    (await tab().getAttribute("href")) === "/housekeeping",
+    "the tab starts at the installer's address",
+    (await tab().getAttribute("href")) === hk,
     await tab().getAttribute("href"),
   );
   await page.goto(`${hk}/`);
@@ -121,7 +126,7 @@ export default async function ({
     refused.includes("must be a path or an http or https URL"),
     refused,
   );
-  await page.fill('input[name="site.housekeepingUrl"]', hk);
+  await page.fill('input[name="site.housekeepingUrl"]', `${hk}/`);
   check(
     "a good one is saved",
     (await save("Save Configuration")) === "Settings saved successfully.",
@@ -166,7 +171,7 @@ export default async function ({
   await page.goto(`${base}/me`);
   check(
     "a running CMS keeps its values until it restarts",
-    (await tab().getAttribute("href")) === "/housekeeping",
+    (await tab().getAttribute("href")) === hk,
     await tab().getAttribute("href"),
   );
 
@@ -177,7 +182,7 @@ export default async function ({
   await page.goto(`${base}/me`);
   check(
     "the tab follows the setting after the restart",
-    (await tab().getAttribute("href")) === hk,
+    (await tab().getAttribute("href")) === `${hk}/`,
     await tab().getAttribute("href"),
   );
   check(

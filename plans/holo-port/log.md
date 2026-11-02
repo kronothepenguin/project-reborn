@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [fx-09](/tasks/fx-09-housekeeping-address.md): the installer asks for the Housekeeping Address, and the tab
+  works on a new install.
+- **Start** [fx-09](/tasks/fx-09-housekeeping-address.md).
 - **Done** [fx-08](/tasks/fx-08-delete-access-groups.md): staff can delete an access group, unless the guard or the
   level rule refuses.
 - **Start** [fx-08](/tasks/fx-08-delete-access-groups.md).

@@ -1,4 +1,4 @@
-export default async function ({ base, browser, check, shot, sql }) {
+export default async function ({ base, browser, check, hk, shot, sql }) {
   const page = await (
     await browser.newContext({ viewport: { width: 1100, height: 760 } })
   ).newPage();
@@ -17,7 +17,7 @@ export default async function ({ base, browser, check, shot, sql }) {
     (await page
       .getByRole("link", { name: "Housekeeping" })
       .first()
-      .getAttribute("href")) === "/housekeeping",
+      .getAttribute("href")) === hk,
   );
   await page.goto(base + "/disclaimer");
   check(

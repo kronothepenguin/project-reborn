@@ -62,8 +62,8 @@ This is how programs run today, and how development works.
   maintenance on shows the maintenance page only then.
 - Housekeeping has no sign-in of its own. A guest goes to `site.url`, and the session cookie reaches housekeeping because
   cookies do not depend on the port.
-- The CMS's Housekeeping links follow `site.housekeepingUrl`, `/housekeeping` by default. Only a shared mux serves that path:
-  running alone, the CMS answers 404 there until the setting names housekeeping's own address.
+- The CMS's Housekeeping links follow `site.housekeepingUrl`, which the installer asks for. Its default is the development
+  address, `http://localhost:18465/housekeeping`.
 
 [0051](/decisions/0051-one-machine-and-a-refresh.md) decides how a running CMS learns of a change: it re-reads the settings
 every `cms.refresh` seconds, and no IPC is built. [fx-10](/tasks/fx-10-settings-refresh.md) builds it.

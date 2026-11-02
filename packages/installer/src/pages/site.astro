@@ -39,6 +39,18 @@ import Setup from "../layouts/setup.astro";
       />
     </FormField>
     <FormField
+      label="Housekeeping address"
+      help="Where the site's Housekeeping links lead."
+      class="flex flex-col gap-1 text-sm"
+    >
+      <Input
+        name="housekeepingUrl"
+        value="[[ .HousekeepingURL ]]"
+        variant="border"
+        required
+      />
+    </FormField>
+    <FormField
       label="Start credits"
       help="Credits every new habbo receives."
       class="flex flex-col gap-1 text-sm"
