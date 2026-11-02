@@ -63,8 +63,7 @@ func (r *Router) HandleAccountHabbosView(w http.ResponseWriter, req *http.Reques
 }
 
 // HandleAccountHabbos handles the POST /account/habbos action, which adds a habbo
-// to the user. It starts without credits, so that it does not repeat the welcome
-// credits of registering.
+// to the user. It shares the user's wallet.
 func (r *Router) HandleAccountHabbos(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	session, _ := auth.FromContext(ctx)

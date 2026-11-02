@@ -195,10 +195,10 @@ func TestReferralPage(t *testing.T) {
 
 func TestClubMembersSeeTheirDays(t *testing.T) {
 	db, mux := newSite(t)
-	cookie, avatarID, _ := member(t, db, mux)
+	cookie, _, userID := member(t, db, mux)
 	now := time.Now().UTC()
-	_, err := db.ExecContext(t.Context(), `INSERT INTO club_subscriptions (avatar_id, starts_at, ends_at, created_at) VALUES (?, ?, ?, ?)`,
-		avatarID, now.Add(-time.Hour), now.Add(10*24*time.Hour), now)
+	_, err := db.ExecContext(t.Context(), `INSERT INTO club_subscriptions (user_id, starts_at, ends_at, created_at) VALUES (?, ?, ?, ?)`,
+		userID, now.Add(-time.Hour), now.Add(10*24*time.Hour), now)
 	if err != nil {
 		t.Fatalf("insert subscription: %v", err)
 	}

@@ -61,10 +61,10 @@ func TestRegistrationThroughGeneratedQueries(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateProfileHome: %v", err)
 	}
-	if err := qtx.CreateWallet(ctx, CreateWalletParams{AvatarID: avatar.ID, Credits: 100, UpdatedAt: testNow}); err != nil {
+	if err := qtx.CreateWallet(ctx, CreateWalletParams{UserID: user.ID, Credits: 100, UpdatedAt: testNow}); err != nil {
 		t.Fatalf("CreateWallet: %v", err)
 	}
-	if err := qtx.CreateWalletTransaction(ctx, CreateWalletTransactionParams{AvatarID: avatar.ID, Credits: 100, Reason: "registration", CreatedAt: testNow}); err != nil {
+	if err := qtx.CreateWalletTransaction(ctx, CreateWalletTransactionParams{UserID: user.ID, AvatarID: sql.NullInt64{Int64: avatar.ID, Valid: true}, Credits: 100, Reason: "registration", CreatedAt: testNow}); err != nil {
 		t.Fatalf("CreateWalletTransaction: %v", err)
 	}
 	if err := tx.Commit(); err != nil {
@@ -94,19 +94,19 @@ func TestAddWalletCreditsAddsToTheBalance(t *testing.T) {
 	db := openTestDB(t)
 	ctx := t.Context()
 	q := New(db)
-	_, avatar := createUserWithHabbo(t, q, "krono@example.com", "Krono")
-	if err := q.CreateWallet(ctx, CreateWalletParams{AvatarID: avatar.ID, Credits: 500, UpdatedAt: testNow}); err != nil {
+	user, _ := createUserWithHabbo(t, q, "krono@example.com", "Krono")
+	if err := q.CreateWallet(ctx, CreateWalletParams{UserID: user.ID, Credits: 500, UpdatedAt: testNow}); err != nil {
 		t.Fatalf("CreateWallet: %v", err)
 	}
 
 	later := testNow.Add(time.Hour)
-	if err := q.AddWalletCredits(ctx, AddWalletCreditsParams{Credits: 50, UpdatedAt: later, AvatarID: avatar.ID}); err != nil {
+	if err := q.AddWalletCredits(ctx, AddWalletCreditsParams{Credits: 50, UpdatedAt: later, UserID: user.ID}); err != nil {
 		t.Fatalf("AddWalletCredits: %v", err)
 	}
 
 	var wallet Wallet
-	err := db.QueryRowContext(ctx, `SELECT avatar_id, credits, tickets, film, updated_at FROM wallets WHERE avatar_id = ?`, avatar.ID).
-		Scan(&wallet.AvatarID, &wallet.Credits, &wallet.Tickets, &wallet.Film, &wallet.UpdatedAt)
+	err := db.QueryRowContext(ctx, `SELECT user_id, credits, tickets, film, updated_at FROM wallets WHERE user_id = ?`, user.ID).
+		Scan(&wallet.UserID, &wallet.Credits, &wallet.Tickets, &wallet.Film, &wallet.UpdatedAt)
 	if err != nil {
 		t.Fatalf("read the wallet: %v", err)
 	}

@@ -118,7 +118,7 @@ export default async function ({
   check(
     "referrer paid",
     sql(
-      "select credits from wallets join avatars on avatars.id=wallets.avatar_id where name='Admin-1'",
+      "select credits from wallets join avatars on avatars.user_id=wallets.user_id where name='Admin-1'",
     )[0][0] === 5050,
   );
   check(

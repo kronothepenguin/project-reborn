@@ -7,49 +7,54 @@ package store
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
 const addWalletCredits = `-- name: AddWalletCredits :exec
 UPDATE wallets
 SET credits = credits + ?1, updated_at = ?2
-WHERE avatar_id = ?3
+WHERE user_id = ?3
 `
 
 type AddWalletCreditsParams struct {
 	Credits   int64
 	UpdatedAt time.Time
-	AvatarID  int64
+	UserID    int64
 }
 
 func (q *Queries) AddWalletCredits(ctx context.Context, arg AddWalletCreditsParams) error {
-	_, err := q.db.ExecContext(ctx, addWalletCredits, arg.Credits, arg.UpdatedAt, arg.AvatarID)
+	_, err := q.db.ExecContext(ctx, addWalletCredits, arg.Credits, arg.UpdatedAt, arg.UserID)
 	return err
 }
 
 const createWallet = `-- name: CreateWallet :exec
-INSERT INTO wallets (avatar_id, credits, updated_at)
+INSERT INTO wallets (user_id, credits, updated_at)
 VALUES (?1, ?2, ?3)
 `
 
 type CreateWalletParams struct {
-	AvatarID  int64
+	UserID    int64
 	Credits   int64
 	UpdatedAt time.Time
 }
 
 func (q *Queries) CreateWallet(ctx context.Context, arg CreateWalletParams) error {
-	_, err := q.db.ExecContext(ctx, createWallet, arg.AvatarID, arg.Credits, arg.UpdatedAt)
+	_, err := q.db.ExecContext(ctx, createWallet, arg.UserID, arg.Credits, arg.UpdatedAt)
 	return err
 }
 
 const createWalletTransaction = `-- name: CreateWalletTransaction :exec
-INSERT INTO wallet_transactions (avatar_id, credits, reason, detail, created_at)
-VALUES (?1, ?2, ?3, ?4, ?5)
+INSERT INTO wallet_transactions (user_id, avatar_id, credits, reason, detail, created_at)
+VALUES (
+    ?1, ?2, ?3, ?4, ?5,
+    ?6
+)
 `
 
 type CreateWalletTransactionParams struct {
-	AvatarID  int64
+	UserID    int64
+	AvatarID  sql.NullInt64
 	Credits   int64
 	Reason    string
 	Detail    string
@@ -58,6 +63,7 @@ type CreateWalletTransactionParams struct {
 
 func (q *Queries) CreateWalletTransaction(ctx context.Context, arg CreateWalletTransactionParams) error {
 	_, err := q.db.ExecContext(ctx, createWalletTransaction,
+		arg.UserID,
 		arg.AvatarID,
 		arg.Credits,
 		arg.Reason,
@@ -68,14 +74,14 @@ func (q *Queries) CreateWalletTransaction(ctx context.Context, arg CreateWalletT
 }
 
 const getWallet = `-- name: GetWallet :one
-SELECT avatar_id, credits, tickets, film, updated_at FROM wallets WHERE avatar_id = ?1
+SELECT user_id, credits, tickets, film, updated_at FROM wallets WHERE user_id = ?1
 `
 
-func (q *Queries) GetWallet(ctx context.Context, avatarID int64) (Wallet, error) {
-	row := q.db.QueryRowContext(ctx, getWallet, avatarID)
+func (q *Queries) GetWallet(ctx context.Context, userID int64) (Wallet, error) {
+	row := q.db.QueryRowContext(ctx, getWallet, userID)
 	var i Wallet
 	err := row.Scan(
-		&i.AvatarID,
+		&i.UserID,
 		&i.Credits,
 		&i.Tickets,
 		&i.Film,

@@ -76,7 +76,7 @@ func TestRegisterCreatesTheAccountAndSignsIn(t *testing.T) {
 	if avatar.UserID != user.ID || avatar.Figure != newFigure || avatar.Gender != "F" {
 		t.Errorf("avatar = %+v, want the registered look", avatar)
 	}
-	if n := count(t, db, `SELECT COUNT(*) FROM wallets WHERE avatar_id = ? AND credits = 500`, avatar.ID); n != 1 {
+	if n := count(t, db, `SELECT COUNT(*) FROM wallets WHERE user_id = ? AND credits = 500`, user.ID); n != 1 {
 		t.Errorf("%d wallets with the start credits, want 1", n)
 	}
 	if n := count(t, db, `SELECT COUNT(*) FROM wallet_transactions WHERE avatar_id = ? AND credits = 500 AND reason = 'registration' AND detail = 'Welcome to Holo Hotel!'`, avatar.ID); n != 1 {
@@ -438,7 +438,7 @@ func referred(t *testing.T, mux *http.ServeMux) url.Values {
 
 func referrerCredits(t *testing.T, db *sql.DB) int {
 	t.Helper()
-	return count(t, db, `SELECT credits FROM wallets JOIN avatars ON wallets.avatar_id = avatars.id WHERE avatars.name = 'Referrer'`)
+	return count(t, db, `SELECT credits FROM wallets JOIN avatars ON wallets.user_id = avatars.user_id WHERE avatars.name = 'Referrer'`)
 }
 
 func TestReferralPaysTheReferrer(t *testing.T) {

@@ -33,8 +33,8 @@ lexicographic filename order on every `store.Open`.
 
 ## Economy
 
-- [economy.schema.sql](economy.md) — Declares habbo wallets, the credit ledger and vouchers.
-- [club.schema.sql](club.md) — Declares the Habbo Club subscription periods of habbos.
+- [economy.schema.sql](economy.md) — Declares user wallets, the credit ledger and vouchers.
+- [club.schema.sql](club.md) — Declares the Habbo Club subscription periods of users.
 
 ## Moderation
 

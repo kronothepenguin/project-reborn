@@ -22,7 +22,7 @@ Domain entities represented by the store's tables: their meaning, invariants, li
 
 - [Profile](profile.md) — A habbo's web presence, which anchors its home page and its tags.
 - [Home](home.md) — A decorated home page owned by a profile or a group, with stickers, sticky notes, widgets and a background.
-- [Home store](home-store.md) — The catalogue of stickers, note packs and backgrounds for homes, and each habbo's inventory of bought items.
+- [Home store](home-store.md) — The catalogue of stickers, note packs and backgrounds for homes, and each user's inventory of bought items.
 
 ## Community
 
@@ -33,8 +33,8 @@ Domain entities represented by the store's tables: their meaning, invariants, li
 
 ## Economy
 
-- [Wallet](wallet.md) — A habbo's credits, tickets and film, the ledger of every credit change, and the vouchers that add credits.
-- [Club subscription](club-subscription.md) — A paid Habbo Club period of a habbo; club membership is a habbo property, not an access attribute.
+- [Wallet](wallet.md) — A user's credits, tickets and film, shared by all their habbos, the ledger of every credit change, and the vouchers that add credits.
+- [Club subscription](club-subscription.md) — A paid Habbo Club period of a user; club membership covers all their habbos and is not an access attribute.
 
 ## Moderation
 

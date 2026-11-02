@@ -1,14 +1,14 @@
 ---
 type: Entity
 title: Home store
-description: The catalogue of stickers, note packs and backgrounds for homes, and each habbo's inventory of bought items.
+description: The catalogue of stickers, note packs and backgrounds for homes, and each user's inventory of bought items.
 tags: [store, entity, homes]
-timestamp: 2026-10-27T21:28:26+00:00
+timestamp: 2026-11-02T01:44:57+00:00
 ---
 
 # Definition
 
-Habbos spend credits in the home store; a purchase adds `quantity` units of the item to the habbo's inventory, and
+Habbos spend the user's credits in the home store; a purchase adds `quantity` units of the item to the user's inventory, so all their habbos can place it, and
 placing an item on a home takes it out again.
 
 # Invariants

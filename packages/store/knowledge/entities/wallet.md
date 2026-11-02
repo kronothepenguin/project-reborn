@@ -1,15 +1,15 @@
 ---
 type: Entity
 title: Wallet
-description: A habbo's credits, tickets and film, the ledger of every credit change, and the vouchers that add credits.
+description: A user's credits, tickets and film, shared by all their habbos, the ledger of every credit change, and the vouchers that add credits.
 tags: [store, entity, economy]
-timestamp: 2026-10-28T01:30:19+00:00
+timestamp: 2026-11-02T01:44:15+00:00
 ---
 
 # Definition
 
-Credits are per habbo. Every change of credits writes a signed ledger row in the same transaction, so the ledger
-explains the balance. Vouchers are codes created by staff that add credits once.
+Credits belong to the user, so all their habbos share one purse. Every change of credits writes a signed ledger row in
+the same transaction, so the ledger explains the balance, and the row names the habbo that acted. Vouchers are codes created by staff that add credits once.
 
 # Invariants
 
@@ -20,11 +20,12 @@ explains the balance. Vouchers are codes created by staff that add credits once.
 
 # Lifecycle
 
-- Created with the habbo, with `registration.startCredits` and a `registration` ledger row.
+- Created with the user, with `registration.startCredits` and a `registration` ledger row. A habbo added later has no
+  wallet of its own, so the start credits are given once.
 - The installer creates the administrator's wallet with 5000 credits and a `registration` row whose detail is
   `installer`.
 - Redeemed vouchers keep their row with `redeemed_by_avatar_id` and `redeemed_at`.
-- Deleted with the habbo, with its ledger.
+- Deleted with the user, with its ledger.
 
 # Vocabularies
 
@@ -34,7 +35,7 @@ explains the balance. Vouchers are codes created by staff that add credits once.
 
 # Relations
 
-- Belongs to a [habbo](/entities/habbo.md); pays for the [home store](/entities/home-store.md),
+- Belongs to a [user](/entities/user.md), and shared by their [habbos](/entities/habbo.md); pays for the [home store](/entities/home-store.md),
   [groups](/entities/group.md) and [club subscriptions](/entities/club-subscription.md).
 
 # Tables

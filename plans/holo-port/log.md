@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [fx-04](/tasks/fx-04-user-wallet-club-inventory.md): the wallet, the club and the home inventory belong to
+  the user, and all their habbos share them.
+- **Start** [fx-04](/tasks/fx-04-user-wallet-club-inventory.md).
 - **Done** [fx-03](/tasks/fx-03-release-workflow.md): a tag like `v0.1.0` publishes archives for linux amd64 and
   aarch64, once every gate has passed.
 - **Start** [fx-03](/tasks/fx-03-release-workflow.md).

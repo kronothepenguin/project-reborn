@@ -26,8 +26,8 @@ Concepts for the query files under `packages/store/queries/`.
 
 ## Economy
 
-- [economy.query.sql](economy.md) — Wallet operations for reading and creating a habbo's wallet, adding credits and writing credit ledger rows.
-- [club.query.sql](club.md) — Club operations, currently the end of a habbo's running membership.
+- [economy.query.sql](economy.md) — Wallet operations for reading and creating a user's wallet, adding credits and writing credit ledger rows.
+- [club.query.sql](club.md) — Club operations, currently the end of a user's running membership.
 - [referrals.query.sql](referrals.md) — Referral operations, currently the creation of a referral at registration.
 
 ## Settings

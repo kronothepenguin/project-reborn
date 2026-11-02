@@ -29,10 +29,10 @@ export function seedStaff(sql) {
       sql(
         `INSERT INTO homes (profile_id, updated_at) VALUES (${profileID}, '${now}')`,
       );
-      sql(
-        `INSERT INTO wallets (avatar_id, updated_at) VALUES (${avatarID}, '${now}')`,
-      );
     }
+    sql(
+      `INSERT INTO wallets (user_id, updated_at) VALUES (${userID}, '${now}')`,
+    );
     return userID;
   };
 

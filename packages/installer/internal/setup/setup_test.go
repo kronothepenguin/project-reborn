@@ -169,7 +169,7 @@ func TestCreateAdministrator(t *testing.T) {
 	var credits, ledger, homes int
 	var reason, detail string
 	db := installation.DB
-	if err := db.QueryRowContext(t.Context(), `SELECT credits FROM wallets WHERE avatar_id = ?`, avatar.ID).Scan(&credits); err != nil || credits != adminCredits {
+	if err := db.QueryRowContext(t.Context(), `SELECT credits FROM wallets WHERE user_id = ?`, avatar.UserID).Scan(&credits); err != nil || credits != adminCredits {
 		t.Errorf("wallet credits = %d, %v, want %d", credits, err, adminCredits)
 	}
 	err = db.QueryRowContext(t.Context(), `SELECT credits, reason, detail FROM wallet_transactions WHERE avatar_id = ?`, avatar.ID).Scan(&ledger, &reason, &detail)

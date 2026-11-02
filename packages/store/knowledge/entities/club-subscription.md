@@ -1,14 +1,15 @@
 ---
 type: Entity
 title: Club subscription
-description: A paid Habbo Club period of a habbo; club membership is a habbo property, not an access attribute.
+description: A paid Habbo Club period of a user; club membership covers all their habbos and is not an access attribute.
 tags: [store, entity, club]
-timestamp: 2026-10-27T21:28:26+00:00
+timestamp: 2026-11-02T01:44:15+00:00
 ---
 
 # Definition
 
-A habbo is a club member while one of its periods covers the current time. Days left come from the latest
+A user is a club member while one of their periods covers the current time, and all their habbos are members with
+them. Days left come from the latest
 `ends_at`; total club time is the sum of the periods.
 
 # Invariants
@@ -21,7 +22,7 @@ A habbo is a club member while one of its periods covers the current time. Days 
 
 - A purchase debits the wallet, writes a `club` ledger row, inserts the period and, on the first purchase, grants
   the club badge, all in one transaction.
-- Periods are never updated; deleting the habbo deletes them.
+- Periods are never updated; deleting the user deletes them.
 
 # Vocabularies
 
@@ -29,7 +30,7 @@ None.
 
 # Relations
 
-- Belongs to a [habbo](/entities/habbo.md); paid from its [wallet](/entities/wallet.md).
+- Belongs to a [user](/entities/user.md); paid from their [wallet](/entities/wallet.md).
 
 # Tables
 

@@ -12,18 +12,18 @@ import (
 
 const getClubEnd = `-- name: GetClubEnd :one
 SELECT ends_at FROM club_subscriptions
-WHERE avatar_id = ?1 AND starts_at <= ?2 AND ends_at > ?2
+WHERE user_id = ?1 AND starts_at <= ?2 AND ends_at > ?2
 ORDER BY ends_at DESC
 LIMIT 1
 `
 
 type GetClubEndParams struct {
-	AvatarID int64
-	Now      time.Time
+	UserID int64
+	Now    time.Time
 }
 
 func (q *Queries) GetClubEnd(ctx context.Context, arg GetClubEndParams) (time.Time, error) {
-	row := q.db.QueryRowContext(ctx, getClubEnd, arg.AvatarID, arg.Now)
+	row := q.db.QueryRowContext(ctx, getClubEnd, arg.UserID, arg.Now)
 	var ends_at time.Time
 	err := row.Scan(&ends_at)
 	return ends_at, err

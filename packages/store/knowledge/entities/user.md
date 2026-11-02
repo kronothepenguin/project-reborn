@@ -33,6 +33,8 @@ None.
 
 - Owns [habbos](/entities/habbo.md).
 - Has a [credential](/entities/credential.md) and [sessions](/entities/session.md).
+- Has a [wallet](/entities/wallet.md), [club subscriptions](/entities/club-subscription.md) and a
+  [home store](/entities/home-store.md) inventory, which all their habbos share.
 - Belongs to [access groups](/entities/access-group.md).
 - May have been brought in by a [referral](/entities/referral.md).
 - Can be the target of a [ban](/entities/ban.md); as staff, appears in the [staff log](/entities/staff-log.md).

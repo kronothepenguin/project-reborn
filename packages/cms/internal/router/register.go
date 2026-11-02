@@ -256,13 +256,9 @@ func (r *Router) createAccount(ctx context.Context, page registerPage, bornOn ti
 		Newsletter:   page.Newsletter,
 		IP:           ip,
 		PasswordHash: hash,
-		Habbo: auth.Habbo{
-			Name:    page.Habbo,
-			Figure:  page.Figure,
-			Gender:  page.Gender,
-			Credits: int64(settings.GetInt("registration.startCredits")),
-			Detail:  "Welcome to " + settings.GetString("site.name") + "!",
-		},
+		Credits:      int64(settings.GetInt("registration.startCredits")),
+		Detail:       "Welcome to " + settings.GetString("site.name") + "!",
+		Habbo:        auth.Habbo{Name: page.Habbo, Figure: page.Figure, Gender: page.Gender},
 	})
 	if err != nil {
 		return err
@@ -293,12 +289,13 @@ func recordReferral(ctx context.Context, q *store.Queries, refer string, userID 
 	if settings.GetBool("referral.enabled") {
 		rewardedAt = sql.NullTime{Time: now, Valid: true}
 		reward := int64(settings.GetInt("referral.reward"))
-		err := q.AddWalletCredits(ctx, store.AddWalletCreditsParams{Credits: reward, UpdatedAt: now, AvatarID: referrer.ID})
+		err := q.AddWalletCredits(ctx, store.AddWalletCreditsParams{Credits: reward, UpdatedAt: now, UserID: referrer.UserID})
 		if err != nil {
 			return err
 		}
 		err = q.CreateWalletTransaction(ctx, store.CreateWalletTransactionParams{
-			AvatarID:  referrer.ID,
+			UserID:    referrer.UserID,
+			AvatarID:  sql.NullInt64{Int64: referrer.ID, Valid: true},
 			Credits:   reward,
 			Reason:    "referral",
 			Detail:    name,

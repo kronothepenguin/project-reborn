@@ -61,10 +61,9 @@ export default async function ({ base, browser, check, shot, sql }) {
     sql("select figure from avatars where name='Second'")[0][0] + " vs " + look,
   );
   check(
-    "with no credits",
-    sql(
-      "select credits from wallets join avatars on avatars.id=avatar_id where name='Second'",
-    )[0][0] === 0,
+    "it adds no wallet",
+    sql("select count(*) from wallets")[0][0] === 1,
+    String(sql("select count(*) from wallets")),
   );
   check(
     "switch link in the header",
@@ -84,12 +83,6 @@ export default async function ({ base, browser, check, shot, sql }) {
     (await page.title()) === "Reborn ~ Second",
     await page.title(),
   );
-  check(
-    "with its own credits",
-    (await text("0 credits")) ||
-      (
-        await page.locator('ul li:has-text("credits")').first().innerText()
-      ).includes("0"),
-  );
+  check("it shares the credits", await page.getByText("5000").first().isVisible());
   check("no script errors", errors.length === 0, errors.join(" | "));
 }

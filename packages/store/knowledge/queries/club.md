@@ -1,10 +1,10 @@
 ---
 type: SQL Query
 title: club.query.sql
-description: Club operations, currently the end of a habbo's running membership.
+description: Club operations, currently the end of a user's running membership.
 resource: packages/store/queries/club.query.sql
 tags: [store, query, club]
-timestamp: 2026-11-01T21:04:04+00:00
+timestamp: 2026-11-02T01:44:15+00:00
 ---
 
 # Operations
@@ -12,8 +12,8 @@ timestamp: 2026-11-01T21:04:04+00:00
 ## GetClubEnd
 
 - Cardinality: `:one`
-- Inputs: `avatar_id`, `now`
-- Result: the latest `ends_at` of the periods covering `now`; not found when the habbo is not a member
+- Inputs: `user_id`, `now`
+- Result: the latest `ends_at` of the periods covering `now`; not found when the user is not a member
 - Tables: `club_subscriptions`
 
 # Related

@@ -78,10 +78,10 @@ func TestRegistrationRowsCommitInOneTransaction(t *testing.T) {
 	if _, err := tx.ExecContext(ctx, `INSERT INTO homes (profile_id, updated_at) VALUES (?, ?)`, profileID, now); err != nil {
 		t.Fatalf("insert home: %v", err)
 	}
-	if _, err := tx.ExecContext(ctx, `INSERT INTO wallets (avatar_id, credits, updated_at) VALUES (?, 100, ?)`, avatarID, now); err != nil {
+	if _, err := tx.ExecContext(ctx, `INSERT INTO wallets (user_id, credits, updated_at) VALUES (?, 100, ?)`, userID, now); err != nil {
 		t.Fatalf("insert wallet: %v", err)
 	}
-	if _, err := tx.ExecContext(ctx, `INSERT INTO wallet_transactions (avatar_id, credits, reason, created_at) VALUES (?, 100, 'registration', ?)`, avatarID, now); err != nil {
+	if _, err := tx.ExecContext(ctx, `INSERT INTO wallet_transactions (user_id, avatar_id, credits, reason, created_at) VALUES (?, ?, 100, 'registration', ?)`, userID, avatarID, now); err != nil {
 		t.Fatalf("insert ledger row: %v", err)
 	}
 	if err := tx.Commit(); err != nil {
@@ -160,12 +160,12 @@ func TestDeletingAGroupDeletesItsHomeAndMembers(t *testing.T) {
 func TestWalletCreditsNeverGoNegative(t *testing.T) {
 	db := openTestDB(t)
 	ctx := t.Context()
-	_, avatarID := insertHabbo(t, db, "krono@example.com", "Krono")
+	userID, _ := insertHabbo(t, db, "krono@example.com", "Krono")
 
-	if _, err := db.ExecContext(ctx, `INSERT INTO wallets (avatar_id, credits, updated_at) VALUES (?, 5, ?)`, avatarID, time.Now().UTC()); err != nil {
+	if _, err := db.ExecContext(ctx, `INSERT INTO wallets (user_id, credits, updated_at) VALUES (?, 5, ?)`, userID, time.Now().UTC()); err != nil {
 		t.Fatalf("insert wallet: %v", err)
 	}
-	if _, err := db.ExecContext(ctx, `UPDATE wallets SET credits = credits - 10 WHERE avatar_id = ?`, avatarID); err == nil {
+	if _, err := db.ExecContext(ctx, `UPDATE wallets SET credits = credits - 10 WHERE user_id = ?`, userID); err == nil {
 		t.Fatal("wallet went below zero credits")
 	}
 }
@@ -173,7 +173,7 @@ func TestWalletCreditsNeverGoNegative(t *testing.T) {
 func TestStoreItemsInUseCannotBeDeleted(t *testing.T) {
 	db := openTestDB(t)
 	ctx := t.Context()
-	_, avatarID := insertHabbo(t, db, "krono@example.com", "Krono")
+	userID, _ := insertHabbo(t, db, "krono@example.com", "Krono")
 
 	if _, err := db.ExecContext(ctx, `INSERT INTO home_store_categories (id, name) VALUES (1, 'General')`); err != nil {
 		t.Fatalf("insert category: %v", err)
@@ -181,7 +181,7 @@ func TestStoreItemsInUseCannotBeDeleted(t *testing.T) {
 	if _, err := db.ExecContext(ctx, `INSERT INTO home_store_items (id, home_store_category_id, kind, asset, name, price) VALUES (1, 1, 'sticker', 'sticker_star', 'Star', 2)`); err != nil {
 		t.Fatalf("insert item: %v", err)
 	}
-	if _, err := db.ExecContext(ctx, `INSERT INTO home_inventory (avatar_id, home_store_item_id, quantity) VALUES (?, 1, 3)`, avatarID); err != nil {
+	if _, err := db.ExecContext(ctx, `INSERT INTO home_inventory (user_id, home_store_item_id, quantity) VALUES (?, 1, 3)`, userID); err != nil {
 		t.Fatalf("insert inventory: %v", err)
 	}
 
@@ -218,12 +218,12 @@ func TestBanNeedsAUserOrAnIP(t *testing.T) {
 
 func TestClubPeriodEndsAfterItStarts(t *testing.T) {
 	db := openTestDB(t)
-	_, avatarID := insertHabbo(t, db, "krono@example.com", "Krono")
+	userID, _ := insertHabbo(t, db, "krono@example.com", "Krono")
 	now := time.Now().UTC()
 
 	_, err := db.ExecContext(t.Context(),
-		`INSERT INTO club_subscriptions (avatar_id, starts_at, ends_at, created_at) VALUES (?, ?, ?, ?)`,
-		avatarID, now, now.Add(-time.Hour), now)
+		`INSERT INTO club_subscriptions (user_id, starts_at, ends_at, created_at) VALUES (?, ?, ?, ?)`,
+		userID, now, now.Add(-time.Hour), now)
 	if err == nil {
 		t.Fatal("club period ending before it starts was accepted")
 	}

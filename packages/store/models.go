@@ -83,7 +83,7 @@ type Banner struct {
 
 type ClubSubscription struct {
 	ID        int64
-	AvatarID  int64
+	UserID    int64
 	StartsAt  time.Time
 	EndsAt    time.Time
 	CreatedAt time.Time
@@ -157,7 +157,7 @@ type Home struct {
 }
 
 type HomeInventory struct {
-	AvatarID        int64
+	UserID          int64
 	HomeStoreItemID int64
 	Quantity        int64
 }
@@ -303,7 +303,7 @@ type Voucher struct {
 }
 
 type Wallet struct {
-	AvatarID  int64
+	UserID    int64
 	Credits   int64
 	Tickets   int64
 	Film      int64
@@ -312,7 +312,8 @@ type Wallet struct {
 
 type WalletTransaction struct {
 	ID        int64
-	AvatarID  int64
+	UserID    int64
+	AvatarID  sql.NullInt64
 	Credits   int64
 	Reason    string
 	Detail    string

@@ -76,10 +76,10 @@ func TestMeCountsClubDays(t *testing.T) {
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			db, mux := newSite(t)
-			cookie, avatarID, _ := member(t, db, mux)
+			cookie, _, userID := member(t, db, mux)
 			now := time.Now().UTC()
-			_, err := db.ExecContext(t.Context(), `INSERT INTO club_subscriptions (avatar_id, starts_at, ends_at, created_at) VALUES (?, ?, ?, ?)`,
-				avatarID, now.Add(-30*24*time.Hour), now.Add(c.left), now)
+			_, err := db.ExecContext(t.Context(), `INSERT INTO club_subscriptions (user_id, starts_at, ends_at, created_at) VALUES (?, ?, ?, ?)`,
+				userID, now.Add(-30*24*time.Hour), now.Add(c.left), now)
 			if err != nil {
 				t.Fatalf("insert subscription: %v", err)
 			}

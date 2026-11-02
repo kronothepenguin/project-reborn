@@ -1,10 +1,10 @@
 ---
 type: SQLite Table
 title: wallet_transactions
-description: The credit ledger, with one signed row per change of a habbo's credits.
+description: The credit ledger, with one signed row per change of a user's credits.
 resource: packages/store/schema/economy.schema.sql
 tags: [store, table, economy]
-timestamp: 2026-10-27T21:28:26+00:00
+timestamp: 2026-11-02T01:44:15+00:00
 ---
 
 # Schema
@@ -12,7 +12,8 @@ timestamp: 2026-10-27T21:28:26+00:00
 | Column | Type | Null | Default | Description | Key / reference |
 |--------|------|------|---------|-------------|-----------------|
 | `id` | INTEGER | no | rowid | Transaction id | primary key |
-| `avatar_id` | INTEGER | no | | Habbo whose credits changed | → `avatars.id` ON DELETE CASCADE |
+| `user_id` | INTEGER | no | | User whose credits changed | → `users.id` ON DELETE CASCADE |
+| `avatar_id` | INTEGER | yes | | Habbo that acted, NULL when none did | → `avatars.id` ON DELETE SET NULL |
 | `credits` | INTEGER | no | | Signed change (`-20`, `500`) | |
 | `reason` | TEXT | no | | Why the credits changed | |
 | `detail` | TEXT | no | `''` | Free detail (item, voucher, months) | |
@@ -21,7 +22,7 @@ timestamp: 2026-10-27T21:28:26+00:00
 # Keys
 
 - Primary key `id`.
-- `idx_wallet_transactions_avatar_id_created_at` (`avatar_id`, `created_at`).
+- `idx_wallet_transactions_user_id_created_at` (`user_id`, `created_at`).
 
 # Related
 

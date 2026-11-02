@@ -14,6 +14,6 @@ timestamp: 2026-10-27T21:28:26+00:00
 | [home_store_categories](/tables/home_store_categories.md) | table | Store categories, some staff-only |
 | [home_store_items](/tables/home_store_items.md) | table | Stickers, note packs and backgrounds for sale |
 | `idx_home_store_items_home_store_category_id` | index | Items of a category |
-| [home_inventory](/tables/home_inventory.md) | table | Bought items a habbo has not placed yet |
+| [home_inventory](/tables/home_inventory.md) | table | Bought items a user has not placed yet |
 
 Entity: [Home store](/entities/home-store.md).

@@ -24,7 +24,7 @@ func (r *Router) newAccountPage(ctx context.Context) (accountPage, error) {
 	if err != nil {
 		return accountPage{}, err
 	}
-	days, err := r.clubDays(ctx, session.AvatarID, time.Now().UTC())
+	days, err := r.clubDays(ctx, session.UserID, time.Now().UTC())
 	if err != nil {
 		return accountPage{}, err
 	}

@@ -3,13 +3,13 @@ type: Entity
 title: Habbo
 description: An in-hotel identity owned by a user, with its name, look, motto, badges and wardrobe.
 tags: [store, entity, habbo]
-timestamp: 2026-10-27T21:17:19+00:00
+timestamp: 2026-11-02T01:44:15+00:00
 ---
 
 # Definition
 
 A habbo (table `avatars`) is what other people see: the name used to sign in, the figure, the gender and the
-motto. A user can own several habbos; club membership, credits and the home page are per habbo.
+motto. A user can own several habbos, which share the user's wallet, club membership and home inventory; the home page is per habbo.
 
 # Invariants
 
@@ -36,7 +36,7 @@ motto. A user can own several habbos; club membership, credits and the home page
 - Active in [sessions](/entities/session.md).
 - Shown for a member of an [access group](/entities/access-group.md) on the staff page.
 - Can refer new users ([referral](/entities/referral.md)).
-- Has a [profile](/entities/profile.md), a [wallet](/entities/wallet.md), [club subscriptions](/entities/club-subscription.md)
+- Has a [profile](/entities/profile.md), and shares the user's [wallet](/entities/wallet.md), [club subscriptions](/entities/club-subscription.md)
   and a [home store](/entities/home-store.md) inventory.
 - Owns and joins [groups](/entities/group.md); writes [forum threads](/entities/forum-thread.md); receives
   [alerts](/entities/alert.md).

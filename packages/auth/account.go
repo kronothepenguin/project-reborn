@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 	"regexp"
@@ -81,31 +82,31 @@ func ValidateLook(figure, gender string) error {
 	return nil
 }
 
-// Habbo describes a new habbo. Detail goes on the ledger row of its first
-// credits; a habbo starting without credits gets no row.
+// Habbo describes a new habbo.
 type Habbo struct {
-	Name    string
-	Figure  string
-	Gender  string
-	Credits int64
-	Detail  string
+	Name   string
+	Figure string
+	Gender string
 }
 
 // Account describes a new user with its first habbo. PasswordHash comes from
 // HashPassword, which the caller runs before opening its transaction: argon2 is
-// slow, and the store's pool has one connection.
+// slow, and the store's pool has one connection. Detail goes on the ledger row of
+// the first credits; an account starting without credits gets no row.
 type Account struct {
 	Email        string
 	BornOn       time.Time
 	Newsletter   bool
 	IP           string
 	PasswordHash string
+	Credits      int64
+	Detail       string
 	Habbo        Habbo
 }
 
-// CreateAccount writes a user, its credentials and its first habbo. It takes the
-// queries of the caller's transaction, since the writes must succeed together
-// and a caller can have more of its own. It does not validate the account.
+// CreateAccount writes a user, its credentials, its wallet and its first habbo. It
+// takes the queries of the caller's transaction, since the writes must succeed
+// together and a caller can have more of its own. It does not validate the account.
 func CreateAccount(ctx context.Context, q *store.Queries, account Account) (userID, avatarID int64, err error) {
 	now := clock().UTC()
 	user, err := q.CreateUser(ctx, store.CreateUserParams{
@@ -127,10 +128,28 @@ func CreateAccount(ctx context.Context, q *store.Queries, account Account) (user
 	if err != nil {
 		return 0, 0, err
 	}
+	err = q.CreateWallet(ctx, store.CreateWalletParams{UserID: user.ID, Credits: account.Credits, UpdatedAt: now})
+	if err != nil {
+		return 0, 0, fmt.Errorf("auth: create account: %w", err)
+	}
+	if account.Credits == 0 {
+		return user.ID, avatarID, nil
+	}
+	err = q.CreateWalletTransaction(ctx, store.CreateWalletTransactionParams{
+		UserID:    user.ID,
+		AvatarID:  sql.NullInt64{Int64: avatarID, Valid: true},
+		Credits:   account.Credits,
+		Reason:    "registration",
+		Detail:    account.Detail,
+		CreatedAt: now,
+	})
+	if err != nil {
+		return 0, 0, fmt.Errorf("auth: create account: %w", err)
+	}
 	return user.ID, avatarID, nil
 }
 
-// CreateHabbo writes a habbo of userID with its profile, home and wallet. Like
+// CreateHabbo writes a habbo of userID with its profile and home. Like
 // CreateAccount, it takes the queries of the caller's transaction and does not
 // validate the habbo.
 func CreateHabbo(ctx context.Context, q *store.Queries, userID int64, habbo Habbo) (avatarID int64, err error) {
@@ -151,22 +170,6 @@ func CreateHabbo(ctx context.Context, q *store.Queries, userID int64, habbo Habb
 		return 0, fmt.Errorf("auth: create habbo: %w", err)
 	}
 	if _, err := q.CreateProfileHome(ctx, store.CreateProfileHomeParams{ProfileID: profile.ID, UpdatedAt: now}); err != nil {
-		return 0, fmt.Errorf("auth: create habbo: %w", err)
-	}
-	if err := q.CreateWallet(ctx, store.CreateWalletParams{AvatarID: avatar.ID, Credits: habbo.Credits, UpdatedAt: now}); err != nil {
-		return 0, fmt.Errorf("auth: create habbo: %w", err)
-	}
-	if habbo.Credits == 0 {
-		return avatar.ID, nil
-	}
-	err = q.CreateWalletTransaction(ctx, store.CreateWalletTransactionParams{
-		AvatarID:  avatar.ID,
-		Credits:   habbo.Credits,
-		Reason:    "registration",
-		Detail:    habbo.Detail,
-		CreatedAt: now,
-	})
-	if err != nil {
 		return 0, fmt.Errorf("auth: create habbo: %w", err)
 	}
 	return avatar.ID, nil

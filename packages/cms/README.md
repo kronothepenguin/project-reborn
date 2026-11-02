@@ -65,8 +65,8 @@ serves the built frontend from the embedded `dist/`.
   that it cannot proceed until it is first touched, so on `/register` that would
   stop a visitor who keeps the suggested look.
 - `/account/habbos` adds habbos up to `registration.maxHabbosPerUser` and switches the
-  session's active one. A habbo added here starts without credits, so that it does
-  not repeat the welcome credits.
+  session's active one. All the habbos of a user share one wallet and one club
+  membership.
 - Islands get no `[[ ]]` values, so the page keeps the name and the look in
   inputs that Go fills in. `habbo/avatar-editor` reads the hidden `figure`,
   `gender` and `editorState` inputs on start and writes every change back, which

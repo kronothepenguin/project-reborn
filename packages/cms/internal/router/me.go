@@ -69,7 +69,7 @@ func (r *Router) newMePage(ctx context.Context, session auth.Session) (mePage, e
 	if err != nil {
 		return page, err
 	}
-	wallet, err := q.GetWallet(ctx, session.AvatarID)
+	wallet, err := q.GetWallet(ctx, session.UserID)
 	if err != nil {
 		return page, err
 	}
@@ -78,7 +78,7 @@ func (r *Router) newMePage(ctx context.Context, session auth.Session) (mePage, e
 		return page, err
 	}
 	now := time.Now().UTC()
-	days, err := r.clubDays(ctx, session.AvatarID, now)
+	days, err := r.clubDays(ctx, session.UserID, now)
 	if err != nil {
 		return page, err
 	}
@@ -115,10 +115,10 @@ func (r *Router) newMePage(ctx context.Context, session auth.Session) (mePage, e
 	return page, nil
 }
 
-// clubDays says how many days of the club the habbo has left, counting a day
-// that has begun, and 0 for a habbo outside the club.
-func (r *Router) clubDays(ctx context.Context, avatarID int64, now time.Time) (int, error) {
-	end, err := r.deps.Queries.GetClubEnd(ctx, store.GetClubEndParams{AvatarID: avatarID, Now: now})
+// clubDays says how many days of the club the user has left, counting a day that
+// has begun, and 0 for a user outside the club.
+func (r *Router) clubDays(ctx context.Context, userID int64, now time.Time) (int, error) {
+	end, err := r.deps.Queries.GetClubEnd(ctx, store.GetClubEndParams{UserID: userID, Now: now})
 	if store.IsNotFound(err) {
 		return 0, nil
 	}

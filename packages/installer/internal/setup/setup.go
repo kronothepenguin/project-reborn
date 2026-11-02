@@ -187,13 +187,9 @@ func createAdministrator(ctx context.Context, q *store.Queries, admin Administra
 		BornOn:       admin.BornOn,
 		IP:           admin.IP,
 		PasswordHash: hash,
-		Habbo: auth.Habbo{
-			Name:    admin.Name,
-			Figure:  adminFigure,
-			Gender:  adminGender,
-			Credits: adminCredits,
-			Detail:  "installer",
-		},
+		Credits:      adminCredits,
+		Detail:       "installer",
+		Habbo:        auth.Habbo{Name: admin.Name, Figure: adminFigure, Gender: adminGender},
 	})
 	if err != nil {
 		return err

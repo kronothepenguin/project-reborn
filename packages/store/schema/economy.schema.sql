@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS wallets (
-    avatar_id INTEGER PRIMARY KEY REFERENCES avatars(id) ON DELETE CASCADE,
+    user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
     credits INTEGER NOT NULL DEFAULT 0 CHECK (credits >= 0),
     tickets INTEGER NOT NULL DEFAULT 0 CHECK (tickets >= 0),
     film INTEGER NOT NULL DEFAULT 0 CHECK (film >= 0),
@@ -7,16 +7,18 @@ CREATE TABLE IF NOT EXISTS wallets (
 );
 
 -- Every change of wallets.credits writes one row here in the same transaction.
+-- avatar_id is the habbo that acted, and NULL when none did.
 CREATE TABLE IF NOT EXISTS wallet_transactions (
     id INTEGER PRIMARY KEY,
-    avatar_id INTEGER NOT NULL REFERENCES avatars(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    avatar_id INTEGER REFERENCES avatars(id) ON DELETE SET NULL,
     credits INTEGER NOT NULL,
     reason TEXT NOT NULL,
     detail TEXT NOT NULL DEFAULT '',
     created_at DATETIME NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS idx_wallet_transactions_avatar_id_created_at ON wallet_transactions(avatar_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_wallet_transactions_user_id_created_at ON wallet_transactions(user_id, created_at);
 
 CREATE TABLE IF NOT EXISTS vouchers (
     code TEXT NOT NULL COLLATE NOCASE PRIMARY KEY,

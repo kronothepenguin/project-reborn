@@ -36,7 +36,7 @@ Concepts for the tables declared under `packages/store/schema/`, one per table.
 - [home_items](home_items.md) — Stickers, sticky notes and widgets placed on a home, with position, stacking order and skin.
 - [home_store_categories](home_store_categories.md) — Categories of the home store, ordered by position, some reserved for staff.
 - [home_store_items](home_store_items.md) — Stickers, note packs and backgrounds for sale in the home store.
-- [home_inventory](home_inventory.md) — Bought home store items a habbo has not placed yet, with their remaining quantity.
+- [home_inventory](home_inventory.md) — Bought home store items a user has not placed yet, with their remaining quantity.
 
 ## Community
 
@@ -49,10 +49,10 @@ Concepts for the tables declared under `packages/store/schema/`, one per table.
 
 ## Economy
 
-- [wallets](wallets.md) — The credits, tickets and film of a habbo, which can never go negative.
-- [wallet_transactions](wallet_transactions.md) — The credit ledger, with one signed row per change of a habbo's credits.
+- [wallets](wallets.md) — The credits, tickets and film of a user, which can never go negative.
+- [wallet_transactions](wallet_transactions.md) — The credit ledger, with one signed row per change of a user's credits.
 - [vouchers](vouchers.md) — Credit vouchers created by staff, matched ignoring case, and kept after redemption for audit.
-- [club_subscriptions](club_subscriptions.md) — Paid Habbo Club periods of a habbo; the habbo is a member while a period covers the current time.
+- [club_subscriptions](club_subscriptions.md) — Paid Habbo Club periods of a user; the user is a member while a period covers the current time.
 
 ## Moderation
 

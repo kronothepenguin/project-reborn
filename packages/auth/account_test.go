@@ -16,12 +16,12 @@ func testAccount() Account {
 		Newsletter:   true,
 		IP:           "10.0.0.1",
 		PasswordHash: HashPassword(testPassword),
+		Credits:      500,
+		Detail:       "Welcome!",
 		Habbo: Habbo{
-			Name:    "Newbie",
-			Figure:  "hd-180-1.ch-215-82.lg-270-82",
-			Gender:  "F",
-			Credits: 500,
-			Detail:  "Welcome!",
+			Name:   "Newbie",
+			Figure: "hd-180-1.ch-215-82.lg-270-82",
+			Gender: "F",
 		},
 	}
 }
@@ -196,25 +196,35 @@ func TestCreateHabboWritesItsRows(t *testing.T) {
 	if n := f.count(t, `SELECT COUNT(*) FROM homes JOIN profiles ON homes.profile_id = profiles.id WHERE avatar_id = ?`, avatarID); n != 1 {
 		t.Errorf("%d homes, want 1", n)
 	}
-	if n := f.count(t, `SELECT COUNT(*) FROM wallets WHERE avatar_id = ? AND credits = 500`, avatarID); n != 1 {
-		t.Errorf("%d wallets with 500 credits, want 1", n)
-	}
-	if n := f.count(t, `SELECT COUNT(*) FROM wallet_transactions WHERE avatar_id = ? AND credits = 500 AND reason = 'registration' AND detail = 'Welcome!'`, avatarID); n != 1 {
-		t.Errorf("%d ledger rows, want 1", n)
+	if n := f.count(t, `SELECT COUNT(*) FROM wallets`); n != 0 {
+		t.Errorf("%d wallets, want none from a habbo", n)
 	}
 }
 
-func TestCreateHabboWithoutCreditsWritesNoLedgerRow(t *testing.T) {
+func TestCreateAccountWritesTheWalletOnTheUser(t *testing.T) {
 	f := newFixture(t)
-	userID, _ := f.habbo(t, "admin@example.com", "Admin", testPassword)
-	habbo := testAccount().Habbo
-	habbo.Credits = 0
-
-	avatarID, err := CreateHabbo(t.Context(), store.New(f.db), userID, habbo)
+	userID, avatarID, err := CreateAccount(t.Context(), store.New(f.db), testAccount())
 	if err != nil {
-		t.Fatalf("CreateHabbo: %v", err)
+		t.Fatalf("CreateAccount: %v", err)
 	}
-	if n := f.count(t, `SELECT COUNT(*) FROM wallets WHERE avatar_id = ? AND credits = 0`, avatarID); n != 1 {
+	if n := f.count(t, `SELECT COUNT(*) FROM wallets WHERE user_id = ? AND credits = 500`, userID); n != 1 {
+		t.Errorf("%d wallets with 500 credits, want 1", n)
+	}
+	if n := f.count(t, `SELECT COUNT(*) FROM wallet_transactions WHERE user_id = ? AND avatar_id = ? AND credits = 500 AND reason = 'registration' AND detail = 'Welcome!'`, userID, avatarID); n != 1 {
+		t.Errorf("%d ledger rows naming the habbo, want 1", n)
+	}
+}
+
+func TestCreateAccountWithoutCreditsWritesNoLedgerRow(t *testing.T) {
+	f := newFixture(t)
+	account := testAccount()
+	account.Credits = 0
+
+	userID, _, err := CreateAccount(t.Context(), store.New(f.db), account)
+	if err != nil {
+		t.Fatalf("CreateAccount: %v", err)
+	}
+	if n := f.count(t, `SELECT COUNT(*) FROM wallets WHERE user_id = ? AND credits = 0`, userID); n != 1 {
 		t.Errorf("%d empty wallets, want 1", n)
 	}
 	if n := f.count(t, `SELECT COUNT(*) FROM wallet_transactions`); n != 0 {
