@@ -2,7 +2,7 @@
 type: Phase
 title: HK-B Users and moderation
 description: Housekeeping search and editing of users and habbos, credits, badges, bans, alerts and the help queue.
-status: active
+status: done
 timestamp: 2026-10-27T20:48:19+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [hk-b, housekeeping]
@@ -50,4 +50,4 @@ Holo details: [housekeeping reference](/reference/holo-housekeeping.md).
 - [hk-b-08 Give direct attributes](/tasks/hk-b-08-direct-attributes.md) — done
 - [hk-b-09 Restore archived habbos](/tasks/hk-b-09-restore-habbos.md) — done
 - [hk-b-11 Fix what the screenshots showed](/tasks/hk-b-11-screenshot-fixes.md) — done
-- [hk-b-10 Verify HK-B](/tasks/hk-b-10-exit-check.md) — todo
+- [hk-b-10 Verify HK-B](/tasks/hk-b-10-exit-check.md) — done

@@ -17,7 +17,8 @@ A ban stops a person from signing in. It targets the user, so every habbo of tha
 
 # Lifecycle
 
-- Issued from housekeeping with `housekeeping.bans`; issuing also ends every session of the user.
+- Issued from housekeeping with `housekeeping.bans`, only on users below the actor; issuing also ends every session of
+  the user. Holo's longest length is a real date 25 years away, so no form writes a NULL `expires_at`.
 - Lifted early from housekeeping; expired bans stay as history.
 - Deleting the user deletes their bans.
 

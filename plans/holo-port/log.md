@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [hk-b-10](/tasks/hk-b-10-exit-check.md): HK-B meets its exit criteria from a clean checkout, with every gate
+  and all 498 browser checks passing.
+- **Start** [hk-b-10](/tasks/hk-b-10-exit-check.md).
 - **Done** [hk-b-11](/tasks/hk-b-11-screenshot-fixes.md): the ticket page names the staff member, the addresses read as
   in Holo, and a test stops a page from hiding the layout's fields.
 - **Start** [hk-b-11](/tasks/hk-b-11-screenshot-fixes.md).

@@ -148,6 +148,7 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Help Queries | `Username` links to the home page | The same link, which works once homes are built | [P3](/phases/p3-homes.md) |
 | Alert | Goes to a user, with `Server Alert` for the game | Goes to a habbo, and archived ones count as unknown; the checkbox waits for the game server | Alerts were always per habbo here, and [0013](/decisions/0013-defer-game-server-features.md) |
 | Mass alert | One row per user | One row per habbo that is not archived | Each habbo reads its own feed |
+| Left menu | `Edit User`, `Retrive IP Address`, `Retrive User ID`, `Clone Checker`, `Give User Badge`, `Transaction logs`, `Give Credits / Refunds`, `Unbanning`, `Ban Listing`, `Mass Site/Remote Alert` and `Alert Listing` are links of their own | Their work is on `User Listing`, the habbo's page, `Remote Banning` and `Site/Remote Alert` | The plan's routes |
 | Ban tool | `You may not ban the System Administrator!` | `Access denied. You may only act on users below your level.` | [0055](/decisions/0055-staff-levels.md) |
 | Ban tool | `...successfully. An ingame notification has been sent (that is, if the user is online).` | Ends at `successfully.` | The game server is deferred ([0013](/decisions/0013-defer-game-server-features.md)) |
 | Unban tool | `(Mass) Unban` deletes every ban matching a query | `Lift` beside each ban, which stays in the table as history | The plan, and [0063](/decisions/0063-what-housekeeping-can-delete.md) |
@@ -215,6 +216,8 @@ veto.
 | The tags habblet, the news promo and the banners on `/me` | [P4](/phases/p4-community.md) |
 | The wardrobe on `/account/looks` | [P6](/phases/p6-economy.md) |
 | The page behind the header's habbo search, `/home?name=` | The deferred [P3](/phases/p3-homes.md) |
+| `Voucher Management` in housekeeping | [P6](/phases/p6-economy.md) |
+| `Chatlogs` and `Online Users` in housekeeping | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | The pages behind Help, Community and Credits | [P7](/phases/p7-help.md), [P4](/phases/p4-community.md), [P6](/phases/p6-economy.md) |
 | News and banners in housekeeping, and the text boxes of the staff page | [P4](/phases/p4-community.md) |
 | Vouchers in housekeeping, and the text boxes of the credits page | [P6](/phases/p6-economy.md) |

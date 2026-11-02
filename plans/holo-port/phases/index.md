@@ -10,7 +10,7 @@ parallel with P2, on feature branches ([0046](/decisions/0046-main-and-feature-b
 3. [P2 Me and account](/phases/p2-me-account.md) — The community layout and header, the Me page, account settings and owning several habbos. **Done.**
 4. [HK-A Housekeeping core](/phases/hk-a-housekeeping-core.md) — Housekeeping scaffold and layout, dashboard, settings editor, access groups and the staff log. **Done.**
 5. [FX Review follow-ups](/phases/fx-review-follow-ups.md) — The changes the user decided in the review of P2 and HK-A, before HK-B builds on them. **Done.**
-6. [HK-B Users and moderation](/phases/hk-b-users-moderation.md) — Housekeeping search and editing of users and habbos, credits, badges, bans, alerts and the help queue.
+6. [HK-B Users and moderation](/phases/hk-b-users-moderation.md) — Housekeeping search and editing of users and habbos, credits, badges, bans, alerts and the help queue. **Done.**
 7. [P3 Homes](/phases/p3-homes.md) — Habbo home pages with stickers, notes and widgets, the home editor, the home store and inventory, profile tags, and the store seed and admin.
 8. [P4 Community](/phases/p4-community.md) — Community page, news, tags with the tag cloud and tag fight, the staff page and banners, with their housekeeping editors.
 9. [P5 Groups and forum](/phases/p5-groups-forum.md) — Groups with group homes, membership management, the badge editor and renderer, and the site-wide discussion board.
