@@ -48,9 +48,9 @@ func (r *Router) inTx(ctx context.Context, change func(q *store.Queries) error) 
 
 // keepManager refuses a change that leaves nobody able to manage access groups,
 // after the change has run in its transaction. It asks for someone holding both
-// attributes: housekeeping.accessGroups alone opens nothing, so losing
-// housekeeping.access would lock the hotel out just the same, and nobody is
-// expected to edit the database by hand.
+// attributes, from any group or directly: housekeeping.accessGroups alone opens
+// nothing, so losing housekeeping.access would lock the hotel out just the same,
+// and nobody is expected to edit the database by hand.
 func keepManager(ctx context.Context, q *store.Queries) error {
 	managers, err := q.ListAttributeHolders(ctx, string(auth.HousekeepingAccessGroups))
 	if err != nil {

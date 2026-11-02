@@ -13,8 +13,8 @@ import (
 
 func TestCatalogue(t *testing.T) {
 	entries := Catalogue()
-	if len(entries) != 18 {
-		t.Errorf("the catalogue has %d attributes, want the 18 of decision 0015", len(entries))
+	if len(entries) != 19 {
+		t.Errorf("the catalogue has %d attributes, want the 18 of decision 0015 and housekeeping.usersPrivate", len(entries))
 	}
 	seen := make(map[Attribute]bool)
 	for _, entry := range entries {
@@ -50,6 +50,39 @@ func TestAttributesAreTheUnionOfTheGroups(t *testing.T) {
 	}
 	if got, err := Attributes(t.Context(), f.db, outsider); err != nil || len(got) != 0 {
 		t.Errorf("Attributes() of a user without groups = %v, %v, want none", got, err)
+	}
+}
+
+func TestAttributesAddWhatTheUserHolds(t *testing.T) {
+	f := newFixture(t)
+	userID, _ := f.habbo(t, "staff@example.com", "Staff", testPassword)
+	otherID, _ := f.habbo(t, "other@example.com", "Other", testPassword)
+	f.join(t, f.group(t, "Staff", HousekeepingAccess), userID)
+	q := store.New(f.db)
+	for _, attribute := range []Attribute{HousekeepingBans, HousekeepingAccess} {
+		err := q.AddUserAttribute(t.Context(), store.AddUserAttributeParams{UserID: userID, Attribute: string(attribute), GrantedAt: testNow})
+		if err != nil {
+			t.Fatalf("AddUserAttribute: %v", err)
+		}
+	}
+
+	got, err := Attributes(t.Context(), f.db, userID)
+	if err != nil {
+		t.Fatalf("Attributes: %v", err)
+	}
+	if want := []Attribute{HousekeepingAccess, HousekeepingBans}; !slices.Equal(got, want) {
+		t.Errorf("Attributes = %v, want %v", got, want)
+	}
+	if got, err := Attributes(t.Context(), f.db, otherID); err != nil || len(got) != 0 {
+		t.Errorf("Attributes of another user = %v, %v", got, err)
+	}
+
+	err = q.RemoveUserAttribute(t.Context(), store.RemoveUserAttributeParams{UserID: userID, Attribute: string(HousekeepingBans)})
+	if err != nil {
+		t.Fatalf("RemoveUserAttribute: %v", err)
+	}
+	if got, _ := Attributes(t.Context(), f.db, userID); !slices.Equal(got, []Attribute{HousekeepingAccess}) {
+		t.Errorf("Attributes after removing = %v", got)
 	}
 }
 

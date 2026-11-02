@@ -293,6 +293,13 @@ type User struct {
 	UpdatedAt  time.Time
 }
 
+type UserAttribute struct {
+	UserID          int64
+	Attribute       string
+	GrantedAt       time.Time
+	GrantedByUserID sql.NullInt64
+}
+
 type Voucher struct {
 	Code               string
 	Credits            int64

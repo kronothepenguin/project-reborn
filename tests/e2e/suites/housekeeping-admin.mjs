@@ -40,7 +40,7 @@ export default async function (t) {
   const boxes = await page.locator('input[name="attribute"]').count();
   check(
     "every attribute of the catalogue has a checkbox",
-    boxes === 18,
+    boxes === 19,
     String(boxes),
   );
 

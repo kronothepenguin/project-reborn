@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [fx-05](/tasks/fx-05-user-attributes.md): a user can hold attributes directly, every check and the guard
+  read both, and emails take `housekeeping.usersPrivate`.
+- **Start** [fx-05](/tasks/fx-05-user-attributes.md).
 - **Done** [fx-04](/tasks/fx-04-user-wallet-club-inventory.md): the wallet, the club and the home inventory belong to
   the user, and all their habbos share them.
 - **Start** [fx-04](/tasks/fx-04-user-wallet-club-inventory.md).

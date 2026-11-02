@@ -3,7 +3,7 @@ type: Entity
 title: Access group
 description: An admin-defined group of users that grants attributes; code checks attributes, never group names.
 tags: [store, entity, access]
-timestamp: 2026-10-27T21:17:19+00:00
+timestamp: 2026-11-02T01:52:57+00:00
 ---
 
 # Definition
@@ -27,7 +27,7 @@ properties, not attributes.
 
 # Vocabularies
 
-`access_group_attributes.attribute` takes values from the catalogue in `packages/auth`:
+`access_group_attributes.attribute` and `user_attributes.attribute` take values from the catalogue in `packages/auth`:
 
 | Attribute | Grants |
 |-----------|--------|
@@ -37,7 +37,8 @@ properties, not attributes.
 | `housekeeping.news` | writing and deleting news |
 | `housekeeping.banners` | managing banners |
 | `housekeeping.homeStore` | managing the home store catalogue |
-| `housekeeping.users` | searching users and habbos, seeing emails and IP history |
+| `housekeeping.users` | searching users and habbos, reading their profiles |
+| `housekeeping.usersPrivate` | seeing emails and IP history |
 | `housekeeping.usersEdit` | editing users, habbos and badges |
 | `housekeeping.credits` | giving or taking credits |
 | `housekeeping.vouchers` | creating vouchers |
@@ -61,6 +62,7 @@ R26 fuses (`fuse_*`) are a separate catalogue, designed with the game server.
 - [access_groups](/tables/access_groups.md)
 - [access_group_attributes](/tables/access_group_attributes.md)
 - [access_group_members](/tables/access_group_members.md)
+- [user_attributes](/tables/user_attributes.md)
 
 # Queries
 

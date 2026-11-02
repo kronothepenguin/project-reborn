@@ -40,7 +40,7 @@ starts.
 - [fx-02 Run every gate on GitHub Actions](/tasks/fx-02-ci-workflow.md) — done
 - [fx-03 Publish releases on tags](/tasks/fx-03-release-workflow.md) — done
 - [fx-04 Give the wallet, the club and the home inventory to the user](/tasks/fx-04-user-wallet-club-inventory.md) — done
-- [fx-05 Give attributes to users](/tasks/fx-05-user-attributes.md) — todo
+- [fx-05 Give attributes to users](/tasks/fx-05-user-attributes.md) — done
 - [fx-06 Add levels to access groups](/tasks/fx-06-staff-levels.md) — todo
 - [fx-07 Seed Holo's ranks in the installer](/tasks/fx-07-seed-ranks.md) — todo
 - [fx-08 Delete access groups](/tasks/fx-08-delete-access-groups.md) — todo

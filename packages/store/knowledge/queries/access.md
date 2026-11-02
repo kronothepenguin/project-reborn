@@ -4,7 +4,7 @@ title: access.query.sql
 description: Access operations for groups, their attributes and members, a user's attributes and the holders of an attribute.
 resource: packages/store/queries/access.query.sql
 tags: [store, query, access]
-timestamp: 2026-10-27T21:44:59+00:00
+timestamp: 2026-11-02T01:52:57+00:00
 ---
 
 # Operations
@@ -104,24 +104,37 @@ timestamp: 2026-10-27T21:44:59+00:00
 
 - Cardinality: `:many`
 - Inputs: `user_id`
-- Result: the distinct attributes of all the user's groups, sorted
-- Tables: `access_group_attributes`, `access_group_members`
+- Result: the distinct attributes of the user's groups and those given to the user directly, sorted
+- Tables: `access_group_attributes`, `access_group_members`, `user_attributes`
+
+## AddUserAttribute
+
+- Cardinality: `:exec`
+- Inputs: `user_id`, `attribute`, `granted_at`, `granted_by_user_id` (nullable)
+- Result: gives the attribute to the user directly; nothing happens when they already hold it directly
+- Tables: `user_attributes`
+
+## RemoveUserAttribute
+
+- Cardinality: `:exec`
+- Inputs: `user_id`, `attribute`
+- Tables: `user_attributes`
 
 ## ListAttributeHolderDetails
 
 - Cardinality: `:many`
 - Inputs: `attribute`, `row_limit`
-- Result: `ListAttributeHolderDetailsRow` (`id`, `email`, `name`) of the users holding the attribute through any group,
+- Result: `ListAttributeHolderDetailsRow` (`id`, `email`, `name`) of the users holding the attribute directly or through any group,
   sorted by name. The name is that of a display habbo, or of the user's first habbo when no group names one.
-- Tables: `users`, `avatars`, `access_group_members`, `access_group_attributes`
+- Tables: `users`, `avatars`, `access_group_members`, `access_group_attributes`, `user_attributes`
 
 ## ListAttributeHolders
 
 - Cardinality: `:many`
 - Inputs: `attribute`
-- Result: the ids of the users holding the attribute through any group, sorted (installer check, last-holder
-  guard)
-- Tables: `access_group_members`, `access_group_attributes`
+- Result: the ids of the users holding the attribute directly or through any group, sorted (installer check,
+  last-holder guard)
+- Tables: `access_group_members`, `access_group_attributes`, `user_attributes`
 
 # Related
 

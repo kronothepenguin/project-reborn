@@ -105,7 +105,20 @@ SELECT DISTINCT access_group_attributes.attribute
 FROM access_group_attributes
 JOIN access_group_members ON access_group_members.access_group_id = access_group_attributes.access_group_id
 WHERE access_group_members.user_id = sqlc.arg(user_id)
-ORDER BY access_group_attributes.attribute;
+UNION
+SELECT user_attributes.attribute
+FROM user_attributes
+WHERE user_attributes.user_id = sqlc.arg(user_id)
+ORDER BY attribute;
+
+-- name: AddUserAttribute :exec
+INSERT INTO user_attributes (user_id, attribute, granted_at, granted_by_user_id)
+VALUES (sqlc.arg(user_id), sqlc.arg(attribute), sqlc.arg(granted_at), sqlc.narg(granted_by_user_id))
+ON CONFLICT (user_id, attribute) DO NOTHING;
+
+-- name: RemoveUserAttribute :exec
+DELETE FROM user_attributes
+WHERE user_id = sqlc.arg(user_id) AND attribute = sqlc.arg(attribute);
 
 -- The name is that of the habbo shown for the user on the staff page, or of their
 -- first habbo when no group names one.
@@ -131,6 +144,10 @@ WHERE users.id IN (
     FROM access_group_members
     JOIN access_group_attributes ON access_group_attributes.access_group_id = access_group_members.access_group_id
     WHERE access_group_attributes.attribute = sqlc.arg(attribute)
+    UNION
+    SELECT user_attributes.user_id
+    FROM user_attributes
+    WHERE user_attributes.attribute = sqlc.arg(attribute)
 )
 ORDER BY name
 LIMIT sqlc.arg(row_limit);
@@ -140,4 +157,8 @@ SELECT DISTINCT access_group_members.user_id
 FROM access_group_members
 JOIN access_group_attributes ON access_group_attributes.access_group_id = access_group_members.access_group_id
 WHERE access_group_attributes.attribute = sqlc.arg(attribute)
-ORDER BY access_group_members.user_id;
+UNION
+SELECT user_attributes.user_id
+FROM user_attributes
+WHERE user_attributes.attribute = sqlc.arg(attribute)
+ORDER BY user_id;

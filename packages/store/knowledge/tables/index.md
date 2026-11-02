@@ -22,6 +22,7 @@ Concepts for the tables declared under `packages/store/schema/`, one per table.
 
 - [access_groups](access_groups.md) — Admin-defined named groups that grant attributes to their members.
 - [access_group_attributes](access_group_attributes.md) — The attributes each access group grants, one row per group and attribute.
+- [user_attributes](user_attributes.md) — Attributes given to a user directly, on top of those of their access groups.
 - [access_group_members](access_group_members.md) — Users who belong to an access group, with the habbo shown for them on the staff page.
 
 ## Settings

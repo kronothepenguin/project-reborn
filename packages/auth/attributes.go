@@ -20,6 +20,7 @@ const (
 	HousekeepingBanners         Attribute = "housekeeping.banners"
 	HousekeepingHomeStore       Attribute = "housekeeping.homeStore"
 	HousekeepingUsers           Attribute = "housekeeping.users"
+	HousekeepingUsersPrivate    Attribute = "housekeeping.usersPrivate"
 	HousekeepingUsersEdit       Attribute = "housekeeping.usersEdit"
 	HousekeepingCredits         Attribute = "housekeeping.credits"
 	HousekeepingVouchers        Attribute = "housekeeping.vouchers"
@@ -45,7 +46,8 @@ var catalogue = []CatalogueEntry{
 	{HousekeepingNews, "writing and deleting news"},
 	{HousekeepingBanners, "managing banners"},
 	{HousekeepingHomeStore, "managing the home store catalogue"},
-	{HousekeepingUsers, "searching users and habbos, seeing emails and IP history"},
+	{HousekeepingUsers, "searching users and habbos, reading their profiles"},
+	{HousekeepingUsersPrivate, "seeing emails and IP history"},
 	{HousekeepingUsersEdit, "editing users, habbos and badges"},
 	{HousekeepingCredits, "giving or taking credits"},
 	{HousekeepingVouchers, "creating vouchers"},
@@ -65,7 +67,8 @@ func Catalogue() []CatalogueEntry {
 	return slices.Clone(catalogue)
 }
 
-// Attributes returns the union of the attributes of userID's access groups.
+// Attributes returns the attributes of userID's access groups and those given to
+// the user directly.
 func Attributes(ctx context.Context, db *sql.DB, userID int64) ([]Attribute, error) {
 	names, err := store.New(db).ListUserAttributes(ctx, userID)
 	if err != nil {

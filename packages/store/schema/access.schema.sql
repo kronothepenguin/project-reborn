@@ -27,3 +27,14 @@ CREATE TABLE IF NOT EXISTS access_group_members (
 );
 
 CREATE INDEX IF NOT EXISTS idx_access_group_members_user_id ON access_group_members(user_id);
+
+-- Attributes given to a user directly, on top of those of their access groups.
+CREATE TABLE IF NOT EXISTS user_attributes (
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    attribute TEXT NOT NULL,
+    granted_at DATETIME NOT NULL,
+    granted_by_user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+    PRIMARY KEY (user_id, attribute)
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_attributes_attribute ON user_attributes(attribute);

@@ -355,6 +355,36 @@ func TestAHolderInTwoGroupsCanLeaveOne(t *testing.T) {
 	wantPage(t, serve(mux, "POST", memberURL(adminID), cookie, form), http.StatusUnprocessableEntity, lastManager)
 }
 
+func TestADirectHolderKeepsTheHotelManaged(t *testing.T) {
+	db, mux := newSite(t)
+	_, group, cookie := manager(t, db, "Admin")
+	otherID := habbo(t, db, "other@example.com", "Other")
+
+	wantPage(t, serve(mux, "POST", groupURL(group), cookie, groupForm("Group")), http.StatusUnprocessableEntity, lastManager)
+
+	q := store.New(db)
+	for _, attribute := range []auth.Attribute{auth.HousekeepingAccess, auth.HousekeepingAccessGroups} {
+		err := q.AddUserAttribute(t.Context(), store.AddUserAttributeParams{UserID: otherID, Attribute: string(attribute), GrantedAt: testNow})
+		if err != nil {
+			t.Fatalf("AddUserAttribute: %v", err)
+		}
+	}
+	wantRedirect(t, serve(mux, "POST", groupURL(group), cookie, groupForm("Group")), groupURL(group)+"?saved=1")
+}
+
+func TestTheKeysCanComeFromAGroupAndDirectly(t *testing.T) {
+	db, mux := newSite(t)
+	_, group, cookie := manager(t, db, "Admin")
+	otherID := habbo(t, db, "other@example.com", "Other")
+	grant(t, db, otherID, auth.HousekeepingAccess)
+
+	err := store.New(db).AddUserAttribute(t.Context(), store.AddUserAttributeParams{UserID: otherID, Attribute: string(auth.HousekeepingAccessGroups), GrantedAt: testNow})
+	if err != nil {
+		t.Fatalf("AddUserAttribute: %v", err)
+	}
+	wantRedirect(t, serve(mux, "POST", groupURL(group), cookie, groupForm("Group")), groupURL(group)+"?saved=1")
+}
+
 func TestAttributesLeaveOneGroupWhenAnotherHoldsThem(t *testing.T) {
 	db, mux := newSite(t)
 	adminID, first, cookie := manager(t, db, "Admin")

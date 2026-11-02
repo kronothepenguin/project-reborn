@@ -32,8 +32,7 @@ type administrator struct {
 }
 
 // HandleIndexView renders GET /housekeeping/{$}. Holo showed every administrator's
-// address to all staff; here it takes housekeeping.users, which grants seeing
-// emails.
+// address to all staff; here it takes housekeeping.usersPrivate.
 func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
 	page, err := r.newIndexPage(req.Context())
 	if err != nil {
@@ -46,7 +45,7 @@ func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
-	if !slices.Contains(attributes, auth.HousekeepingUsers) {
+	if !slices.Contains(attributes, auth.HousekeepingUsersPrivate) {
 		for i := range page.Administrators {
 			page.Administrators[i].Email = ""
 		}

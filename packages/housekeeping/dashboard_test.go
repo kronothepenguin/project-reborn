@@ -121,15 +121,15 @@ func TestTheDashboardShowsTwentyHolders(t *testing.T) {
 	}
 }
 
-func TestAddressesTakeTheUsersAttribute(t *testing.T) {
+func TestAddressesTakeThePrivateAttribute(t *testing.T) {
 	db, mux := newSite(t)
-	_, plain := staff(t, db, "Plain", auth.HousekeepingAccess, auth.HousekeepingAccessGroups)
-	_, seer := staff(t, db, "Seer", auth.HousekeepingAccess, auth.HousekeepingUsers)
+	_, plain := staff(t, db, "Plain", auth.HousekeepingAccess, auth.HousekeepingAccessGroups, auth.HousekeepingUsers)
+	_, seer := staff(t, db, "Seer", auth.HousekeepingAccess, auth.HousekeepingUsersPrivate)
 
 	rec := serve(mux, "GET", "/housekeeping/", plain, nil)
 	wantPage(t, rec, http.StatusOK, "Name:Plain")
 	if strings.Contains(rec.Body.String(), "plain@example.com") {
-		t.Errorf("the address reached a viewer without housekeeping.users: %s", rec.Body)
+		t.Errorf("the address reached a viewer without housekeeping.usersPrivate: %s", rec.Body)
 	}
 	wantPage(t, serve(mux, "GET", "/housekeeping/", seer, nil), http.StatusOK, "Email:plain@example.com")
 }
