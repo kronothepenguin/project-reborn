@@ -53,6 +53,11 @@ func New(db *sql.DB, opts ...Option) *CMS {
 	for _, opt := range opts {
 		opt(c)
 	}
+	// Housekeeping is the single writer of settings, so this is how a CMS running
+	// alone learns of a change.
+	scheduler.Every(settings.GetInt("cms.refresh"), scheduler.Second, func(ctx context.Context) error {
+		return settings.Reload(ctx, db)
+	})
 	scheduler.Every(1, scheduler.Minute, func(ctx context.Context) error {
 		return auth.DeleteExpiredResets(ctx, db)
 	})

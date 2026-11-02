@@ -46,14 +46,9 @@ func TestASettingDeclaredLaterGetsAForm(t *testing.T) {
 }
 
 func TestHiddenSettingsGetNoForm(t *testing.T) {
-	sections := sectionsOver([]settings.Setting{
-		{Key: "cms.refresh", Value: 1},
-		{Key: "housekeeping.note", Value: "note"},
-	})
-	for _, id := range []string{"cms", "housekeeping"} {
-		if s, ok := findSection(sections, id); ok {
-			t.Errorf("a form holds a hidden setting: %+v", s)
-		}
+	sections := sectionsOver([]settings.Setting{{Key: "housekeeping.note", Value: "note"}})
+	if s, ok := findSection(sections, "housekeeping"); ok {
+		t.Errorf("a form holds a hidden setting: %+v", s)
 	}
 }
 

@@ -33,6 +33,9 @@ var (
 	mu     sync.Mutex
 	base   map[string]any
 	values atomic.Pointer[map[string]any]
+	// reported holds what the last merge ignored, because Reload runs every few
+	// seconds and a bad row would otherwise fill the log.
+	reported map[string]string
 )
 
 var errNotLoaded = errors.New("settings: not loaded")
@@ -51,6 +54,7 @@ func Load(ctx context.Context, cfg *config.Config, db *sql.DB) error {
 
 	mu.Lock()
 	defer mu.Unlock()
+	reported = nil
 	loaded, err := merge(ctx, db, next)
 	if err != nil {
 		return err
@@ -204,10 +208,12 @@ func merge(ctx context.Context, db *sql.DB, base map[string]any) (map[string]any
 
 	merged := maps.Clone(base)
 	fromRows := make(map[string]bool)
+	ignored := make(map[string]string)
+	defer func() { reported = ignored }()
 	for _, row := range rows {
 		value, err := decode(row)
 		if err != nil {
-			ignore(row.Key, err)
+			ignore(ignored, row.Key, err)
 			continue
 		}
 		merged[row.Key] = value
@@ -220,7 +226,7 @@ func merge(ctx context.Context, db *sql.DB, base map[string]any) (map[string]any
 			for _, key := range r.keys {
 				if fromRows[key] {
 					merged[key] = base[key]
-					ignore(key, err)
+					ignore(ignored, key, err)
 				}
 			}
 		}
@@ -291,7 +297,11 @@ func dump(prefix string, v reflect.Value, out map[string]any) {
 	}
 }
 
-// ignore never logs the row's value: rows can hold secrets such as passwords.
-func ignore(key string, reason error) {
-	slog.Warn("settings: row ignored", "key", key, "reason", reason)
+// ignore logs a row once, until its reason changes. It never logs the row's value:
+// rows can hold secrets such as passwords.
+func ignore(ignored map[string]string, key string, reason error) {
+	ignored[key] = reason.Error()
+	if reported[key] != ignored[key] {
+		slog.Warn("settings: row ignored", "key", key, "reason", reason)
+	}
 }

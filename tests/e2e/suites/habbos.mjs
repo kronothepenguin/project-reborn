@@ -83,6 +83,9 @@ export default async function ({ base, browser, check, hk, shot, sql }) {
     (await page.title()) === "Reborn ~ Second",
     await page.title(),
   );
-  check("it shares the credits", await page.getByText("5000").first().isVisible());
+  check(
+    "it shares the credits",
+    await page.getByText("5000").first().isVisible(),
+  );
   check("no script errors", errors.length === 0, errors.join(" | "));
 }

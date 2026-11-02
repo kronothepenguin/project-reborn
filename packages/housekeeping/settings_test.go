@@ -72,7 +72,7 @@ func TestEverySettingHasARealLabel(t *testing.T) {
 		pages.WriteString(serve(mux, "GET", "/housekeeping/settings?section="+section, cookie, nil).Body.String())
 	}
 	for _, setting := range settings.Declared() {
-		if setting.Key == "cms.refresh" || setting.Key == "housekeeping.note" {
+		if setting.Key == "housekeeping.note" {
 			continue
 		}
 		if !strings.Contains(pages.String(), "Key:"+setting.Key+" ") {
@@ -102,7 +102,7 @@ func TestNoFormOffersWhatHasNoPlaceThere(t *testing.T) {
 	db, mux := newSite(t)
 	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
 	body := serve(mux, "GET", "/housekeeping/settings", cookie, nil).Body.String()
-	for _, key := range []string{"cms.refresh", "housekeeping.note", "cms.port", "housekeeping.port", "store.path", "proxy.enabled"} {
+	for _, key := range []string{"housekeeping.note", "cms.port", "housekeeping.port", "store.path", "proxy.enabled"} {
 		if strings.Contains(body, "Key:"+key) {
 			t.Errorf("a form offers %s", key)
 		}

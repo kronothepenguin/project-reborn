@@ -24,7 +24,9 @@ export default async function (t) {
   const listed = await page.locator("main table").first().innerText();
   check(
     "the groups are listed",
-    listed.includes("Administrator") && listed.includes("Moderator") && listed.includes("Helpers"),
+    listed.includes("Administrator") &&
+      listed.includes("Moderator") &&
+      listed.includes("Helpers"),
   );
 
   await page.fill('input[name="name"]', "Trainers");

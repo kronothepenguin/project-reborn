@@ -11,6 +11,7 @@ import (
 )
 
 const (
+	Second = time.Second
 	Minute = time.Minute
 	Hour   = time.Hour
 	Day    = 24 * time.Hour

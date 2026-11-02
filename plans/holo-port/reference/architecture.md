@@ -58,15 +58,14 @@ This is how programs run today, and how development works.
 - Each program has its own process and port, from its runner. The CMS and housekeeping read theirs from `config.json`.
 - Each opens the database named by `config.json` with `store.FromConfig()`.
 - Each holds its own copy of the settings, loaded when it starts (`settings.Load`).
-- A settings change in housekeeping reaches the CMS at the CMS's next start. Nothing polls for changes, so turning
-  maintenance on shows the maintenance page only then.
+- A CMS re-reads the settings every `cms.refresh` seconds, so a change in housekeeping reaches it without a restart.
+  Housekeeping has no refresh, because it is the single writer ([0051](/decisions/0051-one-machine-and-a-refresh.md)).
 - Housekeeping has no sign-in of its own. A guest goes to `site.url`, and the session cookie reaches housekeeping because
   cookies do not depend on the port.
 - The CMS's Housekeeping links follow `site.housekeepingUrl`, which the installer asks for. Its default is the development
   address, `http://localhost:18465/housekeeping`.
 
-[0051](/decisions/0051-one-machine-and-a-refresh.md) decides how a running CMS learns of a change: it re-reads the settings
-every `cms.refresh` seconds, and no IPC is built. [fx-10](/tasks/fx-10-settings-refresh.md) builds it.
+The programs share the SQLite file, so they run on one machine, and no IPC exists.
 
 # Running together
 
@@ -88,4 +87,4 @@ This is planned, and needs the orchestrator.
 | Session cookie | Shared, on one host | Shared |
 | Settings copy | One per process | One |
 | Scheduler | One per process, running that program's tasks | One, running every program's tasks |
-| A settings change reaches the CMS | At its next start; within `cms.refresh` seconds after [fx-10](/tasks/fx-10-settings-refresh.md) | At once |
+| A settings change reaches the CMS | Within `cms.refresh` seconds | At once |

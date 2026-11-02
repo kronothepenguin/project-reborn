@@ -48,8 +48,8 @@ serves the built frontend from the embedded `dist/`.
   that leaves nobody holding both `housekeeping.access` and
   `housekeeping.accessGroups`. A refusal is logged after the rollback, because the
   pool has one connection.
-- Housekeeping is the single writer of settings. A CMS running alone sees a change
-  at its next start, and on one shared mux at once, because the settings are shared.
+- Housekeeping is the single writer of settings. A CMS running alone re-reads them
+  every `cms.refresh` seconds, and on one shared mux a change applies at once.
 
 ## Design
 

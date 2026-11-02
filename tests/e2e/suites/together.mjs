@@ -10,10 +10,10 @@ export default async function ({
   browser,
   check,
   dir,
+  eventually,
   hk,
   installer,
   ports,
-  restart,
   shot,
   sql,
   start,
@@ -168,23 +168,19 @@ export default async function ({
     logs.slice(0, 300),
   );
 
-  await page.goto(`${base}/me`);
   check(
-    "a running CMS keeps its values until it restarts",
-    (await tab().getAttribute("href")) === hk,
+    "the running CMS reads the new settings",
+    await eventually(async () => {
+      await page.goto(`${base}/me`);
+      return (await tab().getAttribute("href")) === `${hk}/`;
+    }),
     await tab().getAttribute("href"),
   );
 
-  await restart("cms");
   sql(
     "UPDATE users SET born_on = date('now', '-30 years') WHERE email = 'admin@example.com'",
   );
   await page.goto(`${base}/me`);
-  check(
-    "the tab follows the setting after the restart",
-    (await tab().getAttribute("href")) === `${hk}/`,
-    await tab().getAttribute("href"),
-  );
   check(
     "the birthday message is off",
     !(await page.locator("main").innerText()).toLowerCase().includes("happy"),
@@ -235,13 +231,14 @@ export default async function ({
     (await save("Save Settings")) === "Settings saved successfully.",
   );
 
-  await restart("cms");
-  await page.goto(`${base}/me`);
-  const main = await page.locator("main").innerText();
   check(
     "the birthday message is back",
-    main.toLowerCase().includes("happy"),
-    main.slice(0, 300),
+    await eventually(async () => {
+      await page.goto(`${base}/me`);
+      return (await page.locator("main").innerText())
+        .toLowerCase()
+        .includes("happy");
+    }),
   );
   await page.click('button:has-text("Sign Out")');
   await page.waitForLoadState();

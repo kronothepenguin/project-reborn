@@ -252,6 +252,30 @@ func TestInvalidRowsAreIgnoredAndLogged(t *testing.T) {
 	}
 }
 
+func TestReloadLogsABadRowOnce(t *testing.T) {
+	warnings := captureWarnings(t)
+	db := openDB(t)
+	load(t, db)
+	putRows(t, db, map[string]string{"auth.rememberDays": `"7"`})
+
+	for range 3 {
+		if err := Reload(t.Context(), db); err != nil {
+			t.Fatalf("Reload: %v", err)
+		}
+	}
+	if n := strings.Count(warnings.String(), "key=auth.rememberDays"); n != 1 {
+		t.Errorf("logged %d times, want once:\n%s", n, warnings)
+	}
+
+	putRows(t, db, map[string]string{"auth.rememberDays": `9999`})
+	if err := Reload(t.Context(), db); err != nil {
+		t.Fatalf("Reload: %v", err)
+	}
+	if n := strings.Count(warnings.String(), "key=auth.rememberDays"); n != 2 {
+		t.Errorf("logged %d times, want a new reason logged again:\n%s", n, warnings)
+	}
+}
+
 func TestUndeclaredAndConfigRowsAreIgnoredAndLogged(t *testing.T) {
 	warnings := captureWarnings(t)
 	db := openDB(t)

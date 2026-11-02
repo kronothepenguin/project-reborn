@@ -38,9 +38,8 @@ type field struct {
 	Required bool
 }
 
-// hiddenSettings have no form: cms.refresh has no reader until the IPC design
-// decides its fate, and the note belongs to the dashboard.
-var hiddenSettings = []string{"cms.refresh", noteKey}
+// hiddenSettings have no form here: the note belongs to the dashboard.
+var hiddenSettings = []string{noteKey}
 
 const defaultButton = "Save Settings"
 
@@ -52,6 +51,7 @@ var forms = []section{
 			{Key: "site.shortName", Label: "Shortname", Help: "This is the 'shortname' of your site, eg. 'Holo'.", Required: true},
 			{Key: "site.url", Label: "Site Address", Help: "This is the address of your site, eg. 'https://hotel.example.com'. Reset mails link to it, and Housekeeping sends guests there to sign in.", Required: true},
 			{Key: "site.housekeepingUrl", Label: "Housekeeping Address", Help: "The address the site's Housekeeping links open: a path when they share a port, eg. '/housekeeping', or a full address when Housekeeping has its own, eg. 'https://hotel.example.com:18465/housekeeping'.", Required: true},
+			{Key: "cms.refresh", Label: "Settings Refresh", Help: "The seconds a running site waits before it reads changed settings. A new value applies when the site restarts."},
 		},
 	},
 	{

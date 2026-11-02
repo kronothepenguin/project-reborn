@@ -135,6 +135,23 @@ func TestATaskNeverOverlapsItself(t *testing.T) {
 	})
 }
 
+func TestEverySecondsCountsSeconds(t *testing.T) {
+	synctest.Test(t, func(t *testing.T) {
+		var runs atomic.Int32
+		stop := Every(2, Second, func(context.Context) error {
+			runs.Add(1)
+			return nil
+		})
+		defer stop()
+
+		time.Sleep(7 * Second)
+		synctest.Wait()
+		if n := runs.Load(); n != 3 {
+			t.Errorf("%d runs in 7 seconds, want 3", n)
+		}
+	})
+}
+
 func TestStopEndsTheTask(t *testing.T) {
 	synctest.Test(t, func(t *testing.T) {
 		var runs atomic.Int32

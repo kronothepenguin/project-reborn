@@ -3,7 +3,7 @@ import { session } from "../lib/staff.mjs";
 export const programs = ["cms", "housekeeping"];
 
 export default async function (t) {
-  const { base, check, hk, restart } = t;
+  const { base, check, eventually, hk } = t;
 
   async function setClosed(closed) {
     const { context, page } = await session(t, "Admin-1");
@@ -39,35 +39,25 @@ export default async function (t) {
   }
 
   await setClosed(true);
+  check(
+    "a running CMS shows the maintenance page without a restart",
+    await eventually(async () => {
+      const { status, maintenance } = await cmsStatus();
+      return status === 503 && maintenance;
+    }),
+  );
   {
-    const { status, maintenance } = await cmsStatus();
-    check(
-      "a running stand-alone CMS has not seen the change yet",
-      status === 200 && !maintenance,
-      String(status),
-    );
-  }
-  await restart("cms");
-  {
-    const { status, maintenance } = await cmsStatus();
-    check(
-      "after its restart the CMS shows the maintenance page",
-      status === 503 && maintenance,
-      String(status),
-    );
     const { context, page } = await session(t);
     const response = await page.goto(`${base}/register`);
     check("every page is closed", response.status() === 503);
     await context.close();
   }
   await setClosed(false);
-  await restart("cms");
-  {
-    const { status, maintenance } = await cmsStatus();
-    check(
-      "with the row deleted and a restart the CMS is back",
-      status === 200 && !maintenance,
-      String(status),
-    );
-  }
+  check(
+    "with the row deleted the running CMS is back",
+    await eventually(async () => {
+      const { status, maintenance } = await cmsStatus();
+      return status === 200 && !maintenance;
+    }),
+  );
 }

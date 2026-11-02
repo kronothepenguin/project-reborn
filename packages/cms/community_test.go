@@ -3,6 +3,7 @@ package cms
 import (
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 )
@@ -15,6 +16,25 @@ func TestCommunityShowsTheHousekeepingTabToStaff(t *testing.T) {
 
 	wantPage(t, serve(mux, "GET", "/me", login(t, db, "Admin"), nil), http.StatusOK, "Staff:true", "HousekeepingURL:http://localhost:18465/housekeeping")
 	wantPage(t, serve(mux, "GET", "/me", login(t, db, "Player"), nil), http.StatusOK, "Staff:false")
+}
+
+func TestARunningCMSReadsNewSettings(t *testing.T) {
+	db, mux := newSite(t)
+	if rec := serve(mux, "GET", "/privacy", nil, nil); rec.Code != http.StatusOK {
+		t.Fatalf("got %d, want an open site", rec.Code)
+	}
+
+	_, err := db.ExecContext(t.Context(), `INSERT INTO settings (key, value, updated_at) VALUES ('site.maintenance', 'true', ?)`, time.Now().UTC())
+	if err != nil {
+		t.Fatalf("insert setting: %v", err)
+	}
+	for range 40 {
+		if serve(mux, "GET", "/privacy", nil, nil).Code == http.StatusServiceUnavailable {
+			return
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	t.Error("the CMS did not read the row within 4 seconds, with cms.refresh at 1")
 }
 
 func TestHousekeepingLinkFollowsItsSetting(t *testing.T) {

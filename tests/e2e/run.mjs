@@ -84,6 +84,13 @@ async function runSuite(name, suite) {
     sql: (query) => hotel.sql(query),
     mails: () => [...mail.received],
     wait: sleep,
+    async eventually(test) {
+      for (let tries = 0; tries < 40; tries++) {
+        if (await test()) return true;
+        await sleep(100);
+      }
+      return false;
+    },
     shot: (page, shotName) =>
       page.screenshot({
         path: path.join(work, "shots", `${shotName}.png`),

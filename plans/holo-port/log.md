@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [fx-10](/tasks/fx-10-settings-refresh.md): a running CMS reads changed settings every `cms.refresh` seconds,
+  with no restart.
+- **Start** [fx-10](/tasks/fx-10-settings-refresh.md).
 - **Done** [fx-09](/tasks/fx-09-housekeeping-address.md): the installer asks for the Housekeeping Address, and the tab
   works on a new install.
 - **Start** [fx-09](/tasks/fx-09-housekeeping-address.md).
