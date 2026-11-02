@@ -86,3 +86,31 @@ LIMIT sqlc.arg(row_limit) OFFSET sqlc.arg(row_offset);
 
 -- name: CountOpenHelpTickets :one
 SELECT COUNT(*) FROM help_tickets WHERE picked_up_at IS NULL AND closed_at IS NULL;
+
+-- Picked up or not, as Holo's overview listed them until they were deleted.
+-- name: CountUnclosedHelpTickets :one
+SELECT COUNT(*) FROM help_tickets WHERE closed_at IS NULL;
+
+-- name: ListUnclosedHelpTickets :many
+SELECT help_tickets.id, help_tickets.subject, help_tickets.created_at, help_tickets.picked_up_at, avatars.name AS habbo
+FROM help_tickets
+LEFT JOIN avatars ON avatars.id = help_tickets.avatar_id
+WHERE help_tickets.closed_at IS NULL
+ORDER BY help_tickets.id DESC
+LIMIT sqlc.arg(row_limit) OFFSET sqlc.arg(row_offset);
+
+-- name: GetHelpTicket :one
+SELECT help_tickets.*, avatars.name AS habbo, avatars.user_id AS habbo_user_id
+FROM help_tickets
+LEFT JOIN avatars ON avatars.id = help_tickets.avatar_id
+WHERE help_tickets.id = sqlc.arg(id);
+
+-- name: PickUpHelpTicket :execrows
+UPDATE help_tickets
+SET picked_up_by_user_id = sqlc.narg(picked_up_by_user_id), picked_up_at = sqlc.narg(picked_up_at)
+WHERE id = sqlc.arg(id) AND picked_up_at IS NULL AND closed_at IS NULL;
+
+-- A closed ticket stays as history, and only a ticket someone took can be closed.
+-- name: CloseHelpTicket :execrows
+UPDATE help_tickets SET closed_at = sqlc.narg(closed_at)
+WHERE id = sqlc.arg(id) AND picked_up_at IS NOT NULL AND closed_at IS NULL;

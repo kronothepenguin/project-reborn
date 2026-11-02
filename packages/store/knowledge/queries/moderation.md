@@ -103,6 +103,40 @@ them `string` and `time.Time` instead of copying the nullability of `bans.ip` an
 - Result: how many tickets nobody has picked up or closed
 - Tables: `help_tickets`
 
+## CountUnclosedHelpTickets
+
+- Cardinality: `:one`
+- Result: how many tickets are not closed, picked up or not
+- Tables: `help_tickets`
+
+## ListUnclosedHelpTickets
+
+- Cardinality: `:many`
+- Inputs: `row_limit`, `row_offset`
+- Result: the tickets that are not closed, newest first, with the name of the habbo, which is NULL once it is deleted
+- Tables: `help_tickets`, `avatars`
+
+## GetHelpTicket
+
+- Cardinality: `:one`
+- Inputs: `id`
+- Result: the ticket, closed or not, with the name and the owner of the habbo
+- Tables: `help_tickets`, `avatars`
+
+## PickUpHelpTicket
+
+- Cardinality: `:execrows`
+- Inputs: `id`, `picked_up_by_user_id`, `picked_up_at`
+- Result: 1 when the ticket was picked up, and 0 when it had been already or is closed
+- Tables: `help_tickets`
+
+## CloseHelpTicket
+
+- Cardinality: `:execrows`
+- Inputs: `id`, `closed_at`
+- Result: 1 when the ticket was closed, and 0 when nobody picked it up or it is closed already
+- Tables: `help_tickets`
+
 # Related
 
 - Entities: [Ban](/entities/ban.md), [Alert](/entities/alert.md), [Help ticket](/entities/help-ticket.md).

@@ -18,7 +18,8 @@ close them.
 
 # Lifecycle
 
-- Created on the site; picked up and closed from housekeeping with `housekeeping.help`.
+- Created on the site; picked up and closed from housekeeping with `housekeeping.help`. Only a ticket someone picked up
+  can be closed, and a closed ticket stays as history.
 - Kept when the reporter or the reported post is deleted.
 
 # Vocabularies

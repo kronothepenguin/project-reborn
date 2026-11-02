@@ -11,6 +11,25 @@ import (
 	"time"
 )
 
+const closeHelpTicket = `-- name: CloseHelpTicket :execrows
+UPDATE help_tickets SET closed_at = ?1
+WHERE id = ?2 AND picked_up_at IS NOT NULL AND closed_at IS NULL
+`
+
+type CloseHelpTicketParams struct {
+	ClosedAt sql.NullTime
+	ID       int64
+}
+
+// A closed ticket stays as history, and only a ticket someone took can be closed.
+func (q *Queries) CloseHelpTicket(ctx context.Context, arg CloseHelpTicketParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, closeHelpTicket, arg.ClosedAt, arg.ID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
 const countActiveAlerts = `-- name: CountActiveAlerts :one
 SELECT COUNT(*) FROM alerts WHERE dismissed_at IS NULL
 `
@@ -43,6 +62,18 @@ SELECT COUNT(*) FROM help_tickets WHERE picked_up_at IS NULL AND closed_at IS NU
 
 func (q *Queries) CountOpenHelpTickets(ctx context.Context) (int64, error) {
 	row := q.db.QueryRowContext(ctx, countOpenHelpTickets)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countUnclosedHelpTickets = `-- name: CountUnclosedHelpTickets :one
+SELECT COUNT(*) FROM help_tickets WHERE closed_at IS NULL
+`
+
+// Picked up or not, as Holo's overview listed them until they were deleted.
+func (q *Queries) CountUnclosedHelpTickets(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countUnclosedHelpTickets)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -212,6 +243,48 @@ func (q *Queries) GetBan(ctx context.Context, id int64) (Ban, error) {
 	return i, err
 }
 
+const getHelpTicket = `-- name: GetHelpTicket :one
+SELECT help_tickets.id, help_tickets.avatar_id, help_tickets.forum_post_id, help_tickets.subject, help_tickets.message, help_tickets.ip, help_tickets.created_at, help_tickets.picked_up_by_user_id, help_tickets.picked_up_at, help_tickets.closed_at, avatars.name AS habbo, avatars.user_id AS habbo_user_id
+FROM help_tickets
+LEFT JOIN avatars ON avatars.id = help_tickets.avatar_id
+WHERE help_tickets.id = ?1
+`
+
+type GetHelpTicketRow struct {
+	ID               int64
+	AvatarID         sql.NullInt64
+	ForumPostID      sql.NullInt64
+	Subject          string
+	Message          string
+	IP               string
+	CreatedAt        time.Time
+	PickedUpByUserID sql.NullInt64
+	PickedUpAt       sql.NullTime
+	ClosedAt         sql.NullTime
+	Habbo            sql.NullString
+	HabboUserID      sql.NullInt64
+}
+
+func (q *Queries) GetHelpTicket(ctx context.Context, id int64) (GetHelpTicketRow, error) {
+	row := q.db.QueryRowContext(ctx, getHelpTicket, id)
+	var i GetHelpTicketRow
+	err := row.Scan(
+		&i.ID,
+		&i.AvatarID,
+		&i.ForumPostID,
+		&i.Subject,
+		&i.Message,
+		&i.IP,
+		&i.CreatedAt,
+		&i.PickedUpByUserID,
+		&i.PickedUpAt,
+		&i.ClosedAt,
+		&i.Habbo,
+		&i.HabboUserID,
+	)
+	return i, err
+}
+
 const getOldestAlert = `-- name: GetOldestAlert :one
 SELECT id, avatar_id, sender_user_id, message, created_at, dismissed_at FROM alerts
 WHERE avatar_id = ?1 AND dismissed_at IS NULL
@@ -365,4 +438,75 @@ func (q *Queries) ListActiveBans(ctx context.Context, arg ListActiveBansParams) 
 		return nil, err
 	}
 	return items, nil
+}
+
+const listUnclosedHelpTickets = `-- name: ListUnclosedHelpTickets :many
+SELECT help_tickets.id, help_tickets.subject, help_tickets.created_at, help_tickets.picked_up_at, avatars.name AS habbo
+FROM help_tickets
+LEFT JOIN avatars ON avatars.id = help_tickets.avatar_id
+WHERE help_tickets.closed_at IS NULL
+ORDER BY help_tickets.id DESC
+LIMIT ?2 OFFSET ?1
+`
+
+type ListUnclosedHelpTicketsParams struct {
+	RowOffset int64
+	RowLimit  int64
+}
+
+type ListUnclosedHelpTicketsRow struct {
+	ID         int64
+	Subject    string
+	CreatedAt  time.Time
+	PickedUpAt sql.NullTime
+	Habbo      sql.NullString
+}
+
+func (q *Queries) ListUnclosedHelpTickets(ctx context.Context, arg ListUnclosedHelpTicketsParams) ([]ListUnclosedHelpTicketsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listUnclosedHelpTickets, arg.RowOffset, arg.RowLimit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListUnclosedHelpTicketsRow
+	for rows.Next() {
+		var i ListUnclosedHelpTicketsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Subject,
+			&i.CreatedAt,
+			&i.PickedUpAt,
+			&i.Habbo,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const pickUpHelpTicket = `-- name: PickUpHelpTicket :execrows
+UPDATE help_tickets
+SET picked_up_by_user_id = ?1, picked_up_at = ?2
+WHERE id = ?3 AND picked_up_at IS NULL AND closed_at IS NULL
+`
+
+type PickUpHelpTicketParams struct {
+	PickedUpByUserID sql.NullInt64
+	PickedUpAt       sql.NullTime
+	ID               int64
+}
+
+func (q *Queries) PickUpHelpTicket(ctx context.Context, arg PickUpHelpTicketParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, pickUpHelpTicket, arg.PickedUpByUserID, arg.PickedUpAt, arg.ID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
 }

@@ -8,6 +8,8 @@ export const prepare = ({ sql }) => {
   const [[habbo]] = sql("SELECT id FROM avatars WHERE name = 'Frank'");
   sql(`INSERT INTO login_attempts (user_id, avatar_id, ip, succeeded, created_at)
     VALUES (${frank}, ${habbo}, '10.1.2.3', TRUE, '2026-11-01 12:00:00.000000000+00:00')`);
+  sql(`INSERT INTO help_tickets (avatar_id, subject, message, ip, created_at)
+    VALUES (${habbo}, 'My <credits>', 'They are gone & I am sad', '10.1.2.3', '2026-11-01 13:00:00.000000000+00:00')`);
 };
 
 export default async function (t) {
@@ -248,6 +250,70 @@ export default async function (t) {
     String(habbos),
   );
 
+  await page.getByRole("link", { name: "Help Queries" }).click();
+  await page.waitForURL("**/housekeeping/help");
+  await shot(page, "help");
+  const queue = await page.locator("main table").first().innerText();
+  check(
+    "the queue has Holo's columns",
+    ["ID", "Subject", "Date", "Username", "Picked up?", "Reply"].every((column) =>
+      queue.includes(column),
+    ) && queue.includes("My <credits>"),
+    queue,
+  );
+  await page.getByRole("button", { name: "Close" }).click();
+  await page.waitForLoadState();
+  check(
+    "a ticket nobody picked up does not close",
+    (await page.getByRole("alert").innerText()).includes("not picked up yet"),
+  );
+  await page.getByRole("link", { name: "My <credits>" }).click();
+  await page.waitForURL(/help\/\d+$/);
+  await shot(page, "help-ticket");
+  const ticketURL = page.url();
+  const ticket = await page.locator("main").innerText();
+  check(
+    "a ticket shows who asked, from where and what",
+    ["Frank", "10.1.2.3", "They are gone & I am sad"].every((text) =>
+      ticket.includes(text),
+    ),
+    ticket,
+  );
+  await page.getByRole("button", { name: "Reply" }).click();
+  await page.waitForURL(/alerts\?reply=\d+/);
+  const reply = await page.inputValue('textarea[name="alert"]');
+  check(
+    "Quick Reply fills in Holo's text",
+    (await page.inputValue('input[name="username"]')) === "Frank" &&
+      reply.startsWith(
+        "Hello, my name is Admin-1. I am sending you this message in reply to your help inquiry sent on 01-11-2026 13:00:00, with the subject 'My <credits>'.",
+      ) &&
+      reply.endsWith("Player Support"),
+    reply,
+  );
+  await page.getByRole("button", { name: "Give Alert" }).first().click();
+  await page.waitForURL(/sent=1/);
+  await page.goto(ticketURL);
+  check(
+    "Quick Reply picked the ticket up",
+    (await page.locator("main").innerText()).includes("Already picked up"),
+  );
+  await page.getByRole("button", { name: "Close" }).click();
+  await page.waitForURL(/closed=1/);
+  check(
+    "a closed ticket leaves the queue",
+    (await page.locator("main table").first().innerText()).includes(
+      "Nothing found.",
+    ),
+  );
+  await page.goto(ticketURL);
+  check(
+    "a closed ticket stays readable",
+    (await page.locator("main").innerText()).includes(
+      "They are gone & I am sad",
+    ),
+  );
+
   await page.goto(`${hk}/habbos?q=Admin-1`);
   await page.getByRole("row", { name: /Admin-1/ }).getByRole("link", { name: "Edit" }).click();
   await page.waitForURL(/habbos\/\d+$/);
@@ -276,6 +342,8 @@ export default async function (t) {
       "bans.lift",
       "alerts.send",
       "alerts.broadcast",
+      "help.pick",
+      "help.close",
     ].every((action) =>
       logs.includes(action),
     ),

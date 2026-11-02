@@ -45,6 +45,8 @@ many actions).
 | `credits.give` | the signed amount | the user and the habbo |
 | `alerts.send` | none | the user and the habbo |
 | `alerts.broadcast` | how many habbos got it | none |
+| `help.pick` | the ticket's id | the user and the habbo who asked, when they still exist |
+| `help.close` | the ticket's id | the user and the habbo who asked, when they still exist |
 | `bans.create` | the reason, the end of the ban and the address, if any | the user and the habbo named |
 | `bans.lift` | the ban's id and reason | the user |
 | `badges.give` | the badge | the user and the habbo |

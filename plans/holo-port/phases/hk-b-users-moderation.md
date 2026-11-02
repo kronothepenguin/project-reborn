@@ -46,7 +46,7 @@ Holo details: [housekeeping reference](/reference/holo-housekeeping.md).
 - [hk-b-04 Give credits and read transactions](/tasks/hk-b-04-credits.md) — done
 - [hk-b-05 Ban users and lift bans](/tasks/hk-b-05-bans.md) — done
 - [hk-b-06 Send alerts](/tasks/hk-b-06-alerts.md) — done
-- [hk-b-07 Handle help tickets](/tasks/hk-b-07-help.md) — todo
+- [hk-b-07 Handle help tickets](/tasks/hk-b-07-help.md) — done
 - [hk-b-08 Give direct attributes](/tasks/hk-b-08-direct-attributes.md) — todo
 - [hk-b-09 Restore archived habbos](/tasks/hk-b-09-restore-habbos.md) — todo
 - [hk-b-10 Verify HK-B](/tasks/hk-b-10-exit-check.md) — todo

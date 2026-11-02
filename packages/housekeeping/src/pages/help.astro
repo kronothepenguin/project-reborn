@@ -1,0 +1,68 @@
+---
+import { Table } from "@project-reborn/components";
+import Box from "../components/box.astro";
+import Message from "../components/message.astro";
+import Submit from "../components/submit.astro";
+import Housekeeping from "../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="Customer Support" tab="users">
+  <Message />
+  <div class="space-y-3">
+    <Box title="Customer Support - Help Queries" color="gold">
+      <Table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Subject</th>
+            <th>Date</th>
+            <th>Username</th>
+            <th>Picked up?</th>
+            [[ if .CanReply ]]<th>Reply</th>[[ end ]]
+            <th>Close</th>
+          </tr>
+        </thead>
+        <tbody>
+          [[ range .Tickets ]]
+          <tr>
+            <td>[[ .ID ]]</td>
+            <td><a href="/housekeeping/help/[[ .ID ]]" class="text-indigo-900 underline"><strong>[[ .Subject ]]</strong></a></td>
+            <td>[[ .Date ]]</td>
+            <td>[[ if .Habbo ]]<a href="[[ $.SiteURL ]]/home/[[ .Habbo ]]" target="_blank" rel="noreferrer" class="text-indigo-900 underline">[[ .Habbo ]]</a>[[ end ]]</td>
+            <td>
+              [[ if .PickedUp ]]
+              Yes
+              [[ else ]]
+              <form method="post" action="/housekeeping/help/[[ .ID ]]/pick">
+                No <Submit>Pick up</Submit>
+              </form>
+              [[ end ]]
+            </td>
+            [[ if $.CanReply ]]
+            <td>
+              <form method="post" action="/housekeeping/help/[[ .ID ]]/pick">
+                <input type="hidden" name="reply" value="1" />
+                <Submit>Reply</Submit>
+              </form>
+            </td>
+            [[ end ]]
+            <td>
+              <form method="post" action="/housekeeping/help/[[ .ID ]]/close">
+                <Submit>Close</Submit>
+              </form>
+            </td>
+          </tr>
+          [[ else ]]
+          <tr>
+            <td colspan="7">Nothing found.</td>
+          </tr>
+          [[ end ]]
+        </tbody>
+      </Table>
+      <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+        <a href="/housekeeping/help?refreshed=1" class="text-indigo-900 underline">Refresh overview</a>
+      </div>
+    </Box>
+    <p class="text-center">[[ if .Newer ]]<a href="/housekeeping/help?page=[[ .Newer ]]" class="text-indigo-900 underline">Newer</a>[[ end ]] [[ if .Older ]]<a href="/housekeeping/help?page=[[ .Older ]]" class="text-indigo-900 underline">Older</a>[[ end ]]</p>
+  </div>
+</Housekeeping>

@@ -11,6 +11,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/store"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 const alertsPerPage = 100
@@ -81,6 +82,10 @@ func (r *Router) HandleAlertsView(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
+	if err := r.fillReply(req, &page); err != nil {
+		r.fail(w, err)
+		return
+	}
 	query := req.URL.Query()
 	if query.Has("sent") {
 		page.Message = alertSent
@@ -89,6 +94,31 @@ func (r *Router) HandleAlertsView(w http.ResponseWriter, req *http.Request) {
 		page.Message = fmt.Sprintf("Gave mass alert. Users processed: %d", processed)
 	}
 	astro.WriteTemplate(w, r.deps.Resolver, "alerts.html", page)
+}
+
+// fillReply writes Holo's Quick Reply into the form, for ?reply= and a help ticket,
+// which only holders of housekeeping.help can read.
+func (r *Router) fillReply(req *http.Request, page *alertsPage) error {
+	ctx := req.Context()
+	id, err := strconv.ParseInt(req.URL.Query().Get("reply"), 10, 64)
+	if err != nil {
+		return nil
+	}
+	allowed, err := r.holds(req, auth.HousekeepingHelp)
+	if err != nil || !allowed {
+		return err
+	}
+	ticket, err := r.deps.Queries.GetHelpTicket(ctx, id)
+	if store.IsNotFound(err) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	page.Username = ticket.Habbo.String
+	page.Alert = fmt.Sprintf("Hello, my name is %s. I am sending you this message in reply to your help inquiry sent on %s, with the subject '%s'.\n\n%s\n%s Player Support",
+		page.Habbo, ticket.CreatedAt.UTC().Format(dateFormat), ticket.Subject, page.Habbo, settings.GetString("site.shortName"))
+	return nil
 }
 
 func (r *Router) refuseAlert(w http.ResponseWriter, req *http.Request, form alertsPage, message string) {

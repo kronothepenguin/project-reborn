@@ -26,6 +26,8 @@ const (
 	actionCreditsGive           = "credits.give"
 	actionAlertsSend            = "alerts.send"
 	actionAlertsBroadcast       = "alerts.broadcast"
+	actionHelpPick              = "help.pick"
+	actionHelpClose             = "help.close"
 	actionBansCreate            = "bans.create"
 	actionBansLift              = "bans.lift"
 	actionBadgesGive            = "badges.give"

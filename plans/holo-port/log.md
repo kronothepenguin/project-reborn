@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [hk-b-07](/tasks/hk-b-07-help.md): staff read, pick up, reply to and close help tickets, and a closed ticket
+  stays as history.
+- **Start** [hk-b-07](/tasks/hk-b-07-help.md).
 - **Done** [hk-b-06](/tasks/hk-b-06-alerts.md): staff alert one habbo, or every habbo with
   `housekeeping.alertsBroadcast`, and list the alerts not dismissed yet.
 - **Start** [hk-b-06](/tasks/hk-b-06-alerts.md).

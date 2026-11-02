@@ -92,6 +92,11 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /housekeeping/bans", holding(auth.HousekeepingBans, r.HandleBansCreate))
 	mux.Handle("POST /housekeeping/bans/{id}/lift", holding(auth.HousekeepingBans, r.HandleBansLift))
 
+	mux.Handle("GET /housekeeping/help", holding(auth.HousekeepingHelp, r.HandleHelpView))
+	mux.Handle("GET /housekeeping/help/{id}", holding(auth.HousekeepingHelp, r.HandleHelpTicketView))
+	mux.Handle("POST /housekeeping/help/{id}/pick", holding(auth.HousekeepingHelp, r.HandleHelpPick))
+	mux.Handle("POST /housekeeping/help/{id}/close", holding(auth.HousekeepingHelp, r.HandleHelpClose))
+
 	mux.Handle("GET /housekeeping/habbos", holding(auth.HousekeepingUsers, r.HandleHabbosView))
 	mux.Handle("GET /housekeeping/habbos/{id}", holding(auth.HousekeepingUsers, r.HandleHabboView))
 	mux.Handle("POST /housekeeping/habbos/{id}", holding(auth.HousekeepingUsersEdit, r.HandleHabboSave))

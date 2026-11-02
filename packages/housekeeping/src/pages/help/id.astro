@@ -1,0 +1,97 @@
+---
+import { Table } from "@project-reborn/components";
+import Box from "../../components/box.astro";
+import Submit from "../../components/submit.astro";
+import Housekeeping from "../../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="Customer Support" tab="users">
+  <div class="space-y-3">
+    <Box title="Help Query ([[ .Subject ]])">
+      <Table variant="form">
+        <tbody>
+          <tr>
+            <td class="w-2/5">
+              <strong>Username</strong>
+              <div class="text-neutral-500">The name of the user that submitted this help query.</div>
+            </td>
+            <td class="w-3/5">[[ .Habbo ]]</td>
+          </tr>
+          [[ if .Private ]]
+          <tr>
+            <td>
+              <strong>IP Address</strong>
+              <div class="text-neutral-500">The IP Address of the user that submitted this help query.</div>
+            </td>
+            <td>[[ .IP ]]</td>
+          </tr>
+          [[ end ]]
+          <tr>
+            <td>
+              <strong>Date</strong>
+              <div class="text-neutral-500">The date and time this query was submitted.</div>
+            </td>
+            <td>[[ .Date ]]</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Message</strong>
+              <div class="text-neutral-500">The actual query submitted by the user via the Help Tool or ingame CFH tool.</div>
+            </td>
+            <td class="whitespace-pre-line">[[ .Text ]]</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Pick Up</strong>
+              <div class="text-neutral-500">If not picked up already, you can do so here. Picking up a query indicates that you will 'take care of it'.</div>
+            </td>
+            <td>
+              [[ if .PickedUp ]]
+              Already picked up
+              [[ else ]]
+              <form method="post" action="/housekeeping/help/[[ .ID ]]/pick">
+                <Submit>Pick up</Submit>
+              </form>
+              [[ end ]]
+            </td>
+          </tr>
+          [[ if .Closed ]]
+          <tr>
+            <td><strong>Close</strong></td>
+            <td>Already closed</td>
+          </tr>
+          [[ else ]]
+          <tr>
+            <td>
+              <strong>Close</strong>
+              <div class="text-neutral-500">If the query is picked up and taken care of, you can close it here.</div>
+            </td>
+            <td>
+              <form method="post" action="/housekeeping/help/[[ .ID ]]/close">
+                <Submit>Close</Submit>
+              </form>
+            </td>
+          </tr>
+          [[ if .CanReply ]]
+          <tr>
+            <td>
+              <strong>Quick Reply</strong>
+              <div class="text-neutral-500">Quickly reply to this Help Inquery.</div>
+            </td>
+            <td>
+              <form method="post" action="/housekeeping/help/[[ .ID ]]/pick">
+                <input type="hidden" name="reply" value="1" />
+                <Submit>Reply</Submit>
+              </form>
+            </td>
+          </tr>
+          [[ end ]]
+          [[ end ]]
+        </tbody>
+      </Table>
+      <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+        <a href="/housekeeping/help" class="text-indigo-900 underline">Return to overview</a>
+      </div>
+    </Box>
+  </div>
+</Housekeeping>
