@@ -118,6 +118,33 @@ export default async function (t) {
     (await page.locator("main").innerText()).includes("This habbo has no badges."),
   );
 
+  await page.goto(frankStaffURL);
+  await page.fill('input[name="amount"]', "250");
+  await page.getByRole("button", { name: "Give Credits" }).click();
+  await page.waitForURL(/gave=250/);
+  check(
+    "credits are given",
+    (await page.getByRole("status").innerText()).includes(
+      "Gave user FrankStaff 250 credits.",
+    ),
+  );
+  await page.fill('input[name="amount"]', "-251");
+  const debit = page.waitForResponse((r) => r.request().method() === "POST");
+  await page.getByRole("button", { name: "Give Credits" }).click();
+  check("a wallet cannot go below zero", (await debit).status() === 422);
+  await page.waitForLoadState();
+  await page.getByRole("link", { name: "Transaction logs" }).click();
+  await page.waitForURL(/transactions$/);
+  await shot(page, "transactions");
+  const ledger = await page.locator("main table").first().innerText();
+  check(
+    "the ledger shows the transfer and the habbo",
+    ["FrankStaff", "Housekeeping transfer/refund", "250"].every((text) =>
+      ledger.includes(text),
+    ) && !ledger.includes("-251"),
+    ledger,
+  );
+
   await page.goto(`${hk}/habbos?q=Admin-1`);
   await page.getByRole("row", { name: /Admin-1/ }).getByRole("link", { name: "Edit" }).click();
   await page.waitForURL(/habbos\/\d+$/);
@@ -135,7 +162,14 @@ export default async function (t) {
   const logs = await page.locator("main table").first().innerText();
   check(
     "the staff log has the edits and the refusal",
-    ["habbos.update", "users.update", "users.refused", "badges.give", "badges.delete"].every((action) =>
+    [
+      "habbos.update",
+      "users.update",
+      "users.refused",
+      "badges.give",
+      "badges.delete",
+      "credits.give",
+    ].every((action) =>
       logs.includes(action),
     ),
     logs,

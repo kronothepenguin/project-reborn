@@ -23,6 +23,7 @@ const (
 	actionHabbosUpdate          = "habbos.update"
 	actionUsersUpdate           = "users.update"
 	actionUsersRefused          = "users.refused"
+	actionCreditsGive           = "credits.give"
 	actionBadgesGive            = "badges.give"
 	actionBadgesWear            = "badges.wear"
 	actionBadgesDelete          = "badges.delete"

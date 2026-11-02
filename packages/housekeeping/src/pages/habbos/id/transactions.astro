@@ -1,0 +1,38 @@
+---
+import { Table } from "@project-reborn/components";
+import Box from "../../../components/box.astro";
+import Housekeeping from "../../../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="Transactions" tab="users">
+  <div class="space-y-3">
+    <Box title="Transaction Logs" color="gold">
+      <Table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Habbo</th>
+            <th>Description</th>
+            <th>Activity</th>
+          </tr>
+        </thead>
+        <tbody>
+          [[ range .Transactions ]]
+          <tr>
+            <td>[[ .Date ]]</td>
+            <td>[[ .Habbo ]]</td>
+            <td>[[ .Description ]]</td>
+            <td>[[ .Activity ]]</td>
+          </tr>
+          [[ else ]]
+          <tr>
+            <td colspan="4">Nothing found.</td>
+          </tr>
+          [[ end ]]
+        </tbody>
+      </Table>
+    </Box>
+    <p class="text-center">[[ if .Newer ]]<a href="/housekeeping/habbos/[[ .HabboID ]]/transactions?page=[[ .Newer ]]" class="text-indigo-900 underline">Newer</a>[[ end ]] [[ if .Older ]]<a href="/housekeeping/habbos/[[ .HabboID ]]/transactions?page=[[ .Older ]]" class="text-indigo-900 underline">Older</a>[[ end ]]</p>
+    <p class="text-center"><a href="/housekeeping/habbos/[[ .HabboID ]]" class="text-indigo-900 underline">Back to the habbo</a></p>
+  </div>
+</Housekeeping>

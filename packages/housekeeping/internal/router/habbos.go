@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math"
 	"net/http"
+	"net/url"
 	"slices"
 	"strconv"
 	"strings"
@@ -185,6 +186,7 @@ type habboPage struct {
 	chrome
 	Private bool
 	CanEdit bool
+	CanGive bool
 	Target  targetHabbo
 	Owner   targetUser
 	Others  []ownedHabbo
@@ -256,6 +258,7 @@ func (r *Router) newHabboPage(req *http.Request, avatar store.Avatar) (habboPage
 	}
 	page.Private = slices.Contains(attributes, auth.HousekeepingUsersPrivate)
 	page.CanEdit = slices.Contains(attributes, auth.HousekeepingUsersEdit)
+	page.CanGive = slices.Contains(attributes, auth.HousekeepingCredits)
 
 	page.Target = targetHabbo{
 		ID:       avatar.ID,
@@ -340,19 +343,32 @@ func (r *Router) HandleHabboView(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
-	query := req.URL.Query()
-	switch code := query.Get("badge"); {
-	case query.Has("saved"):
-		page.Message = habboSaved
-	case !badgeCode.MatchString(code):
-	case query.Has("given"):
-		page.Message = "Gave the user this badge (" + code + ") and set it as current badge successfully."
-	case query.Has("worn"):
-		page.Message = "This user already has this badge; the badge (" + code + ") has been set as the user's current badge successfully."
-	case query.Has("removed"):
-		page.Message = "Removed the badge (" + code + ") from this user."
-	}
+	page.Message = habboMessage(req.URL.Query(), avatar.Name)
 	astro.WriteTemplate(w, r.deps.Resolver, "habbos/id.html", page)
+}
+
+// habboMessage is what a change says once it has redirected here. The address only
+// picks a text: what it adds must read as a badge code or an amount, so that a link
+// cannot put words on the page.
+func habboMessage(query url.Values, name string) string {
+	if query.Has("saved") {
+		return habboSaved
+	}
+	if amount, err := strconv.ParseInt(query.Get("gave"), 10, 64); err == nil {
+		return fmt.Sprintf("Gave user %s %d credits.", name, amount)
+	}
+	code := query.Get("badge")
+	switch {
+	case !badgeCode.MatchString(code):
+		return ""
+	case query.Has("given"):
+		return "Gave the user this badge (" + code + ") and set it as current badge successfully."
+	case query.Has("worn"):
+		return "This user already has this badge; the badge (" + code + ") has been set as the user's current badge successfully."
+	case query.Has("removed"):
+		return "Removed the badge (" + code + ") from this user."
+	}
+	return ""
 }
 
 // refuseHabbo answers a refused change on the habbo's page.

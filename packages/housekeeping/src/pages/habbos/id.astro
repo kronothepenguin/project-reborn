@@ -71,7 +71,15 @@ import Housekeeping from "../../layouts/housekeeping.astro";
             <tr><td class="w-2/5"><strong>E-Mail Address</strong></td><td class="w-3/5">[[ .Owner.Email ]]</td></tr>
             <tr><td><strong>Birthdate</strong></td><td>[[ .Owner.BornOn ]]</td></tr>
             [[ end ]]
-            <tr><td class="w-2/5"><strong>Credits</strong></td><td class="w-3/5">[[ .Owner.Credits ]]</td></tr>
+            <tr>
+              <td class="w-2/5"><strong>Credits</strong></td>
+              <td class="w-3/5">
+                [[ .Owner.Credits ]]
+                [[ if .CanGive ]]
+                [<a href="/housekeeping/habbos/[[ .Target.ID ]]/transactions" class="text-indigo-900 underline">Transaction logs</a>]
+                [[ end ]]
+              </td>
+            </tr>
             [[ if .CanEdit ]]
             <tr>
               <td><label for="user-tickets"><strong>Tickets</strong></label></td>
@@ -105,6 +113,27 @@ import Housekeeping from "../../layouts/housekeeping.astro";
         [[ end ]]
       </Box>
     </form>
+
+    [[ if .CanGive ]]
+    <form method="post" action="/housekeeping/habbos/[[ .Target.ID ]]/credits">
+      <Box title="Give Credits / Refunds">
+        <Table variant="form">
+          <tbody>
+            <tr>
+              <td class="w-2/5">
+                <label for="credits-amount"><strong>Amount</strong></label>
+                <div class="text-neutral-500">The amount of credits you want to give.</div>
+              </td>
+              <td class="w-3/5"><Input id="credits-amount" name="amount" variant="border" /></td>
+            </tr>
+          </tbody>
+        </Table>
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+          <Submit>Give Credits</Submit>
+        </div>
+      </Box>
+    </form>
+    [[ end ]]
 
     <Box title="Badges" color="gold">
       <Table>

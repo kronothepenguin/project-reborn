@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [hk-b-04](/tasks/hk-b-04-credits.md): staff give or take credits on the wallet with its ledger row, never
+  below zero, and read the ledger of the user with the habbo that acted.
+- **Start** [hk-b-04](/tasks/hk-b-04-credits.md).
 - **Done** [hk-b-03](/tasks/hk-b-03-badges.md): staff give a badge, which the habbo wears, make one it has the worn
   one, and remove one, only on users below them.
 - **Start** [hk-b-03](/tasks/hk-b-03-badges.md).

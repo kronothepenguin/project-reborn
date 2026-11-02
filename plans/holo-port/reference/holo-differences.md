@@ -114,6 +114,7 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Edit User | Takes column names from the form | Reads a fixed list of fields | `name=x` could otherwise reach any column, as it did in Holo |
 | Edit User | Any value goes into the query, with no escaping | The email, the birth date, the figure, the gender, the motto's 38 characters, and tickets and film from 0 to 2147483647 are checked | A value Holo accepted could break the site's pages |
 | Edit User | The email and birth date of anyone can be changed | They take `housekeeping.usersPrivate`, and `housekeeping.usersEdit` alone does not show them or save them | Changing an address nobody may read would hand over the account, through the password reset |
+| Give Credits | `is_numeric` lets `1.5` and `1e3` through, and a debit can go below zero | Whole numbers up to 2147483647, and a debit stops at zero with Holo's message | A wallet holds whole credits, and a sum past SQLite's integers would turn into a float |
 | Badge tool | Takes any 3 or 4 characters | Letters and digits, saved in upper case | A code names a file and a segment of a path, and MySQL matched codes ignoring case |
 | User listing | Every administrator sees every email and address | Emails, birth dates and addresses take `housekeeping.usersPrivate`, in the search too | [0053](/decisions/0053-attributes-on-groups-and-users.md) |
 
@@ -165,6 +166,8 @@ veto.
 | Settings | `mail.password` is never shown: blank keeps it, and `Clear it` removes it | The plan: `mail.password` masked |
 | Edit User | Two forms on the habbo's page, `Save Habbo` and `Save User` | A habbo and its owner are two rows |
 | Edit User | `users.update` and `habbos.update` list the fields saved, never their values | Holo logged `Edited user`, and an address must not reach readers of the log |
+| Give Credits | A form on the habbo's page, not a page asking for a name | The plan: `POST /habbos/{id}/credits` |
+| Transaction logs | The page of a habbo, with a `Habbo` column and 100 rows a page, not a page asking for a user id | The plan, and the wallet is shared ([0056](/decisions/0056-wallet-club-and-inventory-per-user.md)) |
 | Badge tool | The habbo's page lists its badges, each with `Remove`, and the form gives one to that habbo | The plan: `POST /habbos/{id}/badges/{code}/delete`. Holo's tool only gave badges, by username |
 | User listing | Lists habbos, with `(Archived)` beside those archived | A user owns several habbos, and staff must find an archived one to restore it |
 | User listing | 100 habbos a page, with `Older` and `Newer` | Holo listed every user on one page |

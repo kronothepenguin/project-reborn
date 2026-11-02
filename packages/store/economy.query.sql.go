@@ -28,6 +28,39 @@ func (q *Queries) AddWalletCredits(ctx context.Context, arg AddWalletCreditsPara
 	return err
 }
 
+const changeWalletCredits = `-- name: ChangeWalletCredits :execrows
+UPDATE wallets
+SET credits = credits + ?1, updated_at = ?2
+WHERE user_id = ?3 AND credits + ?1 >= 0
+`
+
+type ChangeWalletCreditsParams struct {
+	Credits   int64
+	UpdatedAt time.Time
+	UserID    int64
+}
+
+// The guard keeps the wallet from going below zero: no row changed means it would
+// have.
+func (q *Queries) ChangeWalletCredits(ctx context.Context, arg ChangeWalletCreditsParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, changeWalletCredits, arg.Credits, arg.UpdatedAt, arg.UserID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const countWalletTransactions = `-- name: CountWalletTransactions :one
+SELECT COUNT(*) FROM wallet_transactions WHERE user_id = ?1
+`
+
+func (q *Queries) CountWalletTransactions(ctx context.Context, userID int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countWalletTransactions, userID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createWallet = `-- name: CreateWallet :exec
 INSERT INTO wallets (user_id, credits, updated_at)
 VALUES (?1, ?2, ?3)
@@ -88,6 +121,62 @@ func (q *Queries) GetWallet(ctx context.Context, userID int64) (Wallet, error) {
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const listWalletTransactions = `-- name: ListWalletTransactions :many
+SELECT wallet_transactions.id, wallet_transactions.credits, wallet_transactions.reason, wallet_transactions.detail,
+       wallet_transactions.created_at, avatars.name AS habbo
+FROM wallet_transactions
+LEFT JOIN avatars ON avatars.id = wallet_transactions.avatar_id
+WHERE wallet_transactions.user_id = ?1
+ORDER BY wallet_transactions.id DESC
+LIMIT ?3 OFFSET ?2
+`
+
+type ListWalletTransactionsParams struct {
+	UserID    int64
+	RowOffset int64
+	RowLimit  int64
+}
+
+type ListWalletTransactionsRow struct {
+	ID        int64
+	Credits   int64
+	Reason    string
+	Detail    string
+	CreatedAt time.Time
+	Habbo     sql.NullString
+}
+
+// The ledger of the user, with the habbo that acted when there was one.
+func (q *Queries) ListWalletTransactions(ctx context.Context, arg ListWalletTransactionsParams) ([]ListWalletTransactionsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listWalletTransactions, arg.UserID, arg.RowOffset, arg.RowLimit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListWalletTransactionsRow
+	for rows.Next() {
+		var i ListWalletTransactionsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Credits,
+			&i.Reason,
+			&i.Detail,
+			&i.CreatedAt,
+			&i.Habbo,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const updateWalletTicketsAndFilm = `-- name: UpdateWalletTicketsAndFilm :exec
