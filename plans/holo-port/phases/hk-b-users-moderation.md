@@ -40,4 +40,13 @@ Holo details: [housekeeping reference](/reference/holo-housekeeping.md).
 
 # Tasks
 
-Created when the phase starts.
+- [hk-b-01 Find habbos and read them](/tasks/hk-b-01-find-habbos.md) — done
+- [hk-b-02 Edit habbos and users](/tasks/hk-b-02-edit-users.md) — todo
+- [hk-b-03 Give and remove badges](/tasks/hk-b-03-badges.md) — todo
+- [hk-b-04 Give credits and read transactions](/tasks/hk-b-04-credits.md) — todo
+- [hk-b-05 Ban users and lift bans](/tasks/hk-b-05-bans.md) — todo
+- [hk-b-06 Send alerts](/tasks/hk-b-06-alerts.md) — todo
+- [hk-b-07 Handle help tickets](/tasks/hk-b-07-help.md) — todo
+- [hk-b-08 Give direct attributes](/tasks/hk-b-08-direct-attributes.md) — todo
+- [hk-b-09 Restore archived habbos](/tasks/hk-b-09-restore-habbos.md) — todo
+- [hk-b-10 Verify HK-B](/tasks/hk-b-10-exit-check.md) — todo

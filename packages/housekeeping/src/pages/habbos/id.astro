@@ -1,0 +1,80 @@
+---
+import { Table } from "@project-reborn/components";
+import Box from "../../components/box.astro";
+import Message from "../../components/message.astro";
+import Housekeeping from "../../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="[[ .Target.Name ]]" tab="users">
+  <Message />
+  <div class="space-y-3">
+    <Box title="[[ .Target.Name ]] (ID: [[ .Target.ID ]])[[ if .Target.Archived ]] - Archived[[ end ]]">
+      <Table variant="form">
+        <tbody>
+          <tr><td class="w-2/5"><strong>Motto</strong></td><td class="w-3/5">[[ .Target.Motto ]]</td></tr>
+          <tr><td><strong>Figure</strong></td><td class="break-all">[[ .Target.Figure ]]</td></tr>
+          <tr><td><strong>Gender</strong></td><td>[[ .Target.Gender ]]</td></tr>
+          <tr><td><strong>Join date</strong></td><td>[[ .Target.Joined ]]</td></tr>
+          <tr><td><strong>Last Activity</strong></td><td>[[ .Target.Activity ]]</td></tr>
+          <tr><td><strong>Credits</strong></td><td>[[ .Owner.Credits ]]</td></tr>
+        </tbody>
+      </Table>
+    </Box>
+
+    <Box title="Owner (User ID: [[ .Owner.ID ]])">
+      <Table variant="form">
+        <tbody>
+          [[ if .Private ]]
+          <tr><td class="w-2/5"><strong>E-Mail Address</strong></td><td class="w-3/5">[[ .Owner.Email ]]</td></tr>
+          <tr><td><strong>Birthdate</strong></td><td>[[ .Owner.BornOn ]]</td></tr>
+          [[ end ]]
+          <tr><td class="w-2/5"><strong>Newsletter</strong></td><td class="w-3/5">[[ if .Owner.Newsletter ]]Yes[[ else ]]No[[ end ]]</td></tr>
+        </tbody>
+      </Table>
+    </Box>
+
+    <Box title="The Owner's Other Habbos" color="gold">
+      <Table>
+        <tbody>
+          [[ range .Others ]]
+          <tr>
+            <td><a href="/housekeeping/habbos/[[ .ID ]]" class="text-indigo-900 underline">[[ .Name ]]</a>[[ if .Archived ]] (Archived)[[ end ]]</td>
+          </tr>
+          [[ else ]]
+          <tr>
+            <td>This user has no other habbos.</td>
+          </tr>
+          [[ end ]]
+        </tbody>
+      </Table>
+    </Box>
+
+    [[ if .Private ]]
+    <Box title="IP History" color="gold">
+      <Table>
+        <thead>
+          <tr>
+            <th>IP Address</th>
+            <th>Last sign-in</th>
+          </tr>
+        </thead>
+        <tbody>
+          [[ range .Logins ]]
+          <tr>
+            <td>
+              <a href="/housekeeping/habbos?q=[[ .IP ]]" class="text-indigo-900 underline">[[ .IP ]]</a>
+              [<a href="https://who.is/whois-ip/ip-address/[[ .IP ]]/" target="_blank" rel="noreferrer" class="text-indigo-900 underline">WHOIS</a>]
+            </td>
+            <td>[[ .Date ]]</td>
+          </tr>
+          [[ else ]]
+          <tr>
+            <td colspan="2">No IP Found</td>
+          </tr>
+          [[ end ]]
+        </tbody>
+      </Table>
+    </Box>
+    [[ end ]]
+  </div>
+</Housekeeping>

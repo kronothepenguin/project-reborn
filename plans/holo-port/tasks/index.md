@@ -99,8 +99,20 @@ starts.
 - [fx-15 Bring the art into the repository](/tasks/fx-15-art-in-the-repository.md) — Fetch the stickers, backgrounds, user badges and missing widget skins once, and commit them.
 - [fx-16 Verify FX](/tasks/fx-16-exit-check.md) — Every exit criterion of FX holds from a clean checkout, in a real browser.
 
+## HK-B Users and moderation
+
+- [hk-b-01 Find habbos and read them](/tasks/hk-b-01-find-habbos.md) — GET /habbos and GET /habbos/{id} give Holo's user listing, its IP, user id and clone tools, and the habbo with its owner, other habbos and IP history.
+- [hk-b-02 Edit habbos and users](/tasks/hk-b-02-edit-users.md) — POST /habbos/{id} and POST /users/{id} save the fields of Holo's Edit User, taken from a list, only on users below the actor.
+- [hk-b-03 Give and remove badges](/tasks/hk-b-03-badges.md) — POST /habbos/{id}/badges gives a badge and wears it, as Holo's badge tool did, and POST /habbos/{id}/badges/{code}/delete removes one.
+- [hk-b-04 Give credits and read transactions](/tasks/hk-b-04-credits.md) — POST /habbos/{id}/credits changes the user's wallet and its ledger together, and GET /habbos/{id}/transactions lists the ledger.
+- [hk-b-05 Ban users and lift bans](/tasks/hk-b-05-bans.md) — GET /bans and POST /bans issue a ban with Holo's lengths and end the user's sessions, and POST /bans/{id}/lift lifts it and keeps it as history.
+- [hk-b-06 Send alerts](/tasks/hk-b-06-alerts.md) — GET /alerts and POST /alerts alert one habbo, or everyone with housekeeping.alertsBroadcast, and list the alerts not dismissed yet.
+- [hk-b-07 Handle help tickets](/tasks/hk-b-07-help.md) — GET /help lists open tickets, and staff read, pick up, close and reply to them; closed tickets stay as history.
+- [hk-b-08 Give direct attributes](/tasks/hk-b-08-direct-attributes.md) — The habbo page lets holders of housekeeping.accessGroups give attributes to the user directly, only on users below them.
+- [hk-b-09 Restore archived habbos](/tasks/hk-b-09-restore-habbos.md) — Staff restore an archived habbo from its page, unless that takes the user past registration.maxHabbosPerUser.
+- [hk-b-10 Verify HK-B](/tasks/hk-b-10-exit-check.md) — Every exit criterion of HK-B holds from a clean checkout, in a real browser.
+
 ## Later phases
 
-[HK-B](/phases/hk-b-users-moderation.md),
 [P3](/phases/p3-homes.md), [P4](/phases/p4-community.md), [P5](/phases/p5-groups-forum.md),
 [P6](/phases/p6-economy.md) and [P7](/phases/p7-help.md) get their tasks when they start.

@@ -44,6 +44,29 @@ timestamp: 2026-11-02T02:47:29+00:00
 - Result: the user's habbos, oldest first (`ORDER BY created_at, id`)
 - Tables: `avatars`
 
+## ListAllUserAvatars
+
+- Cardinality: `:many`
+- Inputs: `user_id`
+- Result: the user's habbos, archived ones too, oldest first, for staff
+- Tables: `avatars`
+
+## SearchHabbos
+
+- Cardinality: `:many`
+- Inputs: `query`, `private`, `row_limit`, `row_offset`
+- Result: habbos with their owner's email, archived ones too, by name. A blank query matches every habbo, and otherwise
+  part of a name or a whole id. With `private`, also part of an email, the address the user registered from, or one
+  they signed in from.
+- Tables: `avatars`, `users`, `login_attempts`
+
+## CountHabbos
+
+- Cardinality: `:one`
+- Inputs: `query`, `private`
+- Result: how many habbos [SearchHabbos](#searchhabbos) finds
+- Tables: `avatars`, `users`, `login_attempts`
+
 ## CountAvatars
 
 - Cardinality: `:one`

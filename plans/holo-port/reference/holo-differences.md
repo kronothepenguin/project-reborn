@@ -11,7 +11,8 @@ tags: [holo]
 
 [0034](/decisions/0034-behaviour-matches-holo.md) makes every page behave exactly as Holo does. Anything else is listed
 here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p2-me-account.md) and, in its own
-section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md).
+section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
+[HK-B](/phases/hk-b-users-moderation.md).
 
 # Safer than Holo
 
@@ -110,6 +111,7 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Dashboard | Shows every administrator's address to all staff | Takes `housekeeping.users`, which grants seeing emails ([0015](/decisions/0015-attribute-names-and-fuses.md)) | Staff should not get more than their attributes give |
 | Access Denied | Answers 200 | The same page answers 403 | The status says what happened; a browser shows no difference |
 | Staff log | `GET ?do=prune` empties the log for the `$sysadmin` | The page is read-only | A log its readers can empty proves nothing, and a link could trigger it |
+| User listing | Every administrator sees every email and address | Emails, birth dates and addresses take `housekeeping.usersPrivate`, in the search too | [0053](/decisions/0053-attributes-on-groups-and-users.md) |
 
 ## Changed by a decision
 
@@ -153,6 +155,11 @@ veto.
 | Staff log | An `IP` column in place of `Note`, Holo's name of the PHP file | `staff_logs` has the address and no such note |
 | Settings | Forms for `auth`, `registration`, `referral`, `mail` and `imaging`, which Holo kept in `config.php` or nowhere | The plan: forms over the declared settings |
 | Settings | `mail.password` is never shown: blank keeps it, and `Clear it` removes it | The plan: `mail.password` masked |
+| User listing | Lists habbos, with `(Archived)` beside those archived | A user owns several habbos, and staff must find an archived one to restore it |
+| User listing | 100 habbos a page, with `Older` and `Newer` | Holo listed every user on one page |
+| User listing | One search does the work of `Retrive IP Address`, `Retrive User ID` and the `Clone Checker`, and matches part of a name | The plan: `GET /habbos?q=` |
+| User listing | `Last Activity` reads the habbo's newest session, then its last sign-in | `online` is not kept; the column's wording is Holo's |
+| Habbo page | The page of one habbo, with its owner, their other habbos and the addresses they signed in from | The plan. Holo kept only the last address |
 | Access groups | The guard also keeps `housekeeping.access` on someone | `housekeeping.accessGroups` opens nothing without it, so the rule as written could still lock everyone out |
 
 ## Kept as in Holo, on purpose

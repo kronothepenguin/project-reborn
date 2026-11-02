@@ -12,6 +12,30 @@ import (
 
 const logsPerPage = 100
 
+// paging splits a list into pages, in the terms of Older and Newer.
+type paging struct {
+	offset int64
+	older  int
+	newer  int
+}
+
+func pageOf(req *http.Request, total int64, perPage int) paging {
+	last := max(int((total+int64(perPage)-1)/int64(perPage)), 1)
+	current, err := strconv.Atoi(req.URL.Query().Get("page"))
+	if err != nil || current < 1 {
+		current = 1
+	}
+	current = min(current, last)
+	page := paging{offset: int64((current - 1) * perPage)}
+	if current < last {
+		page.older = current + 1
+	}
+	if current > 1 {
+		page.newer = current - 1
+	}
+	return page
+}
+
 type logsPage struct {
 	chrome
 	Logs  []logRow
@@ -37,29 +61,18 @@ func (r *Router) HandleLogsView(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
-	last := max(int((total+logsPerPage-1)/logsPerPage), 1)
-	current, err := strconv.Atoi(req.URL.Query().Get("page"))
-	if err != nil || current < 1 {
-		current = 1
-	}
-	current = min(current, last)
+	paged := pageOf(req, total, logsPerPage)
 
 	rows, err := r.deps.Queries.ListStaffLogs(ctx, store.ListStaffLogsParams{
 		RowLimit:  logsPerPage,
-		RowOffset: int64((current - 1) * logsPerPage),
+		RowOffset: paged.offset,
 	})
 	if err != nil {
 		r.fail(w, err)
 		return
 	}
 
-	page := logsPage{chrome: r.chrome(req)}
-	if current < last {
-		page.Older = current + 1
-	}
-	if current > 1 {
-		page.Newer = current - 1
-	}
+	page := logsPage{chrome: r.chrome(req), Older: paged.older, Newer: paged.newer}
 	for _, row := range rows {
 		page.Logs = append(page.Logs, logRow{
 			Action: row.Action,

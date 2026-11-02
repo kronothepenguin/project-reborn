@@ -2,6 +2,11 @@
 
 ## 2026-11-02
 
+- **Done** [hk-b-01](/tasks/hk-b-01-find-habbos.md): staff find habbos by name or id, and by email or address with
+  `housekeeping.usersPrivate`, and read a habbo with its owner, other habbos and IP history.
+- **Start** [hk-b-01](/tasks/hk-b-01-find-habbos.md).
+- **Create** [hk-b-01](/tasks/hk-b-01-find-habbos.md) to [hk-b-10](/tasks/hk-b-10-exit-check.md): HK-B is the active
+  phase.
 - **Done** [fx-16](/tasks/fx-16-exit-check.md): FX meets its exit criteria from a clean checkout, with every gate and
   all 395 browser checks passing.
 - **Start** [fx-16](/tasks/fx-16-exit-check.md).

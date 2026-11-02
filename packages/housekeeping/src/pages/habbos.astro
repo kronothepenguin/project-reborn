@@ -1,0 +1,61 @@
+---
+import { Input, Table } from "@project-reborn/components";
+import Box from "../components/box.astro";
+import Submit from "../components/submit.astro";
+import Housekeeping from "../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="User Overview" tab="users">
+  <div class="space-y-3">
+    <form method="get" action="/housekeeping/habbos">
+      <Box title="Find A User">
+        <div class="flex flex-wrap items-end gap-2 p-1">
+          <div>
+            <label for="habbo-query"><strong>[[ if .Private ]]Name, ID, E-Mail Address or IP Address[[ else ]]Name or ID[[ end ]]</strong></label>
+            <div>
+              <Input id="habbo-query" name="q" value="[[ .Query ]]" variant="border" />
+            </div>
+          </div>
+          <Submit>Search</Submit>
+        </div>
+      </Box>
+    </form>
+
+    <Box title="[[ .SiteName ]] User Listing" color="gold">
+      <Table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            [[ if .Private ]]<th>E-Mail Address</th>[[ end ]]
+            <th>Join date</th>
+            <th>Last Activity</th>
+            <th>Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          [[ range .Habbos ]]
+          <tr>
+            <td>[[ .ID ]]</td>
+            <td>
+              <strong>[[ .Name ]]</strong>[[ if .Archived ]] (Archived)[[ end ]]
+              [[ if $.Private ]]
+              <div class="text-neutral-500">[[ .IP ]]</div>
+              [[ end ]]
+            </td>
+            [[ if $.Private ]]<td><a href="mailto:[[ .Email ]]" class="text-indigo-900 underline">[[ .Email ]]</a></td>[[ end ]]
+            <td>[[ .Joined ]]</td>
+            <td>[[ .Activity ]]</td>
+            <td><a href="/housekeeping/habbos/[[ .ID ]]" class="text-indigo-900 underline">Edit</a></td>
+          </tr>
+          [[ else ]]
+          <tr>
+            <td colspan="6">Nothing found.</td>
+          </tr>
+          [[ end ]]
+        </tbody>
+      </Table>
+    </Box>
+    <p class="text-center">[[ if .Newer ]]<a href="/housekeeping/habbos?q=[[ .Query ]]&page=[[ .Newer ]]" class="text-indigo-900 underline">Newer</a>[[ end ]] [[ if .Older ]]<a href="/housekeeping/habbos?q=[[ .Query ]]&page=[[ .Older ]]" class="text-indigo-900 underline">Older</a>[[ end ]]</p>
+  </div>
+</Housekeeping>

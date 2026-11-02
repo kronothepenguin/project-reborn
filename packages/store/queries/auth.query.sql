@@ -88,6 +88,19 @@ WHERE avatar_id = sqlc.arg(avatar_id) AND succeeded
 ORDER BY created_at DESC
 LIMIT 1;
 
+-- name: GetLastSeen :one
+SELECT last_seen_at FROM sessions
+WHERE avatar_id = sqlc.arg(avatar_id)
+ORDER BY last_seen_at DESC
+LIMIT 1;
+
+-- CAST keeps user_id a non-null parameter although the column is nullable.
+-- name: ListUserLogins :many
+SELECT ip, created_at FROM login_attempts
+WHERE user_id = CAST(sqlc.arg(user_id) AS INTEGER) AND succeeded
+ORDER BY created_at DESC, id DESC
+LIMIT sqlc.arg(row_limit);
+
 -- name: GetResetAccount :one
 SELECT users.id AS user_id, users.email, avatars.name
 FROM avatars

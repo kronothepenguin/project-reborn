@@ -127,6 +127,20 @@ timestamp: 2026-11-02T02:47:29+00:00
 - Result: when the habbo last signed in; not found when it never did
 - Tables: `login_attempts`
 
+## GetLastSeen
+
+- Cardinality: `:one`
+- Inputs: `avatar_id`
+- Result: when a session of the habbo last did something; not found without a session
+- Tables: `sessions`
+
+## ListUserLogins
+
+- Cardinality: `:many`
+- Inputs: `user_id`, `row_limit`
+- Result: the addresses and times of the user's sign-ins, newest first, for the clone checker
+- Tables: `login_attempts`
+
 ## GetResetAccount
 
 - Cardinality: `:one`

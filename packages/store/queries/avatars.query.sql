@@ -38,3 +38,51 @@ WHERE id = sqlc.arg(id);
 -- name: ArchiveAvatar :execrows
 UPDATE avatars SET archived_at = sqlc.arg(archived_at), updated_at = sqlc.arg(updated_at)
 WHERE id = sqlc.arg(id) AND user_id = sqlc.arg(user_id) AND archived_at IS NULL;
+
+-- Habbos for staff, archived ones too. A query matches part of a name or a whole
+-- id; with private it also matches part of an email or an address the user used,
+-- so that a search by IP finds clones.
+-- name: SearchHabbos :many
+SELECT avatars.id, avatars.user_id, avatars.name, avatars.created_at, avatars.archived_at, users.email
+FROM avatars
+JOIN users ON users.id = avatars.user_id
+WHERE CAST(sqlc.arg(query) AS TEXT) = ''
+   OR avatars.name LIKE '%' || CAST(sqlc.arg(query) AS TEXT) || '%'
+   OR CAST(avatars.id AS TEXT) = CAST(sqlc.arg(query) AS TEXT)
+   OR (
+       CAST(sqlc.arg(private) AS BOOLEAN)
+       AND (
+           users.email LIKE '%' || CAST(sqlc.arg(query) AS TEXT) || '%'
+           OR users.created_ip = CAST(sqlc.arg(query) AS TEXT)
+           OR users.id IN (
+               SELECT login_attempts.user_id FROM login_attempts
+               WHERE login_attempts.ip = CAST(sqlc.arg(query) AS TEXT)
+           )
+       )
+   )
+ORDER BY avatars.name
+LIMIT sqlc.arg(row_limit) OFFSET sqlc.arg(row_offset);
+
+-- name: CountHabbos :one
+SELECT COUNT(*)
+FROM avatars
+JOIN users ON users.id = avatars.user_id
+WHERE CAST(sqlc.arg(query) AS TEXT) = ''
+   OR avatars.name LIKE '%' || CAST(sqlc.arg(query) AS TEXT) || '%'
+   OR CAST(avatars.id AS TEXT) = CAST(sqlc.arg(query) AS TEXT)
+   OR (
+       CAST(sqlc.arg(private) AS BOOLEAN)
+       AND (
+           users.email LIKE '%' || CAST(sqlc.arg(query) AS TEXT) || '%'
+           OR users.created_ip = CAST(sqlc.arg(query) AS TEXT)
+           OR users.id IN (
+               SELECT login_attempts.user_id FROM login_attempts
+               WHERE login_attempts.ip = CAST(sqlc.arg(query) AS TEXT)
+           )
+       )
+   );
+
+-- name: ListAllUserAvatars :many
+SELECT * FROM avatars
+WHERE user_id = sqlc.arg(user_id)
+ORDER BY created_at, id;

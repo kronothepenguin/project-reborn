@@ -85,6 +85,9 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 
 	mux.Handle("GET /housekeeping/logs", holding(auth.HousekeepingLogs, r.HandleLogsView))
 
+	mux.Handle("GET /housekeeping/habbos", holding(auth.HousekeepingUsers, r.HandleHabbosView))
+	mux.Handle("GET /housekeeping/habbos/{id}", holding(auth.HousekeepingUsers, r.HandleHabboView))
+
 	mux.Handle("/housekeeping/", page(http.StripPrefix("/housekeeping", h.static)))
 }
 

@@ -237,6 +237,20 @@ func (q *Queries) GetCredential(ctx context.Context, userID int64) (Credential, 
 	return i, err
 }
 
+const getLastSeen = `-- name: GetLastSeen :one
+SELECT last_seen_at FROM sessions
+WHERE avatar_id = ?1
+ORDER BY last_seen_at DESC
+LIMIT 1
+`
+
+func (q *Queries) GetLastSeen(ctx context.Context, avatarID int64) (time.Time, error) {
+	row := q.db.QueryRowContext(ctx, getLastSeen, avatarID)
+	var last_seen_at time.Time
+	err := row.Scan(&last_seen_at)
+	return last_seen_at, err
+}
+
 const getLastSignIn = `-- name: GetLastSignIn :one
 SELECT created_at FROM login_attempts
 WHERE avatar_id = ?1 AND succeeded
@@ -325,6 +339,47 @@ func (q *Queries) GetResetAccount(ctx context.Context, arg GetResetAccountParams
 	var i GetResetAccountRow
 	err := row.Scan(&i.UserID, &i.Email, &i.Name)
 	return i, err
+}
+
+const listUserLogins = `-- name: ListUserLogins :many
+SELECT ip, created_at FROM login_attempts
+WHERE user_id = CAST(?1 AS INTEGER) AND succeeded
+ORDER BY created_at DESC, id DESC
+LIMIT ?2
+`
+
+type ListUserLoginsParams struct {
+	UserID   int64
+	RowLimit int64
+}
+
+type ListUserLoginsRow struct {
+	IP        string
+	CreatedAt time.Time
+}
+
+// CAST keeps user_id a non-null parameter although the column is nullable.
+func (q *Queries) ListUserLogins(ctx context.Context, arg ListUserLoginsParams) ([]ListUserLoginsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listUserLogins, arg.UserID, arg.RowLimit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListUserLoginsRow
+	for rows.Next() {
+		var i ListUserLoginsRow
+		if err := rows.Scan(&i.IP, &i.CreatedAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const moveAvatarSessions = `-- name: MoveAvatarSessions :exec

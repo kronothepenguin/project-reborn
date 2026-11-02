@@ -20,6 +20,7 @@ import * as housekeepingAccess from "./suites/housekeeping-access.mjs";
 import * as housekeepingAdmin from "./suites/housekeeping-admin.mjs";
 import * as housekeepingMaintenance from "./suites/housekeeping-maintenance.mjs";
 import * as housekeepingSettings from "./suites/housekeeping-settings.mjs";
+import * as housekeepingUsers from "./suites/housekeeping-users.mjs";
 import * as looks from "./suites/looks.mjs";
 import * as maintenance from "./suites/maintenance.mjs";
 import * as me from "./suites/me.mjs";
@@ -40,6 +41,7 @@ const suites = {
   "housekeeping-admin": housekeepingAdmin,
   "housekeeping-settings": housekeepingSettings,
   "housekeeping-maintenance": housekeepingMaintenance,
+  "housekeeping-users": housekeepingUsers,
   together,
 };
 

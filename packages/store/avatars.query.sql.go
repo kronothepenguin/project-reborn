@@ -47,6 +47,38 @@ func (q *Queries) CountAvatars(ctx context.Context) (int64, error) {
 	return count, err
 }
 
+const countHabbos = `-- name: CountHabbos :one
+SELECT COUNT(*)
+FROM avatars
+JOIN users ON users.id = avatars.user_id
+WHERE CAST(?1 AS TEXT) = ''
+   OR avatars.name LIKE '%' || CAST(?1 AS TEXT) || '%'
+   OR CAST(avatars.id AS TEXT) = CAST(?1 AS TEXT)
+   OR (
+       CAST(?2 AS BOOLEAN)
+       AND (
+           users.email LIKE '%' || CAST(?1 AS TEXT) || '%'
+           OR users.created_ip = CAST(?1 AS TEXT)
+           OR users.id IN (
+               SELECT login_attempts.user_id FROM login_attempts
+               WHERE login_attempts.ip = CAST(?1 AS TEXT)
+           )
+       )
+   )
+`
+
+type CountHabbosParams struct {
+	Query   string
+	Private bool
+}
+
+func (q *Queries) CountHabbos(ctx context.Context, arg CountHabbosParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countHabbos, arg.Query, arg.Private)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createAvatar = `-- name: CreateAvatar :one
 INSERT INTO avatars (user_id, name, figure, gender, motto, created_at, updated_at)
 VALUES (
@@ -134,6 +166,45 @@ func (q *Queries) GetAvatarByName(ctx context.Context, name string) (Avatar, err
 	return i, err
 }
 
+const listAllUserAvatars = `-- name: ListAllUserAvatars :many
+SELECT id, user_id, name, figure, gender, motto, created_at, updated_at, archived_at FROM avatars
+WHERE user_id = ?1
+ORDER BY created_at, id
+`
+
+func (q *Queries) ListAllUserAvatars(ctx context.Context, userID int64) ([]Avatar, error) {
+	rows, err := q.db.QueryContext(ctx, listAllUserAvatars, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Avatar
+	for rows.Next() {
+		var i Avatar
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.Name,
+			&i.Figure,
+			&i.Gender,
+			&i.Motto,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.ArchivedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listRandomAvatars = `-- name: ListRandomAvatars :many
 SELECT id, user_id, name, figure, gender, motto, created_at, updated_at, archived_at FROM avatars
 WHERE archived_at IS NULL
@@ -199,6 +270,82 @@ func (q *Queries) ListUserAvatars(ctx context.Context, userID int64) ([]Avatar, 
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.ArchivedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const searchHabbos = `-- name: SearchHabbos :many
+SELECT avatars.id, avatars.user_id, avatars.name, avatars.created_at, avatars.archived_at, users.email
+FROM avatars
+JOIN users ON users.id = avatars.user_id
+WHERE CAST(?1 AS TEXT) = ''
+   OR avatars.name LIKE '%' || CAST(?1 AS TEXT) || '%'
+   OR CAST(avatars.id AS TEXT) = CAST(?1 AS TEXT)
+   OR (
+       CAST(?2 AS BOOLEAN)
+       AND (
+           users.email LIKE '%' || CAST(?1 AS TEXT) || '%'
+           OR users.created_ip = CAST(?1 AS TEXT)
+           OR users.id IN (
+               SELECT login_attempts.user_id FROM login_attempts
+               WHERE login_attempts.ip = CAST(?1 AS TEXT)
+           )
+       )
+   )
+ORDER BY avatars.name
+LIMIT ?4 OFFSET ?3
+`
+
+type SearchHabbosParams struct {
+	Query     string
+	Private   bool
+	RowOffset int64
+	RowLimit  int64
+}
+
+type SearchHabbosRow struct {
+	ID         int64
+	UserID     int64
+	Name       string
+	CreatedAt  time.Time
+	ArchivedAt sql.NullTime
+	Email      string
+}
+
+// Habbos for staff, archived ones too. A query matches part of a name or a whole
+// id; with private it also matches part of an email or an address the user used,
+// so that a search by IP finds clones.
+func (q *Queries) SearchHabbos(ctx context.Context, arg SearchHabbosParams) ([]SearchHabbosRow, error) {
+	rows, err := q.db.QueryContext(ctx, searchHabbos,
+		arg.Query,
+		arg.Private,
+		arg.RowOffset,
+		arg.RowLimit,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SearchHabbosRow
+	for rows.Next() {
+		var i SearchHabbosRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.Name,
+			&i.CreatedAt,
+			&i.ArchivedAt,
+			&i.Email,
 		); err != nil {
 			return nil, err
 		}
