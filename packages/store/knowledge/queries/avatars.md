@@ -93,6 +93,40 @@ timestamp: 2026-11-02T02:47:29+00:00
 - Result: up to `count` habbos in random order, for the landing promo
 - Tables: `avatars`
 
+## ListAvatarBadges
+
+- Cardinality: `:many`
+- Inputs: `avatar_id`
+- Result: the habbo's badges, oldest first
+- Tables: `avatar_badges`
+
+## TakeOffAvatarBadge
+
+- Cardinality: `:exec`
+- Inputs: `avatar_id`
+- Result: the habbo wears no badge, which must come before wearing another, because a habbo wears one
+- Tables: `avatar_badges`
+
+## GrantAvatarBadge
+
+- Cardinality: `:execrows`
+- Inputs: `avatar_id`, `code`, `granted_at`
+- Result: 1 when the habbo got the badge, worn, and 0 when it already had it
+- Tables: `avatar_badges`
+
+## WearAvatarBadge
+
+- Cardinality: `:exec`
+- Inputs: `avatar_id`, `code`
+- Tables: `avatar_badges`
+
+## DeleteAvatarBadge
+
+- Cardinality: `:execrows`
+- Inputs: `avatar_id`, `code`
+- Result: 1 when the habbo had the badge, 0 otherwise
+- Tables: `avatar_badges`
+
 # Related
 
 - Entity: [Habbo](/entities/habbo.md).

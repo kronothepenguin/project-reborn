@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [hk-b-03](/tasks/hk-b-03-badges.md): staff give a badge, which the habbo wears, make one it has the worn
+  one, and remove one, only on users below them.
+- **Start** [hk-b-03](/tasks/hk-b-03-badges.md).
 - **Done** [hk-b-02](/tasks/hk-b-02-edit-users.md): staff edit the fields of Holo's Edit User from the habbo page,
   taken from a fixed list, only on users below them.
 - **Start** [hk-b-02](/tasks/hk-b-02-edit-users.md).

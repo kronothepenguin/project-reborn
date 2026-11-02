@@ -101,6 +101,23 @@ export default async function (t) {
     (await page.getByRole("alert").innerText()).includes("not valid"),
   );
 
+  await page.goto(frankStaffURL);
+  await page.fill('input[name="badge"]', "adm");
+  await page.getByRole("button", { name: "Give badge" }).click();
+  await page.waitForURL(/given=1/);
+  check(
+    "a badge is given and worn",
+    (await page.getByRole("status").innerText()).includes(
+      "Gave the user this badge (ADM)",
+    ) && (await page.getByRole("row", { name: /^ADM/ }).innerText()).includes("Yes"),
+  );
+  await page.getByRole("row", { name: /^ADM/ }).getByRole("button", { name: "Remove" }).click();
+  await page.waitForURL(/removed=1/);
+  check(
+    "a badge is removed",
+    (await page.locator("main").innerText()).includes("This habbo has no badges."),
+  );
+
   await page.goto(`${hk}/habbos?q=Admin-1`);
   await page.getByRole("row", { name: /Admin-1/ }).getByRole("link", { name: "Edit" }).click();
   await page.waitForURL(/habbos\/\d+$/);
@@ -118,7 +135,7 @@ export default async function (t) {
   const logs = await page.locator("main table").first().innerText();
   check(
     "the staff log has the edits and the refusal",
-    ["habbos.update", "users.update", "users.refused"].every((action) =>
+    ["habbos.update", "users.update", "users.refused", "badges.give", "badges.delete"].every((action) =>
       logs.includes(action),
     ),
     logs,

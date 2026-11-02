@@ -23,6 +23,9 @@ const (
 	actionHabbosUpdate          = "habbos.update"
 	actionUsersUpdate           = "users.update"
 	actionUsersRefused          = "users.refused"
+	actionBadgesGive            = "badges.give"
+	actionBadgesWear            = "badges.wear"
+	actionBadgesDelete          = "badges.delete"
 )
 
 // staffLog is what a mutation records about itself; the actor, the address and

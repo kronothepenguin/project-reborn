@@ -188,6 +188,7 @@ type habboPage struct {
 	Target  targetHabbo
 	Owner   targetUser
 	Others  []ownedHabbo
+	Badges  []badgeRow
 	Logins  []loginRow
 	Message string
 	Error   string
@@ -218,6 +219,11 @@ type ownedHabbo struct {
 	ID       int64
 	Name     string
 	Archived bool
+}
+
+type badgeRow struct {
+	Code string
+	Worn bool
 }
 
 type loginRow struct {
@@ -277,6 +283,13 @@ func (r *Router) newHabboPage(req *http.Request, avatar store.Avatar) (habboPage
 			page.Others = append(page.Others, ownedHabbo{ID: habbo.ID, Name: habbo.Name, Archived: habbo.ArchivedAt.Valid})
 		}
 	}
+	badges, err := q.ListAvatarBadges(ctx, avatar.ID)
+	if err != nil {
+		return page, err
+	}
+	for _, badge := range badges {
+		page.Badges = append(page.Badges, badgeRow{Code: badge.Code, Worn: badge.Worn})
+	}
 	if !page.Private {
 		return page, nil
 	}
@@ -327,8 +340,17 @@ func (r *Router) HandleHabboView(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
-	if req.URL.Query().Has("saved") {
+	query := req.URL.Query()
+	switch code := query.Get("badge"); {
+	case query.Has("saved"):
 		page.Message = habboSaved
+	case !badgeCode.MatchString(code):
+	case query.Has("given"):
+		page.Message = "Gave the user this badge (" + code + ") and set it as current badge successfully."
+	case query.Has("worn"):
+		page.Message = "This user already has this badge; the badge (" + code + ") has been set as the user's current badge successfully."
+	case query.Has("removed"):
+		page.Message = "Removed the badge (" + code + ") from this user."
 	}
 	astro.WriteTemplate(w, r.deps.Resolver, "habbos/id.html", page)
 }

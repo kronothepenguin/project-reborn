@@ -106,6 +106,58 @@ import Housekeeping from "../../layouts/housekeeping.astro";
       </Box>
     </form>
 
+    <Box title="Badges" color="gold">
+      <Table>
+        <thead>
+          <tr>
+            <th>Badge</th>
+            <th>Current</th>
+            [[ if .CanEdit ]]<th>Remove</th>[[ end ]]
+          </tr>
+        </thead>
+        <tbody>
+          [[ range .Badges ]]
+          <tr>
+            <td>[[ .Code ]]</td>
+            <td>[[ if .Worn ]]Yes[[ else ]]No[[ end ]]</td>
+            [[ if $.CanEdit ]]
+            <td>
+              <form method="post" action="/housekeeping/habbos/[[ $.Target.ID ]]/badges/[[ .Code ]]/delete">
+                <Submit>Remove</Submit>
+              </form>
+            </td>
+            [[ end ]]
+          </tr>
+          [[ else ]]
+          <tr>
+            <td colspan="3">This habbo has no badges.</td>
+          </tr>
+          [[ end ]]
+        </tbody>
+      </Table>
+    </Box>
+
+    [[ if .CanEdit ]]
+    <form method="post" action="/housekeeping/habbos/[[ .Target.ID ]]/badges">
+      <Box title="Badge Manager">
+        <Table variant="form">
+          <tbody>
+            <tr>
+              <td class="w-2/5">
+                <label for="badge-code"><strong>Badgecode</strong></label>
+                <div class="text-neutral-500">The bage code, eg. 'ADM' or 'XM8'.</div>
+              </td>
+              <td class="w-3/5"><Input id="badge-code" name="badge" variant="border" /></td>
+            </tr>
+          </tbody>
+        </Table>
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+          <Submit>Give badge</Submit>
+        </div>
+      </Box>
+    </form>
+    [[ end ]]
+
     <Box title="The Owner's Other Habbos" color="gold">
       <Table>
         <tbody>

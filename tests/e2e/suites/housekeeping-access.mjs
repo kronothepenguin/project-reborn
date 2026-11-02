@@ -20,6 +20,8 @@ const everyRoute = [
   ["GET", "/habbos"],
   ["GET", "/habbos/1"],
   ["POST", "/habbos/1"],
+  ["POST", "/habbos/1/badges"],
+  ["POST", "/habbos/1/badges/ADM/delete"],
   ["POST", "/users/1"],
   ["GET", "/settings.html"],
   ["GET", "/index.html"],

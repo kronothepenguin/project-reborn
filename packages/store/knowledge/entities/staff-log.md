@@ -42,6 +42,9 @@ many actions).
 | `accessGroups.refused` | what was refused, as Holo logged the refusals of its rank tool | the user, when there is one |
 | `habbos.update` | the fields saved, never their values | the user and the habbo |
 | `users.update` | the fields saved, never their values | the user and the habbo of the page |
+| `badges.give` | the badge | the user and the habbo |
+| `badges.wear` | the badge, which the habbo already had | the user and the habbo |
+| `badges.delete` | the badge | the user and the habbo |
 | `users.refused` | what was tried on a user at or above the actor's level | the user and the habbo |
 
 # Relations

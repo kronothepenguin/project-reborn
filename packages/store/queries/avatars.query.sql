@@ -86,3 +86,26 @@ WHERE CAST(sqlc.arg(query) AS TEXT) = ''
 SELECT * FROM avatars
 WHERE user_id = sqlc.arg(user_id)
 ORDER BY created_at, id;
+
+-- name: ListAvatarBadges :many
+SELECT * FROM avatar_badges
+WHERE avatar_id = sqlc.arg(avatar_id)
+ORDER BY granted_at, code;
+
+-- A habbo wears one badge, so this comes before wearing another.
+-- name: TakeOffAvatarBadge :exec
+UPDATE avatar_badges SET worn = FALSE
+WHERE avatar_id = sqlc.arg(avatar_id) AND worn;
+
+-- name: GrantAvatarBadge :execrows
+INSERT INTO avatar_badges (avatar_id, code, worn, granted_at)
+VALUES (sqlc.arg(avatar_id), sqlc.arg(code), TRUE, sqlc.arg(granted_at))
+ON CONFLICT (avatar_id, code) DO NOTHING;
+
+-- name: WearAvatarBadge :exec
+UPDATE avatar_badges SET worn = TRUE
+WHERE avatar_id = sqlc.arg(avatar_id) AND code = sqlc.arg(code);
+
+-- name: DeleteAvatarBadge :execrows
+DELETE FROM avatar_badges
+WHERE avatar_id = sqlc.arg(avatar_id) AND code = sqlc.arg(code);

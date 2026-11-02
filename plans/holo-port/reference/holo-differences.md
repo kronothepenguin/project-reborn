@@ -114,6 +114,7 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Edit User | Takes column names from the form | Reads a fixed list of fields | `name=x` could otherwise reach any column, as it did in Holo |
 | Edit User | Any value goes into the query, with no escaping | The email, the birth date, the figure, the gender, the motto's 38 characters, and tickets and film from 0 to 2147483647 are checked | A value Holo accepted could break the site's pages |
 | Edit User | The email and birth date of anyone can be changed | They take `housekeeping.usersPrivate`, and `housekeeping.usersEdit` alone does not show them or save them | Changing an address nobody may read would hand over the account, through the password reset |
+| Badge tool | Takes any 3 or 4 characters | Letters and digits, saved in upper case | A code names a file and a segment of a path, and MySQL matched codes ignoring case |
 | User listing | Every administrator sees every email and address | Emails, birth dates and addresses take `housekeeping.usersPrivate`, in the search too | [0053](/decisions/0053-attributes-on-groups-and-users.md) |
 
 ## Changed by a decision
@@ -149,6 +150,7 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Dashboard | `Active Bans` counts every row, expired ones too, until the banned user comes back | Counts the bans in force |
 | A refused form | Forgets what was typed | Keeps it, except a password |
 | A saved form | Answers the post, so a reload posts again | Redirects, and shows the same message |
+| Badge tool | A new badge is current, and the old one stays current too | One worn badge at a time | The old badge was never cleared |
 
 ## Not in Holo
 
@@ -163,6 +165,7 @@ veto.
 | Settings | `mail.password` is never shown: blank keeps it, and `Clear it` removes it | The plan: `mail.password` masked |
 | Edit User | Two forms on the habbo's page, `Save Habbo` and `Save User` | A habbo and its owner are two rows |
 | Edit User | `users.update` and `habbos.update` list the fields saved, never their values | Holo logged `Edited user`, and an address must not reach readers of the log |
+| Badge tool | The habbo's page lists its badges, each with `Remove`, and the form gives one to that habbo | The plan: `POST /habbos/{id}/badges/{code}/delete`. Holo's tool only gave badges, by username |
 | User listing | Lists habbos, with `(Archived)` beside those archived | A user owns several habbos, and staff must find an archived one to restore it |
 | User listing | 100 habbos a page, with `Older` and `Newer` | Holo listed every user on one page |
 | User listing | One search does the work of `Retrive IP Address`, `Retrive User ID` and the `Clone Checker`, and matches part of a name | The plan: `GET /habbos?q=` |
@@ -174,6 +177,7 @@ veto.
 
 - Any staff member can change the shared note.
 - A blank field of `Edit User` keeps its value, so a motto cannot be emptied there.
+- Holo's spelling in its texts, such as `The bage code` and `Permenantly`.
 - The dashboard shows 20 administrators, and the staff list 50 rows.
 - Every link of the left menu shows to all staff, and a page they lack answers `Access Denied`.
 

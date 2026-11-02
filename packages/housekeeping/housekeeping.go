@@ -88,6 +88,8 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	mux.Handle("GET /housekeeping/habbos", holding(auth.HousekeepingUsers, r.HandleHabbosView))
 	mux.Handle("GET /housekeeping/habbos/{id}", holding(auth.HousekeepingUsers, r.HandleHabboView))
 	mux.Handle("POST /housekeeping/habbos/{id}", holding(auth.HousekeepingUsersEdit, r.HandleHabboSave))
+	mux.Handle("POST /housekeeping/habbos/{id}/badges", holding(auth.HousekeepingUsersEdit, r.HandleHabboBadgesGive))
+	mux.Handle("POST /housekeeping/habbos/{id}/badges/{code}/delete", holding(auth.HousekeepingUsersEdit, r.HandleHabboBadgesDelete))
 	mux.Handle("POST /housekeeping/users/{id}", holding(auth.HousekeepingUsersEdit, r.HandleUserSave))
 
 	mux.Handle("/housekeeping/", page(http.StripPrefix("/housekeeping", h.static)))
