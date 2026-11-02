@@ -417,6 +417,36 @@ func (q *Queries) ListAttributeHolders(ctx context.Context, attribute string) ([
 	return items, nil
 }
 
+const listDirectUserAttributes = `-- name: ListDirectUserAttributes :many
+SELECT attribute FROM user_attributes
+WHERE user_id = ?1
+ORDER BY attribute
+`
+
+// Only what the user was given directly, without their groups.
+func (q *Queries) ListDirectUserAttributes(ctx context.Context, userID int64) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, listDirectUserAttributes, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var attribute string
+		if err := rows.Scan(&attribute); err != nil {
+			return nil, err
+		}
+		items = append(items, attribute)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listStaffMembers = `-- name: ListStaffMembers :many
 SELECT
     access_group_members.user_id,

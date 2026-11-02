@@ -22,6 +22,7 @@ const (
 	actionGroupsRefused         = "accessGroups.refused"
 	actionHabbosUpdate          = "habbos.update"
 	actionUsersUpdate           = "users.update"
+	actionUsersAttributes       = "users.attributes"
 	actionUsersRefused          = "users.refused"
 	actionCreditsGive           = "credits.give"
 	actionAlertsSend            = "alerts.send"

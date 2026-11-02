@@ -52,6 +52,7 @@ many actions).
 | `badges.give` | the badge | the user and the habbo |
 | `badges.wear` | the badge, which the habbo already had | the user and the habbo |
 | `badges.delete` | the badge | the user and the habbo |
+| `users.attributes` | the attributes added and removed | the user and the habbo of the page |
 | `users.refused` | what was tried on a user at or above the actor's level | the user and the habbo |
 
 # Relations

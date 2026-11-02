@@ -123,6 +123,12 @@ FROM access_group_members
 JOIN access_groups ON access_groups.id = access_group_members.access_group_id
 WHERE access_group_members.user_id = sqlc.arg(user_id);
 
+-- Only what the user was given directly, without their groups.
+-- name: ListDirectUserAttributes :many
+SELECT attribute FROM user_attributes
+WHERE user_id = sqlc.arg(user_id)
+ORDER BY attribute;
+
 -- name: AddUserAttribute :exec
 INSERT INTO user_attributes (user_id, attribute, granted_at, granted_by_user_id)
 VALUES (sqlc.arg(user_id), sqlc.arg(attribute), sqlc.arg(granted_at), sqlc.narg(granted_by_user_id))

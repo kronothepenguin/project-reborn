@@ -34,6 +34,7 @@ const everyRoute = [
   ["POST", "/habbos/1/badges"],
   ["POST", "/habbos/1/badges/ADM/delete"],
   ["POST", "/users/1"],
+  ["POST", "/users/1/attributes"],
   ["GET", "/settings.html"],
   ["GET", "/index.html"],
   ["GET", "/favicon.svg"],

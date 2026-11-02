@@ -140,6 +140,39 @@ import Housekeeping from "../../layouts/housekeeping.astro";
     </form>
     [[ end ]]
 
+    [[ if .CanGrant ]]
+    <form method="post" action="/housekeeping/users/[[ .Owner.ID ]]/attributes">
+      <input type="hidden" name="habbo" value="[[ .Target.ID ]]" />
+      <Box title="Direct Attributes">
+        <Table variant="form">
+          <thead>
+            <tr>
+              <th>Attribute</th>
+              <th>Grants</th>
+            </tr>
+          </thead>
+          <tbody>
+            [[ range .Attributes ]]
+            <tr>
+              <td class="w-2/5">
+                [[ if .Held ]]
+                <Checkbox name="attribute" value="[[ .Name ]]" checked>[[ .Name ]]</Checkbox>
+                [[ else ]]
+                <Checkbox name="attribute" value="[[ .Name ]]">[[ .Name ]]</Checkbox>
+                [[ end ]]
+              </td>
+              <td class="w-3/5 text-neutral-500">[[ .Description ]]</td>
+            </tr>
+            [[ end ]]
+          </tbody>
+        </Table>
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+          <Submit>Save Attributes</Submit>
+        </div>
+      </Box>
+    </form>
+    [[ end ]]
+
     <Box title="Badges" color="gold">
       <Table>
         <thead>

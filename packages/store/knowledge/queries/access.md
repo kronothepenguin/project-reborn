@@ -121,6 +121,13 @@ timestamp: 2026-11-02T02:13:59+00:00
 - Result: the highest level of the user's groups, 0 without a group
 - Tables: `access_group_members`, `access_groups`
 
+## ListDirectUserAttributes
+
+- Cardinality: `:many`
+- Inputs: `user_id`
+- Result: the attributes given to the user directly, without those of their groups
+- Tables: `user_attributes`
+
 ## AddUserAttribute
 
 - Cardinality: `:exec`

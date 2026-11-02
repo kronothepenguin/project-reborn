@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [hk-b-08](/tasks/hk-b-08-direct-attributes.md): holders of `housekeeping.accessGroups` tick attributes for
+  one user on the habbo page, only on users below them.
+- **Start** [hk-b-08](/tasks/hk-b-08-direct-attributes.md).
 - **Done** [hk-b-07](/tasks/hk-b-07-help.md): staff read, pick up, reply to and close help tickets, and a closed ticket
   stays as history.
 - **Start** [hk-b-07](/tasks/hk-b-07-help.md).

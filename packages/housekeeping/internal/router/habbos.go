@@ -188,13 +188,16 @@ type habboPage struct {
 	CanEdit bool
 	CanGive bool
 	CanBan  bool
-	Target  targetHabbo
-	Owner   targetUser
-	Others  []ownedHabbo
-	Badges  []badgeRow
-	Logins  []loginRow
-	Message string
-	Error   string
+	// CanGrant shows Attributes, which stays empty without it.
+	CanGrant   bool
+	Attributes []attributeBox
+	Target     targetHabbo
+	Owner      targetUser
+	Others     []ownedHabbo
+	Badges     []badgeRow
+	Logins     []loginRow
+	Message    string
+	Error      string
 }
 
 type targetHabbo struct {
@@ -261,6 +264,7 @@ func (r *Router) newHabboPage(req *http.Request, avatar store.Avatar) (habboPage
 	page.CanEdit = slices.Contains(attributes, auth.HousekeepingUsersEdit)
 	page.CanGive = slices.Contains(attributes, auth.HousekeepingCredits)
 	page.CanBan = slices.Contains(attributes, auth.HousekeepingBans)
+	page.CanGrant = slices.Contains(attributes, auth.HousekeepingAccessGroups)
 
 	page.Target = targetHabbo{
 		ID:       avatar.ID,
@@ -286,6 +290,19 @@ func (r *Router) newHabboPage(req *http.Request, avatar store.Avatar) (habboPage
 	for _, habbo := range habbos {
 		if habbo.ID != avatar.ID {
 			page.Others = append(page.Others, ownedHabbo{ID: habbo.ID, Name: habbo.Name, Archived: habbo.ArchivedAt.Valid})
+		}
+	}
+	if page.CanGrant {
+		direct, err := q.ListDirectUserAttributes(ctx, avatar.UserID)
+		if err != nil {
+			return page, err
+		}
+		for _, entry := range auth.Catalogue() {
+			page.Attributes = append(page.Attributes, attributeBox{
+				Name:        string(entry.Attribute),
+				Description: entry.Description,
+				Held:        slices.Contains(direct, string(entry.Attribute)),
+			})
 		}
 	}
 	badges, err := q.ListAvatarBadges(ctx, avatar.ID)

@@ -314,6 +314,20 @@ export default async function (t) {
     ),
   );
 
+  await page.goto(frankStaffURL);
+  await page.check('input[name="attribute"][value="housekeeping.logs"]');
+  await page.getByRole("button", { name: "Save Attributes" }).click();
+  await page.waitForURL(/saved=1/);
+  check(
+    "a direct attribute stays ticked",
+    await page.isChecked('input[name="attribute"][value="housekeeping.logs"]'),
+  );
+  const [[granted]] = t.sql(
+    `SELECT COUNT(*) FROM user_attributes JOIN users ON users.id = user_attributes.user_id
+     WHERE users.email = 'frank.new@example.com' AND attribute = 'housekeeping.logs'`,
+  );
+  check("the attribute is the user's", granted === 1 || granted === "1", String(granted));
+
   await page.goto(`${hk}/habbos?q=Admin-1`);
   await page.getByRole("row", { name: /Admin-1/ }).getByRole("link", { name: "Edit" }).click();
   await page.waitForURL(/habbos\/\d+$/);
@@ -344,6 +358,7 @@ export default async function (t) {
       "alerts.broadcast",
       "help.pick",
       "help.close",
+      "users.attributes",
     ].every((action) =>
       logs.includes(action),
     ),

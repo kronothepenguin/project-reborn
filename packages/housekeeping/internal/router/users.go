@@ -87,34 +87,45 @@ func (f userForm) changedFrom(user store.User, wallet store.Wallet) string {
 	return strings.Join(changed, ", ")
 }
 
-// HandleUserSave handles POST /housekeeping/users/{id}, the user's half of Holo's
-// Edit User. The form lives on the page of one of the user's habbos, and the posted
-// habbo says which, so that the answer comes back to it. Credits are not here: they
-// move only with a ledger row, through the credits form.
-func (r *Router) HandleUserSave(w http.ResponseWriter, req *http.Request) {
-	ctx := req.Context()
+// postedHabbo reads the habbo of a user's form. A user's forms live on the page of
+// one of their habbos, and the posted habbo says which, so that the answer comes
+// back to it. It answers 404 unless that habbo is the user's.
+func (r *Router) postedHabbo(w http.ResponseWriter, req *http.Request) (store.Avatar, bool) {
 	id, err := strconv.ParseInt(req.PathValue("id"), 10, 64)
 	if err != nil {
 		http.NotFound(w, req)
-		return
+		return store.Avatar{}, false
 	}
 	habboID, err := strconv.ParseInt(req.PostFormValue("habbo"), 10, 64)
 	if err != nil {
 		http.NotFound(w, req)
-		return
+		return store.Avatar{}, false
 	}
-	avatar, err := r.deps.Queries.GetAvatar(ctx, habboID)
+	avatar, err := r.deps.Queries.GetAvatar(req.Context(), habboID)
 	switch {
 	case store.IsNotFound(err):
 		http.NotFound(w, req)
-		return
+		return avatar, false
 	case err != nil:
 		r.fail(w, err)
-		return
+		return avatar, false
 	case avatar.UserID != id:
 		http.NotFound(w, req)
+		return avatar, false
+	}
+	return avatar, true
+}
+
+// HandleUserSave handles POST /housekeeping/users/{id}, the user's half of Holo's
+// Edit User. Credits are not here: they move only with a ledger row, through the
+// credits form.
+func (r *Router) HandleUserSave(w http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
+	avatar, ok := r.postedHabbo(w, req)
+	if !ok {
 		return
 	}
+	id := avatar.UserID
 	user, err := r.deps.Queries.GetUser(ctx, id)
 	if err != nil {
 		r.fail(w, err)

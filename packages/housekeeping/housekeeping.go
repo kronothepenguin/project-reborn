@@ -105,6 +105,7 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /housekeeping/habbos/{id}/credits", holding(auth.HousekeepingCredits, r.HandleHabboCreditsGive))
 	mux.Handle("GET /housekeeping/habbos/{id}/transactions", holding(auth.HousekeepingCredits, r.HandleHabboTransactionsView))
 	mux.Handle("POST /housekeeping/users/{id}", holding(auth.HousekeepingUsersEdit, r.HandleUserSave))
+	mux.Handle("POST /housekeeping/users/{id}/attributes", holding(auth.HousekeepingAccessGroups, r.HandleUserAttributesSave))
 
 	mux.Handle("/housekeeping/", page(http.StripPrefix("/housekeeping", h.static)))
 }
