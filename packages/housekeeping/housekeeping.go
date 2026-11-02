@@ -85,6 +85,9 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 
 	mux.Handle("GET /housekeeping/logs", holding(auth.HousekeepingLogs, r.HandleLogsView))
 
+	mux.Handle("GET /housekeeping/alerts", holding(auth.HousekeepingAlerts, r.HandleAlertsView))
+	mux.Handle("POST /housekeeping/alerts", holding(auth.HousekeepingAlerts, r.HandleAlertsSend))
+
 	mux.Handle("GET /housekeeping/bans", holding(auth.HousekeepingBans, r.HandleBansView))
 	mux.Handle("POST /housekeeping/bans", holding(auth.HousekeepingBans, r.HandleBansCreate))
 	mux.Handle("POST /housekeeping/bans/{id}/lift", holding(auth.HousekeepingBans, r.HandleBansLift))

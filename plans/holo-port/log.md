@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [hk-b-06](/tasks/hk-b-06-alerts.md): staff alert one habbo, or every habbo with
+  `housekeeping.alertsBroadcast`, and list the alerts not dismissed yet.
+- **Start** [hk-b-06](/tasks/hk-b-06-alerts.md).
 - **Done** [hk-b-05](/tasks/hk-b-05-bans.md): staff ban a user, and their address if they want, with Holo's lengths and
   real dates; the sessions end at once, and bans are lifted and kept.
 - **Start** [hk-b-05](/tasks/hk-b-05-bans.md).

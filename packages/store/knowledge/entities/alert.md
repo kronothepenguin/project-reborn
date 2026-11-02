@@ -17,7 +17,7 @@ alerts.
 
 # Lifecycle
 
-- Sent from housekeeping; a broadcast inserts one row per habbo.
+- Sent from housekeeping; a broadcast inserts one row per habbo that is not archived.
 - Dismissed by the recipient; deleted with the recipient habbo.
 
 # Vocabularies

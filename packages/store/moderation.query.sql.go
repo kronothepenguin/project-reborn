@@ -11,6 +11,17 @@ import (
 	"time"
 )
 
+const countActiveAlerts = `-- name: CountActiveAlerts :one
+SELECT COUNT(*) FROM alerts WHERE dismissed_at IS NULL
+`
+
+func (q *Queries) CountActiveAlerts(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countActiveAlerts)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const countActiveBans = `-- name: CountActiveBans :one
 SELECT COUNT(*) FROM bans
 WHERE created_at <= ?1
@@ -35,6 +46,50 @@ func (q *Queries) CountOpenHelpTickets(ctx context.Context) (int64, error) {
 	var count int64
 	err := row.Scan(&count)
 	return count, err
+}
+
+const createAlert = `-- name: CreateAlert :exec
+INSERT INTO alerts (avatar_id, sender_user_id, message, created_at)
+VALUES (?1, ?2, ?3, ?4)
+`
+
+type CreateAlertParams struct {
+	AvatarID     int64
+	SenderUserID sql.NullInt64
+	Message      string
+	CreatedAt    time.Time
+}
+
+func (q *Queries) CreateAlert(ctx context.Context, arg CreateAlertParams) error {
+	_, err := q.db.ExecContext(ctx, createAlert,
+		arg.AvatarID,
+		arg.SenderUserID,
+		arg.Message,
+		arg.CreatedAt,
+	)
+	return err
+}
+
+const createAlertForEveryone = `-- name: CreateAlertForEveryone :execrows
+INSERT INTO alerts (avatar_id, sender_user_id, message, created_at)
+SELECT avatars.id, ?1, ?2, ?3
+FROM avatars
+WHERE avatars.archived_at IS NULL
+`
+
+type CreateAlertForEveryoneParams struct {
+	SenderUserID sql.NullInt64
+	Message      string
+	CreatedAt    time.Time
+}
+
+// One row for each habbo that can still read it: an archived one cannot sign in.
+func (q *Queries) CreateAlertForEveryone(ctx context.Context, arg CreateAlertForEveryoneParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, createAlertForEveryone, arg.SenderUserID, arg.Message, arg.CreatedAt)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
 }
 
 const createBan = `-- name: CreateBan :one
@@ -196,6 +251,57 @@ func (q *Queries) LiftBan(ctx context.Context, arg LiftBanParams) (int64, error)
 		return 0, err
 	}
 	return result.RowsAffected()
+}
+
+const listActiveAlerts = `-- name: ListActiveAlerts :many
+SELECT alerts.id, alerts.avatar_id, alerts.sender_user_id, alerts.message, avatars.name AS habbo
+FROM alerts
+JOIN avatars ON avatars.id = alerts.avatar_id
+WHERE alerts.dismissed_at IS NULL
+ORDER BY alerts.id DESC
+LIMIT ?2 OFFSET ?1
+`
+
+type ListActiveAlertsParams struct {
+	RowOffset int64
+	RowLimit  int64
+}
+
+type ListActiveAlertsRow struct {
+	ID           int64
+	AvatarID     int64
+	SenderUserID sql.NullInt64
+	Message      string
+	Habbo        string
+}
+
+func (q *Queries) ListActiveAlerts(ctx context.Context, arg ListActiveAlertsParams) ([]ListActiveAlertsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listActiveAlerts, arg.RowOffset, arg.RowLimit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListActiveAlertsRow
+	for rows.Next() {
+		var i ListActiveAlertsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.AvatarID,
+			&i.SenderUserID,
+			&i.Message,
+			&i.Habbo,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listActiveBans = `-- name: ListActiveBans :many

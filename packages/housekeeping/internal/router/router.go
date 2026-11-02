@@ -70,13 +70,17 @@ func (r *Router) RequireAttribute(attr auth.Attribute) func(http.Handler) http.H
 				return
 			}
 			if !slices.Contains(attributes, attr) {
-				w.WriteHeader(http.StatusForbidden)
-				astro.WriteTemplate(w, r.deps.Resolver, "access-denied.html", accessDeniedPage{chrome: r.chrome(req)})
+				r.denied(w, req)
 				return
 			}
 			next.ServeHTTP(w, req)
 		})
 	}
+}
+
+func (r *Router) denied(w http.ResponseWriter, req *http.Request) {
+	w.WriteHeader(http.StatusForbidden)
+	astro.WriteTemplate(w, r.deps.Resolver, "access-denied.html", accessDeniedPage{chrome: r.chrome(req)})
 }
 
 type accessDeniedPage struct {

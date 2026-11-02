@@ -207,6 +207,47 @@ export default async function (t) {
   check("after the lift the user signs in", frank.page.url().endsWith("/me"));
   await frank.context.close();
 
+  const reader = await session(t, "Frank");
+  await page.goto(`${hk}/`);
+  await page.getByRole("link", { name: "Site/Remote Alert" }).click();
+  await page.waitForURL("**/housekeeping/alerts");
+  await page.fill('input[name="username"]', "Frank");
+  await page.fill('textarea[name="alert"]', "Be <nice> & calm");
+  await shot(page, "alerts");
+  await page.getByRole("button", { name: "Give Alert" }).first().click();
+  await page.waitForURL(/sent=1/);
+  check(
+    "an alert is sent and listed",
+    (await page.getByRole("status").innerText()).includes(
+      "Gave alert to user.",
+    ) &&
+      (await page.locator("main table").last().innerText()).includes(
+        "Be <nice> & calm",
+      ),
+  );
+  await reader.page.goto(`${base}/me`);
+  check(
+    "the habbo reads the alert on its page",
+    (await reader.page.locator("body").innerText()).includes(
+      "Be <nice> & calm",
+    ),
+  );
+  await reader.context.close();
+
+  await page.fill('textarea[name="everyone"]', "The hotel closes at nine");
+  await page.getByRole("button", { name: "Give Alert" }).last().click();
+  await page.waitForURL(/everyone=\d+/);
+  const [[habbos]] = t.sql(
+    "SELECT COUNT(*) FROM avatars WHERE archived_at IS NULL",
+  );
+  check(
+    "a mass alert reaches every habbo",
+    (await page.getByRole("status").innerText()).includes(
+      `Gave mass alert. Users processed: ${habbos}`,
+    ),
+    String(habbos),
+  );
+
   await page.goto(`${hk}/habbos?q=Admin-1`);
   await page.getByRole("row", { name: /Admin-1/ }).getByRole("link", { name: "Edit" }).click();
   await page.waitForURL(/habbos\/\d+$/);
@@ -233,6 +274,8 @@ export default async function (t) {
       "credits.give",
       "bans.create",
       "bans.lift",
+      "alerts.send",
+      "alerts.broadcast",
     ].every((action) =>
       logs.includes(action),
     ),

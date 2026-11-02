@@ -71,6 +71,32 @@ them `string` and `time.Time` instead of copying the nullability of `bans.ip` an
 - Result: 1 when the habbo's alert was dismissed, 0 otherwise, so a habbo cannot dismiss another's
 - Tables: `alerts`
 
+## CreateAlert
+
+- Cardinality: `:exec`
+- Inputs: `avatar_id`, `sender_user_id`, `message`, `created_at`
+- Tables: `alerts`
+
+## CreateAlertForEveryone
+
+- Cardinality: `:execrows`
+- Inputs: `sender_user_id`, `message`, `created_at`
+- Result: how many habbos got the alert, one row for each habbo that is not archived
+- Tables: `alerts`, `avatars`
+
+## CountActiveAlerts
+
+- Cardinality: `:one`
+- Result: how many alerts nobody has dismissed
+- Tables: `alerts`
+
+## ListActiveAlerts
+
+- Cardinality: `:many`
+- Inputs: `row_limit`, `row_offset`
+- Result: the alerts nobody has dismissed, newest first, with the name of the habbo
+- Tables: `alerts`, `avatars`
+
 ## CountOpenHelpTickets
 
 - Cardinality: `:one`

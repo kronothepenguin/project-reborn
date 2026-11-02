@@ -62,5 +62,27 @@ LIMIT 1;
 UPDATE alerts SET dismissed_at = sqlc.arg(dismissed_at)
 WHERE id = sqlc.arg(id) AND avatar_id = sqlc.arg(avatar_id) AND dismissed_at IS NULL;
 
+-- name: CreateAlert :exec
+INSERT INTO alerts (avatar_id, sender_user_id, message, created_at)
+VALUES (sqlc.arg(avatar_id), sqlc.narg(sender_user_id), sqlc.arg(message), sqlc.arg(created_at));
+
+-- One row for each habbo that can still read it: an archived one cannot sign in.
+-- name: CreateAlertForEveryone :execrows
+INSERT INTO alerts (avatar_id, sender_user_id, message, created_at)
+SELECT avatars.id, sqlc.narg(sender_user_id), sqlc.arg(message), sqlc.arg(created_at)
+FROM avatars
+WHERE avatars.archived_at IS NULL;
+
+-- name: CountActiveAlerts :one
+SELECT COUNT(*) FROM alerts WHERE dismissed_at IS NULL;
+
+-- name: ListActiveAlerts :many
+SELECT alerts.id, alerts.avatar_id, alerts.sender_user_id, alerts.message, avatars.name AS habbo
+FROM alerts
+JOIN avatars ON avatars.id = alerts.avatar_id
+WHERE alerts.dismissed_at IS NULL
+ORDER BY alerts.id DESC
+LIMIT sqlc.arg(row_limit) OFFSET sqlc.arg(row_offset);
+
 -- name: CountOpenHelpTickets :one
 SELECT COUNT(*) FROM help_tickets WHERE picked_up_at IS NULL AND closed_at IS NULL;
