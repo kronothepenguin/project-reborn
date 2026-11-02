@@ -14,7 +14,7 @@ and `install.php` becomes `packages/installer`.
 2. Read the newest entries of the [log](/log.md).
 3. Open the [task index](/tasks/index.md): in-progress tasks first, then the todo tasks of the current phase.
 
-Current phase: [FX Review follow-ups](/phases/fx-review-follow-ups.md).
+Current phase: [HK-B Users and moderation](/phases/hk-b-users-moderation.md).
 
 ## Contents
 

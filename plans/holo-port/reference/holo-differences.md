@@ -31,6 +31,7 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md).
 | Ban | The page answers 200 | The same page answers 403 | The status says what happened; a browser shows no difference |
 | Me | `me.php?do=RemoveFeedItem` removes an alert on a `GET` | Only `POST /me/alerts/{id}/dismiss` does, for the habbo's own alerts | Any site could trigger a `GET`, and Holo took the id from the address |
 | Motto | Stored with `htmlspecialchars` | Stored as typed and escaped when shown | Escaping belongs to the output |
+| Ban | An IP ban stops everyone on the address | Holders of `housekeeping.access` are not stopped by it, though a ban on their account is | A moderator could lock an administrator out through their address ([0055](/decisions/0055-staff-levels.md)) |
 
 # Changed by a decision
 
@@ -51,6 +52,9 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md).
 | Me | `Enter <site>` | `Hotel Closed` | [0013](/decisions/0013-defer-game-server-features.md) |
 | Header | One habbo per account | `Switch habbo` with several, and `/account/habbos` | [0001](/decisions/0001-user-owns-many-habbos.md) |
 | Header | Housekeeping is `housekeeping.php` | `site.housekeepingUrl`, because housekeeping can run on its own port | [0003](/decisions/0003-housekeeping-under-prefix.md) |
+| Several habbos | One habbo per account | One wallet, one club membership and one home inventory per user | [0056](/decisions/0056-wallet-club-and-inventory-per-user.md) |
+| Several habbos | A habbo is never removed | A user archives a habbo, which hides it and keeps its name | [0058](/decisions/0058-habbos-are-archived.md) |
+| Settings | Read from the database on every request | A running CMS re-reads them every `cms.refresh` seconds | [0051](/decisions/0051-one-machine-and-a-refresh.md) |
 | Account | An email can be shared | `This e-mail address already has an account.` | [0001](/decisions/0001-user-owns-many-habbos.md) |
 | Maintenance | An `Administrator Login` link to housekeeping | A sign-in form on the page | The plan: staff sign in with the shared session |
 | Maintenance | Redirects every page to `maintenance.php` | Serves the page on every address with 503 | The plan |
@@ -120,6 +124,9 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Dashboard | The version, `HoloCMS Updater`, `Support HoloCMS`, `Need assistance?` | Not ported: they are about Holo | [0021](/decisions/0021-dropped-and-kept-features.md) |
 | Dashboard | `Members` counts users | Counts habbos | [HK-A](/phases/hk-a-housekeeping-core.md) |
 | Dashboard | Administrators are `rank > 6` | They are the holders of `housekeeping.accessGroups`, under their display habbo | [0014](/decisions/0014-attribute-based-access.md) |
+| Ranks | Numbers on a user | The installer creates Holo's staff ranks as access groups with levels, and the admin can change or delete them | [0054](/decisions/0054-access-groups-are-holos-ranks.md) |
+| Moderators | See emails and IP history | They take `housekeeping.usersPrivate`, which the Moderator group does not hold | [0053](/decisions/0053-attributes-on-groups-and-users.md) |
+| Staff actions | Anyone can act on anyone but `$sysadmin` | Only on users of a lower level | [0055](/decisions/0055-staff-levels.md) |
 | Rank tool | Ranks 1 to 7 by name or id | Access groups with attributes; the search still takes a name or an id | [0014](/decisions/0014-attribute-based-access.md) |
 | Rank tool | The `$sysadmin` of `config.php` cannot lose that rank, and only that user gives rank 7 | No `$sysadmin`: nobody edits a group above their level ([0055](/decisions/0055-staff-levels.md)), and the last holder of `housekeeping.access` and `housekeeping.accessGroups` cannot lose them: `Access denied. The last user who can manage access groups must keep housekeeping.access and housekeeping.accessGroups.`, logged as `accessGroups.refused`, as Holo logged its tool's refusals | [0014](/decisions/0014-attribute-based-access.md) |
 | Configuration | `Enable SSO` and `Language` | Gone: SSO waits for the client page, and only English is left | [Holo's settings](/reference/holo-database.md) |

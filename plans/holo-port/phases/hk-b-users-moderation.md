@@ -2,7 +2,7 @@
 type: Phase
 title: HK-B Users and moderation
 description: Housekeeping search and editing of users and habbos, credits, badges, bans, alerts and the help queue.
-status: planned
+status: active
 timestamp: 2026-10-27T20:48:19+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [hk-b, housekeeping]

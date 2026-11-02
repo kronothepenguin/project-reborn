@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [fx-16](/tasks/fx-16-exit-check.md): FX meets its exit criteria from a clean checkout, with every gate and
+  all 395 browser checks passing.
+- **Start** [fx-16](/tasks/fx-16-exit-check.md).
 - **Done** [fx-15](/tasks/fx-15-art-in-the-repository.md): the home art is in the repository and inside the CMS binary:
   419 stickers, 106 backgrounds, 494 badges and 45 skins.
 - **Start** [fx-15](/tasks/fx-15-art-in-the-repository.md).

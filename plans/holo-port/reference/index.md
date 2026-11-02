@@ -12,7 +12,6 @@ What HoloCMS (`source/holo/`) contains and where each part goes. These documents
 ## The port
 
 - [The home art](/reference/art.md) — What art the repository holds under packages/cms/public/c_images, where it came from, and what is still missing.
-
 - [How the programs work together](/reference/architecture.md) — Which programs make up Project Reborn, what each one owns, and how they interact when they run alone and when they run together in one process.
 - [Where the port differs from Holo](/reference/holo-differences.md) — Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
 

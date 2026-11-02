@@ -2,7 +2,7 @@
 type: Phase
 title: FX Review follow-ups
 description: The changes the user decided in the review of P2 and HK-A, before HK-B builds on them.
-status: active
+status: done
 timestamp: 2026-11-02T01:25:45+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-02T01:25:45+00:00"}
 tags: [fx, review]
@@ -51,4 +51,4 @@ starts.
 - [fx-13 Give housekeeping components their looks](/tasks/fx-13-housekeeping-components.md) — done
 - [fx-14 Archive habbos](/tasks/fx-14-archive-habbos.md) — done
 - [fx-15 Bring the art into the repository](/tasks/fx-15-art-in-the-repository.md) — done
-- [fx-16 Verify FX](/tasks/fx-16-exit-check.md) — todo
+- [fx-16 Verify FX](/tasks/fx-16-exit-check.md) — done
