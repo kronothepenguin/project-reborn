@@ -37,6 +37,13 @@ timestamp: 2026-11-02T02:47:29+00:00
 - Result: 1 when the habbo was the user's and not archived yet, 0 otherwise
 - Tables: `avatars`
 
+## RestoreAvatar
+
+- Cardinality: `:execrows`
+- Inputs: `id`, `updated_at`
+- Result: 1 when the habbo was archived, 0 otherwise
+- Tables: `avatars`
+
 ## ListUserAvatars
 
 - Cardinality: `:many`

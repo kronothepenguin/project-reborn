@@ -54,6 +54,7 @@ var routes = []struct {
 	{"GET", "/housekeeping/habbos"},
 	{"GET", "/housekeeping/habbos/1"},
 	{"POST", "/housekeeping/habbos/1"},
+	{"POST", "/housekeeping/habbos/1/restore"},
 	{"POST", "/housekeeping/habbos/1/credits"},
 	{"GET", "/housekeeping/habbos/1/transactions"},
 	{"POST", "/housekeeping/habbos/1/badges"},

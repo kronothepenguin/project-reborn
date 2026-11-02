@@ -21,6 +21,7 @@ const (
 	actionGroupsRemoveMember    = "accessGroups.removeMember"
 	actionGroupsRefused         = "accessGroups.refused"
 	actionHabbosUpdate          = "habbos.update"
+	actionHabbosRestore         = "habbos.restore"
 	actionUsersUpdate           = "users.update"
 	actionUsersAttributes       = "users.attributes"
 	actionUsersRefused          = "users.refused"

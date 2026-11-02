@@ -102,6 +102,7 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /housekeeping/habbos/{id}", holding(auth.HousekeepingUsersEdit, r.HandleHabboSave))
 	mux.Handle("POST /housekeeping/habbos/{id}/badges", holding(auth.HousekeepingUsersEdit, r.HandleHabboBadgesGive))
 	mux.Handle("POST /housekeeping/habbos/{id}/badges/{code}/delete", holding(auth.HousekeepingUsersEdit, r.HandleHabboBadgesDelete))
+	mux.Handle("POST /housekeeping/habbos/{id}/restore", holding(auth.HousekeepingUsersEdit, r.HandleHabboRestore))
 	mux.Handle("POST /housekeeping/habbos/{id}/credits", holding(auth.HousekeepingCredits, r.HandleHabboCreditsGive))
 	mux.Handle("GET /housekeeping/habbos/{id}/transactions", holding(auth.HousekeepingCredits, r.HandleHabboTransactionsView))
 	mux.Handle("POST /housekeeping/users/{id}", holding(auth.HousekeepingUsersEdit, r.HandleUserSave))

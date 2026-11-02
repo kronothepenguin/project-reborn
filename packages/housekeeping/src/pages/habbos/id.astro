@@ -53,6 +53,17 @@ import Housekeeping from "../../layouts/housekeeping.astro";
       </Box>
     </form>
 
+    [[ if and .Target.Archived .CanEdit ]]
+    <form method="post" action="/housekeeping/habbos/[[ .Target.ID ]]/restore">
+      <Box title="Archived Habbo">
+        <p class="p-1">The owner archived this habbo, so it cannot sign in.</p>
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+          <Submit>Restore Habbo</Submit>
+        </div>
+      </Box>
+    </form>
+    [[ end ]]
+
     <form method="post" action="/housekeeping/users/[[ .Owner.ID ]]">
       <input type="hidden" name="habbo" value="[[ .Target.ID ]]" />
       <Box title="Owner (User ID: [[ .Owner.ID ]])">

@@ -39,6 +39,10 @@ WHERE id = sqlc.arg(id);
 UPDATE avatars SET archived_at = sqlc.arg(archived_at), updated_at = sqlc.arg(updated_at)
 WHERE id = sqlc.arg(id) AND user_id = sqlc.arg(user_id) AND archived_at IS NULL;
 
+-- name: RestoreAvatar :execrows
+UPDATE avatars SET archived_at = NULL, updated_at = sqlc.arg(updated_at)
+WHERE id = sqlc.arg(id) AND archived_at IS NOT NULL;
+
 -- Habbos for staff, archived ones too. A query matches part of a name or a whole
 -- id; with private it also matches part of an email or an address the user used,
 -- so that a search by IP finds clones.

@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [hk-b-09](/tasks/hk-b-09-restore-habbos.md): staff restore an archived habbo from its page, while the user
+  has a free slot and is below them.
+- **Start** [hk-b-09](/tasks/hk-b-09-restore-habbos.md).
 - **Done** [hk-b-08](/tasks/hk-b-08-direct-attributes.md): holders of `housekeeping.accessGroups` tick attributes for
   one user on the habbo page, only on users below them.
 - **Start** [hk-b-08](/tasks/hk-b-08-direct-attributes.md).

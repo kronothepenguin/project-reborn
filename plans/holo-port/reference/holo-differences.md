@@ -192,6 +192,7 @@ veto.
 | User listing | 100 habbos a page, with `Older` and `Newer` | Holo listed every user on one page |
 | User listing | One search does the work of `Retrive IP Address`, `Retrive User ID` and the `Clone Checker`, and matches part of a name | The plan: `GET /habbos?q=` |
 | User listing | `Last Activity` reads the habbo's newest session, then its last sign-in | `online` is not kept; the column's wording is Holo's |
+| Habbo page | `Restore Habbo` on an archived habbo, refused while the user has no free slot | [0058](/decisions/0058-habbos-are-archived.md), and a user owns up to `registration.maxHabbosPerUser` ([0056](/decisions/0056-wallet-club-and-inventory-per-user.md)) |
 | Habbo page | Holders of `housekeeping.accessGroups` tick attributes for the user alone | [0053](/decisions/0053-attributes-on-groups-and-users.md) |
 | Habbo page | The page of one habbo, with its owner, their other habbos and the addresses they signed in from | The plan. Holo kept only the last address |
 | Access groups | The guard also keeps `housekeeping.access` on someone | `housekeeping.accessGroups` opens nothing without it, so the rule as written could still lock everyone out |

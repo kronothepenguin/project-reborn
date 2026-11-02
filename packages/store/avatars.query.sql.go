@@ -356,6 +356,24 @@ func (q *Queries) ListUserAvatars(ctx context.Context, userID int64) ([]Avatar, 
 	return items, nil
 }
 
+const restoreAvatar = `-- name: RestoreAvatar :execrows
+UPDATE avatars SET archived_at = NULL, updated_at = ?1
+WHERE id = ?2 AND archived_at IS NOT NULL
+`
+
+type RestoreAvatarParams struct {
+	UpdatedAt time.Time
+	ID        int64
+}
+
+func (q *Queries) RestoreAvatar(ctx context.Context, arg RestoreAvatarParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, restoreAvatar, arg.UpdatedAt, arg.ID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
 const searchHabbos = `-- name: SearchHabbos :many
 SELECT avatars.id, avatars.user_id, avatars.name, avatars.created_at, avatars.archived_at, users.email
 FROM avatars

@@ -41,6 +41,7 @@ many actions).
 | `accessGroups.removeMember` | the group | the user |
 | `accessGroups.refused` | what was refused, as Holo logged the refusals of its rank tool | the user, when there is one |
 | `habbos.update` | the fields saved, never their values | the user and the habbo |
+| `habbos.restore` | none | the user and the habbo |
 | `users.update` | the fields saved, never their values | the user and the habbo of the page |
 | `credits.give` | the signed amount | the user and the habbo |
 | `alerts.send` | none | the user and the habbo |

@@ -28,10 +28,12 @@ const (
 )
 
 const (
-	habboSaved   = "User updated successfully."
-	mottoTooLong = "Sorry, but the motto you have chosen is too long!"
-	lookInvalid  = "The figure or the gender is not valid."
-	userAbove    = "Access denied. You may only act on users below your level."
+	habboSaved       = "User updated successfully."
+	habboRestored    = "Habbo restored successfully."
+	habboNotArchived = "This habbo is not archived."
+	mottoTooLong     = "Sorry, but the motto you have chosen is too long!"
+	lookInvalid      = "The figure or the gender is not valid."
+	userAbove        = "Access denied. You may only act on users below your level."
 )
 
 // holds reports whether the staff member making the request holds attribute.
@@ -372,6 +374,9 @@ func (r *Router) HandleHabboView(w http.ResponseWriter, req *http.Request) {
 func habboMessage(query url.Values, name string) string {
 	if query.Has("saved") {
 		return habboSaved
+	}
+	if query.Has("restored") {
+		return habboRestored
 	}
 	if amount, err := strconv.ParseInt(query.Get("gave"), 10, 64); err == nil {
 		return fmt.Sprintf("Gave user %s %d credits.", name, amount)

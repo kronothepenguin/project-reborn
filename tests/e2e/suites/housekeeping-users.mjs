@@ -8,6 +8,13 @@ export const prepare = ({ sql }) => {
   const [[habbo]] = sql("SELECT id FROM avatars WHERE name = 'Frank'");
   sql(`INSERT INTO login_attempts (user_id, avatar_id, ip, succeeded, created_at)
     VALUES (${frank}, ${habbo}, '10.1.2.3', TRUE, '2026-11-01 12:00:00.000000000+00:00')`);
+  const now = "2026-11-01 12:00:00.000000000+00:00";
+  sql(`INSERT INTO avatars (user_id, name, figure, gender, created_at, updated_at, archived_at)
+    VALUES (${frank}, 'FrankOld', 'hd-180-1', 'M', '${now}', '${now}', '${now}')`);
+  const [[archived]] = sql("SELECT id FROM avatars WHERE name = 'FrankOld'");
+  sql(`INSERT INTO profiles (avatar_id, created_at, updated_at) VALUES (${archived}, '${now}', '${now}')`);
+  const [[profile]] = sql(`SELECT id FROM profiles WHERE avatar_id = ${archived}`);
+  sql(`INSERT INTO homes (profile_id, updated_at) VALUES (${profile}, '${now}')`);
   sql(`INSERT INTO help_tickets (avatar_id, subject, message, ip, created_at)
     VALUES (${habbo}, 'My <credits>', 'They are gone & I am sad', '10.1.2.3', '2026-11-01 13:00:00.000000000+00:00')`);
 };
@@ -328,6 +335,27 @@ export default async function (t) {
   );
   check("the attribute is the user's", granted === 1 || granted === "1", String(granted));
 
+  await page.goto(`${hk}/habbos?q=FrankOld`);
+  check(
+    "an archived habbo is marked in the list",
+    (await page.locator("main table").first().innerText()).includes(
+      "(Archived)",
+    ),
+  );
+  await page.getByRole("row", { name: /FrankOld/ }).getByRole("link", { name: "Edit" }).click();
+  await page.waitForURL(/habbos\/\d+$/);
+  await page.getByRole("button", { name: "Restore Habbo" }).click();
+  await page.waitForURL(/restored=1/);
+  check(
+    "a restored habbo is one again",
+    (await page.getByRole("status").innerText()).includes(
+      "Habbo restored successfully.",
+    ) && (await page.getByRole("button", { name: "Restore Habbo" }).count()) === 0,
+  );
+  const restored = await session(t, "FrankOld");
+  check("a restored habbo signs in", restored.page.url().endsWith("/me"));
+  await restored.context.close();
+
   await page.goto(`${hk}/habbos?q=Admin-1`);
   await page.getByRole("row", { name: /Admin-1/ }).getByRole("link", { name: "Edit" }).click();
   await page.waitForURL(/habbos\/\d+$/);
@@ -359,6 +387,7 @@ export default async function (t) {
       "help.pick",
       "help.close",
       "users.attributes",
+      "habbos.restore",
     ].every((action) =>
       logs.includes(action),
     ),
