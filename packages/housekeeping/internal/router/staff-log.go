@@ -15,6 +15,7 @@ const (
 	actionSettingsUpdate        = "settings.update"
 	actionGroupsCreate          = "accessGroups.create"
 	actionGroupsUpdate          = "accessGroups.update"
+	actionGroupsDelete          = "accessGroups.delete"
 	actionGroupsAddMember       = "accessGroups.addMember"
 	actionGroupsSetDisplayHabbo = "accessGroups.setDisplayHabbo"
 	actionGroupsRemoveMember    = "accessGroups.removeMember"

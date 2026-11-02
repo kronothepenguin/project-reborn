@@ -96,6 +96,7 @@ func TestAccessGroupsTakeTheirAttribute(t *testing.T) {
 		{"POST", "/housekeeping/access-groups", groupForm("Mine")},
 		{"GET", groupURL(group), nil},
 		{"POST", groupURL(group), groupForm("Mine", auth.HousekeepingAccessGroups)},
+		{"POST", groupURL(group) + "/delete", url.Values{"confirm": {"1"}}},
 		{"POST", memberURL(userID), url.Values{"group": {strconv.FormatInt(group, 10)}, "habbo": {"1"}}},
 	} {
 		wantPage(t, serve(mux, c.method, c.path, cookie, c.form), http.StatusForbidden, "access-denied.html")
@@ -526,6 +527,80 @@ func TestNobodyJoinsOrLeavesAGroupAboveTheEditor(t *testing.T) {
 	if n := refusals(t, db); n != 2 {
 		t.Errorf("%d refusal rows, want 2", n)
 	}
+}
+
+func TestDeletingAGroup(t *testing.T) {
+	db, mux := newSite(t)
+	_, _, cookie := manager(t, db, "Admin")
+	memberID := habbo(t, db, "member@example.com", "Member")
+	group := grant(t, db, memberID, auth.HousekeepingAccess)
+
+	wantRedirect(t, serve(mux, "POST", groupURL(group)+"/delete", cookie, url.Values{"confirm": {"1"}}), "/housekeeping/access-groups?deleted=1")
+
+	if n := count(t, db, fmt.Sprintf(`SELECT COUNT(*) FROM access_groups WHERE id = %d`, group)); n != 0 {
+		t.Errorf("%d groups left", n)
+	}
+	if isMember(t, db, group, memberID) {
+		t.Error("the membership survived its group")
+	}
+	if got := groupAttributes(t, db, group); len(got) != 0 {
+		t.Errorf("attributes left: %v", got)
+	}
+	attributes, err := auth.Attributes(t.Context(), db, memberID)
+	if err != nil || len(attributes) != 0 {
+		t.Errorf("the member still holds %v, %v", attributes, err)
+	}
+	logs := staffLogs(t, db)
+	if len(logs) != 1 || logs[0].Action != "accessGroups.delete" {
+		t.Errorf("staff logs = %+v", logs)
+	}
+	wantPage(t, serve(mux, "GET", "/housekeeping/access-groups?deleted=1", cookie, nil), http.StatusOK, "Access group deleted successfully.")
+}
+
+func TestDeletingAGroupNeedsTheBoxTicked(t *testing.T) {
+	db, mux := newSite(t)
+	_, _, cookie := manager(t, db, "Admin")
+	group := grant(t, db, habbo(t, db, "member@example.com", "Member"))
+
+	wantPage(t, serve(mux, "POST", groupURL(group)+"/delete", cookie, url.Values{}), http.StatusUnprocessableEntity, "Tick the box to delete this group.")
+	if got := groupLevel(t, db, group); got != 0 {
+		t.Errorf("level = %d", got)
+	}
+	if n := len(staffLogs(t, db)); n != 0 {
+		t.Errorf("%d staff log rows, want none", n)
+	}
+}
+
+func TestTheGuardKeepsTheLastManagersGroup(t *testing.T) {
+	db, mux := newSite(t)
+	_, group, cookie := manager(t, db, "Admin")
+
+	wantPage(t, serve(mux, "POST", groupURL(group)+"/delete", cookie, url.Values{"confirm": {"1"}}), http.StatusUnprocessableEntity, lastManager)
+	if got := groupAttributes(t, db, group); len(got) != 2 {
+		t.Errorf("attributes = %v, want the group untouched", got)
+	}
+	if n := refusals(t, db); n != 1 {
+		t.Errorf("%d refusal rows, want 1", n)
+	}
+}
+
+func TestAGroupAboveTheEditorCannotBeDeleted(t *testing.T) {
+	db, mux := newSite(t)
+	_, admins, mod := levels(t, db)
+
+	wantPage(t, serve(mux, "POST", groupURL(admins)+"/delete", mod, url.Values{"confirm": {"1"}}), http.StatusUnprocessableEntity, groupAbove)
+	if got := groupLevel(t, db, admins); got != 7 {
+		t.Errorf("level = %d, want the group untouched", got)
+	}
+	if n := refusals(t, db); n != 1 {
+		t.Errorf("%d refusal rows, want 1", n)
+	}
+}
+
+func TestDeletingAGroupThatDoesNotExistIsNotFound(t *testing.T) {
+	db, mux := newSite(t)
+	_, _, cookie := manager(t, db, "Admin")
+	wantPage(t, serve(mux, "POST", groupURL(999)+"/delete", cookie, url.Values{"confirm": {"1"}}), http.StatusNotFound)
 }
 
 func TestAttributesLeaveOneGroupWhenAnotherHoldsThem(t *testing.T) {

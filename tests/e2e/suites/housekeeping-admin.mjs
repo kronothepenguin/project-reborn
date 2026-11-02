@@ -145,6 +145,24 @@ export default async function (t) {
     ),
   );
 
+  await page.goto(groupURL);
+  await page.getByRole("button", { name: "Delete Group" }).click();
+  await page.waitForLoadState();
+  check(
+    "deleting asks for the box",
+    (await page.getByRole("alert").innerText()).includes("Tick the box"),
+  );
+  await page.check('input[name="confirm"]');
+  await page.getByRole("button", { name: "Delete Group" }).click();
+  await page.waitForURL(/deleted=1/);
+  check(
+    "the group is gone",
+    (await page.getByRole("status").innerText()).includes("deleted") &&
+      !(await page.locator("main table").first().innerText()).includes(
+        "Trainers",
+      ),
+  );
+
   await page.goto(`${hk}/access-groups`);
   await page.getByRole("link", { name: "Administrator", exact: true }).click();
   await page.waitForURL(/access-groups\/\d+$/);
@@ -204,6 +222,7 @@ export default async function (t) {
     "accessGroups.addMember",
     "accessGroups.setDisplayHabbo",
     "accessGroups.removeMember",
+    "accessGroups.delete",
     "accessGroups.refused",
     "note.update",
   ]) {

@@ -29,6 +29,10 @@ SET
     updated_at = sqlc.arg(updated_at)
 WHERE id = sqlc.arg(id);
 
+-- Attributes and memberships go with the group, by foreign key.
+-- name: DeleteAccessGroup :exec
+DELETE FROM access_groups WHERE id = sqlc.arg(id);
+
 -- name: ListAccessGroupAttributes :many
 SELECT attribute FROM access_group_attributes
 WHERE access_group_id = sqlc.arg(access_group_id)

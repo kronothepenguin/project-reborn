@@ -20,6 +20,8 @@ const staffShown = 50
 
 const (
 	groupSaved      = "Access groups updated successfully."
+	groupDeleted    = "Access group deleted successfully."
+	groupNotTicked  = "Tick the box to delete this group."
 	groupNameBlank  = "Please do not leave any fields blank."
 	groupNameTaken  = "A group with this name already exists."
 	groupUnknown    = "Only the attributes of the catalogue can be given."
@@ -168,6 +170,9 @@ func (r *Router) HandleAccessGroupsView(w http.ResponseWriter, req *http.Request
 	if err != nil {
 		r.fail(w, err)
 		return
+	}
+	if req.URL.Query().Has("deleted") {
+		page.Message = groupDeleted
 	}
 	astro.WriteTemplate(w, r.deps.Resolver, "access-groups.html", page)
 }
@@ -529,5 +534,54 @@ func (r *Router) HandleAccessGroupSave(w http.ResponseWriter, req *http.Request)
 		r.fail(w, err)
 	default:
 		http.Redirect(w, req, groupPath(group.ID)+"?saved=1", http.StatusSeeOther)
+	}
+}
+
+// HandleAccessGroupDelete handles POST /housekeeping/access-groups/{id}/delete. The
+// group's attributes and memberships go with it, so the guard runs in the same
+// transaction.
+func (r *Router) HandleAccessGroupDelete(w http.ResponseWriter, req *http.Request) {
+	group, ok := r.groupFromPath(w, req)
+	if !ok {
+		return
+	}
+	if req.PostFormValue("confirm") == "" {
+		r.refuseMember(w, req, group, groupNotTicked)
+		return
+	}
+	level, err := r.actorLevel(req)
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
+	if group.Level > level {
+		if err := r.refused(req, group.Name, 0); err != nil {
+			r.fail(w, err)
+			return
+		}
+		r.refuseMember(w, req, group, groupAbove)
+		return
+	}
+
+	err = r.inTx(req.Context(), func(q *store.Queries) error {
+		if err := q.DeleteAccessGroup(req.Context(), group.ID); err != nil {
+			return err
+		}
+		if err := keepManager(req.Context(), q); err != nil {
+			return err
+		}
+		return writeLog(req, q, staffLog{action: actionGroupsDelete, detail: group.Name})
+	})
+	switch {
+	case errors.Is(err, errLastManager):
+		if err := r.refused(req, group.Name, 0); err != nil {
+			r.fail(w, err)
+			return
+		}
+		r.refuseMember(w, req, group, lastManager)
+	case err != nil:
+		r.fail(w, err)
+	default:
+		http.Redirect(w, req, "/housekeeping/access-groups?deleted=1", http.StatusSeeOther)
 	}
 }

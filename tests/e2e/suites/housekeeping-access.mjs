@@ -13,6 +13,7 @@ const everyRoute = [
   ["POST", "/access-groups"],
   ["GET", "/access-groups/1"],
   ["POST", "/access-groups/1"],
+  ["POST", "/access-groups/1/delete"],
   ["POST", "/users/1/access-groups"],
   ["GET", "/logs"],
   ["GET", "/settings.html"],

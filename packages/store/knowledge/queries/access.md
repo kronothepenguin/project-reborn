@@ -4,7 +4,7 @@ title: access.query.sql
 description: Access operations for groups, their attributes and members, a user's attributes and the holders of an attribute.
 resource: packages/store/queries/access.query.sql
 tags: [store, query, access]
-timestamp: 2026-11-02T02:00:12+00:00
+timestamp: 2026-11-02T02:13:59+00:00
 ---
 
 # Operations
@@ -29,6 +29,13 @@ timestamp: 2026-11-02T02:00:12+00:00
 - Inputs: none
 - Result: `ListAccessGroupsRow`, every group and its `member_count`, sorted by name
 - Tables: `access_groups`, `access_group_members`
+
+## DeleteAccessGroup
+
+- Cardinality: `:exec`
+- Inputs: `id`
+- Result: removes the group, and its attributes and memberships go with it by foreign key
+- Tables: `access_groups`
 
 ## UpdateAccessGroup
 

@@ -117,5 +117,12 @@ import Housekeeping from "../../layouts/housekeeping.astro";
       </form>
       [[ end ]]
     </Box>
+
+    <Box title="Delete Group">
+      <form method="post" action="/housekeeping/access-groups/[[ .Group.ID ]]/delete" class="flex flex-wrap items-center gap-2 p-1">
+        <Checkbox name="confirm" value="1">Delete this group and take its attributes from its members</Checkbox>
+        <Submit>Delete Group</Submit>
+      </form>
+    </Box>
   </div>
 </Housekeeping>

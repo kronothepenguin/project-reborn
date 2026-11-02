@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [fx-08](/tasks/fx-08-delete-access-groups.md): staff can delete an access group, unless the guard or the
+  level rule refuses.
+- **Start** [fx-08](/tasks/fx-08-delete-access-groups.md).
 - **Done** [fx-07](/tasks/fx-07-seed-ranks.md): the installer creates Holo's staff ranks as access groups, with the
   first administrator in Administrator.
 - **Start** [fx-07](/tasks/fx-07-seed-ranks.md).

@@ -3,7 +3,7 @@ type: Entity
 title: Staff log
 description: The audit trail of every staff action, with the acting user, the target user or habbo, and the IP.
 tags: [store, entity, moderation]
-timestamp: 2026-10-27T21:28:26+00:00
+timestamp: 2026-11-02T02:14:12+00:00
 ---
 
 # Definition
@@ -35,6 +35,7 @@ many actions).
 | `note.update` | none | none |
 | `accessGroups.create` | the group | none |
 | `accessGroups.update` | the group, and the attributes added and removed | none |
+| `accessGroups.delete` | the group | none |
 | `accessGroups.addMember` | the group | the user and the display habbo |
 | `accessGroups.setDisplayHabbo` | the group | the user and the display habbo |
 | `accessGroups.removeMember` | the group | the user |

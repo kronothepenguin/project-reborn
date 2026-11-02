@@ -117,6 +117,16 @@ func (q *Queries) CreateAccessGroup(ctx context.Context, arg CreateAccessGroupPa
 	return i, err
 }
 
+const deleteAccessGroup = `-- name: DeleteAccessGroup :exec
+DELETE FROM access_groups WHERE id = ?1
+`
+
+// Attributes and memberships go with the group, by foreign key.
+func (q *Queries) DeleteAccessGroup(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deleteAccessGroup, id)
+	return err
+}
+
 const getAccessGroup = `-- name: GetAccessGroup :one
 SELECT id, name, description, staff_listed, level, created_at, updated_at FROM access_groups WHERE id = ?1
 `

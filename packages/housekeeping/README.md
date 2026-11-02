@@ -41,7 +41,9 @@ serves the built frontend from the embedded `dist/`.
   reads only the fields of its section, and saves all of them or none: it checks
   them together with `settings.Validate`, then writes each with `settings.Set`, so
   a value back at its default deletes the row.
-- `/access-groups` manages groups, their attributes and their members. Every change
+- `/access-groups` creates, edits and deletes groups, with their attributes, levels
+  and members. Nobody edits a group above their level, adds someone to it, or sets a
+  level above their own. Every change
   runs in one transaction with its log row and `keepManager`, which refuses a change
   that leaves nobody holding both `housekeeping.access` and
   `housekeeping.accessGroups`. A refusal is logged after the rollback, because the
