@@ -64,6 +64,8 @@ serves the built frontend from the embedded `dist/`.
   `/account/looks`, as only Holo's `settings.js` listens to them. The editor reports
   that it cannot proceed until it is first touched, so on `/register` that would
   stop a visitor who keeps the suggested look.
+- `public/c_images/` holds the home art with Holo's folder names, and the binary embeds it: stickers, backgrounds,
+  user badges in `album1584` and widget skins.
 - `/account/habbos` adds habbos up to `registration.maxHabbosPerUser`, switches the
   session's active one, and archives the others with the user's password. All the habbos of a user share one wallet and one club
   membership.

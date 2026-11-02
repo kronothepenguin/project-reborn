@@ -2,6 +2,9 @@
 
 ## 2026-11-02
 
+- **Done** [fx-15](/tasks/fx-15-art-in-the-repository.md): the home art is in the repository and inside the CMS binary:
+  419 stickers, 106 backgrounds, 494 badges and 45 skins.
+- **Start** [fx-15](/tasks/fx-15-art-in-the-repository.md).
 - **Done** [fx-14](/tasks/fx-14-archive-habbos.md): a user archives a habbo with their password, which hides it, frees
   a slot and keeps its name.
 - **Start** [fx-14](/tasks/fx-14-archive-habbos.md).

@@ -32,6 +32,7 @@ screenshots and server logs stay in `.run/`, which is git-ignored.
 | `register` | The registration form, with and without JavaScript |
 | `me`, `looks`, `details`, `habbos` | The Me page and the account tabs |
 | `maintenance` | The site closed, and staff signing in |
+| `art` | The home art, served by the binary |
 | `housekeeping-access` | Every route as a guest, a player and staff |
 | `housekeeping-admin` | Access groups, members, the guard and the log |
 | `housekeeping-settings` | The settings forms |
