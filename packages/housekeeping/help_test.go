@@ -173,7 +173,7 @@ func TestReadingOneTicket(t *testing.T) {
 	path := fmt.Sprintf("/housekeeping/help/%d", id)
 
 	rec := serve(mux, "GET", path, cookie, nil)
-	wantPage(t, rec, http.StatusOK, "help/id.html", "Subject:Lost", "Habbo:Frank", "Text:My credits are gone")
+	wantPage(t, rec, http.StatusOK, "help/id.html", "Subject:Lost", "Asker:Frank", "Text:My credits are gone")
 	if strings.Contains(rec.Body.String(), "10.0.0.7") {
 		t.Error("the page shows the address without housekeeping.usersPrivate")
 	}

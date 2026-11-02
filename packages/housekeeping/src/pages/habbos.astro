@@ -40,7 +40,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
             <td>
               <strong>[[ .Name ]]</strong>[[ if .Archived ]] (Archived)[[ end ]]
               [[ if $.Private ]]
-              <div class="text-neutral-500">[[ .IP ]]</div>
+              <div class="text-neutral-500">[[ .IP ]][[ if ne .IP "No IP Found" ]] [<a href="https://who.is/whois-ip/ip-address/[[ .IP ]]/" target="_blank" rel="noreferrer" class="text-indigo-900 underline">WHOIS</a>][[ end ]]</div>
               [[ end ]]
             </td>
             [[ if $.Private ]]<td><a href="mailto:[[ .Email ]]" class="text-indigo-900 underline">[[ .Email ]]</a></td>[[ end ]]

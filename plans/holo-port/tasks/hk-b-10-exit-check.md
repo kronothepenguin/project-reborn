@@ -4,7 +4,7 @@ title: Verify HK-B
 description: Every exit criterion of HK-B holds from a clean checkout, in a real browser.
 status: todo
 phase: hk-b
-depends_on: [hk-b-02, hk-b-03, hk-b-04, hk-b-05, hk-b-06, hk-b-07, hk-b-08, hk-b-09]
+depends_on: [hk-b-02, hk-b-03, hk-b-04, hk-b-05, hk-b-06, hk-b-07, hk-b-08, hk-b-09, hk-b-11]
 packages: [packages/housekeeping, tests/e2e]
 holo: []
 timestamp: 2026-11-02T19:41:44+00:00

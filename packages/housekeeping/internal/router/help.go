@@ -108,7 +108,7 @@ type ticketPage struct {
 	CanReply bool
 	ID       int64
 	Subject  string
-	Habbo    string
+	Asker    string
 	IP       string
 	Date     string
 	Text     string
@@ -147,7 +147,7 @@ func (r *Router) HandleHelpTicketView(w http.ResponseWriter, req *http.Request) 
 		CanReply: slices.Contains(attributes, auth.HousekeepingAlerts),
 		ID:       ticket.ID,
 		Subject:  ticket.Subject,
-		Habbo:    ticket.Habbo.String,
+		Asker:    ticket.Habbo.String,
 		Date:     ticket.CreatedAt.UTC().Format(dateFormat),
 		Text:     ticket.Message,
 		PickedUp: ticket.PickedUpAt.Valid,

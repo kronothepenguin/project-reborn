@@ -2,6 +2,10 @@
 
 ## 2026-11-02
 
+- **Done** [hk-b-11](/tasks/hk-b-11-screenshot-fixes.md): the ticket page names the staff member, the addresses read as
+  in Holo, and a test stops a page from hiding the layout's fields.
+- **Start** [hk-b-11](/tasks/hk-b-11-screenshot-fixes.md).
+- **Create** [hk-b-11](/tasks/hk-b-11-screenshot-fixes.md): the screenshots of HK-B showed two faults no test saw.
 - **Done** [hk-b-09](/tasks/hk-b-09-restore-habbos.md): staff restore an archived habbo from its page, while the user
   has a free slot and is below them.
 - **Start** [hk-b-09](/tasks/hk-b-09-restore-habbos.md).

@@ -110,6 +110,7 @@ starts.
 - [hk-b-07 Handle help tickets](/tasks/hk-b-07-help.md) — GET /help lists open tickets, and staff read, pick up, close and reply to them; closed tickets stay as history.
 - [hk-b-08 Give direct attributes](/tasks/hk-b-08-direct-attributes.md) — The habbo page lets holders of housekeeping.accessGroups give attributes to the user directly, only on users below them.
 - [hk-b-09 Restore archived habbos](/tasks/hk-b-09-restore-habbos.md) — Staff restore an archived habbo from its page, unless that takes the user past registration.maxHabbosPerUser.
+- [hk-b-11 Fix what the screenshots showed](/tasks/hk-b-11-screenshot-fixes.md) — The help ticket page named the asker as the one logged in, and the WHOIS link lost its space and was missing from the listing.
 - [hk-b-10 Verify HK-B](/tasks/hk-b-10-exit-check.md) — Every exit criterion of HK-B holds from a clean checkout, in a real browser.
 
 ## Later phases

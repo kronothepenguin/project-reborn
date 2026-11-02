@@ -38,7 +38,8 @@ export default async function (t) {
   );
   check(
     "the listing shows the owner's address and last IP",
-    listing.includes("frank@example.com") && listing.includes("10.1.2.3"),
+    listing.includes("frank@example.com") &&
+      listing.includes("10.1.2.3 [WHOIS]"),
     listing,
   );
 
@@ -66,7 +67,7 @@ export default async function (t) {
   );
   check(
     "the habbo page shows the IP history",
-    habboPage.includes("10.1.2.3") && habboPage.includes("WHOIS"),
+    habboPage.includes("10.1.2.3 [WHOIS]"),
     habboPage,
   );
 
@@ -279,6 +280,12 @@ export default async function (t) {
   await shot(page, "help-ticket");
   const ticketURL = page.url();
   const ticket = await page.locator("main").innerText();
+  check(
+    "the ticket page names the staff member, not the asker",
+    (await page.locator("body").innerText()).includes(
+      "Logged in as: Admin-1",
+    ),
+  );
   check(
     "a ticket shows who asked, from where and what",
     ["Frank", "10.1.2.3", "They are gone & I am sad"].every((text) =>
