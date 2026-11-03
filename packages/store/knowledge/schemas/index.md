@@ -39,3 +39,7 @@ lexicographic filename order on every `store.Open`.
 ## Moderation
 
 - [moderation.schema.sql](moderation.md) — Declares bans, staff alerts, help tickets and the staff log.
+
+## Updates
+
+- [migrations.schema.sql](migrations.md) — Declares the migrations table, the record of the update files applied to the database.

@@ -35,3 +35,7 @@ Concepts for the query files under `packages/store/queries/`.
 ## Settings
 
 - [settings.query.sql](settings.md) — Settings operations to list, upsert and delete the stored runtime settings.
+
+## Updates
+
+- [migrations.query.sql](migrations.md) — Update operations to list the applied updates, find one, and record one in the transaction that applies it.

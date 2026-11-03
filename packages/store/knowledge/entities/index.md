@@ -42,3 +42,7 @@ Domain entities represented by the store's tables: their meaning, invariants, li
 - [Alert](alert.md) — A staff message shown in a habbo's Me feed until the habbo dismisses it.
 - [Help ticket](help-ticket.md) — A help request from a habbo or a report of a forum post, handled by staff in housekeeping.
 - [Staff log](staff-log.md) — The audit trail of every staff action, with the acting user, the target user or habbo, and the IP.
+
+## Updates
+
+- [Update](update.md) — A change to the database that a release brings as an update file, applied once, in version order, and recorded in migrations.

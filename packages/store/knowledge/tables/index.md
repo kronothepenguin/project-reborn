@@ -61,3 +61,7 @@ Concepts for the tables declared under `packages/store/schema/`, one per table.
 - [alerts](alerts.md) — Staff messages shown in a habbo's feed until dismissed.
 - [help_tickets](help_tickets.md) — Help requests from habbos and forum post reports, picked up and closed by staff.
 - [staff_logs](staff_logs.md) — One row per staff action, with the acting user, the target and the IP.
+
+## Updates
+
+- [migrations](migrations.md) — One row per update file applied to the database, with its version, name and time.

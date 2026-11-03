@@ -207,6 +207,12 @@ type LoginAttempt struct {
 	CreatedAt time.Time
 }
 
+type Migration struct {
+	Version   int64
+	Name      string
+	AppliedAt time.Time
+}
+
 type NewsArticle struct {
 	ID          int64
 	AvatarID    sql.NullInt64

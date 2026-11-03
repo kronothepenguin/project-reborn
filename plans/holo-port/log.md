@@ -2,6 +2,9 @@
 
 ## 2026-11-03
 
+- **Done** [up-01](/tasks/up-01-update-runner.md): packages/store lists, applies and records update files in order,
+  each in one transaction with a foreign-key check, and saves copies of the database.
+- **Start** [up-01](/tasks/up-01-update-runner.md).
 - **Create** [UP Database updates](/phases/up-database-updates.md), with [up-01](/tasks/up-01-update-runner.md) to
   [up-11](/tasks/up-11-exit-check.md), before [P4](/phases/p4-community.md), and its design in
   [How database updates work](/reference/database-updates.md). UP is the active phase.

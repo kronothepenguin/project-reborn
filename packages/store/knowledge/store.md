@@ -4,7 +4,7 @@ title: Store
 description: Persistence infrastructure that opens the SQLite file, applies the declared schemas and provides the generated typed operations.
 resource: packages/store
 tags: [store, sqlite, go]
-timestamp: 2026-10-27T21:44:59+00:00
+timestamp: 2026-11-03T21:45:00+00:00
 ---
 
 # Overview
@@ -25,6 +25,11 @@ domain tables: features contribute schema and query files incrementally.
 | `New(db DBTX) *Queries` | Generated; binds the typed operations to a `*sql.DB` or a `*sql.Tx`. |
 | `(*Queries).WithTx(tx *sql.Tx) *Queries` | Generated; the same operations inside a transaction. |
 | `IsNotFound`, `IsConflict`, `IsForeignKey`, `IsBusy` | Classify the errors the operations return. |
+| `ParseUpdates(fsys fs.FS) ([]Update, error)` | Reads the [update](/entities/update.md) files `NNNN-<name>.sql` at the root of `fsys`: versions from 0001 without a gap, a `-- ` title on the first line, and the `-- automatic` mark among the first comments. |
+| `WaitingUpdates(ctx, db, updates) ([]Update, error)` | The updates `db` has not applied, in version order. It only reads. |
+| `AppliedUpdates(ctx, db) ([]Migration, error)` | The rows of [migrations](/tables/migrations.md) in version order, and none before the table exists. |
+| `ApplyUpdates(ctx, db, updates) ([]Update, error)` | Applies the updates in order and returns those it applied; see the guarantees. A failure is an `*UpdateError` naming the update. |
+| `Backup(ctx, db) (string, error)` | Saves a copy beside the database file as `<file>.backup-<YYYYMMDD-HHMMSS>` (UTC) with `VACUUM INTO`, adding `-2`, `-3`… when another copy took that second, and returns its path. |
 
 # Guarantees
 
@@ -47,6 +52,15 @@ domain tables: features contribute schema and query files incrementally.
   order and use idempotent, additive DDL. The store never drops, alters, or
   overwrites structures it does not declare, so an older application can open
   a database created by a newer one and leave unknown structures untouched.
+- **Updates apply once and in order.** Each update runs in one transaction with
+  its row in `migrations`, so a failed update leaves no trace and the run stops
+  there, keeping the updates before it. `BEGIN IMMEDIATE` takes the write lock
+  first, so programs applying the same updates together apply each one once,
+  and the busy timeout is ten minutes while updates apply.
+- **Foreign keys are checked after an update.** They are off while an update
+  runs, because SQLite cannot rebuild a table that others refer to with them
+  on, and `PRAGMA foreign_key_check` must find nothing before the commit. An
+  update gets no `ON DELETE CASCADE`: it deletes child rows itself.
 - **Atomic units of work.** A transaction started with `db.BeginTx` makes its
   changes visible only on `Commit`; a process exit before commit leaves no
   partial change.
