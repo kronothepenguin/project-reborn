@@ -113,3 +113,7 @@ WHERE avatar_id = sqlc.arg(avatar_id) AND code = sqlc.arg(code);
 -- name: DeleteAvatarBadge :execrows
 DELETE FROM avatar_badges
 WHERE avatar_id = sqlc.arg(avatar_id) AND code = sqlc.arg(code);
+
+-- name: GetWornAvatarBadge :one
+SELECT * FROM avatar_badges
+WHERE avatar_id = sqlc.arg(avatar_id) AND worn;

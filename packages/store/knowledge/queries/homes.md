@@ -53,6 +53,13 @@ timestamp: 2026-11-03T17:46:46+00:00
 - Result: the home's items, lowest in the stack first
 - Tables: `home_items`
 
+## ListHomeItemsToDraw
+
+- Cardinality: `:many`
+- Inputs: `home_id`
+- Result: the home's items, lowest in the stack first, each with the art of its store item, blank for a widget
+- Tables: `home_items`, `home_store_items`
+
 ## CountHomeItems
 
 - Cardinality: `:one`

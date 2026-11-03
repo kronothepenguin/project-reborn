@@ -1,0 +1,30 @@
+---
+interface Props {
+  items: { label: string; href: string }[];
+  active: string;
+}
+
+const { items, active } = Astro.props;
+---
+
+<ul class="flex border-t-2 border-black bg-white py-1.5 pl-5 text-xs">
+  {
+    items.map(({ label, href }, index) => (
+      <li
+        class:list={[
+          "pr-5",
+          index > 0 && "border-l border-gray-200 pl-5",
+          label === active && "font-bold text-black",
+        ]}
+      >
+        {label === active ? (
+          label
+        ) : (
+          <a class="text-blue-900" href={href}>
+            {label}
+          </a>
+        )}
+      </li>
+    ))
+  }
+</ul>

@@ -149,6 +149,7 @@ var colours = []struct{ name, class string }{
 	{"cyan", "text-teal-400"},
 	{"blue", "text-sky-600"},
 	{"gray", "text-olive-500"},
+	{"black", "text-black"},
 }
 
 // colour reads the name as a browser read Holo's <font color>, without the

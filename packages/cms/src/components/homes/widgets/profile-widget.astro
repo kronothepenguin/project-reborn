@@ -1,0 +1,61 @@
+---
+import { Avatar } from "@project-reborn/components";
+import TagPanel from "../tag-panel.svelte";
+
+// The profile widget inside [[ range .Items ]], so . is the item and $ the page.
+---
+
+<div
+  class="movable widget profile-widget absolute"
+  id="widget-[[ .ID ]]"
+  style="left: [[ .X ]]px; top: [[ .Y ]]px; z-index: [[ .Z ]]"
+>
+  <div data-widget-skin="[[ .Skin ]]">
+    <div class="widget-corner" id="widget-[[ .ID ]]-handle">
+      <div class="widget-headline">
+        <h3>
+          <span class="header-left">&nbsp;</span><span class="header-middle">MY HABBO</span><span class="header-right">&nbsp;</span>
+        </h3>
+      </div>
+    </div>
+    <div class="widget-body">
+      <div class="widget-content">
+        <div class="float-left w-[90px]">
+          <div class="float-left">
+            <span class="font-bold underline">[[ $.Profile.Name ]]</span>
+          </div>
+          <br class="clear-both" />
+          <img class="my-[3px]" alt="offline" src="/myhabbo/habbo_offline.gif" />
+          <div>Created on:</div>
+          <div>[[ $.Profile.Created ]]</div>
+          <div>
+            [[ if $.Profile.Badge ]]<img class="my-[3px]" src="[[ $.Profile.Badge ]]" alt="" />[[ end ]]
+          </div>
+        </div>
+        <div class="float-left ml-[5px]">
+          <Avatar imagingUrl="[[ $.ImagingURL ]]" figure="[[ $.Profile.Figure ]]" alt="[[ $.Profile.Name ]]" />
+        </div>
+        <div class="clear-both mt-[5px] border-t border-dashed border-black pt-[5px]">
+          [[ $.Profile.Motto ]]
+          <div class="clear-both"></div>
+        </div>
+        <br class="clear-both" />
+        <div id="profile-tags-panel" class="relative">
+          <div
+            id="profile-tags-container"
+            class="my-[5px] border border-white p-0.5"
+            data-panel="[[ if $.Profile.Own ]]own[[ else ]]other[[ end ]]"
+          >
+            [[ range $.Profile.Tags ]]
+            <span><a href="/tags?tag=[[ . ]]">[[ . ]]</a></span>
+            [[ else ]]No tags[[ end ]]
+          </div>
+          [[ if $.SignedIn ]]
+          <TagPanel client:only="svelte" source="profile-tags-container" />
+          [[ end ]]
+        </div>
+        <div class="clear-both"></div>
+      </div>
+    </div>
+  </div>
+</div>

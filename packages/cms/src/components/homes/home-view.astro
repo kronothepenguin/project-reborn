@@ -1,0 +1,71 @@
+---
+import { Button, Icon } from "@project-reborn/components";
+import Note from "./note.astro";
+import ProfileWidget from "./widgets/profile-widget.astro";
+
+// editing is Holo's edit mode, where the editor island takes over the playground
+// and its toolbar sits in the slot.
+interface Props {
+  editing?: boolean;
+}
+
+const { editing = false } = Astro.props;
+---
+
+<div id="mypage-wrapper" class="rounded border-2 border-black bg-white p-1" data-mode={editing ? "edit" : "view"}>
+  <div class="flex items-center gap-2 px-2.5 pt-1">
+    {
+      !editing && (
+        <Fragment>
+          [[ if .CanEdit ]]
+          <Button variant="dark" size="compact" href="/home/[[ .Owner ]]/edit">
+            <span class="flex items-center gap-1">
+              <Icon variant="edit" />
+              Edit
+            </span>
+          </Button>
+          [[ end ]]
+        </Fragment>
+      )
+    }
+    <h2 class="text-sm font-bold text-sky-500">[[ .Owner ]]</h2>
+  </div>
+  <div class="mt-[5px]">
+    <slot />
+    <div
+      id="mypage-bg"
+      class:list={["relative px-[3px]", editing && "border border-dotted border-white"]}
+      style="background-image: url('[[ .Background ]]')"
+      data-background="[[ .BackgroundID ]]"
+    >
+      <div
+        id="playground"
+        class:list={[
+          "[[ if .Wide ]]w-[922px][[ else ]]w-[752px][[ end ]] relative h-[1360px] overflow-hidden",
+          editing && "border border-dotted border-black",
+        ]}
+      >
+        [[ range .Items ]] [[ if eq .Kind "sticker" ]]
+        <div
+          class="movable sticker absolute"
+          id="sticker-[[ .ID ]]"
+          style="left: [[ .X ]]px; top: [[ .Y ]]px; z-index: [[ .Z ]]"
+        >
+          <img src="[[ .Image ]]" alt="" />
+        </div>
+        [[ else if eq .Kind "note" ]]
+        <Note />
+        [[ else if eq .Widget "profile" ]]
+        <ProfileWidget />
+        [[ end ]] [[ end ]]
+      </div>
+      [[ if not .Wide ]]
+      <div class="absolute top-0 right-0 z-[10000] w-40 text-right">
+        <a href="/club">
+          <img src="/myhabbo/hc_habbohome_banner_holo.png" width="160" height="600" alt="hc habbohome banner holo" />
+        </a>
+      </div>
+      [[ end ]]
+    </div>
+  </div>
+</div>

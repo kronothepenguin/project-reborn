@@ -107,6 +107,13 @@ timestamp: 2026-11-02T02:47:29+00:00
 - Result: the habbo's badges, oldest first
 - Tables: `avatar_badges`
 
+## GetWornAvatarBadge
+
+- Cardinality: `:one`
+- Inputs: `avatar_id`
+- Result: the badge the habbo wears; not found when it wears none
+- Tables: `avatar_badges`
+
 ## TakeOffAvatarBadge
 
 - Cardinality: `:exec`

@@ -2,6 +2,15 @@
 
 ## 2026-11-03
 
+- **Done** [p3-05](/tasks/p3-05-profile-tags.md): the active habbo adds, removes and borrows tags from the profile
+  widget, with Holo's rules and a limit that holds.
+- **Start** [p3-05](/tasks/p3-05-profile-tags.md).
+- **Done** [p3-04](/tasks/p3-04-home-page.md): anyone reads a habbo's home with its background, stickers, notes and
+  profile widget in Holo's skins, and Holo's pages for unknown and banned habbos.
+- **Start** [p3-04](/tasks/p3-04-home-page.md).
+- **Done** [p3-03](/tasks/p3-03-bbcode.md): notes render Holo's BBCode and smilies as escaped HTML, with the plan's
+  colours and links only to http and https.
+- **Start** [p3-03](/tasks/p3-03-bbcode.md).
 - **Done** [p3-10](/tasks/p3-10-housekeeping-store.md): staff with `housekeeping.homeStore` add items from the art in
   the repository, and edit or stop selling any item, with a staff log row each time.
 - **Start** [p3-10](/tasks/p3-10-housekeeping-store.md).

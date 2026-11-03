@@ -1,0 +1,793 @@
+/* Holo's skins of widgets and notes, from web-gallery/styles/myhabbo/skins.css.
+   An item's skin is runtime data, so each rule keys on data-widget-skin or
+   data-note-skin, and the colours are Holo's mapped to the palette. The first
+   rules are the notes' own, from myhabbo.css, which the skins refine. */
+
+.stickie-header {
+  padding-left: 4px;
+}
+
+.stickie-header h3 {
+  margin: 0;
+  font-size: 1px;
+  height: 20px;
+  padding: 2px 7px 0 3px;
+}
+
+.stickie-body {
+  padding-left: 4px;
+}
+
+.stickie-content {
+  padding: 3px 28px 4px 3px;
+  overflow-wrap: break-word;
+}
+
+.stickie-footer {
+  padding: 0 15px 5px 0;
+}
+
+/* dialogs.css hid the edit buttons while an item is dragged. */
+.dragging .edit-button {
+  display: none;
+}
+
+.profile-widget .widget-content,
+.stickie-content {
+  width: 218px;
+}
+
+.profile-widget [data-widget-skin="goldenskin"] {
+  width: 287px;
+}
+
+.profile-widget [data-widget-skin="defaultskin"] {
+  width: 252px;
+}
+
+.profile-widget [data-widget-skin="hc_pillowskin"] {
+  width: 302px;
+}
+
+.profile-widget [data-widget-skin="hc_machineskin"] {
+  width: 313px;
+}
+
+.profile-widget [data-widget-skin="metalskin"] {
+  width: 273px;
+}
+
+.profile-widget [data-widget-skin="notepadskin"] {
+  width: 254px;
+}
+
+.profile-widget [data-widget-skin="speechbubbleskin"] {
+  width: 238px;
+}
+
+.profile-widget [data-widget-skin="noteitskin"] {
+  width: 237px;
+}
+
+.stickie .edit-button {
+  position: absolute;
+  right: 0;
+  top: 5px;
+}
+
+.widget .widget-headline h3 {
+  margin-top: 0;
+}
+
+[data-mode="edit"] .widget-headline {
+  cursor: move;
+}
+
+.widget .edit-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+[data-widget-skin="goldenskin"] .edit-button {
+  right: -10px;
+}
+
+[data-widget-skin="goldenskin"] a {
+  @apply text-yellow-950;
+}
+
+[data-widget-skin="goldenskin"] .widget-content {
+  @apply text-black;
+  background: url(/c_images/skins/Skin_Goldenframe_btmlR.png) no-repeat bottom right;
+  padding: 4px 35px 35px 4px;
+}
+
+[data-widget-skin="goldenskin"] .widget-body {
+  background: url(/c_images/skins/Skin_Goldenframe_btmlL.png) no-repeat bottom left;
+  padding-left: 30px;
+}
+
+[data-widget-skin="goldenskin"] .widget-headline {
+  background: url(/c_images/skins/Skin_Goldenframe_topR.png) no-repeat top right;
+  height: 31px;
+}
+
+[data-widget-skin="goldenskin"] .widget-corner {
+  background: url(/c_images/skins/Skin_Goldenframe_topL.png) no-repeat top left;
+  padding-left: 31px;
+  height: 31px;
+}
+
+[data-widget-skin="goldenskin"] .widget-headline h3 {
+  @apply text-yellow-900;
+  text-align: center;
+  font-size: x-small;
+  height: 21px;
+  top: 7px;
+  text-align: center;
+  padding-top: 2px;
+  margin: 2px 20px 0 0;
+  position: relative;
+}
+
+[data-widget-skin="goldenskin"] .widget-headline .header-middle {
+  text-align: center;
+  background: url(/c_images/skins/Skin_Goldenframe_Header_M.png);
+  height: 21px;
+  margin: 0px;
+  padding: 3px 5px 3px 5px;
+}
+
+[data-widget-skin="goldenskin"] .widget-headline .header-left {
+  background: url(/c_images/skins/Skin_Goldenframe_Header_L.png) no-repeat;
+  height: 21px;
+  padding: 3px 0px 3px 8px;
+}
+
+[data-widget-skin="goldenskin"] .widget-headline .header-right {
+  background: url(/c_images/skins/Skin_Goldenframe_Header_R.png) no-repeat;
+  height: 21px;
+  padding: 3px 18px 3px 0;
+}
+
+[data-widget-skin="metalskin"] .edit-button {
+  right: -18px;
+  top: -1px;
+}
+
+[data-widget-skin="metalskin"] a {
+  @apply text-zinc-700;
+}
+
+[data-widget-skin="metalskin"] .metadata {
+  @apply text-olive-700;
+}
+
+[data-widget-skin="metalskin"] .widget-content {
+  @apply text-black;
+  background: url(/c_images/skins/Skin_Metal_btmR.png) no-repeat bottom right;
+  padding: 1px 26px 23px 7px;
+}
+
+[data-widget-skin="metalskin"] .widget-body {
+  background: url(/c_images/skins/Skin_Metal_btmL.png) no-repeat bottom left;
+  padding-left: 22px;
+}
+
+[data-widget-skin="metalskin"] .widget-headline {
+  background: url(/c_images/skins/Skin_Metal_topRh.png) no-repeat top right;
+  height: 33px;
+}
+
+[data-widget-skin="metalskin"] .widget-corner {
+  background: url(/c_images/skins/Skin_Metal_topLh.png) no-repeat top left;
+  padding-left: 35px;
+  height: 33px;
+}
+
+[data-widget-skin="metalskin"] .widget-headline h3 {
+  @apply text-zinc-700;
+  text-align: center;
+  font-size: x-small;
+  position: relative;
+  top: 3px;
+  height: 33px;
+  text-align: center;
+  padding-top: 2px;
+  margin: 2px 40px 0 0;
+  position: relative;
+}
+
+[data-widget-skin="hc_machineskin"] .edit-button {
+  right: -47px;
+  top: 17px;
+}
+
+[data-widget-skin="hc_machineskin"] a {
+  @apply text-lime-950;
+}
+
+[data-widget-skin="hc_machineskin"] .metadata {
+  @apply text-lime-400;
+}
+
+[data-widget-skin="hc_machineskin"] .widget-content {
+  @apply text-white;
+  background: url(/c_images/skins/Skin_HCmachine_btmR.png) no-repeat bottom right;
+  padding: 0 46px 31px 0;
+}
+
+[data-widget-skin="hc_machineskin"] .widget-body {
+  background: url(/c_images/skins/Skin_HCmachine_btmL.png) no-repeat bottom left;
+  padding-left: 49px;
+}
+
+[data-widget-skin="hc_machineskin"] .widget-headline {
+  background: url(/c_images/skins/Skin_HCmachine_topRh.png) no-repeat top right;
+  height: 42px;
+}
+
+[data-widget-skin="hc_machineskin"] .widget-corner {
+  background: url(/c_images/skins/Skin_HCmachine_topLh.png) no-repeat top left;
+  padding-left: 61px;
+  height: 42px;
+}
+
+[data-widget-skin="hc_machineskin"] .widget-headline h3 {
+  @apply text-white;
+  text-align: center;
+  font-size: x-small;
+  position: relative;
+  top: 3px;
+  text-align: center;
+  padding-top: 2px;
+  margin: 2px 61px 0 0;
+  position: relative;
+}
+
+[data-widget-skin="defaultskin"] .edit-button {
+  right: -18px;
+  top: 8px;
+}
+
+[data-widget-skin="defaultskin"] a {
+  @apply text-neutral-800;
+}
+
+[data-widget-skin="defaultskin"] .widget-content {
+  @apply text-black;
+  background: url(/c_images/skins/Skin_HabboHomes_btmR.png) no-repeat bottom right;
+  padding: 4px 16px 19px 4px;
+}
+
+[data-widget-skin="defaultskin"] .widget-body {
+  background: url(/c_images/skins/Skin_HabboHomes_btmL.png) no-repeat bottom left;
+  padding-left: 14px;
+}
+
+[data-widget-skin="defaultskin"] .widget-headline {
+  background: url(/c_images/skins/Skin_HabboHomes_topRh.png) no-repeat top right;
+  height: 41px;
+}
+
+[data-widget-skin="defaultskin"] .widget-corner {
+  background: url(/c_images/skins/Skin_HabboHomes_topLh.png) no-repeat top left;
+  padding-left: 41px;
+  height: 41px;
+}
+
+[data-widget-skin="defaultskin"] .widget-headline h3 {
+  @apply text-white;
+  text-align: left;
+  font-size: x-small;
+  font-weight: normal;
+  vertical-align: bottom;
+  position: relative;
+  padding-top: 10px;
+  left: -33px;
+}
+
+[data-widget-skin="notepadskin"] .edit-button {
+  right: 2px;
+  top: 5px;
+}
+
+[data-widget-skin="notepadskin"] a {
+  @apply text-gray-800;
+}
+
+[data-widget-skin="notepadskin"] .widget-content {
+  @apply text-black;
+  background: url(/c_images/skins/Skin_Notepad_btmR.png) no-repeat bottom right;
+  padding: 2px 7px 18px 2px;
+}
+
+[data-widget-skin="notepadskin"] .widget-body {
+  background: url(/c_images/skins/Skin_Notepad_btmL.png) no-repeat bottom left;
+  padding-left: 27px;
+}
+
+[data-widget-skin="notepadskin"] .widget-headline {
+  background: url(/c_images/skins/Skin_Notepad_topRh.png) no-repeat top right;
+  height: 29px;
+  width: 100%;
+}
+
+[data-widget-skin="notepadskin"] .widget-corner {
+  background: url(/c_images/skins/Skin_Notepad_topLh.png) no-repeat top left;
+  padding-left: 27px;
+  height: 29px;
+}
+
+[data-widget-skin="notepadskin"] .widget-headline h3 {
+  @apply text-mauve-700;
+  text-align: left;
+  font-size: small;
+  vertical-align: bottom;
+  position: relative;
+  padding-top: 10px;
+  left: -4px;
+}
+
+[data-widget-skin="noteitskin"] .edit-button {
+  right: 4px;
+  top: 6px;
+}
+
+[data-widget-skin="noteitskin"] a {
+  @apply text-black;
+}
+
+[data-widget-skin="noteitskin"] .metadata {
+  @apply text-gray-600;
+}
+
+[data-widget-skin="noteitskin"] .widget-content {
+  @apply text-black;
+  background: url(/c_images/skins/Skin_Stickienote_btmR.png) no-repeat bottom right;
+  padding: 7px 9px 30px 9px;
+}
+
+[data-widget-skin="noteitskin"] .widget-body {
+  background: url(/c_images/skins/Skin_Stickienote_btmL.png) no-repeat bottom left;
+  padding-left: 1px;
+}
+
+[data-widget-skin="noteitskin"] .widget-headline {
+  background: url(/c_images/skins/Skin_Stickienote_topR.png) no-repeat top right;
+  height: 30px;
+  width: 100%;
+}
+
+[data-widget-skin="noteitskin"] .widget-corner {
+  background: url(/c_images/skins/Skin_Stickienote_topL.png) no-repeat top left;
+  padding-left: 5px;
+  height: 30px;
+}
+
+[data-widget-skin="noteitskin"] .widget-headline h3 {
+  @apply text-gray-800;
+  text-align: left;
+  font-size: 11px;
+  vertical-align: bottom;
+  position: relative;
+  padding-top: 10px;
+  left: -4px;
+}
+
+[data-widget-skin="speechbubbleskin"] .edit-button {
+  right: 4px;
+  top: 5px;
+}
+
+[data-widget-skin="speechbubbleskin"] a {
+  @apply text-olive-800;
+}
+
+[data-widget-skin="speechbubbleskin"] .widget-content {
+  @apply text-black;
+  background: url(/c_images/skins/Skin_Speechbubble_btmR.png) no-repeat bottom right;
+  padding: 17px 10px 22px 0;
+}
+
+[data-widget-skin="speechbubbleskin"] .widget-body {
+  background: url(/c_images/skins/Skin_Speechbubble_btmL.png) no-repeat bottom left;
+  padding-left: 10px;
+}
+
+[data-widget-skin="speechbubbleskin"] .widget-headline {
+  background: url(/c_images/skins/Skin_Speechbubble_topR.png) no-repeat top right;
+  height: 10px;
+}
+
+[data-widget-skin="speechbubbleskin"] .widget-corner {
+  background: url(/c_images/skins/Skin_Speechbubble_topL.png) no-repeat top left;
+  padding-left: 10px;
+  height: 10px;
+}
+
+[data-widget-skin="speechbubbleskin"] .widget-headline h3 {
+  @apply text-taupe-500;
+  text-align: left;
+  font-size: small;
+  vertical-align: bottom;
+  position: relative;
+  padding-top: 4px;
+  left: -4px;
+}
+
+.stickie {
+  width: 250px;
+}
+
+[data-note-skin="goldenskin"] .stickie-header {
+  background: url(/c_images/skins/Skin_Goldenframe_topL.png) no-repeat top left;
+  padding-left: 31px;
+  height: 31px;
+  font-size: 1%;
+}
+
+[data-note-skin="goldenskin"] .stickie-header h3 {
+  background: url(/c_images/skins/Skin_Goldenframe_topR.png) no-repeat top right;
+  height: 31px;
+  font-size: 1%;
+}
+
+[data-note-skin="goldenskin"] .stickie-body {
+  background: url(/c_images/skins/Skin_Goldenframe_btmlL.png) no-repeat bottom left;
+  padding-left: 31px;
+}
+
+[data-note-skin="goldenskin"] .stickie-content {
+  background: url(/c_images/skins/Skin_Goldenframe_btmlR.png) no-repeat bottom right;
+  padding: 3px 30px 5px 2px;
+}
+
+[data-note-skin="goldenskin"] .stickie-content p {
+  @apply text-black;
+  vertical-align: top;
+  margin: 0px 0px 5px 2px;
+  padding: 0 0 19px 0;
+}
+
+.stickie [data-note-skin="goldenskin"] {
+  width: 281px;
+}
+
+.stickie [data-note-skin="defaultskin"] {
+  width: 250px;
+}
+
+[data-note-skin="defaultskin"] .stickie-header {
+  background: url(/c_images/skins/Skin_HabboHomes_topL.png) no-repeat;
+  padding-left: 14px;
+  height: 14px;
+  margin: 0;
+  font-size: 1%;
+}
+
+[data-note-skin="defaultskin"] .stickie-header h3 {
+  background: url(/c_images/skins/Skin_HabboHomes_topR.png) no-repeat top right;
+  height: 14px;
+  margin: 0;
+  font-size: 1%;
+}
+
+[data-note-skin="defaultskin"] .stickie-body {
+  background: url(/c_images/skins/Skin_HabboHomes_btmL.png) no-repeat bottom left;
+  padding-left: 14px;
+}
+
+[data-note-skin="defaultskin"] .stickie-content {
+  background: url(/c_images/skins/Skin_HabboHomes_btmR.png) no-repeat bottom right;
+  padding: 1px 15px 4px 3px;
+}
+
+[data-note-skin="defaultskin"] .stickie-content p {
+  @apply text-black;
+  vertical-align: top;
+  margin: 0;
+  padding-bottom: 7px;
+}
+
+.stickie [data-note-skin="metalskin"] {
+  width: 259px;
+}
+
+[data-note-skin="metalskin"] .stickie-header {
+  background: url(/c_images/skins/Skin_Metal_topL.png) no-repeat;
+  padding-left: 24px;
+  height: 24px;
+  padding-bottom: 0;
+  margin: 0;
+  font-size: 1%;
+}
+
+[data-note-skin="metalskin"] .stickie-header h3 {
+  background: url(/c_images/skins/Skin_Metal_topR.png) no-repeat top right;
+  height: 24px;
+  margin: 0;
+  padding-bottom: 0;
+  font-size: 1%;
+}
+
+[data-note-skin="metalskin"] .stickie-body {
+  background: url(/c_images/skins/Skin_Metal_btmL.png) no-repeat bottom left;
+  padding-left: 21px;
+}
+
+[data-note-skin="metalskin"] .stickie-content {
+  background: url(/c_images/skins/Skin_Metal_btmR.png) no-repeat bottom right;
+  padding: 1px 20px 1px 0;
+}
+
+[data-note-skin="metalskin"] .stickie-content p {
+  @apply text-black;
+  vertical-align: top;
+  margin: 0 0 13px 0;
+}
+
+.stickie [data-note-skin="hc_machineskin"] {
+  width: 293px;
+}
+
+[data-note-skin="hc_machineskin"] .stickie-header {
+  background: url(/c_images/skins/Skin_HCmachine_topL.png) no-repeat;
+  padding-left: 49px;
+  height: 42px;
+  padding-bottom: 0;
+  margin: 0;
+  font-size: 1%;
+}
+
+[data-note-skin="hc_machineskin"] .stickie-header h3 {
+  background: url(/c_images/skins/Skin_HCmachine_topR.png) no-repeat top right;
+  height: 42px;
+  margin: 0;
+  padding-bottom: 0;
+  font-size: 1%;
+}
+
+[data-note-skin="hc_machineskin"] .stickie-body {
+  background: url(/c_images/skins/Skin_HCmachine_btmL.png) no-repeat bottom left;
+  padding-left: 49px;
+}
+
+[data-note-skin="hc_machineskin"] .stickie-content {
+  background: url(/c_images/skins/Skin_HCmachine_btmR.png) no-repeat bottom right;
+  padding: 3px 28px 4px 0;
+}
+
+[data-note-skin="hc_machineskin"] .stickie-content p {
+  @apply text-white;
+  vertical-align: top;
+  margin: 2px 15px 29px 4px;
+}
+
+.stickie [data-note-skin="notepadskin"] {
+  width: 253px;
+}
+
+[data-note-skin="notepadskin"] .stickie-header {
+  background: url(/c_images/skins/Skin_Notepad_topL.png) no-repeat;
+  padding-left: 20px;
+  height: 12px;
+  padding-bottom: 0;
+  margin: 0;
+  font-size: 1%;
+}
+
+[data-note-skin="notepadskin"] .stickie-header h3 {
+  background: url(/c_images/skins/Skin_Notepad_topR.png) no-repeat top right;
+  height: 12px;
+  margin: 0;
+  padding-bottom: 0;
+  font-size: 1%;
+}
+
+[data-note-skin="notepadskin"] .stickie-body {
+  background: url(/c_images/skins/Skin_Notepad_btmL.png) no-repeat bottom left;
+  padding-left: 27px;
+}
+
+[data-note-skin="notepadskin"] .stickie-content {
+  background: url(/c_images/skins/Skin_Notepad_btmR.png) no-repeat bottom right;
+  padding: 3px 5px 4px 3px;
+}
+
+[data-note-skin="notepadskin"] .stickie-content p {
+  @apply text-black;
+  vertical-align: top;
+  margin: 2px 0 0 0;
+}
+
+.stickie [data-note-skin="noteitskin"] {
+  width: 254px;
+}
+
+[data-note-skin="noteitskin"] .stickie-header {
+  background: url(/c_images/skins/Skin_Stickienote_topL.png) no-repeat;
+  padding-left: 5px;
+  height: 30px;
+  padding-bottom: 0;
+  margin: 0;
+  font-size: 1%;
+}
+
+[data-note-skin="noteitskin"] .stickie-header h3 {
+  background: url(/c_images/skins/Skin_Stickienote_topR.png) no-repeat top right;
+  height: 30px;
+  margin: 0;
+  padding-bottom: 0;
+  font-size: 1%;
+}
+
+[data-note-skin="noteitskin"] .stickie-body {
+  background: url(/c_images/skins/Skin_Stickienote_btmL.png) no-repeat bottom left;
+  padding-left: 5px;
+}
+
+[data-note-skin="noteitskin"] .stickie-content {
+  background: url(/c_images/skins/Skin_Stickienote_btmR.png) no-repeat bottom right;
+  padding: 1px 28px 23px 3px;
+}
+
+[data-note-skin="noteitskin"] .stickie-content p {
+  @apply text-black;
+  vertical-align: top;
+  margin-top: 2px;
+  margin-bottom: 0;
+}
+
+.stickie [data-note-skin="speechbubbleskin"] {
+  width: 236px;
+}
+
+[data-note-skin="speechbubbleskin"] .stickie-header {
+  background: url(/c_images/skins/Skin_Speechbubble_topL.png) no-repeat;
+  padding-left: 10px;
+  height: 8px;
+  padding-bottom: 0;
+  margin: 0;
+  font-size: 1%;
+}
+
+[data-note-skin="speechbubbleskin"] .stickie-header h3 {
+  background: url(/c_images/skins/Skin_Speechbubble_topR.png) no-repeat top right;
+  height: 8px;
+  margin: 0;
+  padding-bottom: 0;
+  font-size: 1%;
+}
+
+[data-note-skin="speechbubbleskin"] .stickie-body {
+  background: url(/c_images/skins/Skin_Speechbubble_btmL.png) no-repeat bottom left;
+  padding-left: 10px;
+}
+
+[data-note-skin="speechbubbleskin"] .stickie-content {
+  background: url(/c_images/skins/Skin_Speechbubble_btmR.png) no-repeat bottom right;
+  padding: 1px 5px 6px 3px;
+}
+
+[data-note-skin="speechbubbleskin"] .stickie-content p {
+  vertical-align: top;
+  margin-top: 2px;
+  margin-bottom: 10px;
+}
+
+[data-widget-skin="hc_pillowskin"] .edit-button {
+  right: 10px;
+  top: 20px;
+}
+
+[data-widget-skin="hc_pillowskin"] a {
+  @apply text-fuchsia-900;
+}
+
+[data-widget-skin="hc_pillowskin"] .metadata {
+  @apply text-pink-700;
+}
+
+[data-widget-skin="hc_pillowskin"] .widget-content {
+  @apply text-black;
+  background: url(/c_images/skins/girl/Skin_HCpillow_btmR.png) no-repeat bottom right;
+  padding: 0 41px 38px 0;
+  font-weight: normal;
+  margin-bottom: 1px;
+  margin-left: 44px;
+}
+
+[data-widget-skin="hc_pillowskin"] .widget-body {
+  background: url(/c_images/skins/girl/Skin_HCpillow_btmL.png) no-repeat bottom left;
+  margin-left: 0px;
+}
+
+[data-widget-skin="hc_pillowskin"] .widget-headline {
+  background: url(/c_images/skins/girl/Skin_HCpillow_topRh.png) no-repeat top right;
+  height: 49px;
+  padding-left: 0px;
+  margin-left: 13px;
+}
+
+[data-widget-skin="hc_pillowskin"] .widget-corner {
+  background: url(/c_images/skins/girl/Skin_HCpillow_topLh.png) no-repeat top left;
+  background-position: 0px 0px;
+  padding-left: 41px;
+  height: 49px;
+}
+
+[data-widget-skin="hc_pillowskin"] .widget-headline h3 {
+  @apply text-yellow-900 text-fuchsia-950;
+  text-align: left;
+  padding-left: 15px;
+  font-size: small;
+  font-weight: bold;
+  vertical-align: bottom;
+  position: relative;
+  padding-top: 10px;
+}
+
+[data-widget-skin="hc_pillowskin"] .widget-headline .header-right {
+  padding: 1px 18px 3px 0;
+}
+
+.stickie [data-note-skin="hc_pillowskin"] {
+  width: 300px;
+}
+
+[data-note-skin="hc_pillowskin"] .stickie-header {
+  background: url(/c_images/skins/girl/Skin_HCpillow_topL.png) no-repeat;
+  padding-left: 40px;
+  height: 49px;
+  padding-bottom: 0;
+  margin: 0;
+  font-size: 1%;
+}
+
+[data-note-skin="hc_pillowskin"] .stickie-header h3 {
+  background: url(/c_images/skins/girl/Skin_HCpillow_topR.png) no-repeat top right;
+  height: 49px;
+  margin: 0;
+  padding-bottom: 0;
+  font-size: 1%;
+}
+
+[data-note-skin="hc_pillowskin"] .stickie-body {
+  background: url(/c_images/skins/girl/Skin_HCpillow_btmL.png) no-repeat bottom left;
+  padding-left: 41px;
+}
+
+[data-note-skin="hc_pillowskin"] .stickie-content {
+  background: url(/c_images/skins/girl/Skin_HCpillow_btmR.png) no-repeat bottom right;
+  padding: 0 35px 36px 3px;
+  margin-left: 4px;
+}
+
+[data-note-skin="hc_pillowskin"] .stickie-content p {
+  @apply text-black;
+  vertical-align: top;
+  margin-top: 0;
+  padding-left: 0;
+}
+
+.stickie[data-note-skin="nakedskin"],
+[data-note-skin="nakedskin"] .stickie-content {
+  width: auto;
+}
+
+[data-note-skin="nakedskin"] .stickie-header h3 {
+  height: auto;
+}
+
+[data-note-skin="nakedskin"] .stickie-header .clear {
+  display: none;
+}
+
+[data-note-skin="nakedskin"] .stickie-header h3,
+[data-note-skin="nakedskin"] .stickie-body,
+[data-note-skin="nakedskin"] .stickie-content,
+[data-note-skin="nakedskin"] .stickie-footer {
+  padding: 0;
+}

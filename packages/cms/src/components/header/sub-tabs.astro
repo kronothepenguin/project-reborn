@@ -1,5 +1,9 @@
 ---
-export type CommunityTab = "me" | "community" | "credits";
+import SubTabList from "./sub-tab-list.astro";
+
+// home is a habbo's home: under Me when it is the active habbo's, as Holo's
+// myprofile, and under Community otherwise, which only the page data can tell.
+export type CommunityTab = "me" | "community" | "credits" | "home";
 
 interface Props {
   tab: CommunityTab;
@@ -8,7 +12,7 @@ interface Props {
 
 const { tab, active } = Astro.props;
 
-const groups: Record<CommunityTab, { label: string; href: string }[]> = {
+const groups: Record<Exclude<CommunityTab, "home">, { label: string; href: string }[]> = {
   me: [
     { label: "Homepage", href: "/me" },
     { label: "My Page", href: "/home?name=[[ .Habbo ]]" },
@@ -29,24 +33,16 @@ const groups: Record<CommunityTab, { label: string; href: string }[]> = {
 };
 ---
 
-<ul class="flex border-t-2 border-black bg-white py-1.5 pl-5 text-xs">
-  {
-    groups[tab].map(({ label, href }, index) => (
-      <li
-        class:list={[
-          "pr-5",
-          index > 0 && "border-l border-gray-200 pl-5",
-          label === active && "font-bold text-black",
-        ]}
-      >
-        {label === active ? (
-          label
-        ) : (
-          <a class="text-blue-900" href={href}>
-            {label}
-          </a>
-        )}
-      </li>
-    ))
-  }
-</ul>
+{
+  tab === "home" ? (
+    <Fragment>
+      [[ if .MyPage ]]
+      <SubTabList items={groups.me} active="My Page" />
+      [[ else ]]
+      <SubTabList items={groups.community} active="" />
+      [[ end ]]
+    </Fragment>
+  ) : (
+    <SubTabList items={groups[tab]} active={active} />
+  )
+}

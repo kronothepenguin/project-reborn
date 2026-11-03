@@ -1,0 +1,24 @@
+---
+// A note inside [[ range .Items ]], so . is the item. The outer element and the
+// skin's both carry the skin, as Holo's n_skin_X-c and n_skin_X did.
+---
+
+<div
+  class="movable stickie absolute"
+  id="stickie-[[ .ID ]]"
+  data-note-skin="[[ .Skin ]]"
+  style="left: [[ .X ]]px; top: [[ .Y ]]px; z-index: [[ .Z ]]"
+>
+  <div data-note-skin="[[ .Skin ]]">
+    <div class="stickie-header">
+      <h3></h3>
+      <div class="clear-both"></div>
+    </div>
+    <div class="stickie-body">
+      <div class="stickie-content">
+        <div class="stickie-markup">[[ .HTML ]]</div>
+        <div class="stickie-footer"></div>
+      </div>
+    </div>
+  </div>
+</div>

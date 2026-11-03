@@ -1,0 +1,26 @@
+---
+import { Card } from "@project-reborn/components";
+import Community from "../../layouts/community.astro";
+---
+
+<Community title="[[ .ShortName ]] ~ Page not found" tab="community" sub="">
+  <div class="flex gap-2.5">
+    <div class="w-[460px]">
+      <Card color="red">
+        <span slot="header">Page not found!</span>
+        <p class="font-bold text-red-600">Sorry, but the page you were looking for was not found.</p>
+        <img class="my-2" src="/myhabbo/error.gif" alt="" width="76" height="112" />
+        <p class="font-bold text-red-600">Please use the 'Back' button to get back to where you started.</p>
+      </Card>
+    </div>
+    <div class="w-[310px]">
+      <Card color="green">
+        <span slot="header">Were you looking for...</span>
+        <p class="mb-2"><b>A friend's group or personal page?</b><br />See if it is listed on the <a class="underline" href="/community">Community</a> page.</p>
+        <p class="mb-2"><b>Rooms that rock?</b><br />Browse the <a class="underline" href="/community">Recommended Rooms</a> list.</p>
+        <p class="mb-2"><b>What other users are in to?</b><br />Check out the <a class="underline" href="/tags">Top Tags</a> list.</p>
+        <p><b>How to get Credits?</b><br />Have a look at the <a class="underline" href="/credits">Credits</a> page.</p>
+      </Card>
+    </div>
+  </div>
+</Community>

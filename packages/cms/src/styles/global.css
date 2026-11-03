@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@project-reborn/components/styles.css";
+@import "./homes.css";
 
 /* The states register/registration-form sets on the fields, from Holo's
    registration.css. */

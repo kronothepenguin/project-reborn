@@ -10,6 +10,37 @@ import (
 	"time"
 )
 
+const addProfileTag = `-- name: AddProfileTag :execrows
+INSERT INTO profile_tags (profile_id, tag, created_at)
+VALUES (?1, ?2, ?3)
+ON CONFLICT (profile_id, tag) DO NOTHING
+`
+
+type AddProfileTagParams struct {
+	ProfileID int64
+	Tag       string
+	CreatedAt time.Time
+}
+
+func (q *Queries) AddProfileTag(ctx context.Context, arg AddProfileTagParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, addProfileTag, arg.ProfileID, arg.Tag, arg.CreatedAt)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const countProfileTags = `-- name: CountProfileTags :one
+SELECT COUNT(*) FROM profile_tags WHERE profile_id = ?1
+`
+
+func (q *Queries) CountProfileTags(ctx context.Context, profileID int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countProfileTags, profileID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createProfile = `-- name: CreateProfile :one
 INSERT INTO profiles (avatar_id, created_at, updated_at)
 VALUES (?1, ?2, ?3)
@@ -32,4 +63,66 @@ func (q *Queries) CreateProfile(ctx context.Context, arg CreateProfileParams) (P
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const deleteProfileTag = `-- name: DeleteProfileTag :execrows
+DELETE FROM profile_tags WHERE profile_id = ?1 AND tag = ?2
+`
+
+type DeleteProfileTagParams struct {
+	ProfileID int64
+	Tag       string
+}
+
+func (q *Queries) DeleteProfileTag(ctx context.Context, arg DeleteProfileTagParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteProfileTag, arg.ProfileID, arg.Tag)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const getAvatarProfile = `-- name: GetAvatarProfile :one
+SELECT id, avatar_id, created_at, updated_at FROM profiles WHERE avatar_id = ?1
+`
+
+func (q *Queries) GetAvatarProfile(ctx context.Context, avatarID int64) (Profile, error) {
+	row := q.db.QueryRowContext(ctx, getAvatarProfile, avatarID)
+	var i Profile
+	err := row.Scan(
+		&i.ID,
+		&i.AvatarID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const listProfileTags = `-- name: ListProfileTags :many
+SELECT tag FROM profile_tags
+WHERE profile_id = ?1
+ORDER BY created_at, tag
+`
+
+func (q *Queries) ListProfileTags(ctx context.Context, profileID int64) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, listProfileTags, profileID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var tag string
+		if err := rows.Scan(&tag); err != nil {
+			return nil, err
+		}
+		items = append(items, tag)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

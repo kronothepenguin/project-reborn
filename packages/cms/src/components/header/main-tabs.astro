@@ -17,7 +17,21 @@ const highlighted = `${tab} bg-lime-600 font-bold text-white`;
 <ul class="flex gap-1">
   [[ if .SignedIn ]]
   {
-    active === "me" ? (
+    active === "home" ? (
+      <Fragment>
+        [[ if .MyPage ]]
+        <li>
+          <strong class={selected}>[[ .Habbo ]]</strong>
+        </li>
+        [[ else ]]
+        <li>
+          <a class={normal} href="/">
+            [[ .Habbo ]]
+          </a>
+        </li>
+        [[ end ]]
+      </Fragment>
+    ) : active === "me" ? (
       <li>
         <strong class={selected}>[[ .Habbo ]]</strong>
       </li>
@@ -33,7 +47,21 @@ const highlighted = `${tab} bg-lime-600 font-bold text-white`;
   <li><a class={highlighted} href="/register">Register now!</a></li>
   [[ end ]]
   {
-    active === "community" ? (
+    active === "home" ? (
+      <Fragment>
+        [[ if .MyPage ]]
+        <li>
+          <a class={normal} href="/community">
+            Community
+          </a>
+        </li>
+        [[ else ]]
+        <li>
+          <strong class={selected}>Community</strong>
+        </li>
+        [[ end ]]
+      </Fragment>
+    ) : active === "community" ? (
       <li>
         <strong class={selected}>Community</strong>
       </li>

@@ -174,7 +174,7 @@ func TestFormatLinks(t *testing.T) {
 func TestFormatColours(t *testing.T) {
 	run(t, []formatCase{
 		{name: "unknown name", text: "[color=purple]x[/color]", want: "x"},
-		{name: "black", text: "[color=black]x[/color]", want: "x"},
+		{name: "black", text: "[color=black]x[/color]", want: "<span class='text-black'>x</span>"},
 		{name: "grey", text: "[color=grey]x[/color]", want: "x"},
 		{name: "hex", text: "[color=#ff0000]x[/color]", want: "x"},
 		{name: "blank", text: "[color=]x[/color]", want: "x"},

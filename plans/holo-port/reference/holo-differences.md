@@ -37,6 +37,9 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | Webstore | A habbo without the staff rank who asks for a staff item gets an empty answer | `Sorry, but you can not buy this item!` | The same answer as any item that is not sold |
 | Home editor | Saves any number as a position | Items stay on the playground, 922 by 1360 pixels | A position off the page lost the item for good |
 | Home editor | Places items with no limit, and shows only the first 200 | Refuses past `homes.maxItems`, with `This home cannot hold more than 200 items.` | Items past 200 vanished from the page without a word |
+| Notes | Staff write raw HTML, and for everyone else `'` stays open, so a link can break out of its address | Every note is text with BBCode, escaped for everyone | A note could run scripts on anyone who opened the home |
+| BBCode | A link takes any address | Only `http` and `https` addresses become links | A `javascript:` link ran code on a click |
+| BBCode | Crossed tags close the page's own elements | Crossed tags nest inside the text, as a browser nested Holo's | One note could break the rest of the page |
 
 # Changed by a decision
 
@@ -66,6 +69,9 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | A password change | The session ends, with `You will need to login again.` | The session stays under a new token, and open reset links end | [0059](/decisions/0059-account-forms.md) |
 | A password change | The other session goes to `index.php?error=1`, reading `Invalid username or password.` | The other session just ends | [0018](/decisions/0018-password-reset-by-email.md) ends every session, and the port cannot tell that from an expired one |
 | Home store | `Holograph Emulator`, `HoloCMS` and `Pedobear Seal of Approval`, three stickers on HoloCMS's own host | Left out, since the host is gone | [0061](/decisions/0061-art-in-the-repository.md) |
+| BBCode | Any colour name or hex value | The eight colours of Holo's toolbar, as the plan maps them; any other shows uncoloured | The plan's colours |
+| Home page | `Edit` shows on the home of the signed-in habbo | It shows on the homes of all the user's habbos | [0065](/decisions/0065-owners-edit-all-their-homes.md) |
+| Home page | The tag buttons and the edit icon come from Habbo's servers | The plus, the minus and the wrench of the CMS's own icon sprite | Those servers are gone, and Holo never shipped the images |
 
 # Holo bugs not ported
 
@@ -91,6 +97,8 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | Home store | Previews `Notes` with `hiscores_preview.gif`, a file Holo never shipped | Previews them with Holo's own `note_thumbnail_store.gif` |
 | Home editor | Gives a club skin to anyone who sends its number, though the menu shows it to club members only | Club skins take club |
 | Home page | Writes the profile widget the first time anyone opens a home | Each home starts with it, at the same place |
+| Smilies | Never show, because the code reads `enable-smilies` and the install writes `smilies-enabled` | Show while `features.smilies` is on, as it is by default |
+| Profile tags | The limit of 20 never refuses: it counts at most 20 tags and refuses only above 20 | `homes.maxTags` refuses with Holo's `You've reached the tag limit...` |
 
 # Kept as in Holo, on purpose
 
@@ -157,7 +165,6 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Maintenance | `Administrators can still login through Housekeeping.` | `Administrators can still login on that page.` | The plan: staff sign in with the shared session on the maintenance page |
 | Help Queries | `Delete`, which deletes the query | `Close`, with Holo's rule that it must be picked up first and its texts saying `closed`; the ticket stays as history and leaves the overview | [0063](/decisions/0063-what-housekeeping-can-delete.md) |
 | Help Queries | A `Room ID` column | Not shown | Tickets from inside the hotel wait for the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
-| Help Queries | `Username` links to the home page | The same link, which works once homes are built | [P3](/phases/p3-homes.md) |
 | Alert | Goes to a user, with `Server Alert` for the game | Goes to a habbo, and archived ones count as unknown; the checkbox waits for the game server | Alerts were always per habbo here, and [0013](/decisions/0013-defer-game-server-features.md) |
 | Mass alert | One row per user | One row per habbo that is not archived | Each habbo reads its own feed |
 | Left menu | `Edit User`, `Retrive IP Address`, `Retrive User ID`, `Clone Checker`, `Give User Badge`, `Transaction logs`, `Give Credits / Refunds`, `Unbanning`, `Ban Listing`, `Mass Site/Remote Alert` and `Alert Listing` are links of their own | Their work is on `User Listing`, the habbo's page, `Remote Banning` and `Site/Remote Alert` | The plan's routes |
@@ -236,7 +243,8 @@ veto.
 | `My Friends`, `My Rooms` and the recommended rooms | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | The tags habblet, the news promo and the banners on `/me` | [P4](/phases/p4-community.md) |
 | The wardrobe on `/account/looks` | [P6](/phases/p6-economy.md) |
-| The page behind the header's habbo search, `/home?name=` | The deferred [P3](/phases/p3-homes.md) |
+| The `MY GROUPS` widget and the group badge of the profile widget | [P5](/phases/p5-groups-forum.md) |
+| The online state of the profile widget, which shows offline | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | `Voucher Management` in housekeeping | [P6](/phases/p6-economy.md) |
 | `Chatlogs` and `Online Users` in housekeeping | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | The pages behind Help, Community and Credits | [P7](/phases/p7-help.md), [P4](/phases/p4-community.md), [P6](/phases/p6-economy.md) |

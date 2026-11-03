@@ -260,6 +260,61 @@ func (q *Queries) ListHomeItems(ctx context.Context, homeID int64) ([]HomeItem, 
 	return items, nil
 }
 
+const listHomeItemsToDraw = `-- name: ListHomeItemsToDraw :many
+SELECT home_items.id, home_items.kind, home_items.widget, home_items.skin, home_items.body, home_items.x, home_items.y,
+       home_items.z, CAST(COALESCE(home_store_items.asset, '') AS TEXT) AS asset
+FROM home_items
+LEFT JOIN home_store_items ON home_store_items.id = home_items.home_store_item_id
+WHERE home_items.home_id = ?1
+ORDER BY home_items.z, home_items.id
+`
+
+type ListHomeItemsToDrawRow struct {
+	ID     int64
+	Kind   string
+	Widget sql.NullString
+	Skin   string
+	Body   string
+	X      int64
+	Y      int64
+	Z      int64
+	Asset  string
+}
+
+// Each item with the art of its store item, which a widget does not have.
+func (q *Queries) ListHomeItemsToDraw(ctx context.Context, homeID int64) ([]ListHomeItemsToDrawRow, error) {
+	rows, err := q.db.QueryContext(ctx, listHomeItemsToDraw, homeID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListHomeItemsToDrawRow
+	for rows.Next() {
+		var i ListHomeItemsToDrawRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Kind,
+			&i.Widget,
+			&i.Skin,
+			&i.Body,
+			&i.X,
+			&i.Y,
+			&i.Z,
+			&i.Asset,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const moveHomeItem = `-- name: MoveHomeItem :execrows
 UPDATE home_items SET x = ?1, y = ?2, z = ?3, updated_at = ?4
 WHERE id = ?5 AND home_id = ?6

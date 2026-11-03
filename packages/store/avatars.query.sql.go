@@ -184,6 +184,23 @@ func (q *Queries) GetAvatarByName(ctx context.Context, name string) (Avatar, err
 	return i, err
 }
 
+const getWornAvatarBadge = `-- name: GetWornAvatarBadge :one
+SELECT avatar_id, code, worn, granted_at FROM avatar_badges
+WHERE avatar_id = ?1 AND worn
+`
+
+func (q *Queries) GetWornAvatarBadge(ctx context.Context, avatarID int64) (AvatarBadge, error) {
+	row := q.db.QueryRowContext(ctx, getWornAvatarBadge, avatarID)
+	var i AvatarBadge
+	err := row.Scan(
+		&i.AvatarID,
+		&i.Code,
+		&i.Worn,
+		&i.GrantedAt,
+	)
+	return i, err
+}
+
 const grantAvatarBadge = `-- name: GrantAvatarBadge :execrows
 INSERT INTO avatar_badges (avatar_id, code, worn, granted_at)
 VALUES (?1, ?2, TRUE, ?3)

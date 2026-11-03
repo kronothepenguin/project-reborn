@@ -57,3 +57,12 @@ WHERE id = sqlc.arg(id) AND home_id = sqlc.arg(home_id);
 
 -- name: DeleteHomeItem :execrows
 DELETE FROM home_items WHERE id = sqlc.arg(id) AND home_id = sqlc.arg(home_id);
+
+-- Each item with the art of its store item, which a widget does not have.
+-- name: ListHomeItemsToDraw :many
+SELECT home_items.id, home_items.kind, home_items.widget, home_items.skin, home_items.body, home_items.x, home_items.y,
+       home_items.z, CAST(COALESCE(home_store_items.asset, '') AS TEXT) AS asset
+FROM home_items
+LEFT JOIN home_store_items ON home_store_items.id = home_items.home_store_item_id
+WHERE home_items.home_id = sqlc.arg(home_id)
+ORDER BY home_items.z, home_items.id;

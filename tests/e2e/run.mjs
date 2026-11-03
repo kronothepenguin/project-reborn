@@ -16,6 +16,7 @@ import { startMail } from "./lib/mail.mjs";
 import * as art from "./suites/art.mjs";
 import * as details from "./suites/details.mjs";
 import * as habbos from "./suites/habbos.mjs";
+import * as homes from "./suites/homes.mjs";
 import * as housekeepingAccess from "./suites/housekeeping-access.mjs";
 import * as housekeepingAdmin from "./suites/housekeeping-admin.mjs";
 import * as housekeepingMaintenance from "./suites/housekeeping-maintenance.mjs";
@@ -36,6 +37,7 @@ const suites = {
   looks,
   details,
   habbos,
+  homes,
   maintenance,
   art,
   "housekeeping-access": housekeepingAccess,
