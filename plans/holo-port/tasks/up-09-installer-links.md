@@ -38,8 +38,9 @@ Results (2026-11-03T23:45:29+00:00):
   the administrator reaches the CMS's index through the link and signs in there.
 - The installation test finds the link on the done page and on the status page after installing, and none on the status
   page before.
-- Breaking these on purpose fails a test: a done page or a status page linking elsewhere, and a status page linking
-  before the hotel is installed.
+- Breaking these on purpose fails a test: a done page or a status page linking elsewhere. A status page that reads
+  `site.url` before the hotel is installed logs a warning, which the Go test misses and the `together` browser suite
+  catches through its check of the server logs.
 - The screenshot `installer-done` was read by eye.
 
 # Notes
