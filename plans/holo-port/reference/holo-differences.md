@@ -61,6 +61,7 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | Maintenance | Redirects every page to `maintenance.php` | Serves the page on every address with 503 | The plan |
 | A password change | The session ends, with `You will need to login again.` | The session stays under a new token, and open reset links end | [0059](/decisions/0059-account-forms.md) |
 | A password change | The other session goes to `index.php?error=1`, reading `Invalid username or password.` | The other session just ends | [0018](/decisions/0018-password-reset-by-email.md) ends every session, and the port cannot tell that from an expired one |
+| Home store | `Holograph Emulator`, `HoloCMS` and `Pedobear Seal of Approval`, three stickers on HoloCMS's own host | Left out, since the host is gone | [0061](/decisions/0061-art-in-the-repository.md) |
 
 # Holo bugs not ported
 
@@ -82,6 +83,8 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | Me | Clearing the motto leaves nothing to click | The prompt comes back |
 | Account | The newsletter box on the email form starts unchecked and is ignored | It shows and saves the choice |
 | Texts | `shiney`, `basicly`, `automaticly`, `referal`, `benifits` | Spelled correctly |
+| Home store | Sells `Plaster` under the name `plaster1`, which no rule draws | Left out of the store |
+| Home store | Previews `Notes` with `hiscores_preview.gif`, a file Holo never shipped | Previews them with Holo's own `note_thumbnail_store.gif` |
 
 # Kept as in Holo, on purpose
 

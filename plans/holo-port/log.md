@@ -2,6 +2,9 @@
 
 ## 2026-11-03
 
+- **Done** [p3-02](/tasks/p3-02-store-seed.md): the CMS owns Holo's 20 store categories and 298 items, the installer
+  writes them, and the store queries and home images are in place.
+- **Start** [p3-02](/tasks/p3-02-store-seed.md).
 - **Done** [p3-01](/tasks/p3-01-homes-settings.md): the homes settings and `features.smilies` are declared with Holo's
   values and labelled on the settings forms.
 - **Start** [p3-01](/tasks/p3-01-homes-settings.md).

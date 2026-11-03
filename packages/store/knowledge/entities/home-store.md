@@ -20,7 +20,7 @@ placing an item on a home takes it out again.
 
 # Lifecycle
 
-- The installer seeds Holo's categories and items; housekeeping adds and edits items.
+- The installer writes the CMS's seed of Holo's categories and items, with Holo's ids, and nothing else writes it; housekeeping adds and edits items.
 - A purchase debits the wallet, writes a ledger row and adds to the inventory in one transaction.
 
 # Vocabularies
@@ -28,7 +28,7 @@ placing an item on a home takes it out again.
 | Column | Values |
 |--------|--------|
 | `home_store_items.kind` | `sticker`, `note`, `background` |
-| `home_store_items.asset` | asset key of the re-hosted image |
+| `home_store_items.asset` | the image's path under the CMS's public files, such as `c_images/stickers/trax_sfx.gif` |
 
 # Relations
 
@@ -39,3 +39,7 @@ placing an item on a home takes it out again.
 - [home_store_categories](/tables/home_store_categories.md)
 - [home_store_items](/tables/home_store_items.md)
 - [home_inventory](/tables/home_inventory.md)
+
+# Queries
+
+- [home-store.query.sql](/queries/home-store.md)

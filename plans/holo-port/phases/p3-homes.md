@@ -40,7 +40,7 @@ Every habbo has a home page that guests can read and the owner can decorate with
 # Tasks
 
 - [p3-01 Declare the homes settings](/tasks/p3-01-homes-settings.md) — done
-- [p3-02 Seed the home store](/tasks/p3-02-store-seed.md) — todo
+- [p3-02 Seed the home store](/tasks/p3-02-store-seed.md) — done
 - [p3-03 Turn BBCode into HTML](/tasks/p3-03-bbcode.md) — todo
 - [p3-04 Show a home](/tasks/p3-04-home-page.md) — todo
 - [p3-05 Edit profile tags](/tasks/p3-05-profile-tags.md) — todo

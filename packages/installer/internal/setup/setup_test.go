@@ -251,6 +251,23 @@ func TestCreateAdministrator(t *testing.T) {
 
 // Another program may have created the database and taken registrations before
 // the installer first runs. A registered habbo is no administrator.
+// The seed belongs to the CMS, and the installer is the one place that writes it.
+func TestCreateAdministratorWritesTheHomeStore(t *testing.T) {
+	s := configure(t)
+	if err := s.CreateAdministrator(t.Context(), testAdministrator()); err != nil {
+		t.Fatalf("CreateAdministrator: %v", err)
+	}
+	installation, _ := s.Current()
+	var categories, items int
+	if err := installation.DB.QueryRowContext(t.Context(),
+		`SELECT (SELECT COUNT(*) FROM home_store_categories), (SELECT COUNT(*) FROM home_store_items)`).Scan(&categories, &items); err != nil {
+		t.Fatal(err)
+	}
+	if categories != 20 || items != 298 {
+		t.Errorf("the store holds %d categories and %d items, want 20 and 298", categories, items)
+	}
+}
+
 func TestCreateAdministratorOnADatabaseWithUsers(t *testing.T) {
 	s := configure(t)
 	installation, _ := s.Current()

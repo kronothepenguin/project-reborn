@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/cms/seed"
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
@@ -143,9 +144,9 @@ type Administrator struct {
 }
 
 // CreateAdministrator creates, in one transaction, the administrator's user,
-// credentials and habbo with its profile, home and wallet, and Holo's ranks as
-// access groups. The administrator joins Administrator, which holds every
-// attribute and shows the habbo on the staff page.
+// credentials and habbo with its profile, home and wallet, Holo's ranks as access
+// groups, and the CMS's seed. The administrator joins Administrator, which holds
+// every attribute and shows the habbo on the staff page.
 func (s *State) CreateAdministrator(ctx context.Context, admin Administrator) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -196,6 +197,9 @@ func createAdministrator(ctx context.Context, q *store.Queries, admin Administra
 	}
 	administrators, err := createRanks(ctx, q, now)
 	if err != nil {
+		return err
+	}
+	if err := seed.HomeStore(ctx, q); err != nil {
 		return err
 	}
 	return q.AddAccessGroupMember(ctx, store.AddAccessGroupMemberParams{
