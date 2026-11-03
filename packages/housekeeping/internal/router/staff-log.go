@@ -38,6 +38,7 @@ const (
 	actionHomeStoreCreate       = "homeStore.create"
 	actionHomeStoreUpdate       = "homeStore.update"
 	actionDatabaseUpdate        = "database.update"
+	actionConfigUpdate          = "config.update"
 )
 
 // staffLog is what a mutation records about itself; the actor, the address and

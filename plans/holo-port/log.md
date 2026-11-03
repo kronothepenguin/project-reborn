@@ -2,6 +2,9 @@
 
 ## 2026-11-03
 
+- **Done** [up-08](/tasks/up-08-config-keys.md): housekeeping's update page offers the keys a release adds to
+  config.json, with their defaults, and rewrites the file without the keys nothing reads.
+- **Start** [up-08](/tasks/up-08-config-keys.md).
 - **Done** [up-07](/tasks/up-07-automatic-updates.md): the CMS and housekeeping apply the updates sign-in needs when
   they start, after a copy, show an error page when that fails, and two tests keep sign-in working on every older
   database.

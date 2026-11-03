@@ -22,6 +22,7 @@ const everyRoute = [
   ["GET", "/logs"],
   ["GET", "/updates"],
   ["POST", "/updates"],
+  ["POST", "/updates/config"],
   ["GET", "/alerts"],
   ["POST", "/alerts"],
   ["GET", "/bans"],
@@ -164,6 +165,7 @@ export default async function (t) {
       "/access-groups/1",
       "/users/1/access-groups",
       "/updates",
+      "/updates/config",
     ]) {
       check(
         `a helper's POST ${path} gets 403`,

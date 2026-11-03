@@ -1,6 +1,7 @@
 package router
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
@@ -16,14 +18,46 @@ import (
 const (
 	updatesApplied = "The updates were applied. A copy of the database from before them was saved beside it."
 	updateFailed   = "Update %s failed: %v. The updates before it were applied, and the copy of the database from before them is %s."
+	configSaved    = "config.json was saved. The new values apply when the programs restart."
+	configInvalid  = "The value of %s is not a JSON value."
+	configRefused  = "config.json was not saved: %v"
 )
 
 type updatesPage struct {
 	chrome
 	Waiting []updateRow
 	Applied []updateRow
+	NewKeys []configKey
+	OldKeys []configKey
 	Message string
 	Error   string
+}
+
+// configKey is a key of config.json as its field shows it: a string as it is,
+// and any other value as JSON.
+type configKey struct {
+	Path  string
+	Value string
+}
+
+func fieldText(value json.RawMessage) string {
+	var text string
+	if json.Unmarshal(value, &text) == nil {
+		return text
+	}
+	return string(value)
+}
+
+// fieldValue reads the field of a key whose default is def, keeping the type
+// the default has: the text itself for a string, a JSON value otherwise.
+func fieldValue(def json.RawMessage, text string) (json.RawMessage, bool) {
+	var s string
+	if json.Unmarshal(def, &s) == nil {
+		value, err := json.Marshal(text)
+		return value, err == nil
+	}
+	text = strings.TrimSpace(text)
+	return json.RawMessage(text), json.Valid([]byte(text))
 }
 
 type updateRow struct {
@@ -45,8 +79,11 @@ func (r *Router) HandleUpdatesView(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
-	if req.URL.Query().Has("applied") {
+	switch query := req.URL.Query(); {
+	case query.Has("applied"):
 		page.Message = updatesApplied
+	case query.Has("config"):
+		page.Message = configSaved
 	}
 	astro.WriteTemplate(w, r.deps.Resolver, "updates.html", page)
 }
@@ -66,7 +103,18 @@ func (r *Router) newUpdatesPage(req *http.Request) (updatesPage, error) {
 		return updatesPage{}, err
 	}
 
+	missing, unused, err := config.Differences()
+	if err != nil {
+		return updatesPage{}, err
+	}
+
 	page := updatesPage{chrome: r.chrome(req)}
+	for _, key := range missing {
+		page.NewKeys = append(page.NewKeys, configKey{Path: key.Path, Value: fieldText(key.Value)})
+	}
+	for _, key := range unused {
+		page.OldKeys = append(page.OldKeys, configKey{Path: key.Path, Value: string(key.Value)})
+	}
 	for _, update := range waiting {
 		page.Waiting = append(page.Waiting, updateRow{Number: updateNumber(update.Version, update.Name), Title: update.Title})
 	}
@@ -190,4 +238,66 @@ func (r *Router) UpdateFailed(next http.Handler) http.Handler {
 		w.WriteHeader(http.StatusServiceUnavailable)
 		astro.WriteTemplate(w, r.deps.Resolver, "update-failed.html", updateFailedPage{SiteName: settings.GetString("site.name")})
 	})
+}
+
+// HandleUpdatesConfig handles POST /housekeeping/updates/config: it writes the
+// keys a release added to config.json, with the values posted, and drops the
+// keys nothing reads. The keys already there stay as they are.
+func (r *Router) HandleUpdatesConfig(w http.ResponseWriter, req *http.Request) {
+	missing, unused, err := config.Differences()
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
+	if len(missing) == 0 && len(unused) == 0 {
+		http.Redirect(w, req, "/housekeeping/updates", http.StatusSeeOther)
+		return
+	}
+	values := make(map[string]json.RawMessage, len(missing))
+	var added, removed []string
+	for _, key := range missing {
+		value, ok := fieldValue(key.Value, req.PostFormValue("key."+key.Path))
+		if !ok {
+			r.refuseConfig(w, req, fmt.Sprintf(configInvalid, key.Path))
+			return
+		}
+		values[key.Path] = value
+		added = append(added, key.Path)
+	}
+	for _, key := range unused {
+		removed = append(removed, key.Path)
+	}
+	if err := config.Rewrite(values); err != nil {
+		r.refuseConfig(w, req, fmt.Sprintf(configRefused, err))
+		return
+	}
+
+	var detail []string
+	if len(added) > 0 {
+		detail = append(detail, "added "+strings.Join(added, ", "))
+	}
+	if len(removed) > 0 {
+		detail = append(detail, "removed "+strings.Join(removed, ", "))
+	}
+	if err := writeLog(req, r.deps.Queries, staffLog{action: actionConfigUpdate, detail: strings.Join(detail, "; ")}); err != nil {
+		r.fail(w, err)
+		return
+	}
+	http.Redirect(w, req, "/housekeeping/updates?config=1", http.StatusSeeOther)
+}
+
+func (r *Router) refuseConfig(w http.ResponseWriter, req *http.Request, message string) {
+	page, err := r.newUpdatesPage(req)
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
+	for i, key := range page.NewKeys {
+		if req.PostForm.Has("key." + key.Path) {
+			page.NewKeys[i].Value = req.PostFormValue("key." + key.Path)
+		}
+	}
+	page.Error = message
+	w.WriteHeader(http.StatusUnprocessableEntity)
+	astro.WriteTemplate(w, r.deps.Resolver, "updates.html", page)
 }

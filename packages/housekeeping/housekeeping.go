@@ -110,6 +110,7 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	}
 	mux.Handle("GET /housekeeping/updates", updating(r.HandleUpdatesView))
 	mux.Handle("POST /housekeeping/updates", updating(r.HandleUpdatesApply))
+	mux.Handle("POST /housekeeping/updates/config", updating(r.HandleUpdatesConfig))
 
 	mux.Handle("GET /housekeeping/alerts", holding(auth.HousekeepingAlerts, r.HandleAlertsView))
 	mux.Handle("POST /housekeeping/alerts", holding(auth.HousekeepingAlerts, r.HandleAlertsSend))

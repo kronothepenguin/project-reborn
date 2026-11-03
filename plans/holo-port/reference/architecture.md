@@ -2,7 +2,7 @@
 type: Reference
 title: How the programs work together
 description: Which programs make up Project Reborn, what each one owns, and how they interact when they run alone and when they run together in one process.
-timestamp: 2026-11-01T18:13:48+00:00
+timestamp: 2026-11-03T23:38:50+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [architecture]
 ---
@@ -25,7 +25,7 @@ Packages hold the code of each program, and `apps/<name>` is a thin runner aroun
 | --- | --- | --- | --- |
 | Installer | Creates it | Creates it and its first rows | Writes once, and is not expected to run again |
 | CMS | Reads it, and writes the defaults when it is missing | Reads and writes its own tables | Only reads |
-| Housekeeping | Reads it | Reads and writes its own tables | The single writer ([0040](/decisions/0040-housekeeping-writes-settings.md)) |
+| Housekeeping | Reads it, and writes a release's new keys when an administrator saves them ([0070](/decisions/0070-housekeeping-applies-updates.md)) | Reads and writes its own tables, and applies the updates | The single writer ([0040](/decisions/0040-housekeeping-writes-settings.md)) |
 
 Nobody is expected to edit the database by hand.
 

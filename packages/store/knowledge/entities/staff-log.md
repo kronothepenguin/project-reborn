@@ -58,6 +58,7 @@ many actions).
 | `homeStore.create` | the item's name and price, as Holo logged it: `<name> worth <price> credits` | none |
 | `homeStore.update` | the item's name and id, and the fields that changed, never their values | none |
 | `database.update` | each update applied, the one that failed with its error, and the path of the copy saved first | none |
+| `config.update` | the keys added to config.json and the keys removed from it, never their values | none |
 
 # Relations
 

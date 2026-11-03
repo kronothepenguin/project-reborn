@@ -1,5 +1,5 @@
 ---
-import { Table } from "@project-reborn/components";
+import { Input, Table } from "@project-reborn/components";
 import Box from "../components/box.astro";
 import Message from "../components/message.astro";
 import Submit from "../components/submit.astro";
@@ -37,6 +37,39 @@ import Housekeeping from "../layouts/housekeeping.astro";
         [[ end ]]
       </Box>
     </form>
+    [[ if or .NewKeys .OldKeys ]]
+    <form method="post" action="/housekeeping/updates/config">
+      <Box title="config.json">
+        <Table variant="form">
+          <tbody>
+            [[ range .NewKeys ]]
+            <tr>
+              <td class="w-2/5">
+                <label for="key-[[ .Path ]]"><strong>[[ .Path ]]</strong></label>
+                <div class="text-neutral-500">New in this release, with its default</div>
+              </td>
+              <td class="w-3/5 [&>input]:w-full">
+                <Input id="key-[[ .Path ]]" name="key.[[ .Path ]]" value="[[ .Value ]]" variant="border" />
+              </td>
+            </tr>
+            [[ end ]] [[ range .OldKeys ]]
+            <tr>
+              <td class="w-2/5">
+                <strong>[[ .Path ]]</strong>
+                <div class="text-neutral-500">Nothing reads it any more, so saving removes it</div>
+              </td>
+              <td class="w-3/5 font-mono wrap-anywhere">[[ .Value ]]</td>
+            </tr>
+            [[ end ]]
+          </tbody>
+        </Table>
+        <div class="flex items-center justify-between gap-3 p-1">
+          <p>The keys already in config.json stay as they are. The new values apply when the programs restart.</p>
+          <Submit>Save config.json</Submit>
+        </div>
+      </Box>
+    </form>
+    [[ end ]]
     <Box title="Applied Updates" color="gold">
       <Table>
         <thead>
