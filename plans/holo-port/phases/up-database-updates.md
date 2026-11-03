@@ -54,7 +54,7 @@ Out of scope:
 - [up-01 Apply update files](/tasks/up-01-update-runner.md) — done
 - [up-02 Start the updates from a baseline](/tasks/up-02-baseline.md) — done
 - [up-03 Turn the seeds into updates](/tasks/up-03-seed-updates.md) — done
-- [up-04 Add the database attribute](/tasks/up-04-database-attribute.md) — todo
+- [up-04 Add the database attribute](/tasks/up-04-database-attribute.md) — done
 - [up-05 Build housekeeping's update page](/tasks/up-05-update-page.md) — todo
 - [up-06 Close the hotel while updates wait](/tasks/up-06-close-while-waiting.md) — todo
 - [up-07 Apply automatic updates at start](/tasks/up-07-automatic-updates.md) — todo

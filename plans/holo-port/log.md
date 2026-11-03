@@ -2,6 +2,9 @@
 
 ## 2026-11-03
 
+- **Done** [up-04](/tasks/up-04-database-attribute.md): housekeeping.database joins the catalogue, and
+  0004-database-attribute.sql gives it to every group and user that manages access.
+- **Start** [up-04](/tasks/up-04-database-attribute.md).
 - **Done** [up-03](/tasks/up-03-seed-updates.md): Holo's home store and ranks reach every database through
   0002-home-store.sql and 0003-ranks.sql, and the installer joins the administrator to the seeded Administrator.
 - **Start** [up-03](/tasks/up-03-seed-updates.md).

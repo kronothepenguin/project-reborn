@@ -13,8 +13,8 @@ import (
 
 func TestCatalogue(t *testing.T) {
 	entries := Catalogue()
-	if len(entries) != 19 {
-		t.Errorf("the catalogue has %d attributes, want the 18 of decision 0015 and housekeeping.usersPrivate", len(entries))
+	if len(entries) != 20 {
+		t.Errorf("the catalogue has %d attributes, want the 18 of decision 0015, housekeeping.usersPrivate and housekeeping.database", len(entries))
 	}
 	seen := make(map[Attribute]bool)
 	for _, entry := range entries {
@@ -210,5 +210,38 @@ func (f *fixture) join(t *testing.T, groupID, userID int64) {
 	err := store.New(f.db).AddAccessGroupMember(t.Context(), store.AddAccessGroupMemberParams{AccessGroupID: groupID, UserID: userID, GrantedAt: testNow})
 	if err != nil {
 		t.Fatalf("AddAccessGroupMember: %v", err)
+	}
+}
+
+// A new attribute comes with an update that grants it to the groups managing
+// access, so a new hotel's administrator holds every attribute.
+func TestTheGroupsManagingAccessHoldEveryAttribute(t *testing.T) {
+	f := newFixture(t)
+	q := store.New(f.db)
+	groups, err := q.ListAccessGroups(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	managers := 0
+	for _, group := range groups {
+		attributes, err := q.ListAccessGroupAttributes(t.Context(), group.ID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !slices.Contains(attributes, string(HousekeepingAccessGroups)) {
+			if slices.Contains(attributes, string(HousekeepingDatabase)) {
+				t.Errorf("%s holds %s without managing access", group.Name, HousekeepingDatabase)
+			}
+			continue
+		}
+		managers++
+		for _, entry := range Catalogue() {
+			if !slices.Contains(attributes, string(entry.Attribute)) {
+				t.Errorf("%s manages access without %s: add an update that grants it", group.Name, entry.Attribute)
+			}
+		}
+	}
+	if managers == 0 {
+		t.Error("no group of a new hotel manages access")
 	}
 }

@@ -3,7 +3,7 @@ type: Entity
 title: Access group
 description: An admin-defined group of users that grants attributes; code checks attributes, never group names.
 tags: [store, entity, access]
-timestamp: 2026-11-03T21:54:04+00:00
+timestamp: 2026-11-03T22:14:59+00:00
 ---
 
 # Definition
@@ -52,6 +52,7 @@ it to. Attributes cover security and the permission to modify things; club perks
 | `housekeeping.alertsBroadcast` | alerting everyone |
 | `housekeeping.help` | handling help tickets |
 | `housekeeping.logs` | reading the staff log |
+| `housekeeping.database` | applying database updates and config.json changes |
 | `site.maintenanceBypass` | using the site during maintenance |
 | `forum.edit` | editing, deleting, locking or pinning any thread or post |
 | `homes.staffItems` | the staff store category and the staff skin |

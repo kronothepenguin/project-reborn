@@ -120,3 +120,39 @@ func TestAStoreAnAdministratorChangedKeepsItsRows(t *testing.T) {
 		t.Errorf("%d categories, want the other 19 added", n)
 	}
 }
+
+func TestTheDatabaseAttributeReachesThoseWhoManageAccess(t *testing.T) {
+	db := baselineDB(t)
+	ctx := t.Context()
+	userID, _ := insertHabbo(t, db, "keeper@example.com", "Keeper")
+	playerID, _ := insertHabbo(t, db, "player@example.com", "Player")
+	for _, statement := range []string{
+		`INSERT INTO access_groups (id, name, level, created_at, updated_at) VALUES (1, 'Owners', 7, '2026-11-03 21:00:00+00:00', '2026-11-03 21:00:00+00:00')`,
+		`INSERT INTO access_groups (id, name, level, created_at, updated_at) VALUES (2, 'Helpers', 3, '2026-11-03 21:00:00+00:00', '2026-11-03 21:00:00+00:00')`,
+		`INSERT INTO access_group_attributes (access_group_id, attribute) VALUES (1, 'housekeeping.accessGroups'), (2, 'housekeeping.access')`,
+	} {
+		if _, err := db.ExecContext(ctx, statement); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for id, attribute := range map[int64]string{userID: "housekeeping.accessGroups", playerID: "housekeeping.news"} {
+		if _, err := db.ExecContext(ctx, `INSERT INTO user_attributes (user_id, attribute, granted_at) VALUES (?, ?, ?)`, id, attribute, testNow); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	applyEveryUpdate(t, db)
+	q := New(db)
+	if got := must(q.ListAccessGroupAttributes(ctx, 1)); !slices.Contains(got, "housekeeping.database") {
+		t.Errorf("Owners holds %v, want housekeeping.database", got)
+	}
+	if got := must(q.ListAccessGroupAttributes(ctx, 2)); slices.Contains(got, "housekeeping.database") {
+		t.Errorf("Helpers holds %v, want no housekeeping.database", got)
+	}
+	if got := must(q.ListDirectUserAttributes(ctx, userID)); !slices.Contains(got, "housekeeping.database") {
+		t.Errorf("Keeper holds %v directly, want housekeeping.database", got)
+	}
+	if got := must(q.ListDirectUserAttributes(ctx, playerID)); slices.Contains(got, "housekeeping.database") {
+		t.Errorf("Player holds %v directly, want no housekeeping.database", got)
+	}
+}
