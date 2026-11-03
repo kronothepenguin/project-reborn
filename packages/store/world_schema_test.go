@@ -178,14 +178,14 @@ func TestStoreItemsInUseCannotBeDeleted(t *testing.T) {
 	if _, err := db.ExecContext(ctx, `INSERT INTO home_store_categories (id, name) VALUES (1, 'General')`); err != nil {
 		t.Fatalf("insert category: %v", err)
 	}
-	if _, err := db.ExecContext(ctx, `INSERT INTO home_store_items (id, home_store_category_id, kind, asset, name, price) VALUES (1, 1, 'sticker', 'sticker_star', 'Star', 2)`); err != nil {
+	if _, err := db.ExecContext(ctx, `INSERT INTO home_store_items (id, home_store_category_id, kind, asset, name, price) VALUES (1000, 1, 'sticker', 'sticker_star', 'Star', 2)`); err != nil {
 		t.Fatalf("insert item: %v", err)
 	}
-	if _, err := db.ExecContext(ctx, `INSERT INTO home_inventory (user_id, home_store_item_id, quantity) VALUES (?, 1, 3)`, userID); err != nil {
+	if _, err := db.ExecContext(ctx, `INSERT INTO home_inventory (user_id, home_store_item_id, quantity) VALUES (?, 1000, 3)`, userID); err != nil {
 		t.Fatalf("insert inventory: %v", err)
 	}
 
-	_, err := db.ExecContext(ctx, `DELETE FROM home_store_items WHERE id = 1`)
+	_, err := db.ExecContext(ctx, `DELETE FROM home_store_items WHERE id = 1000`)
 	if !IsForeignKey(err) {
 		t.Fatalf("deleting an owned store item: err = %v, want a foreign-key error", err)
 	}

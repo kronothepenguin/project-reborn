@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
-	"github.com/kronothepenguin/project-reborn/packages/cms/seed"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
@@ -27,13 +26,6 @@ var storeRow = regexp.MustCompile(`\{ID:(\d+) Asset:`)
 
 func storeItemURL(id int64) string {
 	return fmt.Sprintf("/housekeeping/home-store/%d", id)
-}
-
-func seedStore(t *testing.T, db *sql.DB) {
-	t.Helper()
-	if err := seed.HomeStore(t.Context(), store.New(db)); err != nil {
-		t.Fatalf("seed.HomeStore: %v", err)
-	}
 }
 
 func keeper(t *testing.T, db *sql.DB) (int64, *http.Cookie) {
@@ -105,7 +97,6 @@ func rowsOf(body string) []string {
 
 func TestTheHomeStoreTakesTheAttribute(t *testing.T) {
 	db, mux := newSite(t)
-	seedStore(t, db)
 	_, cookie := ranked(t, db, "Writer", 7, auth.HousekeepingAccess, auth.HousekeepingSettings, auth.HousekeepingNews, auth.HousekeepingLogs)
 	before := storeItem(t, db, 2)
 	changed := editForm(before)
@@ -129,7 +120,6 @@ func TestTheHomeStoreTakesTheAttribute(t *testing.T) {
 
 func TestCreatingASticker(t *testing.T) {
 	db, mux := newSite(t)
-	seedStore(t, db)
 	actor, cookie := keeper(t, db)
 
 	rec := serve(mux, "POST", "/housekeeping/home-store", cookie, createForm(sticker, "3", "Shining Star", "5"))
@@ -150,7 +140,6 @@ func TestCreatingASticker(t *testing.T) {
 // Holo made every item a sticker, even in its Backgrounds category.
 func TestTheKindComesFromTheFolder(t *testing.T) {
 	db, mux := newSite(t)
-	seedStore(t, db)
 	_, cookie := keeper(t, db)
 
 	for _, c := range []struct {
@@ -175,7 +164,6 @@ func TestTheKindComesFromTheFolder(t *testing.T) {
 
 func TestTheNameIsTrimmedAndAPriceCanBeZero(t *testing.T) {
 	db, mux := newSite(t)
-	seedStore(t, db)
 	_, cookie := keeper(t, db)
 
 	wantRedirect(t, serve(mux, "POST", "/housekeeping/home-store", cookie, createForm(sticker, "19", "  Free Star \t", "0")), "/housekeeping/home-store?created=1")
@@ -192,7 +180,6 @@ func TestTheNameIsTrimmedAndAPriceCanBeZero(t *testing.T) {
 
 func TestABadItemIsRefused(t *testing.T) {
 	db, mux := newSite(t)
-	seedStore(t, db)
 	_, cookie := keeper(t, db)
 
 	for _, c := range []struct {
@@ -234,7 +221,6 @@ func TestABadItemIsRefused(t *testing.T) {
 
 func TestARefusedItemKeepsWhatWasTyped(t *testing.T) {
 	db, mux := newSite(t)
-	seedStore(t, db)
 	_, cookie := keeper(t, db)
 
 	rec := serve(mux, "POST", "/housekeeping/home-store", cookie, createForm("c_images/stickers/nope.gif", "27", " Typed ", "12"))
@@ -245,7 +231,6 @@ func TestARefusedItemKeepsWhatWasTyped(t *testing.T) {
 
 func TestEditingAnItem(t *testing.T) {
 	db, mux := newSite(t)
-	seedStore(t, db)
 	actor, cookie := keeper(t, db)
 
 	form := url.Values{"name": {" Trax Sound "}, "category": {"19"}, "price": {"4"}, "quantity": {"3"}, "enabled": {"1"}}
@@ -263,7 +248,6 @@ func TestEditingAnItem(t *testing.T) {
 
 func TestStoppingTheSalesOfAnItem(t *testing.T) {
 	db, mux := newSite(t)
-	seedStore(t, db)
 	actor, cookie := keeper(t, db)
 	q := store.New(db)
 
@@ -300,7 +284,6 @@ func TestStoppingTheSalesOfAnItem(t *testing.T) {
 
 func TestSavingAnItemUnchangedLogsNothing(t *testing.T) {
 	db, mux := newSite(t)
-	seedStore(t, db)
 	_, cookie := keeper(t, db)
 	before := storeItem(t, db, 2)
 
@@ -315,7 +298,6 @@ func TestSavingAnItemUnchangedLogsNothing(t *testing.T) {
 
 func TestABadEditIsRefused(t *testing.T) {
 	db, mux := newSite(t)
-	seedStore(t, db)
 	_, cookie := keeper(t, db)
 	before := storeItem(t, db, 2)
 
@@ -360,7 +342,6 @@ func TestABadEditIsRefused(t *testing.T) {
 // The row of a refused edit shows what was typed, on the page its form came from.
 func TestARefusedEditKeepsWhatWasTyped(t *testing.T) {
 	db, mux := newSite(t)
-	seedStore(t, db)
 	_, cookie := keeper(t, db)
 	item := storeItems(t, db)[250]
 
@@ -375,7 +356,6 @@ func TestARefusedEditKeepsWhatWasTyped(t *testing.T) {
 
 func TestEditingAnItemThatDoesNotExistIsNotFound(t *testing.T) {
 	db, mux := newSite(t)
-	seedStore(t, db)
 	_, cookie := keeper(t, db)
 	form := url.Values{"name": {"Ghost"}, "category": {"3"}, "price": {"1"}, "quantity": {"1"}}
 
@@ -388,7 +368,6 @@ func TestEditingAnItemThatDoesNotExistIsNotFound(t *testing.T) {
 
 func TestTheStoreComesInPages(t *testing.T) {
 	db, mux := newSite(t)
-	seedStore(t, db)
 	_, cookie := keeper(t, db)
 	items := storeItems(t, db)
 	idsOf := func(items []store.HomeStoreItem) []string {
@@ -424,7 +403,6 @@ func TestTheStoreComesInPages(t *testing.T) {
 
 func TestThePageListsWhatTheFormsNeed(t *testing.T) {
 	db, mux := newSite(t)
-	seedStore(t, db)
 	_, cookie := keeper(t, db)
 
 	rec := serve(mux, "GET", "/housekeeping/home-store", cookie, nil)
@@ -438,9 +416,14 @@ func TestThePageListsWhatTheFormsNeed(t *testing.T) {
 	}
 }
 
-func TestTheStoreWorksOnAnEmptyDatabase(t *testing.T) {
+func TestTheStoreWorksWithoutCategories(t *testing.T) {
 	db, mux := newSite(t)
 	_, cookie := keeper(t, db)
+	for _, statement := range []string{"DELETE FROM home_store_items", "DELETE FROM home_store_categories"} {
+		if _, err := db.ExecContext(t.Context(), statement); err != nil {
+			t.Fatal(err)
+		}
+	}
 
 	wantPage(t, serve(mux, "GET", "/housekeeping/home-store", cookie, nil), http.StatusOK, "Categories:[] Items:[] Page:1 Older:0 Newer:0")
 	rec := serve(mux, "POST", "/housekeeping/home-store", cookie, createForm(sticker, "3", "Shining Star", "5"))

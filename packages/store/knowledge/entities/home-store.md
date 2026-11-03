@@ -3,7 +3,7 @@ type: Entity
 title: Home store
 description: The catalogue of stickers, note packs and backgrounds for homes, and each user's inventory of bought items.
 tags: [store, entity, homes]
-timestamp: 2026-11-02T01:44:57+00:00
+timestamp: 2026-11-03T21:54:04+00:00
 ---
 
 # Definition
@@ -20,7 +20,7 @@ placing an item on a home takes it out again.
 
 # Lifecycle
 
-- The installer writes the CMS's seed of Holo's categories and items, with Holo's ids, and nothing else writes it; housekeeping adds and edits items.
+- The update [0002-home-store.sql](/migrations/0002-home-store.md) writes Holo's categories and items with Holo's ids, keeping rows already there; housekeeping adds and edits items.
 - A purchase debits the wallet, writes a `store` ledger row and adds to the inventory in one transaction.
 - A background is bought once and stays in the inventory, however many homes show it
   ([0064](/decisions/0064-backgrounds-are-unlocks.md)).

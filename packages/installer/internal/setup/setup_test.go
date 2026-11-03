@@ -130,7 +130,7 @@ func TestConfigureLeavesNoConfigWhenTheDatabaseCannotOpen(t *testing.T) {
 	}
 }
 
-func TestCreateAdministratorSeedsHolosRanks(t *testing.T) {
+func TestAnInstalledHotelHasHolosRanks(t *testing.T) {
 	s := configure(t)
 	if err := s.CreateAdministrator(t.Context(), testAdministrator()); err != nil {
 		t.Fatalf("CreateAdministrator: %v", err)
@@ -249,10 +249,8 @@ func TestCreateAdministrator(t *testing.T) {
 	}
 }
 
-// Another program may have created the database and taken registrations before
-// the installer first runs. A registered habbo is no administrator.
-// The seed belongs to the CMS, and the installer is the one place that writes it.
-func TestCreateAdministratorWritesTheHomeStore(t *testing.T) {
+// The updates write the store when the installer creates the database.
+func TestAnInstalledHotelHasTheHomeStore(t *testing.T) {
 	s := configure(t)
 	if err := s.CreateAdministrator(t.Context(), testAdministrator()); err != nil {
 		t.Fatalf("CreateAdministrator: %v", err)
@@ -268,6 +266,44 @@ func TestCreateAdministratorWritesTheHomeStore(t *testing.T) {
 	}
 }
 
+func TestCreateAdministratorJoinsTheHighestGroupThatManagesAccess(t *testing.T) {
+	s := configure(t)
+	installation, _ := s.Current()
+	for _, statement := range []string{
+		`INSERT INTO access_groups (id, name, level, created_at, updated_at) VALUES (40, 'Deputies', 2, '2026-11-03 21:00:00+00:00', '2026-11-03 21:00:00+00:00')`,
+		`INSERT INTO access_group_attributes (access_group_id, attribute) VALUES (40, 'housekeeping.accessGroups')`,
+	} {
+		if _, err := installation.DB.ExecContext(t.Context(), statement); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := s.CreateAdministrator(t.Context(), testAdministrator()); err != nil {
+		t.Fatalf("CreateAdministrator: %v", err)
+	}
+	var name string
+	if err := installation.DB.QueryRowContext(t.Context(),
+		`SELECT access_groups.name FROM access_group_members JOIN access_groups ON access_groups.id = access_group_members.access_group_id`).Scan(&name); err != nil || name != "Administrator" {
+		t.Errorf("the administrator joined %q, %v, want Administrator", name, err)
+	}
+}
+
+func TestCreateAdministratorNeedsAGroupForIt(t *testing.T) {
+	s := configure(t)
+	installation, _ := s.Current()
+	if _, err := installation.DB.ExecContext(t.Context(), `DELETE FROM access_groups`); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.CreateAdministrator(t.Context(), testAdministrator()); !errors.Is(err, ErrNoGroup) {
+		t.Fatalf("CreateAdministrator = %v, want ErrNoGroup", err)
+	}
+	var users int
+	if err := installation.DB.QueryRowContext(t.Context(), `SELECT COUNT(*) FROM users`).Scan(&users); err != nil || users != 0 {
+		t.Errorf("%d users after the refusal, %v, want none", users, err)
+	}
+}
+
+// Another program may have created the database and taken registrations before
+// the installer first runs. A registered habbo is no administrator.
 func TestCreateAdministratorOnADatabaseWithUsers(t *testing.T) {
 	s := configure(t)
 	installation, _ := s.Current()

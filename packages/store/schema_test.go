@@ -158,8 +158,8 @@ func TestDeletingAUserDeletesTheirIdentityRows(t *testing.T) {
 	}{
 		{`INSERT INTO credentials (user_id, password_hash, updated_at) VALUES (?, 'hash', ?)`, []any{userID, now}},
 		{`INSERT INTO sessions (id, user_id, avatar_id, ip, user_agent, created_at, last_seen_at, expires_at) VALUES ('digest', ?, ?, '127.0.0.1', 'test', ?, ?, ?)`, []any{userID, avatarID, now, now, now.Add(time.Hour)}},
-		{`INSERT INTO access_groups (id, name, created_at, updated_at) VALUES (1, 'Administrators', ?, ?)`, []any{now, now}},
-		{`INSERT INTO access_group_members (access_group_id, user_id, display_avatar_id, granted_at) VALUES (1, ?, ?, ?)`, []any{userID, avatarID, now}},
+		{`INSERT INTO access_groups (id, name, created_at, updated_at) VALUES (100, 'Testers', ?, ?)`, []any{now, now}},
+		{`INSERT INTO access_group_members (access_group_id, user_id, display_avatar_id, granted_at) VALUES (100, ?, ?, ?)`, []any{userID, avatarID, now}},
 	} {
 		if _, err := db.ExecContext(ctx, stmt.query, stmt.args...); err != nil {
 			t.Fatalf("%s: %v", stmt.query, err)
@@ -175,7 +175,7 @@ func TestDeletingAUserDeletesTheirIdentityRows(t *testing.T) {
 			t.Errorf("%s still has %d rows of the deleted user", table, n)
 		}
 	}
-	if n := countRows(t, db, `SELECT COUNT(*) FROM access_groups`); n != 1 {
+	if n := countRows(t, db, `SELECT COUNT(*) FROM access_groups WHERE id = 100`); n != 1 {
 		t.Errorf("access_groups has %d rows, want the group to survive its member", n)
 	}
 }
@@ -187,10 +187,10 @@ func TestDeletingADisplayHabboKeepsTheMembership(t *testing.T) {
 	staffID := insertAvatar(t, db, userID, "KronoStaff")
 	now := time.Now().UTC()
 
-	if _, err := db.ExecContext(ctx, `INSERT INTO access_groups (id, name, created_at, updated_at) VALUES (1, 'Moderators', ?, ?)`, now, now); err != nil {
+	if _, err := db.ExecContext(ctx, `INSERT INTO access_groups (id, name, created_at, updated_at) VALUES (100, 'Testers', ?, ?)`, now, now); err != nil {
 		t.Fatalf("insert access group: %v", err)
 	}
-	if _, err := db.ExecContext(ctx, `INSERT INTO access_group_members (access_group_id, user_id, display_avatar_id, granted_at) VALUES (1, ?, ?, ?)`, userID, staffID, now); err != nil {
+	if _, err := db.ExecContext(ctx, `INSERT INTO access_group_members (access_group_id, user_id, display_avatar_id, granted_at) VALUES (100, ?, ?, ?)`, userID, staffID, now); err != nil {
 		t.Fatalf("insert membership: %v", err)
 	}
 
@@ -199,7 +199,7 @@ func TestDeletingADisplayHabboKeepsTheMembership(t *testing.T) {
 	}
 
 	var display sql.NullInt64
-	if err := db.QueryRowContext(ctx, `SELECT display_avatar_id FROM access_group_members WHERE access_group_id = 1 AND user_id = ?`, userID).Scan(&display); err != nil {
+	if err := db.QueryRowContext(ctx, `SELECT display_avatar_id FROM access_group_members WHERE access_group_id = 100 AND user_id = ?`, userID).Scan(&display); err != nil {
 		t.Fatalf("read membership: %v", err)
 	}
 	if display.Valid {

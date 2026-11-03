@@ -13,7 +13,7 @@ Concepts for the query files under `packages/store/queries/`.
 - [profiles.query.sql](profiles.md) — Profile operations for creating a habbo's profile and reading, adding and removing its tags.
 - [homes.query.sql](homes.md) — Home operations for creating a profile's home, reading it, and placing, moving, skinning and removing its items.
 - [home-inventory.query.sql](home-inventory.md) — Home inventory operations for adding bought items, listing them, and taking them out to place on a home.
-- [home-store.query.sql](home-store.md) — Home store operations for the seed, the store's categories and items, and their upkeep from housekeeping.
+- [home-store.query.sql](home-store.md) — Home store operations for the store's categories and items, and their upkeep from housekeeping.
 
 ## Authentication and access
 

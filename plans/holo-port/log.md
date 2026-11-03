@@ -2,6 +2,9 @@
 
 ## 2026-11-03
 
+- **Done** [up-03](/tasks/up-03-seed-updates.md): Holo's home store and ranks reach every database through
+  0002-home-store.sql and 0003-ranks.sql, and the installer joins the administrator to the seeded Administrator.
+- **Start** [up-03](/tasks/up-03-seed-updates.md).
 - **Done** [up-02](/tasks/up-02-baseline.md): 0001-baseline.sql holds the schema of every hotel before updates, Open
   gives a new database every update and leaves an existing one alone, and a test keeps the schema files and the updates
   alike.

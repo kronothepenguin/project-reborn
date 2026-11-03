@@ -12,10 +12,27 @@ import (
 
 const public = "../public"
 
+func newStore(t *testing.T) *store.Queries {
+	t.Helper()
+	db, err := store.Open(filepath.Join(t.TempDir(), "habbo.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { db.Close() })
+	return store.New(db)
+}
+
 func TestEveryItemShowsArtThatExists(t *testing.T) {
+	items, err := newStore(t).ListHomeStoreItems(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
 	for _, it := range items {
-		if _, err := os.Stat(filepath.Join(public, it.asset)); err != nil {
-			t.Errorf("item %d (%s): %v", it.id, it.name, err)
+		if _, err := os.Stat(filepath.Join(public, it.Asset)); err != nil {
+			t.Errorf("item %d (%s): %v", it.ID, it.Name, err)
+		}
+		if !slices.Contains(Art(), it.Asset) && it.Kind != "note" {
+			t.Errorf("item %d (%s) shows %s, which the art list lacks", it.ID, it.Name, it.Asset)
 		}
 	}
 }
@@ -36,65 +53,43 @@ func TestTheArtListMatchesThePublicFiles(t *testing.T) {
 	}
 }
 
-func TestTheSeedIsWhole(t *testing.T) {
-	ids := make(map[int64]bool)
-	known := make(map[int64]bool)
-	for _, c := range categories {
-		known[c.id] = true
+func TestANewDatabaseHasHolosStore(t *testing.T) {
+	q := newStore(t)
+	categories, err := q.ListHomeStoreCategories(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(categories) != 20 || categories[0].Name != "General" || !categories[1].StaffOnly || categories[19].Name != "Notes" {
+		t.Errorf("categories = %+v", categories)
+	}
+	for id, name := range map[int64]string{BackgroundsCategory: "Backgrounds", NotesCategory: "Notes"} {
+		if c, err := q.GetHomeStoreCategory(t.Context(), id); err != nil || c.Name != name {
+			t.Errorf("category %d = %+v, %v, want %s", id, c, err, name)
+		}
+	}
+
+	items, err := q.ListHomeStoreItems(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(items) != 298 {
+		t.Errorf("%d items, want 298", len(items))
 	}
 	for _, it := range items {
-		switch {
-		case ids[it.id]:
-			t.Errorf("item %d twice", it.id)
-		case !known[it.category]:
-			t.Errorf("item %d in unknown category %d", it.id, it.category)
-		case it.name == "" || it.price < 0 || it.quantity < 1:
-			t.Errorf("item %d = %+v", it.id, it)
-		case !slices.Contains([]string{"sticker", "background", "note"}, it.kind):
-			t.Errorf("item %d has kind %q", it.id, it.kind)
+		if it.Name == "" || it.Price < 0 || it.Quantity < 1 || !it.Enabled || !slices.Contains([]string{"sticker", "background", "note"}, it.Kind) {
+			t.Errorf("item %d = %+v", it.ID, it)
 		}
-		ids[it.id] = true
-	}
-	for _, gone := range []int64{102, 231, 273, 274, 290} {
-		if ids[gone] {
-			t.Errorf("item %d has no art in Holo and should not be sold", gone)
-		}
-	}
-}
-
-func TestHomeStoreWritesTheStore(t *testing.T) {
-	db, err := store.Open(filepath.Join(t.TempDir(), "habbo.db"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Cleanup(func() { db.Close() })
-	q := store.New(db)
-	if err := HomeStore(t.Context(), q); err != nil {
-		t.Fatal(err)
-	}
-
-	categoryRows, err := q.ListHomeStoreCategories(t.Context())
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(categoryRows) != 20 || categoryRows[0].Name != "General" || !categoryRows[1].StaffOnly || categoryRows[19].Name != "Notes" {
-		t.Errorf("categories = %+v", categoryRows)
-	}
-	itemRows, err := q.ListHomeStoreItems(t.Context())
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(itemRows) != 298 {
-		t.Errorf("%d items, want 298", len(itemRows))
 	}
 	note, err := q.GetHomeStoreItem(t.Context(), 13)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if note.Kind != "note" || note.Quantity != 5 || note.Price != 2 || !note.Enabled || note.HomeStoreCategoryID != 29 {
+	if note.Kind != "note" || note.Quantity != 5 || note.Price != 2 || note.HomeStoreCategoryID != NotesCategory {
 		t.Errorf("notes = %+v", note)
 	}
-	if _, err := q.GetHomeStoreItem(t.Context(), 102); err != sql.ErrNoRows {
-		t.Errorf("item 102: %v, want none", err)
+	for _, gone := range []int64{102, 231, 273, 274, 290} {
+		if _, err := q.GetHomeStoreItem(t.Context(), gone); err != sql.ErrNoRows {
+			t.Errorf("item %d: %v, want none: Holo had no art for it", gone, err)
+		}
 	}
 }

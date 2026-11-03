@@ -1,26 +1,13 @@
 ---
 type: SQL Query
 title: home-store.query.sql
-description: Home store operations for the seed, the store's categories and items, and their upkeep from housekeeping.
+description: Home store operations for the store's categories and items, and their upkeep from housekeeping.
 resource: packages/store/queries/home-store.query.sql
 tags: [store, query, homes]
-timestamp: 2026-11-03T17:35:14+00:00
+timestamp: 2026-11-03T21:53:51+00:00
 ---
 
 # Operations
-
-## CreateHomeStoreCategory
-
-- Cardinality: `:exec`
-- Inputs: `id`, `name`, `staff_only`, `position`
-- Tables: `home_store_categories`
-
-## SeedHomeStoreItem
-
-- Cardinality: `:exec`
-- Inputs: `id`, `home_store_category_id`, `kind`, `asset`, `name`, `price`, `quantity`
-- Result: an item with the id it is given, so that the seed keeps Holo's ids
-- Tables: `home_store_items`
 
 ## CreateHomeStoreItem
 

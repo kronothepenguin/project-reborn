@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
-	"github.com/kronothepenguin/project-reborn/packages/cms/seed"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
@@ -18,9 +17,6 @@ import (
 func shopper(t *testing.T, credits int64) (*sql.DB, *http.ServeMux, *http.Cookie, int64) {
 	t.Helper()
 	db, mux := newSite(t)
-	if err := seed.HomeStore(t.Context(), store.New(db)); err != nil {
-		t.Fatalf("seed: %v", err)
-	}
 	userID := habbo(t, db, "frank@example.com", "Frank")
 	if credits > 0 {
 		if _, err := store.New(db).ChangeWalletCredits(t.Context(), store.ChangeWalletCreditsParams{UserID: userID, Credits: credits, UpdatedAt: testNow}); err != nil {

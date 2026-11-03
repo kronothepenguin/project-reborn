@@ -1,15 +1,3 @@
--- name: CreateHomeStoreCategory :exec
-INSERT INTO home_store_categories (id, name, staff_only, position)
-VALUES (sqlc.arg(id), sqlc.arg(name), sqlc.arg(staff_only), sqlc.arg(position));
-
--- Holo's ids are kept, so that the seed's items find their categories.
--- name: SeedHomeStoreItem :exec
-INSERT INTO home_store_items (id, home_store_category_id, kind, asset, name, price, quantity)
-VALUES (
-    sqlc.arg(id), sqlc.arg(home_store_category_id), sqlc.arg(kind), sqlc.arg(asset), sqlc.arg(name),
-    sqlc.arg(price), sqlc.arg(quantity)
-);
-
 -- name: CreateHomeStoreItem :one
 INSERT INTO home_store_items (home_store_category_id, kind, asset, name, price, quantity, enabled)
 VALUES (

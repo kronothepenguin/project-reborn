@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
-	"github.com/kronothepenguin/project-reborn/packages/cms/seed"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
@@ -36,11 +35,7 @@ func owner(t *testing.T, db *sql.DB, email, name string, credits int64) (userID,
 
 func storeSite(t *testing.T) (*sql.DB, *http.ServeMux) {
 	t.Helper()
-	db, mux := newSite(t)
-	if err := seed.HomeStore(t.Context(), store.New(db)); err != nil {
-		t.Fatalf("seed: %v", err)
-	}
-	return db, mux
+	return newSite(t)
 }
 
 func homeOf(t *testing.T, db *sql.DB, avatarID int64) store.Home {

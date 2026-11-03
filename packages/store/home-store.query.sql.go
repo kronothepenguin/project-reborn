@@ -9,28 +9,6 @@ import (
 	"context"
 )
 
-const createHomeStoreCategory = `-- name: CreateHomeStoreCategory :exec
-INSERT INTO home_store_categories (id, name, staff_only, position)
-VALUES (?1, ?2, ?3, ?4)
-`
-
-type CreateHomeStoreCategoryParams struct {
-	ID        int64
-	Name      string
-	StaffOnly bool
-	Position  int64
-}
-
-func (q *Queries) CreateHomeStoreCategory(ctx context.Context, arg CreateHomeStoreCategoryParams) error {
-	_, err := q.db.ExecContext(ctx, createHomeStoreCategory,
-		arg.ID,
-		arg.Name,
-		arg.StaffOnly,
-		arg.Position,
-	)
-	return err
-}
-
 const createHomeStoreItem = `-- name: CreateHomeStoreItem :one
 INSERT INTO home_store_items (home_store_category_id, kind, asset, name, price, quantity, enabled)
 VALUES (
@@ -216,38 +194,6 @@ func (q *Queries) ListHomeStoreItems(ctx context.Context) ([]HomeStoreItem, erro
 		return nil, err
 	}
 	return items, nil
-}
-
-const seedHomeStoreItem = `-- name: SeedHomeStoreItem :exec
-INSERT INTO home_store_items (id, home_store_category_id, kind, asset, name, price, quantity)
-VALUES (
-    ?1, ?2, ?3, ?4, ?5,
-    ?6, ?7
-)
-`
-
-type SeedHomeStoreItemParams struct {
-	ID                  int64
-	HomeStoreCategoryID int64
-	Kind                string
-	Asset               string
-	Name                string
-	Price               int64
-	Quantity            int64
-}
-
-// Holo's ids are kept, so that the seed's items find their categories.
-func (q *Queries) SeedHomeStoreItem(ctx context.Context, arg SeedHomeStoreItemParams) error {
-	_, err := q.db.ExecContext(ctx, seedHomeStoreItem,
-		arg.ID,
-		arg.HomeStoreCategoryID,
-		arg.Kind,
-		arg.Asset,
-		arg.Name,
-		arg.Price,
-		arg.Quantity,
-	)
-	return err
 }
 
 const updateHomeStoreItem = `-- name: UpdateHomeStoreItem :exec

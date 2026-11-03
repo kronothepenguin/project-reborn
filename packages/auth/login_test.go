@@ -306,15 +306,7 @@ func TestArchivingReturnsTheHomesStickersAndNotes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := q.CreateHomeStoreCategory(t.Context(), store.CreateHomeStoreCategoryParams{ID: 1, Name: "General"}); err != nil {
-		t.Fatal(err)
-	}
-	for id, kind := range map[int64]string{1: "sticker", 2: "note", 3: "background"} {
-		err := q.SeedHomeStoreItem(t.Context(), store.SeedHomeStoreItemParams{ID: id, HomeStoreCategoryID: 1, Kind: kind, Asset: "a.gif", Name: kind, Price: 1, Quantity: 1})
-		if err != nil {
-			t.Fatal(err)
-		}
-	}
+	const sticker, note, background = 1, 13, 12
 	home, err := q.GetProfileHome(t.Context(), second)
 	if err != nil {
 		t.Fatal(err)
@@ -322,16 +314,16 @@ func TestArchivingReturnsTheHomesStickersAndNotes(t *testing.T) {
 	for _, placed := range []struct {
 		kind string
 		item int64
-	}{{"sticker", 1}, {"sticker", 1}, {"note", 2}} {
+	}{{"sticker", sticker}, {"sticker", sticker}, {"note", note}} {
 		_, err := q.CreateHomeItem(t.Context(), store.CreateHomeItemParams{HomeID: home.ID, Kind: placed.kind, HomeStoreItemID: sql.NullInt64{Int64: placed.item, Valid: true}, Body: "text", CreatedAt: testNow, UpdatedAt: testNow})
 		if err != nil {
 			t.Fatal(err)
 		}
 	}
-	if err := q.SetHomeBackground(t.Context(), store.SetHomeBackgroundParams{ID: home.ID, BackgroundHomeStoreItemID: sql.NullInt64{Int64: 3, Valid: true}, UpdatedAt: testNow}); err != nil {
+	if err := q.SetHomeBackground(t.Context(), store.SetHomeBackgroundParams{ID: home.ID, BackgroundHomeStoreItemID: sql.NullInt64{Int64: background, Valid: true}, UpdatedAt: testNow}); err != nil {
 		t.Fatal(err)
 	}
-	if err := q.AddHomeInventory(t.Context(), store.AddHomeInventoryParams{UserID: userID, HomeStoreItemID: 3, Quantity: 1}); err != nil {
+	if err := q.AddHomeInventory(t.Context(), store.AddHomeInventoryParams{UserID: userID, HomeStoreItemID: background, Quantity: 1}); err != nil {
 		t.Fatal(err)
 	}
 	session, _, _ := f.visit(t, f.mustLogin(t, "Admin", false))
@@ -339,7 +331,7 @@ func TestArchivingReturnsTheHomesStickersAndNotes(t *testing.T) {
 	if err := ArchiveHabbo(context.WithValue(t.Context(), contextKey{}, session), f.db, second); err != nil {
 		t.Fatalf("ArchiveHabbo: %v", err)
 	}
-	for item, want := range map[int64]int{1: 2, 2: 1, 3: 1} {
+	for item, want := range map[int64]int{sticker: 2, note: 1, background: 1} {
 		if n := f.count(t, `SELECT quantity FROM home_inventory WHERE user_id = ? AND home_store_item_id = ?`, userID, item); n != want {
 			t.Errorf("item %d: %d in the inventory, want %d", item, n, want)
 		}
