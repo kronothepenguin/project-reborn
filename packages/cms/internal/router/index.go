@@ -63,11 +63,16 @@ func (r *Router) signIn(w http.ResponseWriter, req *http.Request, username, pass
 	}
 }
 
-// loginFailed shows the form again on the page it came from: during maintenance
-// only the maintenance page has one.
+// loginFailed shows the form again on the page it came from: during maintenance,
+// and while updates wait, only the maintenance page has one.
 func (r *Router) loginFailed(w http.ResponseWriter, req *http.Request, username, message string) {
-	if settings.GetBool("site.maintenance") {
-		r.writeMaintenance(w, maintenancePage{Username: username, Error: message})
+	waiting, err := r.deps.Updates.Waiting(req.Context())
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
+	if waiting || settings.GetBool("site.maintenance") {
+		r.writeMaintenance(w, req, maintenancePage{Username: username, Error: message})
 		return
 	}
 	page := r.newIndexPage(req.Context())

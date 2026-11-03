@@ -1,6 +1,7 @@
 package store
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"os"
@@ -437,5 +438,37 @@ func TestAnUpdateWaitsForAnotherProgramsRun(t *testing.T) {
 	}
 	if n := countRows(t, runner, "SELECT COUNT(*) FROM things"); n != 2 {
 		t.Errorf("things = %d, want 2", n)
+	}
+}
+
+func TestUpdateCheckStopsReadingOnceNothingWaits(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "hotel.db")
+	db := connectTestDB(t, path)
+	updates, err := Updates()
+	if err != nil {
+		t.Fatal(err)
+	}
+	check := NewUpdateCheck(db)
+	if waiting, err := check.Waiting(t.Context()); err != nil || !waiting {
+		t.Fatalf("Waiting on an empty database = %t, %v, want true", waiting, err)
+	}
+	ran := 0
+	task := check.WhenCurrent(func(context.Context) error { ran++; return nil })
+	if err := task(t.Context()); err != nil || ran != 0 {
+		t.Errorf("the task ran %d times while updates waited, %v", ran, err)
+	}
+
+	if _, err := ApplyUpdates(t.Context(), db, updates); err != nil {
+		t.Fatal(err)
+	}
+	if waiting, err := check.Waiting(t.Context()); err != nil || waiting {
+		t.Fatalf("Waiting after the updates = %t, %v, want false", waiting, err)
+	}
+	if err := task(t.Context()); err != nil || ran != 1 {
+		t.Errorf("the task ran %d times once nothing waited, %v, want once", ran, err)
+	}
+	db.Close()
+	if waiting, err := check.Waiting(t.Context()); err != nil || waiting {
+		t.Errorf("Waiting read the database again: %t, %v", waiting, err)
 	}
 }

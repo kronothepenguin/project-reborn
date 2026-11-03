@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
+	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
@@ -137,4 +138,37 @@ func (r *Router) HandleUpdatesApply(w http.ResponseWriter, req *http.Request) {
 	default:
 		http.Redirect(w, req, "/housekeeping/updates?applied=1", http.StatusSeeOther)
 	}
+}
+
+type updatingPage struct {
+	chrome
+}
+
+// Updating stands in front of every page but the update page while updates
+// wait, because the pages' code may need them: those who may apply them go to
+// the update page, and other staff are told that the hotel is being updated.
+func (r *Router) Updating(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		waiting, err := r.deps.Updates.Waiting(req.Context())
+		if err != nil {
+			r.fail(w, err)
+			return
+		}
+		if !waiting {
+			next.ServeHTTP(w, req)
+			return
+		}
+		session, _ := auth.FromContext(req.Context())
+		attributes, err := auth.Attributes(req.Context(), r.deps.DB, session.UserID)
+		if err != nil {
+			r.fail(w, err)
+			return
+		}
+		if slices.Contains(attributes, auth.HousekeepingDatabase) || slices.Contains(attributes, auth.HousekeepingAccessGroups) {
+			http.Redirect(w, req, "/housekeeping/updates", http.StatusSeeOther)
+			return
+		}
+		w.WriteHeader(http.StatusServiceUnavailable)
+		astro.WriteTemplate(w, r.deps.Resolver, "updating.html", updatingPage{chrome: r.chrome(req)})
+	})
 }

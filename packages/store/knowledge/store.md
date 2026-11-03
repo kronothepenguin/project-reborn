@@ -31,6 +31,7 @@ query files.
 | `WaitingUpdates(ctx, db, updates) ([]Update, error)` | The updates `db` has not applied, in version order. It only reads. |
 | `AppliedUpdates(ctx, db) ([]Migration, error)` | The rows of [migrations](/tables/migrations.md) in version order, and none before the table exists. |
 | `ApplyUpdates(ctx, db, updates) ([]Update, error)` | Applies the updates in order and returns those it applied; see the guarantees. A failure is an `*UpdateError` naming the update. |
+| `NewUpdateCheck(db) *UpdateCheck` | A running program's view of its waiting updates. `Waiting(ctx)` reads `migrations` until nothing waits, then stops reading, since a running program never gains updates; `WhenCurrent(task)` wraps a scheduled task to do nothing while updates wait. |
 | `Backup(ctx, db) (string, error)` | Saves a copy beside the database file as `<file>.backup-<YYYYMMDD-HHMMSS>` (UTC) with `VACUUM INTO`, adding `-2`, `-3`… when another copy took that second, and returns its path. |
 
 # Guarantees

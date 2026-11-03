@@ -21,6 +21,7 @@ var DistFS embed.FS
 
 type CMS struct {
 	db      *sql.DB
+	updates *store.UpdateCheck
 	static  http.Handler
 	resolve astro.Resolver
 	// protect wraps every CMS route with RealIP, cross-origin protection and
@@ -44,8 +45,10 @@ func New(db *sql.DB, opts ...Option) *CMS {
 	crossOrigin := http.NewCrossOriginProtection()
 	sessions := auth.Sessions(db)
 
+	updates := store.NewUpdateCheck(db)
 	c := &CMS{
-		db: db,
+		db:      db,
+		updates: updates,
 		protect: func(h http.Handler) http.Handler {
 			return realIP(crossOrigin.Handler(sessions(h)))
 		},
@@ -55,20 +58,20 @@ func New(db *sql.DB, opts ...Option) *CMS {
 	}
 	// Housekeeping is the single writer of settings, so this is how a CMS running
 	// alone learns of a change.
-	scheduler.Every(settings.GetInt("cms.refresh"), scheduler.Second, func(ctx context.Context) error {
+	scheduler.Every(settings.GetInt("cms.refresh"), scheduler.Second, updates.WhenCurrent(func(ctx context.Context) error {
 		return settings.Reload(ctx, db)
-	})
-	scheduler.Every(1, scheduler.Minute, func(ctx context.Context) error {
+	}))
+	scheduler.Every(1, scheduler.Minute, updates.WhenCurrent(func(ctx context.Context) error {
 		return auth.DeleteExpiredResets(ctx, db)
-	})
-	scheduler.Every(1, scheduler.Minute, func(ctx context.Context) error {
+	}))
+	scheduler.Every(1, scheduler.Minute, updates.WhenCurrent(func(ctx context.Context) error {
 		return auth.DeleteExpiredSessions(ctx, db)
-	})
+	}))
 	return c
 }
 
 func (c *CMS) Mount(mux *http.ServeMux) {
-	r := router.New(router.Deps{Resolver: c.resolve, DB: c.db, Queries: store.New(c.db)})
+	r := router.New(router.Deps{Resolver: c.resolve, DB: c.db, Queries: store.New(c.db), Updates: c.updates})
 	page := func(h http.Handler) http.Handler { return c.protect(r.Banned(r.Maintenance(h))) }
 	guestPage := func(h http.HandlerFunc) http.Handler { return page(router.Guest(h)) }
 

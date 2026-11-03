@@ -56,7 +56,7 @@ Out of scope:
 - [up-03 Turn the seeds into updates](/tasks/up-03-seed-updates.md) — done
 - [up-04 Add the database attribute](/tasks/up-04-database-attribute.md) — done
 - [up-05 Build housekeeping's update page](/tasks/up-05-update-page.md) — done
-- [up-06 Close the hotel while updates wait](/tasks/up-06-close-while-waiting.md) — todo
+- [up-06 Close the hotel while updates wait](/tasks/up-06-close-while-waiting.md) — done
 - [up-07 Apply automatic updates at start](/tasks/up-07-automatic-updates.md) — todo
 - [up-08 Offer config.json's new keys in housekeeping](/tasks/up-08-config-keys.md) — todo
 - [up-09 Link the installer to the hotel](/tasks/up-09-installer-links.md) — todo

@@ -19,6 +19,7 @@ type Deps struct {
 	Resolver astro.Resolver
 	DB       *sql.DB
 	Queries  *store.Queries
+	Updates  *store.UpdateCheck
 }
 
 type Router struct {

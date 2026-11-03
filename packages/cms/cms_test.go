@@ -80,7 +80,7 @@ func secondHabbo(t *testing.T, db *sql.DB, userID int64, name string) {
 func grant(t *testing.T, db *sql.DB, userID int64, attribute auth.Attribute) {
 	t.Helper()
 	q := store.New(db)
-	group, err := q.CreateAccessGroup(t.Context(), store.CreateAccessGroupParams{Name: "Staff", CreatedAt: testNow, UpdatedAt: testNow})
+	group, err := q.CreateAccessGroup(t.Context(), store.CreateAccessGroupParams{Name: "Staff " + string(attribute), CreatedAt: testNow, UpdatedAt: testNow})
 	if err != nil {
 		t.Fatalf("CreateAccessGroup: %v", err)
 	}

@@ -2,6 +2,9 @@
 
 ## 2026-11-03
 
+- **Done** [up-06](/tasks/up-06-close-while-waiting.md): while updates wait the CMS shows maintenance to everyone and
+  housekeeping only its update page, scheduled tasks wait, and both open once the updates are applied.
+- **Start** [up-06](/tasks/up-06-close-while-waiting.md).
 - **Done** [up-05](/tasks/up-05-update-page.md): housekeeping's update page lists the waiting and the applied updates,
   and applies them after a copy, with a staff log row, for holders of housekeeping.database or
   housekeeping.accessGroups.

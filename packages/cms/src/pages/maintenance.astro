@@ -1,5 +1,5 @@
 ---
-import { Paper } from "@project-reborn/components";
+import { Card, Paper } from "@project-reborn/components";
 import frank from "../assets/maintenance/frank_habbo_down.gif";
 import workman from "../assets/maintenance/workman_habbo_down.gif";
 import LoginBox from "../components/landing/login-box.astro";
@@ -40,7 +40,17 @@ import Document from "../layouts/document.astro";
       </div>
     </Paper>
     <div class="flex w-72 flex-col gap-2">
+      [[ if .UpdatesURL ]]
+      <Card variant="login" color="loginbox">
+        <span slot="header">Updates</span>
+        <p class="text-sm text-white">
+          [[ .ShortName ]] is closed until its database updates are applied.
+          <a href="[[ .UpdatesURL ]]" class="font-bold text-olive-800 underline hover:text-white">Apply them in housekeeping</a>
+        </p>
+      </Card>
+      [[ else ]]
       <LoginBox links={false} />
+      [[ end ]]
     </div>
   </main>
 </Document>

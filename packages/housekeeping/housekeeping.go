@@ -21,6 +21,7 @@ var DistFS embed.FS
 
 type Housekeeping struct {
 	db      *sql.DB
+	updates *store.UpdateCheck
 	static  http.Handler
 	resolve astro.Resolver
 	// protect wraps every route with RealIP, cross-origin protection and the
@@ -44,8 +45,10 @@ func New(db *sql.DB, opts ...Option) *Housekeeping {
 	crossOrigin := http.NewCrossOriginProtection()
 	sessions := auth.Sessions(db)
 
+	updates := store.NewUpdateCheck(db)
 	h := &Housekeeping{
-		db: db,
+		db:      db,
+		updates: updates,
 		protect: func(next http.Handler) http.Handler {
 			return realIP(crossOrigin.Handler(sessions(next)))
 		},
@@ -53,9 +56,9 @@ func New(db *sql.DB, opts ...Option) *Housekeeping {
 	for _, opt := range opts {
 		opt(h)
 	}
-	scheduler.Every(1, scheduler.Minute, func(ctx context.Context) error {
+	scheduler.Every(1, scheduler.Minute, updates.WhenCurrent(func(ctx context.Context) error {
 		return auth.DeleteExpiredSessions(ctx, db)
-	})
+	}))
 	return h
 }
 
@@ -63,15 +66,18 @@ func New(db *sql.DB, opts ...Option) *Housekeeping {
 // share a mux. Everything under the prefix is behind router.Staff, the static
 // files too: /housekeeping/ also serves the built templates.
 func (h *Housekeeping) Mount(mux *http.ServeMux) {
-	r := router.New(router.Deps{Resolver: h.resolve, DB: h.db, Queries: store.New(h.db)})
-	page := func(next http.Handler) http.Handler { return h.protect(r.Staff(next)) }
+	r := router.New(router.Deps{Resolver: h.resolve, DB: h.db, Queries: store.New(h.db), Updates: h.updates})
+	// The update page, signing out and the files stay open while updates wait;
+	// every other page waits for them.
+	staffPage := func(next http.Handler) http.Handler { return h.protect(r.Staff(next)) }
+	page := func(next http.Handler) http.Handler { return staffPage(r.Updating(next)) }
 	holding := func(attr auth.Attribute, next http.HandlerFunc) http.Handler {
 		return page(r.RequireAttribute(attr)(next))
 	}
 
 	mux.Handle("GET /housekeeping/{$}", page(http.HandlerFunc(r.HandleIndexView)))
 	mux.Handle("POST /housekeeping/note", page(http.HandlerFunc(r.HandleNoteSave)))
-	mux.Handle("POST /housekeeping/logout", page(http.HandlerFunc(r.HandleLogout)))
+	mux.Handle("POST /housekeeping/logout", staffPage(http.HandlerFunc(r.HandleLogout)))
 
 	mux.Handle("GET /housekeeping/settings", holding(auth.HousekeepingSettings, r.HandleSettingsView))
 	mux.Handle("POST /housekeeping/settings/{section}", holding(auth.HousekeepingSettings, r.HandleSettingsSave))
@@ -92,7 +98,7 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	// Holders of housekeeping.accessGroups can give themselves any attribute, and
 	// one of them always exists, so a hotel always has someone to apply updates.
 	updating := func(next http.HandlerFunc) http.Handler {
-		return page(r.RequireAnyAttribute(auth.HousekeepingDatabase, auth.HousekeepingAccessGroups)(next))
+		return staffPage(r.RequireAnyAttribute(auth.HousekeepingDatabase, auth.HousekeepingAccessGroups)(next))
 	}
 	mux.Handle("GET /housekeeping/updates", updating(r.HandleUpdatesView))
 	mux.Handle("POST /housekeeping/updates", updating(r.HandleUpdatesApply))
@@ -120,7 +126,7 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /housekeeping/users/{id}", holding(auth.HousekeepingUsersEdit, r.HandleUserSave))
 	mux.Handle("POST /housekeeping/users/{id}/attributes", holding(auth.HousekeepingAccessGroups, r.HandleUserAttributesSave))
 
-	mux.Handle("/housekeeping/", page(http.StripPrefix("/housekeeping", h.static)))
+	mux.Handle("/housekeeping/", staffPage(http.StripPrefix("/housekeeping", h.static)))
 }
 
 func WithStatic(next http.Handler) Option {

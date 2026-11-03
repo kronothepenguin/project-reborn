@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -176,6 +177,49 @@ func migrationsTableExists(ctx context.Context, db DBTX) (bool, error) {
 		return false, fmt.Errorf("store: updates: %w", err)
 	}
 	return exists, nil
+}
+
+// UpdateCheck tells a running program whether its database lacks updates the
+// program carries. Once none waits it stops reading the database, because a
+// running program never gains updates.
+type UpdateCheck struct {
+	db      *sql.DB
+	current atomic.Bool
+}
+
+func NewUpdateCheck(db *sql.DB) *UpdateCheck {
+	return &UpdateCheck{db: db}
+}
+
+// Waiting reports whether updates wait, reading the database until none does.
+func (c *UpdateCheck) Waiting(ctx context.Context) (bool, error) {
+	if c.current.Load() {
+		return false, nil
+	}
+	updates, err := Updates()
+	if err != nil {
+		return false, err
+	}
+	waiting, err := WaitingUpdates(ctx, c.db, updates)
+	if err != nil {
+		return false, err
+	}
+	if len(waiting) == 0 {
+		c.current.Store(true)
+	}
+	return len(waiting) > 0, nil
+}
+
+// WhenCurrent wraps a scheduled task so that it does nothing while updates
+// wait: the task's code may need them.
+func (c *UpdateCheck) WhenCurrent(task func(context.Context) error) func(context.Context) error {
+	return func(ctx context.Context) error {
+		waiting, err := c.Waiting(ctx)
+		if err != nil || waiting {
+			return err
+		}
+		return task(ctx)
+	}
 }
 
 // ApplyUpdates applies updates in order, each in its own transaction together
