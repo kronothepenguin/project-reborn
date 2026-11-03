@@ -1,0 +1,127 @@
+---
+import { Checkbox, Input, Select, Table } from "@project-reborn/components";
+import Box from "../components/box.astro";
+import Message from "../components/message.astro";
+import Submit from "../components/submit.astro";
+import Housekeeping from "../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="Stickers & Backgrounds" tab="site">
+  <Message />
+  <div class="space-y-3">
+    <form method="post" action="/housekeeping/home-store">
+      <Box title="Create Sticker or Background">
+        <Table variant="form">
+          <tbody>
+            <tr>
+              <td class="w-2/5">
+                <label for="store-asset"><strong>URL</strong></label>
+                <div class="text-neutral-500">The URL of the image</div>
+              </td>
+              <td class="w-3/5 [&>input]:w-full">
+                <Input id="store-asset" name="asset" list="store-art" value="[[ .New.Asset ]]" variant="border" />
+                <datalist id="store-art">
+                  [[ range .Art ]]<option value="[[ . ]]"></option>[[ end ]]
+                </datalist>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="store-category"><strong>Category</strong></label>
+                <div class="text-neutral-500">The category the item will be on</div>
+              </td>
+              <td>
+                <Select id="store-category" name="category">
+                  [[ range .Categories ]][[ if .Selected ]]
+                  <option value="[[ .ID ]]" selected>[[ .Name ]]</option>
+                  [[ else ]]
+                  <option value="[[ .ID ]]">[[ .Name ]]</option>
+                  [[ end ]][[ end ]]
+                </Select>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="store-name"><strong>Name</strong></label>
+                <div class="text-neutral-500">The name that will be displayed with the image in the homes and groups catalogue</div>
+              </td>
+              <td class="[&>input]:w-full">
+                <Input id="store-name" name="name" value="[[ .New.Name ]]" variant="border" />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="store-price"><strong>Price</strong></label>
+                <div class="text-neutral-500">The amount of credits the item will cost</div>
+              </td>
+              <td class="[&>input]:w-full">
+                <Input id="store-price" name="price" value="[[ .New.Price ]]" variant="border" />
+              </td>
+            </tr>
+          </tbody>
+        </Table>
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+          <Submit>Create Sticker</Submit>
+        </div>
+      </Box>
+    </form>
+
+    <Box title="Homes Catalogue" color="gold">
+      <Table>
+        <thead>
+          <tr>
+            <th>Preview</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>For Sale</th>
+            <th>Save</th>
+          </tr>
+        </thead>
+        <tbody>
+          [[ range .Items ]]
+          <tr>
+            <td><img src="[[ $.SiteURL ]]/[[ .Asset ]]" alt="[[ .Name ]]" loading="lazy" class="max-h-16 max-w-24" /></td>
+            <td class="[&>input]:w-32">
+              <Input form="item-[[ .ID ]]" name="name" value="[[ .Name ]]" aria-label="Name" variant="border" />
+            </td>
+            <td>
+              <Select form="item-[[ .ID ]]" name="category" aria-label="Category">
+                [[ range .Categories ]][[ if .Selected ]]
+                <option value="[[ .ID ]]" selected>[[ .Name ]]</option>
+                [[ else ]]
+                <option value="[[ .ID ]]">[[ .Name ]]</option>
+                [[ end ]][[ end ]]
+              </Select>
+            </td>
+            <td class="[&>input]:w-20">
+              <Input form="item-[[ .ID ]]" name="price" value="[[ .Price ]]" aria-label="Price" variant="border" />
+            </td>
+            <td class="[&>input]:w-20">
+              <Input form="item-[[ .ID ]]" name="quantity" value="[[ .Quantity ]]" aria-label="Quantity" variant="border" />
+            </td>
+            <td>
+              [[ if .Enabled ]]
+              <Checkbox form="item-[[ .ID ]]" name="enabled" value="1" checked>For sale</Checkbox>
+              [[ else ]]
+              <Checkbox form="item-[[ .ID ]]" name="enabled" value="1">For sale</Checkbox>
+              [[ end ]]
+            </td>
+            <td>
+              <form id="item-[[ .ID ]]" method="post" action="/housekeeping/home-store/[[ .ID ]]?page=[[ $.Page ]]">
+                <Submit>Save</Submit>
+              </form>
+            </td>
+          </tr>
+          [[ else ]]
+          <tr>
+            <td colspan="7">Nothing found.</td>
+          </tr>
+          [[ end ]]
+        </tbody>
+      </Table>
+    </Box>
+    <p class="text-center">[[ if .Newer ]]<a href="/housekeeping/home-store?page=[[ .Newer ]]" class="text-indigo-900 underline">Newer</a>[[ end ]] [[ if .Older ]]<a href="/housekeeping/home-store?page=[[ .Older ]]" class="text-indigo-900 underline">Older</a>[[ end ]]</p>
+  </div>
+</Housekeeping>
