@@ -2,6 +2,9 @@
 
 ## 2026-11-03
 
+- **Done** [p3-12](/tasks/p3-12-exit-check.md): P3 meets its exit criteria from a clean checkout, with every gate and
+  all 555 browser checks passing.
+- **Start** [p3-12](/tasks/p3-12-exit-check.md).
 - **Done** [p3-09](/tasks/p3-09-store-dialogs.md): the editor's Webstore and Inventory buy and place stickers, notes
   and backgrounds, with Holo's texts and its note editor.
 - **Start** [p3-09](/tasks/p3-09-store-dialogs.md).

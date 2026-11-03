@@ -31,12 +31,15 @@ screenshots and server logs stay in `.run/`, which is git-ignored.
 | `signed-out` | Landing, sign-in, forgot and reset, legal pages, ban, throttle |
 | `register` | The registration form, with and without JavaScript |
 | `me`, `looks`, `details`, `habbos` | The Me page and the account tabs |
+| `homes` | A home read by a guest, profile tags, the editor, and the Webstore and Inventory |
 | `maintenance` | The site closed, and staff signing in |
 | `art` | The home art, served by the binary |
 | `housekeeping-access` | Every route as a guest, a player and staff |
 | `housekeeping-admin` | Access groups, members, the guard and the log |
 | `housekeeping-settings` | The settings forms |
 | `housekeeping-maintenance` | Maintenance saved in housekeeping, read by the CMS |
+| `housekeeping-users` | Habbos and users, badges, credits, bans, alerts and the help queue |
+| `housekeeping-store` | The home store's items, added from the art and edited |
 | `together` | The installer's forms, then the CMS and housekeeping side by side |
 
 ## Writing a suite
