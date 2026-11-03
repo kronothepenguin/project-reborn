@@ -2,12 +2,12 @@
 type: Task
 title: Verify UP
 description: Every exit criterion of UP holds from a clean checkout, in a real browser.
-status: todo
+status: in-progress
 phase: up
-depends_on: [up-01, up-02, up-03, up-04, up-05, up-06, up-07, up-08, up-09, up-10]
+depends_on: [up-01, up-02, up-03, up-04, up-05, up-06, up-07, up-08, up-09, up-10, up-12]
 packages: [packages/store, packages/auth, packages/config, packages/cms, packages/housekeeping, packages/installer, tests/e2e]
 holo: []
-timestamp: 2026-11-03T21:02:31+00:00
+timestamp: 2026-11-03T23:48:29+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-03T21:02:31+00:00"}
 ---
 

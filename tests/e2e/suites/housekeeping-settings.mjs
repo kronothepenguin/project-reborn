@@ -36,8 +36,9 @@ export default async function ({ base, browser, check, hk, hkOrigin, shot }) {
   await shot(page, "settings");
 
   const links = await page
-    .locator("aside a")
+    .locator('aside a[href*="/settings?section="]')
     .evaluateAll((all) => all.map((a) => a.getAttribute("href")));
+  check("the menu lists the settings sections", links.length >= 8, String(links.length));
   for (const href of links) {
     const response = await page.goto(`${hkOrigin}${href}`);
     const heading = await page.locator("main h2").first().innerText();

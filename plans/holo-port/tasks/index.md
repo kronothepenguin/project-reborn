@@ -140,6 +140,7 @@ starts.
 - [up-08 Offer config.json's new keys in housekeeping](/tasks/up-08-config-keys.md) — packages/config finds the keys config.json lacks and the keys nothing reads, and housekeeping's update page lets an administrator fill the new keys and rewrite config.json.
 - [up-09 Link the installer to the hotel](/tasks/up-09-installer-links.md) — The installer's done page and its "already installed" page link to the hotel at site.url, so the administrator goes on to sign in.
 - [up-10 Test updates in a real browser](/tasks/up-10-browser-suite.md) — A browser suite takes a hotel installed before updates existed through maintenance, sign-in, housekeeping's update page and config.json, until the hotel opens with Holo's home store.
+- [up-12 Keep the settings suite to the settings sections](/tasks/up-12-settings-suite-sections.md) — The housekeeping-settings browser suite opens only the settings sections of the menu, since the Database updates link leads to a page without a form when nothing waits.
 - [up-11 Verify UP](/tasks/up-11-exit-check.md) — Every exit criterion of UP holds from a clean checkout, in a real browser.
 
 ## Later phases

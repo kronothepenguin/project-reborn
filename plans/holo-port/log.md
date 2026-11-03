@@ -2,6 +2,11 @@
 
 ## 2026-11-03
 
+- **Done** [up-12](/tasks/up-12-settings-suite-sections.md): the settings suite opens only the settings sections of the
+  menu, so the Database updates link no longer fails it.
+- **Start** [up-12](/tasks/up-12-settings-suite-sections.md).
+- **Create** [up-12](/tasks/up-12-settings-suite-sections.md): the clean checkout of up-11 found the settings suite
+  opening the Database updates link as a settings section.
 - **Done** [up-10](/tasks/up-10-browser-suite.md): a browser suite takes a hotel installed before updates through
   maintenance, sign-in, the update page and config.json, until it opens with Holo's home store.
 - **Start** [up-10](/tasks/up-10-browser-suite.md).
