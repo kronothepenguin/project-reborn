@@ -35,6 +35,8 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | Ban | An IP ban stops everyone on the address | Holders of `housekeeping.access` are not stopped by it, though a ban on their account is | A moderator could lock an administrator out through their address ([0055](/decisions/0055-staff-levels.md)) |
 | Webstore | Takes the credits, fills the inventory and writes the ledger in separate queries, and the credits with no floor | One transaction, and the credits never go below zero | A failure halfway lost credits or gave items away |
 | Webstore | A habbo without the staff rank who asks for a staff item gets an empty answer | `Sorry, but you can not buy this item!` | The same answer as any item that is not sold |
+| Home editor | Saves any number as a position | Items stay on the playground, 922 by 1360 pixels | A position off the page lost the item for good |
+| Home editor | Places items with no limit, and shows only the first 200 | Refuses past `homes.maxItems`, with `This home cannot hold more than 200 items.` | Items past 200 vanished from the page without a word |
 
 # Changed by a decision
 
@@ -87,6 +89,8 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | Texts | `shiney`, `basicly`, `automaticly`, `referal`, `benifits` | Spelled correctly |
 | Home store | Sells `Plaster` under the name `plaster1`, which no rule draws | Left out of the store |
 | Home store | Previews `Notes` with `hiscores_preview.gif`, a file Holo never shipped | Previews them with Holo's own `note_thumbnail_store.gif` |
+| Home editor | Gives a club skin to anyone who sends its number, though the menu shows it to club members only | Club skins take club |
+| Home page | Writes the profile widget the first time anyone opens a home | Each home starts with it, at the same place |
 
 # Kept as in Holo, on purpose
 

@@ -7,8 +7,81 @@ package store
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
+
+const countHomeItems = `-- name: CountHomeItems :one
+SELECT COUNT(*) FROM home_items WHERE home_id = ?1
+`
+
+func (q *Queries) CountHomeItems(ctx context.Context, homeID int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countHomeItems, homeID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const createHomeItem = `-- name: CreateHomeItem :one
+INSERT INTO home_items (
+    home_id, kind, home_store_item_id, widget, skin, body, x, y, z, created_by_avatar_id, created_at, updated_at
+)
+VALUES (
+    ?1, ?2, ?3, ?4, ?5,
+    ?6, ?7, ?8, ?9, ?10, ?11,
+    ?12
+)
+RETURNING id, home_id, kind, home_store_item_id, widget, skin, body, x, y, z, created_by_avatar_id, created_at, updated_at
+`
+
+type CreateHomeItemParams struct {
+	HomeID            int64
+	Kind              string
+	HomeStoreItemID   sql.NullInt64
+	Widget            sql.NullString
+	Skin              string
+	Body              string
+	X                 int64
+	Y                 int64
+	Z                 int64
+	CreatedByAvatarID sql.NullInt64
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
+}
+
+func (q *Queries) CreateHomeItem(ctx context.Context, arg CreateHomeItemParams) (HomeItem, error) {
+	row := q.db.QueryRowContext(ctx, createHomeItem,
+		arg.HomeID,
+		arg.Kind,
+		arg.HomeStoreItemID,
+		arg.Widget,
+		arg.Skin,
+		arg.Body,
+		arg.X,
+		arg.Y,
+		arg.Z,
+		arg.CreatedByAvatarID,
+		arg.CreatedAt,
+		arg.UpdatedAt,
+	)
+	var i HomeItem
+	err := row.Scan(
+		&i.ID,
+		&i.HomeID,
+		&i.Kind,
+		&i.HomeStoreItemID,
+		&i.Widget,
+		&i.Skin,
+		&i.Body,
+		&i.X,
+		&i.Y,
+		&i.Z,
+		&i.CreatedByAvatarID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
 
 const createProfileHome = `-- name: CreateProfileHome :one
 INSERT INTO homes (profile_id, updated_at)
@@ -33,4 +106,227 @@ func (q *Queries) CreateProfileHome(ctx context.Context, arg CreateProfileHomePa
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const deleteHomeItem = `-- name: DeleteHomeItem :execrows
+DELETE FROM home_items WHERE id = ?1 AND home_id = ?2
+`
+
+type DeleteHomeItemParams struct {
+	ID     int64
+	HomeID int64
+}
+
+func (q *Queries) DeleteHomeItem(ctx context.Context, arg DeleteHomeItemParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteHomeItem, arg.ID, arg.HomeID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const getHome = `-- name: GetHome :one
+SELECT id, profile_id, group_id, background_home_store_item_id, updated_at FROM homes WHERE id = ?1
+`
+
+func (q *Queries) GetHome(ctx context.Context, id int64) (Home, error) {
+	row := q.db.QueryRowContext(ctx, getHome, id)
+	var i Home
+	err := row.Scan(
+		&i.ID,
+		&i.ProfileID,
+		&i.GroupID,
+		&i.BackgroundHomeStoreItemID,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getHomeHabbo = `-- name: GetHomeHabbo :one
+SELECT avatars.id, avatars.user_id, avatars.name, avatars.figure, avatars.gender, avatars.motto, avatars.created_at, avatars.updated_at, avatars.archived_at FROM avatars
+JOIN profiles ON profiles.avatar_id = avatars.id
+JOIN homes ON homes.profile_id = profiles.id
+WHERE homes.id = ?1
+`
+
+func (q *Queries) GetHomeHabbo(ctx context.Context, homeID int64) (Avatar, error) {
+	row := q.db.QueryRowContext(ctx, getHomeHabbo, homeID)
+	var i Avatar
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Name,
+		&i.Figure,
+		&i.Gender,
+		&i.Motto,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.ArchivedAt,
+	)
+	return i, err
+}
+
+const getHomeItem = `-- name: GetHomeItem :one
+SELECT id, home_id, kind, home_store_item_id, widget, skin, body, x, y, z, created_by_avatar_id, created_at, updated_at FROM home_items WHERE id = ?1 AND home_id = ?2
+`
+
+type GetHomeItemParams struct {
+	ID     int64
+	HomeID int64
+}
+
+func (q *Queries) GetHomeItem(ctx context.Context, arg GetHomeItemParams) (HomeItem, error) {
+	row := q.db.QueryRowContext(ctx, getHomeItem, arg.ID, arg.HomeID)
+	var i HomeItem
+	err := row.Scan(
+		&i.ID,
+		&i.HomeID,
+		&i.Kind,
+		&i.HomeStoreItemID,
+		&i.Widget,
+		&i.Skin,
+		&i.Body,
+		&i.X,
+		&i.Y,
+		&i.Z,
+		&i.CreatedByAvatarID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getProfileHome = `-- name: GetProfileHome :one
+SELECT homes.id, homes.profile_id, homes.group_id, homes.background_home_store_item_id, homes.updated_at FROM homes
+JOIN profiles ON profiles.id = homes.profile_id
+WHERE profiles.avatar_id = ?1
+`
+
+func (q *Queries) GetProfileHome(ctx context.Context, avatarID int64) (Home, error) {
+	row := q.db.QueryRowContext(ctx, getProfileHome, avatarID)
+	var i Home
+	err := row.Scan(
+		&i.ID,
+		&i.ProfileID,
+		&i.GroupID,
+		&i.BackgroundHomeStoreItemID,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const listHomeItems = `-- name: ListHomeItems :many
+SELECT id, home_id, kind, home_store_item_id, widget, skin, body, x, y, z, created_by_avatar_id, created_at, updated_at FROM home_items
+WHERE home_id = ?1
+ORDER BY z, id
+`
+
+// Items lower in the stack come first, so that a page drawing them in order needs
+// no z-index to look right.
+func (q *Queries) ListHomeItems(ctx context.Context, homeID int64) ([]HomeItem, error) {
+	rows, err := q.db.QueryContext(ctx, listHomeItems, homeID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []HomeItem
+	for rows.Next() {
+		var i HomeItem
+		if err := rows.Scan(
+			&i.ID,
+			&i.HomeID,
+			&i.Kind,
+			&i.HomeStoreItemID,
+			&i.Widget,
+			&i.Skin,
+			&i.Body,
+			&i.X,
+			&i.Y,
+			&i.Z,
+			&i.CreatedByAvatarID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const moveHomeItem = `-- name: MoveHomeItem :execrows
+UPDATE home_items SET x = ?1, y = ?2, z = ?3, updated_at = ?4
+WHERE id = ?5 AND home_id = ?6
+`
+
+type MoveHomeItemParams struct {
+	X         int64
+	Y         int64
+	Z         int64
+	UpdatedAt time.Time
+	ID        int64
+	HomeID    int64
+}
+
+func (q *Queries) MoveHomeItem(ctx context.Context, arg MoveHomeItemParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, moveHomeItem,
+		arg.X,
+		arg.Y,
+		arg.Z,
+		arg.UpdatedAt,
+		arg.ID,
+		arg.HomeID,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const setHomeBackground = `-- name: SetHomeBackground :exec
+UPDATE homes
+SET background_home_store_item_id = ?1, updated_at = ?2
+WHERE id = ?3
+`
+
+type SetHomeBackgroundParams struct {
+	BackgroundHomeStoreItemID sql.NullInt64
+	UpdatedAt                 time.Time
+	ID                        int64
+}
+
+func (q *Queries) SetHomeBackground(ctx context.Context, arg SetHomeBackgroundParams) error {
+	_, err := q.db.ExecContext(ctx, setHomeBackground, arg.BackgroundHomeStoreItemID, arg.UpdatedAt, arg.ID)
+	return err
+}
+
+const skinHomeItem = `-- name: SkinHomeItem :execrows
+UPDATE home_items SET skin = ?1, updated_at = ?2
+WHERE id = ?3 AND home_id = ?4
+`
+
+type SkinHomeItemParams struct {
+	Skin      string
+	UpdatedAt time.Time
+	ID        int64
+	HomeID    int64
+}
+
+func (q *Queries) SkinHomeItem(ctx context.Context, arg SkinHomeItemParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, skinHomeItem,
+		arg.Skin,
+		arg.UpdatedAt,
+		arg.ID,
+		arg.HomeID,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
 }

@@ -103,6 +103,10 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("GET /home-store/categories/{id}", page(auth.RequireSession(http.HandlerFunc(r.HandleHomeStoreCategoryView))))
 	mux.Handle("POST /home-store/items/{id}/purchase", page(auth.RequireSession(http.HandlerFunc(r.HandleHomeStoreItemPurchase))))
 	mux.Handle("GET /me/inventory", page(auth.RequireSession(http.HandlerFunc(r.HandleMeInventoryView))))
+	mux.Handle("POST /homes/{id}/layout", page(auth.RequireSession(http.HandlerFunc(r.HandleHomesLayout))))
+	mux.Handle("POST /homes/{id}/items", page(auth.RequireSession(http.HandlerFunc(r.HandleHomesItemsPlace))))
+	mux.Handle("POST /homes/{id}/items/{item}/skin", page(auth.RequireSession(http.HandlerFunc(r.HandleHomesItemsSkin))))
+	mux.Handle("POST /homes/{id}/items/{item}/delete", page(auth.RequireSession(http.HandlerFunc(r.HandleHomesItemsDelete))))
 
 	mux.Handle("GET /register", guestPage(r.HandleRegisterView))
 	mux.Handle("POST /register", guestPage(r.HandleRegister))

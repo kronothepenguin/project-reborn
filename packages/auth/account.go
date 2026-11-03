@@ -149,9 +149,9 @@ func CreateAccount(ctx context.Context, q *store.Queries, account Account) (user
 	return user.ID, avatarID, nil
 }
 
-// CreateHabbo writes a habbo of userID with its profile and home. Like
-// CreateAccount, it takes the queries of the caller's transaction and does not
-// validate the habbo.
+// CreateHabbo writes a habbo of userID with its profile, its home and the home's
+// profile widget. Like CreateAccount, it takes the queries of the caller's
+// transaction and does not validate the habbo.
 func CreateHabbo(ctx context.Context, q *store.Queries, userID int64, habbo Habbo) (avatarID int64, err error) {
 	now := clock().UTC()
 	avatar, err := q.CreateAvatar(ctx, store.CreateAvatarParams{
@@ -169,7 +169,25 @@ func CreateHabbo(ctx context.Context, q *store.Queries, userID int64, habbo Habb
 	if err != nil {
 		return 0, fmt.Errorf("auth: create habbo: %w", err)
 	}
-	if _, err := q.CreateProfileHome(ctx, store.CreateProfileHomeParams{ProfileID: profile.ID, UpdatedAt: now}); err != nil {
+	home, err := q.CreateProfileHome(ctx, store.CreateProfileHomeParams{ProfileID: profile.ID, UpdatedAt: now})
+	if err != nil {
+		return 0, fmt.Errorf("auth: create habbo: %w", err)
+	}
+	// Holo wrote the profile widget the first time anyone looked at the home, at
+	// this place.
+	_, err = q.CreateHomeItem(ctx, store.CreateHomeItemParams{
+		HomeID:            home.ID,
+		Kind:              "widget",
+		Widget:            sql.NullString{String: "profile", Valid: true},
+		Skin:              "defaultskin",
+		X:                 25,
+		Y:                 25,
+		Z:                 5,
+		CreatedByAvatarID: sql.NullInt64{Int64: avatar.ID, Valid: true},
+		CreatedAt:         now,
+		UpdatedAt:         now,
+	})
+	if err != nil {
 		return 0, fmt.Errorf("auth: create habbo: %w", err)
 	}
 	return avatar.ID, nil

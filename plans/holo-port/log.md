@@ -2,6 +2,9 @@
 
 ## 2026-11-03
 
+- **Done** [p3-07](/tasks/p3-07-home-changes.md): the owner of a habbo places, moves, skins and removes the items of
+  its home, with the inventory, the limit and the skins checked on the server.
+- **Start** [p3-07](/tasks/p3-07-home-changes.md).
 - **Done** [p3-06](/tasks/p3-06-home-store.md): the store and the inventory answer as JSON, and a purchase pays, writes
   the ledger and fills the inventory in one transaction.
 - **Start** [p3-06](/tasks/p3-06-home-store.md).

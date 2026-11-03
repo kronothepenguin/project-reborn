@@ -199,6 +199,10 @@ func TestCreateHabboWritesItsRows(t *testing.T) {
 	if n := f.count(t, `SELECT COUNT(*) FROM wallets`); n != 0 {
 		t.Errorf("%d wallets, want none from a habbo", n)
 	}
+	if n := f.count(t, `SELECT COUNT(*) FROM home_items JOIN homes ON homes.id = home_items.home_id JOIN profiles ON profiles.id = homes.profile_id
+		WHERE profiles.avatar_id = ? AND kind = 'widget' AND widget = 'profile' AND skin = 'defaultskin' AND x = 25 AND y = 25 AND z = 5`, avatarID); n != 1 {
+		t.Errorf("%d profile widgets where Holo put them, want 1", n)
+	}
 }
 
 func TestCreateAccountWritesTheWalletOnTheUser(t *testing.T) {

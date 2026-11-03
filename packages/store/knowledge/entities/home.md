@@ -14,15 +14,15 @@ background is a bought background item or the default.
 # Invariants
 
 - A home belongs to exactly one profile or one group, and each has at most one home.
-- A sticker references its store item; notes and widgets do not.
+- A sticker or a note references the store item it came from, so that it can go back to the inventory; widgets do not.
 - A home holds at most `homes.maxItems` items (validated in Go).
 - Only the owner, or an admin of the owning group, edits the home; permission is checked on every request.
 
 # Lifecycle
 
-- Created with its profile or group.
+- Created with its profile or group; a profile's home starts with its profile widget at Holo's place, 25 and 25.
 - Items are placed from the inventory (a sticker or note leaves it), moved, re-skinned and removed; a removed
-  sticker goes back to the inventory, a removed note is gone.
+  sticker goes back to the inventory, a removed note is gone, and a removed profile widget goes back to its place.
 - Deleted with its profile or group, together with its items.
 
 # Vocabularies
