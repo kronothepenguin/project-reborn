@@ -2,7 +2,8 @@
 type: Decision
 title: Seeds reach a database through the installer alone
 description: The home store's seed belongs to the CMS and only the installer writes it, so a database installed before a seed existed is recreated.
-status: accepted
+status: superseded
+superseded_by: "0068"
 timestamp: 2026-11-03T17:26:05+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-03T17:26:05+00:00"}
 tags: [installer, store, homes]

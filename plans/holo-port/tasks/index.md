@@ -128,6 +128,20 @@ starts.
 - [p3-11 Return placed items on archive](/tasks/p3-11-archive-returns-items.md) — Archiving a habbo returns its placed stickers and notes to the user's inventory, in the archive's transaction.
 - [p3-12 Verify P3](/tasks/p3-12-exit-check.md) — Every exit criterion of P3 holds from a clean checkout, in a real browser.
 
+## UP Database updates
+
+- [up-01 Apply update files](/tasks/up-01-update-runner.md) — packages/store lists, applies and records update files in order, each in one transaction with a foreign-key check, and saves a copy of the database before a run.
+- [up-02 Start the updates from a baseline](/tasks/up-02-baseline.md) — 0001-baseline.sql holds today's schema, Open creates a new database with every update and leaves an existing one alone, and a test keeps the schema files and the updates alike.
+- [up-03 Turn the seeds into updates](/tasks/up-03-seed-updates.md) — 0002-home-store.sql and 0003-ranks.sql replace the Go seeds, and the installer adds the administrator to the seeded group that holds every attribute.
+- [up-04 Add the database attribute](/tasks/up-04-database-attribute.md) — housekeeping.database joins the catalogue, 0004-database-attribute.sql grants it to the holders of housekeeping.accessGroups, and a test keeps every attribute with them on a new database.
+- [up-05 Build housekeeping's update page](/tasks/up-05-update-page.md) — GET /housekeeping/updates lists the waiting and applied updates, and POST /housekeeping/updates saves a copy and applies the waiting ones, for holders of housekeeping.database or housekeeping.accessGroups.
+- [up-06 Close the hotel while updates wait](/tasks/up-06-close-while-waiting.md) — While a database lacks updates, the CMS answers with its maintenance page and housekeeping only with its update page, scheduled tasks wait, and both open once nothing waits.
+- [up-07 Apply automatic updates at start](/tasks/up-07-automatic-updates.md) — When the CMS or housekeeping starts, it saves a copy and applies the waiting updates up to the last one marked automatic, shows an error page when one fails, and a test keeps sign-in working on the database start-up leaves.
+- [up-08 Offer config.json's new keys in housekeeping](/tasks/up-08-config-keys.md) — packages/config finds the keys config.json lacks and the keys nothing reads, and housekeeping's update page lets an administrator fill the new keys and rewrite config.json.
+- [up-09 Link the installer to the hotel](/tasks/up-09-installer-links.md) — The installer's done page and its "already installed" page link to the hotel at site.url, so the administrator goes on to sign in.
+- [up-10 Test updates in a real browser](/tasks/up-10-browser-suite.md) — A browser suite takes a hotel installed before updates existed through maintenance, sign-in, housekeeping's update page and config.json, until the hotel opens with Holo's home store.
+- [up-11 Verify UP](/tasks/up-11-exit-check.md) — Every exit criterion of UP holds from a clean checkout, in a real browser.
+
 ## Later phases
 
 [P4](/phases/p4-community.md), [P5](/phases/p5-groups-forum.md),

@@ -2,7 +2,8 @@
 type: Decision
 title: packages/store is the global database
 description: packages/store stays the one access point to one global database with every schema, and programs do not get schemas of their own.
-status: accepted
+status: superseded
+superseded_by: "0068"
 timestamp: 2026-11-01T20:49:31+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T20:49:31+00:00"}
 tags: [store, architecture]

@@ -25,7 +25,12 @@ change supersedes a decision with a new one.
 
 ## Configuration and data
 
-- [0049 packages/store is the global database](/decisions/0049-store-is-the-global-database.md) — packages/store stays the one access point to one global database with every schema, and programs do not get schemas of their own.
+- [0067 Database updates are our own migrations](/decisions/0067-updates-are-our-own-migrations.md) — packages/store applies numbered SQL update files in order, each in one transaction with its record and a foreign-key check, after saving a copy of the database, and the schema files stay beside them.
+- [0068 Seeds are updates, and a new database gets every update](/decisions/0068-seeds-are-updates.md) — Seed data lives in packages/store as update files beside the schema changes, and a program that creates a database applies every update to it, seeds included.
+- [0069 Waiting updates close the hotel](/decisions/0069-waiting-updates-close-the-hotel.md) — While a database lacks updates of the running binary, the CMS shows the maintenance page and housekeeping only its update page, until the updates are applied.
+- [0070 Housekeeping applies the updates and config.json's new keys](/decisions/0070-housekeeping-applies-updates.md) — Holders of housekeeping.database or housekeeping.accessGroups apply waiting updates and a release's new config.json keys from housekeeping, and the installer only installs and links to the hotel.
+- [0071 Updates that sign-in needs apply at start](/decisions/0071-sign-in-updates-apply-at-start.md) — An update marked automatic applies when a program starts, after a copy of the database; a failure shows an error page and goes to the log, and a test keeps sign-in working on the database start-up leaves.
+- [0049 packages/store is the global database](/decisions/0049-store-is-the-global-database.md) — packages/store stays the one access point to one global database with every schema, and programs do not get schemas of their own. **Superseded by [0068](/decisions/0068-seeds-are-updates.md).**
 - [0047 Every program works on an empty database](/decisions/0047-every-program-works-on-an-empty-database.md) — Any program creates and uses an empty database with default values, while the installer merges every schema and seed and lets the administrator change the defaults once.
 - [0004 Fresh start without Holo data](/decisions/0004-fresh-start.md) — No data is imported from a Holo or Holograph MySQL database, so the schema keeps no legacy ids, formats or hashes.
 - [0007 Store knowledge documents entities and tables](/decisions/0007-store-okf-entities-and-tables.md) — The store's OKF bundle adds entities/ and tables/ concepts next to the required schemas/ and queries/ concepts.
@@ -39,7 +44,7 @@ change supersedes a decision with a new one.
 - [0029 Settings and auth are package-level; apps take the db on creation](/decisions/0029-package-level-settings-and-auth.md) — Settings live in virtual/settings as a process-wide singleton read through package functions, auth is a set of helpers that receive the db, and app packages take the db as New's first argument with options only for the resolver and the static handler.
 - [0051 One machine, and a refresh instead of IPC](/decisions/0051-one-machine-and-a-refresh.md) — The programs run on one machine while the database is SQLite, and a CMS running alone re-reads the settings every cms.refresh seconds, so no IPC is built.
 - [0064 Home backgrounds are unlocks](/decisions/0064-backgrounds-are-unlocks.md) — A background is bought once and stays in the user's inventory, so any home of the user's habbos can show it, and the store refuses a second copy.
-- [0066 Seeds reach a database through the installer alone](/decisions/0066-seeds-reach-a-database-through-the-installer.md) — The home store's seed belongs to the CMS and only the installer writes it, so a database installed before a seed existed is recreated.
+- [0066 Seeds reach a database through the installer alone](/decisions/0066-seeds-reach-a-database-through-the-installer.md) — The home store's seed belongs to the CMS and only the installer writes it, so a database installed before a seed existed is recreated. **Superseded by [0068](/decisions/0068-seeds-are-updates.md).**
 - [0056 The wallet, the club and the home inventory belong to the user](/decisions/0056-wallet-club-and-inventory-per-user.md) — One wallet and one club membership per user, and stickers, notes and backgrounds are shared while they are not placed on a home.
 
 ## Scope
@@ -61,6 +66,7 @@ change supersedes a decision with a new one.
 
 ## Packages and process
 
+- [0072 Later work is listed in plans/later.md](/decisions/0072-later-work-in-plans-later.md) — plans/later.md, beside the port bundle, lists work planned for later that belongs to no phase, starting with the orchestrator's.
 - [0043 packages/scheduler runs timed tasks](/decisions/0043-scheduler.md) — A package-level, cron-like scheduler in packages/scheduler runs tasks written as scheduler.Every(1, scheduler.Hour, task), so a process has one scheduler whether a program runs alone or under the orchestrator.
 - [0046 Sequential work on main, parallel work on feature branches](/decisions/0046-main-and-feature-branches.md) — The agent commits sequential work on main and gives each parallel line of work a feature branch that is merged later, and it never pushes.
 - [0037 The CMS address comes from config.json](/decisions/0037-cms-host-in-config.md) — config.json gains cms.host, and the CMS runners listen on cms.host and cms.port instead of a fixed localhost.

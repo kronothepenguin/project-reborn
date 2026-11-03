@@ -2,6 +2,24 @@
 
 ## 2026-11-03
 
+- **Create** [UP Database updates](/phases/up-database-updates.md), with [up-01](/tasks/up-01-update-runner.md) to
+  [up-11](/tasks/up-11-exit-check.md), before [P4](/phases/p4-community.md), and its design in
+  [How database updates work](/reference/database-updates.md). UP is the active phase.
+- **Decision** [0072](/decisions/0072-later-work-in-plans-later.md): work planned for later is listed in `plans/later.md`,
+  beside the bundle, starting with the orchestrator.
+- **Decision** [0071](/decisions/0071-sign-in-updates-apply-at-start.md): updates that sign-in needs apply when a program
+  starts, after a copy, and a failure shows an error page.
+- **Decision** [0070](/decisions/0070-housekeeping-applies-updates.md): housekeeping applies the updates and config.json's
+  new keys, for holders of `housekeeping.database` or `housekeeping.accessGroups`; the installer only installs and links
+  to the hotel.
+- **Decision** [0069](/decisions/0069-waiting-updates-close-the-hotel.md): waiting updates close the hotel, and minor and
+  major updates are kept as a discussion in the store's knowledge.
+- **Decision** [0068](/decisions/0068-seeds-are-updates.md) supersedes
+  [0049](/decisions/0049-store-is-the-global-database.md) and
+  [0066](/decisions/0066-seeds-reach-a-database-through-the-installer.md): seeds are updates, and a new database gets
+  every update.
+- **Decision** [0067](/decisions/0067-updates-are-our-own-migrations.md): database updates are our own migrations in
+  `packages/store`, applied in order after a copy, with the schema files kept beside them.
 - **Done** [p3-12](/tasks/p3-12-exit-check.md): P3 meets its exit criteria from a clean checkout, with every gate and
   all 555 browser checks passing.
 - **Start** [p3-12](/tasks/p3-12-exit-check.md).

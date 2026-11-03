@@ -25,3 +25,7 @@ Concepts for `packages/store`, the project's persistence infrastructure.
 ## Queries
 
 - [Queries](queries/index.md) — Index of the query files and their generated operations.
+
+## Discussions
+
+- [Discussions](discussions/index.md) — Questions kept for a later discussion, with nothing planned from them.

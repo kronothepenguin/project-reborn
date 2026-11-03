@@ -27,9 +27,12 @@ packages/store/knowledge/
 ├── entities/
 │   ├── index.md
 │   └── <entity>.md     # one concept per domain entity
-└── queries/
+├── queries/
+│   ├── index.md
+│   └── <feature>.md    # one concept per query file
+└── discussions/
     ├── index.md
-    └── <feature>.md    # one concept per query file
+    └── <slug>.md       # one question kept for a later discussion
 ```
 
 Concept types by source artifact:
@@ -41,6 +44,7 @@ Concept types by source artifact:
 | A domain entity | `Entity` | `entities/<entity>.md` | none: an entity is abstract |
 | A query file | `SQL Query` | `queries/<feature>.md` | the query file |
 | The Go module | `Go Package` | `store.md` | `packages/store` |
+| A question kept for later | `Discussion` | `discussions/<slug>.md` | none: nothing is planned from it |
 
 Table concepts are named after the table (`club_subscriptions.md`); entity
 concepts after the singular entity in kebab-case (`club-subscription.md`).
@@ -73,6 +77,7 @@ fields are tolerated; a missing `type` is not.
 | Table | `# Schema`: one row per column (column, type, null, default, description, key or reference); `# Keys`: primary key, unique and plain indexes; links to its entity and to the queries that touch it |
 | Entity | `# Definition`, `# Invariants`, `# Lifecycle`, `# Vocabularies` (allowed values of open `TEXT` columns), `# Relations` (links to other entities); links to its tables and queries |
 | Query file | `# Operations`: one section per operation (name, cardinality, inputs, result, tables touched) |
+| Discussion | `# Status` (nothing planned, and the decision in force), `# The question`, `# What the user said` (quoted), `# Ideas raised` |
 
 - Prefer structural markdown over prose.
 - `# Examples` for short usage snippets.
