@@ -2,6 +2,9 @@
 
 ## 2026-11-03
 
+- **Done** [up-10](/tasks/up-10-browser-suite.md): a browser suite takes a hotel installed before updates through
+  maintenance, sign-in, the update page and config.json, until it opens with Holo's home store.
+- **Start** [up-10](/tasks/up-10-browser-suite.md).
 - **Done** [up-09](/tasks/up-09-installer-links.md): the installer's done page and its installed status page link to
   the hotel at site.url, where the administrator signs in.
 - **Start** [up-09](/tasks/up-09-installer-links.md).

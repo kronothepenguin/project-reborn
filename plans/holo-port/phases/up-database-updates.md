@@ -60,5 +60,5 @@ Out of scope:
 - [up-07 Apply automatic updates at start](/tasks/up-07-automatic-updates.md) — done
 - [up-08 Offer config.json's new keys in housekeeping](/tasks/up-08-config-keys.md) — done
 - [up-09 Link the installer to the hotel](/tasks/up-09-installer-links.md) — done
-- [up-10 Test updates in a real browser](/tasks/up-10-browser-suite.md) — todo
+- [up-10 Test updates in a real browser](/tasks/up-10-browser-suite.md) — done
 - [up-11 Verify UP](/tasks/up-11-exit-check.md) — todo

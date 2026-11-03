@@ -29,6 +29,7 @@ import * as me from "./suites/me.mjs";
 import * as register from "./suites/register.mjs";
 import * as signedOut from "./suites/signed-out.mjs";
 import * as together from "./suites/together.mjs";
+import * as updates from "./suites/updates.mjs";
 
 const suites = {
   "signed-out": signedOut,
@@ -46,6 +47,7 @@ const suites = {
   "housekeeping-maintenance": housekeepingMaintenance,
   "housekeeping-users": housekeepingUsers,
   "housekeeping-store": housekeepingStore,
+  updates,
   together,
 };
 
