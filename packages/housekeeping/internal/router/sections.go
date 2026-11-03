@@ -109,10 +109,19 @@ var forms = []section{
 		},
 	},
 	{
+		ID: "homes", Menu: "Homes", Title: "Homes", Button: defaultButton,
+		Fields: []field{
+			{Key: "homes.maxItems", Label: "Items Per Home", Help: "The most stickers, notes and widgets one home can hold."},
+			{Key: "homes.noteMaxLength", Label: "Note Length", Help: "The most characters in a note."},
+			{Key: "homes.maxTags", Label: "Tags Per Habbo", Help: "The most tags one habbo can have."},
+		},
+	},
+	{
 		ID: "features", Menu: "Manage Site Content", Title: "Manage Content Options", Button: defaultButton, Content: true,
 		Fields: []field{
 			{Key: "features.landingPromo", Label: "Landing Promo Enabled", Help: "This determines whether the promo on the login page will be displayed. If disabled, the join button is shown."},
 			{Key: "features.birthdayNotifications", Label: "Birthday Notifications Enabled", Help: "This will determine whether a 'Happy birthday' message will be shown on a user's birthday."},
+			{Key: "features.smilies", Label: "Smilies Enabled", Help: "This determines whether Smilies will be shown on the Discussion Board and on Homes."},
 		},
 	},
 }

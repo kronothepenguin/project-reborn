@@ -53,6 +53,11 @@ var catalogue = map[string]declaration{
 
 	"features.landingPromo":          declare(true, nil),
 	"features.birthdayNotifications": declare(true, nil),
+	"features.smilies":               declare(true, nil),
+
+	"homes.maxItems":      declare(200, between(1, 1000)),
+	"homes.noteMaxLength": declare(500, between(1, 5000)),
+	"homes.maxTags":       declare(20, between(1, 100)),
 }
 
 // rules check settings that depend on each other. keys lists every setting a

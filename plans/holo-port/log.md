@@ -2,6 +2,9 @@
 
 ## 2026-11-03
 
+- **Done** [p3-01](/tasks/p3-01-homes-settings.md): the homes settings and `features.smilies` are declared with Holo's
+  values and labelled on the settings forms.
+- **Start** [p3-01](/tasks/p3-01-homes-settings.md).
 - **Create** [p3-01](/tasks/p3-01-homes-settings.md) to [p3-12](/tasks/p3-12-exit-check.md): P3 is the active phase.
 - **Decision** [0066](/decisions/0066-seeds-reach-a-database-through-the-installer.md): only the installer writes seeds, so
   the development database is recreated after P3.

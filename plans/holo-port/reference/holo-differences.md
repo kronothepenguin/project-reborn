@@ -179,6 +179,7 @@ veto.
 | Staff log | 100 rows a page, with `Older` and `Newer` | Holo listed every row, and pruned them. Here rows are never deleted, so the list only grows |
 | Staff log | An `IP` column in place of `Note`, Holo's name of the PHP file | `staff_logs` has the address and no such note |
 | Settings | Forms for `auth`, `registration`, `referral`, `mail` and `imaging`, which Holo kept in `config.php` or nowhere | The plan: forms over the declared settings |
+| Settings | A `Homes` form for the items per home, the length of a note and the tags per habbo, which Holo wrote in its code | The plan: the `homes` section |
 | Settings | `mail.password` is never shown: blank keeps it, and `Clear it` removes it | The plan: `mail.password` masked |
 | Edit User | Two forms on the habbo's page, `Save Habbo` and `Save User` | A habbo and its owner are two rows |
 | Edit User | `users.update` and `habbos.update` list the fields saved, never their values | Holo logged `Edited user`, and an address must not reach readers of the log |
