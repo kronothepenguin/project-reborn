@@ -2,6 +2,9 @@
 
 ## 2026-11-03
 
+- **Done** [p3-10](/tasks/p3-10-housekeeping-store.md): staff with `housekeeping.homeStore` add items from the art in
+  the repository, and edit or stop selling any item, with a staff log row each time.
+- **Start** [p3-10](/tasks/p3-10-housekeeping-store.md).
 - **Done** [p3-11](/tasks/p3-11-archive-returns-items.md): archiving a habbo returns the stickers and notes of its home
   to the user's inventory, in the archive's transaction.
 - **Start** [p3-11](/tasks/p3-11-archive-returns-items.md).

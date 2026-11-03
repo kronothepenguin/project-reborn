@@ -335,10 +335,11 @@ func TestABadEditIsRefused(t *testing.T) {
 		{"a negative price", "price", "-1", storePrice},
 		{"a price too high", "price", "2147483648", storePrice},
 		{"a price that is no number", "price", "cheap", storePrice},
-		{"no units", "quantity", "0", "The quantity must be a number of at least 1."},
-		{"a negative quantity", "quantity", "-5", "The quantity must be a number of at least 1."},
-		{"a quantity with decimals", "quantity", "1.5", "The quantity must be a number of at least 1."},
-		{"a quantity past what a number holds", "quantity", "9223372036854775808", "The quantity must be a number of at least 1."},
+		{"no units", "quantity", "0", "The quantity must be a number from 1 to 2147483647."},
+		{"a negative quantity", "quantity", "-5", "The quantity must be a number from 1 to 2147483647."},
+		{"a quantity with decimals", "quantity", "1.5", "The quantity must be a number from 1 to 2147483647."},
+		{"a quantity past what a number holds", "quantity", "9223372036854775808", "The quantity must be a number from 1 to 2147483647."},
+		{"a quantity past a wallet's limit", "quantity", "2147483648", "The quantity must be a number from 1 to 2147483647."},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			form := editForm(before)

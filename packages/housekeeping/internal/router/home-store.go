@@ -22,7 +22,7 @@ const (
 	storeImageMissing    = "This image does not exist."
 	storeCategoryMissing = "This category does not exist."
 	storePriceInvalid    = "The price must be a number from 0 to 2147483647."
-	storeQuantityInvalid = "The quantity must be a number of at least 1."
+	storeQuantityInvalid = "The quantity must be a number from 1 to 2147483647."
 )
 
 // artFolders give an item its kind. Notes come only from the seed, so no art makes one.
@@ -191,9 +191,11 @@ func storePrice(posted string) (int64, bool) {
 	return price, err == nil && price >= 0 && price <= maxWalletAmount
 }
 
+// storeQuantity is capped like a wallet, since every purchase adds it to an
+// inventory, where a sum past SQLite's integers would turn into a float.
 func storeQuantity(posted string) (int64, bool) {
 	quantity, err := strconv.ParseInt(posted, 10, 64)
-	return quantity, err == nil && quantity >= 1
+	return quantity, err == nil && quantity >= 1 && quantity <= maxWalletAmount
 }
 
 // HandleHomeStoreCreate handles POST /housekeeping/home-store, Holo's Create Sticker.

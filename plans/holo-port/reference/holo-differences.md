@@ -130,6 +130,9 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Give Credits | `is_numeric` lets `1.5` and `1e3` through, and a debit can go below zero | Whole numbers up to 2147483647, and a debit stops at zero with Holo's message | A wallet holds whole credits, and a sum past SQLite's integers would turn into a float |
 | Badge tool | Takes any 3 or 4 characters | Letters and digits, saved in upper case | A code names a file and a segment of a path, and MySQL matched codes ignoring case |
 | User listing | Every administrator sees every email and address | Emails, birth dates and addresses take `housekeeping.usersPrivate`, in the search too | [0053](/decisions/0053-attributes-on-groups-and-users.md) |
+| Stickers & Backgrounds | Fetches any address from the server for the image's size, and appends unescaped text to `assets.css` | The image is one of the art files in the repository, by its path; nothing is fetched or written | The plan and [0061](/decisions/0061-art-in-the-repository.md): the fetch reached any host, and the form wrote CSS |
+| Stickers & Backgrounds | The price takes any text, a negative number too | A price from 0 to 2147483647 and a quantity from 1 to 2147483647, whole numbers | A wallet pays the price and an inventory adds the quantity, and past SQLite's integers a sum turns into a float |
+| Stickers & Backgrounds | Stores any category it is sent | Refuses a category that does not exist | An item outside every category could never be sold |
 
 ## Changed by a decision
 
@@ -165,6 +168,8 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Edit User | `credits` is a field of the form | Credits move only through `Give Credits`, which writes the ledger | Every change of credits has a ledger row |
 | Edit User | Every column but six can be edited, `hbirth`, `lastvisit`, `postcount` and `noob` too | The fields that still exist as data of their own: motto, figure, gender, email, birth date, newsletter, tickets and film | The others are worked out from history, or are gone |
 | Edit User | `...will also update (poof) ingame, if connected.` | `User updated successfully.` | The game server is deferred ([0013](/decisions/0013-defer-game-server-features.md)) |
+| Stickers & Backgrounds | Its own list of categories, with its own spellings and no Notes | The store's categories, in the store's order | The categories live in the database, and a fixed list would drift from it |
+| Stickers & Backgrounds | Open to every administrator | Takes `housekeeping.homeStore`, which the installer's Administrator and Moderator hold | [0053](/decisions/0053-attributes-on-groups-and-users.md), [0054](/decisions/0054-access-groups-are-holos-ranks.md) |
 
 ## Holo bugs not ported
 
@@ -177,6 +182,11 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Badge tool | A new badge is current, and the old one stays current too | One worn badge at a time | The old badge was never cleared |
 | Ban tool | Adds hours, days and months by hand, so a ban across the end of a day, a month or a year gets a wrong date | Real dates | The sums ignored month lengths and the year's end |
 | Ban tool | `Invalid ban length!` is written over, and the ban goes through ending now | The ban is refused | The message never showed |
+| Stickers & Backgrounds | `Please do not leave any fields blank.` shows whenever the page opens, and a post with a blank field does nothing | The message answers a blank post |
+| Stickers & Backgrounds | A price of `0` counts as blank, so a free item cannot be made | 0 is a price |
+| Stickers & Backgrounds | Every item is a sticker, even in Backgrounds | The image's folder gives the kind |
+| Stickers & Backgrounds | Its log row leaves out the item's name | `homeStore.create` reads `<name> worth <price> credits` |
+| Stickers & Backgrounds | Two items whose names start with the same word share one image | Each item keeps its own image |
 
 ## Not in Holo
 
@@ -207,6 +217,7 @@ veto.
 | Habbo page | Holders of `housekeeping.accessGroups` tick attributes for the user alone | [0053](/decisions/0053-attributes-on-groups-and-users.md) |
 | Habbo page | The page of one habbo, with its owner, their other habbos and the addresses they signed in from | The plan. Holo kept only the last address |
 | Access groups | The guard also keeps `housekeeping.access` on someone | `housekeeping.accessGroups` opens nothing without it, so the rule as written could still lock everyone out |
+| Stickers & Backgrounds | A gold list of every item, sold or not, 100 a page, each with a form for its name, category, price, quantity and `For Sale`; an item is never deleted | The plan: `POST /home-store/{id}`, and [0063](/decisions/0063-what-housekeeping-can-delete.md) |
 
 ## Kept as in Holo, on purpose
 
