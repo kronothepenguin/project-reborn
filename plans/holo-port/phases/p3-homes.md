@@ -2,7 +2,7 @@
 type: Phase
 title: P3 Homes
 description: Habbo home pages with stickers, notes and widgets, the home editor, the home store and inventory, profile tags, and the store seed and admin.
-status: planned
+status: active
 timestamp: 2026-10-27T20:48:19+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p3, cms, housekeeping, installer]
@@ -39,4 +39,15 @@ Every habbo has a home page that guests can read and the owner can decorate with
 
 # Tasks
 
-Created when the phase starts.
+- [p3-01 Declare the homes settings](/tasks/p3-01-homes-settings.md) — todo
+- [p3-02 Seed the home store](/tasks/p3-02-store-seed.md) — todo
+- [p3-03 Turn BBCode into HTML](/tasks/p3-03-bbcode.md) — todo
+- [p3-04 Show a home](/tasks/p3-04-home-page.md) — todo
+- [p3-05 Edit profile tags](/tasks/p3-05-profile-tags.md) — todo
+- [p3-06 Sell home items](/tasks/p3-06-home-store.md) — todo
+- [p3-07 Change a home](/tasks/p3-07-home-changes.md) — todo
+- [p3-08 Build the home editor](/tasks/p3-08-home-editor.md) — todo
+- [p3-09 Build the store and inventory dialogs](/tasks/p3-09-store-dialogs.md) — todo
+- [p3-10 Manage the home store in housekeeping](/tasks/p3-10-housekeeping-store.md) — todo
+- [p3-11 Return placed items on archive](/tasks/p3-11-archive-returns-items.md) — todo
+- [p3-12 Verify P3](/tasks/p3-12-exit-check.md) — todo

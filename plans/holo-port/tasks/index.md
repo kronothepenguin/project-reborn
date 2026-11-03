@@ -113,7 +113,22 @@ starts.
 - [hk-b-11 Fix what the screenshots showed](/tasks/hk-b-11-screenshot-fixes.md) — The help ticket page named the asker as the one logged in, and the WHOIS link lost its space and was missing from the listing.
 - [hk-b-10 Verify HK-B](/tasks/hk-b-10-exit-check.md) — Every exit criterion of HK-B holds from a clean checkout, in a real browser.
 
+## P3 Homes
+
+- [p3-01 Declare the homes settings](/tasks/p3-01-homes-settings.md) — Declare homes.maxItems, homes.noteMaxLength, homes.maxTags and features.smilies with Holo's values, and label them on the settings forms.
+- [p3-02 Seed the home store](/tasks/p3-02-store-seed.md) — The CMS owns Holo's home store categories and items, the installer writes them, and the store queries and Holo's home images are in place.
+- [p3-03 Turn BBCode into HTML](/tasks/p3-03-bbcode.md) — packages/cms/internal/bbcode renders Holo's BBCode and smilies as safe HTML, with the plan's colour classes.
+- [p3-04 Show a home](/tasks/p3-04-home-page.md) — GET /home/{name} and GET /home?name= show a habbo's home to anyone, with its items, background and profile widget, and Holo's pages for unknown and banned habbos.
+- [p3-05 Edit profile tags](/tasks/p3-05-profile-tags.md) — POST /me/tags and POST /me/tags/{tag}/delete add and remove the active habbo's tags with Holo's rules, from the tag panel of the profile widget.
+- [p3-06 Sell home items](/tasks/p3-06-home-store.md) — The store and the inventory answer as JSON, and a purchase takes credits, writes the ledger and fills the inventory in one transaction.
+- [p3-07 Change a home](/tasks/p3-07-home-changes.md) — POST /homes/{id}/layout, /items, /items/{item}/skin and /items/{item}/delete place, move, skin and remove items for the home's owner.
+- [p3-08 Build the home editor](/tasks/p3-08-home-editor.md) — GET /home/{name}/edit opens the editor island: drag, raise, skin and remove items, then save or cancel.
+- [p3-09 Build the store and inventory dialogs](/tasks/p3-09-store-dialogs.md) — The editor's Webstore and Inventory dialogs browse, preview, buy and place items, and the note editor writes a note.
+- [p3-10 Manage the home store in housekeeping](/tasks/p3-10-housekeeping-store.md) — /housekeeping/home-store lists the store, adds an item from the art in the repository, and edits or disables one.
+- [p3-11 Return placed items on archive](/tasks/p3-11-archive-returns-items.md) — Archiving a habbo returns its placed stickers and notes to the user's inventory, in the archive's transaction.
+- [p3-12 Verify P3](/tasks/p3-12-exit-check.md) — Every exit criterion of P3 holds from a clean checkout, in a real browser.
+
 ## Later phases
 
-[P3](/phases/p3-homes.md), [P4](/phases/p4-community.md), [P5](/phases/p5-groups-forum.md),
+[P4](/phases/p4-community.md), [P5](/phases/p5-groups-forum.md),
 [P6](/phases/p6-economy.md) and [P7](/phases/p7-help.md) get their tasks when they start.

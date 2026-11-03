@@ -2,7 +2,8 @@
 type: Decision
 title: The wallet, the club and the home inventory belong to the user
 description: One wallet and one club membership per user, and stickers, notes and backgrounds are shared while they are not placed on a home.
-status: accepted
+status: superseded
+superseded_by: "0064"
 timestamp: 2026-11-02T01:24:38+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-02T01:24:38+00:00"}
 tags: [economy, habbos]

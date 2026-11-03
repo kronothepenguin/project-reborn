@@ -19,6 +19,7 @@ change supersedes a decision with a new one.
 - [0053 Attributes on groups and on users](/decisions/0053-attributes-on-groups-and-users.md) — A user holds the attributes of their access groups and those given to them directly, private user data takes its own attribute, and the guard needs one user holding both keys.
 - [0054 Access groups are Holo's ranks](/decisions/0054-access-groups-are-holos-ranks.md) — The installer creates Holo's staff ranks as access groups with attributes, and admins can create, edit and delete any group.
 - [0055 Staff levels](/decisions/0055-staff-levels.md) — Each access group has a level, staff act only on users below them, IP bans skip housekeeping staff, and a banned user in housekeeping goes to the CMS.
+- [0065 Users edit the homes of all their habbos](/decisions/0065-owners-edit-all-their-homes.md) — A user edits the home of any habbo they own, whichever of their habbos is active.
 - [0058 Habbos are archived, not deleted](/decisions/0058-habbos-are-archived.md) — A user can archive a habbo instead of deleting it, which hides the habbo and keeps the audit trail, and staff can restore it.
 - [0059 Account forms keep the birth date and the session](/decisions/0059-account-forms.md) — The email and password forms keep Holo's birth date question, and a password change keeps the session of the user who made it, with a new token.
 
@@ -37,6 +38,8 @@ change supersedes a decision with a new one.
 - [0025 Settings reads never wait on writers](/decisions/0025-settings-reads-never-wait.md) — virtual.Settings publishes its values through an atomic pointer read without locks, and a mutex used only by Set and Reload serializes the writers.
 - [0029 Settings and auth are package-level; apps take the db on creation](/decisions/0029-package-level-settings-and-auth.md) — Settings live in virtual/settings as a process-wide singleton read through package functions, auth is a set of helpers that receive the db, and app packages take the db as New's first argument with options only for the resolver and the static handler.
 - [0051 One machine, and a refresh instead of IPC](/decisions/0051-one-machine-and-a-refresh.md) — The programs run on one machine while the database is SQLite, and a CMS running alone re-reads the settings every cms.refresh seconds, so no IPC is built.
+- [0064 Home backgrounds are unlocks](/decisions/0064-backgrounds-are-unlocks.md) — A background is bought once and stays in the user's inventory, so any home of the user's habbos can show it, and the store refuses a second copy.
+- [0066 Seeds reach a database through the installer alone](/decisions/0066-seeds-reach-a-database-through-the-installer.md) — The home store's seed belongs to the CMS and only the installer writes it, so a database installed before a seed existed is recreated.
 - [0056 The wallet, the club and the home inventory belong to the user](/decisions/0056-wallet-club-and-inventory-per-user.md) — One wallet and one club membership per user, and stickers, notes and backgrounds are shared while they are not placed on a home.
 
 ## Scope

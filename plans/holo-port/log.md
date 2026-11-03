@@ -1,5 +1,13 @@
 # Log
 
+## 2026-11-03
+
+- **Create** [p3-01](/tasks/p3-01-homes-settings.md) to [p3-12](/tasks/p3-12-exit-check.md): P3 is the active phase.
+- **Decision** [0066](/decisions/0066-seeds-reach-a-database-through-the-installer.md): only the installer writes seeds, so
+  the development database is recreated after P3.
+- **Decision** [0065](/decisions/0065-owners-edit-all-their-homes.md): a user edits the homes of all their habbos.
+- **Decision** [0064](/decisions/0064-backgrounds-are-unlocks.md): backgrounds are unlocks, as in Holo, and supersede that
+  line of 0056.
 ## 2026-11-02
 
 - **Done** [hk-b-10](/tasks/hk-b-10-exit-check.md): HK-B meets its exit criteria from a clean checkout, with every gate
