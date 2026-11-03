@@ -1,4 +1,5 @@
 ---
+import { Link } from "@project-reborn/components";
 import Setup from "../layouts/setup.astro";
 ---
 
@@ -19,4 +20,7 @@ import Setup from "../layouts/setup.astro";
       >[[ .Dir ]]</span
     > and sign in with your habbo name and password.
   </p>
+  <div class="flex justify-end text-sm">
+    <Link href="[[ .SiteURL ]]">Go to the hotel</Link>
+  </div>
 </Setup>

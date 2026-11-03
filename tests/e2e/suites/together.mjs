@@ -82,6 +82,13 @@ export default async function ({
     page.waitForURL("**/done"),
     page.click('button:has-text("Create administrator")'),
   ]);
+  const doneLink = page.getByRole("link", { name: "Go to the hotel" });
+  check(
+    "the done page links to the hotel",
+    (await doneLink.getAttribute("href")) === base,
+    await doneLink.getAttribute("href"),
+  );
+  await shot(page, "installer-done");
   const config = JSON.parse(readFileSync(`${dir}/config.json`, "utf8"));
   check(
     "config.json holds both ports",
@@ -89,11 +96,18 @@ export default async function ({
       config.housekeeping.port === ports.housekeeping,
     JSON.stringify(config),
   );
+  await page.goto(`${installer}/`);
+  const hotel = page.getByRole("link", { name: "Go to the hotel" });
+  check(
+    "the installed hotel's status links to it",
+    (await hotel.getAttribute("href")) === base,
+    await hotel.getAttribute("href"),
+  );
   await stop("installer");
 
   await start("cms");
   await start("housekeeping");
-  await page.goto(`${base}/`);
+  await Promise.all([page.waitForURL(`${base}/`), hotel.click()]);
   await page.fill('input[name="username"]', "Admin-1");
   await page.fill('input[name="password"]', "secret123");
   await Promise.all([

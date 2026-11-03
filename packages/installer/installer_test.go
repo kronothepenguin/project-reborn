@@ -68,6 +68,7 @@ func TestInstallation(t *testing.T) {
 		body     string
 	}{
 		{"status before configuring", "GET", "/", nil, 200, "", "Configured:false Installed:false"},
+		{"status links nowhere before installing", "GET", "/", nil, 200, "", "SiteURL:}"},
 		{"site before configuring", "GET", "/site", nil, 303, "/config", ""},
 		{"admin before configuring", "POST", "/admin", admin, 303, "/config", ""},
 		{"done before installing", "GET", "/done", nil, 303, "/", ""},
@@ -92,7 +93,9 @@ func TestInstallation(t *testing.T) {
 		{"short password", "POST", "/admin", with(with(admin, "password", "short"), "passwordConfirm", "short"), 422, "", "Passwords are 6 to 25 characters."},
 		{"create administrator", "POST", "/admin", admin, 303, "/done", ""},
 		{"done", "GET", "/done", nil, 200, "", "habbo.db"},
-		{"status after installing", "GET", "/", nil, 200, "", "Installed:true"},
+		{"done links to the hotel", "GET", "/done", nil, 200, "", "SiteURL:https://hotel.example.com}"},
+		{"status after installing", "GET", "/", nil, 200, "", "Installed:true ConfigPath:"},
+		{"status links to the hotel", "GET", "/", nil, 200, "", "SiteURL:https://hotel.example.com}"},
 		{"config after installing", "GET", "/config", nil, 303, "/", ""},
 		{"site after installing", "POST", "/site", site, 303, "/", ""},
 		{"admin after installing", "POST", "/admin", admin, 303, "/", ""},

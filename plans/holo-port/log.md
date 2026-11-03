@@ -2,6 +2,9 @@
 
 ## 2026-11-03
 
+- **Done** [up-09](/tasks/up-09-installer-links.md): the installer's done page and its installed status page link to
+  the hotel at site.url, where the administrator signs in.
+- **Start** [up-09](/tasks/up-09-installer-links.md).
 - **Done** [up-08](/tasks/up-08-config-keys.md): housekeeping's update page offers the keys a release adds to
   config.json, with their defaults, and rewrites the file without the keys nothing reads.
 - **Start** [up-08](/tasks/up-08-config-keys.md).

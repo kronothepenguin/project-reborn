@@ -6,12 +6,14 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/installer/internal/setup"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 type donePage struct {
 	ConfigPath   string
 	DatabasePath string
 	Dir          string
+	SiteURL      string
 }
 
 // HandleDoneView renders GET /done once the administrator exists.
@@ -35,5 +37,6 @@ func (r *Router) HandleDoneView(w http.ResponseWriter, req *http.Request) {
 		ConfigPath:   configPath,
 		DatabasePath: database,
 		Dir:          filepath.Dir(configPath),
+		SiteURL:      settings.GetString("site.url"),
 	})
 }
