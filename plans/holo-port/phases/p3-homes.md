@@ -49,5 +49,5 @@ Every habbo has a home page that guests can read and the owner can decorate with
 - [p3-08 Build the home editor](/tasks/p3-08-home-editor.md) — todo
 - [p3-09 Build the store and inventory dialogs](/tasks/p3-09-store-dialogs.md) — todo
 - [p3-10 Manage the home store in housekeeping](/tasks/p3-10-housekeeping-store.md) — todo
-- [p3-11 Return placed items on archive](/tasks/p3-11-archive-returns-items.md) — todo
+- [p3-11 Return placed items on archive](/tasks/p3-11-archive-returns-items.md) — done
 - [p3-12 Verify P3](/tasks/p3-12-exit-check.md) — todo

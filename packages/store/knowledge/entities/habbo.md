@@ -24,7 +24,8 @@ motto. A user can own several habbos, which share the user's wallet, club member
 - Created with its user at registration, or later from Account → Habbos.
 - Look, gender and motto change from the account settings; badges come from staff or club purchases.
 - The owner archives a habbo from Account → Habbos, and staff restore it. An archived habbo cannot sign in, leaves the
-  lists and the limit of `registration.maxHabbosPerUser`, and keeps its rows and its name.
+  lists and the limit of `registration.maxHabbosPerUser`, and keeps its rows and its name. The stickers and notes on its
+  home go back to the user's inventory, notes without their text.
 - Deleting a habbo deletes its badges, outfits, the sessions where it is active and its SSO tickets, and clears it
   as display habbo, referrer and login-attempt habbo.
 

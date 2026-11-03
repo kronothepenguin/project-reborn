@@ -219,7 +219,9 @@ func SwitchHabbo(ctx context.Context, db *sql.DB, avatarID int64) error {
 // ArchiveHabbo hides a habbo of the session's user. Its rows stay for the audit
 // trail and its name stays taken, so nobody can pose as it. The active habbo
 // cannot go, so a user always keeps one, and sessions open on the archived habbo
-// elsewhere move to this session's.
+// elsewhere move to this session's. The stickers and notes on its home go back to
+// the user's inventory, a note without its text, and the background stays: it is
+// the user's, whichever homes show it.
 func ArchiveHabbo(ctx context.Context, db *sql.DB, avatarID int64) error {
 	session, ok := FromContext(ctx)
 	if !ok {
@@ -259,8 +261,38 @@ func ArchiveHabbo(ctx context.Context, db *sql.DB, avatarID int64) error {
 	if err != nil {
 		return fmt.Errorf("auth: archive habbo: %w", err)
 	}
+	if err := returnPlacedItems(ctx, q, session.UserID, avatarID); err != nil {
+		return fmt.Errorf("auth: archive habbo: %w", err)
+	}
 	if err := tx.Commit(); err != nil {
 		return fmt.Errorf("auth: archive habbo: %w", err)
+	}
+	return nil
+}
+
+func returnPlacedItems(ctx context.Context, q *store.Queries, userID, avatarID int64) error {
+	home, err := q.GetProfileHome(ctx, avatarID)
+	if store.IsNotFound(err) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	items, err := q.ListHomeItems(ctx, home.ID)
+	if err != nil {
+		return err
+	}
+	for _, item := range items {
+		if (item.Kind != "sticker" && item.Kind != "note") || !item.HomeStoreItemID.Valid {
+			continue
+		}
+		if _, err := q.DeleteHomeItem(ctx, store.DeleteHomeItemParams{ID: item.ID, HomeID: home.ID}); err != nil {
+			return err
+		}
+		err := q.AddHomeInventory(ctx, store.AddHomeInventoryParams{UserID: userID, HomeStoreItemID: item.HomeStoreItemID.Int64, Quantity: 1})
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"testing"
 	"time"
+
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 func TestLoginStartsASession(t *testing.T) {
@@ -293,6 +295,60 @@ func TestArchiveHabbo(t *testing.T) {
 	}
 	if err := SwitchHabbo(ctx, f.db, second); !errors.Is(err, ErrNotOwner) {
 		t.Errorf("switching to it = %v, want ErrNotOwner", err)
+	}
+}
+
+func TestArchivingReturnsTheHomesStickersAndNotes(t *testing.T) {
+	f := newFixture(t)
+	userID, _ := f.habbo(t, "admin@example.com", "Admin", testPassword)
+	q := store.New(f.db)
+	second, err := CreateHabbo(t.Context(), q, userID, Habbo{Name: "Second", Figure: "hd-180-1", Gender: "M"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := q.CreateHomeStoreCategory(t.Context(), store.CreateHomeStoreCategoryParams{ID: 1, Name: "General"}); err != nil {
+		t.Fatal(err)
+	}
+	for id, kind := range map[int64]string{1: "sticker", 2: "note", 3: "background"} {
+		err := q.SeedHomeStoreItem(t.Context(), store.SeedHomeStoreItemParams{ID: id, HomeStoreCategoryID: 1, Kind: kind, Asset: "a.gif", Name: kind, Price: 1, Quantity: 1})
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	home, err := q.GetProfileHome(t.Context(), second)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, placed := range []struct {
+		kind string
+		item int64
+	}{{"sticker", 1}, {"sticker", 1}, {"note", 2}} {
+		_, err := q.CreateHomeItem(t.Context(), store.CreateHomeItemParams{HomeID: home.ID, Kind: placed.kind, HomeStoreItemID: sql.NullInt64{Int64: placed.item, Valid: true}, Body: "text", CreatedAt: testNow, UpdatedAt: testNow})
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := q.SetHomeBackground(t.Context(), store.SetHomeBackgroundParams{ID: home.ID, BackgroundHomeStoreItemID: sql.NullInt64{Int64: 3, Valid: true}, UpdatedAt: testNow}); err != nil {
+		t.Fatal(err)
+	}
+	if err := q.AddHomeInventory(t.Context(), store.AddHomeInventoryParams{UserID: userID, HomeStoreItemID: 3, Quantity: 1}); err != nil {
+		t.Fatal(err)
+	}
+	session, _, _ := f.visit(t, f.mustLogin(t, "Admin", false))
+
+	if err := ArchiveHabbo(context.WithValue(t.Context(), contextKey{}, session), f.db, second); err != nil {
+		t.Fatalf("ArchiveHabbo: %v", err)
+	}
+	for item, want := range map[int64]int{1: 2, 2: 1, 3: 1} {
+		if n := f.count(t, `SELECT quantity FROM home_inventory WHERE user_id = ? AND home_store_item_id = ?`, userID, item); n != want {
+			t.Errorf("item %d: %d in the inventory, want %d", item, n, want)
+		}
+	}
+	if n := f.count(t, `SELECT COUNT(*) FROM home_items WHERE home_id = ? AND kind != 'widget'`, home.ID); n != 0 {
+		t.Errorf("%d stickers and notes left on the home", n)
+	}
+	if n := f.count(t, `SELECT COUNT(*) FROM home_items WHERE home_id = ? AND widget = 'profile'`, home.ID); n != 1 {
+		t.Errorf("%d profile widgets, want it kept", n)
 	}
 }
 
