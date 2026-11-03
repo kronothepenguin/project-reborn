@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"io/fs"
 
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	_ "modernc.org/sqlite"
@@ -13,23 +12,34 @@ import (
 // Open returns a pool with a single connection. Inside a transaction use only
 // the queries bound to it (New(db).WithTx(tx)): touching db there waits forever
 // for the connection the transaction already holds.
+//
+// A database with no table gets every update at once. Open writes nothing to
+// any other database: its waiting updates are applied by an administrator, or
+// at start when they are automatic.
 func Open(path string) (*sql.DB, error) {
 	db, err := connect(path)
 	if err != nil {
 		return nil, err
 	}
-
-	schemas, err := fs.Sub(schemaFS, "schema")
-	if err != nil {
+	if err := createIfNew(context.Background(), db); err != nil {
 		db.Close()
 		return nil, fmt.Errorf("store: open %q: %w", path, err)
 	}
-	if err := applySchemas(db, schemas); err != nil {
-		db.Close()
-		return nil, fmt.Errorf("store: open %q: %w", path, err)
-	}
-
 	return db, nil
+}
+
+func createIfNew(ctx context.Context, db *sql.DB) error {
+	var tables int
+	err := db.QueryRowContext(ctx, `SELECT COUNT(*) FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite\_%' ESCAPE '\'`).Scan(&tables)
+	if err != nil || tables > 0 {
+		return err
+	}
+	updates, err := Updates()
+	if err != nil {
+		return err
+	}
+	_, err = ApplyUpdates(ctx, db, updates)
+	return err
 }
 
 func connect(path string) (*sql.DB, error) {

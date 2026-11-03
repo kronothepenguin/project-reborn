@@ -2,6 +2,10 @@
 
 ## 2026-11-03
 
+- **Done** [up-02](/tasks/up-02-baseline.md): 0001-baseline.sql holds the schema of every hotel before updates, Open
+  gives a new database every update and leaves an existing one alone, and a test keeps the schema files and the updates
+  alike.
+- **Start** [up-02](/tasks/up-02-baseline.md).
 - **Done** [up-01](/tasks/up-01-update-runner.md): packages/store lists, applies and records update files in order,
   each in one transaction with a foreign-key check, and saves copies of the database.
 - **Start** [up-01](/tasks/up-01-update-runner.md).

@@ -1,7 +1,7 @@
 ---
 type: Go Package
 title: Store
-description: Persistence infrastructure that opens the SQLite file, applies the declared schemas and provides the generated typed operations.
+description: Persistence infrastructure that opens the SQLite file, applies the update files and provides the generated typed operations.
 resource: packages/store
 tags: [store, sqlite, go]
 timestamp: 2026-11-03T21:45:00+00:00
@@ -10,21 +10,23 @@ timestamp: 2026-11-03T21:45:00+00:00
 # Overview
 
 `packages/store` is the project's persistence infrastructure. `Open` returns a
-`*sql.DB` for the deployment's SQLite file after applying every declared
-schema, and the sqlc-generated `New` binds the typed operations from
-`packages/store/queries/` to that database or to a transaction. It owns no
-domain tables: features contribute schema and query files incrementally.
+`*sql.DB` for the deployment's SQLite file, and gives a new database every
+[update](/migrations/index.md). The sqlc-generated `New` binds the typed
+operations from `packages/store/queries/` to that database or to a
+transaction. It owns no domain tables: features contribute schema, update and
+query files.
 
 # API
 
 | Function | Behaviour |
 |----------|-----------|
-| `Open(path string) (*sql.DB, error)` | Opens the SQLite file (creating it when missing) and applies the embedded schemas. |
+| `Open(path string) (*sql.DB, error)` | Opens the SQLite file, creating it when missing. A database with no table gets every update at once; Open writes nothing to any other database. |
 | `Must(db *sql.DB, err error) *sql.DB` | Returns `db`, or panics with `err`, like `template.Must`. |
 | `FromConfig() *sql.DB` | Opens the database that `config.json` names (`config.Get().Store.Path`) through `Must`; runners use it to get the db they pass to the apps. |
 | `New(db DBTX) *Queries` | Generated; binds the typed operations to a `*sql.DB` or a `*sql.Tx`. |
 | `(*Queries).WithTx(tx *sql.Tx) *Queries` | Generated; the same operations inside a transaction. |
 | `IsNotFound`, `IsConflict`, `IsForeignKey`, `IsBusy` | Classify the errors the operations return. |
+| `Updates() ([]Update, error)` | The updates the program carries, from `packages/store/migrations/`, in version order. |
 | `ParseUpdates(fsys fs.FS) ([]Update, error)` | Reads the [update](/entities/update.md) files `NNNN-<name>.sql` at the root of `fsys`: versions from 0001 without a gap, a `-- ` title on the first line, and the `-- automatic` mark among the first comments. |
 | `WaitingUpdates(ctx, db, updates) ([]Update, error)` | The updates `db` has not applied, in version order. It only reads. |
 | `AppliedUpdates(ctx, db) ([]Migration, error)` | The rows of [migrations](/tables/migrations.md) in version order, and none before the table exists. |
@@ -48,10 +50,13 @@ domain tables: features contribute schema and query files incrementally.
   database file. Readers see committed data only; conflicting writers wait up
   to the busy timeout, then fail with a busy error for which `IsBusy` is true.
   A failed write never leaves a partial change behind.
-- **Additive evolution.** Schema files are applied in lexicographic filename
-  order and use idempotent, additive DDL. The store never drops, alters, or
-  overwrites structures it does not declare, so an older application can open
-  a database created by a newer one and leave unknown structures untouched.
+- **Schema files and updates agree.** The schema files describe the database
+  as it is now, for sqlc and the docs. The update files are how a database gets
+  there, and a test fails when a database built from the schema files differs
+  from one built from the updates.
+- **An existing database changes only through updates.** `Open` gives a new
+  database every update and writes nothing to an existing one, whose waiting
+  updates are applied by an administrator, or at start when they are automatic.
 - **Updates apply once and in order.** Each update runs in one transaction with
   its row in `migrations`, so a failed update leaves no trace and the run stops
   there, keeping the updates before it. `BEGIN IMMEDIATE` takes the write lock

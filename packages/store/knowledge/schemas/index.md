@@ -1,7 +1,8 @@
 # Schemas
 
-Concepts for the schema files under `packages/store/schema/`. They are applied in
-lexicographic filename order on every `store.Open`.
+Concepts for the schema files under `packages/store/schema/`. They describe the
+database as it is now, for sqlc and these docs; the [update files](/migrations/index.md)
+build it, and a test keeps the two alike.
 
 ## Identity
 

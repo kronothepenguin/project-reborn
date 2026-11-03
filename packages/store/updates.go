@@ -3,7 +3,7 @@ package store
 import (
 	"context"
 	"database/sql"
-	_ "embed"
+	"embed"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -11,6 +11,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -24,6 +25,17 @@ const (
 
 //go:embed schema/migrations.schema.sql
 var migrationsSchema string
+
+//go:embed migrations/*.sql
+var updatesFS embed.FS
+
+var embeddedUpdates = sync.OnceValues(func() ([]Update, error) {
+	fsys, err := fs.Sub(updatesFS, "migrations")
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdates(fsys)
+})
 
 var updateFileName = regexp.MustCompile(`^([0-9]{4})-([a-z0-9]+(?:-[a-z0-9]+)*)\.sql$`)
 
@@ -52,6 +64,12 @@ func (e *UpdateError) Error() string {
 
 func (e *UpdateError) Unwrap() error {
 	return e.Err
+}
+
+// Updates returns the updates this program carries, from
+// packages/store/migrations, in version order.
+func Updates() ([]Update, error) {
+	return embeddedUpdates()
 }
 
 // ParseUpdates reads the update files at the root of fsys, named

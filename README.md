@@ -116,7 +116,7 @@ GitHub Actions runs both on every push to `main` and on pull requests.
 
 ## Database
 
-The persistence infrastructure lives in `packages/store/`: it owns the SQLite file, applies the declared schemas on every open, and exposes typed operations generated from SQL with sqlc. Run the generator after changing any `.sql` files.
+The persistence infrastructure lives in `packages/store/`: it owns the SQLite file, gives a new database every update in `packages/store/migrations/`, and exposes typed operations generated from SQL with sqlc. Run the generator after changing any `.sql` files.
 
 ```bash
 cd packages/store && go tool sqlc generate

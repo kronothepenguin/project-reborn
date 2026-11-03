@@ -10,11 +10,10 @@ Follow these steps in order. Work from the repository root unless stated.
 1. **Choose the feature filename family.** Pick a lowercase kebab-case name,
    for example `auth`, and use `auth.schema.sql` and `auth.query.sql`.
 
-2. **Add the schema file** `packages/store/schema/<feature>.schema.sql`.
-   Use additive, idempotent DDL only: `CREATE TABLE IF NOT EXISTS` and
-   `CREATE INDEX IF NOT EXISTS` / `CREATE UNIQUE INDEX IF NOT EXISTS`. Never
-   `DROP`, `ALTER`, `INSERT`, `UPDATE`, or `DELETE`. A table can never gain a
-   column later, so declare it complete and give a new concern its own table.
+2. **Add or change the schema file** `packages/store/schema/<feature>.schema.sql`.
+   It describes the database as it is now, for sqlc and the docs, with
+   `CREATE TABLE IF NOT EXISTS` and `CREATE INDEX IF NOT EXISTS` /
+   `CREATE UNIQUE INDEX IF NOT EXISTS`. Edit a table in place when it changes.
 
    | Rule | Convention |
    | --- | --- |
@@ -29,28 +28,53 @@ Follow these steps in order. Work from the repository root unless stated.
 
    Never declare `TIME` columns: sqlc does not map them to a Go type.
 
-3. **Add named operations** `packages/store/queries/<feature>.query.sql`.
+3. **Add an update file** `packages/store/migrations/NNNN-<slug>.sql`, with
+   the next free number, holding the same change. It is how an existing
+   database gets it, and every program carries it. The test
+   `TestTheUpdatesBuildTheDatabaseTheSchemaFilesDescribe` fails when the schema
+   files and the updates describe different databases.
+
+   | Part | Rule |
+   | --- | --- |
+   | First line | `-- <one sentence>`, the title housekeeping shows |
+   | Mark | `-- automatic` among the first comments when sign-in, housekeeping's access check or its update page read what the update adds |
+   | New table or index | the statement exactly as in the schema file |
+   | New column | `ALTER TABLE ... ADD COLUMN` with the column's text from the schema file |
+   | Any other table change | rebuild the table: create the new one, copy the rows, drop the old one, rename the new one, create its indexes again |
+   | Seed rows | fixed ids and `INSERT OR IGNORE`, so rows an administrator changed stay |
+   | New attribute in `packages/auth` | an update that grants it to the holders of `housekeeping.accessGroups` |
+
+   An update runs in one transaction with foreign keys off, and
+   `PRAGMA foreign_key_check` must find nothing before the commit. So
+   `ON DELETE CASCADE` does not fire: delete child rows yourself. Never rely on
+   values an administrator can change, such as a group's name. A released
+   update never changes: a fix is a new update. A feature branch renumbers its
+   updates when another branch merged the same numbers first.
+
+4. **Add named operations** `packages/store/queries/<feature>.query.sql`.
    Every statement starts with `-- name: <Operation> :one|:many|:exec|:execrows|:execlastid`.
    Reads use `:one`/`:many`; mutations use the `:exec*` forms. List reads
    include an explicit `ORDER BY`. Times arrive as parameters from Go; never use
    `CURRENT_TIMESTAMP`. No ad-hoc SQL in applications.
 
-4. **Document the change** with the `documenting-with-okf` skill
+5. **Document the change** with the `documenting-with-okf` skill
    (`.agents/skills/documenting-with-okf/SKILL.md`), in
    `packages/store/knowledge/`:
    - one concept per schema file in `schemas/<feature>.md`;
    - one concept per query file in `queries/<feature>.md`;
+   - one concept per update file in `migrations/<file>.md`;
    - one concept per table in `tables/<table>.md`;
    - a new or updated concept in `entities/<entity>.md` for each entity the
      tables represent;
    - every concept listed in its directory `index.md`.
 
-5. **Generate the typed operations.** From `packages/store` run
+6. **Generate the typed operations.** From `packages/store` run
    `go tool sqlc generate` (or `make generate`). Commit the generated
    `<feature>.query.sql.go` file; never edit it by hand.
 
-6. **Consume through the store.** Open the database once per process with
-   `store.Open(path)` (or `store.Must(store.Open(path))`) and bind the
+7. **Consume through the store.** Open the database once per process with
+   `store.Open(path)` (or `store.Must(store.Open(path))`), which gives a new
+   database every update and writes nothing to an existing one, and bind the
    operations with `store.New(db)`. Run writes that must succeed together in
    one transaction:
 
@@ -73,7 +97,7 @@ Follow these steps in order. Work from the repository root unless stated.
    `store.IsForeignKey` and `store.IsBusy`. Applications never import a driver
    or execute SQL themselves.
 
-7. **Verify.** From `packages/store`: `go vet ./...` and `go test ./...`
+8. **Verify.** From `packages/store`: `go vet ./...` and `go test ./...`
    pass; `make check-docs` exits 0; regenerating with `go tool sqlc generate`
    leaves the generated files unchanged
    (`git diff --exit-code -- db.go models.go '*.query.sql.go'`).
@@ -100,13 +124,14 @@ Follow these steps in order. Work from the repository root unless stated.
 
 ```text
 New persisted data:
-- [ ] schema file is additive and idempotent (no DROP/ALTER/DML)
+- [ ] the schema file describes the tables as they are now, with IF NOT EXISTS
+- [ ] an update file with the same change: next free number, a title, `-- automatic` when sign-in needs it
 - [ ] table, column, index and foreign-key names follow the naming rules
 - [ ] instants are DATETIME, dates are DATE, flags are BOOLEAN; no TIME columns
 - [ ] every table referenced by a foreign key is declared before code writes the child
 - [ ] every operation is named and given a cardinality
 - [ ] list operations specify ORDER BY; times come from Go, never CURRENT_TIMESTAMP
-- [ ] OKF concepts for each schema file, query file, table and entity, linked and indexed
+- [ ] OKF concepts for each schema file, query file, update file, table and entity, linked and indexed
 - [ ] `go tool sqlc generate` re-run; generated files committed
 - [ ] `go vet ./...` and `go test ./...` pass from packages/store
 - [ ] `make check-docs` exits 0
