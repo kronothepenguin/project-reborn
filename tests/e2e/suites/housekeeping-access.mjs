@@ -20,6 +20,8 @@ const everyRoute = [
   ["POST", "/access-groups/1/delete"],
   ["POST", "/users/1/access-groups"],
   ["GET", "/logs"],
+  ["GET", "/updates"],
+  ["POST", "/updates"],
   ["GET", "/alerts"],
   ["POST", "/alerts"],
   ["GET", "/bans"],
@@ -145,6 +147,7 @@ export default async function (t) {
       "/access-groups",
       "/access-groups/1",
       "/logs",
+      "/updates",
     ]) {
       const response = await page.goto(`${hk}${path}`);
       check(
@@ -160,6 +163,7 @@ export default async function (t) {
       "/access-groups",
       "/access-groups/1",
       "/users/1/access-groups",
+      "/updates",
     ]) {
       check(
         `a helper's POST ${path} gets 403`,

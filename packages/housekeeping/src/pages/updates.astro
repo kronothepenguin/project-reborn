@@ -1,0 +1,65 @@
+---
+import { Table } from "@project-reborn/components";
+import Box from "../components/box.astro";
+import Message from "../components/message.astro";
+import Submit from "../components/submit.astro";
+import Housekeeping from "../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="Database Updates" tab="site">
+  <Message />
+  <div class="space-y-3">
+    <form method="post" action="/housekeeping/updates">
+      <Box title="Waiting Updates">
+        [[ if .Waiting ]]
+        <Table>
+          <thead>
+            <tr>
+              <th>Update</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            [[ range .Waiting ]]
+            <tr>
+              <td class="whitespace-nowrap">[[ .Number ]]</td>
+              <td>[[ .Title ]]</td>
+            </tr>
+            [[ end ]]
+          </tbody>
+        </Table>
+        <div class="flex items-center justify-between gap-3 p-1">
+          <p>A copy of the database is saved beside it first. The updates apply in order, and the first that fails stops them.</p>
+          <Submit>Apply Updates</Submit>
+        </div>
+        [[ else ]]
+        <p class="px-1 py-0.5">The database has every update of this release.</p>
+        [[ end ]]
+      </Box>
+    </form>
+    <Box title="Applied Updates" color="gold">
+      <Table>
+        <thead>
+          <tr>
+            <th>Update</th>
+            <th>Description</th>
+            <th>Applied</th>
+          </tr>
+        </thead>
+        <tbody>
+          [[ range .Applied ]]
+          <tr>
+            <td class="whitespace-nowrap">[[ .Number ]]</td>
+            <td>[[ .Title ]]</td>
+            <td class="whitespace-nowrap">[[ .Date ]]</td>
+          </tr>
+          [[ else ]]
+          <tr>
+            <td colspan="3">No update was applied yet.</td>
+          </tr>
+          [[ end ]]
+        </tbody>
+      </Table>
+    </Box>
+  </div>
+</Housekeeping>

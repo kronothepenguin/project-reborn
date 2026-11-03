@@ -8,6 +8,7 @@ import MenuLink from "./menu-link.astro";
     [[ range .Sections ]][[ if not .Content ]]
     <MenuLink href="/housekeeping/settings?section=[[ .ID ]]">[[ .Menu ]]</MenuLink>
     [[ end ]][[ end ]]
+    <MenuLink href="/housekeeping/updates">Database updates</MenuLink>
   </ul>
 </Box>
 <Box title="Content Management">

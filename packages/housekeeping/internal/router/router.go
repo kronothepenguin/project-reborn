@@ -61,6 +61,11 @@ func (r *Router) Staff(next http.Handler) http.Handler {
 // RequireAttribute lets through only staff holding attr, inside Staff. Anyone
 // else gets Holo's Access Denied page, in the layout, because they are staff.
 func (r *Router) RequireAttribute(attr auth.Attribute) func(http.Handler) http.Handler {
+	return r.RequireAnyAttribute(attr)
+}
+
+// RequireAnyAttribute lets in a user holding at least one of attrs.
+func (r *Router) RequireAnyAttribute(attrs ...auth.Attribute) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			session, _ := auth.FromContext(req.Context())
@@ -69,7 +74,7 @@ func (r *Router) RequireAttribute(attr auth.Attribute) func(http.Handler) http.H
 				r.fail(w, err)
 				return
 			}
-			if !slices.Contains(attributes, attr) {
+			if !slices.ContainsFunc(attrs, func(attr auth.Attribute) bool { return slices.Contains(attributes, attr) }) {
 				r.denied(w, req)
 				return
 			}

@@ -14,6 +14,16 @@ export default async function (t) {
   await page.getByRole("button", { name: "Save Admin Notes" }).click();
   await page.waitForLoadState();
 
+  await page.getByRole("link", { name: "Database updates" }).click();
+  await page.waitForURL("**/housekeeping/updates");
+  await shot(page, "updates");
+  check(
+    "the administrator finds every update applied",
+    (await page.getByRole("heading", { name: "Applied Updates" }).count()) === 1 &&
+      (await page.getByText("The database has every update of this release.").count()) === 1 &&
+      (await page.locator("tbody tr").count()) === 4,
+  );
+
   await page.goto(`${hk}/access-groups`);
   await shot(page, "groups");
   check(

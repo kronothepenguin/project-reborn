@@ -2,6 +2,10 @@
 
 ## 2026-11-03
 
+- **Done** [up-05](/tasks/up-05-update-page.md): housekeeping's update page lists the waiting and the applied updates,
+  and applies them after a copy, with a staff log row, for holders of housekeeping.database or
+  housekeeping.accessGroups.
+- **Start** [up-05](/tasks/up-05-update-page.md).
 - **Done** [up-04](/tasks/up-04-database-attribute.md): housekeeping.database joins the catalogue, and
   0004-database-attribute.sql gives it to every group and user that manages access.
 - **Start** [up-04](/tasks/up-04-database-attribute.md).

@@ -89,6 +89,14 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 
 	mux.Handle("GET /housekeeping/logs", holding(auth.HousekeepingLogs, r.HandleLogsView))
 
+	// Holders of housekeeping.accessGroups can give themselves any attribute, and
+	// one of them always exists, so a hotel always has someone to apply updates.
+	updating := func(next http.HandlerFunc) http.Handler {
+		return page(r.RequireAnyAttribute(auth.HousekeepingDatabase, auth.HousekeepingAccessGroups)(next))
+	}
+	mux.Handle("GET /housekeeping/updates", updating(r.HandleUpdatesView))
+	mux.Handle("POST /housekeeping/updates", updating(r.HandleUpdatesApply))
+
 	mux.Handle("GET /housekeeping/alerts", holding(auth.HousekeepingAlerts, r.HandleAlertsView))
 	mux.Handle("POST /housekeeping/alerts", holding(auth.HousekeepingAlerts, r.HandleAlertsSend))
 
