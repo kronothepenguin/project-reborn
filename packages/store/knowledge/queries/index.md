@@ -12,6 +12,7 @@ Concepts for the query files under `packages/store/queries/`.
 - [avatars.query.sql](avatars.md) — Habbo operations for creation, lookup by id or name, the habbos of a user and random habbos.
 - [profiles.query.sql](profiles.md) — Profile operations, currently the creation of a habbo's profile.
 - [homes.query.sql](homes.md) — Home operations, currently the creation of a profile's home.
+- [home-inventory.query.sql](home-inventory.md) — Home inventory operations for adding bought items, listing them, and taking them out to place on a home.
 - [home-store.query.sql](home-store.md) — Home store operations for the seed, the store's categories and items, and their upkeep from housekeeping.
 
 ## Authentication and access

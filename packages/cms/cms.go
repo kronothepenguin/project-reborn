@@ -99,6 +99,11 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /account/habbos/{id}/switch", account(r.HandleAccountHabbosSwitch))
 	mux.Handle("POST /account/habbos/{id}/archive", account(r.HandleAccountHabbosArchive))
 
+	mux.Handle("GET /home-store", page(auth.RequireSession(http.HandlerFunc(r.HandleHomeStoreView))))
+	mux.Handle("GET /home-store/categories/{id}", page(auth.RequireSession(http.HandlerFunc(r.HandleHomeStoreCategoryView))))
+	mux.Handle("POST /home-store/items/{id}/purchase", page(auth.RequireSession(http.HandlerFunc(r.HandleHomeStoreItemPurchase))))
+	mux.Handle("GET /me/inventory", page(auth.RequireSession(http.HandlerFunc(r.HandleMeInventoryView))))
+
 	mux.Handle("GET /register", guestPage(r.HandleRegisterView))
 	mux.Handle("POST /register", guestPage(r.HandleRegister))
 	mux.Handle("POST /register/check-name", page(http.HandlerFunc(r.HandleRegisterCheckName)))

@@ -3,6 +3,7 @@ package router
 import (
 	"context"
 	"database/sql"
+	"encoding/json/v2"
 	"log/slog"
 	"net/http"
 	"slices"
@@ -87,4 +88,28 @@ func (r *Router) invalid(w http.ResponseWriter, name string, data any) {
 func (r *Router) fail(w http.ResponseWriter, err error) {
 	slog.Error("cms", "err", err)
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+}
+
+// answerJSON writes v as the answer, with status.
+func (r *Router) answerJSON(w http.ResponseWriter, status int, v any) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	if err := json.MarshalWrite(w, v); err != nil {
+		slog.Error("cms: json", "err", err)
+	}
+}
+
+// inTx runs change in one transaction, committing when it returns nil. change must
+// use only the q it receives, because the pool's one connection is the
+// transaction's until inTx returns.
+func (r *Router) inTx(ctx context.Context, change func(q *store.Queries) error) error {
+	tx, err := r.deps.DB.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	if err := change(r.deps.Queries.WithTx(tx)); err != nil {
+		return err
+	}
+	return tx.Commit()
 }

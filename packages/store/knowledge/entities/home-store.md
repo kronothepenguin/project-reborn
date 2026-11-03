@@ -21,7 +21,9 @@ placing an item on a home takes it out again.
 # Lifecycle
 
 - The installer writes the CMS's seed of Holo's categories and items, with Holo's ids, and nothing else writes it; housekeeping adds and edits items.
-- A purchase debits the wallet, writes a ledger row and adds to the inventory in one transaction.
+- A purchase debits the wallet, writes a `store` ledger row and adds to the inventory in one transaction.
+- A background is bought once and stays in the inventory, however many homes show it
+  ([0064](/decisions/0064-backgrounds-are-unlocks.md)).
 
 # Vocabularies
 
@@ -43,3 +45,4 @@ placing an item on a home takes it out again.
 # Queries
 
 - [home-store.query.sql](/queries/home-store.md)
+- [home-inventory.query.sql](/queries/home-inventory.md)

@@ -11,6 +11,13 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
+// Holo's webstore listed its categories in fixed HTML, with these two under main
+// categories of their own and every other one under Stickers.
+const (
+	BackgroundsCategory = 27
+	NotesCategory       = 29
+)
+
 type category struct {
 	id        int64
 	name      string

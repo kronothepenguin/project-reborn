@@ -2,6 +2,9 @@
 
 ## 2026-11-03
 
+- **Done** [p3-06](/tasks/p3-06-home-store.md): the store and the inventory answer as JSON, and a purchase pays, writes
+  the ledger and fills the inventory in one transaction.
+- **Start** [p3-06](/tasks/p3-06-home-store.md).
 - **Done** [p3-02](/tasks/p3-02-store-seed.md): the CMS owns Holo's 20 store categories and 298 items, the installer
   writes them, and the store queries and home images are in place.
 - **Start** [p3-02](/tasks/p3-02-store-seed.md).
