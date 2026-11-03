@@ -55,6 +55,8 @@ many actions).
 | `badges.delete` | the badge | the user and the habbo |
 | `users.attributes` | the attributes added and removed | the user and the habbo of the page |
 | `users.refused` | what was tried on a user at or above the actor's level | the user and the habbo |
+| `homeStore.create` | the item's name and price, as Holo logged it: `<name> worth <price> credits` | none |
+| `homeStore.update` | the item's name and id, and the fields that changed, never their values | none |
 
 # Relations
 

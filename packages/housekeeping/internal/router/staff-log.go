@@ -35,6 +35,8 @@ const (
 	actionBadgesGive            = "badges.give"
 	actionBadgesWear            = "badges.wear"
 	actionBadgesDelete          = "badges.delete"
+	actionHomeStoreCreate       = "homeStore.create"
+	actionHomeStoreUpdate       = "homeStore.update"
 )
 
 // staffLog is what a mutation records about itself; the actor, the address and
