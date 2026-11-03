@@ -72,6 +72,9 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | BBCode | Any colour name or hex value | The eight colours of Holo's toolbar, as the plan maps them; any other shows uncoloured | The plan's colours |
 | Home page | `Edit` shows on the home of the signed-in habbo | It shows on the homes of all the user's habbos | [0065](/decisions/0065-owners-edit-all-their-homes.md) |
 | Home page | The tag buttons and the edit icon come from Habbo's servers | The plus, the minus and the wrench of the CMS's own icon sprite | Those servers are gone, and Holo never shipped the images |
+| Home editor | The edit menu and the store dialogs sit in frames drawn by images from Habbo's servers | Plain frames, with Holo's texts, buttons and order | Those servers are gone, and Holo never shipped the images |
+| Home editor | Items fade out and back in when the background changes, and placed items fade in | The background and the items change at once | Holo's fades came from an effects library the site does not load; the result is the same |
+| Note editor | `Control.TextArea`'s BBCode toolbar | Buttons for bold, italics, underline, strike, quote, code and a link, and the colours of Holo's list | The same tags and colours, without that library |
 
 # Holo bugs not ported
 

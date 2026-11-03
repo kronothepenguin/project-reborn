@@ -89,6 +89,116 @@ export default async function ({ base, browser, check, shot }) {
   await panelEmpty.waitFor();
   check("a tag is removed", await panelEmpty.isVisible());
 
+  await admin.page.getByRole("link", { name: "Edit", exact: true }).click();
+  await admin.page.waitForURL("**/home/Admin-1/edit");
+  await shot(admin.page, "home-edit");
+  const sticker = admin.page.locator(".sticker").first();
+  const place = (element) => element.evaluate((e) => [e.offsetLeft, e.offsetTop]);
+  const before = await sticker.boundingBox();
+  const placedBefore = await place(sticker);
+  await admin.page.mouse.move(before.x + 10, before.y + 30);
+  await admin.page.mouse.down();
+  await admin.page.mouse.move(before.x + 60, before.y + 80, { steps: 5 });
+  await admin.page.mouse.up();
+  const widget = admin.page.locator(".profile-widget");
+  const corner = await widget.locator(".widget-corner").boundingBox();
+  const widgetBefore = await widget.boundingBox();
+  await admin.page.mouse.move(corner.x + 10, corner.y + 5);
+  await admin.page.mouse.down();
+  await admin.page.mouse.move(corner.x - 600, corner.y + 5, { steps: 5 });
+  await admin.page.mouse.up();
+  const widgetDropped = await widget.boundingBox();
+  check(
+    "an item dropped off the playground goes back",
+    widgetDropped.x === widgetBefore.x && widgetDropped.y === widgetBefore.y,
+    JSON.stringify({ widgetBefore, widgetDropped }),
+  );
+  await widget.getByRole("button", { name: "Edit", exact: true }).click();
+  await admin.page.getByRole("dialog", { name: "Edit" }).waitFor();
+  check(
+    "the profile widget cannot be removed",
+    (await admin.page.getByRole("button", { name: "Remove" }).count()) === 0,
+  );
+  await admin.page.selectOption('select[aria-label="Skin"]', "goldenskin");
+  await admin.page.locator('.profile-widget [data-widget-skin="goldenskin"]').waitFor();
+  await admin.page.getByRole("button", { name: "Save" }).click();
+  await admin.page.waitForURL("**/home/Admin-1");
+  const placedAfter = await place(admin.page.locator(".sticker").first());
+  check(
+    "a dragged sticker keeps its place after saving",
+    placedAfter[0] - placedBefore[0] === 50 && placedAfter[1] - placedBefore[1] === 50,
+    JSON.stringify({ placedBefore, placedAfter }),
+  );
+  check(
+    "a skin chosen in the editor stays",
+    (await admin.page.locator('.profile-widget [data-widget-skin="goldenskin"]').count()) === 1,
+  );
+  await admin.page.getByRole("link", { name: "Edit", exact: true }).click();
+  await admin.page.waitForURL("**/home/Admin-1/edit");
+  await admin.page.locator(".sticker").first().getByRole("button", { name: "Edit", exact: true }).click();
+  await admin.page.getByRole("button", { name: "Remove" }).click();
+  await admin.page.locator(".sticker").first().waitFor({ state: "detached" });
+  await admin.page.getByRole("link", { name: "Cancel" }).click();
+  await admin.page.waitForURL("**/home/Admin-1");
+  check("a removed sticker leaves the home", (await admin.page.locator(".sticker").count()) === 0);
+
+  await admin.page.getByRole("link", { name: "Edit", exact: true }).click();
+  await admin.page.waitForURL("**/home/Admin-1/edit");
+  const store = admin.page.getByRole("dialog", { name: "Webstore" });
+  await admin.page.getByRole("button", { name: "Webstore" }).click();
+  await store.getByRole("button", { name: "Genie Fire Head" }).click();
+  await shot(admin.page, "home-webstore");
+  check("the webstore shows the price and the credits", (await store.innerText()).includes("You have:"));
+  check("staff see Holo's staff category with the site's name", (await store.innerText()).includes("Reborn Staff"));
+  await store.getByRole("button", { name: "Buy" }).click();
+  check(
+    "a purchase asks first, in Holo's words",
+    (await store.innerText()).includes("Are you sure you want to buy Genie Fire Head?"),
+  );
+  await store.getByRole("button", { name: "Continue" }).click();
+  await store.getByRole("button", { name: "Notes", exact: true }).click();
+  await store.getByRole("button", { name: "Notes" }).nth(1).click();
+  await store.getByRole("button", { name: "Buy" }).click();
+  await store.getByRole("button", { name: "Continue" }).click();
+  await store.getByRole("button", { name: "Backgrounds", exact: true }).click();
+  const background = store.locator('button[title]:has(img[src*="backgrounds2"])').first();
+  const backgroundName = await background.getAttribute("title");
+  await background.click();
+  await store.getByRole("button", { name: "Buy" }).click();
+  await store.getByRole("button", { name: "Continue" }).click();
+
+  await store.getByRole("button", { name: "Inventory" }).click();
+  const inventory = admin.page.getByRole("dialog", { name: "Inventory" });
+  await inventory.getByRole("button", { name: "Genie Fire Head" }).click();
+  await inventory.getByRole("button", { name: "Place" }).click();
+  await admin.page.locator(".sticker").first().waitFor();
+  check("a bought sticker is placed from the inventory", (await admin.page.locator(".sticker").count()) === 1);
+
+  await admin.page.getByRole("button", { name: "Inventory" }).click();
+  await inventory.getByRole("button", { name: "Notes", exact: true }).click();
+  await inventory.getByRole("button", { name: "Notes" }).nth(1).click();
+  await inventory.getByRole("button", { name: "Place" }).click();
+  const notes = admin.page.getByRole("dialog", { name: "Notes" });
+  await notes.locator('textarea[aria-label="Note text"]').fill("[b]Welcome[/b] to my page");
+  await notes.getByRole("button", { name: "Continue" }).click();
+  check("the note editor shows the note as it will be", (await notes.locator("strong").innerText()) === "Welcome");
+  await notes.getByRole("button", { name: "Add to page" }).click();
+  await admin.page.locator("#playground .stickie strong").waitFor();
+  await notes.waitFor({ state: "detached" });
+
+  await admin.page.getByRole("button", { name: "Inventory" }).click();
+  await inventory.getByRole("button", { name: "Backgrounds", exact: true }).click();
+  await inventory.getByRole("button", { name: backgroundName }).click();
+  await inventory.getByRole("button", { name: "Place" }).click();
+  await admin.page.getByRole("button", { name: "Save" }).click();
+  await admin.page.waitForURL("**/home/Admin-1");
+  await shot(admin.page, "home-decorated");
+  check(
+    "the note and the background stay after saving",
+    (await admin.page.locator(".stickie strong").innerText()) === "Welcome" &&
+      !(await admin.page.locator("#mypage-bg").getAttribute("style")).includes("bg_pattern_abstract2"),
+  );
+
   await admin.page.goto(base + "/home/Frank");
   check("someone else's home has no Edit", (await admin.page.getByRole("link", { name: "Edit", exact: true }).count()) === 0);
   await admin.page.getByRole("button", { name: "Add retro to my tags" }).click();

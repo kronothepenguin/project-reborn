@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json/v2"
 	"fmt"
+	"html/template"
 	"net/http"
 	"slices"
 	"strconv"
@@ -12,6 +13,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/cms/internal/bbcode"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
@@ -130,14 +132,14 @@ func readEdit(w http.ResponseWriter, req *http.Request, body any) bool {
 
 // placed is one item as the editor draws it.
 type placed struct {
-	ID    int64  `json:"id"`
-	Kind  string `json:"kind"`
-	X     int64  `json:"x"`
-	Y     int64  `json:"y"`
-	Z     int64  `json:"z"`
-	Image string `json:"image,omitempty"`
-	Skin  string `json:"skin,omitempty"`
-	Body  string `json:"body,omitempty"`
+	ID    int64         `json:"id"`
+	Kind  string        `json:"kind"`
+	X     int64         `json:"x"`
+	Y     int64         `json:"y"`
+	Z     int64         `json:"z"`
+	Image string        `json:"image,omitempty"`
+	Skin  string        `json:"skin,omitempty"`
+	HTML  template.HTML `json:"html,omitempty"`
 }
 
 type placeBody struct {
@@ -261,7 +263,7 @@ func (r *Router) drawn(item store.HomeItem, asset string) placed {
 	case "sticker":
 		out.Image = image(asset)
 	case "note":
-		out.Body = item.Body
+		out.HTML = bbcode.Format(item.Body, settings.GetBool("features.smilies"))
 	}
 	return out
 }

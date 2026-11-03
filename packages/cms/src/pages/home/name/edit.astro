@@ -1,0 +1,16 @@
+---
+import HomeEditor from "../../../components/homes/home-editor.svelte";
+import HomeView from "../../../components/homes/home-view.astro";
+import Community from "../../../layouts/community.astro";
+---
+
+<Community title="[[ .ShortName ]] ~ User Profile - [[ .Owner ]]" tab="home" sub="My Page">
+  <HomeView editing>
+    <div id="home-editor-config" hidden data-home="[[ .HomeID ]]" data-note-max="[[ .NoteMax ]]" data-short-name="[[ .ShortName ]]" data-view="/home/[[ .Owner ]]">
+      <select>
+        [[ range .Skins ]]<option value="[[ .Value ]]">[[ .Label ]]</option>[[ end ]]
+      </select>
+    </div>
+    <HomeEditor client:only="svelte" config="home-editor-config" />
+  </HomeView>
+</Community>

@@ -2,6 +2,12 @@
 
 ## 2026-11-03
 
+- **Done** [p3-09](/tasks/p3-09-store-dialogs.md): the editor's Webstore and Inventory buy and place stickers, notes
+  and backgrounds, with Holo's texts and its note editor.
+- **Start** [p3-09](/tasks/p3-09-store-dialogs.md).
+- **Done** [p3-08](/tasks/p3-08-home-editor.md): the owner drags, raises, skins and removes the items of a home, then
+  saves or cancels, as in Holo's edit mode.
+- **Start** [p3-08](/tasks/p3-08-home-editor.md).
 - **Done** [p3-05](/tasks/p3-05-profile-tags.md): the active habbo adds, removes and borrows tags from the profile
   widget, with Holo's rules and a limit that holds.
 - **Start** [p3-05](/tasks/p3-05-profile-tags.md).

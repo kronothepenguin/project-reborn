@@ -101,10 +101,12 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 
 	mux.Handle("GET /home", page(http.HandlerFunc(r.HandleHomeSearch)))
 	mux.Handle("GET /home/{name}", page(http.HandlerFunc(r.HandleHomeView)))
+	mux.Handle("GET /home/{name}/edit", page(auth.RequireSession(http.HandlerFunc(r.HandleHomeEditView))))
 	mux.Handle("GET /home-store", page(auth.RequireSession(http.HandlerFunc(r.HandleHomeStoreView))))
 	mux.Handle("GET /home-store/categories/{id}", page(auth.RequireSession(http.HandlerFunc(r.HandleHomeStoreCategoryView))))
 	mux.Handle("POST /home-store/items/{id}/purchase", page(auth.RequireSession(http.HandlerFunc(r.HandleHomeStoreItemPurchase))))
 	mux.Handle("GET /me/inventory", page(auth.RequireSession(http.HandlerFunc(r.HandleMeInventoryView))))
+	mux.Handle("POST /bbcode/preview", page(auth.RequireSession(http.HandlerFunc(r.HandleBBCodePreview))))
 	mux.Handle("POST /me/tags", page(auth.RequireSession(http.HandlerFunc(r.HandleMeTagsAdd))))
 	mux.Handle("POST /me/tags/{tag}/delete", page(auth.RequireSession(http.HandlerFunc(r.HandleMeTagsDelete))))
 	mux.Handle("POST /homes/{id}/layout", page(auth.RequireSession(http.HandlerFunc(r.HandleHomesLayout))))
