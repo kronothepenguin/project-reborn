@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"embed"
 	"fmt"
+	"log/slog"
 	"net/http"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
@@ -35,6 +36,14 @@ type Option func(*Housekeeping)
 // like store.Must: housekeeping cannot serve without them.
 func New(db *sql.DB, opts ...Option) *Housekeeping {
 	cfg := config.Get()
+	list, err := store.Updates()
+	if err != nil {
+		panic(fmt.Errorf("housekeeping: %w", err))
+	}
+	updates := store.NewUpdateCheck(db, list)
+	if err := updates.ApplyAutomatic(context.Background()); err != nil {
+		slog.Error("housekeeping: the database could not be updated", "err", err)
+	}
 	if err := settings.Load(context.Background(), cfg, db); err != nil {
 		panic(fmt.Errorf("housekeeping: %w", err))
 	}
@@ -45,7 +54,6 @@ func New(db *sql.DB, opts ...Option) *Housekeeping {
 	crossOrigin := http.NewCrossOriginProtection()
 	sessions := auth.Sessions(db)
 
-	updates := store.NewUpdateCheck(db)
 	h := &Housekeeping{
 		db:      db,
 		updates: updates,
@@ -69,7 +77,7 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	r := router.New(router.Deps{Resolver: h.resolve, DB: h.db, Queries: store.New(h.db), Updates: h.updates})
 	// The update page, signing out and the files stay open while updates wait;
 	// every other page waits for them.
-	staffPage := func(next http.Handler) http.Handler { return h.protect(r.Staff(next)) }
+	staffPage := func(next http.Handler) http.Handler { return r.UpdateFailed(h.protect(r.Staff(next))) }
 	page := func(next http.Handler) http.Handler { return staffPage(r.Updating(next)) }
 	holding := func(attr auth.Attribute, next http.HandlerFunc) http.Handler {
 		return page(r.RequireAttribute(attr)(next))
@@ -126,7 +134,7 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /housekeeping/users/{id}", holding(auth.HousekeepingUsersEdit, r.HandleUserSave))
 	mux.Handle("POST /housekeeping/users/{id}/attributes", holding(auth.HousekeepingAccessGroups, r.HandleUserAttributesSave))
 
-	mux.Handle("/housekeeping/", staffPage(http.StripPrefix("/housekeeping", h.static)))
+	mux.Handle("/housekeeping/", h.protect(r.Staff(http.StripPrefix("/housekeeping", h.static))))
 }
 
 func WithStatic(next http.Handler) Option {

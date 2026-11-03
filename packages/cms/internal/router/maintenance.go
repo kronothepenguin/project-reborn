@@ -56,3 +56,21 @@ func (r *Router) writeMaintenance(w http.ResponseWriter, req *http.Request, page
 	w.WriteHeader(http.StatusServiceUnavailable)
 	astro.WriteTemplate(w, r.deps.Resolver, "maintenance.html", page)
 }
+
+type updateFailedPage struct {
+	ShortName string
+}
+
+// UpdateFailed answers every page with the update-failed page once an automatic
+// update failed at start. It stands outside the session reader, because the
+// code may not work on the database the failure left.
+func (r *Router) UpdateFailed(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		if r.deps.Updates.Failed() == nil {
+			next.ServeHTTP(w, req)
+			return
+		}
+		w.WriteHeader(http.StatusServiceUnavailable)
+		astro.WriteTemplate(w, r.deps.Resolver, "update-failed.html", updateFailedPage{ShortName: settings.GetString("site.shortName")})
+	})
+}

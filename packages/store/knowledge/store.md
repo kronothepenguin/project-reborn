@@ -21,6 +21,7 @@ query files.
 | Function | Behaviour |
 |----------|-----------|
 | `Open(path string) (*sql.DB, error)` | Opens the SQLite file, creating it when missing. A database with no table gets every update at once; Open writes nothing to any other database. |
+| `Connect(path string) (*sql.DB, error)` | Opens the file like `Open` but writes nothing, even to a database with no table. Tests build an older release's database with it and `ApplyUpdates`; programs use `Open`. |
 | `Must(db *sql.DB, err error) *sql.DB` | Returns `db`, or panics with `err`, like `template.Must`. |
 | `FromConfig() *sql.DB` | Opens the database that `config.json` names (`config.Get().Store.Path`) through `Must`; runners use it to get the db they pass to the apps. |
 | `New(db DBTX) *Queries` | Generated; binds the typed operations to a `*sql.DB` or a `*sql.Tx`. |
@@ -31,7 +32,7 @@ query files.
 | `WaitingUpdates(ctx, db, updates) ([]Update, error)` | The updates `db` has not applied, in version order. It only reads. |
 | `AppliedUpdates(ctx, db) ([]Migration, error)` | The rows of [migrations](/tables/migrations.md) in version order, and none before the table exists. |
 | `ApplyUpdates(ctx, db, updates) ([]Update, error)` | Applies the updates in order and returns those it applied; see the guarantees. A failure is an `*UpdateError` naming the update. |
-| `NewUpdateCheck(db) *UpdateCheck` | A running program's view of its waiting updates. `Waiting(ctx)` reads `migrations` until nothing waits, then stops reading, since a running program never gains updates; `WhenCurrent(task)` wraps a scheduled task to do nothing while updates wait. |
+| `NewUpdateCheck(db, updates) *UpdateCheck` | A running program's view of the updates it carries. `ApplyAutomatic(ctx)` saves a copy and applies the waiting updates up to the last automatic one, keeping a failure for `Failed()`. `Waiting(ctx)` reads `migrations` until nothing waits, then stops reading, since a running program never gains updates. `WhenCurrent(task)` wraps a scheduled task to do nothing while updates wait. |
 | `Backup(ctx, db) (string, error)` | Saves a copy beside the database file as `<file>.backup-<YYYYMMDD-HHMMSS>` (UTC) with `VACUUM INTO`, adding `-2`, `-3`… when another copy took that second, and returns its path. |
 
 # Guarantees

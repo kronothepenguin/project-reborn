@@ -2,6 +2,12 @@
 
 ## 2026-11-03
 
+- **Done** [up-07](/tasks/up-07-automatic-updates.md): the CMS and housekeeping apply the updates sign-in needs when
+  they start, after a copy, show an error page when that fails, and two tests keep sign-in working on every older
+  database.
+- **Start** [up-07](/tasks/up-07-automatic-updates.md).
+- **Decision** [0073](/decisions/0073-update-lists-reach-tests-through-the-router.md): the update check takes its list,
+  and the error page of a failed automatic update is tested through the programs' internal routers.
 - **Done** [up-06](/tasks/up-06-close-while-waiting.md): while updates wait the CMS shows maintenance to everyone and
   housekeeping only its update page, scheduled tasks wait, and both open once the updates are applied.
 - **Start** [up-06](/tasks/up-06-close-while-waiting.md).

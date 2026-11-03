@@ -83,3 +83,30 @@ func TestTheHotelOpensOnceTheUpdatesAreApplied(t *testing.T) {
 	wantPage(t, serve(mux, "GET", "/disclaimer", nil, nil), http.StatusOK, "disclaimer.html")
 	wantPage(t, serve(mux, "GET", "/", nil, nil), http.StatusOK, "index.html")
 }
+
+// A database whose updates cannot be read fails the start-up, like an automatic
+// update that fails, and every page but the files waits for the administrator.
+func TestAFailedStartClosesEveryPage(t *testing.T) {
+	db, err := store.Open(filepath.Join(t.TempDir(), "habbo.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { db.Close() })
+	for _, statement := range []string{"DROP TABLE migrations", "CREATE TABLE migrations (note TEXT)"} {
+		if _, err := db.ExecContext(t.Context(), statement); err != nil {
+			t.Fatal(err)
+		}
+	}
+	mux := http.NewServeMux()
+	static := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { io.WriteString(w, "static") })
+	New(db, WithResolver(printPage), WithStatic(static)).Mount(mux)
+
+	for _, route := range []struct{ method, path string }{
+		{"GET", "/"}, {"POST", "/"}, {"POST", "/logout"}, {"GET", "/logout"}, {"GET", "/me"}, {"GET", "/account/looks"},
+		{"GET", "/home/Admin"}, {"POST", "/home-store/items/1/purchase"}, {"GET", "/register"}, {"POST", "/register/check-name"},
+		{"GET", "/forgot"}, {"GET", "/reset/token"}, {"GET", "/disclaimer"}, {"GET", "/xml/promo-habbos.xml"},
+	} {
+		wantPage(t, serve(mux, route.method, route.path, nil, nil), http.StatusServiceUnavailable, "update-failed.html {ShortName:Holo}")
+	}
+	wantPage(t, serve(mux, "GET", "/web-gallery/styles.css", nil, nil), http.StatusOK, "static")
+}

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"embed"
 	"fmt"
+	"log/slog"
 	"net/http"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
@@ -35,6 +36,14 @@ type Option func(*CMS)
 // like store.Must: the CMS cannot serve without them.
 func New(db *sql.DB, opts ...Option) *CMS {
 	cfg := config.Get()
+	list, err := store.Updates()
+	if err != nil {
+		panic(fmt.Errorf("cms: %w", err))
+	}
+	updates := store.NewUpdateCheck(db, list)
+	if err := updates.ApplyAutomatic(context.Background()); err != nil {
+		slog.Error("cms: the database could not be updated", "err", err)
+	}
 	if err := settings.Load(context.Background(), cfg, db); err != nil {
 		panic(fmt.Errorf("cms: %w", err))
 	}
@@ -45,7 +54,6 @@ func New(db *sql.DB, opts ...Option) *CMS {
 	crossOrigin := http.NewCrossOriginProtection()
 	sessions := auth.Sessions(db)
 
-	updates := store.NewUpdateCheck(db)
 	c := &CMS{
 		db:      db,
 		updates: updates,
@@ -72,14 +80,15 @@ func New(db *sql.DB, opts ...Option) *CMS {
 
 func (c *CMS) Mount(mux *http.ServeMux) {
 	r := router.New(router.Deps{Resolver: c.resolve, DB: c.db, Queries: store.New(c.db), Updates: c.updates})
-	page := func(h http.Handler) http.Handler { return c.protect(r.Banned(r.Maintenance(h))) }
+	guard := func(h http.Handler) http.Handler { return r.UpdateFailed(c.protect(h)) }
+	page := func(h http.Handler) http.Handler { return guard(r.Banned(r.Maintenance(h))) }
 	guestPage := func(h http.HandlerFunc) http.Handler { return page(router.Guest(h)) }
 
 	mux.Handle("GET /{$}", guestPage(r.HandleIndexView))
 	mux.Handle("GET /xml/promo-habbos.xml", page(http.HandlerFunc(r.HandleXMLPromoHabbos)))
 	// Signing in and out stays open during maintenance, for staff.
-	mux.Handle("POST /{$}", c.protect(router.Guest(http.HandlerFunc(r.HandleIndexLogin))))
-	mux.Handle("POST /logout", c.protect(r.Banned(http.HandlerFunc(r.HandleLogout))))
+	mux.Handle("POST /{$}", guard(router.Guest(http.HandlerFunc(r.HandleIndexLogin))))
+	mux.Handle("POST /logout", guard(r.Banned(http.HandlerFunc(r.HandleLogout))))
 	mux.Handle("GET /logout", page(http.HandlerFunc(r.HandleLogoutView)))
 
 	mux.Handle("GET /me", page(auth.RequireSession(http.HandlerFunc(r.HandleMeView))))

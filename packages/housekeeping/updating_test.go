@@ -3,6 +3,7 @@ package housekeeping
 import (
 	"database/sql"
 	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
@@ -53,4 +54,24 @@ func TestHousekeepingOpensOnceTheUpdatesAreApplied(t *testing.T) {
 	wantRedirect(t, serve(mux, "GET", "/housekeeping/", keeper, nil), "/housekeeping/updates")
 	wantRedirect(t, serve(mux, "POST", "/housekeeping/updates", keeper, nil), "/housekeeping/updates?applied=1")
 	wantPage(t, serve(mux, "GET", "/housekeeping/", keeper, nil), http.StatusOK, "index.html")
+}
+
+// A database whose updates cannot be read fails the start-up, like an automatic
+// update that fails, and every page waits for the administrator.
+func TestAFailedStartClosesHousekeeping(t *testing.T) {
+	db := openDB(t)
+	for _, statement := range []string{"DROP TABLE migrations", "CREATE TABLE migrations (note TEXT)"} {
+		if _, err := db.ExecContext(t.Context(), statement); err != nil {
+			t.Fatal(err)
+		}
+	}
+	mux := http.NewServeMux()
+	New(db, WithResolver(printPage), WithStatic(printPath("static"))).Mount(mux)
+
+	for _, route := range routes {
+		if strings.HasPrefix(route.path, "/housekeeping/_astro/") || strings.HasSuffix(route.path, ".html") {
+			continue
+		}
+		wantPage(t, serve(mux, route.method, route.path, nil, nil), http.StatusServiceUnavailable, "update-failed.html {SiteName:Holo Hotel}")
+	}
 }

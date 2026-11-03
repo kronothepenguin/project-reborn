@@ -184,11 +184,54 @@ func migrationsTableExists(ctx context.Context, db DBTX) (bool, error) {
 // running program never gains updates.
 type UpdateCheck struct {
 	db      *sql.DB
+	updates []Update
 	current atomic.Bool
+	failed  atomic.Pointer[error]
 }
 
-func NewUpdateCheck(db *sql.DB) *UpdateCheck {
-	return &UpdateCheck{db: db}
+// NewUpdateCheck watches db for updates, the ones the program carries.
+func NewUpdateCheck(db *sql.DB, updates []Update) *UpdateCheck {
+	return &UpdateCheck{db: db, updates: updates}
+}
+
+// ApplyAutomatic saves a copy of the database and applies the waiting updates up
+// to the last automatic one, because sign-in needs them; updates keep their
+// order, so the ones before it apply too. A failure is kept for Failed.
+func (c *UpdateCheck) ApplyAutomatic(ctx context.Context) error {
+	err := c.applyAutomatic(ctx)
+	if err != nil {
+		c.failed.Store(&err)
+	}
+	return err
+}
+
+func (c *UpdateCheck) applyAutomatic(ctx context.Context) error {
+	waiting, err := WaitingUpdates(ctx, c.db, c.updates)
+	if err != nil {
+		return err
+	}
+	last := -1
+	for i, update := range waiting {
+		if update.Automatic {
+			last = i
+		}
+	}
+	if last < 0 {
+		return nil
+	}
+	if _, err := Backup(ctx, c.db); err != nil {
+		return err
+	}
+	_, err = ApplyUpdates(ctx, c.db, waiting[:last+1])
+	return err
+}
+
+// Failed returns why the automatic updates failed at start, or nil.
+func (c *UpdateCheck) Failed() error {
+	if err := c.failed.Load(); err != nil {
+		return *err
+	}
+	return nil
 }
 
 // Waiting reports whether updates wait, reading the database until none does.
@@ -196,11 +239,7 @@ func (c *UpdateCheck) Waiting(ctx context.Context) (bool, error) {
 	if c.current.Load() {
 		return false, nil
 	}
-	updates, err := Updates()
-	if err != nil {
-		return false, err
-	}
-	waiting, err := WaitingUpdates(ctx, c.db, updates)
+	waiting, err := WaitingUpdates(ctx, c.db, c.updates)
 	if err != nil {
 		return false, err
 	}

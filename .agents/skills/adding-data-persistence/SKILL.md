@@ -44,6 +44,11 @@ Follow these steps in order. Work from the repository root unless stated.
    | Seed rows | fixed ids and `INSERT OR IGNORE`, so rows an administrator changed stay |
    | New attribute in `packages/auth` | an update that grants it to the holders of `housekeeping.accessGroups` |
 
+   The tests `TestSignInWorksOnTheDatabaseStartUpLeaves` (CMS) and
+   `TestTheUpdatePageOpensOnTheDatabaseStartUpLeaves` (housekeeping) sign in on
+   every older database a start-up can leave, and fail when an update that
+   sign-in needs lacks its `-- automatic` mark.
+
    An update runs in one transaction with foreign keys off, and
    `PRAGMA foreign_key_check` must find nothing before the commit. So
    `ON DELETE CASCADE` does not fire: delete child rows yourself. Never rely on

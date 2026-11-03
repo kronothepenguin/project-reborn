@@ -17,7 +17,7 @@ import (
 // any other database: its waiting updates are applied by an administrator, or
 // at start when they are automatic.
 func Open(path string) (*sql.DB, error) {
-	db, err := connect(path)
+	db, err := Connect(path)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,10 @@ func createIfNew(ctx context.Context, db *sql.DB) error {
 	return err
 }
 
-func connect(path string) (*sql.DB, error) {
+// Connect opens path like Open but writes nothing, even to a database with no
+// table: the caller applies the updates it wants. Tests build an older
+// release's database with it; programs use Open.
+func Connect(path string) (*sql.DB, error) {
 	// Without _time_format=sqlite, modernc writes time.Time with t.String(),
 	// which SQLite date functions and ordering cannot use. _timezone=UTC
 	// converts every written time to UTC, so stored DATETIME text compares in

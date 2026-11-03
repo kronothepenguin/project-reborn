@@ -17,7 +17,7 @@ import (
 
 func connectTestDB(t *testing.T, path string) *sql.DB {
 	t.Helper()
-	db, err := connect(path)
+	db, err := Connect(path)
 	if err != nil {
 		t.Fatalf("connect: %v", err)
 	}
@@ -448,7 +448,7 @@ func TestUpdateCheckStopsReadingOnceNothingWaits(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	check := NewUpdateCheck(db)
+	check := NewUpdateCheck(db, updates)
 	if waiting, err := check.Waiting(t.Context()); err != nil || !waiting {
 		t.Fatalf("Waiting on an empty database = %t, %v, want true", waiting, err)
 	}
@@ -470,5 +470,104 @@ func TestUpdateCheckStopsReadingOnceNothingWaits(t *testing.T) {
 	db.Close()
 	if waiting, err := check.Waiting(t.Context()); err != nil || waiting {
 		t.Errorf("Waiting read the database again: %t, %v", waiting, err)
+	}
+}
+
+var automaticUpdates = map[string]string{
+	"0001-create-things.sql":  "-- Create the things.\nCREATE TABLE things (id INTEGER PRIMARY KEY, name TEXT NOT NULL);\n",
+	"0002-sign-in-column.sql": "-- A column sign-in reads.\n-- automatic\nALTER TABLE things ADD COLUMN signed BOOLEAN NOT NULL DEFAULT FALSE;\n",
+	"0003-later.sql":          "-- Later.\nINSERT INTO things (id, name) VALUES (1, 'lamp');\n",
+}
+
+func backups(t *testing.T, path string) []string {
+	t.Helper()
+	found, err := filepath.Glob(path + ".backup-*")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return found
+}
+
+func TestApplyAutomaticStopsAtTheLastAutomaticUpdate(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "hotel.db")
+	first, second := connectTestDB(t, path), connectTestDB(t, path)
+	updates := parseTestUpdates(t, automaticUpdates)
+
+	check := NewUpdateCheck(first, updates)
+	if err := check.ApplyAutomatic(t.Context()); err != nil || check.Failed() != nil {
+		t.Fatalf("ApplyAutomatic = %v, Failed = %v", err, check.Failed())
+	}
+	if got := versions(must(WaitingUpdates(t.Context(), first, updates))); !slices.Equal(got, []int64{3}) {
+		t.Errorf("waiting = %v, want only the update after the last automatic one", got)
+	}
+	if saved := backups(t, path); len(saved) != 1 {
+		t.Errorf("copies = %v, want one before the automatic updates", saved)
+	}
+
+	if err := NewUpdateCheck(second, updates).ApplyAutomatic(t.Context()); err != nil {
+		t.Errorf("a second program's ApplyAutomatic = %v", err)
+	}
+	if saved := backups(t, path); len(saved) != 1 {
+		t.Errorf("copies = %v, want no second one when nothing automatic waits", saved)
+	}
+}
+
+func TestApplyAutomaticLeavesUpdatesWithoutAMark(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "hotel.db")
+	db := connectTestDB(t, path)
+	updates := parseTestUpdates(t, map[string]string{
+		"0001-create-things.sql": automaticUpdates["0001-create-things.sql"],
+		"0002-later.sql":         automaticUpdates["0003-later.sql"],
+	})
+
+	if err := NewUpdateCheck(db, updates).ApplyAutomatic(t.Context()); err != nil {
+		t.Fatalf("ApplyAutomatic: %v", err)
+	}
+	if got := versions(must(WaitingUpdates(t.Context(), db, updates))); !slices.Equal(got, []int64{1, 2}) {
+		t.Errorf("waiting = %v, want every update", got)
+	}
+	if saved := backups(t, path); len(saved) != 0 {
+		t.Errorf("copies = %v, want none", saved)
+	}
+}
+
+func TestAFailedAutomaticUpdateIsKept(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "hotel.db")
+	db := connectTestDB(t, path)
+	updates := parseTestUpdates(t, map[string]string{
+		"0001-create-things.sql": automaticUpdates["0001-create-things.sql"],
+		"0002-broken.sql":        "-- Broken.\n-- automatic\nINSERT INTO nowhere (id) VALUES (1);\n",
+	})
+
+	check := NewUpdateCheck(db, updates)
+	err := check.ApplyAutomatic(t.Context())
+	var updateErr *UpdateError
+	if !errors.As(err, &updateErr) || updateErr.Update.Version != 2 || check.Failed() != err {
+		t.Fatalf("ApplyAutomatic = %v, Failed = %v, want update 2's error kept", err, check.Failed())
+	}
+	if got := versions(must(WaitingUpdates(t.Context(), db, updates))); !slices.Equal(got, []int64{2}) {
+		t.Errorf("waiting = %v, want the broken update", got)
+	}
+	if saved := backups(t, path); len(saved) != 1 {
+		t.Errorf("copies = %v, want one", saved)
+	}
+}
+
+func TestApplyAutomaticTakesEveryUpdateBeforeTheLastMark(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "hotel.db")
+	db := connectTestDB(t, path)
+	updates := parseTestUpdates(t, map[string]string{
+		"0001-create-things.sql":  automaticUpdates["0001-create-things.sql"],
+		"0002-sign-in-column.sql": automaticUpdates["0002-sign-in-column.sql"],
+		"0003-lamp.sql":           "-- A lamp.\nINSERT INTO things (id, name) VALUES (1, 'lamp');\n",
+		"0004-another-column.sql": "-- Another column sign-in reads.\n-- automatic\nALTER TABLE things ADD COLUMN seen BOOLEAN NOT NULL DEFAULT FALSE;\n",
+		"0005-sofa.sql":           "-- A sofa.\nINSERT INTO things (id, name) VALUES (2, 'sofa');\n",
+	})
+
+	if err := NewUpdateCheck(db, updates).ApplyAutomatic(t.Context()); err != nil {
+		t.Fatalf("ApplyAutomatic: %v", err)
+	}
+	if got := versions(must(WaitingUpdates(t.Context(), db, updates))); !slices.Equal(got, []int64{5}) {
+		t.Errorf("waiting = %v, want only the update after the last mark", got)
 	}
 }
