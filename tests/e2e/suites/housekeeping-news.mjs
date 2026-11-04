@@ -666,6 +666,75 @@ export default async function (t) {
     rows.join(" | "),
   );
 
+  // Every format of the editor's toolbar, written in a story, reaches the site
+  // as the editor showed it. The boxes come last: a space after a box is
+  // collapsed, and the browser's commands take it with the next word.
+  await page.goto(`${hk}/news/new`);
+  await page.fill("#news-title", "Every Format");
+  await page.fill("#news-short-story", "Formats.");
+  const formats = page.getByRole("textbox", { name: "Story", exact: true });
+  await formats.click();
+  await page.keyboard.type("bold italic under strike link red small large quote code");
+  const pick = (word) =>
+    formats.evaluate((area, word) => {
+      const walker = document.createTreeWalker(area, NodeFilter.SHOW_TEXT);
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        const at = node.data.indexOf(word);
+        if (at >= 0) {
+          document.getSelection().setBaseAndExtent(node, at, node, at + word.length);
+          return;
+        }
+      }
+    }, word);
+  for (const [word, name] of [
+    ["bold", "Bold"],
+    ["italic", "Italic"],
+    ["under", "Underline"],
+    ["strike", "Strike"],
+    ["small", "Small"],
+    ["large", "Large"],
+    ["quote", "Quote"],
+    ["code", "Code"],
+  ]) {
+    await pick(word);
+    await page.getByRole("button", { name, exact: true }).click();
+  }
+  await pick("link");
+  await page.getByRole("button", { name: "Link", exact: true }).click();
+  await page.getByRole("textbox", { name: "Address" }).fill("https://hotel.example/");
+  await page.getByRole("button", { name: "Add link" }).click();
+  await pick("red");
+  await page.getByRole("combobox", { name: "Colours" }).selectOption("red");
+  await shot(page, "news-every-format");
+  const written = await page.inputValue("#news-story");
+  check(
+    "every format of the toolbar is written as its BBCode",
+    written ===
+      "[b]bold[/b] [i]italic[/i] [u]under[/u] [s]strike[/s] [url=https://hotel.example/]link[/url] [color=red]red[/color] [size=small]small[/size] [size=large]large[/size] [quote]quote[/quote] [code]code[/code]",
+    written,
+  );
+  await page.getByRole("button", { name: "Publish Article" }).click();
+  await page.waitForURL(/published=1/);
+  const [[everyFormat]] = sql("SELECT id FROM news_articles WHERE title = 'Every Format'");
+  await page.goto(`${base}/news/${everyFormat}`);
+  const article = page.locator("#article-wrapper");
+  const shows = async (selector, text) => (await article.locator(selector).filter({ hasText: text }).count()) === 1;
+  check(
+    "the site shows every format as the editor did",
+    (await shows("strong", "bold")) &&
+      (await shows("em", "italic")) &&
+      (await shows("u", "under")) &&
+      (await shows("s", "strike")) &&
+      (await shows("div.bg-stone-300", "quote")) &&
+      (await shows("pre", "code")) &&
+      (await shows('a[href="https://hotel.example/"]', "link")) &&
+      (await shows("span.text-red-600", "red")) &&
+      (await shows('span[class="text-[10px]"]', "small")) &&
+      (await shows("span.text-base", "large")),
+    await article.innerHTML(),
+  );
+  await shot(page, "news-every-format-site");
+
   const plain = await t.browser.newContext({ javaScriptEnabled: false });
   await plain.addCookies(await context.cookies());
   const plainPage = await plain.newPage();

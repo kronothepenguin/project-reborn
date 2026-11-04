@@ -154,6 +154,22 @@ describe("BBCodeEditor", () => {
     expect(field.value).toBe("our news");
   });
 
+  // A space after a box starts its line, where it is collapsed and shows
+  // nothing, and the browser's commands take it with the word after it: the
+  // link may hold it, and looks the same either way.
+  it("links a word right after a code box", async () => {
+    const { field, area } = setup("quote code link");
+    await selectText(area, "quote");
+    await userEvent.click(button("Quote"));
+    await selectText(area, "code");
+    await userEvent.click(button("Code"));
+    await selectText(area, "link");
+    await userEvent.click(button("Link"));
+    await userEvent.fill(page.getByRole("textbox", { name: "Address" }), "https://hotel.example/");
+    await userEvent.click(button("Add link"));
+    expect(field.value).toMatch(/^\[quote\]quote\[\/quote\] \[code\]code\[\/code\]( \[url=https:\/\/hotel\.example\/\]| ?\[url=https:\/\/hotel\.example\/\] )link\[\/url\]$/);
+  });
+
   it("adds smilies when the field shows them", async () => {
     const { field, area } = setup("hi", { smilies: true });
     await caretAtEnd(area);
