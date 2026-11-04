@@ -43,6 +43,15 @@ Results (2026-11-04T01:57:39+00:00):
 - Breaking these on purpose fails a test: a colour field typed, a body on one line, the fields out of order, `White (no
   Header)` labelled `White`, a heading allowed blank, and a changed default heading, which the housekeeping test catches.
 
+Correction (2026-11-04T02:27:04+00:00):
+
+- The check that the form has two multi-line fields and two lists was added after the last green run, and it counted
+  the menu's copy of every form too, so `TestTheStaffModuleHasHolosFieldsInHolosOrder` failed in the commit that closed
+  this task, and the breakages above were caught by a test that failed anyway.
+- The test now reads the form from its own part of the page. `go test -race` passes in `packages/housekeeping`, and each
+  breakage above, run again from a passing test, fails it. So does leaving the tag fight switch out of Manage Site
+  Content, which `TestEverySettingHasARealLabel` catches.
+
 # Notes
 
 - The labels and help texts are Holo's `setting_title` and `setting_desc`, with `wether` spelled `whether` and

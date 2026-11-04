@@ -395,6 +395,13 @@ func TestTheStaffModuleHasHolosFieldsInHolosOrder(t *testing.T) {
 	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
 
 	body := serve(mux, "GET", "/housekeeping/settings?section=staffPage", cookie, nil).Body.String()
+	// The menu lists every section with its fields, so the form is read from its
+	// own part of the page.
+	at := strings.Index(body, " Section:{ID:staffPage ")
+	if at < 0 {
+		t.Fatalf("the page is not the staff module's form: %s", body)
+	}
+	form := body[at:]
 	order := []string{
 		"Key:staffPage.box1Body Label:Staff Content Box 1 ",
 		"Key:staffPage.box1Color Label:Staff Content Box 1 Color ",
@@ -406,9 +413,9 @@ func TestTheStaffModuleHasHolosFieldsInHolosOrder(t *testing.T) {
 	}
 	last := -1
 	for _, text := range order {
-		at := strings.Index(body, text)
+		at := strings.Index(form, text)
 		if at <= last {
-			t.Errorf("%q is missing or out of Holo's order: %s", text, body)
+			t.Errorf("%q is missing or out of Holo's order: %s", text, form)
 		}
 		last = at
 	}
@@ -420,11 +427,11 @@ func TestTheStaffModuleHasHolosFieldsInHolosOrder(t *testing.T) {
 		"Kind:text Value:Joining the Team",
 		"Menu:Staff Module",
 	} {
-		if !strings.Contains(body, html.EscapeString(text)) {
+		if !strings.Contains(form, html.EscapeString(text)) {
 			t.Errorf("the form lacks %q", text)
 		}
 	}
-	if longs, choices := strings.Count(body, "Kind:longtext"), strings.Count(body, "Kind:choice"); longs != 2 || choices != 2 {
+	if longs, choices := strings.Count(form, "Kind:longtext"), strings.Count(form, "Kind:choice"); longs != 2 || choices != 2 {
 		t.Errorf("the form has %d multi-line fields and %d lists, want 2 of each", longs, choices)
 	}
 }
