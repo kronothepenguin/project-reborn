@@ -29,6 +29,7 @@ Domain entities represented by the store's tables: their meaning, invariants, li
 - [Group](group.md) — A group bought by a habbo, with a badge, an access mode, members, admins, pending requests and a home.
 - [Forum thread](forum-thread.md) — A thread of the site-wide discussion board with its BBCode posts.
 - [News article](news-article.md) — A news article written by staff, shown on the news pages and the news promo.
+- [Image](image.md) — A picture staff upload, such as a news top story, kept in the database and served by the CMS at an address of its own.
 - [Banner](banner.md) — A promotional banner shown in the side column of the Me and community pages.
 
 ## Economy

@@ -11,16 +11,20 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
-// waitingSite starts the CMS on a database that lacks the updates from version
-// on, as after a release that brings them.
-func waitingSite(t *testing.T, from int64) (*sql.DB, *http.ServeMux) {
+// waitingSite starts the CMS on the database an older release left, which holds
+// the updates before version from, as after a release that brings the others.
+func waitingSite(t *testing.T, from int) (*sql.DB, *http.ServeMux) {
 	t.Helper()
-	db, err := store.Open(filepath.Join(t.TempDir(), "habbo.db"))
+	db, err := store.Connect(filepath.Join(t.TempDir(), "habbo.db"))
 	if err != nil {
-		t.Fatalf("store.Open: %v", err)
+		t.Fatalf("store.Connect: %v", err)
 	}
 	t.Cleanup(func() { db.Close() })
-	if _, err := db.ExecContext(t.Context(), `DELETE FROM migrations WHERE version >= ?`, from); err != nil {
+	updates, err := store.Updates()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := store.ApplyUpdates(t.Context(), db, updates[:from-1]); err != nil {
 		t.Fatal(err)
 	}
 	mux := http.NewServeMux()

@@ -4,11 +4,12 @@ import { seedStaff, session } from "../lib/staff.mjs";
 export const programs = ["cms", "housekeeping"];
 
 // The hotel is made like one installed before updates existed: no migrations
-// table, an empty home store and no housekeeping.database, with a config.json
-// that lacks its proxy section.
+// table, none of the tables later updates add, an empty home store and no
+// housekeeping.database, with a config.json that lacks its proxy section.
 export const prepare = ({ dir, sql }) => {
   seedStaff(sql);
   sql("DROP TABLE migrations");
+  sql("DROP TABLE images");
   sql("DELETE FROM home_store_items");
   sql("DELETE FROM home_store_categories");
   sql("DELETE FROM access_group_attributes WHERE attribute = 'housekeeping.database'");
@@ -64,7 +65,7 @@ export default async function (t) {
   const waiting = await page
     .locator("form[action='/housekeeping/updates'] tbody tr")
     .count();
-  check("the update page lists every update", waiting === 4, String(waiting));
+  check("the update page lists every update", waiting === 5, String(waiting));
   check(
     "config.json's new keys are offered with their defaults",
     (await page.getByLabel("proxy.enabled").inputValue()) === "false" &&

@@ -3,18 +3,31 @@ package housekeeping
 import (
 	"database/sql"
 	"net/http"
+	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
-// waitingSite starts housekeeping on a database that lacks the updates from
-// version on, as after a release that brings them.
-func waitingSite(t *testing.T, from int64) (*sql.DB, *http.ServeMux) {
+// waitingSite starts housekeeping on the database an older release left, which
+// holds the updates before version from, as after a release that brings the
+// others.
+func waitingSite(t *testing.T, from int) (*sql.DB, *http.ServeMux) {
 	t.Helper()
-	db := openDB(t)
-	unapply(t, db, from)
+	db, err := store.Connect(filepath.Join(t.TempDir(), "habbo.db"))
+	if err != nil {
+		t.Fatalf("store.Connect: %v", err)
+	}
+	t.Cleanup(func() { db.Close() })
+	updates, err := store.Updates()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := store.ApplyUpdates(t.Context(), db, updates[:from-1]); err != nil {
+		t.Fatal(err)
+	}
 	mux := http.NewServeMux()
 	New(db, WithResolver(printPage), WithStatic(printPath("static"))).Mount(mux)
 	return db, mux

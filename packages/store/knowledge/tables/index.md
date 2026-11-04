@@ -46,6 +46,7 @@ Concepts for the tables declared under `packages/store/schema/`, one per table.
 - [forum_threads](forum_threads.md) — Threads of the site-wide discussion board, with sticky and locked flags and a view counter.
 - [forum_posts](forum_posts.md) — BBCode posts of a discussion board thread, with their last edit.
 - [news_articles](news_articles.md) — News articles written by staff, with category, top-story image, summary and BBCode body.
+- [images](images.md) — Pictures staff upload, such as the top stories of news, with their format, bytes and size.
 - [banners](banners.md) — Promotional banners with image, link, position and an enabled flag.
 
 ## Economy

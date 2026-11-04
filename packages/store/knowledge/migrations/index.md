@@ -7,3 +7,4 @@ them all when `store.Open` creates it.
 - [0002-home-store.sql](0002-home-store.md) — Writes Holo's home store, its 20 categories and 298 items with Holo's ids, keeping the rows already there.
 - [0003-ranks.sql](0003-ranks.md) — Creates Holo's five staff ranks as access groups with their attributes, only on a hotel that has no access group yet.
 - [0004-database-attribute.sql](0004-database-attribute.md) — Grants housekeeping.database to every group and every user that holds housekeeping.accessGroups.
+- [0005-images.sql](0005-images.md) — Creates the images table for the pictures staff upload, such as the top stories of news.

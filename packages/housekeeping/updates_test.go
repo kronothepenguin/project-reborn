@@ -12,15 +12,6 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
-// unapply makes the updates from version on wait again. Each of the first ones
-// can run again on a database that has it.
-func unapply(t *testing.T, db *sql.DB, from int64) {
-	t.Helper()
-	if _, err := db.ExecContext(t.Context(), `DELETE FROM migrations WHERE version >= ?`, from); err != nil {
-		t.Fatal(err)
-	}
-}
-
 func copies(t *testing.T, db *sql.DB) []string {
 	t.Helper()
 	var file string
@@ -52,24 +43,24 @@ func TestTheUpdatePageListsWaitingAndAppliedUpdates(t *testing.T) {
 	_, cookie := staff(t, db, "Keeper", auth.HousekeepingAccess, auth.HousekeepingDatabase)
 
 	rec := serve(mux, "GET", "/housekeeping/updates", cookie, nil)
-	wantPage(t, rec, http.StatusOK, "updates.html", "Waiting:[] Applied:[{Number:0004-database-attribute Title:Applying database updates")
-	if strings.Index(rec.Body.String(), "Number:0004") > strings.Index(rec.Body.String(), "Number:0001-baseline") {
+	wantPage(t, rec, http.StatusOK, "updates.html", "Waiting:[] Applied:[{Number:0005-images Title:A table for the pictures")
+	if strings.Index(rec.Body.String(), "Number:0005") > strings.Index(rec.Body.String(), "Number:0001-baseline") {
 		t.Error("the applied updates are not newest first")
 	}
 
-	unapply(t, db, 3)
+	older, mux := waitingSite(t, 3)
+	_, cookie = staff(t, older, "Keeper", auth.HousekeepingAccess, auth.HousekeepingDatabase)
 	wantPage(t, serve(mux, "GET", "/housekeeping/updates", cookie, nil), http.StatusOK,
 		html.EscapeString("Waiting:[{Number:0003-ranks Title:Holo's staff ranks as access groups, for a hotel that has no access group yet. Date:} {Number:0004-database-attribute"),
 		html.EscapeString("Applied:[{Number:0002-home-store Title:Holo's home store: its 20 categories and 298 items, with Holo's ids. Date:"))
 }
 
 func TestApplyingUpdatesSavesACopyFirst(t *testing.T) {
-	db, mux := newSite(t)
+	db, mux := waitingSite(t, 3)
 	_, cookie := staff(t, db, "Keeper", auth.HousekeepingAccess, auth.HousekeepingDatabase)
-	unapply(t, db, 3)
 
 	wantRedirect(t, serve(mux, "POST", "/housekeeping/updates", cookie, nil), "/housekeeping/updates?applied=1")
-	if got := versionsApplied(t, db); len(got) != 4 {
+	if got := versionsApplied(t, db); len(got) != 5 {
 		t.Errorf("applied = %v, want every update", got)
 	}
 	saved := copies(t, db)
@@ -85,7 +76,7 @@ func TestApplyingUpdatesSavesACopyFirst(t *testing.T) {
 		t.Errorf("the copy has %v applied, want the database from before the updates", got)
 	}
 	logs := staffLogs(t, db)
-	if len(logs) != 1 || logs[0].Action != "database.update" || logs[0].Detail != "applied 0003-ranks; applied 0004-database-attribute; copy "+saved[0] {
+	if len(logs) != 1 || logs[0].Action != "database.update" || logs[0].Detail != "applied 0003-ranks; applied 0004-database-attribute; applied 0005-images; copy "+saved[0] {
 		t.Errorf("staff logs = %+v", logs)
 	}
 	wantPage(t, serve(mux, "GET", "/housekeeping/updates?applied=1", cookie, nil), http.StatusOK,
@@ -93,10 +84,9 @@ func TestApplyingUpdatesSavesACopyFirst(t *testing.T) {
 }
 
 func TestAFailingUpdateSaysWhichOne(t *testing.T) {
-	db, mux := newSite(t)
+	db, mux := waitingSite(t, 3)
 	_, cookie := staff(t, db, "Keeper", auth.HousekeepingAccess, auth.HousekeepingAccessGroups)
-	unapply(t, db, 1)
-	if _, err := db.ExecContext(t.Context(), `CREATE TRIGGER refuse_items BEFORE INSERT ON home_store_items BEGIN SELECT RAISE(ABORT, 'items refused'); END`); err != nil {
+	if _, err := db.ExecContext(t.Context(), `CREATE TRIGGER refuse_grants BEFORE INSERT ON access_group_attributes BEGIN SELECT RAISE(ABORT, 'grants refused'); END`); err != nil {
 		t.Fatal(err)
 	}
 
@@ -105,15 +95,15 @@ func TestAFailingUpdateSaysWhichOne(t *testing.T) {
 	if len(saved) != 1 {
 		t.Fatalf("copies = %v, want one", saved)
 	}
-	wantPage(t, rec, http.StatusInternalServerError, "Error:Update 0002-home-store failed: ", "items refused",
+	wantPage(t, rec, http.StatusInternalServerError, "Error:Update 0004-database-attribute failed: ", "grants refused",
 		"The updates before it were applied, and the copy of the database from before them is "+saved[0]+".",
-		"Waiting:[{Number:0002-home-store")
-	if got := versionsApplied(t, db); len(got) != 1 || got[0] != 1 {
-		t.Errorf("applied = %v, want only 0001 before the failure", got)
+		"Waiting:[{Number:0004-database-attribute")
+	if got := versionsApplied(t, db); len(got) != 3 {
+		t.Errorf("applied = %v, want the three before the failure", got)
 	}
 	logs := staffLogs(t, db)
-	if len(logs) != 1 || !strings.HasPrefix(logs[0].Detail, "applied 0001-baseline; 0002-home-store failed: ") ||
-		!strings.Contains(logs[0].Detail, "items refused") || !strings.HasSuffix(logs[0].Detail, "; copy "+saved[0]) {
+	if len(logs) != 1 || !strings.HasPrefix(logs[0].Detail, "applied 0003-ranks; 0004-database-attribute failed: ") ||
+		!strings.Contains(logs[0].Detail, "grants refused") || !strings.HasSuffix(logs[0].Detail, "; copy "+saved[0]) {
 		t.Errorf("staff logs = %+v", logs)
 	}
 }
@@ -132,11 +122,10 @@ func TestNothingWaitingAppliesNothing(t *testing.T) {
 }
 
 func TestUpdatesAreForTheDatabaseAttributeOrAccessManagers(t *testing.T) {
-	db, mux := newSite(t)
+	db, mux := waitingSite(t, 4)
 	_, moderator := staff(t, db, "Moderator", auth.HousekeepingAccess, auth.HousekeepingSettings, auth.HousekeepingLogs)
 	_, keeper := staff(t, db, "Keeper", auth.HousekeepingAccess, auth.HousekeepingDatabase)
 	_, manager := staff(t, db, "Manager", auth.HousekeepingAccess, auth.HousekeepingAccessGroups)
-	unapply(t, db, 4)
 
 	wantPage(t, serve(mux, "GET", "/housekeeping/updates", moderator, nil), http.StatusForbidden, "access-denied.html")
 	wantPage(t, serve(mux, "POST", "/housekeeping/updates", moderator, nil), http.StatusForbidden, "access-denied.html")

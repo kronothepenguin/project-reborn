@@ -3,7 +3,7 @@ type: Entity
 title: News article
 description: A news article written by staff, shown on the news pages and the news promo.
 tags: [store, entity, news]
-timestamp: 2026-10-27T21:28:26+00:00
+timestamp: 2026-11-04T01:38:16+00:00
 ---
 
 # Definition
@@ -18,7 +18,9 @@ CMS.
 
 # Lifecycle
 
-- Written, edited and deleted from housekeeping; listed newest first by `published_at`.
+- Written, edited and deleted from housekeeping; listed newest first by `published_at`, then by id.
+- Editing keeps the author and the date, as Holo's did.
+- `image_url` is one of the CMS's top-story images, an http(s) address, or an uploaded [image](/entities/image.md).
 
 # Vocabularies
 
@@ -33,3 +35,7 @@ CMS.
 # Tables
 
 - [news_articles](/tables/news_articles.md)
+
+# Queries
+
+- [news.query.sql](/queries/news.md)

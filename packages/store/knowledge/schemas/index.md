@@ -31,6 +31,7 @@ build it, and a test keeps the two alike.
 - [forums.schema.sql](forums.md) — Declares the site-wide discussion board threads and posts.
 - [news.schema.sql](news.md) — Declares the news articles written in housekeeping.
 - [site.schema.sql](site.md) — Declares the promotional banners shown on the Me and community pages.
+- [images.schema.sql](images.md) — Declares the images table, the pictures staff upload, kept in the database.
 
 ## Economy
 

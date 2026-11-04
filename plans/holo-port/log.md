@@ -2,6 +2,9 @@
 
 ## 2026-11-04
 
+- **Done** [p4-03](/tasks/p4-03-store.md): the store has the news, banner and image operations and the images table
+  with update 0005, the CMS serves uploaded images, and Holo top stories join the CMS.
+- **Start** [p4-03](/tasks/p4-03-store.md).
 - **Create** [p4-01](/tasks/p4-01-settings-kinds.md) to [p4-12](/tasks/p4-12-exit-check.md): P4 is the active phase,
   with p4-05 to p4-07 on the feature branch `p4-housekeeping`.
 - **Decision** [0077](/decisions/0077-staff-boxes-in-bbcode.md): the staff page boxes are BBCode with a colour each.

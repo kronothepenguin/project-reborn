@@ -198,6 +198,16 @@ type HomeStoreItem struct {
 	Enabled             bool
 }
 
+type Image struct {
+	ID              int64
+	Format          string
+	Data            []byte
+	Width           int64
+	Height          int64
+	CreatedAt       time.Time
+	CreatedByUserID sql.NullInt64
+}
+
 type LoginAttempt struct {
 	ID        int64
 	UserID    sql.NullInt64
