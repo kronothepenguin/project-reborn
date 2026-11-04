@@ -41,6 +41,21 @@ func (q *Queries) CountProfileTags(ctx context.Context, profileID int64) (int64,
 	return count, err
 }
 
+const countTaggedAvatars = `-- name: CountTaggedAvatars :one
+SELECT COUNT(*)
+FROM profile_tags
+JOIN profiles ON profiles.id = profile_tags.profile_id
+JOIN avatars ON avatars.id = profiles.avatar_id
+WHERE profile_tags.tag = ?1 AND avatars.archived_at IS NULL
+`
+
+func (q *Queries) CountTaggedAvatars(ctx context.Context, tag string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countTaggedAvatars, tag)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createProfile = `-- name: CreateProfile :one
 INSERT INTO profiles (avatar_id, created_at, updated_at)
 VALUES (?1, ?2, ?3)
@@ -117,6 +132,100 @@ func (q *Queries) ListProfileTags(ctx context.Context, profileID int64) ([]strin
 			return nil, err
 		}
 		items = append(items, tag)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listTagCloud = `-- name: ListTagCloud :many
+SELECT profile_tags.tag, COUNT(*) AS habbos
+FROM profile_tags
+JOIN profiles ON profiles.id = profile_tags.profile_id
+JOIN avatars ON avatars.id = profiles.avatar_id
+WHERE avatars.archived_at IS NULL
+GROUP BY profile_tags.tag
+ORDER BY random()
+LIMIT ?1
+`
+
+type ListTagCloudRow struct {
+	Tag    string
+	Habbos int64
+}
+
+// An archived habbo leaves the lists, and so do its tags, in the cloud, the
+// search and the tag fight alike.
+func (q *Queries) ListTagCloud(ctx context.Context, rowLimit int64) ([]ListTagCloudRow, error) {
+	rows, err := q.db.QueryContext(ctx, listTagCloud, rowLimit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListTagCloudRow
+	for rows.Next() {
+		var i ListTagCloudRow
+		if err := rows.Scan(&i.Tag, &i.Habbos); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listTaggedAvatars = `-- name: ListTaggedAvatars :many
+SELECT avatars.id, avatars.name, avatars.figure, avatars.motto, profiles.id AS profile_id
+FROM profile_tags
+JOIN profiles ON profiles.id = profile_tags.profile_id
+JOIN avatars ON avatars.id = profiles.avatar_id
+WHERE profile_tags.tag = ?1 AND avatars.archived_at IS NULL
+ORDER BY profile_tags.created_at, profile_tags.profile_id
+LIMIT ?2
+`
+
+type ListTaggedAvatarsParams struct {
+	Tag      string
+	RowLimit int64
+}
+
+type ListTaggedAvatarsRow struct {
+	ID        int64
+	Name      string
+	Figure    string
+	Motto     string
+	ProfileID int64
+}
+
+// In the order the habbos took the tag, as Holo listed them.
+func (q *Queries) ListTaggedAvatars(ctx context.Context, arg ListTaggedAvatarsParams) ([]ListTaggedAvatarsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listTaggedAvatars, arg.Tag, arg.RowLimit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListTaggedAvatarsRow
+	for rows.Next() {
+		var i ListTaggedAvatarsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Figure,
+			&i.Motto,
+			&i.ProfileID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
 	}
 	if err := rows.Close(); err != nil {
 		return nil, err

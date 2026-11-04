@@ -1,0 +1,37 @@
+---
+import { Card } from "@project-reborn/components";
+import TagCloud from "../components/tags/tag-cloud.astro";
+import TagFight from "../components/tags/tag-fight.svelte";
+import TagSearch from "../components/tags/tag-search.astro";
+import Community from "../layouts/community.astro";
+---
+
+<Community title="[[ .ShortName ]] ~ Tags" tab="community" sub="Tags">
+  <div class="flex">
+    <div class="w-[210px]">
+      <div class="mr-2 mb-[7px]">
+        <Card color="orange">
+          <span slot="header">Tag Cloud</span>
+          <div id="tag-related-habblet-container" class="text-center"><TagCloud /></div>
+        </Card>
+      </div>
+      [[ if .TagFight ]]
+      <div class="mr-2 mb-[7px]">
+        <Card color="orange">
+          <span slot="header">Tag Fight</span>
+          <div id="tag-fight-habblet-container"><TagFight client:only="svelte" /></div>
+        </Card>
+      </div>
+      [[ end ]]
+    </div>
+    <div class="w-[560px]">
+      <div class="mr-2 mb-[7px]">
+        <Card color="orange">
+          <span slot="header">Find others with the same interests[[ if .Searched ]] ([[ len .Results ]])[[ end ]]</span>
+          <TagSearch />
+        </Card>
+      </div>
+    </div>
+    <div class="w-[160px]"></div>
+  </div>
+</Community>

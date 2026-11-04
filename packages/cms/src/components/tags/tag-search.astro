@@ -1,0 +1,59 @@
+---
+import { Avatar, Button, Icon } from "@project-reborn/components";
+
+const indent = "pl-[45px]";
+---
+
+<div id="tag-search-habblet-container">
+  <form action="/tags" class={`mt-2.5 flex items-center gap-1 ${indent}`}>
+    <input
+      type="text"
+      name="tag"
+      value="[[ .Tag ]]"
+      aria-label="Tag"
+      class="w-[70%] border border-neutral-600 bg-white p-1 text-black"
+    />
+    <Button type="submit" size="compact" aria-label="Search"><Icon variant="search" /></Button>
+  </form>
+  [[ if .Results ]]
+  <br /><p class={indent}>1 - [[ len .Results ]] / [[ len .Results ]]</p>
+  [[ else ]]
+  <p class={indent}>No results</p>
+  [[ end ]]
+  [[ if .CanTag ]]
+  <form id="tag-search-add" method="post" action="/tags" class={`flex items-center gap-1 ${indent}`}>
+    <span>Tag yourself with:</span>
+    <input type="hidden" name="tag" value="[[ .Tag ]]" />
+    <Button type="submit" size="compact">[[ .Tag ]]</Button>
+  </form>
+  [[ end ]]
+  <p class="m-[5px]"></p>
+  <table class="w-full border-collapse">
+    <tbody>
+      [[ range .Results ]]
+      <tr class="odd:bg-neutral-200 even:bg-white">
+        <td class="w-[39px] px-[5px] align-top">
+          <Avatar
+            imagingUrl="[[ $.ImagingURL ]]"
+            figure="[[ .Figure ]]"
+            size="s"
+            direction={4}
+            headDirection={4}
+            gesture="sml"
+            alt="[[ .Name ]]"
+          />
+        </td>
+        <td class="py-[5px]">
+          <a class="font-bold text-orange-500 underline" href="/home?name=[[ .Name ]]">[[ .Name ]]</a><br />
+          <span class="italic">[[ .Motto ]]</span>
+          <ul>
+            [[ range .Tags ]]
+            <li class="mr-[5px] inline"><a class="text-[10px] text-black no-underline hover:underline" href="/tags?tag=[[ . ]]">[[ . ]]</a> </li>
+            [[ end ]]
+          </ul>
+        </td>
+      </tr>
+      [[ end ]]
+    </tbody>
+  </table>
+</div>

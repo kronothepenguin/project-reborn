@@ -58,7 +58,7 @@ Guests and habbos browse community content; staff write news and manage banners.
 - [p4-05 Write news in housekeeping](/tasks/p4-05-housekeeping-news.md) — todo
 - [p4-06 Cut, fit and preview news images](/tasks/p4-06-image-editor.md) — todo
 - [p4-07 Manage banners in housekeeping](/tasks/p4-07-housekeeping-banners.md) — todo
-- [p4-08 Find habbos by tag and fight tags](/tasks/p4-08-tags-page.md) — todo
+- [p4-08 Find habbos by tag and fight tags](/tasks/p4-08-tags-page.md) — done
 - [p4-09 Show the community page](/tasks/p4-09-community-page.md) — todo
 - [p4-10 Show the staff page](/tasks/p4-10-staff-page.md) — todo
 - [p4-11 Fill the Me page's habblets and the landing's tag cloud](/tasks/p4-11-me-habblets.md) — todo

@@ -41,6 +41,7 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | BBCode | A link takes any address | Only `http` and `https` addresses become links | A `javascript:` link ran code on a click |
 | BBCode | Crossed tags close the page's own elements | Crossed tags nest inside the text, as a browser nested Holo's | One note could break the rest of the page |
 | News | The article's id goes into the SQL as it is, and the title, category and author print as HTML | Bound, and escaped when shown | Any address could read the database, and a title could run scripts |
+| Tags | `tags.php?tag=…&add=true` adds the tag on a plain link, and the search box prints the tag as HTML | Tagging yourself is a form that posts, and the search box escapes the tag | Any page could tag a visitor with a link, and a search address could run scripts |
 
 # Changed by a decision
 
@@ -84,6 +85,7 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | Install | `install.php` writes the store and the ranks | Updates write them, so a hotel installed before them receives them too | [0068](/decisions/0068-seeds-are-updates.md) |
 | Staff page | Its two boxes hold raw HTML, edited in the content tool | Their bodies are BBCode, and the help of their fields says `BBCode is allowed here.` | [0077](/decisions/0077-staff-boxes-in-bbcode.md) |
 | News | The body is HTML written by staff | BBCode, without smilies, as Holo's news had none | [0020](/decisions/0020-news-in-bbcode.md) |
+| Tags | A tag counts for its owner whether the owner still exists or not | An archived habbo's tags leave the cloud, the search and the tag fight | [0058](/decisions/0058-habbos-are-archived.md) |
 
 # Holo bugs not ported
 
@@ -112,6 +114,8 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | Smilies | Never show, because the code reads `enable-smilies` and the install writes `smilies-enabled` | Show while `features.smilies` is on, as it is by default |
 | Profile tags | The limit of 20 never refuses: it counts at most 20 tags and refuses only above 20 | `homes.maxTags` refuses with Holo's `You've reached the tag limit...` |
 | News | An unknown article shows the archive with status 200 | The archive, with status 404 |
+| Tags | The search takes the tag as a `LIKE` pattern, so `%` finds every tagged habbo | It finds the tag exactly |
+| Texts | `The winnner is:` on the tag fight | Spelled correctly |
 
 # Kept as in Holo, on purpose
 
@@ -123,6 +127,8 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 - The motto allows 38 characters on `/me` and 32 on `/account/profile`.
 - The email and password forms ask for the birth date, which the plan had dropped.
 - `Refer Options` describes a field during registration that exists neither in Holo nor here.
+- The tags page says `No results` before anything is searched.
+- After `Again?`, the tag fight's button reads `Start`, not `Fight!`.
 
 # Housekeeping
 

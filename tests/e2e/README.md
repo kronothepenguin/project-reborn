@@ -34,6 +34,7 @@ screenshots and server logs stay in `.run/`, which is git-ignored.
 | `homes` | A home read by a guest, profile tags, the editor, and the Webstore and Inventory |
 | `maintenance` | The site closed, and staff signing in |
 | `news` | The archive, an article, a category and the headlines, as a guest reads them |
+| `tags` | The cloud, a search, the tag fight and tagging yourself |
 | `art` | The home art, served by the binary |
 | `housekeeping-access` | Every route as a guest, a player and staff |
 | `housekeeping-admin` | Access groups, members, the guard and the log |

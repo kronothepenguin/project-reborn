@@ -2,6 +2,10 @@
 
 ## 2026-11-04
 
+- **Done** [p4-08](/tasks/p4-08-tags-page.md): anyone finds habbos by tag and fights tags, and a habbo tags itself, as
+  on Holo's tags.php.
+- **Start** [p4-08](/tasks/p4-08-tags-page.md).
+- **Start** [p4-08](/tasks/p4-08-tags-page.md).
 - **Done** [p4-13](/tasks/p4-13-home-links.md): the home's Edit button, the editor's way back and housekeeping's help
   queue escape a habbo's name, so a name with ? reaches its own home.
 - **Start** [p4-13](/tasks/p4-13-home-links.md).

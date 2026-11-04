@@ -1,6 +1,7 @@
 package router
 
 import (
+	"context"
 	"net/http"
 	"regexp"
 	"strings"
@@ -45,14 +46,23 @@ func (r *Router) HandleMeTagsAdd(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
-	tag := strings.ToLower(body.Tag)
-	refusal := ""
+	refusal, err := r.addProfileTag(ctx, profile.ID, strings.ToLower(body.Tag))
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
+	r.answerTags(w, req, profile.ID, refusal)
+}
+
+// addProfileTag gives the profile a tag, already lowered, by tags_ajax.php's
+// rules, or says why it refused.
+func (r *Router) addProfileTag(ctx context.Context, profileID int64, tag string) (refusal string, err error) {
 	err = r.inTx(ctx, func(q *store.Queries) error {
 		if !tagFormat.MatchString(tag) {
 			refusal = tagInvalid
 			return nil
 		}
-		count, err := q.CountProfileTags(ctx, profile.ID)
+		count, err := q.CountProfileTags(ctx, profileID)
 		if err != nil {
 			return err
 		}
@@ -60,17 +70,13 @@ func (r *Router) HandleMeTagsAdd(w http.ResponseWriter, req *http.Request) {
 			refusal = tagLimit
 			return nil
 		}
-		added, err := q.AddProfileTag(ctx, store.AddProfileTagParams{ProfileID: profile.ID, Tag: tag, CreatedAt: time.Now().UTC()})
+		added, err := q.AddProfileTag(ctx, store.AddProfileTagParams{ProfileID: profileID, Tag: tag, CreatedAt: time.Now().UTC()})
 		if err == nil && added == 0 {
 			refusal = tagInvalid
 		}
 		return err
 	})
-	if err != nil {
-		r.fail(w, err)
-		return
-	}
-	r.answerTags(w, req, profile.ID, refusal)
+	return refusal, err
 }
 
 // HandleMeTagsDelete handles POST /me/tags/{tag}/delete.
