@@ -35,7 +35,7 @@ cd tests/e2e && pnpm test staff
 Results (2026-11-04T16:24:45+00:00):
 
 - `gofmt`, `go vet` and `go test -race` pass in `packages/cms` and `packages/store`; `make check-docs` and
-  `go tool sqlc diff` pass in `packages/store`; the component tests pass (127).
+  `go tool sqlc diff` pass in `packages/store`; the component tests pass (125).
 - `pnpm test staff` passes all 12 checks: the title and sub-tab, no Housekeeping tab for a guest, each member once by
   name and no player, `No motto` and the highest group as `Rank:`, Holo's `Last Visit:` format, the worn badge, the
   offline state and the avatar from the imager, the home link, the two boxes with Holo's headings and texts in green,
