@@ -2,8 +2,8 @@
 type: Phase
 title: ED BBCode editor
 description: A WYSIWYG BBCode editor of our own, shared by housekeeping's news and staff boxes, the home notes and the coming forum.
-status: active
-timestamp: 2026-11-04T20:35:37+00:00
+status: done
+timestamp: 2026-11-04T21:33:12+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-04T20:35:37+00:00"}
 tags: [ed, bbcode, components, cms, housekeeping]
 ---
@@ -40,4 +40,4 @@ codes ([0092](/decisions/0092-bbcode-editor.md)).
 - [ed-02 Write news stories with the editor](/tasks/ed-02-news-story-editor.md) — done
 - [ed-03 Write the staff boxes with the editor](/tasks/ed-03-staff-boxes-editor.md) — done
 - [ed-04 Write home notes with the editor](/tasks/ed-04-note-editor.md) — done
-- [ed-05 Verify ED](/tasks/ed-05-exit-check.md) — todo
+- [ed-05 Verify ED](/tasks/ed-05-exit-check.md) — done

@@ -2,6 +2,10 @@
 
 ## 2026-11-04
 
+- **Update** ED is done, and [P5](/phases/p5-groups-forum.md) comes next.
+- **Done** [ed-05](/tasks/ed-05-exit-check.md): ED meets its exit criteria from a clean checkout; all 821 browser
+  checks pass, and every format written in the editor reaches the site as it showed.
+- **Start** [ed-05](/tasks/ed-05-exit-check.md).
 - **Done** [ed-04](/tasks/ed-04-note-editor.md): home notes are written in the BBCode editor, with smilies while they
   are on, and keep their skins, counter, preview and limit.
 - **Start** [ed-04](/tasks/ed-04-note-editor.md).
