@@ -1,0 +1,46 @@
+---
+import { Input } from "@project-reborn/components";
+---
+
+<tr>
+  <td class="w-2/5">
+    <label for="banner-text"><strong>Text</strong></label>
+    <div class="text-neutral-500">The text below your banner.</div>
+  </td>
+  <td class="w-3/5 [&>input]:w-full">
+    <Input id="banner-text" name="text" value="[[ .Form.Text ]]" maxlength="50" variant="border" />
+  </td>
+</tr>
+<tr>
+  <td>
+    <label for="banner-image"><strong>Url of banner</strong></label>
+    <div class="text-neutral-500">What's the url of your banner?</div>
+  </td>
+  <td class="[&>input]:w-full">
+    <Input id="banner-image" name="banner" value="[[ .Form.Banner ]]" maxlength="255" variant="border" />
+  </td>
+</tr>
+<tr>
+  <td>
+    <label for="banner-link"><strong>Url</strong></label>
+    <div class="text-neutral-500">To what site are they going when they click on the text/banner?</div>
+  </td>
+  <td class="[&>input]:w-full">
+    <Input id="banner-link" name="url" value="[[ .Form.URL ]]" maxlength="255" variant="border" />
+  </td>
+</tr>
+<tr>
+  <td>
+    <strong>Enable/disable</strong>
+    <div class="text-neutral-500">Enable or disable the banner.</div>
+  </td>
+  <td>
+    [[ if .Form.Enabled ]]
+    <label class="flex items-center gap-1"><input type="radio" name="status" value="0" /> Disabled</label>
+    <label class="flex items-center gap-1"><input type="radio" name="status" value="1" checked /> Enabled</label>
+    [[ else ]]
+    <label class="flex items-center gap-1"><input type="radio" name="status" value="0" checked /> Disabled</label>
+    <label class="flex items-center gap-1"><input type="radio" name="status" value="1" /> Enabled</label>
+    [[ end ]]
+  </td>
+</tr>

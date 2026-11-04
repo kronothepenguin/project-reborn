@@ -1,0 +1,24 @@
+---
+import { Table } from "@project-reborn/components";
+import BannerAnswer from "../../components/banners/banner-answer.astro";
+import BannerFields from "../../components/banners/banner-fields.astro";
+import Box from "../../components/box.astro";
+import Submit from "../../components/submit.astro";
+import Housekeeping from "../../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="Manage Site Banners" tab="site">
+  <form method="post" action="/housekeeping/banners/[[ .ID ]]">
+    <Box title="Edit banner!">
+      <Table variant="form">
+        <tbody>
+          <BannerAnswer />
+          <BannerFields />
+        </tbody>
+      </Table>
+      <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+        <Submit>Edit banner</Submit>
+      </div>
+    </Box>
+  </form>
+</Housekeeping>

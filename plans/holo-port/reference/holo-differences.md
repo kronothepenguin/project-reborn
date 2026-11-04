@@ -152,6 +152,8 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Stickers & Backgrounds | Stores any category it is sent | Refuses a category that does not exist | An item outside every category could never be sold |
 | News | The topstory image takes any text, which the CMS prints raw into its pages | One of Holo's five local images, an uploaded image at the path the CMS serves it at, or an http(s) address; anything else answers `The topstory image must be one of the local images, an uploaded image or an http(s) address.` and keeps what was typed | Any other address, such as `javascript:`, would go into every page that shows the article |
 | News | `Delete` is a link that deletes at once, with no question | A `Delete` button that posts, still with no question | A link in a message could delete an article |
+| Banners | Takes any address for the banner and its link, `javascript:` too, and puts them into the query and the pages raw | Each url is an http(s) address or a path of the site, or the form answers `The urls must be http(s) addresses or paths of the site, such as /community.` and keeps what was typed | A link could run a script on every page that shows the banner, or a path such as `//host` lead to another site |
+| Banners | The lengths of the text, 50, and of the urls, 255, hold only in the browser and the columns | The server checks them too: `The text must be at most 50 characters, and each url at most 255.` | A script could skip the browser |
 
 ## Changed by a decision
 
@@ -193,6 +195,8 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | News | No uploads | An `Upload Image` row cuts a picture to fill 300x187 by dragging and zooming it, or fits it whole with transparent bands, previews it, and uploads it with `Use this picture`; a GIF of exactly 300x187 goes up as it is, with its animation. The server keeps only a PNG or a GIF of 300x187, re-encoded, and its path fills the field | [0074](/decisions/0074-news-images.md) |
 | News | `HTML is allowed here.` under `Story` | `BBCode is allowed here.`, and the edit form links to the article with `View on site` | [0020](/decisions/0020-news-in-bbcode.md) |
 | News | The author is the user's name, saved as text | The staff member's active habbo, whose name the list shows | [P4](/phases/p4-community.md) |
+| Banners | Open to rank 6 | Takes `housekeeping.banners`, which the installer's Administrator and Moderator hold | [0053](/decisions/0053-attributes-on-groups-and-users.md), [0054](/decisions/0054-access-groups-are-holos-ranks.md) |
+| Banners | Under the HoloCMS tab | Under Site & Content, whose Content Management box links to it, as Holo's did | [0021](/decisions/0021-dropped-and-kept-features.md) |
 
 ## Holo bugs not ported
 
@@ -211,6 +215,11 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Stickers & Backgrounds | Its log row leaves out the item's name | `homeStore.create` reads `<name> worth <price> credits` |
 | Stickers & Backgrounds | Two items whose names start with the same word share one image | Each item keeps its own image |
 | News | The edit form selects `HoloCMS` for an article in `Events & Competitions` or `Other`, so saving moves it there, and selects `Events & Competitions` for `Security` | Each article's category is selected, and one no longer offered, such as the club of an older short name, stays as a choice of its own |
+| Banners | The page's title is `Wordfilter Options` | `Manage Site Banners`, the name of its link |
+| Banners | `Add banner` asks for an id the form does not send, so it never adds a banner | It adds the banner, asking for the two urls as Holo meant to |
+| Banners | Each check overwrites the answer of the one before, so the add and edit forms always say `Something was going wrong!`, and the edit view says it before anything is sent | Each answer follows what happened, and shows only after a post: `Succesfully added!` or `You're something forgotten!` in the add form, `Succesfully edited!` or `You're something forgotten!` in the edit view, `Succesfully deleted!` in the list |
+| Banners | A second `Add banner` button under the list posts an empty form | Not ported |
+| Banners | A delete stays on its question, about a banner that is gone, and says `Succesfully deleted!` for any id; the edit view of a banner that does not exist shows blank fields | A delete goes back to the list; a banner that does not exist answers the page with `Something was going wrong!` in the list, and 404 |
 
 ## Not in Holo
 
@@ -249,7 +258,7 @@ veto.
 
 - Any staff member can change the shared note.
 - A blank field of `Edit User` keeps its value, so a motto cannot be emptied there.
-- Holo's spelling in its texts, such as `The bage code` and `Permenantly`.
+- Holo's spelling in its texts, such as `The bage code`, `Permenantly`, `Succesfully` and `Banner editer`.
 - The dashboard shows 20 administrators, and the staff list 50 rows.
 - Every link of the left menu shows to all staff, and a page they lack answers `Access Denied`.
 

@@ -102,6 +102,13 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /housekeeping/news/{id}/delete", holding(auth.HousekeepingNews, r.HandleNewsArticleDelete))
 	mux.Handle("POST /housekeeping/news/images", holding(auth.HousekeepingNews, r.HandleNewsImageUpload))
 
+	mux.Handle("GET /housekeeping/banners", holding(auth.HousekeepingBanners, r.HandleBannersView))
+	mux.Handle("POST /housekeeping/banners", holding(auth.HousekeepingBanners, r.HandleBannersCreate))
+	mux.Handle("GET /housekeeping/banners/{id}", holding(auth.HousekeepingBanners, r.HandleBannerView))
+	mux.Handle("POST /housekeeping/banners/{id}", holding(auth.HousekeepingBanners, r.HandleBannerSave))
+	mux.Handle("GET /housekeeping/banners/{id}/delete", holding(auth.HousekeepingBanners, r.HandleBannerDeleteView))
+	mux.Handle("POST /housekeeping/banners/{id}/delete", holding(auth.HousekeepingBanners, r.HandleBannerDelete))
+
 	mux.Handle("GET /housekeeping/access-groups", holding(auth.HousekeepingAccessGroups, r.HandleAccessGroupsView))
 	mux.Handle("POST /housekeeping/access-groups", holding(auth.HousekeepingAccessGroups, r.HandleAccessGroupsCreate))
 	mux.Handle("GET /housekeeping/access-groups/{id}", holding(auth.HousekeepingAccessGroups, r.HandleAccessGroupView))

@@ -1,0 +1,27 @@
+---
+import { Table } from "@project-reborn/components";
+import Box from "../../../components/box.astro";
+import Submit from "../../../components/submit.astro";
+import Housekeeping from "../../../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="Manage Site Banners" tab="site">
+  <form method="post" action="/housekeeping/banners/[[ .ID ]]/delete">
+    <Box title="Delete banner">
+      <Table variant="form">
+        <tbody>
+          <tr>
+            <td class="w-2/5">
+              <strong>Delete</strong>
+              <div class="text-neutral-500">Do you want to delete the banner with the following text:</div>
+            </td>
+            <td class="w-3/5">[[ .Text ]]</td>
+          </tr>
+        </tbody>
+      </Table>
+      <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+        <Submit>Delete banner</Submit>
+      </div>
+    </Box>
+  </form>
+</Housekeeping>

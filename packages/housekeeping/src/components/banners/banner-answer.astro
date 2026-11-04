@@ -1,0 +1,11 @@
+[[ if .Message ]]
+<tr>
+  <td class="w-2/5"><strong role="status">[[ .Message ]]</strong></td>
+  <td class="w-3/5"></td>
+</tr>
+[[ end ]] [[ if .Error ]]
+<tr>
+  <td class="w-2/5 text-red-600"><strong role="alert">[[ .Error ]]</strong></td>
+  <td class="w-3/5"></td>
+</tr>
+[[ end ]]

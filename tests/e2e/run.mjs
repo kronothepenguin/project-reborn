@@ -19,6 +19,7 @@ import * as habbos from "./suites/habbos.mjs";
 import * as homes from "./suites/homes.mjs";
 import * as housekeepingAccess from "./suites/housekeeping-access.mjs";
 import * as housekeepingAdmin from "./suites/housekeeping-admin.mjs";
+import * as housekeepingBanners from "./suites/housekeeping-banners.mjs";
 import * as housekeepingMaintenance from "./suites/housekeeping-maintenance.mjs";
 import * as housekeepingNews from "./suites/housekeeping-news.mjs";
 import * as housekeepingSettings from "./suites/housekeeping-settings.mjs";
@@ -49,6 +50,7 @@ const suites = {
   "housekeeping-users": housekeepingUsers,
   "housekeeping-store": housekeepingStore,
   "housekeeping-news": housekeepingNews,
+  "housekeeping-banners": housekeepingBanners,
   updates,
   together,
 };

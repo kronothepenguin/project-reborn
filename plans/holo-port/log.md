@@ -2,6 +2,10 @@
 
 ## 2026-11-04
 
+- **Done** [p4-07](/tasks/p4-07-housekeeping-banners.md): staff with housekeeping.banners add, list, edit and delete
+  banners in Holo's views and texts, adding works, each answer follows what happened, the urls are http(s) addresses
+  or paths of the site, and each change is logged.
+- **Start** [p4-07](/tasks/p4-07-housekeeping-banners.md).
 - **Done** [p4-06](/tasks/p4-06-image-editor.md): the news form's editor cuts a picture to fill 300x187 or fits it
   whole, previews it and uploads it; a GIF of 300x187 goes up as it is; the server keeps only a re-encoded PNG or
   GIF of that size, within 2 MB and 500 frames, logs it and answers its path.

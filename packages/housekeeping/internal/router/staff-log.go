@@ -41,6 +41,9 @@ const (
 	actionNewsUpdate            = "news.update"
 	actionNewsDelete            = "news.delete"
 	actionNewsImage             = "news.image"
+	actionBannersCreate         = "banners.create"
+	actionBannersUpdate         = "banners.update"
+	actionBannersDelete         = "banners.delete"
 	actionDatabaseUpdate        = "database.update"
 	actionConfigUpdate          = "config.update"
 )
