@@ -401,6 +401,30 @@ export default async function (t) {
     logs,
   );
 
+  // A name may hold ?, which an address takes for the start of a query.
+  const asked = "2026-11-02 12:00:00.000000000+00:00";
+  const [[adminUser]] = t.sql("SELECT user_id FROM avatars WHERE name = 'Admin-1'");
+  t.sql(`INSERT INTO avatars (user_id, name, figure, gender, created_at, updated_at)
+    VALUES (${adminUser}, 'Who?me=1', 'hd-180-1', 'M', '${asked}', '${asked}')`);
+  const [[who]] = t.sql("SELECT id FROM avatars WHERE name = 'Who?me=1'");
+  t.sql(`INSERT INTO profiles (avatar_id, created_at, updated_at) VALUES (${who}, '${asked}', '${asked}')`);
+  const [[whoProfile]] = t.sql(`SELECT id FROM profiles WHERE avatar_id = ${who}`);
+  t.sql(`INSERT INTO homes (profile_id, updated_at) VALUES (${whoProfile}, '${asked}')`);
+  t.sql(`INSERT INTO help_tickets (avatar_id, subject, message, ip, created_at)
+    VALUES (${who}, 'Lost', 'Where am I?', '10.1.2.3', '${asked}')`);
+  await page.goto(`${hk}/help`);
+  const [home] = await Promise.all([
+    context.waitForEvent("page"),
+    page.getByRole("link", { name: "Who?me=1" }).click(),
+  ]);
+  await home.waitForLoadState();
+  check(
+    "the queue opens the home of a habbo whose name holds ?",
+    home.url() === `${base}/home/Who%3Fme=1` && (await home.title()).endsWith("~ User Profile - Who?me=1"),
+    home.url(),
+  );
+  await home.close();
+
   check(
     "no page failed for the administrator",
     problems.length === 0,

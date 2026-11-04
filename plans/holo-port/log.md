@@ -2,6 +2,15 @@
 
 ## 2026-11-04
 
+- **Done** [p4-13](/tasks/p4-13-home-links.md): the home's Edit button, the editor's way back and housekeeping's help
+  queue escape a habbo's name, so a name with ? reaches its own home.
+- **Start** [p4-13](/tasks/p4-13-home-links.md).
+- **Correct** [p4-02](/tasks/p4-02-staff-settings.md): its form test counted the menu's copy of the form and failed in
+  the commit that closed it; it now reads the form alone, and every breakage was run again from a passing test.
+- **Start** [p4-13](/tasks/p4-13-home-links.md).
+- **Create** [p4-13](/tasks/p4-13-home-links.md): writing the news found that the home's Edit button, the editor's way
+  back to the home and housekeeping's help queue put a habbo's name in an address unescaped, so a name with `?` leads
+  to another habbo's home.
 - **Done** [p4-04](/tasks/p4-04-news-pages.md): anyone reads the news as Holo's news.php showed it: the archive, a
   category's listing, an article and the headlines column.
 - **Start** [p4-04](/tasks/p4-04-news-pages.md).

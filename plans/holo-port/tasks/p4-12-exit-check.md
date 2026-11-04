@@ -4,7 +4,7 @@ title: Verify P4
 description: Every exit criterion of P4 holds from a clean checkout, in a real browser, with p4-housekeeping merged.
 status: todo
 phase: p4
-depends_on: [p4-01, p4-02, p4-03, p4-04, p4-05, p4-06, p4-07, p4-08, p4-09, p4-10, p4-11]
+depends_on: [p4-01, p4-02, p4-03, p4-04, p4-05, p4-06, p4-07, p4-08, p4-09, p4-10, p4-11, p4-13]
 packages: [packages/cms, packages/housekeeping, packages/store, packages/virtual, tests/e2e]
 holo: []
 timestamp: 2026-11-04T01:28:29+00:00

@@ -117,3 +117,14 @@ func TestAClubOwnersHomeIsWide(t *testing.T) {
 	}
 	wantPage(t, serve(mux, "GET", "/home/Frank", nil, nil), http.StatusOK, "Wide:true")
 }
+
+// A habbo's name may hold ?, which an address takes for the start of a query.
+func TestTheHomeCarriesItsNameEscapedForAnAddress(t *testing.T) {
+	db, mux := storeSite(t)
+	owner(t, db, "who@example.com", "Who?me=1", 0)
+	cookie := login(t, db, "Who?me=1")
+
+	for _, path := range []string{"/home/Who%3Fme=1", "/home/Who%3Fme=1/edit"} {
+		wantPage(t, serve(mux, "GET", path, cookie, nil), http.StatusOK, "Owner:Who?me=1 OwnerPath:Who%3Fme=1 ")
+	}
+}

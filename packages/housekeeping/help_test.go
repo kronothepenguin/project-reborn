@@ -84,6 +84,16 @@ func TestTheQueueShowsWhatIsNotClosed(t *testing.T) {
 	}
 }
 
+// A habbo's name may hold ?, which an address takes for the start of a query.
+func TestTheQueueLinksToAHomeByItsEscapedName(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := helper(t, db)
+	habbo(t, db, "who@example.com", "Who?me=1")
+	ticket(t, db, habboOf(t, db, "Who?me=1").ID, "Lost")
+
+	wantPage(t, serve(mux, "GET", "/housekeeping/help", cookie, nil), http.StatusOK, "Habbo:Who?me=1 HabboPath:Who%3Fme=1 ")
+}
+
 func TestTheQueueShowsANewerTicketFirstInPages(t *testing.T) {
 	db, mux := newSite(t)
 	_, cookie := helper(t, db)

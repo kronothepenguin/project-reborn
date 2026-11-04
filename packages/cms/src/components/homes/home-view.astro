@@ -18,7 +18,7 @@ const { editing = false } = Astro.props;
       !editing && (
         <Fragment>
           [[ if .CanEdit ]]
-          <Button variant="dark" size="compact" href="/home/[[ .Owner ]]/edit">
+          <Button variant="dark" size="compact" href="/home/[[ .OwnerPath ]]/edit">
             <span class="flex items-center gap-1">
               <Icon variant="edit" />
               Edit

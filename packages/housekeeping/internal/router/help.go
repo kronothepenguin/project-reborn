@@ -3,6 +3,7 @@ package router
 import (
 	"database/sql"
 	"net/http"
+	"net/url"
 	"slices"
 	"strconv"
 	"time"
@@ -33,11 +34,13 @@ type helpPage struct {
 }
 
 type ticketRow struct {
-	ID       int64
-	Subject  string
-	Date     string
-	Habbo    string
-	PickedUp bool
+	ID      int64
+	Subject string
+	Date    string
+	Habbo   string
+	// HabboPath is Habbo escaped for an address, since a name may hold ?.
+	HabboPath string
+	PickedUp  bool
 }
 
 func (r *Router) newHelpPage(req *http.Request) (helpPage, error) {
@@ -62,11 +65,12 @@ func (r *Router) newHelpPage(req *http.Request) (helpPage, error) {
 	}
 	for _, ticket := range tickets {
 		page.Tickets = append(page.Tickets, ticketRow{
-			ID:       ticket.ID,
-			Subject:  ticket.Subject,
-			Date:     ticket.CreatedAt.UTC().Format(dateFormat),
-			Habbo:    ticket.Habbo.String,
-			PickedUp: ticket.PickedUpAt.Valid,
+			ID:        ticket.ID,
+			Subject:   ticket.Subject,
+			Date:      ticket.CreatedAt.UTC().Format(dateFormat),
+			Habbo:     ticket.Habbo.String,
+			HabboPath: url.PathEscape(ticket.Habbo.String),
+			PickedUp:  ticket.PickedUpAt.Valid,
 		})
 	}
 	return page, nil

@@ -25,9 +25,11 @@ type homePage struct {
 	ImagingURL string
 	// MyPage is the active habbo's own home, under the Me tab; any other home is
 	// under Community, as Holo told myprofile from profile.
-	MyPage     bool
-	CanEdit    bool
-	Owner      string
+	MyPage  bool
+	CanEdit bool
+	Owner   string
+	// OwnerPath is Owner escaped for an address, since a name may hold ?.
+	OwnerPath  string
 	HomeID     int64
 	Background string
 	// BackgroundID is the store item of the background, 0 for Holo's default.
@@ -135,6 +137,7 @@ func (r *Router) newHomePage(ctx context.Context, avatar store.Avatar) (homePage
 		MyPage:     shared.SignedIn && session.AvatarID == avatar.ID,
 		CanEdit:    shared.SignedIn && session.UserID == avatar.UserID,
 		Owner:      avatar.Name,
+		OwnerPath:  url.PathEscape(avatar.Name),
 		Background: image(defaultBackground),
 	}
 	home, err := q.GetProfileHome(ctx, avatar.ID)

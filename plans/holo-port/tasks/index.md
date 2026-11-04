@@ -157,6 +157,7 @@ starts.
 - [p4-10 Show the staff page](/tasks/p4-10-staff-page.md) — GET /staff lists the staff in one list, as Holo, and shows the two BBCode boxes, while features.staffPage is on.
 - [p4-11 Fill the Me page's habblets and the landing's tag cloud](/tasks/p4-11-me-habblets.md) — The Me page gains the tags habblet, the news promo and the banners column, and the landing page Holo's tag cloud.
 - [p4-12 Verify P4](/tasks/p4-12-exit-check.md) — Every exit criterion of P4 holds from a clean checkout, in a real browser, with p4-housekeeping merged.
+- [p4-13 Escape habbo names in home links](/tasks/p4-13-home-links.md) — The home's Edit button, the editor's way back to the home and housekeeping's help queue link to the right home for a habbo whose name holds a question mark.
 
 ## Later phases
 

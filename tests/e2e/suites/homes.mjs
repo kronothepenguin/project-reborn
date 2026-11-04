@@ -25,6 +25,19 @@ export const prepare = ({ sql }) => {
     VALUES (${home}, 'sticker', 1, 500, 200, 10, '${now}', '${now}')`);
   sql(`INSERT INTO profile_tags (profile_id, tag, created_at) VALUES (${profile}, 'retro', '${now}')`);
 
+  // A name may hold ?, which an address takes for the start of a query.
+  sql(`INSERT INTO users (email, born_on, created_ip, created_at, updated_at)
+    VALUES ('who@example.com', '1990-05-01', '127.0.0.1', '${now}', '${now}')`);
+  const [[who]] = sql("SELECT id FROM users WHERE email = 'who@example.com'");
+  sql(`INSERT INTO credentials (user_id, password_hash, updated_at) VALUES (${who}, '${hash}', '${now}')`);
+  sql(`INSERT INTO wallets (user_id, updated_at) VALUES (${who}, '${now}')`);
+  sql(`INSERT INTO avatars (user_id, name, figure, gender, created_at, updated_at)
+    VALUES (${who}, 'Who?me=1', 'hd-180-1', 'M', '${now}', '${now}')`);
+  const [[whoAvatar]] = sql("SELECT id FROM avatars WHERE name = 'Who?me=1'");
+  sql(`INSERT INTO profiles (avatar_id, created_at, updated_at) VALUES (${whoAvatar}, '${now}', '${now}')`);
+  const [[whoProfile]] = sql(`SELECT id FROM profiles WHERE avatar_id = ${whoAvatar}`);
+  sql(`INSERT INTO homes (profile_id, updated_at) VALUES (${whoProfile}, '${now}')`);
+
   const [[adminHome]] = sql(`SELECT homes.id FROM homes JOIN profiles ON profiles.id = homes.profile_id
     JOIN avatars ON avatars.id = profiles.avatar_id WHERE avatars.name = 'Admin-1'`);
   sql(`INSERT INTO home_items (home_id, kind, home_store_item_id, x, y, z, created_at, updated_at)
@@ -206,4 +219,19 @@ export default async function ({ base, browser, check, shot }) {
   check("a borrowed tag is the habbo's own", await admin.page.getByRole("link", { name: "retro" }).isVisible());
   check("no page failed for the owner", admin.problems.length === 0, admin.problems.join(", "));
   await admin.context.close();
+
+  const who = await signIn(browser, base, "Who?me=1");
+  await who.page.getByRole("link", { name: "My Page" }).click();
+  await who.page.waitForURL("**/home/Who%3Fme=1");
+  await who.page.getByRole("link", { name: "Edit", exact: true }).click();
+  await who.page.waitForURL("**/home/Who%3Fme=1/edit");
+  check(
+    "Edit opens the editor of a habbo whose name holds ?",
+    (await who.page.title()).endsWith("~ User Profile - Who?me=1") && (await who.page.getByRole("button", { name: "Save" }).isVisible()),
+  );
+  await who.page.getByRole("link", { name: "Cancel" }).click();
+  await who.page.waitForURL("**/home/Who%3Fme=1");
+  check("Cancel goes back to that habbo's home", (await who.page.title()).endsWith("~ User Profile - Who?me=1"));
+  check("no page failed for that habbo", who.problems.length === 0, who.problems.join(", "));
+  await who.context.close();
 }
