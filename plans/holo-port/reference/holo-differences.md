@@ -75,6 +75,12 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | Home editor | The edit menu and the store dialogs sit in frames drawn by images from Habbo's servers | Plain frames, with Holo's texts, buttons and order | Those servers are gone, and Holo never shipped the images |
 | Home editor | Items fade out and back in when the background changes, and placed items fade in | The background and the items change at once | Holo's fades came from an effects library the site does not load; the result is the same |
 | Note editor | `Control.TextArea`'s BBCode toolbar | Buttons for bold, italics, underline, strike, quote, code and a link, and the colours of Holo's list | The same tags and colours, without that library |
+| Upgrading | `upgrade.php` runs its changes once, with no record of what ran, and asks for the file to be deleted | Housekeeping's update page applies the waiting update files in order, after a copy of the database, and records each in `migrations` | [0067](/decisions/0067-updates-are-our-own-migrations.md), [0070](/decisions/0070-housekeeping-applies-updates.md) |
+| Upgrading | The site runs while `upgrade.php` waits | While updates wait, the CMS shows its maintenance page to everyone, staff with the bypass included, and housekeeping only its update page | [0069](/decisions/0069-waiting-updates-close-the-hotel.md) |
+| Upgrading | No change happens by itself | Updates that sign-in needs apply when a program starts, after a copy, and a failure shows an error page | [0071](/decisions/0071-sign-in-updates-apply-at-start.md) |
+| Upgrading | `config.php` is edited by hand | Housekeeping offers the keys a release adds to `config.json`, with their defaults, and removes the ones nothing reads | [0070](/decisions/0070-housekeeping-applies-updates.md) |
+| Install | The last page links to the new site and to housekeeping's sign-in | It links to the hotel, where the administrator signs in; housekeeping has no sign-in of its own | [0070](/decisions/0070-housekeeping-applies-updates.md) |
+| Install | `install.php` writes the store and the ranks | Updates write them, so a hotel installed before them receives them too | [0068](/decisions/0068-seeds-are-updates.md) |
 
 # Holo bugs not ported
 

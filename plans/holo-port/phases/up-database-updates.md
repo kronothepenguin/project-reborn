@@ -2,7 +2,7 @@
 type: Phase
 title: UP Database updates
 description: A release reaches an installed hotel through database updates applied from housekeeping, with automatic updates for sign-in, a copy before each run, config.json's new keys, and an installer that links to the hotel.
-status: active
+status: done
 timestamp: 2026-11-03T21:02:31+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-03T21:02:31+00:00"}
 tags: [up, store, cms, housekeeping, installer, config]
@@ -62,4 +62,4 @@ Out of scope:
 - [up-09 Link the installer to the hotel](/tasks/up-09-installer-links.md) — done
 - [up-10 Test updates in a real browser](/tasks/up-10-browser-suite.md) — done
 - [up-12 Keep the settings suite to the settings sections](/tasks/up-12-settings-suite-sections.md) — done
-- [up-11 Verify UP](/tasks/up-11-exit-check.md) — todo
+- [up-11 Verify UP](/tasks/up-11-exit-check.md) — done

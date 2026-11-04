@@ -31,15 +31,24 @@ Nobody is expected to edit the database by hand.
 
 # An empty database
 
-Every program works on an empty database ([0049](/decisions/0049-store-is-the-global-database.md)).
+Every program works on an empty database ([0068](/decisions/0068-seeds-are-updates.md)).
 
-- The CMS and housekeeping create it when it does not exist, and use the default values.
-- The installer is a merge of every schema and every seed. It lets the administrator change the default values, the first
-  time Reborn is opened and only once.
+- A program that finds no database creates it with every update, seeds included, and uses the default values.
+- The installer lets the administrator change the default values, the first time Reborn is opened and only once.
 - The installer still works on a database another program created, which is how such a hotel gets its administrator.
-- `packages/store` is the global access point to the one database, and holds every schema, so a program opens tables it
-  never uses ([0049](/decisions/0049-store-is-the-global-database.md)). A program can have its own seed, which the installer
-  merges.
+- `packages/store` is the global access point to the one database, and holds every schema and every update, so a program
+  opens tables it never uses.
+
+# Database updates
+
+A release changes the database through update files in `packages/store`, as
+[How database updates work](/reference/database-updates.md) describes.
+
+- Opening an existing database writes nothing to it. When the CMS or housekeeping starts, it applies only the updates
+  that sign-in needs, after a copy ([0071](/decisions/0071-sign-in-updates-apply-at-start.md)).
+- While other updates wait, the CMS shows maintenance and housekeeping only its update page, where an administrator
+  applies them ([0069](/decisions/0069-waiting-updates-close-the-hotel.md),
+  [0070](/decisions/0070-housekeeping-applies-updates.md)).
 
 # Scheduled tasks
 
@@ -50,6 +59,8 @@ tasks in its `New`, written as `scheduler.Every(1, scheduler.Hour, task)`.
 | --- | --- | --- |
 | Delete expired reset links ([0044](/decisions/0044-expired-reset-links-deleted.md)) | CMS | 1 minute |
 | Delete expired sessions ([0050](/decisions/0050-expired-sessions-deleted.md)) | CMS, housekeeping | 1 minute |
+
+No task runs while updates wait, because its code may need them.
 
 # Running alone
 

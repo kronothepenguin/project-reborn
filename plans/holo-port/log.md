@@ -1,5 +1,11 @@
 # Log
 
+## 2026-11-04
+
+- **Done** [up-11](/tasks/up-11-exit-check.md): UP meets its exit criteria from a clean checkout, with every gate and
+  all 584 browser checks passing.
+- **Start** [up-11](/tasks/up-11-exit-check.md).
+
 ## 2026-11-03
 
 - **Done** [up-12](/tasks/up-12-settings-suite-sections.md): the settings suite opens only the settings sections of the
