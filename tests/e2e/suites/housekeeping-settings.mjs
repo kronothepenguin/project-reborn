@@ -51,17 +51,57 @@ export default async function ({ base, browser, check, hk, hkOrigin, shot }) {
   }
 
   await page.goto(`${hk}/settings?section=staffPage`);
-  await page.fill('textarea[name="staffPage.box1Body"]', "[b]Need help?[/b]\nAsk us.");
+  const box1 = page.getByRole("textbox", { name: "Staff Content Box 1", exact: true });
+  check(
+    "the two staff boxes are written in the BBCode editor, named by their labels, and the other fields stay plain",
+    (await page.getByRole("toolbar", { name: "Formatting" }).count()) === 2 &&
+      !(await page.locator('textarea[name="staffPage.box1Body"]').isVisible()) &&
+      (await box1.isVisible()) &&
+      (await page.getByRole("textbox", { name: "Staff Content Box 2", exact: true }).isVisible()) &&
+      (await page.locator('input[name="staffPage.box1Heading"]').isVisible()) &&
+      (await page.getByRole("button", { name: "Smiley :)" }).count()) === 0,
+  );
+  await box1.click();
+  await page.keyboard.press("Control+A");
+  await page.keyboard.type("Need help?");
+  await page.keyboard.press("Enter");
+  await page.keyboard.type("Ask us.");
+  await box1.evaluate((area) => {
+    const text = area.firstChild;
+    document.getSelection().setBaseAndExtent(text, 0, text, "Need help?".length);
+  });
+  await box1.locator("xpath=..").getByRole("button", { name: "Bold" }).click();
   await page.selectOption('select[name="staffPage.box1Color"]', "red");
   await page.getByRole("button", { name: "Save Settings" }).click();
   await page.waitForLoadState();
   check(
-    "the staff module keeps a multi-line body and a colour",
+    "the staff module keeps a multi-line body written in the editor, and a colour",
     (await page.inputValue('textarea[name="staffPage.box1Body"]')) ===
       "[b]Need help?[/b]\nAsk us." &&
-      (await page.inputValue('select[name="staffPage.box1Color"]')) === "red",
+      (await page.inputValue('select[name="staffPage.box1Color"]')) === "red" &&
+      (await box1.locator("strong").innerText()) === "Need help?",
+    await page.inputValue('textarea[name="staffPage.box1Body"]'),
   );
   await shot(page, "settings-staff");
+  let staffPage = "";
+  for (let i = 0; i < 20 && !staffPage.includes("<strong>Need help?</strong><br />"); i++) {
+    if (i > 0) await page.waitForTimeout(250);
+    staffPage = await (await page.request.get(`${base}/staff`)).text();
+  }
+  check(
+    "the staff page shows the box as it was written",
+    staffPage.includes("<strong>Need help?</strong><br />") && staffPage.includes("Ask us."),
+  );
+  const plain = await browser.newContext({ javaScriptEnabled: false });
+  await plain.addCookies(await page.context().cookies());
+  const plainPage = await plain.newPage();
+  await plainPage.goto(`${hk}/settings?section=staffPage`);
+  check(
+    "without JavaScript the staff boxes are plain fields",
+    (await plainPage.locator('textarea[name="staffPage.box1Body"]').isVisible()) &&
+      (await plainPage.getByRole("toolbar", { name: "Formatting" }).count()) === 0,
+  );
+  await plain.close();
 
   await page.goto(`${hk}/settings?section=site`);
   await page.fill('input[name="site.name"]', "Reborn <b>Palace</b>");

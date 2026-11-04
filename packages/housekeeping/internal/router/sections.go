@@ -43,6 +43,8 @@ type field struct {
 	Long    bool
 	Rows    int
 	Choices []choice
+	// BBCode gives a long text the BBCode editor (decision 0092).
+	BBCode bool
 }
 
 type choice struct {
@@ -141,10 +143,10 @@ var forms = []section{
 	{
 		ID: "staffPage", Menu: "Staff Module", Title: "Manage Content Options", Button: defaultButton, Content: true,
 		Fields: []field{
-			{Key: "staffPage.box1Body", Label: "Staff Content Box 1", Help: "The text within a content box on the staff page (if enabled). BBCode is allowed here.", Long: true},
+			{Key: "staffPage.box1Body", Label: "Staff Content Box 1", Help: "The text within a content box on the staff page (if enabled). BBCode is allowed here.", Long: true, BBCode: true},
 			{Key: "staffPage.box1Color", Label: "Staff Content Box 1 Color", Help: "Only valid colors defined in CSS such as 'orange', 'blue', etc", Choices: staffBoxColors},
 			{Key: "staffPage.box1Heading", Label: "Staff Content Box 1 Heading", Help: "The title (heading) of Staff Content Box 1.", Required: true},
-			{Key: "staffPage.box2Body", Label: "Staff Content Box 2", Help: "The text within a content box on the staff page (if enabled). BBCode is allowed here.", Long: true},
+			{Key: "staffPage.box2Body", Label: "Staff Content Box 2", Help: "The text within a content box on the staff page (if enabled). BBCode is allowed here.", Long: true, BBCode: true},
 			{Key: "staffPage.box2Color", Label: "Staff Content Box 2 Color", Help: "Only valid colors defined in CSS such as 'orange', 'blue', etc", Choices: staffBoxColors},
 			{Key: "staffPage.box2Heading", Label: "Staff Content Box 2 Heading", Help: "The title (heading) of Staff Content Box 2.", Required: true},
 			{Key: "features.staffPage", Label: "Staff Module Enabled", Help: "This determines whether the Staff Module (/staff) will be displayed/enabled."},

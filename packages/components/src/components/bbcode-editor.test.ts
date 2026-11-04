@@ -250,6 +250,17 @@ describe("BBCodeEditor", () => {
     expect(container.querySelector("[contenteditable]")?.classList.contains("border-neutral-600")).toBe(true);
   });
 
+  it("takes its name and its height from the field it stands in for", () => {
+    const form = document.createElement("form");
+    form.innerHTML = '<label for="box"><strong>Staff Content Box 1</strong></label><textarea id="box" rows="8">x</textarea>';
+    document.body.append(form);
+    forms.push(form);
+    const { container } = render(BBCodeEditor, { props: { field: "box" } });
+    const area = container.querySelector("[contenteditable]") as HTMLDivElement;
+    expect(area.getAttribute("aria-label")).toBe("Staff Content Box 1");
+    expect(area.style.minHeight).toBe("12em");
+  });
+
   it("gives the field back when it goes", () => {
     const { field, unmount } = setup("x");
     expect(field.hidden).toBe(true);

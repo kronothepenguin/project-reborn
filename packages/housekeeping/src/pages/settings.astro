@@ -1,5 +1,5 @@
 ---
-import { Checkbox, Input, Select, Table } from "@project-reborn/components";
+import { BBCodeEditor, Checkbox, Input, Select, Table } from "@project-reborn/components";
 import Box from "../components/box.astro";
 import Message from "../components/message.astro";
 import Submit from "../components/submit.astro";
@@ -36,6 +36,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
                 rows="[[ .Rows ]]"
                 class="w-full border border-black bg-white p-1"
               >[[ .Value ]]</textarea>
+              [[ if .BBCode ]]<BBCodeEditor client:only="svelte" field="[[ .Key ]]" variant="housekeeping" />[[ end ]]
               [[ else if eq .Kind "choice" ]]
               <Select id="[[ .Key ]]" name="[[ .Key ]]">
                 [[ range .Choices ]][[ if .Selected ]]

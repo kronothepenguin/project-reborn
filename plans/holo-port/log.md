@@ -2,6 +2,9 @@
 
 ## 2026-11-04
 
+- **Done** [ed-03](/tasks/ed-03-staff-boxes-editor.md): the Staff Module's two boxes are written in the BBCode editor,
+  through a mark that P6's credits boxes will take.
+- **Start** [ed-03](/tasks/ed-03-staff-boxes-editor.md).
 - **Done** [ed-02](/tasks/ed-02-news-story-editor.md): housekeeping's news story is written in the BBCode editor, and the
   form posts it as before.
 - **Start** [ed-02](/tasks/ed-02-news-story-editor.md).

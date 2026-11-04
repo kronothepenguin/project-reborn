@@ -8,7 +8,8 @@
   // area is drawn again from that BBCode, so it only holds what the site can
   // show. Drawing it again empties the browser's undo, so the editor keeps its
   // own. With field, it stands in for that textarea, which keeps the BBCode for
-  // its form and stays the plain field without JavaScript.
+  // its form and stays the plain field without JavaScript; without a label and
+  // rows of its own, it takes the field's.
   interface Props {
     value?: string;
     field?: string;
@@ -18,7 +19,7 @@
     rows?: number;
   }
 
-  let { value = $bindable(""), field, smilies = false, variant = "site", label = "Text", rows = 5 }: Props = $props();
+  let { value = $bindable(""), field, smilies = false, variant = "site", label, rows }: Props = $props();
 
   type Toggle = "bold" | "italic" | "underline" | "strikeThrough";
   type State = { value: string; start: number; end: number };
@@ -47,6 +48,11 @@
 
   const look = $derived(looks[variant]);
   const content = "block resize-y overflow-auto break-words [&_a]:underline";
+
+  let fieldLabel = $state("");
+  let fieldRows = $state(0);
+  const name = $derived(label ?? (fieldLabel || "Text"));
+  const lines = $derived(rows ?? (fieldRows || 5));
 
   let area = $state<HTMLDivElement>();
   let source = $state(false);
@@ -383,6 +389,8 @@
       if (target) {
         value = target.value;
         target.hidden = true;
+        fieldLabel = target.labels?.[0]?.textContent?.trim() ?? "";
+        fieldRows = target.rows;
       }
     }
     draw(value);
@@ -487,15 +495,15 @@
     role="textbox"
     tabindex="0"
     aria-multiline="true"
-    aria-label={label}
+    aria-label={name}
     class="{look.area} {content}"
-    style:min-height="{rows * 1.5}em"
+    style:min-height="{lines * 1.5}em"
     onkeydown={keydown}
     onbeforeinput={beforeinput}
     oninput={input}
     onpaste={paste}
   ></div>
   {#if source}
-    <textarea aria-label="{label} (BBCode)" {rows} class={look.area} bind:value oninput={edited}></textarea>
+    <textarea aria-label="{name} (BBCode)" rows={lines} class={look.area} bind:value oninput={edited}></textarea>
   {/if}
 </div>

@@ -5,6 +5,7 @@ import (
 	"html"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -388,6 +389,31 @@ func TestTheChangeOutlivesARestart(t *testing.T) {
 	restarted := http.NewServeMux()
 	cms.New(db, cms.WithResolver(printPage), cms.WithStatic(printPath("cms"))).Mount(restarted)
 	wantPage(t, serve(restarted, "GET", "/", nil, nil), http.StatusServiceUnavailable, "maintenance.html")
+}
+
+// The two staff boxes take the BBCode editor (0092), and no other field does.
+func TestTheStaffBoxesTakeTheBBCodeEditor(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
+
+	body := serve(mux, "GET", "/housekeeping/settings?section=staffPage", cookie, nil).Body.String()
+	at := strings.Index(body, " Section:{ID:staffPage ")
+	if at < 0 {
+		t.Fatalf("the page is not the staff module's form: %s", body)
+	}
+	form := body[at:]
+	for _, key := range []string{"staffPage.box1Body", "staffPage.box1Color", "staffPage.box1Heading", "staffPage.box2Body", "staffPage.box2Color", "staffPage.box2Heading", "features.staffPage"} {
+		start := strings.Index(form, "{Key:"+key+" ")
+		mark := strings.Index(form[max(start, 0):], "BBCode:")
+		if start < 0 || mark < 0 {
+			t.Errorf("no %s with its mark: %s", key, form)
+			continue
+		}
+		want := "BBCode:" + strconv.FormatBool(key == "staffPage.box1Body" || key == "staffPage.box2Body")
+		if got := form[start+mark:]; !strings.HasPrefix(got, want) {
+			t.Errorf("%s has %.12s, want %s", key, got, want)
+		}
+	}
 }
 
 func TestTheStaffModuleHasHolosFieldsInHolosOrder(t *testing.T) {
