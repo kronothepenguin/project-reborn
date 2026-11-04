@@ -1,8 +1,9 @@
+-- image_id is the uploaded picture image_url shows, and NULL for any other address.
 -- name: CreateNewsArticle :one
-INSERT INTO news_articles (avatar_id, title, category, image_url, summary, body, published_at, created_at, updated_at)
+INSERT INTO news_articles (avatar_id, title, category, image_url, image_id, summary, body, published_at, created_at, updated_at)
 VALUES (
-    sqlc.narg(avatar_id), sqlc.arg(title), sqlc.arg(category), sqlc.arg(image_url), sqlc.arg(summary), sqlc.arg(body),
-    sqlc.arg(published_at), sqlc.arg(created_at), sqlc.arg(updated_at)
+    sqlc.narg(avatar_id), sqlc.arg(title), sqlc.arg(category), sqlc.arg(image_url), sqlc.narg(image_id), sqlc.arg(summary),
+    sqlc.arg(body), sqlc.arg(published_at), sqlc.arg(created_at), sqlc.arg(updated_at)
 )
 RETURNING *;
 
@@ -13,6 +14,7 @@ SET
     title = sqlc.arg(title),
     category = sqlc.arg(category),
     image_url = sqlc.arg(image_url),
+    image_id = sqlc.narg(image_id),
     summary = sqlc.arg(summary),
     body = sqlc.arg(body),
     updated_at = sqlc.arg(updated_at)

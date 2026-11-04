@@ -4,7 +4,7 @@ title: news_articles
 description: News articles written by staff, with category, top-story image, summary and BBCode body.
 resource: packages/store/schema/news.schema.sql
 tags: [store, table, news]
-timestamp: 2026-10-27T21:28:26+00:00
+timestamp: 2026-11-04T16:10:00+00:00
 ---
 
 # Schema
@@ -21,11 +21,13 @@ timestamp: 2026-10-27T21:28:26+00:00
 | `published_at` | DATETIME | no | | Publication time (UTC) | |
 | `created_at` | DATETIME | no | | Creation time (UTC) | |
 | `updated_at` | DATETIME | no | | Last edit (UTC) | |
+| `image_id` | INTEGER | yes | | The uploaded picture `image_url` shows; NULL for any other address. Added last by update 0006 | → `images.id`, whose default action refuses to delete a picture in use |
 
 # Keys
 
 - Primary key `id`.
 - `idx_news_articles_published_at` (`published_at`).
+- `idx_news_articles_image_id` (`image_id`).
 
 # Related
 

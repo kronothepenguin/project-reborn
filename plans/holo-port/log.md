@@ -2,6 +2,10 @@
 
 ## 2026-11-04
 
+- **Update** `p4-images` is merged into `main`: [p4-15](/tasks/p4-15-link-article-images.md),
+  [p4-16](/tasks/p4-16-pick-uploaded-image.md) and [p4-17](/tasks/p4-17-uploaded-images-page.md) join the CMS work.
+  Every gate passes on the result. The link refuses a delete with SQLite's default action rather than `ON DELETE
+  RESTRICT`, which SQLite reports through a trigger that `store.IsForeignKey` does not know.
 - **Done** [p4-11](/tasks/p4-11-me-habblets.md): the Me page shows the tags habblet, the news promo and the banners,
   and the landing page its tag cloud, as Holo's did.
 - **Start** [p4-11](/tasks/p4-11-me-habblets.md).
@@ -11,6 +15,16 @@
 - **Done** [p4-09](/tasks/p4-09-community-page.md): anyone reads the community page as Holo's: random habbos, the news
   promo turning, the tag cloud and the banners.
 - **Start** [p4-09](/tasks/p4-09-community-page.md).
+- **Done** [p4-17](/tasks/p4-17-uploaded-images-page.md): an Uploaded Images page lists every uploaded picture with
+  the articles showing it, deletes one no article shows, and names the articles that keep one in use.
+- **Start** [p4-17](/tasks/p4-17-uploaded-images-page.md).
+- **Done** [p4-16](/tasks/p4-16-pick-uploaded-image.md): the image editor's Uploaded mode shows a thumbnail of every
+  uploaded picture, newest first, and clicking one fills the top-story field and the preview, as an upload does.
+- **Start** [p4-16](/tasks/p4-16-pick-uploaded-image.md).
+- **Done** [p4-15](/tasks/p4-15-link-article-images.md): update 0006 links each article to its uploaded picture and
+  fills the link for the articles that show one, the database refuses to delete a picture in use, the store lists the
+  uploads and their articles, and the news form writes the link.
+- **Start** [p4-15](/tasks/p4-15-link-article-images.md).
 - **Create** [p4-15](/tasks/p4-15-link-article-images.md), [p4-16](/tasks/p4-16-pick-uploaded-image.md) and
   [p4-17](/tasks/p4-17-uploaded-images-page.md) for [0079](/decisions/0079-uploaded-images-managed.md), on the feature
   branch `p4-images`.

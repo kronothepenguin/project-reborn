@@ -49,6 +49,7 @@ export default async function (t) {
         "Add stickers or backgrounds to homes catalogue",
         "Compose News Item",
         "Manage Existing News Items",
+        "Uploaded Images",
       ].join("|"),
     menu.join("|"),
   );

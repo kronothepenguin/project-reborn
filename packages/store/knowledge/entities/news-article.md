@@ -3,7 +3,7 @@ type: Entity
 title: News article
 description: A news article written by staff, shown on the news pages and the news promo.
 tags: [store, entity, news]
-timestamp: 2026-11-04T01:38:16+00:00
+timestamp: 2026-11-04T16:10:00+00:00
 ---
 
 # Definition
@@ -15,6 +15,7 @@ CMS.
 
 - The body is BBCode, never raw HTML.
 - Only users with `housekeeping.news` create, edit or delete articles.
+- `image_id` is the uploaded image `image_url` shows, written in the same statement, and NULL for any other address.
 
 # Lifecycle
 
@@ -31,6 +32,7 @@ CMS.
 # Relations
 
 - Authored by a [habbo](/entities/habbo.md).
+- Shows an uploaded [image](/entities/image.md) through `image_id`, which keeps that image from being deleted.
 
 # Tables
 

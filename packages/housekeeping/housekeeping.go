@@ -101,6 +101,8 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /housekeeping/news/{id}", holding(auth.HousekeepingNews, r.HandleNewsArticleSave))
 	mux.Handle("POST /housekeeping/news/{id}/delete", holding(auth.HousekeepingNews, r.HandleNewsArticleDelete))
 	mux.Handle("POST /housekeeping/news/images", holding(auth.HousekeepingNews, r.HandleNewsImageUpload))
+	mux.Handle("GET /housekeeping/images", holding(auth.HousekeepingNews, r.HandleImagesView))
+	mux.Handle("POST /housekeeping/images/{id}/delete", holding(auth.HousekeepingNews, r.HandleImageDelete))
 
 	mux.Handle("GET /housekeeping/banners", holding(auth.HousekeepingBanners, r.HandleBannersView))
 	mux.Handle("POST /housekeeping/banners", holding(auth.HousekeepingBanners, r.HandleBannersCreate))

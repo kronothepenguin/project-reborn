@@ -3,7 +3,7 @@ type: Entity
 title: Staff log
 description: The audit trail of every staff action, with the acting user, the target user or habbo, and the IP.
 tags: [store, entity, moderation]
-timestamp: 2026-11-04T02:40:37+00:00
+timestamp: 2026-11-04T16:32:38+00:00
 ---
 
 # Definition
@@ -61,6 +61,7 @@ many actions).
 | `news.update` | the article's title and id, and the fields that changed, by the names of Holo's form | none |
 | `news.delete` | the article's title and id | none |
 | `news.image` | the path of the uploaded image on the site, such as `/news/images/12.png` | none |
+| `images.delete` | the path the deleted image had on the site | none |
 | `banners.create` | the banner's text and id | none |
 | `banners.update` | the banner's text and id, and the fields that changed, by the names of Holo's form | none |
 | `banners.delete` | the banner's text and id | none |

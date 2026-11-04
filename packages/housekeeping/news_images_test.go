@@ -18,6 +18,7 @@ import (
 	"testing"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/cms/seed"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
@@ -353,5 +354,102 @@ func TestAnUploadLeavesTheArticleAlone(t *testing.T) {
 	wantOneLog(t, db, "news.update", fmt.Sprintf("Old news (ID: %d): topstory", id), 0, 0)
 	if _, err := store.New(db).GetImage(t.Context(), 1); err != nil {
 		t.Errorf("GetImage: %v", err)
+	}
+}
+
+func TestAnArticleLinksItsUploadedPicture(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := newsWriter(t, db)
+	wantAnswer(t, uploadImage(mux, cookie, pngOf(t, picture(300, 187))), http.StatusOK, imageAnswer{Path: "/news/images/1.png"})
+
+	wantRedirect(t, serve(mux, "POST", "/housekeeping/news", cookie, articleForm("Linked", "/news/images/1.png")), "/housekeeping/news?published=1")
+	id := newestArticle(t, db).ID
+	linked := sql.NullInt64{Int64: 1, Valid: true}
+	if got := newsArticle(t, db, id); got.ImageID != linked || got.ImageURL != "/news/images/1.png" {
+		t.Errorf("the new article shows %q linked to %v, want the upload", got.ImageURL, got.ImageID)
+	}
+
+	for _, c := range []struct {
+		address string
+		want    sql.NullInt64
+	}{
+		{seed.DefaultTopStory, sql.NullInt64{}},
+		{"/news/images/1.png", linked},
+		{"https://images.example.com/top.png", sql.NullInt64{}},
+	} {
+		wantRedirect(t, serve(mux, "POST", articleURL(id), cookie, articleForm("Linked", c.address)), "/housekeeping/news?updated=1")
+		if got := newsArticle(t, db, id); got.ImageID != c.want || got.ImageURL != c.address {
+			t.Errorf("after %s the article shows %q linked to %v, want %v", c.address, got.ImageURL, got.ImageID, c.want)
+		}
+	}
+	if rows := logsOf(t, db, "news.update"); len(rows) != 3 {
+		t.Errorf("%d update rows, want 3", len(rows))
+	}
+
+	if _, err := db.ExecContext(t.Context(), `UPDATE news_articles SET image_url = '/news/images/1.png', image_id = NULL WHERE id = ?`, id); err != nil {
+		t.Fatal(err)
+	}
+	wantRedirect(t, serve(mux, "POST", articleURL(id), cookie, articleForm("Linked", "/news/images/1.png")), "/housekeeping/news?updated=1")
+	if got := newsArticle(t, db, id); got.ImageID != linked {
+		t.Errorf("saving an upload whose link was missing left it at %v", got.ImageID)
+	}
+}
+
+func TestTheNewsFormOffersTheUploads(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := newsWriter(t, db)
+	wantPage(t, serve(mux, "GET", "/housekeeping/news/new", cookie, nil), http.StatusOK, "news/new.html", "Uploads:[] Message:")
+
+	wantAnswer(t, uploadImage(mux, cookie, pngOf(t, picture(300, 187))), http.StatusOK, imageAnswer{Path: "/news/images/1.png"})
+	moving, _ := animation(t, 300, 187, 2)
+	wantAnswer(t, uploadImage(mux, cookie, moving), http.StatusOK, imageAnswer{Path: "/news/images/2.gif"})
+	const offered = "Uploads:[/news/images/2.gif /news/images/1.png] Message:"
+
+	wantPage(t, serve(mux, "GET", "/housekeeping/news/new", cookie, nil), http.StatusOK, "news/new.html", offered)
+	wantRedirect(t, serve(mux, "POST", "/housekeeping/news", cookie, articleForm("Picked", "/news/images/1.png")), "/housekeeping/news?published=1")
+	id := newestArticle(t, db).ID
+	wantPage(t, serve(mux, "GET", articleURL(id), cookie, nil), http.StatusOK, "news/id.html", offered)
+	wantPage(t, serve(mux, "POST", "/housekeeping/news", cookie, articleForm("Refused", "javascript:alert(1)")), http.StatusUnprocessableEntity,
+		"news/new.html", offered)
+	wantPage(t, serve(mux, "POST", articleURL(id), cookie, articleForm("Refused", "javascript:alert(1)")), http.StatusUnprocessableEntity,
+		"news/id.html", offered)
+}
+
+// Staff can delete a picture while another has the form open. The triggers
+// delete it between the check and the write, as that would.
+func TestAPictureDeletedMeanwhileIsRefused(t *testing.T) {
+	db, mux := newSite(t)
+	habbo(t, db, "author@example.com", "Author")
+	id := oldArticle(t, db, habboOf(t, db, "Author").ID, "News")
+	before := newsArticle(t, db, id)
+	_, cookie := newsWriter(t, db)
+	for _, path := range []string{"/news/images/1.png", "/news/images/2.png"} {
+		wantAnswer(t, uploadImage(mux, cookie, pngOf(t, picture(300, 187))), http.StatusOK, imageAnswer{Path: path})
+	}
+	for _, trigger := range []string{
+		"CREATE TRIGGER delete_on_insert BEFORE INSERT ON news_articles BEGIN DELETE FROM images WHERE id = NEW.image_id; END",
+		"CREATE TRIGGER delete_on_update BEFORE UPDATE ON news_articles BEGIN DELETE FROM images WHERE id = NEW.image_id; END",
+	} {
+		if _, err := db.ExecContext(t.Context(), trigger); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	wantPage(t, serve(mux, "POST", "/housekeeping/news", cookie, articleForm("Late", "/news/images/1.png")), http.StatusUnprocessableEntity,
+		"news/new.html", "Form:{Title:Late Category:Tips TopStory:/news/images/1.png", "Error:"+newsImageInvalid)
+	wantPage(t, serve(mux, "POST", articleURL(id), cookie, articleForm("Late", "/news/images/2.png")), http.StatusUnprocessableEntity,
+		"news/id.html", fmt.Sprintf("ID:%d Title:Old news Form:{Title:Late Category:Tips TopStory:/news/images/2.png", id), "Error:"+newsImageInvalid)
+
+	if got := count(t, db, `SELECT COUNT(*) FROM news_articles`); got != 1 {
+		t.Errorf("%d articles, want 1", got)
+	}
+	if after := newsArticle(t, db, id); !sameArticle(after, before) || after.ImageID.Valid {
+		t.Errorf("article = %+v, want %+v", after, before)
+	}
+	if got := count(t, db, `SELECT COUNT(*) FROM images`); got != 2 {
+		t.Errorf("%d images, want the refused writes to delete nothing", got)
+	}
+	if rows := len(logsOf(t, db, "news.create")) + len(logsOf(t, db, "news.update")); rows != 0 {
+		t.Errorf("%d news log rows", rows)
 	}
 }

@@ -58,26 +58,26 @@ func newsImagePath(id int64, format string) string {
 	return fmt.Sprintf("%s%d.%s", newsImagesPath, id, format)
 }
 
-// uploadedImage reports whether address is the path of an image that was
-// uploaded, in the one form the CMS serves it at.
-func (r *Router) uploadedImage(ctx context.Context, address string) (bool, error) {
+// uploadedImage returns the image whose path address is, in the one form the
+// CMS serves it at, and false when there is none.
+func (r *Router) uploadedImage(ctx context.Context, address string) (int64, bool, error) {
 	name, ok := strings.CutPrefix(address, newsImagesPath)
 	if !ok {
-		return false, nil
+		return 0, false, nil
 	}
 	number, _, _ := strings.Cut(name, ".")
 	id, err := strconv.ParseInt(number, 10, 64)
 	if err != nil || id <= 0 {
-		return false, nil
+		return 0, false, nil
 	}
 	stored, err := r.deps.Queries.GetImage(ctx, id)
 	switch {
 	case store.IsNotFound(err):
-		return false, nil
+		return 0, false, nil
 	case err != nil:
-		return false, err
+		return 0, false, err
 	}
-	return newsImagePath(id, stored.Format) == address, nil
+	return id, newsImagePath(id, stored.Format) == address, nil
 }
 
 // reencode keeps only the pixels of a 300x187 PNG, or the frames and timing of a

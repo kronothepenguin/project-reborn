@@ -4,7 +4,7 @@ title: images
 description: Pictures staff upload, such as the top stories of news, with their format, bytes and size.
 resource: packages/store/schema/images.schema.sql
 tags: [store, table, images]
-timestamp: 2026-11-04T01:38:16+00:00
+timestamp: 2026-11-04T16:10:00+00:00
 ---
 
 # Schema
@@ -22,6 +22,7 @@ timestamp: 2026-11-04T01:38:16+00:00
 # Keys
 
 - Primary key `id`.
+- `news_articles.image_id` refers to it, so an image an article shows cannot be deleted.
 
 # Related
 

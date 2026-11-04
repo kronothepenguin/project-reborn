@@ -1,14 +1,22 @@
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
+import { root } from "../lib/hotel.mjs";
 import { seedStaff, session } from "../lib/staff.mjs";
 
 export const programs = ["cms", "housekeeping"];
 
+// Every update of the release, which waits on a hotel from before updates.
+const updates = readdirSync(path.join(root, "packages/store/migrations")).filter((name) => name.endsWith(".sql")).length;
+
 // The hotel is made like one installed before updates existed: no migrations
-// table, none of the tables later updates add, an empty home store and no
-// housekeeping.database, with a config.json that lacks its proxy section.
+// table, none of the tables and columns later updates add, an empty home store
+// and no housekeeping.database, with a config.json that lacks its proxy
+// section. SQLite cannot drop the column 0006 adds, which refers to images, but
+// news_articles is empty, so the baseline makes it again without that column.
 export const prepare = ({ dir, sql }) => {
   seedStaff(sql);
   sql("DROP TABLE migrations");
+  sql("DROP TABLE news_articles");
   sql("DROP TABLE images");
   sql("DELETE FROM home_store_items");
   sql("DELETE FROM home_store_categories");
@@ -65,7 +73,7 @@ export default async function (t) {
   const waiting = await page
     .locator("form[action='/housekeeping/updates'] tbody tr")
     .count();
-  check("the update page lists every update", waiting === 5, String(waiting));
+  check("the update page lists every update", waiting === updates, String(waiting));
   check(
     "config.json's new keys are offered with their defaults",
     (await page.getByLabel("proxy.enabled").inputValue()) === "false" &&

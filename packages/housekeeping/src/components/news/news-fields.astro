@@ -47,10 +47,13 @@ import ImageEditor from "./image-editor.svelte";
 <tr>
   <td>
     <strong>Upload Image</strong>
-    <div class="text-neutral-500">Choose a picture. Cut drags and zooms it to fill the 300x187 frame; Fit shows it whole, with transparent bands.</div>
+    <div class="text-neutral-500">Choose a picture. Cut drags and zooms it to fill the 300x187 frame; Fit shows it whole, with transparent bands. Uploaded picks a picture uploaded before.</div>
   </td>
   <td>
-    <ImageEditor client:only="svelte" field="news-topstory" />
+    <ul id="news-uploads" hidden data-site="[[ .SiteURL ]]">
+      [[ range .Uploads ]]<li>[[ . ]]</li>[[ end ]]
+    </ul>
+    <ImageEditor client:only="svelte" field="news-topstory" uploads="news-uploads" />
   </td>
 </tr>
 <tr>
