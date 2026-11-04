@@ -42,6 +42,7 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | BBCode | Crossed tags close the page's own elements | Crossed tags nest inside the text, as a browser nested Holo's | One note could break the rest of the page |
 | News | The article's id goes into the SQL as it is, and the title, category and author print as HTML | Bound, and escaped when shown | Any address could read the database, and a title could run scripts |
 | Tags | `tags.php?tag=…&add=true` adds the tag on a plain link, and the search box prints the tag as HTML | Tagging yourself is a form that posts, and the search box escapes the tag | Any page could tag a visitor with a link, and a search address could run scripts |
+| Community | Banners open in a window named `blank`, which the opened page can steer back, and titles, summaries, banner texts and addresses print as HTML | Each banner opens in a new window that cannot reach the hotel's, and everything is escaped | A banner's page could replace the hotel, and an article could run scripts |
 
 # Changed by a decision
 
@@ -116,6 +117,7 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | News | An unknown article shows the archive with status 200 | The archive, with status 404 |
 | Tags | The search takes the tag as a `LIKE` pattern, so `%` finds every tagged habbo | It finds the tag exactly |
 | Texts | `The winnner is:` on the tag fight | Spelled correctly |
+| Community | The news promo prints empty stories and items when there are fewer than four articles | It shows only the articles there are |
 
 # Kept as in Holo, on purpose
 
@@ -283,8 +285,8 @@ veto.
 | The tags habblet, the news promo and the banners on `/me` | [P4](/phases/p4-community.md) |
 | The wardrobe on `/account/looks` | [P6](/phases/p6-economy.md) |
 | The `MY GROUPS` widget and the group badge of the profile widget | [P5](/phases/p5-groups-forum.md) |
-| The online state of the profile widget, which shows offline | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
+| The online state of the profile widget and of the community page's random habbos, which show offline | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | `Voucher Management` in housekeeping | [P6](/phases/p6-economy.md) |
 | `Chatlogs` and `Online Users` in housekeeping | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
-| The pages behind Help, Community and Credits | [P7](/phases/p7-help.md), [P4](/phases/p4-community.md), [P6](/phases/p6-economy.md) |
+| The pages behind Help and Credits | [P7](/phases/p7-help.md), [P6](/phases/p6-economy.md) |
 | Vouchers in housekeeping, and the text boxes of the credits page | [P6](/phases/p6-economy.md) |

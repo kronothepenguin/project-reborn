@@ -1,0 +1,38 @@
+---
+import { Card } from "@project-reborn/components";
+import RandomHabbos from "../components/community/random-habbos.svelte";
+import NewsPromo from "../components/news/news-promo.astro";
+import Banners from "../components/site/banners.astro";
+import TagCloud from "../components/tags/tag-cloud.astro";
+import TagSearchForm from "../components/tags/tag-search-form.astro";
+import Community from "../layouts/community.astro";
+---
+
+<Community title="[[ .ShortName ]] ~ Community" tab="community" sub="Community">
+  <div class="flex">
+    <div class="w-[460px]">
+      <div class="mr-2 mb-[7px]">
+        <Card variant="blue" color="activehomes">
+          <span slot="header">Random Habbos - Click Us!</span>
+          <ul id="random-habbos" hidden data-imaging="[[ .ImagingURL ]]">
+            [[ range .RandomHabbos ]]
+            <li data-name="[[ .Name ]]" data-figure="[[ .Figure ]]" data-created="[[ .Created ]]" data-motto="[[ .Motto ]]"></li>
+            [[ end ]]
+          </ul>
+          <RandomHabbos client:only="svelte" source="random-habbos" />
+        </Card>
+      </div>
+    </div>
+    <div class="w-[310px]">
+      <NewsPromo />
+      <div class="mr-2 mb-[7px]">
+        <Card color="red">
+          <span slot="header">Users like..</span>
+          <TagCloud />
+          <TagSearchForm />
+        </Card>
+      </div>
+    </div>
+    <div class="w-[160px]"><Banners /></div>
+  </div>
+</Community>

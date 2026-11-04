@@ -2,6 +2,9 @@
 
 ## 2026-11-04
 
+- **Done** [p4-09](/tasks/p4-09-community-page.md): anyone reads the community page as Holo's: random habbos, the news
+  promo turning, the tag cloud and the banners.
+- **Start** [p4-09](/tasks/p4-09-community-page.md).
 - **Create** [p4-15](/tasks/p4-15-link-article-images.md), [p4-16](/tasks/p4-16-pick-uploaded-image.md) and
   [p4-17](/tasks/p4-17-uploaded-images-page.md) for [0079](/decisions/0079-uploaded-images-managed.md), on the feature
   branch `p4-images`.
