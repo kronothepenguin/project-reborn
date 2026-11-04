@@ -2,6 +2,9 @@
 
 ## 2026-11-04
 
+- **Done** [p4-01](/tasks/p4-01-settings-kinds.md): housekeeping's settings forms gain a multi-line field sized as
+  Holo's content tool sized it, and a field with a fixed list of choices.
+- **Start** [p4-01](/tasks/p4-01-settings-kinds.md).
 - **Done** [p4-03](/tasks/p4-03-store.md): the store has the news, banner and image operations and the images table
   with update 0005, the CMS serves uploaded images, and Holo top stories join the CMS.
 - **Start** [p4-03](/tasks/p4-03-store.md).

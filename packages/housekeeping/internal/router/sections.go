@@ -4,12 +4,15 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 const (
 	kindText     = "text"
+	kindLongText = "longtext"
+	kindChoice   = "choice"
 	kindNumber   = "number"
 	kindToggle   = "toggle"
 	kindPassword = "password"
@@ -36,6 +39,16 @@ type field struct {
 	OnLabel  string
 	OffLabel string
 	Required bool
+	// Long makes a text field multi-line, sized as Holo's content tool sized it.
+	Long    bool
+	Rows    int
+	Choices []choice
+}
+
+type choice struct {
+	Value    string
+	Label    string
+	Selected bool
 }
 
 // hiddenSettings have no form here: the note belongs to the dashboard.
@@ -180,6 +193,15 @@ func filled(f field, setting settings.Setting) field {
 		f.Kind, f.Value = kindNumber, strconv.Itoa(value)
 	case string:
 		f.Kind, f.Value = kindText, value
+		switch {
+		case len(f.Choices) > 0:
+			f.Kind, f.Choices = kindChoice, slices.Clone(f.Choices)
+			for i := range f.Choices {
+				f.Choices[i].Selected = f.Choices[i].Value == value
+			}
+		case f.Long:
+			f.Kind, f.Rows = kindLongText, min(max((utf8.RuneCountInString(value)+59)/60, 2), 10)
+		}
 	}
 	return f
 }

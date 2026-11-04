@@ -119,6 +119,21 @@ func readChanges(s section, form url.Values) (map[string]any, string) {
 			if on := typed == "1"; on != f.On {
 				changes[f.Key] = on
 			}
+		case kindChoice:
+			if !slices.ContainsFunc(f.Choices, func(c choice) bool { return c.Value == typed }) {
+				return nil, f.Label + " must be one of its choices. " + settingsNotSaved
+			}
+			if typed != f.Value {
+				changes[f.Key] = typed
+			}
+		case kindLongText:
+			typed = strings.ReplaceAll(typed, "\r\n", "\n")
+			if f.Required && strings.TrimSpace(typed) == "" {
+				return nil, settingsBlank
+			}
+			if typed != f.Value {
+				changes[f.Key] = typed
+			}
 		case kindNumber:
 			number, err := strconv.Atoi(typed)
 			if err != nil {

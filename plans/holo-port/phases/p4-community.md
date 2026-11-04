@@ -51,7 +51,7 @@ Guests and habbos browse community content; staff write news and manage banners.
 
 # Tasks
 
-- [p4-01 Edit long texts and choices in the settings](/tasks/p4-01-settings-kinds.md) — todo
+- [p4-01 Edit long texts and choices in the settings](/tasks/p4-01-settings-kinds.md) — done
 - [p4-02 Declare the staff page and tag fight settings](/tasks/p4-02-staff-settings.md) — todo
 - [p4-03 Store news, banners and images](/tasks/p4-03-store.md) — done
 - [p4-04 Show the news](/tasks/p4-04-news-pages.md) — todo

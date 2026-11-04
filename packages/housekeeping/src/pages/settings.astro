@@ -29,6 +29,21 @@ import Housekeeping from "../layouts/housekeeping.astro";
                 <option value="0" selected>[[ .OffLabel ]]</option>
                 [[ end ]]
               </Select>
+              [[ else if eq .Kind "longtext" ]]
+              <textarea
+                id="[[ .Key ]]"
+                name="[[ .Key ]]"
+                rows="[[ .Rows ]]"
+                class="w-full border border-black bg-white p-1"
+              >[[ .Value ]]</textarea>
+              [[ else if eq .Kind "choice" ]]
+              <Select id="[[ .Key ]]" name="[[ .Key ]]">
+                [[ range .Choices ]][[ if .Selected ]]
+                <option value="[[ .Value ]]" selected>[[ .Label ]]</option>
+                [[ else ]]
+                <option value="[[ .Value ]]">[[ .Label ]]</option>
+                [[ end ]][[ end ]]
+              </Select>
               [[ else if eq .Kind "number" ]]
               <Input id="[[ .Key ]]" name="[[ .Key ]]" type="number" value="[[ .Value ]]" variant="border" />
               [[ else if eq .Kind "password" ]]
