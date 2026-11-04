@@ -120,6 +120,8 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | Tags | The search takes the tag as a `LIKE` pattern, so `%` finds every tagged habbo | It finds the tag exactly |
 | Texts | `The winnner is:` on the tag fight | Spelled correctly |
 | Community | The news promo prints empty stories and items when there are fewer than four articles | It shows only the articles there are |
+| Me page | The tags habblet's text keeps saying what it said when the page loaded after a tag is added or removed, and the next question comes from an older list | The text follows the tags, and every question comes from the Me page's list |
+| Texts | `You need you remove one of your tags` | Spelled correctly |
 
 # Kept as in Holo, on purpose
 
@@ -281,10 +283,8 @@ veto.
 
 | Holo | Phase |
 | --- | --- |
-| The tag cloud on the landing page | [P4](/phases/p4-community.md) |
 | `My Groups` in the header, and the groups habblet on `/me` | [P5](/phases/p5-groups-forum.md) |
 | `My Friends`, `My Rooms` and the recommended rooms | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
-| The tags habblet, the news promo and the banners on `/me` | [P4](/phases/p4-community.md) |
 | The wardrobe on `/account/looks` | [P6](/phases/p6-economy.md) |
 | The `MY GROUPS` widget, and the group badge of the profile widget and of the staff page | [P5](/phases/p5-groups-forum.md) |
 | The online state of the profile widget, the community page's random habbos and the staff page, which show offline | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |

@@ -69,11 +69,20 @@ func habbo(t *testing.T, db *sql.DB, email, name string) int64 {
 	return user.ID
 }
 
+// secondHabbo makes a habbo with its profile and home, as every habbo has.
 func secondHabbo(t *testing.T, db *sql.DB, userID int64, name string) {
 	t.Helper()
-	_, err := store.New(db).CreateAvatar(t.Context(), store.CreateAvatarParams{UserID: userID, Name: name, Figure: "hd-180-1", Gender: "M", CreatedAt: testNow, UpdatedAt: testNow})
+	q := store.New(db)
+	avatar, err := q.CreateAvatar(t.Context(), store.CreateAvatarParams{UserID: userID, Name: name, Figure: "hd-180-1", Gender: "M", CreatedAt: testNow, UpdatedAt: testNow})
 	if err != nil {
 		t.Fatalf("CreateAvatar: %v", err)
+	}
+	profile, err := q.CreateProfile(t.Context(), store.CreateProfileParams{AvatarID: avatar.ID, CreatedAt: testNow, UpdatedAt: testNow})
+	if err != nil {
+		t.Fatalf("CreateProfile: %v", err)
+	}
+	if _, err := q.CreateProfileHome(t.Context(), store.CreateProfileHomeParams{ProfileID: profile.ID, UpdatedAt: testNow}); err != nil {
+		t.Fatalf("CreateProfileHome: %v", err)
 	}
 }
 

@@ -1,9 +1,15 @@
 ---
 // The page's data holds the Cloud, so any page that draws it reads its own.
+interface Props {
+  // inline runs the tags on after the text before them, as on the landing page.
+  inline?: boolean;
+}
+
+const { inline = false } = Astro.props;
 ---
 
 [[ if .Cloud ]]
-<ul>
+<ul class={inline ? "inline" : undefined}>
   [[ range .Cloud ]]
   <li class="mr-[5px] inline"><a class="text-black no-underline hover:underline" href="/tags?tag=[[ .Tag ]]" style="font-size: [[ .Size ]]%">[[ .Tag ]]</a> </li>
   [[ end ]]

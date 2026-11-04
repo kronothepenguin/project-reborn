@@ -14,7 +14,20 @@ export default async function ({
   const text = (t) => page.getByText(t, { exact: false }).first().isVisible();
 
   // the landing page
+  const [[adminProfile]] = sql(
+    "select profiles.id from profiles join avatars on avatars.id = profiles.avatar_id where avatars.name = 'Admin-1'",
+  );
+  sql(
+    `insert into profile_tags (profile_id, tag, created_at) values (${adminProfile}, 'retro', '2026-11-01 12:00:00+00:00')`,
+  );
   await page.goto(base + "/");
+  const cloud = page.locator("#tag-cloud-slim");
+  check(
+    "the landing page shows the tag cloud after Holo's line",
+    (await cloud.innerText()).startsWith("Reborn's like retro") &&
+      (await cloud.getByRole("link", { name: "retro" }).getAttribute("href")) === "/tags?tag=retro",
+    await cloud.innerText(),
+  );
   check(
     "landing title",
     (await page.title()) === "Reborn ~ Home",

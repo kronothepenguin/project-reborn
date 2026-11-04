@@ -167,3 +167,10 @@ func TestHeaderCountsRegisteredHabbos(t *testing.T) {
 		wantPage(t, serve(mux, "GET", path, nil, nil), http.StatusOK, "RegisteredUsers:2")
 	}
 }
+
+func TestTheLandingCarriesTheTagCloud(t *testing.T) {
+	db, mux := newSite(t)
+	tagHabbo(t, db, "Alpha", testNow, "retro")
+	wantPage(t, serve(mux, "GET", "/", nil, nil), http.StatusOK, "index.html", "Cloud:[{Tag:retro Size:100}]")
+	wantPage(t, serve(mux, "POST", "/", nil, credentials("Alpha", "wrong123")), http.StatusUnprocessableEntity, "index.html", "Cloud:[{Tag:retro Size:100}]", "Username:Alpha")
+}

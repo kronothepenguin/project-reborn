@@ -165,5 +165,76 @@ export default async function ({ base, browser, check, shot, sql }) {
     "no JS: dismiss works",
     !(await plain.getByText("Older-looking notification").isVisible()),
   );
+  // The tags habblet, the news promo and the banners.
+  const at = "2026-11-01 12:00:00+00:00";
+  sql(
+    `insert into news_articles (title, category, image_url, summary, body, published_at, created_at, updated_at) values ('Hotel news', 'Updates', '/web-gallery/images/top-story/top_story_news.png', 'Read this', 'Body', '${at}', '${at}', '${at}')`,
+  );
+  sql(
+    `insert into banners (title, image_url, link_url, enabled, position, created_at, updated_at) values ('Find tags', '/web-gallery/images/top-story/topstory_accessories2.gif', '/tags', true, 1, '${at}', '${at}')`,
+  );
+  await page.goto(base + "/me");
+  const mine = page.getByRole("tabpanel", { name: "My Tags" });
+  await mine.getByText("You have no tags.").waitFor();
+  check(
+    "the tags habblet opens on My Tags with Holo's text for no tags",
+    await mine
+      .getByText("You have no tags. Answer the question below or just add a tag of your choice.")
+      .isVisible(),
+  );
+  await mine.getByLabel("New tag").fill("Retro");
+  await mine.getByRole("button", { name: "Add tag" }).click();
+  await mine.getByRole("link", { name: "retro" }).waitFor();
+  check(
+    "an added tag is listed, and the text counts it",
+    await mine.getByText("You haven't used up all your tags yet - add some more!").isVisible(),
+  );
+  await mine.getByLabel("New tag").fill("a");
+  await mine.getByRole("button", { name: "Add tag" }).click();
+  const refusal = page.getByRole("dialog", { name: "Tags" });
+  await refusal.waitFor();
+  await shot(page, "me-tags-dialog");
+  check("an invalid tag opens Holo's dialog", (await refusal.innerText()).includes("Invalid tag"));
+  await refusal.getByRole("button", { name: "OK" }).click();
+  await refusal.waitFor({ state: "hidden" });
+
+  sql(`insert into settings (key, value, updated_at) values ('homes.maxTags', '1', '${at}')`);
+  let full = false;
+  for (let i = 0; i < 20 && !full; i++) {
+    await page.waitForTimeout(250);
+    await page.goto(base + "/me");
+    await mine.getByRole("link", { name: "retro" }).waitFor();
+    full = await mine.getByText("Tag limit reached.").isVisible();
+  }
+  check(
+    "at the limit, Holo's text says so and the form goes",
+    full &&
+      (await mine
+        .getByText("Tag limit reached. You need to remove one of your tags before adding another.")
+        .isVisible()) &&
+      (await mine.getByRole("button", { name: "Add tag" }).count()) === 0,
+  );
+  await page.getByRole("tab", { name: "Others Like..." }).click();
+  const others = page.getByRole("tabpanel", { name: "Others Like..." });
+  check(
+    "Others Like... shows the cloud and its search form",
+    (await others.getByRole("link", { name: "retro" }).isVisible()) &&
+      (await others.locator('form[action="/tags"]').isVisible()),
+  );
+  check(
+    "the news promo and the banners join the Me page",
+    (await page.locator("#topstories").getByText("Hotel news").isVisible()) &&
+      (await page.locator('a[target="_blank"]').count()) === 2,
+  );
+  await shot(page, "me-habblets");
+  await page.getByRole("tab", { name: "My Tags" }).click();
+  await mine.getByRole("button", { name: "Remove retro" }).click();
+  await mine.getByText("You have no tags.").waitFor();
+  check(
+    "removing a tag takes it off and brings the form back",
+    (await mine.getByRole("link", { name: "retro" }).count()) === 0 &&
+      (await mine.getByRole("button", { name: "Add tag" }).isVisible()),
+  );
+
   check("no script errors", errors.length === 0, errors.join(" | "));
 }

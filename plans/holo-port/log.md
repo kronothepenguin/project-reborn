@@ -2,6 +2,9 @@
 
 ## 2026-11-04
 
+- **Done** [p4-11](/tasks/p4-11-me-habblets.md): the Me page shows the tags habblet, the news promo and the banners,
+  and the landing page its tag cloud, as Holo's did.
+- **Start** [p4-11](/tasks/p4-11-me-habblets.md).
 - **Done** [p4-10](/tasks/p4-10-staff-page.md): anyone sees the staff team as on Holo's staff.php: one list with each
   member's highest group and last visit, and the two boxes.
 - **Start** [p4-10](/tasks/p4-10-staff-page.md).

@@ -14,18 +14,26 @@ import (
 type indexPage struct {
 	hotelStatus
 	LandingPromo bool
+	Cloud        []cloudTag
 	Username     string
 	Error        string
 }
 
-func (r *Router) newIndexPage(ctx context.Context) indexPage {
-	return indexPage{hotelStatus: r.hotelStatus(ctx), LandingPromo: settings.GetBool("features.landingPromo")}
+func (r *Router) newIndexPage(ctx context.Context) (indexPage, error) {
+	page := indexPage{hotelStatus: r.hotelStatus(ctx), LandingPromo: settings.GetBool("features.landingPromo")}
+	var err error
+	page.Cloud, err = r.tagCloud(ctx)
+	return page, err
 }
 
 // HandleIndexView renders GET /{$}. The registration's age check sends visitors
 // here with ?ageLimit=true.
 func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
-	page := r.newIndexPage(req.Context())
+	page, err := r.newIndexPage(req.Context())
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
 	if req.URL.Query().Get("ageLimit") == "true" {
 		page.Error = "You are too young to register."
 	}
@@ -75,7 +83,11 @@ func (r *Router) loginFailed(w http.ResponseWriter, req *http.Request, username,
 		r.writeMaintenance(w, req, maintenancePage{Username: username, Error: message})
 		return
 	}
-	page := r.newIndexPage(req.Context())
+	page, err := r.newIndexPage(req.Context())
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
 	page.Username, page.Error = username, message
 	r.invalid(w, "index.html", page)
 }

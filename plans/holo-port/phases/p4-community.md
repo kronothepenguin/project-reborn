@@ -65,7 +65,7 @@ Guests and habbos browse community content; staff write news and manage banners.
 - [p4-08 Find habbos by tag and fight tags](/tasks/p4-08-tags-page.md) — done
 - [p4-09 Show the community page](/tasks/p4-09-community-page.md) — done
 - [p4-10 Show the staff page](/tasks/p4-10-staff-page.md) — done
-- [p4-11 Fill the Me page's habblets and the landing's tag cloud](/tasks/p4-11-me-habblets.md) — todo
+- [p4-11 Fill the Me page's habblets and the landing's tag cloud](/tasks/p4-11-me-habblets.md) — done
 - [p4-12 Verify P4](/tasks/p4-12-exit-check.md) — todo
 - [p4-13 Escape habbo names in home links](/tasks/p4-13-home-links.md) — done
 - [p4-14 Count the updates in the admin suite from the release](/tasks/p4-14-admin-suite-updates.md) — done

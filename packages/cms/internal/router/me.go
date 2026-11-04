@@ -44,6 +44,14 @@ type mePage struct {
 	Alerts      []meAlert
 	Birthday    string
 	LastSignIn  string
+	// MyTags are the active habbo's, for the tags habblet, which offers room up
+	// to MaxTags.
+	MyTags     []string
+	MaxTags    int
+	Cloud      []cloudTag
+	TopStories []topStory
+	MoreNews   []newsLink
+	Banners    []banner
 }
 
 // HandleMeView renders GET /me, which auth.RequireSession guards.
@@ -110,6 +118,23 @@ func (r *Router) newMePage(ctx context.Context, session auth.Session) (mePage, e
 	case err == nil:
 		page.LastSignIn = at.UTC().Format("02-01-2006 15:04:05")
 	case !store.IsNotFound(err):
+		return page, err
+	}
+	profile, err := q.GetAvatarProfile(ctx, session.AvatarID)
+	if err != nil {
+		return page, err
+	}
+	if page.MyTags, err = q.ListProfileTags(ctx, profile.ID); err != nil {
+		return page, err
+	}
+	page.MaxTags = settings.GetInt("homes.maxTags")
+	if page.Cloud, err = r.tagCloud(ctx); err != nil {
+		return page, err
+	}
+	if page.TopStories, page.MoreNews, err = r.newsPromo(ctx); err != nil {
+		return page, err
+	}
+	if page.Banners, err = r.banners(ctx); err != nil {
 		return page, err
 	}
 	return page, nil

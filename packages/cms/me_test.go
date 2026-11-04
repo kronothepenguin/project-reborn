@@ -202,3 +202,29 @@ func TestMottoNeedsASession(t *testing.T) {
 		t.Errorf("got %d, want 401", rec.Code)
 	}
 }
+
+func TestMeCarriesTheTagsHabbletTheNewsAndTheBanners(t *testing.T) {
+	db, mux := newSite(t)
+	q := store.New(db)
+	tagHabbo(t, db, "Alpha", testNow, "retro", "holo")
+	tagHabbo(t, db, "Beta", testNow, "retro")
+	cookie := login(t, db, "Alpha")
+	story := newsArticle(t, db, store.CreateNewsArticleParams{Title: "Story", Category: "Updates", ImageURL: "/web-gallery/images/top-story/top_story_news.png"})
+	if _, err := q.CreateBanner(t.Context(), store.CreateBannerParams{Title: "Ad", ImageURL: "/ad.gif", LinkURL: "/tags", Enabled: true, CreatedAt: testNow, UpdatedAt: testNow}); err != nil {
+		t.Fatal(err)
+	}
+	setSetting(t, db, "homes.maxTags", 7)
+
+	rec := serve(mux, "GET", "/me", cookie, nil)
+	wantPage(t, rec, http.StatusOK, "me.html",
+		"MyTags:[retro holo] MaxTags:7 Cloud:[",
+		"{Tag:retro Size:200}", "{Tag:holo Size:100}",
+		fmt.Sprintf("TopStories:[{ID:%d Title:Story Summary: Image:/web-gallery/images/top-story/top_story_news.png}] MoreNews:[]", story),
+		"Banners:[{Text:Ad Image:/ad.gif Link:/tags}]}")
+}
+
+func TestMeShowsNoTagsForAHabboWithoutAny(t *testing.T) {
+	db, mux := newSite(t)
+	cookie, _, _ := member(t, db, mux)
+	wantPage(t, serve(mux, "GET", "/me", cookie, nil), http.StatusOK, "MyTags:[] MaxTags:20 Cloud:[] TopStories:[] MoreNews:[] Banners:[]}")
+}

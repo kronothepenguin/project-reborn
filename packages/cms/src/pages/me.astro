@@ -1,12 +1,32 @@
 ---
+import { Card } from "@project-reborn/components";
 import PersonalInfo from "../components/me/personal-info.astro";
+import TagsHabblet from "../components/me/tags-habblet.svelte";
+import NewsPromo from "../components/news/news-promo.astro";
+import Banners from "../components/site/banners.astro";
+import TagCloud from "../components/tags/tag-cloud.astro";
+import TagSearchForm from "../components/tags/tag-search-form.astro";
 import Community from "../layouts/community.astro";
 ---
 
 <Community title="[[ .ShortName ]] ~ [[ .Habbo ]]" tab="me" sub="Homepage">
   <div class="flex">
-    <div class="w-[460px]"><PersonalInfo /></div>
-    <div class="w-[310px]"></div>
-    <div class="w-[160px]"></div>
+    <div class="w-[460px]">
+      <PersonalInfo />
+      <div class="mr-2 mb-[7px]">
+        <Card>
+          <ul id="me-tags" hidden data-max="[[ .MaxTags ]]">
+            [[ range .MyTags ]]<li>[[ . ]]</li>[[ end ]]
+          </ul>
+          <div id="others-like" hidden>
+            <TagCloud />
+            <TagSearchForm />
+          </div>
+          <TagsHabblet client:only="svelte" source="me-tags" others="others-like" />
+        </Card>
+      </div>
+    </div>
+    <div class="w-[310px]"><NewsPromo /></div>
+    <div class="w-[160px]"><Banners /></div>
   </div>
 </Community>
