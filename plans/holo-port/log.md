@@ -2,6 +2,9 @@
 
 ## 2026-11-04
 
+- **Done** [ed-01](/tasks/ed-01-bbcode-editor.md): a WYSIWYG BBCode editor of our own in `packages/components` shows
+  the renderer's tags as the site does, edits the raw codes, keeps on paste what BBCode can say, and has its own undo.
+- **Start** [ed-01](/tasks/ed-01-bbcode-editor.md).
 - **Create** [ED](/phases/ed-bbcode-editor.md) with [ed-01](/tasks/ed-01-bbcode-editor.md) to
   [ed-05](/tasks/ed-05-exit-check.md), before [P5](/phases/p5-groups-forum.md).
 - **Update** [P5](/phases/p5-groups-forum.md)'s questions are answered.
