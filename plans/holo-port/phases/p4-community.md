@@ -64,6 +64,7 @@ Guests and habbos browse community content; staff write news and manage banners.
 - [p4-11 Fill the Me page's habblets and the landing's tag cloud](/tasks/p4-11-me-habblets.md) — todo
 - [p4-12 Verify P4](/tasks/p4-12-exit-check.md) — todo
 - [p4-13 Escape habbo names in home links](/tasks/p4-13-home-links.md) — done
+- [p4-14 Count the updates in the admin suite from the release](/tasks/p4-14-admin-suite-updates.md) — done
 
 p4-05, p4-06 and p4-07 run on the feature branch `p4-housekeeping`, beside the CMS work on `main`
 ([0046](/decisions/0046-main-and-feature-branches.md)).

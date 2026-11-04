@@ -1,8 +1,14 @@
+import { readdirSync } from "node:fs";
+import path from "node:path";
+import { root } from "../lib/hotel.mjs";
 import { seedStaff, session } from "../lib/staff.mjs";
 
 export const programs = ["cms", "housekeeping"];
 
 export const prepare = ({ sql }) => seedStaff(sql);
+
+// Every update of the release, which the installer applied.
+const updates = readdirSync(path.join(root, "packages/store/migrations")).filter((name) => name.endsWith(".sql")).length;
 
 export default async function (t) {
   const { base, check, hk, shot } = t;
@@ -21,7 +27,8 @@ export default async function (t) {
     "the administrator finds every update applied",
     (await page.getByRole("heading", { name: "Applied Updates" }).count()) === 1 &&
       (await page.getByText("The database has every update of this release.").count()) === 1 &&
-      (await page.locator("tbody tr").count()) === 4,
+      (await page.locator("tbody tr").count()) === updates,
+    `${await page.locator("tbody tr").count()} rows for ${updates} updates`,
   );
 
   await page.goto(`${hk}/access-groups`);

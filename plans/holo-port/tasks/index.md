@@ -158,6 +158,7 @@ starts.
 - [p4-11 Fill the Me page's habblets and the landing's tag cloud](/tasks/p4-11-me-habblets.md) — The Me page gains the tags habblet, the news promo and the banners column, and the landing page Holo's tag cloud.
 - [p4-12 Verify P4](/tasks/p4-12-exit-check.md) — Every exit criterion of P4 holds from a clean checkout, in a real browser, with p4-housekeeping merged.
 - [p4-13 Escape habbo names in home links](/tasks/p4-13-home-links.md) — The home's Edit button, the editor's way back to the home and housekeeping's help queue link to the right home for a habbo whose name holds a question mark.
+- [p4-14 Count the updates in the admin suite from the release](/tasks/p4-14-admin-suite-updates.md) — The housekeeping-admin browser suite expects as many applied updates as the release has migration files, instead of the four it counted before 0005.
 
 ## Later phases
 

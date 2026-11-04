@@ -2,6 +2,12 @@
 
 ## 2026-11-04
 
+- **Done** [p4-14](/tasks/p4-14-admin-suite-updates.md): the housekeeping-admin suite counts the release's migration
+  files instead of four.
+- **Start** [p4-14](/tasks/p4-14-admin-suite-updates.md).
+- **Start** [p4-14](/tasks/p4-14-admin-suite-updates.md).
+- **Create** [p4-14](/tasks/p4-14-admin-suite-updates.md): the housekeeping agent found that `housekeeping-admin` still
+  expects four applied updates, while p4-03 added a fifth.
 - **Done** [p4-08](/tasks/p4-08-tags-page.md): anyone finds habbos by tag and fights tags, and a habbo tags itself, as
   on Holo's tags.php.
 - **Start** [p4-08](/tasks/p4-08-tags-page.md).
