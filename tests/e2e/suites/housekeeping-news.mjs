@@ -505,6 +505,20 @@ export default async function (t) {
   );
   await shot(page, "news-edit");
 
+  await page.goto(`${base}/news/${id}`);
+  check(
+    "the article written in housekeeping appears on the site, escaped and with its BBCode",
+    (await page.locator("#article-wrapper h2").innerText()) === "Grand <Opening> & More" &&
+      (await page.locator("#article-wrapper").getByText("The hotel opens its doors.").isVisible()) &&
+      (await page.locator("#article-wrapper strong").filter({ hasText: "Welcome" }).count()) === 1,
+  );
+  await page.goto(`${base}/community`);
+  check(
+    "the article leads the community page's news promo",
+    (await page.locator('#topstories [data-story="shown"] h3').innerText()) === "Grand <Opening> & More",
+  );
+  await page.goto(`${hk}/news/${id}`);
+
   await page.fill("#news-topstory", "javascript:alert(1)");
   const refused = page.waitForResponse((r) => r.request().method() === "POST");
   await page.getByRole("button", { name: "Update Article" }).click();

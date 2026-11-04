@@ -15,7 +15,7 @@ export const prepare = ({ sql }) => {
 const forgotten = "You're something forgotten!";
 
 export default async function (t) {
-  const { check, hk, shot, sql } = t;
+  const { base, check, hk, shot, sql } = t;
   const { context, page, problems } = await session(t, "Admin-1");
   const addBox = page.locator("main section").first();
   const listBox = page.locator("main section").nth(1);
@@ -131,6 +131,14 @@ export default async function (t) {
       Number(enabled) === 1,
     `${image} ${link} ${enabled}`,
   );
+  await page.goto(`${base}/community`);
+  const shown = page.locator('a[target="_blank"]', { hasText: "Visit <the> Forum & more" });
+  check(
+    "the banner written in housekeeping appears on the community page",
+    (await shown.getAttribute("href")) === "/community" &&
+      (await page.locator('a[target="_blank"] img[src="/web-gallery/images/top-story/top_story_news.png"]').count()) === 1,
+  );
+  await page.goto(`${hk}/banners`);
   const listed = await listBox.innerText();
   check(
     "the list shows the banner as Holo did",
