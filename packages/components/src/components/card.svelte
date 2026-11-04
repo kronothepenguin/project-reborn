@@ -31,24 +31,25 @@
     children: Snippet;
   }
 
+  // Holo's white boxes have a white title bar with black text.
   const colorClasses: Record<Color, string> = {
-    black: "bg-black",
-    blue: "bg-sky-700",
-    lightblue: "bg-sky-500",
-    orange: "bg-orange-500",
-    green: "bg-lime-600",
-    darkred: "bg-orange-700",
-    brown: "bg-yellow-700",
-    settings: "bg-mist-600",
-    red: "bg-orange-700",
-    hcred: "bg-orange-700",
-    lightbrown: "bg-yellow-600",
-    activehomes: "bg-sky-500",
-    promogray: "bg-orange-800",
-    loginbox: "bg-neutral-500",
-    rooms: "bg-cyan-800",
-    club: "bg-amber-300",
-    white: "bg-white",
+    black: "bg-black text-white",
+    blue: "bg-sky-700 text-white",
+    lightblue: "bg-sky-500 text-white",
+    orange: "bg-orange-500 text-white",
+    green: "bg-lime-600 text-white",
+    darkred: "bg-orange-700 text-white",
+    brown: "bg-yellow-700 text-white",
+    settings: "bg-mist-600 text-white",
+    red: "bg-orange-700 text-white",
+    hcred: "bg-orange-700 text-white",
+    lightbrown: "bg-yellow-600 text-white",
+    activehomes: "bg-sky-500 text-white",
+    promogray: "bg-orange-800 text-white",
+    loginbox: "bg-neutral-500 text-white",
+    rooms: "bg-cyan-800 text-white",
+    club: "bg-amber-300 text-white",
+    white: "bg-white text-black",
   };
 
   let {
@@ -64,7 +65,7 @@
   <div class="p-1">
     {#if header}
       <header
-        class="rounded p-1 text-center font-bold text-white {colorClasses[
+        class="rounded p-1 text-center font-bold {colorClasses[
           color
         ] ?? colorClasses.white}"
       >

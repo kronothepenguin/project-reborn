@@ -180,3 +180,45 @@ SELECT user_attributes.user_id
 FROM user_attributes
 WHERE user_attributes.attribute = sqlc.arg(attribute)
 ORDER BY user_id;
+
+-- The staff page: each member of a staff-listed group once, under the listed
+-- group of the highest level, the oldest when levels tie, and shown as the habbo
+-- chosen for that group or else the member's first habbo. A member whose habbos
+-- are all archived is left out.
+-- name: ListStaff :many
+WITH highest AS (
+    SELECT
+        access_group_members.user_id,
+        access_group_members.display_avatar_id,
+        access_groups.name AS group_name,
+        ROW_NUMBER() OVER (
+            PARTITION BY access_group_members.user_id
+            ORDER BY access_groups.level DESC, access_groups.id
+        ) AS place
+    FROM access_group_members
+    JOIN access_groups ON access_groups.id = access_group_members.access_group_id
+    WHERE access_groups.staff_listed
+)
+SELECT
+    avatars.id,
+    avatars.name,
+    avatars.figure,
+    avatars.motto,
+    avatars.created_at,
+    highest.group_name,
+    CAST(COALESCE((
+        SELECT avatar_badges.code FROM avatar_badges
+        WHERE avatar_badges.avatar_id = avatars.id AND avatar_badges.worn
+    ), '') AS TEXT) AS badge
+FROM highest
+JOIN avatars ON avatars.id = COALESCE((
+    SELECT shown.id FROM avatars AS shown
+    WHERE shown.id = highest.display_avatar_id AND shown.archived_at IS NULL
+), (
+    SELECT first.id FROM avatars AS first
+    WHERE first.user_id = highest.user_id AND first.archived_at IS NULL
+    ORDER BY first.created_at, first.id
+    LIMIT 1
+))
+WHERE highest.place = 1
+ORDER BY avatars.name;

@@ -32,6 +32,7 @@ import * as me from "./suites/me.mjs";
 import * as news from "./suites/news.mjs";
 import * as register from "./suites/register.mjs";
 import * as signedOut from "./suites/signed-out.mjs";
+import * as staff from "./suites/staff.mjs";
 import * as tags from "./suites/tags.mjs";
 import * as together from "./suites/together.mjs";
 import * as updates from "./suites/updates.mjs";
@@ -48,6 +49,7 @@ const suites = {
   news,
   tags,
   community,
+  staff,
   art,
   "housekeeping-access": housekeepingAccess,
   "housekeeping-admin": housekeepingAdmin,

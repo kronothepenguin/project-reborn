@@ -43,6 +43,7 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | News | The article's id goes into the SQL as it is, and the title, category and author print as HTML | Bound, and escaped when shown | Any address could read the database, and a title could run scripts |
 | Tags | `tags.php?tag=…&add=true` adds the tag on a plain link, and the search box prints the tag as HTML | Tagging yourself is a form that posts, and the search box escapes the tag | Any page could tag a visitor with a link, and a search address could run scripts |
 | Community | Banners open in a window named `blank`, which the opened page can steer back, and titles, summaries, banner texts and addresses print as HTML | Each banner opens in a new window that cannot reach the hotel's, and everything is escaped | A banner's page could replace the hotel, and an article could run scripts |
+| Staff page | Names and mottos print as HTML | Escaped | A motto could run scripts on the staff page |
 
 # Changed by a decision
 
@@ -87,6 +88,7 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | Staff page | Its two boxes hold raw HTML, edited in the content tool | Their bodies are BBCode, and the help of their fields says `BBCode is allowed here.` | [0077](/decisions/0077-staff-boxes-in-bbcode.md) |
 | News | The body is HTML written by staff | BBCode, without smilies, as Holo's news had none | [0020](/decisions/0020-news-in-bbcode.md) |
 | Tags | A tag counts for its owner whether the owner still exists or not | An archived habbo's tags leave the cloud, the search and the tag fight | [0058](/decisions/0058-habbos-are-archived.md) |
+| Staff page | Every user above rank 2, with `Rank:` named after the rank | Each member of a staff-listed access group once, with `Rank:` the name of the highest of those groups and the habbo chosen for it | [0076](/decisions/0076-one-staff-list.md) |
 
 # Holo bugs not ported
 
@@ -284,8 +286,8 @@ veto.
 | `My Friends`, `My Rooms` and the recommended rooms | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | The tags habblet, the news promo and the banners on `/me` | [P4](/phases/p4-community.md) |
 | The wardrobe on `/account/looks` | [P6](/phases/p6-economy.md) |
-| The `MY GROUPS` widget and the group badge of the profile widget | [P5](/phases/p5-groups-forum.md) |
-| The online state of the profile widget and of the community page's random habbos, which show offline | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
+| The `MY GROUPS` widget, and the group badge of the profile widget and of the staff page | [P5](/phases/p5-groups-forum.md) |
+| The online state of the profile widget, the community page's random habbos and the staff page, which show offline | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | `Voucher Management` in housekeeping | [P6](/phases/p6-economy.md) |
 | `Chatlogs` and `Online Users` in housekeeping | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | The pages behind Help and Credits | [P7](/phases/p7-help.md), [P6](/phases/p6-economy.md) |

@@ -2,6 +2,9 @@
 
 ## 2026-11-04
 
+- **Done** [p4-10](/tasks/p4-10-staff-page.md): anyone sees the staff team as on Holo's staff.php: one list with each
+  member's highest group and last visit, and the two boxes.
+- **Start** [p4-10](/tasks/p4-10-staff-page.md).
 - **Done** [p4-09](/tasks/p4-09-community-page.md): anyone reads the community page as Holo's: random habbos, the news
   promo turning, the tag cloud and the banners.
 - **Start** [p4-09](/tasks/p4-09-community-page.md).

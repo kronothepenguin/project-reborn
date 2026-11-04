@@ -30,3 +30,11 @@ export const Default: Story = {
     color: "lightblue",
   },
 };
+
+export const WhiteHeader: Story = {
+  args: {
+    header,
+    children: body,
+    color: "white",
+  },
+};

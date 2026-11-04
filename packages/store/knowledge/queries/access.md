@@ -1,10 +1,10 @@
 ---
 type: SQL Query
 title: access.query.sql
-description: Access operations for groups, their attributes and members, a user's attributes and the holders of an attribute.
+description: Access operations for groups, their attributes and members, a user's attributes, the holders of an attribute and the staff page's list.
 resource: packages/store/queries/access.query.sql
 tags: [store, query, access]
-timestamp: 2026-11-02T02:13:59+00:00
+timestamp: 2026-11-04T16:16:30+00:00
 ---
 
 # Operations
@@ -106,6 +106,16 @@ timestamp: 2026-11-02T02:13:59+00:00
 - Result: `ListStaffMembersRow` (`user_id`, `group_name`, `name`), one row per membership, sorted by name and group. The
   name is chosen as in [ListAccessGroupMembers](#listaccessgroupmembers).
 - Tables: `access_group_members`, `access_groups`, `avatars`
+
+## ListStaff
+
+- Cardinality: `:many`
+- Inputs: none
+- Result: `ListStaffRow` (`id`, `name`, `figure`, `motto`, `created_at`, `group_name`, `badge`), the staff page's list:
+  each member of a staff-listed group once, under the listed group of the highest level (the oldest when levels tie),
+  as the habbo chosen for that group or else the member's first habbo, with its worn badge or `''`; sorted by name. A
+  member whose habbos are all archived is left out.
+- Tables: `access_group_members`, `access_groups`, `avatars`, `avatar_badges`
 
 ## ListUserAttributes
 

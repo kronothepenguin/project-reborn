@@ -136,6 +136,7 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /reset/{token}", guestPage(r.HandleReset))
 
 	mux.Handle("GET /community", page(http.HandlerFunc(r.HandleCommunityView)))
+	mux.Handle("GET /staff", page(http.HandlerFunc(r.HandleStaffView)))
 	mux.Handle("GET /tags", page(http.HandlerFunc(r.HandleTagsView)))
 	mux.Handle("POST /tags", page(auth.RequireSession(http.HandlerFunc(r.HandleTagsAdd))))
 	mux.Handle("POST /tags/fight", page(http.HandlerFunc(r.HandleTagsFight)))

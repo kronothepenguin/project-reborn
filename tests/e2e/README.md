@@ -36,6 +36,7 @@ screenshots and server logs stay in `.run/`, which is git-ignored.
 | `news` | The archive, an article, a category and the headlines, as a guest reads them |
 | `tags` | The cloud, a search, the tag fight and tagging yourself |
 | `community` | The random habbos, the news promo turning, the tag cloud and the banners |
+| `staff` | The staff list, the two boxes and their settings, and the page switched off |
 | `art` | The home art, served by the binary |
 | `housekeeping-access` | Every route as a guest, a player and staff |
 | `housekeeping-admin` | Access groups, members, the guard and the log |

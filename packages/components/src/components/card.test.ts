@@ -17,6 +17,20 @@ describe("Card", () => {
     expect(container.querySelector("header h2")?.textContent).toBe("Profile");
   });
 
+  it("writes a white header in black, as Holo's white boxes", () => {
+    const { container } = render(Card, { props: { header, children: body, color: "white" } });
+    const bar = container.querySelector("header");
+    expect(bar?.classList.contains("text-black")).toBe(true);
+    expect(bar?.classList.contains("text-white")).toBe(false);
+  });
+
+  it("writes a coloured header in white", () => {
+    const { container } = render(Card, { props: { header, children: body, color: "green" } });
+    const bar = container.querySelector("header");
+    expect(bar?.classList.contains("text-white")).toBe(true);
+    expect(bar?.classList.contains("text-black")).toBe(false);
+  });
+
   it("forwards native attributes to the surface", () => {
     const { container } = render(Card, {
       props: { children: body, class: "card", "data-testid": "card" },
