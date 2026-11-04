@@ -1,5 +1,6 @@
 ---
 import { Input, Select } from "@project-reborn/components";
+import ImageEditor from "./image-editor.svelte";
 
 // The preview is a 300x187 box that shows the picture at its own size, as the
 // news promo of Holo's CMS shows a top story.
@@ -41,6 +42,15 @@ import { Input, Select } from "@project-reborn/components";
     <div class="mt-1 box-content h-[187px] w-[300px] overflow-hidden border border-neutral-600 bg-olive-300">
       <img id="news-topstory-preview" src="[[ .Preview ]]" data-site="[[ .SiteURL ]]" alt="Preview" class="max-w-none" />
     </div>
+  </td>
+</tr>
+<tr>
+  <td>
+    <strong>Upload Image</strong>
+    <div class="text-neutral-500">Choose a picture. Cut drags and zooms it to fill the 300x187 frame; Fit shows it whole, with transparent bands.</div>
+  </td>
+  <td>
+    <ImageEditor client:only="svelte" field="news-topstory" />
   </td>
 </tr>
 <tr>

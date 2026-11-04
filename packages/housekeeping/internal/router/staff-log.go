@@ -40,6 +40,7 @@ const (
 	actionNewsCreate            = "news.create"
 	actionNewsUpdate            = "news.update"
 	actionNewsDelete            = "news.delete"
+	actionNewsImage             = "news.image"
 	actionDatabaseUpdate        = "database.update"
 	actionConfigUpdate          = "config.update"
 )

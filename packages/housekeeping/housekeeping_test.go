@@ -44,6 +44,7 @@ var routes = []struct {
 	{"GET", "/housekeeping/news/1"},
 	{"POST", "/housekeeping/news/1"},
 	{"POST", "/housekeeping/news/1/delete"},
+	{"POST", "/housekeeping/news/images"},
 	{"GET", "/housekeeping/access-groups"},
 	{"POST", "/housekeeping/access-groups"},
 	{"GET", "/housekeeping/access-groups/1"},

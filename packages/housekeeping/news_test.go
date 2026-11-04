@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	newsImageInvalid = "The topstory image must be one of the local images or an http(s) address."
+	newsImageInvalid = "The topstory image must be one of the local images, an uploaded image or an http(s) address."
 	pollStory        = "/web-gallery/images/top-story/top_story_poll2.png"
 )
 

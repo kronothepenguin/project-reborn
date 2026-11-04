@@ -19,6 +19,7 @@ const everyRoute = [
   ["GET", "/news/1"],
   ["POST", "/news/1"],
   ["POST", "/news/1/delete"],
+  ["POST", "/news/images"],
   ["GET", "/access-groups"],
   ["POST", "/access-groups"],
   ["GET", "/access-groups/1"],

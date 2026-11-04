@@ -1,6 +1,7 @@
 package router
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"net/http"
@@ -23,7 +24,7 @@ const (
 	newsDeleted       = "Article deleted successfully."
 	newsEditMissing   = "Unable to edit article; this article does not exist!"
 	newsDeleteMissing = "Unable to delete article; this article does not exist!"
-	newsImageInvalid  = "The topstory image must be one of the local images or an http(s) address."
+	newsImageInvalid  = "The topstory image must be one of the local images, an uploaded image or an http(s) address."
 )
 
 // newsDateFormat is the date Holo's news pages show.
@@ -116,9 +117,12 @@ func webAddress(address string) bool {
 }
 
 // validTopStory accepts only addresses that are safe in the src of the CMS's
-// pages: Holo's local pictures and http(s) addresses.
-func validTopStory(address string) bool {
-	return slices.Contains(seed.TopStories(), address) || webAddress(address)
+// pages: Holo's local pictures, uploaded images and http(s) addresses.
+func (r *Router) validTopStory(ctx context.Context, address string) (bool, error) {
+	if slices.Contains(seed.TopStories(), address) || webAddress(address) {
+		return true, nil
+	}
+	return r.uploadedImage(ctx, address)
 }
 
 // sitePicture is the address housekeeping loads a picture from. A path is the
@@ -232,13 +236,18 @@ func (r *Router) HandleNewsComposeView(w http.ResponseWriter, req *http.Request)
 func (r *Router) HandleNewsCreate(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	form := readNewsForm(req)
-	if !validTopStory(form.TopStory) {
+	valid, err := r.validTopStory(ctx, form.TopStory)
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
+	if !valid {
 		r.refuseNews(w, req, "news/new.html", 0, "", form, newsImageInvalid)
 		return
 	}
 	session, _ := auth.FromContext(ctx)
 	now := time.Now().UTC()
-	err := r.inTx(ctx, func(q *store.Queries) error {
+	err = r.inTx(ctx, func(q *store.Queries) error {
 		article, err := q.CreateNewsArticle(ctx, store.CreateNewsArticleParams{
 			AvatarID:    sql.NullInt64{Int64: session.AvatarID, Valid: true},
 			Title:       form.Title,
@@ -288,12 +297,17 @@ func (r *Router) HandleNewsArticleSave(w http.ResponseWriter, req *http.Request)
 		return
 	}
 	form := readNewsForm(req)
-	if !validTopStory(form.TopStory) {
+	valid, err := r.validTopStory(ctx, form.TopStory)
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
+	if !valid {
 		r.refuseNews(w, req, "news/id.html", article.ID, article.Title, form, newsImageInvalid)
 		return
 	}
 
-	err := r.inTx(ctx, func(q *store.Queries) error {
+	err = r.inTx(ctx, func(q *store.Queries) error {
 		saved, err := q.GetNewsArticle(ctx, article.ID)
 		if err != nil {
 			return err
