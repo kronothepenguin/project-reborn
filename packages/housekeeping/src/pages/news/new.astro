@@ -1,0 +1,24 @@
+---
+import { Table } from "@project-reborn/components";
+import Box from "../../components/box.astro";
+import Message from "../../components/message.astro";
+import NewsFields from "../../components/news/news-fields.astro";
+import Submit from "../../components/submit.astro";
+import Housekeeping from "../../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="Compose New Article" tab="site">
+  <Message />
+  <form method="post" action="/housekeeping/news">
+    <Box title="Compose News Article">
+      <Table variant="form">
+        <tbody>
+          <NewsFields />
+        </tbody>
+      </Table>
+      <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+        <Submit>Publish Article</Submit>
+      </div>
+    </Box>
+  </form>
+</Housekeeping>

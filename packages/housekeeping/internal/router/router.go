@@ -2,6 +2,7 @@ package router
 
 import (
 	"database/sql"
+	"encoding/json/v2"
 	"errors"
 	"log/slog"
 	"net/http"
@@ -143,4 +144,13 @@ func (r *Router) chrome(req *http.Request) chrome {
 func (r *Router) fail(w http.ResponseWriter, err error) {
 	slog.Error("housekeeping", "err", err)
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+}
+
+// answerJSON writes v as the answer, with status.
+func (r *Router) answerJSON(w http.ResponseWriter, status int, v any) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	if err := json.MarshalWrite(w, v); err != nil {
+		slog.Error("housekeeping: json", "err", err)
+	}
 }

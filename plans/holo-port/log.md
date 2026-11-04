@@ -2,19 +2,20 @@
 
 ## 2026-11-04
 
+- **Update** `p4-housekeeping` is merged into `main`: [p4-05](/tasks/p4-05-housekeeping-news.md),
+  [p4-06](/tasks/p4-06-image-editor.md) and [p4-07](/tasks/p4-07-housekeeping-banners.md) join the CMS work. Two of
+  the branch's tests met main's Staff Module: the news form's test counts the selected category in its own list, and
+  the banners suite finds `Staff Module` after `Manage Site Content`. Every gate and all 735 browser checks pass.
 - **Done** [p4-14](/tasks/p4-14-admin-suite-updates.md): the housekeeping-admin suite counts the release's migration
   files instead of four.
-- **Start** [p4-14](/tasks/p4-14-admin-suite-updates.md).
 - **Start** [p4-14](/tasks/p4-14-admin-suite-updates.md).
 - **Create** [p4-14](/tasks/p4-14-admin-suite-updates.md): the housekeeping agent found that `housekeeping-admin` still
   expects four applied updates, while p4-03 added a fifth.
 - **Done** [p4-08](/tasks/p4-08-tags-page.md): anyone finds habbos by tag and fights tags, and a habbo tags itself, as
   on Holo's tags.php.
 - **Start** [p4-08](/tasks/p4-08-tags-page.md).
-- **Start** [p4-08](/tasks/p4-08-tags-page.md).
 - **Done** [p4-13](/tasks/p4-13-home-links.md): the home's Edit button, the editor's way back and housekeeping's help
   queue escape a habbo's name, so a name with ? reaches its own home.
-- **Start** [p4-13](/tasks/p4-13-home-links.md).
 - **Correct** [p4-02](/tasks/p4-02-staff-settings.md): its form test counted the menu's copy of the form and failed in
   the commit that closed it; it now reads the form alone, and every breakage was run again from a passing test.
 - **Start** [p4-13](/tasks/p4-13-home-links.md).
@@ -30,6 +31,18 @@
 - **Done** [p4-01](/tasks/p4-01-settings-kinds.md): housekeeping's settings forms gain a multi-line field sized as
   Holo's content tool sized it, and a field with a fixed list of choices.
 - **Start** [p4-01](/tasks/p4-01-settings-kinds.md).
+- **Done** [p4-07](/tasks/p4-07-housekeeping-banners.md): staff with housekeeping.banners add, list, edit and delete
+  banners in Holo's views and texts, adding works, each answer follows what happened, the urls are http(s) addresses
+  or paths of the site, and each change is logged.
+- **Start** [p4-07](/tasks/p4-07-housekeeping-banners.md).
+- **Done** [p4-06](/tasks/p4-06-image-editor.md): the news form's editor cuts a picture to fill 300x187 or fits it
+  whole, previews it and uploads it; a GIF of 300x187 goes up as it is; the server keeps only a re-encoded PNG or
+  GIF of that size, within 2 MB and 500 frames, logs it and answers its path.
+- **Start** [p4-06](/tasks/p4-06-image-editor.md).
+- **Done** [p4-05](/tasks/p4-05-housekeeping-news.md): staff with housekeeping.news compose, list, edit and delete
+  articles in Holo's forms, with the five local top stories or an address, a preview from the CMS, the author's habbo
+  and date kept on edit, a link to the article and a log row for each change.
+- **Start** [p4-05](/tasks/p4-05-housekeeping-news.md).
 - **Done** [p4-03](/tasks/p4-03-store.md): the store has the news, banner and image operations and the images table
   with update 0005, the CMS serves uploaded images, and Holo top stories join the CMS.
 - **Start** [p4-03](/tasks/p4-03-store.md).
