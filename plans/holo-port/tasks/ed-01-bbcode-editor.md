@@ -44,7 +44,7 @@ pnpm --filter @project-reborn/components build-storybook
 Results (2026-11-04T21:04:37+00:00):
 
 - `pnpm --filter @project-reborn/components test`: 156 tests pass, 31 of them new.
-  - The reader shows the 146 cases of the Go renderer's own tests as the CMS renders them, once Chromium has nested
+  - The reader shows the 139 cases of the Go renderer's own tests as the CMS renders them, once Chromium has nested
     its HTML, crossed tags included.
   - The writer gives well-formed BBCode back as it was given, and writes a tidier form of the rest that looks the
     same.
