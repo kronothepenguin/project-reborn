@@ -61,7 +61,7 @@ async function signIn(browser, base, name) {
   return { context, page, problems };
 }
 
-export default async function ({ base, browser, check, shot }) {
+export default async function ({ base, browser, check, shot, sql }) {
   const guest = await signIn(browser, base);
   await guest.page.goto(base + "/home/Frank");
   await shot(guest.page, "home-guest");
@@ -192,12 +192,53 @@ export default async function ({ base, browser, check, shot }) {
   await inventory.getByRole("button", { name: "Notes" }).nth(1).click();
   await inventory.getByRole("button", { name: "Place" }).click();
   const notes = admin.page.getByRole("dialog", { name: "Notes" });
-  await notes.locator('textarea[aria-label="Note text"]').fill("[b]Welcome[/b] to my page");
+  const note = notes.getByRole("textbox", { name: "Note text", exact: true });
+  check(
+    "the note is written in the BBCode editor, with the site's look and the smilies",
+    (await note.isVisible()) &&
+      (await notes.getByRole("button", { name: "Smiley :)" }).isVisible()) &&
+      (await notes.getByRole("button", { name: "Bold" }).getAttribute("class")).includes("bg-white"),
+  );
+  await note.click();
+  await admin.page.keyboard.type("Welcome to my page");
+  await note.evaluate((area) => {
+    const text = area.firstChild;
+    document.getSelection().setBaseAndExtent(text, 0, text, "Welcome".length);
+  });
+  await notes.getByRole("button", { name: "Bold" }).click();
+  await note.evaluate((area) => {
+    const range = document.createRange();
+    range.selectNodeContents(area);
+    range.collapse(false);
+    document.getSelection().removeAllRanges();
+    document.getSelection().addRange(range);
+  });
+  await notes.getByRole("button", { name: "Smiley :)" }).click();
+  check(
+    "the counter counts the note's BBCode",
+    (await notes.locator('[aria-live="polite"]').innerText()) === String(500 - "[b]Welcome[/b] to my page:)".length),
+    await notes.locator('[aria-live="polite"]').innerText(),
+  );
+  await shot(admin.page, "home-note-editor");
   await notes.getByRole("button", { name: "Continue" }).click();
-  check("the note editor shows the note as it will be", (await notes.locator("strong").innerText()) === "Welcome");
+  const markup = notes.locator(".stickie-markup");
+  await markup.waitFor();
+  check(
+    "the note editor shows the note as it will be",
+    (await markup.locator("strong").innerText()) === "Welcome" &&
+      (await markup.locator('img[src="/smilies/smile.gif"]').count()) === 1,
+    await markup.innerHTML(),
+  );
   await notes.getByRole("button", { name: "Add to page" }).click();
   await admin.page.locator("#playground .stickie strong").waitFor();
   await notes.waitFor({ state: "detached" });
+  const [[noteText]] = sql("SELECT body FROM home_items WHERE kind = 'note' ORDER BY id DESC LIMIT 1");
+  check(
+    "the placed note keeps the BBCode written in the editor, and shows its smiley",
+    noteText === "[b]Welcome[/b] to my page:)" &&
+      (await admin.page.locator('#playground .stickie img[src="/smilies/smile.gif"]').count()) === 1,
+    JSON.stringify(noteText),
+  );
 
   await admin.page.getByRole("button", { name: "Inventory" }).click();
   await inventory.getByRole("button", { name: "Backgrounds", exact: true }).click();

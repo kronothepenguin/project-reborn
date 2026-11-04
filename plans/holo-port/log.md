@@ -2,6 +2,9 @@
 
 ## 2026-11-04
 
+- **Done** [ed-04](/tasks/ed-04-note-editor.md): home notes are written in the BBCode editor, with smilies while they
+  are on, and keep their skins, counter, preview and limit.
+- **Start** [ed-04](/tasks/ed-04-note-editor.md).
 - **Done** [ed-03](/tasks/ed-03-staff-boxes-editor.md): the Staff Module's two boxes are written in the BBCode editor,
   through a mark that P6's credits boxes will take.
 - **Start** [ed-03](/tasks/ed-03-staff-boxes-editor.md).

@@ -26,6 +26,7 @@
 
   let home = $state(0);
   let noteMax = $state(500);
+  let smilies = $state(false);
   let shortName = $state("");
   let view = $state("/");
   let skins = $state<{ value: string; label: string }[]>([]);
@@ -40,6 +41,7 @@
     const element = document.getElementById(config) as HTMLElement;
     home = Number(element.dataset.home);
     noteMax = Number(element.dataset.noteMax);
+    smilies = element.dataset.smilies === "true";
     shortName = element.dataset.shortName ?? "";
     view = element.dataset.view ?? "/";
     skins = [...element.querySelectorAll("option")].map((option) => ({
@@ -278,6 +280,7 @@
   <HomeStoreDialog
     {home}
     {noteMax}
+    {smilies}
     {shortName}
     {nextZ}
     bind:tab={dialog}

@@ -9,7 +9,8 @@
   // show. Drawing it again empties the browser's undo, so the editor keeps its
   // own. With field, it stands in for that textarea, which keeps the BBCode for
   // its form and stays the plain field without JavaScript; without a label and
-  // rows of its own, it takes the field's.
+  // rows of its own, it takes the field's. With maxLength, a change that makes
+  // the BBCode longer is turned away, as a textarea's maxlength turns it away.
   interface Props {
     value?: string;
     field?: string;
@@ -17,9 +18,10 @@
     variant?: "site" | "housekeeping";
     label?: string;
     rows?: number;
+    maxLength?: number;
   }
 
-  let { value = $bindable(""), field, smilies = false, variant = "site", label, rows }: Props = $props();
+  let { value = $bindable(""), field, smilies = false, variant = "site", label, rows, maxLength }: Props = $props();
 
   type Toggle = "bold" | "italic" | "underline" | "strikeThrough";
   type State = { value: string; start: number; end: number };
@@ -65,6 +67,7 @@
   let target: HTMLTextAreaElement | null = null;
   let shown = "";
   let saved: [number, number] = [0, 0];
+  let lastInput: State = { value: "", start: 0, end: 0 };
   let past: State[] = [];
   let future: State[] = [];
   let typing = false;
@@ -112,6 +115,16 @@
     saved = [start, end];
   }
 
+  function fits(text: string): boolean {
+    return maxLength === undefined || [...text].length <= maxLength;
+  }
+
+  function goBack(to: State) {
+    draw(to.value);
+    select(to.start, to.end);
+    saved = [to.start, to.end];
+  }
+
   function remember(before: State) {
     past.push(before);
     future = [];
@@ -132,6 +145,10 @@
     const range = document.getSelection()?.getRangeAt(0);
     if (!range) return;
     apply(range);
+    if (!fits(write(area))) {
+      goBack(before);
+      return;
+    }
     rewrite();
     remember(before);
     refresh();
@@ -280,6 +297,7 @@
 
   function beforeinput(event: InputEvent) {
     const kind = event.inputType;
+    lastInput = snapshot();
     if (kind === "historyUndo" || kind === "historyRedo") {
       event.preventDefault();
       if (kind === "historyUndo") undo();
@@ -311,10 +329,16 @@
 
   function input(event: Event) {
     if (!area) return;
-    if (!(event as InputEvent).isComposing && area.querySelector(foreign)) {
+    const composing = (event as InputEvent).isComposing;
+    const text = write(area);
+    if (!composing && !fits(text)) {
+      goBack(lastInput);
+      return;
+    }
+    if (!composing && area.querySelector(foreign)) {
       rewrite();
     } else {
-      commit(write(area));
+      commit(text);
     }
     refresh();
   }
@@ -334,6 +358,10 @@
     const length = measure(fragment);
     range.insertNode(fragment);
     const next = write(area);
+    if (!fits(next)) {
+      goBack(before);
+      return;
+    }
     commit(next);
     draw(next);
     select(start + length, start + length);
@@ -504,6 +532,6 @@
     onpaste={paste}
   ></div>
   {#if source}
-    <textarea aria-label="{name} (BBCode)" rows={lines} class={look.area} bind:value oninput={edited}></textarea>
+    <textarea aria-label="{name} (BBCode)" rows={lines} maxlength={maxLength} class={look.area} bind:value oninput={edited}></textarea>
   {/if}
 </div>

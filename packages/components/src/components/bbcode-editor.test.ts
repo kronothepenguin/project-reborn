@@ -250,6 +250,24 @@ describe("BBCodeEditor", () => {
     expect(container.querySelector("[contenteditable]")?.classList.contains("border-neutral-600")).toBe(true);
   });
 
+  it("turns away a change that makes the BBCode longer than its most", async () => {
+    const { field, area } = setup("abc", { maxLength: 10 });
+    await caretAtEnd(area);
+    await userEvent.keyboard("defghijklm");
+    expect(field.value).toBe("abcdefghij");
+    await selectText(area, "abc");
+    await userEvent.click(button("Bold"));
+    expect(field.value).toBe("abcdefghij");
+    expect(area.querySelector("strong")).toBeNull();
+    await caretAtEnd(area);
+    const data = new DataTransfer();
+    data.setData("text/plain", "xyz");
+    area.dispatchEvent(new ClipboardEvent("paste", { clipboardData: data, bubbles: true, cancelable: true }));
+    await tick();
+    expect(field.value).toBe("abcdefghij");
+    expect(area.textContent).toBe("abcdefghij");
+  });
+
   it("takes its name and its height from the field it stands in for", () => {
     const form = document.createElement("form");
     form.innerHTML = '<label for="box"><strong>Staff Content Box 1</strong></label><textarea id="box" rows="8">x</textarea>';

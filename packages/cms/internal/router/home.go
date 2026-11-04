@@ -223,6 +223,7 @@ type homeEditPage struct {
 	homePage
 	Skins   []skinOption
 	NoteMax int
+	Smilies bool
 }
 
 // HandleHomeEditView handles GET /home/{name}/edit, Holo's edit mode, for the
@@ -249,7 +250,7 @@ func (r *Router) HandleHomeEditView(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
-	page := homeEditPage{homePage: home, NoteMax: settings.GetInt("homes.noteMaxLength")}
+	page := homeEditPage{homePage: home, NoteMax: settings.GetInt("homes.noteMaxLength"), Smilies: settings.GetBool("features.smilies")}
 	for _, skin := range skinLabels {
 		allowed, err := r.skinAllowed(ctx, skin.Value)
 		if err != nil {

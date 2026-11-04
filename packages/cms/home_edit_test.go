@@ -19,11 +19,14 @@ func TestTheEditPageIsTheOwners(t *testing.T) {
 	owner(t, db, "other@example.com", "Other", 0)
 	cookie := login(t, db, "Frank")
 
-	wantPage(t, serve(mux, "GET", "/home/Frank/edit", cookie, nil), http.StatusOK, "home/name/edit.html", "Owner:Frank", "NoteMax:500")
+	wantPage(t, serve(mux, "GET", "/home/Frank/edit", cookie, nil), http.StatusOK, "home/name/edit.html", "Owner:Frank", "NoteMax:500 Smilies:true")
 	wantPage(t, serve(mux, "GET", "/home/FrankToo/edit", cookie, nil), http.StatusOK, "home/name/edit.html", "Owner:FrankToo")
 	wantRedirect(t, serve(mux, "GET", "/home/Other/edit", cookie, nil), "/home/Other")
 	wantPage(t, serve(mux, "GET", "/home/Nobody/edit", cookie, nil), http.StatusNotFound, "home/not-found.html")
 	wantRedirect(t, serve(mux, "GET", "/home/Frank/edit", nil, nil), "/")
+
+	setSetting(t, db, "features.smilies", false)
+	wantPage(t, serve(mux, "GET", "/home/Frank/edit", cookie, nil), http.StatusOK, "NoteMax:500 Smilies:false")
 }
 
 func TestTheEditMenuOffersTheSkinsTheUserMayUse(t *testing.T) {

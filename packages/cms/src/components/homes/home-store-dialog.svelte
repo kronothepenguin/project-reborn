@@ -9,6 +9,7 @@
     home: number;
     tab: "inventory" | "webstore";
     noteMax: number;
+    smilies: boolean;
     shortName: string;
     nextZ: () => number;
     onclose: () => void;
@@ -46,7 +47,7 @@
   type Held = { id: number; name: string; image: string; quantity: number };
   type Inventory = Record<"stickers" | "backgrounds" | "notes" | "widgets", Held[]>;
 
-  let { home, tab = $bindable(), noteMax, shortName, nextZ, onclose, onplace, onbackground }: Props = $props();
+  let { home, tab = $bindable(), noteMax, smilies, shortName, nextZ, onclose, onplace, onbackground }: Props = $props();
 
   let credits = $state(0);
   let categories = $state<Category[]>([]);
@@ -313,6 +314,7 @@
     {home}
     item={held.id}
     max={noteMax}
+    {smilies}
     oncancel={() => (writing = false)}
     onplace={(placed) => {
       writing = false;
