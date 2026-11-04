@@ -1,0 +1,52 @@
+---
+import { Table } from "@project-reborn/components";
+import Box from "../components/box.astro";
+import Message from "../components/message.astro";
+import Submit from "../components/submit.astro";
+import Housekeeping from "../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="Uploaded Images" tab="site">
+  <Message />
+  <Box title="Uploaded Images" color="gold">
+    <Table>
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Format</th>
+          <th>Size</th>
+          <th>Uploaded by</th>
+          <th>Date</th>
+          <th>Articles</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        [[ range .Images ]]
+        <tr>
+          <td>
+            <a href="[[ .Preview ]]" class="block w-[150px]"><img src="[[ .Preview ]]" alt="[[ .Path ]]" width="150" height="94" loading="lazy" class="block h-[94px] w-[150px] bg-olive-300" /></a>
+            <div>[[ .Path ]]</div>
+          </td>
+          <td>[[ .Format ]]</td>
+          <td class="whitespace-nowrap">[[ .Size ]]</td>
+          <td class="whitespace-nowrap">[[ .Uploader ]]</td>
+          <td class="whitespace-nowrap">[[ .Date ]]</td>
+          <td>
+            [[ range .Articles ]]<a href="/housekeeping/news/[[ .ID ]]" class="text-indigo-900 underline">[[ .Title ]] (ID: [[ .ID ]])</a><br />[[ else ]]None[[ end ]]
+          </td>
+          <td>
+            <form method="post" action="/housekeeping/images/[[ .ID ]]/delete">
+              <Submit>Delete</Submit>
+            </form>
+          </td>
+        </tr>
+        [[ else ]]
+        <tr>
+          <td colspan="7">Nothing found.</td>
+        </tr>
+        [[ end ]]
+      </tbody>
+    </Table>
+  </Box>
+</Housekeeping>

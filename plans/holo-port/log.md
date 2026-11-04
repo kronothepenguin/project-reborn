@@ -2,6 +2,9 @@
 
 ## 2026-11-04
 
+- **Done** [p4-17](/tasks/p4-17-uploaded-images-page.md): an Uploaded Images page lists every uploaded picture with
+  the articles showing it, deletes one no article shows, and names the articles that keep one in use.
+- **Start** [p4-17](/tasks/p4-17-uploaded-images-page.md).
 - **Done** [p4-16](/tasks/p4-16-pick-uploaded-image.md): the image editor's Uploaded mode shows a thumbnail of every
   uploaded picture, newest first, and clicking one fills the top-story field and the preview, as an upload does.
 - **Start** [p4-16](/tasks/p4-16-pick-uploaded-image.md).
