@@ -1,0 +1,17 @@
+---
+import Archive from "../components/news/archive.astro";
+import Headlines from "../components/news/headlines.astro";
+import Community from "../layouts/community.astro";
+---
+
+<Community
+  title="[[ .ShortName ]] ~ [[ if .InCategory ]]Category Listing[[ else ]]News Archive[[ end ]]"
+  tab="community"
+  sub="News"
+>
+  <div class="flex">
+    <div class="w-[210px]"><Headlines /></div>
+    <div class="w-[560px]"><Archive /></div>
+    <div class="w-[160px]"></div>
+  </div>
+</Community>

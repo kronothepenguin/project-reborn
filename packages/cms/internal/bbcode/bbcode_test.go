@@ -278,3 +278,17 @@ func TestFormatIsWellFormed(t *testing.T) {
 		}
 	}
 }
+
+func TestLinesBreakAndEscapeOnly(t *testing.T) {
+	for _, c := range []struct{ text, want string }{
+		{"one\r\ntwo\nthree\rfour", "one<br />\r\ntwo<br />\nthree<br />\rfour"},
+		{"a\n\nb", "a<br />\n<br />\nb"},
+		{"<b>Tom & 'Jerry'</b>", "&lt;b&gt;Tom &amp; &#39;Jerry&#39;&lt;/b&gt;"},
+		{"[b]bold[/b] :) (L)", "[b]bold[/b] :) (L)"},
+		{"", ""},
+	} {
+		if got := string(Lines(c.text)); got != c.want {
+			t.Errorf("Lines(%q) = %q, want %q", c.text, got, c.want)
+		}
+	}
+}

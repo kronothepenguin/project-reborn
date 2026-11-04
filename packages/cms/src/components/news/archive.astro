@@ -1,0 +1,28 @@
+---
+import { Card, Link } from "@project-reborn/components";
+---
+
+<div class="mr-2 mb-[7px]">
+  <Card>
+    <div id="article-wrapper" class="px-2.5">
+      [[ if .InCategory ]]
+      <h2 class="mb-1 text-base font-bold text-orange-500">Category Listing</h2>
+      <div class="mb-2 border-t border-orange-500 pt-[7px] text-zinc-400">
+        This is an overview of the last 25 articles posted in the category <b>[[ .Category ]]</b>.
+      </div>
+      [[ else ]]
+      <h2 class="mb-1 text-base font-bold text-orange-500">[[ .ShortName ]] News Archive</h2>
+      <div class="mb-2 border-t border-orange-500 pt-[7px] text-zinc-400">
+        This is an overview of all articles ever posted on the website, ordered by post date.
+      </div>
+      [[ end ]]
+      <ul class="my-[1em]">
+        [[ range .Articles ]]
+        <li>[[ .Date ]] - <Link href="/news/[[ .ID ]]">[[ .Title ]]</Link></li>
+        [[ else ]][[ if not .InCategory ]]
+        <li>No news to display yet.</li>
+        [[ end ]][[ end ]]
+      </ul>
+    </div>
+  </Card>
+</div>

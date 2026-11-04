@@ -1,0 +1,26 @@
+---
+import { Card, Link } from "@project-reborn/components";
+
+const heading = "border-b border-dashed border-taupe-500 py-[3px] font-bold";
+const list = "mb-[1.5em] ml-[15px]";
+---
+
+<div class="mr-2 mb-[7px]">
+  <Card color="orange">
+    <span slot="header">News</span>
+    <div id="article-archive">
+      <h2 class={heading}>News Headlines</h2>
+      <ul class={list}>
+        [[ range .Headlines ]]
+        <li class="my-[5px]"><Link href="/news/[[ .ID ]]">[[ .Title ]]</Link> &raquo;</li>
+        [[ else ]]
+        <li><br />No headlines to display yet.</li>
+        [[ end ]]
+      </ul>
+      <h2 class={heading}>More news?</h2>
+      <ul class={list}>
+        <li class="my-[5px]"><Link href="/news">View our news archive</Link> &raquo;</li>
+      </ul>
+    </div>
+  </Card>
+</div>

@@ -40,6 +40,7 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | Notes | Staff write raw HTML, and for everyone else `'` stays open, so a link can break out of its address | Every note is text with BBCode, escaped for everyone | A note could run scripts on anyone who opened the home |
 | BBCode | A link takes any address | Only `http` and `https` addresses become links | A `javascript:` link ran code on a click |
 | BBCode | Crossed tags close the page's own elements | Crossed tags nest inside the text, as a browser nested Holo's | One note could break the rest of the page |
+| News | The article's id goes into the SQL as it is, and the title, category and author print as HTML | Bound, and escaped when shown | Any address could read the database, and a title could run scripts |
 
 # Changed by a decision
 
@@ -82,6 +83,7 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | Install | The last page links to the new site and to housekeeping's sign-in | It links to the hotel, where the administrator signs in; housekeeping has no sign-in of its own | [0070](/decisions/0070-housekeeping-applies-updates.md) |
 | Install | `install.php` writes the store and the ranks | Updates write them, so a hotel installed before them receives them too | [0068](/decisions/0068-seeds-are-updates.md) |
 | Staff page | Its two boxes hold raw HTML, edited in the content tool | Their bodies are BBCode, and the help of their fields says `BBCode is allowed here.` | [0077](/decisions/0077-staff-boxes-in-bbcode.md) |
+| News | The body is HTML written by staff | BBCode, without smilies, as Holo's news had none | [0020](/decisions/0020-news-in-bbcode.md) |
 
 # Holo bugs not ported
 
@@ -109,6 +111,7 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | Home page | Writes the profile widget the first time anyone opens a home | Each home starts with it, at the same place |
 | Smilies | Never show, because the code reads `enable-smilies` and the install writes `smilies-enabled` | Show while `features.smilies` is on, as it is by default |
 | Profile tags | The limit of 20 never refuses: it counts at most 20 tags and refuses only above 20 | `homes.maxTags` refuses with Holo's `You've reached the tag limit...` |
+| News | An unknown article shows the archive with status 200 | The archive, with status 404 |
 
 # Kept as in Holo, on purpose
 

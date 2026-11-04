@@ -26,6 +26,7 @@ import * as housekeepingUsers from "./suites/housekeeping-users.mjs";
 import * as looks from "./suites/looks.mjs";
 import * as maintenance from "./suites/maintenance.mjs";
 import * as me from "./suites/me.mjs";
+import * as news from "./suites/news.mjs";
 import * as register from "./suites/register.mjs";
 import * as signedOut from "./suites/signed-out.mjs";
 import * as together from "./suites/together.mjs";
@@ -40,6 +41,7 @@ const suites = {
   habbos,
   homes,
   maintenance,
+  news,
   art,
   "housekeeping-access": housekeepingAccess,
   "housekeeping-admin": housekeepingAdmin,

@@ -135,6 +135,8 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("GET /reset/{token}", guestPage(r.HandleResetView))
 	mux.Handle("POST /reset/{token}", guestPage(r.HandleReset))
 
+	mux.Handle("GET /news", page(http.HandlerFunc(r.HandleNewsView)))
+	mux.Handle("GET /news/{id}", page(http.HandlerFunc(r.HandleNewsArticleView)))
 	mux.Handle("GET /news/images/{file}", page(http.HandlerFunc(r.HandleNewsImagesView)))
 
 	mux.Handle("GET /disclaimer", page(http.HandlerFunc(r.HandleDisclaimerView)))

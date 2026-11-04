@@ -1,4 +1,4 @@
-// Package bbcode turns the text of notes, and later of news and forum posts,
+// Package bbcode turns the text of notes and news, and later of forum posts,
 // into HTML as HoloCMS's bbcode_format did, with every piece of the text
 // escaped.
 package bbcode
@@ -20,6 +20,20 @@ func Format(text string, smilies bool) template.HTML {
 	}
 	var b strings.Builder
 	build(tokens).render(&b)
+	return template.HTML(b.String())
+}
+
+// Lines renders text as Holo's nl2br(htmlspecialchars(text)) did: escaped,
+// with a <br /> before every line break, and neither smilies nor tags.
+func Lines(text string) template.HTML {
+	var b strings.Builder
+	for _, t := range tokenize(text, false) {
+		if t.kind == breakKind {
+			b.WriteString("<br />")
+			continue
+		}
+		b.WriteString(template.HTMLEscapeString(t.text))
+	}
 	return template.HTML(b.String())
 }
 

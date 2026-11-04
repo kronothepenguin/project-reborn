@@ -2,6 +2,9 @@
 
 ## 2026-11-04
 
+- **Done** [p4-04](/tasks/p4-04-news-pages.md): anyone reads the news as Holo's news.php showed it: the archive, a
+  category's listing, an article and the headlines column.
+- **Start** [p4-04](/tasks/p4-04-news-pages.md).
 - **Done** [p4-02](/tasks/p4-02-staff-settings.md): the staff page's switch, its two boxes with Holo's headings, texts
   and colours, and the tag fight switch are settings, edited in a Staff Module form and in Manage Site Content.
 - **Start** [p4-02](/tasks/p4-02-staff-settings.md).
