@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-04T16:52:07+00:00
+timestamp: 2026-11-04T20:02:08+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -211,7 +211,7 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | News | The topstory image is an address, `http://images.habbohotel.co.uk/c_images/Top_Story_Images/top_story_web60.png` by default | One of Holo's five local images, picked from a list, `top_story_news.png` by default, or an http(s) address, with a 300x187 preview that follows the field, as the CMS's news promo shows the picture | [0074](/decisions/0074-news-images.md) |
 | News | No uploads | An `Upload Image` row cuts a picture to fill 300x187 by dragging and zooming it, or fits it whole with transparent bands, previews it, and uploads it with `Use this picture`; a GIF of exactly 300x187 goes up as it is, with its animation. The server keeps only a PNG or a GIF of 300x187, re-encoded, and its path fills the field | [0074](/decisions/0074-news-images.md) |
 | News | No uploads | The image editor's `Uploaded` mode shows a thumbnail of every uploaded picture, newest first, with the field's own pressed; clicking one fills the field and the preview, as an upload does, and answers `Chosen as the topstory image. Save the article to keep it.` | [0079](/decisions/0079-uploaded-images-managed.md) |
-| Uploaded Images | No uploads | A page after `Manage Existing News Items`, for `housekeeping.news`, lists every uploaded picture, newest first, with its thumbnail, format, size, uploader, date and the articles showing it. `Delete` removes one no article shows, `Image deleted successfully.`; the database refuses one in use, and the answer names the articles to change or delete first: `Unable to delete image; it is the topstory image of Red Letter Day (ID: 3). Change or delete that article first.` | [0079](/decisions/0079-uploaded-images-managed.md) |
+| Uploaded Images | No uploads | A page after `Manage Existing News Items`, for `housekeeping.news`, lists every uploaded picture, newest first, with its thumbnail, format, size, uploader, date and the articles showing it, ten a page turned in the browser with `Newer` and `Older`. `Delete` removes one no article shows, `Image deleted successfully.`; the database refuses one in use, and the answer names the articles to change or delete first: `Unable to delete image; it is the topstory image of Red Letter Day (ID: 3). Change or delete that article first.` Both answers stay on the page of the delete | [0079](/decisions/0079-uploaded-images-managed.md), [0080](/decisions/0080-uploaded-images-in-pages.md) |
 | News | `HTML is allowed here.` under `Story` | `BBCode is allowed here.`, and the edit form links to the article with `View on site` | [0020](/decisions/0020-news-in-bbcode.md) |
 | News | The author is the user's name, saved as text | The staff member's active habbo, whose name the list shows | [P4](/phases/p4-community.md) |
 | Banners | Open to rank 6 | Takes `housekeeping.banners`, which the installer's Administrator and Moderator hold | [0053](/decisions/0053-attributes-on-groups-and-users.md), [0054](/decisions/0054-access-groups-are-holos-ranks.md) |

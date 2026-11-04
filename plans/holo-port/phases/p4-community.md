@@ -2,8 +2,8 @@
 type: Phase
 title: P4 Community
 description: Community page, news, tags with the tag cloud and tag fight, the staff page and banners, with their housekeeping editors.
-status: active
-timestamp: 2026-11-04T19:46:15+00:00
+status: done
+timestamp: 2026-11-04T20:02:08+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p4, cms, housekeeping]
 ---
@@ -72,7 +72,7 @@ Guests and habbos browse community content; staff write news and manage banners.
 - [p4-15 Link articles to their uploaded images](/tasks/p4-15-link-article-images.md) — done
 - [p4-16 Pick an uploaded picture in the news editor](/tasks/p4-16-pick-uploaded-image.md) — done
 - [p4-17 List and delete uploaded images in housekeeping](/tasks/p4-17-uploaded-images-page.md) — done
-- [p4-18 Page the uploaded images in the browser](/tasks/p4-18-page-uploaded-images.md) — todo
+- [p4-18 Page the uploaded images in the browser](/tasks/p4-18-page-uploaded-images.md) — done
 
 p4-05, p4-06 and p4-07 run on the feature branch `p4-housekeeping`, beside the CMS work on `main`
 ([0046](/decisions/0046-main-and-feature-branches.md)).

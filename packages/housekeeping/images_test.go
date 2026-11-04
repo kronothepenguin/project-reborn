@@ -76,6 +76,26 @@ func TestDeletingAnUnusedImage(t *testing.T) {
 	wantPage(t, serve(mux, "POST", imageDeleteURL(2), cookie, url.Values{}), http.StatusNotFound, "images.html", imageMissing)
 }
 
+// The browser pages the list (0080), and a delete returns to the page its form
+// carried, leaving out one that is no positive number.
+func TestADeleteReturnsToItsPage(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := newsWriter(t, db)
+	cases := []struct{ query, want string }{
+		{"?page=3", "/housekeeping/images?deleted=1&page=3"},
+		{"?page=0", "/housekeeping/images?deleted=1"},
+		{"?page=-2", "/housekeeping/images?deleted=1"},
+		{"?page=two", "/housekeeping/images?deleted=1"},
+		{"", "/housekeeping/images?deleted=1"},
+	}
+	for i := range cases {
+		wantAnswer(t, uploadImage(mux, cookie, pngOf(t, picture(300, 187))), http.StatusOK, imageAnswer{Path: fmt.Sprintf("/news/images/%d.png", i+1)})
+	}
+	for i, c := range cases {
+		wantRedirect(t, serve(mux, "POST", imageDeleteURL(int64(i+1))+c.query, cookie, url.Values{}), c.want)
+	}
+}
+
 // The database refuses to delete a picture an article shows, and the answer
 // names the articles that keep it.
 func TestAnImageInUseIsNotDeleted(t *testing.T) {

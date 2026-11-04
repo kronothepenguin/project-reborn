@@ -45,7 +45,7 @@ screenshots and server logs stay in `.run/`, which is git-ignored.
 | `housekeeping-users` | Habbos and users, badges, credits, bans, alerts and the help queue |
 | `housekeeping-store` | The home store's items, added from the art and edited |
 | `housekeeping-news` | News composed, listed, edited and deleted, with the top-story picker, its preview and the image editor |
-| `housekeeping-images` | Uploaded pictures listed with their articles, and deleted only once no article shows them |
+| `housekeeping-images` | Uploaded pictures listed with their articles, ten a page, and deleted only once no article shows them |
 | `housekeeping-banners` | Banners added, listed, edited and deleted, with Holo's texts and the right messages |
 | `updates` | A hotel installed before updates: maintenance, the update page, the copy, config.json's new keys |
 | `together` | The installer's forms, then the CMS and housekeeping side by side |

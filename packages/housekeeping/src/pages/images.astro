@@ -1,6 +1,7 @@
 ---
 import { Table } from "@project-reborn/components";
 import Box from "../components/box.astro";
+import ImagePages from "../components/images/image-pages.svelte";
 import Message from "../components/message.astro";
 import Submit from "../components/submit.astro";
 import Housekeeping from "../layouts/housekeeping.astro";
@@ -21,7 +22,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
           <th>Delete</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="uploaded-images">
         [[ range .Images ]]
         <tr>
           <td>
@@ -49,4 +50,5 @@ import Housekeeping from "../layouts/housekeeping.astro";
       </tbody>
     </Table>
   </Box>
+  <ImagePages client:only="svelte" list="uploaded-images" />
 </Housekeeping>

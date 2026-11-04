@@ -14,8 +14,7 @@ and `install.php` becomes `packages/installer`.
 2. Read the newest entries of the [log](/log.md).
 3. Open the [task index](/tasks/index.md): in-progress tasks first, then the todo tasks of the current phase.
 
-Current phase: [P4 Community](/phases/p4-community.md), reopened for
-[p4-18](/tasks/p4-18-page-uploaded-images.md); [P5 Groups and forum](/phases/p5-groups-forum.md) comes next.
+Current phase: [P5 Groups and forum](/phases/p5-groups-forum.md), planned.
 
 Work planned for later that belongs to no phase is listed in `plans/later.md`, beside this bundle
 ([0072](/decisions/0072-later-work-in-plans-later.md)).

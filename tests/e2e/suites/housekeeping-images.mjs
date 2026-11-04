@@ -182,6 +182,145 @@ export default async function (t) {
     deleted.join(" | "),
   );
 
+  // Twenty-one uploads make three pages of ten, newest first: the second page
+  // holds pictures[10] to pictures[1], one of them in an article.
+  const pictures = [];
+  for (let i = 0; i < 21; i++) {
+    pictures.push(await upload(page, `hsl(${i * 17}, 70%, 50%)`));
+  }
+  await page.goto(`${hk}/news/new`);
+  await page.fill("#news-title", "Paged Picture");
+  await page.fill("#news-topstory", pictures[5]);
+  await page.getByRole("button", { name: "Publish Article" }).click();
+  await page.waitForURL(/published=1/);
+  const [[paged]] = sql(
+    "SELECT id FROM news_articles WHERE title = 'Paged Picture'",
+  );
+
+  const shown = () => page.locator("main tbody tr:visible").allInnerTexts();
+  const paths = (rows) =>
+    rows.map((row) => row.match(/\/news\/images\/\d+\.png/)?.[0]).join(" ");
+  const newer = page.getByRole("link", { name: "Newer", exact: true });
+  const older = page.getByRole("link", { name: "Older", exact: true });
+
+  await page.goto(`${hk}/images`);
+  await older.waitFor();
+  let pageRows = await shown();
+  check(
+    "the list shows ten pictures a page, newest first, with Older under them",
+    pageRows.length === 10 &&
+      pageRows[0].includes(pictures[20]) &&
+      pageRows[9].includes(pictures[11]) &&
+      (await newer.count()) === 0 &&
+      (await older.getAttribute("href")) === "/housekeeping/images?page=2",
+    paths(pageRows),
+  );
+
+  await page.evaluate(() => (window.stayed = true));
+  await older.click();
+  await page.waitForURL("**/housekeeping/images?page=2");
+  pageRows = await shown();
+  check(
+    "Older turns to the next ten without loading the page again",
+    pageRows.length === 10 &&
+      pageRows[0].includes(pictures[10]) &&
+      pageRows[9].includes(pictures[1]) &&
+      (await newer.getAttribute("href")) === "/housekeeping/images?page=1" &&
+      (await older.getAttribute("href")) === "/housekeeping/images?page=3" &&
+      (await page.evaluate(() => window.stayed)) === true,
+    paths(pageRows),
+  );
+  await shot(page, "images-pages");
+
+  await older.click();
+  await page.waitForURL("**/housekeeping/images?page=3");
+  pageRows = await shown();
+  check(
+    "the last page holds the oldest picture, with only Newer",
+    pageRows.length === 1 &&
+      pageRows[0].includes(pictures[0]) &&
+      (await newer.count()) === 1 &&
+      (await older.count()) === 0,
+    paths(pageRows),
+  );
+
+  await page.goBack();
+  await page.waitForURL("**/housekeeping/images?page=2");
+  const back = await eventually(async () =>
+    (await shown())[0]?.includes(pictures[10]),
+  );
+  await page.reload();
+  await older.waitFor();
+  pageRows = await shown();
+  check(
+    "Back returns to the page before, and a reload keeps it",
+    back && pageRows.length === 10 && pageRows[0].includes(pictures[10]),
+    paths(pageRows),
+  );
+
+  await deleteButton(page, pictures[3]).click();
+  await page.waitForURL(/\?deleted=1&page=2$/);
+  await newer.waitFor();
+  pageRows = await shown();
+  check(
+    "a delete on the second page answers on the second page",
+    (await page.getByRole("status").innerText()) ===
+      "Image deleted successfully." &&
+      pageRows.length === 10 &&
+      !pageRows.some((row) => row.includes(pictures[3])) &&
+      pageRows[9].includes(pictures[0]) &&
+      (await older.count()) === 0,
+    paths(pageRows),
+  );
+
+  const refusedHere = page.waitForResponse(
+    (r) => r.request().method() === "POST",
+  );
+  await deleteButton(page, pictures[5]).click();
+  const refusal = (await refusedHere).status();
+  await page.waitForLoadState();
+  await newer.waitFor();
+  pageRows = await shown();
+  check(
+    "a refused delete on the second page answers on the second page",
+    refusal === 422 &&
+      (await page.getByRole("alert").innerText()).includes(
+        `Paged Picture (ID: ${paged})`,
+      ) &&
+      new URL(page.url()).searchParams.get("page") === "2" &&
+      pageRows.length === 10 &&
+      pageRows.some((row) => row.includes(pictures[5])),
+    `${refusal} ${page.url()} ${paths(pageRows)}`,
+  );
+
+  await page.goto(`${hk}/images?page=9`);
+  await newer.waitFor();
+  const past = await shown();
+  await page.goto(`${hk}/images?page=two`);
+  await older.waitFor();
+  pageRows = await shown();
+  check(
+    "a page past the last shows the last, and one that is no number the first",
+    past[0].includes(pictures[10]) &&
+      past.length === 10 &&
+      pageRows[0].includes(pictures[20]) &&
+      (await newer.count()) === 0,
+    `${paths(past)} / ${paths(pageRows)}`,
+  );
+
+  const plain = await t.browser.newContext({ javaScriptEnabled: false });
+  await plain.addCookies(await context.cookies());
+  const plainPage = await plain.newPage();
+  await plainPage.goto(`${hk}/images`);
+  check(
+    "without JavaScript the list shows every picture",
+    (await plainPage.locator("main tbody tr:visible").count()) === 20 &&
+      (await plainPage
+        .getByRole("link", { name: /^(Newer|Older)$/ })
+        .count()) === 0,
+  );
+  await plain.close();
+
   check(
     "no page failed for the administrator",
     problems.length === 0,

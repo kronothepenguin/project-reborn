@@ -148,6 +148,11 @@ func (r *Router) HandleImageDelete(w http.ResponseWriter, req *http.Request) {
 	case err != nil:
 		r.fail(w, err)
 	default:
-		http.Redirect(w, req, "/housekeeping/images?deleted=1", http.StatusSeeOther)
+		target := "/housekeeping/images?deleted=1"
+		// The browser pages the list (0080), and the form carries its page.
+		if page, err := strconv.Atoi(req.URL.Query().Get("page")); err == nil && page > 0 {
+			target += "&page=" + strconv.Itoa(page)
+		}
+		http.Redirect(w, req, target, http.StatusSeeOther)
 	}
 }
