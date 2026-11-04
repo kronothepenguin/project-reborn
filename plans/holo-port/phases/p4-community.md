@@ -70,7 +70,7 @@ Guests and habbos browse community content; staff write news and manage banners.
 - [p4-13 Escape habbo names in home links](/tasks/p4-13-home-links.md) — done
 - [p4-14 Count the updates in the admin suite from the release](/tasks/p4-14-admin-suite-updates.md) — done
 - [p4-15 Link articles to their uploaded images](/tasks/p4-15-link-article-images.md) — done
-- [p4-16 Pick an uploaded picture in the news editor](/tasks/p4-16-pick-uploaded-image.md) — todo
+- [p4-16 Pick an uploaded picture in the news editor](/tasks/p4-16-pick-uploaded-image.md) — done
 - [p4-17 List and delete uploaded images in housekeeping](/tasks/p4-17-uploaded-images-page.md) — todo
 
 p4-05, p4-06 and p4-07 run on the feature branch `p4-housekeeping`, beside the CMS work on `main`

@@ -1,14 +1,16 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
+  import { onDestroy, onMount } from "svelte";
 
   // The news form's topstory field is the element named field. This makes a
   // 300x187 picture, uploads it, and puts its path in that field, whose input
-  // event moves the form's preview.
+  // event moves the form's preview. Islands get no [[ ]] values, so the uploaded
+  // pictures and site.url come from the list named uploads.
   interface Props {
     field: string;
+    uploads: string;
   }
 
-  type Mode = "cut" | "fit";
+  type Mode = "cut" | "fit" | "uploaded";
 
   const width = 300;
   const height = 187;
@@ -17,8 +19,10 @@
   const failure = "The picture could not be uploaded.";
   const button =
     "cursor-pointer border border-black bg-olive-200 px-2 py-0.5 font-bold hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-wait disabled:opacity-50 aria-pressed:bg-sky-700 aria-pressed:text-white";
+  const thumbnail =
+    "cursor-pointer border-2 border-transparent hover:border-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black aria-pressed:border-sky-700";
 
-  let { field }: Props = $props();
+  let { field, uploads }: Props = $props();
 
   let canvas = $state<HTMLCanvasElement>();
   let file = $state.raw<File | null>(null);
@@ -31,7 +35,27 @@
   let message = $state("");
   let failed = $state(false);
   let uploading = $state(false);
+  let site = $state("");
+  let paths = $state<string[]>([]);
+  let current = $state("");
   let drag: { pointer: number; x: number; y: number } | null = null;
+
+  function topstory() {
+    return document.getElementById(field) as HTMLInputElement;
+  }
+
+  onMount(() => {
+    const list = document.getElementById(uploads) as HTMLElement;
+    site = list.dataset.site ?? "";
+    paths = [...list.querySelectorAll("li")].map(
+      (item) => item.textContent?.trim() ?? "",
+    );
+    const input = topstory();
+    const follow = () => (current = input.value.trim());
+    follow();
+    input.addEventListener("input", follow);
+    return () => input.removeEventListener("input", follow);
+  });
 
   function scale() {
     if (!picture) return 1;
@@ -105,9 +129,17 @@
     message = text;
   }
 
+  // The field's input event moves the preview and the pressed thumbnail.
+  function fill(path: string) {
+    const input = topstory();
+    input.value = path;
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+
   async function choose(event: Event) {
     const chosen = (event.currentTarget as HTMLInputElement).files?.[0];
     clear();
+    if (mode === "uploaded") mode = "cut";
     if (!chosen) return;
     file = chosen;
     if (await keptAsIs(chosen)) {
@@ -128,6 +160,9 @@
 
   function switchTo(next: Mode) {
     mode = next;
+    message = "";
+    failed = false;
+    if (next === "uploaded") return;
     zoom = 1;
     center();
   }
@@ -206,15 +241,21 @@
         fail(answer.error ?? failure);
         return;
       }
-      const input = document.getElementById(field) as HTMLInputElement;
-      input.value = answer.path;
-      input.dispatchEvent(new Event("input", { bubbles: true }));
+      const path = answer.path;
+      paths = [path, ...paths.filter((other) => other !== path)];
+      fill(path);
       message = "Uploaded as the topstory image. Save the article to keep it.";
     } catch {
       fail(failure);
     } finally {
       uploading = false;
     }
+  }
+
+  function pick(path: string) {
+    fill(path);
+    failed = false;
+    message = "Chosen as the topstory image. Save the article to keep it.";
   }
 
   onDestroy(clear);
@@ -228,7 +269,66 @@
     aria-label="Picture"
     onchange={choose}
   />
-  {#if kept}
+  <div class="flex flex-wrap items-center gap-2">
+    <button
+      type="button"
+      aria-pressed={mode === "cut"}
+      onclick={() => switchTo("cut")}
+      class={button}>Cut</button
+    >
+    <button
+      type="button"
+      aria-pressed={mode === "fit"}
+      onclick={() => switchTo("fit")}
+      class={button}>Fit</button
+    >
+    <button
+      type="button"
+      aria-pressed={mode === "uploaded"}
+      onclick={() => switchTo("uploaded")}
+      class={button}>Uploaded</button
+    >
+    {#if mode === "cut" && picture}
+      <label class="flex items-center gap-1">
+        Zoom
+        <input
+          type="range"
+          min="1"
+          max={maxZoom}
+          step="0.01"
+          value={zoom}
+          oninput={(event) => zoomTo(Number(event.currentTarget.value))}
+        />
+      </label>
+    {/if}
+  </div>
+  {#if mode === "uploaded"}
+    {#if paths.length === 0}
+      <p>No pictures were uploaded yet.</p>
+    {:else}
+      <ul class="flex flex-wrap gap-1" aria-label="Uploaded pictures">
+        {#each paths as path (path)}
+          <li>
+            <button
+              type="button"
+              aria-pressed={path === current}
+              onclick={() => pick(path)}
+              class={thumbnail}
+            >
+              <img
+                src={site + path}
+                alt={path}
+                width="150"
+                height="94"
+                loading="lazy"
+                class="block h-[94px] w-[150px] bg-olive-300"
+              />
+            </button>
+          </li>
+        {/each}
+      </ul>
+    {/if}
+  {:else if kept}
     <img
       src={kept}
       alt="The GIF to upload"
@@ -240,33 +340,6 @@
       This GIF is already 300x187, so it goes up as it is, with its animation.
     </p>
   {:else if picture}
-    <div class="flex flex-wrap items-center gap-2">
-      <button
-        type="button"
-        aria-pressed={mode === "cut"}
-        onclick={() => switchTo("cut")}
-        class={button}>Cut</button
-      >
-      <button
-        type="button"
-        aria-pressed={mode === "fit"}
-        onclick={() => switchTo("fit")}
-        class={button}>Fit</button
-      >
-      {#if mode === "cut"}
-        <label class="flex items-center gap-1">
-          Zoom
-          <input
-            type="range"
-            min="1"
-            max={maxZoom}
-            step="0.01"
-            value={zoom}
-            oninput={(event) => zoomTo(Number(event.currentTarget.value))}
-          />
-        </label>
-      {/if}
-    </div>
     <canvas
       bind:this={canvas}
       {width}
@@ -284,7 +357,7 @@
       ]}
     ></canvas>
   {/if}
-  {#if kept || picture}
+  {#if mode !== "uploaded" && (kept || picture)}
     <button type="button" disabled={uploading} onclick={use} class={button}
       >Use this picture</button
     >

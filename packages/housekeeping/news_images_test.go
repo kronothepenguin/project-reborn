@@ -395,6 +395,26 @@ func TestAnArticleLinksItsUploadedPicture(t *testing.T) {
 	}
 }
 
+func TestTheNewsFormOffersTheUploads(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := newsWriter(t, db)
+	wantPage(t, serve(mux, "GET", "/housekeeping/news/new", cookie, nil), http.StatusOK, "news/new.html", "Uploads:[] Message:")
+
+	wantAnswer(t, uploadImage(mux, cookie, pngOf(t, picture(300, 187))), http.StatusOK, imageAnswer{Path: "/news/images/1.png"})
+	moving, _ := animation(t, 300, 187, 2)
+	wantAnswer(t, uploadImage(mux, cookie, moving), http.StatusOK, imageAnswer{Path: "/news/images/2.gif"})
+	const offered = "Uploads:[/news/images/2.gif /news/images/1.png] Message:"
+
+	wantPage(t, serve(mux, "GET", "/housekeeping/news/new", cookie, nil), http.StatusOK, "news/new.html", offered)
+	wantRedirect(t, serve(mux, "POST", "/housekeeping/news", cookie, articleForm("Picked", "/news/images/1.png")), "/housekeeping/news?published=1")
+	id := newestArticle(t, db).ID
+	wantPage(t, serve(mux, "GET", articleURL(id), cookie, nil), http.StatusOK, "news/id.html", offered)
+	wantPage(t, serve(mux, "POST", "/housekeeping/news", cookie, articleForm("Refused", "javascript:alert(1)")), http.StatusUnprocessableEntity,
+		"news/new.html", offered)
+	wantPage(t, serve(mux, "POST", articleURL(id), cookie, articleForm("Refused", "javascript:alert(1)")), http.StatusUnprocessableEntity,
+		"news/id.html", offered)
+}
+
 // Staff can delete a picture while another has the form open. The triggers
 // delete it between the check and the write, as that would.
 func TestAPictureDeletedMeanwhileIsRefused(t *testing.T) {

@@ -2,6 +2,9 @@
 
 ## 2026-11-04
 
+- **Done** [p4-16](/tasks/p4-16-pick-uploaded-image.md): the image editor's Uploaded mode shows a thumbnail of every
+  uploaded picture, newest first, and clicking one fills the top-story field and the preview, as an upload does.
+- **Start** [p4-16](/tasks/p4-16-pick-uploaded-image.md).
 - **Done** [p4-15](/tasks/p4-15-link-article-images.md): update 0006 links each article to its uploaded picture and
   fills the link for the articles that show one, the database refuses to delete a picture in use, the store lists the
   uploads and their articles, and the news form writes the link.

@@ -276,8 +276,57 @@ async function imageEditor(t, page) {
       (await page.getByRole("button", { name: "Use this picture" }).count()) ===
         0,
   );
-  return photo.answer.path;
+
+  await page.getByRole("button", { name: "Uploaded" }).click();
+  const uploads = [photo, kept, fit].map((upload) => upload.answer.path);
+  check(
+    "Uploaded offers this page's uploads, newest first, the field's pressed",
+    (await thumbnailsOf(page)).join("|") === uploads.join("|") &&
+      (await pressedOf(page)) === photo.answer.path &&
+      (await page.getByRole("alert").count()) === 0,
+    (await thumbnailsOf(page)).join("|"),
+  );
+  check(
+    "the thumbnails load from the CMS",
+    await eventually(() =>
+      page
+        .getByRole("list", { name: "Uploaded pictures" })
+        .getByRole("img")
+        .evaluateAll((images) =>
+          images.every((image) => image.complete && image.naturalWidth === 300),
+        ),
+    ),
+  );
+  await shot(page, "news-image-uploaded");
+  await page
+    .getByRole("button", { name: fit.answer.path, exact: true })
+    .click();
+  check(
+    "a thumbnail fills the field and the preview, as an upload does",
+    (await page.inputValue("#news-topstory")) === fit.answer.path &&
+      (await preview.getAttribute("src")) === `${base}${fit.answer.path}` &&
+      (await page.getByRole("status").innerText()) ===
+        "Chosen as the topstory image. Save the article to keep it." &&
+      (await pressedOf(page)) === fit.answer.path,
+    await page.inputValue("#news-topstory"),
+  );
+  return { picked: fit.answer.path, uploads };
 }
+
+// thumbnailsOf lists the paths of the Uploaded mode's pictures, in their order.
+const thumbnailsOf = (page) =>
+  page
+    .getByRole("list", { name: "Uploaded pictures" })
+    .getByRole("img")
+    .evaluateAll((images) => images.map((image) => image.getAttribute("alt")));
+
+// pressedOf is the path of the pressed thumbnail, or "" when none is.
+const pressedOf = async (page) => {
+  const pressed = page
+    .getByRole("list", { name: "Uploaded pictures" })
+    .locator('button[aria-pressed="true"] img');
+  return (await pressed.count()) === 1 ? pressed.getAttribute("alt") : "";
+};
 
 export default async function (t) {
   const { base, check, eventually, hk, shot, sql } = t;
@@ -365,6 +414,11 @@ export default async function (t) {
       `${base}${topStory("top_story_poll2.png")}` &&
       (await eventually(() => loaded(preview))),
     await preview.getAttribute("src"),
+  );
+  await page.getByRole("button", { name: "Uploaded" }).click();
+  check(
+    "Uploaded says when nothing was uploaded yet",
+    await page.getByText("No pictures were uploaded yet.").isVisible(),
   );
 
   await page.fill("#news-title", "Grand <Opening> & More");
@@ -493,16 +547,24 @@ export default async function (t) {
     (await page.inputValue("#news-category")) === "Other",
   );
 
-  const uploaded = await imageEditor(t, page);
+  const { picked, uploads } = await imageEditor(t, page);
   await page.getByRole("button", { name: "Update Article" }).click();
   await page.waitForURL(/updated=1/);
   const [[savedImage, linked]] = sql(
     `SELECT image_url, image_id FROM news_articles WHERE id = ${id}`,
   );
   check(
-    "the article keeps the uploaded picture once saved, linked to it",
-    savedImage === uploaded && `/news/images/${linked}.png` === uploaded,
-    `${savedImage} ${linked} ${uploaded}`,
+    "the article keeps the picked picture once saved, linked to it",
+    savedImage === picked && `/news/images/${linked}.png` === picked,
+    `${savedImage} ${linked} ${picked}`,
+  );
+  await page.goto(`${hk}/news/${id}`);
+  await page.getByRole("button", { name: "Uploaded" }).click();
+  check(
+    "the form offers every upload again, the article's pressed",
+    (await thumbnailsOf(page)).join("|") === uploads.join("|") &&
+      (await pressedOf(page)) === picked,
+    (await thumbnailsOf(page)).join("|"),
   );
 
   await page.goto(`${hk}/news`);
@@ -552,7 +614,7 @@ export default async function (t) {
       deleted.length === 1 &&
       deleted[0].includes(`Grand Opening (ID: ${id})`) &&
       images.length === 3 &&
-      images.some((row) => row.includes(uploaded)) &&
+      images.some((row) => row.includes(picked)) &&
       rows.every((row) => row.includes("Admin-1 (ID:")),
     rows.join(" | "),
   );

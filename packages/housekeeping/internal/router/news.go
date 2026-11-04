@@ -85,8 +85,11 @@ type newsArticlePage struct {
 	Categories []newsCategory
 	TopStories []string
 	Preview    string
-	Message    string
-	Error      string
+	// Uploads are the paths of the uploaded pictures, newest first, which the
+	// image editor offers in its Uploaded mode.
+	Uploads []string
+	Message string
+	Error   string
 }
 
 type newsCategory struct {
@@ -154,8 +157,8 @@ func (r *Router) newNewsPage(req *http.Request) (newsPage, error) {
 	return page, nil
 }
 
-func (r *Router) newNewsArticlePage(req *http.Request, id int64, title string, form newsForm) newsArticlePage {
-	return newsArticlePage{
+func (r *Router) newNewsArticlePage(req *http.Request, id int64, title string, form newsForm) (newsArticlePage, error) {
+	page := newsArticlePage{
 		chrome:     r.chrome(req),
 		ID:         id,
 		Title:      title,
@@ -164,6 +167,14 @@ func (r *Router) newNewsArticlePage(req *http.Request, id int64, title string, f
 		TopStories: seed.TopStories(),
 		Preview:    sitePicture(form.TopStory),
 	}
+	images, err := r.deps.Queries.ListImages(req.Context())
+	if err != nil {
+		return page, err
+	}
+	for _, image := range images {
+		page.Uploads = append(page.Uploads, newsImagePath(image.ID, image.Format))
+	}
+	return page, nil
 }
 
 // HandleNewsView renders GET /housekeeping/news, Holo's news_manage: every
@@ -219,7 +230,11 @@ func (r *Router) newsArticle(w http.ResponseWriter, req *http.Request, missing s
 }
 
 func (r *Router) refuseNews(w http.ResponseWriter, req *http.Request, name string, id int64, title string, form newsForm, message string) {
-	page := r.newNewsArticlePage(req, id, title, form)
+	page, err := r.newNewsArticlePage(req, id, title, form)
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
 	page.Error = message
 	w.WriteHeader(http.StatusUnprocessableEntity)
 	astro.WriteTemplate(w, r.deps.Resolver, name, page)
@@ -230,7 +245,12 @@ func (r *Router) refuseNews(w http.ResponseWriter, req *http.Request, name strin
 // default local one.
 func (r *Router) HandleNewsComposeView(w http.ResponseWriter, req *http.Request) {
 	form := newsForm{Category: newsCategories()[0], TopStory: seed.DefaultTopStory}
-	astro.WriteTemplate(w, r.deps.Resolver, "news/new.html", r.newNewsArticlePage(req, 0, "", form))
+	page, err := r.newNewsArticlePage(req, 0, "", form)
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
+	astro.WriteTemplate(w, r.deps.Resolver, "news/new.html", page)
 }
 
 // HandleNewsCreate handles POST /housekeeping/news. The author is the staff
@@ -292,7 +312,12 @@ func (r *Router) HandleNewsArticleView(w http.ResponseWriter, req *http.Request)
 		ShortStory: article.Summary,
 		Story:      article.Body,
 	}
-	astro.WriteTemplate(w, r.deps.Resolver, "news/id.html", r.newNewsArticlePage(req, article.ID, article.Title, form))
+	page, err := r.newNewsArticlePage(req, article.ID, article.Title, form)
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
+	astro.WriteTemplate(w, r.deps.Resolver, "news/id.html", page)
 }
 
 // HandleNewsArticleSave handles POST /housekeeping/news/{id}. The author and the
