@@ -164,6 +164,14 @@ starts.
 - [p4-17 List and delete uploaded images in housekeeping](/tasks/p4-17-uploaded-images-page.md) — An Uploaded Images page lists every uploaded picture with the articles using it, and deletes only the pictures no article uses.
 - [p4-18 Page the uploaded images in the browser](/tasks/p4-18-page-uploaded-images.md) — Housekeeping's Uploaded Images list shows ten pictures a page, turned in the browser with Newer and Older links, and the address keeps the page through a delete, a reload and Back.
 
+## ED BBCode editor
+
+- [ed-01 Build the BBCode editor](/tasks/ed-01-bbcode-editor.md) — A WYSIWYG BBCode editor of our own in packages/components shows the renderer's tags as they will look, edits the raw codes on demand, keeps on paste what BBCode can say, and posts BBCode through a named field.
+- [ed-02 Write news stories with the editor](/tasks/ed-02-news-story-editor.md) — The Story field of housekeeping's news forms uses the BBCode editor with housekeeping's look and no smilies, and the form posts the story as before.
+- [ed-03 Write the staff boxes with the editor](/tasks/ed-03-staff-boxes-editor.md) — A settings field can be marked as BBCode, the Staff Module's two boxes are, and such fields use the BBCode editor with housekeeping's look and no smilies.
+- [ed-04 Write home notes with the editor](/tasks/ed-04-note-editor.md) — The home store's note editor uses the BBCode editor with the site's look and smilies when they are on, in place of its buttons, and keeps its skins, counter and Preview.
+- [ed-05 Verify ED](/tasks/ed-05-exit-check.md) — Every exit criterion of ED holds from a clean checkout, in a real browser.
+
 ## Later phases
 
 [P5](/phases/p5-groups-forum.md), [P6](/phases/p6-economy.md) and [P7](/phases/p7-help.md) get their tasks when they

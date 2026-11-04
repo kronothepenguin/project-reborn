@@ -2,6 +2,21 @@
 
 ## 2026-11-04
 
+- **Create** [ED](/phases/ed-bbcode-editor.md) with [ed-01](/tasks/ed-01-bbcode-editor.md) to
+  [ed-05](/tasks/ed-05-exit-check.md), before [P5](/phases/p5-groups-forum.md).
+- **Update** [P5](/phases/p5-groups-forum.md)'s questions are answered.
+- **Decision** [0092](/decisions/0092-bbcode-editor.md): every field that takes BBCode gets one WYSIWYG editor of our own, in its own phase before P5, and pasting keeps what BBCode can say.
+- **Decision** [0091](/decisions/0091-forum-spam-check.md): blank posts, and posts within a setting's 30 seconds of the habbo's last, are refused.
+- **Decision** [0090](/decisions/0090-post-reports.md): a habbo has one waiting help request or report, and reports open the Help Tool's window.
+- **Decision** [0089](/decisions/0089-archived-habbos-show-as-archived.md): the forum shows an archived habbo as `archived`, superseding [0058](/decisions/0058-habbos-are-archived.md).
+- **Decision** [0088](/decisions/0088-stickies-head-every-page.md): sticky threads head every page of the board.
+- **Decision** [0087](/decisions/0087-online-picture-stays-offline.md): the online picture stays offline until the game server.
+- **Decision** [0086](/decisions/0086-roles-and-posts-follow-the-active-habbo.md): group roles and forum posts belong to the active habbo.
+- **Decision** [0085](/decisions/0085-no-housekeeping-group-tools-yet.md): housekeeping gets no group tools yet; they wait in `plans/later.md`.
+- **Decision** [0084](/decisions/0084-group-names-and-descriptions.md): group names take 25 characters and descriptions 200.
+- **Decision** [0083](/decisions/0083-group-home-items-return-to-members.md): items on a group home go back to the members who placed them.
+- **Decision** [0082](/decisions/0082-group-limits-per-user-and-habbo.md): owned groups count per user and memberships per habbo.
+- **Decision** [0081](/decisions/0081-groups-have-four-types.md): groups have Holo's four types, Unlimited included.
 - **Update** [P5](/phases/p5-groups-forum.md) lists its open questions for the user.
 - **Update** P4 is done again, and [P5](/phases/p5-groups-forum.md) comes next.
 - **Done** [p4-18](/tasks/p4-18-page-uploaded-images.md): the Uploaded Images list shows ten pictures a page, turned in

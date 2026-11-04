@@ -16,7 +16,7 @@ A habbo can ask staff for help from the site.
 
 | Holo source | Routes | Astro pages | Composed UI |
 | --- | --- | --- | --- |
-| `iot/go.php` | `GET /help`, `POST /help` | `help.astro` | `help/help-form`; one open ticket per habbo (Holo limited it per IP) |
+| `iot/go.php` | `GET /help`, `POST /help` | `help.astro` | `help/help-form`; one request not yet picked up per habbo, post reports included, where Holo counted per address ([0090](/decisions/0090-post-reports.md)) |
 
 The housekeeping side (`/housekeeping/help`) comes with [HK-B](/phases/hk-b-users-moderation.md).
 

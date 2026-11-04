@@ -44,3 +44,9 @@ try to enable the installer to set them as the administrator."
 - One copy of the settings serves every program, with no refresh
   ([0051](holo-port/decisions/0051-one-machine-and-a-refresh.md)).
 - How the programs run together: [How the programs work together](holo-port/reference/architecture.md).
+
+## Staff tools for groups
+
+A housekeeping page, behind its own attribute, that renames a group, resets its badge or deletes it, so that staff can
+deal with an offensive group ([0085](holo-port/decisions/0085-no-housekeeping-group-tools-yet.md)). Holo's housekeeping
+only counted groups, and P5 keeps to that.
