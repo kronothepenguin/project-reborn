@@ -162,6 +162,7 @@ starts.
 - [p4-15 Link articles to their uploaded images](/tasks/p4-15-link-article-images.md) — Update 0006 links each article to its uploaded picture, so the database refuses to delete a picture in use, and the news form writes the link.
 - [p4-16 Pick an uploaded picture in the news editor](/tasks/p4-16-pick-uploaded-image.md) — The news form's image editor gains an Uploaded mode with a thumbnail of every uploaded picture, and clicking one fills the top-story field and the preview.
 - [p4-17 List and delete uploaded images in housekeeping](/tasks/p4-17-uploaded-images-page.md) — An Uploaded Images page lists every uploaded picture with the articles using it, and deletes only the pictures no article uses.
+- [p4-18 Page the uploaded images in the browser](/tasks/p4-18-page-uploaded-images.md) — Housekeeping's Uploaded Images list shows ten pictures a page, turned in the browser with Newer and Older links, and the address keeps the page through a delete, a reload and Back.
 
 ## Later phases
 

@@ -2,6 +2,11 @@
 
 ## 2026-11-04
 
+- **Update** P4 reopens for [p4-18](/tasks/p4-18-page-uploaded-images.md).
+- **Create** [p4-18](/tasks/p4-18-page-uploaded-images.md) for [0080](/decisions/0080-uploaded-images-in-pages.md).
+- **Decision** [0080](/decisions/0080-uploaded-images-in-pages.md): the Uploaded Images list shows ten pictures a
+  page, turned in the browser with Newer and Older links, and the address keeps the page through a delete, a reload
+  and Back; the news editor's gallery gets no pages.
 - **Update** P4 is done, and [P5](/phases/p5-groups-forum.md) comes next.
 - **Done** [p4-12](/tasks/p4-12-exit-check.md): P4 meets its exit criteria from a clean checkout, with both feature
   branches merged.
