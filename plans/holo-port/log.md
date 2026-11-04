@@ -2,6 +2,13 @@
 
 ## 2026-11-04
 
+- **Create** [p4-15](/tasks/p4-15-link-article-images.md), [p4-16](/tasks/p4-16-pick-uploaded-image.md) and
+  [p4-17](/tasks/p4-17-uploaded-images-page.md) for [0079](/decisions/0079-uploaded-images-managed.md), on the feature
+  branch `p4-images`.
+- **Decision** [0079](/decisions/0079-uploaded-images-managed.md): uploaded images can be picked again in the news
+  editor, articles link to theirs in the database, and housekeeping deletes only unused ones.
+- **Decision** [0078](/decisions/0078-news-upload-limits.md): uploads stay within 2 MB and 500 frames, and the new texts
+  stay as written.
 - **Update** `p4-housekeeping` is merged into `main`: [p4-05](/tasks/p4-05-housekeeping-news.md),
   [p4-06](/tasks/p4-06-image-editor.md) and [p4-07](/tasks/p4-07-housekeeping-banners.md) join the CMS work. Two of
   the branch's tests met main's Staff Module: the news form's test counts the selected category in its own list, and

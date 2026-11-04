@@ -159,6 +159,9 @@ starts.
 - [p4-12 Verify P4](/tasks/p4-12-exit-check.md) — Every exit criterion of P4 holds from a clean checkout, in a real browser, with p4-housekeeping merged.
 - [p4-13 Escape habbo names in home links](/tasks/p4-13-home-links.md) — The home's Edit button, the editor's way back to the home and housekeeping's help queue link to the right home for a habbo whose name holds a question mark.
 - [p4-14 Count the updates in the admin suite from the release](/tasks/p4-14-admin-suite-updates.md) — The housekeeping-admin browser suite expects as many applied updates as the release has migration files, instead of the four it counted before 0005.
+- [p4-15 Link articles to their uploaded images](/tasks/p4-15-link-article-images.md) — Update 0006 links each article to its uploaded picture, so the database refuses to delete a picture in use, and the news form writes the link.
+- [p4-16 Pick an uploaded picture in the news editor](/tasks/p4-16-pick-uploaded-image.md) — The news form's image editor gains an Uploaded mode with a thumbnail of every uploaded picture, and clicking one fills the top-story field and the preview.
+- [p4-17 List and delete uploaded images in housekeeping](/tasks/p4-17-uploaded-images-page.md) — An Uploaded Images page lists every uploaded picture with the articles using it, and deletes only the pictures no article uses.
 
 ## Later phases
 
