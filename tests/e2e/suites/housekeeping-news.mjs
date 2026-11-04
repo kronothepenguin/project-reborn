@@ -424,10 +424,30 @@ export default async function (t) {
   await page.fill("#news-title", "Grand <Opening> & More");
   await page.selectOption("#news-category", "Events & Competitions");
   await page.fill("#news-short-story", "The hotel opens its doors.");
-  await page.fill(
-    "#news-story",
-    "[b]Welcome[/b] to the hotel.\nSee you there!",
+  const story = page.getByRole("textbox", { name: "Story", exact: true });
+  check(
+    "the story is written in the BBCode editor, with housekeeping's look and no smilies, in place of the field",
+    !(await page.locator("#news-story").isVisible()) &&
+      (await story.isVisible()) &&
+      (await page.getByRole("button", { name: "Bold" }).getAttribute("class")).includes("bg-olive-200") &&
+      (await page.getByRole("button", { name: "Smiley :)" }).count()) === 0,
   );
+  await story.click();
+  await page.keyboard.type("Welcome to the hotel.");
+  await page.keyboard.press("Enter");
+  await page.keyboard.type("See you there!");
+  await story.evaluate((area) => {
+    const text = area.firstChild;
+    document.getSelection().setBaseAndExtent(text, 0, text, "Welcome".length);
+  });
+  await page.getByRole("button", { name: "Bold" }).click();
+  check(
+    "the toolbar makes the selection bold where it is written",
+    (await story.locator("strong").innerText()) === "Welcome" &&
+      (await page.inputValue("#news-story")) === "[b]Welcome[/b] to the hotel.\nSee you there!",
+    await page.inputValue("#news-story"),
+  );
+  await shot(page, "news-story-editor");
   await page.getByRole("button", { name: "Publish Article" }).click();
   await page.waitForURL(/published=1/);
   check(
@@ -503,6 +523,14 @@ export default async function (t) {
       .getByRole("link", { name: "View on site" })
       .getAttribute("href")) === `${base}/news/${id}`,
   );
+  const editing = page.getByRole("textbox", { name: "Story", exact: true });
+  check(
+    "the edit form shows the story in the editor as the site will",
+    (await editing.locator("strong").innerText()) === "Welcome" &&
+      (await editing.locator("br").count()) === 1 &&
+      (await editing.innerText()).includes("See you there!"),
+    await editing.innerHTML(),
+  );
   await shot(page, "news-edit");
 
   await page.goto(`${base}/news/${id}`);
@@ -543,8 +571,13 @@ export default async function (t) {
     (await page.getByRole("status").innerText()) ===
       "Article updated successfully.",
   );
-  const [[title, newCategory, newImage, keptAuthor, keptDate]] = sql(
-    `SELECT title, category, image_url, avatar_id, published_at FROM news_articles WHERE id = ${id}`,
+  const [[title, newCategory, newImage, keptAuthor, keptDate, keptBody]] = sql(
+    `SELECT title, category, image_url, avatar_id, published_at, body FROM news_articles WHERE id = ${id}`,
+  );
+  check(
+    "an edit that leaves the story keeps its BBCode as it was",
+    keptBody.replaceAll("\r\n", "\n") === "[b]Welcome[/b] to the hotel.\nSee you there!",
+    JSON.stringify(keptBody),
   );
   check(
     "the edit is saved, and the author and the date stay",
@@ -632,6 +665,17 @@ export default async function (t) {
       rows.every((row) => row.includes("Admin-1 (ID:")),
     rows.join(" | "),
   );
+
+  const plain = await t.browser.newContext({ javaScriptEnabled: false });
+  await plain.addCookies(await context.cookies());
+  const plainPage = await plain.newPage();
+  await plainPage.goto(`${hk}/news/new`);
+  check(
+    "without JavaScript the story is the plain field",
+    (await plainPage.locator("#news-story").isVisible()) &&
+      (await plainPage.getByRole("toolbar", { name: "Formatting" }).count()) === 0,
+  );
+  await plain.close();
 
   check(
     "no page failed for the administrator",

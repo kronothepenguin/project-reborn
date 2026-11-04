@@ -37,7 +37,7 @@ codes ([0092](/decisions/0092-bbcode-editor.md)).
 # Tasks
 
 - [ed-01 Build the BBCode editor](/tasks/ed-01-bbcode-editor.md) — done
-- [ed-02 Write news stories with the editor](/tasks/ed-02-news-story-editor.md) — todo
+- [ed-02 Write news stories with the editor](/tasks/ed-02-news-story-editor.md) — done
 - [ed-03 Write the staff boxes with the editor](/tasks/ed-03-staff-boxes-editor.md) — todo
 - [ed-04 Write home notes with the editor](/tasks/ed-04-note-editor.md) — todo
 - [ed-05 Verify ED](/tasks/ed-05-exit-check.md) — todo

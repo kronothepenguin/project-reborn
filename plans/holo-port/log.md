@@ -2,6 +2,9 @@
 
 ## 2026-11-04
 
+- **Done** [ed-02](/tasks/ed-02-news-story-editor.md): housekeeping's news story is written in the BBCode editor, and the
+  form posts it as before.
+- **Start** [ed-02](/tasks/ed-02-news-story-editor.md).
 - **Done** [ed-01](/tasks/ed-01-bbcode-editor.md): a WYSIWYG BBCode editor of our own in `packages/components` shows
   the renderer's tags as the site does, edits the raw codes, keeps on paste what BBCode can say, and has its own undo.
 - **Start** [ed-01](/tasks/ed-01-bbcode-editor.md).
