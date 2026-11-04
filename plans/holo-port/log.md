@@ -2,6 +2,10 @@
 
 ## 2026-11-04
 
+- **Done** [p4-15](/tasks/p4-15-link-article-images.md): update 0006 links each article to its uploaded picture and
+  fills the link for the articles that show one, the database refuses to delete a picture in use, the store lists the
+  uploads and their articles, and the news form writes the link.
+- **Start** [p4-15](/tasks/p4-15-link-article-images.md).
 - **Create** [p4-15](/tasks/p4-15-link-article-images.md), [p4-16](/tasks/p4-16-pick-uploaded-image.md) and
   [p4-17](/tasks/p4-17-uploaded-images-page.md) for [0079](/decisions/0079-uploaded-images-managed.md), on the feature
   branch `p4-images`.

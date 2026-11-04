@@ -116,13 +116,15 @@ func webAddress(address string) bool {
 	return err == nil && (u.Scheme == "http" || u.Scheme == "https") && u.Host != ""
 }
 
-// validTopStory accepts only addresses that are safe in the src of the CMS's
-// pages: Holo's local pictures, uploaded images and http(s) addresses.
-func (r *Router) validTopStory(ctx context.Context, address string) (bool, error) {
+// topStory accepts only addresses that are safe in the src of the CMS's pages:
+// Holo's local pictures, uploaded images and http(s) addresses. For an uploaded
+// image it also returns the image, which the article links to.
+func (r *Router) topStory(ctx context.Context, address string) (image sql.NullInt64, valid bool, err error) {
 	if slices.Contains(seed.TopStories(), address) || webAddress(address) {
-		return true, nil
+		return sql.NullInt64{}, true, nil
 	}
-	return r.uploadedImage(ctx, address)
+	id, uploaded, err := r.uploadedImage(ctx, address)
+	return sql.NullInt64{Int64: id, Valid: uploaded}, uploaded, err
 }
 
 // sitePicture is the address housekeeping loads a picture from. A path is the
@@ -236,7 +238,7 @@ func (r *Router) HandleNewsComposeView(w http.ResponseWriter, req *http.Request)
 func (r *Router) HandleNewsCreate(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	form := readNewsForm(req)
-	valid, err := r.validTopStory(ctx, form.TopStory)
+	image, valid, err := r.topStory(ctx, form.TopStory)
 	if err != nil {
 		r.fail(w, err)
 		return
@@ -253,6 +255,7 @@ func (r *Router) HandleNewsCreate(w http.ResponseWriter, req *http.Request) {
 			Title:       form.Title,
 			Category:    form.Category,
 			ImageURL:    form.TopStory,
+			ImageID:     image,
 			Summary:     form.ShortStory,
 			Body:        form.Story,
 			PublishedAt: now,
@@ -264,11 +267,15 @@ func (r *Router) HandleNewsCreate(w http.ResponseWriter, req *http.Request) {
 		}
 		return writeLog(req, q, staffLog{action: actionNewsCreate, detail: fmt.Sprintf("%s (ID: %d)", article.Title, article.ID)})
 	})
-	if err != nil {
+	switch {
+	// The uploaded picture was deleted after the check.
+	case store.IsForeignKey(err):
+		r.refuseNews(w, req, "news/new.html", 0, "", form, newsImageInvalid)
+	case err != nil:
 		r.fail(w, err)
-		return
+	default:
+		http.Redirect(w, req, "/housekeeping/news?published=1", http.StatusSeeOther)
 	}
-	http.Redirect(w, req, "/housekeeping/news?published=1", http.StatusSeeOther)
 }
 
 // HandleNewsArticleView renders GET /housekeeping/news/{id}, the edit form of
@@ -297,7 +304,7 @@ func (r *Router) HandleNewsArticleSave(w http.ResponseWriter, req *http.Request)
 		return
 	}
 	form := readNewsForm(req)
-	valid, err := r.validTopStory(ctx, form.TopStory)
+	image, valid, err := r.topStory(ctx, form.TopStory)
 	if err != nil {
 		r.fail(w, err)
 		return
@@ -319,7 +326,7 @@ func (r *Router) HandleNewsArticleSave(w http.ResponseWriter, req *http.Request)
 		if form.Category != saved.Category {
 			changed = append(changed, "category")
 		}
-		if form.TopStory != saved.ImageURL {
+		if form.TopStory != saved.ImageURL || image != saved.ImageID {
 			changed = append(changed, "topstory")
 		}
 		if form.ShortStory != saved.Summary {
@@ -336,6 +343,7 @@ func (r *Router) HandleNewsArticleSave(w http.ResponseWriter, req *http.Request)
 			Title:     form.Title,
 			Category:  form.Category,
 			ImageURL:  form.TopStory,
+			ImageID:   image,
 			Summary:   form.ShortStory,
 			Body:      form.Story,
 			UpdatedAt: time.Now().UTC(),
@@ -352,6 +360,9 @@ func (r *Router) HandleNewsArticleSave(w http.ResponseWriter, req *http.Request)
 	switch {
 	case store.IsNotFound(err):
 		r.newsMissing(w, req, newsEditMissing)
+	// The uploaded picture was deleted after the check.
+	case store.IsForeignKey(err):
+		r.refuseNews(w, req, "news/id.html", article.ID, article.Title, form, newsImageInvalid)
 	case err != nil:
 		r.fail(w, err)
 	default:

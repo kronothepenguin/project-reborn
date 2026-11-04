@@ -12,12 +12,12 @@ import (
 )
 
 const createNewsArticle = `-- name: CreateNewsArticle :one
-INSERT INTO news_articles (avatar_id, title, category, image_url, summary, body, published_at, created_at, updated_at)
+INSERT INTO news_articles (avatar_id, title, category, image_url, image_id, summary, body, published_at, created_at, updated_at)
 VALUES (
     ?1, ?2, ?3, ?4, ?5, ?6,
-    ?7, ?8, ?9
+    ?7, ?8, ?9, ?10
 )
-RETURNING id, avatar_id, title, category, image_url, summary, body, published_at, created_at, updated_at
+RETURNING id, avatar_id, title, category, image_url, summary, body, published_at, created_at, updated_at, image_id
 `
 
 type CreateNewsArticleParams struct {
@@ -25,6 +25,7 @@ type CreateNewsArticleParams struct {
 	Title       string
 	Category    string
 	ImageURL    string
+	ImageID     sql.NullInt64
 	Summary     string
 	Body        string
 	PublishedAt time.Time
@@ -32,12 +33,14 @@ type CreateNewsArticleParams struct {
 	UpdatedAt   time.Time
 }
 
+// image_id is the uploaded picture image_url shows, and NULL for any other address.
 func (q *Queries) CreateNewsArticle(ctx context.Context, arg CreateNewsArticleParams) (NewsArticle, error) {
 	row := q.db.QueryRowContext(ctx, createNewsArticle,
 		arg.AvatarID,
 		arg.Title,
 		arg.Category,
 		arg.ImageURL,
+		arg.ImageID,
 		arg.Summary,
 		arg.Body,
 		arg.PublishedAt,
@@ -56,6 +59,7 @@ func (q *Queries) CreateNewsArticle(ctx context.Context, arg CreateNewsArticlePa
 		&i.PublishedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ImageID,
 	)
 	return i, err
 }
@@ -73,7 +77,7 @@ func (q *Queries) DeleteNewsArticle(ctx context.Context, id int64) (int64, error
 }
 
 const getNewsArticle = `-- name: GetNewsArticle :one
-SELECT news_articles.id, news_articles.avatar_id, news_articles.title, news_articles.category, news_articles.image_url, news_articles.summary, news_articles.body, news_articles.published_at, news_articles.created_at, news_articles.updated_at, CAST(COALESCE(avatars.name, '') AS TEXT) AS author
+SELECT news_articles.id, news_articles.avatar_id, news_articles.title, news_articles.category, news_articles.image_url, news_articles.summary, news_articles.body, news_articles.published_at, news_articles.created_at, news_articles.updated_at, news_articles.image_id, CAST(COALESCE(avatars.name, '') AS TEXT) AS author
 FROM news_articles
 LEFT JOIN avatars ON avatars.id = news_articles.avatar_id
 WHERE news_articles.id = ?1
@@ -90,6 +94,7 @@ type GetNewsArticleRow struct {
 	PublishedAt time.Time
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	ImageID     sql.NullInt64
 	Author      string
 }
 
@@ -107,6 +112,7 @@ func (q *Queries) GetNewsArticle(ctx context.Context, id int64) (GetNewsArticleR
 		&i.PublishedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ImageID,
 		&i.Author,
 	)
 	return i, err
@@ -257,16 +263,18 @@ SET
     title = ?1,
     category = ?2,
     image_url = ?3,
-    summary = ?4,
-    body = ?5,
-    updated_at = ?6
-WHERE id = ?7
+    image_id = ?4,
+    summary = ?5,
+    body = ?6,
+    updated_at = ?7
+WHERE id = ?8
 `
 
 type UpdateNewsArticleParams struct {
 	Title     string
 	Category  string
 	ImageURL  string
+	ImageID   sql.NullInt64
 	Summary   string
 	Body      string
 	UpdatedAt time.Time
@@ -279,6 +287,7 @@ func (q *Queries) UpdateNewsArticle(ctx context.Context, arg UpdateNewsArticlePa
 		arg.Title,
 		arg.Category,
 		arg.ImageURL,
+		arg.ImageID,
 		arg.Summary,
 		arg.Body,
 		arg.UpdatedAt,

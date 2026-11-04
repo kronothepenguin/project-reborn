@@ -43,6 +43,19 @@ func (q *Queries) CreateImage(ctx context.Context, arg CreateImageParams) (int64
 	return id, err
 }
 
+const deleteImage = `-- name: DeleteImage :execrows
+DELETE FROM images WHERE id = ?1
+`
+
+// The link of news_articles refuses to delete an image an article shows.
+func (q *Queries) DeleteImage(ctx context.Context, id int64) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteImage, id)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
 const getImage = `-- name: GetImage :one
 SELECT format, data FROM images WHERE id = ?1
 `
@@ -57,4 +70,100 @@ func (q *Queries) GetImage(ctx context.Context, id int64) (GetImageRow, error) {
 	var i GetImageRow
 	err := row.Scan(&i.Format, &i.Data)
 	return i, err
+}
+
+const listImageArticles = `-- name: ListImageArticles :many
+SELECT id, title
+FROM news_articles
+WHERE image_id = ?1
+ORDER BY published_at DESC, id DESC
+`
+
+type ListImageArticlesRow struct {
+	ID    int64
+	Title string
+}
+
+func (q *Queries) ListImageArticles(ctx context.Context, imageID sql.NullInt64) ([]ListImageArticlesRow, error) {
+	rows, err := q.db.QueryContext(ctx, listImageArticles, imageID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListImageArticlesRow
+	for rows.Next() {
+		var i ListImageArticlesRow
+		if err := rows.Scan(&i.ID, &i.Title); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listImages = `-- name: ListImages :many
+SELECT
+    images.id,
+    images.format,
+    CAST(length(images.data) AS INTEGER) AS size,
+    images.created_at,
+    images.created_by_user_id,
+    CAST(COALESCE((
+        SELECT avatars.name FROM avatars
+        WHERE avatars.user_id = images.created_by_user_id
+        ORDER BY avatars.created_at, avatars.id
+        LIMIT 1
+    ), '') AS TEXT) AS uploader,
+    (SELECT COUNT(*) FROM news_articles WHERE news_articles.image_id = images.id) AS articles
+FROM images
+ORDER BY images.created_at DESC, images.id DESC
+`
+
+type ListImagesRow struct {
+	ID              int64
+	Format          string
+	Size            int64
+	CreatedAt       time.Time
+	CreatedByUserID sql.NullInt64
+	Uploader        string
+	Articles        int64
+}
+
+// Newest first, with the size of the bytes, the first habbo of the user who
+// uploaded the image, as the staff log names users, and how many articles show it.
+func (q *Queries) ListImages(ctx context.Context) ([]ListImagesRow, error) {
+	rows, err := q.db.QueryContext(ctx, listImages)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListImagesRow
+	for rows.Next() {
+		var i ListImagesRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Format,
+			&i.Size,
+			&i.CreatedAt,
+			&i.CreatedByUserID,
+			&i.Uploader,
+			&i.Articles,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

@@ -4,7 +4,7 @@ title: news.query.sql
 description: News operations to write, edit and delete articles, and to list the archive, the newest ones and a category's.
 resource: packages/store/queries/news.query.sql
 tags: [store, query, news]
-timestamp: 2026-11-04T01:38:16+00:00
+timestamp: 2026-11-04T16:10:00+00:00
 ---
 
 # Operations
@@ -12,14 +12,14 @@ timestamp: 2026-11-04T01:38:16+00:00
 ## CreateNewsArticle
 
 - Cardinality: `:one`
-- Inputs: `avatar_id` (nullable author), `title`, `category`, `image_url`, `summary`, `body`, `published_at`, `created_at`, `updated_at`
+- Inputs: `avatar_id` (nullable author), `title`, `category`, `image_url`, `image_id` (the uploaded picture `image_url` shows, or NULL), `summary`, `body`, `published_at`, `created_at`, `updated_at`
 - Result: the new article
 - Tables: `news_articles`
 
 ## UpdateNewsArticle
 
 - Cardinality: `:execrows`
-- Inputs: `id`, `title`, `category`, `image_url`, `summary`, `body`, `updated_at`
+- Inputs: `id`, `title`, `category`, `image_url`, `image_id` (nullable), `summary`, `body`, `updated_at`
 - Result: changes the article and keeps its author and date, as Holo's editing did
 - Tables: `news_articles`
 
@@ -33,7 +33,7 @@ timestamp: 2026-11-04T01:38:16+00:00
 
 - Cardinality: `:one`
 - Inputs: `id`
-- Result: the article and `author`, the name of its habbo, empty when it has none
+- Result: the article, with its `image_id`, and `author`, the name of its habbo, empty when it has none
 - Tables: `news_articles`, `avatars`
 
 ## ListNewsArticles

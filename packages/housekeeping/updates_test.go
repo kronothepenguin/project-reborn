@@ -2,6 +2,7 @@ package housekeeping
 
 import (
 	"database/sql"
+	"fmt"
 	"html"
 	"net/http"
 	"path/filepath"
@@ -25,6 +26,21 @@ func copies(t *testing.T, db *sql.DB) []string {
 	return found
 }
 
+// releaseUpdates are the updates this release carries, so that the tests follow
+// the ones a release adds.
+func releaseUpdates(t *testing.T) []store.Update {
+	t.Helper()
+	updates, err := store.Updates()
+	if err != nil {
+		t.Fatal(err)
+	}
+	return updates
+}
+
+func updateNumber(update store.Update) string {
+	return fmt.Sprintf("%04d-%s", update.Version, update.Name)
+}
+
 func versionsApplied(t *testing.T, db *sql.DB) []int64 {
 	t.Helper()
 	applied, err := store.AppliedUpdates(t.Context(), db)
@@ -42,9 +58,12 @@ func TestTheUpdatePageListsWaitingAndAppliedUpdates(t *testing.T) {
 	db, mux := newSite(t)
 	_, cookie := staff(t, db, "Keeper", auth.HousekeepingAccess, auth.HousekeepingDatabase)
 
+	updates := releaseUpdates(t)
+	newest := updates[len(updates)-1]
 	rec := serve(mux, "GET", "/housekeeping/updates", cookie, nil)
-	wantPage(t, rec, http.StatusOK, "updates.html", "Waiting:[] Applied:[{Number:0005-images Title:A table for the pictures")
-	if strings.Index(rec.Body.String(), "Number:0005") > strings.Index(rec.Body.String(), "Number:0001-baseline") {
+	wantPage(t, rec, http.StatusOK, "updates.html",
+		html.EscapeString(fmt.Sprintf("Waiting:[] Applied:[{Number:%s Title:%s Date:", updateNumber(newest), newest.Title)))
+	if strings.Index(rec.Body.String(), "Number:"+updateNumber(newest)) > strings.Index(rec.Body.String(), "Number:0001-baseline") {
 		t.Error("the applied updates are not newest first")
 	}
 
@@ -60,7 +79,8 @@ func TestApplyingUpdatesSavesACopyFirst(t *testing.T) {
 	_, cookie := staff(t, db, "Keeper", auth.HousekeepingAccess, auth.HousekeepingDatabase)
 
 	wantRedirect(t, serve(mux, "POST", "/housekeeping/updates", cookie, nil), "/housekeeping/updates?applied=1")
-	if got := versionsApplied(t, db); len(got) != 5 {
+	updates := releaseUpdates(t)
+	if got := versionsApplied(t, db); len(got) != len(updates) {
 		t.Errorf("applied = %v, want every update", got)
 	}
 	saved := copies(t, db)
@@ -75,8 +95,12 @@ func TestApplyingUpdatesSavesACopyFirst(t *testing.T) {
 	if got := versionsApplied(t, before); len(got) != 2 {
 		t.Errorf("the copy has %v applied, want the database from before the updates", got)
 	}
+	var detail []string
+	for _, update := range updates[2:] {
+		detail = append(detail, "applied "+updateNumber(update))
+	}
 	logs := staffLogs(t, db)
-	if len(logs) != 1 || logs[0].Action != "database.update" || logs[0].Detail != "applied 0003-ranks; applied 0004-database-attribute; applied 0005-images; copy "+saved[0] {
+	if len(logs) != 1 || logs[0].Action != "database.update" || logs[0].Detail != strings.Join(append(detail, "copy "+saved[0]), "; ") {
 		t.Errorf("staff logs = %+v", logs)
 	}
 	wantPage(t, serve(mux, "GET", "/housekeeping/updates?applied=1", cookie, nil), http.StatusOK,

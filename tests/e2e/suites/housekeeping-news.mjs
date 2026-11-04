@@ -496,13 +496,13 @@ export default async function (t) {
   const uploaded = await imageEditor(t, page);
   await page.getByRole("button", { name: "Update Article" }).click();
   await page.waitForURL(/updated=1/);
-  const [[savedImage]] = sql(
-    `SELECT image_url FROM news_articles WHERE id = ${id}`,
+  const [[savedImage, linked]] = sql(
+    `SELECT image_url, image_id FROM news_articles WHERE id = ${id}`,
   );
   check(
-    "the article keeps the uploaded picture once saved",
-    savedImage === uploaded,
-    `${savedImage} ${uploaded}`,
+    "the article keeps the uploaded picture once saved, linked to it",
+    savedImage === uploaded && `/news/images/${linked}.png` === uploaded,
+    `${savedImage} ${linked} ${uploaded}`,
   );
 
   await page.goto(`${hk}/news`);
