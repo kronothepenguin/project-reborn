@@ -2,6 +2,10 @@
 
 ## 2026-11-04
 
+- **Done** [p4-05](/tasks/p4-05-housekeeping-news.md): staff with housekeeping.news compose, list, edit and delete
+  articles in Holo's forms, with the five local top stories or an address, a preview from the CMS, the author's habbo
+  and date kept on edit, a link to the article and a log row for each change.
+- **Start** [p4-05](/tasks/p4-05-housekeeping-news.md).
 - **Done** [p4-03](/tasks/p4-03-store.md): the store has the news, banner and image operations and the images table
   with update 0005, the CMS serves uploaded images, and Holo top stories join the CMS.
 - **Start** [p4-03](/tasks/p4-03-store.md).

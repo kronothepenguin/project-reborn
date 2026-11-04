@@ -1,0 +1,52 @@
+---
+import { Table } from "@project-reborn/components";
+import Box from "../components/box.astro";
+import Message from "../components/message.astro";
+import Submit from "../components/submit.astro";
+import Housekeeping from "../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="Manage Existing Articles" tab="site">
+  <Message />
+  <Box title="News Articles" color="gold">
+    <Table>
+      <thead>
+        <tr>
+          <th class="w-[1%] text-center">ID</th>
+          <th class="w-[28%]">Title</th>
+          <th class="w-[10%] text-center">Date</th>
+          <th class="w-[10%] text-center">Author</th>
+          <th class="w-[10%] text-center">Edit</th>
+          <th class="w-[12%] text-center">Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        [[ range .Articles ]]
+        <tr>
+          <td class="text-center">[[ .ID ]]</td>
+          <td><strong>[[ .Title ]]</strong><div class="text-neutral-500">[[ .Summary ]]</div></td>
+          <td class="text-center">[[ .Date ]]</td>
+          <td class="text-center">[[ .Author ]]</td>
+          <td class="text-center"><a href="/housekeeping/news/[[ .ID ]]" class="text-indigo-900 underline">Edit</a></td>
+          <td class="text-center">
+            <form method="post" action="/housekeeping/news/[[ .ID ]]/delete">
+              <Submit>Delete</Submit>
+            </form>
+          </td>
+        </tr>
+        [[ else ]]
+        <tr>
+          <td colspan="6">Nothing found.</td>
+        </tr>
+        [[ end ]]
+      </tbody>
+    </Table>
+    <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+      <a
+        href="/housekeeping/news/new"
+        class="inline-block border border-black bg-olive-200 px-2 py-0.5 font-bold hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+        >Compose New News Item</a
+      >
+    </div>
+  </Box>
+</Housekeeping>

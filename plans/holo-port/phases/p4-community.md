@@ -55,7 +55,7 @@ Guests and habbos browse community content; staff write news and manage banners.
 - [p4-02 Declare the staff page and tag fight settings](/tasks/p4-02-staff-settings.md) — todo
 - [p4-03 Store news, banners and images](/tasks/p4-03-store.md) — done
 - [p4-04 Show the news](/tasks/p4-04-news-pages.md) — todo
-- [p4-05 Write news in housekeeping](/tasks/p4-05-housekeeping-news.md) — todo
+- [p4-05 Write news in housekeeping](/tasks/p4-05-housekeeping-news.md) — done
 - [p4-06 Cut, fit and preview news images](/tasks/p4-06-image-editor.md) — todo
 - [p4-07 Manage banners in housekeeping](/tasks/p4-07-housekeeping-banners.md) — todo
 - [p4-08 Find habbos by tag and fight tags](/tasks/p4-08-tags-page.md) — todo

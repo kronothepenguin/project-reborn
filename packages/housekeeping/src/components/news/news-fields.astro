@@ -1,0 +1,73 @@
+---
+import { Input, Select } from "@project-reborn/components";
+
+// The preview is a 300x187 box that shows the picture at its own size, as the
+// news promo of Holo's CMS shows a top story.
+---
+
+<tr>
+  <td class="w-2/5">
+    <label for="news-title"><strong>Title</strong></label>
+    <div class="text-neutral-500">The full title of your article.</div>
+  </td>
+  <td class="w-3/5 [&>input]:w-full">
+    <Input id="news-title" name="title" value="[[ .Form.Title ]]" variant="border" />
+  </td>
+</tr>
+<tr>
+  <td>
+    <label for="news-category"><strong>News Category</strong></label>
+  </td>
+  <td>
+    <Select id="news-category" name="category">
+      [[ range .Categories ]][[ if .Selected ]]
+      <option value="[[ .Name ]]" selected>[[ .Name ]]</option>
+      [[ else ]]
+      <option value="[[ .Name ]]">[[ .Name ]]</option>
+      [[ end ]][[ end ]]
+    </Select>
+  </td>
+</tr>
+<tr>
+  <td>
+    <label for="news-topstory"><strong>Topstory Image</strong></label>
+    <div class="text-neutral-500">The URL to the topstory image.</div>
+  </td>
+  <td class="[&>input]:w-full">
+    <Input id="news-topstory" name="topstory" list="news-topstories" value="[[ .Form.TopStory ]]" variant="border" />
+    <datalist id="news-topstories">
+      [[ range .TopStories ]]<option value="[[ . ]]"></option>[[ end ]]
+    </datalist>
+    <div class="mt-1 box-content h-[187px] w-[300px] overflow-hidden border border-neutral-600 bg-olive-300">
+      <img id="news-topstory-preview" src="[[ .Preview ]]" data-site="[[ .SiteURL ]]" alt="Preview" class="max-w-none" />
+    </div>
+  </td>
+</tr>
+<tr>
+  <td>
+    <label for="news-short-story"><strong>Short Story</strong></label>
+    <div class="text-neutral-500">A small introduction to the article.<br />HTML is not allowed here.</div>
+  </td>
+  <td>
+    <textarea id="news-short-story" name="short_story" cols="60" rows="5" class="w-full border border-neutral-600 bg-white p-1">[[ .Form.ShortStory ]]</textarea>
+  </td>
+</tr>
+<tr>
+  <td>
+    <label for="news-story"><strong>Story</strong></label>
+    <div class="text-neutral-500">The actual news message.<br />BBCode is allowed here.</div>
+  </td>
+  <td>
+    <textarea id="news-story" name="story" cols="60" rows="5" class="w-full border border-neutral-600 bg-white p-1">[[ .Form.Story ]]</textarea>
+  </td>
+</tr>
+
+<script>
+  const field = document.getElementById("news-topstory") as HTMLInputElement;
+  const preview = document.getElementById("news-topstory-preview") as HTMLImageElement;
+  // A path is the CMS's, so it loads from site.url: housekeeping may run on another port.
+  field.addEventListener("input", () => {
+    const address = field.value.trim();
+    preview.src = address.startsWith("/") ? `${preview.dataset.site}${address}` : address;
+  });
+</script>

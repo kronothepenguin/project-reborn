@@ -37,6 +37,9 @@ const (
 	actionBadgesDelete          = "badges.delete"
 	actionHomeStoreCreate       = "homeStore.create"
 	actionHomeStoreUpdate       = "homeStore.update"
+	actionNewsCreate            = "news.create"
+	actionNewsUpdate            = "news.update"
+	actionNewsDelete            = "news.delete"
 	actionDatabaseUpdate        = "database.update"
 	actionConfigUpdate          = "config.update"
 )

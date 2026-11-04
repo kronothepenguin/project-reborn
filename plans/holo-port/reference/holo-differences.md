@@ -150,6 +150,8 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Stickers & Backgrounds | Fetches any address from the server for the image's size, and appends unescaped text to `assets.css` | The image is one of the art files in the repository, by its path; nothing is fetched or written | The plan and [0061](/decisions/0061-art-in-the-repository.md): the fetch reached any host, and the form wrote CSS |
 | Stickers & Backgrounds | The price takes any text, a negative number too | A price from 0 to 2147483647 and a quantity from 1 to 2147483647, whole numbers | A wallet pays the price and an inventory adds the quantity, and past SQLite's integers a sum turns into a float |
 | Stickers & Backgrounds | Stores any category it is sent | Refuses a category that does not exist | An item outside every category could never be sold |
+| News | The topstory image takes any text, which the CMS prints raw into its pages | One of Holo's five local images or an http(s) address; anything else answers `The topstory image must be one of the local images or an http(s) address.` and keeps what was typed | Any other address, such as `javascript:`, would go into every page that shows the article |
+| News | `Delete` is a link that deletes at once, with no question | A `Delete` button that posts, still with no question | A link in a message could delete an article |
 
 ## Changed by a decision
 
@@ -186,6 +188,10 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Edit User | `...will also update (poof) ingame, if connected.` | `User updated successfully.` | The game server is deferred ([0013](/decisions/0013-defer-game-server-features.md)) |
 | Stickers & Backgrounds | Its own list of categories, with its own spellings and no Notes | The store's categories, in the store's order | The categories live in the database, and a fixed list would drift from it |
 | Stickers & Backgrounds | Open to every administrator | Takes `housekeeping.homeStore`, which the installer's Administrator and Moderator hold | [0053](/decisions/0053-attributes-on-groups-and-users.md), [0054](/decisions/0054-access-groups-are-holos-ranks.md) |
+| News | Open to rank 7 | Takes `housekeeping.news`, which the installer's Administrator holds | [0053](/decisions/0053-attributes-on-groups-and-users.md), [0054](/decisions/0054-access-groups-are-holos-ranks.md) |
+| News | The topstory image is an address, `http://images.habbohotel.co.uk/c_images/Top_Story_Images/top_story_web60.png` by default | One of Holo's five local images, picked from a list, `top_story_news.png` by default, or an http(s) address, with a 300x187 preview that follows the field, as the CMS's news promo shows the picture | [0074](/decisions/0074-news-images.md) |
+| News | `HTML is allowed here.` under `Story` | `BBCode is allowed here.`, and the edit form links to the article with `View on site` | [0020](/decisions/0020-news-in-bbcode.md) |
+| News | The author is the user's name, saved as text | The staff member's active habbo, whose name the list shows | [P4](/phases/p4-community.md) |
 
 ## Holo bugs not ported
 
@@ -203,6 +209,7 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Stickers & Backgrounds | Every item is a sticker, even in Backgrounds | The image's folder gives the kind |
 | Stickers & Backgrounds | Its log row leaves out the item's name | `homeStore.create` reads `<name> worth <price> credits` |
 | Stickers & Backgrounds | Two items whose names start with the same word share one image | Each item keeps its own image |
+| News | The edit form selects `HoloCMS` for an article in `Events & Competitions` or `Other`, so saving moves it there, and selects `Events & Competitions` for `Security` | Each article's category is selected, and one no longer offered, such as the club of an older short name, stays as a choice of its own |
 
 ## Not in Holo
 
@@ -234,6 +241,7 @@ veto.
 | Habbo page | The page of one habbo, with its owner, their other habbos and the addresses they signed in from | The plan. Holo kept only the last address |
 | Access groups | The guard also keeps `housekeeping.access` on someone | `housekeeping.accessGroups` opens nothing without it, so the rule as written could still lock everyone out |
 | Stickers & Backgrounds | A gold list of every item, sold or not, 100 a page, each with a form for its name, category, price, quantity and `For Sale`; an item is never deleted | The plan: `POST /home-store/{id}`, and [0063](/decisions/0063-what-housekeeping-can-delete.md) |
+| News | An article that does not exist answers Holo's `Unable to edit article; this article does not exist!` or `Unable to delete article; this article does not exist!` with 404, also for an id that is not a number | Holo answered 200, and showed the plain list for an id that is not a number |
 
 ## Kept as in Holo, on purpose
 
