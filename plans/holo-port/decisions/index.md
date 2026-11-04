@@ -50,6 +50,10 @@ change supersedes a decision with a new one.
 
 ## Scope
 
+- [0074 News images are local art, an address or an upload cut in the browser](/decisions/0074-news-images.md) — A news article's 300x187 top-story picture is one of Holo's five local images, an http(s) address, or an upload that housekeeping cuts, fits and previews in the browser and the database keeps.
+- [0075 A new hotel starts with no news and no banners](/decisions/0075-no-news-or-banner-seeds.md) — Holo's welcome article and its two banners are not seeded, so a new hotel shows Holo's empty-news texts until staff write news.
+- [0076 The staff page is one list, as Holo's](/decisions/0076-one-staff-list.md) — The staff page lists every member of the staff-listed groups once, sorted by habbo name, with the name of their highest listed group as rank and the habbo chosen for that group.
+- [0077 The staff page boxes are BBCode with a colour each](/decisions/0077-staff-boxes-in-bbcode.md) — The two text boxes of the staff page are BBCode, edited in a multi-line field, each with one of Holo's four colours chosen from a list.
 - [0045 Homes are deferred until the art exists](/decisions/0045-homes-deferred.md) — P3 Homes leaves the phase order and becomes an isolated piece of work for later, because the user has none of the art yet and will look for it.
 - [0048 The footer names Project Reborn](/decisions/0048-footer-names-reborn.md) — The signed-out footer keeps "Powered by Project Reborn ©" instead of Holo's line.
 - [0034 Behaviour matches Holo exactly; the code is new and safest](/decisions/0034-behaviour-matches-holo.md) — Every page behaves exactly as its HoloCMS page does, with new code, and differs only where Holo is unsafe, where a decision says so, or where Holo's behaviour is a bug.

@@ -2,6 +2,13 @@
 
 ## 2026-11-04
 
+- **Create** [p4-01](/tasks/p4-01-settings-kinds.md) to [p4-12](/tasks/p4-12-exit-check.md): P4 is the active phase,
+  with p4-05 to p4-07 on the feature branch `p4-housekeeping`.
+- **Decision** [0077](/decisions/0077-staff-boxes-in-bbcode.md): the staff page boxes are BBCode with a colour each.
+- **Decision** [0076](/decisions/0076-one-staff-list.md): the staff page is one list, as Holo's.
+- **Decision** [0075](/decisions/0075-no-news-or-banner-seeds.md): a new hotel starts with no news and no banners.
+- **Decision** [0074](/decisions/0074-news-images.md): news images are local art, an address, or an upload cut in the
+  browser and kept in the database.
 - **Done** [up-11](/tasks/up-11-exit-check.md): UP meets its exit criteria from a clean checkout, with every gate and
   all 584 browser checks passing.
 - **Start** [up-11](/tasks/up-11-exit-check.md).

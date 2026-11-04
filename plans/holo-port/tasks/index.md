@@ -143,7 +143,22 @@ starts.
 - [up-12 Keep the settings suite to the settings sections](/tasks/up-12-settings-suite-sections.md) — The housekeeping-settings browser suite opens only the settings sections of the menu, since the Database updates link leads to a page without a form when nothing waits.
 - [up-11 Verify UP](/tasks/up-11-exit-check.md) — Every exit criterion of UP holds from a clean checkout, in a real browser.
 
+## P4 Community
+
+- [p4-01 Edit long texts and choices in the settings](/tasks/p4-01-settings-kinds.md) — Housekeeping's settings forms gain a multi-line field and a field with a fixed list of choices, validated by the settings catalogue.
+- [p4-02 Declare the staff page and tag fight settings](/tasks/p4-02-staff-settings.md) — features.staffPage, the two staff boxes with Holo's headings, texts and colours, and features.tagFight are declared and labelled in a Staff Module form.
+- [p4-03 Store news, banners and images](/tasks/p4-03-store.md) — The store gains the news and banner operations and an images table with its update, the CMS serves uploaded images, and Holo's five top-story images join the CMS.
+- [p4-04 Show the news](/tasks/p4-04-news-pages.md) — GET /news shows the archive and a category's listing, and GET /news/{id} an article, with the headlines column, as Holo's news.php.
+- [p4-05 Write news in housekeeping](/tasks/p4-05-housekeeping-news.md) — Staff with housekeeping.news compose, list, edit and delete articles with Holo's forms, a top-story picker and a link to the article on the site.
+- [p4-06 Cut, fit and preview news images](/tasks/p4-06-image-editor.md) — Housekeeping's news form uploads an image through an editor that cuts it to fill a 300x187 frame or fits it whole, previews it, and sends only the result, which the server checks, re-encodes and stores.
+- [p4-07 Manage banners in housekeeping](/tasks/p4-07-housekeeping-banners.md) — Staff with housekeeping.banners add, list, edit and delete banners with Holo's banners page, its add form working and its messages right.
+- [p4-08 Find habbos by tag and fight tags](/tasks/p4-08-tags-page.md) — GET /tags shows the tag cloud, the tag fight and a search for habbos with a tag, POST /tags tags the active habbo, and POST /tags/fight answers a fight, as Holo's tags pages.
+- [p4-09 Show the community page](/tasks/p4-09-community-page.md) — GET /community shows the random habbos, the news promo, the tag cloud with its search, and the banners, as Holo's community.php.
+- [p4-10 Show the staff page](/tasks/p4-10-staff-page.md) — GET /staff lists the staff in one list, as Holo, and shows the two BBCode boxes, while features.staffPage is on.
+- [p4-11 Fill the Me page's habblets and the landing's tag cloud](/tasks/p4-11-me-habblets.md) — The Me page gains the tags habblet, the news promo and the banners column, and the landing page Holo's tag cloud.
+- [p4-12 Verify P4](/tasks/p4-12-exit-check.md) — Every exit criterion of P4 holds from a clean checkout, in a real browser, with p4-housekeeping merged.
+
 ## Later phases
 
-[P4](/phases/p4-community.md), [P5](/phases/p5-groups-forum.md),
-[P6](/phases/p6-economy.md) and [P7](/phases/p7-help.md) get their tasks when they start.
+[P5](/phases/p5-groups-forum.md), [P6](/phases/p6-economy.md) and [P7](/phases/p7-help.md) get their tasks when they
+start.
