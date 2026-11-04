@@ -2,6 +2,7 @@
 
 ## 2026-11-04
 
+- **Update** [P5](/phases/p5-groups-forum.md) lists its open questions for the user.
 - **Update** P4 is done again, and [P5](/phases/p5-groups-forum.md) comes next.
 - **Done** [p4-18](/tasks/p4-18-page-uploaded-images.md): the Uploaded Images list shows ten pictures a page, turned in
   the browser with Newer and Older, and a delete, a refused delete, a reload and Back keep the page.
