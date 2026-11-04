@@ -50,6 +50,19 @@ export default async function ({ base, browser, check, hk, hkOrigin, shot }) {
     );
   }
 
+  await page.goto(`${hk}/settings?section=staffPage`);
+  await page.fill('textarea[name="staffPage.box1Body"]', "[b]Need help?[/b]\nAsk us.");
+  await page.selectOption('select[name="staffPage.box1Color"]', "red");
+  await page.getByRole("button", { name: "Save Settings" }).click();
+  await page.waitForLoadState();
+  check(
+    "the staff module keeps a multi-line body and a colour",
+    (await page.inputValue('textarea[name="staffPage.box1Body"]')) ===
+      "[b]Need help?[/b]\nAsk us." &&
+      (await page.inputValue('select[name="staffPage.box1Color"]')) === "red",
+  );
+  await shot(page, "settings-staff");
+
   await page.goto(`${hk}/settings?section=site`);
   await page.fill('input[name="site.name"]', "Reborn <b>Palace</b>");
   await page.getByRole("button", { name: "Save Configuration" }).click();

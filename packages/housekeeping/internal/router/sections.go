@@ -135,8 +135,29 @@ var forms = []section{
 			{Key: "features.landingPromo", Label: "Landing Promo Enabled", Help: "This determines whether the promo on the login page will be displayed. If disabled, the join button is shown."},
 			{Key: "features.birthdayNotifications", Label: "Birthday Notifications Enabled", Help: "This will determine whether a 'Happy birthday' message will be shown on a user's birthday."},
 			{Key: "features.smilies", Label: "Smilies Enabled", Help: "This determines whether Smilies will be shown on the Discussion Board and on Homes."},
+			{Key: "features.tagFight", Label: "Tag Fight Enabled", Help: "This determines whether the Tag Fight will be shown on the tags page."},
 		},
 	},
+	{
+		ID: "staffPage", Menu: "Staff Module", Title: "Manage Content Options", Button: defaultButton, Content: true,
+		Fields: []field{
+			{Key: "staffPage.box1Body", Label: "Staff Content Box 1", Help: "The text within a content box on the staff page (if enabled). BBCode is allowed here.", Long: true},
+			{Key: "staffPage.box1Color", Label: "Staff Content Box 1 Color", Help: "Only valid colors defined in CSS such as 'orange', 'blue', etc", Choices: staffBoxColors},
+			{Key: "staffPage.box1Heading", Label: "Staff Content Box 1 Heading", Help: "The title (heading) of Staff Content Box 1.", Required: true},
+			{Key: "staffPage.box2Body", Label: "Staff Content Box 2", Help: "The text within a content box on the staff page (if enabled). BBCode is allowed here.", Long: true},
+			{Key: "staffPage.box2Color", Label: "Staff Content Box 2 Color", Help: "Only valid colors defined in CSS such as 'orange', 'blue', etc", Choices: staffBoxColors},
+			{Key: "staffPage.box2Heading", Label: "Staff Content Box 2 Heading", Help: "The title (heading) of Staff Content Box 2.", Required: true},
+			{Key: "features.staffPage", Label: "Staff Module Enabled", Help: "This determines whether the Staff Module (/staff) will be displayed/enabled."},
+		},
+	},
+}
+
+// staffBoxColors are the choices of Holo's content tool for a staff page box.
+var staffBoxColors = []choice{
+	{Value: "red", Label: "Red"},
+	{Value: "blue", Label: "Blue"},
+	{Value: "white", Label: "White (no Header)"},
+	{Value: "green", Label: "Green"},
 }
 
 // sectionsOver lays out declared as forms. A setting the list above does not name

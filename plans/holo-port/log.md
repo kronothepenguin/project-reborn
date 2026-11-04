@@ -2,6 +2,9 @@
 
 ## 2026-11-04
 
+- **Done** [p4-02](/tasks/p4-02-staff-settings.md): the staff page's switch, its two boxes with Holo's headings, texts
+  and colours, and the tag fight switch are settings, edited in a Staff Module form and in Manage Site Content.
+- **Start** [p4-02](/tasks/p4-02-staff-settings.md).
 - **Done** [p4-01](/tasks/p4-01-settings-kinds.md): housekeeping's settings forms gain a multi-line field sized as
   Holo's content tool sized it, and a field with a fixed list of choices.
 - **Start** [p4-01](/tasks/p4-01-settings-kinds.md).

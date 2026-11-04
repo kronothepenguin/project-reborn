@@ -54,6 +54,16 @@ var catalogue = map[string]declaration{
 	"features.landingPromo":          declare(true, nil),
 	"features.birthdayNotifications": declare(true, nil),
 	"features.smilies":               declare(true, nil),
+	"features.staffPage":             declare(true, nil),
+	"features.tagFight":              declare(true, nil),
+
+	// The boxes of the staff page, in BBCode, with Holo's texts and colours.
+	"staffPage.box1Heading": declare("Need our help?", length(1, 100)),
+	"staffPage.box1Body":    declare(staffBox1, length(0, 5000)),
+	"staffPage.box1Color":   declare("green", oneOf(staffBoxColors...)),
+	"staffPage.box2Heading": declare("Joining the Team", length(1, 100)),
+	"staffPage.box2Body":    declare(staffBox2, length(0, 5000)),
+	"staffPage.box2Color":   declare("green", oneOf(staffBoxColors...)),
 
 	"homes.maxItems":      declare(200, between(1, 1000)),
 	"homes.noteMaxLength": declare(500, between(1, 5000)),
@@ -150,6 +160,15 @@ func mailbox(value string) error {
 	}
 	return nil
 }
+
+// staffBoxColors are the colours a box of the staff page takes, as Holo's
+// content tool offered them.
+var staffBoxColors = []string{"red", "blue", "white", "green"}
+
+const (
+	staffBox1 = "You can find the staff members all over the hotel -- in the public rooms, their own rooms, or that dark little corner in your room. But how can you call them if you actually need them!? Easy. If it's urgent, use the Call for Help system ingame by using the blue questionmark in the right bottom of your screen. If it isn't urgent, use the Help Tool on the website."
+	staffBox2 = "So you want that sexy staff badge next to your name in the hotel and on the site? Do you want to join Holo Hotel's moderation team? Keep your eyes focused on this section and the news -- if we're looking for staff it will be announced there, and surely you won't miss it!"
+)
 
 func oneOf(allowed ...string) func(string) error {
 	return func(value string) error {

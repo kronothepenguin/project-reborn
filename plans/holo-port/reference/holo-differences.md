@@ -81,6 +81,7 @@ section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
 | Upgrading | `config.php` is edited by hand | Housekeeping offers the keys a release adds to `config.json`, with their defaults, and removes the ones nothing reads | [0070](/decisions/0070-housekeeping-applies-updates.md) |
 | Install | The last page links to the new site and to housekeeping's sign-in | It links to the hotel, where the administrator signs in; housekeeping has no sign-in of its own | [0070](/decisions/0070-housekeeping-applies-updates.md) |
 | Install | `install.php` writes the store and the ranks | Updates write them, so a hotel installed before them receives them too | [0068](/decisions/0068-seeds-are-updates.md) |
+| Staff page | Its two boxes hold raw HTML, edited in the content tool | Their bodies are BBCode, and the help of their fields says `BBCode is allowed here.` | [0077](/decisions/0077-staff-boxes-in-bbcode.md) |
 
 # Holo bugs not ported
 
@@ -171,6 +172,7 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Rank tool | The `$sysadmin` of `config.php` cannot lose that rank, and only that user gives rank 7 | No `$sysadmin`: nobody edits a group above their level ([0055](/decisions/0055-staff-levels.md)), and the last holder of `housekeeping.access` and `housekeeping.accessGroups` cannot lose them: `Access denied. The last user who can manage access groups must keep housekeeping.access and housekeeping.accessGroups.`, logged as `accessGroups.refused`, as Holo logged its tool's refusals | [0014](/decisions/0014-attribute-based-access.md) |
 | Configuration | `Enable SSO` and `Language` | Gone: SSO waits for the client page, and only English is left | [Holo's settings](/reference/holo-database.md) |
 | Content tool | Four categories of `cms_content` | A form per group of settings. Those of the staff, credits and forum pages arrive with their phases, and get a form when they are declared | [HK-A](/phases/hk-a-housekeeping-core.md) |
+| Content tool | No switch for the tag fight | `Tag Fight Enabled` in Manage Site Content, on by default | [P4](/phases/p4-community.md) |
 | Maintenance | `Administrators can still login through Housekeeping.` | `Administrators can still login on that page.` | The plan: staff sign in with the shared session on the maintenance page |
 | Help Queries | `Delete`, which deletes the query | `Close`, with Holo's rule that it must be picked up first and its texts saying `closed`; the ticket stays as history and leaves the overview | [0063](/decisions/0063-what-housekeeping-can-delete.md) |
 | Help Queries | A `Room ID` column | Not shown | Tickets from inside the hotel wait for the game server ([0013](/decisions/0013-defer-game-server-features.md)) |

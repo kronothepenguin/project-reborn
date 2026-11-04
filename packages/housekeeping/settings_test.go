@@ -2,6 +2,7 @@ package housekeeping
 
 import (
 	"fmt"
+	"html"
 	"net/http"
 	"net/url"
 	"strings"
@@ -162,6 +163,10 @@ func TestEveryKindOfFieldSaves(t *testing.T) {
 		{"registration", "registration.defaultGender", "F", func() any { return settings.GetString("registration.defaultGender") }, "F"},
 		{"imaging", "imaging.avatarUrl", "https://imager.example/avatar", func() any { return settings.GetString("imaging.avatarUrl") }, "https://imager.example/avatar"},
 		{"features", "features.landingPromo", "0", func() any { return settings.GetBool("features.landingPromo") }, false},
+		{"features", "features.tagFight", "0", func() any { return settings.GetBool("features.tagFight") }, false},
+		{"staffPage", "features.staffPage", "0", func() any { return settings.GetBool("features.staffPage") }, false},
+		{"staffPage", "staffPage.box1Body", "[b]Line one[/b]\r\nLine two", func() any { return settings.GetString("staffPage.box1Body") }, "[b]Line one[/b]\nLine two"},
+		{"staffPage", "staffPage.box2Color", "white", func() any { return settings.GetString("staffPage.box2Color") }, "white"},
 	} {
 		t.Run(c.key, func(t *testing.T) {
 			db, mux := newSite(t)
@@ -226,6 +231,8 @@ func TestARefusedFormSavesNothing(t *testing.T) {
 		{"a broken rule", "auth", url.Values{"auth.passwordMinLength": {"30"}, "auth.rememberDays": {"7"}}, "auth.passwordMaxLength: must be at least"},
 		{"not an address", "mail", url.Values{"mail.host": {"smtp.example.com"}, "mail.from": {"nobody"}}, "mail.from: must be an email address"},
 		{"a gender outside the list", "registration", url.Values{"registration.startCredits": {"900"}, "registration.defaultGender": {"U"}}, "registration.defaultGender: must be one of"},
+		{"a colour outside the list", "staffPage", url.Values{"staffPage.box1Heading": {"Help"}, "staffPage.box1Color": {"orange"}}, "Staff Content Box 1 Color must be one of its choices."},
+		{"a blank heading", "staffPage", url.Values{"staffPage.box1Body": {"Text"}, "staffPage.box2Heading": {""}}, blank},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			db, mux := newSite(t)
@@ -381,4 +388,43 @@ func TestTheChangeOutlivesARestart(t *testing.T) {
 	restarted := http.NewServeMux()
 	cms.New(db, cms.WithResolver(printPage), cms.WithStatic(printPath("cms"))).Mount(restarted)
 	wantPage(t, serve(restarted, "GET", "/", nil, nil), http.StatusServiceUnavailable, "maintenance.html")
+}
+
+func TestTheStaffModuleHasHolosFieldsInHolosOrder(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
+
+	body := serve(mux, "GET", "/housekeeping/settings?section=staffPage", cookie, nil).Body.String()
+	order := []string{
+		"Key:staffPage.box1Body Label:Staff Content Box 1 ",
+		"Key:staffPage.box1Color Label:Staff Content Box 1 Color ",
+		"Key:staffPage.box1Heading Label:Staff Content Box 1 Heading ",
+		"Key:staffPage.box2Body Label:Staff Content Box 2 ",
+		"Key:staffPage.box2Color Label:Staff Content Box 2 Color ",
+		"Key:staffPage.box2Heading Label:Staff Content Box 2 Heading ",
+		"Key:features.staffPage Label:Staff Module Enabled ",
+	}
+	last := -1
+	for _, text := range order {
+		at := strings.Index(body, text)
+		if at <= last {
+			t.Errorf("%q is missing or out of Holo's order: %s", text, body)
+		}
+		last = at
+	}
+	for _, text := range []string{
+		"Kind:longtext Value:You can find the staff members all over the hotel",
+		"Kind:choice Value:green",
+		"{Value:white Label:White (no Header) Selected:false} {Value:green Label:Green Selected:true}",
+		"Kind:text Value:Need our help?",
+		"Kind:text Value:Joining the Team",
+		"Menu:Staff Module",
+	} {
+		if !strings.Contains(body, html.EscapeString(text)) {
+			t.Errorf("the form lacks %q", text)
+		}
+	}
+	if longs, choices := strings.Count(body, "Kind:longtext"), strings.Count(body, "Kind:choice"); longs != 2 || choices != 2 {
+		t.Errorf("the form has %d multi-line fields and %d lists, want 2 of each", longs, choices)
+	}
 }

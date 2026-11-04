@@ -13,7 +13,7 @@ import (
 func TestASettingDeclaredLaterGetsAForm(t *testing.T) {
 	sections := sectionsOver([]settings.Setting{
 		{Key: "site.name", Value: "Hotel"},
-		{Key: "features.tagFight", Value: true},
+		{Key: "features.forum", Value: true},
 		{Key: "club.maxMonths", Value: 6},
 		{Key: "club.name", Value: "Club"},
 		{Key: "payments.apiKey", Secret: true},
@@ -23,7 +23,7 @@ func TestASettingDeclaredLaterGetsAForm(t *testing.T) {
 	if !ok || len(features.Fields) != 1 {
 		t.Fatalf("features = %+v, %t, want its one declared field", features, ok)
 	}
-	if got := features.Fields[0]; got.Key != "features.tagFight" || got.Label != "features.tagFight" || got.Kind != kindToggle || !got.On || got.OnLabel != "Enabled" {
+	if got := features.Fields[0]; got.Key != "features.forum" || got.Label != "features.forum" || got.Kind != kindToggle || !got.On || got.OnLabel != "Enabled" {
 		t.Errorf("the field = %+v", got)
 	}
 
