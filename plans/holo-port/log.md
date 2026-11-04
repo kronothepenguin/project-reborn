@@ -2,6 +2,10 @@
 
 ## 2026-11-04
 
+- **Update** P4 is done, and [P5](/phases/p5-groups-forum.md) comes next.
+- **Done** [p4-12](/tasks/p4-12-exit-check.md): P4 meets its exit criteria from a clean checkout, with both feature
+  branches merged.
+- **Start** [p4-12](/tasks/p4-12-exit-check.md).
 - **Update** `p4-images` is merged into `main`: [p4-15](/tasks/p4-15-link-article-images.md),
   [p4-16](/tasks/p4-16-pick-uploaded-image.md) and [p4-17](/tasks/p4-17-uploaded-images-page.md) join the CMS work.
   Every gate passes on the result. The link refuses a delete with SQLite's default action rather than `ON DELETE

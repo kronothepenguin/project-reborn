@@ -2,7 +2,7 @@
 type: Reference
 title: How the programs work together
 description: Which programs make up Project Reborn, what each one owns, and how they interact when they run alone and when they run together in one process.
-timestamp: 2026-11-03T23:38:50+00:00
+timestamp: 2026-11-04T16:52:36+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [architecture]
 ---
@@ -75,6 +75,9 @@ This is how programs run today, and how development works.
   cookies do not depend on the port.
 - The CMS's Housekeeping links follow `site.housekeepingUrl`, which the installer asks for. Its default is the development
   address, `http://localhost:18465/housekeeping`.
+- Housekeeping keeps uploaded news pictures in the database, and the CMS serves them at `/news/images/{id}.{format}`.
+  Housekeeping's previews and its Uploaded Images page load every picture from `site.url`, since it may run on another
+  port ([0074](/decisions/0074-news-images.md), [0079](/decisions/0079-uploaded-images-managed.md)).
 
 The programs share the SQLite file, so they run on one machine, and no IPC exists.
 

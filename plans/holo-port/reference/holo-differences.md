@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-01T19:05:00+00:00
+timestamp: 2026-11-04T16:52:07+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -10,9 +10,9 @@ tags: [holo]
 # How to read this
 
 [0034](/decisions/0034-behaviour-matches-holo.md) makes every page behave exactly as Holo does. Anything else is listed
-here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p2-me-account.md) and, in its own
-section, the housekeeping pages of [HK-A](/phases/hk-a-housekeeping-core.md) and
-[HK-B](/phases/hk-b-users-moderation.md).
+here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p2-me-account.md),
+[P3](/phases/p3-homes.md) and [P4](/phases/p4-community.md) and, in its own section, the housekeeping pages of
+[HK-A](/phases/hk-a-housekeeping-core.md), [HK-B](/phases/hk-b-users-moderation.md), P3 and P4.
 
 # Safer than Holo
 

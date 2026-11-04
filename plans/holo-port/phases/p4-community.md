@@ -2,8 +2,8 @@
 type: Phase
 title: P4 Community
 description: Community page, news, tags with the tag cloud and tag fight, the staff page and banners, with their housekeeping editors.
-status: active
-timestamp: 2026-11-04T01:27:12+00:00
+status: done
+timestamp: 2026-11-04T17:03:28+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p4, cms, housekeeping]
 ---
@@ -66,7 +66,7 @@ Guests and habbos browse community content; staff write news and manage banners.
 - [p4-09 Show the community page](/tasks/p4-09-community-page.md) — done
 - [p4-10 Show the staff page](/tasks/p4-10-staff-page.md) — done
 - [p4-11 Fill the Me page's habblets and the landing's tag cloud](/tasks/p4-11-me-habblets.md) — done
-- [p4-12 Verify P4](/tasks/p4-12-exit-check.md) — todo
+- [p4-12 Verify P4](/tasks/p4-12-exit-check.md) — done
 - [p4-13 Escape habbo names in home links](/tasks/p4-13-home-links.md) — done
 - [p4-14 Count the updates in the admin suite from the release](/tasks/p4-14-admin-suite-updates.md) — done
 - [p4-15 Link articles to their uploaded images](/tasks/p4-15-link-article-images.md) — done
