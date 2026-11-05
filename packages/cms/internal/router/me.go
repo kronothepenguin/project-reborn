@@ -46,16 +46,16 @@ type mePage struct {
 	LastSignIn  string
 	// MyTags are the active habbo's, for the tags habblet, which offers room up
 	// to MaxTags.
-	MyTags  []string
-	MaxTags int
-	// Groups are the active habbo's, for the groups habblet, whose purchase
-	// dialog opens on Purchase.
-	Groups     []myGroup
-	Purchase   groupPurchase
+	MyTags     []string
+	MaxTags    int
 	Cloud      []cloudTag
 	TopStories []topStory
 	MoreNews   []newsLink
 	Banners    []banner
+	// Groups are the active habbo's, for the groups habblet, whose purchase
+	// dialog opens on Purchase.
+	Groups   []myGroup
+	Purchase groupPurchase
 }
 
 // HandleMeView renders GET /me, which auth.RequireSession guards.

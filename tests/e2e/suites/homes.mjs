@@ -37,6 +37,8 @@ export const prepare = ({ sql }) => {
   sql(`INSERT INTO profiles (avatar_id, created_at, updated_at) VALUES (${whoAvatar}, '${now}', '${now}')`);
   const [[whoProfile]] = sql(`SELECT id FROM profiles WHERE avatar_id = ${whoAvatar}`);
   sql(`INSERT INTO homes (profile_id, updated_at) VALUES (${whoProfile}, '${now}')`);
+  sql(`INSERT INTO club_subscriptions (user_id, starts_at, ends_at, created_at)
+    VALUES (${who}, '${now}', '2099-01-01 00:00:00.000000000+00:00', '${now}')`);
 
   const [[adminHome]] = sql(`SELECT homes.id FROM homes JOIN profiles ON profiles.id = homes.profile_id
     JOIN avatars ON avatars.id = profiles.avatar_id WHERE avatars.name = 'Admin-1'`);
@@ -70,6 +72,12 @@ export default async function ({ base, browser, check, shot, sql }) {
     "the note shows its BBCode and not its HTML",
     (await guest.page.locator(".stickie strong").innerText()) === "there" &&
       (await guest.page.locator(".stickie").innerText()).includes("<i>friend</i>"),
+  );
+  const narrow = await guest.page.locator("#playground").evaluate((el) => el.offsetWidth);
+  check(
+    "a home without the club has Holo's 752-pixel playground beside the club banner",
+    narrow === 752 && (await guest.page.locator('img[alt="hc habbohome banner holo"]').isVisible()),
+    String(narrow),
   );
   check(
     "the sticker shows its art",
@@ -273,6 +281,12 @@ export default async function ({ base, browser, check, shot, sql }) {
   await who.page.getByRole("link", { name: "Cancel" }).click();
   await who.page.waitForURL("**/home/Who%3Fme=1");
   check("Cancel goes back to that habbo's home", (await who.page.title()).endsWith("~ User Profile - Who?me=1"));
+  const wide = await who.page.locator("#playground").evaluate((el) => el.offsetWidth);
+  check(
+    "a club owner's home has Holo's 922-pixel playground and no club banner",
+    wide === 922 && (await who.page.locator('img[alt="hc habbohome banner holo"]').count()) === 0,
+    String(wide),
+  );
   check("no page failed for that habbo", who.problems.length === 0, who.problems.join(", "));
   await who.context.close();
 }

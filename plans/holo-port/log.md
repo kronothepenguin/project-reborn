@@ -4,6 +4,21 @@
 
 - **Decision** [0097](/decisions/0097-no-agent-works-on-main.md): no agent works on `main`; every line of work has its
   own feature branch and worktree, and the agent merges it once every gate passes.
+- **Done** [p5-07](/tasks/p5-07-group-settings.md): the owner's Edit menu opens Holo's settings, which rename, rewrite and
+  retype the group, or delete it with its items going back to those who placed them.
+- **Start** [p5-07](/tasks/p5-07-group-settings.md).
+- **Done** [p5-06](/tasks/p5-06-join-leave-favourite.md): the group page's tools join, request, leave and choose the favourite for
+  the active habbo, with Holo's dialogs and answers.
+- **Start** [p5-06](/tasks/p5-06-join-leave-favourite.md).
+- **Done** [p5-05](/tasks/p5-05-group-page.md): anyone reads a group's home with its Group information and Group Members
+  widgets, and a missing group gets Holo's page with the group search; a view writes nothing.
+- **Done** [p5-21](/tasks/p5-21-home-playground-widths.md): home playgrounds are 752 pixels beside the club banner and 922 without
+  it, as Holo's; since P3 every playground had taken 912.
+- **Start** [p5-21](/tasks/p5-21-home-playground-widths.md).
+- **Create** [p5-21](/tasks/p5-21-home-playground-widths.md): the playground widths were never generated.
+- **Update** [p5-04](/tasks/p5-04-buy-groups.md) broke two Me page tests that its record said passed; they are fixed, and
+  the record says what was run.
+- **Start** [p5-05](/tasks/p5-05-group-page.md).
 - **Done** [p5-20](/tasks/p5-20-tags-box-green.md): the Me page's Tags box is green, as Holo's.
 - **Start** [p5-20](/tasks/p5-20-tags-box-green.md).
 - **Create** [p5-20](/tasks/p5-20-tags-box-green.md): the Me page's Tags box is orange where Holo's is green.

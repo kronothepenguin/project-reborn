@@ -220,11 +220,11 @@ func TestMeCarriesTheTagsHabbletTheNewsAndTheBanners(t *testing.T) {
 		"MyTags:[retro holo] MaxTags:7 Cloud:[",
 		"{Tag:retro Size:200}", "{Tag:holo Size:100}",
 		fmt.Sprintf("TopStories:[{ID:%d Title:Story Summary: Image:/web-gallery/images/top-story/top_story_news.png}] MoreNews:[]", story),
-		"Banners:[{Text:Ad Image:/ad.gif Link:/tags}]}")
+		"Banners:[{Text:Ad Image:/ad.gif Link:/tags}]")
 }
 
 func TestMeShowsNoTagsForAHabboWithoutAny(t *testing.T) {
 	db, mux := newSite(t)
 	cookie, _, _ := member(t, db, mux)
-	wantPage(t, serve(mux, "GET", "/me", cookie, nil), http.StatusOK, "MyTags:[] MaxTags:20 Cloud:[] TopStories:[] MoreNews:[] Banners:[]}")
+	wantPage(t, serve(mux, "GET", "/me", cookie, nil), http.StatusOK, "MyTags:[] MaxTags:20 Cloud:[] TopStories:[] MoreNews:[] Banners:[]")
 }

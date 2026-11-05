@@ -93,9 +93,9 @@ task:
 - [p5-02 Store groups and their members](/tasks/p5-02-store-groups.md) — done
 - [p5-03 Draw group badges](/tasks/p5-03-badge-renderer.md) — done
 - [p5-04 Buy groups from the Me page](/tasks/p5-04-buy-groups.md) — done
-- [p5-05 Show a group's home](/tasks/p5-05-group-page.md) — todo
-- [p5-06 Join, leave and favourite groups](/tasks/p5-06-join-leave-favourite.md) — todo
-- [p5-07 Change and delete a group](/tasks/p5-07-group-settings.md) — todo
+- [p5-05 Show a group's home](/tasks/p5-05-group-page.md) — done
+- [p5-06 Join, leave and favourite groups](/tasks/p5-06-join-leave-favourite.md) — done
+- [p5-07 Change and delete a group](/tasks/p5-07-group-settings.md) — done
 - [p5-08 Manage a group's members](/tasks/p5-08-group-members.md) — todo
 - [p5-09 Edit a group's badge](/tasks/p5-09-badge-editor.md) — todo
 - [p5-10 Decorate a group's home](/tasks/p5-10-decorate-group-homes.md) — todo
@@ -109,6 +109,7 @@ task:
 - [p5-18 Keep the badge palette the user picks](/tasks/p5-18-keep-one-badge-palette.md) — todo
 - [p5-19 Verify P5](/tasks/p5-19-exit-check.md) — todo
 - [p5-20 Colour the Me page's Tags box as Holo's](/tasks/p5-20-tags-box-green.md) — done
+- [p5-21 Give home playgrounds their widths](/tasks/p5-21-home-playground-widths.md) — done
 
 They run in this order on `main` ([0046](/decisions/0046-main-and-feature-branches.md)). [p5-18](/tasks/p5-18-keep-one-badge-palette.md)
 waits for the user's pick from the sheet of [p5-03](/tasks/p5-03-badge-renderer.md).

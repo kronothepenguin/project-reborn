@@ -43,8 +43,10 @@ cd tests/e2e && node run.mjs groups me
 
 Results (2026-11-05T19:56:42+00:00):
 
-- `gofmt`, `go vet` and `go test` pass in `packages/cms` and `packages/store`; `pnpm build` passes, and `svelte-check`
-  finds nothing in the new components.
+- `gofmt` and `go vet` pass in `packages/cms` and `packages/store`, and so do the new tests; `pnpm build` passes, and
+  `svelte-check` finds nothing in the new components. The whole of `packages/cms` was not run here: the next run, in
+  [p5-05](/tasks/p5-05-group-page.md), found two Me page tests that read the page's data up to its last field, which
+  the groups habblet's fields had moved. They are fixed in the commit after this task's, and the whole package passes.
 - `node run.mjs groups me` passes all 50 checks. `groups` (14) signs Frank in with 30 credits and finds:
   - Holo's blue Groups box on My Groups, with its text, his group and its badge, which the CMS draws at 39 pixels;
   - Hot Groups loading the three groups at random with the purchase button;
