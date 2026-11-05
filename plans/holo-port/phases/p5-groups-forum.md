@@ -97,7 +97,7 @@ task:
 - [p5-06 Join, leave and favourite groups](/tasks/p5-06-join-leave-favourite.md) — done
 - [p5-07 Change and delete a group](/tasks/p5-07-group-settings.md) — done
 - [p5-08 Manage a group's members](/tasks/p5-08-group-members.md) — done
-- [p5-09 Edit a group's badge](/tasks/p5-09-badge-editor.md) — todo
+- [p5-09 Edit a group's badge](/tasks/p5-09-badge-editor.md) — done
 - [p5-10 Decorate a group's home](/tasks/p5-10-decorate-group-homes.md) — todo
 - [p5-11 Show groups across the site](/tasks/p5-11-groups-across-the-site.md) — todo
 - [p5-12 Store the forum](/tasks/p5-12-store-forum.md) — todo

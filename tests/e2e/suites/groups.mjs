@@ -542,6 +542,29 @@ async function ownerTools({ base, browser, check, shot, sql }) {
   );
   await members.getByRole("tabpanel").getByRole("button", { name: "Close" }).click();
 
+  await page.goto(`${base}/groups/${retro}`);
+  const colourFile = page.waitForResponse((r) => r.url().endsWith("/habbo-widgets/badge-editor/data/badge_data.xml"));
+  await page.getByRole("button", { name: "Edit" }).click();
+  await page.getByRole("button", { name: "Badge" }).click();
+  const editor = page.locator("#editor-container canvas");
+  await editor.waitFor();
+  check("the badge editor reads the CMS's colours", (await colourFile).status() === 200);
+  await page.waitForTimeout(500);
+  await shot(page, "group-badge-editor");
+  // Base colour 2 sits at 173,303 of the editor's canvas, and Save at 50,354.
+  await editor.click({ position: { x: 173, y: 303 } });
+  await Promise.all([page.waitForEvent("load"), editor.click({ position: { x: 50, y: 354 } })]);
+  await page.locator(".group-info-widget img").waitFor();
+  const [[saved]] = sql(`SELECT badge FROM groups WHERE id = ${retro}`);
+  const drawn = await page
+    .locator(`.group-info-widget img[src="/habbo-imaging/badge/${saved}"]`)
+    .evaluate((img) => img.complete && img.naturalWidth);
+  check(
+    "Save stores the editor's code, with the base's new colour, and the page draws it",
+    saved === "b0702Xs01124" && drawn === 39,
+    `${saved} ${drawn}`,
+  );
+
   await page.goto(`${base}/groups/${id("Quiet Corner")}`);
   await page.getByRole("button", { name: "Edit" }).click();
   await page.getByRole("button", { name: "Members" }).click();

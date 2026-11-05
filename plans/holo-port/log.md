@@ -2,6 +2,9 @@
 
 ## 2026-11-05
 
+- **Done** [p5-09](/tasks/p5-09-badge-editor.md): a group's admins design its badge in the HTML5 port of Holo's editor, with
+  the live palette, and the renderer draws the checked code they save.
+- **Start** [p5-09](/tasks/p5-09-badge-editor.md).
 - **Done** [p5-08](/tasks/p5-08-group-members.md): a group's admins list members and requests twelve a page, and accept,
   decline, give and revoke rights and remove, never touching the owner.
 - **Update** `p5` reaches `main` up to [p5-07](/tasks/p5-07-group-settings.md), with every gate passing.

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Bubble, Button, Card, Dialog, GroupBadge, Icon, Spinner } from "@project-reborn/components";
   import { onMount } from "svelte";
+  import BadgeEditor from "./badge-editor.svelte";
   import MemberList from "./member-list.svelte";
 
   // source holds the group's settings for group_settings.php's form. The island
@@ -22,6 +23,7 @@
   let menu = $state(false);
   let settings = $state(false);
   let membersOpen = $state(false);
+  let badgeOpen = $state(false);
   let name = $state("");
   let description = $state("");
   let access = $state<Access>("open");
@@ -162,6 +164,16 @@
             class="cursor-pointer pb-[5px] pl-5 text-taupe-500 hover:underline"
             onclick={() => {
               menu = false;
+              badgeOpen = true;
+            }}>Badge</button
+          >
+        </li>
+        <li class="py-[5px]">
+          <button
+            type="button"
+            class="cursor-pointer pb-[5px] pl-5 text-taupe-500 hover:underline"
+            onclick={() => {
+              menu = false;
               membersOpen = true;
             }}>Members</button
           >
@@ -172,6 +184,7 @@
 </div>
 
 <MemberList bind:open={membersOpen} {group} {me} />
+<BadgeEditor bind:open={badgeOpen} {group} code={badge} />
 
 <Dialog bind:open={settings} label="Group settings" class="m-auto w-[480px] bg-transparent backdrop:bg-black/40">
   <Card color="black">

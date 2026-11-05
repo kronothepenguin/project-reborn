@@ -54,6 +54,12 @@ serves the built frontend from the embedded `dist/`.
   reads `GET /xml/promo-habbos.xml`, and its button sends `gender` and `figure` to
   `/register`. With `features.landingPromo` off the landing shows the join button
   and the feed answers 404.
+- `groups/badge-editor` wraps the HTML5 port of Holo's Flash badge editor, built from
+  `vendor/HabboWidgets/badge-editor/badge-editor` (`npm ci && npm run build`) into
+  `public/habbo-widgets/badge-editor/`: `badge-editor.js`, `data/` and `sprites/`,
+  without the zip. Its `data/badge_data.xml` holds the live palette of
+  `internal/badge`, and a test keeps the two equal. The editor draws itself into
+  `#editor-container` when its script first runs.
 - `register/registration-form` is the port of Holo's `registration.js`. The form is
   plain HTML that works without JavaScript, and the island reads it by id: it
   keeps step 3 closed until the name passes the check, shows Holo's tooltips and
