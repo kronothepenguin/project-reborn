@@ -2,6 +2,9 @@
 
 ## 2026-11-05
 
+- **Done** [p5-13](/tasks/p5-13-forum-pages.md): anyone reads the discussion board, with every sticky on each page, and its
+  threads ten posts a page with Holo's post boxes.
+- **Start** [p5-13](/tasks/p5-13-forum-pages.md).
 - **Done** [p5-12](/tasks/p5-12-store-forum.md): the store reads the board with every sticky on each page and a thread's posts
   with their habbos, and writes, edits and deletes threads and posts.
 - **Start** [p5-12](/tasks/p5-12-store-forum.md).

@@ -18,6 +18,8 @@ func TestNoPageHidesAFieldOfTheLayout(t *testing.T) {
 			reflect.TypeFor[groupMissingPage](),
 			reflect.TypeFor[groupPage](),
 			reflect.TypeFor[groupEditPage](),
+			reflect.TypeFor[forumPage](),
+			reflect.TypeFor[forumThreadPage](),
 			reflect.TypeFor[habbosPage](),
 			reflect.TypeFor[homeEditPage](),
 			reflect.TypeFor[homeMissingPage](),

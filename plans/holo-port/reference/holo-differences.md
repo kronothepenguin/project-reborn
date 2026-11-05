@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-05T21:57:11+00:00
+timestamp: 2026-11-05T22:22:51+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -78,6 +78,9 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Group home editor | `Modify page` opens for any of the user's admin roles | Only while the admin habbo is active | [0086](/decisions/0086-roles-and-posts-follow-the-active-habbo.md) |
 | Group page | `Search for group` takes a `LIKE` pattern, so `%` and `_` match anything and the first match opens | The group with exactly that name, ignoring case, at `GET /groups?name=` | [0095](/decisions/0095-group-search-and-report-addresses.md) |
 | Group page | Lists every member, archived habbos included | Archived habbos are left out of the members and their count | [0089](/decisions/0089-archived-habbos-show-as-archived.md) |
+| Discussion board | Pages count every thread, stickies included, and the stickies take places among the first page's ten | Every sticky heads each page, then ten other threads, and the pages count the others | [0088](/decisions/0088-stickies-head-every-page.md) |
+| Discussion board | Names every habbo | An archived habbo shows `archived`, with no link, and its post boxes keep only that and the offline picture | [0089](/decisions/0089-archived-habbos-show-as-archived.md) |
+| Discussion board | `Messages:` counts every post the user ever wrote, deleted ones included | The posts the habbo has on the board now | The plan: counts are queried from the posts, never stored |
 | Group badge | The Flash `BadgeEditor.swf`, with its colours from habbo.co.uk | The HTML5 port in `vendor/HabboWidgets`, with the live palette | [0021](/decisions/0021-dropped-and-kept-features.md), [0042](/decisions/0042-two-badge-palettes.md) |
 | Group badges | Holo's 18 tints | The closest Tailwind colours, until the user picks one palette from the sheet | [0042](/decisions/0042-two-badge-palettes.md), [0093](/decisions/0093-badge-palettes-compared-on-a-sheet.md) |
 | Several habbos | A habbo is never removed | A user archives a habbo, which hides it and keeps its name | [0058](/decisions/0058-habbos-are-archived.md) |
@@ -145,6 +148,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Texts | `An request`, `Noone`, `You are already member`, `dont` on the group page's dialogs | Spelled correctly |
 | Group page | The Group Members widget takes its favourite icon, and its tiles their background, from Habbo's CDN, which is gone | The favourite mark of Holo's own `info_icons.png`; the tiles keep their dashed border alone, as Holo's show now |
 | Header | `My Groups` opens on layer 99, under any home item placed higher | The menu stays above the page |
+| Discussion board | The jump to a thread's last post counts two views, its own and the page it sends to | The last post's date links straight to the thread's last page, which counts one |
 | Home page | `widget_add.php` lists and counts every membership in a new MY GROUPS, waiting requests included, until the page reloads | The joined groups, as the page lists them |
 | Home page | The info box of a group that no longer exists is empty, and its script then fails on the missing minus, which leaves the widget blank | `Invalid group or no group supplied.`, with its minus |
 | Group home editor | Never shows `This item belongs to another user. If you remove it, it will return to their inventory.`, because the page calls `openEditMenu` without its fifth argument | It shows on the stickers and notes another user placed |
@@ -320,7 +324,7 @@ veto.
 | --- | --- |
 | `My Friends`, `My Rooms` and the recommended rooms | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | The wardrobe on `/account/looks` | [P6](/phases/p6-economy.md) |
-| The online state of the profile widget, the community page's random habbos and the staff page, which show offline | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
+| The online state of the profile widget, the community page's random habbos, the staff page and the forum's post boxes, which show offline | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | `Voucher Management` in housekeeping | [P6](/phases/p6-economy.md) |
 | `Chatlogs` and `Online Users` in housekeeping | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | The pages behind Help and Credits | [P7](/phases/p7-help.md), [P6](/phases/p6-economy.md) |

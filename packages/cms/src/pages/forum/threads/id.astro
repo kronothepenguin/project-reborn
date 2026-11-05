@@ -1,0 +1,29 @@
+---
+import ForumBox from "../../../components/forum/forum-box.astro";
+import PageNumbers from "../../../components/forum/page-numbers.astro";
+import Post from "../../../components/forum/post.astro";
+import Community from "../../../layouts/community.astro";
+---
+
+<Community title="[[ .ShortName ]] ~ Discussion - [[ .Title ]]" tab="community" sub="Discussion Board">
+  <ForumBox>
+    <div class="flow-root pt-1 pr-0 pb-2 pl-2">
+      [[ if and .SignedIn .Locked ]]<span class="float-left pr-[11px] font-bold text-neutral-700"
+        ><img class="inline" src="/web-gallery/images/groups/status_closed.gif" title="Closed Thread" alt="" /> Closed Thread</span
+      >[[ end ]]
+      <PageNumbers base="/forum/threads/[[ $.ThreadID ]]?page=" />
+    </div>
+    <table class="w-full border-collapse" id="group-postlist-list">
+      [[ range .Posts ]]
+      <Post />
+      [[ end ]]
+    </table>
+    <div class="flow-root pt-1 pr-0 pb-2 pl-2">
+      [[ if .SignedIn ]][[ if .Locked ]]<span class="float-left pr-[11px] font-bold text-neutral-700"
+        ><img class="inline" src="/web-gallery/images/groups/status_closed.gif" title="Closed Thread" alt="" /> Closed Thread</span
+      >[[ end ]][[ else ]] You must be logged in to reply or post new threads. [[ end ]]
+      <PageNumbers base="/forum/threads/[[ $.ThreadID ]]?page=" />
+    </div>
+    <span id="page-bottom"></span>
+  </ForumBox>
+</Community>

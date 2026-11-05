@@ -35,7 +35,8 @@ screenshots and server logs stay in `.run/`, which is git-ignored.
 | `maintenance` | The site closed, and staff signing in |
 | `news` | The archive, an article, a category and the headlines, as a guest reads them |
 | `tags` | The cloud, a search, the tag fight and tagging yourself |
-| `groups` | The Me page's Groups box, Hot Groups and buying a group |
+| `groups` | The Me page's Groups box, buying a group, group pages, membership, the admins' tools, decorating, and My Groups |
+| `forum` | The discussion board and its threads, as a guest and signed in, and the board switched off |
 | `community` | The random habbos, the news promo turning, the tag cloud and the banners |
 | `staff` | The staff list, the two boxes and their settings, and the page switched off |
 | `art` | The home art, served by the binary |

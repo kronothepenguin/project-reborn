@@ -13,6 +13,8 @@ export { default as Link } from "./components/link.svelte";
 export { default as Menu } from "./components/menu.svelte";
 export { default as MenuItem } from "./components/menu-item.svelte";
 export { default as Notice } from "./components/notice.svelte";
+export { default as Pagination } from "./components/pagination.svelte";
+export { default as PaginationItem } from "./components/pagination-item.svelte";
 export { default as Paper } from "./components/paper.svelte";
 export { default as Select } from "./components/select.svelte";
 export { default as Spinner } from "./components/spinner.svelte";

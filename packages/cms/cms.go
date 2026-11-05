@@ -127,6 +127,9 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /homes/{id}/items/{item}/skin", page(auth.RequireSession(http.HandlerFunc(r.HandleHomesItemsSkin))))
 	mux.Handle("POST /homes/{id}/items/{item}/delete", page(auth.RequireSession(http.HandlerFunc(r.HandleHomesItemsDelete))))
 
+	mux.Handle("GET /forum", page(http.HandlerFunc(r.HandleForumView)))
+	mux.Handle("GET /forum/threads/{id}", page(http.HandlerFunc(r.HandleForumThreadsView)))
+
 	mux.Handle("GET /register", guestPage(r.HandleRegisterView))
 	mux.Handle("POST /register", guestPage(r.HandleRegister))
 	mux.Handle("POST /register/check-name", page(http.HandlerFunc(r.HandleRegisterCheckName)))

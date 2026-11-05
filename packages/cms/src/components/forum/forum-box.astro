@@ -1,0 +1,24 @@
+---
+// Holo's Discussion Board box around the board and its threads: its title and
+// tab, and the 750-pixel column beside the empty 164-pixel one.
+---
+
+<div id="mypage-wrapper" class="rounded border-2 border-black bg-white p-1">
+  <div class="flow-root px-2.5 pt-1">
+    <h2 class="float-left mr-2 text-sm font-bold text-sky-500">Discussion Board</h2>
+    <ul class="h-[25px] border-b border-cyan-600 px-[5px]">
+      <li class="float-left ml-1 h-[25px]">
+        <a
+          href="/forum"
+          class="float-left h-[25px] rounded-t border-t border-r border-l border-cyan-600 bg-white px-3.5 pt-1.5 font-bold text-black no-underline"
+          aria-current="page">Discussion Board</a
+        >
+      </li>
+    </ul>
+  </div>
+  <div class="mt-[5px] flex">
+    <div class="w-[750px]"><slot /></div>
+    <div class="w-1"></div>
+    <div class="w-[164px]"></div>
+  </div>
+</div>

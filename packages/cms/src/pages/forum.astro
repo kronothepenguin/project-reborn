@@ -1,0 +1,11 @@
+---
+import ForumBox from "../components/forum/forum-box.astro";
+import TopicList from "../components/forum/topic-list.astro";
+import Community from "../layouts/community.astro";
+---
+
+<Community title="[[ .ShortName ]] ~ Discussion Board" tab="community" sub="Discussion Board">
+  <ForumBox>
+    <TopicList />
+  </ForumBox>
+</Community>

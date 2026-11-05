@@ -1,0 +1,47 @@
+---
+import { Avatar, GroupBadge } from "@project-reborn/components";
+
+// One of viewthread.php's post boxes inside [[ range .Posts ]], so . is the post
+// and $ the page. An archived habbo shows archived, with no link, and none of its
+// avatar, badges, motto and message count (0089). The habbo shows offline (0087).
+---
+
+<tr class:list={["[[ if .Even ]] bg-olive-200 [[ end ]]"]} id="post-[[ .ID ]]">
+  <td class="w-[148px] px-1 py-1.5 align-top text-neutral-500">
+    [[ if .AuthorArchived ]]<span class="pl-[11px] align-super text-black">archived</span>[[ else ]]<a
+      class="pl-[11px] align-super text-black underline"
+      href="/home?name=[[ .Author ]]">[[ .Author ]]</a
+    >[[ end ]]<br />&nbsp;<img class="inline" alt="Offline" src="/myhabbo/habbo_offline.gif" />
+    [[ if not .AuthorArchived ]]
+    <div class="pl-[11px]">Messages: [[ .Messages ]]</div>
+    <div class="flow-root">
+      <div class="float-left">
+        <Avatar
+          imagingUrl="[[ $.ImagingURL ]]"
+          figure="[[ .Figure ]]"
+          size="b"
+          direction={2}
+          headDirection={2}
+          gesture="sml"
+          alt="[[ .Author ]]"
+        />
+      </div>
+      <div class="float-left h-10 w-[60px] pt-[23px] text-center">
+        [[ if .Group ]]<a href="/groups/[[ .Group ]]"><GroupBadge class="inline" code="[[ .GroupBadge ]]" /></a>[[ end ]]
+      </div>
+      <div class="float-left h-10 w-[60px] pt-1 text-center">
+        [[ if .Badge ]]<img class="inline" src="[[ .Badge ]]" alt="" />[[ end ]]
+      </div>
+    </div>
+    <div class="clear-both overflow-hidden pt-1 pl-[11px] break-words">[[ .Motto ]]</div>
+    [[ end ]]
+  </td>
+  <td class="overflow-hidden p-[9px] align-top break-words" colspan="2">
+    <span class="text-xs font-bold">[[ if .RE ]]RE: [[ end ]][[ $.Title ]]</span><br />
+    <span class="text-[10px] text-neutral-500">[[ .Date ]]</span>
+    [[ if .Edited ]]<br /><br /><strong class="text-[10px]"
+      >Last modified [[ .EditedAt ]] by [[ if .EditorArchived ]]archived[[ else ]][[ .Editor ]][[ end ]]</strong
+    >[[ end ]]
+    <div class="mt-2.5 w-[540px] overflow-hidden break-words">[[ .HTML ]]</div>
+  </td>
+</tr>

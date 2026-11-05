@@ -1,0 +1,17 @@
+---
+import { Pagination, PaginationItem } from "@project-reborn/components";
+
+// Holo's View page: list from [[ .Pages ]]. base is the address a page's number
+// ends, written with $ since . is the page link inside the range.
+interface Props {
+  base: string;
+}
+
+const { base } = Astro.props;
+---
+
+<Pagination class="float-right">
+  [[ range .Pages ]][[ if .Current ]]<PaginationItem current>[[ .Number ]]</PaginationItem>[[ else ]]<PaginationItem
+    href={`${base}[[ .Number ]]`}>[[ .Number ]]</PaginationItem
+  >[[ end ]] [[ end ]]
+</Pagination>
