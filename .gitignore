@@ -13,6 +13,9 @@ tmp/
 
 /config.json
 
+# Every agent works in its own worktree here, never on main.
+.claude/worktrees/
+
 # If you prefer the allow list template instead of the deny list, see community template:
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 #

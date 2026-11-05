@@ -25,7 +25,7 @@ Task:
 - [ ] status: done, timestamp updated, verified: [{by, at}] added
 - [ ] tasks/index.md and the phase file updated
 - [ ] "**Done**" log entry under today's "## YYYY-MM-DD"
-- [ ] committed, not pushed, on main or on the work's feature branch (decision 0046)
+- [ ] committed, not pushed, on the work's feature branch, never on main (decision 0097)
 ```
 
 - Blocked: `status: blocked`, reason in `# Notes`, `**Blocked**` log entry.
@@ -35,9 +35,11 @@ Task:
 
 ## Branches
 
-- Sequential work goes on `main`, one commit per finished task.
-- Parallel work goes on feature branches, one for each line of work, named after its phase, such as `hk-a`, each in its own
-  worktree. A branch merges into `main` once its work is done and verified.
+- Never work on `main`. Every line of work, sequential or parallel, goes on its own feature branch named after its phase,
+  such as `p5`, in its own worktree under `.claude/worktrees/<branch>` (decision 0097).
+- When the branch's work is done and verified, merge it without asking: merge `main` into the branch inside the worktree,
+  run every gate there, then fast-forward `main` from the main checkout with `git merge --ff-only <branch>`. If `main`
+  moved, start again.
 - Never push.
 
 ## Decisions

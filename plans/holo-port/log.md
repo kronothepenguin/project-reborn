@@ -9,6 +9,8 @@
 - **Start** [p5-10](/tasks/p5-10-decorate-group-homes.md).
 - **Done** [p5-09](/tasks/p5-09-badge-editor.md): a group's admins design its badge in the HTML5 port of Holo's editor, with
   the live palette, and the renderer draws the checked code they save.
+- **Decision** [0097](/decisions/0097-no-agent-works-on-main.md): no agent works on `main`; every line of work has its
+  own feature branch and worktree, and the agent merges it once every gate passes.
 - **Start** [p5-09](/tasks/p5-09-badge-editor.md).
 - **Done** [p5-08](/tasks/p5-08-group-members.md): a group's admins list members and requests twelve a page, and accept,
   decline, give and revoke rights and remove, never touching the owner.

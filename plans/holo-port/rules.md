@@ -89,17 +89,21 @@ repository path in backticks (`packages/store/store.go`).
    next phase to `active`, and update the current phase in `/index.md`.
 4. Log `**Done** [<id>](/tasks/<file>)` with one line about the outcome.
 5. Commit the task without pushing, on the branch [Branches](#branches) names.
+6. When the task ends its branch's work, merge the branch as [Branches](#branches) says.
 
 ## Branches
 
-[0046](/decisions/0046-main-and-feature-branches.md) sets where work goes:
+[0097](/decisions/0097-no-agent-works-on-main.md) sets where work goes:
 
-- Sequential work goes on `main`, one commit per finished task.
-- Parallel work goes on feature branches, one for each line of work, named after its phase, such as `hk-a`. Each runs in its
-  own worktree, so that agents do not touch each other's files.
-- A feature branch merges into `main` once its work is done and verified, with every gate passing on the merged result.
-- The agent commits without being asked, in one-line titles (`feat:`, `fix:`, `refactor:`, `docs:`), and each commit builds
-  on its own. The agent never pushes.
+- No agent works on `main`: nothing is edited or committed in the main checkout.
+- Every line of work, sequential or parallel, goes on its own feature branch named after its phase, such as `p5` or
+  `hk-a`, in its own worktree under `.claude/worktrees/<branch>`, so that agents do not touch each other's files.
+- The agent commits without being asked, one commit per finished task, in one-line titles (`feat:`, `fix:`, `refactor:`,
+  `docs:`), and each commit builds on its own. The agent never pushes.
+- When the branch's work is done and verified, the agent merges it by itself, without asking: it merges `main` into the
+  branch inside its worktree, runs every gate there, and then fast-forwards `main` from the main checkout with
+  `git merge --ff-only <branch>`. If `main` moved in the meantime, it starts again. That fast-forward is the only thing an
+  agent does on `main`.
 
 ## Change of scope
 

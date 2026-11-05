@@ -2,7 +2,7 @@
 type: Reference
 title: How the programs work together
 description: Which programs make up Project Reborn, what each one owns, and how they interact when they run alone and when they run together in one process.
-timestamp: 2026-11-04T16:52:36+00:00
+timestamp: 2026-11-05T20:57:45+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [architecture]
 ---
@@ -16,7 +16,7 @@ Packages hold the code of each program, and `apps/<name>` is a thin runner aroun
 | Installer | `packages/installer` | `apps/installer` | built | Writes `config.json`, creates the database, the site settings and the first administrator |
 | CMS | `packages/cms` | `apps/cms` | being built | The public site |
 | Housekeeping | `packages/housekeeping` | `apps/housekeeping` | HK-A built | The staff panel |
-| Game server | `packages/server` | not decided | deferred ([0013](/decisions/0013-defer-game-server-features.md)) | The hotel itself |
+| Game server | `packages/server` | `apps/server` | planned in `plans/server`; the site's game-server features stay deferred ([0013](/decisions/0013-defer-game-server-features.md)) | The hotel itself |
 | Orchestrator | none | `apps/reborn` | later ([0039](/decisions/0039-orchestrator-is-a-later-project.md)) | Runs all of the above from one binary |
 
 # What each program does with shared state

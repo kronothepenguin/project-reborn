@@ -70,9 +70,11 @@ Web apps have two modes:
 
 ## Workflow
 
-- Sequential work goes on `main`, one commit per finished task.
-- Parallel work, such as agents building housekeeping beside the CMS, goes on feature branches, one for each line of work,
-  and is merged into `main` once it is done and verified.
+- No agent works on `main`. Every line of work, sequential or parallel, goes on its own feature branch in its own worktree
+  under `.claude/worktrees/<branch>`, so that several agents can work at once without touching each other's files.
+- When its work is done and verified, the agent merges the branch by itself: it merges `main` into the branch inside its
+  worktree, runs every gate there, and then fast-forwards `main` from the main checkout with
+  `git merge --ff-only <branch>`. If `main` moved in the meantime, it starts again. Agents never push.
 
 ---
 
