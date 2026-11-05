@@ -3,7 +3,7 @@ type: Phase
 title: P5 Groups and forum
 description: Groups with group homes, membership management, the badge editor and renderer, and the site-wide discussion board.
 status: active
-timestamp: 2026-11-05T19:06:47+00:00
+timestamp: 2026-11-05T21:26:34+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p5, cms]
 ---
@@ -111,6 +111,7 @@ task:
 - [p5-20 Colour the Me page's Tags box as Holo's](/tasks/p5-20-tags-box-green.md) — done
 - [p5-21 Give home playgrounds their widths](/tasks/p5-21-home-playground-widths.md) — done
 
-They run in this order on `main` ([0046](/decisions/0046-main-and-feature-branches.md)). [p5-18](/tasks/p5-18-keep-one-badge-palette.md)
-waits for the user's pick from the sheet of [p5-03](/tasks/p5-03-badge-renderer.md).
+They run in this order on the `p5` branch, in its own worktree, which merges into `main` whenever every gate passes
+([0097](/decisions/0097-no-agent-works-on-main.md)). [p5-18](/tasks/p5-18-keep-one-badge-palette.md) waits for the
+user's pick from the sheet of [p5-03](/tasks/p5-03-badge-renderer.md).
 
