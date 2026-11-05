@@ -194,6 +194,7 @@ starts.
 - [p5-18 Keep the badge palette the user picks](/tasks/p5-18-keep-one-badge-palette.md) — Once the user picks a palette from the sheet, the other is deleted from the renderer, the badge editor's colour data and the docs.
 - [p5-19 Verify P5](/tasks/p5-19-exit-check.md) — Every exit criterion of P5 holds from a clean checkout, in a real browser.
 - [p5-20 Colour the Me page's Tags box as Holo's](/tasks/p5-20-tags-box-green.md) — The Me page's Tags box takes the green heading and tab line of Holo's green box, in place of the orange of its default boxes.
+- [p5-21 Give home playgrounds their widths](/tasks/p5-21-home-playground-widths.md) — The playground of a home is 752 pixels beside the club banner and 922 without it, as Holo's, now that Tailwind generates the two widths written beside the template's markers.
 
 ## Later phases
 

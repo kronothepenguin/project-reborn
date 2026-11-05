@@ -41,7 +41,8 @@ const { editing = false } = Astro.props;
       <div
         id="playground"
         class:list={[
-          "[[ if .Wide ]]w-[922px][[ else ]]w-[752px][[ end ]] relative h-[1360px] overflow-hidden",
+          // Tailwind finds a class only between spaces, so each stands apart from the markers.
+          "[[ if .Wide ]] w-[922px] [[ else ]] w-[752px] [[ end ]] relative h-[1360px] overflow-hidden",
           editing && "border border-dotted border-black",
         ]}
       >

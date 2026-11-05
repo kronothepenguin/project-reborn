@@ -2,6 +2,13 @@
 
 ## 2026-11-05
 
+- **Done** [p5-21](/tasks/p5-21-home-playground-widths.md): home playgrounds are 752 pixels beside the club banner and 922 without
+  it, as Holo's; since P3 every playground had taken 912.
+- **Start** [p5-21](/tasks/p5-21-home-playground-widths.md).
+- **Create** [p5-21](/tasks/p5-21-home-playground-widths.md): the playground widths were never generated.
+- **Update** [p5-04](/tasks/p5-04-buy-groups.md) broke two Me page tests that its record said passed; they are fixed, and
+  the record says what was run.
+- **Start** [p5-05](/tasks/p5-05-group-page.md).
 - **Done** [p5-20](/tasks/p5-20-tags-box-green.md): the Me page's Tags box is green, as Holo's.
 - **Start** [p5-20](/tasks/p5-20-tags-box-green.md).
 - **Create** [p5-20](/tasks/p5-20-tags-box-green.md): the Me page's Tags box is orange where Holo's is green.
