@@ -132,10 +132,10 @@ func TestOnlyTheOwnersActiveHabboChangesOrDeletesTheGroup(t *testing.T) {
 	if got, _ := q.GetGroup(t.Context(), club.ID); got.Name != "Club" {
 		t.Errorf("the group changed: %+v", got)
 	}
-	if body := serve(mux, "GET", fmt.Sprintf("/groups/%d", club.ID), login(t, db, "club-owner"), nil).Body.String(); !strings.Contains(body, "Owner:true}") {
+	if body := serve(mux, "GET", fmt.Sprintf("/groups/%d", club.ID), login(t, db, "club-owner"), nil).Body.String(); !strings.Contains(body, "Admin:true Owner:true Me:") {
 		t.Errorf("the owner's page lacks the Edit menu: %s", body)
 	}
-	if body := serve(mux, "GET", fmt.Sprintf("/groups/%d", club.ID), ownerToo, nil).Body.String(); !strings.Contains(body, "Owner:false}") {
+	if body := serve(mux, "GET", fmt.Sprintf("/groups/%d", club.ID), ownerToo, nil).Body.String(); !strings.Contains(body, "Admin:false Owner:false Me:") {
 		t.Errorf("the owner's other habbo gets the Edit menu: %s", body)
 	}
 }

@@ -20,7 +20,14 @@ import Community from "../../layouts/community.astro";
         data-max-members="[[ .MaxMembers ]]"
       >
       </div>
-      <GroupTools client:only="svelte" group="[[ .GroupID ]]" owner="[[ .Viewer.Owner ]]" source="group-settings-data" />
+      <GroupTools
+        client:only="svelte"
+        group="[[ .GroupID ]]"
+        admin="[[ .Viewer.Admin ]]"
+        owner="[[ .Viewer.Owner ]]"
+        me="[[ .Viewer.Me ]]"
+        source="group-settings-data"
+      />
       <h2 class="flex items-center gap-1 text-sm font-bold text-sky-500">
         [[ .Group ]] [[ if .Private ]]<img src="/web-gallery/images/status_closed_big.gif" alt="Closed Group" title="Closed Group" />[[ end ]]
         [[ if .Exclusive ]]<img src="/web-gallery/images/status_exclusive_big.gif" alt="Moderated Group" title="Moderated Group" />[[ end ]]

@@ -268,8 +268,11 @@ type groupViewer struct {
 	Join      string
 	Favourite string
 	Leave     bool
-	// Owner opens the Edit menu with its Settings.
+	// Admin opens the Edit menu, and Owner adds its Settings.
+	Admin bool
 	Owner bool
+	// Me is the active habbo, whose own row the member list treats apart.
+	Me int64
 }
 
 // groupInfo is the Group information widget.
@@ -432,6 +435,7 @@ func (r *Router) groupViewer(ctx context.Context, group store.Group) (groupViewe
 	if !ok {
 		return viewer, nil
 	}
+	viewer.Me = session.AvatarID
 	row, err := r.deps.Queries.GetGroupMember(ctx, store.GetGroupMemberParams{GroupID: group.ID, AvatarID: session.AvatarID})
 	switch {
 	case store.IsNotFound(err):
@@ -452,6 +456,7 @@ func (r *Router) groupViewer(ctx context.Context, group store.Group) (groupViewe
 		viewer.Favourite = "remove"
 	}
 	viewer.Owner = session.AvatarID == group.AvatarID
+	viewer.Admin = row.Role == roleAdmin
 	viewer.Leave = !viewer.Owner
 	return viewer, nil
 }
@@ -753,4 +758,32 @@ func (r *Router) HandleGroupsDelete(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	r.answerJSON(w, http.StatusOK, groupAnswer{Message: groupDeleted})
+}
+
+type badgeBody struct {
+	Code string `json:"code"`
+}
+
+// HandleGroupsBadge handles POST /groups/{id}/badge, save_group_badge.php: an admin
+// stores the code the badge editor wrote. A code the editor would not write is
+// refused, where Holo stored anything it was sent.
+func (r *Router) HandleGroupsBadge(w http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
+	group, ok := r.adminGroup(w, req)
+	if !ok {
+		return
+	}
+	var body badgeBody
+	if !readEdit(w, req, &body) {
+		return
+	}
+	if _, err := badge.Parse(body.Code); err != nil {
+		r.answerJSON(w, http.StatusUnprocessableEntity, groupAnswer{Error: "badCode"})
+		return
+	}
+	if err := r.deps.Queries.SetGroupBadge(ctx, store.SetGroupBadgeParams{ID: group.ID, Badge: body.Code, UpdatedAt: time.Now().UTC()}); err != nil {
+		r.fail(w, err)
+		return
+	}
+	r.answerJSON(w, http.StatusOK, groupAnswer{})
 }

@@ -156,6 +156,9 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /groups/{id}/unfavourite", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsUnfavourite))))
 	mux.Handle("POST /groups/{id}/settings", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsSettings))))
 	mux.Handle("POST /groups/{id}/delete", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsDelete))))
+	mux.Handle("POST /groups/{id}/badge", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsBadge))))
+	mux.Handle("GET /groups/{id}/members", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsMembersView))))
+	mux.Handle("POST /groups/{id}/members/{member}/{action}", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsMembersAction))))
 
 	mux.Handle("GET /disclaimer", page(http.HandlerFunc(r.HandleDisclaimerView)))
 	mux.Handle("GET /privacy", page(http.HandlerFunc(r.HandlePrivacyView)))

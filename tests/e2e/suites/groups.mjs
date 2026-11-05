@@ -34,6 +34,19 @@ export const prepare = ({ sql }) => {
   sql(`UPDATE groups SET access = 'closed' WHERE id = ${owls}`);
   const society = group("Secret Society", "b0913X", 4);
   sql(`UPDATE groups SET access = 'moderated' WHERE id = ${society}`);
+  const corner = group("Quiet Corner", "b1102X", 5);
+  for (const [name, role] of [["Dora", "admin"], ["Eve", "member"]]) {
+    sql(`INSERT INTO users (email, born_on, created_ip, created_at, updated_at)
+      VALUES ('${name.toLowerCase()}@example.com', '1990-05-01', '127.0.0.1', '${at(0)}', '${at(0)}')`);
+    const [[user]] = sql(`SELECT id FROM users WHERE email = '${name.toLowerCase()}@example.com'`);
+    sql(`INSERT INTO credentials (user_id, password_hash, updated_at) VALUES (${user}, '${hash}', '${at(0)}')`);
+    sql(`INSERT INTO wallets (user_id, updated_at) VALUES (${user}, '${at(0)}')`);
+    sql(`INSERT INTO avatars (user_id, name, figure, gender, motto, created_at, updated_at)
+      VALUES (${user}, '${name}', 'hd-180-1', 'F', '', '${at(0)}', '${at(0)}')`);
+    const [[avatar]] = sql(`SELECT id FROM avatars WHERE name = '${name}'`);
+    sql(`INSERT INTO group_members (group_id, avatar_id, role, requested_at, joined_at)
+      VALUES (${corner}, ${avatar}, '${role}', '${at(6)}', '${at(6)}')`);
+  }
   sql(`INSERT INTO group_members (group_id, avatar_id, role, favourite, requested_at, joined_at)
     VALUES (${retro}, ${frankHabbo}, 'member', TRUE, '${at(4)}', '${at(4)}')`);
   const [[home]] = sql(`SELECT id FROM homes WHERE group_id = ${retro}`);
@@ -96,7 +109,7 @@ export default async function ({ base, browser, check, shot, sql }) {
   check(
     "Hot Groups loads the groups at random, with the purchase button",
     JSON.stringify((await hot.locator("li a").allInnerTexts()).sort()) ===
-      JSON.stringify(["Night Owls", "Pixel Art", "Retro Club", "Secret Society"]) &&
+      JSON.stringify(["Night Owls", "Pixel Art", "Quiet Corner", "Retro Club", "Secret Society"]) &&
       (await hot.getByRole("button", { name: "Create/buy a Group" }).isVisible()),
     await hot.innerText(),
   );
@@ -467,6 +480,105 @@ async function ownerTools({ base, browser, check, shot, sql }) {
     (await settings.getByRole("radio", { name: /^Unlimited/ }).isChecked()) &&
       (await settings.getByRole("radio", { name: /^Regular/ }).isDisabled()),
   );
+
+  await page.goto(`${base}/groups/${retro}`);
+  await page.getByRole("button", { name: "Edit" }).click();
+  await page.getByRole("button", { name: "Members" }).click();
+  const members = page.getByRole("dialog", { name: "Members" });
+  await members.getByRole("tab", { name: "Members (2)" }).waitFor();
+  await shot(page, "group-members");
+  const frankBox = members.getByRole("checkbox", { name: "Select Frank" });
+  check(
+    "Members lists the owner, who cannot be ticked, and Frank, with Holo's counts and paging",
+    (await members.getByRole("tab", { name: "Pending Members (0)" }).isVisible()) &&
+      (await members.getByRole("checkbox", { name: "Select Admin-1" }).isDisabled()) &&
+      (await members.locator('img[alt="Owner"]').count()) === 1 &&
+      (await frankBox.isEnabled()) &&
+      (await members.getByText("1 - 2 / 2").isVisible()) &&
+      (await members.innerText()).includes("First | << | >> | Last"),
+    await members.innerText(),
+  );
+  const isOn = async (label) => (await members.getByRole("button", { name: label }).getAttribute("aria-disabled")) !== "true";
+  check(
+    "with nobody ticked every action is off",
+    !(await isOn("Give rights")) && !(await isOn("Revoke rights")) && !(await isOn("Remove")),
+  );
+  await frankBox.check();
+  check(
+    "ticking a member turns on Give rights and Remove, as Holo's script did",
+    (await isOn("Give rights")) && !(await isOn("Revoke rights")) && (await isOn("Remove")),
+  );
+  await members.getByRole("button", { name: "Give rights" }).click();
+  const memberConfirm = page.getByRole("dialog", { name: "Group" });
+  check(
+    "Give rights asks first",
+    await memberConfirm.getByText("Are you sure you want to give admin rights to the selected member(s)?").isVisible(),
+  );
+  await memberConfirm.getByRole("button", { name: "OK" }).click();
+  await members.locator('img[alt="Administrator"]').waitFor();
+  check(
+    "Frank is an admin now, and the list came back",
+    sql(`SELECT role FROM group_members WHERE group_id = ${retro} AND avatar_id = (SELECT id FROM avatars WHERE name = 'Frank')`)[0][0] === "admin",
+  );
+  await members.getByRole("tabpanel").getByRole("button", { name: "Close" }).click();
+
+  const society = id("Secret Society");
+  await page.goto(`${base}/groups/${society}`);
+  await page.getByRole("button", { name: "Edit" }).click();
+  await page.getByRole("button", { name: "Members" }).click();
+  await members.getByRole("tab", { name: "Pending Members (1)" }).click();
+  await members.getByRole("checkbox", { name: "Select Frank" }).check();
+  await members.getByRole("button", { name: "Accept" }).click();
+  check(
+    "Accept asks first",
+    await memberConfirm.getByText("Are you sure you want to accept this (these) new member(s) into the group?").isVisible(),
+  );
+  await memberConfirm.getByRole("button", { name: "OK" }).click();
+  await members.getByText("There are no pending membership requests at this time. Please check back later.").waitFor();
+  check(
+    "the request becomes a membership, and the titles count it",
+    (await members.getByRole("tab", { name: "Members (2)" }).isVisible()) &&
+      sql(`SELECT joined_at IS NOT NULL FROM group_members WHERE group_id = ${society} AND avatar_id = (SELECT id FROM avatars WHERE name = 'Frank')`)[0][0] === 1,
+  );
+  await members.getByRole("tabpanel").getByRole("button", { name: "Close" }).click();
+
+  await page.goto(`${base}/groups/${retro}`);
+  const colourFile = page.waitForResponse((r) => r.url().endsWith("/habbo-widgets/badge-editor/data/badge_data.xml"));
+  await page.getByRole("button", { name: "Edit" }).click();
+  await page.getByRole("button", { name: "Badge" }).click();
+  const editor = page.locator("#editor-container canvas");
+  await editor.waitFor();
+  check("the badge editor reads the CMS's colours", (await colourFile).status() === 200);
+  await page.waitForTimeout(500);
+  await shot(page, "group-badge-editor");
+  // Base colour 2 sits at 173,303 of the editor's canvas, and Save at 50,354.
+  await editor.click({ position: { x: 173, y: 303 } });
+  await Promise.all([page.waitForEvent("load"), editor.click({ position: { x: 50, y: 354 } })]);
+  await page.locator(".group-info-widget img").waitFor();
+  const [[saved]] = sql(`SELECT badge FROM groups WHERE id = ${retro}`);
+  const drawn = await page
+    .locator(`.group-info-widget img[src="/habbo-imaging/badge/${saved}"]`)
+    .evaluate((img) => img.complete && img.naturalWidth);
+  check(
+    "Save stores the editor's code, with the base's new colour, and the page draws it",
+    saved === "b0702Xs01124" && drawn === 39,
+    `${saved} ${drawn}`,
+  );
+
+  await page.goto(`${base}/groups/${id("Quiet Corner")}`);
+  await page.getByRole("button", { name: "Edit" }).click();
+  await page.getByRole("button", { name: "Members" }).click();
+  await members.getByRole("checkbox", { name: "Select Dora" }).check();
+  check(
+    "ticking an admin alone turns on Revoke rights and Remove",
+    !(await isOn("Give rights")) && (await isOn("Revoke rights")) && (await isOn("Remove")),
+  );
+  await members.getByRole("checkbox", { name: "Select Eve" }).check();
+  check(
+    "an admin and a member ticked together leave only Remove on, as Holo's script did",
+    !(await isOn("Give rights")) && !(await isOn("Revoke rights")) && (await isOn("Remove")),
+  );
+  await members.getByRole("tabpanel").getByRole("button", { name: "Close" }).click();
 
   const owls = id("Night Owls");
   await page.goto(`${base}/groups/${owls}`);
