@@ -2,7 +2,8 @@
 type: Decision
 title: Sequential work on main, parallel work on feature branches
 description: The agent commits sequential work on main and gives each parallel line of work a feature branch that is merged later, and it never pushes.
-status: accepted
+status: superseded
+superseded_by: "0097"
 timestamp: 2026-11-01T19:50:41+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T19:50:41+00:00"}
 tags: [process, git]

@@ -90,9 +90,10 @@ change supersedes a decision with a new one.
 
 ## Packages and process
 
+- [0097 No agent works on main](/decisions/0097-no-agent-works-on-main.md) — Every line of work, sequential or parallel, goes on its own feature branch in its own worktree, and the agent merges it into main by itself once its work is done and every gate passes.
 - [0072 Later work is listed in plans/later.md](/decisions/0072-later-work-in-plans-later.md) — plans/later.md, beside the port bundle, lists work planned for later that belongs to no phase, starting with the orchestrator's.
 - [0043 packages/scheduler runs timed tasks](/decisions/0043-scheduler.md) — A package-level, cron-like scheduler in packages/scheduler runs tasks written as scheduler.Every(1, scheduler.Hour, task), so a process has one scheduler whether a program runs alone or under the orchestrator.
-- [0046 Sequential work on main, parallel work on feature branches](/decisions/0046-main-and-feature-branches.md) — The agent commits sequential work on main and gives each parallel line of work a feature branch that is merged later, and it never pushes.
+- [0046 Sequential work on main, parallel work on feature branches](/decisions/0046-main-and-feature-branches.md) — The agent commits sequential work on main and gives each parallel line of work a feature branch that is merged later, and it never pushes. **Superseded by [0097](/decisions/0097-no-agent-works-on-main.md).**
 - [0037 The CMS address comes from config.json](/decisions/0037-cms-host-in-config.md) — config.json gains cms.host, and the CMS runners listen on cms.host and cms.port instead of a fixed localhost.
 - [0038 Project folders hold a README and a make install](/decisions/0038-project-docs-and-install.md) — AGENTS.md stays only at the repository root, project folders document themselves in README.md, and every project and the root have a make install.
 - [0039 The orchestrator is a later project](/decisions/0039-orchestrator-is-a-later-project.md) — apps/reborn will run the installer, cms, housekeeping and server from one binary; its old implementation is gone, it is not planned yet, and the work stays on the CMS.

@@ -2,6 +2,8 @@
 
 ## 2026-11-05
 
+- **Decision** [0097](/decisions/0097-no-agent-works-on-main.md): no agent works on `main`; every line of work has its
+  own feature branch and worktree, and the agent merges it once every gate passes.
 - **Done** [p5-20](/tasks/p5-20-tags-box-green.md): the Me page's Tags box is green, as Holo's.
 - **Start** [p5-20](/tasks/p5-20-tags-box-green.md).
 - **Create** [p5-20](/tasks/p5-20-tags-box-green.md): the Me page's Tags box is orange where Holo's is green.

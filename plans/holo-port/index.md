@@ -49,4 +49,4 @@ They come from the original request and `AGENTS.md` and apply to every task.
 | Behaviour | exactly as Holo, with new and safest code ([0034](/decisions/0034-behaviour-matches-holo.md)) |
 | Agent docs | one `AGENTS.md` at the root; project folders use `README.md` |
 | Code comments | only for non-obvious architecture or tricky edge cases |
-| Commits | sequential work on `main`, parallel work on feature branches merged later, never pushed ([0046](/decisions/0046-main-and-feature-branches.md)) |
+| Commits | never on `main`: each line of work has its own feature branch and worktree, which the agent merges once every gate passes, never pushed ([0097](/decisions/0097-no-agent-works-on-main.md)) |
