@@ -2,6 +2,10 @@
 
 ## 2026-11-05
 
+- **Create** [p5-20](/tasks/p5-20-tags-box-green.md): the Me page's Tags box is orange where Holo's is green.
+- **Done** [p5-04](/tasks/p5-04-buy-groups.md): the Me page's Groups box lists the habbo's groups and Hot Groups, and
+  Holo's dialog buys a group from the shared purse in one transaction.
+- **Start** [p5-04](/tasks/p5-04-buy-groups.md).
 - **Done** [p5-03](/tasks/p5-03-badge-renderer.md): group badges draw as Holo's `badge.php` drew them, pixel for pixel in
   Holo's palette over 1,080 codes, after a strict check, in the Tailwind palette until the user picks from the sheet.
 - **Start** [p5-03](/tasks/p5-03-badge-renderer.md).

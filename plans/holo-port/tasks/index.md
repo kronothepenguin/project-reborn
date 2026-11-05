@@ -193,6 +193,7 @@ starts.
 - [p5-17 Report posts](/tasks/p5-17-report-posts.md) — A signed-in habbo reports another habbo's post in Holo's Help Tool window, which sends a help ticket that housekeeping's help queue shows, with one waiting request per habbo.
 - [p5-18 Keep the badge palette the user picks](/tasks/p5-18-keep-one-badge-palette.md) — Once the user picks a palette from the sheet, the other is deleted from the renderer, the badge editor's colour data and the docs.
 - [p5-19 Verify P5](/tasks/p5-19-exit-check.md) — Every exit criterion of P5 holds from a clean checkout, in a real browser.
+- [p5-20 Colour the Me page's Tags box as Holo's](/tasks/p5-20-tags-box-green.md) — The Me page's Tags box takes the green heading and tab line of Holo's green box, in place of the orange of its default boxes.
 
 ## Later phases
 

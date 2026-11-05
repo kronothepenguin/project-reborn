@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-05T19:43:45+00:00
+timestamp: 2026-11-05T19:56:14+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -36,6 +36,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Webstore | Takes the credits, fills the inventory and writes the ledger in separate queries, and the credits with no floor | One transaction, and the credits never go below zero | A failure halfway lost credits or gave items away |
 | Webstore | A habbo without the staff rank who asks for a staff item gets an empty answer | `Sorry, but you can not buy this item!` | The same answer as any item that is not sold |
 | Home editor | Saves any number as a position | Items stay on the playground, 922 by 1360 pixels | A position off the page lost the item for good |
+| Group purchase | Takes the credits, writes the group, the owner's row and the ledger in separate queries, and checks a typed name, unescaped in its query, against the names it stored HTML-escaped | One transaction; the name is stored as typed and checked exactly, ignoring case | A failure halfway lost credits or left a group without its owner, a name with `<` could be bought twice, and the check took SQL from the form |
 | Group badges | `badge.php` drew any text it was given, and saved the drawing in `badge-fill/` under a file name taken from the request | A code the badge editor would not write answers 404, and no drawing is written to disk; browsers keep each code's drawing for a year | Any visitor could write files named by the request, and an unknown tint drew a black layer |
 | Home editor | Places items with no limit, and shows only the first 200 | Refuses past `homes.maxItems`, with `This home cannot hold more than 200 items.` | Items past 200 vanished from the page without a word |
 | Notes | Staff write raw HTML, and for everyone else `'` stays open, so a link can break out of its address | Every note is text with BBCode, escaped for everyone | A note could run scripts on anyone who opened the home |
@@ -124,6 +125,8 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Community | The news promo prints empty stories and items when there are fewer than four articles | It shows only the articles there are |
 | Me page | The tags habblet's text keeps saying what it said when the page loaded after a tag is added or removed, and the next question comes from an older list | The text follows the tags, and every question comes from the Me page's list |
 | Texts | `You need you remove one of your tags` | Spelled correctly |
+| Group purchase | Compares `strlen($name > 25)`, so a name or description of any length passes | A name over `groups.nameMaxLength` or a description over `groups.descriptionMaxLength` gets Holo's `The group name you have selected is too long.` or `The group description you have entered is too long.` ([0084](/decisions/0084-group-names-and-descriptions.md)) |
+| Texts | `Purchashing`, `Managment`, `An group`, `occured` on the purchase dialog | Spelled correctly |
 
 # Kept as in Holo, on purpose
 
@@ -289,7 +292,7 @@ veto.
 
 | Holo | Phase |
 | --- | --- |
-| `My Groups` in the header, and the groups habblet on `/me` | [P5](/phases/p5-groups-forum.md) |
+| `My Groups` in the header | [P5](/phases/p5-groups-forum.md) |
 | `My Friends`, `My Rooms` and the recommended rooms | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | The wardrobe on `/account/looks` | [P6](/phases/p6-economy.md) |
 | The `MY GROUPS` widget, and the group badge of the profile widget and of the staff page | [P5](/phases/p5-groups-forum.md) |

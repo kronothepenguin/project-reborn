@@ -151,10 +151,11 @@ func (q *Queries) DeleteHomeItem(ctx context.Context, arg DeleteHomeItemParams) 
 }
 
 const getGroupHome = `-- name: GetGroupHome :one
-SELECT id, profile_id, group_id, background_home_store_item_id, updated_at FROM homes WHERE group_id = ?1
+SELECT id, profile_id, group_id, background_home_store_item_id, updated_at FROM homes WHERE group_id = CAST(?1 AS INTEGER)
 `
 
-func (q *Queries) GetGroupHome(ctx context.Context, groupID sql.NullInt64) (Home, error) {
+// CAST keeps group_id a non-null parameter, as in CreateGroupHome.
+func (q *Queries) GetGroupHome(ctx context.Context, groupID int64) (Home, error) {
 	row := q.db.QueryRowContext(ctx, getGroupHome, groupID)
 	var i Home
 	err := row.Scan(

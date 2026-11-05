@@ -46,8 +46,12 @@ type mePage struct {
 	LastSignIn  string
 	// MyTags are the active habbo's, for the tags habblet, which offers room up
 	// to MaxTags.
-	MyTags     []string
-	MaxTags    int
+	MyTags  []string
+	MaxTags int
+	// Groups are the active habbo's, for the groups habblet, whose purchase
+	// dialog opens on Purchase.
+	Groups     []myGroup
+	Purchase   groupPurchase
 	Cloud      []cloudTag
 	TopStories []topStory
 	MoreNews   []newsLink
@@ -128,6 +132,12 @@ func (r *Router) newMePage(ctx context.Context, session auth.Session) (mePage, e
 		return page, err
 	}
 	page.MaxTags = settings.GetInt("homes.maxTags")
+	if page.Groups, err = r.myGroups(ctx, session.AvatarID); err != nil {
+		return page, err
+	}
+	if page.Purchase, err = r.groupPurchase(ctx, session.UserID); err != nil {
+		return page, err
+	}
 	if page.Cloud, err = r.tagCloud(ctx); err != nil {
 		return page, err
 	}

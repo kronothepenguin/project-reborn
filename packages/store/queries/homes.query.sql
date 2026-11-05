@@ -73,8 +73,9 @@ INSERT INTO homes (group_id, updated_at)
 VALUES (CAST(sqlc.arg(group_id) AS INTEGER), sqlc.arg(updated_at))
 RETURNING *;
 
+-- CAST keeps group_id a non-null parameter, as in CreateGroupHome.
 -- name: GetGroupHome :one
-SELECT * FROM homes WHERE group_id = sqlc.arg(group_id);
+SELECT * FROM homes WHERE group_id = CAST(sqlc.arg(group_id) AS INTEGER);
 
 -- Every sticker and note of the home goes back to the user whose habbo placed it,
 -- a note blank as the item it came from (0083).

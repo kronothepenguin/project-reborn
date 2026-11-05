@@ -16,6 +16,7 @@ import { startMail } from "./lib/mail.mjs";
 import * as art from "./suites/art.mjs";
 import * as community from "./suites/community.mjs";
 import * as details from "./suites/details.mjs";
+import * as groups from "./suites/groups.mjs";
 import * as habbos from "./suites/habbos.mjs";
 import * as homes from "./suites/homes.mjs";
 import * as housekeepingAccess from "./suites/housekeeping-access.mjs";
@@ -49,6 +50,7 @@ const suites = {
   maintenance,
   news,
   tags,
+  groups,
   community,
   staff,
   art,

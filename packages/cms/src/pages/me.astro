@@ -1,5 +1,6 @@
 ---
 import { Card } from "@project-reborn/components";
+import GroupsHabblet from "../components/me/groups-habblet.svelte";
 import PersonalInfo from "../components/me/personal-info.astro";
 import TagsHabblet from "../components/me/tags-habblet.svelte";
 import NewsPromo from "../components/news/news-promo.astro";
@@ -13,6 +14,24 @@ import Community from "../layouts/community.astro";
   <div class="flex">
     <div class="w-[460px]">
       <PersonalInfo />
+      <div class="mr-2 mb-[7px]">
+        <Card>
+          <ul
+            id="my-groups"
+            hidden
+            data-enabled="[[ .Purchase.Enabled ]]"
+            data-price="[[ .Purchase.Price ]]"
+            data-credits="[[ .Credits ]]"
+            data-owned="[[ .Purchase.Owned ]]"
+            data-max-owned="[[ .Purchase.MaxOwned ]]"
+            data-name-max="[[ .Purchase.NameMax ]]"
+            data-description-max="[[ .Purchase.DescriptionMax ]]"
+          >
+            [[ range .Groups ]]<li data-id="[[ .ID ]]" data-badge="[[ .Badge ]]">[[ .Name ]]</li>[[ end ]]
+          </ul>
+          <GroupsHabblet client:only="svelte" source="my-groups" />
+        </Card>
+      </div>
       <div class="mr-2 mb-[7px]">
         <Card>
           <ul id="me-tags" hidden data-max="[[ .MaxTags ]]">
