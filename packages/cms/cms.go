@@ -148,6 +148,8 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("GET /habbo-imaging/badge/{code}", page(http.HandlerFunc(r.HandleHabboImagingBadgeView)))
 	mux.Handle("POST /groups", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsPurchase))))
 	mux.Handle("GET /groups/random", page(http.HandlerFunc(r.HandleGroupsRandomView)))
+	mux.Handle("GET /groups", page(http.HandlerFunc(r.HandleGroupsSearch)))
+	mux.Handle("GET /groups/{id}", page(http.HandlerFunc(r.HandleGroupsView)))
 
 	mux.Handle("GET /disclaimer", page(http.HandlerFunc(r.HandleDisclaimerView)))
 	mux.Handle("GET /privacy", page(http.HandlerFunc(r.HandlePrivacyView)))

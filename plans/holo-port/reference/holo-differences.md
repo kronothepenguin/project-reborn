@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-05T19:56:14+00:00
+timestamp: 2026-11-05T20:19:16+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -36,6 +36,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Webstore | Takes the credits, fills the inventory and writes the ledger in separate queries, and the credits with no floor | One transaction, and the credits never go below zero | A failure halfway lost credits or gave items away |
 | Webstore | A habbo without the staff rank who asks for a staff item gets an empty answer | `Sorry, but you can not buy this item!` | The same answer as any item that is not sold |
 | Home editor | Saves any number as a position | Items stay on the playground, 922 by 1360 pixels | A position off the page lost the item for good |
+| Group page | Viewing it deletes the viewer's waiting request of a group that is not Exclusive, and writes a missing Group information widget, and its search prints the typed name unescaped | Viewing writes nothing, and the name is escaped | Any link could change the database, and the search could run scripts |
 | Group purchase | Takes the credits, writes the group, the owner's row and the ledger in separate queries, and checks a typed name, unescaped in its query, against the names it stored HTML-escaped | One transaction; the name is stored as typed and checked exactly, ignoring case | A failure halfway lost credits or left a group without its owner, a name with `<` could be bought twice, and the check took SQL from the form |
 | Group badges | `badge.php` drew any text it was given, and saved the drawing in `badge-fill/` under a file name taken from the request | A code the badge editor would not write answers 404, and no drawing is written to disk; browsers keep each code's drawing for a year | Any visitor could write files named by the request, and an unknown tint drew a black layer |
 | Home editor | Places items with no limit, and shows only the first 200 | Refuses past `homes.maxItems`, with `This home cannot hold more than 200 items.` | Items past 200 vanished from the page without a word |
@@ -67,6 +68,8 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Header | One habbo per account | `Switch habbo` with several, and `/account/habbos` | [0001](/decisions/0001-user-owns-many-habbos.md) |
 | Header | Housekeeping is `housekeeping.php` | `site.housekeepingUrl`, because housekeeping can run on its own port | [0003](/decisions/0003-housekeeping-under-prefix.md) |
 | Several habbos | One habbo per account | One wallet, one club membership and one home inventory per user | [0056](/decisions/0056-wallet-club-and-inventory-per-user.md) |
+| Group page | `Search for group` takes a `LIKE` pattern, so `%` and `_` match anything and the first match opens | The group with exactly that name, ignoring case, at `GET /groups?name=` | [0095](/decisions/0095-group-search-and-report-addresses.md) |
+| Group page | Lists every member, archived habbos included | Archived habbos are left out of the members and their count | [0089](/decisions/0089-archived-habbos-show-as-archived.md) |
 | Group badges | Holo's 18 tints | The closest Tailwind colours, until the user picks one palette from the sheet | [0042](/decisions/0042-two-badge-palettes.md), [0093](/decisions/0093-badge-palettes-compared-on-a-sheet.md) |
 | Several habbos | A habbo is never removed | A user archives a habbo, which hides it and keeps its name | [0058](/decisions/0058-habbos-are-archived.md) |
 | Settings | Read from the database on every request | A running CMS re-reads them every `cms.refresh` seconds | [0051](/decisions/0051-one-machine-and-a-refresh.md) |
@@ -125,6 +128,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Community | The news promo prints empty stories and items when there are fewer than four articles | It shows only the articles there are |
 | Me page | The tags habblet's text keeps saying what it said when the page loaded after a tag is added or removed, and the next question comes from an older list | The text follows the tags, and every question comes from the Me page's list |
 | Texts | `You need you remove one of your tags` | Spelled correctly |
+| Group page | The Group Members widget takes its favourite icon, and its tiles their background, from Habbo's CDN, which is gone | The favourite mark of Holo's own `info_icons.png`; the tiles keep their dashed border alone, as Holo's show now |
 | Group purchase | Compares `strlen($name > 25)`, so a name or description of any length passes | A name over `groups.nameMaxLength` or a description over `groups.descriptionMaxLength` gets Holo's `The group name you have selected is too long.` or `The group description you have entered is too long.` ([0084](/decisions/0084-group-names-and-descriptions.md)) |
 | Texts | `Purchashing`, `Managment`, `An group`, `occured` on the purchase dialog | Spelled correctly |
 

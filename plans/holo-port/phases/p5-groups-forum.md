@@ -93,7 +93,7 @@ task:
 - [p5-02 Store groups and their members](/tasks/p5-02-store-groups.md) — done
 - [p5-03 Draw group badges](/tasks/p5-03-badge-renderer.md) — done
 - [p5-04 Buy groups from the Me page](/tasks/p5-04-buy-groups.md) — done
-- [p5-05 Show a group's home](/tasks/p5-05-group-page.md) — todo
+- [p5-05 Show a group's home](/tasks/p5-05-group-page.md) — done
 - [p5-06 Join, leave and favourite groups](/tasks/p5-06-join-leave-favourite.md) — todo
 - [p5-07 Change and delete a group](/tasks/p5-07-group-settings.md) — todo
 - [p5-08 Manage a group's members](/tasks/p5-08-group-members.md) — todo

@@ -30,12 +30,21 @@ export const prepare = ({ sql }) => {
   };
   const retro = group("Retro Club", "b0711Xs01124", 1);
   group("Pixel Art", "b1405Xs09114", 2);
-  group("Night Owls", "b2213X", 3);
-  sql(`INSERT INTO group_members (group_id, avatar_id, role, requested_at, joined_at)
-    VALUES (${retro}, ${frankHabbo}, 'member', '${at(4)}', '${at(4)}')`);
+  const owls = group("Night Owls", "b2213X", 3);
+  sql(`UPDATE groups SET access = 'closed' WHERE id = ${owls}`);
+  sql(`INSERT INTO group_members (group_id, avatar_id, role, favourite, requested_at, joined_at)
+    VALUES (${retro}, ${frankHabbo}, 'member', TRUE, '${at(4)}', '${at(4)}')`);
+  const [[home]] = sql(`SELECT id FROM homes WHERE group_id = ${retro}`);
+  const widget = (name, skin, x, z) =>
+    sql(`INSERT INTO home_items (home_id, kind, widget, skin, x, y, z, created_at, updated_at)
+      VALUES (${home}, 'widget', '${name}', '${skin}', ${x}, 25, ${z}, '${at(5)}', '${at(5)}')`);
+  widget("group_info", "defaultskin", 25, 5);
+  widget("members", "goldenskin", 320, 6);
 };
 
 export default async function ({ base, browser, check, shot, sql }) {
+  await groupPages({ base, browser, check, shot, sql });
+
   const context = await browser.newContext({ viewport: { width: 1100, height: 900 } });
   const page = await context.newPage();
   const problems = [];
@@ -175,5 +184,101 @@ export default async function ({ base, browser, check, shot, sql }) {
   );
 
   check("no page failed", problems.length === 0, problems.join(" | "));
+  await context.close();
+}
+
+// A guest reads a group's home, a missing group's page and its search.
+async function groupPages({ base, browser, check, shot, sql }) {
+  const context = await browser.newContext({ viewport: { width: 1100, height: 900 } });
+  const page = await context.newPage();
+  const problems = [];
+  page.on("pageerror", (e) => problems.push(e.message));
+  page.on("response", (r) => {
+    if (r.status() >= 400 && !r.url().includes("/groups/9999") && !r.url().includes("/groups?name=nothing")) {
+      problems.push(`${r.status()} ${r.url()}`);
+    }
+  });
+  const [[retro]] = sql("SELECT id FROM groups WHERE name = 'Retro Club'");
+  const [[owls]] = sql("SELECT id FROM groups WHERE name = 'Night Owls'");
+
+  await page.goto(`${base}/groups/${retro}`);
+  const info = page.locator(".group-info-widget");
+  const members = page.locator(".members-widget");
+  await info.waitFor();
+  await shot(page, "group-home");
+  check(
+    "the header names the hotel, not the group",
+    !(await page.locator("header").innerText()).includes("Retro Club"),
+    await page.locator("header").innerText(),
+  );
+  check(
+    "a guest reads a group's home, named after it, with no icon for a Regular group",
+    (await page.title()).endsWith("~ Retro Club") &&
+      (await page.locator("#mypage-wrapper h2").innerText()).trim() === "Retro Club" &&
+      (await page.locator("#mypage-wrapper h2 img").count()) === 0,
+    await page.title(),
+  );
+  check(
+    "the Group information widget shows the badge, the name, the date, the members and the text",
+    (await info.locator("h3").innerText()).includes("Group information") &&
+      (await info.locator("h4").innerText()) === "Retro Club" &&
+      /Created: \d\d-\d\d-\d{4} \d\d:\d\d:\d\d/.test(await info.innerText()) &&
+      (await info.innerText()).includes("2 members") &&
+      (await info.innerText()).includes("About Retro Club") &&
+      (await info.locator('img[src="/habbo-imaging/badge/b0711Xs01124"]').evaluate((img) => img.complete && img.naturalWidth)) === 39,
+    await info.innerText(),
+  );
+  const tiles = members.locator("li");
+  check(
+    "the Group Members widget lists the owner first with Holo's icon, then the member with the favourite mark",
+    (await members.locator("h3").innerText()).includes("Members of this group (2)") &&
+      (await tiles.count()) === 2 &&
+      (await tiles.nth(0).getAttribute("title")) === "Admin-1" &&
+      (await tiles.nth(0).locator('img[alt="Owner"]').count()) === 1 &&
+      (await tiles.nth(1).getAttribute("title")) === "Frank" &&
+      (await tiles.nth(1).getByRole("img", { name: "Favorite" }).count()) === 1 &&
+      (await tiles.nth(1).getByRole("link", { name: "Frank" }).getAttribute("href")) === "/home?name=Frank",
+    await members.innerText(),
+  );
+  const placed = {
+    playground: await page.locator("#playground").evaluate((el) => el.offsetWidth),
+    info: await info.evaluate((el) => el.style.left),
+    members: await members.evaluate((el) => el.style.left),
+  };
+  check(
+    "the widgets stand where they were placed, on the wide playground",
+    placed.playground >= 922 && placed.info === "25px" && placed.members === "320px",
+    JSON.stringify(placed),
+  );
+
+  await page.goto(`${base}/groups/${owls}`);
+  check(
+    "a Private group shows Holo's closed icon",
+    (await page.locator('#mypage-wrapper h2 img[alt="Closed Group"]').count()) === 1,
+  );
+
+  const missing = await page.goto(`${base}/groups/9999`);
+  await shot(page, "group-missing");
+  check(
+    "a missing group answers 404 with Holo's page and its search",
+    missing.status() === 404 &&
+      (await page.getByText("Sorry, but the page you were looking for was not found.").isVisible()) &&
+      (await page.getByText("Search for group").isVisible()) &&
+      (await page.getByText("A friend's group or personal page?").isVisible()),
+  );
+  await page.getByLabel("Group Name:").fill("nothing");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await page.waitForURL("**/groups?name=nothing");
+  check(
+    "a search that finds nothing says so, keeping the name",
+    (await page.getByText("Sorry, but no results were found for 'nothing'.").isVisible()) &&
+      (await page.getByLabel("Group Name:").inputValue()) === "nothing",
+  );
+  await page.getByLabel("Group Name:").fill("rETRO cLUB");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await page.waitForURL(`**/groups/${retro}`);
+  check("a search opens the group with that name, ignoring case", page.url().endsWith(`/groups/${retro}`), page.url());
+
+  check("no group page failed", problems.length === 0, problems.join(" | "));
   await context.close();
 }

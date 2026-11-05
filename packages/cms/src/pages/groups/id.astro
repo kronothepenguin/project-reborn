@@ -1,0 +1,13 @@
+---
+import HomeView from "../../components/homes/home-view.astro";
+import Community from "../../layouts/community.astro";
+---
+
+<Community title="[[ .ShortName ]] ~ [[ .Group ]]" tab="community" sub="">
+  <HomeView>
+    <h2 slot="header" class="flex items-center gap-1 text-sm font-bold text-sky-500">
+      [[ .Group ]] [[ if .Private ]]<img src="/web-gallery/images/status_closed_big.gif" alt="Closed Group" title="Closed Group" />[[ end ]]
+      [[ if .Exclusive ]]<img src="/web-gallery/images/status_exclusive_big.gif" alt="Moderated Group" title="Moderated Group" />[[ end ]]
+    </h2>
+  </HomeView>
+</Community>

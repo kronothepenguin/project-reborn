@@ -1,10 +1,12 @@
 ---
 import { Button, Icon } from "@project-reborn/components";
 import Note from "./note.astro";
+import GroupInfoWidget from "./widgets/group-info-widget.astro";
+import MembersWidget from "./widgets/members-widget.astro";
 import ProfileWidget from "./widgets/profile-widget.astro";
 
 // editing is Holo's edit mode, where the editor island takes over the playground
-// and its toolbar sits in the slot.
+// and its toolbar sits in the slot. A group's page gives its own header.
 interface Props {
   editing?: boolean;
 }
@@ -14,21 +16,23 @@ const { editing = false } = Astro.props;
 
 <div id="mypage-wrapper" class="rounded border-2 border-black bg-white p-1" data-mode={editing ? "edit" : "view"}>
   <div class="flex items-center gap-2 px-2.5 pt-1">
-    {
-      !editing && (
-        <Fragment>
-          [[ if .CanEdit ]]
-          <Button variant="dark" size="compact" href="/home/[[ .OwnerPath ]]/edit">
-            <span class="flex items-center gap-1">
-              <Icon variant="edit" />
-              Edit
-            </span>
-          </Button>
-          [[ end ]]
-        </Fragment>
-      )
-    }
-    <h2 class="text-sm font-bold text-sky-500">[[ .Owner ]]</h2>
+    <slot name="header">
+      {
+        !editing && (
+          <Fragment>
+            [[ if .CanEdit ]]
+            <Button variant="dark" size="compact" href="/home/[[ .OwnerPath ]]/edit">
+              <span class="flex items-center gap-1">
+                <Icon variant="edit" />
+                Edit
+              </span>
+            </Button>
+            [[ end ]]
+          </Fragment>
+        )
+      }
+      <h2 class="text-sm font-bold text-sky-500">[[ .Owner ]]</h2>
+    </slot>
   </div>
   <div class="mt-[5px]">
     <slot />
@@ -58,6 +62,10 @@ const { editing = false } = Astro.props;
         <Note />
         [[ else if eq .Widget "profile" ]]
         <ProfileWidget />
+        [[ else if eq .Widget "group_info" ]]
+        <GroupInfoWidget />
+        [[ else if eq .Widget "members" ]]
+        <MembersWidget />
         [[ end ]] [[ end ]]
       </div>
       [[ if not .Wide ]]

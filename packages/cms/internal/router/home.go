@@ -138,20 +138,14 @@ func (r *Router) newHomePage(ctx context.Context, avatar store.Avatar) (homePage
 		CanEdit:    shared.SignedIn && session.UserID == avatar.UserID,
 		Owner:      avatar.Name,
 		OwnerPath:  url.PathEscape(avatar.Name),
-		Background: image(defaultBackground),
 	}
 	home, err := q.GetProfileHome(ctx, avatar.ID)
 	if err != nil {
 		return page, err
 	}
 	page.HomeID = home.ID
-	if home.BackgroundHomeStoreItemID.Valid {
-		background, err := q.GetHomeStoreItem(ctx, home.BackgroundHomeStoreItemID.Int64)
-		if err != nil {
-			return page, err
-		}
-		page.Background = image(background.Asset)
-		page.BackgroundID = background.ID
+	if page.Background, page.BackgroundID, err = r.homeBackground(ctx, home); err != nil {
+		return page, err
 	}
 	if page.Wide, err = r.inClub(ctx, avatar.UserID); err != nil {
 		return page, err
@@ -161,12 +155,35 @@ func (r *Router) newHomePage(ctx context.Context, avatar store.Avatar) (homePage
 	}
 	page.Profile.Own = page.MyPage
 
-	items, err := q.ListHomeItemsToDraw(ctx, home.ID)
-	if err != nil {
+	if page.Items, err = r.homeItems(ctx, home.ID); err != nil {
 		return page, err
 	}
+	return page, nil
+}
+
+// homeBackground is the art of a home's background and its store item, or Holo's
+// default and 0.
+func (r *Router) homeBackground(ctx context.Context, home store.Home) (string, int64, error) {
+	if !home.BackgroundHomeStoreItemID.Valid {
+		return image(defaultBackground), 0, nil
+	}
+	background, err := r.deps.Queries.GetHomeStoreItem(ctx, home.BackgroundHomeStoreItemID.Int64)
+	if err != nil {
+		return "", 0, err
+	}
+	return image(background.Asset), background.ID, nil
+}
+
+// homeItems are a home's items as the page draws them: a sticker with its art and
+// a note in BBCode.
+func (r *Router) homeItems(ctx context.Context, homeID int64) ([]homeItem, error) {
+	rows, err := r.deps.Queries.ListHomeItemsToDraw(ctx, homeID)
+	if err != nil {
+		return nil, err
+	}
 	smilies := settings.GetBool("features.smilies")
-	for _, it := range items {
+	items := make([]homeItem, 0, len(rows))
+	for _, it := range rows {
 		item := homeItem{ID: it.ID, Kind: it.Kind, Widget: it.Widget.String, Skin: it.Skin, X: it.X, Y: it.Y, Z: it.Z}
 		switch it.Kind {
 		case "sticker":
@@ -174,9 +191,9 @@ func (r *Router) newHomePage(ctx context.Context, avatar store.Avatar) (homePage
 		case "note":
 			item.HTML = bbcode.Format(it.Body, smilies)
 		}
-		page.Items = append(page.Items, item)
+		items = append(items, item)
 	}
-	return page, nil
+	return items, nil
 }
 
 func (r *Router) profileWidget(ctx context.Context, avatar store.Avatar, profileID int64) (profileWidget, error) {

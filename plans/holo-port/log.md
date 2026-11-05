@@ -2,6 +2,8 @@
 
 ## 2026-11-05
 
+- **Done** [p5-05](/tasks/p5-05-group-page.md): anyone reads a group's home with its Group information and Group Members
+  widgets, and a missing group gets Holo's page with the group search; a view writes nothing.
 - **Done** [p5-21](/tasks/p5-21-home-playground-widths.md): home playgrounds are 752 pixels beside the club banner and 922 without
   it, as Holo's; since P3 every playground had taken 912.
 - **Start** [p5-21](/tasks/p5-21-home-playground-widths.md).
