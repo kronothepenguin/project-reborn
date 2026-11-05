@@ -2,8 +2,8 @@
 type: Phase
 title: P5 Groups and forum
 description: Groups with group homes, membership management, the badge editor and renderer, and the site-wide discussion board.
-status: planned
-timestamp: 2026-11-04T20:35:37+00:00
+status: active
+timestamp: 2026-11-05T19:06:47+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p5, cms]
 ---
@@ -52,12 +52,21 @@ Decided with the user before the start:
 - Posts are written in the BBCode editor of [ED](/phases/ed-bbcode-editor.md)
   ([0092](/decisions/0092-bbcode-editor.md)).
 
+Decided with the user when the phase started:
+
+- The badge palettes are compared on one sheet, with the Tailwind palette live until the user picks
+  ([0093](/decisions/0093-badge-palettes-compared-on-a-sheet.md)).
+- A thread counts a view on every load ([0094](/decisions/0094-thread-views-count-every-load.md)).
+- `GET /groups?name=` searches groups and `GET /forum/posts/{id}/report` shows the report window
+  ([0095](/decisions/0095-group-search-and-report-addresses.md)).
+- An archived habbo's stickers stay on group homes ([0096](/decisions/0096-archived-habbos-stickers-stay-on-group-homes.md)).
+
 These follow from accepted decisions, and each goes into the [differences](/reference/holo-differences.md) with its
 task:
 
 - One board for the whole site, as Holo and the schema have.
 - Holo's unsafe or missing checks are fixed:
-  - guests cannot post or report, and nothing changes on a GET;
+  - guests cannot post or report, and nothing changes on a GET but a thread's views ([0094](/decisions/0094-thread-views-count-every-load.md));
   - the admin check runs on every request;
   - nobody demotes, removes or locks out a group's owner, and the owner cannot leave;
   - accept and decline touch only requests;
@@ -80,5 +89,26 @@ task:
 
 # Tasks
 
-Created when the phase starts, after [ED](/phases/ed-bbcode-editor.md).
+- [p5-01 Declare the group and forum settings](/tasks/p5-01-group-forum-settings.md) — todo
+- [p5-02 Store groups and their members](/tasks/p5-02-store-groups.md) — todo
+- [p5-03 Draw group badges](/tasks/p5-03-badge-renderer.md) — todo
+- [p5-04 Buy groups from the Me page](/tasks/p5-04-buy-groups.md) — todo
+- [p5-05 Show a group's home](/tasks/p5-05-group-page.md) — todo
+- [p5-06 Join, leave and favourite groups](/tasks/p5-06-join-leave-favourite.md) — todo
+- [p5-07 Change and delete a group](/tasks/p5-07-group-settings.md) — todo
+- [p5-08 Manage a group's members](/tasks/p5-08-group-members.md) — todo
+- [p5-09 Edit a group's badge](/tasks/p5-09-badge-editor.md) — todo
+- [p5-10 Decorate a group's home](/tasks/p5-10-decorate-group-homes.md) — todo
+- [p5-11 Show groups across the site](/tasks/p5-11-groups-across-the-site.md) — todo
+- [p5-12 Store the forum](/tasks/p5-12-store-forum.md) — todo
+- [p5-13 Show the board and its threads](/tasks/p5-13-forum-pages.md) — todo
+- [p5-14 Start threads and reply](/tasks/p5-14-post-threads-and-replies.md) — todo
+- [p5-15 Edit and delete posts](/tasks/p5-15-edit-delete-posts.md) — todo
+- [p5-16 Moderate threads](/tasks/p5-16-moderate-threads.md) — todo
+- [p5-17 Report posts](/tasks/p5-17-report-posts.md) — todo
+- [p5-18 Keep the badge palette the user picks](/tasks/p5-18-keep-one-badge-palette.md) — todo
+- [p5-19 Verify P5](/tasks/p5-19-exit-check.md) — todo
+
+They run in this order on `main` ([0046](/decisions/0046-main-and-feature-branches.md)). [p5-18](/tasks/p5-18-keep-one-badge-palette.md)
+waits for the user's pick from the sheet of [p5-03](/tasks/p5-03-badge-renderer.md).
 

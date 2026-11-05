@@ -1,5 +1,14 @@
 # Log
 
+## 2026-11-05
+
+- **Update** [P5](/phases/p5-groups-forum.md) is active.
+- **Create** [p5-01](/tasks/p5-01-group-forum-settings.md) to [p5-19](/tasks/p5-19-exit-check.md), P5's tasks.
+- **Decision** [0096](/decisions/0096-archived-habbos-stickers-stay-on-group-homes.md): an archived habbo's stickers stay on group homes.
+- **Decision** [0095](/decisions/0095-group-search-and-report-addresses.md): `GET /groups?name=` searches groups, and `GET /forum/posts/{id}/report` shows the report window.
+- **Decision** [0094](/decisions/0094-thread-views-count-every-load.md): a thread counts a view on every load, as in Holo.
+- **Decision** [0093](/decisions/0093-badge-palettes-compared-on-a-sheet.md): the badge palettes are compared on one sheet, with the Tailwind palette live until the user picks.
+
 ## 2026-11-04
 
 - **Update** ED is done, and [P5](/phases/p5-groups-forum.md) comes next.

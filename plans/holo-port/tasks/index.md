@@ -172,7 +172,28 @@ starts.
 - [ed-04 Write home notes with the editor](/tasks/ed-04-note-editor.md) — The home store's note editor uses the BBCode editor with the site's look and smilies when they are on, in place of its buttons, and keeps its skins, counter and Preview.
 - [ed-05 Verify ED](/tasks/ed-05-exit-check.md) — Every exit criterion of ED holds from a clean checkout, in a real browser.
 
+## P5 Groups and forum
+
+- [p5-01 Declare the group and forum settings](/tasks/p5-01-group-forum-settings.md) — The groups.* numbers, features.groupPurchase, features.forum and forum.spamSeconds are declared with Holo's values and labelled in housekeeping, in a Groups form, the content options and a Discussion Board Module form.
+- [p5-02 Store groups and their members](/tasks/p5-02-store-groups.md) — The store gains the group operations the pages need, from buying and joining to roles, member lists, settings and deletion, with archived habbos left out, and documents the group entity.
+- [p5-03 Draw group badges](/tasks/p5-03-badge-renderer.md) — packages/cms/internal/badge draws a checked badge code from Holo's part images in either palette, GET /habbo-imaging/badge/{code} serves it for good, a GroupBadge primitive shows it, and a sheet compares the palettes.
+- [p5-04 Buy groups from the Me page](/tasks/p5-04-buy-groups.md) — The Me page's Groups habblet lists the habbo's groups and Hot Groups, and its Create/buy a Group button opens Holo's purchase dialog, which buys a group from the shared purse with its ledger row in one transaction.
+- [p5-05 Show a group's home](/tasks/p5-05-group-page.md) — GET /groups/{id} shows a group's home as Holo's group_profile.php, with its stickers, notes, Group information and Group Members widgets, and a missing group gets Holo's page with the group search.
+- [p5-06 Join, leave and favourite groups](/tasks/p5-06-join-leave-favourite.md) — The group page's buttons join a group or request membership, leave it, and make it the favourite or remove it, for the active habbo, with Holo's dialogs and answers and the limits.
+- [p5-07 Change and delete a group](/tasks/p5-07-group-settings.md) — A group's admins get Holo's Edit menu, and its owner's Settings change the name, description and type with Holo's confirmations or delete the group, whose home's items go back to the members who placed them.
+- [p5-08 Manage a group's members](/tasks/p5-08-group-members.md) — The Members dialog lists a group's members and waiting requests twelve a page, and lets its admins accept or decline requests and give, revoke or remove rights and members, never touching the owner, with Holo's confirmations.
+- [p5-09 Edit a group's badge](/tasks/p5-09-badge-editor.md) — The Badge entry of the Edit menu opens the HTML5 port of Holo's badge editor with the live palette, and its Save stores a checked code that the renderer draws.
+- [p5-10 Decorate a group's home](/tasks/p5-10-decorate-group-homes.md) — GET /groups/{id}/edit opens the home editor on a group's home for its admins, the store and inventory place items there with the Group Members widget, and a removed item goes back to the member who placed it.
+- [p5-11 Show groups across the site](/tasks/p5-11-groups-across-the-site.md) — The header's My Groups menu, the MY GROUPS widget of habbo homes with its group info, and the favourite group's badge on the profile widget and the staff page show a habbo's groups as in Holo.
+- [p5-12 Store the forum](/tasks/p5-12-store-forum.md) — The store gains the forum's operations, from the board's pages with stickies on every page to threads, posts, edits, deletes, thread settings, views and each habbo's last post, with counts taken from the posts that exist.
+- [p5-13 Show the board and its threads](/tasks/p5-13-forum-pages.md) — GET /forum and GET /forum/threads/{id} show Holo's Discussion Board and its threads ten to a page, with stickies on every page, page links, the jump to the last post, a view counted on every load, and Holo's post boxes, while features.forum is on.
+- [p5-14 Start threads and reply](/tasks/p5-14-post-threads-and-replies.md) — Signed-in habbos start threads and reply in the BBCode editor, quote posts and preview a post in its box, and blank, long, hasty and closed-thread posts are refused with Holo's texts.
+- [p5-15 Edit and delete posts](/tasks/p5-15-edit-delete-posts.md) — The author's active habbo, or anyone with forum.edit, modifies a post in the editor, which then shows when and by whom, and deletes it after Holo's confirmation, a thread going with its last post.
+- [p5-16 Moderate threads](/tasks/p5-16-moderate-threads.md) — Holders of forum.edit open Holo's Moderation Tools on a thread to rename it within 30 characters, open or close it, make it sticky or normal, and delete it after Holo's confirmation.
+- [p5-17 Report posts](/tasks/p5-17-report-posts.md) — A signed-in habbo reports another habbo's post in Holo's Help Tool window, which sends a help ticket that housekeeping's help queue shows, with one waiting request per habbo.
+- [p5-18 Keep the badge palette the user picks](/tasks/p5-18-keep-one-badge-palette.md) — Once the user picks a palette from the sheet, the other is deleted from the renderer, the badge editor's colour data and the docs.
+- [p5-19 Verify P5](/tasks/p5-19-exit-check.md) — Every exit criterion of P5 holds from a clean checkout, in a real browser.
+
 ## Later phases
 
-[P5](/phases/p5-groups-forum.md), [P6](/phases/p6-economy.md) and [P7](/phases/p7-help.md) get their tasks when they
-start.
+[P6](/phases/p6-economy.md) and [P7](/phases/p7-help.md) get their tasks when they start.
