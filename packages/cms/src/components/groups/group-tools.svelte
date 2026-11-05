@@ -1,22 +1,27 @@
 <script lang="ts">
   import { Bubble, Button, Card, Dialog, GroupBadge, Icon, Spinner } from "@project-reborn/components";
   import { onMount } from "svelte";
+  import MemberList from "./member-list.svelte";
 
   // source holds the group's settings for group_settings.php's form. The island
   // stands on every group page, since the first island of a page carries Astro's
-  // script for all of them; it shows itself to the owner alone.
+  // script for all of them; it shows itself to the group's admins alone, and its
+  // Settings to the owner. me is the active habbo.
   interface Props {
     group: string;
+    admin: string;
     owner: string;
+    me: string;
     source: string;
   }
 
-  let { group, owner, source }: Props = $props();
+  let { group, admin, owner, me, source }: Props = $props();
 
   type Access = "open" | "moderated" | "closed" | "unlimited";
 
   let menu = $state(false);
   let settings = $state(false);
+  let membersOpen = $state(false);
   let name = $state("");
   let description = $state("");
   let access = $state<Access>("open");
@@ -124,7 +129,7 @@
 
 <svelte:window onclick={() => (menu = false)} />
 
-{#if owner === "true"}
+{#if admin === "true"}
 
 <div class="relative">
   <Button
@@ -144,15 +149,29 @@
     <Bubble tail="top" class="absolute top-full left-0 z-[1000] mt-2 w-40 text-taupe-500">
       <h3 class="mb-1 text-center text-[11px] font-bold uppercase">Edit group</h3>
       <ul>
+        {#if owner === "true"}
+          <li class="py-[5px]">
+            <button type="button" class="cursor-pointer pb-[5px] pl-5 text-taupe-500 hover:underline" onclick={openSettings}
+              >Settings</button
+            >
+          </li>
+        {/if}
         <li class="py-[5px]">
-          <button type="button" class="cursor-pointer pb-[5px] pl-5 text-taupe-500 hover:underline" onclick={openSettings}
-            >Settings</button
+          <button
+            type="button"
+            class="cursor-pointer pb-[5px] pl-5 text-taupe-500 hover:underline"
+            onclick={() => {
+              menu = false;
+              membersOpen = true;
+            }}>Members</button
           >
         </li>
       </ul>
     </Bubble>
   {/if}
 </div>
+
+<MemberList bind:open={membersOpen} {group} {me} />
 
 <Dialog bind:open={settings} label="Group settings" class="m-auto w-[480px] bg-transparent backdrop:bg-black/40">
   <Card color="black">

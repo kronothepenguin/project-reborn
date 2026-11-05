@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-05T20:37:49+00:00
+timestamp: 2026-11-05T20:49:05+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -36,6 +36,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Webstore | Takes the credits, fills the inventory and writes the ledger in separate queries, and the credits with no floor | One transaction, and the credits never go below zero | A failure halfway lost credits or gave items away |
 | Webstore | A habbo without the staff rank who asks for a staff item gets an empty answer | `Sorry, but you can not buy this item!` | The same answer as any item that is not sold |
 | Home editor | Saves any number as a position | Items stay on the playground, 922 by 1360 pixels | A position off the page lost the item for good |
+| Group members | `groups_accept.php` checks no admin at all; accept, decline, give, revoke and remove change any row of their habbos, the owner's included | Every action needs an admin's active habbo; accept and decline touch only requests, and the others only members, never the owner | Anyone could accept requests, and an admin could demote or remove the owner by posting the request |
 | Group page | `groups_select_favorite.php` makes a group the favourite of a habbo that only asked to join it, and `leavegroup.php` lets the owner go, leaving the group without its owner's row | Only members choose a favourite, and the owner cannot leave | The buttons never offered either, but anyone could post them |
 | Group page | Viewing it deletes the viewer's waiting request of a group that is not Exclusive, and writes a missing Group information widget, and its search prints the typed name unescaped | Viewing writes nothing, and the name is escaped | Any link could change the database, and the search could run scripts |
 | Group purchase | Takes the credits, writes the group, the owner's row and the ledger in separate queries, and checks a typed name, unescaped in its query, against the names it stored HTML-escaped | One transaction; the name is stored as typed and checked exactly, ignoring case | A failure halfway lost credits or left a group without its owner, a name with `<` could be bought twice, and the check took SQL from the form |
@@ -131,6 +132,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Community | The news promo prints empty stories and items when there are fewer than four articles | It shows only the articles there are |
 | Me page | The tags habblet's text keeps saying what it said when the page loaded after a tag is added or removed, and the next question comes from an older list | The text follows the tags, and every question comes from the Me page's list |
 | Texts | `You need you remove one of your tags` | Spelled correctly |
+| Group members | The paging links of the Pending members tab load the Members tab | They page the waiting requests |
 | Group settings | A type that leaves Exclusive keeps its waiting requests until each habbo next views the group, and an admin can accept one meanwhile, even into a closed group | The waiting requests go at once |
 | Group page | Shows `Join` again to a habbo whose request waits, because its check reads a row loaded only for members | Shows no way in while the request waits |
 | Texts | `An request`, `Noone`, `You are already member`, `dont` on the group page's dialogs | Spelled correctly |

@@ -2,6 +2,10 @@
 
 ## 2026-11-05
 
+- **Done** [p5-08](/tasks/p5-08-group-members.md): a group's admins list members and requests twelve a page, and accept,
+  decline, give and revoke rights and remove, never touching the owner.
+- **Update** `p5` reaches `main` up to [p5-07](/tasks/p5-07-group-settings.md), with every gate passing.
+- **Start** [p5-08](/tasks/p5-08-group-members.md).
 - **Done** [p5-07](/tasks/p5-07-group-settings.md): the owner's Edit menu opens Holo's settings, which rename, rewrite and
   retype the group, or delete it with its items going back to those who placed them.
 - **Start** [p5-07](/tasks/p5-07-group-settings.md).

@@ -268,8 +268,11 @@ type groupViewer struct {
 	Join      string
 	Favourite string
 	Leave     bool
-	// Owner opens the Edit menu with its Settings.
+	// Admin opens the Edit menu, and Owner adds its Settings.
+	Admin bool
 	Owner bool
+	// Me is the active habbo, whose own row the member list treats apart.
+	Me int64
 }
 
 // groupInfo is the Group information widget.
@@ -432,6 +435,7 @@ func (r *Router) groupViewer(ctx context.Context, group store.Group) (groupViewe
 	if !ok {
 		return viewer, nil
 	}
+	viewer.Me = session.AvatarID
 	row, err := r.deps.Queries.GetGroupMember(ctx, store.GetGroupMemberParams{GroupID: group.ID, AvatarID: session.AvatarID})
 	switch {
 	case store.IsNotFound(err):
@@ -452,6 +456,7 @@ func (r *Router) groupViewer(ctx context.Context, group store.Group) (groupViewe
 		viewer.Favourite = "remove"
 	}
 	viewer.Owner = session.AvatarID == group.AvatarID
+	viewer.Admin = row.Role == roleAdmin
 	viewer.Leave = !viewer.Owner
 	return viewer, nil
 }
