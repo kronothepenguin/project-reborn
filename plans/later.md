@@ -2,7 +2,7 @@
 
 Work planned for later that belongs to no phase yet ([0072](holo-port/decisions/0072-later-work-in-plans-later.md)). An
 item becomes a phase, with its decisions, when the user starts it. The state of the port lives in
-[holo-port](holo-port/index.md).
+[holo-port](holo-port/index.md), and the state of the game server in [server](server/index.md).
 
 ## The orchestrator
 
@@ -44,6 +44,18 @@ try to enable the installer to set them as the administrator."
 - One copy of the settings serves every program, with no refresh
   ([0051](holo-port/decisions/0051-one-machine-and-a-refresh.md)).
 - How the programs run together: [How the programs work together](holo-port/reference/architecture.md).
+- It mounts the game server's WebSocket on its shared mux ([server 0006](server/decisions/0006-transport.md)).
+- The CMS and housekeeping change the game server's virtual state directly
+  ([server 0013](server/decisions/0013-site-changes-like-mus.md)).
+
+## r18
+
+A second protocol for the game server, `packages/server/r18`, beside `r26`, served on listeners of its own
+([server 0007](server/decisions/0007-protocols-per-listener.md)). The repository has no r18 client yet. Whether r18 and
+r26 players share one hotel is documented both ways and settled when this starts.
+
+The user: "create a way out for the server to have dynamic protocol, this means i can change between r26 and r18 or
+support both at the same time" and "both, we can document it and just focus on r26 for now".
 
 ## Staff tools for groups
 
