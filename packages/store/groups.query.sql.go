@@ -7,7 +7,104 @@ package store
 
 import (
 	"context"
+	"database/sql"
+	"time"
 )
+
+const acceptGroupRequest = `-- name: AcceptGroupRequest :execrows
+UPDATE group_members SET joined_at = ?1
+WHERE group_id = ?2 AND avatar_id = ?3 AND joined_at IS NULL
+`
+
+type AcceptGroupRequestParams struct {
+	JoinedAt sql.NullTime
+	GroupID  int64
+	AvatarID int64
+}
+
+// Accepting and declining touch only waiting requests.
+func (q *Queries) AcceptGroupRequest(ctx context.Context, arg AcceptGroupRequestParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, acceptGroupRequest, arg.JoinedAt, arg.GroupID, arg.AvatarID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const addGroupMember = `-- name: AddGroupMember :exec
+INSERT INTO group_members (group_id, avatar_id, role, requested_at, joined_at)
+VALUES (?1, ?2, ?3, ?4, ?5)
+`
+
+type AddGroupMemberParams struct {
+	GroupID     int64
+	AvatarID    int64
+	Role        string
+	RequestedAt time.Time
+	JoinedAt    sql.NullTime
+}
+
+// Without joined_at the row is a waiting request.
+func (q *Queries) AddGroupMember(ctx context.Context, arg AddGroupMemberParams) error {
+	_, err := q.db.ExecContext(ctx, addGroupMember,
+		arg.GroupID,
+		arg.AvatarID,
+		arg.Role,
+		arg.RequestedAt,
+		arg.JoinedAt,
+	)
+	return err
+}
+
+const clearFavouriteGroup = `-- name: ClearFavouriteGroup :exec
+UPDATE group_members SET favourite = FALSE WHERE avatar_id = ?1 AND favourite
+`
+
+// A habbo has one favourite, so the old one goes before another is set.
+func (q *Queries) ClearFavouriteGroup(ctx context.Context, avatarID int64) error {
+	_, err := q.db.ExecContext(ctx, clearFavouriteGroup, avatarID)
+	return err
+}
+
+const countAvatarMemberships = `-- name: CountAvatarMemberships :one
+SELECT COUNT(*) FROM group_members WHERE avatar_id = ?1
+`
+
+// Waiting requests count beside memberships, as Holo counted them (0082).
+func (q *Queries) CountAvatarMemberships(ctx context.Context, avatarID int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countAvatarMemberships, avatarID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countGroupMembers = `-- name: CountGroupMembers :one
+SELECT COUNT(*) FROM group_members
+JOIN avatars ON avatars.id = group_members.avatar_id
+WHERE group_members.group_id = ?1 AND group_members.joined_at IS NOT NULL
+  AND avatars.archived_at IS NULL
+`
+
+func (q *Queries) CountGroupMembers(ctx context.Context, groupID int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countGroupMembers, groupID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countGroupRequests = `-- name: CountGroupRequests :one
+SELECT COUNT(*) FROM group_members
+JOIN avatars ON avatars.id = group_members.avatar_id
+WHERE group_members.group_id = ?1 AND group_members.joined_at IS NULL
+  AND avatars.archived_at IS NULL
+`
+
+func (q *Queries) CountGroupRequests(ctx context.Context, groupID int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countGroupRequests, groupID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
 
 const countGroups = `-- name: CountGroups :one
 SELECT COUNT(*) FROM groups
@@ -29,4 +126,512 @@ func (q *Queries) CountGroupsOwnedBy(ctx context.Context, avatarID int64) (int64
 	var count int64
 	err := row.Scan(&count)
 	return count, err
+}
+
+const countUserOwnedGroups = `-- name: CountUserOwnedGroups :one
+SELECT COUNT(*) FROM groups
+JOIN avatars ON avatars.id = groups.avatar_id
+WHERE avatars.user_id = ?1
+`
+
+// The habbos of one user share the limit of owned groups (0082).
+func (q *Queries) CountUserOwnedGroups(ctx context.Context, userID int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countUserOwnedGroups, userID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const createGroup = `-- name: CreateGroup :one
+INSERT INTO groups (avatar_id, name, description, badge, access, created_at, updated_at)
+VALUES (
+    ?1, ?2, ?3, ?4, ?5,
+    ?6, ?7
+)
+RETURNING id, avatar_id, name, description, badge, access, created_at, updated_at
+`
+
+type CreateGroupParams struct {
+	AvatarID    int64
+	Name        string
+	Description string
+	Badge       string
+	Access      string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+func (q *Queries) CreateGroup(ctx context.Context, arg CreateGroupParams) (Group, error) {
+	row := q.db.QueryRowContext(ctx, createGroup,
+		arg.AvatarID,
+		arg.Name,
+		arg.Description,
+		arg.Badge,
+		arg.Access,
+		arg.CreatedAt,
+		arg.UpdatedAt,
+	)
+	var i Group
+	err := row.Scan(
+		&i.ID,
+		&i.AvatarID,
+		&i.Name,
+		&i.Description,
+		&i.Badge,
+		&i.Access,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const declineGroupRequest = `-- name: DeclineGroupRequest :execrows
+DELETE FROM group_members
+WHERE group_id = ?1 AND avatar_id = ?2 AND joined_at IS NULL
+`
+
+type DeclineGroupRequestParams struct {
+	GroupID  int64
+	AvatarID int64
+}
+
+func (q *Queries) DeclineGroupRequest(ctx context.Context, arg DeclineGroupRequestParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, declineGroupRequest, arg.GroupID, arg.AvatarID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const deleteGroup = `-- name: DeleteGroup :execrows
+DELETE FROM groups WHERE id = ?1
+`
+
+// Its memberships and its home go with it.
+func (q *Queries) DeleteGroup(ctx context.Context, id int64) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteGroup, id)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const deleteGroupRequests = `-- name: DeleteGroupRequests :exec
+DELETE FROM group_members WHERE group_id = ?1 AND joined_at IS NULL
+`
+
+func (q *Queries) DeleteGroupRequests(ctx context.Context, groupID int64) error {
+	_, err := q.db.ExecContext(ctx, deleteGroupRequests, groupID)
+	return err
+}
+
+const getFavouriteGroup = `-- name: GetFavouriteGroup :one
+SELECT groups.id, groups.name, groups.badge FROM group_members
+JOIN groups ON groups.id = group_members.group_id
+WHERE group_members.avatar_id = ?1 AND group_members.favourite
+`
+
+type GetFavouriteGroupRow struct {
+	ID    int64
+	Name  string
+	Badge string
+}
+
+func (q *Queries) GetFavouriteGroup(ctx context.Context, avatarID int64) (GetFavouriteGroupRow, error) {
+	row := q.db.QueryRowContext(ctx, getFavouriteGroup, avatarID)
+	var i GetFavouriteGroupRow
+	err := row.Scan(&i.ID, &i.Name, &i.Badge)
+	return i, err
+}
+
+const getGroup = `-- name: GetGroup :one
+SELECT id, avatar_id, name, description, badge, access, created_at, updated_at FROM groups WHERE id = ?1
+`
+
+func (q *Queries) GetGroup(ctx context.Context, id int64) (Group, error) {
+	row := q.db.QueryRowContext(ctx, getGroup, id)
+	var i Group
+	err := row.Scan(
+		&i.ID,
+		&i.AvatarID,
+		&i.Name,
+		&i.Description,
+		&i.Badge,
+		&i.Access,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getGroupByName = `-- name: GetGroupByName :one
+SELECT id, avatar_id, name, description, badge, access, created_at, updated_at FROM groups WHERE name = ?1
+`
+
+// Names are unique ignoring case, so a name finds at most one group.
+func (q *Queries) GetGroupByName(ctx context.Context, name string) (Group, error) {
+	row := q.db.QueryRowContext(ctx, getGroupByName, name)
+	var i Group
+	err := row.Scan(
+		&i.ID,
+		&i.AvatarID,
+		&i.Name,
+		&i.Description,
+		&i.Badge,
+		&i.Access,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getGroupMember = `-- name: GetGroupMember :one
+SELECT group_id, avatar_id, role, favourite, requested_at, joined_at FROM group_members WHERE group_id = ?1 AND avatar_id = ?2
+`
+
+type GetGroupMemberParams struct {
+	GroupID  int64
+	AvatarID int64
+}
+
+func (q *Queries) GetGroupMember(ctx context.Context, arg GetGroupMemberParams) (GroupMember, error) {
+	row := q.db.QueryRowContext(ctx, getGroupMember, arg.GroupID, arg.AvatarID)
+	var i GroupMember
+	err := row.Scan(
+		&i.GroupID,
+		&i.AvatarID,
+		&i.Role,
+		&i.Favourite,
+		&i.RequestedAt,
+		&i.JoinedAt,
+	)
+	return i, err
+}
+
+const leaveGroup = `-- name: LeaveGroup :execrows
+DELETE FROM group_members
+WHERE group_members.group_id = ?1 AND group_members.avatar_id = ?2
+  AND group_members.avatar_id <> (SELECT groups.avatar_id FROM groups WHERE groups.id = group_members.group_id)
+`
+
+type LeaveGroupParams struct {
+	GroupID  int64
+	AvatarID int64
+}
+
+// The owner never leaves, so a group always keeps its owner's admin row.
+func (q *Queries) LeaveGroup(ctx context.Context, arg LeaveGroupParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, leaveGroup, arg.GroupID, arg.AvatarID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const listAvatarGroups = `-- name: ListAvatarGroups :many
+SELECT groups.id, groups.name, groups.badge, groups.created_at, groups.avatar_id AS owner_avatar_id,
+       group_members.role, group_members.favourite
+FROM group_members
+JOIN groups ON groups.id = group_members.group_id
+WHERE group_members.avatar_id = ?1 AND group_members.joined_at IS NOT NULL
+ORDER BY group_members.requested_at, groups.id
+`
+
+type ListAvatarGroupsRow struct {
+	ID            int64
+	Name          string
+	Badge         string
+	CreatedAt     time.Time
+	OwnerAvatarID int64
+	Role          string
+	Favourite     bool
+}
+
+// The groups a habbo has joined, in the order it asked to join them.
+func (q *Queries) ListAvatarGroups(ctx context.Context, avatarID int64) ([]ListAvatarGroupsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listAvatarGroups, avatarID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListAvatarGroupsRow
+	for rows.Next() {
+		var i ListAvatarGroupsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Badge,
+			&i.CreatedAt,
+			&i.OwnerAvatarID,
+			&i.Role,
+			&i.Favourite,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listGroupMembers = `-- name: ListGroupMembers :many
+SELECT avatars.id, avatars.name, avatars.figure, avatars.created_at, group_members.role, group_members.favourite
+FROM group_members
+JOIN avatars ON avatars.id = group_members.avatar_id
+WHERE group_members.group_id = ?1 AND group_members.joined_at IS NOT NULL
+  AND avatars.archived_at IS NULL
+ORDER BY group_members.role = 'admin' DESC, group_members.requested_at, avatars.id
+LIMIT ?3 OFFSET ?2
+`
+
+type ListGroupMembersParams struct {
+	GroupID   int64
+	RowOffset int64
+	RowLimit  int64
+}
+
+type ListGroupMembersRow struct {
+	ID        int64
+	Name      string
+	Figure    string
+	CreatedAt time.Time
+	Role      string
+	Favourite bool
+}
+
+// Admins come first, then members, each in the order Holo kept their rows: when
+// they asked to join. The owner bought the group, so its row is the first.
+func (q *Queries) ListGroupMembers(ctx context.Context, arg ListGroupMembersParams) ([]ListGroupMembersRow, error) {
+	rows, err := q.db.QueryContext(ctx, listGroupMembers, arg.GroupID, arg.RowOffset, arg.RowLimit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListGroupMembersRow
+	for rows.Next() {
+		var i ListGroupMembersRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Figure,
+			&i.CreatedAt,
+			&i.Role,
+			&i.Favourite,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listGroupRequests = `-- name: ListGroupRequests :many
+SELECT avatars.id, avatars.name, group_members.requested_at
+FROM group_members
+JOIN avatars ON avatars.id = group_members.avatar_id
+WHERE group_members.group_id = ?1 AND group_members.joined_at IS NULL
+  AND avatars.archived_at IS NULL
+ORDER BY group_members.requested_at, avatars.id
+LIMIT ?3 OFFSET ?2
+`
+
+type ListGroupRequestsParams struct {
+	GroupID   int64
+	RowOffset int64
+	RowLimit  int64
+}
+
+type ListGroupRequestsRow struct {
+	ID          int64
+	Name        string
+	RequestedAt time.Time
+}
+
+func (q *Queries) ListGroupRequests(ctx context.Context, arg ListGroupRequestsParams) ([]ListGroupRequestsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listGroupRequests, arg.GroupID, arg.RowOffset, arg.RowLimit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListGroupRequestsRow
+	for rows.Next() {
+		var i ListGroupRequestsRow
+		if err := rows.Scan(&i.ID, &i.Name, &i.RequestedAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listRandomGroups = `-- name: ListRandomGroups :many
+SELECT id, avatar_id, name, description, badge, access, created_at, updated_at FROM groups ORDER BY RANDOM() LIMIT ?1
+`
+
+func (q *Queries) ListRandomGroups(ctx context.Context, count int64) ([]Group, error) {
+	rows, err := q.db.QueryContext(ctx, listRandomGroups, count)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Group
+	for rows.Next() {
+		var i Group
+		if err := rows.Scan(
+			&i.ID,
+			&i.AvatarID,
+			&i.Name,
+			&i.Description,
+			&i.Badge,
+			&i.Access,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const removeGroupMember = `-- name: RemoveGroupMember :execrows
+DELETE FROM group_members
+WHERE group_members.group_id = ?1 AND group_members.avatar_id = ?2
+  AND group_members.joined_at IS NOT NULL
+  AND group_members.avatar_id <> (SELECT groups.avatar_id FROM groups WHERE groups.id = group_members.group_id)
+`
+
+type RemoveGroupMemberParams struct {
+	GroupID  int64
+	AvatarID int64
+}
+
+func (q *Queries) RemoveGroupMember(ctx context.Context, arg RemoveGroupMemberParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, removeGroupMember, arg.GroupID, arg.AvatarID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const setFavouriteGroup = `-- name: SetFavouriteGroup :execrows
+UPDATE group_members SET favourite = TRUE
+WHERE group_id = ?1 AND avatar_id = ?2 AND joined_at IS NOT NULL
+`
+
+type SetFavouriteGroupParams struct {
+	GroupID  int64
+	AvatarID int64
+}
+
+func (q *Queries) SetFavouriteGroup(ctx context.Context, arg SetFavouriteGroupParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, setFavouriteGroup, arg.GroupID, arg.AvatarID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const setGroupBadge = `-- name: SetGroupBadge :exec
+UPDATE groups SET badge = ?1, updated_at = ?2 WHERE id = ?3
+`
+
+type SetGroupBadgeParams struct {
+	Badge     string
+	UpdatedAt time.Time
+	ID        int64
+}
+
+func (q *Queries) SetGroupBadge(ctx context.Context, arg SetGroupBadgeParams) error {
+	_, err := q.db.ExecContext(ctx, setGroupBadge, arg.Badge, arg.UpdatedAt, arg.ID)
+	return err
+}
+
+const setGroupMemberRole = `-- name: SetGroupMemberRole :execrows
+UPDATE group_members SET role = ?1
+WHERE group_members.group_id = ?2 AND group_members.avatar_id = ?3
+  AND group_members.joined_at IS NOT NULL
+  AND group_members.avatar_id <> (SELECT groups.avatar_id FROM groups WHERE groups.id = group_members.group_id)
+`
+
+type SetGroupMemberRoleParams struct {
+	Role     string
+	GroupID  int64
+	AvatarID int64
+}
+
+// Roles change only for members, and never the owner's.
+func (q *Queries) SetGroupMemberRole(ctx context.Context, arg SetGroupMemberRoleParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, setGroupMemberRole, arg.Role, arg.GroupID, arg.AvatarID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const unfavouriteGroup = `-- name: UnfavouriteGroup :execrows
+UPDATE group_members SET favourite = FALSE
+WHERE group_id = ?1 AND avatar_id = ?2 AND favourite
+`
+
+type UnfavouriteGroupParams struct {
+	GroupID  int64
+	AvatarID int64
+}
+
+func (q *Queries) UnfavouriteGroup(ctx context.Context, arg UnfavouriteGroupParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, unfavouriteGroup, arg.GroupID, arg.AvatarID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const updateGroup = `-- name: UpdateGroup :exec
+UPDATE groups
+SET name = ?1, description = ?2, access = ?3,
+    updated_at = ?4
+WHERE id = ?5
+`
+
+type UpdateGroupParams struct {
+	Name        string
+	Description string
+	Access      string
+	UpdatedAt   time.Time
+	ID          int64
+}
+
+func (q *Queries) UpdateGroup(ctx context.Context, arg UpdateGroupParams) error {
+	_, err := q.db.ExecContext(ctx, updateGroup,
+		arg.Name,
+		arg.Description,
+		arg.Access,
+		arg.UpdatedAt,
+		arg.ID,
+	)
+	return err
 }

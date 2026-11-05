@@ -66,3 +66,24 @@ FROM home_items
 LEFT JOIN home_store_items ON home_store_items.id = home_items.home_store_item_id
 WHERE home_items.home_id = sqlc.arg(home_id)
 ORDER BY home_items.z, home_items.id;
+
+-- CAST keeps group_id a non-null parameter although homes.group_id is nullable.
+-- name: CreateGroupHome :one
+INSERT INTO homes (group_id, updated_at)
+VALUES (CAST(sqlc.arg(group_id) AS INTEGER), sqlc.arg(updated_at))
+RETURNING *;
+
+-- name: GetGroupHome :one
+SELECT * FROM homes WHERE group_id = sqlc.arg(group_id);
+
+-- Every sticker and note of the home goes back to the user whose habbo placed it,
+-- a note blank as the item it came from (0083).
+-- name: ReturnHomeItemsToPlacers :exec
+INSERT INTO home_inventory (user_id, home_store_item_id, quantity)
+SELECT avatars.user_id, home_items.home_store_item_id, COUNT(*)
+FROM home_items
+JOIN avatars ON avatars.id = home_items.created_by_avatar_id
+WHERE home_items.home_id = sqlc.arg(home_id) AND home_items.kind IN ('sticker', 'note')
+  AND home_items.home_store_item_id IS NOT NULL
+GROUP BY avatars.user_id, home_items.home_store_item_id
+ON CONFLICT (user_id, home_store_item_id) DO UPDATE SET quantity = home_inventory.quantity + excluded.quantity;

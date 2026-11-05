@@ -22,6 +22,31 @@ func (q *Queries) CountHomeItems(ctx context.Context, homeID int64) (int64, erro
 	return count, err
 }
 
+const createGroupHome = `-- name: CreateGroupHome :one
+INSERT INTO homes (group_id, updated_at)
+VALUES (CAST(?1 AS INTEGER), ?2)
+RETURNING id, profile_id, group_id, background_home_store_item_id, updated_at
+`
+
+type CreateGroupHomeParams struct {
+	GroupID   int64
+	UpdatedAt time.Time
+}
+
+// CAST keeps group_id a non-null parameter although homes.group_id is nullable.
+func (q *Queries) CreateGroupHome(ctx context.Context, arg CreateGroupHomeParams) (Home, error) {
+	row := q.db.QueryRowContext(ctx, createGroupHome, arg.GroupID, arg.UpdatedAt)
+	var i Home
+	err := row.Scan(
+		&i.ID,
+		&i.ProfileID,
+		&i.GroupID,
+		&i.BackgroundHomeStoreItemID,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const createHomeItem = `-- name: CreateHomeItem :one
 INSERT INTO home_items (
     home_id, kind, home_store_item_id, widget, skin, body, x, y, z, created_by_avatar_id, created_at, updated_at
@@ -123,6 +148,23 @@ func (q *Queries) DeleteHomeItem(ctx context.Context, arg DeleteHomeItemParams) 
 		return 0, err
 	}
 	return result.RowsAffected()
+}
+
+const getGroupHome = `-- name: GetGroupHome :one
+SELECT id, profile_id, group_id, background_home_store_item_id, updated_at FROM homes WHERE group_id = ?1
+`
+
+func (q *Queries) GetGroupHome(ctx context.Context, groupID sql.NullInt64) (Home, error) {
+	row := q.db.QueryRowContext(ctx, getGroupHome, groupID)
+	var i Home
+	err := row.Scan(
+		&i.ID,
+		&i.ProfileID,
+		&i.GroupID,
+		&i.BackgroundHomeStoreItemID,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const getHome = `-- name: GetHome :one
@@ -342,6 +384,24 @@ func (q *Queries) MoveHomeItem(ctx context.Context, arg MoveHomeItemParams) (int
 		return 0, err
 	}
 	return result.RowsAffected()
+}
+
+const returnHomeItemsToPlacers = `-- name: ReturnHomeItemsToPlacers :exec
+INSERT INTO home_inventory (user_id, home_store_item_id, quantity)
+SELECT avatars.user_id, home_items.home_store_item_id, COUNT(*)
+FROM home_items
+JOIN avatars ON avatars.id = home_items.created_by_avatar_id
+WHERE home_items.home_id = ?1 AND home_items.kind IN ('sticker', 'note')
+  AND home_items.home_store_item_id IS NOT NULL
+GROUP BY avatars.user_id, home_items.home_store_item_id
+ON CONFLICT (user_id, home_store_item_id) DO UPDATE SET quantity = home_inventory.quantity + excluded.quantity
+`
+
+// Every sticker and note of the home goes back to the user whose habbo placed it,
+// a note blank as the item it came from (0083).
+func (q *Queries) ReturnHomeItemsToPlacers(ctx context.Context, homeID int64) error {
+	_, err := q.db.ExecContext(ctx, returnHomeItemsToPlacers, homeID)
+	return err
 }
 
 const setHomeBackground = `-- name: SetHomeBackground :exec

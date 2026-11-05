@@ -1,10 +1,10 @@
 ---
 type: SQL Query
 title: homes.query.sql
-description: Home operations for creating a profile's home, reading it, and placing, moving, skinning and removing its items.
+description: Home operations for creating a profile's or a group's home, reading it, placing, moving, skinning and removing its items, and returning a home's items to those who placed them.
 resource: packages/store/queries/homes.query.sql
 tags: [store, query, homes]
-timestamp: 2026-11-03T17:46:46+00:00
+timestamp: 2026-11-05T19:25:27+00:00
 ---
 
 # Operations
@@ -102,6 +102,32 @@ timestamp: 2026-11-03T17:46:46+00:00
 - Inputs: `id`, `home_id`
 - Result: 1 when the item was on that home, 0 otherwise
 - Tables: `home_items`
+
+
+## CreateGroupHome
+
+- Cardinality: `:one`
+- Inputs: `group_id`, `updated_at`
+- Result: the created `Home` (`RETURNING *`) of the group, with the default background
+- Tables: `homes`
+
+`group_id` is wrapped in `CAST(… AS INTEGER)` as `profile_id` is in `CreateProfileHome`.
+
+## GetGroupHome
+
+- Cardinality: `:one`
+- Inputs: `group_id`
+- Result: the group's home
+- Tables: `homes`
+
+## ReturnHomeItemsToPlacers
+
+- Cardinality: `:exec`
+- Inputs: `home_id`
+- Result: every sticker and note of the home is added, one each, to the inventory of the user whose habbo placed it,
+  a note blank as the item it came from; widgets and items without a placer add nothing, and the items stay until
+  deleted
+- Tables: `home_inventory`, `home_items`, `avatars`
 
 # Related
 

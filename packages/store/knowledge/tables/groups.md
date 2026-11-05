@@ -4,7 +4,7 @@ title: groups
 description: Groups created by habbos, with owner, badge code and access mode.
 resource: packages/store/schema/groups.schema.sql
 tags: [store, table, groups]
-timestamp: 2026-10-27T21:28:26+00:00
+timestamp: 2026-11-05T19:25:38+00:00
 ---
 
 # Schema
@@ -16,7 +16,7 @@ timestamp: 2026-10-27T21:28:26+00:00
 | `name` | TEXT `COLLATE NOCASE` | no | | Group name | unique, ignoring case |
 | `description` | TEXT | no | `''` | Description, stored raw | |
 | `badge` | TEXT | no | | Badge code (`b0503Xs09114s05013s05015`) | |
-| `access` | TEXT | no | `'open'` | `open`, `moderated` or `closed` | |
+| `access` | TEXT | no | `'open'` | `open`, `moderated`, `closed` or `unlimited` | |
 | `created_at` | DATETIME | no | | Purchase time (UTC) | |
 | `updated_at` | DATETIME | no | | Last change (UTC) | |
 

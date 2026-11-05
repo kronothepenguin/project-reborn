@@ -2,6 +2,9 @@
 
 ## 2026-11-05
 
+- **Done** [p5-02](/tasks/p5-02-store-groups.md): the store buys, finds, joins, favours, promotes, lists and deletes
+  groups, leaving archived habbos out and returning a deleted group's items to those who placed them.
+- **Start** [p5-02](/tasks/p5-02-store-groups.md).
 - **Done** [p5-01](/tasks/p5-01-group-forum-settings.md): the group numbers, the group and board switches and the spam
   check are settings with Holo's values, in a `Groups` form, the content options and a `Discussion Board Module` form.
 - **Start** [p5-01](/tasks/p5-01-group-forum-settings.md).
