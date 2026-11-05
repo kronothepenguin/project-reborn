@@ -2,6 +2,9 @@
 
 ## 2026-11-05
 
+- **Done** [p5-03](/tasks/p5-03-badge-renderer.md): group badges draw as Holo's `badge.php` drew them, pixel for pixel in
+  Holo's palette over 1,080 codes, after a strict check, in the Tailwind palette until the user picks from the sheet.
+- **Start** [p5-03](/tasks/p5-03-badge-renderer.md).
 - **Done** [p5-02](/tasks/p5-02-store-groups.md): the store buys, finds, joins, favours, promotes, lists and deletes
   groups, leaving archived habbos out and returning a deleted group's items to those who placed them.
 - **Start** [p5-02](/tasks/p5-02-store-groups.md).

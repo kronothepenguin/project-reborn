@@ -91,7 +91,7 @@ task:
 
 - [p5-01 Declare the group and forum settings](/tasks/p5-01-group-forum-settings.md) — done
 - [p5-02 Store groups and their members](/tasks/p5-02-store-groups.md) — done
-- [p5-03 Draw group badges](/tasks/p5-03-badge-renderer.md) — todo
+- [p5-03 Draw group badges](/tasks/p5-03-badge-renderer.md) — done
 - [p5-04 Buy groups from the Me page](/tasks/p5-04-buy-groups.md) — todo
 - [p5-05 Show a group's home](/tasks/p5-05-group-page.md) — todo
 - [p5-06 Join, leave and favourite groups](/tasks/p5-06-join-leave-favourite.md) — todo

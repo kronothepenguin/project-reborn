@@ -2,7 +2,7 @@
 type: Reference
 title: Holo formats and protocols
 description: MUS commands, SSO tickets, group badge codes, promo habbo XML, figure strings, BBCode and the captcha as Holo used them.
-timestamp: 2026-10-27T20:48:19+00:00
+timestamp: 2026-11-05T19:43:45+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [holo, protocols]
 ---
@@ -41,6 +41,10 @@ Code format (`habbo-imaging/badge.php`): remove every `b` and `X`, split on `s`.
   `(avg(r,g,b) / 255) × tint`; an overlay `NN_NN.gif`, when present, is drawn on top uncoloured.
 - Holo wrote the cache file name straight from the request (path traversal); the new renderer validates the code
   strictly.
+- The badge editor writes an optional base `bBBCCX`, then up to four symbols `sTTCCP` with positions 0–8; the new
+  renderer (`packages/cms/internal/badge`) takes exactly that, and draws every code as Holo's `badge.php` did under PHP
+  5.6 with GD 2.1, pixel for pixel, in Holo's palette.
+- The 35 overlays `NN_NN.gif` (8 bases, 27 symbols) are drawn untinted over their part, and a white tint stays opaque.
 
 | Code | Tint | Code | Tint | Code | Tint |
 | --- | --- | --- | --- | --- | --- |

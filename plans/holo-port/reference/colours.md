@@ -2,7 +2,7 @@
 type: Reference
 title: Holo colours mapped to Tailwind
 description: The closest Tailwind colour for each Holo colour, computed with tools/tw-color, for the public site, BBCode and housekeeping.
-timestamp: 2026-10-27T20:48:19+00:00
+timestamp: 2026-11-05T19:43:45+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [colours, tailwind]
 ---
@@ -109,3 +109,28 @@ The 18 badge tints are pixel data shared with the HabboWidgets badge editor; see
 [the protocols](/reference/holo-protocols.md#group-badges). [P5](/phases/p5-groups-forum.md) builds them twice, with
 Holo's exact colours and with the closest Tailwind colours, and the user picks one
 ([0042](/decisions/0042-two-badge-palettes.md)).
+
+The Tailwind palette is live until the user picks ([0093](/decisions/0093-badge-palettes-compared-on-a-sheet.md)).
+Its colours are the sRGB values of the Tailwind v4 swatches; seven lie outside sRGB and are clipped to it, as their
+usual hex values are.
+
+| Tint | Holo | Tailwind | sRGB |
+| --- | --- | --- | --- |
+| 01 | #ffd601 | amber-300 | #ffd230 |
+| 02 | #ee7600 | amber-600 | #e17100 |
+| 03 | #84de00 | lime-400 | #9ae600 |
+| 04 | #589a00 | lime-600 | #5ea500 |
+| 05 | #50c1fb | sky-400 | #00bcff |
+| 06 | #006fcf | sky-600 | #0084d1 |
+| 07 | #ff98e3 | pink-300 | #fda5d5 |
+| 08 | #f334bf | pink-500 | #f6339a |
+| 09 | #ff2d2d | red-500 | #fb2c36 |
+| 10 | #af0a0a | red-700 | #c10007 |
+| 11 | #ffffff | white | #ffffff |
+| 12 | #c0c0c0 | mauve-300 | #d7d0d7 |
+| 13 | #373737 | taupe-700 | #473c39 |
+| 14 | #fbe7ac | amber-100 | #fef3c6 |
+| 15 | #977641 | olive-500 | #7c7c67 |
+| 16 | #c2eaff | sky-200 | #b8e6fe |
+| 17 | #fff165 | yellow-200 | #fff085 |
+| 18 | #aaff7d | lime-300 | #bbf451 |

@@ -6,6 +6,7 @@ export { default as Card } from "./components/card.svelte";
 export { default as Checkbox } from "./components/checkbox.svelte";
 export { default as Dialog } from "./components/dialog.svelte";
 export { default as FormField } from "./components/form-field.svelte";
+export { default as GroupBadge } from "./components/group-badge.svelte";
 export { default as Icon } from "./components/icon.svelte";
 export { default as Input } from "./components/input.svelte";
 export { default as Link } from "./components/link.svelte";
