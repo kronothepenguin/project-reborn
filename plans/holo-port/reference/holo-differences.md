@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-05T20:26:12+00:00
+timestamp: 2026-11-05T20:37:49+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -69,6 +69,8 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Header | One habbo per account | `Switch habbo` with several, and `/account/habbos` | [0001](/decisions/0001-user-owns-many-habbos.md) |
 | Header | Housekeeping is `housekeeping.php` | `site.housekeepingUrl`, because housekeeping can run on its own port | [0003](/decisions/0003-housekeeping-under-prefix.md) |
 | Several habbos | One habbo per account | One wallet, one club membership and one home inventory per user | [0056](/decisions/0056-wallet-club-and-inventory-per-user.md) |
+| Group settings | The text's counter starts at 255, and a rename takes a name another group has | The counter starts at `groups.descriptionMaxLength`, 200, and a taken name answers `A group with this name already exists.` | [0084](/decisions/0084-group-names-and-descriptions.md) |
+| Deleting a group | Every sticker and note of its home is destroyed | They go back to the users whose habbos placed them, notes blank | [0083](/decisions/0083-group-home-items-return-to-members.md) |
 | Group page | `Search for group` takes a `LIKE` pattern, so `%` and `_` match anything and the first match opens | The group with exactly that name, ignoring case, at `GET /groups?name=` | [0095](/decisions/0095-group-search-and-report-addresses.md) |
 | Group page | Lists every member, archived habbos included | Archived habbos are left out of the members and their count | [0089](/decisions/0089-archived-habbos-show-as-archived.md) |
 | Group badges | Holo's 18 tints | The closest Tailwind colours, until the user picks one palette from the sheet | [0042](/decisions/0042-two-badge-palettes.md), [0093](/decisions/0093-badge-palettes-compared-on-a-sheet.md) |
@@ -129,6 +131,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Community | The news promo prints empty stories and items when there are fewer than four articles | It shows only the articles there are |
 | Me page | The tags habblet's text keeps saying what it said when the page loaded after a tag is added or removed, and the next question comes from an older list | The text follows the tags, and every question comes from the Me page's list |
 | Texts | `You need you remove one of your tags` | Spelled correctly |
+| Group settings | A type that leaves Exclusive keeps its waiting requests until each habbo next views the group, and an admin can accept one meanwhile, even into a closed group | The waiting requests go at once |
 | Group page | Shows `Join` again to a habbo whose request waits, because its check reads a row loaded only for members | Shows no way in while the request waits |
 | Texts | `An request`, `Noone`, `You are already member`, `dont` on the group page's dialogs | Spelled correctly |
 | Group page | The Group Members widget takes its favourite icon, and its tiles their background, from Habbo's CDN, which is gone | The favourite mark of Holo's own `info_icons.png`; the tiles keep their dashed border alone, as Holo's show now |

@@ -1,5 +1,6 @@
 ---
 import GroupActions from "../../components/groups/group-actions.svelte";
+import GroupTools from "../../components/groups/group-tools.svelte";
 import HomeView from "../../components/homes/home-view.astro";
 import Community from "../../layouts/community.astro";
 ---
@@ -7,6 +8,19 @@ import Community from "../../layouts/community.astro";
 <Community title="[[ .ShortName ]] ~ [[ .Group ]]" tab="community" sub="">
   <HomeView>
     <Fragment slot="header">
+      <div
+        id="group-settings-data"
+        hidden
+        data-name="[[ .Group ]]"
+        data-description="[[ .Info.Description ]]"
+        data-access="[[ .Access ]]"
+        data-badge="[[ .Info.Badge ]]"
+        data-name-max="[[ .NameMax ]]"
+        data-description-max="[[ .DescriptionMax ]]"
+        data-max-members="[[ .MaxMembers ]]"
+      >
+      </div>
+      <GroupTools client:only="svelte" group="[[ .GroupID ]]" owner="[[ .Viewer.Owner ]]" source="group-settings-data" />
       <h2 class="flex items-center gap-1 text-sm font-bold text-sky-500">
         [[ .Group ]] [[ if .Private ]]<img src="/web-gallery/images/status_closed_big.gif" alt="Closed Group" title="Closed Group" />[[ end ]]
         [[ if .Exclusive ]]<img src="/web-gallery/images/status_exclusive_big.gif" alt="Moderated Group" title="Moderated Group" />[[ end ]]

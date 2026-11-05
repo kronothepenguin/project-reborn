@@ -2,6 +2,9 @@
 
 ## 2026-11-05
 
+- **Done** [p5-07](/tasks/p5-07-group-settings.md): the owner's Edit menu opens Holo's settings, which rename, rewrite and
+  retype the group, or delete it with its items going back to those who placed them.
+- **Start** [p5-07](/tasks/p5-07-group-settings.md).
 - **Done** [p5-06](/tasks/p5-06-join-leave-favourite.md): the group page's tools join, request, leave and choose the favourite for
   the active habbo, with Holo's dialogs and answers.
 - **Start** [p5-06](/tasks/p5-06-join-leave-favourite.md).

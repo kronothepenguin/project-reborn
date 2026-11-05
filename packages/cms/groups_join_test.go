@@ -259,31 +259,31 @@ func TestThePageOffersWhatTheActiveHabboMayDo(t *testing.T) {
 		return serve(mux, "GET", fmt.Sprintf("/groups/%d", groups[name].ID), cookie, nil).Body.String()
 	}
 	for name, want := range map[string]string{
-		"Regular":   "Viewer:{Join:join Favourite: Leave:false}",
-		"Exclusive": "Viewer:{Join:request Favourite: Leave:false}",
-		"Private":   "Viewer:{Join: Favourite: Leave:false}",
-		"Unlimited": "Viewer:{Join:join Favourite: Leave:false}",
+		"Regular":   "Viewer:{Join:join Favourite: Leave:false Owner:false}",
+		"Exclusive": "Viewer:{Join:request Favourite: Leave:false Owner:false}",
+		"Private":   "Viewer:{Join: Favourite: Leave:false Owner:false}",
+		"Unlimited": "Viewer:{Join:join Favourite: Leave:false Owner:false}",
 	} {
 		if body := page(name, cookie); !strings.Contains(body, want) {
 			t.Errorf("a stranger on %s lacks %q", name, want)
 		}
 	}
-	if body := page("Regular", nil); !strings.Contains(body, "Viewer:{Join: Favourite: Leave:false}") {
+	if body := page("Regular", nil); !strings.Contains(body, "Viewer:{Join: Favourite: Leave:false Owner:false}") {
 		t.Error("a guest is offered something")
 	}
 	groupAction(mux, cookie, groups["Exclusive"].ID, "join")
-	if body := page("Exclusive", cookie); !strings.Contains(body, "Viewer:{Join: Favourite: Leave:false}") {
+	if body := page("Exclusive", cookie); !strings.Contains(body, "Viewer:{Join: Favourite: Leave:false Owner:false}") {
 		t.Errorf("a habbo with a waiting request is offered to join again: %s", body)
 	}
 	groupAction(mux, cookie, groups["Regular"].ID, "join")
-	if body := page("Regular", cookie); !strings.Contains(body, "Viewer:{Join: Favourite:make Leave:true}") {
+	if body := page("Regular", cookie); !strings.Contains(body, "Viewer:{Join: Favourite:make Leave:true Owner:false}") {
 		t.Errorf("a member lacks Make favourite and Leave group: %s", body)
 	}
 	groupAction(mux, cookie, groups["Regular"].ID, "favourite")
-	if body := page("Regular", cookie); !strings.Contains(body, "Viewer:{Join: Favourite:remove Leave:true}") {
+	if body := page("Regular", cookie); !strings.Contains(body, "Viewer:{Join: Favourite:remove Leave:true Owner:false}") {
 		t.Errorf("the favourite lacks Remove favourite: %s", body)
 	}
-	if body := page("Regular", login(t, db, "regular-owner")); !strings.Contains(body, "Viewer:{Join: Favourite:make Leave:false}") {
+	if body := page("Regular", login(t, db, "regular-owner")); !strings.Contains(body, "Viewer:{Join: Favourite:make Leave:false Owner:true}") {
 		t.Errorf("the owner is offered to leave: %s", body)
 	}
 }

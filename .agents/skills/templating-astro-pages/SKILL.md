@@ -91,3 +91,9 @@ The built file must exist and still contain the `[[ ]]` placeholder (unrendered)
 - `[[ ]]` is substituted only in built HTML. Svelte scripts and other JS bundles are not processed by `html/template`; put runtime data in the markup, not in component code.
 - Passing runtime values into client component props works only for simple scalars. Quotes or backslashes in the value corrupt the serialized props JSON; see `adding-svelte-interactivity`.
 - `dist/` is embedded in the Go binary, so build the frontend before `go build`.
+- Astro writes the script that wakes every island just before a page's first island. If that island sits inside
+  `[[ if ]]` or `[[ range ]]`, a visitor for whom the template drops it also loses the script, and the page's other
+  islands never wake. Keep the first island of a page with several outside template blocks, and let it decide in
+  the browser whether to show itself; `packages/cms/islands_test.go` checks every built page.
+- Text that may hold quotes, such as a description, goes to an island through a hidden element's `data-` attributes,
+  which the browser decodes, never through props.

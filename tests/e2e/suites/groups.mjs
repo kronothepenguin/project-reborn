@@ -188,6 +188,8 @@ export default async function ({ base, browser, check, shot, sql }) {
 
   check("no page failed", problems.length === 0, problems.join(" | "));
   await context.close();
+
+  await ownerTools({ base, browser, check, shot, sql });
 }
 
 // A guest reads a group's home, a missing group's page and its search.
@@ -211,8 +213,8 @@ async function groupPages({ base, browser, check, shot, sql }) {
   await shot(page, "group-home");
   check(
     "the header names the hotel, not the group",
-    !(await page.locator("header").innerText()).includes("Retro Club"),
-    await page.locator("header").innerText(),
+    !(await page.getByRole("banner").innerText()).includes("Retro Club"),
+    await page.getByRole("banner").innerText(),
   );
   check(
     "a guest reads a group's home, named after it, with no icon for a Regular group",
@@ -373,5 +375,118 @@ async function membership({ base, browser, check, shot, sql }) {
   check("a Private group offers no way in", (await tools()).length === 0, JSON.stringify(await tools()));
 
   check("no membership page failed", problems.length === 0, problems.join(" | "));
+  await context.close();
+}
+
+// Admin-1 owns the seeded groups: the Edit menu, the settings and deleting a group.
+async function ownerTools({ base, browser, check, shot, sql }) {
+  const context = await browser.newContext({ viewport: { width: 1100, height: 900 } });
+  const page = await context.newPage();
+  const problems = [];
+  page.on("pageerror", (e) => problems.push(e.message));
+  page.on("response", (r) => {
+    if (r.status() >= 400 && r.status() !== 422) problems.push(`${r.status()} ${r.url()}`);
+  });
+  await page.goto(base + "/");
+  await page.fill("#username", "Admin-1");
+  await page.fill("#password", "secret123");
+  await Promise.all([page.waitForURL("**/me"), page.click('button:has-text("Sign in")')]);
+  const id = (name) => sql(`SELECT id FROM groups WHERE name = '${name}'`)[0][0];
+  const settings = page.getByRole("dialog", { name: "Group settings" });
+  const answer = page.getByRole("dialog", { name: "Edit Group Settings" });
+  const openSettings = async () => {
+    await page.getByRole("button", { name: "Edit" }).click();
+    await page.getByRole("button", { name: "Settings" }).click();
+    await settings.waitFor();
+  };
+
+  const retro = id("Retro Club");
+  await page.goto(`${base}/groups/${retro}`);
+  await page.getByRole("button", { name: "Edit" }).click();
+  check(
+    "the owner's Edit opens Holo's menu with Settings",
+    (await page.getByText("Edit group", { exact: true }).isVisible()) &&
+      (await page.getByRole("button", { name: "Settings" }).isVisible()),
+  );
+  await page.getByRole("button", { name: "Settings" }).click();
+  await settings.waitFor();
+  await shot(page, "group-settings");
+  check(
+    "the settings show the name, the text with its counter from 200, and the four types with Holo's texts",
+    (await settings.getByLabel("Edit group name:").inputValue()) === "Retro Club" &&
+      (await settings.getByLabel("Edit text:").inputValue()) === "About Retro Club" &&
+      (await settings.getByLabel("Characters left:").inputValue()) === "184" &&
+      (await settings.getByRole("radio", { name: /^Regular/ }).isChecked()) &&
+      (await settings.innerText()).includes("Anyone can join. 500 members limit.") &&
+      (await settings.innerText()).includes("Group Admin controls who can join.") &&
+      (await settings.innerText()).includes("No one can join.") &&
+      (await settings.innerText()).includes("Note: If you choose the option 'unlimited' you will not be able to change the type later!"),
+    await settings.innerText(),
+  );
+  await settings.getByLabel("Edit text:").fill("Retro forever");
+  check("the counter follows the text", (await settings.getByLabel("Characters left:").inputValue()) === "187");
+  await settings.getByRole("radio", { name: /^Exclusive/ }).check();
+  await settings.getByRole("button", { name: "Save changes" }).click();
+  check(
+    "changing the type asks first, in Holo's words",
+    await answer.getByText("Are you sure you want to change the group type to exclusive?").isVisible(),
+  );
+  await answer.getByRole("button", { name: "OK" }).click();
+  await answer.getByText("Editing group settings successful").waitFor();
+  await Promise.all([page.waitForEvent("load"), answer.getByRole("button", { name: "Done" }).click()]);
+  await page.locator("#mypage-wrapper h2").waitFor();
+  check(
+    "the saved settings show at once: the text and the Exclusive icon",
+    (await page.locator('#mypage-wrapper h2 img[alt="Moderated Group"]').count()) === 1 &&
+      sql(`SELECT description, access FROM groups WHERE id = ${retro}`)[0].join("|") === "Retro forever|moderated",
+  );
+
+  await openSettings();
+  await settings.getByLabel("Edit group name:").fill("pixel art");
+  await settings.getByRole("button", { name: "Save changes" }).click();
+  await answer.getByText("A group with this name already exists.").waitFor();
+  check("a name another group has is refused", true);
+  await Promise.all([page.waitForEvent("load"), answer.getByRole("button", { name: "Done" }).click()]);
+
+  const pixel = id("Pixel Art");
+  await page.goto(`${base}/groups/${pixel}`);
+  await openSettings();
+  await settings.getByRole("radio", { name: /^Unlimited/ }).check();
+  await settings.getByRole("button", { name: "Save changes" }).click();
+  check(
+    "choosing Unlimited warns that it cannot be undone",
+    await answer
+      .getByText("Are you sure you want to change the group type to large? If you continue you can't change it back later!")
+      .isVisible(),
+  );
+  await answer.getByRole("button", { name: "OK" }).click();
+  await Promise.all([page.waitForEvent("load"), answer.getByRole("button", { name: "Done" }).click()]);
+  await openSettings();
+  check(
+    "an Unlimited group's types are locked",
+    (await settings.getByRole("radio", { name: /^Unlimited/ }).isChecked()) &&
+      (await settings.getByRole("radio", { name: /^Regular/ }).isDisabled()),
+  );
+
+  const owls = id("Night Owls");
+  await page.goto(`${base}/groups/${owls}`);
+  await openSettings();
+  await settings.getByRole("button", { name: "Delete group" }).click();
+  const confirm = page.getByRole("dialog", { name: "Group" });
+  check(
+    "Delete group warns as Holo did",
+    (await confirm.getByText("Are you sure you want to delete this Group?").isVisible()) &&
+      (await confirm.getByText("You will lose everything currently on your group home!").isVisible()),
+  );
+  await confirm.getByRole("button", { name: "OK" }).click();
+  await confirm.getByText("The group has been deleted successfully.").waitFor();
+  await shot(page, "group-deleted");
+  await Promise.all([page.waitForURL("**/me"), confirm.getByRole("link", { name: "OK" }).click()]);
+  check(
+    "the group is gone, and its OK leads to the Me page",
+    sql(`SELECT COUNT(*) FROM groups WHERE id = ${owls}`)[0][0] === 0 && page.url().endsWith("/me"),
+  );
+
+  check("no owner page failed", problems.length === 0, problems.join(" | "));
   await context.close();
 }
