@@ -18,6 +18,9 @@
 
   let { group, admin, owner, me, source }: Props = $props();
 
+  // The header's purchase dialog shares the page with this one.
+  const uid = $props.id();
+
   type Access = "open" | "moderated" | "closed" | "unlimited";
 
   let menu = $state(false);
@@ -211,9 +214,9 @@
           <div class="float-left mt-[11px] mr-4 ml-[5px]"><GroupBadge code={badge} alt={name} /></div>
           <div class="float-left w-[164px]">
             {#if nameFull}<div class="text-red-600">Maximum Group name length reached</div>{/if}
-            <label for="group_name" class="font-bold">Edit group name:</label>
+            <label for="{uid}-name" class="font-bold">Edit group name:</label>
             <input
-              id="group_name"
+              id="{uid}-name"
               class="w-full border border-neutral-600 bg-white px-1 text-black"
               maxlength={nameMax}
               bind:value={name}
@@ -221,11 +224,11 @@
           </div>
           <div class="clear-left pt-2">
             {#if descriptionFull}<div class="text-red-600">Description limit reached</div>{/if}
-            <label for="group_description" class="font-bold">Edit text:</label>
+            <label for="{uid}-description" class="font-bold">Edit text:</label>
             <span class="float-right">
-              <label for="group_description-counter">Characters left:</label>
+              <label for="{uid}-counter">Characters left:</label>
               <input
-                id="group_description-counter"
+                id="{uid}-counter"
                 class="w-8 bg-amber-300 text-black"
                 size="3"
                 readonly
@@ -233,7 +236,7 @@
               />
             </span>
             <textarea
-              id="group_description"
+              id="{uid}-description"
               class="mt-1 h-[150px] w-[98%] border border-neutral-600 bg-white px-1 text-black"
               maxlength={descriptionMax}
               bind:value={description}

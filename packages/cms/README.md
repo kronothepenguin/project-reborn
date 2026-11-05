@@ -60,6 +60,12 @@ serves the built frontend from the embedded `dist/`.
   without the zip. Its `data/badge_data.xml` holds the live palette of
   `internal/badge`, and a test keeps the two equal. The editor draws itself into
   `#editor-container` when its script first runs.
+- `header/my-groups` is the header's `My Groups`. Like every island that stands on
+  every page, it sits outside the layout's `[[ if .SignedIn ]]` and hides itself
+  from guests, so that Astro's island script is never left out of a page.
+- `homes/group-info-boxes` listens on the playground for clicks on the groups of
+  any MY GROUPS widget, the ones the editor places included, and mounts
+  `homes/group-info-box` in the widget.
 - `homes/home-editor` edits a habbo's home at `/home/{name}/edit` and a group's at
   `/groups/{id}/edit`. It reads the element named by `config`: `data-home`,
   `data-view` (where Cancel and Save go), `data-group`, the skins in its

@@ -26,6 +26,7 @@ const (
 	roleMember          = "member"
 	widgetGroup         = "group_info"
 	widgetMembers       = "members"
+	widgetGroups        = "groups"
 )
 
 // purchaseTakenText is 0084's answer for a name another group has, on purchase

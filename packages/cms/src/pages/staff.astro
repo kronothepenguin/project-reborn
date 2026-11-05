@@ -1,5 +1,5 @@
 ---
-import { Avatar, Card } from "@project-reborn/components";
+import { Avatar, Card, GroupBadge } from "@project-reborn/components";
 import offline from "../assets/staff/habbo_offline.gif";
 import Community from "../layouts/community.astro";
 
@@ -30,7 +30,9 @@ const body = "[&_a]:text-orange-500 [&_a]:underline";
               <br />
               Rank: [[ .Rank ]]<br />
               Last Visit: [[ .LastVisit ]]<br />
-              <br />[[ if .Badge ]]<img class="inline" src="[[ .Badge ]]" alt="" />[[ end ]]&nbsp;<br /><br />
+              <br />[[ if .Badge ]]<img class="inline" src="[[ .Badge ]]" alt="" />[[ end ]]&nbsp;[[ if .Group ]]<a
+                href="/groups/[[ .Group ]]"><GroupBadge class="inline" code="[[ .GroupBadge ]]" /></a
+              >[[ end ]]<br /><br />
             </p>
             [[ else ]]
             No staff to display yet.

@@ -170,12 +170,13 @@ type placeBody struct {
 }
 
 // homeWidgets are the widgets the inventory's Widgets tab offers a home, once
-// each, as store.php did: Group Members on a group's home.
+// each, as store.php did: Group Members on a group's home, and MY GROUPS on a
+// habbo's.
 func homeWidgets(home store.Home) []string {
 	if home.GroupID.Valid {
 		return []string{widgetMembers}
 	}
-	return nil
+	return []string{widgetGroups}
 }
 
 // HandleHomesItemsPlace handles POST /homes/{id}/items: a sticker, or all of that

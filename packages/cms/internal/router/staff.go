@@ -30,6 +30,9 @@ type staffMember struct {
 	Rank      string
 	LastVisit string
 	Badge     string
+	// Group is the favourite group, 0 for none, whose badge leads to it.
+	Group      int64
+	GroupBadge string
 }
 
 type staffBox struct {
@@ -71,6 +74,14 @@ func (r *Router) HandleStaffView(w http.ResponseWriter, req *http.Request) {
 		}
 		if row.Badge != "" {
 			member.Badge = image("c_images/album1584/" + row.Badge + ".gif")
+		}
+		favourite, err := r.deps.Queries.GetFavouriteGroup(ctx, row.ID)
+		switch {
+		case err == nil:
+			member.Group, member.GroupBadge = favourite.ID, favourite.Badge
+		case !store.IsNotFound(err):
+			r.fail(w, err)
+			return
 		}
 		page.Members = append(page.Members, member)
 	}

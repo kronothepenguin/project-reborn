@@ -34,6 +34,7 @@
 
 .profile-widget .widget-content,
 .group-info-widget .widget-content,
+.groups-widget .widget-content,
 .stickie-content {
   width: 218px;
 }
@@ -43,7 +44,8 @@
 }
 
 .profile-widget [data-widget-skin="goldenskin"],
-.group-info-widget [data-widget-skin="goldenskin"] {
+.group-info-widget [data-widget-skin="goldenskin"],
+.groups-widget [data-widget-skin="goldenskin"] {
   width: 287px;
 }
 
@@ -52,7 +54,8 @@
 }
 
 .profile-widget [data-widget-skin="defaultskin"],
-.group-info-widget [data-widget-skin="defaultskin"] {
+.group-info-widget [data-widget-skin="defaultskin"],
+.groups-widget [data-widget-skin="defaultskin"] {
   width: 252px;
 }
 
@@ -61,7 +64,8 @@
 }
 
 .profile-widget [data-widget-skin="hc_pillowskin"],
-.group-info-widget [data-widget-skin="hc_pillowskin"] {
+.group-info-widget [data-widget-skin="hc_pillowskin"],
+.groups-widget [data-widget-skin="hc_pillowskin"] {
   width: 302px;
 }
 
@@ -70,7 +74,8 @@
 }
 
 .profile-widget [data-widget-skin="hc_machineskin"],
-.group-info-widget [data-widget-skin="hc_machineskin"] {
+.group-info-widget [data-widget-skin="hc_machineskin"],
+.groups-widget [data-widget-skin="hc_machineskin"] {
   width: 313px;
 }
 
@@ -79,7 +84,8 @@
 }
 
 .profile-widget [data-widget-skin="metalskin"],
-.group-info-widget [data-widget-skin="metalskin"] {
+.group-info-widget [data-widget-skin="metalskin"],
+.groups-widget [data-widget-skin="metalskin"] {
   width: 273px;
 }
 
@@ -88,7 +94,8 @@
 }
 
 .profile-widget [data-widget-skin="notepadskin"],
-.group-info-widget [data-widget-skin="notepadskin"] {
+.group-info-widget [data-widget-skin="notepadskin"],
+.groups-widget [data-widget-skin="notepadskin"] {
   width: 254px;
 }
 
@@ -97,7 +104,8 @@
 }
 
 .profile-widget [data-widget-skin="speechbubbleskin"],
-.group-info-widget [data-widget-skin="speechbubbleskin"] {
+.group-info-widget [data-widget-skin="speechbubbleskin"],
+.groups-widget [data-widget-skin="speechbubbleskin"] {
   width: 238px;
 }
 
@@ -106,7 +114,8 @@
 }
 
 .profile-widget [data-widget-skin="noteitskin"],
-.group-info-widget [data-widget-skin="noteitskin"] {
+.group-info-widget [data-widget-skin="noteitskin"],
+.groups-widget [data-widget-skin="noteitskin"] {
   width: 237px;
 }
 

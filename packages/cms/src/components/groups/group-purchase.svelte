@@ -22,6 +22,9 @@
 
   let { open = $bindable(false), limits = $bindable() }: Props = $props();
 
+  // The header's My Groups and the Me page each hold a purchase dialog.
+  const uid = $props.id();
+
   // Holo's badge for a new group, which the dialog shows beside its texts.
   const newBadge = "b0503Xs09114s05013s05015";
 
@@ -126,18 +129,18 @@
             Creating a group will cost you <b>{limits.price}</b> credits.
           </p>
           <p class="mb-2">
-            <label for="group_name"><b>Group Name</b></label><br />
+            <label for="{uid}-name"><b>Group Name</b></label><br />
             <input
-              id="group_name"
+              id="{uid}-name"
               class="border border-neutral-600 bg-white px-1 text-black"
               maxlength={limits.nameMax}
               bind:value={name}
             />
           </p>
           <p class="mb-2">
-            <label for="group_description"><b>Group Description</b></label><br />
+            <label for="{uid}-description"><b>Group Description</b></label><br />
             <textarea
-              id="group_description"
+              id="{uid}-description"
               class="h-[150px] w-[98%] border border-neutral-600 bg-white px-1 text-black"
               maxlength={limits.descriptionMax}
               bind:value={description}
@@ -150,8 +153,8 @@
           </p>
         </form>
       {:else if view.name === "failed"}
-        <p id="purchase-result-error" class="mb-2">Purchasing the group failed. Please try again later.</p>
-        <div id="purchase-group-errors" class="mb-2">
+        <p class="mb-2">Purchasing the group failed. Please try again later.</p>
+        <div class="mb-2">
           <p>
             {#if view.why === "disabled"}
               Purchasing groups has been disabled by the Hotel Management. Please try again later.

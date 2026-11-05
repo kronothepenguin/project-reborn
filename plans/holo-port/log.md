@@ -2,6 +2,9 @@
 
 ## 2026-11-05
 
+- **Done** [p5-11](/tasks/p5-11-groups-across-the-site.md): the header's My Groups, the MY GROUPS widget with its info box,
+  and the favourite group's badge on profiles and the staff page.
+- **Start** [p5-11](/tasks/p5-11-groups-across-the-site.md).
 - **Done** [p5-10](/tasks/p5-10-decorate-group-homes.md): a group's admins decorate its home with the home editor, place
   Group Members once, and removed items go back to whoever placed them.
 - **Decision** [0098](/decisions/0098-group-home-notes-go-back-to-their-placers.md): notes removed from a group home go back

@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-05T21:21:56+00:00
+timestamp: 2026-11-05T21:57:11+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -91,6 +91,8 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | BBCode | Any colour name or hex value | The eight colours of Holo's toolbar, as the plan maps them; any other shows uncoloured | The plan's colours |
 | Home page | `Edit` shows on the home of the signed-in habbo | It shows on the homes of all the user's habbos | [0065](/decisions/0065-owners-edit-all-their-homes.md) |
 | Home page | The tag buttons and the edit icon come from Habbo's servers | The plus, the minus and the wrench of the CMS's own icon sprite | Those servers are gone, and Holo never shipped the images |
+| Home page | The MY GROUPS rows take their background, and their plus and minus, from Habbo's servers | The rows keep their dashed border, as Holo's show now, and the minus is the CMS's own | Those servers are gone, and Holo never shipped the images |
+| Header | `My Groups` lists the signed-in user's groups | The active habbo's | [0086](/decisions/0086-roles-and-posts-follow-the-active-habbo.md) |
 | Home editor | The edit menu and the store dialogs sit in frames drawn by images from Habbo's servers | Plain frames, with Holo's texts, buttons and order | Those servers are gone, and Holo never shipped the images |
 | Home editor | Items fade out and back in when the background changes, and placed items fade in | The background and the items change at once | Holo's fades came from an effects library the site does not load; the result is the same |
 | Note editor | `Control.TextArea`'s BBCode toolbar | Buttons for bold, italics, underline, strike, quote, code and a link, and the colours of Holo's list | The same tags and colours, without that library |
@@ -142,6 +144,9 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Group page | Shows `Join` again to a habbo whose request waits, because its check reads a row loaded only for members | Shows no way in while the request waits |
 | Texts | `An request`, `Noone`, `You are already member`, `dont` on the group page's dialogs | Spelled correctly |
 | Group page | The Group Members widget takes its favourite icon, and its tiles their background, from Habbo's CDN, which is gone | The favourite mark of Holo's own `info_icons.png`; the tiles keep their dashed border alone, as Holo's show now |
+| Header | `My Groups` opens on layer 99, under any home item placed higher | The menu stays above the page |
+| Home page | `widget_add.php` lists and counts every membership in a new MY GROUPS, waiting requests included, until the page reloads | The joined groups, as the page lists them |
+| Home page | The info box of a group that no longer exists is empty, and its script then fails on the missing minus, which leaves the widget blank | `Invalid group or no group supplied.`, with its minus |
 | Group home editor | Never shows `This item belongs to another user. If you remove it, it will return to their inventory.`, because the page calls `openEditMenu` without its fifth argument | It shows on the stickers and notes another user placed |
 | Group home editor | The inventory's `Group Members` carries the tooltip `My Groups` | `Group Members` |
 | Group home editor | `widget_add.php` places a second Group Members widget when asked, though the inventory greys it out once placed | One per home |
@@ -313,10 +318,8 @@ veto.
 
 | Holo | Phase |
 | --- | --- |
-| `My Groups` in the header | [P5](/phases/p5-groups-forum.md) |
 | `My Friends`, `My Rooms` and the recommended rooms | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | The wardrobe on `/account/looks` | [P6](/phases/p6-economy.md) |
-| The `MY GROUPS` widget, and the group badge of the profile widget and of the staff page | [P5](/phases/p5-groups-forum.md) |
 | The online state of the profile widget, the community page's random habbos and the staff page, which show offline | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | `Voucher Management` in housekeeping | [P6](/phases/p6-economy.md) |
 | `Chatlogs` and `Online Users` in housekeeping | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |

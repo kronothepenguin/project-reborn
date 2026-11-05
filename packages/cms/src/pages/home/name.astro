@@ -1,8 +1,10 @@
 ---
+import GroupInfoBoxes from "../../components/homes/group-info-boxes.svelte";
 import HomeView from "../../components/homes/home-view.astro";
 import Community from "../../layouts/community.astro";
 ---
 
 <Community title="[[ .ShortName ]] ~ User Profile - [[ .Owner ]]" tab="home" sub="My Page">
   <HomeView />
+  <GroupInfoBoxes client:only="svelte" />
 </Community>

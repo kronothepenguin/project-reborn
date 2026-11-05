@@ -18,6 +18,9 @@ export const prepare = ({ sql }) => {
   sql(`INSERT INTO profiles (avatar_id, created_at, updated_at) VALUES (${frankHabbo}, '${at(0)}', '${at(0)}')`);
   const [[profile]] = sql(`SELECT id FROM profiles WHERE avatar_id = ${frankHabbo}`);
   sql(`INSERT INTO homes (profile_id, updated_at) VALUES (${profile}, '${at(0)}')`);
+  const [[frankHome]] = sql(`SELECT id FROM homes WHERE profile_id = ${profile}`);
+  sql(`INSERT INTO home_items (home_id, kind, widget, skin, x, y, z, created_at, updated_at)
+    VALUES (${frankHome}, 'widget', 'profile', 'defaultskin', 25, 25, 5, '${at(0)}', '${at(0)}')`);
 
   const [[admin]] = sql("SELECT id FROM avatars WHERE name = 'Admin-1'");
   const group = (name, badge, minute) => {
@@ -211,6 +214,76 @@ export default async function ({ base, browser, check, shot, sql }) {
     JSON.stringify(await mine.locator("li a").allInnerTexts()) === JSON.stringify(["Retro Club", "Frank's <Gang>"]),
     await mine.innerText(),
   );
+  await dialog.getByRole("button", { name: /Done|Cancel/ }).first().click();
+
+  const retro = sql("SELECT id FROM groups WHERE name = 'Retro Club'")[0][0];
+  // Frank lost his favourite when he left Pixel Art; Retro Club is it again.
+  sql(`UPDATE group_members SET favourite = TRUE WHERE group_id = ${retro} AND avatar_id = (SELECT id FROM avatars WHERE name = 'Frank')`);
+  await page.getByRole("button", { name: "My Groups" }).click();
+  const quick = page.getByRole("region", { name: "My Groups" });
+  await quick.getByRole("link").first().waitFor();
+  await shot(page, "quick-menu-groups");
+  const [favourite, owned] = [quick.locator("li").nth(0), quick.locator("li").nth(1)];
+  check(
+    "the header's My Groups lists the memberships before the owned group, with Holo's marks",
+    JSON.stringify(await quick.getByRole("link").allInnerTexts()) === JSON.stringify(["Retro Club", "Frank's <Gang>"]) &&
+      (await favourite.locator('[title="Favourite"]').count()) === 1 &&
+      (await owned.locator('[title="Owner"]').count()) === 1 &&
+      (await quick.locator('[title="Admin"]').count()) === 0 &&
+      (await quick.getByRole("link", { name: "Retro Club" }).getAttribute("href")) === `/groups/${retro}`,
+    await quick.innerText(),
+  );
+  await quick.getByRole("button", { name: "Create a group" }).click();
+  await dialog.waitFor();
+  check(
+    "its Create a group opens the purchase dialog, which knows buying is off",
+    (await dialog.innerText()).includes("Purchasing groups has been disabled by the Hotel Management.") &&
+      !(await quick.isVisible()),
+    await dialog.innerText(),
+  );
+  await dialog.getByRole("button", { name: /Done|Cancel/ }).first().click();
+
+  await page.goto(`${base}/home/Frank`);
+  const badgeLink = page.locator(`.profile-widget a[href="/groups/${retro}"] img[src^="/habbo-imaging/badge/"]`);
+  check("Frank's profile shows his favourite group's badge, linking to it", (await badgeLink.count()) === 1);
+  await page.getByRole("link", { name: "Edit", exact: true }).click();
+  await page.getByRole("button", { name: "Inventory" }).click();
+  const inventory = page.getByRole("dialog", { name: "Inventory" });
+  await inventory.getByRole("button", { name: "Widgets", exact: true }).click();
+  await inventory.getByRole("button", { name: "My Groups" }).click();
+  await inventory.getByRole("button", { name: "Place" }).click();
+  await page.locator("#playground .groups-widget").waitFor();
+  await Promise.all([page.waitForURL("**/home/Frank"), page.getByRole("button", { name: "Save" }).click()]);
+  const groupsWidget = page.locator("#playground .groups-widget");
+  check(
+    "MY GROUPS lists Frank's groups with their badges and marks",
+    (await groupsWidget.locator(".groups-list-size").innerText()) === "2" &&
+      JSON.stringify(await groupsWidget.locator("h4 a").allInnerTexts()) === JSON.stringify(["Retro Club", "Frank's <Gang>"]) &&
+      (await groupsWidget.locator('li[title="Retro Club"] [title="Favourite"]').count()) === 1 &&
+      (await groupsWidget.locator(`li[title="Frank's <Gang>"] [title="Owner"]`).count()) === 1,
+    await groupsWidget.innerText(),
+  );
+  await groupsWidget.locator(`li[title="Frank's <Gang>"] p`).click();
+  const box = groupsWidget.locator(".groups-list-info");
+  await box.getByText("We fight & play.").waitFor();
+  await shot(page, "groups-widget-info");
+  check(
+    "a click on a group opens Holo's info box in its place",
+    (await groupsWidget.locator(".groups-list-container").isHidden()) &&
+      (await box.locator("h4 a").getAttribute("href")) === `/groups/${groupID}` &&
+      (await box.locator(`a[href="/groups/${groupID}"] img[src="/habbo-imaging/badge/${badge}"]`).count()) === 1 &&
+      (await box.innerText()).includes("Group created:"),
+    await box.innerText(),
+  );
+  await box.getByRole("button", { name: "Close" }).click();
+  check(
+    "its minus brings the list back",
+    (await groupsWidget.locator(".groups-list-container").isVisible()) && (await box.isHidden()),
+  );
+  await groupsWidget.locator('li[title="Retro Club"] img').click();
+  await box.getByText("About Retro Club").waitFor();
+  check("as in Holo, a click on a group's badge opens its info box instead of the group", page.url().endsWith("/home/Frank"), page.url());
+  await box.getByRole("button", { name: "Close" }).click();
 
   check("no page failed", problems.length === 0, problems.join(" | "));
   await context.close();
@@ -238,6 +311,7 @@ async function groupPages({ base, browser, check, shot, sql }) {
   const members = page.locator(".members-widget");
   await info.waitFor();
   await shot(page, "group-home");
+  check("a guest has no My Groups in the header", (await page.getByRole("button", { name: "My Groups" }).count()) === 0);
   check(
     "the header names the hotel, not the group",
     !(await page.getByRole("banner").innerText()).includes("Retro Club"),

@@ -3,7 +3,7 @@ type: Entity
 title: Home
 description: A decorated home page owned by a profile or a group, with stickers, sticky notes, widgets and a background.
 tags: [store, entity, homes]
-timestamp: 2026-11-05T21:21:56+00:00
+timestamp: 2026-11-05T21:57:29+00:00
 ---
 
 # Definition
@@ -25,7 +25,8 @@ background is a bought background item or the default.
   sticker goes back to the inventory of the user whose habbo placed it, and a removed profile or Group information
   widget goes back to its place. A removed note is gone from a habbo's home, and goes back blank to its placer from a
   group's.
-- A group's home takes one Group Members widget from the inventory's Widgets tab; widgets come from no inventory.
+- A group's home takes one Group Members widget, and a habbo's home one MY GROUPS widget, from the inventory's Widgets
+  tab; widgets come from no inventory.
 - Deleted with its profile or group, together with its items.
 
 # Vocabularies

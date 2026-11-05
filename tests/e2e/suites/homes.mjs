@@ -256,6 +256,21 @@ export default async function ({ base, browser, check, shot, sql }) {
   await noteMenu.getByRole("button", { name: "Close" }).click();
 
   await admin.page.getByRole("button", { name: "Inventory" }).click();
+  await inventory.getByRole("button", { name: "Widgets", exact: true }).click();
+  check(
+    "a habbo home's Widgets tab offers My Groups alone",
+    (await inventory.getByRole("button", { name: "My Groups" }).isEnabled()) &&
+      (await inventory.getByRole("button", { name: "Group Members" }).count()) === 0,
+  );
+  await inventory.getByRole("button", { name: "My Groups" }).click();
+  await inventory.getByRole("button", { name: "Place" }).click();
+  await admin.page.locator("#playground .groups-widget").waitFor();
+  check(
+    "My Groups goes on the home, counting Admin-1's groups, none here",
+    (await admin.page.locator("#playground .groups-widget .groups-list-size").innerText()) === "0",
+  );
+
+  await admin.page.getByRole("button", { name: "Inventory" }).click();
   await inventory.getByRole("button", { name: "Backgrounds", exact: true }).click();
   await inventory.getByRole("button", { name: backgroundName }).click();
   await inventory.getByRole("button", { name: "Place" }).click();

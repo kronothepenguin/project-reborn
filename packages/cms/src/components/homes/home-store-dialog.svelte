@@ -71,6 +71,7 @@
   // The widgets of store.php's Widgets tab, with Holo's words and previews.
   const widgetInfo: Record<string, { title: string; text: string; preview: string }> = {
     members: { title: "Group Members", text: "Display your groups' members", preview: "/myhabbo/widgets/member_preview.gif" },
+    groups: { title: "My Groups", text: "Display your groups", preview: "/myhabbo/widgets/groupswidget.gif" },
   };
 
   const sections: { id: Category["section"]; label: string }[] = [

@@ -1,16 +1,20 @@
 ---
+import GroupInfoBoxes from "../../../components/homes/group-info-boxes.svelte";
 import HomeEditor from "../../../components/homes/home-editor.svelte";
 import HomeView from "../../../components/homes/home-view.astro";
+import GroupsWidget from "../../../components/homes/widgets/groups-widget.astro";
 import Community from "../../../layouts/community.astro";
 ---
 
 <Community title="[[ .ShortName ]] ~ User Profile - [[ .Owner ]]" tab="home" sub="My Page">
   <HomeView editing>
-    <div id="home-editor-config" hidden data-home="[[ .HomeID ]]" data-note-max="[[ .NoteMax ]]" data-smilies="[[ .Smilies ]]" data-short-name="[[ .ShortName ]]" data-view="/home/[[ .OwnerPath ]]">
+    <div id="home-editor-config" hidden data-home="[[ .HomeID ]]" data-note-max="[[ .NoteMax ]]" data-smilies="[[ .Smilies ]]" data-short-name="[[ .ShortName ]]" data-view="/home/[[ .OwnerPath ]]" data-widgets="groups">
       <select>
         [[ range .Skins ]]<option value="[[ .Value ]]">[[ .Label ]]</option>[[ end ]]
       </select>
+      <template id="widget-groups-template">[[ with .NewGroups ]]<GroupsWidget />[[ end ]]</template>
     </div>
     <HomeEditor client:only="svelte" config="home-editor-config" />
   </HomeView>
+  <GroupInfoBoxes client:only="svelte" />
 </Community>

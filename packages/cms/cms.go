@@ -92,6 +92,7 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("GET /logout", page(http.HandlerFunc(r.HandleLogoutView)))
 
 	mux.Handle("GET /me", page(auth.RequireSession(http.HandlerFunc(r.HandleMeView))))
+	mux.Handle("GET /me/groups", page(auth.RequireSession(http.HandlerFunc(r.HandleMeGroupsView))))
 	mux.Handle("POST /me/motto", page(auth.RequireSession(http.HandlerFunc(r.HandleMeMotto))))
 	mux.Handle("POST /me/alerts/{id}/dismiss", page(auth.RequireSession(http.HandlerFunc(r.HandleMeAlertDismiss))))
 
@@ -157,6 +158,7 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /groups/{id}/settings", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsSettings))))
 	mux.Handle("POST /groups/{id}/delete", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsDelete))))
 	mux.Handle("GET /groups/{id}/edit", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsEditView))))
+	mux.Handle("GET /groups/{id}/info", page(http.HandlerFunc(r.HandleGroupsInfoView)))
 	mux.Handle("POST /groups/{id}/badge", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsBadge))))
 	mux.Handle("GET /groups/{id}/members", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsMembersView))))
 	mux.Handle("POST /groups/{id}/members/{member}/{action}", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsMembersAction))))

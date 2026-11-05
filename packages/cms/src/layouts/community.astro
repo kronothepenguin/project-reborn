@@ -6,6 +6,7 @@ import HabboSearch from "../components/header/habbo-search.astro";
 import HotelStatus from "../components/header/hotel-status.astro";
 import MainTabs from "../components/header/main-tabs.astro";
 import MiniLogin from "../components/header/mini-login.astro";
+import MyGroups from "../components/header/my-groups.svelte";
 import SubTabs, { type CommunityTab } from "../components/header/sub-tabs.astro";
 import UserMenu from "../components/header/user-menu.astro";
 import Document from "./document.astro";
@@ -49,6 +50,10 @@ const { title, tab, sub } = Astro.props;
           </div>
           <MiniLogin />
           [[ end ]]
+        </div>
+
+        <div class="absolute top-0 left-[201px] z-10">
+          <MyGroups client:only="svelte" signedIn="[[ .SignedIn ]]" />
         </div>
 
         <div class="absolute top-[15px] left-[781px] w-[110px] rounded bg-white p-2.5 text-center text-[10px]">

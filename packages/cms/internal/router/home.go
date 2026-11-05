@@ -38,6 +38,20 @@ type homePage struct {
 	Wide    bool
 	Items   []homeItem
 	Profile profileWidget
+	// Groups fill the MY GROUPS widget: the habbo's groups, in the order it asked
+	// to join them, as user_profile.php listed them.
+	Groups []homeGroup
+}
+
+// homeGroup is one group of the MY GROUPS widget, with quickmenu.php's marks.
+type homeGroup struct {
+	ID        int64
+	Name      string
+	Badge     string
+	Created   string
+	Favourite bool
+	Admin     bool
+	Owner     bool
 }
 
 type homeItem struct {
@@ -65,6 +79,9 @@ type profileWidget struct {
 	// Own is the active habbo's own profile, whose tags it may remove; other
 	// habbos may add them to theirs.
 	Own bool
+	// Group is the favourite group, 0 for none, whose badge leads to it.
+	Group      int64
+	GroupBadge string
 }
 
 type homeMissingPage struct {
@@ -161,7 +178,33 @@ func (r *Router) newHomePage(ctx context.Context, avatar store.Avatar) (homePage
 	if page.Items, err = r.homeItems(ctx, home.ID, 0); err != nil {
 		return page, err
 	}
+	if page.Groups, err = r.homeGroups(ctx, avatar.ID); err != nil {
+		return page, err
+	}
 	return page, nil
+}
+
+// homeGroups are the habbo's groups for its MY GROUPS widget.
+func (r *Router) homeGroups(ctx context.Context, avatarID int64) ([]homeGroup, error) {
+	rows, err := r.deps.Queries.ListAvatarGroups(ctx, avatarID)
+	if err != nil {
+		return nil, err
+	}
+	groups := make([]homeGroup, 0, len(rows))
+	for _, row := range rows {
+		owner := row.OwnerAvatarID == avatarID
+		admin := row.Role == roleAdmin
+		groups = append(groups, homeGroup{
+			ID:        row.ID,
+			Name:      row.Name,
+			Badge:     row.Badge,
+			Created:   row.CreatedAt.UTC().Format(dateFull),
+			Favourite: row.Favourite,
+			Admin:     admin && !owner,
+			Owner:     owner,
+		})
+	}
+	return groups, nil
 }
 
 // homeBackground is the art of a home's background and its store item, or Holo's
@@ -215,6 +258,13 @@ func (r *Router) profileWidget(ctx context.Context, avatar store.Avatar, profile
 	case !store.IsNotFound(err):
 		return widget, err
 	}
+	favourite, err := q.GetFavouriteGroup(ctx, avatar.ID)
+	switch {
+	case err == nil:
+		widget.Group, widget.GroupBadge = favourite.ID, favourite.Badge
+	case !store.IsNotFound(err):
+		return widget, err
+	}
 	if widget.Tags, err = q.ListProfileTags(ctx, profileID); err != nil {
 		return widget, err
 	}
@@ -245,6 +295,9 @@ type homeEditPage struct {
 	Skins   []skinOption
 	NoteMax int
 	Smilies bool
+	// NewGroups is the MY GROUPS widget where widget_add.php put it, which the
+	// editor copies when the owner places it.
+	NewGroups homeItem
 }
 
 // HandleHomeEditView handles GET /home/{name}/edit, Holo's edit mode, for the
@@ -271,7 +324,12 @@ func (r *Router) HandleHomeEditView(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
-	page := homeEditPage{homePage: home, NoteMax: settings.GetInt("homes.noteMaxLength"), Smilies: settings.GetBool("features.smilies")}
+	page := homeEditPage{
+		homePage:  home,
+		NoteMax:   settings.GetInt("homes.noteMaxLength"),
+		Smilies:   settings.GetBool("features.smilies"),
+		NewGroups: homeItem{Kind: "widget", Widget: widgetGroups, Skin: "defaultskin", X: widgetX, Y: widgetY},
+	}
 	if page.Skins, err = r.skinOptions(ctx, skinLabels); err != nil {
 		r.fail(w, err)
 		return

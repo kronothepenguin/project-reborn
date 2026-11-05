@@ -2,6 +2,7 @@
 import { Button, Icon } from "@project-reborn/components";
 import Note from "./note.astro";
 import GroupInfoWidget from "./widgets/group-info-widget.astro";
+import GroupsWidget from "./widgets/groups-widget.astro";
 import MembersWidget from "./widgets/members-widget.astro";
 import ProfileWidget from "./widgets/profile-widget.astro";
 
@@ -67,6 +68,8 @@ const { editing = false } = Astro.props;
         <GroupInfoWidget />
         [[ else if eq .Widget "members" ]]
         <MembersWidget />
+        [[ else if eq .Widget "groups" ]]
+        <GroupsWidget />
         [[ end ]] [[ end ]]
       </div>
       [[ if not .Wide ]]

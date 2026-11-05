@@ -1,0 +1,65 @@
+---
+import { GroupBadge } from "@project-reborn/components";
+
+// The MY GROUPS widget inside [[ range .Items ]], so . is the item and $ the
+// page. Holo's rows took their background and their plus and minus from Habbo's
+// CDN, which is gone, so the rows keep their dashed border, as Holo's show now,
+// and the minus is the CMS's own. group-info-boxes opens a group's info box.
+---
+
+<div
+  class="movable widget groups-widget absolute"
+  id="widget-[[ .ID ]]"
+  style="left: [[ .X ]]px; top: [[ .Y ]]px; z-index: [[ .Z ]]"
+>
+  <div data-widget-skin="[[ .Skin ]]">
+    <div class="widget-corner" id="widget-[[ .ID ]]-handle">
+      <div class="widget-headline">
+        <h3>
+          <span class="header-left">&nbsp;</span><span class="header-middle"
+            >MY GROUPS (<span class="groups-list-size">[[ len $.Groups ]]</span>)</span
+          ><span class="header-right">&nbsp;</span>
+        </h3>
+      </div>
+    </div>
+    <div class="widget-body">
+      <div class="widget-content">
+        <div class="groups-list-container h-[196px] overflow-auto">
+          <ul class="groups-list m-0 list-none pl-0">
+            [[ range $.Groups ]]
+            <li
+              class="group/row mb-0.5 cursor-pointer overflow-hidden border border-dashed border-white hover:border-solid"
+              title="[[ .Name ]]"
+              data-group="[[ .ID ]]"
+            >
+              <div class="float-left m-0.5">
+                <a href="/groups/[[ .ID ]]"><GroupBadge code="[[ .Badge ]]" alt="[[ .Name ]]" /></a>
+              </div>
+              <h4 class="m-0 overflow-hidden p-0.5 text-[11px] font-bold"><a href="/groups/[[ .ID ]]">[[ .Name ]]</a></h4>
+              <p class="m-0 overflow-hidden p-0.5">
+                Group created:<br />
+                [[ if .Favourite ]]<span
+                  class="float-right block size-4 bg-[url(/web-gallery/v2/images/info_icons.png)] bg-position-[100%_-433px] bg-no-repeat"
+                  title="Favourite"></span
+                >[[ end ]]
+                [[ if .Admin ]]<span
+                  class="float-right block size-4 bg-[url(/web-gallery/v2/images/info_icons.png)] bg-position-[100%_-528px] bg-no-repeat"
+                  title="Admin"></span
+                >[[ end ]]
+                [[ if .Owner ]]<span
+                  class="float-right block size-4 bg-[url(/web-gallery/v2/images/info_icons.png)] bg-position-[100%_-480px] bg-no-repeat"
+                  title="Owner"></span
+                >[[ end ]]
+                <b>[[ .Created ]]</b>
+              </p>
+              <div class="clear-both"></div>
+            </li>
+            [[ end ]]
+          </ul>
+        </div>
+        <div class="groups-list-info" hidden></div>
+        <div class="clear-both"></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,5 +1,6 @@
 // The staff page: Admin-1 under Administrator, Frank in Moderator and Gold Hobba,
-// shown once under Moderator, and a player who is not staff.
+// shown once under Moderator, with Helpers his favourite group, and a player who
+// is not staff.
 export const programs = ["cms"];
 
 export const prepare = ({ sql }) => {
@@ -21,6 +22,11 @@ export const prepare = ({ sql }) => {
     sql(`INSERT INTO access_group_members (access_group_id, user_id, granted_at) VALUES (${id}, ${frank}, '${at}')`);
   }
   sql(`INSERT INTO avatar_badges (avatar_id, code, worn, granted_at) VALUES (${frankHabbo}, 'ADM', TRUE, '${at}')`);
+  sql(`INSERT INTO groups (avatar_id, name, description, badge, access, created_at, updated_at)
+    VALUES (${frankHabbo}, 'Helpers', '', 'b0503Xs01124', 'open', '${at}', '${at}')`);
+  const [[helpers]] = sql("SELECT id FROM groups WHERE name = 'Helpers'");
+  sql(`INSERT INTO group_members (group_id, avatar_id, role, favourite, requested_at, joined_at)
+    VALUES (${helpers}, ${frankHabbo}, 'admin', TRUE, '${at}', '${at}')`);
 };
 
 export default async function ({ base, browser, check, shot, sql }) {
@@ -52,6 +58,14 @@ export default async function ({ base, browser, check, shot, sql }) {
     "a member in two groups shows the higher one, with the motto and Holo's last visit",
     frank.includes("Here to help") && frank.includes("Rank: Moderator") && frank.includes("Last Visit: 01-11-2026 12:00:00"),
     frank,
+  );
+  const [[helpers]] = sql("SELECT id FROM groups WHERE name = 'Helpers'");
+  const groupBadge = entries.nth(1).locator(`a[href="/groups/${helpers}"] img[src="/habbo-imaging/badge/b0503Xs01124"]`);
+  check(
+    "a member shows the favourite group's badge after the worn one, linking to the group, as Holo's",
+    (await groupBadge.count()) === 1 &&
+      (await groupBadge.evaluate((img) => img.complete && img.naturalWidth === 39)) &&
+      (await entries.nth(0).locator('img[src^="/habbo-imaging/badge/"]').count()) === 0,
   );
   check(
     "a member shows the worn badge, the offline state and the avatar from the imager",
