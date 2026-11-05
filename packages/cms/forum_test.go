@@ -173,8 +173,8 @@ func TestPostBoxesShowTheirHabbos(t *testing.T) {
 		fmt.Sprintf("RE:false Date:27-10-2026 21:00:00 Author:Frank AuthorArchived:false Figure:hd-180-1 Motto:Ask &lt;me&gt; Messages:1 Badge:/c_images/album1584/ADM.gif Group:%d GroupBadge:%s Edited:false", club.ID, club.Badge),
 		"RE:true Date:27-10-2026 21:01:00 Author:Dora AuthorArchived:false",
 		// The printed page escapes the post's HTML once more.
-		"Badge: Group:0 GroupBadge: Edited:true EditedAt:27-10-2026 22:00:00 Editor:Frank EditorArchived:false HTML:&lt;strong&gt;Hi&lt;/strong&gt; &amp;lt;i&amp;gt; Body:[b]Hi[/b] &lt;i&gt; Even:false}",
-		"HTML:Post 0 of Hello Body:Post 0 of Hello Even:true}",
+		"Badge: Group:0 GroupBadge: Edited:true EditedAt:27-10-2026 22:00:00 Editor:Frank EditorArchived:false HTML:&lt;strong&gt;Hi&lt;/strong&gt; &amp;lt;i&amp;gt; Body:[b]Hi[/b] &lt;i&gt; CanEdit:false Even:false}",
+		"HTML:Post 0 of Hello Body:Post 0 of Hello CanEdit:false Even:true}",
 	} {
 		if !strings.Contains(body, text) {
 			t.Errorf("the thread lacks %q: %s", text, body)

@@ -2,6 +2,9 @@
 
 ## 2026-11-05
 
+- **Done** [p5-15](/tasks/p5-15-edit-delete-posts.md): authors and holders of forum.edit modify and delete posts, and
+  a thread goes with its last post.
+- **Start** [p5-15](/tasks/p5-15-edit-delete-posts.md).
 - **Done** [p5-14](/tasks/p5-14-post-threads-and-replies.md): signed-in habbos start threads, reply and quote, with Holo's
   preview, and refusals for blank, long, hasty and closed-thread posts.
 - **Start** [p5-14](/tasks/p5-14-post-threads-and-replies.md).

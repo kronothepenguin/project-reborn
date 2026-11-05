@@ -184,6 +184,7 @@ export default async function ({ base, browser, check, shot, sql }) {
   );
 
   await posting({ base, page, check, shot, sql, long });
+  await editing({ base, browser, page, check, shot, sql, long });
 
   sql(`INSERT INTO settings (key, value, updated_at) VALUES ('features.forum', 'false', '${at(400)}')`);
   let away = false;
@@ -286,4 +287,60 @@ async function posting({ base, page, check, shot, sql, long }) {
     "a reply to a thread closed meanwhile shows it closed, and adds nothing",
     (await page.getByText("Closed Thread", { exact: true }).count()) === 2 && sql(`SELECT COUNT(*) FROM forum_posts WHERE forum_thread_id = ${mine}`)[0][0] === 2,
   );
+}
+
+// Frank modifies and deletes his own posts, on his thread closed in posting, and
+// Admin-1, who holds forum.edit, deletes its last post, which takes the thread.
+async function editing({ base, browser, page, check, shot, sql, long }) {
+  await page.goto(`${base}/forum/threads/${long}`);
+  check(
+    "Frank gets Modify and the delete button on his own posts only",
+    (await page.locator(".edit-post-link").count()) === 5 && (await page.locator(".delete-post").count()) === 5,
+  );
+  const [[mine]] = sql("SELECT id FROM forum_threads WHERE title = 'Frank''s first'");
+  await page.goto(`${base}/forum/threads/${mine}`);
+  await page.locator(".edit-post-link").first().click();
+  const reply = page.getByRole("table", { name: "Reply" });
+  const editor = reply.getByRole("textbox", { name: "Message", exact: true });
+  await editor.click();
+  await page.keyboard.press("Control+A");
+  await page.keyboard.type("Hello board, corrected");
+  await Promise.all([page.waitForEvent("load"), reply.getByRole("button", { name: "Save" }).click()]);
+  const first = page.locator("#group-postlist-list tr").first();
+  check(
+    "Modify saves the post, even on a closed thread, with Holo's line",
+    (await first.innerText()).includes("Hello board, corrected") && /Last modified \d\d-\d\d-\d{4} \d\d:\d\d:\d\d by Frank/.test(await first.innerText()),
+    await first.innerText(),
+  );
+
+  await page.locator(".delete-post").last().click();
+  const dialog = page.getByRole("dialog", { name: "Delete Post" });
+  check("the delete button asks first, in Holo's words", await dialog.getByText("Are you sure you want to delete this post? This cannot be reverted.").isVisible());
+  await shot(page, "forum-delete-post");
+  await Promise.all([page.waitForEvent("load"), dialog.getByRole("button", { name: "Proceed" }).click()]);
+  check(
+    "Proceed deletes the post and comes back to the thread",
+    page.url().includes(`/forum/threads/${mine}`) && sql(`SELECT COUNT(*) FROM forum_posts WHERE forum_thread_id = ${mine}`)[0][0] === 1,
+    page.url(),
+  );
+
+  const admin = await browser.newContext({ viewport: { width: 1100, height: 900 } });
+  const moderator = await admin.newPage();
+  await moderator.goto(base + "/");
+  await moderator.fill("#username", "Admin-1");
+  await moderator.fill("#password", "secret123");
+  await Promise.all([moderator.waitForURL("**/me"), moderator.click('button:has-text("Sign in")')]);
+  await moderator.goto(`${base}/forum/threads/${mine}`);
+  check("a holder of forum.edit gets Modify on Frank's post", (await moderator.locator(".edit-post-link").count()) === 1);
+  await moderator.locator(".delete-post").click();
+  await Promise.all([
+    moderator.waitForURL("**/forum"),
+    moderator.getByRole("dialog", { name: "Delete Post" }).getByRole("button", { name: "Proceed" }).click(),
+  ]);
+  check(
+    "deleting a thread's last post takes the thread, and goes to the board",
+    sql(`SELECT COUNT(*) FROM forum_threads WHERE id = ${mine}`)[0][0] === 0 && moderator.url().endsWith("/forum"),
+    moderator.url(),
+  );
+  await admin.close();
 }

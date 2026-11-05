@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-05T22:40:53+00:00
+timestamp: 2026-11-05T22:52:34+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -83,6 +83,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Discussion board | `Messages:` counts every post the user ever wrote, deleted ones included | The posts the habbo has on the board now | The plan: counts are queried from the posts, never stored |
 | Discussion board | Takes any number of posts in a row, and keeps `Spam detected!` unused | A new thread or reply within `forum.spamSeconds` of the habbo's last post answers `Spam detected!`, and a blank one `Post may not be blank` | [0091](/decisions/0091-forum-spam-check.md) |
 | Discussion board | After a reply, the thread's last page is redrawn in place | The last page loads, which counts a view | [0094](/decisions/0094-thread-views-count-every-load.md) |
+| Discussion board | Staff from rank 6 and the post's user modify and delete a post | Holders of `forum.edit`, and the post's habbo while it is active | [0086](/decisions/0086-roles-and-posts-follow-the-active-habbo.md), and the plan's attributes |
 | Group badge | The Flash `BadgeEditor.swf`, with its colours from habbo.co.uk | The HTML5 port in `vendor/HabboWidgets`, with the live palette | [0021](/decisions/0021-dropped-and-kept-features.md), [0042](/decisions/0042-two-badge-palettes.md) |
 | Group badges | Holo's 18 tints | The closest Tailwind colours, until the user picks one palette from the sheet | [0042](/decisions/0042-two-badge-palettes.md), [0093](/decisions/0093-badge-palettes-compared-on-a-sheet.md) |
 | Several habbos | A habbo is never removed | A user archives a habbo, which hides it and keeps its name | [0058](/decisions/0058-habbos-are-archived.md) |
@@ -153,6 +154,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Discussion board | The jump to a thread's last post counts two views, its own and the page it sends to | The last post's date links straight to the thread's last page, which counts one |
 | Discussion board | A title over 30 characters or a post over 65,535 is cut short by its column | Refused with `Topic title may not be longer than 30 characters` or `Post may not be longer than 65535 characters` |
 | Discussion board | A reply to a thread closed meanwhile vanishes | The thread shows closed, and nothing is added |
+| Discussion board | Every deleted post sends the visitor to the board | Back to the thread, unless the thread went with its last post |
 | Discussion board | A new thread the server refuses replaces the form with the refusal's text | The text shows in the form's red box |
 | Discussion board | The preview shows the habbo online, with a blank motto and a nameless avatar, from a variable the page never sets | The habbo's motto and name, offline ([0087](/decisions/0087-online-picture-stays-offline.md)) |
 | Discussion board | Quote copies the post with its HTML escaped a second time | The post as written |

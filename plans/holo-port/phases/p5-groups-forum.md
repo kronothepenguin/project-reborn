@@ -103,7 +103,7 @@ task:
 - [p5-12 Store the forum](/tasks/p5-12-store-forum.md) — done
 - [p5-13 Show the board and its threads](/tasks/p5-13-forum-pages.md) — done
 - [p5-14 Start threads and reply](/tasks/p5-14-post-threads-and-replies.md) — done
-- [p5-15 Edit and delete posts](/tasks/p5-15-edit-delete-posts.md) — todo
+- [p5-15 Edit and delete posts](/tasks/p5-15-edit-delete-posts.md) — done
 - [p5-16 Moderate threads](/tasks/p5-16-moderate-threads.md) — todo
 - [p5-17 Report posts](/tasks/p5-17-report-posts.md) — todo
 - [p5-18 Keep the badge palette the user picks](/tasks/p5-18-keep-one-badge-palette.md) — todo

@@ -47,9 +47,11 @@ type forumPost struct {
 	Editor         string
 	EditorArchived bool
 	HTML           template.HTML
-	// Body is the post's BBCode, which Quote copies.
+	// Body is the post's BBCode, which Quote and Modify copy.
 	Body string
-	Even bool
+	// CanEdit shows Modify and the delete button.
+	CanEdit bool
+	Even    bool
 }
 
 // HandleForumThreadsView handles GET /forum/threads/{id}, viewthread.php: a page of
@@ -110,6 +112,8 @@ func (r *Router) HandleForumThreadsView(w http.ResponseWriter, req *http.Request
 		r.fail(w, err)
 		return
 	}
+	moderator := r.holds(ctx, auth.ForumEdit)
+	session, signedIn := auth.FromContext(ctx)
 	for i, row := range rows {
 		post := forumPost{
 			ID:             row.ID,
@@ -127,6 +131,7 @@ func (r *Router) HandleForumThreadsView(w http.ResponseWriter, req *http.Request
 			EditorArchived: row.EditorArchivedAt.Valid,
 			HTML:           bbcode.Format(row.Body, view.Smilies),
 			Body:           row.Body,
+			CanEdit:        signedIn && (moderator || row.AuthorID == session.AvatarID),
 			Even:           i%2 == 0,
 		}
 		if row.Badge != "" {

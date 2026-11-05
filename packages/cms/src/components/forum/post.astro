@@ -42,9 +42,22 @@ import { Avatar, GroupBadge } from "@project-reborn/components";
       class="quote-post-link float-right cursor-pointer bg-[url(/web-gallery/v2/images/discussions/forum_icons.png)] bg-position-[3px_-77px] bg-no-repeat pt-0.5 pb-[3px] pl-[22px] text-neutral-400 hover:underline"
       data-quote="[[ .ID ]]">Quote</button
     >[[ end ]]
+    [[ if .CanEdit ]]<button
+      type="button"
+      class="edit-post-link float-right cursor-pointer bg-[url(/web-gallery/v2/images/myhabbo_icons.png)] bg-position-[3px_-283px] bg-no-repeat pt-0.5 pr-[11px] pb-[3px] pl-[22px] text-neutral-400 hover:underline"
+      data-edit="[[ .ID ]]">Modify</button
+    >[[ end ]]
     [[ if $.SignedIn ]]<input type="hidden" id="post-raw-[[ .ID ]]" value="[[ .Body ]]" />[[ end ]]
     <span class="text-xs font-bold">[[ if .RE ]]RE: [[ end ]][[ $.Title ]]</span><br />
     <span class="text-[10px] text-neutral-500">[[ .Date ]]</span>
+    <div class="float-right mt-[5px] w-4">
+      [[ if .CanEdit ]]<button
+        type="button"
+        class="delete-post block h-4 w-[17px] cursor-pointer bg-[url(/web-gallery/v2/images/myhabbo_icons.png)] bg-position-[0_-402px] bg-no-repeat hover:bg-position-[0_-432px]"
+        data-delete="[[ .ID ]]"
+        aria-label="Delete post"></button
+      >[[ end ]]
+    </div>
     [[ if .Edited ]]<br /><br /><strong class="text-[10px]"
       >Last modified [[ .EditedAt ]] by [[ if .EditorArchived ]]archived[[ else ]][[ .Editor ]][[ end ]]</strong
     >[[ end ]]
