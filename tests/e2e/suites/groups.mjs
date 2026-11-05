@@ -32,6 +32,8 @@ export const prepare = ({ sql }) => {
   group("Pixel Art", "b1405Xs09114", 2);
   const owls = group("Night Owls", "b2213X", 3);
   sql(`UPDATE groups SET access = 'closed' WHERE id = ${owls}`);
+  const society = group("Secret Society", "b0913X", 4);
+  sql(`UPDATE groups SET access = 'moderated' WHERE id = ${society}`);
   sql(`INSERT INTO group_members (group_id, avatar_id, role, favourite, requested_at, joined_at)
     VALUES (${retro}, ${frankHabbo}, 'member', TRUE, '${at(4)}', '${at(4)}')`);
   const [[home]] = sql(`SELECT id FROM homes WHERE group_id = ${retro}`);
@@ -44,6 +46,7 @@ export const prepare = ({ sql }) => {
 
 export default async function ({ base, browser, check, shot, sql }) {
   await groupPages({ base, browser, check, shot, sql });
+  await membership({ base, browser, check, shot, sql });
 
   const context = await browser.newContext({ viewport: { width: 1100, height: 900 } });
   const page = await context.newPage();
@@ -93,7 +96,7 @@ export default async function ({ base, browser, check, shot, sql }) {
   check(
     "Hot Groups loads the groups at random, with the purchase button",
     JSON.stringify((await hot.locator("li a").allInnerTexts()).sort()) ===
-      JSON.stringify(["Night Owls", "Pixel Art", "Retro Club"]) &&
+      JSON.stringify(["Night Owls", "Pixel Art", "Retro Club", "Secret Society"]) &&
       (await hot.getByRole("button", { name: "Create/buy a Group" }).isVisible()),
     await hot.innerText(),
   );
@@ -280,5 +283,95 @@ async function groupPages({ base, browser, check, shot, sql }) {
   check("a search opens the group with that name, ignoring case", page.url().endsWith(`/groups/${retro}`), page.url());
 
   check("no group page failed", problems.length === 0, problems.join(" | "));
+  await context.close();
+}
+
+// Frank joins, favours and leaves groups with the view tools of the group page.
+async function membership({ base, browser, check, shot, sql }) {
+  const context = await browser.newContext({ viewport: { width: 1100, height: 900 } });
+  const page = await context.newPage();
+  const problems = [];
+  page.on("pageerror", (e) => problems.push(e.message));
+  page.on("response", (r) => {
+    if (r.status() >= 400) problems.push(`${r.status()} ${r.url()}`);
+  });
+  await page.goto(base + "/");
+  await page.fill("#username", "Frank");
+  await page.fill("#password", "secret123");
+  await Promise.all([page.waitForURL("**/me"), page.click('button:has-text("Sign in")')]);
+  const id = (name) => sql(`SELECT id FROM groups WHERE name = '${name}'`)[0][0];
+  const [[frank]] = sql("SELECT id FROM avatars WHERE name = 'Frank'");
+  const tools = () => page.locator("#mypage-wrapper button").allInnerTexts();
+  const dialog = page.getByRole("dialog", { name: "Group" });
+
+  await page.goto(`${base}/groups/${id("Retro Club")}`);
+  await page.getByRole("button", { name: "Leave group" }).waitFor();
+  check(
+    "a member who chose the group as favourite is offered Remove favourite and Leave group",
+    JSON.stringify(await tools()) === JSON.stringify(["Remove favourite", "Leave group"]),
+    JSON.stringify(await tools()),
+  );
+
+  await page.goto(`${base}/groups/${id("Pixel Art")}`);
+  await page.getByRole("button", { name: "Join" }).click();
+  await dialog.getByText("You have now joined this group.").waitFor();
+  await shot(page, "group-joined");
+  await Promise.all([page.waitForLoadState("load"), dialog.getByRole("button", { name: "OK" }).click()]);
+  await page.getByRole("button", { name: "Make favourite" }).waitFor();
+  check(
+    "Join answers in Holo's dialog, and its OK reloads the page with the member's tools",
+    JSON.stringify(await tools()) === JSON.stringify(["Make favourite", "Leave group"]) &&
+      sql(`SELECT COUNT(*) FROM group_members WHERE group_id = ${id("Pixel Art")} AND avatar_id = ${frank} AND joined_at IS NOT NULL`)[0][0] === 1,
+    JSON.stringify(await tools()),
+  );
+
+  await page.getByRole("button", { name: "Make favourite" }).click();
+  check(
+    "Make favourite asks first, as Holo did",
+    await dialog.getByText("Are you sure you want to have this group as your favorite Group?").isVisible(),
+  );
+  await Promise.all([page.waitForEvent("load"), dialog.getByRole("button", { name: "OK" }).click()]);
+  await page.getByRole("button", { name: "Remove favourite" }).waitFor();
+  check(
+    "the favourite moves to this group, and the old one is no longer the favourite",
+    JSON.stringify(sql(`SELECT group_id FROM group_members WHERE avatar_id = ${frank} AND favourite`)) ===
+      JSON.stringify([[id("Pixel Art")]]),
+  );
+
+  await page.getByRole("button", { name: "Leave group" }).click();
+  check("Leave group asks first", await dialog.getByText("Are you sure you want to leave this group?").isVisible());
+  await dialog.getByRole("button", { name: "Cancel" }).click();
+  check(
+    "Cancel keeps the membership",
+    sql(`SELECT COUNT(*) FROM group_members WHERE group_id = ${id("Pixel Art")} AND avatar_id = ${frank}`)[0][0] === 1,
+  );
+  await page.getByRole("button", { name: "Leave group" }).click();
+  await Promise.all([page.waitForEvent("load"), dialog.getByRole("button", { name: "OK" }).click()]);
+  await page.getByRole("button", { name: "Join" }).waitFor();
+  check(
+    "leaving takes the membership and the favourite, and the page offers Join again",
+    sql(`SELECT COUNT(*) FROM group_members WHERE group_id = ${id("Pixel Art")} AND avatar_id = ${frank}`)[0][0] === 0 &&
+      JSON.stringify(await tools()) === JSON.stringify(["Join"]),
+  );
+
+  await page.goto(`${base}/groups/${id("Secret Society")}`);
+  await page.getByRole("button", { name: "Request membership" }).click();
+  await dialog.getByText("A request to join this group has been made.", { exact: false }).waitFor();
+  await Promise.all([page.waitForLoadState("load"), dialog.getByRole("button", { name: "OK" }).click()]);
+  await page.locator("#mypage-wrapper h2").waitFor();
+  await page.waitForTimeout(300);
+  check(
+    "an Exclusive group takes a request, and then offers nothing more",
+    (await tools()).length === 0 &&
+      sql(`SELECT COUNT(*) FROM group_members WHERE group_id = ${id("Secret Society")} AND avatar_id = ${frank} AND joined_at IS NULL`)[0][0] === 1,
+    JSON.stringify(await tools()),
+  );
+
+  await page.goto(`${base}/groups/${id("Night Owls")}`);
+  await page.locator("#mypage-wrapper h2").waitFor();
+  await page.waitForTimeout(300);
+  check("a Private group offers no way in", (await tools()).length === 0, JSON.stringify(await tools()));
+
+  check("no membership page failed", problems.length === 0, problems.join(" | "));
   await context.close();
 }

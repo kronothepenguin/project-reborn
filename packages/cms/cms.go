@@ -150,6 +150,10 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("GET /groups/random", page(http.HandlerFunc(r.HandleGroupsRandomView)))
 	mux.Handle("GET /groups", page(http.HandlerFunc(r.HandleGroupsSearch)))
 	mux.Handle("GET /groups/{id}", page(http.HandlerFunc(r.HandleGroupsView)))
+	mux.Handle("POST /groups/{id}/join", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsJoin))))
+	mux.Handle("POST /groups/{id}/leave", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsLeave))))
+	mux.Handle("POST /groups/{id}/favourite", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsFavourite))))
+	mux.Handle("POST /groups/{id}/unfavourite", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsUnfavourite))))
 
 	mux.Handle("GET /disclaimer", page(http.HandlerFunc(r.HandleDisclaimerView)))
 	mux.Handle("GET /privacy", page(http.HandlerFunc(r.HandlePrivacyView)))
