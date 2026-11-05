@@ -2,6 +2,11 @@
 
 ## 2026-11-05
 
+- **Done** [s1-01](/tasks/s1-01-fuse-client.md): [fuse_client](/reference/r26/fuse_client.md) describes the
+  connections, framing and values with worked examples. Text is UTF-8 only when `client.textdata.utf8` is on, a new
+  open question of [s0-06](/tasks/s0-06-encoding.md). The `#mus` byte format is the Multiuser Xtra's, in no `.ls`
+  script: an open question for S7.
+- **Start** [s1-01](/tasks/s1-01-fuse-client.md).
 - **Done** [s0-01](/tasks/s0-01-plan-bundle.md): the bundle, the `tracking-plans` skill and the `.claude/skills` link
   exist, and the bundle passes its checks.
 - **Create** [s0-02](/tasks/s0-02-create-templates.md) to [s0-08](/tasks/s0-08-exit-check.md), S0's tasks, and

@@ -16,7 +16,7 @@ starts.
 
 ## S1 R26 protocol reference
 
-- [s1-01 Describe fuse_client's connections, framing and values](/tasks/s1-01-fuse-client.md) — Write /reference/r26/fuse_client.md: how the client opens its #info and #mus connections, frames packets both ways, encodes every value, and registers listeners and commands.
+- [s1-01 Describe fuse_client's connections, framing and values](/tasks/s1-01-fuse-client.md) — Write /reference/r26/fuse_client.md: how the client opens its #info and #mus connections, frames packets both ways, encodes every value, and registers listeners and commands. **done**
 - [s1-02 Map hh_entry_init: login and opening hours](/tasks/s1-02-entry-init.md) — Write /reference/r26/hh_entry_init.md from the .ls scripts: every message hh_entry_init receives and every command it sends, with their fields, senders and flows.
 - [s1-03 Map hh_shared](/tasks/s1-03-shared.md) — Write /reference/r26/hh_shared.md from the .ls scripts: every message hh_shared receives and every command it sends, with their fields, senders and flows.
 - [s1-04 Map hh_navigator](/tasks/s1-04-navigator.md) — Write /reference/r26/hh_navigator.md from the .ls scripts: every message hh_navigator receives and every command it sends, with their fields, senders and flows.

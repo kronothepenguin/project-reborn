@@ -44,3 +44,6 @@ Written when the phase starts.
   presets, pets and their needs, guide invitations.
 - How club bought in the client meets club bought on the site (`plans/holo-port/phases/p6-economy.md`).
 - Which moderation tools the client offers and which stay in housekeeping.
+- How to learn the byte format of the `#mus` connection, which the Multiuser Xtra writes and no `.ls` script holds
+  ([fuse_client](/reference/r26/fuse_client.md#the-mus-connection)), given that
+  [0008](/decisions/0008-reverse-engineer-ls-only.md) reads only `.ls` files.

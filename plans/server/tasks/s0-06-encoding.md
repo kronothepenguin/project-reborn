@@ -36,4 +36,8 @@ cd packages/server && gofmt -l . && go vet ./... && go test ./encoding/... -race
 
 # Notes
 
+- Open question, asked when the task starts: whether the server speaks UTF-8 text, with `client.textdata.utf8`
+  set in the external variables the site serves, or one byte per character of a locale such as Windows-1252
+  ([fuse_client](/reference/r26/fuse_client.md#text)).
+
 - Runs on the branch `s0`, once s1-01 has reached `main`.

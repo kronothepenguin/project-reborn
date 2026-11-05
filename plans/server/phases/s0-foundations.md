@@ -57,6 +57,7 @@ Asked when their task starts:
 
 - s0-02: the client template's dev server port, derived from the name like the Astro port or chosen otherwise.
 - s0-04: the keys of the listeners in `config.json`, and the default TCP port and WebSocket path.
+- s0-06: whether text is UTF-8 (`client.textdata.utf8` on) or one byte per character of a locale.
 - s0-05: whether the WebSocket sends text or binary frames, which the JavaScript client will have to match.
 - s0-07: what the server logs for each packet; and the change to the generated runner, which belongs to the user, that
   serves the TCP listeners beside the HTTP server.

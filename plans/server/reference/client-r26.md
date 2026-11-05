@@ -2,7 +2,7 @@
 type: Reference
 title: The R26 client
 description: Where the R26 client's protocol lives in packages/client-r26, how its scripts register and send messages, its wire format and handshake, and the format of the per-cast protocol references.
-timestamp: 2026-11-05T20:57:45+00:00
+timestamp: 2026-11-05T22:10:00+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [client, protocol, r26]
 ---
@@ -28,7 +28,7 @@ From the variable texts:
 | `connection.mus.id` | `#mus` | `hh_photo` and `fuse_client/42_Binary Manager Class.ls`, through the Multiuser manager |
 
 The `#mus` connection has a text format of its own, for example `send("LOGIN" && tUserID && tMachineID)` in
-`fuse_client`. [s1-01](/tasks/s1-01-fuse-client.md) describes it.
+`fuse_client`. [fuse_client](/reference/r26/fuse_client.md#the-mus-connection) describes it.
 
 # How a cast registers
 
@@ -101,7 +101,7 @@ Scripts in these casts send commands without registering any: `hh_furni_classes`
 # Wire format
 
 From `fuse_client/51_Connection Instance Class.ls` (`send`, `sendNew`, `msghandler`, `GetIntFrom`, `GetStrFrom`,
-`GetBoolFrom`, `GetByteFrom`). [s1-01](/tasks/s1-01-fuse-client.md) writes it out in full.
+`GetBoolFrom`, `GetByteFrom`). [fuse_client](/reference/r26/fuse_client.md) writes it out in full.
 
 - B64: each character is 64 plus 6 bits of the value, the most significant first.
 - VL64 (`GetIntFrom`, `sendNew #integer`): the first character holds 64, the number of characters × 8, 4 when the
@@ -114,7 +114,8 @@ From `fuse_client/51_Connection Instance Class.ls` (`send`, `sendNew`, `msghandl
 - Server to client: 2 B64 characters of the message id, then the body, then `chr(1)`. In the body, an integer is VL64,
   a string ends with `chr(2)`, a boolean or a byte is one character whose low 6 bits are the value, and a handler may
   take the whole body as text.
-- Text is UTF-8 both ways (`encodeUTF8`, `decodeUTF8`).
+- Text is UTF-8 only when the external variable `client.textdata.utf8` is true; otherwise each byte is one character
+  of the client's locale ([fuse_client](/reference/r26/fuse_client.md#text)).
 
 # Handshake
 
