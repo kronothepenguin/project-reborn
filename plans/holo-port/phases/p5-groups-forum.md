@@ -89,7 +89,7 @@ task:
 
 # Tasks
 
-- [p5-01 Declare the group and forum settings](/tasks/p5-01-group-forum-settings.md) — todo
+- [p5-01 Declare the group and forum settings](/tasks/p5-01-group-forum-settings.md) — done
 - [p5-02 Store groups and their members](/tasks/p5-02-store-groups.md) — todo
 - [p5-03 Draw group badges](/tasks/p5-03-badge-renderer.md) — todo
 - [p5-04 Buy groups from the Me page](/tasks/p5-04-buy-groups.md) — todo

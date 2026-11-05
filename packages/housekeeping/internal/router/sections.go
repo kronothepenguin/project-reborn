@@ -132,12 +132,23 @@ var forms = []section{
 		},
 	},
 	{
+		ID: "groups", Menu: "Groups", Title: "Groups", Button: defaultButton,
+		Fields: []field{
+			{Key: "groups.price", Label: "Group Price", Help: "The credits a new group costs."},
+			{Key: "groups.maxOwned", Label: "Groups Per User", Help: "The most groups the habbos of one user can own together."},
+			{Key: "groups.maxMemberships", Label: "Memberships Per Habbo", Help: "The most groups one habbo can be a member of or ask to join."},
+			{Key: "groups.maxMembers", Label: "Members Per Regular Group", Help: "The most members a Regular group takes. Unlimited groups have no limit."},
+			{Key: "groups.nameMaxLength", Label: "Group Name Length", Help: "The most characters in a group's name."},
+			{Key: "groups.descriptionMaxLength", Label: "Group Description Length", Help: "The most characters in a group's description."},
+		},
+	},
+	{
 		ID: "features", Menu: "Manage Site Content", Title: "Manage Content Options", Button: defaultButton, Content: true,
 		Fields: []field{
 			{Key: "features.landingPromo", Label: "Landing Promo Enabled", Help: "This determines whether the promo on the login page will be displayed. If disabled, the join button is shown."},
 			{Key: "features.birthdayNotifications", Label: "Birthday Notifications Enabled", Help: "This will determine whether a 'Happy birthday' message will be shown on a user's birthday."},
-			{Key: "features.smilies", Label: "Smilies Enabled", Help: "This determines whether Smilies will be shown on the Discussion Board and on Homes."},
 			{Key: "features.tagFight", Label: "Tag Fight Enabled", Help: "This determines whether the Tag Fight will be shown on the tags page."},
+			{Key: "features.groupPurchase", Label: "Group Purchasing Enabled", Help: "This determines whether new groups can be created or not."},
 		},
 	},
 	{
@@ -150,6 +161,14 @@ var forms = []section{
 			{Key: "staffPage.box2Color", Label: "Staff Content Box 2 Color", Help: "Only valid colors defined in CSS such as 'orange', 'blue', etc", Choices: staffBoxColors},
 			{Key: "staffPage.box2Heading", Label: "Staff Content Box 2 Heading", Help: "The title (heading) of Staff Content Box 2.", Required: true},
 			{Key: "features.staffPage", Label: "Staff Module Enabled", Help: "This determines whether the Staff Module (/staff) will be displayed/enabled."},
+		},
+	},
+	{
+		ID: "forum", Menu: "Discussion Board Module", Title: "Manage Content Options", Button: defaultButton, Content: true,
+		Fields: []field{
+			{Key: "features.forum", Label: "Forum Enabled", Help: "This determines whether the Discussion Board will be shown/enabled."},
+			{Key: "features.smilies", Label: "Smilies Enabled", Help: "This determines whether Smilies will be shown on the Discussion Board and on Homes."},
+			{Key: "forum.spamSeconds", Label: "Spam Check", Help: "The seconds a habbo must wait after a post before starting a thread or replying again. 0 turns the check off."},
 		},
 	},
 }

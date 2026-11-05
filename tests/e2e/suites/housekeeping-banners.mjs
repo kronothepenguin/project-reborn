@@ -45,6 +45,7 @@ export default async function (t) {
       [
         "Manage Site Content",
         "Staff Module",
+        "Discussion Board Module",
         "Manage Site Banners",
         "Add stickers or backgrounds to homes catalogue",
         "Compose News Item",

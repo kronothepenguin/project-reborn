@@ -56,6 +56,8 @@ func TestEverySectionHasAForm(t *testing.T) {
 		"mail":         {"Key:mail.password", "Kind:password"},
 		"imaging":      {"Key:imaging.avatarUrl"},
 		"features":     {"Manage Content Options", "Key:features.landingPromo", "Button:Save Settings"},
+		"groups":       {"Key:groups.price Label:Group Price", "Kind:number Value:20"},
+		"forum":        {"Manage Content Options", "Key:features.forum Label:Forum Enabled", "Button:Save Settings"},
 	} {
 		t.Run(section, func(t *testing.T) {
 			wantPage(t, serve(mux, "GET", "/housekeeping/settings?section="+section, cookie, nil), http.StatusOK, append(texts, "settings.html")...)
@@ -168,6 +170,11 @@ func TestEveryKindOfFieldSaves(t *testing.T) {
 		{"staffPage", "features.staffPage", "0", func() any { return settings.GetBool("features.staffPage") }, false},
 		{"staffPage", "staffPage.box1Body", "[b]Line one[/b]\r\nLine two", func() any { return settings.GetString("staffPage.box1Body") }, "[b]Line one[/b]\nLine two"},
 		{"staffPage", "staffPage.box2Color", "white", func() any { return settings.GetString("staffPage.box2Color") }, "white"},
+		{"features", "features.groupPurchase", "0", func() any { return settings.GetBool("features.groupPurchase") }, false},
+		{"groups", "groups.maxMembers", "250", func() any { return settings.GetInt("groups.maxMembers") }, 250},
+		{"forum", "features.forum", "0", func() any { return settings.GetBool("features.forum") }, false},
+		{"forum", "features.smilies", "0", func() any { return settings.GetBool("features.smilies") }, false},
+		{"forum", "forum.spamSeconds", "0", func() any { return settings.GetInt("forum.spamSeconds") }, 0},
 	} {
 		t.Run(c.key, func(t *testing.T) {
 			db, mux := newSite(t)
@@ -234,6 +241,8 @@ func TestARefusedFormSavesNothing(t *testing.T) {
 		{"a gender outside the list", "registration", url.Values{"registration.startCredits": {"900"}, "registration.defaultGender": {"U"}}, "registration.defaultGender: must be one of"},
 		{"a colour outside the list", "staffPage", url.Values{"staffPage.box1Heading": {"Help"}, "staffPage.box1Color": {"orange"}}, "Staff Content Box 1 Color must be one of its choices."},
 		{"a blank heading", "staffPage", url.Values{"staffPage.box1Body": {"Text"}, "staffPage.box2Heading": {""}}, blank},
+		{"a group name too long to allow", "groups", url.Values{"groups.price": {"30"}, "groups.nameMaxLength": {"101"}}, "groups.nameMaxLength: must be between 1 and 100"},
+		{"a spam check too long", "forum", url.Values{"features.forum": {"1"}, "forum.spamSeconds": {"3601"}}, "forum.spamSeconds: must be between 0 and 3600"},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			db, mux := newSite(t)
@@ -459,5 +468,79 @@ func TestTheStaffModuleHasHolosFieldsInHolosOrder(t *testing.T) {
 	}
 	if longs, choices := strings.Count(form, "Kind:longtext"), strings.Count(form, "Kind:choice"); longs != 2 || choices != 2 {
 		t.Errorf("the form has %d multi-line fields and %d lists, want 2 of each", longs, choices)
+	}
+}
+
+// Holo's content tool kept the board's two switches in its Discussion Board
+// Module, and the group switch in General Options.
+func TestTheDiscussionBoardModuleHasHolosFields(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
+
+	body := serve(mux, "GET", "/housekeeping/settings?section=forum", cookie, nil).Body.String()
+	at := strings.Index(body, " Section:{ID:forum ")
+	if at < 0 {
+		t.Fatalf("the page is not the board's form: %s", body)
+	}
+	form := body[at:]
+	last := -1
+	for _, text := range []string{
+		"Menu:Discussion Board Module ",
+		"Key:features.forum Label:Forum Enabled ",
+		"Key:features.smilies Label:Smilies Enabled ",
+		"Key:forum.spamSeconds Label:Spam Check ",
+	} {
+		at := strings.Index(form, text)
+		if at <= last {
+			t.Errorf("%q is missing or out of Holo's order: %s", text, form)
+		}
+		last = at
+	}
+	if !strings.Contains(form, "Kind:number Value:30") {
+		t.Errorf("the spam check is not 30 seconds: %s", form)
+	}
+	if field := fieldOf(form, "features.forum"); !strings.Contains(field, "Kind:toggle ") || !strings.Contains(field, " On:true ") {
+		t.Errorf("the board is not on, as Holo's install left it: %s", field)
+	}
+
+	general := serve(mux, "GET", "/housekeeping/settings?section=features", cookie, nil).Body.String()
+	general = general[strings.Index(general, " Section:{ID:features "):]
+	if strings.Contains(general, "Key:features.smilies") {
+		t.Error("Smilies Enabled is still in the general options")
+	}
+	if !strings.Contains(general, "Key:features.groupPurchase Label:Group Purchasing Enabled ") {
+		t.Errorf("the general options lack Group Purchasing Enabled: %s", general)
+	}
+	if field := fieldOf(general, "features.groupPurchase"); !strings.Contains(field, " On:true ") {
+		t.Errorf("buying groups is not on, as Holo's install left it: %s", field)
+	}
+}
+
+// fieldOf is the printed field of key in form.
+func fieldOf(form, key string) string {
+	start := strings.Index(form, "{Key:"+key+" ")
+	if start < 0 {
+		return ""
+	}
+	return form[start : start+strings.Index(form[start:], "}")]
+}
+
+func TestTheGroupsFormHoldsHolosNumbers(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
+
+	body := serve(mux, "GET", "/housekeeping/settings?section=groups", cookie, nil).Body.String()
+	form := body[strings.Index(body, " Section:{ID:groups "):]
+	for key, value := range map[string]string{
+		"groups.price":                "20",
+		"groups.maxOwned":             "3",
+		"groups.maxMemberships":       "10",
+		"groups.maxMembers":           "500",
+		"groups.nameMaxLength":        "25",
+		"groups.descriptionMaxLength": "200",
+	} {
+		if field := fieldOf(form, key); !strings.Contains(field, "Kind:number Value:"+value+" ") {
+			t.Errorf("%s does not hold %s: %q", key, value, field)
+		}
 	}
 }

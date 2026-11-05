@@ -2,6 +2,9 @@
 
 ## 2026-11-05
 
+- **Done** [p5-01](/tasks/p5-01-group-forum-settings.md): the group numbers, the group and board switches and the spam
+  check are settings with Holo's values, in a `Groups` form, the content options and a `Discussion Board Module` form.
+- **Start** [p5-01](/tasks/p5-01-group-forum-settings.md).
 - **Update** [P5](/phases/p5-groups-forum.md) is active.
 - **Create** [p5-01](/tasks/p5-01-group-forum-settings.md) to [p5-19](/tasks/p5-19-exit-check.md), P5's tasks.
 - **Decision** [0096](/decisions/0096-archived-habbos-stickers-stay-on-group-homes.md): an archived habbo's stickers stay on group homes.

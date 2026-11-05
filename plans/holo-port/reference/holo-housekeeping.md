@@ -2,7 +2,7 @@
 type: Reference
 title: Holo housekeeping
 description: Holo's admin panel pages, its access model, staff log, layout and risky features, and where each part goes.
-timestamp: 2026-10-27T20:48:19+00:00
+timestamp: 2026-11-05T19:12:48+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [housekeeping, holo]
 ---
@@ -28,7 +28,7 @@ New model: shared session, attributes per user ([0014](/decisions/0014-attribute
 | site (`cms_config.php`) | site name, short name, SSO, language | `GET /settings`, `POST /settings/{section}` | `housekeeping.settings` | HK-A |
 | maintenance | site on/off | settings form | `housekeeping.settings` | HK-A |
 | loader | client loader values | deferred | — | — |
-| content (`content_tool.php`) | `cms_content` editor | settings forms (`staffPage`, `creditsPage`, `features`) | `housekeeping.settings` | HK-A |
+| content (`content_tool.php`) | `cms_content` editor | settings forms (`features`, `staffPage`, `creditsPage`, `forum`) | `housekeeping.settings` | HK-A |
 | ranktool | set rank 1–7 | `/access-groups…`, `POST /users/{id}/access-groups` | `housekeeping.accessGroups` | HK-A |
 | logs | staff log, prune by GET | `GET /logs` (read-only) | `housekeeping.logs` | HK-A |
 | users, ip, uid, clonechecker | user list, IP and id lookup, same-IP accounts | `GET /habbos?q=`, `GET /habbos/{id}` | `housekeeping.users` | HK-B |

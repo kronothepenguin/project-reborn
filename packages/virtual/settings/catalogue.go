@@ -56,6 +56,8 @@ var catalogue = map[string]declaration{
 	"features.smilies":               declare(true, nil),
 	"features.staffPage":             declare(true, nil),
 	"features.tagFight":              declare(true, nil),
+	"features.groupPurchase":         declare(true, nil),
+	"features.forum":                 declare(true, nil),
 
 	// The boxes of the staff page, in BBCode, with Holo's texts and colours.
 	"staffPage.box1Heading": declare("Need our help?", length(1, 100)),
@@ -68,6 +70,16 @@ var catalogue = map[string]declaration{
 	"homes.maxItems":      declare(200, between(1, 1000)),
 	"homes.noteMaxLength": declare(500, between(1, 5000)),
 	"homes.maxTags":       declare(20, between(1, 100)),
+
+	"groups.price":                declare(20, between(0, 1_000_000)),
+	"groups.maxOwned":             declare(3, between(1, 100)),
+	"groups.maxMemberships":       declare(10, between(1, 1000)),
+	"groups.maxMembers":           declare(500, between(1, 100_000)),
+	"groups.nameMaxLength":        declare(25, between(1, 100)),
+	"groups.descriptionMaxLength": declare(200, between(1, 1000)),
+
+	// The seconds a habbo waits between two new posts; 0 lets every post through.
+	"forum.spamSeconds": declare(30, between(0, 3600)),
 }
 
 // rules check settings that depend on each other. keys lists every setting a

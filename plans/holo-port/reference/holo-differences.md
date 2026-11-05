@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-04T20:02:08+00:00
+timestamp: 2026-11-05T19:12:48+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -251,6 +251,8 @@ veto.
 | Staff log | An `IP` column in place of `Note`, Holo's name of the PHP file | `staff_logs` has the address and no such note |
 | Settings | Forms for `auth`, `registration`, `referral`, `mail` and `imaging`, which Holo kept in `config.php` or nowhere | The plan: forms over the declared settings |
 | Settings | A `Homes` form for the items per home, the length of a note and the tags per habbo, which Holo wrote in its code | The plan: the `homes` section |
+| Settings | A `Groups` form for a group's price, the groups per user, the memberships per habbo, the members of a Regular group and the lengths of a name and a description, which Holo wrote in its code | The plan: the `groups` section ([0082](/decisions/0082-group-limits-per-user-and-habbo.md), [0084](/decisions/0084-group-names-and-descriptions.md)) |
+| Settings | The content tool's categories are links of their own: `Discussion Board Module` holds `Forum Enabled`, `Smilies Enabled` and a `Spam Check` of 30 seconds, where 0 turns the check off | Holo chose the category from a list; the spam check is [0091](/decisions/0091-forum-spam-check.md) |
 | Settings | `mail.password` is never shown: blank keeps it, and `Clear it` removes it | The plan: `mail.password` masked |
 | Edit User | Two forms on the habbo's page, `Save Habbo` and `Save User` | A habbo and its owner are two rows |
 | Edit User | `users.update` and `habbos.update` list the fields saved, never their values | Holo logged `Edited user`, and an address must not reach readers of the log |

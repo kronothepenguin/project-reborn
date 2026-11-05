@@ -103,6 +103,41 @@ export default async function ({ base, browser, check, hk, hkOrigin, shot }) {
   );
   await plain.close();
 
+  await page.goto(`${hk}/settings?section=forum`);
+  check(
+    "the Discussion Board Module holds Holo's two switches, then the spam check of 30 seconds",
+    (await page.locator("main label").allInnerTexts()).join("|") ===
+      "Forum Enabled|Smilies Enabled|Spam Check" &&
+      (await page.inputValue('input[name="forum.spamSeconds"]')) === "30",
+    (await page.locator("main label").allInnerTexts()).join("|"),
+  );
+  await page.fill('input[name="forum.spamSeconds"]', "45");
+  await page.getByRole("button", { name: "Save Settings" }).click();
+  await page.waitForLoadState();
+  check(
+    "the spam check saves",
+    page.url().includes("saved=1") &&
+      (await page.inputValue('input[name="forum.spamSeconds"]')) === "45",
+    page.url(),
+  );
+  await page.goto(`${hk}/settings?section=groups`);
+  check(
+    "the Groups form holds Holo's numbers",
+    (await page.inputValue('input[name="groups.price"]')) === "20" &&
+      (await page.inputValue('input[name="groups.maxOwned"]')) === "3" &&
+      (await page.inputValue('input[name="groups.maxMemberships"]')) === "10" &&
+      (await page.inputValue('input[name="groups.maxMembers"]')) === "500" &&
+      (await page.inputValue('input[name="groups.nameMaxLength"]')) === "25" &&
+      (await page.inputValue('input[name="groups.descriptionMaxLength"]')) === "200",
+  );
+  await page.goto(`${hk}/settings?section=features`);
+  check(
+    "Group Purchasing Enabled joins the content options, and Smilies Enabled leaves them",
+    (await page.locator("main label").allInnerTexts()).join("|") ===
+      "Landing Promo Enabled|Birthday Notifications Enabled|Tag Fight Enabled|Group Purchasing Enabled",
+    (await page.locator("main label").allInnerTexts()).join("|"),
+  );
+
   await page.goto(`${hk}/settings?section=site`);
   await page.fill('input[name="site.name"]', "Reborn <b>Palace</b>");
   await page.getByRole("button", { name: "Save Configuration" }).click();
