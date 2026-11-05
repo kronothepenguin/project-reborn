@@ -2,6 +2,9 @@
 
 ## 2026-11-05
 
+- **Done** [p5-12](/tasks/p5-12-store-forum.md): the store reads the board with every sticky on each page and a thread's posts
+  with their habbos, and writes, edits and deletes threads and posts.
+- **Start** [p5-12](/tasks/p5-12-store-forum.md).
 - **Done** [p5-11](/tasks/p5-11-groups-across-the-site.md): the header's My Groups, the MY GROUPS widget with its info box,
   and the favourite group's badge on profiles and the staff page.
 - **Start** [p5-11](/tasks/p5-11-groups-across-the-site.md).

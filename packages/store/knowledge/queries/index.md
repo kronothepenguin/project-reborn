@@ -24,7 +24,8 @@ Concepts for the query files under `packages/store/queries/`.
 
 ## Community
 
-- [groups.query.sql](groups.md) — Group operations, currently the count of groups for housekeeping's dashboard.
+- [groups.query.sql](groups.md) — Group operations for buying, reading and changing groups, their members and requests, a habbo's groups and favourite, and the count for housekeeping's dashboard.
+- [forums.query.sql](forums.md) — Forum operations for the board's pages with every sticky on each, a thread's pages of posts with their habbos, writing, editing and deleting posts and threads, thread settings, views and a habbo's last post.
 
 ## Economy
 
