@@ -1,11 +1,13 @@
 package router
 
 import (
+	"context"
 	"net/http"
 	"strconv"
 	"strings"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
+	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
@@ -49,10 +51,56 @@ func splitDate(full string) (string, string) {
 	return date, clock
 }
 
+// forumViewer is the active habbo's own post box, which a preview shows.
+type forumViewer struct {
+	Name       string
+	Figure     string
+	Motto      string
+	Messages   int64
+	Badge      string
+	Group      int64
+	GroupBadge string
+}
+
+// forumViewer is the signed-in visitor's box, or none for a guest.
+func (r *Router) forumViewer(ctx context.Context) (forumViewer, error) {
+	session, ok := auth.FromContext(ctx)
+	if !ok {
+		return forumViewer{}, nil
+	}
+	q := r.deps.Queries
+	avatar, err := q.GetAvatar(ctx, session.AvatarID)
+	if err != nil {
+		return forumViewer{}, err
+	}
+	me := forumViewer{Name: avatar.Name, Figure: avatar.Figure, Motto: avatar.Motto}
+	if me.Messages, err = q.CountAvatarForumPosts(ctx, avatar.ID); err != nil {
+		return me, err
+	}
+	badge, err := q.GetWornAvatarBadge(ctx, avatar.ID)
+	switch {
+	case err == nil:
+		me.Badge = image("c_images/album1584/" + badge.Code + ".gif")
+	case !store.IsNotFound(err):
+		return me, err
+	}
+	favourite, err := q.GetFavouriteGroup(ctx, avatar.ID)
+	switch {
+	case err == nil:
+		me.Group, me.GroupBadge = favourite.ID, favourite.Badge
+	case !store.IsNotFound(err):
+		return me, err
+	}
+	return me, nil
+}
+
 type forumPage struct {
 	community
-	Pages   []pageLink
-	Threads []forumThreadRow
+	ImagingURL string
+	Smilies    bool
+	Me         forumViewer
+	Pages      []pageLink
+	Threads    []forumThreadRow
 	// Empty is a board with no thread at all, which says so.
 	Empty bool
 }
@@ -112,7 +160,17 @@ func (r *Router) HandleForumView(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
-	view := forumPage{community: shared, Pages: pageLinks(pages, page), Empty: count == 0 && len(stickies) == 0}
+	view := forumPage{
+		community:  shared,
+		ImagingURL: settings.GetString("imaging.avatarUrl"),
+		Smilies:    settings.GetBool("features.smilies"),
+		Pages:      pageLinks(pages, page),
+		Empty:      count == 0 && len(stickies) == 0,
+	}
+	if view.Me, err = r.forumViewer(ctx); err != nil {
+		r.fail(w, err)
+		return
+	}
 	for i, row := range append(stickies, others...) {
 		view.Threads = append(view.Threads, threadRow(row, i%2 == 0))
 	}

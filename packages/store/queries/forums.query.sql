@@ -45,6 +45,10 @@ SELECT created_at FROM forum_posts WHERE avatar_id = CAST(sqlc.arg(avatar_id) AS
 ORDER BY created_at DESC, id DESC
 LIMIT 1;
 
+-- The habbo's posts on the board, its Messages:.
+-- name: CountAvatarForumPosts :one
+SELECT COUNT(*) FROM forum_posts WHERE avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER);
+
 -- The board's pages count the threads that are not sticky (0088).
 -- name: CountForumThreads :one
 SELECT COUNT(*) FROM forum_threads WHERE NOT sticky;

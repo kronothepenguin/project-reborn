@@ -37,6 +37,12 @@ import { Avatar, GroupBadge } from "@project-reborn/components";
     [[ end ]]
   </td>
   <td class="overflow-hidden p-[9px] align-top break-words" colspan="2">
+    [[ if and $.SignedIn (not $.Locked) ]]<button
+      type="button"
+      class="quote-post-link float-right cursor-pointer bg-[url(/web-gallery/v2/images/discussions/forum_icons.png)] bg-position-[3px_-77px] bg-no-repeat pt-0.5 pb-[3px] pl-[22px] text-neutral-400 hover:underline"
+      data-quote="[[ .ID ]]">Quote</button
+    >[[ end ]]
+    [[ if $.SignedIn ]]<input type="hidden" id="post-raw-[[ .ID ]]" value="[[ .Body ]]" />[[ end ]]
     <span class="text-xs font-bold">[[ if .RE ]]RE: [[ end ]][[ $.Title ]]</span><br />
     <span class="text-[10px] text-neutral-500">[[ .Date ]]</span>
     [[ if .Edited ]]<br /><br /><strong class="text-[10px]"

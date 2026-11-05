@@ -11,6 +11,18 @@ import (
 	"time"
 )
 
+const countAvatarForumPosts = `-- name: CountAvatarForumPosts :one
+SELECT COUNT(*) FROM forum_posts WHERE avatar_id = CAST(?1 AS INTEGER)
+`
+
+// The habbo's posts on the board, its Messages:.
+func (q *Queries) CountAvatarForumPosts(ctx context.Context, avatarID int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countAvatarForumPosts, avatarID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const countForumPosts = `-- name: CountForumPosts :one
 SELECT COUNT(*) FROM forum_posts WHERE forum_thread_id = ?1
 `

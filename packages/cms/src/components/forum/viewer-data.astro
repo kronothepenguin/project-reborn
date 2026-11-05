@@ -1,0 +1,25 @@
+---
+// The signed-in habbo's own post box and the page's settings, which the forum's
+// forms read; thread adds the thread's id.
+interface Props {
+  thread?: boolean;
+}
+
+const { thread = false } = Astro.props;
+---
+
+<div
+  id="forum-viewer"
+  hidden
+  data-name="[[ .Me.Name ]]"
+  data-figure="[[ .Me.Figure ]]"
+  data-motto="[[ .Me.Motto ]]"
+  data-messages="[[ .Me.Messages ]]"
+  data-badge="[[ .Me.Badge ]]"
+  data-group="[[ .Me.Group ]]"
+  data-group-badge="[[ .Me.GroupBadge ]]"
+  data-imaging="[[ .ImagingURL ]]"
+  data-smilies="[[ .Smilies ]]"
+  data-thread={thread ? "[[ .ThreadID ]]" : undefined}
+>
+</div>

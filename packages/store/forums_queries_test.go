@@ -180,6 +180,9 @@ func TestAThreadsPostsShowTheirHabbos(t *testing.T) {
 	if first[1].AuthorName != "Dora" || first[1].Messages != 11 || first[1].Badge != "" || first[1].GroupID != 0 {
 		t.Errorf("Dora's post = %+v", first[1])
 	}
+	if n := must(q.CountAvatarForumPosts(ctx, dora.ID)); n != 11 {
+		t.Errorf("Dora has %d posts, want 11", n)
+	}
 
 	edited := testNow.Add(time.Hour)
 	if _, err := q.EditForumPost(ctx, EditForumPostParams{ID: opening.ID, Body: "Changed", EditedAt: sql.NullTime{Time: edited, Valid: true}, EditedByAvatarID: dora.ID}); err != nil {

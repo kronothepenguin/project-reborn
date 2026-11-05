@@ -59,7 +59,7 @@ export default async function ({ base, browser, check, shot, sql }) {
   const problems = [];
   page.on("pageerror", (e) => problems.push(e.message));
   page.on("response", (r) => {
-    if (r.status() >= 400) problems.push(`${r.status()} ${r.url()}`);
+    if (r.status() >= 400 && r.status() !== 422) problems.push(`${r.status()} ${r.url()}`);
   });
   const [[long]] = sql("SELECT id FROM forum_threads WHERE title = 'Long chat'");
   const [[rules]] = sql("SELECT id FROM forum_threads WHERE title = 'Board rules'");
@@ -183,6 +183,8 @@ export default async function ({ base, browser, check, shot, sql }) {
       (await page.getByText("You must be logged in to reply or post new threads.").count()) === 0,
   );
 
+  await posting({ base, page, check, shot, sql, long });
+
   sql(`INSERT INTO settings (key, value, updated_at) VALUES ('features.forum', 'false', '${at(400)}')`);
   let away = false;
   for (let i = 0; i < 20 && !away; i++) {
@@ -193,4 +195,95 @@ export default async function ({ base, browser, check, shot, sql }) {
   check("with the forum off, the board sends visitors away, as Holo did", away, page.url());
   check("no page failed", problems.length === 0, problems.join(" | "));
   await context.close();
+}
+
+// Frank writes: a thread through Holo's form and its preview, refused while it
+// looks empty or long, then replies, quotes, and meets the spam check, a blank post
+// and a thread closed under him.
+async function posting({ base, page, check, shot, sql, long }) {
+  await page.goto(base + "/forum");
+  await page.locator("#newtopic-upper").click();
+  const form = page.getByRole("table", { name: "New Thread" });
+  const title = form.getByLabel("Topic:");
+  await title.waitFor();
+  check(
+    "New Thread swaps the list of threads for Holo's form, its title ready",
+    (await page.locator("#group-topiclist-list").isHidden()) && (await title.evaluate((el) => el === document.activeElement)),
+  );
+  await form.getByRole("button", { name: "Save" }).click();
+  check("an empty title is refused in the browser with Holo's words", await form.getByRole("alert").getByText("Topic title may not be empty").isVisible());
+  await title.fill("x".repeat(31));
+  const editor = form.getByRole("textbox", { name: "Post", exact: true });
+  await editor.click();
+  await page.keyboard.type("Hello board");
+  await form.getByRole("button", { name: "Save" }).click();
+  await form.getByRole("alert").getByText("Topic title may not be longer than 30 characters").waitFor();
+  check("a title over 30 characters is refused, where Holo cut it", true);
+
+  await title.fill("Frank's first");
+  await form.getByRole("button", { name: "Preview »" }).click();
+  const preview = page.getByRole("table", { name: "Preview" });
+  await preview.waitFor();
+  await shot(page, "forum-new-thread-preview");
+  check(
+    "Preview shows the post in Frank's own box, under its title",
+    (await preview.innerText()).includes("Frank's first") &&
+      (await preview.innerText()).includes("Messages: 17") &&
+      (await preview.innerText()).includes("Hello board") &&
+      (await preview.getByRole("img", { name: "Offline" }).isVisible()),
+    await preview.innerText(),
+  );
+  await preview.getByRole("button", { name: "« Modify" }).click();
+  check("« Modify goes back to the form, as typed", (await title.inputValue()) === "Frank's first");
+  await Promise.all([page.waitForURL("**/forum/threads/*"), form.getByRole("button", { name: "Save" }).click()]);
+  const [[mine, body]] = sql("SELECT forum_threads.id, forum_posts.body FROM forum_threads JOIN forum_posts ON forum_posts.forum_thread_id = forum_threads.id WHERE title = 'Frank''s first'");
+  check(
+    "Save opens the new thread with its first post",
+    page.url().endsWith(`/forum/threads/${mine}`) && body === "Hello board" && (await page.getByText("Hello board").isVisible()),
+    `${page.url()} ${body}`,
+  );
+
+  const reply = page.getByRole("table", { name: "Reply" });
+  await page.locator("#create-post-message").click();
+  check("Post reply opens the form under the posts and hides itself", (await reply.isVisible()) && (await page.locator("#create-post-message").isHidden()));
+  await reply.getByRole("button", { name: "Save" }).click();
+  await reply.getByRole("alert").getByText("Post may not be blank").waitFor();
+  check("a blank reply is refused", true);
+  await reply.getByRole("textbox", { name: "Message", exact: true }).click();
+  await page.keyboard.type("Me again");
+  await reply.getByRole("button", { name: "Save" }).click();
+  await reply.getByRole("alert").getByText("Spam detected!").waitFor();
+  check("a reply within 30 seconds of the last post is Holo's spam", true);
+
+  sql(`INSERT INTO settings (key, value, updated_at) VALUES ('forum.spamSeconds', '0', '2026-11-01 19:00:00.000000000+00:00')`);
+  const posts = () => sql(`SELECT COUNT(*) FROM forum_posts WHERE forum_thread_id = ${mine}`)[0][0];
+  for (let i = 0; i < 20 && posts() < 2; i++) {
+    await page.waitForTimeout(250);
+    const save = reply.getByRole("button", { name: "Save" });
+    if (await save.isVisible().catch(() => false)) await save.click();
+    await page.waitForTimeout(250);
+  }
+  await page.waitForLoadState("load");
+  await page.locator("#group-postlist-list").getByText("Me again").waitFor();
+  check("with the check off, the reply goes on the thread", posts() === 2 && page.url().includes("page=1#page-bottom"), page.url());
+
+  await page.goto(`${base}/forum/threads/${long}?page=2`);
+  await page.locator(".quote-post-link").last().click();
+  await reply.waitFor();
+  await Promise.all([page.waitForURL(`**/forum/threads/${long}?page=2#page-bottom`), reply.getByRole("button", { name: "Save" }).click()]);
+  await page.waitForLoadState("load");
+  const [[quoted]] = sql(`SELECT body FROM forum_posts WHERE forum_thread_id = ${long} ORDER BY id DESC LIMIT 1`);
+  check("Quote opens the form with the post quoted, and the reply goes to the last page", quoted === "[quote]Message 12[/quote]", quoted);
+  await shot(page, "forum-quoted");
+
+  await page.goto(`${base}/forum/threads/${mine}`);
+  await page.locator("#create-post-message").click();
+  await reply.getByRole("textbox", { name: "Message", exact: true }).click();
+  await page.keyboard.type("Too late");
+  sql(`UPDATE forum_threads SET locked = TRUE WHERE id = ${mine}`);
+  await Promise.all([page.waitForEvent("load"), reply.getByRole("button", { name: "Save" }).click()]);
+  check(
+    "a reply to a thread closed meanwhile shows it closed, and adds nothing",
+    (await page.getByText("Closed Thread", { exact: true }).count()) === 2 && sql(`SELECT COUNT(*) FROM forum_posts WHERE forum_thread_id = ${mine}`)[0][0] === 2,
+  );
 }

@@ -2,15 +2,21 @@
 import ForumBox from "../../../components/forum/forum-box.astro";
 import PageNumbers from "../../../components/forum/page-numbers.astro";
 import Post from "../../../components/forum/post.astro";
+import ReplyForm from "../../../components/forum/reply-form.svelte";
+import ViewerData from "../../../components/forum/viewer-data.astro";
 import Community from "../../../layouts/community.astro";
+
+// Holo's create-post-link, with the new post icon of its forum sprite.
+const reply =
+  "float-left cursor-pointer bg-[url(/web-gallery/v2/images/discussions/forum_icons.png)] bg-position-[3px_-102px] bg-no-repeat pt-0.5 pr-[11px] pb-[3px] pl-[22px] font-bold text-neutral-700 hover:underline";
 ---
 
 <Community title="[[ .ShortName ]] ~ Discussion - [[ .Title ]]" tab="community" sub="Discussion Board">
   <ForumBox>
     <div class="flow-root pt-1 pr-0 pb-2 pl-2">
-      [[ if and .SignedIn .Locked ]]<span class="float-left pr-[11px] font-bold text-neutral-700"
+      [[ if .SignedIn ]][[ if .Locked ]]<span class="float-left pr-[11px] font-bold text-neutral-700"
         ><img class="inline" src="/web-gallery/images/groups/status_closed.gif" title="Closed Thread" alt="" /> Closed Thread</span
-      >[[ end ]]
+      >[[ else ]]<button type="button" id="create-post-message" class:list={[reply]}>Post reply</button>[[ end ]][[ end ]]
       <PageNumbers base="/forum/threads/[[ $.ThreadID ]]?page=" />
     </div>
     <table class="w-full border-collapse" id="group-postlist-list">
@@ -18,10 +24,16 @@ import Community from "../../../layouts/community.astro";
       <Post />
       [[ end ]]
     </table>
+    [[ if and .SignedIn (not .Locked) ]]
+    <ViewerData thread />
+    <ReplyForm client:only="svelte" source="forum-viewer" />
+    [[ end ]]
     <div class="flow-root pt-1 pr-0 pb-2 pl-2">
       [[ if .SignedIn ]][[ if .Locked ]]<span class="float-left pr-[11px] font-bold text-neutral-700"
         ><img class="inline" src="/web-gallery/images/groups/status_closed.gif" title="Closed Thread" alt="" /> Closed Thread</span
-      >[[ end ]][[ else ]] You must be logged in to reply or post new threads. [[ end ]]
+      >[[ else ]]<button type="button" id="create-post-message-lower" class:list={[reply]}>Post reply</button>[[ end ]][[ else ]]
+      You must be logged in to reply or post new threads.
+      [[ end ]]
       <PageNumbers base="/forum/threads/[[ $.ThreadID ]]?page=" />
     </div>
     <span id="page-bottom"></span>

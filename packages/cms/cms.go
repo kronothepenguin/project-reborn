@@ -129,6 +129,8 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 
 	mux.Handle("GET /forum", page(http.HandlerFunc(r.HandleForumView)))
 	mux.Handle("GET /forum/threads/{id}", page(http.HandlerFunc(r.HandleForumThreadsView)))
+	mux.Handle("POST /forum/threads", page(auth.RequireSession(http.HandlerFunc(r.HandleForumThreadsCreate))))
+	mux.Handle("POST /forum/threads/{id}/posts", page(auth.RequireSession(http.HandlerFunc(r.HandleForumThreadsPostsCreate))))
 
 	mux.Handle("GET /register", guestPage(r.HandleRegisterView))
 	mux.Handle("POST /register", guestPage(r.HandleRegister))

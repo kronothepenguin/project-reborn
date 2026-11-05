@@ -84,6 +84,13 @@ timestamp: 2026-11-05T22:07:34+00:00
 - Result: the time of the habbo's newest post, which the spam check measures from (0091); not found without posts
 - Tables: `forum_posts`
 
+## CountAvatarForumPosts
+
+- Cardinality: `:one`
+- Inputs: `avatar_id`
+- Result: the posts the habbo has on the board, its `Messages:`
+- Tables: `forum_posts`
+
 ## CountForumThreads
 
 - Cardinality: `:one`

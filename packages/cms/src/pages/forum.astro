@@ -1,11 +1,19 @@
 ---
 import ForumBox from "../components/forum/forum-box.astro";
+import NewThread from "../components/forum/new-thread.svelte";
 import TopicList from "../components/forum/topic-list.astro";
+import ViewerData from "../components/forum/viewer-data.astro";
 import Community from "../layouts/community.astro";
 ---
 
 <Community title="[[ .ShortName ]] ~ Discussion Board" tab="community" sub="Discussion Board">
   <ForumBox>
-    <TopicList />
+    <div id="group-topiclist-container">
+      <TopicList />
+    </div>
+    [[ if .SignedIn ]]
+    <ViewerData />
+    <NewThread client:only="svelte" source="forum-viewer" />
+    [[ end ]]
   </ForumBox>
 </Community>

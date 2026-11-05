@@ -2,6 +2,9 @@
 
 ## 2026-11-05
 
+- **Done** [p5-14](/tasks/p5-14-post-threads-and-replies.md): signed-in habbos start threads, reply and quote, with Holo's
+  preview, and refusals for blank, long, hasty and closed-thread posts.
+- **Start** [p5-14](/tasks/p5-14-post-threads-and-replies.md).
 - **Done** [p5-13](/tasks/p5-13-forum-pages.md): anyone reads the discussion board, with every sticky on each page, and its
   threads ten posts a page with Holo's post boxes.
 - **Start** [p5-13](/tasks/p5-13-forum-pages.md).
