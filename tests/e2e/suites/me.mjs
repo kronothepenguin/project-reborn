@@ -182,6 +182,21 @@ export default async function ({ base, browser, check, shot, sql }) {
       .getByText("You have no tags. Answer the question below or just add a tag of your choice.")
       .isVisible(),
   );
+  const tagsLook = await page.evaluate(() => {
+    const heading = [...document.querySelectorAll("h2")].find((h) => h.textContent === "Tags");
+    const tabs = heading.parentElement.querySelector('[role="tablist"]') ?? heading.nextElementSibling;
+    const probe = document.createElement("span");
+    probe.style.color = "var(--color-lime-600)";
+    document.body.append(probe);
+    const green = getComputedStyle(probe).color;
+    probe.remove();
+    return { heading: getComputedStyle(heading).color, line: getComputedStyle(tabs).borderBottomColor, green };
+  });
+  check(
+    "the Tags box has the green heading and tab line of Holo's green box",
+    tagsLook.heading === tagsLook.green && tagsLook.line === tagsLook.green,
+    JSON.stringify(tagsLook),
+  );
   await mine.getByLabel("New tag").fill("Retro");
   await mine.getByRole("button", { name: "Add tag" }).click();
   await mine.getByRole("link", { name: "retro" }).waitFor();

@@ -92,8 +92,8 @@
 </script>
 
 <div class="relative">
-  <h2 class="absolute top-0 left-0 pt-[3px] pl-2.5 text-sm font-bold text-orange-500">Tags</h2>
-  <Tabs bind:value={tab} class="flex h-[25px] flex-row-reverse gap-1 border-b border-amber-500 px-[5px]">
+  <h2 class="absolute top-0 left-0 pt-[3px] pl-2.5 text-sm font-bold text-lime-600">Tags</h2>
+  <Tabs bind:value={tab} class="flex h-[25px] flex-row-reverse gap-1 border-b border-lime-600 px-[5px]">
     <Tab value="others">Others Like...</Tab>
     <Tab value="mine">My Tags</Tab>
   </Tabs>

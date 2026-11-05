@@ -2,6 +2,8 @@
 
 ## 2026-11-05
 
+- **Done** [p5-20](/tasks/p5-20-tags-box-green.md): the Me page's Tags box is green, as Holo's.
+- **Start** [p5-20](/tasks/p5-20-tags-box-green.md).
 - **Create** [p5-20](/tasks/p5-20-tags-box-green.md): the Me page's Tags box is orange where Holo's is green.
 - **Done** [p5-04](/tasks/p5-04-buy-groups.md): the Me page's Groups box lists the habbo's groups and Hot Groups, and
   Holo's dialog buys a group from the shared purse in one transaction.

@@ -108,7 +108,7 @@ task:
 - [p5-17 Report posts](/tasks/p5-17-report-posts.md) — todo
 - [p5-18 Keep the badge palette the user picks](/tasks/p5-18-keep-one-badge-palette.md) — todo
 - [p5-19 Verify P5](/tasks/p5-19-exit-check.md) — todo
-- [p5-20 Colour the Me page's Tags box as Holo's](/tasks/p5-20-tags-box-green.md) — todo
+- [p5-20 Colour the Me page's Tags box as Holo's](/tasks/p5-20-tags-box-green.md) — done
 
 They run in this order on `main` ([0046](/decisions/0046-main-and-feature-branches.md)). [p5-18](/tasks/p5-18-keep-one-badge-palette.md)
 waits for the user's pick from the sheet of [p5-03](/tasks/p5-03-badge-renderer.md).
