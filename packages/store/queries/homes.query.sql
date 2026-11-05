@@ -58,14 +58,27 @@ WHERE id = sqlc.arg(id) AND home_id = sqlc.arg(home_id);
 -- name: DeleteHomeItem :execrows
 DELETE FROM home_items WHERE id = sqlc.arg(id) AND home_id = sqlc.arg(home_id);
 
--- Each item with the art of its store item, which a widget does not have.
+-- Each item with the art of its store item, which a widget does not have, and
+-- the user whose habbo placed it, 0 for none.
 -- name: ListHomeItemsToDraw :many
 SELECT home_items.id, home_items.kind, home_items.widget, home_items.skin, home_items.body, home_items.x, home_items.y,
-       home_items.z, CAST(COALESCE(home_store_items.asset, '') AS TEXT) AS asset
+       home_items.z, CAST(COALESCE(home_store_items.asset, '') AS TEXT) AS asset,
+       CAST(COALESCE(avatars.user_id, 0) AS INTEGER) AS placer_user_id
 FROM home_items
 LEFT JOIN home_store_items ON home_store_items.id = home_items.home_store_item_id
+LEFT JOIN avatars ON avatars.id = home_items.created_by_avatar_id
 WHERE home_items.home_id = sqlc.arg(home_id)
 ORDER BY home_items.z, home_items.id;
+
+-- The user whose habbo placed an item, which 0083 gives it back to.
+-- name: GetHomeItemPlacer :one
+SELECT avatars.user_id FROM home_items
+JOIN avatars ON avatars.id = home_items.created_by_avatar_id
+WHERE home_items.id = sqlc.arg(id);
+
+-- name: CountHomeWidgets :one
+SELECT COUNT(*) FROM home_items
+WHERE home_id = sqlc.arg(home_id) AND kind = 'widget' AND widget = sqlc.arg(widget);
 
 -- CAST keeps group_id a non-null parameter although homes.group_id is nullable.
 -- name: CreateGroupHome :one

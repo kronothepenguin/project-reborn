@@ -247,6 +247,13 @@ export default async function ({ base, browser, check, shot, sql }) {
       (await admin.page.locator('#playground .stickie img[src="/smilies/smile.gif"]').count()) === 1,
     JSON.stringify(noteText),
   );
+  await admin.page.locator("#playground .stickie").getByRole("button", { name: "Edit", exact: true }).click();
+  const noteMenu = admin.page.getByRole("dialog", { name: "Edit" });
+  check(
+    "the note's menu warns that Remove deletes it for good, as Holo's",
+    await noteMenu.getByText("Warning! If you click 'Remove', the note will be permanently deleted.").isVisible(),
+  );
+  await noteMenu.getByRole("button", { name: "Close" }).click();
 
   await admin.page.getByRole("button", { name: "Inventory" }).click();
   await inventory.getByRole("button", { name: "Backgrounds", exact: true }).click();

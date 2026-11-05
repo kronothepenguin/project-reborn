@@ -2,6 +2,11 @@
 
 ## 2026-11-05
 
+- **Done** [p5-10](/tasks/p5-10-decorate-group-homes.md): a group's admins decorate its home with the home editor, place
+  Group Members once, and removed items go back to whoever placed them.
+- **Decision** [0098](/decisions/0098-group-home-notes-go-back-to-their-placers.md): notes removed from a group home go back
+  to their placers.
+- **Start** [p5-10](/tasks/p5-10-decorate-group-homes.md).
 - **Done** [p5-09](/tasks/p5-09-badge-editor.md): a group's admins design its badge in the HTML5 port of Holo's editor, with
   the live palette, and the renderer draws the checked code they save.
 - **Start** [p5-09](/tasks/p5-09-badge-editor.md).

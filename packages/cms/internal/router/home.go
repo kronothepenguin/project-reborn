@@ -50,6 +50,9 @@ type homeItem struct {
 	Z      int64
 	Image  string
 	HTML   template.HTML
+	// Foreign is a sticker or note another user's habbo placed, which the edit
+	// menu warns will go back to them (0083).
+	Foreign bool
 }
 
 type profileWidget struct {
@@ -155,7 +158,7 @@ func (r *Router) newHomePage(ctx context.Context, avatar store.Avatar) (homePage
 	}
 	page.Profile.Own = page.MyPage
 
-	if page.Items, err = r.homeItems(ctx, home.ID); err != nil {
+	if page.Items, err = r.homeItems(ctx, home.ID, 0); err != nil {
 		return page, err
 	}
 	return page, nil
@@ -175,8 +178,8 @@ func (r *Router) homeBackground(ctx context.Context, home store.Home) (string, i
 }
 
 // homeItems are a home's items as the page draws them: a sticker with its art and
-// a note in BBCode.
-func (r *Router) homeItems(ctx context.Context, homeID int64) ([]homeItem, error) {
+// a note in BBCode. editor is the user editing the home, 0 when nobody is.
+func (r *Router) homeItems(ctx context.Context, homeID, editor int64) ([]homeItem, error) {
 	rows, err := r.deps.Queries.ListHomeItemsToDraw(ctx, homeID)
 	if err != nil {
 		return nil, err
@@ -185,6 +188,7 @@ func (r *Router) homeItems(ctx context.Context, homeID int64) ([]homeItem, error
 	items := make([]homeItem, 0, len(rows))
 	for _, it := range rows {
 		item := homeItem{ID: it.ID, Kind: it.Kind, Widget: it.Widget.String, Skin: it.Skin, X: it.X, Y: it.Y, Z: it.Z}
+		item.Foreign = editor != 0 && it.Kind != "widget" && it.PlacerUserID != 0 && it.PlacerUserID != editor
 		switch it.Kind {
 		case "sticker":
 			item.Image = image(it.Asset)
@@ -268,15 +272,24 @@ func (r *Router) HandleHomeEditView(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	page := homeEditPage{homePage: home, NoteMax: settings.GetInt("homes.noteMaxLength"), Smilies: settings.GetBool("features.smilies")}
-	for _, skin := range skinLabels {
-		allowed, err := r.skinAllowed(ctx, skin.Value)
-		if err != nil {
-			r.fail(w, err)
-			return
-		}
-		if allowed {
-			page.Skins = append(page.Skins, skin)
-		}
+	if page.Skins, err = r.skinOptions(ctx, skinLabels); err != nil {
+		r.fail(w, err)
+		return
 	}
 	astro.WriteTemplate(w, r.deps.Resolver, "home/name/edit.html", page)
+}
+
+// skinOptions are the skins of labels the user making the request may pick.
+func (r *Router) skinOptions(ctx context.Context, labels []skinOption) ([]skinOption, error) {
+	var options []skinOption
+	for _, skin := range labels {
+		allowed, err := r.skinAllowed(ctx, skin.Value)
+		if err != nil {
+			return nil, err
+		}
+		if allowed {
+			options = append(options, skin)
+		}
+	}
+	return options, nil
 }

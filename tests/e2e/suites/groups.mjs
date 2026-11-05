@@ -1,5 +1,6 @@
 // Groups: Frank, with 30 credits, is a member of Admin-1's Retro Club and buys
-// his own; Admin-1 owns two more for the Hot Groups tab.
+// his own; Admin-1 owns two more for the Hot Groups tab. Dora, an admin of Quiet
+// Corner, has put a sticker on its home, and Admin-1 holds one to put there.
 export const programs = ["cms"];
 
 const at = (minute) => `2026-11-01 12:${String(minute).padStart(2, "0")}:00.000000000+00:00`;
@@ -55,6 +56,18 @@ export const prepare = ({ sql }) => {
       VALUES (${home}, 'widget', '${name}', '${skin}', ${x}, 25, ${z}, '${at(5)}', '${at(5)}')`);
   widget("group_info", "defaultskin", 25, 5);
   widget("members", "goldenskin", 320, 6);
+
+  const [[sticker]] = sql("SELECT id FROM home_store_items WHERE kind = 'sticker' ORDER BY id LIMIT 1");
+  const [[cornerHome]] = sql(`SELECT id FROM homes WHERE group_id = ${corner}`);
+  sql(`INSERT INTO home_items (home_id, kind, widget, skin, x, y, z, created_at, updated_at)
+    VALUES (${cornerHome}, 'widget', 'group_info', 'defaultskin', 25, 25, 5, '${at(5)}', '${at(5)}')`);
+  sql(`INSERT INTO home_items (home_id, kind, home_store_item_id, skin, x, y, z, created_by_avatar_id, created_at, updated_at)
+    VALUES (${cornerHome}, 'sticker', ${sticker}, '', 420, 260, 6, (SELECT id FROM avatars WHERE name = 'Dora'), '${at(7)}', '${at(7)}')`);
+  sql(`INSERT INTO home_inventory (user_id, home_store_item_id, quantity)
+    VALUES ((SELECT user_id FROM avatars WHERE name = 'Admin-1'), ${sticker}, 1)`);
+  sql(`INSERT INTO home_items (home_id, kind, home_store_item_id, skin, body, x, y, z, created_by_avatar_id, created_at, updated_at)
+    VALUES (${cornerHome}, 'note', (SELECT id FROM home_store_items WHERE kind = 'note' ORDER BY id LIMIT 1), 'noteitskin',
+      'Corner rules', 600, 400, 4, (SELECT id FROM avatars WHERE name = 'Admin-1'), '${at(8)}', '${at(8)}')`);
 };
 
 export default async function ({ base, browser, check, shot, sql }) {
@@ -203,6 +216,7 @@ export default async function ({ base, browser, check, shot, sql }) {
   await context.close();
 
   await ownerTools({ base, browser, check, shot, sql });
+  await decorating({ base, browser, check, shot, sql });
 }
 
 // A guest reads a group's home, a missing group's page and its search.
@@ -600,5 +614,111 @@ async function ownerTools({ base, browser, check, shot, sql }) {
   );
 
   check("no owner page failed", problems.length === 0, problems.join(" | "));
+  await context.close();
+}
+
+// Admin-1 decorates Quiet Corner's home with Holo's editor: the Group Members
+// widget, his sticker, and Dora's sticker going back to her.
+async function decorating({ base, browser, check, shot, sql }) {
+  const context = await browser.newContext({ viewport: { width: 1100, height: 900 } });
+  const page = await context.newPage();
+  const problems = [];
+  page.on("pageerror", (e) => problems.push(e.message));
+  page.on("response", (r) => {
+    if (r.status() >= 400) problems.push(`${r.status()} ${r.url()}`);
+  });
+  await page.goto(base + "/");
+  await page.fill("#username", "Admin-1");
+  await page.fill("#password", "secret123");
+  await Promise.all([page.waitForURL("**/me"), page.click('button:has-text("Sign in")')]);
+  const [[corner]] = sql("SELECT id FROM groups WHERE name = 'Quiet Corner'");
+  const [[home]] = sql(`SELECT id FROM homes WHERE group_id = ${corner}`);
+  const [[sticker, stickerName]] = sql("SELECT id, name FROM home_store_items WHERE kind = 'sticker' ORDER BY id LIMIT 1");
+  const [[doraSticker]] = sql(`SELECT id FROM home_items WHERE home_id = ${home} AND kind = 'sticker'`);
+  const held = (name) =>
+    sql(`SELECT COALESCE(SUM(quantity), 0) FROM home_inventory WHERE home_store_item_id = ${sticker}
+      AND user_id = (SELECT user_id FROM avatars WHERE name = '${name}')`)[0][0];
+
+  await page.goto(`${base}/groups/${corner}`);
+  await page.getByRole("button", { name: "Edit" }).click();
+  await Promise.all([page.waitForURL(`**/groups/${corner}/edit`), page.getByRole("link", { name: "Modify page" }).click()]);
+  check(
+    "Modify page opens the group's home in Holo's edit mode",
+    (await page.getByRole("button", { name: "Save" }).isVisible()) && (await page.title()).endsWith("~ Quiet Corner"),
+  );
+
+  const menu = page.getByRole("dialog", { name: "Edit" });
+  await page.locator(".group-info-widget").getByRole("button", { name: "Edit", exact: true }).click();
+  await menu.waitFor();
+  check("the Group information widget cannot be removed, as in Holo", (await menu.getByRole("button", { name: "Remove" }).count()) === 0);
+  await menu.getByRole("button", { name: "Close" }).click();
+
+  const warning = "This item belongs to another user. If you remove it, it will return to their inventory.";
+  await page.locator(`#sticker-${doraSticker}`).getByRole("button", { name: "Edit", exact: true }).click();
+  await menu.waitFor();
+  check("Dora's sticker carries Holo's warning", await menu.getByText(warning).isVisible());
+  await shot(page, "group-edit-warning");
+  await menu.getByRole("button", { name: "Remove" }).click();
+  await page.locator(`#sticker-${doraSticker}`).waitFor({ state: "detached" });
+  check("the removed sticker goes back to Dora", held("Dora") === 1 && held("Admin-1") === 1, `${held("Dora")} ${held("Admin-1")}`);
+
+  await page.locator("#playground .stickie").getByRole("button", { name: "Edit", exact: true }).click();
+  await menu.waitFor();
+  check(
+    "Admin-1's note on the group home is not deleted for good, so the menu does not say so (0098)",
+    (await menu.getByRole("button", { name: "Remove" }).isVisible()) &&
+      !(await menu.getByText("permanently deleted").isVisible()) &&
+      !(await menu.getByText(warning).isVisible()),
+  );
+  await menu.getByRole("button", { name: "Close" }).click();
+
+  const inventory = page.getByRole("dialog", { name: "Inventory" });
+  await page.getByRole("button", { name: "Inventory" }).click();
+  await inventory.getByRole("button", { name: "Widgets", exact: true }).click();
+  await inventory.getByRole("button", { name: "Group Members" }).click();
+  await inventory.getByRole("button", { name: "Place" }).click();
+  await page.locator("#playground .members-widget").waitFor();
+  const widget = page.locator("#playground .members-widget");
+  const [[widgetId]] = sql(`SELECT id FROM home_items WHERE home_id = ${home} AND widget = 'members'`);
+  check(
+    "Group Members goes on the home with the group's members, named after its row as the page names it",
+    (await widget.count()) === 1 &&
+      (await widget.getAttribute("id")) === `widget-${widgetId}` &&
+      (await widget.locator(".widget-corner").getAttribute("id")) === `widget-${widgetId}-handle` &&
+      (await widget.getByRole("link", { name: "Dora" }).isVisible()) &&
+      (await widget.getByRole("link", { name: "Eve" }).isVisible()),
+  );
+  await page.getByRole("button", { name: "Inventory" }).click();
+  await inventory.getByRole("button", { name: "Widgets", exact: true }).click();
+  check("a placed Group Members is greyed out, as Holo's", await inventory.getByRole("button", { name: "Group Members" }).isDisabled());
+  await inventory.getByRole("button", { name: "Stickers", exact: true }).click();
+  await inventory.getByRole("button", { name: stickerName }).click();
+  await inventory.getByRole("button", { name: "Place" }).click();
+  await page.locator("#playground .sticker").first().waitFor();
+  await widget.getByRole("button", { name: "Edit", exact: true }).click();
+  await menu.waitFor();
+  check(
+    "Admin-1's own items carry no warning, and Group Members can be removed",
+    !(await menu.getByText(warning).isVisible()) && (await menu.getByRole("button", { name: "Remove" }).isVisible()),
+  );
+  await menu.getByRole("button", { name: "Close" }).click();
+  await shot(page, "group-decorating");
+
+  await Promise.all([page.waitForURL(`**/groups/${corner}`), page.getByRole("button", { name: "Save" }).click()]);
+  await shot(page, "group-decorated");
+  const [[members, placed, left]] = sql(`SELECT
+    (SELECT COUNT(*) FROM home_items WHERE home_id = ${home} AND widget = 'members'),
+    (SELECT COUNT(*) FROM home_items WHERE home_id = ${home} AND kind = 'sticker'
+      AND created_by_avatar_id = (SELECT id FROM avatars WHERE name = 'Admin-1')),
+    ${held("Admin-1")}`);
+  check(
+    "after Save the group's page shows Group Members and Admin-1's sticker",
+    members === 1 && placed === 1 && left === 0 &&
+      (await page.locator("#playground .members-widget").count()) === 1 &&
+      (await page.locator("#playground .sticker").count()) === 1,
+    `${members} ${placed} ${left}`,
+  );
+
+  check("no decorating page failed", problems.length === 0, problems.join(" | "));
   await context.close();
 }

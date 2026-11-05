@@ -1,6 +1,7 @@
 package router
 
 import (
+	"context"
 	"database/sql"
 	"net/http"
 	"strconv"
@@ -39,16 +40,26 @@ func (r *Router) adminGroup(w http.ResponseWriter, req *http.Request) (store.Gro
 		return group, false
 	}
 	session, _ := auth.FromContext(req.Context())
-	row, err := r.deps.Queries.GetGroupMember(req.Context(), store.GetGroupMemberParams{GroupID: group.ID, AvatarID: session.AvatarID})
+	admin, err := r.isGroupAdmin(req.Context(), group.ID, session.AvatarID)
 	switch {
-	case store.IsNotFound(err) || (err == nil && (!row.JoinedAt.Valid || row.Role != roleAdmin)):
-		r.answerJSON(w, http.StatusForbidden, groupAnswer{Error: "notAdmin"})
-		return group, false
 	case err != nil:
 		r.fail(w, err)
 		return group, false
+	case !admin:
+		r.answerJSON(w, http.StatusForbidden, groupAnswer{Error: "notAdmin"})
+		return group, false
 	}
 	return group, true
+}
+
+// isGroupAdmin reports whether the habbo is one of the group's admins, a request
+// not counting.
+func (r *Router) isGroupAdmin(ctx context.Context, groupID, avatarID int64) (bool, error) {
+	row, err := r.deps.Queries.GetGroupMember(ctx, store.GetGroupMemberParams{GroupID: groupID, AvatarID: avatarID})
+	if store.IsNotFound(err) {
+		return false, nil
+	}
+	return err == nil && row.JoinedAt.Valid && row.Role == roleAdmin, err
 }
 
 // HandleGroupsMembersView handles GET /groups/{id}/members, groups_memberlist.php:

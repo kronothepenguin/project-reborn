@@ -151,6 +151,9 @@
     <Bubble tail="top" class="absolute top-full left-0 z-[1000] mt-2 w-40 text-taupe-500">
       <h3 class="mb-1 text-center text-[11px] font-bold uppercase">Edit group</h3>
       <ul>
+        <li class="py-[5px]">
+          <a class="pb-[5px] pl-5 text-taupe-500 hover:underline" href={`/groups/${group}/edit`}>Modify page</a>
+        </li>
         {#if owner === "true"}
           <li class="py-[5px]">
             <button type="button" class="cursor-pointer pb-[5px] pl-5 text-taupe-500 hover:underline" onclick={openSettings}

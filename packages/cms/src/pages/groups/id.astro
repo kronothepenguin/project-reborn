@@ -1,5 +1,6 @@
 ---
 import GroupActions from "../../components/groups/group-actions.svelte";
+import GroupTitle from "../../components/groups/group-title.astro";
 import GroupTools from "../../components/groups/group-tools.svelte";
 import HomeView from "../../components/homes/home-view.astro";
 import Community from "../../layouts/community.astro";
@@ -28,10 +29,7 @@ import Community from "../../layouts/community.astro";
         me="[[ .Viewer.Me ]]"
         source="group-settings-data"
       />
-      <h2 class="flex items-center gap-1 text-sm font-bold text-sky-500">
-        [[ .Group ]] [[ if .Private ]]<img src="/web-gallery/images/status_closed_big.gif" alt="Closed Group" title="Closed Group" />[[ end ]]
-        [[ if .Exclusive ]]<img src="/web-gallery/images/status_exclusive_big.gif" alt="Moderated Group" title="Moderated Group" />[[ end ]]
-      </h2>
+      <GroupTitle />
       [[ if .SignedIn ]]
       <GroupActions
         client:only="svelte"

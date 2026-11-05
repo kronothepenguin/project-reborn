@@ -4,7 +4,7 @@ title: homes.query.sql
 description: Home operations for creating a profile's or a group's home, reading it, placing, moving, skinning and removing its items, and returning a home's items to those who placed them.
 resource: packages/store/queries/homes.query.sql
 tags: [store, query, homes]
-timestamp: 2026-11-05T19:25:27+00:00
+timestamp: 2026-11-05T21:21:56+00:00
 ---
 
 # Operations
@@ -57,8 +57,23 @@ timestamp: 2026-11-05T19:25:27+00:00
 
 - Cardinality: `:many`
 - Inputs: `home_id`
-- Result: the home's items, lowest in the stack first, each with the art of its store item, blank for a widget
-- Tables: `home_items`, `home_store_items`
+- Result: the home's items, lowest in the stack first, each with the art of its store item, blank for a widget, and
+  the user whose habbo placed it, 0 for none
+- Tables: `home_items`, `home_store_items`, `avatars`
+
+## GetHomeItemPlacer
+
+- Cardinality: `:one`
+- Inputs: `id`
+- Result: the user whose habbo placed the item; not found when nobody is recorded
+- Tables: `home_items`, `avatars`
+
+## CountHomeWidgets
+
+- Cardinality: `:one`
+- Inputs: `home_id`, `widget`
+- Result: how many of that widget the home holds
+- Tables: `home_items`
 
 ## CountHomeItems
 

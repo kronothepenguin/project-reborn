@@ -25,6 +25,7 @@ const (
 	roleAdmin           = "admin"
 	roleMember          = "member"
 	widgetGroup         = "group_info"
+	widgetMembers       = "members"
 )
 
 // purchaseTakenText is 0084's answer for a name another group has, on purchase
@@ -320,7 +321,7 @@ func (r *Router) HandleGroupsView(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
-	page, err := r.newGroupPage(ctx, group)
+	page, err := r.newGroupPage(ctx, group, 0)
 	if err != nil {
 		r.fail(w, err)
 		return
@@ -363,7 +364,9 @@ func (r *Router) groupMissing(w http.ResponseWriter, req *http.Request, searched
 	})
 }
 
-func (r *Router) newGroupPage(ctx context.Context, group store.Group) (groupPage, error) {
+// newGroupPage is a group's page; editor is the user editing its home, 0 when
+// nobody is.
+func (r *Router) newGroupPage(ctx context.Context, group store.Group, editor int64) (groupPage, error) {
 	q := r.deps.Queries
 	shared, err := r.community(ctx)
 	if err != nil {
@@ -418,7 +421,7 @@ func (r *Router) newGroupPage(ctx context.Context, group store.Group) (groupPage
 		})
 	}
 
-	if page.Items, err = r.homeItems(ctx, home.ID); err != nil {
+	if page.Items, err = r.homeItems(ctx, home.ID, editor); err != nil {
 		return page, err
 	}
 	if page.Viewer, err = r.groupViewer(ctx, group); err != nil {

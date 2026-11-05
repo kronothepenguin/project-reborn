@@ -7,6 +7,8 @@
   // background chosen through onbackground, which Save keeps.
   interface Props {
     home: number;
+    widgets: string[];
+    placedWidgets: string[];
     tab: "inventory" | "webstore";
     noteMax: number;
     smilies: boolean;
@@ -20,6 +22,7 @@
   export interface Placed {
     id: number;
     kind: string;
+    widget?: string;
     x: number;
     y: number;
     z: number;
@@ -47,7 +50,8 @@
   type Held = { id: number; name: string; image: string; quantity: number };
   type Inventory = Record<"stickers" | "backgrounds" | "notes" | "widgets", Held[]>;
 
-  let { home, tab = $bindable(), noteMax, smilies, shortName, nextZ, onclose, onplace, onbackground }: Props = $props();
+  let { home, widgets, placedWidgets, tab = $bindable(), noteMax, smilies, shortName, nextZ, onclose, onplace, onbackground }: Props =
+    $props();
 
   let credits = $state(0);
   let categories = $state<Category[]>([]);
@@ -61,7 +65,13 @@
   let inventory = $state<Inventory>({ stickers: [], backgrounds: [], notes: [], widgets: [] });
   let shelf = $state<keyof Inventory>("stickers");
   let held = $state<Held | null>(null);
+  let widget = $state<string | null>(null);
   let writing = $state(false);
+
+  // The widgets of store.php's Widgets tab, with Holo's words and previews.
+  const widgetInfo: Record<string, { title: string; text: string; preview: string }> = {
+    members: { title: "Group Members", text: "Display your groups' members", preview: "/myhabbo/widgets/member_preview.gif" },
+  };
 
   const sections: { id: Category["section"]; label: string }[] = [
     { id: "stickers", label: "Stickers" },
@@ -135,6 +145,18 @@
   async function place(all: boolean) {
     if (!held) return;
     const response = await post(`/homes/${home}/items`, { kind: "sticker", item: held.id, all, z: nextZ() });
+    const answer = await response.json();
+    if (!response.ok) {
+      message = answer.error;
+      return;
+    }
+    onplace(answer);
+    onclose();
+  }
+
+  async function placeWidget() {
+    if (!widget) return;
+    const response = await post(`/homes/${home}/items`, { kind: "widget", widget, z: nextZ() });
     const answer = await response.json();
     if (!response.ok) {
       message = answer.error;
@@ -260,6 +282,7 @@
               onclick={() => {
                 shelf = option.id;
                 held = null;
+                widget = null;
               }}
             >
               {option.label}
@@ -269,6 +292,33 @@
       </ul>
       <div class="flex-1">
         <p>Click an item to select it:</p>
+        {#if shelf === "widgets"}
+          <ul class="max-h-[260px] overflow-y-auto">
+            {#each widgets as name (name)}
+              {@const info = widgetInfo[name]}
+              {@const placed = placedWidgets.includes(name)}
+              <li class="mb-1">
+                <button
+                  type="button"
+                  class={[
+                    "flex h-[61px] w-[240px] border text-left",
+                    placed ? "cursor-default opacity-50" : "cursor-pointer",
+                    widget === name ? "border-black" : "border-neutral-300",
+                  ]}
+                  title={info.title}
+                  disabled={placed}
+                  onclick={() => (widget = name)}
+                >
+                  <span class="size-[61px] shrink-0 bg-center bg-no-repeat" style={`background-image: url(${info.preview})`}></span>
+                  <span class="overflow-hidden py-[3px] pr-1 pl-[3px]">
+                    <b class="block">{info.title}</b>
+                    {info.text}
+                  </span>
+                </button>
+              </li>
+            {/each}
+          </ul>
+        {/if}
         <ul class="flex max-h-[260px] flex-wrap gap-1 overflow-y-auto">
           {#each inventory[shelf] as item (item.id)}
             <li>
@@ -286,6 +336,13 @@
         </ul>
       </div>
       <div class="w-[160px]">
+        {#if shelf === "widgets" && widget}
+          <div
+            class="my-1 h-[100px] bg-neutral-100 bg-center bg-no-repeat"
+            style={`background-image: url(${widgetInfo[widget].preview})`}
+          ></div>
+          <Button size="compact" onclick={placeWidget}>Place</Button>
+        {/if}
         {#if held}
           <div class="my-1 flex h-[100px] items-center justify-center bg-neutral-100">
             <img class="max-h-[96px] max-w-[156px]" src={held.image} alt="" />

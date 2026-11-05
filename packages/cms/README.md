@@ -60,6 +60,12 @@ serves the built frontend from the embedded `dist/`.
   without the zip. Its `data/badge_data.xml` holds the live palette of
   `internal/badge`, and a test keeps the two equal. The editor draws itself into
   `#editor-container` when its script first runs.
+- `homes/home-editor` edits a habbo's home at `/home/{name}/edit` and a group's at
+  `/groups/{id}/edit`. It reads the element named by `config`: `data-home`,
+  `data-view` (where Cancel and Save go), `data-group`, the skins in its
+  `<select>`, and `data-widgets`, the widgets the Widgets tab offers. For each of
+  those the element holds `<template id="widget-NAME-template">`, the widget as the
+  page draws it, which the editor copies when the widget is placed.
 - `register/registration-form` is the port of Holo's `registration.js`. The form is
   plain HTML that works without JavaScript, and the island reads it by id: it
   keeps step 3 closed until the name passes the check, shows Holo's tooltips and

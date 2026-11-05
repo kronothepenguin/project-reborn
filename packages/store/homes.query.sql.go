@@ -22,6 +22,23 @@ func (q *Queries) CountHomeItems(ctx context.Context, homeID int64) (int64, erro
 	return count, err
 }
 
+const countHomeWidgets = `-- name: CountHomeWidgets :one
+SELECT COUNT(*) FROM home_items
+WHERE home_id = ?1 AND kind = 'widget' AND widget = ?2
+`
+
+type CountHomeWidgetsParams struct {
+	HomeID int64
+	Widget sql.NullString
+}
+
+func (q *Queries) CountHomeWidgets(ctx context.Context, arg CountHomeWidgetsParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countHomeWidgets, arg.HomeID, arg.Widget)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createGroupHome = `-- name: CreateGroupHome :one
 INSERT INTO homes (group_id, updated_at)
 VALUES (CAST(?1 AS INTEGER), ?2)
@@ -239,6 +256,20 @@ func (q *Queries) GetHomeItem(ctx context.Context, arg GetHomeItemParams) (HomeI
 	return i, err
 }
 
+const getHomeItemPlacer = `-- name: GetHomeItemPlacer :one
+SELECT avatars.user_id FROM home_items
+JOIN avatars ON avatars.id = home_items.created_by_avatar_id
+WHERE home_items.id = ?1
+`
+
+// The user whose habbo placed an item, which 0083 gives it back to.
+func (q *Queries) GetHomeItemPlacer(ctx context.Context, id int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getHomeItemPlacer, id)
+	var user_id int64
+	err := row.Scan(&user_id)
+	return user_id, err
+}
+
 const getProfileHome = `-- name: GetProfileHome :one
 SELECT homes.id, homes.profile_id, homes.group_id, homes.background_home_store_item_id, homes.updated_at FROM homes
 JOIN profiles ON profiles.id = homes.profile_id
@@ -305,26 +336,30 @@ func (q *Queries) ListHomeItems(ctx context.Context, homeID int64) ([]HomeItem, 
 
 const listHomeItemsToDraw = `-- name: ListHomeItemsToDraw :many
 SELECT home_items.id, home_items.kind, home_items.widget, home_items.skin, home_items.body, home_items.x, home_items.y,
-       home_items.z, CAST(COALESCE(home_store_items.asset, '') AS TEXT) AS asset
+       home_items.z, CAST(COALESCE(home_store_items.asset, '') AS TEXT) AS asset,
+       CAST(COALESCE(avatars.user_id, 0) AS INTEGER) AS placer_user_id
 FROM home_items
 LEFT JOIN home_store_items ON home_store_items.id = home_items.home_store_item_id
+LEFT JOIN avatars ON avatars.id = home_items.created_by_avatar_id
 WHERE home_items.home_id = ?1
 ORDER BY home_items.z, home_items.id
 `
 
 type ListHomeItemsToDrawRow struct {
-	ID     int64
-	Kind   string
-	Widget sql.NullString
-	Skin   string
-	Body   string
-	X      int64
-	Y      int64
-	Z      int64
-	Asset  string
+	ID           int64
+	Kind         string
+	Widget       sql.NullString
+	Skin         string
+	Body         string
+	X            int64
+	Y            int64
+	Z            int64
+	Asset        string
+	PlacerUserID int64
 }
 
-// Each item with the art of its store item, which a widget does not have.
+// Each item with the art of its store item, which a widget does not have, and
+// the user whose habbo placed it, 0 for none.
 func (q *Queries) ListHomeItemsToDraw(ctx context.Context, homeID int64) ([]ListHomeItemsToDrawRow, error) {
 	rows, err := q.db.QueryContext(ctx, listHomeItemsToDraw, homeID)
 	if err != nil {
@@ -344,6 +379,7 @@ func (q *Queries) ListHomeItemsToDraw(ctx context.Context, homeID int64) ([]List
 			&i.Y,
 			&i.Z,
 			&i.Asset,
+			&i.PlacerUserID,
 		); err != nil {
 			return nil, err
 		}

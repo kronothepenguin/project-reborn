@@ -1,6 +1,12 @@
 ---
 // A note inside [[ range .Items ]], so . is the item. The outer element and the
-// skin's both carry the skin, as Holo's n_skin_X-c and n_skin_X did.
+// skin's both carry the skin, as Holo's n_skin_X-c and n_skin_X did. In edit mode
+// it also tells the editor whether another user placed it.
+interface Props {
+  editing?: boolean;
+}
+
+const { editing = false } = Astro.props;
 ---
 
 <div
@@ -8,6 +14,7 @@
   id="stickie-[[ .ID ]]"
   data-note-skin="[[ .Skin ]]"
   style="left: [[ .X ]]px; top: [[ .Y ]]px; z-index: [[ .Z ]]"
+  data-foreign={editing ? "[[ .Foreign ]]" : undefined}
 >
   <div data-note-skin="[[ .Skin ]]">
     <div class="stickie-header">

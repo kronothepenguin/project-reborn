@@ -6,8 +6,8 @@
 
   // Holo's edit mode: the page draws the playground and this enhances its items,
   // as homeedit.js did. Islands get no [[ ]] values, so the home, the address to
-  // go back to and the skins this user may pick come from the element named
-  // config.
+  // go back to, the skins this user may pick and the widgets the home takes come
+  // from the element named config, which holds a template of each widget.
   interface Props {
     config: string;
   }
@@ -29,6 +29,9 @@
   let smilies = $state(false);
   let shortName = $state("");
   let view = $state("/");
+  let group = $state(false);
+  let widgets = $state<string[]>([]);
+  let onPlayground = $state<string[]>([]);
   let skins = $state<{ value: string; label: string }[]>([]);
   let chosen = $state<Chosen | null>(null);
   let skin = $state("");
@@ -44,6 +47,8 @@
     smilies = element.dataset.smilies === "true";
     shortName = element.dataset.shortName ?? "";
     view = element.dataset.view ?? "/";
+    group = element.dataset.group === "true";
+    widgets = element.dataset.widgets ? element.dataset.widgets.split(",") : [];
     skins = [...element.querySelectorAll("option")].map((option) => ({
       value: option.value,
       label: option.textContent ?? option.value,
@@ -52,8 +57,15 @@
     for (const item of playground.querySelectorAll<HTMLElement>(".movable")) {
       enhance(item);
     }
+    countWidgets();
     document.addEventListener("click", close);
   });
+
+  // countWidgets finds which of the home's widgets are on the playground, which the
+  // inventory greys out, as store.php did.
+  function countWidgets() {
+    onPlayground = widgets.filter((name) => playground.querySelector(`.${name}-widget`));
+  }
 
   function kindOf(item: HTMLElement): Kind {
     if (item.classList.contains("stickie")) return "stickie";
@@ -88,6 +100,16 @@
   // place draws what the dialog placed as the page draws it, and enhances it.
   function place(items: Placed[]) {
     for (const item of items) {
+      if (item.kind === "widget") {
+        const template = document.getElementById(`widget-${item.widget}-template`) as HTMLTemplateElement;
+        const element = template.content.firstElementChild?.cloneNode(true) as HTMLElement;
+        at(element, item);
+        (element.querySelector(".widget-corner") as HTMLElement).id = `widget-${item.id}-handle`;
+        playground.append(element);
+        enhance(element);
+        countWidgets();
+        continue;
+      }
       const element = document.createElement("div");
       at(element, item);
       if (item.kind === "sticker") {
@@ -236,6 +258,7 @@
     const response = await post(`/homes/${home}/items/${id}/delete`, {});
     if (response.ok) {
       element.remove();
+      countWidgets();
     } else {
       failure = (await response.json()).error ?? "";
     }
@@ -279,6 +302,8 @@
 {#if dialog}
   <HomeStoreDialog
     {home}
+    {widgets}
+    placedWidgets={onPlayground}
     {noteMax}
     {smilies}
     {shortName}
@@ -316,10 +341,13 @@
         {/each}
       </select>
     {/if}
-    {#if chosen.kind === "stickie"}
+    {#if chosen.kind === "stickie" && !group}
       <p class="pt-[1em]">Warning! If you click 'Remove', the note will be permanently deleted.</p>
     {/if}
-    {#if !chosen.element.classList.contains("profile-widget")}
+    {#if chosen.element.dataset.foreign === "true"}
+      <p>This item belongs to another user. If you remove it, it will return to their inventory.</p>
+    {/if}
+    {#if !chosen.element.classList.contains("profile-widget") && !chosen.element.classList.contains("group-info-widget")}
       <input type="button" class="w-full cursor-pointer border border-black bg-mauve-300" value="Remove" onclick={remove} />
     {/if}
   </div>

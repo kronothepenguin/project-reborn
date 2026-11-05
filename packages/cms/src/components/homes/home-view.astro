@@ -55,11 +55,12 @@ const { editing = false } = Astro.props;
           class="movable sticker absolute"
           id="sticker-[[ .ID ]]"
           style="left: [[ .X ]]px; top: [[ .Y ]]px; z-index: [[ .Z ]]"
+          data-foreign={editing ? "[[ .Foreign ]]" : undefined}
         >
           <img src="[[ .Image ]]" alt="" />
         </div>
         [[ else if eq .Kind "note" ]]
-        <Note />
+        <Note editing={editing} />
         [[ else if eq .Widget "profile" ]]
         <ProfileWidget />
         [[ else if eq .Widget "group_info" ]]

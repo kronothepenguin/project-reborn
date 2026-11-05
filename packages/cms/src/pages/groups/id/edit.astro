@@ -1,0 +1,32 @@
+---
+import GroupTitle from "../../../components/groups/group-title.astro";
+import HomeEditor from "../../../components/homes/home-editor.svelte";
+import HomeView from "../../../components/homes/home-view.astro";
+import MembersWidget from "../../../components/homes/widgets/members-widget.astro";
+import Community from "../../../layouts/community.astro";
+---
+
+<Community title="[[ .ShortName ]] ~ [[ .Group ]]" tab="community" sub="">
+  <HomeView editing>
+    <Fragment slot="header">
+      <GroupTitle />
+    </Fragment>
+    <div
+      id="home-editor-config"
+      hidden
+      data-home="[[ .HomeID ]]"
+      data-note-max="[[ .NoteMax ]]"
+      data-smilies="[[ .Smilies ]]"
+      data-short-name="[[ .ShortName ]]"
+      data-view="/groups/[[ .GroupID ]]"
+      data-group="true"
+      data-widgets="members"
+    >
+      <select>
+        [[ range .Skins ]]<option value="[[ .Value ]]">[[ .Label ]]</option>[[ end ]]
+      </select>
+      <template id="widget-members-template">[[ with .NewMembers ]]<MembersWidget />[[ end ]]</template>
+    </div>
+    <HomeEditor client:only="svelte" config="home-editor-config" />
+  </HomeView>
+</Community>

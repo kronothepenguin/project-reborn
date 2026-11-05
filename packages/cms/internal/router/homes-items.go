@@ -26,15 +26,18 @@ const (
 	maxEditBody      = 1 << 18
 )
 
-// Where store.php put what it placed. A note always went to the same height.
+// Where store.php put what it placed. A note always went to the same height, and
+// widget_add.php put a widget a little further in.
 const (
 	placedX = 10
 	placedY = 10
 	noteZ   = 18
+	widgetX = 20
+	widgetY = 20
 )
 
-// The profile widget comes back where Holo wrote it when anyone viewed a home
-// without one.
+// The profile widget, and a group's Group information widget, come back where
+// Holo wrote them when anyone viewed a home without one.
 const (
 	profileX = 25
 	profileY = 25
@@ -63,39 +66,52 @@ type editError struct {
 	Error string `json:"error"`
 }
 
-// ownHome loads the home of the path for its owner: the user who owns its habbo,
-// whichever of their habbos is active (0065). Anyone else gets 403, and a home
-// that does not exist, a group's, or one whose habbo is archived, 404.
-func (r *Router) ownHome(w http.ResponseWriter, req *http.Request) (store.Home, store.Avatar, bool) {
+// ownHome loads the home of the path for those who may edit it: a habbo's home for
+// the user who owns the habbo, whichever of their habbos is active (0065), and a
+// group's for the admins while that habbo is active (0086). Anyone else gets 403,
+// and a home that does not exist, or one whose habbo is archived, 404.
+func (r *Router) ownHome(w http.ResponseWriter, req *http.Request) (store.Home, bool) {
 	ctx := req.Context()
 	session, _ := auth.FromContext(ctx)
 	id, err := strconv.ParseInt(req.PathValue("id"), 10, 64)
 	if err != nil {
 		http.NotFound(w, req)
-		return store.Home{}, store.Avatar{}, false
+		return store.Home{}, false
 	}
 	home, err := r.deps.Queries.GetHome(ctx, id)
 	if store.IsNotFound(err) {
 		http.NotFound(w, req)
-		return home, store.Avatar{}, false
+		return home, false
 	}
 	if err != nil {
 		r.fail(w, err)
-		return home, store.Avatar{}, false
+		return home, false
+	}
+	if home.GroupID.Valid {
+		admin, err := r.isGroupAdmin(ctx, home.GroupID.Int64, session.AvatarID)
+		switch {
+		case err != nil:
+			r.fail(w, err)
+			return home, false
+		case !admin:
+			r.answerJSON(w, http.StatusForbidden, editError{http.StatusText(http.StatusForbidden)})
+			return home, false
+		}
+		return home, true
 	}
 	habbo, err := r.deps.Queries.GetHomeHabbo(ctx, id)
 	switch {
 	case store.IsNotFound(err) || (err == nil && habbo.ArchivedAt.Valid):
 		http.NotFound(w, req)
-		return home, habbo, false
+		return home, false
 	case err != nil:
 		r.fail(w, err)
-		return home, habbo, false
+		return home, false
 	case habbo.UserID != session.UserID:
 		r.answerJSON(w, http.StatusForbidden, editError{http.StatusText(http.StatusForbidden)})
-		return home, habbo, false
+		return home, false
 	}
-	return home, habbo, true
+	return home, true
 }
 
 // inClub reports whether userID has club now.
@@ -132,36 +148,52 @@ func readEdit(w http.ResponseWriter, req *http.Request, body any) bool {
 
 // placed is one item as the editor draws it.
 type placed struct {
-	ID    int64         `json:"id"`
-	Kind  string        `json:"kind"`
-	X     int64         `json:"x"`
-	Y     int64         `json:"y"`
-	Z     int64         `json:"z"`
-	Image string        `json:"image,omitempty"`
-	Skin  string        `json:"skin,omitempty"`
-	HTML  template.HTML `json:"html,omitempty"`
+	ID     int64         `json:"id"`
+	Kind   string        `json:"kind"`
+	Widget string        `json:"widget,omitempty"`
+	X      int64         `json:"x"`
+	Y      int64         `json:"y"`
+	Z      int64         `json:"z"`
+	Image  string        `json:"image,omitempty"`
+	Skin   string        `json:"skin,omitempty"`
+	HTML   template.HTML `json:"html,omitempty"`
 }
 
 type placeBody struct {
-	Kind string `json:"kind"`
-	Item int64  `json:"item"`
-	All  bool   `json:"all"`
-	Z    int64  `json:"z"`
-	Skin string `json:"skin"`
-	Text string `json:"text"`
+	Kind   string `json:"kind"`
+	Item   int64  `json:"item"`
+	Widget string `json:"widget"`
+	All    bool   `json:"all"`
+	Z      int64  `json:"z"`
+	Skin   string `json:"skin"`
+	Text   string `json:"text"`
+}
+
+// homeWidgets are the widgets the inventory's Widgets tab offers a home, once
+// each, as store.php did: Group Members on a group's home.
+func homeWidgets(home store.Home) []string {
+	if home.GroupID.Valid {
+		return []string{widgetMembers}
+	}
+	return nil
 }
 
 // HandleHomesItemsPlace handles POST /homes/{id}/items: a sticker, or all of that
 // sticker, or a note with its text, leaves the user's inventory for the home, as
-// store.php's place_sticker and noteeditor-place did.
+// store.php's place_sticker and noteeditor-place did, or a widget the home may
+// take goes on it, as widget_add.php.
 func (r *Router) HandleHomesItemsPlace(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
-	home, _, ok := r.ownHome(w, req)
+	home, ok := r.ownHome(w, req)
 	if !ok {
 		return
 	}
 	var body placeBody
 	if !readEdit(w, req, &body) {
+		return
+	}
+	if body.Kind == "widget" {
+		r.placeWidget(w, req, home, body)
 		return
 	}
 	session, _ := auth.FromContext(ctx)
@@ -256,9 +288,68 @@ func (r *Router) HandleHomesItemsPlace(w http.ResponseWriter, req *http.Request)
 	}
 }
 
+// placeWidget puts one of the home's widgets on it where widget_add.php did, if it
+// is not there yet. The editor greys out a placed widget, so a refusal answers
+// only a request it would not send.
+func (r *Router) placeWidget(w http.ResponseWriter, req *http.Request, home store.Home, body placeBody) {
+	ctx := req.Context()
+	session, _ := auth.FromContext(ctx)
+	if !slices.Contains(homeWidgets(home), body.Widget) {
+		r.answerJSON(w, http.StatusUnprocessableEntity, editError{homeTooFew})
+		return
+	}
+	if body.Z < 0 || body.Z > maxZ {
+		r.answerJSON(w, http.StatusUnprocessableEntity, editError{homeBadPlace})
+		return
+	}
+	limit := int64(settings.GetInt("homes.maxItems"))
+	refusal := ""
+	var item store.HomeItem
+	now := time.Now().UTC()
+	err := r.inTx(ctx, func(q *store.Queries) error {
+		there, err := q.CountHomeWidgets(ctx, store.CountHomeWidgetsParams{HomeID: home.ID, Widget: sql.NullString{String: body.Widget, Valid: true}})
+		if err != nil {
+			return err
+		}
+		if there > 0 {
+			refusal = homeTooFew
+			return nil
+		}
+		total, err := q.CountHomeItems(ctx, home.ID)
+		if err != nil {
+			return err
+		}
+		if total+1 > limit {
+			refusal = fmt.Sprintf(homeFull, limit)
+			return nil
+		}
+		item, err = q.CreateHomeItem(ctx, store.CreateHomeItemParams{
+			HomeID:            home.ID,
+			Kind:              "widget",
+			Widget:            sql.NullString{String: body.Widget, Valid: true},
+			Skin:              "defaultskin",
+			X:                 widgetX,
+			Y:                 widgetY,
+			Z:                 body.Z,
+			CreatedByAvatarID: sql.NullInt64{Int64: session.AvatarID, Valid: true},
+			CreatedAt:         now,
+			UpdatedAt:         now,
+		})
+		return err
+	})
+	switch {
+	case err != nil:
+		r.fail(w, err)
+	case refusal != "":
+		r.answerJSON(w, http.StatusUnprocessableEntity, editError{refusal})
+	default:
+		r.answerJSON(w, http.StatusOK, []placed{r.drawn(item, "")})
+	}
+}
+
 // drawn is item as the editor draws it; asset is its store item's art.
 func (r *Router) drawn(item store.HomeItem, asset string) placed {
-	out := placed{ID: item.ID, Kind: item.Kind, X: item.X, Y: item.Y, Z: item.Z, Skin: item.Skin}
+	out := placed{ID: item.ID, Kind: item.Kind, Widget: item.Widget.String, X: item.X, Y: item.Y, Z: item.Z, Skin: item.Skin}
 	switch item.Kind {
 	case "sticker":
 		out.Image = image(asset)
@@ -276,7 +367,7 @@ type skinBody struct {
 // widgets, as edit_stickie.php and edit_widget.php.
 func (r *Router) HandleHomesItemsSkin(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
-	home, _, ok := r.ownHome(w, req)
+	home, ok := r.ownHome(w, req)
 	if !ok {
 		return
 	}
@@ -317,12 +408,14 @@ func (r *Router) HandleHomesItemsSkin(w http.ResponseWriter, req *http.Request) 
 }
 
 // HandleHomesItemsDelete handles POST /homes/{id}/items/{item}/delete: a sticker
-// goes back to the user's inventory and a note is gone, as in Holo. Holo also let
-// the profile widget go, and wrote it again in its corner the next time anyone
-// looked, so here it goes straight back there.
+// goes back to the inventory of the user whose habbo placed it, and a note is
+// gone, as in Holo, though on a group's home a note goes back too, blank (0083,
+// 0098). Holo also let the profile and Group information widgets go, and wrote
+// them again in their corner the next time anyone looked, so here they go
+// straight back there.
 func (r *Router) HandleHomesItemsDelete(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
-	home, _, ok := r.ownHome(w, req)
+	home, ok := r.ownHome(w, req)
 	if !ok {
 		return
 	}
@@ -343,20 +436,30 @@ func (r *Router) HandleHomesItemsDelete(w http.ResponseWriter, req *http.Request
 		if err != nil {
 			return err
 		}
-		if item.Kind == "widget" && item.Widget.String == "profile" {
+		if item.Kind == "widget" && (item.Widget.String == "profile" || item.Widget.String == widgetGroup) {
 			if _, err := q.SkinHomeItem(ctx, store.SkinHomeItemParams{ID: item.ID, HomeID: home.ID, Skin: "defaultskin", UpdatedAt: now}); err != nil {
 				return err
 			}
 			_, err := q.MoveHomeItem(ctx, store.MoveHomeItemParams{ID: item.ID, HomeID: home.ID, X: profileX, Y: profileY, Z: profileZ, UpdatedAt: now})
 			return err
 		}
+		// A placer whose row is gone leaves the item to the user removing it, as
+		// Holo gave every removed sticker.
+		placer, err := q.GetHomeItemPlacer(ctx, item.ID)
+		switch {
+		case store.IsNotFound(err):
+			placer = session.UserID
+		case err != nil:
+			return err
+		}
 		if _, err := q.DeleteHomeItem(ctx, store.DeleteHomeItemParams{ID: item.ID, HomeID: home.ID}); err != nil {
 			return err
 		}
-		if item.Kind != "sticker" || !item.HomeStoreItemID.Valid {
+		returned := item.Kind == "sticker" || (item.Kind == "note" && home.GroupID.Valid)
+		if !returned || !item.HomeStoreItemID.Valid {
 			return nil
 		}
-		return q.AddHomeInventory(ctx, store.AddHomeInventoryParams{UserID: session.UserID, HomeStoreItemID: item.HomeStoreItemID.Int64, Quantity: 1})
+		return q.AddHomeInventory(ctx, store.AddHomeInventoryParams{UserID: placer, HomeStoreItemID: item.HomeStoreItemID.Int64, Quantity: 1})
 	})
 	switch {
 	case err != nil:
@@ -385,7 +488,7 @@ type layoutBody struct {
 // holds, or 0 for Holo's default.
 func (r *Router) HandleHomesLayout(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
-	home, _, ok := r.ownHome(w, req)
+	home, ok := r.ownHome(w, req)
 	if !ok {
 		return
 	}
