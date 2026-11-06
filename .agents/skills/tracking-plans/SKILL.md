@@ -13,7 +13,8 @@ Every plan is an OKF 0.2 bundle in `plans/<plan>/`: decisions, phases, tasks, re
 | `plans/holo-port` | HoloCMS ported to the CMS, housekeeping and the installer (also has `tracking-holo-port`) | `p0`…`p7`, `hk-a`, `hk-b`, `fx`, `up`, `ed` |
 | `plans/server` | The game server | `s0`…`s9` |
 
-`plans/later.md` lists work that belongs to no phase yet.
+`plans/index.md` maps every plan and the sources each one reads, and `plans/later.md` lists work that belongs to no
+phase yet.
 
 ## Resume
 
@@ -67,7 +68,7 @@ Task:
 4. Record every confirmed choice as a decision, numbered from `0001`, quoting the user's words.
 5. Give every phase a goal, a scope, exit criteria and its open questions. Only the phases that start get tasks; the
    first task records the plan's creation.
-6. Add the plan to the table above.
+6. Add the plan to the table above, and to `plans/index.md` with the sources it reads.
 7. Run the checks.
 
 ## Decisions

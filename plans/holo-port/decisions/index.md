@@ -91,6 +91,7 @@ change supersedes a decision with a new one.
 
 ## Packages and process
 
+- [0100 plans/index.md maps the plans, and the port stays one bundle](/decisions/0100-plans-map-and-one-bundle.md) — plans/index.md lists every plan, the sources each one reads and how to work on them, in OKF's index format without declaring a bundle, and this bundle is not split.
 - [0099 HoloCMS's source lives in source/holocms](/decisions/0099-holocms-source-folder.md) — HoloCMS's source moves from source/holo to source/holocms, a name that cannot be mistaken for the new packages/cms, and every path to it in the bundle follows.
 - [0097 No agent works on main](/decisions/0097-no-agent-works-on-main.md) — Every line of work, sequential or parallel, goes on its own feature branch in its own worktree, and the agent merges it into main by itself once its work is done and every gate passes.
 - [0072 Later work is listed in plans/later.md](/decisions/0072-later-work-in-plans-later.md) — plans/later.md, beside the port bundle, lists work planned for later that belongs to no phase, starting with the orchestrator's.

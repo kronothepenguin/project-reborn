@@ -2,6 +2,8 @@
 
 ## 2026-11-06
 
+- **Decision** [0100](/decisions/0100-plans-map-and-one-bundle.md): `plans/index.md` maps every plan and the sources it
+  reads, `AGENTS.md` points to it, and the port stays one bundle.
 - **Update** every path to HoloCMS's source reads `source/holocms/`: the `holo:` line of 83 tasks, a phase, five
   reference documents and their index, the rules, the root index and, for the path only, decisions 0005, 0016 and
   0017.
