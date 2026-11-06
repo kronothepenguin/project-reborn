@@ -2,6 +2,8 @@
 
 ## 2026-11-06
 
+- **Decision** [0101](/decisions/0101-agents-clean-up-worktrees.md): an agent removes its worktree and deletes its
+  branch once merged. The old `agent-*` worktrees and the twelve merged branches are gone; `main` and `p5` remain.
 - **Update** the client page this port deferred, `client.php`, `clientutils.php`, `unloadclient.php` and the
   client settings of `cms_system`, is planned in `plans/client`, phase C1, in
   [Holo public site](/reference/holo-pages.md) and [Holo database](/reference/holo-database.md).
