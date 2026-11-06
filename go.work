@@ -4,6 +4,7 @@ use (
 	./apps/cms
 	./apps/housekeeping
 	./apps/installer
+	./apps/server
 	./packages/astro
 	./packages/auth
 	./packages/cms
@@ -11,6 +12,7 @@ use (
 	./packages/housekeeping
 	./packages/installer
 	./packages/scheduler
+	./packages/server
 	./packages/store
 	./packages/virtual
 	./tools/create
