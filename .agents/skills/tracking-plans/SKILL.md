@@ -37,7 +37,7 @@ Task:
 - [ ] tasks/index.md and the phase file updated
 - [ ] "**Done**" log entry under today's "## YYYY-MM-DD", newest first
 - [ ] committed, not pushed, one-line title (feat:, fix:, refactor:, docs:)
-- [ ] if the branch's work is done: merged as "Branches" says
+- [ ] if the branch's work is done: merged, then its worktree removed and its branch deleted, as "Branches" says
 ```
 
 - Blocked: `status: blocked`, the reason in `# Notes`, a `**Blocked**` log entry.
@@ -53,6 +53,9 @@ Task:
 - When the branch's work is done and verified, merge it without asking: merge `main` into the branch inside the
   worktree, run `make gates` there, then fast-forward `main` from the main checkout with
   `git -C <main checkout> merge --ff-only <branch>`. If `main` moved, start again.
+- Once merged, clean up from the main checkout: `git worktree remove .claude/worktrees/<branch>` and
+  `git branch -d <branch>` (plans/holo-port/decisions/0101). `--force` only when a submodule or ignored build output
+  blocks the removal and `git status` is clean. This includes `agent-*` and throwaway worktrees.
 - Never push.
 
 ## Start a new plan

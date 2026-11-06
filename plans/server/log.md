@@ -16,6 +16,8 @@
   name, in 30000 to 39999 of its own; `client-r18` gets 30050. Answers [s0-02](/tasks/s0-02-create-templates.md)'s
   question.
 - **Start** [s0-02](/tasks/s0-02-create-templates.md).
+- **Update** [the rules](/rules.md#branches): once merged, the agent removes its worktree and deletes its branch
+  (`plans/holo-port/decisions/0101-agents-clean-up-worktrees.md`).
 - **Update** [s1-24](/tasks/s1-24-mus-framing.md) reads LibreShockwave in the submodule `vendor/LibreShockwave`
   (`plans/client/decisions/0003-libreshockwave-submodule.md`), and [S2](/phases/s2-login.md)'s question about the
   `/client` page points at `plans/client`, phase C1.

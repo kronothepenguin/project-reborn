@@ -75,6 +75,9 @@ Web apps have two modes:
 - When its work is done and verified, the agent merges the branch by itself: it merges `main` into the branch inside its
   worktree, runs every gate there, and then fast-forwards `main` from the main checkout with
   `git merge --ff-only <branch>`. If `main` moved in the meantime, it starts again. Agents never push.
+- Once the branch is merged, the agent cleans up from the main checkout with
+  `git worktree remove .claude/worktrees/<branch>` and `git branch -d <branch>`, so that `.claude/worktrees/` and
+  `git branch` hold only work in progress.
 
 ---
 

@@ -2,6 +2,8 @@
 
 ## 2026-11-06
 
+- **Update** [the rules](/rules.md#branches): once merged, the agent removes its worktree and deletes its branch
+  (`plans/holo-port/decisions/0101-agents-clean-up-worktrees.md`).
 - **Done** [c0-02](/tasks/c0-02-libreshockwave-submodule.md): LibreShockwave is a submodule at `vendor/LibreShockwave`,
   at `3f90480`, and [LibreShockwave](/reference/libreshockwave.md) describes it.
 - **Start** [c0-02](/tasks/c0-02-libreshockwave-submodule.md).

@@ -2,7 +2,7 @@
 type: Playbook
 title: Game server tracking rules
 description: How tasks, decisions, phases and log entries of the game server are created and kept up to date.
-timestamp: 2026-11-06T15:44:51+00:00
+timestamp: 2026-11-06T16:52:10+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [process]
 ---
@@ -109,6 +109,9 @@ other bundles are referenced by their repository path in backticks (`packages/se
   branch inside its worktree, runs every gate there (`make gates`), and then fast-forwards `main` from the main checkout
   with `git merge --ff-only <branch>`. If `main` moved in the meantime, it starts again. That fast-forward is the only
   thing an agent does on `main`.
+- Once the branch's work is done and merged, the agent removes its worktree and deletes the branch, from the main
+  checkout: `git worktree remove .claude/worktrees/<branch>` and `git branch -d <branch>`
+  (`plans/holo-port/decisions/0101-agents-clean-up-worktrees.md`).
 
 ## Change of scope
 

@@ -2,7 +2,7 @@
 type: Playbook
 title: Port tracking rules
 description: How tasks, decisions, phases and log entries of the HoloCMS port are created and kept up to date.
-timestamp: 2026-10-30T21:10:07+00:00
+timestamp: 2026-11-06T16:52:10+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [process]
 ---
@@ -104,6 +104,9 @@ repository path in backticks (`packages/store/store.go`).
   branch inside its worktree, runs every gate there, and then fast-forwards `main` from the main checkout with
   `git merge --ff-only <branch>`. If `main` moved in the meantime, it starts again. That fast-forward is the only thing an
   agent does on `main`.
+- Once the branch's work is done and merged, the agent removes its worktree and deletes the branch, from the main
+  checkout: `git worktree remove .claude/worktrees/<branch>` and `git branch -d <branch>`
+  ([0101](/decisions/0101-agents-clean-up-worktrees.md)).
 
 ## Change of scope
 

@@ -28,5 +28,6 @@ work on any of them.
 2. Resume from the plan's `index.md`, then the newest entries of its `log.md`, then its `tasks/index.md`.
 3. Never work on `main`: each line of work has its own feature branch and worktree under `.claude/worktrees/`, which
    the agent merges into `main` once every gate passes, and it never pushes
-   ([0097](holo-port/decisions/0097-no-agent-works-on-main.md)).
+   ([0097](holo-port/decisions/0097-no-agent-works-on-main.md)). Once merged, the agent removes the worktree and deletes
+   the branch ([0101](holo-port/decisions/0101-agents-clean-up-worktrees.md)).
 4. A new plan is started with the `tracking-plans` skill and listed here.
