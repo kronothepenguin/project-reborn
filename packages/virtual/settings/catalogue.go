@@ -70,6 +70,7 @@ var catalogue = map[string]declaration{
 	"homes.maxItems":      declare(200, between(1, 1000)),
 	"homes.noteMaxLength": declare(500, between(1, 5000)),
 	"homes.maxTags":       declare(20, between(1, 100)),
+	"homes.wardrobeSlots": declare(5, between(1, 20)),
 
 	"groups.price":                declare(20, between(0, 1_000_000)),
 	"groups.maxOwned":             declare(3, between(1, 100)),
@@ -80,6 +81,22 @@ var catalogue = map[string]declaration{
 
 	// The seconds a habbo waits between two new posts; 0 lets every post through.
 	"forum.spamSeconds": declare(30, between(0, 3600)),
+
+	"club.price1Month":  declare(20, between(0, 1_000_000)),
+	"club.price3Months": declare(50, between(0, 1_000_000)),
+	"club.price6Months": declare(80, between(0, 1_000_000)),
+	"club.daysPerMonth": declare(31, between(1, 31)),
+
+	// The most club months a user holds at once; 0 lifts the limit.
+	"club.maxMonths": declare(6, between(0, 120)),
+
+	// The boxes of the credits page, in BBCode, with Holo's texts. Their pictures
+	// are part of the page, and the second box's list became lines that start
+	// with "* " (decision 0105).
+	"creditsPage.box1Heading": declare("What are credits?", length(1, 100)),
+	"creditsPage.box1Body":    declare(creditsBox1, length(0, 5000)),
+	"creditsPage.box2Heading": declare("Get credits!", length(1, 100)),
+	"creditsPage.box2Body":    declare(creditsBox2, length(0, 5000)),
 }
 
 // rules check settings that depend on each other. keys lists every setting a
@@ -180,6 +197,15 @@ var staffBoxColors = []string{"red", "blue", "white", "green"}
 const (
 	staffBox1 = "You can find the staff members all over the hotel -- in the public rooms, their own rooms, or that dark little corner in your room. But how can you call them if you actually need them!? Easy. If it's urgent, use the Call for Help system ingame by using the blue questionmark in the right bottom of your screen. If it isn't urgent, use the Help Tool on the website."
 	staffBox2 = "So you want that sexy staff badge next to your name in the hotel and on the site? Do you want to join Holo Hotel's moderation team? Keep your eyes focused on this section and the news -- if we're looking for staff it will be announced there, and surely you won't miss it!"
+)
+
+const (
+	creditsBox1 = "Credits are the hotel's currency. You can use them to buy all kinds of things, from rubber ducks and sofas, to Habbo Club membership, jukeboxes and teleports."
+	creditsBox2 = "To buy furniture or play games, you need [b]credits[/b]. We provide you with free credits on registration, and if you run out, there are several ways you can earn more credits:\n" +
+		"* Refer a friend to the hotel and earn credits\n" +
+		"* Ask a staff member ingame\n" +
+		"* Redeem a voucher if you have one\n" +
+		"* Trade your furniture with others for credit furniture"
 )
 
 func oneOf(allowed ...string) func(string) error {

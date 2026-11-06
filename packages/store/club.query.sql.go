@@ -10,6 +10,28 @@ import (
 	"time"
 )
 
+const createClubSubscription = `-- name: CreateClubSubscription :exec
+INSERT INTO club_subscriptions (user_id, starts_at, ends_at, created_at)
+VALUES (?1, ?2, ?3, ?4)
+`
+
+type CreateClubSubscriptionParams struct {
+	UserID    int64
+	StartsAt  time.Time
+	EndsAt    time.Time
+	CreatedAt time.Time
+}
+
+func (q *Queries) CreateClubSubscription(ctx context.Context, arg CreateClubSubscriptionParams) error {
+	_, err := q.db.ExecContext(ctx, createClubSubscription,
+		arg.UserID,
+		arg.StartsAt,
+		arg.EndsAt,
+		arg.CreatedAt,
+	)
+	return err
+}
+
 const getClubEnd = `-- name: GetClubEnd :one
 SELECT ends_at FROM club_subscriptions
 WHERE user_id = ?1 AND starts_at <= ?2 AND ends_at > ?2
@@ -27,4 +49,31 @@ func (q *Queries) GetClubEnd(ctx context.Context, arg GetClubEndParams) (time.Ti
 	var ends_at time.Time
 	err := row.Scan(&ends_at)
 	return ends_at, err
+}
+
+const getLatestClubEnd = `-- name: GetLatestClubEnd :one
+SELECT ends_at FROM club_subscriptions
+WHERE user_id = ?1
+ORDER BY ends_at DESC
+LIMIT 1
+`
+
+// The end of the user's last period, past or to come; a purchase starts at the later
+// of now and this end.
+func (q *Queries) GetLatestClubEnd(ctx context.Context, userID int64) (time.Time, error) {
+	row := q.db.QueryRowContext(ctx, getLatestClubEnd, userID)
+	var ends_at time.Time
+	err := row.Scan(&ends_at)
+	return ends_at, err
+}
+
+const hasClubSubscription = `-- name: HasClubSubscription :one
+SELECT EXISTS (SELECT 1 FROM club_subscriptions WHERE user_id = ?1)
+`
+
+func (q *Queries) HasClubSubscription(ctx context.Context, userID int64) (bool, error) {
+	row := q.db.QueryRowContext(ctx, hasClubSubscription, userID)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
 }

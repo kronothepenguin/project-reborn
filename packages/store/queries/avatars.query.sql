@@ -117,3 +117,31 @@ WHERE avatar_id = sqlc.arg(avatar_id) AND code = sqlc.arg(code);
 -- name: GetWornAvatarBadge :one
 SELECT * FROM avatar_badges
 WHERE avatar_id = sqlc.arg(avatar_id) AND worn;
+
+-- Unworn, because a habbo wears one badge; archived habbos are still the user's and
+-- get it too.
+-- name: GrantBadgeToUserAvatars :execrows
+INSERT INTO avatar_badges (avatar_id, code, worn, granted_at)
+SELECT avatars.id, sqlc.arg(code), FALSE, sqlc.arg(granted_at)
+FROM avatars
+WHERE avatars.user_id = sqlc.arg(user_id)
+ON CONFLICT (avatar_id, code) DO NOTHING;
+
+-- Archived habbos are still the user's and lose it too.
+-- name: DeleteBadgeFromUserAvatars :execrows
+DELETE FROM avatar_badges
+WHERE code = sqlc.arg(code)
+  AND avatar_id IN (SELECT avatars.id FROM avatars WHERE avatars.user_id = sqlc.arg(user_id));
+
+-- name: ListWardrobeOutfits :many
+SELECT * FROM wardrobe_outfits
+WHERE avatar_id = sqlc.arg(avatar_id)
+ORDER BY slot;
+
+-- name: UpsertWardrobeOutfit :exec
+INSERT INTO wardrobe_outfits (avatar_id, slot, figure, gender, updated_at)
+VALUES (sqlc.arg(avatar_id), sqlc.arg(slot), sqlc.arg(figure), sqlc.arg(gender), sqlc.arg(updated_at))
+ON CONFLICT (avatar_id, slot) DO UPDATE SET
+    figure = excluded.figure,
+    gender = excluded.gender,
+    updated_at = excluded.updated_at;

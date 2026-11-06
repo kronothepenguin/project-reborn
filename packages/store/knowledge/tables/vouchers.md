@@ -4,7 +4,7 @@ title: vouchers
 description: Credit vouchers created by staff, matched ignoring case, and kept after redemption for audit.
 resource: packages/store/schema/economy.schema.sql
 tags: [store, table, economy]
-timestamp: 2026-10-27T21:28:26+00:00
+timestamp: 2026-11-06T22:56:10+00:00
 ---
 
 # Schema
@@ -24,4 +24,5 @@ timestamp: 2026-10-27T21:28:26+00:00
 
 # Related
 
-- Entity: [Wallet](/entities/wallet.md).
+- Entity: [Voucher](/entities/voucher.md).
+- Queries: [economy.query.sql](/queries/economy.md).

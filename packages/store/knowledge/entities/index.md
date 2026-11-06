@@ -6,6 +6,7 @@ Domain entities represented by the store's tables: their meaning, invariants, li
 
 - [User](user.md) — The person who owns habbos, signs in with a password and receives access attributes.
 - [Habbo](habbo.md) — An in-hotel identity owned by a user, with its name, look, motto, badges and wardrobe.
+- [Wardrobe outfit](wardrobe-outfit.md) — A look a habbo keeps in a numbered slot of the club wardrobe, to dress in again from the account's looks page.
 - [Referral](referral.md) — The record that a habbo's referral link brought in a new user, and whether the reward was paid.
 
 ## Authentication and access
@@ -34,7 +35,8 @@ Domain entities represented by the store's tables: their meaning, invariants, li
 
 ## Economy
 
-- [Wallet](wallet.md) — A user's credits, tickets and film, shared by all their habbos, the ledger of every credit change, and the vouchers that add credits.
+- [Wallet](wallet.md) — A user's credits, tickets and film, shared by all their habbos, and the ledger of every credit change.
+- [Voucher](voucher.md) — A code worth credits that staff create in housekeeping and a habbo redeems once into the user's purse, kept as redeemed for audit.
 - [Club subscription](club-subscription.md) — A paid Habbo Club period of a user; club membership covers all their habbos and is not an access attribute.
 
 ## Moderation

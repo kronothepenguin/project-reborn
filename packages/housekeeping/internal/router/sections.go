@@ -129,6 +129,7 @@ var forms = []section{
 			{Key: "homes.maxItems", Label: "Items Per Home", Help: "The most stickers, notes and widgets one home can hold."},
 			{Key: "homes.noteMaxLength", Label: "Note Length", Help: "The most characters in a note."},
 			{Key: "homes.maxTags", Label: "Tags Per Habbo", Help: "The most tags one habbo can have."},
+			{Key: "homes.wardrobeSlots", Label: "Wardrobe Slots", Help: "The most outfits a club member can keep in the wardrobe of each habbo."},
 		},
 	},
 	{
@@ -143,12 +144,22 @@ var forms = []section{
 		},
 	},
 	{
+		ID: "club", Menu: "Club", Title: "Club", Button: defaultButton,
+		Fields: []field{
+			{Key: "club.price1Month", Label: "1 Month Price", Help: "The credits 1 month of the club costs."},
+			{Key: "club.price3Months", Label: "3 Months Price", Help: "The credits 3 months of the club cost."},
+			{Key: "club.price6Months", Label: "6 Months Price", Help: "The credits 6 months of the club cost."},
+			{Key: "club.daysPerMonth", Label: "Days Per Month", Help: "The days one month of the club lasts."},
+		},
+	},
+	{
 		ID: "features", Menu: "Manage Site Content", Title: "Manage Content Options", Button: defaultButton, Content: true,
 		Fields: []field{
 			{Key: "features.landingPromo", Label: "Landing Promo Enabled", Help: "This determines whether the promo on the login page will be displayed. If disabled, the join button is shown."},
 			{Key: "features.birthdayNotifications", Label: "Birthday Notifications Enabled", Help: "This will determine whether a 'Happy birthday' message will be shown on a user's birthday."},
 			{Key: "features.tagFight", Label: "Tag Fight Enabled", Help: "This determines whether the Tag Fight will be shown on the tags page."},
 			{Key: "features.groupPurchase", Label: "Group Purchasing Enabled", Help: "This determines whether new groups can be created or not."},
+			{Key: "club.maxMonths", Label: "HC Months Limit", Help: "This will limit the allowed amount of subscribed Club months per user at once to this number. Set to '0' to have no limit."},
 		},
 	},
 	{
@@ -161,6 +172,17 @@ var forms = []section{
 			{Key: "staffPage.box2Color", Label: "Staff Content Box 2 Color", Help: "Only valid colors defined in CSS such as 'orange', 'blue', etc", Choices: staffBoxColors},
 			{Key: "staffPage.box2Heading", Label: "Staff Content Box 2 Heading", Help: "The title (heading) of Staff Content Box 2.", Required: true},
 			{Key: "features.staffPage", Label: "Staff Module Enabled", Help: "This determines whether the Staff Module (/staff) will be displayed/enabled."},
+		},
+	},
+	// Holo's content tool sorted a category by title, so Holo's misspelt
+	// Credit Content Box 2 Heading comes first.
+	{
+		ID: "creditsPage", Menu: "Credits Page", Title: "Manage Content Options", Button: defaultButton, Content: true,
+		Fields: []field{
+			{Key: "creditsPage.box2Heading", Label: "Credit Content Box 2 Heading", Help: "The title (heading) of Credit Content Box 2.", Required: true},
+			{Key: "creditsPage.box1Body", Label: "Credits Content Box 1", Help: "The text within a content box on the credits page. BBCode is allowed here.", Long: true, BBCode: true},
+			{Key: "creditsPage.box1Heading", Label: "Credits Content Box 1 Heading", Help: "The title (heading) of Credit Content Box 1.", Required: true},
+			{Key: "creditsPage.box2Body", Label: "Credits Content Box 2", Help: "The text within a content box on the credits page. BBCode is allowed here.", Long: true, BBCode: true},
 		},
 	},
 	{

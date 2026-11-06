@@ -3,7 +3,7 @@ type: Entity
 title: Habbo
 description: An in-hotel identity owned by a user, with its name, look, motto, badges and wardrobe.
 tags: [store, entity, habbo]
-timestamp: 2026-11-02T02:46:47+00:00
+timestamp: 2026-11-06T22:56:10+00:00
 ---
 
 # Definition
@@ -17,12 +17,12 @@ motto. A user can own several habbos, which share the user's wallet, club member
 - Gender is `M` or `F`.
 - The figure uses the dot format written by the v2 avatar editor (`hd-180-1.ch-215-82.lg-270-82`).
 - At most one badge is worn.
-- Wardrobe slots start at 1; the upper bound is `homes.wardrobeSlots` in config.
 
 # Lifecycle
 
 - Created with its user at registration, or later from Account → Habbos.
-- Look, gender and motto change from the account settings; badges come from staff or club purchases.
+- Look, gender and motto change from the account settings; badges come from staff, and `HC1` from the user's club
+  purchases, leaving with the club.
 - The owner archives a habbo from Account → Habbos, and staff restore it. An archived habbo cannot sign in, leaves the
   lists and the limit of `registration.maxHabbosPerUser`, and keeps its rows and its name. The stickers and notes on its
   home go back to the user's inventory, notes without their text.
@@ -43,12 +43,12 @@ motto. A user can own several habbos, which share the user's wallet, club member
   and a [home store](/entities/home-store.md) inventory.
 - Owns and joins [groups](/entities/group.md); writes [forum threads](/entities/forum-thread.md); receives
   [alerts](/entities/alert.md).
+- Keeps [wardrobe outfits](/entities/wardrobe-outfit.md) and redeems [vouchers](/entities/voucher.md).
 
 # Tables
 
 - [avatars](/tables/avatars.md)
 - [avatar_badges](/tables/avatar_badges.md)
-- [wardrobe_outfits](/tables/wardrobe_outfits.md)
 
 # Queries
 

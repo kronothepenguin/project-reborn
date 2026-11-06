@@ -58,6 +58,8 @@ func TestEverySectionHasAForm(t *testing.T) {
 		"features":     {"Manage Content Options", "Key:features.landingPromo", "Button:Save Settings"},
 		"groups":       {"Key:groups.price Label:Group Price", "Kind:number Value:20"},
 		"forum":        {"Manage Content Options", "Key:features.forum Label:Forum Enabled", "Button:Save Settings"},
+		"club":         {"Key:club.price1Month Label:1 Month Price", "Kind:number Value:20"},
+		"creditsPage":  {"Manage Content Options", "Key:creditsPage.box1Body Label:Credits Content Box 1", "Button:Save Settings"},
 	} {
 		t.Run(section, func(t *testing.T) {
 			wantPage(t, serve(mux, "GET", "/housekeeping/settings?section="+section, cookie, nil), http.StatusOK, append(texts, "settings.html")...)
@@ -175,6 +177,12 @@ func TestEveryKindOfFieldSaves(t *testing.T) {
 		{"forum", "features.forum", "0", func() any { return settings.GetBool("features.forum") }, false},
 		{"forum", "features.smilies", "0", func() any { return settings.GetBool("features.smilies") }, false},
 		{"forum", "forum.spamSeconds", "0", func() any { return settings.GetInt("forum.spamSeconds") }, 0},
+		{"club", "club.price6Months", "75", func() any { return settings.GetInt("club.price6Months") }, 75},
+		{"club", "club.daysPerMonth", "30", func() any { return settings.GetInt("club.daysPerMonth") }, 30},
+		{"features", "club.maxMonths", "0", func() any { return settings.GetInt("club.maxMonths") }, 0},
+		{"creditsPage", "creditsPage.box2Heading", "Earn credits!", func() any { return settings.GetString("creditsPage.box2Heading") }, "Earn credits!"},
+		{"creditsPage", "creditsPage.box2Body", "You need [b]credits[/b]:\r\n* Ask a staff member", func() any { return settings.GetString("creditsPage.box2Body") }, "You need [b]credits[/b]:\n* Ask a staff member"},
+		{"homes", "homes.wardrobeSlots", "10", func() any { return settings.GetInt("homes.wardrobeSlots") }, 10},
 	} {
 		t.Run(c.key, func(t *testing.T) {
 			db, mux := newSite(t)
@@ -243,6 +251,10 @@ func TestARefusedFormSavesNothing(t *testing.T) {
 		{"a blank heading", "staffPage", url.Values{"staffPage.box1Body": {"Text"}, "staffPage.box2Heading": {""}}, blank},
 		{"a group name too long to allow", "groups", url.Values{"groups.price": {"30"}, "groups.nameMaxLength": {"101"}}, "groups.nameMaxLength: must be between 1 and 100"},
 		{"a spam check too long", "forum", url.Values{"features.forum": {"1"}, "forum.spamSeconds": {"3601"}}, "forum.spamSeconds: must be between 0 and 3600"},
+		{"a month longer than 31 days", "club", url.Values{"club.price1Month": {"25"}, "club.daysPerMonth": {"32"}}, "club.daysPerMonth: must be between 1 and 31"},
+		{"a month limit below none", "features", url.Values{"features.tagFight": {"0"}, "club.maxMonths": {"-1"}}, "club.maxMonths: must be between 0 and 120"},
+		{"a blank credits heading", "creditsPage", url.Values{"creditsPage.box1Body": {"Text"}, "creditsPage.box2Heading": {""}}, blank},
+		{"too many wardrobe slots", "homes", url.Values{"homes.maxTags": {"30"}, "homes.wardrobeSlots": {"21"}}, "homes.wardrobeSlots: must be between 1 and 20"},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			db, mux := newSite(t)
@@ -542,5 +554,92 @@ func TestTheGroupsFormHoldsHolosNumbers(t *testing.T) {
 		if field := fieldOf(form, key); !strings.Contains(field, "Kind:number Value:"+value+" ") {
 			t.Errorf("%s does not hold %s: %q", key, value, field)
 		}
+	}
+}
+
+// Holo's content tool sorted a category by title, so the credits page opens on
+// Holo's misspelt Credit Content Box 2 Heading.
+func TestTheCreditsPageHasHolosFieldsInHolosOrder(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
+
+	body := serve(mux, "GET", "/housekeeping/settings?section=creditsPage", cookie, nil).Body.String()
+	_, form, ok := strings.Cut(body, " Section:{ID:creditsPage ")
+	if !ok {
+		t.Fatalf("the page is not the credits page's form: %s", body)
+	}
+	last := -1
+	for _, text := range []string{
+		"Menu:Credits Page Title:Manage Content Options ",
+		"{Key:creditsPage.box2Heading Label:Credit Content Box 2 Heading Help:The title (heading) of Credit Content Box 2. ",
+		"{Key:creditsPage.box1Body Label:Credits Content Box 1 Help:The text within a content box on the credits page. BBCode is allowed here. ",
+		"{Key:creditsPage.box1Heading Label:Credits Content Box 1 Heading Help:The title (heading) of Credit Content Box 1. ",
+		"{Key:creditsPage.box2Body Label:Credits Content Box 2 Help:The text within a content box on the credits page. BBCode is allowed here. ",
+	} {
+		at := strings.Index(form, text)
+		if at <= last {
+			t.Errorf("%q is missing or out of Holo's order: %s", text, form)
+		}
+		last = at
+	}
+	for key, want := range map[string]string{
+		"creditsPage.box2Heading": " Kind:text Value:Get credits! ",
+		"creditsPage.box1Body":    " Kind:longtext Value:" + html.EscapeString("Credits are the hotel's currency. "),
+		"creditsPage.box1Heading": " Kind:text Value:What are credits? ",
+		"creditsPage.box2Body":    " Kind:longtext Value:To buy furniture or play games, you need [b]credits[/b]. ",
+	} {
+		field := fieldOf(form, key)
+		if !strings.Contains(field, want) {
+			t.Errorf("%s = %q, want %q in it", key, field, want)
+		}
+		if bbcode := strings.HasSuffix(key, "Body"); !strings.HasSuffix(field, " BBCode:"+strconv.FormatBool(bbcode)) {
+			t.Errorf("%s does not take BBCode:%t: %q", key, bbcode, field)
+		}
+	}
+}
+
+// Holo wrote the club's prices, its days and the wardrobe's slots in its code,
+// and kept the month limit among the General Options of its content tool.
+func TestTheClubSettingsHoldHolosNumbers(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
+	formOf := func(section string) string {
+		body := serve(mux, "GET", "/housekeeping/settings?section="+section, cookie, nil).Body.String()
+		_, form, ok := strings.Cut(body, " Section:{ID:"+section+" ")
+		if !ok {
+			t.Fatalf("the page is not the form of %s: %s", section, body)
+		}
+		return form
+	}
+
+	club := formOf("club")
+	last := -1
+	for _, c := range []struct{ key, label, value string }{
+		{"club.price1Month", "1 Month Price", "20"},
+		{"club.price3Months", "3 Months Price", "50"},
+		{"club.price6Months", "6 Months Price", "80"},
+		{"club.daysPerMonth", "Days Per Month", "31"},
+	} {
+		at := strings.Index(club, "{Key:"+c.key+" Label:"+c.label+" ")
+		if at <= last {
+			t.Errorf("%s is missing or out of order: %s", c.label, club)
+		}
+		last = at
+		if field := fieldOf(club, c.key); !strings.Contains(field, " Kind:number Value:"+c.value+" ") {
+			t.Errorf("%s does not hold %s: %q", c.key, c.value, field)
+		}
+	}
+
+	general := formOf("features")
+	help := html.EscapeString("This will limit the allowed amount of subscribed Club months per user at once to this number. Set to '0' to have no limit.")
+	if field := fieldOf(general, "club.maxMonths"); !strings.Contains(field, " Label:HC Months Limit Help:"+help+" Kind:number Value:6 ") {
+		t.Errorf("the general options lack Holo's HC Months Limit of 6: %q", field)
+	}
+	if strings.Index(general, "{Key:features.groupPurchase ") > strings.Index(general, "{Key:club.maxMonths ") {
+		t.Errorf("HC Months Limit is not after Group Purchasing Enabled, as Holo sorted them: %s", general)
+	}
+
+	if field := fieldOf(formOf("homes"), "homes.wardrobeSlots"); !strings.Contains(field, " Label:Wardrobe Slots ") || !strings.Contains(field, " Kind:number Value:5 ") {
+		t.Errorf("the Homes form lacks Holo's 5 wardrobe slots: %q", field)
 	}
 }

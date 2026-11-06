@@ -4,7 +4,7 @@ title: club_subscriptions
 description: Paid Habbo Club periods of a user; the user is a member while a period covers the current time.
 resource: packages/store/schema/club.schema.sql
 tags: [store, table, club]
-timestamp: 2026-11-02T01:44:15+00:00
+timestamp: 2026-11-06T22:56:10+00:00
 ---
 
 # Schema
@@ -25,3 +25,4 @@ timestamp: 2026-11-02T01:44:15+00:00
 # Related
 
 - Entity: [Club subscription](/entities/club-subscription.md).
+- Queries: [club.query.sql](/queries/club.md).

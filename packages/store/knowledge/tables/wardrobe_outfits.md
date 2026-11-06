@@ -4,7 +4,7 @@ title: wardrobe_outfits
 description: Outfits a habbo saved in numbered wardrobe slots.
 resource: packages/store/schema/avatars.schema.sql
 tags: [store, table, habbo]
-timestamp: 2026-10-27T21:17:19+00:00
+timestamp: 2026-11-06T22:56:10+00:00
 ---
 
 # Schema
@@ -12,7 +12,7 @@ timestamp: 2026-10-27T21:17:19+00:00
 | Column | Type | Null | Default | Description | Key / reference |
 |--------|------|------|---------|-------------|-----------------|
 | `avatar_id` | INTEGER | no | | Owning habbo | primary key part, → `avatars.id` ON DELETE CASCADE |
-| `slot` | INTEGER | no | | Slot number, from 1 up to `homes.wardrobeSlots` | primary key part, CHECK ≥ 1 |
+| `slot` | INTEGER | no | | Slot number, from 1 up to the setting `homes.wardrobeSlots` | primary key part, CHECK ≥ 1 |
 | `figure` | TEXT | no | | Saved look in dot format | |
 | `gender` | TEXT | no | | `'M'` or `'F'` | CHECK |
 | `updated_at` | DATETIME | no | | Last save (UTC) | |
@@ -23,4 +23,5 @@ timestamp: 2026-10-27T21:17:19+00:00
 
 # Related
 
-- Entity: [Habbo](/entities/habbo.md).
+- Entity: [Wardrobe outfit](/entities/wardrobe-outfit.md).
+- Queries: [avatars.query.sql](/queries/avatars.md).
