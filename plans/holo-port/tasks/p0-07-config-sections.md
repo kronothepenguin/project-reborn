@@ -6,7 +6,7 @@ status: done
 phase: p0
 depends_on: []
 packages: [packages/config]
-holo: [source/holo/config.php]
+holo: [source/holocms/config.php]
 timestamp: 2026-10-27T21:58:32+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 verified:

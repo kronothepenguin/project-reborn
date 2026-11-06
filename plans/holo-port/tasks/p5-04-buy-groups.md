@@ -6,7 +6,7 @@ status: done
 phase: p5
 depends_on: [p5-01, p5-02, p5-03]
 packages: [packages/cms, packages/store, tests/e2e]
-holo: [source/holo/me.php, source/holo/randomgroups.php, source/holo/grouppurchase.php]
+holo: [source/holocms/me.php, source/holocms/randomgroups.php, source/holocms/grouppurchase.php]
 timestamp: 2026-11-05T19:56:42+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T19:06:47+00:00"}
 verified:

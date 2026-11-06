@@ -34,7 +34,7 @@ status: todo            # todo | in-progress | blocked | done | dropped
 phase: p0
 depends_on: [p0-02]     # task ids; [] when none
 packages: [packages/store]
-holo: [source/holo/install.php]   # legacy sources this task ports; [] when none
+holo: [source/holocms/install.php]   # legacy sources this task ports; [] when none
 timestamp: 2026-10-27T20:48:19+00:00   # last status change, ISO 8601 with offset
 verified:               # only once done
   - {by: <who ran the verification>, at: "<ISO 8601 with offset>"}

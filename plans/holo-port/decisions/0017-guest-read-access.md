@@ -16,7 +16,7 @@ tags: [cms, access]
 
 # Context
 
-Holo marked these pages `$allow_guests = true`, but `source/holo/includes/session.php` redirected without `exit`,
+Holo marked these pages `$allow_guests = true`, but `source/holocms/includes/session.php` redirected without `exit`,
 so the intent never worked.
 
 # Consequences

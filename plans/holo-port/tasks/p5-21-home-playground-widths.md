@@ -6,7 +6,7 @@ status: done
 phase: p5
 depends_on: []
 packages: [packages/cms, tests/e2e]
-holo: [source/holo/templates/community/hsubheader.php]
+holo: [source/holocms/templates/community/hsubheader.php]
 timestamp: 2026-11-05T20:13:30+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:09:02+00:00"}
 verified:

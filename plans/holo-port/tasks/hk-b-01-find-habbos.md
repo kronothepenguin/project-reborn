@@ -6,7 +6,7 @@ status: done
 phase: hk-b
 depends_on: []
 packages: [packages/store, packages/housekeeping]
-holo: [source/holo/housekeeping/users.php, source/holo/housekeeping/ip.php, source/holo/housekeeping/uid.php, source/holo/housekeeping/cloner.php]
+holo: [source/holocms/housekeeping/users.php, source/holocms/housekeeping/ip.php, source/holocms/housekeeping/uid.php, source/holocms/housekeeping/cloner.php]
 timestamp: 2026-11-02T19:46:21+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-02T19:41:44+00:00"}
 verified:

@@ -6,7 +6,7 @@ status: done
 phase: up
 depends_on: [up-04]
 packages: [packages/housekeeping, packages/store]
-holo: [source/holo/upgrade.php]
+holo: [source/holocms/upgrade.php]
 timestamp: 2026-11-03T22:26:12+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-03T21:02:31+00:00"}
 verified:

@@ -6,7 +6,7 @@ status: done
 phase: p0
 depends_on: [p0-04]
 packages: [packages/store]
-holo: [source/holo/install.php, source/holo/upgrade.php, source/holo/web-gallery/v2/styles/cms_homes_catalouge.sql]
+holo: [source/holocms/install.php, source/holocms/upgrade.php, source/holocms/web-gallery/v2/styles/cms_homes_catalouge.sql]
 timestamp: 2026-10-27T21:32:36+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 verified:

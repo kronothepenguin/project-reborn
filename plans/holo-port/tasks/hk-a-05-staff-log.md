@@ -6,7 +6,7 @@ status: done
 phase: hk-a
 depends_on: [hk-a-04]
 packages: [packages/housekeeping, packages/store]
-holo: [source/holo/housekeeping/logs.php]
+holo: [source/holocms/housekeeping/logs.php]
 timestamp: 2026-11-01T21:30:17+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T21:07:47+00:00"}
 verified:

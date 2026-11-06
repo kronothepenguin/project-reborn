@@ -6,7 +6,7 @@ status: done
 phase: p3
 depends_on: [p3-02]
 packages: [packages/cms, packages/store]
-holo: [source/holo/store.php]
+holo: [source/holocms/store.php]
 timestamp: 2026-11-03T17:45:56+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-03T17:26:52+00:00"}
 verified:

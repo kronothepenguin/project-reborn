@@ -6,7 +6,7 @@ status: done
 phase: p4
 depends_on: [p4-03, p4-08]
 packages: [packages/cms, tests/e2e]
-holo: [source/holo/community.php, source/holo/includes/news_headlines.php]
+holo: [source/holocms/community.php, source/holocms/includes/news_headlines.php]
 timestamp: 2026-11-04T16:13:24+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-04T01:28:29+00:00"}
 verified:

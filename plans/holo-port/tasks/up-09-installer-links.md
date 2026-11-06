@@ -6,7 +6,7 @@ status: done
 phase: up
 depends_on: []
 packages: [packages/installer, tests/e2e]
-holo: [source/holo/install.php]
+holo: [source/holocms/install.php]
 timestamp: 2026-11-03T23:45:29+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-03T21:02:31+00:00"}
 verified:

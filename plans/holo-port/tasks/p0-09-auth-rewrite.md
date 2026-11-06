@@ -6,7 +6,7 @@ status: done
 phase: p0
 depends_on: [p0-06, p0-13]
 packages: [packages/auth]
-holo: [source/holo/includes/inc.crypt.php, source/holo/index.php, source/holo/logout.php, source/holo/security_check.php, source/holo/forgot.php, source/holo/core.php]
+holo: [source/holocms/includes/inc.crypt.php, source/holocms/index.php, source/holocms/logout.php, source/holocms/security_check.php, source/holocms/forgot.php, source/holocms/core.php]
 timestamp: 2026-10-27T23:25:58+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 verified:

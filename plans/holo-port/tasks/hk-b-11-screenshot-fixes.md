@@ -6,7 +6,7 @@ status: done
 phase: hk-b
 depends_on: [hk-b-01, hk-b-07]
 packages: [packages/housekeeping, tests/e2e]
-holo: [source/holo/housekeeping/users.php, source/holo/housekeeping/cloner.php]
+holo: [source/holocms/housekeeping/users.php, source/holocms/housekeeping/cloner.php]
 timestamp: 2026-11-02T20:38:22+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-02T20:34:53+00:00"}
 verified:

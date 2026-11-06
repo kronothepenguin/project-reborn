@@ -6,7 +6,7 @@ status: done
 phase: p1
 depends_on: []
 packages: [packages/components, packages/cms, packages/astro]
-holo: [source/holo/web-gallery/v2/styles/style.css, source/holo/web-gallery/v2/styles/registration.css]
+holo: [source/holocms/web-gallery/v2/styles/style.css, source/holocms/web-gallery/v2/styles/registration.css]
 timestamp: 2026-10-30T21:54:29+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-30T21:10:07+00:00"}
 verified:

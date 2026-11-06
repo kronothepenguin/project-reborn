@@ -6,7 +6,7 @@ status: done
 phase: up
 depends_on: [up-02]
 packages: [packages/store, packages/cms, packages/installer, packages/housekeeping]
-holo: [source/holo/install.php, source/holo/staff.php]
+holo: [source/holocms/install.php, source/holocms/staff.php]
 timestamp: 2026-11-03T22:08:29+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-03T21:02:31+00:00"}
 verified:

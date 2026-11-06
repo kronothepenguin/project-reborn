@@ -6,7 +6,7 @@ status: done
 phase: hk-b
 depends_on: [hk-b-02]
 packages: [packages/store, packages/housekeeping]
-holo: [source/holo/housekeeping/badgetool.php]
+holo: [source/holocms/housekeeping/badgetool.php]
 timestamp: 2026-11-02T19:59:53+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-02T19:41:44+00:00"}
 verified:

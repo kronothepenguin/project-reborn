@@ -6,7 +6,7 @@ status: todo
 phase: p5
 depends_on: [p5-13]
 packages: [packages/cms, tests/e2e]
-holo: [source/holo/opentopicsettings.php, source/holo/savetopicsettings.php, source/holo/deletetopic.php, source/holo/confirm_delete_topic.php]
+holo: [source/holocms/opentopicsettings.php, source/holocms/savetopicsettings.php, source/holocms/deletetopic.php, source/holocms/confirm_delete_topic.php]
 timestamp: 2026-11-05T19:06:47+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T19:06:47+00:00"}
 ---

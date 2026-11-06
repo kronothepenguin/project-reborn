@@ -6,7 +6,7 @@ status: done
 phase: p2
 depends_on: [p2-04]
 packages: [packages/store, packages/auth, packages/cms]
-holo: [source/holo/account.php]
+holo: [source/holocms/account.php]
 timestamp: 2026-11-01T21:19:24+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T20:58:04+00:00"}
 verified:

@@ -6,7 +6,7 @@ status: done
 phase: p4
 depends_on: [p4-02]
 packages: [packages/cms, packages/store, tests/e2e]
-holo: [source/holo/staff.php]
+holo: [source/holocms/staff.php]
 timestamp: 2026-11-04T16:24:45+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-04T01:28:29+00:00"}
 verified:

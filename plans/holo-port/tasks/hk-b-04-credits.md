@@ -6,7 +6,7 @@ status: done
 phase: hk-b
 depends_on: [hk-b-01]
 packages: [packages/store, packages/housekeeping]
-holo: [source/holo/housekeeping/givecredits.php, source/holo/housekeeping/transactions.php]
+holo: [source/holocms/housekeeping/givecredits.php, source/holocms/housekeeping/transactions.php]
 timestamp: 2026-11-02T20:03:33+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-02T19:41:44+00:00"}
 verified:

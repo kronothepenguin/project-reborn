@@ -22,7 +22,7 @@ tags: [installer]
      habbo.
   5. Done.
 - It refuses to run when `config.json` exists and the database already has an administrator.
-- Phase P3 adds the home store seed: Holo's categories and the 303 items from `source/holo/install.php:469-772`.
+- Phase P3 adds the home store seed: Holo's categories and the 303 items from `source/holocms/install.php:469-772`.
 
 # Context
 

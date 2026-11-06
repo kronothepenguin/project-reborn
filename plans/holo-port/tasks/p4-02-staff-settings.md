@@ -6,7 +6,7 @@ status: done
 phase: p4
 depends_on: [p4-01]
 packages: [packages/virtual, packages/housekeeping]
-holo: [source/holo/install.php, source/holo/housekeeping/content_tool.php]
+holo: [source/holocms/install.php, source/holocms/housekeeping/content_tool.php]
 timestamp: 2026-11-04T01:57:39+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-04T01:28:29+00:00"}
 verified:

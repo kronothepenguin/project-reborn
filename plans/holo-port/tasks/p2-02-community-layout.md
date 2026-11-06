@@ -6,7 +6,7 @@ status: done
 phase: p2
 depends_on: []
 packages: [packages/virtual, packages/cms]
-holo: [source/holo/templates/community/header.php, source/holo/templates/community/footer.php, source/holo/templates/community/subheader.php]
+holo: [source/holocms/templates/community/header.php, source/holocms/templates/community/footer.php, source/holocms/templates/community/subheader.php]
 timestamp: 2026-11-01T21:02:34+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T20:58:04+00:00"}
 verified:

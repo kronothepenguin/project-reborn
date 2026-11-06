@@ -6,7 +6,7 @@ status: done
 phase: p5
 depends_on: []
 packages: [packages/store]
-holo: [source/holo/install.php]
+holo: [source/holocms/install.php]
 timestamp: 2026-11-05T19:26:37+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T19:06:47+00:00"}
 verified:

@@ -6,7 +6,7 @@ status: done
 phase: p4
 depends_on: []
 packages: [packages/store, packages/cms]
-holo: [source/holo/news.php, source/holo/includes/news_headlines.php, source/holo/housekeeping/banners.php]
+holo: [source/holocms/news.php, source/holocms/includes/news_headlines.php, source/holocms/housekeeping/banners.php]
 timestamp: 2026-11-04T01:42:27+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-04T01:28:29+00:00"}
 verified:

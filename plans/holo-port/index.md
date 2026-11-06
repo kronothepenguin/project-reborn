@@ -4,7 +4,7 @@ okf_version: "0.2"
 
 # HoloCMS port
 
-State of the port of HoloCMS (`source/holo/`, PHP + MySQL, 2008) to Project Reborn: Go, SQLite + sqlc, Astro,
+State of the port of HoloCMS (`source/holocms/`, PHP + MySQL, 2008) to Project Reborn: Go, SQLite + sqlc, Astro,
 Svelte 5 and Tailwind 4. The public site becomes `packages/cms`, the admin panel becomes `packages/housekeeping`
 and `install.php` becomes `packages/installer`.
 

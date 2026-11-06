@@ -6,7 +6,7 @@ status: done
 phase: p3
 depends_on: [p3-04, p3-06]
 packages: [packages/cms, packages/store]
-holo: [source/holo/savehome.php, source/holo/store.php, source/holo/edit_widget.php, source/holo/edit_stickie.php, source/holo/delete_sticker.php, source/holo/delete_stickie.php, source/holo/widget_delete.php]
+holo: [source/holocms/savehome.php, source/holocms/store.php, source/holocms/edit_widget.php, source/holocms/edit_stickie.php, source/holocms/delete_sticker.php, source/holocms/delete_stickie.php, source/holocms/widget_delete.php]
 timestamp: 2026-11-03T17:54:19+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-03T17:26:52+00:00"}
 verified:

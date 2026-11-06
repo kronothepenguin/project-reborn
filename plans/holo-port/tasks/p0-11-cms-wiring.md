@@ -6,7 +6,7 @@ status: done
 phase: p0
 depends_on: [p0-09, p0-10]
 packages: [packages/cms, apps/cms]
-holo: [source/holo/core.php, source/holo/maintenance.php]
+holo: [source/holocms/core.php, source/holocms/maintenance.php]
 timestamp: 2026-10-28T02:06:46+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 verified:

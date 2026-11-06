@@ -9,7 +9,7 @@ tags: [store, holo]
 
 # Holo tables
 
-The CMS tables (`cms_*`) are created in `source/holo/install.php:249-470` and `upgrade.php`. The emulator tables
+The CMS tables (`cms_*`) are created in `source/holocms/install.php:249-470` and `upgrade.php`. The emulator tables
 are not defined in the repository; their columns were inferred from the queries. All are MyISAM latin1, with no
 foreign keys, no transactions and no secondary indexes.
 

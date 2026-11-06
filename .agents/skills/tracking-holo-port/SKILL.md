@@ -1,6 +1,6 @@
 ---
 name: tracking-holo-port
-description: Reads and updates the HoloCMS port state bundle in plans/holo-port (OKF 0.2) — resuming work, creating and updating tasks, logging progress and recording decisions. Use when starting, continuing or finishing any work on porting source/holo to packages/cms, packages/housekeeping or packages/installer, or when asked about the port's status.
+description: Reads and updates the HoloCMS port state bundle in plans/holo-port (OKF 0.2) — resuming work, creating and updating tasks, logging progress and recording decisions. Use when starting, continuing or finishing any work on porting source/holocms to packages/cms, packages/housekeeping or packages/installer, or when asked about the port's status.
 ---
 
 # Tracking the HoloCMS port

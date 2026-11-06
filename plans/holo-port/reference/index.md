@@ -1,6 +1,6 @@
 # Reference
 
-What HoloCMS (`source/holo/`) contains and where each part goes. These documents replace re-reading the PHP.
+What HoloCMS (`source/holocms/`) contains and where each part goes. These documents replace re-reading the PHP.
 
 ## Legacy system
 

@@ -6,7 +6,7 @@ status: done
 phase: p5
 depends_on: [p5-04, p5-10]
 packages: [packages/cms, packages/store, tests/e2e]
-holo: [source/holo/quickmenu.php, source/holo/user_profile.php, source/holo/groupinfo.php, source/holo/staff.php, source/holo/templates/community/header.php]
+holo: [source/holocms/quickmenu.php, source/holocms/user_profile.php, source/holocms/groupinfo.php, source/holocms/staff.php, source/holocms/templates/community/header.php]
 timestamp: 2026-11-05T21:57:29+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T19:06:47+00:00"}
 verified:

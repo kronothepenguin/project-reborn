@@ -6,7 +6,7 @@ status: done
 phase: p4
 depends_on: [p4-03]
 packages: [packages/housekeeping, tests/e2e]
-holo: [source/holo/housekeeping/news_compose.php, source/holo/housekeeping/news_manage.php]
+holo: [source/holocms/housekeeping/news_compose.php, source/holocms/housekeeping/news_manage.php]
 timestamp: 2026-11-04T02:13:27+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-04T01:28:29+00:00"}
 verified:

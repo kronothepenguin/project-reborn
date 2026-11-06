@@ -6,7 +6,7 @@ status: done
 phase: p1
 depends_on: [p1-01]
 packages: [packages/virtual, packages/cms]
-holo: [source/holo/index.php, source/holo/logout.php, source/holo/security_check.php]
+holo: [source/holocms/index.php, source/holocms/logout.php, source/holocms/security_check.php]
 timestamp: 2026-10-30T22:09:04+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-30T21:10:07+00:00"}
 verified:

@@ -1,5 +1,12 @@
 # Log
 
+## 2026-11-06
+
+- **Update** every path to HoloCMS's source reads `source/holocms/`: the `holo:` line of 83 tasks, a phase, five
+  reference documents and their index, the rules, the root index and, for the path only, decisions 0005, 0016 and
+  0017.
+- **Decision** [0099](/decisions/0099-holocms-source-folder.md): HoloCMS's source lives in `source/holocms`.
+
 ## 2026-11-05
 
 - **Done** [p5-14](/tasks/p5-14-post-threads-and-replies.md): signed-in habbos start threads, reply and quote, with Holo's

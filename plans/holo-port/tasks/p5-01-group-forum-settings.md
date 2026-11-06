@@ -6,7 +6,7 @@ status: done
 phase: p5
 depends_on: []
 packages: [packages/virtual, packages/housekeeping, tests/e2e]
-holo: [source/holo/install.php, source/holo/housekeeping/content_tool.php]
+holo: [source/holocms/install.php, source/holocms/housekeeping/content_tool.php]
 timestamp: 2026-11-05T19:18:43+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T19:06:47+00:00"}
 verified:

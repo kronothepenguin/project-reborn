@@ -6,7 +6,7 @@ status: done
 phase: p1
 depends_on: [p1-15, p1-16]
 packages: [packages/cms]
-holo: [source/holo/register.php, source/holo/templates/login/register_subheader.php, source/holo/web-gallery/static/js/registration.js]
+holo: [source/holocms/register.php, source/holocms/templates/login/register_subheader.php, source/holocms/web-gallery/static/js/registration.js]
 timestamp: 2026-11-01T18:49:59+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 verified:

@@ -6,7 +6,7 @@ status: done
 phase: p5
 depends_on: [p5-01, p5-03, p5-12]
 packages: [packages/cms, packages/components, tests/e2e]
-holo: [source/holo/forum.php, source/holo/viewthread.php]
+holo: [source/holocms/forum.php, source/holocms/viewthread.php]
 timestamp: 2026-11-05T22:22:51+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T19:06:47+00:00"}
 verified:

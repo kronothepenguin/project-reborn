@@ -6,7 +6,7 @@ status: done
 phase: p1
 depends_on: []
 packages: [packages/cms]
-holo: [source/holo/disclaimer.php, source/holo/privacy.php, source/holo/locale/en/policies.php]
+holo: [source/holocms/disclaimer.php, source/holocms/privacy.php, source/holocms/locale/en/policies.php]
 timestamp: 2026-10-30T22:31:40+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-30T21:10:07+00:00"}
 verified:
