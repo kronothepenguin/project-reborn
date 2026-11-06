@@ -2,7 +2,7 @@
 type: Reference
 title: The R26 client
 description: Where the R26 client's protocol lives in packages/client-r26, how its scripts register and send messages, its wire format and handshake, and the format of the per-cast protocol references.
-timestamp: 2026-11-06T14:59:31+00:00
+timestamp: 2026-11-06T23:28:02+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [client, protocol, r26]
 ---
@@ -121,7 +121,7 @@ From `fuse_client/51_Connection Instance Class.ls` (`send`, `sendNew`, `msghandl
 # Handshake
 
 As the old server did it, without encryption ([0012](/decisions/0012-no-encryption.md));
-[s1-02](/tasks/s1-02-entry-init.md) confirms it:
+[hh_entry_init](/reference/r26/hh_entry_init.md#the-handshake) confirms it step by step, with its bytes:
 
 1. Server: `HELLO` (0), empty.
 2. Client: `INIT_CRYPTO` (206).

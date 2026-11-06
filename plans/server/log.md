@@ -2,6 +2,11 @@
 
 ## 2026-11-06
 
+- **Done** [s1-02](/tasks/s1-02-entry-init.md): [hh_entry_init](/reference/r26/hh_entry_init.md) maps 26 messages
+  and 22 commands, as registered, and confirms 0012's handshake step by step, with its bytes. 308 has a second reader
+  in `hh_tutorial`, asked for with the same id 228, and what the session parameters carry is a new open question of
+  [S2](/phases/s2-login.md).
+- **Start** [s1-02](/tasks/s1-02-entry-init.md).
 - **Done** [s0-04](/tasks/s0-04-listener-config.md): `config.json` gives `server.info` and `server.mus` a host and a
   port each, by default `localhost` with 30000 and 30001, checked as `cms.host` and refused on one port; the installer
   writes their defaults, and housekeeping offers them to an older `config.json`.

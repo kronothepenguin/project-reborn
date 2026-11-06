@@ -45,6 +45,10 @@ Written when the phase starts.
 - Which fuse rights a habbo gets (`plans/holo-port/decisions/0015-attribute-names-and-fuses.md`).
 - Whether the hotel can close at set hours (opening hours).
 - Which client versions the version check accepts.
+- What the session parameters carry, ids 0 to 9: COPPA, vouchers, the parent's e-mail at registration and
+  re-registration, direct mail, the date format, partner integration, profile editing, the tracking header and the
+  tutorial. The tutorial's value also decides whether `hh_tutorial` asks for the mode that 308 carries after the sound
+  state ([hh_entry_init](/reference/r26/hh_entry_init.md#session-parameters)).
 - What happens to the machine id the client sends (`UNIQUEID`).
 - What happens when a habbo who is online logs in a second time.
 - Whether the latency reports are kept.

@@ -2,7 +2,7 @@
 type: Reference
 title: R26 fuse_client
 description: How the R26 client opens its #info and #mus connections, frames packets both ways, encodes every value, and maps listeners and commands, from fuse_client's .ls scripts.
-timestamp: 2026-11-06T14:59:31+00:00
+timestamp: 2026-11-06T23:28:02+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T22:10:00+00:00"}
 tags: [r26, protocol]
 ---
@@ -290,7 +290,8 @@ The server skips it ([0012](/decisions/0012-no-encryption.md)), so this is only 
 - When `CRYPTOPARAMETERS` is 0, the server never sends `SERVERSECRETKEY`, and nothing is enciphered in either
   direction.
 
-[s1-02](/tasks/s1-02-entry-init.md) maps these messages' ids and the rest of the handshake.
+[hh_entry_init](/reference/r26/hh_entry_init.md#the-handshake) maps these messages' ids and the rest of the
+handshake.
 
 # Notes
 
