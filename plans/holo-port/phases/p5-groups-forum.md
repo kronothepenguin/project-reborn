@@ -2,8 +2,8 @@
 type: Phase
 title: P5 Groups and forum
 description: Groups with group homes, membership management, the badge editor and renderer, and the site-wide discussion board.
-status: active
-timestamp: 2026-11-06T17:54:34+00:00
+status: done
+timestamp: 2026-11-06T19:03:32+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p5, cms]
 ---
@@ -107,7 +107,7 @@ task:
 - [p5-16 Moderate threads](/tasks/p5-16-moderate-threads.md) — done
 - [p5-17 Report posts](/tasks/p5-17-report-posts.md) — done
 - [p5-18 Keep the badge palette the user picks](/tasks/p5-18-keep-one-badge-palette.md) — done
-- [p5-19 Verify P5](/tasks/p5-19-exit-check.md) — todo
+- [p5-19 Verify P5](/tasks/p5-19-exit-check.md) — done
 - [p5-20 Colour the Me page's Tags box as Holo's](/tasks/p5-20-tags-box-green.md) — done
 - [p5-21 Give home playgrounds their widths](/tasks/p5-21-home-playground-widths.md) — done
 

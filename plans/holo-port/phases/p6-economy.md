@@ -2,8 +2,8 @@
 type: Phase
 title: P6 Economy
 description: Credits page with purse and vouchers, transaction history, Habbo Club subscriptions and the club wardrobe, with voucher management in housekeeping.
-status: planned
-timestamp: 2026-10-27T20:48:19+00:00
+status: active
+timestamp: 2026-11-06T19:03:32+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p6, cms, housekeeping]
 ---

@@ -2,6 +2,10 @@
 
 ## 2026-11-06
 
+- **Update** [P5](/phases/p5-groups-forum.md) is done, and [P6](/phases/p6-economy.md) is the active phase.
+- **Done** [p5-19](/tasks/p5-19-exit-check.md): from a clean worktree, install, every gate and all 26 browser suites
+  pass, 970 checks; P5 meets its exit criteria.
+- **Start** [p5-19](/tasks/p5-19-exit-check.md).
 - **Done** [p5-18](/tasks/p5-18-keep-one-badge-palette.md): group badges draw in the Tailwind palette alone; Holo's
   palette, its tests and their drawings are gone, and tint 15 is a known issue in `plans/later.md`.
 - **Decision** [0102](/decisions/0102-badges-keep-the-tailwind-palette.md): group badges keep the Tailwind palette,
