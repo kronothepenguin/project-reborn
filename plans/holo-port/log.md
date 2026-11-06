@@ -2,6 +2,11 @@
 
 ## 2026-11-06
 
+- **Done** [p5-18](/tasks/p5-18-keep-one-badge-palette.md): group badges draw in the Tailwind palette alone; Holo's
+  palette, its tests and their drawings are gone, and tint 15 is a known issue in `plans/later.md`.
+- **Decision** [0102](/decisions/0102-badges-keep-the-tailwind-palette.md): group badges keep the Tailwind palette,
+  olive-500 for tint 15 among them.
+- **Start** [p5-18](/tasks/p5-18-keep-one-badge-palette.md).
 - **Update** [p5-16](/tasks/p5-16-moderate-threads.md): the delete question says `complete`, since P5 spells Holo's
   typos correctly; the task had kept Holo's `compelete`.
 - **Done** [p5-17](/tasks/p5-17-report-posts.md): signed-in habbos report another habbo's post in Holo's

@@ -15,7 +15,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
-func TestGroupBadgesAreDrawnInTheLivePalette(t *testing.T) {
+func TestGroupBadgesAreDrawnInTheTailwindPalette(t *testing.T) {
 	_, mux := newSite(t)
 
 	rec := serve(mux, "GET", "/habbo-imaging/badge/"+badge.Default, nil, nil)
@@ -39,7 +39,7 @@ func TestGroupBadgesAreDrawnInTheLivePalette(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want, err := badge.Draw(b, badge.Live)
+	want, err := badge.Draw(b)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -51,7 +51,7 @@ func TestGroupBadgesAreDrawnInTheLivePalette(t *testing.T) {
 			gr, gg, gb, ga := got.At(x, y).RGBA()
 			wr, wg, wb, wa := want.At(x, y).RGBA()
 			if ga != wa || (wa != 0 && (gr != wr || gg != wg || gb != wb)) {
-				t.Fatalf("pixel %d,%d differs from the live palette's drawing", x, y)
+				t.Fatalf("pixel %d,%d differs from the Tailwind palette's drawing", x, y)
 			}
 		}
 	}
@@ -74,8 +74,8 @@ func TestBadCodesAreNotFound(t *testing.T) {
 }
 
 // The badge editor reads its colours from its own file, as the CMS serves it; it
-// and the renderer must share the live palette (0042).
-func TestTheBadgeEditorSharesTheLivePalette(t *testing.T) {
+// and the renderer must share the Tailwind palette (0102).
+func TestTheBadgeEditorSharesTheTailwindPalette(t *testing.T) {
 	data, err := fs.ReadFile(DistFS, "dist/habbo-widgets/badge-editor/data/badge_data.xml")
 	if err != nil {
 		t.Fatal(err)
@@ -86,11 +86,11 @@ func TestTheBadgeEditorSharesTheLivePalette(t *testing.T) {
 	if err := xml.Unmarshal(data, &file); err != nil {
 		t.Fatal(err)
 	}
-	if len(file.Colours) != len(badge.Live) {
-		t.Fatalf("the editor has %d colours, the palette %d", len(file.Colours), len(badge.Live))
+	if len(file.Colours) != len(badge.Tailwind) {
+		t.Fatalf("the editor has %d colours, the palette %d", len(file.Colours), len(badge.Tailwind))
 	}
 	for i, hex := range file.Colours {
-		c := badge.Live[i]
+		c := badge.Tailwind[i]
 		if want := fmt.Sprintf("%02x%02x%02x", c.R, c.G, c.B); hex != want {
 			t.Errorf("colour %02d is %s in the editor and %s in the renderer", i+1, hex, want)
 		}

@@ -106,12 +106,12 @@ task:
 - [p5-15 Edit and delete posts](/tasks/p5-15-edit-delete-posts.md) — done
 - [p5-16 Moderate threads](/tasks/p5-16-moderate-threads.md) — done
 - [p5-17 Report posts](/tasks/p5-17-report-posts.md) — done
-- [p5-18 Keep the badge palette the user picks](/tasks/p5-18-keep-one-badge-palette.md) — todo
+- [p5-18 Keep the badge palette the user picks](/tasks/p5-18-keep-one-badge-palette.md) — done
 - [p5-19 Verify P5](/tasks/p5-19-exit-check.md) — todo
 - [p5-20 Colour the Me page's Tags box as Holo's](/tasks/p5-20-tags-box-green.md) — done
 - [p5-21 Give home playgrounds their widths](/tasks/p5-21-home-playground-widths.md) — done
 
 They run in this order on the `p5` branch, in its own worktree, which merges into `main` whenever every gate passes
-([0097](/decisions/0097-no-agent-works-on-main.md)). [p5-18](/tasks/p5-18-keep-one-badge-palette.md) waits for the
-user's pick from the sheet of [p5-03](/tasks/p5-03-badge-renderer.md).
+([0097](/decisions/0097-no-agent-works-on-main.md)). The user picked the Tailwind palette from the sheet of
+[p5-03](/tasks/p5-03-badge-renderer.md) ([0102](/decisions/0102-badges-keep-the-tailwind-palette.md)).
 

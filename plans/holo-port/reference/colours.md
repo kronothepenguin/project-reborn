@@ -118,13 +118,12 @@ Holo's own panel, which the new design system replaces, used these:
 # Group badge tints
 
 The 18 badge tints are pixel data shared with the HabboWidgets badge editor; see
-[the protocols](/reference/holo-protocols.md#group-badges). [P5](/phases/p5-groups-forum.md) builds them twice, with
-Holo's exact colours and with the closest Tailwind colours, and the user picks one
-([0042](/decisions/0042-two-badge-palettes.md)).
+[the protocols](/reference/holo-protocols.md#group-badges). [P5](/phases/p5-groups-forum.md) built them twice, with
+Holo's exact colours and with the closest Tailwind colours ([0042](/decisions/0042-two-badge-palettes.md)), and the
+user kept the Tailwind palette ([0102](/decisions/0102-badges-keep-the-tailwind-palette.md)).
 
-The Tailwind palette is live until the user picks ([0093](/decisions/0093-badge-palettes-compared-on-a-sheet.md)).
 Its colours are the sRGB values of the Tailwind v4 swatches; seven lie outside sRGB and are clipped to it, as their
-usual hex values are.
+usual hex values are. Tint 15, olive-500, looks grey-olive beside Holo's brown, a known issue in `plans/later.md`.
 
 | Tint | Holo | Tailwind | sRGB |
 | --- | --- | --- | --- |
