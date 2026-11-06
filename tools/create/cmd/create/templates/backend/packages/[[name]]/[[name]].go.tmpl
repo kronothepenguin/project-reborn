@@ -1,0 +1,23 @@
+package {{.Name}}
+
+import (
+	"database/sql"
+	"net/http"
+
+	"github.com/kronothepenguin/project-reborn/packages/{{.Name}}/internal/router"
+	"github.com/kronothepenguin/project-reborn/packages/store"
+)
+
+type {{.Type}} struct {
+	db *sql.DB
+}
+
+func New(db *sql.DB) *{{.Type}} {
+	return &{{.Type}}{db: db}
+}
+
+func (c *{{.Type}}) Mount(mux *http.ServeMux) {
+	r := router.New(router.Deps{DB: c.db, Queries: store.New(c.db)})
+
+	mux.HandleFunc("GET /{$}", r.HandleIndexView)
+}

@@ -2,6 +2,13 @@
 
 ## 2026-11-06
 
+- **Blocked** [s0-02](/tasks/s0-02-create-templates.md): the fullstack, backend and client templates are written and
+  tested, but a client project's `pnpm build` fails: client-r26's library build needs a global name, `_director`
+  there. How a client builds is asked to the user.
+- **Decision** [0017](/decisions/0017-client-vite-port.md): the client template derives its Vite port from the
+  name, in 30000 to 39999 of its own; `client-r18` gets 30050. Answers [s0-02](/tasks/s0-02-create-templates.md)'s
+  question.
+- **Start** [s0-02](/tasks/s0-02-create-templates.md).
 - **Update** [s1-24](/tasks/s1-24-mus-framing.md) reads LibreShockwave in the submodule `vendor/LibreShockwave`
   (`plans/client/decisions/0003-libreshockwave-submodule.md`), and [S2](/phases/s2-login.md)'s question about the
   `/client` page points at `plans/client`, phase C1.

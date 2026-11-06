@@ -9,6 +9,7 @@ change supersedes a decision with a new one. The branch rule every plan follows 
 - [0001 The game server's plan lives in plans/server](/decisions/0001-plan-in-plans-server.md) — plans/server is an OKF bundle in the format of plans/holo-port, worked through a tracking-plans skill shared by every plan, and Claude Code loads the project skills through a .claude/skills link.
 - [0003 tools/create makes fullstack, backend and client projects](/decisions/0003-create-templates.md) — tools/create takes -template=fullstack|backend|client; fullstack is today's output and the default, backend is a Go package and runner only, and client is a Vite package like client-r26.
 - [0004 The deleted server is the model for the structure](/decisions/0004-old-server-is-the-model.md) — The packages/server removed in commit 2ea51d7b is the model for the new server's structure, with separate receive and send interfaces for TCP and WebSocket, the encoding, and a protocol package with one part per client cast.
+- [0017 The client template derives its Vite port from the name, in a range of its own](/decisions/0017-client-vite-port.md) — tools/create gives a client project the Vite dev server port 30000 + fnv32a("vite:" + name) % 10000, derived from the name as the Astro port is, in the range 30000 to 39999 that no other port uses.
 
 ## Program and packages
 
