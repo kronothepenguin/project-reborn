@@ -24,6 +24,7 @@ change supersedes a decision with a new one. The branch rule every plan follows 
 
 - [0014 Text on the wire is UTF-8](/decisions/0014-text-is-utf8.md) — The server reads and writes every string as UTF-8, and the external variables the site serves turn client.textdata.utf8 on so that the client does the same.
 - [0015 The client runs on LibreShockwave, and every socket is a WebSocket](/decisions/0015-client-on-libreshockwave.md) — The R26 .dcr runs in the browser on LibreShockwave, which turns each of the client's sockets, #info and #mus, into a WebSocket carrying the same bytes as TCP; the #mus connection speaks the Multiuser Xtra's SMUS protocol, learned from LibreShockwave's source.
+- [0016 The Holograph Emulator is a reference, never a port](/decisions/0016-holoemu-is-a-reference.md) — The Holograph Emulator's source in source/holoemu is read only when the client's .ls scripts are not enough for reverse engineering; the server neither translates it nor follows its structure.
 
 ## State and data
 

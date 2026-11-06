@@ -1,0 +1,26 @@
+******************************************************
+-----------------Vista4life's source------------------
+-Update list-
+support v26
+leavegame bb fixed
+bb navi open v24
+prize/greek trophy fixed
+present's fixed tropy
+present send 
+db closing etc
+char patch
+accounts inlog if you have 50 online (if you login on on your account you get on a other account)
+v26 info-matic + badges
+
+-bugs-
+landscape
+v25/26 console
+pathfinder big hc
+bb replay
+rollers
+snowstorm
+diving
+wobble
+
+
+other shizzle 

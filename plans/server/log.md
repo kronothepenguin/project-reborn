@@ -2,6 +2,11 @@
 
 ## 2026-11-06
 
+- **Update** [The Holograph Emulator](/reference/holoemu.md) describes `source/holoemu`: its layout, its dumps and how
+  to read it, and [the rules](/rules.md) gain "Reading the emulator".
+- **Decision** [0016](/decisions/0016-holoemu-is-a-reference.md): the Holograph Emulator is a reference, read when the
+  client's `.ls` scripts are not enough, and never a port.
+
 - **Create** [s1-24](/tasks/s1-24-mus-framing.md): the MUS framing of `#mus`, from LibreShockwave's Multiuser Xtra.
 - **Decision** [0015](/decisions/0015-client-on-libreshockwave.md): the client runs on LibreShockwave, every socket is
   a WebSocket, and the `#mus` framing comes from LibreShockwave's source. Answers s0-05's question (binary frames) and

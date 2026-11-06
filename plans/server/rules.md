@@ -2,7 +2,7 @@
 type: Playbook
 title: Game server tracking rules
 description: How tasks, decisions, phases and log entries of the game server are created and kept up to date.
-timestamp: 2026-11-05T20:57:45+00:00
+timestamp: 2026-11-06T15:44:51+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [process]
 ---
@@ -14,7 +14,7 @@ tags: [process]
 | `decisions/` | `Decision` | `NNNN-<slug>.md` (four digits, next free number) | One design decision confirmed by the user |
 | `phases/` | `Phase` | `<phase-id>-<slug>.md` | Goal, scope, exit criteria and tasks of one phase |
 | `tasks/` | `Task` | `<task-id>-<slug>.md` | One unit of work that can be verified on its own |
-| `reference/` | `Reference` | `<slug>.md` | What the client and the old server contain, and how the server is built |
+| `reference/` | `Reference` | `<slug>.md` | What the client, the Holograph Emulator and the old server contain, and how the server is built |
 | `reference/r26/` | `Reference` | `<cast>.md` | The R26 protocol of one client cast, written in S1 |
 
 `index.md` and `log.md` are reserved OKF files: they are never concepts and carry no frontmatter, except the root
@@ -141,6 +141,13 @@ other bundles are referenced by their repository path in backticks (`packages/se
 - The protocol comes from the `.ls` scripts only ([0008](/decisions/0008-reverse-engineer-ls-only.md)).
 - 295 of the 414 `.ls` files end their lines with CR alone, so `grep` and `wc -l` see one line. Read them through
   `tr '\r' '\n' < "<file>"`.
+
+# Reading the emulator
+
+- `source/holoemu/` is read only when the `.ls` scripts leave a question open, and nothing is ported from it
+  ([0016](/decisions/0016-holoemu-is-a-reference.md)).
+- Its files end their lines in CRLF: read them through `tr -d '\r' < "<file>"`, and quote paths, since some hold
+  spaces ([The Holograph Emulator](/reference/holoemu.md#reading-it)).
 
 # Checks
 
