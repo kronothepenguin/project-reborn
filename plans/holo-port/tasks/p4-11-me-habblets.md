@@ -6,7 +6,7 @@ status: done
 phase: p4
 depends_on: [p4-08, p4-09]
 packages: [packages/cms, tests/e2e]
-holo: [source/holo/me.php, source/holo/tags_ajax.php, source/holo/templates/login/column1.php]
+holo: [source/holocms/me.php, source/holocms/tags_ajax.php, source/holocms/templates/login/column1.php]
 timestamp: 2026-11-04T16:36:30+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-04T01:28:29+00:00"}
 verified:

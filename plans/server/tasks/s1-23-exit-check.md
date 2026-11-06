@@ -4,10 +4,10 @@ title: Check S1's exit criteria
 description: Cross-check the R26 reference against every registration in the client's scripts, so that no message, command or sender is missing, and close the phase.
 status: todo
 phase: s1
-depends_on: [s1-01, s1-02, s1-03, s1-04, s1-05, s1-06, s1-07, s1-08, s1-09, s1-10, s1-11, s1-12, s1-13, s1-14, s1-15, s1-16, s1-17, s1-18, s1-19, s1-20, s1-21, s1-22]
+depends_on: [s1-01, s1-02, s1-03, s1-04, s1-05, s1-06, s1-07, s1-08, s1-09, s1-10, s1-11, s1-12, s1-13, s1-14, s1-15, s1-16, s1-17, s1-18, s1-19, s1-20, s1-21, s1-22, s1-24]
 packages: []
 client: []
-timestamp: 2026-11-05T20:57:45+00:00
+timestamp: 2026-11-06T14:59:31+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 ---
 

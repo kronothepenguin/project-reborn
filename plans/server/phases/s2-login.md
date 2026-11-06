@@ -39,8 +39,8 @@ Written when the phase starts.
 # Open questions
 
 - How a rule in `game` tells other habbos' sessions about an event without knowing their protocol.
-- Who builds the site's `/client` page that hands out SSO tickets (`plans/holo-port/decisions/0013-defer-game-server-features.md`
-  deferred it until the server exists), and how a test client gets a ticket.
+- How a test client gets an SSO ticket before the site's `/client` page exists. The page, which
+  `plans/holo-port/decisions/0013-defer-game-server-features.md` deferred, is planned in `plans/client`, phase C1.
 - Whether the client's own login box (`TRY_LOGIN`, name and password) works, or only SSO, as in the old server.
 - Which fuse rights a habbo gets (`plans/holo-port/decisions/0015-attribute-names-and-fuses.md`).
 - Whether the hotel can close at set hours (opening hours).

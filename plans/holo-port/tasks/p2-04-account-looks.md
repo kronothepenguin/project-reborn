@@ -6,7 +6,7 @@ status: done
 phase: p2
 depends_on: [p2-02]
 packages: [packages/store, packages/cms]
-holo: [source/holo/account.php, source/holo/web-gallery/static/js/settings.js]
+holo: [source/holocms/account.php, source/holocms/web-gallery/static/js/settings.js]
 timestamp: 2026-11-01T21:13:31+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T20:58:04+00:00"}
 verified:

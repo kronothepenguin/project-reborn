@@ -16,7 +16,7 @@ starts.
 
 ## S1 R26 protocol reference
 
-- [s1-01 Describe fuse_client's connections, framing and values](/tasks/s1-01-fuse-client.md) — Write /reference/r26/fuse_client.md: how the client opens its #info and #mus connections, frames packets both ways, encodes every value, and registers listeners and commands.
+- [s1-01 Describe fuse_client's connections, framing and values](/tasks/s1-01-fuse-client.md) — Write /reference/r26/fuse_client.md: how the client opens its #info and #mus connections, frames packets both ways, encodes every value, and registers listeners and commands. **done**
 - [s1-02 Map hh_entry_init: login and opening hours](/tasks/s1-02-entry-init.md) — Write /reference/r26/hh_entry_init.md from the .ls scripts: every message hh_entry_init receives and every command it sends, with their fields, senders and flows.
 - [s1-03 Map hh_shared](/tasks/s1-03-shared.md) — Write /reference/r26/hh_shared.md from the .ls scripts: every message hh_shared receives and every command it sends, with their fields, senders and flows.
 - [s1-04 Map hh_navigator](/tasks/s1-04-navigator.md) — Write /reference/r26/hh_navigator.md from the .ls scripts: every message hh_navigator receives and every command it sends, with their fields, senders and flows.
@@ -38,6 +38,7 @@ starts.
 - [s1-20 Map hh_dynamic_downloader](/tasks/s1-20-dynamic-downloader.md) — Write /reference/r26/hh_dynamic_downloader.md from the .ls scripts: every message hh_dynamic_downloader receives and every command it sends, with their fields, senders and flows.
 - [s1-21 Map hh_ig](/tasks/s1-21-instant-games.md) — Write /reference/r26/hh_ig.md from the .ls scripts: every message hh_ig receives and every command it sends, with their fields, senders and flows.
 - [s1-22 Map hh_human](/tasks/s1-22-human.md) — Write /reference/r26/hh_human.md from the .ls scripts: every message hh_human receives and every command it sends, with their fields, senders and flows.
+- [s1-24 Describe the MUS framing of the #mus connection](/tasks/s1-24-mus-framing.md) — Write /reference/r26/mus.md from LibreShockwave's Multiuser Xtra: the bytes of a MUS frame, the Logon frame, the serialized Lingo values, and the messages fuse_client and hh_photo exchange on #mus.
 - [s1-23 Check S1's exit criteria](/tasks/s1-23-exit-check.md) — Cross-check the R26 reference against every registration in the client's scripts, so that no message, command or sender is missing, and close the phase.
 
 ## S2 to S9

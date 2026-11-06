@@ -6,7 +6,7 @@ status: done
 phase: p5
 depends_on: [p5-13]
 packages: [packages/cms, tests/e2e]
-holo: [source/holo/newtopic.php, source/holo/savetopic.php, source/holo/savepost.php, source/holo/previewpost.php]
+holo: [source/holocms/newtopic.php, source/holocms/savetopic.php, source/holocms/savepost.php, source/holocms/previewpost.php]
 timestamp: 2026-11-05T22:40:53+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T19:06:47+00:00"}
 verified:

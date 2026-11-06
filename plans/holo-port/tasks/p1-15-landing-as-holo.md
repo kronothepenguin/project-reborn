@@ -6,7 +6,7 @@ status: done
 phase: p1
 depends_on: [p1-11]
 packages: [packages/components, packages/cms]
-holo: [source/holo/index.php, source/holo/templates/login/column1.php, source/holo/web-gallery/static/js/fullcontent.js]
+holo: [source/holocms/index.php, source/holocms/templates/login/column1.php, source/holocms/web-gallery/static/js/fullcontent.js]
 timestamp: 2026-11-01T18:35:36+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 verified:

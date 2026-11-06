@@ -6,7 +6,7 @@ status: done
 phase: p1
 depends_on: [p1-01, p1-02, p1-03]
 packages: [packages/auth, packages/virtual, packages/cms]
-holo: [source/holo/register.php, source/holo/ajax_namecheck.php, source/holo/ajax_emailcheck.php, source/holo/ajax_password.php, source/holo/web-gallery/static/js/registration.js]
+holo: [source/holocms/register.php, source/holocms/ajax_namecheck.php, source/holocms/ajax_emailcheck.php, source/holocms/ajax_password.php, source/holocms/web-gallery/static/js/registration.js]
 timestamp: 2026-10-30T22:22:14+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-30T21:10:07+00:00"}
 verified:

@@ -2,7 +2,8 @@
 
 Work planned for later that belongs to no phase yet ([0072](holo-port/decisions/0072-later-work-in-plans-later.md)). An
 item becomes a phase, with its decisions, when the user starts it. The state of the port lives in
-[holo-port](holo-port/index.md), and the state of the game server in [server](server/index.md).
+[holo-port](holo-port/index.md), and the state of the game server in [server](server/index.md); [the plans'
+index](index.md) lists every plan.
 
 ## The orchestrator
 

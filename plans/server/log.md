@@ -1,7 +1,30 @@
 # Log
 
+## 2026-11-06
+
+- **Update** [the rules](/rules.md#branches): once merged, the agent removes its worktree and deletes its branch
+  (`plans/holo-port/decisions/0101-agents-clean-up-worktrees.md`).
+- **Update** [s1-24](/tasks/s1-24-mus-framing.md) reads LibreShockwave in the submodule `vendor/LibreShockwave`
+  (`plans/client/decisions/0003-libreshockwave-submodule.md`), and [S2](/phases/s2-login.md)'s question about the
+  `/client` page points at `plans/client`, phase C1.
+- **Update** [The Holograph Emulator](/reference/holoemu.md) describes `source/holoemu`: its layout, its dumps and how
+  to read it, and [the rules](/rules.md) gain "Reading the emulator".
+- **Decision** [0016](/decisions/0016-holoemu-is-a-reference.md): the Holograph Emulator is a reference, read when the
+  client's `.ls` scripts are not enough, and never a port.
+
+- **Create** [s1-24](/tasks/s1-24-mus-framing.md): the MUS framing of `#mus`, from LibreShockwave's Multiuser Xtra.
+- **Decision** [0015](/decisions/0015-client-on-libreshockwave.md): the client runs on LibreShockwave, every socket is
+  a WebSocket, and the `#mus` framing comes from LibreShockwave's source. Answers s0-05's question (binary frames) and
+  S7's question on the `#mus` format.
+- **Decision** [0014](/decisions/0014-text-is-utf8.md): text on the wire is UTF-8. Answers s0-06's question.
+
 ## 2026-11-05
 
+- **Done** [s1-01](/tasks/s1-01-fuse-client.md): [fuse_client](/reference/r26/fuse_client.md) describes the
+  connections, framing and values with worked examples. Text is UTF-8 only when `client.textdata.utf8` is on, a new
+  open question of [s0-06](/tasks/s0-06-encoding.md). The `#mus` byte format is the Multiuser Xtra's, in no `.ls`
+  script: an open question for S7.
+- **Start** [s1-01](/tasks/s1-01-fuse-client.md).
 - **Done** [s0-01](/tasks/s0-01-plan-bundle.md): the bundle, the `tracking-plans` skill and the `.claude/skills` link
   exist, and the bundle passes its checks.
 - **Create** [s0-02](/tasks/s0-02-create-templates.md) to [s0-08](/tasks/s0-08-exit-check.md), S0's tasks, and

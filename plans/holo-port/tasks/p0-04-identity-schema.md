@@ -6,7 +6,7 @@ status: done
 phase: p0
 depends_on: [p0-02, p0-03]
 packages: [packages/store]
-holo: [source/holo/install.php, source/holo/upgrade.php, source/holo/register.php, source/holo/core.php]
+holo: [source/holocms/install.php, source/holocms/upgrade.php, source/holocms/register.php, source/holocms/core.php]
 timestamp: 2026-10-27T21:19:55+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 verified:

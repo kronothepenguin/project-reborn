@@ -22,6 +22,10 @@ change supersedes a decision with a new one. The branch rule every plan follows 
 - [0008 The R26 protocol comes from the client's .ls scripts](/decisions/0008-reverse-engineer-ls-only.md) — The protocol is reverse engineered from the Lingo .ls scripts of packages/client-r26/src/game, never from the .js translations, covering every Handler Class and every other script that registers or sends messages.
 - [0012 The server skips the client's encryption](/decisions/0012-no-encryption.md) — At login the server answers the client's public key with ENDOFCRYPTOPARAMS, as the old server did, so the client sends plain bytes, with no Diffie-Hellman key exchange and no RC4.
 
+- [0014 Text on the wire is UTF-8](/decisions/0014-text-is-utf8.md) — The server reads and writes every string as UTF-8, and the external variables the site serves turn client.textdata.utf8 on so that the client does the same.
+- [0015 The client runs on LibreShockwave, and every socket is a WebSocket](/decisions/0015-client-on-libreshockwave.md) — The R26 .dcr runs in the browser on LibreShockwave, which turns each of the client's sockets, #info and #mus, into a WebSocket carrying the same bytes as TCP; the #mus connection speaks the Multiuser Xtra's SMUS protocol, learned from LibreShockwave's source.
+- [0016 The Holograph Emulator is a reference, never a port](/decisions/0016-holoemu-is-a-reference.md) — The Holograph Emulator's source in source/holoemu is read only when the client's .ls scripts are not enough for reverse engineering; the server neither translates it nor follows its structure.
+
 ## State and data
 
 - [0009 packages/virtual holds the server's hot data and temporary data](/decisions/0009-virtual-holds-the-server-state.md) — The server's state lives in packages/virtual as hot data, saved data copied from the database while it is in use, and temporary data that lives only in memory and is gone after a restart.

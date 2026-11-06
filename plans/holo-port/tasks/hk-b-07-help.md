@@ -6,7 +6,7 @@ status: done
 phase: hk-b
 depends_on: [hk-b-06]
 packages: [packages/store, packages/housekeeping]
-holo: [source/holo/housekeeping/helper.php, source/holo/housekeeping/alert.php]
+holo: [source/holocms/housekeeping/helper.php, source/holocms/housekeeping/alert.php]
 timestamp: 2026-11-02T20:21:55+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-02T19:41:44+00:00"}
 verified:

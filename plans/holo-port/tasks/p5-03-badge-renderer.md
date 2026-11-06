@@ -6,7 +6,7 @@ status: done
 phase: p5
 depends_on: []
 packages: [packages/cms, packages/components]
-holo: [source/holo/habbo-imaging/badge.php, source/holo/habbo-imaging/badges]
+holo: [source/holocms/habbo-imaging/badge.php, source/holocms/habbo-imaging/badges]
 timestamp: 2026-11-05T19:44:10+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T19:06:47+00:00"}
 verified:

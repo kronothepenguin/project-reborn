@@ -6,7 +6,7 @@ status: done
 phase: p3
 depends_on: [p3-04]
 packages: [packages/cms, packages/store]
-holo: [source/holo/tags_ajax.php, source/holo/user_profile.php]
+holo: [source/holocms/tags_ajax.php, source/holocms/user_profile.php]
 timestamp: 2026-11-03T18:34:45+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-03T17:26:52+00:00"}
 verified:

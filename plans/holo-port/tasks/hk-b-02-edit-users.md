@@ -6,7 +6,7 @@ status: done
 phase: hk-b
 depends_on: [hk-b-01]
 packages: [packages/store, packages/housekeeping]
-holo: [source/holo/housekeeping/edituser.php]
+holo: [source/holocms/housekeeping/edituser.php]
 timestamp: 2026-11-02T19:53:21+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-02T19:41:44+00:00"}
 verified:

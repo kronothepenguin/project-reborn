@@ -1,6 +1,6 @@
 ---
 name: tracking-plans
-description: Starts and works the OKF plan bundles under plans/ (plans/holo-port, plans/server and any new plan) — creating a new plan in the house format, resuming work, creating, starting, blocking and finishing tasks, recording decisions and log entries, and merging the work's branch. Use when asked to plan new work under plans/, to continue or finish any planned task, or about a plan's status.
+description: Starts and works the OKF plan bundles under plans/ (plans/holo-port, plans/server, plans/client and any new plan) — creating a new plan in the house format, resuming work, creating, starting, blocking and finishing tasks, recording decisions and log entries, and merging the work's branch. Use when asked to plan new work under plans/, to continue or finish any planned task, or about a plan's status.
 ---
 
 # Tracking plans
@@ -12,8 +12,10 @@ Every plan is an OKF 0.2 bundle in `plans/<plan>/`: decisions, phases, tasks, re
 | --- | --- | --- |
 | `plans/holo-port` | HoloCMS ported to the CMS, housekeeping and the installer (also has `tracking-holo-port`) | `p0`…`p7`, `hk-a`, `hk-b`, `fx`, `up`, `ed` |
 | `plans/server` | The game server | `s0`…`s9` |
+| `plans/client` | The R26 client in the browser: on LibreShockwave first, in vanilla JavaScript later | `c0`…`c3` |
 
-`plans/later.md` lists work that belongs to no phase yet.
+`plans/index.md` maps every plan and the sources each one reads, and `plans/later.md` lists work that belongs to no
+phase yet.
 
 ## Resume
 
@@ -35,7 +37,7 @@ Task:
 - [ ] tasks/index.md and the phase file updated
 - [ ] "**Done**" log entry under today's "## YYYY-MM-DD", newest first
 - [ ] committed, not pushed, one-line title (feat:, fix:, refactor:, docs:)
-- [ ] if the branch's work is done: merged as "Branches" says
+- [ ] if the branch's work is done: merged, then its worktree removed and its branch deleted, as "Branches" says
 ```
 
 - Blocked: `status: blocked`, the reason in `# Notes`, a `**Blocked**` log entry.
@@ -51,6 +53,9 @@ Task:
 - When the branch's work is done and verified, merge it without asking: merge `main` into the branch inside the
   worktree, run `make gates` there, then fast-forward `main` from the main checkout with
   `git -C <main checkout> merge --ff-only <branch>`. If `main` moved, start again.
+- Once merged, clean up from the main checkout: `git worktree remove .claude/worktrees/<branch>` and
+  `git branch -d <branch>` (plans/holo-port/decisions/0101). `--force` only when a submodule or ignored build output
+  blocks the removal and `git status` is clean. This includes `agent-*` and throwaway worktrees.
 - Never push.
 
 ## Start a new plan
@@ -67,7 +72,7 @@ Task:
 4. Record every confirmed choice as a decision, numbered from `0001`, quoting the user's words.
 5. Give every phase a goal, a scope, exit criteria and its open questions. Only the phases that start get tasks; the
    first task records the plan's creation.
-6. Add the plan to the table above.
+6. Add the plan to the table above, and to `plans/index.md` with the sources it reads.
 7. Run the checks.
 
 ## Decisions

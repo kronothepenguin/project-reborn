@@ -6,7 +6,7 @@ status: done
 phase: p3
 depends_on: [p3-01]
 packages: [packages/cms, packages/installer, packages/store]
-holo: [source/holo/install.php, source/holo/store.php, source/holo/web-gallery/styles/myhabbo/assets.css]
+holo: [source/holocms/install.php, source/holocms/store.php, source/holocms/web-gallery/styles/myhabbo/assets.css]
 timestamp: 2026-11-03T17:38:46+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-03T17:26:52+00:00"}
 verified:

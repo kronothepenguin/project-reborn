@@ -6,7 +6,7 @@ status: done
 phase: p1
 depends_on: [p1-02, p1-04]
 packages: [packages/store, packages/virtual, packages/cms]
-holo: [source/holo/xml/promo_habbos.php, source/holo/templates/login/column1.php]
+holo: [source/holocms/xml/promo_habbos.php, source/holocms/templates/login/column1.php]
 timestamp: 2026-10-30T22:37:07+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-30T21:10:07+00:00"}
 verified:

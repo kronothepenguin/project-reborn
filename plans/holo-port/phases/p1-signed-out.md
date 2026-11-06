@@ -23,7 +23,7 @@ forgotten password. The landing, legal and maintenance pages match Holo's proces
 | `logout.php` | `GET /logout`, `POST /logout` | `logout.astro` | sign-out form on `/me` |
 | `me.php`, minimal ([0031](/decisions/0031-p1-minimal-me-page.md)) | `GET /me` | `me.astro` | the active habbo and the sign-out form; P2 fills in the page |
 | `forgot.php` (+ reset) | `GET/POST /forgot`, `GET/POST /reset/{token}` | `forgot.astro`, `reset/token.astro` | `packages/cms/internal/mail` (`net/smtp`) |
-| `disclaimer.php`, `privacy.php` | `GET /disclaimer`, `GET /privacy` | `disclaimer.astro`, `privacy.astro` | `legal/terms` (text from `source/holo/locale/en/policies.php`) |
+| `disclaimer.php`, `privacy.php` | `GET /disclaimer`, `GET /privacy` | `disclaimer.astro`, `privacy.astro` | `legal/terms` (text from `source/holocms/locale/en/policies.php`) |
 | `maintenance.php` | middleware | `maintenance.astro` | maintenance page with a login form for staff (built in [p0-11](/tasks/p0-11-cms-wiring.md); failed sign-ins in [p1-02](/tasks/p1-02-sign-in-and-out.md)) |
 
 - Registration writes, in one transaction: the user, credentials, habbo, profile, home, wallet, the welcome

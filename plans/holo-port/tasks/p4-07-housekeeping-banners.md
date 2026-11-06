@@ -6,7 +6,7 @@ status: done
 phase: p4
 depends_on: [p4-03]
 packages: [packages/housekeeping, tests/e2e]
-holo: [source/holo/housekeeping/banners.php]
+holo: [source/holocms/housekeeping/banners.php]
 timestamp: 2026-11-04T02:40:37+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-04T01:28:29+00:00"}
 verified:

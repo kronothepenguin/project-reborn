@@ -6,7 +6,7 @@ status: done
 phase: hk-a
 depends_on: [hk-a-07]
 packages: [packages/housekeeping, packages/store]
-holo: [source/holo/housekeeping/ranktool.php, source/holo/housekeeping/usermenu.php]
+holo: [source/holocms/housekeeping/ranktool.php, source/holocms/housekeeping/usermenu.php]
 timestamp: 2026-11-01T22:06:41+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T21:07:47+00:00"}
 verified:

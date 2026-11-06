@@ -6,7 +6,7 @@ status: done
 phase: hk-a
 depends_on: [hk-a-01, hk-a-02]
 packages: [packages/housekeeping, apps/housekeeping]
-holo: [source/holo/housekeeping/index.php, source/holo/housekeeping/access_denied.php]
+holo: [source/holocms/housekeeping/index.php, source/holocms/housekeeping/access_denied.php]
 timestamp: 2026-11-01T21:18:45+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T21:07:47+00:00"}
 verified:

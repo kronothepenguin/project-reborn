@@ -6,7 +6,7 @@ status: done
 phase: p1
 depends_on: []
 packages: [packages/store, packages/cms]
-holo: [source/holo/templates/login/subheader.php, source/holo/templates/login/header.php, source/holo/templates/login/footer.php]
+holo: [source/holocms/templates/login/subheader.php, source/holocms/templates/login/header.php, source/holocms/templates/login/footer.php]
 timestamp: 2026-11-01T18:24:47+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 verified:

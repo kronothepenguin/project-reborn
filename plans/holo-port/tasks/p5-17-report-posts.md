@@ -6,7 +6,7 @@ status: todo
 phase: p5
 depends_on: [p5-13]
 packages: [packages/cms, packages/store, packages/housekeeping, tests/e2e]
-holo: [source/holo/iot/go.php, source/holo/iot/header.php, source/holo/iot/footer.php]
+holo: [source/holocms/iot/go.php, source/holocms/iot/header.php, source/holocms/iot/footer.php]
 timestamp: 2026-11-05T19:06:47+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T19:06:47+00:00"}
 ---

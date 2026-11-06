@@ -6,7 +6,7 @@ status: done
 phase: hk-a
 depends_on: [hk-a-03]
 packages: [packages/housekeeping, packages/components, packages/store]
-holo: [source/holo/housekeeping/header.php, source/holo/housekeeping/subheader.php, source/holo/housekeeping/footer.php, source/holo/housekeeping/sitemenu.php, source/holo/housekeeping/usermenu.php, source/holo/housekeeping/access_denied.php]
+holo: [source/holocms/housekeeping/header.php, source/holocms/housekeeping/subheader.php, source/holocms/housekeeping/footer.php, source/holocms/housekeeping/sitemenu.php, source/holocms/housekeeping/usermenu.php, source/holocms/housekeeping/access_denied.php]
 timestamp: 2026-11-01T21:25:53+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T21:07:47+00:00"}
 verified:

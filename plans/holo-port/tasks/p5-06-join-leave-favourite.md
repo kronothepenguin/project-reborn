@@ -6,7 +6,7 @@ status: done
 phase: p5
 depends_on: [p5-05]
 packages: [packages/cms, tests/e2e]
-holo: [source/holo/joingroup.php, source/holo/leavegroup.php, source/holo/groups_select_favorite.php, source/holo/groups_deselect_favorite.php, source/holo/groups_confirm_leave.php, source/holo/groups_confirm_favorite.php, source/holo/groups_confirm_deselect_favorite.php]
+holo: [source/holocms/joingroup.php, source/holocms/leavegroup.php, source/holocms/groups_select_favorite.php, source/holocms/groups_deselect_favorite.php, source/holocms/groups_confirm_leave.php, source/holocms/groups_confirm_favorite.php, source/holocms/groups_confirm_deselect_favorite.php]
 timestamp: 2026-11-05T20:26:12+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T19:06:47+00:00"}
 verified:

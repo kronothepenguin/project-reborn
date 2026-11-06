@@ -26,7 +26,7 @@ Work planned for later that belongs to no phase, such as r18 and the orchestrato
 - [Decisions](/decisions/index.md) — Design decisions confirmed by the user.
 - [Phases](/phases/index.md) — The phases of the game server with scope, exit criteria and open questions.
 - [Tasks](/tasks/index.md) — Units of work and their status, grouped by phase.
-- [Reference](/reference/index.md) — What the R26 client and the old server contain, and how the new server is built.
+- [Reference](/reference/index.md) — What the R26 client, the Holograph Emulator and the old server contain, and how the new server is built.
 
 ## Ground rules from the user
 
@@ -38,6 +38,7 @@ They come from the original request, `AGENTS.md` and the user's corrections, and
 | IO | through interfaces: TCP and WebSocket behind one byte-stream `Conn`, and the WebSocket mounts on any HTTP mux ([0006](/decisions/0006-transport.md)) |
 | Protocol | a Go package named `r26`; each listener names its protocol, so r18 can come later or run beside r26 ([0007](/decisions/0007-protocols-per-listener.md)) |
 | Protocol source | the client's `.ls` scripts under `packages/client-r26/src/game/`, never its `.js` ([0008](/decisions/0008-reverse-engineer-ls-only.md)) |
+| Emulator | `source/holoemu/` is read only when the `.ls` scripts are not enough, and is never ported ([0016](/decisions/0016-holoemu-is-a-reference.md)) |
 | State | `packages/virtual`: hot data copied from the database, and temporary data that lives only in memory ([0009](/decisions/0009-virtual-holds-the-server-state.md)) |
 | Saved or memory-only | asked to the user for each kind of data, never assumed ([0011](/decisions/0011-saved-and-memory-only-data.md)) |
 | Old server | the structure of the deleted `packages/server` (commit `2ea51d7b`) is the model ([0004](/decisions/0004-old-server-is-the-model.md)) |

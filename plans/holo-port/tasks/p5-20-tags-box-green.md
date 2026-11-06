@@ -6,7 +6,7 @@ status: done
 phase: p5
 depends_on: []
 packages: [packages/cms, tests/e2e]
-holo: [source/holo/me.php, source/holo/web-gallery/v2/styles/style.css]
+holo: [source/holocms/me.php, source/holocms/web-gallery/v2/styles/style.css]
 timestamp: 2026-11-05T19:58:35+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T19:56:57+00:00"}
 verified:

@@ -6,7 +6,7 @@ status: done
 phase: p3
 depends_on: [p3-07]
 packages: [packages/cms]
-holo: [source/holo/user_profile.php, source/holo/web-gallery/static/js/homeview.js, source/holo/web-gallery/static/js/homeedit.js]
+holo: [source/holocms/user_profile.php, source/holocms/web-gallery/static/js/homeview.js, source/holocms/web-gallery/static/js/homeedit.js]
 timestamp: 2026-11-03T18:37:58+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-03T17:26:52+00:00"}
 verified:

@@ -16,7 +16,7 @@ tags: [art, homes]
 | `stickers/` | 419 of 425 | The `s_` rules of `assets.css` | `https://images.habbo.com/c_images/stickers/` |
 | `backgrounds2/` | 106 of 111 | The `b_` rules of `assets.css` | 101 from `https://images.habbo.com/c_images/backgrounds2/`, 5 from `git-MiguelGonzalezAravena_HoloCMS.zip` on h4bbo.net |
 | `album1584/` | 494 | User badges by code, such as `ADM.gif` | `Misc/banksy_pack.zip` on h4bbo.net |
-| `skins/` | 45 of 45 | `skins.css`, with `girl/` as in Holo | 33 from `source/holo`, 12 from `git-MiguelGonzalezAravena_HoloCMS.zip` |
+| `skins/` | 45 of 45 | `skins.css`, with `girl/` as in Holo | 33 from `source/holocms`, 12 from `git-MiguelGonzalezAravena_HoloCMS.zip` |
 
 It is 1064 files and 7 MB. Every file was checked to be a GIF, PNG or JPEG.
 
@@ -35,5 +35,5 @@ Six names are broken in Holo's own `assets.css`, with no file extension, so they
 # Other art
 
 - The three stickers of `upload.meth0d.org` in `assets.css` are HoloCMS's own promotion, and their host is gone.
-- The widget previews and the note images are in `source/holo/web-gallery/images/myhabbo/`, for P3 to take.
-- Group badge parts are in `source/holo/habbo-imaging/`, for P5.
+- The widget previews and the note images are in `source/holocms/web-gallery/images/myhabbo/`, for P3 to take.
+- Group badge parts are in `source/holocms/habbo-imaging/`, for P5.

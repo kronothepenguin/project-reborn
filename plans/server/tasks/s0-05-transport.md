@@ -7,7 +7,7 @@ phase: s0
 depends_on: [s0-03]
 packages: [packages/server]
 client: []
-timestamp: 2026-11-05T20:57:45+00:00
+timestamp: 2026-11-06T14:59:31+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 ---
 
@@ -17,7 +17,8 @@ TCP and WebSocket clients reach the protocol code as the same `Conn` ([0006](/de
 
 # Steps
 
-- [ ] Ask the user S0's open question for this task: text or binary WebSocket frames. Record the answer as a decision.
+- [ ] The WebSocket writes binary frames and reads binary or text frames, as LibreShockwave does
+  ([0015](/decisions/0015-client-on-libreshockwave.md)).
 - [ ] `transport.Conn` and `transport.Handler` as [0006](/decisions/0006-transport.md) writes them.
 - [ ] TCP: serve a `net.Listener`, one goroutine per connection, and return cleanly when the listener closes.
 - [ ] WebSocket: an `http.Handler` on `golang.org/x/net/websocket` whose connections are `Conn`s, with the client's

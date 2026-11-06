@@ -6,7 +6,7 @@ status: done
 phase: p5
 depends_on: [p5-03, p5-07]
 packages: [packages/cms, tests/e2e]
-holo: [source/holo/show_badge_editor.php, source/holo/save_group_badge.php]
+holo: [source/holocms/show_badge_editor.php, source/holocms/save_group_badge.php]
 timestamp: 2026-11-05T20:54:05+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T19:06:47+00:00"}
 verified:

@@ -3,7 +3,7 @@ type: Phase
 title: S0 Foundations
 description: The plan and its skill, the three tools/create templates, and an empty server that accepts R26 clients over TCP and WebSocket, frames their packets and answers HELLO.
 status: active
-timestamp: 2026-11-05T20:57:45+00:00
+timestamp: 2026-11-06T14:59:31+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s0, server]
 ---
@@ -56,7 +56,8 @@ S0 runs on the branch `s0`. s0-06 waits for [s1-01](/tasks/s1-01-fuse-client.md)
 Asked when their task starts:
 
 - s0-02: the client template's dev server port, derived from the name like the Astro port or chosen otherwise.
-- s0-04: the keys of the listeners in `config.json`, and the default TCP port and WebSocket path.
-- s0-05: whether the WebSocket sends text or binary frames, which the JavaScript client will have to match.
+- s0-04: the keys of the listeners in `config.json`, and the default ports and WebSocket path. `#info` and `#mus` share
+  one WebSocket path and differ by port, so each port speaks one protocol
+  ([0015](/decisions/0015-client-on-libreshockwave.md)).
 - s0-07: what the server logs for each packet; and the change to the generated runner, which belongs to the user, that
   serves the TCP listeners beside the HTTP server.

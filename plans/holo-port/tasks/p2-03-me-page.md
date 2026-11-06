@@ -6,7 +6,7 @@ status: done
 phase: p2
 depends_on: [p2-02]
 packages: [packages/store, packages/virtual, packages/components, packages/cms]
-holo: [source/holo/me.php, source/holo/update_motto.php, source/holo/removefeeditem.php, source/holo/web-gallery/static/js/fullcontent.js]
+holo: [source/holocms/me.php, source/holocms/update_motto.php, source/holocms/removefeeditem.php, source/holocms/web-gallery/static/js/fullcontent.js]
 timestamp: 2026-11-01T21:08:36+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T20:58:04+00:00"}
 verified:

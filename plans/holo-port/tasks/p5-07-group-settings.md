@@ -6,7 +6,7 @@ status: done
 phase: p5
 depends_on: [p5-06]
 packages: [packages/cms, tests/e2e]
-holo: [source/holo/group_profile.php, source/holo/group_settings.php, source/holo/update_group_settings.php, source/holo/groups_delete_group.php, source/holo/groups_confirm_delete_group.php]
+holo: [source/holocms/group_profile.php, source/holocms/group_settings.php, source/holocms/update_group_settings.php, source/holocms/groups_delete_group.php, source/holocms/groups_confirm_delete_group.php]
 timestamp: 2026-11-05T20:37:49+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T19:06:47+00:00"}
 verified:

@@ -6,7 +6,7 @@ status: done
 phase: p5
 depends_on: [p5-14]
 packages: [packages/cms, tests/e2e]
-holo: [source/holo/updatepost.php, source/holo/deletepost.php]
+holo: [source/holocms/updatepost.php, source/holocms/deletepost.php]
 timestamp: 2026-11-05T22:52:34+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T19:06:47+00:00"}
 verified:

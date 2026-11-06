@@ -6,7 +6,7 @@ status: done
 phase: p5
 depends_on: [p5-07]
 packages: [packages/cms, packages/store, tests/e2e]
-holo: [source/holo/group_profile.php, source/holo/store.php, source/holo/savehome.php, source/holo/widget_add.php, source/holo/widget_delete.php, source/holo/delete_sticker.php, source/holo/delete_stickie.php, source/holo/edit_widget.php, source/holo/edit_stickie.php]
+holo: [source/holocms/group_profile.php, source/holocms/store.php, source/holocms/savehome.php, source/holocms/widget_add.php, source/holocms/widget_delete.php, source/holocms/delete_sticker.php, source/holocms/delete_stickie.php, source/holocms/edit_widget.php, source/holocms/edit_stickie.php]
 timestamp: 2026-11-05T21:26:02+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T19:06:47+00:00"}
 verified:

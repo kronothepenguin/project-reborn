@@ -6,7 +6,7 @@ status: done
 phase: p5
 depends_on: [p5-07]
 packages: [packages/cms, tests/e2e]
-holo: [source/holo/groups_memberlist.php, source/holo/groups_accept.php, source/holo/groups_decline.php, source/holo/groups_give_rights.php, source/holo/groups_revoke_rights.php, source/holo/groups_remove.php, source/holo/groups_confirm_accept.php, source/holo/groups_confirm_decline.php, source/holo/groups_confirm_give_rights.php, source/holo/groups_confirm_revoke_rights.php, source/holo/groups_confirm_remove.php]
+holo: [source/holocms/groups_memberlist.php, source/holocms/groups_accept.php, source/holocms/groups_decline.php, source/holocms/groups_give_rights.php, source/holocms/groups_revoke_rights.php, source/holocms/groups_remove.php, source/holocms/groups_confirm_accept.php, source/holocms/groups_confirm_decline.php, source/holocms/groups_confirm_give_rights.php, source/holocms/groups_confirm_revoke_rights.php, source/holocms/groups_confirm_remove.php]
 timestamp: 2026-11-05T20:49:05+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T19:06:47+00:00"}
 verified:

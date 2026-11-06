@@ -6,7 +6,7 @@ status: done
 phase: p1
 depends_on: [p1-04]
 packages: [packages/store, packages/virtual, packages/cms]
-holo: [source/holo/account.php, source/holo/config.php]
+holo: [source/holocms/account.php, source/holocms/config.php]
 timestamp: 2026-10-30T22:24:53+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-30T21:10:07+00:00"}
 verified:

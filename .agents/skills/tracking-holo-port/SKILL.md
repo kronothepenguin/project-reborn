@@ -1,6 +1,6 @@
 ---
 name: tracking-holo-port
-description: Reads and updates the HoloCMS port state bundle in plans/holo-port (OKF 0.2) — resuming work, creating and updating tasks, logging progress and recording decisions. Use when starting, continuing or finishing any work on porting source/holo to packages/cms, packages/housekeeping or packages/installer, or when asked about the port's status.
+description: Reads and updates the HoloCMS port state bundle in plans/holo-port (OKF 0.2) — resuming work, creating and updating tasks, logging progress and recording decisions. Use when starting, continuing or finishing any work on porting source/holocms to packages/cms, packages/housekeeping or packages/installer, or when asked about the port's status.
 ---
 
 # Tracking the HoloCMS port
@@ -26,6 +26,7 @@ Task:
 - [ ] tasks/index.md and the phase file updated
 - [ ] "**Done**" log entry under today's "## YYYY-MM-DD"
 - [ ] committed, not pushed, on the work's feature branch, never on main (decision 0097)
+- [ ] when the branch's work is done: merged, its worktree removed and its branch deleted (decision 0101)
 ```
 
 - Blocked: `status: blocked`, reason in `# Notes`, `**Blocked**` log entry.
@@ -40,6 +41,8 @@ Task:
 - When the branch's work is done and verified, merge it without asking: merge `main` into the branch inside the worktree,
   run every gate there, then fast-forward `main` from the main checkout with `git merge --ff-only <branch>`. If `main`
   moved, start again.
+- Once merged and the branch's work is done, remove its worktree and delete the branch from the main checkout:
+  `git worktree remove .claude/worktrees/<branch>` and `git branch -d <branch>` (decision 0101).
 - Never push.
 
 ## Decisions

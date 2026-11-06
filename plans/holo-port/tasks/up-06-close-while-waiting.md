@@ -6,7 +6,7 @@ status: done
 phase: up
 depends_on: [up-05]
 packages: [packages/cms, packages/housekeeping]
-holo: [source/holo/maintenance.php]
+holo: [source/holocms/maintenance.php]
 timestamp: 2026-11-03T22:42:00+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-03T21:02:31+00:00"}
 verified:
