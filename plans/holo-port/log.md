@@ -2,6 +2,22 @@
 
 ## 2026-11-06
 
+- **Update** [P5](/phases/p5-groups-forum.md) is done, and [P6](/phases/p6-economy.md) is the active phase.
+- **Done** [p5-19](/tasks/p5-19-exit-check.md): from a clean worktree, install, every gate and all 26 browser suites
+  pass, 970 checks; P5 meets its exit criteria.
+- **Start** [p5-19](/tasks/p5-19-exit-check.md).
+- **Done** [p5-18](/tasks/p5-18-keep-one-badge-palette.md): group badges draw in the Tailwind palette alone; Holo's
+  palette, its tests and their drawings are gone, and tint 15 is a known issue in `plans/later.md`.
+- **Decision** [0102](/decisions/0102-badges-keep-the-tailwind-palette.md): group badges keep the Tailwind palette,
+  olive-500 for tint 15 among them.
+- **Start** [p5-18](/tasks/p5-18-keep-one-badge-palette.md).
+- **Update** [p5-16](/tasks/p5-16-moderate-threads.md): the delete question says `complete`, since P5 spells Holo's
+  typos correctly; the task had kept Holo's `compelete`.
+- **Done** [p5-17](/tasks/p5-17-report-posts.md): signed-in habbos report another habbo's post in Holo's
+  Help Tool window, whose Proceed posts a ticket that housekeeping's queue shows, one waiting request per habbo.
+- **Start** [p5-17](/tasks/p5-17-report-posts.md).
+- **Done** [p5-16](/tasks/p5-16-moderate-threads.md): holders of `forum.edit` rename, close, stick and delete threads
+  with Holo's Moderation Tools, which open on the thread as it is now; resumed from a cancelled session's work.
 - **Decision** [0101](/decisions/0101-agents-clean-up-worktrees.md): an agent removes its worktree and deletes its
   branch once merged. The old `agent-*` worktrees and the twelve merged branches are gone; `main` and `p5` remain.
 - **Update** the client page this port deferred, `client.php`, `clientutils.php`, `unloadclient.php` and the
@@ -16,6 +32,10 @@
 
 ## 2026-11-05
 
+- **Start** [p5-16](/tasks/p5-16-moderate-threads.md).
+- **Done** [p5-15](/tasks/p5-15-edit-delete-posts.md): authors and holders of forum.edit modify and delete posts, and
+  a thread goes with its last post.
+- **Start** [p5-15](/tasks/p5-15-edit-delete-posts.md).
 - **Done** [p5-14](/tasks/p5-14-post-threads-and-replies.md): signed-in habbos start threads, reply and quote, with Holo's
   preview, and refusals for blank, long, hasty and closed-thread posts.
 - **Start** [p5-14](/tasks/p5-14-post-threads-and-replies.md).

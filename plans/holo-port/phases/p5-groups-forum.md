@@ -2,8 +2,8 @@
 type: Phase
 title: P5 Groups and forum
 description: Groups with group homes, membership management, the badge editor and renderer, and the site-wide discussion board.
-status: active
-timestamp: 2026-11-05T21:26:34+00:00
+status: done
+timestamp: 2026-11-06T19:03:32+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p5, cms]
 ---
@@ -103,15 +103,15 @@ task:
 - [p5-12 Store the forum](/tasks/p5-12-store-forum.md) — done
 - [p5-13 Show the board and its threads](/tasks/p5-13-forum-pages.md) — done
 - [p5-14 Start threads and reply](/tasks/p5-14-post-threads-and-replies.md) — done
-- [p5-15 Edit and delete posts](/tasks/p5-15-edit-delete-posts.md) — todo
-- [p5-16 Moderate threads](/tasks/p5-16-moderate-threads.md) — todo
-- [p5-17 Report posts](/tasks/p5-17-report-posts.md) — todo
-- [p5-18 Keep the badge palette the user picks](/tasks/p5-18-keep-one-badge-palette.md) — todo
-- [p5-19 Verify P5](/tasks/p5-19-exit-check.md) — todo
+- [p5-15 Edit and delete posts](/tasks/p5-15-edit-delete-posts.md) — done
+- [p5-16 Moderate threads](/tasks/p5-16-moderate-threads.md) — done
+- [p5-17 Report posts](/tasks/p5-17-report-posts.md) — done
+- [p5-18 Keep the badge palette the user picks](/tasks/p5-18-keep-one-badge-palette.md) — done
+- [p5-19 Verify P5](/tasks/p5-19-exit-check.md) — done
 - [p5-20 Colour the Me page's Tags box as Holo's](/tasks/p5-20-tags-box-green.md) — done
 - [p5-21 Give home playgrounds their widths](/tasks/p5-21-home-playground-widths.md) — done
 
 They run in this order on the `p5` branch, in its own worktree, which merges into `main` whenever every gate passes
-([0097](/decisions/0097-no-agent-works-on-main.md)). [p5-18](/tasks/p5-18-keep-one-badge-palette.md) waits for the
-user's pick from the sheet of [p5-03](/tasks/p5-03-badge-renderer.md).
+([0097](/decisions/0097-no-agent-works-on-main.md)). The user picked the Tailwind palette from the sheet of
+[p5-03](/tasks/p5-03-badge-renderer.md) ([0102](/decisions/0102-badges-keep-the-tailwind-palette.md)).
 

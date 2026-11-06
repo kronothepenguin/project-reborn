@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-05T22:40:53+00:00
+timestamp: 2026-11-06T17:35:17+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -51,6 +51,9 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Tags | `tags.php?tag=…&add=true` adds the tag on a plain link, and the search box prints the tag as HTML | Tagging yourself is a form that posts, and the search box escapes the tag | Any page could tag a visitor with a link, and a search address could run scripts |
 | Community | Banners open in a window named `blank`, which the opened page can steer back, and titles, summaries, banner texts and addresses print as HTML | Each banner opens in a new window that cannot reach the hotel's, and everything is escaped | A banner's page could replace the hotel, and an article could run scripts |
 | Staff page | Names and mottos print as HTML | Escaped | A motto could run scripts on the staff page |
+| Discussion board | The Moderation Tools save any title, a blank one too, since only the page checked it | The server refuses a blank title with `Topic title may not be empty`, and one over 30 characters | A request sent without the page could leave a thread with no title |
+| Report window | `go.php` puts the post's id into its SQL and its `Proceed` link, and the thread's page into that link, as they came | The id is a number bound to the query, and the page a whole number from 1, or 1 | Any address could read or change the database, or run scripts in the window |
+| Report window | A guest is sent to the Help Tool's start, but the script runs on and writes the report with no name | Guests go to `/`, and nothing is written | Anyone could file reports without an account |
 
 # Changed by a decision
 
@@ -83,8 +86,13 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Discussion board | `Messages:` counts every post the user ever wrote, deleted ones included | The posts the habbo has on the board now | The plan: counts are queried from the posts, never stored |
 | Discussion board | Takes any number of posts in a row, and keeps `Spam detected!` unused | A new thread or reply within `forum.spamSeconds` of the habbo's last post answers `Spam detected!`, and a blank one `Post may not be blank` | [0091](/decisions/0091-forum-spam-check.md) |
 | Discussion board | After a reply, the thread's last page is redrawn in place | The last page loads, which counts a view | [0094](/decisions/0094-thread-views-count-every-load.md) |
-| Group badge | The Flash `BadgeEditor.swf`, with its colours from habbo.co.uk | The HTML5 port in `vendor/HabboWidgets`, with the live palette | [0021](/decisions/0021-dropped-and-kept-features.md), [0042](/decisions/0042-two-badge-palettes.md) |
-| Group badges | Holo's 18 tints | The closest Tailwind colours, until the user picks one palette from the sheet | [0042](/decisions/0042-two-badge-palettes.md), [0093](/decisions/0093-badge-palettes-compared-on-a-sheet.md) |
+| Discussion board | Staff from rank 6 and the post's user modify and delete a post | Holders of `forum.edit`, and the post's habbo while it is active | [0086](/decisions/0086-roles-and-posts-follow-the-active-habbo.md), and the plan's attributes |
+| Discussion board | Staff from rank 6 use the Moderation Tools | Holders of `forum.edit` | [0015](/decisions/0015-attribute-names-and-fuses.md) |
+| Discussion board | The report flag hides on the user's own posts | On the active habbo's own posts only | [0086](/decisions/0086-roles-and-posts-follow-the-active-habbo.md) |
+| Report window | `Proceed` is the link `go.php?do=report&post=…&sure=yes`, which sends the report | The window opens at `GET /forum/posts/{id}/report`, and `Proceed`, a button in the link's place and look, posts to `POST /forum/posts/{id}/report` | [0090](/decisions/0090-post-reports.md), [0095](/decisions/0095-group-search-and-report-addresses.md) |
+| Report window | One help request or report waits per address | One per habbo, so people who share a connection do not block each other | [0090](/decisions/0090-post-reports.md) |
+| Group badge | The Flash `BadgeEditor.swf`, with its colours from habbo.co.uk | The HTML5 port in `vendor/HabboWidgets`, with the Tailwind palette | [0021](/decisions/0021-dropped-and-kept-features.md), [0102](/decisions/0102-badges-keep-the-tailwind-palette.md) |
+| Group badges | Holo's 18 tints | The closest Tailwind colours; tint 15, olive-500, looks grey-olive beside Holo's brown | [0102](/decisions/0102-badges-keep-the-tailwind-palette.md) |
 | Several habbos | A habbo is never removed | A user archives a habbo, which hides it and keeps its name | [0058](/decisions/0058-habbos-are-archived.md) |
 | Settings | Read from the database on every request | A running CMS re-reads them every `cms.refresh` seconds | [0051](/decisions/0051-one-machine-and-a-refresh.md) |
 | Account | An email can be shared | `This e-mail address already has an account.` | [0001](/decisions/0001-user-owns-many-habbos.md) |
@@ -148,14 +156,18 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Group settings | A type that leaves Exclusive keeps its waiting requests until each habbo next views the group, and an admin can accept one meanwhile, even into a closed group | The waiting requests go at once |
 | Group page | Shows `Join` again to a habbo whose request waits, because its check reads a row loaded only for members | Shows no way in while the request waits |
 | Texts | `An request`, `Noone`, `You are already member`, `dont` on the group page's dialogs | Spelled correctly |
+| Texts | `You are about to delete a compelete topic.` in the Moderation Tools | Spelled correctly |
 | Group page | The Group Members widget takes its favourite icon, and its tiles their background, from Habbo's CDN, which is gone | The favourite mark of Holo's own `info_icons.png`; the tiles keep their dashed border alone, as Holo's show now |
 | Header | `My Groups` opens on layer 99, under any home item placed higher | The menu stays above the page |
 | Discussion board | The jump to a thread's last post counts two views, its own and the page it sends to | The last post's date links straight to the thread's last page, which counts one |
 | Discussion board | A title over 30 characters or a post over 65,535 is cut short by its column | Refused with `Topic title may not be longer than 30 characters` or `Post may not be longer than 65535 characters` |
 | Discussion board | A reply to a thread closed meanwhile vanishes | The thread shows closed, and nothing is added |
+| Discussion board | Every deleted post sends the visitor to the board | Back to the thread, unless the thread went with its last post |
 | Discussion board | A new thread the server refuses replaces the form with the refusal's text | The text shows in the form's red box |
 | Discussion board | The preview shows the habbo online, with a blank motto and a nameless avatar, from a variable the page never sets | The habbo's motto and name, offline ([0087](/decisions/0087-online-picture-stays-offline.md)) |
 | Discussion board | Quote copies the post with its HTML escaped a second time | The post as written |
+| Discussion board | Enter in the Moderation Tools' title sends their form to `#`, which reloads the page | Enter does nothing |
+| Discussion board | A Moderation Tools save the server cannot make puts whatever it answered where the post list was | The Moderation Tools open again with the reason in their red box |
 | Home page | `widget_add.php` lists and counts every membership in a new MY GROUPS, waiting requests included, until the page reloads | The joined groups, as the page lists them |
 | Home page | The info box of a group that no longer exists is empty, and its script then fails on the missing minus, which leaves the widget blank | `Invalid group or no group supplied.`, with its minus |
 | Group home editor | Never shows `This item belongs to another user. If you remove it, it will return to their inventory.`, because the page calls `openEditMenu` without its fifth argument | It shows on the stickers and notes another user placed |
@@ -164,6 +176,8 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Group home editor | Removes the Group information widget when its removal is posted, though its menu offers no Remove, and the group page writes it again in its corner at the next view | It goes straight back to its corner, in the default skin |
 | Group purchase | Compares `strlen($name > 25)`, so a name or description of any length passes | A name over `groups.nameMaxLength` or a description over `groups.descriptionMaxLength` gets Holo's `The group name you have selected is too long.` or `The group description you have entered is too long.` ([0084](/decisions/0084-group-names-and-descriptions.md)) |
 | Texts | `Purchashing`, `Managment`, `An group`, `occured` on the purchase dialog | Spelled correctly |
+| Report window | Every answer is 200, `Invalid post specified` too | `Invalid post specified` answers 404, and a report refused for a waiting request 422 |
+| Texts | `has reported an post` in a report's ticket | Spelled correctly |
 
 # Kept as in Holo, on purpose
 
@@ -177,6 +191,10 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 - `Refer Options` describes a field during registration that exists neither in Holo nor here.
 - The tags page says `No results` before anything is searched.
 - After `Again?`, the tag fight's button reads `Start`, not `Fight!`.
+- The report window takes reports while the board is off, and of a habbo's own posts by their address, as `go.php`
+  checked neither.
+- The Help Tool window shows its background colour alone: Holo's style names `bg_patterns/skull.gif`, which Holo
+  never shipped.
 
 # Housekeeping
 

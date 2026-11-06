@@ -4,6 +4,8 @@ import { Avatar, GroupBadge } from "@project-reborn/components";
 // One of viewthread.php's post boxes inside [[ range .Posts ]], so . is the post
 // and $ the page. An archived habbo shows archived, with no link, and none of its
 // avatar, badges, motto and message count (0089). The habbo shows offline (0087).
+// The delete button and the report flag stack in Holo's post-list-report-element,
+// with the margins of Holo's myhabbo.css and discussions.css.
 ---
 
 <tr class:list={["[[ if .Even ]] bg-olive-200 [[ end ]]"]} id="post-[[ .ID ]]">
@@ -42,9 +44,29 @@ import { Avatar, GroupBadge } from "@project-reborn/components";
       class="quote-post-link float-right cursor-pointer bg-[url(/web-gallery/v2/images/discussions/forum_icons.png)] bg-position-[3px_-77px] bg-no-repeat pt-0.5 pb-[3px] pl-[22px] text-neutral-400 hover:underline"
       data-quote="[[ .ID ]]">Quote</button
     >[[ end ]]
+    [[ if .CanEdit ]]<button
+      type="button"
+      class="edit-post-link float-right cursor-pointer bg-[url(/web-gallery/v2/images/myhabbo_icons.png)] bg-position-[3px_-283px] bg-no-repeat pt-0.5 pr-[11px] pb-[3px] pl-[22px] text-neutral-400 hover:underline"
+      data-edit="[[ .ID ]]">Modify</button
+    >[[ end ]]
     [[ if $.SignedIn ]]<input type="hidden" id="post-raw-[[ .ID ]]" value="[[ .Body ]]" />[[ end ]]
     <span class="text-xs font-bold">[[ if .RE ]]RE: [[ end ]][[ $.Title ]]</span><br />
     <span class="text-[10px] text-neutral-500">[[ .Date ]]</span>
+    <div class="float-right mt-[5px] w-4">
+      [[ if .CanEdit ]]<button
+        type="button"
+        class="delete-post mb-2.5 ml-1 block h-[19px] w-[17px] cursor-pointer bg-[url(/web-gallery/v2/images/myhabbo_icons.png)] bg-position-[0_-402px] bg-no-repeat hover:bg-position-[0_-432px]"
+        data-delete="[[ .ID ]]"
+        aria-label="Delete post"></button
+      >[[ end ]]
+      [[ if .CanReport ]]<div class="float-right mt-[5px] w-4">
+        <a
+          href="/forum/posts/[[ .ID ]]/report?page=[[ $.Page ]]"
+          class="create-report-button ml-1 block h-[19px] w-[18px] bg-[url(/web-gallery/v2/images/myhabbo_icons.png)] bg-position-[0_-101px] bg-no-repeat"
+          title="Report this post"
+          target="habbohelp"></a>
+      </div>[[ end ]]
+    </div>
     [[ if .Edited ]]<br /><br /><strong class="text-[10px]"
       >Last modified [[ .EditedAt ]] by [[ if .EditorArchived ]]archived[[ else ]][[ .Editor ]][[ end ]]</strong
     >[[ end ]]

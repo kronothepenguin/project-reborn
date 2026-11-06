@@ -87,6 +87,20 @@ LIMIT sqlc.arg(row_limit) OFFSET sqlc.arg(row_offset);
 -- name: CountOpenHelpTickets :one
 SELECT COUNT(*) FROM help_tickets WHERE picked_up_at IS NULL AND closed_at IS NULL;
 
+-- A habbo's tickets that staff have not picked up, help requests and post reports
+-- alike: while one waits, the habbo sends no other.
+-- name: CountWaitingHelpTickets :one
+SELECT COUNT(*) FROM help_tickets
+WHERE avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER) AND picked_up_at IS NULL;
+
+-- forum_post_id is NULL for a help request and names the post of a report.
+-- name: CreateHelpTicket :exec
+INSERT INTO help_tickets (avatar_id, forum_post_id, subject, message, ip, created_at)
+VALUES (
+    CAST(sqlc.arg(avatar_id) AS INTEGER), sqlc.narg(forum_post_id), sqlc.arg(subject), sqlc.arg(message),
+    sqlc.arg(ip), sqlc.arg(created_at)
+);
+
 -- Picked up or not, as Holo's overview listed them until they were deleted.
 -- name: CountUnclosedHelpTickets :one
 SELECT COUNT(*) FROM help_tickets WHERE closed_at IS NULL;

@@ -5,7 +5,6 @@ import (
 	"image"
 	"image/color"
 	"image/gif"
-	"os"
 	"strings"
 	"testing"
 )
@@ -70,56 +69,12 @@ func TestParseRefusesAnythingElse(t *testing.T) {
 	}
 }
 
-// Holo's own drawing of its default badge, from habbo-imaging/badge-fill.
-func TestTheDefaultBadgeDrawsAsHolosDid(t *testing.T) {
-	want := decodeFile(t, "testdata/holo-default.gif")
-	b, err := Parse(Default)
-	if err != nil {
-		t.Fatal(err)
-	}
-	got, err := Draw(b, Holo)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if diff := differences(got, want); diff != "" {
-		t.Errorf("the default badge differs from Holo's: %s", diff)
-	}
-}
-
-// testdata/holo holds badge.php's own drawings, made by Holo's code with PHP 5.6
-// and GD 2.1: every base and every symbol with an overlay in white, every
-// position, and a dozen badges of five layers.
-func TestCodesDrawAsHolosRendererDrewThem(t *testing.T) {
-	files, err := os.ReadDir("testdata/holo")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(files) < 70 {
-		t.Fatalf("only %d drawings", len(files))
-	}
-	for _, f := range files {
-		code := strings.TrimSuffix(f.Name(), ".gif")
-		b, err := Parse(code)
-		if err != nil {
-			t.Errorf("%s: %v", code, err)
-			continue
-		}
-		got, err := Draw(b, Holo)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if diff := differences(got, decodeFile(t, "testdata/holo/"+f.Name())); diff != "" {
-			t.Errorf("%s differs from Holo's: %s", code, diff)
-		}
-	}
-}
-
 func TestEncodingKeepsEveryPixel(t *testing.T) {
 	b, err := Parse("b1007Xs67180s01148s40036s23122")
 	if err != nil {
 		t.Fatal(err)
 	}
-	img, err := Draw(b, Live)
+	img, err := Draw(b)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -139,17 +94,17 @@ func TestEncodingKeepsEveryPixel(t *testing.T) {
 	}
 }
 
+// Tint 10, red-700, has no green, so no pixel of a symbol without an overlay in it
+// may have any.
 func TestTheTintsComeFromThePalette(t *testing.T) {
-	b, err := Parse("s01110")
+	if Tailwind[9].G != 0 {
+		t.Fatalf("tint 10 is %v; this test needs a tint without green", Tailwind[9])
+	}
+	b, err := Parse("s01100")
 	if err != nil {
 		t.Fatal(err)
 	}
-	var palette Palette
-	for i := range palette {
-		palette[i] = color.RGBA{A: 0xff}
-	}
-	palette[10] = color.RGBA{R: 0xff, A: 0xff}
-	img, err := Draw(b, palette)
+	img, err := Draw(b)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -157,14 +112,14 @@ func TestTheTintsComeFromThePalette(t *testing.T) {
 	for y := range Size {
 		for x := range Size {
 			c := img.RGBAAt(x, y)
-			if c.A != 0 && (c.G != 0 || c.B != 0) {
-				t.Fatalf("pixel %d,%d is %v, which no shade of red is", x, y, c)
+			if c.A != 0 && c.G != 0 {
+				t.Fatalf("pixel %d,%d is %v, which no shade of tint 10 is", x, y, c)
 			}
 			red = red || c.R > 0
 		}
 	}
 	if !red {
-		t.Error("the symbol took no red from tint 11")
+		t.Error("the symbol took no red from tint 10")
 	}
 }
 
@@ -236,15 +191,9 @@ func TestDrawRefusesALayerOutOfRange(t *testing.T) {
 		{Symbols: []Layer{{Part: 1, Tint: 19}}},
 		{Symbols: []Layer{{Part: 1, Tint: 1, Position: 9}}},
 	} {
-		if _, err := Draw(b, Live); err == nil {
+		if _, err := Draw(b); err == nil {
 			t.Errorf("Draw(%+v) drew", b)
 		}
-	}
-}
-
-func TestLiveIsTheTailwindPalette(t *testing.T) {
-	if Live != Tailwind {
-		t.Error("the site draws with another palette than Tailwind's, which decision 0093 keeps until the user picks")
 	}
 }
 
@@ -254,20 +203,6 @@ func maxOf(ns []int) int {
 		m = max(m, n)
 	}
 	return m
-}
-
-func decodeFile(t *testing.T, path string) image.Image {
-	t.Helper()
-	f, err := os.Open(path)
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer f.Close()
-	img, err := gif.Decode(f)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return img
 }
 
 // differences names the first pixels that differ, comparing transparent pixels

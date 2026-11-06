@@ -36,7 +36,7 @@ screenshots and server logs stay in `.run/`, which is git-ignored.
 | `news` | The archive, an article, a category and the headlines, as a guest reads them |
 | `tags` | The cloud, a search, the tag fight and tagging yourself |
 | `groups` | The Me page's Groups box, buying a group, group pages, membership, the admins' tools, decorating, and My Groups |
-| `forum` | The discussion board and its threads, as a guest and signed in, and the board switched off |
+| `forum` | The discussion board and its threads, as a guest and signed in, moderated with Holo's Moderation Tools, posts reported in the Help Tool window, and the board switched off |
 | `community` | The random habbos, the news promo turning, the tag cloud and the banners |
 | `staff` | The staff list, the two boxes and their settings, and the page switched off |
 | `art` | The home art, served by the binary |
@@ -44,7 +44,7 @@ screenshots and server logs stay in `.run/`, which is git-ignored.
 | `housekeeping-admin` | Access groups, members, the guard and the log |
 | `housekeeping-settings` | The settings forms |
 | `housekeeping-maintenance` | Maintenance saved in housekeeping, read by the CMS |
-| `housekeeping-users` | Habbos and users, badges, credits, bans, alerts and the help queue |
+| `housekeeping-users` | Habbos and users, badges, credits, bans, alerts and the help queue, with a post's report |
 | `housekeeping-store` | The home store's items, added from the art and edited |
 | `housekeeping-news` | News composed, listed, edited and deleted, with the top-story picker, its preview and the image editor |
 | `housekeeping-images` | Uploaded pictures listed with their articles, ten a page, and deleted only once no article shows them |

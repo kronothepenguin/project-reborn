@@ -10,7 +10,7 @@ work on any of them.
 - [HoloCMS port](holo-port/index.md) — The public site, housekeeping and the installer, ported from HoloCMS page by page to Go, SQLite + sqlc, Astro, Svelte 5 and Tailwind 4, each page behaving exactly as Holo's.
 - [Game server](server/index.md) — The game server that speaks the R26 client's protocol over TCP and WebSocket, built in the structure of the deleted packages/server, with its state in packages/virtual.
 - [Client](client/index.md) — How the R26 client reaches the player's browser: the .dcr on LibreShockwave in the CMS's client page first, then one program for the client's files, and later a vanilla JavaScript client.
-- [Later](later.md) — Work planned for later that belongs to no phase yet, such as the orchestrator and r18.
+- [Later](later.md) — Work planned for later that belongs to no phase yet, such as the orchestrator and r18, and the known issues to fix later.
 
 ## Sources
 

@@ -8,16 +8,16 @@ import (
 )
 
 // HandleHabboImagingBadgeView serves GET /habbo-imaging/badge/{code}, Holo's
-// habbo-imaging/badge.php: a group badge drawn in the live palette. A code that
-// the badge editor would not write is not found. A code always draws the same, so
-// browsers keep it.
+// habbo-imaging/badge.php: a group badge drawn in the Tailwind palette. A code
+// that the badge editor would not write is not found. A code always draws the
+// same, so browsers keep it.
 func (r *Router) HandleHabboImagingBadgeView(w http.ResponseWriter, req *http.Request) {
 	b, err := badge.Parse(req.PathValue("code"))
 	if err != nil {
 		http.NotFound(w, req)
 		return
 	}
-	img, err := badge.Draw(b, badge.Live)
+	img, err := badge.Draw(b)
 	if err != nil {
 		r.fail(w, err)
 		return

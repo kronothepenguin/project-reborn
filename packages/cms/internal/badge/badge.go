@@ -1,5 +1,6 @@
-// Package badge draws group badges as Holo's habbo-imaging/badge.php drew them,
-// from Holo's part images, after a strict check of the code.
+// Package badge draws group badges as Holo's habbo-imaging/badge.php composed
+// them, from Holo's part images in the closest Tailwind colours to its tints,
+// after a strict check of the code.
 package badge
 
 import (
@@ -96,35 +97,25 @@ func number(s string, high int) (int, bool) {
 // A Palette holds the colours of the tints 01 to 18.
 type Palette [tints]color.RGBA
 
-// Holo is the tints of Holo's badge.php (decision 0042).
-var Holo = Palette{
-	rgb(0xffd601), rgb(0xee7600), rgb(0x84de00), rgb(0x589a00), rgb(0x50c1fb), rgb(0x006fcf),
-	rgb(0xff98e3), rgb(0xf334bf), rgb(0xff2d2d), rgb(0xaf0a0a), rgb(0xffffff), rgb(0xc0c0c0),
-	rgb(0x373737), rgb(0xfbe7ac), rgb(0x977641), rgb(0xc2eaff), rgb(0xfff165), rgb(0xaaff7d),
-}
-
 // Tailwind is the closest Tailwind colour to each of Holo's tints, by
 // tools/tw-color, in sRGB: amber-300, amber-600, lime-400, lime-600, sky-400,
 // sky-600, pink-300, pink-500, red-500, red-700, white, mauve-300, taupe-700,
-// amber-100, olive-500, sky-200, yellow-200 and lime-300. Seven of them lie
-// outside sRGB and are clipped to it, as their usual hex values are.
+// amber-100, olive-500, sky-200, yellow-200 and lime-300 (decision 0102). Seven
+// of them lie outside sRGB and are clipped to it, as their usual hex values are.
 var Tailwind = Palette{
 	rgb(0xffd230), rgb(0xe17100), rgb(0x9ae600), rgb(0x5ea500), rgb(0x00bcff), rgb(0x0084d1),
 	rgb(0xfda5d5), rgb(0xf6339a), rgb(0xfb2c36), rgb(0xc10007), rgb(0xffffff), rgb(0xd7d0d7),
 	rgb(0x473c39), rgb(0xfef3c6), rgb(0x7c7c67), rgb(0xb8e6fe), rgb(0xfff085), rgb(0xbbf451),
 }
 
-// Live is the palette the site draws with until the user picks one (decision 0093).
-var Live = Tailwind
-
 func rgb(hex uint32) color.RGBA {
 	return color.RGBA{R: uint8(hex >> 16), G: uint8(hex >> 8), B: uint8(hex), A: 0xff}
 }
 
-// Draw composes the badge as badge.php did. Each layer takes the tint times the
-// grey level of each of its colours, its overlay is drawn on it untinted, and
-// the layers go onto a transparent canvas in order.
-func Draw(b Badge, p Palette) (*image.RGBA, error) {
+// Draw composes the badge as badge.php did, in the Tailwind palette. Each layer
+// takes the tint times the grey level of each of its colours, its overlay is
+// drawn on it untinted, and the layers go onto a transparent canvas in order.
+func Draw(b Badge) (*image.RGBA, error) {
 	all, err := parts()
 	if err != nil {
 		return nil, err
@@ -143,7 +134,7 @@ func Draw(b Badge, p Palette) (*image.RGBA, error) {
 			return nil, ErrInvalid
 		}
 		pt := all[fmt.Sprintf("%s/%02d", dir, l.Part)]
-		drawLayer(canvas, pt, p[l.Tint-1], l.Position)
+		drawLayer(canvas, pt, Tailwind[l.Tint-1], l.Position)
 	}
 	return canvas, nil
 }

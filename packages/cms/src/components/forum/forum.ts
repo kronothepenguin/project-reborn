@@ -37,7 +37,12 @@ export async function post(path: string, body: object) {
     headers: { "Content-Type": "application/json", Accept: "application/json" },
     body: JSON.stringify(body),
   });
-  const answer = (await response.json().catch(() => ({}))) as { location?: string; error?: string; html?: string };
+  const answer = (await response.json().catch(() => ({}))) as {
+    location?: string;
+    error?: string;
+    html?: string;
+    message?: string;
+  };
   return { ok: response.ok, ...answer };
 }
 

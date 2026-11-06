@@ -17,6 +17,11 @@ export const prepare = ({ sql }) => {
   sql(`INSERT INTO homes (profile_id, updated_at) VALUES (${profile}, '${now}')`);
   sql(`INSERT INTO help_tickets (avatar_id, subject, message, ip, created_at)
     VALUES (${habbo}, 'My <credits>', 'They are gone & I am sad', '10.1.2.3', '2026-11-01 13:00:00.000000000+00:00')`);
+  const [[visitor]] = sql("SELECT id FROM avatars WHERE name = 'Visitor'");
+  sql(`INSERT INTO forum_threads (avatar_id, title, created_at) VALUES (${visitor}, 'Rude words', '${now}')`);
+  const [[thread]] = sql("SELECT id FROM forum_threads WHERE title = 'Rude words'");
+  sql(`INSERT INTO forum_posts (forum_thread_id, avatar_id, body, created_at)
+    VALUES (${thread}, ${visitor}, 'You are all <silly> & slow', '${now}')`);
 };
 
 export default async function (t) {
@@ -258,6 +263,17 @@ export default async function (t) {
     String(habbos),
   );
 
+  const [[post, thread]] = t.sql("SELECT id, forum_thread_id FROM forum_posts WHERE body LIKE 'You are all%'");
+  const report = `${base}/forum/posts/${post}/report?page=1`;
+  const reporter = await session(t, "Frank");
+  await reporter.page.goto(report);
+  check(
+    "Frank's waiting help request stops his report of a post",
+    (await reporter.page.locator("body").innerText()).includes(
+      "Unable to report post: you still have a pending support request. Please try again later. Note that post reports also count as support requests.",
+    ),
+  );
+
   await page.getByRole("link", { name: "Help Queries" }).click();
   await page.waitForURL("**/housekeeping/help");
   await shot(page, "help");
@@ -326,6 +342,35 @@ export default async function (t) {
     (await page.locator("main").innerText()).includes(
       "They are gone & I am sad",
     ),
+  );
+
+  await reporter.page.goto(report);
+  await Promise.all([
+    reporter.page.waitForEvent("load"),
+    reporter.page.getByRole("button", { name: "Proceed" }).click(),
+  ]);
+  check(
+    "once staff picked his request up, Frank reports the post",
+    (await reporter.page.locator("body").innerText()).includes(
+      "Thank you for reporting this post.",
+    ) && reporter.problems.length === 0,
+    reporter.problems.join(", "),
+  );
+  await reporter.context.close();
+  await page.goto(`${hk}/help`);
+  await page.getByRole("link", { name: "DISCUSSION BOARD - REPORTED POST" }).click();
+  await page.waitForURL(/help\/\d+$/);
+  await shot(page, "help-report");
+  const reported = await page.locator("main").innerText();
+  check(
+    "the queue holds Frank's report, with the post's text and its address",
+    [
+      "Frank",
+      `This user has reported a post on the Discussion Board. The Post ID is ${post}, in thread ${thread}.`,
+      "You are all <silly> & slow",
+      `${base}/forum/threads/${thread}?page=1#post-${post}`,
+    ].every((text) => reported.includes(text)),
+    reported,
   );
 
   await page.goto(frankStaffURL);

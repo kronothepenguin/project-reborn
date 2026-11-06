@@ -24,8 +24,12 @@ type forumThreadPage struct {
 	ThreadID   int64
 	Title      string
 	Locked     bool
-	Pages      []pageLink
-	Posts      []forumPost
+	// Moderator holds forum.edit, which opens the Moderation Tools.
+	Moderator bool
+	Pages     []pageLink
+	// Page is the page shown, which a report names.
+	Page  int
+	Posts []forumPost
 }
 
 // forumPost is one of Holo's post boxes. RE marks every post but the thread's
@@ -47,9 +51,13 @@ type forumPost struct {
 	Editor         string
 	EditorArchived bool
 	HTML           template.HTML
-	// Body is the post's BBCode, which Quote copies.
+	// Body is the post's BBCode, which Quote and Modify copy.
 	Body string
-	Even bool
+	// CanEdit shows Modify and the delete button, and CanReport the report flag,
+	// which hides on the active habbo's own posts (0086).
+	CanEdit   bool
+	CanReport bool
+	Even      bool
 }
 
 // HandleForumThreadsView handles GET /forum/threads/{id}, viewthread.php: a page of
@@ -105,11 +113,14 @@ func (r *Router) HandleForumThreadsView(w http.ResponseWriter, req *http.Request
 		Title:      thread.Title,
 		Locked:     thread.Locked,
 		Pages:      pageLinks(pages, page),
+		Page:       page,
 	}
 	if view.Me, err = r.forumViewer(ctx); err != nil {
 		r.fail(w, err)
 		return
 	}
+	view.Moderator = r.holds(ctx, auth.ForumEdit)
+	session, signedIn := auth.FromContext(ctx)
 	for i, row := range rows {
 		post := forumPost{
 			ID:             row.ID,
@@ -127,6 +138,8 @@ func (r *Router) HandleForumThreadsView(w http.ResponseWriter, req *http.Request
 			EditorArchived: row.EditorArchivedAt.Valid,
 			HTML:           bbcode.Format(row.Body, view.Smilies),
 			Body:           row.Body,
+			CanEdit:        signedIn && (view.Moderator || row.AuthorID == session.AvatarID),
+			CanReport:      signedIn && row.AuthorID != session.AvatarID,
 			Even:           i%2 == 0,
 		}
 		if row.Badge != "" {

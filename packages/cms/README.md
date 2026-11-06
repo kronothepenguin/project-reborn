@@ -84,6 +84,10 @@ serves the built frontend from the embedded `dist/`.
   stop a visitor who keeps the suggested look.
 - `public/c_images/` holds the home art with Holo's folder names, and the binary embeds it: stickers, backgrounds,
   user badges in `album1584` and widget skins.
+- `layouts/help-tool` is the Help Tool's window of Holo's `iot` pages, with their art in `public/iot/`. A post's
+  report flag opens `GET /forum/posts/{id}/report` in it, as a window named `habbohelp` sized as Holo's
+  `openOrFocusHelp` (`forum/report-post`). `help/help-window` scrolls it to its foot when it loads and closes it
+  from any element marked `data-close`.
 - `/account/habbos` adds habbos up to `registration.maxHabbosPerUser`, switches the
   session's active one, and archives the others with the user's password. All the habbos of a user share one wallet and one club
   membership.

@@ -146,6 +146,7 @@ export default async function ({ base, browser, check, shot, sql }) {
       (await doraBox.locator('img:not([alt="Offline"])').count()) === 0,
     await doraBox.innerText(),
   );
+  check("a guest gets no report flags", (await page.locator(".create-report-button").count()) === 0);
   check(
     "an edited post says who modified it, and when",
     (await boxes.nth(1).innerText()).includes("Last modified 01-11-2026 15:20:00 by Frank") &&
@@ -184,6 +185,9 @@ export default async function ({ base, browser, check, shot, sql }) {
   );
 
   await posting({ base, page, check, shot, sql, long });
+  await editing({ base, browser, page, check, shot, sql, long });
+  await moderating({ base, browser, page, check, shot, sql });
+  await reporting({ base, page, check, shot, sql, long, problems });
 
   sql(`INSERT INTO settings (key, value, updated_at) VALUES ('features.forum', 'false', '${at(400)}')`);
   let away = false;
@@ -286,4 +290,237 @@ async function posting({ base, page, check, shot, sql, long }) {
     "a reply to a thread closed meanwhile shows it closed, and adds nothing",
     (await page.getByText("Closed Thread", { exact: true }).count()) === 2 && sql(`SELECT COUNT(*) FROM forum_posts WHERE forum_thread_id = ${mine}`)[0][0] === 2,
   );
+}
+
+// Frank modifies and deletes his own posts, on his thread closed in posting, and
+// Admin-1, who holds forum.edit, deletes its last post, which takes the thread.
+async function editing({ base, browser, page, check, shot, sql, long }) {
+  await page.goto(`${base}/forum/threads/${long}`);
+  check(
+    "Frank gets Modify and the delete button on his own posts only",
+    (await page.locator(".edit-post-link").count()) === 5 && (await page.locator(".delete-post").count()) === 5,
+  );
+  const [[mine]] = sql("SELECT id FROM forum_threads WHERE title = 'Frank''s first'");
+  await page.goto(`${base}/forum/threads/${mine}`);
+  await page.locator(".edit-post-link").first().click();
+  const reply = page.getByRole("table", { name: "Reply" });
+  const editor = reply.getByRole("textbox", { name: "Message", exact: true });
+  await editor.click();
+  await page.keyboard.press("Control+A");
+  await page.keyboard.type("Hello board, corrected");
+  await Promise.all([page.waitForEvent("load"), reply.getByRole("button", { name: "Save" }).click()]);
+  const first = page.locator("#group-postlist-list tr").first();
+  check(
+    "Modify saves the post, even on a closed thread, with Holo's line",
+    (await first.innerText()).includes("Hello board, corrected") && /Last modified \d\d-\d\d-\d{4} \d\d:\d\d:\d\d by Frank/.test(await first.innerText()),
+    await first.innerText(),
+  );
+
+  await page.locator(".delete-post").last().click();
+  const dialog = page.getByRole("dialog", { name: "Delete Post" });
+  check("the delete button asks first, in Holo's words", await dialog.getByText("Are you sure you want to delete this post? This cannot be reverted.").isVisible());
+  await shot(page, "forum-delete-post");
+  await Promise.all([page.waitForEvent("load"), dialog.getByRole("button", { name: "Proceed" }).click()]);
+  check(
+    "Proceed deletes the post and comes back to the thread",
+    page.url().includes(`/forum/threads/${mine}`) && sql(`SELECT COUNT(*) FROM forum_posts WHERE forum_thread_id = ${mine}`)[0][0] === 1,
+    page.url(),
+  );
+
+  const admin = await browser.newContext({ viewport: { width: 1100, height: 900 } });
+  const moderator = await admin.newPage();
+  await moderator.goto(base + "/");
+  await moderator.fill("#username", "Admin-1");
+  await moderator.fill("#password", "secret123");
+  await Promise.all([moderator.waitForURL("**/me"), moderator.click('button:has-text("Sign in")')]);
+  await moderator.goto(`${base}/forum/threads/${mine}`);
+  check("a holder of forum.edit gets Modify on Frank's post", (await moderator.locator(".edit-post-link").count()) === 1);
+  check("and the report flag under the delete button", (await moderator.locator(".delete-post + div .create-report-button").count()) === 1);
+  await shot(moderator, "forum-report-flag-moderator");
+  await moderator.locator(".delete-post").click();
+  await Promise.all([
+    moderator.waitForURL("**/forum"),
+    moderator.getByRole("dialog", { name: "Delete Post" }).getByRole("button", { name: "Proceed" }).click(),
+  ]);
+  check(
+    "deleting a thread's last post takes the thread, and goes to the board",
+    sql(`SELECT COUNT(*) FROM forum_threads WHERE id = ${mine}`)[0][0] === 0 && moderator.url().endsWith("/forum"),
+    moderator.url(),
+  );
+  await admin.close();
+}
+
+// Admin-1, who holds forum.edit, opens Holo's Moderation Tools on Frank's Topic 03:
+// a blank title is refused, a new title closes and sticks the thread, and Delete
+// asks first, then takes the thread with its posts.
+async function moderating({ base, browser, page, check, shot, sql }) {
+  const [[topic]] = sql("SELECT id FROM forum_threads WHERE title = 'Topic 03'");
+  await page.goto(`${base}/forum/threads/${topic}`);
+  check("Frank, who lacks forum.edit, gets no Moderation Tools", (await page.getByRole("button", { name: "Moderation Tools »" }).count()) === 0);
+
+  const admin = await browser.newContext({ viewport: { width: 1100, height: 900 } });
+  const moderator = await admin.newPage();
+  await moderator.goto(base + "/");
+  await moderator.fill("#username", "Admin-1");
+  await moderator.fill("#password", "secret123");
+  await Promise.all([moderator.waitForURL("**/me"), moderator.click('button:has-text("Sign in")')]);
+  await moderator.goto(`${base}/forum/threads/${topic}`);
+  const tools = moderator.getByRole("button", { name: "Moderation Tools »" });
+  const dialog = moderator.getByRole("dialog", { name: "Moderation Tools" });
+  const name = dialog.getByLabel("Topic: (max 30 characters)");
+  await tools.click();
+  await name.waitFor();
+  check(
+    "the Moderation Tools open on the thread as it is: its title, Open and Normal",
+    (await name.inputValue()) === "Topic 03" &&
+      (await name.getAttribute("maxlength")) === "30" &&
+      (await dialog.getByLabel("Open").isChecked()) &&
+      (await dialog.getByLabel("Normal").isChecked()),
+  );
+  await shot(moderator, "forum-moderation-tools");
+
+  await name.fill("   ");
+  await dialog.getByRole("button", { name: "Save" }).click();
+  check(
+    "a blank title is refused in Holo's words",
+    (await dialog.getByText("Topic title may not be empty").isVisible()) && sql(`SELECT title FROM forum_threads WHERE id = ${topic}`)[0][0] === "Topic 03",
+  );
+
+  await name.fill("Moderated topic");
+  await dialog.getByLabel("Closed").check();
+  await dialog.getByLabel("Sticky topic").check();
+  await dialog.getByRole("button", { name: "Save" }).click();
+  await moderator.getByText("The thread has been updated successfully.").waitFor();
+  const saved = sql(`SELECT title, locked, sticky FROM forum_threads WHERE id = ${topic}`)[0];
+  check(
+    "Save renames, closes and sticks the thread, and Holo's answer takes the post list's place",
+    JSON.stringify(saved) === JSON.stringify(["Moderated topic", 1, 1]) && !(await moderator.locator("#group-postlist-container").isVisible()),
+    JSON.stringify(saved),
+  );
+  await shot(moderator, "forum-moderation-saved");
+  await Promise.all([moderator.waitForURL(`**/forum/threads/${topic}?page=1#page-bottom`), moderator.getByRole("link", { name: "Proceed" }).click()]);
+  check(
+    "Proceed opens the thread's last page, closed and renamed",
+    (await moderator.getByText("Closed Thread", { exact: true }).count()) === 2 && (await moderator.title()).includes("Moderated topic"),
+    await moderator.title(),
+  );
+
+  await moderator.goto(base + "/forum");
+  const titles = await moderator.locator("#group-topiclist-list tr td:first-child > div > a:first-child").allInnerTexts();
+  check(
+    "the board lists it with the stickies, closed",
+    titles.slice(0, 3).includes("Moderated topic") &&
+      (await moderator.locator("#group-topiclist-list tr", { hasText: "Moderated topic" }).getByRole("img", { name: "Closed Thread" }).isVisible()),
+    JSON.stringify(titles),
+  );
+
+  await moderator.goto(`${base}/forum/threads/${topic}`);
+  await tools.click();
+  await name.waitFor();
+  check("the Moderation Tools reopen on Closed and Sticky topic", (await dialog.getByLabel("Closed").isChecked()) && (await dialog.getByLabel("Sticky topic").isChecked()));
+  await dialog.getByRole("button", { name: "Delete" }).click();
+  check("Delete asks first, in Holo's words", await dialog.getByText("You are about to delete a complete topic. Are you sure?").isVisible());
+  await shot(moderator, "forum-moderation-delete");
+  await dialog.getByRole("button", { name: "Cancel" }).click();
+  check("Cancel keeps the thread", sql(`SELECT COUNT(*) FROM forum_threads WHERE id = ${topic}`)[0][0] === 1);
+  await tools.click();
+  await name.waitFor();
+  await dialog.getByRole("button", { name: "Delete" }).click();
+  await Promise.all([moderator.waitForURL("**/forum"), dialog.getByRole("button", { name: "Proceed" }).click()]);
+  check(
+    "Proceed deletes the thread with its posts and goes to the board",
+    sql(`SELECT COUNT(*) FROM forum_threads WHERE id = ${topic}`)[0][0] === 0 && sql(`SELECT COUNT(*) FROM forum_posts WHERE forum_thread_id = ${topic}`)[0][0] === 0,
+    moderator.url(),
+  );
+  await admin.close();
+}
+
+// Frank reports Dora's posts in Holo's Help Tool window: a flag opens it, another
+// flag takes it over, Proceed sends the report and Close shuts it; the next report
+// waits until staff pick the first up.
+async function reporting({ base, page, check, shot, sql, long, problems }) {
+  // The flag and Close are the pages' own markup, so their islands must be awake
+  // before a click: until then the flag opens a plain window and Close does nothing.
+  const awake = (p) => p.waitForFunction(() => !document.querySelector("astro-island[ssr]"));
+  await page.goto(`${base}/forum/threads/${long}`);
+  await awake(page);
+  const flags = page.locator(".create-report-button");
+  const rows = page.locator("#group-postlist-list tr");
+  check(
+    "Frank gets the report flag on Dora's five posts, and none on his own",
+    (await flags.count()) === 5 &&
+      (await rows.filter({ has: page.locator(".create-report-button") }).filter({ hasText: "archived" }).count()) === 5,
+  );
+  const [first, second] = sql(`SELECT id FROM forum_posts WHERE forum_thread_id = ${long} ORDER BY id LIMIT 3`)
+    .map(([id]) => id)
+    .filter((_, i) => i !== 1);
+  check(
+    "a flag leads to the report window with the thread's page",
+    (await flags.first().getAttribute("href")) === `/forum/posts/${first}/report?page=1` &&
+      (await flags.first().getAttribute("title")) === "Report this post",
+  );
+
+  const [help] = await Promise.all([page.waitForEvent("popup"), flags.first().click()]);
+  help.on("pageerror", (e) => problems.push(e.message));
+  await help.waitForLoadState();
+  await awake(help);
+  const text = () => help.locator("body").innerText();
+  check(
+    "the flag opens Holo's Help Tool in its own window, which asks first",
+    (await help.evaluate(() => window.name)) === "habbohelp" &&
+      !(await help.evaluate(() => window.toolbar.visible)) &&
+      (await help.title()) === "Reborn Help Tool" &&
+      (await text()).includes("REBORN HELP TOOL") &&
+      (await text()).includes("ASK YOUR QUESTION") &&
+      (await text()).includes("Is the post you have selected offensive or breaking the rules? Are you sure you want to report this post?") &&
+      (await help.getByRole("button", { name: "Proceed" }).isVisible()) &&
+      (await help.getByRole("button", { name: "Close" }).isVisible()),
+    await text(),
+  );
+  await shot(help, "forum-report-window");
+
+  await Promise.all([help.waitForURL(`**/forum/posts/${second}/report?page=1`), flags.nth(1).click()]);
+  check("another flag takes the open window over", page.context().pages().length === 2);
+  check("asking writes nothing", sql("SELECT COUNT(*) FROM help_tickets")[0][0] === 0);
+
+  await Promise.all([help.waitForEvent("load"), help.getByRole("button", { name: "Proceed" }).click()]);
+  check(
+    "Proceed sends the report and thanks, with only Close left",
+    (await text()).includes("Thank you for reporting this post.") &&
+      (await help.getByRole("button", { name: "Proceed" }).count()) === 0 &&
+      (await help.getByRole("button", { name: "Close" }).isVisible()),
+    await text(),
+  );
+  await shot(help, "forum-report-thanks");
+  await awake(help);
+  const [[frank]] = sql("SELECT id FROM avatars WHERE name = 'Frank'");
+  const tickets = sql("SELECT avatar_id, forum_post_id, subject, message FROM help_tickets");
+  check(
+    "the ticket is Frank's, about Dora's post, with its text and its address",
+    tickets.length === 1 &&
+      tickets[0][0] === frank &&
+      tickets[0][1] === second &&
+      tickets[0][2] === "DISCUSSION BOARD - REPORTED POST" &&
+      tickets[0][3].includes(`The Post ID is ${second}, in thread ${long}.`) &&
+      tickets[0][3].includes("Message 3") &&
+      tickets[0][3].endsWith(`${base}/forum/threads/${long}?page=1#post-${second}`),
+    JSON.stringify(tickets),
+  );
+  await Promise.all([help.waitForEvent("close"), help.getByRole("button", { name: "Close" }).click()]);
+  check("Close shuts the window", help.isClosed());
+
+  const [again] = await Promise.all([page.waitForEvent("popup"), flags.first().click()]);
+  again.on("pageerror", (e) => problems.push(e.message));
+  await again.waitForLoadState();
+  await awake(again);
+  check(
+    "while the report waits, another answers Holo's refusal",
+    (await again.locator("body").innerText()).includes(
+      "Unable to report post: you still have a pending support request. Please try again later. Note that post reports also count as support requests.",
+    ) && (await again.getByRole("button", { name: "Proceed" }).count()) === 0,
+    await again.locator("body").innerText(),
+  );
+  await shot(again, "forum-report-waiting");
+  await Promise.all([again.waitForEvent("close"), again.getByRole("button", { name: "Close" }).click()]);
+  check("a refused report writes nothing", sql("SELECT COUNT(*) FROM help_tickets")[0][0] === 1);
 }

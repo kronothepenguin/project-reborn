@@ -5,9 +5,9 @@
   import PostPreview from "./post-preview.svelte";
 
   // viewthread.php's message form under the posts: Post reply opens it empty and
-  // hides itself, and a post's Quote opens it with that post quoted, as Holo's
-  // script did. source names the element holding the thread, the habbo's own post
-  // box and whether smilies show.
+  // hides itself, a post's Quote opens it with that post quoted, and its Modify
+  // with the post to change, as Holo's script did. source names the element
+  // holding the thread, the habbo's own post box and whether smilies show.
   interface Props {
     source: string;
   }
@@ -15,6 +15,7 @@
   let { source }: Props = $props();
 
   let open = $state(false);
+  let editing = $state<string | null>(null);
   let message = $state("");
   let error = $state("");
   let saving = $state(false);
@@ -33,16 +34,21 @@
     smilies = data.smilies === "true";
     thread = data.thread ?? "";
     for (const link of replyLinks()) link.addEventListener("click", create);
-    const quote = (event: MouseEvent) => {
-      const button = (event.target as HTMLElement).closest<HTMLElement>(".quote-post-link");
-      if (button) show(`[quote]${(document.getElementById(`post-raw-${button.dataset.quote}`) as HTMLInputElement).value}[/quote]`);
+    const raw = (id = "") => (document.getElementById(`post-raw-${id}`) as HTMLInputElement).value;
+    const pick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      const quote = target.closest<HTMLElement>(".quote-post-link");
+      const edit = target.closest<HTMLElement>(".edit-post-link");
+      if (quote) show(`[quote]${raw(quote.dataset.quote)}[/quote]`, null);
+      if (edit) show(raw(edit.dataset.edit), edit.dataset.edit ?? null);
     };
-    document.addEventListener("click", quote);
-    return () => document.removeEventListener("click", quote);
+    document.addEventListener("click", pick);
+    return () => document.removeEventListener("click", pick);
   });
 
-  async function show(text: string) {
+  async function show(text: string, post: string | null) {
     message = text;
+    editing = post;
     preview = null;
     error = "";
     open = true;
@@ -52,7 +58,7 @@
 
   function create() {
     for (const link of replyLinks()) link.hidden = true;
-    show("");
+    show("", null);
   }
 
   function cancel() {
@@ -66,11 +72,14 @@
     preview = { html: answer.html ?? "", date: now() };
   }
 
+  // An edit redraws the page it was made on, as Holo's did.
   async function save() {
     saving = true;
-    const answer = await post(`/forum/threads/${thread}/posts`, { message }).catch(() => ({ ok: false, error: "", location: "" }));
-    if (answer.ok && answer.location) {
-      go(answer.location);
+    const path = editing ? `/forum/posts/${editing}` : `/forum/threads/${thread}/posts`;
+    const answer = await post(path, { message }).catch(() => ({ ok: false, error: "", location: "" }));
+    if (answer.ok) {
+      if (answer.location) go(answer.location);
+      else window.location.reload();
       return;
     }
     if (answer.error === "closed") {
