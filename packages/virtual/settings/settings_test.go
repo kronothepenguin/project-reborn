@@ -664,3 +664,73 @@ func TestHousekeepingURLTakesAPathOrAURL(t *testing.T) {
 		}
 	}
 }
+
+// Holo wrote the club's prices, its days and the wardrobe's slots in its code,
+// and kept the month limit and the credits page's boxes in cms_content.
+func TestTheEconomySettingsHoldHolosValues(t *testing.T) {
+	load(t, openDB(t))
+
+	assertValues(t, map[string]any{
+		"club.price1Month":        20,
+		"club.price3Months":       50,
+		"club.price6Months":       80,
+		"club.daysPerMonth":       31,
+		"club.maxMonths":          6,
+		"homes.wardrobeSlots":     5,
+		"creditsPage.box1Heading": "What are credits?",
+		"creditsPage.box1Body":    "Credits are the hotel's currency. You can use them to buy all kinds of things, from rubber ducks and sofas, to Habbo Club membership, jukeboxes and teleports.",
+		"creditsPage.box2Heading": "Get credits!",
+		// Holo's credits2 without the palm chair, which belongs to the page, and
+		// with each item of its list on a line of its own (decision 0105).
+		"creditsPage.box2Body": "To buy furniture or play games, you need [b]credits[/b]. We provide you with free credits on registration, and if you run out, there are several ways you can earn more credits:\n" +
+			"* Refer a friend to the hotel and earn credits\n" +
+			"* Ask a staff member ingame\n" +
+			"* Redeem a voucher if you have one\n" +
+			"* Trade your furniture with others for credit furniture",
+	})
+}
+
+// The bounds are the port's own, since Holo wrote the numbers in its code and
+// took any text; the credits boxes take the lengths of the staff boxes.
+func TestTheEconomySettingsKeepTheirBounds(t *testing.T) {
+	validate := func(key string, value any) error {
+		d, ok := catalogue[key]
+		if !ok {
+			return fmt.Errorf("%s is not declared", key)
+		}
+		return d.validate(value)
+	}
+	edges := func(bounds [2]int) map[int]bool {
+		return map[int]bool{bounds[0] - 1: false, bounds[0]: true, bounds[1]: true, bounds[1] + 1: false}
+	}
+
+	for key, bounds := range map[string][2]int{
+		"club.price1Month":    {0, 1_000_000},
+		"club.price3Months":   {0, 1_000_000},
+		"club.price6Months":   {0, 1_000_000},
+		"club.daysPerMonth":   {1, 31},
+		"club.maxMonths":      {0, 120},
+		"homes.wardrobeSlots": {1, 20},
+	} {
+		for value, valid := range edges(bounds) {
+			if err := validate(key, value); valid != (err == nil) {
+				t.Errorf("%s = %d: %v, want valid %t", key, value, err, valid)
+			}
+		}
+	}
+	for key, bounds := range map[string][2]int{
+		"creditsPage.box1Heading": {1, 100},
+		"creditsPage.box2Heading": {1, 100},
+		"creditsPage.box1Body":    {0, 5000},
+		"creditsPage.box2Body":    {0, 5000},
+	} {
+		for n, valid := range edges(bounds) {
+			if n < 0 {
+				continue
+			}
+			if err := validate(key, strings.Repeat("x", n)); valid != (err == nil) {
+				t.Errorf("%s of %d characters: %v, want valid %t", key, n, err, valid)
+			}
+		}
+	}
+}

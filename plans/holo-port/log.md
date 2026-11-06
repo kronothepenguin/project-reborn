@@ -2,6 +2,10 @@
 
 ## 2026-11-06
 
+- **Done** [p6-01](/tasks/p6-01-economy-settings.md): the club's prices, days and month limit, the credits page's
+  boxes in BBCode and the wardrobe's slots are settings with Holo's values, in a `Club` form, the content options, a
+  `Credits Page` form in Holo's order and the `Homes` form.
+- **Start** [p6-01](/tasks/p6-01-economy-settings.md).
 - **Create** [p6-01](/tasks/p6-01-economy-settings.md) to [p6-08](/tasks/p6-08-exit-check.md), P6's tasks.
 - **Decision** [0105](/decisions/0105-credits-boxes-in-bbcode.md): the credits page boxes are BBCode like the staff
   boxes, with their pictures in the page.

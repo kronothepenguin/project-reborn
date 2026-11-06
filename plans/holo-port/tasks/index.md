@@ -198,7 +198,7 @@ starts.
 
 ## P6 Economy
 
-- [p6-01 Declare the economy settings](/tasks/p6-01-economy-settings.md) — The club prices, days and month limit, the credits page boxes in BBCode and the wardrobe slots are declared with Holo's values and labelled in housekeeping, in a Club form, the content options, a Credits Page form and the Homes form.
+- [p6-01 Declare the economy settings](/tasks/p6-01-economy-settings.md) — The club prices, days and month limit, the credits page boxes in BBCode and the wardrobe slots are declared with Holo's values and labelled in housekeeping, in a Club form, the content options, a Credits Page form and the Homes form. **done**
 - [p6-02 Store vouchers, club purchases and wardrobe outfits](/tasks/p6-02-store-economy.md) — The store gains the voucher operations from creating to redeeming once, the club's latest end and periods, the club badge for every habbo of a user, and the wardrobe's outfits per habbo, with their entities documented.
 - [p6-03 Show the credits page and redeem vouchers](/tasks/p6-03-credits-page.md) — GET /credits shows Holo's credits page with its two BBCode boxes and the purse, and the purse's Submit redeems a voucher in one transaction with Holo's answers.
 - [p6-04 Show the account transactions](/tasks/p6-04-account-transactions.md) — GET /credits/transactions lists the 50 newest rows of the user's ledger in Holo's table with a Habbo column, beside the purse.

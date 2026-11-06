@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-06T17:35:17+00:00
+timestamp: 2026-11-06T23:08:21+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -116,6 +116,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Install | The last page links to the new site and to housekeeping's sign-in | It links to the hotel, where the administrator signs in; housekeeping has no sign-in of its own | [0070](/decisions/0070-housekeeping-applies-updates.md) |
 | Install | `install.php` writes the store and the ranks | Updates write them, so a hotel installed before them receives them too | [0068](/decisions/0068-seeds-are-updates.md) |
 | Staff page | Its two boxes hold raw HTML, edited in the content tool | Their bodies are BBCode, and the help of their fields says `BBCode is allowed here.` | [0077](/decisions/0077-staff-boxes-in-bbcode.md) |
+| Credits page | Its two boxes hold raw HTML, edited in the content tool, the second with the palm chair and a list of four ways to earn credits | Their bodies are BBCode, and the help of their fields says `BBCode is allowed here.`; the pictures are part of the page, and the list is lines that start with `* ` | [0105](/decisions/0105-credits-boxes-in-bbcode.md) |
 | News | The body is HTML written by staff | BBCode, without smilies, as Holo's news had none | [0020](/decisions/0020-news-in-bbcode.md) |
 | Tags | A tag counts for its owner whether the owner still exists or not | An archived habbo's tags leave the cloud, the search and the tag fight | [0058](/decisions/0058-habbos-are-archived.md) |
 | Staff page | Every user above rank 2, with `Rank:` named after the rank | Each member of a staff-listed access group once, with `Rank:` the name of the highest of those groups and the habbo chosen for it | [0076](/decisions/0076-one-staff-list.md) |
@@ -310,8 +311,9 @@ veto.
 | Staff log | 100 rows a page, with `Older` and `Newer` | Holo listed every row, and pruned them. Here rows are never deleted, so the list only grows |
 | Staff log | An `IP` column in place of `Note`, Holo's name of the PHP file | `staff_logs` has the address and no such note |
 | Settings | Forms for `auth`, `registration`, `referral`, `mail` and `imaging`, which Holo kept in `config.php` or nowhere | The plan: forms over the declared settings |
-| Settings | A `Homes` form for the items per home, the length of a note and the tags per habbo, which Holo wrote in its code | The plan: the `homes` section |
+| Settings | A `Homes` form for the items per home, the length of a note, the tags per habbo and the wardrobe's slots, which Holo wrote in its code | The plan: the `homes` section |
 | Settings | A `Groups` form for a group's price, the groups per user, the memberships per habbo, the members of a Regular group and the lengths of a name and a description, which Holo wrote in its code | The plan: the `groups` section ([0082](/decisions/0082-group-limits-per-user-and-habbo.md), [0084](/decisions/0084-group-names-and-descriptions.md)) |
+| Settings | A `Club` form for the prices of 1, 3 and 6 months and the days of a month, which Holo wrote in its code | The plan: the `club` settings |
 | Settings | The content tool's categories are links of their own: `Discussion Board Module` holds `Forum Enabled`, `Smilies Enabled` and a `Spam Check` of 30 seconds, where 0 turns the check off | Holo chose the category from a list; the spam check is [0091](/decisions/0091-forum-spam-check.md) |
 | Settings | `mail.password` is never shown: blank keeps it, and `Clear it` removes it | The plan: `mail.password` masked |
 | Edit User | Two forms on the habbo's page, `Save Habbo` and `Save User` | A habbo and its owner are two rows |

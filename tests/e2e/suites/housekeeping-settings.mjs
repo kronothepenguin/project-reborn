@@ -1,6 +1,6 @@
 export const programs = ["cms", "housekeeping"];
 
-export default async function ({ base, browser, check, hk, hkOrigin, shot }) {
+export default async function ({ base, browser, check, hk, hkOrigin, shot, sql }) {
   const page = await browser.newPage({
     viewport: { width: 1000, height: 655 },
   });
@@ -132,10 +132,73 @@ export default async function ({ base, browser, check, hk, hkOrigin, shot }) {
   );
   await page.goto(`${hk}/settings?section=features`);
   check(
-    "Group Purchasing Enabled joins the content options, and Smilies Enabled leaves them",
+    "Group Purchasing Enabled and HC Months Limit of 6 join the content options, and Smilies Enabled leaves them",
     (await page.locator("main label").allInnerTexts()).join("|") ===
-      "Landing Promo Enabled|Birthday Notifications Enabled|Tag Fight Enabled|Group Purchasing Enabled",
+      "Landing Promo Enabled|Birthday Notifications Enabled|Tag Fight Enabled|Group Purchasing Enabled|HC Months Limit" &&
+      (await page.inputValue('input[name="club.maxMonths"]')) === "6",
     (await page.locator("main label").allInnerTexts()).join("|"),
+  );
+  await page.goto(`${hk}/settings?section=club`);
+  check(
+    "the Club form holds Holo's prices and the days of a month",
+    (await page.locator("main label").allInnerTexts()).join("|") ===
+      "1 Month Price|3 Months Price|6 Months Price|Days Per Month" &&
+      (await page.inputValue('input[name="club.price1Month"]')) === "20" &&
+      (await page.inputValue('input[name="club.price3Months"]')) === "50" &&
+      (await page.inputValue('input[name="club.price6Months"]')) === "80" &&
+      (await page.inputValue('input[name="club.daysPerMonth"]')) === "31",
+    (await page.locator("main label").allInnerTexts()).join("|"),
+  );
+  await page.fill('input[name="club.daysPerMonth"]', "30");
+  await page.getByRole("button", { name: "Save Settings" }).click();
+  await page.waitForLoadState();
+  check(
+    "the days of a month save",
+    page.url().includes("saved=1") &&
+      (await page.inputValue('input[name="club.daysPerMonth"]')) === "30",
+    page.url(),
+  );
+  await page.goto(`${hk}/settings?section=homes`);
+  check(
+    "Wardrobe Slots joins the Homes form with Holo's 5",
+    (await page.locator("main label").allInnerTexts()).join("|") ===
+      "Items Per Home|Note Length|Tags Per Habbo|Wardrobe Slots" &&
+      (await page.inputValue('input[name="homes.wardrobeSlots"]')) === "5",
+    (await page.locator("main label").allInnerTexts()).join("|"),
+  );
+
+  await page.goto(`${hk}/settings?section=creditsPage`);
+  check(
+    "the Credits Page holds Holo's four fields in the order of Holo's content tool, with Holo's headings",
+    (await page.locator("main label").allInnerTexts()).join("|") ===
+      "Credit Content Box 2 Heading|Credits Content Box 1|Credits Content Box 1 Heading|Credits Content Box 2" &&
+      (await page.inputValue('input[name="creditsPage.box1Heading"]')) === "What are credits?" &&
+      (await page.inputValue('input[name="creditsPage.box2Heading"]')) === "Get credits!",
+    (await page.locator("main label").allInnerTexts()).join("|"),
+  );
+  const credits2 = page.getByRole("textbox", { name: "Credits Content Box 2", exact: true });
+  await credits2.locator("strong").waitFor();
+  const ways = (await credits2.innerText()).split("\n").filter((line) => line.startsWith("* "));
+  check(
+    "the two credits boxes are written in the BBCode editor, the second with credits in bold and Holo's four ways on lines of their own",
+    (await page.getByRole("toolbar", { name: "Formatting" }).count()) === 2 &&
+      !(await page.locator('textarea[name="creditsPage.box2Body"]').isVisible()) &&
+      (await page.getByRole("textbox", { name: "Credits Content Box 1", exact: true }).isVisible()) &&
+      (await credits2.locator("strong").innerText()) === "credits" &&
+      ways.length === 4,
+    ways.join(" | "),
+  );
+  await shot(page, "settings-credits");
+  await credits2.click();
+  await page.keyboard.type("x");
+  await page.keyboard.press("Backspace");
+  await page.getByRole("button", { name: "Save Settings" }).click();
+  await page.waitForLoadState();
+  const creditsRows = sql("SELECT key, value FROM settings WHERE key LIKE 'creditsPage.%'");
+  check(
+    "a box typed in and saved keeps Holo's text as it was declared",
+    page.url().includes("saved=1") && creditsRows.length === 0,
+    JSON.stringify(creditsRows),
   );
 
   await page.goto(`${hk}/settings?section=site`);

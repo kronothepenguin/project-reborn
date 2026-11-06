@@ -14,8 +14,8 @@ func TestASettingDeclaredLaterGetsAForm(t *testing.T) {
 	sections := sectionsOver([]settings.Setting{
 		{Key: "site.name", Value: "Hotel"},
 		{Key: "features.example", Value: true},
-		{Key: "club.maxMonths", Value: 6},
-		{Key: "club.name", Value: "Club"},
+		{Key: "example.maxCount", Value: 6},
+		{Key: "example.name", Value: "Example"},
 		{Key: "payments.apiKey", Secret: true},
 	})
 
@@ -27,17 +27,17 @@ func TestASettingDeclaredLaterGetsAForm(t *testing.T) {
 		t.Errorf("the field = %+v", got)
 	}
 
-	club, ok := findSection(sections, "club")
-	if !ok || len(club.Fields) != 2 {
-		t.Fatalf("club = %+v, %t, want a new form with both fields", club, ok)
+	example, ok := findSection(sections, "example")
+	if !ok || len(example.Fields) != 2 {
+		t.Fatalf("example = %+v, %t, want a new form with both fields", example, ok)
 	}
-	if club.Button == "" || club.Title == "" || club.Menu == "" {
-		t.Errorf("the new form is missing its texts: %+v", club)
+	if example.Button == "" || example.Title == "" || example.Menu == "" {
+		t.Errorf("the new form is missing its texts: %+v", example)
 	}
-	if got := club.Fields[0]; got.Kind != kindNumber || got.Value != "6" {
+	if got := example.Fields[0]; got.Kind != kindNumber || got.Value != "6" {
 		t.Errorf("the number = %+v", got)
 	}
-	if got := club.Fields[1]; got.Kind != kindText || got.Value != "Club" {
+	if got := example.Fields[1]; got.Kind != kindText || got.Value != "Example" {
 		t.Errorf("the text = %+v", got)
 	}
 
