@@ -4,7 +4,7 @@ title: avatar_badges
 description: Badges owned by a habbo, at most one of them worn.
 resource: packages/store/schema/avatars.schema.sql
 tags: [store, table, habbo]
-timestamp: 2026-10-27T21:17:19+00:00
+timestamp: 2026-11-06T22:56:10+00:00
 ---
 
 # Schema
@@ -24,3 +24,4 @@ timestamp: 2026-10-27T21:17:19+00:00
 # Related
 
 - Entity: [Habbo](/entities/habbo.md).
+- Queries: [avatars.query.sql](/queries/avatars.md).

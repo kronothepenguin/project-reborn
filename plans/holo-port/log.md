@@ -5,7 +5,13 @@
 - **Done** [p6-01](/tasks/p6-01-economy-settings.md): the club's prices, days and month limit, the credits page's
   boxes in BBCode and the wardrobe's slots are settings with Holo's values, in a `Club` form, the content options, a
   `Credits Page` form in Holo's order and the `Homes` form.
+- **Done** [p6-02](/tasks/p6-02-store-economy.md): the store creates, lists, deletes while unused and redeems
+  vouchers once, ignoring case; reads a user's last club end and whether they have any period, adds periods; gives
+  `HC1` unworn to every habbo of a user and takes it; and keeps outfits by slot.
+- **Create** [p6-09](/tasks/p6-09-club-days-to-the-last-period.md): the club days stop at the end of the period that
+  covers now, so a period bought during the club would not count in them.
 - **Start** [p6-01](/tasks/p6-01-economy-settings.md).
+- **Start** [p6-02](/tasks/p6-02-store-economy.md).
 - **Create** [p6-01](/tasks/p6-01-economy-settings.md) to [p6-08](/tasks/p6-08-exit-check.md), P6's tasks.
 - **Decision** [0105](/decisions/0105-credits-boxes-in-bbcode.md): the credits page boxes are BBCode like the staff
   boxes, with their pictures in the page.

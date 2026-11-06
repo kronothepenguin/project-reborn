@@ -141,6 +141,26 @@ func (q *Queries) DeleteAvatarBadge(ctx context.Context, arg DeleteAvatarBadgePa
 	return result.RowsAffected()
 }
 
+const deleteBadgeFromUserAvatars = `-- name: DeleteBadgeFromUserAvatars :execrows
+DELETE FROM avatar_badges
+WHERE code = ?1
+  AND avatar_id IN (SELECT avatars.id FROM avatars WHERE avatars.user_id = ?2)
+`
+
+type DeleteBadgeFromUserAvatarsParams struct {
+	Code   string
+	UserID int64
+}
+
+// Archived habbos are still the user's and lose it too.
+func (q *Queries) DeleteBadgeFromUserAvatars(ctx context.Context, arg DeleteBadgeFromUserAvatarsParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteBadgeFromUserAvatars, arg.Code, arg.UserID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
 const getAvatar = `-- name: GetAvatar :one
 SELECT id, user_id, name, figure, gender, motto, created_at, updated_at, archived_at FROM avatars WHERE id = ?1
 `
@@ -215,6 +235,30 @@ type GrantAvatarBadgeParams struct {
 
 func (q *Queries) GrantAvatarBadge(ctx context.Context, arg GrantAvatarBadgeParams) (int64, error) {
 	result, err := q.db.ExecContext(ctx, grantAvatarBadge, arg.AvatarID, arg.Code, arg.GrantedAt)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const grantBadgeToUserAvatars = `-- name: GrantBadgeToUserAvatars :execrows
+INSERT INTO avatar_badges (avatar_id, code, worn, granted_at)
+SELECT avatars.id, ?1, FALSE, ?2
+FROM avatars
+WHERE avatars.user_id = ?3
+ON CONFLICT (avatar_id, code) DO NOTHING
+`
+
+type GrantBadgeToUserAvatarsParams struct {
+	Code      string
+	GrantedAt time.Time
+	UserID    int64
+}
+
+// Unworn, because a habbo wears one badge; archived habbos are still the user's and
+// get it too.
+func (q *Queries) GrantBadgeToUserAvatars(ctx context.Context, arg GrantBadgeToUserAvatarsParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, grantBadgeToUserAvatars, arg.Code, arg.GrantedAt, arg.UserID)
 	if err != nil {
 		return 0, err
 	}
@@ -373,6 +417,41 @@ func (q *Queries) ListUserAvatars(ctx context.Context, userID int64) ([]Avatar, 
 	return items, nil
 }
 
+const listWardrobeOutfits = `-- name: ListWardrobeOutfits :many
+SELECT avatar_id, slot, figure, gender, updated_at FROM wardrobe_outfits
+WHERE avatar_id = ?1
+ORDER BY slot
+`
+
+func (q *Queries) ListWardrobeOutfits(ctx context.Context, avatarID int64) ([]WardrobeOutfit, error) {
+	rows, err := q.db.QueryContext(ctx, listWardrobeOutfits, avatarID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []WardrobeOutfit
+	for rows.Next() {
+		var i WardrobeOutfit
+		if err := rows.Scan(
+			&i.AvatarID,
+			&i.Slot,
+			&i.Figure,
+			&i.Gender,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const restoreAvatar = `-- name: RestoreAvatar :execrows
 UPDATE avatars SET archived_at = NULL, updated_at = ?1
 WHERE id = ?2 AND archived_at IS NOT NULL
@@ -513,6 +592,34 @@ type UpdateAvatarMottoParams struct {
 
 func (q *Queries) UpdateAvatarMotto(ctx context.Context, arg UpdateAvatarMottoParams) error {
 	_, err := q.db.ExecContext(ctx, updateAvatarMotto, arg.Motto, arg.UpdatedAt, arg.ID)
+	return err
+}
+
+const upsertWardrobeOutfit = `-- name: UpsertWardrobeOutfit :exec
+INSERT INTO wardrobe_outfits (avatar_id, slot, figure, gender, updated_at)
+VALUES (?1, ?2, ?3, ?4, ?5)
+ON CONFLICT (avatar_id, slot) DO UPDATE SET
+    figure = excluded.figure,
+    gender = excluded.gender,
+    updated_at = excluded.updated_at
+`
+
+type UpsertWardrobeOutfitParams struct {
+	AvatarID  int64
+	Slot      int64
+	Figure    string
+	Gender    string
+	UpdatedAt time.Time
+}
+
+func (q *Queries) UpsertWardrobeOutfit(ctx context.Context, arg UpsertWardrobeOutfitParams) error {
+	_, err := q.db.ExecContext(ctx, upsertWardrobeOutfit,
+		arg.AvatarID,
+		arg.Slot,
+		arg.Figure,
+		arg.Gender,
+		arg.UpdatedAt,
+	)
 	return err
 }
 

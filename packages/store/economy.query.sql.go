@@ -61,6 +61,28 @@ func (q *Queries) CountWalletTransactions(ctx context.Context, userID int64) (in
 	return count, err
 }
 
+const createVoucher = `-- name: CreateVoucher :exec
+INSERT INTO vouchers (code, credits, created_by_user_id, created_at)
+VALUES (?1, ?2, ?3, ?4)
+`
+
+type CreateVoucherParams struct {
+	Code            string
+	Credits         int64
+	CreatedByUserID sql.NullInt64
+	CreatedAt       time.Time
+}
+
+func (q *Queries) CreateVoucher(ctx context.Context, arg CreateVoucherParams) error {
+	_, err := q.db.ExecContext(ctx, createVoucher,
+		arg.Code,
+		arg.Credits,
+		arg.CreatedByUserID,
+		arg.CreatedAt,
+	)
+	return err
+}
+
 const createWallet = `-- name: CreateWallet :exec
 INSERT INTO wallets (user_id, credits, updated_at)
 VALUES (?1, ?2, ?3)
@@ -106,6 +128,19 @@ func (q *Queries) CreateWalletTransaction(ctx context.Context, arg CreateWalletT
 	return err
 }
 
+const deleteUnusedVoucher = `-- name: DeleteUnusedVoucher :execrows
+DELETE FROM vouchers WHERE code = ?1 AND redeemed_at IS NULL
+`
+
+// A redeemed voucher stays for audit (0063).
+func (q *Queries) DeleteUnusedVoucher(ctx context.Context, code string) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteUnusedVoucher, code)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
 const getWallet = `-- name: GetWallet :one
 SELECT user_id, credits, tickets, film, updated_at FROM wallets WHERE user_id = ?1
 `
@@ -121,6 +156,43 @@ func (q *Queries) GetWallet(ctx context.Context, userID int64) (Wallet, error) {
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const listUnusedVouchers = `-- name: ListUnusedVouchers :many
+SELECT code, credits, created_by_user_id, created_at, redeemed_by_avatar_id, redeemed_at FROM vouchers
+WHERE redeemed_at IS NULL
+ORDER BY created_at, code
+`
+
+// In the order they were made, as Holo's housekeeping listed them.
+func (q *Queries) ListUnusedVouchers(ctx context.Context) ([]Voucher, error) {
+	rows, err := q.db.QueryContext(ctx, listUnusedVouchers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Voucher
+	for rows.Next() {
+		var i Voucher
+		if err := rows.Scan(
+			&i.Code,
+			&i.Credits,
+			&i.CreatedByUserID,
+			&i.CreatedAt,
+			&i.RedeemedByAvatarID,
+			&i.RedeemedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listWalletTransactions = `-- name: ListWalletTransactions :many
@@ -177,6 +249,28 @@ func (q *Queries) ListWalletTransactions(ctx context.Context, arg ListWalletTran
 		return nil, err
 	}
 	return items, nil
+}
+
+const redeemVoucher = `-- name: RedeemVoucher :one
+UPDATE vouchers
+SET redeemed_by_avatar_id = CAST(?1 AS INTEGER), redeemed_at = ?2
+WHERE code = ?3 AND redeemed_at IS NULL
+RETURNING credits
+`
+
+type RedeemVoucherParams struct {
+	RedeemedByAvatarID int64
+	RedeemedAt         sql.NullTime
+	Code               string
+}
+
+// One statement claims the code, matched ignoring case, so that of two redemptions
+// of one code only the first finds it unused and gets its credits.
+func (q *Queries) RedeemVoucher(ctx context.Context, arg RedeemVoucherParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, redeemVoucher, arg.RedeemedByAvatarID, arg.RedeemedAt, arg.Code)
+	var credits int64
+	err := row.Scan(&credits)
+	return credits, err
 }
 
 const updateWalletTicketsAndFilm = `-- name: UpdateWalletTicketsAndFilm :exec

@@ -42,3 +42,25 @@ LIMIT sqlc.arg(row_limit) OFFSET sqlc.arg(row_offset);
 
 -- name: CountWalletTransactions :one
 SELECT COUNT(*) FROM wallet_transactions WHERE user_id = sqlc.arg(user_id);
+
+-- name: CreateVoucher :exec
+INSERT INTO vouchers (code, credits, created_by_user_id, created_at)
+VALUES (sqlc.arg(code), sqlc.arg(credits), sqlc.narg(created_by_user_id), sqlc.arg(created_at));
+
+-- In the order they were made, as Holo's housekeeping listed them.
+-- name: ListUnusedVouchers :many
+SELECT * FROM vouchers
+WHERE redeemed_at IS NULL
+ORDER BY created_at, code;
+
+-- A redeemed voucher stays for audit (0063).
+-- name: DeleteUnusedVoucher :execrows
+DELETE FROM vouchers WHERE code = sqlc.arg(code) AND redeemed_at IS NULL;
+
+-- One statement claims the code, matched ignoring case, so that of two redemptions
+-- of one code only the first finds it unused and gets its credits.
+-- name: RedeemVoucher :one
+UPDATE vouchers
+SET redeemed_by_avatar_id = CAST(sqlc.arg(redeemed_by_avatar_id) AS INTEGER), redeemed_at = sqlc.arg(redeemed_at)
+WHERE code = sqlc.arg(code) AND redeemed_at IS NULL
+RETURNING credits;

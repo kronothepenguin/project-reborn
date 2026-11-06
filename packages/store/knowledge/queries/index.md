@@ -9,7 +9,7 @@ Concepts for the query files under `packages/store/queries/`.
 ## Identity
 
 - [users.query.sql](users.md) — User operations for creation, lookup by id or email, and registrations per IP.
-- [avatars.query.sql](avatars.md) — Habbo operations for creation, lookup by id or name, the habbos of a user and random habbos.
+- [avatars.query.sql](avatars.md) — Habbo operations for creation, lookup by id or name, the habbos of a user and random habbos, their badges, a badge for every habbo of a user, and their wardrobe outfits.
 - [profiles.query.sql](profiles.md) — Profile operations for creating a habbo's profile and reading, adding and removing its tags.
 - [homes.query.sql](homes.md) — Home operations for creating a profile's home, reading it, and placing, moving, skinning and removing its items.
 - [home-inventory.query.sql](home-inventory.md) — Home inventory operations for adding bought items, listing them, and taking them out to place on a home.
@@ -29,8 +29,8 @@ Concepts for the query files under `packages/store/queries/`.
 
 ## Economy
 
-- [economy.query.sql](economy.md) — Wallet operations for reading and creating a user's wallet, adding credits and writing credit ledger rows.
-- [club.query.sql](club.md) — Club operations, currently the end of a user's running membership.
+- [economy.query.sql](economy.md) — Wallet operations for reading and creating a user's wallet, adding credits and writing credit ledger rows, and voucher operations from creating to redeeming once.
+- [club.query.sql](club.md) — Club operations for the end of a user's running membership and of their last period, whether they have any period, and a new period.
 - [referrals.query.sql](referrals.md) — Referral operations, currently the creation of a referral at registration.
 
 ## Settings

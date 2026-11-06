@@ -1,10 +1,10 @@
 ---
 type: SQL Query
 title: economy.query.sql
-description: Wallet operations for reading and creating a user's wallet, adding credits and writing credit ledger rows.
+description: Wallet operations for reading and creating a user's wallet, adding credits and writing credit ledger rows, and voucher operations from creating to redeeming once.
 resource: packages/store/queries/economy.query.sql
 tags: [store, query, economy]
-timestamp: 2026-11-02T01:44:15+00:00
+timestamp: 2026-11-06T22:56:10+00:00
 ---
 
 # Operations
@@ -63,6 +63,37 @@ timestamp: 2026-11-02T01:44:15+00:00
 - Result: adds to the balance in one statement; pair it with a ledger row in the same transaction
 - Tables: `wallets`
 
+## CreateVoucher
+
+- Cardinality: `:exec`
+- Inputs: `code`, `credits`, `created_by_user_id` (nullable), `created_at`
+- Result: a conflict when a voucher has the code, ignoring case
+- Tables: `vouchers`
+
+## ListUnusedVouchers
+
+- Cardinality: `:many`
+- Inputs: none
+- Result: the vouchers not redeemed yet, in the order they were made (`ORDER BY created_at, code`), as Holo's
+  housekeeping listed them
+- Tables: `vouchers`
+
+## DeleteUnusedVoucher
+
+- Cardinality: `:execrows`
+- Inputs: `code` (matched ignoring case)
+- Result: 1 when the voucher was unused and is gone, and 0 when it is redeemed, which stays (0063), or unknown
+- Tables: `vouchers`
+
+## RedeemVoucher
+
+- Cardinality: `:one`
+- Inputs: `redeemed_by_avatar_id`, `redeemed_at`, `code` (matched ignoring case)
+- Result: the voucher's credits, claimed for the habbo in one statement; not found when no unused voucher has the
+  code, so of two redemptions of one code only the first gets credits. Add them to the wallet with a ledger row in the
+  same transaction.
+- Tables: `vouchers`
+
 # Related
 
-- Entity: [Wallet](/entities/wallet.md).
+- Entities: [Wallet](/entities/wallet.md), [Voucher](/entities/voucher.md).
