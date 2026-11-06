@@ -43,7 +43,7 @@ S0 writes no game rules and no `virtual` state: those start in [S2](/phases/s2-l
 2. [s0-02 Add the backend and client templates to tools/create](/tasks/s0-02-create-templates.md) **done**
 3. [s0-03 Create packages/server and apps/server](/tasks/s0-03-scaffold-server.md) **done**
 4. [s0-04 Declare the server's listeners in config.json](/tasks/s0-04-listener-config.md)
-5. [s0-05 Write the transport](/tasks/s0-05-transport.md)
+5. [s0-05 Write the transport](/tasks/s0-05-transport.md) **done**
 6. [s0-06 Write the encoding](/tasks/s0-06-encoding.md)
 7. [s0-07 Serve R26 sessions](/tasks/s0-07-r26-sessions.md)
 8. [s0-08 Check S0's exit criteria](/tasks/s0-08-exit-check.md)

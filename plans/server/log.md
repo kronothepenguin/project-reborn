@@ -2,6 +2,10 @@
 
 ## 2026-11-06
 
+- **Done** [s0-05](/tasks/s0-05-transport.md): `packages/server/transport` serves TCP with `ServeTCP(l, h)` and
+  the WebSocket with the `http.Handler` `WebSocket(h)`, both as one `Conn` that closes when its handler returns; the
+  WebSocket writes binary frames and reads binary and text frames.
+- **Start** [s0-05](/tasks/s0-05-transport.md).
 - **Update** [s0-04](/tasks/s0-04-listener-config.md)'s steps follow 0019, and its question leaves
   [S0](/phases/s0-foundations.md)'s open questions.
 - **Decision** [0019](/decisions/0019-info-and-mus-listeners.md): the server listens as `server.info` and

@@ -8,8 +8,9 @@ database in `New(db)` and registers its routes on a mux in `Mount(mux)`;
 
 The game server is laid out as `plans/server/decisions/0005-package-layout.md`
 decides. Each part is marked with the task of `plans/server/tasks/index.md`
-that brings it. For now the package is what `tools/create` generated:
-`server.go`, and `internal/router`, whose `GET /` answers `Hello from Go`.
+that brings it. So far the package holds what `tools/create` generated,
+`server.go` and `internal/router`, whose `GET /` answers `Hello from Go`, and
+`transport/`.
 
 | Part | Holds | Brought by |
 | --- | --- | --- |
@@ -23,6 +24,27 @@ that brings it. For now the package is what `tools/create` generated:
 - `game` never knows the protocol. It is its own package so that `r26` can call
   it without an import cycle.
 - The server's state lives in `packages/virtual`, which holds only state.
+
+## Transport
+
+`transport` carries a client's bytes over TCP or a WebSocket
+(`plans/server/decisions/0006-transport.md`). Both reach the protocol as a
+`Conn`: `Read` receives, `Write` sends, `Close` closes and `RemoteAddr` is the
+client's address. The protocol frames its own packets, so neither a read nor a
+WebSocket frame has to be one packet.
+
+- `ServeTCP(l, h)` serves each connection `l` accepts with the `Handler` `h`, in
+  a goroutine of its own. It returns nil once `l` is closed, and the error of any
+  other failed `Accept`.
+- `WebSocket(h)` is an `http.Handler` on `golang.org/x/net/websocket`, mounted
+  on any mux. It writes binary frames and reads the bytes of binary and text
+  frames alike. Like `websocket.Handler`, it refuses a request whose `Origin`
+  header is missing or not a URL. `RemoteAddr` is the HTTP request's
+  `RemoteAddr`.
+- A connection closes once its handler returns. Either end may close it sooner:
+  the handler's `Read` returns `io.EOF` when the client closes, and `Close`
+  from another goroutine ends a `Read` that is waiting.
+- A `Conn`'s methods may be called from several goroutines at once.
 
 ## Port
 
