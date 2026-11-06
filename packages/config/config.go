@@ -11,6 +11,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/config/cms"
 	"github.com/kronothepenguin/project-reborn/packages/config/housekeeping"
 	"github.com/kronothepenguin/project-reborn/packages/config/proxy"
+	"github.com/kronothepenguin/project-reborn/packages/config/server"
 	"github.com/kronothepenguin/project-reborn/packages/config/store"
 )
 
@@ -29,6 +30,7 @@ type Config struct {
 	CMS          cms.CMS                   `json:"cms"`
 	Housekeeping housekeeping.Housekeeping `json:"housekeeping"`
 	Proxy        proxy.Proxy               `json:"proxy"`
+	Server       server.Server             `json:"server"`
 }
 
 func defaults() *Config {
@@ -37,6 +39,7 @@ func defaults() *Config {
 		CMS:          cms.CMS{Host: cms.DefaultHost(), Port: cms.DefaultPort()},
 		Housekeeping: housekeeping.Housekeeping{Host: housekeeping.DefaultHost(), Port: housekeeping.DefaultPort()},
 		Proxy:        proxy.Proxy{Enabled: proxy.DefaultEnabled(), Trusted: proxy.DefaultTrusted()},
+		Server:       server.Server{Info: server.DefaultInfo(), MUS: server.DefaultMUS()},
 	}
 }
 
@@ -54,6 +57,9 @@ func (c *Config) Validate() error {
 	}
 	if err := c.Proxy.Validate(); err != nil {
 		return fmt.Errorf("proxy.%w", err)
+	}
+	if err := c.Server.Validate(); err != nil {
+		return fmt.Errorf("server.%w", err)
 	}
 	return nil
 }

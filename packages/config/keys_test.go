@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strings"
 	"testing"
 )
 
@@ -38,7 +39,8 @@ func TestDifferencesFindsMissingAndUnusedKeys(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Differences: %v", err)
 	}
-	if got, want := paths(missing), []string{`cms.host="localhost"`, `proxy.enabled=false`, `proxy.trusted=["127.0.0.1","::1"]`}; !slices.Equal(got, want) {
+	if got, want := paths(missing), []string{`cms.host="localhost"`, `proxy.enabled=false`, `proxy.trusted=["127.0.0.1","::1"]`,
+		`server.info.host="localhost"`, `server.info.port=30000`, `server.mus.host="localhost"`, `server.mus.port=30001`}; !slices.Equal(got, want) {
 		t.Errorf("missing = %v, want %v", got, want)
 	}
 	if got, want := paths(unused), []string{`store.legacy=true`, `theme="dark"`}; !slices.Equal(got, want) {
@@ -48,7 +50,8 @@ func TestDifferencesFindsMissingAndUnusedKeys(t *testing.T) {
 
 func TestDifferencesFindsNothingInACurrentFile(t *testing.T) {
 	useConfigFile(t, `{"store":{"path":"habbo.db"},"cms":{"host":"localhost","port":17387},`+
-		`"housekeeping":{"host":"localhost","port":18465},"proxy":{"enabled":false,"trusted":["127.0.0.1"]}}`)
+		`"housekeeping":{"host":"localhost","port":18465},"proxy":{"enabled":false,"trusted":["127.0.0.1"]},`+
+		`"server":{"info":{"host":"localhost","port":30000},"mus":{"host":"localhost","port":30001}}}`)
 	if missing, unused, err := Differences(); err != nil || len(missing) != 0 || len(unused) != 0 {
 		t.Errorf("Differences = %v, %v, %v, want none", paths(missing), paths(unused), err)
 	}
@@ -111,5 +114,54 @@ func TestRewriteRefusesBadValuesAndKeysThatAreThere(t *testing.T) {
 				t.Errorf("config.json changed after a refusal: %s", data)
 			}
 		})
+	}
+}
+
+func TestDifferencesAndRewriteReachKeysThreeLevelsDeep(t *testing.T) {
+	useConfigFile(t, `{"server": {"info": {"port": 31000}, "lobby": {"port": 1}}}`)
+	missing, unused, err := Differences()
+	if err != nil {
+		t.Fatalf("Differences: %v", err)
+	}
+	var server []string
+	for _, path := range paths(missing) {
+		if strings.HasPrefix(path, "server.") {
+			server = append(server, path)
+		}
+	}
+	if want := []string{`server.info.host="localhost"`, `server.mus.host="localhost"`, `server.mus.port=30001`}; !slices.Equal(server, want) {
+		t.Errorf("missing server keys = %v, want %v", server, want)
+	}
+	if got, want := paths(unused), []string{`server.lobby.port=1`}; !slices.Equal(got, want) {
+		t.Errorf("unused = %v, want %v", got, want)
+	}
+
+	before, _ := os.ReadFile(Filename)
+	if err := Rewrite(map[string]json.RawMessage{"server.info.port": json.RawMessage(`32000`)}); !errors.Is(err, ErrNotNew) {
+		t.Errorf("Rewrite of server.info.port, which the file has = %v, want ErrNotNew", err)
+	}
+	err = Rewrite(map[string]json.RawMessage{"server.mus.port": json.RawMessage(`31000`)})
+	if err == nil || !strings.Contains(err.Error(), "server.mus.port: must differ from info.port") {
+		t.Errorf("Rewrite of server.mus.port on the port of info = %v, want it refused", err)
+	}
+	if after, _ := os.ReadFile(Filename); string(after) != string(before) {
+		t.Errorf("config.json changed after a refusal: %s", after)
+	}
+	if err := Rewrite(map[string]json.RawMessage{"server.mus.port": json.RawMessage(`31001`)}); err != nil {
+		t.Fatalf("Rewrite: %v", err)
+	}
+	data, err := os.ReadFile(Filename)
+	if err != nil {
+		t.Fatal(err)
+	}
+	cfg := defaults()
+	if err := json.Unmarshal(data, cfg); err != nil {
+		t.Fatal(err)
+	}
+	if info, mus := cfg.Server.Info, cfg.Server.MUS; info.Host != "localhost" || info.Port != 31000 || mus.Host != "localhost" || mus.Port != 31001 {
+		t.Errorf("config.json = %s", data)
+	}
+	if missing, unused, err := Differences(); err != nil || len(missing) != 0 || len(unused) != 0 {
+		t.Errorf("after Rewrite: missing %v, unused %v, %v", paths(missing), paths(unused), err)
 	}
 }

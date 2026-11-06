@@ -45,7 +45,8 @@ try to enable the installer to set them as the administrator."
 - One copy of the settings serves every program, with no refresh
   ([0051](holo-port/decisions/0051-one-machine-and-a-refresh.md)).
 - How the programs run together: [How the programs work together](holo-port/reference/architecture.md).
-- It mounts the game server's WebSocket on its shared mux ([server 0006](server/decisions/0006-transport.md)).
+- The game server keeps a WebSocket listener on the host and port of each of its connections, and WebSocket paths on
+  the orchestrator's mux wait for later ([server 0020](server/decisions/0020-info-and-mus-websocket-ports.md)).
 - The CMS and housekeeping change the game server's virtual state directly
   ([server 0013](server/decisions/0013-site-changes-like-mus.md)).
 
