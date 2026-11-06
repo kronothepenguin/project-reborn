@@ -1,3 +1,6 @@
 [submodule "vendor/HabboWidgets"]
 	path = vendor/HabboWidgets
 	url = https://github.com/Quackster/HabboWidgets.git
+[submodule "vendor/LibreShockwave"]
+	path = vendor/LibreShockwave
+	url = https://github.com/LibreShockwave/LibreShockwave
