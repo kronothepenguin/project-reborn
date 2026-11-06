@@ -14,7 +14,7 @@ that brings it. So far the package holds what `tools/create` generated,
 
 | Part | Holds | Brought by |
 | --- | --- | --- |
-| `server.go` | `New(db)`, serving TCP, and `Mount(mux)` for the WebSocket | s0-03 generated `New(db)` and `Mount(mux)`; s0-07 serves the TCP listeners and mounts the WebSocket paths |
+| `server.go` | `New(db)`, and a WebSocket listener on the host and port of `server.info` and of `server.mus` (`plans/server/decisions/0020-info-and-mus-websocket-ports.md`) | s0-03 generated `New(db)` and `Mount(mux)`; s0-07 serves the listeners |
 | `transport/` | `Conn`, an `io.Reader` to receive, an `io.Writer` to send and an `io.Closer`, over TCP (`tcp.go`) and the WebSocket (`websocket.go`) | s0-05 |
 | `encoding/` | B64, VL64 and strings | s0-06 |
 | `r26/` | The R26 ids, and one file per client cast: `entry_init.go`, `navigator.go`, `room.go`… | s0-07 the framing, `HELLO` and the dispatch by id; each cast's handlers with the phase that serves the cast, from S2 |

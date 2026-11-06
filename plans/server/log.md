@@ -2,6 +2,13 @@
 
 ## 2026-11-06
 
+- **Update** [S0](/phases/s0-foundations.md), [s0-04](/tasks/s0-04-listener-config.md),
+  [s0-07](/tasks/s0-07-r26-sessions.md), [s0-08](/tasks/s0-08-exit-check.md) and
+  [How the server is built](/reference/architecture.md) follow 0020: a WebSocket listener on a host and port per
+  connection, the exit criterion on WebSocket only, and s0-07 also asks what the `mus` listener does before S7.
+- **Decision** [0020](/decisions/0020-info-and-mus-websocket-ports.md): `server.info` and `server.mus` are a host and a
+  port each, and the server runs a WebSocket listener on each, which LibreShockwave opens; TCP and WebSocket paths
+  wait for later. It supersedes 0019 and answers [s0-04](/tasks/s0-04-listener-config.md)'s question.
 - **Done** [s0-06](/tasks/s0-06-encoding.md): `packages/server/encoding` reads and writes B64, VL64, both string
   forms, booleans, bytes and raw bodies byte for byte as ports of the client's scripts do, with UTF-8 text, and fuzzing
   finds no input that makes a reader panic.
