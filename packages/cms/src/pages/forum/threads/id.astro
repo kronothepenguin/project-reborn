@@ -5,6 +5,7 @@ import Moderation from "../../../components/forum/moderation.svelte";
 import PageNumbers from "../../../components/forum/page-numbers.astro";
 import Post from "../../../components/forum/post.astro";
 import ReplyForm from "../../../components/forum/reply-form.svelte";
+import ReportPost from "../../../components/forum/report-post.svelte";
 import ViewerData from "../../../components/forum/viewer-data.astro";
 import Community from "../../../layouts/community.astro";
 
@@ -38,6 +39,7 @@ const moderation =
       <ViewerData thread />
       <ReplyForm client:only="svelte" source="forum-viewer" />
       <DeletePost client:only="svelte" />
+      <ReportPost client:only="svelte" />
       [[ end ]]
       <div class="flow-root pt-1 pr-0 pb-2 pl-2">
         [[ if .SignedIn ]][[ if .Locked ]]<span class="float-left pr-[11px] font-bold text-neutral-700"

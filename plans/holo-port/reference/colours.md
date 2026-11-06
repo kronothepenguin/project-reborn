@@ -2,7 +2,7 @@
 type: Reference
 title: Holo colours mapped to Tailwind
 description: The closest Tailwind colour for each Holo colour, computed with tools/tw-color, for the public site, BBCode and housekeeping.
-timestamp: 2026-11-05T19:43:45+00:00
+timestamp: 2026-11-06T17:35:17+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [colours, tailwind]
 ---
@@ -50,6 +50,18 @@ Use these classes instead of Holo's hex values. For a colour that is not listed,
 | list hover blue (odd / even) | #f1f8ff / #dceafa | sky-50 / blue-100 |
 | list hover default (odd / even) | #fff6ee / #fff0dc | orange-50 / orange-100 |
 | list hover green (odd / even) | #ebffd9 / #dafdc2 | lime-100 / lime-100 |
+
+# Help Tool
+
+The window of Holo's `iot` pages, from `iot/content3/styles/style.css` and `style-iot.css`.
+
+| Use | Hex | Tailwind |
+| --- | --- | --- |
+| window background | #083940 | cyan-950 |
+| behind the portlet | #47839d | slate-500 |
+| heading | #069 | sky-700 |
+| link | #f16100 | orange-600 |
+| footer text | #7295aa | slate-400 |
 
 # BBCode
 

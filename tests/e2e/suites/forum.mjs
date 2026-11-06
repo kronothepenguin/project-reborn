@@ -146,6 +146,7 @@ export default async function ({ base, browser, check, shot, sql }) {
       (await doraBox.locator('img:not([alt="Offline"])').count()) === 0,
     await doraBox.innerText(),
   );
+  check("a guest gets no report flags", (await page.locator(".create-report-button").count()) === 0);
   check(
     "an edited post says who modified it, and when",
     (await boxes.nth(1).innerText()).includes("Last modified 01-11-2026 15:20:00 by Frank") &&
@@ -186,6 +187,7 @@ export default async function ({ base, browser, check, shot, sql }) {
   await posting({ base, page, check, shot, sql, long });
   await editing({ base, browser, page, check, shot, sql, long });
   await moderating({ base, browser, page, check, shot, sql });
+  await reporting({ base, page, check, shot, sql, long, problems });
 
   sql(`INSERT INTO settings (key, value, updated_at) VALUES ('features.forum', 'false', '${at(400)}')`);
   let away = false;
@@ -333,6 +335,8 @@ async function editing({ base, browser, page, check, shot, sql, long }) {
   await Promise.all([moderator.waitForURL("**/me"), moderator.click('button:has-text("Sign in")')]);
   await moderator.goto(`${base}/forum/threads/${mine}`);
   check("a holder of forum.edit gets Modify on Frank's post", (await moderator.locator(".edit-post-link").count()) === 1);
+  check("and the report flag under the delete button", (await moderator.locator(".delete-post + div .create-report-button").count()) === 1);
+  await shot(moderator, "forum-report-flag-moderator");
   await moderator.locator(".delete-post").click();
   await Promise.all([
     moderator.waitForURL("**/forum"),
@@ -429,4 +433,94 @@ async function moderating({ base, browser, page, check, shot, sql }) {
     moderator.url(),
   );
   await admin.close();
+}
+
+// Frank reports Dora's posts in Holo's Help Tool window: a flag opens it, another
+// flag takes it over, Proceed sends the report and Close shuts it; the next report
+// waits until staff pick the first up.
+async function reporting({ base, page, check, shot, sql, long, problems }) {
+  // The flag and Close are the pages' own markup, so their islands must be awake
+  // before a click: until then the flag opens a plain window and Close does nothing.
+  const awake = (p) => p.waitForFunction(() => !document.querySelector("astro-island[ssr]"));
+  await page.goto(`${base}/forum/threads/${long}`);
+  await awake(page);
+  const flags = page.locator(".create-report-button");
+  const rows = page.locator("#group-postlist-list tr");
+  check(
+    "Frank gets the report flag on Dora's five posts, and none on his own",
+    (await flags.count()) === 5 &&
+      (await rows.filter({ has: page.locator(".create-report-button") }).filter({ hasText: "archived" }).count()) === 5,
+  );
+  const [first, second] = sql(`SELECT id FROM forum_posts WHERE forum_thread_id = ${long} ORDER BY id LIMIT 3`)
+    .map(([id]) => id)
+    .filter((_, i) => i !== 1);
+  check(
+    "a flag leads to the report window with the thread's page",
+    (await flags.first().getAttribute("href")) === `/forum/posts/${first}/report?page=1` &&
+      (await flags.first().getAttribute("title")) === "Report this post",
+  );
+
+  const [help] = await Promise.all([page.waitForEvent("popup"), flags.first().click()]);
+  help.on("pageerror", (e) => problems.push(e.message));
+  await help.waitForLoadState();
+  await awake(help);
+  const text = () => help.locator("body").innerText();
+  check(
+    "the flag opens Holo's Help Tool in its own window, which asks first",
+    (await help.evaluate(() => window.name)) === "habbohelp" &&
+      !(await help.evaluate(() => window.toolbar.visible)) &&
+      (await help.title()) === "Reborn Help Tool" &&
+      (await text()).includes("REBORN HELP TOOL") &&
+      (await text()).includes("ASK YOUR QUESTION") &&
+      (await text()).includes("Is the post you have selected offensive or breaking the rules? Are you sure you want to report this post?") &&
+      (await help.getByRole("button", { name: "Proceed" }).isVisible()) &&
+      (await help.getByRole("button", { name: "Close" }).isVisible()),
+    await text(),
+  );
+  await shot(help, "forum-report-window");
+
+  await Promise.all([help.waitForURL(`**/forum/posts/${second}/report?page=1`), flags.nth(1).click()]);
+  check("another flag takes the open window over", page.context().pages().length === 2);
+  check("asking writes nothing", sql("SELECT COUNT(*) FROM help_tickets")[0][0] === 0);
+
+  await Promise.all([help.waitForEvent("load"), help.getByRole("button", { name: "Proceed" }).click()]);
+  check(
+    "Proceed sends the report and thanks, with only Close left",
+    (await text()).includes("Thank you for reporting this post.") &&
+      (await help.getByRole("button", { name: "Proceed" }).count()) === 0 &&
+      (await help.getByRole("button", { name: "Close" }).isVisible()),
+    await text(),
+  );
+  await shot(help, "forum-report-thanks");
+  await awake(help);
+  const [[frank]] = sql("SELECT id FROM avatars WHERE name = 'Frank'");
+  const tickets = sql("SELECT avatar_id, forum_post_id, subject, message FROM help_tickets");
+  check(
+    "the ticket is Frank's, about Dora's post, with its text and its address",
+    tickets.length === 1 &&
+      tickets[0][0] === frank &&
+      tickets[0][1] === second &&
+      tickets[0][2] === "DISCUSSION BOARD - REPORTED POST" &&
+      tickets[0][3].includes(`The Post ID is ${second}, in thread ${long}.`) &&
+      tickets[0][3].includes("Message 3") &&
+      tickets[0][3].endsWith(`${base}/forum/threads/${long}?page=1#post-${second}`),
+    JSON.stringify(tickets),
+  );
+  await Promise.all([help.waitForEvent("close"), help.getByRole("button", { name: "Close" }).click()]);
+  check("Close shuts the window", help.isClosed());
+
+  const [again] = await Promise.all([page.waitForEvent("popup"), flags.first().click()]);
+  again.on("pageerror", (e) => problems.push(e.message));
+  await again.waitForLoadState();
+  await awake(again);
+  check(
+    "while the report waits, another answers Holo's refusal",
+    (await again.locator("body").innerText()).includes(
+      "Unable to report post: you still have a pending support request. Please try again later. Note that post reports also count as support requests.",
+    ) && (await again.getByRole("button", { name: "Proceed" }).count()) === 0,
+    await again.locator("body").innerText(),
+  );
+  await shot(again, "forum-report-waiting");
+  await Promise.all([again.waitForEvent("close"), again.getByRole("button", { name: "Close" }).click()]);
+  check("a refused report writes nothing", sql("SELECT COUNT(*) FROM help_tickets")[0][0] === 1);
 }

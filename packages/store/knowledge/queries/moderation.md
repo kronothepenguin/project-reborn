@@ -1,10 +1,10 @@
 ---
 type: SQL Query
 title: moderation.query.sql
-description: Moderation operations for the active ban on a user or an IP, the count of active bans, a habbo's alerts and the count of open help tickets.
+description: Moderation operations for bans, alerts and help tickets, from the active ban on a user or an IP to a habbo's new and waiting tickets and the help queue staff pick up and close.
 resource: packages/store/queries/moderation.query.sql
 tags: [store, query, moderation]
-timestamp: 2026-10-27T21:44:59+00:00
+timestamp: 2026-11-06T17:35:17+00:00
 ---
 
 # Operations
@@ -101,6 +101,19 @@ them `string` and `time.Time` instead of copying the nullability of `bans.ip` an
 
 - Cardinality: `:one`
 - Result: how many tickets nobody has picked up or closed
+- Tables: `help_tickets`
+
+## CountWaitingHelpTickets
+
+- Cardinality: `:one`
+- Inputs: `avatar_id`
+- Result: how many of the habbo's tickets nobody has picked up, help requests and post reports alike
+- Tables: `help_tickets`
+
+## CreateHelpTicket
+
+- Cardinality: `:exec`
+- Inputs: `avatar_id`, `forum_post_id` (NULL for a help request), `subject`, `message`, `ip`, `created_at`
 - Tables: `help_tickets`
 
 ## CountUnclosedHelpTickets

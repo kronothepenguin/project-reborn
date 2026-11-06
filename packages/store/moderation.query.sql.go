@@ -79,6 +79,20 @@ func (q *Queries) CountUnclosedHelpTickets(ctx context.Context) (int64, error) {
 	return count, err
 }
 
+const countWaitingHelpTickets = `-- name: CountWaitingHelpTickets :one
+SELECT COUNT(*) FROM help_tickets
+WHERE avatar_id = CAST(?1 AS INTEGER) AND picked_up_at IS NULL
+`
+
+// A habbo's tickets that staff have not picked up, help requests and post reports
+// alike: while one waits, the habbo sends no other.
+func (q *Queries) CountWaitingHelpTickets(ctx context.Context, avatarID int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countWaitingHelpTickets, avatarID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createAlert = `-- name: CreateAlert :exec
 INSERT INTO alerts (avatar_id, sender_user_id, message, created_at)
 VALUES (?1, ?2, ?3, ?4)
@@ -163,6 +177,36 @@ func (q *Queries) CreateBan(ctx context.Context, arg CreateBanParams) (Ban, erro
 		&i.LiftedByUserID,
 	)
 	return i, err
+}
+
+const createHelpTicket = `-- name: CreateHelpTicket :exec
+INSERT INTO help_tickets (avatar_id, forum_post_id, subject, message, ip, created_at)
+VALUES (
+    CAST(?1 AS INTEGER), ?2, ?3, ?4,
+    ?5, ?6
+)
+`
+
+type CreateHelpTicketParams struct {
+	AvatarID    int64
+	ForumPostID sql.NullInt64
+	Subject     string
+	Message     string
+	IP          string
+	CreatedAt   time.Time
+}
+
+// forum_post_id is NULL for a help request and names the post of a report.
+func (q *Queries) CreateHelpTicket(ctx context.Context, arg CreateHelpTicketParams) error {
+	_, err := q.db.ExecContext(ctx, createHelpTicket,
+		arg.AvatarID,
+		arg.ForumPostID,
+		arg.Subject,
+		arg.Message,
+		arg.IP,
+		arg.CreatedAt,
+	)
+	return err
 }
 
 const dismissAlert = `-- name: DismissAlert :execrows

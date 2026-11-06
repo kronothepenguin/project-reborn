@@ -2,6 +2,9 @@
 
 ## 2026-11-06
 
+- **Done** [p5-17](/tasks/p5-17-report-posts.md): signed-in habbos report another habbo's post in Holo's
+  Help Tool window, whose Proceed posts a ticket that housekeeping's queue shows, one waiting request per habbo.
+- **Start** [p5-17](/tasks/p5-17-report-posts.md).
 - **Done** [p5-16](/tasks/p5-16-moderate-threads.md): holders of `forum.edit` rename, close, stick and delete threads
   with Holo's Moderation Tools, which open on the thread as it is now; resumed from a cancelled session's work.
 - **Decision** [0101](/decisions/0101-agents-clean-up-worktrees.md): an agent removes its worktree and deletes its

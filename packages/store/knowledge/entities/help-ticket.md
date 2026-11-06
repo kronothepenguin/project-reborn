@@ -3,7 +3,7 @@ type: Entity
 title: Help ticket
 description: A help request from a habbo or a report of a forum post, handled by staff in housekeeping.
 tags: [store, entity, moderation]
-timestamp: 2026-10-27T21:28:26+00:00
+timestamp: 2026-11-06T17:35:17+00:00
 ---
 
 # Definition
@@ -14,7 +14,8 @@ close them.
 # Invariants
 
 - A ticket is open while `closed_at` is NULL.
-- A habbo has at most one open help-tool ticket (validated in Go); post reports are not limited.
+- A habbo has at most one ticket that staff have not picked up, help request or post report alike (validated in
+  Go).
 
 # Lifecycle
 
@@ -34,3 +35,7 @@ None.
 # Tables
 
 - [help_tickets](/tables/help_tickets.md)
+
+# Queries
+
+- [moderation.query.sql](/queries/moderation.md)
