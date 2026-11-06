@@ -1,10 +1,10 @@
 ---
 type: SQL Query
 title: avatars.query.sql
-description: Habbo operations for creation, lookup by id or name, the habbos of a user and random habbos.
+description: Habbo operations for creation, lookup by id or name, the habbos of a user and random habbos, their badges, a badge for every habbo of a user, and their wardrobe outfits.
 resource: packages/store/queries/avatars.query.sql
 tags: [store, query, habbo]
-timestamp: 2026-11-02T02:47:29+00:00
+timestamp: 2026-11-06T22:56:10+00:00
 ---
 
 # Operations
@@ -141,6 +141,38 @@ timestamp: 2026-11-02T02:47:29+00:00
 - Result: 1 when the habbo had the badge, 0 otherwise
 - Tables: `avatar_badges`
 
+## GrantBadgeToUserAvatars
+
+- Cardinality: `:execrows`
+- Inputs: `code`, `granted_at`, `user_id`
+- Result: how many habbos got the badge. Every habbo of the user that lacks it gets it unworn, archived habbos too,
+  since they are still the user's; a habbo that holds it keeps it as it is. A habbo wears one badge, so the habbo
+  that buys club wears `HC1` with [TakeOffAvatarBadge](#takeoffavatarbadge) and
+  [WearAvatarBadge](#wearavatarbadge) (0103).
+- Tables: `avatar_badges`, `avatars`
+
+## DeleteBadgeFromUserAvatars
+
+- Cardinality: `:execrows`
+- Inputs: `code`, `user_id`
+- Result: how many habbos lost the badge; it leaves every habbo of the user, archived habbos too, and no other
+  user's, as `HC1` does when the club ends (0103)
+- Tables: `avatar_badges`, `avatars`
+
+## ListWardrobeOutfits
+
+- Cardinality: `:many`
+- Inputs: `avatar_id`
+- Result: the habbo's wardrobe outfits by slot (`ORDER BY slot`)
+- Tables: `wardrobe_outfits`
+
+## UpsertWardrobeOutfit
+
+- Cardinality: `:exec`
+- Inputs: `avatar_id`, `slot`, `figure`, `gender`, `updated_at`
+- Result: the outfit in the habbo's slot, replacing the one there
+- Tables: `wardrobe_outfits`
+
 # Related
 
-- Entity: [Habbo](/entities/habbo.md).
+- Entities: [Habbo](/entities/habbo.md), [Wardrobe outfit](/entities/wardrobe-outfit.md).
