@@ -7,7 +7,7 @@ starts.
 
 - [s0-01 Create the plan bundle and the tracking-plans skill](/tasks/s0-01-plan-bundle.md) — Write plans/server from the user's request and answers, with the tracking-plans skill that works every plan and the .claude/skills link that lets Claude Code load the project skills. **done**
 - [s0-02 Add the backend and client templates to tools/create](/tasks/s0-02-create-templates.md) — tools/create takes -template=fullstack|backend|client, generating today's output, a Go package and runner without a frontend, or a Vite package like client-r26. **done**
-- [s0-03 Create packages/server and apps/server](/tasks/s0-03-scaffold-server.md) — Generate the server's package and runner with the backend template, and describe the package layout of decision 0005 in its README.
+- [s0-03 Create packages/server and apps/server](/tasks/s0-03-scaffold-server.md) — Generate the server's package and runner with the backend template, and describe the package layout of decision 0005 in its README. **done**
 - [s0-04 Declare the server's listeners in config.json](/tasks/s0-04-listener-config.md) — packages/config gains the server's listeners, each a TCP address or a WebSocket path with the name of the protocol it speaks.
 - [s0-05 Write the transport](/tasks/s0-05-transport.md) — packages/server/transport gives TCP and WebSocket connections one Conn interface, an io.Reader to receive and an io.Writer to send, with the WebSocket as an http.Handler on golang.org/x/net/websocket.
 - [s0-06 Write the encoding](/tasks/s0-06-encoding.md) — packages/server/encoding reads and writes the values of the R26 wire format, B64, VL64, strings, booleans, bytes and raw bodies, tested against the client's own code.

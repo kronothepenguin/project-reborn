@@ -1,0 +1,9 @@
+.PHONY: install dev
+
+install:
+	$(MAKE) -C ../../packages/server install
+	mkdir -p tmp
+
+# air runs from the repository root, so the runner reads the root config.json.
+dev:
+	cd ../.. && go tool air -c apps/server/.air.toml
