@@ -1,0 +1,36 @@
+# {{.Name}} — app runner
+
+Thin runner for `packages/{{.Name}}`. The app code (a Go struct, without a
+frontend) lives entirely in the package; this module only serves it.
+
+| cmd               | mode                       |
+| ----------------- | -------------------------- |
+| `./cmd/{{.Name}}` | production and development |
+
+## Port
+
+- App (Go HTTP server): **{{.AppPort}}** — baked in the runner
+
+## Run
+
+```sh
+make install    # once: this project's folders and dependencies
+make dev        # air hot reload → http://localhost:{{.AppPort}}
+```
+
+## Production
+
+```sh
+cd ../..
+go build -o ./apps/{{.Name}}/tmp/{{.Name}} ./apps/{{.Name}}/cmd/{{.Name}}
+./apps/{{.Name}}/tmp/{{.Name}}   # → http://localhost:{{.AppPort}}, reads ./config.json
+```
+
+## Dev-mode notes
+
+- `make dev` starts air from the repository root, so the runner reads and
+  writes the root `config.json`.
+- Air watches the `.go` files of `apps/{{.Name}}`, `packages/{{.Name}}` and the
+  packages it imports (`config`, `store`), and rebuilds the runner on Go changes.
+- The runner opens the database with `store.FromConfig()`, which creates it when
+  it does not exist.

@@ -1,0 +1,23 @@
+# {{.Name}} — Go package
+
+A Go module without a frontend. The app struct (`{{.Type}}` struct) takes the
+database in `New(db)` and registers its routes on a mux in `Mount(mux)`;
+`apps/{{.Name}}` runs it.
+
+## Port
+
+- App (Go HTTP server): **{{.AppPort}}** — baked in `apps/{{.Name}}/cmd/{{.Name}}`
+
+## Development
+
+Run it through the app runner in `apps/{{.Name}}`:
+
+```sh
+cd apps/{{.Name}}
+make dev    # air hot reload → http://localhost:{{.AppPort}}
+```
+
+## Production build
+
+From the repository root:
+`go build -o apps/{{.Name}}/tmp/{{.Name}} ./apps/{{.Name}}/cmd/{{.Name}} && ./apps/{{.Name}}/tmp/{{.Name}}`

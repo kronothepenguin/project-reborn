@@ -3,9 +3,10 @@ package main
 import "hash/fnv"
 
 const (
-	AppBase   = 10000 // app ports:  10000-19999
+	AppBase   = 10000 // app ports:   10000-19999
 	AstroBase = 20000 // astro ports: 20000-29999
-	Span      = 10000 // same span width for both
+	ViteBase  = 30000 // vite ports:  30000-39999
+	Span      = 10000 // same span width for all three
 )
 
 func hash(s string) int {
@@ -15,9 +16,13 @@ func hash(s string) int {
 }
 
 func AppPort(name string) int {
-	return int(AppBase + hash("app:"+name))
+	return AppBase + hash("app:"+name)
 }
 
 func AstroPort(name string) int {
-	return int(AstroBase + hash("astro:"+name))
+	return AstroBase + hash("astro:"+name)
+}
+
+func VitePort(name string) int {
+	return ViteBase + hash("vite:"+name)
 }

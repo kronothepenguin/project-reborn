@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -15,56 +16,47 @@ import (
 //go:embed all:templates
 var templatesFS embed.FS
 
-func write(root, name string, appPort, astroPort int) (err error) {
+// walkTemplates calls fn with each template of the project's kind and the file
+// it renders to, relative to the repository root.
+func walkTemplates(p project, fn func(tmpl, target string) error) error {
+	dir := path.Join("templates", p.Kind)
+	return fs.WalkDir(templatesFS, dir, func(tmpl string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return err
+		}
+
+		target := strings.TrimSuffix(strings.TrimPrefix(tmpl, dir+"/"), ".tmpl")
+		target = strings.ReplaceAll(target, "[[name]]", p.Name)
+
+		return fn(tmpl, filepath.FromSlash(target))
+	})
+}
+
+func write(root string, p project) (err error) {
 	defer func() {
 		if err == nil {
 			return
 		}
 
-		err = errors.Join(
-			err,
-			os.RemoveAll(filepath.Join(root, "apps", name)),
-			os.RemoveAll(filepath.Join(root, "packages", name)),
-		)
+		errs := []error{err}
+		for _, dir := range p.dirs() {
+			errs = append(errs, os.RemoveAll(filepath.Join(root, dir)))
+		}
+		err = errors.Join(errs...)
 	}()
 
-	data := map[string]any{
-		"Name":      name,
-		"Type":      strings.ToUpper(name[:1]) + name[1:],
-		"AppPort":   appPort,
-		"AstroPort": astroPort,
-	}
+	return walkTemplates(p, func(tmpl, target string) error {
+		target = filepath.Join(root, target)
+		if err := os.MkdirAll(filepath.Dir(target), 0755); err != nil {
+			return err
+		}
 
-	return fs.WalkDir(templatesFS, "templates", func(path string, d fs.DirEntry, err error) error {
+		b, err := fs.ReadFile(templatesFS, tmpl)
 		if err != nil {
 			return err
 		}
 
-		if d.IsDir() {
-			return nil
-		}
-
-		filename, err := filepath.Rel("templates", path)
-		if err != nil {
-			return err
-		}
-
-		filename = strings.TrimSuffix(filename, ".tmpl")
-		filename = strings.ReplaceAll(filename, "[[name]]", name)
-
-		target := filepath.Join(root, filename)
-
-		dir := filepath.Dir(target)
-		if err := os.MkdirAll(dir, 0755); err != nil {
-			return err
-		}
-
-		b, err := fs.ReadFile(templatesFS, path)
-		if err != nil {
-			return err
-		}
-
-		t, err := template.New(path).Parse(string(b))
+		t, err := template.New(tmpl).Parse(string(b))
 		if err != nil {
 			return err
 		}
@@ -73,8 +65,7 @@ func write(root, name string, appPort, astroPort int) (err error) {
 		if err != nil {
 			return err
 		}
-		defer f.Close()
 
-		return t.Execute(f, data)
+		return errors.Join(t.Execute(f, p), f.Close())
 	})
 }

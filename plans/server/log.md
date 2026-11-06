@@ -2,6 +2,20 @@
 
 ## 2026-11-06
 
+- **Done** [s0-02](/tasks/s0-02-create-templates.md): `tools/create -template=fullstack|backend|client` makes today's
+  projects byte for byte, Go-only backends and plain Vite clients, and a project of each kind passes its gates.
+- **Create** [s0-09](/tasks/s0-09-go-template-names.md): the Go templates fail for a name with a `-`, and `gofmt`
+  reorders the imports of a name that sorts after `store`. Found by s0-02.
+- **Decision** [0018](/decisions/0018-client-is-a-plain-vite-app.md): a client project builds as a plain Vite app,
+  `dist/index.html` and its script, with only the port in `vite.config.js`. Answers
+  [s0-02](/tasks/s0-02-create-templates.md)'s question and unblocks it.
+- **Blocked** [s0-02](/tasks/s0-02-create-templates.md): the fullstack, backend and client templates are written and
+  tested, but a client project's `pnpm build` fails: client-r26's library build needs a global name, `_director`
+  there. How a client builds is asked to the user.
+- **Decision** [0017](/decisions/0017-client-vite-port.md): the client template derives its Vite port from the
+  name, in 30000 to 39999 of its own; `client-r18` gets 30050. Answers [s0-02](/tasks/s0-02-create-templates.md)'s
+  question.
+- **Start** [s0-02](/tasks/s0-02-create-templates.md).
 - **Update** [the rules](/rules.md#branches): once merged, the agent removes its worktree and deletes its branch
   (`plans/holo-port/decisions/0101-agents-clean-up-worktrees.md`).
 - **Update** [s1-24](/tasks/s1-24-mus-framing.md) reads LibreShockwave in the submodule `vendor/LibreShockwave`

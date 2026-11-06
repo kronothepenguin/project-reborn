@@ -73,7 +73,7 @@ tools:
 	done
 
 create: tools
-	./tools/create/bin/create $(if $(dry-run),-dry-run) $(if $(app-port),-app-port=$(app-port)) $(if $(astro-port),-astro-port=$(astro-port)) $(name)
+	./tools/create/bin/create $(if $(template),-template=$(template)) $(if $(dry-run),-dry-run) $(if $(app-port),-app-port=$(app-port)) $(if $(astro-port),-astro-port=$(astro-port)) $(name)
 
 tw-color:
 	node tools/tw-color/tw-color.mjs

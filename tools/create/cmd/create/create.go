@@ -1,15 +1,65 @@
 package main
 
 import (
+	"cmp"
 	"errors"
 	"fmt"
-	"io/fs"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
 )
+
+// The kinds of project, each named after its folder in templates/.
+const (
+	fullstack = "fullstack"
+	backend   = "backend"
+	client    = "client"
+)
+
+var kinds = []string{fullstack, backend, client}
+
+// project is what one run makes, and the data of its templates. A port is 0
+// when the kind has no server for it.
+type project struct {
+	Kind      string
+	Name      string
+	AppPort   int
+	AstroPort int
+	VitePort  int
+}
+
+// newProject derives the ports of the kind's servers from the name, unless
+// appPort or astroPort is given.
+func newProject(kind, name string, appPort, astroPort int) project {
+	p := project{Kind: kind, Name: name}
+	switch kind {
+	case fullstack:
+		p.AppPort = cmp.Or(appPort, AppPort(name))
+		p.AstroPort = cmp.Or(astroPort, AstroPort(name))
+	case backend:
+		p.AppPort = cmp.Or(appPort, AppPort(name))
+	case client:
+		p.VitePort = VitePort(name)
+	}
+	return p
+}
+
+// Type is the name of the package's exported type.
+func (p project) Type() string {
+	return strings.ToUpper(p.Name[:1]) + p.Name[1:]
+}
+
+// dirs are the folders the project makes, relative to the repository root.
+func (p project) dirs() []string {
+	dirs := []string{filepath.Join("packages", p.Name)}
+	if p.Kind != client {
+		dirs = append(dirs, filepath.Join("apps", p.Name))
+	}
+	return dirs
+}
 
 func validateName(name string) error {
 	if name == "" {
@@ -45,53 +95,53 @@ func run(root, name string, args ...string) error {
 	return cmd.Run()
 }
 
-func scaffold(root, name string, appPort, astroPort uint, dryRun bool) error {
+func scaffold(root, kind, name string, appPort, astroPort uint, dryRun bool) error {
 	if err := validateName(name); err != nil {
 		return err
 	}
 
-	pkgDir := filepath.Join(root, "/packages/", name)
-	appDir := filepath.Join(root, "/apps/", name)
+	p := newProject(kind, name, int(appPort), int(astroPort))
 
-	if _, err := os.Stat(pkgDir); err == nil {
-		return errors.New("packages/" + name + " already exists")
-	}
-	if _, err := os.Stat(appDir); err == nil {
-		return errors.New("apps/" + name + " already exists")
-	}
-
-	if appPort == 0 {
-		appPort = uint(AppPort(name))
-	}
-	if astroPort == 0 {
-		astroPort = uint(AstroPort(name))
+	for _, dir := range p.dirs() {
+		if _, err := os.Stat(filepath.Join(root, dir)); err == nil {
+			return errors.New(dir + " already exists")
+		}
 	}
 
 	if dryRun {
-		printPlan(root, name, int(appPort), int(astroPort))
+		printPlan(os.Stdout, root, p)
 		return nil
 	}
 
-	if err := write(root, name, int(appPort), int(astroPort)); err != nil {
+	if err := write(root, p); err != nil {
+		return err
+	}
+	if err := install(root, p); err != nil {
 		return err
 	}
 
-	relAppDir, err := filepath.Rel(root, appDir)
-	if err != nil {
-		return err
+	printPlan(os.Stdout, root, p)
+	return nil
+}
+
+// install leaves the new project ready to run: a client gets its pnpm
+// dependencies, and a Go project joins go.work and runs its make install.
+func install(root string, p project) error {
+	if p.Kind == client {
+		return run(root, "pnpm", "--filter", "@project-reborn/"+p.Name+"...", "install")
 	}
+
+	relAppDir := filepath.Join("apps", p.Name)
+	relPkgDir := filepath.Join("packages", p.Name)
+	appDir := filepath.Join(root, relAppDir)
+	pkgDir := filepath.Join(root, relPkgDir)
+
 	if err := run(root, "go", "work", "use", relAppDir); err != nil {
-		return err
-	}
-
-	relPkgDir, err := filepath.Rel(root, pkgDir)
-	if err != nil {
 		return err
 	}
 	if err := run(root, "go", "work", "use", relPkgDir); err != nil {
 		return err
 	}
-
 	if err := run(root, "go", "work", "sync"); err != nil {
 		return err
 	}
@@ -102,52 +152,44 @@ func scaffold(root, name string, appPort, astroPort uint, dryRun bool) error {
 	if err := run(appDir, "go", "mod", "tidy", "-e"); err != nil {
 		return err
 	}
-	if err := run(appDir, "make", "install"); err != nil {
-		return err
-	}
-
-	printPlan(root, name, int(appPort), int(astroPort))
-	return nil
+	return run(appDir, "make", "install")
 }
 
-// printPlan walks the embedded templates and prints the files that would be
-// (or were) created.
-func printPlan(root, name string, appPort, astroPort int) {
-	fmt.Println()
-	fmt.Println("created:")
-	fmt.Println("  packages/" + name + "/")
-	fmt.Println("  apps/" + name + "/")
+// printPlan walks the kind's embedded templates and prints the files that
+// would be (or were) created, the ports of its servers and what to run next.
+func printPlan(w io.Writer, root string, p project) {
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "created:")
+	for _, dir := range p.dirs() {
+		fmt.Fprintln(w, "  "+dir+"/")
+	}
 
-	fs.WalkDir(templatesFS, "templates", func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if d.IsDir() {
-			return nil
-		}
-
-		filename, err := filepath.Rel("templates", path)
-		if err != nil {
-			return err
-		}
-
-		filename = strings.TrimSuffix(filename, ".tmpl")
-		filename = strings.ReplaceAll(filename, "[[name]]", name)
-
-		target := filepath.Join(root, filename)
-
-		fmt.Println("  " + target)
+	walkTemplates(p, func(_, target string) error {
+		fmt.Fprintln(w, "  "+filepath.Join(root, target))
 		return nil
 	})
 
-	fmt.Println()
-	fmt.Println("ports:")
-	fmt.Println("  app:   http://localhost:" + strconv.Itoa(appPort))
-	fmt.Println("  astro: http://localhost:" + strconv.Itoa(astroPort))
-	fmt.Println()
-	fmt.Println("next:")
-	fmt.Println("  make dev        # in apps/" + name + ": astro (background) + air hot reload")
-	fmt.Println("  make install    # at repo root: wires go workspace + pnpm + tools")
-	fmt.Println()
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "ports:")
+	if p.AppPort != 0 {
+		fmt.Fprintln(w, "  app:   http://localhost:"+strconv.Itoa(p.AppPort))
+	}
+	if p.AstroPort != 0 {
+		fmt.Fprintln(w, "  astro: http://localhost:"+strconv.Itoa(p.AstroPort))
+	}
+	if p.VitePort != 0 {
+		fmt.Fprintln(w, "  vite:  http://localhost:"+strconv.Itoa(p.VitePort))
+	}
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "next:")
+	switch p.Kind {
+	case fullstack:
+		fmt.Fprintln(w, "  make dev        # in apps/"+p.Name+": astro (background) + air hot reload")
+	case backend:
+		fmt.Fprintln(w, "  make dev        # in apps/"+p.Name+": air hot reload")
+	case client:
+		fmt.Fprintln(w, "  pnpm dev        # in packages/"+p.Name+": vite dev server")
+	}
+	fmt.Fprintln(w, "  make install    # at repo root: wires go workspace + pnpm + tools")
+	fmt.Fprintln(w)
 }
