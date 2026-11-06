@@ -2,6 +2,8 @@
 
 ## 2026-11-06
 
+- **Update** [p5-16](/tasks/p5-16-moderate-threads.md): the delete question says `complete`, since P5 spells Holo's
+  typos correctly; the task had kept Holo's `compelete`.
 - **Done** [p5-17](/tasks/p5-17-report-posts.md): signed-in habbos report another habbo's post in Holo's
   Help Tool window, whose Proceed posts a ticket that housekeeping's queue shows, one waiting request per habbo.
 - **Start** [p5-17](/tasks/p5-17-report-posts.md).

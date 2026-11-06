@@ -156,6 +156,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Group settings | A type that leaves Exclusive keeps its waiting requests until each habbo next views the group, and an admin can accept one meanwhile, even into a closed group | The waiting requests go at once |
 | Group page | Shows `Join` again to a habbo whose request waits, because its check reads a row loaded only for members | Shows no way in while the request waits |
 | Texts | `An request`, `Noone`, `You are already member`, `dont` on the group page's dialogs | Spelled correctly |
+| Texts | `You are about to delete a compelete topic.` in the Moderation Tools | Spelled correctly |
 | Group page | The Group Members widget takes its favourite icon, and its tiles their background, from Habbo's CDN, which is gone | The favourite mark of Holo's own `info_icons.png`; the tiles keep their dashed border alone, as Holo's show now |
 | Header | `My Groups` opens on layer 99, under any home item placed higher | The menu stays above the page |
 | Discussion board | The jump to a thread's last post counts two views, its own and the page it sends to | The last post's date links straight to the thread's last page, which counts one |

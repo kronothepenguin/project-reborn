@@ -419,7 +419,7 @@ async function moderating({ base, browser, page, check, shot, sql }) {
   await name.waitFor();
   check("the Moderation Tools reopen on Closed and Sticky topic", (await dialog.getByLabel("Closed").isChecked()) && (await dialog.getByLabel("Sticky topic").isChecked()));
   await dialog.getByRole("button", { name: "Delete" }).click();
-  check("Delete asks first, in Holo's words", await dialog.getByText("You are about to delete a compelete topic. Are you sure?").isVisible());
+  check("Delete asks first, in Holo's words", await dialog.getByText("You are about to delete a complete topic. Are you sure?").isVisible());
   await shot(moderator, "forum-moderation-delete");
   await dialog.getByRole("button", { name: "Cancel" }).click();
   check("Cancel keeps the thread", sql(`SELECT COUNT(*) FROM forum_threads WHERE id = ${topic}`)[0][0] === 1);

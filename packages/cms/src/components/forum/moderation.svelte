@@ -158,7 +158,7 @@
         <p class="mb-2">{unknown}</p>
         <p><Button onclick={() => (confirming = false)}>OK</Button></p>
       {:else}
-        <p class="mb-2">You are about to delete a compelete topic. Are you sure?</p>
+        <p class="mb-2">You are about to delete a complete topic. Are you sure?</p>
         <p class="flex gap-1">
           <Button onclick={() => (confirming = false)}>Cancel</Button>
           <Button onclick={proceed}>Proceed</Button>

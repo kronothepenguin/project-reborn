@@ -56,5 +56,6 @@ Results (2026-11-06):
 - Holo's `savetopicsettings.php` checked nothing on the server, so the port's refusals of a blank or long title are in
   [Where the port differs from Holo](/reference/holo-differences.md), with Enter, which no longer reloads the page, and
   a failed save, which opens the Moderation Tools again with the reason.
-- `You are about to delete a compelete topic.` keeps Holo's spelling, as the port keeps Holo's texts.
+- Holo's `compelete` in the delete question is spelled correctly, as on the other CMS pages; the task first kept it,
+  reading the rule of housekeeping, which keeps Holo's spelling.
 
