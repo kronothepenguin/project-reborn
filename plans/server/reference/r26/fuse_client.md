@@ -2,7 +2,7 @@
 type: Reference
 title: R26 fuse_client
 description: How the R26 client opens its #info and #mus connections, frames packets both ways, encodes every value, and maps listeners and commands, from fuse_client's .ls scripts.
-timestamp: 2026-11-05T22:10:00+00:00
+timestamp: 2026-11-06T14:59:31+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T22:10:00+00:00"}
 tags: [r26, protocol]
 ---
@@ -32,6 +32,9 @@ the connection does with it ([Encryption](#encryption)).
 | `#info` | `connection.info.id` | `hh_entry_init/7_Login Component Class.ls`: `openConnection` | `connection.info.host`, `connection.info.port` | raw bytes (`connectToNetServer(…, 1)`) |
 | `#info` | `connection.room.id` | the room casts | the same connection: the variable's value is `#info` | |
 | `#mus` | `connection.mus.id` | `42_Binary Manager Class.ls`: `next`, only when the queue has work | `connection.mus.host`, `connection.mus.port` | Multiuser Xtra messages (`connectToNetServer(…, 0)`) |
+
+On LibreShockwave each of these sockets is a WebSocket to `ws(s)://<host>:<port><websocketPath>`, with the same bytes
+([0015](/decisions/0015-client-on-libreshockwave.md)).
 
 The hosts and ports come from the page that embeds the client, not from a cast: `packages/client-r26/index.html`
 passes `connection.info.host=localhost;connection.info.port=30000` and
@@ -198,7 +201,9 @@ Each example was computed with a literal port of `sendNew` and read back with a 
 ## Text
 
 How text becomes bytes depends on the variable `client.textdata.utf8`. No cast sets it, so it comes from the
-external variables the site serves.
+external variables the site serves; the server's text is UTF-8 with it on ([0014](/decisions/0014-text-is-utf8.md)).
+Several paths also depend on `the productVersion`. LibreShockwave reports `"10.1"`
+([0015](/decisions/0015-client-on-libreshockwave.md)), so the client takes the paths for Director below 11.
 
 - `client.textdata.utf8` true: `encodeUTF8` writes UTF-8 for code points up to U+FFFF, so `é` is `C3 A9`.
   `decodeUTF8` reads 1- to 3-byte sequences back, but only on a Director below version 11; from version 11 the text
@@ -230,10 +235,10 @@ site-to-server commands of [0013](/decisions/0013-site-changes-like-mus.md); the
 ## Wire format
 
 `connectToNetServer("*", "*", host, port, "*", 0)` opens the Multiuser Xtra in its own message mode, not raw mode.
-Every message is `(recipients, subject, content)`, and the Xtra writes the bytes on the wire. No `.ls` script holds
-that byte format: it is the Xtra's own, the protocol of Macromedia's Shockwave Multiuser Server. The server has to
-speak it to serve photos. How to learn it, since [0008](/decisions/0008-reverse-engineer-ls-only.md) reads only
-`.ls` files, is an open question for S7.
+Every message is `(recipients, subject, content)`, and the Xtra writes the bytes on the wire: MUS, the protocol of
+Macromedia's Shockwave Multiuser Server. No `.ls` script holds that byte format, so it comes from LibreShockwave's
+Multiuser Xtra ([0015](/decisions/0015-client-on-libreshockwave.md)), and [s1-24](/tasks/s1-24-mus-framing.md)
+describes it.
 
 What the scripts put in those messages:
 

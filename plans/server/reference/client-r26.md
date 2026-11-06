@@ -2,7 +2,7 @@
 type: Reference
 title: The R26 client
 description: Where the R26 client's protocol lives in packages/client-r26, how its scripts register and send messages, its wire format and handshake, and the format of the per-cast protocol references.
-timestamp: 2026-11-05T22:10:00+00:00
+timestamp: 2026-11-06T14:59:31+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [client, protocol, r26]
 ---
@@ -115,7 +115,8 @@ From `fuse_client/51_Connection Instance Class.ls` (`send`, `sendNew`, `msghandl
   a string ends with `chr(2)`, a boolean or a byte is one character whose low 6 bits are the value, and a handler may
   take the whole body as text.
 - Text is UTF-8 only when the external variable `client.textdata.utf8` is true; otherwise each byte is one character
-  of the client's locale ([fuse_client](/reference/r26/fuse_client.md#text)).
+  of the client's locale ([fuse_client](/reference/r26/fuse_client.md#text)). The server sets it and speaks UTF-8
+  ([0014](/decisions/0014-text-is-utf8.md)).
 
 # Handshake
 

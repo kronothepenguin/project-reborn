@@ -7,7 +7,7 @@ phase: s0
 depends_on: [s0-03, s1-01]
 packages: [packages/server]
 client: ["packages/client-r26/src/game/fuse_client/51_Connection Instance Class.ls"]
-timestamp: 2026-11-05T20:57:45+00:00
+timestamp: 2026-11-06T14:59:31+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 ---
 
@@ -36,8 +36,6 @@ cd packages/server && gofmt -l . && go vet ./... && go test ./encoding/... -race
 
 # Notes
 
-- Open question, asked when the task starts: whether the server speaks UTF-8 text, with `client.textdata.utf8`
-  set in the external variables the site serves, or one byte per character of a locale such as Windows-1252
-  ([fuse_client](/reference/r26/fuse_client.md#text)).
+- Strings are UTF-8 ([0014](/decisions/0014-text-is-utf8.md)).
 
 - Runs on the branch `s0`, once s1-01 has reached `main`.

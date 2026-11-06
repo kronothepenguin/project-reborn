@@ -3,7 +3,7 @@ type: Phase
 title: S7 Club, help and extras
 description: The smaller casts: club purchases and gifts, the tutorial and new-user help, guides, polls, photos, the sound machine, the room dimmer, pets, the call for help and error reports.
 status: planned
-timestamp: 2026-11-05T20:57:45+00:00
+timestamp: 2026-11-06T14:59:31+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s7, server]
 ---
@@ -44,6 +44,3 @@ Written when the phase starts.
   presets, pets and their needs, guide invitations.
 - How club bought in the client meets club bought on the site (`plans/holo-port/phases/p6-economy.md`).
 - Which moderation tools the client offers and which stay in housekeeping.
-- How to learn the byte format of the `#mus` connection, which the Multiuser Xtra writes and no `.ls` script holds
-  ([fuse_client](/reference/r26/fuse_client.md#the-mus-connection)), given that
-  [0008](/decisions/0008-reverse-engineer-ls-only.md) reads only `.ls` files.

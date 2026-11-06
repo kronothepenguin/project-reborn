@@ -3,7 +3,7 @@ type: Phase
 title: S1 R26 protocol reference
 description: Every message the R26 client receives and every command it sends, reverse engineered from the .ls scripts into one reference document per cast, which the later phases implement from.
 status: active
-timestamp: 2026-11-05T20:57:45+00:00
+timestamp: 2026-11-06T14:59:31+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s1, protocol, r26]
 ---
@@ -60,7 +60,8 @@ each other ([Branches](/rules.md#branches)).
 20. [s1-20 Map hh_dynamic_downloader](/tasks/s1-20-dynamic-downloader.md)
 21. [s1-21 Map hh_ig](/tasks/s1-21-instant-games.md)
 22. [s1-22 Map hh_human](/tasks/s1-22-human.md)
-23. [s1-23 Check S1's exit criteria](/tasks/s1-23-exit-check.md)
+23. [s1-24 Describe the MUS framing of the #mus connection](/tasks/s1-24-mus-framing.md)
+24. [s1-23 Check S1's exit criteria](/tasks/s1-23-exit-check.md)
 
 s1-01 and s1-02 come first, because S0's encoding and sessions wait for them. The others may run in any order, many
 at once.

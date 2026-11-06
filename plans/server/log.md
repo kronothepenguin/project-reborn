@@ -1,5 +1,13 @@
 # Log
 
+## 2026-11-06
+
+- **Create** [s1-24](/tasks/s1-24-mus-framing.md): the MUS framing of `#mus`, from LibreShockwave's Multiuser Xtra.
+- **Decision** [0015](/decisions/0015-client-on-libreshockwave.md): the client runs on LibreShockwave, every socket is
+  a WebSocket, and the `#mus` framing comes from LibreShockwave's source. Answers s0-05's question (binary frames) and
+  S7's question on the `#mus` format.
+- **Decision** [0014](/decisions/0014-text-is-utf8.md): text on the wire is UTF-8. Answers s0-06's question.
+
 ## 2026-11-05
 
 - **Done** [s1-01](/tasks/s1-01-fuse-client.md): [fuse_client](/reference/r26/fuse_client.md) describes the
