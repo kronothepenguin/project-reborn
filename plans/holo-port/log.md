@@ -1,7 +1,13 @@
 # Log
 
+## 2026-11-06
+
+- **Done** [p5-16](/tasks/p5-16-moderate-threads.md): holders of `forum.edit` rename, close, stick and delete threads
+  with Holo's Moderation Tools, which open on the thread as it is now; resumed from a cancelled session's work.
+
 ## 2026-11-05
 
+- **Start** [p5-16](/tasks/p5-16-moderate-threads.md).
 - **Done** [p5-15](/tasks/p5-15-edit-delete-posts.md): authors and holders of forum.edit modify and delete posts, and
   a thread goes with its last post.
 - **Start** [p5-15](/tasks/p5-15-edit-delete-posts.md).

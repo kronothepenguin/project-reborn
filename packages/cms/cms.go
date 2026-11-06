@@ -131,6 +131,9 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("GET /forum/threads/{id}", page(http.HandlerFunc(r.HandleForumThreadsView)))
 	mux.Handle("POST /forum/threads", page(auth.RequireSession(http.HandlerFunc(r.HandleForumThreadsCreate))))
 	mux.Handle("POST /forum/threads/{id}/posts", page(auth.RequireSession(http.HandlerFunc(r.HandleForumThreadsPostsCreate))))
+	mux.Handle("GET /forum/threads/{id}/settings", page(auth.RequireSession(http.HandlerFunc(r.HandleForumThreadsSettingsView))))
+	mux.Handle("POST /forum/threads/{id}/settings", page(auth.RequireSession(http.HandlerFunc(r.HandleForumThreadsSettings))))
+	mux.Handle("POST /forum/threads/{id}/delete", page(auth.RequireSession(http.HandlerFunc(r.HandleForumThreadsDelete))))
 	mux.Handle("POST /forum/posts/{id}", page(auth.RequireSession(http.HandlerFunc(r.HandleForumPostsEdit))))
 	mux.Handle("POST /forum/posts/{id}/delete", page(auth.RequireSession(http.HandlerFunc(r.HandleForumPostsDelete))))
 

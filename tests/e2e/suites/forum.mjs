@@ -185,6 +185,7 @@ export default async function ({ base, browser, check, shot, sql }) {
 
   await posting({ base, page, check, shot, sql, long });
   await editing({ base, browser, page, check, shot, sql, long });
+  await moderating({ base, browser, page, check, shot, sql });
 
   sql(`INSERT INTO settings (key, value, updated_at) VALUES ('features.forum', 'false', '${at(400)}')`);
   let away = false;
@@ -340,6 +341,91 @@ async function editing({ base, browser, page, check, shot, sql, long }) {
   check(
     "deleting a thread's last post takes the thread, and goes to the board",
     sql(`SELECT COUNT(*) FROM forum_threads WHERE id = ${mine}`)[0][0] === 0 && moderator.url().endsWith("/forum"),
+    moderator.url(),
+  );
+  await admin.close();
+}
+
+// Admin-1, who holds forum.edit, opens Holo's Moderation Tools on Frank's Topic 03:
+// a blank title is refused, a new title closes and sticks the thread, and Delete
+// asks first, then takes the thread with its posts.
+async function moderating({ base, browser, page, check, shot, sql }) {
+  const [[topic]] = sql("SELECT id FROM forum_threads WHERE title = 'Topic 03'");
+  await page.goto(`${base}/forum/threads/${topic}`);
+  check("Frank, who lacks forum.edit, gets no Moderation Tools", (await page.getByRole("button", { name: "Moderation Tools »" }).count()) === 0);
+
+  const admin = await browser.newContext({ viewport: { width: 1100, height: 900 } });
+  const moderator = await admin.newPage();
+  await moderator.goto(base + "/");
+  await moderator.fill("#username", "Admin-1");
+  await moderator.fill("#password", "secret123");
+  await Promise.all([moderator.waitForURL("**/me"), moderator.click('button:has-text("Sign in")')]);
+  await moderator.goto(`${base}/forum/threads/${topic}`);
+  const tools = moderator.getByRole("button", { name: "Moderation Tools »" });
+  const dialog = moderator.getByRole("dialog", { name: "Moderation Tools" });
+  const name = dialog.getByLabel("Topic: (max 30 characters)");
+  await tools.click();
+  await name.waitFor();
+  check(
+    "the Moderation Tools open on the thread as it is: its title, Open and Normal",
+    (await name.inputValue()) === "Topic 03" &&
+      (await name.getAttribute("maxlength")) === "30" &&
+      (await dialog.getByLabel("Open").isChecked()) &&
+      (await dialog.getByLabel("Normal").isChecked()),
+  );
+  await shot(moderator, "forum-moderation-tools");
+
+  await name.fill("   ");
+  await dialog.getByRole("button", { name: "Save" }).click();
+  check(
+    "a blank title is refused in Holo's words",
+    (await dialog.getByText("Topic title may not be empty").isVisible()) && sql(`SELECT title FROM forum_threads WHERE id = ${topic}`)[0][0] === "Topic 03",
+  );
+
+  await name.fill("Moderated topic");
+  await dialog.getByLabel("Closed").check();
+  await dialog.getByLabel("Sticky topic").check();
+  await dialog.getByRole("button", { name: "Save" }).click();
+  await moderator.getByText("The thread has been updated successfully.").waitFor();
+  const saved = sql(`SELECT title, locked, sticky FROM forum_threads WHERE id = ${topic}`)[0];
+  check(
+    "Save renames, closes and sticks the thread, and Holo's answer takes the post list's place",
+    JSON.stringify(saved) === JSON.stringify(["Moderated topic", 1, 1]) && !(await moderator.locator("#group-postlist-container").isVisible()),
+    JSON.stringify(saved),
+  );
+  await shot(moderator, "forum-moderation-saved");
+  await Promise.all([moderator.waitForURL(`**/forum/threads/${topic}?page=1#page-bottom`), moderator.getByRole("link", { name: "Proceed" }).click()]);
+  check(
+    "Proceed opens the thread's last page, closed and renamed",
+    (await moderator.getByText("Closed Thread", { exact: true }).count()) === 2 && (await moderator.title()).includes("Moderated topic"),
+    await moderator.title(),
+  );
+
+  await moderator.goto(base + "/forum");
+  const titles = await moderator.locator("#group-topiclist-list tr td:first-child > div > a:first-child").allInnerTexts();
+  check(
+    "the board lists it with the stickies, closed",
+    titles.slice(0, 3).includes("Moderated topic") &&
+      (await moderator.locator("#group-topiclist-list tr", { hasText: "Moderated topic" }).getByRole("img", { name: "Closed Thread" }).isVisible()),
+    JSON.stringify(titles),
+  );
+
+  await moderator.goto(`${base}/forum/threads/${topic}`);
+  await tools.click();
+  await name.waitFor();
+  check("the Moderation Tools reopen on Closed and Sticky topic", (await dialog.getByLabel("Closed").isChecked()) && (await dialog.getByLabel("Sticky topic").isChecked()));
+  await dialog.getByRole("button", { name: "Delete" }).click();
+  check("Delete asks first, in Holo's words", await dialog.getByText("You are about to delete a compelete topic. Are you sure?").isVisible());
+  await shot(moderator, "forum-moderation-delete");
+  await dialog.getByRole("button", { name: "Cancel" }).click();
+  check("Cancel keeps the thread", sql(`SELECT COUNT(*) FROM forum_threads WHERE id = ${topic}`)[0][0] === 1);
+  await tools.click();
+  await name.waitFor();
+  await dialog.getByRole("button", { name: "Delete" }).click();
+  await Promise.all([moderator.waitForURL("**/forum"), dialog.getByRole("button", { name: "Proceed" }).click()]);
+  check(
+    "Proceed deletes the thread with its posts and goes to the board",
+    sql(`SELECT COUNT(*) FROM forum_threads WHERE id = ${topic}`)[0][0] === 0 && sql(`SELECT COUNT(*) FROM forum_posts WHERE forum_thread_id = ${topic}`)[0][0] === 0,
     moderator.url(),
   );
   await admin.close();

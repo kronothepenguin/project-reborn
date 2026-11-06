@@ -24,8 +24,10 @@ type forumThreadPage struct {
 	ThreadID   int64
 	Title      string
 	Locked     bool
-	Pages      []pageLink
-	Posts      []forumPost
+	// Moderator holds forum.edit, which opens the Moderation Tools.
+	Moderator bool
+	Pages     []pageLink
+	Posts     []forumPost
 }
 
 // forumPost is one of Holo's post boxes. RE marks every post but the thread's
@@ -112,7 +114,7 @@ func (r *Router) HandleForumThreadsView(w http.ResponseWriter, req *http.Request
 		r.fail(w, err)
 		return
 	}
-	moderator := r.holds(ctx, auth.ForumEdit)
+	view.Moderator = r.holds(ctx, auth.ForumEdit)
 	session, signedIn := auth.FromContext(ctx)
 	for i, row := range rows {
 		post := forumPost{
@@ -131,7 +133,7 @@ func (r *Router) HandleForumThreadsView(w http.ResponseWriter, req *http.Request
 			EditorArchived: row.EditorArchivedAt.Valid,
 			HTML:           bbcode.Format(row.Body, view.Smilies),
 			Body:           row.Body,
-			CanEdit:        signedIn && (moderator || row.AuthorID == session.AvatarID),
+			CanEdit:        signedIn && (view.Moderator || row.AuthorID == session.AvatarID),
 			Even:           i%2 == 0,
 		}
 		if row.Badge != "" {

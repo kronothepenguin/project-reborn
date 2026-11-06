@@ -1,6 +1,7 @@
 ---
 import DeletePost from "../../../components/forum/delete-post.svelte";
 import ForumBox from "../../../components/forum/forum-box.astro";
+import Moderation from "../../../components/forum/moderation.svelte";
 import PageNumbers from "../../../components/forum/page-numbers.astro";
 import Post from "../../../components/forum/post.astro";
 import ReplyForm from "../../../components/forum/reply-form.svelte";
@@ -10,34 +11,44 @@ import Community from "../../../layouts/community.astro";
 // Holo's create-post-link, with the new post icon of its forum sprite.
 const reply =
   "float-left cursor-pointer bg-[url(/web-gallery/v2/images/discussions/forum_icons.png)] bg-position-[3px_-102px] bg-no-repeat pt-0.5 pr-[11px] pb-[3px] pl-[22px] font-bold text-neutral-700 hover:underline";
+// Holo's edit-topic-settings-link, with the pencil of its myhabbo sprite.
+const moderation =
+  "float-left cursor-pointer bg-[url(/web-gallery/v2/images/myhabbo_icons.png)] bg-position-[3px_-283px] bg-no-repeat pt-0.5 pb-[3px] pl-[22px] text-neutral-700 hover:underline";
 ---
 
 <Community title="[[ .ShortName ]] ~ Discussion - [[ .Title ]]" tab="community" sub="Discussion Board">
   <ForumBox>
-    <div class="flow-root pt-1 pr-0 pb-2 pl-2">
-      [[ if .SignedIn ]][[ if .Locked ]]<span class="float-left pr-[11px] font-bold text-neutral-700"
-        ><img class="inline" src="/web-gallery/images/groups/status_closed.gif" title="Closed Thread" alt="" /> Closed Thread</span
-      >[[ else ]]<button type="button" id="create-post-message" class:list={[reply]}>Post reply</button>[[ end ]][[ end ]]
-      <PageNumbers base="/forum/threads/[[ $.ThreadID ]]?page=" />
-    </div>
-    <table class="w-full border-collapse" id="group-postlist-list">
-      [[ range .Posts ]]
-      <Post />
+    <div id="group-postlist-container">
+      <div class="flow-root pt-1 pr-0 pb-2 pl-2">
+        [[ if .SignedIn ]][[ if .Locked ]]<span class="float-left pr-[11px] font-bold text-neutral-700"
+          ><img class="inline" src="/web-gallery/images/groups/status_closed.gif" title="Closed Thread" alt="" /> Closed Thread</span
+        >[[ else ]]<button type="button" id="create-post-message" class:list={[reply]}>Post reply</button>[[ end ]][[ end ]][[ if .Moderator ]]<button
+          type="button"
+          id="edit-topic-settings"
+          class:list={[moderation]}>Moderation Tools &raquo;</button
+        >[[ end ]]
+        <PageNumbers base="/forum/threads/[[ $.ThreadID ]]?page=" />
+      </div>
+      <table class="w-full border-collapse" id="group-postlist-list">
+        [[ range .Posts ]]
+        <Post />
+        [[ end ]]
+      </table>
+      [[ if .SignedIn ]]
+      <ViewerData thread />
+      <ReplyForm client:only="svelte" source="forum-viewer" />
+      <DeletePost client:only="svelte" />
       [[ end ]]
-    </table>
-    [[ if .SignedIn ]]
-    <ViewerData thread />
-    <ReplyForm client:only="svelte" source="forum-viewer" />
-    <DeletePost client:only="svelte" />
-    [[ end ]]
-    <div class="flow-root pt-1 pr-0 pb-2 pl-2">
-      [[ if .SignedIn ]][[ if .Locked ]]<span class="float-left pr-[11px] font-bold text-neutral-700"
-        ><img class="inline" src="/web-gallery/images/groups/status_closed.gif" title="Closed Thread" alt="" /> Closed Thread</span
-      >[[ else ]]<button type="button" id="create-post-message-lower" class:list={[reply]}>Post reply</button>[[ end ]][[ else ]]
-      You must be logged in to reply or post new threads.
-      [[ end ]]
-      <PageNumbers base="/forum/threads/[[ $.ThreadID ]]?page=" />
+      <div class="flow-root pt-1 pr-0 pb-2 pl-2">
+        [[ if .SignedIn ]][[ if .Locked ]]<span class="float-left pr-[11px] font-bold text-neutral-700"
+          ><img class="inline" src="/web-gallery/images/groups/status_closed.gif" title="Closed Thread" alt="" /> Closed Thread</span
+        >[[ else ]]<button type="button" id="create-post-message-lower" class:list={[reply]}>Post reply</button>[[ end ]][[ else ]]
+        You must be logged in to reply or post new threads.
+        [[ end ]]
+        <PageNumbers base="/forum/threads/[[ $.ThreadID ]]?page=" />
+      </div>
     </div>
+    [[ if .Moderator ]]<Moderation client:only="svelte" />[[ end ]]
     <span id="page-bottom"></span>
   </ForumBox>
 </Community>
