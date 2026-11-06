@@ -2,7 +2,8 @@
 type: Decision
 title: The server listens as server.info and server.mus, each on a TCP port, a WebSocket path or both
 description: config.json gives the client's two connections, info and mus, a TCP port and a WebSocket path each, either or both; info speaks r26, and the rest of 0007 stands.
-status: accepted
+status: superseded
+superseded_by: "0020"
 timestamp: 2026-11-06T19:11:02+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-06T19:11:02+00:00"}
 tags: [protocol, config]

@@ -18,7 +18,7 @@ S0 meets its [exit criteria](/phases/s0-foundations.md#exit-criteria) on `main`.
 # Steps
 
 - [ ] In a fresh worktree of `main` merged into `s0`: `make install` and `make gates`.
-- [ ] The test client receives `HELLO` and its `INIT_CRYPTO` is logged by name, over TCP and over WebSocket.
+- [ ] The test client receives `HELLO` and its `INIT_CRYPTO` is logged by name, on the `info` WebSocket listener.
 - [ ] One project of each template passes its gates, in a throwaway worktree.
 - [ ] [How the server is built](/reference/architecture.md) matches the code.
 - [ ] S0 is `done`; `/index.md` names the active phases.

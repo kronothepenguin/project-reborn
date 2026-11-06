@@ -44,8 +44,14 @@ Loading is the first thing a program does. An unreadable file, invalid JSON, or 
 | `housekeeping.port` | int | 18465 | 1–65535 |
 | `proxy.enabled` | bool | false | |
 | `proxy.trusted` | []string | `["127.0.0.1", "::1"]` | IP addresses or CIDR ranges, at least one when `proxy.enabled` |
+| `server.info.host` | string | `localhost` | hostname or IP address, as `cms.host` |
+| `server.info.port` | int | 30000 | 1–65535 |
+| `server.mus.host` | string | `localhost` | hostname or IP address, as `cms.host` |
+| `server.mus.port` | int | 30001 | 1–65535, other than `server.info.port` |
 
 `proxy` is for a hotel behind a reverse proxy: production enables it in its `config.json`, and `auth.RealIP` then takes the client IP from the `X-Forwarded-For` header of requests that come from a trusted address or range.
+
+`server` is the game server's: the client's two connections, `info` for the game and `mus` for the Multiuser Xtra's messages, each a WebSocket listener on a host and port of its own (`plans/server/decisions/0020-info-and-mus-websocket-ports.md`). The server section reuses the rule of `cms.host` for its hosts.
 
 The settings package (`packages/virtual/settings`) exposes these values under the same key paths (`settings.GetInt("cms.port")`; it has no getter for lists such as `proxy.trusted`), and a settings row never overrides them.
 

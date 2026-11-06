@@ -2,7 +2,10 @@ module github.com/kronothepenguin/project-reborn/packages/server
 
 go 1.27.0
 
-require github.com/kronothepenguin/project-reborn/packages/store v0.0.0-20261104000530-b98a37b7cedf
+require (
+	github.com/kronothepenguin/project-reborn/packages/store v0.0.0-20261104000530-b98a37b7cedf
+	golang.org/x/net v0.58.0
+)
 
 require (
 	github.com/dustin/go-humanize v1.0.1 // indirect

@@ -2,6 +2,10 @@
 
 ## 2026-11-06
 
+- **Update** [C1](/phases/c1-client-page-on-libreshockwave.md)'s question on how LibreShockwave reaches the server's
+  two WebSocket paths leaves its open questions: `plans/server/decisions/0020-info-and-mus-websocket-ports.md` gives
+  `info` and `mus` a WebSocket listener each on a host and port of their own, with no path, which LibreShockwave
+  opens from `connection.info.*` and `connection.mus.*`.
 - **Update** [C1](/phases/c1-client-page-on-libreshockwave.md) asks how LibreShockwave reaches the server's two
   WebSocket paths, since it adds one path to every socket.
 - **Update** [the rules](/rules.md#branches): once merged, the agent removes its worktree and deletes its branch

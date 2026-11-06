@@ -3,7 +3,7 @@ type: Phase
 title: C1 The client page on LibreShockwave
 description: A signed-in habbo opens the CMS's client page, where the R26 .dcr runs on LibreShockwave with an SSO ticket and connects to the game server, and the .dcr is decompiled into a recent R26 source.
 status: planned
-timestamp: 2026-11-06T15:50:54+00:00
+timestamp: 2026-11-06T17:32:58-05:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-06T15:50:54+00:00"}
 tags: [c1, client]
 ---
@@ -50,9 +50,6 @@ Written when the phase starts.
 - Which package serves the page, the player and the `.dcr` until [C2](/phases/c2-client-files.md)'s program exists.
 - Whether the pages are Holo's `client.php`, `clientutils.php` and `unloadclient.php` ported exactly
   (`plans/holo-port/decisions/0034-behaviour-matches-holo.md`), with LibreShockwave in the place of Adobe's plugin.
-- How LibreShockwave reaches the server's two WebSocket paths, `/client/info` and `/client/mus`
-  (`plans/server/decisions/0019-info-and-mus-listeners.md`). It adds one path, the page's `websocketPath`, to every
-  socket, so it needs a path per connection or per port in the vendored player, or two host names.
 - Which of Holo's settings stay settings, which give way to the game server's listeners
   (`plans/server/tasks/s0-04-listener-config.md`), and where `external_variables.txt` and `external_texts.txt` come
   from until C2.
