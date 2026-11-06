@@ -12,6 +12,7 @@ import (
 	"testing"
 
 	"github.com/kronothepenguin/project-reborn/packages/config"
+	"github.com/kronothepenguin/project-reborn/packages/config/server"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
@@ -135,5 +136,8 @@ func TestInstallation(t *testing.T) {
 	}
 	if written.Housekeeping.Host != "localhost" || written.Housekeeping.Port != 18400 {
 		t.Errorf("%s holds housekeeping %+v, want the default host and the form's port", config.Filename, written.Housekeeping)
+	}
+	if written.Server.Info != server.DefaultInfo() || written.Server.MUS != server.DefaultMUS() {
+		t.Errorf("%s holds server %+v, want the defaults", config.Filename, written.Server)
 	}
 }

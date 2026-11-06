@@ -2,6 +2,10 @@
 
 ## 2026-11-06
 
+- **Done** [s0-04](/tasks/s0-04-listener-config.md): `config.json` gives `server.info` and `server.mus` a host and a
+  port each, by default `localhost` with 30000 and 30001, checked as `cms.host` and refused on one port; the installer
+  writes their defaults, and housekeeping offers them to an older `config.json`.
+- **Start** [s0-04](/tasks/s0-04-listener-config.md).
 - **Update** [S0](/phases/s0-foundations.md), [s0-04](/tasks/s0-04-listener-config.md),
   [s0-07](/tasks/s0-07-r26-sessions.md), [s0-08](/tasks/s0-08-exit-check.md) and
   [How the server is built](/reference/architecture.md) follow 0020: a WebSocket listener on a host and port per

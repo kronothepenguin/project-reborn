@@ -3,6 +3,7 @@ package housekeeping
 import (
 	"encoding/json"
 	"html"
+	"maps"
 	"net/http"
 	"net/url"
 	"os"
@@ -13,7 +14,8 @@ import (
 )
 
 // olderConfigJSON stands in for the config.json of an older release: it lacks
-// cms.host and the proxy section, and holds a key that nothing reads any more.
+// cms.host and the proxy and server sections, and holds a key that nothing reads
+// any more.
 const olderConfigJSON = `{
   "store": {"path": "habbo.db"},
   "cms": {"port": 17387},
@@ -39,6 +41,12 @@ func useOlderConfig(t *testing.T) {
 	}
 }
 
+// serverKeys fills the server section, which olderConfigJSON lacks, in a form.
+var serverKeys = url.Values{
+	"key.server.info.host": {"localhost"}, "key.server.info.port": {"31000"},
+	"key.server.mus.host": {"localhost"}, "key.server.mus.port": {"31001"},
+}
+
 func readConfig(t *testing.T) map[string]any {
 	t.Helper()
 	data, err := os.ReadFile(config.Filename)
@@ -58,7 +66,9 @@ func TestTheUpdatePageOffersConfigJsonsNewKeys(t *testing.T) {
 	_, keeper := staff(t, db, "Keeper", auth.HousekeepingAccess, auth.HousekeepingDatabase)
 
 	wantPage(t, serve(mux, "GET", "/housekeeping/updates", keeper, nil), http.StatusOK,
-		html.EscapeString(`NewKeys:[{Path:cms.host Value:localhost} {Path:proxy.enabled Value:false} {Path:proxy.trusted Value:["127.0.0.1","::1"]}] OldKeys:[{Path:theme Value:"dark"}]`))
+		html.EscapeString(`NewKeys:[{Path:cms.host Value:localhost} {Path:proxy.enabled Value:false} {Path:proxy.trusted Value:["127.0.0.1","::1"]} `+
+			`{Path:server.info.host Value:localhost} {Path:server.info.port Value:30000} {Path:server.mus.host Value:localhost} `+
+			`{Path:server.mus.port Value:30001}] OldKeys:[{Path:theme Value:"dark"}]`))
 }
 
 func TestSavingConfigJsonWritesTheNewKeys(t *testing.T) {
@@ -67,15 +77,22 @@ func TestSavingConfigJsonWritesTheNewKeys(t *testing.T) {
 	_, keeper := staff(t, db, "Keeper", auth.HousekeepingAccess, auth.HousekeepingDatabase)
 
 	form := url.Values{"key.cms.host": {"0.0.0.0"}, "key.proxy.enabled": {"true"}, "key.proxy.trusted": {`["10.0.0.1"]`}}
+	maps.Copy(form, serverKeys)
 	wantRedirect(t, serve(mux, "POST", "/housekeeping/updates/config", keeper, form), "/housekeeping/updates?config=1")
 	file := readConfig(t)
 	proxy, _ := file["proxy"].(map[string]any)
 	cms, _ := file["cms"].(map[string]any)
+	server, _ := file["server"].(map[string]any)
+	info, _ := server["info"].(map[string]any)
+	mus, _ := server["mus"].(map[string]any)
 	if proxy["enabled"] != true || len(proxy["trusted"].([]any)) != 1 || cms["port"] != float64(17387) || cms["host"] != "0.0.0.0" || file["theme"] != nil {
 		t.Errorf("config.json = %v", file)
 	}
+	if info["host"] != "localhost" || info["port"] != float64(31000) || mus["host"] != "localhost" || mus["port"] != float64(31001) {
+		t.Errorf("config.json holds server %v", server)
+	}
 	logs := staffLogs(t, db)
-	if len(logs) != 1 || logs[0].Action != "config.update" || logs[0].Detail != "added cms.host, proxy.enabled, proxy.trusted; removed theme" {
+	if len(logs) != 1 || logs[0].Action != "config.update" || logs[0].Detail != "added cms.host, proxy.enabled, proxy.trusted, server.info.host, server.info.port, server.mus.host, server.mus.port; removed theme" {
 		t.Errorf("staff logs = %+v", logs)
 	}
 	wantPage(t, serve(mux, "GET", "/housekeeping/updates?config=1", keeper, nil), http.StatusOK,
@@ -96,6 +113,7 @@ func TestABadValueLeavesConfigJsonAsItIs(t *testing.T) {
 		{`"yes"`, "Error:config.json was not saved: "},
 	} {
 		form := url.Values{"key.cms.host": {"localhost"}, "key.proxy.enabled": {c.value}, "key.proxy.trusted": {`["10.0.0.1"]`}}
+		maps.Copy(form, serverKeys)
 		wantPage(t, serve(mux, "POST", "/housekeeping/updates/config", keeper, form), http.StatusUnprocessableEntity,
 			c.want, html.EscapeString("{Path:proxy.enabled Value:"+c.value+"}"))
 	}
