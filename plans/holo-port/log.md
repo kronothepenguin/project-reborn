@@ -2,6 +2,13 @@
 
 ## 2026-11-06
 
+- **Create** [p6-01](/tasks/p6-01-economy-settings.md) to [p6-08](/tasks/p6-08-exit-check.md), P6's tasks.
+- **Decision** [0105](/decisions/0105-credits-boxes-in-bbcode.md): the credits page boxes are BBCode like the staff
+  boxes, with their pictures in the page.
+- **Decision** [0104](/decisions/0104-transactions-show-the-habbo.md): the account transactions page adds a Habbo
+  column to Holo's three.
+- **Decision** [0103](/decisions/0103-club-badge-for-every-habbo.md): each club purchase gives `HC1` to every habbo of
+  the user that lacks it, the buyer wears it, and it leaves them when the club ends.
 - **Update** [P5](/phases/p5-groups-forum.md) is done, and [P6](/phases/p6-economy.md) is the active phase.
 - **Done** [p5-19](/tasks/p5-19-exit-check.md): from a clean worktree, install, every gate and all 26 browser suites
   pass, 970 checks; P5 meets its exit criteria.
