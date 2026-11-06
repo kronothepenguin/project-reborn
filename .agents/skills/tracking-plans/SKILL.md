@@ -1,6 +1,6 @@
 ---
 name: tracking-plans
-description: Starts and works the OKF plan bundles under plans/ (plans/holo-port, plans/server and any new plan) — creating a new plan in the house format, resuming work, creating, starting, blocking and finishing tasks, recording decisions and log entries, and merging the work's branch. Use when asked to plan new work under plans/, to continue or finish any planned task, or about a plan's status.
+description: Starts and works the OKF plan bundles under plans/ (plans/holo-port, plans/server, plans/client and any new plan) — creating a new plan in the house format, resuming work, creating, starting, blocking and finishing tasks, recording decisions and log entries, and merging the work's branch. Use when asked to plan new work under plans/, to continue or finish any planned task, or about a plan's status.
 ---
 
 # Tracking plans
@@ -12,6 +12,7 @@ Every plan is an OKF 0.2 bundle in `plans/<plan>/`: decisions, phases, tasks, re
 | --- | --- | --- |
 | `plans/holo-port` | HoloCMS ported to the CMS, housekeeping and the installer (also has `tracking-holo-port`) | `p0`…`p7`, `hk-a`, `hk-b`, `fx`, `up`, `ed` |
 | `plans/server` | The game server | `s0`…`s9` |
+| `plans/client` | The R26 client in the browser: on LibreShockwave first, in vanilla JavaScript later | `c0`…`c3` |
 
 `plans/index.md` maps every plan and the sources each one reads, and `plans/later.md` lists work that belongs to no
 phase yet.

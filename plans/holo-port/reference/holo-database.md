@@ -101,7 +101,7 @@ Every new key below is a setting declared in `packages/virtual`; `config.json` h
 | `cms_system` | `site_closed` | `site.maintenance` |
 | `cms_system` | `start_credits` | `registration.startCredits` |
 | `cms_system` | `admin_notes` | `housekeeping.note` |
-| `cms_system` | `enable_sso`, `ip`, `port`, `texts`, `variables`, `dcr`, `reload_url`, `localhost`, `loader` | deferred (client page) |
+| `cms_system` | `enable_sso`, `ip`, `port`, `texts`, `variables`, `dcr`, `reload_url`, `localhost`, `loader` | deferred (client page, planned in `plans/client`, C1) |
 | `cms_system` | `language` | dropped (English only) |
 | `config.php` | `$path`, `$reward`, `$sysadmin` | `site.url`, `referral.reward`, access groups |
 | `cms_content` | `forum-enabled`, `allow-group-purchase`, `birthday-notifications`, `enable-flash-promo`, `mod_staff-enabled`, `smilies-enabled` | `features.forum`, `features.groupPurchase`, `features.birthdayNotifications`, `features.landingPromo`, `features.staffPage`, `features.smilies` |

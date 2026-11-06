@@ -2,6 +2,9 @@
 
 ## 2026-11-06
 
+- **Update** [s1-24](/tasks/s1-24-mus-framing.md) reads LibreShockwave in the submodule `vendor/LibreShockwave`
+  (`plans/client/decisions/0003-libreshockwave-submodule.md`), and [S2](/phases/s2-login.md)'s question about the
+  `/client` page points at `plans/client`, phase C1.
 - **Update** [The Holograph Emulator](/reference/holoemu.md) describes `source/holoemu`: its layout, its dumps and how
   to read it, and [the rules](/rules.md) gain "Reading the emulator".
 - **Decision** [0016](/decisions/0016-holoemu-is-a-reference.md): the Holograph Emulator is a reference, read when the

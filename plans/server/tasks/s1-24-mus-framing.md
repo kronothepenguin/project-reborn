@@ -19,8 +19,9 @@ LibreShockwave again.
 
 # Steps
 
-- [ ] Clone LibreShockwave at commit `3f9048009ff4bc9bf4bedb4a44f875c2ab36645b` into a scratch directory, never into
-  the repository.
+- [ ] Read LibreShockwave in `vendor/LibreShockwave`, the submodule at commit `3f9048009ff4bc9bf4bedb4a44f875c2ab36645b`
+  (`plans/client/decisions/0003-libreshockwave-submodule.md`), after `git submodule update --init vendor/LibreShockwave`
+  in the task's worktree.
 - [ ] From `cpp/src/player/xtra/queued_multiuser_bridge.cpp` and `socket_multiuser_bridge.cpp`: the frame header,
   the body fields in order, byte order, how strings are padded, and the `Logon` frame the client writes on connect,
   field by field.

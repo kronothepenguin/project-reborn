@@ -2,6 +2,9 @@
 
 ## 2026-11-06
 
+- **Update** the client page this port deferred, `client.php`, `clientutils.php`, `unloadclient.php` and the
+  client settings of `cms_system`, is planned in `plans/client`, phase C1, in
+  [Holo public site](/reference/holo-pages.md) and [Holo database](/reference/holo-database.md).
 - **Decision** [0100](/decisions/0100-plans-map-and-one-bundle.md): `plans/index.md` maps every plan and the sources it
   reads, `AGENTS.md` points to it, and the port stays one bundle.
 - **Update** every path to HoloCMS's source reads `source/holocms/`: the `holo:` line of 83 tasks, a phase, five
