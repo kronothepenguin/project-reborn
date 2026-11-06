@@ -2,6 +2,10 @@
 
 ## 2026-11-06
 
+- **Done** [s0-06](/tasks/s0-06-encoding.md): `packages/server/encoding` reads and writes B64, VL64, both string
+  forms, booleans, bytes and raw bodies byte for byte as ports of the client's scripts do, with UTF-8 text, and fuzzing
+  finds no input that makes a reader panic.
+- **Start** [s0-06](/tasks/s0-06-encoding.md).
 - **Done** [s0-05](/tasks/s0-05-transport.md): `packages/server/transport` serves TCP with `ServeTCP(l, h)` and
   the WebSocket with the `http.Handler` `WebSocket(h)`, both as one `Conn` that closes when its handler returns; the
   WebSocket writes binary frames and reads binary and text frames.

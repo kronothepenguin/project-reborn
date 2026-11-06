@@ -9,8 +9,8 @@ database in `New(db)` and registers its routes on a mux in `Mount(mux)`;
 The game server is laid out as `plans/server/decisions/0005-package-layout.md`
 decides. Each part is marked with the task of `plans/server/tasks/index.md`
 that brings it. So far the package holds what `tools/create` generated,
-`server.go` and `internal/router`, whose `GET /` answers `Hello from Go`, and
-`transport/`.
+`server.go` and `internal/router`, whose `GET /` answers `Hello from Go`,
+`transport/` and `encoding/`.
 
 | Part | Holds | Brought by |
 | --- | --- | --- |
@@ -45,6 +45,36 @@ WebSocket frame has to be one packet.
   the handler's `Read` returns `io.EOF` when the client closes, and `Close`
   from another goroutine ends a `Read` that is waiting.
 - A `Conn`'s methods may be called from several goroutines at once.
+
+## Encoding
+
+`encoding` reads and writes the values of the R26 wire format byte for byte as
+the client's scripts do (`fuse_client/51_Connection Instance Class.ls`, described
+in `plans/server/reference/r26/fuse_client.md`). A reader takes its value from
+the front of an `io.Reader` and reads no further; a writer writes it to an
+`io.Writer`.
+
+| Value | In the client | Read | Write |
+| --- | --- | --- | --- |
+| B64 of 2 characters: ids, shorts and string lengths | `msghandler`, `sendNew` `#short` | `ReadB64(r, 2)` | `WriteB64(w, v, 2)` |
+| B64 of 3 characters: the length of a client's packet | `send`, `sendNew` | `ReadB64(r, 3)` | `WriteB64(w, v, 3)` |
+| A byte, 0 to 63 | `GetByteFrom` | `ReadB64(r, 1)` | `WriteB64(w, v, 1)` |
+| VL64, a 32-bit integer | `GetIntFrom`, `sendNew` `#integer` | `ReadVL64` | `WriteVL64` |
+| A string that ends with `chr(2)` | `GetStrFrom` | `ReadString` | `WriteString` |
+| A string after its B64 length | `sendNew` `#string` | `ReadB64String` | `WriteB64String` |
+| A boolean, `@` or `A` | `GetBoolFrom`, `sendNew` `#boolean` | `ReadBool` | `WriteBool` |
+| The raw rest of a body, as text | `tMsg.content`, `send` with text | `ReadRaw` | `WriteRaw` |
+
+- Text is UTF-8 (`plans/server/decisions/0014-text-is-utf8.md`), with no locale
+  conversion.
+- A reader returns `io.EOF` when nothing is left, `io.ErrUnexpectedEOF` when the
+  value is cut short, and an error wrapping `ErrMalformed` for bytes that are not
+  the value: a VL64 count of 0 or 7, a VL64 beyond 32 bits, or text that is not
+  UTF-8. It never panics.
+- A writer refuses with an error wrapping `ErrUnencodable` a value the client
+  would not read back as it was given: a B64 number too large for its
+  characters, a string holding `chr(2)` or a B64-length string over 4095 bytes,
+  or text that is not UTF-8.
 
 ## Port
 
