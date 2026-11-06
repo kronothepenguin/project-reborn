@@ -2,6 +2,8 @@
 
 ## 2026-11-06
 
+- **Update** [C1](/phases/c1-client-page-on-libreshockwave.md) asks how LibreShockwave reaches the server's two
+  WebSocket paths, since it adds one path to every socket.
 - **Update** [the rules](/rules.md#branches): once merged, the agent removes its worktree and deletes its branch
   (`plans/holo-port/decisions/0101-agents-clean-up-worktrees.md`).
 - **Done** [c0-02](/tasks/c0-02-libreshockwave-submodule.md): LibreShockwave is a submodule at `vendor/LibreShockwave`,

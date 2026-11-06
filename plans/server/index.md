@@ -36,7 +36,7 @@ They come from the original request, `AGENTS.md` and the user's corrections, and
 | --- | --- |
 | Program | `packages/server` + `apps/server`, created with `tools/create -template=backend`, with no web pages ([0002](/decisions/0002-server-app.md)) |
 | IO | through interfaces: TCP and WebSocket behind one byte-stream `Conn`, and the WebSocket mounts on any HTTP mux ([0006](/decisions/0006-transport.md)) |
-| Protocol | a Go package named `r26`; each listener names its protocol, so r18 can come later or run beside r26 ([0007](/decisions/0007-protocols-per-listener.md)) |
+| Protocol | a Go package named `r26`; `config.json` gives the client's `info` and `mus` connections a TCP port and a WebSocket path each, either or both, and r18 can come later ([0019](/decisions/0019-info-and-mus-listeners.md)) |
 | Protocol source | the client's `.ls` scripts under `packages/client-r26/src/game/`, never its `.js` ([0008](/decisions/0008-reverse-engineer-ls-only.md)) |
 | Emulator | `source/holoemu/` is read only when the `.ls` scripts are not enough, and is never ported ([0016](/decisions/0016-holoemu-is-a-reference.md)) |
 | State | `packages/virtual`: hot data copied from the database, and temporary data that lives only in memory ([0009](/decisions/0009-virtual-holds-the-server-state.md)) |

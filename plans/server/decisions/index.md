@@ -20,7 +20,8 @@ change supersedes a decision with a new one. The branch rule every plan follows 
 
 ## Protocol
 
-- [0007 r26 is the protocol package, and each listener names its protocol](/decisions/0007-protocols-per-listener.md) — The R26 protocol is a Go package named r26, each TCP address or WebSocket path names the protocol it speaks, r18 stays a door left open, and whether r18 and r26 players share one hotel is documented both ways.
+- [0007 r26 is the protocol package, and each listener names its protocol](/decisions/0007-protocols-per-listener.md) — The R26 protocol is a Go package named r26, each TCP address or WebSocket path names the protocol it speaks, r18 stays a door left open, and whether r18 and r26 players share one hotel is documented both ways. **Superseded by [0019](/decisions/0019-info-and-mus-listeners.md).**
+- [0019 The server listens as server.info and server.mus, each on a TCP port, a WebSocket path or both](/decisions/0019-info-and-mus-listeners.md) — config.json gives the client's two connections, info and mus, a TCP port and a WebSocket path each, either or both; info speaks r26, and the rest of 0007 stands.
 - [0008 The R26 protocol comes from the client's .ls scripts](/decisions/0008-reverse-engineer-ls-only.md) — The protocol is reverse engineered from the Lingo .ls scripts of packages/client-r26/src/game, never from the .js translations, covering every Handler Class and every other script that registers or sends messages.
 - [0012 The server skips the client's encryption](/decisions/0012-no-encryption.md) — At login the server answers the client's public key with ENDOFCRYPTOPARAMS, as the old server did, so the client sends plain bytes, with no Diffie-Hellman key exchange and no RC4.
 

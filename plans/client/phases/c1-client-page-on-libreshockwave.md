@@ -50,6 +50,9 @@ Written when the phase starts.
 - Which package serves the page, the player and the `.dcr` until [C2](/phases/c2-client-files.md)'s program exists.
 - Whether the pages are Holo's `client.php`, `clientutils.php` and `unloadclient.php` ported exactly
   (`plans/holo-port/decisions/0034-behaviour-matches-holo.md`), with LibreShockwave in the place of Adobe's plugin.
+- How LibreShockwave reaches the server's two WebSocket paths, `/client/info` and `/client/mus`
+  (`plans/server/decisions/0019-info-and-mus-listeners.md`). It adds one path, the page's `websocketPath`, to every
+  socket, so it needs a path per connection or per port in the vendored player, or two host names.
 - Which of Holo's settings stay settings, which give way to the game server's listeners
   (`plans/server/tasks/s0-04-listener-config.md`), and where `external_variables.txt` and `external_texts.txt` come
   from until C2.

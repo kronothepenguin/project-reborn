@@ -2,7 +2,8 @@
 type: Decision
 title: r26 is the protocol package, and each listener names its protocol
 description: The R26 protocol is a Go package named r26, each TCP address or WebSocket path names the protocol it speaks, r18 stays a door left open, and whether r18 and r26 players share one hotel is documented both ways.
-status: accepted
+status: superseded
+superseded_by: "0019"
 timestamp: 2026-11-05T20:57:45+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [server, protocol, architecture]

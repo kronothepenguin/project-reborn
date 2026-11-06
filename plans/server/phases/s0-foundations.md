@@ -56,9 +56,6 @@ S0 runs on the branch `s0`. s0-06 waits for [s1-01](/tasks/s1-01-fuse-client.md)
 
 Asked when their task starts:
 
-- s0-04: the keys of the listeners in `config.json`, and the default ports and WebSocket path. `#info` and `#mus` share
-  one WebSocket path and differ by port, so each port speaks one protocol
-  ([0015](/decisions/0015-client-on-libreshockwave.md)).
 - s0-07: what the server logs for each packet; and the change to the generated runner, which belongs to the user, that
   serves the TCP listeners beside the HTTP server.
 - s0-09: what a fullstack or backend project's name with a `-` becomes.

@@ -2,6 +2,10 @@
 
 ## 2026-11-06
 
+- **Update** [s0-04](/tasks/s0-04-listener-config.md)'s steps follow 0019, and its question leaves
+  [S0](/phases/s0-foundations.md)'s open questions.
+- **Decision** [0019](/decisions/0019-info-and-mus-listeners.md): the server listens as `server.info` and
+  `server.mus`, each on a TCP port, a WebSocket path or both; it supersedes 0007.
 - **Done** [s0-03](/tasks/s0-03-scaffold-server.md): `make create name=server template=backend` made
   `packages/server` and `apps/server`, which build and pass the gates as generated, and the package's README lays out
   `transport`, `encoding`, `r26` and `game` as [0005](/decisions/0005-package-layout.md) says, each with the task that
