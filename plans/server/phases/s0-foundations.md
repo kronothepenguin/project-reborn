@@ -3,7 +3,7 @@ type: Phase
 title: S0 Foundations
 description: The plan and its skill, the three tools/create templates, and an empty server that accepts R26 clients over TCP and WebSocket, frames their packets and answers HELLO.
 status: active
-timestamp: 2026-11-06T17:13:37+00:00
+timestamp: 2026-11-06T17:54:14+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s0, server]
 ---
@@ -40,13 +40,14 @@ S0 writes no game rules and no `virtual` state: those start in [S2](/phases/s2-l
 # Tasks
 
 1. [s0-01 Create the plan bundle and the tracking-plans skill](/tasks/s0-01-plan-bundle.md) **done**
-2. [s0-02 Add the backend and client templates to tools/create](/tasks/s0-02-create-templates.md) **blocked**
+2. [s0-02 Add the backend and client templates to tools/create](/tasks/s0-02-create-templates.md) **done**
 3. [s0-03 Create packages/server and apps/server](/tasks/s0-03-scaffold-server.md)
 4. [s0-04 Declare the server's listeners in config.json](/tasks/s0-04-listener-config.md)
 5. [s0-05 Write the transport](/tasks/s0-05-transport.md)
 6. [s0-06 Write the encoding](/tasks/s0-06-encoding.md)
 7. [s0-07 Serve R26 sessions](/tasks/s0-07-r26-sessions.md)
 8. [s0-08 Check S0's exit criteria](/tasks/s0-08-exit-check.md)
+9. [s0-09 Make the Go templates work for every name tools/create accepts](/tasks/s0-09-go-template-names.md)
 
 S0 runs on the branch `s0`. s0-06 waits for [s1-01](/tasks/s1-01-fuse-client.md) and s0-07 for
 [s1-02](/tasks/s1-02-entry-init.md), both of S1, which runs beside it.
@@ -55,11 +56,9 @@ S0 runs on the branch `s0`. s0-06 waits for [s1-01](/tasks/s1-01-fuse-client.md)
 
 Asked when their task starts:
 
-- s0-02, found while building the client template: how a client project builds, as a library like
-  `packages/client-r26`, which needs a global name such as client-r26's `_director` for its UMD file, or as a plain
-  Vite app ([s0-02](/tasks/s0-02-create-templates.md) lists the choices).
 - s0-04: the keys of the listeners in `config.json`, and the default ports and WebSocket path. `#info` and `#mus` share
   one WebSocket path and differ by port, so each port speaks one protocol
   ([0015](/decisions/0015-client-on-libreshockwave.md)).
 - s0-07: what the server logs for each packet; and the change to the generated runner, which belongs to the user, that
   serves the TCP listeners beside the HTTP server.
+- s0-09: what a fullstack or backend project's name with a `-` becomes.

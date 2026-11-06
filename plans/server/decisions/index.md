@@ -10,6 +10,7 @@ change supersedes a decision with a new one. The branch rule every plan follows 
 - [0003 tools/create makes fullstack, backend and client projects](/decisions/0003-create-templates.md) — tools/create takes -template=fullstack|backend|client; fullstack is today's output and the default, backend is a Go package and runner only, and client is a Vite package like client-r26.
 - [0004 The deleted server is the model for the structure](/decisions/0004-old-server-is-the-model.md) — The packages/server removed in commit 2ea51d7b is the model for the new server's structure, with separate receive and send interfaces for TCP and WebSocket, the encoding, and a protocol package with one part per client cast.
 - [0017 The client template derives its Vite port from the name, in a range of its own](/decisions/0017-client-vite-port.md) — tools/create gives a client project the Vite dev server port 30000 + fnv32a("vite:" + name) % 10000, derived from the name as the Astro port is, in the range 30000 to 39999 that no other port uses.
+- [0018 A client project builds as a plain Vite app](/decisions/0018-client-is-a-plain-vite-app.md) — A project made with tools/create -template=client builds as a page of its own, pnpm build writing dist/index.html and dist/assets/index-<hash>.js, and its vite.config.js holds only the derived port.
 
 ## Program and packages
 

@@ -147,8 +147,9 @@ func TestWriteGeneratesTheBackendShape(t *testing.T) {
 	}
 }
 
-// A client is a Vite package like packages/client-r26, with nothing in apps/
-// and no Go.
+// A client is a plain Vite app (plans/server decision 0018): Vite's default
+// build takes index.html as its entry, so the config holds only the port.
+// It has nothing in apps/ and no Go.
 func TestWriteGeneratesTheClientShape(t *testing.T) {
 	root := writeProbe(t, client)
 	checkContains(t, root, map[string][]string{
@@ -158,10 +159,18 @@ func TestWriteGeneratesTheClientShape(t *testing.T) {
 		"packages/probe/src/main.js":    {`"probe"`},
 	})
 
+	config, err := os.ReadFile(filepath.Join(root, "packages", "probe", "vite.config.js"))
+	if err != nil {
+		t.Fatalf("read the generated vite.config.js: %v", err)
+	}
+	if strings.Contains(string(config), "build") {
+		t.Errorf("the generated vite.config.js changes Vite's build:\n%s", config)
+	}
+
 	if _, err := os.Stat(filepath.Join(root, "apps")); err == nil {
 		t.Errorf("a client has a folder in apps/")
 	}
-	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
+	err = filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
 		if err != nil || d.IsDir() {
 			return err
 		}
