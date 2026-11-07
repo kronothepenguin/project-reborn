@@ -2,6 +2,9 @@
 
 ## 2026-11-07
 
+- **Done** [p6-11](/tasks/p6-11-club-page-layout-guard.md): the club page joins the guard on the layout's fields,
+  which now fails for a field of `clubPage` named after one of the layout's.
+- **Start** [p6-11](/tasks/p6-11-club-page-layout-guard.md).
 - **Done** [p6-10](/tasks/p6-10-keep-every-voucher-deletable.md): `Create Voucher` refuses the codes `.` and `..`
   alone with `The redemption code cannot be . or ..`, and every other code, `...` among them, is created and then
   deleted through its address.

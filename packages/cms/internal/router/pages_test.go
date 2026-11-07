@@ -13,6 +13,7 @@ func TestNoPageHidesAFieldOfTheLayout(t *testing.T) {
 	for layout, pages := range map[reflect.Type][]reflect.Type{
 		reflect.TypeFor[community](): {
 			reflect.TypeFor[accountPage](),
+			reflect.TypeFor[clubPage](),
 			reflect.TypeFor[communityPage](),
 			reflect.TypeFor[creditsPage](),
 			reflect.TypeFor[emailPage](),

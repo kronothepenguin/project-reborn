@@ -208,7 +208,7 @@ starts.
 - [p6-08 Verify P6](/tasks/p6-08-exit-check.md) — Every exit criterion of P6 holds from a clean checkout, in a real browser.
 - [p6-09 Count the club days to the end of the last period](/tasks/p6-09-club-days-to-the-last-period.md) — The club days of the Me page and the account pages run to the end of the user's last period while one covers now, as Holo's HCDaysLeft counted every month bought, where GetClubEnd stops at the end of the period that covers now. **done**
 - [p6-10 Keep every voucher deletable](/tasks/p6-10-keep-every-voucher-deletable.md) — A voucher whose code is . or .. can be created but not deleted, because a browser reads those codes in the delete's address as folders; the user chooses the fix. **done**
-- [p6-11 Guard the club page's layout fields](/tasks/p6-11-club-page-layout-guard.md) — The club page embeds the community layout but is missing from TestNoPageHidesAFieldOfTheLayout, so a field it gains with the name of a layout field would hide that field from the layout unnoticed.
+- [p6-11 Guard the club page's layout fields](/tasks/p6-11-club-page-layout-guard.md) — The club page embeds the community layout but is missing from TestNoPageHidesAFieldOfTheLayout, so a field it gains with the name of a layout field would hide that field from the layout unnoticed. **done**
 - [p6-12 Open Save changes five seconds after the editor starts, as Holo's Flash did](/tasks/p6-12-save-looks-as-the-flash-editor.md) — Holo's Flash editor opened the looks form's Save changes five seconds after it started with a look the club allows, where the HTML5 editor keeps it closed until it is touched, on the page's load and after a green arrow of the wardrobe.
 
 ## Later phases
