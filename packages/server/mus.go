@@ -1,0 +1,41 @@
+package server
+
+import (
+	"errors"
+	"fmt"
+	"io"
+	"log/slog"
+	"strconv"
+
+	"github.com/kronothepenguin/project-reborn/packages/server/transport"
+)
+
+// serveMus serves a client of the mus connection until the server frames MUS: it logs the connect, the size of each
+// message and the close, and never answers. The transport hides the WebSocket's frames, so each size is what one read
+// brings: never more than one message, and a large message may come in several reads.
+func serveMus(c transport.Conn) {
+	addr := c.RemoteAddr()
+	slog.Info("mus " + addr + " connected")
+	buf := make([]byte, 64<<10)
+	for {
+		n, err := c.Read(buf)
+		if n > 0 {
+			slog.Info(fmt.Sprintf("mus %s received %s", addr, size(n)))
+		}
+		if errors.Is(err, io.EOF) {
+			slog.Info("mus " + addr + " closed")
+			return
+		}
+		if err != nil {
+			slog.Warn(fmt.Sprintf("mus %s closed: %v", addr, err))
+			return
+		}
+	}
+}
+
+func size(n int) string {
+	if n == 1 {
+		return "1 byte"
+	}
+	return strconv.Itoa(n) + " bytes"
+}

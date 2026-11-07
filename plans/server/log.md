@@ -2,6 +2,11 @@
 
 ## 2026-11-07
 
+- **Done** [s0-07](/tasks/s0-07-r26-sessions.md): `StartInfo` and `StartMus` start a WebSocket listener on the host
+  and port of `server.info` and `server.mus`, and the runner calls both. On `info`, `r26` sends `HELLO`, reads packets
+  in each session's own goroutine and logs each unhandled one as `r26 <address> unhandled INIT_CRYPTO (206), 0 bytes`;
+  on `mus`, the server logs the connect, each size and the close, and never answers.
+- **Start** [s0-07](/tasks/s0-07-r26-sessions.md).
 - **Create** [s0-10](/tasks/s0-10-go-names-that-clash.md): names whose Go package name is a Go keyword or `main`, or
   a name the generated Go already uses, such as `log`, `http`, `db` or `new`, still make projects that do not compile;
   what `tools/create` does with them is a new open question of [S0](/phases/s0-foundations.md). Found by s0-09.
