@@ -4,7 +4,7 @@ title: club.query.sql
 description: Club operations for the end of a user's running membership and of their last period, whether they have any period, and a new period.
 resource: packages/store/queries/club.query.sql
 tags: [store, query, club]
-timestamp: 2026-11-06T22:56:10+00:00
+timestamp: 2026-11-07T00:12:27+00:00
 ---
 
 # Operations
@@ -13,7 +13,8 @@ timestamp: 2026-11-06T22:56:10+00:00
 
 - Cardinality: `:one`
 - Inputs: `user_id`, `now`
-- Result: the latest `ends_at` of the periods covering `now`; not found when the user is not a member
+- Result: the `ends_at` of the user's last period while a period covers `now`: the club's end, since a period
+  bought during the club starts where the last one ends; not found when the user is not a member
 - Tables: `club_subscriptions`
 
 ## GetLatestClubEnd

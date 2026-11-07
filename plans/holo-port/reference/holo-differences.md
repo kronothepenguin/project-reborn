@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-07T00:24:13+00:00
+timestamp: 2026-11-07T00:44:57+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -75,6 +75,8 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Header | One habbo per account | `Switch habbo` with several, and `/account/habbos` | [0001](/decisions/0001-user-owns-many-habbos.md) |
 | Header | Housekeeping is `housekeeping.php` | `site.housekeepingUrl`, because housekeeping can run on its own port | [0003](/decisions/0003-housekeeping-under-prefix.md) |
 | Several habbos | One habbo per account | One wallet, one club membership and one home inventory per user | [0056](/decisions/0056-wallet-club-and-inventory-per-user.md) |
+| Club page | A purchase gives `HC1` to the account's one habbo, which wears it if it lacked it | Each purchase gives `HC1` to every habbo of the user that lacks it, archived ones too; the buyer wears it when given it, as Holo's habbo did, and the others keep the badge they wear | [0056](/decisions/0056-wallet-club-and-inventory-per-user.md), [0103](/decisions/0103-club-badge-for-every-habbo.md) |
+| Club page | When the club ends, `IsHCMember` hides the badge the habbo wears, whichever it is, and means to delete `HC1`, but its query names a column `users_badges` lacks, so `HC1` stays | `HC1` leaves every habbo of the user, and a habbo that wears another badge keeps it on | [0103](/decisions/0103-club-badge-for-every-habbo.md) |
 | Group settings | The text's counter starts at 255, and a rename takes a name another group has | The counter starts at `groups.descriptionMaxLength`, 200, and a taken name answers `A group with this name already exists.` | [0084](/decisions/0084-group-names-and-descriptions.md) |
 | Deleting a group | Every sticker and note of its home is destroyed | They go back to the users whose habbos placed them, notes blank | [0083](/decisions/0083-group-home-items-return-to-members.md) |
 | Group home editor | A removed sticker goes to the admin who removed it, and a removed note is deleted | Both go back to the user whose habbo placed them, a note blank, and the note's menu no longer says it is deleted for good | [0083](/decisions/0083-group-home-items-return-to-members.md), [0098](/decisions/0098-group-home-notes-go-back-to-their-placers.md) |
@@ -177,6 +179,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Group home editor | Removes the Group information widget when its removal is posted, though its menu offers no Remove, and the group page writes it again in its corner at the next view | It goes straight back to its corner, in the default skin |
 | Group purchase | Compares `strlen($name > 25)`, so a name or description of any length passes | A name over `groups.nameMaxLength` or a description over `groups.descriptionMaxLength` gets Holo's `The group name you have selected is too long.` or `The group description you have entered is too long.` ([0084](/decisions/0084-group-names-and-descriptions.md)) |
 | Texts | `Purchashing`, `Managment`, `An group`, `occured` on the purchase dialog | Spelled correctly |
+| Texts | `maxiamum` in the club's month limit | Spelled correctly |
 | Report window | Every answer is 200, `Invalid post specified` too | `Invalid post specified` answers 404, and a report refused for a waiting request 422 |
 | Texts | `has reported an post` in a report's ticket | Spelled correctly |
 
@@ -196,6 +199,8 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
   checked neither.
 - The Help Tool window shows its background colour alone: Holo's style names `bg_patterns/skull.gif`, which Holo
   never shipped.
+- After a club purchase, the club page keeps the buy buttons it drew, even once the purse holds less than a month's
+  price, and the next purchase answers that the credits are short.
 
 # Housekeeping
 

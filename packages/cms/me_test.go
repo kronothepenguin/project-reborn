@@ -88,6 +88,27 @@ func TestMeCountsClubDays(t *testing.T) {
 	}
 }
 
+// A month bought 10 days ago and three months bought now leave 114 days, as Holo's
+// HCDaysLeft counted every month bought.
+func TestClubDaysRunToTheEndOfTheLastPeriod(t *testing.T) {
+	db, mux := newSite(t)
+	cookie, _, userID := member(t, db, mux)
+	now := time.Now().UTC()
+	first := now.AddDate(0, 0, -10)
+	for _, period := range [][3]time.Time{
+		{first, first.AddDate(0, 0, 31), first},
+		{first.AddDate(0, 0, 31), first.AddDate(0, 0, 124), now},
+	} {
+		_, err := db.ExecContext(t.Context(), `INSERT INTO club_subscriptions (user_id, starts_at, ends_at, created_at) VALUES (?, ?, ?, ?)`,
+			userID, period[0], period[1], period[2])
+		if err != nil {
+			t.Fatalf("insert subscription: %v", err)
+		}
+	}
+	wantPage(t, serve(mux, "GET", "/me", cookie, nil), http.StatusOK, "ClubDays:114")
+	wantPage(t, serve(mux, "GET", "/account/profile", cookie, nil), http.StatusOK, "ClubDays:114")
+}
+
 func TestMeShowsTheOldestAlert(t *testing.T) {
 	db, mux := newSite(t)
 	cookie, avatarID, userID := member(t, db, mux)

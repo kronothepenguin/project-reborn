@@ -1,7 +1,13 @@
+-- The club's end while a period covers now: the end of the user's last period, since a
+-- period bought during the club starts where the last one ends.
 -- name: GetClubEnd :one
-SELECT ends_at FROM club_subscriptions
-WHERE user_id = sqlc.arg(user_id) AND starts_at <= sqlc.arg(now) AND ends_at > sqlc.arg(now)
-ORDER BY ends_at DESC
+SELECT club_subscriptions.ends_at FROM club_subscriptions
+WHERE club_subscriptions.user_id = sqlc.arg(user_id)
+  AND EXISTS (
+    SELECT 1 FROM club_subscriptions AS running
+    WHERE running.user_id = sqlc.arg(user_id) AND running.starts_at <= sqlc.arg(now) AND running.ends_at > sqlc.arg(now)
+  )
+ORDER BY club_subscriptions.ends_at DESC
 LIMIT 1;
 
 -- The end of the user's last period, past or to come; a purchase starts at the later
