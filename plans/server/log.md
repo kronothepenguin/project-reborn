@@ -2,6 +2,8 @@
 
 ## 2026-11-07
 
+- **Blocked** [s0-08](/tasks/s0-08-exit-check.md): s0-10 is done, but [S0](/phases/s0-foundations.md) can be `done`
+  only once [s0-11](/tasks/s0-11-names-the-go-tool-treats-specially.md), which waits for the user's answer, is.
 - **Create** [s0-11](/tasks/s0-11-names-the-go-tool-treats-specially.md): `internal`, `vendor` and `testdata` compile
   as Go package names but not as folders: the runners may not import `packages/internal`, the go tool reads
   `packages/vendor` as vendored code, and `./...` skips folders named `testdata`, which fails a backend's gates. What
