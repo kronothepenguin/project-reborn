@@ -3,7 +3,7 @@ type: Phase
 title: S0 Foundations
 description: The plan and its skill, the three tools/create templates, and an empty server that accepts R26 clients over WebSocket, frames their packets and answers HELLO.
 status: active
-timestamp: 2026-11-07T00:12:36+00:00
+timestamp: 2026-11-07T00:25:22+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s0, server]
 ---
@@ -48,7 +48,15 @@ S0 writes no game rules and no `virtual` state: those start in [S2](/phases/s2-l
 6. [s0-06 Write the encoding](/tasks/s0-06-encoding.md) **done**
 7. [s0-07 Serve R26 sessions](/tasks/s0-07-r26-sessions.md)
 8. [s0-08 Check S0's exit criteria](/tasks/s0-08-exit-check.md)
-9. [s0-09 Make the Go templates work for every name tools/create accepts](/tasks/s0-09-go-template-names.md)
+9. [s0-09 Make the Go templates work for every name tools/create accepts](/tasks/s0-09-go-template-names.md) **done**
+10. [s0-10 Handle the names whose Go package cannot compile](/tasks/s0-10-go-names-that-clash.md)
 
 S0 runs on the branch `s0`. s0-06 waits for [s1-01](/tasks/s1-01-fuse-client.md) and s0-07 for
 [s1-02](/tasks/s1-02-entry-init.md), both of S1, which runs beside it.
+
+# Open questions
+
+Asked when their task starts:
+
+- s0-10: what `tools/create` does with a name whose Go package name the generated Go cannot use: a Go keyword, `main`,
+  or a name the generated files already use, such as `log`, `http`, `db` or `new`.

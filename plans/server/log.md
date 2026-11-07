@@ -2,6 +2,14 @@
 
 ## 2026-11-07
 
+- **Create** [s0-10](/tasks/s0-10-go-names-that-clash.md): names whose Go package name is a Go keyword or `main`, or
+  a name the generated Go already uses, such as `log`, `http`, `db` or `new`, still make projects that do not compile;
+  what `tools/create` does with them is a new open question of [S0](/phases/s0-foundations.md). Found by s0-09.
+- **Done** [s0-09](/tasks/s0-09-go-template-names.md): the Go package of `game-server` is `gameserver` while its
+  folders and module paths keep the dash, and `create` runs the Go it writes through `go/format`, so the imports are in
+  order for any name; projects of both Go templates named `tracker`, `tracker2`, `web-shop` and `game-server` pass
+  their gates.
+- **Start** [s0-09](/tasks/s0-09-go-template-names.md).
 - **Update** [S2](/phases/s2-login.md) asks whether the server waits for `GENERATEKEY` (2002) before it sends
   `ENDOFCRYPTOPARAMS` (278): the client withholds `GENERATEKEY` in some cases, while its handler of 278 checks
   nothing. Found by [s1-02](/tasks/s1-02-entry-init.md); `plans/client`'s C1 asks whether LibreShockwave runs the key
