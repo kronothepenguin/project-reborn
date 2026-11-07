@@ -1,5 +1,27 @@
 # Log
 
+## 2026-11-07
+
+- **Update** [S2](/phases/s2-login.md) asks whether the server waits for `GENERATEKEY` (2002) before it sends
+  `ENDOFCRYPTOPARAMS` (278): the client withholds `GENERATEKEY` in some cases, while its handler of 278 checks
+  nothing. Found by [s1-02](/tasks/s1-02-entry-init.md); `plans/client`'s C1 asks whether LibreShockwave runs the key
+  code at all.
+- **Update** [s0-07](/tasks/s0-07-r26-sessions.md)'s steps follow 0021 to 0023,
+  [s0-09](/tasks/s0-09-go-template-names.md)'s question is answered by 0024, and [S0](/phases/s0-foundations.md) has
+  no open questions left.
+- **Decision** [0024](/decisions/0024-go-package-names-drop-the-dash.md): the Go package of a backend or fullstack
+  project is its name without the dashes, and folders and module paths keep them. Answers
+  [s0-09](/tasks/s0-09-go-template-names.md)'s question.
+- **Decision** [0023](/decisions/0023-mus-listener-before-s7.md): until S7 frames MUS, the `mus` listener accepts the
+  WebSocket, logs the connect, the size of each message and the close, and never answers. Answers
+  [s0-07](/tasks/s0-07-r26-sessions.md)'s question.
+- **Decision** [0022](/decisions/0022-start-info-and-start-mus.md): `StartInfo` and `StartMus` of `packages/server`
+  start the listeners, for the standalone runner and later the orchestrator; the runner gains the two calls and
+  nothing else. Answers [s0-07](/tasks/s0-07-r26-sessions.md)'s question.
+- **Decision** [0021](/decisions/0021-unhandled-packets-logged-by-id-name-and-size.md): a packet the server does not
+  handle yet is logged as one line with the session's address, the id, the name and the body's size, never the body.
+  Answers [s0-07](/tasks/s0-07-r26-sessions.md)'s question.
+
 ## 2026-11-06
 
 - **Done** [s1-02](/tasks/s1-02-entry-init.md): [hh_entry_init](/reference/r26/hh_entry_init.md) maps 26 messages

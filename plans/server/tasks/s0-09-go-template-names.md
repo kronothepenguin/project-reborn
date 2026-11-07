@@ -18,8 +18,10 @@ Every name `tools/create` accepts makes, with the fullstack and the backend temp
 
 # Steps
 
-- [ ] Ask the user what a fullstack or backend name with a `-` becomes: `validateName` accepts `a-b`, and the
-  templates write `package a-b`, which does not compile. Record the answer as a decision.
+- [x] Ask the user what a fullstack or backend name with a `-` becomes: `validateName` accepts `a-b`, and the
+  templates write `package a-b`, which does not compile. Record the answer as a decision:
+  [0024](/decisions/0024-go-package-names-drop-the-dash.md), the Go package drops the dash, and folders and module
+  paths keep it.
 - [ ] The generated Go passes `gofmt` for a name that sorts after `store`. Today `tracker` gives import blocks where
   `packages/tracker` comes before `packages/store`, which `gofmt` reorders.
 - [ ] Tests: for both Go templates, a name with a `-` and a name after `store` are handled as the decision says, and
