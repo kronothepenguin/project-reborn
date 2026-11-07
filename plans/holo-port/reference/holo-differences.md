@@ -12,7 +12,7 @@ tags: [holo]
 [0034](/decisions/0034-behaviour-matches-holo.md) makes every page behave exactly as Holo does. Anything else is listed
 here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p2-me-account.md),
 [P3](/phases/p3-homes.md) and [P4](/phases/p4-community.md) and, in its own section, the housekeeping pages of
-[HK-A](/phases/hk-a-housekeeping-core.md), [HK-B](/phases/hk-b-users-moderation.md), P3 and P4.
+[HK-A](/phases/hk-a-housekeeping-core.md), [HK-B](/phases/hk-b-users-moderation.md), P3, P4 and P6.
 
 # Safer than Holo
 
@@ -236,6 +236,8 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | News | `Delete` is a link that deletes at once, with no question | A `Delete` button that posts, still with no question | A link in a message could delete an article |
 | Banners | Takes any address for the banner and its link, `javascript:` too, and puts them into the query and the pages raw | Each url is an http(s) address or a path of the site, or the form answers `The urls must be http(s) addresses or paths of the site, such as /community.` and keeps what was typed | A link could run a script on every page that shows the banner, or a path such as `//host` lead to another site |
 | Banners | The lengths of the text, 50, and of the urls, 255, hold only in the browser and the columns | The server checks them too: `The text must be at most 50 characters, and each url at most 255.` | A script could skip the browser |
+| Voucher Management | The random code comes from PHP's `rand`, which can be foretold | The code is drawn with `crypto/rand` | A voucher is worth credits to whoever types its code |
+| Voucher Management | `Amount` takes any text, which the redemption adds to the wallet as a number, so a voucher of `-500` takes credits away | A whole number from 1 to 2147483647, or `The amount must be a number from 1 to 2147483647.` | A wallet holds whole credits, a voucher must give some, and past SQLite's integers a sum turns into a float |
 
 ## Changed by a decision
 
@@ -282,6 +284,10 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | News | The author is the user's name, saved as text | The staff member's active habbo, whose name the list shows | [P4](/phases/p4-community.md) |
 | Banners | Open to rank 6 | Takes `housekeeping.banners`, which the installer's Administrator and Moderator hold | [0053](/decisions/0053-attributes-on-groups-and-users.md), [0054](/decisions/0054-access-groups-are-holos-ranks.md) |
 | Banners | Under the HoloCMS tab | Under Site & Content, whose Content Management box links to it, as Holo's did | [0021](/decisions/0021-dropped-and-kept-features.md) |
+| Voucher Management | A `Type` list of `Credits` and `Item`, and `Amount` asks for either: `The amount of credits/item a user will recieve upon entering the redemption code. For Item purchases input the correct item CCT name.` | Credit vouchers only: no `Type`, and `Amount` reads `The amount of credits a user will recieve upon entering the redemption code.` | Item vouchers wait for the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
+| Voucher Management | Open to rank 6 | Takes `housekeeping.vouchers`, which the installer's Administrator and Moderator hold | [0053](/decisions/0053-attributes-on-groups-and-users.md), [0054](/decisions/0054-access-groups-are-holos-ranks.md) |
+| Voucher Management | A voucher cannot be deleted | `Delete` beside each unused voucher answers `The voucher has been deleted successfully.` and logs `Deleted voucher <code>`; a voucher redeemed in the meantime stays, and the answer is `Unable to delete voucher; this voucher does not exist or has been redeemed!` with 404 | [0063](/decisions/0063-what-housekeeping-can-delete.md) |
+| Voucher Management | A redemption deletes the voucher, so its code can be given again | A redeemed voucher stays, so its code stays taken | [0063](/decisions/0063-what-housekeeping-can-delete.md) |
 
 ## Holo bugs not ported
 
@@ -305,6 +311,10 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Banners | Each check overwrites the answer of the one before, so the add and edit forms always say `Something was going wrong!`, and the edit view says it before anything is sent | Each answer follows what happened, and shows only after a post: `Succesfully added!` or `You're something forgotten!` in the add form, `Succesfully edited!` or `You're something forgotten!` in the edit view, `Succesfully deleted!` in the list |
 | Banners | A second `Add banner` button under the list posts an empty form | Not ported |
 | Banners | A delete stays on its question, about a banner that is gone, and says `Succesfully deleted!` for any id; the edit view of a banner that does not exist shows blank fields | A delete goes back to the list; a banner that does not exist answers the page with `Something was going wrong!` in the list, and 404 |
+| Voucher Management | `rand(0,71)` reaches one past the last of the 71 characters, so a code now and then has fewer than 8 | Always 8 of Holo's characters |
+| Voucher Management | A code that a voucher has stops the page with MySQL's `Duplicate entry` error | `A voucher with this redemption code already exists.`, matching codes ignoring case as Holo's column did |
+| Voucher Management | A code past 20 characters reaches MySQL, which cuts it to its column's 20 or stops the page with its error | `The redemption code must be at most 20 characters.` |
+| Voucher Management | A code of `0` counts as blank, as PHP's `empty` reads it | `0` is a code |
 
 ## Not in Holo
 
@@ -341,12 +351,13 @@ veto.
 | Stickers & Backgrounds | A gold list of every item, sold or not, 100 a page, each with a form for its name, category, price, quantity and `For Sale`; an item is never deleted | The plan: `POST /home-store/{id}`, and [0063](/decisions/0063-what-housekeeping-can-delete.md) |
 | News | An article that does not exist answers Holo's `Unable to edit article; this article does not exist!` or `Unable to delete article; this article does not exist!` with 404, also for an id that is not a number | Holo answered 200, and showed the plain list for an id that is not a number |
 | News | An upload takes at most 2 MB, and a GIF at most 500 frames, answering `The image must be at most 2 MB.` or `The GIF must have at most 500 frames.`; any other file answers `The image must be a PNG or a GIF of 300x187 pixels.` | [0074](/decisions/0074-news-images.md) sets the size and the formats but no bounds, and a small GIF can decode to far more memory than it takes |
+| Voucher Management | The code loses the spaces around it, and a code of spaces is blank | Habbos type the code again, and the other forms trim the names they take |
 
 ## Kept as in Holo, on purpose
 
 - Any staff member can change the shared note.
 - A blank field of `Edit User` keeps its value, so a motto cannot be emptied there.
-- Holo's spelling in its texts, such as `The bage code`, `Permenantly`, `Succesfully` and `Banner editer`.
+- Holo's spelling in its texts, such as `The bage code`, `Permenantly`, `Succesfully`, `Banner editer` and `recieve`.
 - The dashboard shows 20 administrators, and the staff list 50 rows.
 - Every link of the left menu shows to all staff, and a page they lack answers `Access Denied`.
 
@@ -357,7 +368,6 @@ veto.
 | `My Friends`, `My Rooms` and the recommended rooms | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | The wardrobe on `/account/looks` | [P6](/phases/p6-economy.md) |
 | The online state of the profile widget, the community page's random habbos, the staff page and the forum's post boxes, which show offline | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
-| `Voucher Management` in housekeeping | [P6](/phases/p6-economy.md) |
 | `Chatlogs` and `Online Users` in housekeeping | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | The pages behind Help and Credits | [P7](/phases/p7-help.md), [P6](/phases/p6-economy.md) |
-| Vouchers in housekeeping, and the text boxes of the credits page | [P6](/phases/p6-economy.md) |
+| The text boxes of the credits page | [P6](/phases/p6-economy.md) |
