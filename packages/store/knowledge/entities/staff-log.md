@@ -3,7 +3,7 @@ type: Entity
 title: Staff log
 description: The audit trail of every staff action, with the acting user, the target user or habbo, and the IP.
 tags: [store, entity, moderation]
-timestamp: 2026-11-04T16:32:38+00:00
+timestamp: 2026-11-07T00:22:34+00:00
 ---
 
 # Definition
@@ -65,6 +65,8 @@ many actions).
 | `banners.create` | the banner's text and id | none |
 | `banners.update` | the banner's text and id, and the fields that changed, by the names of Holo's form | none |
 | `banners.delete` | the banner's text and id | none |
+| `vouchers.create` | the code and the credits, as Holo logged it: `Created voucher <code> worth <credits> credits` | none |
+| `vouchers.delete` | the code: `Deleted voucher <code>` | none |
 | `database.update` | each update applied, the one that failed with its error, and the path of the copy saved first | none |
 | `config.update` | the keys added to config.json and the keys removed from it, never their values | none |
 

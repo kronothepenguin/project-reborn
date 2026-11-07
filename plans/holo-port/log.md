@@ -4,11 +4,20 @@
 
 - **Done** [p6-04](/tasks/p6-04-account-transactions.md): a signed-in habbo reads the 50 newest rows of the shared
   purse's ledger in Holo's table, with the habbo that acted in a Habbo column, beside the purse.
+- **Done** [p6-07](/tasks/p6-07-housekeeping-vouchers.md): staff with `housekeeping.vouchers` reach Voucher
+  Management from a `Credits` box, create credit vouchers with Holo's random code drawn from `crypto/rand`, its
+  blank-field answer and new checks on the code and the amount, list the unused ones and delete one, each logged in
+  Holo's words; a redeemed voucher stays.
 - **Start** [p6-04](/tasks/p6-04-account-transactions.md).
 - **Done** [p6-03](/tasks/p6-03-credits-page.md): anyone reads the credits page's two BBCode boxes beside
   Holo's pictures, and a signed-in habbo redeems a voucher in the purse, once, in any case, in one transaction with
   its ledger row, with Holo's green and red answers.
+- **Blocked** [p6-10](/tasks/p6-10-keep-every-voucher-deletable.md): it waits for the user to choose between refusing
+  the codes `.` and `..`, taking only letters and digits as badge codes do, and leaving those two vouchers undeletable.
+- **Create** [p6-10](/tasks/p6-10-keep-every-voucher-deletable.md): p6-07 found that a voucher whose code is `.` or `..`
+  can be created but not deleted, because a browser reads those codes in the delete's address as folders.
 - **Start** [p6-03](/tasks/p6-03-credits-page.md).
+- **Start** [p6-07](/tasks/p6-07-housekeeping-vouchers.md).
 
 ## 2026-11-06
 

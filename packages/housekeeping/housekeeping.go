@@ -152,6 +152,10 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /housekeeping/users/{id}", holding(auth.HousekeepingUsersEdit, r.HandleUserSave))
 	mux.Handle("POST /housekeeping/users/{id}/attributes", holding(auth.HousekeepingAccessGroups, r.HandleUserAttributesSave))
 
+	mux.Handle("GET /housekeeping/vouchers", holding(auth.HousekeepingVouchers, r.HandleVouchersView))
+	mux.Handle("POST /housekeeping/vouchers", holding(auth.HousekeepingVouchers, r.HandleVouchersCreate))
+	mux.Handle("POST /housekeeping/vouchers/{code}/delete", holding(auth.HousekeepingVouchers, r.HandleVoucherDelete))
+
 	mux.Handle("/housekeeping/", h.protect(r.Staff(http.StripPrefix("/housekeeping", h.static))))
 }
 
