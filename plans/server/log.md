@@ -2,6 +2,11 @@
 
 ## 2026-11-07
 
+- **Blocked** [s0-08](/tasks/s0-08-exit-check.md): every exit criterion of [S0](/phases/s0-foundations.md) passes on
+  `main`, from `make install` and `make gates` in a fresh worktree to one project of each template, and
+  [How the server is built](/reference/architecture.md) matches the code; S0 can be `done` only once
+  [s0-10](/tasks/s0-10-go-names-that-clash.md), which waits for the user's answer, is.
+- **Start** [s0-08](/tasks/s0-08-exit-check.md).
 - **Done** [s0-07](/tasks/s0-07-r26-sessions.md): `StartInfo` and `StartMus` start a WebSocket listener on the host
   and port of `server.info` and `server.mus`, and the runner calls both. On `info`, `r26` sends `HELLO`, reads packets
   in each session's own goroutine and logs each unhandled one as `r26 <address> unhandled INIT_CRYPTO (206), 0 bytes`;

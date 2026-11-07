@@ -47,7 +47,7 @@ S0 writes no game rules and no `virtual` state: those start in [S2](/phases/s2-l
 5. [s0-05 Write the transport](/tasks/s0-05-transport.md) **done**
 6. [s0-06 Write the encoding](/tasks/s0-06-encoding.md) **done**
 7. [s0-07 Serve R26 sessions](/tasks/s0-07-r26-sessions.md) **done**
-8. [s0-08 Check S0's exit criteria](/tasks/s0-08-exit-check.md)
+8. [s0-08 Check S0's exit criteria](/tasks/s0-08-exit-check.md) **blocked**
 9. [s0-09 Make the Go templates work for every name tools/create accepts](/tasks/s0-09-go-template-names.md) **done**
 10. [s0-10 Handle the names whose Go package cannot compile](/tasks/s0-10-go-names-that-clash.md)
 
