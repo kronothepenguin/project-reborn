@@ -3,7 +3,7 @@ type: Phase
 title: P6 Economy
 description: Credits page with purse and vouchers, transaction history, Habbo Club subscriptions and the club wardrobe, with voucher management in housekeeping.
 status: active
-timestamp: 2026-11-07T00:32:36+00:00
+timestamp: 2026-11-07T00:56:43+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p6, cms, housekeeping]
 ---
@@ -40,14 +40,15 @@ Habbos see their credits and transactions, redeem vouchers, buy club months and 
 
 1. [p6-01 Declare the economy settings](/tasks/p6-01-economy-settings.md) — done
 2. [p6-02 Store vouchers, club purchases and wardrobe outfits](/tasks/p6-02-store-economy.md) — done
-3. [p6-03 Show the credits page and redeem vouchers](/tasks/p6-03-credits-page.md)
-4. [p6-04 Show the account transactions](/tasks/p6-04-account-transactions.md)
+3. [p6-03 Show the credits page and redeem vouchers](/tasks/p6-03-credits-page.md) — done
+4. [p6-04 Show the account transactions](/tasks/p6-04-account-transactions.md) — done
 5. [p6-05 Buy club on the club page](/tasks/p6-05-club-page.md) — done
 6. [p6-06 Keep outfits in the club wardrobe](/tasks/p6-06-club-wardrobe.md)
 7. [p6-07 Manage vouchers in housekeeping](/tasks/p6-07-housekeeping-vouchers.md) — done
 8. [p6-08 Verify P6](/tasks/p6-08-exit-check.md)
 9. [p6-09 Count the club days to the end of the last period](/tasks/p6-09-club-days-to-the-last-period.md) — done
 10. [p6-10 Keep every voucher deletable](/tasks/p6-10-keep-every-voucher-deletable.md) — blocked
+11. [p6-11 Guard the club page's layout fields](/tasks/p6-11-club-page-layout-guard.md)
 
 # Open questions
 

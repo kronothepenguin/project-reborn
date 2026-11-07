@@ -40,6 +40,7 @@ screenshots and server logs stay in `.run/`, which is git-ignored.
 | `club` | The club page as a guest, buying club months with Holo's dialogs, the month limit, a short purse, and `HC1` given to the user's habbos and taken when the club ends |
 | `community` | The random habbos, the news promo turning, the tag cloud and the banners |
 | `staff` | The staff list, the two boxes and their settings, and the page switched off |
+| `credits` | The credits page as a guest reads it, vouchers redeemed into the shared purse, used twice, in other case and unknown, and the account transactions of two habbos, fifty at most |
 | `art` | The home art, served by the binary |
 | `housekeeping-access` | Every route as a guest, a player and staff |
 | `housekeeping-admin` | Access groups, members, the guard and the log |

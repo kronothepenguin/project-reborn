@@ -2,13 +2,21 @@
 
 ## 2026-11-07
 
+- **Create** [p6-11](/tasks/p6-11-club-page-layout-guard.md): merging `main` into p6-04's branch showed the club page
+  missing from the guard on the layout's fields.
 - **Done** [p6-05](/tasks/p6-05-club-page.md): `/club` shows Holo's club page, whose buttons buy 1, 3 or 6 months
   from the shared purse with Holo's dialogs and answers, from the club's end and within the month limit; each purchase
   gives `HC1` to every habbo of the user, the buyer wearing it, and `HC1` leaves them once the site reads an ended club.
+- **Done** [p6-04](/tasks/p6-04-account-transactions.md): a signed-in habbo reads the 50 newest rows of the shared
+  purse's ledger in Holo's table, with the habbo that acted in a Habbo column, beside the purse.
 - **Done** [p6-07](/tasks/p6-07-housekeeping-vouchers.md): staff with `housekeeping.vouchers` reach Voucher
   Management from a `Credits` box, create credit vouchers with Holo's random code drawn from `crypto/rand`, its
   blank-field answer and new checks on the code and the amount, list the unused ones and delete one, each logged in
   Holo's words; a redeemed voucher stays.
+- **Start** [p6-04](/tasks/p6-04-account-transactions.md).
+- **Done** [p6-03](/tasks/p6-03-credits-page.md): anyone reads the credits page's two BBCode boxes beside
+  Holo's pictures, and a signed-in habbo redeems a voucher in the purse, once, in any case, in one transaction with
+  its ledger row, with Holo's green and red answers.
 - **Blocked** [p6-10](/tasks/p6-10-keep-every-voucher-deletable.md): it waits for the user to choose between refusing
   the codes `.` and `..`, taking only letters and digits as badge codes do, and leaving those two vouchers undeletable.
 - **Create** [p6-10](/tasks/p6-10-keep-every-voucher-deletable.md): p6-07 found that a voucher whose code is `.` or `..`
@@ -17,6 +25,7 @@
 - **Done** [p6-09](/tasks/p6-09-club-days-to-the-last-period.md): `GetClubEnd` gives the end of the user's last
   period while one covers now, so a month and then three months bought 10 days later leave 114 days on the Me page and
   the account pages, as Holo's `HCDaysLeft`.
+- **Start** [p6-03](/tasks/p6-03-credits-page.md).
 - **Start** [p6-09](/tasks/p6-09-club-days-to-the-last-period.md).
 - **Start** [p6-07](/tasks/p6-07-housekeeping-vouchers.md).
 
