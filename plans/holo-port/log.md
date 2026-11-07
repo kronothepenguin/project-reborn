@@ -2,6 +2,10 @@
 
 ## 2026-11-07
 
+- **Done** [p6-05](/tasks/p6-05-club-page.md): `/club` shows Holo's club page, whose buttons buy 1, 3 or 6 months
+  from the shared purse with Holo's dialogs and answers, from the club's end and within the month limit; each purchase
+  gives `HC1` to every habbo of the user, the buyer wearing it, and `HC1` leaves them once the site reads an ended club.
+- **Start** [p6-05](/tasks/p6-05-club-page.md).
 - **Done** [p6-09](/tasks/p6-09-club-days-to-the-last-period.md): `GetClubEnd` gives the end of the user's last
   period while one covers now, so a month and then three months bought 10 days later leave 114 days on the Me page and
   the account pages, as Holo's `HCDaysLeft`.

@@ -114,13 +114,10 @@ func (r *Router) ownHome(w http.ResponseWriter, req *http.Request) (store.Home, 
 	return home, true
 }
 
-// inClub reports whether userID has club now.
+// inClub reports whether userID has club now, reading the club as clubDays does.
 func (r *Router) inClub(ctx context.Context, userID int64) (bool, error) {
-	_, err := r.deps.Queries.GetClubEnd(ctx, store.GetClubEndParams{UserID: userID, Now: time.Now().UTC()})
-	if store.IsNotFound(err) {
-		return false, nil
-	}
-	return err == nil, err
+	days, err := r.clubDays(ctx, userID, time.Now().UTC())
+	return days > 0, err
 }
 
 // skinAllowed reports whether the user making the request may use skin: club skins
