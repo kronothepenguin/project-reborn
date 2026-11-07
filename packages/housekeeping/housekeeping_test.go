@@ -82,6 +82,9 @@ var routes = []struct {
 	{"POST", "/housekeeping/habbos/1/badges/ADM/delete"},
 	{"POST", "/housekeeping/users/1"},
 	{"POST", "/housekeeping/users/1/attributes"},
+	{"GET", "/housekeeping/vouchers"},
+	{"POST", "/housekeeping/vouchers"},
+	{"POST", "/housekeeping/vouchers/ABC/delete"},
 	{"GET", "/housekeeping/_astro/page.css"},
 	{"GET", "/housekeeping/index.html"},
 }
