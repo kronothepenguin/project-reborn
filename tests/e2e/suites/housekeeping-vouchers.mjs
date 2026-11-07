@@ -181,6 +181,41 @@ export default async function (t) {
     (await listed()).join("|"),
   );
 
+  // A browser reads . and .. in the delete's address as folders (0106).
+  for (const code of [".", ".."]) {
+    await page.fill("#voucher-code", code);
+    await page.fill("#voucher-credits", "5");
+    const dots = await post("Create Voucher");
+    await page.waitForLoadState();
+    check(
+      `the code ${code} alone is refused and kept`,
+      dots.status() === 422 &&
+        (await page.getByRole("alert").innerText()) ===
+          "The redemption code cannot be . or .." &&
+        (await page.inputValue("#voucher-code")) === code,
+    );
+  }
+  await page.fill("#voucher-code", "...");
+  await page.fill("#voucher-credits", "5");
+  await page.getByRole("button", { name: "Create Voucher" }).click();
+  await page.waitForURL(/created=1/);
+  const withDots = (await listed()).join("|");
+  await listBox
+    .getByRole("row", { name: "..." })
+    .getByRole("button", { name: "Delete" })
+    .click();
+  await page.waitForURL(/deleted=1/);
+  const [[dotted]] = sql("SELECT COUNT(*) FROM vouchers WHERE code = '...'");
+  check(
+    "a code of three dots is created, and deleted through its address",
+    withDots === `${offered} 50|... 5` &&
+      (await page.getByRole("status").innerText()) ===
+        "The voucher has been deleted successfully." &&
+      Number(dotted) === 0 &&
+      (await listed()).join("|") === `${offered} 50`,
+    `${withDots} :: ${(await listed()).join("|")}`,
+  );
+
   const [[visitor]] = sql("SELECT id FROM avatars WHERE name = 'Visitor'");
   sql(`UPDATE vouchers SET redeemed_by_avatar_id = ${visitor},
     redeemed_at = '2026-11-07 00:00:00.000000000+00:00' WHERE code = '${offered}'`);
@@ -209,15 +244,19 @@ export default async function (t) {
   const rows = [...created, ...deleted];
   check(
     "the log holds each change in Holo's words, and who made it",
-    created.length === 2 &&
+    created.length === 3 &&
       created.some((row) =>
         row.includes(`Created voucher ${offered} worth 50 credits`),
       ) &&
       created.some((row) =>
         row.includes("Created voucher Summer/08 gift? worth 10 credits"),
       ) &&
-      deleted.length === 1 &&
-      deleted[0].includes("Deleted voucher Summer/08 gift?") &&
+      created.some((row) =>
+        row.includes("Created voucher ... worth 5 credits"),
+      ) &&
+      deleted.length === 2 &&
+      deleted.some((row) => row.includes("Deleted voucher Summer/08 gift?")) &&
+      deleted.some((row) => row.includes("Deleted voucher ...")) &&
       rows.every((row) => row.includes("Admin-1 (ID:")),
     rows.join(" | "),
   );

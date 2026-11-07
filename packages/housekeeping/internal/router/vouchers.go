@@ -22,6 +22,7 @@ const (
 	voucherCreated        = "The voucher has been created successfully."
 	voucherBlank          = "Please do not leave any fields blank."
 	voucherCodeTooLong    = "The redemption code must be at most 20 characters."
+	voucherCodeDots       = "The redemption code cannot be . or .."
 	voucherCreditsInvalid = "The amount must be a number from 1 to 2147483647."
 	voucherCodeTaken      = "A voucher with this redemption code already exists."
 	voucherDeleted        = "The voucher has been deleted successfully."
@@ -147,6 +148,12 @@ func (r *Router) HandleVouchersCreate(w http.ResponseWriter, req *http.Request) 
 	}
 	if utf8.RuneCountInString(form.Code) > maxVoucherCode {
 		refuse(voucherCodeTooLong)
+		return
+	}
+	// A browser reads . and .. in the delete's address as folders, even escaped,
+	// so such a voucher could never be deleted (0106).
+	if form.Code == "." || form.Code == ".." {
+		refuse(voucherCodeDots)
 		return
 	}
 	credits, ok := voucherCredits(form.Credits)

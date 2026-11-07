@@ -19,6 +19,7 @@ const (
 	voucherCreated        = "The voucher has been created successfully."
 	voucherBlank          = "Please do not leave any fields blank."
 	voucherCodeTooLong    = "The redemption code must be at most 20 characters."
+	voucherCodeDots       = "The redemption code cannot be . or .."
 	voucherCreditsInvalid = "The amount must be a number from 1 to 2147483647."
 	voucherCodeTaken      = "A voucher with this redemption code already exists."
 	voucherDeleted        = "The voucher has been deleted successfully."
@@ -219,6 +220,9 @@ func TestABadVoucherIsRefused(t *testing.T) {
 		{"a code of spaces", "   ", "5", voucherBlank},
 		{"no amount", "SPRING", "", voucherBlank},
 		{"a code of 21 characters", strings.Repeat("é", 21), "5", voucherCodeTooLong},
+		{"the code .", ".", "5", voucherCodeDots},
+		{"the code ..", "..", "5", voucherCodeDots},
+		{"the code .. between spaces", " .. ", "5", voucherCodeDots},
 		{"an amount of 0", "SPRING", "0", voucherCreditsInvalid},
 		{"a negative amount", "SPRING", "-5", voucherCreditsInvalid},
 		{"an amount too high", "SPRING", "2147483648", voucherCreditsInvalid},
@@ -246,6 +250,30 @@ func TestARefusedVoucherKeepsWhatWasTyped(t *testing.T) {
 
 	rec := serve(mux, "POST", "/housekeeping/vouchers", cookie, voucherForm(" Typed ", "ten"))
 	wantPage(t, rec, http.StatusUnprocessableEntity, "Form:{Code:Typed Credits:ten}", "Error:"+voucherCreditsInvalid)
+
+	rec = serve(mux, "POST", "/housekeeping/vouchers", cookie, voucherForm(" .. ", "5"))
+	wantPage(t, rec, http.StatusUnprocessableEntity, "Form:{Code:.. Credits:5}", "Error:"+voucherCodeDots)
+}
+
+// A browser reads only . and .. in an address as folders (0106), so every other code
+// of dots is created and then deleted through its address.
+func TestOtherCodesOfDotsAreCreatedAndDeleted(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := treasurer(t, db)
+	codes := []string{"...", "..a", "a..", ". .", "./..", "%2E", "%2E%2E", ".%2e"}
+
+	for _, code := range codes {
+		wantRedirect(t, serve(mux, "POST", "/housekeeping/vouchers", cookie, voucherForm(code, "5")), "/housekeeping/vouchers?created=1")
+	}
+	if got := codesOf(allVouchers(t, db)); !slices.Equal(slices.Sorted(slices.Values(got)), slices.Sorted(slices.Values(codes))) {
+		t.Fatalf("vouchers = %q, want %q", got, codes)
+	}
+	for _, code := range codes {
+		wantRedirect(t, serve(mux, "POST", voucherDeleteURL(code), cookie, url.Values{}), "/housekeeping/vouchers?deleted=1")
+	}
+	if got := allVouchers(t, db); len(got) != 0 {
+		t.Errorf("vouchers = %+v, want none", got)
+	}
 }
 
 // Codes match ignoring case, as Holo's column did, and a redeemed voucher keeps its

@@ -2,6 +2,10 @@
 
 ## 2026-11-07
 
+- **Done** [p6-10](/tasks/p6-10-keep-every-voucher-deletable.md): `Create Voucher` refuses the codes `.` and `..`
+  alone with `The redemption code cannot be . or ..`, and every other code, `...` among them, is created and then
+  deleted through its address.
+- **Start** [p6-10](/tasks/p6-10-keep-every-voucher-deletable.md).
 - **Update** [p2-04](/tasks/p2-04-account-looks.md): its note said that Holo keeps `Save changes` disabled until the
   editor is touched; it now says that Holo's Flash editor opened it five seconds after drawing a look the club allows.
 - **Decision** [0107](/decisions/0107-save-opens-after-the-first-look.md): `habbo/avatar-editor` opens the looks form's

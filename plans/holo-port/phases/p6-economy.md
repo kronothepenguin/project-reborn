@@ -47,6 +47,6 @@ Habbos see their credits and transactions, redeem vouchers, buy club months and 
 7. [p6-07 Manage vouchers in housekeeping](/tasks/p6-07-housekeeping-vouchers.md) — done
 8. [p6-08 Verify P6](/tasks/p6-08-exit-check.md)
 9. [p6-09 Count the club days to the end of the last period](/tasks/p6-09-club-days-to-the-last-period.md) — done
-10. [p6-10 Keep every voucher deletable](/tasks/p6-10-keep-every-voucher-deletable.md)
+10. [p6-10 Keep every voucher deletable](/tasks/p6-10-keep-every-voucher-deletable.md) — done
 11. [p6-11 Guard the club page's layout fields](/tasks/p6-11-club-page-layout-guard.md)
 12. [p6-12 Open Save changes five seconds after the editor starts, as Holo's Flash did](/tasks/p6-12-save-looks-as-the-flash-editor.md)

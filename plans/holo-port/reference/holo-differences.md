@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-07T00:46:14+00:00
+timestamp: 2026-11-07T02:32:02+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -298,6 +298,7 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Voucher Management | Open to rank 6 | Takes `housekeeping.vouchers`, which the installer's Administrator and Moderator hold | [0053](/decisions/0053-attributes-on-groups-and-users.md), [0054](/decisions/0054-access-groups-are-holos-ranks.md) |
 | Voucher Management | A voucher cannot be deleted | `Delete` beside each unused voucher answers `The voucher has been deleted successfully.` and logs `Deleted voucher <code>`; a voucher redeemed in the meantime stays, and the answer is `Unable to delete voucher; this voucher does not exist or has been redeemed!` with 404 | [0063](/decisions/0063-what-housekeeping-can-delete.md) |
 | Voucher Management | A redemption deletes the voucher, so its code can be given again | A redeemed voucher stays, so its code stays taken | [0063](/decisions/0063-what-housekeeping-can-delete.md) |
+| Voucher Management | Any code goes through, `.` and `..` too | The codes `.` and `..` alone answer `The redemption code cannot be . or ..` and keep what was typed, since a browser reads them in the delete's address as folders; every other code goes through | [0106](/decisions/0106-dot-voucher-codes-refused.md) |
 
 ## Holo bugs not ported
 
