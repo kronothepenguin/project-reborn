@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-07T00:28:48+00:00
+timestamp: 2026-11-07T00:36:29+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -120,6 +120,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Credits page | Its two boxes hold raw HTML, edited in the content tool, the second with the palm chair and a list of four ways to earn credits | Their bodies are BBCode, and the help of their fields says `BBCode is allowed here.`; the pictures are part of the page, and the list is lines that start with `* ` | [0105](/decisions/0105-credits-boxes-in-bbcode.md) |
 | Credits page | A redeemed voucher is deleted | It stays, with the habbo that redeemed it and when | [0063](/decisions/0063-what-housekeeping-can-delete.md) |
 | Credits page | A voucher of the type `item` gives a piece of furniture, with `You have redeemed this item of furniture successfully.` or `Item not valid, please contact an admin for assistance.` | Vouchers give credits only; item vouchers wait for the game server | [0013](/decisions/0013-defer-game-server-features.md) |
+| Account transactions | Date, Activity and Description | A Habbo column after them names the habbo that acted, blank when none did, since all the user's habbos share the purse | [0104](/decisions/0104-transactions-show-the-habbo.md) |
 | News | The body is HTML written by staff | BBCode, without smilies, as Holo's news had none | [0020](/decisions/0020-news-in-bbcode.md) |
 | Tags | A tag counts for its owner whether the owner still exists or not | An archived habbo's tags leave the cloud, the search and the tag fight | [0058](/decisions/0058-habbos-are-archived.md) |
 | Staff page | Every user above rank 2, with `Rank:` named after the rank | Each member of a staff-listed access group once, with `Rank:` the name of the highest of those groups and the habbo chosen for it | [0076](/decisions/0076-one-staff-list.md) |
@@ -358,4 +359,3 @@ veto.
 | `Voucher Management` in housekeeping | [P6](/phases/p6-economy.md) |
 | `Chatlogs` and `Online Users` in housekeeping | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | The page behind Help | [P7](/phases/p7-help.md) |
-| Vouchers in housekeeping, and the text boxes of the credits page | [P6](/phases/p6-economy.md) |

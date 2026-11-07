@@ -2,11 +2,13 @@ package cms
 
 import (
 	"database/sql"
+	"fmt"
 	"html"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
@@ -164,4 +166,54 @@ func TestOnlyASignedInHabboRedeems(t *testing.T) {
 	if n := countRows(t, db, `SELECT COUNT(*) FROM vouchers WHERE redeemed_at IS NULL`); n != 1 {
 		t.Error("the voucher was redeemed")
 	}
+}
+
+func ledgerRow(t *testing.T, db *sql.DB, userID int64, habbo string, credits int64, reason, detail string, at time.Time) {
+	t.Helper()
+	var avatar sql.NullInt64
+	if habbo != "" {
+		avatar = sql.NullInt64{Int64: avatarID(t, db, habbo), Valid: true}
+	}
+	err := store.New(db).CreateWalletTransaction(t.Context(), store.CreateWalletTransactionParams{
+		UserID: userID, AvatarID: avatar, Credits: credits, Reason: reason, Detail: detail, CreatedAt: at,
+	})
+	if err != nil {
+		t.Fatalf("CreateWalletTransaction: %v", err)
+	}
+}
+
+func TestTheTransactionsListTheSharedLedger(t *testing.T) {
+	db, mux, cookie, userID := buyer(t, 75)
+	secondHabbo(t, db, userID, "FrankToo")
+	other := habbo(t, db, "dora@example.com", "Dora")
+	ledgerRow(t, db, userID, "Frank", 500, "registration", "Welcome to Holo Hotel!", testNow)
+	ledgerRow(t, db, other, "Dora", 30, "staff", "Housekeeping transfer/refund", testNow.Add(time.Minute))
+	ledgerRow(t, db, userID, "FrankToo", -20, "group", "Group purchase", testNow.Add(time.Hour+2*time.Second))
+	ledgerRow(t, db, userID, "", 50, "staff", "", testNow.Add(24*time.Hour))
+	if _, err := db.ExecContext(t.Context(), `UPDATE avatars SET archived_at = ? WHERE name = 'FrankToo'`, testNow); err != nil {
+		t.Fatal(err)
+	}
+
+	wantPage(t, serve(mux, "GET", "/credits/transactions", cookie, nil), http.StatusOK,
+		"credits/transactions.html {", "Habbo:Frank", "Credits:75 ",
+		"Transactions:[{Date:28-10-2026 21:00:00 Activity:50 Description:staff Habbo: Odd:true}"+
+			" {Date:27-10-2026 22:00:02 Activity:-20 Description:Group purchase Habbo:FrankToo Odd:false}"+
+			" {Date:27-10-2026 21:00:00 Activity:500 Description:Welcome to Holo Hotel! Habbo:Frank Odd:true}]}")
+}
+
+func TestTheTransactionsShowTheFiftyNewest(t *testing.T) {
+	db, mux, cookie, userID := buyer(t, 0)
+	for i := range 51 {
+		ledgerRow(t, db, userID, "Frank", 1, "staff", fmt.Sprintf("Row %02d", i), testNow)
+	}
+	rec := serve(mux, "GET", "/credits/transactions", cookie, nil)
+	wantPage(t, rec, http.StatusOK, "Transactions:[{Date:27-10-2026 21:00:00 Activity:1 Description:Row 50 ", "Description:Row 01 ")
+	if n := strings.Count(rec.Body.String(), "Description:Row "); n != 50 || strings.Contains(rec.Body.String(), "Row 00") {
+		t.Errorf("the page lists %d rows, want the 50 newest", n)
+	}
+}
+
+func TestTheTransactionsWaitForASignIn(t *testing.T) {
+	_, mux := newSite(t)
+	wantRedirect(t, serve(mux, "GET", "/credits/transactions", nil, nil), "/")
 }

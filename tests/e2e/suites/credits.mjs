@@ -1,5 +1,6 @@
 // The credits page, as a guest reads it and as Frank redeems vouchers into the purse
-// his two habbos share: SPRING20 worth 20 and summer50 worth 50.
+// his two habbos share, SPRING20 worth 20 and summer50 worth 50, and reads its
+// transactions.
 export const programs = ["cms"];
 
 const at = "2026-11-01 12:00:00.000000000+00:00";
@@ -162,6 +163,78 @@ export default async function ({ base, browser, check, shot, sql }) {
     (await other.page.locator("main form").innerText()).includes("170 Credits"),
     await other.page.locator("main form").innerText(),
   );
+
+  const [[frank]] = sql("SELECT id FROM avatars WHERE name = 'Frank'");
+  sql(`INSERT INTO wallet_transactions (user_id, avatar_id, credits, reason, detail, created_at)
+    VALUES (${frankUser}, ${frank}, -20, 'group', 'Group purchase', '2026-11-02 08:30:05.000000000+00:00')`);
+  sql(`INSERT INTO wallet_transactions (user_id, avatar_id, credits, reason, detail, created_at)
+    VALUES (${frankUser}, NULL, 5, 'staff', '', '2026-11-02 09:00:00.000000000+00:00')`);
+  await Promise.all([page.waitForURL("**/credits/transactions"), purse.getByRole("link", { name: "Account transactions" }).click()]);
+  await purse.getByText("You Currently Have:").waitFor();
+  await shot(page, "credits-transactions");
+  check(
+    "the purse's link opens Account transactions under the Credits tab, with neither sub-tab chosen, as Holo's",
+    (await page.title()).endsWith("~ Account transactions") &&
+      (await page.locator("header li strong").innerText()) === "Credits" &&
+      (await page.locator("nav li.font-bold").count()) === 0 &&
+      JSON.stringify(await page.locator("main header").allInnerTexts()) === JSON.stringify(["Account transactions", "Your purse"]) &&
+      (await page.getByText("This is an overview of your credit transaction history. They are updated as soon as the transaction is made. You can see up to 50 records.").isVisible()),
+    JSON.stringify(await page.locator("main header").allInnerTexts()),
+  );
+  const table = page.locator("main table");
+  const cells = async () => {
+    const out = [];
+    for (const row of await table.locator("tbody tr").all()) out.push(await row.locator("td").allInnerTexts());
+    return out;
+  };
+  const listed = await cells();
+  const date = /^\d\d-\d\d-\d{4} \d\d:\d\d:\d\d$/;
+  check(
+    "the table lists the user's ledger newest first, with Holo's date, the activity, the detail or else the reason, and the habbo that acted",
+    JSON.stringify(await table.locator("thead th").allInnerTexts()) === JSON.stringify(["Date", "Activity", "Description", "Habbo"]) &&
+      listed.length === 4 &&
+      JSON.stringify(listed.slice(0, 2)) ===
+        JSON.stringify([
+          ["02-11-2026 09:00:00", "5", "staff", ""],
+          ["02-11-2026 08:30:05", "-20", "Group purchase", "Frank"],
+        ]) &&
+      JSON.stringify(listed.slice(2).map((row) => row.slice(1))) ===
+        JSON.stringify([
+          ["50", "Credit voucher redeem", "FrankToo"],
+          ["20", "Credit voucher redeem", "FrankToo"],
+        ]) &&
+      listed.every((row) => date.test(row[0])),
+    JSON.stringify(listed),
+  );
+  const rowClasses = await table.locator("tbody tr").evaluateAll((rows) => rows.map((row) => row.className.includes("bg-taupe-100")));
+  check("the first row is Holo's grey one, and every other after it", JSON.stringify(rowClasses) === JSON.stringify([true, false, true, false]), JSON.stringify(rowClasses));
+  check(
+    "the purse stands beside the table, with the shared balance and the code field",
+    (await purse.innerText()).includes("170 Credits") && (await purse.getByLabel("Enter redemption code:").isVisible()),
+    await purse.innerText(),
+  );
+
+  for (let i = 0; i < 60; i++) {
+    sql(`INSERT INTO wallet_transactions (user_id, avatar_id, credits, reason, detail, created_at)
+      VALUES (${frankUser}, ${frank}, 1, 'staff', 'Gift ${String(i).padStart(2, "0")}', '2026-11-03 10:00:00.000000000+00:00')`);
+  }
+  await page.reload();
+  const fifty = await cells();
+  check(
+    "the table shows the 50 newest rows only",
+    fifty.length === 50 && fifty[0][2] === "Gift 59" && fifty[49][2] === "Gift 10",
+    JSON.stringify([fifty.length, fifty[0], fifty.at(-1)]),
+  );
+
+  const stranger = await visitor(browser, base);
+  await stranger.page.goto(base + "/credits/transactions");
+  check(
+    "a guest is sent to sign in",
+    new URL(stranger.page.url()).pathname === "/" && (await stranger.page.locator("#username").isVisible()),
+    stranger.page.url(),
+  );
+  await stranger.context.close();
+
   check("no page failed", signedIn.problems.length === 0 && other.problems.length === 0, [...signedIn.problems, ...other.problems].join(", "));
   await other.context.close();
   await signedIn.context.close();

@@ -1,6 +1,6 @@
 ---
 import { Card } from "@project-reborn/components";
-import Purse from "../components/credits/purse.svelte";
+import PurseBox from "../components/credits/purse-box.astro";
 import Community from "../layouts/community.astro";
 
 const body = "flow-root [&_a]:text-orange-500 [&_a]:underline";
@@ -19,17 +19,7 @@ const body = "flow-root [&_a]:text-orange-500 [&_a]:underline";
       </div>
     </div>
     <div class="w-[310px]">
-      <div class="mr-2 mb-[7px]">
-        <Card color="brown">
-          <span slot="header">Your purse</span>
-          [[ if .SignedIn ]]
-          <div id="purse" hidden data-credits="[[ .Credits ]]"></div>
-          <Purse client:only="svelte" source="purse" />
-          [[ else ]]
-          <div>You need to be logged in to see the purse.</div>
-          [[ end ]]
-        </Card>
-      </div>
+      <div class="mr-2 mb-[7px]"><PurseBox /></div>
       <div class="mr-2 mb-[7px]">
         <Card color="blue">
           <span slot="header">[[ .Box1Heading ]]</span>

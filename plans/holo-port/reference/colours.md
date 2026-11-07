@@ -2,7 +2,7 @@
 type: Reference
 title: Holo colours mapped to Tailwind
 description: The closest Tailwind colour for each Holo colour, computed with tools/tw-color, for the public site, BBCode and housekeeping.
-timestamp: 2026-11-06T17:35:17+00:00
+timestamp: 2026-11-07T00:36:29+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [colours, tailwind]
 ---
@@ -45,6 +45,7 @@ Use these classes instead of Holo's hex values. For a colour that is not listed,
 | warning orange / yellow | #f29400 / #ffcd0a | amber-500 / amber-300 |
 | rounded-blue | #3399cc | cyan-600 |
 | even rows / separators | #ececec / #e8e8e8 | olive-200 / gray-200 |
+| transaction odd rows / headings | #efefef / #999 | taupe-100 / neutral-400 |
 | footer text | #777 | neutral-500 |
 | maintenance background | #083940 | cyan-950 |
 | list hover blue (odd / even) | #f1f8ff / #dceafa | sky-50 / blue-100 |

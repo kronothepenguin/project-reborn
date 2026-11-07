@@ -2,6 +2,9 @@
 
 ## 2026-11-07
 
+- **Done** [p6-04](/tasks/p6-04-account-transactions.md): a signed-in habbo reads the 50 newest rows of the shared
+  purse's ledger in Holo's table, with the habbo that acted in a Habbo column, beside the purse.
+- **Start** [p6-04](/tasks/p6-04-account-transactions.md).
 - **Done** [p6-03](/tasks/p6-03-credits-page.md): anyone reads the credits page's two BBCode boxes beside
   Holo's pictures, and a signed-in habbo redeems a voucher in the purse, once, in any case, in one transaction with
   its ledger row, with Holo's green and red answers.
