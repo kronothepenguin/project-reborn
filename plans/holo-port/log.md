@@ -1,5 +1,17 @@
 # Log
 
+## 2026-11-07
+
+- **Done** [p6-07](/tasks/p6-07-housekeeping-vouchers.md): staff with `housekeeping.vouchers` reach Voucher
+  Management from a `Credits` box, create credit vouchers with Holo's random code drawn from `crypto/rand`, its
+  blank-field answer and new checks on the code and the amount, list the unused ones and delete one, each logged in
+  Holo's words; a redeemed voucher stays.
+- **Blocked** [p6-10](/tasks/p6-10-keep-every-voucher-deletable.md): it waits for the user to choose between refusing
+  the codes `.` and `..`, taking only letters and digits as badge codes do, and leaving those two vouchers undeletable.
+- **Create** [p6-10](/tasks/p6-10-keep-every-voucher-deletable.md): p6-07 found that a voucher whose code is `.` or `..`
+  can be created but not deleted, because a browser reads those codes in the delete's address as folders.
+- **Start** [p6-07](/tasks/p6-07-housekeeping-vouchers.md).
+
 ## 2026-11-06
 
 - **Done** [p6-01](/tasks/p6-01-economy-settings.md): the club's prices, days and month limit, the credits page's

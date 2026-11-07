@@ -31,6 +31,7 @@ func TestNoPageHidesAFieldOfTheLayout(t *testing.T) {
 		reflect.TypeFor[settingsPage](),
 		reflect.TypeFor[ticketPage](),
 		reflect.TypeFor[transactionsPage](),
+		reflect.TypeFor[vouchersPage](),
 	} {
 		for i := range layout.NumField() {
 			name := layout.Field(i).Name

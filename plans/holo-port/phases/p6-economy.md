@@ -3,7 +3,7 @@ type: Phase
 title: P6 Economy
 description: Credits page with purse and vouchers, transaction history, Habbo Club subscriptions and the club wardrobe, with voucher management in housekeeping.
 status: active
-timestamp: 2026-11-06T22:30:17+00:00
+timestamp: 2026-11-07T00:32:36+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p6, cms, housekeeping]
 ---
@@ -44,6 +44,18 @@ Habbos see their credits and transactions, redeem vouchers, buy club months and 
 4. [p6-04 Show the account transactions](/tasks/p6-04-account-transactions.md)
 5. [p6-05 Buy club on the club page](/tasks/p6-05-club-page.md)
 6. [p6-06 Keep outfits in the club wardrobe](/tasks/p6-06-club-wardrobe.md)
-7. [p6-07 Manage vouchers in housekeeping](/tasks/p6-07-housekeeping-vouchers.md)
+7. [p6-07 Manage vouchers in housekeeping](/tasks/p6-07-housekeeping-vouchers.md) — done
 8. [p6-08 Verify P6](/tasks/p6-08-exit-check.md)
 9. [p6-09 Count the club days to the end of the last period](/tasks/p6-09-club-days-to-the-last-period.md)
+10. [p6-10 Keep every voucher deletable](/tasks/p6-10-keep-every-voucher-deletable.md) — blocked
+
+# Open questions
+
+Found by [p6-07](/tasks/p6-07-housekeeping-vouchers.md) on 2026-11-07. The first option is the recommendation.
+
+1. **Vouchers that cannot be deleted.** A code takes any 20 characters, as Holo's did, but a browser reads the codes
+   `.` and `..` in `/housekeeping/vouchers/{code}/delete` as folders, so their `Delete` answers 404 and the voucher
+   stays ([p6-10](/tasks/p6-10-keep-every-voucher-deletable.md)).
+   - `Create Voucher` refuses those two codes alone, with a message such as `The redemption code cannot be . or ..`.
+   - Codes take only letters and digits, as badge codes do.
+   - Nothing changes: those two vouchers can be created and redeemed, but never deleted.
