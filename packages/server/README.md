@@ -1,23 +1,25 @@
 # server — Go package
 
 A Go module without a frontend. The app struct (`Server` struct) takes the
-database in `New(db)` and registers its routes on a mux in `Mount(mux)`;
-`apps/server` runs it.
+database in `New(db)` and registers its routes on a mux in `Mount(mux)`, and
+`StartInfo` and `StartMus` start the WebSocket listeners of the client's two
+connections; `apps/server` runs it.
 
 ## Layout
 
 The game server is laid out as `plans/server/decisions/0005-package-layout.md`
 decides. Each part is marked with the task of `plans/server/tasks/index.md`
 that brings it. So far the package holds what `tools/create` generated,
-`server.go` and `internal/router`, whose `GET /` answers `Hello from Go`,
-`transport/` and `encoding/`.
+`server.go` and `internal/router`, whose `GET /` answers `Hello from Go`, the
+listeners of `server.go` and `mus.go`, `transport/`, `encoding/` and `r26/`.
 
 | Part | Holds | Brought by |
 | --- | --- | --- |
-| `server.go` | `New(db)`, and a WebSocket listener on the host and port of `server.info` and of `server.mus` (`plans/server/decisions/0020-info-and-mus-websocket-ports.md`) | s0-03 generated `New(db)` and `Mount(mux)`; s0-07 serves the listeners |
+| `server.go` | `New(db)`, and `StartInfo` and `StartMus`, which start a WebSocket listener on the host and port of `server.info` and of `server.mus` (`plans/server/decisions/0020-info-and-mus-websocket-ports.md`, `plans/server/decisions/0022-start-info-and-start-mus.md`) | s0-03 generated `New(db)` and `Mount(mux)`; s0-07 the listeners |
+| `mus.go` | What the `mus` listener does until S7 frames MUS: it logs and never answers (`plans/server/decisions/0023-mus-listener-before-s7.md`) | s0-07 |
 | `transport/` | `Conn`, an `io.Reader` to receive, an `io.Writer` to send and an `io.Closer`, over TCP (`tcp.go`) and the WebSocket (`websocket.go`) | s0-05 |
 | `encoding/` | B64, VL64 and strings | s0-06 |
-| `r26/` | The R26 ids, and one file per client cast: `entry_init.go`, `navigator.go`, `room.go`… | s0-07 the framing, `HELLO` and the dispatch by id; each cast's handlers with the phase that serves the cast, from S2 |
+| `r26/` | The R26 ids, and one file per client cast: `entry_init.go`, `navigator.go`, `room.go`… | s0-07 the framing (`packet.go`), `HELLO` and the dispatch by id (`r26.go`) and the names of hh_entry_init's commands (`entry_init.go`); each cast's handlers with the phase that serves the cast, from S2 |
 | `game/` | The rules: login, entering rooms, chat, walking…, with no protocol in them | S2, the first rules; its tasks are written when the phase starts |
 
 - `encoding` stands apart from `r26`, so that another protocol can reuse it.
@@ -76,9 +78,64 @@ the front of an `io.Reader` and reads no further; a writer writes it to an
   characters, a string holding `chr(2)` or a B64-length string over 4095 bytes,
   or text that is not UTF-8.
 
+## A connection
+
+`StartInfo` and `StartMus` each open a WebSocket listener on the host and port
+that `config.json` gives `server.info` or `server.mus`. Each returns an error
+when it cannot listen, then serves in the background until the process ends,
+and logs where it listens: `server: info on ws://localhost:30000`. There is no
+shutdown yet. The standalone runner calls both, and the orchestrator will call
+the same two (`plans/server/decisions/0022-start-info-and-start-mus.md`).
+
+The transport hands each WebSocket to the handler of its connection as a
+`Conn`, in a goroutine of its own, so that no session waits on another.
+
+On `info`, `r26.Serve` speaks R26:
+
+1. It sends `HELLO`: `@@` and the character 1. The client sends nothing before
+   it.
+2. It reads the client's packets one after another: 3 B64 characters of
+   length, 2 of the command id, then the body. A WebSocket frame may hold
+   several packets or a part of one.
+3. It runs the handler registered for the id in the session's goroutine, so a
+   session handles its packets in order. No id has a handler yet.
+4. A packet that no handler takes is logged as one line, with the session's
+   address, the id, the name when `r26` knows it and the size of the body,
+   never the body (`plans/server/decisions/0021-unhandled-packets-logged-by-id-name-and-size.md`):
+   `r26 127.0.0.1:53422 unhandled TRY_LOGIN (756), 18 bytes`, or
+   `r26 127.0.0.1:53422 unhandled 999, 3 bytes` for an id it does not know.
+   `r26` knows the 22 commands of hh_entry_init. The session goes on.
+5. The session ends when the client leaves, which is no error and is not
+   logged: the client closes, and first writes one byte 0 where a packet would
+   start.
+6. A length too short to hold the id, or a packet cut short, ends the session
+   and is logged:
+   `r26 127.0.0.1:53422 closed: encoding: malformed value: a packet length of 1, too short for its id`.
+   Every other session goes on.
+
+`r26` writes a message as 2 B64 characters of its id, the body and the
+character 1, in one `Write`, so that the messages of goroutines sharing a
+connection never mix. The client ends a message at its first character 1, so a
+body that holds one is refused with an error wrapping `encoding.ErrUnencodable`.
+
+On `mus`, until S7 frames MUS, the server logs the connect, the size of each
+message and the close, and never answers
+(`plans/server/decisions/0023-mus-listener-before-s7.md`):
+`mus 127.0.0.1:53422 connected`, `mus 127.0.0.1:53422 received 11 bytes` and
+`mus 127.0.0.1:53422 closed`. The transport hides the WebSocket's frames, so a
+size is what one read brings: never more than one message, and a large message
+may come in several reads.
+
+- The server logs through the default logger of `log/slog`.
+- A panic in a session does not end the server: `net/http` recovers it and logs
+  it, and the transport closes that connection. Over TCP, which no listener
+  serves yet, it would end the process.
+
 ## Port
 
 - App (Go HTTP server): **15445** — baked in `apps/server/cmd/server`
+- `info` and `mus` (WebSocket listeners): **30000** and **30001** by default,
+  the ports of `server.info` and `server.mus` in `config.json`
 
 ## Development
 

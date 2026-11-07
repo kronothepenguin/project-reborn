@@ -12,6 +12,12 @@ func main() {
 	db := store.FromConfig()
 
 	c := server.New(db)
+	if err := c.StartInfo(); err != nil {
+		log.Fatalln(err)
+	}
+	if err := c.StartMus(); err != nil {
+		log.Fatalln(err)
+	}
 
 	mux := http.NewServeMux()
 	c.Mount(mux)

@@ -4,14 +4,14 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/kronothepenguin/project-reborn/packages/{{.Name}}"
+	{{if ne .Package .Name}}{{.Package}} {{end}}"github.com/kronothepenguin/project-reborn/packages/{{.Name}}"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 func main() {
 	db := store.FromConfig()
 
-	c := {{.Name}}.New(db)
+	c := {{.Package}}.New(db)
 
 	mux := http.NewServeMux()
 	c.Mount(mux)

@@ -3,7 +3,7 @@ type: Phase
 title: S2 Login and session
 description: A habbo logs in with an SSO ticket and reaches the hotel view with their name, look, credits, badges and settings, and the session stays alive.
 status: planned
-timestamp: 2026-11-05T20:57:45+00:00
+timestamp: 2026-11-07T00:12:36+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s2, server]
 ---
@@ -38,6 +38,12 @@ Written when the phase starts.
 
 # Open questions
 
+- Whether the server waits for `GENERATEKEY` (2002) before it sends `ENDOFCRYPTOPARAMS` (278), as
+  [0012](/decisions/0012-no-encryption.md) describes, or sends 278 right after `CRYPTOPARAMETERS` (277). The client
+  withholds `GENERATEKEY` when script tracing is on, when `Login Subscript 2` is not in the Login Handler's cast or is
+  not that script, and, where the platform is not Windows, when its key comes out shorter than 2 characters; a server
+  that waits for it then never sends 278. The client's handler of 278 checks nothing and starts the session whenever
+  278 arrives ([hh_entry_init](/reference/r26/hh_entry_init.md#the-handshake)).
 - How a rule in `game` tells other habbos' sessions about an event without knowing their protocol.
 - How a test client gets an SSO ticket before the site's `/client` page exists. The page, which
   `plans/holo-port/decisions/0013-defer-game-server-features.md` deferred, is planned in `plans/client`, phase C1.

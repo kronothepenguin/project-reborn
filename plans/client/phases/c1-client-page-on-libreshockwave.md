@@ -3,7 +3,7 @@ type: Phase
 title: C1 The client page on LibreShockwave
 description: A signed-in habbo opens the CMS's client page, where the R26 .dcr runs on LibreShockwave with an SSO ticket and connects to the game server, and the .dcr is decompiled into a recent R26 source.
 status: planned
-timestamp: 2026-11-06T17:32:58-05:00
+timestamp: 2026-11-07T00:12:36+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-06T15:50:54+00:00"}
 tags: [c1, client]
 ---
@@ -55,3 +55,10 @@ Written when the phase starts.
   from until C2.
 - How the hotel offers LibreShockwave's source to the players whose browsers receive its player, since LibreShockwave is
   licensed under the AGPL-3.0 ([LibreShockwave](/reference/libreshockwave.md#licence)).
+- Whether LibreShockwave runs the code behind the client's login key. Before it sends `GENERATEKEY`,
+  `responseWithPublicKey` computes the key with handlers of `hh_entry_init`'s `9_Login Subscript.ls` and
+  `10_Login Subscript 2.ls` and of `fuse_client`'s `83_JSBigInt.ls`, which the decompiled scripts show only as
+  `-- unk26`, as they show `fuse_client`'s `84_JavaScript Proxy.ls`, through which the client calls the page's
+  JavaScript (all in `packages/client-r26/src/game/`). LibreShockwave runs the `.dcr`'s bytecode, not the `.ls`
+  scripts, so that code may still run there. If it does not, the client never sends `GENERATEKEY`
+  (`plans/server/reference/r26/hh_entry_init.md`, The handshake).

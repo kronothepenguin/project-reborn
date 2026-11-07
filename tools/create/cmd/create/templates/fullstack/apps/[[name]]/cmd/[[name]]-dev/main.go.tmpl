@@ -7,7 +7,7 @@ import (
 	"net/url"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
-	"github.com/kronothepenguin/project-reborn/packages/{{.Name}}"
+	{{if ne .Package .Name}}{{.Package}} {{end}}"github.com/kronothepenguin/project-reborn/packages/{{.Name}}"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
@@ -21,9 +21,9 @@ func main() {
 
 	db := store.FromConfig()
 
-	c := {{.Name}}.New(db,
-		{{.Name}}.WithResolver(resolver),
-		{{.Name}}.WithStatic(proxy),
+	c := {{.Package}}.New(db,
+		{{.Package}}.WithResolver(resolver),
+		{{.Package}}.WithStatic(proxy),
 	)
 
 	mux := http.NewServeMux()

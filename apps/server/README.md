@@ -10,6 +10,9 @@ frontend) lives entirely in the package; this module only serves it.
 ## Port
 
 - App (Go HTTP server): **15445** — baked in the runner
+- `info` and `mus` (WebSocket listeners): the hosts and ports of `server.info`
+  and `server.mus` in `config.json`, 30000 and 30001 by default, which the
+  runner starts with `StartInfo` and `StartMus`
 
 ## Run
 

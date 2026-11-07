@@ -47,9 +47,16 @@ func newProject(kind, name string, appPort, astroPort int) project {
 	return p
 }
 
+// Package is the name of the Go package: the name without its dashes, which a
+// Go identifier cannot hold. Folders and module paths keep them.
+func (p project) Package() string {
+	return strings.ReplaceAll(p.Name, "-", "")
+}
+
 // Type is the name of the package's exported type.
 func (p project) Type() string {
-	return strings.ToUpper(p.Name[:1]) + p.Name[1:]
+	pkg := p.Package()
+	return strings.ToUpper(pkg[:1]) + pkg[1:]
 }
 
 // dirs are the folders the project makes, relative to the repository root.

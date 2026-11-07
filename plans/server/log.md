@@ -1,5 +1,40 @@
 # Log
 
+## 2026-11-07
+
+- **Done** [s0-07](/tasks/s0-07-r26-sessions.md): `StartInfo` and `StartMus` start a WebSocket listener on the host
+  and port of `server.info` and `server.mus`, and the runner calls both. On `info`, `r26` sends `HELLO`, reads packets
+  in each session's own goroutine and logs each unhandled one as `r26 <address> unhandled INIT_CRYPTO (206), 0 bytes`;
+  on `mus`, the server logs the connect, each size and the close, and never answers.
+- **Start** [s0-07](/tasks/s0-07-r26-sessions.md).
+- **Create** [s0-10](/tasks/s0-10-go-names-that-clash.md): names whose Go package name is a Go keyword or `main`, or
+  a name the generated Go already uses, such as `log`, `http`, `db` or `new`, still make projects that do not compile;
+  what `tools/create` does with them is a new open question of [S0](/phases/s0-foundations.md). Found by s0-09.
+- **Done** [s0-09](/tasks/s0-09-go-template-names.md): the Go package of `game-server` is `gameserver` while its
+  folders and module paths keep the dash, and `create` runs the Go it writes through `go/format`, so the imports are in
+  order for any name; projects of both Go templates named `tracker`, `tracker2`, `web-shop` and `game-server` pass
+  their gates.
+- **Start** [s0-09](/tasks/s0-09-go-template-names.md).
+- **Update** [S2](/phases/s2-login.md) asks whether the server waits for `GENERATEKEY` (2002) before it sends
+  `ENDOFCRYPTOPARAMS` (278): the client withholds `GENERATEKEY` in some cases, while its handler of 278 checks
+  nothing. Found by [s1-02](/tasks/s1-02-entry-init.md); `plans/client`'s C1 asks whether LibreShockwave runs the key
+  code at all.
+- **Update** [s0-07](/tasks/s0-07-r26-sessions.md)'s steps follow 0021 to 0023,
+  [s0-09](/tasks/s0-09-go-template-names.md)'s question is answered by 0024, and [S0](/phases/s0-foundations.md) has
+  no open questions left.
+- **Decision** [0024](/decisions/0024-go-package-names-drop-the-dash.md): the Go package of a backend or fullstack
+  project is its name without the dashes, and folders and module paths keep them. Answers
+  [s0-09](/tasks/s0-09-go-template-names.md)'s question.
+- **Decision** [0023](/decisions/0023-mus-listener-before-s7.md): until S7 frames MUS, the `mus` listener accepts the
+  WebSocket, logs the connect, the size of each message and the close, and never answers. Answers
+  [s0-07](/tasks/s0-07-r26-sessions.md)'s question.
+- **Decision** [0022](/decisions/0022-start-info-and-start-mus.md): `StartInfo` and `StartMus` of `packages/server`
+  start the listeners, for the standalone runner and later the orchestrator; the runner gains the two calls and
+  nothing else. Answers [s0-07](/tasks/s0-07-r26-sessions.md)'s question.
+- **Decision** [0021](/decisions/0021-unhandled-packets-logged-by-id-name-and-size.md): a packet the server does not
+  handle yet is logged as one line with the session's address, the id, the name and the body's size, never the body.
+  Answers [s0-07](/tasks/s0-07-r26-sessions.md)'s question.
+
 ## 2026-11-06
 
 - **Done** [s1-02](/tasks/s1-02-entry-init.md): [hh_entry_init](/reference/r26/hh_entry_init.md) maps 26 messages
