@@ -15,6 +15,7 @@ import {
 import { startMail } from "./lib/mail.mjs";
 import * as art from "./suites/art.mjs";
 import * as community from "./suites/community.mjs";
+import * as credits from "./suites/credits.mjs";
 import * as details from "./suites/details.mjs";
 import * as forum from "./suites/forum.mjs";
 import * as groups from "./suites/groups.mjs";
@@ -55,6 +56,7 @@ const suites = {
   forum,
   community,
   staff,
+  credits,
   art,
   "housekeeping-access": housekeepingAccess,
   "housekeeping-admin": housekeepingAdmin,

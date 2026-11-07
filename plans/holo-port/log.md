@@ -1,5 +1,12 @@
 # Log
 
+## 2026-11-07
+
+- **Done** [p6-03](/tasks/p6-03-credits-page.md): anyone reads the credits page's two BBCode boxes beside
+  Holo's pictures, and a signed-in habbo redeems a voucher in the purse, once, in any case, in one transaction with
+  its ledger row, with Holo's green and red answers.
+- **Start** [p6-03](/tasks/p6-03-credits-page.md).
+
 ## 2026-11-06
 
 - **Done** [p6-01](/tasks/p6-01-economy-settings.md): the club's prices, days and month limit, the credits page's

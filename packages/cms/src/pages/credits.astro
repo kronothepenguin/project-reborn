@@ -1,0 +1,49 @@
+---
+import { Card } from "@project-reborn/components";
+import Purse from "../components/credits/purse.svelte";
+import Community from "../layouts/community.astro";
+
+const body = "flow-root [&_a]:text-orange-500 [&_a]:underline";
+---
+
+<Community title="[[ .ShortName ]] ~ Credits" tab="credits" sub="Credits">
+  <div class="flex">
+    <div class="w-[460px]">
+      <div class="mr-2 mb-[7px]">
+        <Card color="green">
+          <span slot="header">[[ .Box2Heading ]]</span>
+          <div class={body}>
+            <img class="float-left" src="/web-gallery/album1/palmchair.gif" width="96" height="146" alt="" />[[ .Box2Body ]]
+          </div>
+        </Card>
+      </div>
+    </div>
+    <div class="w-[310px]">
+      <div class="mr-2 mb-[7px]">
+        <Card color="brown">
+          <span slot="header">Your purse</span>
+          [[ if .SignedIn ]]
+          <div id="purse" hidden data-credits="[[ .Credits ]]"></div>
+          <Purse client:only="svelte" source="purse" />
+          [[ else ]]
+          <div>You need to be logged in to see the purse.</div>
+          [[ end ]]
+        </Card>
+      </div>
+      <div class="mr-2 mb-[7px]">
+        <Card color="blue">
+          <span slot="header">[[ .Box1Heading ]]</span>
+          <div id="credits-promo" class={body}>
+            <img
+              class="float-left"
+              src="/web-gallery/v2/images/credits/credits_permission.png"
+              width="114"
+              height="136"
+              alt=""
+            />[[ .Box1Body ]]
+          </div>
+        </Card>
+      </div>
+    </div>
+  </div>
+</Community>

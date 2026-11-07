@@ -40,7 +40,7 @@ Habbos see their credits and transactions, redeem vouchers, buy club months and 
 
 1. [p6-01 Declare the economy settings](/tasks/p6-01-economy-settings.md) — done
 2. [p6-02 Store vouchers, club purchases and wardrobe outfits](/tasks/p6-02-store-economy.md) — done
-3. [p6-03 Show the credits page and redeem vouchers](/tasks/p6-03-credits-page.md)
+3. [p6-03 Show the credits page and redeem vouchers](/tasks/p6-03-credits-page.md) — done
 4. [p6-04 Show the account transactions](/tasks/p6-04-account-transactions.md)
 5. [p6-05 Buy club on the club page](/tasks/p6-05-club-page.md)
 6. [p6-06 Keep outfits in the club wardrobe](/tasks/p6-06-club-wardrobe.md)
