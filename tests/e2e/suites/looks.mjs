@@ -1,4 +1,4 @@
-export default async function ({ base, browser, check, shot, sql }) {
+export default async function ({ base, browser, check, shot, sql, eventually }) {
   const page = await (
     await browser.newContext({ viewport: { width: 1100, height: 760 } })
   ).newPage();
@@ -83,6 +83,8 @@ export default async function ({ base, browser, check, shot, sql }) {
       "Looks",
   );
 
+  await wardrobe({ base, page, check, shot, sql, eventually });
+
   // /register must still ignore the callbacks
   const reg = await (await browser.newContext()).newPage();
   await reg.goto(base + "/register");
@@ -96,4 +98,233 @@ export default async function ({ base, browser, check, shot, sql }) {
     ),
   );
   check("no script errors", errors.length === 0, errors.join(" | "));
+}
+
+// The editor reports its look once it has drawn itself, and on every change; the
+// suite counts the reports to know when the editor is ready.
+async function listen(page) {
+  await page.waitForFunction(() => window.HabboEditor);
+  await page.evaluate(() => {
+    const editor = window.HabboEditor;
+    const report = editor.setGenderAndFigure;
+    window.looks = [];
+    editor.setGenderAndFigure = (gender, figure) => {
+      window.looks.push(figure);
+      report(gender, figure);
+    };
+  });
+}
+
+async function reported(page, count) {
+  await page.waitForFunction((n) => window.looks.length >= n, count, {
+    timeout: 30000,
+  });
+  return page.evaluate(() => window.looks.at(-1));
+}
+
+// The club wardrobe: Admin-1 joins the club, keeps the editor's looks in slots,
+// replaces one after Holo's question, dresses in another and wears it, and meets
+// a slot the hotel took away while the page was open.
+async function wardrobe({ base, page, check, shot, sql, eventually }) {
+  check(
+    "no wardrobe outside the club",
+    (await page.locator("#settings-wardrobe").count()) === 0,
+  );
+
+  const [[admin, userID]] = sql(
+    "SELECT id, user_id FROM avatars WHERE name = 'Admin-1'",
+  );
+  sql(`INSERT INTO club_subscriptions (user_id, starts_at, ends_at, created_at)
+    VALUES (${userID}, '2026-11-01 12:00:00.000000000+00:00', '2099-01-01 00:00:00.000000000+00:00', '2026-11-01 12:00:00.000000000+00:00')`);
+  const outfits = () =>
+    sql(
+      `SELECT slot, figure FROM wardrobe_outfits WHERE avatar_id = ${admin} ORDER BY slot`,
+    )
+      .map((row) => row.join(":"))
+      .join(" ");
+  const picture = (slot) =>
+    page
+      .locator(`#wardrobe-slot-${slot}`)
+      .evaluate((p) => p.style.backgroundImage);
+  const shows = async (slot, figure) =>
+    (await picture(slot)).includes(
+      `figure=${figure}&size=s&direction=4&head_direction=4&gesture=sml`,
+    );
+
+  await page.goto(base + "/account/looks");
+  await listen(page);
+  const first = await reported(page, 1);
+  check(
+    "club members get one slot per homes.wardrobeSlots, empty",
+    (await page.locator("#wardrobe-slots > li").count()) === 5 &&
+      (await page.locator('#wardrobe-slots [id^="wardrobe-store-"]').count()) ===
+        5 &&
+      (await page.locator('#wardrobe-slots [id^="wardrobe-dress-"]').count()) ===
+        0,
+  );
+
+  await page.hover("#wardrobe-store-1");
+  const tip = page.locator("#wardrobe-instructions");
+  const tipBox = await tip.boundingBox();
+  const content = await page.locator("main").boundingBox();
+  const slots = await page.locator("#wardrobe-slots").boundingBox();
+  check(
+    "hovering the wardrobe shows Holo's instructions with the number of slots",
+    (await tip.innerText()).includes(
+      "Press red arrows to save up to 5 outfits to your wardrobe. Press green arrow to select an outfit and save changes to take it into use.",
+    ),
+    await tip.innerText(),
+  );
+  check(
+    "the instructions stand 585 pixels into the content, 17 above the slots",
+    Math.round(tipBox.x - content.x) === 585 &&
+      Math.round(slots.y - tipBox.y - tipBox.height) === 17,
+    `${tipBox.x - content.x} ${slots.y - tipBox.y - tipBox.height}`,
+  );
+  await shot(page, "looks-wardrobe-instructions");
+  await page.mouse.move(5, 5);
+  check("leaving the wardrobe hides them", (await tip.count()) === 0);
+
+  await page.click("#wardrobe-store-1");
+  await page.locator("#wardrobe-dress-1").waitFor();
+  check(
+    "a red arrow keeps the editor's look in an empty slot, with its picture",
+    outfits() === `1:${first}` && (await shows(1, first)),
+    `${outfits()} ${await picture(1)}`,
+  );
+
+  const canvas = await page.locator("#editor-container canvas").boundingBox();
+  // Randomize rests for a second after each use.
+  const randomize = async () => {
+    await page.waitForTimeout(1100);
+    await page.mouse.click(canvas.x + 330, canvas.y + 56);
+  };
+  await randomize();
+  const second = await reported(page, 2);
+  await page.click("#wardrobe-store-2");
+  await page.locator("#wardrobe-dress-2").waitFor();
+  await randomize();
+  const third = await reported(page, 3);
+  check(
+    "the editor's next looks differ",
+    new Set([first, second, third]).size === 3,
+  );
+
+  const question = page.getByRole("dialog", { name: "Replace?" });
+  await page.click("#wardrobe-store-1");
+  await question.waitFor();
+  check(
+    "a red arrow over an outfit asks first, in Holo's words",
+    (await question.innerText()).includes(
+      "Are you sure you want to replace the stored outfit with the new one?",
+    ),
+  );
+  await shot(page, "looks-wardrobe-replace");
+  await question.getByRole("button", { name: "Cancel" }).click();
+  await question.waitFor({ state: "hidden" });
+  check(
+    "Cancel keeps the stored outfit",
+    outfits() === `1:${first} 2:${second}` && (await shows(1, first)),
+  );
+  await page.click("#wardrobe-store-2");
+  await question.waitFor();
+  await question.getByRole("button", { name: "OK" }).click();
+  check(
+    "OK replaces it",
+    (await eventually(async () => outfits() === `1:${first} 2:${third}`)) &&
+      (await eventually(() => shows(2, third))),
+    outfits(),
+  );
+
+  const drawn = await page.$("#editor-container canvas");
+  await page.click("#wardrobe-dress-1");
+  check(
+    "a green arrow puts the outfit in the form at once and starts the editor again",
+    (await page.inputValue("#settings-figure")) === first &&
+      !(await drawn.evaluate((element) => element.isConnected)),
+  );
+  const dressed = await reported(page, 4);
+  const config = await page.evaluate(() => window.HabboEditorConfig);
+  check(
+    "the editor starts again with the outfit and the club's choices",
+    dressed === first &&
+      config.figure === first &&
+      config.showClubSelections === true &&
+      config.userHasClub === true,
+    JSON.stringify(config),
+  );
+  await shot(page, "looks-wardrobe-dressed");
+
+  const redrawn = await page.$("#editor-container canvas");
+  await page.click("#wardrobe-dress-1");
+  await page.waitForTimeout(500);
+  check(
+    "the green arrow of the outfit the editor shows does nothing",
+    (await redrawn.evaluate((element) => element.isConnected)) &&
+      (await page.evaluate(() => window.looks.length)) === 4,
+  );
+
+  await page.click("#wardrobe-dress-2");
+  await page.click("#wardrobe-dress-1");
+  const last = await reported(page, 6);
+  check(
+    "a green arrow pressed while the editor loads starts it again once it has drawn itself",
+    (await page.evaluate(() => window.looks.slice(4).join(" "))) ===
+      `${third} ${first}` &&
+      last === first &&
+      (await page.inputValue("#settings-figure")) === first,
+    await page.evaluate(() => window.looks.join(" ")),
+  );
+
+  // The editor opens the save button once touched, as on any start.
+  await page.waitForFunction(
+    () => document.getElementById("settings-submit").disabled,
+  );
+  await page.evaluate(() => window.HabboEditor.setAllowedToProceed(true));
+  await page.click("#settings-submit");
+  await page.getByText("Account settings updated successfully.").waitFor();
+  check(
+    "saving the looks form then wears the outfit",
+    sql(`SELECT figure FROM avatars WHERE id = ${admin}`)[0][0] === first,
+  );
+  await page.locator("#wardrobe-dress-2").waitFor();
+  check(
+    "the wardrobe keeps its outfits",
+    (await shows(1, first)) && (await shows(2, third)),
+  );
+
+  sql(`INSERT INTO settings (key, value, updated_at)
+    VALUES ('homes.wardrobeSlots', '3', '2026-11-01 12:00:00.000000000+00:00')`);
+  check(
+    "the hotel lowers homes.wardrobeSlots to 3",
+    await eventually(async () =>
+      (await (await page.request.get(base + "/account/looks")).text()).includes(
+        'data-slots="3"',
+      ),
+    ),
+  );
+  let alerted = "";
+  page.once("dialog", (dialog) => {
+    alerted = dialog.message();
+    dialog.accept();
+  });
+  await page.click("#wardrobe-store-5");
+  check(
+    "a slot the hotel took away answers Holo's alert, and stays empty",
+    (await eventually(
+      async () => alerted === "Error! This outfit cannot be saved.",
+    )) &&
+      (await page.locator("#wardrobe-dress-5").count()) === 0 &&
+      (await picture(5)) === "" &&
+      outfits() === `1:${first} 2:${third}`,
+    alerted,
+  );
+  await page.reload();
+  await page.locator("#wardrobe-dress-2").waitFor();
+  await page.hover("#wardrobe-store-1");
+  check(
+    "the page then shows three slots, and says so",
+    (await page.locator("#wardrobe-slots > li").count()) === 3 &&
+      (await tip.innerText()).includes("save up to 3 outfits"),
+  );
 }

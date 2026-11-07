@@ -4,11 +4,19 @@
 
 - **Create** [p6-11](/tasks/p6-11-club-page-layout-guard.md): merging `main` into p6-04's branch showed the club page
   missing from the guard on the layout's fields.
+- **Done** [p6-06](/tasks/p6-06-club-wardrobe.md): club members keep the editor's look in Holo's wardrobe beside the
+  editor, one slot per `homes.wardrobeSlots` for each habbo, replace an outfit after Holo's `Replace?`, and dress in
+  one, which starts the editor again with it; anything else answers Holo's `Error! This outfit cannot be saved.`
 - **Done** [p6-05](/tasks/p6-05-club-page.md): `/club` shows Holo's club page, whose buttons buy 1, 3 or 6 months
   from the shared purse with Holo's dialogs and answers, from the club's end and within the month limit; each purchase
   gives `HC1` to every habbo of the user, the buyer wearing it, and `HC1` leaves them once the site reads an ended club.
 - **Done** [p6-04](/tasks/p6-04-account-transactions.md): a signed-in habbo reads the 50 newest rows of the shared
   purse's ledger in Holo's table, with the habbo that acted in a Habbo column, beside the purse.
+- **Blocked** [p6-12](/tasks/p6-12-save-looks-as-the-flash-editor.md): the change goes either into the HTML5 editor
+  of `vendor/HabboWidgets`, which agents may not change, or into `habbo/avatar-editor`; the user chooses.
+- **Create** [p6-12](/tasks/p6-12-save-looks-as-the-flash-editor.md): Holo's Flash editor opened Save changes five
+  seconds after it started, where the HTML5 editor keeps it closed until it is touched, after the wardrobe's green
+  arrow too.
 - **Done** [p6-07](/tasks/p6-07-housekeeping-vouchers.md): staff with `housekeeping.vouchers` reach Voucher
   Management from a `Credits` box, create credit vouchers with Holo's random code drawn from `crypto/rand`, its
   blank-field answer and new checks on the code and the amount, list the unused ones and delete one, each logged in
@@ -28,6 +36,7 @@
 - **Start** [p6-03](/tasks/p6-03-credits-page.md).
 - **Start** [p6-09](/tasks/p6-09-club-days-to-the-last-period.md).
 - **Start** [p6-07](/tasks/p6-07-housekeeping-vouchers.md).
+- **Start** [p6-06](/tasks/p6-06-club-wardrobe.md).
 
 ## 2026-11-06
 

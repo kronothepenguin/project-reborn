@@ -30,7 +30,7 @@ screenshots and server logs stay in `.run/`, which is git-ignored.
 | --- | --- |
 | `signed-out` | Landing, sign-in, forgot and reset, legal pages, ban, throttle |
 | `register` | The registration form, with and without JavaScript |
-| `me`, `looks`, `details`, `habbos` | The Me page and the account tabs |
+| `me`, `looks`, `details`, `habbos` | The Me page and the account tabs, with the club wardrobe on Looks |
 | `homes` | A home read by a guest, profile tags, the editor, and the Webstore and Inventory |
 | `maintenance` | The site closed, and staff signing in |
 | `news` | The archive, an article, a category and the headlines, as a guest reads them |

@@ -1,6 +1,4 @@
-<script lang="ts">
-  import { onMount } from "svelte";
-
+<script lang="ts" module>
   declare global {
     interface Window {
       HabboEditor: {
@@ -12,8 +10,13 @@
         showOldFigureNotice?(): void;
       };
       HabboEditorConfig: object;
+      HabboAvatarEditor?: new (container: HTMLElement, config: object) => unknown;
     }
   }
+</script>
+
+<script lang="ts">
+  import { onMount } from "svelte";
 
   // Islands get no [[ ]] values, so the form holds the look in hidden inputs that
   // the server fills in. The editor reads them on start and writes every change
@@ -41,6 +44,10 @@
     oldFigureNotice,
   }: Props = $props();
 
+  let container: HTMLDivElement;
+
+  type Look = { figure: string; gender: string };
+
   function input(id: string) {
     return document.getElementById(id) as HTMLInputElement;
   }
@@ -56,10 +63,36 @@
     const gender = input(genderInput);
     const state = input(stateInput);
 
+    // A "restart" event on the container starts the editor again with a look, as
+    // Holo's wardrobe wrote the Flash editor again. An editor still loading cannot
+    // be stopped, and would draw itself into the emptied container, so the new one
+    // waits until it has drawn itself, which it reports with its first look.
+    let starting = true;
+    let waiting: Look | null = null;
+
+    function restart(look: Look) {
+      gender.value = look.gender;
+      figure.value = look.figure;
+      if (starting) {
+        waiting = look;
+        return;
+      }
+      starting = true;
+      window.HabboEditorConfig = { ...window.HabboEditorConfig, ...look };
+      container.replaceChildren();
+      new window.HabboAvatarEditor!(container, window.HabboEditorConfig);
+    }
+
     window.HabboEditor = {
       setGenderAndFigure(newGender, newFigure) {
         gender.value = newGender;
         figure.value = newFigure;
+        if (starting) {
+          starting = false;
+          const look = waiting;
+          waiting = null;
+          if (look) queueMicrotask(() => restart(look));
+        }
       },
       setEditorState(newState) {
         state.value = newState;
@@ -79,6 +112,7 @@
         showOldFigureNotice: () => show(oldFigureNotice, true),
       });
     }
+    container.addEventListener("restart", (event) => restart((event as CustomEvent<Look>).detail));
 
     // The editor spreads this over its defaults, so an undefined value would
     // replace one. It attaches itself to #editor-container when its script loads.
@@ -98,4 +132,4 @@
   });
 </script>
 
-<div id="editor-container"></div>
+<div id="editor-container" bind:this={container}></div>
