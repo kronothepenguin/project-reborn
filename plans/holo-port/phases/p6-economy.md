@@ -3,7 +3,7 @@ type: Phase
 title: P6 Economy
 description: Credits page with purse and vouchers, transaction history, Habbo Club subscriptions and the club wardrobe, with voucher management in housekeeping.
 status: active
-timestamp: 2026-11-07T00:32:36+00:00
+timestamp: 2026-11-07T00:56:43+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p6, cms, housekeeping]
 ---
@@ -48,6 +48,7 @@ Habbos see their credits and transactions, redeem vouchers, buy club months and 
 8. [p6-08 Verify P6](/tasks/p6-08-exit-check.md)
 9. [p6-09 Count the club days to the end of the last period](/tasks/p6-09-club-days-to-the-last-period.md) — done
 10. [p6-10 Keep every voucher deletable](/tasks/p6-10-keep-every-voucher-deletable.md) — blocked
+11. [p6-11 Guard the club page's layout fields](/tasks/p6-11-club-page-layout-guard.md)
 
 # Open questions
 

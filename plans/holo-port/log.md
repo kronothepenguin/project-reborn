@@ -2,6 +2,8 @@
 
 ## 2026-11-07
 
+- **Create** [p6-11](/tasks/p6-11-club-page-layout-guard.md): merging `main` into p6-04's branch showed the club page
+  missing from the guard on the layout's fields.
 - **Done** [p6-05](/tasks/p6-05-club-page.md): `/club` shows Holo's club page, whose buttons buy 1, 3 or 6 months
   from the shared purse with Holo's dialogs and answers, from the club's end and within the month limit; each purchase
   gives `HC1` to every habbo of the user, the buyer wearing it, and `HC1` leaves them once the site reads an ended club.
