@@ -109,7 +109,7 @@ ok  	github.com/kronothepenguin/project-reborn/tools/create/cmd/create	1.280s
 - Runs on the branch `s0`.
 - The list derived from the templates adds three names to s0-09's: `store` in both templates and `astro` in the
   fullstack one, which the runners import, and `panic`, which the fullstack dev runner calls. `create` refused `store`
-  and `astro` before, as folders that exist, but without saying why.
+  and `astro` already in this repository, whose `packages/store` and `packages/astro` exist.
 - `init`, which s0-09 did not try, fails as `main` does, with or without a dash (`in-it`): Go cannot import a package
   as `init` (`cannot import package as init - init must be a func`). Its Go package name cannot compile in either Go
   template, so `validateName` refuses it under [0025](/decisions/0025-refuse-names-whose-go-package-cannot-compile.md).
