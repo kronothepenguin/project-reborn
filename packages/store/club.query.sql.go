@@ -33,9 +33,13 @@ func (q *Queries) CreateClubSubscription(ctx context.Context, arg CreateClubSubs
 }
 
 const getClubEnd = `-- name: GetClubEnd :one
-SELECT ends_at FROM club_subscriptions
-WHERE user_id = ?1 AND starts_at <= ?2 AND ends_at > ?2
-ORDER BY ends_at DESC
+SELECT club_subscriptions.ends_at FROM club_subscriptions
+WHERE club_subscriptions.user_id = ?1
+  AND EXISTS (
+    SELECT 1 FROM club_subscriptions AS running
+    WHERE running.user_id = ?1 AND running.starts_at <= ?2 AND running.ends_at > ?2
+  )
+ORDER BY club_subscriptions.ends_at DESC
 LIMIT 1
 `
 
@@ -44,6 +48,8 @@ type GetClubEndParams struct {
 	Now    time.Time
 }
 
+// The club's end while a period covers now: the end of the user's last period, since a
+// period bought during the club starts where the last one ends.
 func (q *Queries) GetClubEnd(ctx context.Context, arg GetClubEndParams) (time.Time, error) {
 	row := q.db.QueryRowContext(ctx, getClubEnd, arg.UserID, arg.Now)
 	var ends_at time.Time

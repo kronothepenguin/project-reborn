@@ -6,12 +6,12 @@ import (
 	"net/http"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
-	"github.com/kronothepenguin/project-reborn/packages/{{.Name}}"
+	{{if ne .Package .Name}}{{.Package}} {{end}}"github.com/kronothepenguin/project-reborn/packages/{{.Name}}"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 func main() {
-	distFS, err := fs.Sub({{.Name}}.DistFS, "dist")
+	distFS, err := fs.Sub({{.Package}}.DistFS, "dist")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -20,9 +20,9 @@ func main() {
 
 	db := store.FromConfig()
 
-	c := {{.Name}}.New(db,
-		{{.Name}}.WithResolver(resolver),
-		{{.Name}}.WithStatic(fileServer),
+	c := {{.Package}}.New(db,
+		{{.Package}}.WithResolver(resolver),
+		{{.Package}}.WithStatic(fileServer),
 	)
 
 	mux := http.NewServeMux()

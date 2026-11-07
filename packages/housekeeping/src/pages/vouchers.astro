@@ -1,0 +1,71 @@
+---
+import { Input, Table } from "@project-reborn/components";
+import Box from "../components/box.astro";
+import Message from "../components/message.astro";
+import Submit from "../components/submit.astro";
+import Housekeeping from "../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="Vouchers" tab="users">
+  <Message />
+  <div class="space-y-3">
+    <form method="post" action="/housekeeping/vouchers">
+      <Box title="Create Voucher">
+        <Table variant="form">
+          <tbody>
+            <tr>
+              <td class="w-2/5">
+                <label for="voucher-code"><strong>Redemption Code</strong></label>
+                <div class="text-neutral-500">The voucher code the user must enter to recieve the credits.</div>
+              </td>
+              <td class="w-3/5 [&>input]:w-full">
+                <Input id="voucher-code" name="voucher" value="[[ .Form.Code ]]" variant="border" />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="voucher-credits"><strong>Amount</strong></label>
+                <div class="text-neutral-500">The amount of credits a user will recieve upon entering the redemption code.</div>
+              </td>
+              <td class="[&>input]:w-full">
+                <Input id="voucher-credits" name="credits" value="[[ .Form.Credits ]]" variant="border" />
+              </td>
+            </tr>
+          </tbody>
+        </Table>
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+          <Submit>Create Voucher</Submit>
+        </div>
+      </Box>
+    </form>
+
+    <Box title="Existing vouchers" color="gold">
+      <Table>
+        <thead>
+          <tr>
+            <th>Redemption Code</th>
+            <th>Credits</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          [[ range .Vouchers ]]
+          <tr>
+            <td>[[ .Code ]]</td>
+            <td>[[ .Credits ]]</td>
+            <td>
+              <form method="post" action="/housekeeping/vouchers/[[ .Path ]]/delete">
+                <Submit>Delete</Submit>
+              </form>
+            </td>
+          </tr>
+          [[ else ]]
+          <tr>
+            <td colspan="3">Nothing found.</td>
+          </tr>
+          [[ end ]]
+        </tbody>
+      </Table>
+    </Box>
+  </div>
+</Housekeeping>

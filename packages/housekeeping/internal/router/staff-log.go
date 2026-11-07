@@ -45,6 +45,8 @@ const (
 	actionBannersCreate         = "banners.create"
 	actionBannersUpdate         = "banners.update"
 	actionBannersDelete         = "banners.delete"
+	actionVouchersCreate        = "vouchers.create"
+	actionVouchersDelete        = "vouchers.delete"
 	actionDatabaseUpdate        = "database.update"
 	actionConfigUpdate          = "config.update"
 )

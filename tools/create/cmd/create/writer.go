@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"embed"
 	"errors"
+	"fmt"
+	"go/format"
 	"io/fs"
 	"os"
 	"path"
@@ -61,11 +64,17 @@ func write(root string, p project) (err error) {
 			return err
 		}
 
-		f, err := os.OpenFile(target, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
-		if err != nil {
+		var out bytes.Buffer
+		if err := t.Execute(&out, p); err != nil {
 			return err
 		}
-
-		return errors.Join(t.Execute(f, p), f.Close())
+		data := out.Bytes()
+		// The order of the imports depends on the name, and gofmt sorts them.
+		if filepath.Ext(target) == ".go" {
+			if data, err = format.Source(data); err != nil {
+				return fmt.Errorf("%s: %w", tmpl, err)
+			}
+		}
+		return os.WriteFile(target, data, 0644)
 	})
 }

@@ -2,7 +2,7 @@
 type: Reference
 title: Holo housekeeping
 description: Holo's admin panel pages, its access model, staff log, layout and risky features, and where each part goes.
-timestamp: 2026-11-05T19:12:48+00:00
+timestamp: 2026-11-07T00:24:13+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [housekeeping, holo]
 ---
@@ -41,7 +41,7 @@ New model: shared session, attributes per user ([0014](/decisions/0014-attribute
 | add_homes | add store item by remote URL, appended CSS | `/home-store…` | `housekeeping.homeStore` | P3 |
 | news_compose, news_manage | news CRUD (delete by GET) | `/news…` | `housekeeping.news` | P4 |
 | banners | banner CRUD (add was broken) | `/banners…` | `housekeeping.banners` | P4 |
-| vouchers | create credit or item vouchers | `GET/POST /vouchers` (credits only) | `housekeeping.vouchers` | P6 |
+| vouchers | create credit or item vouchers | `GET/POST /vouchers`, `POST /vouchers/{code}/delete` (credits only) | `housekeeping.vouchers` | P6 |
 | server, recycler, wordfilter, welcomemsg, chatlogs, onlinelist | emulator settings and data | deferred | — | — |
 | dbquery, dbrepair, dboptimize, holocms, credits, help_main, help_bugs, help_svn | raw SQL, REPAIR/OPTIMIZE by GET, static pages | dropped ([0021](/decisions/0021-dropped-and-kept-features.md)) | — | — |
 

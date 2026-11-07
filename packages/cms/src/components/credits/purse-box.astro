@@ -1,0 +1,14 @@
+---
+import { Card } from "@project-reborn/components";
+import Purse from "./purse.svelte";
+---
+
+<Card color="brown">
+  <span slot="header">Your purse</span>
+  [[ if .SignedIn ]]
+  <div id="purse" hidden data-credits="[[ .Credits ]]"></div>
+  <Purse client:only="svelte" source="purse" />
+  [[ else ]]
+  <div>You need to be logged in to see the purse.</div>
+  [[ end ]]
+</Card>

@@ -13,8 +13,13 @@ import (
 
 func writeProbe(t *testing.T, kind string) string {
 	t.Helper()
+	return writeProject(t, kind, "probe")
+}
+
+func writeProject(t *testing.T, kind, name string) string {
+	t.Helper()
 	root := t.TempDir()
-	if err := write(root, newProject(kind, "probe", 10001, 20001)); err != nil {
+	if err := write(root, newProject(kind, name, 10001, 20001)); err != nil {
 		t.Fatalf("write: %v", err)
 	}
 	return root
@@ -185,43 +190,153 @@ func TestWriteGeneratesTheClientShape(t *testing.T) {
 }
 
 // Generated code passes the same checks as hand-written code, so that
-// make create leaves nothing to fix.
+// make create leaves nothing to fix, whatever the name: admin sorts before
+// astro, tracker after store, and game-server holds a dash.
 func TestWriteGeneratesFormattedFiles(t *testing.T) {
 	for _, kind := range kinds {
-		t.Run(kind, func(t *testing.T) {
-			root := writeProbe(t, kind)
-			err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
-				if err != nil || d.IsDir() {
-					return err
-				}
-				data, err := os.ReadFile(path)
-				if err != nil {
-					return err
-				}
-				name, err := filepath.Rel(root, path)
-				if err != nil {
-					return err
-				}
-				if !bytes.HasSuffix(data, []byte("\n")) {
-					t.Errorf("%s does not end with a newline", name)
-				}
-				if filepath.Ext(path) != ".go" {
-					return nil
-				}
-				formatted, err := format.Source(data)
-				if err != nil {
-					t.Errorf("%s does not parse: %v", name, err)
-					return nil
-				}
-				if !bytes.Equal(formatted, data) {
-					t.Errorf("%s is not formatted", name)
-				}
-				return nil
+		for _, name := range []string{"probe", "admin", "tracker", "game-server"} {
+			t.Run(kind+"/"+name, func(t *testing.T) {
+				checkFormatted(t, writeProject(t, kind, name))
 			})
-			if err != nil {
-				t.Fatalf("walk: %v", err)
+		}
+	}
+}
+
+func checkFormatted(t *testing.T, root string) {
+	t.Helper()
+	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return err
+		}
+		data, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		name, err := filepath.Rel(root, path)
+		if err != nil {
+			return err
+		}
+		if !bytes.HasSuffix(data, []byte("\n")) {
+			t.Errorf("%s does not end with a newline", name)
+		}
+		if filepath.Ext(path) != ".go" {
+			return nil
+		}
+		formatted, err := format.Source(data)
+		if err != nil {
+			t.Errorf("%s does not parse: %v", name, err)
+			return nil
+		}
+		if !bytes.Equal(formatted, data) {
+			t.Errorf("%s is not formatted", name)
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("walk: %v", err)
+	}
+}
+
+// A Go package name cannot hold a dash, so game-server holds package
+// gameserver, while its folders and module paths keep the dash (plans/server
+// decision 0024). The runner names the import, as goimports writes an import
+// whose package is not named after the last element of its path.
+func TestWriteDropsTheDashFromThePackageName(t *testing.T) {
+	const imp = `gameserver "github.com/kronothepenguin/project-reborn/packages/game-server"`
+	for kind, files := range map[string]map[string][]string{
+		backend: {
+			"packages/game-server/game-server.go": {
+				"package gameserver\n",
+				"type Gameserver struct {",
+				"func New(db *sql.DB) *Gameserver {",
+				`"github.com/kronothepenguin/project-reborn/packages/game-server/internal/router"`,
+			},
+			"packages/game-server/go.mod": {"module github.com/kronothepenguin/project-reborn/packages/game-server\n"},
+			"apps/game-server/go.mod":     {"module github.com/kronothepenguin/project-reborn/apps/game-server\n"},
+			"apps/game-server/cmd/game-server/main.go": {
+				"\t" + imp + "\n",
+				"c := gameserver.New(db)\n",
+				`log.Println("game-server on http://" + server.Addr)`,
+			},
+		},
+		fullstack: {
+			"packages/game-server/game-server.go": {
+				"package gameserver\n",
+				"type Gameserver struct {",
+				"func New(db *sql.DB, opts ...Option) *Gameserver {",
+			},
+			"packages/game-server/go.mod": {"module github.com/kronothepenguin/project-reborn/packages/game-server\n"},
+			"apps/game-server/cmd/game-server/main.go": {
+				"\t" + imp + "\n",
+				`fs.Sub(gameserver.DistFS, "dist")`,
+				"c := gameserver.New(db,\n",
+				"gameserver.WithResolver(resolver),\n",
+				"gameserver.WithStatic(fileServer),\n",
+			},
+			"apps/game-server/cmd/game-server-dev/main.go": {
+				"\t" + imp + "\n",
+				"c := gameserver.New(db,\n",
+				"gameserver.WithStatic(proxy),\n",
+			},
+		},
+	} {
+		t.Run(kind, func(t *testing.T) {
+			root := writeProject(t, kind, "game-server")
+			checkContains(t, root, files)
+			for file := range files {
+				if filepath.Ext(file) != ".go" {
+					continue
+				}
+				data, err := os.ReadFile(filepath.Join(root, file))
+				if err != nil {
+					t.Fatalf("read the generated %s: %v", file, err)
+				}
+				if strings.Contains(string(data), "game-server.") {
+					t.Errorf("the generated %s uses game-server as a Go name:\n%s", file, data)
+				}
 			}
 		})
+	}
+}
+
+// A name without a dash is its own package name, so the runner's import needs
+// no name.
+func TestWriteImportsAPackageNamedAfterItsFolderPlainly(t *testing.T) {
+	for _, kind := range []string{backend, fullstack} {
+		root := writeProbe(t, kind)
+		checkContains(t, root, map[string][]string{
+			"apps/probe/cmd/probe/main.go": {"\t\"github.com/kronothepenguin/project-reborn/packages/probe\"\n"},
+		})
+	}
+}
+
+// gofmt orders the imports of a block by path, and the project's path moves
+// with its name: before astro for admin, after store for tracker.
+func TestWriteSortsTheImports(t *testing.T) {
+	for _, c := range []struct {
+		kind, name, file string
+		order            []string
+	}{
+		{backend, "tracker", "apps/tracker/cmd/tracker/main.go", []string{"/packages/store\"", "/packages/tracker\""}},
+		{backend, "tracker", "packages/tracker/tracker.go", []string{"/packages/store\"", "/packages/tracker/internal/router\""}},
+		{fullstack, "tracker", "apps/tracker/cmd/tracker/main.go", []string{"/packages/astro\"", "/packages/store\"", "/packages/tracker\""}},
+		{fullstack, "tracker", "apps/tracker/cmd/tracker-dev/main.go", []string{"/packages/astro\"", "/packages/store\"", "/packages/tracker\""}},
+		{fullstack, "tracker", "packages/tracker/tracker.go", []string{"/packages/astro\"", "/packages/store\"", "/packages/tracker/internal/router\""}},
+		{fullstack, "admin", "apps/admin/cmd/admin/main.go", []string{"/packages/admin\"", "/packages/astro\"", "/packages/store\""}},
+		{fullstack, "admin", "packages/admin/admin.go", []string{"/packages/admin/internal/router\"", "/packages/astro\"", "/packages/store\""}},
+	} {
+		data, err := os.ReadFile(filepath.Join(writeProject(t, c.kind, c.name), c.file))
+		if err != nil {
+			t.Fatalf("read the generated %s: %v", c.file, err)
+		}
+		last := -1
+		for _, imp := range c.order {
+			i := strings.Index(string(data), imp)
+			if i <= last {
+				t.Errorf("the %s %s imports %q out of the order %q:\n%s", c.kind, c.file, imp, c.order, data)
+			}
+			last = i
+		}
 	}
 }
 

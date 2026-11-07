@@ -1,0 +1,22 @@
+---
+import { Card } from "@project-reborn/components";
+import PurseBox from "../../components/credits/purse-box.astro";
+import TransactionsTable from "../../components/credits/transactions-table.astro";
+import Community from "../../layouts/community.astro";
+---
+
+<Community title="[[ .ShortName ]] ~ Account transactions" tab="credits" sub="">
+  <div class="flex">
+    <div class="w-[460px]">
+      <div class="mr-2 mb-[7px]">
+        <Card color="brown">
+          <span slot="header">Account transactions</span>
+          <TransactionsTable />
+        </Card>
+      </div>
+    </div>
+    <div class="w-[310px]">
+      <div class="mr-2 mb-[7px]"><PurseBox /></div>
+    </div>
+  </div>
+</Community>

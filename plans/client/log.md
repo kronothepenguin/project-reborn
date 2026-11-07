@@ -1,5 +1,11 @@
 # Log
 
+## 2026-11-07
+
+- **Update** [C1](/phases/c1-client-page-on-libreshockwave.md) asks whether LibreShockwave runs the code behind the
+  client's login key, which the decompiled scripts show only as `-- unk26`; without it the client never sends
+  `GENERATEKEY`. Found by `plans/server/tasks/s1-02-entry-init.md`.
+
 ## 2026-11-06
 
 - **Update** [C1](/phases/c1-client-page-on-libreshockwave.md)'s question on how LibreShockwave reaches the server's

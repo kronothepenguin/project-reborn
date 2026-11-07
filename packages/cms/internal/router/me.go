@@ -151,16 +151,22 @@ func (r *Router) newMePage(ctx context.Context, session auth.Session) (mePage, e
 }
 
 // clubDays says how many days of the club the user has left, counting a day that
-// has begun, and 0 for a user outside the club.
+// has begun, and 0 for a user outside the club, whose ended club takes its badge
+// with it.
 func (r *Router) clubDays(ctx context.Context, userID int64, now time.Time) (int, error) {
 	end, err := r.deps.Queries.GetClubEnd(ctx, store.GetClubEndParams{UserID: userID, Now: now})
 	if store.IsNotFound(err) {
-		return 0, nil
+		return 0, r.endClub(ctx, userID, now)
 	}
 	if err != nil {
 		return 0, err
 	}
-	return int(math.Ceil(end.Sub(now).Hours() / 24)), nil
+	return daysLeft(end, now), nil
+}
+
+// daysLeft counts the days from now to end, a day that has begun among them.
+func daysLeft(end, now time.Time) int {
+	return int(math.Ceil(end.Sub(now).Hours() / 24))
 }
 
 func ordinal(n int) string {

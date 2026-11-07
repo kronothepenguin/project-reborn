@@ -11,9 +11,10 @@ starts.
 - [s0-04 Declare the hosts and ports of info and mus in config.json](/tasks/s0-04-listener-config.md) — packages/config gains server.info and server.mus, a host and a port each, on which the server runs its WebSocket listeners. **done**
 - [s0-05 Write the transport](/tasks/s0-05-transport.md) — packages/server/transport gives TCP and WebSocket connections one Conn interface, an io.Reader to receive and an io.Writer to send, with the WebSocket as an http.Handler on golang.org/x/net/websocket. **done**
 - [s0-06 Write the encoding](/tasks/s0-06-encoding.md) — packages/server/encoding reads and writes the values of the R26 wire format, B64, VL64, strings, booleans, bytes and raw bodies, tested against the client's own code. **done**
-- [s0-07 Serve R26 sessions](/tasks/s0-07-r26-sessions.md) — The server runs a WebSocket listener on the host and port of server.info and of server.mus, and on info r26 frames packets, sends HELLO, dispatches packets by id and logs the ones it does not handle yet.
+- [s0-07 Serve R26 sessions](/tasks/s0-07-r26-sessions.md) — The server runs a WebSocket listener on the host and port of server.info and of server.mus, and on info r26 frames packets, sends HELLO, dispatches packets by id and logs the ones it does not handle yet. **done**
 - [s0-08 Check S0's exit criteria](/tasks/s0-08-exit-check.md) — From a clean checkout of the merged work, check every exit criterion of S0, bring the reference up to date and close the phase.
-- [s0-09 Make the Go templates work for every name tools/create accepts](/tasks/s0-09-go-template-names.md) — A fullstack or backend name with a '-' gives a Go package that does not compile, and a name that sorts after store gives imports that gofmt reorders; every name validateName accepts makes Go that compiles and passes gofmt.
+- [s0-09 Make the Go templates work for every name tools/create accepts](/tasks/s0-09-go-template-names.md) — A fullstack or backend name with a '-' gives a Go package that does not compile, and a name that sorts after store gives imports that gofmt reorders; every name validateName accepts makes Go that compiles and passes gofmt. **done**
+- [s0-10 Handle the names whose Go package cannot compile](/tasks/s0-10-go-names-that-clash.md) — tools/create accepts names whose Go package name is a Go keyword or main, or a name the generated Go already uses, such as log, http, db or new, and the projects it makes from them do not compile.
 
 ## S1 R26 protocol reference
 

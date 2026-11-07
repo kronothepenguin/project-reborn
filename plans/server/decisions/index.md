@@ -11,12 +11,14 @@ change supersedes a decision with a new one. The branch rule every plan follows 
 - [0004 The deleted server is the model for the structure](/decisions/0004-old-server-is-the-model.md) — The packages/server removed in commit 2ea51d7b is the model for the new server's structure, with separate receive and send interfaces for TCP and WebSocket, the encoding, and a protocol package with one part per client cast.
 - [0017 The client template derives its Vite port from the name, in a range of its own](/decisions/0017-client-vite-port.md) — tools/create gives a client project the Vite dev server port 30000 + fnv32a("vite:" + name) % 10000, derived from the name as the Astro port is, in the range 30000 to 39999 that no other port uses.
 - [0018 A client project builds as a plain Vite app](/decisions/0018-client-is-a-plain-vite-app.md) — A project made with tools/create -template=client builds as a page of its own, pnpm build writing dist/index.html and dist/assets/index-<hash>.js, and its vite.config.js holds only the derived port.
+- [0024 Go package names drop the dash](/decisions/0024-go-package-names-drop-the-dash.md) — The backend and fullstack templates of tools/create name the Go package after the project without its dashes, so game-server holds package gameserver, while folders and module paths keep the dash.
 
 ## Program and packages
 
 - [0002 The game server is packages/server and apps/server, with no web pages](/decisions/0002-server-app.md) — The program is called server; packages/server holds it and apps/server runs it, as a TCP listener and a WebSocket server without web pages, created with the backend template of tools/create.
 - [0005 The server lives in packages/server, and virtual holds only state](/decisions/0005-package-layout.md) — packages/server is one Go module with the transport, the encoding, the r26 protocol and the protocol-free game rules, and packages/virtual holds only the server's state.
 - [0006 TCP and WebSocket are one byte-stream Conn, and the WebSocket mounts on any HTTP mux](/decisions/0006-transport.md) — The protocol code sees every connection as an io.Reader to receive and an io.Writer to send, TCP and golang.org/x/net/websocket both provide them, and the WebSocket is an http.Handler mounted with Mount(mux).
+- [0022 StartInfo and StartMus start the listeners](/decisions/0022-start-info-and-start-mus.md) — packages/server defines StartInfo and StartMus, which open the listeners of server.info and server.mus, return an error when they cannot listen and then serve in the background; the standalone runner calls both, and the orchestrator will call the same two.
 
 ## Protocol
 
@@ -29,6 +31,8 @@ change supersedes a decision with a new one. The branch rule every plan follows 
 - [0014 Text on the wire is UTF-8](/decisions/0014-text-is-utf8.md) — The server reads and writes every string as UTF-8, and the external variables the site serves turn client.textdata.utf8 on so that the client does the same.
 - [0015 The client runs on LibreShockwave, and every socket is a WebSocket](/decisions/0015-client-on-libreshockwave.md) — The R26 .dcr runs in the browser on LibreShockwave, which turns each of the client's sockets, #info and #mus, into a WebSocket carrying the same bytes as TCP; the #mus connection speaks the Multiuser Xtra's SMUS protocol, learned from LibreShockwave's source.
 - [0016 The Holograph Emulator is a reference, never a port](/decisions/0016-holoemu-is-a-reference.md) — The Holograph Emulator's source in source/holoemu is read only when the client's .ls scripts are not enough for reverse engineering; the server neither translates it nor follows its structure.
+- [0021 An unhandled packet is logged by its id, its name and its size](/decisions/0021-unhandled-packets-logged-by-id-name-and-size.md) — A packet the server does not handle yet is logged as one line with the session's address, the command's id, its name when r26 knows it, and the body's size; the body itself is never logged.
+- [0023 Until S7, the mus listener accepts, logs sizes and never answers](/decisions/0023-mus-listener-before-s7.md) — Until S7 frames MUS, the mus listener accepts the WebSocket and logs the connect, the size of each message and the close, and it never answers.
 
 ## State and data
 
