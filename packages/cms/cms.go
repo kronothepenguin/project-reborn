@@ -100,6 +100,7 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("GET /account", account(r.HandleAccountView))
 	mux.Handle("GET /account/looks", account(r.HandleAccountLooksView))
 	mux.Handle("POST /account/looks", account(r.HandleAccountLooks))
+	mux.Handle("POST /account/looks/wardrobe/{slot}", account(r.HandleAccountLooksWardrobeStore))
 	mux.Handle("GET /account/profile", account(r.HandleAccountProfileView))
 	mux.Handle("POST /account/profile", account(r.HandleAccountProfile))
 	mux.Handle("GET /account/email", account(r.HandleAccountEmailView))

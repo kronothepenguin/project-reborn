@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-06T23:08:21+00:00
+timestamp: 2026-11-07T00:46:14+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -54,6 +54,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Discussion board | The Moderation Tools save any title, a blank one too, since only the page checked it | The server refuses a blank title with `Topic title may not be empty`, and one over 30 characters | A request sent without the page could leave a thread with no title |
 | Report window | `go.php` puts the post's id into its SQL and its `Proceed` link, and the thread's page into that link, as they came | The id is a number bound to the query, and the page a whole number from 1, or 1 | Any address could read or change the database, or run scripts in the window |
 | Report window | A guest is sent to the Help Tool's start, but the script runs on and writes the report with no name | Guests go to `/`, and nothing is written | Anyone could file reports without an account |
+| Wardrobe | `wardrobestore.php` keeps an outfit for any signed-in user, in the club or not, and turns a slot it does not know into slot 1 and a gender into `M` | Only club members keep outfits, in a slot from 1 to `homes.wardrobeSlots` and with the looks form's checks; anything else answers the error that shows `Error! This outfit cannot be saved.`, the alert Holo's script had for it and its server never sent | A request could fill a wardrobe the page shows only to the club, and a wrong slot overwrote the first outfit |
 
 # Changed by a decision
 
@@ -94,6 +95,8 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Group badge | The Flash `BadgeEditor.swf`, with its colours from habbo.co.uk | The HTML5 port in `vendor/HabboWidgets`, with the Tailwind palette | [0021](/decisions/0021-dropped-and-kept-features.md), [0102](/decisions/0102-badges-keep-the-tailwind-palette.md) |
 | Group badges | Holo's 18 tints | The closest Tailwind colours; tint 15, olive-500, looks grey-olive beside Holo's brown | [0102](/decisions/0102-badges-keep-the-tailwind-palette.md) |
 | Several habbos | A habbo is never removed | A user archives a habbo, which hides it and keeps its name | [0058](/decisions/0058-habbos-are-archived.md) |
+| Wardrobe | One wardrobe per account | One per habbo: the active habbo keeps its own outfits and dresses in them | [0001](/decisions/0001-user-owns-many-habbos.md), and the plan's `wardrobe_outfits` |
+| Wardrobe | A green arrow writes the Flash editor again at once | The HTML5 editor starts again with the outfit, after its loading screen; pressed while an editor is still loading, it waits until that one has drawn itself, since a loading editor cannot be stopped | [0021](/decisions/0021-dropped-and-kept-features.md) |
 | Settings | Read from the database on every request | A running CMS re-reads them every `cms.refresh` seconds | [0051](/decisions/0051-one-machine-and-a-refresh.md) |
 | Account | An email can be shared | `This e-mail address already has an account.` | [0001](/decisions/0001-user-owns-many-habbos.md) |
 | Maintenance | An `Administrator Login` link to housekeeping | A sign-in form on the page | The plan: staff sign in with the shared session |
@@ -179,6 +182,9 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Texts | `Purchashing`, `Managment`, `An group`, `occured` on the purchase dialog | Spelled correctly |
 | Report window | Every answer is 200, `Invalid post specified` too | `Invalid post specified` answers 404, and a report refused for a waiting request 422 |
 | Texts | `has reported an post` in a report's ticket | Spelled correctly |
+| Wardrobe | Shows a green arrow on every slot, which does nothing on an empty one: its style shows the arrows its script meant to show once a slot is filled | The green arrow shows once the slot holds an outfit |
+| Wardrobe | An outfit stored since the page loaded starts the editor again without the club's choices | Every outfit starts it again with them |
+| Wardrobe | Takes the outfit for the slot before the server answers, so a refused one could still be dressed in | The slot takes it once the server keeps it |
 
 # Kept as in Holo, on purpose
 
@@ -350,7 +356,6 @@ veto.
 | Holo | Phase |
 | --- | --- |
 | `My Friends`, `My Rooms` and the recommended rooms | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
-| The wardrobe on `/account/looks` | [P6](/phases/p6-economy.md) |
 | The online state of the profile widget, the community page's random habbos, the staff page and the forum's post boxes, which show offline | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | `Voucher Management` in housekeeping | [P6](/phases/p6-economy.md) |
 | `Chatlogs` and `Online Users` in housekeeping | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |

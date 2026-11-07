@@ -2,19 +2,31 @@
 import { Button, Notice } from "@project-reborn/components";
 import clubSymbol from "../../assets/community/hc_mini.png";
 import SettingsFrame from "../../components/account/settings-frame.astro";
+import Wardrobe from "../../components/account/wardrobe.svelte";
 import AvatarEditor from "../../components/habbo/avatar-editor.svelte";
 ---
 
 <SettingsFrame active="Looks" heading="Change your looks">
-  <AvatarEditor
-    client:only="svelte"
-    figureInput="settings-figure"
-    genderInput="settings-gender"
-    stateInput="settings-state"
-    saveButton="settings-submit"
-    clubNotice="settings-hc"
-    oldFigureNotice="settings-oldfigure"
-  />
+  <div class="flex items-start justify-between">
+    <AvatarEditor
+      client:only="svelte"
+      figureInput="settings-figure"
+      genderInput="settings-gender"
+      stateInput="settings-state"
+      saveButton="settings-submit"
+      clubNotice="settings-hc"
+      oldFigureNotice="settings-oldfigure"
+    />
+
+    [[ if .Club ]]
+    <ul id="wardrobe-outfits" hidden data-slots="[[ .WardrobeSlots ]]">
+      [[ range .Outfits ]]
+      <li data-slot="[[ .Slot ]]" data-figure="[[ .Figure ]]" data-gender="[[ .Gender ]]" data-picture="[[ .Picture ]]"></li>
+      [[ end ]]
+    </ul>
+    <Wardrobe client:only="svelte" source="wardrobe-outfits" figureInput="settings-figure" genderInput="settings-gender" />
+    [[ end ]]
+  </div>
 
   <div id="settings-hc" hidden>
     <Notice>

@@ -3,7 +3,7 @@ type: Phase
 title: P6 Economy
 description: Credits page with purse and vouchers, transaction history, Habbo Club subscriptions and the club wardrobe, with voucher management in housekeeping.
 status: active
-timestamp: 2026-11-06T22:30:17+00:00
+timestamp: 2026-11-07T00:46:14+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p6, cms, housekeeping]
 ---
@@ -43,7 +43,22 @@ Habbos see their credits and transactions, redeem vouchers, buy club months and 
 3. [p6-03 Show the credits page and redeem vouchers](/tasks/p6-03-credits-page.md)
 4. [p6-04 Show the account transactions](/tasks/p6-04-account-transactions.md)
 5. [p6-05 Buy club on the club page](/tasks/p6-05-club-page.md)
-6. [p6-06 Keep outfits in the club wardrobe](/tasks/p6-06-club-wardrobe.md)
+6. [p6-06 Keep outfits in the club wardrobe](/tasks/p6-06-club-wardrobe.md) — done
 7. [p6-07 Manage vouchers in housekeeping](/tasks/p6-07-housekeeping-vouchers.md)
 8. [p6-08 Verify P6](/tasks/p6-08-exit-check.md)
 9. [p6-09 Count the club days to the end of the last period](/tasks/p6-09-club-days-to-the-last-period.md)
+10. [p6-12 Open Save changes five seconds after the editor starts, as Holo's Flash did](/tasks/p6-12-save-looks-as-the-flash-editor.md) — blocked
+
+# Open questions
+
+Found on 2026-11-07. The first option is the recommendation.
+
+1. **Save changes after a look the editor did not change.** Found by [p6-06](/tasks/p6-06-club-wardrobe.md). Holo's
+   Flash editor opened Save changes five seconds after it started with a look the club allows; the HTML5 editor keeps
+   it closed until it is touched, after the page loads and after a green arrow of the wardrobe
+   ([p6-12](/tasks/p6-12-save-looks-as-the-flash-editor.md)).
+   - The HTML5 editor of `vendor/HabboWidgets`, which agents may not change, does as the Flash did, and
+     `packages/cms/public/habbo-editor.iife.js` is built again from it.
+   - `habbo/avatar-editor` opens Save changes five seconds after the editor's first look, unless the club notice
+     showed or the look changed, setting aside the editor's own answer at the end of its five seconds.
+   - Nothing changes: a habbo touches the editor before saving a look it did not change.

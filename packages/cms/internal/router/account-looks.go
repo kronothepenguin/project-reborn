@@ -7,12 +7,18 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/store"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
+// looksPage gives club members the wardrobe: WardrobeSlots slots, with the
+// active habbo's Outfits in them.
 type looksPage struct {
 	accountPage
-	Figure string
-	Gender string
+	Figure        string
+	Gender        string
+	Club          bool
+	WardrobeSlots int
+	Outfits       []wardrobeOutfit
 }
 
 func (r *Router) newLooksPage(ctx context.Context) (looksPage, error) {
@@ -25,7 +31,18 @@ func (r *Router) newLooksPage(ctx context.Context) (looksPage, error) {
 	if err != nil {
 		return looksPage{}, err
 	}
-	return looksPage{accountPage: account, Figure: avatar.Figure, Gender: avatar.Gender}, nil
+	club, err := r.inClub(ctx, session.UserID)
+	if err != nil {
+		return looksPage{}, err
+	}
+	page := looksPage{accountPage: account, Figure: avatar.Figure, Gender: avatar.Gender, Club: club}
+	if club {
+		page.WardrobeSlots = settings.GetInt("homes.wardrobeSlots")
+		if page.Outfits, err = r.wardrobeOutfits(ctx, session.AvatarID, page.WardrobeSlots); err != nil {
+			return looksPage{}, err
+		}
+	}
+	return page, nil
 }
 
 // HandleAccountLooksView renders GET /account/looks.

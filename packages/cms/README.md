@@ -82,6 +82,11 @@ serves the built frontend from the embedded `dist/`.
   `/account/looks`, as only Holo's `settings.js` listens to them. The editor reports
   that it cannot proceed until it is first touched, so on `/register` that would
   stop a visitor who keeps the suggested look.
+- `account/wardrobe` is Holo's club wardrobe on `/account/looks`, for club members only. It reads its slots and
+  outfits from the hidden list `#wardrobe-outfits`, keeps the editor's look through
+  `POST /account/looks/wardrobe/{slot}`, and its green arrows send a `restart` event to `#editor-container`, on which
+  `habbo/avatar-editor` puts the outfit in the form and starts a new editor with it. The HTML5 editor cannot be
+  stopped, so a restart waits until an editor still loading has reported its first look.
 - `public/c_images/` holds the home art with Holo's folder names, and the binary embeds it: stickers, backgrounds,
   user badges in `album1584` and widget skins.
 - `layouts/help-tool` is the Help Tool's window of Holo's `iot` pages, with their art in `public/iot/`. A post's

@@ -1,5 +1,17 @@
 # Log
 
+## 2026-11-07
+
+- **Done** [p6-06](/tasks/p6-06-club-wardrobe.md): club members keep the editor's look in Holo's wardrobe beside the
+  editor, one slot per `homes.wardrobeSlots` for each habbo, replace an outfit after Holo's `Replace?`, and dress in
+  one, which starts the editor again with it; anything else answers Holo's `Error! This outfit cannot be saved.`
+- **Blocked** [p6-12](/tasks/p6-12-save-looks-as-the-flash-editor.md): the change goes either into the HTML5 editor
+  of `vendor/HabboWidgets`, which agents may not change, or into `habbo/avatar-editor`; the user chooses.
+- **Create** [p6-12](/tasks/p6-12-save-looks-as-the-flash-editor.md): Holo's Flash editor opened Save changes five
+  seconds after it started, where the HTML5 editor keeps it closed until it is touched, after the wardrobe's green
+  arrow too.
+- **Start** [p6-06](/tasks/p6-06-club-wardrobe.md).
+
 ## 2026-11-06
 
 - **Done** [p6-01](/tasks/p6-01-economy-settings.md): the club's prices, days and month limit, the credits page's
