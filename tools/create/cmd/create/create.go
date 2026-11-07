@@ -4,10 +4,12 @@ import (
 	"cmp"
 	"errors"
 	"fmt"
+	"go/token"
 	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -68,7 +70,23 @@ func (p project) dirs() []string {
 	return dirs
 }
 
-func validateName(name string) error {
+// taken are the names the Go of each template already uses where the
+// project's package is in scope, so that the package cannot be named after
+// them: the runners' other imports, the variables they declare before their
+// last use of the package and the predeclared identifiers they use, and new
+// and option, whose type would be the New or Option the package declares.
+var taken = map[string][]string{
+	backend: {"db", "http", "log", "new", "store"},
+	fullstack: {
+		"astro", "db", "err", "fs", "http", "httputil", "log", "new", "nil", "option", "panic", "proxy", "resolver",
+		"store", "url",
+	},
+}
+
+// validateName refuses a name the folders cannot hold and, in a template with
+// Go, a name whose Go package cannot compile there (plans/server decision
+// 0025).
+func validateName(kind, name string) error {
 	if name == "" {
 		return errors.New("name is required")
 	}
@@ -83,6 +101,21 @@ func validateName(name string) error {
 		}
 	}
 
+	if kind == client {
+		return nil
+	}
+	pkg := project{Name: name}.Package()
+	switch {
+	case token.IsKeyword(pkg):
+		return fmt.Errorf("name cannot be %s: its Go package would be %s, a Go keyword", name, pkg)
+	case pkg == "main":
+		return fmt.Errorf("name cannot be %s: its Go package would be main, which Go keeps for programs", name)
+	case pkg == "init":
+		return fmt.Errorf("name cannot be %s: its Go package would be init, which Go keeps for init functions", name)
+	case slices.Contains(taken[kind], pkg):
+		return fmt.Errorf("name cannot be %s: its Go package would be %s, which the %s template's Go already uses",
+			name, pkg, kind)
+	}
 	return nil
 }
 
@@ -103,7 +136,7 @@ func run(root, name string, args ...string) error {
 }
 
 func scaffold(root, kind, name string, appPort, astroPort uint, dryRun bool) error {
-	if err := validateName(name); err != nil {
+	if err := validateName(kind, name); err != nil {
 		return err
 	}
 

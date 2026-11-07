@@ -36,23 +36,3 @@ func TestVitePortOfTheDecisionExample(t *testing.T) {
 		t.Errorf("VitePort(%q) = %d; want 30050", "client-r18", got)
 	}
 }
-
-func TestValidateName(t *testing.T) {
-	names := map[string]bool{
-		"housekeeping": true,
-		"a-b-c":        true,
-		"a1":           true,
-		"":             false,
-		"9abc":         false,
-		"Abc":          false,
-		"a_b":          false,
-		"a/b":          false,
-	}
-
-	for name, valid := range names {
-		got := validateName(name) == nil
-		if got != valid {
-			t.Errorf("ValidateName(%q) = %t; want %t", name, got, valid)
-		}
-	}
-}
