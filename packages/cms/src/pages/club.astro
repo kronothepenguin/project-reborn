@@ -1,0 +1,120 @@
+---
+import { Card } from "@project-reborn/components";
+import Membership from "../components/club/membership.svelte";
+import Community from "../layouts/community.astro";
+
+const pattern = "background-image: url(/web-gallery/v2/images/hc_pattern.gif)";
+// Holo's pictures reach the box's borders, 450 pixels apart, past the card's
+// padding.
+const flush = "-mx-3 -mt-2";
+const heading = "my-3 text-xs font-bold text-yellow-600";
+const pictured = "box-content bg-position-[100%_50%] bg-no-repeat pb-[1em]";
+---
+
+<Community title="[[ .ShortName ]] ~ [[ .ShortName ]] Club" tab="credits" sub="Habbo Club">
+  <div class="flex">
+    <div class="w-[460px]">
+      <div class="mr-2 mb-[7px]">
+        <Card variant="hc" color="hcred" style={pattern}>
+          <span slot="header">[[ .ShortName ]] Club: become a VIP!</span>
+          <div id="habboclub-products" class={flush}>
+            <div class="flow-root pl-5">
+              <img class="float-left mt-2.5" src="/web-gallery/v2/images/habboclub/extra.png" width="106" height="106" alt="" />
+              <img class="float-right" src="/web-gallery/v2/images/habboclub/hc_clothes_items.png" width="320" height="130" alt="" />
+            </div>
+            <div class="pl-[5px]">
+              <img src="/web-gallery/v2/images/habboclub/hc_furniture_items.gif" width="440" height="138" alt="" />
+            </div>
+          </div>
+        </Card>
+      </div>
+      <div class="mr-2 mb-[7px]">
+        <Card color="lightbrown">
+          <span slot="header">Benefits</span>
+          <div id="habboclub-info">
+            <p class="pb-[1em]">
+              [[ .ShortName ]] Club is our VIP members-only club - absolutely no riff-raff admitted! Members enjoy a wide
+              range of benefits, including exclusive clothes, free gifts and an extended Friends List. See below for all
+              the sparkly, attractive reasons to join.
+            </p>
+            <h3 class={heading}>1. Extra Clothes &amp; Accessories</h3>
+            <p
+              class={`${pictured} min-h-[66px] bg-[url(/web-gallery/v2/images/habboclub/hc_clothes.gif)] pr-[90px] pl-5`}
+            >
+              Show off your new status with a variety of extra clothes and accessories, along with special hairstyles and
+              colours.
+            </p>
+            <h3 class={heading}>2. Free Furni</h3>
+            <p
+              class={`${pictured} min-h-[72px] bg-[url(/web-gallery/v2/images/habboclub/hc_furniture.gif)] pr-[260px] pl-5`}
+            >
+              Once a month, every month, you'll get an exclusive piece of [[ .ShortName ]] Club furni.
+            </p>
+            <p class="pb-[1em] pl-5">
+              Important note: club time is cumulative. This means that if you have a break in membership, and then rejoin,
+              you'll start back in the same place you left off.
+            </p>
+            <h3 class={heading}>3. Exclusive Room Layouts</h3>
+            <p class="pb-[1em] pl-5">
+              Special Guest Room layouts, only for [[ .ShortName ]] Club members. Perfect for showing off your new furni!
+            </p>
+            <p class={`${pictured} min-h-[88px] bg-[url(/web-gallery/v2/images/habboclub/hc_morerooms.gif)]`}></p>
+            <h3 class={heading}>4. Access All Areas</h3>
+            <p class="pb-[1em] pl-5">
+              Jump the annoying queues when rooms are loading. And that's not all - you'll also get access to HC-only
+              Public Rooms.
+            </p>
+            <h3 class={heading}>5. Homepage Upgrades</h3>
+            <p class="pb-[1em] pl-5">
+              Join [[ .ShortName ]] Club and say goodbye to homepage ads! And this means you can make the most of the HC
+              skins and backgrounds too.
+            </p>
+            <h3 class={heading}>6. More Friends</h3>
+            <p
+              class={`${pictured} min-h-[106px] bg-[url(/web-gallery/v2/images/habboclub/600_newfriends.gif)] pr-[165px] pl-5`}
+            >
+              600 people! Now that's a lot of buddies however you look at it. More than you can poke with a medium-sized
+              stick, or a big-sized small stick.
+            </p>
+            <h3 class={heading}>7. Special Commands</h3>
+            <p
+              class="box-content min-h-[97px] bg-[url(/web-gallery/v2/images/habboclub/chooser_tuto.gif)] bg-position-[7px_50%] bg-no-repeat pb-[1em] pl-[230px]"
+            >
+              Use the :chooser command to see a clickable list of all the users in the room. Pretty handy when you want to
+              sit next to your mate, or kick out a troublemaker.
+            </p>
+            <br />
+            <p class="pb-[1em]">
+              Use the :furni command to list all the items in a room. Everything is listed, even those sneakily hidden
+              items.
+            </p>
+          </div>
+        </Card>
+      </div>
+    </div>
+    <div class="w-[310px]">
+      <div class="mr-2 mb-[7px]">
+        <Card variant="hc" color="hcred" style={pattern}>
+          <span slot="header">My Membership</span>
+          [[ if .SignedIn ]]
+          <div
+            id="club-membership"
+            hidden
+            data-short-name="[[ .ShortName ]]"
+            data-days="[[ .ClubDays ]]"
+            data-credits="[[ .Credits ]]"
+            data-price1="[[ .Price1Month ]]"
+            data-price3="[[ .Price3Months ]]"
+            data-price6="[[ .Price6Months ]]"
+            data-days-per-month="[[ .DaysPerMonth ]]"
+          >
+          </div>
+          <Membership client:only="svelte" source="club-membership" />
+          [[ else ]]
+          <p class="px-[7px]">Please sign in to see your [[ .ShortName ]] Club status.</p>
+          [[ end ]]
+        </Card>
+      </div>
+    </div>
+  </div>
+</Community>

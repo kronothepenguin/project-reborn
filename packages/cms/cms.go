@@ -179,6 +179,9 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("GET /groups/{id}/members", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsMembersView))))
 	mux.Handle("POST /groups/{id}/members/{member}/{action}", page(auth.RequireSession(http.HandlerFunc(r.HandleGroupsMembersAction))))
 
+	mux.Handle("GET /club", page(http.HandlerFunc(r.HandleClubView)))
+	mux.Handle("POST /club/subscriptions", page(auth.RequireSession(http.HandlerFunc(r.HandleClubSubscriptionsPurchase))))
+
 	mux.Handle("GET /disclaimer", page(http.HandlerFunc(r.HandleDisclaimerView)))
 	mux.Handle("GET /privacy", page(http.HandlerFunc(r.HandlePrivacyView)))
 

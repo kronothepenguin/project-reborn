@@ -14,6 +14,7 @@ import {
 } from "./lib/hotel.mjs";
 import { startMail } from "./lib/mail.mjs";
 import * as art from "./suites/art.mjs";
+import * as club from "./suites/club.mjs";
 import * as community from "./suites/community.mjs";
 import * as credits from "./suites/credits.mjs";
 import * as details from "./suites/details.mjs";
@@ -55,6 +56,7 @@ const suites = {
   tags,
   groups,
   forum,
+  club,
   community,
   staff,
   credits,

@@ -42,11 +42,11 @@ Habbos see their credits and transactions, redeem vouchers, buy club months and 
 2. [p6-02 Store vouchers, club purchases and wardrobe outfits](/tasks/p6-02-store-economy.md) — done
 3. [p6-03 Show the credits page and redeem vouchers](/tasks/p6-03-credits-page.md) — done
 4. [p6-04 Show the account transactions](/tasks/p6-04-account-transactions.md) — done
-5. [p6-05 Buy club on the club page](/tasks/p6-05-club-page.md)
+5. [p6-05 Buy club on the club page](/tasks/p6-05-club-page.md) — done
 6. [p6-06 Keep outfits in the club wardrobe](/tasks/p6-06-club-wardrobe.md)
 7. [p6-07 Manage vouchers in housekeeping](/tasks/p6-07-housekeeping-vouchers.md) — done
 8. [p6-08 Verify P6](/tasks/p6-08-exit-check.md)
-9. [p6-09 Count the club days to the end of the last period](/tasks/p6-09-club-days-to-the-last-period.md)
+9. [p6-09 Count the club days to the end of the last period](/tasks/p6-09-club-days-to-the-last-period.md) — done
 10. [p6-10 Keep every voucher deletable](/tasks/p6-10-keep-every-voucher-deletable.md) — blocked
 
 # Open questions

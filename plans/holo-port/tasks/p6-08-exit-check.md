@@ -4,7 +4,7 @@ title: Verify P6
 description: Every exit criterion of P6 holds from a clean checkout, in a real browser.
 status: todo
 phase: p6
-depends_on: [p6-01, p6-02, p6-03, p6-04, p6-05, p6-06, p6-07]
+depends_on: [p6-01, p6-02, p6-03, p6-04, p6-05, p6-06, p6-07, p6-09]
 packages: [packages/cms, packages/housekeeping, packages/store, tests/e2e]
 holo: []
 timestamp: 2026-11-06T22:30:17+00:00

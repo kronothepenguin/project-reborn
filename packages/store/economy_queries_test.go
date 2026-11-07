@@ -192,6 +192,41 @@ func TestAClubPeriodStartsAtTheEndOfTheCurrentOne(t *testing.T) {
 	}
 }
 
+// The periods are bought in order, each read at or after its purchase, as the site
+// reads them.
+func TestTheClubEndsWithItsLastPeriod(t *testing.T) {
+	db := openTestDB(t)
+	q := New(db)
+	ctx := t.Context()
+	user, _ := createUserWithHabbo(t, q, "krono@example.com", "Krono")
+	other, _ := createUserWithHabbo(t, q, "other@example.com", "Other")
+	day := func(n int) time.Time { return testNow.AddDate(0, 0, n) }
+	wantEnd := func(name string, now, want time.Time) {
+		t.Helper()
+		if got, err := q.GetClubEnd(ctx, GetClubEndParams{UserID: user.ID, Now: now}); err != nil || !got.Equal(want) {
+			t.Errorf("%s: the club ends at %v, %v; want %v", name, got, err, want)
+		}
+	}
+	wantNone := func(name string, now time.Time) {
+		t.Helper()
+		if got, err := q.GetClubEnd(ctx, GetClubEndParams{UserID: user.ID, Now: now}); !IsNotFound(err) {
+			t.Errorf("%s: the club ends at %v, %v; want not found", name, got, err)
+		}
+	}
+
+	subscribe(t, q, user.ID, day(0), 31)
+	wantEnd("one period", day(0), day(31))
+	subscribe(t, q, other.ID, day(5), 186)
+	subscribe(t, q, user.ID, day(10), 93)
+	wantEnd("a period bought during the first", day(10), day(124))
+	wantEnd("in the second period", day(50), day(124))
+	wantNone("before the first period", day(-1))
+	wantNone("at the end of the last period", day(124))
+	wantNone("after the club, while another user's runs", day(150))
+	subscribe(t, q, user.ID, day(200), 31)
+	wantEnd("a period bought after the club ended", day(210), day(231))
+}
+
 func badgesOf(t *testing.T, q *Queries, avatarID int64) map[string]AvatarBadge {
 	t.Helper()
 	badges := map[string]AvatarBadge{}
