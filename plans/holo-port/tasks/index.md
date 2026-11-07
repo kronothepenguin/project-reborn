@@ -206,7 +206,7 @@ starts.
 - [p6-06 Keep outfits in the club wardrobe](/tasks/p6-06-club-wardrobe.md) — Club members get Holo's wardrobe under the avatar editor on /account/looks, whose red arrows store the look in a slot and green arrows put a stored outfit back in the editor.
 - [p6-07 Manage vouchers in housekeeping](/tasks/p6-07-housekeeping-vouchers.md) — Housekeeping's Voucher Management creates credit vouchers with Holo's random code, lists the unused ones and deletes an unused one, each logged, for holders of housekeeping.vouchers.
 - [p6-08 Verify P6](/tasks/p6-08-exit-check.md) — Every exit criterion of P6 holds from a clean checkout, in a real browser.
-- [p6-09 Count the club days to the end of the last period](/tasks/p6-09-club-days-to-the-last-period.md) — The club days of the Me page and the account pages run to the end of the user's last period while one covers now, as Holo's HCDaysLeft counted every month bought, where GetClubEnd stops at the end of the period that covers now.
+- [p6-09 Count the club days to the end of the last period](/tasks/p6-09-club-days-to-the-last-period.md) — The club days of the Me page and the account pages run to the end of the user's last period while one covers now, as Holo's HCDaysLeft counted every month bought, where GetClubEnd stops at the end of the period that covers now. **done**
 
 ## Later phases
 

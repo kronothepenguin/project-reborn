@@ -46,4 +46,4 @@ Habbos see their credits and transactions, redeem vouchers, buy club months and 
 6. [p6-06 Keep outfits in the club wardrobe](/tasks/p6-06-club-wardrobe.md)
 7. [p6-07 Manage vouchers in housekeeping](/tasks/p6-07-housekeeping-vouchers.md)
 8. [p6-08 Verify P6](/tasks/p6-08-exit-check.md)
-9. [p6-09 Count the club days to the end of the last period](/tasks/p6-09-club-days-to-the-last-period.md)
+9. [p6-09 Count the club days to the end of the last period](/tasks/p6-09-club-days-to-the-last-period.md) — done

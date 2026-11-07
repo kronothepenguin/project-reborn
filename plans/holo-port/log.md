@@ -1,5 +1,12 @@
 # Log
 
+## 2026-11-07
+
+- **Done** [p6-09](/tasks/p6-09-club-days-to-the-last-period.md): `GetClubEnd` gives the end of the user's last
+  period while one covers now, so a month and then three months bought 10 days later leave 114 days on the Me page and
+  the account pages, as Holo's `HCDaysLeft`.
+- **Start** [p6-09](/tasks/p6-09-club-days-to-the-last-period.md).
+
 ## 2026-11-06
 
 - **Done** [p6-01](/tasks/p6-01-economy-settings.md): the club's prices, days and month limit, the credits page's
