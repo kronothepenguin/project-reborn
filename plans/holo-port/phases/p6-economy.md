@@ -3,7 +3,7 @@ type: Phase
 title: P6 Economy
 description: Credits page with purse and vouchers, transaction history, Habbo Club subscriptions and the club wardrobe, with voucher management in housekeeping.
 status: active
-timestamp: 2026-11-07T00:56:43+00:00
+timestamp: 2026-11-07T02:22:16+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p6, cms, housekeeping]
 ---
@@ -47,26 +47,6 @@ Habbos see their credits and transactions, redeem vouchers, buy club months and 
 7. [p6-07 Manage vouchers in housekeeping](/tasks/p6-07-housekeeping-vouchers.md) — done
 8. [p6-08 Verify P6](/tasks/p6-08-exit-check.md)
 9. [p6-09 Count the club days to the end of the last period](/tasks/p6-09-club-days-to-the-last-period.md) — done
-10. [p6-10 Keep every voucher deletable](/tasks/p6-10-keep-every-voucher-deletable.md) — blocked
+10. [p6-10 Keep every voucher deletable](/tasks/p6-10-keep-every-voucher-deletable.md)
 11. [p6-11 Guard the club page's layout fields](/tasks/p6-11-club-page-layout-guard.md)
-12. [p6-12 Open Save changes five seconds after the editor starts, as Holo's Flash did](/tasks/p6-12-save-looks-as-the-flash-editor.md) — blocked
-
-# Open questions
-
-Found by [p6-07](/tasks/p6-07-housekeeping-vouchers.md) on 2026-11-07. The first option is the recommendation.
-
-1. **Vouchers that cannot be deleted.** A code takes any 20 characters, as Holo's did, but a browser reads the codes
-   `.` and `..` in `/housekeeping/vouchers/{code}/delete` as folders, so their `Delete` answers 404 and the voucher
-   stays ([p6-10](/tasks/p6-10-keep-every-voucher-deletable.md)).
-   - `Create Voucher` refuses those two codes alone, with a message such as `The redemption code cannot be . or ..`.
-   - Codes take only letters and digits, as badge codes do.
-   - Nothing changes: those two vouchers can be created and redeemed, but never deleted.
-2. **Save changes after a look the editor did not change.** Found by [p6-06](/tasks/p6-06-club-wardrobe.md). Holo's
-   Flash editor opened Save changes five seconds after it started with a look the club allows; the HTML5 editor keeps
-   it closed until it is touched, after the page loads and after a green arrow of the wardrobe
-   ([p6-12](/tasks/p6-12-save-looks-as-the-flash-editor.md)).
-   - The HTML5 editor of `vendor/HabboWidgets`, which agents may not change, does as the Flash did, and
-     `packages/cms/public/habbo-editor.iife.js` is built again from it.
-   - `habbo/avatar-editor` opens Save changes five seconds after the editor's first look, unless the club notice
-     showed or the look changed, setting aside the editor's own answer at the end of its five seconds.
-   - Nothing changes: a habbo touches the editor before saving a look it did not change.
+12. [p6-12 Open Save changes five seconds after the editor starts, as Holo's Flash did](/tasks/p6-12-save-looks-as-the-flash-editor.md)

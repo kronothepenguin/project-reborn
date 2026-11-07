@@ -50,7 +50,11 @@ Results (2026-11-01T21:13:31+00:00):
 
 # Notes
 
-- Holo's `Save changes` is disabled until the editor is touched, so this behaviour is the one `/register` must not have.
+- Holo's `Save changes` starts disabled, and its Flash editor opened it five seconds after drawing a look the club
+  allows. The HTML5 editor keeps it closed until it is touched, so `/register` must not take the editor's answer, and
+  the looks page opens it after those five seconds itself ([0107](/decisions/0107-save-opens-after-the-first-look.md)).
+  This note first said that Holo keeps `Save changes` disabled until the editor is touched;
+  [p6-06](/tasks/p6-06-club-wardrobe.md) found the five seconds in the decompiled Flash.
 - The installer's administrator look holds a club item, so that habbo sees the club notice until it picks another look. Holo's
   `settings.js` behaves the same way.
 - The wardrobe waits for [P6](/phases/p6-economy.md).

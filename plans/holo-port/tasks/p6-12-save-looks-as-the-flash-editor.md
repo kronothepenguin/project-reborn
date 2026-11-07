@@ -2,12 +2,12 @@
 type: Task
 title: Open Save changes five seconds after the editor starts, as Holo's Flash did
 description: Holo's Flash editor opened the looks form's Save changes five seconds after it started with a look the club allows, where the HTML5 editor keeps it closed until it is touched, on the page's load and after a green arrow of the wardrobe.
-status: blocked
+status: todo
 phase: p6
 depends_on: [p6-06]
 packages: [packages/cms, tests/e2e]
 holo: [source/holocms/account.php, source/holocms/web-gallery/static/js/settings.js]
-timestamp: 2026-11-07T00:35:59+00:00
+timestamp: 2026-11-07T02:22:16+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-07T00:35:59+00:00"}
 ---
 
@@ -19,7 +19,8 @@ to select an outfit and save changes to take it into use.` holds without touchin
 
 # Steps
 
-- [ ] The user chooses where the change goes (see Notes).
+- [x] The user chooses where the change goes (see Notes): `habbo/avatar-editor`
+  ([0107](/decisions/0107-save-opens-after-the-first-look.md)).
 - [ ] Save changes opens five seconds after the editor has drawn itself with a look the club allows, and stays closed
   for one with club items outside the club; a change in those five seconds counts at their end, as in the Flash.
 - [ ] `/register` keeps ignoring the editor's answer, as [p2-04](/tasks/p2-04-account-looks.md) requires.
@@ -46,3 +47,5 @@ cd tests/e2e && node run.mjs looks register habbos
   or `packages/cms/src/components/habbo/avatar-editor.svelte` opens Save changes five seconds after the editor's first
   look, unless the club notice showed or the look changed, setting aside the editor's own answer at the end of its
   five seconds; or nothing changes, and a habbo touches the editor before saving a look it did not change.
+- Unblocked on 2026-11-07: the user chose `habbo/avatar-editor`,
+  [0107](/decisions/0107-save-opens-after-the-first-look.md).

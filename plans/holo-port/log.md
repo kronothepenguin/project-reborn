@@ -2,6 +2,14 @@
 
 ## 2026-11-07
 
+- **Update** [p2-04](/tasks/p2-04-account-looks.md): its note said that Holo keeps `Save changes` disabled until the
+  editor is touched; it now says that Holo's Flash editor opened it five seconds after drawing a look the club allows.
+- **Decision** [0107](/decisions/0107-save-opens-after-the-first-look.md): `habbo/avatar-editor` opens the looks form's
+  Save changes five seconds after the editor's first look, unless the club notice showed or the look changed
+  meanwhile, as Holo's Flash editor did; [p6-12](/tasks/p6-12-save-looks-as-the-flash-editor.md) is no longer blocked.
+- **Decision** [0106](/decisions/0106-dot-voucher-codes-refused.md): `Create Voucher` refuses the codes `.` and `..`
+  alone and takes every other code Holo took; [p6-10](/tasks/p6-10-keep-every-voucher-deletable.md) is no longer
+  blocked.
 - **Create** [p6-11](/tasks/p6-11-club-page-layout-guard.md): merging `main` into p6-04's branch showed the club page
   missing from the guard on the layout's fields.
 - **Done** [p6-06](/tasks/p6-06-club-wardrobe.md): club members keep the editor's look in Holo's wardrobe beside the
