@@ -12,6 +12,7 @@ change supersedes a decision with a new one. The branch rule every plan follows 
 - [0017 The client template derives its Vite port from the name, in a range of its own](/decisions/0017-client-vite-port.md) — tools/create gives a client project the Vite dev server port 30000 + fnv32a("vite:" + name) % 10000, derived from the name as the Astro port is, in the range 30000 to 39999 that no other port uses.
 - [0018 A client project builds as a plain Vite app](/decisions/0018-client-is-a-plain-vite-app.md) — A project made with tools/create -template=client builds as a page of its own, pnpm build writing dist/index.html and dist/assets/index-<hash>.js, and its vite.config.js holds only the derived port.
 - [0024 Go package names drop the dash](/decisions/0024-go-package-names-drop-the-dash.md) — The backend and fullstack templates of tools/create name the Go package after the project without its dashes, so game-server holds package gameserver, while folders and module paths keep the dash.
+- [0025 tools/create refuses names whose Go package cannot compile](/decisions/0025-refuse-names-whose-go-package-cannot-compile.md) — validateName refuses, with a plain message, a name whose Go package name cannot compile in the template being made, main, a Go keyword or a name the template's own Go already uses, and every generated project stays as it is.
 
 ## Program and packages
 

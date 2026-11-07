@@ -18,9 +18,11 @@ Every name `tools/create` accepts makes, with the fullstack and the backend temp
 
 # Steps
 
-- [ ] Ask the user what `tools/create` does with a name whose Go package name
+- [x] Ask the user what `tools/create` does with a name whose Go package name
   ([0024](/decisions/0024-go-package-names-drop-the-dash.md)) the generated Go cannot use: a Go keyword such as `func`
-  or `go`, `main`, or a name the generated files already use. Record the answer as a decision.
+  or `go`, `main`, or a name the generated files already use. Record the answer as a decision:
+  [0025](/decisions/0025-refuse-names-whose-go-package-cannot-compile.md), `validateName` refuses them with a plain
+  message, and every generated project stays as it is.
 - [ ] `tools/create` does so for every such name, including the names that become one once their dashes are dropped
   (`go-to` gives `goto`).
 - [ ] Tests: for both Go templates, each such name is handled as the decision says.

@@ -2,6 +2,12 @@
 
 ## 2026-11-07
 
+- **Update** [s0-10](/tasks/s0-10-go-names-that-clash.md)'s question is answered by 0025, and
+  [S0](/phases/s0-foundations.md) has no open questions left.
+- **Decision** [0025](/decisions/0025-refuse-names-whose-go-package-cannot-compile.md): `validateName` refuses, with a
+  plain message, a name whose Go package name cannot compile in the template being made: `main`, a Go keyword, or a
+  name the template's own Go already uses; every generated project stays as it is. Answers
+  [s0-10](/tasks/s0-10-go-names-that-clash.md)'s question.
 - **Blocked** [s0-08](/tasks/s0-08-exit-check.md): every exit criterion of [S0](/phases/s0-foundations.md) passes on
   `main`, from `make install` and `make gates` in a fresh worktree to one project of each template, and
   [How the server is built](/reference/architecture.md) matches the code; S0 can be `done` only once
