@@ -2,6 +2,12 @@
 
 ## 2026-11-09
 
+- **Update** [P6](/phases/p6-economy.md) is done, and [P7](/phases/p7-help.md) is the active phase, with two open
+  questions: whether guests may send a request, and how long a request may be.
+- **Done** [p6-08](/tasks/p6-08-exit-check.md): from a clean worktree, install, every gate and all 30 browser suites
+  pass, 1083 checks; the new `economy` suite walks P6's exit criteria from a voucher made in housekeeping to a club
+  that ends. P6 meets its exit criteria.
+- **Start** [p6-08](/tasks/p6-08-exit-check.md).
 - **Done** [p6-12](/tasks/p6-12-save-looks-as-the-flash-editor.md): on `/account/looks`, Save changes opens five
   seconds after the editor draws a look the club allows, on the page's load and after a green arrow, as Holo's Flash
   did; a change in those seconds counts at their end, and a look with club items outside the club keeps it closed.
