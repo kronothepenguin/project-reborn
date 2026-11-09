@@ -10,6 +10,13 @@
   templates, `validateName` refuses `internal`, `vendor` and `testdata`, whose folders the go tool treats specially;
   the client template keeps them. Answers [s0-11](/tasks/s0-11-names-the-go-tool-treats-specially.md)'s question,
   and [S0](/phases/s0-foundations.md) has no open questions left.
+- **Update** [S7](/phases/s7-club-help-extras.md) asks who receives the calls for help and where a staff member who
+  follows one is taken: the client checks no right before it shows a call, and waits for the server to move it.
+  Found by [s1-03](/tasks/s1-03-shared.md).
+- **Done** [s1-03](/tasks/s1-03-shared.md): [hh_shared](/reference/r26/hh_shared.md) maps 7 messages and 8 commands,
+  as registered: the calls for help, their pick-up, replies and categories, the mod tool's alerts, kicks and bans, the
+  server's date, the error reports and the tracking codes. `GETAVAILABLESETS` (9) is never sent.
+- **Start** [s1-03](/tasks/s1-03-shared.md).
 
 ## 2026-11-07
 
