@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [s1-04](/tasks/s1-04-navigator.md): [hh_navigator](/reference/r26/hh_navigator.md) maps 18 messages
+  and 18 commands, as registered: the tree of nodes, the own rooms, the search and the favourites, a flat's settings
+  and their changes, entering a room or being refused, and forwarding. `SBUSYF` (13) is never sent.
+- **Start** [s1-04](/tasks/s1-04-navigator.md).
 - **Update** [S0](/phases/s0-foundations.md) is done, and [S1](/phases/s1-protocol-reference.md) is the active
   phase.
 - **Done** [s0-08](/tasks/s0-08-exit-check.md): on the merged state, install, every gate, the server's 47 tests and a
