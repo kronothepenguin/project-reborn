@@ -6,7 +6,7 @@ planning, and the user may change it.
 
 ## Order
 
-1. [S0 Foundations](/phases/s0-foundations.md) — The plan and its skill, the three tools/create templates, and an empty server that accepts R26 clients over WebSocket, frames their packets and answers HELLO. **Active.**
+1. [S0 Foundations](/phases/s0-foundations.md) — The plan and its skill, the three tools/create templates, and an empty server that accepts R26 clients over WebSocket, frames their packets and answers HELLO. **Done.**
 2. [S1 R26 protocol reference](/phases/s1-protocol-reference.md) — Every message the R26 client receives and every command it sends, reverse engineered from the .ls scripts into one reference document per cast, which the later phases implement from. **Active.**
 3. [S2 Login and session](/phases/s2-login.md) — A habbo logs in with an SSO ticket and reaches the hotel view with their name, look, credits, badges and settings, and the session stays alive.
 4. [S3 Navigator](/phases/s3-navigator.md) — The navigator lists the public rooms and the habbos' rooms, searches and keeps favourites, and habbos create, edit and delete their rooms.

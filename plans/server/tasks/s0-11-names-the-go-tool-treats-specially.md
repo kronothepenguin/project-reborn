@@ -2,13 +2,15 @@
 type: Task
 title: Handle the names whose folder the go tool treats specially
 description: tools/create accepts internal, vendor and testdata, whose Go package names compile but whose folders the go tool treats specially, so the backend and fullstack projects made from them do not compile or are skipped by go vet ./....
-status: todo
+status: done
 phase: s0
 depends_on: [s0-10]
 packages: [tools/create]
 client: []
-timestamp: 2026-11-07T02:38:54+00:00
+timestamp: 2026-11-09T18:01:15+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-07T02:38:54+00:00"}
+verified:
+  - {by: claude-code/claude-opus-5-5, at: "2026-11-09T18:01:15+00:00"}
 ---
 
 # Goal
@@ -18,10 +20,11 @@ gates check, as [s0-10](/tasks/s0-10-go-names-that-clash.md)'s goal says.
 
 # Steps
 
-- [ ] Ask the user what `tools/create` does with a name whose folder the go tool treats specially: `internal`,
-  `vendor` or `testdata`. Record the answer as a decision.
-- [ ] `tools/create` does so for each such name.
-- [ ] Tests: for each template, each such name is handled as the decision says.
+- [x] Ask the user what `tools/create` does with a name whose folder the go tool treats specially: `internal`,
+  `vendor` or `testdata`. Record the answer as a decision:
+  [0026](/decisions/0026-refuse-names-the-go-tool-treats-specially.md).
+- [x] `tools/create` does so for each such name.
+- [x] Tests: for each template, each such name is handled as the decision says.
 
 # Verification
 
@@ -32,6 +35,16 @@ cd tools/create && gofmt -l . && go vet ./... && go test ./... -race
 In a throwaway worktree, `make create` with such names in both Go templates, then `go vet ./...` and
 `go test ./... -race` in the folders it makes, if the decision makes any; then the worktree and its branch are
 removed.
+
+Results:
+
+- In `tools/create`, `gofmt -l .` lists nothing, `go vet ./...` passes and `go test ./... -race` passes, with
+  `TestValidateNameRefusesNamesTheGoToolTreatsSpecially`: the backend and fullstack templates refuse `internal`,
+  `testdata` and `vendor` with `name cannot be <name>: the go tool treats a folder named <name> specially`, the client
+  template takes them, and every template takes `inter-nal`, `test-data`, `ven-dor`, `internals` and `vendors`.
+- The decision makes no project, so no throwaway worktree was needed: the built `create` exits 1 with that message for
+  each of the three names in both Go templates, and makes nothing; with `-dry-run`, the client template exits 0 for
+  each.
 
 # Notes
 

@@ -2,13 +2,15 @@
 type: Task
 title: Check S0's exit criteria
 description: From a clean checkout of the merged work, check every exit criterion of S0, bring the reference up to date and close the phase.
-status: blocked
+status: done
 phase: s0
 depends_on: [s0-01, s0-02, s0-03, s0-04, s0-05, s0-06, s0-07]
 packages: [packages/server, apps/server, tools/create]
 client: []
-timestamp: 2026-11-07T02:40:24+00:00
+timestamp: 2026-11-09T18:13:34+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
+verified:
+  - {by: claude-code/claude-opus-5-5, at: "2026-11-09T18:13:34+00:00"}
 ---
 
 # Goal
@@ -21,7 +23,7 @@ S0 meets its [exit criteria](/phases/s0-foundations.md#exit-criteria) on `main`.
 - [x] The test client receives `HELLO` and its `INIT_CRYPTO` is logged by name, on the `info` WebSocket listener.
 - [x] One project of each template passes its gates, in a throwaway worktree.
 - [x] [How the server is built](/reference/architecture.md) matches the code.
-- [ ] S0 is `done`; `/index.md` names the active phases.
+- [x] S0 is `done`; `/index.md` names the active phases.
 
 # Verification
 
@@ -59,6 +61,23 @@ S0's [exit criteria](/phases/s0-foundations.md#exit-criteria), one by one:
 - [How the server is built](/reference/architecture.md) names `StartInfo` and `StartMus`, the dispatch by id, the log of
   unhandled packets and the `mus` listener before S7, and says what the package holds so far.
 
+Run again on 2026-11-09, once [s0-11](/tasks/s0-11-names-the-go-tool-treats-specially.md) was done, in the worktree of
+`s0` at `6c74cc44`, the merge of `main` at `7b4a3e29` with s0-11, fresh from `git worktree add`:
+
+- `make install` exits 0, and `git status` lists only this task's own edits after it.
+- `make gates` exits 0: `gofmt`, `go vet` and `go test -race` in every Go module, 26 packages with tests, the
+  components' 167 tests and `svelte-check` with 0 errors and 0 warnings, `sqlc generate` with no diff, and
+  `check-docs`.
+- `go test ./... -race -v` in `packages/server` passes the same 47 tests: 6 of the listeners, 18 of `encoding`, 15 of
+  `r26` and 8 of `transport`, `TestInfoSendsHelloAndLogsInitCryptoByName` among them.
+- In the throwaway worktree `s0-exit-tmp`, made from `s0`: `make install`, `make create name=exitfull`,
+  `make create name=exitback template=backend`, `make create name=exit-client template=client` and `make install`
+  again exit 0; `gofmt` lists nothing, and `go vet ./...` and `go test ./... -race` pass, in `packages/exitfull`,
+  `apps/exitfull`, `packages/exitback` and `apps/exitback`; and `pnpm build` in `packages/exit-client` writes
+  `dist/index.html` and `dist/assets/index-BYhCLo9y.js`. The worktree and its branch were then removed.
+- [How the server is built](/reference/architecture.md) is as the first run found it: s0-10 and s0-11 changed only
+  `tools/create`.
+
 # Notes
 
 - Runs on the branch `s0`, and ends it: the branch is merged as [Branches](/rules.md#branches) says.
@@ -71,3 +90,5 @@ S0's [exit criteria](/phases/s0-foundations.md#exit-criteria), one by one:
   question, what `tools/create` does with `internal`, `vendor` and `testdata`. Once s0-11 is done, the exit criteria are
   checked again on the merged state, and the last step sets S0 to `done` and updates the active phases of `/index.md`.
   s0-10's throwaway worktree made a backend, a fullstack and a client project that pass the checks of the gates.
+- Done on 2026-11-09: with s0-11 done, every task of S0 is, its exit criteria pass on the merged state, and S0 is
+  `done`.
