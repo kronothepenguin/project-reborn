@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [p7-02](/tasks/p7-02-help-requests.md): a signed-in habbo opens go.php's form from the header's `Help`
+  in the Help Tool's own window and sends a request, with Holo's answers to blank and waiting requests and the two
+  lengths of 0109; a visitor is sent to sign in, and housekeeping's Help Queries lists the request.
+- **Start** [p7-02](/tasks/p7-02-help-requests.md).
 - **Done** [p7-01](/tasks/p7-01-help-setting.md): `help.messageMaxLength` holds 65535, from 1 to 65535, in a
   `Help` form after `Club`, labelled `Question Length`.
 - **Start** [p7-01](/tasks/p7-01-help-setting.md).

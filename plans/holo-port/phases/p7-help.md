@@ -31,5 +31,5 @@ The housekeeping side (`/housekeeping/help`) comes with [HK-B](/phases/hk-b-user
 # Tasks
 
 1. [p7-01 Declare the help setting](/tasks/p7-01-help-setting.md) — done
-2. [p7-02 Send help requests from the Help Tool window](/tasks/p7-02-help-requests.md)
+2. [p7-02 Send help requests from the Help Tool window](/tasks/p7-02-help-requests.md) — done
 3. [p7-03 Verify P7](/tasks/p7-03-exit-check.md)

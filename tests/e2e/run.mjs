@@ -22,6 +22,7 @@ import * as economy from "./suites/economy.mjs";
 import * as forum from "./suites/forum.mjs";
 import * as groups from "./suites/groups.mjs";
 import * as habbos from "./suites/habbos.mjs";
+import * as help from "./suites/help.mjs";
 import * as homes from "./suites/homes.mjs";
 import * as housekeepingAccess from "./suites/housekeeping-access.mjs";
 import * as housekeepingAdmin from "./suites/housekeeping-admin.mjs";
@@ -73,6 +74,7 @@ const suites = {
   "housekeeping-banners": housekeepingBanners,
   "housekeeping-vouchers": housekeepingVouchers,
   economy,
+  help,
   updates,
   together,
 };
