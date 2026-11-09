@@ -44,6 +44,18 @@ starts.
 - [s1-24 Describe the MUS framing of the #mus connection](/tasks/s1-24-mus-framing.md) — Write /reference/r26/mus.md from LibreShockwave's Multiuser Xtra: the bytes of a MUS frame, the Logon frame, the serialized Lingo values, and the messages fuse_client and hh_photo exchange on #mus. **done**
 - [s1-23 Check S1's exit criteria](/tasks/s1-23-exit-check.md) — Cross-check the R26 reference against every registration in the client's scripts, so that no message, command or sender is missing, and close the phase. **done**
 
-## S2 to S9
+## S2 Login and session
+
+- [s2-01 Add S2's settings](/tasks/s2-01-settings.md) — Declare the ten session parameters and the client version the server accepts in the settings catalogue, and edit them in housekeeping.
+- [s2-02 Create SSO tickets at the CMS sign-in](/tasks/s2-02-sso-tickets-at-sign-in.md) — Signing in to the CMS creates an SSO ticket for the active habbo, kept as text with the session that created it, which the client page reads and the game server spends.
+- [s2-03 Save the last time online, the machine id and the sound setting](/tasks/s2-03-saved-login-data.md) — Habbos keep their last time online, the machine id of their last login and their sound setting in the store.
+- [s2-04 Add the fuse catalogue](/tasks/s2-04-fuse-catalogue.md) — A habbo's fuses are the default set, the club fuses for club members, and the staff fuses their access groups grant, from a fuse catalogue beside the site's attributes.
+- [s2-05 Log a habbo in and out in game](/tasks/s2-05-login-in-game.md) — game logs a habbo in with an SSO ticket and out, holds the online habbo in virtual, and tells sessions through the interface each one implements, starting with a second login.
+- [s2-06 Speak the handshake and the login](/tasks/s2-06-handshake-and-login.md) — r26 takes a client from HELLO to LOGIN_OK with an SSO ticket: the handshake without encryption, the version check, the machine id, the session parameters, SSO and TRY_LOGIN, and the old session's 287 on a second login.
+- [s2-07 Answer what the client asks after its login](/tasks/s2-07-after-login.md) — After LOGIN_OK the client gets the habbo's user object, fuses, credits, badges, achievements, sound setting and club status, and the server date.
+- [s2-08 Keep the session alive and end it](/tasks/s2-08-keeping-the-session-alive.md) — The server pings and the client answers, the latency test is answered and its reports logged, error reports are logged, and a closed connection logs the habbo out.
+- [s2-09 Check S2's exit criteria](/tasks/s2-09-exit-check.md) — From the merged work, check every exit criterion of S2 and close the phase.
+
+## S3 to S9
 
 Their tasks are written when each phase starts, once its open questions are answered.

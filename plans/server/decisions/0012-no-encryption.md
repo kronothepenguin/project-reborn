@@ -2,7 +2,8 @@
 type: Decision
 title: The server skips the client's encryption
 description: At login the server answers the client's public key with ENDOFCRYPTOPARAMS, as the old server did, so the client sends plain bytes, with no Diffie-Hellman key exchange and no RC4.
-status: accepted
+status: superseded
+superseded_by: "0027"
 timestamp: 2026-11-05T20:57:45+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [server, protocol, security]

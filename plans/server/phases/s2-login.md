@@ -2,8 +2,8 @@
 type: Phase
 title: S2 Login and session
 description: A habbo logs in with an SSO ticket and reaches the hotel view with their name, look, credits, badges and settings, and the session stays alive.
-status: planned
-timestamp: 2026-11-09T18:15:30+00:00
+status: active
+timestamp: 2026-11-09T22:15:00+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s2, server]
 ---
@@ -30,32 +30,22 @@ credits, badges, rights and sound setting. The session stays alive with pings un
 
 # Exit criteria
 
-Written with the phase's tasks, once its open questions are answered.
+- A Go test client logs in end to end with a ticket it inserts: `HELLO`, the handshake without encryption, the version
+  check, the session parameters, `SSO` and `LOGIN_OK`, then the user object, the fuses, the credits, the badges, the
+  sound setting and the club status; it answers pings, and a second login ends the first session with 287.
+- Signing in to the CMS creates a ticket that the server accepts once, and that dies with the CMS session.
+- S2's settings are in housekeeping, and its fuses come from the defaults, the club and the access groups.
+- The last time online, the machine id and the sound setting are saved.
+- Every gate passes.
 
 # Tasks
 
-Written when the phase starts.
-
-# Open questions
-
-- Whether the server waits for `GENERATEKEY` (2002) before it sends `ENDOFCRYPTOPARAMS` (278), as
-  [0012](/decisions/0012-no-encryption.md) describes, or sends 278 right after `CRYPTOPARAMETERS` (277). The client
-  withholds `GENERATEKEY` when script tracing is on, when `Login Subscript 2` is not in the Login Handler's cast or is
-  not that script, and, where the platform is not Windows, when its key comes out shorter than 2 characters; a server
-  that waits for it then never sends 278. The client's handler of 278 checks nothing and starts the session whenever
-  278 arrives ([hh_entry_init](/reference/r26/hh_entry_init.md#the-handshake)).
-- How a rule in `game` tells other habbos' sessions about an event without knowing their protocol.
-- How a test client gets an SSO ticket before the site's `/client` page exists. The page, which
-  `plans/holo-port/decisions/0013-defer-game-server-features.md` deferred, is planned in `plans/client`, phase C1.
-- Whether the client's own login box (`TRY_LOGIN`, name and password) works, or only SSO, as in the old server.
-- Which fuse rights a habbo gets (`plans/holo-port/decisions/0015-attribute-names-and-fuses.md`).
-- Whether the hotel can close at set hours (opening hours).
-- Which client versions the version check accepts.
-- What the session parameters carry, ids 0 to 9: COPPA, vouchers, the parent's e-mail at registration and
-  re-registration, direct mail, the date format, partner integration, profile editing, the tracking header and the
-  tutorial. The tutorial's value also decides whether `hh_tutorial` asks for the mode that 308 carries after the sound
-  state ([hh_entry_init](/reference/r26/hh_entry_init.md#session-parameters)).
-- What happens to the machine id the client sends (`UNIQUEID`).
-- What happens when a habbo who is online logs in a second time.
-- Whether the latency reports are kept.
-- When the last time online is written: at login, at logout, or both.
+1. [s2-01 Add S2's settings](/tasks/s2-01-settings.md)
+2. [s2-02 Create SSO tickets at the CMS sign-in](/tasks/s2-02-sso-tickets-at-sign-in.md)
+3. [s2-03 Save the last time online, the machine id and the sound setting](/tasks/s2-03-saved-login-data.md)
+4. [s2-04 Add the fuse catalogue](/tasks/s2-04-fuse-catalogue.md)
+5. [s2-05 Log a habbo in and out in game](/tasks/s2-05-login-in-game.md)
+6. [s2-06 Speak the handshake and the login](/tasks/s2-06-handshake-and-login.md)
+7. [s2-07 Answer what the client asks after its login](/tasks/s2-07-after-login.md)
+8. [s2-08 Keep the session alive and end it](/tasks/s2-08-keeping-the-session-alive.md)
+9. [s2-09 Check S2's exit criteria](/tasks/s2-09-exit-check.md)

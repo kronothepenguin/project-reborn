@@ -2,6 +2,28 @@
 
 ## 2026-11-09
 
+- **Update** [S2](/phases/s2-login.md) is active, with its exit criteria and the tasks
+  [s2-01](/tasks/s2-01-settings.md) to [s2-09](/tasks/s2-09-exit-check.md), once the user answered its open questions.
+- **Decision** [0039](/decisions/0039-rules-notify-sessions-through-an-interface.md): rules tell sessions about events
+  through an interface each session implements.
+- **Decision** [0038](/decisions/0038-the-sound-setting-is-saved.md): a habbo's sound setting is saved.
+- **Decision** [0037](/decisions/0037-last-online-at-login-and-logout.md): the last time online is written at login and
+  at logout.
+- **Decision** [0036](/decisions/0036-latency-reports-are-logged.md): latency reports are only logged.
+- **Decision** [0035](/decisions/0035-the-machine-id-is-saved-per-habbo.md): the machine id is saved with the habbo at
+  each login.
+- **Decision** [0034](/decisions/0034-session-parameters-are-settings.md): the session parameters are settings.
+- **Decision** [0033](/decisions/0033-one-client-version-from-the-site.md): the server accepts one client version, from
+  the site.
+- **Decision** [0032](/decisions/0032-the-hotel-is-always-open.md): the hotel is always open.
+- **Decision** [0031](/decisions/0031-fuses-defaults-club-and-access-groups.md): a habbo's fuses: a default set, club
+  fuses, and staff fuses from access groups.
+- **Decision** [0030](/decisions/0030-sso-tickets-from-the-cms-sign-in.md): SSO tickets come from the CMS sign-in and
+  live as long as its session.
+- **Decision** [0029](/decisions/0029-a-second-login-closes-the-first.md): a second login closes the first session.
+- **Decision** [0028](/decisions/0028-sso-only.md): habbos log in with SSO tickets only.
+- **Decision** [0027](/decisions/0027-endofcryptoparams-right-after-cryptoparameters.md): the server sends
+  ENDOFCRYPTOPARAMS right after CRYPTOPARAMETERS.
 - **Done** [s1-23](/tasks/s1-23-exit-check.md): every registration and every send in the client's scripts is in the R26
   reference: 31 registering scripts, 240 message ids, 218 commands and 329 sends. `hh_entry_init` gained its `-1` row,
   and `hh_room`'s count of commands became 73. [S1](/phases/s1-protocol-reference.md) is done.

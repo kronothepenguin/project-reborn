@@ -1,5 +1,10 @@
 # Log
 
+## 2026-11-09
+
+- **Decision** [0004](/decisions/0004-client-links-from-site-url.md): the client's links come from `site.url`, taken
+  with the game server's S2 questions (`plans/server/decisions/0033-one-client-version-from-the-site.md`).
+
 ## 2026-11-07
 
 - **Update** [C1](/phases/c1-client-page-on-libreshockwave.md) asks whether LibreShockwave runs the code behind the
