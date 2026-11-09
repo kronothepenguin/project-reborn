@@ -3,7 +3,7 @@ type: Phase
 title: S2 Login and session
 description: A habbo logs in with an SSO ticket and reaches the hotel view with their name, look, credits, badges and settings, and the session stays alive.
 status: planned
-timestamp: 2026-11-07T00:12:36+00:00
+timestamp: 2026-11-09T18:15:30+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s2, server]
 ---
@@ -20,7 +20,7 @@ credits, badges, rights and sound setting. The session stays alive with pings un
 | `hh_entry_init` | [s1-02](/tasks/s1-02-entry-init.md) | Handshake without encryption ([0012](/decisions/0012-no-encryption.md)), version check, SSO login, user object, rights, credits, badges, achievements, session parameters, sound setting, ping, latency test, hotel logout, opening hours |
 | `hh_shared` | [s1-03](/tasks/s1-03-shared.md) | Server date, error reports, statistics |
 | `hh_club` | [s1-10](/tasks/s1-10-club.md) | The club status the client asks for at login |
-| `hh_human` | [s1-22](/tasks/s1-22-human.md) | The figure system's command |
+| `hh_human` | [s1-22](/tasks/s1-22-human.md) | The figure strings the client reads; the figure system's one command, `GETAVAILABLESETS`, is never sent |
 
 - The first rules in `game`, and the first entity in `virtual`: the habbo, loaded at login and dropped at logout
   ([0009](/decisions/0009-virtual-holds-the-server-state.md)).

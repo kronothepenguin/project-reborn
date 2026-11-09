@@ -53,6 +53,7 @@ screenshots and server logs stay in `.run/`, which is git-ignored.
 | `housekeeping-banners` | Banners added, listed, edited and deleted, with Holo's texts and the right messages |
 | `housekeeping-vouchers` | Vouchers created with Holo's random code, listed while unused, refused when blank, bad or taken, and deleted unless redeemed |
 | `economy` | P6 from end to end: a voucher made in housekeeping and redeemed once on the credits page, then a club month bought, counted on every page that shows it and opening the club's skins, wide playground and wardrobe until it ends |
+| `help` | The help tool: a visitor sent to sign in, the header's Help opening the Help Tool window, Holo's answers to blank, long and waiting requests, and a request picked up in housekeeping's Help Queries |
 | `updates` | A hotel installed before updates: maintenance, the update page, the copy, config.json's new keys |
 | `together` | The installer's forms, then the CMS and housekeeping side by side |
 

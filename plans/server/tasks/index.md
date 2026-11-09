@@ -28,7 +28,7 @@ starts.
 - [s1-07 Map hh_room_utils](/tasks/s1-07-room-utils.md) — Write /reference/r26/hh_room_utils.md from the .ls scripts: every message hh_room_utils receives and every command it sends, with their fields, senders and flows.
 - [s1-08 Map hh_buffer](/tasks/s1-08-buffer.md) — Write /reference/r26/hh_buffer.md from the .ls scripts: every message hh_buffer receives and every command it sends, with their fields, senders and flows.
 - [s1-09 Map hh_cat_code](/tasks/s1-09-catalogue.md) — Write /reference/r26/hh_cat_code.md from the .ls scripts: every message hh_cat_code receives and every command it sends, with their fields, senders and flows.
-- [s1-10 Map hh_club](/tasks/s1-10-club.md) — Write /reference/r26/hh_club.md from the .ls scripts: every message hh_club receives and every command it sends, with their fields, senders and flows.
+- [s1-10 Map hh_club](/tasks/s1-10-club.md) — Write /reference/r26/hh_club.md from the .ls scripts: every message hh_club receives and every command it sends, with their fields, senders and flows. **done**
 - [s1-11 Map hh_friend_list](/tasks/s1-11-friend-list.md) — Write /reference/r26/hh_friend_list.md from the .ls scripts: every message hh_friend_list receives and every command it sends, with their fields, senders and flows.
 - [s1-12 Map hh_instant_messenger](/tasks/s1-12-instant-messenger.md) — Write /reference/r26/hh_instant_messenger.md from the .ls scripts: every message hh_instant_messenger receives and every command it sends, with their fields, senders and flows.
 - [s1-13 Map hh_guide](/tasks/s1-13-guide.md) — Write /reference/r26/hh_guide.md from the .ls scripts: every message hh_guide receives and every command it sends, with their fields, senders and flows.
@@ -40,7 +40,7 @@ starts.
 - [s1-19 Map hh_roomdimmer](/tasks/s1-19-roomdimmer.md) — Write /reference/r26/hh_roomdimmer.md from the .ls scripts: every message hh_roomdimmer receives and every command it sends, with their fields, senders and flows.
 - [s1-20 Map hh_dynamic_downloader](/tasks/s1-20-dynamic-downloader.md) — Write /reference/r26/hh_dynamic_downloader.md from the .ls scripts: every message hh_dynamic_downloader receives and every command it sends, with their fields, senders and flows.
 - [s1-21 Map hh_ig](/tasks/s1-21-instant-games.md) — Write /reference/r26/hh_ig.md from the .ls scripts: every message hh_ig receives and every command it sends, with their fields, senders and flows.
-- [s1-22 Map hh_human](/tasks/s1-22-human.md) — Write /reference/r26/hh_human.md from the .ls scripts: every message hh_human receives and every command it sends, with their fields, senders and flows.
+- [s1-22 Map hh_human](/tasks/s1-22-human.md) — Write /reference/r26/hh_human.md from the .ls scripts: every message hh_human receives and every command it sends, with their fields, senders and flows. **done**
 - [s1-24 Describe the MUS framing of the #mus connection](/tasks/s1-24-mus-framing.md) — Write /reference/r26/mus.md from LibreShockwave's Multiuser Xtra: the bytes of a MUS frame, the Logon frame, the serialized Lingo values, and the messages fuse_client and hh_photo exchange on #mus.
 - [s1-23 Check S1's exit criteria](/tasks/s1-23-exit-check.md) — Cross-check the R26 reference against every registration in the client's scripts, so that no message, command or sender is missing, and close the phase.
 

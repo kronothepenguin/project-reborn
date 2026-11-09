@@ -153,6 +153,12 @@ var forms = []section{
 		},
 	},
 	{
+		ID: "help", Menu: "Help", Title: "Help", Button: defaultButton,
+		Fields: []field{
+			{Key: "help.messageMaxLength", Label: "Question Length", Help: "The most characters in the question of a help request."},
+		},
+	},
+	{
 		ID: "features", Menu: "Manage Site Content", Title: "Manage Content Options", Button: defaultButton, Content: true,
 		Fields: []field{
 			{Key: "features.landingPromo", Label: "Landing Promo Enabled", Help: "This determines whether the promo on the login page will be displayed. If disabled, the join button is shown."},
