@@ -734,3 +734,16 @@ func TestTheEconomySettingsKeepTheirBounds(t *testing.T) {
 		}
 	}
 }
+
+// Holo's help tool took a question of any length; the port stops at the
+// forum's post limit (decision 0109).
+func TestTheHelpSettingStopsAtTheForumsLimit(t *testing.T) {
+	load(t, openDB(t))
+	assertValues(t, map[string]any{"help.messageMaxLength": 65535})
+
+	for value, valid := range map[int]bool{0: false, 1: true, 65535: true, 65536: false} {
+		if err := catalogue["help.messageMaxLength"].validate(value); valid != (err == nil) {
+			t.Errorf("help.messageMaxLength = %d: %v, want valid %t", value, err, valid)
+		}
+	}
+}
