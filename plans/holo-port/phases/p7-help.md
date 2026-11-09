@@ -2,8 +2,8 @@
 type: Phase
 title: P7 Help
 description: The help tool where habbos open a help ticket that staff handle in housekeeping.
-status: planned
-timestamp: 2026-10-27T20:48:19+00:00
+status: active
+timestamp: 2026-11-09T17:52:05+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [p7, cms]
 ---
@@ -27,3 +27,9 @@ The housekeeping side (`/housekeeping/help`) comes with [HK-B](/phases/hk-b-user
 # Tasks
 
 Created when the phase starts.
+
+# Open questions
+
+- Guests: Holo's form took a ticket from anyone who opened it, signed in or not, though its header linked to it only
+  for signed-in habbos. [0090](/decisions/0090-post-reports.md) counts the one waiting request per habbo.
+- Lengths: Holo's subject field held 50 characters in the browser only, and the question field had no limit at all.

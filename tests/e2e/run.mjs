@@ -18,6 +18,7 @@ import * as club from "./suites/club.mjs";
 import * as community from "./suites/community.mjs";
 import * as credits from "./suites/credits.mjs";
 import * as details from "./suites/details.mjs";
+import * as economy from "./suites/economy.mjs";
 import * as forum from "./suites/forum.mjs";
 import * as groups from "./suites/groups.mjs";
 import * as habbos from "./suites/habbos.mjs";
@@ -71,6 +72,7 @@ const suites = {
   "housekeeping-images": housekeepingImages,
   "housekeeping-banners": housekeepingBanners,
   "housekeeping-vouchers": housekeepingVouchers,
+  economy,
   updates,
   together,
 };
