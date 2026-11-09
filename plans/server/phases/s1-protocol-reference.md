@@ -59,7 +59,7 @@ each other ([Branches](/rules.md#branches)).
 19. [s1-19 Map hh_roomdimmer](/tasks/s1-19-roomdimmer.md)
 20. [s1-20 Map hh_dynamic_downloader](/tasks/s1-20-dynamic-downloader.md)
 21. [s1-21 Map hh_ig](/tasks/s1-21-instant-games.md)
-22. [s1-22 Map hh_human](/tasks/s1-22-human.md)
+22. [s1-22 Map hh_human](/tasks/s1-22-human.md) **done**
 23. [s1-24 Describe the MUS framing of the #mus connection](/tasks/s1-24-mus-framing.md)
 24. [s1-23 Check S1's exit criteria](/tasks/s1-23-exit-check.md)
 
