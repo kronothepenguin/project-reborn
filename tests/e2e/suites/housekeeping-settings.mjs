@@ -158,6 +158,25 @@ export default async function ({ base, browser, check, hk, hkOrigin, shot, sql }
       (await page.inputValue('input[name="club.daysPerMonth"]')) === "30",
     page.url(),
   );
+  await page.goto(`${hk}/settings?section=help`);
+  check(
+    "the Help form holds the longest question of a help request, 65535 characters",
+    (await page.locator("main label").allInnerTexts()).join("|") ===
+      "Question Length" &&
+      (await page.inputValue('input[name="help.messageMaxLength"]')) ===
+        "65535",
+    (await page.locator("main label").allInnerTexts()).join("|"),
+  );
+  await page.fill('input[name="help.messageMaxLength"]', "2000");
+  await page.getByRole("button", { name: "Save Settings" }).click();
+  await page.waitForLoadState();
+  check(
+    "the question's length saves",
+    page.url().includes("saved=1") &&
+      (await page.inputValue('input[name="help.messageMaxLength"]')) ===
+        "2000",
+    page.url(),
+  );
   await page.goto(`${hk}/settings?section=homes`);
   check(
     "Wardrobe Slots joins the Homes form with Holo's 5",

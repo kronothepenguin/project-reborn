@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-09T17:18:22+00:00
+timestamp: 2026-11-09T18:23:28+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -54,6 +54,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Discussion board | The Moderation Tools save any title, a blank one too, since only the page checked it | The server refuses a blank title with `Topic title may not be empty`, and one over 30 characters | A request sent without the page could leave a thread with no title |
 | Report window | `go.php` puts the post's id into its SQL and its `Proceed` link, and the thread's page into that link, as they came | The id is a number bound to the query, and the page a whole number from 1, or 1 | Any address could read or change the database, or run scripts in the window |
 | Report window | A guest is sent to the Help Tool's start, but the script runs on and writes the report with no name | Guests go to `/`, and nothing is written | Anyone could file reports without an account |
+| Help | `go.php` puts the subject and the question into its SQL through `addslashes` and `htmlspecialchars` | They are bound to the query as typed, and escaped where housekeeping shows them | `addslashes` does not stop every injection, and text escaped on its way in shows its entities |
 | Credits page | `redeemvoucher.php` reads the voucher, then adds its credits, deletes it and writes the ledger in separate queries | One transaction, whose first statement claims the unused code | A failure halfway lost the voucher or its credits, and two redemptions of one code at once were both paid |
 | Wardrobe | `wardrobestore.php` keeps an outfit for any signed-in user, in the club or not, and turns a slot it does not know into slot 1 and a gender into `M` | Only club members keep outfits, in a slot from 1 to `homes.wardrobeSlots` and with the looks form's checks; anything else answers the error that shows `Error! This outfit cannot be saved.`, the alert Holo's script had for it and its server never sent | A request could fill a wardrobe the page shows only to the club, and a wrong slot overwrote the first outfit |
 
@@ -95,6 +96,10 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Discussion board | The report flag hides on the user's own posts | On the active habbo's own posts only | [0086](/decisions/0086-roles-and-posts-follow-the-active-habbo.md) |
 | Report window | `Proceed` is the link `go.php?do=report&post=…&sure=yes`, which sends the report | The window opens at `GET /forum/posts/{id}/report`, and `Proceed`, a button in the link's place and look, posts to `POST /forum/posts/{id}/report` | [0090](/decisions/0090-post-reports.md), [0095](/decisions/0095-group-search-and-report-addresses.md) |
 | Report window | One help request or report waits per address | One per habbo, so people who share a connection do not block each other | [0090](/decisions/0090-post-reports.md) |
+| Help | `iot/` and `go.php` send a visitor on to `go.php?lang=en&country=uk` | `/help` | The plan's route |
+| Help | Takes a request from anyone, a visitor's with no name | A visitor is sent to `/` to sign in first | [0108](/decisions/0108-help-asks-visitors-to-sign-in.md) |
+| Help | The subject holds 50 characters in the browser only, and the question any length | The server checks the subject's 50 characters too, with `Your subject may not be longer than 50 characters.`, and refuses a question past `help.messageMaxLength`, 65535 by default, with `Your question may not be longer than <n> characters.` | [0109](/decisions/0109-help-request-lengths.md) |
+| Help | One waiting request per address | One per habbo, post reports included | [0090](/decisions/0090-post-reports.md) |
 | Group badge | The Flash `BadgeEditor.swf`, with its colours from habbo.co.uk | The HTML5 port in `vendor/HabboWidgets`, with the Tailwind palette | [0021](/decisions/0021-dropped-and-kept-features.md), [0102](/decisions/0102-badges-keep-the-tailwind-palette.md) |
 | Group badges | Holo's 18 tints | The closest Tailwind colours; tint 15, olive-500, looks grey-olive beside Holo's brown | [0102](/decisions/0102-badges-keep-the-tailwind-palette.md) |
 | Several habbos | A habbo is never removed | A user archives a habbo, which hides it and keeps its name | [0058](/decisions/0058-habbos-are-archived.md) |
@@ -135,6 +140,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 
 | Page | Holo | The port |
 | --- | --- | --- |
+| Help | `empty` takes a subject or question of `0` for blank, and lets one of spaces through | `0` is text, and spaces alone are blank, as in the forum's posts |
 | Register | Forgets every field after a failed post, because PHP renames `bean.avatarName` | Keeps what was typed, except the passwords |
 | Register | Its `MOD-` check never runs | `This name is not allowed.` works |
 | Register | Accepts 31 February | `Please supply a valid date of birth.` |
@@ -341,6 +347,7 @@ veto.
 | Settings | A `Homes` form for the items per home, the length of a note, the tags per habbo and the wardrobe's slots, which Holo wrote in its code | The plan: the `homes` section |
 | Settings | A `Groups` form for a group's price, the groups per user, the memberships per habbo, the members of a Regular group and the lengths of a name and a description, which Holo wrote in its code | The plan: the `groups` section ([0082](/decisions/0082-group-limits-per-user-and-habbo.md), [0084](/decisions/0084-group-names-and-descriptions.md)) |
 | Settings | A `Club` form for the prices of 1, 3 and 6 months and the days of a month, which Holo wrote in its code | The plan: the `club` settings |
+| Settings | A `Help` form for the longest question of a help request, which Holo never limited | [0109](/decisions/0109-help-request-lengths.md) |
 | Settings | The content tool's categories are links of their own: `Discussion Board Module` holds `Forum Enabled`, `Smilies Enabled` and a `Spam Check` of 30 seconds, where 0 turns the check off | Holo chose the category from a list; the spam check is [0091](/decisions/0091-forum-spam-check.md) |
 | Settings | `mail.password` is never shown: blank keeps it, and `Clear it` removes it | The plan: `mail.password` masked |
 | Edit User | Two forms on the habbo's page, `Save Habbo` and `Save User` | A habbo and its owner are two rows |
@@ -380,4 +387,3 @@ veto.
 | `My Friends`, `My Rooms` and the recommended rooms | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | The online state of the profile widget, the community page's random habbos, the staff page and the forum's post boxes, which show offline | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
 | `Chatlogs` and `Online Users` in housekeeping | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
-| The page behind Help | [P7](/phases/p7-help.md) |

@@ -5,6 +5,7 @@ import (
 	"html"
 	"net/http"
 	"net/url"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -60,6 +61,7 @@ func TestEverySectionHasAForm(t *testing.T) {
 		"forum":        {"Manage Content Options", "Key:features.forum Label:Forum Enabled", "Button:Save Settings"},
 		"club":         {"Key:club.price1Month Label:1 Month Price", "Kind:number Value:20"},
 		"creditsPage":  {"Manage Content Options", "Key:creditsPage.box1Body Label:Credits Content Box 1", "Button:Save Settings"},
+		"help":         {"Key:help.messageMaxLength Label:Question Length", "Kind:number Value:65535", "Button:Save Settings"},
 	} {
 		t.Run(section, func(t *testing.T) {
 			wantPage(t, serve(mux, "GET", "/housekeeping/settings?section="+section, cookie, nil), http.StatusOK, append(texts, "settings.html")...)
@@ -183,6 +185,7 @@ func TestEveryKindOfFieldSaves(t *testing.T) {
 		{"creditsPage", "creditsPage.box2Heading", "Earn credits!", func() any { return settings.GetString("creditsPage.box2Heading") }, "Earn credits!"},
 		{"creditsPage", "creditsPage.box2Body", "You need [b]credits[/b]:\r\n* Ask a staff member", func() any { return settings.GetString("creditsPage.box2Body") }, "You need [b]credits[/b]:\n* Ask a staff member"},
 		{"homes", "homes.wardrobeSlots", "10", func() any { return settings.GetInt("homes.wardrobeSlots") }, 10},
+		{"help", "help.messageMaxLength", "2000", func() any { return settings.GetInt("help.messageMaxLength") }, 2000},
 	} {
 		t.Run(c.key, func(t *testing.T) {
 			db, mux := newSite(t)
@@ -255,6 +258,8 @@ func TestARefusedFormSavesNothing(t *testing.T) {
 		{"a month limit below none", "features", url.Values{"features.tagFight": {"0"}, "club.maxMonths": {"-1"}}, "club.maxMonths: must be between 0 and 120"},
 		{"a blank credits heading", "creditsPage", url.Values{"creditsPage.box1Body": {"Text"}, "creditsPage.box2Heading": {""}}, blank},
 		{"too many wardrobe slots", "homes", url.Values{"homes.maxTags": {"30"}, "homes.wardrobeSlots": {"21"}}, "homes.wardrobeSlots: must be between 1 and 20"},
+		{"a question past the forum's limit", "help", url.Values{"help.messageMaxLength": {"65536"}}, "help.messageMaxLength: must be between 1 and 65535"},
+		{"a question of no characters", "help", url.Values{"help.messageMaxLength": {"0"}}, "help.messageMaxLength: must be between 1 and 65535"},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			db, mux := newSite(t)
@@ -641,5 +646,34 @@ func TestTheClubSettingsHoldHolosNumbers(t *testing.T) {
 
 	if field := fieldOf(formOf("homes"), "homes.wardrobeSlots"); !strings.Contains(field, " Label:Wardrobe Slots ") || !strings.Contains(field, " Kind:number Value:5 ") {
 		t.Errorf("the Homes form lacks Holo's 5 wardrobe slots: %q", field)
+	}
+}
+
+// The Help form holds the longest question of a help request (decision 0109),
+// after the Club form, as Groups and Club hold their numbers.
+func TestTheHelpFormHoldsTheQuestionLength(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
+	body := serve(mux, "GET", "/housekeeping/settings?section=help", cookie, nil).Body.String()
+	_, form, ok := strings.Cut(body, " Section:{ID:help ")
+	if !ok {
+		t.Fatalf("the page is not the Help form: %s", body)
+	}
+	if !strings.HasPrefix(form, "Menu:Help Title:Help Button:Save Settings ") {
+		t.Errorf("the Help form is not named Help: %s", form)
+	}
+	help := html.EscapeString("The most characters in the question of a help request.")
+	if field := fieldOf(form, "help.messageMaxLength"); !strings.Contains(field, " Label:Question Length Help:"+help+" Kind:number Value:65535 ") {
+		t.Errorf("the Help form lacks Question Length of 65535: %q", field)
+	}
+
+	ids := []string{}
+	for _, part := range strings.Split(body, "{ID:")[1:] {
+		id, _, _ := strings.Cut(part, " ")
+		ids = append(ids, id)
+	}
+	club, helpAt := slices.Index(ids, "club"), slices.Index(ids, "help")
+	if club < 0 || helpAt != club+1 {
+		t.Errorf("Help does not follow Club in the menu: %v", ids)
 	}
 }
