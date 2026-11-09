@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [s1-09](/tasks/s1-09-catalogue.md): [hh_cat_code](/reference/r26/hh_cat_code.md) maps 8 messages and 4
+  commands, as registered: the index and pages as text, the pet name check, the purchase as eight lines with each
+  page's extra value and the gift, and the credit balance.
+- **Start** [s1-09](/tasks/s1-09-catalogue.md).
 - **Done** [s1-08](/tasks/s1-08-buffer.md): [hh_buffer](/reference/r26/hh_buffer.md) maps 5 messages, which
   `hh_room` registers too, and no command: the client holds the updates of furniture still downloading and replays
   them, so the server needs nothing of its own.

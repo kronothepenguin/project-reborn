@@ -46,7 +46,7 @@ each other ([Branches](/rules.md#branches)).
 6. [s1-06 Map hh_room](/tasks/s1-06-room.md)
 7. [s1-07 Map hh_room_utils](/tasks/s1-07-room-utils.md)
 8. [s1-08 Map hh_buffer](/tasks/s1-08-buffer.md) **done**
-9. [s1-09 Map hh_cat_code](/tasks/s1-09-catalogue.md)
+9. [s1-09 Map hh_cat_code](/tasks/s1-09-catalogue.md) **done**
 10. [s1-10 Map hh_club](/tasks/s1-10-club.md) **done**
 11. [s1-11 Map hh_friend_list](/tasks/s1-11-friend-list.md)
 12. [s1-12 Map hh_instant_messenger](/tasks/s1-12-instant-messenger.md)
