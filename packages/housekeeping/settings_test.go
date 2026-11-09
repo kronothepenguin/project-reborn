@@ -677,3 +677,38 @@ func TestTheHelpFormHoldsTheQuestionLength(t *testing.T) {
 		t.Errorf("Help does not follow Club in the menu: %v", ids)
 	}
 }
+
+func TestTheGameFormHoldsTheClientsSettings(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
+	body := serve(mux, "GET", "/housekeeping/settings?section=game", cookie, nil).Body.String()
+	_, form, ok := strings.Cut(body, " Section:{ID:game ")
+	if !ok {
+		t.Fatalf("the page is not the Game form: %s", body)
+	}
+	for key, want := range map[string]string{
+		"game.clientVersion":  " Label:Client Version ",
+		"game.coppa":          " Kind:number Value:0 ",
+		"game.dateFormat":     " Kind:text Value:dd-mm-yyyy ",
+		"game.trackingHeader": " Kind:text Value: ",
+	} {
+		if field := fieldOf(form, key); !strings.Contains(field, want) {
+			t.Errorf("%s lacks %q: %q", key, want, field)
+		}
+	}
+	for key, on := range map[string]bool{"game.vouchers": false, "game.profileEditing": true, "game.tutorial": false} {
+		if field := fieldOf(form, key); !strings.Contains(field, "Kind:toggle ") || !strings.Contains(field, fmt.Sprintf(" On:%t ", on)) {
+			t.Errorf("%s is not a toggle that is %t: %q", key, on, field)
+		}
+	}
+
+	ids := []string{}
+	for _, part := range strings.Split(body, "{ID:")[1:] {
+		id, _, _ := strings.Cut(part, " ")
+		ids = append(ids, id)
+	}
+	help, game := slices.Index(ids, "help"), slices.Index(ids, "game")
+	if help < 0 || game != help+1 {
+		t.Errorf("Game does not follow Help in the menu: %v", ids)
+	}
+}

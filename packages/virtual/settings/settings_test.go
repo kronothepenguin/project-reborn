@@ -747,3 +747,34 @@ func TestTheHelpSettingStopsAtTheForumsLimit(t *testing.T) {
 		}
 	}
 }
+
+func TestTheGameSettingsHoldTheirDefaults(t *testing.T) {
+	load(t, openDB(t))
+	assertValues(t, map[string]any{
+		"game.clientVersion":             1,
+		"game.coppa":                     0,
+		"game.vouchers":                  false,
+		"game.parentEmailRequest":        false,
+		"game.parentEmailReregistration": false,
+		"game.directMail":                false,
+		"game.dateFormat":                "dd-mm-yyyy",
+		"game.partnerIntegration":        false,
+		"game.profileEditing":            true,
+		"game.trackingHeader":            "",
+		"game.tutorial":                  false,
+	})
+
+	for value, valid := range map[int]bool{0: false, 1: true, 1_000_000: true} {
+		if err := catalogue["game.clientVersion"].validate(value); valid != (err == nil) {
+			t.Errorf("game.clientVersion = %d: %v, want valid %t", value, err, valid)
+		}
+	}
+	for value, valid := range map[int]bool{-1: false, 0: true, 2: true, 3: false} {
+		if err := catalogue["game.coppa"].validate(value); valid != (err == nil) {
+			t.Errorf("game.coppa = %d: %v, want valid %t", value, err, valid)
+		}
+	}
+	if err := catalogue["game.dateFormat"].validate(""); err == nil {
+		t.Error("game.dateFormat accepts an empty format")
+	}
+}

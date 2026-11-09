@@ -46,7 +46,7 @@ starts.
 
 ## S2 Login and session
 
-- [s2-01 Add S2's settings](/tasks/s2-01-settings.md) — Declare the ten session parameters and the client version the server accepts in the settings catalogue, and edit them in housekeeping.
+- [s2-01 Add S2's settings](/tasks/s2-01-settings.md) — Declare the ten session parameters and the client version the server accepts in the settings catalogue, and edit them in housekeeping. **done**
 - [s2-02 Create SSO tickets at the CMS sign-in](/tasks/s2-02-sso-tickets-at-sign-in.md) — Signing in to the CMS creates an SSO ticket for the active habbo, kept as text with the session that created it, which the client page reads and the game server spends.
 - [s2-03 Save the last time online, the machine id and the sound setting](/tasks/s2-03-saved-login-data.md) — Habbos keep their last time online, the machine id of their last login and their sound setting in the store.
 - [s2-04 Add the fuse catalogue](/tasks/s2-04-fuse-catalogue.md) — A habbo's fuses are the default set, the club fuses for club members, and the staff fuses their access groups grant, from a fuse catalogue beside the site's attributes.

@@ -17,7 +17,8 @@ The session stays alive with pings until the habbo leaves, and its end logs the 
 
 # Steps
 
-- [ ] Ask the user how often the server pings and how long it waits for `PONG`; the answers become decisions.
+- [x] Ask the user how often the server pings and how long it waits for `PONG`; the answers become decisions:
+  [0042](/decisions/0042-ping-every-30-seconds.md).
 - [ ] `PING` (50) at that rate, and `PONG` (196) awaited; a session that stops answering is closed.
 - [ ] `TEST_LATENCY` gets 354 with its id, and `REPORT_LATENCY` is logged ([0036](/decisions/0036-latency-reports-are-logged.md)).
 - [ ] `hh_shared`'s error reports are logged.

@@ -159,6 +159,22 @@ var forms = []section{
 		},
 	},
 	{
+		ID: "game", Menu: "Game", Title: "Game", Button: defaultButton,
+		Fields: []field{
+			{Key: "game.clientVersion", Label: "Client Version", Help: "The version the game client must send, the client.version.id of its external variables."},
+			{Key: "game.coppa", Label: "COPPA", Help: "0 off, 1 on, 2 strong."},
+			{Key: "game.vouchers", Label: "Vouchers", Help: "This tells the game client that vouchers can be redeemed."},
+			{Key: "game.parentEmailRequest", Label: "Parent's E-mail", Help: "This tells the game client to ask for a parent's e-mail at registration."},
+			{Key: "game.parentEmailReregistration", Label: "Parent's E-mail Again", Help: "This tells the game client to ask for a parent's e-mail at re-registration."},
+			{Key: "game.directMail", Label: "Direct Mail", Help: "This tells the game client that habbos may get mail from the hotel."},
+			{Key: "game.dateFormat", Label: "Date Format", Help: "How the game client writes dates, with dd, mm and yyyy."},
+			{Key: "game.partnerIntegration", Label: "Partner Integration", Help: "This tells the game client that the hotel works with a partner site."},
+			{Key: "game.profileEditing", Label: "Profile Editing", Help: "This shows the game client's links to change a habbo's looks."},
+			{Key: "game.trackingHeader", Label: "Tracking Header", Help: "The text the game client puts before each tracking point it reports."},
+			{Key: "game.tutorial", Label: "Tutorial", Help: "This lets the game client run its tutorial."},
+		},
+	},
+	{
 		ID: "features", Menu: "Manage Site Content", Title: "Manage Content Options", Button: defaultButton, Content: true,
 		Fields: []field{
 			{Key: "features.landingPromo", Label: "Landing Promo Enabled", Help: "This determines whether the promo on the login page will be displayed. If disabled, the join button is shown."},

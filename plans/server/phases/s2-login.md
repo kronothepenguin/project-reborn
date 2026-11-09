@@ -40,7 +40,7 @@ credits, badges, rights and sound setting. The session stays alive with pings un
 
 # Tasks
 
-1. [s2-01 Add S2's settings](/tasks/s2-01-settings.md)
+1. [s2-01 Add S2's settings](/tasks/s2-01-settings.md) **done**
 2. [s2-02 Create SSO tickets at the CMS sign-in](/tasks/s2-02-sso-tickets-at-sign-in.md)
 3. [s2-03 Save the last time online, the machine id and the sound setting](/tasks/s2-03-saved-login-data.md)
 4. [s2-04 Add the fuse catalogue](/tasks/s2-04-fuse-catalogue.md)

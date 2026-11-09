@@ -2,6 +2,14 @@
 
 ## 2026-11-09
 
+- **Done** [s2-01](/tasks/s2-01-settings.md): the Game settings form holds the client version, 1 by default, and the ten
+  session parameters, as `game.` settings of the catalogue.
+- **Decision** [0040](/decisions/0040-the-accepted-client-version-starts-at-1.md): the accepted client version starts at
+  1.
+- **Decision** [0041](/decisions/0041-an-empty-versioncheck-url-passes.md): an empty VERSIONCHECK URL passes the check.
+- **Decision** [0042](/decisions/0042-ping-every-30-seconds.md): the server pings every 30 seconds and closes a session
+  after 90 seconds without PONG.
+- **Start** [s2-01](/tasks/s2-01-settings.md).
 - **Update** [S2](/phases/s2-login.md) is active, with its exit criteria and the tasks
   [s2-01](/tasks/s2-01-settings.md) to [s2-09](/tasks/s2-09-exit-check.md), once the user answered its open questions.
 - **Decision** [0039](/decisions/0039-rules-notify-sessions-through-an-interface.md): rules tell sessions about events

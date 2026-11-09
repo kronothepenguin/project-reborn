@@ -101,6 +101,20 @@ var catalogue = map[string]declaration{
 	// Holo's help tool took a question of any length; the port stops at the
 	// forum's post limit (decision 0109).
 	"help.messageMaxLength": declare(65535, between(1, 65535)),
+
+	// The game client's session parameters, ids 0 to 9 (plans/server decision
+	// 0034), and the version its VERSIONCHECK must carry (decision 0040).
+	"game.clientVersion":             declare(1, between(1, 1_000_000)),
+	"game.coppa":                     declare(0, between(0, 2)),
+	"game.vouchers":                  declare(false, nil),
+	"game.parentEmailRequest":        declare(false, nil),
+	"game.parentEmailReregistration": declare(false, nil),
+	"game.directMail":                declare(false, nil),
+	"game.dateFormat":                declare("dd-mm-yyyy", length(1, 20)),
+	"game.partnerIntegration":        declare(false, nil),
+	"game.profileEditing":            declare(true, nil),
+	"game.trackingHeader":            declare("", length(0, 255)),
+	"game.tutorial":                  declare(false, nil),
 }
 
 // rules check settings that depend on each other. keys lists every setting a

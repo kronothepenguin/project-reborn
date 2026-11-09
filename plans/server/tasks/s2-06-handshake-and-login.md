@@ -17,9 +17,10 @@ A client goes from `HELLO` to `LOGIN_OK` (3) with an SSO ticket, as [hh_entry_in
 
 # Steps
 
-- [ ] Ask the user, before the version check: the client sends both URLs of `VERSIONCHECK` empty outside a browser
+- [x] Ask the user, before the version check: the client sends both URLs of `VERSIONCHECK` empty outside a browser
   plugin, and the client URL empty when its host is local, such as `localhost` or `192.168.` ([hh_entry_init](/reference/r26/hh_entry_init.md)). What the check
-  does with empty URLs, and with the `runMode` LibreShockwave reports, becomes a decision.
+  does with empty URLs, and with the `runMode` LibreShockwave reports, becomes a decision:
+  [0041](/decisions/0041-an-empty-versioncheck-url-passes.md).
 - [ ] `INIT_CRYPTO` gets `CRYPTOPARAMETERS` 0 and `ENDOFCRYPTOPARAMS` at once; a later `GENERATEKEY` is logged
   ([0027](/decisions/0027-endofcryptoparams-right-after-cryptoparameters.md)).
 - [ ] `VERSIONCHECK`: the version the setting holds, and URLs under `site.url`; any other client gets 33
