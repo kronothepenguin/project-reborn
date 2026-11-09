@@ -32,3 +32,7 @@ Written when the phase starts.
 
 - Which games the hotel runs, and where their rules come from, since the client holds only its own half.
 - What else of a game is saved besides the hall of fame.
+- Where the casts the client downloads to play a game come from: `hh_ig_gamesys`, and for SnowWar and BattleBall
+  `hh_ig_game_<type>` with its `_ui` and `_room` casts. They are not in the repository, and they hold a running
+  game's messages, the senders of `MSG_PLAYER_INPUT` and the reader of the rest of 403
+  ([hh_ig](/reference/r26/hh_ig.md#in-game)).
