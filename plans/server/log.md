@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [s1-16](/tasks/s1-16-photo.md): [hh_photo](/reference/r26/hh_photo.md) maps 1 message on `#info` and 2 on
+  `#mus`, and the photo's `#mus` messages: a photo stored as `PHOTOTXT` and `BINDATA`, fetched with `GETBINDATA` and
+  checked by its checksum, and the film count.
+- **Start** [s1-16](/tasks/s1-16-photo.md).
 - **Update** [S2](/phases/s2-login.md)'s scope says that the figure system's command, `GETAVAILABLESETS`, is
   never sent. Found by [s1-22](/tasks/s1-22-human.md).
 - **Done** [s1-22](/tasks/s1-22-human.md): [hh_human](/reference/r26/hh_human.md) maps no message and 1 command,
