@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [s1-15](/tasks/s1-15-poll.md): [hh_poll](/reference/r26/hh_poll.md) maps 3 messages and 3 commands, as
+  registered: the offer, the questions and their answers. `POLL_CANCEL` is sent without being registered, so it
+  never leaves the client.
+- **Start** [s1-15](/tasks/s1-15-poll.md).
 - **Update** [S0](/phases/s0-foundations.md) is done, and [S1](/phases/s1-protocol-reference.md) is the active
   phase.
 - **Done** [s0-08](/tasks/s0-08-exit-check.md): on the merged state, install, every gate, the server's 47 tests and a
