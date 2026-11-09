@@ -3,7 +3,7 @@ type: Phase
 title: S7 Club, help and extras
 description: The smaller casts: club purchases and gifts, the tutorial and new-user help, guides, polls, photos, the sound machine, the room dimmer, pets, the call for help and error reports.
 status: planned
-timestamp: 2026-11-09T17:46:18+00:00
+timestamp: 2026-11-09T17:50:34+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s7, server]
 ---
@@ -42,7 +42,9 @@ Written when the phase starts.
 
 - What is saved and what lives only in memory for each part: tutorial progress, poll answers, photos, songs, dimmer
   presets, pets and their needs, guide invitations.
-- How club bought in the client meets club bought on the site (`plans/holo-port/phases/p6-economy.md`).
+- How club bought in the client meets club bought on the site (`plans/holo-port/phases/p6-economy.md`). The client's
+  `SCR_BUY` sends which of its three buttons was pressed, 1 to 3, not a number of months
+  ([s1-10](/tasks/s1-10-club.md)).
 - Which moderation tools the client offers and which stay in housekeeping.
 - Who receives the calls for help, and where a staff member who follows one is taken: the client checks no right
   before it shows a call (148), and after `FOLLOW_CRYFORHELP` it waits for the server to move it, as 286 does
