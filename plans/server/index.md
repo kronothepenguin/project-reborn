@@ -14,8 +14,8 @@ state in `packages/virtual` ([0002](/decisions/0002-server-app.md), [0005](/deci
 2. Read the newest entries of the [log](/log.md).
 3. Open the [task index](/tasks/index.md): in-progress tasks first, then the todo tasks of the active phases.
 
-Active phases: [S0 Foundations](/phases/s0-foundations.md) and [S1 R26 protocol reference](/phases/s1-protocol-reference.md),
-which run in parallel.
+Active phase: [S1 R26 protocol reference](/phases/s1-protocol-reference.md). [S0 Foundations](/phases/s0-foundations.md),
+which ran beside it, is done.
 
 Work planned for later that belongs to no phase, such as r18 and the orchestrator, is listed in `plans/later.md`.
 

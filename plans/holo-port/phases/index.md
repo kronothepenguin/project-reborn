@@ -16,7 +16,7 @@ parallel with P2, on feature branches ([0046](/decisions/0046-main-and-feature-b
 9. [P4 Community](/phases/p4-community.md) — Community page, news, tags with the tag cloud and tag fight, the staff page and banners, with their housekeeping editors. **Done.**
 10. [ED BBCode editor](/phases/ed-bbcode-editor.md) — A WYSIWYG BBCode editor of our own, shared by housekeeping's news and staff boxes, the home notes and the coming forum. **Done.**
 11. [P5 Groups and forum](/phases/p5-groups-forum.md) — Groups with group homes, membership management, the badge editor and renderer, and the site-wide discussion board. **Done.**
-12. [P6 Economy](/phases/p6-economy.md) — Credits page with purse and vouchers, transaction history, Habbo Club subscriptions and the club wardrobe, with voucher management in housekeeping.
+12. [P6 Economy](/phases/p6-economy.md) — Credits page with purse and vouchers, transaction history, Habbo Club subscriptions and the club wardrobe, with voucher management in housekeeping. **Done.**
 13. [P7 Help](/phases/p7-help.md) — The help tool where habbos open a help ticket that staff handle in housekeeping.
 
 ## Deferred

@@ -40,7 +40,7 @@ each other ([Branches](/rules.md#branches)).
 
 1. [s1-01 Describe fuse_client's connections, framing and values](/tasks/s1-01-fuse-client.md) **done**
 2. [s1-02 Map hh_entry_init: login and opening hours](/tasks/s1-02-entry-init.md) **done**
-3. [s1-03 Map hh_shared](/tasks/s1-03-shared.md)
+3. [s1-03 Map hh_shared](/tasks/s1-03-shared.md) **done**
 4. [s1-04 Map hh_navigator](/tasks/s1-04-navigator.md)
 5. [s1-05 Map hh_kiosk_room](/tasks/s1-05-kiosk-room.md)
 6. [s1-06 Map hh_room](/tasks/s1-06-room.md)

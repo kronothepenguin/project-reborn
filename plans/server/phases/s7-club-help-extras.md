@@ -46,3 +46,6 @@ Written when the phase starts.
   `SCR_BUY` sends which of its three buttons was pressed, 1 to 3, not a number of months
   ([s1-10](/tasks/s1-10-club.md)).
 - Which moderation tools the client offers and which stay in housekeeping.
+- Who receives the calls for help, and where a staff member who follows one is taken: the client checks no right
+  before it shows a call (148), and after `FOLLOW_CRYFORHELP` it waits for the server to move it, as 286 does
+  ([s1-03](/tasks/s1-03-shared.md)).
