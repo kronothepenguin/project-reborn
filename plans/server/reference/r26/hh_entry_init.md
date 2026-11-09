@@ -2,7 +2,7 @@
 type: Reference
 title: R26 hh_entry_init
 description: How the R26 client logs in, from the handshake without encryption to the user object, and what it does with rights, badges, achievements, alerts, pings, latency tests, logouts and opening hours, from hh_entry_init's .ls scripts.
-timestamp: 2026-11-06T23:28:02+00:00
+timestamp: 2026-11-09T21:38:46+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-06T23:28:02+00:00"}
 tags: [r26, protocol]
 ---
@@ -42,6 +42,7 @@ The handlers are in `8_Login Handler Class.ls`, except those of 290 to 294, in `
 
 | Id | Handler | Connection | Fields, in order | Notes |
 | --- | --- | --- | --- | --- |
+| -1 | `handleDisconnect` | `#info` | none | Not a message on the wire: `fuse_client` delivers it when `#info` drops ([A lost connection](#a-lost-connection)) |
 | 0 | `handleHello` | `#info` | none | Sets the disconnect state to `init_crypto` and sends `INIT_CRYPTO` ([The handshake](#the-handshake)) |
 | 1 | `handleServerSecretKey` | `#info` | raw: the server's public key in hexadecimal | Turns encryption on ([fuse_client](/reference/r26/fuse_client.md#encryption)); the server never sends it ([0012](/decisions/0012-no-encryption.md)) |
 | 2 | `handleRights` | `#info` | string right, repeated up to an empty string or the end of the body | Replaces the session's `user_rights` ([Rights](#rights)) |
@@ -333,8 +334,8 @@ The first 5 executes `#userlogin`, on which `hh_entry_base` shows the entry bar,
 - 292 with disconnect not 0, and 294, set the state to 2 and show `opening_hours_text_opening_time` with the opening
   time. The client does not close `#info` itself, and when it drops, the disconnect window stays hidden
   ([A lost connection](#a-lost-connection)).
-- No command asks for 290, 291, 292 or 294. `GET_AVAILABILITY_TIME`, whose name matches 293's handler, is sent by no
-  script.
+- No command asks for 290, 291, 292 or 294. `GET_AVAILABILITY_TIME`, whose name matches 293's handler, is sent only
+  on `#getAvailabilityTime`, which no script executes ([Dead code](#dead-code)).
 
 ## A lost connection
 

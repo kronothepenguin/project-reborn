@@ -2,7 +2,7 @@
 type: Reference
 title: The R26 client
 description: Where the R26 client's protocol lives in packages/client-r26, how its scripts register and send messages, its wire format and handshake, and the format of the per-cast protocol references.
-timestamp: 2026-11-06T23:28:02+00:00
+timestamp: 2026-11-09T21:38:46+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [client, protocol, r26]
 ---
@@ -53,7 +53,8 @@ by name with `getConnection(...).send("NAME", ...)`, from any cast.
 
 # Registering scripts
 
-Counted while planning, from the `tMsgs` and `tCmds` lists and the inline lists; S1 confirms every number. "In" is
+Counted while planning, from the `tMsgs` and `tCmds` lists and the inline lists; S1 confirmed every number and
+corrected `hh_room`'s commands from 72 to 73, one of them registered under a symbol, `#room_directory` (2). "In" is
 messages from the server, "Out" commands from the client.
 
 | Cast | Script | In | Out | Connection |
@@ -76,7 +77,7 @@ messages from the server, "Out" commands from the client.
 | `hh_photo` | `4_Photo Handler Class.ls` | 1, and 2 on `#mus` | 0 | `#info`, `#mus` |
 | `hh_poll` | `5_Poll Handler Class.ls` | 3 | 3 | `#info` |
 | `hh_recycler` | `5_Recycler Handler Class.ls` | 5 | 5 | `#info` (room) |
-| `hh_room` | `5_Room Handler Class.ls` | 71 | 72 | `#info` (room) |
+| `hh_room` | `5_Room Handler Class.ls` | 71 | 73 | `#info` (room) |
 | `hh_room_utils` | `7_Dialog Handler Class.ls` | 3 | 2 | `#info` |
 | `hh_room_utils` | `23_OneWayDoor Manager Class.ls` | 1 | 1 | `#info` |
 | `hh_room_utils` | `25_Chat Manager.ls` | 3 | 3 | `#info` (room) |

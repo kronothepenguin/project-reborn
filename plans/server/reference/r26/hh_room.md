@@ -2,7 +2,7 @@
 type: Reference
 title: R26 hh_room
 description: How the R26 client enters a room, builds it from its height map, objects, items and users, keeps the users moving through status lines, and handles furniture, the hand, trading, teleports, rights, the doorbell, groups, tags, ratings, events and ignoring, from hh_room's .ls scripts.
-timestamp: 2026-11-09T19:30:21+00:00
+timestamp: 2026-11-09T21:38:46+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-09T19:30:21+00:00"}
 tags: [r26, protocol]
 ---
@@ -342,7 +342,7 @@ a floor or a landscape with `FLATPROPBYITEM`, and picked up with `ADDSTRIPITEM`.
 ## Counts
 
 `5_Room Handler Class.ls` registers 72 messages and 73 commands. [Registering scripts](/reference/client-r26.md#registering-scripts)
-counts 71 and 72: it leaves out the message -1 and the command `#room_directory`, whose name is a symbol.
+counts 71 messages: it leaves out -1, the manager's own signal, as its note says.
 
 ## Ids other casts register too
 

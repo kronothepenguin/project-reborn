@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [s1-23](/tasks/s1-23-exit-check.md): every registration and every send in the client's scripts is in the R26
+  reference: 31 registering scripts, 240 message ids, 218 commands and 329 sends. `hh_entry_init` gained its `-1` row,
+  and `hh_room`'s count of commands became 73. [S1](/phases/s1-protocol-reference.md) is done.
+- **Start** [s1-23](/tasks/s1-23-exit-check.md).
 - **Done** [s1-24](/tasks/s1-24-mus-framing.md): [mus](/reference/r26/mus.md) describes `#mus` byte for byte under
   LibreShockwave: one SMUS frame per WebSocket message, the fixed Logon frame, the 12 value types and each message's
   frame, checked against a probe built from LibreShockwave's own bridge.

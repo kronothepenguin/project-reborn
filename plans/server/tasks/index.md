@@ -42,7 +42,7 @@ starts.
 - [s1-21 Map hh_ig](/tasks/s1-21-instant-games.md) — Write /reference/r26/hh_ig.md from the .ls scripts: every message hh_ig receives and every command it sends, with their fields, senders and flows. **done**
 - [s1-22 Map hh_human](/tasks/s1-22-human.md) — Write /reference/r26/hh_human.md from the .ls scripts: every message hh_human receives and every command it sends, with their fields, senders and flows. **done**
 - [s1-24 Describe the MUS framing of the #mus connection](/tasks/s1-24-mus-framing.md) — Write /reference/r26/mus.md from LibreShockwave's Multiuser Xtra: the bytes of a MUS frame, the Logon frame, the serialized Lingo values, and the messages fuse_client and hh_photo exchange on #mus. **done**
-- [s1-23 Check S1's exit criteria](/tasks/s1-23-exit-check.md) — Cross-check the R26 reference against every registration in the client's scripts, so that no message, command or sender is missing, and close the phase.
+- [s1-23 Check S1's exit criteria](/tasks/s1-23-exit-check.md) — Cross-check the R26 reference against every registration in the client's scripts, so that no message, command or sender is missing, and close the phase. **done**
 
 ## S2 to S9
 
