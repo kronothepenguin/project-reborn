@@ -211,6 +211,8 @@ starts.
 - [p6-11 Guard the club page's layout fields](/tasks/p6-11-club-page-layout-guard.md) — The club page embeds the community layout but is missing from TestNoPageHidesAFieldOfTheLayout, so a field it gains with the name of a layout field would hide that field from the layout unnoticed. **done**
 - [p6-12 Open Save changes five seconds after the editor starts, as Holo's Flash did](/tasks/p6-12-save-looks-as-the-flash-editor.md) — Holo's Flash editor opened the looks form's Save changes five seconds after it started with a look the club allows, where the HTML5 editor keeps it closed until it is touched, on the page's load and after a green arrow of the wardrobe. **done**
 
-## Later phases
+## P7 Help
 
-[P7](/phases/p7-help.md) gets its tasks once its open questions are answered.
+- [p7-01 Declare the help setting](/tasks/p7-01-help-setting.md) — help.messageMaxLength is declared with 65535 and labelled in housekeeping, in a Help form, so that staff set the longest question a help request takes.
+- [p7-02 Send help requests from the Help Tool window](/tasks/p7-02-help-requests.md) — GET /help shows go.php's Ask your question form in the Help Tool window to a signed-in habbo, and POST /help writes the active habbo's help request with Holo's answers, one waiting request per habbo with the post reports, within 50 characters of subject and help.messageMaxLength of question.
+- [p7-03 Verify P7](/tasks/p7-03-exit-check.md) — Every exit criterion of P7 holds from a clean checkout, in a real browser.
