@@ -6,6 +6,51 @@
   as registered: the lobby, creating, joining and observing games, loading the arena and the scores. The running game
   lives in downloaded casts the repository lacks, now an open question of S8; the invitations are never reached.
 - **Start** [s1-21](/tasks/s1-21-instant-games.md).
+- **Done** [s1-06](/tasks/s1-06-room.md): [hh_room](/reference/r26/hh_room.md) maps 72 messages and 73 commands, as
+  registered: entering and building a room, users and their status lines, furniture, the hand, trading, teleports,
+  rights, groups, ratings, events and ignoring. It explains why Registering scripts counts one fewer of each.
+- **Start** [s1-06](/tasks/s1-06-room.md).
+- **Done** [s1-18](/tasks/s1-18-soundmachine.md): [hh_soundmachine](/reference/r26/hh_soundmachine.md) maps 17
+  messages and 19 commands, as registered: play lists and their play time, the song editor with its sound sets and the
+  song's text form, and the jukebox's disks. A length counts 2-second slots, and the play time tenths of a second.
+- **Start** [s1-18](/tasks/s1-18-soundmachine.md).
+- **Done** [s1-09](/tasks/s1-09-catalogue.md): [hh_cat_code](/reference/r26/hh_cat_code.md) maps 8 messages and 4
+  commands, as registered: the index and pages as text, the pet name check, the purchase as eight lines with each
+  page's extra value and the gift, and the credit balance.
+- **Start** [s1-09](/tasks/s1-09-catalogue.md).
+- **Done** [s1-11](/tasks/s1-11-friend-list.md): [hh_friend_list](/reference/r26/hh_friend_list.md) maps 11 messages
+  and 10 commands, as registered: the list after the login and its timed updates, friend requests, removal, the user
+  search, following a friend and mail notices. `FRIENDLIST_GETOFFLINEFRIENDS` is never sent, and 315's failures are
+  never shown.
+- **Start** [s1-11](/tasks/s1-11-friend-list.md).
+- **Done** [s1-14](/tasks/s1-14-tutorial.md): [hh_tutorial](/reference/r26/hh_tutorial.md) maps 12 messages and 10
+  commands, as registered: the tutorial's preferences, configuration, topics and status, and the new-user help's items
+  and invitations of guides. A topic's steps name client messages for the client to execute and to wait for.
+- **Start** [s1-14](/tasks/s1-14-tutorial.md).
+- **Done** [s1-16](/tasks/s1-16-photo.md): [hh_photo](/reference/r26/hh_photo.md) maps 1 message on `#info` and 2 on
+  `#mus`, and the photo's `#mus` messages: a photo stored as `PHOTOTXT` and `BINDATA`, fetched with `GETBINDATA` and
+  checked by its checksum, and the film count.
+- **Start** [s1-16](/tasks/s1-16-photo.md).
+- **Done** [s1-07](/tasks/s1-07-room-utils.md): [hh_room_utils](/reference/r26/hh_room_utils.md) maps 7 messages and 6
+  commands, as registered: the waiting call for help, one-way doors, and chat, whispers and shouts, which `hh_room`
+  sends by the chat mode's name.
+- **Start** [s1-07](/tasks/s1-07-room-utils.md).
+- **Done** [s1-13](/tasks/s1-13-guide.md): [hh_guide](/reference/r26/hh_guide.md) maps 5 messages and 5 commands, as
+  registered: the guide tool's status, waiting for invitations, and accepting or refusing one. The room bar's copies
+  of accept and refuse never send.
+- **Start** [s1-13](/tasks/s1-13-guide.md).
+- **Done** [s1-05](/tasks/s1-05-kiosk-room.md): [hh_kiosk_room](/reference/r26/hh_kiosk_room.md) maps 3 messages and 1
+  command, as registered: the Roommatic's `CREATEFLAT` as text, answered by 59, after which it sends `SETFLATCAT` and
+  a `SETFLATINFO` in a form of its own, unlike the navigator's.
+- **Start** [s1-05](/tasks/s1-05-kiosk-room.md).
+- **Done** [s1-12](/tasks/s1-12-instant-messenger.md): [hh_instant_messenger](/reference/r26/hh_instant_messenger.md)
+  maps 4 messages and 2 commands, as registered: chats with friends by user id, invitations to the room, and the
+  errors of undelivered lines.
+- **Start** [s1-12](/tasks/s1-12-instant-messenger.md).
+- **Done** [s1-17](/tasks/s1-17-recycler.md): [hh_recycler](/reference/r26/hh_recycler.md) maps 5 messages and 5
+  commands, as registered: the rewards and the status, recycling from the hand, and taking or refusing the reward.
+  `APPROVE_RECYCLED_FURNI` (224) is never sent.
+- **Start** [s1-17](/tasks/s1-17-recycler.md).
 - **Done** [s1-15](/tasks/s1-15-poll.md): [hh_poll](/reference/r26/hh_poll.md) maps 3 messages and 3 commands, as
   registered: the offer, the questions and their answers. `POLL_CANCEL` is sent without being registered, so it
   never leaves the client.
