@@ -1,0 +1,54 @@
+---
+import HelpTool from "../layouts/help-tool.astro";
+
+// iot/go.php: Ask your question. An answer shows above the form while the form
+// stays, and in its place once go.php ended it, when Close takes the place of
+// Proceed. Both are the browser's own buttons, as Holo's iot styles left them.
+---
+
+<HelpTool title="[[ .ShortName ]] Help Tool">
+  <form method="post" action="/help">
+    <table class="w-full">
+      <tr>
+        <td class="w-[70px] text-right align-top">
+          <img class="inline" src="/iot/header_images/Western2/1.gif" alt="" width="47" height="37" />
+        </td>
+        <td><h2 class="pb-[5px] text-[110%] font-bold text-sky-700 uppercase">Ask your question</h2></td>
+      </tr>
+    </table>
+    <br />
+    <table class="ml-10">
+      <tr>
+        <td>
+          <div class="mx-2.5">
+            You can contact Player Support through this form. They will get back to you as soon as possible. If it's urgent,
+            you may also use the Call For Help system ingame.
+            <br /><br />
+            [[ if .Result ]]<b role="status">[[ .Result ]]</b><br /><br />[[ end ]]
+            [[ if .Form ]]
+            <label for="help-subject">Subject:</label><br />
+            <input id="help-subject" type="text" name="subject" size="50" maxlength="50" class="[all:revert]" /><br />
+            <label for="help-message">Your question/problem:</label><br />
+            <textarea id="help-message" name="message" class="[all:revert] h-[150px]! w-[550px]!"></textarea>
+            [[ end ]]
+          </div>
+          <br />
+        </td>
+      </tr>
+    </table>
+    <div class="float-right">
+      <table class="h-[21px]">
+        <tr>
+          <td>
+            [[ if .Form ]]<input type="submit" class="[all:revert]" value="Proceed" />[[ else ]]<input
+              type="button"
+              class="[all:revert]"
+              value="Close"
+              data-close
+            />[[ end ]]
+          </td>
+        </tr>
+      </table>
+    </div>
+  </form>
+</HelpTool>

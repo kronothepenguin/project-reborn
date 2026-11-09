@@ -9,6 +9,7 @@ import MiniLogin from "../components/header/mini-login.astro";
 import MyGroups from "../components/header/my-groups.svelte";
 import SubTabs, { type CommunityTab } from "../components/header/sub-tabs.astro";
 import UserMenu from "../components/header/user-menu.astro";
+import OpenHelp from "../components/help/open-help.svelte";
 import Document from "./document.astro";
 
 interface Props {
@@ -55,6 +56,7 @@ const { title, tab, sub } = Astro.props;
         <div class="absolute top-0 left-[201px] z-10">
           <MyGroups client:only="svelte" signedIn="[[ .SignedIn ]]" />
         </div>
+        <OpenHelp client:only="svelte" />
 
         <div class="absolute top-[15px] left-[781px] w-[110px] rounded bg-white p-2.5 text-center text-[10px]">
           <span>[[ .OnlineCount ]] users online now</span>

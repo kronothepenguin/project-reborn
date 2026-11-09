@@ -97,6 +97,10 @@ var catalogue = map[string]declaration{
 	"creditsPage.box1Body":    declare(creditsBox1, length(0, 5000)),
 	"creditsPage.box2Heading": declare("Get credits!", length(1, 100)),
 	"creditsPage.box2Body":    declare(creditsBox2, length(0, 5000)),
+
+	// Holo's help tool took a question of any length; the port stops at the
+	// forum's post limit (decision 0109).
+	"help.messageMaxLength": declare(65535, between(1, 65535)),
 }
 
 // rules check settings that depend on each other. keys lists every setting a
