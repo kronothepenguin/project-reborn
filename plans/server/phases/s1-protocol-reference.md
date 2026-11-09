@@ -51,7 +51,7 @@ each other ([Branches](/rules.md#branches)).
 11. [s1-11 Map hh_friend_list](/tasks/s1-11-friend-list.md)
 12. [s1-12 Map hh_instant_messenger](/tasks/s1-12-instant-messenger.md)
 13. [s1-13 Map hh_guide](/tasks/s1-13-guide.md)
-14. [s1-14 Map hh_tutorial](/tasks/s1-14-tutorial.md)
+14. [s1-14 Map hh_tutorial](/tasks/s1-14-tutorial.md) **done**
 15. [s1-15 Map hh_poll](/tasks/s1-15-poll.md)
 16. [s1-16 Map hh_photo](/tasks/s1-16-photo.md)
 17. [s1-17 Map hh_recycler](/tasks/s1-17-recycler.md)

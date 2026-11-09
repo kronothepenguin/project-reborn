@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [s1-14](/tasks/s1-14-tutorial.md): [hh_tutorial](/reference/r26/hh_tutorial.md) maps 12 messages and 10
+  commands, as registered: the tutorial's preferences, configuration, topics and status, and the new-user help's items
+  and invitations of guides. A topic's steps name client messages for the client to execute and to wait for.
+- **Start** [s1-14](/tasks/s1-14-tutorial.md).
 - **Done** [s1-04](/tasks/s1-04-navigator.md): [hh_navigator](/reference/r26/hh_navigator.md) maps 18 messages
   and 18 commands, as registered: the tree of nodes, the own rooms, the search and the favourites, a flat's settings
   and their changes, entering a room or being refused, and forwarding. `SBUSYF` (13) is never sent.
