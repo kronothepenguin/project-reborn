@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [s1-20](/tasks/s1-20-dynamic-downloader.md): [hh_dynamic_downloader](/reference/r26/hh_dynamic_downloader.md)
+  maps 2 messages and 2 commands, as registered: the aliases and revisions the client asks for once, before its first
+  download, and the address each furniture cast downloads from.
+- **Start** [s1-20](/tasks/s1-20-dynamic-downloader.md).
 - **Update** [S0](/phases/s0-foundations.md) is done, and [S1](/phases/s1-protocol-reference.md) is the active
   phase.
 - **Done** [s0-08](/tasks/s0-08-exit-check.md): on the merged state, install, every gate, the server's 47 tests and a

@@ -57,7 +57,7 @@ each other ([Branches](/rules.md#branches)).
 17. [s1-17 Map hh_recycler](/tasks/s1-17-recycler.md)
 18. [s1-18 Map hh_soundmachine](/tasks/s1-18-soundmachine.md)
 19. [s1-19 Map hh_roomdimmer](/tasks/s1-19-roomdimmer.md)
-20. [s1-20 Map hh_dynamic_downloader](/tasks/s1-20-dynamic-downloader.md)
+20. [s1-20 Map hh_dynamic_downloader](/tasks/s1-20-dynamic-downloader.md) **done**
 21. [s1-21 Map hh_ig](/tasks/s1-21-instant-games.md)
 22. [s1-22 Map hh_human](/tasks/s1-22-human.md)
 23. [s1-24 Describe the MUS framing of the #mus connection](/tasks/s1-24-mus-framing.md)
