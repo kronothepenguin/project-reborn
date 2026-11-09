@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [s1-08](/tasks/s1-08-buffer.md): [hh_buffer](/reference/r26/hh_buffer.md) maps 5 messages, which
+  `hh_room` registers too, and no command: the client holds the updates of furniture still downloading and replays
+  them, so the server needs nothing of its own.
+- **Start** [s1-08](/tasks/s1-08-buffer.md).
 - **Update** [S0](/phases/s0-foundations.md) is done, and [S1](/phases/s1-protocol-reference.md) is the active
   phase.
 - **Done** [s0-08](/tasks/s0-08-exit-check.md): on the merged state, install, every gate, the server's 47 tests and a
