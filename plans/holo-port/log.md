@@ -2,6 +2,9 @@
 
 ## 2026-11-09
 
+- **Done** [p7-01](/tasks/p7-01-help-setting.md): `help.messageMaxLength` holds 65535, from 1 to 65535, in a
+  `Help` form after `Club`, labelled `Question Length`.
+- **Start** [p7-01](/tasks/p7-01-help-setting.md).
 - **Create** [p7-01](/tasks/p7-01-help-setting.md) to [p7-03](/tasks/p7-03-exit-check.md), P7's tasks.
 - **Decision** [0109](/decisions/0109-help-request-lengths.md): a help request's subject takes Holo's 50 characters
   and its question `help.messageMaxLength`, 65535 by default, both checked by the server.

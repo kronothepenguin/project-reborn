@@ -341,6 +341,7 @@ veto.
 | Settings | A `Homes` form for the items per home, the length of a note, the tags per habbo and the wardrobe's slots, which Holo wrote in its code | The plan: the `homes` section |
 | Settings | A `Groups` form for a group's price, the groups per user, the memberships per habbo, the members of a Regular group and the lengths of a name and a description, which Holo wrote in its code | The plan: the `groups` section ([0082](/decisions/0082-group-limits-per-user-and-habbo.md), [0084](/decisions/0084-group-names-and-descriptions.md)) |
 | Settings | A `Club` form for the prices of 1, 3 and 6 months and the days of a month, which Holo wrote in its code | The plan: the `club` settings |
+| Settings | A `Help` form for the longest question of a help request, which Holo never limited | [0109](/decisions/0109-help-request-lengths.md) |
 | Settings | The content tool's categories are links of their own: `Discussion Board Module` holds `Forum Enabled`, `Smilies Enabled` and a `Spam Check` of 30 seconds, where 0 turns the check off | Holo chose the category from a list; the spam check is [0091](/decisions/0091-forum-spam-check.md) |
 | Settings | `mail.password` is never shown: blank keeps it, and `Clear it` removes it | The plan: `mail.password` masked |
 | Edit User | Two forms on the habbo's page, `Save Habbo` and `Save User` | A habbo and its owner are two rows |
