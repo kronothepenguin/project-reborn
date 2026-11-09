@@ -1,5 +1,14 @@
 # Log
 
+## 2026-11-09
+
+- **Update** [S7](/phases/s7-club-help-extras.md)'s question on club bought in the client says that `SCR_BUY`
+  sends the button's number, 1 to 3, not months. Found by [s1-10](/tasks/s1-10-club.md).
+- **Done** [s1-10](/tasks/s1-10-club.md): [hh_club](/reference/r26/hh_club.md) maps 3 messages and 3 commands, as
+  registered: the club status the client asks for after every 3, its responses and windows, buying by button, and
+  the gifts, accepted one at a time.
+- **Start** [s1-10](/tasks/s1-10-club.md).
+
 ## 2026-11-07
 
 - **Blocked** [s0-08](/tasks/s0-08-exit-check.md): s0-10 is done, but [S0](/phases/s0-foundations.md) can be `done`
