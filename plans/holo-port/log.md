@@ -2,6 +2,11 @@
 
 ## 2026-11-09
 
+- **Update** [P7](/phases/p7-help.md) is done, and with it every phase of the port; what needs the game server
+  waits for it ([0013](/decisions/0013-defer-game-server-features.md)).
+- **Done** [p7-03](/tasks/p7-03-exit-check.md): from a clean worktree, install, every gate and all 31 browser suites
+  pass, 1100 checks; a request sent on `/help` is picked up in housekeeping, and the habbo sends another.
+- **Start** [p7-03](/tasks/p7-03-exit-check.md).
 - **Done** [p7-02](/tasks/p7-02-help-requests.md): a signed-in habbo opens go.php's form from the header's `Help`
   in the Help Tool's own window and sends a request, with Holo's answers to blank and waiting requests and the two
   lengths of 0109; a visitor is sent to sign in, and housekeeping's Help Queries lists the request.

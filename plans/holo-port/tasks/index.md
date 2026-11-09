@@ -215,4 +215,4 @@ starts.
 
 - [p7-01 Declare the help setting](/tasks/p7-01-help-setting.md) — help.messageMaxLength is declared with 65535 and labelled in housekeeping, in a Help form, so that staff set the longest question a help request takes. **done**
 - [p7-02 Send help requests from the Help Tool window](/tasks/p7-02-help-requests.md) — GET /help shows go.php's Ask your question form in the Help Tool window to a signed-in habbo, and POST /help writes the active habbo's help request with Holo's answers, one waiting request per habbo with the post reports, within 50 characters of subject and help.messageMaxLength of question. **done**
-- [p7-03 Verify P7](/tasks/p7-03-exit-check.md) — Every exit criterion of P7 holds from a clean checkout, in a real browser.
+- [p7-03 Verify P7](/tasks/p7-03-exit-check.md) — Every exit criterion of P7 holds from a clean checkout, in a real browser. **done**
