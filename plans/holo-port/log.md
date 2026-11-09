@@ -2,6 +2,23 @@
 
 ## 2026-11-09
 
+- **Update** [P7](/phases/p7-help.md) is done, and with it every phase of the port; what needs the game server
+  waits for it ([0013](/decisions/0013-defer-game-server-features.md)).
+- **Done** [p7-03](/tasks/p7-03-exit-check.md): from a clean worktree, install, every gate and all 31 browser suites
+  pass, 1100 checks; a request sent on `/help` is picked up in housekeeping, and the habbo sends another.
+- **Start** [p7-03](/tasks/p7-03-exit-check.md).
+- **Done** [p7-02](/tasks/p7-02-help-requests.md): a signed-in habbo opens go.php's form from the header's `Help`
+  in the Help Tool's own window and sends a request, with Holo's answers to blank and waiting requests and the two
+  lengths of 0109; a visitor is sent to sign in, and housekeeping's Help Queries lists the request.
+- **Start** [p7-02](/tasks/p7-02-help-requests.md).
+- **Done** [p7-01](/tasks/p7-01-help-setting.md): `help.messageMaxLength` holds 65535, from 1 to 65535, in a
+  `Help` form after `Club`, labelled `Question Length`.
+- **Start** [p7-01](/tasks/p7-01-help-setting.md).
+- **Create** [p7-01](/tasks/p7-01-help-setting.md) to [p7-03](/tasks/p7-03-exit-check.md), P7's tasks.
+- **Decision** [0109](/decisions/0109-help-request-lengths.md): a help request's subject takes Holo's 50 characters
+  and its question `help.messageMaxLength`, 65535 by default, both checked by the server.
+- **Decision** [0108](/decisions/0108-help-asks-visitors-to-sign-in.md): the help form asks visitors to sign in
+  first, so every request has a habbo.
 - **Update** [P6](/phases/p6-economy.md) is done, and [P7](/phases/p7-help.md) is the active phase, with two open
   questions: whether guests may send a request, and how long a request may be.
 - **Done** [p6-08](/tasks/p6-08-exit-check.md): from a clean worktree, install, every gate and all 30 browser suites
