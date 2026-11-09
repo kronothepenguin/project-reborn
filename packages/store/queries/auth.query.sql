@@ -124,3 +124,30 @@ DELETE FROM password_resets WHERE user_id = sqlc.arg(user_id);
 
 -- name: PurgeExpiredPasswordResets :execrows
 DELETE FROM password_resets WHERE expires_at <= sqlc.arg(now);
+
+-- name: CreateSSOTicket :exec
+INSERT INTO sso_tickets (id, session_id, avatar_id, ip, created_at)
+VALUES (sqlc.arg(id), sqlc.arg(session_id), sqlc.arg(avatar_id), sqlc.arg(ip), sqlc.arg(created_at));
+
+-- A ticket counts only while it names the active habbo of its session.
+-- name: GetSessionSSOTicket :one
+SELECT sso_tickets.* FROM sso_tickets
+JOIN sessions ON sessions.id = sso_tickets.session_id
+WHERE sso_tickets.session_id = sqlc.arg(session_id) AND sso_tickets.avatar_id = sessions.avatar_id
+ORDER BY sso_tickets.created_at DESC, sso_tickets.id
+LIMIT 1;
+
+-- name: DeleteSessionSSOTickets :exec
+DELETE FROM sso_tickets WHERE session_id = sqlc.arg(session_id);
+
+-- Spends a ticket whose session has not expired and still has the ticket's habbo active, and returns that habbo.
+-- name: SpendSSOTicket :one
+DELETE FROM sso_tickets
+WHERE sso_tickets.id = sqlc.arg(id) AND EXISTS (
+    SELECT 1 FROM sessions
+    WHERE sessions.id = sso_tickets.session_id
+      AND sessions.avatar_id = sso_tickets.avatar_id
+      AND sessions.expires_at > sqlc.arg(now)
+)
+RETURNING avatar_id;
+

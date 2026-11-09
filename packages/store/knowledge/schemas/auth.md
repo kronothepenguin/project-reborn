@@ -4,7 +4,7 @@ title: auth.schema.sql
 description: Declares the authentication tables for credentials, sessions, login attempts, password resets and SSO tickets.
 resource: packages/store/schema/auth.schema.sql
 tags: [store, schema, auth]
-timestamp: 2026-10-27T21:17:19+00:00
+timestamp: 2026-11-09T23:05:00+00:00
 ---
 
 # Schema
@@ -19,7 +19,8 @@ timestamp: 2026-10-27T21:17:19+00:00
 | `idx_login_attempts_ip_created_at`, `idx_login_attempts_user_id_created_at`, `idx_login_attempts_avatar_id_created_at` | indexes | Attempts per IP, user or habbo within a window |
 | [password_resets](/tables/password_resets.md) | table | Single-use, expiring reset tokens |
 | `idx_password_resets_user_id` | index | Resets of a user |
-| [sso_tickets](/tables/sso_tickets.md) | table | One-time game-client login tickets (API deferred) |
+| [sso_tickets](/tables/sso_tickets.md) | table | Game-client login tickets of a CMS session, spent once |
+| `idx_sso_tickets_session_id` | index | Tickets of a session |
 | `idx_sso_tickets_avatar_id` | index | Tickets of a habbo |
 
 Entities: [Credential](/entities/credential.md), [Session](/entities/session.md).

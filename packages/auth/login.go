@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"slices"
 	"time"
@@ -163,6 +164,15 @@ func start(w http.ResponseWriter, r *http.Request, db *sql.DB, login store.GetLo
 	}
 
 	setCookie(w, token, remember, lifetime)
+
+	// The ticket is best-effort: sso_tickets keeps its old form while update 0008
+	// waits for an administrator, and the client page makes one whenever none is
+	// valid (plans/server decision 0043).
+	ticket, _ := newToken()
+	err = q.CreateSSOTicket(ctx, store.CreateSSOTicketParams{ID: ticket, SessionID: id, AvatarID: login.AvatarID, IP: ip, CreatedAt: now})
+	if err != nil {
+		slog.Warn("auth: login: no SSO ticket", "err", err)
+	}
 	return session, nil
 }
 
@@ -200,18 +210,31 @@ func LogoutEverywhere(ctx context.Context, db *sql.DB, userID int64) error {
 }
 
 // SwitchHabbo makes avatarID the active habbo of the session in ctx; the habbo
-// must belong to the session's user.
+// must belong to the session's user. The session's SSO tickets go with the habbo
+// it leaves, and SSOTicket makes one for the new habbo.
 func SwitchHabbo(ctx context.Context, db *sql.DB, avatarID int64) error {
 	session, ok := FromContext(ctx)
 	if !ok {
 		return ErrNoSession
 	}
-	n, err := store.New(db).SwitchSessionAvatar(ctx, store.SwitchSessionAvatarParams{AvatarID: avatarID, ID: session.id})
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("auth: switch habbo: %w", err)
+	}
+	defer tx.Rollback()
+	qtx := store.New(db).WithTx(tx)
+	n, err := qtx.SwitchSessionAvatar(ctx, store.SwitchSessionAvatarParams{AvatarID: avatarID, ID: session.id})
 	if err != nil {
 		return fmt.Errorf("auth: switch habbo: %w", err)
 	}
 	if n == 0 {
 		return ErrNotOwner
+	}
+	if err := qtx.DeleteSessionSSOTickets(ctx, session.id); err != nil {
+		return fmt.Errorf("auth: switch habbo: %w", err)
+	}
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("auth: switch habbo: %w", err)
 	}
 	return nil
 }

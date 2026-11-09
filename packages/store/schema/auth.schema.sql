@@ -51,10 +51,12 @@ CREATE INDEX IF NOT EXISTS idx_password_resets_user_id ON password_resets(user_i
 -- id is the SHA-256 digest of the ticket handed to the game client.
 CREATE TABLE IF NOT EXISTS sso_tickets (
     id TEXT PRIMARY KEY,
+    session_id TEXT NOT NULL REFERENCES sessions(id) ON DELETE CASCADE,
     avatar_id INTEGER NOT NULL REFERENCES avatars(id) ON DELETE CASCADE,
     ip TEXT NOT NULL,
-    created_at DATETIME NOT NULL,
-    expires_at DATETIME NOT NULL
+    created_at DATETIME NOT NULL
 );
+
+CREATE INDEX IF NOT EXISTS idx_sso_tickets_session_id ON sso_tickets(session_id);
 
 CREATE INDEX IF NOT EXISTS idx_sso_tickets_avatar_id ON sso_tickets(avatar_id);

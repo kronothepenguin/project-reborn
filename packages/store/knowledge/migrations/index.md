@@ -10,3 +10,4 @@ them all when `store.Open` creates it.
 - [0005-images.sql](0005-images.md) — Creates the images table for the pictures staff upload, such as the top stories of news.
 - [0006-news-image-links.sql](0006-news-image-links.md) — Links each news article to the uploaded picture it shows, so that a picture in use cannot be deleted, and fills the link for the articles that show one.
 - [0007-game-login-data.sql](0007-game-login-data.md) — Creates avatar_game_data, where the game server saves each habbo's last time online, the machine id of its last game login and its sound setting.
+- [0008-sso-tickets-as-text.sql](0008-sso-tickets-as-text.md) — Makes sso_tickets keep each ticket as text with the CMS session that made it, so the client page can show one and the game server can spend it.

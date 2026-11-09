@@ -17,7 +17,7 @@ Concepts for the tables declared under `packages/store/schema/`, one per table.
 - [sessions](sessions.md) — Signed-in browsers of a user with their active habbo, keyed by the digest of the cookie token.
 - [login_attempts](login_attempts.md) — Every login attempt, successful or not, used for throttling and for the IP history of users and habbos.
 - [password_resets](password_resets.md) — Single-use, expiring password-reset tokens, stored as digests of the emailed token.
-- [sso_tickets](sso_tickets.md) — One-time login tickets handed to the game client for a habbo, stored as digests; their API waits for the game server.
+- [sso_tickets](sso_tickets.md) — Login tickets the CMS makes for a session's active habbo and the game server spends once, kept as text and dying with the session.
 
 ## Access
 

@@ -2,6 +2,11 @@
 
 ## 2026-11-09
 
+- **Done** [s2-02](/tasks/s2-02-sso-tickets-at-sign-in.md): signing in to the CMS makes an SSO ticket, kept as text with
+  its session, which the client page gets with `auth.SSOTicket` and the game server spends once with `SpendSSOTicket`.
+- **Decision** [0043](/decisions/0043-the-sign-in-ticket-is-best-effort.md): the sign-in's SSO ticket is best-effort,
+  and update 0008 waits for an administrator.
+- **Start** [s2-02](/tasks/s2-02-sso-tickets-at-sign-in.md).
 - **Done** [s2-03](/tasks/s2-03-saved-login-data.md): `avatar_game_data` keeps each habbo's last time online, the
   machine id of its last game login and its sound setting, through the update `0007-game-login-data.sql`.
 - **Decision** [0044](/decisions/0044-game-login-data-has-its-own-table.md): what the game server saves of a habbo has a

@@ -101,6 +101,30 @@ func (q *Queries) CreatePasswordReset(ctx context.Context, arg CreatePasswordRes
 	return result.RowsAffected()
 }
 
+const createSSOTicket = `-- name: CreateSSOTicket :exec
+INSERT INTO sso_tickets (id, session_id, avatar_id, ip, created_at)
+VALUES (?1, ?2, ?3, ?4, ?5)
+`
+
+type CreateSSOTicketParams struct {
+	ID        string
+	SessionID string
+	AvatarID  int64
+	IP        string
+	CreatedAt time.Time
+}
+
+func (q *Queries) CreateSSOTicket(ctx context.Context, arg CreateSSOTicketParams) error {
+	_, err := q.db.ExecContext(ctx, createSSOTicket,
+		arg.ID,
+		arg.SessionID,
+		arg.AvatarID,
+		arg.IP,
+		arg.CreatedAt,
+	)
+	return err
+}
+
 const createSession = `-- name: CreateSession :exec
 INSERT INTO sessions (id, user_id, avatar_id, remember, ip, user_agent, created_at, last_seen_at, expires_at)
 VALUES (
@@ -156,6 +180,15 @@ DELETE FROM sessions WHERE id = ?1
 
 func (q *Queries) DeleteSession(ctx context.Context, id string) error {
 	_, err := q.db.ExecContext(ctx, deleteSession, id)
+	return err
+}
+
+const deleteSessionSSOTickets = `-- name: DeleteSessionSSOTickets :exec
+DELETE FROM sso_tickets WHERE session_id = ?1
+`
+
+func (q *Queries) DeleteSessionSSOTickets(ctx context.Context, sessionID string) error {
+	_, err := q.db.ExecContext(ctx, deleteSessionSSOTickets, sessionID)
 	return err
 }
 
@@ -341,6 +374,28 @@ func (q *Queries) GetResetAccount(ctx context.Context, arg GetResetAccountParams
 	return i, err
 }
 
+const getSessionSSOTicket = `-- name: GetSessionSSOTicket :one
+SELECT sso_tickets.id, sso_tickets.session_id, sso_tickets.avatar_id, sso_tickets.ip, sso_tickets.created_at FROM sso_tickets
+JOIN sessions ON sessions.id = sso_tickets.session_id
+WHERE sso_tickets.session_id = ?1 AND sso_tickets.avatar_id = sessions.avatar_id
+ORDER BY sso_tickets.created_at DESC, sso_tickets.id
+LIMIT 1
+`
+
+// A ticket counts only while it names the active habbo of its session.
+func (q *Queries) GetSessionSSOTicket(ctx context.Context, sessionID string) (SSOTicket, error) {
+	row := q.db.QueryRowContext(ctx, getSessionSSOTicket, sessionID)
+	var i SSOTicket
+	err := row.Scan(
+		&i.ID,
+		&i.SessionID,
+		&i.AvatarID,
+		&i.IP,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const listUserLogins = `-- name: ListUserLogins :many
 SELECT ip, created_at FROM login_attempts
 WHERE user_id = CAST(?1 AS INTEGER) AND succeeded
@@ -418,6 +473,30 @@ func (q *Queries) PurgeExpiredSessions(ctx context.Context, now time.Time) (int6
 		return 0, err
 	}
 	return result.RowsAffected()
+}
+
+const spendSSOTicket = `-- name: SpendSSOTicket :one
+DELETE FROM sso_tickets
+WHERE sso_tickets.id = ?1 AND EXISTS (
+    SELECT 1 FROM sessions
+    WHERE sessions.id = sso_tickets.session_id
+      AND sessions.avatar_id = sso_tickets.avatar_id
+      AND sessions.expires_at > ?2
+)
+RETURNING avatar_id
+`
+
+type SpendSSOTicketParams struct {
+	ID  string
+	Now time.Time
+}
+
+// Spends a ticket whose session has not expired and still has the ticket's habbo active, and returns that habbo.
+func (q *Queries) SpendSSOTicket(ctx context.Context, arg SpendSSOTicketParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, spendSSOTicket, arg.ID, arg.Now)
+	var avatar_id int64
+	err := row.Scan(&avatar_id)
+	return avatar_id, err
 }
 
 const switchSessionAvatar = `-- name: SwitchSessionAvatar :execrows

@@ -273,10 +273,10 @@ type Referral struct {
 
 type SSOTicket struct {
 	ID        string
+	SessionID string
 	AvatarID  int64
 	IP        string
 	CreatedAt time.Time
-	ExpiresAt time.Time
 }
 
 type Session struct {

@@ -1,10 +1,10 @@
 ---
 type: SQL Query
 title: auth.query.sql
-description: Sign-in operations for the habbo-name login lookup, credentials, sessions, login attempts and password resets.
+description: Sign-in operations for the habbo-name login lookup, credentials, sessions, login attempts, password resets and SSO tickets.
 resource: packages/store/queries/auth.query.sql
 tags: [store, query, auth]
-timestamp: 2026-11-02T02:47:29+00:00
+timestamp: 2026-11-09T23:05:00+00:00
 ---
 
 # Operations
@@ -178,6 +178,36 @@ timestamp: 2026-11-02T02:47:29+00:00
 - Result: number of resets deleted with `expires_at <= now`
 - Run by `auth.DeleteExpiredResets`, on the scheduler
 - Tables: `password_resets`
+
+## CreateSSOTicket
+
+- Cardinality: `:exec`
+- Inputs: `id`, `session_id`, `avatar_id`, `ip`, `created_at`
+- Run by `auth.Login` and `auth.SSOTicket`
+- Tables: `sso_tickets`
+
+## GetSessionSSOTicket
+
+- Cardinality: `:one`
+- Inputs: `session_id`
+- Result: the newest ticket of the session for its active habbo
+- Run by `auth.SSOTicket`
+- Tables: `sso_tickets`, `sessions`
+
+## DeleteSessionSSOTickets
+
+- Cardinality: `:exec`
+- Inputs: `session_id`
+- Run by `auth.SwitchHabbo`
+- Tables: `sso_tickets`
+
+## SpendSSOTicket
+
+- Cardinality: `:one`
+- Inputs: `id`, `now`
+- Result: the habbo of the ticket, deleted, when its session expires after `now` and still has that habbo active
+- Run by the game server at login
+- Tables: `sso_tickets`, `sessions`
 
 # Related
 

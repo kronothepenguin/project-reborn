@@ -257,6 +257,67 @@ func TestSwitchSessionAvatarRequiresOwnership(t *testing.T) {
 	}
 }
 
+func TestAnSSOTicketIsSpentOnceWhileItsSessionHoldsItsHabbo(t *testing.T) {
+	q := New(openTestDB(t))
+	ctx := t.Context()
+	user, first := createUserWithHabbo(t, q, "krono@example.com", "Krono")
+	second, err := q.CreateAvatar(ctx, CreateAvatarParams{UserID: user.ID, Name: "KronoStaff", Figure: "hd-180-1", Gender: "M", CreatedAt: testNow, UpdatedAt: testNow})
+	if err != nil {
+		t.Fatalf("CreateAvatar: %v", err)
+	}
+	if err := q.CreateSession(ctx, CreateSessionParams{
+		ID: "digest", UserID: user.ID, AvatarID: first.ID, IP: "127.0.0.1", UserAgent: "test",
+		CreatedAt: testNow, LastSeenAt: testNow, ExpiresAt: testNow.Add(time.Hour),
+	}); err != nil {
+		t.Fatalf("CreateSession: %v", err)
+	}
+	ticket := func(id string, avatarID int64) {
+		t.Helper()
+		if err := q.CreateSSOTicket(ctx, CreateSSOTicketParams{ID: id, SessionID: "digest", AvatarID: avatarID, IP: "127.0.0.1", CreatedAt: testNow}); err != nil {
+			t.Fatalf("CreateSSOTicket %s: %v", id, err)
+		}
+	}
+	spend := func(id string, now time.Time) (int64, error) {
+		return q.SpendSSOTicket(ctx, SpendSSOTicketParams{ID: id, Now: now})
+	}
+
+	ticket("one", first.ID)
+	if got, err := q.GetSessionSSOTicket(ctx, "digest"); err != nil || got.ID != "one" {
+		t.Errorf("the session's ticket = %q, %v; want one", got.ID, err)
+	}
+	if avatarID, err := spend("one", testNow); err != nil || avatarID != first.ID {
+		t.Errorf("spending one = %d, %v; want %d", avatarID, err, first.ID)
+	}
+	if _, err := spend("one", testNow); !IsNotFound(err) {
+		t.Errorf("spending one again = %v, want not found", err)
+	}
+	if _, err := q.GetSessionSSOTicket(ctx, "digest"); !IsNotFound(err) {
+		t.Errorf("the session's spent ticket = %v, want not found", err)
+	}
+
+	ticket("two", first.ID)
+	if _, err := q.SwitchSessionAvatar(ctx, SwitchSessionAvatarParams{ID: "digest", AvatarID: second.ID}); err != nil {
+		t.Fatalf("SwitchSessionAvatar: %v", err)
+	}
+	if _, err := q.GetSessionSSOTicket(ctx, "digest"); !IsNotFound(err) {
+		t.Errorf("a ticket for the habbo the session left = %v, want not found", err)
+	}
+	if _, err := spend("two", testNow); !IsNotFound(err) {
+		t.Errorf("spending a ticket for the habbo the session left = %v, want not found", err)
+	}
+
+	ticket("three", second.ID)
+	if _, err := spend("three", testNow.Add(time.Hour)); !IsNotFound(err) {
+		t.Errorf("spending a ticket of an expired session = %v, want not found", err)
+	}
+	if err := q.DeleteSession(ctx, "digest"); err != nil {
+		t.Fatalf("DeleteSession: %v", err)
+	}
+	if _, err := spend("three", testNow); !IsNotFound(err) {
+		t.Errorf("spending a ticket of a deleted session = %v, want not found", err)
+	}
+}
+
 func TestSessionsExpireAndArePurged(t *testing.T) {
 	q := New(openTestDB(t))
 	ctx := t.Context()
