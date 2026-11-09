@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [s1-12](/tasks/s1-12-instant-messenger.md): [hh_instant_messenger](/reference/r26/hh_instant_messenger.md)
+  maps 4 messages and 2 commands, as registered: chats with friends by user id, invitations to the room, and the
+  errors of undelivered lines.
+- **Start** [s1-12](/tasks/s1-12-instant-messenger.md).
 - **Update** [S0](/phases/s0-foundations.md) is done, and [S1](/phases/s1-protocol-reference.md) is the active
   phase.
 - **Done** [s0-08](/tasks/s0-08-exit-check.md): on the merged state, install, every gate, the server's 47 tests and a
