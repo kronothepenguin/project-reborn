@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [s1-17](/tasks/s1-17-recycler.md): [hh_recycler](/reference/r26/hh_recycler.md) maps 5 messages and 5
+  commands, as registered: the rewards and the status, recycling from the hand, and taking or refusing the reward.
+  `APPROVE_RECYCLED_FURNI` (224) is never sent.
+- **Start** [s1-17](/tasks/s1-17-recycler.md).
 - **Update** [S0](/phases/s0-foundations.md) is done, and [S1](/phases/s1-protocol-reference.md) is the active
   phase.
 - **Done** [s0-08](/tasks/s0-08-exit-check.md): on the merged state, install, every gate, the server's 47 tests and a
