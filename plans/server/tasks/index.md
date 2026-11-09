@@ -31,7 +31,7 @@ starts.
 - [s1-10 Map hh_club](/tasks/s1-10-club.md) — Write /reference/r26/hh_club.md from the .ls scripts: every message hh_club receives and every command it sends, with their fields, senders and flows. **done**
 - [s1-11 Map hh_friend_list](/tasks/s1-11-friend-list.md) — Write /reference/r26/hh_friend_list.md from the .ls scripts: every message hh_friend_list receives and every command it sends, with their fields, senders and flows.
 - [s1-12 Map hh_instant_messenger](/tasks/s1-12-instant-messenger.md) — Write /reference/r26/hh_instant_messenger.md from the .ls scripts: every message hh_instant_messenger receives and every command it sends, with their fields, senders and flows.
-- [s1-13 Map hh_guide](/tasks/s1-13-guide.md) — Write /reference/r26/hh_guide.md from the .ls scripts: every message hh_guide receives and every command it sends, with their fields, senders and flows.
+- [s1-13 Map hh_guide](/tasks/s1-13-guide.md) — Write /reference/r26/hh_guide.md from the .ls scripts: every message hh_guide receives and every command it sends, with their fields, senders and flows. **done**
 - [s1-14 Map hh_tutorial](/tasks/s1-14-tutorial.md) — Write /reference/r26/hh_tutorial.md from the .ls scripts: every message hh_tutorial receives and every command it sends, with their fields, senders and flows.
 - [s1-15 Map hh_poll](/tasks/s1-15-poll.md) — Write /reference/r26/hh_poll.md from the .ls scripts: every message hh_poll receives and every command it sends, with their fields, senders and flows.
 - [s1-16 Map hh_photo](/tasks/s1-16-photo.md) — Write /reference/r26/hh_photo.md from the .ls scripts: every message hh_photo receives and every command it sends, with their fields, senders and flows.

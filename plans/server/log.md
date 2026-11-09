@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [s1-13](/tasks/s1-13-guide.md): [hh_guide](/reference/r26/hh_guide.md) maps 5 messages and 5 commands, as
+  registered: the guide tool's status, waiting for invitations, and accepting or refusing one. The room bar's copies
+  of accept and refuse never send.
+- **Start** [s1-13](/tasks/s1-13-guide.md).
 - **Update** [S2](/phases/s2-login.md)'s scope says that the figure system's command, `GETAVAILABLESETS`, is
   never sent. Found by [s1-22](/tasks/s1-22-human.md).
 - **Done** [s1-22](/tasks/s1-22-human.md): [hh_human](/reference/r26/hh_human.md) maps no message and 1 command,
