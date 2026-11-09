@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [s1-18](/tasks/s1-18-soundmachine.md): [hh_soundmachine](/reference/r26/hh_soundmachine.md) maps 17
+  messages and 19 commands, as registered: play lists and their play time, the song editor with its sound sets and the
+  song's text form, and the jukebox's disks. A length counts 2-second slots, and the play time tenths of a second.
+- **Start** [s1-18](/tasks/s1-18-soundmachine.md).
 - **Done** [s1-08](/tasks/s1-08-buffer.md): [hh_buffer](/reference/r26/hh_buffer.md) maps 5 messages, which
   `hh_room` registers too, and no command: the client holds the updates of furniture still downloading and replays
   them, so the server needs nothing of its own.

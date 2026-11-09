@@ -36,7 +36,7 @@ starts.
 - [s1-15 Map hh_poll](/tasks/s1-15-poll.md) — Write /reference/r26/hh_poll.md from the .ls scripts: every message hh_poll receives and every command it sends, with their fields, senders and flows.
 - [s1-16 Map hh_photo](/tasks/s1-16-photo.md) — Write /reference/r26/hh_photo.md from the .ls scripts: every message hh_photo receives and every command it sends, with their fields, senders and flows.
 - [s1-17 Map hh_recycler](/tasks/s1-17-recycler.md) — Write /reference/r26/hh_recycler.md from the .ls scripts: every message hh_recycler receives and every command it sends, with their fields, senders and flows.
-- [s1-18 Map hh_soundmachine](/tasks/s1-18-soundmachine.md) — Write /reference/r26/hh_soundmachine.md from the .ls scripts: every message hh_soundmachine receives and every command it sends, with their fields, senders and flows.
+- [s1-18 Map hh_soundmachine](/tasks/s1-18-soundmachine.md) — Write /reference/r26/hh_soundmachine.md from the .ls scripts: every message hh_soundmachine receives and every command it sends, with their fields, senders and flows. **done**
 - [s1-19 Map hh_roomdimmer](/tasks/s1-19-roomdimmer.md) — Write /reference/r26/hh_roomdimmer.md from the .ls scripts: every message hh_roomdimmer receives and every command it sends, with their fields, senders and flows.
 - [s1-20 Map hh_dynamic_downloader](/tasks/s1-20-dynamic-downloader.md) — Write /reference/r26/hh_dynamic_downloader.md from the .ls scripts: every message hh_dynamic_downloader receives and every command it sends, with their fields, senders and flows.
 - [s1-21 Map hh_ig](/tasks/s1-21-instant-games.md) — Write /reference/r26/hh_ig.md from the .ls scripts: every message hh_ig receives and every command it sends, with their fields, senders and flows.
