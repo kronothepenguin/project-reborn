@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [s1-07](/tasks/s1-07-room-utils.md): [hh_room_utils](/reference/r26/hh_room_utils.md) maps 7 messages and 6
+  commands, as registered: the waiting call for help, one-way doors, and chat, whispers and shouts, which `hh_room`
+  sends by the chat mode's name.
+- **Start** [s1-07](/tasks/s1-07-room-utils.md).
 - **Update** [S2](/phases/s2-login.md)'s scope says that the figure system's command, `GETAVAILABLESETS`, is
   never sent. Found by [s1-22](/tasks/s1-22-human.md).
 - **Done** [s1-22](/tasks/s1-22-human.md): [hh_human](/reference/r26/hh_human.md) maps no message and 1 command,
