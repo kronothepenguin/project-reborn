@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [s1-24](/tasks/s1-24-mus-framing.md): [mus](/reference/r26/mus.md) describes `#mus` byte for byte under
+  LibreShockwave: one SMUS frame per WebSocket message, the fixed Logon frame, the 12 value types and each message's
+  frame, checked against a probe built from LibreShockwave's own bridge.
+- **Start** [s1-24](/tasks/s1-24-mus-framing.md).
 - **Done** [s1-08](/tasks/s1-08-buffer.md): [hh_buffer](/reference/r26/hh_buffer.md) maps 5 messages, which
   `hh_room` registers too, and no command: the client holds the updates of furniture still downloading and replays
   them, so the server needs nothing of its own.
