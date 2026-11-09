@@ -3,7 +3,7 @@ type: Phase
 title: S0 Foundations
 description: The plan and its skill, the three tools/create templates, and an empty server that accepts R26 clients over WebSocket, frames their packets and answers HELLO.
 status: active
-timestamp: 2026-11-07T00:25:22+00:00
+timestamp: 2026-11-07T02:39:34+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s0, server]
 ---
@@ -19,7 +19,7 @@ it does not handle yet. `tools/create` makes fullstack, backend and client proje
 | Part | Where | Decisions |
 | --- | --- | --- |
 | The plan bundle, the `tracking-plans` skill and the `.claude/skills` link | `plans/server`, `.agents/skills/tracking-plans`, `.claude/skills` | [0001](/decisions/0001-plan-in-plans-server.md) |
-| The fullstack, backend and client templates | `tools/create` | [0003](/decisions/0003-create-templates.md), [0024](/decisions/0024-go-package-names-drop-the-dash.md) |
+| The fullstack, backend and client templates | `tools/create` | [0003](/decisions/0003-create-templates.md), [0024](/decisions/0024-go-package-names-drop-the-dash.md), [0025](/decisions/0025-refuse-names-whose-go-package-cannot-compile.md) |
 | The server's package and runner, from the backend template | `packages/server`, `apps/server` | [0002](/decisions/0002-server-app.md), [0005](/decisions/0005-package-layout.md) |
 | The listeners: `server.info` and `server.mus`, a host and a port each | `packages/config` | [0020](/decisions/0020-info-and-mus-websocket-ports.md) |
 | `Conn`, TCP and the WebSocket as an `http.Handler` | `packages/server/transport` | [0006](/decisions/0006-transport.md) |
@@ -49,7 +49,8 @@ S0 writes no game rules and no `virtual` state: those start in [S2](/phases/s2-l
 7. [s0-07 Serve R26 sessions](/tasks/s0-07-r26-sessions.md) **done**
 8. [s0-08 Check S0's exit criteria](/tasks/s0-08-exit-check.md) **blocked**
 9. [s0-09 Make the Go templates work for every name tools/create accepts](/tasks/s0-09-go-template-names.md) **done**
-10. [s0-10 Handle the names whose Go package cannot compile](/tasks/s0-10-go-names-that-clash.md)
+10. [s0-10 Handle the names whose Go package cannot compile](/tasks/s0-10-go-names-that-clash.md) **done**
+11. [s0-11 Handle the names whose folder the go tool treats specially](/tasks/s0-11-names-the-go-tool-treats-specially.md)
 
 S0 runs on the branch `s0`. s0-06 waits for [s1-01](/tasks/s1-01-fuse-client.md) and s0-07 for
 [s1-02](/tasks/s1-02-entry-init.md), both of S1, which runs beside it.
@@ -58,5 +59,5 @@ S0 runs on the branch `s0`. s0-06 waits for [s1-01](/tasks/s1-01-fuse-client.md)
 
 Asked when their task starts:
 
-- s0-10: what `tools/create` does with a name whose Go package name the generated Go cannot use: a Go keyword, `main`,
-  or a name the generated files already use, such as `log`, `http`, `db` or `new`.
+- s0-11: what `tools/create` does with a name whose folder the go tool treats specially: `internal`, `vendor` or
+  `testdata`.

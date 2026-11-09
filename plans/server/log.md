@@ -2,6 +2,23 @@
 
 ## 2026-11-07
 
+- **Blocked** [s0-08](/tasks/s0-08-exit-check.md): s0-10 is done, but [S0](/phases/s0-foundations.md) can be `done`
+  only once [s0-11](/tasks/s0-11-names-the-go-tool-treats-specially.md), which waits for the user's answer, is.
+- **Create** [s0-11](/tasks/s0-11-names-the-go-tool-treats-specially.md): `internal`, `vendor` and `testdata` compile
+  as Go package names but not as folders: the runners may not import `packages/internal`, the go tool reads
+  `packages/vendor` as vendored code, and `./...` skips folders named `testdata`, which fails a backend's gates. What
+  `tools/create` does with them is a new open question of [S0](/phases/s0-foundations.md). Found by s0-10.
+- **Done** [s0-10](/tasks/s0-10-go-names-that-clash.md): `validateName` refuses, for the backend and fullstack
+  templates, a name whose Go package would be a Go keyword, `main`, `init`, or one of the 5 names the backend's Go
+  uses or the 15 the fullstack's does, derived from the templates and tested; of 218 names tried in a throwaway
+  worktree, none it refuses compiles, and every one it accepts compiles but `internal`, `vendor` and `testdata`.
+- **Start** [s0-10](/tasks/s0-10-go-names-that-clash.md).
+- **Update** [s0-10](/tasks/s0-10-go-names-that-clash.md)'s question is answered by 0025, and
+  [S0](/phases/s0-foundations.md) has no open questions left.
+- **Decision** [0025](/decisions/0025-refuse-names-whose-go-package-cannot-compile.md): `validateName` refuses, with a
+  plain message, a name whose Go package name cannot compile in the template being made: `main`, a Go keyword, or a
+  name the template's own Go already uses; every generated project stays as it is. Answers
+  [s0-10](/tasks/s0-10-go-names-that-clash.md)'s question.
 - **Blocked** [s0-08](/tasks/s0-08-exit-check.md): every exit criterion of [S0](/phases/s0-foundations.md) passes on
   `main`, from `make install` and `make gates` in a fresh worktree to one project of each template, and
   [How the server is built](/reference/architecture.md) matches the code; S0 can be `done` only once

@@ -7,7 +7,7 @@ phase: s0
 depends_on: [s0-01, s0-02, s0-03, s0-04, s0-05, s0-06, s0-07]
 packages: [packages/server, apps/server, tools/create]
 client: []
-timestamp: 2026-11-07T01:16:06+00:00
+timestamp: 2026-11-07T02:40:24+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 ---
 
@@ -66,3 +66,8 @@ S0's [exit criteria](/phases/s0-foundations.md#exit-criteria), one by one:
   and [s0-10](/tasks/s0-10-go-names-that-clash.md), which s0-09 found, waits for the user's answer to S0's open
   question: what `tools/create` does with a name whose Go package name is a Go keyword, `main`, or a name the generated
   Go already uses. Once s0-10 is done, the last step sets S0 to `done` and updates the active phases of `/index.md`.
+- Still blocked on 2026-11-07, once s0-10 was done: s0-10 found
+  [s0-11](/tasks/s0-11-names-the-go-tool-treats-specially.md), which waits for the user's answer to S0's new open
+  question, what `tools/create` does with `internal`, `vendor` and `testdata`. Once s0-11 is done, the exit criteria are
+  checked again on the merged state, and the last step sets S0 to `done` and updates the active phases of `/index.md`.
+  s0-10's throwaway worktree made a backend, a fullstack and a client project that pass the checks of the gates.
