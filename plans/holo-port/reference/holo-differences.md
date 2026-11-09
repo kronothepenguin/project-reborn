@@ -2,7 +2,7 @@
 type: Reference
 title: Where the port differs from Holo
 description: Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
-timestamp: 2026-11-07T02:32:02+00:00
+timestamp: 2026-11-09T17:18:22+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [holo]
 ---
@@ -99,7 +99,8 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Group badges | Holo's 18 tints | The closest Tailwind colours; tint 15, olive-500, looks grey-olive beside Holo's brown | [0102](/decisions/0102-badges-keep-the-tailwind-palette.md) |
 | Several habbos | A habbo is never removed | A user archives a habbo, which hides it and keeps its name | [0058](/decisions/0058-habbos-are-archived.md) |
 | Wardrobe | One wardrobe per account | One per habbo: the active habbo keeps its own outfits and dresses in them | [0001](/decisions/0001-user-owns-many-habbos.md), and the plan's `wardrobe_outfits` |
-| Wardrobe | A green arrow writes the Flash editor again at once | The HTML5 editor starts again with the outfit, after its loading screen; pressed while an editor is still loading, it waits until that one has drawn itself, since a loading editor cannot be stopped | [0021](/decisions/0021-dropped-and-kept-features.md) |
+| Wardrobe | A green arrow writes the Flash editor again at once, which closes Save changes and opens it five seconds later | The HTML5 editor starts again with the outfit, after its loading screen, and Save changes, closed at the arrow, opens five seconds after the editor has drawn the outfit; pressed while an editor is still loading, the arrow waits until that one has drawn itself, since a loading editor cannot be stopped | [0021](/decisions/0021-dropped-and-kept-features.md), [0107](/decisions/0107-save-opens-after-the-first-look.md) |
+| Looks | The Flash editor answers a change at once while the look holds club items outside the club | The HTML5 editor holds its answers until five seconds after it was built, up to two seconds after its first look, so a look the club allows, chosen in those two seconds, opens Save changes when they end | [0021](/decisions/0021-dropped-and-kept-features.md), [0107](/decisions/0107-save-opens-after-the-first-look.md) |
 | Settings | Read from the database on every request | A running CMS re-reads them every `cms.refresh` seconds | [0051](/decisions/0051-one-machine-and-a-refresh.md) |
 | Account | An email can be shared | `This e-mail address already has an account.` | [0001](/decisions/0001-user-owns-many-habbos.md) |
 | Maintenance | An `Administrator Login` link to housekeeping | A sign-in form on the page | The plan: staff sign in with the shared session |

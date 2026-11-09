@@ -22,19 +22,24 @@ export default async function ({ base, browser, check, shot, sql, eventually }) 
     "save starts disabled",
     await page.locator("#settings-submit").isDisabled(),
   );
-  await page.waitForFunction(() =>
-    document.querySelector("#editor-container canvas"),
+  // Admin-1's look holds club items, and Admin-1 is not in the club yet.
+  await listen(page);
+  await reported(page, 1);
+  const clubNotice = page.getByText(
+    "are available only to Habbo Club members.",
   );
-  await page.waitForTimeout(7000);
+  check(
+    "the editor shows the club notice for a look with club items outside the club",
+    await clubNotice.isVisible(),
+  );
+  const clubLook = await opening(page, 1, 6500);
   await shot(page, "looks");
   check(
-    "save stays disabled until the editor is touched",
-    await page.locator("#settings-submit").isDisabled(),
+    "save stays closed past the five seconds for such a look",
+    clubLook.after === null &&
+      (await page.locator("#settings-submit").isDisabled()),
+    JSON.stringify(clubLook),
   );
-  // a click on the randomize area or a body part changes the look
-  const canvas = page.locator("#editor-container canvas");
-  const box = await canvas.boundingBox();
-  const before = await page.inputValue("#settings-figure");
   await page.evaluate(() => window.HabboEditor.setAllowedToProceed(true));
   check(
     "allowed enables save",
@@ -64,6 +69,24 @@ export default async function ({ base, browser, check, shot, sql, eventually }) 
     "old figure notice",
     await page.getByText("not selectable anymore").isVisible(),
   );
+
+  // Holo's Flash held nothing for a look with club items outside the club, so a
+  // change in what would have been its five seconds counts at once.
+  await page.reload();
+  await listen(page);
+  await reported(page, 1);
+  await page.waitForTimeout(2500);
+  await randomize(page);
+  await reported(page, 2);
+  const leftClub = await opening(page, 2, 2000);
+  check(
+    "a change from such a look to one the club allows opens save at once",
+    leftClub.after !== null &&
+      leftClub.after < 500 &&
+      !(await clubNotice.isVisible()),
+    JSON.stringify(leftClub),
+  );
+
   await page.evaluate(() => {
     document.getElementById("settings-figure").value = "hd-205-6";
     document.getElementById("settings-gender").value = "F";
@@ -75,6 +98,55 @@ export default async function ({ base, browser, check, shot, sql, eventually }) 
     sql("select figure, gender from avatars where name='Admin-1'")[0].join(
       "|",
     ) === "hd-205-6|F",
+  );
+
+  await listen(page);
+  await reported(page, 1);
+  const allowed = await opening(page, 1);
+  check(
+    "save opens by itself five seconds after the editor draws a look the club allows",
+    fiveSeconds(allowed),
+    JSON.stringify(allowed),
+  );
+  await page.goto(base + "/account/looks");
+  await listen(page);
+  await reported(page, 1);
+  await page.waitForTimeout(2500);
+  await randomize(page);
+  await reported(page, 2);
+  const changedEarly = await page.locator("#settings-submit").isDisabled();
+  const atTheirEnd = await opening(page, 1);
+  check(
+    "a change within the five seconds counts at their end",
+    changedEarly && fiveSeconds(atTheirEnd),
+    JSON.stringify({ changedEarly, ...atTheirEnd }),
+  );
+  // The head tab, its first hair, then the second colour of the third row,
+  // which only the club may wear.
+  await page.goto(base + "/account/looks");
+  await listen(page);
+  await reported(page, 1);
+  const editor = await page.locator("#editor-container canvas").boundingBox();
+  for (const [x, y] of [
+    [113, 20],
+    [84, 122],
+    [58, 341],
+  ]) {
+    await page.waitForTimeout(400);
+    await page.mouse.click(editor.x + x, editor.y + y);
+  }
+  await reported(page, 3);
+  const clubColour = await opening(page, 1, 6500);
+  await shot(page, "looks-club-colour");
+  check(
+    "a club colour chosen within the five seconds keeps save closed at their end",
+    clubColour.after === null &&
+      (await page.locator("#settings-submit").isDisabled()) &&
+      (await clubNotice.isVisible()),
+    JSON.stringify({
+      ...clubColour,
+      looks: await page.evaluate(() => window.looks),
+    }),
   );
   check("join club box", await page.getByText("Join Reborn Club").isVisible());
   check(
@@ -101,18 +173,56 @@ export default async function ({ base, browser, check, shot, sql, eventually }) 
 }
 
 // The editor reports its look once it has drawn itself, and on every change; the
-// suite counts the reports to know when the editor is ready.
+// suite counts the reports to know when the editor is ready. It also notes when
+// each look came and whether save was closed then, and when save opened.
 async function listen(page) {
   await page.waitForFunction(() => window.HabboEditor);
   await page.evaluate(() => {
     const editor = window.HabboEditor;
     const report = editor.setGenderAndFigure;
+    const save = document.getElementById("settings-submit");
     window.looks = [];
+    window.looked = [];
+    window.opened = [];
     editor.setGenderAndFigure = (gender, figure) => {
       window.looks.push(figure);
+      window.looked.push({ at: performance.now(), closed: save.disabled });
       report(gender, figure);
     };
+    new MutationObserver(() => {
+      if (!save.disabled) window.opened.push(performance.now());
+    }).observe(save, { attributeFilter: ["disabled"] });
   });
+}
+
+// Whether save was closed when look number n came, and how many milliseconds
+// after it save opened; after is null while save stays closed until timeout.
+async function opening(page, n, timeout = 10000) {
+  await page
+    .waitForFunction(
+      (n) => window.opened.some((at) => at > window.looked[n - 1].at),
+      n,
+      { timeout },
+    )
+    .catch(() => {});
+  return page.evaluate((n) => {
+    const look = window.looked[n - 1];
+    const opened = window.opened.find((at) => at > look.at);
+    return {
+      closed: look.closed,
+      after: opened === undefined ? null : Math.round(opened - look.at),
+    };
+  }, n);
+}
+
+// Holo's Flash opened save five seconds after drawing a look the club allows.
+const fiveSeconds = ({ closed, after }) =>
+  closed && after !== null && after >= 4990 && after < 6000;
+
+// Randomize, at the top right of the editor, changes the look.
+async function randomize(page) {
+  const box = await page.locator("#editor-container canvas").boundingBox();
+  await page.mouse.click(box.x + 330, box.y + 56);
 }
 
 async function reported(page, count) {
@@ -161,6 +271,12 @@ async function wardrobe({ base, page, check, shot, sql, eventually }) {
         5 &&
       (await page.locator('#wardrobe-slots [id^="wardrobe-dress-"]').count()) ===
         0,
+  );
+  const inClub = await opening(page, 1);
+  check(
+    "in the club, save opens by itself five seconds after the editor draws the look",
+    fiveSeconds(inClub),
+    JSON.stringify(inClub),
   );
 
   await page.hover("#wardrobe-store-1");
@@ -237,11 +353,14 @@ async function wardrobe({ base, page, check, shot, sql, eventually }) {
   );
 
   const drawn = await page.$("#editor-container canvas");
+  const openBefore = !(await page.locator("#settings-submit").isDisabled());
   await page.click("#wardrobe-dress-1");
   check(
-    "a green arrow puts the outfit in the form at once and starts the editor again",
+    "a green arrow puts the outfit in the form at once, starts the editor again and closes save",
     (await page.inputValue("#settings-figure")) === first &&
-      !(await drawn.evaluate((element) => element.isConnected)),
+      !(await drawn.evaluate((element) => element.isConnected)) &&
+      openBefore &&
+      (await page.locator("#settings-submit").isDisabled()),
   );
   const dressed = await reported(page, 4);
   const config = await page.evaluate(() => window.HabboEditorConfig);
@@ -276,11 +395,12 @@ async function wardrobe({ base, page, check, shot, sql, eventually }) {
     await page.evaluate(() => window.looks.join(" ")),
   );
 
-  // The editor opens the save button once touched, as on any start.
-  await page.waitForFunction(
-    () => document.getElementById("settings-submit").disabled,
+  const lastDressed = await opening(page, 6);
+  check(
+    "save opens by itself five seconds after the editor draws the outfit of the last green arrow",
+    fiveSeconds(lastDressed),
+    JSON.stringify(lastDressed),
   );
-  await page.evaluate(() => window.HabboEditor.setAllowedToProceed(true));
   await page.click("#settings-submit");
   await page.getByText("Account settings updated successfully.").waitFor();
   check(

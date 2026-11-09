@@ -1,7 +1,14 @@
 # Log
 
+## 2026-11-09
+
+- **Done** [p6-12](/tasks/p6-12-save-looks-as-the-flash-editor.md): on `/account/looks`, Save changes opens five
+  seconds after the editor draws a look the club allows, on the page's load and after a green arrow, as Holo's Flash
+  did; a change in those seconds counts at their end, and a look with club items outside the club keeps it closed.
+
 ## 2026-11-07
 
+- **Start** [p6-12](/tasks/p6-12-save-looks-as-the-flash-editor.md).
 - **Done** [p6-11](/tasks/p6-11-club-page-layout-guard.md): the club page joins the guard on the layout's fields,
   which now fails for a field of `clubPage` named after one of the layout's.
 - **Start** [p6-11](/tasks/p6-11-club-page-layout-guard.md).
