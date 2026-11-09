@@ -42,22 +42,22 @@ each other ([Branches](/rules.md#branches)).
 2. [s1-02 Map hh_entry_init: login and opening hours](/tasks/s1-02-entry-init.md) **done**
 3. [s1-03 Map hh_shared](/tasks/s1-03-shared.md) **done**
 4. [s1-04 Map hh_navigator](/tasks/s1-04-navigator.md) **done**
-5. [s1-05 Map hh_kiosk_room](/tasks/s1-05-kiosk-room.md)
+5. [s1-05 Map hh_kiosk_room](/tasks/s1-05-kiosk-room.md) **done**
 6. [s1-06 Map hh_room](/tasks/s1-06-room.md)
-7. [s1-07 Map hh_room_utils](/tasks/s1-07-room-utils.md)
+7. [s1-07 Map hh_room_utils](/tasks/s1-07-room-utils.md) **done**
 8. [s1-08 Map hh_buffer](/tasks/s1-08-buffer.md) **done**
 9. [s1-09 Map hh_cat_code](/tasks/s1-09-catalogue.md) **done**
 10. [s1-10 Map hh_club](/tasks/s1-10-club.md) **done**
-11. [s1-11 Map hh_friend_list](/tasks/s1-11-friend-list.md)
-12. [s1-12 Map hh_instant_messenger](/tasks/s1-12-instant-messenger.md)
-13. [s1-13 Map hh_guide](/tasks/s1-13-guide.md)
-14. [s1-14 Map hh_tutorial](/tasks/s1-14-tutorial.md)
-15. [s1-15 Map hh_poll](/tasks/s1-15-poll.md)
-16. [s1-16 Map hh_photo](/tasks/s1-16-photo.md)
-17. [s1-17 Map hh_recycler](/tasks/s1-17-recycler.md)
+11. [s1-11 Map hh_friend_list](/tasks/s1-11-friend-list.md) **done**
+12. [s1-12 Map hh_instant_messenger](/tasks/s1-12-instant-messenger.md) **done**
+13. [s1-13 Map hh_guide](/tasks/s1-13-guide.md) **done**
+14. [s1-14 Map hh_tutorial](/tasks/s1-14-tutorial.md) **done**
+15. [s1-15 Map hh_poll](/tasks/s1-15-poll.md) **done**
+16. [s1-16 Map hh_photo](/tasks/s1-16-photo.md) **done**
+17. [s1-17 Map hh_recycler](/tasks/s1-17-recycler.md) **done**
 18. [s1-18 Map hh_soundmachine](/tasks/s1-18-soundmachine.md)
-19. [s1-19 Map hh_roomdimmer](/tasks/s1-19-roomdimmer.md)
-20. [s1-20 Map hh_dynamic_downloader](/tasks/s1-20-dynamic-downloader.md)
+19. [s1-19 Map hh_roomdimmer](/tasks/s1-19-roomdimmer.md) **done**
+20. [s1-20 Map hh_dynamic_downloader](/tasks/s1-20-dynamic-downloader.md) **done**
 21. [s1-21 Map hh_ig](/tasks/s1-21-instant-games.md)
 22. [s1-22 Map hh_human](/tasks/s1-22-human.md) **done**
 23. [s1-24 Describe the MUS framing of the #mus connection](/tasks/s1-24-mus-framing.md)

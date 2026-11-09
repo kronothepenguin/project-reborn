@@ -6,6 +6,50 @@
   commands, as registered: the index and pages as text, the pet name check, the purchase as eight lines with each
   page's extra value and the gift, and the credit balance.
 - **Start** [s1-09](/tasks/s1-09-catalogue.md).
+- **Done** [s1-11](/tasks/s1-11-friend-list.md): [hh_friend_list](/reference/r26/hh_friend_list.md) maps 11 messages
+  and 10 commands, as registered: the list after the login and its timed updates, friend requests, removal, the user
+  search, following a friend and mail notices. `FRIENDLIST_GETOFFLINEFRIENDS` is never sent, and 315's failures are
+  never shown.
+- **Start** [s1-11](/tasks/s1-11-friend-list.md).
+- **Done** [s1-14](/tasks/s1-14-tutorial.md): [hh_tutorial](/reference/r26/hh_tutorial.md) maps 12 messages and 10
+  commands, as registered: the tutorial's preferences, configuration, topics and status, and the new-user help's items
+  and invitations of guides. A topic's steps name client messages for the client to execute and to wait for.
+- **Start** [s1-14](/tasks/s1-14-tutorial.md).
+- **Done** [s1-16](/tasks/s1-16-photo.md): [hh_photo](/reference/r26/hh_photo.md) maps 1 message on `#info` and 2 on
+  `#mus`, and the photo's `#mus` messages: a photo stored as `PHOTOTXT` and `BINDATA`, fetched with `GETBINDATA` and
+  checked by its checksum, and the film count.
+- **Start** [s1-16](/tasks/s1-16-photo.md).
+- **Done** [s1-07](/tasks/s1-07-room-utils.md): [hh_room_utils](/reference/r26/hh_room_utils.md) maps 7 messages and 6
+  commands, as registered: the waiting call for help, one-way doors, and chat, whispers and shouts, which `hh_room`
+  sends by the chat mode's name.
+- **Start** [s1-07](/tasks/s1-07-room-utils.md).
+- **Done** [s1-13](/tasks/s1-13-guide.md): [hh_guide](/reference/r26/hh_guide.md) maps 5 messages and 5 commands, as
+  registered: the guide tool's status, waiting for invitations, and accepting or refusing one. The room bar's copies
+  of accept and refuse never send.
+- **Start** [s1-13](/tasks/s1-13-guide.md).
+- **Done** [s1-05](/tasks/s1-05-kiosk-room.md): [hh_kiosk_room](/reference/r26/hh_kiosk_room.md) maps 3 messages and 1
+  command, as registered: the Roommatic's `CREATEFLAT` as text, answered by 59, after which it sends `SETFLATCAT` and
+  a `SETFLATINFO` in a form of its own, unlike the navigator's.
+- **Start** [s1-05](/tasks/s1-05-kiosk-room.md).
+- **Done** [s1-12](/tasks/s1-12-instant-messenger.md): [hh_instant_messenger](/reference/r26/hh_instant_messenger.md)
+  maps 4 messages and 2 commands, as registered: chats with friends by user id, invitations to the room, and the
+  errors of undelivered lines.
+- **Start** [s1-12](/tasks/s1-12-instant-messenger.md).
+- **Done** [s1-17](/tasks/s1-17-recycler.md): [hh_recycler](/reference/r26/hh_recycler.md) maps 5 messages and 5
+  commands, as registered: the rewards and the status, recycling from the hand, and taking or refusing the reward.
+  `APPROVE_RECYCLED_FURNI` (224) is never sent.
+- **Start** [s1-17](/tasks/s1-17-recycler.md).
+- **Done** [s1-15](/tasks/s1-15-poll.md): [hh_poll](/reference/r26/hh_poll.md) maps 3 messages and 3 commands, as
+  registered: the offer, the questions and their answers. `POLL_CANCEL` is sent without being registered, so it
+  never leaves the client.
+- **Start** [s1-15](/tasks/s1-15-poll.md).
+- **Done** [s1-19](/tasks/s1-19-roomdimmer.md): [hh_roomdimmer](/reference/r26/hh_roomdimmer.md) maps 1 message and 3 commands, as
+  registered: the presets, Apply and On/Off, and the dimmer's state, which comes as its furniture's state string.
+- **Start** [s1-19](/tasks/s1-19-roomdimmer.md).
+- **Done** [s1-20](/tasks/s1-20-dynamic-downloader.md): [hh_dynamic_downloader](/reference/r26/hh_dynamic_downloader.md)
+  maps 2 messages and 2 commands, as registered: the aliases and revisions the client asks for once, before its first
+  download, and the address each furniture cast downloads from.
+- **Start** [s1-20](/tasks/s1-20-dynamic-downloader.md).
 - **Done** [s1-08](/tasks/s1-08-buffer.md): [hh_buffer](/reference/r26/hh_buffer.md) maps 5 messages, which
   `hh_room` registers too, and no command: the client holds the updates of furniture still downloading and replays
   them, so the server needs nothing of its own.
