@@ -2,6 +2,11 @@
 
 ## 2026-11-09
 
+- **Done** [s2-03](/tasks/s2-03-saved-login-data.md): `avatar_game_data` keeps each habbo's last time online, the
+  machine id of its last game login and its sound setting, through the update `0007-game-login-data.sql`.
+- **Decision** [0044](/decisions/0044-game-login-data-has-its-own-table.md): what the game server saves of a habbo has a
+  table of its own.
+- **Start** [s2-03](/tasks/s2-03-saved-login-data.md).
 - **Done** [s2-01](/tasks/s2-01-settings.md): the Game settings form holds the client version, 1 by default, and the ten
   session parameters, as `game.` settings of the catalogue.
 - **Decision** [0040](/decisions/0040-the-accepted-client-version-starts-at-1.md): the accepted client version starts at

@@ -3,7 +3,7 @@ type: Entity
 title: Habbo
 description: An in-hotel identity owned by a user, with its name, look, motto, badges and wardrobe.
 tags: [store, entity, habbo]
-timestamp: 2026-11-06T22:56:10+00:00
+timestamp: 2026-11-09T23:20:00+00:00
 ---
 
 # Definition
@@ -26,6 +26,8 @@ motto. A user can own several habbos, which share the user's wallet, club member
 - The owner archives a habbo from Account → Habbos, and staff restore it. An archived habbo cannot sign in, leaves the
   lists and the limit of `registration.maxHabbosPerUser`, and keeps its rows and its name. The stickers and notes on its
   home go back to the user's inventory, notes without their text.
+- The game server writes its last time online at each login and logout, the machine id of each login, and its sound
+  setting when the game client changes it.
 - Deleting a habbo deletes its badges, outfits, the sessions where it is active and its SSO tickets, and clears it
   as display habbo, referrer and login-attempt habbo.
 
@@ -48,6 +50,7 @@ motto. A user can own several habbos, which share the user's wallet, club member
 # Tables
 
 - [avatars](/tables/avatars.md)
+- [avatar_game_data](/tables/avatar_game_data.md)
 - [avatar_badges](/tables/avatar_badges.md)
 
 # Queries

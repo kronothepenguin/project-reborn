@@ -169,6 +169,49 @@ func TestListRandomAvatarsHonoursTheCount(t *testing.T) {
 	}
 }
 
+func TestAHabbosGameLoginDataIsSaved(t *testing.T) {
+	db := openTestDB(t)
+	q := New(db)
+	ctx := t.Context()
+	_, frank := createUserWithHabbo(t, q, "frank@example.com", "Frank")
+
+	if _, err := q.GetAvatarGameData(ctx, frank.ID); !IsNotFound(err) {
+		t.Fatalf("a habbo that never logged in to the game has data: %v", err)
+	}
+
+	online := testNow.Add(time.Hour)
+	if err := q.SetAvatarLastOnline(ctx, SetAvatarLastOnlineParams{AvatarID: frank.ID, LastOnlineAt: sql.NullTime{Time: online, Valid: true}}); err != nil {
+		t.Fatalf("SetAvatarLastOnline: %v", err)
+	}
+	got, err := q.GetAvatarGameData(ctx, frank.ID)
+	if err != nil {
+		t.Fatalf("GetAvatarGameData: %v", err)
+	}
+	if got.MachineID.Valid || !got.SoundEnabled {
+		t.Errorf("the first write left machine id %v and sound %t; want none and on", got.MachineID, got.SoundEnabled)
+	}
+
+	if err := q.SetAvatarMachineID(ctx, SetAvatarMachineIDParams{AvatarID: frank.ID, MachineID: "machine-1"}); err != nil {
+		t.Fatalf("SetAvatarMachineID: %v", err)
+	}
+	if err := q.SetAvatarSoundEnabled(ctx, SetAvatarSoundEnabledParams{AvatarID: frank.ID, SoundEnabled: false}); err != nil {
+		t.Fatalf("SetAvatarSoundEnabled: %v", err)
+	}
+	got, err = q.GetAvatarGameData(ctx, frank.ID)
+	if err != nil {
+		t.Fatalf("GetAvatarGameData: %v", err)
+	}
+	if !got.LastOnlineAt.Valid || !got.LastOnlineAt.Time.Equal(online) {
+		t.Errorf("last time online = %v, want %v", got.LastOnlineAt, online)
+	}
+	if got.MachineID != (sql.NullString{String: "machine-1", Valid: true}) {
+		t.Errorf("machine id = %v, want machine-1", got.MachineID)
+	}
+	if got.SoundEnabled {
+		t.Error("sound is still on")
+	}
+}
+
 func TestLoginLookupIgnoresCase(t *testing.T) {
 	q := New(openTestDB(t))
 	user, avatar := createUserWithHabbo(t, q, "krono@example.com", "Krono")

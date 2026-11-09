@@ -60,6 +60,13 @@ type AvatarBadge struct {
 	GrantedAt time.Time
 }
 
+type AvatarGameData struct {
+	AvatarID     int64
+	LastOnlineAt sql.NullTime
+	MachineID    sql.NullString
+	SoundEnabled bool
+}
+
 type Ban struct {
 	ID             int64
 	UserID         sql.NullInt64

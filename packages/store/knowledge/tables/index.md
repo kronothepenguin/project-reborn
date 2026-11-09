@@ -6,6 +6,7 @@ Concepts for the tables declared under `packages/store/schema/`, one per table.
 
 - [users](users.md) — The person behind one or more habbos, with email, birth date, newsletter opt-in and registration IP.
 - [avatars](avatars.md) — Habbos, the in-hotel identities owned by a user, with name, figure, gender and motto.
+- [avatar_game_data](avatar_game_data.md) — What the game server saves of a habbo, its last time online, the machine id of its last game login and its sound setting; a habbo that never logged in to the game has no row.
 - [avatar_badges](avatar_badges.md) — Badges owned by a habbo, at most one of them worn.
 - [wardrobe_outfits](wardrobe_outfits.md) — Outfits a habbo saved in numbered wardrobe slots.
 - [referrals](referrals.md) — The habbo that referred each new user, and when the referral reward was paid.

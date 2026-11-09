@@ -8,3 +8,4 @@ sql:
         package: store
         out: .
         initialisms: ["id", "ip", "sso", "url"]
+        inflection_exclude_table_names: ["avatar_game_data"]

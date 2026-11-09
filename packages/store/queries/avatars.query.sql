@@ -145,3 +145,21 @@ ON CONFLICT (avatar_id, slot) DO UPDATE SET
     figure = excluded.figure,
     gender = excluded.gender,
     updated_at = excluded.updated_at;
+
+-- name: GetAvatarGameData :one
+SELECT * FROM avatar_game_data WHERE avatar_id = sqlc.arg(avatar_id);
+
+-- name: SetAvatarLastOnline :exec
+INSERT INTO avatar_game_data (avatar_id, last_online_at)
+VALUES (sqlc.arg(avatar_id), sqlc.arg(last_online_at))
+ON CONFLICT (avatar_id) DO UPDATE SET last_online_at = excluded.last_online_at;
+
+-- name: SetAvatarMachineID :exec
+INSERT INTO avatar_game_data (avatar_id, machine_id)
+VALUES (sqlc.arg(avatar_id), CAST(sqlc.arg(machine_id) AS TEXT))
+ON CONFLICT (avatar_id) DO UPDATE SET machine_id = excluded.machine_id;
+
+-- name: SetAvatarSoundEnabled :exec
+INSERT INTO avatar_game_data (avatar_id, sound_enabled)
+VALUES (sqlc.arg(avatar_id), sqlc.arg(sound_enabled))
+ON CONFLICT (avatar_id) DO UPDATE SET sound_enabled = excluded.sound_enabled;

@@ -33,3 +33,11 @@ CREATE TABLE IF NOT EXISTS wardrobe_outfits (
     updated_at DATETIME NOT NULL,
     PRIMARY KEY (avatar_id, slot)
 );
+
+-- What the game server saves of a habbo; a habbo that never logged in to the game has no row.
+CREATE TABLE IF NOT EXISTS avatar_game_data (
+    avatar_id INTEGER PRIMARY KEY REFERENCES avatars(id) ON DELETE CASCADE,
+    last_online_at DATETIME,
+    machine_id TEXT,
+    sound_enabled BOOLEAN NOT NULL DEFAULT TRUE
+);

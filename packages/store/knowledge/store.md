@@ -4,7 +4,7 @@ title: Store
 description: Persistence infrastructure that opens the SQLite file, applies the update files and provides the generated typed operations.
 resource: packages/store
 tags: [store, sqlite, go]
-timestamp: 2026-11-03T21:45:00+00:00
+timestamp: 2026-11-09T23:20:00+00:00
 ---
 
 # Overview
@@ -90,7 +90,8 @@ the [`Ping`](/queries/ping.md) smoke query and every future feature operation.
 Regenerate with `go tool sqlc generate` after changing SQL; generated files are
 committed and never edited by hand. Generated Go names upper-case the
 initialisms `ID`, `IP`, `SSO` and `URL` (`initialisms` in `sqlc.yaml`), so the
-`created_ip` column becomes `CreatedIP` and `sso_tickets` becomes `SSOTicket`.
+`created_ip` column becomes `CreatedIP` and `sso_tickets` becomes `SSOTicket`. Table names become singular, except
+`avatar_game_data` (`inflection_exclude_table_names`), whose struct is `AvatarGameData`.
 
 The schema is documented per [entity](/entities/index.md), per
 [table](/tables/index.md) and per [schema file](/schemas/index.md).

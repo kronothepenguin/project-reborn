@@ -1,10 +1,10 @@
 ---
 type: SQL Query
 title: avatars.query.sql
-description: Habbo operations for creation, lookup by id or name, the habbos of a user and random habbos, their badges, a badge for every habbo of a user, and their wardrobe outfits.
+description: Habbo operations for creation, lookup by id or name, the habbos of a user and random habbos, their badges, a badge for every habbo of a user, their wardrobe outfits, and what the game server saves of a habbo at login and in play.
 resource: packages/store/queries/avatars.query.sql
 tags: [store, query, habbo]
-timestamp: 2026-11-06T22:56:10+00:00
+timestamp: 2026-11-09T23:20:00+00:00
 ---
 
 # Operations
@@ -172,6 +172,34 @@ timestamp: 2026-11-06T22:56:10+00:00
 - Inputs: `avatar_id`, `slot`, `figure`, `gender`, `updated_at`
 - Result: the outfit in the habbo's slot, replacing the one there
 - Tables: `wardrobe_outfits`
+
+## GetAvatarGameData
+
+- Cardinality: `:one`
+- Inputs: `avatar_id`
+- Result: what the game server saved of the habbo; none when it never logged in to the game
+- Tables: `avatar_game_data`
+
+## SetAvatarLastOnline
+
+- Cardinality: `:exec`
+- Inputs: `avatar_id`, `last_online_at`
+- Result: the row made or updated
+- Tables: `avatar_game_data`
+
+## SetAvatarMachineID
+
+- Cardinality: `:exec`
+- Inputs: `avatar_id`, `machine_id`
+- Result: the row made or updated
+- Tables: `avatar_game_data`
+
+## SetAvatarSoundEnabled
+
+- Cardinality: `:exec`
+- Inputs: `avatar_id`, `sound_enabled`
+- Result: the row made or updated
+- Tables: `avatar_game_data`
 
 # Related
 

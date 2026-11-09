@@ -204,6 +204,22 @@ func (q *Queries) GetAvatarByName(ctx context.Context, name string) (Avatar, err
 	return i, err
 }
 
+const getAvatarGameData = `-- name: GetAvatarGameData :one
+SELECT avatar_id, last_online_at, machine_id, sound_enabled FROM avatar_game_data WHERE avatar_id = ?1
+`
+
+func (q *Queries) GetAvatarGameData(ctx context.Context, avatarID int64) (AvatarGameData, error) {
+	row := q.db.QueryRowContext(ctx, getAvatarGameData, avatarID)
+	var i AvatarGameData
+	err := row.Scan(
+		&i.AvatarID,
+		&i.LastOnlineAt,
+		&i.MachineID,
+		&i.SoundEnabled,
+	)
+	return i, err
+}
+
 const getWornAvatarBadge = `-- name: GetWornAvatarBadge :one
 SELECT avatar_id, code, worn, granted_at FROM avatar_badges
 WHERE avatar_id = ?1 AND worn
@@ -544,6 +560,54 @@ func (q *Queries) SearchHabbos(ctx context.Context, arg SearchHabbosParams) ([]S
 		return nil, err
 	}
 	return items, nil
+}
+
+const setAvatarLastOnline = `-- name: SetAvatarLastOnline :exec
+INSERT INTO avatar_game_data (avatar_id, last_online_at)
+VALUES (?1, ?2)
+ON CONFLICT (avatar_id) DO UPDATE SET last_online_at = excluded.last_online_at
+`
+
+type SetAvatarLastOnlineParams struct {
+	AvatarID     int64
+	LastOnlineAt sql.NullTime
+}
+
+func (q *Queries) SetAvatarLastOnline(ctx context.Context, arg SetAvatarLastOnlineParams) error {
+	_, err := q.db.ExecContext(ctx, setAvatarLastOnline, arg.AvatarID, arg.LastOnlineAt)
+	return err
+}
+
+const setAvatarMachineID = `-- name: SetAvatarMachineID :exec
+INSERT INTO avatar_game_data (avatar_id, machine_id)
+VALUES (?1, CAST(?2 AS TEXT))
+ON CONFLICT (avatar_id) DO UPDATE SET machine_id = excluded.machine_id
+`
+
+type SetAvatarMachineIDParams struct {
+	AvatarID  int64
+	MachineID string
+}
+
+func (q *Queries) SetAvatarMachineID(ctx context.Context, arg SetAvatarMachineIDParams) error {
+	_, err := q.db.ExecContext(ctx, setAvatarMachineID, arg.AvatarID, arg.MachineID)
+	return err
+}
+
+const setAvatarSoundEnabled = `-- name: SetAvatarSoundEnabled :exec
+INSERT INTO avatar_game_data (avatar_id, sound_enabled)
+VALUES (?1, ?2)
+ON CONFLICT (avatar_id) DO UPDATE SET sound_enabled = excluded.sound_enabled
+`
+
+type SetAvatarSoundEnabledParams struct {
+	AvatarID     int64
+	SoundEnabled bool
+}
+
+func (q *Queries) SetAvatarSoundEnabled(ctx context.Context, arg SetAvatarSoundEnabledParams) error {
+	_, err := q.db.ExecContext(ctx, setAvatarSoundEnabled, arg.AvatarID, arg.SoundEnabled)
+	return err
 }
 
 const takeOffAvatarBadge = `-- name: TakeOffAvatarBadge :exec
