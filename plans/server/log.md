@@ -2,6 +2,12 @@
 
 ## 2026-11-09
 
+- **Update** [S0](/phases/s0-foundations.md) is done, and [S1](/phases/s1-protocol-reference.md) is the active
+  phase.
+- **Done** [s0-08](/tasks/s0-08-exit-check.md): on the merged state, install, every gate, the server's 47 tests and a
+  project of each template pass; S0 meets its exit criteria.
+- **Start** [s0-08](/tasks/s0-08-exit-check.md), again: s0-11 is done, so S0's exit criteria are checked on the
+  merged state.
 - **Done** [s0-11](/tasks/s0-11-names-the-go-tool-treats-specially.md): for the backend and fullstack templates,
   `validateName` refuses `internal`, `vendor` and `testdata` with `name cannot be <name>: the go tool treats a folder
   named <name> specially`, and the client template takes them; `inter-nal` and the like still make projects.

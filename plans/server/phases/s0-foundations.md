@@ -2,8 +2,8 @@
 type: Phase
 title: S0 Foundations
 description: The plan and its skill, the three tools/create templates, and an empty server that accepts R26 clients over WebSocket, frames their packets and answers HELLO.
-status: active
-timestamp: 2026-11-09T18:01:15+00:00
+status: done
+timestamp: 2026-11-09T18:13:34+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s0, server]
 ---
@@ -47,7 +47,7 @@ S0 writes no game rules and no `virtual` state: those start in [S2](/phases/s2-l
 5. [s0-05 Write the transport](/tasks/s0-05-transport.md) **done**
 6. [s0-06 Write the encoding](/tasks/s0-06-encoding.md) **done**
 7. [s0-07 Serve R26 sessions](/tasks/s0-07-r26-sessions.md) **done**
-8. [s0-08 Check S0's exit criteria](/tasks/s0-08-exit-check.md) **blocked**
+8. [s0-08 Check S0's exit criteria](/tasks/s0-08-exit-check.md) **done**
 9. [s0-09 Make the Go templates work for every name tools/create accepts](/tasks/s0-09-go-template-names.md) **done**
 10. [s0-10 Handle the names whose Go package cannot compile](/tasks/s0-10-go-names-that-clash.md) **done**
 11. [s0-11 Handle the names whose folder the go tool treats specially](/tasks/s0-11-names-the-go-tool-treats-specially.md) **done**
