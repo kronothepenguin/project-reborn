@@ -2,6 +2,11 @@
 
 ## 2026-11-09
 
+- **Done** [s1-11](/tasks/s1-11-friend-list.md): [hh_friend_list](/reference/r26/hh_friend_list.md) maps 11 messages
+  and 10 commands, as registered: the list after the login and its timed updates, friend requests, removal, the user
+  search, following a friend and mail notices. `FRIENDLIST_GETOFFLINEFRIENDS` is never sent, and 315's failures are
+  never shown.
+- **Start** [s1-11](/tasks/s1-11-friend-list.md).
 - **Done** [s1-04](/tasks/s1-04-navigator.md): [hh_navigator](/reference/r26/hh_navigator.md) maps 18 messages
   and 18 commands, as registered: the tree of nodes, the own rooms, the search and the favourites, a flat's settings
   and their changes, entering a room or being refused, and forwarding. `SBUSYF` (13) is never sent.
