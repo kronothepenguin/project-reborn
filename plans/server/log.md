@@ -1,5 +1,16 @@
 # Log
 
+## 2026-11-09
+
+- **Done** [s0-11](/tasks/s0-11-names-the-go-tool-treats-specially.md): for the backend and fullstack templates,
+  `validateName` refuses `internal`, `vendor` and `testdata` with `name cannot be <name>: the go tool treats a folder
+  named <name> specially`, and the client template takes them; `inter-nal` and the like still make projects.
+- **Start** [s0-11](/tasks/s0-11-names-the-go-tool-treats-specially.md).
+- **Decision** [0026](/decisions/0026-refuse-names-the-go-tool-treats-specially.md): for the backend and fullstack
+  templates, `validateName` refuses `internal`, `vendor` and `testdata`, whose folders the go tool treats specially;
+  the client template keeps them. Answers [s0-11](/tasks/s0-11-names-the-go-tool-treats-specially.md)'s question,
+  and [S0](/phases/s0-foundations.md) has no open questions left.
+
 ## 2026-11-07
 
 - **Blocked** [s0-08](/tasks/s0-08-exit-check.md): s0-10 is done, but [S0](/phases/s0-foundations.md) can be `done`

@@ -100,6 +100,34 @@ func TestValidateNameRefusesNamesWhoseGoPackageCannotCompile(t *testing.T) {
 	}
 }
 
+// The go tool's special folders are refused by the templates with Go and only
+// by them (plans/server decision 0026). The check is on the name, which names
+// the folders: ven-dor's Go package is vendor, and it compiles.
+func TestValidateNameRefusesNamesTheGoToolTreatsSpecially(t *testing.T) {
+	for _, name := range []string{"internal", "testdata", "vendor"} {
+		for _, kind := range kinds {
+			err := validateName(kind, name)
+			if kind == client {
+				if err != nil {
+					t.Errorf("validateName(%q, %q) = %v; want nil, a client has no Go", kind, name, err)
+				}
+				continue
+			}
+			want := "name cannot be " + name + ": the go tool treats a folder named " + name + " specially"
+			if err == nil || err.Error() != want {
+				t.Errorf("validateName(%q, %q) = %v; want %q", kind, name, err, want)
+			}
+		}
+	}
+	for _, name := range []string{"inter-nal", "test-data", "ven-dor", "internals", "vendors"} {
+		for _, kind := range kinds {
+			if err := validateName(kind, name); err != nil {
+				t.Errorf("validateName(%q, %q) = %v; want nil", kind, name, err)
+			}
+		}
+	}
+}
+
 // taken is derived here from the files of a generated project, so that a
 // template that starts using one more name fails until taken lists it.
 func TestTakenHoldsTheNamesTheTemplatesUse(t *testing.T) {

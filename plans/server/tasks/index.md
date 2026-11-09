@@ -15,7 +15,7 @@ starts.
 - [s0-08 Check S0's exit criteria](/tasks/s0-08-exit-check.md) — From a clean checkout of the merged work, check every exit criterion of S0, bring the reference up to date and close the phase. **blocked**
 - [s0-09 Make the Go templates work for every name tools/create accepts](/tasks/s0-09-go-template-names.md) — A fullstack or backend name with a '-' gives a Go package that does not compile, and a name that sorts after store gives imports that gofmt reorders; every name validateName accepts makes Go that compiles and passes gofmt. **done**
 - [s0-10 Handle the names whose Go package cannot compile](/tasks/s0-10-go-names-that-clash.md) — tools/create accepts names whose Go package name is a Go keyword or main, or a name the generated Go already uses, such as log, http, db or new, and the projects it makes from them do not compile. **done**
-- [s0-11 Handle the names whose folder the go tool treats specially](/tasks/s0-11-names-the-go-tool-treats-specially.md) — tools/create accepts internal, vendor and testdata, whose Go package names compile but whose folders the go tool treats specially, so the backend and fullstack projects made from them do not compile or are skipped by go vet ./....
+- [s0-11 Handle the names whose folder the go tool treats specially](/tasks/s0-11-names-the-go-tool-treats-specially.md) — tools/create accepts internal, vendor and testdata, whose Go package names compile but whose folders the go tool treats specially, so the backend and fullstack projects made from them do not compile or are skipped by go vet ./.... **done**
 
 ## S1 R26 protocol reference
 
