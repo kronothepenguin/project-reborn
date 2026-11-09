@@ -24,7 +24,7 @@ starts.
 - [s1-03 Map hh_shared](/tasks/s1-03-shared.md) — Write /reference/r26/hh_shared.md from the .ls scripts: every message hh_shared receives and every command it sends, with their fields, senders and flows. **done**
 - [s1-04 Map hh_navigator](/tasks/s1-04-navigator.md) — Write /reference/r26/hh_navigator.md from the .ls scripts: every message hh_navigator receives and every command it sends, with their fields, senders and flows. **done**
 - [s1-05 Map hh_kiosk_room](/tasks/s1-05-kiosk-room.md) — Write /reference/r26/hh_kiosk_room.md from the .ls scripts: every message hh_kiosk_room receives and every command it sends, with their fields, senders and flows.
-- [s1-06 Map hh_room](/tasks/s1-06-room.md) — Write /reference/r26/hh_room.md from the .ls scripts: every message hh_room receives and every command it sends, with their fields, senders and flows.
+- [s1-06 Map hh_room](/tasks/s1-06-room.md) — Write /reference/r26/hh_room.md from the .ls scripts: every message hh_room receives and every command it sends, with their fields, senders and flows. **done**
 - [s1-07 Map hh_room_utils](/tasks/s1-07-room-utils.md) — Write /reference/r26/hh_room_utils.md from the .ls scripts: every message hh_room_utils receives and every command it sends, with their fields, senders and flows.
 - [s1-08 Map hh_buffer](/tasks/s1-08-buffer.md) — Write /reference/r26/hh_buffer.md from the .ls scripts: every message hh_buffer receives and every command it sends, with their fields, senders and flows. **done**
 - [s1-09 Map hh_cat_code](/tasks/s1-09-catalogue.md) — Write /reference/r26/hh_cat_code.md from the .ls scripts: every message hh_cat_code receives and every command it sends, with their fields, senders and flows.

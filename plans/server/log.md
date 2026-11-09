@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [s1-06](/tasks/s1-06-room.md): [hh_room](/reference/r26/hh_room.md) maps 72 messages and 73 commands, as
+  registered: entering and building a room, users and their status lines, furniture, the hand, trading, teleports,
+  rights, groups, ratings, events and ignoring. It explains why Registering scripts counts one fewer of each.
+- **Start** [s1-06](/tasks/s1-06-room.md).
 - **Done** [s1-19](/tasks/s1-19-roomdimmer.md): [hh_roomdimmer](/reference/r26/hh_roomdimmer.md) maps 1 message and 3 commands, as
   registered: the presets, Apply and On/Off, and the dimmer's state, which comes as its furniture's state string.
 - **Start** [s1-19](/tasks/s1-19-roomdimmer.md).
