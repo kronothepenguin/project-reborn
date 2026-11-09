@@ -42,7 +42,7 @@ each other ([Branches](/rules.md#branches)).
 2. [s1-02 Map hh_entry_init: login and opening hours](/tasks/s1-02-entry-init.md) **done**
 3. [s1-03 Map hh_shared](/tasks/s1-03-shared.md) **done**
 4. [s1-04 Map hh_navigator](/tasks/s1-04-navigator.md) **done**
-5. [s1-05 Map hh_kiosk_room](/tasks/s1-05-kiosk-room.md)
+5. [s1-05 Map hh_kiosk_room](/tasks/s1-05-kiosk-room.md) **done**
 6. [s1-06 Map hh_room](/tasks/s1-06-room.md)
 7. [s1-07 Map hh_room_utils](/tasks/s1-07-room-utils.md)
 8. [s1-08 Map hh_buffer](/tasks/s1-08-buffer.md)

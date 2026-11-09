@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [s1-05](/tasks/s1-05-kiosk-room.md): [hh_kiosk_room](/reference/r26/hh_kiosk_room.md) maps 3 messages and 1
+  command, as registered: the Roommatic's `CREATEFLAT` as text, answered by 59, after which it sends `SETFLATCAT` and
+  a `SETFLATINFO` in a form of its own, unlike the navigator's.
+- **Start** [s1-05](/tasks/s1-05-kiosk-room.md).
 - **Done** [s1-04](/tasks/s1-04-navigator.md): [hh_navigator](/reference/r26/hh_navigator.md) maps 18 messages
   and 18 commands, as registered: the tree of nodes, the own rooms, the search and the favourites, a flat's settings
   and their changes, entering a room or being refused, and forwarding. `SBUSYF` (13) is never sent.
