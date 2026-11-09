@@ -2,6 +2,10 @@
 
 ## 2026-11-09
 
+- **Done** [s1-21](/tasks/s1-21-instant-games.md): [hh_ig](/reference/r26/hh_ig.md) maps 28 messages and 23 commands,
+  as registered: the lobby, creating, joining and observing games, loading the arena and the scores. The running game
+  lives in downloaded casts the repository lacks, now an open question of S8; the invitations are never reached.
+- **Start** [s1-21](/tasks/s1-21-instant-games.md).
 - **Done** [s1-15](/tasks/s1-15-poll.md): [hh_poll](/reference/r26/hh_poll.md) maps 3 messages and 3 commands, as
   registered: the offer, the questions and their answers. `POLL_CANCEL` is sent without being registered, so it
   never leaves the client.
