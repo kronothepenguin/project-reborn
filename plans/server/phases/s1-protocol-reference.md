@@ -56,7 +56,7 @@ each other ([Branches](/rules.md#branches)).
 16. [s1-16 Map hh_photo](/tasks/s1-16-photo.md)
 17. [s1-17 Map hh_recycler](/tasks/s1-17-recycler.md)
 18. [s1-18 Map hh_soundmachine](/tasks/s1-18-soundmachine.md)
-19. [s1-19 Map hh_roomdimmer](/tasks/s1-19-roomdimmer.md)
+19. [s1-19 Map hh_roomdimmer](/tasks/s1-19-roomdimmer.md) **done**
 20. [s1-20 Map hh_dynamic_downloader](/tasks/s1-20-dynamic-downloader.md)
 21. [s1-21 Map hh_ig](/tasks/s1-21-instant-games.md)
 22. [s1-22 Map hh_human](/tasks/s1-22-human.md)

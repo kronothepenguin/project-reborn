@@ -2,6 +2,9 @@
 
 ## 2026-11-09
 
+- **Done** [s1-19](/tasks/s1-19-roomdimmer.md): [hh_roomdimmer](/reference/r26/hh_roomdimmer.md) maps 1 message and 3 commands, as
+  registered: the presets, Apply and On/Off, and the dimmer's state, which comes as its furniture's state string.
+- **Start** [s1-19](/tasks/s1-19-roomdimmer.md).
 - **Update** [S0](/phases/s0-foundations.md) is done, and [S1](/phases/s1-protocol-reference.md) is the active
   phase.
 - **Done** [s0-08](/tasks/s0-08-exit-check.md): on the merged state, install, every gate, the server's 47 tests and a
