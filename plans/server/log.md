@@ -6,6 +6,19 @@
   maps 2 messages and 2 commands, as registered: the aliases and revisions the client asks for once, before its first
   download, and the address each furniture cast downloads from.
 - **Start** [s1-20](/tasks/s1-20-dynamic-downloader.md).
+- **Done** [s1-08](/tasks/s1-08-buffer.md): [hh_buffer](/reference/r26/hh_buffer.md) maps 5 messages, which
+  `hh_room` registers too, and no command: the client holds the updates of furniture still downloading and replays
+  them, so the server needs nothing of its own.
+- **Start** [s1-08](/tasks/s1-08-buffer.md).
+- **Done** [s1-04](/tasks/s1-04-navigator.md): [hh_navigator](/reference/r26/hh_navigator.md) maps 18 messages
+  and 18 commands, as registered: the tree of nodes, the own rooms, the search and the favourites, a flat's settings
+  and their changes, entering a room or being refused, and forwarding. `SBUSYF` (13) is never sent.
+- **Start** [s1-04](/tasks/s1-04-navigator.md).
+- **Update** [S2](/phases/s2-login.md)'s scope says that the figure system's command, `GETAVAILABLESETS`, is
+  never sent. Found by [s1-22](/tasks/s1-22-human.md).
+- **Done** [s1-22](/tasks/s1-22-human.md): [hh_human](/reference/r26/hh_human.md) maps no message and 1 command,
+  `GETAVAILABLESETS`, which no client sends, the two forms of figure string the client reads, and the four figure
+  data files it downloads.
 - **Update** [S0](/phases/s0-foundations.md) is done, and [S1](/phases/s1-protocol-reference.md) is the active
   phase.
 - **Done** [s0-08](/tasks/s0-08-exit-check.md): on the merged state, install, every gate, the server's 47 tests and a
@@ -20,6 +33,13 @@
   templates, `validateName` refuses `internal`, `vendor` and `testdata`, whose folders the go tool treats specially;
   the client template keeps them. Answers [s0-11](/tasks/s0-11-names-the-go-tool-treats-specially.md)'s question,
   and [S0](/phases/s0-foundations.md) has no open questions left.
+- **Start** [s1-22](/tasks/s1-22-human.md).
+- **Update** [S7](/phases/s7-club-help-extras.md)'s question on club bought in the client says that `SCR_BUY`
+  sends the button's number, 1 to 3, not months. Found by [s1-10](/tasks/s1-10-club.md).
+- **Done** [s1-10](/tasks/s1-10-club.md): [hh_club](/reference/r26/hh_club.md) maps 3 messages and 3 commands, as
+  registered: the club status the client asks for after every 3, its responses and windows, buying by button, and
+  the gifts, accepted one at a time.
+- **Start** [s1-10](/tasks/s1-10-club.md).
 - **Update** [S7](/phases/s7-club-help-extras.md) asks who receives the calls for help and where a staff member who
   follows one is taken: the client checks no right before it shows a call, and waits for the server to move it.
   Found by [s1-03](/tasks/s1-03-shared.md).
