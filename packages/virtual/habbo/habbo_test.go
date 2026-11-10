@@ -85,3 +85,30 @@ func TestOnlineHabbosAreSafeForConcurrentUse(t *testing.T) {
 	}
 	wg.Wait()
 }
+
+func TestUpdateChangesTheCopyWhileItsSessionPlaysIt(t *testing.T) {
+	reset(t)
+	s, other := &session{}, &session{}
+	h := frank(s)
+	h.SoundEnabled = true
+	h.Badges = []string{"HC1"}
+	Add(h)
+
+	if Update(7, other, func(h *Habbo) { h.SoundEnabled = false }) {
+		t.Error("another session changed Frank")
+	}
+	if !Update(7, s, func(h *Habbo) { h.SoundEnabled = false; h.Badges[0] = "ADM" }) {
+		t.Error("Frank's session did not change him")
+	}
+	got, _ := Get(7)
+	if got.SoundEnabled || got.Badges[0] != "ADM" {
+		t.Errorf("Get(7) = %+v, want the sound off and the badge ADM", got)
+	}
+	got.Badges[0] = "changed"
+	if again, _ := Get(7); again.Badges[0] != "ADM" {
+		t.Error("a copy from Get shares its badges with the online habbo")
+	}
+	if Update(8, s, func(*Habbo) {}) {
+		t.Error("Update changed a habbo that is not online")
+	}
+}

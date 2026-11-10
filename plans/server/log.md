@@ -2,6 +2,14 @@
 
 ## 2026-11-10
 
+- **Done** [s2-07](/tasks/s2-07-after-login.md): after `LOGIN_OK` the client gets the habbo's fuses, user object,
+  credits, badges, achievements, sound setting and club status, and the server's date.
+- **Decision** [0051](/decisions/0051-no-achievements-yet.md): a habbo has no achievements yet.
+- **Decision** [0052](/decisions/0052-club-status-by-days-per-month.md): the club status splits the club's days by
+  club.daysPerMonth.
+- **Decision** [0053](/decisions/0053-the-online-habbo-holds-its-own-data.md): the online habbo holds its badges, its
+  sound setting and its fuses.
+- **Start** [s2-07](/tasks/s2-07-after-login.md).
 - **Done** [s2-06](/tasks/s2-06-handshake-and-login.md): `r26` takes a client from `HELLO` to `LOGIN_OK` with an SSO
   ticket, closes a client with the wrong version after its error, and ends a session replaced by a second login with
   287.

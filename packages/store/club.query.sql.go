@@ -83,3 +83,37 @@ func (q *Queries) HasClubSubscription(ctx context.Context, userID int64) (bool, 
 	err := row.Scan(&exists)
 	return exists, err
 }
+
+const listClubSubscriptions = `-- name: ListClubSubscriptions :many
+SELECT starts_at, ends_at FROM club_subscriptions
+WHERE user_id = ?1
+ORDER BY starts_at
+`
+
+type ListClubSubscriptionsRow struct {
+	StartsAt time.Time
+	EndsAt   time.Time
+}
+
+func (q *Queries) ListClubSubscriptions(ctx context.Context, userID int64) ([]ListClubSubscriptionsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listClubSubscriptions, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListClubSubscriptionsRow
+	for rows.Next() {
+		var i ListClubSubscriptionsRow
+		if err := rows.Scan(&i.StartsAt, &i.EndsAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

@@ -4,6 +4,7 @@
 package habbo
 
 import (
+	"slices"
 	"sync"
 
 	"github.com/kronothepenguin/project-reborn/packages/store"
@@ -16,10 +17,16 @@ type Session interface {
 	Notify(event any)
 }
 
-// Habbo is an online habbo: its avatar as the login read it, and its session.
+// Habbo is an online habbo: what the login read of it, and its session (plans/server decision 0053). A change writes
+// the store first, then Update changes the copy.
 type Habbo struct {
 	store.Avatar
-	Session Session
+	// Badges are the codes of the habbo's badges, and Worn the one it wears, empty when none.
+	Badges       []string
+	Worn         string
+	SoundEnabled bool
+	Fuses        []string
+	Session      Session
 }
 
 var (
@@ -27,12 +34,33 @@ var (
 	online = make(map[int64]Habbo)
 )
 
-// Get returns the online habbo avatarID.
+// Get returns a copy of the online habbo avatarID.
 func Get(avatarID int64) (Habbo, bool) {
 	mu.Lock()
 	defer mu.Unlock()
 	h, ok := online[avatarID]
-	return h, ok
+	return h.clone(), ok
+}
+
+// Update runs change on the online habbo avatarID while s plays it, and reports whether it did. change runs under the
+// package's lock, so it must not call a session or the database.
+func Update(avatarID int64, s Session, change func(h *Habbo)) bool {
+	mu.Lock()
+	defer mu.Unlock()
+	h, ok := online[avatarID]
+	if !ok || h.Session != s {
+		return false
+	}
+	h = h.clone()
+	change(&h)
+	online[avatarID] = h
+	return true
+}
+
+func (h Habbo) clone() Habbo {
+	h.Badges = slices.Clone(h.Badges)
+	h.Fuses = slices.Clone(h.Fuses)
+	return h
 }
 
 // Add puts h online, and returns the habbo it replaces when h was online
@@ -41,7 +69,7 @@ func Add(h Habbo) (replaced Habbo, ok bool) {
 	mu.Lock()
 	defer mu.Unlock()
 	replaced, ok = online[h.ID]
-	online[h.ID] = h
+	online[h.ID] = h.clone()
 	return replaced, ok
 }
 

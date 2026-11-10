@@ -18,6 +18,11 @@ WHERE user_id = sqlc.arg(user_id)
 ORDER BY ends_at DESC
 LIMIT 1;
 
+-- name: ListClubSubscriptions :many
+SELECT starts_at, ends_at FROM club_subscriptions
+WHERE user_id = sqlc.arg(user_id)
+ORDER BY starts_at;
+
 -- name: HasClubSubscription :one
 SELECT EXISTS (SELECT 1 FROM club_subscriptions WHERE user_id = sqlc.arg(user_id));
 

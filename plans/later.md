@@ -81,6 +81,16 @@ The user chose "Every checked fuse (Recommended)": "The client's 14 and Holo's s
 each one when the phase of its feature comes (S3 navigator, S4 rooms, S7 mod tool and calls for help); Holo's chat
 commands (:ha, :teleport, :freeze) have no phase yet and go to plans/later.md. The 11 unchecked names stay out."
 
+## Achievements
+
+The habbos have no achievements yet ([server 0051](server/decisions/0051-no-achievements-yet.md)): 436 lists none, the
+server sends no 437, and `GETSELECTEDBADGES` (159), which the client sends only after a 437, has no handler. A phase
+that brings achievements decides which ones exist, their levels and badges, how a habbo earns them, and what answers
+`GETSELECTEDBADGES`.
+
+The user chose "None yet (Recommended)": "436 lists no achievements and the server never sends 437. GETSELECTEDBADGES,
+which the client sends only after a 437, then waits for the phase that brings achievements; plans/later.md notes it."
+
 ## Known issues
 
 Issues the user has seen and chose to fix later.

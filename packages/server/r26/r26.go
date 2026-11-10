@@ -21,8 +21,24 @@ import (
 // handler handles one packet of a session, given its body.
 type handler func(s *session, body []byte)
 
-// handlers holds the handler of each command id the server handles. Every other id is logged as unhandled.
-var handlers = entryInitHandlers
+// handlers holds the handler of each command id the server handles, from every cast. Every other id is logged as
+// unhandled.
+var handlers = join(entryInitHandlers, clubHandlers, sharedHandlers)
+
+// join puts the handlers of every cast in one map. A command has one handler, even when several casts send it, as
+// hh_entry_init and hh_tutorial both send 228, so a repeated id is a mistake of the server, caught as it starts.
+func join(casts ...map[int]handler) map[int]handler {
+	all := make(map[int]handler)
+	for _, cast := range casts {
+		for id, h := range cast {
+			if _, ok := all[id]; ok {
+				panic(fmt.Sprintf("r26: command %d has two handlers", id))
+			}
+			all[id] = h
+		}
+	}
+	return all
+}
 
 // Serve speaks R26 with a client of the info connection. It sends HELLO, then reads the client's packets one after
 // another and runs the handler of each one's id, in the connection's own goroutine, so that no session waits on

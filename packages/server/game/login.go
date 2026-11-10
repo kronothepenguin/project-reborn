@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 )
@@ -17,7 +18,8 @@ var ErrInvalidTicket = errors.New("game: invalid SSO ticket")
 
 // Login logs in on s the habbo that ticket names. It spends the ticket, saves
 // machineID, the machine id s holds, when there is one, and the last time online,
-// and puts the habbo online. The session the habbo was online on gets
+// and puts the habbo online with its badges, its sound setting and its fuses
+// (plans/server decision 0053). The session the habbo was online on gets
 // ConcurrentLogin.
 func Login(ctx context.Context, db *sql.DB, s Session, ticket, machineID string) (habbo.Habbo, error) {
 	now := time.Now().UTC()
@@ -47,11 +49,34 @@ func Login(ctx context.Context, db *sql.DB, s Session, ticket, machineID string)
 	if err != nil {
 		return habbo.Habbo{}, fmt.Errorf("game: login: %w", err)
 	}
+	h := habbo.Habbo{Avatar: avatar, Session: s}
+	badges, err := q.ListAvatarBadges(ctx, avatarID)
+	if err != nil {
+		return habbo.Habbo{}, fmt.Errorf("game: login: %w", err)
+	}
+	for _, badge := range badges {
+		h.Badges = append(h.Badges, badge.Code)
+		if badge.Worn {
+			h.Worn = badge.Code
+		}
+	}
+	data, err := q.GetAvatarGameData(ctx, avatarID)
+	if err != nil {
+		return habbo.Habbo{}, fmt.Errorf("game: login: %w", err)
+	}
+	h.SoundEnabled = data.SoundEnabled
 	if err := tx.Commit(); err != nil {
 		return habbo.Habbo{}, fmt.Errorf("game: login: %w", err)
 	}
+	// auth.Fuses reads through db, which waits for the transaction's connection until the commit.
+	fuses, err := auth.Fuses(ctx, db, avatar.UserID)
+	if err != nil {
+		return habbo.Habbo{}, fmt.Errorf("game: login: %w", err)
+	}
+	for _, fuse := range fuses {
+		h.Fuses = append(h.Fuses, string(fuse))
+	}
 
-	h := habbo.Habbo{Avatar: avatar, Session: s}
 	if old, ok := habbo.Add(h); ok && old.Session != s {
 		old.Session.Notify(ConcurrentLogin{})
 	}

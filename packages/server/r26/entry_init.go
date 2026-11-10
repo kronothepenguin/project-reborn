@@ -6,24 +6,34 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"strconv"
 	"strings"
 
 	"github.com/kronothepenguin/project-reborn/packages/server/encoding"
 	"github.com/kronothepenguin/project-reborn/packages/server/game"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // The messages of hh_entry_init the server sends (plans/server/reference/r26/hh_entry_init.md). hello opens every
 // session, and the client sends nothing before it.
 const (
-	hello             = 0
-	loginOK           = 3
-	errorText         = 33
-	sessionParameters = 257
-	cryptoParameters  = 277
-	endOfCryptoParams = 278
-	hotelLogout       = 287
+	hello                = 0
+	rights               = 2
+	loginOK              = 3
+	userObject           = 5
+	errorText            = 33
+	availableBadges      = 229
+	sessionParameters    = 257
+	cryptoParameters     = 277
+	endOfCryptoParams    = 278
+	hotelLogout          = 287
+	soundSetting         = 308
+	possibleAchievements = 436
 )
+
+// purse is hh_cat_code's message, which GET_CREDITS asks for (plans/server/reference/r26/hh_cat_code.md).
+const purse = 6
 
 // The texts of 33 the client acts on, and the reason of 287 on which it opens url_logout_concurrent.
 const (
@@ -32,11 +42,18 @@ const (
 	logoutConcurrent  = 2
 )
 
-// entryInitHandlers handles the commands of the handshake and the login. GENERATEKEY has no handler: it comes after
-// ENDOFCRYPTOPARAMS, changes nothing, and is logged as unhandled (plans/server decision 0027).
+// entryInitHandlers handles the commands of the handshake, the login and what the client asks after it. GENERATEKEY has
+// no handler: it comes after ENDOFCRYPTOPARAMS, changes nothing, and is logged as unhandled (plans/server decision
+// 0027). GETSELECTEDBADGES waits for achievements (plans/server decision 0051).
 var entryInitHandlers = map[int]handler{
+	7:    loggedIn(handleGetInfo),
+	8:    loggedIn(handleGetCredits),
+	157:  loggedIn(handleGetAvailableBadges),
 	204:  handleSSO,
 	206:  handleInitCrypto,
+	228:  loggedIn(handleGetSoundSetting),
+	229:  loggedIn(handleSetSoundSetting),
+	370:  loggedIn(handleGetPossibleAchievements),
 	756:  handleTryLogin,
 	813:  handleUniqueID,
 	1170: handleVersionCheck,
@@ -134,8 +151,9 @@ func handleGetSessionParameters(s *session, _ []byte) {
 	s.reply(sessionParameters, b.Bytes())
 }
 
-// handleSSO logs in the habbo of the ticket through game and answers LOGIN_OK, or 33 login incorrect for a ticket that
-// is not valid (plans/server decisions 0028 and 0030). A session logs in once, and only after its version check.
+// handleSSO logs in the habbo of the ticket through game and answers its fuses, then LOGIN_OK, as Holo did, so that the
+// listeners of LOGIN_OK find the rights in place; or 33 login incorrect for a ticket that is not valid (plans/server
+// decisions 0028, 0030 and 0045). A session logs in once, and only after its version check.
 func handleSSO(s *session, body []byte) {
 	if s.habbo != 0 {
 		return
@@ -155,12 +173,121 @@ func handleSSO(s *session, body []byte) {
 	case errors.Is(err, game.ErrInvalidTicket):
 		s.reply(errorText, []byte(loginIncorrect))
 	case err != nil:
-		slog.Error(fmt.Sprintf("r26 %s: %v", s.addr, err))
-		s.end()
+		s.fail(err)
 	default:
 		s.habbo = h.ID
+		var b bytes.Buffer
+		for _, fuse := range h.Fuses {
+			if err := encoding.WriteString(&b, fuse); err != nil {
+				slog.Error(fmt.Sprintf("r26 %s: fuse %q: %v", s.addr, fuse, err))
+			}
+		}
+		s.reply(rights, b.Bytes())
 		s.reply(loginOK, nil)
 	}
+}
+
+// loggedIn runs h only once the session's habbo is online on it: the client asks these after LOGIN_OK.
+func loggedIn(h func(s *session, me habbo.Habbo, body []byte)) handler {
+	return func(s *session, body []byte) {
+		me, ok := habbo.Get(s.habbo)
+		if s.habbo == 0 || !ok || me.Session != s {
+			return
+		}
+		h(s, me, body)
+	}
+}
+
+// handleGetInfo sends the user object. The user id is the habbo's, the custom data its motto, and the direct mail
+// whether its user takes the newsletter. The pool figure stays empty until a phase brings the pool.
+func handleGetInfo(s *session, me habbo.Habbo, _ []byte) {
+	account, err := game.UserAccount(context.Background(), s.db, me.UserID)
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	var b bytes.Buffer
+	for _, field := range []any{
+		strconv.FormatInt(me.ID, 10), me.Name, me.Figure, me.Gender, me.Motto,
+		int(account.Tickets), "", int(account.Film), flag(account.Newsletter),
+	} {
+		if err := writeField(&b, field); err != nil {
+			s.fail(err)
+			return
+		}
+	}
+	s.reply(userObject, b.Bytes())
+}
+
+// handleGetCredits sends the credits of the habbo's user as text, the first word of 6, which hh_cat_code reads.
+func handleGetCredits(s *session, me habbo.Habbo, _ []byte) {
+	account, err := game.UserAccount(context.Background(), s.db, me.UserID)
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	s.reply(purse, []byte(strconv.FormatInt(account.Credits, 10)))
+}
+
+// handleGetAvailableBadges sends the habbo's badges, and the one it wears in slot 1: a habbo wears one badge at most.
+func handleGetAvailableBadges(s *session, me habbo.Habbo, _ []byte) {
+	var b bytes.Buffer
+	b.Write(vl64(len(me.Badges)))
+	for _, badge := range me.Badges {
+		if err := encoding.WriteString(&b, badge); err != nil {
+			s.fail(err)
+			return
+		}
+	}
+	if me.Worn == "" {
+		b.Write(vl64(0))
+	} else {
+		b.Write(vl64(1))
+		b.Write(vl64(1))
+		if err := encoding.WriteString(&b, me.Worn); err != nil {
+			s.fail(err)
+			return
+		}
+	}
+	s.reply(availableBadges, b.Bytes())
+}
+
+func handleGetSoundSetting(s *session, me habbo.Habbo, _ []byte) {
+	s.reply(soundSetting, vl64(flag(me.SoundEnabled)))
+}
+
+// handleSetSoundSetting saves the setting, 1 on and 0 off; any other value counts as on, as the client reads 308.
+func handleSetSoundSetting(s *session, me habbo.Habbo, body []byte) {
+	state, err := encoding.ReadVL64(bytes.NewReader(body))
+	if err != nil {
+		s.malformed(229, body)
+		return
+	}
+	if err := game.SetSoundEnabled(context.Background(), s.db, s, me.ID, state != 0); err != nil {
+		s.fail(err)
+	}
+}
+
+// handleGetPossibleAchievements sends no achievement: the hotel has none yet (plans/server decision 0051).
+func handleGetPossibleAchievements(s *session, _ habbo.Habbo, _ []byte) {
+	s.reply(possibleAchievements, vl64(0))
+}
+
+// writeField writes a field of a message as the client's GetStrFrom and GetIntFrom read it.
+func writeField(b *bytes.Buffer, field any) error {
+	switch field := field.(type) {
+	case string:
+		return encoding.WriteString(b, field)
+	case int:
+		b.Write(vl64(field))
+	}
+	return nil
+}
+
+// fail logs a failure of the database or of a value the client cannot read, and closes the session.
+func (s *session) fail(err error) {
+	slog.Error(fmt.Sprintf("r26 %s: %v", s.addr, err))
+	s.end()
 }
 
 // handleTryLogin refuses every name and password: a habbo logs in only with SSO (plans/server decision 0028).

@@ -14,18 +14,21 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
-// habboWithTickets makes a user with the habbo name, signed in to the CMS on a session of its own that holds tickets,
-// as the CMS would, and returns the habbo's id.
+// habboWithTickets makes a user who takes the newsletter, with an empty wallet and the habbo name, signed in to the CMS
+// on a session of its own that holds tickets, as the CMS would, and returns the habbo's id.
 func habboWithTickets(t *testing.T, name string, tickets ...string) int64 {
 	t.Helper()
 	ctx := t.Context()
 	q := store.New(testDB)
 	now := time.Now().UTC()
-	user, err := q.CreateUser(ctx, store.CreateUserParams{Email: strings.ToLower(name) + "@example.com", BornOn: time.Date(2000, 1, 2, 0, 0, 0, 0, time.UTC), CreatedIP: "127.0.0.1", CreatedAt: now, UpdatedAt: now})
+	user, err := q.CreateUser(ctx, store.CreateUserParams{Email: strings.ToLower(name) + "@example.com", BornOn: time.Date(2000, 1, 2, 0, 0, 0, 0, time.UTC), Newsletter: true, CreatedIP: "127.0.0.1", CreatedAt: now, UpdatedAt: now})
 	if err != nil {
 		t.Fatalf("CreateUser: %v", err)
 	}
-	avatar, err := q.CreateAvatar(ctx, store.CreateAvatarParams{UserID: user.ID, Name: name, Figure: "hd-180-1", Gender: "M", CreatedAt: now, UpdatedAt: now})
+	if err := q.CreateWallet(ctx, store.CreateWalletParams{UserID: user.ID, UpdatedAt: now}); err != nil {
+		t.Fatalf("CreateWallet: %v", err)
+	}
+	avatar, err := q.CreateAvatar(ctx, store.CreateAvatarParams{UserID: user.ID, Name: name, Figure: "hd-180-1", Gender: "M", Motto: "Hello", CreatedAt: now, UpdatedAt: now})
 	if err != nil {
 		t.Fatalf("CreateAvatar: %v", err)
 	}
@@ -87,8 +90,8 @@ func (c *client) handshake(t *testing.T, check string) {
 	c.write(t, append(append(packet(t, 1170, check), packet(t, 813, b64String(t, "machine"))...), packet(t, 1817, "")...))
 }
 
-// login opens a client that logs in with ticket.
-func login(t *testing.T, ticket string) *client {
+// login opens a client that logs in with ticket, and returns it with the fuses that came before LOGIN_OK.
+func login(t *testing.T, ticket string) (*client, string) {
 	t.Helper()
 	c := dial(t, infoPort)
 	c.handshake(t, versionCheck(t, 1, "", ""))
@@ -96,8 +99,12 @@ func login(t *testing.T, ticket string) *client {
 		t.Fatalf("received %d, want 257", id)
 	}
 	c.send(t, 204, b64String(t, ticket))
+	id, fuses := c.receive(t)
+	if id != 2 {
+		t.Fatalf("received %d, want the fuses, 2", id)
+	}
 	c.expectMessage(t, 3, "")
-	return c
+	return c, fuses
 }
 
 func eventually(t *testing.T, what string, done func() bool) {
@@ -111,7 +118,8 @@ func eventually(t *testing.T, what string, done func() bool) {
 }
 
 // The bytes of plans/server/reference/r26/hh_entry_init.md, from HELLO to LOGIN_OK, with the default session
-// parameters: every flag 0 but profile editing, the date format dd-mm-yyyy and an empty tracking header.
+// parameters: every flag 0 but profile editing, the date format dd-mm-yyyy and an empty tracking header. Every habbo's
+// fuses come before LOGIN_OK.
 func TestTheHandshakeAndTheLoginInBytes(t *testing.T) {
 	id := habboWithTickets(t, "Bytes", "abc")
 	c := dial(t, infoPort)
@@ -123,7 +131,7 @@ func TestTheHandshakeAndTheLoginInBytes(t *testing.T) {
 	c.write(t, []byte("@@GRRI@@@@@@GLm@Cabc@@B\\Y"))
 	c.expect(t, "DARBHHIHJHKHPAHQAdd-mm-yyyy\x02RAHSAIPB\x02QBH\x01")
 	c.write(t, []byte("@@GCL@Cabc"))
-	c.expect(t, "@C\x01")
+	c.expect(t, "@Bfuse_trade\x02fuse_buy_credits\x02\x01@C\x01")
 
 	if h, ok := habbo.Get(id); !ok || h.Name != "Bytes" {
 		t.Errorf("habbo.Get = %+v, %t; want Bytes online", h, ok)
@@ -210,8 +218,8 @@ func TestTryLoginIsAlwaysIncorrect(t *testing.T) {
 // until that one leaves (decision 0029).
 func TestASecondLoginEndsTheFirstSession(t *testing.T) {
 	id := habboWithTickets(t, "Twice", "twice-1", "twice-2")
-	first := login(t, "twice-1")
-	second := login(t, "twice-2")
+	first, _ := login(t, "twice-1")
+	second, _ := login(t, "twice-2")
 
 	first.expectMessage(t, 287, "J")
 	first.expectClosed(t)

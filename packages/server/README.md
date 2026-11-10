@@ -20,8 +20,8 @@ listeners of `server.go` and `mus.go`, `transport/`, `encoding/`, `r26/` and
 | `mus.go` | What the `mus` listener does until S7 frames MUS: it logs and never answers (`plans/server/decisions/0023-mus-listener-before-s7.md`) | s0-07 |
 | `transport/` | `Conn`, an `io.Reader` to receive, an `io.Writer` to send and an `io.Closer`, over TCP (`tcp.go`) and the WebSocket (`websocket.go`) | s0-05 |
 | `encoding/` | B64, VL64 and strings | s0-06 |
-| `r26/` | The R26 ids, and one file per client cast: `entry_init.go`, `navigator.go`, `room.go`… | s0-07 the framing (`packet.go`), `HELLO` and the dispatch by id (`r26.go`) and the names of hh_entry_init's commands (`entry_init.go`); s2-06 the handshake and the login (`entry_init.go`); each cast's handlers with the phase that serves the cast |
-| `game/` | The rules: login, entering rooms, chat, walking…, with no protocol in them | s2-05 the login and the logout; the other rules with the phases that bring them |
+| `r26/` | The R26 ids, and one file per client cast: `entry_init.go`, `navigator.go`, `room.go`… | s0-07 the framing (`packet.go`), `HELLO` and the dispatch by id (`r26.go`) and the names of hh_entry_init's commands (`entry_init.go`); s2-06 the handshake and the login (`entry_init.go`); s2-07 what the client asks after it (`entry_init.go`, `club.go`, `shared.go`); each cast's handlers with the phase that serves the cast |
+| `game/` | The rules: login, entering rooms, chat, walking…, with no protocol in them | s2-05 the login and the logout; s2-07 the account, the club status and the sound setting; the other rules with the phases that bring them |
 
 - `encoding` stands apart from `r26`, so that another protocol can reuse it.
 - `game` never knows the protocol. It is its own package so that `r26` can call
@@ -147,9 +147,30 @@ may come in several reads.
 | `VERSIONCHECK` (1170) | Nothing when the version is `game.clientVersion` and both URLs are empty or on `site.url`: the URL itself or the URL followed by `/`. Any other client, or a body that cannot be read, gets 33 `Version not correct`, and the server closes the connection (`plans/server/decisions/0049-a-wrong-version-is-closed.md`) |
 | `UNIQUEID` (813) | Nothing: the session keeps the machine id for the login |
 | `GET_SESSION_PARAMETERS` (1817) | 257 with the ten session parameters, ids 0 to 9, from their `game.` settings; a flag goes out as 0 or 1 |
-| `SSO` (204) | `LOGIN_OK` (3) once `game.Login` logs the ticket's habbo in; 33 `login incorrect` for a ticket that is not valid. Before a `VERSIONCHECK` that passed, 33 `Version not correct` and the close. A session logs in once, and later `SSO`s get no answer. A failure of the database is logged and closes the session |
+| `SSO` (204) | The habbo's fuses (2), then `LOGIN_OK` (3), as Holo sent them, once `game.Login` logs the ticket's habbo in; 33 `login incorrect` for a ticket that is not valid. Before a `VERSIONCHECK` that passed, 33 `Version not correct` and the close. A session logs in once, and later `SSO`s get no answer. A failure of the database is logged and closes the session |
 | `TRY_LOGIN` (756) | 33 `login incorrect`, always: a habbo logs in only with `SSO` (`plans/server/decisions/0028-sso-only.md`) |
 
+## After the login
+
+The client asks these right after `LOGIN_OK`; before it, they get no answer.
+Each cast's commands have their file: `entry_init.go`, `club.go` for hh_club
+and `shared.go` for hh_shared.
+
+| Command | Answer |
+| --- | --- |
+| `GET_INFO` (7) | The user object (5): the habbo's id, name, figure, gender and motto, the user's tickets, an empty pool figure, the user's film, and 1 for direct mail when the user takes the newsletter |
+| `GET_CREDITS` (8) | hh_cat_code's purse (6): the user's credits as text |
+| `GETAVAILABLEBADGES` (157) | 229: the habbo's badges, and the one it wears in slot 1 |
+| `GET_SOUND_SETTING` (228) | 308: 1 when the sound is on, 0 when off |
+| `SET_SOUND_SETTING` (229) | Nothing: `game.SetSoundEnabled` saves it, 0 off and any other value on |
+| `GET_POSSIBLE_ACHIEVEMENTS` (370) | 436 with no achievement (`plans/server/decisions/0051-no-achievements-yet.md`) |
+| `SCR_GET_USER_INFO` (26) | 7: `club_habbo`, the days left of the running period, the elapsed periods, the prepaid periods, and the response 1, which opens no window (`plans/server/decisions/0052-club-status-by-days-per-month.md`) |
+| `GDATE` (49) | 163: today's date in UTC as `dd-mm-yyyy`, which the client asks before and after its login |
+
+- `GETSELECTEDBADGES` (159), which the client sends only after 437, has no
+  handler until a phase brings achievements.
+- `join` puts every cast's handlers in one map, and a command id with two
+  handlers stops the server as it starts.
 - A session is the `game.Session` of its habbo. On `game.ConcurrentLogin` it
   sends `HOTEL_LOGOUT` (287) with reason 2, on which the client opens
   `url_logout_concurrent`, and closes the connection.
@@ -176,13 +197,25 @@ client through its `Session` (`plans/server/decisions/0039-rules-notify-sessions
   reason 2 (`plans/server/decisions/0029-a-second-login-closes-the-first.md`).
 - `Login(ctx, db, s, ticket, machineID)` spends the SSO ticket and returns the
   habbo it names, online on `s`. In one transaction it spends the ticket, reads
-  the habbo, and saves the machine id, when `s` holds one, and the last time
-  online. Then the habbo goes online, and the session it was online on gets
-  `ConcurrentLogin`. A ticket that is unknown, spent, or whose CMS session ended
+  the habbo, its badges and its sound setting, and saves the machine id, when
+  `s` holds one, and the last time online; after the commit it reads the fuses
+  with `auth.Fuses`. Then the habbo goes online with them
+  (`plans/server/decisions/0053-the-online-habbo-holds-its-own-data.md`), and
+  the session it was online on gets `ConcurrentLogin`. A ticket that is unknown, spent, or whose CMS session ended
   or moved to another habbo returns `ErrInvalidTicket`.
 - `Logout(ctx, db, s, avatarID)` writes the habbo's last time online and takes
   it offline, while `s` plays it. A session that a second login replaced logs
   nothing out.
+- `UserAccount(ctx, db, userID)` reads what the client shows of the user behind
+  a habbo, which all the user's habbos share: the credits, the tickets, the film
+  and whether the user takes the newsletter.
+- `ClubStatus(ctx, db, userID)` reads the user's club: the days left of the
+  running period, the whole periods of club the user has had and the whole
+  periods prepaid, in periods of `club.daysPerMonth` days. The days left are
+  those the CMS shows: 40 of them with months of 31 days are 9 days and 1
+  prepaid period.
+- `SetSoundEnabled(ctx, db, s, avatarID, on)` saves the sound setting, then that
+  of the online habbo while `s` plays it.
 
 ```go
 h, err := game.Login(ctx, db, s, ticket, machineID)

@@ -24,7 +24,8 @@ tags: [server, architecture]
 `game` never imports `r26`, so a second protocol needs no change to the rules.
 
 So far `packages/server` holds the listeners, `transport`, `encoding`, `r26`, which takes a client from `HELLO` to
-`LOGIN_OK` ([s2-06](/tasks/s2-06-handshake-and-login.md)), and `game`, whose first rules log a habbo in and out
+`LOGIN_OK` ([s2-06](/tasks/s2-06-handshake-and-login.md)) and answers what it asks after
+([s2-07](/tasks/s2-07-after-login.md)), and `game`, whose first rules log a habbo in and out
 ([s2-05](/tasks/s2-05-login-in-game.md)). A session that ends logs its habbo out.
 
 # A connection
