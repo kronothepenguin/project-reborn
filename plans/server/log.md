@@ -2,6 +2,14 @@
 
 ## 2026-11-10
 
+- **Done** [s2-06](/tasks/s2-06-handshake-and-login.md): `r26` takes a client from `HELLO` to `LOGIN_OK` with an SSO
+  ticket, closes a client with the wrong version after its error, and ends a session replaced by a second login with
+  287.
+- **Decision** [0049](/decisions/0049-a-wrong-version-is-closed.md): a client with the wrong version is closed after its
+  error.
+- **Decision** [0050](/decisions/0050-the-server-loads-and-reloads-the-settings.md): the game server loads the settings
+  and reloads them like the CMS.
+- **Start** [s2-06](/tasks/s2-06-handshake-and-login.md).
 - **Done** [s2-05](/tasks/s2-05-login-in-game.md): `game` logs a habbo in with an SSO ticket and out, holding it online
   in `virtual/habbo` with its session, and a second login sends the first session `ConcurrentLogin`.
 - **Decision** [0047](/decisions/0047-online-habbos-in-virtual-habbo.md): the online habbos live in virtual/habbo.

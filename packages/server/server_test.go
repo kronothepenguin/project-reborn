@@ -2,6 +2,7 @@ package server
 
 import (
 	"bytes"
+	"database/sql"
 	"errors"
 	"fmt"
 	"io"
@@ -9,21 +10,25 @@ import (
 	"log/slog"
 	"net"
 	"os"
+	"path/filepath"
 	"slices"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/config"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 var (
 	logged            = newRecorder()
 	infoPort, musPort int
+	testDB            *sql.DB
 )
 
 // config.Load reads config.json once per process, so the whole package shares one file. It puts info and mus on ports
-// of the loopback interface that were free when the tests started, and both listeners start before any test runs.
+// of the loopback interface that were free when the tests started, and both listeners start before any test runs, on
+// one database that every test shares.
 func TestMain(m *testing.M) {
 	dir, err := os.MkdirTemp("", "server-test-")
 	if err != nil {
@@ -39,7 +44,12 @@ func TestMain(m *testing.M) {
 	if err := os.WriteFile(config.Filename, []byte(cfg), 0o644); err != nil {
 		log.Fatal(err)
 	}
-	s := New(nil)
+	testDB, err = store.Open(filepath.Join(dir, "hotel.db"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer testDB.Close()
+	s := New(testDB)
 	if err := s.StartInfo(); err != nil {
 		log.Fatal(err)
 	}
@@ -64,27 +74,27 @@ func freePorts(n int) []int {
 	return ports
 }
 
-// S0's exit criterion: a client of the info listener receives HELLO, and its INIT_CRYPTO, which nothing handles yet,
-// is logged by name.
-func TestInfoSendsHelloAndLogsInitCryptoByName(t *testing.T) {
+// S0's exit criterion: a client of the info listener receives HELLO, and a command that nothing handles is logged by
+// name. INIT_CRYPTO was that command until s2-06 answered it; GET_PASSWORD, which no script sends, stays unhandled.
+func TestInfoSendsHelloAndLogsAnUnhandledCommandByName(t *testing.T) {
 	c := dial(t, infoPort)
 	if id, body := c.receive(t); id != 0 || body != "" {
 		t.Fatalf("received %d %q, want HELLO, 0 with no body", id, body)
 	}
-	c.send(t, 206, "")
-	logged.wait(t, "r26 "+c.addr+" unhandled INIT_CRYPTO (206), 0 bytes")
+	c.send(t, 47, "")
+	logged.wait(t, "r26 "+c.addr+" unhandled GET_PASSWORD (47), 0 bytes")
 }
 
 // Packets share frames and spread over several, and each is logged in the order it came.
 func TestInfoReadsPacketsWhateverTheFrames(t *testing.T) {
 	c := dial(t, infoPort)
 	c.receive(t)
-	c.write(t, append(packet(t, 206, ""), packet(t, 2002, b64String(t, "ab"))...))
-	versionCheck := packet(t, 1170, "I@@@@")
-	c.write(t, versionCheck[:4])
-	c.write(t, versionCheck[4:])
+	c.write(t, append(packet(t, 47, ""), packet(t, 2002, b64String(t, "ab"))...))
+	langCheck := packet(t, 58, b64String(t, "word"))
+	c.write(t, langCheck[:4])
+	c.write(t, langCheck[4:])
 	last := -1
-	for _, want := range []string{"INIT_CRYPTO (206), 0 bytes", "GENERATEKEY (2002), 4 bytes", "VERSIONCHECK (1170), 5 bytes"} {
+	for _, want := range []string{"GET_PASSWORD (47), 0 bytes", "GENERATEKEY (2002), 4 bytes", "LANGCHECK (58), 6 bytes"} {
 		line := "r26 " + c.addr + " unhandled " + want
 		logged.wait(t, line)
 		i := slices.Index(logged.all(), line)
@@ -95,14 +105,21 @@ func TestInfoReadsPacketsWhateverTheFrames(t *testing.T) {
 	}
 }
 
-// Until login is handled, TRY_LOGIN carries the typed password and SSO the ticket (decision 0021).
+// TRY_LOGIN carries the typed password, SSO the ticket, and an unhandled command what a player typed: none of them
+// reaches the log (decision 0021).
 func TestInfoNeverLogsABody(t *testing.T) {
 	c := dial(t, infoPort)
 	c.receive(t)
 	c.send(t, 756, b64String(t, "habbo")+b64String(t, "hunter2"))
+	if id, body := c.receive(t); id != 33 || body != "login incorrect" {
+		t.Errorf("TRY_LOGIN got %d %q, want 33 login incorrect", id, body)
+	}
+	c.send(t, 58, b64String(t, "hunter2"))
+	logged.wait(t, "r26 "+c.addr+" unhandled LANGCHECK (58), 9 bytes")
 	c.send(t, 204, b64String(t, "the-sso-ticket"))
-	logged.wait(t, "r26 "+c.addr+" unhandled TRY_LOGIN (756), 16 bytes")
-	logged.wait(t, "r26 "+c.addr+" unhandled SSO (204), 16 bytes")
+	if id, body := c.receive(t); id != 33 || body != "Version not correct" {
+		t.Errorf("SSO before VERSIONCHECK got %d %q, want 33 Version not correct", id, body)
+	}
 	for _, line := range logged.all() {
 		if strings.Contains(line, "hunter2") || strings.Contains(line, "the-sso-ticket") {
 			t.Errorf("the log holds a body: %q", line)
@@ -119,8 +136,8 @@ func TestInfoClosesOnlyTheSessionWithAMalformedLength(t *testing.T) {
 		t.Errorf("the session with a malformed length read %v, want io.EOF once the server closed it", err)
 	}
 	logged.wait(t, "r26 "+bad.addr+" closed: encoding: malformed value: a packet length of 1, too short for its id")
-	good.send(t, 206, "")
-	logged.wait(t, "r26 "+good.addr+" unhandled INIT_CRYPTO (206), 0 bytes")
+	good.send(t, 47, "")
+	logged.wait(t, "r26 "+good.addr+" unhandled GET_PASSWORD (47), 0 bytes")
 }
 
 // Until S7 frames MUS, the mus listener logs what a client sends and never answers (decision 0023).
@@ -150,7 +167,7 @@ func isTimeout(err error) bool {
 
 // The listeners of TestMain hold both ports.
 func TestStartReturnsAnErrorWhenItCannotListen(t *testing.T) {
-	s := New(nil)
+	s := New(testDB)
 	for name, start := range map[string]func() error{"info": s.StartInfo, "mus": s.StartMus} {
 		if err := start(); err == nil || !strings.HasPrefix(err.Error(), "server: "+name+": ") {
 			t.Errorf("starting %s on a port in use = %v, want an error", name, err)

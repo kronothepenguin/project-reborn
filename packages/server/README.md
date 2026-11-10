@@ -1,9 +1,9 @@
 # server — Go package
 
 A Go module without a frontend. The app struct (`Server` struct) takes the
-database in `New(db)` and registers its routes on a mux in `Mount(mux)`, and
-`StartInfo` and `StartMus` start the WebSocket listeners of the client's two
-connections; `apps/server` runs it.
+database in `New(db)`, which loads the settings, and registers its routes on a
+mux in `Mount(mux)`, and `StartInfo` and `StartMus` start the WebSocket
+listeners of the client's two connections; `apps/server` runs it.
 
 ## Layout
 
@@ -16,11 +16,11 @@ listeners of `server.go` and `mus.go`, `transport/`, `encoding/`, `r26/` and
 
 | Part | Holds | Brought by |
 | --- | --- | --- |
-| `server.go` | `New(db)`, and `StartInfo` and `StartMus`, which start a WebSocket listener on the host and port of `server.info` and of `server.mus` (`plans/server/decisions/0020-info-and-mus-websocket-ports.md`, `plans/server/decisions/0022-start-info-and-start-mus.md`) | s0-03 generated `New(db)` and `Mount(mux)`; s0-07 the listeners |
+| `server.go` | `New(db)`, which loads the settings and reloads them (`plans/server/decisions/0050-the-server-loads-and-reloads-the-settings.md`), and `StartInfo` and `StartMus`, which start a WebSocket listener on the host and port of `server.info` and of `server.mus` (`plans/server/decisions/0020-info-and-mus-websocket-ports.md`, `plans/server/decisions/0022-start-info-and-start-mus.md`) | s0-03 generated `New(db)` and `Mount(mux)`; s0-07 the listeners; s2-06 the settings |
 | `mus.go` | What the `mus` listener does until S7 frames MUS: it logs and never answers (`plans/server/decisions/0023-mus-listener-before-s7.md`) | s0-07 |
 | `transport/` | `Conn`, an `io.Reader` to receive, an `io.Writer` to send and an `io.Closer`, over TCP (`tcp.go`) and the WebSocket (`websocket.go`) | s0-05 |
 | `encoding/` | B64, VL64 and strings | s0-06 |
-| `r26/` | The R26 ids, and one file per client cast: `entry_init.go`, `navigator.go`, `room.go`… | s0-07 the framing (`packet.go`), `HELLO` and the dispatch by id (`r26.go`) and the names of hh_entry_init's commands (`entry_init.go`); each cast's handlers with the phase that serves the cast, from S2 |
+| `r26/` | The R26 ids, and one file per client cast: `entry_init.go`, `navigator.go`, `room.go`… | s0-07 the framing (`packet.go`), `HELLO` and the dispatch by id (`r26.go`) and the names of hh_entry_init's commands (`entry_init.go`); s2-06 the handshake and the login (`entry_init.go`); each cast's handlers with the phase that serves the cast |
 | `game/` | The rules: login, entering rooms, chat, walking…, with no protocol in them | s2-05 the login and the logout; the other rules with the phases that bring them |
 
 - `encoding` stands apart from `r26`, so that another protocol can reuse it.
@@ -99,7 +99,9 @@ On `info`, `r26.Serve` speaks R26:
    length, 2 of the command id, then the body. A WebSocket frame may hold
    several packets or a part of one.
 3. It runs the handler registered for the id in the session's goroutine, so a
-   session handles its packets in order. No id has a handler yet.
+   session handles its packets in order. The handshake and the login have
+   handlers ([The handshake and the login](#the-handshake-and-the-login)). A
+   handler that closes the session leaves the packets after it unread.
 4. A packet that no handler takes is logged as one line, with the session's
    address, the id, the name when `r26` knows it and the size of the body,
    never the body (`plans/server/decisions/0021-unhandled-packets-logged-by-id-name-and-size.md`):
@@ -108,7 +110,9 @@ On `info`, `r26.Serve` speaks R26:
    `r26` knows the 22 commands of hh_entry_init. The session goes on.
 5. The session ends when the client leaves, which is no error and is not
    logged: the client closes, and first writes one byte 0 where a packet would
-   start.
+   start. A session the server closes ends without a log line either. Either
+   way, the habbo the session logged in is logged out
+   (`game.Logout`).
 6. A length too short to hold the id, or a packet cut short, ends the session
    and is logged:
    `r26 127.0.0.1:53422 closed: encoding: malformed value: a packet length of 1, too short for its id`.
@@ -131,6 +135,31 @@ may come in several reads.
 - A panic in a session does not end the server: `net/http` recovers it and logs
   it, and the transport closes that connection. Over TCP, which no listener
   serves yet, it would end the process.
+
+## The handshake and the login
+
+`r26`'s handlers of hh_entry_init take a client from `HELLO` to `LOGIN_OK`
+(`plans/server/reference/r26/hh_entry_init.md`):
+
+| Command | Answer |
+| --- | --- |
+| `INIT_CRYPTO` (206) | `CRYPTOPARAMETERS` (277) with 0, then `ENDOFCRYPTOPARAMS` (278) at once: nothing is enciphered. `GENERATEKEY`, which the client sends after 277, has no handler and is logged as unhandled (`plans/server/decisions/0027-endofcryptoparams-right-after-cryptoparameters.md`) |
+| `VERSIONCHECK` (1170) | Nothing when the version is `game.clientVersion` and both URLs are empty or on `site.url`: the URL itself or the URL followed by `/`. Any other client, or a body that cannot be read, gets 33 `Version not correct`, and the server closes the connection (`plans/server/decisions/0049-a-wrong-version-is-closed.md`) |
+| `UNIQUEID` (813) | Nothing: the session keeps the machine id for the login |
+| `GET_SESSION_PARAMETERS` (1817) | 257 with the ten session parameters, ids 0 to 9, from their `game.` settings; a flag goes out as 0 or 1 |
+| `SSO` (204) | `LOGIN_OK` (3) once `game.Login` logs the ticket's habbo in; 33 `login incorrect` for a ticket that is not valid. Before a `VERSIONCHECK` that passed, 33 `Version not correct` and the close. A session logs in once, and later `SSO`s get no answer. A failure of the database is logged and closes the session |
+| `TRY_LOGIN` (756) | 33 `login incorrect`, always: a habbo logs in only with `SSO` (`plans/server/decisions/0028-sso-only.md`) |
+
+- A session is the `game.Session` of its habbo. On `game.ConcurrentLogin` it
+  sends `HOTEL_LOGOUT` (287) with reason 2, on which the client opens
+  `url_logout_concurrent`, and closes the connection.
+- A body that cannot be read is logged as an unhandled packet is, by the
+  command's name, its id and its size, never its content:
+  `r26 127.0.0.1:53422 malformed UNIQUEID (813), 3 bytes`.
+- `New(db)` loads the settings and reloads them every `cms.refresh` seconds
+  while no database update waits, as the CMS does, so that the Game form's
+  changes reach a server running alone
+  (`plans/server/decisions/0050-the-server-loads-and-reloads-the-settings.md`).
 
 ## Game
 

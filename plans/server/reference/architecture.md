@@ -2,7 +2,7 @@
 type: Reference
 title: How the server is built
 description: The packages of the game server and what each one does, the path of a connection from a listener to the state, and how the server runs alone and under the orchestrator.
-timestamp: 2026-11-10T02:12:25+00:00
+timestamp: 2026-11-10T02:24:01+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [server, architecture]
 ---
@@ -11,10 +11,10 @@ tags: [server, architecture]
 
 | Package | Holds | Decisions |
 | --- | --- | --- |
-| `packages/server` | `New(db)`, and `StartInfo` and `StartMus`, which start a WebSocket listener on the host and port of `server.info` and of `server.mus` | [0002](/decisions/0002-server-app.md), [0005](/decisions/0005-package-layout.md), [0020](/decisions/0020-info-and-mus-websocket-ports.md), [0022](/decisions/0022-start-info-and-start-mus.md), [0023](/decisions/0023-mus-listener-before-s7.md) |
+| `packages/server` | `New(db)`, which loads the settings and reloads them, and `StartInfo` and `StartMus`, which start a WebSocket listener on the host and port of `server.info` and of `server.mus` | [0002](/decisions/0002-server-app.md), [0005](/decisions/0005-package-layout.md), [0020](/decisions/0020-info-and-mus-websocket-ports.md), [0022](/decisions/0022-start-info-and-start-mus.md), [0023](/decisions/0023-mus-listener-before-s7.md), [0050](/decisions/0050-the-server-loads-and-reloads-the-settings.md) |
 | `packages/server/transport` | `Conn` (receive, send, close), TCP and the WebSocket on `golang.org/x/net/websocket` | [0006](/decisions/0006-transport.md) |
 | `packages/server/encoding` | B64, VL64 and strings, shared by every protocol | [0005](/decisions/0005-package-layout.md) |
-| `packages/server/r26` | The R26 ids, framing and handshake, the dispatch by id, and one file per client cast | [0007](/decisions/0007-protocols-per-listener.md), [0012](/decisions/0012-no-encryption.md), [0021](/decisions/0021-unhandled-packets-logged-by-id-name-and-size.md) |
+| `packages/server/r26` | The R26 ids, framing and handshake, the dispatch by id, and one file per client cast | [0007](/decisions/0007-protocols-per-listener.md), [0012](/decisions/0012-no-encryption.md), [0021](/decisions/0021-unhandled-packets-logged-by-id-name-and-size.md), [0027](/decisions/0027-endofcryptoparams-right-after-cryptoparameters.md), [0028](/decisions/0028-sso-only.md), [0049](/decisions/0049-a-wrong-version-is-closed.md) |
 | `packages/server/game` | The rules of the hotel, with no protocol in them, and the events they send sessions | [0005](/decisions/0005-package-layout.md), [0039](/decisions/0039-rules-notify-sessions-through-an-interface.md), [0048](/decisions/0048-sessions-through-an-interface-virtual-declares.md) |
 | `packages/virtual` | The state: hot data and temporary data, one package per entity | [0009](/decisions/0009-virtual-holds-the-server-state.md) |
 | `packages/virtual/habbo` | The habbos online in the game, each with its session | [0047](/decisions/0047-online-habbos-in-virtual-habbo.md), [0048](/decisions/0048-sessions-through-an-interface-virtual-declares.md) |
@@ -23,9 +23,9 @@ tags: [server, architecture]
 
 `game` never imports `r26`, so a second protocol needs no change to the rules.
 
-So far `packages/server` holds the listeners, `transport`, `encoding`, `r26`, which sends `HELLO`, names the commands
-of `hh_entry_init` and handles none of them yet, and `game`, whose first rules log a habbo in and out
-([s2-05](/tasks/s2-05-login-in-game.md)). The handshake comes with [s2-06](/tasks/s2-06-handshake-and-login.md).
+So far `packages/server` holds the listeners, `transport`, `encoding`, `r26`, which takes a client from `HELLO` to
+`LOGIN_OK` ([s2-06](/tasks/s2-06-handshake-and-login.md)), and `game`, whose first rules log a habbo in and out
+([s2-05](/tasks/s2-05-login-in-game.md)). A session that ends logs its habbo out.
 
 # A connection
 

@@ -38,7 +38,7 @@ func start(t *testing.T, addr string, handlers map[int]handler) (client net.Conn
 	go func() {
 		defer close(served)
 		defer server.Close()
-		serve(pipeConn{server, addr}, handlers)
+		serve(nil, pipeConn{server, addr}, handlers)
 	}()
 	t.Cleanup(func() {
 		client.Close()
