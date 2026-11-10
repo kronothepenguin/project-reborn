@@ -2,6 +2,10 @@
 
 ## 2026-11-10
 
+- **Done** [s3-06](/tasks/s3-06-creating-a-room.md): the room-o-matic creates a habbo's room, up to 50, with a club
+  model only for the club fuse, and `SETFLATCAT` and `SETFLATINFO` set its category, description, hashed password,
+  furniture rights and visitors.
+- **Start** [s3-06](/tasks/s3-06-creating-a-room.md).
 - **Done** [s3-05](/tasks/s3-05-favourites.md): a habbo keeps favourite public rooms and habbo rooms, up to 30, with
   `GETFVRF`, `ADD_FAVORITE_ROOM` and `DEL_FAVORITE_ROOM`.
 - **Start** [s3-05](/tasks/s3-05-favourites.md).

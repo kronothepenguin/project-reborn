@@ -65,6 +65,8 @@ var navigatorHandlers = map[int]handler{
 	18:  loggedIn(handleGetFavouriteFlats),
 	19:  loggedIn(handleAddFavouriteRoom),
 	20:  loggedIn(handleRemoveFavouriteRoom),
+	25:  loggedIn(handleSetFlatInfo),
+	153: loggedIn(handleSetFlatCat),
 	264: loggedIn(handleGetRecommendedRooms),
 	150: loggedIn(handleNavigate),
 	151: loggedIn(handleGetUserFlatCats),
@@ -240,6 +242,70 @@ func handleGetRecommendedRooms(s *session, me habbo.Habbo, _ []byte) {
 		return
 	}
 	s.reply(recommendedRoomList, b.Bytes())
+}
+
+// handleSetFlatCat puts the habbo's room in a category its level lets it use; anything else changes nothing.
+func handleSetFlatCat(s *session, me habbo.Habbo, body []byte) {
+	r := bytes.NewReader(body)
+	id, err := encoding.ReadVL64(r)
+	if err != nil {
+		s.malformed(153, body)
+		return
+	}
+	categoryID, err := encoding.ReadVL64(r)
+	if err != nil {
+		s.malformed(153, body)
+		return
+	}
+	err = game.SetRoomCategory(context.Background(), s.db, me, int64(id), int64(categoryID))
+	if err != nil && !errors.Is(err, game.ErrInvalidRoomSettings) && !errors.Is(err, game.ErrNotOwner) {
+		s.fail(err)
+	}
+}
+
+// handleSetFlatInfo changes the habbo's room by the lines SETFLATINFO carries; settings the rules refuse, or a room
+// the habbo does not own, change nothing.
+func handleSetFlatInfo(s *session, me habbo.Habbo, body []byte) {
+	id, change, ok := parseFlatInfo(string(body))
+	if !ok {
+		s.malformed(25, body)
+		return
+	}
+	err := game.SetRoomSettings(context.Background(), s.db, me, id, change)
+	if err != nil && !errors.Is(err, game.ErrInvalidRoomSettings) && !errors.Is(err, game.ErrNotOwner) {
+		s.fail(err)
+	}
+}
+
+// parseFlatInfo reads SETFLATINFO's two forms: the navigator's <flat id>/ and the room-o-matic's /<flat id>/, each
+// followed by lines of key=value ended by carriage returns. The room-o-matic always sends password=, empty unless one
+// was typed, and no maxvisitors=.
+func parseFlatInfo(body string) (int64, game.RoomSettings, bool) {
+	head, rest, found := strings.Cut(strings.TrimPrefix(body, "/"), "/")
+	id, err := strconv.ParseInt(head, 10, 64)
+	if !found || err != nil {
+		return 0, game.RoomSettings{}, false
+	}
+	var change game.RoomSettings
+	for line := range strings.SplitSeq(rest, "\r") {
+		key, value, _ := strings.Cut(line, "=")
+		switch key {
+		case "description":
+			change.Description = &value
+		case "password":
+			if value != "" {
+				change.Password = &value
+			}
+		case "allsuperuser":
+			others := value == "1"
+			change.OthersMoveFurni = &others
+		case "maxvisitors":
+			if n, err := strconv.Atoi(value); err == nil {
+				change.MaxVisitors = &n
+			}
+		}
+	}
+	return id, change, true
 }
 
 // tooManyFavourites is the text of 33 the client turns into nav_error_toomanyfavrooms, whatever limit it says

@@ -25,7 +25,7 @@ type handler func(s *session, body []byte)
 
 // handlers holds the handler of each command id the server handles, from every cast. Every other id is logged as
 // unhandled.
-var handlers = join(entryInitHandlers, clubHandlers, sharedHandlers, navigatorHandlers)
+var handlers = join(entryInitHandlers, clubHandlers, sharedHandlers, navigatorHandlers, kioskRoomHandlers)
 
 // join puts the handlers of every cast in one map. A command has one handler, even when several casts send it, as
 // hh_entry_init and hh_tutorial both send 228, so a repeated id is a mistake of the server, caught as it starts.
@@ -186,7 +186,7 @@ func (s *session) logout() {
 
 // command names a command in the log: by its name and id when r26 knows it, by its id otherwise.
 func command(id int) string {
-	for _, names := range []map[int]string{entryInitCommands, navigatorCommands} {
+	for _, names := range []map[int]string{entryInitCommands, navigatorCommands, kioskRoomCommands} {
 		if name, ok := names[id]; ok {
 			return name + " (" + strconv.Itoa(id) + ")"
 		}

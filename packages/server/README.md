@@ -205,6 +205,9 @@ data of `virtual/category`, `virtual/model` and `virtual/room` and the store
 | `GETFVRF` (18) | 61: a header node of type 2 with the favourite habbo rooms as its flats, then the favourite public rooms as nodes of type 1, each under its category |
 | `ADD_FAVORITE_ROOM` (19) | Nothing: the room, type 1 public or 0 a habbo room, becomes a favourite; past `game.maxFavouriteRooms`, 33 `Only 10 favorite rooms allowed!` (`plans/server/decisions/0058-favourites-saved-up-to-30.md`). A room that does not exist changes nothing |
 | `DEL_FAVORITE_ROOM` (20) | Nothing: the room stops being a favourite |
+| `CREATEFLAT` (29), in `kiosk_room.go` | 59, the new room's id and name on two lines of text, for a room the habbo creates and owns: up to `game.maxRoomsPerHabbo`, a name of 1 to 50 characters without control characters, a model habbos build on, a club one only with `fuse_use_special_room_layouts`, and one of the client's three doors. Otherwise 33 `Error creating a private room`. A new room sits in No category until `SETFLATCAT` (`plans/server/decisions/0056-own-rooms-follow-holos-rules.md`) |
+| `SETFLATCAT` (153) | Nothing: the owner's room goes to a category its level lets it use |
+| `SETFLATINFO` (25) | Nothing: the owner's room takes the description, cut at 125 characters and without control characters; a password of 1 to 32 characters, stored hashed (`plans/server/decisions/0062-room-passwords-are-hashed.md`); whether others move furniture; and 10 to 25 visitors. A change the rules refuse in any field changes nothing. Both the navigator's form, `<id>/`, and the room-o-matic's, `/<id>/`, are read |
 
 - A public room's port is its id, as Holo gave it, which `#room_directory`
   sends back to enter it; its door is 0.
