@@ -2,6 +2,9 @@
 
 ## 2026-11-10
 
+- **Done** [s3-07](/tasks/s3-07-changing-a-room.md): `GETFLATINFO` and `GETFLATCAT` read a room, and its owner changes
+  it with `UPDATEFLAT` and deletes it with `DELETEFLAT`.
+- **Start** [s3-07](/tasks/s3-07-changing-a-room.md).
 - **Done** [s3-06](/tasks/s3-06-creating-a-room.md): the room-o-matic creates a habbo's room, up to 50, with a club
   model only for the club fuse, and `SETFLATCAT` and `SETFLATINFO` set its category, description, hashed password,
   furniture rights and visitors.

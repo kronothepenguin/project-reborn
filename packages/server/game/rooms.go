@@ -12,6 +12,7 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/store"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/category"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/model"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
@@ -191,4 +192,76 @@ func isControl(r rune) bool {
 
 func inRange(n, low, high int) bool {
 	return n >= low && n <= high
+}
+
+// RoomDetails is a habbo room as GETFLATINFO shows it: its listing, the name of its model, its settings, whether its
+// category allows trading, and the most visitors any room takes, past which the navigator's modify page may not go.
+type RoomDetails struct {
+	FlatListing
+	Model               string
+	ShowOwner           bool
+	OthersMoveFurni     bool
+	Trading             bool
+	AbsoluteMaxVisitors int
+}
+
+// RoomInfo returns what viewer sees of a habbo room, and false when there is none.
+func RoomInfo(ctx context.Context, db *sql.DB, viewer habbo.Habbo, roomID int64) (RoomDetails, bool, error) {
+	r, err := store.New(db).GetRoom(ctx, roomID)
+	if store.IsNotFound(err) {
+		return RoomDetails{}, false, nil
+	}
+	if err != nil {
+		return RoomDetails{}, false, fmt.Errorf("game: room info: %w", err)
+	}
+	m, _ := model.ByID(r.RoomModelID)
+	c, _ := category.Get(r.RoomCategoryID)
+	return RoomDetails{
+		FlatListing:         listFlat(viewer, r),
+		Model:               m.Name,
+		ShowOwner:           r.ShowOwner,
+		OthersMoveFurni:     r.OthersMoveFurni,
+		Trading:             c.Trading,
+		AbsoluteMaxVisitors: maxRoomVisitors,
+	}, true, nil
+}
+
+// RoomCategoryOf returns the category of viewer's room, and false when viewer does not own it.
+func RoomCategoryOf(ctx context.Context, db *sql.DB, viewer habbo.Habbo, roomID int64) (int64, bool, error) {
+	r, err := store.New(db).GetRoom(ctx, roomID)
+	if store.IsNotFound(err) {
+		return 0, false, nil
+	}
+	if err != nil {
+		return 0, false, fmt.Errorf("game: room category: %w", err)
+	}
+	return r.RoomCategoryID, r.OwnerAvatarID == viewer.ID, nil
+}
+
+// UpdateRoom changes the name, the door and whether to show the owner of viewer's room, by the rules of CreateRoom.
+func UpdateRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo, roomID int64, name, door string, showOwner bool) error {
+	if !validRoomName(name) || !slices.Contains(doors, door) {
+		return ErrInvalidRoomSettings
+	}
+	n, err := store.New(db).UpdateRoomInfo(ctx, store.UpdateRoomInfoParams{ID: roomID, OwnerAvatarID: viewer.ID, Name: name, Door: door, ShowOwner: showOwner, UpdatedAt: time.Now().UTC()})
+	if err != nil {
+		return fmt.Errorf("game: update room: %w", err)
+	}
+	if n == 0 {
+		return ErrNotOwner
+	}
+	return nil
+}
+
+// DeleteRoom deletes viewer's room and the favourites that name it. The furni in it goes to the owner's hand once S5
+// brings furni (plans/server decision 0059); rooms hold none before.
+func DeleteRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo, roomID int64) error {
+	n, err := store.New(db).DeleteRoom(ctx, store.DeleteRoomParams{ID: roomID, OwnerAvatarID: viewer.ID})
+	if err != nil {
+		return fmt.Errorf("game: delete room: %w", err)
+	}
+	if n == 0 {
+		return ErrNotOwner
+	}
+	return nil
 }

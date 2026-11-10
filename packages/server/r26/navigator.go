@@ -18,6 +18,7 @@ import (
 // The messages of hh_navigator the server sends (plans/server/reference/r26/hh_navigator.md).
 const (
 	ownFlats            = 16
+	flatInfo            = 54
 	searchResults       = 55
 	favouriteRooms      = 61
 	noOwnFlats          = 57
@@ -26,6 +27,7 @@ const (
 	userFlatCats        = 221
 	spaceNodeUsers      = 223
 	parentChain         = 227
+	flatCat             = 222
 	recommendedRoomList = 351
 )
 
@@ -65,7 +67,11 @@ var navigatorHandlers = map[int]handler{
 	18:  loggedIn(handleGetFavouriteFlats),
 	19:  loggedIn(handleAddFavouriteRoom),
 	20:  loggedIn(handleRemoveFavouriteRoom),
+	21:  loggedIn(handleGetFlatInfo),
+	23:  loggedIn(handleDeleteFlat),
+	24:  loggedIn(handleUpdateFlat),
 	25:  loggedIn(handleSetFlatInfo),
+	152: loggedIn(handleGetFlatCat),
 	153: loggedIn(handleSetFlatCat),
 	264: loggedIn(handleGetRecommendedRooms),
 	150: loggedIn(handleNavigate),
@@ -242,6 +248,91 @@ func handleGetRecommendedRooms(s *session, me habbo.Habbo, _ []byte) {
 		return
 	}
 	s.reply(recommendedRoomList, b.Bytes())
+}
+
+// doorCodes are the doors as 54 numbers them.
+var doorCodes = map[string]int{"open": 0, "closed": 1, "password": 2}
+
+// handleGetFlatInfo sends a habbo room's settings, with the room's model as its marker. A room that does not exist gets
+// no answer. Alert is 0, since no script reads it, and the absolute most visitors is the rules' 25, which caps the
+// navigator's modify page.
+func handleGetFlatInfo(s *session, me habbo.Habbo, body []byte) {
+	id, err := strconv.ParseInt(string(body), 10, 64)
+	if err != nil {
+		s.malformed(21, body)
+		return
+	}
+	info, ok, err := game.RoomInfo(context.Background(), s.db, me, id)
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	if !ok {
+		return
+	}
+	var b bytes.Buffer
+	for _, field := range []any{
+		flag(info.OthersMoveFurni), doorCodes[info.Door], int(info.ID), info.Owner, "model_" + info.Model, info.Name, info.Description,
+		flag(info.ShowOwner), flag(info.Trading), 0, info.MaxVisitors, info.AbsoluteMaxVisitors,
+	} {
+		if err := writeField(&b, field); err != nil {
+			s.fail(err)
+			return
+		}
+	}
+	s.reply(flatInfo, b.Bytes())
+}
+
+// handleGetFlatCat sends the category of the habbo's room; another habbo's room gets no answer.
+func handleGetFlatCat(s *session, me habbo.Habbo, body []byte) {
+	id, err := encoding.ReadVL64(bytes.NewReader(body))
+	if err != nil {
+		s.malformed(152, body)
+		return
+	}
+	categoryID, owned, err := game.RoomCategoryOf(context.Background(), s.db, me, int64(id))
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	if !owned {
+		return
+	}
+	var b bytes.Buffer
+	b.Write(vl64(int(id)))
+	b.Write(vl64(int(categoryID)))
+	s.reply(flatCat, b.Bytes())
+}
+
+// handleUpdateFlat changes the name, the door and whether to show the owner of the habbo's room:
+// <flat id>/<name>/<door>/<show owner name>. What the rules refuse, or another habbo's room, changes nothing.
+func handleUpdateFlat(s *session, me habbo.Habbo, body []byte) {
+	parts := strings.Split(string(body), "/")
+	var id int64
+	err := errors.New("malformed")
+	if len(parts) == 4 {
+		id, err = strconv.ParseInt(parts[0], 10, 64)
+	}
+	if err != nil || (parts[3] != "0" && parts[3] != "1") {
+		s.malformed(24, body)
+		return
+	}
+	err = game.UpdateRoom(context.Background(), s.db, me, id, parts[1], parts[2], parts[3] == "1")
+	if err != nil && !errors.Is(err, game.ErrInvalidRoomSettings) && !errors.Is(err, game.ErrNotOwner) {
+		s.fail(err)
+	}
+}
+
+// handleDeleteFlat deletes the habbo's room (plans/server decision 0059); another habbo's room stays.
+func handleDeleteFlat(s *session, me habbo.Habbo, body []byte) {
+	id, err := strconv.ParseInt(string(body), 10, 64)
+	if err != nil {
+		s.malformed(23, body)
+		return
+	}
+	if err := game.DeleteRoom(context.Background(), s.db, me, id); err != nil && !errors.Is(err, game.ErrNotOwner) {
+		s.fail(err)
+	}
 }
 
 // handleSetFlatCat puts the habbo's room in a category its level lets it use; anything else changes nothing.

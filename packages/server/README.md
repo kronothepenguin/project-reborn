@@ -207,6 +207,10 @@ data of `virtual/category`, `virtual/model` and `virtual/room` and the store
 | `DEL_FAVORITE_ROOM` (20) | Nothing: the room stops being a favourite |
 | `CREATEFLAT` (29), in `kiosk_room.go` | 59, the new room's id and name on two lines of text, for a room the habbo creates and owns: up to `game.maxRoomsPerHabbo`, a name of 1 to 50 characters without control characters, a model habbos build on, a club one only with `fuse_use_special_room_layouts`, and one of the client's three doors. Otherwise 33 `Error creating a private room`. A new room sits in No category until `SETFLATCAT` (`plans/server/decisions/0056-own-rooms-follow-holos-rules.md`) |
 | `SETFLATCAT` (153) | Nothing: the owner's room goes to a category its level lets it use |
+| `GETFLATINFO` (21) | 54: the room's settings, with `model_<model>` as its marker, the category's trading flag, 0 for the alert no script reads, and 25 as the absolute most visitors, which caps the navigator's modify page. A room that does not exist gets no answer |
+| `GETFLATCAT` (152) | 222: the owner's room and its category; another habbo's room gets no answer |
+| `UPDATEFLAT` (24) | Nothing: the owner's room takes the name, the door and whether to show the owner, by `CREATEFLAT`'s rules |
+| `DELETEFLAT` (23) | Nothing: the owner's room goes, with the favourites that name it; its furni will go to the owner's hand once S5 brings furni (`plans/server/decisions/0059-a-deleted-rooms-furni-goes-to-its-owner.md`) |
 | `SETFLATINFO` (25) | Nothing: the owner's room takes the description, cut at 125 characters and without control characters; a password of 1 to 32 characters, stored hashed (`plans/server/decisions/0062-room-passwords-are-hashed.md`); whether others move furniture; and 10 to 25 visitors. A change the rules refuse in any field changes nothing. Both the navigator's form, `<id>/`, and the room-o-matic's, `/<id>/`, are read |
 
 - A public room's port is its id, as Holo gave it, which `#room_directory`
