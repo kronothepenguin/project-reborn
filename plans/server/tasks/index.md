@@ -78,7 +78,7 @@ starts.
 - [s4-07 Rate rooms, hold events, show badges and tags, and queue](/tasks/s4-07-room-extras.md) — RATEFLAT rates a room, room events list and run, a habbo's badge and favourite group show, tags list, and full rooms queue their habbos and spectators.
 - [s4-08 Read the chat history in housekeeping](/tasks/s4-08-chat-log-page.md) — Housekeeping gets a chat log page behind housekeeping.chatLogs, by room or habbo, and lines older than game.chatHistoryDays are deleted.
 - [s4-09 Check S4's exit criteria](/tasks/s4-09-exit-check.md) — From the merged work, check every exit criterion of S4 and close the phase.
-- [s4-10 Send through an outbox per session](/tasks/s4-10-outbox.md) — Each r26 session queues its messages and a goroutine of its own writes them; a client whose game.outboxSize queue is full is closed.
+- [s4-10 Send through an outbox per session](/tasks/s4-10-outbox.md) — Each r26 session queues its messages and a goroutine of its own writes them; a client whose game.outboxSize queue is full is closed. **done**
 
 ## S5 to S9
 

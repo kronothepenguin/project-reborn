@@ -56,4 +56,4 @@ doorbell, kick and ban, and habbos rate rooms, ignore others and hold room event
 7. [s4-07 Rate rooms, hold events, show badges and tags, and queue](/tasks/s4-07-room-extras.md)
 8. [s4-08 Read the chat history in housekeeping](/tasks/s4-08-chat-log-page.md)
 9. [s4-09 Check S4's exit criteria](/tasks/s4-09-exit-check.md)
-10. [s4-10 Send through an outbox per session](/tasks/s4-10-outbox.md)
+10. [s4-10 Send through an outbox per session](/tasks/s4-10-outbox.md) **done**

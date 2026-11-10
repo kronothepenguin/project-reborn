@@ -184,6 +184,7 @@ var forms = []section{
 			{Key: "game.loadingAdLink", Label: "Loading Ad Link", Help: "Where a click on the loading picture goes."},
 			{Key: "game.roomAdImage", Label: "Room Ad Image", Help: "The address of the picture shown in a room; empty for none."},
 			{Key: "game.roomAdLink", Label: "Room Ad Link", Help: "Where a click on the room's picture goes."},
+			{Key: "game.outboxSize", Label: "Outbox Size", Help: "How many messages may wait for a client before the server closes it, as a client that stopped reading."},
 		},
 	},
 	{

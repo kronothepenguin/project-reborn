@@ -1,7 +1,6 @@
 package r26
 
 import (
-	"bytes"
 	"errors"
 	"io"
 	"strings"
@@ -74,7 +73,7 @@ func TestReadPacketCutShort(t *testing.T) {
 	}
 }
 
-func TestWritePacketWritesTheServersMessages(t *testing.T) {
+func TestEncodePacketFramesTheServersMessages(t *testing.T) {
 	for _, c := range []struct {
 		name       string
 		id         int
@@ -88,37 +87,23 @@ func TestWritePacketWritesTheServersMessages(t *testing.T) {
 		{"PING", 50, "", "@r\x01"},
 		{"the answer to TEST_LATENCY 1", 354, "I", "EbI\x01"},
 	} {
-		var w writes
-		if err := writePacket(&w, c.id, []byte(c.body)); err != nil || w.String() != c.want || w.n != 1 {
-			t.Errorf("%s: writePacket = %v, wrote %q in %d writes; want %q in 1", c.name, err, w.String(), w.n, c.want)
+		if got, err := encodePacket(c.id, []byte(c.body)); err != nil || string(got) != c.want {
+			t.Errorf("%s: encodePacket = %q, %v; want %q", c.name, got, err, c.want)
 		}
 	}
 }
 
 // The client ends a message at its first character 1, so a body holding one would end early.
-func TestWritePacketRefusesABodyThatHoldsTheCharacter1(t *testing.T) {
-	var w writes
-	if err := writePacket(&w, 33, []byte("a\x01b")); !errors.Is(err, encoding.ErrUnencodable) || w.n != 0 {
-		t.Errorf("writePacket = %v after %d writes, want encoding.ErrUnencodable and none", err, w.n)
+func TestEncodePacketRefusesABodyThatHoldsTheCharacter1(t *testing.T) {
+	if got, err := encodePacket(33, []byte("a\x01b")); !errors.Is(err, encoding.ErrUnencodable) || got != nil {
+		t.Errorf("encodePacket = %q, %v; want encoding.ErrUnencodable and nothing", got, err)
 	}
 }
 
-func TestWritePacketRefusesAnIdBeyondTwoB64Characters(t *testing.T) {
+func TestEncodePacketRefusesAnIdBeyondTwoB64Characters(t *testing.T) {
 	for _, id := range []int{-1, 4096} {
-		var w writes
-		if err := writePacket(&w, id, nil); !errors.Is(err, encoding.ErrUnencodable) || w.n != 0 {
-			t.Errorf("writePacket(%d) = %v after %d writes, want encoding.ErrUnencodable and none", id, err, w.n)
+		if got, err := encodePacket(id, nil); !errors.Is(err, encoding.ErrUnencodable) || got != nil {
+			t.Errorf("encodePacket(%d) = %q, %v; want encoding.ErrUnencodable and nothing", id, got, err)
 		}
 	}
-}
-
-// writes counts the calls of Write, since a message goes out in one.
-type writes struct {
-	bytes.Buffer
-	n int
-}
-
-func (w *writes) Write(p []byte) (int, error) {
-	w.n++
-	return w.Buffer.Write(p)
 }

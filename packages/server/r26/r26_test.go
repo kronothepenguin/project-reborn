@@ -208,3 +208,68 @@ func TestServeClosesTheSessionOnAPacketCutShort(t *testing.T) {
 	waitDone(t, done)
 	logged.wait(t, "r26 "+t.Name()+" closed: unexpected EOF")
 }
+
+// The outbox keeps the order of the messages, which one goroutine writes (plans/server decision 0073).
+func TestTheOutboxKeepsTheOrderOfTheMessages(t *testing.T) {
+	client, _ := start(t, t.Name(), map[int]handler{315: func(s *session, _ []byte) {
+		for i := range 300 {
+			s.reply(354, vl64(i))
+		}
+	}})
+	write(t, client, packet(t, 315, "I"))
+	for i := range 300 {
+		want, _ := encodePacket(354, vl64(i))
+		got := make([]byte, len(want))
+		if _, err := io.ReadFull(client, got); err != nil || !bytes.Equal(got, want) {
+			t.Fatalf("message %d is %q, %v; want %q", i, got, err, want)
+		}
+	}
+}
+
+// Sending never waits for the client, as when one session's handler sends to another's, as a room will: a client that
+// stops reading fills its outbox, of game.outboxSize messages, 500 here, and its session ends, while the sender goes on.
+func TestAClientThatStopsReadingIsClosed(t *testing.T) {
+	sessions := make(chan *session, 1)
+	sent := make(chan struct{})
+	handlers := map[int]handler{
+		206: func(s *session, _ []byte) { sessions <- s },
+		315: func(*session, []byte) {
+			stuck := <-sessions
+			for range 600 {
+				stuck.reply(354, vl64(1))
+			}
+			close(sent)
+		},
+	}
+	stuck, stuckDone := start(t, t.Name()+"/stuck", handlers)
+	write(t, stuck, packet(t, 206, ""))
+	sender, _ := start(t, t.Name()+"/sender", handlers)
+	write(t, sender, packet(t, 315, "I"))
+	select {
+	case <-sent:
+	case <-time.After(timeout):
+		t.Fatal("sending waited for a client that does not read")
+	}
+	waitDone(t, stuckDone)
+	logged.wait(t, "r26 "+t.Name()+"/stuck closed: 500 messages waiting")
+	write(t, sender, packet(t, 999, ""))
+	logged.wait(t, "r26 "+t.Name()+"/sender unhandled 999, 0 bytes")
+}
+
+// A session that the server ends writes what it sent before, and then closes.
+func TestEndWritesWhatWasSentBefore(t *testing.T) {
+	client, done := start(t, t.Name(), map[int]handler{315: func(s *session, _ []byte) {
+		s.reply(33, []byte("Version not correct"))
+		s.end()
+	}})
+	write(t, client, packet(t, 315, "I"))
+	want, _ := encodePacket(33, []byte("Version not correct"))
+	got := make([]byte, len(want))
+	if _, err := io.ReadFull(client, got); err != nil || !bytes.Equal(got, want) {
+		t.Fatalf("read %q, %v; want %q", got, err, want)
+	}
+	waitDone(t, done)
+	if _, err := client.Read(make([]byte, 1)); !errors.Is(err, io.EOF) {
+		t.Errorf("the client read %v, want io.EOF once the session ended", err)
+	}
+}

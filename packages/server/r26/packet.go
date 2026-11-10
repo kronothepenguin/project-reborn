@@ -38,21 +38,19 @@ func cutShort(err error) error {
 	return err
 }
 
-// writePacket writes a message as the client's msghandler reads one: 2 B64 characters of the message id, the body,
+// encodePacket frames a message as the client's msghandler reads one: 2 B64 characters of the message id, the body,
 // and the character 1, which ends it. The client ends a message at its first character 1, so a body that holds one
-// is refused with an error wrapping encoding.ErrUnencodable. The message goes out in one Write, so that the messages
-// of goroutines sharing a connection never mix.
-func writePacket(w io.Writer, id int, body []byte) error {
+// is refused with an error wrapping encoding.ErrUnencodable.
+func encodePacket(id int, body []byte) ([]byte, error) {
 	if bytes.IndexByte(body, 1) >= 0 {
-		return fmt.Errorf("%w: a message body that holds the character 1, which ends a message", encoding.ErrUnencodable)
+		return nil, fmt.Errorf("%w: a message body that holds the character 1, which ends a message", encoding.ErrUnencodable)
 	}
 	var b bytes.Buffer
 	b.Grow(2 + len(body) + 1)
 	if err := encoding.WriteB64(&b, id, 2); err != nil {
-		return err
+		return nil, err
 	}
 	b.Write(body)
 	b.WriteByte(1)
-	_, err := w.Write(b.Bytes())
-	return err
+	return b.Bytes(), nil
 }

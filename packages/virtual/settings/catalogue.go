@@ -138,6 +138,10 @@ var catalogue = map[string]declaration{
 	"game.loadingAdLink":   declare("", optionalURL),
 	"game.roomAdImage":     declare("", optionalURL),
 	"game.roomAdLink":      declare("", optionalURL),
+
+	// How many messages may wait for a client before the server closes it, as a
+	// client that stopped reading (plans/server decision 0073).
+	"game.outboxSize": declare(500, between(10, 100000)),
 }
 
 // rules check settings that depend on each other. keys lists every setting a

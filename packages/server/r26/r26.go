@@ -52,7 +52,7 @@ func Serve(db *sql.DB, c transport.Conn) {
 }
 
 // session is one client of the info connection. Its handlers run one after another in the session's goroutine, so
-// only ended is shared: Notify runs in the goroutine of the session that sends the event.
+// only ended, lastPong and the outbox are shared: Notify runs in the goroutine of the session that sends the event.
 type session struct {
 	conn transport.Conn
 	addr string
@@ -62,23 +62,32 @@ type session struct {
 	machineID string
 	// habbo is the avatar id of the habbo the session logged in, 0 before.
 	habbo int64
-	// ended is set when the server closes the connection, whose read then fails without it being an error.
+	// ended is set once the session ends, after which a message sent goes nowhere and a read or a write that fails is
+	// not an error.
 	ended atomic.Bool
+	// outbox holds the messages waiting for write, in order (plans/server decision 0073). A nil message ends the
+	// writing once the messages before it are written.
+	outbox chan []byte
 	// lastPong is when the client last answered a PING, in Unix nanoseconds, or when the session started.
 	lastPong atomic.Int64
 }
 
 func serve(db *sql.DB, c transport.Conn, handlers map[int]handler) {
-	s := &session{conn: c, addr: c.RemoteAddr(), db: db}
+	s := &session{conn: c, addr: c.RemoteAddr(), db: db, outbox: make(chan []byte, settings.GetIntOr("game.outboxSize", 500))}
 	s.lastPong.Store(time.Now().UnixNano())
-	defer s.logout()
+	written := make(chan struct{})
+	go s.write(written)
 	done := make(chan struct{})
-	defer close(done)
 	go s.keepAlive(done)
-	if err := s.send(hello, nil); err != nil {
-		s.closed(err)
-		return
-	}
+	// The ping loop runs until the writer is done, so that its timeout still ends a session whose last messages wait
+	// on a client that stopped reading.
+	defer func() {
+		s.end()
+		s.logout()
+		<-written
+		close(done)
+	}()
+	s.reply(hello, nil)
 	r := bufio.NewReader(c)
 	for {
 		b, err := r.Peek(1)
@@ -110,14 +119,68 @@ func serve(db *sql.DB, c transport.Conn, handlers map[int]handler) {
 	}
 }
 
+// send queues a message for the client (plans/server decision 0073), and fails only for a message the protocol cannot
+// carry. Once the session has ended, a message goes nowhere. A client whose outbox is full has stopped reading, and its
+// session ends at once.
 func (s *session) send(id int, body []byte) error {
-	return writePacket(s.conn, id, body)
+	b, err := encodePacket(id, body)
+	if err != nil {
+		return err
+	}
+	if s.ended.Load() {
+		return nil
+	}
+	select {
+	case s.outbox <- b:
+	default:
+		if !s.ended.Swap(true) {
+			slog.Warn(fmt.Sprintf("r26 %s closed: %d messages waiting", s.addr, cap(s.outbox)))
+		}
+		s.conn.Close()
+	}
+	return nil
 }
 
-// end closes the connection from the server's side.
+// write writes the outbox in order until a nil message or a write that fails, then closes the connection. It runs in
+// a goroutine of its own, so that a client that stops reading holds up nobody who sends to it.
+func (s *session) write(written chan<- struct{}) {
+	defer close(written)
+	defer s.conn.Close()
+	for {
+		b := <-s.outbox
+		if b == nil {
+			return
+		}
+		if _, err := s.conn.Write(b); err != nil {
+			s.closed(err)
+			s.ended.Store(true)
+			return
+		}
+	}
+}
+
+// end ends the session from the server's side: the connection closes once the messages sent before are written. With
+// a full outbox, the client has stopped reading, and the connection closes at once; the writer then fails on what
+// waits and stops.
 func (s *session) end() {
+	if s.ended.Swap(true) {
+		return
+	}
+	select {
+	case s.outbox <- nil:
+	default:
+		s.conn.Close()
+	}
+}
+
+// abort ends the session at once, without writing what waits: the client stopped answering.
+func (s *session) abort() {
 	s.ended.Store(true)
 	s.conn.Close()
+	select {
+	case s.outbox <- nil:
+	default:
+	}
 }
 
 func (s *session) closed(err error) {
@@ -149,7 +212,7 @@ func (s *session) keepAlive(done <-chan struct{}) {
 		now := time.Now()
 		if !now.Before(deadline) {
 			slog.Info(fmt.Sprintf("r26 %s closed: no PONG for %s", s.addr, now.Sub(lastPong).Round(time.Second)))
-			s.end()
+			s.abort()
 			return
 		}
 		if !now.Before(next) {

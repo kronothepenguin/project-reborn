@@ -118,10 +118,25 @@ On `info`, `r26.Serve` speaks R26:
    `r26 127.0.0.1:53422 closed: encoding: malformed value: a packet length of 1, too short for its id`.
    Every other session goes on.
 
-`r26` writes a message as 2 B64 characters of its id, the body and the
-character 1, in one `Write`, so that the messages of goroutines sharing a
-connection never mix. The client ends a message at its first character 1, so a
-body that holds one is refused with an error wrapping `encoding.ErrUnencodable`.
+`r26` frames a message as 2 B64 characters of its id, the body and the
+character 1. The client ends a message at its first character 1, so a body that
+holds one is refused with an error wrapping `encoding.ErrUnencodable`.
+
+Each session sends through an outbox
+(`plans/server/decisions/0073-each-session-sends-through-an-outbox.md`):
+
+- Sending queues the message, and a goroutine of the session's own writes the
+  queue in order, one message per `Write`. So sending never waits for the
+  client, even from another session's goroutine, as a room's messages will.
+- The queue holds `game.outboxSize` messages, 500 by default, read as the
+  session starts. A client whose queue is full has stopped reading: its session
+  ends at once and is logged, `r26 127.0.0.1:53422 closed: 500 messages waiting`.
+- A session the server ends, as on a wrong `VERSIONCHECK` or a second login,
+  writes what it sent before, then closes. The ping loop's timeout closes at
+  once, without writing what waits, and keeps running until the writing is
+  done, so it also ends a session whose last messages wait on a client that
+  stopped reading.
+- Once a session has ended, what is sent to it goes nowhere.
 
 On `mus`, until S7 frames MUS, the server logs the connect, the size of each
 message and the close, and never answers

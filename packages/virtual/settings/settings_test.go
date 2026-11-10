@@ -772,6 +772,7 @@ func TestTheGameSettingsHoldTheirDefaults(t *testing.T) {
 		"game.chatHistoryDays":           30,
 		"game.loadingAdImage":            "",
 		"game.roomAdLink":                "",
+		"game.outboxSize":                500,
 	})
 
 	for value, valid := range map[int]bool{0: false, 1: true, 1_000_000: true} {

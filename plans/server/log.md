@@ -2,6 +2,9 @@
 
 ## 2026-11-10
 
+- **Done** [s4-10](/tasks/s4-10-outbox.md): each r26 session sends through an outbox of game.outboxSize messages,
+  written by a goroutine of its own; a client that stops reading is closed.
+- **Start** [s4-10](/tasks/s4-10-outbox.md).
 - **Done** [s4-02](/tasks/s4-02-loaded-rooms.md): virtual/room keeps the loaded rooms, their floors, habbos, rights,
   bans and lines; a room loads with its first habbo and unloads with its last.
 - **Decision** [0072](/decisions/0072-each-loaded-room-runs-its-own-clock.md): each loaded room runs its own clock.
