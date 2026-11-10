@@ -189,6 +189,7 @@ var forms = []section{
 			{Key: "game.chatMaxLength", Label: "Chat Line Length", Help: "How many characters of a chat, shout or whisper the server keeps."},
 			{Key: "game.maxIgnoredHabbos", Label: "Ignored Habbos", Help: "How many habbos a habbo may ignore; one more drops the oldest."},
 			{Key: "game.roomEventTypes", Label: "Room Event Types", Help: "How many types of room events there are, named by the client's texts roomevent_type_1 and on."},
+			{Key: "game.maxSpectators", Label: "Spectators", Help: "How many spectators may watch a full room at once."},
 		},
 	},
 	{

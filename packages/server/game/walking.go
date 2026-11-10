@@ -59,9 +59,7 @@ func tick(r *room.Room) {
 		return sent
 	})
 	if len(sent) > 0 {
-		for _, o := range r.Occupants() {
-			o.Session.Notify(Statuses{Occupants: sent})
-		}
+		broadcast(r, Statuses{Occupants: sent})
 	}
 	// A kicked habbo that stopped, at the door or with no way to it, leaves the room there (plans/server decision 0079).
 	for _, o := range leaving {

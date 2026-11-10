@@ -36,7 +36,11 @@ const (
 	flatNotAllowedToEnter = 131
 	roomAdData            = 208
 	cantConnect           = 224
+	youAreSpectator       = 254
 	interstitialData      = 258
+	roomQueueData         = 259
+	removeSpecs           = 283
+	spectatorAmount       = 298
 	groupBadges           = 309
 	groupDetails          = 311
 	roomRating            = 345
@@ -50,11 +54,8 @@ const (
 	ignoreList            = 420
 )
 
-// The reasons of 224, as hh_navigator shows them.
-const (
-	cantConnectFull   = 1
-	cantConnectBanned = 4
-)
+// The reason of 224 for a ban, as hh_navigator shows it; a full room queues (plans/server decision 0087).
+const cantConnectBanned = 4
 
 const incorrectFlatPassword = "Incorrect flat password"
 
@@ -158,6 +159,8 @@ var roomHandlers = map[int]handler{
 	98:  loggedIn(handleLetUserIn),
 	126: loggedIn(handleGetRoomAd),
 	182: loggedIn(handleGetInterstitial),
+	211: loggedIn(handleRoomQueueChange),
+	216: loggedIn(handleGetSpectatorAmount),
 	317: loggedIn(handleStartTyping),
 	318: loggedIn(handleCancelTyping),
 	319: loggedIn(handleIgnoreUser),
@@ -177,7 +180,8 @@ var roomHandlers = map[int]handler{
 }
 
 // handleRoomDirectory heads the habbo for a room, out of the one it is in: 19, which Holo sent for both kinds, then a
-// public room's 69 with its model as the marker, or 224 with 1 when it is full. A habbo room goes on with TRYFLAT.
+// public room's 69 with its model as the marker, or its queue's 259 when it is full. A habbo room goes on with
+// TRYFLAT.
 // The public room's door, the third field, is the model's own.
 func handleRoomDirectory(s *session, me habbo.Habbo, body []byte) {
 	r := bytes.NewReader(body)
@@ -198,17 +202,14 @@ func handleRoomDirectory(s *session, me habbo.Habbo, body []byte) {
 		s.fail(err)
 		return
 	}
-	switch a {
-	case game.Admitted:
+	if a == game.Admitted {
 		s.reply(roomReady, []byte(m.Name+" "+strconv.FormatInt(ref.ID, 10)))
-	case game.Full:
-		s.reply(cantConnect, vl64(cantConnectFull))
 	}
 }
 
 // handleTryFlat answers the habbo at the door of the habbo room it chose: 41 lets it in, and the client goes on with
-// GOTOFLAT; 91 keeps it at the doorbell; 131 turns it away when nobody can answer; 33 Incorrect flat password; and 224
-// with 1 for a full room or with 4 for a ban.
+// GOTOFLAT; 91 keeps it at the doorbell; 131 turns it away when nobody can answer; 33 Incorrect flat password; 224
+// with 4 for a ban; and a full room's queue, 259.
 func handleTryFlat(s *session, me habbo.Habbo, body []byte) {
 	text, err := encoding.ReadRaw(bytes.NewReader(body))
 	if err != nil {
@@ -235,8 +236,6 @@ func handleTryFlat(s *session, me habbo.Habbo, body []byte) {
 		s.reply(flatNotAllowedToEnter, str(""))
 	case game.WrongPassword:
 		s.reply(errorText, []byte(incorrectFlatPassword))
-	case game.Full:
-		s.reply(cantConnect, vl64(cantConnectFull))
 	case game.Banned:
 		s.reply(cantConnect, vl64(cantConnectBanned))
 	}
@@ -344,7 +343,8 @@ func handleGetItems(s *session, me habbo.Habbo, _ []byte) {
 }
 
 // handleGetStatus brings the habbo into the room it built: it gets the others' statuses, then its own user line and
-// status, which the others get too, as Holo sent them. A room that filled meanwhile gets 224 with 1.
+// status, which the others get too, as Holo sent them. A room that filled meanwhile queues it, and a spectator gets the
+// statuses alone.
 func handleGetStatus(s *session, me habbo.Habbo, _ []byte) {
 	visitors, a, err := game.EnterRoom(context.Background(), s.db, me)
 	if err != nil {
@@ -352,10 +352,14 @@ func handleGetStatus(s *session, me habbo.Habbo, _ []byte) {
 		return
 	}
 	switch a {
-	case game.Full:
-		s.reply(cantConnect, vl64(cantConnectFull))
+	case game.InQueue, game.NoRoom:
 		return
-	case game.NoRoom:
+	case game.Watching:
+		var b strings.Builder
+		for _, v := range visitors {
+			writeStatus(&b, v.Occupant)
+		}
+		s.reply(roomStatus, []byte(b.String()))
 		return
 	}
 	var others strings.Builder
@@ -787,4 +791,49 @@ func handleSetBadge(s *session, me habbo.Habbo, body []byte) {
 // sendBadges writes 228: a habbo's web id, its avatar id, then the badges it wears with their slots.
 func (s *session) sendBadges(c game.BadgesChanged) {
 	s.reply(userBadge, append(str(strconv.FormatInt(c.AvatarID, 10)), wornBadges(c.Worn)...))
+}
+
+// handleRoomQueueChange moves the habbo to the line of the target it sends, the room's or the spectators'.
+func handleRoomQueueChange(s *session, me habbo.Habbo, body []byte) {
+	target, err := encoding.ReadVL64(bytes.NewReader(body))
+	if err != nil {
+		s.malformed(211, body)
+		return
+	}
+	game.ChangeQueue(me, int(target))
+}
+
+// handleGetSpectatorAmount answers 298: how many watch the habbo's room and how many may, -1 when it watches none.
+func handleGetSpectatorAmount(s *session, me habbo.Habbo, _ []byte) {
+	count, most := game.SpectatorCount(me)
+	s.reply(spectatorAmount, append(vl64(count), vl64(most)...))
+}
+
+// sendQueue writes 259: each set's name and target, then its two queues, club and the set's own, with how many of
+// each come in before the habbo (plans/server decision 0090).
+func (s *session) sendQueue(q game.QueueChanged) {
+	b := vl64(len(q.Sets))
+	for _, set := range q.Sets {
+		b = append(b, str(set.Name)...)
+		b = append(b, vl64(set.Target)...)
+		b = append(b, vl64(2)...)
+		b = append(b, str("club")...)
+		b = append(b, vl64(set.Club)...)
+		b = append(b, str(set.Name)...)
+		b = append(b, vl64(set.Others)...)
+	}
+	s.reply(roomQueueData, b)
+}
+
+// sendQueueAdmitted lets the habbo go on into the room its queue let it into: 254 first for a spectator, then 69 for a
+// public room, as #room_directory would have, or 41 for a habbo room, on which the client sends GOTOFLAT.
+func (s *session) sendQueueAdmitted(a game.QueueAdmitted) {
+	if a.Spectator {
+		s.reply(youAreSpectator, nil)
+	}
+	if a.Ref.Public {
+		s.reply(roomReady, []byte(a.Model+" "+strconv.FormatInt(a.Ref.ID, 10)))
+		return
+	}
+	s.reply(flatLetIn, str(""))
 }

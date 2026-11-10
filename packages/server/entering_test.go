@@ -310,14 +310,15 @@ func TestABannedHabboAndAFullRoom(t *testing.T) {
 	owner.knock(t, flat, "")
 	owner.expectNext(t, 41, "\x02")
 
+	// A full room queues the habbo in place of refusing it (plans/server decision 0087).
 	fill(t, room.Ref{ID: flat}, 2_000_000, 25)
 	squeezed.knock(t, flat, "")
-	squeezed.expectNext(t, 224, vl64String(t, 1))
+	squeezed.expectNext(t, 259, queueData(t, "room", 0, 0, "spectators", 0, 0))
 
 	library, _ := room.Public(104)
 	fill(t, room.Ref{Public: true, ID: 104}, 2_000_100, int(library.MaxVisitors))
 	squeezed.chooseRoom(t, true, 104)
-	squeezed.expectNext(t, 224, vl64String(t, 1))
+	squeezed.expectNext(t, 259, queueData(t, "room", 0, 0, "spectators", 0, 0))
 }
 
 // Deleting a room sends the habbos in it out, as Holo did: each gets 18, and the others see it go.

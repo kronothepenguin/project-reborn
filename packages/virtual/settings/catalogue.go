@@ -153,6 +153,10 @@ var catalogue = map[string]declaration{
 	// How many room event types there are, which the client names from its
 	// texts roomevent_type_<n> (plans/server decision 0081).
 	"game.roomEventTypes": declare(11, between(1, 50)),
+
+	// How many spectators may watch a full room at once (plans/server
+	// decision 0089).
+	"game.maxSpectators": declare(50, between(1, 1000)),
 }
 
 // rules check settings that depend on each other. keys lists every setting a

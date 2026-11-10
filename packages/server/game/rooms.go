@@ -167,7 +167,15 @@ func SetRoomSettings(ctx context.Context, db *sql.DB, viewer habbo.Habbo, roomID
 			return fmt.Errorf("game: set room settings: %w", err)
 		}
 	}
-	return tx.Commit()
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("game: set room settings: %w", err)
+	}
+	// A loaded room takes the new limit, and a higher one lets its queue in.
+	if r, ok := room.Loaded(room.Ref{ID: roomID}); ok {
+		r.SetMax(int(next.MaxVisitors))
+		serveLines(r)
+	}
+	return nil
 }
 
 func validRoomName(name string) bool {

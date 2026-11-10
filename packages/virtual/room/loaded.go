@@ -62,20 +62,23 @@ func (o Occupant) clone() Occupant {
 	return o
 }
 
-// Waiting is a habbo at a room's doorbell, in its queue or among its spectators.
+// Waiting is a habbo at a room's doorbell, in its queues or among its spectators. Club tells a club member, who comes
+// first in a queue (plans/server decision 0088).
 type Waiting struct {
 	AvatarID int64
 	Session  habbo.Session
+	Club     bool
 }
 
 // Line is one of the ways a habbo waits on a room.
 type Line int
 
-// The lines: at the doorbell, in the queue of a full room, and among the spectators.
+// The lines: at the doorbell, in the queue of a full room, among the spectators, and in the spectators' queue.
 const (
 	Doorbell Line = iota
 	Queue
 	Spectators
+	SpectatorQueue
 	lines
 )
 
@@ -90,11 +93,14 @@ type Room struct {
 
 	mu        sync.Mutex
 	unloaded  bool
+	max       int
 	occupants map[int64]Occupant
 	rights    map[int64]bool
 	bans      map[int64]time.Time
 	waiting   [lines][]Waiting
 	event     *Event
+	// reserved are the habbos a queue let in, on their way: their places count as taken until they come in or go.
+	reserved map[int64]bool
 }
 
 var (
@@ -145,6 +151,7 @@ func load(ctx context.Context, db *sql.DB, ref Ref) (*Room, error) {
 		occupants: make(map[int64]Occupant),
 		rights:    make(map[int64]bool),
 		bans:      make(map[int64]time.Time),
+		reserved:  make(map[int64]bool),
 	}
 	var modelID int64
 	if ref.Public {
@@ -152,7 +159,7 @@ func load(ctx context.Context, db *sql.DB, ref Ref) (*Room, error) {
 		if !ok {
 			return nil, ErrNoRoom
 		}
-		modelID = p.RoomModelID
+		modelID, r.max = p.RoomModelID, int(p.MaxVisitors)
 	} else {
 		q := store.New(db)
 		row, err := q.GetRoom(ctx, ref.ID)
@@ -162,7 +169,7 @@ func load(ctx context.Context, db *sql.DB, ref Ref) (*Room, error) {
 		if err != nil {
 			return nil, fmt.Errorf("room: %w", err)
 		}
-		modelID, r.owner = row.RoomModelID, row.OwnerAvatarID
+		modelID, r.owner, r.max = row.RoomModelID, row.OwnerAvatarID, int(row.MaxVisitors)
 		rights, err := q.ListRoomRights(ctx, ref.ID)
 		if err != nil {
 			return nil, fmt.Errorf("room: %w", err)
@@ -216,6 +223,7 @@ func (r *Room) add(avatarID int64, s habbo.Session, limit int) (Occupant, error)
 		BodyDirection: direction,
 	}
 	r.occupants[avatarID] = o
+	delete(r.reserved, avatarID)
 	return o.clone(), nil
 }
 
@@ -443,4 +451,65 @@ func (r *Room) Waiting(l Line) []Waiting {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	return slices.Clone(r.waiting[l])
+}
+
+// LineOf returns the line the habbo avatarID waits in.
+func (r *Room) LineOf(avatarID int64) (Line, bool) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	for l := range lines {
+		if slices.ContainsFunc(r.waiting[l], func(w Waiting) bool { return w.AvatarID == avatarID }) {
+			return Line(l), true
+		}
+	}
+	return 0, false
+}
+
+// Reserve keeps a place for the habbo avatarID, which a queue let in, until it comes in or Unreserve frees it, and
+// reports whether the room is still loaded.
+func (r *Room) Reserve(avatarID int64) bool {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if r.unloaded {
+		return false
+	}
+	r.reserved[avatarID] = true
+	return true
+}
+
+// Unreserve frees the place kept for the habbo avatarID, and reports whether one was kept.
+func (r *Room) Unreserve(avatarID int64) bool {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	kept := r.reserved[avatarID]
+	delete(r.reserved, avatarID)
+	return kept
+}
+
+// Reserved reports whether a place is kept for the habbo avatarID.
+func (r *Room) Reserved(avatarID int64) bool {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	return r.reserved[avatarID]
+}
+
+// Max returns how many habbos the room takes, as it loaded or as SetMax changed it.
+func (r *Room) Max() int {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	return r.max
+}
+
+// SetMax changes how many habbos the room's copy takes, once the store has the change.
+func (r *Room) SetMax(n int) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	r.max = n
+}
+
+// Taken returns how many places the room's habbos and those on their way from its queue take.
+func (r *Room) Taken() int {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	return len(r.occupants) + len(r.reserved)
 }

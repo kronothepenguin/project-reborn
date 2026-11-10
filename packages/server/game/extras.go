@@ -134,7 +134,7 @@ func HostEvent(viewer habbo.Habbo, eventType int, name, description string, edit
 		return
 	}
 	if r.SetEvent(e) {
-		notify(r.Occupants(), RoomEventChanged{Event: EventInfo{Event: e, HostName: viewer.Name, FlatID: r.Ref().ID}, Held: true})
+		broadcast(r, RoomEventChanged{Event: EventInfo{Event: e, HostName: viewer.Name, FlatID: r.Ref().ID}, Held: true})
 	}
 }
 
@@ -150,7 +150,7 @@ func endEventOf(r *room.Room, hostID int64) {
 		return
 	}
 	if _, ended := r.EndEvent(); ended {
-		notify(r.Occupants(), RoomEventChanged{})
+		broadcast(r, RoomEventChanged{})
 	}
 }
 
@@ -294,7 +294,7 @@ func SetBadges(ctx context.Context, db *sql.DB, viewer habbo.Habbo, slots [5]str
 	}
 	habbo.Update(viewer.ID, viewer.Session, func(h *habbo.Habbo) { h.Worn = worn })
 	if r, ok := room.In(viewer.ID); ok {
-		notify(r.Occupants(), BadgesChanged{AvatarID: viewer.ID, Worn: worn})
+		broadcast(r, BadgesChanged{AvatarID: viewer.ID, Worn: worn})
 	}
 	return nil
 }

@@ -114,7 +114,7 @@ func speak(ctx context.Context, db *sql.DB, viewer habbo.Habbo, kind ChatKind, t
 		return nil
 	}
 	if wasTyping {
-		notify(occupants, Typing{Index: me.Index})
+		broadcast(r, Typing{Index: me.Index})
 	}
 
 	reach := settings.GetIntOr("game.chatRange", 5)
@@ -135,6 +135,14 @@ func speak(ctx context.Context, db *sql.DB, viewer habbo.Habbo, kind ChatKind, t
 			}
 		}
 		o.Session.Notify(line)
+	}
+	// Spectators watch the whole room, so they read every chat and shout (plans/server decision 0089).
+	if kind != ChatWhisper {
+		for _, w := range r.Waiting(room.Spectators) {
+			if listener, ok := habbo.Get(w.AvatarID); ok && !slices.Contains(listener.Ignored, viewer.ID) {
+				w.Session.Notify(Chat{Index: me.Index, Kind: kind, Text: text})
+			}
+		}
 	}
 	return nil
 }
@@ -197,7 +205,7 @@ func SetTyping(viewer habbo.Habbo, on bool) {
 	if !r.Update(viewer.ID, func(o *room.Occupant) { o.Typing, index = on, o.Index }) {
 		return
 	}
-	notify(r.Occupants(), Typing{Index: index, On: on})
+	broadcast(r, Typing{Index: index, On: on})
 }
 
 // Dance starts the habbo's dance (DANCE): the normal one, 0, for anyone, and the club dances 1 to 4 for the holders of

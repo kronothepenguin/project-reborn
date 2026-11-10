@@ -143,8 +143,10 @@ left, ok := room.Leave(h.ID, h.Session)
   `Occupants()`, by index, and `Occupant(avatarID)`; `Update(avatarID, change)`, which changes a habbo's place and
   statuses but never its id, session or index; the copies of its rights and bans, `HasRights`, `SetRights`, `BanEnd` and
   `Ban`, which the rules change once the store has the change
-  (`plans/server/decisions/0010-hot-data-written-at-once.md`); and three lines, `Doorbell`, `Queue` and `Spectators`,
-  with `Join`, `Remove` and `Waiting` (`plans/server/decisions/0069-doorbell-queue-and-spectators-in-memory.md`).
+  (`plans/server/decisions/0010-hot-data-written-at-once.md`); four lines, `Doorbell`, `Queue`, `Spectators` and
+  `SpectatorQueue`, with `Join`, `Remove`, `Waiting` and `LineOf`
+  (`plans/server/decisions/0069-doorbell-queue-and-spectators-in-memory.md`); `Reserve`, `Unreserve`, `Reserved` and
+  `Taken`, for the places a queue keeps for the habbos it lets in; and `Max`, the room's limit, which `SetMax` changes.
 - An `Occupant` also holds its walk, `Walking` to `GoalX`, `GoalY`; `Changed`, which asks the room's clock to send its
   status (`plans/server/decisions/0072-each-loaded-room-runs-its-own-clock.md`); `Typing`; and `Leaving`, a kicked or
   banned habbo walking out. A `Status` may end, `Until`, as talking and waving do. `Tick(step)` runs the clock's step on

@@ -251,8 +251,8 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
 | Command | Answer |
 | --- | --- |
 | `GETINTERST` (182) | 258: `game.loadingAdImage`, a tab and `game.loadingAdLink`, or `0`, which shows no ad (`plans/server/decisions/0070-a-loading-ad-and-a-room-ad-from-settings.md`) |
-| `#room_directory` (2) | 19, for both kinds, as Holo sent it. The habbo leaves the room it is in or rings. A public room, named by its id, then gets 69, `<model> <id>`, or 224 with 1 when it holds its `max_visitors` habbos. A habbo room goes on with `TRYFLAT` |
-| `TRYFLAT` (57) | 41 with an empty name lets the habbo in. A full room gets 224 with 1. The owner and the holders of `fuse_enter_locked_rooms` pass any door and any ban; anyone else banned gets 224 with 4; a password door compares `<id>/<password>` with the room's hash (`plans/server/decisions/0062-room-passwords-are-hashed.md`), or 33 `Incorrect flat password`; a closed door gets 91 and rings the doorbell of the habbos with rights in the room, who get 91 with the ringer's name. A room that is not loaded, or holds nobody who may answer, gets 131 at once, as Holo did with nobody in |
+| `#room_directory` (2) | 19, for both kinds, as Holo sent it. The habbo leaves the room it is in or rings. A public room, named by its id, then gets 69, `<model> <id>`, or joins its queue when it is full. A habbo room goes on with `TRYFLAT` |
+| `TRYFLAT` (57) | 41 with an empty name lets the habbo in. A full room queues it. The owner and the holders of `fuse_enter_locked_rooms` pass any door and any ban; anyone else banned gets 224 with 4; a password door compares `<id>/<password>` with the room's hash (`plans/server/decisions/0062-room-passwords-are-hashed.md`), or 33 `Incorrect flat password`; a closed door gets 91 and rings the doorbell of the habbos with rights in the room, who get 91 with the ringer's name. A room that is not loaded, or holds nobody who may answer, gets 131 at once, as Holo did with nobody in |
 | `LETUSERIN` (98) | From a habbo with rights in the room: the ringer gets 41 and goes on with `GOTOFLAT`, or 131; the habbos with rights get 41 or 131 with its name, which their doorbells drop. A ringer who leaves is dropped the same way |
 | `GOTOFLAT` (59) | 69, `model_<model> <id>`; then 47 for the owner and 42 for a habbo with rights; then the room's rating, 345, and its event, 370, as Holo sent them. The holders of `fuse_any_room_controller` count as owners, as Holo had it. Only after the door let the habbo through |
 | `GETROOMAD` (126) | 208: `game.roomAdImage`, a tab and `game.roomAdLink`, or `0` |
@@ -260,8 +260,10 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
 | `G_USRS` (61) | 28: the user lines of the habbos in the room |
 | `G_OBJS` (62) | 30: the model's public furni, `<id> <class> <x> <y> <height> <direction>` a line, then 32 with no furniture, which no command asks for and the client needs |
 | `G_ITEMS` (63) | 45: no wall items |
-| `G_STAT` (64) | The habbo comes in at the model's door: 34 with the others' statuses, then 28 with its own user lines and 34 with its status, which the others get too. In a habbo room the owner's status holds `flatctrl useradmin` and a habbo with rights `flatctrl` with no level, which the client's Human class reads as `furniture`; Holo's `onlyfurniture` was another client's. A room that filled meanwhile gets 224 with 1 |
+| `G_STAT` (64) | The habbo comes in at the model's door: 34 with the others' statuses, then 28 with its own user lines and 34 with its status, which the others get too. In a habbo room the owner's status holds `flatctrl useradmin` and a habbo with rights `flatctrl` with no level, which the client's Human class reads as `furniture`; Holo's `onlyfurniture` was another client's. A room that filled meanwhile queues the habbo. A spectator gets the statuses alone and comes into no place |
 | `QUIT` (53) | Nothing: the habbo leaves, and the others get 29 with its index |
+| `ROOM_QUEUE_CHANGE` (211) | The habbo waiting in a full room's line moves to the line its target names, 1 the room's and 2 the spectators', at its end (`plans/server/decisions/0089-up-to-50-spectators-from-the-queue.md`) |
+| `GET_SPECTATOR_AMOUNT` (216) | 298: how many watch the habbo's room and `game.maxSpectators`, or -1 for a habbo that watches none, which hides the client's count |
 | `MOVE` (75) | Nothing at once: the habbo walks to the tile, two B64 shorts, a step on each tick of the room's clock. A tile off the floor, such as the 1000, 1000 of the sound machine's editor, changes nothing |
 | `LOOKTO` (79) | The habbo turns, head and body, to the tile `<x> <y>`, unless it sits or lies, as Holo had it; its status goes out on the next tick |
 | `CHAT` (52), in `room_utils.go` | 24 with the speaker's index and the text to the habbos within `game.chatRange` tiles each way, 5, as Holo had it; the farther ones get 24 with no text, which the client draws as its unheard bubble (`plans/server/decisions/0074-near-habbos-read-chat-far-ones-see-a-bubble.md`) |
@@ -327,7 +329,21 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
   chat or a shout with a smiley shows its face for 5 s, `gest sml`, `agr`, `sad`
   or `srp`, as Holo's `checkEmotion` found them. The room's clock ends each
   timed status on its tick and sends the change.
-- The queue with the spectators comes with s4-12.
+- A full room, public or habbo room, puts an arriving habbo in its queue
+  (`plans/server/decisions/0087-every-full-room-queues.md`) and sends everyone
+  waiting 259: two sets, `room`, target 1, and `spectators`, target 2, the
+  habbo's own first, each with two queues, `club` and the set's own name, and
+  how many of each come in before it
+  (`plans/server/decisions/0090-queue-sets-room-and-spectators.md`). Club
+  members come first (`plans/server/decisions/0088-club-members-first-in-a-queue.md`).
+- A place that frees lets the next habbo in, which gets 69 for a public room
+  or 41 for a habbo room, and keeps its place until it comes in, so that a
+  newcomer cannot take it. A spectator's seat that frees lets the spectators'
+  queue in, with 254 first; up to `game.maxSpectators`, 50, watch at once
+  (`plans/server/decisions/0089-up-to-50-spectators-from-the-queue.md`).
+- Spectators see what the room's habbos see, the chat and shouts too, but have
+  no place, and cannot act. When the room empties, they get 283 and 18, and
+  those still in its queues are let in.
 
 ## Keeping the session alive
 
@@ -398,6 +414,10 @@ client through its `Session` (`plans/server/decisions/0039-rules-notify-sessions
   `RightsChanged`; `Kick` and `Ban` send a habbo walking out, and the room's
   clock sends it `Kicked` and takes it out once it stops.
 - Badges: `SetBadges` saves the five slots and sends `BadgesChanged`.
+- Queue: full rooms call `joinQueue`, and every place that frees `serveLines`,
+  which sends `QueueChanged` and `QueueAdmitted`; `ChangeQueue` moves a habbo
+  between the lines; `SpectatorCount` counts the spectators; the room's events
+  reach its spectators too, and `SpectatorsRemoved` lets them go.
 - Extras: `RoomRating` and `RateRoom` with `RatingChanged`; `CanHostEvent`,
   `HostEvent`, `EndEvent`, `RoomEvent`, `Events` and `EventTypes` with
   `RoomEventChanged`; `GroupBadges`, `GroupDetails` and `UserTags`.
@@ -457,6 +477,8 @@ says, and each uses habbos of its own.
   and tags.
 - `rights_test.go` gives and takes rights, kicks a habbo that walks out, bans
   it, and takes every right from the navigator.
+- `queue_test.go` queues habbos at a full room, lets one in when a place
+  frees, puts club members first and takes a spectator until the room empties.
 - `walking_test.go` walks two habbos at once, a step every 500 ms, and turns
   one; `game`'s `walking_test.go` tests the way: around walls without cutting
   corners, heights, other habbos and seats.

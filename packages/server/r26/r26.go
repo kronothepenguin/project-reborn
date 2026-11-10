@@ -221,6 +221,12 @@ func (s *session) Notify(event any) {
 		} else {
 			s.reply(roomNotController, nil)
 		}
+	case game.QueueChanged:
+		s.sendQueue(e)
+	case game.QueueAdmitted:
+		s.sendQueueAdmitted(e)
+	case game.SpectatorsRemoved:
+		s.reply(removeSpecs, nil)
 	case game.BadgesChanged:
 		s.sendBadges(e)
 	case game.RatingChanged:

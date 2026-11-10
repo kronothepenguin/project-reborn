@@ -2,6 +2,14 @@
 
 ## 2026-11-10
 
+- **Done** [s4-12](/tasks/s4-12-queue-and-spectators.md): full rooms queue their arrivals, club members first, let them
+  in as places free, and take up to 50 spectators from the queue.
+- **Decision** [0087](/decisions/0087-every-full-room-queues.md): every full room queues its arrivals.
+- **Decision** [0088](/decisions/0088-club-members-first-in-a-queue.md): club members come first in a queue.
+- **Decision** [0089](/decisions/0089-up-to-50-spectators-from-the-queue.md): up to 50 spectators watch a full room,
+  from its queue.
+- **Decision** [0090](/decisions/0090-queue-sets-room-and-spectators.md): the queue sets are room and spectators.
+- **Start** [s4-12](/tasks/s4-12-queue-and-spectators.md).
 - **Done** [s4-11](/tasks/s4-11-five-badge-slots.md): a habbo wears up to five badges in slots, set by SETBADGE and
   shown by 228, 229 and the user lines; the site wears its badge in slot 1.
 - **Start** [s4-11](/tasks/s4-11-five-badge-slots.md).

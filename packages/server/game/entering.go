@@ -30,12 +30,14 @@ const (
 	WrongPassword
 	// Banned is a habbo banned from the room.
 	Banned
-	// Full is a room that holds as many habbos as it takes.
-	Full
+	// InQueue is a full room, whose queue the habbo joined (plans/server decision 0087).
+	InQueue
 	// NoAnswer is a doorbell that nobody in the room can answer.
 	NoAnswer
 	// NoRoom is a room that does not exist, or one the habbo is not on its way into.
 	NoRoom
+	// Watching is a habbo that comes in as a spectator (plans/server decision 0089).
+	Watching
 )
 
 // Visitor is a habbo in a room: who it is, and where it stands.
@@ -99,8 +101,11 @@ func ChooseRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo, ref room.Re
 	if !ok {
 		return 0, store.RoomModel{}, fmt.Errorf("game: choose room: the public room %d is on the model %d, which is not loaded", p.ID, p.RoomModelID)
 	}
-	if full(viewer, ref, int(p.MaxVisitors)) {
-		return Full, store.RoomModel{}, nil
+	if r, ok := fullRoom(viewer, ref, int(p.MaxVisitors)); ok {
+		if err := joinQueue(ctx, db, viewer, r); err != nil {
+			return 0, store.RoomModel{}, fmt.Errorf("game: choose room: %w", err)
+		}
+		return InQueue, store.RoomModel{}, nil
 	}
 	room.Head(viewer.ID, ref)
 	room.Admit(viewer.ID, ref)
@@ -134,7 +139,7 @@ func TryFlat(ctx context.Context, db *sql.DB, viewer habbo.Habbo, flatID int64, 
 	switch a {
 	case Admitted:
 		room.Admit(viewer.ID, ref)
-	case Ringing:
+	case Ringing, InQueue:
 	default:
 		room.ClearHeading(viewer.ID)
 	}
@@ -142,8 +147,8 @@ func TryFlat(ctx context.Context, db *sql.DB, viewer habbo.Habbo, flatID int64, 
 }
 
 func door(ctx context.Context, db *sql.DB, viewer habbo.Habbo, ref room.Ref, r store.GetRoomRow, password string) (Admission, error) {
-	if full(viewer, ref, int(r.MaxVisitors)) {
-		return Full, nil
+	if full, ok := fullRoom(viewer, ref, int(r.MaxVisitors)); ok {
+		return InQueue, joinQueue(ctx, db, viewer, full)
 	}
 	if r.OwnerAvatarID == viewer.ID || hasFuse(viewer, auth.FuseEnterLockedRooms) {
 		return Admitted, nil
@@ -342,23 +347,37 @@ func visitorsOf(r *room.Room) []Visitor {
 
 // EnterRoom brings the habbo into the room whose door let it through, once its client has built the room (G_STAT),
 // as Holo did, and returns everyone in it, the habbo too, by index. The habbo that loads the room starts its clock
-// (plans/server decision 0072). The others see it come. The room is checked
-// again: one that filled meanwhile turns it away, Full, unless it holds fuse_enter_full_rooms. In a habbo room, its
-// owner gets the status flatctrl useradmin, and a habbo with rights flatctrl with no level, as flatControl says.
+// (plans/server decision 0072). The others and the spectators see it come. The room is checked again: one that filled
+// meanwhile queues the habbo, InQueue, unless it holds fuse_enter_full_rooms or its queue let it in. A spectator only
+// watches: Watching. In a habbo room, its owner gets the status flatctrl useradmin, and a habbo with rights flatctrl
+// with no level, as flatControl says.
 func EnterRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]Visitor, Admission, error) {
 	h, ok := room.HeadingOf(viewer.ID)
 	if !ok || !h.Admitted {
 		return nil, NoRoom, nil
 	}
+	if r, ok := watching(viewer.ID); ok {
+		return visitorsOf(r), Watching, nil
+	}
 	limit, err := limitFor(ctx, db, viewer, h.Ref)
 	if err != nil {
 		return nil, 0, fmt.Errorf("game: enter room: %w", err)
+	}
+	if r, ok := room.Loaded(h.Ref); ok && r.Reserved(viewer.ID) {
+		limit = 0
 	}
 	r, _, loaded, err := room.Enter(ctx, db, h.Ref, viewer.ID, viewer.Session, limit)
 	clearHeadingFor(viewer.ID, h.Ref)
 	switch {
 	case errors.Is(err, room.ErrFull):
-		return nil, Full, nil
+		full, ok := room.Loaded(h.Ref)
+		if !ok {
+			return nil, NoRoom, nil
+		}
+		if err := joinQueue(ctx, db, viewer, full); err != nil {
+			return nil, 0, fmt.Errorf("game: enter room: %w", err)
+		}
+		return nil, InQueue, nil
 	case errors.Is(err, room.ErrNoRoom):
 		return nil, NoRoom, nil
 	case err != nil:
@@ -378,9 +397,9 @@ func EnterRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]Visitor, 
 		// The habbo logged out meanwhile.
 		return nil, NoRoom, nil
 	}
-	for _, other := range visitors {
-		if other.Habbo.ID != viewer.ID {
-			other.Occupant.Session.Notify(RoomEntered{Visitor: visitors[i]})
+	for _, s := range audience(r) {
+		if s != viewer.Session {
+			s.Notify(RoomEntered{Visitor: visitors[i]})
 		}
 	}
 	return visitors, Admitted, nil
@@ -417,16 +436,14 @@ func limitFor(ctx context.Context, db *sql.DB, viewer habbo.Habbo, ref room.Ref)
 }
 
 // LeaveRoom takes the habbo avatarID, whom s plays, out of the room it is in (QUIT), ending the event it hosts there
-// (plans/server decision 0081), and away from the doorbell it rings, whose answerers drop it. The others in the room see it go. When it was the last one in, the room unloads
-// (plans/server decision 0071), and those still ringing are turned away.
+// (plans/server decision 0081); and off the doorbell, the queues and the spectators of the room it heads for, or out of
+// the place kept for it, which lets the next habbo in. The others and the spectators see it go. When it was the last
+// one in, the room unloads (plans/server decision 0071): those still ringing are turned away, its spectators let go,
+// and those in its queues let in, since it has places now.
 func LeaveRoom(avatarID int64, s Session) {
-	if h, ok := room.ClearHeading(avatarID); ok && !h.Admitted {
+	if h, ok := room.ClearHeading(avatarID); ok {
 		if r, ok := room.Loaded(h.Ref); ok {
-			if _, ok := r.Remove(room.Doorbell, avatarID); ok {
-				if ringer, ok := habbo.Get(avatarID); ok {
-					notify(controllersIn(r), DoorbellAnswered{Name: ringer.Name})
-				}
-			}
+			leaveLines(r, avatarID)
 		}
 	}
 	if r, ok := room.In(avatarID); ok {
@@ -436,22 +453,67 @@ func LeaveRoom(avatarID int64, s Session) {
 	if !ok {
 		return
 	}
-	for _, o := range left.Room.Occupants() {
-		o.Session.Notify(RoomLeft{Index: left.Occupant.Index})
+	broadcast(left.Room, RoomLeft{Index: left.Occupant.Index})
+	if !left.Unloaded {
+		serveLines(left.Room)
+		return
 	}
-	if left.Unloaded {
-		for _, w := range left.Waiting[room.Doorbell] {
-			clearHeadingFor(w.AvatarID, left.Room.Ref())
-			w.Session.Notify(TurnedAway{})
+	ref := left.Room.Ref()
+	for _, w := range left.Waiting[room.Doorbell] {
+		clearHeadingFor(w.AvatarID, ref)
+		w.Session.Notify(TurnedAway{})
+	}
+	for _, w := range left.Waiting[room.Spectators] {
+		clearHeadingFor(w.AvatarID, ref)
+		w.Session.Notify(SpectatorsRemoved{})
+		w.Session.Notify(Kicked{})
+	}
+	model := ""
+	if ref.Public {
+		model = left.Room.Model().Name
+	}
+	for _, l := range []room.Line{room.Queue, room.SpectatorQueue} {
+		for _, w := range left.Waiting[l] {
+			if room.Admit(w.AvatarID, ref) {
+				w.Session.Notify(QueueAdmitted{Ref: ref, Model: model})
+			}
 		}
 	}
 }
 
-// emptyRoom sends every habbo in a room out of it, as Holo did when its owner deleted it.
+// leaveLines takes the habbo off the room's doorbell, whose answerers drop it, its queues and its spectators, and
+// frees the place kept for it; a place or a spectator's seat freed lets the next habbo in.
+func leaveLines(r *room.Room, avatarID int64) {
+	freed := r.Unreserve(avatarID)
+	if l, ok := r.LineOf(avatarID); ok {
+		r.Remove(l, avatarID)
+		if l != room.Doorbell {
+			freed = true
+		} else if ringer, ok := habbo.Get(avatarID); ok {
+			notify(controllersIn(r), DoorbellAnswered{Name: ringer.Name})
+		}
+	}
+	if freed {
+		serveLines(r)
+	}
+}
+
+// emptyRoom sends every habbo in a room out of it, as Holo did when its owner deleted it, and first those waiting on it,
+// so that its queue lets nobody into a room that is gone.
 func emptyRoom(ref room.Ref) {
 	r, ok := room.Loaded(ref)
 	if !ok {
 		return
+	}
+	for _, l := range []room.Line{room.Doorbell, room.Queue, room.SpectatorQueue, room.Spectators} {
+		for _, w := range r.Waiting(l) {
+			r.Remove(l, w.AvatarID)
+			clearHeadingFor(w.AvatarID, ref)
+			if l == room.Spectators {
+				w.Session.Notify(SpectatorsRemoved{})
+			}
+			w.Session.Notify(Kicked{})
+		}
 	}
 	for _, o := range r.Occupants() {
 		o.Session.Notify(Kicked{})
@@ -465,8 +527,14 @@ func clearHeadingFor(avatarID int64, ref room.Ref) {
 	}
 }
 
-func full(viewer habbo.Habbo, ref room.Ref, most int) bool {
-	return room.Visitors(ref) >= most && !hasFuse(viewer, auth.FuseEnterFullRooms)
+// fullRoom returns the room ref when its habbos and those on their way from its queue take its most places, and the
+// habbo holds no fuse_enter_full_rooms.
+func fullRoom(viewer habbo.Habbo, ref room.Ref, most int) (*room.Room, bool) {
+	r, ok := room.Loaded(ref)
+	if !ok || r.Taken() < most || hasFuse(viewer, auth.FuseEnterFullRooms) {
+		return nil, false
+	}
+	return r, true
 }
 
 // owns reports whether the habbo controls the room as its owner: the owner, and the holders of

@@ -80,7 +80,7 @@ starts.
 - [s4-09 Check S4's exit criteria](/tasks/s4-09-exit-check.md) — From the merged work, check every exit criterion of S4 and close the phase.
 - [s4-10 Send through an outbox per session](/tasks/s4-10-outbox.md) — Each r26 session queues its messages and a goroutine of its own writes them; a client whose game.outboxSize queue is full is closed. **done**
 - [s4-11 Wear five badges](/tasks/s4-11-five-badge-slots.md) — The store keeps a slot 1 to 5 per worn badge; SETBADGE sets them, 228 and the user lines show them, and the site's badge page keeps working. **done**
-- [s4-12 Queue for full rooms and watch as a spectator](/tasks/s4-12-queue-and-spectators.md) — A full room queues its arriving habbos and takes spectators, as the R26 client shows them, in memory.
+- [s4-12 Queue for full rooms and watch as a spectator](/tasks/s4-12-queue-and-spectators.md) — A full room queues its arriving habbos and takes spectators, as the R26 client shows them, in memory. **done**
 
 ## S5 to S9
 
