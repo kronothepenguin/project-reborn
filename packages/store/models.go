@@ -104,6 +104,13 @@ type Credential struct {
 	UpdatedAt    time.Time
 }
 
+type FavouriteRoom struct {
+	AvatarID     int64
+	PublicRoomID sql.NullInt64
+	RoomID       sql.NullInt64
+	CreatedAt    time.Time
+}
+
 type ForumPost struct {
 	ID               int64
 	ForumThreadID    int64
@@ -264,11 +271,66 @@ type ProfileTag struct {
 	CreatedAt time.Time
 }
 
+type PublicRoom struct {
+	ID             int64
+	RoomCategoryID int64
+	RoomModelID    int64
+	Name           string
+	Unit           string
+	Casts          string
+	MaxVisitors    int64
+}
+
 type Referral struct {
 	ReferredUserID   int64
 	ReferrerAvatarID sql.NullInt64
 	CreatedAt        time.Time
 	RewardedAt       sql.NullTime
+}
+
+type Room struct {
+	ID              int64
+	CreatorAvatarID int64
+	OwnerAvatarID   int64
+	RoomCategoryID  int64
+	RoomModelID     int64
+	Name            string
+	Description     string
+	Door            string
+	PasswordHash    sql.NullString
+	ShowOwner       bool
+	OthersMoveFurni bool
+	MaxVisitors     int64
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+}
+
+type RoomCategory struct {
+	ID               int64
+	ParentID         sql.NullInt64
+	Kind             string
+	Name             string
+	MinLevel         int64
+	HiddenBelowLevel bool
+	Trading          bool
+}
+
+type RoomModel struct {
+	ID                    int64
+	Name                  string
+	HabboRooms            bool
+	ClubOnly              bool
+	DoorX                 int64
+	DoorY                 int64
+	DoorHeight            int64
+	DoorDirection         int64
+	Heightmap             string
+	PublicItems           string
+	SwimmingPool          bool
+	SpecialCast           sql.NullString
+	SpecialCastIntervalMs sql.NullInt64
+	SpecialCastMin        sql.NullInt64
+	SpecialCastMax        sql.NullInt64
 }
 
 type SSOTicket struct {

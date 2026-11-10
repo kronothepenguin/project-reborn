@@ -67,3 +67,8 @@ Concepts for the tables declared under `packages/store/schema/`, one per table.
 ## Updates
 
 - [migrations](migrations.md) — One row per update file applied to the database, with its version, name and time.
+- [room_categories](room_categories.md) — A category of the navigator, which holds either public rooms or habbo rooms, with the level a habbo needs to use it.
+- [room_models](room_models.md) — A room's floor plan: its door, its heightmap and a public room's furni, with which models a habbo may build on and which need the club.
+- [public_rooms](public_rooms.md) — A public room of the hotel: its unit, the casts the client loads for it, its model, its category and its most visitors.
+- [rooms](rooms.md) — A habbo's room: its creator and owner, category, model, name, description, door, hashed password and settings.
+- [favourite_rooms](favourite_rooms.md) — A habbo's favourite room: a public room or a habbo room, never both, each at most once.

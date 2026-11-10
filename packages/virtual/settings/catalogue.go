@@ -121,6 +121,13 @@ var catalogue = map[string]declaration{
 	// decision 0042).
 	"game.pingSeconds":        declare(30, between(1, 3600)),
 	"game.pongTimeoutSeconds": declare(90, between(1, 3600)),
+
+	// The navigator's limits, as Holo's were (plans/server decisions 0056, 0058
+	// and 0061).
+	"game.maxRoomsPerHabbo":  declare(50, between(1, 1000)),
+	"game.maxFavouriteRooms": declare(30, between(1, 1000)),
+	"game.categoryMaxRooms":  declare(30, between(1, 1000)),
+	"game.searchMaxRooms":    declare(30, between(1, 1000)),
 }
 
 // rules check settings that depend on each other. keys lists every setting a

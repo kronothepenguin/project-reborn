@@ -2,6 +2,9 @@
 
 ## 2026-11-10
 
+- **Done** [s3-01](/tasks/s3-01-navigator-tables.md): the store keeps the navigator's categories, models, public rooms,
+  habbo rooms and favourites, and the update `0010-navigator.sql` seeds Holo's categories, public rooms and models.
+- **Start** [s3-01](/tasks/s3-01-navigator-tables.md).
 - **Update** [S3](/phases/s3-navigator.md) is active, with its exit criteria and the tasks
   [s3-01](/tasks/s3-01-navigator-tables.md) to [s3-08](/tasks/s3-08-exit-check.md), once the user answered its open
   questions.

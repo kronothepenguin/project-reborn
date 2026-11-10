@@ -49,3 +49,8 @@ Domain entities represented by the store's tables: their meaning, invariants, li
 ## Updates
 
 - [Update](update.md) — A change to the database that a release brings as an update file, applied once, in version order, and recorded in migrations.
+- [Room category](room-category.md) — A category of the navigator's tree, holding public rooms or habbo rooms, that a habbo's access group level may need to use.
+- [Room model](room-model.md) — A room's floor plan: its door, heightmap and, for a public room, its furni; some are the models habbos build on, some need the club.
+- [Public room](public-room.md) — One of the hotel's public rooms, which the client draws from its casts, in a category of public rooms.
+- [Room](room.md) — A habbo's room, created with the room-o-matic, with its creator, owner, category, model, door and settings.
+- [Favourite room](favourite-room.md) — A public room or a habbo room that a habbo keeps among its favourites, up to a limit.

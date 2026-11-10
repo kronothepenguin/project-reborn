@@ -58,7 +58,7 @@ starts.
 
 ## S3 Navigator
 
-- [s3-01 Add the navigator's tables and Holo's data](/tasks/s3-01-navigator-tables.md) — The store gets the categories, the room models, the public rooms, the habbos' rooms and the favourite rooms, and an update seeds Holo's categories, public rooms and models; S3's settings join the Game form.
+- [s3-01 Add the navigator's tables and Holo's data](/tasks/s3-01-navigator-tables.md) — The store gets the categories, the room models, the public rooms, the habbos' rooms and the favourite rooms, and an update seeds Holo's categories, public rooms and models; S3's settings join the Game form. **done**
 - [s3-02 Load the navigator's shared data in virtual](/tasks/s3-02-navigator-state.md) — virtual/category, virtual/model and virtual/room load the categories, the room models and the public rooms when the server starts, and count the habbos in each room in memory.
 - [s3-03 Browse the navigator's categories](/tasks/s3-03-browsing.md) — NAVIGATE gets the category's sub-categories and its public rooms or habbo rooms, with the habbos in each, GETUSERFLATCATS the categories a habbo may use, GETPARENTCHAIN a category's parents, and GETSPACENODEUSERS who is in a public room.
 - [s3-04 List own rooms, search results and recommended rooms](/tasks/s3-04-room-lists.md) — SUSERF gets the habbo's own rooms, SRCHF the rooms whose name or owner matches, at most 30, and GET_RECOMMENDED_ROOMS three random habbo rooms.

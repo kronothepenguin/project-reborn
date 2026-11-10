@@ -693,6 +693,10 @@ func TestTheGameFormHoldsTheClientsSettings(t *testing.T) {
 		"game.trackingHeader":     " Kind:text Value: ",
 		"game.pingSeconds":        " Kind:number Value:30 ",
 		"game.pongTimeoutSeconds": " Kind:number Value:90 ",
+		"game.maxRoomsPerHabbo":   " Kind:number Value:50 ",
+		"game.maxFavouriteRooms":  " Kind:number Value:30 ",
+		"game.categoryMaxRooms":   " Kind:number Value:30 ",
+		"game.searchMaxRooms":     " Kind:number Value:30 ",
 	} {
 		if field := fieldOf(form, key); !strings.Contains(field, want) {
 			t.Errorf("%s lacks %q: %q", key, want, field)

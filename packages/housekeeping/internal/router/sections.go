@@ -174,6 +174,10 @@ var forms = []section{
 			{Key: "game.tutorial", Label: "Tutorial", Help: "This lets the game client run its tutorial."},
 			{Key: "game.pingSeconds", Label: "Ping Every", Help: "How many seconds pass between the server's pings to each game client."},
 			{Key: "game.pongTimeoutSeconds", Label: "Ping Timeout", Help: "How many seconds a game client may leave the pings unanswered before the server closes it. It must be longer than Ping Every."},
+			{Key: "game.maxRoomsPerHabbo", Label: "Rooms per Habbo", Help: "How many rooms a habbo may own."},
+			{Key: "game.maxFavouriteRooms", Label: "Favourite Rooms", Help: "How many rooms a habbo may keep among its favourites."},
+			{Key: "game.categoryMaxRooms", Label: "Rooms per Category", Help: "How many habbo rooms the navigator lists in one category."},
+			{Key: "game.searchMaxRooms", Label: "Rooms per Search", Help: "How many rooms a search in the navigator returns."},
 		},
 	},
 	{

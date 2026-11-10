@@ -764,6 +764,10 @@ func TestTheGameSettingsHoldTheirDefaults(t *testing.T) {
 		"game.tutorial":                  false,
 		"game.pingSeconds":               30,
 		"game.pongTimeoutSeconds":        90,
+		"game.maxRoomsPerHabbo":          50,
+		"game.maxFavouriteRooms":         30,
+		"game.categoryMaxRooms":          30,
+		"game.searchMaxRooms":            30,
 	})
 
 	for value, valid := range map[int]bool{0: false, 1: true, 1_000_000: true} {

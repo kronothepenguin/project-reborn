@@ -45,3 +45,4 @@ build it, and a test keeps the two alike.
 ## Updates
 
 - [migrations.schema.sql](migrations.md) — Declares the migrations table, the record of the update files applied to the database.
+- [navigator.schema.sql](navigator.md) — Declares the navigator: its categories, the room models, the public rooms, the habbos' rooms and their favourite rooms.

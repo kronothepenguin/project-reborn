@@ -3,7 +3,7 @@ type: Entity
 title: Habbo
 description: An in-hotel identity owned by a user, with its name, look, motto, badges and wardrobe.
 tags: [store, entity, habbo]
-timestamp: 2026-11-09T23:20:00+00:00
+timestamp: 2026-11-10T03:49:35+00:00
 ---
 
 # Definition
@@ -46,6 +46,7 @@ motto. A user can own several habbos, which share the user's wallet, club member
 - Owns and joins [groups](/entities/group.md); writes [forum threads](/entities/forum-thread.md); receives
   [alerts](/entities/alert.md).
 - Keeps [wardrobe outfits](/entities/wardrobe-outfit.md) and redeems [vouchers](/entities/voucher.md).
+- Creates and owns [rooms](/entities/room.md), and keeps [favourite rooms](/entities/favourite-room.md).
 
 # Tables
 
