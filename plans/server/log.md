@@ -2,6 +2,10 @@
 
 ## 2026-11-10
 
+- **Done** [s2-08](/tasks/s2-08-keeping-the-session-alive.md): the server pings every session, closes one that stops
+  answering and logs its habbo out, and answers the latency test and logs its reports.
+- **Decision** [0054](/decisions/0054-error-reports-wait-for-s7.md): error reports wait for S7.
+- **Start** [s2-08](/tasks/s2-08-keeping-the-session-alive.md).
 - **Done** [s2-07](/tasks/s2-07-after-login.md): after `LOGIN_OK` the client gets the habbo's fuses, user object,
   credits, badges, achievements, sound setting and club status, and the server's date.
 - **Decision** [0051](/decisions/0051-no-achievements-yet.md): a habbo has no achievements yet.

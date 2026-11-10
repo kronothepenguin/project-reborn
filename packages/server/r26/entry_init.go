@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/server/encoding"
 	"github.com/kronothepenguin/project-reborn/packages/server/game"
@@ -23,12 +24,14 @@ const (
 	loginOK              = 3
 	userObject           = 5
 	errorText            = 33
+	ping                 = 50
 	availableBadges      = 229
 	sessionParameters    = 257
 	cryptoParameters     = 277
 	endOfCryptoParams    = 278
 	hotelLogout          = 287
 	soundSetting         = 308
+	latencyTest          = 354
 	possibleAchievements = 436
 )
 
@@ -49,10 +52,13 @@ var entryInitHandlers = map[int]handler{
 	7:    loggedIn(handleGetInfo),
 	8:    loggedIn(handleGetCredits),
 	157:  loggedIn(handleGetAvailableBadges),
+	196:  handlePong,
 	204:  handleSSO,
 	206:  handleInitCrypto,
 	228:  loggedIn(handleGetSoundSetting),
 	229:  loggedIn(handleSetSoundSetting),
+	315:  handleTestLatency,
+	316:  handleReportLatency,
 	370:  loggedIn(handleGetPossibleAchievements),
 	756:  handleTryLogin,
 	813:  handleUniqueID,
@@ -271,6 +277,37 @@ func handleSetSoundSetting(s *session, me habbo.Habbo, body []byte) {
 // handleGetPossibleAchievements sends no achievement: the hotel has none yet (plans/server decision 0051).
 func handleGetPossibleAchievements(s *session, _ habbo.Habbo, _ []byte) {
 	s.reply(possibleAchievements, vl64(0))
+}
+
+// handlePong keeps the session alive (plans/server decision 0042).
+func handlePong(s *session, _ []byte) {
+	s.lastPong.Store(time.Now().UnixNano())
+}
+
+// handleTestLatency answers the client's latency test with the id it sent.
+func handleTestLatency(s *session, body []byte) {
+	id, err := encoding.ReadVL64(bytes.NewReader(body))
+	if err != nil {
+		s.malformed(315, body)
+		return
+	}
+	s.reply(latencyTest, vl64(int(id)))
+}
+
+// handleReportLatency writes the client's latency to the log, and saves nothing (plans/server decision 0036): the mean
+// of every round trip, the mean of those below twice it, and how many answers both count.
+func handleReportLatency(s *session, body []byte) {
+	r := bytes.NewReader(body)
+	var values [3]int32
+	for i := range values {
+		v, err := encoding.ReadVL64(r)
+		if err != nil {
+			s.malformed(316, body)
+			return
+		}
+		values[i] = v
+	}
+	slog.Info(fmt.Sprintf("r26 %s latency: mean %d ms, %d ms below twice the mean, %d answers", s.addr, values[0], values[1], values[2]))
 }
 
 // writeField writes a field of a message as the client's GetStrFrom and GetIntFrom read it.

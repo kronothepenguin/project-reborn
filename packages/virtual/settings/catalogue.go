@@ -115,6 +115,12 @@ var catalogue = map[string]declaration{
 	"game.profileEditing":            declare(true, nil),
 	"game.trackingHeader":            declare("", length(0, 255)),
 	"game.tutorial":                  declare(false, nil),
+
+	// How often the server pings each game client, and how long a client may
+	// leave the pings unanswered before the server closes it (plans/server
+	// decision 0042).
+	"game.pingSeconds":        declare(30, between(1, 3600)),
+	"game.pongTimeoutSeconds": declare(90, between(1, 3600)),
 }
 
 // rules check settings that depend on each other. keys lists every setting a
@@ -126,6 +132,18 @@ var rules = []rule{
 			low, high := values["auth.passwordMinLength"].(int), values["auth.passwordMaxLength"].(int)
 			if high < low {
 				return fmt.Errorf("auth.passwordMaxLength: must be at least auth.passwordMinLength (%d), got %d", low, high)
+			}
+			return nil
+		},
+	},
+	{
+		// A timeout no longer than the interval would close a client before it
+		// could answer the ping.
+		keys: []string{"game.pingSeconds", "game.pongTimeoutSeconds"},
+		check: func(values map[string]any) error {
+			ping, timeout := values["game.pingSeconds"].(int), values["game.pongTimeoutSeconds"].(int)
+			if timeout <= ping {
+				return fmt.Errorf("game.pongTimeoutSeconds: must be longer than game.pingSeconds (%d), got %d", ping, timeout)
 			}
 			return nil
 		},

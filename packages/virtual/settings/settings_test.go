@@ -762,6 +762,8 @@ func TestTheGameSettingsHoldTheirDefaults(t *testing.T) {
 		"game.profileEditing":            true,
 		"game.trackingHeader":            "",
 		"game.tutorial":                  false,
+		"game.pingSeconds":               30,
+		"game.pongTimeoutSeconds":        90,
 	})
 
 	for value, valid := range map[int]bool{0: false, 1: true, 1_000_000: true} {
@@ -776,5 +778,18 @@ func TestTheGameSettingsHoldTheirDefaults(t *testing.T) {
 	}
 	if err := catalogue["game.dateFormat"].validate(""); err == nil {
 		t.Error("game.dateFormat accepts an empty format")
+	}
+}
+
+// A ping timeout no longer than the interval would close every game client before it could answer.
+func TestThePingTimeoutIsLongerThanTheInterval(t *testing.T) {
+	load(t, openDB(t))
+	for timeout, valid := range map[int]bool{29: false, 30: false, 31: true} {
+		if err := Validate(map[string]any{"game.pongTimeoutSeconds": timeout}); valid != (err == nil) {
+			t.Errorf("a timeout of %d with pings every 30 seconds: %v, want valid %t", timeout, err, valid)
+		}
+	}
+	if err := Validate(map[string]any{"game.pingSeconds": 90}); err == nil {
+		t.Error("pings every 90 seconds pass with a timeout of 90")
 	}
 }

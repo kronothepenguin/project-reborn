@@ -172,6 +172,8 @@ var forms = []section{
 			{Key: "game.profileEditing", Label: "Profile Editing", Help: "This shows the game client's links to change a habbo's looks."},
 			{Key: "game.trackingHeader", Label: "Tracking Header", Help: "The text the game client puts before each tracking point it reports."},
 			{Key: "game.tutorial", Label: "Tutorial", Help: "This lets the game client run its tutorial."},
+			{Key: "game.pingSeconds", Label: "Ping Every", Help: "How many seconds pass between the server's pings to each game client."},
+			{Key: "game.pongTimeoutSeconds", Label: "Ping Timeout", Help: "How many seconds a game client may leave the pings unanswered before the server closes it. It must be longer than Ping Every."},
 		},
 	},
 	{

@@ -47,5 +47,5 @@ credits, badges, rights and sound setting. The session stays alive with pings un
 5. [s2-05 Log a habbo in and out in game](/tasks/s2-05-login-in-game.md) **done**
 6. [s2-06 Speak the handshake and the login](/tasks/s2-06-handshake-and-login.md) **done**
 7. [s2-07 Answer what the client asks after its login](/tasks/s2-07-after-login.md) **done**
-8. [s2-08 Keep the session alive and end it](/tasks/s2-08-keeping-the-session-alive.md)
+8. [s2-08 Keep the session alive and end it](/tasks/s2-08-keeping-the-session-alive.md) **done**
 9. [s2-09 Check S2's exit criteria](/tasks/s2-09-exit-check.md)

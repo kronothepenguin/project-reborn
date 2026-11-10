@@ -13,9 +13,11 @@ import (
 	"log/slog"
 	"strconv"
 	"sync/atomic"
+	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/server/game"
 	"github.com/kronothepenguin/project-reborn/packages/server/transport"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // handler handles one packet of a session, given its body.
@@ -62,11 +64,17 @@ type session struct {
 	habbo int64
 	// ended is set when the server closes the connection, whose read then fails without it being an error.
 	ended atomic.Bool
+	// lastPong is when the client last answered a PING, in Unix nanoseconds, or when the session started.
+	lastPong atomic.Int64
 }
 
 func serve(db *sql.DB, c transport.Conn, handlers map[int]handler) {
 	s := &session{conn: c, addr: c.RemoteAddr(), db: db}
+	s.lastPong.Store(time.Now().UnixNano())
 	defer s.logout()
+	done := make(chan struct{})
+	defer close(done)
+	go s.keepAlive(done)
 	if err := s.send(hello, nil); err != nil {
 		s.closed(err)
 		return
@@ -128,6 +136,43 @@ func (s *session) Notify(event any) {
 		}
 		s.end()
 	}
+}
+
+// keepAlive sends PING every game.pingSeconds, and closes the session once it has gone game.pongTimeoutSeconds
+// without a PONG (plans/server decision 0042). It reads both again each time it wakes, and wakes for the next PING or
+// for the timeout, whichever comes first, so a silent client is closed when its time is up, not at the next PING.
+func (s *session) keepAlive(done <-chan struct{}) {
+	next := time.Now().Add(seconds("game.pingSeconds", 30))
+	for {
+		lastPong := time.Unix(0, s.lastPong.Load())
+		deadline := lastPong.Add(seconds("game.pongTimeoutSeconds", 90))
+		now := time.Now()
+		if !now.Before(deadline) {
+			slog.Info(fmt.Sprintf("r26 %s closed: no PONG for %s", s.addr, now.Sub(lastPong).Round(time.Second)))
+			s.end()
+			return
+		}
+		if !now.Before(next) {
+			if err := s.send(ping, nil); err != nil {
+				return
+			}
+			next = now.Add(seconds("game.pingSeconds", 30))
+		}
+		wake := next
+		if deadline.Before(wake) {
+			wake = deadline
+		}
+		select {
+		case <-done:
+			return
+		case <-time.After(time.Until(wake)):
+		}
+	}
+}
+
+// seconds reads a setting of seconds, or fallback, its default, when the settings are not loaded.
+func seconds(key string, fallback int) time.Duration {
+	return time.Duration(settings.GetIntOr(key, fallback)) * time.Second
 }
 
 func (s *session) logout() {

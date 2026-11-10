@@ -687,10 +687,12 @@ func TestTheGameFormHoldsTheClientsSettings(t *testing.T) {
 		t.Fatalf("the page is not the Game form: %s", body)
 	}
 	for key, want := range map[string]string{
-		"game.clientVersion":  " Label:Client Version ",
-		"game.coppa":          " Kind:number Value:0 ",
-		"game.dateFormat":     " Kind:text Value:dd-mm-yyyy ",
-		"game.trackingHeader": " Kind:text Value: ",
+		"game.clientVersion":      " Label:Client Version ",
+		"game.coppa":              " Kind:number Value:0 ",
+		"game.dateFormat":         " Kind:text Value:dd-mm-yyyy ",
+		"game.trackingHeader":     " Kind:text Value: ",
+		"game.pingSeconds":        " Kind:number Value:30 ",
+		"game.pongTimeoutSeconds": " Kind:number Value:90 ",
 	} {
 		if field := fieldOf(form, key); !strings.Contains(field, want) {
 			t.Errorf("%s lacks %q: %q", key, want, field)
