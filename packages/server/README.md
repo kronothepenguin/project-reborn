@@ -11,7 +11,8 @@ The game server is laid out as `plans/server/decisions/0005-package-layout.md`
 decides. Each part is marked with the task of `plans/server/tasks/index.md`
 that brings it. So far the package holds what `tools/create` generated,
 `server.go` and `internal/router`, whose `GET /` answers `Hello from Go`, the
-listeners of `server.go` and `mus.go`, `transport/`, `encoding/` and `r26/`.
+listeners of `server.go` and `mus.go`, `transport/`, `encoding/`, `r26/` and
+`game/`.
 
 | Part | Holds | Brought by |
 | --- | --- | --- |
@@ -20,7 +21,7 @@ listeners of `server.go` and `mus.go`, `transport/`, `encoding/` and `r26/`.
 | `transport/` | `Conn`, an `io.Reader` to receive, an `io.Writer` to send and an `io.Closer`, over TCP (`tcp.go`) and the WebSocket (`websocket.go`) | s0-05 |
 | `encoding/` | B64, VL64 and strings | s0-06 |
 | `r26/` | The R26 ids, and one file per client cast: `entry_init.go`, `navigator.go`, `room.go`… | s0-07 the framing (`packet.go`), `HELLO` and the dispatch by id (`r26.go`) and the names of hh_entry_init's commands (`entry_init.go`); each cast's handlers with the phase that serves the cast, from S2 |
-| `game/` | The rules: login, entering rooms, chat, walking…, with no protocol in them | S2, the first rules; its tasks are written when the phase starts |
+| `game/` | The rules: login, entering rooms, chat, walking…, with no protocol in them | s2-05 the login and the logout; the other rules with the phases that bring them |
 
 - `encoding` stands apart from `r26`, so that another protocol can reuse it.
 - `game` never knows the protocol. It is its own package so that `r26` can call
@@ -130,6 +131,41 @@ may come in several reads.
 - A panic in a session does not end the server: `net/http` recovers it and logs
   it, and the transport closes that connection. Over TCP, which no listener
   serves yet, it would end the process.
+
+## Game
+
+`game` holds the rules, which each protocol's handlers call. A rule changes the
+state in `packages/virtual` and writes the database, and reaches a habbo's
+client through its `Session` (`plans/server/decisions/0039-rules-notify-sessions-through-an-interface.md`).
+
+- `Session` is the interface `virtual/habbo` declares, `Notify(event any)`
+  (`plans/server/decisions/0048-sessions-through-an-interface-virtual-declares.md`).
+  Each protocol's session implements it on a pointer and turns every event into
+  its messages.
+- The events are structs of `game`. `ConcurrentLogin{}` tells a session that its
+  habbo logged in on another one, which replaces it; `r26` answers it with 287,
+  reason 2 (`plans/server/decisions/0029-a-second-login-closes-the-first.md`).
+- `Login(ctx, db, s, ticket, machineID)` spends the SSO ticket and returns the
+  habbo it names, online on `s`. In one transaction it spends the ticket, reads
+  the habbo, and saves the machine id, when `s` holds one, and the last time
+  online. Then the habbo goes online, and the session it was online on gets
+  `ConcurrentLogin`. A ticket that is unknown, spent, or whose CMS session ended
+  or moved to another habbo returns `ErrInvalidTicket`.
+- `Logout(ctx, db, s, avatarID)` writes the habbo's last time online and takes
+  it offline, while `s` plays it. A session that a second login replaced logs
+  nothing out.
+
+```go
+h, err := game.Login(ctx, db, s, ticket, machineID)
+if errors.Is(err, game.ErrInvalidTicket) {
+	// refuse the login
+}
+
+// once the client is gone
+if err := game.Logout(ctx, db, s, h.ID); err != nil {
+	slog.Warn(err.Error())
+}
+```
 
 ## Port
 

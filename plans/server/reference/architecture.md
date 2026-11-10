@@ -2,7 +2,7 @@
 type: Reference
 title: How the server is built
 description: The packages of the game server and what each one does, the path of a connection from a listener to the state, and how the server runs alone and under the orchestrator.
-timestamp: 2026-11-07T01:04:48+00:00
+timestamp: 2026-11-10T02:12:25+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [server, architecture]
 ---
@@ -15,16 +15,17 @@ tags: [server, architecture]
 | `packages/server/transport` | `Conn` (receive, send, close), TCP and the WebSocket on `golang.org/x/net/websocket` | [0006](/decisions/0006-transport.md) |
 | `packages/server/encoding` | B64, VL64 and strings, shared by every protocol | [0005](/decisions/0005-package-layout.md) |
 | `packages/server/r26` | The R26 ids, framing and handshake, the dispatch by id, and one file per client cast | [0007](/decisions/0007-protocols-per-listener.md), [0012](/decisions/0012-no-encryption.md), [0021](/decisions/0021-unhandled-packets-logged-by-id-name-and-size.md) |
-| `packages/server/game` | The rules of the hotel, with no protocol in them | [0005](/decisions/0005-package-layout.md) |
+| `packages/server/game` | The rules of the hotel, with no protocol in them, and the events they send sessions | [0005](/decisions/0005-package-layout.md), [0039](/decisions/0039-rules-notify-sessions-through-an-interface.md), [0048](/decisions/0048-sessions-through-an-interface-virtual-declares.md) |
 | `packages/virtual` | The state: hot data and temporary data, one package per entity | [0009](/decisions/0009-virtual-holds-the-server-state.md) |
+| `packages/virtual/habbo` | The habbos online in the game, each with its session | [0047](/decisions/0047-online-habbos-in-virtual-habbo.md), [0048](/decisions/0048-sessions-through-an-interface-virtual-declares.md) |
 | `packages/store` | The database: tables, queries and updates | [0010](/decisions/0010-hot-data-written-at-once.md), [0011](/decisions/0011-saved-and-memory-only-data.md) |
 | `apps/server` | The runner | [0002](/decisions/0002-server-app.md) |
 
 `game` never imports `r26`, so a second protocol needs no change to the rules.
 
-So far `packages/server` holds the listeners, `transport`, `encoding` and `r26`, which sends `HELLO`, names the
-commands of `hh_entry_init` and handles none of them yet. The handshake, `game` and the habbo's entity in `virtual`
-come with [S2](/phases/s2-login.md).
+So far `packages/server` holds the listeners, `transport`, `encoding`, `r26`, which sends `HELLO`, names the commands
+of `hh_entry_init` and handles none of them yet, and `game`, whose first rules log a habbo in and out
+([s2-05](/tasks/s2-05-login-in-game.md)). The handshake comes with [s2-06](/tasks/s2-06-handshake-and-login.md).
 
 # A connection
 
@@ -38,8 +39,10 @@ come with [S2](/phases/s2-login.md).
 4. The rule reads and changes the state in `virtual`. Saved data is written to the database at once, then in memory.
 5. The protocol writes the answers back on the `Conn`.
 
-How a rule tells the other habbos concerned, such as everyone in a room when one habbo talks, without knowing their
-protocol, is designed when the first rules are written (S2).
+A rule tells the habbos an event concerns, such as everyone in a room when one habbo talks, without knowing their
+protocol: it finds them in `virtual/habbo` and calls each one's `Session.Notify` with one of `game`'s events, which the
+session's protocol turns into its messages ([0039](/decisions/0039-rules-notify-sessions-through-an-interface.md),
+[0048](/decisions/0048-sessions-through-an-interface-virtual-declares.md)).
 
 Until [S7](/phases/s7-club-help-extras.md) frames MUS, the `mus` listener accepts the WebSocket, logs the connect, the
 size of each message and the close, and never answers ([0023](/decisions/0023-mus-listener-before-s7.md)).

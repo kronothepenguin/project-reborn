@@ -2,6 +2,12 @@
 
 ## 2026-11-10
 
+- **Done** [s2-05](/tasks/s2-05-login-in-game.md): `game` logs a habbo in with an SSO ticket and out, holding it online
+  in `virtual/habbo` with its session, and a second login sends the first session `ConcurrentLogin`.
+- **Decision** [0047](/decisions/0047-online-habbos-in-virtual-habbo.md): the online habbos live in virtual/habbo.
+- **Decision** [0048](/decisions/0048-sessions-through-an-interface-virtual-declares.md): an online habbo keeps its
+  session through an interface virtual declares.
+- **Start** [s2-05](/tasks/s2-05-login-in-game.md).
 - **Done** [s2-04](/tasks/s2-04-fuse-catalogue.md): access groups grant the 31 fuses the client or Holo's server checks,
   club members get Holo's four club fuses, and update `0009-holo-fuses.sql` gives the groups Holo's fuses by level.
 - **Decision** [0045](/decisions/0045-fuses-holos-club-set-and-every-checked-fuse.md): a habbo's fuses: everyone's two,

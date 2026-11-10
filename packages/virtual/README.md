@@ -47,6 +47,30 @@ The tests check that every default passes its validator and the rules, and that 
 - `Set` refuses a value whose Go type differs from the default's: `int64(7)` is not an `int`.
 - The store's pool has one connection, so calling `Load`, `Set` or `Reload` while holding a transaction blocks forever.
 
+## habbo
+
+`packages/virtual/habbo` holds the habbos online in the game, each with the session that plays it
+(`plans/server/decisions/0047-online-habbos-in-virtual-habbo.md`). `game.Login` adds a habbo and `game.Logout` drops it;
+nothing here reads or writes the database.
+
+```go
+h, ok := habbo.Get(avatarID)
+if ok {
+	h.Session.Notify(event)
+}
+```
+
+- `Session` is the interface every protocol's session implements, `Notify(event any)`, and `game.Session` is the same
+  interface (`plans/server/decisions/0048-sessions-through-an-interface-virtual-declares.md`). Sessions are compared by
+  identity, so a session is a pointer.
+- `Habbo` is the habbo's `store.Avatar`, as the login read it, and its `Session`.
+- `Get(avatarID) (Habbo, bool)` returns an online habbo.
+- `Add(h) (replaced Habbo, ok bool)` puts `h` online, and returns the habbo it replaces when `h` was online already,
+  on its old session.
+- `Drop(avatarID, s) bool` takes the habbo offline while `s` plays it, and reports whether it did: a session that a
+  second login replaced drops nothing.
+- Every function may be called from several goroutines at once, and none calls a session.
+
 Gates, from `packages/virtual`:
 
 ```sh
