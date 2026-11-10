@@ -3,7 +3,7 @@ type: Entity
 title: Room
 description: A habbo's room, created with the room-o-matic, with its creator, owner, category, model, door and settings.
 tags: [store, entity, navigator]
-timestamp: 2026-11-10T03:49:03+00:00
+timestamp: 2026-11-10T16:46:21+00:00
 ---
 
 # Definition
@@ -34,11 +34,17 @@ A room a habbo created. Its creator never changes; its owner is a habbo of the s
 
 - Created and owned by [habbos](/entities/habbo.md); in a [room category](/entities/room-category.md), on a
   [room model](/entities/room-model.md); may be a [favourite room](/entities/favourite-room.md).
+- Gives rights to habbos, bans them for `game.roomBanMinutes`, takes their votes, and keeps what is said in it as
+  [chat messages](/entities/chat-message.md).
 
 # Tables
 
 - [rooms](/tables/rooms.md)
+- [room_rights](/tables/room_rights.md)
+- [room_bans](/tables/room_bans.md)
+- [room_votes](/tables/room_votes.md)
 
 # Queries
 
 - [navigator.query.sql](/queries/navigator.md)
+- [rooms.query.sql](/queries/rooms.md)

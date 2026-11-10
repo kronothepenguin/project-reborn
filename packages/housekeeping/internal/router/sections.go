@@ -178,6 +178,12 @@ var forms = []section{
 			{Key: "game.maxFavouriteRooms", Label: "Favourite Rooms", Help: "How many rooms a habbo may keep among its favourites."},
 			{Key: "game.categoryMaxRooms", Label: "Rooms per Category", Help: "How many habbo rooms the navigator lists in one category."},
 			{Key: "game.searchMaxRooms", Label: "Rooms per Search", Help: "How many rooms a search in the navigator returns."},
+			{Key: "game.roomBanMinutes", Label: "Room Ban Minutes", Help: "How many minutes an owner's ban keeps a habbo out of a room."},
+			{Key: "game.chatHistoryDays", Label: "Chat History Days", Help: "How many days what habbos say in rooms is kept for staff."},
+			{Key: "game.loadingAdImage", Label: "Loading Ad Image", Help: "The address of the picture shown while a room loads; empty for none."},
+			{Key: "game.loadingAdLink", Label: "Loading Ad Link", Help: "Where a click on the loading picture goes."},
+			{Key: "game.roomAdImage", Label: "Room Ad Image", Help: "The address of the picture shown in a room; empty for none."},
+			{Key: "game.roomAdLink", Label: "Room Ad Link", Help: "Where a click on the room's picture goes."},
 		},
 	},
 	{

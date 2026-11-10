@@ -72,3 +72,8 @@ Concepts for the tables declared under `packages/store/schema/`, one per table.
 - [public_rooms](public_rooms.md) — A public room of the hotel: its unit, the casts the client loads for it, its model, its category and its most visitors.
 - [rooms](rooms.md) — A habbo's room: its creator and owner, category, model, name, description, door, hashed password and settings.
 - [favourite_rooms](favourite_rooms.md) — A habbo's favourite room: a public room or a habbo room, never both, each at most once.
+- [room_rights](room_rights.md) — A habbo with rights in a room, which lets it move the room's furni and answer its doorbell.
+- [room_bans](room_bans.md) — A habbo kept out of a room until a time, game.roomBanMinutes after the owner's ban.
+- [room_votes](room_votes.md) — A habbo's vote on a room, 1 or -1, once; the room's rating is their sum.
+- [chat_messages](chat_messages.md) — A line said in a public room or a habbo room, chat, whisper or shout, kept for moderators for game.chatHistoryDays.
+- [ignored_habbos](ignored_habbos.md) — A habbo whose chat another habbo does not want to see.

@@ -54,3 +54,4 @@ Domain entities represented by the store's tables: their meaning, invariants, li
 - [Public room](public-room.md) — One of the hotel's public rooms, which the client draws from its casts, in a category of public rooms.
 - [Room](room.md) — A habbo's room, created with the room-o-matic, with its creator, owner, category, model, door and settings.
 - [Favourite room](favourite-room.md) — A public room or a habbo room that a habbo keeps among its favourites, up to a limit.
+- [Chat message](chat-message.md) — A line a habbo said, whispered or shouted in a room, kept for moderators for game.chatHistoryDays.

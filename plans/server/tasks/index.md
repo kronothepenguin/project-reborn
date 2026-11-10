@@ -69,7 +69,7 @@ starts.
 
 ## S4 Rooms
 
-- [s4-01 Add the rooms' saved data](/tasks/s4-01-room-tables.md) — The store gets room rights, room bans, room votes, the chat history and the ignore lists; the attribute that reads the chat history and S4's settings join the catalogues.
+- [s4-01 Add the rooms' saved data](/tasks/s4-01-room-tables.md) — The store gets room rights, room bans, room votes, the chat history and the ignore lists; the attribute that reads the chat history and S4's settings join the catalogues. **done**
 - [s4-02 Load and unload rooms in virtual](/tasks/s4-02-loaded-rooms.md) — virtual/room keeps each loaded room with its floor and its habbos, their positions and statuses, the doorbell, the queue and the spectators; a room loads with its first habbo and unloads with its last.
 - [s4-03 Enter and leave a room](/tasks/s4-03-entering-a-room.md) — A habbo enters a public room or a habbo room past its door, its password, its ban or its doorbell, gets the room's map, habbos, objects and statuses, and leaves; the loading ad and the room ad come from settings.
 - [s4-04 Walk](/tasks/s4-04-walking.md) — MOVE walks a habbo to a tile a step every 500 ms by Holo's rules, LOOKTO turns it, and every room's habbos see the steps in 34.

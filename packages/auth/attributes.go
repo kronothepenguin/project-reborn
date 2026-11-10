@@ -30,6 +30,7 @@ const (
 	HousekeepingHelp            Attribute = "housekeeping.help"
 	HousekeepingLogs            Attribute = "housekeeping.logs"
 	HousekeepingDatabase        Attribute = "housekeeping.database"
+	HousekeepingChatLogs        Attribute = "housekeeping.chatLogs"
 	SiteMaintenanceBypass       Attribute = "site.maintenanceBypass"
 	ForumEdit                   Attribute = "forum.edit"
 	HomesStaffItems             Attribute = "homes.staffItems"
@@ -58,6 +59,7 @@ var catalogue = []CatalogueEntry{
 	{HousekeepingHelp, "handling help tickets"},
 	{HousekeepingLogs, "reading the staff log"},
 	{HousekeepingDatabase, "applying database updates and config.json changes"},
+	{HousekeepingChatLogs, "reading the chat history of rooms"},
 	{SiteMaintenanceBypass, "using the site during maintenance"},
 	{ForumEdit, "editing, deleting, locking or pinning any thread or post"},
 	{HomesStaffItems, "the staff store category and the staff skin"},

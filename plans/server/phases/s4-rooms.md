@@ -45,7 +45,7 @@ doorbell, kick and ban, and habbos rate rooms, ignore others and hold room event
 
 # Tasks
 
-1. [s4-01 Add the rooms' saved data](/tasks/s4-01-room-tables.md)
+1. [s4-01 Add the rooms' saved data](/tasks/s4-01-room-tables.md) **done**
 2. [s4-02 Load and unload rooms in virtual](/tasks/s4-02-loaded-rooms.md)
 3. [s4-03 Enter and leave a room](/tasks/s4-03-entering-a-room.md)
 4. [s4-04 Walk](/tasks/s4-04-walking.md)

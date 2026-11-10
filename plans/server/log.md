@@ -2,6 +2,10 @@
 
 ## 2026-11-10
 
+- **Done** [s4-01](/tasks/s4-01-room-tables.md): the rooms' saved data: rights, bans, votes, the chat history and the
+  ignore lists, update 0011, the attribute housekeeping.chatLogs and the six settings of the bans, the history and the
+  ads.
+- **Start** [s4-01](/tasks/s4-01-room-tables.md).
 - **Update** [S4](/phases/s4-rooms.md) is active, with its exit criteria and the tasks
   [s4-01](/tasks/s4-01-room-tables.md) to [s4-09](/tasks/s4-09-exit-check.md), once the user answered its open
   questions.

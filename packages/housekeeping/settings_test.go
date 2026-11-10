@@ -697,6 +697,10 @@ func TestTheGameFormHoldsTheClientsSettings(t *testing.T) {
 		"game.maxFavouriteRooms":  " Kind:number Value:30 ",
 		"game.categoryMaxRooms":   " Kind:number Value:30 ",
 		"game.searchMaxRooms":     " Kind:number Value:30 ",
+		"game.roomBanMinutes":     " Kind:number Value:15 ",
+		"game.chatHistoryDays":    " Kind:number Value:30 ",
+		"game.loadingAdImage":     " Kind:text Value: ",
+		"game.roomAdLink":         " Kind:text Value: ",
 	} {
 		if field := fieldOf(form, key); !strings.Contains(field, want) {
 			t.Errorf("%s lacks %q: %q", key, want, field)

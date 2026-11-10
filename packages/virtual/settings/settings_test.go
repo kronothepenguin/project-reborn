@@ -768,6 +768,10 @@ func TestTheGameSettingsHoldTheirDefaults(t *testing.T) {
 		"game.maxFavouriteRooms":         30,
 		"game.categoryMaxRooms":          30,
 		"game.searchMaxRooms":            30,
+		"game.roomBanMinutes":            15,
+		"game.chatHistoryDays":           30,
+		"game.loadingAdImage":            "",
+		"game.roomAdLink":                "",
 	})
 
 	for value, valid := range map[int]bool{0: false, 1: true, 1_000_000: true} {
@@ -795,5 +799,23 @@ func TestThePingTimeoutIsLongerThanTheInterval(t *testing.T) {
 	}
 	if err := Validate(map[string]any{"game.pingSeconds": 90}); err == nil {
 		t.Error("pings every 90 seconds pass with a timeout of 90")
+	}
+}
+
+// An ad's address is empty, for none, or an absolute http or https URL the game client loads; a control character, such
+// as the tab that separates 258's image from its link, is refused.
+func TestAnAdIsEmptyOrAnAbsoluteURL(t *testing.T) {
+	for value, valid := range map[string]bool{
+		"":                              true,
+		"https://example.com/ad.gif":    true,
+		"http://localhost:17387/ad.png": true,
+		"/ad.gif":                       false,
+		"javascript:alert(1)":           false,
+		"https://example.com/\tad":      false,
+		"https://exa mple.com/\x01":     false,
+	} {
+		if err := catalogue["game.loadingAdImage"].validate(value); valid != (err == nil) {
+			t.Errorf("game.loadingAdImage = %q: %v, want valid %t", value, err, valid)
+		}
 	}
 }

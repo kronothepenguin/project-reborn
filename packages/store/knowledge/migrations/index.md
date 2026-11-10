@@ -13,3 +13,4 @@ them all when `store.Open` creates it.
 - [0008-sso-tickets-as-text.sql](0008-sso-tickets-as-text.md) — Makes sso_tickets keep each ticket as text with the CMS session that made it, so the client page can show one and the game server can spend it.
 - [0009-holo-fuses.sql](0009-holo-fuses.md) — Gives every access group the game fuses Holo's ranks held up to the group's level, from fuse_use_club_dance at level 2 to fuse_see_flat_ids at level 7.
 - [0010-navigator.sql](0010-navigator.md) — Creates the navigator's tables, and seeds Holo's English categories, its 12 public rooms that are not games and its 42 room models.
+- [0011-room-life.sql](0011-room-life.md) — Creates room_rights, room_bans, room_votes, chat_messages and ignored_habbos, and grants housekeeping.chatLogs to every group and user that manages access.

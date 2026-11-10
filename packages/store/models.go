@@ -90,6 +90,17 @@ type Banner struct {
 	UpdatedAt time.Time
 }
 
+type ChatMessage struct {
+	ID           int64
+	PublicRoomID sql.NullInt64
+	RoomID       sql.NullInt64
+	AvatarID     int64
+	Kind         string
+	ToAvatarID   sql.NullInt64
+	Text         string
+	SaidAt       time.Time
+}
+
 type ClubSubscription struct {
 	ID        int64
 	UserID    int64
@@ -212,6 +223,12 @@ type HomeStoreItem struct {
 	Enabled             bool
 }
 
+type IgnoredHabbo struct {
+	AvatarID        int64
+	IgnoredAvatarID int64
+	CreatedAt       time.Time
+}
+
 type Image struct {
 	ID              int64
 	Format          string
@@ -305,6 +322,12 @@ type Room struct {
 	UpdatedAt       time.Time
 }
 
+type RoomBan struct {
+	RoomID    int64
+	AvatarID  int64
+	ExpiresAt time.Time
+}
+
 type RoomCategory struct {
 	ID               int64
 	ParentID         sql.NullInt64
@@ -331,6 +354,19 @@ type RoomModel struct {
 	SpecialCastIntervalMs sql.NullInt64
 	SpecialCastMin        sql.NullInt64
 	SpecialCastMax        sql.NullInt64
+}
+
+type RoomRight struct {
+	RoomID    int64
+	AvatarID  int64
+	GrantedAt time.Time
+}
+
+type RoomVote struct {
+	RoomID   int64
+	AvatarID int64
+	Vote     int64
+	VotedAt  time.Time
 }
 
 type SSOTicket struct {

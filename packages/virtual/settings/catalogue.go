@@ -128,6 +128,16 @@ var catalogue = map[string]declaration{
 	"game.maxFavouriteRooms": declare(30, between(1, 1000)),
 	"game.categoryMaxRooms":  declare(30, between(1, 1000)),
 	"game.searchMaxRooms":    declare(30, between(1, 1000)),
+
+	// Rooms: how long a room ban lasts, how long the chat history is kept, and
+	// the ads shown while a room loads and in it (plans/server decisions 0066,
+	// 0067 and 0070).
+	"game.roomBanMinutes":  declare(15, between(1, 10080)),
+	"game.chatHistoryDays": declare(30, between(1, 3650)),
+	"game.loadingAdImage":  declare("", optionalURL),
+	"game.loadingAdLink":   declare("", optionalURL),
+	"game.roomAdImage":     declare("", optionalURL),
+	"game.roomAdLink":      declare("", optionalURL),
 }
 
 // rules check settings that depend on each other. keys lists every setting a
@@ -280,6 +290,19 @@ func location(value string) error {
 	u, err := url.Parse(value)
 	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
 		return fmt.Errorf("must be a path or an http or https URL, got %q", value)
+	}
+	return nil
+}
+
+// optionalURL accepts an empty value, for none, or an absolute http or https URL, which the game client loads as it
+// is.
+func optionalURL(value string) error {
+	if value == "" {
+		return nil
+	}
+	u, err := url.Parse(value)
+	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
+		return fmt.Errorf("must be empty or an http or https URL, got %q", value)
 	}
 	return nil
 }

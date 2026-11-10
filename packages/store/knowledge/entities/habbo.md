@@ -3,7 +3,7 @@ type: Entity
 title: Habbo
 description: An in-hotel identity owned by a user, with its name, look, motto, badges and wardrobe.
 tags: [store, entity, habbo]
-timestamp: 2026-11-10T03:49:35+00:00
+timestamp: 2026-11-10T16:46:21+00:00
 ---
 
 # Definition
@@ -47,11 +47,13 @@ motto. A user can own several habbos, which share the user's wallet, club member
   [alerts](/entities/alert.md).
 - Keeps [wardrobe outfits](/entities/wardrobe-outfit.md) and redeems [vouchers](/entities/voucher.md).
 - Creates and owns [rooms](/entities/room.md), and keeps [favourite rooms](/entities/favourite-room.md).
+- Says [chat messages](/entities/chat-message.md), and keeps an ignore list of other habbos.
 
 # Tables
 
 - [avatars](/tables/avatars.md)
 - [avatar_game_data](/tables/avatar_game_data.md)
+- [ignored_habbos](/tables/ignored_habbos.md)
 - [avatar_badges](/tables/avatar_badges.md)
 
 # Queries
