@@ -2,7 +2,7 @@
 type: Reference
 title: How the server is built
 description: The packages of the game server and what each one does, the path of a connection from a listener to the state, and how the server runs alone and under the orchestrator.
-timestamp: 2026-11-10T02:24:01+00:00
+timestamp: 2026-11-10T11:41:55+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [server, architecture]
 ---
@@ -18,6 +18,7 @@ tags: [server, architecture]
 | `packages/server/game` | The rules of the hotel, with no protocol in them, and the events they send sessions | [0005](/decisions/0005-package-layout.md), [0039](/decisions/0039-rules-notify-sessions-through-an-interface.md), [0048](/decisions/0048-sessions-through-an-interface-virtual-declares.md) |
 | `packages/virtual` | The state: hot data and temporary data, one package per entity | [0009](/decisions/0009-virtual-holds-the-server-state.md) |
 | `packages/virtual/habbo` | The habbos online in the game, each with its session | [0047](/decisions/0047-online-habbos-in-virtual-habbo.md), [0048](/decisions/0048-sessions-through-an-interface-virtual-declares.md) |
+| `packages/virtual/category`, `model` and `room` | The navigator's categories, the room models and the public rooms, loaded at start; how many habbos are in each room | [0060](/decisions/0060-virtual-category-model-and-room.md), [0064](/decisions/0064-the-navigator-loads-once-the-updates-are-applied.md) |
 | `packages/store` | The database: tables, queries and updates | [0010](/decisions/0010-hot-data-written-at-once.md), [0011](/decisions/0011-saved-and-memory-only-data.md) |
 | `apps/server` | The runner | [0002](/decisions/0002-server-app.md) |
 

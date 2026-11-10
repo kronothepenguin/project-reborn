@@ -2,6 +2,11 @@
 
 ## 2026-11-10
 
+- **Done** [s3-02](/tasks/s3-02-navigator-state.md): `virtual/category`, `virtual/model` and `virtual/room` hold the
+  navigator's shared data, which `server.New` loads at once or once the updates waiting are applied.
+- **Decision** [0064](/decisions/0064-the-navigator-loads-once-the-updates-are-applied.md): the game server starts while
+  updates wait, and loads the navigator once they are applied.
+- **Start** [s3-02](/tasks/s3-02-navigator-state.md).
 - **Done** [s3-01](/tasks/s3-01-navigator-tables.md): the store keeps the navigator's categories, models, public rooms,
   habbo rooms and favourites, and the update `0010-navigator.sql` seeds Holo's categories, public rooms and models.
 - **Start** [s3-01](/tasks/s3-01-navigator-tables.md).

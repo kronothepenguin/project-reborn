@@ -75,6 +75,30 @@ if ok {
   second login replaced drops nothing.
 - Every function may be called from several goroutines at once, and none calls a session.
 
+## category, model and room
+
+The navigator's shared data, loaded when the server starts and kept
+(`plans/server/decisions/0060-virtual-category-model-and-room.md`): `server.New` calls each `Load(ctx, db)`, at once or
+once the database updates waiting are applied (`plans/server/decisions/0064-the-navigator-loads-once-the-updates-are-applied.md`).
+A load swaps in a whole new copy, so a reader never sees half of one, and the getters take no lock.
+
+```go
+c, ok := category.Get(3)            // Public Rooms
+for _, r := range room.PublicIn(c.ID) {
+	visitors := room.Visitors(room.Ref{Public: true, ID: r.ID})
+}
+m, ok := model.Get("a")
+```
+
+- `category`: `Get(id)`; `Children(id)`, the categories right under it, by id; and `Parents(id)`, the categories above
+  it, nearest first, as `GETPARENTCHAIN` wants them.
+- `model`: `Get(name)`, by the name the client knows, such as `a` or `newbie_lobby`, and `ByID(id)`.
+- `room`: `Public(id)` and `PublicIn(categoryID)` for the public rooms; and how many habbos are in each room, which
+  lives only in memory (`plans/server/decisions/0011-saved-and-memory-only-data.md`): `Visitors(ref)`, `Enter(ref)` and
+  `Leave(ref)`, where a `Ref` names a public room or a habbo room, whose ids may be equal. The counts stay 0 until S4
+  lets habbos enter.
+- The getters return copies: changing one changes nothing in memory.
+
 Gates, from `packages/virtual`:
 
 ```sh
