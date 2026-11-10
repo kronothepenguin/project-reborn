@@ -2,6 +2,13 @@
 
 ## 2026-11-10
 
+- **Done** [s4-08](/tasks/s4-08-chat-log-page.md): housekeeping's Chat Log Viewer searches the chat by room or habbo,
+  100 lines a page, and the game server prunes lines older than 30 days every hour.
+- **Decision** [0084](/decisions/0084-the-game-server-prunes-the-chat-hourly.md): the game server prunes the chat
+  history hourly.
+- **Decision** [0085](/decisions/0085-the-chat-log-viewer-pages-by-100.md): the Chat Log Viewer lists 100 lines a page.
+- **Decision** [0086](/decisions/0086-the-chat-log-marks-public-rooms.md): the Chat Log Viewer marks public rooms.
+- **Start** [s4-08](/tasks/s4-08-chat-log-page.md).
 - **Done** [s4-07](/tasks/s4-07-room-extras.md): habbos rate rooms, owners host events of 11 types that the navigator
   lists, and rooms show favourite groups and profile tags.
 - **Start** [s4-07](/tasks/s4-07-room-extras.md).

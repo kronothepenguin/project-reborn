@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log/slog"
 	"slices"
 	"strconv"
 	"strings"
@@ -344,4 +345,18 @@ func IgnoreList(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]string, 
 		names[i] = row.Name
 	}
 	return names, nil
+}
+
+// PruneChat deletes the lines of the chat history older than game.chatHistoryDays at now (plans/server decisions 0066
+// and 0084), and logs how many went.
+func PruneChat(ctx context.Context, db *sql.DB, now time.Time) error {
+	days := settings.GetIntOr("game.chatHistoryDays", 30)
+	n, err := store.New(db).DeleteChatMessagesBefore(ctx, now.UTC().AddDate(0, 0, -days))
+	if err != nil {
+		return fmt.Errorf("game: prune chat: %w", err)
+	}
+	if n > 0 {
+		slog.Info(fmt.Sprintf("game: pruned %d chat lines older than %d days", n, days))
+	}
+	return nil
 }

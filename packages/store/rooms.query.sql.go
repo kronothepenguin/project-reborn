@@ -104,6 +104,27 @@ func (q *Queries) BanFromRoom(ctx context.Context, arg BanFromRoomParams) error 
 	return err
 }
 
+const countChatLog = `-- name: CountChatLog :one
+SELECT COUNT(*) FROM chat_messages
+JOIN avatars ON avatars.id = chat_messages.avatar_id
+WHERE chat_messages.public_room_id = CAST(?1 AS INTEGER) OR chat_messages.room_id = CAST(?1 AS INTEGER)
+   OR avatars.name = CAST(?2 AS TEXT)
+`
+
+type CountChatLogParams struct {
+	Room int64
+	Name string
+}
+
+// The Chat Log Viewer's search, as HoloCMS's: the lines said in the public room or the habbo room numbered room, or by
+// the habbo named name, whose names ignore case.
+func (q *Queries) CountChatLog(ctx context.Context, arg CountChatLogParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countChatLog, arg.Room, arg.Name)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const deleteChatMessagesBefore = `-- name: DeleteChatMessagesBefore :execrows
 DELETE FROM chat_messages WHERE said_at < ?1
 `
@@ -362,6 +383,68 @@ func (q *Queries) RemoveRoomRights(ctx context.Context, arg RemoveRoomRightsPara
 		return 0, err
 	}
 	return result.RowsAffected()
+}
+
+const searchChatLog = `-- name: SearchChatLog :many
+SELECT chat_messages.id, avatars.name, chat_messages.public_room_id, chat_messages.room_id, chat_messages.said_at,
+       chat_messages.text
+FROM chat_messages
+JOIN avatars ON avatars.id = chat_messages.avatar_id
+WHERE chat_messages.public_room_id = CAST(?1 AS INTEGER) OR chat_messages.room_id = CAST(?1 AS INTEGER)
+   OR avatars.name = CAST(?2 AS TEXT)
+ORDER BY chat_messages.said_at DESC, chat_messages.id DESC
+LIMIT ?4 OFFSET ?3
+`
+
+type SearchChatLogParams struct {
+	Room      int64
+	Name      string
+	RowOffset int64
+	RowLimit  int64
+}
+
+type SearchChatLogRow struct {
+	ID           int64
+	Name         string
+	PublicRoomID sql.NullInt64
+	RoomID       sql.NullInt64
+	SaidAt       time.Time
+	Text         string
+}
+
+func (q *Queries) SearchChatLog(ctx context.Context, arg SearchChatLogParams) ([]SearchChatLogRow, error) {
+	rows, err := q.db.QueryContext(ctx, searchChatLog,
+		arg.Room,
+		arg.Name,
+		arg.RowOffset,
+		arg.RowLimit,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SearchChatLogRow
+	for rows.Next() {
+		var i SearchChatLogRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.PublicRoomID,
+			&i.RoomID,
+			&i.SaidAt,
+			&i.Text,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const unignoreHabbo = `-- name: UnignoreHabbo :execrows

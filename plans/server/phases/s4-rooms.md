@@ -54,7 +54,7 @@ doorbell, kick and ban, and habbos rate rooms, ignore others and hold room event
 5. [s4-05 Chat, whisper, shout, dance, wave and type](/tasks/s4-05-chat-and-gestures.md) **done**
 6. [s4-06 Give rights, kick and ban](/tasks/s4-06-rights-kicks-and-bans.md) **done**
 7. [s4-07 Rate rooms, hold events, and show groups and tags](/tasks/s4-07-room-extras.md) **done**
-8. [s4-08 Read the chat history in housekeeping](/tasks/s4-08-chat-log-page.md)
+8. [s4-08 Read the chat history in housekeeping](/tasks/s4-08-chat-log-page.md) **done**
 9. [s4-09 Check S4's exit criteria](/tasks/s4-09-exit-check.md)
 10. [s4-10 Send through an outbox per session](/tasks/s4-10-outbox.md) **done**
 11. [s4-11 Wear five badges](/tasks/s4-11-five-badge-slots.md)

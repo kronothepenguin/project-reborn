@@ -1,0 +1,57 @@
+---
+import { Input, Table } from "@project-reborn/components";
+import Box from "../components/box.astro";
+import Message from "../components/message.astro";
+import Submit from "../components/submit.astro";
+import Housekeeping from "../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="Chat Log Viewer" tab="users">
+  <Message />
+  <div class="space-y-3">
+    <form method="get" action="/housekeeping/chatlogs">
+      <Box title="Chat Log Search">
+        <Table variant="form">
+          <tbody>
+            <tr>
+              <td class="w-2/5">
+                <label for="chatlog-query"><strong>Room ID</strong> OR <strong>Username</strong></label>
+                <div class="text-neutral-500">Search string for the chat log viewer.</div>
+              </td>
+              <td class="w-3/5"><Input id="chatlog-query" name="query" value="[[ .Query ]]" variant="border" /></td>
+            </tr>
+          </tbody>
+        </Table>
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+          <Submit>Retrive logs</Submit>
+        </div>
+      </Box>
+    </form>
+
+    [[ if .Lines ]]
+    <Box title="Search Results">
+      <Table>
+        <thead>
+          <tr>
+            <th class="w-1/4">Username</th>
+            <th class="w-1/10">Room ID</th>
+            <th class="w-3/20">Time</th>
+            <th class="w-1/2">Message</th>
+          </tr>
+        </thead>
+        <tbody>
+          [[ range .Lines ]]
+          <tr>
+            <td class="text-center">[[ .Username ]]</td>
+            <td class="text-center whitespace-nowrap">[[ .Room ]]</td>
+            <td class="text-center whitespace-nowrap">[[ .Time ]]</td>
+            <td class="text-center wrap-anywhere">[[ .Text ]]</td>
+          </tr>
+          [[ end ]]
+        </tbody>
+      </Table>
+    </Box>
+    <p class="text-center">[[ if .Newer ]]<a href="/housekeeping/chatlogs?query=[[ .Query ]]&page=[[ .Newer ]]" class="text-indigo-900 underline">Newer</a>[[ end ]] [[ if .Older ]]<a href="/housekeeping/chatlogs?query=[[ .Query ]]&page=[[ .Older ]]" class="text-indigo-900 underline">Older</a>[[ end ]]</p>
+    [[ end ]]
+  </div>
+</Housekeeping>

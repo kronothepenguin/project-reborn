@@ -385,6 +385,11 @@ client through its `Session` (`plans/server/decisions/0039-rules-notify-sessions
 - Their events: `RoomEntered`, `RoomLeft`, `DoorbellRang`, `DoorbellAnswered`,
   `LetIn`, `TurnedAway` and `Kicked`.
 - `DeleteRoom` sends the habbos in the room out.
+- `PruneChat(ctx, db, now)` deletes the chat lines older than
+  `game.chatHistoryDays`, 30; `server.New` runs it at once and every hour, once
+  the database updates are applied
+  (`plans/server/decisions/0084-the-game-server-prunes-the-chat-hourly.md`).
+  Housekeeping's Chat Log Viewer reads the lines.
 - Chat: `Say`, `Shout` and `Whisper` send `Chat` events; `SetTyping` sends
   `Typing`; `Dance`, `StopDancing` and `Wave` change statuses; `Ignore`,
   `Unignore` and `IgnoreList` keep the ignore list, saved and in the online

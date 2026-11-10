@@ -107,6 +107,21 @@ timestamp: 2026-11-10T16:46:21+00:00
 - Result: how many lines older than `before` went
 - Tables: `chat_messages`
 
+## CountChatLog
+
+- Cardinality: `:one`
+- Inputs: `room`, `name`
+- Result: how many lines were said in the public room or the habbo room numbered `room`, or by the habbo named
+  `name`, whose names ignore case: the Chat Log Viewer's search, as HoloCMS's
+- Tables: `chat_messages`, `avatars`
+
+## SearchChatLog
+
+- Cardinality: `:many`
+- Inputs: `room`, `name`, `row_limit`, `row_offset`
+- Result: those lines, newest first, with the speaker's name, the public room or habbo room, the time and the text
+- Tables: `chat_messages`, `avatars`
+
 ## ListIgnoredHabbos
 
 - Cardinality: `:many`

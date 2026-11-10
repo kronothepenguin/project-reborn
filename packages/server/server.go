@@ -9,9 +9,11 @@ import (
 	"net/http"
 	"strconv"
 	"sync/atomic"
+	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/scheduler"
+	"github.com/kronothepenguin/project-reborn/packages/server/game"
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/router"
 	"github.com/kronothepenguin/project-reborn/packages/server/r26"
 	"github.com/kronothepenguin/project-reborn/packages/server/transport"
@@ -62,6 +64,12 @@ func New(db *sql.DB) *Server {
 		}
 		return settings.Reload(ctx, db)
 	}))
+	// The game server saves the chat, so it prunes it: now, then every hour (plans/server decision 0084).
+	prune := updates.WhenCurrent(func(ctx context.Context) error { return game.PruneChat(ctx, db, time.Now()) })
+	if err := prune(ctx); err != nil {
+		slog.Error(err.Error())
+	}
+	scheduler.Every(1, scheduler.Hour, prune)
 	return &Server{db: db}
 }
 

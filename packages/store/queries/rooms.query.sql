@@ -76,3 +76,21 @@ ON CONFLICT DO NOTHING;
 
 -- name: UnignoreHabbo :execrows
 DELETE FROM ignored_habbos WHERE avatar_id = sqlc.arg(avatar_id) AND ignored_avatar_id = sqlc.arg(ignored_avatar_id);
+
+-- The Chat Log Viewer's search, as HoloCMS's: the lines said in the public room or the habbo room numbered room, or by
+-- the habbo named name, whose names ignore case.
+-- name: CountChatLog :one
+SELECT COUNT(*) FROM chat_messages
+JOIN avatars ON avatars.id = chat_messages.avatar_id
+WHERE chat_messages.public_room_id = CAST(sqlc.arg(room) AS INTEGER) OR chat_messages.room_id = CAST(sqlc.arg(room) AS INTEGER)
+   OR avatars.name = CAST(sqlc.arg(name) AS TEXT);
+
+-- name: SearchChatLog :many
+SELECT chat_messages.id, avatars.name, chat_messages.public_room_id, chat_messages.room_id, chat_messages.said_at,
+       chat_messages.text
+FROM chat_messages
+JOIN avatars ON avatars.id = chat_messages.avatar_id
+WHERE chat_messages.public_room_id = CAST(sqlc.arg(room) AS INTEGER) OR chat_messages.room_id = CAST(sqlc.arg(room) AS INTEGER)
+   OR avatars.name = CAST(sqlc.arg(name) AS TEXT)
+ORDER BY chat_messages.said_at DESC, chat_messages.id DESC
+LIMIT sqlc.arg(row_limit) OFFSET sqlc.arg(row_offset);

@@ -60,6 +60,7 @@ var routes = []struct {
 	{"POST", "/housekeeping/access-groups/1/delete"},
 	{"POST", "/housekeeping/users/1/access-groups"},
 	{"GET", "/housekeeping/logs"},
+	{"GET", "/housekeeping/chatlogs"},
 	{"GET", "/housekeeping/updates"},
 	{"POST", "/housekeeping/updates"},
 	{"POST", "/housekeeping/updates/config"},

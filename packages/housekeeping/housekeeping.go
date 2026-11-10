@@ -119,6 +119,7 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /housekeeping/users/{id}/access-groups", holding(auth.HousekeepingAccessGroups, r.HandleUsersAccessGroupsSave))
 
 	mux.Handle("GET /housekeeping/logs", holding(auth.HousekeepingLogs, r.HandleLogsView))
+	mux.Handle("GET /housekeeping/chatlogs", holding(auth.HousekeepingChatLogs, r.HandleChatLogsView))
 
 	// Holders of housekeeping.accessGroups can give themselves any attribute, and
 	// one of them always exists, so a hotel always has someone to apply updates.
