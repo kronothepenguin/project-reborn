@@ -65,7 +65,7 @@ starts.
 - [s3-05 Keep a habbo's favourite rooms](/tasks/s3-05-favourites.md) — GETFVRF gets the habbo's favourite public rooms and habbo rooms, ADD_FAVORITE_ROOM saves one, up to 30, and DEL_FAVORITE_ROOM removes one. **done**
 - [s3-06 Create a room with the room-o-matic](/tasks/s3-06-creating-a-room.md) — CREATEFLAT creates a habbo's room, up to 50, with a club model only for club fuses; SETFLATCAT puts it in a category the habbo's level allows, and SETFLATINFO saves its description, hashed password, furniture rights and visitors. **done**
 - [s3-07 Read, change and delete a room](/tasks/s3-07-changing-a-room.md) — GETFLATINFO and GETFLATCAT read a room's settings and category; UPDATEFLAT, SETFLATINFO and SETFLATCAT let its owner change them, and DELETEFLAT deletes it. **done**
-- [s3-08 Check S3's exit criteria](/tasks/s3-08-exit-check.md) — From the merged work, check every exit criterion of S3 and close the phase.
+- [s3-08 Check S3's exit criteria](/tasks/s3-08-exit-check.md) — From the merged work, check every exit criterion of S3 and close the phase. **done**
 
 ## S4 to S9
 

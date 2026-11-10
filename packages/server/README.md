@@ -310,6 +310,11 @@ says, and each uses habbos of its own.
 - S2's: `TestAClientLogsInEndToEnd`, from `HELLO` to the second login that
   ends the first session, and `TestACMSSignInMakesATicketTheServerAcceptsOnce`,
   which signs in through `packages/auth` as the CMS does.
+- S3's: `TestAClientBrowsesTheNavigator`, every list of the navigator against
+  its limits in one session, and `TestAHabboBuildsChangesAndDeletesARoom`, the
+  room-o-matic up to the 50th room, its settings, its changes and its deletion.
+- Every habbo a test makes has a name of its own across all the test files: the
+  tests share one database, where names are unique.
 - Tests that need short pings set `game.pingSeconds` and
   `game.pongTimeoutSeconds` for their run.
 

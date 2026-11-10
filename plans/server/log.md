@@ -2,6 +2,10 @@
 
 ## 2026-11-10
 
+- **Done** [s3-08](/tasks/s3-08-exit-check.md): every exit criterion of S3 passes on the merged work, with two new
+  tests: a client browses every list of the navigator, and a habbo builds, changes and deletes a room.
+  [S3](/phases/s3-navigator.md) is done.
+- **Start** [s3-08](/tasks/s3-08-exit-check.md).
 - **Done** [s3-07](/tasks/s3-07-changing-a-room.md): `GETFLATINFO` and `GETFLATCAT` read a room, and its owner changes
   it with `UPDATEFLAT` and deletes it with `DELETEFLAT`.
 - **Start** [s3-07](/tasks/s3-07-changing-a-room.md).

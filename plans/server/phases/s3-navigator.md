@@ -2,8 +2,8 @@
 type: Phase
 title: S3 Navigator
 description: The navigator lists the public rooms and the habbos' rooms, searches and keeps favourites, and habbos create, edit and delete their rooms.
-status: active
-timestamp: 2026-11-10T03:41:09+00:00
+status: done
+timestamp: 2026-11-10T13:11:45+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s3, server]
 ---
@@ -53,4 +53,4 @@ rooms, and lets a habbo create, edit and delete their rooms.
 5. [s3-05 Keep a habbo's favourite rooms](/tasks/s3-05-favourites.md) **done**
 6. [s3-06 Create a room with the room-o-matic](/tasks/s3-06-creating-a-room.md) **done**
 7. [s3-07 Read, change and delete a room](/tasks/s3-07-changing-a-room.md) **done**
-8. [s3-08 Check S3's exit criteria](/tasks/s3-08-exit-check.md)
+8. [s3-08 Check S3's exit criteria](/tasks/s3-08-exit-check.md) **done**

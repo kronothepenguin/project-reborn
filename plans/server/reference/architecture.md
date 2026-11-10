@@ -2,7 +2,7 @@
 type: Reference
 title: How the server is built
 description: The packages of the game server and what each one does, the path of a connection from a listener to the state, and how the server runs alone and under the orchestrator.
-timestamp: 2026-11-10T11:41:55+00:00
+timestamp: 2026-11-10T12:58:51+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [server, architecture]
 ---
@@ -25,9 +25,11 @@ tags: [server, architecture]
 `game` never imports `r26`, so a second protocol needs no change to the rules.
 
 So far `packages/server` holds the listeners, `transport`, `encoding`, `r26`, which takes a client from `HELLO` to
-`LOGIN_OK` ([s2-06](/tasks/s2-06-handshake-and-login.md)) and answers what it asks after
-([s2-07](/tasks/s2-07-after-login.md)), and `game`, whose first rules log a habbo in and out
-([s2-05](/tasks/s2-05-login-in-game.md)). A session that ends logs its habbo out.
+`LOGIN_OK` ([s2-06](/tasks/s2-06-handshake-and-login.md)), answers what it asks after
+([s2-07](/tasks/s2-07-after-login.md)) and serves the navigator and the room-o-matic ([S3](/phases/s3-navigator.md)),
+and `game`, whose rules log a habbo in and out ([s2-05](/tasks/s2-05-login-in-game.md)) and list, create, change and
+delete rooms. A session that ends logs its habbo out. `server.New` loads the navigator's shared data into
+`virtual/category`, `virtual/model` and `virtual/room` ([s3-02](/tasks/s3-02-navigator-state.md)).
 
 # A connection
 
