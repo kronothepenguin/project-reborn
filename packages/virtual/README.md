@@ -135,12 +135,15 @@ left, ok := room.Leave(h.ID, h.Session)
 - `Leave(avatarID, s)` takes the habbo out while `s` plays it. The last one out unloads the room: `Done()` closes, and
   `Left.Waiting` hands back who was at its doorbell, in its queue or among its spectators, to be told.
 - `Loaded(ref)` and `In(avatarID)` find a loaded room by its ref or by a habbo in it.
-- A `Room` gives its `Ref()`, `Model()`, `Floor()` and `Done()`; `Occupants()`, by index, and `Occupant(avatarID)`;
-  `Update(avatarID, change)`, which changes a habbo's place and statuses but never its id, session or index; the copies
-  of its rights and bans, `HasRights`, `SetRights`, `BanEnd` and `Ban`, which the rules change once the store has the
-  change (`plans/server/decisions/0010-hot-data-written-at-once.md`); and three lines, `Doorbell`, `Queue` and
-  `Spectators`, with `Join`, `Remove` and `Waiting`
-  (`plans/server/decisions/0069-doorbell-queue-and-spectators-in-memory.md`).
+- `Head(avatarID, ref)`, `Admit(avatarID, ref)`, `HeadingOf(avatarID)` and `ClearHeading(avatarID)` keep the room a
+  habbo is on its way into and whether its door let it through, only in memory. `Admit` admits a habbo only into the
+  room it heads for, so that a late answer never lets it in elsewhere.
+- A `Room` gives its `Ref()`, `Owner()`, a habbo room's owner as it loaded, `Model()`, `Floor()` and `Done()`;
+  `Occupants()`, by index, and `Occupant(avatarID)`; `Update(avatarID, change)`, which changes a habbo's place and
+  statuses but never its id, session or index; the copies of its rights and bans, `HasRights`, `SetRights`, `BanEnd` and
+  `Ban`, which the rules change once the store has the change
+  (`plans/server/decisions/0010-hot-data-written-at-once.md`); and three lines, `Doorbell`, `Queue` and `Spectators`,
+  with `Join`, `Remove` and `Waiting` (`plans/server/decisions/0069-doorbell-queue-and-spectators-in-memory.md`).
 - Once a room unloads, its methods change nothing and report false, so a rule holding an old `*Room` cannot bring it
   back.
 - `ParseFloor(model)` reads a model's height map as the client reads 31: `x` blocked, in either case; a digit, that

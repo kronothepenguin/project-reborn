@@ -19,8 +19,8 @@ var ErrInvalidTicket = errors.New("game: invalid SSO ticket")
 // Login logs in on s the habbo that ticket names. It spends the ticket, saves
 // machineID, the machine id s holds, when there is one, and the last time online,
 // and puts the habbo online with its badges, its sound setting and its fuses
-// (plans/server decision 0053). The session the habbo was online on gets
-// ConcurrentLogin.
+// (plans/server decision 0053). The session the habbo was online on leaves its
+// room and gets ConcurrentLogin.
 func Login(ctx context.Context, db *sql.DB, s Session, ticket, machineID string) (habbo.Habbo, error) {
 	now := time.Now().UTC()
 	tx, err := db.BeginTx(ctx, nil)
@@ -78,17 +78,21 @@ func Login(ctx context.Context, db *sql.DB, s Session, ticket, machineID string)
 	}
 
 	if old, ok := habbo.Add(h); ok && old.Session != s {
+		LeaveRoom(old.ID, old.Session)
 		old.Session.Notify(ConcurrentLogin{})
 	}
 	return h, nil
 }
 
-// Logout writes the last time online of avatarID and takes it offline, while s
-// plays it: a session that a second login replaced logs nothing out.
+// Logout takes avatarID out of its room, writes its last time online and takes it
+// offline, while s plays it: a session that a second login replaced logs nothing
+// out.
 func Logout(ctx context.Context, db *sql.DB, s Session, avatarID int64) error {
+	// A replaced session left its room at the second login; leaving again would clear the heading of the new one.
 	if h, ok := habbo.Get(avatarID); !ok || h.Session != s {
 		return nil
 	}
+	LeaveRoom(avatarID, s)
 	err := store.New(db).SetAvatarLastOnline(ctx, store.SetAvatarLastOnlineParams{
 		AvatarID:     avatarID,
 		LastOnlineAt: sql.NullTime{Time: time.Now().UTC(), Valid: true},

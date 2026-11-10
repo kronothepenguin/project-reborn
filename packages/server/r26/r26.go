@@ -25,7 +25,7 @@ type handler func(s *session, body []byte)
 
 // handlers holds the handler of each command id the server handles, from every cast. Every other id is logged as
 // unhandled.
-var handlers = join(entryInitHandlers, clubHandlers, sharedHandlers, navigatorHandlers, kioskRoomHandlers)
+var handlers = join(entryInitHandlers, clubHandlers, sharedHandlers, navigatorHandlers, kioskRoomHandlers, roomHandlers)
 
 // join puts the handlers of every cast in one map. A command has one handler, even when several casts send it, as
 // hh_entry_init and hh_tutorial both send 228, so a repeated id is a mistake of the server, caught as it starts.
@@ -192,12 +192,28 @@ func (s *session) closed(err error) {
 
 // Notify turns a rule's event into its message (plans/server decision 0039).
 func (s *session) Notify(event any) {
-	switch event.(type) {
+	switch e := event.(type) {
 	case game.ConcurrentLogin:
-		if err := s.send(hotelLogout, vl64(logoutConcurrent)); err != nil {
-			slog.Warn(fmt.Sprintf("r26 %s: %v", s.addr, err))
-		}
+		s.reply(hotelLogout, vl64(logoutConcurrent))
 		s.end()
+	case game.RoomEntered:
+		s.sendEntered(e.Visitor)
+	case game.RoomLeft:
+		s.reply(roomLogout, []byte(strconv.Itoa(e.Index)))
+	case game.DoorbellRang:
+		s.reply(doorbellRinging, []byte(e.Name))
+	case game.DoorbellAnswered:
+		if e.LetIn {
+			s.reply(flatLetIn, str(e.Name))
+		} else {
+			s.reply(flatNotAllowedToEnter, str(e.Name))
+		}
+	case game.LetIn:
+		s.reply(flatLetIn, str(""))
+	case game.TurnedAway:
+		s.reply(flatNotAllowedToEnter, str(""))
+	case game.Kicked:
+		s.reply(clc, nil)
 	}
 }
 
@@ -249,7 +265,7 @@ func (s *session) logout() {
 
 // command names a command in the log: by its name and id when r26 knows it, by its id otherwise.
 func command(id int) string {
-	for _, names := range []map[int]string{entryInitCommands, navigatorCommands, kioskRoomCommands} {
+	for _, names := range []map[int]string{entryInitCommands, navigatorCommands, kioskRoomCommands, roomCommands} {
 		if name, ok := names[id]; ok {
 			return name + " (" + strconv.Itoa(id) + ")"
 		}

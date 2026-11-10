@@ -70,6 +70,7 @@ const (
 // goroutines at once and return copies. Once the room unloads, its methods change nothing and report false.
 type Room struct {
 	ref   Ref
+	owner int64
 	model store.RoomModel
 	floor Floor
 	done  chan struct{}
@@ -147,7 +148,7 @@ func load(ctx context.Context, db *sql.DB, ref Ref) (*Room, error) {
 		if err != nil {
 			return nil, fmt.Errorf("room: %w", err)
 		}
-		modelID = row.RoomModelID
+		modelID, r.owner = row.RoomModelID, row.OwnerAvatarID
 		rights, err := q.ListRoomRights(ctx, ref.ID)
 		if err != nil {
 			return nil, fmt.Errorf("room: %w", err)
@@ -272,6 +273,9 @@ func Visitors(ref Ref) int {
 
 // Ref names the room.
 func (r *Room) Ref() Ref { return r.ref }
+
+// Owner returns the avatar id of a habbo room's owner, as the room loaded, and 0 for a public room.
+func (r *Room) Owner() int64 { return r.owner }
 
 // Model returns the room's model.
 func (r *Room) Model() store.RoomModel { return r.model }

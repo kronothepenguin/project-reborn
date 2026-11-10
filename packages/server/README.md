@@ -20,8 +20,8 @@ listeners of `server.go` and `mus.go`, `transport/`, `encoding/`, `r26/` and
 | `mus.go` | What the `mus` listener does until S7 frames MUS: it logs and never answers (`plans/server/decisions/0023-mus-listener-before-s7.md`) | s0-07 |
 | `transport/` | `Conn`, an `io.Reader` to receive, an `io.Writer` to send and an `io.Closer`, over TCP (`tcp.go`) and the WebSocket (`websocket.go`) | s0-05 |
 | `encoding/` | B64, VL64 and strings | s0-06 |
-| `r26/` | The R26 ids, and one file per client cast: `entry_init.go`, `navigator.go`, `room.go`… | s0-07 the framing (`packet.go`), `HELLO` and the dispatch by id (`r26.go`) and the names of hh_entry_init's commands (`entry_init.go`); s2-06 the handshake and the login (`entry_init.go`); s2-07 what the client asks after it (`entry_init.go`, `club.go`, `shared.go`); each cast's handlers with the phase that serves the cast |
-| `game/` | The rules: login, entering rooms, chat, walking…, with no protocol in them | s2-05 the login and the logout; s2-07 the account, the club status and the sound setting; the other rules with the phases that bring them |
+| `r26/` | The R26 ids, and one file per client cast: `entry_init.go`, `navigator.go`, `room.go`… | s0-07 the framing (`packet.go`), `HELLO` and the dispatch by id (`r26.go`) and the names of hh_entry_init's commands (`entry_init.go`); s2-06 the handshake and the login (`entry_init.go`); s2-07 what the client asks after it (`entry_init.go`, `club.go`, `shared.go`); s4-03 entering and leaving a room (`room.go`); each cast's handlers with the phase that serves the cast |
+| `game/` | The rules: login, entering rooms, chat, walking…, with no protocol in them | s2-05 the login and the logout; s2-07 the account, the club status and the sound setting; s4-03 entering and leaving rooms (`entering.go`); the other rules with the phases that bring them |
 
 - `encoding` stands apart from `r26`, so that another protocol can reuse it.
 - `game` never knows the protocol. It is its own package so that `r26` can call
@@ -213,7 +213,7 @@ data of `virtual/category`, `virtual/model` and `virtual/room` and the store
 | `NAVIGATE` (150) | 220: the category, the categories right under it that the habbo may see, and its public rooms (type 1) or its habbo rooms (type 2), at most `game.categoryMaxRooms`, the busiest first. Node mask 1 leaves full rooms out. A category that does not exist or hides itself from the habbo's level gets no answer |
 | `GETUSERFLATCATS` (151) | 221: the categories of habbo rooms below the root that the habbo's level reaches |
 | `GETPARENTCHAIN` (156) | 227: the category and those above it, nearest first |
-| `GETSPACENODEUSERS` (154) | 223: the names of the habbos in a public room, none until S4 |
+| `GETSPACENODEUSERS` (154) | 223: the names of the habbos in a public room, by index, as Holo listed them |
 | `SUSERF` (16) | 16: the habbo's own rooms, as lines of text; 57 when it has none. The session's habbo is the one listed, whatever name the client sends |
 | `SRCHF` (17) | 55: the rooms whose name holds the query or whose owner it names, at most `game.searchMaxRooms`; 58 when none matches |
 | `GET_RECOMMENDED_ROOMS` (264) | 351: three habbo rooms drawn at random (`plans/server/decisions/0057-three-random-recommended-rooms.md`) |
@@ -239,6 +239,44 @@ data of `virtual/category`, `virtual/model` and `virtual/room` and the store
   separated by tabs, with `x` for the port and `null` for the filter, as Holo
   wrote them, and the control characters of a name or a description turned into
   spaces.
+
+## Rooms
+
+`room.go` serves hh_room once the habbo is logged in
+(`plans/server/reference/r26/hh_room.md`). A room is entered as the client
+does it: the ad while it loads, the door, the room's parts, then the habbo
+comes in once its client has built the room, at `G_STAT`, as Holo had it.
+
+| Command | Answer |
+| --- | --- |
+| `GETINTERST` (182) | 258: `game.loadingAdImage`, a tab and `game.loadingAdLink`, or `0`, which shows no ad (`plans/server/decisions/0070-a-loading-ad-and-a-room-ad-from-settings.md`) |
+| `#room_directory` (2) | 19, for both kinds, as Holo sent it. The habbo leaves the room it is in or rings. A public room, named by its id, then gets 69, `<model> <id>`, or 224 with 1 when it holds its `max_visitors` habbos. A habbo room goes on with `TRYFLAT` |
+| `TRYFLAT` (57) | 41 with an empty name lets the habbo in. A full room gets 224 with 1. The owner and the holders of `fuse_enter_locked_rooms` pass any door and any ban; anyone else banned gets 224 with 4; a password door compares `<id>/<password>` with the room's hash (`plans/server/decisions/0062-room-passwords-are-hashed.md`), or 33 `Incorrect flat password`; a closed door gets 91 and rings the doorbell of the habbos with rights in the room, who get 91 with the ringer's name. A room that is not loaded, or holds nobody who may answer, gets 131 at once, as Holo did with nobody in |
+| `LETUSERIN` (98) | From a habbo with rights in the room: the ringer gets 41 and goes on with `GOTOFLAT`, or 131; the habbos with rights get 41 or 131 with its name, which their doorbells drop. A ringer who leaves is dropped the same way |
+| `GOTOFLAT` (59) | 69, `model_<model> <id>`; then 47 for the owner and 42 for a habbo with rights. The holders of `fuse_any_room_controller` count as owners, as Holo had it. Only after the door let the habbo through |
+| `GETROOMAD` (126) | 208: `game.roomAdImage`, a tab and `game.roomAdLink`, or `0` |
+| `G_HMAP` (60) | 31: the model's height map, a row per line |
+| `G_USRS` (61) | 28: the user lines of the habbos in the room |
+| `G_OBJS` (62) | 30: the model's public furni, `<id> <class> <x> <y> <height> <direction>` a line, then 32 with no furniture, which no command asks for and the client needs |
+| `G_ITEMS` (63) | 45: no wall items |
+| `G_STAT` (64) | The habbo comes in at the model's door: 34 with the others' statuses, then 28 with its own user lines and 34 with its status, which the others get too. In a habbo room the owner's status holds `flatctrl useradmin` and a habbo with rights `flatctrl onlyfurniture`, as Holo gave them. A room that filled meanwhile gets 224 with 1 |
+| `QUIT` (53) | Nothing: the habbo leaves, and the others get 29 with its index |
+
+- A user line is `i` the index, `a` the habbo's id, `n` the name, `f` the
+  figure, `l` the place, `c` the motto, `s` the sex and `b` the worn badge in
+  slot 1, as Holo wrote them, each line ended by a carriage return, which no
+  value may hold. A status line is `<index> <x>,<y>,<height>,<head>,<body>/`,
+  then each action and its parameters followed by a slash.
+- The room's commands before `G_STAT` need the door to have let the habbo
+  through; `G_HMAP`, `G_OBJS` and `G_ITEMS` also answer a habbo in the room.
+- A habbo leaves its room on `QUIT`, on `#room_directory`, when its session
+  ends and when it logs in again elsewhere. The last one out unloads the room
+  (`plans/server/decisions/0071-an-empty-room-unloads-at-once.md`), and those
+  still ringing get 131.
+- Deleting a room sends the habbos in it out, as Holo did: each gets 18, and the
+  others see it go.
+- Walking, chat, rights, kicks, bans, ratings, events, badges and the queue come
+  with the next S4 tasks.
 
 ## Keeping the session alive
 
@@ -278,11 +316,24 @@ client through its `Session` (`plans/server/decisions/0039-rules-notify-sessions
   `s` holds one, and the last time online; after the commit it reads the fuses
   with `auth.Fuses`. Then the habbo goes online with them
   (`plans/server/decisions/0053-the-online-habbo-holds-its-own-data.md`), and
-  the session it was online on gets `ConcurrentLogin`. A ticket that is unknown, spent, or whose CMS session ended
+  the session it was online on leaves its room and gets `ConcurrentLogin`. A ticket that is unknown, spent, or whose CMS session ended
   or moved to another habbo returns `ErrInvalidTicket`.
-- `Logout(ctx, db, s, avatarID)` writes the habbo's last time online and takes
-  it offline, while `s` plays it. A session that a second login replaced logs
-  nothing out.
+- `Logout(ctx, db, s, avatarID)` takes the habbo out of its room, writes its
+  last time online and takes it offline, while `s` plays it. A session that a
+  second login replaced logs nothing out: the second login took it out of its
+  room.
+- Entering a room: `ChooseRoom` heads the habbo for a room, out of the one it is
+  in, and admits it to a public room; `TryFlat` answers a habbo room's door with
+  an `Admission`; `AnswerDoorbell` lets a ringer in or turns it away;
+  `GoToFlat` gives a habbo room's model and the habbo's rights in it;
+  `Arrival` and `Visitors` give the room's model and who is in it while the
+  client builds it; `EnterRoom` brings the habbo in; `LeaveRoom` takes it out;
+  and `PublicRoomVisitors` names who is in a public room. The way into a room
+  is a `room.Heading` of `virtual/room`, so that only a habbo whose door let it
+  through comes in.
+- Their events: `RoomEntered`, `RoomLeft`, `DoorbellRang`, `DoorbellAnswered`,
+  `LetIn`, `TurnedAway` and `Kicked`.
+- `DeleteRoom` sends the habbos in the room out.
 - `UserAccount(ctx, db, userID)` reads what the client shows of the user behind
   a habbo, which all the user's habbos share: the credits, the tickets, the film
   and whether the user takes the newsletter.
@@ -328,6 +379,8 @@ says, and each uses habbos of its own.
 - S3's: `TestAClientBrowsesTheNavigator`, every list of the navigator against
   its limits in one session, and `TestAHabboBuildsChangesAndDeletesARoom`, the
   room-o-matic up to the 50th room, its settings, its changes and its deletion.
+- `entering_test.go` enters public rooms and habbo rooms through every door,
+  the doorbell, bans, full rooms, a deletion, a logout and the ads.
 - Every habbo a test makes has a name of its own across all the test files: the
   tests share one database, where names are unique.
 - Tests that need short pings set `game.pingSeconds` and

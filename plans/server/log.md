@@ -2,6 +2,9 @@
 
 ## 2026-11-10
 
+- **Done** [s4-03](/tasks/s4-03-entering-a-room.md): habbos enter and leave public rooms and habbo rooms past their
+  doors, passwords, bans, limits and doorbells, see each other come and go, and get the ads from the settings.
+- **Start** [s4-03](/tasks/s4-03-entering-a-room.md).
 - **Done** [s4-10](/tasks/s4-10-outbox.md): each r26 session sends through an outbox of game.outboxSize messages,
   written by a goroutine of its own; a client that stops reading is closed.
 - **Start** [s4-10](/tasks/s4-10-outbox.md).

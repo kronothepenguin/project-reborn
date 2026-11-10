@@ -189,16 +189,20 @@ func handleGetParentChain(s *session, _ habbo.Habbo, body []byte) {
 	s.reply(parentChain, b.Bytes())
 }
 
-// handleGetSpaceNodeUsers sends the names of the habbos in a public room: none until S4 lets habbos enter.
+// handleGetSpaceNodeUsers sends the names of the habbos in a public room, by index.
 func handleGetSpaceNodeUsers(s *session, _ habbo.Habbo, body []byte) {
 	id, err := encoding.ReadVL64(bytes.NewReader(body))
 	if err != nil {
 		s.malformed(154, body)
 		return
 	}
+	names := game.PublicRoomVisitors(int64(id))
 	var b bytes.Buffer
 	b.Write(vl64(int(id)))
-	b.Write(vl64(0))
+	b.Write(vl64(len(names)))
+	for _, name := range names {
+		b.Write(str(name))
+	}
 	s.reply(spaceNodeUsers, b.Bytes())
 }
 

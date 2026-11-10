@@ -15,6 +15,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/category"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/model"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
@@ -253,8 +254,8 @@ func UpdateRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo, roomID int6
 	return nil
 }
 
-// DeleteRoom deletes viewer's room and the favourites that name it. The furni in it goes to the owner's hand once S5
-// brings furni (plans/server decision 0059); rooms hold none before.
+// DeleteRoom deletes viewer's room and the favourites that name it, and sends the habbos in it out, as Holo did. The
+// furni in it goes to the owner's hand once S5 brings furni (plans/server decision 0059); rooms hold none before.
 func DeleteRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo, roomID int64) error {
 	n, err := store.New(db).DeleteRoom(ctx, store.DeleteRoomParams{ID: roomID, OwnerAvatarID: viewer.ID})
 	if err != nil {
@@ -263,5 +264,6 @@ func DeleteRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo, roomID int6
 	if n == 0 {
 		return ErrNotOwner
 	}
+	emptyRoom(room.Ref{ID: roomID})
 	return nil
 }

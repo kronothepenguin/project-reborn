@@ -33,11 +33,12 @@ func openHotel(t *testing.T) *sql.DB {
 	t.Cleanup(func() {
 		mu.Lock()
 		defer mu.Unlock()
-		if len(rooms) != 0 || len(in) != 0 {
-			t.Errorf("%d rooms and %d habbos left loaded", len(rooms), len(in))
+		if len(rooms) != 0 || len(in) != 0 || len(headings) != 0 {
+			t.Errorf("%d rooms, %d habbos and %d headings left", len(rooms), len(in), len(headings))
 		}
 		clear(rooms)
 		clear(in)
+		clear(headings)
 	})
 	return db
 }
@@ -197,6 +198,9 @@ func TestAHabboRoomLoadsItsRightsAndBans(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if r.Owner() != owner {
+		t.Errorf("the owner is %d, want %d", r.Owner(), owner)
+	}
 	if !r.HasRights(helper) || r.HasRights(pest) {
 		t.Error("the rights did not load: Helper has them and Pest does not")
 	}
@@ -303,4 +307,30 @@ func TestRoomsAreSafeForConcurrentUse(t *testing.T) {
 		})
 	}
 	wg.Wait()
+}
+
+// A door lets a habbo through only into the room it heads for, so that a late answer never lets it in elsewhere.
+func TestAHabboIsAdmittedOnlyWhereItHeads(t *testing.T) {
+	openHotel(t)
+	lounge, library := Ref{Public: true, ID: 101}, Ref{Public: true, ID: 104}
+	if Admit(1, lounge) {
+		t.Error("a habbo heading nowhere was admitted")
+	}
+	Head(1, lounge)
+	if h, ok := HeadingOf(1); !ok || h != (Heading{Ref: lounge}) {
+		t.Errorf("heading %+v, %t; want the lounge, not admitted", h, ok)
+	}
+	Head(1, library)
+	if Admit(1, lounge) {
+		t.Error("the lounge's late answer admitted a habbo heading for the library")
+	}
+	if !Admit(1, library) {
+		t.Error("the library did not admit the habbo heading for it")
+	}
+	if h, ok := ClearHeading(1); !ok || h != (Heading{Ref: library, Admitted: true}) {
+		t.Errorf("cleared %+v, %t; want the library, admitted", h, ok)
+	}
+	if _, ok := HeadingOf(1); ok {
+		t.Error("the heading is still there")
+	}
 }
