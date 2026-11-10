@@ -214,6 +214,7 @@ data of `virtual/category`, `virtual/model` and `virtual/room` and the store
 | `GETUSERFLATCATS` (151) | 221: the categories of habbo rooms below the root that the habbo's level reaches |
 | `GETPARENTCHAIN` (156) | 227: the category and those above it, nearest first |
 | `GETSPACENODEUSERS` (154) | 223: the names of the habbos in a public room, by index, as Holo listed them |
+| `REMOVEALLRIGHTS` (155) | Nothing: the owner's room loses every habbo's rights, from the modify page; those in the room get 43 |
 | `SUSERF` (16) | 16: the habbo's own rooms, as lines of text; 57 when it has none. The session's habbo is the one listed, whatever name the client sends |
 | `SRCHF` (17) | 55: the rooms whose name holds the query or whose owner it names, at most `game.searchMaxRooms`; 58 when none matches |
 | `GET_RECOMMENDED_ROOMS` (264) | 351: three habbo rooms drawn at random (`plans/server/decisions/0057-three-random-recommended-rooms.md`) |
@@ -259,7 +260,7 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
 | `G_USRS` (61) | 28: the user lines of the habbos in the room |
 | `G_OBJS` (62) | 30: the model's public furni, `<id> <class> <x> <y> <height> <direction>` a line, then 32 with no furniture, which no command asks for and the client needs |
 | `G_ITEMS` (63) | 45: no wall items |
-| `G_STAT` (64) | The habbo comes in at the model's door: 34 with the others' statuses, then 28 with its own user lines and 34 with its status, which the others get too. In a habbo room the owner's status holds `flatctrl useradmin` and a habbo with rights `flatctrl onlyfurniture`, as Holo gave them. A room that filled meanwhile gets 224 with 1 |
+| `G_STAT` (64) | The habbo comes in at the model's door: 34 with the others' statuses, then 28 with its own user lines and 34 with its status, which the others get too. In a habbo room the owner's status holds `flatctrl useradmin` and a habbo with rights `flatctrl` with no level, which the client's Human class reads as `furniture`; Holo's `onlyfurniture` was another client's. A room that filled meanwhile gets 224 with 1 |
 | `QUIT` (53) | Nothing: the habbo leaves, and the others get 29 with its index |
 | `MOVE` (75) | Nothing at once: the habbo walks to the tile, two B64 shorts, a step on each tick of the room's clock. A tile off the floor, such as the 1000, 1000 of the sound machine's editor, changes nothing |
 | `LOOKTO` (79) | The habbo turns, head and body, to the tile `<x> <y>`, unless it sits or lies, as Holo had it; its status goes out on the next tick |
@@ -272,6 +273,9 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
 | `STOP` (88) | `Dance` ends the dance; carrying waits for drinks |
 | `IGNOREUSER` (319), `UNIGNORE_USER` (322) | 419: 0 failed (no such habbo, or the habbo itself), 1 added, 2 added with the oldest dropped past `game.maxIgnoredHabbos`, 100, or 3 removed (`plans/server/decisions/0076-ignore-up-to-100-the-oldest-dropped.md`) |
 | `GET_IGNORE_LIST` (321) | 420: the names the habbo ignores, oldest first |
+| `ASSIGNRIGHTS` (96), `REMOVERIGHTS` (97) | From the room's owner, or a holder of `fuse_any_room_controller`, about a habbo in the room, as the client shows the buttons: saved, then the habbo gets 42 or 43, and its status gains or loses `flatctrl` |
+| `KICKUSER` (95) | From an owner or a habbo with rights, as the client shows the button: the habbo, never an owner or a holder of `fuse_any_room_controller`, walks to the door, a step every 500 ms and no longer where it wants, and leaves there with 18; it leaves at once when it cannot reach the door, which a habbo standing on it blocks (`plans/server/decisions/0079-a-kicked-habbo-walks-out.md`) |
+| `BANUSER` (320) | From an owner only, as the client shows the button: the habbo is banned for `game.roomBanMinutes`, 15 (`plans/server/decisions/0067-a-room-ban-lasts-15-minutes.md`), saved and in the room's copy, and walks out as on `KICKUSER`; its next `TRYFLAT` gets 224 with 4 |
 
 - A user line is `i` the index, `a` the habbo's id, `n` the name, `f` the
   figure, `l` the place, `c` the motto, `s` the sex and `b` the worn badge in
@@ -311,8 +315,7 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
   chat or a shout with a smiley shows its face for 5 s, `gest sml`, `agr`, `sad`
   or `srp`, as Holo's `checkEmotion` found them. The room's clock ends each
   timed status on its tick and sends the change.
-- Rights, kicks, bans, ratings, events, badges and the queue come with the next
-  S4 tasks.
+- Ratings, events, badges and the queue come with the next S4 tasks.
 
 ## Keeping the session alive
 
@@ -374,6 +377,9 @@ client through its `Session` (`plans/server/decisions/0039-rules-notify-sessions
   `Typing`; `Dance`, `StopDancing` and `Wave` change statuses; `Ignore`,
   `Unignore` and `IgnoreList` keep the ignore list, saved and in the online
   habbo, which `Login` loads.
+- Rights: `AssignRights`, `RemoveRights` and `RemoveAllRights` send
+  `RightsChanged`; `Kick` and `Ban` send a habbo walking out, and the room's
+  clock sends it `Kicked` and takes it out once it stops.
 - Walking: `EnterRoom` starts a room's clock when its entry loads the room;
   `Walk` sets a habbo's goal and `LookTo` turns it; the clock's ticks send
   `Statuses`.
@@ -426,6 +432,8 @@ says, and each uses habbos of its own.
   the doorbell, bans, full rooms, a deletion, a logout and the ads.
 - `chat_test.go` chats near and far, shouts, whispers, types, ignores up to the
   limit, dances and waves.
+- `rights_test.go` gives and takes rights, kicks a habbo that walks out, bans
+  it, and takes every right from the navigator.
 - `walking_test.go` walks two habbos at once, a step every 500 ms, and turns
   one; `game`'s `walking_test.go` tests the way: around walls without cutting
   corners, heights, other habbos and seats.

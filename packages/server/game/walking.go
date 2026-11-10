@@ -36,6 +36,7 @@ func startClock(r *room.Room) {
 
 func tick(r *room.Room) {
 	floor, now := r.Floor(), time.Now()
+	var leaving []room.Occupant
 	sent := r.Tick(func(all []*room.Occupant) []room.Occupant {
 		var sent []room.Occupant
 		for _, o := range all {
@@ -44,7 +45,12 @@ func tick(r *room.Room) {
 			}
 			switch {
 			case o.Walking:
-				sent = append(sent, walk(floor, all, o))
+				step := walk(floor, all, o)
+				if o.Leaving && !o.Walking {
+					leaving = append(leaving, *o)
+					continue
+				}
+				sent = append(sent, step)
 			case o.Changed:
 				o.Changed = false
 				sent = append(sent, snapshot(o))
@@ -52,11 +58,15 @@ func tick(r *room.Room) {
 		}
 		return sent
 	})
-	if len(sent) == 0 {
-		return
+	if len(sent) > 0 {
+		for _, o := range r.Occupants() {
+			o.Session.Notify(Statuses{Occupants: sent})
+		}
 	}
-	for _, o := range r.Occupants() {
-		o.Session.Notify(Statuses{Occupants: sent})
+	// A kicked habbo that stopped, at the door or with no way to it, leaves the room there (plans/server decision 0079).
+	for _, o := range leaving {
+		o.Session.Notify(Kicked{})
+		LeaveRoom(o.AvatarID, o.Session)
 	}
 }
 
@@ -217,7 +227,8 @@ func (q *frontier) Pop() any {
 }
 
 // Walk sends the habbo walking to the tile x, y of its room (MOVE): the room's clock takes it a step on each tick. A
-// tile off the floor, such as the 1000, 1000 the sound machine's editor sends, changes nothing.
+// tile off the floor, such as the 1000, 1000 the sound machine's editor sends, changes nothing, and so does any tile
+// for a habbo walking out, kicked or banned.
 func Walk(viewer habbo.Habbo, x, y int) {
 	r, ok := room.In(viewer.ID)
 	if !ok {
@@ -227,7 +238,9 @@ func Walk(viewer habbo.Habbo, x, y int) {
 		return
 	}
 	r.Update(viewer.ID, func(o *room.Occupant) {
-		o.Walking, o.GoalX, o.GoalY = true, x, y
+		if !o.Leaving {
+			o.Walking, o.GoalX, o.GoalY = true, x, y
+		}
 	})
 }
 

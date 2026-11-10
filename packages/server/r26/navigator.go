@@ -78,6 +78,17 @@ var navigatorHandlers = map[int]handler{
 	151: loggedIn(handleGetUserFlatCats),
 	154: loggedIn(handleGetSpaceNodeUsers),
 	156: loggedIn(handleGetParentChain),
+	155: loggedIn(handleRemoveAllRights),
+}
+
+// handleRemoveAllRights takes every habbo's rights in the habbo's own room, from the navigator's modify page.
+func handleRemoveAllRights(s *session, me habbo.Habbo, body []byte) {
+	id, err := encoding.ReadVL64(bytes.NewReader(body))
+	if err != nil {
+		s.malformed(155, body)
+		return
+	}
+	s.ruled(game.RemoveAllRights(context.Background(), s.db, me, int64(id)))
 }
 
 // handleNavigate sends a category: itself, the categories right under it, and its public rooms or its habbo rooms.

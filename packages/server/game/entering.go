@@ -344,7 +344,7 @@ func visitorsOf(r *room.Room) []Visitor {
 // as Holo did, and returns everyone in it, the habbo too, by index. The habbo that loads the room starts its clock
 // (plans/server decision 0072). The others see it come. The room is checked
 // again: one that filled meanwhile turns it away, Full, unless it holds fuse_enter_full_rooms. In a habbo room, its
-// owner gets the status flatctrl useradmin, and a habbo with rights flatctrl onlyfurniture, as Holo gave them.
+// owner gets the status flatctrl useradmin, and a habbo with rights flatctrl with no level, as flatControl says.
 func EnterRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]Visitor, Admission, error) {
 	h, ok := room.HeadingOf(viewer.ID)
 	if !ok || !h.Admitted {
@@ -367,9 +367,9 @@ func EnterRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]Visitor, 
 	if loaded {
 		startClock(r)
 	}
-	if control := flatControl(r, viewer); control != "" {
+	if control, ok := flatControl(r, viewer); ok {
 		r.Update(viewer.ID, func(o *room.Occupant) {
-			o.Statuses = append(o.Statuses, room.Status{Action: "flatctrl", Parameters: control})
+			o.Statuses = setStatus(o.Statuses, room.Status{Action: "flatctrl", Parameters: control})
 		})
 	}
 	visitors := visitorsOf(r)
@@ -386,16 +386,19 @@ func EnterRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]Visitor, 
 	return visitors, Admitted, nil
 }
 
-func flatControl(r *room.Room, viewer habbo.Habbo) string {
+// flatControl returns the level of the habbo's flatctrl status in a habbo room: useradmin for its owners, and none for a
+// habbo with rights, which the client reads as furniture, as its Human class does with an empty level. Holo's
+// onlyfurniture is another client's.
+func flatControl(r *room.Room, viewer habbo.Habbo) (string, bool) {
 	switch {
 	case r.Ref().Public:
-		return ""
+		return "", false
 	case owns(r, viewer):
-		return "useradmin"
+		return "useradmin", true
 	case r.HasRights(viewer.ID):
-		return "onlyfurniture"
+		return "", true
 	}
-	return ""
+	return "", false
 }
 
 func limitFor(ctx context.Context, db *sql.DB, viewer habbo.Habbo, ref room.Ref) (int, error) {

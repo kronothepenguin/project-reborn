@@ -2,6 +2,10 @@
 
 ## 2026-11-10
 
+- **Done** [s4-06](/tasks/s4-06-rights-kicks-and-bans.md): owners give and take rights, all at once too; habbos with
+  rights kick and owners ban, as the client's buttons show, and the kicked walk out.
+- **Decision** [0079](/decisions/0079-a-kicked-habbo-walks-out.md): a kicked or banned habbo walks out.
+- **Start** [s4-06](/tasks/s4-06-rights-kicks-and-bans.md).
 - **Done** [s4-05](/tasks/s4-05-chat-and-gestures.md): habbos chat near and far, shout, whisper, type, dance and wave,
   the lines saved and cut at 100 characters, and ignore up to 100 habbos.
 - **Decision** [0074](/decisions/0074-near-habbos-read-chat-far-ones-see-a-bubble.md): near habbos read chat, far ones

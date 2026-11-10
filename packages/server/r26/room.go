@@ -27,6 +27,7 @@ const (
 	roomStatus            = 34
 	flatLetIn             = 41
 	roomController        = 42
+	roomNotController     = 43
 	roomItems             = 45
 	roomOwner             = 47
 	roomReady             = 69
@@ -141,6 +142,9 @@ var roomHandlers = map[int]handler{
 	88:  loggedIn(handleStop),
 	93:  loggedIn(handleDance),
 	94:  loggedIn(handleWave),
+	95:  loggedIn(handleKickUser),
+	96:  loggedIn(handleAssignRights),
+	97:  loggedIn(handleRemoveRights),
 	98:  loggedIn(handleLetUserIn),
 	126: loggedIn(handleGetRoomAd),
 	182: loggedIn(handleGetInterstitial),
@@ -148,6 +152,7 @@ var roomHandlers = map[int]handler{
 	318: loggedIn(handleCancelTyping),
 	319: loggedIn(handleIgnoreUser),
 	321: loggedIn(handleGetIgnoreList),
+	320: loggedIn(handleBanUser),
 	322: loggedIn(handleUnignoreUser),
 }
 
@@ -453,6 +458,43 @@ func handleGetIgnoreList(s *session, me habbo.Habbo, _ []byte) {
 		b = append(b, str(name)...)
 	}
 	s.reply(ignoreList, b)
+}
+
+// handleKickUser sends a habbo of the room, named by the body, walking out (plans/server decision 0079).
+func handleKickUser(s *session, me habbo.Habbo, body []byte) {
+	if name, ok := rawName(s, 95, body); ok {
+		game.Kick(me, name)
+	}
+}
+
+// handleBanUser bans a habbo of the room for game.roomBanMinutes and sends it walking out.
+func handleBanUser(s *session, me habbo.Habbo, body []byte) {
+	if name, ok := rawName(s, 320, body); ok {
+		s.ruled(game.Ban(context.Background(), s.db, me, name))
+	}
+}
+
+// handleAssignRights and handleRemoveRights give and take a habbo's rights in the owner's room: the habbo gets 42 or
+// 43.
+func handleAssignRights(s *session, me habbo.Habbo, body []byte) {
+	if name, ok := rawName(s, 96, body); ok {
+		s.ruled(game.AssignRights(context.Background(), s.db, me, name))
+	}
+}
+
+func handleRemoveRights(s *session, me habbo.Habbo, body []byte) {
+	if name, ok := rawName(s, 97, body); ok {
+		s.ruled(game.RemoveRights(context.Background(), s.db, me, name))
+	}
+}
+
+func rawName(s *session, id int, body []byte) (string, bool) {
+	name, err := encoding.ReadRaw(bytes.NewReader(body))
+	if err != nil {
+		s.malformed(id, body)
+		return "", false
+	}
+	return name, true
 }
 
 // handleLetUserIn answers the doorbell of the habbo's room.

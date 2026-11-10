@@ -52,6 +52,9 @@ type Occupant struct {
 	Changed bool
 	// Typing reports whether the habbo types a line.
 	Typing bool
+	// Leaving reports whether the habbo walks out of the room, kicked or banned, and may walk nowhere else
+	// (plans/server decision 0079).
+	Leaving bool
 }
 
 func (o Occupant) clone() Occupant {

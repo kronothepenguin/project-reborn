@@ -215,6 +215,12 @@ func (s *session) Notify(event any) {
 		s.reply(flatNotAllowedToEnter, str(""))
 	case game.Kicked:
 		s.reply(clc, nil)
+	case game.RightsChanged:
+		if e.On {
+			s.reply(roomController, nil)
+		} else {
+			s.reply(roomNotController, nil)
+		}
 	case game.Chat:
 		s.sendChat(e)
 	case game.Typing:
