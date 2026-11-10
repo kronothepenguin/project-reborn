@@ -743,6 +743,17 @@ func (q *Queries) SetRoomPassword(ctx context.Context, arg SetRoomPasswordParams
 	return result.RowsAffected()
 }
 
+const sumCategoryMaxVisitors = `-- name: SumCategoryMaxVisitors :one
+SELECT CAST(COALESCE(SUM(max_visitors), 0) AS INTEGER) FROM rooms WHERE room_category_id = ?1
+`
+
+func (q *Queries) SumCategoryMaxVisitors(ctx context.Context, roomCategoryID int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, sumCategoryMaxVisitors, roomCategoryID)
+	var column_1 int64
+	err := row.Scan(&column_1)
+	return column_1, err
+}
+
 const updateRoomInfo = `-- name: UpdateRoomInfo :execrows
 UPDATE rooms SET name = ?1, door = ?2, show_owner = ?3, updated_at = ?4
 WHERE id = ?5 AND owner_avatar_id = ?6

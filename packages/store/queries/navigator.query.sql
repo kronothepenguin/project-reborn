@@ -22,6 +22,9 @@ FROM rooms
 JOIN avatars ON avatars.id = rooms.owner_avatar_id
 WHERE rooms.id = sqlc.arg(id);
 
+-- name: SumCategoryMaxVisitors :one
+SELECT CAST(COALESCE(SUM(max_visitors), 0) AS INTEGER) FROM rooms WHERE room_category_id = sqlc.arg(room_category_id);
+
 -- name: CountAvatarRooms :one
 SELECT COUNT(*) FROM rooms WHERE owner_avatar_id = sqlc.arg(avatar_id);
 

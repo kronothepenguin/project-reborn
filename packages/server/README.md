@@ -187,6 +187,26 @@ and `shared.go` for hh_shared.
   reload after they are applied loads it
   (`plans/server/decisions/0064-the-navigator-loads-once-the-updates-are-applied.md`).
 
+## The navigator
+
+`navigator.go` serves hh_navigator once the habbo is logged in, from the shared
+data of `virtual/category`, `virtual/model` and `virtual/room` and the store
+(`plans/server/reference/r26/hh_navigator.md`):
+
+| Command | Answer |
+| --- | --- |
+| `NAVIGATE` (150) | 220: the category, the categories right under it that the habbo may see, and its public rooms (type 1) or its habbo rooms (type 2), at most `game.categoryMaxRooms`, the busiest first. Node mask 1 leaves full rooms out. A category that does not exist or hides itself from the habbo's level gets no answer |
+| `GETUSERFLATCATS` (151) | 221: the categories of habbo rooms below the root that the habbo's level reaches |
+| `GETPARENTCHAIN` (156) | 227: the category and those above it, nearest first |
+| `GETSPACENODEUSERS` (154) | 223: the names of the habbos in a public room, none until S4 |
+
+- A public room's port is its id, as Holo gave it, which `#room_directory`
+  sends back to enter it; its door is 0.
+- A category counts the habbos in its rooms from memory, and the most its rooms
+  take: its public rooms' and its habbo rooms' `max_visitors`.
+- A habbo room that hides its owner shows `-`, except to its owner and to
+  holders of `fuse_see_all_roomowners`.
+
 ## Keeping the session alive
 
 Every session, from `HELLO` on, is pinged

@@ -2,6 +2,9 @@
 
 ## 2026-11-10
 
+- **Done** [s3-03](/tasks/s3-03-browsing.md): `NAVIGATE` lists a category with its sub-categories and its public rooms
+  or habbo rooms, and `GETUSERFLATCATS`, `GETPARENTCHAIN` and `GETSPACENODEUSERS` answer.
+- **Start** [s3-03](/tasks/s3-03-browsing.md).
 - **Done** [s3-02](/tasks/s3-02-navigator-state.md): `virtual/category`, `virtual/model` and `virtual/room` hold the
   navigator's shared data, which `server.New` loads at once or once the updates waiting are applied.
 - **Decision** [0064](/decisions/0064-the-navigator-loads-once-the-updates-are-applied.md): the game server starts while

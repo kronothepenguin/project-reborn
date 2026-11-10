@@ -58,3 +58,11 @@ func TestChildrenReturnsACopy(t *testing.T) {
 		t.Error("Children returns the tree's own slice")
 	}
 }
+
+func TestAllListsEveryCategoryByID(t *testing.T) {
+	load(t)
+	got := ids(All())
+	if len(got) != 15 || got[0] != 2 || got[len(got)-1] != 29 || !slices.IsSorted(got) {
+		t.Errorf("All() = %v, want the 15 categories by id", got)
+	}
+}

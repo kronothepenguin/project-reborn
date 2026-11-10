@@ -3,6 +3,7 @@
 package category
 
 import (
+	"cmp"
 	"context"
 	"database/sql"
 	"fmt"
@@ -45,6 +46,20 @@ func Get(id int64) (store.RoomCategory, bool) {
 	}
 	c, ok := t.byID[id]
 	return c, ok
+}
+
+// All returns every category, by id.
+func All() []store.RoomCategory {
+	t := current.Load()
+	if t == nil {
+		return nil
+	}
+	all := make([]store.RoomCategory, 0, len(t.byID))
+	for _, c := range t.byID {
+		all = append(all, c)
+	}
+	slices.SortFunc(all, func(a, b store.RoomCategory) int { return cmp.Compare(a.ID, b.ID) })
+	return all
 }
 
 // Children returns the categories right under id, by id.

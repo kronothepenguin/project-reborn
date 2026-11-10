@@ -4,7 +4,7 @@ title: navigator.query.sql
 description: Navigator operations: the categories, models and public rooms; a habbo's rooms, a category's, a search and random ones; creating, changing and deleting a room; and a habbo's favourite rooms.
 resource: packages/store/queries/navigator.query.sql
 tags: [store, query, navigator]
-timestamp: 2026-11-10T03:49:22+00:00
+timestamp: 2026-11-10T11:43:55+00:00
 ---
 
 # Operations
@@ -43,6 +43,14 @@ timestamp: 2026-11-10T03:49:22+00:00
 - Inputs: `id`
 - Result: the room and its owner's name; not found when there is none
 - Tables: `rooms`, `avatars`
+
+## SumCategoryMaxVisitors
+
+- Cardinality: `:one`
+- Inputs: `room_category_id`
+- Result: how many visitors the category's habbo rooms take together, 0 for none; the navigator shows it beside the
+  category
+- Tables: `rooms`
 
 ## CountAvatarRooms
 
