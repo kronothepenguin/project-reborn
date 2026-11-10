@@ -144,7 +144,7 @@ func listCategory(ctx context.Context, q *store.Queries, c store.RoomCategory) (
 // fuse_see_all_roomowners (plans/server decision 0045).
 func listFlat(viewer habbo.Habbo, r store.GetRoomRow) FlatListing {
 	owner := r.OwnerName
-	if !r.ShowOwner && r.OwnerAvatarID != viewer.ID && !slices.Contains(viewer.Fuses, "fuse_see_all_roomowners") {
+	if !r.ShowOwner && r.OwnerAvatarID != viewer.ID && !seesHiddenOwners(viewer) {
 		owner = hiddenOwner
 	}
 	return FlatListing{

@@ -148,7 +148,7 @@ func TestSearchRoomsMatchesTheNameOrTheOwner(t *testing.T) {
 		owner int64
 		name  string
 	}{{frank.ID, "Party Hall"}, {frank.ID, "100% fun"}, {frank.ID, "Quiet"}, {party.ID, "Lounge"}} {
-		must(q.CreateRoom(ctx, CreateRoomParams{AvatarID: room.owner, RoomCategoryID: 2, RoomModelID: 1, Name: room.name, Door: "open", CreatedAt: testNow}))
+		must(q.CreateRoom(ctx, CreateRoomParams{AvatarID: room.owner, RoomCategoryID: 2, RoomModelID: 1, Name: room.name, Door: "open", ShowOwner: true, CreatedAt: testNow}))
 	}
 
 	names := func(rows []SearchRoomsRow) []string {
@@ -169,5 +169,32 @@ func TestSearchRoomsMatchesTheNameOrTheOwner(t *testing.T) {
 	}
 	if got := must(q.SearchRooms(ctx, SearchRoomsParams{NamePattern: "%", OwnerName: "", MaxRooms: 2})); len(got) != 2 {
 		t.Errorf("a search capped at 2 found %d rooms", len(got))
+	}
+}
+
+// A room that hides its owner never comes up in a search for the owner's name, except for the owner and for a viewer
+// who sees hidden owners; its own name still finds it.
+func TestASearchNeverGivesAHiddenOwnerAway(t *testing.T) {
+	db := openTestDB(t)
+	q := New(db)
+	ctx := t.Context()
+	_, shy := createUserWithHabbo(t, q, "shy@example.com", "Shy")
+	_, other := createUserWithHabbo(t, q, "other@example.com", "Other")
+	must(q.CreateRoom(ctx, CreateRoomParams{AvatarID: shy.ID, RoomCategoryID: 2, RoomModelID: 1, Name: "Hideout", Door: "open", ShowOwner: false, CreatedAt: testNow}))
+
+	search := func(viewer int64, seeHidden int64, owner, pattern string) int {
+		return len(must(q.SearchRooms(ctx, SearchRoomsParams{OwnerName: owner, ViewerAvatarID: viewer, SeeHiddenOwners: seeHidden, NamePattern: pattern, MaxRooms: 30})))
+	}
+	if n := search(other.ID, 0, "Shy", "%Shy%"); n != 0 {
+		t.Errorf("a search for Shy found %d rooms of Shy's that hide their owner", n)
+	}
+	if n := search(other.ID, 0, "Hideout", "%Hideout%"); n != 1 {
+		t.Errorf("a search for the room's name found %d rooms, want 1", n)
+	}
+	if n := search(shy.ID, 0, "Shy", "%Shy%"); n != 1 {
+		t.Errorf("Shy's search for its own name found %d rooms, want its room", n)
+	}
+	if n := search(other.ID, 1, "Shy", "%Shy%"); n != 1 {
+		t.Errorf("a viewer who sees hidden owners found %d rooms, want 1", n)
 	}
 }

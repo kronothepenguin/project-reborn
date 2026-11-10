@@ -3,6 +3,8 @@ package r26
 import (
 	"bytes"
 	"context"
+	"strconv"
+	"strings"
 
 	"github.com/kronothepenguin/project-reborn/packages/server/encoding"
 	"github.com/kronothepenguin/project-reborn/packages/server/game"
@@ -13,10 +15,15 @@ import (
 
 // The messages of hh_navigator the server sends (plans/server/reference/r26/hh_navigator.md).
 const (
-	navNodeInfo    = 220
-	userFlatCats   = 221
-	spaceNodeUsers = 223
-	parentChain    = 227
+	ownFlats            = 16
+	searchResults       = 55
+	noOwnFlats          = 57
+	noFlats             = 58
+	navNodeInfo         = 220
+	userFlatCats        = 221
+	spaceNodeUsers      = 223
+	parentChain         = 227
+	recommendedRoomList = 351
 )
 
 // The types of the navigator's nodes.
@@ -50,6 +57,9 @@ var navigatorCommands = map[int]string{
 
 // navigatorHandlers handles hh_navigator's commands, which the client sends once its habbo is logged in.
 var navigatorHandlers = map[int]handler{
+	16:  loggedIn(handleGetOwnFlats),
+	17:  loggedIn(handleSearchFlats),
+	264: loggedIn(handleGetRecommendedRooms),
 	150: loggedIn(handleNavigate),
 	151: loggedIn(handleGetUserFlatCats),
 	154: loggedIn(handleGetSpaceNodeUsers),
@@ -174,6 +184,81 @@ func handleGetSpaceNodeUsers(s *session, _ habbo.Habbo, body []byte) {
 	b.Write(vl64(int(id)))
 	b.Write(vl64(0))
 	s.reply(spaceNodeUsers, b.Bytes())
+}
+
+// handleGetOwnFlats sends the habbo's own rooms, or 57 when it has none. The client sends its habbo's name, and the
+// session's habbo is the one whose rooms it gets.
+func handleGetOwnFlats(s *session, me habbo.Habbo, _ []byte) {
+	flats, err := game.OwnRooms(context.Background(), s.db, me)
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	if len(flats) == 0 {
+		s.reply(noOwnFlats, nil)
+		return
+	}
+	s.reply(ownFlats, flatLines(flats))
+}
+
+// handleSearchFlats sends the rooms whose name holds the query or whose owner it names, or 58 when none does.
+func handleSearchFlats(s *session, me habbo.Habbo, body []byte) {
+	if len(body) == 0 {
+		s.reply(noFlats, nil)
+		return
+	}
+	flats, err := game.SearchRooms(context.Background(), s.db, me, string(body))
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	if len(flats) == 0 {
+		s.reply(noFlats, nil)
+		return
+	}
+	s.reply(searchResults, flatLines(flats))
+}
+
+// handleGetRecommendedRooms sends three habbo rooms drawn at random (plans/server decision 0057).
+func handleGetRecommendedRooms(s *session, me habbo.Habbo, _ []byte) {
+	flats, err := game.RecommendedRooms(context.Background(), s.db, me)
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	var b bytes.Buffer
+	if err := writeFlats(&b, flats); err != nil {
+		s.fail(err)
+		return
+	}
+	s.reply(recommendedRoomList, b.Bytes())
+}
+
+// flatLines writes habbo rooms as 16 and 55 carry them: a line each, ended by a carriage return, of nine items
+// separated by tabs. The port and the filter are x and null, as Holo wrote them: the client keeps both and reads
+// neither.
+func flatLines(flats []game.FlatListing) []byte {
+	var b strings.Builder
+	for _, f := range flats {
+		items := []string{
+			strconv.FormatInt(f.ID, 10), oneLine(f.Name), oneLine(f.Owner), f.Door, "x",
+			strconv.Itoa(f.Visitors), strconv.Itoa(f.MaxVisitors), "null", oneLine(f.Description),
+		}
+		b.WriteString(strings.Join(items, "\t"))
+		b.WriteByte('\r')
+	}
+	return []byte(b.String())
+}
+
+// oneLine turns the control characters of a text into spaces, so that a tab or a line break never splits a line of
+// 16 or 55.
+func oneLine(text string) string {
+	return strings.Map(func(r rune) rune {
+		if r < ' ' {
+			return ' '
+		}
+		return r
+	}, text)
 }
 
 // writeNode writes the fields every node starts with.

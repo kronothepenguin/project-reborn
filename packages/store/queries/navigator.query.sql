@@ -43,13 +43,18 @@ WHERE rooms.room_category_id = sqlc.arg(room_category_id)
 ORDER BY rooms.id
 LIMIT sqlc.arg(max_rooms);
 
--- The pattern escapes %, _ and ! with !, so that a query finds those characters as they are. sqlc leaves the
--- arguments after an ESCAPE clause unbound, so the LIKE comes last.
+-- A room that hides its owner matches the owner's name only for that owner, or for a viewer who sees hidden owners
+-- (see_hidden_owners, 1), so a search never gives the owner away. The pattern escapes %, _ and ! with !, so that a
+-- query finds those characters as they are. sqlc leaves the arguments after an ESCAPE clause unbound, so the LIKE
+-- comes last.
 -- name: SearchRooms :many
 SELECT rooms.*, avatars.name AS owner_name
 FROM rooms
 JOIN avatars ON avatars.id = rooms.owner_avatar_id
-WHERE avatars.name = CAST(sqlc.arg(owner_name) AS TEXT) OR (rooms.name LIKE CAST(sqlc.arg(name_pattern) AS TEXT) ESCAPE '!')
+WHERE (
+    avatars.name = CAST(sqlc.arg(owner_name) AS TEXT)
+    AND (rooms.show_owner OR rooms.owner_avatar_id = sqlc.arg(viewer_avatar_id) OR CAST(sqlc.arg(see_hidden_owners) AS INTEGER) = 1)
+) OR (rooms.name LIKE CAST(sqlc.arg(name_pattern) AS TEXT) ESCAPE '!')
 ORDER BY rooms.id
 LIMIT sqlc.arg(max_rooms);
 

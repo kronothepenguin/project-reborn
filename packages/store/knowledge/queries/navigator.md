@@ -4,7 +4,7 @@ title: navigator.query.sql
 description: Navigator operations: the categories, models and public rooms; a habbo's rooms, a category's, a search and random ones; creating, changing and deleting a room; and a habbo's favourite rooms.
 resource: packages/store/queries/navigator.query.sql
 tags: [store, query, navigator]
-timestamp: 2026-11-10T11:43:55+00:00
+timestamp: 2026-11-10T11:48:45+00:00
 ---
 
 # Operations
@@ -76,8 +76,10 @@ timestamp: 2026-11-10T11:43:55+00:00
 ## SearchRooms
 
 - Cardinality: `:many`
-- Inputs: `owner_name`, `name_pattern`, `max_rooms`
-- Result: the rooms whose owner has that name, without case, or whose name is LIKE the pattern, which escapes `%`, `_` and `!` with `!`; by id, at most `max_rooms`
+- Inputs: `owner_name`, `viewer_avatar_id`, `see_hidden_owners`, `name_pattern`, `max_rooms`
+- Result: the rooms whose owner has that name, without case, or whose name is LIKE the pattern, which escapes `%`, `_`
+  and `!` with `!`; by id, at most `max_rooms`. A room that hides its owner matches the owner's name only for the owner
+  and when `see_hidden_owners` is 1, so a search never gives the owner away
 - Tables: `rooms`, `avatars`
 
 ## ListRandomRooms

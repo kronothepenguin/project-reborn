@@ -199,13 +199,21 @@ data of `virtual/category`, `virtual/model` and `virtual/room` and the store
 | `GETUSERFLATCATS` (151) | 221: the categories of habbo rooms below the root that the habbo's level reaches |
 | `GETPARENTCHAIN` (156) | 227: the category and those above it, nearest first |
 | `GETSPACENODEUSERS` (154) | 223: the names of the habbos in a public room, none until S4 |
+| `SUSERF` (16) | 16: the habbo's own rooms, as lines of text; 57 when it has none. The session's habbo is the one listed, whatever name the client sends |
+| `SRCHF` (17) | 55: the rooms whose name holds the query or whose owner it names, at most `game.searchMaxRooms`; 58 when none matches |
+| `GET_RECOMMENDED_ROOMS` (264) | 351: three habbo rooms drawn at random (`plans/server/decisions/0057-three-random-recommended-rooms.md`) |
 
 - A public room's port is its id, as Holo gave it, which `#room_directory`
   sends back to enter it; its door is 0.
 - A category counts the habbos in its rooms from memory, and the most its rooms
   take: its public rooms' and its habbo rooms' `max_visitors`.
 - A habbo room that hides its owner shows `-`, except to its owner and to
-  holders of `fuse_see_all_roomowners`.
+  holders of `fuse_see_all_roomowners`. A search for the owner's name
+  never finds such a room for anyone else.
+- 16 and 55 carry a room per line, ended by a carriage return: nine items
+  separated by tabs, with `x` for the port and `null` for the filter, as Holo
+  wrote them, and the control characters of a name or a description turned into
+  spaces.
 
 ## Keeping the session alive
 

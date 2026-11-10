@@ -623,15 +623,20 @@ const searchRooms = `-- name: SearchRooms :many
 SELECT rooms.id, rooms.creator_avatar_id, rooms.owner_avatar_id, rooms.room_category_id, rooms.room_model_id, rooms.name, rooms.description, rooms.door, rooms.password_hash, rooms.show_owner, rooms.others_move_furni, rooms.max_visitors, rooms.created_at, rooms.updated_at, avatars.name AS owner_name
 FROM rooms
 JOIN avatars ON avatars.id = rooms.owner_avatar_id
-WHERE avatars.name = CAST(?1 AS TEXT) OR (rooms.name LIKE CAST(?2 AS TEXT) ESCAPE '!')
+WHERE (
+    avatars.name = CAST(?1 AS TEXT)
+    AND (rooms.show_owner OR rooms.owner_avatar_id = ?2 OR CAST(?3 AS INTEGER) = 1)
+) OR (rooms.name LIKE CAST(?4 AS TEXT) ESCAPE '!')
 ORDER BY rooms.id
-LIMIT ?3
+LIMIT ?5
 `
 
 type SearchRoomsParams struct {
-	OwnerName   string
-	NamePattern string
-	MaxRooms    int64
+	OwnerName       string
+	ViewerAvatarID  int64
+	SeeHiddenOwners int64
+	NamePattern     string
+	MaxRooms        int64
 }
 
 type SearchRoomsRow struct {
@@ -652,10 +657,18 @@ type SearchRoomsRow struct {
 	OwnerName       string
 }
 
-// The pattern escapes %, _ and ! with !, so that a query finds those characters as they are. sqlc leaves the
-// arguments after an ESCAPE clause unbound, so the LIKE comes last.
+// A room that hides its owner matches the owner's name only for that owner, or for a viewer who sees hidden owners
+// (see_hidden_owners, 1), so a search never gives the owner away. The pattern escapes %, _ and ! with !, so that a
+// query finds those characters as they are. sqlc leaves the arguments after an ESCAPE clause unbound, so the LIKE
+// comes last.
 func (q *Queries) SearchRooms(ctx context.Context, arg SearchRoomsParams) ([]SearchRoomsRow, error) {
-	rows, err := q.db.QueryContext(ctx, searchRooms, arg.OwnerName, arg.NamePattern, arg.MaxRooms)
+	rows, err := q.db.QueryContext(ctx, searchRooms,
+		arg.OwnerName,
+		arg.ViewerAvatarID,
+		arg.SeeHiddenOwners,
+		arg.NamePattern,
+		arg.MaxRooms,
+	)
 	if err != nil {
 		return nil, err
 	}

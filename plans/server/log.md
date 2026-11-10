@@ -2,6 +2,9 @@
 
 ## 2026-11-10
 
+- **Done** [s3-04](/tasks/s3-04-room-lists.md): `SUSERF`, `SRCHF` and `GET_RECOMMENDED_ROOMS` list a habbo's own rooms,
+  a search, at most 30, and three random rooms, and a search never gives a hidden owner away.
+- **Start** [s3-04](/tasks/s3-04-room-lists.md).
 - **Done** [s3-03](/tasks/s3-03-browsing.md): `NAVIGATE` lists a category with its sub-categories and its public rooms
   or habbo rooms, and `GETUSERFLATCATS`, `GETPARENTCHAIN` and `GETSPACENODEUSERS` answer.
 - **Start** [s3-03](/tasks/s3-03-browsing.md).
