@@ -191,3 +191,43 @@ func TestSearchingTheChatLog(t *testing.T) {
 		t.Errorf("the second page holds %v", texts(got))
 	}
 }
+
+// The client's badge window sets every slot at once; the site wears one badge in slot 1, in place of the one there,
+// and shows the badge of the first slot filled (plans/server decision 0083).
+func TestBadgeSlots(t *testing.T) {
+	q := New(openTestDB(t))
+	ctx := t.Context()
+	_, habbo := createUserWithHabbo(t, q, "badges@example.com", "Badger")
+	for _, code := range []string{"ADM", "HC1", "NWB"} {
+		if _, err := q.GrantAvatarBadge(ctx, GrantAvatarBadgeParams{AvatarID: habbo.ID, Code: code, GrantedAt: testNow}); err != nil && !IsConflict(err) {
+			t.Fatal(err)
+		}
+		if err := q.TakeOffAvatarBadge(ctx, habbo.ID); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := q.TakeOffAvatarBadges(ctx, habbo.ID); err != nil {
+		t.Fatal(err)
+	}
+	for code, slot := range map[string]int64{"NWB": 2, "HC1": 4} {
+		if n := must(q.WearAvatarBadgeInSlot(ctx, WearAvatarBadgeInSlotParams{AvatarID: habbo.ID, Code: code, Slot: slot})); n != 1 {
+			t.Errorf("wore %s in %d rows", code, n)
+		}
+	}
+	if worn := must(q.GetWornAvatarBadge(ctx, habbo.ID)); worn.Code != "NWB" {
+		t.Errorf("the site shows %s, want NWB, in the first slot filled", worn.Code)
+	}
+	if err := q.TakeOffAvatarBadge(ctx, habbo.ID); err != nil {
+		t.Fatal(err)
+	}
+	if err := q.WearAvatarBadge(ctx, WearAvatarBadgeParams{AvatarID: habbo.ID, Code: "ADM"}); err != nil {
+		t.Fatal(err)
+	}
+	slots := map[string]int64{}
+	for _, b := range must(q.ListAvatarBadges(ctx, habbo.ID)) {
+		slots[b.Code] = b.Slot
+	}
+	if slots["ADM"] != 1 || slots["NWB"] != 2 || slots["HC1"] != 4 {
+		t.Errorf("slots %v, want ADM in 1 and the others kept", slots)
+	}
+}

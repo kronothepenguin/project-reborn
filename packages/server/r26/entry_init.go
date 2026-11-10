@@ -235,7 +235,8 @@ func handleGetCredits(s *session, me habbo.Habbo, _ []byte) {
 	s.reply(purse, []byte(strconv.FormatInt(account.Credits, 10)))
 }
 
-// handleGetAvailableBadges sends the habbo's badges, and the one it wears in slot 1: a habbo wears one badge at most.
+// handleGetAvailableBadges sends the habbo's badges, then those it wears, each with its slot, 1 to 5 (plans/server
+// decision 0083).
 func handleGetAvailableBadges(s *session, me habbo.Habbo, _ []byte) {
 	var b bytes.Buffer
 	b.Write(vl64(len(me.Badges)))
@@ -245,17 +246,21 @@ func handleGetAvailableBadges(s *session, me habbo.Habbo, _ []byte) {
 			return
 		}
 	}
-	if me.Worn == "" {
-		b.Write(vl64(0))
-	} else {
-		b.Write(vl64(1))
-		b.Write(vl64(1))
-		if err := encoding.WriteString(&b, me.Worn); err != nil {
-			s.fail(err)
-			return
+	b.Write(wornBadges(me.Worn))
+	s.reply(availableBadges, b.Bytes())
+}
+
+// wornBadges writes the badges a habbo wears as 229 and 228 carry them: their count, then each one's slot and code.
+func wornBadges(worn [5]string) []byte {
+	var b []byte
+	n := 0
+	for i, code := range worn {
+		if code != "" {
+			b = append(append(b, vl64(i+1)...), str(code)...)
+			n++
 		}
 	}
-	s.reply(availableBadges, b.Bytes())
+	return append(vl64(n), b...)
 }
 
 func handleGetSoundSetting(s *session, me habbo.Habbo, _ []byte) {

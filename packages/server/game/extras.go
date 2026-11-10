@@ -255,3 +255,46 @@ func UserTags(ctx context.Context, db *sql.DB, avatarID int64) ([]string, error)
 	}
 	return tags, nil
 }
+
+// BadgesChanged tells the habbos in a room the badges a habbo now wears, by slot.
+type BadgesChanged struct {
+	AvatarID int64
+	Worn     [5]string
+}
+
+// SetBadges wears the viewer's badges in the five slots its client's badge window sets (SETBADGE), each a badge it
+// has, once, in the first slot that names it, or none: saved, then the online habbo's copy, and the room it is in gets
+// BadgesChanged (plans/server decision 0083).
+func SetBadges(ctx context.Context, db *sql.DB, viewer habbo.Habbo, slots [5]string) error {
+	var worn [5]string
+	for i, code := range slots {
+		if code != "" && slices.Contains(viewer.Badges, code) && !slices.Contains(worn[:], code) {
+			worn[i] = code
+		}
+	}
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("game: set badges: %w", err)
+	}
+	defer tx.Rollback()
+	q := store.New(tx)
+	if err := q.TakeOffAvatarBadges(ctx, viewer.ID); err != nil {
+		return fmt.Errorf("game: set badges: %w", err)
+	}
+	for i, code := range worn {
+		if code == "" {
+			continue
+		}
+		if _, err := q.WearAvatarBadgeInSlot(ctx, store.WearAvatarBadgeInSlotParams{AvatarID: viewer.ID, Code: code, Slot: int64(i + 1)}); err != nil {
+			return fmt.Errorf("game: set badges: %w", err)
+		}
+	}
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("game: set badges: %w", err)
+	}
+	habbo.Update(viewer.ID, viewer.Session, func(h *habbo.Habbo) { h.Worn = worn })
+	if r, ok := room.In(viewer.ID); ok {
+		notify(r.Occupants(), BadgesChanged{AvatarID: viewer.ID, Worn: worn})
+	}
+	return nil
+}

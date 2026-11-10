@@ -312,7 +312,7 @@ func (r *Router) newHabboPage(req *http.Request, avatar store.Avatar) (habboPage
 		return page, err
 	}
 	for _, badge := range badges {
-		page.Badges = append(page.Badges, badgeRow{Code: badge.Code, Worn: badge.Worn})
+		page.Badges = append(page.Badges, badgeRow{Code: badge.Code, Worn: badge.Slot > 0})
 	}
 	if !page.Private {
 		return page, nil

@@ -14,16 +14,18 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_avatars_name ON avatars(name);
 
 CREATE INDEX IF NOT EXISTS idx_avatars_user_id ON avatars(user_id);
 
+-- slot is where the habbo wears the badge, 1 to 5 as the R26 client's badge window sets them, or 0 when it does not
+-- wear it (plans/server decision 0083).
 CREATE TABLE IF NOT EXISTS avatar_badges (
     avatar_id INTEGER NOT NULL REFERENCES avatars(id) ON DELETE CASCADE,
     code TEXT NOT NULL,
-    worn BOOLEAN NOT NULL DEFAULT FALSE,
+    slot INTEGER NOT NULL DEFAULT 0 CHECK (slot BETWEEN 0 AND 5),
     granted_at DATETIME NOT NULL,
     PRIMARY KEY (avatar_id, code)
 );
 
--- A habbo wears at most one badge.
-CREATE UNIQUE INDEX IF NOT EXISTS idx_avatar_badges_avatar_id_worn ON avatar_badges(avatar_id) WHERE worn;
+-- A habbo wears one badge at most in each slot.
+CREATE UNIQUE INDEX IF NOT EXISTS idx_avatar_badges_avatar_id_slot ON avatar_badges(avatar_id, slot) WHERE slot > 0;
 
 CREATE TABLE IF NOT EXISTS wardrobe_outfits (
     avatar_id INTEGER NOT NULL REFERENCES avatars(id) ON DELETE CASCADE,

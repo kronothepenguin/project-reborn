@@ -78,7 +78,7 @@ func badgesOf(t *testing.T, db *sql.DB, avatarID int64) map[string]bool {
 	}
 	badges := map[string]bool{}
 	for _, b := range rows {
-		badges[b.Code] = b.Worn
+		badges[b.Code] = b.Slot > 0
 	}
 	return badges
 }

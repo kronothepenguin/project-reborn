@@ -96,33 +96,45 @@ SELECT * FROM avatar_badges
 WHERE avatar_id = sqlc.arg(avatar_id)
 ORDER BY granted_at, code;
 
--- A habbo wears one badge, so this comes before wearing another.
+-- The site wears one badge, in slot 1, in place of the one there, so this comes before wearing another; the other
+-- slots keep theirs.
 -- name: TakeOffAvatarBadge :exec
-UPDATE avatar_badges SET worn = FALSE
-WHERE avatar_id = sqlc.arg(avatar_id) AND worn;
+UPDATE avatar_badges SET slot = 0
+WHERE avatar_id = sqlc.arg(avatar_id) AND slot = 1;
 
 -- name: GrantAvatarBadge :execrows
-INSERT INTO avatar_badges (avatar_id, code, worn, granted_at)
-VALUES (sqlc.arg(avatar_id), sqlc.arg(code), TRUE, sqlc.arg(granted_at))
+INSERT INTO avatar_badges (avatar_id, code, slot, granted_at)
+VALUES (sqlc.arg(avatar_id), sqlc.arg(code), 1, sqlc.arg(granted_at))
 ON CONFLICT (avatar_id, code) DO NOTHING;
 
 -- name: WearAvatarBadge :exec
-UPDATE avatar_badges SET worn = TRUE
+UPDATE avatar_badges SET slot = 1
+WHERE avatar_id = sqlc.arg(avatar_id) AND code = sqlc.arg(code);
+
+-- The client's badge window sets every slot at once, so its badges come off first.
+-- name: TakeOffAvatarBadges :exec
+UPDATE avatar_badges SET slot = 0
+WHERE avatar_id = sqlc.arg(avatar_id) AND slot > 0;
+
+-- name: WearAvatarBadgeInSlot :execrows
+UPDATE avatar_badges SET slot = sqlc.arg(slot)
 WHERE avatar_id = sqlc.arg(avatar_id) AND code = sqlc.arg(code);
 
 -- name: DeleteAvatarBadge :execrows
 DELETE FROM avatar_badges
 WHERE avatar_id = sqlc.arg(avatar_id) AND code = sqlc.arg(code);
 
+-- The site shows one badge: the one in the first slot the habbo fills.
 -- name: GetWornAvatarBadge :one
 SELECT * FROM avatar_badges
-WHERE avatar_id = sqlc.arg(avatar_id) AND worn;
+WHERE avatar_id = sqlc.arg(avatar_id) AND slot > 0
+ORDER BY slot
+LIMIT 1;
 
--- Unworn, because a habbo wears one badge; archived habbos are still the user's and
--- get it too.
+-- Unworn; archived habbos are still the user's and get it too.
 -- name: GrantBadgeToUserAvatars :execrows
-INSERT INTO avatar_badges (avatar_id, code, worn, granted_at)
-SELECT avatars.id, sqlc.arg(code), FALSE, sqlc.arg(granted_at)
+INSERT INTO avatar_badges (avatar_id, code, slot, granted_at)
+SELECT avatars.id, sqlc.arg(code), 0, sqlc.arg(granted_at)
 FROM avatars
 WHERE avatars.user_id = sqlc.arg(user_id)
 ON CONFLICT (avatar_id, code) DO NOTHING;

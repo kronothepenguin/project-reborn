@@ -56,8 +56,8 @@ func Login(ctx context.Context, db *sql.DB, s Session, ticket, machineID string)
 	}
 	for _, badge := range badges {
 		h.Badges = append(h.Badges, badge.Code)
-		if badge.Worn {
-			h.Worn = badge.Code
+		if badge.Slot >= 1 && badge.Slot <= 5 {
+			h.Worn[badge.Slot-1] = badge.Code
 		}
 	}
 	if h.Group, err = favouriteGroup(ctx, q, avatarID); err != nil {

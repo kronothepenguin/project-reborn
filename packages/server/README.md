@@ -175,7 +175,7 @@ and `shared.go` for hh_shared.
 | --- | --- |
 | `GET_INFO` (7) | The user object (5): the habbo's id, name, figure, gender and motto, the user's tickets, an empty pool figure, the user's film, and 1 for direct mail when the user takes the newsletter |
 | `GET_CREDITS` (8) | hh_cat_code's purse (6): the user's credits as text |
-| `GETAVAILABLEBADGES` (157) | 229: the habbo's badges, and the one it wears in slot 1 |
+| `GETAVAILABLEBADGES` (157) | 229: the habbo's badges, then those it wears, each with its slot, 1 to 5 (`plans/server/decisions/0083-a-habbo-wears-five-badges-in-slots.md`) |
 | `GET_SOUND_SETTING` (228) | 308: 1 when the sound is on, 0 when off |
 | `SET_SOUND_SETTING` (229) | Nothing: `game.SetSoundEnabled` saves it, 0 off and any other value on |
 | `GET_POSSIBLE_ACHIEVEMENTS` (370) | 436 with no achievement (`plans/server/decisions/0051-no-achievements-yet.md`) |
@@ -285,10 +285,11 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
 | `GET_GROUP_BADGES` (230) | 309: the favourite groups the room's habbos show, by id, with their badges (`plans/server/decisions/0068-a-habbo-shows-its-favourite-groups-badge.md`) |
 | `GET_GROUP_DETAILS` (231) | 311: the group's name and description, and -1 and an empty name for its room, which groups have not; -1 alone for a group that does not exist |
 | `GET_USER_TAGS` (263) | 350: the habbo's id and the tags of its profile on the site |
+| `SETBADGE` (158) | Five times a slot and a code, empty for none: the habbo wears each badge it has, once, in the first slot that names it, saved; the room gets 228 with its web id and the badges it wears with their slots |
 
 - A user line is `i` the index, `a` the habbo's id, `n` the name, `f` the
-  figure, `l` the place, `c` the motto, `s` the sex and `b` the worn badge in
-  slot 1, as Holo wrote them, then `g` the favourite group and `t` the habbo's
+  figure, `l` the place, `c` the motto, `s` the sex and `b` the badges it wears,
+  `<slot>:<code>` comma-separated, as Holo wrote them, then `g` the favourite group and `t` the habbo's
   status in it, 1 owner, 2 admin, 3 member, as the client's Group Info class
   reads them; each line ended by a carriage return, which no value may hold.
   The online habbo keeps its favourite group from its login. A status line is `<index> <x>,<y>,<height>,<head>,<body>/`,
@@ -326,8 +327,7 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
   chat or a shout with a smiley shows its face for 5 s, `gest sml`, `agr`, `sad`
   or `srp`, as Holo's `checkEmotion` found them. The room's clock ends each
   timed status on its tick and sends the change.
-- Five badge slots (`SETBADGE`) and the queue with the spectators come with
-  s4-11 and s4-12.
+- The queue with the spectators comes with s4-12.
 
 ## Keeping the session alive
 
@@ -397,6 +397,7 @@ client through its `Session` (`plans/server/decisions/0039-rules-notify-sessions
 - Rights: `AssignRights`, `RemoveRights` and `RemoveAllRights` send
   `RightsChanged`; `Kick` and `Ban` send a habbo walking out, and the room's
   clock sends it `Kicked` and takes it out once it stops.
+- Badges: `SetBadges` saves the five slots and sends `BadgesChanged`.
 - Extras: `RoomRating` and `RateRoom` with `RatingChanged`; `CanHostEvent`,
   `HostEvent`, `EndEvent`, `RoomEvent`, `Events` and `EventTypes` with
   `RoomEventChanged`; `GroupBadges`, `GroupDetails` and `UserTags`.

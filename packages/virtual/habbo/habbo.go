@@ -21,9 +21,10 @@ type Session interface {
 // the store first, then Update changes the copy.
 type Habbo struct {
 	store.Avatar
-	// Badges are the codes of the habbo's badges, and Worn the one it wears, empty when none.
+	// Badges are the codes of the habbo's badges, and Worn those it wears in its five slots, by slot, empty for none
+	// (plans/server decision 0083).
 	Badges       []string
-	Worn         string
+	Worn         [5]string
 	SoundEnabled bool
 	Fuses        []string
 	// Ignored are the avatar ids of the habbos whose chat it does not see, oldest first.

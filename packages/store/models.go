@@ -56,7 +56,7 @@ type Avatar struct {
 type AvatarBadge struct {
 	AvatarID  int64
 	Code      string
-	Worn      bool
+	Slot      int64
 	GrantedAt time.Time
 }
 

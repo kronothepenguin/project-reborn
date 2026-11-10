@@ -4,7 +4,7 @@ title: avatars.schema.sql
 description: Declares the habbo tables for avatars, their badges and their wardrobe outfits.
 resource: packages/store/schema/avatars.schema.sql
 tags: [store, schema, habbo]
-timestamp: 2026-11-09T23:20:00+00:00
+timestamp: 2026-11-10T20:23:05+00:00
 ---
 
 # Schema
@@ -15,7 +15,7 @@ timestamp: 2026-11-09T23:20:00+00:00
 | `idx_avatars_name` | unique index | One habbo per name, ignoring case |
 | `idx_avatars_user_id` | index | Habbos of a user |
 | [avatar_badges](/tables/avatar_badges.md) | table | Badges owned by a habbo |
-| `idx_avatar_badges_avatar_id_worn` | partial unique index | At most one worn badge per habbo |
+| `idx_avatar_badges_avatar_id_slot` | partial unique index | One badge at most in each of a habbo's five slots |
 | [wardrobe_outfits](/tables/wardrobe_outfits.md) | table | Saved outfits per wardrobe slot |
 | [avatar_game_data](/tables/avatar_game_data.md) | table | What the game server saves of a habbo |
 

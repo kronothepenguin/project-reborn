@@ -114,22 +114,28 @@ func TestUserEmailsAreUniqueIgnoringCase(t *testing.T) {
 	}
 }
 
-func TestHabboWearsAtMostOneBadge(t *testing.T) {
+// A habbo wears one badge at most in each of its five slots, and 0 is no slot (plans/server decision 0083).
+func TestHabboWearsOneBadgeASlot(t *testing.T) {
 	db := openTestDB(t)
 	ctx := t.Context()
 	_, avatarID := insertHabbo(t, db, "krono@example.com", "Krono")
 	now := time.Now().UTC()
 
-	if _, err := db.ExecContext(ctx, `INSERT INTO avatar_badges (avatar_id, code, worn, granted_at) VALUES (?, 'HC1', TRUE, ?)`, avatarID, now); err != nil {
-		t.Fatalf("insert worn badge: %v", err)
+	for i, badge := range []struct {
+		code string
+		slot int
+	}{{"HC1", 1}, {"ADM", 2}, {"NWB", 0}, {"XXX", 0}} {
+		if _, err := db.ExecContext(ctx, `INSERT INTO avatar_badges (avatar_id, code, slot, granted_at) VALUES (?, ?, ?, ?)`, avatarID, badge.code, badge.slot, now); err != nil {
+			t.Fatalf("badge %d: %v", i, err)
+		}
 	}
-	if _, err := db.ExecContext(ctx, `INSERT INTO avatar_badges (avatar_id, code, worn, granted_at) VALUES (?, 'ADM', ?, ?)`, avatarID, false, now); err != nil {
-		t.Fatalf("insert unworn badge: %v", err)
+	if _, err := db.ExecContext(ctx, `UPDATE avatar_badges SET slot = 1 WHERE avatar_id = ? AND code = 'NWB'`, avatarID); !IsConflict(err) {
+		t.Errorf("wearing a second badge in slot 1: err = %v, want a conflict", err)
 	}
-
-	_, err := db.ExecContext(ctx, `UPDATE avatar_badges SET worn = ? WHERE avatar_id = ? AND code = 'ADM'`, true, avatarID)
-	if !IsConflict(err) {
-		t.Fatalf("wearing a second badge: err = %v, want a conflict", err)
+	for _, slot := range []int{-1, 6} {
+		if _, err := db.ExecContext(ctx, `UPDATE avatar_badges SET slot = ? WHERE avatar_id = ? AND code = 'NWB'`, slot, avatarID); err == nil {
+			t.Errorf("slot %d was taken", slot)
+		}
 	}
 }
 

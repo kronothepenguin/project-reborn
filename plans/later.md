@@ -92,6 +92,17 @@ The user chose "Later, on its own (Recommended)": "No filter in S4. plans/later.
 that housekeeping edits, for one task that covers chat, room names and messages together. Example: in S4, chat shows
 exactly what was typed."
 
+## Five badges on the site
+
+A habbo wears up to five badges in slots, as the R26 client's badge window sets them
+([server 0083](server/decisions/0083-a-habbo-wears-five-badges-in-slots.md)). The site, from HoloCMS, shows one: the
+badge of the first slot a habbo fills, on homes, forum posts and the staff page, and its club purchase and
+housekeeping's badge tool wear a badge in slot 1, in place of the one there. Every phase of the port is done
+([holo-port 0072](holo-port/decisions/0072-later-work-in-plans-later.md)), so how the site shows the five waits here.
+
+The user chose "Five slots": "The store keeps a slot, 1 to 5, per worn badge; the site's badge page then needs a change
+(plans/holo-port) to show several. Example: choosing 3 badges in the client shows all 3 in rooms."
+
 ## Achievements
 
 The habbos have no achievements yet ([server 0051](server/decisions/0051-no-achievements-yet.md)): 436 lists none, the

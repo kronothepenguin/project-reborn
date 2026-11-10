@@ -265,14 +265,14 @@ func TestTheClubBadgeReachesEveryHabboOfTheUserOnly(t *testing.T) {
 		t.Errorf("HC1 went to %d habbos, want the 3 that lacked it", n)
 	}
 	for name, id := range map[string]int64{"Krono": buyer.ID, "KronoToo": plain, "KronoGone": archived} {
-		if b, ok := badgesOf(t, q, id)["HC1"]; !ok || b.Worn || !b.GrantedAt.Equal(later) {
+		if b, ok := badgesOf(t, q, id)["HC1"]; !ok || b.Slot != 0 || !b.GrantedAt.Equal(later) {
 			t.Errorf("%s's HC1 = %+v, %t; want it given unworn", name, b, ok)
 		}
 	}
-	if b := badgesOf(t, q, holder)["HC1"]; !b.Worn || !b.GrantedAt.Equal(testNow) {
+	if b := badgesOf(t, q, holder)["HC1"]; b.Slot != 1 || !b.GrantedAt.Equal(testNow) {
 		t.Errorf("the habbo that held HC1 has %+v, want it as it was", b)
 	}
-	if b := badgesOf(t, q, buyer.ID)["ADM"]; !b.Worn {
+	if b := badgesOf(t, q, buyer.ID)["ADM"]; b.Slot != 1 {
 		t.Errorf("the buyer's ADM = %+v, want it still worn until the buyer wears HC1", b)
 	}
 	if badges := badgesOf(t, q, stranger.ID); len(badges) != 0 {

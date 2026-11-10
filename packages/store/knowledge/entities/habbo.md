@@ -3,7 +3,7 @@ type: Entity
 title: Habbo
 description: An in-hotel identity owned by a user, with its name, look, motto, badges and wardrobe.
 tags: [store, entity, habbo]
-timestamp: 2026-11-10T16:46:21+00:00
+timestamp: 2026-11-10T20:23:05+00:00
 ---
 
 # Definition
@@ -16,7 +16,7 @@ motto. A user can own several habbos, which share the user's wallet, club member
 - The name is unique, ignoring case.
 - Gender is `M` or `F`.
 - The figure uses the dot format written by the v2 avatar editor (`hd-180-1.ch-215-82.lg-270-82`).
-- At most one badge is worn.
+- It wears up to five badges, one in each slot 1 to 5; the site shows the first slot filled.
 
 # Lifecycle
 

@@ -63,8 +63,8 @@ if ok {
 - `Session` is the interface every protocol's session implements, `Notify(event any)`, and `game.Session` is the same
   interface (`plans/server/decisions/0048-sessions-through-an-interface-virtual-declares.md`). Sessions are compared by
   identity, so a session is a pointer.
-- `Habbo` is what the login read of the habbo: its `store.Avatar`, its badges, the one it wears, its sound setting, its
-  ignore list, `Ignored`, its favourite `Group`, and its fuses
+- `Habbo` is what the login read of the habbo: its `store.Avatar`, its badges, those it wears in its five slots, `Worn`,
+  its sound setting, its ignore list, `Ignored`, its favourite `Group`, and its fuses
   (`plans/server/decisions/0053-the-online-habbo-holds-its-own-data.md`), and its `Session`. The wallet and the club,
   which the user's habbos share, stay in the store.
 - `Get(avatarID) (Habbo, bool)` returns a copy of an online habbo; changing the copy changes nothing online.

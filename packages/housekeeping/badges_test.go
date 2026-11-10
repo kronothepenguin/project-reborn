@@ -24,7 +24,7 @@ func wornBadges(t *testing.T, db *sql.DB, id int64) (all, worn []string) {
 	}
 	for _, badge := range badges {
 		all = append(all, badge.Code)
-		if badge.Worn {
+		if badge.Slot > 0 {
 			worn = append(worn, badge.Code)
 		}
 	}

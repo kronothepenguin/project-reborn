@@ -4,7 +4,7 @@ title: avatars.query.sql
 description: Habbo operations for creation, lookup by id or name, the habbos of a user and random habbos, their badges, a badge for every habbo of a user, their wardrobe outfits, and what the game server saves of a habbo at login and in play.
 resource: packages/store/queries/avatars.query.sql
 tags: [store, query, habbo]
-timestamp: 2026-11-09T23:20:00+00:00
+timestamp: 2026-11-10T20:23:05+00:00
 ---
 
 # Operations
@@ -111,27 +111,43 @@ timestamp: 2026-11-09T23:20:00+00:00
 
 - Cardinality: `:one`
 - Inputs: `avatar_id`
-- Result: the badge the habbo wears; not found when it wears none
+- Result: the badge the site shows: the one in the first slot the habbo fills; not found when it wears none
 - Tables: `avatar_badges`
 
 ## TakeOffAvatarBadge
 
 - Cardinality: `:exec`
 - Inputs: `avatar_id`
-- Result: the habbo wears no badge, which must come before wearing another, because a habbo wears one
+- Result: slot 1 is free: the site wears one badge, in slot 1, in place of the one there, so this comes before
+  `GrantAvatarBadge` or `WearAvatarBadge`; the other slots keep theirs
 - Tables: `avatar_badges`
 
 ## GrantAvatarBadge
 
 - Cardinality: `:execrows`
 - Inputs: `avatar_id`, `code`, `granted_at`
-- Result: 1 when the habbo got the badge, worn, and 0 when it already had it
+- Result: 1 when the habbo got the badge, worn in slot 1, and 0 when it already had it
 - Tables: `avatar_badges`
 
 ## WearAvatarBadge
 
 - Cardinality: `:exec`
 - Inputs: `avatar_id`, `code`
+- Result: the habbo wears the badge in slot 1
+- Tables: `avatar_badges`
+
+## TakeOffAvatarBadges
+
+- Cardinality: `:exec`
+- Inputs: `avatar_id`
+- Result: the habbo wears no badge, before the client's badge window sets every slot at once
+- Tables: `avatar_badges`
+
+## WearAvatarBadgeInSlot
+
+- Cardinality: `:execrows`
+- Inputs: `avatar_id`, `code`, `slot`
+- Result: 1 when the habbo has the badge, now worn in that slot
 - Tables: `avatar_badges`
 
 ## DeleteAvatarBadge

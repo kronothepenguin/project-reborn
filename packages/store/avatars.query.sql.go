@@ -221,25 +221,28 @@ func (q *Queries) GetAvatarGameData(ctx context.Context, avatarID int64) (Avatar
 }
 
 const getWornAvatarBadge = `-- name: GetWornAvatarBadge :one
-SELECT avatar_id, code, worn, granted_at FROM avatar_badges
-WHERE avatar_id = ?1 AND worn
+SELECT avatar_id, code, slot, granted_at FROM avatar_badges
+WHERE avatar_id = ?1 AND slot > 0
+ORDER BY slot
+LIMIT 1
 `
 
+// The site shows one badge: the one in the first slot the habbo fills.
 func (q *Queries) GetWornAvatarBadge(ctx context.Context, avatarID int64) (AvatarBadge, error) {
 	row := q.db.QueryRowContext(ctx, getWornAvatarBadge, avatarID)
 	var i AvatarBadge
 	err := row.Scan(
 		&i.AvatarID,
 		&i.Code,
-		&i.Worn,
+		&i.Slot,
 		&i.GrantedAt,
 	)
 	return i, err
 }
 
 const grantAvatarBadge = `-- name: GrantAvatarBadge :execrows
-INSERT INTO avatar_badges (avatar_id, code, worn, granted_at)
-VALUES (?1, ?2, TRUE, ?3)
+INSERT INTO avatar_badges (avatar_id, code, slot, granted_at)
+VALUES (?1, ?2, 1, ?3)
 ON CONFLICT (avatar_id, code) DO NOTHING
 `
 
@@ -258,8 +261,8 @@ func (q *Queries) GrantAvatarBadge(ctx context.Context, arg GrantAvatarBadgePara
 }
 
 const grantBadgeToUserAvatars = `-- name: GrantBadgeToUserAvatars :execrows
-INSERT INTO avatar_badges (avatar_id, code, worn, granted_at)
-SELECT avatars.id, ?1, FALSE, ?2
+INSERT INTO avatar_badges (avatar_id, code, slot, granted_at)
+SELECT avatars.id, ?1, 0, ?2
 FROM avatars
 WHERE avatars.user_id = ?3
 ON CONFLICT (avatar_id, code) DO NOTHING
@@ -271,8 +274,7 @@ type GrantBadgeToUserAvatarsParams struct {
 	UserID    int64
 }
 
-// Unworn, because a habbo wears one badge; archived habbos are still the user's and
-// get it too.
+// Unworn; archived habbos are still the user's and get it too.
 func (q *Queries) GrantBadgeToUserAvatars(ctx context.Context, arg GrantBadgeToUserAvatarsParams) (int64, error) {
 	result, err := q.db.ExecContext(ctx, grantBadgeToUserAvatars, arg.Code, arg.GrantedAt, arg.UserID)
 	if err != nil {
@@ -321,7 +323,7 @@ func (q *Queries) ListAllUserAvatars(ctx context.Context, userID int64) ([]Avata
 }
 
 const listAvatarBadges = `-- name: ListAvatarBadges :many
-SELECT avatar_id, code, worn, granted_at FROM avatar_badges
+SELECT avatar_id, code, slot, granted_at FROM avatar_badges
 WHERE avatar_id = ?1
 ORDER BY granted_at, code
 `
@@ -338,7 +340,7 @@ func (q *Queries) ListAvatarBadges(ctx context.Context, avatarID int64) ([]Avata
 		if err := rows.Scan(
 			&i.AvatarID,
 			&i.Code,
-			&i.Worn,
+			&i.Slot,
 			&i.GrantedAt,
 		); err != nil {
 			return nil, err
@@ -611,13 +613,25 @@ func (q *Queries) SetAvatarSoundEnabled(ctx context.Context, arg SetAvatarSoundE
 }
 
 const takeOffAvatarBadge = `-- name: TakeOffAvatarBadge :exec
-UPDATE avatar_badges SET worn = FALSE
-WHERE avatar_id = ?1 AND worn
+UPDATE avatar_badges SET slot = 0
+WHERE avatar_id = ?1 AND slot = 1
 `
 
-// A habbo wears one badge, so this comes before wearing another.
+// The site wears one badge, in slot 1, in place of the one there, so this comes before wearing another; the other
+// slots keep theirs.
 func (q *Queries) TakeOffAvatarBadge(ctx context.Context, avatarID int64) error {
 	_, err := q.db.ExecContext(ctx, takeOffAvatarBadge, avatarID)
+	return err
+}
+
+const takeOffAvatarBadges = `-- name: TakeOffAvatarBadges :exec
+UPDATE avatar_badges SET slot = 0
+WHERE avatar_id = ?1 AND slot > 0
+`
+
+// The client's badge window sets every slot at once, so its badges come off first.
+func (q *Queries) TakeOffAvatarBadges(ctx context.Context, avatarID int64) error {
+	_, err := q.db.ExecContext(ctx, takeOffAvatarBadges, avatarID)
 	return err
 }
 
@@ -688,7 +702,7 @@ func (q *Queries) UpsertWardrobeOutfit(ctx context.Context, arg UpsertWardrobeOu
 }
 
 const wearAvatarBadge = `-- name: WearAvatarBadge :exec
-UPDATE avatar_badges SET worn = TRUE
+UPDATE avatar_badges SET slot = 1
 WHERE avatar_id = ?1 AND code = ?2
 `
 
@@ -700,4 +714,23 @@ type WearAvatarBadgeParams struct {
 func (q *Queries) WearAvatarBadge(ctx context.Context, arg WearAvatarBadgeParams) error {
 	_, err := q.db.ExecContext(ctx, wearAvatarBadge, arg.AvatarID, arg.Code)
 	return err
+}
+
+const wearAvatarBadgeInSlot = `-- name: WearAvatarBadgeInSlot :execrows
+UPDATE avatar_badges SET slot = ?1
+WHERE avatar_id = ?2 AND code = ?3
+`
+
+type WearAvatarBadgeInSlotParams struct {
+	Slot     int64
+	AvatarID int64
+	Code     string
+}
+
+func (q *Queries) WearAvatarBadgeInSlot(ctx context.Context, arg WearAvatarBadgeInSlotParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, wearAvatarBadgeInSlot, arg.Slot, arg.AvatarID, arg.Code)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
 }

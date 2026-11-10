@@ -14,3 +14,4 @@ them all when `store.Open` creates it.
 - [0009-holo-fuses.sql](0009-holo-fuses.md) — Gives every access group the game fuses Holo's ranks held up to the group's level, from fuse_use_club_dance at level 2 to fuse_see_flat_ids at level 7.
 - [0010-navigator.sql](0010-navigator.md) — Creates the navigator's tables, and seeds Holo's English categories, its 12 public rooms that are not games and its 42 room models.
 - [0011-room-life.sql](0011-room-life.md) — Creates room_rights, room_bans, room_votes, chat_messages and ignored_habbos, and grants housekeeping.chatLogs to every group and user that manages access.
+- [0012-badge-slots.sql](0012-badge-slots.md) — Rebuilds avatar_badges with a slot 1 to 5 for each worn badge in place of worn, the badge a habbo wore taking slot 1.

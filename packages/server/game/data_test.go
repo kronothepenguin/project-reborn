@@ -54,8 +54,8 @@ func TestLoginLoadsTheHabbosOwnData(t *testing.T) {
 	}
 	online, _ := habbo.Get(id)
 	for _, got := range []habbo.Habbo{h, online} {
-		if !slices.Equal(got.Badges, []string{"HC1", "ADM"}) || got.Worn != "ADM" {
-			t.Errorf("badges %v, worn %q; want HC1 and ADM, wearing ADM", got.Badges, got.Worn)
+		if !slices.Equal(got.Badges, []string{"HC1", "ADM"}) || got.Worn != [5]string{"ADM"} {
+			t.Errorf("badges %v, worn %q; want HC1 and ADM, wearing ADM in slot 1", got.Badges, got.Worn)
 		}
 		if got.SoundEnabled {
 			t.Error("the sound is on, want the saved setting, off")
@@ -70,7 +70,7 @@ func TestANewHabboLogsInWithTheSoundOn(t *testing.T) {
 	db := openDB(t)
 	frank(t, db, "ticket-1")
 	h, err := Login(t.Context(), db, &session{}, "ticket-1", "")
-	if err != nil || !h.SoundEnabled || len(h.Badges) != 0 || h.Worn != "" {
+	if err != nil || !h.SoundEnabled || len(h.Badges) != 0 || h.Worn != [5]string{} {
 		t.Errorf("Login() = %+v, %v; want the sound on and no badge", h, err)
 	}
 }

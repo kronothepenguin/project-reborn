@@ -29,6 +29,7 @@ const (
 	roomController        = 42
 	roomNotController     = 43
 	roomItems             = 45
+	userBadge             = 228
 	roomOwner             = 47
 	roomReady             = 69
 	doorbellRinging       = 91
@@ -148,6 +149,7 @@ var roomHandlers = map[int]handler{
 	75:  loggedIn(handleMove),
 	79:  loggedIn(handleLookTo),
 	88:  loggedIn(handleStop),
+	158: loggedIn(handleSetBadge),
 	93:  loggedIn(handleDance),
 	94:  loggedIn(handleWave),
 	95:  loggedIn(handleKickUser),
@@ -560,13 +562,17 @@ func ad(imageKey, linkKey string) []byte {
 }
 
 // writeUser writes a habbo's user lines, in the order Holo wrote them: its index, web id, name, figure, place, motto,
-// sex and badges, its worn badge in slot 1, then its favourite group and its status in it, when it has one. Each line ends with a carriage return, which ends a line for the client,
+// sex and badges, `<slot>:<code>` for each badge it wears, comma-separated, then its favourite group and its status in
+// it, when it has one. Each line ends with a carriage return, which ends a line for the client,
 // so none may hold one.
 func writeUser(b *strings.Builder, v game.Visitor) {
-	badges := ""
-	if v.Habbo.Worn != "" {
-		badges = "1:" + v.Habbo.Worn
+	var worn []string
+	for i, code := range v.Habbo.Worn {
+		if code != "" {
+			worn = append(worn, strconv.Itoa(i+1)+":"+code)
+		}
 	}
+	badges := strings.Join(worn, ",")
 	o := v.Occupant
 	for _, line := range []string{
 		"i:" + strconv.Itoa(o.Index),
@@ -753,4 +759,32 @@ func handleGetUserTags(s *session, _ habbo.Habbo, body []byte) {
 		b = append(b, str(tag)...)
 	}
 	s.reply(userTagList, b)
+}
+
+// handleSetBadge wears the badges the client's badge window puts in its five slots: five times a slot and a code,
+// empty for none (plans/server decision 0083).
+func handleSetBadge(s *session, me habbo.Habbo, body []byte) {
+	r := bytes.NewReader(body)
+	var slots [5]string
+	for range 5 {
+		slot, err := encoding.ReadVL64(r)
+		if err != nil {
+			s.malformed(158, body)
+			return
+		}
+		code, err := encoding.ReadB64String(r)
+		if err != nil {
+			s.malformed(158, body)
+			return
+		}
+		if slot >= 1 && slot <= 5 {
+			slots[slot-1] = code
+		}
+	}
+	s.ruled(game.SetBadges(context.Background(), s.db, me, slots))
+}
+
+// sendBadges writes 228: a habbo's web id, its avatar id, then the badges it wears with their slots.
+func (s *session) sendBadges(c game.BadgesChanged) {
+	s.reply(userBadge, append(str(strconv.FormatInt(c.AvatarID, 10)), wornBadges(c.Worn)...))
 }

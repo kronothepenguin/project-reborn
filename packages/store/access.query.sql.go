@@ -470,7 +470,9 @@ SELECT
     highest.group_name,
     CAST(COALESCE((
         SELECT avatar_badges.code FROM avatar_badges
-        WHERE avatar_badges.avatar_id = avatars.id AND avatar_badges.worn
+        WHERE avatar_badges.avatar_id = avatars.id AND avatar_badges.slot > 0
+        ORDER BY avatar_badges.slot
+        LIMIT 1
     ), '') AS TEXT) AS badge
 FROM highest
 JOIN avatars ON avatars.id = COALESCE((

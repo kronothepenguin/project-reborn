@@ -221,6 +221,8 @@ func (s *session) Notify(event any) {
 		} else {
 			s.reply(roomNotController, nil)
 		}
+	case game.BadgesChanged:
+		s.sendBadges(e)
 	case game.RatingChanged:
 		s.sendRating(e.Rating)
 	case game.RoomEventChanged:

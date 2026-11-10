@@ -2,6 +2,9 @@
 
 ## 2026-11-10
 
+- **Done** [s4-11](/tasks/s4-11-five-badge-slots.md): a habbo wears up to five badges in slots, set by SETBADGE and
+  shown by 228, 229 and the user lines; the site wears its badge in slot 1.
+- **Start** [s4-11](/tasks/s4-11-five-badge-slots.md).
 - **Done** [s4-08](/tasks/s4-08-chat-log-page.md): housekeeping's Chat Log Viewer searches the chat by room or habbo,
   100 lines a page, and the game server prunes lines older than 30 days every hour.
 - **Decision** [0084](/decisions/0084-the-game-server-prunes-the-chat-hourly.md): the game server prunes the chat

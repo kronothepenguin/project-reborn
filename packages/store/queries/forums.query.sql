@@ -102,7 +102,9 @@ SELECT
     author.archived_at AS author_archived_at,
     CAST(COALESCE((
         SELECT avatar_badges.code FROM avatar_badges
-        WHERE avatar_badges.avatar_id = forum_posts.avatar_id AND avatar_badges.worn
+        WHERE avatar_badges.avatar_id = forum_posts.avatar_id AND avatar_badges.slot > 0
+        ORDER BY avatar_badges.slot
+        LIMIT 1
     ), '') AS TEXT) AS badge,
     CAST(COALESCE(favourite.group_id, 0) AS INTEGER) AS group_id,
     CAST(COALESCE(groups.badge, '') AS TEXT) AS group_badge,

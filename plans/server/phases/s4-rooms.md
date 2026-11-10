@@ -57,5 +57,5 @@ doorbell, kick and ban, and habbos rate rooms, ignore others and hold room event
 8. [s4-08 Read the chat history in housekeeping](/tasks/s4-08-chat-log-page.md) **done**
 9. [s4-09 Check S4's exit criteria](/tasks/s4-09-exit-check.md)
 10. [s4-10 Send through an outbox per session](/tasks/s4-10-outbox.md) **done**
-11. [s4-11 Wear five badges](/tasks/s4-11-five-badge-slots.md)
+11. [s4-11 Wear five badges](/tasks/s4-11-five-badge-slots.md) **done**
 12. [s4-12 Queue for full rooms and watch as a spectator](/tasks/s4-12-queue-and-spectators.md)

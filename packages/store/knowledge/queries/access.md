@@ -113,7 +113,7 @@ timestamp: 2026-11-04T16:16:30+00:00
 - Inputs: none
 - Result: `ListStaffRow` (`id`, `name`, `figure`, `motto`, `created_at`, `group_name`, `badge`), the staff page's list:
   each member of a staff-listed group once, under the listed group of the highest level (the oldest when levels tie),
-  as the habbo chosen for that group or else the member's first habbo, with its worn badge or `''`; sorted by name. A
+  as the habbo chosen for that group or else the member's first habbo, with the badge of the first slot it fills or `''`; sorted by name. A
   member whose habbos are all archived is left out.
 - Tables: `access_group_members`, `access_groups`, `avatars`, `avatar_badges`
 

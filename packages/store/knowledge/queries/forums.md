@@ -119,7 +119,7 @@ timestamp: 2026-11-05T22:07:34+00:00
 - Cardinality: `:many`
 - Inputs: `forum_thread_id`, `row_limit`, `row_offset`
 - Result: a page of the thread's posts, oldest first; each with its body, time and edit time, its habbo's id, name,
-  figure, motto, worn badge, favourite group and badge, and the posts that habbo has on the board, and the name of the
+  figure, motto, the badge of the first slot it fills, favourite group and badge, and the posts that habbo has on the board, and the name of the
   habbo that edited it last. Archived habbos carry their `archived_at`.
 - Tables: `forum_posts`, `avatars`, `avatar_badges`, `group_members`, `groups`
 
