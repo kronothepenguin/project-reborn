@@ -58,6 +58,13 @@ timestamp: 2026-11-10T16:46:21+00:00
 - Result: the end of the habbo's ban while it holds; not found otherwise
 - Tables: `room_bans`
 
+## ListRoomBans
+
+- Cardinality: `:many`
+- Inputs: `room_id`, `now`
+- Result: the habbos banned from the room while their bans hold, with each ban's end, by habbo
+- Tables: `room_bans`
+
 ## DeleteExpiredRoomBans
 
 - Cardinality: `:execrows`

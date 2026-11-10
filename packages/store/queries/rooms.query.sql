@@ -29,6 +29,12 @@ ON CONFLICT (room_id, avatar_id) DO UPDATE SET expires_at = excluded.expires_at;
 SELECT expires_at FROM room_bans
 WHERE room_id = sqlc.arg(room_id) AND avatar_id = sqlc.arg(avatar_id) AND expires_at > sqlc.arg(now);
 
+-- The bans in force, which load with the room.
+-- name: ListRoomBans :many
+SELECT avatar_id, expires_at FROM room_bans
+WHERE room_id = sqlc.arg(room_id) AND expires_at > sqlc.arg(now)
+ORDER BY avatar_id;
+
 -- name: DeleteExpiredRoomBans :execrows
 DELETE FROM room_bans WHERE expires_at <= sqlc.arg(now);
 

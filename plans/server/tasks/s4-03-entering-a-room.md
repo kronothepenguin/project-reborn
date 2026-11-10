@@ -4,7 +4,7 @@ title: Enter and leave a room
 description: A habbo enters a public room or a habbo room past its door, its password, its ban or its doorbell, gets the room's map, habbos, objects and statuses, and leaves; the loading ad and the room ad come from settings.
 status: todo
 phase: s4
-depends_on: [s4-02]
+depends_on: [s4-02, s4-10]
 packages: [packages/server]
 client: ["packages/client-r26/src/game/hh_room/4_Room Component Class.ls", "packages/client-r26/src/game/hh_room/5_Room Handler Class.ls"]
 timestamp: 2026-11-10T16:42:08+00:00

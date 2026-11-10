@@ -3,7 +3,6 @@ package room
 import (
 	"path/filepath"
 	"slices"
-	"sync"
 	"testing"
 
 	"github.com/kronothepenguin/project-reborn/packages/store"
@@ -31,39 +30,5 @@ func TestThePublicRoomsLoadByIDAndCategory(t *testing.T) {
 	}
 	if rooms := PublicIn(4); len(rooms) != 0 {
 		t.Errorf("Guestrooms holds the public rooms %v", rooms)
-	}
-}
-
-func TestVisitorsAreCountedPerRoom(t *testing.T) {
-	lounge, den := Ref{Public: true, ID: 101}, Ref{ID: 101}
-	t.Cleanup(func() {
-		mu.Lock()
-		clear(visitors)
-		mu.Unlock()
-	})
-	Enter(lounge)
-	Enter(lounge)
-	Enter(den)
-	if Visitors(lounge) != 2 || Visitors(den) != 1 {
-		t.Errorf("visitors = %d and %d, want 2 in the public room and 1 in the habbo room of the same id", Visitors(lounge), Visitors(den))
-	}
-	Leave(den)
-	Leave(den)
-	if Visitors(den) != 0 {
-		t.Errorf("visitors = %d after two leaves of one habbo, want 0", Visitors(den))
-	}
-
-	var wg sync.WaitGroup
-	for range 8 {
-		wg.Go(func() {
-			for range 100 {
-				Enter(den)
-				Leave(den)
-			}
-		})
-	}
-	wg.Wait()
-	if Visitors(den) != 0 {
-		t.Errorf("visitors = %d after as many leaves as entries", Visitors(den))
 	}
 }

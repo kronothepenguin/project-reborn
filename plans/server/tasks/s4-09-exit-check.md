@@ -4,7 +4,7 @@ title: Check S4's exit criteria
 description: From the merged work, check every exit criterion of S4 and close the phase.
 status: todo
 phase: s4
-depends_on: [s4-01, s4-02, s4-03, s4-04, s4-05, s4-06, s4-07, s4-08]
+depends_on: [s4-01, s4-02, s4-03, s4-04, s4-05, s4-06, s4-07, s4-08, s4-10]
 packages: [packages/server, packages/store, packages/virtual, packages/housekeeping]
 client: []
 timestamp: 2026-11-10T16:42:08+00:00

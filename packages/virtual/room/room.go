@@ -1,5 +1,6 @@
-// Package room holds the public rooms, which every player shares, loaded when the server starts and kept, and how
-// many habbos are in each room, which lives only in memory (plans/server decisions 0009, 0011 and 0060).
+// Package room holds the public rooms, which every player shares, loaded when the server starts and kept, and the
+// loaded rooms with the habbos in them, which live only in memory: a room loads with its first habbo and unloads with
+// its last (plans/server decisions 0009, 0011, 0060, 0069 and 0071).
 package room
 
 import (
@@ -7,7 +8,6 @@ import (
 	"database/sql"
 	"fmt"
 	"slices"
-	"sync"
 	"sync/atomic"
 
 	"github.com/kronothepenguin/project-reborn/packages/store"
@@ -58,34 +58,4 @@ func PublicIn(categoryID int64) []store.PublicRoom {
 type Ref struct {
 	Public bool
 	ID     int64
-}
-
-var (
-	mu       sync.Mutex
-	visitors = make(map[Ref]int)
-)
-
-// Visitors returns how many habbos are in the room.
-func Visitors(r Ref) int {
-	mu.Lock()
-	defer mu.Unlock()
-	return visitors[r]
-}
-
-// Enter counts one more habbo in the room.
-func Enter(r Ref) {
-	mu.Lock()
-	defer mu.Unlock()
-	visitors[r]++
-}
-
-// Leave counts one habbo less in the room, never below none.
-func Leave(r Ref) {
-	mu.Lock()
-	defer mu.Unlock()
-	if visitors[r] <= 1 {
-		delete(visitors, r)
-		return
-	}
-	visitors[r]--
 }

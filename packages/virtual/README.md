@@ -93,10 +93,8 @@ m, ok := model.Get("a")
 - `category`: `Get(id)`; `Children(id)`, the categories right under it, by id; and `Parents(id)`, the categories above
   it, nearest first, as `GETPARENTCHAIN` wants them.
 - `model`: `Get(name)`, by the name the client knows, such as `a` or `newbie_lobby`, and `ByID(id)`.
-- `room`: `Public(id)` and `PublicIn(categoryID)` for the public rooms; and how many habbos are in each room, which
-  lives only in memory (`plans/server/decisions/0011-saved-and-memory-only-data.md`): `Visitors(ref)`, `Enter(ref)` and
-  `Leave(ref)`, where a `Ref` names a public room or a habbo room, whose ids may be equal. The counts stay 0 until S4
-  lets habbos enter.
+- `room`: `Public(id)` and `PublicIn(categoryID)` for the public rooms, and `Visitors(ref)`, how many habbos are in a
+  room, where a `Ref` names a public room or a habbo room, whose ids may be equal.
 - The getters return copies: changing one changes nothing in memory.
 
 Gates, from `packages/virtual`:
@@ -106,3 +104,49 @@ gofmt -l .
 go vet ./...
 go test ./... -race
 ```
+
+## Loaded rooms
+
+`packages/virtual/room` also holds the rooms in use, with the habbos in them, only in memory
+(`plans/server/decisions/0009-virtual-holds-the-server-state.md`, `plans/server/decisions/0011-saved-and-memory-only-data.md`).
+A room loads with its first habbo and unloads with its last
+(`plans/server/decisions/0071-an-empty-room-unloads-at-once.md`).
+
+```go
+r, o, loaded, err := room.Enter(ctx, db, room.Ref{ID: flatID}, h.ID, h.Session, limit)
+if errors.Is(err, room.ErrFull) {
+	// 224 with 1
+}
+if loaded {
+	go clock(r) // until <-r.Done()
+}
+for _, other := range r.Occupants() {
+	other.Session.Notify(event)
+}
+left, ok := room.Leave(h.ID, h.Session)
+```
+
+- `Enter(ctx, db, ref, avatarID, s, limit)` puts the habbo at the room's door, at the model's door tile, height and
+  direction, with the smallest index nobody in the room holds, from 0, as Holo gave it. A room that is not loaded loads
+  first: its floor from its model, and a habbo room's rights and bans in force from `db`
+  (`plans/server/decisions/0009-virtual-holds-the-server-state.md`); `loaded` tells. It refuses a habbo who is in a room
+  already (`ErrInRoom`), a room that holds `limit` habbos or more (`ErrFull`, never when `limit` is 0) and a room that does
+  not exist (`ErrNoRoom`).
+- `Leave(avatarID, s)` takes the habbo out while `s` plays it. The last one out unloads the room: `Done()` closes, and
+  `Left.Waiting` hands back who was at its doorbell, in its queue or among its spectators, to be told.
+- `Loaded(ref)` and `In(avatarID)` find a loaded room by its ref or by a habbo in it.
+- A `Room` gives its `Ref()`, `Model()`, `Floor()` and `Done()`; `Occupants()`, by index, and `Occupant(avatarID)`;
+  `Update(avatarID, change)`, which changes a habbo's place and statuses but never its id, session or index; the copies
+  of its rights and bans, `HasRights`, `SetRights`, `BanEnd` and `Ban`, which the rules change once the store has the
+  change (`plans/server/decisions/0010-hot-data-written-at-once.md`); and three lines, `Doorbell`, `Queue` and
+  `Spectators`, with `Join`, `Remove` and `Waiting`
+  (`plans/server/decisions/0069-doorbell-queue-and-spectators-in-memory.md`).
+- Once a room unloads, its methods change nothing and report false, so a rule holding an old `*Room` cannot bring it
+  back.
+- `ParseFloor(model)` reads a model's height map as the client reads 31: `x` blocked, in either case; a digit, that
+  height; `A` to `H`, the heights 0 to 7, and `y`, 0, where nothing may be placed; any other character open at 0, as
+  Holo read it. The public furni block their tiles (state 1) or seat a habbo (state 2), and the door's tile is always
+  open. Holo's data lists the furni of eight models without their state; no public room uses them, and they do not
+  parse.
+- `change` runs under the room's lock, so it must not call a session or the database. A `Floor` never changes once
+  parsed, and every function may be called from several goroutines at once.

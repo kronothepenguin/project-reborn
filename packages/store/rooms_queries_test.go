@@ -60,6 +60,12 @@ func TestARoomBanEnds(t *testing.T) {
 	if got := must(q.GetRoomBanEnd(ctx, GetRoomBanEndParams{RoomID: room.ID, AvatarID: pest.ID, Now: end})); !got.Equal(later) {
 		t.Errorf("a second ban ends at %v, want %v", got, later)
 	}
+	if got := must(q.ListRoomBans(ctx, ListRoomBansParams{RoomID: room.ID, Now: end})); len(got) != 1 || got[0].AvatarID != pest.ID || !got[0].ExpiresAt.Equal(later) {
+		t.Errorf("bans in force = %+v, want Pest's until %v", got, later)
+	}
+	if got := must(q.ListRoomBans(ctx, ListRoomBansParams{RoomID: room.ID, Now: later})); len(got) != 0 {
+		t.Errorf("bans in force at their end = %+v, want none", got)
+	}
 	if n := must(q.DeleteExpiredRoomBans(ctx, later)); n != 1 {
 		t.Errorf("deleted %d expired bans, want 1", n)
 	}

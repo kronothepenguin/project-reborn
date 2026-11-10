@@ -172,12 +172,15 @@ func TestHidingFullRooms(t *testing.T) {
 	owner := habboWithTickets(t, "Crowded", "crowded")
 	full := newRoom(t, owner, 25, "Packed", true)
 	newRoom(t, owner, 25, "Roomy", true)
-	for range 25 {
-		room.Enter(room.Ref{ID: full})
+	crowd := &stranger{}
+	for i := range int64(25) {
+		if _, _, _, err := room.Enter(t.Context(), testDB, room.Ref{ID: full}, 1_000_000+i, crowd, 0); err != nil {
+			t.Fatal(err)
+		}
 	}
 	t.Cleanup(func() {
-		for range 25 {
-			room.Leave(room.Ref{ID: full})
+		for i := range int64(25) {
+			room.Leave(1_000_000+i, crowd)
 		}
 	})
 	c, _ := login(t, "crowded")
@@ -259,3 +262,8 @@ func TestThoseInAPublicRoom(t *testing.T) {
 		t.Errorf("received %d %q, want 223 with the Welcome Lounge and nobody", id, body)
 	}
 }
+
+// stranger plays habbos that only fill rooms: they have no client, and their ids belong to no test's habbo.
+type stranger struct{}
+
+func (*stranger) Notify(any) {}

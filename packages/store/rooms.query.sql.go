@@ -249,6 +249,46 @@ func (q *Queries) ListIgnoredHabbos(ctx context.Context, avatarID int64) ([]List
 	return items, nil
 }
 
+const listRoomBans = `-- name: ListRoomBans :many
+SELECT avatar_id, expires_at FROM room_bans
+WHERE room_id = ?1 AND expires_at > ?2
+ORDER BY avatar_id
+`
+
+type ListRoomBansParams struct {
+	RoomID int64
+	Now    time.Time
+}
+
+type ListRoomBansRow struct {
+	AvatarID  int64
+	ExpiresAt time.Time
+}
+
+// The bans in force, which load with the room.
+func (q *Queries) ListRoomBans(ctx context.Context, arg ListRoomBansParams) ([]ListRoomBansRow, error) {
+	rows, err := q.db.QueryContext(ctx, listRoomBans, arg.RoomID, arg.Now)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListRoomBansRow
+	for rows.Next() {
+		var i ListRoomBansRow
+		if err := rows.Scan(&i.AvatarID, &i.ExpiresAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listRoomRights = `-- name: ListRoomRights :many
 SELECT avatar_id FROM room_rights
 WHERE room_id = ?1

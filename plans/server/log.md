@@ -2,6 +2,13 @@
 
 ## 2026-11-10
 
+- **Done** [s4-02](/tasks/s4-02-loaded-rooms.md): virtual/room keeps the loaded rooms, their floors, habbos, rights,
+  bans and lines; a room loads with its first habbo and unloads with its last.
+- **Decision** [0072](/decisions/0072-each-loaded-room-runs-its-own-clock.md): each loaded room runs its own clock.
+- **Decision** [0073](/decisions/0073-each-session-sends-through-an-outbox.md): each session sends through an outbox.
+- **Create** [s4-10](/tasks/s4-10-outbox.md): each session sends through an outbox, before
+  [s4-03](/tasks/s4-03-entering-a-room.md) sends to rooms. Found by s4-02: a session wrote straight to its connection.
+- **Start** [s4-02](/tasks/s4-02-loaded-rooms.md).
 - **Done** [s4-01](/tasks/s4-01-room-tables.md): the rooms' saved data: rights, bans, votes, the chat history and the
   ignore lists, update 0011, the attribute housekeeping.chatLogs and the six settings of the bans, the history and the
   ads.

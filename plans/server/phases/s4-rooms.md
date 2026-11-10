@@ -28,7 +28,9 @@ doorbell, kick and ban, and habbos rate rooms, ignore others and hold room event
   ([0068](/decisions/0068-a-habbo-shows-its-favourite-groups-badge.md)); the doorbell, the queue and the spectators
   live only in memory ([0069](/decisions/0069-doorbell-queue-and-spectators-in-memory.md)); rooms show a loading ad and
   a room ad from settings ([0070](/decisions/0070-a-loading-ad-and-a-room-ad-from-settings.md)); an empty room unloads
-  at once ([0071](/decisions/0071-an-empty-room-unloads-at-once.md)).
+  at once ([0071](/decisions/0071-an-empty-room-unloads-at-once.md)); each loaded room runs its own clock
+  ([0072](/decisions/0072-each-loaded-room-runs-its-own-clock.md)); each session sends through an outbox
+  ([0073](/decisions/0073-each-session-sends-through-an-outbox.md)).
 - Furni in rooms, trading and teleports are [S5](/phases/s5-furni-catalogue.md)'s; pets and photos
   [S7](/phases/s7-club-help-extras.md)'s.
 
@@ -46,7 +48,7 @@ doorbell, kick and ban, and habbos rate rooms, ignore others and hold room event
 # Tasks
 
 1. [s4-01 Add the rooms' saved data](/tasks/s4-01-room-tables.md) **done**
-2. [s4-02 Load and unload rooms in virtual](/tasks/s4-02-loaded-rooms.md)
+2. [s4-02 Load and unload rooms in virtual](/tasks/s4-02-loaded-rooms.md) **done**
 3. [s4-03 Enter and leave a room](/tasks/s4-03-entering-a-room.md)
 4. [s4-04 Walk](/tasks/s4-04-walking.md)
 5. [s4-05 Chat, whisper, shout, dance, wave and type](/tasks/s4-05-chat-and-gestures.md)
@@ -54,3 +56,4 @@ doorbell, kick and ban, and habbos rate rooms, ignore others and hold room event
 7. [s4-07 Rate rooms, hold events, show badges and tags, and queue](/tasks/s4-07-room-extras.md)
 8. [s4-08 Read the chat history in housekeeping](/tasks/s4-08-chat-log-page.md)
 9. [s4-09 Check S4's exit criteria](/tasks/s4-09-exit-check.md)
+10. [s4-10 Send through an outbox per session](/tasks/s4-10-outbox.md)
