@@ -2,6 +2,11 @@
 
 ## 2026-11-10
 
+- **Update** [S4](/phases/s4-rooms.md) is done; [S5](/phases/s5-furni-catalogue.md) is next, once its open questions are
+  answered.
+- **Done** [s4-09](/tasks/s4-09-exit-check.md): every exit criterion of S4 holds on the merged work, with three
+  end-to-end tests added; S4 is done.
+- **Start** [s4-09](/tasks/s4-09-exit-check.md).
 - **Done** [s4-12](/tasks/s4-12-queue-and-spectators.md): full rooms queue their arrivals, club members first, let them
   in as places free, and take up to 50 spectators from the queue.
 - **Decision** [0087](/decisions/0087-every-full-room-queues.md): every full room queues its arrivals.

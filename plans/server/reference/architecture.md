@@ -2,7 +2,7 @@
 type: Reference
 title: How the server is built
 description: The packages of the game server and what each one does, the path of a connection from a listener to the state, and how the server runs alone and under the orchestrator.
-timestamp: 2026-11-10T12:58:51+00:00
+timestamp: 2026-11-10T21:11:34+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [server, architecture]
 ---
@@ -18,7 +18,7 @@ tags: [server, architecture]
 | `packages/server/game` | The rules of the hotel, with no protocol in them, and the events they send sessions | [0005](/decisions/0005-package-layout.md), [0039](/decisions/0039-rules-notify-sessions-through-an-interface.md), [0048](/decisions/0048-sessions-through-an-interface-virtual-declares.md) |
 | `packages/virtual` | The state: hot data and temporary data, one package per entity | [0009](/decisions/0009-virtual-holds-the-server-state.md) |
 | `packages/virtual/habbo` | The habbos online in the game, each with its session | [0047](/decisions/0047-online-habbos-in-virtual-habbo.md), [0048](/decisions/0048-sessions-through-an-interface-virtual-declares.md) |
-| `packages/virtual/category`, `model` and `room` | The navigator's categories, the room models and the public rooms, loaded at start; how many habbos are in each room | [0060](/decisions/0060-virtual-category-model-and-room.md), [0064](/decisions/0064-the-navigator-loads-once-the-updates-are-applied.md) |
+| `packages/virtual/category`, `model` and `room` | The navigator's categories, the room models and the public rooms, loaded at start; the loaded rooms, with their floors, habbos, rights, bans, lines, events and kept places, and the way each habbo heads into a room | [0060](/decisions/0060-virtual-category-model-and-room.md), [0064](/decisions/0064-the-navigator-loads-once-the-updates-are-applied.md), [0069](/decisions/0069-doorbell-queue-and-spectators-in-memory.md), [0071](/decisions/0071-an-empty-room-unloads-at-once.md) |
 | `packages/store` | The database: tables, queries and updates | [0010](/decisions/0010-hot-data-written-at-once.md), [0011](/decisions/0011-saved-and-memory-only-data.md) |
 | `apps/server` | The runner | [0002](/decisions/0002-server-app.md) |
 
@@ -29,7 +29,15 @@ So far `packages/server` holds the listeners, `transport`, `encoding`, `r26`, wh
 ([s2-07](/tasks/s2-07-after-login.md)) and serves the navigator and the room-o-matic ([S3](/phases/s3-navigator.md)),
 and `game`, whose rules log a habbo in and out ([s2-05](/tasks/s2-05-login-in-game.md)) and list, create, change and
 delete rooms. A session that ends logs its habbo out. `server.New` loads the navigator's shared data into
-`virtual/category`, `virtual/model` and `virtual/room` ([s3-02](/tasks/s3-02-navigator-state.md)).
+`virtual/category`, `virtual/model` and `virtual/room` ([s3-02](/tasks/s3-02-navigator-state.md)), and prunes the chat
+history every hour ([0084](/decisions/0084-the-game-server-prunes-the-chat-hourly.md)).
+
+[S4](/phases/s4-rooms.md) brought the rooms: `r26/room.go` and `r26/room_utils.go` serve hh_room's entry, walking,
+chat, rights, ratings, events, badges, groups, the queue and the spectators, through `game`'s rules on the loaded rooms
+of `virtual/room`. A room loads with its first habbo and unloads with its last
+([0071](/decisions/0071-an-empty-room-unloads-at-once.md)); while loaded, a goroutine of `game`, its clock, ticks every
+500 ms, walking its habbos, ending timed statuses and sending what changed in one message
+([0065](/decisions/0065-walking-500-ms-by-holos-rules.md), [0072](/decisions/0072-each-loaded-room-runs-its-own-clock.md)).
 
 # A connection
 
@@ -41,7 +49,9 @@ delete rooms. A session that ends logs its habbo out. `server.New` loads the nav
    on ([0021](/decisions/0021-unhandled-packets-logged-by-id-name-and-size.md)).
 3. The handler reads the fields and calls a rule in `game`.
 4. The rule reads and changes the state in `virtual`. Saved data is written to the database at once, then in memory.
-5. The protocol writes the answers back on the `Conn`.
+5. The protocol queues the answers in the session's outbox, which a goroutine of the session's own writes on the
+   `Conn` in order, so that sending never waits for a client; a client that stops reading fills its outbox and is
+   closed ([0073](/decisions/0073-each-session-sends-through-an-outbox.md)).
 
 A rule tells the habbos an event concerns, such as everyone in a room when one habbo talks, without knowing their
 protocol: it finds them in `virtual/habbo` and calls each one's `Session.Notify` with one of `game`'s events, which the

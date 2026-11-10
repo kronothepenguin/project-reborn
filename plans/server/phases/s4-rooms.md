@@ -2,8 +2,8 @@
 type: Phase
 title: S4 Rooms
 description: Habbos enter rooms, see each other, walk, talk and act, and owners manage rights, the doorbell, kicks and bans.
-status: active
-timestamp: 2026-11-10T16:42:26+00:00
+status: done
+timestamp: 2026-11-10T21:29:15+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s4, server]
 ---
@@ -38,8 +38,9 @@ doorbell, kick and ban, and habbos rate rooms, ignore others and hold room event
 
 - Go test clients enter a public room and a habbo room, see each other, walk a step every 500 ms around walls and
   heights without cutting corners, chat, whisper and shout, type, dance and wave, and leave.
-- An owner's room asks for its password, rings its doorbell and refuses a full room or a banned habbo; the owner gives
-  and takes rights, answers the doorbell, kicks, and bans for 15 minutes.
+- An owner's room asks for its password, rings its doorbell, queues the arrivals of a full room
+  ([0087](/decisions/0087-every-full-room-queues.md)) and refuses a banned habbo; the owner gives and takes rights,
+  answers the doorbell, kicks, and bans for 15 minutes.
 - A habbo rates a room, ignores another, holds a room event, and shows its badge and its favourite group's.
 - The chat is saved, staff read it in housekeeping, and lines older than 30 days go.
 - The loading ad and the room ad come from housekeeping's settings, and an empty room unloads at once.
@@ -55,7 +56,7 @@ doorbell, kick and ban, and habbos rate rooms, ignore others and hold room event
 6. [s4-06 Give rights, kick and ban](/tasks/s4-06-rights-kicks-and-bans.md) **done**
 7. [s4-07 Rate rooms, hold events, and show groups and tags](/tasks/s4-07-room-extras.md) **done**
 8. [s4-08 Read the chat history in housekeeping](/tasks/s4-08-chat-log-page.md) **done**
-9. [s4-09 Check S4's exit criteria](/tasks/s4-09-exit-check.md)
+9. [s4-09 Check S4's exit criteria](/tasks/s4-09-exit-check.md) **done**
 10. [s4-10 Send through an outbox per session](/tasks/s4-10-outbox.md) **done**
 11. [s4-11 Wear five badges](/tasks/s4-11-five-badge-slots.md) **done**
 12. [s4-12 Queue for full rooms and watch as a spectator](/tasks/s4-12-queue-and-spectators.md) **done**

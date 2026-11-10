@@ -469,6 +469,12 @@ says, and each uses habbos of its own.
 - S3's: `TestAClientBrowsesTheNavigator`, every list of the navigator against
   its limits in one session, and `TestAHabboBuildsChangesAndDeletesARoom`, the
   room-o-matic up to the 50th room, its settings, its changes and its deletion.
+- S4's: `TestHabbosLiveInRooms`, two habbos in a public room and a habbo room,
+  walking, chatting, whispering, shouting, typing, dancing and waving, with the
+  ads, the saved and pruned chat and the rooms unloading;
+  `TestAnOwnerKeepsItsRoom`, the password, the doorbell, rights, a kick, a
+  15-minute ban and a full room's queue; and `TestAHabbosLifeInARoom`, a rating,
+  an ignore, an event, five badge slots and a favourite group.
 - `entering_test.go` enters public rooms and habbo rooms through every door,
   the doorbell, bans, full rooms, a deletion, a logout and the ads.
 - `chat_test.go` chats near and far, shouts, whispers, types, ignores up to the
