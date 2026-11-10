@@ -705,6 +705,7 @@ func TestTheGameFormHoldsTheClientsSettings(t *testing.T) {
 		"game.chatRange":          " Kind:number Value:5 ",
 		"game.chatMaxLength":      " Kind:number Value:100 ",
 		"game.maxIgnoredHabbos":   " Kind:number Value:100 ",
+		"game.roomEventTypes":     " Kind:number Value:11 ",
 	} {
 		if field := fieldOf(form, key); !strings.Contains(field, want) {
 			t.Errorf("%s lacks %q: %q", key, want, field)

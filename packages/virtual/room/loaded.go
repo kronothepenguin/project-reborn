@@ -94,6 +94,7 @@ type Room struct {
 	rights    map[int64]bool
 	bans      map[int64]time.Time
 	waiting   [lines][]Waiting
+	event     *Event
 }
 
 var (

@@ -254,7 +254,7 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
 | `#room_directory` (2) | 19, for both kinds, as Holo sent it. The habbo leaves the room it is in or rings. A public room, named by its id, then gets 69, `<model> <id>`, or 224 with 1 when it holds its `max_visitors` habbos. A habbo room goes on with `TRYFLAT` |
 | `TRYFLAT` (57) | 41 with an empty name lets the habbo in. A full room gets 224 with 1. The owner and the holders of `fuse_enter_locked_rooms` pass any door and any ban; anyone else banned gets 224 with 4; a password door compares `<id>/<password>` with the room's hash (`plans/server/decisions/0062-room-passwords-are-hashed.md`), or 33 `Incorrect flat password`; a closed door gets 91 and rings the doorbell of the habbos with rights in the room, who get 91 with the ringer's name. A room that is not loaded, or holds nobody who may answer, gets 131 at once, as Holo did with nobody in |
 | `LETUSERIN` (98) | From a habbo with rights in the room: the ringer gets 41 and goes on with `GOTOFLAT`, or 131; the habbos with rights get 41 or 131 with its name, which their doorbells drop. A ringer who leaves is dropped the same way |
-| `GOTOFLAT` (59) | 69, `model_<model> <id>`; then 47 for the owner and 42 for a habbo with rights. The holders of `fuse_any_room_controller` count as owners, as Holo had it. Only after the door let the habbo through |
+| `GOTOFLAT` (59) | 69, `model_<model> <id>`; then 47 for the owner and 42 for a habbo with rights; then the room's rating, 345, and its event, 370, as Holo sent them. The holders of `fuse_any_room_controller` count as owners, as Holo had it. Only after the door let the habbo through |
 | `GETROOMAD` (126) | 208: `game.roomAdImage`, a tab and `game.roomAdLink`, or `0` |
 | `G_HMAP` (60) | 31: the model's height map, a row per line |
 | `G_USRS` (61) | 28: the user lines of the habbos in the room |
@@ -276,11 +276,22 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
 | `ASSIGNRIGHTS` (96), `REMOVERIGHTS` (97) | From the room's owner, or a holder of `fuse_any_room_controller`, about a habbo in the room, as the client shows the buttons: saved, then the habbo gets 42 or 43, and its status gains or loses `flatctrl` |
 | `KICKUSER` (95) | From an owner or a habbo with rights, as the client shows the button: the habbo, never an owner or a holder of `fuse_any_room_controller`, walks to the door, a step every 500 ms and no longer where it wants, and leaves there with 18; it leaves at once when it cannot reach the door, which a habbo standing on it blocks (`plans/server/decisions/0079-a-kicked-habbo-walks-out.md`) |
 | `BANUSER` (320) | From an owner only, as the client shows the button: the habbo is banned for `game.roomBanMinutes`, 15 (`plans/server/decisions/0067-a-room-ban-lasts-15-minutes.md`), saved and in the room's copy, and walks out as on `KICKUSER`; its next `TRYFLAT` gets 224 with 4 |
+| `RATEFLAT` (261) | A vote, 1 or -1, once, in a habbo room: everyone in it who has voted gets 345 with the sum of the votes, never below 0, and the share of +1 votes; 345 is -1 for a habbo that has not voted, which shows the client's vote buttons (`plans/server/decisions/0082-a-rating-is-the-sum-and-the-share-of-up-votes.md`) |
+| `CAN_CREATE_ROOMEVENT` (345) | 367: 1 for an owner of the habbo room it is in, which hosts no event yet |
+| `CREATE_ROOMEVENT` (346), `EDIT_ROOMEVENT` (348) | A type 1 to `game.roomEventTypes`, 11, a name and a description of 3 characters or more, as the client asks them: the room gets 370 with the host's id and name, the room, the type, the name, the description and the start, `HH:MM` in UTC. An edit keeps the start. Events live only in memory and end when their host leaves the room or logs out (`plans/server/decisions/0081-eleven-room-event-types.md`) |
+| `QUIT_ROOMEVENT` (347) | The host's event ends: the room gets 370 with `-1` |
+| `GET_ROOMEVENT_TYPE_COUNT` (349) | 368: `game.roomEventTypes` |
+| `GET_ROOMEVENTS_BY_TYPE` (350) | 369: the type and its events, by room: the room, the host, the name, the description and the start |
+| `GET_GROUP_BADGES` (230) | 309: the favourite groups the room's habbos show, by id, with their badges (`plans/server/decisions/0068-a-habbo-shows-its-favourite-groups-badge.md`) |
+| `GET_GROUP_DETAILS` (231) | 311: the group's name and description, and -1 and an empty name for its room, which groups have not; -1 alone for a group that does not exist |
+| `GET_USER_TAGS` (263) | 350: the habbo's id and the tags of its profile on the site |
 
 - A user line is `i` the index, `a` the habbo's id, `n` the name, `f` the
   figure, `l` the place, `c` the motto, `s` the sex and `b` the worn badge in
-  slot 1, as Holo wrote them, each line ended by a carriage return, which no
-  value may hold. A status line is `<index> <x>,<y>,<height>,<head>,<body>/`,
+  slot 1, as Holo wrote them, then `g` the favourite group and `t` the habbo's
+  status in it, 1 owner, 2 admin, 3 member, as the client's Group Info class
+  reads them; each line ended by a carriage return, which no value may hold.
+  The online habbo keeps its favourite group from its login. A status line is `<index> <x>,<y>,<height>,<head>,<body>/`,
   then each action and its parameters followed by a slash.
 - The room's commands before `G_STAT` need the door to have let the habbo
   through; `G_HMAP`, `G_OBJS` and `G_ITEMS` also answer a habbo in the room.
@@ -315,7 +326,8 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
   chat or a shout with a smiley shows its face for 5 s, `gest sml`, `agr`, `sad`
   or `srp`, as Holo's `checkEmotion` found them. The room's clock ends each
   timed status on its tick and sends the change.
-- Ratings, events, badges and the queue come with the next S4 tasks.
+- Five badge slots (`SETBADGE`) and the queue with the spectators come with
+  s4-11 and s4-12.
 
 ## Keeping the session alive
 
@@ -380,6 +392,9 @@ client through its `Session` (`plans/server/decisions/0039-rules-notify-sessions
 - Rights: `AssignRights`, `RemoveRights` and `RemoveAllRights` send
   `RightsChanged`; `Kick` and `Ban` send a habbo walking out, and the room's
   clock sends it `Kicked` and takes it out once it stops.
+- Extras: `RoomRating` and `RateRoom` with `RatingChanged`; `CanHostEvent`,
+  `HostEvent`, `EndEvent`, `RoomEvent`, `Events` and `EventTypes` with
+  `RoomEventChanged`; `GroupBadges`, `GroupDetails` and `UserTags`.
 - Walking: `EnterRoom` starts a room's clock when its entry loads the room;
   `Walk` sets a habbo's goal and `LookTo` turns it; the clock's ticks send
   `Statuses`.
@@ -432,6 +447,8 @@ says, and each uses habbos of its own.
   the doorbell, bans, full rooms, a deletion, a logout and the ads.
 - `chat_test.go` chats near and far, shouts, whispers, types, ignores up to the
   limit, dances and waves.
+- `extras_test.go` rates a room, hosts an event and lists it, and shows groups
+  and tags.
 - `rights_test.go` gives and takes rights, kicks a habbo that walks out, bans
   it, and takes every right from the navigator.
 - `walking_test.go` walks two habbos at once, a step every 500 ms, and turns

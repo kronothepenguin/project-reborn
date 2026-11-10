@@ -149,6 +149,10 @@ var catalogue = map[string]declaration{
 	"game.chatRange":        declare(5, between(1, 50)),
 	"game.chatMaxLength":    declare(100, between(10, 1000)),
 	"game.maxIgnoredHabbos": declare(100, between(1, 1000)),
+
+	// How many room event types there are, which the client names from its
+	// texts roomevent_type_<n> (plans/server decision 0081).
+	"game.roomEventTypes": declare(11, between(1, 50)),
 }
 
 // rules check settings that depend on each other. keys lists every setting a

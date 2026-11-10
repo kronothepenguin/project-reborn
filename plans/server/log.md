@@ -2,6 +2,17 @@
 
 ## 2026-11-10
 
+- **Done** [s4-07](/tasks/s4-07-room-extras.md): habbos rate rooms, owners host events of 11 types that the navigator
+  lists, and rooms show favourite groups and profile tags.
+- **Start** [s4-07](/tasks/s4-07-room-extras.md).
+- **Create** [s4-11](/tasks/s4-11-five-badge-slots.md) and [s4-12](/tasks/s4-12-queue-and-spectators.md), split from
+  [s4-07](/tasks/s4-07-room-extras.md): five badge slots and the queue with the spectators.
+- **Decision** [0083](/decisions/0083-a-habbo-wears-five-badges-in-slots.md): a habbo wears up to five badges, in slots.
+- **Decision** [0082](/decisions/0082-a-rating-is-the-sum-and-the-share-of-up-votes.md): a room's rating is the sum of
+  its votes and the share of +1.
+- **Decision** [0081](/decisions/0081-eleven-room-event-types.md): rooms have 11 event types, as Holo.
+- **Decision** [0080](/decisions/0080-full-rooms-queue-and-take-spectators-in-s4.md): full rooms queue habbos and take
+  spectators in S4.
 - **Done** [s4-06](/tasks/s4-06-rights-kicks-and-bans.md): owners give and take rights, all at once too; habbos with
   rights kick and owners ban, as the client's buttons show, and the kicked walk out.
 - **Decision** [0079](/decisions/0079-a-kicked-habbo-walks-out.md): a kicked or banned habbo walks out.

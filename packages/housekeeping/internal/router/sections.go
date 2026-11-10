@@ -188,6 +188,7 @@ var forms = []section{
 			{Key: "game.chatRange", Label: "Chat Range", Help: "How many tiles away habbos read a habbo's chat; farther ones see a bubble without the words."},
 			{Key: "game.chatMaxLength", Label: "Chat Line Length", Help: "How many characters of a chat, shout or whisper the server keeps."},
 			{Key: "game.maxIgnoredHabbos", Label: "Ignored Habbos", Help: "How many habbos a habbo may ignore; one more drops the oldest."},
+			{Key: "game.roomEventTypes", Label: "Room Event Types", Help: "How many types of room events there are, named by the client's texts roomevent_type_1 and on."},
 		},
 	},
 	{

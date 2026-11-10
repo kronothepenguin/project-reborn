@@ -95,14 +95,16 @@ func (c *client) enterFlat(t *testing.T, id int64, rights ...int) arrival {
 	return c.arrive(t)
 }
 
-// goToFlat sends GOTOFLAT and reads 69 with model a, then the rights messages given, 47 and 42.
-func (c *client) goToFlat(t *testing.T, id int64, rights ...int) {
+// goToFlat sends GOTOFLAT and reads 69 with model a, then the rights messages given, 47 and 42, and returns the
+// room's rating, 345, and its event, 370, which come after them.
+func (c *client) goToFlat(t *testing.T, id int64, rights ...int) (rating, event string) {
 	t.Helper()
 	c.send(t, 59, strconv.FormatInt(id, 10))
 	c.expectNext(t, 69, "model_a "+strconv.FormatInt(id, 10))
 	for _, r := range rights {
 		c.expectNext(t, r, "")
 	}
+	return c.nextBody(t, 345), c.nextBody(t, 370)
 }
 
 func userLine(index int, id int64, name string, x, y, height int) string {

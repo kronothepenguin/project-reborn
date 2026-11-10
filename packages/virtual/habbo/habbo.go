@@ -28,7 +28,18 @@ type Habbo struct {
 	Fuses        []string
 	// Ignored are the avatar ids of the habbos whose chat it does not see, oldest first.
 	Ignored []int64
+	// Group is the habbo's favourite group, which it shows in rooms (plans/server decision 0068); its ID is 0 when it
+	// has none.
+	Group   Group
 	Session Session
+}
+
+// Group is a habbo's favourite group as rooms show it: its badge, and the habbo's status in it, 1 owner, 2 admin or 3
+// member, as the client's Group Info class reads it.
+type Group struct {
+	ID     int64
+	Badge  string
+	Status int
 }
 
 var (

@@ -36,7 +36,15 @@ const (
 	roomAdData            = 208
 	cantConnect           = 224
 	interstitialData      = 258
+	groupBadges           = 309
+	groupDetails          = 311
+	roomRating            = 345
+	userTagList           = 350
 	userTypingStatus      = 361
+	roomEventPermission   = 367
+	roomEventTypes        = 368
+	roomEventList         = 369
+	roomEventInfo         = 370
 	ignoreUserResult      = 419
 	ignoreList            = 420
 )
@@ -152,8 +160,18 @@ var roomHandlers = map[int]handler{
 	318: loggedIn(handleCancelTyping),
 	319: loggedIn(handleIgnoreUser),
 	321: loggedIn(handleGetIgnoreList),
+	230: loggedIn(handleGetGroupBadges),
+	231: loggedIn(handleGetGroupDetails),
+	261: loggedIn(handleRateFlat),
+	263: loggedIn(handleGetUserTags),
 	320: loggedIn(handleBanUser),
 	322: loggedIn(handleUnignoreUser),
+	345: loggedIn(handleCanCreateRoomEvent),
+	346: loggedIn(handleCreateRoomEvent),
+	347: loggedIn(handleQuitRoomEvent),
+	348: loggedIn(handleEditRoomEvent),
+	349: loggedIn(handleGetRoomEventTypeCount),
+	350: loggedIn(handleGetRoomEventsByType),
 }
 
 // handleRoomDirectory heads the habbo for a room, out of the one it is in: 19, which Holo sent for both kinds, then a
@@ -223,7 +241,7 @@ func handleTryFlat(s *session, me habbo.Habbo, body []byte) {
 }
 
 // handleGoToFlat takes the habbo into the habbo room whose door let it through: 69 with model_<model> as the marker,
-// then 47 for its owner and 42 for a habbo with rights, as Holo sent them.
+// then 47 for its owner and 42 for a habbo with rights, the room's rating, 345, and its event, 370, as Holo sent them.
 func handleGoToFlat(s *session, me habbo.Habbo, body []byte) {
 	id, ok := flatID(body)
 	if !ok {
@@ -245,6 +263,14 @@ func handleGoToFlat(s *session, me habbo.Habbo, body []byte) {
 	if e.Rights {
 		s.reply(roomController, nil)
 	}
+	rating, err := game.RoomRating(context.Background(), s.db, me, id)
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	s.sendRating(rating)
+	event, held := game.RoomEvent(id)
+	s.sendRoomEvent(game.RoomEventChanged{Event: event, Held: held})
 }
 
 func flatID(body []byte) (int64, bool) {
@@ -534,7 +560,7 @@ func ad(imageKey, linkKey string) []byte {
 }
 
 // writeUser writes a habbo's user lines, in the order Holo wrote them: its index, web id, name, figure, place, motto,
-// sex and badges, its worn badge in slot 1. Each line ends with a carriage return, which ends a line for the client,
+// sex and badges, its worn badge in slot 1, then its favourite group and its status in it, when it has one. Each line ends with a carriage return, which ends a line for the client,
 // so none may hold one.
 func writeUser(b *strings.Builder, v game.Visitor) {
 	badges := ""
@@ -554,6 +580,9 @@ func writeUser(b *strings.Builder, v game.Visitor) {
 	} {
 		b.WriteString(strings.ReplaceAll(line, "\r", " "))
 		b.WriteByte('\r')
+	}
+	if g := v.Habbo.Group; g.ID != 0 {
+		fmt.Fprintf(b, "g:%d\rt:%d\r", g.ID, g.Status)
 	}
 }
 
@@ -581,4 +610,147 @@ func str(s string) []byte {
 	// A string that cannot be encoded holds the character 2 or is not UTF-8; names and empty strings never are.
 	_ = encoding.WriteString(&b, s)
 	return b.Bytes()
+}
+
+// handleRateFlat records the habbo's vote, 1 or -1, on its room.
+func handleRateFlat(s *session, me habbo.Habbo, body []byte) {
+	vote, err := encoding.ReadVL64(bytes.NewReader(body))
+	if err != nil {
+		s.malformed(261, body)
+		return
+	}
+	s.ruled(game.RateRoom(context.Background(), s.db, me, int(vote)))
+}
+
+// sendRating writes a rating as 345: the rating, -1 before the habbo votes, and the share of +1 votes.
+func (s *session) sendRating(r game.Rating) {
+	s.reply(roomRating, append(vl64(r.Value), vl64(r.Percent)...))
+}
+
+// handleCanCreateRoomEvent answers 367: 1 when the habbo may host an event where it is.
+func handleCanCreateRoomEvent(s *session, me habbo.Habbo, _ []byte) {
+	s.reply(roomEventPermission, vl64(flag(game.CanHostEvent(me))))
+}
+
+func handleCreateRoomEvent(s *session, me habbo.Habbo, body []byte) {
+	roomEvent(s, me, 346, body, false)
+}
+func handleEditRoomEvent(s *session, me habbo.Habbo, body []byte) { roomEvent(s, me, 348, body, true) }
+
+// roomEvent reads an event, its type, name and description, and hosts or changes it.
+func roomEvent(s *session, me habbo.Habbo, id int, body []byte, edit bool) {
+	r := bytes.NewReader(body)
+	eventType, err := encoding.ReadVL64(r)
+	if err != nil {
+		s.malformed(id, body)
+		return
+	}
+	name, err := encoding.ReadB64String(r)
+	if err != nil {
+		s.malformed(id, body)
+		return
+	}
+	description, err := encoding.ReadB64String(r)
+	if err != nil {
+		s.malformed(id, body)
+		return
+	}
+	game.HostEvent(me, int(eventType), name, description, edit)
+}
+
+// handleQuitRoomEvent ends the event the habbo hosts.
+func handleQuitRoomEvent(_ *session, me habbo.Habbo, _ []byte) { game.EndEvent(me) }
+
+// handleGetRoomEventTypeCount answers 368 with how many event types there are.
+func handleGetRoomEventTypeCount(s *session, _ habbo.Habbo, _ []byte) {
+	s.reply(roomEventTypes, vl64(game.EventTypes()))
+}
+
+// handleGetRoomEventsByType answers 369 with the events of a type: each one's room, host, name, description and
+// start.
+func handleGetRoomEventsByType(s *session, _ habbo.Habbo, body []byte) {
+	eventType, err := encoding.ReadVL64(bytes.NewReader(body))
+	if err != nil {
+		s.malformed(350, body)
+		return
+	}
+	events := game.Events(int(eventType))
+	b := append(vl64(int(eventType)), vl64(len(events))...)
+	for _, e := range events {
+		for _, field := range []string{strconv.FormatInt(e.FlatID, 10), e.HostName, e.Name, e.Description, game.EventTime(e.Event)} {
+			b = append(b, str(field)...)
+		}
+	}
+	s.reply(roomEventList, b)
+}
+
+// sendRoomEvent writes a room's event as 370: its host's id, -1 when it has none; then the host's name, the room, the
+// type, the name, the description and the start.
+func (s *session) sendRoomEvent(c game.RoomEventChanged) {
+	if !c.Held {
+		s.reply(roomEventInfo, str("-1"))
+		return
+	}
+	e := c.Event
+	b := append(str(strconv.FormatInt(e.HostID, 10)), str(e.HostName)...)
+	b = append(b, str(strconv.FormatInt(e.FlatID, 10))...)
+	b = append(b, vl64(e.Type)...)
+	for _, field := range []string{e.Name, e.Description, game.EventTime(e.Event)} {
+		b = append(b, str(field)...)
+	}
+	s.reply(roomEventInfo, b)
+}
+
+// handleGetGroupBadges answers 309 with the badges of the groups the room's habbos show.
+func handleGetGroupBadges(s *session, me habbo.Habbo, _ []byte) {
+	groups := game.GroupBadges(me)
+	b := vl64(len(groups))
+	for _, g := range groups {
+		b = append(b, vl64(int(g.ID))...)
+		b = append(b, str(g.Badge)...)
+	}
+	s.reply(groupBadges, b)
+}
+
+// handleGetGroupDetails answers 311 with a group's name and description, and -1 for its room, which groups have not;
+// a group that does not exist is -1 alone.
+func handleGetGroupDetails(s *session, _ habbo.Habbo, body []byte) {
+	id, err := encoding.ReadVL64(bytes.NewReader(body))
+	if err != nil {
+		s.malformed(231, body)
+		return
+	}
+	g, ok, err := game.GroupDetails(context.Background(), s.db, int64(id))
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	if !ok {
+		s.reply(groupDetails, vl64(-1))
+		return
+	}
+	b := append(vl64(int(g.ID)), str(g.Name)...)
+	b = append(b, str(g.Description)...)
+	b = append(b, vl64(-1)...)
+	b = append(b, str("")...)
+	s.reply(groupDetails, b)
+}
+
+// handleGetUserTags answers 350 with a habbo's tags from the site.
+func handleGetUserTags(s *session, _ habbo.Habbo, body []byte) {
+	id, err := encoding.ReadVL64(bytes.NewReader(body))
+	if err != nil {
+		s.malformed(263, body)
+		return
+	}
+	tags, err := game.UserTags(context.Background(), s.db, int64(id))
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	b := append(vl64(int(id)), vl64(len(tags))...)
+	for _, tag := range tags {
+		b = append(b, str(tag)...)
+	}
+	s.reply(userTagList, b)
 }

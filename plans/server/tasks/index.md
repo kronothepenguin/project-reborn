@@ -75,10 +75,12 @@ starts.
 - [s4-04 Walk](/tasks/s4-04-walking.md) — MOVE walks a habbo to a tile a step every 500 ms by Holo's rules, LOOKTO turns it, and every room's habbos see the steps in 34. **done**
 - [s4-05 Chat, whisper, shout, dance, wave and type](/tasks/s4-05-chat-and-gestures.md) — CHAT, WHISPER and SHOUT reach the room as 24, 25 and 26 and are saved; typing, dances and waves show; a habbo's ignore list hides others' chat from it. **done**
 - [s4-06 Give rights, kick and ban](/tasks/s4-06-rights-kicks-and-bans.md) — An owner gives and takes rights, all at once too, and kicks and bans habbos for 15 minutes; holders of fuse_any_room_controller act as owners. **done**
-- [s4-07 Rate rooms, hold events, show badges and tags, and queue](/tasks/s4-07-room-extras.md) — RATEFLAT rates a room, room events list and run, a habbo's badge and favourite group show, tags list, and full rooms queue their habbos and spectators.
+- [s4-07 Rate rooms, hold events, and show groups and tags](/tasks/s4-07-room-extras.md) — RATEFLAT rates a room, room events list and run, a habbo's favourite group shows, and tags list. **done**
 - [s4-08 Read the chat history in housekeeping](/tasks/s4-08-chat-log-page.md) — Housekeeping gets a chat log page behind housekeeping.chatLogs, by room or habbo, and lines older than game.chatHistoryDays are deleted.
 - [s4-09 Check S4's exit criteria](/tasks/s4-09-exit-check.md) — From the merged work, check every exit criterion of S4 and close the phase.
 - [s4-10 Send through an outbox per session](/tasks/s4-10-outbox.md) — Each r26 session queues its messages and a goroutine of its own writes them; a client whose game.outboxSize queue is full is closed. **done**
+- [s4-11 Wear five badges](/tasks/s4-11-five-badge-slots.md) — The store keeps a slot 1 to 5 per worn badge; SETBADGE sets them, 228 and the user lines show them, and the site's badge page keeps working.
+- [s4-12 Queue for full rooms and watch as a spectator](/tasks/s4-12-queue-and-spectators.md) — A full room queues its arriving habbos and takes spectators, as the R26 client shows them, in memory.
 
 ## S5 to S9
 

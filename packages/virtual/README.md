@@ -64,8 +64,9 @@ if ok {
   interface (`plans/server/decisions/0048-sessions-through-an-interface-virtual-declares.md`). Sessions are compared by
   identity, so a session is a pointer.
 - `Habbo` is what the login read of the habbo: its `store.Avatar`, its badges, the one it wears, its sound setting, its
-  ignore list, `Ignored`, and its fuses (`plans/server/decisions/0053-the-online-habbo-holds-its-own-data.md`), and its
-  `Session`. The wallet and the club, which the user's habbos share, stay in the store.
+  ignore list, `Ignored`, its favourite `Group`, and its fuses
+  (`plans/server/decisions/0053-the-online-habbo-holds-its-own-data.md`), and its `Session`. The wallet and the club,
+  which the user's habbos share, stay in the store.
 - `Get(avatarID) (Habbo, bool)` returns a copy of an online habbo; changing the copy changes nothing online.
 - `Update(avatarID, s, change) bool` runs `change` on the online habbo while `s` plays it, after the store has the
   change. `change` runs under the package's lock: it must not call a session or the database.
@@ -148,6 +149,8 @@ left, ok := room.Leave(h.ID, h.Session)
   status (`plans/server/decisions/0072-each-loaded-room-runs-its-own-clock.md`); `Typing`; and `Leaving`, a kicked or
   banned habbo walking out. A `Status` may end, `Until`, as talking and waving do. `Tick(step)` runs the clock's step on
   every habbo at once, by index, under the room's lock, and returns the statuses `step` hands back.
+- A loaded room holds its event, which lives only in memory (`plans/server/decisions/0081-eleven-room-event-types.md`):
+  `Event`, `SetEvent` and `EndEvent`; `All()` returns the loaded rooms, for the navigator's list of events.
 - Once a room unloads, its methods change nothing and report false, so a rule holding an old `*Room` cannot bring it
   back.
 - `ParseFloor(model)` reads a model's height map as the client reads 31: `x` blocked, in either case; a digit, that

@@ -221,6 +221,10 @@ func (s *session) Notify(event any) {
 		} else {
 			s.reply(roomNotController, nil)
 		}
+	case game.RatingChanged:
+		s.sendRating(e.Rating)
+	case game.RoomEventChanged:
+		s.sendRoomEvent(e)
 	case game.Chat:
 		s.sendChat(e)
 	case game.Typing:

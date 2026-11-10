@@ -416,8 +416,8 @@ func limitFor(ctx context.Context, db *sql.DB, viewer habbo.Habbo, ref room.Ref)
 	return int(r.MaxVisitors), err
 }
 
-// LeaveRoom takes the habbo avatarID, whom s plays, out of the room it is in (QUIT), and away from the doorbell it
-// rings, whose answerers drop it. The others in the room see it go. When it was the last one in, the room unloads
+// LeaveRoom takes the habbo avatarID, whom s plays, out of the room it is in (QUIT), ending the event it hosts there
+// (plans/server decision 0081), and away from the doorbell it rings, whose answerers drop it. The others in the room see it go. When it was the last one in, the room unloads
 // (plans/server decision 0071), and those still ringing are turned away.
 func LeaveRoom(avatarID int64, s Session) {
 	if h, ok := room.ClearHeading(avatarID); ok && !h.Admitted {
@@ -428,6 +428,9 @@ func LeaveRoom(avatarID int64, s Session) {
 				}
 			}
 		}
+	}
+	if r, ok := room.In(avatarID); ok {
+		endEventOf(r, avatarID)
 	}
 	left, ok := room.Leave(avatarID, s)
 	if !ok {
