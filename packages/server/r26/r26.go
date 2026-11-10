@@ -26,7 +26,7 @@ type handler func(s *session, body []byte)
 
 // handlers holds the handler of each command id the server handles, from every cast. Every other id is logged as
 // unhandled.
-var handlers = join(entryInitHandlers, clubHandlers, sharedHandlers, navigatorHandlers, kioskRoomHandlers, roomHandlers)
+var handlers = join(entryInitHandlers, clubHandlers, sharedHandlers, navigatorHandlers, kioskRoomHandlers, roomHandlers, roomUtilsHandlers)
 
 // join puts the handlers of every cast in one map. A command has one handler, even when several casts send it, as
 // hh_entry_init and hh_tutorial both send 228, so a repeated id is a mistake of the server, caught as it starts.
@@ -215,6 +215,10 @@ func (s *session) Notify(event any) {
 		s.reply(flatNotAllowedToEnter, str(""))
 	case game.Kicked:
 		s.reply(clc, nil)
+	case game.Chat:
+		s.sendChat(e)
+	case game.Typing:
+		s.reply(userTypingStatus, append(vl64(e.Index), vl64(flag(e.On))...))
 	case game.Statuses:
 		var b strings.Builder
 		for _, o := range e.Occupants {

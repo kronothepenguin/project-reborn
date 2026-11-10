@@ -51,7 +51,7 @@ doorbell, kick and ban, and habbos rate rooms, ignore others and hold room event
 2. [s4-02 Load and unload rooms in virtual](/tasks/s4-02-loaded-rooms.md) **done**
 3. [s4-03 Enter and leave a room](/tasks/s4-03-entering-a-room.md) **done**
 4. [s4-04 Walk](/tasks/s4-04-walking.md) **done**
-5. [s4-05 Chat, whisper, shout, dance, wave and type](/tasks/s4-05-chat-and-gestures.md)
+5. [s4-05 Chat, whisper, shout, dance, wave and type](/tasks/s4-05-chat-and-gestures.md) **done**
 6. [s4-06 Give rights, kick and ban](/tasks/s4-06-rights-kicks-and-bans.md)
 7. [s4-07 Rate rooms, hold events, show badges and tags, and queue](/tasks/s4-07-room-extras.md)
 8. [s4-08 Read the chat history in housekeeping](/tasks/s4-08-chat-log-page.md)

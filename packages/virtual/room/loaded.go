@@ -23,10 +23,12 @@ var (
 	ErrFull = errors.New("room: the room is full")
 )
 
-// Status is one of a habbo's actions in a room, such as sit or dance, as 34 sends it.
+// Status is one of a habbo's actions in a room, such as sit or dance, as 34 sends it. A status with an end, such as
+// talk or wave, lasts until the room's clock reaches it.
 type Status struct {
 	Action     string
 	Parameters string
+	Until      time.Time
 }
 
 // Occupant is a habbo in a loaded room.
@@ -48,6 +50,8 @@ type Occupant struct {
 	GoalX, GoalY int
 	// Changed asks the room's clock to send the habbo's status on its next tick.
 	Changed bool
+	// Typing reports whether the habbo types a line.
+	Typing bool
 }
 
 func (o Occupant) clone() Occupant {

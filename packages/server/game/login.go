@@ -18,7 +18,7 @@ var ErrInvalidTicket = errors.New("game: invalid SSO ticket")
 
 // Login logs in on s the habbo that ticket names. It spends the ticket, saves
 // machineID, the machine id s holds, when there is one, and the last time online,
-// and puts the habbo online with its badges, its sound setting and its fuses
+// and puts the habbo online with its badges, its sound setting, its ignore list and its fuses
 // (plans/server decision 0053). The session the habbo was online on leaves its
 // room and gets ConcurrentLogin.
 func Login(ctx context.Context, db *sql.DB, s Session, ticket, machineID string) (habbo.Habbo, error) {
@@ -59,6 +59,13 @@ func Login(ctx context.Context, db *sql.DB, s Session, ticket, machineID string)
 		if badge.Worn {
 			h.Worn = badge.Code
 		}
+	}
+	ignored, err := q.ListIgnoredHabbos(ctx, avatarID)
+	if err != nil {
+		return habbo.Habbo{}, fmt.Errorf("game: login: %w", err)
+	}
+	for _, row := range ignored {
+		h.Ignored = append(h.Ignored, row.IgnoredAvatarID)
 	}
 	data, err := q.GetAvatarGameData(ctx, avatarID)
 	if err != nil {

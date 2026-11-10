@@ -26,7 +26,9 @@ type Habbo struct {
 	Worn         string
 	SoundEnabled bool
 	Fuses        []string
-	Session      Session
+	// Ignored are the avatar ids of the habbos whose chat it does not see, oldest first.
+	Ignored []int64
+	Session Session
 }
 
 var (
@@ -60,6 +62,7 @@ func Update(avatarID int64, s Session, change func(h *Habbo)) bool {
 func (h Habbo) clone() Habbo {
 	h.Badges = slices.Clone(h.Badges)
 	h.Fuses = slices.Clone(h.Fuses)
+	h.Ignored = slices.Clone(h.Ignored)
 	return h
 }
 

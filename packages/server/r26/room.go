@@ -35,6 +35,9 @@ const (
 	roomAdData            = 208
 	cantConnect           = 224
 	interstitialData      = 258
+	userTypingStatus      = 361
+	ignoreUserResult      = 419
+	ignoreList            = 420
 )
 
 // The reasons of 224, as hh_navigator shows them.
@@ -135,9 +138,17 @@ var roomHandlers = map[int]handler{
 	64:  loggedIn(handleGetStatus),
 	75:  loggedIn(handleMove),
 	79:  loggedIn(handleLookTo),
+	88:  loggedIn(handleStop),
+	93:  loggedIn(handleDance),
+	94:  loggedIn(handleWave),
 	98:  loggedIn(handleLetUserIn),
 	126: loggedIn(handleGetRoomAd),
 	182: loggedIn(handleGetInterstitial),
+	317: loggedIn(handleStartTyping),
+	318: loggedIn(handleCancelTyping),
+	319: loggedIn(handleIgnoreUser),
+	321: loggedIn(handleGetIgnoreList),
+	322: loggedIn(handleUnignoreUser),
 }
 
 // handleRoomDirectory heads the habbo for a room, out of the one it is in: 19, which Holo sent for both kinds, then a
@@ -372,6 +383,76 @@ func handleLookTo(s *session, me habbo.Habbo, body []byte) {
 		return
 	}
 	game.LookTo(me, x, y)
+}
+
+// handleStartTyping and handleCancelTyping tell the room that the habbo types, as 361.
+func handleStartTyping(_ *session, me habbo.Habbo, _ []byte)  { game.SetTyping(me, true) }
+func handleCancelTyping(_ *session, me habbo.Habbo, _ []byte) { game.SetTyping(me, false) }
+
+// handleDance starts the normal dance with no body, or a club dance, 1 to 4.
+func handleDance(s *session, me habbo.Habbo, body []byte) {
+	if len(body) == 0 {
+		game.Dance(me, 0)
+		return
+	}
+	dance, err := encoding.ReadVL64(bytes.NewReader(body))
+	if err != nil {
+		s.malformed(93, body)
+		return
+	}
+	game.Dance(me, int(dance))
+}
+
+// handleWave makes the habbo wave.
+func handleWave(_ *session, me habbo.Habbo, _ []byte) { game.Wave(me) }
+
+// handleStop ends the habbo's dance, `Dance`; carrying, `CarryItem`, comes with drinks.
+func handleStop(_ *session, me habbo.Habbo, body []byte) {
+	if string(body) == "Dance" {
+		game.StopDancing(me)
+	}
+}
+
+// handleIgnoreUser and handleUnignoreUser answer 419 with what the ignore did: 0 failed, 1 added, 2 added with the
+// oldest dropped, 3 removed, as the client's ignore list reads them.
+func handleIgnoreUser(s *session, me habbo.Habbo, body []byte) {
+	ignoreBy(s, 319, body, func(name string) (game.IgnoreResult, error) {
+		return game.Ignore(context.Background(), s.db, me, name)
+	})
+}
+
+func handleUnignoreUser(s *session, me habbo.Habbo, body []byte) {
+	ignoreBy(s, 322, body, func(name string) (game.IgnoreResult, error) {
+		return game.Unignore(context.Background(), s.db, me, name)
+	})
+}
+
+func ignoreBy(s *session, id int, body []byte, rule func(name string) (game.IgnoreResult, error)) {
+	name, err := encoding.ReadB64String(bytes.NewReader(body))
+	if err != nil {
+		s.malformed(id, body)
+		return
+	}
+	result, err := rule(name)
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	s.reply(ignoreUserResult, vl64(int(result)))
+}
+
+// handleGetIgnoreList sends 420: the names of the habbos the habbo ignores.
+func handleGetIgnoreList(s *session, me habbo.Habbo, _ []byte) {
+	names, err := game.IgnoreList(context.Background(), s.db, me)
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	b := vl64(len(names))
+	for _, name := range names {
+		b = append(b, str(name)...)
+	}
+	s.reply(ignoreList, b)
 }
 
 // handleLetUserIn answers the doorbell of the habbo's room.

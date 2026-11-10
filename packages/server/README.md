@@ -263,6 +263,15 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
 | `QUIT` (53) | Nothing: the habbo leaves, and the others get 29 with its index |
 | `MOVE` (75) | Nothing at once: the habbo walks to the tile, two B64 shorts, a step on each tick of the room's clock. A tile off the floor, such as the 1000, 1000 of the sound machine's editor, changes nothing |
 | `LOOKTO` (79) | The habbo turns, head and body, to the tile `<x> <y>`, unless it sits or lies, as Holo had it; its status goes out on the next tick |
+| `CHAT` (52), in `room_utils.go` | 24 with the speaker's index and the text to the habbos within `game.chatRange` tiles each way, 5, as Holo had it; the farther ones get 24 with no text, which the client draws as its unheard bubble (`plans/server/decisions/0074-near-habbos-read-chat-far-ones-see-a-bubble.md`) |
+| `SHOUT` (55), in `room_utils.go` | 26 to everyone in the room |
+| `WHISPER` (56), in `room_utils.go` | `<name> <text>`: 25 to the named habbo and the speaker only, and to nobody when the name is not in the room, as Holo had it |
+| `USER_START_TYPING` (317), `USER_CANCEL_TYPING` (318) | 361 to the room: the habbo's index and 1 or 0. A line ends the typing, and the room gets 361 with 0 first, as Holo sent it |
+| `DANCE` (93) | With no body the normal dance, `dance`; with 1 to 4 a club dance, `dance <n>`, for the holders of `fuse_use_club_dance`; never while sitting or lying |
+| `WAVE` (94) | `wave` for 1.5 s, which stops a dance (`plans/server/decisions/0075-talking-smileys-and-waves-as-holo.md`) |
+| `STOP` (88) | `Dance` ends the dance; carrying waits for drinks |
+| `IGNOREUSER` (319), `UNIGNORE_USER` (322) | 419: 0 failed (no such habbo, or the habbo itself), 1 added, 2 added with the oldest dropped past `game.maxIgnoredHabbos`, 100, or 3 removed (`plans/server/decisions/0076-ignore-up-to-100-the-oldest-dropped.md`) |
+| `GET_IGNORE_LIST` (321) | 420: the names the habbo ignores, oldest first |
 
 - A user line is `i` the index, `a` the habbo's id, `n` the name, `f` the
   figure, `l` the place, `c` the motto, `s` the sex and `b` the worn badge in
@@ -292,8 +301,18 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
   one diagonal; up or down at most 1 height; never onto another habbo's tile.
   A seat takes a habbo only as its goal, and seats it facing the seat's way
   with `sit 1`, dropping its dance, as Holo did.
-- Chat, rights, kicks, bans, ratings, events, badges and the queue come with
-  the next S4 tasks.
+- A line keeps its first `game.chatMaxLength` characters, 100
+  (`plans/server/decisions/0078-a-chat-line-is-cut-at-100-characters.md`), and
+  is saved for staff (`plans/server/decisions/0066-staff-read-the-chat-history-30-days.md`),
+  whispers with the habbo they went to. A habbo never gets the lines of a habbo
+  it ignores. Nothing is filtered yet
+  (`plans/server/decisions/0077-the-word-filter-waits.md`).
+- After each line the speaker shows `talk` for (letters + 50) x 30 ms, and a
+  chat or a shout with a smiley shows its face for 5 s, `gest sml`, `agr`, `sad`
+  or `srp`, as Holo's `checkEmotion` found them. The room's clock ends each
+  timed status on its tick and sends the change.
+- Rights, kicks, bans, ratings, events, badges and the queue come with the next
+  S4 tasks.
 
 ## Keeping the session alive
 
@@ -351,6 +370,10 @@ client through its `Session` (`plans/server/decisions/0039-rules-notify-sessions
 - Their events: `RoomEntered`, `RoomLeft`, `DoorbellRang`, `DoorbellAnswered`,
   `LetIn`, `TurnedAway` and `Kicked`.
 - `DeleteRoom` sends the habbos in the room out.
+- Chat: `Say`, `Shout` and `Whisper` send `Chat` events; `SetTyping` sends
+  `Typing`; `Dance`, `StopDancing` and `Wave` change statuses; `Ignore`,
+  `Unignore` and `IgnoreList` keep the ignore list, saved and in the online
+  habbo, which `Login` loads.
 - Walking: `EnterRoom` starts a room's clock when its entry loads the room;
   `Walk` sets a habbo's goal and `LookTo` turns it; the clock's ticks send
   `Statuses`.
@@ -401,6 +424,8 @@ says, and each uses habbos of its own.
   room-o-matic up to the 50th room, its settings, its changes and its deletion.
 - `entering_test.go` enters public rooms and habbo rooms through every door,
   the doorbell, bans, full rooms, a deletion, a logout and the ads.
+- `chat_test.go` chats near and far, shouts, whispers, types, ignores up to the
+  limit, dances and waves.
 - `walking_test.go` walks two habbos at once, a step every 500 ms, and turns
   one; `game`'s `walking_test.go` tests the way: around walls without cutting
   corners, heights, other habbos and seats.

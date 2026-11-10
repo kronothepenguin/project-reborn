@@ -16,8 +16,9 @@ const stepTime = 500 * time.Millisecond
 // Statuses tells the habbos in a room the statuses that changed on one tick of its clock, in one message.
 type Statuses struct{ Occupants []room.Occupant }
 
-// startClock runs a loaded room's clock until the room unloads (plans/server decision 0072): every stepTime, each
-// walking habbo takes a step, and the statuses that changed go to the room in one message.
+// startClock runs a loaded room's clock until the room unloads (plans/server decision 0072): every stepTime, the
+// statuses whose time is up end (plans/server decision 0075), each walking habbo takes a step, and the statuses that
+// changed go to the room in one message.
 func startClock(r *room.Room) {
 	go func() {
 		t := time.NewTicker(stepTime)
@@ -34,10 +35,13 @@ func startClock(r *room.Room) {
 }
 
 func tick(r *room.Room) {
-	floor := r.Floor()
+	floor, now := r.Floor(), time.Now()
 	sent := r.Tick(func(all []*room.Occupant) []room.Occupant {
 		var sent []room.Occupant
 		for _, o := range all {
+			if statuses, dropped := expire(o.Statuses, now); dropped {
+				o.Statuses, o.Changed = statuses, true
+			}
 			switch {
 			case o.Walking:
 				sent = append(sent, walk(floor, all, o))

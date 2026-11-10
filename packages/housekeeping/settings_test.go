@@ -702,6 +702,9 @@ func TestTheGameFormHoldsTheClientsSettings(t *testing.T) {
 		"game.loadingAdImage":     " Kind:text Value: ",
 		"game.roomAdLink":         " Kind:text Value: ",
 		"game.outboxSize":         " Kind:number Value:500 ",
+		"game.chatRange":          " Kind:number Value:5 ",
+		"game.chatMaxLength":      " Kind:number Value:100 ",
+		"game.maxIgnoredHabbos":   " Kind:number Value:100 ",
 	} {
 		if field := fieldOf(form, key); !strings.Contains(field, want) {
 			t.Errorf("%s lacks %q: %q", key, want, field)

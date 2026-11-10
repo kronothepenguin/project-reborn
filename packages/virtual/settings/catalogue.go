@@ -142,6 +142,13 @@ var catalogue = map[string]declaration{
 	// How many messages may wait for a client before the server closes it, as a
 	// client that stopped reading (plans/server decision 0073).
 	"game.outboxSize": declare(500, between(10, 100000)),
+
+	// Chat: how far a habbo's chat is read, how long a line may be, and how
+	// many habbos a habbo may ignore (plans/server decisions 0074, 0076 and
+	// 0078).
+	"game.chatRange":        declare(5, between(1, 50)),
+	"game.chatMaxLength":    declare(100, between(10, 1000)),
+	"game.maxIgnoredHabbos": declare(100, between(1, 1000)),
 }
 
 // rules check settings that depend on each other. keys lists every setting a

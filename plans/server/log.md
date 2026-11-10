@@ -2,6 +2,17 @@
 
 ## 2026-11-10
 
+- **Done** [s4-05](/tasks/s4-05-chat-and-gestures.md): habbos chat near and far, shout, whisper, type, dance and wave,
+  the lines saved and cut at 100 characters, and ignore up to 100 habbos.
+- **Decision** [0074](/decisions/0074-near-habbos-read-chat-far-ones-see-a-bubble.md): near habbos read chat, far ones
+  see a bubble.
+- **Decision** [0075](/decisions/0075-talking-smileys-and-waves-as-holo.md): talking, smileys and waves animate as Holo
+  did.
+- **Decision** [0076](/decisions/0076-ignore-up-to-100-the-oldest-dropped.md): a habbo ignores up to 100 habbos, the
+  oldest dropped.
+- **Decision** [0077](/decisions/0077-the-word-filter-waits.md): the word filter waits for a task of its own.
+- **Decision** [0078](/decisions/0078-a-chat-line-is-cut-at-100-characters.md): a chat line is cut at 100 characters.
+- **Start** [s4-05](/tasks/s4-05-chat-and-gestures.md).
 - **Done** [s4-04](/tasks/s4-04-walking.md): each loaded room's clock walks its habbos a step every 500 ms by A*,
   without cutting corners or climbing more than 1, seats them, and turns them with LOOKTO.
 - **Start** [s4-04](/tasks/s4-04-walking.md).

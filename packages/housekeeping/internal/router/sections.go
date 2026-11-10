@@ -185,6 +185,9 @@ var forms = []section{
 			{Key: "game.roomAdImage", Label: "Room Ad Image", Help: "The address of the picture shown in a room; empty for none."},
 			{Key: "game.roomAdLink", Label: "Room Ad Link", Help: "Where a click on the room's picture goes."},
 			{Key: "game.outboxSize", Label: "Outbox Size", Help: "How many messages may wait for a client before the server closes it, as a client that stopped reading."},
+			{Key: "game.chatRange", Label: "Chat Range", Help: "How many tiles away habbos read a habbo's chat; farther ones see a bubble without the words."},
+			{Key: "game.chatMaxLength", Label: "Chat Line Length", Help: "How many characters of a chat, shout or whisper the server keeps."},
+			{Key: "game.maxIgnoredHabbos", Label: "Ignored Habbos", Help: "How many habbos a habbo may ignore; one more drops the oldest."},
 		},
 	},
 	{

@@ -81,6 +81,17 @@ The user chose "Every checked fuse (Recommended)": "The client's 14 and Holo's s
 each one when the phase of its feature comes (S3 navigator, S4 rooms, S7 mod tool and calls for help); Holo's chat
 commands (:ha, :teleport, :freeze) have no phase yet and go to plans/later.md. The 11 unchecked names stay out."
 
+## The word filter
+
+Holo replaced each word of its `wordfilter` table with `wordfilter_censor`, `bobba`, ignoring case, in chat, room
+names and descriptions, and messenger messages, while `wordfilter_enable` was on. The game server filters nothing yet
+([server 0077](server/decisions/0077-the-word-filter-waits.md)); a task of its own brings a word list that housekeeping
+edits and filters the three together.
+
+The user chose "Later, on its own (Recommended)": "No filter in S4. plans/later.md keeps Holo's filter, a word list
+that housekeeping edits, for one task that covers chat, room names and messages together. Example: in S4, chat shows
+exactly what was typed."
+
 ## Achievements
 
 The habbos have no achievements yet ([server 0051](server/decisions/0051-no-achievements-yet.md)): 436 lists none, the
