@@ -144,6 +144,9 @@ left, ok := room.Leave(h.ID, h.Session)
   `Ban`, which the rules change once the store has the change
   (`plans/server/decisions/0010-hot-data-written-at-once.md`); and three lines, `Doorbell`, `Queue` and `Spectators`,
   with `Join`, `Remove` and `Waiting` (`plans/server/decisions/0069-doorbell-queue-and-spectators-in-memory.md`).
+- An `Occupant` also holds its walk, `Walking` to `GoalX`, `GoalY`, and `Changed`, which asks the room's clock to send
+  its status (`plans/server/decisions/0072-each-loaded-room-runs-its-own-clock.md`). `Tick(step)` runs the clock's
+  step on every habbo at once, by index, under the room's lock, and returns the statuses `step` hands back.
 - Once a room unloads, its methods change nothing and report false, so a rule holding an old `*Room` cannot bring it
   back.
 - `ParseFloor(model)` reads a model's height map as the client reads 31: `x` blocked, in either case; a digit, that

@@ -42,6 +42,12 @@ type Occupant struct {
 	BodyDirection int
 	// Statuses are the habbo's actions, in the order they were set.
 	Statuses []Status
+	// Walking reports whether the habbo walks to GoalX, GoalY, a step on each tick of the room's clock (plans/server
+	// decisions 0065 and 0072).
+	Walking      bool
+	GoalX, GoalY int
+	// Changed asks the room's clock to send the habbo's status on its next tick.
+	Changed bool
 }
 
 func (o Occupant) clone() Occupant {
@@ -320,6 +326,36 @@ func (r *Room) Update(avatarID int64, change func(o *Occupant)) bool {
 	changed.AvatarID, changed.Session, changed.Index = o.AvatarID, o.Session, o.Index
 	r.occupants[avatarID] = changed
 	return true
+}
+
+// Tick runs step on every habbo in the room at once, by index, under the room's lock, as the room's clock does, and
+// returns what step returns: the statuses to send. step must not call a session or the database; its changes to a
+// habbo's id, session or index are undone. An unloaded room runs nothing.
+func (r *Room) Tick(step func(all []*Occupant) []Occupant) []Occupant {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if r.unloaded {
+		return nil
+	}
+	all := make([]*Occupant, 0, len(r.occupants))
+	for _, o := range r.occupants {
+		c := o.clone()
+		all = append(all, &c)
+	}
+	slices.SortFunc(all, func(a, b *Occupant) int { return a.Index - b.Index })
+	held := make([]Occupant, len(all))
+	for i, o := range all {
+		held[i] = *o
+	}
+	sent := step(all)
+	for i, o := range all {
+		o.AvatarID, o.Session, o.Index = held[i].AvatarID, held[i].Session, held[i].Index
+		r.occupants[o.AvatarID] = *o
+	}
+	for i := range sent {
+		sent[i] = sent[i].clone()
+	}
+	return sent
 }
 
 // HasRights reports whether the habbo avatarID has rights in the room, as the store had them when the room loaded and

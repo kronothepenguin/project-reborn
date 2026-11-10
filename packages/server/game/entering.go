@@ -341,7 +341,8 @@ func visitorsOf(r *room.Room) []Visitor {
 }
 
 // EnterRoom brings the habbo into the room whose door let it through, once its client has built the room (G_STAT),
-// as Holo did, and returns everyone in it, the habbo too, by index. The others see it come. The room is checked
+// as Holo did, and returns everyone in it, the habbo too, by index. The habbo that loads the room starts its clock
+// (plans/server decision 0072). The others see it come. The room is checked
 // again: one that filled meanwhile turns it away, Full, unless it holds fuse_enter_full_rooms. In a habbo room, its
 // owner gets the status flatctrl useradmin, and a habbo with rights flatctrl onlyfurniture, as Holo gave them.
 func EnterRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]Visitor, Admission, error) {
@@ -353,7 +354,7 @@ func EnterRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]Visitor, 
 	if err != nil {
 		return nil, 0, fmt.Errorf("game: enter room: %w", err)
 	}
-	r, _, _, err := room.Enter(ctx, db, h.Ref, viewer.ID, viewer.Session, limit)
+	r, _, loaded, err := room.Enter(ctx, db, h.Ref, viewer.ID, viewer.Session, limit)
 	clearHeadingFor(viewer.ID, h.Ref)
 	switch {
 	case errors.Is(err, room.ErrFull):
@@ -362,6 +363,9 @@ func EnterRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]Visitor, 
 		return nil, NoRoom, nil
 	case err != nil:
 		return nil, 0, fmt.Errorf("game: enter room: %w", err)
+	}
+	if loaded {
+		startClock(r)
 	}
 	if control := flatControl(r, viewer); control != "" {
 		r.Update(viewer.ID, func(o *room.Occupant) {

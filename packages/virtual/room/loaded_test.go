@@ -334,3 +334,36 @@ func TestAHabboIsAdmittedOnlyWhereItHeads(t *testing.T) {
 		t.Error("the heading is still there")
 	}
 }
+
+// The clock's step sees every habbo at once and keeps its changes, but never who holds a place.
+func TestTickChangesEveryHabboAtOnce(t *testing.T) {
+	openHotel(t)
+	ann, bob := &session{"Ann"}, &session{"Bob"}
+	r, _, _ := enter(t, Ref{Public: true, ID: 101}, 1, ann)
+	enter(t, Ref{Public: true, ID: 101}, 2, bob)
+
+	sent := r.Tick(func(all []*Occupant) []Occupant {
+		if len(all) != 2 || all[0].AvatarID != 1 || all[1].AvatarID != 2 {
+			t.Errorf("the step saw %+v, want Ann then Bob", all)
+		}
+		all[0].X, all[0].Walking = 7, true
+		all[1].Index, all[1].AvatarID = 5, 9
+		all[1].Statuses = []Status{{Action: "mv", Parameters: "3,4,0"}}
+		return []Occupant{*all[1]}
+	})
+	if len(sent) != 1 || sent[0].Statuses[0].Action != "mv" {
+		t.Errorf("sent %+v, want Bob's status", sent)
+	}
+	sent[0].Statuses[0].Action = "sit"
+	if o, _ := r.Occupant(1); o.X != 7 || !o.Walking {
+		t.Errorf("Ann is %+v, want at x 7, walking", o)
+	}
+	if o, ok := r.Occupant(2); !ok || o.Index != 1 || o.Statuses[0].Action != "mv" {
+		t.Errorf("Bob is %+v, %t; want still index 1, moving", o, ok)
+	}
+	leave(t, 1, ann)
+	leave(t, 2, bob)
+	if r.Tick(func([]*Occupant) []Occupant { t.Error("an unloaded room ran a tick"); return nil }) != nil {
+		t.Error("an unloaded room sent statuses")
+	}
+}

@@ -12,6 +12,7 @@ import (
 	"io"
 	"log/slog"
 	"strconv"
+	"strings"
 	"sync/atomic"
 	"time"
 
@@ -214,6 +215,12 @@ func (s *session) Notify(event any) {
 		s.reply(flatNotAllowedToEnter, str(""))
 	case game.Kicked:
 		s.reply(clc, nil)
+	case game.Statuses:
+		var b strings.Builder
+		for _, o := range e.Occupants {
+			writeStatus(&b, o)
+		}
+		s.reply(roomStatus, []byte(b.String()))
 	}
 }
 

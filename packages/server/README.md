@@ -261,6 +261,8 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
 | `G_ITEMS` (63) | 45: no wall items |
 | `G_STAT` (64) | The habbo comes in at the model's door: 34 with the others' statuses, then 28 with its own user lines and 34 with its status, which the others get too. In a habbo room the owner's status holds `flatctrl useradmin` and a habbo with rights `flatctrl onlyfurniture`, as Holo gave them. A room that filled meanwhile gets 224 with 1 |
 | `QUIT` (53) | Nothing: the habbo leaves, and the others get 29 with its index |
+| `MOVE` (75) | Nothing at once: the habbo walks to the tile, two B64 shorts, a step on each tick of the room's clock. A tile off the floor, such as the 1000, 1000 of the sound machine's editor, changes nothing |
+| `LOOKTO` (79) | The habbo turns, head and body, to the tile `<x> <y>`, unless it sits or lies, as Holo had it; its status goes out on the next tick |
 
 - A user line is `i` the index, `a` the habbo's id, `n` the name, `f` the
   figure, `l` the place, `c` the motto, `s` the sex and `b` the worn badge in
@@ -275,8 +277,23 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
   still ringing get 131.
 - Deleting a room sends the habbos in it out, as Holo did: each gets 18, and the
   others see it go.
-- Walking, chat, rights, kicks, bans, ratings, events, badges and the queue come
-  with the next S4 tasks.
+- Each loaded room runs a clock, from its load to its unload
+  (`plans/server/decisions/0072-each-loaded-room-runs-its-own-clock.md`). Every
+  500 ms, the client's own step time
+  (`plans/server/decisions/0065-walking-500-ms-by-holos-rules.md`), each
+  walking habbo takes a step, and the statuses that changed, steps and turns,
+  go to the room in one 34. A step's status stands where the habbo was, with
+  `mv <x>,<y>,<height>` to where it goes, which the client animates; at its
+  goal, or with no way to it, the habbo stops, and its status goes without
+  `mv`.
+- The way is the shortest, by A*, over the room's floor: 8 directions, each
+  step the same time; a diagonal only when both tiles beside it are open, so
+  nobody cuts a corner, which Holo's pathfinder checked on the wrong side for
+  one diagonal; up or down at most 1 height; never onto another habbo's tile.
+  A seat takes a habbo only as its goal, and seats it facing the seat's way
+  with `sit 1`, dropping its dance, as Holo did.
+- Chat, rights, kicks, bans, ratings, events, badges and the queue come with
+  the next S4 tasks.
 
 ## Keeping the session alive
 
@@ -334,6 +351,9 @@ client through its `Session` (`plans/server/decisions/0039-rules-notify-sessions
 - Their events: `RoomEntered`, `RoomLeft`, `DoorbellRang`, `DoorbellAnswered`,
   `LetIn`, `TurnedAway` and `Kicked`.
 - `DeleteRoom` sends the habbos in the room out.
+- Walking: `EnterRoom` starts a room's clock when its entry loads the room;
+  `Walk` sets a habbo's goal and `LookTo` turns it; the clock's ticks send
+  `Statuses`.
 - `UserAccount(ctx, db, userID)` reads what the client shows of the user behind
   a habbo, which all the user's habbos share: the credits, the tickets, the film
   and whether the user takes the newsletter.
@@ -381,6 +401,9 @@ says, and each uses habbos of its own.
   room-o-matic up to the 50th room, its settings, its changes and its deletion.
 - `entering_test.go` enters public rooms and habbo rooms through every door,
   the doorbell, bans, full rooms, a deletion, a logout and the ads.
+- `walking_test.go` walks two habbos at once, a step every 500 ms, and turns
+  one; `game`'s `walking_test.go` tests the way: around walls without cutting
+  corners, heights, other habbos and seats.
 - Every habbo a test makes has a name of its own across all the test files: the
   tests share one database, where names are unique.
 - Tests that need short pings set `game.pingSeconds` and

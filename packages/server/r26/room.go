@@ -133,6 +133,8 @@ var roomHandlers = map[int]handler{
 	62:  loggedIn(handleGetObjects),
 	63:  loggedIn(handleGetItems),
 	64:  loggedIn(handleGetStatus),
+	75:  loggedIn(handleMove),
+	79:  loggedIn(handleLookTo),
 	98:  loggedIn(handleLetUserIn),
 	126: loggedIn(handleGetRoomAd),
 	182: loggedIn(handleGetInterstitial),
@@ -337,6 +339,39 @@ func (s *session) sendEntered(v game.Visitor) {
 // handleQuit takes the habbo out of its room.
 func handleQuit(s *session, me habbo.Habbo, _ []byte) {
 	game.LeaveRoom(me.ID, s)
+}
+
+// handleMove sends the habbo walking to a tile of its room, two B64 shorts.
+func handleMove(s *session, me habbo.Habbo, body []byte) {
+	r := bytes.NewReader(body)
+	x, err := encoding.ReadB64(r, 2)
+	if err != nil {
+		s.malformed(75, body)
+		return
+	}
+	y, err := encoding.ReadB64(r, 2)
+	if err != nil {
+		s.malformed(75, body)
+		return
+	}
+	game.Walk(me, x, y)
+}
+
+// handleLookTo turns the habbo to a tile, `<x> <y>`.
+func handleLookTo(s *session, me habbo.Habbo, body []byte) {
+	text, err := encoding.ReadRaw(bytes.NewReader(body))
+	if err != nil {
+		s.malformed(79, body)
+		return
+	}
+	xText, yText, _ := strings.Cut(text, " ")
+	x, errX := strconv.Atoi(xText)
+	y, errY := strconv.Atoi(yText)
+	if errX != nil || errY != nil {
+		s.malformed(79, body)
+		return
+	}
+	game.LookTo(me, x, y)
 }
 
 // handleLetUserIn answers the doorbell of the habbo's room.

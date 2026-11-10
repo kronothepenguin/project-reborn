@@ -2,6 +2,9 @@
 
 ## 2026-11-10
 
+- **Done** [s4-04](/tasks/s4-04-walking.md): each loaded room's clock walks its habbos a step every 500 ms by A*,
+  without cutting corners or climbing more than 1, seats them, and turns them with LOOKTO.
+- **Start** [s4-04](/tasks/s4-04-walking.md).
 - **Done** [s4-03](/tasks/s4-03-entering-a-room.md): habbos enter and leave public rooms and habbo rooms past their
   doors, passwords, bans, limits and doorbells, see each other come and go, and get the ads from the settings.
 - **Start** [s4-03](/tasks/s4-03-entering-a-room.md).
