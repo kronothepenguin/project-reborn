@@ -2,6 +2,21 @@
 
 ## 2026-11-10
 
+- **Update** [S4](/phases/s4-rooms.md) is active, with its exit criteria and the tasks
+  [s4-01](/tasks/s4-01-room-tables.md) to [s4-09](/tasks/s4-09-exit-check.md), once the user answered its open
+  questions.
+- **Decision** [0071](/decisions/0071-an-empty-room-unloads-at-once.md): an empty room unloads at once.
+- **Decision** [0070](/decisions/0070-a-loading-ad-and-a-room-ad-from-settings.md): rooms show a loading ad and a room
+  ad from housekeeping's settings.
+- **Decision** [0069](/decisions/0069-doorbell-queue-and-spectators-in-memory.md): the doorbell, the room queue and the
+  spectators live only in memory.
+- **Decision** [0068](/decisions/0068-a-habbo-shows-its-favourite-groups-badge.md): a habbo shows its favourite group's
+  badge in rooms.
+- **Decision** [0067](/decisions/0067-a-room-ban-lasts-15-minutes.md): a room ban lasts 15 minutes.
+- **Decision** [0066](/decisions/0066-staff-read-the-chat-history-30-days.md): staff read the chat history in
+  housekeeping, and it is kept 30 days.
+- **Decision** [0065](/decisions/0065-walking-500-ms-by-holos-rules.md): habbos walk a step every 500 ms, by Holo's
+  rules.
 - **Done** [s3-08](/tasks/s3-08-exit-check.md): every exit criterion of S3 passes on the merged work, with two new
   tests: a client browses every list of the navigator, and a habbo builds, changes and deletes a room.
   [S3](/phases/s3-navigator.md) is done.

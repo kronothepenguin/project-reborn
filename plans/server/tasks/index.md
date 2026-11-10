@@ -67,6 +67,18 @@ starts.
 - [s3-07 Read, change and delete a room](/tasks/s3-07-changing-a-room.md) — GETFLATINFO and GETFLATCAT read a room's settings and category; UPDATEFLAT, SETFLATINFO and SETFLATCAT let its owner change them, and DELETEFLAT deletes it. **done**
 - [s3-08 Check S3's exit criteria](/tasks/s3-08-exit-check.md) — From the merged work, check every exit criterion of S3 and close the phase. **done**
 
-## S4 to S9
+## S4 Rooms
+
+- [s4-01 Add the rooms' saved data](/tasks/s4-01-room-tables.md) — The store gets room rights, room bans, room votes, the chat history and the ignore lists; the attribute that reads the chat history and S4's settings join the catalogues.
+- [s4-02 Load and unload rooms in virtual](/tasks/s4-02-loaded-rooms.md) — virtual/room keeps each loaded room with its floor and its habbos, their positions and statuses, the doorbell, the queue and the spectators; a room loads with its first habbo and unloads with its last.
+- [s4-03 Enter and leave a room](/tasks/s4-03-entering-a-room.md) — A habbo enters a public room or a habbo room past its door, its password, its ban or its doorbell, gets the room's map, habbos, objects and statuses, and leaves; the loading ad and the room ad come from settings.
+- [s4-04 Walk](/tasks/s4-04-walking.md) — MOVE walks a habbo to a tile a step every 500 ms by Holo's rules, LOOKTO turns it, and every room's habbos see the steps in 34.
+- [s4-05 Chat, whisper, shout, dance, wave and type](/tasks/s4-05-chat-and-gestures.md) — CHAT, WHISPER and SHOUT reach the room as 24, 25 and 26 and are saved; typing, dances and waves show; a habbo's ignore list hides others' chat from it.
+- [s4-06 Give rights, kick and ban](/tasks/s4-06-rights-kicks-and-bans.md) — An owner gives and takes rights, all at once too, and kicks and bans habbos for 15 minutes; holders of fuse_any_room_controller act as owners.
+- [s4-07 Rate rooms, hold events, show badges and tags, and queue](/tasks/s4-07-room-extras.md) — RATEFLAT rates a room, room events list and run, a habbo's badge and favourite group show, tags list, and full rooms queue their habbos and spectators.
+- [s4-08 Read the chat history in housekeeping](/tasks/s4-08-chat-log-page.md) — Housekeeping gets a chat log page behind housekeeping.chatLogs, by room or habbo, and lines older than game.chatHistoryDays are deleted.
+- [s4-09 Check S4's exit criteria](/tasks/s4-09-exit-check.md) — From the merged work, check every exit criterion of S4 and close the phase.
+
+## S5 to S9
 
 Their tasks are written when each phase starts, once its open questions are answered.

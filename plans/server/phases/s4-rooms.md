@@ -2,8 +2,8 @@
 type: Phase
 title: S4 Rooms
 description: Habbos enter rooms, see each other, walk, talk and act, and owners manage rights, the doorbell, kicks and bans.
-status: planned
-timestamp: 2026-11-05T20:57:45+00:00
+status: active
+timestamp: 2026-11-10T16:42:26+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s4, server]
 ---
@@ -22,21 +22,35 @@ doorbell, kick and ban, and habbos rate rooms, ignore others and hold room event
 
 - Saved: room rights, bans, chat history, rating and ignore lists. Only in memory: positions, loaded rooms and room
   events ([0011](/decisions/0011-saved-and-memory-only-data.md)).
+- Habbos walk a step every 500 ms by Holo's rules ([0065](/decisions/0065-walking-500-ms-by-holos-rules.md)); staff
+  read the chat history, kept 30 days ([0066](/decisions/0066-staff-read-the-chat-history-30-days.md)); a room ban
+  lasts 15 minutes ([0067](/decisions/0067-a-room-ban-lasts-15-minutes.md)); a habbo shows its favourite group's badge
+  ([0068](/decisions/0068-a-habbo-shows-its-favourite-groups-badge.md)); the doorbell, the queue and the spectators
+  live only in memory ([0069](/decisions/0069-doorbell-queue-and-spectators-in-memory.md)); rooms show a loading ad and
+  a room ad from settings ([0070](/decisions/0070-a-loading-ad-and-a-room-ad-from-settings.md)); an empty room unloads
+  at once ([0071](/decisions/0071-an-empty-room-unloads-at-once.md)).
+- Furni in rooms, trading and teleports are [S5](/phases/s5-furni-catalogue.md)'s; pets and photos
+  [S7](/phases/s7-club-help-extras.md)'s.
 
 # Exit criteria
 
-Written with the phase's tasks, once its open questions are answered.
+- Go test clients enter a public room and a habbo room, see each other, walk a step every 500 ms around walls and
+  heights without cutting corners, chat, whisper and shout, type, dance and wave, and leave.
+- An owner's room asks for its password, rings its doorbell and refuses a full room or a banned habbo; the owner gives
+  and takes rights, answers the doorbell, kicks, and bans for 15 minutes.
+- A habbo rates a room, ignores another, holds a room event, and shows its badge and its favourite group's.
+- The chat is saved, staff read it in housekeeping, and lines older than 30 days go.
+- The loading ad and the room ad come from housekeeping's settings, and an empty room unloads at once.
+- Every gate passes.
 
 # Tasks
 
-Written when the phase starts.
-
-# Open questions
-
-- How walking works: the tick, diagonal steps and heights.
-- Who may read the chat history, and for how long it is kept.
-- How long a room ban lasts.
-- Whether the doorbell, the room queue and the spectators live only in memory.
-- Which group badge a habbo shows in a room, from the site's groups.
-- Whether room ads and interstitials are shown.
-- When an empty room unloads: at once or after a while.
+1. [s4-01 Add the rooms' saved data](/tasks/s4-01-room-tables.md)
+2. [s4-02 Load and unload rooms in virtual](/tasks/s4-02-loaded-rooms.md)
+3. [s4-03 Enter and leave a room](/tasks/s4-03-entering-a-room.md)
+4. [s4-04 Walk](/tasks/s4-04-walking.md)
+5. [s4-05 Chat, whisper, shout, dance, wave and type](/tasks/s4-05-chat-and-gestures.md)
+6. [s4-06 Give rights, kick and ban](/tasks/s4-06-rights-kicks-and-bans.md)
+7. [s4-07 Rate rooms, hold events, show badges and tags, and queue](/tasks/s4-07-room-extras.md)
+8. [s4-08 Read the chat history in housekeeping](/tasks/s4-08-chat-log-page.md)
+9. [s4-09 Check S4's exit criteria](/tasks/s4-09-exit-check.md)
