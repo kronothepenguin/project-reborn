@@ -1,5 +1,15 @@
 # Log
 
+## 2026-11-10
+
+- **Done** [s2-04](/tasks/s2-04-fuse-catalogue.md): access groups grant the 31 fuses the client or Holo's server checks,
+  club members get Holo's four club fuses, and update `0009-holo-fuses.sql` gives the groups Holo's fuses by level.
+- **Decision** [0045](/decisions/0045-fuses-holos-club-set-and-every-checked-fuse.md): a habbo's fuses: everyone's two,
+  Holo's club set, and every checked fuse from access groups.
+- **Decision** [0046](/decisions/0046-the-first-fuses-follow-holos-ranks.md): the first fuses follow Holo's ranks by
+  level.
+- **Start** [s2-04](/tasks/s2-04-fuse-catalogue.md).
+
 ## 2026-11-09
 
 - **Done** [s2-02](/tasks/s2-02-sso-tickets-at-sign-in.md): signing in to the CMS makes an SSO ticket, kept as text with

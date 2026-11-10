@@ -2,7 +2,8 @@
 type: Decision
 title: A habbo's fuses: a default set, club fuses, and staff fuses from access groups
 description: Every habbo gets fuse_trade and fuse_buy_credits, club members also fuse_use_club_dance and fuse_use_special_room_layouts, and the other 14 fuses the client checks come from access groups, through a fuse catalogue beside the site's attributes.
-status: accepted
+status: superseded
+superseded_by: "0045"
 timestamp: 2026-11-09T22:15:00+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-09T22:15:00+00:00"}
 tags: [server, auth, rights]

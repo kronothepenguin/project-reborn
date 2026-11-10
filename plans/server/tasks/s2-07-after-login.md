@@ -20,7 +20,7 @@ date ([hh_shared](/reference/r26/hh_shared.md)).
 # Steps
 
 - [ ] `GET_INFO` gets 5, the user object.
-- [ ] The habbo's fuses go out as 2 ([0031](/decisions/0031-fuses-defaults-club-and-access-groups.md)).
+- [ ] The habbo's fuses go out as 2 ([0045](/decisions/0045-fuses-holos-club-set-and-every-checked-fuse.md)).
 - [ ] `GET_CREDITS` gets 6 with the habbo's credits, as `hh_cat_code` reads it ([hh_cat_code](/reference/r26/hh_cat_code.md)).
 - [ ] `GETAVAILABLEBADGES` gets 229, and `GETSELECTEDBADGES` the habbo's chosen badges.
 - [ ] `GET_POSSIBLE_ACHIEVEMENTS` gets 436.

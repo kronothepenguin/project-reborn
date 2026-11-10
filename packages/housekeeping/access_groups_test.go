@@ -171,9 +171,10 @@ func TestTheGroupPage(t *testing.T) {
 	wantPage(t, rec, http.StatusOK, "access-groups/id.html",
 		"{Name:housekeeping.access Description:entering housekeeping Held:true}",
 		"{Name:housekeeping.news Description:writing and deleting news Held:false}",
+		"{Name:fuse_see_flat_ids Description:the ids of rooms in the navigator and in calls for help Held:false}",
 		"Name:Admin Habbos:")
-	if got, want := strings.Count(rec.Body.String(), "Held:"), len(auth.Catalogue()); got != want {
-		t.Errorf("the page has %d checkboxes, want the %d of the catalogue", got, want)
+	if got, want := strings.Count(rec.Body.String(), "Held:"), len(auth.Catalogue())+len(auth.FuseCatalogue()); got != want {
+		t.Errorf("the page has %d checkboxes, want the %d of the two catalogues", got, want)
 	}
 
 	for _, path := range []string{"/housekeeping/access-groups/999", "/housekeeping/access-groups/x"} {
@@ -209,6 +210,43 @@ func TestSavingAGroup(t *testing.T) {
 		t.Errorf("staff logs = %+v", logs)
 	}
 	wantPage(t, serve(mux, "GET", rec.Header().Get("Location"), cookie, nil), http.StatusOK, "Access groups updated successfully.")
+}
+
+func TestSavingAGroupsFuses(t *testing.T) {
+	db, mux := newSite(t)
+	_, _, cookie := manager(t, db, "Admin")
+	group := grant(t, db, habbo(t, db, "other@example.com", "Other"), auth.HousekeepingHelp, auth.Attribute(auth.FuseAlert))
+
+	form := groupForm("Guards", auth.HousekeepingHelp, auth.Attribute(auth.FuseKick), auth.Attribute(auth.FuseUseClubDance))
+	rec := serve(mux, "POST", groupURL(group), cookie, form)
+	wantRedirect(t, rec, groupURL(group)+"?saved=1")
+
+	if got, want := groupAttributes(t, db, group), []string{"fuse_kick", "fuse_use_club_dance", "housekeeping.help"}; !slices.Equal(got, want) {
+		t.Errorf("attributes = %v, want %v", got, want)
+	}
+	logs := staffLogs(t, db)
+	if len(logs) != 1 || logs[0].Detail != "Guards: +fuse_kick, +fuse_use_club_dance, -fuse_alert" {
+		t.Errorf("staff logs = %+v", logs)
+	}
+	wantPage(t, serve(mux, "GET", groupURL(group), cookie, nil), http.StatusOK,
+		"{Name:fuse_kick Description:the mod tool and its button in rooms, kicking from it, and the chat command :kick Held:true}",
+		"{Name:fuse_alert Description:", "Held:false}")
+}
+
+// Holo's database holds fuses that nothing checks, such as fuse_login, and every
+// habbo holds fuse_trade without a group.
+func TestOnlyTheCatalogueFusesCanBeGiven(t *testing.T) {
+	db, mux := newSite(t)
+	_, group, cookie := manager(t, db, "Admin")
+
+	for _, fuse := range []auth.Attribute{"fuse_login", auth.Attribute(auth.FuseTrade)} {
+		form := groupForm("Admins", auth.HousekeepingAccess, auth.HousekeepingAccessGroups, fuse)
+		wantPage(t, serve(mux, "POST", groupURL(group), cookie, form), http.StatusUnprocessableEntity,
+			"Only the attributes of the catalogue can be given.")
+		if got := groupAttributes(t, db, group); slices.Contains(got, string(fuse)) {
+			t.Errorf("%s was given: attributes = %v", fuse, got)
+		}
+	}
 }
 
 func TestSavingAGroupUnchangedLogsNothing(t *testing.T) {

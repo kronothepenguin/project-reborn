@@ -65,6 +65,22 @@ A housekeeping page, behind its own attribute, that renames a group, resets its 
 deal with an offensive group ([0085](holo-port/decisions/0085-no-housekeeping-group-tools-yet.md)). Holo's housekeeping
 only counted groups, and P5 keeps to that.
 
+## Holo's chat commands
+
+The chat commands Holo's server answered, behind fuses access groups already grant
+([server 0045](server/decisions/0045-fuses-holos-club-set-and-every-checked-fuse.md)): `:alert` and `:ra`
+(`fuse_alert`), `:roomalert` (`fuse_room_alert`), `:kick` (`fuse_kick`), `:roomkick` (`fuse_room_kick`), `:shutup` and
+`:unmute` (`fuse_mute`), `:roomshutup` and `:roomunmute` (`fuse_room_mute`), `:ban` (`fuse_ban`), `:superban`
+(`fuse_superban`), `:commandlist`, `:teletome`, `:jatlook`, `:userinfo` and `:whosonline` (`fuse_moderator_access`),
+`:refresh`, `:cat_transform`, `:ha`, `:offline`, `:mycoords` and `:masscredits` (`fuse_administrator_access`),
+`:teleport` and `:warp` (`fuse_teleport`), `:credits` (`fuse_credits`), and `:freeze` and `:unfreeze` (`fuse_freeze`).
+The game server has no phase for chat commands yet. [The Holograph Emulator](server/reference/holoemu.md#fuses) says
+where Holo handled each.
+
+The user chose "Every checked fuse (Recommended)": "The client's 14 and Holo's server's 15, 29 in all. Our server checks
+each one when the phase of its feature comes (S3 navigator, S4 rooms, S7 mod tool and calls for help); Holo's chat
+commands (:ha, :teleport, :freeze) have no phase yet and go to plans/later.md. The 11 unchecked names stay out."
+
 ## Known issues
 
 Issues the user has seen and chose to fix later.

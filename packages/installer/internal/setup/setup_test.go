@@ -145,13 +145,13 @@ func TestAnInstalledHotelHasHolosRanks(t *testing.T) {
 	}
 
 	want := map[string]struct {
-		level, attributes, members int64
+		level, attributes, fuses, members int64
 	}{
-		"Administrator": {7, int64(len(auth.Catalogue())), 1},
-		"Moderator":     {6, 13, 0},
-		"Gold Hobba":    {5, 0, 0},
-		"Silver Hobba":  {4, 0, 0},
-		"HabboX":        {3, 0, 0},
+		"Administrator": {7, int64(len(auth.Catalogue())), int64(len(auth.FuseCatalogue())), 1},
+		"Moderator":     {6, 13, 22, 0},
+		"Gold Hobba":    {5, 0, 16, 0},
+		"Silver Hobba":  {4, 0, 10, 0},
+		"HabboX":        {3, 0, 6, 0},
 	}
 	if len(groups) != len(want) {
 		t.Fatalf("%d groups, want %d", len(groups), len(want))
@@ -166,8 +166,10 @@ func TestAnInstalledHotelHasHolosRanks(t *testing.T) {
 		if err != nil {
 			t.Fatalf("ListAccessGroupAttributes: %v", err)
 		}
-		if group.Level != rank.level || int64(len(attributes)) != rank.attributes || group.MemberCount != rank.members || !group.StaffListed {
-			t.Errorf("%s = level %d, %d attributes, %d members, listed %t; want %+v", group.Name, group.Level, len(attributes), group.MemberCount, group.StaffListed, rank)
+		fuses := int64(len(slices.DeleteFunc(slices.Clone(attributes), func(name string) bool { return !strings.HasPrefix(name, "fuse_") })))
+		others := int64(len(attributes)) - fuses
+		if group.Level != rank.level || others != rank.attributes || fuses != rank.fuses || group.MemberCount != rank.members || !group.StaffListed {
+			t.Errorf("%s = level %d, %d attributes, %d fuses, %d members, listed %t; want %+v", group.Name, group.Level, others, fuses, group.MemberCount, group.StaffListed, rank)
 		}
 		if group.Name != "Moderator" {
 			continue

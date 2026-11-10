@@ -1,15 +1,15 @@
 ---
 type: Entity
 title: Access group
-description: An admin-defined group of users that grants attributes; code checks attributes, never group names.
+description: An admin-defined group of users that grants attributes and the game's fuses; code checks them, never group names.
 tags: [store, entity, access]
-timestamp: 2026-11-03T22:14:59+00:00
+timestamp: 2026-11-10T01:52:00+00:00
 ---
 
 # Definition
 
-Attribute-based access control: an access group carries attributes, and a user holds those of every group they
-belong to, plus any given to them directly. Attributes say what a user can do, and a group's level says who they can do
+Attribute-based access control: an access group carries attributes and the game's fuses, and a user holds those of
+every group they belong to, plus any attribute given to them directly. Attributes say what a user can do, and a group's level says who they can do
 it to. Attributes cover security and the permission to modify things; club perks are not attributes.
 
 # Invariants
@@ -27,7 +27,9 @@ it to. Attributes cover security and the permission to modify things; club perks
   Administrator (level 7, every attribute), Moderator (6), Gold Hobba (5), Silver Hobba (4) and HabboX (3), all with
   `staff_listed`. The installer adds the first administrator to the highest group holding `housekeeping.accessGroups`.
   They are examples, and the admin can change or delete them.
-- Housekeeping creates groups, toggles attributes and adds or removes members with a display habbo.
+- The update [0009-holo-fuses.sql](/migrations/0009-holo-fuses.md) gives every group the game fuses Holo's ranks held up
+  to its level.
+- Housekeeping creates groups, toggles attributes and fuses, and adds or removes members with a display habbo.
 - Deleting a group deletes its attributes and memberships.
 
 # Vocabularies
@@ -57,7 +59,11 @@ it to. Attributes cover security and the permission to modify things; club perks
 | `forum.edit` | editing, deleting, locking or pinning any thread or post |
 | `homes.staffItems` | the staff store category and the staff skin |
 
-R26 fuses (`fuse_*`) are a separate catalogue, designed with the game server.
+R26 fuses (`fuse_*`) are a separate catalogue in `packages/auth`, which access groups grant through the same table
+(`plans/server/decisions/0045-fuses-holos-club-set-and-every-checked-fuse.md`): the 31 the client or Holo's server
+checks, each with what it allows in the game. Every habbo also holds `fuse_trade` and `fuse_buy_credits`, and a club
+member `fuse_use_club_dance`, `fuse_use_special_room_layouts`, `fuse_habbo_chooser` and `fuse_furni_chooser`, without a
+row here. Users are not given fuses directly.
 
 # Relations
 

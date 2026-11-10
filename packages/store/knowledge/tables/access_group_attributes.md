@@ -4,7 +4,7 @@ title: access_group_attributes
 description: The attributes each access group grants, one row per group and attribute.
 resource: packages/store/schema/access.schema.sql
 tags: [store, table, access]
-timestamp: 2026-10-27T21:17:19+00:00
+timestamp: 2026-11-10T01:52:00+00:00
 ---
 
 # Schema
@@ -12,7 +12,7 @@ timestamp: 2026-10-27T21:17:19+00:00
 | Column | Type | Null | Default | Description | Key / reference |
 |--------|------|------|---------|-------------|-----------------|
 | `access_group_id` | INTEGER | no | | Granting group | primary key part, → `access_groups.id` ON DELETE CASCADE |
-| `attribute` | TEXT | no | | Attribute name from the catalogue (`housekeeping.news`, `forum.edit`) | primary key part |
+| `attribute` | TEXT | no | | Attribute or game fuse name from the catalogues of `packages/auth` (`housekeeping.news`, `fuse_kick`) | primary key part |
 
 # Keys
 

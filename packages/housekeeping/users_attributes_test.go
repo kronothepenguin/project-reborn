@@ -130,6 +130,20 @@ func TestOnlyTheCatalogueCanBeGivenDirectly(t *testing.T) {
 	}
 }
 
+// Access groups grant fuses; a user is never given one directly.
+func TestFusesAreNotGivenDirectly(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := grantor(t, db)
+	userID := habbo(t, db, "frank@example.com", "Frank")
+	id := habboOf(t, db, "Frank").ID
+
+	form := url.Values{"habbo": {fmt.Sprint(id)}, "attribute": {string(auth.FuseKick)}}
+	wantPage(t, serve(mux, "POST", attributesPath(userID), cookie, form), http.StatusUnprocessableEntity, "Only the attributes of the catalogue can be given.")
+	if got := directOf(t, db, userID); len(got) != 0 {
+		t.Errorf("direct = %v", got)
+	}
+}
+
 func TestStaffGiveAttributesOnlyToUsersBelowThem(t *testing.T) {
 	db, mux := newSite(t)
 	actor, cookie := grantor(t, db)

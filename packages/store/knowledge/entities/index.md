@@ -13,7 +13,7 @@ Domain entities represented by the store's tables: their meaning, invariants, li
 
 - [Credential](credential.md) — A user's argon2id password hash and the single-use tokens that reset it.
 - [Session](session.md) — A signed-in browser of a user with its active habbo, together with the login-attempt history and game-client tickets.
-- [Access group](access-group.md) — An admin-defined group of users that grants attributes; code checks attributes, never group names.
+- [Access group](access-group.md) — An admin-defined group of users that grants attributes and the game's fuses; code checks them, never group names.
 
 ## Settings
 

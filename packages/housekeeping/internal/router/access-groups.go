@@ -243,6 +243,7 @@ type accessGroupPage struct {
 	chrome
 	Group      groupForm
 	Attributes []attributeBox
+	Fuses      []attributeBox
 	Members    []memberRow
 	Search     string
 	Found      foundUser
@@ -301,6 +302,13 @@ func (r *Router) newAccessGroupPage(req *http.Request, group store.AccessGroup) 
 			Name:        string(entry.Attribute),
 			Description: entry.Description,
 			Held:        slices.Contains(held, string(entry.Attribute)),
+		})
+	}
+	for _, entry := range auth.FuseCatalogue() {
+		page.Fuses = append(page.Fuses, attributeBox{
+			Name:        string(entry.Fuse),
+			Description: entry.Description,
+			Held:        slices.Contains(held, string(entry.Fuse)),
 		})
 	}
 	members, err := r.deps.Queries.ListAccessGroupMembers(ctx, group.ID)
@@ -409,6 +417,20 @@ func knownAttributes(posted []string) ([]string, bool) {
 	return slices.Compact(slices.Sorted(slices.Values(posted))), true
 }
 
+// knownGrants keeps a posted list to what access groups grant, the attributes and
+// the game's fuses, sorted and without repeats.
+func knownGrants(posted []string) ([]string, bool) {
+	attributes, fuses := auth.Catalogue(), auth.FuseCatalogue()
+	for _, name := range posted {
+		known := slices.ContainsFunc(attributes, func(entry auth.CatalogueEntry) bool { return string(entry.Attribute) == name }) ||
+			slices.ContainsFunc(fuses, func(entry auth.FuseEntry) bool { return string(entry.Fuse) == name })
+		if !known {
+			return nil, false
+		}
+	}
+	return slices.Compact(slices.Sorted(slices.Values(posted))), true
+}
+
 func without(from, remove []string) []string {
 	return slices.DeleteFunc(slices.Clone(from), func(name string) bool { return slices.Contains(remove, name) })
 }
@@ -458,7 +480,7 @@ func (r *Router) HandleAccessGroupSave(w http.ResponseWriter, req *http.Request)
 		refuse(levelInvalid)
 		return
 	}
-	wanted, ok := knownAttributes(req.PostForm["attribute"])
+	wanted, ok := knownGrants(req.PostForm["attribute"])
 	if !ok {
 		refuse(groupUnknown)
 		return
