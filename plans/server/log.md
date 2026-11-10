@@ -2,6 +2,23 @@
 
 ## 2026-11-10
 
+- **Update** [S3](/phases/s3-navigator.md) is active, with its exit criteria and the tasks
+  [s3-01](/tasks/s3-01-navigator-tables.md) to [s3-08](/tasks/s3-08-exit-check.md), once the user answered its open
+  questions.
+- **Decision** [0063](/decisions/0063-public-rooms-and-habbo-rooms-apart.md): public rooms and habbo rooms have tables
+  of their own.
+- **Decision** [0062](/decisions/0062-room-passwords-are-hashed.md): room passwords are stored hashed.
+- **Decision** [0061](/decisions/0061-navigator-lists-show-up-to-30-rooms.md): a navigator list shows at most 30 rooms.
+- **Decision** [0060](/decisions/0060-virtual-category-model-and-room.md): the navigator's shared data lives in
+  virtual/category, virtual/model and virtual/room.
+- **Decision** [0059](/decisions/0059-a-deleted-rooms-furni-goes-to-its-owner.md): a deleted room's furni goes to its
+  owner's hand.
+- **Decision** [0058](/decisions/0058-favourites-saved-up-to-30.md): favourite rooms are saved, up to 30.
+- **Decision** [0057](/decisions/0057-three-random-recommended-rooms.md): the recommended rooms are three random habbo
+  rooms.
+- **Decision** [0056](/decisions/0056-own-rooms-follow-holos-rules.md): a habbo's own rooms follow Holo's rules.
+- **Decision** [0055](/decisions/0055-holos-navigator-set.md): a hotel starts with Holo's categories, public rooms and
+  room models.
 - **Done** [s2-09](/tasks/s2-09-exit-check.md): every exit criterion of S2 passes on the merged work, with two new
   tests: a client logs in end to end, and a CMS sign-in's ticket is accepted once and dies with its session.
   [S2](/phases/s2-login.md) is done.
