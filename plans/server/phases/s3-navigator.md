@@ -50,7 +50,7 @@ rooms, and lets a habbo create, edit and delete their rooms.
 2. [s3-02 Load the navigator's shared data in virtual](/tasks/s3-02-navigator-state.md) **done**
 3. [s3-03 Browse the navigator's categories](/tasks/s3-03-browsing.md) **done**
 4. [s3-04 List own rooms, search results and recommended rooms](/tasks/s3-04-room-lists.md) **done**
-5. [s3-05 Keep a habbo's favourite rooms](/tasks/s3-05-favourites.md)
+5. [s3-05 Keep a habbo's favourite rooms](/tasks/s3-05-favourites.md) **done**
 6. [s3-06 Create a room with the room-o-matic](/tasks/s3-06-creating-a-room.md)
 7. [s3-07 Read, change and delete a room](/tasks/s3-07-changing-a-room.md)
 8. [s3-08 Check S3's exit criteria](/tasks/s3-08-exit-check.md)

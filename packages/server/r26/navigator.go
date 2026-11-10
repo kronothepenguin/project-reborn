@@ -3,6 +3,7 @@ package r26
 import (
 	"bytes"
 	"context"
+	"errors"
 	"strconv"
 	"strings"
 
@@ -11,12 +12,14 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/category"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
 )
 
 // The messages of hh_navigator the server sends (plans/server/reference/r26/hh_navigator.md).
 const (
 	ownFlats            = 16
 	searchResults       = 55
+	favouriteRooms      = 61
 	noOwnFlats          = 57
 	noFlats             = 58
 	navNodeInfo         = 220
@@ -59,6 +62,9 @@ var navigatorCommands = map[int]string{
 var navigatorHandlers = map[int]handler{
 	16:  loggedIn(handleGetOwnFlats),
 	17:  loggedIn(handleSearchFlats),
+	18:  loggedIn(handleGetFavouriteFlats),
+	19:  loggedIn(handleAddFavouriteRoom),
+	20:  loggedIn(handleRemoveFavouriteRoom),
 	264: loggedIn(handleGetRecommendedRooms),
 	150: loggedIn(handleNavigate),
 	151: loggedIn(handleGetUserFlatCats),
@@ -112,24 +118,26 @@ func handleNavigate(s *session, me habbo.Habbo, body []byte) {
 		}
 	}
 	for _, p := range browsed.PublicRooms {
-		if err := writeNode(&b, p.ID, nodePublicRoom, p.Name, p.Visitors, int(p.MaxVisitors), c.ID); err != nil {
-			s.fail(err)
-			return
-		}
-		// The port is the public room's id, as Holo gave it, which #room_directory sends back to enter it; the door is
-		// 0 and nobody waits in a queue.
-		for _, field := range []any{p.Unit, int(p.ID), 0, p.Casts, 0} {
-			if err := writeField(&b, field); err != nil {
-				s.fail(err)
-				return
-			}
-		}
-		if err := encoding.WriteBool(&b, true); err != nil {
+		if err := writePublicRoom(&b, p, c.ID); err != nil {
 			s.fail(err)
 			return
 		}
 	}
 	s.reply(navNodeInfo, b.Bytes())
+}
+
+// writePublicRoom writes a public room as a node of type 1 under parent. The port is the room's id, as Holo gave it,
+// which #room_directory sends back to enter it; the door is 0 and nobody waits in a queue.
+func writePublicRoom(b *bytes.Buffer, p game.PublicListing, parent int64) error {
+	if err := writeNode(b, p.ID, nodePublicRoom, p.Name, p.Visitors, int(p.MaxVisitors), parent); err != nil {
+		return err
+	}
+	for _, field := range []any{p.Unit, int(p.ID), 0, p.Casts, 0} {
+		if err := writeField(b, field); err != nil {
+			return err
+		}
+	}
+	return encoding.WriteBool(b, true)
 }
 
 // handleGetUserFlatCats sends the categories the habbo may put a room in.
@@ -232,6 +240,81 @@ func handleGetRecommendedRooms(s *session, me habbo.Habbo, _ []byte) {
 		return
 	}
 	s.reply(recommendedRoomList, b.Bytes())
+}
+
+// tooManyFavourites is the text of 33 the client turns into nav_error_toomanyfavrooms, whatever limit it says
+// (plans/server decision 0058).
+const tooManyFavourites = "Only 10 favorite rooms allowed!"
+
+// handleGetFavouriteFlats sends the habbo's favourites: a header node of type 2 with the habbo rooms as its list of
+// flats, then the public rooms as nodes of type 1, each under its category.
+func handleGetFavouriteFlats(s *session, me habbo.Habbo, _ []byte) {
+	public, flats, err := game.Favourites(context.Background(), s.db, me)
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	var b bytes.Buffer
+	b.Write(vl64(0))
+	if err := writeNode(&b, 0, nodeFlats, "", 0, 0, 0); err != nil {
+		s.fail(err)
+		return
+	}
+	if err := writeFlats(&b, flats); err != nil {
+		s.fail(err)
+		return
+	}
+	for _, p := range public {
+		if err := writePublicRoom(&b, p, p.RoomCategoryID); err != nil {
+			s.fail(err)
+			return
+		}
+	}
+	s.reply(favouriteRooms, b.Bytes())
+}
+
+// handleAddFavouriteRoom keeps a public room, type 1, or a habbo room, type 0, among the habbo's favourites; past the
+// limit, it answers 33.
+func handleAddFavouriteRoom(s *session, me habbo.Habbo, body []byte) {
+	ref, ok := readRoomRef(body)
+	if !ok {
+		s.malformed(19, body)
+		return
+	}
+	err := game.AddFavourite(context.Background(), s.db, me, ref)
+	switch {
+	case errors.Is(err, game.ErrTooManyFavourites):
+		s.reply(errorText, []byte(tooManyFavourites))
+	case err != nil:
+		s.fail(err)
+	}
+}
+
+// handleRemoveFavouriteRoom takes a room out of the habbo's favourites.
+func handleRemoveFavouriteRoom(s *session, me habbo.Habbo, body []byte) {
+	ref, ok := readRoomRef(body)
+	if !ok {
+		s.malformed(20, body)
+		return
+	}
+	if err := game.RemoveFavourite(context.Background(), s.db, me, ref); err != nil {
+		s.fail(err)
+	}
+}
+
+// readRoomRef reads a room as the favourites' commands name it: int type, 1 for a public room and 0 for a habbo
+// room, then int id.
+func readRoomRef(body []byte) (room.Ref, bool) {
+	r := bytes.NewReader(body)
+	kind, err := encoding.ReadVL64(r)
+	if err != nil {
+		return room.Ref{}, false
+	}
+	id, err := encoding.ReadVL64(r)
+	if err != nil {
+		return room.Ref{}, false
+	}
+	return room.Ref{Public: kind == 1, ID: int64(id)}, true
 }
 
 // flatLines writes habbo rooms as 16 and 55 carry them: a line each, ended by a carriage return, of nine items

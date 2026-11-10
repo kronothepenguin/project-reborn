@@ -202,6 +202,9 @@ data of `virtual/category`, `virtual/model` and `virtual/room` and the store
 | `SUSERF` (16) | 16: the habbo's own rooms, as lines of text; 57 when it has none. The session's habbo is the one listed, whatever name the client sends |
 | `SRCHF` (17) | 55: the rooms whose name holds the query or whose owner it names, at most `game.searchMaxRooms`; 58 when none matches |
 | `GET_RECOMMENDED_ROOMS` (264) | 351: three habbo rooms drawn at random (`plans/server/decisions/0057-three-random-recommended-rooms.md`) |
+| `GETFVRF` (18) | 61: a header node of type 2 with the favourite habbo rooms as its flats, then the favourite public rooms as nodes of type 1, each under its category |
+| `ADD_FAVORITE_ROOM` (19) | Nothing: the room, type 1 public or 0 a habbo room, becomes a favourite; past `game.maxFavouriteRooms`, 33 `Only 10 favorite rooms allowed!` (`plans/server/decisions/0058-favourites-saved-up-to-30.md`). A room that does not exist changes nothing |
+| `DEL_FAVORITE_ROOM` (20) | Nothing: the room stops being a favourite |
 
 - A public room's port is its id, as Holo gave it, which `#room_directory`
   sends back to enter it; its door is 0.
