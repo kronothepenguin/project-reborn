@@ -54,7 +54,7 @@ starts.
 - [s2-06 Speak the handshake and the login](/tasks/s2-06-handshake-and-login.md) — r26 takes a client from HELLO to LOGIN_OK with an SSO ticket: the handshake without encryption, the version check, the machine id, the session parameters, SSO and TRY_LOGIN, and the old session's 287 on a second login. **done**
 - [s2-07 Answer what the client asks after its login](/tasks/s2-07-after-login.md) — After LOGIN_OK the client gets the habbo's user object, fuses, credits, badges, achievements, sound setting and club status, and the server date. **done**
 - [s2-08 Keep the session alive and end it](/tasks/s2-08-keeping-the-session-alive.md) — The server pings and the client answers, the latency test is answered and its reports logged, and a closed connection logs the habbo out. **done**
-- [s2-09 Check S2's exit criteria](/tasks/s2-09-exit-check.md) — From the merged work, check every exit criterion of S2 and close the phase.
+- [s2-09 Check S2's exit criteria](/tasks/s2-09-exit-check.md) — From the merged work, check every exit criterion of S2 and close the phase. **done**
 
 ## S3 to S9
 

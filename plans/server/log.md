@@ -2,6 +2,10 @@
 
 ## 2026-11-10
 
+- **Done** [s2-09](/tasks/s2-09-exit-check.md): every exit criterion of S2 passes on the merged work, with two new
+  tests: a client logs in end to end, and a CMS sign-in's ticket is accepted once and dies with its session.
+  [S2](/phases/s2-login.md) is done.
+- **Start** [s2-09](/tasks/s2-09-exit-check.md).
 - **Done** [s2-08](/tasks/s2-08-keeping-the-session-alive.md): the server pings every session, closes one that stops
   answering and logs its habbo out, and answers the latency test and logs its reports.
 - **Decision** [0054](/decisions/0054-error-reports-wait-for-s7.md): error reports wait for S7.

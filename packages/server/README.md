@@ -254,6 +254,22 @@ if err := game.Logout(ctx, db, s, h.ID); err != nil {
 - `info` and `mus` (WebSocket listeners): **30000** and **30001** by default,
   the ports of `server.info` and `server.mus` in `config.json`
 
+## Tests
+
+`TestMain` writes a `config.json` with free ports, opens one database that
+every test shares, and starts both listeners once. `client_test.go` is a test
+client that speaks R26 over a WebSocket as the client does on LibreShockwave,
+one binary frame per write. Tests insert their own users, CMS sessions and SSO
+tickets, as `plans/server/decisions/0030-sso-tickets-from-the-cms-sign-in.md`
+says, and each uses habbos of its own.
+
+- S0's exit criterion: `TestInfoSendsHelloAndLogsAnUnhandledCommandByName`.
+- S2's: `TestAClientLogsInEndToEnd`, from `HELLO` to the second login that
+  ends the first session, and `TestACMSSignInMakesATicketTheServerAcceptsOnce`,
+  which signs in through `packages/auth` as the CMS does.
+- Tests that need short pings set `game.pingSeconds` and
+  `game.pongTimeoutSeconds` for their run.
+
 ## Development
 
 Run it through the app runner in `apps/server`:

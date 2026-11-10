@@ -2,8 +2,8 @@
 type: Phase
 title: S2 Login and session
 description: A habbo logs in with an SSO ticket and reaches the hotel view with their name, look, credits, badges and settings, and the session stays alive.
-status: active
-timestamp: 2026-11-09T22:15:00+00:00
+status: done
+timestamp: 2026-11-10T03:19:16+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s2, server]
 ---
@@ -48,4 +48,4 @@ credits, badges, rights and sound setting. The session stays alive with pings un
 6. [s2-06 Speak the handshake and the login](/tasks/s2-06-handshake-and-login.md) **done**
 7. [s2-07 Answer what the client asks after its login](/tasks/s2-07-after-login.md) **done**
 8. [s2-08 Keep the session alive and end it](/tasks/s2-08-keeping-the-session-alive.md) **done**
-9. [s2-09 Check S2's exit criteria](/tasks/s2-09-exit-check.md)
+9. [s2-09 Check S2's exit criteria](/tasks/s2-09-exit-check.md) **done**
