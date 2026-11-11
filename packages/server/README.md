@@ -244,6 +244,34 @@ data of `virtual/category`, `virtual/model` and `virtual/room` and the store
   wrote them, and the control characters of a name or a description turned into
   spaces.
 
+## The catalogue
+
+`cat_code.go` serves hh_cat_code once the habbo is logged in, from the shared
+data of `virtual/catalogue` (`plans/server/reference/r26/hh_cat_code.md`):
+
+| Command | Answer |
+| --- | --- |
+| `GCIX` (101) | 126: the pages the habbo sees, in the catalogue's order, a line each: the page's code, a tab and its name. A habbo sees a page when its access group level reaches the page's, or when the page is open to the club and its user is a member (`plans/server/decisions/0100-sixteen-pages-need-level-7-and-two-the-club.md`) |
+| `GCAP` (102) | 127: the page the client names by its code, a line per value: `i` the code, `n` the name, `l` the layout, then those the page has of `g`, `e`, `h`, `w` and `s`, its numbered texts as `t<n>`, and a `p` line for each item it sells. A page that does not exist or that the habbo does not see gets no answer |
+
+- The client names a page by its code and reads the page `Recycler` by that
+  name, so the code is Holo's index name, and a page's name is what the list
+  shows: `Recycler` is listed as Ecotron.
+- A `p` line's values are separated by tabs: name, description, price, an
+  empty special text, the object type, the class, the direction, the
+  dimensions, the purchase code and the part colours. A floor furni is `s`,
+  with direction 0 and its length and width; a wall item is `i`, its class the
+  sprite and, after a space, its data, as in `poster 44`; a deal, an item that
+  gives more than one piece, is `d`, followed by the count of its furni and
+  each one's class, pieces and colours.
+- The purchase code is the item's own code, which `GPRC` sends back. The
+  client shows the picture `ctlg_pic_<code>` when its cast holds one, as it
+  does for the pet food packs, `deal97` to `deal99`.
+- The edit mode and the language the client sends change nothing. A tab, a
+  line break or another control character in a value becomes a space.
+- The level and the club are read from the store each time, since the site
+  changes them; the client keeps the index and each page for the session.
+
 ## Rooms
 
 `room.go` serves hh_room once the habbo is logged in

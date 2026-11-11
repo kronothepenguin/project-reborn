@@ -2,6 +2,9 @@
 
 ## 2026-11-11
 
+- **Done** [s5-03](/tasks/s5-03-showing-the-catalogue.md): GCIX lists the pages a habbo's level and club open, and GCAP
+  sends a page with its texts and a product line for each item.
+- **Start** [s5-03](/tasks/s5-03-showing-the-catalogue.md).
 - **Done** [s5-02](/tasks/s5-02-catalogue-state.md): virtual/furni and virtual/catalogue hold the furni definitions and
   the catalogue, and server.New loads them with the navigator.
 - **Start** [s5-02](/tasks/s5-02-catalogue-state.md).
