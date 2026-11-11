@@ -2,6 +2,15 @@
 
 ## 2026-11-11
 
+- **Done** [s5-01](/tasks/s5-01-catalogue-tables.md): the store holds the furni definitions and the catalogue, and a new
+  hotel starts with Holo's: 67 pages, 1,256 furni and 1,275 items.
+- **Start** [s5-01](/tasks/s5-01-catalogue-tables.md).
+- **Decision** [0102](/decisions/0102-club-furni-and-club-shop-sell-to-club-members.md): Club Furni and Club Shop sell
+  only to club members.
+- **Decision** [0101](/decisions/0101-the-pages-of-s7s-furni-wait-for-s7.md): the pages of S7's furni wait for S7.
+- **Decision** [0100](/decisions/0100-sixteen-pages-need-level-7-and-two-the-club.md): sixteen catalogue pages need
+  level 7, and two the club.
+- **Decision** [0099](/decisions/0099-the-catalogues-page-names-are-english.md): the catalogue's page names are English.
 - **Update** [S5](/phases/s5-furni-catalogue.md) is active, with its exit criteria and the tasks
   [s5-01](/tasks/s5-01-catalogue-tables.md) to [s5-21](/tasks/s5-21-exit-check.md), once the user answered its open
   questions. Each task lists what is still to settle before it starts.

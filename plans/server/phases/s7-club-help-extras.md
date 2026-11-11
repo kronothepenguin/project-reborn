@@ -28,6 +28,11 @@ photos, the sound machine, the room dimmer, pets, the call for help and error re
 | `hh_shared` | [s1-03](/tasks/s1-03-shared.md) | The call for help and moderation (Hobba) |
 | `hh_cat_code`, `hh_room` | [s1-09](/tasks/s1-09-catalogue.md), [s1-06](/tasks/s1-06-room.md) | Pets |
 
+- The catalogue's pages that S5's seed leaves out come back with what they sell
+  ([0101](/decisions/0101-the-pages-of-s7s-furni-wait-for-s7.md), [s5-01](/tasks/s5-01-catalogue-tables.md)): Pets,
+  Camera, the five Trax pages and Club Shop with its Mood Light, the sound sets and the jukebox of the Alhambra and Ver.
+  21 to 23 pages, and the song disk.
+
 The order inside the phase, and whether it splits, is settled when it starts.
 
 # Exit criteria

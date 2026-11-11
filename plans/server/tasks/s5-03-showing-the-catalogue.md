@@ -17,7 +17,8 @@ A habbo opens the catalogue and reads its pages ([hh_cat_code](/reference/r26/hh
 
 # Steps
 
-- [ ] `GCIX` (101) answers 126 with the pages the habbo's access group level lets it see, in their order.
+- [ ] `GCIX` (101) answers 126 with the pages the habbo sees, by its access group level and its club membership
+  ([0100](/decisions/0100-sixteen-pages-need-level-7-and-two-the-club.md)), in their order.
 - [ ] `GCAP` (102) answers 127 with the page: its id, name, layout, images and texts, and a `p` line per item, a deal's
   with the furni it gives. A `p` line's purchase code names the catalogue item, since a sprite does not.
 - [ ] A page the habbo may not see is not sent.
@@ -34,6 +35,4 @@ make gates
 
 - Runs on the branch `s5-showing-the-catalogue`.
 - To settle before it starts:
-  - What the pages show whose furni works only from [S7](/phases/s7-club-help-extras.md): Pets, Camera and the five Trax
-    pages.
   - What the client gets for a page the habbo may not see; Holo sent a page named `holo.cast.catalogue.access_denied`.

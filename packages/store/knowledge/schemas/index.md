@@ -47,3 +47,7 @@ build it, and a test keeps the two alike.
 - [migrations.schema.sql](migrations.md) — Declares the migrations table, the record of the update files applied to the database.
 - [navigator.schema.sql](navigator.md) — Declares the navigator: its categories, the room models, the public rooms, the habbos' rooms and their favourite rooms.
 - [rooms.schema.sql](rooms.md) — Declares what a room keeps between visits, rights, bans, votes and the chat history, and the habbos' ignore lists.
+
+## Catalogue
+
+- [catalogue.schema.sql](catalogue.md) — Declares the furni definitions and the catalogue: its pages, their numbered texts, its items and the furni each item gives.

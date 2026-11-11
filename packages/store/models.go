@@ -90,6 +90,44 @@ type Banner struct {
 	UpdatedAt time.Time
 }
 
+type CatalogueItem struct {
+	ID              int64
+	CataloguePageID int64
+	Position        int64
+	Code            string
+	Name            string
+	Description     string
+	Price           int64
+}
+
+type CatalogueItemFurni struct {
+	CatalogueItemID   int64
+	FurniDefinitionID int64
+	Amount            int64
+}
+
+type CataloguePage struct {
+	ID           int64
+	Position     int64
+	Code         string
+	Name         string
+	Layout       string
+	HeaderImage  string
+	TeaserImages string
+	HeaderText   string
+	TeaserText   string
+	SpecialText  string
+	MinLevel     int64
+	OpenToClub   bool
+	ClubOnly     bool
+}
+
+type CataloguePageText struct {
+	CataloguePageID int64
+	Number          int64
+	Text            string
+}
+
 type ChatMessage struct {
 	ID           int64
 	PublicRoomID sql.NullInt64
@@ -140,6 +178,20 @@ type ForumThread struct {
 	Locked    bool
 	Views     int64
 	CreatedAt time.Time
+}
+
+type FurniDefinition struct {
+	ID         int64
+	Sprite     string
+	Kind       string
+	Length     int64
+	Width      int64
+	Height     float64
+	Colours    string
+	Data       string
+	Door       bool
+	Tradeable  bool
+	Recyclable bool
 }
 
 type Group struct {

@@ -19,7 +19,9 @@ A habbo buys furni with its user's credits ([hh_cat_code](/reference/r26/hh_cat_
 
 - [ ] `GPRC` (100) buys an item of a page the habbo may see: the user's wallet pays the price, the credit history gets
   its line and the furni lands in the buyer's hand, in one transaction; the client gets 67 and the new balance as 6.
-- [ ] 68 when the credits are not enough, and 65 for an item the page does not sell; neither charges.
+- [ ] 68 when the credits are not enough, 65 for an item the page does not sell, and 296 with 1 when the page sells only
+  to club members and the habbo is not one ([0102](/decisions/0102-club-furni-and-club-shop-sell-to-club-members.md));
+  none of them charges.
 - [ ] A deal gives every furni of it. A trophy keeps the buyer's name, the day and the inscription; a wallpaper, a floor
   and a landscape keep the pattern the buyer chose.
 - [ ] Tests with the Go test client.
@@ -36,8 +38,5 @@ make gates
 
 - Runs on the branch `s5-buying-furni`.
 - To settle before it starts:
-  - Whether the Club Furni and Club Shop pages sell only to club members, 296 with 1; Holo sold them to anyone.
   - What the purchase's line in the credit history says.
-  - What the pages of [S7](/phases/s7-club-help-extras.md) sell until then, a pet, the camera and its film and the sound
-    sets, with [s5-03](/tasks/s5-03-showing-the-catalogue.md)'s answer.
   - How many notes a pad of post-its has; Holo's had 20.

@@ -56,7 +56,7 @@ presents, trade with each other and recycle furni.
 
 # Tasks
 
-1. [s5-01 Add the furni definitions and the catalogue to the store](/tasks/s5-01-catalogue-tables.md)
+1. [s5-01 Add the furni definitions and the catalogue to the store](/tasks/s5-01-catalogue-tables.md) **done**
 2. [s5-02 Load the furni definitions and the catalogue in virtual](/tasks/s5-02-catalogue-state.md)
 3. [s5-03 Show the catalogue](/tasks/s5-03-showing-the-catalogue.md)
 4. [s5-04 Keep furni in the hand](/tasks/s5-04-the-hand.md)

@@ -48,3 +48,7 @@ Concepts for the query files under `packages/store/queries/`.
 - [images.query.sql](images.md) — Image operations to store an uploaded picture and to read it back for serving.
 - [navigator.query.sql](navigator.md) — Navigator operations: the categories, models and public rooms; a habbo's rooms, a category's, a search and random ones; creating, changing and deleting a room; and a habbo's favourite rooms.
 - [rooms.query.sql](rooms.md) — Room operations: rights, bans, votes and the rating, the chat history, and a habbo's ignore list.
+
+## Catalogue
+
+- [catalogue.query.sql](catalogue.md) — Catalogue operations that list the furni definitions, the pages with their texts, the items and the furni each item gives, for the game server to load.

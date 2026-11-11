@@ -55,3 +55,9 @@ Domain entities represented by the store's tables: their meaning, invariants, li
 - [Room](room.md) — A habbo's room, created with the room-o-matic, with its creator, owner, category, model, door and settings.
 - [Favourite room](favourite-room.md) — A public room or a habbo room that a habbo keeps among its favourites, up to a limit.
 - [Chat message](chat-message.md) — A line a habbo said, whispered or shouted in a room, kept for moderators for game.chatHistoryDays.
+
+## Catalogue
+
+- [Furni definition](furni-definition.md) — What a kind of furni is, apart from who sells it: its sprite, where it stands, its size and colours, and what may be done with it.
+- [Catalogue page](catalogue-page.md) — A page of the catalogue with its layout, images and texts, shown to the habbos its level and the club allow, which sells catalogue items.
+- [Catalogue item](catalogue-item.md) — Something a catalogue page sells for credits, which gives one piece of a furni or, as a deal, several.

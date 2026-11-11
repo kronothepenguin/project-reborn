@@ -77,3 +77,11 @@ Concepts for the tables declared under `packages/store/schema/`, one per table.
 - [room_votes](room_votes.md) — A habbo's vote on a room, 1 or -1, once; the room's rating is their sum.
 - [chat_messages](chat_messages.md) — A line said in a public room or a habbo room, chat, whisper or shout, kept for moderators for game.chatHistoryDays.
 - [ignored_habbos](ignored_habbos.md) — A habbo whose chat another habbo does not want to see.
+
+## Catalogue
+
+- [furni_definitions](furni_definitions.md) — What a furni is: its sprite, where it stands, its size, height and colours, a wall item's data, and whether it is a door, tradeable and recyclable.
+- [catalogue_pages](catalogue_pages.md) — A page of the catalogue: its place in the list, its code for the client, its name, layout, images and texts, and who sees it and buys from it.
+- [catalogue_page_texts](catalogue_page_texts.md) — A numbered text of a catalogue page, which the page's layout places.
+- [catalogue_items](catalogue_items.md) — What a catalogue page sells: its place on the page, its name, description and price in credits.
+- [catalogue_item_furni](catalogue_item_furni.md) — The furni a catalogue item gives: one piece of one furni, or the several of a deal.
