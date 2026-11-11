@@ -68,7 +68,7 @@ presents, trade with each other and recycle furni.
 10. [s5-10 Move furni and habbos on rollers](/tasks/s5-10-rollers.md) **done**
 11. [s5-11 Decorate a room](/tasks/s5-11-decorating-a-room.md) **done**
 12. [s5-12 Write post-its](/tasks/s5-12-post-its.md) **done**
-13. [s5-13 Travel through teleports](/tasks/s5-13-teleports.md)
+13. [s5-13 Travel through teleports](/tasks/s5-13-teleports.md) **done**
 14. [s5-14 Trade furni](/tasks/s5-14-trading.md)
 15. [s5-15 Turn credit furni into credits](/tasks/s5-15-credit-furni.md)
 16. [s5-16 Recycle furni](/tasks/s5-16-recycler.md)

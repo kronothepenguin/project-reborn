@@ -265,6 +265,8 @@ data of `virtual/catalogue` (`plans/server/reference/r26/hh_cat_code.md`):
   sprite and, after a space, its data, as in `poster 44`; a deal, an item that
   gives more than one piece, is `d`, followed by the count of its furni and
   each one's class, pieces and colours.
+- A teleport, `door`, `doorB`, `doorC`, `doorD` or `teleport_door`, comes as two furni
+  that name each other, as Holo sold it; in a present, both wait in the box.
 - The purchase code is the item's own code, which `GPRC` sends back. The
   client shows the picture `ctlg_pic_<code>` when its cast holds one, as it
   does for the pet food packs, `deal97` to `deal99`.
@@ -328,6 +330,7 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
 | --- | --- |
 | `GETINTERST` (182) | 258: `game.loadingAdImage`, a tab and `game.loadingAdLink`, or `0`, which shows no ad (`plans/server/decisions/0070-a-loading-ad-and-a-room-ad-from-settings.md`) |
 | `#room_directory` (2) | 19, for both kinds, as Holo sent it. The habbo leaves the room it is in or rings. A public room, named by its id, then gets 69, `<model> <id>`, or joins its queue when it is full. A habbo room goes on with `TRYFLAT` |
+| `GOVIADOOR` (54) | `<flat id>/<teleport id>`, through the passage `GETDOORFLAT` opened. In the room the habbo is in, it stands in the other teleport at once: the room gets its status and 92, `<teleport id>/<name>`. Into another room, which it chose with `#room_directory`, 41 with an empty name lets it in past the doorbell, the password, a ban and a full room (`plans/server/decisions/0110-a-teleport-skips-every-check-of-the-door.md`); it goes on with `GOTOFLAT`, arrives in the teleport, and the others get 92 |
 | `TRYFLAT` (57) | 41 with an empty name lets the habbo in. A full room queues it. The owner and the holders of `fuse_enter_locked_rooms` pass any door and any ban; anyone else banned gets 224 with 4; a password door compares `<id>/<password>` with the room's hash (`plans/server/decisions/0062-room-passwords-are-hashed.md`), or 33 `Incorrect flat password`; a closed door gets 91 and rings the doorbell of the habbos with rights in the room, who get 91 with the ringer's name. A room that is not loaded, or holds nobody who may answer, gets 131 at once, as Holo did with nobody in |
 | `LETUSERIN` (98) | From a habbo with rights in the room: the ringer gets 41 and goes on with `GOTOFLAT`, or 131; the habbos with rights get 41 or 131 with its name, which their doorbells drop. A ringer who leaves is dropped the same way |
 | `GOTOFLAT` (59) | 69, `model_<model> <id>`; then 46 for each of the room's landscape, wallpaper and floor that was set, `<property>/<pattern>`; then 47 for the owner and 42 for a habbo with rights; then the room's rating, 345, and its event, 370, as Holo sent them. The holders of `fuse_any_room_controller` count as owners, as Holo had it. Only after the door let the habbo through |
@@ -340,6 +343,9 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
 | `PLACESTUFF` (90) | Nothing to the sender alone: the furni of its hand stands in the room, and everyone in it gets 93 for a floor furni, `<strip id> <x> <y> <direction>`, or 83 for a wall item, `<strip id> :w=<x>,<y> l=<x>,<y> <r or l>`. A furni that may not stand there stays in the hand. A pad of post-its stays in the hand too: one note leaves it for the wall as a new, yellow wall item, the pad counts one fewer and goes with its last, and the sender gets 101 |
 | `MOVESTUFF` (73) | 95 to the room: the floor furni stands on the new tile or turned. A furni that may not stand there stays, and its mover alone gets 95 with it where it is |
 | `SETSTUFFDATA` (74) | 88 to the room, the furni's id and its new state: anyone in the room sets a floor furni's state, a lamp `ON`. Only a habbo that controls the room opens and closes a door furni, `O` and `C`, and a door closes only while nobody stands in it. A state longer than 32 characters is refused |
+| `GETDOORFLAT` (28) | 62, the other teleport's id and its room's, for a habbo that stands in the teleport named by its id as text. Nothing while the other of the pair stands in no room (`plans/server/decisions/0111-a-teleport-keeps-its-partner.md`) |
+| `INTODOOR` (81) | The habbo steps into the teleport from the tile in front of it, the one the teleport faces: its status goes to the room at once, with `mv`. A teleport's tile takes no walk otherwise |
+| `DOORGOIN` (82) | 89 to the room, the id of the teleport the habbo stands in |
 | `G_IDATA` (83) | 48, `<id>` TAB `<colour> <text>`: what is written on a post-it of the room, for anyone in it |
 | `SETITEMDATA` (84) | 85 to the room, the post-it's line with its colour: a habbo that controls the room writes `<id>/<colour> <text>`. A `post.it` takes the four colours of the client's window; a text longer than `game.postItMaxLength`, 684, is refused (`plans/server/decisions/0108-rights-write-notes-owner-and-staff-delete.md`, `0109-post-it-length-is-a-setting.md`) |
 | `REMOVEITEM` (85) | 84 to the room: the room's owner, or a holder of `fuse_remove_stickies`, deletes a post-it for good. Nothing else is deleted this way, and a post-it is never picked up |

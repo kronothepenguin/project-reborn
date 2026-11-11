@@ -10,6 +10,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
 )
 
 // ErrInvalidTicket is returned for a ticket that is unknown, spent, or whose CMS
@@ -103,6 +104,7 @@ func Logout(ctx context.Context, db *sql.DB, s Session, avatarID int64) error {
 		return nil
 	}
 	LeaveRoom(avatarID, s)
+	room.ClosePassage(avatarID)
 	err := store.New(db).SetAvatarLastOnline(ctx, store.SetAvatarLastOnlineParams{
 		AvatarID:     avatarID,
 		LastOnlineAt: sql.NullTime{Time: time.Now().UTC(), Valid: true},

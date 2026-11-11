@@ -153,11 +153,26 @@ func Buy(ctx context.Context, db *sql.DB, buyer habbo.Habbo, order Order) (credi
 			pieceState = postItPadNotes
 		}
 		for range f.Amount {
-			_, err := q.CreateFurni(ctx, store.CreateFurniParams{
+			piece, err := q.CreateFurni(ctx, store.CreateFurniParams{
 				FurniDefinitionID: f.ID, UserID: owner, AvatarID: holder, BoxFurniID: box, State: pieceState, CreatedAt: now,
 			})
 			if err != nil {
 				return 0, fmt.Errorf("game: buy: %w", err)
+			}
+			if !slices.Contains(teleportSprites, f.Sprite) {
+				continue
+			}
+			// A teleport comes as a pair, as Holo sold it: the two name each other (plans/server decision 0111).
+			partner, err := q.CreateFurni(ctx, store.CreateFurniParams{
+				FurniDefinitionID: f.ID, UserID: owner, AvatarID: holder, BoxFurniID: box, State: pieceState, CreatedAt: now,
+			})
+			if err != nil {
+				return 0, fmt.Errorf("game: buy: %w", err)
+			}
+			for _, pair := range [][2]int64{{piece.ID, partner.ID}, {partner.ID, piece.ID}} {
+				if err := q.SetFurniPartner(ctx, store.SetFurniPartnerParams{ID: pair[0], PartnerFurniID: pair[1]}); err != nil {
+					return 0, fmt.Errorf("game: buy: %w", err)
+				}
 			}
 		}
 	}

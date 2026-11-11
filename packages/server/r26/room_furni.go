@@ -16,6 +16,9 @@ import (
 const (
 	flatProperty       = 46
 	itemData           = 48
+	doorFlat           = 62
+	doorOut            = 89
+	doorIn             = 92
 	noUserForGift      = 76
 	itemsAdded         = 83
 	itemRemoved        = 84
@@ -332,6 +335,61 @@ func handleRemoveItem(s *session, me habbo.Habbo, body []byte) {
 	if err := game.DeletePostIt(context.Background(), s.db, me, id); err != nil {
 		s.fail(err)
 	}
+}
+
+// handleIntoDoor steps the habbo into a teleport, handleGetDoorFlat answers where the teleport it stands in leads,
+// 62 with the other teleport and its room, and handleDoorGoIn shows the room that it goes, 89. Each names the
+// teleport by its id as text. A teleport whose partner stands in no room gets no answer.
+func handleIntoDoor(s *session, me habbo.Habbo, body []byte) {
+	if id, ok := textID(s, 81, body); ok {
+		game.EnterTeleport(me, id)
+	}
+}
+
+func handleGetDoorFlat(s *session, me habbo.Habbo, body []byte) {
+	id, ok := textID(s, 28, body)
+	if !ok {
+		return
+	}
+	teleport, flat, ok, err := game.TeleportTarget(context.Background(), s.db, me, id)
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	if ok {
+		s.reply(doorFlat, append(vl64(int(teleport)), vl64(int(flat))...))
+	}
+}
+
+func handleDoorGoIn(s *session, me habbo.Habbo, body []byte) {
+	if id, ok := textID(s, 82, body); ok {
+		game.LeaveByTeleport(me, id)
+	}
+}
+
+// handleGoViaDoor brings the habbo out of the other teleport: `<flat id>/<teleport id>`. In another room, which the
+// habbo chose, 41 lets it in as an open door does, and it goes on with GOTOFLAT.
+func handleGoViaDoor(s *session, me habbo.Habbo, body []byte) {
+	flatText, teleportText, ok := strings.Cut(string(body), "/")
+	flat, err := strconv.ParseInt(flatText, 10, 64)
+	teleport, err2 := strconv.ParseInt(teleportText, 10, 64)
+	if !ok || err != nil || err2 != nil {
+		s.malformed(54, body)
+		return
+	}
+	if game.GoViaTeleport(me, flat, teleport) {
+		s.reply(flatLetIn, str(""))
+	}
+}
+
+// textID reads a furni's id sent as the whole body, and logs a body that is none as a malformed message id.
+func textID(s *session, message int, body []byte) (int64, bool) {
+	id, err := strconv.ParseInt(string(body), 10, 64)
+	if err != nil {
+		s.malformed(message, body)
+		return 0, false
+	}
+	return id, true
 }
 
 // ints reads every field as a number.

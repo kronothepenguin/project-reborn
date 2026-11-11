@@ -141,3 +141,10 @@ timestamp: 2026-11-11T16:24:23+00:00
 - Inputs: `furni_id`, `text`
 - Result: the post-it has the text, written over what it had
 - Tables: `furni_notes`
+
+## SetFurniPartner
+
+- Cardinality: `:exec`
+- Inputs: `id`, `partner_furni_id`
+- Result: the teleport names the other of its pair; a purchase runs it once for each of the two
+- Tables: `furni`

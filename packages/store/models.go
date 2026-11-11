@@ -194,6 +194,7 @@ type Furni struct {
 	State             string
 	CreatedAt         time.Time
 	BoxFurniID        sql.NullInt64
+	PartnerFurniID    sql.NullInt64
 }
 
 type FurniDefinition struct {

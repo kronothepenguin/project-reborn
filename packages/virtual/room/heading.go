@@ -5,6 +5,8 @@ package room
 type Heading struct {
 	Ref      Ref
 	Admitted bool
+	// Teleport is the teleport the habbo comes out of, and 0 for a habbo that comes in by the door.
+	Teleport int64
 }
 
 var headings = make(map[int64]Heading)
@@ -44,4 +46,42 @@ func ClearHeading(avatarID int64) (Heading, bool) {
 	h, ok := headings[avatarID]
 	delete(headings, avatarID)
 	return h, ok
+}
+
+// Passage is the way a habbo opened by standing in a teleport: the teleport it comes out of, and the room that one
+// stands in. It lives only in memory, as a heading does.
+type Passage struct {
+	Teleport int64
+	Ref      Ref
+}
+
+var passages = make(map[int64]Passage)
+
+// OpenPassage records the passage the habbo avatarID opened, in place of one it had.
+func OpenPassage(avatarID int64, p Passage) {
+	mu.Lock()
+	defer mu.Unlock()
+	passages[avatarID] = p
+}
+
+// ClosePassage forgets the passage the habbo avatarID opened, and returns it.
+func ClosePassage(avatarID int64) (Passage, bool) {
+	mu.Lock()
+	defer mu.Unlock()
+	p, ok := passages[avatarID]
+	delete(passages, avatarID)
+	return p, ok
+}
+
+// AdmitThrough lets the habbo avatarID into ref out of the teleport teleportID, past the room's door, and reports
+// whether it did: only while the habbo is on its way into ref.
+func AdmitThrough(avatarID int64, ref Ref, teleportID int64) bool {
+	mu.Lock()
+	defer mu.Unlock()
+	h, ok := headings[avatarID]
+	if !ok || h.Ref != ref {
+		return false
+	}
+	headings[avatarID] = Heading{Ref: ref, Admitted: true, Teleport: teleportID}
+	return true
 }

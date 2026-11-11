@@ -24,11 +24,12 @@ timestamp: 2026-11-11T16:24:23+00:00
 | `state` | TEXT | no | `''` | The client's stuff data or item data: a dice's number, a gate open or shut, a present's note after `!`, a post-it's colour, the notes left on a pad of post-its | |
 | `created_at` | DATETIME | no | | When the piece came to be | |
 | `box_furni_id` | INTEGER | yes | | The present box it waits in; none once the box is opened | → `furni.id`, set null |
+| `partner_furni_id` | INTEGER | yes | | The other teleport of a teleport's pair; none for other furni, or once the other is gone | → `furni.id`, set null |
 
 # Keys
 
 - Primary key `id`; `idx_furni_user_id` (`user_id`), `idx_furni_avatar_id` (`avatar_id`), `idx_furni_room_id`
-  (`room_id`), `idx_furni_box_furni_id` (`box_furni_id`).
+  (`room_id`), `idx_furni_box_furni_id` (`box_furni_id`), `idx_furni_partner_furni_id` (`partner_furni_id`).
 - CHECK: never both `avatar_id` and `room_id`.
 
 # Notes

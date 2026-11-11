@@ -45,6 +45,8 @@ A piece of furni is one thing a habbo bought, was given or took: a chair, a post
 - Is of one [furni definition](/entities/furni-definition.md).
 - Belongs to a [user](/entities/user.md); held by a [habbo](/entities/habbo.md) or standing in a
   [room](/entities/room.md).
+- A teleport names the other teleport of its pair, which names it back. The two are bought together and stay a pair
+  whoever holds either (`plans/server/decisions/0111-a-teleport-keeps-its-partner.md`).
 
 # Tables
 

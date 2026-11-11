@@ -250,6 +250,10 @@ func (s *session) Notify(event any) {
 		s.sendDice(e)
 	case game.FurniRolled:
 		s.sendRolled(e)
+	case game.TeleportLeft:
+		s.reply(doorOut, []byte(strconv.FormatInt(e.ID, 10)))
+	case game.TeleportArrival:
+		s.reply(doorIn, []byte(strconv.FormatInt(e.ID, 10)+"/"+e.Name))
 	case game.RoomDecorated:
 		s.reply(flatProperty, []byte(e.Property+"/"+e.Pattern))
 	case game.FurniMoved:

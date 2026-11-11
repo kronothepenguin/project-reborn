@@ -2,6 +2,9 @@
 
 ## 2026-11-11
 
+- **Done** [s5-13](/tasks/s5-13-teleports.md): a teleport is bought as a pair, and a habbo that steps into one comes out
+  of the other, in the same room or past another room's door.
+- **Start** [s5-13](/tasks/s5-13-teleports.md).
 - **Done** [s5-12](/tasks/s5-12-post-its.md): a pad's post-its hang on a wall one at a time; anyone reads a note, habbos
   with rights write it, and the owner or staff with the fuse delete it.
 - **Start** [s5-12](/tasks/s5-12-post-its.md).

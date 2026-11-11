@@ -392,6 +392,11 @@ func EnterRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]Visitor, 
 	if r, ok := room.Loaded(h.Ref); ok && r.Reserved(viewer.ID) {
 		limit = 0
 	}
+	if h.Teleport != 0 {
+		// A teleport brings a habbo into a full room too (plans/server decision 0110).
+		limit = 0
+	}
+	room.ClosePassage(viewer.ID)
 	r, _, loaded, err := room.Enter(ctx, db, h.Ref, viewer.ID, viewer.Session, limit)
 	clearHeadingFor(viewer.ID, h.Ref)
 	switch {
@@ -417,6 +422,7 @@ func EnterRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]Visitor, 
 			o.Statuses = setStatus(o.Statuses, room.Status{Action: "flatctrl", Parameters: control})
 		})
 	}
+	teleport, through := arriveByTeleport(r, viewer, h.Teleport)
 	visitors := visitorsOf(r)
 	i := slices.IndexFunc(visitors, func(v Visitor) bool { return v.Habbo.ID == viewer.ID })
 	if i < 0 {
@@ -426,6 +432,9 @@ func EnterRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]Visitor, 
 	for _, s := range audience(r) {
 		if s != viewer.Session {
 			s.Notify(RoomEntered{Visitor: visitors[i]})
+			if through {
+				s.Notify(TeleportArrival{ID: teleport.ID, Name: viewer.Name})
+			}
 		}
 	}
 	return visitors, Admitted, nil

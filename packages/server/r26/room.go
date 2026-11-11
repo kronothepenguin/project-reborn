@@ -139,7 +139,9 @@ var roomCommands = map[int]string{
 // roomHandlers handles hh_room's commands, which the client sends once its habbo is logged in.
 var roomHandlers = map[int]handler{
 	2:   loggedIn(handleRoomDirectory),
+	28:  loggedIn(handleGetDoorFlat),
 	53:  loggedIn(handleQuit),
+	54:  loggedIn(handleGoViaDoor),
 	57:  loggedIn(handleTryFlat),
 	59:  loggedIn(handleGoToFlat),
 	60:  loggedIn(handleGetHeightMap),
@@ -158,6 +160,8 @@ var roomHandlers = map[int]handler{
 	78:  loggedIn(handlePresentOpen),
 	79:  loggedIn(handleLookTo),
 	80:  loggedIn(handleCarryDrink),
+	81:  loggedIn(handleIntoDoor),
+	82:  loggedIn(handleDoorGoIn),
 	83:  loggedIn(handleGetItemData),
 	84:  loggedIn(handleSetItemData),
 	85:  loggedIn(handleRemoveItem),

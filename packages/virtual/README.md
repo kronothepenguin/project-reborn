@@ -167,6 +167,9 @@ left, ok := room.Leave(h.ID, h.Session)
 - `Head(avatarID, ref)`, `Admit(avatarID, ref)`, `HeadingOf(avatarID)` and `ClearHeading(avatarID)` keep the room a
   habbo is on its way into and whether its door let it through, only in memory. `Admit` admits a habbo only into the
   room it heads for, so that a late answer never lets it in elsewhere.
+- `OpenPassage(avatarID, passage)` and `ClosePassage(avatarID)` keep the teleport a habbo comes out of and its room,
+  from the moment it stands in the other of the pair, only in memory. `AdmitThrough(avatarID, ref, teleportID)`
+  admits it into the room it heads for with that teleport as its `Heading.Teleport`, where it arrives.
 - A `Room` gives its `Ref()`, `Owner()`, a habbo room's owner as it loaded, `Model()`, `Floor()` and `Done()`;
   `Occupants()`, by index, and `Occupant(avatarID)`; `Update(avatarID, change)`, which changes a habbo's place and
   statuses but never its id, session or index; the copies of its rights and bans, `HasRights`, `SetRights`, `BanEnd` and

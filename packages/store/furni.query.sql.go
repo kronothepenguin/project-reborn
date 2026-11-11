@@ -28,7 +28,7 @@ VALUES (
     ?1, ?2, ?3, ?4, ?5,
     ?6
 )
-RETURNING id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id
+RETURNING id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id, partner_furni_id
 `
 
 type CreateFurniParams struct {
@@ -64,6 +64,7 @@ func (q *Queries) CreateFurni(ctx context.Context, arg CreateFurniParams) (Furni
 		&i.State,
 		&i.CreatedAt,
 		&i.BoxFurniID,
+		&i.PartnerFurniID,
 	)
 	return i, err
 }
@@ -116,7 +117,7 @@ func (q *Queries) DeleteRoomPostIts(ctx context.Context, roomID int64) error {
 }
 
 const getFurni = `-- name: GetFurni :one
-SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id FROM furni WHERE id = ?1
+SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id, partner_furni_id FROM furni WHERE id = ?1
 `
 
 func (q *Queries) GetFurni(ctx context.Context, id int64) (Furni, error) {
@@ -136,6 +137,7 @@ func (q *Queries) GetFurni(ctx context.Context, id int64) (Furni, error) {
 		&i.State,
 		&i.CreatedAt,
 		&i.BoxFurniID,
+		&i.PartnerFurniID,
 	)
 	return i, err
 }
@@ -152,7 +154,7 @@ func (q *Queries) GetFurniNote(ctx context.Context, furniID int64) (string, erro
 }
 
 const listBoxFurni = `-- name: ListBoxFurni :many
-SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id FROM furni WHERE box_furni_id = CAST(?1 AS INTEGER) ORDER BY id
+SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id, partner_furni_id FROM furni WHERE box_furni_id = CAST(?1 AS INTEGER) ORDER BY id
 `
 
 func (q *Queries) ListBoxFurni(ctx context.Context, boxFurniID int64) ([]Furni, error) {
@@ -178,6 +180,7 @@ func (q *Queries) ListBoxFurni(ctx context.Context, boxFurniID int64) ([]Furni, 
 			&i.State,
 			&i.CreatedAt,
 			&i.BoxFurniID,
+			&i.PartnerFurniID,
 		); err != nil {
 			return nil, err
 		}
@@ -193,7 +196,7 @@ func (q *Queries) ListBoxFurni(ctx context.Context, boxFurniID int64) ([]Furni, 
 }
 
 const listHandFurni = `-- name: ListHandFurni :many
-SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id FROM furni
+SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id, partner_furni_id FROM furni
 WHERE avatar_id = CAST(?1 AS INTEGER)
 ORDER BY id
 LIMIT ?3 OFFSET ?2
@@ -228,6 +231,7 @@ func (q *Queries) ListHandFurni(ctx context.Context, arg ListHandFurniParams) ([
 			&i.State,
 			&i.CreatedAt,
 			&i.BoxFurniID,
+			&i.PartnerFurniID,
 		); err != nil {
 			return nil, err
 		}
@@ -243,7 +247,7 @@ func (q *Queries) ListHandFurni(ctx context.Context, arg ListHandFurniParams) ([
 }
 
 const listRoomFurni = `-- name: ListRoomFurni :many
-SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id FROM furni WHERE room_id = CAST(?1 AS INTEGER) ORDER BY id
+SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id, partner_furni_id FROM furni WHERE room_id = CAST(?1 AS INTEGER) ORDER BY id
 `
 
 func (q *Queries) ListRoomFurni(ctx context.Context, roomID int64) ([]Furni, error) {
@@ -269,6 +273,7 @@ func (q *Queries) ListRoomFurni(ctx context.Context, roomID int64) ([]Furni, err
 			&i.State,
 			&i.CreatedAt,
 			&i.BoxFurniID,
+			&i.PartnerFurniID,
 		); err != nil {
 			return nil, err
 		}
@@ -409,6 +414,21 @@ type SetFurniNoteParams struct {
 
 func (q *Queries) SetFurniNote(ctx context.Context, arg SetFurniNoteParams) error {
 	_, err := q.db.ExecContext(ctx, setFurniNote, arg.FurniID, arg.Text)
+	return err
+}
+
+const setFurniPartner = `-- name: SetFurniPartner :exec
+UPDATE furni SET partner_furni_id = CAST(?1 AS INTEGER) WHERE id = ?2
+`
+
+type SetFurniPartnerParams struct {
+	PartnerFurniID int64
+	ID             int64
+}
+
+// The two teleports of a pair name each other, once both exist.
+func (q *Queries) SetFurniPartner(ctx context.Context, arg SetFurniPartnerParams) error {
+	_, err := q.db.ExecContext(ctx, setFurniPartner, arg.PartnerFurniID, arg.ID)
 	return err
 }
 

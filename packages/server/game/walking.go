@@ -258,6 +258,8 @@ func Walk(viewer habbo.Habbo, x, y int) {
 	if _, ok := r.Floor().At(x, y); !ok {
 		return
 	}
+	// A habbo that walks on leaves the teleport it stood in.
+	room.ClosePassage(viewer.ID)
 	r.Update(viewer.ID, func(o *room.Occupant) {
 		if !o.Leaving {
 			o.Walking, o.GoalX, o.GoalY = true, x, y

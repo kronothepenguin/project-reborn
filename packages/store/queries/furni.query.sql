@@ -83,3 +83,7 @@ SELECT text FROM furni_notes WHERE furni_id = sqlc.arg(furni_id);
 -- name: SetFurniNote :exec
 INSERT INTO furni_notes (furni_id, text) VALUES (sqlc.arg(furni_id), sqlc.arg(text))
 ON CONFLICT (furni_id) DO UPDATE SET text = excluded.text;
+
+-- The two teleports of a pair name each other, once both exist.
+-- name: SetFurniPartner :exec
+UPDATE furni SET partner_furni_id = CAST(sqlc.arg(partner_furni_id) AS INTEGER) WHERE id = sqlc.arg(id);
