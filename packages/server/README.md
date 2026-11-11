@@ -196,10 +196,13 @@ and `shared.go` for hh_shared.
   while no database update waits, as the CMS does, so that the Game form's
   changes reach a server running alone
   (`plans/server/decisions/0050-the-server-loads-and-reloads-the-settings.md`).
-- `New(db)` also loads the navigator's categories, models and public rooms
-  into `virtual`. While updates wait, it logs
-  `server: the navigator waits for the database updates`, and the first
-  reload after they are applied loads it
+- `New(db)` also loads what every player shares into `virtual`: the
+  navigator's categories, models and public rooms, then the furni definitions
+  and the catalogue that reads them
+  (`plans/server/decisions/0098-virtual-furni-and-catalogue.md`). While updates
+  wait, it logs
+  `server: the navigator and the catalogue wait for the database updates`, and
+  the first reload after they are applied loads them
   (`plans/server/decisions/0064-the-navigator-loads-once-the-updates-are-applied.md`).
 
 ## The navigator

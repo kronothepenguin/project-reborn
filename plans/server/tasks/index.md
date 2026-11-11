@@ -85,7 +85,7 @@ starts.
 ## S5 Furni, catalogue and trading
 
 - [s5-01 Add the furni definitions and the catalogue to the store](/tasks/s5-01-catalogue-tables.md) — The store gets the furni definitions, the catalogue's pages and its items, and an update that seeds Holo's catalogue, 67 pages, 1,256 furni and 1,275 items. **done**
-- [s5-02 Load the furni definitions and the catalogue in virtual](/tasks/s5-02-catalogue-state.md) — virtual/furni holds the furni definitions and virtual/catalogue the pages and what they sell, both loaded when the server starts.
+- [s5-02 Load the furni definitions and the catalogue in virtual](/tasks/s5-02-catalogue-state.md) — virtual/furni holds the furni definitions and virtual/catalogue the pages and what they sell, both loaded when the server starts. **done**
 - [s5-03 Show the catalogue](/tasks/s5-03-showing-the-catalogue.md) — GCIX lists the catalogue's pages a habbo may see as 126, and GCAP sends a page with its texts, images and items as 127.
 - [s5-04 Keep furni in the hand](/tasks/s5-04-the-hand.md) — The store gets the furni items, each belonging to a user and held by a habbo, shared or placed in a room; GETSTRIP sends the hand a page at a time as 140, read from the database.
 - [s5-05 Buy furni](/tasks/s5-05-buying-furni.md) — GPRC buys a catalogue item with the user's credits in one transaction, and the furni lands in the buyer's hand, with deals, trophies and decorations.

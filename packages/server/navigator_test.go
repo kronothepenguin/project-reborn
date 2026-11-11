@@ -23,8 +23,8 @@ func TestTheServerStartsWithTheNavigator(t *testing.T) {
 	}
 }
 
-// While the update with the navigator's tables waits, nothing loads; once it is applied, the navigator does
-// (decision 0064).
+// While the update with the navigator's tables waits, nothing loads; once every update is applied, the navigator and
+// the catalogue do (decisions 0064 and 0098).
 func TestTheNavigatorWaitsForTheUpdates(t *testing.T) {
 	db, err := store.Connect(filepath.Join(t.TempDir(), "waiting.db"))
 	if err != nil {
@@ -44,13 +44,13 @@ func TestTheNavigatorWaitsForTheUpdates(t *testing.T) {
 	}
 	check := store.NewUpdateCheck(db, updates)
 
-	if loaded, err := loadNavigator(t.Context(), db, check); loaded || err != nil {
-		t.Fatalf("loadNavigator() = %t, %v while the update waits; want false and no error", loaded, err)
+	if loaded, err := loadShared(t.Context(), db, check); loaded || err != nil {
+		t.Fatalf("loadShared() = %t, %v while the update waits; want false and no error", loaded, err)
 	}
 	if _, err := store.ApplyUpdates(t.Context(), db, updates[navigator:]); err != nil {
 		t.Fatal(err)
 	}
-	if loaded, err := loadNavigator(t.Context(), db, check); !loaded || err != nil {
-		t.Fatalf("loadNavigator() = %t, %v once the update is applied; want true", loaded, err)
+	if loaded, err := loadShared(t.Context(), db, check); !loaded || err != nil {
+		t.Fatalf("loadShared() = %t, %v once the updates are applied; want true", loaded, err)
 	}
 }

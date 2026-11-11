@@ -106,6 +106,33 @@ go vet ./...
 go test ./... -race
 ```
 
+## furni and catalogue
+
+What each furni is and what the catalogue sells, loaded when the server starts and kept
+(`plans/server/decisions/0098-virtual-furni-and-catalogue.md`): `server.New` calls `furni.Load(ctx, db)` and then
+`catalogue.Load(ctx, db)`, with the navigator's shared data. A load swaps in a whole new copy, so a reader never sees
+half of one, and the getters take no lock.
+
+```go
+chair, ok := furni.Get(463)           // the recycler's Palm Chair
+page, ok := catalogue.Get("Recycler") // by the page's code, the client's id for it
+for _, p := range catalogue.Pages() {
+	for _, item := range p.Items {
+		for _, f := range item.Furni {
+			_ = f.Sprite // and f.Amount, how many pieces the item gives
+		}
+	}
+}
+```
+
+- `furni`: `Get(id)`, a furni definition.
+- `catalogue`: `Pages()`, every page in the catalogue's order, and `Get(code)`. A `Page` carries its numbered `Texts`
+  and its `Items`, each with the `Furni` it gives, a definition and an amount. `Item.Deal()` tells a deal, an item that
+  gives more than one piece.
+- `catalogue.Load` takes each furni from `virtual/furni`, so `furni.Load` runs first.
+- `Pages` returns a copy of its list. The texts, items and furni of a page are the ones in memory, to read and never
+  to change.
+
 ## Loaded rooms
 
 `packages/virtual/room` also holds the rooms in use, with the habbos in them, only in memory

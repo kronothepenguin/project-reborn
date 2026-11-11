@@ -2,6 +2,9 @@
 
 ## 2026-11-11
 
+- **Done** [s5-02](/tasks/s5-02-catalogue-state.md): virtual/furni and virtual/catalogue hold the furni definitions and
+  the catalogue, and server.New loads them with the navigator.
+- **Start** [s5-02](/tasks/s5-02-catalogue-state.md).
 - **Done** [s5-01](/tasks/s5-01-catalogue-tables.md): the store holds the furni definitions and the catalogue, and a new
   hotel starts with Holo's: 67 pages, 1,256 furni and 1,275 items.
 - **Start** [s5-01](/tasks/s5-01-catalogue-tables.md).

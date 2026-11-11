@@ -18,7 +18,9 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/server/r26"
 	"github.com/kronothepenguin/project-reborn/packages/server/transport"
 	"github.com/kronothepenguin/project-reborn/packages/store"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/catalogue"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/category"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/furni"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/model"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
@@ -30,8 +32,9 @@ type Server struct {
 
 // New loads the settings from config.json and db, and panics when it cannot, like cms.New: the handshake and the login
 // read them. Housekeeping is their only writer, so the server reloads them every cms.refresh seconds while no update
-// waits, as the CMS does (plans/server decision 0050). It loads the navigator too, at once or, while updates wait,
-// with the first reload after they are applied (plans/server decision 0064).
+// waits, as the CMS does (plans/server decision 0050). It loads what every player shares too, the navigator and the
+// catalogue, at once or, while updates wait, with the first reload after they are applied (plans/server decisions 0064
+// and 0098).
 func New(db *sql.DB) *Server {
 	list, err := store.Updates()
 	if err != nil {
@@ -42,25 +45,25 @@ func New(db *sql.DB) *Server {
 		panic(fmt.Errorf("server: %w", err))
 	}
 	updates := store.NewUpdateCheck(db, list)
-	var navigator atomic.Bool
-	loaded, err := loadNavigator(ctx, db, updates)
+	var shared atomic.Bool
+	loaded, err := loadShared(ctx, db, updates)
 	if err != nil {
 		panic(fmt.Errorf("server: %w", err))
 	}
 	if !loaded {
-		slog.Warn("server: the navigator waits for the database updates")
+		slog.Warn("server: the navigator and the catalogue wait for the database updates")
 	}
-	navigator.Store(loaded)
+	shared.Store(loaded)
 	scheduler.Every(settings.GetInt("cms.refresh"), scheduler.Second, updates.WhenCurrent(func(ctx context.Context) error {
-		if !navigator.Load() {
-			loaded, err := loadNavigator(ctx, db, updates)
+		if !shared.Load() {
+			loaded, err := loadShared(ctx, db, updates)
 			if err != nil {
 				return err
 			}
 			if loaded {
-				slog.Info("server: the navigator is loaded")
+				slog.Info("server: the navigator and the catalogue are loaded")
 			}
-			navigator.Store(loaded)
+			shared.Store(loaded)
 		}
 		return settings.Reload(ctx, db)
 	}))
@@ -73,14 +76,15 @@ func New(db *sql.DB) *Server {
 	return &Server{db: db}
 }
 
-// loadNavigator loads the categories, the models and the public rooms once no update waits, and reports whether it
-// did: they come with an update an administrator applies (plans/server decision 0064).
-func loadNavigator(ctx context.Context, db *sql.DB, updates *store.UpdateCheck) (bool, error) {
+// loadShared loads what every player shares once no update waits, and reports whether it did: the navigator's
+// categories, models and public rooms, and the furni definitions and the catalogue that reads them. They come with
+// updates an administrator applies (plans/server decisions 0064 and 0098).
+func loadShared(ctx context.Context, db *sql.DB, updates *store.UpdateCheck) (bool, error) {
 	waiting, err := updates.Waiting(ctx)
 	if err != nil || waiting {
 		return false, err
 	}
-	for _, load := range []func(context.Context, *sql.DB) error{category.Load, model.Load, room.Load} {
+	for _, load := range []func(context.Context, *sql.DB) error{category.Load, model.Load, room.Load, furni.Load, catalogue.Load} {
 		if err := load(ctx, db); err != nil {
 			return false, err
 		}
