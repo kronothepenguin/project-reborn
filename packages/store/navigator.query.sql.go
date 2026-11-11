@@ -74,7 +74,7 @@ INSERT INTO rooms (
     ?1, ?1, ?2, ?3, ?4,
     ?5, ?6, ?7, ?7
 )
-RETURNING id, creator_avatar_id, owner_avatar_id, room_category_id, room_model_id, name, description, door, password_hash, show_owner, others_move_furni, max_visitors, created_at, updated_at
+RETURNING id, creator_avatar_id, owner_avatar_id, room_category_id, room_model_id, name, description, door, password_hash, show_owner, others_move_furni, max_visitors, created_at, updated_at, wallpaper, floor, landscape
 `
 
 type CreateRoomParams struct {
@@ -113,6 +113,9 @@ func (q *Queries) CreateRoom(ctx context.Context, arg CreateRoomParams) (Room, e
 		&i.MaxVisitors,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Wallpaper,
+		&i.Floor,
+		&i.Landscape,
 	)
 	return i, err
 }
@@ -135,7 +138,7 @@ func (q *Queries) DeleteRoom(ctx context.Context, arg DeleteRoomParams) (int64, 
 }
 
 const getRoom = `-- name: GetRoom :one
-SELECT rooms.id, rooms.creator_avatar_id, rooms.owner_avatar_id, rooms.room_category_id, rooms.room_model_id, rooms.name, rooms.description, rooms.door, rooms.password_hash, rooms.show_owner, rooms.others_move_furni, rooms.max_visitors, rooms.created_at, rooms.updated_at, avatars.name AS owner_name
+SELECT rooms.id, rooms.creator_avatar_id, rooms.owner_avatar_id, rooms.room_category_id, rooms.room_model_id, rooms.name, rooms.description, rooms.door, rooms.password_hash, rooms.show_owner, rooms.others_move_furni, rooms.max_visitors, rooms.created_at, rooms.updated_at, rooms.wallpaper, rooms.floor, rooms.landscape, avatars.name AS owner_name
 FROM rooms
 JOIN avatars ON avatars.id = rooms.owner_avatar_id
 WHERE rooms.id = ?1
@@ -156,6 +159,9 @@ type GetRoomRow struct {
 	MaxVisitors     int64
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
+	Wallpaper       string
+	Floor           string
+	Landscape       string
 	OwnerName       string
 }
 
@@ -177,13 +183,16 @@ func (q *Queries) GetRoom(ctx context.Context, id int64) (GetRoomRow, error) {
 		&i.MaxVisitors,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.Wallpaper,
+		&i.Floor,
+		&i.Landscape,
 		&i.OwnerName,
 	)
 	return i, err
 }
 
 const listAvatarRooms = `-- name: ListAvatarRooms :many
-SELECT rooms.id, rooms.creator_avatar_id, rooms.owner_avatar_id, rooms.room_category_id, rooms.room_model_id, rooms.name, rooms.description, rooms.door, rooms.password_hash, rooms.show_owner, rooms.others_move_furni, rooms.max_visitors, rooms.created_at, rooms.updated_at, avatars.name AS owner_name
+SELECT rooms.id, rooms.creator_avatar_id, rooms.owner_avatar_id, rooms.room_category_id, rooms.room_model_id, rooms.name, rooms.description, rooms.door, rooms.password_hash, rooms.show_owner, rooms.others_move_furni, rooms.max_visitors, rooms.created_at, rooms.updated_at, rooms.wallpaper, rooms.floor, rooms.landscape, avatars.name AS owner_name
 FROM rooms
 JOIN avatars ON avatars.id = rooms.owner_avatar_id
 WHERE rooms.owner_avatar_id = ?1
@@ -205,6 +214,9 @@ type ListAvatarRoomsRow struct {
 	MaxVisitors     int64
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
+	Wallpaper       string
+	Floor           string
+	Landscape       string
 	OwnerName       string
 }
 
@@ -232,6 +244,9 @@ func (q *Queries) ListAvatarRooms(ctx context.Context, avatarID int64) ([]ListAv
 			&i.MaxVisitors,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Wallpaper,
+			&i.Floor,
+			&i.Landscape,
 			&i.OwnerName,
 		); err != nil {
 			return nil, err
@@ -248,7 +263,7 @@ func (q *Queries) ListAvatarRooms(ctx context.Context, avatarID int64) ([]ListAv
 }
 
 const listCategoryRooms = `-- name: ListCategoryRooms :many
-SELECT rooms.id, rooms.creator_avatar_id, rooms.owner_avatar_id, rooms.room_category_id, rooms.room_model_id, rooms.name, rooms.description, rooms.door, rooms.password_hash, rooms.show_owner, rooms.others_move_furni, rooms.max_visitors, rooms.created_at, rooms.updated_at, avatars.name AS owner_name
+SELECT rooms.id, rooms.creator_avatar_id, rooms.owner_avatar_id, rooms.room_category_id, rooms.room_model_id, rooms.name, rooms.description, rooms.door, rooms.password_hash, rooms.show_owner, rooms.others_move_furni, rooms.max_visitors, rooms.created_at, rooms.updated_at, rooms.wallpaper, rooms.floor, rooms.landscape, avatars.name AS owner_name
 FROM rooms
 JOIN avatars ON avatars.id = rooms.owner_avatar_id
 WHERE rooms.room_category_id = ?1
@@ -276,6 +291,9 @@ type ListCategoryRoomsRow struct {
 	MaxVisitors     int64
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
+	Wallpaper       string
+	Floor           string
+	Landscape       string
 	OwnerName       string
 }
 
@@ -303,6 +321,9 @@ func (q *Queries) ListCategoryRooms(ctx context.Context, arg ListCategoryRoomsPa
 			&i.MaxVisitors,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Wallpaper,
+			&i.Floor,
+			&i.Landscape,
 			&i.OwnerName,
 		); err != nil {
 			return nil, err
@@ -348,7 +369,7 @@ func (q *Queries) ListFavouritePublicRooms(ctx context.Context, avatarID int64) 
 }
 
 const listFavouriteRooms = `-- name: ListFavouriteRooms :many
-SELECT rooms.id, rooms.creator_avatar_id, rooms.owner_avatar_id, rooms.room_category_id, rooms.room_model_id, rooms.name, rooms.description, rooms.door, rooms.password_hash, rooms.show_owner, rooms.others_move_furni, rooms.max_visitors, rooms.created_at, rooms.updated_at, avatars.name AS owner_name
+SELECT rooms.id, rooms.creator_avatar_id, rooms.owner_avatar_id, rooms.room_category_id, rooms.room_model_id, rooms.name, rooms.description, rooms.door, rooms.password_hash, rooms.show_owner, rooms.others_move_furni, rooms.max_visitors, rooms.created_at, rooms.updated_at, rooms.wallpaper, rooms.floor, rooms.landscape, avatars.name AS owner_name
 FROM favourite_rooms
 JOIN rooms ON rooms.id = favourite_rooms.room_id
 JOIN avatars ON avatars.id = rooms.owner_avatar_id
@@ -371,6 +392,9 @@ type ListFavouriteRoomsRow struct {
 	MaxVisitors     int64
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
+	Wallpaper       string
+	Floor           string
+	Landscape       string
 	OwnerName       string
 }
 
@@ -398,6 +422,9 @@ func (q *Queries) ListFavouriteRooms(ctx context.Context, avatarID int64) ([]Lis
 			&i.MaxVisitors,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Wallpaper,
+			&i.Floor,
+			&i.Landscape,
 			&i.OwnerName,
 		); err != nil {
 			return nil, err
@@ -449,7 +476,7 @@ func (q *Queries) ListPublicRooms(ctx context.Context) ([]PublicRoom, error) {
 }
 
 const listRandomRooms = `-- name: ListRandomRooms :many
-SELECT rooms.id, rooms.creator_avatar_id, rooms.owner_avatar_id, rooms.room_category_id, rooms.room_model_id, rooms.name, rooms.description, rooms.door, rooms.password_hash, rooms.show_owner, rooms.others_move_furni, rooms.max_visitors, rooms.created_at, rooms.updated_at, avatars.name AS owner_name
+SELECT rooms.id, rooms.creator_avatar_id, rooms.owner_avatar_id, rooms.room_category_id, rooms.room_model_id, rooms.name, rooms.description, rooms.door, rooms.password_hash, rooms.show_owner, rooms.others_move_furni, rooms.max_visitors, rooms.created_at, rooms.updated_at, rooms.wallpaper, rooms.floor, rooms.landscape, avatars.name AS owner_name
 FROM rooms
 JOIN avatars ON avatars.id = rooms.owner_avatar_id
 ORDER BY random()
@@ -471,6 +498,9 @@ type ListRandomRoomsRow struct {
 	MaxVisitors     int64
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
+	Wallpaper       string
+	Floor           string
+	Landscape       string
 	OwnerName       string
 }
 
@@ -498,6 +528,9 @@ func (q *Queries) ListRandomRooms(ctx context.Context, maxRooms int64) ([]ListRa
 			&i.MaxVisitors,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Wallpaper,
+			&i.Floor,
+			&i.Landscape,
 			&i.OwnerName,
 		); err != nil {
 			return nil, err
@@ -620,7 +653,7 @@ func (q *Queries) RemoveFavouriteRoom(ctx context.Context, arg RemoveFavouriteRo
 }
 
 const searchRooms = `-- name: SearchRooms :many
-SELECT rooms.id, rooms.creator_avatar_id, rooms.owner_avatar_id, rooms.room_category_id, rooms.room_model_id, rooms.name, rooms.description, rooms.door, rooms.password_hash, rooms.show_owner, rooms.others_move_furni, rooms.max_visitors, rooms.created_at, rooms.updated_at, avatars.name AS owner_name
+SELECT rooms.id, rooms.creator_avatar_id, rooms.owner_avatar_id, rooms.room_category_id, rooms.room_model_id, rooms.name, rooms.description, rooms.door, rooms.password_hash, rooms.show_owner, rooms.others_move_furni, rooms.max_visitors, rooms.created_at, rooms.updated_at, rooms.wallpaper, rooms.floor, rooms.landscape, avatars.name AS owner_name
 FROM rooms
 JOIN avatars ON avatars.id = rooms.owner_avatar_id
 WHERE (
@@ -654,6 +687,9 @@ type SearchRoomsRow struct {
 	MaxVisitors     int64
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
+	Wallpaper       string
+	Floor           string
+	Landscape       string
 	OwnerName       string
 }
 
@@ -691,6 +727,9 @@ func (q *Queries) SearchRooms(ctx context.Context, arg SearchRoomsParams) ([]Sea
 			&i.MaxVisitors,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.Wallpaper,
+			&i.Floor,
+			&i.Landscape,
 			&i.OwnerName,
 		); err != nil {
 			return nil, err
@@ -731,6 +770,42 @@ func (q *Queries) SetRoomCategory(ctx context.Context, arg SetRoomCategoryParams
 	return result.RowsAffected()
 }
 
+const setRoomFloor = `-- name: SetRoomFloor :execrows
+UPDATE rooms SET floor = ?1, updated_at = ?2 WHERE id = ?3
+`
+
+type SetRoomFloorParams struct {
+	Pattern   string
+	UpdatedAt time.Time
+	ID        int64
+}
+
+func (q *Queries) SetRoomFloor(ctx context.Context, arg SetRoomFloorParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, setRoomFloor, arg.Pattern, arg.UpdatedAt, arg.ID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const setRoomLandscape = `-- name: SetRoomLandscape :execrows
+UPDATE rooms SET landscape = ?1, updated_at = ?2 WHERE id = ?3
+`
+
+type SetRoomLandscapeParams struct {
+	Pattern   string
+	UpdatedAt time.Time
+	ID        int64
+}
+
+func (q *Queries) SetRoomLandscape(ctx context.Context, arg SetRoomLandscapeParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, setRoomLandscape, arg.Pattern, arg.UpdatedAt, arg.ID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
 const setRoomPassword = `-- name: SetRoomPassword :execrows
 UPDATE rooms SET password_hash = CAST(?1 AS TEXT), updated_at = ?2
 WHERE id = ?3 AND owner_avatar_id = ?4
@@ -750,6 +825,24 @@ func (q *Queries) SetRoomPassword(ctx context.Context, arg SetRoomPasswordParams
 		arg.ID,
 		arg.OwnerAvatarID,
 	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const setRoomWallpaper = `-- name: SetRoomWallpaper :execrows
+UPDATE rooms SET wallpaper = ?1, updated_at = ?2 WHERE id = ?3
+`
+
+type SetRoomWallpaperParams struct {
+	Pattern   string
+	UpdatedAt time.Time
+	ID        int64
+}
+
+func (q *Queries) SetRoomWallpaper(ctx context.Context, arg SetRoomWallpaperParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, setRoomWallpaper, arg.Pattern, arg.UpdatedAt, arg.ID)
 	if err != nil {
 		return 0, err
 	}

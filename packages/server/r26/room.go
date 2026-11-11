@@ -148,6 +148,7 @@ var roomHandlers = map[int]handler{
 	63:  loggedIn(handleGetItems),
 	64:  loggedIn(handleGetStatus),
 	65:  loggedIn(handleGetStrip),
+	66:  loggedIn(handleFlatPropByItem),
 	67:  loggedIn(handleAddStripItem),
 	73:  loggedIn(handleMoveStuff),
 	74:  loggedIn(handleSetStuffData),
@@ -270,6 +271,12 @@ func handleGoToFlat(s *session, me habbo.Habbo, body []byte) {
 		return
 	}
 	s.reply(roomReady, []byte("model_"+e.Model+" "+strconv.FormatInt(id, 10)))
+	// The room's decorations, in Holo's order; a room that was never decorated shows its model's own.
+	for _, property := range [][2]string{{"landscape", e.Landscape}, {"wallpaper", e.Wallpaper}, {"floor", e.Floor}} {
+		if property[1] != "" {
+			s.reply(flatProperty, []byte(property[0]+"/"+property[1]))
+		}
+	}
 	if e.Owner {
 		s.reply(roomOwner, nil)
 	}

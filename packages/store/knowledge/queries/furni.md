@@ -104,3 +104,11 @@ timestamp: 2026-11-11T16:24:23+00:00
 - Inputs: `id`, `room_id`, `state`
 - Result: the piece that stands in the room takes the state; no row changes when the room does not have it
 - Tables: `furni`
+
+## DeleteHandFurni
+
+- Cardinality: `:execrows`
+- Inputs: `id`, `avatar_id`
+- Result: the piece leaves the habbo's hand for good, as a wallpaper used on a room does; no row changes when the
+  hand does not hold it
+- Tables: `furni`

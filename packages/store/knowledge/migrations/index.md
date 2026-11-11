@@ -19,3 +19,4 @@ them all when `store.Open` creates it.
 - [0014-furni.sql](0014-furni.md) — Creates furni, the pieces of furni habbos own, each in a hand, in a room or in its user's shared inventory.
 - [0015-presents.sql](0015-presents.md) — Lets a furni wait inside a present by adding to furni the box that holds it.
 - [0016-rollers.sql](0016-rollers.md) — Rebuilds furni_definitions with the kind roller, and gives it to the ten rollers of Holo's catalogue.
+- [0017-room-decorations.sql](0017-room-decorations.md) — Adds to rooms the wallpaper, the floor and the landscape a habbo's room was decorated with.

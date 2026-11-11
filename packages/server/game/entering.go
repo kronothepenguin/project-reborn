@@ -77,6 +77,8 @@ type FlatEntry struct {
 	Model  string
 	Owner  bool
 	Rights bool
+	// Wallpaper, Floor and Landscape are the patterns the room was decorated with, empty for the model's own.
+	Wallpaper, Floor, Landscape string
 }
 
 // ChooseRoom heads the habbo for ref, out of the room it is in or rings (#room_directory). A public room's door is
@@ -257,7 +259,10 @@ func GoToFlat(ctx context.Context, db *sql.DB, viewer habbo.Habbo, flatID int64)
 	if !ok {
 		return FlatEntry{}, false, fmt.Errorf("game: go to flat: the room %d is on the model %d, which is not loaded", r.ID, r.RoomModelID)
 	}
-	e := FlatEntry{Model: m.Name, Owner: r.OwnerAvatarID == viewer.ID || hasFuse(viewer, auth.FuseAnyRoomController)}
+	e := FlatEntry{
+		Model: m.Name, Owner: r.OwnerAvatarID == viewer.ID || hasFuse(viewer, auth.FuseAnyRoomController),
+		Wallpaper: r.Wallpaper, Floor: r.Floor, Landscape: r.Landscape,
+	}
 	switch loaded, ok := room.Loaded(ref); {
 	case e.Owner:
 		e.Rights = true

@@ -117,3 +117,12 @@ DELETE FROM favourite_rooms WHERE avatar_id = sqlc.arg(avatar_id) AND public_roo
 
 -- name: RemoveFavouriteRoom :exec
 DELETE FROM favourite_rooms WHERE avatar_id = sqlc.arg(avatar_id) AND room_id = CAST(sqlc.arg(room_id) AS INTEGER);
+
+-- name: SetRoomWallpaper :execrows
+UPDATE rooms SET wallpaper = sqlc.arg(pattern), updated_at = sqlc.arg(updated_at) WHERE id = sqlc.arg(id);
+
+-- name: SetRoomFloor :execrows
+UPDATE rooms SET floor = sqlc.arg(pattern), updated_at = sqlc.arg(updated_at) WHERE id = sqlc.arg(id);
+
+-- name: SetRoomLandscape :execrows
+UPDATE rooms SET landscape = sqlc.arg(pattern), updated_at = sqlc.arg(updated_at) WHERE id = sqlc.arg(id);

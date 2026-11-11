@@ -68,6 +68,24 @@ func (q *Queries) CreateFurni(ctx context.Context, arg CreateFurniParams) (Furni
 	return i, err
 }
 
+const deleteHandFurni = `-- name: DeleteHandFurni :execrows
+DELETE FROM furni WHERE id = ?1 AND avatar_id = CAST(?2 AS INTEGER)
+`
+
+type DeleteHandFurniParams struct {
+	ID       int64
+	AvatarID int64
+}
+
+// A furni that is used up leaves its habbo's hand for good: no row changes when the hand does not hold it.
+func (q *Queries) DeleteHandFurni(ctx context.Context, arg DeleteHandFurniParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteHandFurni, arg.ID, arg.AvatarID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
 const deleteRoomFurni = `-- name: DeleteRoomFurni :execrows
 DELETE FROM furni WHERE id = ?1 AND room_id = CAST(?2 AS INTEGER)
 `

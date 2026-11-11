@@ -2,6 +2,9 @@
 
 ## 2026-11-11
 
+- **Done** [s5-11](/tasks/s5-11-decorating-a-room.md): a habbo that controls a room uses up a wallpaper, a floor or a
+  landscape of its hand on it, and the room keeps and shows the pattern.
+- **Start** [s5-11](/tasks/s5-11-decorating-a-room.md).
 - **Done** [s5-10](/tasks/s5-10-rollers.md): rollers are a kind of furni that habbos walk onto, and every 2 seconds each
   carries the furni and the habbo on it one tile on, as 230.
 - **Start** [s5-10](/tasks/s5-10-rollers.md).

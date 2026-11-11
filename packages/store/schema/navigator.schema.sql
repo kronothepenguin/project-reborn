@@ -50,7 +50,8 @@ CREATE TABLE IF NOT EXISTS public_rooms (
 CREATE INDEX IF NOT EXISTS idx_public_rooms_room_category_id ON public_rooms (room_category_id);
 
 -- A habbo's room. The creator never changes, the owner may become another habbo of the same user, and the password is
--- a hash.
+-- a hash. wallpaper, floor and landscape hold the patterns the room was decorated with, as the client names them, and
+-- are empty for a room that shows its model's own.
 CREATE TABLE IF NOT EXISTS rooms (
     id INTEGER PRIMARY KEY,
     creator_avatar_id INTEGER NOT NULL REFERENCES avatars(id) ON DELETE CASCADE,
@@ -65,7 +66,10 @@ CREATE TABLE IF NOT EXISTS rooms (
     others_move_furni BOOLEAN NOT NULL DEFAULT FALSE,
     max_visitors INTEGER NOT NULL DEFAULT 25 CHECK (max_visitors > 0),
     created_at DATETIME NOT NULL,
-    updated_at DATETIME NOT NULL
+    updated_at DATETIME NOT NULL,
+    wallpaper TEXT NOT NULL DEFAULT '',
+    floor TEXT NOT NULL DEFAULT '',
+    landscape TEXT NOT NULL DEFAULT ''
 );
 
 CREATE INDEX IF NOT EXISTS idx_rooms_owner_avatar_id ON rooms (owner_avatar_id);

@@ -24,6 +24,7 @@ timestamp: 2026-11-10T03:49:03+00:00
 | `others_move_furni` | BOOLEAN | no | FALSE | Every visitor may move furniture | |
 | `max_visitors` | INTEGER | no | 25 | Most visitors, 10 to 25 (validated in Go) | CHECK > 0 |
 | `created_at`, `updated_at` | DATETIME | no | | Creation and last change (UTC) | |
+| `wallpaper`, `floor`, `landscape` | TEXT | no | `''` | The patterns the room was decorated with, as the client names them; empty for the model's own | |
 
 # Keys
 

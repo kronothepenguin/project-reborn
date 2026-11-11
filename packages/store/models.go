@@ -388,6 +388,9 @@ type Room struct {
 	MaxVisitors     int64
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
+	Wallpaper       string
+	Floor           string
+	Landscape       string
 }
 
 type RoomBan struct {

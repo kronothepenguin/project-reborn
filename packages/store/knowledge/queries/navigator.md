@@ -177,3 +177,10 @@ timestamp: 2026-11-10T11:48:45+00:00
 
 - Entities: [Room category](/entities/room-category.md), [Room model](/entities/room-model.md),
   [Public room](/entities/public-room.md), [Room](/entities/room.md) and [Favourite room](/entities/favourite-room.md).
+
+## SetRoomWallpaper, SetRoomFloor, SetRoomLandscape
+
+- Cardinality: `:execrows`
+- Inputs: `id`, `pattern`, `updated_at`
+- Result: the room keeps the pattern as its wallpaper, its floor or its landscape
+- Tables: `rooms`

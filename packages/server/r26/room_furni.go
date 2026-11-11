@@ -14,6 +14,7 @@ import (
 
 // The messages of hh_room about a room's furni (plans/server/reference/r26/hh_room.md).
 const (
+	flatProperty       = 46
 	noUserForGift      = 76
 	itemsAdded         = 83
 	itemRemoved        = 84
@@ -272,6 +273,20 @@ func (s *session) sendRolled(e game.FurniRolled) {
 		b.Write(str(height(e.Rider.To)))
 	}
 	s.reply(slideObjectBundle, b.Bytes())
+}
+
+// handleFlatPropByItem uses a wallpaper, a floor or a landscape of the habbo's hand on its room:
+// `<class>/<strip id>`. The room then gets 46 with the property and its pattern.
+func handleFlatPropByItem(s *session, me habbo.Habbo, body []byte) {
+	property, strip, ok := strings.Cut(string(body), "/")
+	id, err := strconv.ParseInt(strip, 10, 64)
+	if !ok || err != nil {
+		s.malformed(66, body)
+		return
+	}
+	if _, err := game.Decorate(context.Background(), s.db, me, property, id); err != nil {
+		s.fail(err)
+	}
 }
 
 // ints reads every field as a number.

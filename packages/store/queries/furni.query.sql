@@ -62,3 +62,7 @@ DELETE FROM furni WHERE id = sqlc.arg(id) AND room_id = CAST(sqlc.arg(room_id) A
 
 -- name: SetRoomFurniState :execrows
 UPDATE furni SET state = sqlc.arg(state) WHERE id = sqlc.arg(id) AND room_id = CAST(sqlc.arg(room_id) AS INTEGER);
+
+-- A furni that is used up leaves its habbo's hand for good: no row changes when the hand does not hold it.
+-- name: DeleteHandFurni :execrows
+DELETE FROM furni WHERE id = sqlc.arg(id) AND avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER);
