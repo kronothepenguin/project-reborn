@@ -171,6 +171,8 @@ var catalogue = map[string]declaration{
 	"game.presentNoteMaxLength": declare(200, between(1, 1000)),
 	// The most characters of a post-it, Holo's 684; a longer one is refused (plans/server decision 0109).
 	"game.postItMaxLength": declare(684, between(1, 2000)),
+	// The most furni one side of a trade offers, Holo's 65 (plans/server decision 0113).
+	"game.maxTradeFurni": declare(65, between(1, 500)),
 }
 
 // rules check settings that depend on each other. keys lists every setting a

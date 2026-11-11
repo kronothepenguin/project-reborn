@@ -117,6 +117,8 @@ type Room struct {
 	event     *Event
 	// reserved are the habbos a queue let in, on their way: their places count as taken until they come in or go.
 	reserved map[int64]bool
+	// trades are the open trades, each under both of its habbos.
+	trades map[int64]*Trade
 }
 
 var (
@@ -169,6 +171,7 @@ func load(ctx context.Context, db *sql.DB, ref Ref) (*Room, error) {
 		rights:    make(map[int64]bool),
 		bans:      make(map[int64]time.Time),
 		reserved:  make(map[int64]bool),
+		trades:    make(map[int64]*Trade),
 	}
 	var modelID int64
 	if ref.Public {
@@ -253,12 +256,15 @@ func (r *Room) add(avatarID int64, s habbo.Session, limit int) (Occupant, error)
 }
 
 // Left is what Leave did: the room the habbo left and its place there. When the habbo was the last one in the room,
-// the room unloaded, and Waiting holds those who waited on it, by line, to be told.
+// the room unloaded, and Waiting holds those who waited on it, by line, to be told. Trade is the trade the habbo had
+// open, which ended, and Traded reports whether it had one.
 type Left struct {
 	Room     *Room
 	Occupant Occupant
 	Unloaded bool
 	Waiting  [lines][]Waiting
+	Trade    Trade
+	Traded   bool
 }
 
 // Leave takes the habbo avatarID out of its room while s plays it, and unloads the room when the habbo was the last
@@ -279,6 +285,7 @@ func Leave(avatarID int64, s habbo.Session) (Left, bool) {
 	delete(r.occupants, avatarID)
 	delete(in, avatarID)
 	left := Left{Room: r, Occupant: o.clone()}
+	left.Trade, left.Traded = r.closeTrade(avatarID)
 	if len(r.occupants) == 0 {
 		// Under both locks, so that nobody joins a line the room no longer has, and nobody enters the room it was.
 		left.Unloaded, left.Waiting = true, r.waiting

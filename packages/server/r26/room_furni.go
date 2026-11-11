@@ -14,23 +14,28 @@ import (
 
 // The messages of hh_room about a room's furni (plans/server/reference/r26/hh_room.md).
 const (
-	flatProperty       = 46
-	itemData           = 48
-	doorFlat           = 62
-	doorOut            = 89
-	doorIn             = 92
-	noUserForGift      = 76
-	itemsAdded         = 83
-	itemRemoved        = 84
-	itemUpdated        = 85
-	stuffDataUpdate    = 88
-	diceValue          = 90
-	activeObjectAdd    = 93
-	activeObjectRemove = 94
-	activeObjectUpdate = 95
-	stripUpdated       = 101
-	presentOpen        = 129
-	slideObjectBundle  = 230
+	flatProperty          = 46
+	itemData              = 48
+	doorFlat              = 62
+	doorOut               = 89
+	doorIn                = 92
+	noUserForGift         = 76
+	itemsAdded            = 83
+	itemRemoved           = 84
+	itemUpdated           = 85
+	stuffDataUpdate       = 88
+	diceValue             = 90
+	activeObjectAdd       = 93
+	activeObjectRemove    = 94
+	activeObjectUpdate    = 95
+	stripUpdated          = 101
+	tradeYouAreNotAllowed = 102
+	tradeOtherNotAllowed  = 103
+	tradeItems            = 108
+	tradeAccept           = 109
+	tradeClose            = 110
+	presentOpen           = 129
+	slideObjectBundle     = 230
 )
 
 // The move types of 230: no habbo rode the roller, or one slides with it.
@@ -380,6 +385,60 @@ func handleGoViaDoor(s *session, me habbo.Habbo, body []byte) {
 	if game.GoViaTeleport(me, flat, teleport) {
 		s.reply(flatLetIn, str(""))
 	}
+}
+
+// handleTradeOpen opens a trade with the habbo whose room index is the body: both get 108, or the sender 102 when it
+// may not trade and 103 when the other may not.
+func handleTradeOpen(s *session, me habbo.Habbo, body []byte) {
+	index, err := strconv.Atoi(string(body))
+	if err != nil {
+		s.malformed(71, body)
+		return
+	}
+	opening, err := game.OpenTrade(context.Background(), s.db, me, index)
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	switch opening {
+	case game.TradeNotAllowed:
+		s.reply(tradeYouAreNotAllowed, nil)
+	case game.OtherNotAllowed:
+		s.reply(tradeOtherNotAllowed, nil)
+	}
+}
+
+// handleTradeAddItem offers a furni of the hand, named by its strip id as text: both get 108.
+func handleTradeAddItem(s *session, me habbo.Habbo, body []byte) {
+	id, ok := textID(s, 72, body)
+	if !ok {
+		return
+	}
+	if err := game.OfferFurni(context.Background(), s.db, me, id); err != nil {
+		s.fail(err)
+	}
+}
+
+// handleTradeAccept accepts the trade, 109 to both, and ends it when both have, 110 to both. handleTradeUnaccept
+// takes both accepts away, and handleTradeClose ends the trade with nothing changed.
+func handleTradeAccept(s *session, me habbo.Habbo, _ []byte) {
+	if err := game.AcceptTrade(context.Background(), s.db, me); err != nil {
+		s.fail(err)
+	}
+}
+
+func handleTradeUnaccept(_ *session, me habbo.Habbo, _ []byte) { game.UnacceptTrade(me) }
+
+func handleTradeClose(_ *session, me habbo.Habbo, _ []byte) { game.CloseTrade(me) }
+
+// sendTrade writes 108: a line for each side, the habbo's own first, with its name, whether it accepted and the
+// furni it offers, as the hand writes them, separated by tabs.
+func (s *session) sendTrade(e game.TradeChanged) {
+	lines := make([]string, len(e.Sides))
+	for i, side := range e.Sides {
+		lines[i] = printable(side.Name) + "\t" + strconv.FormatBool(side.Accepted) + "\t" + stripItems(side.Items)
+	}
+	s.reply(tradeItems, []byte(strings.Join(lines, "\r")))
 }
 
 // textID reads a furni's id sent as the whole body, and logs a body that is none as a malformed message id.

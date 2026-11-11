@@ -17,10 +17,11 @@ type RoomDecorated struct{ Property, Pattern string }
 
 // Decorate uses up the wallpaper, floor or landscape id of viewer's hand on the room it is in (FLATPROPBYITEM), and
 // reports whether it did: the room keeps the pattern the furni was bought with, the furni goes, and the room is told.
-// A habbo that controls the room decorates it, as Holo let it. The room and the furni change in one transaction.
+// A habbo that controls the room decorates it, as Holo let it, and never with a furni it has on offer in a trade. The
+// room and the furni change in one transaction.
 func Decorate(ctx context.Context, db *sql.DB, viewer habbo.Habbo, property string, id int64) (bool, error) {
 	r, ok := furnished(viewer)
-	if !ok || !slices.Contains(decorations, property) {
+	if !ok || !slices.Contains(decorations, property) || onOffer(viewer, id) {
 		return false, nil
 	}
 	tx, err := db.BeginTx(ctx, nil)

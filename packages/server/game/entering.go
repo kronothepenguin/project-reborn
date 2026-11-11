@@ -489,6 +489,10 @@ func LeaveRoom(avatarID int64, s Session) {
 		return
 	}
 	broadcast(left.Room, RoomLeft{Index: left.Occupant.Index})
+	if left.Traded {
+		// The trade of a habbo that goes ends for the other, and nothing changed hands (plans/server decision 0092).
+		endTrade(left.Room, left.Trade)
+	}
 	if !left.Unloaded {
 		serveLines(left.Room)
 		return

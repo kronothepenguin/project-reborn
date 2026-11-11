@@ -469,6 +469,34 @@ func (q *Queries) SetRoomFurniState(ctx context.Context, arg SetRoomFurniStatePa
 	return result.RowsAffected()
 }
 
+const tradeFurni = `-- name: TradeFurni :execrows
+UPDATE furni
+SET user_id = ?1, avatar_id = CAST(?2 AS INTEGER)
+WHERE id = ?3 AND avatar_id = CAST(?4 AS INTEGER)
+`
+
+type TradeFurniParams struct {
+	UserID       int64
+	ToAvatarID   int64
+	ID           int64
+	FromAvatarID int64
+}
+
+// A furni changes hands in a trade, and belongs to the taker's user: no row changes when the giver's hand does not
+// hold it.
+func (q *Queries) TradeFurni(ctx context.Context, arg TradeFurniParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, tradeFurni,
+		arg.UserID,
+		arg.ToAvatarID,
+		arg.ID,
+		arg.FromAvatarID,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
 const unboxFurni = `-- name: UnboxFurni :exec
 UPDATE furni
 SET user_id = ?1, avatar_id = CAST(?2 AS INTEGER), box_furni_id = NULL

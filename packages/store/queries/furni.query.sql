@@ -87,3 +87,10 @@ ON CONFLICT (furni_id) DO UPDATE SET text = excluded.text;
 -- The two teleports of a pair name each other, once both exist.
 -- name: SetFurniPartner :exec
 UPDATE furni SET partner_furni_id = CAST(sqlc.arg(partner_furni_id) AS INTEGER) WHERE id = sqlc.arg(id);
+
+-- A furni changes hands in a trade, and belongs to the taker's user: no row changes when the giver's hand does not
+-- hold it.
+-- name: TradeFurni :execrows
+UPDATE furni
+SET user_id = sqlc.arg(user_id), avatar_id = CAST(sqlc.arg(to_avatar_id) AS INTEGER)
+WHERE id = sqlc.arg(id) AND avatar_id = CAST(sqlc.arg(from_avatar_id) AS INTEGER);

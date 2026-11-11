@@ -42,19 +42,29 @@ func (s *session) sendHand(me habbo.Habbo, page int) {
 	s.reply(stripInfo, []byte(handLines(hand)))
 }
 
-// handLines writes a page of the hand as 140 carries it: each furni ended by a slash, its values separated by the
-// character 30, then on a line of its own how many furni the whole hand holds. A furni's values are SI, its strip
-// id, its place in the hand, S for a floor furni or I for a wall item, its id and its class; then a floor furni's
-// length, width, state, colours and whether it is recyclable, or a wall item's data and whether it is recyclable.
-// The strip id is the furni's id.
+// handLines writes a page of the hand as 140 carries it: its furni, then on a line of its own how many furni the
+// whole hand holds.
 func handLines(hand game.Hand) string {
+	return stripItems(hand.Items) + "\r" + strconv.Itoa(hand.Total)
+}
+
+// stripItems writes furni as the hand and a trade carry them: each furni ended by a slash, its values separated by
+// the character 30. A furni's values are SI, its strip id, its place, S for a floor furni or I for a wall item, its
+// id and its class; then a floor furni's length, width, state, colours and whether it is recyclable, or a wall
+// item's data and whether it is recyclable. A wall item's data is its state when it has one, as the notes left on a
+// pad of post-its, and else its definition's, a poster's number. The strip id is the furni's id.
+func stripItems(items []game.HandItem) string {
 	var b strings.Builder
-	for _, item := range hand.Items {
+	for _, item := range items {
 		id := strconv.FormatInt(item.ID, 10)
 		d := item.Definition
 		values := []string{"SI", id, strconv.Itoa(item.Position)}
 		if d.Kind == "wall" {
-			values = append(values, "I", id, handValue(d.Sprite), handValue(d.Data))
+			data := item.State
+			if data == "" {
+				data = d.Data
+			}
+			values = append(values, "I", id, handValue(d.Sprite), handValue(data))
 		} else {
 			values = append(values, "S", id, handValue(d.Sprite), strconv.FormatInt(d.Length, 10), strconv.FormatInt(d.Width, 10),
 				handValue(item.State), handValue(d.Colours))
@@ -62,7 +72,6 @@ func handLines(hand game.Hand) string {
 		values = append(values, strconv.Itoa(flag(d.Recyclable)))
 		b.WriteString(strings.Join(values, "\x1e") + "/")
 	}
-	b.WriteString("\r" + strconv.Itoa(hand.Total))
 	return b.String()
 }
 

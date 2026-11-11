@@ -250,6 +250,12 @@ func (s *session) Notify(event any) {
 		s.sendDice(e)
 	case game.FurniRolled:
 		s.sendRolled(e)
+	case game.TradeChanged:
+		s.sendTrade(e)
+	case game.TradeAccepted:
+		s.reply(tradeAccept, []byte(printable(e.Name)+"/"+strconv.FormatBool(e.Accepted)))
+	case game.TradeClosed:
+		s.reply(tradeClose, nil)
 	case game.TeleportLeft:
 		s.reply(doorOut, []byte(strconv.FormatInt(e.ID, 10)))
 	case game.TeleportArrival:

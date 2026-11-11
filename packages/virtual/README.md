@@ -167,6 +167,10 @@ left, ok := room.Leave(h.ID, h.Session)
 - `Head(avatarID, ref)`, `Admit(avatarID, ref)`, `HeadingOf(avatarID)` and `ClearHeading(avatarID)` keep the room a
   habbo is on its way into and whether its door let it through, only in memory. `Admit` admits a habbo only into the
   room it heads for, so that a late answer never lets it in elsewhere.
+- A `Room` holds its open trades (`plans/server/decisions/0092-a-trade-lives-only-in-memory.md`): `OpenTrade(avatarID,
+  index)` between two of its habbos, `OfferFurni`, `AcceptTrade`, `TradeOf` and `CloseTrade`. A `Trade` has two
+  `TradeSide`s, each with its habbo, its accept and the furni it offers, by id. `Leave` ends the trade of the habbo
+  that goes and returns it in `Left.Trade`.
 - `OpenPassage(avatarID, passage)` and `ClosePassage(avatarID)` keep the teleport a habbo comes out of and its room,
   from the moment it stands in the other of the pair, only in memory. `AdmitThrough(avatarID, ref, teleportID)`
   admits it into the room it heads for with that teleport as its `Heading.Teleport`, where it arrives.

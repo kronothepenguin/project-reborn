@@ -148,3 +148,11 @@ timestamp: 2026-11-11T16:24:23+00:00
 - Inputs: `id`, `partner_furni_id`
 - Result: the teleport names the other of its pair; a purchase runs it once for each of the two
 - Tables: `furni`
+
+## TradeFurni
+
+- Cardinality: `:execrows`
+- Inputs: `id`, `from_avatar_id`, `to_avatar_id`, `user_id`
+- Result: the piece leaves one habbo's hand for another's, and belongs to the taker's user; no row changes when the
+  giver's hand does not hold it, which undoes the whole trade
+- Tables: `furni`

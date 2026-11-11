@@ -2,6 +2,16 @@
 
 ## 2026-11-11
 
+- **Done** [s5-14](/tasks/s5-14-trading.md): two habbos in a room offer furni from their hands, and when both accept
+  every piece changes hands in one transaction; a trade cut short loses nothing.
+- **Start** [s5-14](/tasks/s5-14-trading.md).
+- **Decision** [0115](/decisions/0115-the-rooms-owner-redeems-credit-furni.md): the room's owner redeems a credit furni,
+  worth what its name says.
+- **Decision** [0114](/decisions/0114-a-furni-on-offer-is-locked.md): a furni on offer in a trade is locked until the
+  trade ends.
+- **Decision** [0113](/decisions/0113-a-trade-side-offers-up-to-a-setting.md): a side of a trade offers up to a setting,
+  65 by default.
+- **Decision** [0112](/decisions/0112-habbos-trade-in-any-room.md): habbos trade in any room, as Holo.
 - **Done** [s5-13](/tasks/s5-13-teleports.md): a teleport is bought as a pair, and a habbo that steps into one comes out
   of the other, in the same room or past another room's door.
 - **Start** [s5-13](/tasks/s5-13-teleports.md).

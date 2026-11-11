@@ -37,6 +37,8 @@ A piece of furni is one thing a habbo bought, was given or took: a chair, a post
 - A pad of post-its is never placed: each of its notes becomes a furni of its own on a wall, and the pad, which
   counts its notes in its state, goes with the last. A post-it is never picked up, only deleted, and its text is in
   [furni_notes](/tables/furni_notes.md).
+- A trade moves it from one habbo's hand to another's, whose user it then belongs to, every piece of the trade in
+  one transaction (`plans/server/decisions/0092-a-trade-lives-only-in-memory.md`).
 - Trading and the site's Take move it between hands; the tasks of `plans/server/phases/s5-furni-catalogue.md` bring
   them.
 

@@ -782,6 +782,7 @@ func TestTheGameSettingsHoldTheirDefaults(t *testing.T) {
 		"game.maxStackHeight":            20,
 		"game.presentNoteMaxLength":      200,
 		"game.postItMaxLength":           684,
+		"game.maxTradeFurni":             65,
 	})
 
 	for value, valid := range map[int]bool{0: false, 1: true, 1_000_000: true} {

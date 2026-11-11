@@ -97,7 +97,7 @@ starts.
 - [s5-11 Decorate a room](/tasks/s5-11-decorating-a-room.md) — FLATPROPBYITEM uses a wallpaper, a floor or a landscape from the hand on the room, saved with it and told to the room as 46. **done**
 - [s5-12 Write post-its](/tasks/s5-12-post-its.md) — A pad's post-its go on a wall one at a time; G_IDATA reads a note as 48, SETITEMDATA writes its colour and text, saved, and REMOVEITEM deletes it. **done**
 - [s5-13 Travel through teleports](/tasks/s5-13-teleports.md) — A teleport is bought as a pair; INTODOOR, GETDOORFLAT, DOORGOIN and GOVIADOOR take a habbo from one to the other, in the same room or another. **done**
-- [s5-14 Trade furni](/tasks/s5-14-trading.md) — Two habbos in a room offer furni from their hands and accept; when both have, every piece changes hands in one transaction, and a trade cut short loses nothing.
+- [s5-14 Trade furni](/tasks/s5-14-trading.md) — Two habbos in a room offer furni from their hands and accept; when both have, every piece changes hands in one transaction, and a trade cut short loses nothing. **done**
 - [s5-15 Turn credit furni into credits](/tasks/s5-15-credit-furni.md) — CONVERT_FURNI_TO_CREDITS destroys a coin, a sack or a gold bar that stands in the habbo's room and adds its worth to the user's wallet.
 - [s5-16 Recycle furni](/tasks/s5-16-recycler.md) — The recycler takes furni from the hand, keeps it saved while the recycling runs, and gives a reward for it or the furni back; its rewards and times start as Holo's.
 - [s5-17 Port housekeeping's Recycler Options](/tasks/s5-17-recycler-options-page.md) — Housekeeping gets HoloCMS's Recycler Options page, which saves the recycler's four settings and writes the staff log.

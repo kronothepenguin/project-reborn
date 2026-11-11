@@ -102,9 +102,10 @@ func PlaceWallItem(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64
 	return placed, err
 }
 
-// fromHand reads the furni id from the store while viewer's hand holds it and the room takes one more.
+// fromHand reads the furni id from the store while viewer's hand holds it and the room takes one more. A furni on
+// offer in a trade stays in the hand (plans/server decision 0114).
 func fromHand(ctx context.Context, db *sql.DB, r *room.Room, viewer habbo.Habbo, id int64) (room.Furni, bool, error) {
-	if len(r.Furni()) >= settings.GetIntOr("game.maxRoomFurni", 500) {
+	if len(r.Furni()) >= settings.GetIntOr("game.maxRoomFurni", 500) || onOffer(viewer, id) {
 		return room.Furni{}, false, nil
 	}
 	row, err := store.New(db).GetFurni(ctx, id)

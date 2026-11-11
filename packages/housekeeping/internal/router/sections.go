@@ -194,6 +194,7 @@ var forms = []section{
 			{Key: "game.maxStackHeight", Label: "Stack Height", Help: "How high a furni may stand on a stack of others."},
 			{Key: "game.presentNoteMaxLength", Label: "Present Note Length", Help: "How many characters a present's note keeps; a longer one is cut."},
 			{Key: "game.postItMaxLength", Label: "Post-it Length", Help: "How many characters a post-it holds; a longer one is not saved."},
+			{Key: "game.maxTradeFurni", Label: "Trade Size", Help: "How many furni one habbo may offer in a trade."},
 		},
 	},
 	{
