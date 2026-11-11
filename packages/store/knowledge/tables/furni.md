@@ -21,7 +21,7 @@ timestamp: 2026-11-11T16:24:23+00:00
 | `altitude` | REAL | no | 0 | How high a placed floor furni stands | |
 | `direction` | INTEGER | no | 0 | Where a placed floor furni faces | CHECK 0 to 7 |
 | `wall_position` | TEXT | no | `''` | A placed wall item's place, as the client writes it | |
-| `state` | TEXT | no | `''` | The client's stuff data or item data: a dice's number, a gate open or shut, a present's note after `!` | |
+| `state` | TEXT | no | `''` | The client's stuff data or item data: a dice's number, a gate open or shut, a present's note after `!`, a post-it's colour, the notes left on a pad of post-its | |
 | `created_at` | DATETIME | no | | When the piece came to be | |
 | `box_furni_id` | INTEGER | yes | | The present box it waits in; none once the box is opened | → `furni.id`, set null |
 

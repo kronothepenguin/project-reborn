@@ -15,6 +15,7 @@ import (
 // The messages of hh_room about a room's furni (plans/server/reference/r26/hh_room.md).
 const (
 	flatProperty       = 46
+	itemData           = 48
 	noUserForGift      = 76
 	itemsAdded         = 83
 	itemRemoved        = 84
@@ -285,6 +286,50 @@ func handleFlatPropByItem(s *session, me habbo.Habbo, body []byte) {
 		return
 	}
 	if _, err := game.Decorate(context.Background(), s.db, me, property, id); err != nil {
+		s.fail(err)
+	}
+}
+
+// handleGetItemData answers what is written on a post-it, named by its id as text, with 48: the id, a tab, the
+// colour, a space and the text.
+func handleGetItemData(s *session, me habbo.Habbo, body []byte) {
+	id, err := strconv.ParseInt(string(body), 10, 64)
+	if err != nil {
+		s.malformed(83, body)
+		return
+	}
+	item, text, ok, err := game.PostIt(context.Background(), s.db, me, id)
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	if ok {
+		s.reply(itemData, []byte(strconv.FormatInt(id, 10)+"\t"+printable(item.State)+" "+text))
+	}
+}
+
+// handleSetItemData writes a post-it: `<id>/<colour> <text>`, the colour six hexadecimal digits. The room then gets
+// 85 with the note's colour.
+func handleSetItemData(s *session, me habbo.Habbo, body []byte) {
+	name, data, ok := strings.Cut(string(body), "/")
+	id, err := strconv.ParseInt(name, 10, 64)
+	if !ok || err != nil || len(data) < 6 {
+		s.malformed(84, body)
+		return
+	}
+	if err := game.WritePostIt(context.Background(), s.db, me, id, data[:6], strings.TrimPrefix(data[6:], " ")); err != nil {
+		s.fail(err)
+	}
+}
+
+// handleRemoveItem deletes a post-it, named by its id as text. The room then gets 84.
+func handleRemoveItem(s *session, me habbo.Habbo, body []byte) {
+	id, err := strconv.ParseInt(string(body), 10, 64)
+	if err != nil {
+		s.malformed(85, body)
+		return
+	}
+	if err := game.DeletePostIt(context.Background(), s.db, me, id); err != nil {
 		s.fail(err)
 	}
 }

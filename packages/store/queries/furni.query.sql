@@ -66,3 +66,20 @@ UPDATE furni SET state = sqlc.arg(state) WHERE id = sqlc.arg(id) AND room_id = C
 -- A furni that is used up leaves its habbo's hand for good: no row changes when the hand does not hold it.
 -- name: DeleteHandFurni :execrows
 DELETE FROM furni WHERE id = sqlc.arg(id) AND avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER);
+
+-- A pad of post-its counts its notes in its state while a hand holds it: no row changes when the hand does not.
+-- name: SetHandFurniState :execrows
+UPDATE furni SET state = sqlc.arg(state) WHERE id = sqlc.arg(id) AND avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER);
+
+-- The post-its of a room go with it, before the rest of its furni goes to a hand.
+-- name: DeleteRoomPostIts :exec
+DELETE FROM furni
+WHERE room_id = CAST(sqlc.arg(room_id) AS INTEGER)
+    AND furni_definition_id IN (SELECT id FROM furni_definitions WHERE sprite LIKE 'post.it%');
+
+-- name: GetFurniNote :one
+SELECT text FROM furni_notes WHERE furni_id = sqlc.arg(furni_id);
+
+-- name: SetFurniNote :exec
+INSERT INTO furni_notes (furni_id, text) VALUES (sqlc.arg(furni_id), sqlc.arg(text))
+ON CONFLICT (furni_id) DO UPDATE SET text = excluded.text;

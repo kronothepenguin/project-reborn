@@ -112,3 +112,32 @@ timestamp: 2026-11-11T16:24:23+00:00
 - Result: the piece leaves the habbo's hand for good, as a wallpaper used on a room does; no row changes when the
   hand does not hold it
 - Tables: `furni`
+
+## SetHandFurniState
+
+- Cardinality: `:execrows`
+- Inputs: `id`, `avatar_id`, `state`
+- Result: the piece in the habbo's hand has the state, as a pad of post-its that counts one note fewer; no row
+  changes when the hand does not hold it
+- Tables: `furni`
+
+## DeleteRoomPostIts
+
+- Cardinality: `:exec`
+- Inputs: `room_id`
+- Result: the room's post-its are deleted, before the rest of its furni goes to a hand
+- Tables: `furni`, `furni_definitions`
+
+## GetFurniNote
+
+- Cardinality: `:one`
+- Inputs: `furni_id`
+- Result: what is written on the post-it; no row for one nobody wrote on
+- Tables: `furni_notes`
+
+## SetFurniNote
+
+- Cardinality: `:exec`
+- Inputs: `furni_id`, `text`
+- Result: the post-it has the text, written over what it had
+- Tables: `furni_notes`

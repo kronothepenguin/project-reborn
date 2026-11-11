@@ -2,6 +2,17 @@
 
 ## 2026-11-11
 
+- **Done** [s5-12](/tasks/s5-12-post-its.md): a pad's post-its hang on a wall one at a time; anyone reads a note, habbos
+  with rights write it, and the owner or staff with the fuse delete it.
+- **Start** [s5-12](/tasks/s5-12-post-its.md).
+- **Decision** [0111](/decisions/0111-a-teleport-keeps-its-partner.md): a teleport keeps its partner, whoever holds
+  either.
+- **Decision** [0110](/decisions/0110-a-teleport-skips-every-check-of-the-door.md): a teleport takes a habbo past the
+  doorbell, the password, a ban and a full room.
+- **Decision** [0109](/decisions/0109-post-it-length-is-a-setting.md): a post-it's longest text is a setting, 684 by
+  default.
+- **Decision** [0108](/decisions/0108-rights-write-notes-owner-and-staff-delete.md): habbos with rights write post-its,
+  the owner and staff with fuse_remove_stickies delete them.
 - **Done** [s5-11](/tasks/s5-11-decorating-a-room.md): a habbo that controls a room uses up a wallpaper, a floor or a
   landscape of its hand on it, and the room keeps and shows the pattern.
 - **Start** [s5-11](/tasks/s5-11-decorating-a-room.md).

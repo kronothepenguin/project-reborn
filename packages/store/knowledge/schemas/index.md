@@ -54,4 +54,4 @@ build it, and a test keeps the two alike.
 
 ## Furni
 
-- [furni.schema.sql](furni.md) — Declares furni, the pieces of furni habbos own, each in a hand, in a room or in its user's shared inventory.
+- [furni.schema.sql](furni.md) — Declares furni, the pieces of furni habbos own, each in a hand, in a room or in its user's shared inventory, and furni_notes, what is written on a post-it.

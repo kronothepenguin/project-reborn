@@ -279,6 +279,10 @@ func DeleteRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo, roomID int6
 	if err != nil {
 		return fmt.Errorf("game: delete room: %w", err)
 	}
+	// A post-it never comes back into a hand, so the room's go with it.
+	if err := q.DeleteRoomPostIts(ctx, roomID); err != nil {
+		return fmt.Errorf("game: delete room: %w", err)
+	}
 	if err := q.MoveRoomFurniToHand(ctx, store.MoveRoomFurniToHandParams{RoomID: roomID, UserID: viewer.UserID, AvatarID: viewer.ID}); err != nil {
 		return fmt.Errorf("game: delete room: %w", err)
 	}

@@ -26,3 +26,10 @@ CREATE INDEX IF NOT EXISTS idx_furni_user_id ON furni (user_id);
 CREATE INDEX IF NOT EXISTS idx_furni_avatar_id ON furni (avatar_id);
 CREATE INDEX IF NOT EXISTS idx_furni_room_id ON furni (room_id);
 CREATE INDEX IF NOT EXISTS idx_furni_box_furni_id ON furni (box_furni_id);
+
+-- What a habbo wrote on a post-it that hangs on a wall. A post-it nobody wrote on has no row. The post-it's colour
+-- is its furni's state.
+CREATE TABLE IF NOT EXISTS furni_notes (
+    furni_id INTEGER PRIMARY KEY REFERENCES furni(id) ON DELETE CASCADE,
+    text TEXT NOT NULL
+);

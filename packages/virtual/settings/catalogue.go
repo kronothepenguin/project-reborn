@@ -169,6 +169,8 @@ var catalogue = map[string]declaration{
 	// How many characters a present's note keeps (plans/server decision
 	// 0106).
 	"game.presentNoteMaxLength": declare(200, between(1, 1000)),
+	// The most characters of a post-it, Holo's 684; a longer one is refused (plans/server decision 0109).
+	"game.postItMaxLength": declare(684, between(1, 2000)),
 }
 
 // rules check settings that depend on each other. keys lists every setting a

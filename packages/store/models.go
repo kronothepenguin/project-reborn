@@ -210,6 +210,11 @@ type FurniDefinition struct {
 	Recyclable bool
 }
 
+type FurniNote struct {
+	FurniID int64
+	Text    string
+}
+
 type Group struct {
 	ID          int64
 	AvatarID    int64

@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"regexp"
 	"slices"
-	"strings"
 
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/furni"
@@ -71,8 +70,8 @@ func PlaceFurni(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64, x
 }
 
 // PlaceWallItem hangs the wall item id of viewer's hand at position on a wall of the room it is in, and reports
-// whether it did. A wallpaper, a floor or a landscape is never hung, and a pad of post-its is not either: its notes
-// are (plans/server/tasks/s5-12-post-its.md).
+// whether it did. A wallpaper, a floor or a landscape is never hung, and a pad of post-its is not either: one of its
+// notes is (hangPostIt).
 func PlaceWallItem(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64, position string) (bool, error) {
 	r, ok := furnished(viewer)
 	at := wallPosition.FindStringSubmatch(position)
@@ -89,7 +88,11 @@ func PlaceWallItem(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64
 	err := r.Furnish(func() error {
 		item, ok, err := fromHand(ctx, db, r, viewer, id)
 		sprite := item.Definition.Sprite
-		if err != nil || !ok || item.Definition.Kind != "wall" || slices.Contains(decorations, sprite) || strings.HasPrefix(sprite, "post.it") {
+		if err != nil || !ok || item.Definition.Kind != "wall" || slices.Contains(decorations, sprite) {
+			return err
+		}
+		if isPostIt(item) {
+			placed, err = hangPostIt(ctx, db, r, viewer, item, position)
 			return err
 		}
 		item.WallPosition = position
@@ -188,7 +191,7 @@ func PickUpFurni(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64) 
 	picked := false
 	err := r.Furnish(func() error {
 		item, ok := r.FurniByID(id)
-		if !ok || strings.HasPrefix(item.Definition.Sprite, "post.it") {
+		if !ok || isPostIt(item) {
 			return nil
 		}
 		n, err := store.New(db).PickUpFurni(ctx, store.PickUpFurniParams{ID: id, RoomID: r.Ref().ID, UserID: viewer.UserID, AvatarID: viewer.ID})

@@ -124,6 +124,13 @@ one-way door, so the game server leaves both out ([server s5-09](server/tasks/s5
 needs its furni in the catalogue first, and the fortune teller's states come from the furni's own data, which the
 repository does not hold.
 
+## A room's most post-its and rollers
+
+The R26 client has alerts for a room that holds its most post-its (403, `wallitem_post.it.limit`) and its most rollers
+(404, `queue_tile_limit`), beside the one for a room's most furni (405). Holo never sent either, and the server has no
+such limits: a room takes post-its and rollers up to `game.maxRoomFurni`
+([server s5-12](server/tasks/s5-12-post-its.md)). Limits of their own would be two settings and the two alerts.
+
 ## Achievements
 
 The habbos have no achievements yet ([server 0051](server/decisions/0051-no-achievements-yet.md)): 436 lists none, the

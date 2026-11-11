@@ -103,6 +103,18 @@ func (q *Queries) DeleteRoomFurni(ctx context.Context, arg DeleteRoomFurniParams
 	return result.RowsAffected()
 }
 
+const deleteRoomPostIts = `-- name: DeleteRoomPostIts :exec
+DELETE FROM furni
+WHERE room_id = CAST(?1 AS INTEGER)
+    AND furni_definition_id IN (SELECT id FROM furni_definitions WHERE sprite LIKE 'post.it%')
+`
+
+// The post-its of a room go with it, before the rest of its furni goes to a hand.
+func (q *Queries) DeleteRoomPostIts(ctx context.Context, roomID int64) error {
+	_, err := q.db.ExecContext(ctx, deleteRoomPostIts, roomID)
+	return err
+}
+
 const getFurni = `-- name: GetFurni :one
 SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id FROM furni WHERE id = ?1
 `
@@ -126,6 +138,17 @@ func (q *Queries) GetFurni(ctx context.Context, id int64) (Furni, error) {
 		&i.BoxFurniID,
 	)
 	return i, err
+}
+
+const getFurniNote = `-- name: GetFurniNote :one
+SELECT text FROM furni_notes WHERE furni_id = ?1
+`
+
+func (q *Queries) GetFurniNote(ctx context.Context, furniID int64) (string, error) {
+	row := q.db.QueryRowContext(ctx, getFurniNote, furniID)
+	var text string
+	err := row.Scan(&text)
+	return text, err
 }
 
 const listBoxFurni = `-- name: ListBoxFurni :many
@@ -368,6 +391,40 @@ func (q *Queries) PlaceFurni(ctx context.Context, arg PlaceFurniParams) (int64, 
 		arg.ID,
 		arg.AvatarID,
 	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const setFurniNote = `-- name: SetFurniNote :exec
+INSERT INTO furni_notes (furni_id, text) VALUES (?1, ?2)
+ON CONFLICT (furni_id) DO UPDATE SET text = excluded.text
+`
+
+type SetFurniNoteParams struct {
+	FurniID int64
+	Text    string
+}
+
+func (q *Queries) SetFurniNote(ctx context.Context, arg SetFurniNoteParams) error {
+	_, err := q.db.ExecContext(ctx, setFurniNote, arg.FurniID, arg.Text)
+	return err
+}
+
+const setHandFurniState = `-- name: SetHandFurniState :execrows
+UPDATE furni SET state = ?1 WHERE id = ?2 AND avatar_id = CAST(?3 AS INTEGER)
+`
+
+type SetHandFurniStateParams struct {
+	State    string
+	ID       int64
+	AvatarID int64
+}
+
+// A pad of post-its counts its notes in its state while a hand holds it: no row changes when the hand does not.
+func (q *Queries) SetHandFurniState(ctx context.Context, arg SetHandFurniStateParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, setHandFurniState, arg.State, arg.ID, arg.AvatarID)
 	if err != nil {
 		return 0, err
 	}
