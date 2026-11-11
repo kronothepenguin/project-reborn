@@ -59,3 +59,6 @@ WHERE box_furni_id = CAST(sqlc.arg(box_furni_id) AS INTEGER);
 
 -- name: DeleteRoomFurni :execrows
 DELETE FROM furni WHERE id = sqlc.arg(id) AND room_id = CAST(sqlc.arg(room_id) AS INTEGER);
+
+-- name: SetRoomFurniState :execrows
+UPDATE furni SET state = sqlc.arg(state) WHERE id = sqlc.arg(id) AND room_id = CAST(sqlc.arg(room_id) AS INTEGER);

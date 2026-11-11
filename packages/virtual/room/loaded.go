@@ -31,6 +31,14 @@ type Status struct {
 	Until      time.Time
 }
 
+// Carry is what a habbo holds to drink or eat: the item's token, how many sips it has left, and when the habbo next
+// raises or lowers it.
+type Carry struct {
+	Item string
+	Sips int
+	Next time.Time
+}
+
 // Occupant is a habbo in a loaded room.
 type Occupant struct {
 	AvatarID int64
@@ -55,6 +63,8 @@ type Occupant struct {
 	// Leaving reports whether the habbo walks out of the room, kicked or banned, and may walk nowhere else
 	// (plans/server decision 0079).
 	Leaving bool
+	// Carry is the drink the habbo carries, with an empty Item for none.
+	Carry Carry
 }
 
 func (o Occupant) clone() Occupant {

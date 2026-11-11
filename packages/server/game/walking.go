@@ -17,8 +17,8 @@ const stepTime = 500 * time.Millisecond
 type Statuses struct{ Occupants []room.Occupant }
 
 // startClock runs a loaded room's clock until the room unloads (plans/server decision 0072): every stepTime, the
-// statuses whose time is up end (plans/server decision 0075), each walking habbo takes a step, and the statuses that
-// changed go to the room in one message.
+// statuses whose time is up end (plans/server decision 0075), each habbo that carries a drink sips it in its time,
+// each walking habbo takes a step, and the statuses that changed go to the room in one message.
 func startClock(r *room.Room) {
 	go func() {
 		t := time.NewTicker(stepTime)
@@ -43,6 +43,7 @@ func tick(r *room.Room) {
 			if statuses, dropped := expire(o.Statuses, now); dropped {
 				o.Statuses, o.Changed = statuses, true
 			}
+			sip(o, now)
 			switch {
 			case o.Walking:
 				step := walk(floor, all, o)

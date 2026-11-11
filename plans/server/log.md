@@ -2,6 +2,9 @@
 
 ## 2026-11-11
 
+- **Done** [s5-09](/tasks/s5-09-using-furni.md): habbos change furni's states, open gates, roll dice, spin the wheel and
+  the randomizer and carry drinks, by Holo's rules and waits.
+- **Start** [s5-09](/tasks/s5-09-using-furni.md).
 - **Done** [s5-06](/tasks/s5-06-presents.md): a habbo buys furni as a present for any habbo, which waits in a box in the
   receiver's hand with its note, and a room's owner opens a box that stands in its room.
 - **Start** [s5-06](/tasks/s5-06-presents.md).

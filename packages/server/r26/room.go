@@ -150,9 +150,13 @@ var roomHandlers = map[int]handler{
 	65:  loggedIn(handleGetStrip),
 	67:  loggedIn(handleAddStripItem),
 	73:  loggedIn(handleMoveStuff),
+	74:  loggedIn(handleSetStuffData),
+	76:  loggedIn(handleThrowDice),
+	77:  loggedIn(handleDiceOff),
 	75:  loggedIn(handleMove),
 	78:  loggedIn(handlePresentOpen),
 	79:  loggedIn(handleLookTo),
+	80:  loggedIn(handleCarryDrink),
 	88:  loggedIn(handleStop),
 	90:  loggedIn(handlePlaceStuff),
 	158: loggedIn(handleSetBadge),
@@ -165,6 +169,7 @@ var roomHandlers = map[int]handler{
 	126: loggedIn(handleGetRoomAd),
 	182: loggedIn(handleGetInterstitial),
 	211: loggedIn(handleRoomQueueChange),
+	214: loggedIn(handleSetItemState),
 	216: loggedIn(handleGetSpectatorAmount),
 	317: loggedIn(handleStartTyping),
 	318: loggedIn(handleCancelTyping),
@@ -172,8 +177,10 @@ var roomHandlers = map[int]handler{
 	321: loggedIn(handleGetIgnoreList),
 	230: loggedIn(handleGetGroupBadges),
 	231: loggedIn(handleGetGroupDetails),
+	247: loggedIn(handleSpinWheel),
 	261: loggedIn(handleRateFlat),
 	263: loggedIn(handleGetUserTags),
+	314: loggedIn(handleSetRandomState),
 	320: loggedIn(handleBanUser),
 	322: loggedIn(handleUnignoreUser),
 	345: loggedIn(handleCanCreateRoomEvent),
@@ -455,8 +462,11 @@ func handleWave(_ *session, me habbo.Habbo, _ []byte) { game.Wave(me) }
 
 // handleStop ends the habbo's dance, `Dance`; carrying, `CarryItem`, comes with drinks.
 func handleStop(_ *session, me habbo.Habbo, body []byte) {
-	if string(body) == "Dance" {
+	switch string(body) {
+	case "Dance":
 		game.StopDancing(me)
+	case "CarryItem":
+		game.DropDrink(me)
 	}
 }
 

@@ -209,7 +209,7 @@ func SetTyping(viewer habbo.Habbo, on bool) {
 }
 
 // Dance starts the habbo's dance (DANCE): the normal one, 0, for anyone, and the club dances 1 to 4 for the holders of
-// fuse_use_club_dance, as Holo had it; never while it sits or lies.
+// fuse_use_club_dance, as Holo had it; never while it sits or lies. A dancing habbo carries nothing.
 func Dance(viewer habbo.Habbo, dance int) {
 	if dance < 0 || dance > 4 || (dance > 0 && !hasFuse(viewer, auth.FuseUseClubDance)) {
 		return
@@ -221,6 +221,9 @@ func Dance(viewer habbo.Habbo, dance int) {
 		params := ""
 		if dance > 0 {
 			params = strconv.Itoa(dance)
+		}
+		if o.Carry.Item != "" {
+			drop(o)
 		}
 		o.Statuses, o.Changed = setStatus(o.Statuses, room.Status{Action: "dance", Parameters: params}), true
 	})

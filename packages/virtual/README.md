@@ -190,6 +190,8 @@ left, ok := room.Leave(h.ID, h.Session)
   altitude. `Furni.Tiles()` gives the tiles a floor furni covers, its length along x when it faces 0 or 4 and along y
   when it faces 2 or 6. `WithDefinitions(rows)` pairs the store's rows with their definitions, for a room that is not
   loaded.
+- An `Occupant` carries its drink in `Carry`: the token, the sips left and when it next raises or lowers it; the
+  room's clock moves it on.
 - `SetFurni(item)` stands a furni in the room's copy, or moves the one of its id, and `RemoveFurni(id)` takes one out,
   each once the store has the change; both lay the floor again. `FurniByID(id)` reads one, and `FloorWithout(id)` is
   the floor without a furni, where it may move to. A tile says where more furni stands: `Placeable`, when the model

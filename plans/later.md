@@ -115,6 +115,15 @@ The user chose "Holo's, changed by updates (Recommended)": "A database update co
 price or page is another database update. Example: a Throne costs 25 credits because Holo's row says 25. A housekeeping
 editor is noted in plans/later.md."
 
+## One-way doors and the fortune teller
+
+The R26 client has a class for a one-way door, which a habbo enters with `ENTER_ONEWAY_DOOR` (232) and whose state 312
+tells, and one for a fortune teller, which draws with `SET_RANDOM_STATE` (314)
+([server hh_room_utils](server/reference/r26/hh_room_utils.md)). Holo handled neither, and its catalogue sells no
+one-way door, so the game server leaves both out ([server s5-09](server/tasks/s5-09-using-furni.md)): a one-way door
+needs its furni in the catalogue first, and the fortune teller's states come from the furni's own data, which the
+repository does not hold.
+
 ## Achievements
 
 The habbos have no achievements yet ([server 0051](server/decisions/0051-no-achievements-yet.md)): 436 lists none, the

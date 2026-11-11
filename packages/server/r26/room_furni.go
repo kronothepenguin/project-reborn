@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/kronothepenguin/project-reborn/packages/server/encoding"
 	"github.com/kronothepenguin/project-reborn/packages/server/game"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
@@ -16,6 +17,9 @@ const (
 	noUserForGift      = 76
 	itemsAdded         = 83
 	itemRemoved        = 84
+	itemUpdated        = 85
+	stuffDataUpdate    = 88
+	diceValue          = 90
 	activeObjectAdd    = 93
 	activeObjectRemove = 94
 	activeObjectUpdate = 95
@@ -121,6 +125,121 @@ func handlePresentOpen(s *session, me habbo.Habbo, body []byte) {
 	}
 	s.reply(presentOpen, []byte(printable(held.Sprite)+"\r"+printable(code)+"\r"+printable(colours)))
 	s.sendHand(me, game.LastHandPage)
+}
+
+// handleSetStuffData changes a floor furni's state: a string for the furni's id and one for the state.
+func handleSetStuffData(s *session, me habbo.Habbo, body []byte) {
+	r := bytes.NewReader(body)
+	id, state, ok := furniID(r), "", false
+	if id > 0 {
+		var err error
+		state, err = encoding.ReadB64String(r)
+		ok = err == nil
+	}
+	if !ok {
+		s.malformed(74, body)
+		return
+	}
+	if err := game.SetFurniState(context.Background(), s.db, me, id, state); err != nil {
+		s.fail(err)
+	}
+}
+
+// handleSetItemState changes a wall item's state: a string for the item's id and a number for the state.
+func handleSetItemState(s *session, me habbo.Habbo, body []byte) {
+	r := bytes.NewReader(body)
+	id := furniID(r)
+	state, err := encoding.ReadVL64(r)
+	if id == 0 || err != nil {
+		s.malformed(214, body)
+		return
+	}
+	if err := game.SetItemState(context.Background(), s.db, me, id, int(state)); err != nil {
+		s.fail(err)
+	}
+}
+
+// furniID reads a furni's id sent as a string, and 0 for anything else.
+func furniID(r *bytes.Reader) int64 {
+	text, err := encoding.ReadB64String(r)
+	if err != nil {
+		return 0
+	}
+	id, err := strconv.ParseInt(text, 10, 64)
+	if err != nil || id < 0 {
+		return 0
+	}
+	return id
+}
+
+// handleThrowDice rolls a dice or spins a bottle, and handleDiceOff turns a dice off; each names the furni by its id
+// as text.
+func handleThrowDice(s *session, me habbo.Habbo, body []byte) {
+	rawID(s, 76, body, func(id int64) error { return game.ThrowDice(context.Background(), s.db, me, id) })
+}
+
+func handleDiceOff(s *session, me habbo.Habbo, body []byte) {
+	rawID(s, 77, body, func(id int64) error { return game.CloseDice(context.Background(), s.db, me, id) })
+}
+
+// handleSpinWheel spins a wheel of fortune, and handleSetRandomState starts a love randomizer; each names the furni
+// by its id as a number.
+func handleSpinWheel(s *session, me habbo.Habbo, body []byte) {
+	numberID(s, 247, body, func(id int64) error { return game.SpinWheel(context.Background(), s.db, me, id) })
+}
+
+func handleSetRandomState(s *session, me habbo.Habbo, body []byte) {
+	numberID(s, 314, body, func(id int64) error { return game.SetRandomState(context.Background(), s.db, me, id) })
+}
+
+// rawID runs use with the furni id that a command's body holds as text.
+func rawID(s *session, command int, body []byte, use func(id int64) error) {
+	id, err := strconv.ParseInt(strings.TrimSpace(string(body)), 10, 64)
+	if err != nil {
+		s.malformed(command, body)
+		return
+	}
+	if err := use(id); err != nil {
+		s.fail(err)
+	}
+}
+
+// numberID runs use with the furni id that a command's body holds as a number.
+func numberID(s *session, command int, body []byte, use func(id int64) error) {
+	id, err := encoding.ReadVL64(bytes.NewReader(body))
+	if err != nil {
+		s.malformed(command, body)
+		return
+	}
+	if err := use(int64(id)); err != nil {
+		s.fail(err)
+	}
+}
+
+// handleCarryDrink puts in the habbo's hand the drink whose token the furni gave the client.
+func handleCarryDrink(_ *session, me habbo.Habbo, body []byte) {
+	game.CarryDrink(me, strings.TrimSpace(string(body)))
+}
+
+// sendFurniState tells the client a furni's new state: 88 for a floor furni, its id and the state, and 85 for a wall
+// item, its line.
+func (s *session) sendFurniState(item room.Furni) {
+	if item.Definition.Kind == "wall" {
+		s.reply(itemUpdated, []byte(strings.TrimSuffix(wallItemLines([]room.Furni{item}), "\r")))
+		return
+	}
+	s.reply(stuffDataUpdate, append(str(strconv.FormatInt(item.ID, 10)), str(stuffData(item.State))...))
+}
+
+// sendDice tells the client that a dice rolls, 90 with its id, or the face it stopped on, its id and the face plus 38
+// times the id, as the client reads it.
+func (s *session) sendDice(e game.DiceRolled) {
+	id := strconv.FormatInt(e.ID, 10)
+	if e.Rolling {
+		s.reply(diceValue, []byte(id))
+		return
+	}
+	s.reply(diceValue, []byte(id+" "+strconv.FormatInt(e.ID*38+int64(e.Face), 10)))
 }
 
 // ints reads every field as a number.

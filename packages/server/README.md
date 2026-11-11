@@ -338,6 +338,12 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
 | `G_ITEMS` (63) | 45: the wall items that stand in the room, a line each |
 | `PLACESTUFF` (90) | Nothing to the sender alone: the furni of its hand stands in the room, and everyone in it gets 93 for a floor furni, `<strip id> <x> <y> <direction>`, or 83 for a wall item, `<strip id> :w=<x>,<y> l=<x>,<y> <r or l>`. A furni that may not stand there stays in the hand |
 | `MOVESTUFF` (73) | 95 to the room: the floor furni stands on the new tile or turned. A furni that may not stand there stays, and its mover alone gets 95 with it where it is |
+| `SETSTUFFDATA` (74) | 88 to the room, the furni's id and its new state: anyone in the room sets a floor furni's state, a lamp `ON`. Only a habbo that controls the room opens and closes a door furni, `O` and `C`, and a door closes only while nobody stands in it. A state longer than 32 characters is refused |
+| `SETITEMSTATE` (214) | 85 to the room, the wall item's line with its new state |
+| `THROW_DICE` (76), `DICE_OFF` (77) | 90 to the room: the dice's id while it rolls, then two seconds later the id and its face, 1 to 6, plus 38 times the id; `DICE_OFF` shows no face. The habbo stands on a tile beside the dice. A bottle spins the same way and points one of eight ways |
+| `SPIN_WHEEL_OF_FORTUNE` (247) | 85 to the room: the wheel's line with -1 while it spins, and with its number, 0 to 9, 4.25 seconds later; for a habbo that controls the room |
+| `SET_RANDOM_STATE` (314) | 88 to the room: the love randomizer's state `123456789` while it runs, and its number, 1 to 4, five seconds later |
+| `CARRYDRINK` (80) | Nothing but the habbo's status: `carryd` and the drink's token, 1 to 26, for 9 seconds, then `drink` for 1, ten times over, as Holo's habbos sipped; never while it lies. A dance or `STOP CarryItem` takes the drink away |
 | `PRESENTOPEN` (78) | 94 to the room, then 129 and 140 to the opener: the box that stands in the opener's own room goes, what waited in it lands in the opener's hand, 129 shows the last of it on the box's card, the class, the class with a wall item's data, and the colours, and the hand comes at its last page. Only the room's owner opens a box (`plans/server/decisions/0105-only-a-rooms-owner-opens-a-present.md`) |
 | `ADDSTRIPITEM` (67) | 94 or 84 to the room, and 140 to the picker: the furni leaves the room for the picker's hand, `new stuff <id>` a floor furni and `new item <id>` a wall item |
 | `G_STAT` (64) | The habbo comes in at the model's door: 34 with the others' statuses, then 28 with its own user lines and 34 with its status, which the others get too. In a habbo room the owner's status holds `flatctrl useradmin` and a habbo with rights `flatctrl` with no level, which the client's Human class reads as `furniture`; Holo's `onlyfurniture` was another client's. A room that filled meanwhile queues the habbo. A spectator gets the statuses alone and comes into no place |
@@ -428,6 +434,11 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
   (`plans/server/decisions/0010-hot-data-written-at-once.md`).
 - The client shows no button that deletes a furni, so `REMOVESTUFF` (99) is
   not handled.
+- A furni's state is saved, then the room's copy changes, and the room is
+  told. No client sets the state of a furni the server draws or writes: a
+  dice, a bottle, the wheel, the randomizer, a trophy, a present, a post-it, a
+  poster and the room dimmer. A number drawn is saved at once, so a habbo that
+  comes in while it still rolls sees it.
 - 32 carries the count of the floor furni, then each as an active object: its
   id and class, its tile, its length and width, its direction, its altitude,
   its colours, an empty runtime data, 0, and its state as the stuff data. 45

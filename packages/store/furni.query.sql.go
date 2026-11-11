@@ -356,6 +356,24 @@ func (q *Queries) PlaceFurni(ctx context.Context, arg PlaceFurniParams) (int64, 
 	return result.RowsAffected()
 }
 
+const setRoomFurniState = `-- name: SetRoomFurniState :execrows
+UPDATE furni SET state = ?1 WHERE id = ?2 AND room_id = CAST(?3 AS INTEGER)
+`
+
+type SetRoomFurniStateParams struct {
+	State  string
+	ID     int64
+	RoomID int64
+}
+
+func (q *Queries) SetRoomFurniState(ctx context.Context, arg SetRoomFurniStateParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, setRoomFurniState, arg.State, arg.ID, arg.RoomID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
 const unboxFurni = `-- name: UnboxFurni :exec
 UPDATE furni
 SET user_id = ?1, avatar_id = CAST(?2 AS INTEGER), box_furni_id = NULL

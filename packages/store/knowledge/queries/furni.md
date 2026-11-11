@@ -1,7 +1,7 @@
 ---
 type: SQL Query
 title: furni.query.sql
-description: Furni operations that create and read a piece, list a habbo's hand a page at a time and a room's furni, and place, move and pick up furni.
+description: Furni operations that create and read a piece, list a habbo's hand a page at a time and a room's furni, place, move and pick up furni, open a present and save a furni's state.
 resource: packages/store/queries/furni.query.sql
 tags: [store, query, furni]
 timestamp: 2026-11-11T16:24:23+00:00
@@ -96,4 +96,11 @@ timestamp: 2026-11-11T16:24:23+00:00
 - Inputs: `id`, `room_id`
 - Result: the piece that stands in the room is deleted, as an opened present's box is; no row changes when the room
   does not have it
+- Tables: `furni`
+
+## SetRoomFurniState
+
+- Cardinality: `:execrows`
+- Inputs: `id`, `room_id`, `state`
+- Result: the piece that stands in the room takes the state; no row changes when the room does not have it
 - Tables: `furni`
