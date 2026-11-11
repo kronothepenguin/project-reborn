@@ -60,7 +60,7 @@ presents, trade with each other and recycle furni.
 2. [s5-02 Load the furni definitions and the catalogue in virtual](/tasks/s5-02-catalogue-state.md) **done**
 3. [s5-03 Show the catalogue](/tasks/s5-03-showing-the-catalogue.md) **done**
 4. [s5-04 Keep furni in the hand](/tasks/s5-04-the-hand.md) **done**
-5. [s5-05 Buy furni](/tasks/s5-05-buying-furni.md)
+5. [s5-05 Buy furni](/tasks/s5-05-buying-furni.md) **done**
 6. [s5-06 Send and open presents](/tasks/s5-06-presents.md)
 7. [s5-07 Show a room's furni and walk around it](/tasks/s5-07-furni-in-rooms.md)
 8. [s5-08 Place, move, turn and pick up furni](/tasks/s5-08-placing-furni.md)

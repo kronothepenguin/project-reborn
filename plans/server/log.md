@@ -2,6 +2,9 @@
 
 ## 2026-11-11
 
+- **Done** [s5-05](/tasks/s5-05-buying-furni.md): GPRC buys a catalogue item with the user's credits in one transaction,
+  and its furni lands in the buyer's hand, with deals, trophies, decorations and the club's page.
+- **Start** [s5-05](/tasks/s5-05-buying-furni.md).
 - **Done** [s5-04](/tasks/s5-04-the-hand.md): the store keeps every piece of furni, in a hand, a room or the shared
   inventory, and GETSTRIP sends the hand nine furni at a time, read from the database.
 - **Start** [s5-04](/tasks/s5-04-the-hand.md).

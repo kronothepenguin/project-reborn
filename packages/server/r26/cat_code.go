@@ -2,6 +2,7 @@ package r26
 
 import (
 	"context"
+	"errors"
 	"strconv"
 	"strings"
 
@@ -13,9 +14,16 @@ import (
 
 // The messages of hh_cat_code the server sends (plans/server/reference/r26/hh_cat_code.md).
 const (
-	catalogueIndex = 126
-	cataloguePage  = 127
+	purchaseError      = 65
+	purchaseOK         = 67
+	purchaseNoBalance  = 68
+	catalogueIndex     = 126
+	cataloguePage      = 127
+	purchaseNotAllowed = 296
 )
+
+// purchaseNeedsClub is the code of 296 on which the client shows catalog_purchase_not_allowed_hc.
+const purchaseNeedsClub = 1
 
 // catCodeCommands names the commands of hh_cat_code by id, as its Catalogue Handler and its pets page register them.
 var catCodeCommands = map[int]string{
@@ -27,6 +35,7 @@ var catCodeCommands = map[int]string{
 
 // catCodeHandlers handles hh_cat_code's commands.
 var catCodeHandlers = map[int]handler{
+	100: loggedIn(handlePurchase),
 	101: loggedIn(handleCatalogueIndex),
 	102: loggedIn(handleCataloguePage),
 }
@@ -61,6 +70,42 @@ func handleCataloguePage(s *session, me habbo.Habbo, body []byte) {
 	}
 	if ok {
 		s.reply(cataloguePage, []byte(pageLines(page)))
+	}
+}
+
+// handlePurchase buys what the order names, eight lines of text: the edit mode, the page's code, the language, the
+// item's purchase code, the extra value of the page or a dash, 1 for a gift, the receiver's name and the message.
+// The client then shows the purchase as done, 67, with the new balance, 6, and in a habbo room it opens the hand by
+// itself. 68 says the credits are not enough, 296 with 1 that the page sells only to club members, and 65 that the
+// catalogue does not sell that; none of them charges.
+func handlePurchase(s *session, me habbo.Habbo, body []byte) {
+	lines := strings.Split(string(body), "\r")
+	if len(lines) < 6 {
+		s.malformed(100, body)
+		return
+	}
+	// Presents come with a task of their own, plans/server/tasks/s5-06-presents.md.
+	if lines[5] == "1" {
+		s.reply(purchaseError, []byte("Gifts are not sold yet"))
+		return
+	}
+	order := game.Order{Page: lines[1], Item: lines[3], Extra: lines[4]}
+	if order.Extra == "-" {
+		order.Extra = ""
+	}
+	credits, err := game.Buy(context.Background(), s.db, me, order)
+	switch {
+	case errors.Is(err, game.ErrNotEnoughCredits):
+		s.reply(purchaseNoBalance, nil)
+	case errors.Is(err, game.ErrClubOnly):
+		s.reply(purchaseNotAllowed, vl64(purchaseNeedsClub))
+	case errors.Is(err, game.ErrNotForSale):
+		s.reply(purchaseError, []byte("The catalogue does not sell that"))
+	case err != nil:
+		s.fail(err)
+	default:
+		s.reply(purchaseOK, nil)
+		s.reply(purse, []byte(strconv.FormatInt(credits, 10)))
 	}
 }
 

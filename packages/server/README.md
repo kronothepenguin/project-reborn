@@ -252,6 +252,7 @@ data of `virtual/catalogue` (`plans/server/reference/r26/hh_cat_code.md`):
 | Command | Answer |
 | --- | --- |
 | `GCIX` (101) | 126: the pages the habbo sees, in the catalogue's order, a line each: the page's code, a tab and its name. A habbo sees a page when its access group level reaches the page's, or when the page is open to the club and its user is a member (`plans/server/decisions/0100-sixteen-pages-need-level-7-and-two-the-club.md`) |
+| `GPRC` (100) | 67 and 6 with the new balance: the item of the page, both named by their codes, is bought with the credits of the habbo's user, and its furni lands in the habbo's hand. 68 when the credits are not enough; 296 with 1 when the page sells only to club members and the habbo's user is not one (`plans/server/decisions/0102-club-furni-and-club-shop-sell-to-club-members.md`); 65 when the page does not exist, the habbo does not see it or it sells no such item. None of the three charges |
 | `GCAP` (102) | 127: the page the client names by its code, a line per value: `i` the code, `n` the name, `l` the layout, then those the page has of `g`, `e`, `h`, `w` and `s`, its numbered texts as `t<n>`, and a `p` line for each item it sells. A page that does not exist or that the habbo does not see gets no answer |
 
 - The client names a page by its code and reads the page `Recycler` by that
@@ -267,6 +268,19 @@ data of `virtual/catalogue` (`plans/server/reference/r26/hh_cat_code.md`):
 - The purchase code is the item's own code, which `GPRC` sends back. The
   client shows the picture `ctlg_pic_<code>` when its cast holds one, as it
   does for the pet food packs, `deal97` to `deal99`.
+- A purchase is one transaction: the wallet pays, its history gets the line
+  `Catalogue purchase (<item>)` under the reason `catalogue`, and each piece
+  the item gives becomes a furni in the buyer's hand, six for a pet food pack.
+  The wallet belongs to the user, so every habbo of the user pays from it.
+- A furni bought on a page of the layout `ctlg_trophies` keeps the buyer's
+  name, the day as dd-mm-yyyy and the inscription, cut at 150 characters,
+  separated by tabs, as the client's trophy reads its state. One bought on the
+  `ctlg_spaces` page keeps the pattern the client sends, digits with at most
+  one dot. A pad of post-its starts with 20 notes.
+- After 67 the client shows the purchase as done and, in a habbo room, opens
+  the hand by itself, which asks for it with `GETSTRIP`.
+- A gift is refused with 65 until presents are sold
+  (`plans/server/tasks/s5-06-presents.md`).
 - The edit mode and the language the client sends change nothing. A tab, a
   line break or another control character in a value becomes a space.
 - The level and the club are read from the store each time, since the site

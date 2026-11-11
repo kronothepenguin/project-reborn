@@ -29,7 +29,7 @@ the same transaction, so the ledger explains the balance, and the row names the 
 
 | Column | Values |
 |--------|--------|
-| `wallet_transactions.reason` | `registration`, `referral`, `store`, `group`, `club`, `voucher`, `staff` |
+| `wallet_transactions.reason` | `registration`, `referral`, `store`, `group`, `club`, `voucher`, `staff`, `catalogue` |
 
 # Relations
 
