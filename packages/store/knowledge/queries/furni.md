@@ -1,7 +1,7 @@
 ---
 type: SQL Query
 title: furni.query.sql
-description: Furni operations that create a piece, count and list a habbo's hand a page at a time, and list the furni that stands in a room.
+description: Furni operations that create and read a piece, list a habbo's hand a page at a time and a room's furni, and place, move and pick up furni.
 resource: packages/store/queries/furni.query.sql
 tags: [store, query, furni]
 timestamp: 2026-11-11T16:24:23+00:00
@@ -35,4 +35,42 @@ timestamp: 2026-11-11T16:24:23+00:00
 - Cardinality: `:many`
 - Inputs: `room_id`
 - Result: the furni that stands in the room, by id
+- Tables: `furni`
+
+## GetFurni
+
+- Cardinality: `:one`
+- Inputs: `id`
+- Result: the piece of furni
+- Tables: `furni`
+
+## PlaceFurni
+
+- Cardinality: `:execrows`
+- Inputs: `id`, `avatar_id`, `room_id`, `x`, `y`, `altitude`, `direction`, `wall_position`
+- Result: the piece leaves the habbo's hand and stands in the room at that place; no row changes when the hand does
+  not hold it
+- Tables: `furni`
+
+## MoveFurni
+
+- Cardinality: `:execrows`
+- Inputs: `id`, `room_id`, `x`, `y`, `altitude`, `direction`
+- Result: the piece stands elsewhere in its room; no row changes when the room does not have it
+- Tables: `furni`
+
+## PickUpFurni
+
+- Cardinality: `:execrows`
+- Inputs: `id`, `room_id`, `user_id`, `avatar_id`
+- Result: the piece leaves the room for the habbo's hand and belongs to its user, with no place left; no row changes
+  when the room does not have it
+- Tables: `furni`
+
+## MoveRoomFurniToHand
+
+- Cardinality: `:exec`
+- Inputs: `room_id`, `user_id`, `avatar_id`
+- Result: every piece that stands in the room goes to the habbo's hand and belongs to its user, before the room is
+  deleted
 - Tables: `furni`

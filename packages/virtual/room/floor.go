@@ -27,8 +27,10 @@ type Tile struct {
 	State TileState
 	// Height is the floor's height, 0 to 9.
 	Height int
-	// Placeable reports whether furni may stand on the tile.
+	// Placeable reports whether furni may stand on the tile: the model allows it, and what stands there carries more.
 	Placeable bool
+	// Top is how high a furni placed on the tile would stand: the floor's height, or the top of what stands there.
+	Top float64
 	// Direction is a seat's or a bed's: the way a habbo on it faces.
 	Direction int
 	// Level is how high a habbo is on the tile: standing on the floor or on a rug, or sitting or lying on a seat's or a
@@ -83,7 +85,7 @@ func ParseFloor(m store.RoomModel) (Floor, error) {
 	if _, ok := f.At(x, y); !ok {
 		return Floor{}, fmt.Errorf("model %s: the door %d,%d is off the height map", m.Name, x, y)
 	}
-	f.rows[y][x] = Tile{State: Open, Height: int(m.DoorHeight), Level: float64(m.DoorHeight)}
+	f.rows[y][x] = Tile{State: Open, Height: int(m.DoorHeight), Level: float64(m.DoorHeight), Top: float64(m.DoorHeight)}
 	return f, nil
 }
 
@@ -92,9 +94,9 @@ func tileOf(c byte) Tile {
 	case c == 'x' || c == 'X':
 		return Tile{State: Blocked}
 	case c >= '0' && c <= '9':
-		return Tile{Height: int(c - '0'), Level: float64(c - '0'), Placeable: true}
+		return Tile{Height: int(c - '0'), Level: float64(c - '0'), Top: float64(c - '0'), Placeable: true}
 	case c >= 'A' && c <= 'H':
-		return Tile{Height: int(c - 'A'), Level: float64(c - 'A')}
+		return Tile{Height: int(c - 'A'), Level: float64(c - 'A'), Top: float64(c - 'A')}
 	default:
 		return Tile{}
 	}

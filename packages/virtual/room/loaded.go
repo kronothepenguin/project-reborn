@@ -91,6 +91,8 @@ type Room struct {
 	// bare is the model's floor, without the room's furni.
 	bare Floor
 	done chan struct{}
+	// furnishing lets one change to the room's furni run at a time.
+	furnishing sync.Mutex
 
 	mu       sync.Mutex
 	unloaded bool

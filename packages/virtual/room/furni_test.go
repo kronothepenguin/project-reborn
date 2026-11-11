@@ -59,14 +59,14 @@ func TestFurniShapesTheFloor(t *testing.T) {
 		x, y int
 		tile Tile
 	}{
-		{1, 0, Tile{State: Blocked, Placeable: true}},
-		{2, 0, Tile{State: Seat, Direction: 4, Level: 1, Placeable: true}},
-		{0, 1, Tile{State: Bed, Direction: 2, Level: 1, Placeable: true}},
-		{1, 1, Tile{State: Open, Placeable: true}},
-		{3, 1, Tile{State: Open, Placeable: true}},
-		{3, 2, Tile{State: Blocked, Placeable: true}},
+		{1, 0, Tile{State: Blocked, Placeable: true, Top: 1}},
+		{2, 0, Tile{State: Seat, Direction: 4, Level: 1}},
+		{0, 1, Tile{State: Bed, Direction: 2, Level: 1}},
+		{1, 1, Tile{State: Open, Placeable: true, Top: 0.1}},
+		{3, 1, Tile{State: Open, Placeable: true, Top: 1}},
+		{3, 2, Tile{State: Blocked, Placeable: true, Top: 1}},
 		{0, 2, Tile{State: Open, Placeable: true}},
-		{0, 3, Tile{State: Seat, Direction: 6, Height: 1, Level: 2, Placeable: true}},
+		{0, 3, Tile{State: Seat, Direction: 6, Height: 1, Level: 2, Top: 1}},
 	} {
 		if got, _ := f.At(want.x, want.y); got != want.tile {
 			t.Errorf("At(%d, %d) = %+v, want %+v", want.x, want.y, got, want.tile)
@@ -135,5 +135,53 @@ func TestAHabboRoomLoadsItsFurni(t *testing.T) {
 	}
 	if tile, _ := r.Floor().At(7, 6); tile.State != Open {
 		t.Errorf("the tile beside the chair = %+v, want open", tile)
+	}
+}
+
+// More furni stands on a solid that has a height, and on a rug; nothing stands on a seat, a bed or a flat solid.
+func TestWhereMoreFurniMayStand(t *testing.T) {
+	flat := piece(4, "solid", 3, 0, 0, 0)
+	flat.Definition.Height = 0
+	f := bareFloor(t).with([]Furni{piece(1, "solid", 2, 2, 0, 0), piece(2, "seat", 1, 0, 0, 0), piece(3, "bed", 2, 0, 0, 0), flat, piece(5, "rug", 0, 1, 0, 0), piece(6, "solid", 2, 2, 1, 0)})
+	for _, want := range []struct {
+		x, y      int
+		placeable bool
+		top       float64
+	}{{2, 2, true, 2}, {1, 0, false, 0}, {2, 0, false, 0}, {3, 0, false, 0}, {0, 1, true, 0.1}, {1, 1, true, 0}, {0, 0, false, 0}} {
+		if tile, _ := f.At(want.x, want.y); tile.Placeable != want.placeable || tile.Top != want.top {
+			t.Errorf("At(%d, %d) takes furni %t at %v, want %t at %v", want.x, want.y, tile.Placeable, tile.Top, want.placeable, want.top)
+		}
+	}
+}
+
+// A loaded room keeps its floor up to date with its furni, and tells where a furni may move without counting it.
+func TestARoomsFloorFollowsItsFurni(t *testing.T) {
+	openHotel(t)
+	ann := &session{"Ann"}
+	r, _, _ := enter(t, Ref{Public: true, ID: 101}, 1, ann)
+	defer leave(t, 1, ann)
+	chair := piece(1, "seat", 2, 2, 0, 4)
+	if !r.SetFurni(chair) {
+		t.Fatal("SetFurni refused a furni")
+	}
+	if tile, _ := r.Floor().At(2, 2); tile.State != Seat {
+		t.Errorf("the chair's tile = %+v, want a seat", tile)
+	}
+	if tile, _ := r.FloorWithout(1).At(2, 2); tile.State == Seat {
+		t.Errorf("without the chair its tile = %+v, want what the model has there", tile)
+	}
+	chair.X = 3
+	r.SetFurni(chair)
+	if got, ok := r.FurniByID(1); !ok || got.X != 3 || len(r.Furni()) != 1 {
+		t.Errorf("after moving, the room holds %+v, want the one chair at 3,2", r.Furni())
+	}
+	if removed, ok := r.RemoveFurni(1); !ok || removed.X != 3 || len(r.Furni()) != 0 {
+		t.Errorf("RemoveFurni = %+v, %t; want the chair, and an empty room", removed, ok)
+	}
+	if _, ok := r.RemoveFurni(1); ok {
+		t.Error("RemoveFurni took the chair out twice")
+	}
+	if tile, _ := r.Floor().At(3, 2); tile.State == Seat {
+		t.Error("the floor still has the chair")
 	}
 }

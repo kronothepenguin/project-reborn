@@ -189,6 +189,11 @@ left, ok := room.Leave(h.ID, h.Session)
   altitude. `Furni.Tiles()` gives the tiles a floor furni covers, its length along x when it faces 0 or 4 and along y
   when it faces 2 or 6. `WithDefinitions(rows)` pairs the store's rows with their definitions, for a room that is not
   loaded.
+- `SetFurni(item)` stands a furni in the room's copy, or moves the one of its id, and `RemoveFurni(id)` takes one out,
+  each once the store has the change; both lay the floor again. `FurniByID(id)` reads one, and `FloorWithout(id)` is
+  the floor without a furni, where it may move to. A tile says where more furni stands: `Placeable`, when the model
+  allows furni and what stands there carries more, a solid that has a height or a rug, and `Top`, how high the next
+  one would stand. `Furnish(change)` runs one change to the room's furni at a time.
 - `ParseFloor(model)` reads a model's height map as the client reads 31: `x` blocked, in either case; a digit, that
   height; `A` to `H`, the heights 0 to 7, and `y`, 0, where nothing may be placed; any other character open at 0, as
   Holo read it. The public furni block their tiles (state 1) or seat a habbo (state 2), and the door's tile is always

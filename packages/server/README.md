@@ -229,7 +229,7 @@ data of `virtual/category`, `virtual/model` and `virtual/room` and the store
 | `GETFLATINFO` (21) | 54: the room's settings, with `model_<model>` as its marker, the category's trading flag, 0 for the alert no script reads, and 25 as the absolute most visitors, which caps the navigator's modify page. A room that does not exist gets no answer |
 | `GETFLATCAT` (152) | 222: the owner's room and its category; another habbo's room gets no answer |
 | `UPDATEFLAT` (24) | Nothing: the owner's room takes the name, the door and whether to show the owner, by `CREATEFLAT`'s rules |
-| `DELETEFLAT` (23) | Nothing: the owner's room goes, with the favourites that name it; its furni will go to the owner's hand once S5 brings furni (`plans/server/decisions/0059-a-deleted-rooms-furni-goes-to-its-owner.md`) |
+| `DELETEFLAT` (23) | Nothing: the owner's room goes, with the favourites that name it, after the furni that stands in it went to the owner's hand, whoever placed it (`plans/server/decisions/0059-a-deleted-rooms-furni-goes-to-its-owner.md`) |
 | `SETFLATINFO` (25) | Nothing: the owner's room takes the description, cut at 125 characters and without control characters; a password of 1 to 32 characters, stored hashed (`plans/server/decisions/0062-room-passwords-are-hashed.md`); whether others move furniture; and 10 to 25 visitors. A change the rules refuse in any field changes nothing. Both the navigator's form, `<id>/`, and the room-o-matic's, `/<id>/`, are read |
 
 - A public room's port is its id, as Holo gave it, which `#room_directory`
@@ -328,6 +328,9 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
 | `G_USRS` (61) | 28: the user lines of the habbos in the room |
 | `G_OBJS` (62) | 30: the model's public furni, `<id> <class> <x> <y> <height> <direction>` a line, then 32 with the floor furni that stands in the room, which no command asks for and the client needs |
 | `G_ITEMS` (63) | 45: the wall items that stand in the room, a line each |
+| `PLACESTUFF` (90) | Nothing to the sender alone: the furni of its hand stands in the room, and everyone in it gets 93 for a floor furni, `<strip id> <x> <y> <direction>`, or 83 for a wall item, `<strip id> :w=<x>,<y> l=<x>,<y> <r or l>`. A furni that may not stand there stays in the hand |
+| `MOVESTUFF` (73) | 95 to the room: the floor furni stands on the new tile or turned. A furni that may not stand there stays, and its mover alone gets 95 with it where it is |
+| `ADDSTRIPITEM` (67) | 94 or 84 to the room, and 140 to the picker: the furni leaves the room for the picker's hand, `new stuff <id>` a floor furni and `new item <id>` a wall item |
 | `G_STAT` (64) | The habbo comes in at the model's door: 34 with the others' statuses, then 28 with its own user lines and 34 with its status, which the others get too. In a habbo room the owner's status holds `flatctrl useradmin` and a habbo with rights `flatctrl` with no level, which the client's Human class reads as `furniture`; Holo's `onlyfurniture` was another client's. A room that filled meanwhile queues the habbo. A spectator gets the statuses alone and comes into no place |
 | `QUIT` (53) | Nothing: the habbo leaves, and the others get 29 with its index |
 | `ROOM_QUEUE_CHANGE` (211) | The habbo waiting in a full room's line moves to the line its target names, 1 the room's and 2 the spectators', at its end (`plans/server/decisions/0089-up-to-50-spectators-from-the-queue.md`) |
@@ -395,6 +398,27 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
   bed take a habbo at their top; a rug leaves its tile open, and a habbo walks
   at the rug's height. A furni's length runs along x when it faces north or
   south and along y when it faces east or west, as Holo laid furni.
+- The owner, the habbos with rights and the holders of
+  `fuse_any_room_controller` place furni from their own hands and move the
+  room's; only the owner and those holders pick furni up, and what they pick
+  up becomes their user's, whoever placed it
+  (`plans/server/decisions/0103-whoever-picks-a-furni-up-keeps-it.md`). A
+  post-it is never picked up, and a wallpaper, a floor or a landscape never
+  hung.
+- A floor furni stands where every tile it covers takes furni, by Holo's
+  rules: a tile the model allows, with nothing on it, with a solid that has a
+  height, on whose top it stands, or with a rug, just above which it stands;
+  never on a seat, a bed or a flat solid, and never where a habbo stands. It
+  stands no higher than `game.maxStackHeight`, 20. A seat that is moved may
+  come under a habbo, which then sits; a habbo whose seat or bed moves or goes
+  stands up. A wall item's place is the client's text, each number 200 at most.
+- A room holds at most `game.maxRoomFurni` furni, 500
+  (`plans/server/decisions/0104-a-room-holds-up-to-500-furni.md`).
+- One change to a room's furni runs at a time. Each writes its row, then the
+  room's copy, then tells the room
+  (`plans/server/decisions/0010-hot-data-written-at-once.md`).
+- The client shows no button that deletes a furni, so `REMOVESTUFF` (99) is
+  not handled.
 - 32 carries the count of the floor furni, then each as an active object: its
   id and class, its tile, its length and width, its direction, its altitude,
   its colours, an empty runtime data, 0, and its state as the stuff data. 45

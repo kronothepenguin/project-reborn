@@ -239,6 +239,17 @@ func (s *session) Notify(event any) {
 		s.sendChat(e)
 	case game.Typing:
 		s.reply(userTypingStatus, append(vl64(e.Index), vl64(flag(e.On))...))
+	case game.FurniPlaced:
+		s.sendFurniPlaced(e.Furni)
+	case game.FurniMoved:
+		s.reply(activeObjectUpdate, activeObject(e.Furni))
+	case game.FurniRemoved:
+		id := []byte(strconv.FormatInt(e.ID, 10))
+		if e.Wall {
+			s.reply(itemRemoved, id)
+		} else {
+			s.reply(activeObjectRemove, id)
+		}
 	case game.Statuses:
 		var b strings.Builder
 		for _, o := range e.Occupants {

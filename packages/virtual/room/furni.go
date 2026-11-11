@@ -18,6 +18,9 @@ type Furni struct {
 // doorOpen is the state of a door furni that lets habbos through, as the client's door classes set it.
 const doorOpen = "O"
 
+// aboveRug is how far above a rug the furni placed on it stands, as Holo had it.
+const aboveRug = 0.1
+
 // Tiles returns the tiles a floor furni covers, from its own tile on: its length runs along x when it faces north or
 // south, and along y when it faces east or west, 2 or 6, as Holo laid furni.
 func (f Furni) Tiles() [][2]int {
@@ -36,8 +39,9 @@ func (f Furni) Tiles() [][2]int {
 
 // with returns the floor with the furni on it. On each tile the highest furni decides, and of two as high the newer
 // one: a solid blocks the tile, unless it is a door that stands open; a seat and a bed take a habbo at their top,
-// facing their way; and a rug leaves the tile open, at the rug's own height. Wall items and tiles off the map change
-// nothing.
+// facing their way; and a rug leaves the tile open, at the rug's own height. More furni stands on a solid that has a
+// height, at its top, and on a rug, just above it; nothing stands on a seat, a bed or a solid with no height, as Holo
+// stacked furni. Wall items and tiles off the map change nothing.
 func (f Floor) with(items []Furni) Floor {
 	rows := make([][]Tile, len(f.rows))
 	for y, row := range f.rows {
@@ -60,16 +64,21 @@ func (f Floor) with(items []Furni) Floor {
 			t.Direction = 0
 			switch d.Kind {
 			case "seat":
-				t.State, t.Direction, t.Level = Seat, int(item.Direction), item.Altitude+d.Height
+				t.State, t.Direction, t.Level, t.Placeable = Seat, int(item.Direction), item.Altitude+d.Height, false
 			case "bed":
-				t.State, t.Direction, t.Level = Bed, int(item.Direction), item.Altitude+d.Height
+				t.State, t.Direction, t.Level, t.Placeable = Bed, int(item.Direction), item.Altitude+d.Height, false
 			case "rug":
-				t.State, t.Level = Open, item.Altitude
+				t.State, t.Level, t.Top = Open, item.Altitude, item.Altitude+aboveRug
 			default:
 				if d.Door && item.State == doorOpen {
 					t.State, t.Level = Open, float64(t.Height)
 				} else {
 					t.State = Blocked
+				}
+				if d.Height > 0 {
+					t.Top = item.Altitude + d.Height
+				} else {
+					t.Placeable = false
 				}
 			}
 		}
@@ -98,4 +107,56 @@ func WithDefinitions(rows []store.Furni) []Furni {
 		}
 	}
 	return items
+}
+
+// FurniByID returns the furni id that stands in the room.
+func (r *Room) FurniByID(id int64) (Furni, bool) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	item, ok := r.furni[id]
+	return item, ok
+}
+
+// FloorWithout returns the room's floor as it would be without the furni id: where that furni may move to.
+func (r *Room) FloorWithout(id int64) Floor {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	others := maps.Clone(r.furni)
+	delete(others, id)
+	return r.bare.with(sortedFurni(others))
+}
+
+// SetFurni stands item in the room's copy, in place of the furni of its id if the room has one, once the store has
+// the change (plans/server decision 0010), and reports whether it did.
+func (r *Room) SetFurni(item Furni) bool {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if r.unloaded {
+		return false
+	}
+	r.furni[item.ID] = item
+	r.floor = r.bare.with(sortedFurni(r.furni))
+	return true
+}
+
+// RemoveFurni takes the furni id out of the room's copy, once the store has the change, and returns it as it stood.
+func (r *Room) RemoveFurni(id int64) (Furni, bool) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	item, ok := r.furni[id]
+	if r.unloaded || !ok {
+		return Furni{}, false
+	}
+	delete(r.furni, id)
+	r.floor = r.bare.with(sortedFurni(r.furni))
+	return item, true
+}
+
+// Furnish runs change while no other change to the room's furni runs, so that two habbos never place, move or pick
+// up furni at once: each sees the room as the one before left it. It holds no other lock, so change may read the room
+// and write the store.
+func (r *Room) Furnish(change func() error) error {
+	r.furnishing.Lock()
+	defer r.furnishing.Unlock()
+	return change()
 }

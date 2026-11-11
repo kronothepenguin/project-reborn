@@ -190,6 +190,8 @@ var forms = []section{
 			{Key: "game.maxIgnoredHabbos", Label: "Ignored Habbos", Help: "How many habbos a habbo may ignore; one more drops the oldest."},
 			{Key: "game.roomEventTypes", Label: "Room Event Types", Help: "How many types of room events there are, named by the client's texts roomevent_type_1 and on."},
 			{Key: "game.maxSpectators", Label: "Spectators", Help: "How many spectators may watch a full room at once."},
+			{Key: "game.maxRoomFurni", Label: "Furni In A Room", Help: "How many furni a habbo room holds; one more stays in the hand."},
+			{Key: "game.maxStackHeight", Label: "Stack Height", Help: "How high a furni may stand on a stack of others."},
 		},
 	},
 	{

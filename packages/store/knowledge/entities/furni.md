@@ -28,8 +28,11 @@ A piece of furni is one thing a habbo bought, was given or took: a chair, a post
 # Lifecycle
 
 - Created in a hand, or with no habbo in the shared inventory.
-- Placing, picking up, trading and the site's Take move it between its places; the tasks of
-  `plans/server/phases/s5-furni-catalogue.md` bring them.
+- Placing takes it from a hand into a room, and picking up from a room into the hand of the habbo that picks it up,
+  whose user it then belongs to, whoever placed it (`plans/server/decisions/0103-whoever-picks-a-furni-up-keeps-it.md`).
+  A deleted room's furni goes to its owner's hand the same way.
+- Trading and the site's Take move it between hands; the tasks of `plans/server/phases/s5-furni-catalogue.md` bring
+  them.
 
 # Relations
 

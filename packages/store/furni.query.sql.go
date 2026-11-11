@@ -62,6 +62,30 @@ func (q *Queries) CreateFurni(ctx context.Context, arg CreateFurniParams) (Furni
 	return i, err
 }
 
+const getFurni = `-- name: GetFurni :one
+SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at FROM furni WHERE id = ?1
+`
+
+func (q *Queries) GetFurni(ctx context.Context, id int64) (Furni, error) {
+	row := q.db.QueryRowContext(ctx, getFurni, id)
+	var i Furni
+	err := row.Scan(
+		&i.ID,
+		&i.FurniDefinitionID,
+		&i.UserID,
+		&i.AvatarID,
+		&i.RoomID,
+		&i.X,
+		&i.Y,
+		&i.Altitude,
+		&i.Direction,
+		&i.WallPosition,
+		&i.State,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const listHandFurni = `-- name: ListHandFurni :many
 SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at FROM furni
 WHERE avatar_id = CAST(?1 AS INTEGER)
@@ -149,4 +173,118 @@ func (q *Queries) ListRoomFurni(ctx context.Context, roomID int64) ([]Furni, err
 		return nil, err
 	}
 	return items, nil
+}
+
+const moveFurni = `-- name: MoveFurni :execrows
+UPDATE furni
+SET x = ?1, y = ?2, altitude = ?3, direction = ?4
+WHERE id = ?5 AND room_id = CAST(?6 AS INTEGER)
+`
+
+type MoveFurniParams struct {
+	X         int64
+	Y         int64
+	Altitude  float64
+	Direction int64
+	ID        int64
+	RoomID    int64
+}
+
+func (q *Queries) MoveFurni(ctx context.Context, arg MoveFurniParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, moveFurni,
+		arg.X,
+		arg.Y,
+		arg.Altitude,
+		arg.Direction,
+		arg.ID,
+		arg.RoomID,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const moveRoomFurniToHand = `-- name: MoveRoomFurniToHand :exec
+UPDATE furni
+SET user_id = ?1, avatar_id = CAST(?2 AS INTEGER), room_id = NULL,
+    x = 0, y = 0, altitude = 0, direction = 0, wall_position = ''
+WHERE room_id = CAST(?3 AS INTEGER)
+`
+
+type MoveRoomFurniToHandParams struct {
+	UserID   int64
+	AvatarID int64
+	RoomID   int64
+}
+
+// Everything that stands in the room goes to one habbo's hand, before the room goes (plans/server decision 0059).
+func (q *Queries) MoveRoomFurniToHand(ctx context.Context, arg MoveRoomFurniToHandParams) error {
+	_, err := q.db.ExecContext(ctx, moveRoomFurniToHand, arg.UserID, arg.AvatarID, arg.RoomID)
+	return err
+}
+
+const pickUpFurni = `-- name: PickUpFurni :execrows
+UPDATE furni
+SET user_id = ?1, avatar_id = CAST(?2 AS INTEGER), room_id = NULL,
+    x = 0, y = 0, altitude = 0, direction = 0, wall_position = ''
+WHERE id = ?3 AND room_id = CAST(?4 AS INTEGER)
+`
+
+type PickUpFurniParams struct {
+	UserID   int64
+	AvatarID int64
+	ID       int64
+	RoomID   int64
+}
+
+// Out of the room and into the hand of the habbo that picks it up, whose user it then belongs to (plans/server
+// decision 0103).
+func (q *Queries) PickUpFurni(ctx context.Context, arg PickUpFurniParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, pickUpFurni,
+		arg.UserID,
+		arg.AvatarID,
+		arg.ID,
+		arg.RoomID,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const placeFurni = `-- name: PlaceFurni :execrows
+UPDATE furni
+SET avatar_id = NULL, room_id = CAST(?1 AS INTEGER), x = ?2, y = ?3,
+    altitude = ?4, direction = ?5, wall_position = ?6
+WHERE id = ?7 AND avatar_id = CAST(?8 AS INTEGER)
+`
+
+type PlaceFurniParams struct {
+	RoomID       int64
+	X            int64
+	Y            int64
+	Altitude     float64
+	Direction    int64
+	WallPosition string
+	ID           int64
+	AvatarID     int64
+}
+
+// Out of the habbo's hand and into the room: no row changes when the hand does not hold the furni.
+func (q *Queries) PlaceFurni(ctx context.Context, arg PlaceFurniParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, placeFurni,
+		arg.RoomID,
+		arg.X,
+		arg.Y,
+		arg.Altitude,
+		arg.Direction,
+		arg.WallPosition,
+		arg.ID,
+		arg.AvatarID,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
 }

@@ -2,11 +2,117 @@ package r26
 
 import (
 	"bytes"
+	"context"
 	"strconv"
 	"strings"
 
+	"github.com/kronothepenguin/project-reborn/packages/server/game"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
 )
+
+// The messages of hh_room about a room's furni (plans/server/reference/r26/hh_room.md).
+const (
+	itemsAdded         = 83
+	itemRemoved        = 84
+	activeObjectAdd    = 93
+	activeObjectRemove = 94
+	activeObjectUpdate = 95
+)
+
+// handlePlaceStuff places a furni of the habbo's hand in its room: `<strip id> <x> <y> <direction>` for a floor
+// furni, and `<strip id> :w=<x>,<y> l=<x>,<y> <r or l>` for a wall item. The strip id is the furni's id. A furni that
+// may not stand there stays in the hand, which the client asks for again.
+func handlePlaceStuff(s *session, me habbo.Habbo, body []byte) {
+	fields := strings.Fields(string(body))
+	if len(fields) != 4 {
+		s.malformed(90, body)
+		return
+	}
+	id, err := strconv.ParseInt(fields[0], 10, 64)
+	if err != nil {
+		s.malformed(90, body)
+		return
+	}
+	if strings.HasPrefix(fields[1], ":w=") {
+		if _, err := game.PlaceWallItem(context.Background(), s.db, me, id, strings.Join(fields[1:], " ")); err != nil {
+			s.fail(err)
+		}
+		return
+	}
+	at, ok := ints(fields[1:])
+	if !ok {
+		s.malformed(90, body)
+		return
+	}
+	if _, err := game.PlaceFurni(context.Background(), s.db, me, id, at[0], at[1], at[2]); err != nil {
+		s.fail(err)
+	}
+}
+
+// handleMoveStuff moves or turns a floor furni of the habbo's room: `<id> <x> <y> <direction>`. A furni that may not
+// stand there stays, and the habbo's client, which already moved it, gets it back as it stands.
+func handleMoveStuff(s *session, me habbo.Habbo, body []byte) {
+	fields := strings.Fields(string(body))
+	values, ok := ints(fields)
+	if len(fields) != 4 || !ok {
+		s.malformed(73, body)
+		return
+	}
+	item, found, err := game.MoveFurni(context.Background(), s.db, me, int64(values[0]), values[1], values[2], values[3])
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	if found && (item.X != int64(values[1]) || item.Y != int64(values[2]) || item.Direction != int64(values[3])) {
+		s.reply(activeObjectUpdate, activeObject(item))
+	}
+}
+
+// handleAddStripItem picks a furni of the habbo's room up into its hand: `new stuff <id>` for a floor furni and
+// `new item <id>` for a wall item. The hand then comes again, as Holo sent it.
+func handleAddStripItem(s *session, me habbo.Habbo, body []byte) {
+	fields := strings.Fields(string(body))
+	if len(fields) != 3 || fields[0] != "new" || (fields[1] != "stuff" && fields[1] != "item") {
+		s.malformed(67, body)
+		return
+	}
+	id, err := strconv.ParseInt(fields[2], 10, 64)
+	if err != nil {
+		s.malformed(67, body)
+		return
+	}
+	picked, err := game.PickUpFurni(context.Background(), s.db, me, id)
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	if picked {
+		s.sendHand(me, s.handPage)
+	}
+}
+
+// ints reads every field as a number.
+func ints(fields []string) ([]int, bool) {
+	values := make([]int, 0, len(fields))
+	for _, field := range fields {
+		v, err := strconv.Atoi(field)
+		if err != nil {
+			return nil, false
+		}
+		values = append(values, v)
+	}
+	return values, true
+}
+
+// sendFurniPlaced tells the client that a furni now stands in its room: 93 for a floor furni, 83 for a wall item.
+func (s *session) sendFurniPlaced(item room.Furni) {
+	if item.Definition.Kind == "wall" {
+		s.reply(itemsAdded, []byte(wallItemLines([]room.Furni{item})))
+		return
+	}
+	s.reply(activeObjectAdd, activeObject(item))
+}
 
 // activeObjectsBody writes the floor furni among items as 32 carries them: their count, then each as an active
 // object.

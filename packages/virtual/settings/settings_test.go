@@ -778,6 +778,8 @@ func TestTheGameSettingsHoldTheirDefaults(t *testing.T) {
 		"game.maxIgnoredHabbos":          100,
 		"game.roomEventTypes":            11,
 		"game.maxSpectators":             50,
+		"game.maxRoomFurni":              500,
+		"game.maxStackHeight":            20,
 	})
 
 	for value, valid := range map[int]bool{0: false, 1: true, 1_000_000: true} {

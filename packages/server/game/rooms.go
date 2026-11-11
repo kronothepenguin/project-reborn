@@ -263,14 +263,34 @@ func UpdateRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo, roomID int6
 }
 
 // DeleteRoom deletes viewer's room and the favourites that name it, and sends the habbos in it out, as Holo did. The
-// furni in it goes to the owner's hand once S5 brings furni (plans/server decision 0059); rooms hold none before.
+// furni that stands in it goes to the owner's hand first, in the same transaction, whoever placed it (plans/server
+// decisions 0059 and 0103).
 func DeleteRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo, roomID int64) error {
-	n, err := store.New(db).DeleteRoom(ctx, store.DeleteRoomParams{ID: roomID, OwnerAvatarID: viewer.ID})
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("game: delete room: %w", err)
+	}
+	defer tx.Rollback()
+	q := store.New(db).WithTx(tx)
+	owned, err := q.GetRoom(ctx, roomID)
+	if store.IsNotFound(err) || err == nil && owned.OwnerAvatarID != viewer.ID {
+		return ErrNotOwner
+	}
+	if err != nil {
+		return fmt.Errorf("game: delete room: %w", err)
+	}
+	if err := q.MoveRoomFurniToHand(ctx, store.MoveRoomFurniToHandParams{RoomID: roomID, UserID: viewer.UserID, AvatarID: viewer.ID}); err != nil {
+		return fmt.Errorf("game: delete room: %w", err)
+	}
+	n, err := q.DeleteRoom(ctx, store.DeleteRoomParams{ID: roomID, OwnerAvatarID: viewer.ID})
 	if err != nil {
 		return fmt.Errorf("game: delete room: %w", err)
 	}
 	if n == 0 {
 		return ErrNotOwner
+	}
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("game: delete room: %w", err)
 	}
 	emptyRoom(room.Ref{ID: roomID})
 	return nil

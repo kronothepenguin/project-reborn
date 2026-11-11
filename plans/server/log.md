@@ -2,6 +2,11 @@
 
 ## 2026-11-11
 
+- **Done** [s5-08](/tasks/s5-08-placing-furni.md): habbos with rights place, move and turn furni by Holo's stacking
+  rules, the owner picks it up and keeps it, and a deleted room's furni goes to its owner's hand.
+- **Start** [s5-08](/tasks/s5-08-placing-furni.md).
+- **Decision** [0104](/decisions/0104-a-room-holds-up-to-500-furni.md): a room holds up to 500 furni.
+- **Decision** [0103](/decisions/0103-whoever-picks-a-furni-up-keeps-it.md): whoever picks a furni up keeps it.
 - **Done** [s5-07](/tasks/s5-07-furni-in-rooms.md): a habbo room loads and shows the furni that stands in it, and habbos
   walk around solids, sit on seats, lie on beds and cross rugs.
 - **Start** [s5-07](/tasks/s5-07-furni-in-rooms.md).

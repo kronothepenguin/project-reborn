@@ -91,7 +91,7 @@ starts.
 - [s5-05 Buy furni](/tasks/s5-05-buying-furni.md) — GPRC buys a catalogue item with the user's credits in one transaction, and the furni lands in the buyer's hand, with deals, trophies and decorations. **done**
 - [s5-06 Send and open presents](/tasks/s5-06-presents.md) — A purchase with the gift flag puts the furni in a box in the hand of the habbo named, with a note, and PRESENTOPEN gives the box's furni to its opener.
 - [s5-07 Show a room's furni and walk around it](/tasks/s5-07-furni-in-rooms.md) — A room loads its floor furni and wall items and shows them as 32 and 45; furni shapes the floor, and habbos sit on seats and lie on beds. **done**
-- [s5-08 Place, move, turn and pick up furni](/tasks/s5-08-placing-furni.md) — PLACESTUFF, MOVESTUFF and ADDSTRIPITEM place furni from the hand, move and turn it, and pick it up, saved at once; a deleted room's furni goes to its owner's hand.
+- [s5-08 Place, move, turn and pick up furni](/tasks/s5-08-placing-furni.md) — PLACESTUFF, MOVESTUFF and ADDSTRIPITEM place furni from the hand, move and turn it, and pick it up, saved at once; a deleted room's furni goes to its owner's hand. **done**
 - [s5-09 Use furni](/tasks/s5-09-using-furni.md) — SETSTUFFDATA and SETITEMSTATE change a furni's state, saved; gates open, dice and bottles roll, wheels and randomizers draw, and fridges hand out drinks.
 - [s5-10 Move furni and habbos on rollers](/tasks/s5-10-rollers.md) — The room's clock moves what stands on a roller one tile on, furni and habbos together, as 230.
 - [s5-11 Decorate a room](/tasks/s5-11-decorating-a-room.md) — FLATPROPBYITEM uses a wallpaper, a floor or a landscape from the hand on the room, saved with it and told to the room as 46.

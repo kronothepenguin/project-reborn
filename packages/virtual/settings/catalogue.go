@@ -157,6 +157,14 @@ var catalogue = map[string]declaration{
 	// How many spectators may watch a full room at once (plans/server
 	// decision 0089).
 	"game.maxSpectators": declare(50, between(1, 1000)),
+
+	// How many furni a habbo room holds, floor furni and wall items together
+	// (plans/server decision 0104).
+	"game.maxRoomFurni": declare(500, between(1, 100000)),
+
+	// How high a floor furni may stand on a stack; one that would stand
+	// higher is placed there, as Holo's items_stacking_maxstackheight had it.
+	"game.maxStackHeight": declare(20, between(1, 100)),
 }
 
 // rules check settings that depend on each other. keys lists every setting a
