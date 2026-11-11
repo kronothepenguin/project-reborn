@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -114,14 +115,49 @@ func login(t *testing.T, db *sql.DB, name string) *http.Cookie {
 	return cookies[0]
 }
 
-// newSite mounts a CMS with printPage's pages on a new database.
-func newSite(t *testing.T) (*sql.DB, *http.ServeMux) {
+// freshDatabase holds the bytes of a database with every update applied, made once for the package's tests. A few hundred
+// tests each want a database of their own, and copying this one costs far less than applying every update again.
+var freshDatabase = sync.OnceValues(func() ([]byte, error) {
+	dir, err := os.MkdirTemp("", "habbo-template-")
+	if err != nil {
+		return nil, err
+	}
+	defer os.RemoveAll(dir)
+	path := filepath.Join(dir, "habbo.db")
+	db, err := store.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	// Closing the last connection moves what the write-ahead log holds into the file.
+	if err := db.Close(); err != nil {
+		return nil, err
+	}
+	return os.ReadFile(path)
+})
+
+// openDB gives the test a new database of its own, a copy of freshDatabase.
+func openDB(t *testing.T) *sql.DB {
 	t.Helper()
-	db, err := store.Open(filepath.Join(t.TempDir(), "habbo.db"))
+	content, err := freshDatabase()
+	if err != nil {
+		t.Fatalf("the fresh database: %v", err)
+	}
+	path := filepath.Join(t.TempDir(), "habbo.db")
+	if err := os.WriteFile(path, content, 0o600); err != nil {
+		t.Fatalf("copying the fresh database: %v", err)
+	}
+	db, err := store.Open(path)
 	if err != nil {
 		t.Fatalf("store.Open: %v", err)
 	}
 	t.Cleanup(func() { db.Close() })
+	return db
+}
+
+// newSite mounts a CMS with printPage's pages on a new database.
+func newSite(t *testing.T) (*sql.DB, *http.ServeMux) {
+	t.Helper()
+	db := openDB(t)
 	mux := http.NewServeMux()
 	static := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { io.WriteString(w, "static") })
 	New(db, WithResolver(printPage), WithStatic(static)).Mount(mux)

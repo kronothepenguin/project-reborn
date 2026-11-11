@@ -4,7 +4,7 @@ title: Check S5's exit criteria
 description: From the merged work, check every exit criterion of S5 and close the phase.
 status: todo
 phase: s5
-depends_on: [s5-01, s5-02, s5-03, s5-04, s5-05, s5-06, s5-07, s5-08, s5-09, s5-10, s5-11, s5-12, s5-13, s5-14, s5-15, s5-16, s5-17, s5-18, s5-19, s5-20]
+depends_on: [s5-01, s5-02, s5-03, s5-04, s5-05, s5-06, s5-07, s5-08, s5-09, s5-10, s5-11, s5-12, s5-13, s5-14, s5-15, s5-16, s5-17, s5-18, s5-19, s5-20, s5-22]
 packages: [packages/server, packages/store, packages/virtual, packages/cms, packages/housekeeping]
 client: []
 timestamp: 2026-11-11T15:10:47+00:00

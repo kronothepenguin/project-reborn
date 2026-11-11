@@ -2,6 +2,11 @@
 
 ## 2026-11-11
 
+- **Done** [s5-22](/tasks/s5-22-test-databases.md): the CMS's and housekeeping's tests copy one prepared database, and
+  their suites take 132 s and 146 s where they took 389 s and 354 s.
+- **Start** [s5-22](/tasks/s5-22-test-databases.md).
+- **Create** [s5-22](/tasks/s5-22-test-databases.md): the CMS's and housekeeping's tests copy one prepared database,
+  since the catalogue's seed made applying every update for each test too slow for the gates.
 - **Done** [s5-03](/tasks/s5-03-showing-the-catalogue.md): GCIX lists the pages a habbo's level and club open, and GCAP
   sends a page with its texts and a product line for each item.
 - **Start** [s5-03](/tasks/s5-03-showing-the-catalogue.md).

@@ -77,3 +77,4 @@ presents, trade with each other and recycle furni.
 19. [s5-19 Show the shared inventory on the site](/tasks/s5-19-shared-inventory-page.md)
 20. [s5-20 Count rooms and furni on housekeeping's dashboard](/tasks/s5-20-dashboard-counts.md)
 21. [s5-21 Check S5's exit criteria](/tasks/s5-21-exit-check.md)
+22. [s5-22 Copy one prepared database for each CMS and housekeeping test](/tasks/s5-22-test-databases.md) **done**
