@@ -1,5 +1,25 @@
 # Log
 
+## 2026-11-11
+
+- **Update** [S5](/phases/s5-furni-catalogue.md) is active, with its exit criteria and the tasks
+  [s5-01](/tasks/s5-01-catalogue-tables.md) to [s5-21](/tasks/s5-21-exit-check.md), once the user answered its open
+  questions. Each task lists what is still to settle before it starts.
+- **Decision** [0098](/decisions/0098-virtual-furni-and-catalogue.md): S5's shared data lives in virtual/furni and
+  virtual/catalogue.
+- **Decision** [0097](/decisions/0097-furni-definitions-and-catalogue-items-apart.md): furni definitions and catalogue
+  items have tables of their own.
+- **Decision** [0096](/decisions/0096-the-hand-is-read-from-the-database.md): the hand is read from the database each
+  time.
+- **Decision** [0095](/decisions/0095-s5-builds-four-site-pieces.md): S5 builds item vouchers, the shared inventory
+  page, Recycler Options and the dashboard counts.
+- **Decision** [0094](/decisions/0094-any-habbo-sends-a-present-to-any-habbo.md): any habbo sends a present to any
+  habbo.
+- **Decision** [0093](/decisions/0093-a-recycling-is-saved.md): a recycling is saved.
+- **Decision** [0092](/decisions/0092-a-trade-lives-only-in-memory.md): a trade lives only in memory.
+- **Decision** [0091](/decisions/0091-holos-catalogue-changed-by-updates.md): a hotel starts with Holo's catalogue,
+  changed by database updates.
+
 ## 2026-11-10
 
 - **Update** [S4](/phases/s4-rooms.md) is done; [S5](/phases/s5-furni-catalogue.md) is next, once its open questions are

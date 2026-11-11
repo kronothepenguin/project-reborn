@@ -103,6 +103,18 @@ housekeeping's badge tool wear a badge in slot 1, in place of the one there. Eve
 The user chose "Five slots": "The store keeps a slot, 1 to 5, per worn badge; the site's badge page then needs a change
 (plans/holo-port) to show several. Example: choosing 3 badges in the client shows all 3 in rooms."
 
+## A catalogue editor in housekeeping
+
+The hotel's catalogue is Holo's, seeded by a database update, and no page edits it: a new price, furni or page is
+another update ([server 0091](server/decisions/0091-holos-catalogue-changed-by-updates.md)). HoloCMS had no catalogue
+editor either, so pages in housekeeping that change the pages, the prices and what is on sale are new, and their design
+is asked when this starts.
+
+The user chose "Holo's, changed by updates (Recommended)": "A database update copies Holo's English catalogue
+(source/holoemu/Resources/holodb.sql), as S3 did for the categories and public rooms. No page edits it in S5: a new
+price or page is another database update. Example: a Throne costs 25 credits because Holo's row says 25. A housekeeping
+editor is noted in plans/later.md."
+
 ## Achievements
 
 The habbos have no achievements yet ([server 0051](server/decisions/0051-no-achievements-yet.md)): 436 lists none, the

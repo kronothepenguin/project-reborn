@@ -82,6 +82,30 @@ starts.
 - [s4-11 Wear five badges](/tasks/s4-11-five-badge-slots.md) — The store keeps a slot 1 to 5 per worn badge; SETBADGE sets them, 228 and the user lines show them, and the site's badge page keeps working. **done**
 - [s4-12 Queue for full rooms and watch as a spectator](/tasks/s4-12-queue-and-spectators.md) — A full room queues its arriving habbos and takes spectators, as the R26 client shows them, in memory. **done**
 
-## S5 to S9
+## S5 Furni, catalogue and trading
+
+- [s5-01 Add the furni definitions and the catalogue to the store](/tasks/s5-01-catalogue-tables.md) — The store gets the furni definitions, the catalogue's pages and its items, and an update that seeds Holo's catalogue of 76 pages, 1,372 furni and 19 deals.
+- [s5-02 Load the furni definitions and the catalogue in virtual](/tasks/s5-02-catalogue-state.md) — virtual/furni holds the furni definitions and virtual/catalogue the pages and what they sell, both loaded when the server starts.
+- [s5-03 Show the catalogue](/tasks/s5-03-showing-the-catalogue.md) — GCIX lists the catalogue's pages a habbo may see as 126, and GCAP sends a page with its texts, images and items as 127.
+- [s5-04 Keep furni in the hand](/tasks/s5-04-the-hand.md) — The store gets the furni items, each belonging to a user and held by a habbo, shared or placed in a room; GETSTRIP sends the hand a page at a time as 140, read from the database.
+- [s5-05 Buy furni](/tasks/s5-05-buying-furni.md) — GPRC buys a catalogue item with the user's credits in one transaction, and the furni lands in the buyer's hand, with deals, trophies and decorations.
+- [s5-06 Send and open presents](/tasks/s5-06-presents.md) — A purchase with the gift flag puts the furni in a box in the hand of the habbo named, with a note, and PRESENTOPEN gives the box's furni to its opener.
+- [s5-07 Show a room's furni and walk around it](/tasks/s5-07-furni-in-rooms.md) — A room loads its floor furni and wall items and shows them as 32 and 45; furni shapes the floor, and habbos sit on seats and lie on beds.
+- [s5-08 Place, move, turn and pick up furni](/tasks/s5-08-placing-furni.md) — PLACESTUFF, MOVESTUFF and ADDSTRIPITEM place furni from the hand, move and turn it, and pick it up, saved at once; a deleted room's furni goes to its owner's hand.
+- [s5-09 Use furni](/tasks/s5-09-using-furni.md) — SETSTUFFDATA and SETITEMSTATE change a furni's state, saved; gates open, dice and bottles roll, wheels and randomizers draw, and fridges hand out drinks.
+- [s5-10 Move furni and habbos on rollers](/tasks/s5-10-rollers.md) — The room's clock moves what stands on a roller one tile on, furni and habbos together, as 230.
+- [s5-11 Decorate a room](/tasks/s5-11-decorating-a-room.md) — FLATPROPBYITEM uses a wallpaper, a floor or a landscape from the hand on the room, saved with it and told to the room as 46.
+- [s5-12 Write post-its](/tasks/s5-12-post-its.md) — A pad's post-its go on a wall one at a time; G_IDATA reads a note as 48, SETITEMDATA writes its colour and text, saved, and REMOVEITEM deletes it.
+- [s5-13 Travel through teleports](/tasks/s5-13-teleports.md) — A teleport is bought as a pair; INTODOOR, GETDOORFLAT, DOORGOIN and GOVIADOOR take a habbo from one to the other, in the same room or another.
+- [s5-14 Trade furni](/tasks/s5-14-trading.md) — Two habbos in a room offer furni from their hands and accept; when both have, every piece changes hands in one transaction, and a trade cut short loses nothing.
+- [s5-15 Turn credit furni into credits](/tasks/s5-15-credit-furni.md) — CONVERT_FURNI_TO_CREDITS destroys a coin, a sack or a gold bar that stands in the habbo's room and adds its worth to the user's wallet.
+- [s5-16 Recycle furni](/tasks/s5-16-recycler.md) — The recycler takes furni from the hand, keeps it saved while the recycling runs, and gives a reward for it or the furni back; its rewards and times start as Holo's.
+- [s5-17 Port housekeeping's Recycler Options](/tasks/s5-17-recycler-options-page.md) — Housekeeping gets HoloCMS's Recycler Options page, which saves the recycler's four settings and writes the staff log.
+- [s5-18 Redeem item vouchers on the site](/tasks/s5-18-item-vouchers.md) — A voucher gives credits or a furni; housekeeping's Voucher Management makes item vouchers by sprite name, and the credits page puts the furni in the redeeming habbo's hand, as HoloCMS did.
+- [s5-19 Show the shared inventory on the site](/tasks/s5-19-shared-inventory-page.md) — The CMS lists the furni of a user that no habbo holds, with a Take button that moves it to the active habbo's hand, and archiving a habbo sends its hand there.
+- [s5-20 Count rooms and furni on housekeeping's dashboard](/tasks/s5-20-dashboard-counts.md) — Housekeeping's dashboard shows how many rooms and furni the hotel has, as HoloCMS's did.
+- [s5-21 Check S5's exit criteria](/tasks/s5-21-exit-check.md) — From the merged work, check every exit criterion of S5 and close the phase.
+
+## S6 to S9
 
 Their tasks are written when each phase starts, once its open questions are answered.
