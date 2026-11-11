@@ -2,6 +2,10 @@
 
 ## 2026-11-11
 
+- **Done** [s5-10](/tasks/s5-10-rollers.md): rollers are a kind of furni that habbos walk onto, and every 2 seconds each
+  carries the furni and the habbo on it one tile on, as 230.
+- **Start** [s5-10](/tasks/s5-10-rollers.md).
+- **Decision** [0107](/decisions/0107-rollers-roll-every-two-seconds.md): rollers roll, every 2 seconds.
 - **Done** [s5-09](/tasks/s5-09-using-furni.md): habbos change furni's states, open gates, roll dice, spin the wheel and
   the randomizer and carry drinks, by Holo's rules and waits.
 - **Start** [s5-09](/tasks/s5-09-using-furni.md).

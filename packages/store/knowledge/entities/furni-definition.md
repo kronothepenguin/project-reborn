@@ -34,6 +34,7 @@ items, the recycler's rewards and the present boxes name definitions
 | `seat` | On the floor | A habbo sits on it |
 | `bed` | On the floor | A habbo lies on it |
 | `rug` | On the floor | Habbos walk over it |
+| `roller` | On the floor | Habbos walk onto it, and it carries what stands on it to the next tile |
 
 # Relations
 

@@ -39,9 +39,10 @@ func (f Furni) Tiles() [][2]int {
 
 // with returns the floor with the furni on it. On each tile the highest furni decides, and of two as high the newer
 // one: a solid blocks the tile, unless it is a door that stands open; a seat and a bed take a habbo at their top,
-// facing their way; and a rug leaves the tile open, at the rug's own height. More furni stands on a solid that has a
-// height, at its top, and on a rug, just above it; nothing stands on a seat, a bed or a solid with no height, as Holo
-// stacked furni. Wall items and tiles off the map change nothing.
+// facing their way; a rug leaves the tile open, at the rug's own height; and a roller leaves it open at the roller's
+// top. More furni stands on a solid that has a height and on a roller, at their top, and on a rug, just above it;
+// nothing stands on a seat, a bed or a solid with no height, as Holo stacked furni. Wall items and tiles off the map
+// change nothing.
 func (f Floor) with(items []Furni) Floor {
 	rows := make([][]Tile, len(f.rows))
 	for y, row := range f.rows {
@@ -69,6 +70,8 @@ func (f Floor) with(items []Furni) Floor {
 				t.State, t.Direction, t.Level, t.Placeable = Bed, int(item.Direction), item.Altitude+d.Height, false
 			case "rug":
 				t.State, t.Level, t.Top = Open, item.Altitude, item.Altitude+aboveRug
+			case "roller":
+				t.State, t.Level, t.Top = Open, item.Altitude+d.Height, item.Altitude+d.Height
 			default:
 				if d.Door && item.State == doorOpen {
 					t.State, t.Level = Open, float64(t.Height)
@@ -160,3 +163,6 @@ func (r *Room) Furnish(change func() error) error {
 	defer r.furnishing.Unlock()
 	return change()
 }
+
+// BareFloor returns the room's floor without its furni: what the model alone lets stand where.
+func (r *Room) BareFloor() Floor { return r.bare }

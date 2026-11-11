@@ -248,6 +248,8 @@ func (s *session) Notify(event any) {
 		s.sendFurniState(e.Furni)
 	case game.DiceRolled:
 		s.sendDice(e)
+	case game.FurniRolled:
+		s.sendRolled(e)
 	case game.FurniMoved:
 		s.reply(activeObjectUpdate, activeObject(e.Furni))
 	case game.FurniRemoved:

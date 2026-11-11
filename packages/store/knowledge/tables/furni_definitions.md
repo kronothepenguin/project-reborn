@@ -13,7 +13,7 @@ timestamp: 2026-11-11T15:49:58+00:00
 |--------|------|------|---------|-------------|-----------------|
 | `id` | INTEGER | no | | Definition; a seeded one keeps the id of Holo's first row for it | primary key |
 | `sprite` | TEXT | no | | The furni's class for the client, with the client's own variant after a `*`, such as `rare_parasol*0` | |
-| `kind` | TEXT | no | | Where it stands: `wall`, `solid`, `seat`, `bed` or `rug` | CHECK closed set |
+| `kind` | TEXT | no | | Where it stands: `wall`, `solid`, `seat`, `bed`, `rug` or `roller` | CHECK closed set |
 | `length` | INTEGER | no | 0 | A floor furni's first size in tiles; 0 for a wall item | CHECK ≥ 0 |
 | `width` | INTEGER | no | 0 | A floor furni's second size in tiles; 0 for a wall item | CHECK ≥ 0 |
 | `height` | REAL | no | 0 | How high a floor furni's top is, where a habbo sits or the next furni stands | CHECK ≥ 0 |

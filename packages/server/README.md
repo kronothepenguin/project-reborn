@@ -434,6 +434,17 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
   (`plans/server/decisions/0010-hot-data-written-at-once.md`).
 - The client shows no button that deletes a furni, so `REMOVESTUFF` (99) is
   not handled.
+- Rollers roll (`plans/server/decisions/0107-rollers-roll-every-two-seconds.md`):
+  a roller's tile is open, and habbos and furni stand at its top. Every 2
+  seconds, on the room's clock, each roller carries the furni of one tile
+  that stand on it and the habbo that stands still on it, together, one tile
+  the way it points. The next tile must be on the floor, hold no habbo and no
+  furni but a roller, on whose top things land, and take furni by the model
+  when furni comes. A roller ahead moves its load first, so a line of rollers
+  passes a row of things along in one go; what cannot move stays and tries
+  again. Each move saves the furni's place and tells the room with 230: the
+  two tiles, each furni's id and altitudes, the roller's id, and 2 with the
+  habbo's index and heights when one slid along, else 0.
 - A furni's state is saved, then the room's copy changes, and the room is
   told. No client sets the state of a furni the server draws or writes: a
   dice, a bottle, the wheel, the randomizer, a trophy, a present, a post-it, a

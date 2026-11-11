@@ -120,6 +120,16 @@ func TestANewDatabaseHasHolosCatalogue(t *testing.T) {
 		t.Errorf("%d deals, and Doggy Bones %+v gives %+v; want Holo's four pet food packs of 6, this one deal97", deals, item[37], bones)
 	}
 
+	rollers := 0
+	for _, d := range definitions {
+		if d.Kind == "roller" {
+			rollers++
+		}
+	}
+	if rollers != 10 || definition[465].Kind != "roller" || definition[465].Height != 0.5 {
+		t.Errorf("%d rollers, and the White Habbo Roller is %+v; want Holo's ten, half a tile high (plans/server decision 0107)", rollers, definition[465])
+	}
+
 	throne := slices.IndexFunc(items, func(i CatalogueItem) bool { return i.Name == "Throne" })
 	if throne < 0 {
 		t.Fatal("no Throne in the catalogue")

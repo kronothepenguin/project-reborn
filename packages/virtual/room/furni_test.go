@@ -75,6 +75,11 @@ func TestFurniShapesTheFloor(t *testing.T) {
 	if bare, _ := bareFloor(t).At(1, 0); bare.State != Open {
 		t.Error("laying furni on a floor changed the floor it was laid on")
 	}
+	roller := piece(10, "roller", 2, 2, 0, 2)
+	roller.Definition.Height = 0.5
+	if tile, _ := bareFloor(t).with([]Furni{roller}).At(2, 2); tile != (Tile{State: Open, Placeable: true, Level: 0.5, Top: 0.5}) {
+		t.Errorf("a roller's tile = %+v, want it open, at the roller's top for habbos and furni", tile)
+	}
 }
 
 // The highest furni on a tile decides what the tile is, and of two as high the newer one.

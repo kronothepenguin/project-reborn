@@ -25,6 +25,13 @@ const (
 	activeObjectUpdate = 95
 	stripUpdated       = 101
 	presentOpen        = 129
+	slideObjectBundle  = 230
+)
+
+// The move types of 230: no habbo rode the roller, or one slides with it.
+const (
+	rolledAlone   = 0
+	rolledSliding = 2
 )
 
 // handlePlaceStuff places a furni of the habbo's hand in its room: `<strip id> <x> <y> <direction>` for a floor
@@ -240,6 +247,31 @@ func (s *session) sendDice(e game.DiceRolled) {
 		return
 	}
 	s.reply(diceValue, []byte(id+" "+strconv.FormatInt(e.ID*38+int64(e.Face), 10)))
+}
+
+// sendRolled tells the client what a roller carried, 230: the tile it left and the one it reached, the count of the
+// furni and each one's id and altitudes, before and after, the roller's id, and how the habbo it carried moves, 0
+// when it carried none or 2, a slide, with the habbo's index and heights.
+func (s *session) sendRolled(e game.FurniRolled) {
+	var b bytes.Buffer
+	for _, v := range []int{e.FromX, e.FromY, e.ToX, e.ToY, len(e.Furni)} {
+		b.Write(vl64(v))
+	}
+	for _, f := range e.Furni {
+		b.Write(vl64(int(f.ID)))
+		b.Write(str(height(f.From)))
+		b.Write(str(height(f.To)))
+	}
+	b.Write(vl64(int(e.Roller)))
+	if e.Rider == nil {
+		b.Write(vl64(rolledAlone))
+	} else {
+		b.Write(vl64(rolledSliding))
+		b.Write(vl64(e.Rider.Index))
+		b.Write(str(height(e.Rider.From)))
+		b.Write(str(height(e.Rider.To)))
+	}
+	s.reply(slideObjectBundle, b.Bytes())
 }
 
 // ints reads every field as a number.

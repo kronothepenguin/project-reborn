@@ -405,7 +405,7 @@ func EnterRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]Visitor, 
 		return nil, 0, fmt.Errorf("game: enter room: %w", err)
 	}
 	if loaded {
-		startClock(r)
+		startClock(db, r)
 	}
 	if control, ok := flatControl(r, viewer); ok {
 		r.Update(viewer.ID, func(o *room.Occupant) {

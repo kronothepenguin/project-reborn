@@ -186,8 +186,9 @@ left, ok := room.Leave(h.ID, h.Session)
 - A habbo room loads the furni that stands in it too, each row with what it is from `virtual/furni`: `Furni()` lists
   it by id, and `Floor()` is the model's floor with the furni on it. On each tile the highest furni decides, and of two
   as high the newer one: a solid blocks the tile, unless it is a door whose state is `O`; a seat and a bed take a habbo
-  at `Tile.Level`, their altitude and their height, facing `Tile.Direction`; and a rug leaves the tile open at its own
-  altitude. `Furni.Tiles()` gives the tiles a floor furni covers, its length along x when it faces 0 or 4 and along y
+  at `Tile.Level`, their altitude and their height, facing `Tile.Direction`; a rug leaves the tile open at its own
+  altitude; and a roller leaves it open at its top, where habbos and furni stand. `BareFloor()` is the model's floor
+  alone. `Furni.Tiles()` gives the tiles a floor furni covers, its length along x when it faces 0 or 4 and along y
   when it faces 2 or 6. `WithDefinitions(rows)` pairs the store's rows with their definitions, for a room that is not
   loaded.
 - An `Occupant` carries its drink in `Carry`: the token, the sips left and when it next raises or lowers it; the

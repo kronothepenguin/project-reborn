@@ -2,6 +2,9 @@ package game
 
 import (
 	"container/heap"
+	"context"
+	"database/sql"
+	"log/slog"
 	"slices"
 	"strconv"
 	"time"
@@ -18,17 +21,23 @@ type Statuses struct{ Occupants []room.Occupant }
 
 // startClock runs a loaded room's clock until the room unloads (plans/server decision 0072): every stepTime, the
 // statuses whose time is up end (plans/server decision 0075), each habbo that carries a drink sips it in its time,
-// each walking habbo takes a step, and the statuses that changed go to the room in one message.
-func startClock(r *room.Room) {
+// each walking habbo takes a step, and the statuses that changed go to the room in one message. Every rollTime, the
+// room's rollers carry what stands on them (plans/server decision 0107).
+func startClock(db *sql.DB, r *room.Room) {
 	go func() {
 		t := time.NewTicker(stepTime)
 		defer t.Stop()
-		for {
+		for ticks := 1; ; ticks++ {
 			select {
 			case <-r.Done():
 				return
 			case <-t.C:
 				tick(r)
+				if ticks%int(rollTime/stepTime) == 0 {
+					if err := roll(context.Background(), db, r); err != nil {
+						slog.Error(err.Error())
+					}
+				}
 			}
 		}
 	}()

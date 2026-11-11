@@ -1,12 +1,13 @@
 -- The catalogue: what each furni is, the catalogue's pages and what they sell (plans/server decisions 0091 and 0097).
 
 -- What a furni is. sprite names its class to the client, which reads a variant after a *. kind says where it stands:
--- on a wall, or on the floor as a solid, a seat, a bed or a rug. length, width, height and colours describe a floor
--- furni, and data what a wall item carries, a poster's number. door marks a furni that opens to let habbos through.
+-- on a wall, or on the floor as a solid, a seat, a bed, a rug or a roller, which carries what stands on it. length,
+-- width, height and colours describe a floor furni, and data what a wall item carries, a poster's number. door marks
+-- a furni that opens to let habbos through.
 CREATE TABLE IF NOT EXISTS furni_definitions (
     id INTEGER PRIMARY KEY,
     sprite TEXT NOT NULL,
-    kind TEXT NOT NULL CHECK (kind IN ('wall', 'solid', 'seat', 'bed', 'rug')),
+    kind TEXT NOT NULL CHECK (kind IN ('wall', 'solid', 'seat', 'bed', 'rug', 'roller')),
     length INTEGER NOT NULL DEFAULT 0 CHECK (length >= 0),
     width INTEGER NOT NULL DEFAULT 0 CHECK (width >= 0),
     height REAL NOT NULL DEFAULT 0 CHECK (height >= 0),
