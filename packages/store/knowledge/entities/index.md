@@ -61,3 +61,7 @@ Domain entities represented by the store's tables: their meaning, invariants, li
 - [Furni definition](furni-definition.md) — What a kind of furni is, apart from who sells it: its sprite, where it stands, its size and colours, and what may be done with it.
 - [Catalogue page](catalogue-page.md) — A page of the catalogue with its layout, images and texts, shown to the habbos its level and the club allow, which sells catalogue items.
 - [Catalogue item](catalogue-item.md) — Something a catalogue page sells for credits, which gives one piece of a furni or, as a deal, several.
+
+## Furni
+
+- [Furni](furni.md) — A piece of furni that a user owns: in a habbo's hand, placed in a room, or in the user's shared inventory.

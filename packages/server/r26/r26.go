@@ -63,6 +63,8 @@ type session struct {
 	machineID string
 	// habbo is the avatar id of the habbo the session logged in, 0 before.
 	habbo int64
+	// handPage is the page of the hand the client is on, from 0.
+	handPage int
 	// ended is set once the session ends, after which a message sent goes nowhere and a read or a write that fails is
 	// not an error.
 	ended atomic.Bool

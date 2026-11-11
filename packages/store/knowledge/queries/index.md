@@ -52,3 +52,7 @@ Concepts for the query files under `packages/store/queries/`.
 ## Catalogue
 
 - [catalogue.query.sql](catalogue.md) — Catalogue operations that list the furni definitions, the pages with their texts, the items and the furni each item gives, for the game server to load.
+
+## Furni
+
+- [furni.query.sql](furni.md) — Furni operations: creating a piece, and counting and listing a habbo's hand a page at a time.

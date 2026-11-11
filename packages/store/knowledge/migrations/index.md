@@ -16,3 +16,4 @@ them all when `store.Open` creates it.
 - [0011-room-life.sql](0011-room-life.md) — Creates room_rights, room_bans, room_votes, chat_messages and ignored_habbos, and grants housekeeping.chatLogs to every group and user that manages access.
 - [0012-badge-slots.sql](0012-badge-slots.md) — Rebuilds avatar_badges with a slot 1 to 5 for each worn badge in place of worn, the badge a habbo wore taking slot 1.
 - [0013-catalogue.sql](0013-catalogue.md) — Creates the furni definitions and the catalogue's tables, and seeds Holo's English catalogue: 67 pages, 1,256 furni and 1,275 items.
+- [0014-furni.sql](0014-furni.md) — Creates furni, the pieces of furni habbos own, each in a hand, in a room or in its user's shared inventory.

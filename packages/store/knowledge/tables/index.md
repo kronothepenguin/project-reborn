@@ -85,3 +85,7 @@ Concepts for the tables declared under `packages/store/schema/`, one per table.
 - [catalogue_page_texts](catalogue_page_texts.md) — A numbered text of a catalogue page, which the page's layout places.
 - [catalogue_items](catalogue_items.md) — What a catalogue page sells: its place on the page, its name, description and price in credits.
 - [catalogue_item_furni](catalogue_item_furni.md) — The furni a catalogue item gives: one piece of one furni, or the several of a deal.
+
+## Furni
+
+- [furni](furni.md) — A piece of furni: what it is, the user it belongs to, the habbo that holds it or the room it stands in with its place there, and its state.

@@ -51,3 +51,7 @@ build it, and a test keeps the two alike.
 ## Catalogue
 
 - [catalogue.schema.sql](catalogue.md) — Declares the furni definitions and the catalogue: its pages, their numbered texts, its items and the furni each item gives.
+
+## Furni
+
+- [furni.schema.sql](furni.md) — Declares furni, the pieces of furni habbos own, each in a hand, in a room or in its user's shared inventory.

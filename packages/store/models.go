@@ -180,6 +180,21 @@ type ForumThread struct {
 	CreatedAt time.Time
 }
 
+type Furni struct {
+	ID                int64
+	FurniDefinitionID int64
+	UserID            int64
+	AvatarID          sql.NullInt64
+	RoomID            sql.NullInt64
+	X                 int64
+	Y                 int64
+	Altitude          float64
+	Direction         int64
+	WallPosition      string
+	State             string
+	CreatedAt         time.Time
+}
+
 type FurniDefinition struct {
 	ID         int64
 	Sprite     string

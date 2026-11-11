@@ -2,6 +2,9 @@
 
 ## 2026-11-11
 
+- **Done** [s5-04](/tasks/s5-04-the-hand.md): the store keeps every piece of furni, in a hand, a room or the shared
+  inventory, and GETSTRIP sends the hand nine furni at a time, read from the database.
+- **Start** [s5-04](/tasks/s5-04-the-hand.md).
 - **Done** [s5-22](/tasks/s5-22-test-databases.md): the CMS's and housekeeping's tests copy one prepared database, and
   their suites take 132 s and 146 s where they took 389 s and 354 s.
 - **Start** [s5-22](/tasks/s5-22-test-databases.md).
