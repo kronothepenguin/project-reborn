@@ -20,15 +20,15 @@ func TestTheFloorReadsTheHeightMapAsTheClientDoes(t *testing.T) {
 		x, y int
 		tile Tile
 	}{
-		{0, 0, Tile{State: Open, Height: 2}},
+		{0, 0, Tile{State: Open, Height: 2, Level: 2}},
 		{1, 0, Tile{State: Blocked}},
 		{2, 0, Tile{Height: 0, Placeable: true}},
-		{3, 0, Tile{Height: 9, Placeable: true}},
+		{3, 0, Tile{Height: 9, Level: 9, Placeable: true}},
 		{0, 1, Tile{Height: 0}},
-		{1, 1, Tile{Height: 7}},
+		{1, 1, Tile{Height: 7, Level: 7}},
 		{2, 1, Tile{Height: 0}},
 		{3, 1, Tile{Height: 0}},
-		{3, 2, Tile{Height: 4, Placeable: true}},
+		{3, 2, Tile{Height: 4, Level: 4, Placeable: true}},
 	} {
 		if got, ok := f.At(want.x, want.y); !ok || got != want.tile {
 			t.Errorf("At(%d, %d) = %+v, %t; want %+v", want.x, want.y, got, ok, want.tile)

@@ -55,4 +55,4 @@ Concepts for the query files under `packages/store/queries/`.
 
 ## Furni
 
-- [furni.query.sql](furni.md) — Furni operations: creating a piece, and counting and listing a habbo's hand a page at a time.
+- [furni.query.sql](furni.md) — Furni operations that create a piece, count and list a habbo's hand a page at a time, and list the furni that stands in a room.

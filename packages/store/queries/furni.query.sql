@@ -11,3 +11,6 @@ SELECT * FROM furni
 WHERE avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER)
 ORDER BY id
 LIMIT sqlc.arg(page_size) OFFSET sqlc.arg(skip);
+
+-- name: ListRoomFurni :many
+SELECT * FROM furni WHERE room_id = CAST(sqlc.arg(room_id) AS INTEGER) ORDER BY id;

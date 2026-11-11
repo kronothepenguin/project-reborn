@@ -88,11 +88,15 @@ type Room struct {
 	ref   Ref
 	owner int64
 	model store.RoomModel
-	floor Floor
-	done  chan struct{}
+	// bare is the model's floor, without the room's furni.
+	bare Floor
+	done chan struct{}
 
-	mu        sync.Mutex
-	unloaded  bool
+	mu       sync.Mutex
+	unloaded bool
+	// furni is what stands in the room, by id, and floor the model's floor with it on.
+	furni     map[int64]Furni
+	floor     Floor
 	max       int
 	occupants map[int64]Occupant
 	rights    map[int64]bool
@@ -149,6 +153,7 @@ func load(ctx context.Context, db *sql.DB, ref Ref) (*Room, error) {
 		ref:       ref,
 		done:      make(chan struct{}),
 		occupants: make(map[int64]Occupant),
+		furni:     make(map[int64]Furni),
 		rights:    make(map[int64]bool),
 		bans:      make(map[int64]time.Time),
 		reserved:  make(map[int64]bool),
@@ -184,6 +189,13 @@ func load(ctx context.Context, db *sql.DB, ref Ref) (*Room, error) {
 		for _, b := range bans {
 			r.bans[b.AvatarID] = b.ExpiresAt
 		}
+		rows, err := q.ListRoomFurni(ctx, ref.ID)
+		if err != nil {
+			return nil, fmt.Errorf("room: %w", err)
+		}
+		for _, item := range WithDefinitions(rows) {
+			r.furni[item.ID] = item
+		}
 	}
 	m, ok := model.ByID(modelID)
 	if !ok {
@@ -193,7 +205,8 @@ func load(ctx context.Context, db *sql.DB, ref Ref) (*Room, error) {
 	if err != nil {
 		return nil, fmt.Errorf("room: %w", err)
 	}
-	r.model, r.floor = m, floor
+	r.model, r.bare = m, floor
+	r.floor = floor.with(sortedFurni(r.furni))
 	return r, nil
 }
 
@@ -302,8 +315,12 @@ func (r *Room) Owner() int64 { return r.owner }
 // Model returns the room's model.
 func (r *Room) Model() store.RoomModel { return r.model }
 
-// Floor returns the room's floor.
-func (r *Room) Floor() Floor { return r.floor }
+// Floor returns the room's floor as it is now, with its furni on.
+func (r *Room) Floor() Floor {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	return r.floor
+}
 
 // Done is closed when the room unloads.
 func (r *Room) Done() <-chan struct{} { return r.done }

@@ -1,7 +1,7 @@
 ---
 type: SQL Query
 title: furni.query.sql
-description: Furni operations: creating a piece, and counting and listing a habbo's hand a page at a time.
+description: Furni operations that create a piece, count and list a habbo's hand a page at a time, and list the furni that stands in a room.
 resource: packages/store/queries/furni.query.sql
 tags: [store, query, furni]
 timestamp: 2026-11-11T16:24:23+00:00
@@ -28,4 +28,11 @@ timestamp: 2026-11-11T16:24:23+00:00
 - Cardinality: `:many`
 - Inputs: `avatar_id`, `page_size`, `skip`
 - Result: the hand's furni after the first `skip`, at most `page_size`, the oldest first
+- Tables: `furni`
+
+## ListRoomFurni
+
+- Cardinality: `:many`
+- Inputs: `room_id`
+- Result: the furni that stands in the room, by id
 - Tables: `furni`

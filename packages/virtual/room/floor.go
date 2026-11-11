@@ -18,6 +18,8 @@ const (
 	Blocked
 	// Seat tiles take a habbo, who sits facing the seat's direction.
 	Seat
+	// Bed tiles take a habbo, who lies facing the bed's direction.
+	Bed
 )
 
 // Tile is a square of a room's floor.
@@ -27,12 +29,15 @@ type Tile struct {
 	Height int
 	// Placeable reports whether furni may stand on the tile.
 	Placeable bool
-	// Direction is a seat's: the way a habbo sitting on it faces.
+	// Direction is a seat's or a bed's: the way a habbo on it faces.
 	Direction int
+	// Level is how high a habbo is on the tile: standing on the floor or on a rug, or sitting or lying on a seat's or a
+	// bed's top.
+	Level float64
 }
 
-// Floor is a room's floor: its model's height map, with the model's public furni on it. A floor never changes once
-// parsed, so it may be read from several goroutines at once.
+// Floor is a room's floor: its model's height map, with the model's public furni and the room's furni on it. A floor
+// never changes once made, so it may be read from several goroutines at once.
 type Floor struct {
 	rows [][]Tile
 }
@@ -78,7 +83,7 @@ func ParseFloor(m store.RoomModel) (Floor, error) {
 	if _, ok := f.At(x, y); !ok {
 		return Floor{}, fmt.Errorf("model %s: the door %d,%d is off the height map", m.Name, x, y)
 	}
-	f.rows[y][x] = Tile{State: Open, Height: int(m.DoorHeight)}
+	f.rows[y][x] = Tile{State: Open, Height: int(m.DoorHeight), Level: float64(m.DoorHeight)}
 	return f, nil
 }
 
@@ -87,9 +92,9 @@ func tileOf(c byte) Tile {
 	case c == 'x' || c == 'X':
 		return Tile{State: Blocked}
 	case c >= '0' && c <= '9':
-		return Tile{Height: int(c - '0'), Placeable: true}
+		return Tile{Height: int(c - '0'), Level: float64(c - '0'), Placeable: true}
 	case c >= 'A' && c <= 'H':
-		return Tile{Height: int(c - 'A')}
+		return Tile{Height: int(c - 'A'), Level: float64(c - 'A')}
 	default:
 		return Tile{}
 	}
@@ -118,6 +123,8 @@ func (f *Floor) place(line string) error {
 	case "2":
 		f.rows[y][x].State = Seat
 		f.rows[y][x].Direction = direction
+		// Holo sat a habbo 1 high on a public seat, whatever its floor.
+		f.rows[y][x].Level = 1
 	default:
 		return fmt.Errorf("the state %q, want 1 or 2", fields[6])
 	}

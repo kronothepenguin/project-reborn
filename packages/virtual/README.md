@@ -182,6 +182,13 @@ left, ok := room.Leave(h.ID, h.Session)
   `Event`, `SetEvent` and `EndEvent`; `All()` returns the loaded rooms, for the navigator's list of events.
 - Once a room unloads, its methods change nothing and report false, so a rule holding an old `*Room` cannot bring it
   back.
+- A habbo room loads the furni that stands in it too, each row with what it is from `virtual/furni`: `Furni()` lists
+  it by id, and `Floor()` is the model's floor with the furni on it. On each tile the highest furni decides, and of two
+  as high the newer one: a solid blocks the tile, unless it is a door whose state is `O`; a seat and a bed take a habbo
+  at `Tile.Level`, their altitude and their height, facing `Tile.Direction`; and a rug leaves the tile open at its own
+  altitude. `Furni.Tiles()` gives the tiles a floor furni covers, its length along x when it faces 0 or 4 and along y
+  when it faces 2 or 6. `WithDefinitions(rows)` pairs the store's rows with their definitions, for a room that is not
+  loaded.
 - `ParseFloor(model)` reads a model's height map as the client reads 31: `x` blocked, in either case; a digit, that
   height; `A` to `H`, the heights 0 to 7, and `y`, 0, where nothing may be placed; any other character open at 0, as
   Holo read it. The public furni block their tiles (state 1) or seat a habbo (state 2), and the door's tile is always

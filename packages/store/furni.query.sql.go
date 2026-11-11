@@ -110,3 +110,43 @@ func (q *Queries) ListHandFurni(ctx context.Context, arg ListHandFurniParams) ([
 	}
 	return items, nil
 }
+
+const listRoomFurni = `-- name: ListRoomFurni :many
+SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at FROM furni WHERE room_id = CAST(?1 AS INTEGER) ORDER BY id
+`
+
+func (q *Queries) ListRoomFurni(ctx context.Context, roomID int64) ([]Furni, error) {
+	rows, err := q.db.QueryContext(ctx, listRoomFurni, roomID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Furni
+	for rows.Next() {
+		var i Furni
+		if err := rows.Scan(
+			&i.ID,
+			&i.FurniDefinitionID,
+			&i.UserID,
+			&i.AvatarID,
+			&i.RoomID,
+			&i.X,
+			&i.Y,
+			&i.Altitude,
+			&i.Direction,
+			&i.WallPosition,
+			&i.State,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

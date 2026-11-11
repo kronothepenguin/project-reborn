@@ -70,7 +70,8 @@ func tick(r *room.Room) {
 
 // walk takes the habbo a step towards its goal, as Holo's status cycle did, and returns the status to send: where it
 // stands, with mv and the tile it steps to, which the client animates. A habbo at its goal, or that has no way to it,
-// stops, and its status goes without mv. A step onto a seat sits the habbo on the next tick, facing the seat's way.
+// stops, and its status goes without mv. A habbo walks at the floor's height, or at a rug's on a rug. A step onto a
+// seat or a bed sits or lays the habbo on the next tick, at the furni's top and facing its way.
 func walk(floor room.Floor, all []*room.Occupant, o *room.Occupant) room.Occupant {
 	o.Changed = false
 	o.Statuses = without(o.Statuses, "mv")
@@ -83,19 +84,30 @@ func walk(floor room.Floor, all []*room.Occupant, o *room.Occupant) room.Occupan
 	o.HeadDirection = direction(o.X, o.Y, next.x, next.y)
 	o.BodyDirection = o.HeadDirection
 	o.Statuses = without(o.Statuses, "sit", "lay")
+	at := float64(t.Height)
+	if t.State == room.Open {
+		at = t.Level
+	}
 	o.Statuses = append(o.Statuses, room.Status{
 		Action:     "mv",
-		Parameters: strconv.Itoa(next.x) + "," + strconv.Itoa(next.y) + "," + strconv.Itoa(t.Height),
+		Parameters: strconv.Itoa(next.x) + "," + strconv.Itoa(next.y) + "," + level(at),
 	})
 	sent := snapshot(o)
-	o.X, o.Y, o.Height = next.x, next.y, float64(t.Height)
-	if t.State == room.Seat {
+	o.X, o.Y, o.Height = next.x, next.y, at
+	if action, ok := restsOn[t.State]; ok {
 		o.Statuses = without(o.Statuses, "dance")
 		o.HeadDirection, o.BodyDirection = t.Direction, t.Direction
-		// Holo sat a habbo 1 above a public seat's floor.
-		o.Statuses = append(o.Statuses, room.Status{Action: "sit", Parameters: "1"})
+		o.Statuses = append(o.Statuses, room.Status{Action: action, Parameters: level(t.Level)})
 	}
 	return sent
+}
+
+// restsOn names what a habbo does on the tiles that take one at rest.
+var restsOn = map[room.TileState]string{room.Seat: "sit", room.Bed: "lay"}
+
+// level writes a height as Holo wrote one: 1, or 1.5.
+func level(v float64) string {
+	return strconv.FormatFloat(v, 'f', -1, 64)
 }
 
 func snapshot(o *room.Occupant) room.Occupant {
@@ -113,7 +125,7 @@ type tile struct{ x, y int }
 // nextStep finds the first step of the shortest way from the habbo to its goal, by A*: every step takes the same time,
 // straight or diagonal. A step goes to one of the 8 tiles around, open and free of other habbos, up or down at most 1
 // height; a diagonal only when both tiles beside it are open and free, so that nobody cuts a corner. The goal may be a
-// seat, but not a tile another habbo holds. It reports false at the goal, or with no way to it.
+// seat or a bed, but not a tile another habbo holds. It reports false at the goal, or with no way to it.
 func nextStep(floor room.Floor, all []*room.Occupant, o *room.Occupant) (tile, bool) {
 	start, goal := tile{o.X, o.Y}, tile{o.GoalX, o.GoalY}
 	if start == goal {
@@ -130,7 +142,8 @@ func nextStep(floor room.Floor, all []*room.Occupant, o *room.Occupant) (tile, b
 		if !ok || held[t] {
 			return false
 		}
-		return at.State == room.Open || (t == goal && at.State == room.Seat)
+		_, rests := restsOn[at.State]
+		return at.State == room.Open || (t == goal && rests)
 	}
 	if !free(goal) {
 		return tile{}, false

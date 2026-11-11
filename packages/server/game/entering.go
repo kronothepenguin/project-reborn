@@ -271,6 +271,27 @@ func GoToFlat(ctx context.Context, db *sql.DB, viewer habbo.Habbo, flatID int64)
 	return e, true, nil
 }
 
+// RoomFurni returns the furni that stands in the room the habbo is in or arrives in, by id: the room's own copy while
+// it is loaded, and the store's rows before its first habbo comes in. A public room has none. It reports false for a
+// habbo going nowhere.
+func RoomFurni(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]room.Furni, bool, error) {
+	ref, _, ok, err := Arrival(ctx, db, viewer)
+	if err != nil || !ok {
+		return nil, false, err
+	}
+	if r, ok := room.Loaded(ref); ok {
+		return r.Furni(), true, nil
+	}
+	if ref.Public {
+		return nil, true, nil
+	}
+	rows, err := store.New(db).ListRoomFurni(ctx, ref.ID)
+	if err != nil {
+		return nil, false, fmt.Errorf("game: room furni: %w", err)
+	}
+	return room.WithDefinitions(rows), true, nil
+}
+
 // Arrival returns the room the habbo is in, or is on its way into through a door that let it through, with its
 // model: its height map and its public furni. It reports false for a habbo going nowhere.
 func Arrival(ctx context.Context, db *sql.DB, viewer habbo.Habbo) (room.Ref, store.RoomModel, bool, error) {

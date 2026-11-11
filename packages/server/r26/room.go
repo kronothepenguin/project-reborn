@@ -313,8 +313,8 @@ func handleGetUsers(s *session, me habbo.Habbo, _ []byte) {
 	s.reply(roomUsers, []byte(b.String()))
 }
 
-// handleGetObjects sends the room's public furni, and its furniture, which no room holds before S5. Nothing asks for
-// the furniture, 32, which the client needs to build the room, so it follows the public furni, as Holo sent it.
+// handleGetObjects sends the room's public furni, and the floor furni that stands in it. Nothing asks for the floor
+// furni, 32, which the client needs to build the room, so it follows the public furni, as Holo sent it.
 func handleGetObjects(s *session, me habbo.Habbo, _ []byte) {
 	_, m, ok, err := game.Arrival(context.Background(), s.db, me)
 	if err != nil {
@@ -324,6 +324,11 @@ func handleGetObjects(s *session, me habbo.Habbo, _ []byte) {
 	if !ok {
 		return
 	}
+	items, _, err := game.RoomFurni(context.Background(), s.db, me)
+	if err != nil {
+		s.fail(err)
+		return
+	}
 	var b strings.Builder
 	for line := range strings.SplitSeq(m.PublicItems, "\n") {
 		if fields := strings.Fields(line); len(fields) >= 6 {
@@ -331,15 +336,15 @@ func handleGetObjects(s *session, me habbo.Habbo, _ []byte) {
 		}
 	}
 	s.reply(roomObjects, []byte(b.String()))
-	s.reply(activeObjects, vl64(0))
+	s.reply(activeObjects, activeObjectsBody(items))
 }
 
-// handleGetItems sends a habbo room's wall items, which no room holds before S5.
+// handleGetItems sends the wall items of the room the habbo arrives in.
 func handleGetItems(s *session, me habbo.Habbo, _ []byte) {
-	if _, _, ok, err := game.Arrival(context.Background(), s.db, me); err != nil {
+	if items, ok, err := game.RoomFurni(context.Background(), s.db, me); err != nil {
 		s.fail(err)
 	} else if ok {
-		s.reply(roomItems, nil)
+		s.reply(roomItems, []byte(wallItemLines(items)))
 	}
 }
 

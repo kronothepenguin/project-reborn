@@ -2,6 +2,9 @@
 
 ## 2026-11-11
 
+- **Done** [s5-07](/tasks/s5-07-furni-in-rooms.md): a habbo room loads and shows the furni that stands in it, and habbos
+  walk around solids, sit on seats, lie on beds and cross rugs.
+- **Start** [s5-07](/tasks/s5-07-furni-in-rooms.md).
 - **Done** [s5-05](/tasks/s5-05-buying-furni.md): GPRC buys a catalogue item with the user's credits in one transaction,
   and its furni lands in the buyer's hand, with deals, trophies, decorations and the club's page.
 - **Start** [s5-05](/tasks/s5-05-buying-furni.md).

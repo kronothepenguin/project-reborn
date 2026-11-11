@@ -326,8 +326,8 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
 | `GETROOMAD` (126) | 208: `game.roomAdImage`, a tab and `game.roomAdLink`, or `0` |
 | `G_HMAP` (60) | 31: the model's height map, a row per line |
 | `G_USRS` (61) | 28: the user lines of the habbos in the room |
-| `G_OBJS` (62) | 30: the model's public furni, `<id> <class> <x> <y> <height> <direction>` a line, then 32 with no furniture, which no command asks for and the client needs |
-| `G_ITEMS` (63) | 45: no wall items |
+| `G_OBJS` (62) | 30: the model's public furni, `<id> <class> <x> <y> <height> <direction>` a line, then 32 with the floor furni that stands in the room, which no command asks for and the client needs |
+| `G_ITEMS` (63) | 45: the wall items that stand in the room, a line each |
 | `G_STAT` (64) | The habbo comes in at the model's door: 34 with the others' statuses, then 28 with its own user lines and 34 with its status, which the others get too. In a habbo room the owner's status holds `flatctrl useradmin` and a habbo with rights `flatctrl` with no level, which the client's Human class reads as `furniture`; Holo's `onlyfurniture` was another client's. A room that filled meanwhile queues the habbo. A spectator gets the statuses alone and comes into no place |
 | `QUIT` (53) | Nothing: the habbo leaves, and the others get 29 with its index |
 | `ROOM_QUEUE_CHANGE` (211) | The habbo waiting in a full room's line moves to the line its target names, 1 the room's and 2 the spectators', at its end (`plans/server/decisions/0089-up-to-50-spectators-from-the-queue.md`) |
@@ -385,8 +385,23 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
   step the same time; a diagonal only when both tiles beside it are open, so
   nobody cuts a corner, which Holo's pathfinder checked on the wrong side for
   one diagonal; up or down at most 1 height; never onto another habbo's tile.
-  A seat takes a habbo only as its goal, and seats it facing the seat's way
-  with `sit 1`, dropping its dance, as Holo did.
+  A seat or a bed takes a habbo only as its goal, and sits or lays it facing
+  the furni's way with `sit` or `lay` and the height of the furni's top,
+  dropping its dance, as Holo did: `sit 1` on a public seat, `lay 1.5` on a
+  bed 1.5 high.
+- A habbo room's furni shapes the floor habbos walk on
+  (`room_furni.go`, `virtual/room`): on each tile the highest furni decides.
+  A solid blocks its tiles, unless it is a door that stands open; a seat and a
+  bed take a habbo at their top; a rug leaves its tile open, and a habbo walks
+  at the rug's height. A furni's length runs along x when it faces north or
+  south and along y when it faces east or west, as Holo laid furni.
+- 32 carries the count of the floor furni, then each as an active object: its
+  id and class, its tile, its length and width, its direction, its altitude,
+  its colours, an empty runtime data, 0, and its state as the stuff data. 45
+  carries a wall item a line: the id, the class, a space where the owner goes,
+  its place on the wall and its state, or without one what its definition
+  carries, a poster's number, tab-separated. A room that no habbo is in yet
+  answers both from the store, and a loaded one from its own copy.
 - A line keeps its first `game.chatMaxLength` characters, 100
   (`plans/server/decisions/0078-a-chat-line-is-cut-at-100-characters.md`), and
   is saved for staff (`plans/server/decisions/0066-staff-read-the-chat-history-30-days.md`),
