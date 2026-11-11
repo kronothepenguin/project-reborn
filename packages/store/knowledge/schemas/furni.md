@@ -15,5 +15,6 @@ timestamp: 2026-11-11T16:24:23+00:00
 | `idx_furni_user_id` | index | A user's furni |
 | `idx_furni_avatar_id` | index | A habbo's hand |
 | `idx_furni_room_id` | index | A room's furni |
+| `idx_furni_box_furni_id` | index | What waits in a present |
 
 Entity: [Furni](/entities/furni.md).

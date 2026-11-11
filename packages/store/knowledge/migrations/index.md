@@ -17,3 +17,4 @@ them all when `store.Open` creates it.
 - [0012-badge-slots.sql](0012-badge-slots.md) — Rebuilds avatar_badges with a slot 1 to 5 for each worn badge in place of worn, the badge a habbo wore taking slot 1.
 - [0013-catalogue.sql](0013-catalogue.md) — Creates the furni definitions and the catalogue's tables, and seeds Holo's English catalogue: 67 pages, 1,256 furni and 1,275 items.
 - [0014-furni.sql](0014-furni.md) — Creates furni, the pieces of furni habbos own, each in a hand, in a room or in its user's shared inventory.
+- [0015-presents.sql](0015-presents.md) — Lets a furni wait inside a present by adding to furni the box that holds it.

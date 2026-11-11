@@ -152,12 +152,8 @@ func TestWhoMayBuy(t *testing.T) {
 			t.Errorf("the item %s of the page %s got %d %q, want an error, 65", order[1], order[0], id, body)
 		}
 	}
-	c.send(t, 100, "production\rRollers\ren\r465\r-\r1\rInsider\rEnjoy\r")
-	if id, body := c.next(t); id != 65 {
-		t.Errorf("a gift got %d %q, want an error until presents are sold", id, body)
-	}
 	if got, hand := credits(t, outsider), handOf(t, outsider); got != 50 || len(hand) != 0 {
-		t.Errorf("after seven refused purchases the wallet holds %d and the hand %d furni, want 50 and none", got, len(hand))
+		t.Errorf("after six refused purchases the wallet holds %d and the hand %d furni, want 50 and none", got, len(hand))
 	}
 
 	member, _ := login(t, "insider")

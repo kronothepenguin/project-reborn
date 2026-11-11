@@ -279,8 +279,16 @@ data of `virtual/catalogue` (`plans/server/reference/r26/hh_cat_code.md`):
   one dot. A pad of post-its starts with 20 notes.
 - After 67 the client shows the purchase as done and, in a habbo room, opens
   the hand by itself, which asks for it with `GETSTRIP`.
-- A gift is refused with 65 until presents are sold
-  (`plans/server/tasks/s5-06-presents.md`).
+- A gift, the order's sixth line 1, buys for the habbo its seventh line
+  names, online or not
+  (`plans/server/decisions/0094-any-habbo-sends-a-present-to-any-habbo.md`):
+  the furni waits in one of the six boxes, `present_gen1` to `present_gen6`,
+  drawn at random, in the receiver's hand, and belongs to the receiver's user.
+  The box's state is `!` and the note, its control characters turned into
+  spaces and cut at `game.presentNoteMaxLength`, 200. The buyer pays, and its
+  history's line ends with `, a present for <name>`. A name that no habbo has
+  gets 76 with the name and charges nothing. A receiver that is in a room gets
+  101, on which its client asks for its hand.
 - The edit mode and the language the client sends change nothing. A tab, a
   line break or another control character in a value becomes a space.
 - The level and the club are read from the store each time, since the site
@@ -330,6 +338,7 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
 | `G_ITEMS` (63) | 45: the wall items that stand in the room, a line each |
 | `PLACESTUFF` (90) | Nothing to the sender alone: the furni of its hand stands in the room, and everyone in it gets 93 for a floor furni, `<strip id> <x> <y> <direction>`, or 83 for a wall item, `<strip id> :w=<x>,<y> l=<x>,<y> <r or l>`. A furni that may not stand there stays in the hand |
 | `MOVESTUFF` (73) | 95 to the room: the floor furni stands on the new tile or turned. A furni that may not stand there stays, and its mover alone gets 95 with it where it is |
+| `PRESENTOPEN` (78) | 94 to the room, then 129 and 140 to the opener: the box that stands in the opener's own room goes, what waited in it lands in the opener's hand, 129 shows the last of it on the box's card, the class, the class with a wall item's data, and the colours, and the hand comes at its last page. Only the room's owner opens a box (`plans/server/decisions/0105-only-a-rooms-owner-opens-a-present.md`) |
 | `ADDSTRIPITEM` (67) | 94 or 84 to the room, and 140 to the picker: the furni leaves the room for the picker's hand, `new stuff <id>` a floor furni and `new item <id>` a wall item |
 | `G_STAT` (64) | The habbo comes in at the model's door: 34 with the others' statuses, then 28 with its own user lines and 34 with its status, which the others get too. In a habbo room the owner's status holds `flatctrl useradmin` and a habbo with rights `flatctrl` with no level, which the client's Human class reads as `furniture`; Holo's `onlyfurniture` was another client's. A room that filled meanwhile queues the habbo. A spectator gets the statuses alone and comes into no place |
 | `QUIT` (53) | Nothing: the habbo leaves, and the others get 29 with its index |

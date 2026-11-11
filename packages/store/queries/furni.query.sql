@@ -1,6 +1,9 @@
 -- name: CreateFurni :one
-INSERT INTO furni (furni_definition_id, user_id, avatar_id, state, created_at)
-VALUES (sqlc.arg(furni_definition_id), sqlc.arg(user_id), sqlc.narg(avatar_id), sqlc.arg(state), sqlc.arg(created_at))
+INSERT INTO furni (furni_definition_id, user_id, avatar_id, box_furni_id, state, created_at)
+VALUES (
+    sqlc.arg(furni_definition_id), sqlc.arg(user_id), sqlc.narg(avatar_id), sqlc.narg(box_furni_id), sqlc.arg(state),
+    sqlc.arg(created_at)
+)
 RETURNING *;
 
 -- name: CountHandFurni :one
@@ -44,3 +47,15 @@ UPDATE furni
 SET user_id = sqlc.arg(user_id), avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER), room_id = NULL,
     x = 0, y = 0, altitude = 0, direction = 0, wall_position = ''
 WHERE room_id = CAST(sqlc.arg(room_id) AS INTEGER);
+
+-- name: ListBoxFurni :many
+SELECT * FROM furni WHERE box_furni_id = CAST(sqlc.arg(box_furni_id) AS INTEGER) ORDER BY id;
+
+-- What waits in the box goes to the hand of the habbo that opens it, whose user it then belongs to.
+-- name: UnboxFurni :exec
+UPDATE furni
+SET user_id = sqlc.arg(user_id), avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER), box_furni_id = NULL
+WHERE box_furni_id = CAST(sqlc.arg(box_furni_id) AS INTEGER);
+
+-- name: DeleteRoomFurni :execrows
+DELETE FROM furni WHERE id = sqlc.arg(id) AND room_id = CAST(sqlc.arg(room_id) AS INTEGER);

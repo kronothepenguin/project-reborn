@@ -11,8 +11,14 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
-// Load swaps in a whole new map, so a reader never sees half of one.
-var current atomic.Pointer[map[int64]store.FurniDefinition]
+type definitions struct {
+	byID map[int64]store.FurniDefinition
+	// bySprite holds the first definition of each sprite, by id.
+	bySprite map[string]store.FurniDefinition
+}
+
+// Load swaps in a whole new set, so a reader never sees half of one.
+var current atomic.Pointer[definitions]
 
 // Load reads every definition from db, in place of the ones in memory.
 func Load(ctx context.Context, db *sql.DB) error {
@@ -20,20 +26,33 @@ func Load(ctx context.Context, db *sql.DB) error {
 	if err != nil {
 		return fmt.Errorf("furni: %w", err)
 	}
-	byID := make(map[int64]store.FurniDefinition, len(rows))
+	d := &definitions{byID: make(map[int64]store.FurniDefinition, len(rows)), bySprite: make(map[string]store.FurniDefinition, len(rows))}
 	for _, row := range rows {
-		byID[row.ID] = row
+		d.byID[row.ID] = row
+		if _, known := d.bySprite[row.Sprite]; !known {
+			d.bySprite[row.Sprite] = row
+		}
 	}
-	current.Store(&byID)
+	current.Store(d)
 	return nil
 }
 
 // Get returns the definition id.
 func Get(id int64) (store.FurniDefinition, bool) {
-	byID := current.Load()
-	if byID == nil {
+	d := current.Load()
+	if d == nil {
 		return store.FurniDefinition{}, false
 	}
-	d, ok := (*byID)[id]
-	return d, ok
+	row, ok := d.byID[id]
+	return row, ok
+}
+
+// BySprite returns the definition of a sprite, and of several that share it the one with the lowest id.
+func BySprite(sprite string) (store.FurniDefinition, bool) {
+	d := current.Load()
+	if d == nil {
+		return store.FurniDefinition{}, false
+	}
+	row, ok := d.bySprite[sprite]
+	return row, ok
 }

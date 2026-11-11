@@ -193,6 +193,7 @@ type Furni struct {
 	WallPosition      string
 	State             string
 	CreatedAt         time.Time
+	BoxFurniID        sql.NullInt64
 }
 
 type FurniDefinition struct {

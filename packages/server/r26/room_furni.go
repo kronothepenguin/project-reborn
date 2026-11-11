@@ -13,11 +13,14 @@ import (
 
 // The messages of hh_room about a room's furni (plans/server/reference/r26/hh_room.md).
 const (
+	noUserForGift      = 76
 	itemsAdded         = 83
 	itemRemoved        = 84
 	activeObjectAdd    = 93
 	activeObjectRemove = 94
 	activeObjectUpdate = 95
+	stripUpdated       = 101
+	presentOpen        = 129
 )
 
 // handlePlaceStuff places a furni of the habbo's hand in its room: `<strip id> <x> <y> <direction>` for a floor
@@ -90,6 +93,34 @@ func handleAddStripItem(s *session, me habbo.Habbo, body []byte) {
 	if picked {
 		s.sendHand(me, s.handPage)
 	}
+}
+
+// handlePresentOpen opens the box the client names, which stands in the habbo's own room: 129 shows what it held on
+// the box's card, three lines, the furni's class, its class again with a wall item's data, and its colours; then the
+// hand comes at its last page, where the furni landed, as Holo sent it.
+func handlePresentOpen(s *session, me habbo.Habbo, body []byte) {
+	id, err := strconv.ParseInt(strings.TrimSpace(string(body)), 10, 64)
+	if err != nil {
+		s.malformed(78, body)
+		return
+	}
+	held, ok, err := game.OpenPresent(context.Background(), s.db, me, id)
+	if err != nil {
+		s.fail(err)
+		return
+	}
+	if !ok {
+		return
+	}
+	code, colours := held.Sprite, held.Colours
+	if held.Kind == "wall" {
+		colours = ""
+		if held.Data != "" {
+			code += " " + held.Data
+		}
+	}
+	s.reply(presentOpen, []byte(printable(held.Sprite)+"\r"+printable(code)+"\r"+printable(colours)))
+	s.sendHand(me, game.LastHandPage)
 }
 
 // ints reads every field as a number.

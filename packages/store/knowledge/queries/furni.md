@@ -12,8 +12,9 @@ timestamp: 2026-11-11T16:24:23+00:00
 ## CreateFurni
 
 - Cardinality: `:one`
-- Inputs: `furni_definition_id`, `user_id`, `avatar_id` (none for the shared inventory), `state`, `created_at`
-- Result: the new piece, in the habbo's hand or in the user's shared inventory
+- Inputs: `furni_definition_id`, `user_id`, `avatar_id` (none for the shared inventory or a present),
+  `box_furni_id` (the box of a present, or none), `state`, `created_at`
+- Result: the new piece, in the habbo's hand, in a present or in the user's shared inventory
 - Tables: `furni`
 
 ## CountHandFurni
@@ -73,4 +74,26 @@ timestamp: 2026-11-11T16:24:23+00:00
 - Inputs: `room_id`, `user_id`, `avatar_id`
 - Result: every piece that stands in the room goes to the habbo's hand and belongs to its user, before the room is
   deleted
+- Tables: `furni`
+
+## ListBoxFurni
+
+- Cardinality: `:many`
+- Inputs: `box_furni_id`
+- Result: the furni that waits in the present, by id
+- Tables: `furni`
+
+## UnboxFurni
+
+- Cardinality: `:exec`
+- Inputs: `box_furni_id`, `user_id`, `avatar_id`
+- Result: what waited in the present goes to the habbo's hand and belongs to its user
+- Tables: `furni`
+
+## DeleteRoomFurni
+
+- Cardinality: `:execrows`
+- Inputs: `id`, `room_id`
+- Result: the piece that stands in the room is deleted, as an opened present's box is; no row changes when the room
+  does not have it
 - Tables: `furni`

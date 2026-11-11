@@ -2,6 +2,12 @@
 
 ## 2026-11-11
 
+- **Done** [s5-06](/tasks/s5-06-presents.md): a habbo buys furni as a present for any habbo, which waits in a box in the
+  receiver's hand with its note, and a room's owner opens a box that stands in its room.
+- **Start** [s5-06](/tasks/s5-06-presents.md).
+- **Decision** [0106](/decisions/0106-a-presents-note-is-cut-at-200-characters.md): a present's note is cut at 200
+  characters.
+- **Decision** [0105](/decisions/0105-only-a-rooms-owner-opens-a-present.md): only a room's owner opens a present.
 - **Done** [s5-08](/tasks/s5-08-placing-furni.md): habbos with rights place, move and turn furni by Holo's stacking
   rules, the owner picks it up and keeps it, and a deleted room's furni goes to its owner's hand.
 - **Start** [s5-08](/tasks/s5-08-placing-furni.md).

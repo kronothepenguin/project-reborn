@@ -165,6 +165,10 @@ var catalogue = map[string]declaration{
 	// How high a floor furni may stand on a stack; one that would stand
 	// higher is placed there, as Holo's items_stacking_maxstackheight had it.
 	"game.maxStackHeight": declare(20, between(1, 100)),
+
+	// How many characters a present's note keeps (plans/server decision
+	// 0106).
+	"game.presentNoteMaxLength": declare(200, between(1, 1000)),
 }
 
 // rules check settings that depend on each other. keys lists every setting a

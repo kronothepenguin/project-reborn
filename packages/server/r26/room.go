@@ -151,6 +151,7 @@ var roomHandlers = map[int]handler{
 	67:  loggedIn(handleAddStripItem),
 	73:  loggedIn(handleMoveStuff),
 	75:  loggedIn(handleMove),
+	78:  loggedIn(handlePresentOpen),
 	79:  loggedIn(handleLookTo),
 	88:  loggedIn(handleStop),
 	90:  loggedIn(handlePlaceStuff),

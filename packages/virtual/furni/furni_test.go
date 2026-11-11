@@ -29,4 +29,13 @@ func TestTheDefinitionsLoadByID(t *testing.T) {
 	if _, ok := Get(661); ok {
 		t.Error("Get(661) found a definition for the second row of the Mummy poster")
 	}
+	if box, ok := BySprite("present_gen3"); !ok || box.ID != 1374 || box.Tradeable {
+		t.Errorf("BySprite(present_gen3) = %+v, %t; want the third present box", box, ok)
+	}
+	if bed, ok := BySprite("bed_budgetb"); !ok || bed.ID != 444 {
+		t.Errorf("BySprite(bed_budgetb) = %+v, %t; want the first of its five colours, 444", bed, ok)
+	}
+	if _, ok := BySprite("no_such_furni"); ok {
+		t.Error("BySprite found a sprite the catalogue does not have")
+	}
 }

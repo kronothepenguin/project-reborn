@@ -16,11 +16,14 @@ A piece of furni is one thing a habbo bought, was given or took: a chair, a post
 |-------|-------------|-----------|
 | A habbo's hand | the habbo | none |
 | A room | none | the room |
+| A present, the box that holds it | none | none |
 | The user's shared inventory | none | none |
 
 # Invariants
 
 - It is never in a hand and in a room at once.
+- A furni that waits in a present names its box, `box_furni_id`, and is in no hand and no room until the box is
+  opened; one with no habbo, no room and no box is in the shared inventory.
 - The hand lives only here: the game server keeps no copy, and reads it each time
   (`plans/server/decisions/0096-the-hand-is-read-from-the-database.md`).
 - A hand lists its furni the oldest first, by id.

@@ -125,7 +125,8 @@ for _, p := range catalogue.Pages() {
 }
 ```
 
-- `furni`: `Get(id)`, a furni definition.
+- `furni`: `Get(id)`, a furni definition, and `BySprite(sprite)`, the definition of a sprite, the one with the lowest
+  id of several that share it.
 - `catalogue`: `Pages()`, every page in the catalogue's order, and `Get(code)`. A `Page` carries its numbered `Texts`
   and its `Items`, each with the `Furni` it gives, a definition and an amount. `Item.Deal()` tells a deal, an item that
   gives more than one piece.

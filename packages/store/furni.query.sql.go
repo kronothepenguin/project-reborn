@@ -23,15 +23,19 @@ func (q *Queries) CountHandFurni(ctx context.Context, avatarID int64) (int64, er
 }
 
 const createFurni = `-- name: CreateFurni :one
-INSERT INTO furni (furni_definition_id, user_id, avatar_id, state, created_at)
-VALUES (?1, ?2, ?3, ?4, ?5)
-RETURNING id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at
+INSERT INTO furni (furni_definition_id, user_id, avatar_id, box_furni_id, state, created_at)
+VALUES (
+    ?1, ?2, ?3, ?4, ?5,
+    ?6
+)
+RETURNING id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id
 `
 
 type CreateFurniParams struct {
 	FurniDefinitionID int64
 	UserID            int64
 	AvatarID          sql.NullInt64
+	BoxFurniID        sql.NullInt64
 	State             string
 	CreatedAt         time.Time
 }
@@ -41,6 +45,7 @@ func (q *Queries) CreateFurni(ctx context.Context, arg CreateFurniParams) (Furni
 		arg.FurniDefinitionID,
 		arg.UserID,
 		arg.AvatarID,
+		arg.BoxFurniID,
 		arg.State,
 		arg.CreatedAt,
 	)
@@ -58,12 +63,30 @@ func (q *Queries) CreateFurni(ctx context.Context, arg CreateFurniParams) (Furni
 		&i.WallPosition,
 		&i.State,
 		&i.CreatedAt,
+		&i.BoxFurniID,
 	)
 	return i, err
 }
 
+const deleteRoomFurni = `-- name: DeleteRoomFurni :execrows
+DELETE FROM furni WHERE id = ?1 AND room_id = CAST(?2 AS INTEGER)
+`
+
+type DeleteRoomFurniParams struct {
+	ID     int64
+	RoomID int64
+}
+
+func (q *Queries) DeleteRoomFurni(ctx context.Context, arg DeleteRoomFurniParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteRoomFurni, arg.ID, arg.RoomID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
 const getFurni = `-- name: GetFurni :one
-SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at FROM furni WHERE id = ?1
+SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id FROM furni WHERE id = ?1
 `
 
 func (q *Queries) GetFurni(ctx context.Context, id int64) (Furni, error) {
@@ -82,12 +105,54 @@ func (q *Queries) GetFurni(ctx context.Context, id int64) (Furni, error) {
 		&i.WallPosition,
 		&i.State,
 		&i.CreatedAt,
+		&i.BoxFurniID,
 	)
 	return i, err
 }
 
+const listBoxFurni = `-- name: ListBoxFurni :many
+SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id FROM furni WHERE box_furni_id = CAST(?1 AS INTEGER) ORDER BY id
+`
+
+func (q *Queries) ListBoxFurni(ctx context.Context, boxFurniID int64) ([]Furni, error) {
+	rows, err := q.db.QueryContext(ctx, listBoxFurni, boxFurniID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Furni
+	for rows.Next() {
+		var i Furni
+		if err := rows.Scan(
+			&i.ID,
+			&i.FurniDefinitionID,
+			&i.UserID,
+			&i.AvatarID,
+			&i.RoomID,
+			&i.X,
+			&i.Y,
+			&i.Altitude,
+			&i.Direction,
+			&i.WallPosition,
+			&i.State,
+			&i.CreatedAt,
+			&i.BoxFurniID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listHandFurni = `-- name: ListHandFurni :many
-SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at FROM furni
+SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id FROM furni
 WHERE avatar_id = CAST(?1 AS INTEGER)
 ORDER BY id
 LIMIT ?3 OFFSET ?2
@@ -121,6 +186,7 @@ func (q *Queries) ListHandFurni(ctx context.Context, arg ListHandFurniParams) ([
 			&i.WallPosition,
 			&i.State,
 			&i.CreatedAt,
+			&i.BoxFurniID,
 		); err != nil {
 			return nil, err
 		}
@@ -136,7 +202,7 @@ func (q *Queries) ListHandFurni(ctx context.Context, arg ListHandFurniParams) ([
 }
 
 const listRoomFurni = `-- name: ListRoomFurni :many
-SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at FROM furni WHERE room_id = CAST(?1 AS INTEGER) ORDER BY id
+SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id FROM furni WHERE room_id = CAST(?1 AS INTEGER) ORDER BY id
 `
 
 func (q *Queries) ListRoomFurni(ctx context.Context, roomID int64) ([]Furni, error) {
@@ -161,6 +227,7 @@ func (q *Queries) ListRoomFurni(ctx context.Context, roomID int64) ([]Furni, err
 			&i.WallPosition,
 			&i.State,
 			&i.CreatedAt,
+			&i.BoxFurniID,
 		); err != nil {
 			return nil, err
 		}
@@ -287,4 +354,22 @@ func (q *Queries) PlaceFurni(ctx context.Context, arg PlaceFurniParams) (int64, 
 		return 0, err
 	}
 	return result.RowsAffected()
+}
+
+const unboxFurni = `-- name: UnboxFurni :exec
+UPDATE furni
+SET user_id = ?1, avatar_id = CAST(?2 AS INTEGER), box_furni_id = NULL
+WHERE box_furni_id = CAST(?3 AS INTEGER)
+`
+
+type UnboxFurniParams struct {
+	UserID     int64
+	AvatarID   int64
+	BoxFurniID int64
+}
+
+// What waits in the box goes to the hand of the habbo that opens it, whose user it then belongs to.
+func (q *Queries) UnboxFurni(ctx context.Context, arg UnboxFurniParams) error {
+	_, err := q.db.ExecContext(ctx, unboxFurni, arg.UserID, arg.AvatarID, arg.BoxFurniID)
+	return err
 }

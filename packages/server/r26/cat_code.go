@@ -76,25 +76,31 @@ func handleCataloguePage(s *session, me habbo.Habbo, body []byte) {
 // handlePurchase buys what the order names, eight lines of text: the edit mode, the page's code, the language, the
 // item's purchase code, the extra value of the page or a dash, 1 for a gift, the receiver's name and the message.
 // The client then shows the purchase as done, 67, with the new balance, 6, and in a habbo room it opens the hand by
-// itself. 68 says the credits are not enough, 296 with 1 that the page sells only to club members, and 65 that the
-// catalogue does not sell that; none of them charges.
+// itself. 68 says the credits are not enough, 296 with 1 that the page sells only to club members, 65 that the
+// catalogue does not sell that, and 76, which belongs to hh_room, that no habbo has the receiver's name; none of
+// them charges.
 func handlePurchase(s *session, me habbo.Habbo, body []byte) {
 	lines := strings.Split(string(body), "\r")
 	if len(lines) < 6 {
 		s.malformed(100, body)
 		return
 	}
-	// Presents come with a task of their own, plans/server/tasks/s5-06-presents.md.
-	if lines[5] == "1" {
-		s.reply(purchaseError, []byte("Gifts are not sold yet"))
-		return
-	}
 	order := game.Order{Page: lines[1], Item: lines[3], Extra: lines[4]}
 	if order.Extra == "-" {
 		order.Extra = ""
 	}
+	if lines[5] == "1" {
+		if len(lines) < 8 {
+			s.malformed(100, body)
+			return
+		}
+		order.Gift, order.Receiver, order.Note = true, lines[6], lines[7]
+	}
 	credits, err := game.Buy(context.Background(), s.db, me, order)
+	var nobody game.NoSuchHabboError
 	switch {
+	case errors.As(err, &nobody):
+		s.reply(noUserForGift, []byte(printable(nobody.Name)))
 	case errors.Is(err, game.ErrNotEnoughCredits):
 		s.reply(purchaseNoBalance, nil)
 	case errors.Is(err, game.ErrClubOnly):

@@ -239,6 +239,9 @@ func (s *session) Notify(event any) {
 		s.sendChat(e)
 	case game.Typing:
 		s.reply(userTypingStatus, append(vl64(e.Index), vl64(flag(e.On))...))
+	case game.HandChanged:
+		// The client asks for its hand again, which shows it.
+		s.reply(stripUpdated, nil)
 	case game.FurniPlaced:
 		s.sendFurniPlaced(e.Furni)
 	case game.FurniMoved:

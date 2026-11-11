@@ -192,6 +192,7 @@ var forms = []section{
 			{Key: "game.maxSpectators", Label: "Spectators", Help: "How many spectators may watch a full room at once."},
 			{Key: "game.maxRoomFurni", Label: "Furni In A Room", Help: "How many furni a habbo room holds; one more stays in the hand."},
 			{Key: "game.maxStackHeight", Label: "Stack Height", Help: "How high a furni may stand on a stack of others."},
+			{Key: "game.presentNoteMaxLength", Label: "Present Note Length", Help: "How many characters a present's note keeps; a longer one is cut."},
 		},
 	},
 	{
