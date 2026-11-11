@@ -346,30 +346,27 @@ func handleRemoveItem(s *session, me habbo.Habbo, body []byte) {
 // 62 with the other teleport and its room, and handleDoorGoIn shows the room that it goes, 89. Each names the
 // teleport by its id as text. A teleport whose partner stands in no room gets no answer.
 func handleIntoDoor(s *session, me habbo.Habbo, body []byte) {
-	if id, ok := textID(s, 81, body); ok {
+	rawID(s, 81, body, func(id int64) error {
 		game.EnterTeleport(me, id)
-	}
+		return nil
+	})
 }
 
 func handleGetDoorFlat(s *session, me habbo.Habbo, body []byte) {
-	id, ok := textID(s, 28, body)
-	if !ok {
-		return
-	}
-	teleport, flat, ok, err := game.TeleportTarget(context.Background(), s.db, me, id)
-	if err != nil {
-		s.fail(err)
-		return
-	}
-	if ok {
-		s.reply(doorFlat, append(vl64(int(teleport)), vl64(int(flat))...))
-	}
+	rawID(s, 28, body, func(id int64) error {
+		teleport, flat, ok, err := game.TeleportTarget(context.Background(), s.db, me, id)
+		if ok {
+			s.reply(doorFlat, append(vl64(int(teleport)), vl64(int(flat))...))
+		}
+		return err
+	})
 }
 
 func handleDoorGoIn(s *session, me habbo.Habbo, body []byte) {
-	if id, ok := textID(s, 82, body); ok {
+	rawID(s, 82, body, func(id int64) error {
 		game.LeaveByTeleport(me, id)
-	}
+		return nil
+	})
 }
 
 // handleGoViaDoor brings the habbo out of the other teleport: `<flat id>/<teleport id>`. In another room, which the
@@ -410,13 +407,7 @@ func handleTradeOpen(s *session, me habbo.Habbo, body []byte) {
 
 // handleTradeAddItem offers a furni of the hand, named by its strip id as text: both get 108.
 func handleTradeAddItem(s *session, me habbo.Habbo, body []byte) {
-	id, ok := textID(s, 72, body)
-	if !ok {
-		return
-	}
-	if err := game.OfferFurni(context.Background(), s.db, me, id); err != nil {
-		s.fail(err)
-	}
+	rawID(s, 72, body, func(id int64) error { return game.OfferFurni(context.Background(), s.db, me, id) })
 }
 
 // handleTradeAccept accepts the trade, 109 to both, and ends it when both have, 110 to both. handleTradeUnaccept
@@ -441,14 +432,16 @@ func (s *session) sendTrade(e game.TradeChanged) {
 	s.reply(tradeItems, []byte(strings.Join(lines, "\r")))
 }
 
-// textID reads a furni's id sent as the whole body, and logs a body that is none as a malformed message id.
-func textID(s *session, message int, body []byte) (int64, bool) {
-	id, err := strconv.ParseInt(string(body), 10, 64)
-	if err != nil {
-		s.malformed(message, body)
-		return 0, false
-	}
-	return id, true
+// handleConvertFurniToCredits turns a credit furni of the room back into credits, named by its id as a number: the
+// room gets 94, and the habbo its new balance, 6.
+func handleConvertFurniToCredits(s *session, me habbo.Habbo, body []byte) {
+	numberID(s, 183, body, func(id int64) error {
+		balance, ok, err := game.RedeemFurni(context.Background(), s.db, me, id)
+		if ok {
+			s.reply(purse, []byte(strconv.FormatInt(balance, 10)))
+		}
+		return err
+	})
 }
 
 // ints reads every field as a number.

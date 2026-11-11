@@ -70,7 +70,7 @@ presents, trade with each other and recycle furni.
 12. [s5-12 Write post-its](/tasks/s5-12-post-its.md) **done**
 13. [s5-13 Travel through teleports](/tasks/s5-13-teleports.md) **done**
 14. [s5-14 Trade furni](/tasks/s5-14-trading.md) **done**
-15. [s5-15 Turn credit furni into credits](/tasks/s5-15-credit-furni.md)
+15. [s5-15 Turn credit furni into credits](/tasks/s5-15-credit-furni.md) **done**
 16. [s5-16 Recycle furni](/tasks/s5-16-recycler.md)
 17. [s5-17 Port housekeeping's Recycler Options](/tasks/s5-17-recycler-options-page.md)
 18. [s5-18 Redeem item vouchers on the site](/tasks/s5-18-item-vouchers.md)

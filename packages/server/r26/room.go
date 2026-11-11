@@ -181,6 +181,7 @@ var roomHandlers = map[int]handler{
 	98:  loggedIn(handleLetUserIn),
 	126: loggedIn(handleGetRoomAd),
 	182: loggedIn(handleGetInterstitial),
+	183: loggedIn(handleConvertFurniToCredits),
 	211: loggedIn(handleRoomQueueChange),
 	214: loggedIn(handleSetItemState),
 	216: loggedIn(handleGetSpectatorAmount),

@@ -2,6 +2,9 @@
 
 ## 2026-11-11
 
+- **Done** [s5-15](/tasks/s5-15-credit-furni.md): the room's owner turns a coin, a sack or a gold bar that stands in the
+  room back into credits, worth the number in its name.
+- **Start** [s5-15](/tasks/s5-15-credit-furni.md).
 - **Done** [s5-14](/tasks/s5-14-trading.md): two habbos in a room offer furni from their hands, and when both accept
   every piece changes hands in one transaction; a trade cut short loses nothing.
 - **Start** [s5-14](/tasks/s5-14-trading.md).
