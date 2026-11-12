@@ -192,3 +192,10 @@ timestamp: 2026-11-10T11:48:45+00:00
 - Result: every room the first habbo owns is the second's, its furni in place and its creator kept, as when the
   first is archived
 - Tables: `rooms`
+
+## CountRooms, CountPublicRooms
+
+- Cardinality: `:one`
+- Inputs: none
+- Result: how many habbo rooms, or public rooms, there are, for housekeeping's dashboard
+- Tables: `rooms`, `public_rooms`

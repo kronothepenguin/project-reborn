@@ -138,3 +138,7 @@ WHERE user_id = sqlc.arg(user_id)
 UPDATE furni
 SET avatar_id = NULL, recycler_avatar_id = NULL
 WHERE avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER) OR recycler_avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER);
+
+-- Every piece there is, wherever it is.
+-- name: CountFurni :one
+SELECT COUNT(*) FROM furni;

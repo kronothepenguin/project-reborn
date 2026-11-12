@@ -186,3 +186,10 @@ timestamp: 2026-11-11T16:24:23+00:00
 - Inputs: `avatar_id`
 - Result: the furni in the habbo's hand and in its recycler is shared, as when the habbo is archived
 - Tables: `furni`
+
+## CountFurni
+
+- Cardinality: `:one`
+- Inputs: none
+- Result: how many pieces of furni there are, wherever each is, for housekeeping's dashboard
+- Tables: `furni`

@@ -11,6 +11,18 @@ import (
 	"time"
 )
 
+const countFurni = `-- name: CountFurni :one
+SELECT COUNT(*) FROM furni
+`
+
+// Every piece there is, wherever it is.
+func (q *Queries) CountFurni(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countFurni)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const countHandFurni = `-- name: CountHandFurni :one
 SELECT COUNT(*) FROM furni WHERE avatar_id = CAST(?1 AS INTEGER)
 `

@@ -133,3 +133,9 @@ UPDATE rooms SET landscape = sqlc.arg(pattern), updated_at = sqlc.arg(updated_at
 UPDATE rooms
 SET owner_avatar_id = sqlc.arg(to_avatar_id), updated_at = sqlc.arg(updated_at)
 WHERE owner_avatar_id = sqlc.arg(from_avatar_id);
+
+-- name: CountRooms :one
+SELECT COUNT(*) FROM rooms;
+
+-- name: CountPublicRooms :one
+SELECT COUNT(*) FROM public_rooms;

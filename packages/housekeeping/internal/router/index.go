@@ -17,10 +17,14 @@ const administratorsShown = 20
 
 type indexPage struct {
 	chrome
-	Habbos         int64
-	Groups         int64
-	ActiveBans     int64
-	StaffLogs      int64
+	Habbos     int64
+	Groups     int64
+	ActiveBans int64
+	StaffLogs  int64
+	// Rooms counts every room, as Holo's one table of rooms did, PublicRooms among them.
+	Rooms          int64
+	PublicRooms    int64
+	Furni          int64
 	Administrators []administrator
 	Note           string
 }
@@ -68,6 +72,17 @@ func (r *Router) newIndexPage(ctx context.Context) (indexPage, error) {
 		return page, err
 	}
 	if page.StaffLogs, err = q.CountStaffLogs(ctx); err != nil {
+		return page, err
+	}
+	flats, err := q.CountRooms(ctx)
+	if err != nil {
+		return page, err
+	}
+	if page.PublicRooms, err = q.CountPublicRooms(ctx); err != nil {
+		return page, err
+	}
+	page.Rooms = flats + page.PublicRooms
+	if page.Furni, err = q.CountFurni(ctx); err != nil {
 		return page, err
 	}
 	holders, err := q.ListAttributeHolderDetails(ctx, store.ListAttributeHolderDetailsParams{

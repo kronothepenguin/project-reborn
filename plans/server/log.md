@@ -2,6 +2,9 @@
 
 ## 2026-11-12
 
+- **Done** [s5-20](/tasks/s5-20-dashboard-counts.md): housekeeping's dashboard shows how many rooms, public rooms and
+  furni the hotel has, where HoloCMS showed them.
+- **Start** [s5-20](/tasks/s5-20-dashboard-counts.md).
 - **Done** [s5-19](/tasks/s5-19-shared-inventory-page.md): the account page Furni lists the furni of a user that no
   habbo holds and moves it to the active habbo's hand, and archiving a habbo sends its furni there and its rooms to the
   active habbo.

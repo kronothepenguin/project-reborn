@@ -67,6 +67,28 @@ func (q *Queries) CountFavouriteRooms(ctx context.Context, avatarID int64) (int6
 	return count, err
 }
 
+const countPublicRooms = `-- name: CountPublicRooms :one
+SELECT COUNT(*) FROM public_rooms
+`
+
+func (q *Queries) CountPublicRooms(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countPublicRooms)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countRooms = `-- name: CountRooms :one
+SELECT COUNT(*) FROM rooms
+`
+
+func (q *Queries) CountRooms(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countRooms)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createRoom = `-- name: CreateRoom :one
 INSERT INTO rooms (
     creator_avatar_id, owner_avatar_id, room_category_id, room_model_id, name, door, show_owner, created_at, updated_at

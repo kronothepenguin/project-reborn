@@ -72,8 +72,23 @@ func TestTheDashboardCounts(t *testing.T) {
 	addLog(t, db, store.CreateStaffLogParams{UserID: id(adminID), Action: "settings.update", IP: "10.0.0.1"})
 	addLog(t, db, store.CreateStaffLogParams{UserID: id(adminID), Action: "settings.update", IP: "10.0.0.1"})
 
+	// Two habbo rooms beside the hotel's 12 public rooms, and three furni, wherever each is.
+	for _, name := range []string{"Attic", "Cellar"} {
+		_, err := db.ExecContext(t.Context(), `INSERT INTO rooms (creator_avatar_id, owner_avatar_id, room_category_id, room_model_id, name, created_at, updated_at)
+			VALUES (?, ?, (SELECT MIN(id) FROM room_categories), (SELECT MIN(id) FROM room_models), ?, ?, ?)`, avatar.ID, avatar.ID, name, now, now)
+		if err != nil {
+			t.Fatalf("insert room: %v", err)
+		}
+	}
+	for _, holder := range []sql.NullInt64{{Int64: avatar.ID, Valid: true}, {Int64: avatar.ID, Valid: true}, {}} {
+		_, err := store.New(db).CreateFurni(t.Context(), store.CreateFurniParams{FurniDefinitionID: 1279, UserID: otherID, AvatarID: holder, CreatedAt: now})
+		if err != nil {
+			t.Fatalf("CreateFurni: %v", err)
+		}
+	}
+
 	wantPage(t, serve(mux, "GET", "/housekeeping/", cookie, nil), http.StatusOK,
-		"index.html", "Habbos:2 Groups:1 ActiveBans:2 StaffLogs:3")
+		"index.html", "Habbos:2 Groups:1 ActiveBans:2 StaffLogs:3 Rooms:14 PublicRooms:12 Furni:3")
 }
 
 func TestTheDashboardListsTheHoldersOfAccessGroups(t *testing.T) {
