@@ -104,7 +104,7 @@ starts.
 - [s5-18 Redeem item vouchers on the site](/tasks/s5-18-item-vouchers.md) — A voucher gives credits or a furni; housekeeping's Voucher Management makes item vouchers by sprite name, and the credits page puts the furni in the redeeming habbo's hand, as HoloCMS did. **done**
 - [s5-19 Show the shared inventory on the site](/tasks/s5-19-shared-inventory-page.md) — The CMS lists the furni of a user that no habbo holds, with a Take button that moves it to the active habbo's hand, and archiving a habbo sends its hand there. **done**
 - [s5-20 Count rooms and furni on housekeeping's dashboard](/tasks/s5-20-dashboard-counts.md) — Housekeeping's dashboard shows how many rooms and furni the hotel has, as HoloCMS's did. **done**
-- [s5-21 Check S5's exit criteria](/tasks/s5-21-exit-check.md) — From the merged work, check every exit criterion of S5 and close the phase.
+- [s5-21 Check S5's exit criteria](/tasks/s5-21-exit-check.md) — From the merged work, check every exit criterion of S5 and close the phase. **done**
 - [s5-22 Copy one prepared database for each CMS and housekeeping test](/tasks/s5-22-test-databases.md) — The CMS's and housekeeping's tests copy a database made once with every update applied, in place of applying every update for each test, which the catalogue's seed made too slow for the gates. **done**
 
 ## S6 to S9

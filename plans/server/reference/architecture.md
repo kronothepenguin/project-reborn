@@ -39,6 +39,17 @@ of `virtual/room`. A room loads with its first habbo and unloads with its last
 500 ms, walking its habbos, ending timed statuses and sending what changed in one message
 ([0065](/decisions/0065-walking-500-ms-by-holos-rules.md), [0072](/decisions/0072-each-loaded-room-runs-its-own-clock.md)).
 
+[S5](/phases/s5-furni-catalogue.md) brought the furni: `r26/cat_code.go`, `r26/room_hand.go`, `r26/room_furni.go` and
+`r26/recycler.go` serve the catalogue, the hand, the furni of a room, trades and the recycler. `server.New` loads the
+furni definitions and the catalogue into `virtual/furni` and `virtual/catalogue`
+([0098](/decisions/0098-virtual-furni-and-catalogue.md)). A piece of furni lives in the store, where the hand is read
+each time ([0096](/decisions/0096-the-hand-is-read-from-the-database.md)); a loaded room keeps a copy of what stands in
+it, changed after the store is ([0010](/decisions/0010-hot-data-written-at-once.md)), and its clock rolls its rollers
+every 2 seconds ([0107](/decisions/0107-rollers-roll-every-two-seconds.md)). An open trade lives in the loaded room and
+nowhere else ([0092](/decisions/0092-a-trade-lives-only-in-memory.md)); a recycling lives in the store alone
+([0093](/decisions/0093-a-recycling-is-saved.md)). `virtual/furni` also creates the pieces of a furni for whoever gives
+one, the catalogue or the site ([0125](/decisions/0125-an-item-voucher-gives-what-buying-gives.md)).
+
 # A connection
 
 1. A listener, the WebSocket listener on the host and port that `config.json` gives `info` or `mus`, accepts a client

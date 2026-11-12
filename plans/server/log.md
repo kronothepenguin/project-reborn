@@ -2,6 +2,9 @@
 
 ## 2026-11-12
 
+- **Done** [s5-21](/tasks/s5-21-exit-check.md): every exit criterion of S5 passes on the merged work, with two tests
+  added, and S5 is done.
+- **Start** [s5-21](/tasks/s5-21-exit-check.md).
 - **Done** [s5-20](/tasks/s5-20-dashboard-counts.md): housekeeping's dashboard shows how many rooms, public rooms and
   furni the hotel has, where HoloCMS showed them.
 - **Start** [s5-20](/tasks/s5-20-dashboard-counts.md).

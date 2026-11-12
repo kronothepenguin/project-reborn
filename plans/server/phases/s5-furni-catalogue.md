@@ -2,8 +2,8 @@
 type: Phase
 title: S5 Furni, catalogue and trading
 description: Habbos buy furni in the catalogue, keep it in their hand, place, move and use it in rooms, trade it and recycle it.
-status: active
-timestamp: 2026-11-11T15:10:47+00:00
+status: done
+timestamp: 2026-11-12T16:33:18+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s5, server]
 ---
@@ -76,5 +76,5 @@ presents, trade with each other and recycle furni.
 18. [s5-18 Redeem item vouchers on the site](/tasks/s5-18-item-vouchers.md) **done**
 19. [s5-19 Show the shared inventory on the site](/tasks/s5-19-shared-inventory-page.md) **done**
 20. [s5-20 Count rooms and furni on housekeeping's dashboard](/tasks/s5-20-dashboard-counts.md) **done**
-21. [s5-21 Check S5's exit criteria](/tasks/s5-21-exit-check.md)
+21. [s5-21 Check S5's exit criteria](/tasks/s5-21-exit-check.md) **done**
 22. [s5-22 Copy one prepared database for each CMS and housekeeping test](/tasks/s5-22-test-databases.md) **done**
