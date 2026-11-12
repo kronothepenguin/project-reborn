@@ -48,6 +48,9 @@ func TestTrading(t *testing.T) {
 
 	h.send(t, 72, fmt.Sprint(chair))
 	h.send(t, 69, "")
+	// The two connections are read apart: the hand's answer tells that the haggler's two were read, and refused,
+	// before the merchant opens the trade they would otherwise reach.
+	hand(t, h, "new")
 	m.send(t, 71, "0")
 	m.send(t, 71, "1")
 	each("false", "", "false", "")
