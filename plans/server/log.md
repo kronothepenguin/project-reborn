@@ -2,6 +2,9 @@
 
 ## 2026-11-12
 
+- **Done** [s5-17](/tasks/s5-17-recycler-options-page.md): housekeeping's settings have the form Recycler Options, with
+  HoloCMS's four fields, saved and logged like the others.
+- **Start** [s5-17](/tasks/s5-17-recycler-options-page.md).
 - **Done** [s5-16](/tasks/s5-16-recycler.md): a habbo in a room gives the recycler old furni of its hand, which wait
   saved, and takes a reward once the recycling is over, or its furni back.
 - **Start** [s5-16](/tasks/s5-16-recycler.md).

@@ -62,6 +62,7 @@ func TestEverySectionHasAForm(t *testing.T) {
 		"club":         {"Key:club.price1Month Label:1 Month Price", "Kind:number Value:20"},
 		"creditsPage":  {"Manage Content Options", "Key:creditsPage.box1Body Label:Credits Content Box 1", "Button:Save Settings"},
 		"help":         {"Key:help.messageMaxLength Label:Question Length", "Kind:number Value:65535", "Button:Save Settings"},
+		"recycler":     {"Menu:Recycler Options Title:Recycler Options Button:Save Settings", "Key:recycler.enabled Label:Enable recycler", "OnLabel:Enabled OffLabel:Disabled", "Key:recycler.minOwnedMinutes Label:Minimum owned time", "Kind:number Value:43200", "Key:recycler.sessionMinutes Label:Session length", "Kind:number Value:60", "Key:recycler.timeoutMinutes Label:Session expire length", "Kind:number Value:10080"},
 	} {
 		t.Run(section, func(t *testing.T) {
 			wantPage(t, serve(mux, "GET", "/housekeeping/settings?section="+section, cookie, nil), http.StatusOK, append(texts, "settings.html")...)
@@ -260,6 +261,8 @@ func TestARefusedFormSavesNothing(t *testing.T) {
 		{"too many wardrobe slots", "homes", url.Values{"homes.maxTags": {"30"}, "homes.wardrobeSlots": {"21"}}, "homes.wardrobeSlots: must be between 1 and 20"},
 		{"a question past the forum's limit", "help", url.Values{"help.messageMaxLength": {"65536"}}, "help.messageMaxLength: must be between 1 and 65535"},
 		{"a question of no characters", "help", url.Values{"help.messageMaxLength": {"0"}}, "help.messageMaxLength: must be between 1 and 65535"},
+		{"a recycler time-out before the session's end", "recycler", url.Values{"recycler.sessionMinutes": {"120"}, "recycler.timeoutMinutes": {"100"}}, "recycler.timeoutMinutes: must be longer than recycler.sessionMinutes"},
+		{"a recycler session of no minutes", "recycler", url.Values{"recycler.sessionMinutes": {"0"}}, "recycler.sessionMinutes: must be between 1 and 525600"},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			db, mux := newSite(t)
@@ -731,5 +734,38 @@ func TestTheGameFormHoldsTheClientsSettings(t *testing.T) {
 	help, game := slices.Index(ids, "help"), slices.Index(ids, "game")
 	if help < 0 || game != help+1 {
 		t.Errorf("Game does not follow Help in the menu: %v", ids)
+	}
+}
+
+// HoloCMS's Recycler Options is a settings form, after Game (plans/server decision 0119): it saves the recycler's
+// settings and writes the staff log as every form does.
+func TestRecyclerOptionsSavesTheRecyclersSettings(t *testing.T) {
+	db, mux := newSite(t)
+	adminID, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
+	body := serve(mux, "GET", "/housekeeping/settings?section=recycler", cookie, nil).Body.String()
+	ids := []string{}
+	for _, part := range strings.Split(body, "{ID:")[1:] {
+		id, _, _ := strings.Cut(part, " ")
+		ids = append(ids, id)
+	}
+	if game, recycler := slices.Index(ids, "game"), slices.Index(ids, "recycler"); game < 0 || recycler != game+1 {
+		t.Errorf("Recycler Options does not follow Game in the menu: %v", ids)
+	}
+
+	form := url.Values{"recycler.enabled": {"0"}, "recycler.minOwnedMinutes": {"0"}, "recycler.sessionMinutes": {"30"}, "recycler.timeoutMinutes": {"1440"}}
+	wantRedirect(t, serve(mux, "POST", "/housekeeping/settings/recycler", cookie, form), "/housekeeping/settings?saved=1&section=recycler")
+	if settings.GetBool("recycler.enabled") || settings.GetInt("recycler.minOwnedMinutes") != 0 || settings.GetInt("recycler.sessionMinutes") != 30 || settings.GetInt("recycler.timeoutMinutes") != 1440 {
+		t.Errorf("the recycler's settings are %t, %d, %d and %d; want off, 0, 30 and 1440", settings.GetBool("recycler.enabled"),
+			settings.GetInt("recycler.minOwnedMinutes"), settings.GetInt("recycler.sessionMinutes"), settings.GetInt("recycler.timeoutMinutes"))
+	}
+	logs := staffLogs(t, db)
+	if len(logs) != 1 || logs[0].Action != "settings.update" || logs[0].UserID.Int64 != adminID ||
+		logs[0].Detail != "recycler.enabled, recycler.minOwnedMinutes, recycler.sessionMinutes, recycler.timeoutMinutes" {
+		t.Errorf("the staff log = %+v, want one row for the recycler's four settings", logs)
+	}
+
+	_, plain := staff(t, db, "Clerk", auth.HousekeepingAccess)
+	if rec := serve(mux, "POST", "/housekeeping/settings/recycler", plain, url.Values{"recycler.sessionMinutes": {"45"}}); settings.GetInt("recycler.sessionMinutes") != 30 {
+		t.Errorf("staff without housekeeping.settings changed the recycler: %d, status %d", settings.GetInt("recycler.sessionMinutes"), rec.Code)
 	}
 }

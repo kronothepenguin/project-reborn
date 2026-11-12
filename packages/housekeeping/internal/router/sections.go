@@ -198,6 +198,17 @@ var forms = []section{
 		},
 	},
 	{
+		// HoloCMS's Recycler Options, with its labels and its help (plans/server decision 0119). Holo kept the three
+		// times in minutes and did not say so.
+		ID: "recycler", Menu: "Recycler Options", Title: "Recycler Options", Button: defaultButton,
+		Fields: []field{
+			{Key: "recycler.enabled", Label: "Enable recycler"},
+			{Key: "recycler.minOwnedMinutes", Label: "Minimum owned time", Help: "The minimum required amount of time since the furniture was bought before it can be used with the recycler. In minutes; 0 takes any furniture."},
+			{Key: "recycler.sessionMinutes", Label: "Session length", Help: "The length of a recycler session. In minutes."},
+			{Key: "recycler.timeoutMinutes", Label: "Session expire length", Help: "In minutes, from the start of the session; it must be longer than the session length. After it the reward is lost and the furniture comes back."},
+		},
+	},
+	{
 		ID: "features", Menu: "Manage Site Content", Title: "Manage Content Options", Button: defaultButton, Content: true,
 		Fields: []field{
 			{Key: "features.landingPromo", Label: "Landing Promo Enabled", Help: "This determines whether the promo on the login page will be displayed. If disabled, the join button is shown."},
