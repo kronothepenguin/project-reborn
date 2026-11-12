@@ -112,6 +112,8 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /account/habbos", account(r.HandleAccountHabbos))
 	mux.Handle("POST /account/habbos/{id}/switch", account(r.HandleAccountHabbosSwitch))
 	mux.Handle("POST /account/habbos/{id}/archive", account(r.HandleAccountHabbosArchive))
+	mux.Handle("GET /account/furni", account(r.HandleAccountFurniView))
+	mux.Handle("POST /account/furni/take", account(r.HandleAccountFurniTake))
 
 	mux.Handle("GET /home", page(http.HandlerFunc(r.HandleHomeSearch)))
 	mux.Handle("GET /home/{name}", page(http.HandlerFunc(r.HandleHomeView)))

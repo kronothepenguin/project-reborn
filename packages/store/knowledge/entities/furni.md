@@ -41,6 +41,11 @@ A piece of furni is one thing a habbo bought, was given or took: a chair, a post
   one transaction (`plans/server/decisions/0092-a-trade-lives-only-in-memory.md`).
 - A [recycling](/entities/recycling.md) takes it out of the hand to wait in the recycler, and ends by destroying it
   or giving it back.
+- A furni that no habbo holds, no room has, no present holds and no recycler keeps is shared: the account page
+  Furni lists it, and Take moves a kind of it, or all of it, to the active habbo's hand, one way
+  (`plans/server/decisions/0122-the-shared-inventory-is-an-account-page.md`,
+  `plans/server/decisions/0123-take-moves-a-kind-of-furni-or-all.md`). Archiving a habbo shares the furni of its hand
+  and of its recycler.
 - Trading and the site's Take move it between hands; the tasks of `plans/server/phases/s5-furni-catalogue.md` bring
   them.
 

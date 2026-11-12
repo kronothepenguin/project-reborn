@@ -74,7 +74,7 @@ presents, trade with each other and recycle furni.
 16. [s5-16 Recycle furni](/tasks/s5-16-recycler.md) **done**
 17. [s5-17 Port housekeeping's Recycler Options](/tasks/s5-17-recycler-options-page.md) **done**
 18. [s5-18 Redeem item vouchers on the site](/tasks/s5-18-item-vouchers.md) **done**
-19. [s5-19 Show the shared inventory on the site](/tasks/s5-19-shared-inventory-page.md)
+19. [s5-19 Show the shared inventory on the site](/tasks/s5-19-shared-inventory-page.md) **done**
 20. [s5-20 Count rooms and furni on housekeeping's dashboard](/tasks/s5-20-dashboard-counts.md)
 21. [s5-21 Check S5's exit criteria](/tasks/s5-21-exit-check.md)
 22. [s5-22 Copy one prepared database for each CMS and housekeeping test](/tasks/s5-22-test-databases.md) **done**

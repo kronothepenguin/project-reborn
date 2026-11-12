@@ -16,6 +16,8 @@ A room a habbo created. Its creator never changes; its owner is a habbo of the s
 - A habbo owns up to `game.maxRoomsPerHabbo` rooms (`plans/server/decisions/0056-own-rooms-follow-holos-rules.md`).
 - The password is stored as a hash (`plans/server/decisions/0062-room-passwords-are-hashed.md`).
 - Only its owner changes or deletes it.
+- When its owner is archived, it becomes the user's active habbo's, with its furni in place
+  (`plans/server/decisions/0124-an-archived-habbos-rooms-move-to-the-active-habbo.md`).
 
 # Lifecycle
 

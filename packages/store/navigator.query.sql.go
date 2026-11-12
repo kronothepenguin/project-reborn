@@ -624,6 +624,25 @@ func (q *Queries) ListRoomModels(ctx context.Context) ([]RoomModel, error) {
 	return items, nil
 }
 
+const moveRoomsToAvatar = `-- name: MoveRoomsToAvatar :exec
+UPDATE rooms
+SET owner_avatar_id = ?1, updated_at = ?2
+WHERE owner_avatar_id = ?3
+`
+
+type MoveRoomsToAvatarParams struct {
+	ToAvatarID   int64
+	UpdatedAt    time.Time
+	FromAvatarID int64
+}
+
+// The rooms of a habbo that goes are another habbo's, their furni in place and their creator kept (plans/server
+// decision 0124).
+func (q *Queries) MoveRoomsToAvatar(ctx context.Context, arg MoveRoomsToAvatarParams) error {
+	_, err := q.db.ExecContext(ctx, moveRoomsToAvatar, arg.ToAvatarID, arg.UpdatedAt, arg.FromAvatarID)
+	return err
+}
+
 const removeFavouritePublicRoom = `-- name: RemoveFavouritePublicRoom :exec
 DELETE FROM favourite_rooms WHERE avatar_id = ?1 AND public_room_id = CAST(?2 AS INTEGER)
 `

@@ -184,3 +184,11 @@ timestamp: 2026-11-10T11:48:45+00:00
 - Inputs: `id`, `pattern`, `updated_at`
 - Result: the room keeps the pattern as its wallpaper, its floor or its landscape
 - Tables: `rooms`
+
+## MoveRoomsToAvatar
+
+- Cardinality: `:exec`
+- Inputs: `from_avatar_id`, `to_avatar_id`, `updated_at`
+- Result: every room the first habbo owns is the second's, its furni in place and its creator kept, as when the
+  first is archived
+- Tables: `rooms`

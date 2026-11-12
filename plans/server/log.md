@@ -2,6 +2,10 @@
 
 ## 2026-11-12
 
+- **Done** [s5-19](/tasks/s5-19-shared-inventory-page.md): the account page Furni lists the furni of a user that no
+  habbo holds and moves it to the active habbo's hand, and archiving a habbo sends its furni there and its rooms to the
+  active habbo.
+- **Start** [s5-19](/tasks/s5-19-shared-inventory-page.md).
 - **Done** [s5-18](/tasks/s5-18-item-vouchers.md): housekeeping makes item vouchers by sprite name again, and the
   credits page puts the furni in the redeeming habbo's hand, as buying it would give it.
 - **Decision** [0125](/decisions/0125-an-item-voucher-gives-what-buying-gives.md): an item voucher gives what buying the

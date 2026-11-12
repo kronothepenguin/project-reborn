@@ -131,6 +131,14 @@ The R26 client has alerts for a room that holds its most post-its (403, `wallite
 such limits: a room takes post-its and rollers up to `game.maxRoomFurni`
 ([server s5-12](server/tasks/s5-12-post-its.md)). Limits of their own would be two settings and the two alerts.
 
+## The game server and a habbo archived on the site
+
+Archiving a habbo on the site changes the store alone ([server s5-19](server/tasks/s5-19-shared-inventory-page.md)): its
+hand goes to the shared inventory and its rooms to the active habbo. A game server that runs learns of neither. A room
+that is loaded keeps the owner it loaded with until its last habbo leaves, and an archived habbo that is in the hotel,
+through a game session opened before it was archived, stays until it logs out, with a hand that is now empty. The site
+would have to tell the server, which today only reads what the site wrote.
+
 ## Achievements
 
 The habbos have no achievements yet ([server 0051](server/decisions/0051-no-achievements-yet.md)): 436 lists none, the

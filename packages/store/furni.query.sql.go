@@ -293,6 +293,61 @@ func (q *Queries) ListRoomFurni(ctx context.Context, roomID int64) ([]Furni, err
 	return items, nil
 }
 
+const listSharedFurni = `-- name: ListSharedFurni :many
+SELECT
+    furni.furni_definition_id,
+    CAST(COALESCE((
+        SELECT catalogue_items.name
+        FROM catalogue_items
+        JOIN catalogue_item_furni ON catalogue_item_furni.catalogue_item_id = catalogue_items.id
+        WHERE catalogue_item_furni.furni_definition_id = furni.furni_definition_id
+            AND catalogue_item_furni.amount = 1
+            AND (SELECT COUNT(*) FROM catalogue_item_furni AS given WHERE given.catalogue_item_id = catalogue_items.id) = 1
+        ORDER BY catalogue_items.id
+        LIMIT 1
+    ), furni_definitions.sprite) AS TEXT) AS name,
+    COUNT(*) AS amount
+FROM furni
+JOIN furni_definitions ON furni_definitions.id = furni.furni_definition_id
+WHERE furni.user_id = ?1
+    AND furni.avatar_id IS NULL AND furni.room_id IS NULL
+    AND furni.box_furni_id IS NULL AND furni.recycler_avatar_id IS NULL
+GROUP BY furni.furni_definition_id
+ORDER BY name, furni.furni_definition_id
+`
+
+type ListSharedFurniRow struct {
+	FurniDefinitionID int64
+	Name              string
+	Amount            int64
+}
+
+// A user's shared inventory, a row for each kind of furni: the furni that no habbo holds, no room has, no present
+// holds and no recycler keeps (plans/holo-port decision 0057). A kind goes by the name of the first catalogue item
+// that sells it alone, or by its sprite.
+func (q *Queries) ListSharedFurni(ctx context.Context, userID int64) ([]ListSharedFurniRow, error) {
+	rows, err := q.db.QueryContext(ctx, listSharedFurni, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListSharedFurniRow
+	for rows.Next() {
+		var i ListSharedFurniRow
+		if err := rows.Scan(&i.FurniDefinitionID, &i.Name, &i.Amount); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const moveFurni = `-- name: MoveFurni :execrows
 UPDATE furni
 SET x = ?1, y = ?2, altitude = ?3, direction = ?4
@@ -468,6 +523,60 @@ type SetRoomFurniStateParams struct {
 
 func (q *Queries) SetRoomFurniState(ctx context.Context, arg SetRoomFurniStateParams) (int64, error) {
 	result, err := q.db.ExecContext(ctx, setRoomFurniState, arg.State, arg.ID, arg.RoomID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const shareAvatarFurni = `-- name: ShareAvatarFurni :exec
+UPDATE furni
+SET avatar_id = NULL, recycler_avatar_id = NULL
+WHERE avatar_id = CAST(?1 AS INTEGER) OR recycler_avatar_id = CAST(?1 AS INTEGER)
+`
+
+// The hand of a habbo that goes, and what waits in its recycler, become shared (plans/server decision 0124).
+func (q *Queries) ShareAvatarFurni(ctx context.Context, avatarID int64) error {
+	_, err := q.db.ExecContext(ctx, shareAvatarFurni, avatarID)
+	return err
+}
+
+const takeAllSharedFurni = `-- name: TakeAllSharedFurni :execrows
+UPDATE furni
+SET avatar_id = CAST(?1 AS INTEGER)
+WHERE user_id = ?2
+    AND avatar_id IS NULL AND room_id IS NULL AND box_furni_id IS NULL AND recycler_avatar_id IS NULL
+`
+
+type TakeAllSharedFurniParams struct {
+	AvatarID int64
+	UserID   int64
+}
+
+func (q *Queries) TakeAllSharedFurni(ctx context.Context, arg TakeAllSharedFurniParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, takeAllSharedFurni, arg.AvatarID, arg.UserID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
+}
+
+const takeSharedFurni = `-- name: TakeSharedFurni :execrows
+UPDATE furni
+SET avatar_id = CAST(?1 AS INTEGER)
+WHERE user_id = ?2 AND furni_definition_id = ?3
+    AND avatar_id IS NULL AND room_id IS NULL AND box_furni_id IS NULL AND recycler_avatar_id IS NULL
+`
+
+type TakeSharedFurniParams struct {
+	AvatarID          int64
+	UserID            int64
+	FurniDefinitionID int64
+}
+
+// Every shared furni of one kind goes to a habbo's hand (plans/server decision 0123).
+func (q *Queries) TakeSharedFurni(ctx context.Context, arg TakeSharedFurniParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, takeSharedFurni, arg.AvatarID, arg.UserID, arg.FurniDefinitionID)
 	if err != nil {
 		return 0, err
 	}

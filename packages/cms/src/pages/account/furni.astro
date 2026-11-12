@@ -1,0 +1,31 @@
+---
+import { Button } from "@project-reborn/components";
+import SettingsFrame from "../../components/account/settings-frame.astro";
+---
+
+<SettingsFrame active="Furni" heading="Your Furni">
+  <p>
+    Furni that none of your habbos holds waits here. Take moves it to the hand
+    of the habbo you are playing, <strong>[[ .Habbo ]]</strong>, and it does not
+    come back.
+  </p>
+  [[ if .Furni ]]
+  <form method="post" action="/account/furni/take">
+    <Button type="submit" size="compact">Take all</Button>
+  </form>
+  <ul class="flex flex-col divide-y divide-gray-200">
+    [[ range .Furni ]]
+    <li class="flex items-center gap-3 py-1">
+      <span class="flex-1 font-bold">[[ .Name ]]</span>
+      <span>x [[ .Amount ]]</span>
+      <form method="post" action="/account/furni/take">
+        <input type="hidden" name="furni" value="[[ .ID ]]" />
+        <Button type="submit" size="compact">Take</Button>
+      </form>
+    </li>
+    [[ end ]]
+  </ul>
+  [[ else ]]
+  <p>No furni waits here.</p>
+  [[ end ]]
+</SettingsFrame>

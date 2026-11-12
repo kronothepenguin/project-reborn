@@ -244,7 +244,9 @@ func SwitchHabbo(ctx context.Context, db *sql.DB, avatarID int64) error {
 // cannot go, so a user always keeps one, and sessions open on the archived habbo
 // elsewhere move to this session's. The stickers and notes on its home go back to
 // the user's inventory, a note without its text, and the background stays: it is
-// the user's, whichever homes show it.
+// the user's, whichever homes show it. The furni in its hand and in its recycler
+// goes to the user's shared inventory, its recycling ends, and its rooms are the
+// session's habbo's, their furni in place (plans/server decision 0124).
 func ArchiveHabbo(ctx context.Context, db *sql.DB, avatarID int64) error {
 	session, ok := FromContext(ctx)
 	if !ok {
@@ -285,6 +287,16 @@ func ArchiveHabbo(ctx context.Context, db *sql.DB, avatarID int64) error {
 		return fmt.Errorf("auth: archive habbo: %w", err)
 	}
 	if err := returnPlacedItems(ctx, q, session.UserID, avatarID); err != nil {
+		return fmt.Errorf("auth: archive habbo: %w", err)
+	}
+	if err := q.ShareAvatarFurni(ctx, avatarID); err != nil {
+		return fmt.Errorf("auth: archive habbo: %w", err)
+	}
+	if _, err := q.DeleteRecycling(ctx, avatarID); err != nil {
+		return fmt.Errorf("auth: archive habbo: %w", err)
+	}
+	err = q.MoveRoomsToAvatar(ctx, store.MoveRoomsToAvatarParams{FromAvatarID: avatarID, ToAvatarID: session.AvatarID, UpdatedAt: now})
+	if err != nil {
 		return fmt.Errorf("auth: archive habbo: %w", err)
 	}
 	if err := tx.Commit(); err != nil {

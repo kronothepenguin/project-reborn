@@ -156,3 +156,33 @@ timestamp: 2026-11-11T16:24:23+00:00
 - Result: the piece leaves one habbo's hand for another's, and belongs to the taker's user; no row changes when the
   giver's hand does not hold it, which undoes the whole trade
 - Tables: `furni`
+
+## ListSharedFurni
+
+- Cardinality: `:many`
+- Inputs: `user_id`
+- Result: the user's shared inventory, a row for each kind of furni with how many of it there are: the furni that no
+  habbo holds, no room has, no present holds and no recycler keeps. A kind goes by the name of the first catalogue
+  item that sells it alone, or by its sprite, and the rows by that name
+- Tables: `furni`, `furni_definitions`, `catalogue_items`, `catalogue_item_furni`
+
+## TakeSharedFurni
+
+- Cardinality: `:execrows`
+- Inputs: `user_id`, `avatar_id`, `furni_definition_id`
+- Result: every shared furni of the kind is in the habbo's hand
+- Tables: `furni`
+
+## TakeAllSharedFurni
+
+- Cardinality: `:execrows`
+- Inputs: `user_id`, `avatar_id`
+- Result: every shared furni of the user is in the habbo's hand
+- Tables: `furni`
+
+## ShareAvatarFurni
+
+- Cardinality: `:exec`
+- Inputs: `avatar_id`
+- Result: the furni in the habbo's hand and in its recycler is shared, as when the habbo is archived
+- Tables: `furni`
