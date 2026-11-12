@@ -195,6 +195,7 @@ type Furni struct {
 	CreatedAt         time.Time
 	BoxFurniID        sql.NullInt64
 	PartnerFurniID    sql.NullInt64
+	RecyclerAvatarID  sql.NullInt64
 }
 
 type FurniDefinition struct {
@@ -370,6 +371,17 @@ type PublicRoom struct {
 	Unit           string
 	Casts          string
 	MaxVisitors    int64
+}
+
+type RecyclerReward struct {
+	FurniCount        int64
+	FurniDefinitionID int64
+}
+
+type Recycling struct {
+	AvatarID          int64
+	FurniDefinitionID int64
+	StartedAt         time.Time
 }
 
 type Referral struct {

@@ -39,6 +39,8 @@ A piece of furni is one thing a habbo bought, was given or took: a chair, a post
   [furni_notes](/tables/furni_notes.md).
 - A trade moves it from one habbo's hand to another's, whose user it then belongs to, every piece of the trade in
   one transaction (`plans/server/decisions/0092-a-trade-lives-only-in-memory.md`).
+- A [recycling](/entities/recycling.md) takes it out of the hand to wait in the recycler, and ends by destroying it
+  or giving it back.
 - Trading and the site's Take move it between hands; the tasks of `plans/server/phases/s5-furni-catalogue.md` bring
   them.
 

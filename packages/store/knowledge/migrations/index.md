@@ -22,3 +22,4 @@ them all when `store.Open` creates it.
 - [0017-room-decorations.sql](0017-room-decorations.md) — Adds to rooms the wallpaper, the floor and the landscape a habbo's room was decorated with.
 - [0018-post-its.sql](0018-post-its.md) — Creates furni_notes, what a habbo wrote on a post-it.
 - [0019-teleports.sql](0019-teleports.md) — Adds to furni the other teleport of a teleport's pair.
+- [0020-recycler.sql](0020-recycler.md) — Creates recycler_rewards, with Holo's four rewards, and recyclings, and adds to furni the habbo whose recycler a piece waits in.

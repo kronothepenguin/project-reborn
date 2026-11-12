@@ -783,6 +783,10 @@ func TestTheGameSettingsHoldTheirDefaults(t *testing.T) {
 		"game.presentNoteMaxLength":      200,
 		"game.postItMaxLength":           684,
 		"game.maxTradeFurni":             65,
+		"recycler.enabled":               true,
+		"recycler.minOwnedMinutes":       43200,
+		"recycler.sessionMinutes":        60,
+		"recycler.timeoutMinutes":        10080,
 	})
 
 	for value, valid := range map[int]bool{0: false, 1: true, 1_000_000: true} {

@@ -90,3 +90,8 @@ Concepts for the tables declared under `packages/store/schema/`, one per table.
 
 - [furni](furni.md) — A piece of furni: what it is, the user it belongs to, the habbo that holds it or the room it stands in with its place there, and its state.
 - [furni_notes](furni_notes.md) — What a habbo wrote on a post-it that hangs on a wall, one row per post-it that was written on.
+
+## Recycler
+
+- [recycler_rewards](recycler_rewards.md) — What the recycler gives: the furni a habbo gets for recycling a number of pieces at once.
+- [recyclings](recyclings.md) — A habbo's recycling, one at a time: when it started and the furni it brings.

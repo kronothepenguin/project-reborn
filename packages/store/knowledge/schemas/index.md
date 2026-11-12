@@ -55,3 +55,7 @@ build it, and a test keeps the two alike.
 ## Furni
 
 - [furni.schema.sql](furni.md) — Declares furni, the pieces of furni habbos own, each in a hand, in a room or in its user's shared inventory, and furni_notes, what is written on a post-it.
+
+## Recycler
+
+- [recycler.schema.sql](recycler.md) — Declares the recycler: the rewards it gives for furni, and each habbo's recycling.

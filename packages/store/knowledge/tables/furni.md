@@ -25,11 +25,13 @@ timestamp: 2026-11-11T16:24:23+00:00
 | `created_at` | DATETIME | no | | When the piece came to be | |
 | `box_furni_id` | INTEGER | yes | | The present box it waits in; none once the box is opened | → `furni.id`, set null |
 | `partner_furni_id` | INTEGER | yes | | The other teleport of a teleport's pair; none for other furni, or once the other is gone | → `furni.id`, set null |
+| `recycler_avatar_id` | INTEGER | yes | | The habbo whose recycler it waits in, out of every hand; none otherwise | → `avatars.id`, set null |
 
 # Keys
 
 - Primary key `id`; `idx_furni_user_id` (`user_id`), `idx_furni_avatar_id` (`avatar_id`), `idx_furni_room_id`
-  (`room_id`), `idx_furni_box_furni_id` (`box_furni_id`), `idx_furni_partner_furni_id` (`partner_furni_id`).
+  (`room_id`), `idx_furni_box_furni_id` (`box_furni_id`), `idx_furni_partner_furni_id` (`partner_furni_id`),
+  `idx_furni_recycler_avatar_id` (`recycler_avatar_id`).
 - CHECK: never both `avatar_id` and `room_id`.
 
 # Notes

@@ -173,6 +173,16 @@ var catalogue = map[string]declaration{
 	"game.postItMaxLength": declare(684, between(1, 2000)),
 	// The most furni one side of a trade offers, Holo's 65 (plans/server decision 0113).
 	"game.maxTradeFurni": declare(65, between(1, 500)),
+
+	// The recycler, with Holo's values, in minutes: whether it runs, how old
+	// a furni must be before it is recycled, 30 days and 0 for any furni
+	// (plans/server decision 0117), how long a recycling takes, and how long
+	// after its start the reward may still be taken, 7 days (plans/server
+	// decision 0116).
+	"recycler.enabled":         declare(true, nil),
+	"recycler.minOwnedMinutes": declare(43200, between(0, 5256000)),
+	"recycler.sessionMinutes":  declare(60, between(1, 525600)),
+	"recycler.timeoutMinutes":  declare(10080, between(2, 5256000)),
 }
 
 // rules check settings that depend on each other. keys lists every setting a
@@ -196,6 +206,18 @@ var rules = []rule{
 			ping, timeout := values["game.pingSeconds"].(int), values["game.pongTimeoutSeconds"].(int)
 			if timeout <= ping {
 				return fmt.Errorf("game.pongTimeoutSeconds: must be longer than game.pingSeconds (%d), got %d", ping, timeout)
+			}
+			return nil
+		},
+	},
+	{
+		// A time-out no later than the recycling's end would leave no time
+		// to take the reward.
+		keys: []string{"recycler.sessionMinutes", "recycler.timeoutMinutes"},
+		check: func(values map[string]any) error {
+			session, timeout := values["recycler.sessionMinutes"].(int), values["recycler.timeoutMinutes"].(int)
+			if timeout <= session {
+				return fmt.Errorf("recycler.timeoutMinutes: must be longer than recycler.sessionMinutes (%d), got %d", session, timeout)
 			}
 			return nil
 		},

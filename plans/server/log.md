@@ -1,5 +1,18 @@
 # Log
 
+## 2026-11-12
+
+- **Done** [s5-16](/tasks/s5-16-recycler.md): a habbo in a room gives the recycler old furni of its hand, which wait
+  saved, and takes a reward once the recycling is over, or its furni back.
+- **Start** [s5-16](/tasks/s5-16-recycler.md).
+- **Decision** [0119](/decisions/0119-recycler-options-is-a-settings-section.md): Recycler Options is a section of
+  housekeeping's settings.
+- **Decision** [0118](/decisions/0118-a-recycling-starts-in-a-room.md): a recycling starts only in a room, as Holo.
+- **Decision** [0117](/decisions/0117-the-recycler-checks-a-furnis-age.md): the recycler checks a furni's age, from when
+  it was made.
+- **Decision** [0116](/decisions/0116-a-recycling-that-waits-too-long-gives-the-furni-back.md): a recycling that waits
+  too long loses its reward and gives the furni back.
+
 ## 2026-11-11
 
 - **Done** [s5-15](/tasks/s5-15-credit-furni.md): the room's owner turns a coin, a sack or a gold bar that stands in the

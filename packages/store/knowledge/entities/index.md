@@ -65,3 +65,8 @@ Domain entities represented by the store's tables: their meaning, invariants, li
 ## Furni
 
 - [Furni](furni.md) — A piece of furni that a user owns: in a habbo's hand, placed in a room, or in the user's shared inventory.
+
+## Recycler
+
+- [Recycler reward](recycler-reward.md) — What the recycler gives for a number of furni recycled at once.
+- [Recycling](recycling.md) — A habbo's exchange of many furni for one, which runs for a time and then waits for the habbo to take its reward.

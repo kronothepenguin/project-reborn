@@ -5,7 +5,8 @@
 -- client writes it. One that waits inside a present has that box as box_furni_id. One that no habbo holds, no room
 -- has and no box holds is in its user's shared inventory. state is what the client calls its stuff data or its item
 -- data, such as a dice's number, or the note of a present after an exclamation mark. A teleport has the other of its
--- pair as partner_furni_id, whoever holds either (plans/server decision 0111).
+-- pair as partner_furni_id, whoever holds either (plans/server decision 0111). One that a habbo gave the recycler
+-- waits under recycler_avatar_id, in no hand, until its recycling ends (plans/server decision 0093).
 CREATE TABLE IF NOT EXISTS furni (
     id INTEGER PRIMARY KEY,
     furni_definition_id INTEGER NOT NULL REFERENCES furni_definitions(id),
@@ -21,6 +22,7 @@ CREATE TABLE IF NOT EXISTS furni (
     created_at DATETIME NOT NULL,
     box_furni_id INTEGER REFERENCES furni(id) ON DELETE SET NULL,
     partner_furni_id INTEGER REFERENCES furni(id) ON DELETE SET NULL,
+    recycler_avatar_id INTEGER REFERENCES avatars(id) ON DELETE SET NULL,
     CHECK (avatar_id IS NULL OR room_id IS NULL)
 );
 
@@ -29,6 +31,7 @@ CREATE INDEX IF NOT EXISTS idx_furni_avatar_id ON furni (avatar_id);
 CREATE INDEX IF NOT EXISTS idx_furni_room_id ON furni (room_id);
 CREATE INDEX IF NOT EXISTS idx_furni_box_furni_id ON furni (box_furni_id);
 CREATE INDEX IF NOT EXISTS idx_furni_partner_furni_id ON furni (partner_furni_id);
+CREATE INDEX IF NOT EXISTS idx_furni_recycler_avatar_id ON furni (recycler_avatar_id);
 
 -- What a habbo wrote on a post-it that hangs on a wall. A post-it nobody wrote on has no row. The post-it's colour
 -- is its furni's state.

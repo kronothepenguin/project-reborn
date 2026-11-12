@@ -17,6 +17,7 @@ timestamp: 2026-11-11T16:24:23+00:00
 | `idx_furni_room_id` | index | A room's furni |
 | `idx_furni_box_furni_id` | index | What waits in a present |
 | `idx_furni_partner_furni_id` | index | A teleport's partner |
+| `idx_furni_recycler_avatar_id` | index | What waits in a habbo's recycler |
 | [furni_notes](/tables/furni_notes.md) | table | What is written on a post-it |
 
 Entity: [Furni](/entities/furni.md).
