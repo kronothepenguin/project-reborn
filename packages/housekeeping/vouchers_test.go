@@ -289,7 +289,7 @@ func TestATakenCodeIsRefused(t *testing.T) {
 
 	for _, code := range []string{"summer08", "used"} {
 		rec := serve(mux, "POST", "/housekeeping/vouchers", cookie, voucherForm(code, "5"))
-		wantPage(t, rec, http.StatusUnprocessableEntity, "Form:{Code:"+code+" Credits:5}", "Error:"+voucherCodeTaken+"}")
+		wantPage(t, rec, http.StatusUnprocessableEntity, "Form:{Code:"+code+" Credits:5 Type:credits}", "Error:"+voucherCodeTaken+"}")
 	}
 	vouchers := allVouchers(t, db)
 	if got := codesOf(vouchers); !slices.Equal(got, []string{"SUMMER08", "USED"}) || vouchers[0].Credits != 100 {
