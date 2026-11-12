@@ -43,3 +43,24 @@ timestamp: 2026-11-11T15:49:58+00:00
 - Inputs: none
 - Result: the furni every item gives, by item and definition
 - Tables: `catalogue_item_furni`
+
+## GetFurniDefinition
+
+- Cardinality: `:one`
+- Inputs: `id`
+- Result: the furni definition
+- Tables: `furni_definitions`
+
+## GetFurniDefinitionBySprite
+
+- Cardinality: `:one`
+- Inputs: `sprite`
+- Result: the definition of the sprite, and of several that share it the one with the lowest id
+- Tables: `furni_definitions`
+
+## GetFurniName
+
+- Cardinality: `:one`
+- Inputs: `furni_definition_id`
+- Result: the name of the first catalogue item that sells the furni alone, one piece of it; not found when none does
+- Tables: `catalogue_items`, `catalogue_item_furni`

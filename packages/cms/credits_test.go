@@ -217,3 +217,68 @@ func TestTheTransactionsWaitForASignIn(t *testing.T) {
 	_, mux := newSite(t)
 	wantRedirect(t, serve(mux, "GET", "/credits/transactions", nil, nil), "/")
 }
+
+// An item voucher puts its furni in the active habbo's hand, as a purchase gives it: a teleport as a pair that name
+// each other, a pad of post-its with its 20 notes. The purse keeps its credits, and the ledger gets a row of 0
+// (plans/server decisions 0121 and 0125).
+func TestRedeemingAnItemVoucherFillsTheHand(t *testing.T) {
+	db, mux, _, userID := buyer(t, 10)
+	secondHabbo(t, db, userID, "FrankToo")
+	q := store.New(db)
+	for code, sprite := range map[string]string{"throne": "throne", "beam": "door", "notes": "post.it", "box": "present_gen1"} {
+		item, err := q.GetFurniDefinitionBySprite(t.Context(), sprite)
+		if err != nil {
+			t.Fatal(err)
+		}
+		err = q.CreateVoucher(t.Context(), store.CreateVoucherParams{Code: code, FurniDefinitionID: sql.NullInt64{Int64: item.ID, Valid: true}, CreatedAt: testNow})
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	cookie := login(t, db, "FrankToo")
+	for _, code := range []string{"throne", "BEAM", "notes", "box"} {
+		wantRedeemed(t, redeem(mux, cookie, code), http.StatusOK, 10, "You have redeemed this item of furniture successfully.")
+	}
+	wantRedeemed(t, redeem(mux, cookie, "throne"), http.StatusUnprocessableEntity, 10, "Your redeem code could not be found. Please try again.")
+
+	hand, err := q.ListHandFurni(t.Context(), store.ListHandFurniParams{AvatarID: avatarID(t, db, "FrankToo"), PageSize: 10})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(hand) != 5 {
+		t.Fatalf("the hand holds %d furni, want a throne, two teleports, a pad and a box: %+v", len(hand), hand)
+	}
+	throne, first, second, pad := hand[0], hand[1], hand[2], hand[3]
+	if throne.FurniDefinitionID != 1152 || throne.UserID != userID || throne.State != "" {
+		t.Errorf("the throne = %+v, want the furni 1152 of the user", throne)
+	}
+	if first.PartnerFurniID.Int64 != second.ID || second.PartnerFurniID.Int64 != first.ID || first.FurniDefinitionID != second.FurniDefinitionID {
+		t.Errorf("the teleports %+v and %+v do not name each other", first, second)
+	}
+	if pad.State != "20" {
+		t.Errorf("the pad of post-its holds %q notes, want 20", pad.State)
+	}
+	if got := walletOf(t, db, userID); got != 10 {
+		t.Errorf("the purse holds %d, want its 10 untouched", got)
+	}
+	ledger, err := q.ListWalletTransactions(t.Context(), store.ListWalletTransactionsParams{UserID: userID, RowLimit: 10})
+	if err != nil {
+		t.Fatal(err)
+	}
+	details := map[string]bool{}
+	for _, row := range ledger {
+		if row.Credits != 0 || row.Reason != "voucher" || row.Habbo.String != "FrankToo" {
+			t.Errorf("the ledger row %+v, want 0 credits by the active habbo", row)
+		}
+		details[row.Detail] = true
+	}
+	// A present box is sold by no item, so it goes by its sprite.
+	for _, want := range []string{"Item voucher redeem (Throne)", "Item voucher redeem (Telephone Box)", "Item voucher redeem (present_gen1)"} {
+		if !details[want] {
+			t.Errorf("the ledger lacks %q: %+v", want, ledger)
+		}
+	}
+	if len(ledger) != 4 {
+		t.Errorf("the ledger holds %d rows, want one for each voucher", len(ledger))
+	}
+}

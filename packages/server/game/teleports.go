@@ -4,16 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"slices"
 	"strconv"
 
 	"github.com/kronothepenguin/project-reborn/packages/store"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/furni"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
 )
-
-// teleportSprites are the furni sold as a pair of teleports, as Holo knew them.
-var teleportSprites = []string{"door", "doorB", "doorC", "doorD", "teleport_door"}
 
 // TeleportLeft tells a room that a habbo goes away through the teleport ID, and TeleportArrival that the habbo Name
 // comes out of it.
@@ -28,7 +25,7 @@ type (
 // teleportIn returns the habbo room viewer is in and its teleport id.
 func teleportIn(viewer habbo.Habbo, id int64) (*room.Room, room.Furni, bool) {
 	r, item, ok := in(viewer, id)
-	if !ok || !slices.Contains(teleportSprites, item.Definition.Sprite) {
+	if !ok || !furni.IsTeleport(item.Definition.Sprite) {
 		return nil, room.Furni{}, false
 	}
 	return r, item, true
@@ -133,7 +130,7 @@ func GoViaTeleport(viewer habbo.Habbo, flatID, id int64) bool {
 // whether it did: not for a teleport that left the room meanwhile, nor for the id 0 of a habbo that came by the door.
 func arriveByTeleport(r *room.Room, viewer habbo.Habbo, id int64) (room.Furni, bool) {
 	teleport, ok := r.FurniByID(id)
-	if id == 0 || !ok || !slices.Contains(teleportSprites, teleport.Definition.Sprite) {
+	if id == 0 || !ok || !furni.IsTeleport(teleport.Definition.Sprite) {
 		return room.Furni{}, false
 	}
 	moved := r.Update(viewer.ID, func(o *room.Occupant) {

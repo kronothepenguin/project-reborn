@@ -62,21 +62,24 @@ func (q *Queries) CountWalletTransactions(ctx context.Context, userID int64) (in
 }
 
 const createVoucher = `-- name: CreateVoucher :exec
-INSERT INTO vouchers (code, credits, created_by_user_id, created_at)
-VALUES (?1, ?2, ?3, ?4)
+INSERT INTO vouchers (code, credits, furni_definition_id, created_by_user_id, created_at)
+VALUES (?1, ?2, ?3, ?4, ?5)
 `
 
 type CreateVoucherParams struct {
-	Code            string
-	Credits         int64
-	CreatedByUserID sql.NullInt64
-	CreatedAt       time.Time
+	Code              string
+	Credits           int64
+	FurniDefinitionID sql.NullInt64
+	CreatedByUserID   sql.NullInt64
+	CreatedAt         time.Time
 }
 
+// A voucher gives credits, or the furni of furni_definition_id with no credits.
 func (q *Queries) CreateVoucher(ctx context.Context, arg CreateVoucherParams) error {
 	_, err := q.db.ExecContext(ctx, createVoucher,
 		arg.Code,
 		arg.Credits,
+		arg.FurniDefinitionID,
 		arg.CreatedByUserID,
 		arg.CreatedAt,
 	)
@@ -159,29 +162,30 @@ func (q *Queries) GetWallet(ctx context.Context, userID int64) (Wallet, error) {
 }
 
 const listUnusedVouchers = `-- name: ListUnusedVouchers :many
-SELECT code, credits, created_by_user_id, created_at, redeemed_by_avatar_id, redeemed_at FROM vouchers
-WHERE redeemed_at IS NULL
-ORDER BY created_at, code
+SELECT vouchers.code, vouchers.credits, CAST(COALESCE(furni_definitions.sprite, '') AS TEXT) AS sprite
+FROM vouchers
+LEFT JOIN furni_definitions ON furni_definitions.id = vouchers.furni_definition_id
+WHERE vouchers.redeemed_at IS NULL
+ORDER BY vouchers.created_at, vouchers.code
 `
 
-// In the order they were made, as Holo's housekeeping listed them.
-func (q *Queries) ListUnusedVouchers(ctx context.Context) ([]Voucher, error) {
+type ListUnusedVouchersRow struct {
+	Code    string
+	Credits int64
+	Sprite  string
+}
+
+// In the order they were made, as Holo's housekeeping listed them, an item voucher with its furni's sprite.
+func (q *Queries) ListUnusedVouchers(ctx context.Context) ([]ListUnusedVouchersRow, error) {
 	rows, err := q.db.QueryContext(ctx, listUnusedVouchers)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Voucher
+	var items []ListUnusedVouchersRow
 	for rows.Next() {
-		var i Voucher
-		if err := rows.Scan(
-			&i.Code,
-			&i.Credits,
-			&i.CreatedByUserID,
-			&i.CreatedAt,
-			&i.RedeemedByAvatarID,
-			&i.RedeemedAt,
-		); err != nil {
+		var i ListUnusedVouchersRow
+		if err := rows.Scan(&i.Code, &i.Credits, &i.Sprite); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -255,7 +259,7 @@ const redeemVoucher = `-- name: RedeemVoucher :one
 UPDATE vouchers
 SET redeemed_by_avatar_id = CAST(?1 AS INTEGER), redeemed_at = ?2
 WHERE code = ?3 AND redeemed_at IS NULL
-RETURNING credits
+RETURNING credits, furni_definition_id
 `
 
 type RedeemVoucherParams struct {
@@ -264,13 +268,18 @@ type RedeemVoucherParams struct {
 	Code               string
 }
 
+type RedeemVoucherRow struct {
+	Credits           int64
+	FurniDefinitionID sql.NullInt64
+}
+
 // One statement claims the code, matched ignoring case, so that of two redemptions
-// of one code only the first finds it unused and gets its credits.
-func (q *Queries) RedeemVoucher(ctx context.Context, arg RedeemVoucherParams) (int64, error) {
+// of one code only the first finds it unused and gets its credits or its furni.
+func (q *Queries) RedeemVoucher(ctx context.Context, arg RedeemVoucherParams) (RedeemVoucherRow, error) {
 	row := q.db.QueryRowContext(ctx, redeemVoucher, arg.RedeemedByAvatarID, arg.RedeemedAt, arg.Code)
-	var credits int64
-	err := row.Scan(&credits)
-	return credits, err
+	var i RedeemVoucherRow
+	err := row.Scan(&i.Credits, &i.FurniDefinitionID)
+	return i, err
 }
 
 const updateWalletTicketsAndFilm = `-- name: UpdateWalletTicketsAndFilm :exec

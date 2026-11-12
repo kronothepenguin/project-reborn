@@ -24,11 +24,13 @@ const (
 	voucherCodeTaken      = "A voucher with this redemption code already exists."
 	voucherDeleted        = "The voucher has been deleted successfully."
 	voucherMissing        = "Unable to delete voucher; this voucher does not exist or has been redeemed!"
+	voucherItemUnknown    = "Unable to create voucher; this item does not exist!"
+	voucherItemDecoration = "Unable to create voucher; wallpapers, floors and landscapes cannot be given by a voucher!"
 )
 
 // randomCode reads the code that Create Voucher offers: 8 of Holo's characters,
 // which leave out c.
-var randomCode = regexp.MustCompile(`Form:\{Code:([0-9abd-zA-Z]{8}) Credits:\}`)
+var randomCode = regexp.MustCompile(`Form:\{Code:([0-9abd-zA-Z]{8}) Credits: Type:credits\}`)
 
 func treasurer(t *testing.T, db *sql.DB) (int64, *http.Cookie) {
 	t.Helper()
@@ -68,7 +70,7 @@ func redeemVoucher(t *testing.T, db *sql.DB, code string) {
 // allVouchers reads every voucher, redeemed ones too, in the order they were made.
 func allVouchers(t *testing.T, db *sql.DB) []store.Voucher {
 	t.Helper()
-	rows, err := db.QueryContext(t.Context(), `SELECT code, credits, created_by_user_id, created_at,
+	rows, err := db.QueryContext(t.Context(), `SELECT code, credits, furni_definition_id, created_by_user_id, created_at,
 		redeemed_by_avatar_id, redeemed_at FROM vouchers ORDER BY created_at, code`)
 	if err != nil {
 		t.Fatalf("read vouchers: %v", err)
@@ -77,7 +79,7 @@ func allVouchers(t *testing.T, db *sql.DB) []store.Voucher {
 	var vouchers []store.Voucher
 	for rows.Next() {
 		var v store.Voucher
-		if err := rows.Scan(&v.Code, &v.Credits, &v.CreatedByUserID, &v.CreatedAt, &v.RedeemedByAvatarID, &v.RedeemedAt); err != nil {
+		if err := rows.Scan(&v.Code, &v.Credits, &v.FurniDefinitionID, &v.CreatedByUserID, &v.CreatedAt, &v.RedeemedByAvatarID, &v.RedeemedAt); err != nil {
 			t.Fatalf("scan voucher: %v", err)
 		}
 		vouchers = append(vouchers, v)
@@ -249,10 +251,10 @@ func TestARefusedVoucherKeepsWhatWasTyped(t *testing.T) {
 	_, cookie := treasurer(t, db)
 
 	rec := serve(mux, "POST", "/housekeeping/vouchers", cookie, voucherForm(" Typed ", "ten"))
-	wantPage(t, rec, http.StatusUnprocessableEntity, "Form:{Code:Typed Credits:ten}", "Error:"+voucherCreditsInvalid)
+	wantPage(t, rec, http.StatusUnprocessableEntity, "Form:{Code:Typed Credits:ten Type:credits}", "Error:"+voucherCreditsInvalid)
 
 	rec = serve(mux, "POST", "/housekeeping/vouchers", cookie, voucherForm(" .. ", "5"))
-	wantPage(t, rec, http.StatusUnprocessableEntity, "Form:{Code:.. Credits:5}", "Error:"+voucherCodeDots)
+	wantPage(t, rec, http.StatusUnprocessableEntity, "Form:{Code:.. Credits:5 Type:credits}", "Error:"+voucherCodeDots)
 }
 
 // A browser reads only . and .. in an address as folders (0106), so every other code
@@ -358,5 +360,38 @@ func TestAnyCodeCanBeDeleted(t *testing.T) {
 	}
 	if got := allVouchers(t, db); len(got) != 0 {
 		t.Errorf("vouchers = %+v, want none", got)
+	}
+}
+
+// A voucher of the type Item gives the furni whose sprite the amount names, the first of several that share it
+// (plans/server decision 0120), and is listed with the sprite where the credits go, as Holo's column showed it.
+func TestCreatingAnItemVoucher(t *testing.T) {
+	db, mux := newSite(t)
+	actor, cookie := treasurer(t, db)
+	item := func(code, sprite string) url.Values {
+		return url.Values{"voucher": {code}, "type": {"item"}, "credits": {sprite}}
+	}
+
+	wantRedirect(t, serve(mux, "POST", "/housekeeping/vouchers", cookie, item("Beds", " bed_budgetb ")), "/housekeeping/vouchers?created=1")
+	vouchers := allVouchers(t, db)
+	if len(vouchers) != 1 || vouchers[0].Credits != 0 || vouchers[0].FurniDefinitionID.Int64 != 444 || vouchers[0].CreatedByUserID.Int64 != actor {
+		t.Fatalf("vouchers = %+v, want one for the furni 444, the first bed_budgetb, with no credits", vouchers)
+	}
+	wantOneLog(t, db, "vouchers.create", "Created voucher Beds for the item bed_budgetb", 0, 0)
+	wantPage(t, serve(mux, "GET", "/housekeeping/vouchers", cookie, nil), http.StatusOK, "Vouchers:[{Code:Beds Credits:bed_budgetb Path:Beds}]")
+
+	for sprite, want := range map[string]string{
+		"no_such_furni": voucherItemUnknown,
+		"50":            voucherItemUnknown,
+		"wallpaper":     voucherItemDecoration,
+		"floor":         voucherItemDecoration,
+		"landscape":     voucherItemDecoration,
+	} {
+		rec := serve(mux, "POST", "/housekeeping/vouchers", cookie, item("Other", sprite))
+		wantPage(t, rec, http.StatusUnprocessableEntity, "vouchers.html", "Form:{Code:Other Credits:"+sprite+" Type:item}", "Error:"+want+"}")
+	}
+	wantPage(t, serve(mux, "POST", "/housekeeping/vouchers", cookie, item("Other", "")), http.StatusUnprocessableEntity, "Error:"+voucherBlank+"}")
+	if got := allVouchers(t, db); len(got) != 1 {
+		t.Errorf("vouchers = %+v, want the bed's alone", got)
 	}
 }

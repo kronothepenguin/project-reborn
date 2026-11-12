@@ -12,6 +12,7 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/store"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/furni"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
@@ -24,7 +25,7 @@ const newPostItColour = "FFFF33"
 var postItColours = []string{"FFFF33", "FF9CFF", "9CFF9C", "9CCEFF"}
 
 func isPostIt(item room.Furni) bool {
-	return item.Definition.Kind == "wall" && strings.HasPrefix(item.Definition.Sprite, "post.it")
+	return item.Definition.Kind == "wall" && furni.IsPostIt(item.Definition.Sprite)
 }
 
 // hangPostIt takes one note off the pad of viewer's hand and hangs it on the wall at position, as Holo did: the pad

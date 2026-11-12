@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"slices"
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/store"
@@ -21,7 +20,7 @@ type RoomDecorated struct{ Property, Pattern string }
 // room and the furni change in one transaction.
 func Decorate(ctx context.Context, db *sql.DB, viewer habbo.Habbo, property string, id int64) (bool, error) {
 	r, ok := furnished(viewer)
-	if !ok || !slices.Contains(decorations, property) || onOffer(viewer, id) {
+	if !ok || !furni.IsDecoration(property) || onOffer(viewer, id) {
 		return false, nil
 	}
 	tx, err := db.BeginTx(ctx, nil)

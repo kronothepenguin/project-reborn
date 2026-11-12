@@ -516,6 +516,7 @@ type UserAttribute struct {
 type Voucher struct {
 	Code               string
 	Credits            int64
+	FurniDefinitionID  sql.NullInt64
 	CreatedByUserID    sql.NullInt64
 	CreatedAt          time.Time
 	RedeemedByAvatarID sql.NullInt64

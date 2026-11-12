@@ -1,6 +1,7 @@
 package router
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"net/http"
@@ -9,14 +10,17 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/store"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/furni"
 )
 
-// Holo's answers of redeemvoucher.php, and the description of its ledger rows.
+// Holo's answers of redeemvoucher.php, and the descriptions of its ledger rows.
 const (
-	voucherRedeemed = "You have redeemed %d credits successfully."
-	voucherNotFound = "Your redeem code could not be found. Please try again."
-	voucherRedeem   = "Credit voucher redeem"
-	reasonVoucher   = "voucher"
+	voucherRedeemed     = "You have redeemed %d credits successfully."
+	voucherItemRedeemed = "You have redeemed this item of furniture successfully."
+	voucherNotFound     = "Your redeem code could not be found. Please try again."
+	voucherRedeem       = "Credit voucher redeem"
+	voucherItemRedeem   = "Item voucher redeem"
+	reasonVoucher       = "voucher"
 )
 
 type voucherBody struct {
@@ -32,7 +36,10 @@ type voucherAnswer struct {
 
 // HandleCreditsVouchersRedeem handles POST /credits/vouchers, redeemvoucher.php:
 // the active habbo claims an unused voucher, and its credits go to the user's
-// purse with a ledger row, in one transaction.
+// purse with a ledger row, in one transaction. An item voucher puts its furni in
+// the active habbo's hand, as a purchase would give it (plans/server decision
+// 0125), and its ledger row holds 0 credits and the furni's name (plans/server
+// decision 0121).
 func (r *Router) HandleCreditsVouchersRedeem(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	var body voucherBody
@@ -46,7 +53,7 @@ func (r *Router) HandleCreditsVouchersRedeem(w http.ResponseWriter, req *http.Re
 	err := r.inTx(ctx, func(q *store.Queries) error {
 		// MySQL compared Holo's codes in any case, which the store does, and
 		// without the spaces after them.
-		credits, err := q.RedeemVoucher(ctx, store.RedeemVoucherParams{
+		voucher, err := q.RedeemVoucher(ctx, store.RedeemVoucherParams{
 			RedeemedByAvatarID: session.AvatarID,
 			RedeemedAt:         sql.NullTime{Time: now, Valid: true},
 			Code:               strings.TrimRight(body.Code, " "),
@@ -57,17 +64,26 @@ func (r *Router) HandleCreditsVouchersRedeem(w http.ResponseWriter, req *http.Re
 			return err
 		default:
 			found = true
-			answer.Message = fmt.Sprintf(voucherRedeemed, credits)
-			err = q.AddWalletCredits(ctx, store.AddWalletCreditsParams{UserID: session.UserID, Credits: credits, UpdatedAt: now})
-			if err != nil {
-				return err
+			answer.Message = fmt.Sprintf(voucherRedeemed, voucher.Credits)
+			detail := voucherRedeem
+			if voucher.FurniDefinitionID.Valid {
+				name, err := giveFurni(ctx, q, voucher.FurniDefinitionID.Int64, session, now)
+				if err != nil {
+					return err
+				}
+				answer.Message, detail = voucherItemRedeemed, voucherItemRedeem+" ("+name+")"
+			} else {
+				err = q.AddWalletCredits(ctx, store.AddWalletCreditsParams{UserID: session.UserID, Credits: voucher.Credits, UpdatedAt: now})
+				if err != nil {
+					return err
+				}
 			}
 			err = q.CreateWalletTransaction(ctx, store.CreateWalletTransactionParams{
 				UserID:    session.UserID,
 				AvatarID:  sql.NullInt64{Int64: session.AvatarID, Valid: true},
-				Credits:   credits,
+				Credits:   voucher.Credits,
 				Reason:    reasonVoucher,
-				Detail:    voucherRedeem,
+				Detail:    detail,
 				CreatedAt: now,
 			})
 			if err != nil {
@@ -87,4 +103,26 @@ func (r *Router) HandleCreditsVouchersRedeem(w http.ResponseWriter, req *http.Re
 	default:
 		r.answerJSON(w, http.StatusOK, answer)
 	}
+}
+
+// giveFurni puts the furni of the definition in the hand of the session's habbo,
+// and returns the name the catalogue sells it under, or its sprite when no item
+// sells it alone.
+func giveFurni(ctx context.Context, q *store.Queries, definitionID int64, session auth.Session, now time.Time) (string, error) {
+	item, err := q.GetFurniDefinition(ctx, definitionID)
+	if err != nil {
+		return "", err
+	}
+	err = furni.Create(ctx, q, item.Sprite, store.CreateFurniParams{
+		FurniDefinitionID: item.ID, UserID: session.UserID,
+		AvatarID: sql.NullInt64{Int64: session.AvatarID, Valid: true}, CreatedAt: now,
+	})
+	if err != nil {
+		return "", err
+	}
+	name, err := q.GetFurniName(ctx, item.ID)
+	if store.IsNotFound(err) {
+		return item.Sprite, nil
+	}
+	return name, err
 }

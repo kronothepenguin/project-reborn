@@ -54,7 +54,7 @@ Concepts for the tables declared under `packages/store/schema/`, one per table.
 
 - [wallets](wallets.md) — The credits, tickets and film of a user, which can never go negative.
 - [wallet_transactions](wallet_transactions.md) — The credit ledger, with one signed row per change of a user's credits.
-- [vouchers](vouchers.md) — Credit vouchers created by staff, matched ignoring case, and kept after redemption for audit.
+- [vouchers](vouchers.md) — Vouchers created by staff, each worth credits or one furni, matched ignoring case, and kept after redemption for audit.
 - [club_subscriptions](club_subscriptions.md) — Paid Habbo Club periods of a user; the user is a member while a period covers the current time.
 
 ## Moderation

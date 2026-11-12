@@ -130,6 +130,11 @@ for _, p := range catalogue.Pages() {
 - `catalogue`: `Pages()`, every page in the catalogue's order, and `Get(code)`. A `Page` carries its numbered `Texts`
   and its `Items`, each with the `Furni` it gives, a definition and an amount. `Item.Deal()` tells a deal, an item that
   gives more than one piece.
+- `furni.Create(ctx, q, sprite, piece)` creates what a habbo gets for one furni, as a purchase, an item voucher or any
+  other gift gives it (`plans/server/decisions/0125-an-item-voucher-gives-what-buying-gives.md`): the piece, a pad of
+  post-its with its 20 notes, or a teleport with the other of its pair. It writes through `q`, in the caller's
+  transaction, and reads nothing from memory, so the site calls it too. `IsTeleport`, `IsPostIt` and `IsDecoration` tell
+  those furni by their sprite.
 - `catalogue.Load` takes each furni from `virtual/furni`, so `furni.Load` runs first.
 - `Pages` returns a copy of its list. The texts, items and furni of a page are the ones in memory, to read and never
   to change.

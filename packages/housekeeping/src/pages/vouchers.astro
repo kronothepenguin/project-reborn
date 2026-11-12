@@ -1,5 +1,5 @@
 ---
-import { Input, Table } from "@project-reborn/components";
+import { Input, Select, Table } from "@project-reborn/components";
 import Box from "../components/box.astro";
 import Message from "../components/message.astro";
 import Submit from "../components/submit.astro";
@@ -24,8 +24,31 @@ import Housekeeping from "../layouts/housekeeping.astro";
             </tr>
             <tr>
               <td>
+                <label for="voucher-type"><strong>Type</strong></label>
+                <div class="text-neutral-500">
+                  The type of voucher that can be redeemed, there are two options; Credits or Item, Credits will be a
+                  normal credit voucher, Item will be a furniture redemption voucher.
+                </div>
+              </td>
+              <td>
+                <Select id="voucher-type" name="type">
+                  [[ if eq .Form.Type "item" ]]
+                  <option value="credits">Credits</option>
+                  <option value="item" selected>Item</option>
+                  [[ else ]]
+                  <option value="credits" selected>Credits</option>
+                  <option value="item">Item</option>
+                  [[ end ]]
+                </Select>
+              </td>
+            </tr>
+            <tr>
+              <td>
                 <label for="voucher-credits"><strong>Amount</strong></label>
-                <div class="text-neutral-500">The amount of credits a user will recieve upon entering the redemption code.</div>
+                <div class="text-neutral-500">
+                  The amount of credits/item a user will recieve upon entering the redemption code. For Item purchases
+                  input the correct item CCT name.
+                </div>
               </td>
               <td class="[&>input]:w-full">
                 <Input id="voucher-credits" name="credits" value="[[ .Form.Credits ]]" variant="border" />

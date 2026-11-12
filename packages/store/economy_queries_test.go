@@ -14,7 +14,7 @@ func makeVoucher(t *testing.T, q *Queries, code string, credits int64, at time.T
 	}
 }
 
-func voucherCodes(vouchers []Voucher) []string {
+func voucherCodes(vouchers []ListUnusedVouchersRow) []string {
 	codes := make([]string, 0, len(vouchers))
 	for _, v := range vouchers {
 		codes = append(codes, v.Code)
@@ -42,12 +42,13 @@ func TestAVoucherRedeemsOnceIgnoringCase(t *testing.T) {
 		}
 		defer tx.Rollback()
 		qtx := q.WithTx(tx)
-		credits, err := qtx.RedeemVoucher(ctx, RedeemVoucherParams{
+		voucher, err := qtx.RedeemVoucher(ctx, RedeemVoucherParams{
 			RedeemedByAvatarID: habbo.ID, RedeemedAt: sql.NullTime{Time: at, Valid: true}, Code: code,
 		})
 		if err != nil {
 			return 0, err
 		}
+		credits := voucher.Credits
 		if err := qtx.AddWalletCredits(ctx, AddWalletCreditsParams{Credits: credits, UpdatedAt: at, UserID: user.ID}); err != nil {
 			t.Fatal(err)
 		}
@@ -344,5 +345,50 @@ func TestAnOutfitReplacesItsSlots(t *testing.T) {
 	}
 	if err := q.UpsertWardrobeOutfit(ctx, UpsertWardrobeOutfitParams{AvatarID: habbo.ID, Slot: 0, Figure: "hd-180-1", Gender: "M", UpdatedAt: testNow}); err == nil {
 		t.Error("slot 0 was accepted")
+	}
+}
+
+// A voucher gives credits or one furni, never both and never neither (plans/server decision 0120). An item voucher is
+// listed with its furni's sprite, and its redemption names the furni.
+func TestAVoucherGivesCreditsOrAFurni(t *testing.T) {
+	db := openTestDB(t)
+	q := New(db)
+	ctx := t.Context()
+	_, habbo := createUserWithHabbo(t, q, "krono@example.com", "Krono")
+	bed := must(q.GetFurniDefinitionBySprite(ctx, "bed_budgetb"))
+	if bed.ID != 444 {
+		t.Errorf("the first bed_budgetb is the furni %d, want 444, the lowest of the five", bed.ID)
+	}
+	if _, err := q.GetFurniDefinitionBySprite(ctx, "no_such_furni"); !IsNotFound(err) {
+		t.Errorf("an unknown sprite = %v, want not found", err)
+	}
+	item := sql.NullInt64{Int64: bed.ID, Valid: true}
+	if err := q.CreateVoucher(ctx, CreateVoucherParams{Code: "Both", Credits: 5, FurniDefinitionID: item, CreatedAt: testNow}); err == nil {
+		t.Error("a voucher gives credits and a furni")
+	}
+	if err := q.CreateVoucher(ctx, CreateVoucherParams{Code: "Neither", CreatedAt: testNow}); err == nil {
+		t.Error("a voucher gives nothing")
+	}
+	if err := q.CreateVoucher(ctx, CreateVoucherParams{Code: "Bed", FurniDefinitionID: item, CreatedAt: testNow}); err != nil {
+		t.Fatalf("an item voucher: %v", err)
+	}
+	makeVoucher(t, q, "Coins", 10, testNow.Add(time.Minute))
+	listed := must(q.ListUnusedVouchers(ctx))
+	if len(listed) != 2 || listed[0] != (ListUnusedVouchersRow{Code: "Bed", Sprite: "bed_budgetb"}) || listed[1] != (ListUnusedVouchersRow{Code: "Coins", Credits: 10}) {
+		t.Errorf("unused vouchers = %+v, want the bed's with its sprite and the credits'", listed)
+	}
+	redeemed := must(q.RedeemVoucher(ctx, RedeemVoucherParams{RedeemedByAvatarID: habbo.ID, RedeemedAt: sql.NullTime{Time: testNow, Valid: true}, Code: "bed"}))
+	if redeemed.Credits != 0 || redeemed.FurniDefinitionID != item {
+		t.Errorf("the item voucher's redemption = %+v, want the bed and no credits", redeemed)
+	}
+
+	if name := must(q.GetFurniName(ctx, 277)); name != "Gold Bar" {
+		t.Errorf("the furni 277 is sold as %q, want Gold Bar", name)
+	}
+	if name, err := q.GetFurniName(ctx, 1372); !IsNotFound(err) {
+		t.Errorf("a present box, which no item sells, is named %q (%v)", name, err)
+	}
+	if d := must(q.GetFurniDefinition(ctx, 277)); d.Sprite != "CF_50_goldbar" {
+		t.Errorf("the furni 277 = %+v", d)
 	}
 }

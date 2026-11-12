@@ -53,9 +53,6 @@ const (
 	spacesLayout   = "ctlg_spaces"
 )
 
-// postItPadNotes is how many notes a new pad of post-its holds, as Holo's did.
-const postItPadNotes = "20"
-
 // trophyInscriptionMax is the longest inscription the client's trophies page takes.
 const trophyInscriptionMax = 150
 
@@ -148,31 +145,12 @@ func Buy(ctx context.Context, db *sql.DB, buyer habbo.Habbo, order Order) (credi
 		box, holder = sql.NullInt64{Int64: wrapped.ID, Valid: true}, sql.NullInt64{}
 	}
 	for _, f := range item.Furni {
-		pieceState := state
-		if pieceState == "" && strings.HasPrefix(f.Sprite, "post.it") {
-			pieceState = postItPadNotes
-		}
 		for range f.Amount {
-			piece, err := q.CreateFurni(ctx, store.CreateFurniParams{
-				FurniDefinitionID: f.ID, UserID: owner, AvatarID: holder, BoxFurniID: box, State: pieceState, CreatedAt: now,
+			err := furni.Create(ctx, q, f.Sprite, store.CreateFurniParams{
+				FurniDefinitionID: f.ID, UserID: owner, AvatarID: holder, BoxFurniID: box, State: state, CreatedAt: now,
 			})
 			if err != nil {
 				return 0, fmt.Errorf("game: buy: %w", err)
-			}
-			if !slices.Contains(teleportSprites, f.Sprite) {
-				continue
-			}
-			// A teleport comes as a pair, as Holo sold it: the two name each other (plans/server decision 0111).
-			partner, err := q.CreateFurni(ctx, store.CreateFurniParams{
-				FurniDefinitionID: f.ID, UserID: owner, AvatarID: holder, BoxFurniID: box, State: pieceState, CreatedAt: now,
-			})
-			if err != nil {
-				return 0, fmt.Errorf("game: buy: %w", err)
-			}
-			for _, pair := range [][2]int64{{piece.ID, partner.ID}, {partner.ID, piece.ID}} {
-				if err := q.SetFurniPartner(ctx, store.SetFurniPartnerParams{ID: pair[0], PartnerFurniID: pair[1]}); err != nil {
-					return 0, fmt.Errorf("game: buy: %w", err)
-				}
 			}
 		}
 	}

@@ -9,6 +9,73 @@ import (
 	"context"
 )
 
+const getFurniDefinition = `-- name: GetFurniDefinition :one
+SELECT id, sprite, kind, length, width, height, colours, data, door, tradeable, recyclable FROM furni_definitions WHERE id = ?1
+`
+
+func (q *Queries) GetFurniDefinition(ctx context.Context, id int64) (FurniDefinition, error) {
+	row := q.db.QueryRowContext(ctx, getFurniDefinition, id)
+	var i FurniDefinition
+	err := row.Scan(
+		&i.ID,
+		&i.Sprite,
+		&i.Kind,
+		&i.Length,
+		&i.Width,
+		&i.Height,
+		&i.Colours,
+		&i.Data,
+		&i.Door,
+		&i.Tradeable,
+		&i.Recyclable,
+	)
+	return i, err
+}
+
+const getFurniDefinitionBySprite = `-- name: GetFurniDefinitionBySprite :one
+SELECT id, sprite, kind, length, width, height, colours, data, door, tradeable, recyclable FROM furni_definitions WHERE sprite = ?1 ORDER BY id LIMIT 1
+`
+
+// Of the definitions that share a sprite, the one with the lowest id, as Holo took the first (plans/server decision
+// 0120).
+func (q *Queries) GetFurniDefinitionBySprite(ctx context.Context, sprite string) (FurniDefinition, error) {
+	row := q.db.QueryRowContext(ctx, getFurniDefinitionBySprite, sprite)
+	var i FurniDefinition
+	err := row.Scan(
+		&i.ID,
+		&i.Sprite,
+		&i.Kind,
+		&i.Length,
+		&i.Width,
+		&i.Height,
+		&i.Colours,
+		&i.Data,
+		&i.Door,
+		&i.Tradeable,
+		&i.Recyclable,
+	)
+	return i, err
+}
+
+const getFurniName = `-- name: GetFurniName :one
+SELECT catalogue_items.name
+FROM catalogue_items
+JOIN catalogue_item_furni ON catalogue_item_furni.catalogue_item_id = catalogue_items.id
+WHERE catalogue_item_furni.furni_definition_id = ?1
+    AND catalogue_item_furni.amount = 1
+    AND (SELECT COUNT(*) FROM catalogue_item_furni AS pieces WHERE pieces.catalogue_item_id = catalogue_items.id) = 1
+ORDER BY catalogue_items.id
+LIMIT 1
+`
+
+// The name of the first catalogue item that sells the furni alone, one piece of it.
+func (q *Queries) GetFurniName(ctx context.Context, furniDefinitionID int64) (string, error) {
+	row := q.db.QueryRowContext(ctx, getFurniName, furniDefinitionID)
+	var name string
+	err := row.Scan(&name)
+	return name, err
+}
+
 const listCatalogueItemFurni = `-- name: ListCatalogueItemFurni :many
 SELECT catalogue_item_id, furni_definition_id, amount FROM catalogue_item_furni ORDER BY catalogue_item_id, furni_definition_id
 `

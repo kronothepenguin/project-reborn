@@ -2,6 +2,21 @@
 
 ## 2026-11-12
 
+- **Done** [s5-18](/tasks/s5-18-item-vouchers.md): housekeeping makes item vouchers by sprite name again, and the
+  credits page puts the furni in the redeeming habbo's hand, as buying it would give it.
+- **Decision** [0125](/decisions/0125-an-item-voucher-gives-what-buying-gives.md): an item voucher gives what buying the
+  furni gives, through code shared in packages/virtual/furni.
+- **Start** [s5-18](/tasks/s5-18-item-vouchers.md).
+- **Decision** [0124](/decisions/0124-an-archived-habbos-rooms-move-to-the-active-habbo.md): an archived habbo's rooms
+  move to the active habbo, and its recycler's furni to the shared inventory.
+- **Decision** [0123](/decisions/0123-take-moves-a-kind-of-furni-or-all.md): Take moves one kind of shared furni, or all
+  of it.
+- **Decision** [0122](/decisions/0122-the-shared-inventory-is-an-account-page.md): the shared inventory is the account
+  page Furni.
+- **Decision** [0121](/decisions/0121-an-item-voucher-leaves-a-line-of-no-credits.md): an item voucher leaves a line of
+  0 credits in the credit history.
+- **Decision** [0120](/decisions/0120-an-item-voucher-gives-the-first-furni-of-its-sprite.md): an item voucher gives the
+  first furni of its sprite, and an unknown sprite is refused when it is made.
 - **Done** [s5-17](/tasks/s5-17-recycler-options-page.md): housekeeping's settings have the form Recycler Options, with
   HoloCMS's four fields, saved and logged like the others.
 - **Start** [s5-17](/tasks/s5-17-recycler-options-page.md).

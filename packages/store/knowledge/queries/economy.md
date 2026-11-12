@@ -66,17 +66,17 @@ timestamp: 2026-11-06T22:56:10+00:00
 ## CreateVoucher
 
 - Cardinality: `:exec`
-- Inputs: `code`, `credits`, `created_by_user_id` (nullable), `created_at`
-- Result: a conflict when a voucher has the code, ignoring case
+- Inputs: `code`, `credits`, `furni_definition_id` (nullable), `created_by_user_id` (nullable), `created_at`
+- Result: a voucher of credits, or of a furni with 0 credits; a conflict when a voucher has the code, ignoring case
 - Tables: `vouchers`
 
 ## ListUnusedVouchers
 
 - Cardinality: `:many`
 - Inputs: none
-- Result: the vouchers not redeemed yet, in the order they were made (`ORDER BY created_at, code`), as Holo's
-  housekeeping listed them
-- Tables: `vouchers`
+- Result: the code and the credits of the vouchers not redeemed yet, in the order they were made (`ORDER BY
+  created_at, code`), as Holo's housekeeping listed them, each item voucher with its furni's sprite
+- Tables: `vouchers`, `furni_definitions`
 
 ## DeleteUnusedVoucher
 
@@ -89,9 +89,9 @@ timestamp: 2026-11-06T22:56:10+00:00
 
 - Cardinality: `:one`
 - Inputs: `redeemed_by_avatar_id`, `redeemed_at`, `code` (matched ignoring case)
-- Result: the voucher's credits, claimed for the habbo in one statement; not found when no unused voucher has the
-  code, so of two redemptions of one code only the first gets credits. Add them to the wallet with a ledger row in the
-  same transaction.
+- Result: the voucher's credits and its furni definition, claimed for the habbo in one statement; not found when no
+  unused voucher has the code, so of two redemptions of one code only the first gets them. Add the credits to the
+  wallet, or create the furni, with a ledger row in the same transaction.
 - Tables: `vouchers`
 
 # Related

@@ -14,6 +14,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/store"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/furni"
 )
 
 // Holo's texts. It checked only for blank fields and could not delete a voucher,
@@ -27,6 +28,14 @@ const (
 	voucherCodeTaken      = "A voucher with this redemption code already exists."
 	voucherDeleted        = "The voucher has been deleted successfully."
 	voucherMissing        = "Unable to delete voucher; this voucher does not exist or has been redeemed!"
+	voucherItemUnknown    = "Unable to create voucher; this item does not exist!"
+	voucherItemDecoration = "Unable to create voucher; wallpapers, floors and landscapes cannot be given by a voucher!"
+)
+
+// Holo's two types of voucher, by the values of its Type list.
+const (
+	voucherTypeCredits = "credits"
+	voucherTypeItem    = "item"
 )
 
 const (
@@ -64,10 +73,11 @@ func voucherCredits(posted string) (int64, bool) {
 	return credits, err == nil && credits >= 1 && credits <= maxWalletAmount
 }
 
-// voucherForm is Create Voucher as it was typed.
+// voucherForm is Create Voucher as it was typed. Credits is Holo's Amount: the credits, or an item's sprite.
 type voucherForm struct {
 	Code    string
 	Credits string
+	Type    string
 }
 
 type vouchersPage struct {
@@ -78,11 +88,12 @@ type vouchersPage struct {
 	Error    string
 }
 
-// voucherRow is an unused voucher. Path is its code as one segment of an address,
-// because a code may hold a slash, a question mark or a space.
+// voucherRow is an unused voucher. Credits is what it gives, as Holo's column
+// showed it: the credits, or an item's sprite. Path is its code as one segment of
+// an address, because a code may hold a slash, a question mark or a space.
 type voucherRow struct {
 	Code    string
-	Credits int64
+	Credits string
 	Path    string
 }
 
@@ -93,11 +104,11 @@ func (r *Router) newVouchersPage(req *http.Request, form voucherForm) (vouchersP
 		return page, err
 	}
 	for _, voucher := range vouchers {
-		page.Vouchers = append(page.Vouchers, voucherRow{
-			Code:    voucher.Code,
-			Credits: voucher.Credits,
-			Path:    url.PathEscape(voucher.Code),
-		})
+		gives := voucher.Sprite
+		if gives == "" {
+			gives = strconv.FormatInt(voucher.Credits, 10)
+		}
+		page.Vouchers = append(page.Vouchers, voucherRow{Code: voucher.Code, Credits: gives, Path: url.PathEscape(voucher.Code)})
 	}
 	return page, nil
 }
@@ -105,7 +116,7 @@ func (r *Router) newVouchersPage(req *http.Request, form voucherForm) (vouchersP
 // HandleVouchersView renders GET /housekeeping/vouchers, Holo's Vouchers page:
 // Create Voucher with a new random code, then the vouchers not redeemed yet.
 func (r *Router) HandleVouchersView(w http.ResponseWriter, req *http.Request) {
-	page, err := r.newVouchersPage(req, voucherForm{Code: randomVoucher()})
+	page, err := r.newVouchersPage(req, voucherForm{Code: randomVoucher(), Type: voucherTypeCredits})
 	if err != nil {
 		r.fail(w, err)
 		return
@@ -131,13 +142,21 @@ func (r *Router) refuseVoucher(w http.ResponseWriter, req *http.Request, status 
 }
 
 // HandleVouchersCreate handles POST /housekeeping/vouchers, Holo's Create Voucher,
-// whose vouchers give credits alone. Holo took any amount, and a taken code stopped
-// the page with MySQL's error.
+// whose vouchers give credits or, with the type Item, the furni whose sprite the
+// amount names. Holo took any amount, and a taken code stopped the page with MySQL's
+// error. It looked an item up only when the voucher was redeemed; here the first
+// furni of the sprite is found now, and a name that gives nothing is refused, as a
+// wallpaper, a floor and a landscape are, whose pattern nobody chose (plans/server
+// decisions 0120 and 0125).
 func (r *Router) HandleVouchersCreate(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	form := voucherForm{
 		Code:    strings.TrimSpace(req.PostFormValue("voucher")),
 		Credits: req.PostFormValue("credits"),
+		Type:    voucherTypeCredits,
+	}
+	if req.PostFormValue("type") == voucherTypeItem {
+		form.Type = voucherTypeItem
 	}
 	refuse := func(message string) {
 		r.refuseVoucher(w, req, http.StatusUnprocessableEntity, form, message)
@@ -156,27 +175,44 @@ func (r *Router) HandleVouchersCreate(w http.ResponseWriter, req *http.Request) 
 		refuse(voucherCodeDots)
 		return
 	}
-	credits, ok := voucherCredits(form.Credits)
-	if !ok {
-		refuse(voucherCreditsInvalid)
-		return
+	session, _ := auth.FromContext(ctx)
+	voucher := store.CreateVoucherParams{
+		Code:            form.Code,
+		CreatedByUserID: sql.NullInt64{Int64: session.UserID, Valid: true},
+		CreatedAt:       time.Now().UTC(),
+	}
+	var detail string
+	if form.Type == voucherTypeItem {
+		sprite := strings.TrimSpace(form.Credits)
+		item, err := r.deps.Queries.GetFurniDefinitionBySprite(ctx, sprite)
+		switch {
+		case store.IsNotFound(err):
+			refuse(voucherItemUnknown)
+			return
+		case err != nil:
+			r.fail(w, err)
+			return
+		case furni.IsDecoration(item.Sprite):
+			refuse(voucherItemDecoration)
+			return
+		}
+		voucher.FurniDefinitionID = sql.NullInt64{Int64: item.ID, Valid: true}
+		detail = fmt.Sprintf("Created voucher %s for the item %s", form.Code, item.Sprite)
+	} else {
+		credits, ok := voucherCredits(form.Credits)
+		if !ok {
+			refuse(voucherCreditsInvalid)
+			return
+		}
+		voucher.Credits = credits
+		detail = fmt.Sprintf("Created voucher %s worth %d credits", form.Code, credits)
 	}
 
-	session, _ := auth.FromContext(ctx)
 	err := r.inTx(ctx, func(q *store.Queries) error {
-		err := q.CreateVoucher(ctx, store.CreateVoucherParams{
-			Code:            form.Code,
-			Credits:         credits,
-			CreatedByUserID: sql.NullInt64{Int64: session.UserID, Valid: true},
-			CreatedAt:       time.Now().UTC(),
-		})
-		if err != nil {
+		if err := q.CreateVoucher(ctx, voucher); err != nil {
 			return err
 		}
-		return writeLog(req, q, staffLog{
-			action: actionVouchersCreate,
-			detail: fmt.Sprintf("Created voucher %s worth %d credits", form.Code, credits),
-		})
+		return writeLog(req, q, staffLog{action: actionVouchersCreate, detail: detail})
 	})
 	switch {
 	case store.IsConflict(err):
@@ -206,7 +242,7 @@ func (r *Router) HandleVoucherDelete(w http.ResponseWriter, req *http.Request) {
 	case err != nil:
 		r.fail(w, err)
 	case !deleted:
-		r.refuseVoucher(w, req, http.StatusNotFound, voucherForm{Code: randomVoucher()}, voucherMissing)
+		r.refuseVoucher(w, req, http.StatusNotFound, voucherForm{Code: randomVoucher(), Type: voucherTypeCredits}, voucherMissing)
 	default:
 		http.Redirect(w, req, "/housekeeping/vouchers?deleted=1", http.StatusSeeOther)
 	}

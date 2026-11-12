@@ -25,9 +25,6 @@ type (
 	}
 )
 
-// decorations are the wall items a room uses up in place of hanging them: FLATPROPBYITEM applies them.
-var decorations = []string{"wallpaper", "floor", "landscape"}
-
 // wallPosition is a wall item's place as the client writes it: the wall's tile, the place on it, and the left or
 // the right wall.
 var wallPosition = regexp.MustCompile(`^:w=(\d{1,3}),(\d{1,3}) l=(\d{1,3}),(\d{1,3}) ([lr])$`)
@@ -88,7 +85,7 @@ func PlaceWallItem(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64
 	err := r.Furnish(func() error {
 		item, ok, err := fromHand(ctx, db, r, viewer, id)
 		sprite := item.Definition.Sprite
-		if err != nil || !ok || item.Definition.Kind != "wall" || slices.Contains(decorations, sprite) {
+		if err != nil || !ok || item.Definition.Kind != "wall" || furni.IsDecoration(sprite) {
 			return err
 		}
 		if isPostIt(item) {
