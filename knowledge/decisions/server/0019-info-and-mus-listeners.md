@@ -18,14 +18,14 @@ tags: [protocol, config]
   runs on TCP only, on WebSocket only, or on both.
 - `info` is the game's connection and speaks r26. `mus` is the connection of the Multiuser Xtra's messages.
 - The defaults are the user's: TCP 30000 and 30001, and the paths `/client/info` and `/client/mus`.
-- The rest of [0007](/decisions/0007-protocols-per-listener.md) stands. The R26 protocol is the Go package `r26`
+- The rest of [0007](/decisions/server/0007-protocols-per-listener.md) stands. The R26 protocol is the Go package `r26`
   (`packages/server/r26`). r18 stays a door left open, as a package of its own. Whether r18 and r26 players share one
   hotel is documented both ways and settled when r18 starts, which also settles how r18's connections enter
   `config.json`.
 
 # Context
 
-Supersedes [0007](/decisions/0007-protocols-per-listener.md), whose listeners were a list in which each TCP address or
+Supersedes [0007](/decisions/server/0007-protocols-per-listener.md), whose listeners were a list in which each TCP address or
 WebSocket path named its protocol. Asked s0-04's open question, the user answered: "i like the server.info.port and
 server.mus.port but i also want path for each one. my idea about server supporting both tcp and websocket is to be able
 to have that, only tcp, only ws or both tcp and ws. i already tested before with another client and the previous game
@@ -40,4 +40,4 @@ server, one thing, and libreshockwave is client side only".
   and `connection.mus.*`, and it adds one path, the page's `websocketPath`, to every socket
   (`vendor/LibreShockwave/web/libreshockwave-cpp-worker.js`). As shipped it cannot reach `/client/info` and
   `/client/mus` on one host and port. How it does is a question of `plans/client`'s C1, not of the server.
-- [s0-04](/tasks/s0-04-listener-config.md) adds the section, and [s0-07](/tasks/s0-07-r26-sessions.md) serves it.
+- s0-04 adds the section, and s0-07 serves it.

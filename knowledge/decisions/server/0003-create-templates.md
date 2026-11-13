@@ -27,5 +27,5 @@ follow.
 
 # Consequences
 
-- The game server is created with the backend template ([0002](/decisions/0002-server-app.md)).
-- [s0-02](/tasks/s0-02-create-templates.md) builds the templates.
+- The game server is created with the backend template ([0002](/decisions/server/0002-server-app.md)).
+- s0-02 builds the templates.

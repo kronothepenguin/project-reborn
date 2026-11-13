@@ -30,17 +30,17 @@ tags: [server, auth, rights]
   `fuse_room_queue_default`, `fuse_extended_buddylist`, `fuse_room_queue_club`, `fuse_priority_access`, `fuse_mod`,
   `fuse_ignore_room_owner`, `fuse_chat_log`, `fuse_hotelalert` and `fuse_guide`.
 - The server checks each fuse of Holo's server when the phase of its feature comes: `fuse_see_all_roomowners` in
-  [S3](/phases/s3-navigator.md), `fuse_enter_locked_rooms` and `fuse_enter_full_rooms` in [S4](/phases/s4-rooms.md),
+  S3, `fuse_enter_locked_rooms` and `fuse_enter_full_rooms` in S4,
   and `fuse_receive_calls_for_help` and the mod tool's `fuse_ban`, `fuse_superban`, `fuse_room_alert` and
-  `fuse_room_kick` in [S7](/phases/s7-club-help-extras.md). Holo's chat commands, behind `fuse_mute`, `fuse_room_mute`,
+  `fuse_room_kick` in S7. Holo's chat commands, behind `fuse_mute`, `fuse_room_mute`,
   `fuse_moderator_access`, `fuse_administrator_access`, `fuse_teleport`, `fuse_credits` and `fuse_freeze`, belong to no
   phase yet and wait in `plans/later.md`.
 
 # Context
 
-[0031](/decisions/0031-fuses-defaults-club-and-access-groups.md) took the 14 staff fuses the client checks. Asked which
+[0031](/decisions/server/0031-fuses-defaults-club-and-access-groups.md) took the 14 staff fuses the client checks. Asked which
 groups should hold them first, the user answered: "please analyze the holo emulator source, you will find many fuses
-there, same for the database...". The analysis is in [The Holograph Emulator](/reference/holoemu.md#fuses).
+there, same for the database...". The analysis is in [The Holograph Emulator](/sources/holoemu.md#fuses).
 
 Offered every fuse something checks, every name of Holo's dumps, or the client's 14, the user chose "Every checked fuse
 (Recommended)": "The client's 14 and Holo's server's 15, 29 in all. Our server checks each one when the phase of its
@@ -54,7 +54,7 @@ moderator without club can still use the club dances."
 
 # Consequences
 
-- Supersedes [0031](/decisions/0031-fuses-defaults-club-and-access-groups.md).
-- [s2-04](/tasks/s2-04-fuse-catalogue.md) adds the catalogue, and [s2-07](/tasks/s2-07-after-login.md) sends a habbo's
+- Supersedes [0031](/decisions/server/0031-fuses-defaults-club-and-access-groups.md).
+- s2-04 adds the catalogue, and s2-07 sends a habbo's
   fuses.
-- [0046](/decisions/0046-the-first-fuses-follow-holos-ranks.md) says which groups hold them first.
+- [0046](/decisions/server/0046-the-first-fuses-follow-holos-ranks.md) says which groups hold them first.

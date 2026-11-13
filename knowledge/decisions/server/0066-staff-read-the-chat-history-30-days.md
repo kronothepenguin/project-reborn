@@ -10,18 +10,18 @@ tags: [server, chat, housekeeping]
 
 # Decision
 
-- What habbos say in rooms is saved ([0011](/decisions/0011-saved-and-memory-only-data.md)); a housekeeping page behind
+- What habbos say in rooms is saved ([0011](/decisions/server/0011-saved-and-memory-only-data.md)); a housekeeping page behind
   a new attribute searches it by room or by habbo, as HoloCMS's chat logs page did.
 - Lines older than 30 days, a setting, are deleted.
 
 # Context
 
 Holo kept every line forever, and HoloCMS's housekeeping had a chat logs page, which
-`plans/holo-port/decisions/0013-defer-game-server-features.md` deferred to the game server. Offered 30 days, forever,
+`knowledge/decisions/holo-port/0013-defer-game-server-features.md` deferred to the game server. Offered 30 days, forever,
 or 90 days, the user chose "Staff, 30 days (Recommended)": "A housekeeping page behind a new attribute searches it by
 room or habbo, as HoloCMS's did; lines older than 30 days (a setting) are deleted."
 
 # Consequences
 
-- [s4-01](/tasks/s4-01-room-tables.md) adds the table, the attribute and the setting, [s4-05](/tasks/s4-05-chat-and-gestures.md)
-  saves the chat, and [s4-08](/tasks/s4-08-chat-log-page.md) brings the page and the deletion.
+- s4-01 adds the table, the attribute and the setting, s4-05
+  saves the chat, and s4-08 brings the page and the deletion.

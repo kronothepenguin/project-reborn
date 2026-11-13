@@ -44,7 +44,7 @@ The handlers are in `8_Login Handler Class.ls`, except those of 290 to 294, in `
 | --- | --- | --- | --- | --- |
 | -1 | `handleDisconnect` | `#info` | none | Not a message on the wire: `fuse_client` delivers it when `#info` drops ([A lost connection](#a-lost-connection)) |
 | 0 | `handleHello` | `#info` | none | Sets the disconnect state to `init_crypto` and sends `INIT_CRYPTO` ([The handshake](#the-handshake)) |
-| 1 | `handleServerSecretKey` | `#info` | raw: the server's public key in hexadecimal | Turns encryption on ([fuse_client](/reference/r26/fuse_client.md#encryption)); the server never sends it ([0012](/decisions/0012-no-encryption.md)) |
+| 1 | `handleServerSecretKey` | `#info` | raw: the server's public key in hexadecimal | Turns encryption on ([fuse_client](/r26/fuse_client.md#encryption)); the server never sends it (0012 (`knowledge/decisions/server/0012-no-encryption.md`)) |
 | 2 | `handleRights` | `#info` | string right, repeated up to an empty string or the end of the body | Replaces the session's `user_rights` ([Rights](#rights)) |
 | 3 | `handleLoginOK` | `#info` | none | Sends five commands and starts the latency test ([After the login](#after-the-login)) |
 | 5 | `handleUserObj` | `#info` | string user id; string name; string figure; string sex; string custom data; int pool tickets; string pool figure; int photo film; int direct mail | [The user object](#the-user-object) |
@@ -160,7 +160,7 @@ Any other reason does nothing.
 
 All are registered by `8_Login Handler Class.ls`, except `GET_AVAILABILITY_TIME`, registered by
 `13_Opening Hours Handler Class.ls`. Every sender calls `send`: with no body it sends the id alone, and with a typed
-list it goes through `sendNew` ([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+list it goes through `sendNew` ([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -211,15 +211,15 @@ list it goes through `sendNew` ([fuse_client](/reference/r26/fuse_client.md#clie
      with them at once;
    - with `use.sso.ticket` on and no ticket, it shows `Alert_generic_login_error` and opens nothing.
 4. `connect` opens `#info` on `connection.info.host` and `connection.info.port`
-   ([fuse_client](/reference/r26/fuse_client.md#connections)). It also creates `hh_shared`'s Server Date Class and
-   Connection Problem Class and starts its `hobba` thread ([s1-03](/tasks/s1-03-shared.md)). The Connection Problem
+   ([fuse_client](/r26/fuse_client.md#connections)). It also creates `hh_shared`'s Server Date Class and
+   Connection Problem Class and starts its `hobba` thread (s1-03). The Connection Problem
    Class shows a dialog after `failed.connection.delay` ms, 20,000 when unset, unless `sendLogin` removes it first.
 
 The client sends nothing until the server's `HELLO`.
 
 ## The handshake
 
-This confirms [0012](/decisions/0012-no-encryption.md) step by step.
+This confirms 0012 (`knowledge/decisions/server/0012-no-encryption.md`) step by step.
 
 | Step | From | Message or command | What the client does, and what it waits for |
 | --- | --- | --- | --- |
@@ -247,12 +247,12 @@ This confirms [0012](/decisions/0012-no-encryption.md) step by step.
   allows a login (`pOkToLogin`). With neither a ticket nor a name and a password, it closes `#info` instead.
 - The client has handlers for four outcomes of a login: 3 when it succeeds, 33 with `login incorrect`, 35 for a ban,
   and 294 while the hotel is closed. For a habbo already online it has 33 with `Duplicate session` and 287 with
-  reason 2, `url_logout_concurrent`; [S2](/phases/s2-login.md) asks what happens then.
+  reason 2, `url_logout_concurrent`; S2 asks what happens then.
 
 ## The handshake in bytes
 
 Computed with literal ports of `send`, `sendNew`, `registerCommands`, `GetIntFrom` and `GetStrFrom`
-([fuse_client](/reference/r26/fuse_client.md#framing)). `␁` is `0x01` and `␂` is `0x02`.
+([fuse_client](/r26/fuse_client.md#framing)). `␁` is `0x01` and `␂` is `0x02`.
 
 | Step | Frame | Characters | Bytes |
 | --- | --- | --- | --- |
@@ -276,15 +276,15 @@ On 3, three listeners run, in the order they registered:
   `GETAVAILABLEBADGES` (157), `GET_POSSIBLE_ACHIEVEMENTS` (370) and `GET_SOUND_SETTING` (228). It then starts the
   latency test, sets the session's `userLoggedIn`, executes `#userloggedin`, on which `hh_ig` and `hh_recycler` start,
   and reports `/client/loggedin` to the statistics broker, outside `#info`.
-- `hh_club`'s `handle_ok` sends `SCR_GET_USER_INFO` with `club_habbo` ([s1-10](/tasks/s1-10-club.md)).
-- `hh_friend_list`'s `handleOk` sends `FRIENDLIST_INIT` ([s1-11](/tasks/s1-11-friend-list.md)).
+- `hh_club`'s `handle_ok` sends `SCR_GET_USER_INFO` with `club_habbo` (s1-10).
+- `hh_friend_list`'s `handleOk` sends `FRIENDLIST_INIT` (s1-11).
 
 The scripts pair no command with its answer. These are the messages whose handlers store what each command asks for:
 
 | Command | Message |
 | --- | --- |
 | `GET_INFO` | 5, `handleUserObj` |
-| `GET_CREDITS` | 6, `hh_cat_code`'s `handle_purse`, which takes the credits from the first word of its body ([s1-09](/tasks/s1-09-catalogue.md)) |
+| `GET_CREDITS` | 6, `hh_cat_code`'s `handle_purse`, which takes the credits from the first word of its body (s1-09) |
 | `GETAVAILABLEBADGES` | 229, `handleAvailableBadges` |
 | `GET_POSSIBLE_ACHIEVEMENTS` | 436, `handlePossibleAchievements` |
 | `GET_SOUND_SETTING` | 308, `handleSoundSetting`, and `hh_tutorial`'s `handleAccountPreferences` |
@@ -340,7 +340,7 @@ The first 5 executes `#userlogin`, on which `hh_entry_base` shows the entry bar,
 ## A lost connection
 
 When `#info` drops without the client closing it, `fuse_client` delivers `-1`
-([fuse_client](/reference/r26/fuse_client.md#closing-and-the--1-message)), and `handleDisconnect`:
+([fuse_client](/r26/fuse_client.md#closing-and-the--1-message)), and `handleDisconnect`:
 
 - before `LOGIN_OK`, calls `fatalError` with the disconnect state as its `error`, and the host and the port. The state
   tells the step the login reached: `socket_init` before `HELLO`, `init_crypto` after it, `start_session` after 278,
@@ -348,7 +348,7 @@ When `#info` drops without the client closing it, `fuse_client` delivers `-1`
 - after `LOGIN_OK`, shows the window `Alert_ConnectionFailure` with `Alert_ConnectionDisconnected`, unless the hotel
   closed with a disconnect, and calls `fatalError` with `disconnect`. The window's close button calls `resetClient()`.
 
-`hh_room`'s `handle_disconnect` runs too ([s1-06](/tasks/s1-06-room.md)). The client closes `#info` itself, with no
+`hh_room`'s `handle_disconnect` runs too (s1-06). The client closes `#info` itself, with no
 `-1`, on `login incorrect`, `Duplicate session`, a ban, logout reason −1, `#notify` type 1001, and a login with no
 ticket and no name or password.
 
@@ -358,7 +358,7 @@ ticket and no name or password.
 
 `8_Login Handler Class.ls` registers 22 ids in `tMsgs`, 21 messages and `-1`, and 21 commands.
 `13_Opening Hours Handler Class.ls` registers 5 messages and 1 command. Both match
-[Registering scripts](/reference/client-r26.md#registering-scripts), which leaves `-1` out as well. No other cast
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`), which leaves `-1` out as well. No other cast
 registers a command name of this cast.
 
 ## Ids other casts register too
@@ -366,10 +366,10 @@ registers a command name of this cast.
 - 3: `hh_club`'s `handle_ok` and `hh_friend_list`'s `handleOk` also run ([After the login](#after-the-login)).
 - 33: `hh_navigator`, `hh_kiosk_room` and `hh_room` each compare the whole text with texts of their own, such as
   `Only 10 favorite rooms allowed!`, `Error creating a private room` and `Incorrect flat password`
-  ([s1-04](/tasks/s1-04-navigator.md), [s1-05](/tasks/s1-05-kiosk-room.md), [s1-06](/tasks/s1-06-room.md)).
+  (s1-04, s1-05, s1-06).
 - `-1`: `hh_room`'s `handle_disconnect`.
 - 308: `hh_tutorial`'s `handleAccountPreferences` reads the same body from its start: a bool, which it ignores, then an
-  int, the tutorial mode ([s1-14](/tasks/s1-14-tutorial.md)). It asks for it with `GET_ACCOUNT_PREFERENCES`, which is
+  int, the tutorial mode (s1-14). It asks for it with `GET_ACCOUNT_PREFERENCES`, which is
   228, the id of `GET_SOUND_SETTING`, and only when session parameter 9 is on. A bool, and a VL64 from −3 to 3, are
   one character each, so both handlers get their values from `int sound state; int tutorial mode`, and also from
   `bool sound state; int tutorial mode`, since `GetIntFrom` reads `@` or `A` as 0 or 1 and consumes nothing:
@@ -412,7 +412,7 @@ registers a command name of this cast.
 
 ## The Holograph Emulator
 
-Read for the question 308 leaves open ([0016](/decisions/0016-holoemu-is-a-reference.md)), it never sends 308, nor
+Read for the question 308 leaves open (0016 (`knowledge/decisions/server/0016-holoemu-is-a-reference.md`)), it never sends 308, nor
 278. It answers `GENERATEKEY` with a 257 of its own, so the client sends `SSO` without `VERSIONCHECK`, `UNIQUEID` or
 `GET_SESSION_PARAMETERS`, and its 229 and 436 have other layouts than these handlers read. Its login does not show
 what these scripts expect.

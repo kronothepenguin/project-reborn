@@ -12,7 +12,7 @@ tags: [process]
 
 - `plans/later.md` lists work planned for later that belongs to no phase yet. It lives beside the port bundle, outside
   it.
-- It starts with the orchestrator ([0039](/decisions/0039-orchestrator-is-a-later-project.md)):
+- It starts with the orchestrator ([0039](/decisions/holo-port/0039-orchestrator-is-a-later-project.md)):
   - one binary that administrators replace and restart;
   - a check that runs the installer only when nothing is installed;
   - opening the installer again, only as an administrator's secured decision.

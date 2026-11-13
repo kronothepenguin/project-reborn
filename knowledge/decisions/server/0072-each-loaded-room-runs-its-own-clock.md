@@ -11,7 +11,7 @@ tags: [server, rooms, walking]
 # Decision
 
 - Each loaded room runs a clock of its own, from its load to its unload. Every 500 ms
-  ([0065](/decisions/0065-walking-500-ms-by-holos-rules.md)) it moves all the room's walking habbos one tile, and sends
+  ([0065](/decisions/server/0065-walking-500-ms-by-holos-rules.md)) it moves all the room's walking habbos one tile, and sends
   one status message, 34, with all of them.
 - A habbo who clicks starts on the room's next tick, at most 500 ms later.
 
@@ -25,5 +25,5 @@ next tick, at most 500 ms after their click."
 
 # Consequences
 
-- [s4-02](/tasks/s4-02-loaded-rooms.md) tells when a loaded room unloads, and [s4-04](/tasks/s4-04-walking.md) runs the
+- s4-02 tells when a loaded room unloads, and s4-04 runs the
   clock in `game`, the rules' package.

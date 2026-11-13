@@ -20,10 +20,10 @@ The user answered: "new design system, habbo original housekeeping actually use 
 pretty simple, here is an image of what i like to build".
 
 The answer came under the question about P3's art, but it describes housekeeping, so it is recorded here and the art
-question stays open in [P3](/phases/p3-homes.md). The image is behind a bot check, so the agent could not open it.
+question stays open in P3. The image is behind a bot check, so the agent could not open it.
 
 # Consequences
 
-- [HK-A](/phases/hk-a-housekeeping-core.md) needs the image saved in the repository before its layout starts.
-- The [housekeeping colours](/reference/colours.md#housekeeping) come from Holo's panel and are checked against that image
+- HK-A needs the image saved in the repository before its layout starts.
+- The [housekeeping colours](/colours.md#housekeeping) come from Holo's panel and are checked against that image
   in HK-A.

@@ -12,10 +12,10 @@ tags: [process, slices]
 
 - The basic slices are the hotel's features: economy, club, furnis (with the catalogue), rooms, habbos, navigator and
   messenger. More follow as they come.
-- "Credits and club" becomes [economy](/slices/economy.md), for credits, tickets, film, vouchers and the site's
-  purchases, and [club](/slices/club.md). "Furni and the catalogue" becomes [furnis](/slices/furnis.md). "Friends and the
-  messenger" becomes [messenger](/slices/messenger.md). [Habbos](/slices/habbos.md), [rooms](/slices/rooms.md) and
-  [navigator](/slices/navigator.md) are new; what [presence and rooms](/slices/presence-and-rooms.md) holds goes to them
+- "Credits and club" becomes economy (`plans/reborn/slices/economy.md`), for credits, tickets, film, vouchers and the site's
+  purchases, and club (`plans/reborn/slices/club.md`). "Furni and the catalogue" becomes furnis (`plans/reborn/slices/furnis.md`). "Friends and the
+  messenger" becomes messenger (`plans/reborn/slices/messenger.md`). Habbos (`plans/reborn/slices/habbos.md`), rooms (`plans/reborn/slices/rooms.md`) and
+  navigator (`plans/reborn/slices/navigator.md`) are new; what presence and rooms (`plans/reborn/slices/presence-and-rooms.md`) holds goes to them
   when they start.
 - The habbos slice comes first: a habbo seen in a room of the client opened from the site, whose look and motto,
   changed on the site, change in the client at once.
@@ -34,5 +34,5 @@ reflect that."
 # Consequences
 
 - The pointers of the history bundles to the renamed slices are corrected in place.
-- The habbos slice needs reborn's core from [platform](/slices/platform.md) and the client page from
-  [the client](/slices/client.md), whose tasks come first.
+- The habbos slice needs reborn's core from platform (`plans/reborn/slices/platform.md`) and the client page from
+  the client (`plans/reborn/slices/client.md`), whose tasks come first.

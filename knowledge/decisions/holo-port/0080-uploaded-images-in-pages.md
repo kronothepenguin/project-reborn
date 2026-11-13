@@ -13,14 +13,14 @@ tags: [housekeeping, images]
 - The Uploaded Images page shows ten pictures a page. The server still sends every picture, and the browser shows one
   page at a time.
 - `Newer` and `Older` links centred under the table turn the pages, as on the other housekeeping lists
-  ([0060](/decisions/0060-housekeeping-components.md)).
+  ([0060](/decisions/holo-port/0060-housekeeping-components.md)).
 - The address keeps the page (`/housekeeping/images?page=3`). A delete, a refused delete and a reload show the same
   page, and Back returns to the page before.
 - The `Uploaded` gallery of the news editor gets no pages.
 
 # Context
 
-Told that the page of [0079](/decisions/0079-uploaded-images-managed.md) lists every upload on one page, the user asked:
+Told that the page of [0079](/decisions/holo-port/0079-uploaded-images-managed.md) lists every upload on one page, the user asked:
 "please add client-side pagination for uploaded images". The user then chose ten pictures a page over 20 or 100,
 staying on the same page after a delete over going back to the first, and paging only this list over paging the
 editor's gallery too.

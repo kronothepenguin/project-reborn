@@ -15,12 +15,12 @@ tags: [settings, architecture, store]
 - A CMS running alone re-reads the settings from the database every `cms.refresh` seconds, on the scheduler.
 - No IPC is built. Housekeeping has no refresh, because it is the single writer, and in one process with the
   orchestrator the refresh does not run.
-- The rest of [0040](/decisions/0040-housekeeping-writes-settings.md) stands: housekeeping is the single writer of
+- The rest of [0040](/decisions/holo-port/0040-housekeeping-writes-settings.md) stands: housekeeping is the single writer of
   settings, the installer writes them once and the CMS only reads them.
 
 # Context
 
-Supersedes [0040](/decisions/0040-housekeeping-writes-settings.md), which left the IPC open. The user asked for UDP
+Supersedes [0040](/decisions/holo-port/0040-housekeeping-writes-settings.md), which left the IPC open. The user asked for UDP
 broadcast and for programs on different servers. SQLite's documentation says "All processes using a database must be on
 the same host computer; WAL does not work over a network filesystem", and AWS, Google and Azure document that their
 private networks carry no broadcast. Told that, the user answered: "sqlite as recommended" and "go with a, a refresh

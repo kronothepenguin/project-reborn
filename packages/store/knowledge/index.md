@@ -18,6 +18,7 @@ Concepts for `packages/store`, the project's persistence infrastructure.
 ## Updates
 
 - [Updates](migrations/index.md) — Index of the update files that bring a database from one release to the next.
+- [How database updates work](database-updates.md) — How a release's schema and seed changes reach an installed hotel through update files in packages/store, automatic and waiting updates, a copy before each run, and housekeeping's update page with config.json's new keys.
 
 ## Schemas
 

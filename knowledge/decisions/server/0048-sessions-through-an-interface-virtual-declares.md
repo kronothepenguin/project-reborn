@@ -13,11 +13,11 @@ tags: [server, virtual, game]
 - `virtual/habbo` declares `type Session interface { Notify(event any) }` and keeps each online habbo with its
   session.
 - `game.Session` is that same interface, and the events are `game`'s structs, such as `game.ConcurrentLogin{}`, which
-  `r26` turns into 287 with reason 2 ([0029](/decisions/0029-a-second-login-closes-the-first.md)).
+  `r26` turns into 287 with reason 2 ([0029](/decisions/server/0029-a-second-login-closes-the-first.md)).
 
 # Context
 
-[0039](/decisions/0039-rules-notify-sessions-through-an-interface.md) has a rule find the habbos an event concerns in
+[0039](/decisions/server/0039-rules-notify-sessions-through-an-interface.md) has a rule find the habbos an event concerns in
 `virtual` and call each one's session, but `game` imports `virtual`, so `virtual` cannot name a type of `game`. Offered
 an interface declared in `virtual`, or the sessions kept in `game` beside `virtual`'s habbos, the user chose "Interface
 in virtual (Recommended)": "virtual/habbos declares `type Session interface { Notify(event any) }` and keeps each online
@@ -26,4 +26,4 @@ h.Session.Notify(game.ConcurrentLogin{}), which r26 turns into 287 with reason 2
 
 # Consequences
 
-- [s2-05](/tasks/s2-05-login-in-game.md) declares it, in `virtual/habbo` ([0047](/decisions/0047-online-habbos-in-virtual-habbo.md)).
+- s2-05 declares it, in `virtual/habbo` ([0047](/decisions/server/0047-online-habbos-in-virtual-habbo.md)).

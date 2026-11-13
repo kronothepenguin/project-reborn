@@ -11,8 +11,8 @@ tags: [server, data]
 # Decision
 
 - A habbo's last time online, the machine id of its last game login and its sound setting
-  ([0035](/decisions/0035-the-machine-id-is-saved-per-habbo.md), [0037](/decisions/0037-last-online-at-login-and-logout.md),
-  [0038](/decisions/0038-the-sound-setting-is-saved.md)) live in `avatar_game_data`, one row per habbo keyed by
+  ([0035](/decisions/server/0035-the-machine-id-is-saved-per-habbo.md), [0037](/decisions/server/0037-last-online-at-login-and-logout.md),
+  [0038](/decisions/server/0038-the-sound-setting-is-saved.md)) live in `avatar_game_data`, one row per habbo keyed by
   `avatar_id`, as `wallets` is per user.
 - A habbo that never logged in to the game has no row.
 - The update that adds the table waits for an administrator, as the other updates do.
@@ -27,4 +27,4 @@ updates. Example: avatar_game_data(avatar_id, last_online_at, machine_id, sound_
 
 # Consequences
 
-- [s2-03](/tasks/s2-03-saved-login-data.md) adds the table, and the game server writes it.
+- s2-03 adds the table, and the game server writes it.

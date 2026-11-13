@@ -22,4 +22,4 @@ housekeeping, Holo's 65 to start. Example: with the setting at 65, the 66th furn
 
 # Consequences
 
-- [s5-14](/tasks/s5-14-trading.md) adds the setting and reads it.
+- s5-14 adds the setting and reads it.

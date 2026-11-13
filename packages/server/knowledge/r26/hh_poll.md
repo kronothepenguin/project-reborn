@@ -43,7 +43,7 @@ or below the least to choose. The thanks text shows after the last answer.
 # Commands from the client
 
 Registered by `5_Poll Handler Class.ls`. Every sender calls `send` with a typed list, which goes through `sendNew`
-([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -68,7 +68,7 @@ Registered by `5_Poll Handler Class.ls`. Every sender calls `send` with a typed 
    a choice past the most shows `invalid_selection`.
 3. The next question then shows, and after the last one the poll's thanks text.
 4. Cancelling the questions, after a confirmation, would send `POLL_CANCEL`, which no cast registers, so the client
-   logs "Unrecognized command!" and sends nothing ([fuse_client](/reference/r26/fuse_client.md#client-to-server));
+   logs "Unrecognized command!" and sends nothing ([fuse_client](/r26/fuse_client.md#client-to-server));
    the questions are dropped.
 
 # Notes
@@ -76,7 +76,7 @@ Registered by `5_Poll Handler Class.ls`. Every sender calls `send` with a typed 
 ## Counts
 
 `5_Poll Handler Class.ls` registers 3 messages and 3 commands, as
-[Registering scripts](/reference/client-r26.md#registering-scripts) says.
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says.
 
 ## Dead code
 

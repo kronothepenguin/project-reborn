@@ -30,4 +30,4 @@ it is 31; with 30, 40 days left gives 10 days and 1 prepaid, and the bar shows 1
 
 # Consequences
 
-- [s2-07](/tasks/s2-07-after-login.md) answers `SCR_GET_USER_INFO` with it.
+- s2-07 answers `SCR_GET_USER_INFO` with it.

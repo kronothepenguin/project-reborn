@@ -11,8 +11,8 @@ tags: [server, virtual]
 # Decision
 
 - `game.Login` loads into the online habbo of `virtual/habbo` its badges, the one it wears, its sound setting and its
-  fuses, besides its avatar ([0009](/decisions/0009-virtual-holds-the-server-state.md)).
-- A change writes the store, then the copy ([0010](/decisions/0010-hot-data-written-at-once.md)), as
+  fuses, besides its avatar ([0009](/decisions/server/0009-virtual-holds-the-server-state.md)).
+- A change writes the store, then the copy ([0010](/decisions/server/0010-hot-data-written-at-once.md)), as
   `SET_SOUND_SETTING` does.
 - The wallet and the club belong to the user, whose habbos share them, so the credits, the tickets, the film and the
   club status are read from the store when the client asks.
@@ -26,4 +26,4 @@ share them, so credits, tickets, film and the club status are read from the stor
 
 # Consequences
 
-- [s2-07](/tasks/s2-07-after-login.md) loads them.
+- s2-07 loads them.

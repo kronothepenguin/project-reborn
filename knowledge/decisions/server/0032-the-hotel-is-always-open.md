@@ -15,7 +15,7 @@ tags: [server, protocol]
 
 # Context
 
-The client can warn online habbos that the hotel closes, show it closed, and turn logins away ([hh_entry_init](/reference/r26/hh_entry_init.md)). Offered an
+The client can warn online habbos that the hotel closes, show it closed, and turn logins away (hh_entry_init (`packages/server/knowledge/r26/hh_entry_init.md`)). Offered an
 always-open hotel or a closing schedule, the user chose "Always open (Recommended)": "The server never sends 290 to
 294, and logins are never refused for the time of day."
 

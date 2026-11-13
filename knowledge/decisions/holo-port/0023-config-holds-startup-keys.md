@@ -13,14 +13,14 @@ tags: [config, settings]
 - `packages/config` stays the static, type-safe description of `config.json`, but only for the keys a program needs
   before the database opens: `store.path` and `cms.port`, plus `housekeeping.port` once HK-A adds it.
 - Every other value is a setting, declared in `packages/virtual`
-  ([0024](/decisions/0024-settings-catalogue-and-getters.md)) and stored in the `settings` table. That covers the
+  ([0024](/decisions/holo-port/0024-settings-catalogue-and-getters.md)) and stored in the `settings` table. That covers the
   site name, maintenance mode, the auth limits, the reload interval and the keys later phases add.
 - A settings row never overrides a `config.json` key.
 - `Create(cfg)` stays; only the installer calls it.
 
 # Context
 
-Supersedes [0009](/decisions/0009-config-is-static-types.md). The user pointed out that a program starts from the
+Supersedes [0009](/decisions/holo-port/0009-config-is-static-types.md). The user pointed out that a program starts from the
 initial config, opens the database and only then loads the site settings, so the `site` section and
 `settingsRefreshSeconds` were never config. Asked which keys stay in `config.json`, the user chose the startup keys
 only, so the auth limits became settings too.
@@ -29,7 +29,7 @@ only, so the auth limits became settings too.
 
 - `packages/config/site`, `packages/config/auth` and `Config.SettingsRefreshSeconds` are removed;
   `settingsRefreshSeconds` becomes the setting `cms.refresh`.
-- Several keys are called config keys in [0008](/decisions/0008-configurable-avatar-imaging.md) and in the phase
+- Several keys are called config keys in [0008](/decisions/holo-port/0008-configurable-avatar-imaging.md) and in the phase
   files. They are settings: `imaging.*`, `registration.*`, `mail.*`, `features.*`, `homes.*`, `groups.*`,
   `club.*` and the others like them.
 - `adding-config-sections` applies only to startup keys.

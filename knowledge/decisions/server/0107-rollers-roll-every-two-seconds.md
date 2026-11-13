@@ -27,4 +27,4 @@ task."
 
 # Consequences
 
-- [s5-10](/tasks/s5-10-rollers.md) builds them, with a kind of furni of their own.
+- s5-10 builds them, with a kind of furni of their own.

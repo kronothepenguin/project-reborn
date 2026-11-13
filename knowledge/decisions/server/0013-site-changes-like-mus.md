@@ -16,7 +16,7 @@ tags: [server, cms, housekeeping, orchestrator]
 - Under the orchestrator, the CMS, housekeeping and the server run in one process, and the CMS and housekeeping change
   the virtual state directly.
 - The user will add a Holo source to `source/`. The commands, and how they travel between programs that run apart, are
-  settled from it in [S9](/phases/s9-site-changes.md).
+  settled from it in S9.
 
 # Context
 
@@ -25,7 +25,7 @@ commands idea, that's the way to go, i'll add a holo source code to the source f
 orchestractor, the same process will have cms+housekeeping+game server, so cms and housekeeping can modify the virtual
 state directly."
 
-Holo's MUS commands: `plans/holo-port/reference/holo-protocols.md`.
+Holo's MUS commands: `knowledge/sources/holocms/protocols.md`.
 
 # Consequences
 

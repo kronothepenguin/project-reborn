@@ -11,7 +11,7 @@ tags: [client, cms, libreshockwave]
 # Decision
 
 - The CMS serves the client page: Holo's `client.php`, `clientutils.php` and `unloadclient.php` ported exactly
-  (`plans/holo-port/decisions/0034-behaviour-matches-holo.md`), with LibreShockwave's player running the R26 `.dcr`
+  (`knowledge/decisions/holo-port/0034-behaviour-matches-holo.md`), with LibreShockwave's player running the R26 `.dcr`
   in place of Adobe's plugin, and the SSO ticket the page gives the client.
 - The game's hosts and ports the page passes come from `config.json`, `server.info` and `server.mus`. The external
   texts and variables come from the client files. Holo's other settings of the page (the reload address, the loader,
@@ -19,13 +19,13 @@ tags: [client, cms, libreshockwave]
 - A spike comes first: the `.dcr` on LibreShockwave's player logs in to the game server, which tells whether
   LibreShockwave runs the client's login-key code
   (`plans/client/phases/c1-client-page-on-libreshockwave.md`, the last open question).
-- How the hotel offers LibreShockwave's source to players waits for [the assets slice](/slices/assets.md).
+- How the hotel offers LibreShockwave's source to players waits for the assets slice (`plans/reborn/slices/assets.md`).
 
 # Context
 
 The user chose "Port Holo's pages" for the client page. The `.dcr`, its casts, the external texts and variables and the
 figure files are in `packages/cms/public/r26/`, which the user added
-([0011](/decisions/0011-no-habbo-files-in-the-repository.md)).
+([0011](/decisions/reborn/0011-no-habbo-files-in-the-repository.md)).
 
 # Consequences
 

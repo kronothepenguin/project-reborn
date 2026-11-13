@@ -20,7 +20,7 @@ tags: [auth, installer, cms, habbos]
 # Context
 
 The installer and registration write the same rows and need the same rules:
-[0026](/decisions/0026-installer-administrator-and-names.md) says P1 registration follows the installer's name rule.
+[0026](/decisions/holo-port/0026-installer-administrator-and-names.md) says P1 registration follows the installer's name rule.
 The user chose `packages/auth` over a helper in `packages/store` and over separate copies.
 
 The callers need their own transaction because the installer also creates the Administrators group in it, and

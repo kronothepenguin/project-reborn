@@ -24,7 +24,7 @@ Other casts open the window, show the status and send the notifications:
 | --- | --- |
 | `hh_entry_base/3_Entry Interface Class.ls` | Its bottom bar shows the club days from `club_status`, on `#updateClubStatus`, and its club icon executes `#show_clubinfo`, which opens the club window |
 | `hh_room_ui/5_Room Object Displayer Class.ls` | Redraws on `#updateClubStatus` |
-| `hh_entry_init/8_Login Handler Class.ls` | Also listens to 3, and passes the notifications of 52 on as `#notify` ([hh_entry_init](/reference/r26/hh_entry_init.md#notifications)) |
+| `hh_entry_init/8_Login Handler Class.ls` | Also listens to 3, and passes the notifications of 52 on as `#notify` ([hh_entry_init](/r26/hh_entry_init.md#notifications)) |
 | `hh_friend_list/5_Friend List Handler Class.ls` | Also listens to 3 |
 | `hh_cat_code/5_Catalogue Handler Class.ls` | Keeps the credits in the session as `user_walletbalance`, which the club's question shows |
 
@@ -61,7 +61,7 @@ Other casts open the window, show the status and send the notifications:
 
 The club icon of the bottom bar executes `#show_clubinfo`, which opens the club window, or closes it when it is open.
 It opens nothing while the hotel is closing (`#getHotelClosingStatus`,
-[hh_entry_init](/reference/r26/hh_entry_init.md#opening-hours)). By the status:
+[hh_entry_init](/r26/hh_entry_init.md#opening-hours)). By the status:
 
 | Days left | Elapsed periods | Window |
 | --- | --- | --- |
@@ -75,7 +75,7 @@ and the client never sends `SCR_BUY`.
 # Commands from the client
 
 All are registered by `4_Club Handler Class.ls`. Every sender calls `send` with a typed list, which goes through
-`sendNew` ([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+`sendNew` ([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -87,7 +87,7 @@ All are registered by `4_Club Handler Class.ls`. Every sender calls `send` with 
 
 ## After the login
 
-1. The server sends 3 once the login is done ([hh_entry_init](/reference/r26/hh_entry_init.md#after-the-login)).
+1. The server sends 3 once the login is done ([hh_entry_init](/r26/hh_entry_init.md#after-the-login)).
 2. `handle_ok` answers `SCR_GET_USER_INFO` with `club_habbo`.
 3. The server sends 7 with the club status. The bottom bar shows the days, or `club_habbo.bottombar.text.notmember`
    and `club_habbo.bottombar.link.notmember` when they add up to 0.
@@ -102,7 +102,7 @@ All are registered by `4_Club Handler Class.ls`. Every sender calls `send` with 
 3. By the client's handlers, a purchase that went through comes back as 7 with response 2, which opens the status
    window; a refused one as a notification of 52, which `hh_entry_init` passes on as `#notify`: 551 shows
    `club_extend_failed`, and 552 `Alert_no_credits`. The new credits come from `hh_cat_code`'s messages
-   ([s1-09](/tasks/s1-09-catalogue.md)).
+   (s1-09).
 
 ## Gifts
 
@@ -119,19 +119,19 @@ All are registered by `4_Club Handler Class.ls`. Every sender calls `send` with 
 ## Counts
 
 `4_Club Handler Class.ls` registers 3 messages and 3 commands, as
-[Registering scripts](/reference/client-r26.md#registering-scripts) says. No other cast registers 7, 280 or a command
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says. No other cast registers 7, 280 or a command
 of this cast.
 
 ## Ids other casts register too
 
 - 3: `hh_entry_init`'s `handleLoginOK` and `hh_friend_list`'s `handleOk` also run
-  ([hh_entry_init](/reference/r26/hh_entry_init.md#ids-other-casts-register-too)).
+  ([hh_entry_init](/r26/hh_entry_init.md#ids-other-casts-register-too)).
 - 157: `askforBadgeUpdate` sends `GETAVAILABLEBADGES`, which `hh_entry_init` registers.
 
 ## Dead code
 
 - `askforBadgeUpdate` is called by no script
-  ([hh_entry_init](/reference/r26/hh_entry_init.md#dead-code)).
+  ([hh_entry_init](/r26/hh_entry_init.md#dead-code)).
 - No script reads the product the club status keeps.
 
 ## Quirks

@@ -14,7 +14,7 @@ tags: [server, protocol, settings]
 - `VERSIONCHECK` (1170) must carry that version, and its client URL and external variables URL must start with the
   setting `site.url`, the site's root. Any other client is turned away with an error.
 - The links the client opens are built from `site.url` too, in the external variables the site serves
-  (`plans/client/decisions/0004-client-links-from-site-url.md`).
+  (`knowledge/decisions/client/0004-client-links-from-site-url.md`).
 
 # Context
 
@@ -27,5 +27,5 @@ too."
 
 # Consequences
 
-- [s2-01](/tasks/s2-01-settings.md) adds the version setting, whose default is asked when it starts, and
-  [s2-06](/tasks/s2-06-handshake-and-login.md) checks `VERSIONCHECK`.
+- s2-01 adds the version setting, whose default is asked when it starts, and
+  s2-06 checks `VERSIONCHECK`.

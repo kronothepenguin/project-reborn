@@ -23,4 +23,4 @@ Holo logged in by `users.name` only. The existing `packages/cms/src/pages/index.
 # Consequences
 
 - Email is never a login identifier; it is used for password resets
-  ([0018](/decisions/0018-password-reset-by-email.md)).
+  ([0018](/decisions/holo-port/0018-password-reset-by-email.md)).

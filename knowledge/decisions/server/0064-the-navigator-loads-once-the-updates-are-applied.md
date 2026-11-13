@@ -14,7 +14,7 @@ tags: [server, updates, navigator]
 - `server.New` loads the categories, the models and the public rooms when no database update waits.
 - While updates wait, it logs that the navigator waits for them, and loads it as soon as they are applied: the check
   runs with the settings' reload, every `cms.refresh` seconds
-  ([0050](/decisions/0050-the-server-loads-and-reloads-the-settings.md)).
+  ([0050](/decisions/server/0050-the-server-loads-and-reloads-the-settings.md)).
 - The server never stops for waiting updates.
 
 # Context
@@ -27,4 +27,4 @@ orchestrator runs housekeeping in the same process."
 
 # Consequences
 
-- [s3-02](/tasks/s3-02-navigator-state.md) applies it.
+- s3-02 applies it.

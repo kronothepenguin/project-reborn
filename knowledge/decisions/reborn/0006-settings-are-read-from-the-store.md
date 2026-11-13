@@ -39,13 +39,13 @@ chats, and everything else will be a lot." On the refresh: "i think better remov
 
 # Consequences
 
-- Supersedes `plans/holo-port/decisions/0029-package-level-settings-and-auth.md`. Its other points stand: `packages/auth`
+- Supersedes `knowledge/decisions/holo-port/0029-package-level-settings-and-auth.md`. Its other points stand: `packages/auth`
   is a set of package-level helpers that receive the db; app packages take the db as `New`'s first argument, and
   options are only for what differs between runners (now also reborn and a program run alone,
-  [0005](/decisions/0005-the-game-hears-live-changes-through-services.md)); the installer keeps its own config step.
-- Supersedes `plans/holo-port/decisions/0051-one-machine-and-a-refresh.md`. Its other points stand: SQLite stays, the
+  [0005](/decisions/reborn/0005-the-game-hears-live-changes-through-services.md)); the installer keeps its own config step.
+- Supersedes `knowledge/decisions/holo-port/0051-one-machine-and-a-refresh.md`. Its other points stand: SQLite stays, the
   programs run on one machine, no program but housekeeping writes settings after the install.
-- Supersedes `plans/server/decisions/0050-the-server-loads-and-reloads-the-settings.md` and the check every
-  `cms.refresh` seconds of `plans/server/decisions/0064-the-navigator-loads-once-the-updates-are-applied.md`. The rest
+- Supersedes `knowledge/decisions/server/0050-the-server-loads-and-reloads-the-settings.md` and the check every
+  `cms.refresh` seconds of `knowledge/decisions/server/0064-the-navigator-loads-once-the-updates-are-applied.md`. The rest
   of 0064 stands: the navigator loads when no update waits, and the server never stops for waiting updates.
 - About 190 calls change, in the CMS, housekeeping, the installer, auth and the game server.

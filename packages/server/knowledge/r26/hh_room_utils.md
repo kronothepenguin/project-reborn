@@ -21,7 +21,7 @@ scripts of other casts by `<cast>/<file>`.
 | `26_Chat Display.ls` and the chat bubble classes | Draw the chat |
 
 This cast holds many of the room's tools, and they send commands that `hh_room/5_Room Handler Class.ls` registers, so
-their rows are in that cast's document ([s1-06](/tasks/s1-06-room.md)): the safe trader (`TRADE_ACCEPT`,
+their rows are in that cast's document (s1-06): the safe trader (`TRADE_ACCEPT`,
 `TRADE_ADDITEM`, `TRADE_CLOSE`, `TRADE_UNACCEPT`), the hand and the object mover (`GETSTRIP`, `ADDSTRIPITEM`,
 `FLATPROPBYITEM`), the badge manager (`SETBADGE`), the ignore list (`GET_IGNORE_LIST`, `IGNOREUSER`,
 `UNIGNORE_USER`), the doorbell (`LETUSERIN`), group info (`GET_GROUP_DETAILS`, `GET_GROUP_BADGES`) and the room
@@ -34,7 +34,7 @@ Other casts send this cast's commands, and register the same ones:
 | `hh_room/4_Room Component Class.ls` | `sendChat` sends `CHAT`, `SHOUT` and `WHISPER`, naming the command by the chat mode |
 | `hh_room/5_Room Handler Class.ls` | Registers `CHAT`, `SHOUT` and `WHISPER` too, with the same ids |
 | `hh_furni_classes/59_Furniture OneWayDoor Class.ls` | Sends `ENTER_ONEWAY_DOOR`, and shows the door's state |
-| `hh_shared/4_Hobba Component Class.ls` | Sends `CALL_FOR_HELP` on `#sendCallForHelp` ([hh_shared](/reference/r26/hh_shared.md#a-call-for-help)), and `GET_PENDING_CALLS_FOR_HELP` from `getPendingCFHs`, which no script calls ([hh_shared](/reference/r26/hh_shared.md#dead-code)) |
+| `hh_shared/4_Hobba Component Class.ls` | Sends `CALL_FOR_HELP` on `#sendCallForHelp` ([hh_shared](/r26/hh_shared.md#a-call-for-help)), and `GET_PENDING_CALLS_FOR_HELP` from `getPendingCFHs`, which no script calls ([hh_shared](/r26/hh_shared.md#dead-code)) |
 
 # Messages from the server
 
@@ -51,7 +51,7 @@ Other casts send this cast's commands, and register the same ones:
 # Commands from the client
 
 Registered by the three scripts above. Every sender calls `send`: with no body it sends the id alone, and with a
-typed list it goes through `sendNew` ([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+typed list it goes through `sendNew` ([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -72,15 +72,15 @@ typed list it goes through `sendNew` ([fuse_client](/reference/r26/fuse_client.m
    the call; otherwise it shows the waiting call's text, which the user may delete with `DELETE_PENDING_CALLS_FOR_HELP`,
    after which 320 opens the dialog to write.
 3. Send executes `#sendCallForHelp`, and `hh_shared` sends `CALL_FOR_HELP`
-   ([hh_shared](/reference/r26/hh_shared.md#a-call-for-help)). 321 with status 0 shows `callhelp_sent` or
+   ([hh_shared](/r26/hh_shared.md#a-call-for-help)). 321 with status 0 shows `callhelp_sent` or
    `help_emergency_sent`, by the kind of call.
 
 ## Chat
 
 `hh_room`'s `sendChat` sends what the user types as `CHAT`, `SHOUT` (Shift held, or the shout mode) or `WHISPER` (the
 whisper mode, with the selected user's name in front), its text through `convertSpecialChars`
-([fuse_client](/reference/r26/fuse_client.md#text)), after the client's own chat commands, which `hh_room` handles
-([s1-06](/tasks/s1-06-room.md)). A moderator command of the variable `moderator.cmds` goes as `CHAT`, its `x`
+([fuse_client](/r26/fuse_client.md#text)), after the client's own chat commands, which `hh_room` handles
+(s1-06). A moderator command of the variable `moderator.cmds` goes as `CHAT`, its `x`
 replaced by the selected user's name. Each user's line comes back as 24, 25 or 26 with their room index.
 
 ## One-way doors
@@ -93,7 +93,7 @@ A click on a one-way door walks the user in front of it with `MOVE`; a double cl
 ## Counts
 
 `7_Dialog Handler Class.ls` registers 3 messages and 2 commands, `23_OneWayDoor Manager Class.ls` 1 and 1, and
-`25_Chat Manager.ls` 3 and 3, as [Registering scripts](/reference/client-r26.md#registering-scripts) says.
+`25_Chat Manager.ls` 3 and 3, as Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says.
 
 ## Ids other casts register too
 

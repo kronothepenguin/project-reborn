@@ -9,7 +9,7 @@ tags: [art, homes]
 
 # What is here
 
-[0061](/decisions/0061-art-in-the-repository.md) keeps the art in the repository, and the CMS binary embeds it.
+0061 (`knowledge/decisions/holo-port/0061-art-in-the-repository.md`) keeps the art in the repository, and the CMS binary embeds it.
 
 | Folder under `packages/cms/public/c_images/` | Files | Holo's names | Came from |
 | --- | --- | --- | --- |
@@ -30,7 +30,7 @@ Five files exist nowhere that was searched: the live CDN, the Wayback Machine, o
 Six names are broken in Holo's own `assets.css`, with no file extension, so they point at nothing: `TEST4`, `TEST5`, `TEST6`,
 `anti_eco`, `pro_eco` and `xmas_gifts_bg`.
 
-[P3](/phases/p3-homes.md) leaves these out of the home store.
+P3 leaves these out of the home store.
 
 # Other art
 

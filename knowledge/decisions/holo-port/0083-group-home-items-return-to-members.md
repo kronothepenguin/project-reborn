@@ -13,7 +13,7 @@ tags: [groups, homes, p5]
 - An item removed from a group home goes back to the user whose habbo placed it, as Holo's edit menu promises: "This
   item belongs to another user. If you remove it, it will return to their inventory."
 - Deleting a group returns every item on its home to the users whose habbos placed them, as archiving a habbo does
-  ([0089](/decisions/0089-archived-habbos-show-as-archived.md)).
+  ([0089](/decisions/holo-port/0089-archived-habbos-show-as-archived.md)).
 
 # Context
 

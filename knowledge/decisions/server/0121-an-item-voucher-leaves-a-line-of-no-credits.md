@@ -22,4 +22,4 @@ staff still see when a voucher was used and what it gave. Example: '12 Nov, Item
 
 # Consequences
 
-- [s5-18](/tasks/s5-18-item-vouchers.md) writes it, under the reason `voucher`.
+- s5-18 writes it, under the reason `voucher`.

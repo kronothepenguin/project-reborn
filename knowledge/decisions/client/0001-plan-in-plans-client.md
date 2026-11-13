@@ -29,6 +29,6 @@ HoloCMS, and Holo's `client.php` printed no more than an `<object>` tag for Adob
 
 # Consequences
 
-- The client page that holo-port deferred (`plans/holo-port/decisions/0013-defer-game-server-features.md`,
-  `plans/holo-port/reference/holo-pages.md`) is planned in [C1](/phases/c1-client-page-on-libreshockwave.md).
+- The client page that holo-port deferred (`knowledge/decisions/holo-port/0013-defer-game-server-features.md`,
+  `knowledge/sources/holocms/pages.md`) is planned in C1.
 - `plans/index.md` and the `tracking-plans` skill list the plan.

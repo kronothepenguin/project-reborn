@@ -35,9 +35,9 @@ Other casts:
 
 | Script | Why it is here |
 | --- | --- |
-| `hh_room/5_Room Handler Class.ls` | Registers `QUIT`, which 400 sends ([s1-06](/tasks/s1-06-room.md)) |
-| `hh_room/4_Room Component Class.ls` | Builds the arena's room as a room of type `#game` ([s1-06](/tasks/s1-06-room.md)) |
-| `hh_shared/64_Statistics Broker Javascript Class.ls` | Takes the tracking points `/game/started/…`, `/game/ended/…`, `/game/created`, `/game/joined/…`, which reach no server ([hh_shared](/reference/r26/hh_shared.md)) |
+| `hh_room/5_Room Handler Class.ls` | Registers `QUIT`, which 400 sends (s1-06) |
+| `hh_room/4_Room Component Class.ls` | Builds the arena's room as a room of type `#game` (s1-06) |
+| `hh_shared/64_Statistics Broker Javascript Class.ls` | Takes the tracking points `/game/started/…`, `/game/ended/…`, `/game/created`, `/game/joined/…`, which reach no server ([hh_shared](/r26/hh_shared.md)) |
 
 # Messages from the server
 
@@ -95,7 +95,7 @@ string name.
 # Commands from the client
 
 Registered by `3_IG Handler Class.ls`. Every sender calls `send`: with no body it sends the id alone, and with a typed
-list it goes through `sendNew` ([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+list it goes through `sendNew` ([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -124,7 +124,7 @@ list it goes through `sendNew` ([fuse_client](/reference/r26/fuse_client.md#clie
 | 312 | `IG_STOP_OBSERVING_GAME` | `#info` | `3_IG Handler Class.ls`: `send_STOP_OBSERVING_GAME`, typed | int game id | Not sent for -1, no game |
 
 The client holds back `IG_PLAY_AGAIN`, `IG_CREATE_GAME`, `IG_START_GAME` and `IG_JOIN_GAME` while
-`#getHotelClosingStatus` says the hotel is closing ([hh_entry_init](/reference/r26/hh_entry_init.md)).
+`#getHotelClosingStatus` says the hotel is closing ([hh_entry_init](/r26/hh_entry_init.md)).
 
 # Flows
 
@@ -171,7 +171,7 @@ above is registered there.
 ## Counts
 
 `3_IG Handler Class.ls` registers 28 messages and 23 commands, as
-[Registering scripts](/reference/client-r26.md#registering-scripts) says.
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says.
 
 ## Ids other casts register too
 

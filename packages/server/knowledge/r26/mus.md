@@ -10,8 +10,8 @@ tags: [r26, protocol]
 # Sources
 
 LibreShockwave at commit `3f9048009ff4bc9bf4bedb4a44f875c2ab36645b`, the submodule `vendor/LibreShockwave`
-([0015](/decisions/0015-client-on-libreshockwave.md)), read only for this framing
-([0008](/decisions/0008-reverse-engineer-ls-only.md)):
+(0015 (`knowledge/decisions/server/0015-client-on-libreshockwave.md`)), read only for this framing
+(0008 (`knowledge/decisions/server/0008-reverse-engineer-ls-only.md`)):
 
 | File | What it holds |
 | --- | --- |
@@ -23,7 +23,7 @@ LibreShockwave at commit `3f9048009ff4bc9bf4bedb4a44f875c2ab36645b`, the submodu
 
 The client's side is `packages/client-r26/src/game/fuse_client/`: `52_Multiuser Instance Class.ls` opens `#mus` and
 sends and receives on it, and `42_Binary Manager Class.ls` runs the session
-([fuse_client](/reference/r26/fuse_client.md#the-mus-connection)).
+([fuse_client](/r26/fuse_client.md#the-mus-connection)).
 
 Every worked frame below was checked against LibreShockwave. A probe compiled from `queued_multiuser_bridge.cpp`
 wrote the client's frames, the same byte for byte, and read the server's frames and every value back as shown.
@@ -31,7 +31,7 @@ wrote the client's frames, the same byte for byte, and read the server's frames 
 # Transport
 
 - In the browser the player opens one WebSocket per connection, `ws://<connection.mus.host>:<connection.mus.port>`,
-  or `wss://` on an HTTPS page, and sends binary messages ([0020](/decisions/0020-info-and-mus-websocket-ports.md)).
+  or `wss://` on an HTTPS page, and sends binary messages (0020 (`knowledge/decisions/server/0020-info-and-mus-websocket-ports.md`)).
 - Each client frame is one WebSocket message.
 - Each WebSocket message from the server must hold exactly one whole frame. The player reads one frame from the
   message's start and drops whatever follows it, so a second frame in the same message is lost. A message that does
@@ -98,7 +98,7 @@ The content is one value: a 2-byte type, then its data.
 - Type 20 reads as media too. Any other type reads as media holding the 2 type bytes and the rest of the content.
 - The player writes a value of any other kind as its string.
 - A string's bytes are the text as the player holds it. `fuse_client` passes text through `encodeUTF8` first, as on
-  `#info` ([fuse_client](/reference/r26/fuse_client.md#text)).
+  `#info` ([fuse_client](/r26/fuse_client.md#text)).
 
 # The Logon frame
 
@@ -124,12 +124,12 @@ the subject `Logon` or `logon` is dropped.
 
 | Subject | Content | What the client does |
 | --- | --- | --- |
-| `HELLO` | string: a number; `0` for no encryption ([0012](/decisions/0012-no-encryption.md)) | Ends the handshake; the client then sends `LOGIN`. Any other number turns RC4 on ([fuse_client](/reference/r26/fuse_client.md#session)) |
-| `BINDATA_SAVED` | string: the stored photo's id | Ends a store; `hh_photo` keeps the id ([s1-16](/tasks/s1-16-photo.md)) |
+| `HELLO` | string: a number; `0` for no encryption (0012 (`knowledge/decisions/server/0012-no-encryption.md`)) | Ends the handshake; the client then sends `LOGIN`. Any other number turns RC4 on ([fuse_client](/r26/fuse_client.md#session)) |
+| `BINDATA_SAVED` | string: the stored photo's id | Ends a store; `hh_photo` keeps the id (s1-16) |
 | `BINDATA_AUTHKEYERROR` | string, unused | Drops the task at the head of the queue, a store or a fetch |
 | Any | the property list stored with `BINDATA` | The answer to `GETBINDATA`: a content that is not a string goes to the Binary Manager's binary callback, whatever the subject |
 | `U_RTS` | string | Listened to, and nothing done |
-| `OK`, `FILM` | string | `hh_photo`'s ([s1-16](/tasks/s1-16-photo.md)) |
+| `OK`, `FILM` | string | `hh_photo`'s (s1-16) |
 
 The client hands a string content to the listeners of the subject as `subject`, `RETURN` and the content, through
 `convertSpecialChars`; the content is that text from its second word on. Any other content goes to the binary callback.

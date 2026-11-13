@@ -14,9 +14,9 @@ tags: [protocol, client]
 - A cast's Handler Class registers the messages the client receives (`tMsgs`: id → handler) and the commands it sends
   (`tCmds`: name → id). Other scripts register some too, and the commands are sent from scripts all over the client,
   `hh_furni_classes` and `hh_room_ui` among them, which register nothing: the reference covers all of them
-  ([The R26 client](/reference/client-r26.md)).
+  (The R26 client (`packages/client-r26/knowledge/client-r26.md`)).
 - The results are reference documents in this bundle, one per cast, written in
-  [S1](/phases/s1-protocol-reference.md).
+  S1.
 
 # Context
 
@@ -24,7 +24,7 @@ The user: "do reverse engineering of @packages/client-r26/src/game/ . look for .
 @packages/client-r26/src/game/ could have a "Handler Class.ls" that is the one with the protocol".
 
 While planning, 23 Handler Classes were found in 20 casts, plus the other registering scripts. 295 of the 414 `.ls`
-files end their lines with CR alone ([the rules](/rules.md#reading-the-client)).
+files end their lines with CR alone (the rules).
 
 # Consequences
 

@@ -25,4 +25,4 @@ a private room"."
 
 # Consequences
 
-- [s3-06](/tasks/s3-06-creating-a-room.md) and [s3-07](/tasks/s3-07-changing-a-room.md) apply them.
+- s3-06 and s3-07 apply them.

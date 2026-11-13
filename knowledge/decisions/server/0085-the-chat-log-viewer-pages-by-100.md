@@ -21,4 +21,4 @@ at a time."
 
 # Consequences
 
-- [s4-08](/tasks/s4-08-chat-log-page.md) applies it.
+- s4-08 applies it.

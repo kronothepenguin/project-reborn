@@ -11,7 +11,7 @@ tags: [server, rooms, queue]
 # Decision
 
 - A full room, public or habbo room, puts an arriving habbo in its queue (259) in place of refusing it with 224 and 1,
-  and lets the next one in when a place frees ([0080](/decisions/0080-full-rooms-queue-and-take-spectators-in-s4.md)).
+  and lets the next one in when a place frees ([0080](/decisions/server/0080-full-rooms-queue-and-take-spectators-in-s4.md)).
 
 # Context
 
@@ -20,4 +20,4 @@ Example: the 26th habbo at a habbo room waits in line too."
 
 # Consequences
 
-- [s4-12](/tasks/s4-12-queue-and-spectators.md) applies it.
+- s4-12 applies it.

@@ -24,7 +24,7 @@ gets the port 30050.
 
 # Context
 
-[s0-02](/tasks/s0-02-create-templates.md) asked S0's open question: the client template's dev server port, derived
+s0-02 asked S0's open question: the client template's dev server port, derived
 from the name like the Astro port, or chosen otherwise. The options, each with the port `client-r18` would get:
 
 - derived from the name, in a range of its own, 30000 to 39999: 30050;

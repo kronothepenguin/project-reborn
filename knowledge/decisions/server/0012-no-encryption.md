@@ -24,4 +24,4 @@ nothing today, and for the WebSocket the real protection is `wss://` (TLS) in fr
 
 # Consequences
 
-- [s1-02](/tasks/s1-02-entry-init.md) confirms the handshake from the client's scripts.
+- s1-02 confirms the handshake from the client's scripts.

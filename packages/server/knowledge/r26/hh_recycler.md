@@ -24,7 +24,7 @@ Other casts start it:
 | Script | Why it is here |
 | --- | --- |
 | `hh_entry_init/8_Login Handler Class.ls` | Executes `#userloggedin` after the login, on which the recycler asks for its configuration and status |
-| `hh_cat_code/14_Catalogue recycler Class.ls` | The catalogue's recycler page opens the recycler ([s1-09](/tasks/s1-09-catalogue.md)) |
+| `hh_cat_code/14_Catalogue recycler Class.ls` | The catalogue's recycler page opens the recycler (s1-09) |
 
 # Messages from the server
 
@@ -61,7 +61,7 @@ All come on `connection.room.id`, which is `#info`.
 
 Registered by `5_Recycler Handler Class.ls`, on `connection.room.id`; the component sends them on
 `connection.info.id`, the same `#info`. Every sender calls `send`: with no body it sends the id alone, and with a
-typed list it goes through `sendNew` ([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+typed list it goes through `sendNew` ([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -93,7 +93,7 @@ On `#userloggedin`, the client sends `GET_FURNI_RECYCLER_CONFIGURATION` and `GET
 ## Counts
 
 `5_Recycler Handler Class.ls` registers 5 messages and 5 commands, as
-[Registering scripts](/reference/client-r26.md#registering-scripts) says. No other cast registers them.
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says. No other cast registers them.
 
 ## Dead code
 

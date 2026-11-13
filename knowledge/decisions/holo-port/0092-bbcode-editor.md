@@ -22,8 +22,8 @@ tags: [bbcode, components, housekeeping, cms]
   formatting is dropped and its text kept.
 - It is written from scratch on the browser's contenteditable, with no library, as one component in
   `packages/components`, with the site's look in the CMS and housekeeping's in housekeeping
-  ([0060](/decisions/0060-housekeeping-components.md)).
-- It is built in its own phase, [ED](/phases/ed-bbcode-editor.md), before P5.
+  ([0060](/decisions/holo-port/0060-housekeeping-components.md)).
+- It is built in its own phase, ED, before P5.
 
 # Context
 

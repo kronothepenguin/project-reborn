@@ -23,4 +23,4 @@ change (plans/holo-port) to show several. Example: choosing 3 badges in the clie
 
 # Consequences
 
-- [s4-11](/tasks/s4-11-five-badge-slots.md), split from [s4-07](/tasks/s4-07-room-extras.md), applies it.
+- s4-11, split from s4-07, applies it.

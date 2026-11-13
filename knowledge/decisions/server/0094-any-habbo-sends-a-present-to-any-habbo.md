@@ -28,4 +28,4 @@ box, what is inside and the note; the buyer's credit history names the furni and
 
 # Consequences
 
-- [s5-06](/tasks/s5-06-presents.md) builds presents.
+- s5-06 builds presents.

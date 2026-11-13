@@ -13,12 +13,12 @@ Holo pages are ISO-8859-1 XHTML 1.0 with a fixed 930 px layout. Every page boots
 
 | Holo template | Used by | New layout |
 | --- | --- | --- |
-| `templates/community/{subheader,header,footer}.php` | most pages; columns 460/310/160 (`body#home`) or 210/560/160 (`#news`, `#tags`) | `layouts/community.astro` ([P2](/phases/p2-me-account.md)) |
-| `templates/community/hsubheader.php` | homes; playground 922 px (groups, club owners) or 752 px, by 1360 px | community layout + homes canvas ([P3](/phases/p3-homes.md)) |
+| `templates/community/{subheader,header,footer}.php` | most pages; columns 460/310/160 (`body#home`) or 210/560/160 (`#news`, `#tags`) | `layouts/community.astro` (P2) |
+| `templates/community/hsubheader.php` | homes; playground 922 px (groups, club owners) or 752 px, by 1360 px | community layout + homes canvas (P3) |
 | `templates/login/*` (process template) | index, logout, forgot, legal, client errors; 766 px box | `layouts/signed-out.astro` (exists) |
 | `templates/login/register_*` | register | `layouts/signed-out.astro` |
 | `templates/client/*` | client popup | deferred |
-| `web-gallery/maintenance/style.css` | maintenance | `maintenance.astro` ([P1](/phases/p1-signed-out.md)) |
+| `web-gallery/maintenance/style.css` | maintenance | `maintenance.astro` (P1) |
 
 # Navigation
 
@@ -67,7 +67,7 @@ Holo pages are ISO-8859-1 XHTML 1.0 with a fixed 930 px layout. Every page boots
 Small primitives (go to `packages/components`):
 
 - Box ("cbb"): `habblet-container > cbb.{variant} > h2.title + box-content`; JS-rounded corners; coloured title
-  bar ([colours](/reference/colours.md)). → `Card` + `Paper`.
+  bar ([colours](/colours.md)). → `Card` + `Paper`.
 - Box tabs (`box-tabs-container`, lazy `tab-ajax` panels). → `Tabs`.
 - Buttons `a.new-button` (default, red, green, dark, disabled, fill, icon variants) and form buttons
   (`input.submit`, `continue`, `cancel`). → `Button`, `Icon`.

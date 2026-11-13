@@ -18,14 +18,14 @@ tags: [account, editor, holo]
 
 # Context
 
-[p6-06](/tasks/p6-06-club-wardrobe.md) found in the decompiled Flash editor that Holo's Save changes opened five
+p6-06 found in the decompiled Flash editor that Holo's Save changes opened five
 seconds after the editor started with a look the club allows, where the HTML5 editor of `vendor/HabboWidgets` keeps it
-closed until it is touched ([p6-12](/tasks/p6-12-save-looks-as-the-flash-editor.md)). The user chose "In our wrapper
+closed until it is touched (p6-12). The user chose "In our wrapper
 (Recommended)" over changing the HTML5 editor in `vendor/HabboWidgets`, which would need a fork or a carried patch,
 and over changing nothing.
 
 # Consequences
 
-- [p2-04](/tasks/p2-04-account-looks.md)'s note that Holo keeps Save changes closed until the editor is touched was
+- p2-04's note that Holo keeps Save changes closed until the editor is touched was
   wrong, and is corrected.
 - The registration form and the Habbos page use the wrapper without a Save button, and stay as they are.

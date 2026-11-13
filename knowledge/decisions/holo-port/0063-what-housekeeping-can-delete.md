@@ -23,4 +23,4 @@ deletion of unused vouchers, the user answered "ok".
 
 # Consequences
 
-- [P6](/phases/p6-economy.md) gains a route to delete an unused voucher.
+- P6 gains a route to delete an unused voucher.

@@ -13,7 +13,7 @@ tags: [site, furni, account]
 - Identical furni share a row, with a count.
 - Take on a row moves all the furni of that kind to the hand of the active habbo. Take all, at the top, moves
   everything.
-- Shared furni moves one way, to a habbo (`plans/holo-port/decisions/0057-furni-and-rooms.md`).
+- Shared furni moves one way, to a habbo (`knowledge/decisions/holo-port/0057-furni-and-rooms.md`).
 
 # Context
 
@@ -23,4 +23,4 @@ hand, and 'Take all' at the top moves everything. Example: 20 Moon Lamps are one
 
 # Consequences
 
-- [s5-19](/tasks/s5-19-shared-inventory-page.md) builds both.
+- s5-19 builds both.

@@ -11,7 +11,7 @@ tags: [server, packages, runner]
 # Decision
 
 - `packages/server` defines `StartInfo` and `StartMus`. Each opens its listener on the host and port of `server.info`
-  or `server.mus` ([0020](/decisions/0020-info-and-mus-websocket-ports.md)), returns an error when it cannot listen,
+  or `server.mus` ([0020](/decisions/server/0020-info-and-mus-websocket-ports.md)), returns an error when it cannot listen,
   and then serves in the background.
 - The standalone runner, `apps/server/cmd/server/main.go`, calls both, and the orchestrator (`plans/later.md`) will
   later call the same two.
@@ -36,5 +36,5 @@ Asked whether the two calls may be added to `apps/server/cmd/server/main.go`, wh
 
 # Consequences
 
-- Those lines are the only change [s0-07](/tasks/s0-07-r26-sessions.md) makes to the runner.
+- Those lines are the only change s0-07 makes to the runner.
 - The orchestrator starts the listeners with the same two calls.

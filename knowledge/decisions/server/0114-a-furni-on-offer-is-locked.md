@@ -25,7 +25,7 @@ showed."
 
 # Consequences
 
-- [s5-14](/tasks/s5-14-trading.md) refuses those uses while a trade holds the furni, and the recycler,
-  [s5-16](/tasks/s5-16-recycler.md), does too.
+- s5-14 refuses those uses while a trade holds the furni, and the recycler,
+  s5-16, does too.
 - The trade still checks each furni's hand when it completes, in its one transaction
-  ([0092](/decisions/0092-a-trade-lives-only-in-memory.md)).
+  ([0092](/decisions/server/0092-a-trade-lives-only-in-memory.md)).

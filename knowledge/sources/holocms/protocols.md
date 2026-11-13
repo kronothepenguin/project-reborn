@@ -11,7 +11,7 @@ tags: [holo, protocols]
 
 `source/holocms/includes/mus.php` `SendMUSData` opened one TCP connection per command to the emulator
 (`cms_system.ip` and the `mus_port` key), wrote a 4-character opcode followed by fields separated by `chr(2)`, and
-closed without reading. Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)).
+closed without reading. Deferred with the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)).
 
 | Opcode | Payload | Meaning | Holo callers |
 | --- | --- | --- | --- |
@@ -87,9 +87,9 @@ badge, without escaping attributes.
 Holo's `bbcode_format()` (`core.php:195-243`) supported `[b] [i] [u] [s] [quote] [link=] [url=] [color=]
 [size=small|large] [code]` and smilies, without URL sanitizing. The new renderer (`packages/cms/internal/bbcode`)
 keeps these tags, escapes everything else, allows only http(s) links and maps colours to
-[Tailwind classes](/reference/colours.md#bbcode).
+[Tailwind classes](/colours.md#bbcode).
 
 # Captcha
 
 `captcha/CaptchaSecurityImages.php` generated a JPEG code stored in the session, but registration never checked it.
-Dropped in favour of a per-IP registration limit ([0021](/decisions/0021-dropped-and-kept-features.md)).
+Dropped in favour of a per-IP registration limit ([0021](/decisions/holo-port/0021-dropped-and-kept-features.md)).

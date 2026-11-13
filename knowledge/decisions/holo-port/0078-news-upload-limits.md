@@ -17,10 +17,10 @@ tags: [news, housekeeping, images]
 
 # Context
 
-[0074](/decisions/0074-news-images.md) gave the uploads no bounds. The housekeeping agent chose 2 MB and 500 frames (a
+[0074](/decisions/holo-port/0074-news-images.md) gave the uploads no bounds. The housekeeping agent chose 2 MB and 500 frames (a
 300x187 frame takes 56 KB once decoded, so 500 frames take about 28 MB) and wrote the new texts. The user kept the limits
 and the texts as written.
 
 # Consequences
 
-- [p4-06](/tasks/p4-06-image-editor.md) stands as built.
+- p4-06 stands as built.

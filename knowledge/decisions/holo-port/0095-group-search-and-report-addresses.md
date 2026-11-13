@@ -14,7 +14,7 @@ tags: [groups, forum, p5]
   exactly that name, ignoring case, like the header's habbo search `/home?name=`. Otherwise the not-found page shows
   again with Holo's `Sorry, but no results were found for '<name>'.`
 - `%` and `_` are plain characters, not the wildcards of Holo's `LIKE`.
-- `GET /forum/posts/{id}/report` shows the Help Tool window of [0090](/decisions/0090-post-reports.md), and its
+- `GET /forum/posts/{id}/report` shows the Help Tool window of [0090](/decisions/holo-port/0090-post-reports.md), and its
   Proceed button posts to the plan's `POST /forum/posts/{id}/report`.
 
 # Context

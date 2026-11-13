@@ -16,13 +16,13 @@ tags: [server, protocol, logging]
 
 # Context
 
-Asked what goes in that line, and told that until [S2](/phases/s2-login.md) handles login, the body of `TRY_LOGIN`
+Asked what goes in that line, and told that until S2 handles login, the body of `TRY_LOGIN`
 (756) carries the typed password and the body of `SSO` (204) the ticket
-([hh_entry_init](/reference/r26/hh_entry_init.md#commands-from-the-client)), the user chose "Id, name and size
+(hh_entry_init (`packages/server/knowledge/r26/hh_entry_init.md#commands-from-the-client`)), the user chose "Id, name and size
 (Recommended)": "e.g. `r26 127.0.0.1:53422 unhandled TRY_LOGIN (756), 18 bytes`. Shows what the client asks for, and
 keeps passwords and tickets out of the log."
 
 # Consequences
 
-- [s0-07](/tasks/s0-07-r26-sessions.md) logs every packet that no handler takes in that line, and the session goes on.
+- s0-07 logs every packet that no handler takes in that line, and the session goes on.
 - A packet leaves that log once a later phase registers a handler for its id.

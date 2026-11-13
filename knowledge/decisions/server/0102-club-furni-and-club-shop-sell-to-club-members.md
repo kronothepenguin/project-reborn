@@ -23,5 +23,5 @@ Sofa and the client tells her to join the club."
 
 # Consequences
 
-- [s5-01](/tasks/s5-01-catalogue-tables.md) marks such a page, and [s5-05](/tasks/s5-05-buying-furni.md) refuses the
+- s5-01 marks such a page, and s5-05 refuses the
   purchase.

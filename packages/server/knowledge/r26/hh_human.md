@@ -23,11 +23,11 @@ reads figures through it:
 
 | Script | Figures it reads |
 | --- | --- |
-| `hh_entry_init/8_Login Handler Class.ls` | The user object's figure, in 5 ([hh_entry_init](/reference/r26/hh_entry_init.md#the-user-object)) |
-| `hh_room/5_Room Handler Class.ls`, `hh_room/4_Room Component Class.ls` | The room's users, as `user`, `pelle` for a user in swimwear, or `bot` ([s1-06](/tasks/s1-06-room.md)) |
-| `hh_friend_list/12_Friend Online List View.ls`, `15_Friend Search Results View.ls`, `31_Friend Infobox Class.ls` | Friends and search results ([s1-11](/tasks/s1-11-friend-list.md)) |
-| `hh_instant_messenger/8_IM Tabs Class.ls` | The chat partner ([s1-12](/tasks/s1-12-instant-messenger.md)) |
-| `hh_ig/15_IGComponentUI Subcomponent Class.ls`, `hh_ig/71_IG PreGame Class.ls` | The players of a game ([s1-21](/tasks/s1-21-instant-games.md)) |
+| `hh_entry_init/8_Login Handler Class.ls` | The user object's figure, in 5 ([hh_entry_init](/r26/hh_entry_init.md#the-user-object)) |
+| `hh_room/5_Room Handler Class.ls`, `hh_room/4_Room Component Class.ls` | The room's users, as `user`, `pelle` for a user in swimwear, or `bot` (s1-06) |
+| `hh_friend_list/12_Friend Online List View.ls`, `15_Friend Search Results View.ls`, `31_Friend Infobox Class.ls` | Friends and search results (s1-11) |
+| `hh_instant_messenger/8_IM Tabs Class.ls` | The chat partner (s1-12) |
+| `hh_ig/15_IGComponentUI Subcomponent Class.ls`, `hh_ig/71_IG PreGame Class.ls` | The players of a game (s1-21) |
 
 # Messages from the server
 
@@ -39,7 +39,7 @@ Registered by `11_Figure System Class.ls`.
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 9 | `GETAVAILABLESETS` | `#info` | `hh_shared/71_OLD Figure System Class.ls`: `getAvailableSetList`, no body | none | Never sent: no script creates that class, which registers the command too ([hh_shared](/reference/r26/hh_shared.md#dead-code)), and this cast's figure system has no sender |
+| 9 | `GETAVAILABLESETS` | `#info` | `hh_shared/71_OLD Figure System Class.ls`: `getAvailableSetList`, no body | none | Never sent: no script creates that class, which registers the command too ([hh_shared](/r26/hh_shared.md#dead-code)), and this cast's figure system has no sender |
 
 # Flows
 
@@ -82,12 +82,12 @@ For `user` and `pelle`, each set id then gives the parts the figure data lists f
 ## Counts
 
 `11_Figure System Class.ls` registers an empty `tMsgs` and 1 command, as
-[Registering scripts](/reference/client-r26.md#registering-scripts) says.
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says.
 
 ## Ids other casts register too
 
 - 9: `hh_shared/71_OLD Figure System Class.ls` registers `GETAVAILABLESETS` too, and it alone has a sender, in a class
-  no script creates ([hh_shared](/reference/r26/hh_shared.md#ids-other-casts-register-too)). No client sends 9.
+  no script creates ([hh_shared](/r26/hh_shared.md#ids-other-casts-register-too)). No client sends 9.
 
 ## Dead code
 

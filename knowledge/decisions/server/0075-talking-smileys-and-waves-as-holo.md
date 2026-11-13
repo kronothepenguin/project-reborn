@@ -15,7 +15,7 @@ tags: [server, rooms, chat]
 - A smiley in a chat or a shout shows its face for 5 seconds, as Holo's `checkEmotion` did: `:)` and `:D` `gest sml`;
   `>:(`, `:@` and `:/` `gest agr`; `:(` and `:'(` `gest sad`; `:o`, `:O` and `:0` `gest srp`.
 - A wave, `wave`, lasts 1.5 seconds and stops a dance.
-- The room's clock ([0072](/decisions/0072-each-loaded-room-runs-its-own-clock.md)) ends each on its tick.
+- The room's clock ([0072](/decisions/server/0072-each-loaded-room-runs-its-own-clock.md)) ends each on its tick.
 
 # Context
 
@@ -27,4 +27,4 @@ s."
 
 # Consequences
 
-- [s4-05](/tasks/s4-05-chat-and-gestures.md) applies it.
+- s4-05 applies it.

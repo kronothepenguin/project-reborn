@@ -18,7 +18,7 @@ tags: [site, furni, rooms, account]
 
 # Context
 
-`plans/holo-port/decisions/0057-furni-and-rooms.md` moves an archived habbo's rooms to the active habbo, which was the
+`knowledge/decisions/holo-port/0057-furni-and-rooms.md` moves an archived habbo's rooms to the active habbo, which was the
 agent's reading of the user's words, and nothing did it yet. A habbo is archived only while the user plays another one.
 Offered that, rooms that stay with the archived habbo, or a refusal to archive a habbo that owns rooms, the user chose
 "They move to the habbo you play (Recommended)": "Every room the archived habbo owns gets the active habbo as owner,
@@ -28,4 +28,4 @@ while playing 'New'; Old's 3 rooms now show New as owner in the navigator."
 
 # Consequences
 
-- [s5-19](/tasks/s5-19-shared-inventory-page.md) does it in the transaction that archives the habbo.
+- s5-19 does it in the transaction that archives the habbo.

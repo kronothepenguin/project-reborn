@@ -26,6 +26,6 @@ moderator who picks it up keeps it too."
 
 # Consequences
 
-- [s5-08](/tasks/s5-08-placing-furni.md) applies it.
+- s5-08 applies it.
 - A deleted room's furni goes to its owner's hand by the same rule
-  ([0059](/decisions/0059-a-deleted-rooms-furni-goes-to-its-owner.md)).
+  ([0059](/decisions/server/0059-a-deleted-rooms-furni-goes-to-its-owner.md)).

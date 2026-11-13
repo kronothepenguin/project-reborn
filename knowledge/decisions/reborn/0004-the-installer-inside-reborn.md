@@ -52,9 +52,9 @@ alone it keeps the form for separate programs, the user chose "Yes, one form per
 
 # Consequences
 
-- Supersedes `plans/holo-port/decisions/0052-installer-has-no-modes.md`: the option reborn passes decides which form
+- Supersedes `knowledge/decisions/holo-port/0052-installer-has-no-modes.md`: the option reborn passes decides which form
   shows. The rest of 0052 stands: the fields stay editable, and run alone they default to the development ports.
-- Supersedes the done page of `plans/holo-port/decisions/0070-housekeeping-applies-updates.md`. The rest of 0070
+- Supersedes the done page of `knowledge/decisions/holo-port/0070-housekeeping-applies-updates.md`. The rest of 0070
   stands: housekeeping applies the updates and config.json's new keys, and the installer only installs, refuses to run
   once an administrator exists, never applies updates, and its "already installed" page links to the hotel at
   `site.url`.

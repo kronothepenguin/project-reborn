@@ -21,13 +21,13 @@ Deferred until the game server exists:
 - the server, recycler, wordfilter, welcome-message and loader settings;
 - the welcome room picker;
 - MUS pushes;
-- R26 fuses ([0015](/decisions/0015-attribute-names-and-fuses.md)).
+- R26 fuses ([0015](/decisions/holo-port/0015-attribute-names-and-fuses.md)).
 
 # Context
 
 Holo read `rooms`, `messenger_friendships`, `furniture`, `catalogue_items`, `system`, `system_chatlog` and
 `system_config` from the emulator's database and pushed MUS commands (see
-[protocols](/reference/holo-protocols.md)). No game server exists in the repository yet.
+[protocols](/sources/holocms/protocols.md)). No game server exists in the repository yet.
 
 # Consequences
 

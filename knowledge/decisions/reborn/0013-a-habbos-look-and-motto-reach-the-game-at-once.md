@@ -12,7 +12,7 @@ tags: [habbos, services, server, cms, housekeeping]
 
 - Every place that changes a habbo's figure, gender or motto tells the game after it saves: the CMS's looks, profile and
   motto pages, and housekeeping's habbo editor. They call `Habbos.SendLook(ctx, avatarID)`, the first service of
-  [0005](/decisions/0005-the-game-hears-live-changes-through-services.md).
+  [0005](/decisions/reborn/0005-the-game-hears-live-changes-through-services.md).
 - The game reads the habbo again; when it is online, the game updates the copy it holds and sends the new look and motto
   to the habbo and to everyone in its room, with the client's own messages.
 - Any room will do for the first demonstration.

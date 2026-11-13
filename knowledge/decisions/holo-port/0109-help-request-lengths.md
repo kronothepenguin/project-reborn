@@ -24,5 +24,5 @@ longer than 65535 characters.\" Safest against huge requests."
 
 # Consequences
 
-- [P7](/phases/p7-help.md) declares `help.messageMaxLength` and labels it in housekeeping's settings.
-- [Holo's differences](/reference/holo-differences.md) lists both checks.
+- P7 declares `help.messageMaxLength` and labels it in housekeeping's settings.
+- [Holo's differences](/sources/holocms/differences.md) lists both checks.

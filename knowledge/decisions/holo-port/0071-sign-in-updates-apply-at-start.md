@@ -27,6 +27,6 @@ update should be notified to the admin somehow... like an error page in the cms 
 # Consequences
 
 - Most releases have no automatic update, and their updates wait for an administrator
-  ([0069](/decisions/0069-waiting-updates-close-the-hotel.md)).
+  ([0069](/decisions/holo-port/0069-waiting-updates-close-the-hotel.md)).
 - The error page tells visitors that the hotel could not be updated. The error itself stays in the log, which only the
   server's administrator reads.

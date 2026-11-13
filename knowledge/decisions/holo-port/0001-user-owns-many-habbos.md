@@ -24,8 +24,8 @@ tables.
 
 # Consequences
 
-- Login names a habbo ([0002](/decisions/0002-login-with-habbo-name.md)).
+- Login names a habbo ([0002](/decisions/holo-port/0002-login-with-habbo-name.md)).
 - Bans apply to the person, so to all of their habbos.
-- Profiles hang off habbos ([0006](/decisions/0006-profiles-per-habbo.md)); access attributes hang off users
-  ([0014](/decisions/0014-attribute-based-access.md)).
+- Profiles hang off habbos ([0006](/decisions/holo-port/0006-profiles-per-habbo.md)); access attributes hang off users
+  ([0014](/decisions/holo-port/0014-attribute-based-access.md)).
 - The signed-in header has a habbo switcher.

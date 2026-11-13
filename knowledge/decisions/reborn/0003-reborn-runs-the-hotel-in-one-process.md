@@ -19,9 +19,9 @@ tags: [platform, orchestrator, config]
   `tools/create` derives for the name `reborn`. Under reborn, `cms.host`, `cms.port`, `housekeeping.host` and
   `housekeeping.port` go unused; the separate programs still read them.
 - One `*sql.DB` is shared by the CMS, housekeeping and the game server
-  (`plans/holo-port/decisions/0029-package-level-settings-and-auth.md`). The installer keeps opening its own.
+  (`knowledge/decisions/holo-port/0029-package-level-settings-and-auth.md`). The installer keeps opening its own.
 - The game server keeps its own WebSocket ports, `server.info` 30000 and `server.mus` 30001
-  (`plans/server/decisions/0020-info-and-mus-websocket-ports.md`): a hotel opens 16416, 30000 and 30001.
+  (`knowledge/decisions/server/0020-info-and-mus-websocket-ports.md`): a hotel opens 16416, 30000 and 30001.
 - The standalone runners of the CMS, housekeeping, the installer and the game server stay. Work that needs more than one
   program runs under reborn; a standalone runner is for one program, or for testing how separate programs talk.
 
@@ -41,7 +41,7 @@ reborn is easier when anyone want to test a full feature, including cms+housekee
 want to work on cms only, then i run the cms standalone only." And: "if it requires more than 1 app then reborn is the
 way to go, if we want to test communication between standalone runners, then the standalone is the way to go."
 
-The study is [the orchestrator study](/reference/research-orchestrator.md).
+The study is the orchestrator study (`plans/reborn/reference/research-orchestrator.md`).
 
 # Consequences
 
@@ -49,5 +49,5 @@ The study is [the orchestrator study](/reference/research-orchestrator.md).
   game reads the database.
 - One shared connection: every query of the site and the game takes its turn, and a long transaction makes everyone
   wait. Inside a transaction, code reads only through the transaction's queries, as everywhere
-  (`plans/holo-port/decisions/0011-store-returns-sql-db.md`).
+  (`knowledge/decisions/holo-port/0011-store-returns-sql-db.md`).
 - `go.work` gains `packages/reborn` and `apps/reborn`; the root `Makefile` gets back its `dev` and `build` targets.

@@ -42,5 +42,5 @@ Holo's `upgrade.php` was one button that ran the changes since the last release,
 
 - The additive-only rule of `packages/store/knowledge/store.md` and of the `adding-data-persistence` skill gives way to
   update files.
-- [How database updates work](/reference/database-updates.md) describes the files, the runner and the rules for writing
-  an update, and [UP Database updates](/phases/up-database-updates.md) builds them.
+- How database updates work (`packages/store/knowledge/database-updates.md`) describes the files, the runner and the rules for writing
+  an update, and UP Database updates builds them.

@@ -16,8 +16,8 @@ Packages hold the code of each program, and `apps/<name>` is a thin runner aroun
 | Installer | `packages/installer` | `apps/installer` | built | Writes `config.json`, creates the database, the site settings and the first administrator |
 | CMS | `packages/cms` | `apps/cms` | being built | The public site |
 | Housekeeping | `packages/housekeeping` | `apps/housekeeping` | HK-A built | The staff panel |
-| Game server | `packages/server` | `apps/server` | planned in `plans/server`; the site's game-server features stay deferred ([0013](/decisions/0013-defer-game-server-features.md)) | The hotel itself |
-| Orchestrator | none | `apps/reborn` | later ([0039](/decisions/0039-orchestrator-is-a-later-project.md)) | Runs all of the above from one binary |
+| Game server | `packages/server` | `apps/server` | planned in `plans/server`; the site's game-server features stay deferred ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) | The hotel itself |
+| Orchestrator | none | `apps/reborn` | later ([0039](/decisions/holo-port/0039-orchestrator-is-a-later-project.md)) | Runs all of the above from one binary |
 
 # What each program does with shared state
 
@@ -25,13 +25,13 @@ Packages hold the code of each program, and `apps/<name>` is a thin runner aroun
 | --- | --- | --- | --- |
 | Installer | Creates it | Creates it and its first rows | Writes once, and is not expected to run again |
 | CMS | Reads it, and writes the defaults when it is missing | Reads and writes its own tables | Only reads |
-| Housekeeping | Reads it, and writes a release's new keys when an administrator saves them ([0070](/decisions/0070-housekeeping-applies-updates.md)) | Reads and writes its own tables, and applies the updates | The single writer ([0040](/decisions/0040-housekeeping-writes-settings.md)) |
+| Housekeeping | Reads it, and writes a release's new keys when an administrator saves them ([0070](/decisions/holo-port/0070-housekeeping-applies-updates.md)) | Reads and writes its own tables, and applies the updates | The single writer ([0040](/decisions/holo-port/0040-housekeeping-writes-settings.md)) |
 
 Nobody is expected to edit the database by hand.
 
 # An empty database
 
-Every program works on an empty database ([0068](/decisions/0068-seeds-are-updates.md)).
+Every program works on an empty database ([0068](/decisions/holo-port/0068-seeds-are-updates.md)).
 
 - A program that finds no database creates it with every update, seeds included, and uses the default values.
 - The installer lets the administrator change the default values, the first time Reborn is opened and only once.
@@ -42,23 +42,23 @@ Every program works on an empty database ([0068](/decisions/0068-seeds-are-updat
 # Database updates
 
 A release changes the database through update files in `packages/store`, as
-[How database updates work](/reference/database-updates.md) describes.
+How database updates work (`packages/store/knowledge/database-updates.md`) describes.
 
 - Opening an existing database writes nothing to it. When the CMS or housekeeping starts, it applies only the updates
-  that sign-in needs, after a copy ([0071](/decisions/0071-sign-in-updates-apply-at-start.md)).
+  that sign-in needs, after a copy ([0071](/decisions/holo-port/0071-sign-in-updates-apply-at-start.md)).
 - While other updates wait, the CMS shows maintenance and housekeeping only its update page, where an administrator
-  applies them ([0069](/decisions/0069-waiting-updates-close-the-hotel.md),
-  [0070](/decisions/0070-housekeeping-applies-updates.md)).
+  applies them ([0069](/decisions/holo-port/0069-waiting-updates-close-the-hotel.md),
+  [0070](/decisions/holo-port/0070-housekeeping-applies-updates.md)).
 
 # Scheduled tasks
 
-`packages/scheduler` is cron-like and lives inside the process ([0043](/decisions/0043-scheduler.md)). A program registers its
+`packages/scheduler` is cron-like and lives inside the process ([0043](/decisions/holo-port/0043-scheduler.md)). A program registers its
 tasks in its `New`, written as `scheduler.Every(1, scheduler.Hour, task)`.
 
 | Task | Program | Every |
 | --- | --- | --- |
-| Delete expired reset links ([0044](/decisions/0044-expired-reset-links-deleted.md)) | CMS | 1 minute |
-| Delete expired sessions ([0050](/decisions/0050-expired-sessions-deleted.md)) | CMS, housekeeping | 1 minute |
+| Delete expired reset links ([0044](/decisions/holo-port/0044-expired-reset-links-deleted.md)) | CMS | 1 minute |
+| Delete expired sessions ([0050](/decisions/holo-port/0050-expired-sessions-deleted.md)) | CMS, housekeeping | 1 minute |
 
 No task runs while updates wait, because its code may need them.
 
@@ -70,14 +70,14 @@ This is how programs run today, and how development works.
 - Each opens the database named by `config.json` with `store.FromConfig()`.
 - Each holds its own copy of the settings, loaded when it starts (`settings.Load`).
 - A CMS re-reads the settings every `cms.refresh` seconds, so a change in housekeeping reaches it without a restart.
-  Housekeeping has no refresh, because it is the single writer ([0051](/decisions/0051-one-machine-and-a-refresh.md)).
+  Housekeeping has no refresh, because it is the single writer ([0051](/decisions/holo-port/0051-one-machine-and-a-refresh.md)).
 - Housekeeping has no sign-in of its own. A guest goes to `site.url`, and the session cookie reaches housekeeping because
   cookies do not depend on the port.
 - The CMS's Housekeeping links follow `site.housekeepingUrl`, which the installer asks for. Its default is the development
   address, `http://localhost:18465/housekeeping`.
 - Housekeeping keeps uploaded news pictures in the database, and the CMS serves them at `/news/images/{id}.{format}`.
   Housekeeping's previews and its Uploaded Images page load every picture from `site.url`, since it may run on another
-  port ([0074](/decisions/0074-news-images.md), [0079](/decisions/0079-uploaded-images-managed.md)).
+  port ([0074](/decisions/holo-port/0074-news-images.md), [0079](/decisions/holo-port/0079-uploaded-images-managed.md)).
 
 The programs share the SQLite file, so they run on one machine, and no IPC exists.
 
@@ -86,9 +86,9 @@ The programs share the SQLite file, so they run on one machine, and no IPC exist
 This is planned, and needs the orchestrator.
 
 - One process mounts every program on one mux, with one database handle
-  ([0029](/decisions/0029-package-level-settings-and-auth.md)).
+  ([0029](/decisions/holo-port/0029-package-level-settings-and-auth.md)).
 - `Mount` keeps each program's routes protected on the shared mux, and housekeeping stays under `/housekeeping`
-  ([0003](/decisions/0003-housekeeping-under-prefix.md)).
+  ([0003](/decisions/holo-port/0003-housekeeping-under-prefix.md)).
 - The settings are one process-wide singleton, so a change applies at once and the refresh does not run.
 
 # Comparison

@@ -21,9 +21,9 @@ i want to have reborn orchestractor and cms, housekeeping, game server, installe
 
 # Consequences
 
-- Supersedes `plans/holo-port/decisions/0062-ci-and-releases.md`, whose archives held `cms`, `housekeeping` and
+- Supersedes `knowledge/decisions/holo-port/0062-ci-and-releases.md`, whose archives held `cms`, `housekeeping` and
   `installer`. The rest of 0062 stands: `ci.yml` runs every gate and the browser suites, `release.yml` runs on a tag and
   publishes the linux amd64 and aarch64 archives with `SHA256SUMS`.
 - `plans/later.md`, "One binary", is corrected to name this decision.
 - The separate programs are a way to run the hotel in production, so their remote API is secured as reborn's
-  [0005](/decisions/0005-the-game-hears-live-changes-through-services.md) says.
+  [0005](/decisions/reborn/0005-the-game-hears-live-changes-through-services.md) says.

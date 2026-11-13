@@ -23,4 +23,4 @@ settings, Furni, and see its 12 furni there."
 
 # Consequences
 
-- [s5-19](/tasks/s5-19-shared-inventory-page.md) builds the page.
+- s5-19 builds the page.

@@ -11,7 +11,7 @@ tags: [server, rooms, queue]
 # Decision
 
 - S4 builds the queue the R26 client shows for a full room (259, `ROOM_QUEUE_CHANGE`) and its spectator mode (254,
-  283, 298, `GET_SPECTATOR_AMOUNT`), in memory ([0069](/decisions/0069-doorbell-queue-and-spectators-in-memory.md)).
+  283, 298, `GET_SPECTATOR_AMOUNT`), in memory ([0069](/decisions/server/0069-doorbell-queue-and-spectators-in-memory.md)).
 - Its details, such as the queue sets, a priority for club members and the spectators' limit, are asked when its task
   starts.
 
@@ -24,5 +24,5 @@ habbo waits in line and sees its position until a place frees."
 
 # Consequences
 
-- [s4-12](/tasks/s4-12-queue-and-spectators.md), split from [s4-07](/tasks/s4-07-room-extras.md), builds them once
+- s4-12, split from s4-07, builds them once
   its questions are answered.

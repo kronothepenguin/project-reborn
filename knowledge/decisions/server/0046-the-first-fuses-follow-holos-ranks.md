@@ -11,9 +11,9 @@ tags: [server, auth, rights, data]
 # Decision
 
 - The update `packages/store/migrations/0009-holo-fuses.sql` gives each fuse of the catalogue
-  ([0045](/decisions/0045-fuses-holos-club-set-and-every-checked-fuse.md)) to every access group whose level reaches
+  ([0045](/decisions/server/0045-fuses-holos-club-set-and-every-checked-fuse.md)) to every access group whose level reaches
   the fuse's `minrank` in `system_fuserights` of `source/holoemu/database.sql`, Holo's newest dump, since a group's level
-  is Holo's rank number (`plans/holo-port/decisions/0055-staff-levels.md`).
+  is Holo's rank number (`knowledge/decisions/holo-port/0055-staff-levels.md`).
 - The fuses that dump does not rank go to level 7: `fuse_cancel_roomevent`, `fuse_catalog_editor`,
   `fuse_debug_window`, `fuse_remove_photos` and `fuse_see_chat_log_link`, which no dump ranks, and `fuse_credits`,
   which only the oldest dump, `Resources/holodb.sql`, ranks (6).
@@ -28,7 +28,7 @@ tags: [server, auth, rights, data]
 | 7 | `fuse_see_flat_ids`, `fuse_administrator_access`, `fuse_freeze`, and the six above |
 
 - A group holds the fuses of its level and the levels below. A new hotel's ranks
-  (`plans/holo-port/decisions/0054-access-groups-are-holos-ranks.md`) get 6 (HabboX), 10 (Silver Hobba), 16 (Gold
+  (`knowledge/decisions/holo-port/0054-access-groups-are-holos-ranks.md`) get 6 (HabboX), 10 (Silver Hobba), 16 (Gold
   Hobba), 22 (Moderator) and all 31 (Administrator); a hotel's own groups get them by their level too, and a group below
   level 2 gets none.
 - The update is not automatic: neither sign-in nor housekeeping's access check reads fuses.
@@ -42,4 +42,4 @@ never ranked (fuse_debug_window, fuse_catalog_editor…) go to level 7."
 
 # Consequences
 
-- [s2-04](/tasks/s2-04-fuse-catalogue.md) adds the update.
+- s2-04 adds the update.

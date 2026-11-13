@@ -12,13 +12,13 @@ tags: [homes, habbos]
 
 - A user edits the home of any habbo they own, whichever of their habbos is active, and the Edit button shows on all of
   them.
-- Group homes follow their own rules, in [P5](/phases/p5-groups-forum.md).
+- Group homes follow their own rules, in P5.
 
 # Context
 
 In Holo an account had one habbo, so whoever was signed in as the home's name owned it. Asked who edits a home when a user
 owns several habbos, the user chose "Any habbo you own", since the inventory is shared anyway
-([0056](/decisions/0056-wallet-club-and-inventory-per-user.md)).
+([0056](/decisions/holo-port/0056-wallet-club-and-inventory-per-user.md)).
 
 # Consequences
 

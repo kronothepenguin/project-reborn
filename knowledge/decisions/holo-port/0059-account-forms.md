@@ -16,12 +16,12 @@ tags: [account, auth]
 
 # Context
 
-The plan had dropped the birth date, and [0034](/decisions/0034-behaviour-matches-holo.md) brought it back. Asked which
+The plan had dropped the birth date, and [0034](/decisions/holo-port/0034-behaviour-matches-holo.md) brought it back. Asked which
 stands, the user answered "keep". Holo's password form says "You will need to login again.". The user asked: "can we
 just keep session for the one changes the password or is it a security issue?", was told it is the usual way, and did
 not object.
 
 # Consequences
 
-- The form no longer says "You will need to login again.", and [the differences](/reference/holo-differences.md) list
+- The form no longer says "You will need to login again.", and [the differences](/sources/holocms/differences.md) list
   it.

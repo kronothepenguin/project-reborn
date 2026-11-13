@@ -39,4 +39,4 @@ WebSocket package of its own.
 
 # Consequences
 
-- [s0-05](/tasks/s0-05-transport.md) writes the transport.
+- s0-05 writes the transport.

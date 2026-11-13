@@ -14,12 +14,12 @@ tags: [server, rooms, furni]
 
 # Context
 
-Holo deleted the furni with the room, and `plans/holo-port/decisions/0057-furni-and-rooms.md` makes every furni item
+Holo deleted the furni with the room, and `knowledge/decisions/holo-port/0057-furni-and-rooms.md` makes every furni item
 belong to a user. Offered the owner's hand, deleting it with the room, or the user's shared inventory, the user chose
 "To the owner's hand (Recommended)": "The room's furni goes to the hand of the habbo that owns the room, so nothing
 bought is lost. Example: deleting a room with a sofa and a lamp puts both in the owner's hand."
 
 # Consequences
 
-- Rooms hold no furni until [S5](/phases/s5-furni-catalogue.md): [s3-07](/tasks/s3-07-changing-a-room.md) deletes the
+- Rooms hold no furni until S5: s3-07 deletes the
   room, and S5's furni moves to the owner's hand from then on.

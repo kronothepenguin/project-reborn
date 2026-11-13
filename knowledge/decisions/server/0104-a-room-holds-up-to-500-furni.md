@@ -22,4 +22,4 @@ furni is refused and stays in the hand."
 
 # Consequences
 
-- [s5-08](/tasks/s5-08-placing-furni.md) declares the setting and applies it.
+- s5-08 declares the setting and applies it.

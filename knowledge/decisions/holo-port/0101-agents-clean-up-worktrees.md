@@ -11,7 +11,7 @@ tags: [process, git]
 # Decision
 
 - Once its work is done and its branch has reached `main` by the fast-forward of
-  [0097](/decisions/0097-no-agent-works-on-main.md), the agent removes the branch's worktree and deletes the branch, from
+  [0097](/decisions/holo-port/0097-no-agent-works-on-main.md), the agent removes the branch's worktree and deletes the branch, from
   the main checkout: `git worktree remove .claude/worktrees/<branch>`, then `git branch -d <branch>`.
 - `git branch -d` deletes only a merged branch, so nothing that has not reached `main` is lost. `git worktree remove`
   takes `--force` only when it refuses because of a checked-out submodule or ignored build output, and only after

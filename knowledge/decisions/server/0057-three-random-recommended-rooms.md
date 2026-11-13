@@ -20,4 +20,4 @@ Holo: three habbo rooms drawn at random each time the client asks."
 
 # Consequences
 
-- [s3-04](/tasks/s3-04-room-lists.md) answers it.
+- s3-04 answers it.

@@ -22,4 +22,4 @@ which the client sends only after a 437, then waits for the phase that brings ac
 
 # Consequences
 
-- [s2-07](/tasks/s2-07-after-login.md) answers 436 with none.
+- s2-07 answers 436 with none.

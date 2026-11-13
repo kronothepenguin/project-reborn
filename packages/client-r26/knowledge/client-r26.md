@@ -10,7 +10,7 @@ tags: [client, protocol, r26]
 # Where it is
 
 `packages/client-r26/src/game/` holds the R26 Shockwave client, one folder per cast: the decompiled Lingo scripts
-(`.ls`), their JavaScript translations (`.js`, ignored here: [0008](/decisions/0008-reverse-engineer-ls-only.md)),
+(`.ls`), their JavaScript translations (`.js`, ignored here: 0008 (`knowledge/decisions/server/0008-reverse-engineer-ls-only.md`)),
 window and variable texts (`.txt`) and each cast's `Members.csv`.
 
 - 295 of the 414 `.ls` files end their lines with CR alone: read them through `tr '\r' '\n' < "<file>"`.
@@ -28,7 +28,7 @@ From the variable texts:
 | `connection.mus.id` | `#mus` | `hh_photo` and `fuse_client/42_Binary Manager Class.ls`, through the Multiuser manager |
 
 The `#mus` connection has a text format of its own, for example `send("LOGIN" && tUserID && tMachineID)` in
-`fuse_client`. [fuse_client](/reference/r26/fuse_client.md#the-mus-connection) describes it.
+`fuse_client`. fuse_client (`packages/server/knowledge/r26/fuse_client.md#the-mus-connection`) describes it.
 
 # How a cast registers
 
@@ -102,7 +102,7 @@ Scripts in these casts send commands without registering any: `hh_furni_classes`
 # Wire format
 
 From `fuse_client/51_Connection Instance Class.ls` (`send`, `sendNew`, `msghandler`, `GetIntFrom`, `GetStrFrom`,
-`GetBoolFrom`, `GetByteFrom`). [fuse_client](/reference/r26/fuse_client.md) writes it out in full.
+`GetBoolFrom`, `GetByteFrom`). fuse_client (`packages/server/knowledge/r26/fuse_client.md`) writes it out in full.
 
 - B64: each character is 64 plus 6 bits of the value, the most significant first.
 - VL64 (`GetIntFrom`, `sendNew #integer`): the first character holds 64, the number of characters × 8, 4 when the
@@ -116,13 +116,13 @@ From `fuse_client/51_Connection Instance Class.ls` (`send`, `sendNew`, `msghandl
   a string ends with `chr(2)`, a boolean or a byte is one character whose low 6 bits are the value, and a handler may
   take the whole body as text.
 - Text is UTF-8 only when the external variable `client.textdata.utf8` is true; otherwise each byte is one character
-  of the client's locale ([fuse_client](/reference/r26/fuse_client.md#text)). The server sets it and speaks UTF-8
-  ([0014](/decisions/0014-text-is-utf8.md)).
+  of the client's locale (fuse_client (`packages/server/knowledge/r26/fuse_client.md#text`)). The server sets it and speaks UTF-8
+  (0014 (`knowledge/decisions/server/0014-text-is-utf8.md`)).
 
 # Handshake
 
-As the old server did it, without encryption ([0012](/decisions/0012-no-encryption.md));
-[hh_entry_init](/reference/r26/hh_entry_init.md#the-handshake) confirms it step by step, with its bytes:
+As the old server did it, without encryption (0012 (`knowledge/decisions/server/0012-no-encryption.md`));
+hh_entry_init (`packages/server/knowledge/r26/hh_entry_init.md#the-handshake`) confirms it step by step, with its bytes:
 
 1. Server: `HELLO` (0), empty.
 2. Client: `INIT_CRYPTO` (206).

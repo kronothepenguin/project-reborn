@@ -17,7 +17,7 @@ tags: [economy, club, badges]
 
 # Context
 
-The club belongs to the user, so all their habbos are members ([0056](/decisions/0056-wallet-club-and-inventory-per-user.md)),
+The club belongs to the user, so all their habbos are members ([0056](/decisions/holo-port/0056-wallet-club-and-inventory-per-user.md)),
 while badges belong to each habbo. Holo had one habbo per account: buying club gave it `HC1` and wore it, and the badge
 went when the club ended. Asked which habbos get `HC1` when a user buys club, offered the habbo that buys or every
 habbo of the user, the user chose "Every habbo of the user": "Each purchase gives HC1 to every habbo of the user that
@@ -29,4 +29,4 @@ as in Holo.
 - A habbo added while the club runs gets `HC1` at the user's next purchase.
 - Holo also hid whatever badge the habbo wore when the club ended (`badge_status = 0`); here only `HC1` goes, so a
   habbo that wore another badge keeps it on.
-- [P6](/phases/p6-economy.md)'s club purchase writes the badges in the purchase's transaction.
+- P6's club purchase writes the badges in the purchase's transaction.

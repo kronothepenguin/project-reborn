@@ -12,11 +12,11 @@ tags: [tools, packages]
 
 A client project is a plain Vite app. `pnpm build` builds `index.html` and `src/main.js` into `dist/index.html` and
 `dist/assets/index-<hash>.js`, a page of its own. `vite.config.js` holds only the dev server's port, derived from the
-name ([0017](/decisions/0017-client-vite-port.md)).
+name ([0017](/decisions/server/0017-client-vite-port.md)).
 
 # Context
 
-[s0-02](/tasks/s0-02-create-templates.md) found that `packages/client-r26`'s `vite.config.js` builds `src/main.js` in
+s0-02 found that `packages/client-r26`'s `vite.config.js` builds `src/main.js` in
 Vite's library mode, into `dist/main.es.js` and `dist/main.umd.js`, and that the UMD file needs a global name:
 `_director` in client-r26, the director runtime's. A client copied without that name failed its `pnpm build`. The
 question: how should a client project build? The options, each tried on a generated `client-r18`, where all four

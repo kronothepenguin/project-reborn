@@ -21,7 +21,7 @@ tags: [server, navigator, data]
     theatre, each with its model, the casts it loads and its most visitors;
   - its 42 room models, `room_modeldata`: the habbo rooms' models `a` to `r` and the public rooms', each with its door,
     heightmap and public furni.
-- BattleBall and SnowStorm, their categories and their lobbies, wait for [S8](/phases/s8-instant-games.md). The pool
+- BattleBall and SnowStorm, their categories and their lobbies, wait for S8. The pool
   triggers, `room_modeldata_triggers`, wait for the phase that serves the pools.
 - The public rooms' casts are files of the client that the user adds (`plans/client`'s C1).
 
@@ -36,4 +36,4 @@ its 42 models (guest models a–r and the public rooms'). BattleBall and SnowSto
 
 # Consequences
 
-- [s3-01](/tasks/s3-01-navigator-tables.md) writes the update.
+- s3-01 writes the update.

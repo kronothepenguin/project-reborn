@@ -11,7 +11,7 @@ tags: [server, catalogue, data]
 # Decision
 
 - An update of the store seeds the hotel's catalogue from `source/holoemu/Resources/holodb.sql`, the dump whose names
-  are English, as [0055](/decisions/0055-holos-navigator-set.md) did for the navigator: its 76 pages, its 1,372 furni
+  are English, as [0055](/decisions/server/0055-holos-navigator-set.md) did for the navigator: its 76 pages, its 1,372 furni
   with their names, descriptions, prices, sprites, colours, sizes and flags, and its 19 deals.
 - No page edits the catalogue in S5. A new price, a new furni or a new page is another database update.
 - A catalogue editor in housekeeping waits in `plans/later.md`.
@@ -30,5 +30,5 @@ rows that the English dump lacks or holds differently, among them those of a pag
 
 # Consequences
 
-- [s5-01](/tasks/s5-01-catalogue-tables.md) writes the update.
+- s5-01 writes the update.
 - `plans/later.md` gains "A catalogue editor in housekeeping".

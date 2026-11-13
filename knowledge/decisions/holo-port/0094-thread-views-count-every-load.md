@@ -16,6 +16,6 @@ tags: [forum, p5]
 
 # Context
 
-[P5](/phases/p5-groups-forum.md)'s settled fixes said that nothing changes on a GET. Asked whether the forum still
+P5's settled fixes said that nothing changes on a GET. Asked whether the forum still
 counts a view on each load, or through a POST that the page sends once it has loaded, the user chose Holo's count on
 every load.

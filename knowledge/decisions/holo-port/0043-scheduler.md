@@ -25,4 +25,4 @@ module over a sub-package of `packages/virtual`.
 
 # Consequences
 
-- [How the programs work together](/reference/architecture.md) describes the scheduler in both ways of running.
+- [How the programs work together](/programs.md) describes the scheduler in both ways of running.

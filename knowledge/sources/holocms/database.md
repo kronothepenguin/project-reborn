@@ -38,7 +38,7 @@ foreign keys, no transactions and no secondary indexes.
 | `groups_details`, `groups_memberships` | groups and members | `groups`, `group_members` |
 | `vouchers` | credit or item vouchers, deleted on redeem | `vouchers` (credits only) |
 | `system_stafflog` | staff audit log | `staff_logs` |
-| `rooms`, `messenger_friendships`, `furniture`, `catalogue_items`, `system`, `system_chatlog`, `system_strings` | emulator data | deferred ([0013](/decisions/0013-defer-game-server-features.md)) |
+| `rooms`, `messenger_friendships`, `furniture`, `catalogue_items`, `system`, `system_chatlog`, `system_strings` | emulator data | deferred ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |
 
 # Users columns
 
@@ -52,7 +52,7 @@ foreign keys, no transactions and no secondary indexes.
 | `hbirth` | registration date string | `users.created_at`, `avatars.created_at` |
 | `figure`, `sex`, `mission` | look, gender, motto | `avatars.figure`, `avatars.gender`, `avatars.motto` |
 | `credits`, `tickets` | currencies | `wallets` |
-| `rank` | role + Habbo Club (2) + title | access groups ([0014](/decisions/0014-attribute-based-access.md)) and `club_subscriptions` |
+| `rank` | role + Habbo Club (2) + title | access groups ([0014](/decisions/holo-port/0014-attribute-based-access.md)) and `club_subscriptions` |
 | `badge_status` | duplicate of the current badge | `avatar_badges.worn` |
 | `ticket_sso` | reusable SSO ticket | `sso_tickets` (deferred API) |
 | `lastvisit`, `online`, `ipaddress_last` | presence and audit | `sessions.last_seen_at`, `login_attempts` |
@@ -63,7 +63,7 @@ foreign keys, no transactions and no secondary indexes.
 
 - Dates as strings in mixed formats (`users.birth`, `hbirth`, `lastvisit`, `users_bans.date_expire`,
   `users_club.date_monthstarted`, `groups_details.created`, forum, help, transactions, stafflog); ban expiry
-  parsing swapped day and month. → `DATETIME`/`DATE` ([0012](/decisions/0012-sqlite-native-types.md)).
+  parsing swapped day and month. → `DATETIME`/`DATE` ([0012](/decisions/holo-port/0012-sqlite-native-types.md)).
 - Numbers as strings (`cms_homes_inventory.amount` varchar(3), sticker coordinates varchar(6), transaction amounts
   varchar(10), wardrobe slots varchar(1), `vouchers.credits` varchar(255)). → INTEGER with CHECKs.
 - Booleans as `'0'/'1'` strings and enums. → `BOOLEAN`.
@@ -93,7 +93,7 @@ foreign keys, no transactions and no secondary indexes.
 # Holo settings
 
 Every new key below is a setting declared in `packages/virtual`; `config.json` holds only startup keys
-([0023](/decisions/0023-config-holds-startup-keys.md)).
+([0023](/decisions/holo-port/0023-config-holds-startup-keys.md)).
 
 | Holo source | Key | New setting key |
 | --- | --- | --- |
@@ -108,7 +108,7 @@ Every new key below is a setting declared in `packages/virtual`; `config.json` h
 | `cms_content` | `hc-maxmonths` | `club.maxMonths` |
 | `cms_content` | `staff1/2`, `staff1/2-heading`, `staff1/2-color` | `staffPage.box1Body`, `box1Heading`, `box1Color`, `box2…` |
 | `cms_content` | `credits1/2`, `credits1/2-heading` | `creditsPage.box1Body`, `box1Heading`, `box2…` |
-| `cms_content` | `client-widescreen`, `allow-guests` | deferred / replaced by [0017](/decisions/0017-guest-read-access.md) |
+| `cms_content` | `client-widescreen`, `allow-guests` | deferred / replaced by [0017](/decisions/holo-port/0017-guest-read-access.md) |
 | hard-coded | group price 20, max 3 owned, 10 memberships, 500 members, name 25, description 200 | `groups.*` |
 | hard-coded | club 1/3/6 months = 20/50/80 credits, 31 days per month | `club.*` |
 | hard-coded | 200 home items, 500-char notes, 20 tags, 5 wardrobe slots | `homes.*` |
@@ -116,7 +116,7 @@ Every new key below is a setting declared in `packages/virtual`; `config.json` h
 
 # New schema
 
-Rules: [0012](/decisions/0012-sqlite-native-types.md) types; references by id; a second reference to the same table,
+Rules: [0012](/decisions/holo-port/0012-sqlite-native-types.md) types; references by id; a second reference to the same table,
 or a non-owner role, gets a role prefix; `ON DELETE CASCADE` for owned data and `SET NULL` for authorship;
 `CHECK` only for closed sets.
 

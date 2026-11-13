@@ -23,4 +23,4 @@ password hash.
 
 # Consequences
 
-- Access is decided by attributes ([0014](/decisions/0014-attribute-based-access.md)).
+- Access is decided by attributes ([0014](/decisions/holo-port/0014-attribute-based-access.md)).

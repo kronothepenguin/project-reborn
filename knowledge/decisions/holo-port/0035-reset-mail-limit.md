@@ -14,7 +14,7 @@ tags: [auth, security]
 - `auth.resetMaxActive` is a setting, 3 by default. A link lives for `auth.resetTokenMinutes`, so at most that many mails
   go out in that time.
 - The page answers the same way when the limit stops a mail, as
-  [0018](/decisions/0018-password-reset-by-email.md) requires.
+  [0018](/decisions/holo-port/0018-password-reset-by-email.md) requires.
 
 # Context
 

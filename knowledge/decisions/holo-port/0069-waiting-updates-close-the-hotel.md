@@ -32,5 +32,5 @@ and later said: "i think we should go with show up maintenance only during updat
 # Consequences
 
 - New code never serves pages from a database it was not written for. Sign-in is the exception that
-  [0071](/decisions/0071-sign-in-updates-apply-at-start.md) keeps working, so that staff can reach the update page.
+  [0071](/decisions/holo-port/0071-sign-in-updates-apply-at-start.md) keeps working, so that staff can reach the update page.
 - `site.maintenanceBypass` does not open the hotel while updates wait, and scheduled tasks do not run.

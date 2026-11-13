@@ -11,7 +11,7 @@ tags: [server, store, rooms]
 # Decision
 
 - `public_rooms` and `rooms` each keep only their own columns: a public room its unit name, casts and category, a habbo
-  room its creator and owner (`plans/holo-port/decisions/0057-furni-and-rooms.md`), door, password and settings, its
+  room its creator and owner (`knowledge/decisions/holo-port/0057-furni-and-rooms.md`), door, password and settings, its
   owner NOT NULL.
 - A favourite names one or the other: `favourite_rooms(avatar_id, public_room_id, room_id)`, exactly one of the two set.
 
@@ -23,4 +23,4 @@ A favourite names one or the other: favourite_rooms(avatar_id, public_room_id, r
 
 # Consequences
 
-- [s3-01](/tasks/s3-01-navigator-tables.md) creates them.
+- s3-01 creates them.

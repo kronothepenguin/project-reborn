@@ -27,4 +27,4 @@ and its room keeps walking and chatting meanwhile."
 
 # Consequences
 
-- [s4-10](/tasks/s4-10-outbox.md) applies it, before [s4-03](/tasks/s4-03-entering-a-room.md) sends to rooms.
+- s4-10 applies it, before s4-03 sends to rooms.

@@ -11,7 +11,7 @@ tags: [housekeeping, chat]
 # Decision
 
 - The Room ID column of the Chat Log Viewer shows `101` for habbo room 101 and `Public 101` for the public room 101
-  ([0063](/decisions/0063-public-rooms-and-habbo-rooms-apart.md)); a search for an id lists the lines of both.
+  ([0063](/decisions/server/0063-public-rooms-and-habbo-rooms-apart.md)); a search for an id lists the lines of both.
 - The lines of a deleted habbo room show `-`.
 
 # Context
@@ -22,4 +22,4 @@ HoloCMS had one kind of room id. Offered the ids with public rooms marked, or th
 
 # Consequences
 
-- [s4-08](/tasks/s4-08-chat-log-page.md) applies it.
+- s4-08 applies it.

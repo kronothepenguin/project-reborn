@@ -22,4 +22,4 @@ other settings forms. Example: whoever may change 'Game' settings may change the
 
 # Consequences
 
-- [s5-17](/tasks/s5-17-recycler-options-page.md) adds the section.
+- s5-17 adds the section.

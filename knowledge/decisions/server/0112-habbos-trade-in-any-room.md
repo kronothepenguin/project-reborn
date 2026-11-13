@@ -22,4 +22,4 @@ open a trade in any room." The recommendation was the category's switch.
 
 # Consequences
 
-- [s5-14](/tasks/s5-14-trading.md) checks no category.
+- s5-14 checks no category.

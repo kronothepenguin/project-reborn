@@ -10,7 +10,7 @@ tags: [server, data]
 
 # Decision
 
-Saved in the database, and hot while in use ([0009](/decisions/0009-virtual-holds-the-server-state.md)):
+Saved in the database, and hot while in use ([0009](/decisions/server/0009-virtual-holds-the-server-state.md)):
 
 | Data | Example |
 | --- | --- |
@@ -48,5 +48,5 @@ restart.
 
 - When the CMS runs apart from the server, it cannot know who is online, which lives only in the server's memory. How
   the site shows online status is asked when that work starts; until then the hotel shows as offline
-  (`plans/holo-port/decisions/0013-defer-game-server-features.md`, `plans/holo-port/decisions/0087-online-picture-stays-offline.md`).
+  (`knowledge/decisions/holo-port/0013-defer-game-server-features.md`, `knowledge/decisions/holo-port/0087-online-picture-stays-offline.md`).
 - The tables for saved data come with the phases that need them, through the `adding-data-persistence` skill.

@@ -14,7 +14,7 @@ tags: [server, history]
   removed from `packages/server` is the model for the structure: TCP and WebSocket behind the same interfaces to receive
   and send, the encoding on its own, and a protocol package with one part per client cast, each part small and in the
   Go way.
-- Tasks read it with `git show 2ea51d7b^:packages/server/<path>`; [The old server](/reference/old-server.md) describes
+- Tasks read it with `git show 2ea51d7b^:packages/server/<path>`; [The old server](/sources/old-server.md) describes
   it and what the decisions of this plan change.
 
 # Context
@@ -25,9 +25,9 @@ and websockets, the encoding and a package for the protocol, everything modular 
 can find it, that will help you planning".
 
 The commit was found while planning. The same server had lived in `server/internal/habbo`, `internal/app/game` and
-`apps/server` before `packages/server` ([The old server](/reference/old-server.md#where-it-is)).
+`apps/server` before `packages/server` ([The old server](/sources/old-server.md#where-it-is)).
 
 # Consequences
 
-- The structure decisions that follow it: [0005](/decisions/0005-package-layout.md),
-  [0006](/decisions/0006-transport.md) and [0007](/decisions/0007-protocols-per-listener.md).
+- The structure decisions that follow it: [0005](/decisions/server/0005-package-layout.md),
+  [0006](/decisions/server/0006-transport.md) and [0007](/decisions/server/0007-protocols-per-listener.md).

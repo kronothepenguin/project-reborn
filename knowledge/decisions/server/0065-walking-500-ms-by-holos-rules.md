@@ -25,4 +25,4 @@ allowed. Example: crossing 4 tiles takes 2 s."
 
 # Consequences
 
-- [s4-04](/tasks/s4-04-walking.md) applies it.
+- s4-04 applies it.

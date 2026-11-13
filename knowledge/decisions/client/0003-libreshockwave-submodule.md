@@ -13,7 +13,7 @@ tags: [client, sources]
 - LibreShockwave (`https://github.com/LibreShockwave/LibreShockwave`) is a git submodule at `vendor/LibreShockwave`,
   beside `vendor/HabboWidgets`.
 - It is pinned at `3f9048009ff4bc9bf4bedb4a44f875c2ab36645b`, the commit
-  `plans/server/decisions/0015-client-on-libreshockwave.md` read, which was also its `master` when it was added.
+  `knowledge/decisions/server/0015-client-on-libreshockwave.md` read, which was also its `master` when it was added.
 - Every plan reads LibreShockwave there, not in a clone of its own.
 
 # Context
@@ -26,5 +26,5 @@ and will add dcr later to decompile them and have a recent r26 source using libr
 - A fresh worktree runs `git submodule update --init vendor/LibreShockwave` before reading it.
 - `plans/server/tasks/s1-24-mus-framing.md` reads the Multiuser Xtra in the submodule.
 - Decompiling the R26 `.dcr` with LibreShockwave's asset extractor is part of
-  [C1](/phases/c1-client-page-on-libreshockwave.md), once the user has added the `.dcr`.
-- LibreShockwave is licensed under the AGPL-3.0 ([LibreShockwave](/reference/libreshockwave.md#licence)).
+  C1, once the user has added the `.dcr`.
+- LibreShockwave is licensed under the AGPL-3.0 ([LibreShockwave](/sources/libreshockwave.md#licence)).

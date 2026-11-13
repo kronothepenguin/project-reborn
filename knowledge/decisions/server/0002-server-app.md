@@ -13,7 +13,7 @@ tags: [server, packages]
 - The program is named `server`. `packages/server` holds its code, and `apps/server` is the thin runner, as for the
   other programs.
 - It is a TCP listener and a WebSocket server. It has no web pages: no Astro, no Svelte, no pnpm.
-- It is created with `tools/create -template=backend` ([0003](/decisions/0003-create-templates.md)).
+- It is created with `tools/create -template=backend` ([0003](/decisions/server/0003-create-templates.md)).
 
 # Context
 
@@ -22,5 +22,5 @@ remove astro and frontend stuff after running @tools/create/".
 
 # Consequences
 
-- `plans/holo-port/reference/architecture.md` names `apps/server` as the game server's runner.
+- `knowledge/programs.md` names `apps/server` as the game server's runner.
 - The runner's `cmd` files belong to the user like every other runner's: once generated, a change to them is asked for.

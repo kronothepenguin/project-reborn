@@ -15,7 +15,7 @@ tags: [store, cms, housekeeping, updates, tests]
 - The error page of a failed automatic update is tested in each program's internal router tests, which build the router
   with a list of updates made for the test.
 - `cms.New` and `housekeeping.New` get no new option, and nothing global changes, so
-  [0029](/decisions/0029-package-level-settings-and-auth.md)'s options stay the resolver and the static files.
+  [0029](/decisions/holo-port/0029-package-level-settings-and-auth.md)'s options stay the resolver and the static files.
 
 # Context
 
@@ -25,4 +25,4 @@ testing in `packages/store` alone.
 
 # Consequences
 
-- [up-07](/tasks/up-07-automatic-updates.md) builds the check this way.
+- up-07 builds the check this way.

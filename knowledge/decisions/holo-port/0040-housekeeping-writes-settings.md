@@ -17,7 +17,7 @@ tags: [settings, housekeeping, architecture]
 - Housekeeping has no refresh interval, because it holds the values it writes.
 - Together in one process, the programs share the settings and need nothing more.
 - Running alone, they may need IPC, disabled when the orchestrator runs everything in one process. Its design is open
-  ([HK-A](/phases/hk-a-housekeeping-core.md)).
+  (HK-A).
 
 # Context
 
@@ -30,8 +30,8 @@ OKF docs or just describe how projects communicate and interact as standalone vs
 
 # Consequences
 
-- [How the programs work together](/reference/architecture.md) describes both ways of running.
-- The question about the reload interval in [0024](/decisions/0024-settings-catalogue-and-getters.md) is closed.
+- [How the programs work together](/programs.md) describes both ways of running.
+- The question about the reload interval in [0024](/decisions/holo-port/0024-settings-catalogue-and-getters.md) is closed.
 - Until the IPC exists, a CMS running alone sees a housekeeping change at its next start, as
-  [0029](/decisions/0029-package-level-settings-and-auth.md) says.
+  [0029](/decisions/holo-port/0029-package-level-settings-and-auth.md) says.
 - `cms.refresh` has no reader. It stays until the IPC design decides its fate.

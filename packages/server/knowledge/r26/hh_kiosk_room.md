@@ -23,9 +23,9 @@ Other casts register the two other commands this cast sends, and listen to the s
 
 | Script | Why it is here |
 | --- | --- |
-| `hh_navigator/6_Navigator Handler Class.ls` | Registers `SETFLATINFO` and `SETFLATCAT`, and also listens to 33 ([hh_navigator](/reference/r26/hh_navigator.md)) |
+| `hh_navigator/6_Navigator Handler Class.ls` | Registers `SETFLATINFO` and `SETFLATCAT`, and also listens to 33 ([hh_navigator](/r26/hh_navigator.md)) |
 | `hh_navigator/5_Navigator Component Class.ls` | `roomkioskGoingFlat` enters the new room, and `sendGetOwnFlats` lists the own rooms; the navigator's room lists open the kiosk |
-| `hh_room/5_Room Handler Class.ls` | Registers `MOVE` and `LOOKTO`, which the Roommatic object sends ([s1-06](/tasks/s1-06-room.md)) |
+| `hh_room/5_Room Handler Class.ls` | Registers `MOVE` and `LOOKTO`, which the Roommatic object sends (s1-06) |
 | `hh_entry_init/8_Login Handler Class.ls`, `hh_room/5_Room Handler Class.ls` | Also listen to 33 |
 
 # Messages from the server
@@ -39,18 +39,18 @@ Other casts register the two other commands this cast sends, and listen to the s
 # Commands from the client
 
 Registered by `5_RoomKiosk Handler Class.ls`. Its sender calls `send` with text, which is the whole body
-([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
 | 29 | `CREATEFLAT` | `#info` | `4_RoomKiosk Component Class.ls`: `sendNewRoomData`, text | raw: `/first floor/<name>/model_<model>/<door>/<show owner name>` | [Creating a room](#creating-a-room) |
 
 This cast also sends two commands that `hh_navigator` registers, and whose rows list it among their senders
-([hh_navigator](/reference/r26/hh_navigator.md#commands-from-the-client)):
+([hh_navigator](/r26/hh_navigator.md#commands-from-the-client)):
 
 - `SETFLATINFO` (25), as text: `/<flat id>/`, then the lines `description=…`, `password=…` and `allsuperuser=…`.
   Unlike the navigator's, it starts with a `/`, always has a `password=` line, empty unless the door is `password`,
-  and has no `maxvisitors=` ([hh_navigator](/reference/r26/hh_navigator.md#changing-a-room)).
+  and has no `maxvisitors=` ([hh_navigator](/r26/hh_navigator.md#changing-a-room)).
 - `SETFLATCAT` (153), typed: int flat id; int category id, the category chosen on the first page.
 
 # Flows
@@ -88,12 +88,12 @@ The kiosk opens on `#open_roomkiosk`, which comes from:
 ## Counts
 
 `5_RoomKiosk Handler Class.ls` registers 3 messages and 1 command, as
-[Registering scripts](/reference/client-r26.md#registering-scripts) says.
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says.
 
 ## Ids other casts register too
 
 - 33: `hh_entry_init`, `hh_navigator` and `hh_room` also listen, each comparing the whole text with texts of their own
-  ([hh_entry_init](/reference/r26/hh_entry_init.md#ids-other-casts-register-too)).
+  ([hh_entry_init](/r26/hh_entry_init.md#ids-other-casts-register-too)).
 - `SETFLATINFO` and `SETFLATCAT` are registered by `hh_navigator`, which sends them too.
 
 ## Quirks

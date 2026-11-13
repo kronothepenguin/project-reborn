@@ -15,7 +15,7 @@ tags: [tools]
 # Context
 
 The game server's HTTP listener on 15445 came from that template and went with
-[platform-01](/tasks/platform-01-drop-the-unused-listener.md). Asked whether the template should change, the user chose
+platform-01. Asked whether the template should change, the user chose
 "Leave it".
 
 # Consequences

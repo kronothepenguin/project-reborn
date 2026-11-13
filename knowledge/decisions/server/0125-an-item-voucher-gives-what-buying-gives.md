@@ -28,8 +28,8 @@ inside the game server's buying code."
 
 # Consequences
 
-- [s5-18](/tasks/s5-18-item-vouchers.md) moves the code: `furni.Create`, with `furni.IsTeleport`, `furni.IsPostIt` and
+- s5-18 moves the code: `furni.Create`, with `furni.IsTeleport`, `furni.IsPostIt` and
   `furni.IsDecoration`, which the game's rules use too.
 - `packages/virtual/furni` holds the definitions in memory for the game server
-  ([0098](/decisions/0098-virtual-furni-and-catalogue.md)); `Create` reads none of them, and writes through the caller's
+  ([0098](/decisions/server/0098-virtual-furni-and-catalogue.md)); `Create` reads none of them, and writes through the caller's
   transaction.

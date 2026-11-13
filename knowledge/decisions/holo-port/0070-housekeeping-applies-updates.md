@@ -35,11 +35,11 @@ from the housekeeping update everything including the config.json".
 
 The user chose "New attribute" for the permission. Told that no hotel holds the new attribute yet, so nobody could apply
 the update that grants it, the user chose "Database or admins". At least one user always holds
-`housekeeping.accessGroups` ([0053](/decisions/0053-attributes-on-groups-and-users.md)), so a hotel always has someone who
+`housekeeping.accessGroups` ([0053](/decisions/holo-port/0053-attributes-on-groups-and-users.md)), so a hotel always has someone who
 can apply its updates.
 
 # Consequences
 
-- Housekeeping writes config.json, and [How the programs work together](/reference/architecture.md) changes with it.
+- Housekeeping writes config.json, and [How the programs work together](/programs.md) changes with it.
 - Opening the installer again on an installed hotel waits in `plans/later.md`
-  ([0072](/decisions/0072-later-work-in-plans-later.md)).
+  ([0072](/decisions/holo-port/0072-later-work-in-plans-later.md)).

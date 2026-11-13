@@ -21,7 +21,7 @@ tags: [server, auth, rights]
 
 # Context
 
-`plans/holo-port/decisions/0015-attribute-names-and-fuses.md` keeps the fuses' exact names in a separate catalogue,
+`knowledge/decisions/holo-port/0015-attribute-names-and-fuses.md` keeps the fuses' exact names in a separate catalogue,
 designed together with the game server. The client's scripts check 18 fuses. Offered a default set with access groups,
 or the same few fuses for everyone until a later phase, the user chose "Defaults + access groups (Recommended)": "Every
 habbo gets fuse_trade and fuse_buy_credits; club members also fuse_use_club_dance and fuse_use_special_room_layouts.
@@ -30,5 +30,5 @@ beside the site's attributes."
 
 # Consequences
 
-- [s2-04](/tasks/s2-04-fuse-catalogue.md) adds the catalogue, and
-  [s2-07](/tasks/s2-07-after-login.md) sends a habbo's fuses.
+- s2-04 adds the catalogue, and
+  s2-07 sends a habbo's fuses.

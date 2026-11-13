@@ -26,4 +26,4 @@ a deal is one catalogue item that gives several furni."
 
 # Consequences
 
-- [s5-01](/tasks/s5-01-catalogue-tables.md) creates the tables and splits Holo's rows into them.
+- s5-01 creates the tables and splits Holo's rows into them.

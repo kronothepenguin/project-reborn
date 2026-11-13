@@ -11,7 +11,7 @@ tags: [p3, scope]
 
 # Decision
 
-- [P3 Homes](/phases/p3-homes.md) leaves the phase order and waits as an isolated piece of work.
+- P3 Homes leaves the phase order and waits as an isolated piece of work.
 - The user looks for the art and says when it is found.
 
 # Context
@@ -23,5 +23,5 @@ task for later".
 # Consequences
 
 - P4 follows the housekeeping phases.
-- What needs homes waits with them: the group homes of [P5](/phases/p5-groups-forum.md), which reuse the home editor, and
-  the target of the header's habbo search in [P2](/phases/p2-me-account.md), `GET /home?name=`.
+- What needs homes waits with them: the group homes of P5, which reuse the home editor, and
+  the target of the header's habbo search in P2, `GET /home?name=`.

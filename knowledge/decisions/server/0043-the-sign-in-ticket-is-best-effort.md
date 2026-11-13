@@ -10,7 +10,7 @@ tags: [server, cms, auth, data]
 
 # Decision
 
-- Signing in to the CMS makes its SSO ticket ([0030](/decisions/0030-sso-tickets-from-the-cms-sign-in.md)) after the
+- Signing in to the CMS makes its SSO ticket ([0030](/decisions/server/0030-sso-tickets-from-the-cms-sign-in.md)) after the
   session, outside its transaction, and only logs a failure.
 - A failure happens only while the update `0008-sso-tickets-as-text.sql`, which gives `sso_tickets` its new form,
   waits. The update is not automatic: it waits for an administrator, as the other updates do, and the hotel is closed
@@ -29,4 +29,4 @@ like the other updates, and the update tests keep working."
 
 # Consequences
 
-- [s2-02](/tasks/s2-02-sso-tickets-at-sign-in.md) follows it in `packages/auth` and in the update.
+- s2-02 follows it in `packages/auth` and in the update.

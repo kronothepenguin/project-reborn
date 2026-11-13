@@ -12,7 +12,7 @@ tags: [server, catalogue, data]
 
 - S5's seed leaves out the seven pages whose furni works only once S7 builds pets, photos and the sound machine: Pets,
   Camera, Trax Ambient, Trax Dance, Trax Rock, Trax SFX and Trax Urban, with their furni.
-- [S7](/phases/s7-club-help-extras.md) adds each page with an update, together with what makes it work.
+- S7 adds each page with an update, together with what makes it work.
 
 # Context
 
@@ -23,5 +23,5 @@ machine that stays silent."
 
 # Consequences
 
-- [s5-01](/tasks/s5-01-catalogue-tables.md) leaves them out, and [S7](/phases/s7-club-help-extras.md)'s scope gains
+- s5-01 leaves them out, and S7's scope gains
   them.

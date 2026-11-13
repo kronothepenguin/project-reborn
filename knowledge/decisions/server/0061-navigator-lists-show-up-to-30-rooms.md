@@ -20,5 +20,5 @@ rooms and a search returns at most 30. Example: a search for "party" matching 80
 
 # Consequences
 
-- [s3-01](/tasks/s3-01-navigator-tables.md) declares the settings, and [s3-03](/tasks/s3-03-browsing.md) and
-  [s3-04](/tasks/s3-04-room-lists.md) apply them.
+- s3-01 declares the settings, and s3-03 and
+  s3-04 apply them.

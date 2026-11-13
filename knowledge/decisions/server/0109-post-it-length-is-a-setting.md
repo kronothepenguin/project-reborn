@@ -22,4 +22,4 @@ did."
 
 # Consequences
 
-- [s5-12](/tasks/s5-12-post-its.md) adds the setting and reads it.
+- s5-12 adds the setting and reads it.

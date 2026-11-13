@@ -25,4 +25,4 @@ no habbo ever redeems a voucher that gives nothing. Example: staff type 'throne'
 
 # Consequences
 
-- [s5-18](/tasks/s5-18-item-vouchers.md) stores the furni definition with the voucher.
+- s5-18 stores the furni definition with the voucher.

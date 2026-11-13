@@ -28,5 +28,5 @@ archived".
 # Consequences
 
 - `avatars` gains `archived_at`, and the queries that read habbos filter on it.
-- Each rule arrives with its feature: hiding now, restoring in [HK-B](/phases/hk-b-users-moderation.md), the stickers in
-  [P3](/phases/p3-homes.md) and the label in [P5](/phases/p5-groups-forum.md).
+- Each rule arrives with its feature: hiding now, restoring in HK-B, the stickers in
+  P3 and the label in P5.

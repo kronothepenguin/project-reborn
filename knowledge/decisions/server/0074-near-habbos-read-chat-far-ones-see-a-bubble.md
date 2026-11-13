@@ -26,4 +26,4 @@ the speaker. Example: across the Welcome Lounge you see a bubble over someone ta
 
 # Consequences
 
-- [s4-05](/tasks/s4-05-chat-and-gestures.md) applies it, with the setting `game.chatRange`.
+- s4-05 applies it, with the setting `game.chatRange`.

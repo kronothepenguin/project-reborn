@@ -16,10 +16,10 @@ tags: [server, protocol, settings]
 
 # Context
 
-The client answers each `PING` at once and expects none at any rate ([hh_entry_init](/reference/r26/hh_entry_init.md)). Offered 30 seconds with a close after 90,
+The client answers each `PING` at once and expects none at any rate (hh_entry_init (`packages/server/knowledge/r26/hh_entry_init.md`)). Offered 30 seconds with a close after 90,
 or 60 seconds with a close after 3 minutes, the user chose "30 s, close after 90 s (Recommended)": "Two settings: a PING
 every 30 seconds, and a session closed after 90 seconds without a PONG, which logs the habbo out."
 
 # Consequences
 
-- [s2-08](/tasks/s2-08-keeping-the-session-alive.md) declares the settings and pings.
+- s2-08 declares the settings and pings.

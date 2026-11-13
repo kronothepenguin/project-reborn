@@ -13,7 +13,7 @@ tags: [server, rooms, events]
 - Room events have the types 1 to `game.roomEventTypes`, 11 by default, as Holo's `events_categorycount`; the client
   names each from its texts `roomevent_type_<n>`.
 - Only a room's owner hosts an event there, one at a time. An event lives in memory
-  ([0011](/decisions/0011-saved-and-memory-only-data.md)) and ends when its host leaves the room or logs out.
+  ([0011](/decisions/server/0011-saved-and-memory-only-data.md)) and ends when its host leaves the room or logs out.
 
 # Context
 
@@ -24,4 +24,4 @@ at a time; the event lives in memory (decision 0011) and ends when its host leav
 
 # Consequences
 
-- [s4-07](/tasks/s4-07-room-extras.md) applies it, with the setting `game.roomEventTypes`.
+- s4-07 applies it, with the setting `game.roomEventTypes`.

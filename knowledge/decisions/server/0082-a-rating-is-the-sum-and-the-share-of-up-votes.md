@@ -23,4 +23,4 @@ of +1 votes, 0 to 100. Example: 3 up and 1 down shows 'rated 2', percent 75."
 
 # Consequences
 
-- [s4-07](/tasks/s4-07-room-extras.md) applies it.
+- s4-07 applies it.

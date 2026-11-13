@@ -25,7 +25,7 @@ packages/virtual/         state only: settings/, habbos/, rooms/, furni/ ...
 - `game` holds the rules and never knows the protocol. It is its own package so that `r26` can call it without an
   import cycle.
 - `packages/virtual` holds only state, one package per entity, as `virtual/settings` does
-  ([0009](/decisions/0009-virtual-holds-the-server-state.md)).
+  ([0009](/decisions/server/0009-virtual-holds-the-server-state.md)).
 
 # Context
 

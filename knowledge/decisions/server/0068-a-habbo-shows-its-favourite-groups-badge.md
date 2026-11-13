@@ -21,4 +21,4 @@ or none when it has no favourite; the room's 309 answer lists the badges of the 
 
 # Consequences
 
-- [s4-07](/tasks/s4-07-room-extras.md) applies it.
+- s4-07 applies it.

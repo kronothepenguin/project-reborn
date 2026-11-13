@@ -15,7 +15,7 @@ tags: [config, settings]
   and a declared default and validator for every key, following `adding-config-sections`.
 - Settings are rows of the `settings` table: `key` is a config key path (`site.name`), `value` a JSON literal.
   They are a table, not a package.
-- The merge of both lives in `packages/virtual` ([0010](/decisions/0010-virtual-settings-entity.md)).
+- The merge of both lives in `packages/virtual` ([0010](/decisions/holo-port/0010-virtual-settings-entity.md)).
 - The only new function in `packages/config` is `Create(cfg)`, which writes `config.json` only when it does not
   exist. Only the installer calls it.
 

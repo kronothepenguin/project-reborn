@@ -25,4 +25,4 @@ recycled yet, even after being traded."
 
 # Consequences
 
-- [s5-16](/tasks/s5-16-recycler.md) compares the furni's `created_at` with the setting.
+- s5-16 compares the furni's `created_at` with the setting.

@@ -23,4 +23,4 @@ chose `main`.
 
 # Consequences
 
-- [Finish a task](/rules.md) gains a commit step, mirrored in the `tracking-holo-port` skill.
+- Finish a task gains a commit step, mirrored in the `tracking-holo-port` skill.

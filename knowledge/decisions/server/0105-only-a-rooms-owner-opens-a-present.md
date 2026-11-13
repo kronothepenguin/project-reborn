@@ -12,7 +12,7 @@ tags: [server, furni, presents]
 
 - Only the owner of the habbo room a box stands in opens it, and what is inside goes to the owner's hand.
 - Whoever may pick the box up may open it: a holder of `fuse_any_room_controller` counts as the owner, as everywhere
-  ([0103](/decisions/0103-whoever-picks-a-furni-up-keeps-it.md)).
+  ([0103](/decisions/server/0103-whoever-picks-a-furni-up-keeps-it.md)).
 - `fuse_pick_up_any_furni`, for which the client shows its Open button too, opens nothing.
 
 # Context
@@ -24,4 +24,4 @@ open it. Example: Ana places her present in her own room and opens it; in Bob's 
 
 # Consequences
 
-- [s5-06](/tasks/s5-06-presents.md) applies it.
+- s5-06 applies it.

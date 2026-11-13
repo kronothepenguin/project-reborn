@@ -21,12 +21,12 @@ tags: [habbos, moderation, forum]
 
 # Context
 
-[0058](/decisions/0058-habbos-are-archived.md) took every rule above but the forum's, where it showed the habbo as
+[0058](/decisions/holo-port/0058-habbos-are-archived.md) took every rule above but the forum's, where it showed the habbo as
 `disabled`. Asked what that looks like, the user chose the name replaced everywhere with no link and an empty box, and
 answered: "yes, instead of "disabled" -> "archived"".
 
 # Consequences
 
 - `avatars` has `archived_at`, and the queries that read habbos filter on it.
-- Each rule arrives with its feature: hiding with 0058, restoring in [HK-B](/phases/hk-b-users-moderation.md), the
-  stickers in [P3](/phases/p3-homes.md) and the forum in [P5](/phases/p5-groups-forum.md).
+- Each rule arrives with its feature: hiding with 0058, restoring in HK-B, the
+  stickers in P3 and the forum in P5.

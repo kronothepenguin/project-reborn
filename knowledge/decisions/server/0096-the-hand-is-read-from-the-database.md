@@ -17,8 +17,8 @@ tags: [server, furni, data]
 
 # Context
 
-[0009](/decisions/0009-virtual-holds-the-server-state.md) loads a habbo's own data at login, and
-[0053](/decisions/0053-the-online-habbo-holds-its-own-data.md) reads the wallet and the club from the store when the
+[0009](/decisions/server/0009-virtual-holds-the-server-state.md) loads a habbo's own data at login, and
+[0053](/decisions/server/0053-the-online-habbo-holds-its-own-data.md) reads the wallet and the club from the store when the
 client asks, because the user's habbos share them. Offered the database each time or a copy in memory loaded at login,
 the user chose "The database, each time (Recommended)": "Opening the hand, placing, buying and trading read and write
 the database at that moment, like the wallet and like Holo. One source of truth: a present bought for an online habbo,
@@ -27,5 +27,5 @@ site, opens her hand in the client and the Throne is there. Costs one small quer
 
 # Consequences
 
-- [s5-04](/tasks/s5-04-the-hand.md) builds the hand.
-- A room's placed furni stays hot data of the loaded room ([0009](/decisions/0009-virtual-holds-the-server-state.md)).
+- s5-04 builds the hand.
+- A room's placed furni stays hot data of the loaded room ([0009](/decisions/server/0009-virtual-holds-the-server-state.md)).

@@ -31,7 +31,7 @@ Other casts:
 
 | Script | Why it is here |
 | --- | --- |
-| `hh_room/4_Room Component Class.ls` | The chat command `:editcatalogue`, for holders of `fuse_catalog_editor` ([s1-06](/tasks/s1-06-room.md)) |
+| `hh_room/4_Room Component Class.ls` | The chat command `:editcatalogue`, for holders of `fuse_catalog_editor` (s1-06) |
 
 # Messages from the server
 
@@ -47,7 +47,7 @@ Other casts:
 | 36 | `handle_nameapproved` (`12_Catalogue pets Class.ls`) | `#info` | int result: 0 approved | The answer to `APPROVENAME`, read only while a check waits: 0 opens the order; any other value shows `catalog_pet_unacceptable` |
 
 Raw bodies are split into lines at `RETURN` (`0x0D`) and into values at `TAB`
-([fuse_client](/reference/r26/fuse_client.md#booleans-bytes-and-raw-bodies)).
+([fuse_client](/r26/fuse_client.md#booleans-bytes-and-raw-bodies)).
 
 ## A page
 
@@ -72,7 +72,7 @@ orders the texts. The value is everything after the first `:`. `<br>` in a text 
 
 Registered by `5_Catalogue Handler Class.ls` (100 to 102) and `12_Catalogue pets Class.ls` (42). A sender that calls
 `send` with text sends it as the whole body, and with a typed list it goes through `sendNew`
-([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -126,7 +126,7 @@ Extra values:
 ## Counts
 
 `5_Catalogue Handler Class.ls` registers 7 messages and 3 commands, and `12_Catalogue pets Class.ls` 1 and 1, as
-[Registering scripts](/reference/client-r26.md#registering-scripts) says.
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says.
 
 ## Ids other casts register too
 
@@ -141,7 +141,7 @@ None: no other cast registers these messages or these commands.
 ## Quirks
 
 - 296's code 0 has a case label with no statements, so it does nothing, as in
-  [s1-11](/tasks/s1-11-friend-list.md)'s errors.
+  s1-11's errors.
 - The trophy's inscription and the pet's name turn each line break into the two characters `\r`: Lingo strings have
   no escapes.
 - `:editcatalogue` executes `"edit_catalogue"`, a string, where the component registered the symbol

@@ -34,7 +34,7 @@ the connection does with it ([Encryption](#encryption)).
 | `#mus` | `connection.mus.id` | `42_Binary Manager Class.ls`: `next`, only when the queue has work | `connection.mus.host`, `connection.mus.port` | Multiuser Xtra messages (`connectToNetServer(…, 0)`) |
 
 On LibreShockwave each of these sockets is a WebSocket to `ws(s)://<host>:<port><websocketPath>`, with the same bytes
-([0015](/decisions/0015-client-on-libreshockwave.md)).
+(0015 (`knowledge/decisions/server/0015-client-on-libreshockwave.md`)).
 
 The hosts and ports come from the page that embeds the client, not from a cast: `packages/client-r26/index.html`
 passes `connection.info.host=localhost;connection.info.port=30000` and
@@ -201,9 +201,9 @@ Each example was computed with a literal port of `sendNew` and read back with a 
 ## Text
 
 How text becomes bytes depends on the variable `client.textdata.utf8`. No cast sets it, so it comes from the
-external variables the site serves; the server's text is UTF-8 with it on ([0014](/decisions/0014-text-is-utf8.md)).
+external variables the site serves; the server's text is UTF-8 with it on (0014 (`knowledge/decisions/server/0014-text-is-utf8.md`)).
 Several paths also depend on `the productVersion`. LibreShockwave reports `"10.1"`
-([0015](/decisions/0015-client-on-libreshockwave.md)), so the client takes the paths for Director below 11.
+(0015 (`knowledge/decisions/server/0015-client-on-libreshockwave.md`)), so the client takes the paths for Director below 11.
 
 - `client.textdata.utf8` true: `encodeUTF8` writes UTF-8 for code points up to U+FFFF, so `é` is `C3 A9`.
   `decodeUTF8` reads 1- to 3-byte sequences back, but only on a Director below version 11; from version 11 the text
@@ -229,15 +229,15 @@ handler the object does not have is skipped, with an error. `unregisterListener`
 
 # The `#mus` connection
 
-`#mus` carries the photo data of `hh_photo` ([s1-16](/tasks/s1-16-photo.md)). It is not Holo's MUS, the
-site-to-server commands of [0013](/decisions/0013-site-changes-like-mus.md); the two only share a name.
+`#mus` carries the photo data of `hh_photo` (s1-16). It is not Holo's MUS, the
+site-to-server commands of 0013 (`knowledge/decisions/server/0013-site-changes-like-mus.md`); the two only share a name.
 
 ## Wire format
 
 `connectToNetServer("*", "*", host, port, "*", 0)` opens the Multiuser Xtra in its own message mode, not raw mode.
 Every message is `(recipients, subject, content)`, and the Xtra writes the bytes on the wire: MUS, the protocol of
 Macromedia's Shockwave Multiuser Server. No `.ls` script holds that byte format, so it comes from LibreShockwave's
-Multiuser Xtra ([0015](/decisions/0015-client-on-libreshockwave.md)), and [s1-24](/tasks/s1-24-mus-framing.md)
+Multiuser Xtra (0015 (`knowledge/decisions/server/0015-client-on-libreshockwave.md`)), and s1-24
 describes it.
 
 What the scripts put in those messages:
@@ -273,11 +273,11 @@ The Binary Manager owns `#mus` and keeps a queue of tasks: `#store` (`storeBinar
 5. With the queue empty, a 30,000 ms timeout closes `#mus`. The next task opens it again.
 
 The Binary Manager also listens for `U_RTS` and does nothing with it. `hh_photo` adds `OK` and `FILM` on `#mus`,
-described in [s1-16](/tasks/s1-16-photo.md).
+described in s1-16.
 
 # Encryption
 
-The server skips it ([0012](/decisions/0012-no-encryption.md)), so this is only what the client would do.
+The server skips it (0012 (`knowledge/decisions/server/0012-no-encryption.md`)), so this is only what the client would do.
 
 - `handleCryptoParameters` always takes client-to-server encryption as on, so the client always answers
   `CRYPTOPARAMETERS` with `GENERATEKEY` and its Diffie–Hellman public key in hex. The server then chooses: it answers
@@ -290,7 +290,7 @@ The server skips it ([0012](/decisions/0012-no-encryption.md)), so this is only 
 - When `CRYPTOPARAMETERS` is 0, the server never sends `SERVERSECRETKEY`, and nothing is enciphered in either
   direction.
 
-[hh_entry_init](/reference/r26/hh_entry_init.md#the-handshake) maps these messages' ids and the rest of the
+[hh_entry_init](/r26/hh_entry_init.md#the-handshake) maps these messages' ids and the rest of the
 handshake.
 
 # Notes

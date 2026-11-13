@@ -29,4 +29,4 @@ Checked in the module cache:
 # Consequences
 
 - `adding-data-persistence` replaces its "unix seconds" and "0/1" rules
-  ([p0-03](/tasks/p0-03-persistence-skill-updates.md)).
+  (p0-03).

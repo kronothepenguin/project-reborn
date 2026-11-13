@@ -12,9 +12,9 @@ tags: [process, sources]
 
 - HoloCMS's source is `source/holocms/`, no longer `source/holo/`.
 - Every path to it in this bundle names `source/holocms/`: the tasks' `holo:` lines, the phases, the reference
-  documents, [the rules](/rules.md), the root [index](/index.md) and three accepted decisions,
-  [0005](/decisions/0005-argon2id-passwords.md), [0016](/decisions/0016-installer.md) and
-  [0017](/decisions/0017-guest-read-access.md), where only the path changed.
+  documents, the rules, the root index and three accepted decisions,
+  [0005](/decisions/holo-port/0005-argon2id-passwords.md), [0016](/decisions/holo-port/0016-installer.md) and
+  [0017](/decisions/holo-port/0017-guest-read-access.md), where only the path changed.
 - The task field that lists the Holo sources a task ports keeps its name, `holo:`.
 
 # Context
@@ -26,7 +26,7 @@ with the new names".
 
 Offered `holocms` and `holoemu`, `cms` and `server`, or `holocms` and `holoserver`, the user chose `holocms` and
 `holoemu`, which name the products themselves, over `cms`, which would also name `packages/cms`. The emulator is a
-reference of the game server, `plans/server/decisions/0016-holoemu-is-a-reference.md`.
+reference of the game server, `knowledge/decisions/server/0016-holoemu-is-a-reference.md`.
 
 # Consequences
 

@@ -33,4 +33,4 @@ active one.
 
 # Consequences
 
-- Nothing is built until the game server exists ([0013](/decisions/0013-defer-game-server-features.md)).
+- Nothing is built until the game server exists ([0013](/decisions/holo-port/0013-defer-game-server-features.md)).

@@ -20,7 +20,7 @@ tags: [housekeeping, design]
 
 - Every page has a `Log out` link and the clock box.
 - The extra tools in the user's screenshots are a reference for the look only.
-- The rest of [0041](/decisions/0041-housekeeping-design-system.md) stands.
+- The rest of [0041](/decisions/holo-port/0041-housekeeping-design-system.md) stands.
 
 # Context
 

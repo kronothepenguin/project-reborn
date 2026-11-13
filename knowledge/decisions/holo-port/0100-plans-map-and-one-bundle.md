@@ -31,4 +31,4 @@ housekeeping and the installer alike, and P5 was in progress on its own branch.
 # Consequences
 
 - A plan is added to `plans/index.md` when it is created, with the sources it reads.
-- `plans/later.md` stays beside the bundles ([0072](/decisions/0072-later-work-in-plans-later.md)).
+- `plans/later.md` stays beside the bundles ([0072](/decisions/holo-port/0072-later-work-in-plans-later.md)).

@@ -11,7 +11,7 @@ tags: [groups, colours, p5]
 # Decision
 
 - Once the badge renderer works, one sheet shows the 18 tints and sample badges, drawn by the renderer in both palettes
-  of [0042](/decisions/0042-two-badge-palettes.md), side by side.
+  of [0042](/decisions/holo-port/0042-two-badge-palettes.md), side by side.
 - The user picks one palette from the sheet, and the other is deleted from the renderer and the badge editor.
 - Until then the Tailwind palette is live, as the colour rule wants. Nothing temporary enters the code: no setting
   switches the palettes, and badge addresses carry no palette.

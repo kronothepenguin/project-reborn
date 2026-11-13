@@ -20,7 +20,7 @@ tags: [server, catalogue, access]
 # Context
 
 Holo gives each page a minimum rank, and a group's level is Holo's rank number
-(`plans/holo-port/decisions/0055-staff-levels.md`); the club is a subscription here, not a level. Offered as Holo, the
+(`knowledge/decisions/holo-port/0055-staff-levels.md`); the club is a subscription here, not a level. Offered as Holo, the
 level 7 pages only, or every page for everyone, the user chose "As Holo: level 7, and club (Recommended)": "The 16 rare
 pages show only to habbos whose access group level is 7, as the navigator's staff categories do. Greek and Advertisement
 show to club members and to staff from level 2. Example: a moderator of level 6 sees no Rares page, and a club member
@@ -28,6 +28,6 @@ sees Greek."
 
 # Consequences
 
-- [s5-01](/tasks/s5-01-catalogue-tables.md) gives a page the level a habbo needs and whether the club opens it.
-- [s5-03](/tasks/s5-03-showing-the-catalogue.md) lists and sends a page by them, and
-  [s5-05](/tasks/s5-05-buying-furni.md) sells only from a page the habbo sees.
+- s5-01 gives a page the level a habbo needs and whether the club opens it.
+- s5-03 lists and sends a page by them, and
+  s5-05 sells only from a page the habbo sees.

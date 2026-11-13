@@ -11,7 +11,7 @@ tags: [process]
 # Decision
 
 - `plans/holo-port/` holds decisions, phases, tasks, reference documents and a log, following OKF 0.2.
-- [The rules](/rules.md) define how tasks, decisions and log entries are created and updated.
+- The rules define how tasks, decisions and log entries are created and updated.
 - `.agents/skills/tracking-holo-port/SKILL.md` points agents to the bundle and its rules.
 
 # Context

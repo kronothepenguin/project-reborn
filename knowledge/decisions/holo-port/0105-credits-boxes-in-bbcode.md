@@ -11,8 +11,8 @@ tags: [economy, settings, bbcode]
 # Decision
 
 - The bodies of the credits page's two boxes, `What are credits?` and `Get credits!`, are BBCode, rendered by
-  `packages/cms/internal/bbcode` like the staff page boxes ([0077](/decisions/0077-staff-boxes-in-bbcode.md)), and
-  edited in housekeeping in the BBCode editor ([0092](/decisions/0092-bbcode-editor.md)).
+  `packages/cms/internal/bbcode` like the staff page boxes ([0077](/decisions/holo-port/0077-staff-boxes-in-bbcode.md)), and
+  edited in housekeeping in the BBCode editor ([0092](/decisions/holo-port/0092-bbcode-editor.md)).
 - Each box's picture is part of the page, beside the text: `credits_permission.png` in the first, as Holo's
   `credits.php` already has it, and the palm chair of Holo's default text in the second.
 - The second box's list becomes lines that start with `* `, as Holo's list items already showed.

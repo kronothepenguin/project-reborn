@@ -24,11 +24,11 @@ Other casts:
 
 | Script | Why it is here |
 | --- | --- |
-| `hh_entry_init/8_Login Handler Class.ls` | Registers 3, the login's answer, which also starts the friend list ([hh_entry_init](/reference/r26/hh_entry_init.md#after-the-login)) |
-| `hh_club/4_Club Handler Class.ls` | Also listens to 3 ([hh_club](/reference/r26/hh_club.md)) |
-| `hh_navigator/5_Navigator Component Class.ls` | Sends `FOLLOW_FRIEND` with the variable `friend.id` ([hh_navigator](/reference/r26/hh_navigator.md)) |
-| `hh_instant_messenger/3_Instant Messenger Interface Class.ls` | Sends `FOLLOW_FRIEND` from a chat's follow button ([s1-12](/tasks/s1-12-instant-messenger.md)) |
-| `hh_room_ui/5_Room Object Displayer Class.ls` | Executes `#externalFriendRequest` with a user's name, which sends `FRIENDLIST_FRIENDREQUEST` ([s1-06](/tasks/s1-06-room.md)) |
+| `hh_entry_init/8_Login Handler Class.ls` | Registers 3, the login's answer, which also starts the friend list ([hh_entry_init](/r26/hh_entry_init.md#after-the-login)) |
+| `hh_club/4_Club Handler Class.ls` | Also listens to 3 ([hh_club](/r26/hh_club.md)) |
+| `hh_navigator/5_Navigator Component Class.ls` | Sends `FOLLOW_FRIEND` with the variable `friend.id` ([hh_navigator](/r26/hh_navigator.md)) |
+| `hh_instant_messenger/3_Instant Messenger Interface Class.ls` | Sends `FOLLOW_FRIEND` from a chat's follow button (s1-12) |
+| `hh_room_ui/5_Room Object Displayer Class.ls` | Executes `#externalFriendRequest` with a user's name, which sends `FRIENDLIST_FRIENDREQUEST` (s1-06) |
 | `hh_room_ui/34_Room Bar Extensions Manager.ls` | Accepts or declines a friend request from the room bar, through the component's `updateFriendRequest` |
 
 # Messages from the server
@@ -68,7 +68,7 @@ string last access. These are a friend's values in another order, with the room 
 # Commands from the client
 
 Registered by `5_Friend List Handler Class.ls`. Every sender calls `send`: with no body it sends the id alone, and
-with a typed list it goes through `sendNew` ([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+with a typed list it goes through `sendNew` ([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -124,7 +124,7 @@ the variable `link.format.mail.compose`, its `%recipientid%` replaced by the fri
 ## Counts
 
 `5_Friend List Handler Class.ls` registers 11 messages and 10 commands, as
-[Registering scripts](/reference/client-r26.md#registering-scripts) says.
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says.
 
 ## Ids other casts register too
 
@@ -145,4 +145,4 @@ the variable `link.format.mail.compose`, its `%recipientid%` replaced by the fri
 - In 260, code 37's reason 1 and code 39 have case labels with no statements, so they do nothing. The decompiler
   prints a label of several values on one line, as `36, 76:` in `hh_navigator`, so these are labels of their own.
 - A person's sex is an int in 12, 13 and 435. The friend list hands it to the figure parser with the figure, and the
-  sex plays no part there ([hh_human](/reference/r26/hh_human.md)).
+  sex plays no part there ([hh_human](/r26/hh_human.md)).

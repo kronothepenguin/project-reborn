@@ -19,4 +19,4 @@ keeps nothing."
 
 # Consequences
 
-- [s2-08](/tasks/s2-08-keeping-the-session-alive.md) logs them.
+- s2-08 logs them.

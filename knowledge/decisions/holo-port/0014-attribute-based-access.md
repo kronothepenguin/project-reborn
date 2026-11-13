@@ -27,5 +27,5 @@ Holo used numeric ranks 1–7: rank 2 meant Habbo Club, staff checks were `rank 
 
 # Consequences
 
-- Names and the initial catalogue: [0015](/decisions/0015-attribute-names-and-fuses.md).
-- Staff page: [0019](/decisions/0019-staff-page-display-habbo.md).
+- Names and the initial catalogue: [0015](/decisions/holo-port/0015-attribute-names-and-fuses.md).
+- Staff page: [0019](/decisions/holo-port/0019-staff-page-display-habbo.md).

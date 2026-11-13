@@ -54,9 +54,9 @@ on" for a failed call.
 
 # Consequences
 
-- Supersedes `plans/server/decisions/0013-site-changes-like-mus.md`: the site never changes the game's state directly,
+- Supersedes `knowledge/decisions/server/0013-site-changes-like-mus.md`: the site never changes the game's state directly,
   even in one process. Its first point stands: the game is told of a change it holds.
-- Replaces the notices of [the communication study](/reference/research-communication.md).
+- Replaces the notices of the communication study (`plans/reborn/reference/research-communication.md`).
 - Options now also carry what differs between reborn and a program run alone (`WithAPI`, the installer's
   `WithListener`); required dependencies are never options.
-- The first service is `Habbos`, built with [the habbos slice](/slices/habbos.md).
+- The first service is `Habbos`, built with the habbos slice (`plans/reborn/slices/habbos.md`).

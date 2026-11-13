@@ -34,5 +34,5 @@ unused.
 
 # Consequences
 
-- What is saved and what is temporary: [0011](/decisions/0011-saved-and-memory-only-data.md).
-- When a change to hot data reaches the database: [0010](/decisions/0010-hot-data-written-at-once.md).
+- What is saved and what is temporary: [0011](/decisions/server/0011-saved-and-memory-only-data.md).
+- When a change to hot data reaches the database: [0010](/decisions/server/0010-hot-data-written-at-once.md).

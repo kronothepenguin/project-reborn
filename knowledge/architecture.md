@@ -9,6 +9,8 @@ description: The apps are runners and the packages hold the full applications, i
 The apps are runners. The packages hold the code of the full applications, because one runner, `reborn`, will embed
 every other app. `apps/reborn` is planned.
 
+[How the programs work together](/programs.md)
+
 # Projects
 
 | Folder | What it is |

@@ -25,4 +25,4 @@ Example: you place a gold bar in your room, double-click it and get 50 credits."
 
 # Consequences
 
-- [s5-15](/tasks/s5-15-credit-furni.md) builds it.
+- s5-15 builds it.

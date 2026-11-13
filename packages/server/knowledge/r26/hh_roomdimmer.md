@@ -21,7 +21,7 @@ scripts of other casts by `<cast>/<file>`.
 | `9_Color Converter Class.ls` | RGB to HSL and back, for the lightness |
 
 The dimmer's state reaches the client as the state of its furniture, in `hh_room`'s messages about active objects
-([s1-06](/tasks/s1-06-room.md)), and the room's owner flag, `room_owner`, comes from `hh_room` too.
+(s1-06), and the room's owner flag, `room_owner`, comes from `hh_room` too.
 
 # Messages from the server
 
@@ -32,7 +32,7 @@ The dimmer's state reaches the client as the state of its furniture, in `hh_room
 # Commands from the client
 
 Registered by `6_Roomdimmer Handler Class.ls`. Every sender calls `send`: with no body it sends the id alone, and with
-a typed list it goes through `sendNew` ([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+a typed list it goes through `sendNew` ([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -78,7 +78,7 @@ the colour it shows to the new one over 1.5 seconds; off, it removes the effect 
 ## Counts
 
 `6_Roomdimmer Handler Class.ls` registers 1 message and 3 commands, as
-[Registering scripts](/reference/client-r26.md#registering-scripts) says. No other cast registers them.
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says. No other cast registers them.
 
 ## Quirks
 

@@ -22,9 +22,9 @@ Other casts hand furniture to the buffer and register the same messages:
 
 | Script | Why it is here |
 | --- | --- |
-| `hh_room/5_Room Handler Class.ls` | Registers the same 5 ids and reads them in full ([s1-06](/tasks/s1-06-room.md)); passes each new active object through `processObject`; the buffer replays held messages through its handlers |
+| `hh_room/5_Room Handler Class.ls` | Registers the same 5 ids and reads them in full (s1-06); passes each new active object through `processObject`; the buffer replays held messages through its handlers |
 | `hh_room/4_Room Component Class.ls` | Passes each new item through `processObject` |
-| `hh_dynamic_downloader` | Downloads a class's cast and says whether it is there ([s1-20](/tasks/s1-20-dynamic-downloader.md)) |
+| `hh_dynamic_downloader` | Downloads a class's cast and says whether it is there (s1-20) |
 | `hh_soundmachine/3_SoundMachine Interface Class.ls` | Asks for a download with `#downloadObject` |
 
 # Messages from the server
@@ -84,7 +84,7 @@ The server needs nothing of its own for this: it sends the room's messages as us
 ## Counts
 
 `4_Buffer Handler Class.ls` registers 5 messages and an empty `tCmds`, as
-[Registering scripts](/reference/client-r26.md#registering-scripts) says.
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says.
 
 ## Ids other casts register too
 

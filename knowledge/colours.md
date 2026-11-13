@@ -81,7 +81,7 @@ The renderer emits classes, never inline hex.
 
 # Housekeeping
 
-The design system of [0041](/decisions/0041-housekeeping-design-system.md) takes its colours from `docs/hk.png`, measured
+The design system of [0041](/decisions/holo-port/0041-housekeeping-design-system.md) takes its colours from `docs/hk.png`, measured
 on the image and mapped with `tools/tw-color`:
 
 | Use | Hex | Tailwind | Distance |
@@ -119,9 +119,9 @@ Holo's own panel, which the new design system replaces, used these:
 # Group badge tints
 
 The 18 badge tints are pixel data shared with the HabboWidgets badge editor; see
-[the protocols](/reference/holo-protocols.md#group-badges). [P5](/phases/p5-groups-forum.md) built them twice, with
-Holo's exact colours and with the closest Tailwind colours ([0042](/decisions/0042-two-badge-palettes.md)), and the
-user kept the Tailwind palette ([0102](/decisions/0102-badges-keep-the-tailwind-palette.md)).
+[the protocols](/sources/holocms/protocols.md#group-badges). P5 built them twice, with
+Holo's exact colours and with the closest Tailwind colours ([0042](/decisions/holo-port/0042-two-badge-palettes.md)), and the
+user kept the Tailwind palette ([0102](/decisions/holo-port/0102-badges-keep-the-tailwind-palette.md)).
 
 Its colours are the sRGB values of the Tailwind v4 swatches; seven lie outside sRGB and are clipped to it, as their
 usual hex values are. Tint 15, olive-500, looks grey-olive beside Holo's brown, a known issue in `plans/later.md`.

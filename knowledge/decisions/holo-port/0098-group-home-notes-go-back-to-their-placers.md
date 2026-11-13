@@ -12,7 +12,7 @@ tags: [groups, homes, p5]
 
 - Every sticker and note removed from a group home goes back to the user whose habbo placed it, a note as a blank one
   of the item it came from, as a deleted group's notes do
-  ([0083](/decisions/0083-group-home-items-return-to-members.md)). This holds for the admin's own items too.
+  ([0083](/decisions/holo-port/0083-group-home-items-return-to-members.md)). This holds for the admin's own items too.
 - On a group home the edit menu does not show Holo's "Warning! If you click 'Remove', the note will be permanently
   deleted." An item another user placed shows Holo's "This item belongs to another user. If you remove it, it will
   return to their inventory."

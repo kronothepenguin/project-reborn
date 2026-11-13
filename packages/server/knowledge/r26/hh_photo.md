@@ -20,9 +20,9 @@ of other casts by `<cast>/<file>`.
 | `5_Photo Item Class.ls` | The photo as an item on a wall; a click opens it |
 
 `fuse_client`'s Binary Manager owns `#mus`, logs in on it and runs the stores and fetches the photo asks for
-([fuse_client](/reference/r26/fuse_client.md#the-mus-connection)); the bytes of a MUS message are
-[s1-24](/tasks/s1-24-mus-framing.md)'s. The photo also uses two commands of `hh_room`: `G_IDATA` to read a photo
-item's data and `REMOVEITEM` to take it down ([s1-06](/tasks/s1-06-room.md)).
+([fuse_client](/r26/fuse_client.md#the-mus-connection)); the bytes of a MUS message are
+s1-24's. The photo also uses two commands of `hh_room`: `G_IDATA` to read a photo
+item's data and `REMOVEITEM` to take it down (s1-06).
 
 # Messages from the server
 
@@ -33,7 +33,7 @@ item's data and `REMOVEITEM` to take it down ([s1-06](/tasks/s1-06-room.md)).
 | `OK` | `handle_ok` | `#mus` | none read | Ignored |
 
 On `#mus` a message is named by its subject, the first word, and its content is the rest
-([fuse_client](/reference/r26/fuse_client.md#wire-format)). The Binary Manager also handles `HELLO`, `BINDATA_SAVED`,
+([fuse_client](/r26/fuse_client.md#wire-format)). The Binary Manager also handles `HELLO`, `BINDATA_SAVED`,
 `BINDATA_AUTHKEYERROR` and the binary answer to `GETBINDATA`.
 
 # Commands from the client
@@ -72,7 +72,7 @@ None registered. The photo's messages on `#mus` go through the Binary Manager's 
 ## Counts
 
 `4_Photo Handler Class.ls` listens to 1 message on `#info` and 2 on `#mus`, and registers no command, as
-[Registering scripts](/reference/client-r26.md#registering-scripts) says: "1, and 2 on `#mus`" in, 0 out.
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says: "1, and 2 on `#mus`" in, 0 out.
 
 ## Ids other casts register too
 

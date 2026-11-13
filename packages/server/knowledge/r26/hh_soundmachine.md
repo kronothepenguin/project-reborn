@@ -27,7 +27,7 @@ Other casts:
 
 | Script | Why it is here |
 | --- | --- |
-| `hh_room_utils/3_Safe Trader Class.ls` | Executes `#listen_song` with a disk's song id during a trade, which sends `GET_SONG_INFO` ([s1-07](/tasks/s1-07-room-utils.md)) |
+| `hh_room_utils/3_Safe Trader Class.ls` | Executes `#listen_song` with a disk's song id during a trade, which sends `GET_SONG_INFO` (s1-07) |
 
 # Messages from the server
 
@@ -73,7 +73,7 @@ silence. `1:12,4;0,2;13,4:2:0,10:3:0,10:4:0,10:` is a song of four channels and 
 # Commands from the client
 
 Registered by `5_SoundMachine Handler Class.ls`. Every sender calls `send`: with no body it sends the id alone, and
-with a typed list it goes through `sendNew` ([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+with a typed list it goes through `sendNew` ([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -132,7 +132,7 @@ with a typed list it goes through `sendNew` ([fuse_client](/reference/r26/fuse_c
 ## Counts
 
 `5_SoundMachine Handler Class.ls` registers 17 messages and 19 commands, as
-[Registering scripts](/reference/client-r26.md#registering-scripts) says.
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says.
 
 ## Ids other casts register too
 

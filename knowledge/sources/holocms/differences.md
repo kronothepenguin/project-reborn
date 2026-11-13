@@ -9,10 +9,10 @@ tags: [holo]
 
 # How to read this
 
-[0034](/decisions/0034-behaviour-matches-holo.md) makes every page behave exactly as Holo does. Anything else is listed
-here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p2-me-account.md),
-[P3](/phases/p3-homes.md) and [P4](/phases/p4-community.md) and, in its own section, the housekeeping pages of
-[HK-A](/phases/hk-a-housekeeping-core.md), [HK-B](/phases/hk-b-users-moderation.md), P3, P4 and P6.
+[0034](/decisions/holo-port/0034-behaviour-matches-holo.md) makes every page behave exactly as Holo does. Anything else is listed
+here, by reason. This list covers P1, P2,
+P3 and P4 and, in its own section, the housekeeping pages of
+HK-A, HK-B, P3, P4 and P6.
 
 # Safer than Holo
 
@@ -21,8 +21,8 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Sign-out | `GET logout.php` signs out | Only `POST /logout` does; `GET /logout` sends a signed-in visitor to `/me` | Any site could sign a visitor out with a link |
 | Forgot | `Invalid username or e-mail address` for a wrong pair | One answer for every pair | A stranger could test which names and addresses belong together |
 | Forgot | `E-Mail send! Check your inbox and spam folders.` | `If this username and e-mail address match, an e-mail is on its way. Check your inbox and spam folders.` | The answer must also be true for a wrong pair |
-| Forgot | Mails the stored password hash | Mails a single-use link on the `Password:` line | [0018](/decisions/0018-password-reset-by-email.md) |
-| Forgot | Unlimited mail to one address | At most `auth.resetMaxActive` unexpired links | [0035](/decisions/0035-reset-mail-limit.md) |
+| Forgot | Mails the stored password hash | Mails a single-use link on the `Password:` line | [0018](/decisions/holo-port/0018-password-reset-by-email.md) |
+| Forgot | Unlimited mail to one address | At most `auth.resetMaxActive` unexpired links | [0035](/decisions/holo-port/0035-reset-mail-limit.md) |
 | Sign-in | Unlimited attempts | `Too many failed attempts. Please try again later.` after `auth.loginMaxFailures` | Password guessing |
 | Landing | `index.php?do=version` prints the version, the path and the visitor's address | Not ported | It tells an attacker what runs |
 | Register | The age limit runs only in the browser | The server checks it too | A script could skip it |
@@ -32,7 +32,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Ban | The page answers 200 | The same page answers 403 | The status says what happened; a browser shows no difference |
 | Me | `me.php?do=RemoveFeedItem` removes an alert on a `GET` | Only `POST /me/alerts/{id}/dismiss` does, for the habbo's own alerts | Any site could trigger a `GET`, and Holo took the id from the address |
 | Motto | Stored with `htmlspecialchars` | Stored as typed and escaped when shown | Escaping belongs to the output |
-| Ban | An IP ban stops everyone on the address | Holders of `housekeeping.access` are not stopped by it, though a ban on their account is | A moderator could lock an administrator out through their address ([0055](/decisions/0055-staff-levels.md)) |
+| Ban | An IP ban stops everyone on the address | Holders of `housekeeping.access` are not stopped by it, though a ban on their account is | A moderator could lock an administrator out through their address ([0055](/decisions/holo-port/0055-staff-levels.md)) |
 | Webstore | Takes the credits, fills the inventory and writes the ledger in separate queries, and the credits with no floor | One transaction, and the credits never go below zero | A failure halfway lost credits or gave items away |
 | Webstore | A habbo without the staff rank who asks for a staff item gets an empty answer | `Sorry, but you can not buy this item!` | The same answer as any item that is not sold |
 | Home editor | Saves any number as a position | Items stay on the playground, 922 by 1360 pixels | A position off the page lost the item for good |
@@ -62,83 +62,83 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 
 | Page | Holo | The port | Decision |
 | --- | --- | --- | --- |
-| Sign-in | The name of a user | The name of a habbo, with the owner's password | [0002](/decisions/0002-login-with-habbo-name.md) |
-| Register | One address can hold many accounts | `This e-mail address already has an account. Please sign in and add a habbo there.` | [0001](/decisions/0001-user-owns-many-habbos.md) |
-| Register | Letters and digits, while its tooltip promises more | Also `- = ? ! @ : . ,`, as the tooltip says | [0026](/decisions/0026-installer-administrator-and-names.md) |
-| Register | Captcha | `registration.maxPerIp`, with `Too many habbos were registered from your connection. Please try again later.` | [0021](/decisions/0021-dropped-and-kept-features.md) |
-| Register | Refer field only in the locale | `?refer=` pays the referrer | [0021](/decisions/0021-dropped-and-kept-features.md) |
-| Register, landing | Flash, with a list of 6 avatars and `Show more Habbos` when it is missing | The HTML5 ports, and no list | [0021](/decisions/0021-dropped-and-kept-features.md) |
-| Landing | `Install Flash Player 8 or higher` | Gone with Flash; `Enable JavaScript` stays | [0021](/decisions/0021-dropped-and-kept-features.md) |
-| Landing | Promo feed with name, motto, profile link, badge, online state and group badge | `image`, `figure` and `gender`, the attributes the HTML5 widget reads | [0021](/decisions/0021-dropped-and-kept-features.md) |
-| Every page | Real online count | `0` and the offline picture | [0013](/decisions/0013-defer-game-server-features.md) |
-| Every page | `Powered by HoloCMS © 2008 Meth0d.` | `Powered by Project Reborn ©` | [0048](/decisions/0048-footer-names-reborn.md) |
-| After registering | `welcome.php` picks a first room | Goes to `/me` | [0013](/decisions/0013-defer-game-server-features.md) |
-| Header | `Enter <site>` for guests | `<site> is offline` | [0013](/decisions/0013-defer-game-server-features.md) |
-| Me | `Enter <site>` | `Hotel Closed` | [0013](/decisions/0013-defer-game-server-features.md) |
-| Header | One habbo per account | `Switch habbo` with several, and `/account/habbos` | [0001](/decisions/0001-user-owns-many-habbos.md) |
-| Account settings | No page for furniture | `Furni`, after `Habbos`: the furniture of the user that no habbo holds, with `Take` for a kind and `Take all`, which move it to the active habbo's hand | [0057](/decisions/0057-furni-and-rooms.md), `plans/server/decisions/0122-the-shared-inventory-is-an-account-page.md` |
-| Several habbos | One habbo per account, which is never archived | Archiving a habbo sends the furniture of its hand and of its recycler to the shared inventory and gives its rooms to the active habbo | [0057](/decisions/0057-furni-and-rooms.md), `plans/server/decisions/0124-an-archived-habbos-rooms-move-to-the-active-habbo.md` |
-| Header | Housekeeping is `housekeeping.php` | `site.housekeepingUrl`, because housekeeping can run on its own port | [0003](/decisions/0003-housekeeping-under-prefix.md) |
-| Several habbos | One habbo per account | One wallet, one club membership and one home inventory per user | [0056](/decisions/0056-wallet-club-and-inventory-per-user.md) |
-| Club page | A purchase gives `HC1` to the account's one habbo, which wears it if it lacked it | Each purchase gives `HC1` to every habbo of the user that lacks it, archived ones too; the buyer wears it when given it, as Holo's habbo did, and the others keep the badge they wear | [0056](/decisions/0056-wallet-club-and-inventory-per-user.md), [0103](/decisions/0103-club-badge-for-every-habbo.md) |
-| Club page | When the club ends, `IsHCMember` hides the badge the habbo wears, whichever it is, and means to delete `HC1`, but its query names a column `users_badges` lacks, so `HC1` stays | `HC1` leaves every habbo of the user, and a habbo that wears another badge keeps it on | [0103](/decisions/0103-club-badge-for-every-habbo.md) |
-| Group settings | The text's counter starts at 255, and a rename takes a name another group has | The counter starts at `groups.descriptionMaxLength`, 200, and a taken name answers `A group with this name already exists.` | [0084](/decisions/0084-group-names-and-descriptions.md) |
-| Deleting a group | Every sticker and note of its home is destroyed | They go back to the users whose habbos placed them, notes blank | [0083](/decisions/0083-group-home-items-return-to-members.md) |
-| Group home editor | A removed sticker goes to the admin who removed it, and a removed note is deleted | Both go back to the user whose habbo placed them, a note blank, and the note's menu no longer says it is deleted for good | [0083](/decisions/0083-group-home-items-return-to-members.md), [0098](/decisions/0098-group-home-notes-go-back-to-their-placers.md) |
-| Group home editor | `Modify page` opens for any of the user's admin roles | Only while the admin habbo is active | [0086](/decisions/0086-roles-and-posts-follow-the-active-habbo.md) |
-| Group page | `Search for group` takes a `LIKE` pattern, so `%` and `_` match anything and the first match opens | The group with exactly that name, ignoring case, at `GET /groups?name=` | [0095](/decisions/0095-group-search-and-report-addresses.md) |
-| Group page | Lists every member, archived habbos included | Archived habbos are left out of the members and their count | [0089](/decisions/0089-archived-habbos-show-as-archived.md) |
-| Discussion board | Pages count every thread, stickies included, and the stickies take places among the first page's ten | Every sticky heads each page, then ten other threads, and the pages count the others | [0088](/decisions/0088-stickies-head-every-page.md) |
-| Discussion board | Names every habbo | An archived habbo shows `archived`, with no link, and its post boxes keep only that and the offline picture | [0089](/decisions/0089-archived-habbos-show-as-archived.md) |
+| Sign-in | The name of a user | The name of a habbo, with the owner's password | [0002](/decisions/holo-port/0002-login-with-habbo-name.md) |
+| Register | One address can hold many accounts | `This e-mail address already has an account. Please sign in and add a habbo there.` | [0001](/decisions/holo-port/0001-user-owns-many-habbos.md) |
+| Register | Letters and digits, while its tooltip promises more | Also `- = ? ! @ : . ,`, as the tooltip says | [0026](/decisions/holo-port/0026-installer-administrator-and-names.md) |
+| Register | Captcha | `registration.maxPerIp`, with `Too many habbos were registered from your connection. Please try again later.` | [0021](/decisions/holo-port/0021-dropped-and-kept-features.md) |
+| Register | Refer field only in the locale | `?refer=` pays the referrer | [0021](/decisions/holo-port/0021-dropped-and-kept-features.md) |
+| Register, landing | Flash, with a list of 6 avatars and `Show more Habbos` when it is missing | The HTML5 ports, and no list | [0021](/decisions/holo-port/0021-dropped-and-kept-features.md) |
+| Landing | `Install Flash Player 8 or higher` | Gone with Flash; `Enable JavaScript` stays | [0021](/decisions/holo-port/0021-dropped-and-kept-features.md) |
+| Landing | Promo feed with name, motto, profile link, badge, online state and group badge | `image`, `figure` and `gender`, the attributes the HTML5 widget reads | [0021](/decisions/holo-port/0021-dropped-and-kept-features.md) |
+| Every page | Real online count | `0` and the offline picture | [0013](/decisions/holo-port/0013-defer-game-server-features.md) |
+| Every page | `Powered by HoloCMS © 2008 Meth0d.` | `Powered by Project Reborn ©` | [0048](/decisions/holo-port/0048-footer-names-reborn.md) |
+| After registering | `welcome.php` picks a first room | Goes to `/me` | [0013](/decisions/holo-port/0013-defer-game-server-features.md) |
+| Header | `Enter <site>` for guests | `<site> is offline` | [0013](/decisions/holo-port/0013-defer-game-server-features.md) |
+| Me | `Enter <site>` | `Hotel Closed` | [0013](/decisions/holo-port/0013-defer-game-server-features.md) |
+| Header | One habbo per account | `Switch habbo` with several, and `/account/habbos` | [0001](/decisions/holo-port/0001-user-owns-many-habbos.md) |
+| Account settings | No page for furniture | `Furni`, after `Habbos`: the furniture of the user that no habbo holds, with `Take` for a kind and `Take all`, which move it to the active habbo's hand | [0057](/decisions/holo-port/0057-furni-and-rooms.md), `knowledge/decisions/server/0122-the-shared-inventory-is-an-account-page.md` |
+| Several habbos | One habbo per account, which is never archived | Archiving a habbo sends the furniture of its hand and of its recycler to the shared inventory and gives its rooms to the active habbo | [0057](/decisions/holo-port/0057-furni-and-rooms.md), `knowledge/decisions/server/0124-an-archived-habbos-rooms-move-to-the-active-habbo.md` |
+| Header | Housekeeping is `housekeeping.php` | `site.housekeepingUrl`, because housekeeping can run on its own port | [0003](/decisions/holo-port/0003-housekeeping-under-prefix.md) |
+| Several habbos | One habbo per account | One wallet, one club membership and one home inventory per user | [0056](/decisions/holo-port/0056-wallet-club-and-inventory-per-user.md) |
+| Club page | A purchase gives `HC1` to the account's one habbo, which wears it if it lacked it | Each purchase gives `HC1` to every habbo of the user that lacks it, archived ones too; the buyer wears it when given it, as Holo's habbo did, and the others keep the badge they wear | [0056](/decisions/holo-port/0056-wallet-club-and-inventory-per-user.md), [0103](/decisions/holo-port/0103-club-badge-for-every-habbo.md) |
+| Club page | When the club ends, `IsHCMember` hides the badge the habbo wears, whichever it is, and means to delete `HC1`, but its query names a column `users_badges` lacks, so `HC1` stays | `HC1` leaves every habbo of the user, and a habbo that wears another badge keeps it on | [0103](/decisions/holo-port/0103-club-badge-for-every-habbo.md) |
+| Group settings | The text's counter starts at 255, and a rename takes a name another group has | The counter starts at `groups.descriptionMaxLength`, 200, and a taken name answers `A group with this name already exists.` | [0084](/decisions/holo-port/0084-group-names-and-descriptions.md) |
+| Deleting a group | Every sticker and note of its home is destroyed | They go back to the users whose habbos placed them, notes blank | [0083](/decisions/holo-port/0083-group-home-items-return-to-members.md) |
+| Group home editor | A removed sticker goes to the admin who removed it, and a removed note is deleted | Both go back to the user whose habbo placed them, a note blank, and the note's menu no longer says it is deleted for good | [0083](/decisions/holo-port/0083-group-home-items-return-to-members.md), [0098](/decisions/holo-port/0098-group-home-notes-go-back-to-their-placers.md) |
+| Group home editor | `Modify page` opens for any of the user's admin roles | Only while the admin habbo is active | [0086](/decisions/holo-port/0086-roles-and-posts-follow-the-active-habbo.md) |
+| Group page | `Search for group` takes a `LIKE` pattern, so `%` and `_` match anything and the first match opens | The group with exactly that name, ignoring case, at `GET /groups?name=` | [0095](/decisions/holo-port/0095-group-search-and-report-addresses.md) |
+| Group page | Lists every member, archived habbos included | Archived habbos are left out of the members and their count | [0089](/decisions/holo-port/0089-archived-habbos-show-as-archived.md) |
+| Discussion board | Pages count every thread, stickies included, and the stickies take places among the first page's ten | Every sticky heads each page, then ten other threads, and the pages count the others | [0088](/decisions/holo-port/0088-stickies-head-every-page.md) |
+| Discussion board | Names every habbo | An archived habbo shows `archived`, with no link, and its post boxes keep only that and the offline picture | [0089](/decisions/holo-port/0089-archived-habbos-show-as-archived.md) |
 | Discussion board | `Messages:` counts every post the user ever wrote, deleted ones included | The posts the habbo has on the board now | The plan: counts are queried from the posts, never stored |
-| Discussion board | Takes any number of posts in a row, and keeps `Spam detected!` unused | A new thread or reply within `forum.spamSeconds` of the habbo's last post answers `Spam detected!`, and a blank one `Post may not be blank` | [0091](/decisions/0091-forum-spam-check.md) |
-| Discussion board | After a reply, the thread's last page is redrawn in place | The last page loads, which counts a view | [0094](/decisions/0094-thread-views-count-every-load.md) |
-| Discussion board | Staff from rank 6 and the post's user modify and delete a post | Holders of `forum.edit`, and the post's habbo while it is active | [0086](/decisions/0086-roles-and-posts-follow-the-active-habbo.md), and the plan's attributes |
-| Discussion board | Staff from rank 6 use the Moderation Tools | Holders of `forum.edit` | [0015](/decisions/0015-attribute-names-and-fuses.md) |
-| Discussion board | The report flag hides on the user's own posts | On the active habbo's own posts only | [0086](/decisions/0086-roles-and-posts-follow-the-active-habbo.md) |
-| Report window | `Proceed` is the link `go.php?do=report&post=…&sure=yes`, which sends the report | The window opens at `GET /forum/posts/{id}/report`, and `Proceed`, a button in the link's place and look, posts to `POST /forum/posts/{id}/report` | [0090](/decisions/0090-post-reports.md), [0095](/decisions/0095-group-search-and-report-addresses.md) |
-| Report window | One help request or report waits per address | One per habbo, so people who share a connection do not block each other | [0090](/decisions/0090-post-reports.md) |
+| Discussion board | Takes any number of posts in a row, and keeps `Spam detected!` unused | A new thread or reply within `forum.spamSeconds` of the habbo's last post answers `Spam detected!`, and a blank one `Post may not be blank` | [0091](/decisions/holo-port/0091-forum-spam-check.md) |
+| Discussion board | After a reply, the thread's last page is redrawn in place | The last page loads, which counts a view | [0094](/decisions/holo-port/0094-thread-views-count-every-load.md) |
+| Discussion board | Staff from rank 6 and the post's user modify and delete a post | Holders of `forum.edit`, and the post's habbo while it is active | [0086](/decisions/holo-port/0086-roles-and-posts-follow-the-active-habbo.md), and the plan's attributes |
+| Discussion board | Staff from rank 6 use the Moderation Tools | Holders of `forum.edit` | [0015](/decisions/holo-port/0015-attribute-names-and-fuses.md) |
+| Discussion board | The report flag hides on the user's own posts | On the active habbo's own posts only | [0086](/decisions/holo-port/0086-roles-and-posts-follow-the-active-habbo.md) |
+| Report window | `Proceed` is the link `go.php?do=report&post=…&sure=yes`, which sends the report | The window opens at `GET /forum/posts/{id}/report`, and `Proceed`, a button in the link's place and look, posts to `POST /forum/posts/{id}/report` | [0090](/decisions/holo-port/0090-post-reports.md), [0095](/decisions/holo-port/0095-group-search-and-report-addresses.md) |
+| Report window | One help request or report waits per address | One per habbo, so people who share a connection do not block each other | [0090](/decisions/holo-port/0090-post-reports.md) |
 | Help | `iot/` and `go.php` send a visitor on to `go.php?lang=en&country=uk` | `/help` | The plan's route |
-| Help | Takes a request from anyone, a visitor's with no name | A visitor is sent to `/` to sign in first | [0108](/decisions/0108-help-asks-visitors-to-sign-in.md) |
-| Help | The subject holds 50 characters in the browser only, and the question any length | The server checks the subject's 50 characters too, with `Your subject may not be longer than 50 characters.`, and refuses a question past `help.messageMaxLength`, 65535 by default, with `Your question may not be longer than <n> characters.` | [0109](/decisions/0109-help-request-lengths.md) |
-| Help | One waiting request per address | One per habbo, post reports included | [0090](/decisions/0090-post-reports.md) |
-| Group badge | The Flash `BadgeEditor.swf`, with its colours from habbo.co.uk | The HTML5 port in `vendor/HabboWidgets`, with the Tailwind palette | [0021](/decisions/0021-dropped-and-kept-features.md), [0102](/decisions/0102-badges-keep-the-tailwind-palette.md) |
-| Group badges | Holo's 18 tints | The closest Tailwind colours; tint 15, olive-500, looks grey-olive beside Holo's brown | [0102](/decisions/0102-badges-keep-the-tailwind-palette.md) |
-| Several habbos | A habbo is never removed | A user archives a habbo, which hides it and keeps its name | [0058](/decisions/0058-habbos-are-archived.md) |
-| Wardrobe | One wardrobe per account | One per habbo: the active habbo keeps its own outfits and dresses in them | [0001](/decisions/0001-user-owns-many-habbos.md), and the plan's `wardrobe_outfits` |
-| Wardrobe | A green arrow writes the Flash editor again at once, which closes Save changes and opens it five seconds later | The HTML5 editor starts again with the outfit, after its loading screen, and Save changes, closed at the arrow, opens five seconds after the editor has drawn the outfit; pressed while an editor is still loading, the arrow waits until that one has drawn itself, since a loading editor cannot be stopped | [0021](/decisions/0021-dropped-and-kept-features.md), [0107](/decisions/0107-save-opens-after-the-first-look.md) |
-| Looks | The Flash editor answers a change at once while the look holds club items outside the club | The HTML5 editor holds its answers until five seconds after it was built, up to two seconds after its first look, so a look the club allows, chosen in those two seconds, opens Save changes when they end | [0021](/decisions/0021-dropped-and-kept-features.md), [0107](/decisions/0107-save-opens-after-the-first-look.md) |
-| Settings | Read from the database on every request | A running CMS re-reads them every `cms.refresh` seconds | [0051](/decisions/0051-one-machine-and-a-refresh.md) |
-| Account | An email can be shared | `This e-mail address already has an account.` | [0001](/decisions/0001-user-owns-many-habbos.md) |
+| Help | Takes a request from anyone, a visitor's with no name | A visitor is sent to `/` to sign in first | [0108](/decisions/holo-port/0108-help-asks-visitors-to-sign-in.md) |
+| Help | The subject holds 50 characters in the browser only, and the question any length | The server checks the subject's 50 characters too, with `Your subject may not be longer than 50 characters.`, and refuses a question past `help.messageMaxLength`, 65535 by default, with `Your question may not be longer than <n> characters.` | [0109](/decisions/holo-port/0109-help-request-lengths.md) |
+| Help | One waiting request per address | One per habbo, post reports included | [0090](/decisions/holo-port/0090-post-reports.md) |
+| Group badge | The Flash `BadgeEditor.swf`, with its colours from habbo.co.uk | The HTML5 port in `vendor/HabboWidgets`, with the Tailwind palette | [0021](/decisions/holo-port/0021-dropped-and-kept-features.md), [0102](/decisions/holo-port/0102-badges-keep-the-tailwind-palette.md) |
+| Group badges | Holo's 18 tints | The closest Tailwind colours; tint 15, olive-500, looks grey-olive beside Holo's brown | [0102](/decisions/holo-port/0102-badges-keep-the-tailwind-palette.md) |
+| Several habbos | A habbo is never removed | A user archives a habbo, which hides it and keeps its name | [0058](/decisions/holo-port/0058-habbos-are-archived.md) |
+| Wardrobe | One wardrobe per account | One per habbo: the active habbo keeps its own outfits and dresses in them | [0001](/decisions/holo-port/0001-user-owns-many-habbos.md), and the plan's `wardrobe_outfits` |
+| Wardrobe | A green arrow writes the Flash editor again at once, which closes Save changes and opens it five seconds later | The HTML5 editor starts again with the outfit, after its loading screen, and Save changes, closed at the arrow, opens five seconds after the editor has drawn the outfit; pressed while an editor is still loading, the arrow waits until that one has drawn itself, since a loading editor cannot be stopped | [0021](/decisions/holo-port/0021-dropped-and-kept-features.md), [0107](/decisions/holo-port/0107-save-opens-after-the-first-look.md) |
+| Looks | The Flash editor answers a change at once while the look holds club items outside the club | The HTML5 editor holds its answers until five seconds after it was built, up to two seconds after its first look, so a look the club allows, chosen in those two seconds, opens Save changes when they end | [0021](/decisions/holo-port/0021-dropped-and-kept-features.md), [0107](/decisions/holo-port/0107-save-opens-after-the-first-look.md) |
+| Settings | Read from the database on every request | A running CMS re-reads them every `cms.refresh` seconds | [0051](/decisions/holo-port/0051-one-machine-and-a-refresh.md) |
+| Account | An email can be shared | `This e-mail address already has an account.` | [0001](/decisions/holo-port/0001-user-owns-many-habbos.md) |
 | Maintenance | An `Administrator Login` link to housekeeping | A sign-in form on the page | The plan: staff sign in with the shared session |
 | Maintenance | Redirects every page to `maintenance.php` | Serves the page on every address with 503 | The plan |
-| A password change | The session ends, with `You will need to login again.` | The session stays under a new token, and open reset links end | [0059](/decisions/0059-account-forms.md) |
-| A password change | The other session goes to `index.php?error=1`, reading `Invalid username or password.` | The other session just ends | [0018](/decisions/0018-password-reset-by-email.md) ends every session, and the port cannot tell that from an expired one |
-| Home store | `Holograph Emulator`, `HoloCMS` and `Pedobear Seal of Approval`, three stickers on HoloCMS's own host | Left out, since the host is gone | [0061](/decisions/0061-art-in-the-repository.md) |
+| A password change | The session ends, with `You will need to login again.` | The session stays under a new token, and open reset links end | [0059](/decisions/holo-port/0059-account-forms.md) |
+| A password change | The other session goes to `index.php?error=1`, reading `Invalid username or password.` | The other session just ends | [0018](/decisions/holo-port/0018-password-reset-by-email.md) ends every session, and the port cannot tell that from an expired one |
+| Home store | `Holograph Emulator`, `HoloCMS` and `Pedobear Seal of Approval`, three stickers on HoloCMS's own host | Left out, since the host is gone | [0061](/decisions/holo-port/0061-art-in-the-repository.md) |
 | BBCode | Any colour name or hex value | The eight colours of Holo's toolbar, as the plan maps them; any other shows uncoloured | The plan's colours |
-| Home page | `Edit` shows on the home of the signed-in habbo | It shows on the homes of all the user's habbos | [0065](/decisions/0065-owners-edit-all-their-homes.md) |
+| Home page | `Edit` shows on the home of the signed-in habbo | It shows on the homes of all the user's habbos | [0065](/decisions/holo-port/0065-owners-edit-all-their-homes.md) |
 | Home page | The tag buttons and the edit icon come from Habbo's servers | The plus, the minus and the wrench of the CMS's own icon sprite | Those servers are gone, and Holo never shipped the images |
 | Home page | The MY GROUPS rows take their background, and their plus and minus, from Habbo's servers | The rows keep their dashed border, as Holo's show now, and the minus is the CMS's own | Those servers are gone, and Holo never shipped the images |
-| Header | `My Groups` lists the signed-in user's groups | The active habbo's | [0086](/decisions/0086-roles-and-posts-follow-the-active-habbo.md) |
+| Header | `My Groups` lists the signed-in user's groups | The active habbo's | [0086](/decisions/holo-port/0086-roles-and-posts-follow-the-active-habbo.md) |
 | Home editor | The edit menu and the store dialogs sit in frames drawn by images from Habbo's servers | Plain frames, with Holo's texts, buttons and order | Those servers are gone, and Holo never shipped the images |
 | Home editor | Items fade out and back in when the background changes, and placed items fade in | The background and the items change at once | Holo's fades came from an effects library the site does not load; the result is the same |
 | Note editor | `Control.TextArea`'s BBCode toolbar | Buttons for bold, italics, underline, strike, quote, code and a link, and the colours of Holo's list | The same tags and colours, without that library |
-| Upgrading | `upgrade.php` runs its changes once, with no record of what ran, and asks for the file to be deleted | Housekeeping's update page applies the waiting update files in order, after a copy of the database, and records each in `migrations` | [0067](/decisions/0067-updates-are-our-own-migrations.md), [0070](/decisions/0070-housekeeping-applies-updates.md) |
-| Upgrading | The site runs while `upgrade.php` waits | While updates wait, the CMS shows its maintenance page to everyone, staff with the bypass included, and housekeeping only its update page | [0069](/decisions/0069-waiting-updates-close-the-hotel.md) |
-| Upgrading | No change happens by itself | Updates that sign-in needs apply when a program starts, after a copy, and a failure shows an error page | [0071](/decisions/0071-sign-in-updates-apply-at-start.md) |
-| Upgrading | `config.php` is edited by hand | Housekeeping offers the keys a release adds to `config.json`, with their defaults, and removes the ones nothing reads | [0070](/decisions/0070-housekeeping-applies-updates.md) |
-| Install | The last page links to the new site and to housekeeping's sign-in | It links to the hotel, where the administrator signs in; housekeeping has no sign-in of its own | [0070](/decisions/0070-housekeeping-applies-updates.md) |
-| Install | `install.php` writes the store and the ranks | Updates write them, so a hotel installed before them receives them too | [0068](/decisions/0068-seeds-are-updates.md) |
-| Staff page | Its two boxes hold raw HTML, edited in the content tool | Their bodies are BBCode, and the help of their fields says `BBCode is allowed here.` | [0077](/decisions/0077-staff-boxes-in-bbcode.md) |
-| Credits page | Its two boxes hold raw HTML, edited in the content tool, the second with the palm chair and a list of four ways to earn credits | Their bodies are BBCode, and the help of their fields says `BBCode is allowed here.`; the pictures are part of the page, and the list is lines that start with `* ` | [0105](/decisions/0105-credits-boxes-in-bbcode.md) |
-| Credits page | A redeemed voucher is deleted | It stays, with the habbo that redeemed it and when | [0063](/decisions/0063-what-housekeeping-can-delete.md) |
-| Credits page | A voucher of the type `item` looks its furniture up by name when it is redeemed, and answers `Item not valid, please contact an admin for assistance.` when no furniture has the name, leaving the voucher to be tried again | The furniture is found when the voucher is made, so a redemption always gives it, and that answer is never shown | `plans/server/decisions/0120-an-item-voucher-gives-the-first-furni-of-its-sprite.md` |
-| Credits page | An item voucher creates one bare piece: a teleport without its pair, a pad of post-its without notes | It gives what buying the furniture gives: a teleport as a linked pair, a pad of 20 post-its | `plans/server/decisions/0125-an-item-voucher-gives-what-buying-gives.md` |
-| Credits page | An item voucher's line in the transactions is `Item voucher redeem`, with the furniture's name where the credits go | `Item voucher redeem (<name>)`, with 0 credits: the name the catalogue sells the furniture under | `plans/server/decisions/0121-an-item-voucher-leaves-a-line-of-no-credits.md` |
-| Account transactions | Date, Activity and Description | A Habbo column after them names the habbo that acted, blank when none did, since all the user's habbos share the purse | [0104](/decisions/0104-transactions-show-the-habbo.md) |
-| News | The body is HTML written by staff | BBCode, without smilies, as Holo's news had none | [0020](/decisions/0020-news-in-bbcode.md) |
-| Tags | A tag counts for its owner whether the owner still exists or not | An archived habbo's tags leave the cloud, the search and the tag fight | [0058](/decisions/0058-habbos-are-archived.md) |
-| Staff page | Every user above rank 2, with `Rank:` named after the rank | Each member of a staff-listed access group once, with `Rank:` the name of the highest of those groups and the habbo chosen for it | [0076](/decisions/0076-one-staff-list.md) |
+| Upgrading | `upgrade.php` runs its changes once, with no record of what ran, and asks for the file to be deleted | Housekeeping's update page applies the waiting update files in order, after a copy of the database, and records each in `migrations` | [0067](/decisions/holo-port/0067-updates-are-our-own-migrations.md), [0070](/decisions/holo-port/0070-housekeeping-applies-updates.md) |
+| Upgrading | The site runs while `upgrade.php` waits | While updates wait, the CMS shows its maintenance page to everyone, staff with the bypass included, and housekeeping only its update page | [0069](/decisions/holo-port/0069-waiting-updates-close-the-hotel.md) |
+| Upgrading | No change happens by itself | Updates that sign-in needs apply when a program starts, after a copy, and a failure shows an error page | [0071](/decisions/holo-port/0071-sign-in-updates-apply-at-start.md) |
+| Upgrading | `config.php` is edited by hand | Housekeeping offers the keys a release adds to `config.json`, with their defaults, and removes the ones nothing reads | [0070](/decisions/holo-port/0070-housekeeping-applies-updates.md) |
+| Install | The last page links to the new site and to housekeeping's sign-in | It links to the hotel, where the administrator signs in; housekeeping has no sign-in of its own | [0070](/decisions/holo-port/0070-housekeeping-applies-updates.md) |
+| Install | `install.php` writes the store and the ranks | Updates write them, so a hotel installed before them receives them too | [0068](/decisions/holo-port/0068-seeds-are-updates.md) |
+| Staff page | Its two boxes hold raw HTML, edited in the content tool | Their bodies are BBCode, and the help of their fields says `BBCode is allowed here.` | [0077](/decisions/holo-port/0077-staff-boxes-in-bbcode.md) |
+| Credits page | Its two boxes hold raw HTML, edited in the content tool, the second with the palm chair and a list of four ways to earn credits | Their bodies are BBCode, and the help of their fields says `BBCode is allowed here.`; the pictures are part of the page, and the list is lines that start with `* ` | [0105](/decisions/holo-port/0105-credits-boxes-in-bbcode.md) |
+| Credits page | A redeemed voucher is deleted | It stays, with the habbo that redeemed it and when | [0063](/decisions/holo-port/0063-what-housekeeping-can-delete.md) |
+| Credits page | A voucher of the type `item` looks its furniture up by name when it is redeemed, and answers `Item not valid, please contact an admin for assistance.` when no furniture has the name, leaving the voucher to be tried again | The furniture is found when the voucher is made, so a redemption always gives it, and that answer is never shown | `knowledge/decisions/server/0120-an-item-voucher-gives-the-first-furni-of-its-sprite.md` |
+| Credits page | An item voucher creates one bare piece: a teleport without its pair, a pad of post-its without notes | It gives what buying the furniture gives: a teleport as a linked pair, a pad of 20 post-its | `knowledge/decisions/server/0125-an-item-voucher-gives-what-buying-gives.md` |
+| Credits page | An item voucher's line in the transactions is `Item voucher redeem`, with the furniture's name where the credits go | `Item voucher redeem (<name>)`, with 0 credits: the name the catalogue sells the furniture under | `knowledge/decisions/server/0121-an-item-voucher-leaves-a-line-of-no-credits.md` |
+| Account transactions | Date, Activity and Description | A Habbo column after them names the habbo that acted, blank when none did, since all the user's habbos share the purse | [0104](/decisions/holo-port/0104-transactions-show-the-habbo.md) |
+| News | The body is HTML written by staff | BBCode, without smilies, as Holo's news had none | [0020](/decisions/holo-port/0020-news-in-bbcode.md) |
+| Tags | A tag counts for its owner whether the owner still exists or not | An archived habbo's tags leave the cloud, the search and the tag fight | [0058](/decisions/holo-port/0058-habbos-are-archived.md) |
+| Staff page | Every user above rank 2, with `Rank:` named after the rank | Each member of a staff-listed access group once, with `Rank:` the name of the highest of those groups and the habbo chosen for it | [0076](/decisions/holo-port/0076-one-staff-list.md) |
 
 # Holo bugs not ported
 
@@ -185,7 +185,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Discussion board | A reply to a thread closed meanwhile vanishes | The thread shows closed, and nothing is added |
 | Discussion board | Every deleted post sends the visitor to the board | Back to the thread, unless the thread went with its last post |
 | Discussion board | A new thread the server refuses replaces the form with the refusal's text | The text shows in the form's red box |
-| Discussion board | The preview shows the habbo online, with a blank motto and a nameless avatar, from a variable the page never sets | The habbo's motto and name, offline ([0087](/decisions/0087-online-picture-stays-offline.md)) |
+| Discussion board | The preview shows the habbo online, with a blank motto and a nameless avatar, from a variable the page never sets | The habbo's motto and name, offline ([0087](/decisions/holo-port/0087-online-picture-stays-offline.md)) |
 | Discussion board | Quote copies the post with its HTML escaped a second time | The post as written |
 | Discussion board | Enter in the Moderation Tools' title sends their form to `#`, which reloads the page | Enter does nothing |
 | Discussion board | A Moderation Tools save the server cannot make puts whatever it answered where the post list was | The Moderation Tools open again with the reason in their red box |
@@ -195,7 +195,7 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 | Group home editor | The inventory's `Group Members` carries the tooltip `My Groups` | `Group Members` |
 | Group home editor | `widget_add.php` places a second Group Members widget when asked, though the inventory greys it out once placed | One per home |
 | Group home editor | Removes the Group information widget when its removal is posted, though its menu offers no Remove, and the group page writes it again in its corner at the next view | It goes straight back to its corner, in the default skin |
-| Group purchase | Compares `strlen($name > 25)`, so a name or description of any length passes | A name over `groups.nameMaxLength` or a description over `groups.descriptionMaxLength` gets Holo's `The group name you have selected is too long.` or `The group description you have entered is too long.` ([0084](/decisions/0084-group-names-and-descriptions.md)) |
+| Group purchase | Compares `strlen($name > 25)`, so a name or description of any length passes | A name over `groups.nameMaxLength` or a description over `groups.descriptionMaxLength` gets Holo's `The group name you have selected is too long.` or `The group description you have entered is too long.` ([0084](/decisions/holo-port/0084-group-names-and-descriptions.md)) |
 | Texts | `Purchashing`, `Managment`, `An group`, `occured` on the purchase dialog | Spelled correctly |
 | Texts | `maxiamum` in the club's month limit | Spelled correctly |
 | Report window | Every answer is 200, `Invalid post specified` too | `Invalid post specified` answers 404, and a report refused for a waiting request 422 |
@@ -225,8 +225,8 @@ here, by reason. This list covers [P1](/phases/p1-signed-out.md), [P2](/phases/p
 
 # Housekeeping
 
-The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.md)), and the look is a new design system
-([0041](/decisions/0041-housekeeping-design-system.md)).
+The behaviour follows Holo's PHP ([0034](/decisions/holo-port/0034-behaviour-matches-holo.md)), and the look is a new design system
+([0041](/decisions/holo-port/0041-housekeeping-design-system.md)).
 
 ## Safer than Holo
 
@@ -237,20 +237,20 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 | Every page | Logs what it remembers to | Every mutation writes one `staff_logs` row, notes and content too | Holo logged neither, and an audit trail with gaps is not one |
 | A settings form | Builds its query from the posted keys, in the content tool | Reads only the fields of its section | A form must not reach other settings, as `edituser.php` could |
 | A settings log row | Says which form was saved | Lists the keys that changed, never their values | Values can be secrets |
-| Dashboard | Shows every administrator's address to all staff | Takes `housekeeping.users`, which grants seeing emails ([0015](/decisions/0015-attribute-names-and-fuses.md)) | Staff should not get more than their attributes give |
+| Dashboard | Shows every administrator's address to all staff | Takes `housekeeping.users`, which grants seeing emails ([0015](/decisions/holo-port/0015-attribute-names-and-fuses.md)) | Staff should not get more than their attributes give |
 | Access Denied | Answers 200 | The same page answers 403 | The status says what happened; a browser shows no difference |
 | Staff log | `GET ?do=prune` empties the log for the `$sysadmin` | The page is read-only | A log its readers can empty proves nothing, and a link could trigger it |
 | Edit User | Takes column names from the form | Reads a fixed list of fields | `name=x` could otherwise reach any column, as it did in Holo |
 | Edit User | Any value goes into the query, with no escaping | The email, the birth date, the figure, the gender, the motto's 38 characters, and tickets and film from 0 to 2147483647 are checked | A value Holo accepted could break the site's pages |
 | Edit User | The email and birth date of anyone can be changed | They take `housekeeping.usersPrivate`, and `housekeeping.usersEdit` alone does not show them or save them | Changing an address nobody may read would hand over the account, through the password reset |
 | Help Queries | Picking up, deleting and `Quick Reply` happen on links | Each is a `POST` behind a button | A link in a message could close a ticket |
-| Help Queries | Every administrator reads the asker's address | It takes `housekeeping.usersPrivate` | [0053](/decisions/0053-attributes-on-groups-and-users.md) |
+| Help Queries | Every administrator reads the asker's address | It takes `housekeeping.usersPrivate` | [0053](/decisions/holo-port/0053-attributes-on-groups-and-users.md) |
 | Alert | A blank alert to one user goes through | Refused, with the message of the mass alert | An empty alert would sit on the habbo's page |
 | Ban tool | Stores any text as the address | An IPv4 or IPv6 address, in the form sign-ins compare | A mistyped address would look like a ban and stop nobody |
 | Give Credits | `is_numeric` lets `1.5` and `1e3` through, and a debit can go below zero | Whole numbers up to 2147483647, and a debit stops at zero with Holo's message | A wallet holds whole credits, and a sum past SQLite's integers would turn into a float |
 | Badge tool | Takes any 3 or 4 characters | Letters and digits, saved in upper case | A code names a file and a segment of a path, and MySQL matched codes ignoring case |
-| User listing | Every administrator sees every email and address | Emails, birth dates and addresses take `housekeeping.usersPrivate`, in the search too | [0053](/decisions/0053-attributes-on-groups-and-users.md) |
-| Stickers & Backgrounds | Fetches any address from the server for the image's size, and appends unescaped text to `assets.css` | The image is one of the art files in the repository, by its path; nothing is fetched or written | The plan and [0061](/decisions/0061-art-in-the-repository.md): the fetch reached any host, and the form wrote CSS |
+| User listing | Every administrator sees every email and address | Emails, birth dates and addresses take `housekeeping.usersPrivate`, in the search too | [0053](/decisions/holo-port/0053-attributes-on-groups-and-users.md) |
+| Stickers & Backgrounds | Fetches any address from the server for the image's size, and appends unescaped text to `assets.css` | The image is one of the art files in the repository, by its path; nothing is fetched or written | The plan and [0061](/decisions/holo-port/0061-art-in-the-repository.md): the fetch reached any host, and the form wrote CSS |
 | Stickers & Backgrounds | The price takes any text, a negative number too | A price from 0 to 2147483647 and a quantity from 1 to 2147483647, whole numbers | A wallet pays the price and an inventory adds the quantity, and past SQLite's integers a sum turns into a float |
 | Stickers & Backgrounds | Stores any category it is sent | Refuses a category that does not exist | An item outside every category could never be sold |
 | News | The topstory image takes any text, which the CMS prints raw into its pages | One of Holo's five local images, an uploaded image at the path the CMS serves it at, or an http(s) address; anything else answers `The topstory image must be one of the local images, an uploaded image or an http(s) address.` and keeps what was typed | Any other address, such as `javascript:`, would go into every page that shows the article |
@@ -264,54 +264,54 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 
 | Page | Holo | The port | Decision |
 | --- | --- | --- | --- |
-| Sign-in | A login page of its own and a second session that holds the password hash | The shared session; a guest goes to `site.url` | [0003](/decisions/0003-housekeeping-under-prefix.md) |
-| Sign-in | Non-staff read `Invalid username, password, or access level.` | Non-staff get 403 | [HK-A](/phases/hk-a-housekeeping-core.md) |
-| Header | `Welcome Administrator Name [ Site Home · Log Out ]` | `Logged in as: Name (Previous login at … from …)` `Log out` and `Site Home`, with no rank | [0014](/decisions/0014-attribute-based-access.md), [0003](/decisions/0003-housekeeping-under-prefix.md), [0041](/decisions/0041-housekeeping-design-system.md) |
-| Every page | `HoloCMS Housekeeping` and `HoloCMS v… Build …` | `Project Reborn Housekeeping` and `Powered by Project Reborn ©` | [0048](/decisions/0048-footer-names-reborn.md) |
-| Tabs | Six | Dashboard, Site & Content, Users & Moderation; Server waits for the game server, and HoloCMS and Help are dropped | [0013](/decisions/0013-defer-game-server-features.md), [0021](/decisions/0021-dropped-and-kept-features.md) |
-| Dashboard | The online count beside `Members`, and `Server Setup` | They wait for the game server | [0013](/decisions/0013-defer-game-server-features.md) |
-| Dashboard | The version, `HoloCMS Updater`, `Support HoloCMS`, `Need assistance?` | Not ported: they are about Holo | [0021](/decisions/0021-dropped-and-kept-features.md) |
-| Dashboard | `Members` counts users | Counts habbos | [HK-A](/phases/hk-a-housekeeping-core.md) |
-| Dashboard | Administrators are `rank > 6` | They are the holders of `housekeeping.accessGroups`, under their display habbo | [0014](/decisions/0014-attribute-based-access.md) |
-| Ranks | Numbers on a user | The installer creates Holo's staff ranks as access groups with levels, and the admin can change or delete them | [0054](/decisions/0054-access-groups-are-holos-ranks.md) |
-| Moderators | See emails and IP history | They take `housekeeping.usersPrivate`, which the Moderator group does not hold | [0053](/decisions/0053-attributes-on-groups-and-users.md) |
-| Staff actions | Anyone can act on anyone but `$sysadmin` | Only on users of a lower level | [0055](/decisions/0055-staff-levels.md) |
-| Rank tool | Ranks 1 to 7 by name or id | Access groups with attributes; the search still takes a name or an id | [0014](/decisions/0014-attribute-based-access.md) |
-| Rank tool | The `$sysadmin` of `config.php` cannot lose that rank, and only that user gives rank 7 | No `$sysadmin`: nobody edits a group above their level ([0055](/decisions/0055-staff-levels.md)), and the last holder of `housekeeping.access` and `housekeeping.accessGroups` cannot lose them: `Access denied. The last user who can manage access groups must keep housekeeping.access and housekeeping.accessGroups.`, logged as `accessGroups.refused`, as Holo logged its tool's refusals | [0014](/decisions/0014-attribute-based-access.md) |
-| Configuration | `Enable SSO` and `Language` | Gone: SSO waits for the client page, and only English is left | [Holo's settings](/reference/holo-database.md) |
-| Content tool | Four categories of `cms_content` | A form per group of settings. Those of the staff, credits and forum pages arrive with their phases, and get a form when they are declared | [HK-A](/phases/hk-a-housekeeping-core.md) |
-| Content tool | No switch for the tag fight | `Tag Fight Enabled` in Manage Site Content, on by default | [P4](/phases/p4-community.md) |
+| Sign-in | A login page of its own and a second session that holds the password hash | The shared session; a guest goes to `site.url` | [0003](/decisions/holo-port/0003-housekeeping-under-prefix.md) |
+| Sign-in | Non-staff read `Invalid username, password, or access level.` | Non-staff get 403 | HK-A |
+| Header | `Welcome Administrator Name [ Site Home · Log Out ]` | `Logged in as: Name (Previous login at … from …)` `Log out` and `Site Home`, with no rank | [0014](/decisions/holo-port/0014-attribute-based-access.md), [0003](/decisions/holo-port/0003-housekeeping-under-prefix.md), [0041](/decisions/holo-port/0041-housekeeping-design-system.md) |
+| Every page | `HoloCMS Housekeeping` and `HoloCMS v… Build …` | `Project Reborn Housekeeping` and `Powered by Project Reborn ©` | [0048](/decisions/holo-port/0048-footer-names-reborn.md) |
+| Tabs | Six | Dashboard, Site & Content, Users & Moderation; Server waits for the game server, and HoloCMS and Help are dropped | [0013](/decisions/holo-port/0013-defer-game-server-features.md), [0021](/decisions/holo-port/0021-dropped-and-kept-features.md) |
+| Dashboard | The online count beside `Members`, and `Server Setup` | They wait for the game server | [0013](/decisions/holo-port/0013-defer-game-server-features.md) |
+| Dashboard | The version, `HoloCMS Updater`, `Support HoloCMS`, `Need assistance?` | Not ported: they are about Holo | [0021](/decisions/holo-port/0021-dropped-and-kept-features.md) |
+| Dashboard | `Members` counts users | Counts habbos | HK-A |
+| Dashboard | Administrators are `rank > 6` | They are the holders of `housekeeping.accessGroups`, under their display habbo | [0014](/decisions/holo-port/0014-attribute-based-access.md) |
+| Ranks | Numbers on a user | The installer creates Holo's staff ranks as access groups with levels, and the admin can change or delete them | [0054](/decisions/holo-port/0054-access-groups-are-holos-ranks.md) |
+| Moderators | See emails and IP history | They take `housekeeping.usersPrivate`, which the Moderator group does not hold | [0053](/decisions/holo-port/0053-attributes-on-groups-and-users.md) |
+| Staff actions | Anyone can act on anyone but `$sysadmin` | Only on users of a lower level | [0055](/decisions/holo-port/0055-staff-levels.md) |
+| Rank tool | Ranks 1 to 7 by name or id | Access groups with attributes; the search still takes a name or an id | [0014](/decisions/holo-port/0014-attribute-based-access.md) |
+| Rank tool | The `$sysadmin` of `config.php` cannot lose that rank, and only that user gives rank 7 | No `$sysadmin`: nobody edits a group above their level ([0055](/decisions/holo-port/0055-staff-levels.md)), and the last holder of `housekeeping.access` and `housekeeping.accessGroups` cannot lose them: `Access denied. The last user who can manage access groups must keep housekeeping.access and housekeeping.accessGroups.`, logged as `accessGroups.refused`, as Holo logged its tool's refusals | [0014](/decisions/holo-port/0014-attribute-based-access.md) |
+| Configuration | `Enable SSO` and `Language` | Gone: SSO waits for the client page, and only English is left | [Holo's settings](/sources/holocms/database.md) |
+| Content tool | Four categories of `cms_content` | A form per group of settings. Those of the staff, credits and forum pages arrive with their phases, and get a form when they are declared | HK-A |
+| Content tool | No switch for the tag fight | `Tag Fight Enabled` in Manage Site Content, on by default | P4 |
 | Maintenance | `Administrators can still login through Housekeeping.` | `Administrators can still login on that page.` | The plan: staff sign in with the shared session on the maintenance page |
-| Help Queries | `Delete`, which deletes the query | `Close`, with Holo's rule that it must be picked up first and its texts saying `closed`; the ticket stays as history and leaves the overview | [0063](/decisions/0063-what-housekeeping-can-delete.md) |
-| Help Queries | A `Room ID` column | Not shown | Tickets from inside the hotel wait for the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
-| Alert | Goes to a user, with `Server Alert` for the game | Goes to a habbo, and archived ones count as unknown; the checkbox waits for the game server | Alerts were always per habbo here, and [0013](/decisions/0013-defer-game-server-features.md) |
+| Help Queries | `Delete`, which deletes the query | `Close`, with Holo's rule that it must be picked up first and its texts saying `closed`; the ticket stays as history and leaves the overview | [0063](/decisions/holo-port/0063-what-housekeeping-can-delete.md) |
+| Help Queries | A `Room ID` column | Not shown | Tickets from inside the hotel wait for the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |
+| Alert | Goes to a user, with `Server Alert` for the game | Goes to a habbo, and archived ones count as unknown; the checkbox waits for the game server | Alerts were always per habbo here, and [0013](/decisions/holo-port/0013-defer-game-server-features.md) |
 | Mass alert | One row per user | One row per habbo that is not archived | Each habbo reads its own feed |
 | Left menu | `Edit User`, `Retrive IP Address`, `Retrive User ID`, `Clone Checker`, `Give User Badge`, `Transaction logs`, `Give Credits / Refunds`, `Unbanning`, `Ban Listing`, `Mass Site/Remote Alert` and `Alert Listing` are links of their own | Their work is on `User Listing`, the habbo's page, `Remote Banning` and `Site/Remote Alert` | The plan's routes |
-| Ban tool | `You may not ban the System Administrator!` | `Access denied. You may only act on users below your level.` | [0055](/decisions/0055-staff-levels.md) |
-| Ban tool | `...successfully. An ingame notification has been sent (that is, if the user is online).` | Ends at `successfully.` | The game server is deferred ([0013](/decisions/0013-defer-game-server-features.md)) |
-| Unban tool | `(Mass) Unban` deletes every ban matching a query | `Lift` beside each ban, which stays in the table as history | The plan, and [0063](/decisions/0063-what-housekeeping-can-delete.md) |
+| Ban tool | `You may not ban the System Administrator!` | `Access denied. You may only act on users below your level.` | [0055](/decisions/holo-port/0055-staff-levels.md) |
+| Ban tool | `...successfully. An ingame notification has been sent (that is, if the user is online).` | Ends at `successfully.` | The game server is deferred ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |
+| Unban tool | `(Mass) Unban` deletes every ban matching a query | `Lift` beside each ban, which stays in the table as history | The plan, and [0063](/decisions/holo-port/0063-what-housekeeping-can-delete.md) |
 | Ban Listing | Lists expired bans until their user signs in, with a notice saying so | Lists active bans, and the notice is gone | Bans are never deleted here, so expired ones would stay forever. Lifted and expired bans stay readable in the staff log |
 | Edit User | `credits` is a field of the form | Credits move only through `Give Credits`, which writes the ledger | Every change of credits has a ledger row |
 | Edit User | Every column but six can be edited, `hbirth`, `lastvisit`, `postcount` and `noob` too | The fields that still exist as data of their own: motto, figure, gender, email, birth date, newsletter, tickets and film | The others are worked out from history, or are gone |
-| Edit User | `...will also update (poof) ingame, if connected.` | `User updated successfully.` | The game server is deferred ([0013](/decisions/0013-defer-game-server-features.md)) |
+| Edit User | `...will also update (poof) ingame, if connected.` | `User updated successfully.` | The game server is deferred ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |
 | Stickers & Backgrounds | Its own list of categories, with its own spellings and no Notes | The store's categories, in the store's order | The categories live in the database, and a fixed list would drift from it |
-| Stickers & Backgrounds | Open to every administrator | Takes `housekeeping.homeStore`, which the installer's Administrator and Moderator hold | [0053](/decisions/0053-attributes-on-groups-and-users.md), [0054](/decisions/0054-access-groups-are-holos-ranks.md) |
-| News | Open to rank 7 | Takes `housekeeping.news`, which the installer's Administrator holds | [0053](/decisions/0053-attributes-on-groups-and-users.md), [0054](/decisions/0054-access-groups-are-holos-ranks.md) |
-| News | The topstory image is an address, `http://images.habbohotel.co.uk/c_images/Top_Story_Images/top_story_web60.png` by default | One of Holo's five local images, picked from a list, `top_story_news.png` by default, or an http(s) address, with a 300x187 preview that follows the field, as the CMS's news promo shows the picture | [0074](/decisions/0074-news-images.md) |
-| News | No uploads | An `Upload Image` row cuts a picture to fill 300x187 by dragging and zooming it, or fits it whole with transparent bands, previews it, and uploads it with `Use this picture`; a GIF of exactly 300x187 goes up as it is, with its animation. The server keeps only a PNG or a GIF of 300x187, re-encoded, and its path fills the field | [0074](/decisions/0074-news-images.md) |
-| News | No uploads | The image editor's `Uploaded` mode shows a thumbnail of every uploaded picture, newest first, with the field's own pressed; clicking one fills the field and the preview, as an upload does, and answers `Chosen as the topstory image. Save the article to keep it.` | [0079](/decisions/0079-uploaded-images-managed.md) |
-| Uploaded Images | No uploads | A page after `Manage Existing News Items`, for `housekeeping.news`, lists every uploaded picture, newest first, with its thumbnail, format, size, uploader, date and the articles showing it, ten a page turned in the browser with `Newer` and `Older`. `Delete` removes one no article shows, `Image deleted successfully.`; the database refuses one in use, and the answer names the articles to change or delete first: `Unable to delete image; it is the topstory image of Red Letter Day (ID: 3). Change or delete that article first.` Both answers stay on the page of the delete | [0079](/decisions/0079-uploaded-images-managed.md), [0080](/decisions/0080-uploaded-images-in-pages.md) |
-| News | `HTML is allowed here.` under `Story` | `BBCode is allowed here.`, and the edit form links to the article with `View on site` | [0020](/decisions/0020-news-in-bbcode.md) |
-| News | The author is the user's name, saved as text | The staff member's active habbo, whose name the list shows | [P4](/phases/p4-community.md) |
-| Banners | Open to rank 6 | Takes `housekeeping.banners`, which the installer's Administrator and Moderator hold | [0053](/decisions/0053-attributes-on-groups-and-users.md), [0054](/decisions/0054-access-groups-are-holos-ranks.md) |
-| Banners | Under the HoloCMS tab | Under Site & Content, whose Content Management box links to it, as Holo's did | [0021](/decisions/0021-dropped-and-kept-features.md) |
-| Voucher Management | The `Amount` of an `Item` voucher takes any text, checked only when a habbo redeems it | A name that no furniture has answers `Unable to create voucher; this item does not exist!`, and of several furniture with one name the first is given | `plans/server/decisions/0120-an-item-voucher-gives-the-first-furni-of-its-sprite.md` |
-| Voucher Management | An `Item` voucher is made for any furniture | `wallpaper`, `floor` and `landscape` answer `Unable to create voucher; wallpapers, floors and landscapes cannot be given by a voucher!`, since nobody chooses their pattern | `plans/server/decisions/0125-an-item-voucher-gives-what-buying-gives.md` |
+| Stickers & Backgrounds | Open to every administrator | Takes `housekeeping.homeStore`, which the installer's Administrator and Moderator hold | [0053](/decisions/holo-port/0053-attributes-on-groups-and-users.md), [0054](/decisions/holo-port/0054-access-groups-are-holos-ranks.md) |
+| News | Open to rank 7 | Takes `housekeeping.news`, which the installer's Administrator holds | [0053](/decisions/holo-port/0053-attributes-on-groups-and-users.md), [0054](/decisions/holo-port/0054-access-groups-are-holos-ranks.md) |
+| News | The topstory image is an address, `http://images.habbohotel.co.uk/c_images/Top_Story_Images/top_story_web60.png` by default | One of Holo's five local images, picked from a list, `top_story_news.png` by default, or an http(s) address, with a 300x187 preview that follows the field, as the CMS's news promo shows the picture | [0074](/decisions/holo-port/0074-news-images.md) |
+| News | No uploads | An `Upload Image` row cuts a picture to fill 300x187 by dragging and zooming it, or fits it whole with transparent bands, previews it, and uploads it with `Use this picture`; a GIF of exactly 300x187 goes up as it is, with its animation. The server keeps only a PNG or a GIF of 300x187, re-encoded, and its path fills the field | [0074](/decisions/holo-port/0074-news-images.md) |
+| News | No uploads | The image editor's `Uploaded` mode shows a thumbnail of every uploaded picture, newest first, with the field's own pressed; clicking one fills the field and the preview, as an upload does, and answers `Chosen as the topstory image. Save the article to keep it.` | [0079](/decisions/holo-port/0079-uploaded-images-managed.md) |
+| Uploaded Images | No uploads | A page after `Manage Existing News Items`, for `housekeeping.news`, lists every uploaded picture, newest first, with its thumbnail, format, size, uploader, date and the articles showing it, ten a page turned in the browser with `Newer` and `Older`. `Delete` removes one no article shows, `Image deleted successfully.`; the database refuses one in use, and the answer names the articles to change or delete first: `Unable to delete image; it is the topstory image of Red Letter Day (ID: 3). Change or delete that article first.` Both answers stay on the page of the delete | [0079](/decisions/holo-port/0079-uploaded-images-managed.md), [0080](/decisions/holo-port/0080-uploaded-images-in-pages.md) |
+| News | `HTML is allowed here.` under `Story` | `BBCode is allowed here.`, and the edit form links to the article with `View on site` | [0020](/decisions/holo-port/0020-news-in-bbcode.md) |
+| News | The author is the user's name, saved as text | The staff member's active habbo, whose name the list shows | P4 |
+| Banners | Open to rank 6 | Takes `housekeeping.banners`, which the installer's Administrator and Moderator hold | [0053](/decisions/holo-port/0053-attributes-on-groups-and-users.md), [0054](/decisions/holo-port/0054-access-groups-are-holos-ranks.md) |
+| Banners | Under the HoloCMS tab | Under Site & Content, whose Content Management box links to it, as Holo's did | [0021](/decisions/holo-port/0021-dropped-and-kept-features.md) |
+| Voucher Management | The `Amount` of an `Item` voucher takes any text, checked only when a habbo redeems it | A name that no furniture has answers `Unable to create voucher; this item does not exist!`, and of several furniture with one name the first is given | `knowledge/decisions/server/0120-an-item-voucher-gives-the-first-furni-of-its-sprite.md` |
+| Voucher Management | An `Item` voucher is made for any furniture | `wallpaper`, `floor` and `landscape` answer `Unable to create voucher; wallpapers, floors and landscapes cannot be given by a voucher!`, since nobody chooses their pattern | `knowledge/decisions/server/0125-an-item-voucher-gives-what-buying-gives.md` |
 | Voucher Management | An `Item` voucher is logged as `Created voucher <code> worth <name> credits` | `Created voucher <code> for the item <name>` | The staff log says what the voucher gives |
-| Voucher Management | Open to rank 6 | Takes `housekeeping.vouchers`, which the installer's Administrator and Moderator hold | [0053](/decisions/0053-attributes-on-groups-and-users.md), [0054](/decisions/0054-access-groups-are-holos-ranks.md) |
-| Voucher Management | A voucher cannot be deleted | `Delete` beside each unused voucher answers `The voucher has been deleted successfully.` and logs `Deleted voucher <code>`; a voucher redeemed in the meantime stays, and the answer is `Unable to delete voucher; this voucher does not exist or has been redeemed!` with 404 | [0063](/decisions/0063-what-housekeeping-can-delete.md) |
-| Voucher Management | A redemption deletes the voucher, so its code can be given again | A redeemed voucher stays, so its code stays taken | [0063](/decisions/0063-what-housekeeping-can-delete.md) |
-| Voucher Management | Any code goes through, `.` and `..` too | The codes `.` and `..` alone answer `The redemption code cannot be . or ..` and keep what was typed, since a browser reads them in the delete's address as folders; every other code goes through | [0106](/decisions/0106-dot-voucher-codes-refused.md) |
+| Voucher Management | Open to rank 6 | Takes `housekeeping.vouchers`, which the installer's Administrator and Moderator hold | [0053](/decisions/holo-port/0053-attributes-on-groups-and-users.md), [0054](/decisions/holo-port/0054-access-groups-are-holos-ranks.md) |
+| Voucher Management | A voucher cannot be deleted | `Delete` beside each unused voucher answers `The voucher has been deleted successfully.` and logs `Deleted voucher <code>`; a voucher redeemed in the meantime stays, and the answer is `Unable to delete voucher; this voucher does not exist or has been redeemed!` with 404 | [0063](/decisions/holo-port/0063-what-housekeeping-can-delete.md) |
+| Voucher Management | A redemption deletes the voucher, so its code can be given again | A redeemed voucher stays, so its code stays taken | [0063](/decisions/holo-port/0063-what-housekeeping-can-delete.md) |
+| Voucher Management | Any code goes through, `.` and `..` too | The codes `.` and `..` alone answer `The redemption code cannot be . or ..` and keep what was typed, since a browser reads them in the delete's address as folders; every other code goes through | [0106](/decisions/holo-port/0106-dot-voucher-codes-refused.md) |
 
 ## Holo bugs not ported
 
@@ -342,7 +342,7 @@ The behaviour follows Holo's PHP ([0034](/decisions/0034-behaviour-matches-holo.
 
 ## Not in Holo
 
-None of these fits the three reasons of [0034](/decisions/0034-behaviour-matches-holo.md), so each is here for the user to
+None of these fits the three reasons of [0034](/decisions/holo-port/0034-behaviour-matches-holo.md), so each is here for the user to
 veto.
 
 | Page | The port | Why |
@@ -351,31 +351,31 @@ veto.
 | Staff log | An `IP` column in place of `Note`, Holo's name of the PHP file | `staff_logs` has the address and no such note |
 | Settings | Forms for `auth`, `registration`, `referral`, `mail` and `imaging`, which Holo kept in `config.php` or nowhere | The plan: forms over the declared settings |
 | Settings | A `Homes` form for the items per home, the length of a note, the tags per habbo and the wardrobe's slots, which Holo wrote in its code | The plan: the `homes` section |
-| Settings | A `Groups` form for a group's price, the groups per user, the memberships per habbo, the members of a Regular group and the lengths of a name and a description, which Holo wrote in its code | The plan: the `groups` section ([0082](/decisions/0082-group-limits-per-user-and-habbo.md), [0084](/decisions/0084-group-names-and-descriptions.md)) |
+| Settings | A `Groups` form for a group's price, the groups per user, the memberships per habbo, the members of a Regular group and the lengths of a name and a description, which Holo wrote in its code | The plan: the `groups` section ([0082](/decisions/holo-port/0082-group-limits-per-user-and-habbo.md), [0084](/decisions/holo-port/0084-group-names-and-descriptions.md)) |
 | Settings | A `Club` form for the prices of 1, 3 and 6 months and the days of a month, which Holo wrote in its code | The plan: the `club` settings |
-| Settings | A `Help` form for the longest question of a help request, which Holo never limited | [0109](/decisions/0109-help-request-lengths.md) |
-| Settings | The content tool's categories are links of their own: `Discussion Board Module` holds `Forum Enabled`, `Smilies Enabled` and a `Spam Check` of 30 seconds, where 0 turns the check off | Holo chose the category from a list; the spam check is [0091](/decisions/0091-forum-spam-check.md) |
+| Settings | A `Help` form for the longest question of a help request, which Holo never limited | [0109](/decisions/holo-port/0109-help-request-lengths.md) |
+| Settings | The content tool's categories are links of their own: `Discussion Board Module` holds `Forum Enabled`, `Smilies Enabled` and a `Spam Check` of 30 seconds, where 0 turns the check off | Holo chose the category from a list; the spam check is [0091](/decisions/holo-port/0091-forum-spam-check.md) |
 | Settings | `mail.password` is never shown: blank keeps it, and `Clear it` removes it | The plan: `mail.password` masked |
 | Edit User | Two forms on the habbo's page, `Save Habbo` and `Save User` | A habbo and its owner are two rows |
 | Edit User | `users.update` and `habbos.update` list the fields saved, never their values | Holo logged `Edited user`, and an address must not reach readers of the log |
 | Help Queries | 100 rows a page, and a closed ticket stays readable at its address, shown to staff who open it | Tickets are never deleted here, so the list needs pages |
 | Alerts | One page for alert, mass alert and the listing, with 100 rows a page, and the mass form shows only with `housekeeping.alertsBroadcast` | The plan: `GET /alerts`, `POST /alerts`. Holo listed every row |
 | Ban tool | Takes a habbo's name or a user id, and the habbo's page links to it | Holo took a user id, and here staff see habbos; the rank tool already took both |
-| Ban tool | The form and the list share one page, in the plain rows of Sulake's `Mass banning and kicking`, with the answer under the form | The plan, and [0060](/decisions/0060-housekeeping-components.md) |
+| Ban tool | The form and the list share one page, in the plain rows of Sulake's `Mass banning and kicking`, with the answer under the form | The plan, and [0060](/decisions/holo-port/0060-housekeeping-components.md) |
 | Give Credits | A form on the habbo's page, not a page asking for a name | The plan: `POST /habbos/{id}/credits` |
-| Transaction logs | The page of a habbo, with a `Habbo` column and 100 rows a page, not a page asking for a user id | The plan, and the wallet is shared ([0056](/decisions/0056-wallet-club-and-inventory-per-user.md)) |
+| Transaction logs | The page of a habbo, with a `Habbo` column and 100 rows a page, not a page asking for a user id | The plan, and the wallet is shared ([0056](/decisions/holo-port/0056-wallet-club-and-inventory-per-user.md)) |
 | Badge tool | The habbo's page lists its badges, each with `Remove`, and the form gives one to that habbo | The plan: `POST /habbos/{id}/badges/{code}/delete`. Holo's tool only gave badges, by username |
 | User listing | Lists habbos, with `(Archived)` beside those archived | A user owns several habbos, and staff must find an archived one to restore it |
 | User listing | 100 habbos a page, with `Older` and `Newer` | Holo listed every user on one page |
 | User listing | One search does the work of `Retrive IP Address`, `Retrive User ID` and the `Clone Checker`, and matches part of a name | The plan: `GET /habbos?q=` |
 | User listing | `Last Activity` reads the habbo's newest session, then its last sign-in | `online` is not kept; the column's wording is Holo's |
-| Habbo page | `Restore Habbo` on an archived habbo, refused while the user has no free slot | [0058](/decisions/0058-habbos-are-archived.md), and a user owns up to `registration.maxHabbosPerUser` ([0056](/decisions/0056-wallet-club-and-inventory-per-user.md)) |
-| Habbo page | Holders of `housekeeping.accessGroups` tick attributes for the user alone | [0053](/decisions/0053-attributes-on-groups-and-users.md) |
+| Habbo page | `Restore Habbo` on an archived habbo, refused while the user has no free slot | [0058](/decisions/holo-port/0058-habbos-are-archived.md), and a user owns up to `registration.maxHabbosPerUser` ([0056](/decisions/holo-port/0056-wallet-club-and-inventory-per-user.md)) |
+| Habbo page | Holders of `housekeeping.accessGroups` tick attributes for the user alone | [0053](/decisions/holo-port/0053-attributes-on-groups-and-users.md) |
 | Habbo page | The page of one habbo, with its owner, their other habbos and the addresses they signed in from | The plan. Holo kept only the last address |
 | Access groups | The guard also keeps `housekeeping.access` on someone | `housekeeping.accessGroups` opens nothing without it, so the rule as written could still lock everyone out |
-| Stickers & Backgrounds | A gold list of every item, sold or not, 100 a page, each with a form for its name, category, price, quantity and `For Sale`; an item is never deleted | The plan: `POST /home-store/{id}`, and [0063](/decisions/0063-what-housekeeping-can-delete.md) |
+| Stickers & Backgrounds | A gold list of every item, sold or not, 100 a page, each with a form for its name, category, price, quantity and `For Sale`; an item is never deleted | The plan: `POST /home-store/{id}`, and [0063](/decisions/holo-port/0063-what-housekeeping-can-delete.md) |
 | News | An article that does not exist answers Holo's `Unable to edit article; this article does not exist!` or `Unable to delete article; this article does not exist!` with 404, also for an id that is not a number | Holo answered 200, and showed the plain list for an id that is not a number |
-| News | An upload takes at most 2 MB, and a GIF at most 500 frames, answering `The image must be at most 2 MB.` or `The GIF must have at most 500 frames.`; any other file answers `The image must be a PNG or a GIF of 300x187 pixels.` | [0074](/decisions/0074-news-images.md) sets the size and the formats but no bounds, and a small GIF can decode to far more memory than it takes |
+| News | An upload takes at most 2 MB, and a GIF at most 500 frames, answering `The image must be at most 2 MB.` or `The GIF must have at most 500 frames.`; any other file answers `The image must be a PNG or a GIF of 300x187 pixels.` | [0074](/decisions/holo-port/0074-news-images.md) sets the size and the formats but no bounds, and a small GIF can decode to far more memory than it takes |
 | Voucher Management | The code loses the spaces around it, and a code of spaces is blank | Habbos type the code again, and the other forms trim the names they take |
 
 ## Kept as in Holo, on purpose
@@ -390,7 +390,7 @@ veto.
 
 | Holo | Phase |
 | --- | --- |
-| `My Friends`, `My Rooms` and the recommended rooms | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
-| The online state of the profile widget, the community page's random habbos, the staff page and the forum's post boxes, which show offline | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
+| `My Friends`, `My Rooms` and the recommended rooms | Deferred with the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |
+| The online state of the profile widget, the community page's random habbos, the staff page and the forum's post boxes, which show offline | Deferred with the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |
 | `Chatlogs` in housekeeping | The game server's `plans/server` task s4-08 ports it: 100 lines a page with Newer and Older, public rooms marked `Public`, the lines kept 30 days |
-| `Online Users` in housekeeping | Deferred with the game server ([0013](/decisions/0013-defer-game-server-features.md)) |
+| `Online Users` in housekeeping | Deferred with the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |

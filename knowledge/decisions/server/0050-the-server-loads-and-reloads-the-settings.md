@@ -19,11 +19,11 @@ tags: [server, settings]
 # Context
 
 The version check and 257 read settings (`game.clientVersion`, `site.url` and the ten `game.` parameters of
-[0034](/decisions/0034-session-parameters-are-settings.md)), and `packages/server` never loaded them. Offered loading
+[0034](/decisions/server/0034-session-parameters-are-settings.md)), and `packages/server` never loaded them. Offered loading
 them once in `server.New`, or loading and reloading them, the user chose "Load and reload": "server.New loads them and
 also reloads them every cms.refresh seconds, as the CMS does, so a change in housekeeping's Game form reaches a server
 running alone within seconds."
 
 # Consequences
 
-- [s2-06](/tasks/s2-06-handshake-and-login.md) applies it. The tests of `packages/server` open a database of their own.
+- s2-06 applies it. The tests of `packages/server` open a database of their own.

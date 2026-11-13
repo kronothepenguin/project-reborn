@@ -11,7 +11,7 @@ tags: [installer, store, homes]
 
 # Decision
 
-- The home store's seed belongs to the CMS, as [0049](/decisions/0049-store-is-the-global-database.md) says, and only
+- The home store's seed belongs to the CMS, as [0049](/decisions/holo-port/0049-store-is-the-global-database.md) says, and only
   the installer writes it, when it installs.
 - A database installed before a seed existed is recreated with the installer. The CMS never writes seeds.
 
@@ -22,4 +22,4 @@ fill an empty store when it starts, the user chose "Recreate the database".
 
 # Consequences
 
-- After [P3](/phases/p3-homes.md) the development database is recreated, and its administrator with it.
+- After P3 the development database is recreated, and its administrator with it.

@@ -10,7 +10,7 @@ tags: [server, data]
 
 # Decision
 
-- A habbo's last time online, which [0011](/decisions/0011-saved-and-memory-only-data.md) saves, is written when the
+- A habbo's last time online, which [0011](/decisions/server/0011-saved-and-memory-only-data.md) saves, is written when the
   habbo logs in and when they log out.
 
 # Context
@@ -21,4 +21,4 @@ then the last one known."
 
 # Consequences
 
-- [s2-03](/tasks/s2-03-saved-login-data.md) adds the column, and [s2-05](/tasks/s2-05-login-in-game.md) writes it.
+- s2-03 adds the column, and s2-05 writes it.

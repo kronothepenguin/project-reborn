@@ -21,8 +21,8 @@ Offered up to 50 spectators from the queue, or no spectators, the user chose "Up
 (Recommended)": "A habbo waiting for a full room can switch to the spectators' line (the queue window's second choice,
 ROOM_QUEUE_CHANGE); up to game.maxSpectators (50, a setting) watch at once, and a spectator leaving lets the next one
 in. Example: while waiting for the Welcome Lounge, a habbo switches to watch it and sees the room on the TV." Every full
-room queues ([0087](/decisions/0087-every-full-room-queues.md)), so every full room takes spectators.
+room queues ([0087](/decisions/server/0087-every-full-room-queues.md)), so every full room takes spectators.
 
 # Consequences
 
-- [s4-12](/tasks/s4-12-queue-and-spectators.md) applies it, with the setting `game.maxSpectators`.
+- s4-12 applies it, with the setting `game.maxSpectators`.

@@ -26,7 +26,7 @@ of other casts by `<cast>/<file>`.
 | `71_OLD Figure System Class.ls` | Registers 1 command, `GETAVAILABLESETS`; no script creates it ([Dead code](#dead-code)) |
 
 Three scripts of this cast send commands that `hh_entry_init` registers, and
-[hh_entry_init](/reference/r26/hh_entry_init.md#commands-from-the-client) describes them: `10_CLangTest.ls` sends
+[hh_entry_init](/r26/hh_entry_init.md#commands-from-the-client) describes them: `10_CLangTest.ls` sends
 `LANGCHECK`, and `20_Ticket Window Manager Class.ls` and `60_Game Oneclick Buy Window Manager Class.ls` send `BTCKS`.
 
 Other scripts are why some of these messages and commands exist:
@@ -102,11 +102,11 @@ could not handle; the client only shows it.
 All are registered by `5_Hobba Handler Class.ls`, except `GDATE`, registered by `7_Server Date Class.ls`, and
 `GETAVAILABLESETS`, registered by `71_OLD Figure System Class.ls`. Every sender calls `send`: with no body it sends the
 id alone, and with a typed list it goes through `sendNew`
-([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 9 | `GETAVAILABLESETS` | `#info` | `71_OLD Figure System Class.ls`: `getAvailableSetList`, no body | none | Never sent ([Dead code](#dead-code)); `hh_human` registers the same command and sends it nowhere ([s1-22](/tasks/s1-22-human.md)) |
+| 9 | `GETAVAILABLESETS` | `#info` | `71_OLD Figure System Class.ls`: `getAvailableSetList`, no body | none | Never sent ([Dead code](#dead-code)); `hh_human` registers the same command and sends it nowhere (s1-22) |
 | 48 | `PICK_CRYFORHELP` | `#info` | `4_Hobba Component Class.ls`: `send_cryPick`, typed | string call id | On the window's `hobba_pickup`, `hobba_pickup_go` and `hobba_pickandreply` ([Taking up a call](#taking-up-a-call)) |
 | 49 | `GDATE` | `#info` | `7_Server Date Class.ls`: `getDate`, no body | none | [The server's date](#the-servers-date) |
 | 86 | `CALL_FOR_HELP` | `#info`, as `connection.room.id` | `4_Hobba Component Class.ls`: `send_cryForHelp`, typed, on `#sendCallForHelp` from `hh_room_utils/6_Dialog Thread Class.ls` | string message; int category: 1 an emergency, 2 for the helpers | [A call for help](#a-call-for-help) |
@@ -132,10 +132,10 @@ id alone, and with a typed list it goes through `sendNew`
 1. A player's help dialogs, in `hh_room_utils`, send `GET_PENDING_CALLS_FOR_HELP` (237). The server answers 319 with
    the number of the player's calls still waiting, and the dialog for writing opens only on 0; otherwise the player
    may first delete them with `DELETE_PENDING_CALLS_FOR_HELP` (238), which 320 answers. These belong to
-   `hh_room_utils` ([s1-07](/tasks/s1-07-room-utils.md)).
+   `hh_room_utils` (s1-07).
 2. On Send, the dialog executes `#sendCallForHelp` with the text and its kind, and `send_cryForHelp` sends
    `CALL_FOR_HELP`: the text with every `/` turned into a space and every line break into `<br>`, run through
-   `convertSpecialChars` ([fuse_client](/reference/r26/fuse_client.md#text)), then 1 for `#emergency` or 2 for
+   `convertSpecialChars` ([fuse_client](/r26/fuse_client.md#text)), then 1 for `#emergency` or 2 for
    `#habbo_helpers`. The server answers 321, whose status 0 opens `hh_room_utils`' dialog saying the call was sent.
 3. The server sends 148 to the clients that take calls. The client checks no right before it shows a call: whoever
    gets 148 sees it. It plays `sound_cfh_received` while the mod tool's audio alert is on, as it is when the client
@@ -154,8 +154,8 @@ id alone, and with a typed list it goes through `sendNew`
    id. Otherwise it logs "Invalid or missing data in saved help cry!" and sends nothing more.
 4. The client does not move by itself. When it next receives a room's users and one has the remembered name,
    `hh_room/5_Room Handler Class.ls` forgets the name and, three seconds later, points the room's arrow at that user
-   ([s1-06](/tasks/s1-06-room.md)). Moving a client to a room is what `hh_navigator`'s `handle_roomforward` (286)
-   does ([s1-04](/tasks/s1-04-navigator.md)).
+   (s1-06). Moving a client to a room is what `hh_navigator`'s `handle_roomforward` (286)
+   does (s1-04).
 5. The server sends 273 with the call id when the call leaves the window.
 
 ## Answering a call
@@ -170,7 +170,7 @@ id alone, and with a typed list it goes through `sendNew`
 ## The mod tool
 
 1. A client that enters a room shows the mod tool button beside the alert icon when its rights hold `fuse_kick`
-   ([hh_entry_init](/reference/r26/hh_entry_init.md#rights)). The button leaves with the room, and while a game runs.
+   ([hh_entry_init](/r26/hh_entry_init.md#rights)). The button leaves with the room, and while a game runs.
 2. The mod tool's main view offers alert, kick and ban for a user, and alert and kick for the room. A click on a user
    in the room writes that user's name in the name field, unless it is the staff member's own name.
 3. The reason field stops taking keys as the reply's does. A ban chooses 2, 4, 12 or 24 hours, or 2, 3, 7, 14, 21,
@@ -185,7 +185,7 @@ id alone, and with a typed list it goes through `sendNew`
    between dashes is ignored.
 3. The client keeps it in the session as `server_date`, with dots for dashes, and executes `#serverDate`, on which the
    trophy page writes the date in the format of session parameter 5
-   ([hh_entry_init](/reference/r26/hh_entry_init.md#session-parameters)), the day, the month and the year as numbers.
+   ([hh_entry_init](/r26/hh_entry_init.md#session-parameters)), the day, the month and the year as numbers.
 
 ## Tracking
 
@@ -207,16 +207,16 @@ tracking points, such as `/client/loggedin`, prefixed with session parameter 8, 
 `5_Hobba Handler Class.ls` registers 4 messages and 6 commands, `7_Server Date Class.ls` 1 and 1,
 `57_Error Report Handler Class.ls` 1 and 0, `63_Statistics Broker Class.ls` and
 `64_Statistics Broker Javascript Class.ls` 1 and 0 each, and `71_OLD Figure System Class.ls` 0 and 1. All match
-[Registering scripts](/reference/client-r26.md#registering-scripts).
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`).
 
 ## Ids other casts register too
 
 - 9: `hh_human/11_Figure System Class.ls`, whose class the login creates as `Figure_System`, registers
-  `GETAVAILABLESETS` too and never sends it ([s1-22](/tasks/s1-22-human.md)). The only sender is this cast's
+  `GETAVAILABLESETS` too and never sends it (s1-22). The only sender is this cast's
   `getAvailableSetList`, which never runs, so no client sends 9.
 - 166: both statistics brokers of this cast listen to it.
 - 237: `GET_PENDING_CALLS_FOR_HELP` is registered by `hh_room_utils/7_Dialog Handler Class.ls`, and sent by this cast's
-  `getPendingCFHs` as well as by `hh_room_utils`' dialogs ([s1-07](/tasks/s1-07-room-utils.md)).
+  `getPendingCFHs` as well as by `hh_room_utils`' dialogs (s1-07).
 
 ## Dead code
 
@@ -236,7 +236,7 @@ tracking points, such as `/client/loggedin`, prefixed with session parameter 8, 
 - `send_CfhReply` counts the 45 characters again after each `<br>` it writes, counting the `br>` it adds among them,
   and stops at the reply's first length, so the end of a long reply is not broken.
 - `handle_cry_reply` runs the reply through `convertSpecialChars` again, after `fuse_client` already has
-  ([fuse_client](/reference/r26/fuse_client.md#text)).
+  ([fuse_client](/r26/fuse_client.md#text)).
 - `64_Statistics Broker Javascript Class.ls` listens to 166 with `#handle_update_stats` and stops listening with
   `#updateStats`.
 - The Hobba Interface stops listening to `#userlogin`, which it never listened to, and goes on listening to

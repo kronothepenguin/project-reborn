@@ -23,4 +23,4 @@ shown while any room loads, as Holo did".
 
 # Consequences
 
-- [s4-01](/tasks/s4-01-room-tables.md) declares the settings, and [s4-03](/tasks/s4-03-entering-a-room.md) answers both.
+- s4-01 declares the settings, and s4-03 answers both.

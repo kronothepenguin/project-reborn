@@ -11,7 +11,7 @@ tags: [process]
 # Decision
 
 - `plans/server/` holds the game server's decisions, phases, tasks, reference documents and log, in the format of
-  `plans/holo-port/` (OKF 0.2), with its own [rules](/rules.md).
+  `plans/holo-port/` (OKF 0.2), with its own rules.
 - `.agents/skills/tracking-plans` works every bundle under `plans/`: it starts a new bundle in this format, and resumes,
   works and finishes the tasks of any of them.
 - `.claude/skills` is a link to `.agents/skills`, so Claude Code loads every project skill.
@@ -28,4 +28,4 @@ chose the generic skill with the link. `tracking-holo-port` stays because the P5
 
 # Consequences
 
-- [s0-01](/tasks/s0-01-plan-bundle.md) creates the bundle, the skill and the link.
+- s0-01 creates the bundle, the skill and the link.

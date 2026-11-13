@@ -23,8 +23,8 @@ Other casts open chats and invitations:
 
 | Script | Why it is here |
 | --- | --- |
-| `hh_friend_list/3_Friend List Interface Class.ls` | Starts a chat with a friend, and invites the selected friends ([s1-11](/tasks/s1-11-friend-list.md)) |
-| `hh_room/4_Room Component Class.ls` | The chat command `:im <name> <text>` starts a chat with that friend ([s1-06](/tasks/s1-06-room.md)) |
+| `hh_friend_list/3_Friend List Interface Class.ls` | Starts a chat with a friend, and invites the selected friends (s1-11) |
+| `hh_room/4_Room Component Class.ls` | The chat command `:im <name> <text>` starts a chat with that friend (s1-06) |
 
 A chat only opens with someone on the friend list, whose user id names the chat.
 
@@ -51,7 +51,7 @@ A chat only opens with someone on the friend list, whose user id names the chat.
 # Commands from the client
 
 Registered by `5_Instant Messenger Handler Class.ls`. Both are sent with a typed list, which goes through `sendNew`
-([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -82,7 +82,7 @@ Registered by `5_Instant Messenger Handler Class.ls`. Both are sent with a typed
 ## Counts
 
 `5_Instant Messenger Handler Class.ls` registers 4 messages and 2 commands, as
-[Registering scripts](/reference/client-r26.md#registering-scripts) says. No other cast registers them.
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says. No other cast registers them.
 
 ## Quirks
 

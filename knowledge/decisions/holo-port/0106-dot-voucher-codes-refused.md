@@ -16,14 +16,14 @@ tags: [economy, housekeeping, vouchers]
 
 # Context
 
-[p6-07](/tasks/p6-07-housekeeping-vouchers.md) found that a browser reads `.` and `..` in
+p6-07 found that a browser reads `.` and `..` in
 `/housekeeping/vouchers/{code}/delete` as folders, even escaped, so `Delete` on those two vouchers answered 404 and they
-stayed, though a wrong voucher has no other fix ([0063](/decisions/0063-what-housekeeping-can-delete.md)). Offered four
+stayed, though a wrong voucher has no other fix ([0063](/decisions/holo-port/0063-what-housekeeping-can-delete.md)). Offered four
 choices, the user chose "Refuse . and .. (Recommended)": "Create Voucher refuses those two codes alone, with e.g.
 `The redemption code cannot be . or ..`. Every other code Holo took still works, and the route stays as planned." The
 other choices were to post the code in the form, to take letters and digits only, or to leave it.
 
 # Consequences
 
-- [p6-10](/tasks/p6-10-keep-every-voucher-deletable.md) adds the refusal, so every voucher that Voucher Management
+- p6-10 adds the refusal, so every voucher that Voucher Management
   creates can be deleted while unused.

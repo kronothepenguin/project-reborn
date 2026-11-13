@@ -26,5 +26,5 @@ a switch in `config.json`, so that development and production differ only by the
 
 # Consequences
 
-- [p0-11](/tasks/p0-11-cms-wiring.md) puts `auth.RealIP` in front of the CMS handler, and housekeeping does the same.
+- p0-11 puts `auth.RealIP` in front of the CMS handler, and housekeeping does the same.
 - Housekeeping cannot change which proxies are trusted, since the list lives in `config.json`.

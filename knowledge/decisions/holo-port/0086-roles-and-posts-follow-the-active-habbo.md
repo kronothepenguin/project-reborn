@@ -19,6 +19,6 @@ tags: [groups, forum, habbos, p5]
 
 # Context
 
-[0065](/decisions/0065-owners-edit-all-their-homes.md) lets a user edit the homes of all their habbos and left group
+[0065](/decisions/holo-port/0065-owners-edit-all-their-homes.md) lets a user edit the homes of all their habbos and left group
 homes to P5. Asked whose group roles and posts count when a user owns several habbos, the user chose the active
 habbo's: each page shows one habbo's view, and nothing public shows that two habbos are one person.

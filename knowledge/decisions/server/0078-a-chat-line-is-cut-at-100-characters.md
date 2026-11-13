@@ -23,4 +23,4 @@ client shows its first 100 characters."
 
 # Consequences
 
-- [s4-05](/tasks/s4-05-chat-and-gestures.md) applies it, with the setting `game.chatMaxLength`.
+- s4-05 applies it, with the setting `game.chatMaxLength`.

@@ -11,15 +11,15 @@ tags: [server, virtual, layout]
 # Decision
 
 - The habbos online in the game live in `packages/virtual/habbo`, package `habbo`: package-level state, as
-  `virtual/settings` is, loaded at login and dropped at logout ([0009](/decisions/0009-virtual-holds-the-server-state.md)).
+  `virtual/settings` is, loaded at login and dropped at logout ([0009](/decisions/server/0009-virtual-holds-the-server-state.md)).
 
 # Context
 
-[0005](/decisions/0005-package-layout.md) drew the layout with `virtual/habbos/` and left the names of `virtual`'s
+[0005](/decisions/server/0005-package-layout.md) drew the layout with `virtual/habbos/` and left the names of `virtual`'s
 packages to the phase that needs each one. Offered `virtual/habbos`, as the layout drew it, or `virtual/habbo`, the user
 chose "virtual/habbo": "Singular, Go's usual package naming. Example: habbo.Get(avatarID), habbo.Online()."
 
 # Consequences
 
-- [s2-05](/tasks/s2-05-login-in-game.md) creates it.
+- s2-05 creates it.
 - The other packages of 0005's layout, such as `rooms/` and `furni/`, are still named by the phases that need them.

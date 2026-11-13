@@ -22,4 +22,4 @@ says."
 
 # Consequences
 
-- [s3-01](/tasks/s3-01-navigator-tables.md) adds the table, and [s3-05](/tasks/s3-05-favourites.md) serves them.
+- s3-01 adds the table, and s3-05 serves them.

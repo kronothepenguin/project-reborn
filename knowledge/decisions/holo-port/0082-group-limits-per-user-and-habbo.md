@@ -11,7 +11,7 @@ tags: [groups, p5]
 # Decision
 
 - A user owns at most 3 groups across all their habbos, bought from the shared purse
-  ([0056](/decisions/0056-wallet-club-and-inventory-per-user.md)).
+  ([0056](/decisions/holo-port/0056-wallet-club-and-inventory-per-user.md)).
 - Each habbo holds at most 10 memberships, waiting requests included, as Holo counted them.
 - The numbers are the plan's `groups.*` settings, with Holo's values as defaults.
 

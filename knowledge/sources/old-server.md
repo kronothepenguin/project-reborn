@@ -17,7 +17,7 @@ tags: [server, history]
 | 2026-06-22 | `apps/server/` | `19d8f75c` |
 | 2026-09-11 | `packages/server/`, removed the same day | moved in `640b0b7d`, removed in `2ea51d7b` |
 
-The last version is the model ([0004](/decisions/0004-old-server-is-the-model.md)):
+The last version is the model ([0004](/decisions/server/0004-old-server-is-the-model.md)):
 
 ```sh
 git ls-tree -r --name-only 2ea51d7b^ -- packages/server packages/virtual
@@ -69,13 +69,13 @@ The `hh_` packages: `hh_buffer`, `hh_cat_code`, `hh_club`, `hh_dynamic_downloade
 
 | Old server | This plan |
 | --- | --- |
-| `transport.Connection`: `io.ReadWriteCloser` + `RemoteAddr` | The same idea as `transport.Conn`; TCP serves a `net.Listener` ([0006](/decisions/0006-transport.md)) |
-| The encoding inside `protocol` | Its own package, `encoding` ([0005](/decisions/0005-package-layout.md)) |
-| `protocol/hh_<cast>/` handlers that also held the rules | `r26`, one file per cast, calling the protocol-free rules in `game` ([0005](/decisions/0005-package-layout.md)) |
-| `virtual.Connection.Send(cmd string, args ...io.WriterTo)`, with R26 names and values | `game` and `virtual` know no protocol ([0007](/decisions/0007-protocols-per-listener.md)) |
-| One protocol | One protocol per listener ([0007](/decisions/0007-protocols-per-listener.md)) |
-| `crypto.go` | No encryption ([0012](/decisions/0012-no-encryption.md)) |
-| Mocked data | `packages/store`, with hot data in `virtual` ([0009](/decisions/0009-virtual-holds-the-server-state.md), [0010](/decisions/0010-hot-data-written-at-once.md)) |
+| `transport.Connection`: `io.ReadWriteCloser` + `RemoteAddr` | The same idea as `transport.Conn`; TCP serves a `net.Listener` ([0006](/decisions/server/0006-transport.md)) |
+| The encoding inside `protocol` | Its own package, `encoding` ([0005](/decisions/server/0005-package-layout.md)) |
+| `protocol/hh_<cast>/` handlers that also held the rules | `r26`, one file per cast, calling the protocol-free rules in `game` ([0005](/decisions/server/0005-package-layout.md)) |
+| `virtual.Connection.Send(cmd string, args ...io.WriterTo)`, with R26 names and values | `game` and `virtual` know no protocol ([0007](/decisions/server/0007-protocols-per-listener.md)) |
+| One protocol | One protocol per listener ([0007](/decisions/server/0007-protocols-per-listener.md)) |
+| `crypto.go` | No encryption ([0012](/decisions/server/0012-no-encryption.md)) |
+| Mocked data | `packages/store`, with hot data in `virtual` ([0009](/decisions/server/0009-virtual-holds-the-server-state.md), [0010](/decisions/server/0010-hot-data-written-at-once.md)) |
 
 # Problems found while planning
 

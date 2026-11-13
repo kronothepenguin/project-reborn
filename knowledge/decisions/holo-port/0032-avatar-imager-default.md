@@ -14,7 +14,7 @@ tags: [settings, components]
 
 # Context
 
-[0008](/decisions/0008-configurable-avatar-imaging.md) starts with an external imager without naming one. On
+[0008](/decisions/holo-port/0008-configurable-avatar-imaging.md) starts with an external imager without naming one. On
 2026-10-30 this URL answered 200 with a PNG for a dot-format figure. The user chose it over an empty default, which
 would show no avatars until an admin set the URL.
 

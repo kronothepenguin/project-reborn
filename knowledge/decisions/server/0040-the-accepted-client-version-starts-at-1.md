@@ -11,7 +11,7 @@ tags: [server, settings]
 # Decision
 
 - The setting that holds the client version the server accepts
-  ([0033](/decisions/0033-one-client-version-from-the-site.md)) starts at 1.
+  ([0033](/decisions/server/0033-one-client-version-from-the-site.md)) starts at 1.
 - The external variables the site serves give the client `client.version.id=1` (`plans/client`'s C1).
 
 # Context
@@ -22,4 +22,4 @@ not correct' and the alert_old_client window."
 
 # Consequences
 
-- [s2-01](/tasks/s2-01-settings.md) declares the setting with it.
+- s2-01 declares the setting with it.

@@ -46,6 +46,6 @@ CMS session it came from, and dies with it at logout."
 
 - `sso_tickets` changes from a digest to the ticket's text, and names the session that created it; the store's
   Session entity loses the invariant that SSO ticket ids are digests
-  ([s2-02](/tasks/s2-02-sso-tickets-at-sign-in.md)).
+  (s2-02).
 - `packages/auth`'s sign-in creates the ticket, and the client page of `plans/client`'s C1 reads it.
-- [s2-05](/tasks/s2-05-login-in-game.md) spends it at login.
+- s2-05 spends it at login.

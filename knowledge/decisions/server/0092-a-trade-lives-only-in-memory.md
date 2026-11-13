@@ -10,8 +10,8 @@ tags: [server, trading, data]
 
 # Decision
 
-- An open trade is temporary data ([0009](/decisions/0009-virtual-holds-the-server-state.md)): it lives in memory, in
-  the loaded room ([0098](/decisions/0098-virtual-furni-and-catalogue.md)).
+- An open trade is temporary data ([0009](/decisions/server/0009-virtual-holds-the-server-state.md)): it lives in memory, in
+  the loaded room ([0098](/decisions/server/0098-virtual-furni-and-catalogue.md)).
 - Furni offered stays in its owner's hand until both habbos accept. Then every piece changes hands in the database in
   one transaction.
 - A restart, a disconnect or either habbo leaving the room closes the trade, and nobody loses anything.
@@ -27,4 +27,4 @@ Ana offers a Throne and the server restarts: Ana still has her Throne."
 
 # Consequences
 
-- [s5-14](/tasks/s5-14-trading.md) builds trading.
+- s5-14 builds trading.

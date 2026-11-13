@@ -11,7 +11,7 @@ tags: [server, rooms, moderation]
 # Decision
 
 - A habbo kicked (`KICKUSER`) or banned (`BANUSER`) from a habbo room can no longer walk anywhere else: it walks to the
-  room's door, a step every 500 ms ([0065](/decisions/0065-walking-500-ms-by-holos-rules.md)), and leaves the room
+  room's door, a step every 500 ms ([0065](/decisions/server/0065-walking-500-ms-by-holos-rules.md)), and leaves the room
   there, with 18.
 - One that cannot reach the door leaves at once.
 
@@ -25,4 +25,4 @@ about 3 s later, after everyone saw it walk out."
 
 # Consequences
 
-- [s4-06](/tasks/s4-06-rights-kicks-and-bans.md) applies it.
+- s4-06 applies it.

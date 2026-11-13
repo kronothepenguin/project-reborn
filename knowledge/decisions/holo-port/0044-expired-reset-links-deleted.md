@@ -11,7 +11,7 @@ tags: [auth, scheduler]
 # Decision
 
 - A reset link works for `auth.resetTokenMinutes`, 60 by default, and is deleted at that age.
-- A task on the [scheduler](/decisions/0043-scheduler.md) does the deleting. `auth.resetTokenMinutes` is the only setting.
+- A task on the [scheduler](/decisions/holo-port/0043-scheduler.md) does the deleting. `auth.resetTokenMinutes` is the only setting.
 - Requesting a reset no longer deletes expired links; the task is the one place that does.
 
 # Context
@@ -22,4 +22,4 @@ minutes and is deleted at 24 hours, or one that works for the full 24, the user 
 
 # Consequences
 
-- The limit of [0035](/decisions/0035-reset-mail-limit.md) stays as it is: expired links never counted against it.
+- The limit of [0035](/decisions/holo-port/0035-reset-mail-limit.md) stays as it is: expired links never counted against it.

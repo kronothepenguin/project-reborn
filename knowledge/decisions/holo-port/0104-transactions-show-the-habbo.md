@@ -15,7 +15,7 @@ tags: [economy, transactions]
 
 # Context
 
-The purse is shared by all the user's habbos ([0056](/decisions/0056-wallet-club-and-inventory-per-user.md)), and
+The purse is shared by all the user's habbos ([0056](/decisions/holo-port/0056-wallet-club-and-inventory-per-user.md)), and
 housekeeping's transaction log already shows a Habbo column. Asked whether the public page should show which habbo
 made each change, the user chose "Add a Habbo column (Recommended)": "With a shared purse, it tells which habbo spent
 or got the credits."

@@ -11,11 +11,11 @@ tags: [tools, packages]
 # Decision
 
 - `validateName` refuses, with a plain message, a name whose Go package name (the name without its dashes,
-  [0024](/decisions/0024-go-package-names-drop-the-dash.md)) cannot compile in the template being made:
+  [0024](/decisions/server/0024-go-package-names-drop-the-dash.md)) cannot compile in the template being made:
   - `main`;
   - Go's keywords: `func`, or `go-to`, which becomes `goto`;
   - the names that clash with identifiers the templates' own code uses.
-    [s0-09](/tasks/s0-09-go-template-names.md) found `log`, `http`, `db` and `new` in both Go templates, and `fs`,
+    s0-09 found `log`, `http`, `db` and `new` in both Go templates, and `fs`,
     `url`, `httputil`, `err`, `resolver`, `proxy`, `nil` and `option` in the fullstack one. The full list is derived
     from the templates and tested, rather than taken from this one.
 - Every generated project stays as it is today.
@@ -29,4 +29,4 @@ generated project stays exactly as today. Keywords and `main` could only be refu
 
 # Consequences
 
-- [s0-10](/tasks/s0-10-go-names-that-clash.md) makes `validateName` follow it.
+- s0-10 makes `validateName` follow it.

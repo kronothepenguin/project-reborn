@@ -26,13 +26,13 @@ Other casts:
 
 | Script | Why it is here |
 | --- | --- |
-| `hh_entry_init/8_Login Handler Class.ls` | Keeps session parameter 9 as `tutorial_enabled`, and registers 308 and 228 too ([hh_entry_init](/reference/r26/hh_entry_init.md#ids-other-casts-register-too)) |
-| `hh_navigator/5_Navigator Component Class.ls` | Executes `#updateAvailableFlatCategories`, which starts the tutorial, when the navigator opens before its categories have come ([hh_navigator](/reference/r26/hh_navigator.md)) |
-| `hh_room_utils/6_Dialog Thread Class.ls` | The help window's restart button, hidden while `tutorial_enabled` is 0, executes `#restart_tutorial` ([s1-07](/tasks/s1-07-room-utils.md)) |
-| `hh_room_ui/3_Room Bar Class.ls` | Executes `#NUH_close` for the help items `chat`, `hand`, `games`, `events` and `friends` ([s1-06](/tasks/s1-06-room.md)) |
-| `hh_shared/64_Statistics Broker Javascript Class.ls` | Takes the tutorial's tracking points, `/client/tutorial/…`, to a JavaScript function, behind the session's `tracking_header`; none reaches the server ([hh_shared](/reference/r26/hh_shared.md)) |
+| `hh_entry_init/8_Login Handler Class.ls` | Keeps session parameter 9 as `tutorial_enabled`, and registers 308 and 228 too ([hh_entry_init](/r26/hh_entry_init.md#ids-other-casts-register-too)) |
+| `hh_navigator/5_Navigator Component Class.ls` | Executes `#updateAvailableFlatCategories`, which starts the tutorial, when the navigator opens before its categories have come ([hh_navigator](/r26/hh_navigator.md)) |
+| `hh_room_utils/6_Dialog Thread Class.ls` | The help window's restart button, hidden while `tutorial_enabled` is 0, executes `#restart_tutorial` (s1-07) |
+| `hh_room_ui/3_Room Bar Class.ls` | Executes `#NUH_close` for the help items `chat`, `hand`, `games`, `events` and `friends` (s1-06) |
+| `hh_shared/64_Statistics Broker Javascript Class.ls` | Takes the tutorial's tracking points, `/client/tutorial/…`, to a JavaScript function, behind the session's `tracking_header`; none reaches the server ([hh_shared](/r26/hh_shared.md)) |
 
-The guides' side of an invitation is `hh_guide`'s ([s1-13](/tasks/s1-13-guide.md)).
+The guides' side of an invitation is `hh_guide`'s (s1-13).
 
 # Messages from the server
 
@@ -55,7 +55,7 @@ The guides' side of an invitation is `hh_guide`'s ([s1-13](/tasks/s1-13-guide.md
 
 Registered by `5_Tutorial Handler Class.ls` (228 to 253) and `15_NUH Handler Class.ls` (313 to 359). Every sender
 calls `send`: with no body it sends the id alone, and with a typed list it goes through `sendNew`
-([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -130,12 +130,12 @@ calls `send`: with no body it sends the id alone, and with a typed list it goes 
 ## Counts
 
 `5_Tutorial Handler Class.ls` registers 5 messages and 6 commands, and `15_NUH Handler Class.ls` 7 and 4, as
-[Registering scripts](/reference/client-r26.md#registering-scripts) says.
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says.
 
 ## Ids other casts register too
 
 - 308 and 228: `hh_entry_init`'s Login Handler registers 308 as `handleSoundSetting` and 228 as `GET_SOUND_SETTING`.
-  [hh_entry_init](/reference/r26/hh_entry_init.md#ids-other-casts-register-too) shows how one body serves both
+  [hh_entry_init](/r26/hh_entry_init.md#ids-other-casts-register-too) shows how one body serves both
   handlers, and both run on every 308.
 - The NUH commands 355 and 359 have the numbers of `hh_guide`'s messages 355 and 359, and the NUH messages 357 and 358
   those of `hh_guide`'s commands 357 and 358. Commands and messages are numbered apart, so none of them meet.
@@ -144,7 +144,7 @@ calls `send`: with no body it sends the id alone, and with a typed list it goes 
 
 328's prerequisites, triggers and restrictions, and the variables `NUH.invitation.option.<n>` that the options of the
 window following an invitation execute, name client messages. These are the only ways to reach a client message that
-no script executes ([hh_entry_init](/reference/r26/hh_entry_init.md#dead-code)), such as four of the tutorial's own:
+no script executes ([hh_entry_init](/r26/hh_entry_init.md#dead-code)), such as four of the tutorial's own:
 `#tutorial_open_guestrooms_tab` and `#tutorial_open_publicrooms_tab`, which open the navigator on a tab,
 `#tutorial_send_console_message` and `#exit_tutorial`, which quits the tutorial.
 

@@ -12,7 +12,7 @@ tags: [sources, libreshockwave]
 - A C++20 project that reads Director and Shockwave files (`.dir`, `.dxr`, `.dcr`, `.cct`, `.cst`) and plays them. It
   calls itself "An open-source SDK, decompiler and web player for Adobe/Macromedia Shockwave".
 - A git submodule at `vendor/LibreShockwave`, pinned at `3f9048009ff4bc9bf4bedb4a44f875c2ab36645b`
-  ([0003](/decisions/0003-libreshockwave-submodule.md)). A fresh worktree runs
+  ([0003](/decisions/client/0003-libreshockwave-submodule.md)). A fresh worktree runs
   `git submodule update --init vendor/LibreShockwave` before reading it.
 
 # Layout
@@ -20,7 +20,7 @@ tags: [sources, libreshockwave]
 | Path | What it holds |
 | --- | --- |
 | `cpp/` | The library (`cpp/include/`, `cpp/src/`), the programs (`cpp/apps/tools/`, `cpp/apps/wasm/`) and the tests (`cpp/tests/`) |
-| `cpp/src/player/xtra/queued_multiuser_bridge.cpp` | The Multiuser Xtra, which frames the client's `#mus` connection (`plans/server/decisions/0015-client-on-libreshockwave.md`) |
+| `cpp/src/player/xtra/queued_multiuser_bridge.cpp` | The Multiuser Xtra, which frames the client's `#mus` connection (`knowledge/decisions/server/0015-client-on-libreshockwave.md`) |
 | `cpp/src/player/movie_properties.cpp` | `the productVersion`, which it reports as `"10.1"` |
 | `web/` | The browser player's page and scripts: `index.html`, `libreshockwave-cpp-player.js`, `libreshockwave-cpp-worker.js` and `test-harness.html` |
 | `debugger/` | The Qt desktop debugger |
@@ -56,4 +56,4 @@ who use a modified version over a network can get its source.
 | Plan | For |
 | --- | --- |
 | `plans/server` | The `#mus` framing only (`plans/server/tasks/s1-24-mus-framing.md`) |
-| `plans/client` | The browser player and the decompiler, in [C1](/phases/c1-client-page-on-libreshockwave.md) |
+| `plans/client` | The browser player and the decompiler, in C1 |

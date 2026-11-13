@@ -11,17 +11,17 @@ tags: [server, protocol]
 # Decision
 
 - An empty client URL or external variables URL in `VERSIONCHECK` passes the check
-  ([0033](/decisions/0033-one-client-version-from-the-site.md)).
+  ([0033](/decisions/server/0033-one-client-version-from-the-site.md)).
 - A URL that is not empty must start with `site.url`.
 
 # Context
 
 The client sends its client URL empty while the game host is local, as in development, and both URLs empty outside a
-browser plugin ([hh_entry_init](/reference/r26/hh_entry_init.md)); LibreShockwave reports the `runMode` `Plugin`, so it sends both otherwise. Offered letting empty
+browser plugin (hh_entry_init (`packages/server/knowledge/r26/hh_entry_init.md`)); LibreShockwave reports the `runMode` `Plugin`, so it sends both otherwise. Offered letting empty
 URLs pass or requiring both to match, the user chose "Empty passes (Recommended)": "An empty URL is accepted; a URL
 that is not empty must start with site.url. Local development keeps working, and a client loaded from another site is
 still turned away."
 
 # Consequences
 
-- [s2-06](/tasks/s2-06-handshake-and-login.md) checks `VERSIONCHECK` with it.
+- s2-06 checks `VERSIONCHECK` with it.

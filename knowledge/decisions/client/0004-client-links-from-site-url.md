@@ -13,7 +13,7 @@ tags: [client, settings]
 - The links the client opens, such as a habbo's home page, mail and the logout pages, are built from the CMS setting
   `site.url`, the site's root, in the external variables the site serves.
 - The game server checks the URLs that `VERSIONCHECK` carries against the same setting
-  (`plans/server/decisions/0033-one-client-version-from-the-site.md`).
+  (`knowledge/decisions/server/0033-one-client-version-from-the-site.md`).
 
 # Context
 
@@ -25,5 +25,5 @@ too."
 
 # Consequences
 
-- [C1](/phases/c1-client-page-on-libreshockwave.md), which serves the external variables until
-  [C2](/phases/c2-client-files.md), builds every link of the client from `site.url`.
+- C1, which serves the external variables until
+  C2, builds every link of the client from `site.url`.

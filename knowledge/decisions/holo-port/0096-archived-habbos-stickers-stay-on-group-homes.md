@@ -11,9 +11,9 @@ tags: [groups, homes, habbos, p5]
 # Decision
 
 - Archiving a habbo returns the stickers and notes of its own home to the user's inventory, as
-  [0089](/decisions/0089-archived-habbos-show-as-archived.md) says, and nothing else.
+  [0089](/decisions/holo-port/0089-archived-habbos-show-as-archived.md) says, and nothing else.
 - The stickers and notes it placed on group homes stay there. They go back to the user when an admin removes them or
-  the group is deleted ([0083](/decisions/0083-group-home-items-return-to-members.md)).
+  the group is deleted ([0083](/decisions/holo-port/0083-group-home-items-return-to-members.md)).
 
 # Context
 

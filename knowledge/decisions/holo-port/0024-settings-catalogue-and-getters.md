@@ -41,7 +41,7 @@ tags: [virtual, settings]
 
 # Context
 
-Supersedes [0010](/decisions/0010-virtual-settings-entity.md). The user asked for a map with typed getters instead
+Supersedes [0010](/decisions/holo-port/0010-virtual-settings-entity.md). The user asked for a map with typed getters instead
 of a typed wrapper over `config.Config`. The user then chose:
 
 - a declared catalogue for defaults and validation;
@@ -50,6 +50,6 @@ of a typed wrapper over `config.Config`. The user then chose:
 
 # Consequences
 
-- The installer's site step ([0016](/decisions/0016-installer.md)) and housekeeping's settings forms write with
+- The installer's site step ([0016](/decisions/holo-port/0016-installer.md)) and housekeeping's settings forms write with
   `Set`, one key at a time.
 - Which key a housekeeping running alone reads for its reload interval is decided in HK-A.

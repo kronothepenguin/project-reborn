@@ -11,7 +11,7 @@ tags: [server, protocol, architecture]
 
 # Decision
 
-- The R26 protocol is a Go package named `r26`, `packages/server/r26` ([0005](/decisions/0005-package-layout.md)).
+- The R26 protocol is a Go package named `r26`, `packages/server/r26` ([0005](/decisions/server/0005-package-layout.md)).
 - Each listener, a TCP address or a WebSocket path, names the protocol it speaks: TCP `:30000` speaks `r26`, and later
   TCP `:30001` could speak `r18`. The version cannot be guessed from the client's bytes, because the server speaks
   first (`HELLO`).
@@ -34,6 +34,6 @@ example ports are illustrations, not chosen ports.
 
 # Consequences
 
-- `game` never imports `r26`, so either way stays possible ([0005](/decisions/0005-package-layout.md)).
-- The listeners are declared in `config.json`, whose keys are startup keys ([s0-04](/tasks/s0-04-listener-config.md)).
+- `game` never imports `r26`, so either way stays possible ([0005](/decisions/server/0005-package-layout.md)).
+- The listeners are declared in `config.json`, whose keys are startup keys (s0-04).
 - `plans/later.md` lists r18.

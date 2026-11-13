@@ -24,12 +24,12 @@ Other casts send two of these commands, and one listens to the same id:
 
 | Script | Why it is here |
 | --- | --- |
-| `hh_kiosk_room/4_RoomKiosk Component Class.ls` | Sends `SETFLATINFO` and `SETFLATCAT` for a room it has just created ([s1-05](/tasks/s1-05-kiosk-room.md)) |
+| `hh_kiosk_room/4_RoomKiosk Component Class.ls` | Sends `SETFLATINFO` and `SETFLATCAT` for a room it has just created (s1-05) |
 | `hh_kiosk_room/3_RoomKiosk Interface Class.ls` | Calls `sendGetOwnFlats`, and reads the session's `user_flat_cats` |
-| `hh_room/5_Room Handler Class.ls` | Passes `incorrect flat password` and `Password required!` from 33 to `flatAccessResult` ([s1-06](/tasks/s1-06-room.md)) |
+| `hh_room/5_Room Handler Class.ls` | Passes `incorrect flat password` and `Password required!` from 33 to `flatAccessResult` (s1-06) |
 | `hh_room/4_Room Component Class.ls` | Asks the info broker for a flat's data before a teleport |
 | `hh_room_ui/27_Navigator Popup Class.ls`, `hh_room_utils/32_RoomEvent Browser Class.ls`, `hh_room_utils/11_Group Info Class.ls`, `hh_tutorial/14_NUH Component Class.ls` | Execute `#roomForward`, which enters a room through this cast |
-| `hh_entry_init/8_Login Handler Class.ls`, `hh_kiosk_room/5_RoomKiosk Handler Class.ls`, `hh_room/5_Room Handler Class.ls` | Also listen to 33 ([hh_entry_init](/reference/r26/hh_entry_init.md#ids-other-casts-register-too)) |
+| `hh_entry_init/8_Login Handler Class.ls`, `hh_kiosk_room/5_RoomKiosk Handler Class.ls`, `hh_room/5_Room Handler Class.ls` | Also listen to 33 ([hh_entry_init](/r26/hh_entry_init.md#ids-other-casts-register-too)) |
 
 # Messages from the server
 
@@ -102,7 +102,7 @@ for the flat.
 
 All are registered by `6_Navigator Handler Class.ls`. Every sender calls `send`: with no body it sends the id alone,
 with text the text is the whole body, and with a typed list it goes through `sendNew`
-([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -137,7 +137,7 @@ On `#userlogin` the navigator:
 3. sends `GET_RECOMMENDED_ROOMS`;
 4. a second later, enters the room of the variables `forward.id` and `forward.type` (`1` for a public room) when both
    exist; or else sends `FOLLOW_FRIEND` with the variable `friend.id`, a command of `hh_friend_list`
-   ([s1-11](/tasks/s1-11-friend-list.md)); or else opens the navigator.
+   (s1-11); or else opens the navigator.
 
 ## Browsing
 
@@ -150,7 +150,7 @@ On `#userlogin` the navigator:
 ## Entering a room
 
 1. A public room enters at once: the navigator executes `#enterRoom` with the room's data, which `hh_room` acts on
-   ([s1-06](/tasks/s1-06-room.md)).
+   (s1-06).
 2. A flat needs its data first, asked with `GETFLATINFO` when the cache lacks it. The owner always enters; for anyone
    else, a door of `password` asks for the password first, and any other door goes on to enter through `hh_room`,
    whose window waits at the bell of a closed one.
@@ -184,12 +184,12 @@ rooms the same way: the event browser, group info, the navigator popup and the n
 ## Counts
 
 `6_Navigator Handler Class.ls` registers 18 messages and 18 commands, as
-[Registering scripts](/reference/client-r26.md#registering-scripts) says.
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says.
 
 ## Ids other casts register too
 
 - 33: `hh_entry_init`, `hh_kiosk_room` and `hh_room` each compare the whole text with texts of their own
-  ([hh_entry_init](/reference/r26/hh_entry_init.md#ids-other-casts-register-too)).
+  ([hh_entry_init](/r26/hh_entry_init.md#ids-other-casts-register-too)).
 - `SETFLATINFO` and `SETFLATCAT` are also sent by `hh_kiosk_room`, which registers neither.
 
 ## Dead code

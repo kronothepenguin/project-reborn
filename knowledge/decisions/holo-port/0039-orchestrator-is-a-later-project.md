@@ -26,4 +26,4 @@ comment it with some description for later."
 
 # Consequences
 
-- [How the programs work together](/reference/architecture.md) describes the orchestrator as planned, not as existing.
+- [How the programs work together](/programs.md) describes the orchestrator as planned, not as existing.

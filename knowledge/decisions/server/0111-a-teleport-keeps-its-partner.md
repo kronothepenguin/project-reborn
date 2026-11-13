@@ -23,4 +23,4 @@ the recycler, it does nothing. Example: you trade one to a friend, and it become
 
 # Consequences
 
-- [s5-13](/tasks/s5-13-teleports.md) saves the partner with the furni.
+- s5-13 saves the partner with the furni.

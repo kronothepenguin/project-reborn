@@ -15,10 +15,10 @@ tags: [scope, holo]
 - The code is new and as safe as possible. No PHP is carried over.
 - A behaviour differs from Holo in three cases only:
   - keeping it would be unsafe, such as signing out on a `GET` or telling a stranger whether an account exists;
-  - an accepted decision changes it, such as [0002](/decisions/0002-login-with-habbo-name.md) or
-    [0021](/decisions/0021-dropped-and-kept-features.md);
+  - an accepted decision changes it, such as [0002](/decisions/holo-port/0002-login-with-habbo-name.md) or
+    [0021](/decisions/holo-port/0021-dropped-and-kept-features.md);
   - it is a plain bug, such as a form that forgets what was typed because PHP renames its fields.
-- Every difference is listed in [the differences](/reference/holo-differences.md), so that the user can veto it.
+- Every difference is listed in [the differences](/sources/holocms/differences.md), so that the user can veto it.
 
 # Context
 

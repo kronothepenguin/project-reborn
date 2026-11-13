@@ -22,9 +22,9 @@ Other casts ask for downloads:
 
 | Script | Why it is here |
 | --- | --- |
-| `hh_buffer/3_Buffer Component Class.ls` | Holds furniture as placeholders until its class arrives ([s1-08](/tasks/s1-08-buffer.md)) |
-| `hh_cat_code/4_Catalogue Component Class.ls`, `hh_cat_code/15_Catalogue soundmachine Class.ls` | Download the classes shown in the catalogue ([s1-09](/tasks/s1-09-catalogue.md)) |
-| `hh_room_utils/18_Container Hand Class.ls`, `hh_room_utils/3_Safe Trader Class.ls`, `hh_furni_classes/58_Package Card Class.ls` | Download the classes of the hand, a trade and a gift ([s1-07](/tasks/s1-07-room-utils.md)) |
+| `hh_buffer/3_Buffer Component Class.ls` | Holds furniture as placeholders until its class arrives (s1-08) |
+| `hh_cat_code/4_Catalogue Component Class.ls`, `hh_cat_code/15_Catalogue soundmachine Class.ls` | Download the classes shown in the catalogue (s1-09) |
+| `hh_room_utils/18_Container Hand Class.ls`, `hh_room_utils/3_Safe Trader Class.ls`, `hh_furni_classes/58_Package Card Class.ls` | Download the classes of the hand, a trade and a gift (s1-07) |
 
 # Messages from the server
 
@@ -38,7 +38,7 @@ Both come on `connection.room.id`, which is `#info`.
 # Commands from the client
 
 Registered by `4_Dynamic Downloader Handler Class.ls`. Each is sent with no body, so with its id alone
-([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -78,7 +78,7 @@ they come from.
 ## Counts
 
 `4_Dynamic Downloader Handler Class.ls` registers 2 messages and 2 commands, as
-[Registering scripts](/reference/client-r26.md#registering-scripts) says. No other cast registers them.
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says. No other cast registers them.
 
 ## Quirks
 

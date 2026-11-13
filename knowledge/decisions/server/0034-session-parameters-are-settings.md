@@ -19,7 +19,7 @@ tags: [server, settings]
 # Context
 
 Only four of the ten are read by any script: the date format, profile editing, the tracking header and the tutorial
-([hh_entry_init](/reference/r26/hh_entry_init.md)). Offered settings with defaults or values fixed in the server, the user answered: "ok with settings, but we
+(hh_entry_init (`packages/server/knowledge/r26/hh_entry_init.md`)). Offered settings with defaults or values fixed in the server, the user answered: "ok with settings, but we
 already have a cms, same for sso i forgot, the sso should be created when the user logs in the cms, please load cms
 knownledge and then extend login to generate sso if needed. and make the urls to the site urls. you will need a setting
 for the site root or something like that." The offered option read: "Each is a setting in the settings catalogue,
@@ -28,5 +28,5 @@ editing on, an empty tracking header, the tutorial off until a phase serves it."
 
 # Consequences
 
-- [s2-01](/tasks/s2-01-settings.md) declares them, and [s2-06](/tasks/s2-06-handshake-and-login.md) sends them in
+- s2-01 declares them, and s2-06 sends them in
   257.

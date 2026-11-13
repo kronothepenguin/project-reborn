@@ -15,11 +15,11 @@ tags: [server, data]
 
 # Context
 
-[0011](/decisions/0011-saved-and-memory-only-data.md) asks each phase about its data. Offered saving it per habbo or
+[0011](/decisions/server/0011-saved-and-memory-only-data.md) asks each phase about its data. Offered saving it per habbo or
 keeping it in memory, the user chose "Saved per habbo (Recommended)": "Saved with the habbo, so the choice is still
 there at the next login. Example: Frank turns sound off, logs out, and it is still off tomorrow."
 
 # Consequences
 
-- [s2-03](/tasks/s2-03-saved-login-data.md) adds the column, and [s2-07](/tasks/s2-07-after-login.md) reads and
+- s2-03 adds the column, and s2-07 reads and
   writes it.

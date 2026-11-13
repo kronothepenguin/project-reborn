@@ -24,7 +24,7 @@ tags: [process, tasks, agents]
 # Context
 
 Until now every line of work ran its own gates before merging itself
-(`plans/holo-port/decisions/0097-no-agent-works-on-main.md`). The gates take about 15 minutes and only one run at a time
+(`knowledge/decisions/holo-port/0097-no-agent-works-on-main.md`). The gates take about 15 minutes and only one run at a time
 is safe, so several branches ready at once cost a run each, and more when `main` moved meanwhile. Each bundle had its
 own tasks, and nothing said in one place what was being worked on.
 
@@ -38,6 +38,6 @@ and the server." And: "if you think the way we handle tasks today can be enhance
 
 - It narrows holo-port 0097: no agent works on `main` still, and a branch still merges only after every gate passes, but
   the coordinator merges, and one run of the gates may cover several branches.
-- [The rules](/rules.md) list what two tasks never change at once: the store's updates, the settings catalogue,
+- The rules list what two tasks never change at once: the store's updates, the settings catalogue,
   `go.work` and the lock files, this bundle's decisions and index, and `apps/**/cmd/**`.
 - `make gates` also runs the plans' checker.

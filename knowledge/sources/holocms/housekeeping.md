@@ -17,8 +17,8 @@ tags: [housekeeping, holo]
   pruning and granting rank 7. The actor id came from the site session, not the housekeeping one.
 - No CSRF protection; several state changes ran on GET links.
 
-New model: shared session, attributes per user ([0014](/decisions/0014-attribute-based-access.md)), routes under
-`/housekeeping` ([0003](/decisions/0003-housekeeping-under-prefix.md)), every mutation logged.
+New model: shared session, attributes per user ([0014](/decisions/holo-port/0014-attribute-based-access.md)), routes under
+`/housekeeping` ([0003](/decisions/holo-port/0003-housekeeping-under-prefix.md)), every mutation logged.
 
 # Pages
 
@@ -45,7 +45,7 @@ New model: shared session, attributes per user ([0014](/decisions/0014-attribute
 | chatlogs | search the chat log by room id or username, every row | `GET /chatlogs` (read-only, 100 a page, public rooms marked) | `housekeeping.chatLogs` | `plans/server` s4-08 |
 | recycler | the recycler's four settings | `GET /settings?section=recycler`, `POST /settings/recycler`, a settings form | `housekeeping.settings` | `plans/server` s5-17 |
 | server, wordfilter, welcomemsg, onlinelist | emulator settings and data | deferred | — | — |
-| dbquery, dbrepair, dboptimize, holocms, credits, help_main, help_bugs, help_svn | raw SQL, REPAIR/OPTIMIZE by GET, static pages | dropped ([0021](/decisions/0021-dropped-and-kept-features.md)) | — | — |
+| dbquery, dbrepair, dboptimize, holocms, credits, help_main, help_bugs, help_svn | raw SQL, REPAIR/OPTIMIZE by GET, static pages | dropped ([0021](/decisions/holo-port/0021-dropped-and-kept-features.md)) | — | — |
 
 # Staff log
 
@@ -58,11 +58,11 @@ for every mutation: actor user, target user and/or habbo, action, detail, IP and
 
 - Six tabs (Dashboard, Server, Site & Content, HoloCMS, Users & Moderation, Help), a left menu per tab, and a
   content column; the new layout keeps the tab strip, left menu and content structure, in the design system of
-  [0041](/decisions/0041-housekeeping-design-system.md). [The differences](/reference/holo-differences.md#housekeeping) list
+  [0041](/decisions/holo-port/0041-housekeeping-design-system.md). [The differences](/sources/holocms/differences.md#housekeeping) list
   what changed.
 - Reusable pieces: form panel (title bar, label column, input column, sub-header rows), data table, message line,
   dashboard panes.
-- Colours: [housekeeping colours](/reference/colours.md#housekeeping).
+- Colours: [housekeeping colours](/colours.md#housekeeping).
 - Not ported: the song lyrics in `header.php`, the offensive fallback rank label, the IPB leftover JavaScript and
   CSS.
 

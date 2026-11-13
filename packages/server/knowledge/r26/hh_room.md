@@ -22,15 +22,15 @@ other casts by `<cast>/<file>`.
 | `8_Room Hiliter Class.ls` | The tile under the cursor |
 
 Every message and command is on `connection.room.id`, which is `#info`
-([fuse_client](/reference/r26/fuse_client.md)). Many of the commands are sent by other casts:
+([fuse_client](/r26/fuse_client.md)). Many of the commands are sent by other casts:
 
 | Script | Why it is here |
 | --- | --- |
 | `hh_furni_classes/…` | The furniture classes: walking to an object, its state, dice, drinks, teleports, post-its, presents |
 | `hh_room_ui/3_Room Bar Class.ls`, `4_Room Info Class.ls`, `5_Room Object Displayer Class.ls` | The room bar, the room's info and rating, and the buttons on a selected user or object |
-| `hh_room_utils/…` | The hand, the object mover, the safe trader, the doorbell, the badges, group info, the ignore list and the room event browser ([s1-07](/tasks/s1-07-room-utils.md)) |
-| `hh_room_utils/25_Chat Manager.ls` | Also registers `CHAT`, `SHOUT` and `WHISPER`, and receives the chat ([s1-07](/tasks/s1-07-room-utils.md)) |
-| `hh_buffer/4_Buffer Handler Class.ls` | Also listens to 84, 85, 88, 94 and 95, to hold them while a class downloads ([hh_buffer](/reference/r26/hh_buffer.md)) |
+| `hh_room_utils/…` | The hand, the object mover, the safe trader, the doorbell, the badges, group info, the ignore list and the room event browser (s1-07) |
+| `hh_room_utils/25_Chat Manager.ls` | Also registers `CHAT`, `SHOUT` and `WHISPER`, and receives the chat (s1-07) |
+| `hh_buffer/4_Buffer Handler Class.ls` | Also listens to 84, 85, 88, 94 and 95, to hold them while a class downloads ([hh_buffer](/r26/hh_buffer.md)) |
 | `hh_human/2_Human Class EX.ls`, `hh_pets_common/1_Pet Class.ls` | The actions of [status](#status) lines |
 | `hh_photo`, `hh_pets_common`, `hh_kiosk_room`, `hh_soundmachine`, `hh_navigator`, `hh_ig` | Send a few of the commands ([Commands from the client](#commands-from-the-client)) |
 
@@ -41,7 +41,7 @@ rating, events and ignoring.
 
 | Id | Handler | Connection | Fields, in order | Notes |
 | --- | --- | --- | --- | --- |
-| -1 | `handle_disconnect` | `#info` (room) | none | The connection dropped: the client leaves the room ([fuse_client](/reference/r26/fuse_client.md#closing-and-the--1-message)) |
+| -1 | `handle_disconnect` | `#info` (room) | none | The connection dropped: the client leaves the room ([fuse_client](/r26/fuse_client.md#closing-and-the--1-message)) |
 | 18 | `handle_clc` | `#info` (room) | none read | The client leaves the room, as on -1 |
 | 19 | `handle_opc_ok` | `#info` (room) | none read | In a private room the client goes on with `TRYFLAT` ([Entering a room](#entering-a-room)); elsewhere nothing |
 | 41 | `handle_flat_letin` | `#info` (room) | string name | Empty: the user may come in, and the client sends `GOTOFLAT`. A name: the client tells the user that this user was let in |
@@ -132,7 +132,7 @@ by a character skips as many as that character's code.
 
 In 32, 93 and 95: string id; string class; int x; int y; int width; int height; int direction, modulo 8; string
 altitude, a number with a decimal part; string colours, empty read as `0`; string runtime data; int extra; string
-stuff data. `hh_buffer` reads the same ([hh_buffer](/reference/r26/hh_buffer.md#an-active-object)).
+stuff data. `hh_buffer` reads the same ([hh_buffer](/r26/hh_buffer.md#an-active-object)).
 
 ## A wall item
 
@@ -215,13 +215,13 @@ total item count, which turns the next page button on. The body's last line is t
 
 Registered by `5_Room Handler Class.ls`. Every sender calls `send`: with no body it sends the id alone, with text the
 text is the body, and with a typed list it goes through `sendNew`
-([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
 | 2 | `#room_directory` | `#info` (room) | `4_Room Component Class.ls`: `enterRoomDirect` and `roomPrePartFinished`, typed | bool public: 0 a private room, 1 a public one; int room: a private room's flat id, a public room's port; int door: a public room's door, 0 for a private room | [Entering a room](#entering-a-room). Its name is a symbol |
 | 28 | `GETDOORFLAT` | `#info` (room) | `hh_furni_classes/31_Furniture Teleport Class.ls`: `tryDoor`, text | raw: the teleport's id | Answered by 62 |
-| 52 | `CHAT` | `#info` (room) | `4_Room Component Class.ls`: `sendChat`, typed | string text | `sendChat` names the command by the chat mode ([s1-07](/tasks/s1-07-room-utils.md)) |
+| 52 | `CHAT` | `#info` (room) | `4_Room Component Class.ls`: `sendChat`, typed | string text | `sendChat` names the command by the chat mode (s1-07) |
 | 53 | `QUIT` | `#info` (room) | `hh_ig/3_IG Handler Class.ls`: `handle_enter_arena`, no body; `hh_navigator/5_Navigator Component Class.ls`: `expandHistoryItem`, no body; `3_Room Interface Class.ls`: `eventProcBanner`, no body; `6_Spectator System Class.ls`: `setSpectatorMode`, no body | none | Leaves the room |
 | 54 | `GOVIADOOR` | `#info` (room) | `4_Room Component Class.ls`: `enterDoor` and `roomConnected`, text | raw: `<flat id>/<target teleport id>` | Arriving through a teleport ([Teleports](#teleports)) |
 | 55 | `SHOUT` | `#info` (room) | `4_Room Component Class.ls`: `sendChat`, typed | string text | As `CHAT` |
@@ -341,14 +341,14 @@ a floor or a landscape with `FLATPROPBYITEM`, and picked up with `ADDSTRIPITEM`.
 
 ## Counts
 
-`5_Room Handler Class.ls` registers 72 messages and 73 commands. [Registering scripts](/reference/client-r26.md#registering-scripts)
+`5_Room Handler Class.ls` registers 72 messages and 73 commands. Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`)
 counts 71 messages: it leaves out -1, the manager's own signal, as its note says.
 
 ## Ids other casts register too
 
-- -1: `hh_entry_init`'s `handleDisconnect` also runs ([hh_entry_init](/reference/r26/hh_entry_init.md#a-lost-connection)).
+- -1: `hh_entry_init`'s `handleDisconnect` also runs ([hh_entry_init](/r26/hh_entry_init.md#a-lost-connection)).
 - 33: `hh_entry_init`, `hh_navigator` and `hh_kiosk_room` also listen, each comparing the whole text with texts of
-  their own ([hh_entry_init](/reference/r26/hh_entry_init.md#ids-other-casts-register-too)).
+  their own ([hh_entry_init](/r26/hh_entry_init.md#ids-other-casts-register-too)).
 - 84, 85, 88, 94 and 95: `hh_buffer` also listens, to hold them while a class downloads.
 - `CHAT` (52), `SHOUT` (55) and `WHISPER` (56): `hh_room_utils/25_Chat Manager.ls` registers them too, with the same
   ids.
@@ -360,7 +360,7 @@ counts 71 messages: it leaves out -1, the manager's own signal, as its note says
 - 70 is read and ignored.
 - `ADCLICK`, which `3_Room Interface Class.ls`'s `eventProcBanner` sends with the session's `ad_id` when the room's
   banner is clicked, is registered by no cast, so it never reaches the server
-  ([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+  ([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 ## Quirks
 

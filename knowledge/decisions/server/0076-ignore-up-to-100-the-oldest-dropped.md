@@ -23,4 +23,4 @@ ignored who ignores one more stops ignoring the first one they added."
 
 # Consequences
 
-- [s4-05](/tasks/s4-05-chat-and-gestures.md) applies it, with the setting `game.maxIgnoredHabbos`.
+- s4-05 applies it, with the setting `game.maxIgnoredHabbos`.

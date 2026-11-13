@@ -25,4 +25,4 @@ any note: the client already shows them the delete button, and Holo ignored it."
 
 # Consequences
 
-- [s5-12](/tasks/s5-12-post-its.md) builds it.
+- s5-12 builds it.

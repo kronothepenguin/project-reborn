@@ -11,14 +11,14 @@ tags: [server, errors]
 # Decision
 
 - The server sends no 299 in S2. A command it cannot answer, on a failure of the database, is logged and closes the
-  session, as [s2-06](/tasks/s2-06-handshake-and-login.md) and [s2-07](/tasks/s2-07-after-login.md) do.
-- [S7](/phases/s7-club-help-extras.md), whose scope lists error reports, decides when the server sends one.
+  session, as s2-06 and s2-07 do.
+- S7, whose scope lists error reports, decides when the server sends one.
 
 # Context
 
-[s2-08](/tasks/s2-08-keeping-the-session-alive.md) had a step to log `hh_shared`'s error reports, but the client
+s2-08 had a step to log `hh_shared`'s error reports, but the client
 sends none: it only receives 299 with an error id, a message id and a time, and shows them in its error window
-([hh_shared](/reference/r26/hh_shared.md#error-reports)). Offered leaving them to S7, or sending 299 when a handler
+(hh_shared (`packages/server/knowledge/r26/hh_shared.md#error-reports`)). Offered leaving them to S7, or sending 299 when a handler
 fails, the user chose "Leave them to S7 (Recommended)": "Drop the step from s2-08: the server sends no 299 yet, and a
 command it cannot answer is logged and closes the session, as now. S7, whose scope lists error reports, decides when
 the server reports one."

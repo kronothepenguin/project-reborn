@@ -12,7 +12,7 @@ tags: [groups, housekeeping, p5]
 
 - P5 adds no housekeeping page for groups, as Holo's housekeeping only counted them.
 - Tools that rename, reset the badge of or delete a group are listed in `plans/later.md`
-  ([0072](/decisions/0072-later-work-in-plans-later.md)).
+  ([0072](/decisions/holo-port/0072-later-work-in-plans-later.md)).
 
 # Context
 

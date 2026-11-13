@@ -11,9 +11,9 @@ tags: [help, access, holo]
 # Decision
 
 - `GET /help` and `POST /help` take a signed-in habbo. A visitor who is not signed in is sent to sign in, as the
-  post-report window of [P5](/phases/p5-groups-forum.md) does.
+  post-report window of P5 does.
 - Every help request then belongs to the active habbo, and the one waiting request per habbo of
-  [0090](/decisions/0090-post-reports.md) holds for help requests and post reports alike.
+  [0090](/decisions/holo-port/0090-post-reports.md) holds for help requests and post reports alike.
 
 # Context
 
@@ -25,5 +25,5 @@ from a habbo, so the one-waiting-request rule applies and staff know whom to ans
 
 # Consequences
 
-- [P7](/phases/p7-help.md)'s help page sits behind the session check, and
-  [Holo's differences](/reference/holo-differences.md) lists it.
+- P7's help page sits behind the session check, and
+  [Holo's differences](/sources/holocms/differences.md) lists it.

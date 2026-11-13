@@ -25,5 +25,5 @@ forget for 8 days, press cancel and have your 20 furni again."
 
 # Consequences
 
-- [s5-16](/tasks/s5-16-recycler.md) builds it: taking the reward works only between the recycling's end and its
+- s5-16 builds it: taking the reward works only between the recycling's end and its
   time-out, and never destroys furni without giving the reward.

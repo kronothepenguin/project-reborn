@@ -24,7 +24,7 @@ Other casts:
 | Script | Why it is here |
 | --- | --- |
 | `hh_room_ui/34_Room Bar Extensions Manager.ls` | Also sends `MSG_ACCEPT_TUTOR_INVITATION` and `MSG_REJECT_TUTOR_INVITATION`, for an invitation no script gives it ([Dead code](#dead-code)) |
-| `hh_tutorial/15_NUH Handler Class.ls` | The new user's side: it registers 355 as a command, `MSG_GET_TUTORS_AVAILABLE` ([s1-14](/tasks/s1-14-tutorial.md)) |
+| `hh_tutorial/15_NUH Handler Class.ls` | The new user's side: it registers 355 as a command, `MSG_GET_TUTORS_AVAILABLE` (s1-14) |
 
 # Messages from the server
 
@@ -39,7 +39,7 @@ Other casts:
 # Commands from the client
 
 Registered by `5_Guide Handler Class.ls`. Every sender calls `send`: with no body it sends the id alone, and with a
-typed list it goes through `sendNew` ([fuse_client](/reference/r26/fuse_client.md#client-to-server)).
+typed list it goes through `sendNew` ([fuse_client](/r26/fuse_client.md#client-to-server)).
 
 | Id | Name | Connection | Sent by | Fields, in order | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -66,14 +66,14 @@ typed list it goes through `sendNew` ([fuse_client](/reference/r26/fuse_client.m
    and puts the tool back to waiting.
 
 The new user's side, from asking which guides are there to inviting one, is `hh_tutorial`'s
-([s1-14](/tasks/s1-14-tutorial.md)).
+(s1-14).
 
 # Notes
 
 ## Counts
 
 `5_Guide Handler Class.ls` registers 5 messages and 5 commands, as
-[Registering scripts](/reference/client-r26.md#registering-scripts) says.
+Registering scripts (`packages/client-r26/knowledge/client-r26.md#registering-scripts`) says.
 
 ## Ids other casts register too
 

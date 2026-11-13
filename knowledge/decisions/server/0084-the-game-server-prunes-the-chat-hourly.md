@@ -11,7 +11,7 @@ tags: [server, chat, housekeeping]
 # Decision
 
 - The game server, which saves the chat history, deletes the lines older than `game.chatHistoryDays`
-  ([0066](/decisions/0066-staff-read-the-chat-history-30-days.md)) once when it starts and every hour after, once the
+  ([0066](/decisions/server/0066-staff-read-the-chat-history-30-days.md)) once when it starts and every hour after, once the
   database updates are applied.
 
 # Context
@@ -22,4 +22,4 @@ days and 1 hour ago is gone within the hour, whether or not staff look."
 
 # Consequences
 
-- [s4-08](/tasks/s4-08-chat-log-page.md) applies it.
+- s4-08 applies it.

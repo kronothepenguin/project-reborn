@@ -26,5 +26,5 @@ Chair is ready at 11:00."
 
 # Consequences
 
-- [s5-16](/tasks/s5-16-recycler.md) builds the recycler, with Holo's rewards and times as its first values.
-- A recycling joins what [0011](/decisions/0011-saved-and-memory-only-data.md) saves.
+- s5-16 builds the recycler, with Holo's rewards and times as its first values.
+- A recycling joins what [0011](/decisions/server/0011-saved-and-memory-only-data.md) saves.

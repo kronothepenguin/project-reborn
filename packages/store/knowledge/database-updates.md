@@ -15,9 +15,9 @@ tags: [store, updates, architecture]
   Each binary carries the updates its code needs.
 - Holo's `upgrade.php` was one button that ran the changes since the last release, with no record of what had run.
 
-Decided in [0067](/decisions/0067-updates-are-our-own-migrations.md), [0068](/decisions/0068-seeds-are-updates.md),
-[0069](/decisions/0069-waiting-updates-close-the-hotel.md), [0070](/decisions/0070-housekeeping-applies-updates.md) and
-[0071](/decisions/0071-sign-in-updates-apply-at-start.md). Names of routes and files below are the planned ones.
+Decided in 0067 (`knowledge/decisions/holo-port/0067-updates-are-our-own-migrations.md`), 0068 (`knowledge/decisions/holo-port/0068-seeds-are-updates.md`),
+0069 (`knowledge/decisions/holo-port/0069-waiting-updates-close-the-hotel.md`), 0070 (`knowledge/decisions/holo-port/0070-housekeeping-applies-updates.md`) and
+0071 (`knowledge/decisions/holo-port/0071-sign-in-updates-apply-at-start.md`). Names of routes and files below are the planned ones.
 
 # Update files
 

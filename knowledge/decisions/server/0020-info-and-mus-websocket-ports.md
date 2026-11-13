@@ -15,13 +15,13 @@ tags: [protocol, config]
   works like `cms.host`.
 - On each port the server runs its own WebSocket listener. TCP for a native Shockwave client, and WebSocket paths on
   another HTTP mux, wait for later.
-- The rest of [0019](/decisions/0019-info-and-mus-listeners.md) stands: `info` is the game's connection and speaks
+- The rest of [0019](/decisions/server/0019-info-and-mus-listeners.md) stands: `info` is the game's connection and speaks
   r26, `mus` is the connection of the Multiuser Xtra's messages, and the rest of
-  [0007](/decisions/0007-protocols-per-listener.md) stands with it (the `r26` package, r18 a door left open).
+  [0007](/decisions/server/0007-protocols-per-listener.md) stands with it (the `r26` package, r18 a door left open).
 
 # Context
 
-Supersedes [0019](/decisions/0019-info-and-mus-listeners.md), whose connections each had a TCP port and a WebSocket
+Supersedes [0019](/decisions/server/0019-info-and-mus-listeners.md), whose connections each had a TCP port and a WebSocket
 path. Asked how `config.json` would switch one of them off, the user answered: "as our earlier discussion, actually
 libreshockwave connects to host:port, i believe it uses websockets somehow but don't know how, i mean, it does not
 have a path. so just keep host port for now".
@@ -36,10 +36,10 @@ for a native Shockwave client waits for later."
 
 # Consequences
 
-- [s0-04](/tasks/s0-04-listener-config.md) declares `server.info.host`, `server.info.port`, `server.mus.host` and
+- s0-04 declares `server.info.host`, `server.info.port`, `server.mus.host` and
   `server.mus.port`.
-- [s0-07](/tasks/s0-07-r26-sessions.md) serves each connection as a WebSocket listener on its own host and port.
-- The transport keeps TCP and the WebSocket handler of [0006](/decisions/0006-transport.md); only the WebSocket is
+- s0-07 serves each connection as a WebSocket listener on its own host and port.
+- The transport keeps TCP and the WebSocket handler of [0006](/decisions/server/0006-transport.md); only the WebSocket is
   served for now.
 - `plans/client`'s C1 no longer needs a path per socket: LibreShockwave reaches both ports from `connection.info.*`
   and `connection.mus.*`.

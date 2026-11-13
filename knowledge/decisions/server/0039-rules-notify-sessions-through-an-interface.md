@@ -17,7 +17,7 @@ tags: [server, packages]
 
 # Context
 
-[0005](/decisions/0005-package-layout.md) keeps the protocol out of `game`. Offered an interface each session
+[0005](/decisions/server/0005-package-layout.md) keeps the protocol out of `game`. Offered an interface each session
 implements, a Go channel per habbo in `virtual`, or events returned to `r26` with a registry of sessions, the user chose
 "Session interface (Recommended)": "game defines an interface that each session implements, like Notify(event), and
 events are Go structs such as game.Chat{From, Text}. game finds the room's habbos in virtual and calls each one's
@@ -25,5 +25,5 @@ session; r26's session turns the event into message 24."
 
 # Consequences
 
-- [s2-05](/tasks/s2-05-login-in-game.md) brings the interface with S2's first event: the old session's logout on a
-  second login ([0029](/decisions/0029-a-second-login-closes-the-first.md)).
+- s2-05 brings the interface with S2's first event: the old session's logout on a
+  second login ([0029](/decisions/server/0029-a-second-login-closes-the-first.md)).

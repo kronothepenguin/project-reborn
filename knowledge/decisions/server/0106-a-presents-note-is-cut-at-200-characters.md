@@ -11,7 +11,7 @@ tags: [server, furni, presents, settings]
 # Decision
 
 - A present's note keeps its first `game.presentNoteMaxLength` characters, 200 by default, as a chat line is cut
-  ([0078](/decisions/0078-a-chat-line-is-cut-at-100-characters.md)).
+  ([0078](/decisions/server/0078-a-chat-line-is-cut-at-100-characters.md)).
 - The setting is in housekeeping's Game form.
 
 # Context
@@ -23,4 +23,4 @@ a 500-character note arrives as its first 200 characters."
 
 # Consequences
 
-- [s5-06](/tasks/s5-06-presents.md) declares the setting and applies it.
+- s5-06 declares the setting and applies it.

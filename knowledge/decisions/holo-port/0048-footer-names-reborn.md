@@ -19,4 +19,4 @@ keep `Powered by Project Reborn &copy;`".
 
 # Consequences
 
-- [The differences](/reference/holo-differences.md) list it as a decision.
+- [The differences](/sources/holocms/differences.md) list it as a decision.

@@ -25,5 +25,5 @@ The `Store` struct only embedded `*Queries` and hid the `*sql.DB`. `(*Store).Beg
 
 - With one connection, code inside a transaction must only use the transaction's queries; touching `db` there
   blocks forever.
-- `knowledge/store.md` and the skill are corrected ([p0-02](/tasks/p0-02-store-open-returns-db.md),
-  [p0-03](/tasks/p0-03-persistence-skill-updates.md)).
+- `packages/store/knowledge/store.md` and the skill are corrected (p0-02,
+  p0-03).

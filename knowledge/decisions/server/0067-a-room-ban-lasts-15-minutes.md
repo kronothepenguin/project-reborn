@@ -11,7 +11,7 @@ tags: [server, rooms, moderation]
 # Decision
 
 - A room ban (`BANUSER`, and the kick and ban of the habbo's window) keeps the habbo out of that room for 15 minutes,
-  a setting; then it may enter again. Bans are saved ([0011](/decisions/0011-saved-and-memory-only-data.md)).
+  a setting; then it may enter again. Bans are saved ([0011](/decisions/server/0011-saved-and-memory-only-data.md)).
 
 # Context
 
@@ -21,5 +21,5 @@ room for 15 minutes, then may enter again."
 
 # Consequences
 
-- [s4-01](/tasks/s4-01-room-tables.md) adds the table and the setting, and [s4-06](/tasks/s4-06-rights-kicks-and-bans.md)
+- s4-01 adds the table and the setting, and s4-06
   applies it.

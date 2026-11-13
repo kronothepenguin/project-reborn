@@ -21,4 +21,4 @@ non-members already waiting."
 
 # Consequences
 
-- [s4-12](/tasks/s4-12-queue-and-spectators.md) applies it to the room's queue and the spectators'.
+- s4-12 applies it to the room's queue and the spectators'.

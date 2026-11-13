@@ -10,7 +10,7 @@ tags: [auth, scheduler]
 
 # Decision
 
-- A task on the [scheduler](/decisions/0043-scheduler.md) deletes sessions once they expire.
+- A task on the [scheduler](/decisions/holo-port/0043-scheduler.md) deletes sessions once they expire.
 - Signing in no longer deletes them; the task is the one place that does.
 - Every program that serves sessions registers the task, so that sessions go even when only one program runs.
 

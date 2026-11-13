@@ -27,4 +27,4 @@ anymore, we can get rid of this select."
 # Consequences
 
 - The tab works in development with nothing to configure, and a production install sets its address in the form.
-- [0029](/decisions/0029-package-level-settings-and-auth.md) keeps options for what differs between runners.
+- [0029](/decisions/holo-port/0029-package-level-settings-and-auth.md) keeps options for what differs between runners.

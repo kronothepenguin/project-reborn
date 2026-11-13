@@ -12,8 +12,8 @@ tags: [sources, emulator]
 - The Holograph Emulator (`namespace Holo`), a game server for the Shockwave client written in C# for .NET 3.5 with
   Visual Studio 2008 (`Holograph Emulator.sln`, `Holograph Emulator.csproj`), on MySQL through ODBC.
 - This copy is "HoloEMU FULL V26", Vista4life's source with V26 support (`update.txt`). It is the emulator HoloCMS
-  talked to: `plans/holo-port/reference/holo-protocols.md` describes the site's side.
-- A reference only ([0016](/decisions/0016-holoemu-is-a-reference.md)): it is read when the client's `.ls` scripts
+  talked to: `knowledge/sources/holocms/protocols.md` describes the site's side.
+- A reference only ([0016](/decisions/server/0016-holoemu-is-a-reference.md)): it is read when the client's `.ls` scripts
   leave a question open, and the server neither ports it nor follows its structure.
 
 # Layout
@@ -46,12 +46,12 @@ Each dump holds the emulator's tables and HoloCMS's `cms_*` tables together.
 
 # Fuses
 
-The analysis behind [0045](/decisions/0045-fuses-holos-club-set-and-every-checked-fuse.md) and
-[0046](/decisions/0046-the-first-fuses-follow-holos-ranks.md).
+The analysis behind [0045](/decisions/server/0045-fuses-holos-club-set-and-every-checked-fuse.md) and
+[0046](/decisions/server/0046-the-first-fuses-follow-holos-ranks.md).
 
 - `Source/Managers/rankManager.cs` gives each rank, 1 to 7, the fuses of `system_fuserights` whose `minrank` it reaches,
   and the login sends them as `@B`, the client's 2 (`Source/Virtual/Users/virtualUser.cs`). Rank 1 is a normal user,
-  rank 2 Habbo Club and ranks 3 to 7 staff (`plans/holo-port/decisions/0054-access-groups-are-holos-ranks.md`); the
+  rank 2 Habbo Club and ranks 3 to 7 staff (`knowledge/decisions/holo-port/0054-access-groups-are-holos-ranks.md`); the
   club itself changes nothing, only the rank does. `rankManager.containsRight` is every check the server makes.
 - The code reads `system_fuserights` only. Every dump also holds `rank_fuserights`, with the same rows in
   `Resources/holodb.sql` and only the first 30 in the other two.
@@ -112,4 +112,4 @@ Nothing checks the other 11 names of `system_fuserights`: `default` (1), `fuse_l
 - `update.txt` lists the bugs this build still had: "landscape", "v25/26 console", "pathfinder big hc", "bb replay",
   "rollers", "snowstorm", "diving" and "wobble". What it does there is no evidence of what the client expects.
 - Its MUS port is the site's channel, not the client's `#mus` connection
-  ([fuse_client](/reference/r26/fuse_client.md)), which Holo's client page sent to `game.habbohotel.co.uk:30001`.
+  (fuse_client (`packages/server/knowledge/r26/fuse_client.md`)), which Holo's client page sent to `game.habbohotel.co.uk:30001`.

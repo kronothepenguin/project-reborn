@@ -11,7 +11,7 @@ tags: [server, protocol, security]
 # Decision
 
 - `TRY_LOGIN` (756) is answered with 33 `login incorrect`, whatever name and password it carries.
-- A habbo logs in only with `SSO` (204) and a ticket from the CMS ([0030](/decisions/0030-sso-tickets-from-the-cms-sign-in.md)).
+- A habbo logs in only with `SSO` (204) and a ticket from the CMS ([0030](/decisions/server/0030-sso-tickets-from-the-cms-sign-in.md)).
   Passwords never travel over the game connection.
 
 # Context
@@ -23,4 +23,4 @@ Passwords never travel over the game connection."
 
 # Consequences
 
-- [s2-06](/tasks/s2-06-handshake-and-login.md) follows it.
+- s2-06 follows it.

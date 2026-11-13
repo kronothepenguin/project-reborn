@@ -11,7 +11,7 @@ tags: [forum, p5]
 # Decision
 
 - The online picture shows offline everywhere, the forum's post boxes included, until the game server exists
-  ([0013](/decisions/0013-defer-game-server-features.md)).
+  ([0013](/decisions/holo-port/0013-defer-game-server-features.md)).
 
 # Context
 

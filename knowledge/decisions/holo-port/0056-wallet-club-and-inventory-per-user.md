@@ -20,7 +20,7 @@ tags: [economy, habbos]
 
 # Context
 
-Changes the line of [0014](/decisions/0014-attribute-based-access.md) that made club a property of the habbo. The user
+Changes the line of [0014](/decisions/holo-port/0014-attribute-based-access.md) that made club a property of the habbo. The user
 answered: "what if we make the habbos share the same wallet instead, so we prevent a user for creating and deleting
 habbos to get more credits", "go", "keep furni separated, share stickers and notes only if they are not in-use." and, on
 club per user, "yes". Backgrounds follow stickers and notes because they share the inventory table.
@@ -29,4 +29,4 @@ club per user, "yes". Backgrounds follow stickers and notes because they share t
 
 - `wallets`, `club_subscriptions` and `home_inventory` move to the user, and `wallet_transactions` keeps which habbo
   acted.
-- Existing databases must be recreated, as [0004](/decisions/0004-fresh-start.md) allows.
+- Existing databases must be recreated, as [0004](/decisions/holo-port/0004-fresh-start.md) allows.

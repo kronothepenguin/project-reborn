@@ -11,7 +11,7 @@ tags: [server, rooms, virtual]
 # Decision
 
 - The last habbo to leave a room unloads it from memory; the next one in loads it again from the store. Saved data is
-  written at once ([0010](/decisions/0010-hot-data-written-at-once.md)), so nothing is lost.
+  written at once ([0010](/decisions/server/0010-hot-data-written-at-once.md)), so nothing is lost.
 
 # Context
 
@@ -20,4 +20,4 @@ unloads the room, and the next one in loads it again from the store."
 
 # Consequences
 
-- [s4-02](/tasks/s4-02-loaded-rooms.md) applies it.
+- s4-02 applies it.

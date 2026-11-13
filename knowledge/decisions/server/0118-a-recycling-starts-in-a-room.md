@@ -11,7 +11,7 @@ tags: [server, furni, recycler, rooms]
 # Decision
 
 - `START_FURNI_RECYCLING` from a habbo that is in no room is refused.
-- A furni on offer in a trade is not recycled ([0114](/decisions/0114-a-furni-on-offer-is-locked.md)).
+- A furni on offer in a trade is not recycled ([0114](/decisions/server/0114-a-furni-on-offer-is-locked.md)).
 - Taking the reward and cancelling work anywhere.
 
 # Context
@@ -23,4 +23,4 @@ Taking the reward or cancelling works anywhere."
 
 # Consequences
 
-- [s5-16](/tasks/s5-16-recycler.md) builds it.
+- s5-16 builds it.

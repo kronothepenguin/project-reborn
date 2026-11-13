@@ -21,5 +21,5 @@ hold 26." The recommendation was the doorbell and the password only.
 
 # Consequences
 
-- [s5-13](/tasks/s5-13-teleports.md) builds it. A room may hold more habbos than its most while habbos arrive by
+- s5-13 builds it. A room may hold more habbos than its most while habbos arrive by
   teleport.
