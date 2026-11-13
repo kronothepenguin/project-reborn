@@ -16,7 +16,7 @@ Packages hold the code of each program, and `apps/<name>` is a thin runner aroun
 | Installer | `packages/installer` | `apps/installer` | built | Writes `config.json`, creates the database, the site settings and the first administrator |
 | CMS | `packages/cms` | `apps/cms` | being built | The public site |
 | Housekeeping | `packages/housekeeping` | `apps/housekeeping` | HK-A built | The staff panel |
-| Game server | `packages/server` | `apps/server` | planned in `plans/server`; the site's game-server features stay deferred ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) | The hotel itself |
+| Game server | `packages/server` | `apps/server` | being built, its next work in the [features](/features/index.md); the site's game-server features stay deferred ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) | The hotel itself |
 | Orchestrator | none | `apps/reborn` | later ([0039](/decisions/holo-port/0039-orchestrator-is-a-later-project.md)) | Runs all of the above from one binary |
 
 # What each program does with shared state
@@ -33,7 +33,8 @@ Nobody is expected to edit the database by hand.
 
 Every program works on an empty database ([0068](/decisions/holo-port/0068-seeds-are-updates.md)).
 
-- A program that finds no database creates it with every update, seeds included, and uses the default values.
+- A program that finds no database creates it with every update, seeds included, and uses the default values. The
+  runners open it with `store.FromConfig()`, which creates it.
 - The installer lets the administrator change the default values, the first time Reborn is opened and only once.
 - The installer still works on a database another program created, which is how such a hotel gets its administrator.
 - `packages/store` is the global access point to the one database, and holds every schema and every update, so a program
@@ -41,8 +42,8 @@ Every program works on an empty database ([0068](/decisions/holo-port/0068-seeds
 
 # Database updates
 
-A release changes the database through update files in `packages/store`, as
-How database updates work (`packages/store/knowledge/database-updates.md`) describes.
+A release changes the database through update files in `packages/store`.
+`packages/store/knowledge/database-updates.md` describes how they work.
 
 - Opening an existing database writes nothing to it. When the CMS or housekeeping starts, it applies only the updates
   that sign-in needs, after a copy ([0071](/decisions/holo-port/0071-sign-in-updates-apply-at-start.md)).
@@ -61,6 +62,29 @@ tasks in its `New`, written as `scheduler.Every(1, scheduler.Hour, task)`.
 | Delete expired sessions ([0050](/decisions/holo-port/0050-expired-sessions-deleted.md)) | CMS, housekeeping | 1 minute |
 
 No task runs while updates wait, because its code may need them.
+
+# Runners
+
+| Program | Production runner | Development runner |
+| --- | --- | --- |
+| Installer | `apps/installer/cmd/installer` | `apps/installer/cmd/installer-dev` |
+| CMS | `apps/cms/cmd/cms` | `apps/cms/cmd/cms-dev` |
+| Housekeeping | `apps/housekeeping/cmd/housekeeping` | `apps/housekeeping/cmd/housekeeping-dev` |
+| Game server | `apps/server/cmd/server` | `apps/server/cmd/server` |
+
+- `make dev` in `apps/<app>` starts air from the repository root, so every runner reads and writes the root
+  `config.json` ([0027](/decisions/holo-port/0027-runners-run-from-the-root.md)).
+- Air rebuilds the runner when a `.go` file of the app, or of a package it imports, changes.
+
+# Web apps: dev and build
+
+The installer, the CMS and housekeeping are web apps, each an Astro frontend in a Go package. They run in two modes.
+
+- **dev**: the development runner starts the Go HTTP server and `make dev` starts the Astro dev server. The Go server
+  reverse-proxies HTML and scripts from the Astro dev server (`astro.MakeServerResolver`). Astro hot-reloads page edits,
+  and the runner fetches each page on every request, so a frontend change needs no Go restart.
+- **build**: Astro build, embed, Go build. The production runner embeds the Astro `dist` output into the Go binary and
+  serves it with `astro.MakeFSResolver` and `http.FileServerFS`.
 
 # Running alone
 

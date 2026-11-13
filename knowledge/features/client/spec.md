@@ -3,7 +3,7 @@ type: Spec
 title: The client in the browser
 description: A signed-in habbo opens the site's client page, where the R26 client runs on LibreShockwave; one program serves the client's files; and later the client runs in vanilla JavaScript.
 status: active
-projects: [packages/cms, packages/housekeeping]
+projects: [packages/cms, packages/housekeeping, packages/settings, packages/virtual, vendor/LibreShockwave]
 ---
 
 # What
@@ -30,5 +30,29 @@ The client's files and the JavaScript client get theirs when they start.
 
 - The client's files and the JavaScript client keep the open questions of their phases: six for the client's files,
   four for the JavaScript client.
+
+The client's files:
+
+- Whether it is a new project, a package and a runner made with `tools/create`, or a part of an existing one, and its
+  name.
+- Where the external folder is set, and what it may hold: the `.dcr`, its `.cct` casts, and whatever else the client
+  loads, such as the figure data.
+- Where housekeeping keeps the texts and the variables, in the database or as files in the folder, and what fills them
+  the first time.
+- Which housekeeping attribute lets someone edit them.
+- How it runs alone and under the orchestrator, beside the other programs.
+- Whether the binary embeds a default set of files, or serves only what the folder holds.
+
+The JavaScript client:
+
+- How it relates to `packages/client-r26` and `packages/director`, the translation of the client's scripts and the
+  Director runtime the repository holds: whether it carries them on or starts again.
+- Which source it is made from: the recent decompile of the client bundle's phase C1, or the `.ls` scripts of
+  `packages/client-r26/src/game/`.
+- What "vanilla" rules out: frameworks, a build step, or both.
+- Whether the page changes to it at once, or offers both clients for a while.
+
+The rest:
+
 - Where the decompiled source goes, and how the hotel offers LibreShockwave's source to players, are
   [the assets feature](/features/assets/spec.md)'s.

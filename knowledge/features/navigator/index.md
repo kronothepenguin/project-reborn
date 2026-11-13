@@ -2,5 +2,5 @@
 
 # Navigator
 
-- [Navigator: how](plan.md) - Written with the user when the feature starts.
+- [Navigator: how](plan.md) - The game server answers the navigator from the shared categories, models and public rooms in virtual and the habbo rooms in the store.
 - [Navigator](spec.md) - The navigator's categories and rooms, changed outside the game, reach it at once, and the site shows the rooms the navigator lists.
