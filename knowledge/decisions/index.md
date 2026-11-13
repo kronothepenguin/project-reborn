@@ -2,7 +2,7 @@
 
 # Decisions
 
-- [Client](client/index.md)
-- [Holo port](holo-port/index.md)
-- [Reborn](reborn/index.md)
-- [Server](server/index.md)
+- [client/](client/index.md)
+- [holo-port/](holo-port/index.md)
+- [reborn/](reborn/index.md)
+- [server/](server/index.md)

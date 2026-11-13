@@ -21,4 +21,4 @@ okf_version: "0.2"
 - [Rooms](rooms.md) - The hh_room commands the server answers: entering, furni, trading, chat, rights, events, queues, walking and rollers.
 - [Tests](tests.md) - How the tests of packages/server run, and what each test file and exit criterion proves.
 - [Transport](transport.md) - How packages/server/transport carries a client's bytes over TCP or a WebSocket as a Conn.
-- [R26](r26/index.md)
+- [r26/](r26/index.md)

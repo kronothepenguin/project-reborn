@@ -33,8 +33,16 @@ knowledge its slave needs.
   project does what) and `# Decisions` (each decision of the user with its reason).
 - `tasks/NN-<slug>.md` is one task. Frontmatter: `type: Task`, `title` (imperative), `description`, `scope` (the repo
   folders it changes), `depends_on` (`NN-<slug>` for a task of the same feature, `<feature>/NN-<slug>` for a task of
-  another feature, `[]` when none) and `skills` (the skills its slave loads). Body: `# Goal`, `# Context`, `# Steps`
-  and `# Checks`.
+  another feature, `[]` when none) and `skills` (the skills its slave loads). Body: `# Goal` (the behaviours of
+  `spec.md` the task implements, in the spec's words), `# Context`, `# Steps` and `# Checks`.
+- Other concepts may sit beside `spec.md` and `plan.md`, such as `later.md` or `research-<x>.md`.
+
+A feature with a built part and a planned part: `# What` says what it does today and the planned text follows a line
+`Next:`; under `# Behaviours` the built lines come first and the lines being built follow under `## Next`;
+`# Architecture` holds a table under `Built:` and one under `Planned:`. When the planned part is built, the master
+moves its lines up and removes `Next:`, `## Next` and `Planned:`.
+
+A spec or plan names a decision as `decision <series>/<NNNN>`, for `knowledge/decisions/<series>/<NNNN>-<slug>.md`.
 
 A task is ready when every task in its `depends_on` is gone. A task is taken when the worktree `<feature>-<NN>` exists.
 A task is done when its slave deletes its file, so `tasks/` shows the work that is left.

@@ -16,7 +16,8 @@ the work, one task each. A feature lives in `knowledge/features/<feature>/`:
 
 Before writing these files, read the example: [spec](assets/buying-furni/spec.md), [plan](assets/buying-furni/plan.md)
 and [task](assets/buying-furni/tasks/02-server.md). Links inside one bundle are bundle-absolute
-(`/features/buying-furni/spec.md`); a file of another bundle and any code are named by repo path in backticks.
+(`/features/buying-furni/spec.md`); a file of another bundle and any code are named by repo path in backticks. The
+keys and sections of each file follow the `documenting-with-okf` skill.
 
 ## 1. Resume
 
@@ -30,6 +31,15 @@ Write `# What` in a few lines, then `# Behaviours`, one line each: a situation, 
 becomes a test, so the user reviews the tests here and approves the list. Keep the spec to what gets built next.
 A spec with no tasks yet is `status: planned`; a feature the user sets aside is `status: parked`.
 
+A feature with a built part and a planned part:
+
+- `spec.md`: `# What` says what the feature does today, and the planned text follows a line `Next:`. Under
+  `# Behaviours` the built lines come first, and the lines being built follow under `## Next`.
+- `plan.md`: `# Architecture` holds one table under `Built:` and one under `Planned:`.
+- When the planned part is built, move its lines up and remove `Next:`, `## Next` and `Planned:`.
+
+The feature folder also holds other concepts beside `spec.md` and `plan.md`, such as `later.md` or `research-<x>.md`.
+
 ## 3. Plan with the user
 
 Write `# Architecture` (which project does what) and `# Decisions` (each decision of the user with its reason). Ask
@@ -40,11 +50,11 @@ reason. Settle every question before work starts.
 
 - One file per task, one project per task where the work allows.
 - Scopes leave each other's folders alone, so tasks run in parallel.
+- The project's knowledge lists the shared files: one task at a time changes them.
 - An interface that several tasks share is built first by one task alone; the others list it in `depends_on`.
   Example: `01-store` first, then `02-server` and `03-cms` at the same time.
+- `# Goal` names the behaviours of `spec.md` the task implements, in the spec's words.
 - Each task names its `scope`, `depends_on`, `skills`, the knowledge under `# Context` and commands under `# Checks`.
-- `depends_on` names `NN-<slug>` in the same feature and `<feature>/NN-<slug>` in another feature.
-- `projects` in `spec.md` also names the folders the feature will create (`packages/reborn`).
 - Writing the tasks sets `status: active` in `spec.md`.
 
 ## 5. Before spawning

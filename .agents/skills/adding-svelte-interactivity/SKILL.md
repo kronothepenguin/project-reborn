@@ -1,69 +1,50 @@
 ---
 name: adding-svelte-interactivity
-description: Promotes Astro components to Svelte 5 when they need client state, events, browser APIs, or fetch, using client:only="svelte". Use when a component must react to the user in the browser or when moving a .astro component to .svelte.
+description: Builds Svelte 5 islands, and promotes Astro components to Svelte, when UI needs client state, events, browser APIs or fetch, hydrated with client:only="svelte". Use when a component must react to the user in the browser, call a Go endpoint, or move from .astro to .svelte.
 ---
 
 # Adding Svelte interactivity
 
-Svelte is used only for UI that runs in the browser. Static markup stays in `.astro` (see `building-astro-components`). Interactive `.svelte` files live in `src/components/`, next to their `.astro` peers. Layouts stay `.astro`: document and body shells have no client behavior.
+Svelte holds the UI that runs in the browser. Static markup and every layout stay `.astro`, as
+`building-astro-components` says. Interactive `.svelte` files live in `src/components/`, next to the `.astro` ones.
 
-## When to use which
+The project's knowledge names the folders, the commands and the checks.
 
-| Component behavior | Implementation | Directive in Astro |
+## Pick the file
+
+| The component | File | Directive where it is used |
 | --- | --- | --- |
-| Renders markup/props only | `.astro` | n/a |
-| Svelte component with no client behavior | `.svelte` | none (server-rendered, not hydrated) |
-| State, events, browser APIs, `fetch` | `.svelte` | `client:only="svelte"` |
+| Renders markup and props | `.astro` | none |
+| Svelte component with no client behaviour | `.svelte` | none: server-rendered, static |
+| Holds state, events, browser APIs or `fetch` | `.svelte` | `client:only="svelte"` |
 
-`client:only="svelte"` skips server rendering, so the component renders only after JavaScript loads. Keep any critical or indexable content in the surrounding `.astro` markup.
+- State (`$state`), event handlers (`onclick`, `onsubmit`) and `bind:value` belong in `.svelte`.
+- `client:only="svelte"` renders the island in the browser only. Keep critical and indexable content in the
+  surrounding `.astro` markup.
 
-## Promoting an `.astro` component to `.svelte`
+## Promote an `.astro` component
 
-Do all five steps in one change; never leave a duplicate `.astro` file behind.
+Do every step in one change:
 
-1. Rename `button.astro` → `button.svelte`.
-2. Port the frontmatter to Svelte 5 runes:
-   - `Astro.props` → `let { ... } = $props()`
-   - local mutable values → `let x = $state(...)`
-   - computed values → `$derived(...)`
-   - side effects → `$effect(...)`
-3. Replace Astro template constructs with Svelte ones (`class:list` → a `class` value; `<slot />` → `let { children } = $props()` plus `{@render children?.()}`).
-4. Update every import and usage: `./button.astro` → `./button.svelte`, and add `client:only="svelte"` at each usage.
-5. Delete the old `.astro` file.
-
-Before (static `.astro`, cannot track clicks):
-
-```astro
----
-interface Props {
-  label?: string;
-}
-
-const { label = "Click me" } = Astro.props;
----
-
-<button class="rounded bg-sky-600 px-4 py-1.5 text-sm font-bold text-white">
-  {label}
-</button>
-```
-
-After (`interactive-button.svelte`):
+1. Rename `button.astro` to `button.svelte`.
+2. Port the frontmatter to runes: `Astro.props` → `let { ... } = $props()`, mutable values → `$state(...)`, computed
+   values → `$derived(...)`, side effects → `$effect(...)`.
+3. Port the template: `class:list` → a `class` value; `<slot />` → `let { children } = $props()` and
+   `{@render children?.()}`.
+4. Update every import to `./button.svelte` and add `client:only="svelte"` at each usage.
+5. Delete the `.astro` file.
 
 ```svelte
+<!-- interactive-button.svelte -->
 <script lang="ts">
   let { label = "Click me" } = $props();
   let count = $state(0);
 </script>
 
-<button
-  class="rounded bg-sky-600 px-4 py-1.5 text-sm font-bold text-white hover:bg-sky-700"
-  onclick={() => count++}
->
+<button class="rounded bg-sky-600 px-4 py-1.5 text-sm font-bold text-white" onclick={() => count++}>
   {label} ({count})
 </button>
 ```
-
-Usage with hydration:
 
 ```astro
 ---
@@ -73,22 +54,23 @@ import InteractiveButton from "../components/interactive-button.svelte";
 <InteractiveButton client:only="svelte" label="Poke" />
 ```
 
-## Svelte 5 rules
+## Svelte 5
 
-- `<script lang="ts">` with runes: `$props`, `$state`, `$derived`, `$effect`.
-- Events are attributes: `onclick={...}`, `onsubmit={...}`. Never `on:click`.
-- Two-way binding uses `bind:value`. Never `export let`.
-- Props are declared once with `$props()`; do not mix in `export let`.
+- Write `<script lang="ts">` with runes: `$props`, `$state`, `$derived`, `$effect`.
+- Declare props once with `$props()`, in place of `export let`.
+- Write events as attributes: `onclick={...}`, `onsubmit={...}`, in place of `on:click`.
+- Bind form values with `bind:value`.
 
-## Fetching data from Go
+## Data from Go
 
-Client components get data by calling the Go endpoints registered on the same mux, not from `[[ ]]` placeholders. Requests and responses use JSON.
-
-`message-sender.svelte`:
+An island fetches its data from the Go endpoints on the same server, with JSON requests and responses, or reads it
+from the page's markup as `templating-astro-pages` says. The endpoint is an ordinary action route that decodes JSON and
+answers 2xx; `applying-go-patterns` owns it.
 
 ```svelte
+<!-- message-sender.svelte -->
 <script lang="ts">
-  let { endpoint = "/me/message" } = $props();
+  let { endpoint = "/messages" } = $props();
 
   let message = $state("");
   let status = $state<"idle" | "sending" | "sent" | "error">("idle");
@@ -101,12 +83,8 @@ Client components get data by calling the Go endpoints registered on the same mu
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message }),
       });
-      if (res.ok) {
-        message = "";
-        status = "sent";
-      } else {
-        status = "error";
-      }
+      status = res.ok ? "sent" : "error";
+      if (res.ok) message = "";
     } catch {
       status = "error";
     }
@@ -121,47 +99,22 @@ Client components get data by calling the Go endpoints registered on the same mu
   }}
 >
   <input class="rounded border border-zinc-500 px-2 py-1" bind:value={message} />
-  <button
-    type="submit"
-    class="rounded bg-sky-600 px-4 py-1.5 font-bold text-white"
-    disabled={status === "sending"}
-  >
-    Send
-  </button>
+  <button type="submit" disabled={status === "sending"}>Send</button>
 </form>
 
 {#if status === "sent"}
-  <p class="mt-1 text-sm text-green-700">Sent.</p>
+  <p class="text-sm text-green-700">Sent.</p>
 {:else if status === "error"}
-  <p class="mt-1 text-sm text-red-700">Something went wrong.</p>
+  <p class="text-sm text-red-700">Something went wrong.</p>
 {/if}
 ```
 
-Use in a page with hydration:
+## Verify
 
-```astro
----
-import MessageSender from "../components/message-sender.svelte";
----
-
-<MessageSender client:only="svelte" endpoint="/me/message" />
-```
-
-The matching Go handler is an ordinary action route (`POST /me/message` → `me-message.go`, `HandleMeMessage`) that decodes JSON and returns a 2xx status. See `applying-go-patterns`.
-
-## Verification
-
-Run from the frontend package:
-
-```sh
-pnpm build
-grep -o 'client="only"' dist/<page>.html
-```
-
-The built HTML must contain `client="only"` for the component. Then run the app and exercise the interaction; confirm the request reaches the Go handler.
+1. Build the frontend and check that the built page holds `client="only"` for the island.
+2. Run the program, use the island, and check that its request reaches the Go handler.
 
 ## Gotchas
 
-- A `.svelte` component rendered without `client:only` is server-rendered and never hydrated: its event handlers silently do nothing. Add the directive whenever the component is interactive.
-- `[[ .Field ]]` inside a `.svelte` `<script>` is never substituted; JS bundles are not parsed by `html/template`. Pass server data through HTML or fetch it.
-- Props passed with `[[ ]]` must be simple scalars. Quotes or backslashes in the value corrupt the serialized props JSON and hydration throws. Prefer fetching such data.
+- Give every interactive `.svelte` component `client:only="svelte"` where it is used. Without the directive it renders
+  as static HTML and its event handlers stay inert.
