@@ -1,70 +1,51 @@
 # Process checklist
 
-Sources: agentskills.io best practices; Claude platform agent-skills best practices.
-
-Apply when a skill is being created, changed, or reviewed for long-term quality.
+How the skill was built and tested. Apply it to a skill being created or changed, or one that holds `evals/`.
 
 ## Contents
 
-- Evaluation-driven development
-- Model coverage
-- Real execution
-- Navigation observation
-- Grounding in expertise
-- Team iteration
+- Grounding
+- Output evals
+- Trigger evals
+- Models
+- Real use
 
-## Evaluation-driven development
+## Grounding
 
-- [ ] Gaps were identified by running a representative task without the skill.
-- [ ] Specific failures or missing context were documented, not imagined.
-- [ ] At least three evaluation scenarios exist.
-- [ ] Evaluations define the query, the files, and the expected behavior.
-- [ ] A baseline without the skill was measured before writing instructions.
-- [ ] Only enough content to close the gaps was written.
-- [ ] Evaluations are re-run after changes and compared to the baseline.
-- [ ] Evaluations live somewhere the skill maintainers can run them.
+- [ ] The skill comes from a real task or real project material: runbooks, specs, review comments, fixes, failures.
+- [ ] It captures the corrections, formats and context the user gave during that task.
+- [ ] Generic advice gives way to the project's own patterns and failure modes.
 
-## Model coverage
+## Output evals
 
-- [ ] The skill was tested with every model it will run on.
-- [ ] A small, fast model can follow the guidance without extra detail.
-- [ ] A balanced model finds the skill clear and efficient.
-- [ ] A large model is not burdened with over-explaining.
-- [ ] Instructions work across the model range or state which model they target.
+- [ ] Gaps were found by running representative tasks without the skill first.
+- [ ] Test cases live in `evals/evals.json`: a realistic prompt, the expected output, input files.
+- [ ] The set starts with two or three cases and grows; at least one case tests a boundary.
+- [ ] Each case runs with the skill and without it, or against a snapshot of the old version, in a fresh context.
+- [ ] Assertions are added after the first run, each specific and checkable; scripts check the mechanical ones.
+- [ ] Grading records PASS or FAIL with quoted evidence from the output.
+- [ ] Results compare pass rate, time and tokens against the baseline.
+- [ ] A human reviews the outputs and records specific feedback per case.
+- [ ] Each iteration generalizes from the feedback, keeps the skill lean and re-runs every case.
 
-## Real execution
+## Trigger evals
 
-- [ ] The skill was used on real tasks, not only synthetic cases.
-- [ ] Execution traces were reviewed, not just final outputs.
-- [ ] Vague instructions that caused flailing were rewritten.
-- [ ] Instructions that never applied were deleted.
-- [ ] Menus of options without a default were replaced.
-- [ ] Corrections made during use were added to the gotchas section.
-- [ ] The skill was executed after each revision.
+- [ ] About 20 labelled queries: half should trigger, half should stay quiet.
+- [ ] Should-trigger queries vary phrasing, detail and directness, including ones that skip the skill's keywords.
+- [ ] Should-stay-quiet queries are near misses that share keywords with the skill.
+- [ ] Each query runs about three times; a trigger rate above 0.5 counts as triggered.
+- [ ] Description changes use a fixed train set (about 60%) and a held-out validation set (about 40%).
+- [ ] The chosen description has the best validation pass rate and generalizes past the train queries.
 
-## Navigation observation
+## Models
 
-- [ ] Unexpected exploration paths were investigated and the structure adjusted.
-- [ ] Missed reference links were made more explicit or prominent.
-- [ ] Content the agent repeatedly read was promoted into `SKILL.md`.
-- [ ] Bundled files the agent never read were removed or better signposted.
-- [ ] Partial reads caused by deep reference chains were fixed by flattening references.
-- [ ] The name and description trigger on the intended prompts.
+- [ ] The skill was tested on every model it runs on: small models get enough guidance, large ones stay unburdened.
 
-## Grounding in expertise
+## Real use
 
-- [ ] The skill was extracted from a real hands-on task or real project artifacts.
-- [ ] Source material includes internal docs, runbooks, or style guides.
-- [ ] API specifications, schemas, or configuration files are reflected.
-- [ ] Code review comments or recurring reviewer concerns are reflected.
-- [ ] Version control history or patches informed the patterns.
-- [ ] Real failure cases and their resolutions are captured.
-- [ ] The skill captures project-specific schemas, failure modes, and procedures.
-
-## Team iteration
-
-- [ ] The skill was shared with the people who will use it.
-- [ ] Usage was observed rather than assumed.
-- [ ] One agent instance refined the skill while another tested it in real tasks.
-- [ ] Feedback about activation, clarity, and gaps was collected.
-- [ ] The observe → refine → retest cycle is followed.
+- [ ] The skill ran on real tasks, and the traces were read along with the outputs.
+- [ ] Vague instructions that caused wasted steps were rewritten; unused instructions were cut.
+- [ ] Each correction made during use became a gotcha.
+- [ ] Navigation was observed: files the agent rereads move into `SKILL.md`, files it ignores are signposted or cut.
+- [ ] The name and description were checked against real prompts.
+- [ ] The people who use the skill gave feedback on activation, clarity and gaps.

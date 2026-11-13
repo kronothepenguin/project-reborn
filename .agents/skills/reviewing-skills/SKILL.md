@@ -1,60 +1,65 @@
 ---
 name: reviewing-skills
-description: Reviews Agent Skills against authoring best practices for frontmatter, naming, descriptions, scope, progressive disclosure, instruction design, scripts, and evaluation. Use when creating, auditing, or improving a SKILL.md or its bundled references, scripts, or assets.
+description: Reviews Agent Skills against the Agent Skills specification, the Claude authoring best practices and the user's own rules for skills (small, affirmative, rules over repo facts). Use when creating, auditing or improving a SKILL.md or its bundled references, scripts or assets, or when a skill fails to trigger or to be followed.
 ---
 
 # Reviewing Skills
 
-Audit a skill bundle (`SKILL.md` plus `references/`, `scripts/`, `assets/`) against the authoring best practices from agentskills.io and the Claude platform. Report concrete findings; do not rewrite the skill unless the user asks for fixes.
+Audit one skill bundle: `SKILL.md` plus `references/`, `scripts/`, `assets/` and `evals/`. Report findings. Edit the
+skill only when the user asks for fixes.
 
 ## Workflow
 
-Copy this checklist and check items off as you go:
+Copy this checklist and tick each step:
 
 ```
 Skill review:
-- [ ] 1. Read SKILL.md and list the bundle files
-- [ ] 2. Run the structural validator
-- [ ] 3. Load the checklists that apply
-- [ ] 4. Report findings: file:line — severity — rule — concrete fix
-- [ ] 5. Re-check every finding against the loaded checklists
+- [ ] 1. Read SKILL.md and list every file of the bundle
+- [ ] 2. Run the validator
+- [ ] 3. Read the checklists that apply
+- [ ] 4. Write the findings
+- [ ] 5. Re-check each finding against its checklist
 ```
 
-1. Read the skill's `SKILL.md` and list every file in its directory.
-2. Run the bundled structural validator (Python 3 standard library only):
+1. Read `SKILL.md` and list every file in the skill directory and in its sibling skills.
+2. Run the validator from this skill's directory (Python 3, standard library):
 
    ```sh
-   python3 scripts/validate_skill.py <skill-directory>
+   python3 -I scripts/validate_skill.py <skill-directory>
    ```
 
-   It reports errors for frontmatter, name, description, links, and size, plus warnings. Use `--strict` to fail on warnings.
-3. Load the checklists that match the bundle:
+   It reports errors and warnings with `file:line`, then a count of prohibition sentences and hard-coded repo paths.
+   Add `--strict` to fail on warnings.
+3. Read the checklists that match the bundle:
 
-| The bundle contains | Read |
+| The bundle holds | Read |
 | --- | --- |
-| Always | [references/structure-checklist.md](references/structure-checklist.md) |
-| Instructions, workflows, examples, or templates | [references/content-checklist.md](references/content-checklist.md) |
-| `scripts/` or any executable code | [references/scripts-checklist.md](references/scripts-checklist.md) |
-| A skill being created or changed | [references/process-checklist.md](references/process-checklist.md) |
+| Any skill | [references/structure-checklist.md](references/structure-checklist.md) |
+| Any skill | [references/user-rules-checklist.md](references/user-rules-checklist.md) |
+| Instructions, workflows, examples or templates | [references/content-checklist.md](references/content-checklist.md) |
+| `scripts/`, inline commands or any code | [references/scripts-checklist.md](references/scripts-checklist.md) |
+| A skill being created or changed, or `evals/` | [references/process-checklist.md](references/process-checklist.md) |
 
-4. Report findings most severe first:
+4. Write the findings, most severe first. ALWAYS use this structure:
 
 ```markdown
 ## Findings
 
-- `SKILL.md:12` — **error** — description is first person; rewrite in third person with what it does and when to use it.
-- `references/api.md:140` — **warning** — reference exceeds 100 lines without a table of contents.
+- `SKILL.md:12` — **error** — description in first person — rewrite in third person: "Extracts … Use when …".
+- `SKILL.md:30` — **warning** — affirmative sentences — "Never edit X" → "Edit only Y".
 ```
 
-5. Re-check each finding against the loaded checklist before reporting it.
-
-## Scope boundary
-
-This skill reviews authoring quality and structure. It does not judge whether the subject-matter guidance inside the skill is correct; use a domain-specific review skill for that.
+   Severity: **error** breaks the specification or makes the skill fail to load; **warning** covers every other rule.
+5. Re-check each finding against the checklist item it names. Report each problem once.
 
 ## Gotchas
 
-- The validator covers mechanics; the checklists cover judgment. Do not report a finding twice.
-- Length alone is not a defect. A long `SKILL.md` matters only when content belongs in a reference.
-- Not every skill needs scripts, gotchas, templates, or evaluations. Flag a missing pattern only when the skill's content calls for it.
-- The right detail level depends on the target models; a small model may need more guidance than a large one.
+- The validator decides the mechanics; the checklists hold the judgment. Each finding comes from one of them.
+- The validator reads prose only: it skips code spans, code blocks and blockquotes. Read each hit in context.
+- A long `SKILL.md` is a finding only when part of it belongs in a reference.
+- Flag a missing pattern (scripts, gotchas, templates, evals) only when the skill's task calls for it.
+- Scope: this review judges authoring and structure. Domain correctness belongs to a domain review skill.
+
+## Sources
+
+The URLs these checklists come from: [references/sources.md](references/sources.md).
