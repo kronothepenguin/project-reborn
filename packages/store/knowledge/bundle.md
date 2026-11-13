@@ -55,9 +55,9 @@ packages/store/knowledge/
 | Concept | Sections |
 |---------|----------|
 | Schema file | `# Schema`: the tables and indexes the file declares, each table linked to `/tables/<table>.md` |
-| Table | `# Schema`: one row per column (column, type, null, default, description, key or reference); `# Keys`: primary key, unique and plain indexes; links to its entity and to the queries that touch it |
-| Entity | `# Definition`, `# Invariants`, `# Lifecycle`, `# Vocabularies` (allowed values of open `TEXT` columns), `# Relations` (links to other entities); links to its tables and queries |
-| Query file | `# Operations`: one section per operation (name, cardinality, inputs, result, tables touched) |
+| Table | `# Schema`: one row per column (column, type, null, default, description, key or reference); `# Keys`: primary key, unique and plain indexes; `# Notes`, when needed: the reasons behind a column or a key; `# Related`: its entity, the queries that touch it and the tables that refer to it |
+| Entity | `# Definition`, `# Invariants`, `# Lifecycle`, `# Vocabularies` (allowed values of open `TEXT` columns), `# Relations` (links to other entities), `# Tables` (links to its tables), `# Queries` (links to its query files) |
+| Query file | `# Operations`: one section per operation (name, cardinality, inputs, result, tables touched); `# Related`: the entities it serves |
 | Update file | `# Update`: its title, whether it is automatic, and what it changes, each table linked to `/tables/<table>.md` |
 | Discussion | `# Status` (nothing planned, and the decision in force), `# The question`, `# What the user said` (quoted), `# Ideas raised` |
 
@@ -67,6 +67,6 @@ packages/store/knowledge/
 
 # Checks
 
-Run `make check-docs` from `packages/store`. It checks a non-empty `type` in every concept, and every schema and query
-file named by some concept's `resource`. Check the index listings and the table and entity concepts by hand, or run
-`check.py` of the `documenting-with-okf` skill.
+Run `make check-docs` from `packages/store`. It checks a non-empty `type` in every concept, and every schema, query
+and update file (`migrations/*.sql`) named by some concept's `resource`. Check the index listings and the table and
+entity concepts by hand, or run `check.py` of the `documenting-with-okf` skill.

@@ -95,6 +95,7 @@ initialisms `ID`, `IP`, `SSO` and `URL` (`initialisms` in `sqlc.yaml`), so the
 
 The schema is documented per [entity](/entities/index.md), per
 [table](/tables/index.md) and per [schema file](/schemas/index.md).
+How Holo's tables map to this schema: `knowledge/sources/holocms/database.md`.
 
 # Examples
 

@@ -27,6 +27,11 @@ Items referenced by homes or inventories cannot be deleted; they are disabled in
 - Primary key `id`.
 - `idx_home_store_items_home_store_category_id` (`home_store_category_id`).
 
+# Notes
+
+- The tables that refer to an item have no `ON DELETE` clause, so an item in use stays. Housekeeping takes it off sale
+  with `enabled`.
+
 # Related
 
 - Entity: [Home store](/entities/home-store.md).

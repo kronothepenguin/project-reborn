@@ -9,15 +9,15 @@ tags: [store, updates, architecture]
 
 # Why
 
-- Every program applies the schema files with `CREATE TABLE IF NOT EXISTS` when it opens the database. A new table
-  reaches an existing database that way, but a changed table or a new seed never does, so a hotel had to be recreated.
-- Reborn is released as binaries that an administrator replaces and restarts, and later as one binary (`plans/later.md`).
-  Each binary carries the updates its code needs.
+- Before updates, every program applied the schema files with `CREATE TABLE IF NOT EXISTS` when it opened the
+  database. A new table reached an existing database that way, but a changed table or a new seed never did, so a hotel
+  had to be recreated.
+- Reborn is released as binaries that an administrator replaces and restarts, and later as one binary
+  (`knowledge/features/platform/later.md`, "One binary"). Each binary carries the updates its code needs.
 - Holo's `upgrade.php` was one button that ran the changes since the last release, with no record of what had run.
 
-Decided in 0067 (`knowledge/decisions/holo-port/0067-updates-are-our-own-migrations.md`), 0068 (`knowledge/decisions/holo-port/0068-seeds-are-updates.md`),
-0069 (`knowledge/decisions/holo-port/0069-waiting-updates-close-the-hotel.md`), 0070 (`knowledge/decisions/holo-port/0070-housekeeping-applies-updates.md`) and
-0071 (`knowledge/decisions/holo-port/0071-sign-in-updates-apply-at-start.md`). Names of routes and files below are the planned ones.
+Decided in decision holo-port/0067, decision holo-port/0068, decision holo-port/0069, decision holo-port/0070 and
+decision holo-port/0071 (`knowledge/decisions/holo-port/`). The feature is `knowledge/features/updates/spec.md`.
 
 # Update files
 
@@ -135,6 +135,7 @@ Every waiting update closes the hotel. Telling minor updates from major ones is 
 - Rebuild a table with SQLite's procedure: create the new table, copy the rows, drop the old table, rename the new one,
   and create its indexes again.
 - Seed rows carry fixed ids and use `INSERT OR IGNORE`, so rows an administrator changed stay as they are.
+- Write times with `strftime('%Y-%m-%d %H:%M:%f+00:00', 'now')`, the format the store writes from Go.
 - An update never relies on values an administrator can change, such as a group's name.
 - A new attribute in the catalogue of `packages/auth` comes with an update that grants it to the holders of
   `housekeeping.accessGroups`. A test checks that, on a new database, they hold every attribute.
