@@ -12,6 +12,6 @@ okf_version: "0.2"
 - [Soft rules](rules.md) - Suggestions on builds, configuration, comments, runners and commits that every agent follows by default.
 - [Shared files](shared-files.md) - The files that only one task changes at a time, each with its reason.
 - [Workflow](workflow.md) - The OKF + Skills cycle: where knowledge, features and skills live, and who plans, builds and ships them.
-- [Decisions](decisions/index.md)
-- [Features](features/index.md)
-- [Sources](sources/index.md)
+- [decisions/](decisions/index.md)
+- [features/](features/index.md)
+- [sources/](sources/index.md)

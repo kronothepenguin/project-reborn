@@ -100,8 +100,8 @@ def parse_frontmatter(lines: list[str]) -> tuple[dict[str, str], dict[str, int],
     return fields, field_lines, closing
 
 
-def prose_lines(lines: list[str], start: int) -> list[tuple[int, str]]:
-    """Return (line number, text) for prose: skips frontmatter, fenced code, blockquotes and inline code."""
+def prose_lines(lines: list[str], start: int, quotes: bool = False) -> list[tuple[int, str]]:
+    """Return (line number, text) for prose: skips frontmatter, fenced code, inline code, and blockquotes unless quotes."""
     result: list[tuple[int, str]] = []
     in_fence = False
     for number, line in enumerate(lines, start=1):
@@ -110,7 +110,7 @@ def prose_lines(lines: list[str], start: int) -> list[tuple[int, str]]:
         if line.lstrip().startswith(("```", "~~~")):
             in_fence = not in_fence
             continue
-        if in_fence or line.lstrip().startswith(">"):
+        if in_fence or (not quotes and line.lstrip().startswith(">")):
             continue
         result.append((number, INLINE_CODE_RE.sub("", line)))
     return result
@@ -153,7 +153,7 @@ def check_style(lines: list[str], start: int, path: Path, findings: list[Finding
 
 def resolve_links(text: str, markdown_path: Path, skill_dir: Path, findings: list[Finding], from_skill_md: bool) -> None:
     skill_root = skill_dir.resolve()
-    for line_number, line in enumerate(text.splitlines(), start=1):
+    for line_number, line in prose_lines(text.splitlines(), 0, quotes=True):
         for match in MD_LINK_RE.finditer(line):
             target = match.group(1).strip()
             if target.startswith(("http://", "https://", "mailto:", "#")):

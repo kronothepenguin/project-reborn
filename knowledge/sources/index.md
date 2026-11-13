@@ -6,4 +6,4 @@
 - [LibreShockwave](libreshockwave.md) - What LibreShockwave in vendor/LibreShockwave holds, its browser player, its decompiler and its licence, and which plan reads it for what.
 - [The old server](old-server.md) - The game server removed in commit 2ea51d7b, where to read it, its structure, what each part did, what this plan changes and the problems found in it.
 - [Sources](overview.md) - The outside code and files the project reads, and what each is read for.
-- [Holocms](holocms/index.md)
+- [holocms/](holocms/index.md)

@@ -2,20 +2,23 @@
 type: Task
 title: Run the purchase in the server
 description: The purchase message spends the credits and puts the furni in the hand.
-scope: [packages/server]   # repo folders the task changes
+scope: [server]   # repo folders the task changes
 depends_on: [01-store]   # NN-<slug> of this feature, <feature>/NN-<slug> of another; [] when none
 skills: [testing-behaviours]   # skills the slave loads
 ---
 
 # Goal
 
-A habbo buys a furni through the server, as the spec's behaviours say.
+The server implements these behaviours of the spec:
+
+- A habbo with credits buys a furni: the credits go down and the furni is in the hand.
+- A habbo without credits buys a furni: the purchase is refused and the credits stay.
 
 # Context
 
 - [Spec](/features/buying-furni/spec.md)
 - [Plan](/features/buying-furni/plan.md)
-- `packages/server/knowledge/index.md`
+- `server/knowledge/index.md`
 
 # Steps
 
@@ -25,4 +28,4 @@ A habbo buys a furni through the server, as the spec's behaviours say.
 
 # Checks
 
-- `go test ./packages/server/...`
+- `go test ./server/...`
