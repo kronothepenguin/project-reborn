@@ -21,13 +21,14 @@ Nothing here is decided: the feature lists the questions the user answers before
 - Nothing uses it: no test calls `Mount` or the port, `TestMain` (`packages/server/server_test.go:32-61`) calls only
   `New`, `StartInfo` and `StartMus`; the browser suites start only cms, housekeeping and installer
   (`tests/e2e/lib/hotel.mjs:24`); air only builds and runs the binary. The only mentions are documents:
-  `apps/server/README.md:12,21,29` and `packages/server/README.md:5,13,19,622,689`.
+  `apps/server/README.md:12,21,29`, the opening lines, Port and Development of `packages/server/README.md`, and
+  `packages/server/knowledge/layout.md`.
 
 | File | Change |
 | --- | --- |
 | `packages/server/server.go` | Delete lines 95-99 and the router import. `net/http` stays, since `listen` uses `http.Serve` |
 | `packages/server/internal/router/` | Delete `router.go` and `index.go` |
-| `packages/server/README.md` | Lines 5, 13, 19, 621-623 and 689 |
+| `packages/server/README.md`, `packages/server/knowledge/layout.md` | The opening lines, Port and Development of the README; the `server.go` row and the router of the layout |
 | `apps/server/README.md` | Lines 12, 21 and 29 |
 | `apps/server/cmd/server/main.go` | The user's file: delete line 5 and lines 22-31 |
 
