@@ -58,6 +58,13 @@ spans several settings goes into `rules` and lists every key it reads.
 The tests check that every default passes its validator and the rules, and that no setting reuses a `config.json` key.
 A value needed before the database opens is not a setting: it belongs to `packages/config`.
 
+# Values
+
+- `site.url` is a bare http(s) origin, because reset links add a path such as `/reset/<token>` to it.
+- Passwords keep Holo's defaults: 6 to 25 characters (`auth.passwordMinLength`, `auth.passwordMaxLength`).
+- `auth.rememberDays` keeps Holo's default of 100.
+- The site names keep Holo's defaults: `site.name` is "Holo Hotel" and `site.shortName` is "Holo".
+
 # Rows
 
 - A row is ignored, and logged with `slog.Warn` (key and reason, never the value, because `mail.password` is a secret),

@@ -13,6 +13,8 @@ A feature lives in `knowledge/features/<feature>/`.
 
 `plan.md`, type `Plan`: how to build it. Body: `# Architecture`, `# Decisions`.
 
+- `# Notes` is optional and holds facts that explain something in the code and live nowhere else.
+
 ## A built part and a planned part
 
 - `spec.md`: `# What` says what the feature does today, and the planned text follows a line `Next:`. Under

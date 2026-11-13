@@ -16,6 +16,8 @@ game do it ([0005](/decisions/reborn/0005-the-game-hears-live-changes-through-se
 
 - [Spec](/features/habbos/spec.md)
 - [Plan](/features/habbos/plan.md)
+- `packages/config/knowledge/adding-a-section.md`: the playbook of `adding-config-sections`.
+- `packages/store/knowledge/adding-persisted-data.md`: the playbook of `adding-data-persistence`.
 - [The game hears of live changes through
   services](/decisions/reborn/0005-the-game-hears-live-changes-through-services.md)
 - It touches `packages/store/migrations`, which no other task may change at the same

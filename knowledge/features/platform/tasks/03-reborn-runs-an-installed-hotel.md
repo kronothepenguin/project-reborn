@@ -16,6 +16,7 @@ the game on its two WebSocket ports ([0003](/decisions/reborn/0003-reborn-runs-t
 
 - [Spec](/features/platform/spec.md)
 - [Plan](/features/platform/plan.md)
+- [Go layout](/go-layout.md): the playbook of `applying-go-patterns`.
 - [reborn runs the hotel in one process, and the separate programs
   stay](/decisions/reborn/0003-reborn-runs-the-hotel-in-one-process.md)
 - Under reborn, inside a transaction only the transaction's queries are used: the one connection is shared

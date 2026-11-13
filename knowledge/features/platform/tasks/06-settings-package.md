@@ -16,6 +16,7 @@ This is the feature's contract for settings: it runs alone.
 
 - [Spec](/features/platform/spec.md)
 - [Plan](/features/platform/plan.md)
+- `packages/store/knowledge/adding-persisted-data.md`: the playbook of `adding-data-persistence`.
 - [Every program reads settings from the store, and nothing
   refreshes](/decisions/reborn/0006-settings-are-read-from-the-store.md)
 - Runs alone: it touches `go.work`, the store's generated queries and `virtual/settings`.

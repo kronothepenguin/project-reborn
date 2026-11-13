@@ -13,6 +13,7 @@ okf_version: "0.2"
 - [How the programs work together](programs.md) - Which programs make up Project Reborn, what each one owns, and how they interact when they run alone and when they run together in one process.
 - [Soft rules](rules.md) - Suggestions on builds, configuration, comments, runners and commits that every agent follows by default.
 - [Shared files](shared-files.md) - The files that only one task changes at a time, each with its reason.
+- [To settle](to-settle.md) - Lists what the move to OKF + Skills found, for the user to decide.
 - [Workflow](workflow.md) - The OKF + Skills cycle: where knowledge, features and skills live, and who plans, builds and ships them.
 - [decisions/](decisions/index.md)
 - [features/](features/index.md)

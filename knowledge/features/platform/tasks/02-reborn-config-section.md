@@ -15,6 +15,7 @@ reborn has its own address in `config.json` ([0003](/decisions/reborn/0003-rebor
 
 - [Spec](/features/platform/spec.md)
 - [Plan](/features/platform/plan.md)
+- `packages/config/knowledge/adding-a-section.md`: the playbook of `adding-config-sections`.
 - [reborn runs the hotel in one process, and the separate programs
   stay](/decisions/reborn/0003-reborn-runs-the-hotel-in-one-process.md)
 - A `config.json` written before this section exists loads with the section's defaults, as every missing section does.
