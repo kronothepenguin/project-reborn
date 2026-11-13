@@ -3,6 +3,7 @@
 # Features
 
 - [Next features](next.md) - The active features, and the proposed order of the rest.
+- [Accounts](accounts/index.md)
 - [Assets](assets/index.md)
 - [Badges and achievements](badges-and-achievements/index.md)
 - [Client](client/index.md)
@@ -16,6 +17,8 @@
 - [Groups](groups/index.md)
 - [Habbos](habbos/index.md)
 - [Homes](homes/index.md)
+- [Hotel login](hotel-login/index.md)
+- [Hotel settings](hotel-settings/index.md)
 - [Installer](installer/index.md)
 - [Look and feel](look-and-feel/index.md)
 - [Messenger](messenger/index.md)
@@ -25,5 +28,7 @@
 - [Platform](platform/index.md)
 - [Presence and rooms](presence-and-rooms/index.md)
 - [R18](r18/index.md)
+- [Ranks](ranks/index.md)
 - [Rooms](rooms/index.md)
 - [Tags](tags/index.md)
+- [Updates](updates/index.md)

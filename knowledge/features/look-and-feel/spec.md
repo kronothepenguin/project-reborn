@@ -8,6 +8,12 @@ projects: [packages/cms, packages/components, packages/housekeeping, packages/in
 
 # What
 
+The public site has Holo's two layouts: the signed-out process pages and the community pages with Holo's header, tabs
+and footer. The footer names Project Reborn. Housekeeping has a look of its own, after Habbo's original housekeeping.
+Pages take Holo's colours as the Tailwind classes of [the colours](/colours.md).
+
+Next:
+
 The site looks like HoloCMS, at sizes made for today's screens.
 
 The user: "the community layout looks like holo cms, but not as holo cms. the link-buttons in the navbar are plain and
@@ -19,7 +25,34 @@ like font-size: 16px. and make the layout's a little bigger to match this new fo
 
 # Behaviours
 
-Written with the user when the feature is planned.
+## Signed-out layout
+
+- A visitor opens a signed-out page: the title reads `<short name> ~ Home`, and `/register` reads `<short name> ~
+  Register`.
+- A visitor opens a signed-out page: the header shows `N users online now` and `N registered users`, counting habbos,
+  and the logo links to `/`.
+- A visitor opens a signed-out page: it carries Holo's `description` and `keywords` meta tags.
+- A visitor reads the footer: its links are separated by ` | `, and it reads `Powered by Project Reborn ©` (decision
+  holo-port/0048).
+- A staff member reads the signed-out footer: it shows a `Housekeeping` link.
+
+## Community layout
+
+- A signed-in habbo opens a page: the main tabs show its name, Community and Credits, over Holo's sub-tabs.
+- A guest opens a page: the main tab reads `Register now!`, and the header shows the mini login.
+- A habbo with `housekeeping.access` opens a page: a Housekeeping tab shows, linking to `site.housekeepingUrl`.
+- A signed-in habbo reads the header: it shows Help, Sign Out, a switch link with several habbos, and the habbo search.
+- A visitor reads the header: it shows `N users online now` and `<site> is offline`.
+- Staff pass maintenance: `Alert: The site is currently turned off!` shows above and below the page.
+
+## Housekeeping
+
+- Staff open housekeeping: a grey top bar shows who is logged in, their previous login, `Log out` and the clock box
+  (decision holo-port/0060).
+- Staff read a page: navy tabs, the active one `sky-700`, over a blue strip, and a left column of boxes with `sky-700`
+  titles (decision holo-port/0060).
+- Staff read a data list: an `amber-300` header over `amber-100` rows; a form has a `sky-700` title and plain rows
+  (decision holo-port/0060).
 
 # Open questions
 

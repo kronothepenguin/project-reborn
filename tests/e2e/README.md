@@ -13,56 +13,6 @@ pnpm test register me        # only these suites
 pnpm test --skip-build me    # reuse the last binaries
 ```
 
-Exit status 0 means every check passed. Failures print as they happen, and
-screenshots and server logs stay in `.run/`, which is git-ignored.
+Exit status 0 means every check passed. Failures print as they happen.
 
-## Rules of a run
-
-- The CMS and housekeeping listen on free ports, so a run does not disturb a
-  development server.
-- The installer's port, 17306, is baked in its runners. A run refuses to start
-  while it is busy, and it never talks to a server it did not start.
-- A suite fails if a program logs anything beyond its start-up line.
-
-## Suites
-
-| Suite | Covers |
-| --- | --- |
-| `signed-out` | Landing, sign-in, forgot and reset, legal pages, ban, throttle |
-| `register` | The registration form, with and without JavaScript |
-| `me`, `looks`, `details`, `habbos` | The Me page and the account tabs, with the club wardrobe on Looks |
-| `homes` | A home read by a guest, profile tags, the editor, and the Webstore and Inventory |
-| `maintenance` | The site closed, and staff signing in |
-| `news` | The archive, an article, a category and the headlines, as a guest reads them |
-| `tags` | The cloud, a search, the tag fight and tagging yourself |
-| `groups` | The Me page's Groups box, buying a group, group pages, membership, the admins' tools, decorating, and My Groups |
-| `forum` | The discussion board and its threads, as a guest and signed in, moderated with Holo's Moderation Tools, posts reported in the Help Tool window, and the board switched off |
-| `club` | The club page as a guest, buying club months with Holo's dialogs, the month limit, a short purse, and `HC1` given to the user's habbos and taken when the club ends |
-| `community` | The random habbos, the news promo turning, the tag cloud and the banners |
-| `staff` | The staff list, the two boxes and their settings, and the page switched off |
-| `credits` | The credits page as a guest reads it, vouchers redeemed into the shared purse, used twice, in other case and unknown, and the account transactions of two habbos, fifty at most |
-| `art` | The home art, served by the binary |
-| `housekeeping-access` | Every route as a guest, a player and staff |
-| `housekeeping-admin` | Access groups, members, the guard and the log |
-| `housekeeping-settings` | The settings forms |
-| `housekeeping-maintenance` | Maintenance saved in housekeeping, read by the CMS |
-| `housekeeping-users` | Habbos and users, badges, credits, bans, alerts and the help queue, with a post's report |
-| `housekeeping-store` | The home store's items, added from the art and edited |
-| `housekeeping-news` | News composed, listed, edited and deleted, with the top-story picker, its preview and the image editor |
-| `housekeeping-images` | Uploaded pictures listed with their articles, ten a page, and deleted only once no article shows them |
-| `housekeeping-banners` | Banners added, listed, edited and deleted, with Holo's texts and the right messages |
-| `housekeeping-vouchers` | Vouchers created with Holo's random code, listed while unused, refused when blank, bad or taken, and deleted unless redeemed |
-| `economy` | P6 from end to end: a voucher made in housekeeping and redeemed once on the credits page, then a club month bought, counted on every page that shows it and opening the club's skins, wide playground and wardrobe until it ends |
-| `help` | The help tool: a visitor sent to sign in, the header's Help opening the Help Tool window, Holo's answers to blank, long and waiting requests, and a request picked up in housekeeping's Help Queries |
-| `updates` | A hotel installed before updates: maintenance, the update page, the copy, config.json's new keys |
-| `together` | The installer's forms, then the CMS and housekeeping side by side |
-
-## Writing a suite
-
-A suite is a module in `suites/`, registered in `run.mjs`. Its default export takes
-the run's helpers: `base`, `hk`, `browser`, `check`, `sql`, `mails`, `shot`,
-`start`, `stop` and `restart`. It may also export:
-
-- `programs`: what to start, `["cms"]` by default;
-- `prepare`: runs on the copy of the hotel before the programs start;
-- `emptyFolder`: `true` to start with no hotel at all.
+How it works: `knowledge/index.md`.

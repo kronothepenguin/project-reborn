@@ -28,6 +28,11 @@ CHECK: `user_id` or `ip` is set.
 - Primary key `id`.
 - `idx_bans_user_id` (`user_id`), `idx_bans_ip` (`ip`).
 
+# Notes
+
+- `user_id` cascades on delete: with `SET NULL`, deleting the user of a ban on the user alone would break the "user or
+  IP" check.
+
 # Related
 
 - Entity: [Ban](/entities/ban.md).
