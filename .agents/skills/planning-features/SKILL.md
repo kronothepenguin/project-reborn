@@ -14,10 +14,9 @@ the work, one task each. A feature lives in `knowledge/features/<feature>/`:
 | `plan.md` | How to build it: the architecture and the user's decisions |
 | `tasks/NN-<slug>.md` | One task each, deleted by the slave that finishes it |
 
-Before writing these files, read the example feature: [spec.md](assets/buying-furni/spec.md),
-[plan.md](assets/buying-furni/plan.md) and [a task](assets/buying-furni/tasks/02-server.md). Links inside one bundle
-are bundle-absolute (`/features/buying-furni/spec.md`); a file of another bundle and any code are named by their repo
-path in backticks.
+Before writing these files, read the example: [spec](assets/buying-furni/spec.md), [plan](assets/buying-furni/plan.md)
+and [task](assets/buying-furni/tasks/02-server.md). Links inside one bundle are bundle-absolute
+(`/features/buying-furni/spec.md`); a file of another bundle and any code are named by repo path in backticks.
 
 ## 1. Resume
 
@@ -29,6 +28,7 @@ gone, and taken when a worktree named `<feature>-<NN>` exists.
 
 Write `# What` in a few lines, then `# Behaviours`, one line each: a situation, an action, an outcome. Each behaviour
 becomes a test, so the user reviews the tests here and approves the list. Keep the spec to what gets built next.
+A spec with no tasks yet is `status: planned`; a feature the user sets aside is `status: parked`.
 
 ## 3. Plan with the user
 
@@ -42,16 +42,14 @@ reason. Settle every question before work starts.
 - Scopes leave each other's folders alone, so tasks run in parallel.
 - An interface that several tasks share is built first by one task alone; the others list it in `depends_on`.
   Example: `01-store` first, then `02-server` and `03-cms` at the same time.
-- Each task names its `scope`, `depends_on` and `skills`, the knowledge under `# Context` and the commands under
-  `# Checks`.
-- `depends_on` names `NN-<slug>` for a task of the same feature and `<feature>/NN-<slug>` for a task of another
-  feature.
+- Each task names its `scope`, `depends_on`, `skills`, the knowledge under `# Context` and commands under `# Checks`.
+- `depends_on` names `NN-<slug>` in the same feature and `<feature>/NN-<slug>` in another feature.
 - `projects` in `spec.md` also names the folders the feature will create (`packages/reborn`).
+- Writing the tasks sets `status: active` in `spec.md`.
 
 ## 5. Before spawning
 
-Read each ready task as its slave would. Ask the user every question it leaves open and write each answer into the
-plan or the task.
+Read each ready task as its slave would. Ask the user every question it leaves open; write the answers into it.
 
 ## 6. Spawn
 
@@ -71,9 +69,11 @@ You are a slave. Work knowledge/features/<feature>/tasks/<NN>-<slug>.md with the
 ## 8. The master's own edits
 
 The master edits `spec.md`, `plan.md` and the task files on the branch `<feature>-plan` in
-`.claude/worktrees/<feature>-plan`, and merges it into `main` before the slaves start, as in step 7 of the
-`working-tasks` skill.
+`.claude/worktrees/<feature>-plan`, and merges it into `main` before the slaves start, as in step 7 of `working-tasks`.
+A task the user drops is deleted there by the master.
+Before the merge, run the knowledge check: `python3 -I .agents/skills/documenting-with-okf/scripts/check.py`.
 
 ## 9. Finish
 
-When `tasks/` is empty, set `status: done` in `spec.md`. A later change edits `spec.md` and `plan.md` and adds tasks.
+When `tasks/` is empty, set `status: done` in `spec.md`. A later change edits `spec.md` and `plan.md`, adds tasks and
+sets `status: active` again.
