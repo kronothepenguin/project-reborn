@@ -1,22 +1,22 @@
 # server — Go package
 
 A Go module without a frontend. The app struct (`Server` struct) takes the
-database in `New(db)`, which loads the settings, and registers its routes on a
-mux in `Mount(mux)`, and `StartInfo` and `StartMus` start the WebSocket
-listeners of the client's two connections; `apps/server` runs it.
+database in `New(db)`, which loads the settings, and `StartInfo` and `StartMus`
+start the WebSocket listeners of the client's two connections; `apps/server`
+runs it. It serves no HTTP of its own.
 
 ## Layout
 
 The game server is laid out as `plans/server/decisions/0005-package-layout.md`
 decides. Each part is marked with the task of `plans/server/tasks/index.md`
-that brings it. So far the package holds what `tools/create` generated,
-`server.go` and `internal/router`, whose `GET /` answers `Hello from Go`, the
-listeners of `server.go` and `mus.go`, `transport/`, `encoding/`, `r26/` and
-`game/`.
+that brings it. So far the package holds `server.go`, which `tools/create`
+generated, the listeners of `server.go` and `mus.go`, `transport/`,
+`encoding/`, `r26/` and `game/`. The HTTP route and the router that came with
+the template are gone (`plans/reborn/tasks/platform-01-drop-the-unused-listener.md`).
 
 | Part | Holds | Brought by |
 | --- | --- | --- |
-| `server.go` | `New(db)`, which loads the settings and reloads them (`plans/server/decisions/0050-the-server-loads-and-reloads-the-settings.md`), and `StartInfo` and `StartMus`, which start a WebSocket listener on the host and port of `server.info` and of `server.mus` (`plans/server/decisions/0020-info-and-mus-websocket-ports.md`, `plans/server/decisions/0022-start-info-and-start-mus.md`) | s0-03 generated `New(db)` and `Mount(mux)`; s0-07 the listeners; s2-06 the settings |
+| `server.go` | `New(db)`, which loads the settings and reloads them (`plans/server/decisions/0050-the-server-loads-and-reloads-the-settings.md`), and `StartInfo` and `StartMus`, which start a WebSocket listener on the host and port of `server.info` and of `server.mus` (`plans/server/decisions/0020-info-and-mus-websocket-ports.md`, `plans/server/decisions/0022-start-info-and-start-mus.md`) | s0-03 generated `New(db)`; s0-07 the listeners; s2-06 the settings |
 | `mus.go` | What the `mus` listener does until S7 frames MUS: it logs and never answers (`plans/server/decisions/0023-mus-listener-before-s7.md`) | s0-07 |
 | `transport/` | `Conn`, an `io.Reader` to receive, an `io.Writer` to send and an `io.Closer`, over TCP (`tcp.go`) and the WebSocket (`websocket.go`) | s0-05 |
 | `encoding/` | B64, VL64 and strings | s0-06 |
@@ -619,7 +619,6 @@ if err := game.Logout(ctx, db, s, h.ID); err != nil {
 
 ## Port
 
-- App (Go HTTP server): **15445** — baked in `apps/server/cmd/server`
 - `info` and `mus` (WebSocket listeners): **30000** and **30001** by default,
   the ports of `server.info` and `server.mus` in `config.json`
 
@@ -686,7 +685,7 @@ Run it through the app runner in `apps/server`:
 
 ```sh
 cd apps/server
-make dev    # air hot reload → http://localhost:15445
+make dev    # air hot reload → ws://localhost:30000 and ws://localhost:30001
 ```
 
 ## Production build

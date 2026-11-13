@@ -18,8 +18,9 @@ store, the game server, the site, housekeeping, the installer and the client
 
 ## Now
 
-- [Platform](/slices/platform.md): [platform-01](/tasks/platform-01-drop-the-unused-listener.md) is ready to start. The
-  orchestrator and the notices wait for the user's answers to its open questions.
+- [Platform](/slices/platform.md): the unused listener is gone
+  ([platform-01](/tasks/platform-01-drop-the-unused-listener.md)). The orchestrator and the notices wait for the user's
+  answers to its open questions.
 
 ## Next
 
