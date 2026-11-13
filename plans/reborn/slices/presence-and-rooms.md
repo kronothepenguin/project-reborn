@@ -42,3 +42,5 @@ Written when the slice starts.
   study](/reference/research-communication.md#the-site-asks-the-game-server)).
 - What the site shows while the game server is not running.
 - Whether the first-login room picker is ported as Holo's `welcome.php`.
+- Which of its parts go to [habbos](/slices/habbos.md), [rooms](/slices/rooms.md) and [navigator](/slices/navigator.md)
+  ([0010](/decisions/0010-slices-follow-the-hotels-features.md)).

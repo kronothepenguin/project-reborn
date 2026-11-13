@@ -77,7 +77,7 @@ What this means:
   Edits made during an installation are fine, because the server starts afterwards. An editor in housekeeping needs a
   way to tell a running server.
 - `plans/server/decisions/0091-holos-catalogue-changed-by-updates.md` and the catalogue editor of
-  [the furni slice](/slices/furni-and-catalogue.md) say the catalogue changes only through updates today, and that an
+  [the furni slice](/slices/furnis.md) say the catalogue changes only through updates today, and that an
   editor's design is asked when its work starts. Editing at install time is that question.
 
 # News

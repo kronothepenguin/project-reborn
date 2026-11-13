@@ -41,7 +41,7 @@ worktree: it cannot ask the user, so it never decides, it stops and reports; it 
    with its reason. Each answer becomes a decision. Assume nothing.
 2. Write the slice's exit criteria and its tasks, set it `active`, and list it under Now.
 3. Split it for parallel work: a contract task done alone (the store's update and queries, the shared types, the
-   notices), then one task a project, then a task that checks the exit criteria.
+   services' contracts), then one task a project, then a task that checks the exit criteria.
 
 ## Work a task
 

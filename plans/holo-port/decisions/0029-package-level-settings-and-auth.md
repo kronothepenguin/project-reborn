@@ -2,7 +2,8 @@
 type: Decision
 title: Settings and auth are package-level; apps take the db on creation
 description: Settings live in virtual/settings as a process-wide singleton read through package functions, auth is a set of helpers that receive the db, and app packages take the db as New's first argument with options only for the resolver and the static handler.
-status: accepted
+status: superseded
+superseded_by: "reborn/0006"
 timestamp: 2026-10-28T02:41:53+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-28T02:41:53+00:00"}
 tags: [virtual, auth, cms, settings]

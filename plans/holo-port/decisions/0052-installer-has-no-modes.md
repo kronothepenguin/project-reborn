@@ -2,7 +2,8 @@
 type: Decision
 title: The installer has no modes
 description: The installer has no standalone or orchestrator mode, its fields stay editable with the development ports as defaults, and it asks for the Housekeeping Address.
-status: accepted
+status: superseded
+superseded_by: "reborn/0004"
 timestamp: 2026-11-02T01:24:38+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-02T01:24:38+00:00"}
 tags: [installer, settings]

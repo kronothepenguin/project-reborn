@@ -2,7 +2,8 @@
 type: Decision
 title: One machine, and a refresh instead of IPC
 description: The programs run on one machine while the database is SQLite, and a CMS running alone re-reads the settings every cms.refresh seconds, so no IPC is built.
-status: accepted
+status: superseded
+superseded_by: "reborn/0006"
 timestamp: 2026-11-02T01:24:38+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-02T01:24:38+00:00"}
 tags: [settings, architecture, store]

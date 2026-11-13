@@ -2,7 +2,8 @@
 type: Decision
 title: The game server loads the settings and reloads them like the CMS
 description: server.New loads the settings, panicking when it cannot, and reloads them every cms.refresh seconds while no update waits, as cms.New does.
-status: accepted
+status: superseded
+superseded_by: "reborn/0006"
 timestamp: 2026-11-10T02:18:18+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-10T02:18:18+00:00"}
 tags: [server, settings]

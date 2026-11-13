@@ -10,7 +10,7 @@ tags: [s7, server]
 ---
 
 Moved on 2026-11-13: this work is the slice `plans/reborn/slices/extras.md`, with club in
-`plans/reborn/slices/credits-and-club.md` and the call for help in `plans/reborn/slices/moderation.md`.
+`plans/reborn/slices/club.md` and the call for help in `plans/reborn/slices/moderation.md`.
 
 # Goal
 

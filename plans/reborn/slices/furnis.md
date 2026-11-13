@@ -1,6 +1,6 @@
 ---
 type: Slice
-title: Furni and the catalogue
+title: Furnis, with the catalogue
 description: Housekeeping edits the catalogue and a habbo's furni, and the furni left out of S5 arrives: one-way doors, the fortune teller, limits for post-its and rollers, and the pages that wait for their features.
 status: planned
 projects: [store, virtual, server, housekeeping, cms, installer]

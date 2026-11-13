@@ -2,6 +2,35 @@
 
 Written by `.agents/skills/tracking-plans/scripts/board.py --write`, from the task files.
 
-## Platform: one binary, and programs that hear of each other's changes
+## The client in the browser
+
+- [client-01 Spike: the R26 client logs in on LibreShockwave](/tasks/client-01-spike-the-client-logs-in.md) — LibreShockwave's player, built from the submodule, runs the user's habbo.dcr in a bare page with Holo's parameters and an SSO ticket, and the spike reports whether the client reaches the game server and logs in.
+- [client-02 Port Holo's client page onto LibreShockwave](/tasks/client-02-the-client-page.md) — The CMS serves Holo's client.php, clientutils.php and unloadclient.php ported exactly, with LibreShockwave's player built from the submodule running the R26 .dcr and an SSO ticket, the game's addresses from config.json and Holo's other client settings as settings.
+
+## Habbos
+
+- [habbos-01 The services package, the Habbos contract and Inject](/tasks/habbos-01-services-and-inject.md) — packages/services holds the first contract, Habbos.SendLook(ctx, avatarID), and the CMS and housekeeping take their services through Inject.
+- [habbos-02 The game sends a habbo's new look and motto](/tasks/habbos-02-the-game-sends-a-new-look.md) — (*server.Server).SendLook reads a habbo again and, when it is online, updates the copy the game holds and shows the new figure, gender and motto to the habbo and to everyone in its room, with the client's own messages.
+- [habbos-03 The site and housekeeping tell the game of a new look or motto](/tasks/habbos-03-the-site-tells-the-game.md) — The CMS's looks, profile and motto pages and housekeeping's habbo editor call Habbos.SendLook after they commit, give up after 2 seconds and log a failure.
+- [habbos-04 reborn passes the game to the site and housekeeping](/tasks/habbos-04-reborn-wires-the-memory-api.md) — packages/reborn builds the memory API around the game's instance and injects it into the CMS and housekeeping, in the order constructors, services, Inject, run.
+- [habbos-05 The game's /api/ for programs run apart](/tasks/habbos-05-the-games-api.md) — Run alone, the game server serves /api/ on server.api, secured by a secret in X-Reborn-Secret that a database update generates; packages/server/api is its client, and the runners' changes are proposed to the user.
+- [habbos-06 Check the habbos slice's exit criteria](/tasks/habbos-06-exit-check.md) — The user's demonstration is run under reborn and with the separate programs, and its evidence written here.
+
+## Platform: reborn runs the whole hotel
 
 - [platform-01 Drop the game server's unused HTTP listener](/tasks/platform-01-drop-the-unused-listener.md) — The HTTP server that apps/server starts on port 15445 goes, with the route and the router behind it, and the runner keeps running on its two WebSocket listeners. **done**
+- [platform-02 Add the reborn section to config.json](/tasks/platform-02-reborn-config-section.md) — packages/config gains the section reborn with host localhost and port 16416, and the installer writes it with its defaults.
+- [platform-03 reborn runs an installed hotel](/tasks/platform-03-reborn-runs-an-installed-hotel.md) — packages/reborn runs the CMS, housekeeping and the game server of an installed hotel in one process, on one mux and one database handle, on the reborn section's address; apps/reborn is scaffolded and its main.go is proposed to the user.
+- [platform-04 Serve the installer under /installer/, with one form per runner and no done page](/tasks/platform-04-installer-under-installer.md) — The installer's pages, routes and redirects move under /installer/, its Mount protects its own routes, the done page goes, and with the option WithListener it asks one host and port and calls the Listener to move; without it, today's form stays.
+- [platform-05 reborn installs a new hotel](/tasks/platform-05-reborn-installs-a-new-hotel.md) — Started in an empty folder, reborn serves the installer under /installer/ on the reborn defaults, redirects every other path there, moves to the address the administrator chooses, builds the hotel once the administrator exists, and answers 404 under /installer/ from then on.
+- [platform-06 packages/settings reads each setting from the store](/tasks/platform-06-settings-package.md) — A new packages/settings holds the list of settings and reads each one with a sqlc query, returning its default when no row exists; auth reads through it; virtual/settings keeps working on top of it until every program has switched.
+- [platform-07 The CMS reads its settings from the store](/tasks/platform-07-cms-reads-settings.md) — The CMS's settings reads go through packages/settings on each use, cms.New loads and refreshes nothing, and a benchmark of its pages before and after is recorded.
+- [platform-08 Housekeeping and the installer read their settings from the store](/tasks/platform-08-housekeeping-installer-read-settings.md) — Housekeeping's and the installer's settings reads and writes go through packages/settings, and neither loads settings at start.
+- [platform-09 The game reads settings from the store and checks for waiting updates on use](/tasks/platform-09-game-reads-settings.md) — The game server reads each setting through packages/settings, loads what it caches the first time no database update waits when a player needs it, refreshes nothing, and virtual/settings and cms.refresh are gone.
+- [platform-10 reborn stops in order](/tasks/platform-10-reborn-stops-in-order.md) — On Ctrl-C or SIGTERM reborn stops taking requests, logs every player out and closes the game's listeners, stops the scheduled tasks and closes the database, with new Shutdown and Stop functions.
+- [platform-11 Spike: one Astro dev server for every site](/tasks/platform-11-spike-one-dev-server.md) — A dev-only Astro project in packages/reborn injects the CMS's, housekeeping's and the installer's pages under /, /housekeeping/ and /installer/, and the spike reports whether one page of each renders with its styles and Svelte components and reloads live.
+- [platform-12 reborn-dev and make dev](/tasks/platform-12-reborn-dev.md) — reborn-dev resolves and proxies every site from the one Astro dev server of the spike, and make dev runs it with air and the dev server.
+- [platform-13 The browser suite reborn](/tasks/platform-13-browser-suite.md) — A browser suite builds reborn and checks, from an empty folder, the installer, the move to a new port, the hotel after the install, the game's first message, and a stop in order.
+- [platform-14 Releases ship reborn and the four separate programs](/tasks/platform-14-releases.md) — make release and the release workflow build reborn, cms, housekeeping, installer and server into each archive, and CI runs the reborn suite.
+- [platform-15 The documents say what reborn is](/tasks/platform-15-documents.md) — plans/later.md, the READMEs and the architecture references describe reborn, the installer under /installer/, settings read from the store, the stop in order and the releases.
+- [platform-16 Check the platform slice's exit criteria](/tasks/platform-16-exit-check.md) — Every exit criterion of the platform slice is checked on main and its evidence written here, and the slice is closed or what is left is reported.

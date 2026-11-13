@@ -2,7 +2,8 @@
 type: Decision
 title: Changes from the site reach the server like Holo's MUS commands
 description: When the CMS or housekeeping changes something the server holds, the server is told, as Holo told its emulator with MUS commands, and under the orchestrator the CMS and housekeeping change the virtual state directly.
-status: accepted
+status: superseded
+superseded_by: "reborn/0005"
 timestamp: 2026-11-05T20:57:45+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [server, cms, housekeeping, orchestrator]

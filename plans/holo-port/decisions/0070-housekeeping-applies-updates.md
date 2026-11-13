@@ -2,7 +2,8 @@
 type: Decision
 title: Housekeeping applies the updates and config.json's new keys
 description: Holders of housekeeping.database or housekeeping.accessGroups apply waiting updates and a release's new config.json keys from housekeeping, and the installer only installs and links to the hotel.
-status: accepted
+status: superseded
+superseded_by: "reborn/0004"
 timestamp: 2026-11-03T21:02:31+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-03T21:02:31+00:00"}
 tags: [housekeeping, installer, config, updates]
