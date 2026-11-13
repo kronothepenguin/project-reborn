@@ -12,6 +12,7 @@
 - [Furnis](furnis/index.md)
 - [Games](games/index.md)
 - [Habbos](habbos/index.md)
+- [Hotel settings](hotel-settings/index.md)
 - [Installer](installer/index.md)
 - [Look and feel](look-and-feel/index.md)
 - [Messenger](messenger/index.md)
@@ -20,4 +21,5 @@
 - [Platform](platform/index.md)
 - [Presence and rooms](presence-and-rooms/index.md)
 - [R18](r18/index.md)
+- [Ranks](ranks/index.md)
 - [Rooms](rooms/index.md)
