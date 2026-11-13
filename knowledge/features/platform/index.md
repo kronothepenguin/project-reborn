@@ -7,4 +7,4 @@
 - [Research: how the programs tell each other of changes](research-communication.md) - Every place where a change made by the site must reach the game server or the reverse, what Holo's MUS did, and the designs weighed for a notice package, with the orchestrator first and separate programs later.
 - [Research: the orchestrator, apps/reborn](research-orchestrator.md) - What the server's leftover HTTP listener is and what removing it takes, how each runner starts its package today, what was already decided about the orchestrator, the problems one mux and one process bring, and a proposal for apps/reborn.
 - [Platform: reborn runs the whole hotel](spec.md) - The orchestrator reborn runs the installer, the site, housekeeping and the game server in one process, installs a new hotel live, stops in order and ships beside the four separate programs; every program reads settings from the store.
-- [Tasks](tasks/index.md)
+- [tasks/](tasks/index.md)

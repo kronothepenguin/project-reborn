@@ -10,6 +10,7 @@ Concepts for `packages/store`, the project's persistence infrastructure.
 
 - [Store](store.md) — Persistence infrastructure that opens the SQLite file, applies the update files and provides the generated typed operations.
 - [Store bundle](bundle.md) — The layout, concept types, naming and body rules of this bundle, and what make check-docs checks.
+- [Adding persisted data](adding-persisted-data.md) — Where new persisted data goes in packages/store, the generator, the checks and tests that guard it, and the helpers a consumer calls, for the adding-data-persistence skill.
 
 ## Entities
 

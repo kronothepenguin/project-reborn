@@ -19,9 +19,9 @@ A bundle is a directory named `knowledge`. A concept is one markdown file of it:
 ---
 type: SQLite Table         # the kind of concept, in words a reader knows
 title: users               # display name
-description: The person behind one or more habbos.   # one sentence; index entries show it
-resource: packages/store/schema/users.schema.sql      # optional: repo path of the file it documents
-tags: [store, sql]         # optional
+description: The person behind one or more accounts.   # one sentence; index entries show it
+resource: db/schema/users.sql   # optional: repo path of the file it documents
+tags: [db, sql]            # optional
 ---
 ```
 
@@ -34,7 +34,9 @@ tags: [store, sql]         # optional
 - Structure over prose: headings, lists, tables, code blocks.
 - `# Schema` for the fields or columns of an asset.
 - `# Examples` for short usage snippets.
-- `# Citations` at the end, numbered, for external sources.
+- Sources go in a `sources` list of the frontmatter, each with an `id` and a `resource` (a URL or a path).
+- A claim names its source with a footnote labelled by that `id`: `… sharded daily.[^ga4]`, then `[^ga4]: GA4 schema`.
+- A `# Citations` list at the end is the older form, and stays valid.
 
 ## Reserved files
 
@@ -46,22 +48,12 @@ tags: [store, sql]         # optional
 
 - Inside one bundle: a markdown link with a bundle-absolute path, such as `/tables/users.md`.
 - To another bundle or to code: the repo path in backticks, `<project>/knowledge/index.md`.
-- A numbered decision: `decision <series>/<NNNN>`, for example `decision server/0107` for
-  `knowledge/decisions/server/0107-<slug>.md`.
 
-## Workflow types
+## Feature files
 
-A feature lives in `knowledge/features/<feature>/`.
-
-- `spec.md`, type `Spec`: what to build.
-  - Keys: `status` (`planned`, `active`, `done` or `parked`); `projects` (repo folders, existing or to create).
-  - Body: `# What`, `# Behaviours`, `# Open questions` while any remain.
-- `plan.md`, type `Plan`: how to build it. Body: `# Architecture`, `# Decisions`.
-- `tasks/NN-<slug>.md`, type `Task`: one unit of work.
-  - Keys: `scope` (repo folders); `depends_on` (task names, `[]` when none); `skills` (folders of `.agents/skills/`).
-  - `depends_on` names `NN-<slug>` for a task of the same feature, `<feature>/NN-<slug>` for a task of another.
-  - Body: `# Goal`, `# Context`, `# Steps`, `# Checks`.
-- A task file is deleted when the task is done. A `depends_on` name with no file counts as done.
+A feature lives in `knowledge/features/<feature>/`: `spec.md` (type `Spec`), `plan.md` (type `Plan`) and
+`tasks/NN-<slug>.md` (type `Task`). Before writing one, read their keys and sections in
+[references/feature-files.md](references/feature-files.md).
 
 ## Scripts
 
