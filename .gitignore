@@ -13,6 +13,21 @@ tmp/
 
 /config.json
 
+# Programs built inside their app's folder by go build ./cmd/<name>.
+/apps/cms/cms
+/apps/cms/cms-dev
+/apps/housekeeping/housekeeping
+/apps/housekeeping/housekeeping-dev
+/apps/installer/installer
+/apps/installer/installer-dev
+/apps/server/server
+/apps/reborn/reborn
+/apps/reborn/reborn-dev
+
+# Habbo's client files are never committed (reborn 0011); until the assets tool
+# fetches them, they are copied here by hand.
+/packages/cms/public/r26/
+
 # Every agent works in its own worktree here, never on main.
 .claude/worktrees/
 
