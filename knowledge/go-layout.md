@@ -10,7 +10,8 @@ description: Where this repo keeps its Go modules, runners, routes and handlers,
 - `reviewing-effective-go` reviews the code against Effective Go; `use-modern-go` owns the newer idioms.
 
 The projects and what each one is: [Monorepo architecture](/architecture.md). The runners and how the programs run:
-[How the programs work together](/programs.md).
+[How the programs work together](/programs.md). The Astro pages, their handlers and the frontend builds:
+[Frontend pages](/frontend-pages.md).
 
 # Folders and modules
 
@@ -39,13 +40,11 @@ The projects and what each one is: [Monorepo architecture](/architecture.md). Th
 
 - `router.Deps` of the CMS and housekeeping: `Resolver astro.Resolver`, `DB *sql.DB`, `Queries *store.Queries`,
   `Updates *store.UpdateCheck`. The installer's: `Resolver astro.Resolver`, `Setup *setup.State`.
-- Handlers render pages with `astro.WriteTemplate(w, r.deps.Resolver, "<page>.html", data)`.
 - The CMS and housekeeping `Mount` wrap each route in middleware with `mux.Handle`:
   `packages/cms/knowledge/runtime.md`.
 - Housekeeping routes live under `/housekeeping/`, and its handler files leave the prefix out of their names
   (`/housekeeping/news` → `news.go`): `packages/housekeeping/knowledge/prefix.md`.
-- Each web app embeds its Astro build with `//go:embed dist/*` in its root file. `make install` in the package writes a
-  placeholder `dist/index.html`; `make frontends` at the root builds the three frontends.
+- Each web app embeds its Astro build with `//go:embed dist/*` in its root file.
 - Behaviour tests of a web app sit at its package root (`packages/cms/*_test.go`).
 
 # Commands
