@@ -45,7 +45,7 @@ tags: [store, sql]         # optional
 ## Links
 
 - Inside one bundle: a markdown link with a bundle-absolute path, such as `/tables/users.md`.
-- To another bundle or to code: the repo path in backticks, `packages/store/knowledge/index.md`.
+- To another bundle or to code: the repo path in backticks, `<project>/knowledge/index.md`.
 - A numbered decision: `decision <series>/<NNNN>`, for example `decision server/0107` for
   `knowledge/decisions/server/0107-<slug>.md`.
 
