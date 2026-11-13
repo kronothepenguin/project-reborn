@@ -37,7 +37,7 @@ to the virtual state or db, and the system keeps in sync."
 
 | Project | Part |
 | --- | --- |
-| `apps/server`, `packages/server` | The unused HTTP listener on 15445 goes ([platform-01](/tasks/platform-01-drop-the-unused-listener.md)) |
+| `apps/server`, `packages/server` | The unused HTTP listener on 15445 is gone ([platform-01](/tasks/platform-01-drop-the-unused-listener.md)) |
 | `apps/reborn` | The orchestrator: one mux for the installer, the site and housekeeping, and the game server's listeners, as [the study](/reference/research-orchestrator.md) proposes |
 | `packages/installer` | What the orchestrator needs of it: whether the hotel is installed, when the installation ends, a place on a shared mux |
 | a new package | Notices between the programs, and the questions the site asks the game server, as [the study](/reference/research-communication.md) sketches |
@@ -59,7 +59,7 @@ Written with the slice's tasks, once its open questions are answered.
 
 # Tasks
 
-1. [platform-01 Drop the game server's unused HTTP listener](/tasks/platform-01-drop-the-unused-listener.md)
+1. [platform-01 Drop the game server's unused HTTP listener](/tasks/platform-01-drop-the-unused-listener.md) **done**
 
 The rest is written once the open questions are answered.
 

@@ -9,7 +9,6 @@ frontend) lives entirely in the package; this module only serves it.
 
 ## Port
 
-- App (Go HTTP server): **15445** — baked in the runner
 - `info` and `mus` (WebSocket listeners): the hosts and ports of `server.info`
   and `server.mus` in `config.json`, 30000 and 30001 by default, which the
   runner starts with `StartInfo` and `StartMus`
@@ -18,7 +17,7 @@ frontend) lives entirely in the package; this module only serves it.
 
 ```sh
 make install    # once: this project's folders and dependencies
-make dev        # air hot reload → http://localhost:15445
+make dev        # air hot reload → ws://localhost:30000 and ws://localhost:30001
 ```
 
 ## Production
@@ -26,7 +25,7 @@ make dev        # air hot reload → http://localhost:15445
 ```sh
 cd ../..
 go build -o ./apps/server/tmp/server ./apps/server/cmd/server
-./apps/server/tmp/server   # → http://localhost:15445, reads ./config.json
+./apps/server/tmp/server   # → ws://localhost:30000 and ws://localhost:30001, reads ./config.json
 ```
 
 ## Dev-mode notes

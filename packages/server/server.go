@@ -14,7 +14,6 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/scheduler"
 	"github.com/kronothepenguin/project-reborn/packages/server/game"
-	"github.com/kronothepenguin/project-reborn/packages/server/internal/router"
 	"github.com/kronothepenguin/project-reborn/packages/server/r26"
 	"github.com/kronothepenguin/project-reborn/packages/server/transport"
 	"github.com/kronothepenguin/project-reborn/packages/store"
@@ -90,12 +89,6 @@ func loadShared(ctx context.Context, db *sql.DB, updates *store.UpdateCheck) (bo
 		}
 	}
 	return true, nil
-}
-
-func (c *Server) Mount(mux *http.ServeMux) {
-	r := router.New(router.Deps{DB: c.db, Queries: store.New(c.db)})
-
-	mux.HandleFunc("GET /{$}", r.HandleIndexView)
 }
 
 // StartInfo opens the WebSocket listener of the client's info connection on the host and port of server.info in

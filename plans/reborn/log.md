@@ -2,6 +2,8 @@
 
 ## 2026-11-13
 
+- **Merged** [platform-01](/tasks/platform-01-drop-the-unused-listener.md): the game server's unused HTTP listener on
+  15445 is gone.
 - **Slice** [Platform](/slices/platform.md) is active, with its first task; twelve more slices are planned or parked
   ([the index](/slices/index.md)).
 - **Decision** [0002](/decisions/0002-a-coordinator-shares-tasks-and-merges-in-batches.md): a coordinator shares tasks
