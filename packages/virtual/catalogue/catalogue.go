@@ -1,5 +1,5 @@
 // Package catalogue holds the catalogue's pages and what they sell, which every player shares: loaded when the server
-// starts, after the furni definitions it reads, and kept (plans/server decisions 0009 and 0098).
+// starts, after the furni definitions it reads, and kept (decisions server/0009 and server/0098).
 package catalogue
 
 import (

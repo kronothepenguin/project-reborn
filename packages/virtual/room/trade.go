@@ -3,8 +3,8 @@ package room
 import "slices"
 
 // Trade is an open trade between two habbos of a room: what each offers from its hand, by furni id, and whether it
-// accepted. It lives in memory, in the loaded room, and ends when either habbo leaves (plans/server decisions 0092
-// and 0098).
+// accepted. It lives in memory, in the loaded room, and ends when either habbo leaves (decisions server/0092
+// and server/0098).
 type Trade struct{ Sides [2]TradeSide }
 
 // TradeSide is one habbo's side of a trade.

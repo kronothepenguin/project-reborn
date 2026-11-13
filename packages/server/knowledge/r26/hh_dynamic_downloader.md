@@ -70,7 +70,7 @@ A sound sample with a parent downloads from `dynamic.download.samples.template` 
 The variable `dynamic.download.delay` holds each download back that many milliseconds. A class in the variable
 `dyn.download.bypass.list`, where `?` stands for any character, counts as downloaded and is never fetched.
 
-These casts are files the hotel serves over HTTP, not messages: `plans/client/phases/c2-client-files.md` plans where
+These casts are files the hotel serves over HTTP, not messages: the client plan's phase C2, the client's files, plans where
 they come from.
 
 # Notes

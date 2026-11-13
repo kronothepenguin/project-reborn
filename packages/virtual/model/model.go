@@ -1,5 +1,5 @@
 // Package model holds the room models, which every player shares: loaded when the server starts, and kept
-// (plans/server decisions 0009 and 0060).
+// (decisions server/0009 and server/0060).
 package model
 
 import (

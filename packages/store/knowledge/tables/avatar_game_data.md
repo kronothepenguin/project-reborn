@@ -23,7 +23,7 @@ timestamp: 2026-11-09T23:20:00+00:00
 # Notes
 
 - A table of its own, not columns of [avatars](/tables/avatars.md), which many queries read whole: while the update
-  that adds it waits, nothing that reads `avatars` fails (`plans/server/decisions/0044-game-login-data-has-its-own-table.md`).
+  that adds it waits, nothing that reads `avatars` fails (`knowledge/decisions/server/0044-game-login-data-has-its-own-table.md`).
 - The game server writes each value with an upsert, so the first write makes the row.
 
 # Related

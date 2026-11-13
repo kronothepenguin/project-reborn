@@ -1,12 +1,12 @@
--- The furni habbos own (plans/holo-port decision 0057, plans/server decision 0096).
+-- The furni habbos own (decision holo-port/0057, decision server/0096).
 
 -- A piece of furni, which belongs to a user. The habbo that holds it has it in its hand. A placed one stands in a room:
 -- a floor furni on the tile x, y at an altitude, turned to a direction, and a wall item at wall_position, as the
 -- client writes it. One that waits inside a present has that box as box_furni_id. One that no habbo holds, no room
 -- has and no box holds is in its user's shared inventory. state is what the client calls its stuff data or its item
 -- data, such as a dice's number, or the note of a present after an exclamation mark. A teleport has the other of its
--- pair as partner_furni_id, whoever holds either (plans/server decision 0111). One that a habbo gave the recycler
--- waits under recycler_avatar_id, in no hand, until its recycling ends (plans/server decision 0093).
+-- pair as partner_furni_id, whoever holds either (decision server/0111). One that a habbo gave the recycler
+-- waits under recycler_avatar_id, in no hand, until its recycling ends (decision server/0093).
 CREATE TABLE IF NOT EXISTS furni (
     id INTEGER PRIMARY KEY,
     furni_definition_id INTEGER NOT NULL REFERENCES furni_definitions(id),

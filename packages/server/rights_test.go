@@ -11,7 +11,7 @@ import (
 )
 
 // The owner gives and takes rights; a habbo with rights kicks, as the client shows it the button, but never an owner,
-// and only the owner bans (plans/server decisions 0067 and 0079).
+// and only the owner bans (decisions server/0067 and server/0079).
 func TestRightsKicksAndBans(t *testing.T) {
 	ownerID := habboWithTickets(t, "Squire", "squire")
 	stewardID := habboWithTickets(t, "Steward", "steward")

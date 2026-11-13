@@ -90,8 +90,8 @@ var taken = map[string][]string{
 var specialFolders = []string{"internal", "testdata", "vendor"}
 
 // validateName refuses a name the folders cannot hold and, in a template with
-// Go, a name whose Go package cannot compile there (plans/server decision
-// 0025) or whose folders the go tool treats specially (0026).
+// Go, a name whose Go package cannot compile there (decision
+// server/0025) or whose folders the go tool treats specially (0026).
 func validateName(kind, name string) error {
 	if name == "" {
 		return errors.New("name is required")

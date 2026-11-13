@@ -69,7 +69,7 @@ func EnterTeleport(viewer habbo.Habbo, id int64) {
 
 // TeleportTarget returns the teleport that the teleport id leads to, and the room that one stands in (GETDOORFLAT),
 // for the habbo that stands in id, and opens its passage there. It reports false while the other of the pair stands
-// in no room: in a hand, in a present, or recycled (plans/server decision 0111).
+// in no room: in a hand, in a present, or recycled (decision server/0111).
 func TeleportTarget(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64) (teleport, flat int64, ok bool, err error) {
 	r, from, ok := teleportIn(viewer, id)
 	if !ok || !from.PartnerFurniID.Valid {
@@ -104,7 +104,7 @@ func LeaveByTeleport(viewer habbo.Habbo, id int64) {
 // reports whether the habbo is now let into another room, which it goes on into with GOTOFLAT. In the room it is in,
 // the habbo stands in the other teleport at once, and the room sees it come out. Into another room, which it must
 // have chosen, the teleport lets it past the doorbell, the password, a ban and the room's last place, as Holo did
-// (plans/server decision 0110).
+// (decision server/0110).
 func GoViaTeleport(viewer habbo.Habbo, flatID, id int64) bool {
 	p, ok := room.ClosePassage(viewer.ID)
 	if !ok || p.Teleport != id || p.Ref.ID != flatID {

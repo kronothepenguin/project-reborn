@@ -18,4 +18,4 @@ Creates [room_rights](/tables/room_rights.md), [room_bans](/tables/room_bans.md)
 [chat_messages](/tables/chat_messages.md) and [ignored_habbos](/tables/ignored_habbos.md), and adds
 `housekeeping.chatLogs` to the rows of [access_group_attributes](/tables/access_group_attributes.md) and
 [user_attributes](/tables/user_attributes.md) of those holding `housekeeping.accessGroups`, as a new attribute goes
-(`plans/server/decisions/0066-staff-read-the-chat-history-30-days.md`).
+(`knowledge/decisions/server/0066-staff-read-the-chat-history-30-days.md`).

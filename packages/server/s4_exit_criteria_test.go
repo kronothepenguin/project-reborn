@@ -117,7 +117,7 @@ func waitForStatus(t *testing.T, c *client, index, action string) string {
 	}
 }
 
-// S4's second exit criterion, with full rooms queueing (plans/server decision 0087): an owner's room asks for its
+// S4's second exit criterion, with full rooms queueing (decision server/0087): an owner's room asks for its
 // password, rings its doorbell, queues a full room's arrivals and refuses a banned habbo; the owner gives and takes
 // rights, answers the doorbell, kicks a habbo that walks out, and bans for 15 minutes.
 func TestAnOwnerKeepsItsRoom(t *testing.T) {

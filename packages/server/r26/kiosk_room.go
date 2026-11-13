@@ -11,7 +11,7 @@ import (
 )
 
 // flatCreated is hh_kiosk_room's answer to CREATEFLAT: the new room's id and name, on two lines of text
-// (plans/server/reference/r26/hh_kiosk_room.md).
+// (packages/server/knowledge/r26/hh_kiosk_room.md).
 const flatCreated = 59
 
 // cannotCreateRoom is the text of 33 on which the room-o-matic shows roomatic_create_error and closes.
@@ -28,7 +28,7 @@ var kioskRoomHandlers = map[int]handler{
 }
 
 // handleCreateFlat creates the room the room-o-matic describes: /first floor/<name>/model_<model>/<door>/<show owner
-// name>, by the rules of plans/server decision 0056.
+// name>, by the rules of decision server/0056.
 func handleCreateFlat(s *session, me habbo.Habbo, body []byte) {
 	parts := strings.Split(string(body), "/")
 	modelName, prefixed := "", false

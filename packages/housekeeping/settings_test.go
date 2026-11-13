@@ -652,7 +652,7 @@ func TestTheClubSettingsHoldHolosNumbers(t *testing.T) {
 	}
 }
 
-// The Help form holds the longest question of a help request (decision 0109),
+// The Help form holds the longest question of a help request (decision holo-port/0109),
 // after the Club form, as Groups and Club hold their numbers.
 func TestTheHelpFormHoldsTheQuestionLength(t *testing.T) {
 	db, mux := newSite(t)
@@ -737,7 +737,7 @@ func TestTheGameFormHoldsTheClientsSettings(t *testing.T) {
 	}
 }
 
-// HoloCMS's Recycler Options is a settings form, after Game (plans/server decision 0119): it saves the recycler's
+// HoloCMS's Recycler Options is a settings form, after Game (decision server/0119): it saves the recycler's
 // settings and writes the staff log as every form does.
 func TestRecyclerOptionsSavesTheRecyclersSettings(t *testing.T) {
 	db, mux := newSite(t)

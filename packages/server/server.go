@@ -31,9 +31,9 @@ type Server struct {
 
 // New loads the settings from config.json and db, and panics when it cannot, like cms.New: the handshake and the login
 // read them. Housekeeping is their only writer, so the server reloads them every cms.refresh seconds while no update
-// waits, as the CMS does (plans/server decision 0050). It loads what every player shares too, the navigator and the
-// catalogue, at once or, while updates wait, with the first reload after they are applied (plans/server decisions 0064
-// and 0098).
+// waits, as the CMS does (decision server/0050). It loads what every player shares too, the navigator and the
+// catalogue, at once or, while updates wait, with the first reload after they are applied (decisions server/0064
+// and server/0098).
 func New(db *sql.DB) *Server {
 	list, err := store.Updates()
 	if err != nil {
@@ -66,7 +66,7 @@ func New(db *sql.DB) *Server {
 		}
 		return settings.Reload(ctx, db)
 	}))
-	// The game server saves the chat, so it prunes it: now, then every hour (plans/server decision 0084).
+	// The game server saves the chat, so it prunes it: now, then every hour (decision server/0084).
 	prune := updates.WhenCurrent(func(ctx context.Context) error { return game.PruneChat(ctx, db, time.Now()) })
 	if err := prune(ctx); err != nil {
 		slog.Error(err.Error())
@@ -77,7 +77,7 @@ func New(db *sql.DB) *Server {
 
 // loadShared loads what every player shares once no update waits, and reports whether it did: the navigator's
 // categories, models and public rooms, and the furni definitions and the catalogue that reads them. They come with
-// updates an administrator applies (plans/server decisions 0064 and 0098).
+// updates an administrator applies (decisions server/0064 and server/0098).
 func loadShared(ctx context.Context, db *sql.DB, updates *store.UpdateCheck) (bool, error) {
 	waiting, err := updates.Waiting(ctx)
 	if err != nil || waiting {

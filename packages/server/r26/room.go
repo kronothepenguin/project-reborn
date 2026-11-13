@@ -14,7 +14,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
-// The messages of hh_room the server sends (plans/server/reference/r26/hh_room.md), and hh_navigator's 224, which
+// The messages of hh_room the server sends (packages/server/knowledge/r26/hh_room.md), and hh_navigator's 224, which
 // answers an entry.
 const (
 	clc                   = 18
@@ -54,7 +54,7 @@ const (
 	ignoreList            = 420
 )
 
-// The reason of 224 for a ban, as hh_navigator shows it; a full room queues (plans/server decision 0087).
+// The reason of 224 for a ban, as hh_navigator shows it; a full room queues (decision server/0087).
 const cantConnectBanned = 4
 
 const incorrectFlatPassword = "Incorrect flat password"
@@ -532,7 +532,7 @@ func handleGetIgnoreList(s *session, me habbo.Habbo, _ []byte) {
 	s.reply(ignoreList, b)
 }
 
-// handleKickUser sends a habbo of the room, named by the body, walking out (plans/server decision 0079).
+// handleKickUser sends a habbo of the room, named by the body, walking out (decision server/0079).
 func handleKickUser(s *session, me habbo.Habbo, body []byte) {
 	if name, ok := rawName(s, 95, body); ok {
 		game.Kick(me, name)
@@ -585,12 +585,12 @@ func handleLetUserIn(s *session, me habbo.Habbo, body []byte) {
 	game.AnswerDoorbell(me, name, letIn)
 }
 
-// handleGetInterstitial sends the ad shown while a room loads (plans/server decision 0070).
+// handleGetInterstitial sends the ad shown while a room loads (decision server/0070).
 func handleGetInterstitial(s *session, _ habbo.Habbo, _ []byte) {
 	s.reply(interstitialData, ad("game.loadingAdImage", "game.loadingAdLink"))
 }
 
-// handleGetRoomAd sends the ad shown in a room (plans/server decision 0070).
+// handleGetRoomAd sends the ad shown in a room (decision server/0070).
 func handleGetRoomAd(s *session, _ habbo.Habbo, _ []byte) {
 	s.reply(roomAdData, ad("game.roomAdImage", "game.roomAdLink"))
 }
@@ -806,7 +806,7 @@ func handleGetUserTags(s *session, _ habbo.Habbo, body []byte) {
 }
 
 // handleSetBadge wears the badges the client's badge window puts in its five slots: five times a slot and a code,
-// empty for none (plans/server decision 0083).
+// empty for none (decision server/0083).
 func handleSetBadge(s *session, me habbo.Habbo, body []byte) {
 	r := bytes.NewReader(body)
 	var slots [5]string
@@ -850,7 +850,7 @@ func handleGetSpectatorAmount(s *session, me habbo.Habbo, _ []byte) {
 }
 
 // sendQueue writes 259: each set's name and target, then its two queues, club and the set's own, with how many of
-// each come in before the habbo (plans/server decision 0090).
+// each come in before the habbo (decision server/0090).
 func (s *session) sendQueue(q game.QueueChanged) {
 	b := vl64(len(q.Sets))
 	for _, set := range q.Sets {

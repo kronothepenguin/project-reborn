@@ -7,17 +7,17 @@ runs it. It serves no HTTP of its own.
 
 ## Layout
 
-The game server is laid out as `plans/server/decisions/0005-package-layout.md`
-decides. Each part is marked with the task of `plans/server/tasks/index.md`
+The game server is laid out as `knowledge/decisions/server/0005-package-layout.md`
+decides. Each part is marked with the task of the server plan
 that brings it. So far the package holds `server.go`, which `tools/create`
 generated, the listeners of `server.go` and `mus.go`, `transport/`,
 `encoding/`, `r26/` and `game/`. The HTTP route and the router that came with
-the template are gone (`plans/reborn/tasks/platform-01-drop-the-unused-listener.md`).
+the template are gone, dropped with the unused listener.
 
 | Part | Holds | Brought by |
 | --- | --- | --- |
-| `server.go` | `New(db)`, which loads the settings and reloads them (`plans/server/decisions/0050-the-server-loads-and-reloads-the-settings.md`), and `StartInfo` and `StartMus`, which start a WebSocket listener on the host and port of `server.info` and of `server.mus` (`plans/server/decisions/0020-info-and-mus-websocket-ports.md`, `plans/server/decisions/0022-start-info-and-start-mus.md`) | s0-03 generated `New(db)`; s0-07 the listeners; s2-06 the settings |
-| `mus.go` | What the `mus` listener does until S7 frames MUS: it logs and never answers (`plans/server/decisions/0023-mus-listener-before-s7.md`) | s0-07 |
+| `server.go` | `New(db)`, which loads the settings and reloads them (`knowledge/decisions/server/0050-the-server-loads-and-reloads-the-settings.md`), and `StartInfo` and `StartMus`, which start a WebSocket listener on the host and port of `server.info` and of `server.mus` (`knowledge/decisions/server/0020-info-and-mus-websocket-ports.md`, `knowledge/decisions/server/0022-start-info-and-start-mus.md`) | s0-03 generated `New(db)`; s0-07 the listeners; s2-06 the settings |
+| `mus.go` | What the `mus` listener does until S7 frames MUS: it logs and never answers (`knowledge/decisions/server/0023-mus-listener-before-s7.md`) | s0-07 |
 | `transport/` | `Conn`, an `io.Reader` to receive, an `io.Writer` to send and an `io.Closer`, over TCP (`tcp.go`) and the WebSocket (`websocket.go`) | s0-05 |
 | `encoding/` | B64, VL64 and strings | s0-06 |
 | `r26/` | The R26 ids, and one file per client cast: `entry_init.go`, `navigator.go`, `room.go`… | s0-07 the framing (`packet.go`), `HELLO` and the dispatch by id (`r26.go`) and the names of hh_entry_init's commands (`entry_init.go`); s2-06 the handshake and the login (`entry_init.go`); s2-07 what the client asks after it (`entry_init.go`, `club.go`, `shared.go`); s4-03 entering and leaving a room (`room.go`); each cast's handlers with the phase that serves the cast |
@@ -31,7 +31,7 @@ the template are gone (`plans/reborn/tasks/platform-01-drop-the-unused-listener.
 ## Transport
 
 `transport` carries a client's bytes over TCP or a WebSocket
-(`plans/server/decisions/0006-transport.md`). Both reach the protocol as a
+(`knowledge/decisions/server/0006-transport.md`). Both reach the protocol as a
 `Conn`: `Read` receives, `Write` sends, `Close` closes and `RemoteAddr` is the
 client's address. The protocol frames its own packets, so neither a read nor a
 WebSocket frame has to be one packet.
@@ -53,7 +53,7 @@ WebSocket frame has to be one packet.
 
 `encoding` reads and writes the values of the R26 wire format byte for byte as
 the client's scripts do (`fuse_client/51_Connection Instance Class.ls`, described
-in `plans/server/reference/r26/fuse_client.md`). A reader takes its value from
+in `packages/server/knowledge/r26/fuse_client.md`). A reader takes its value from
 the front of an `io.Reader` and reads no further; a writer writes it to an
 `io.Writer`.
 
@@ -68,7 +68,7 @@ the front of an `io.Reader` and reads no further; a writer writes it to an
 | A boolean, `@` or `A` | `GetBoolFrom`, `sendNew` `#boolean` | `ReadBool` | `WriteBool` |
 | The raw rest of a body, as text | `tMsg.content`, `send` with text | `ReadRaw` | `WriteRaw` |
 
-- Text is UTF-8 (`plans/server/decisions/0014-text-is-utf8.md`), with no locale
+- Text is UTF-8 (`knowledge/decisions/server/0014-text-is-utf8.md`), with no locale
   conversion.
 - A reader returns `io.EOF` when nothing is left, `io.ErrUnexpectedEOF` when the
   value is cut short, and an error wrapping `ErrMalformed` for bytes that are not
@@ -86,7 +86,7 @@ that `config.json` gives `server.info` or `server.mus`. Each returns an error
 when it cannot listen, then serves in the background until the process ends,
 and logs where it listens: `server: info on ws://localhost:30000`. There is no
 shutdown yet. The standalone runner calls both, and the orchestrator will call
-the same two (`plans/server/decisions/0022-start-info-and-start-mus.md`).
+the same two (`knowledge/decisions/server/0022-start-info-and-start-mus.md`).
 
 The transport hands each WebSocket to the handler of its connection as a
 `Conn`, in a goroutine of its own, so that no session waits on another.
@@ -104,7 +104,7 @@ On `info`, `r26.Serve` speaks R26:
    handler that closes the session leaves the packets after it unread.
 4. A packet that no handler takes is logged as one line, with the session's
    address, the id, the name when `r26` knows it and the size of the body,
-   never the body (`plans/server/decisions/0021-unhandled-packets-logged-by-id-name-and-size.md`):
+   never the body (`knowledge/decisions/server/0021-unhandled-packets-logged-by-id-name-and-size.md`):
    `r26 127.0.0.1:53422 unhandled TRY_LOGIN (756), 18 bytes`, or
    `r26 127.0.0.1:53422 unhandled 999, 3 bytes` for an id it does not know.
    `r26` knows the 22 commands of hh_entry_init. The session goes on.
@@ -123,7 +123,7 @@ character 1. The client ends a message at its first character 1, so a body that
 holds one is refused with an error wrapping `encoding.ErrUnencodable`.
 
 Each session sends through an outbox
-(`plans/server/decisions/0073-each-session-sends-through-an-outbox.md`):
+(`knowledge/decisions/server/0073-each-session-sends-through-an-outbox.md`):
 
 - Sending queues the message, and a goroutine of the session's own writes the
   queue in order, one message per `Write`. So sending never waits for the
@@ -140,7 +140,7 @@ Each session sends through an outbox
 
 On `mus`, until S7 frames MUS, the server logs the connect, the size of each
 message and the close, and never answers
-(`plans/server/decisions/0023-mus-listener-before-s7.md`):
+(`knowledge/decisions/server/0023-mus-listener-before-s7.md`):
 `mus 127.0.0.1:53422 connected`, `mus 127.0.0.1:53422 received 11 bytes` and
 `mus 127.0.0.1:53422 closed`. The transport hides the WebSocket's frames, so a
 size is what one read brings: never more than one message, and a large message
@@ -154,16 +154,16 @@ may come in several reads.
 ## The handshake and the login
 
 `r26`'s handlers of hh_entry_init take a client from `HELLO` to `LOGIN_OK`
-(`plans/server/reference/r26/hh_entry_init.md`):
+(`packages/server/knowledge/r26/hh_entry_init.md`):
 
 | Command | Answer |
 | --- | --- |
-| `INIT_CRYPTO` (206) | `CRYPTOPARAMETERS` (277) with 0, then `ENDOFCRYPTOPARAMS` (278) at once: nothing is enciphered. `GENERATEKEY`, which the client sends after 277, has no handler and is logged as unhandled (`plans/server/decisions/0027-endofcryptoparams-right-after-cryptoparameters.md`) |
-| `VERSIONCHECK` (1170) | Nothing when the version is `game.clientVersion` and both URLs are empty or on `site.url`: the URL itself or the URL followed by `/`. Any other client, or a body that cannot be read, gets 33 `Version not correct`, and the server closes the connection (`plans/server/decisions/0049-a-wrong-version-is-closed.md`) |
+| `INIT_CRYPTO` (206) | `CRYPTOPARAMETERS` (277) with 0, then `ENDOFCRYPTOPARAMS` (278) at once: nothing is enciphered. `GENERATEKEY`, which the client sends after 277, has no handler and is logged as unhandled (`knowledge/decisions/server/0027-endofcryptoparams-right-after-cryptoparameters.md`) |
+| `VERSIONCHECK` (1170) | Nothing when the version is `game.clientVersion` and both URLs are empty or on `site.url`: the URL itself or the URL followed by `/`. Any other client, or a body that cannot be read, gets 33 `Version not correct`, and the server closes the connection (`knowledge/decisions/server/0049-a-wrong-version-is-closed.md`) |
 | `UNIQUEID` (813) | Nothing: the session keeps the machine id for the login |
 | `GET_SESSION_PARAMETERS` (1817) | 257 with the ten session parameters, ids 0 to 9, from their `game.` settings; a flag goes out as 0 or 1 |
 | `SSO` (204) | The habbo's fuses (2), then `LOGIN_OK` (3), as Holo sent them, once `game.Login` logs the ticket's habbo in; 33 `login incorrect` for a ticket that is not valid. Before a `VERSIONCHECK` that passed, 33 `Version not correct` and the close. A session logs in once, and later `SSO`s get no answer. A failure of the database is logged and closes the session |
-| `TRY_LOGIN` (756) | 33 `login incorrect`, always: a habbo logs in only with `SSO` (`plans/server/decisions/0028-sso-only.md`) |
+| `TRY_LOGIN` (756) | 33 `login incorrect`, always: a habbo logs in only with `SSO` (`knowledge/decisions/server/0028-sso-only.md`) |
 
 ## After the login
 
@@ -175,11 +175,11 @@ and `shared.go` for hh_shared.
 | --- | --- |
 | `GET_INFO` (7) | The user object (5): the habbo's id, name, figure, gender and motto, the user's tickets, an empty pool figure, the user's film, and 1 for direct mail when the user takes the newsletter |
 | `GET_CREDITS` (8) | hh_cat_code's purse (6): the user's credits as text |
-| `GETAVAILABLEBADGES` (157) | 229: the habbo's badges, then those it wears, each with its slot, 1 to 5 (`plans/server/decisions/0083-a-habbo-wears-five-badges-in-slots.md`) |
+| `GETAVAILABLEBADGES` (157) | 229: the habbo's badges, then those it wears, each with its slot, 1 to 5 (`knowledge/decisions/server/0083-a-habbo-wears-five-badges-in-slots.md`) |
 | `GET_SOUND_SETTING` (228) | 308: 1 when the sound is on, 0 when off |
 | `SET_SOUND_SETTING` (229) | Nothing: `game.SetSoundEnabled` saves it, 0 off and any other value on |
-| `GET_POSSIBLE_ACHIEVEMENTS` (370) | 436 with no achievement (`plans/server/decisions/0051-no-achievements-yet.md`) |
-| `SCR_GET_USER_INFO` (26) | 7: `club_habbo`, the days left of the running period, the elapsed periods, the prepaid periods, and the response 1, which opens no window (`plans/server/decisions/0052-club-status-by-days-per-month.md`) |
+| `GET_POSSIBLE_ACHIEVEMENTS` (370) | 436 with no achievement (`knowledge/decisions/server/0051-no-achievements-yet.md`) |
+| `SCR_GET_USER_INFO` (26) | 7: `club_habbo`, the days left of the running period, the elapsed periods, the prepaid periods, and the response 1, which opens no window (`knowledge/decisions/server/0052-club-status-by-days-per-month.md`) |
 | `GDATE` (49) | 163: today's date in UTC as `dd-mm-yyyy`, which the client asks before and after its login |
 
 - `GETSELECTEDBADGES` (159), which the client sends only after 437, has no
@@ -195,21 +195,21 @@ and `shared.go` for hh_shared.
 - `New(db)` loads the settings and reloads them every `cms.refresh` seconds
   while no database update waits, as the CMS does, so that the Game form's
   changes reach a server running alone
-  (`plans/server/decisions/0050-the-server-loads-and-reloads-the-settings.md`).
+  (`knowledge/decisions/server/0050-the-server-loads-and-reloads-the-settings.md`).
 - `New(db)` also loads what every player shares into `virtual`: the
   navigator's categories, models and public rooms, then the furni definitions
   and the catalogue that reads them
-  (`plans/server/decisions/0098-virtual-furni-and-catalogue.md`). While updates
+  (`knowledge/decisions/server/0098-virtual-furni-and-catalogue.md`). While updates
   wait, it logs
   `server: the navigator and the catalogue wait for the database updates`, and
   the first reload after they are applied loads them
-  (`plans/server/decisions/0064-the-navigator-loads-once-the-updates-are-applied.md`).
+  (`knowledge/decisions/server/0064-the-navigator-loads-once-the-updates-are-applied.md`).
 
 ## The navigator
 
 `navigator.go` serves hh_navigator once the habbo is logged in, from the shared
 data of `virtual/category`, `virtual/model` and `virtual/room` and the store
-(`plans/server/reference/r26/hh_navigator.md`):
+(`packages/server/knowledge/r26/hh_navigator.md`):
 
 | Command | Answer |
 | --- | --- |
@@ -220,17 +220,17 @@ data of `virtual/category`, `virtual/model` and `virtual/room` and the store
 | `REMOVEALLRIGHTS` (155) | Nothing: the owner's room loses every habbo's rights, from the modify page; those in the room get 43 |
 | `SUSERF` (16) | 16: the habbo's own rooms, as lines of text; 57 when it has none. The session's habbo is the one listed, whatever name the client sends |
 | `SRCHF` (17) | 55: the rooms whose name holds the query or whose owner it names, at most `game.searchMaxRooms`; 58 when none matches |
-| `GET_RECOMMENDED_ROOMS` (264) | 351: three habbo rooms drawn at random (`plans/server/decisions/0057-three-random-recommended-rooms.md`) |
+| `GET_RECOMMENDED_ROOMS` (264) | 351: three habbo rooms drawn at random (`knowledge/decisions/server/0057-three-random-recommended-rooms.md`) |
 | `GETFVRF` (18) | 61: a header node of type 2 with the favourite habbo rooms as its flats, then the favourite public rooms as nodes of type 1, each under its category |
-| `ADD_FAVORITE_ROOM` (19) | Nothing: the room, type 1 public or 0 a habbo room, becomes a favourite; past `game.maxFavouriteRooms`, 33 `Only 10 favorite rooms allowed!` (`plans/server/decisions/0058-favourites-saved-up-to-30.md`). A room that does not exist changes nothing |
+| `ADD_FAVORITE_ROOM` (19) | Nothing: the room, type 1 public or 0 a habbo room, becomes a favourite; past `game.maxFavouriteRooms`, 33 `Only 10 favorite rooms allowed!` (`knowledge/decisions/server/0058-favourites-saved-up-to-30.md`). A room that does not exist changes nothing |
 | `DEL_FAVORITE_ROOM` (20) | Nothing: the room stops being a favourite |
-| `CREATEFLAT` (29), in `kiosk_room.go` | 59, the new room's id and name on two lines of text, for a room the habbo creates and owns: up to `game.maxRoomsPerHabbo`, a name of 1 to 50 characters without control characters, a model habbos build on, a club one only with `fuse_use_special_room_layouts`, and one of the client's three doors. Otherwise 33 `Error creating a private room`. A new room sits in No category until `SETFLATCAT` (`plans/server/decisions/0056-own-rooms-follow-holos-rules.md`) |
+| `CREATEFLAT` (29), in `kiosk_room.go` | 59, the new room's id and name on two lines of text, for a room the habbo creates and owns: up to `game.maxRoomsPerHabbo`, a name of 1 to 50 characters without control characters, a model habbos build on, a club one only with `fuse_use_special_room_layouts`, and one of the client's three doors. Otherwise 33 `Error creating a private room`. A new room sits in No category until `SETFLATCAT` (`knowledge/decisions/server/0056-own-rooms-follow-holos-rules.md`) |
 | `SETFLATCAT` (153) | Nothing: the owner's room goes to a category its level lets it use |
 | `GETFLATINFO` (21) | 54: the room's settings, with `model_<model>` as its marker, the category's trading flag, 0 for the alert no script reads, and 25 as the absolute most visitors, which caps the navigator's modify page. A room that does not exist gets no answer |
 | `GETFLATCAT` (152) | 222: the owner's room and its category; another habbo's room gets no answer |
 | `UPDATEFLAT` (24) | Nothing: the owner's room takes the name, the door and whether to show the owner, by `CREATEFLAT`'s rules |
-| `DELETEFLAT` (23) | Nothing: the owner's room goes, with the favourites that name it, after the furni that stands in it went to the owner's hand, whoever placed it (`plans/server/decisions/0059-a-deleted-rooms-furni-goes-to-its-owner.md`) |
-| `SETFLATINFO` (25) | Nothing: the owner's room takes the description, cut at 125 characters and without control characters; a password of 1 to 32 characters, stored hashed (`plans/server/decisions/0062-room-passwords-are-hashed.md`); whether others move furniture; and 10 to 25 visitors. A change the rules refuse in any field changes nothing. Both the navigator's form, `<id>/`, and the room-o-matic's, `/<id>/`, are read |
+| `DELETEFLAT` (23) | Nothing: the owner's room goes, with the favourites that name it, after the furni that stands in it went to the owner's hand, whoever placed it (`knowledge/decisions/server/0059-a-deleted-rooms-furni-goes-to-its-owner.md`) |
+| `SETFLATINFO` (25) | Nothing: the owner's room takes the description, cut at 125 characters and without control characters; a password of 1 to 32 characters, stored hashed (`knowledge/decisions/server/0062-room-passwords-are-hashed.md`); whether others move furniture; and 10 to 25 visitors. A change the rules refuse in any field changes nothing. Both the navigator's form, `<id>/`, and the room-o-matic's, `/<id>/`, are read |
 
 - A public room's port is its id, as Holo gave it, which `#room_directory`
   sends back to enter it; its door is 0.
@@ -247,12 +247,12 @@ data of `virtual/category`, `virtual/model` and `virtual/room` and the store
 ## The catalogue
 
 `cat_code.go` serves hh_cat_code once the habbo is logged in, from the shared
-data of `virtual/catalogue` (`plans/server/reference/r26/hh_cat_code.md`):
+data of `virtual/catalogue` (`packages/server/knowledge/r26/hh_cat_code.md`):
 
 | Command | Answer |
 | --- | --- |
-| `GCIX` (101) | 126: the pages the habbo sees, in the catalogue's order, a line each: the page's code, a tab and its name. A habbo sees a page when its access group level reaches the page's, or when the page is open to the club and its user is a member (`plans/server/decisions/0100-sixteen-pages-need-level-7-and-two-the-club.md`) |
-| `GPRC` (100) | 67 and 6 with the new balance: the item of the page, both named by their codes, is bought with the credits of the habbo's user, and its furni lands in the habbo's hand. 68 when the credits are not enough; 296 with 1 when the page sells only to club members and the habbo's user is not one (`plans/server/decisions/0102-club-furni-and-club-shop-sell-to-club-members.md`); 65 when the page does not exist, the habbo does not see it or it sells no such item. None of the three charges |
+| `GCIX` (101) | 126: the pages the habbo sees, in the catalogue's order, a line each: the page's code, a tab and its name. A habbo sees a page when its access group level reaches the page's, or when the page is open to the club and its user is a member (`knowledge/decisions/server/0100-sixteen-pages-need-level-7-and-two-the-club.md`) |
+| `GPRC` (100) | 67 and 6 with the new balance: the item of the page, both named by their codes, is bought with the credits of the habbo's user, and its furni lands in the habbo's hand. 68 when the credits are not enough; 296 with 1 when the page sells only to club members and the habbo's user is not one (`knowledge/decisions/server/0102-club-furni-and-club-shop-sell-to-club-members.md`); 65 when the page does not exist, the habbo does not see it or it sells no such item. None of the three charges |
 | `GCAP` (102) | 127: the page the client names by its code, a line per value: `i` the code, `n` the name, `l` the layout, then those the page has of `g`, `e`, `h`, `w` and `s`, its numbered texts as `t<n>`, and a `p` line for each item it sells. A page that does not exist or that the habbo does not see gets no answer |
 
 - The client names a page by its code and reads the page `Recycler` by that
@@ -283,7 +283,7 @@ data of `virtual/catalogue` (`plans/server/reference/r26/hh_cat_code.md`):
   the hand by itself, which asks for it with `GETSTRIP`.
 - A gift, the order's sixth line 1, buys for the habbo its seventh line
   names, online or not
-  (`plans/server/decisions/0094-any-habbo-sends-a-present-to-any-habbo.md`):
+  (`knowledge/decisions/server/0094-any-habbo-sends-a-present-to-any-habbo.md`):
   the furni waits in one of the six boxes, `present_gen1` to `present_gen6`,
   drawn at random, in the receiver's hand, and belongs to the receiver's user.
   The box's state is `!` and the note, its control characters turned into
@@ -298,16 +298,16 @@ data of `virtual/catalogue` (`plans/server/reference/r26/hh_cat_code.md`):
 
 ## The recycler
 
-`recycler.go` serves hh_recycler (`plans/server/reference/r26/hh_recycler.md`),
+`recycler.go` serves hh_recycler (`packages/server/knowledge/r26/hh_recycler.md`),
 whose rewards and recyclings live in the store
-(`plans/server/decisions/0093-a-recycling-is-saved.md`):
+(`knowledge/decisions/server/0093-a-recycling-is-saved.md`):
 
 | Command | Answer |
 | --- | --- |
 | `GET_FURNI_RECYCLER_CONFIGURATION` (222) | 303: 1, the minutes a furni must be old, a recycling takes and its reward waits, from the settings `recycler.minOwnedMinutes`, `recycler.sessionMinutes` and `recycler.timeoutMinutes`, then each reward of `recycler_rewards`: how many furni it takes, 0 for a floor furni or 1 for a wall item, its class and, for a floor furni, 0, its length, its width and its colours. Only 0 while `recycler.enabled` is off |
 | `GET_FURNI_RECYCLER_STATUS` (223) | 304: 0 with no recycling; 1, the reward's type and class and the minutes left while it runs; 2 with the reward once it may be taken; 3 once it waited too long. The time counts from the saved start |
-| `START_FURNI_RECYCLING` (225) | 306, 1 when the recycling started and 0 when not, after 101 for the hand. The habbo must be in a room and recycle nothing yet (`plans/server/decisions/0118-a-recycling-starts-in-a-room.md`); a reward must take exactly that many furni; and each furni must be in its hand, recyclable, on offer in no trade and old enough (`plans/server/decisions/0117-the-recycler-checks-a-furnis-age.md`). All of them move, or none |
-| `CONFIRM_FURNI_RECYCLING` (226) | 307, 1 when the recycling ended and 0 when nothing changed. 1 takes a ready reward: the furni given are destroyed and the reward is in the hand. 0 refuses it at any time, and the furni come back; after the time-out that is all that works (`plans/server/decisions/0116-a-recycling-that-waits-too-long-gives-the-furni-back.md`) |
+| `START_FURNI_RECYCLING` (225) | 306, 1 when the recycling started and 0 when not, after 101 for the hand. The habbo must be in a room and recycle nothing yet (`knowledge/decisions/server/0118-a-recycling-starts-in-a-room.md`); a reward must take exactly that many furni; and each furni must be in its hand, recyclable, on offer in no trade and old enough (`knowledge/decisions/server/0117-the-recycler-checks-a-furnis-age.md`). All of them move, or none |
+| `CONFIRM_FURNI_RECYCLING` (226) | 307, 1 when the recycling ended and 0 when nothing changed. 1 takes a ready reward: the furni given are destroyed and the reward is in the hand. 0 refuses it at any time, and the furni come back; after the time-out that is all that works (`knowledge/decisions/server/0116-a-recycling-that-waits-too-long-gives-the-furni-back.md`) |
 
 - `APPROVE_RECYCLED_FURNI` (224) is never sent by the client, and has no
   handler.
@@ -315,7 +315,7 @@ whose rewards and recyclings live in the store
 ## The hand
 
 `room_hand.go` serves the hand, the furni a habbo carries, which hh_room's
-Room Handler asks for (`plans/server/reference/r26/hh_room.md`):
+Room Handler asks for (`packages/server/knowledge/r26/hh_room.md`):
 
 | Command | Answer |
 | --- | --- |
@@ -323,7 +323,7 @@ Room Handler asks for (`plans/server/reference/r26/hh_room.md`):
 
 - The hand lives in the store, and every `GETSTRIP` reads it there, so what the
   site or another habbo gives shows the next time the hand opens
-  (`plans/server/decisions/0096-the-hand-is-read-from-the-database.md`). Only
+  (`knowledge/decisions/server/0096-the-hand-is-read-from-the-database.md`). Only
   the page the client is on lives in the session.
 - 140 carries each furni ended by a slash, its values separated by the
   character 30: `SI`, the strip id, the place in the whole hand from 0, `S` or
@@ -338,16 +338,16 @@ Room Handler asks for (`plans/server/reference/r26/hh_room.md`):
 ## Rooms
 
 `room.go` serves hh_room once the habbo is logged in
-(`plans/server/reference/r26/hh_room.md`). A room is entered as the client
+(`packages/server/knowledge/r26/hh_room.md`). A room is entered as the client
 does it: the ad while it loads, the door, the room's parts, then the habbo
 comes in once its client has built the room, at `G_STAT`, as Holo had it.
 
 | Command | Answer |
 | --- | --- |
-| `GETINTERST` (182) | 258: `game.loadingAdImage`, a tab and `game.loadingAdLink`, or `0`, which shows no ad (`plans/server/decisions/0070-a-loading-ad-and-a-room-ad-from-settings.md`) |
+| `GETINTERST` (182) | 258: `game.loadingAdImage`, a tab and `game.loadingAdLink`, or `0`, which shows no ad (`knowledge/decisions/server/0070-a-loading-ad-and-a-room-ad-from-settings.md`) |
 | `#room_directory` (2) | 19, for both kinds, as Holo sent it. The habbo leaves the room it is in or rings. A public room, named by its id, then gets 69, `<model> <id>`, or joins its queue when it is full. A habbo room goes on with `TRYFLAT` |
-| `GOVIADOOR` (54) | `<flat id>/<teleport id>`, through the passage `GETDOORFLAT` opened. In the room the habbo is in, it stands in the other teleport at once: the room gets its status and 92, `<teleport id>/<name>`. Into another room, which it chose with `#room_directory`, 41 with an empty name lets it in past the doorbell, the password, a ban and a full room (`plans/server/decisions/0110-a-teleport-skips-every-check-of-the-door.md`); it goes on with `GOTOFLAT`, arrives in the teleport, and the others get 92 |
-| `TRYFLAT` (57) | 41 with an empty name lets the habbo in. A full room queues it. The owner and the holders of `fuse_enter_locked_rooms` pass any door and any ban; anyone else banned gets 224 with 4; a password door compares `<id>/<password>` with the room's hash (`plans/server/decisions/0062-room-passwords-are-hashed.md`), or 33 `Incorrect flat password`; a closed door gets 91 and rings the doorbell of the habbos with rights in the room, who get 91 with the ringer's name. A room that is not loaded, or holds nobody who may answer, gets 131 at once, as Holo did with nobody in |
+| `GOVIADOOR` (54) | `<flat id>/<teleport id>`, through the passage `GETDOORFLAT` opened. In the room the habbo is in, it stands in the other teleport at once: the room gets its status and 92, `<teleport id>/<name>`. Into another room, which it chose with `#room_directory`, 41 with an empty name lets it in past the doorbell, the password, a ban and a full room (`knowledge/decisions/server/0110-a-teleport-skips-every-check-of-the-door.md`); it goes on with `GOTOFLAT`, arrives in the teleport, and the others get 92 |
+| `TRYFLAT` (57) | 41 with an empty name lets the habbo in. A full room queues it. The owner and the holders of `fuse_enter_locked_rooms` pass any door and any ban; anyone else banned gets 224 with 4; a password door compares `<id>/<password>` with the room's hash (`knowledge/decisions/server/0062-room-passwords-are-hashed.md`), or 33 `Incorrect flat password`; a closed door gets 91 and rings the doorbell of the habbos with rights in the room, who get 91 with the ringer's name. A room that is not loaded, or holds nobody who may answer, gets 131 at once, as Holo did with nobody in |
 | `LETUSERIN` (98) | From a habbo with rights in the room: the ringer gets 41 and goes on with `GOTOFLAT`, or 131; the habbos with rights get 41 or 131 with its name, which their doorbells drop. A ringer who leaves is dropped the same way |
 | `GOTOFLAT` (59) | 69, `model_<model> <id>`; then 46 for each of the room's landscape, wallpaper and floor that was set, `<property>/<pattern>`; then 47 for the owner and 42 for a habbo with rights; then the room's rating, 345, and its event, 370, as Holo sent them. The holders of `fuse_any_room_controller` count as owners, as Holo had it. Only after the door let the habbo through |
 | `GETROOMAD` (126) | 208: `game.roomAdImage`, a tab and `game.roomAdLink`, or `0` |
@@ -357,52 +357,52 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
 | `G_ITEMS` (63) | 45: the wall items that stand in the room, a line each |
 | `FLATPROPBYITEM` (66) | 46 to the room, `<property>/<pattern>`: the wallpaper, the floor or the landscape of the habbo's hand, `<class>/<strip id>`, is used up on the room, which keeps the pattern the furni was bought with. A habbo that controls the room decorates it, as Holo let it |
 | `PLACESTUFF` (90) | Nothing to the sender alone: the furni of its hand stands in the room, and everyone in it gets 93 for a floor furni, `<strip id> <x> <y> <direction>`, or 83 for a wall item, `<strip id> :w=<x>,<y> l=<x>,<y> <r or l>`. A furni that may not stand there stays in the hand. A pad of post-its stays in the hand too: one note leaves it for the wall as a new, yellow wall item, the pad counts one fewer and goes with its last, and the sender gets 101 |
-| `TRADE_OPEN` (71) | 108 to both: a trade opens with the habbo whose room index is the body, in any room (`plans/server/decisions/0112-habbos-trade-in-any-room.md`), and both show the status `trd`. A habbo trades with one habbo at a time. 102 when the sender holds no `fuse_trade`, 103 when the other holds none |
-| `TRADE_ADDITEM` (72) | 108 to both, a line a side, the receiver's own first: `<name>` TAB `<true or false>` TAB the furni on offer, written as in the hand. A tradeable furni of the hand is offered once, up to `game.maxTradeFurni`, 65, a side; it takes both accepts away, and stays in the hand, where it is not placed or used up until the trade ends (`plans/server/decisions/0114-a-furni-on-offer-is-locked.md`) |
+| `TRADE_OPEN` (71) | 108 to both: a trade opens with the habbo whose room index is the body, in any room (`knowledge/decisions/server/0112-habbos-trade-in-any-room.md`), and both show the status `trd`. A habbo trades with one habbo at a time. 102 when the sender holds no `fuse_trade`, 103 when the other holds none |
+| `TRADE_ADDITEM` (72) | 108 to both, a line a side, the receiver's own first: `<name>` TAB `<true or false>` TAB the furni on offer, written as in the hand. A tradeable furni of the hand is offered once, up to `game.maxTradeFurni`, 65, a side; it takes both accepts away, and stays in the hand, where it is not placed or used up until the trade ends (`knowledge/decisions/server/0114-a-furni-on-offer-is-locked.md`) |
 | `TRADE_ACCEPT` (69) | 109 to both, `<name>/true`. When both have accepted, every furni on offer changes hands in one transaction and both get 110; a furni that left its hand meanwhile undoes it all |
 | `TRADE_UNACCEPT` (68) | 109 to both for each side that had accepted, `<name>/false`: both accepts go, as in Holo |
 | `TRADE_CLOSE` (70) | 110 to both: the trade ends and nothing changes hands. Leaving the room or losing the connection does the same for the other habbo |
 | `MOVESTUFF` (73) | 95 to the room: the floor furni stands on the new tile or turned. A furni that may not stand there stays, and its mover alone gets 95 with it where it is |
 | `SETSTUFFDATA` (74) | 88 to the room, the furni's id and its new state: anyone in the room sets a floor furni's state, a lamp `ON`. Only a habbo that controls the room opens and closes a door furni, `O` and `C`, and a door closes only while nobody stands in it. A state longer than 32 characters is refused |
-| `GETDOORFLAT` (28) | 62, the other teleport's id and its room's, for a habbo that stands in the teleport named by its id as text. Nothing while the other of the pair stands in no room (`plans/server/decisions/0111-a-teleport-keeps-its-partner.md`) |
+| `GETDOORFLAT` (28) | 62, the other teleport's id and its room's, for a habbo that stands in the teleport named by its id as text. Nothing while the other of the pair stands in no room (`knowledge/decisions/server/0111-a-teleport-keeps-its-partner.md`) |
 | `INTODOOR` (81) | The habbo steps into the teleport from the tile in front of it, the one the teleport faces: its status goes to the room at once, with `mv`. A teleport's tile takes no walk otherwise |
 | `DOORGOIN` (82) | 89 to the room, the id of the teleport the habbo stands in |
 | `G_IDATA` (83) | 48, `<id>` TAB `<colour> <text>`: what is written on a post-it of the room, for anyone in it |
-| `SETITEMDATA` (84) | 85 to the room, the post-it's line with its colour: a habbo that controls the room writes `<id>/<colour> <text>`. A `post.it` takes the four colours of the client's window; a text longer than `game.postItMaxLength`, 684, is refused (`plans/server/decisions/0108-rights-write-notes-owner-and-staff-delete.md`, `0109-post-it-length-is-a-setting.md`) |
+| `SETITEMDATA` (84) | 85 to the room, the post-it's line with its colour: a habbo that controls the room writes `<id>/<colour> <text>`. A `post.it` takes the four colours of the client's window; a text longer than `game.postItMaxLength`, 684, is refused (`knowledge/decisions/server/0108-rights-write-notes-owner-and-staff-delete.md`, `0109-post-it-length-is-a-setting.md`) |
 | `REMOVEITEM` (85) | 84 to the room: the room's owner, or a holder of `fuse_remove_stickies`, deletes a post-it for good. Nothing else is deleted this way, and a post-it is never picked up |
 | `SETITEMSTATE` (214) | 85 to the room, the wall item's line with its new state |
 | `THROW_DICE` (76), `DICE_OFF` (77) | 90 to the room: the dice's id while it rolls, then two seconds later the id and its face, 1 to 6, plus 38 times the id; `DICE_OFF` shows no face. The habbo stands on a tile beside the dice. A bottle spins the same way and points one of eight ways |
-| `CONVERT_FURNI_TO_CREDITS` (183) | 94 to the room and 6, the new balance, to the sender: the room's owner turns a credit furni that stands in the room, named by its id as a number, back into credits (`plans/server/decisions/0115-the-rooms-owner-redeems-credit-furni.md`). The furni is destroyed, the wallet of the habbo's user gets its worth, the number in its sprite, 50 for `CF_50_goldbar`, and the credit history the line `Furni exchanged (<item>)` under the reason `exchange`, in one transaction. Any other furni is left alone |
+| `CONVERT_FURNI_TO_CREDITS` (183) | 94 to the room and 6, the new balance, to the sender: the room's owner turns a credit furni that stands in the room, named by its id as a number, back into credits (`knowledge/decisions/server/0115-the-rooms-owner-redeems-credit-furni.md`). The furni is destroyed, the wallet of the habbo's user gets its worth, the number in its sprite, 50 for `CF_50_goldbar`, and the credit history the line `Furni exchanged (<item>)` under the reason `exchange`, in one transaction. Any other furni is left alone |
 | `SPIN_WHEEL_OF_FORTUNE` (247) | 85 to the room: the wheel's line with -1 while it spins, and with its number, 0 to 9, 4.25 seconds later; for a habbo that controls the room |
 | `SET_RANDOM_STATE` (314) | 88 to the room: the love randomizer's state `123456789` while it runs, and its number, 1 to 4, five seconds later |
 | `CARRYDRINK` (80) | Nothing but the habbo's status: `carryd` and the drink's token, 1 to 26, for 9 seconds, then `drink` for 1, ten times over, as Holo's habbos sipped; never while it lies. A dance or `STOP CarryItem` takes the drink away |
-| `PRESENTOPEN` (78) | 94 to the room, then 129 and 140 to the opener: the box that stands in the opener's own room goes, what waited in it lands in the opener's hand, 129 shows the last of it on the box's card, the class, the class with a wall item's data, and the colours, and the hand comes at its last page. Only the room's owner opens a box (`plans/server/decisions/0105-only-a-rooms-owner-opens-a-present.md`) |
+| `PRESENTOPEN` (78) | 94 to the room, then 129 and 140 to the opener: the box that stands in the opener's own room goes, what waited in it lands in the opener's hand, 129 shows the last of it on the box's card, the class, the class with a wall item's data, and the colours, and the hand comes at its last page. Only the room's owner opens a box (`knowledge/decisions/server/0105-only-a-rooms-owner-opens-a-present.md`) |
 | `ADDSTRIPITEM` (67) | 94 or 84 to the room, and 140 to the picker: the furni leaves the room for the picker's hand, `new stuff <id>` a floor furni and `new item <id>` a wall item |
 | `G_STAT` (64) | The habbo comes in at the model's door: 34 with the others' statuses, then 28 with its own user lines and 34 with its status, which the others get too. In a habbo room the owner's status holds `flatctrl useradmin` and a habbo with rights `flatctrl` with no level, which the client's Human class reads as `furniture`; Holo's `onlyfurniture` was another client's. A room that filled meanwhile queues the habbo. A spectator gets the statuses alone and comes into no place |
 | `QUIT` (53) | Nothing: the habbo leaves, and the others get 29 with its index |
-| `ROOM_QUEUE_CHANGE` (211) | The habbo waiting in a full room's line moves to the line its target names, 1 the room's and 2 the spectators', at its end (`plans/server/decisions/0089-up-to-50-spectators-from-the-queue.md`) |
+| `ROOM_QUEUE_CHANGE` (211) | The habbo waiting in a full room's line moves to the line its target names, 1 the room's and 2 the spectators', at its end (`knowledge/decisions/server/0089-up-to-50-spectators-from-the-queue.md`) |
 | `GET_SPECTATOR_AMOUNT` (216) | 298: how many watch the habbo's room and `game.maxSpectators`, or -1 for a habbo that watches none, which hides the client's count |
 | `MOVE` (75) | Nothing at once: the habbo walks to the tile, two B64 shorts, a step on each tick of the room's clock. A tile off the floor, such as the 1000, 1000 of the sound machine's editor, changes nothing |
 | `LOOKTO` (79) | The habbo turns, head and body, to the tile `<x> <y>`, unless it sits or lies, as Holo had it; its status goes out on the next tick |
-| `CHAT` (52), in `room_utils.go` | 24 with the speaker's index and the text to the habbos within `game.chatRange` tiles each way, 5, as Holo had it; the farther ones get 24 with no text, which the client draws as its unheard bubble (`plans/server/decisions/0074-near-habbos-read-chat-far-ones-see-a-bubble.md`) |
+| `CHAT` (52), in `room_utils.go` | 24 with the speaker's index and the text to the habbos within `game.chatRange` tiles each way, 5, as Holo had it; the farther ones get 24 with no text, which the client draws as its unheard bubble (`knowledge/decisions/server/0074-near-habbos-read-chat-far-ones-see-a-bubble.md`) |
 | `SHOUT` (55), in `room_utils.go` | 26 to everyone in the room |
 | `WHISPER` (56), in `room_utils.go` | `<name> <text>`: 25 to the named habbo and the speaker only, and to nobody when the name is not in the room, as Holo had it |
 | `USER_START_TYPING` (317), `USER_CANCEL_TYPING` (318) | 361 to the room: the habbo's index and 1 or 0. A line ends the typing, and the room gets 361 with 0 first, as Holo sent it |
 | `DANCE` (93) | With no body the normal dance, `dance`; with 1 to 4 a club dance, `dance <n>`, for the holders of `fuse_use_club_dance`; never while sitting or lying |
-| `WAVE` (94) | `wave` for 1.5 s, which stops a dance (`plans/server/decisions/0075-talking-smileys-and-waves-as-holo.md`) |
+| `WAVE` (94) | `wave` for 1.5 s, which stops a dance (`knowledge/decisions/server/0075-talking-smileys-and-waves-as-holo.md`) |
 | `STOP` (88) | `Dance` ends the dance; carrying waits for drinks |
-| `IGNOREUSER` (319), `UNIGNORE_USER` (322) | 419: 0 failed (no such habbo, or the habbo itself), 1 added, 2 added with the oldest dropped past `game.maxIgnoredHabbos`, 100, or 3 removed (`plans/server/decisions/0076-ignore-up-to-100-the-oldest-dropped.md`) |
+| `IGNOREUSER` (319), `UNIGNORE_USER` (322) | 419: 0 failed (no such habbo, or the habbo itself), 1 added, 2 added with the oldest dropped past `game.maxIgnoredHabbos`, 100, or 3 removed (`knowledge/decisions/server/0076-ignore-up-to-100-the-oldest-dropped.md`) |
 | `GET_IGNORE_LIST` (321) | 420: the names the habbo ignores, oldest first |
 | `ASSIGNRIGHTS` (96), `REMOVERIGHTS` (97) | From the room's owner, or a holder of `fuse_any_room_controller`, about a habbo in the room, as the client shows the buttons: saved, then the habbo gets 42 or 43, and its status gains or loses `flatctrl` |
-| `KICKUSER` (95) | From an owner or a habbo with rights, as the client shows the button: the habbo, never an owner or a holder of `fuse_any_room_controller`, walks to the door, a step every 500 ms and no longer where it wants, and leaves there with 18; it leaves at once when it cannot reach the door, which a habbo standing on it blocks (`plans/server/decisions/0079-a-kicked-habbo-walks-out.md`) |
-| `BANUSER` (320) | From an owner only, as the client shows the button: the habbo is banned for `game.roomBanMinutes`, 15 (`plans/server/decisions/0067-a-room-ban-lasts-15-minutes.md`), saved and in the room's copy, and walks out as on `KICKUSER`; its next `TRYFLAT` gets 224 with 4 |
-| `RATEFLAT` (261) | A vote, 1 or -1, once, in a habbo room: everyone in it who has voted gets 345 with the sum of the votes, never below 0, and the share of +1 votes; 345 is -1 for a habbo that has not voted, which shows the client's vote buttons (`plans/server/decisions/0082-a-rating-is-the-sum-and-the-share-of-up-votes.md`) |
+| `KICKUSER` (95) | From an owner or a habbo with rights, as the client shows the button: the habbo, never an owner or a holder of `fuse_any_room_controller`, walks to the door, a step every 500 ms and no longer where it wants, and leaves there with 18; it leaves at once when it cannot reach the door, which a habbo standing on it blocks (`knowledge/decisions/server/0079-a-kicked-habbo-walks-out.md`) |
+| `BANUSER` (320) | From an owner only, as the client shows the button: the habbo is banned for `game.roomBanMinutes`, 15 (`knowledge/decisions/server/0067-a-room-ban-lasts-15-minutes.md`), saved and in the room's copy, and walks out as on `KICKUSER`; its next `TRYFLAT` gets 224 with 4 |
+| `RATEFLAT` (261) | A vote, 1 or -1, once, in a habbo room: everyone in it who has voted gets 345 with the sum of the votes, never below 0, and the share of +1 votes; 345 is -1 for a habbo that has not voted, which shows the client's vote buttons (`knowledge/decisions/server/0082-a-rating-is-the-sum-and-the-share-of-up-votes.md`) |
 | `CAN_CREATE_ROOMEVENT` (345) | 367: 1 for an owner of the habbo room it is in, which hosts no event yet |
-| `CREATE_ROOMEVENT` (346), `EDIT_ROOMEVENT` (348) | A type 1 to `game.roomEventTypes`, 11, a name and a description of 3 characters or more, as the client asks them: the room gets 370 with the host's id and name, the room, the type, the name, the description and the start, `HH:MM` in UTC. An edit keeps the start. Events live only in memory and end when their host leaves the room or logs out (`plans/server/decisions/0081-eleven-room-event-types.md`) |
+| `CREATE_ROOMEVENT` (346), `EDIT_ROOMEVENT` (348) | A type 1 to `game.roomEventTypes`, 11, a name and a description of 3 characters or more, as the client asks them: the room gets 370 with the host's id and name, the room, the type, the name, the description and the start, `HH:MM` in UTC. An edit keeps the start. Events live only in memory and end when their host leaves the room or logs out (`knowledge/decisions/server/0081-eleven-room-event-types.md`) |
 | `QUIT_ROOMEVENT` (347) | The host's event ends: the room gets 370 with `-1` |
 | `GET_ROOMEVENT_TYPE_COUNT` (349) | 368: `game.roomEventTypes` |
 | `GET_ROOMEVENTS_BY_TYPE` (350) | 369: the type and its events, by room: the room, the host, the name, the description and the start |
-| `GET_GROUP_BADGES` (230) | 309: the favourite groups the room's habbos show, by id, with their badges (`plans/server/decisions/0068-a-habbo-shows-its-favourite-groups-badge.md`) |
+| `GET_GROUP_BADGES` (230) | 309: the favourite groups the room's habbos show, by id, with their badges (`knowledge/decisions/server/0068-a-habbo-shows-its-favourite-groups-badge.md`) |
 | `GET_GROUP_DETAILS` (231) | 311: the group's name and description, and -1 and an empty name for its room, which groups have not; -1 alone for a group that does not exist |
 | `GET_USER_TAGS` (263) | 350: the habbo's id and the tags of its profile on the site |
 | `SETBADGE` (158) | Five times a slot and a code, empty for none: the habbo wears each badge it has, once, in the first slot that names it, saved; the room gets 228 with its web id and the badges it wears with their slots |
@@ -418,14 +418,14 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
   through; `G_HMAP`, `G_OBJS` and `G_ITEMS` also answer a habbo in the room.
 - A habbo leaves its room on `QUIT`, on `#room_directory`, when its session
   ends and when it logs in again elsewhere. The last one out unloads the room
-  (`plans/server/decisions/0071-an-empty-room-unloads-at-once.md`), and those
+  (`knowledge/decisions/server/0071-an-empty-room-unloads-at-once.md`), and those
   still ringing get 131.
 - Deleting a room sends the habbos in it out, as Holo did: each gets 18, and the
   others see it go.
 - Each loaded room runs a clock, from its load to its unload
-  (`plans/server/decisions/0072-each-loaded-room-runs-its-own-clock.md`). Every
+  (`knowledge/decisions/server/0072-each-loaded-room-runs-its-own-clock.md`). Every
   500 ms, the client's own step time
-  (`plans/server/decisions/0065-walking-500-ms-by-holos-rules.md`), each
+  (`knowledge/decisions/server/0065-walking-500-ms-by-holos-rules.md`), each
   walking habbo takes a step, and the statuses that changed, steps and turns,
   go to the room in one 34. A step's status stands where the habbo was, with
   `mv <x>,<y>,<height>` to where it goes, which the client animates; at its
@@ -449,7 +449,7 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
   `fuse_any_room_controller` place furni from their own hands and move the
   room's; only the owner and those holders pick furni up, and what they pick
   up becomes their user's, whoever placed it
-  (`plans/server/decisions/0103-whoever-picks-a-furni-up-keeps-it.md`). A
+  (`knowledge/decisions/server/0103-whoever-picks-a-furni-up-keeps-it.md`). A
   post-it is never picked up, and a wallpaper, a floor or a landscape never
   hung.
 - A floor furni stands where every tile it covers takes furni, by Holo's
@@ -460,13 +460,13 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
   come under a habbo, which then sits; a habbo whose seat or bed moves or goes
   stands up. A wall item's place is the client's text, each number 200 at most.
 - A room holds at most `game.maxRoomFurni` furni, 500
-  (`plans/server/decisions/0104-a-room-holds-up-to-500-furni.md`).
+  (`knowledge/decisions/server/0104-a-room-holds-up-to-500-furni.md`).
 - One change to a room's furni runs at a time. Each writes its row, then the
   room's copy, then tells the room
-  (`plans/server/decisions/0010-hot-data-written-at-once.md`).
+  (`knowledge/decisions/server/0010-hot-data-written-at-once.md`).
 - The client shows no button that deletes a furni, so `REMOVESTUFF` (99) is
   not handled.
-- Rollers roll (`plans/server/decisions/0107-rollers-roll-every-two-seconds.md`):
+- Rollers roll (`knowledge/decisions/server/0107-rollers-roll-every-two-seconds.md`):
   a roller's tile is open, and habbos and furni stand at its top. Every 2
   seconds, on the room's clock, each roller carries the furni of one tile
   that stand on it and the habbo that stands still on it, together, one tile
@@ -490,27 +490,27 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
   carries, a poster's number, tab-separated. A room that no habbo is in yet
   answers both from the store, and a loaded one from its own copy.
 - A line keeps its first `game.chatMaxLength` characters, 100
-  (`plans/server/decisions/0078-a-chat-line-is-cut-at-100-characters.md`), and
-  is saved for staff (`plans/server/decisions/0066-staff-read-the-chat-history-30-days.md`),
+  (`knowledge/decisions/server/0078-a-chat-line-is-cut-at-100-characters.md`), and
+  is saved for staff (`knowledge/decisions/server/0066-staff-read-the-chat-history-30-days.md`),
   whispers with the habbo they went to. A habbo never gets the lines of a habbo
   it ignores. Nothing is filtered yet
-  (`plans/server/decisions/0077-the-word-filter-waits.md`).
+  (`knowledge/decisions/server/0077-the-word-filter-waits.md`).
 - After each line the speaker shows `talk` for (letters + 50) x 30 ms, and a
   chat or a shout with a smiley shows its face for 5 s, `gest sml`, `agr`, `sad`
   or `srp`, as Holo's `checkEmotion` found them. The room's clock ends each
   timed status on its tick and sends the change.
 - A full room, public or habbo room, puts an arriving habbo in its queue
-  (`plans/server/decisions/0087-every-full-room-queues.md`) and sends everyone
+  (`knowledge/decisions/server/0087-every-full-room-queues.md`) and sends everyone
   waiting 259: two sets, `room`, target 1, and `spectators`, target 2, the
   habbo's own first, each with two queues, `club` and the set's own name, and
   how many of each come in before it
-  (`plans/server/decisions/0090-queue-sets-room-and-spectators.md`). Club
-  members come first (`plans/server/decisions/0088-club-members-first-in-a-queue.md`).
+  (`knowledge/decisions/server/0090-queue-sets-room-and-spectators.md`). Club
+  members come first (`knowledge/decisions/server/0088-club-members-first-in-a-queue.md`).
 - A place that frees lets the next habbo in, which gets 69 for a public room
   or 41 for a habbo room, and keeps its place until it comes in, so that a
   newcomer cannot take it. A spectator's seat that frees lets the spectators'
   queue in, with 254 first; up to `game.maxSpectators`, 50, watch at once
-  (`plans/server/decisions/0089-up-to-50-spectators-from-the-queue.md`).
+  (`knowledge/decisions/server/0089-up-to-50-spectators-from-the-queue.md`).
 - Spectators see what the room's habbos see, the chat and shouts too, but have
   no place, and cannot act. When the room empties, they get 283 and 18, and
   those still in its queues are let in.
@@ -518,7 +518,7 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
 ## Keeping the session alive
 
 Every session, from `HELLO` on, is pinged
-(`plans/server/decisions/0042-ping-every-30-seconds.md`):
+(`knowledge/decisions/server/0042-ping-every-30-seconds.md`):
 
 - The server sends `PING` (50) every `game.pingSeconds`, 30 by default, and
   the client answers `PONG` (196) at once.
@@ -529,30 +529,30 @@ Every session, from `HELLO` on, is pinged
   `PING` or for its timeout, whichever comes first.
 - `TEST_LATENCY` (315) gets 354 with the id it carries, and `REPORT_LATENCY`
   (316) is logged, never saved
-  (`plans/server/decisions/0036-latency-reports-are-logged.md`):
+  (`knowledge/decisions/server/0036-latency-reports-are-logged.md`):
   `r26 127.0.0.1:53422 latency: mean 120 ms, 110 ms below twice the mean, 15 answers`.
 - The server sends no error report (299) yet: S7 decides when it does
-  (`plans/server/decisions/0054-error-reports-wait-for-s7.md`).
+  (`knowledge/decisions/server/0054-error-reports-wait-for-s7.md`).
 
 ## Game
 
 `game` holds the rules, which each protocol's handlers call. A rule changes the
 state in `packages/virtual` and writes the database, and reaches a habbo's
-client through its `Session` (`plans/server/decisions/0039-rules-notify-sessions-through-an-interface.md`).
+client through its `Session` (`knowledge/decisions/server/0039-rules-notify-sessions-through-an-interface.md`).
 
 - `Session` is the interface `virtual/habbo` declares, `Notify(event any)`
-  (`plans/server/decisions/0048-sessions-through-an-interface-virtual-declares.md`).
+  (`knowledge/decisions/server/0048-sessions-through-an-interface-virtual-declares.md`).
   Each protocol's session implements it on a pointer and turns every event into
   its messages.
 - The events are structs of `game`. `ConcurrentLogin{}` tells a session that its
   habbo logged in on another one, which replaces it; `r26` answers it with 287,
-  reason 2 (`plans/server/decisions/0029-a-second-login-closes-the-first.md`).
+  reason 2 (`knowledge/decisions/server/0029-a-second-login-closes-the-first.md`).
 - `Login(ctx, db, s, ticket, machineID)` spends the SSO ticket and returns the
   habbo it names, online on `s`. In one transaction it spends the ticket, reads
   the habbo, its badges and its sound setting, and saves the machine id, when
   `s` holds one, and the last time online; after the commit it reads the fuses
   with `auth.Fuses`. Then the habbo goes online with them
-  (`plans/server/decisions/0053-the-online-habbo-holds-its-own-data.md`), and
+  (`knowledge/decisions/server/0053-the-online-habbo-holds-its-own-data.md`), and
   the session it was online on leaves its room and gets `ConcurrentLogin`. A ticket that is unknown, spent, or whose CMS session ended
   or moved to another habbo returns `ErrInvalidTicket`.
 - `Logout(ctx, db, s, avatarID)` takes the habbo out of its room, writes its
@@ -574,7 +574,7 @@ client through its `Session` (`plans/server/decisions/0039-rules-notify-sessions
 - `PruneChat(ctx, db, now)` deletes the chat lines older than
   `game.chatHistoryDays`, 30; `server.New` runs it at once and every hour, once
   the database updates are applied
-  (`plans/server/decisions/0084-the-game-server-prunes-the-chat-hourly.md`).
+  (`knowledge/decisions/server/0084-the-game-server-prunes-the-chat-hourly.md`).
   Housekeeping's Chat Log Viewer reads the lines.
 - Chat: `Say`, `Shout` and `Whisper` send `Chat` events; `SetTyping` sends
   `Typing`; `Dance`, `StopDancing` and `Wave` change statuses; `Ignore`,
@@ -628,7 +628,7 @@ if err := game.Logout(ctx, db, s, h.ID); err != nil {
 every test shares, and starts both listeners once. `client_test.go` is a test
 client that speaks R26 over a WebSocket as the client does on LibreShockwave,
 one binary frame per write. Tests insert their own users, CMS sessions and SSO
-tickets, as `plans/server/decisions/0030-sso-tickets-from-the-cms-sign-in.md`
+tickets, as `knowledge/decisions/server/0030-sso-tickets-from-the-cms-sign-in.md`
 says, and each uses habbos of its own.
 
 - S0's exit criterion: `TestInfoSendsHelloAndLogsAnUnhandledCommandByName`.

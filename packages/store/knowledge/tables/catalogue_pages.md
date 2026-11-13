@@ -33,8 +33,8 @@ timestamp: 2026-11-11T15:49:58+00:00
 
 - The update [0013-catalogue.sql](/migrations/0013-catalogue.md) seeds 67 of Holo's pages: 16 at level 7, Greek and
   Advertisement at level 2 and open to the club, and Club Furni for club members only
-  (`plans/server/decisions/0100-sixteen-pages-need-level-7-and-two-the-club.md`,
-  `plans/server/decisions/0102-club-furni-and-club-shop-sell-to-club-members.md`).
+  (`knowledge/decisions/server/0100-sixteen-pages-need-level-7-and-two-the-club.md`,
+  `knowledge/decisions/server/0102-club-furni-and-club-shop-sell-to-club-members.md`).
 
 # Related
 

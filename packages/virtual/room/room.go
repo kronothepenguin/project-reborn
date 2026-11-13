@@ -1,6 +1,6 @@
 // Package room holds the public rooms, which every player shares, loaded when the server starts and kept, and the
 // loaded rooms with the habbos in them, which live only in memory: a room loads with its first habbo and unloads with
-// its last (plans/server decisions 0009, 0011, 0060, 0069 and 0071).
+// its last (decisions server/0009, server/0011, server/0060, server/0069 and server/0071).
 package room
 
 import (

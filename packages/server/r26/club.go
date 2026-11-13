@@ -9,7 +9,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 )
 
-// clubStatus is hh_club's message with the club status (plans/server/reference/r26/hh_club.md).
+// clubStatus is hh_club's message with the club status (packages/server/knowledge/r26/hh_club.md).
 const clubStatus = 7
 
 // clubResponseNone tells the client to open no window with the status, as Holo's login sent it.
@@ -20,8 +20,8 @@ var clubHandlers = map[int]handler{
 	26: loggedIn(handleGetClubInfo),
 }
 
-// handleGetClubInfo sends the club of the habbo's user, which all the user's habbos share (plans/server decision
-// 0052).
+// handleGetClubInfo sends the club of the habbo's user, which all the user's habbos share (decision
+// server/0052).
 func handleGetClubInfo(s *session, me habbo.Habbo, _ []byte) {
 	club, err := game.ClubStatus(context.Background(), s.db, me.UserID)
 	if err != nil {

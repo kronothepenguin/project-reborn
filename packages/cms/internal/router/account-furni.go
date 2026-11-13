@@ -46,8 +46,8 @@ func (r *Router) newFurniPage(ctx context.Context) (furniPage, error) {
 }
 
 // HandleAccountFurniView renders GET /account/furni, the user's shared inventory:
-// the furni that none of its habbos holds, a row for each kind (plans/server
-// decisions 0122 and 0123).
+// the furni that none of its habbos holds, a row for each kind (decisions
+// server/0122 and server/0123).
 func (r *Router) HandleAccountFurniView(w http.ResponseWriter, req *http.Request) {
 	page, err := r.newFurniPage(req.Context())
 	if err != nil {

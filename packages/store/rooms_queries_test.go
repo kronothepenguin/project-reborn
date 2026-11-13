@@ -193,7 +193,7 @@ func TestSearchingTheChatLog(t *testing.T) {
 }
 
 // The client's badge window sets every slot at once; the site wears one badge in slot 1, in place of the one there,
-// and shows the badge of the first slot filled (plans/server decision 0083).
+// and shows the badge of the first slot filled (decision server/0083).
 func TestBadgeSlots(t *testing.T) {
 	q := New(openTestDB(t))
 	ctx := t.Context()

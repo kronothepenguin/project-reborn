@@ -1,7 +1,7 @@
 -- The navigator's categories, room models, public rooms, habbo rooms and favourite rooms, with Holo's categories,
 -- public rooms and room models.
 -- The categories come from source/holoemu/Resources/holodb.sql, whose names are English, and the public rooms and
--- the models from source/holoemu/holodb.sql (plans/server decision 0055). BattleBall and SnowStorm wait for S8.
+-- the models from source/holoemu/holodb.sql (decision server/0055). BattleBall and SnowStorm wait for S8.
 -- "No category" takes the id 2 for Holo's 0, since the client ends a list of nodes at an id of 0, and sits under
 -- Guestrooms. A Holo rank of 1 is level 0, everyone. Heightmaps and public furni keep one row or item per line,
 -- without Holo's carriage returns and the stray character 1 at the end of sunset_cafe's heightmap.

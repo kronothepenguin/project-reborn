@@ -92,18 +92,18 @@ var catalogue = map[string]declaration{
 
 	// The boxes of the credits page, in BBCode, with Holo's texts. Their pictures
 	// are part of the page, and the second box's list became lines that start
-	// with "* " (decision 0105).
+	// with "* " (decision holo-port/0105).
 	"creditsPage.box1Heading": declare("What are credits?", length(1, 100)),
 	"creditsPage.box1Body":    declare(creditsBox1, length(0, 5000)),
 	"creditsPage.box2Heading": declare("Get credits!", length(1, 100)),
 	"creditsPage.box2Body":    declare(creditsBox2, length(0, 5000)),
 
 	// Holo's help tool took a question of any length; the port stops at the
-	// forum's post limit (decision 0109).
+	// forum's post limit (decision holo-port/0109).
 	"help.messageMaxLength": declare(65535, between(1, 65535)),
 
-	// The game client's session parameters, ids 0 to 9 (plans/server decision
-	// 0034), and the version its VERSIONCHECK must carry (decision 0040).
+	// The game client's session parameters, ids 0 to 9 (decision
+	// server/0034), and the version its VERSIONCHECK must carry (decision server/0040).
 	"game.clientVersion":             declare(1, between(1, 1_000_000)),
 	"game.coppa":                     declare(0, between(0, 2)),
 	"game.vouchers":                  declare(false, nil),
@@ -117,21 +117,21 @@ var catalogue = map[string]declaration{
 	"game.tutorial":                  declare(false, nil),
 
 	// How often the server pings each game client, and how long a client may
-	// leave the pings unanswered before the server closes it (plans/server
-	// decision 0042).
+	// leave the pings unanswered before the server closes it (decision
+	// server/0042).
 	"game.pingSeconds":        declare(30, between(1, 3600)),
 	"game.pongTimeoutSeconds": declare(90, between(1, 3600)),
 
-	// The navigator's limits, as Holo's were (plans/server decisions 0056, 0058
-	// and 0061).
+	// The navigator's limits, as Holo's were (decisions server/0056, server/0058
+	// and server/0061).
 	"game.maxRoomsPerHabbo":  declare(50, between(1, 1000)),
 	"game.maxFavouriteRooms": declare(30, between(1, 1000)),
 	"game.categoryMaxRooms":  declare(30, between(1, 1000)),
 	"game.searchMaxRooms":    declare(30, between(1, 1000)),
 
 	// Rooms: how long a room ban lasts, how long the chat history is kept, and
-	// the ads shown while a room loads and in it (plans/server decisions 0066,
-	// 0067 and 0070).
+	// the ads shown while a room loads and in it (decisions server/0066,
+	// server/0067 and server/0070).
 	"game.roomBanMinutes":  declare(15, between(1, 10080)),
 	"game.chatHistoryDays": declare(30, between(1, 3650)),
 	"game.loadingAdImage":  declare("", optionalURL),
@@ -140,45 +140,45 @@ var catalogue = map[string]declaration{
 	"game.roomAdLink":      declare("", optionalURL),
 
 	// How many messages may wait for a client before the server closes it, as a
-	// client that stopped reading (plans/server decision 0073).
+	// client that stopped reading (decision server/0073).
 	"game.outboxSize": declare(500, between(10, 100000)),
 
 	// Chat: how far a habbo's chat is read, how long a line may be, and how
-	// many habbos a habbo may ignore (plans/server decisions 0074, 0076 and
-	// 0078).
+	// many habbos a habbo may ignore (decisions server/0074, server/0076 and
+	// server/0078).
 	"game.chatRange":        declare(5, between(1, 50)),
 	"game.chatMaxLength":    declare(100, between(10, 1000)),
 	"game.maxIgnoredHabbos": declare(100, between(1, 1000)),
 
 	// How many room event types there are, which the client names from its
-	// texts roomevent_type_<n> (plans/server decision 0081).
+	// texts roomevent_type_<n> (decision server/0081).
 	"game.roomEventTypes": declare(11, between(1, 50)),
 
-	// How many spectators may watch a full room at once (plans/server
-	// decision 0089).
+	// How many spectators may watch a full room at once (decision
+	// server/0089).
 	"game.maxSpectators": declare(50, between(1, 1000)),
 
 	// How many furni a habbo room holds, floor furni and wall items together
-	// (plans/server decision 0104).
+	// (decision server/0104).
 	"game.maxRoomFurni": declare(500, between(1, 100000)),
 
 	// How high a floor furni may stand on a stack; one that would stand
 	// higher is placed there, as Holo's items_stacking_maxstackheight had it.
 	"game.maxStackHeight": declare(20, between(1, 100)),
 
-	// How many characters a present's note keeps (plans/server decision
-	// 0106).
+	// How many characters a present's note keeps (decision
+	// server/0106).
 	"game.presentNoteMaxLength": declare(200, between(1, 1000)),
-	// The most characters of a post-it, Holo's 684; a longer one is refused (plans/server decision 0109).
+	// The most characters of a post-it, Holo's 684; a longer one is refused (decision server/0109).
 	"game.postItMaxLength": declare(684, between(1, 2000)),
-	// The most furni one side of a trade offers, Holo's 65 (plans/server decision 0113).
+	// The most furni one side of a trade offers, Holo's 65 (decision server/0113).
 	"game.maxTradeFurni": declare(65, between(1, 500)),
 
 	// The recycler, with Holo's values, in minutes: whether it runs, how old
 	// a furni must be before it is recycled, 30 days and 0 for any furni
-	// (plans/server decision 0117), how long a recycling takes, and how long
-	// after its start the reward may still be taken, 7 days (plans/server
-	// decision 0116).
+	// (decision server/0117), how long a recycling takes, and how long
+	// after its start the reward may still be taken, 7 days (decision
+	// server/0116).
 	"recycler.enabled":         declare(true, nil),
 	"recycler.minOwnedMinutes": declare(43200, between(0, 5256000)),
 	"recycler.sessionMinutes":  declare(60, between(1, 525600)),

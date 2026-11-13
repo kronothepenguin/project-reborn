@@ -46,7 +46,7 @@ Registered by `11_Figure System Class.ls`.
 ## Loading the figure data
 
 The figure system works from four files whose addresses are external variables. These are files the client
-downloads, not messages: `plans/client/phases/c2-client-files.md` plans where they come from.
+downloads, not messages: the client plan's phase C2, the client's files, plans where they come from.
 
 | Variable | File |
 | --- | --- |

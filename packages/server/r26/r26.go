@@ -1,6 +1,6 @@
 // Package r26 speaks the protocol of the R26 client on its info connection: it frames the client's packets, sends
 // HELLO, and runs the handler that each packet's id names. The ids and their names come from the client's scripts, one
-// file per cast, as plans/server/reference/r26 maps them.
+// file per cast, as packages/server/knowledge/r26 maps them.
 package r26
 
 import (
@@ -68,7 +68,7 @@ type session struct {
 	// ended is set once the session ends, after which a message sent goes nowhere and a read or a write that fails is
 	// not an error.
 	ended atomic.Bool
-	// outbox holds the messages waiting for write, in order (plans/server decision 0073). A nil message ends the
+	// outbox holds the messages waiting for write, in order (decision server/0073). A nil message ends the
 	// writing once the messages before it are written.
 	outbox chan []byte
 	// lastPong is when the client last answered a PING, in Unix nanoseconds, or when the session started.
@@ -122,7 +122,7 @@ func serve(db *sql.DB, c transport.Conn, handlers map[int]handler) {
 	}
 }
 
-// send queues a message for the client (plans/server decision 0073), and fails only for a message the protocol cannot
+// send queues a message for the client (decision server/0073), and fails only for a message the protocol cannot
 // carry. Once the session has ended, a message goes nowhere. A client whose outbox is full has stopped reading, and its
 // session ends at once.
 func (s *session) send(id int, body []byte) error {
@@ -193,7 +193,7 @@ func (s *session) closed(err error) {
 	slog.Warn(fmt.Sprintf("r26 %s closed: %v", s.addr, err))
 }
 
-// Notify turns a rule's event into its message (plans/server decision 0039).
+// Notify turns a rule's event into its message (decision server/0039).
 func (s *session) Notify(event any) {
 	switch e := event.(type) {
 	case game.ConcurrentLogin:
@@ -281,7 +281,7 @@ func (s *session) Notify(event any) {
 }
 
 // keepAlive sends PING every game.pingSeconds, and closes the session once it has gone game.pongTimeoutSeconds
-// without a PONG (plans/server decision 0042). It reads both again each time it wakes, and wakes for the next PING or
+// without a PONG (decision server/0042). It reads both again each time it wakes, and wakes for the next PING or
 // for the timeout, whichever comes first, so a silent client is closed when its time is up, not at the next PING.
 func (s *session) keepAlive(done <-chan struct{}) {
 	next := time.Now().Add(seconds("game.pingSeconds", 30))

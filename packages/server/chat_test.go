@@ -32,7 +32,7 @@ func chatLine(t *testing.T, index int32, text string) string {
 }
 
 // threeInAFlat brings Speaker, Nearby and Faraway into Speaker's room, in that order, and moves Faraway 6 tiles from
-// the door, out of reach of chat (plans/server decision 0074).
+// the door, out of reach of chat (decision server/0074).
 func threeInAFlat(t *testing.T, prefix string) (speaker, near, far *client, flat int64) {
 	t.Helper()
 	speakerID := habboWithTickets(t, prefix+"Speaker", strings.ToLower(prefix)+"speaker")
@@ -62,7 +62,7 @@ func TestChatShoutsAndWhispers(t *testing.T) {
 	near.expectChat(t, 24, chatLine(t, 0, "hello :)"))
 	far.expectChat(t, 24, chatLine(t, 0, ""))
 	if line := statusLines(near.nextBody(t, 34))["0"]; !strings.Contains(line, "/talk/") || !strings.HasSuffix(line, "/gest sml/") {
-		t.Errorf("Speaker's status %q, want talk and a smile (plans/server decision 0075)", line)
+		t.Errorf("Speaker's status %q, want talk and a smile (decision server/0075)", line)
 	}
 
 	speaker.send(t, 55, b64String(t, "HEY"))
@@ -91,12 +91,12 @@ func TestChatShoutsAndWhispers(t *testing.T) {
 
 	var lines int
 	if err := testDB.QueryRowContext(t.Context(), "SELECT COUNT(*) FROM chat_messages WHERE room_id = ?", flat).Scan(&lines); err != nil || lines != 6 {
-		t.Errorf("%d lines saved, %v; want the 6 said, whispered and shouted (plans/server decision 0066)", lines, err)
+		t.Errorf("%d lines saved, %v; want the 6 said, whispered and shouted (decision server/0066)", lines, err)
 	}
 }
 
 // A habbo gets nothing of a habbo it ignores; its list holds game.maxIgnoredHabbos, and one more drops the oldest
-// (plans/server decision 0076).
+// (decision server/0076).
 func TestIgnoringAHabbo(t *testing.T) {
 	speaker, near, far, _ := threeInAFlat(t, "Ignore")
 
@@ -126,7 +126,7 @@ func TestIgnoringAHabbo(t *testing.T) {
 }
 
 // Dances, waves and stops show in the habbo's status on the clock's next tick; a wave stops a dance, and ends after
-// 1.5 s (plans/server decision 0075). The club dances need fuse_use_club_dance.
+// 1.5 s (decision server/0075). The club dances need fuse_use_club_dance.
 func TestDancingAndWaving(t *testing.T) {
 	ownerID := habboWithTickets(t, "Dancer", "dancer")
 	flat := newRoom(t, ownerID, 2, "Ballroom", true)

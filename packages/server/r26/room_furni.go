@@ -12,7 +12,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
 )
 
-// The messages of hh_room about a room's furni (plans/server/reference/r26/hh_room.md).
+// The messages of hh_room about a room's furni (packages/server/knowledge/r26/hh_room.md).
 const (
 	flatProperty          = 46
 	itemData              = 48
@@ -482,7 +482,7 @@ func activeObjectsBody(items []room.Furni) []byte {
 
 // activeObject writes a floor furni as the client reads one in 32, 93 and 95: its id and class, its tile, its length
 // and width, its direction, its altitude, its colours, an empty runtime data, 0 for the extra, and its state as the
-// stuff data (plans/server/reference/r26/hh_room.md#an-active-object).
+// stuff data (packages/server/knowledge/r26/hh_room.md#an-active-object).
 func activeObject(item room.Furni) []byte {
 	d := item.Definition
 	var b bytes.Buffer
@@ -512,7 +512,7 @@ func stuffData(value string) string {
 
 // wallItemLines writes the wall items among items as 45 and 83 carry them, a line each: the id, the class, a space
 // where the owner goes, the place on the wall, and the item's state, or without one what its definition carries, a
-// poster's number, tab-separated (plans/server/reference/r26/hh_room.md#a-wall-item).
+// poster's number, tab-separated (packages/server/knowledge/r26/hh_room.md#a-wall-item).
 func wallItemLines(items []room.Furni) string {
 	var b strings.Builder
 	for _, item := range items {

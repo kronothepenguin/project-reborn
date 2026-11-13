@@ -42,8 +42,8 @@ func catalogueIndex(t *testing.T, c *client) (names map[string]string, codes []s
 	return names, codes
 }
 
-// The catalogue lists a habbo the pages its level reaches and the club opens (plans/server decision 0100), in Holo's
-// order, and leaves out the pages that wait for S7 (decision 0101).
+// The catalogue lists a habbo the pages its level reaches and the club opens (decision server/0100), in Holo's
+// order, and leaves out the pages that wait for S7 (decision server/0101).
 func TestTheCatalogueListsThePagesAHabboSees(t *testing.T) {
 	habboWithTickets(t, "Shopper", "shopper")
 	clubber := habboWithTickets(t, "Cardholder", "cardholder")
@@ -91,7 +91,7 @@ func TestTheCatalogueListsThePagesAHabboSees(t *testing.T) {
 	}
 }
 
-// A page comes as 127 with its texts and a p line for each thing it sells (plans/server/reference/r26/hh_cat_code.md).
+// A page comes as 127 with its texts and a p line for each thing it sells (packages/server/knowledge/r26/hh_cat_code.md).
 func TestACataloguePageComesWithWhatItSells(t *testing.T) {
 	habboWithTickets(t, "Pagereader", "pagereader")
 	c, _ := login(t, "pagereader")

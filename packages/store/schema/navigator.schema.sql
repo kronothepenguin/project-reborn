@@ -1,5 +1,5 @@
 -- The navigator: its categories, the room models, the public rooms, the habbos' rooms and their favourite rooms
--- (plans/server decisions 0055 and 0063).
+-- (decisions server/0055 and server/0063).
 
 -- A category of the navigator, which holds either public rooms or habbo rooms. A habbo needs min_level, the highest
 -- level of its access groups, to put a room in it, and a category with hidden_below_level is shown only from that

@@ -33,7 +33,7 @@ func TestAHandListsItsFurniOldestFirst(t *testing.T) {
 	}
 }
 
-// A furni is in a hand or in a room, never both (plans/holo-port decision 0057).
+// A furni is in a hand or in a room, never both (decision holo-port/0057).
 func TestAFurniIsNeverInAHandAndARoom(t *testing.T) {
 	db := openTestDB(t)
 	q := New(db)

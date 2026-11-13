@@ -15,7 +15,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
 )
 
-// The messages of hh_navigator the server sends (plans/server/reference/r26/hh_navigator.md).
+// The messages of hh_navigator the server sends (packages/server/knowledge/r26/hh_navigator.md).
 const (
 	ownFlats            = 16
 	flatInfo            = 54
@@ -250,7 +250,7 @@ func handleSearchFlats(s *session, me habbo.Habbo, body []byte) {
 	s.reply(searchResults, flatLines(flats))
 }
 
-// handleGetRecommendedRooms sends three habbo rooms drawn at random (plans/server decision 0057).
+// handleGetRecommendedRooms sends three habbo rooms drawn at random (decision server/0057).
 func handleGetRecommendedRooms(s *session, me habbo.Habbo, _ []byte) {
 	flats, err := game.RecommendedRooms(context.Background(), s.db, me)
 	if err != nil {
@@ -338,7 +338,7 @@ func handleUpdateFlat(s *session, me habbo.Habbo, body []byte) {
 	}
 }
 
-// handleDeleteFlat deletes the habbo's room (plans/server decision 0059); another habbo's room stays.
+// handleDeleteFlat deletes the habbo's room (decision server/0059); another habbo's room stays.
 func handleDeleteFlat(s *session, me habbo.Habbo, body []byte) {
 	id, err := strconv.ParseInt(string(body), 10, 64)
 	if err != nil {
@@ -415,7 +415,7 @@ func parseFlatInfo(body string) (int64, game.RoomSettings, bool) {
 }
 
 // tooManyFavourites is the text of 33 the client turns into nav_error_toomanyfavrooms, whatever limit it says
-// (plans/server decision 0058).
+// (decision server/0058).
 const tooManyFavourites = "Only 10 favorite rooms allowed!"
 
 // handleGetFavouriteFlats sends the habbo's favourites: a header node of type 2 with the habbo rooms as its list of

@@ -20,7 +20,7 @@ sub-categories. Public Rooms (3) and Guestrooms (4) are the roots.
 # Lifecycle
 
 - The update [0010-navigator.sql](/migrations/0010-navigator.md) seeds Holo's categories
-  (`plans/server/decisions/0055-holos-navigator-set.md`); nothing changes them yet.
+  (`knowledge/decisions/server/0055-holos-navigator-set.md`); nothing changes them yet.
 
 # Vocabularies
 

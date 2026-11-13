@@ -20,7 +20,7 @@ timestamp: 2026-11-10T20:23:05+00:00
 
 - Primary key (`avatar_id`, `code`).
 - `idx_avatar_badges_avatar_id_slot` UNIQUE (`avatar_id`, `slot`) WHERE `slot > 0`: one badge at most in each slot
-  (`plans/server/decisions/0083-a-habbo-wears-five-badges-in-slots.md`).
+  (`knowledge/decisions/server/0083-a-habbo-wears-five-badges-in-slots.md`).
 
 # Related
 

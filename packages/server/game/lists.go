@@ -12,7 +12,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
-// recommendedRooms is how many rooms GET_RECOMMENDED_ROOMS gets (plans/server decision 0057).
+// recommendedRooms is how many rooms GET_RECOMMENDED_ROOMS gets (decision server/0057).
 const recommendedRooms = 3
 
 // likeEscaper escapes what LIKE reads as wildcards, with the ! that SearchRooms declares as its escape.
@@ -32,7 +32,7 @@ func OwnRooms(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]FlatListin
 }
 
 // SearchRooms returns the rooms whose name holds query or whose owner it names, at most game.searchMaxRooms
-// (plans/server decision 0061). A room that hides its owner comes up for the owner's name only for those who may see
+// (decision server/0061). A room that hides its owner comes up for the owner's name only for those who may see
 // that owner.
 func SearchRooms(ctx context.Context, db *sql.DB, viewer habbo.Habbo, query string) ([]FlatListing, error) {
 	seeHidden := int64(0)
@@ -56,7 +56,7 @@ func SearchRooms(ctx context.Context, db *sql.DB, viewer habbo.Habbo, query stri
 	return listed, nil
 }
 
-// RecommendedRooms returns three habbo rooms drawn at random, or as many as there are (plans/server decision 0057).
+// RecommendedRooms returns three habbo rooms drawn at random, or as many as there are (decision server/0057).
 func RecommendedRooms(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]FlatListing, error) {
 	rows, err := store.New(db).ListRandomRooms(ctx, recommendedRooms)
 	if err != nil {

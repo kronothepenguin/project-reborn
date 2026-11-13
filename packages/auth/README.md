@@ -54,7 +54,7 @@ case errors.Is(err, auth.ErrBanned):
 
 ## Attributes
 
-The `Attribute` constants and `Catalogue()` (name and description) follow decision 0015 of the port bundle. `Attributes(ctx, db, userID)` is the union of the attributes of the user's access groups.
+The `Attribute` constants and `Catalogue()` (name and description) follow decision holo-port/0015. `Attributes(ctx, db, userID)` is the union of the attributes of the user's access groups.
 
 ## Accounts
 

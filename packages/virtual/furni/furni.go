@@ -1,5 +1,5 @@
 // Package furni holds the furni definitions, which every player shares: loaded when the server starts, and kept
-// (plans/server decisions 0009 and 0098).
+// (decisions server/0009 and server/0098).
 package furni
 
 import (

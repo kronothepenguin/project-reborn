@@ -3,7 +3,7 @@ package room
 import "time"
 
 // Event is a room event a habbo hosts in the room, which lives only in memory and ends when its host leaves
-// (plans/server decisions 0011 and 0081).
+// (decisions server/0011 and server/0081).
 type Event struct {
 	HostID      int64
 	Type        int

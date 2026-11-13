@@ -75,7 +75,7 @@ func RemoveAllRights(ctx context.Context, db *sql.DB, viewer habbo.Habbo, flatID
 	return nil
 }
 
-// setRights changes the copy of the room's rights once the store has the change (plans/server decision 0010), and
+// setRights changes the copy of the room's rights once the store has the change (decision server/0010), and
 // the habbo's flatctrl status and its client's control.
 func setRights(r *room.Room, o room.Occupant, on bool) {
 	r.SetRights(o.AvatarID, on)
@@ -92,8 +92,8 @@ func setRights(r *room.Room, o room.Occupant, on bool) {
 
 // Kick sends the habbo name walking out of the viewer's habbo room (KICKUSER): the viewer may when it owns the room or
 // has rights in it, as the client shows its button. Nobody kicks an owner of the room, nor a holder of
-// fuse_any_room_controller (plans/server decision 0045). The habbo walks to the door and leaves there (plans/server
-// decision 0079).
+// fuse_any_room_controller (decision server/0045). The habbo walks to the door and leaves there (decision
+// server/0079).
 func Kick(viewer habbo.Habbo, name string) {
 	r, target, ok := targetIn(viewer, name)
 	if !ok || !controls(r, viewer) || owns(r, target.Habbo) {
@@ -103,7 +103,7 @@ func Kick(viewer habbo.Habbo, name string) {
 }
 
 // Ban bans the habbo name from the viewer's habbo room for game.roomBanMinutes (BANUSER), then sends it walking out:
-// the viewer may when it owns the room, as the client shows its button (plans/server decisions 0067 and 0079).
+// the viewer may when it owns the room, as the client shows its button (decisions server/0067 and server/0079).
 func Ban(ctx context.Context, db *sql.DB, viewer habbo.Habbo, name string) error {
 	r, target, ok := targetIn(viewer, name)
 	if !ok || !owns(r, viewer) || owns(r, target.Habbo) {

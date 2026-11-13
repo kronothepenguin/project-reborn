@@ -681,7 +681,7 @@ func TestTheEconomySettingsHoldHolosValues(t *testing.T) {
 		"creditsPage.box1Body":    "Credits are the hotel's currency. You can use them to buy all kinds of things, from rubber ducks and sofas, to Habbo Club membership, jukeboxes and teleports.",
 		"creditsPage.box2Heading": "Get credits!",
 		// Holo's credits2 without the palm chair, which belongs to the page, and
-		// with each item of its list on a line of its own (decision 0105).
+		// with each item of its list on a line of its own (decision holo-port/0105).
 		"creditsPage.box2Body": "To buy furniture or play games, you need [b]credits[/b]. We provide you with free credits on registration, and if you run out, there are several ways you can earn more credits:\n" +
 			"* Refer a friend to the hotel and earn credits\n" +
 			"* Ask a staff member ingame\n" +
@@ -736,7 +736,7 @@ func TestTheEconomySettingsKeepTheirBounds(t *testing.T) {
 }
 
 // Holo's help tool took a question of any length; the port stops at the
-// forum's post limit (decision 0109).
+// forum's post limit (decision holo-port/0109).
 func TestTheHelpSettingStopsAtTheForumsLimit(t *testing.T) {
 	load(t, openDB(t))
 	assertValues(t, map[string]any{"help.messageMaxLength": 65535})

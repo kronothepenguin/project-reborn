@@ -1,5 +1,5 @@
 -- The furni habbos own, each piece in a hand, in a room or in its user's shared inventory.
--- plans/holo-port decision 0057 and plans/server decision 0096.
+-- decision holo-port/0057 and decision server/0096.
 
 -- A piece of furni, which belongs to a user. The habbo that holds it has it in its hand. A placed one stands in a room:
 -- a floor furni on the tile x, y at an altitude, turned to a direction, and a wall item at wall_position, as the

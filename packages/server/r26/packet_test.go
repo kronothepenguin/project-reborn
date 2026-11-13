@@ -9,7 +9,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/server/encoding"
 )
 
-// The bytes come from plans/server/reference/r26/hh_entry_init.md, which computed them with literal ports of the
+// The bytes come from packages/server/knowledge/r26/hh_entry_init.md, which computed them with literal ports of the
 // client's send, sendNew, GetIntFrom and GetStrFrom.
 func TestReadPacketReadsTheClientsCommands(t *testing.T) {
 	for _, c := range []struct {

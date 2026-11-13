@@ -45,7 +45,7 @@ func furniRow(t *testing.T, id int64) store.Furni {
 }
 
 // The owner and a habbo with rights place furni from their own hands and move the room's; only the owner picks up,
-// and keeps what it picks up (plans/server decision 0103). Furni stacks by Holo's rules, never stands on a habbo, and
+// and keeps what it picks up (decision server/0103). Furni stacks by Holo's rules, never stands on a habbo, and
 // is still in its place when the room loads again.
 func TestFurnishingARoom(t *testing.T) {
 	ownerID := habboWithTickets(t, "Decorator", "decorator", "decorator-again")
@@ -132,7 +132,7 @@ func TestFurnishingARoom(t *testing.T) {
 	expectAll(t, all, 84, strconv.FormatInt(poster, 10))
 	owner.nextBody(t, 140)
 
-	// The room holds four furni, and takes no fifth once that is its most (plans/server decision 0104).
+	// The room holds four furni, and takes no fifth once that is its most (decision server/0104).
 	setSetting(t, "game.maxRoomFurni", 4, 500)
 	owner.send(t, 90, fmt.Sprintf("%d 10 10 0", roller))
 	owner.send(t, 90, fmt.Sprintf("%d :w=3,2 l=9,63 l", poster))
@@ -166,7 +166,7 @@ func TestFurnishingARoom(t *testing.T) {
 	}
 }
 
-// A deleted room's furni goes to its owner's hand, whoever placed it (plans/server decisions 0059 and 0103).
+// A deleted room's furni goes to its owner's hand, whoever placed it (decisions server/0059 and server/0103).
 func TestADeletedRoomsFurniGoesToItsOwner(t *testing.T) {
 	ownerID := habboWithTickets(t, "Mover", "mover")
 	guestID := habboWithTickets(t, "Guesty", "guesty")

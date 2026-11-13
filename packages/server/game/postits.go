@@ -95,8 +95,8 @@ func PostIt(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64) (room
 }
 
 // WritePostIt gives the post-it id of the room viewer is in a colour and a text (SETITEMDATA). A habbo that controls
-// the room writes (plans/server decision 0108). A text longer than game.postItMaxLength characters is refused
-// (plans/server decision 0109), and so is a colour the client's window does not have; a post.it.vd, which the client
+// the room writes (decision server/0108). A text longer than game.postItMaxLength characters is refused
+// (decision server/0109), and so is a colour the client's window does not have; a post.it.vd, which the client
 // always shows white, takes any colour, as Holo let it. The text and the colour are saved in one transaction, then
 // the room's copy changes and the room is told the colour.
 func WritePostIt(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64, colour, text string) error {
@@ -142,7 +142,7 @@ func WritePostIt(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64, 
 }
 
 // DeletePostIt takes the post-it id off the wall of the room viewer is in, for good (REMOVEITEM). The room's owner
-// deletes a note, and so does a holder of fuse_remove_stickies (plans/server decision 0108).
+// deletes a note, and so does a holder of fuse_remove_stickies (decision server/0108).
 func DeletePostIt(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64) error {
 	r, ok := room.In(viewer.ID)
 	if !ok || r.Ref().Public || !(owns(r, viewer) || hasFuse(viewer, auth.FuseRemoveStickies)) {

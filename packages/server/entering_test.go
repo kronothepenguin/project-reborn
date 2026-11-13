@@ -224,7 +224,7 @@ func TestEnteringAHabboRoom(t *testing.T) {
 	guest.expectNext(t, 34, statusLine(1, a, "flatctrl useradmin/"))
 }
 
-// The owner passes a password door without one; anyone else needs it (plans/server decision 0062).
+// The owner passes a password door without one; anyone else needs it (decision server/0062).
 func TestAPasswordDoor(t *testing.T) {
 	ownerID := habboWithTickets(t, "Keyholder", "keyholder")
 	habboWithTickets(t, "Guesser", "guesser")
@@ -310,7 +310,7 @@ func TestABannedHabboAndAFullRoom(t *testing.T) {
 	owner.knock(t, flat, "")
 	owner.expectNext(t, 41, "\x02")
 
-	// A full room queues the habbo in place of refusing it (plans/server decision 0087).
+	// A full room queues the habbo in place of refusing it (decision server/0087).
 	fill(t, room.Ref{ID: flat}, 2_000_000, 25)
 	squeezed.knock(t, flat, "")
 	squeezed.expectNext(t, 259, queueData(t, "room", 0, 0, "spectators", 0, 0))
@@ -382,7 +382,7 @@ func setString(t *testing.T, key, value string) {
 	})
 }
 
-// The loading ad and the room ad come from the settings, and 0 shows none (plans/server decision 0070).
+// The loading ad and the room ad come from the settings, and 0 shows none (decision server/0070).
 func TestTheAdsComeFromTheSettings(t *testing.T) {
 	habboWithTickets(t, "Adwatcher", "adwatcher")
 	c, _ := login(t, "adwatcher")

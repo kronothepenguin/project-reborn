@@ -220,7 +220,7 @@ func TestTheTransactionsWaitForASignIn(t *testing.T) {
 
 // An item voucher puts its furni in the active habbo's hand, as a purchase gives it: a teleport as a pair that name
 // each other, a pad of post-its with its 20 notes. The purse keeps its credits, and the ledger gets a row of 0
-// (plans/server decisions 0121 and 0125).
+// (decisions server/0121 and server/0125).
 func TestRedeemingAnItemVoucherFillsTheHand(t *testing.T) {
 	db, mux, _, userID := buyer(t, 10)
 	secondHabbo(t, db, userID, "FrankToo")

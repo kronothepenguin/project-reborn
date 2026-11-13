@@ -25,7 +25,7 @@ timestamp: 2026-11-09T23:05:00+00:00
 # Rules
 
 - A ticket counts only while its session has not expired and still has the ticket's habbo active
-  (`plans/server/decisions/0030-sso-tickets-from-the-cms-sign-in.md`).
+  (`knowledge/decisions/server/0030-sso-tickets-from-the-cms-sign-in.md`).
 - The game server spends a ticket once, by deleting it.
 
 # Related

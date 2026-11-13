@@ -44,7 +44,7 @@ func credits(t *testing.T, avatarID int64) int64 {
 }
 
 // A purchase takes the price from the user's wallet, writes it in the credit history and puts the furni in the
-// buyer's hand; with too few credits it changes nothing (plans/server/reference/r26/hh_cat_code.md, Buying).
+// buyer's hand; with too few credits it changes nothing (packages/server/knowledge/r26/hh_cat_code.md, Buying).
 func TestBuyingAFurniWithCredits(t *testing.T) {
 	spender := habboWithTickets(t, "Spender", "spender")
 	giveCredits(t, spender, 12)
@@ -129,7 +129,7 @@ func TestWhatAPurchaseLeavesInTheHand(t *testing.T) {
 	}
 }
 
-// Club Furni sells only to club members (plans/server decision 0102), and a page the habbo does not see sells it
+// Club Furni sells only to club members (decision server/0102), and a page the habbo does not see sells it
 // nothing.
 func TestWhoMayBuy(t *testing.T) {
 	outsider := habboWithTickets(t, "Outsider", "outsider")

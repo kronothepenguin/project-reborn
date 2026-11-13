@@ -30,13 +30,13 @@ const (
 	WrongPassword
 	// Banned is a habbo banned from the room.
 	Banned
-	// InQueue is a full room, whose queue the habbo joined (plans/server decision 0087).
+	// InQueue is a full room, whose queue the habbo joined (decision server/0087).
 	InQueue
 	// NoAnswer is a doorbell that nobody in the room can answer.
 	NoAnswer
 	// NoRoom is a room that does not exist, or one the habbo is not on its way into.
 	NoRoom
-	// Watching is a habbo that comes in as a spectator (plans/server decision 0089).
+	// Watching is a habbo that comes in as a spectator (decision server/0089).
 	Watching
 )
 
@@ -117,7 +117,7 @@ func ChooseRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo, ref room.Re
 // TryFlat answers the habbo at the door of the habbo room flatID, which it chose (TRYFLAT). A full room turns it away
 // unless it holds fuse_enter_full_rooms. Its owner and the holders of fuse_enter_locked_rooms pass any door and any
 // ban, as Holo had it; anyone else banned is turned away, a password door compares the password with the room's hash
-// (plans/server decision 0062), and a closed door rings the doorbell of the habbos with rights in the room. A room
+// (decision server/0062), and a closed door rings the doorbell of the habbos with rights in the room. A room
 // that is not loaded, or holds nobody who may answer, turns the ringer away at once, as Holo did when nobody was in.
 func TryFlat(ctx context.Context, db *sql.DB, viewer habbo.Habbo, flatID int64, password string) (Admission, error) {
 	ref := room.Ref{ID: flatID}
@@ -373,7 +373,7 @@ func visitorsOf(r *room.Room) []Visitor {
 
 // EnterRoom brings the habbo into the room whose door let it through, once its client has built the room (G_STAT),
 // as Holo did, and returns everyone in it, the habbo too, by index. The habbo that loads the room starts its clock
-// (plans/server decision 0072). The others and the spectators see it come. The room is checked again: one that filled
+// (decision server/0072). The others and the spectators see it come. The room is checked again: one that filled
 // meanwhile queues the habbo, InQueue, unless it holds fuse_enter_full_rooms or its queue let it in. A spectator only
 // watches: Watching. In a habbo room, its owner gets the status flatctrl useradmin, and a habbo with rights flatctrl
 // with no level, as flatControl says.
@@ -393,7 +393,7 @@ func EnterRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]Visitor, 
 		limit = 0
 	}
 	if h.Teleport != 0 {
-		// A teleport brings a habbo into a full room too (plans/server decision 0110).
+		// A teleport brings a habbo into a full room too (decision server/0110).
 		limit = 0
 	}
 	room.ClosePassage(viewer.ID)
@@ -471,9 +471,9 @@ func limitFor(ctx context.Context, db *sql.DB, viewer habbo.Habbo, ref room.Ref)
 }
 
 // LeaveRoom takes the habbo avatarID, whom s plays, out of the room it is in (QUIT), ending the event it hosts there
-// (plans/server decision 0081); and off the doorbell, the queues and the spectators of the room it heads for, or out of
+// (decision server/0081); and off the doorbell, the queues and the spectators of the room it heads for, or out of
 // the place kept for it, which lets the next habbo in. The others and the spectators see it go. When it was the last
-// one in, the room unloads (plans/server decision 0071): those still ringing are turned away, its spectators let go,
+// one in, the room unloads (decision server/0071): those still ringing are turned away, its spectators let go,
 // and those in its queues let in, since it has places now.
 func LeaveRoom(avatarID int64, s Session) {
 	if h, ok := room.ClearHeading(avatarID); ok {
@@ -490,7 +490,7 @@ func LeaveRoom(avatarID int64, s Session) {
 	}
 	broadcast(left.Room, RoomLeft{Index: left.Occupant.Index})
 	if left.Traded {
-		// The trade of a habbo that goes ends for the other, and nothing changed hands (plans/server decision 0092).
+		// The trade of a habbo that goes ends for the other, and nothing changed hands (decision server/0092).
 		endTrade(left.Room, left.Trade)
 	}
 	if !left.Unloaded {

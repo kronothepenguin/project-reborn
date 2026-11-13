@@ -28,7 +28,7 @@ timestamp: 2026-11-10T16:46:21+00:00
 # Notes
 
 - A deleted habbo room leaves its lines without a room, so that deleting a room never erases what was said in it
-  (`plans/server/decisions/0066-staff-read-the-chat-history-30-days.md`).
+  (`knowledge/decisions/server/0066-staff-read-the-chat-history-30-days.md`).
 
 # Related
 

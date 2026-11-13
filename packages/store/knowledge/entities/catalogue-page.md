@@ -17,17 +17,17 @@ header, its teasers and its numbered texts, and it sells [catalogue items](/enti
   page `Recycler`.
 - A habbo sees a page when the highest level of its access groups reaches `min_level`, or when the page is
   `open_to_club` and the habbo's user is a club member
-  (`plans/server/decisions/0100-sixteen-pages-need-level-7-and-two-the-club.md`).
+  (`knowledge/decisions/server/0100-sixteen-pages-need-level-7-and-two-the-club.md`).
 - A `club_only` page sells only to club members, and everyone who sees it may read it
-  (`plans/server/decisions/0102-club-furni-and-club-shop-sell-to-club-members.md`).
+  (`knowledge/decisions/server/0102-club-furni-and-club-shop-sell-to-club-members.md`).
 - A page's texts are numbered from 1, and the client lists them by number.
 
 # Lifecycle
 
 - The update [0013-catalogue.sql](/migrations/0013-catalogue.md) seeds Holo's pages, with six names in English
-  (`plans/server/decisions/0099-the-catalogues-page-names-are-english.md`) and without the pages that wait for S7
-  (`plans/server/decisions/0101-the-pages-of-s7s-furni-wait-for-s7.md`). Another update adds or changes one; no page of
-  the site edits them (`plans/server/decisions/0091-holos-catalogue-changed-by-updates.md`).
+  (`knowledge/decisions/server/0099-the-catalogues-page-names-are-english.md`) and without the pages that wait for S7
+  (`knowledge/decisions/server/0101-the-pages-of-s7s-furni-wait-for-s7.md`). Another update adds or changes one; no page of
+  the site edits them (`knowledge/decisions/server/0091-holos-catalogue-changed-by-updates.md`).
 
 # Vocabularies
 

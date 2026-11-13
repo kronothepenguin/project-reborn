@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { address as linkAddress, colours, faces, flatten, measure, offset, pointAt, quoteClass, read, sizes, smileyBase, write } from "../bbcode";
 
-  // A WYSIWYG editor of the BBCode the CMS renders (decision 0092). The area
+  // A WYSIWYG editor of the BBCode the CMS renders (decision holo-port/0092). The area
   // shows read's HTML and every change is written back as BBCode; after a
   // change of the toolbar, or a browser's change that leaves other markup, the
   // area is drawn again from that BBCode, so it only holds what the site can

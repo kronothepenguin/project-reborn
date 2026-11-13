@@ -10,8 +10,8 @@ import (
 )
 
 // The client's badge window sets five slots at once: a badge the habbo has, once, in the first slot that names it.
-// The room learns them in 228, the user lines and 229 carry them, and the store keeps them (plans/server decision
-// 0083).
+// The room learns them in 228, the user lines and 229 carry them, and the store keeps them (decision
+// server/0083).
 func TestWearingFiveBadges(t *testing.T) {
 	collectorID := habboWithTickets(t, "Decorated", "decorated", "decorated-again")
 	habboWithTickets(t, "Onlooker", "onlooker")

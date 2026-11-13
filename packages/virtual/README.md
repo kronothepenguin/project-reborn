@@ -50,7 +50,7 @@ The tests check that every default passes its validator and the rules, and that 
 ## habbo
 
 `packages/virtual/habbo` holds the habbos online in the game, each with the session that plays it
-(`plans/server/decisions/0047-online-habbos-in-virtual-habbo.md`). `game.Login` adds a habbo and `game.Logout` drops it;
+(`knowledge/decisions/server/0047-online-habbos-in-virtual-habbo.md`). `game.Login` adds a habbo and `game.Logout` drops it;
 nothing here reads or writes the database.
 
 ```go
@@ -61,11 +61,11 @@ if ok {
 ```
 
 - `Session` is the interface every protocol's session implements, `Notify(event any)`, and `game.Session` is the same
-  interface (`plans/server/decisions/0048-sessions-through-an-interface-virtual-declares.md`). Sessions are compared by
+  interface (`knowledge/decisions/server/0048-sessions-through-an-interface-virtual-declares.md`). Sessions are compared by
   identity, so a session is a pointer.
 - `Habbo` is what the login read of the habbo: its `store.Avatar`, its badges, those it wears in its five slots, `Worn`,
   its sound setting, its ignore list, `Ignored`, its favourite `Group`, and its fuses
-  (`plans/server/decisions/0053-the-online-habbo-holds-its-own-data.md`), and its `Session`. The wallet and the club,
+  (`knowledge/decisions/server/0053-the-online-habbo-holds-its-own-data.md`), and its `Session`. The wallet and the club,
   which the user's habbos share, stay in the store.
 - `Get(avatarID) (Habbo, bool)` returns a copy of an online habbo; changing the copy changes nothing online.
 - `Update(avatarID, s, change) bool` runs `change` on the online habbo while `s` plays it, after the store has the
@@ -79,8 +79,8 @@ if ok {
 ## category, model and room
 
 The navigator's shared data, loaded when the server starts and kept
-(`plans/server/decisions/0060-virtual-category-model-and-room.md`): `server.New` calls each `Load(ctx, db)`, at once or
-once the database updates waiting are applied (`plans/server/decisions/0064-the-navigator-loads-once-the-updates-are-applied.md`).
+(`knowledge/decisions/server/0060-virtual-category-model-and-room.md`): `server.New` calls each `Load(ctx, db)`, at once or
+once the database updates waiting are applied (`knowledge/decisions/server/0064-the-navigator-loads-once-the-updates-are-applied.md`).
 A load swaps in a whole new copy, so a reader never sees half of one, and the getters take no lock.
 
 ```go
@@ -109,7 +109,7 @@ go test ./... -race
 ## furni and catalogue
 
 What each furni is and what the catalogue sells, loaded when the server starts and kept
-(`plans/server/decisions/0098-virtual-furni-and-catalogue.md`): `server.New` calls `furni.Load(ctx, db)` and then
+(`knowledge/decisions/server/0098-virtual-furni-and-catalogue.md`): `server.New` calls `furni.Load(ctx, db)` and then
 `catalogue.Load(ctx, db)`, with the navigator's shared data. A load swaps in a whole new copy, so a reader never sees
 half of one, and the getters take no lock.
 
@@ -131,7 +131,7 @@ for _, p := range catalogue.Pages() {
   and its `Items`, each with the `Furni` it gives, a definition and an amount. `Item.Deal()` tells a deal, an item that
   gives more than one piece.
 - `furni.Create(ctx, q, sprite, piece)` creates what a habbo gets for one furni, as a purchase, an item voucher or any
-  other gift gives it (`plans/server/decisions/0125-an-item-voucher-gives-what-buying-gives.md`): the piece, a pad of
+  other gift gives it (`knowledge/decisions/server/0125-an-item-voucher-gives-what-buying-gives.md`): the piece, a pad of
   post-its with its 20 notes, or a teleport with the other of its pair. It writes through `q`, in the caller's
   transaction, and reads nothing from memory, so the site calls it too. `IsTeleport`, `IsPostIt` and `IsDecoration` tell
   those furni by their sprite.
@@ -142,9 +142,9 @@ for _, p := range catalogue.Pages() {
 ## Loaded rooms
 
 `packages/virtual/room` also holds the rooms in use, with the habbos in them, only in memory
-(`plans/server/decisions/0009-virtual-holds-the-server-state.md`, `plans/server/decisions/0011-saved-and-memory-only-data.md`).
+(`knowledge/decisions/server/0009-virtual-holds-the-server-state.md`, `knowledge/decisions/server/0011-saved-and-memory-only-data.md`).
 A room loads with its first habbo and unloads with its last
-(`plans/server/decisions/0071-an-empty-room-unloads-at-once.md`).
+(`knowledge/decisions/server/0071-an-empty-room-unloads-at-once.md`).
 
 ```go
 r, o, loaded, err := room.Enter(ctx, db, room.Ref{ID: flatID}, h.ID, h.Session, limit)
@@ -163,7 +163,7 @@ left, ok := room.Leave(h.ID, h.Session)
 - `Enter(ctx, db, ref, avatarID, s, limit)` puts the habbo at the room's door, at the model's door tile, height and
   direction, with the smallest index nobody in the room holds, from 0, as Holo gave it. A room that is not loaded loads
   first: its floor from its model, and a habbo room's rights and bans in force from `db`
-  (`plans/server/decisions/0009-virtual-holds-the-server-state.md`); `loaded` tells. It refuses a habbo who is in a room
+  (`knowledge/decisions/server/0009-virtual-holds-the-server-state.md`); `loaded` tells. It refuses a habbo who is in a room
   already (`ErrInRoom`), a room that holds `limit` habbos or more (`ErrFull`, never when `limit` is 0) and a room that does
   not exist (`ErrNoRoom`).
 - `Leave(avatarID, s)` takes the habbo out while `s` plays it. The last one out unloads the room: `Done()` closes, and
@@ -172,7 +172,7 @@ left, ok := room.Leave(h.ID, h.Session)
 - `Head(avatarID, ref)`, `Admit(avatarID, ref)`, `HeadingOf(avatarID)` and `ClearHeading(avatarID)` keep the room a
   habbo is on its way into and whether its door let it through, only in memory. `Admit` admits a habbo only into the
   room it heads for, so that a late answer never lets it in elsewhere.
-- A `Room` holds its open trades (`plans/server/decisions/0092-a-trade-lives-only-in-memory.md`): `OpenTrade(avatarID,
+- A `Room` holds its open trades (`knowledge/decisions/server/0092-a-trade-lives-only-in-memory.md`): `OpenTrade(avatarID,
   index)` between two of its habbos, `OfferFurni`, `AcceptTrade`, `TradeOf` and `CloseTrade`. A `Trade` has two
   `TradeSide`s, each with its habbo, its accept and the furni it offers, by id. `Leave` ends the trade of the habbo
   that goes and returns it in `Left.Trade`.
@@ -183,15 +183,15 @@ left, ok := room.Leave(h.ID, h.Session)
   `Occupants()`, by index, and `Occupant(avatarID)`; `Update(avatarID, change)`, which changes a habbo's place and
   statuses but never its id, session or index; the copies of its rights and bans, `HasRights`, `SetRights`, `BanEnd` and
   `Ban`, which the rules change once the store has the change
-  (`plans/server/decisions/0010-hot-data-written-at-once.md`); four lines, `Doorbell`, `Queue`, `Spectators` and
+  (`knowledge/decisions/server/0010-hot-data-written-at-once.md`); four lines, `Doorbell`, `Queue`, `Spectators` and
   `SpectatorQueue`, with `Join`, `Remove`, `Waiting` and `LineOf`
-  (`plans/server/decisions/0069-doorbell-queue-and-spectators-in-memory.md`); `Reserve`, `Unreserve`, `Reserved` and
+  (`knowledge/decisions/server/0069-doorbell-queue-and-spectators-in-memory.md`); `Reserve`, `Unreserve`, `Reserved` and
   `Taken`, for the places a queue keeps for the habbos it lets in; and `Max`, the room's limit, which `SetMax` changes.
 - An `Occupant` also holds its walk, `Walking` to `GoalX`, `GoalY`; `Changed`, which asks the room's clock to send its
-  status (`plans/server/decisions/0072-each-loaded-room-runs-its-own-clock.md`); `Typing`; and `Leaving`, a kicked or
+  status (`knowledge/decisions/server/0072-each-loaded-room-runs-its-own-clock.md`); `Typing`; and `Leaving`, a kicked or
   banned habbo walking out. A `Status` may end, `Until`, as talking and waving do. `Tick(step)` runs the clock's step on
   every habbo at once, by index, under the room's lock, and returns the statuses `step` hands back.
-- A loaded room holds its event, which lives only in memory (`plans/server/decisions/0081-eleven-room-event-types.md`):
+- A loaded room holds its event, which lives only in memory (`knowledge/decisions/server/0081-eleven-room-event-types.md`):
   `Event`, `SetEvent` and `EndEvent`; `All()` returns the loaded rooms, for the navigator's list of events.
 - Once a room unloads, its methods change nothing and report false, so a rule holding an old `*Room` cannot bring it
   back.

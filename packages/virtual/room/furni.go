@@ -130,7 +130,7 @@ func (r *Room) FloorWithout(id int64) Floor {
 }
 
 // SetFurni stands item in the room's copy, in place of the furni of its id if the room has one, once the store has
-// the change (plans/server decision 0010), and reports whether it did.
+// the change (decision server/0010), and reports whether it did.
 func (r *Room) SetFurni(item Furni) bool {
 	r.mu.Lock()
 	defer r.mu.Unlock()

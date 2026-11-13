@@ -52,8 +52,8 @@ type Occupant struct {
 	BodyDirection int
 	// Statuses are the habbo's actions, in the order they were set.
 	Statuses []Status
-	// Walking reports whether the habbo walks to GoalX, GoalY, a step on each tick of the room's clock (plans/server
-	// decisions 0065 and 0072).
+	// Walking reports whether the habbo walks to GoalX, GoalY, a step on each tick of the room's clock (decisions
+	// server/0065 and server/0072).
 	Walking      bool
 	GoalX, GoalY int
 	// Changed asks the room's clock to send the habbo's status on its next tick.
@@ -61,7 +61,7 @@ type Occupant struct {
 	// Typing reports whether the habbo types a line.
 	Typing bool
 	// Leaving reports whether the habbo walks out of the room, kicked or banned, and may walk nowhere else
-	// (plans/server decision 0079).
+	// (decision server/0079).
 	Leaving bool
 	// Carry is the drink the habbo carries, with an empty Item for none.
 	Carry Carry
@@ -73,7 +73,7 @@ func (o Occupant) clone() Occupant {
 }
 
 // Waiting is a habbo at a room's doorbell, in its queues or among its spectators. Club tells a club member, who comes
-// first in a queue (plans/server decision 0088).
+// first in a queue (decision server/0088).
 type Waiting struct {
 	AvatarID int64
 	Session  habbo.Session
@@ -92,7 +92,7 @@ const (
 	lines
 )
 
-// Room is a loaded room (plans/server decisions 0009, 0060 and 0069). Its methods may be called from several
+// Room is a loaded room (decisions server/0009, server/0060 and server/0069). Its methods may be called from several
 // goroutines at once and return copies. Once the room unloads, its methods change nothing and report false.
 type Room struct {
 	ref   Ref
@@ -268,7 +268,7 @@ type Left struct {
 }
 
 // Leave takes the habbo avatarID out of its room while s plays it, and unloads the room when the habbo was the last
-// one in it (plans/server decision 0071). It reports false when the habbo is in no room, or another session plays it.
+// one in it (decision server/0071). It reports false when the habbo is in no room, or another session plays it.
 func Leave(avatarID int64, s habbo.Session) (Left, bool) {
 	mu.Lock()
 	defer mu.Unlock()
@@ -418,8 +418,8 @@ func (r *Room) HasRights(avatarID int64) bool {
 	return r.rights[avatarID]
 }
 
-// SetRights gives or takes the habbo avatarID's rights in the room's copy, once the store has the change (plans/server
-// decision 0010), and reports whether the room is still loaded.
+// SetRights gives or takes the habbo avatarID's rights in the room's copy, once the store has the change (decision
+// server/0010), and reports whether the room is still loaded.
 func (r *Room) SetRights(avatarID int64, on bool) bool {
 	r.mu.Lock()
 	defer r.mu.Unlock()

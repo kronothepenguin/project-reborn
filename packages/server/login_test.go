@@ -117,7 +117,7 @@ func eventually(t *testing.T, what string, done func() bool) {
 	}
 }
 
-// The bytes of plans/server/reference/r26/hh_entry_init.md, from HELLO to LOGIN_OK, with the default session
+// The bytes of packages/server/knowledge/r26/hh_entry_init.md, from HELLO to LOGIN_OK, with the default session
 // parameters: every flag 0 but profile editing, the date format dd-mm-yyyy and an empty tracking header. Every habbo's
 // fuses come before LOGIN_OK.
 func TestTheHandshakeAndTheLoginInBytes(t *testing.T) {
@@ -162,7 +162,7 @@ func TestTheVersionCheckTakesTheSitesURLs(t *testing.T) {
 }
 
 // A wrong client gets 33 Version not correct, and the server closes the connection before it answers the
-// GET_SESSION_PARAMETERS that came with the check (decision 0049).
+// GET_SESSION_PARAMETERS that came with the check (decision server/0049).
 func TestAWrongClientIsClosedAfterItsError(t *testing.T) {
 	site := settings.GetString("site.url")
 	for name, check := range map[string]string{
@@ -215,7 +215,7 @@ func TestTryLoginIsAlwaysIncorrect(t *testing.T) {
 }
 
 // A second login ends the first session with 287, reason 2, and closes it; the habbo stays online on the second
-// until that one leaves (decision 0029).
+// until that one leaves (decision server/0029).
 func TestASecondLoginEndsTheFirstSession(t *testing.T) {
 	id := habboWithTickets(t, "Twice", "twice-1", "twice-2")
 	first, _ := login(t, "twice-1")

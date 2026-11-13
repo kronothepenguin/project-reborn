@@ -152,7 +152,7 @@ func TestWriteGeneratesTheBackendShape(t *testing.T) {
 	}
 }
 
-// A client is a plain Vite app (plans/server decision 0018): Vite's default
+// A client is a plain Vite app (decision server/0018): Vite's default
 // build takes index.html as its entry, so the config holds only the port.
 // It has nothing in apps/ and no Go.
 func TestWriteGeneratesTheClientShape(t *testing.T) {
@@ -238,8 +238,8 @@ func checkFormatted(t *testing.T, root string) {
 }
 
 // A Go package name cannot hold a dash, so game-server holds package
-// gameserver, while its folders and module paths keep the dash (plans/server
-// decision 0024). The runner names the import, as goimports writes an import
+// gameserver, while its folders and module paths keep the dash (decision
+// server/0024). The runner names the import, as goimports writes an import
 // whose package is not named after the last element of its path.
 func TestWriteDropsTheDashFromThePackageName(t *testing.T) {
 	const imp = `gameserver "github.com/kronothepenguin/project-reborn/packages/game-server"`

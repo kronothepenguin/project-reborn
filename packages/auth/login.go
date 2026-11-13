@@ -167,7 +167,7 @@ func start(w http.ResponseWriter, r *http.Request, db *sql.DB, login store.GetLo
 
 	// The ticket is best-effort: sso_tickets keeps its old form while update 0008
 	// waits for an administrator, and the client page makes one whenever none is
-	// valid (plans/server decision 0043).
+	// valid (decision server/0043).
 	ticket, _ := newToken()
 	err = q.CreateSSOTicket(ctx, store.CreateSSOTicketParams{ID: ticket, SessionID: id, AvatarID: login.AvatarID, IP: ip, CreatedAt: now})
 	if err != nil {
@@ -246,7 +246,7 @@ func SwitchHabbo(ctx context.Context, db *sql.DB, avatarID int64) error {
 // the user's inventory, a note without its text, and the background stays: it is
 // the user's, whichever homes show it. The furni in its hand and in its recycler
 // goes to the user's shared inventory, its recycling ends, and its rooms are the
-// session's habbo's, their furni in place (plans/server decision 0124).
+// session's habbo's, their furni in place (decision server/0124).
 func ArchiveHabbo(ctx context.Context, db *sql.DB, avatarID int64) error {
 	session, ok := FromContext(ctx)
 	if !ok {

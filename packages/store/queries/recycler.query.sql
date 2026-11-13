@@ -13,7 +13,7 @@ VALUES (sqlc.arg(avatar_id), sqlc.arg(furni_definition_id), sqlc.arg(started_at)
 DELETE FROM recyclings WHERE avatar_id = sqlc.arg(avatar_id);
 
 -- Out of the habbo's hand and into its recycler: no row changes when the hand does not hold the furni, or when the
--- furni was made after made_before (plans/server decision 0117).
+-- furni was made after made_before (decision server/0117).
 -- name: RecycleFurni :execrows
 UPDATE furni
 SET avatar_id = NULL, recycler_avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER)

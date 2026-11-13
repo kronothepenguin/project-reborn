@@ -96,11 +96,11 @@ serves the built frontend from the embedded `dist/`.
 - `/account/habbos` adds habbos up to `registration.maxHabbosPerUser`, switches the
   session's active one, and archives the others with the user's password. All the habbos of a user share one wallet and one club
   membership. Archiving a habbo sends the furni of its hand and of its recycler to the user's shared inventory and gives
-  its rooms to the active habbo (`plans/server/decisions/0124-an-archived-habbos-rooms-move-to-the-active-habbo.md`).
+  its rooms to the active habbo (`knowledge/decisions/server/0124-an-archived-habbos-rooms-move-to-the-active-habbo.md`).
 - `/account/furni` is the shared inventory, the furni of the user that no habbo holds, a row for each kind with how
   many there are. `POST /account/furni/take` moves the kind named by `furni`, or everything without it, to the active
-  habbo's hand; shared furni moves one way (`plans/server/decisions/0122-the-shared-inventory-is-an-account-page.md`,
-  `plans/server/decisions/0123-take-moves-a-kind-of-furni-or-all.md`).
+  habbo's hand; shared furni moves one way (`knowledge/decisions/server/0122-the-shared-inventory-is-an-account-page.md`,
+  `knowledge/decisions/server/0123-take-moves-a-kind-of-furni-or-all.md`).
 - Islands get no `[[ ]]` values, so the page keeps the name and the look in
   inputs that Go fills in. `habbo/avatar-editor` reads the hidden `figure`,
   `gender` and `editorState` inputs on start and writes every change back, which

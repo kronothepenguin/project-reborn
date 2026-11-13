@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS wallets (
 );
 
 -- Every change of wallets.credits writes one row here in the same transaction.
--- An item voucher changes none and writes a row of 0 credits (plans/server decision 0121).
+-- An item voucher changes none and writes a row of 0 credits (decision server/0121).
 -- avatar_id is the habbo that acted, and NULL when none did.
 CREATE TABLE IF NOT EXISTS wallet_transactions (
     id INTEGER PRIMARY KEY,
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS wallet_transactions (
 
 CREATE INDEX IF NOT EXISTS idx_wallet_transactions_user_id_created_at ON wallet_transactions(user_id, created_at);
 
--- A voucher gives credits or one furni, never both (plans/server decision 0120).
+-- A voucher gives credits or one furni, never both (decision server/0120).
 CREATE TABLE IF NOT EXISTS vouchers (
     code TEXT NOT NULL COLLATE NOCASE PRIMARY KEY,
     credits INTEGER NOT NULL DEFAULT 0 CHECK (credits >= 0),

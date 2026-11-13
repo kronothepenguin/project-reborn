@@ -127,8 +127,8 @@ UPDATE rooms SET floor = sqlc.arg(pattern), updated_at = sqlc.arg(updated_at) WH
 -- name: SetRoomLandscape :execrows
 UPDATE rooms SET landscape = sqlc.arg(pattern), updated_at = sqlc.arg(updated_at) WHERE id = sqlc.arg(id);
 
--- The rooms of a habbo that goes are another habbo's, their furni in place and their creator kept (plans/server
--- decision 0124).
+-- The rooms of a habbo that goes are another habbo's, their furni in place and their creator kept (decision
+-- server/0124).
 -- name: MoveRoomsToAvatar :exec
 UPDATE rooms
 SET owner_avatar_id = sqlc.arg(to_avatar_id), updated_at = sqlc.arg(updated_at)

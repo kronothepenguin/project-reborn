@@ -114,7 +114,7 @@ func TestUserEmailsAreUniqueIgnoringCase(t *testing.T) {
 	}
 }
 
-// A habbo wears one badge at most in each of its five slots, and 0 is no slot (plans/server decision 0083).
+// A habbo wears one badge at most in each of its five slots, and 0 is no slot (decision server/0083).
 func TestHabboWearsOneBadgeASlot(t *testing.T) {
 	db := openTestDB(t)
 	ctx := t.Context()

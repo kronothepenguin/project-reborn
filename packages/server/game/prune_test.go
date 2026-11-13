@@ -8,7 +8,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
-// The chat history keeps game.chatHistoryDays, 30, and PruneChat deletes what is older (plans/server decision 0084).
+// The chat history keeps game.chatHistoryDays, 30, and PruneChat deletes what is older (decision server/0084).
 func TestPruneChatKeepsThirtyDays(t *testing.T) {
 	db := openDB(t)
 	q := store.New(db)
