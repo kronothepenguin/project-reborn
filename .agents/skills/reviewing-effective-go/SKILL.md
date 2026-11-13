@@ -5,35 +5,26 @@ description: Reviews Go code against Effective Go (formatting, names, control fl
 
 # Reviewing Effective Go
 
-Review Go code against the [Effective Go](https://go.dev/doc/effective_go) checklist and report violations with exact `file:line` references. Do not rewrite files during a review unless the user asks for fixes.
-
-## Scope boundary: use-modern-go
-
-Effective Go governs design and style that does not change with Go versions. For idioms that are newer than Effective Go (generics, `any`, `slices`/`maps` helpers, `errors.Is`/`errors.As`/`errors.AsType`, `min`/`max`, `strings.Cut`, `range` over int, ...) the `use-modern-go` skill is authoritative.
-
-Do not flag modern idioms just because an old Effective Go example predates them:
-
-- `any` where the page shows `interface{}`.
-- `slices.SortFunc`/`slices.Contains` where the page writes manual loops.
-- `errors.Is(err, io.EOF)` where the page compares with `==`.
-- `for range n` instead of `for i := 0; i < n; i++`.
+Review Go code against the [Effective Go](https://go.dev/doc/effective_go) checklist and report each departure with its
+exact `file:line`. Edit files only when the user asks for fixes.
 
 ## Workflow
 
-Copy this checklist and check items off as you go:
+Copy this checklist and tick each step:
 
 ```
 Effective Go review:
 - [ ] 1. Read references/checklist.md
 - [ ] 2. Read the code under review
-- [ ] 3. Apply only the sections that match the code
+- [ ] 3. Apply the sections that match the code
 - [ ] 4. Report findings as file:line — rule — concrete fix
-- [ ] 5. Re-check every claimed rule against the checklist before reporting
+- [ ] 5. Re-check each finding against its checklist item
 ```
 
-1. Read [references/checklist.md](references/checklist.md). It follows the guide's section order; apply the sections that match the code.
-2. Read the target files. If none are given, ask which package to review.
-3. Report findings in this shape, most severe first:
+1. Read [references/checklist.md](references/checklist.md). It follows the guide's order. Each item is what good code
+   does; report the code that departs from it.
+2. Read the target files. When none are given, ask which package to review.
+3. Report the findings most severe first. ALWAYS use this structure:
 
 ```markdown
 ## Findings
@@ -41,11 +32,15 @@ Effective Go review:
 - `path/file.go:42` — **Getters** ([#Getters](https://go.dev/doc/effective_go#Getters)) — `GetOwner` breaks the getter convention; rename it to `Owner`.
 ```
 
-If nothing violates the checklist, say so explicitly and list the sections checked.
+When the code meets the checklist, say so and list the sections checked.
 
 ## Gotchas
 
-- Report only what the checklist supports. This skill is a checklist, not general Go advice.
-- The most common false positive is method sets: a value of type `T` cannot use methods declared on `*T` to satisfy an interface. Check the receiver before reporting.
-- A missing doc comment on an exported identifier is a valid finding; unexported code does not need one.
-- Do not report a rule twice when two sections cover it (for example embedded structs appear in both interfaces and embedding). Cite the most specific anchor once.
+- Idioms newer than the guide belong to the `use-modern-go` skill. Accept them; the checklist's first section lists
+  them.
+- Report only what a checklist item states.
+- Method sets: a value of type `T` has the methods of `T` only; a `*T` has the methods of `T` and `*T`. Check the
+  receiver before reporting an interface finding.
+- Report a missing doc comment on exported identifiers only.
+- Report each problem once, under its most specific anchor. Embedded structs, for example, appear in Interfaces and in
+  Embedding.
