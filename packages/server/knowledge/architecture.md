@@ -69,8 +69,7 @@ protocol: it finds them in `virtual/habbo` and calls each one's `Session.Notify`
 session's protocol turns into its messages (0039 (`knowledge/decisions/server/0039-rules-notify-sessions-through-an-interface.md`),
 0048 (`knowledge/decisions/server/0048-sessions-through-an-interface-virtual-declares.md`)).
 
-Until S7 frames MUS, the `mus` listener accepts the WebSocket, logs the connect, the
-size of each message and the close, and never answers (0023 (`knowledge/decisions/server/0023-mus-listener-before-s7.md`)).
+The steps in detail, the `mus` listener and the outbox: [A connection](/connection.md).
 
 # Running alone
 
@@ -78,9 +77,12 @@ size of each message and the close, and never answers (0023 (`knowledge/decision
 and starts the WebSocket listener of each connection, on its host and port, with `StartInfo` and `StartMus`
 (0020 (`knowledge/decisions/server/0020-info-and-mus-websocket-ports.md`), 0022 (`knowledge/decisions/server/0022-start-info-and-start-mus.md`)).
 
+In development, `make dev` runs air, which watches the `.go` files of `apps/server`, `packages/server`,
+`packages/config` and `packages/store` (`apps/server/.air.toml`) and rebuilds the runner on each change.
+
 # Running together
 
-Under the orchestrator (`plans/later.md`), one process runs the installer, the CMS, housekeeping and the server. The
+Under the orchestrator (`knowledge/features/platform/later.md`), one process runs the installer, the CMS, housekeeping and the server. The
 server keeps a WebSocket listener on the host and port of each connection, which the orchestrator starts with the
 same `StartInfo` and `StartMus` (0022 (`knowledge/decisions/server/0022-start-info-and-start-mus.md`)), and WebSocket paths on the
 orchestrator's mux wait for later, as TCP does (0020 (`knowledge/decisions/server/0020-info-and-mus-websocket-ports.md`)). The CMS and

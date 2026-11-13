@@ -12,6 +12,7 @@
 - [Furnis](furnis/index.md)
 - [Games](games/index.md)
 - [Habbos](habbos/index.md)
+- [Hotel login](hotel-login/index.md)
 - [Hotel settings](hotel-settings/index.md)
 - [Installer](installer/index.md)
 - [Look and feel](look-and-feel/index.md)

@@ -7,6 +7,25 @@ generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [client, protocol, r26]
 ---
 
+# The package
+
+`@project-reborn/client-r26`, a Vite project that depends on `@project-reborn/director` (`packages/director`).
+
+| Path | Holds |
+| --- | --- |
+| `src/game/<cast>/` | The 63 folders of the client: `habbo`, the movie, with its `Casts.csv` of 73 cast slots; `fuse_client`; and the `hh_*` casts |
+| `src/game/habbo/index.js`, `src/game/fuse_client/index.js` | Movie and cast packs that `packages/director/scripts/generate-pack.mjs` generated from `Casts.csv` and `Members.csv` |
+| `src/main.js`, `src/worker.js` | Empty files; `src/main.js` is the entry of `index.html` and of the library build |
+| `index.html` | An `<x-object>` of 720 × 540 whose `src` is `/src/game/habbo/index.js`, with `<x-param>`s `sw1` to `sw9`: the external variables, `connection.info.port=30000` and `connection.mus.port=30001` among them |
+| `vite.config.js` | Vite's library mode: `src/main.js` into `dist/main.es.js` and `dist/main.umd.js`, whose global name is `_director`; and `define`s that read `VITE_*` variables of the environment |
+| `vitest.config.js` | jsdom tests under `src/director/**/__tests__/` |
+| `public/` | `favicon.svg` and `icons.svg` |
+
+The cast folders hold 414 `.ls` scripts, each beside its `.js` translation, and the casts' media: bitmaps (`.png`),
+sounds (`.wav`) and texts (`.txt`, `.rtf`, `.htm`).
+
+Commands, from `packages/client-r26`: `pnpm dev`, `pnpm build`, `pnpm preview` and `pnpm test`.
+
 # Where it is
 
 `packages/client-r26/src/game/` holds the R26 Shockwave client, one folder per cast: the decompiled Lingo scripts
@@ -133,7 +152,8 @@ hh_entry_init (`packages/server/knowledge/r26/hh_entry_init.md#the-handshake`) c
 
 # Protocol reference format
 
-S1 writes one document per cast, `/reference/r26/<cast>.md`, listed in `/reference/r26/index.md`:
+S1 wrote one document per cast, `packages/server/knowledge/r26/<cast>.md`, listed in
+`packages/server/knowledge/r26/index.md`:
 
 ```markdown
 ---
