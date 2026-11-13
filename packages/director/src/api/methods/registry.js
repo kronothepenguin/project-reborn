@@ -3,9 +3,7 @@
 // owner ∈ movie | player | sound | key | mouse | system | global | member |
 //           castLib | sprite | channel | window | net | creator | top
 //
-// Built from director_core_objects.txt method summaries (see
-// specs/archive/006-api/research.md) + the api/methods file set; the
-// consolidated contract is specs/015-director-runtime/spec.md (FR-043/R-24).
+// Built from the director_core_objects.txt method summaries and the api/methods file set.
 // The audit test asserts: every file in methods/ has an entry,
 // the entry matches the `// @owner` header at the top of the file, and the set
 // is exactly the files present (no strays).
