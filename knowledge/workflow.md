@@ -26,13 +26,15 @@ knowledge its slave needs.
 # A feature
 
 - `spec.md` is what to build. Frontmatter: `type: Spec`, `title`, `description`, `status` (`planned`, `active`, `done`
-  or `parked`) and `projects` (the repo folders it touches). Body: `# What`, `# Behaviours` (one line each: a
-  situation, an action, an outcome) and `# Open questions` while any remain.
+  or `parked`) and `projects` (the repo folders it touches, including folders the feature creates, such as
+  `packages/reborn`). Body: `# What`, `# Behaviours` (one line each: a situation, an action, an outcome) and
+  `# Open questions` while any remain.
 - `plan.md` is how to build it. Frontmatter: `type: Plan`, `title`, `description`. Body: `# Architecture` (which
   project does what) and `# Decisions` (each decision of the user with its reason).
 - `tasks/NN-<slug>.md` is one task. Frontmatter: `type: Task`, `title` (imperative), `description`, `scope` (the repo
-  folders it changes), `depends_on` (task names of the same feature, `[]` when none) and `skills` (the skills its slave
-  loads). Body: `# Goal`, `# Context`, `# Steps` and `# Checks`.
+  folders it changes), `depends_on` (`NN-<slug>` for a task of the same feature, `<feature>/NN-<slug>` for a task of
+  another feature, `[]` when none) and `skills` (the skills its slave loads). Body: `# Goal`, `# Context`, `# Steps`
+  and `# Checks`.
 
 A task is ready when every task in its `depends_on` is gone. A task is taken when the worktree `<feature>-<NN>` exists.
 A task is done when its slave deletes its file, so `tasks/` shows the work that is left.
