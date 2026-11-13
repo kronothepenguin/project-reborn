@@ -12,7 +12,7 @@ skill only when the user asks for fixes.
 
 Copy this checklist and tick each step:
 
-```
+```text
 Skill review:
 - [ ] 1. Read SKILL.md and list every file of the bundle
 - [ ] 2. Run the validator
@@ -55,7 +55,8 @@ Skill review:
 ## Gotchas
 
 - The validator decides the mechanics; the checklists hold the judgment. Each finding comes from one of them.
-- The validator reads prose only: it skips code spans, code blocks and blockquotes. Read each hit in context.
+- The validator reads prose only: it skips code spans, code blocks and blockquotes, and checks links outside code.
+  Read each hit in context.
 - A long `SKILL.md` is a finding only when part of it belongs in a reference.
 - Flag a missing pattern (scripts, gotchas, templates, evals) only when the skill's task calls for it.
 - Scope: this review judges authoring and structure. Domain correctness belongs to a domain review skill.

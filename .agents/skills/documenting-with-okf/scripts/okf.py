@@ -110,7 +110,7 @@ def render(bundle, dirpath, dirs, files, current):
         description = fields.get("description")
         lines.append(f"- [{label}]({name})" + (f" - {description}" if description else ""))
     for d in dirs:
-        lines.append(f"- [{title(d)}]({d}/index.md)")
+        lines.append(f"- [{d}/]({d}/index.md)")
     return head + "\n".join(lines).rstrip("\n") + "\n"
 
 

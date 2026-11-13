@@ -4,4 +4,4 @@
 
 - [The client in the browser: how](plan.md) - The CMS ports Holo's client page onto LibreShockwave; the client's files and the JavaScript client follow.
 - [The client in the browser](spec.md) - A signed-in habbo opens the site's client page, where the R26 client runs on LibreShockwave; one program serves the client's files; and later the client runs in vanilla JavaScript.
-- [Tasks](tasks/index.md)
+- [tasks/](tasks/index.md)
