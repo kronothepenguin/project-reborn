@@ -39,6 +39,8 @@ knowledge its slave needs.
 A task is ready when every task in its `depends_on` is gone. A task is taken when the worktree `<feature>-<NN>` exists.
 A task is done when its slave deletes its file, so `tasks/` shows the work that is left.
 
+Only one task at a time changes the [shared files](/shared-files.md).
+
 A feature keeps `spec.md` and `plan.md` for good. A change to a feature edits them and adds tasks. Built features are
 documented the same way. One project or many, the shape is the same, and tasks of different projects run in parallel.
 

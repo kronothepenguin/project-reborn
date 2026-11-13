@@ -13,3 +13,12 @@ description: The outside code and files the project reads, and what each is read
 | `packages/client-r26/src/game/` | The R26 client's casts: their Lingo scripts (`.ls`) beside their JavaScript translations | The game's protocol, which comes from the `.ls` scripts only ([0008](/decisions/server/0008-reverse-engineer-ls-only.md)) |
 | `vendor/LibreShockwave/` | LibreShockwave, a Shockwave player, decompiler and SDK in C++ with a WebAssembly player, under the AGPL-3.0, a git submodule | The `#mus` framing ([0015](/decisions/server/0015-client-on-libreshockwave.md)), and the client, which runs the `.dcr` on it ([0003](/decisions/client/0003-libreshockwave-submodule.md)) |
 | `vendor/HabboWidgets/` | Habbo's Flash widgets ported to HTML5, a git submodule | The landing promo, the registration's look editor and the group badge editor |
+
+# Reading the sources
+
+- The game's protocol comes from the client's `.ls` scripts only
+  ([server 0008](/decisions/server/0008-reverse-engineer-ls-only.md)). 295 of the 414 `.ls` files end their lines with
+  CR alone: read them through `tr '\r' '\n' < "<file>"`.
+- `source/holoemu/` is read only when the scripts leave a question open, and nothing is ported from it
+  ([server 0016](/decisions/server/0016-holoemu-is-a-reference.md)). Its files, and those of `source/holocms/`, are
+  Latin-1 with CRLF: read them through `tr -d '\r' < "<file>"`, and search them with `grep -a`.

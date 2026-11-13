@@ -19,7 +19,7 @@ tags: [client, cms, libreshockwave]
 - A spike comes first: the `.dcr` on LibreShockwave's player logs in to the game server, which tells whether
   LibreShockwave runs the client's login-key code
   (`plans/client/phases/c1-client-page-on-libreshockwave.md`, the last open question).
-- How the hotel offers LibreShockwave's source to players waits for the assets slice (`plans/reborn/slices/assets.md`).
+- How the hotel offers LibreShockwave's source to players waits for the [assets slice](/features/assets/spec.md).
 
 # Context
 

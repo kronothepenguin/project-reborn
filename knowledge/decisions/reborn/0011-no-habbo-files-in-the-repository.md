@@ -14,8 +14,8 @@ tags: [assets, client, repository]
   data, images, the decompiled scripts, and Holo's sources where they carry Habbo's images.
 - A tool fetches them from an archive such as h4bbo.net/archive/, each file pinned by its address and checksum, into
   folders git ignores. The programs serve them from disk instead of embedding them.
-- The history is rewritten once to remove them, and pushed with force. That is the work of the assets
-  slice (`plans/reborn/slices/assets.md`).
+- The history is rewritten once to remove them, and pushed with force. That is the work of the [assets
+  slice](/features/assets/spec.md).
 - Until then, the client files the user copied to `packages/cms/public/r26/` stay there, ignored by git.
 - LibreShockwave is open-source code, not Habbo's, and stays a submodule: its pinned source is what is read and what its
   AGPL-3.0 licence obliges the hotel to offer players. Its player is built from that submodule with Emscripten
