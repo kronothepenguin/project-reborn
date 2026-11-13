@@ -1,39 +1,44 @@
 ---
 name: building-astro-components
-description: Builds reusable static Astro components and layouts with typed props, slots, and Tailwind styling, using lowercase kebab-case filenames. Use when creating, refactoring, or reusing .astro layouts or UI components.
+description: Builds reusable static Astro components and layouts with typed props, slots and Tailwind classes, in lowercase kebab-case files. Use when creating, refactoring or reusing .astro layouts or UI components, or when deciding where a piece of static UI lives.
 ---
 
 # Building Astro components
 
-Static, server-rendered UI is split by role:
+A component is a plain `.astro` file: markup and Tailwind classes, rendered on the server. A component that needs
+state, events, browser APIs or `fetch` follows `adding-svelte-interactivity`.
 
-- `src/layouts/` — all layouts. There are two roles, both here:
-  - **Document layout** — the outermost shell: `<html>`, `<head>`, `<body>`. A page renders exactly one.
-  - **Body layout** — structures content inside `<body>` (public vs signed-in chrome, navigation, columns). It renders a document layout and passes its slot through.
-- `src/components/` — everything else: buttons, cards, forms, sections, specialized wrappers.
+The project's knowledge names the folders, the commands and the checks.
 
-Every file is a plain `.astro` file: markup plus Tailwind classes, no client JavaScript.
+## Roles
+
+- **Document layout**: the outer shell with `<html>`, `<head>` and `<body>`. It imports the global styles once.
+- **Body layout**: the chrome inside `<body>`, such as navigation and columns. It renders the document layout and
+  passes its slot through.
+- **Component**: everything else, such as buttons, cards, forms, sections and specialized wrappers.
 
 ## Rules
 
-1. **File name**: lowercase kebab-case (`button.astro`, `signed-in.astro`, `primary-button.astro`). Never PascalCase.
-2. **Location**: document and body layouts in `src/layouts/`; everything else in `src/components/`. Keep both flat; group into subfolders only when the user asks.
-3. **YAGNI**: reuse an existing component before writing a new one. Add a component only when it has a real call site or a second use appears. Never implement a whole catalog up front.
-4. **Typed props**: declare `interface Props`, destructure `Astro.props`, and give defaults.
-5. **Composition**: a component may import and render other components, and a body layout may render a document layout. Prefer composing `button.astro` + `card.astro` over duplicating their markup. Slots pass content; named slots (`<slot name="title" />`) pass regions.
-6. **Styling**: Tailwind utility classes inline. Global styles are imported once, by the document layout.
-7. **Interactivity**: if a component needs state, events, browser APIs, or `fetch`, stop and use the `adding-svelte-interactivity` skill. A `.astro` component holds no client behavior.
+1. Name files in lowercase kebab-case: `button.astro`, `primary-button.astro`.
+2. Put every layout in `src/layouts/` and every other component in `src/components/`. Keep both flat; add sub-folders
+   when the user asks.
+3. Reuse an existing component first. Add a component for a real call site, and extract repeated markup on its second
+   use. Build only the variants a call site uses.
+4. Declare `interface Props`, destructure `Astro.props` and give defaults.
+5. Compose: a component renders other components, and a specialized component renders its base component with set
+   props and forwards its slot. Slots pass content; named slots (`<slot name="title" />`) pass regions.
+6. Style with Tailwind utility classes inline.
+7. A page renders one body layout. The body layout renders the document layout, the only file with `<html>`,
+   `<head>` and `<body>`.
 
-Use [daisyUI](https://daisyui.com/components/) and [shadcn](https://ui.shadcn.com/docs/components) as references for component anatomy and variants. They are guides, not dependencies and not a checklist: implement only the variant a call site needs.
+Read [daisyUI](https://daisyui.com/components/) and [shadcn](https://ui.shadcn.com/docs/components) for a component's
+anatomy and variants. They are references, outside the dependencies.
 
 ## Layouts
 
-A page renders one body layout. The body layout renders the document layout. Only the document layout contains `<html>`, `<head>`, and `<body>`.
-
-`src/layouts/document.astro`:
-
 ```astro
 ---
+// src/layouts/document.astro
 import "../styles/global.css";
 
 interface Props {
@@ -55,34 +60,11 @@ const { title } = Astro.props;
 </html>
 ```
 
-Body layouts use the same shape and differ only in the chrome around the slot. A signed-out page such as the landing page:
-
-`src/layouts/signed-out.astro`:
+A body layout has the same props and adds its chrome around the slot:
 
 ```astro
 ---
-import Document from "./document.astro";
-
-interface Props {
-  title?: string;
-}
-
-const { title } = Astro.props;
----
-
-<Document title={title}>
-  <div class="mx-auto max-w-3xl p-4">
-    <slot />
-  </div>
-</Document>
-```
-
-Signed-in pages add the application chrome:
-
-`src/layouts/signed-in.astro`:
-
-```astro
----
+// src/layouts/app.astro
 import Document from "./document.astro";
 
 interface Props {
@@ -95,26 +77,26 @@ const { title } = Astro.props;
 <Document title={title}>
   <div class="mx-auto flex max-w-5xl gap-4 p-4">
     <nav class="w-48">...</nav>
-    <main class="flex-1">
-      <slot />
-    </main>
+    <main class="flex-1"><slot /></main>
   </div>
 </Document>
 ```
 
-A page imports the body layout, never the document layout:
+A page imports its body layout:
 
 ```astro
 ---
-import SignedIn from "../layouts/signed-in.astro";
+import App from "../layouts/app.astro";
 ---
 
-<SignedIn title="Me">
+<App title="Profile">
   <h1>Hello</h1>
-</SignedIn>
+</App>
 ```
 
-## Base component: `button.astro`
+## Components
+
+A base component with variants, `button.astro`:
 
 ```astro
 ---
@@ -132,18 +114,12 @@ const variants = {
 };
 ---
 
-<button
-  type={type}
-  disabled={disabled}
-  class:list={["rounded px-4 py-1.5 text-sm font-bold", variants[variant]]}
->
+<button {type} {disabled} class:list={["rounded px-4 py-1.5 text-sm font-bold", variants[variant]]}>
   <slot />
 </button>
 ```
 
-## Specialized wrapper: `primary-button.astro`
-
-A specialized component sets the base component's props and forwards its own slot. Do not copy the base markup.
+A specialized wrapper, `primary-button.astro`:
 
 ```astro
 ---
@@ -157,14 +133,10 @@ interface Props {
 const { type, disabled } = Astro.props;
 ---
 
-<Button variant="primary" {type} {disabled}>
-  <slot />
-</Button>
+<Button variant="primary" {type} {disabled}><slot /></Button>
 ```
 
-## Composition: `login-card.astro`
-
-Components can use components. `card.astro` provides the frame and a `title` named slot.
+A composition, `login-card.astro`, filling the `title` slot of `card.astro`:
 
 ```astro
 ---
@@ -181,32 +153,13 @@ import PrimaryButton from "./primary-button.astro";
 </Card>
 ```
 
-Usage passes named slot content with the `slot` attribute on the element:
+## Verify
 
-```astro
-<LoginCard>
-  <label class="text-xs">
-    Username
-    <input name="username" class="rounded border border-zinc-500 px-2 py-1" />
-  </label>
-</LoginCard>
-```
-
-## Verification
-
-Run from the frontend package:
-
-```sh
-pnpm build
-```
-
-Then confirm the rendered markup in `dist/<page>.html` contains the component output.
+Build the frontend and check that the built page holds the component's markup.
 
 ## Gotchas
 
-- `.astro` components are server-only: they cannot hold `$state`, `onclick`, `onsubmit`, or `bind:value`. Those belong to Svelte.
-- Only the document layout contains `<html>`/`<head>`/`<body>`. A body layout that emits those tags breaks nesting.
-- Layouts never live in `src/components/`, even when a component renders a full section.
-- `class` and other attributes passed to a component are not forwarded to the root element. Destructure a `class` prop and use `class:list` if callers need to extend styles.
-- Named slot usage puts `slot="name"` on the element, not inside it: `<span slot="title">Sign in</span>`.
-- A one-off inline `<div>` is fine until it repeats. Extract on the second real use, not the first.
+- A layout lives in `src/layouts/`, also when a component renders a full section.
+- A named slot goes on the element itself: `<span slot="title">Sign in</span>`.
+- Astro forwards `class` and other attributes to the root element only through props. To let callers extend styles,
+  destructure a `class` prop and add it with `class:list`.

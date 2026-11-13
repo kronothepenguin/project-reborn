@@ -1,99 +1,75 @@
 ---
 name: templating-astro-pages
-description: Maps Astro page files to Go routes and injects server data with [[ ]] html/template delimiters. Use when adding a page served by a Go handler, naming Astro pages, or passing Go data into the HTML.
+description: Names Astro page files after the Go routes that serve them and injects server data with [[ ]] html/template delimiters. Use when adding a page served by a Go handler, naming or moving an Astro page, or passing Go data into a page or an island.
 ---
 
 # Templating Astro pages for Go
 
-Go owns routing; Astro builds the HTML shell, and the Go resolver renders it per request with `html/template`. Page files are template keys, not browser URLs.
+Go owns the routes. Astro builds each page once into an HTML file, and a Go handler executes that file per request as
+an `html/template` with the delimiters `[[` and `]]`. A page file is a template name.
 
-## Page to route mapping
+The project's knowledge names the folders, the commands and the checks.
 
-Mirror the Go route path. Replace each dynamic `{param}` with its literal name as a folder, using lowercase kebab-case for static segments. Give Go parameters lowercase names (`{id}`, not `{roomID}`) so folders stay lowercase.
+## Name the page after the route
 
-| Go route | Astro file | Built template (resolver name) |
+Mirror the Go route path. Static segments are lowercase kebab-case folders. Each `{param}` becomes a folder named
+after the parameter. Give parameters lowercase names (`{id}`, in place of `{roomID}`).
+
+| Go route | Astro page | Template name |
 | --- | --- | --- |
 | `GET /{$}` | `src/pages/index.astro` | `index.html` |
-| `GET /me` | `src/pages/me.astro` | `me.html` |
 | `GET /rooms` | `src/pages/rooms.astro` | `rooms.html` |
 | `GET /rooms/{id}` | `src/pages/rooms/id.astro` | `rooms/id.html` |
 | `GET /users/{id}/rooms` | `src/pages/users/id/rooms.astro` | `users/id/rooms.html` |
 
-Pages exist for GET routes. POST/action handlers reuse the GET page's template (see `applying-go-patterns` for handler files and registration).
+- A page exists for each GET route. A POST handler answers with its GET page's template; `applying-go-patterns` owns
+  the handler files and their registration.
+- Set `build: { format: "file" }` in `astro.config.mjs`, so `rooms.astro` builds to `rooms.html`.
 
-`build.format` must be `"file"` in `astro.config.mjs` so `.astro` maps 1:1 to `.html`:
-
-```js
-export default defineConfig({
-  build: { format: "file" },
-  // ...
-});
-```
-
-Without it Astro emits `me/index.html`, and the resolver name changes.
-
-## Injecting server data
-
-Wrap every runtime value in `[[ ]]`. The Go resolver parses the built HTML with `html/template` using `[[` and `]]` delimiters (`template.New(name).Delims("[[", "]]")`).
-
-Handler (in `internal/router/me.go`):
-
-```go
-type mePage struct {
-	Username string
-}
-
-// HandleMeView renders GET /me.
-func (r *Router) HandleMeView(w http.ResponseWriter, req *http.Request) {
-	astro.WriteTemplate(w, r.deps.Resolver, "me.html", mePage{Username: "admin"})
-}
-```
-
-Page (`src/pages/me.astro`), rendered through the signed-in body layout:
+## Inject server data
 
 ```astro
 ---
-import SignedIn from "../layouts/signed-in.astro";
+import App from "../layouts/app.astro";
 ---
 
-<SignedIn title="Me">
+<App title="Profile">
   <h1 class="text-2xl font-bold">[[ .Username ]]</h1>
-</SignedIn>
+</App>
 ```
 
-- `[[ .Field ]]` — runtime data from the Go handler. Works in text and in attributes. `html/template` applies context-aware escaping.
-- `{expr}` — Astro build-time expressions (`Astro.props`, imports). Evaluated once at build, not per request.
-- `{{ }}` — reserved for scaffolding `.tmpl` files. Never use it in `src/pages`.
+The handler executes `profile.html` with a page struct that has a `Username` field.
+
+- `[[ .Field ]]` is runtime data from the Go handler, in text and in attributes. `html/template` escapes it by context.
+- `{expr}` is an Astro expression, evaluated once at build time.
+- `{{ }}` belongs to scaffolding `.tmpl` files. Pages use `[[ ]]`.
 
 ## Workflow
 
-1. Name the Astro file from the Go route with the table above.
-2. Add the page and keep `build.format` at `"file"`.
-3. Add or update the handler: define the page struct in its route file and call `astro.WriteTemplate` with the built template name.
-4. Register the route per `applying-go-patterns`.
-5. Verify (see below).
+1. Name the page from the route with the table above.
+2. Write the page, with `[[ ]]` for every runtime value.
+3. Write the handler: a page struct in its route file, executed with the built template name.
+4. Register the route as `applying-go-patterns` says.
+5. Verify.
 
-## Verification
+## Verify
 
-Run from the frontend package:
-
-```sh
-pnpm build
-test -f dist/<page>.html && grep -c '\[\[ .Field \]\]' dist/<page>.html
-```
-
-The built file must exist and still contain the `[[ ]]` placeholder (unrendered). Replace `<page>` and `.Field` with the page under review. Then run the Go app and request the route to confirm substitution.
+1. Build the frontend.
+2. Check that the built page exists and still holds its `[[ ]]` placeholders.
+3. Run the Go program and request the route to see the values filled in.
 
 ## Gotchas
 
-- Do not create Astro dynamic routes (`src/pages/rooms/[id].astro`). A static build cannot emit a page for an unknown id and fails with `GetStaticPathsRequired`. Use the literal folder form `rooms/id.astro`; the Go handler serves every id through the one template.
-- Pass the built file path to `astro.WriteTemplate` (`me.html`, `rooms/id.html`). Production resolvers read that exact path; the dev resolver trims `.html`/`/index.html` and fetches the matching URL from the Astro dev server.
-- `[[ ]]` is substituted only in built HTML. Svelte scripts and other JS bundles are not processed by `html/template`; put runtime data in the markup, not in component code.
-- Passing runtime values into client component props works only for simple scalars. Quotes or backslashes in the value corrupt the serialized props JSON; see `adding-svelte-interactivity`.
-- `dist/` is embedded in the Go binary, so build the frontend before `go build`.
-- Astro writes the script that wakes every island just before a page's first island. If that island sits inside
-  `[[ if ]]` or `[[ range ]]`, a visitor for whom the template drops it also loses the script, and the page's other
-  islands never wake. Keep the first island of a page with several outside template blocks, and let it decide in
-  the browser whether to show itself; `packages/cms/islands_test.go` checks every built page.
-- Text that may hold quotes, such as a description, goes to an island through a hidden element's `data-` attributes,
-  which the browser decodes, never through props.
+- Write each `{param}` as a literal folder (`rooms/id.astro`). A static build rejects Astro's `rooms/[id].astro` with
+  `GetStaticPathsRequired`; one template serves every id.
+- Pass the built file path as the template name: `rooms.html`, `rooms/id.html`.
+- `[[ ]]` is filled in the built HTML only. Islands and other JavaScript read runtime data from the page's markup or
+  fetch it.
+- A runtime value reaches an island prop only as a simple scalar: quotes or backslashes corrupt the serialized props
+  JSON. The island fetches richer data.
+- Text that may hold quotes, such as a description, reaches an island through a hidden element's `data-` attributes,
+  which the browser decodes.
+- Astro writes the script that wakes every island just before a page's first island. On a page with several islands,
+  keep the first one outside `[[ if ]]` and `[[ range ]]` and let it decide in the browser whether to show itself, so
+  every visitor gets the script.
+- The Go binary embeds the built pages: build the frontend before the Go build.
