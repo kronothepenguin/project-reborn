@@ -21,3 +21,4 @@
 - [Presence and rooms](presence-and-rooms/index.md)
 - [R18](r18/index.md)
 - [Rooms](rooms/index.md)
+- [Updates](updates/index.md)

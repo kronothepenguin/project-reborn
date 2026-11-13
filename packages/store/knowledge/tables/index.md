@@ -1,6 +1,7 @@
 # Tables
 
 Concepts for the tables declared under `packages/store/schema/`, one per table.
+Holo's tables and where each one went: `knowledge/sources/holocms/database.md`.
 
 ## Identity
 

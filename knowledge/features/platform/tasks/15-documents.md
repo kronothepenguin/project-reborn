@@ -30,6 +30,6 @@ Nothing written in the repository contradicts what the platform feature built.
 # Checks
 
 ```sh
-grep -rn 'cms.refresh\|virtual/settings' --include=*.md . | grep -v '^./knowledge/decisions/\|^./plans/' || true
+grep -rn 'cms.refresh\|virtual/settings' --include=*.md . | grep -v '^./knowledge/decisions/' || true
 make gates
 ```
