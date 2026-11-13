@@ -4,6 +4,9 @@ okf_version: "0.2"
 
 # Game server
 
+**History since 2026-11-13.** New work is planned by feature slice in `plans/reborn/index.md`. Nothing is added to this
+bundle's tasks, decisions or log; its reference documents stay in use.
+
 State of Project Reborn's game server: a TCP and WebSocket server without web pages that speaks the protocol of the
 R26 Shockwave client (`packages/client-r26`). It lives in `packages/server`, runs from `apps/server`, and keeps its
 state in `packages/virtual` ([0002](/decisions/0002-server-app.md), [0005](/decisions/0005-package-layout.md)).
@@ -16,8 +19,8 @@ state in `packages/virtual` ([0002](/decisions/0002-server-app.md), [0005](/deci
 
 [S0 Foundations](/phases/s0-foundations.md), [S1 R26 protocol reference](/phases/s1-protocol-reference.md),
 [S2 Login and session](/phases/s2-login.md), [S3 Navigator](/phases/s3-navigator.md), [S4 Rooms](/phases/s4-rooms.md)
-and [S5 Furni, catalogue and trading](/phases/s5-furni-catalogue.md) are done. Next:
-[S6 Friends and messenger](/phases/s6-friends.md), which starts once its open questions are answered.
+and [S5 Furni, catalogue and trading](/phases/s5-furni-catalogue.md) are done. [S6](/phases/s6-friends.md) to
+[S9](/phases/s9-site-changes.md) moved to the slices of `plans/reborn/slices/index.md` before they started.
 
 Work planned for later that belongs to no phase, such as r18 and the orchestrator, is listed in `plans/later.md`.
 

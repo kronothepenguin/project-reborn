@@ -1,99 +1,111 @@
 ---
 name: tracking-plans
-description: Starts and works the OKF plan bundles under plans/ (plans/holo-port, plans/server, plans/client and any new plan) — creating a new plan in the house format, resuming work, creating, starting, blocking and finishing tasks, recording decisions and log entries, and merging the work's branch. Use when asked to plan new work under plans/, to continue or finish any planned task, or about a plan's status.
+description: Works the plan of Project Reborn in plans/reborn (OKF 0.2), planned by feature slice across the store, the game server, the site, housekeeping, the installer and the client — resuming work, starting a slice, creating and working tasks, sharing them with sub-agents, recording decisions, and merging finished branches in batches. Also reads the history bundles plans/holo-port, plans/server and plans/client. Use when asked to plan new work, to continue or finish any planned task, or about the plan's status.
 ---
 
 # Tracking plans
 
-Every plan is an OKF 0.2 bundle in `plans/<plan>/`: decisions, phases, tasks, reference documents, a log and its own
-`rules.md`. The bundle's `rules.md` is the full version and wins over this skill.
+`plans/reborn/` is the live plan: slices, tasks, decisions, reference documents, a log and its `rules.md`, which is the
+full version and wins over this skill. `plans/holo-port`, `plans/server` and `plans/client` are history: read them,
+cite them, never add to their tasks, decisions or logs. Their reference documents stay in use and are corrected in
+place.
 
-| Plan | What it plans | Phase ids |
-| --- | --- | --- |
-| `plans/holo-port` | HoloCMS ported to the CMS, housekeeping and the installer (also has `tracking-holo-port`) | `p0`…`p7`, `hk-a`, `hk-b`, `fx`, `up`, `ed` |
-| `plans/server` | The game server | `s0`…`s9` |
-| `plans/client` | The R26 client in the browser: on LibreShockwave first, in vanilla JavaScript later | `c0`…`c3` |
-
-`plans/index.md` maps every plan and the sources each one reads, and `plans/later.md` lists work that belongs to no
-phase yet.
+| Folder of `plans/reborn` | Holds |
+| --- | --- |
+| `slices/` | One feature across every project it touches: goal, scope by project, exit criteria, tasks, open questions |
+| `tasks/` | `<slice>-<nn>-<slug>.md`: one unit of work, the slice it belongs to and the packages it changes |
+| `decisions/` | `NNNN-<slug>.md`: what the user decided, cited as "reborn NNNN" outside the bundle |
+| `reference/` | Studies the slices read |
 
 ## Resume
 
-1. Read `plans/<plan>/index.md`, then the newest entries of its `log.md`.
-2. Open its `tasks/index.md`. Continue in-progress tasks first, then todo tasks of the active phases whose
-   `depends_on` are all done.
-3. Read the task's phase file and the decisions and reference documents it links before touching anything.
+1. Read `plans/reborn/index.md`: Now names the active slices, Next the order of the rest.
+2. Run the board:
+
+   ```sh
+   python3 -I .agents/skills/tracking-plans/scripts/board.py
+   ```
+
+   It prints, for each active slice, the tasks in progress, the ones ready to merge and the ones ready to start.
+3. Read the newest entries of `plans/reborn/log.md`.
+
+## Coordinator and sub-agents
+
+The coordinator is the session that talks to the user. It alone asks the user, records decisions, writes slices and
+tasks, edits the bundle's `index.md`, `decisions/` and `log.md`, and merges. A sub-agent works one task in one
+worktree: it cannot ask the user, so it never decides, it stops and reports; it does not merge.
+
+## Start a slice
+
+1. Ask the user every open question of the slice, in plain words with a concrete example, the recommendation first
+   with its reason. Each answer becomes a decision. Assume nothing.
+2. Write the slice's exit criteria and its tasks, set it `active`, and list it under Now.
+3. Split it for parallel work: a contract task done alone (the store's update and queries, the shared types, the
+   notices), then one task a project, then a task that checks the exit criteria.
 
 ## Work a task
 
 ```text
 Task:
-- [ ] own feature branch and worktree, never main (plans/holo-port/decisions/0097)
-- [ ] the task's open questions asked and settled, each answer a decision
-- [ ] status: in-progress, timestamp updated, "**Start**" log entry
+- [ ] ready: status todo, every depends_on done
+- [ ] claimed by its worktree: git worktree add -b <task-id> .claude/worktrees/<task-id> main
+- [ ] status: in-progress, timestamp updated
 - [ ] every step of "# Steps" done and checked
-- [ ] every "# Verification" command run, results written in the task
+- [ ] every "# Verification" command run, and the whole suite of each package touched; results written in the task
 - [ ] status: done, timestamp updated, verified: [{by, at}] added
-- [ ] tasks/index.md and the phase file updated
-- [ ] "**Done**" log entry under today's "## YYYY-MM-DD", newest first
 - [ ] committed, not pushed, one-line title (feat:, fix:, refactor:, docs:)
-- [ ] if the branch's work is done: merged, then its worktree removed and its branch deleted, as "Branches" says
+- [ ] reported as ready; the coordinator merges
 ```
 
-- Blocked: `status: blocked`, the reason in `# Notes`, a `**Blocked**` log entry.
-- New work found: a new task with the phase's next free number; never widen the current one silently.
+- Blocked: `status: blocked`, the reason in `# Notes`, and a report.
+- New work found: a new task with the slice's next free number; never widen the current one silently.
 - Never delete a task: `status: dropped` with the reason.
-- A phase gets its tasks when it starts, after its open questions are answered.
+- After adding or changing a task file: `python3 -I .agents/skills/tracking-plans/scripts/board.py --write` rewrites
+  `plans/reborn/tasks/index.md`. Nobody edits that index by hand.
 
-## Branches
+## What two tasks never change at once
 
-- Never work on `main`. Every line of work goes on its own feature branch in its own worktree:
-  `git worktree add -b <branch> .claude/worktrees/<branch> main`. The bundle's rules name the branch, usually the
-  phase id.
-- When the branch's work is done and verified, merge it without asking: merge `main` into the branch inside the
-  worktree, run `make gates` there, then fast-forward `main` from the main checkout with
-  `git -C <main checkout> merge --ff-only <branch>`. If `main` moved, start again.
-- Once merged, clean up from the main checkout: `git worktree remove .claude/worktrees/<branch>` and
-  `git branch -d <branch>` (plans/holo-port/decisions/0101). `--force` only when a submodule or ignored build output
-  blocks the removal and `git status` is clean. This includes `agent-*` and throwaway worktrees.
-- Never push.
+- `packages/store/migrations`, the generated query files and the indexes of `packages/store/knowledge`;
+- `packages/virtual/settings`;
+- `go.work`, the `go.mod` files and `pnpm-lock.yaml`;
+- `plans/reborn/decisions` and `plans/reborn/index.md`, the coordinator's;
+- `apps/**/cmd/**`, the user's: describe a change there and ask for it, never make it unasked.
 
-## Start a new plan
+Otherwise tasks run in parallel when their `packages` do not overlap.
 
-1. Gather what the user wants. Ask every open choice in plain words with a concrete example, the recommendation first
-   with its reason. Assume nothing; settle every question before writing tasks.
-2. Work on a branch and worktree of the plan's own.
-3. Create `plans/<plan>/`:
-   - `index.md` with `okf_version: "0.2"`, what the plan covers, "Resume here", the active phases, the contents and
-     the user's ground rules;
-   - `rules.md`, copied from `plans/server/rules.md`, with the plan's phase ids, the task field that names the sources
-     it reads (`holo:`, `client:`), and whatever the plan does differently;
-   - `log.md`, and `decisions/`, `phases/`, `tasks/` and `reference/`, each with an `index.md`.
-4. Record every confirmed choice as a decision, numbered from `0001`, quoting the user's words.
-5. Give every phase a goal, a scope, exit criteria and its open questions. Only the phases that start get tasks; the
-   first task records the plan's creation.
-6. Add the plan to the table above, and to `plans/index.md` with the sources it reads.
-7. Run the checks.
+## Merge
+
+`make gates` takes about 15 minutes, and only one run at a time is safe.
+
+1. Make a worktree `merge-<date>` from `main` and merge every ready branch into it.
+2. Run `make gates` there once.
+3. From the main checkout: `git merge --ff-only merge-<date>`, then `git worktree remove` and `git branch -d` for the
+   batch and each branch in it. `--force` only when ignored build output blocks a removal and `git status` is clean.
+4. When the gates fail, the branch at fault leaves the batch and goes back to its task.
+
+Never work on `main`. Never push.
 
 ## Decisions
 
-- A decision the user confirms becomes `decisions/NNNN-<slug>.md` with `status: accepted`.
-- A changed decision gets a new file; the old one gets `status: superseded` and `superseded_by`, and its index line
-  ends with "Superseded by" and a link to the new decision, in bold. Accepted text is never rewritten.
+- A decision the user confirms becomes `decisions/NNNN-<slug>.md` with `status: accepted`, quoting the user's words.
+- A changed decision gets a new file; the old one gets `status: superseded` and `superseded_by`. A decision of a
+  history bundle that a new one replaces gets `superseded_by: reborn/NNNN`. Accepted text is never rewritten.
+- Outside its bundle a decision is cited with it: "reborn 0002", "server 0045", "holo-port 0097".
 - An architecture choice that no decision covers is asked to the user before acting.
 
 ## Checks
 
 ```sh
-python3 -I .agents/skills/tracking-plans/scripts/check_bundle.py plans/<plan>
+python3 -I .agents/skills/tracking-plans/scripts/check_bundle.py plans/reborn plans/holo-port plans/server plans/client
 ```
 
-It checks the frontmatter, the index listings, the links, the statuses and the `depends_on` ids.
+It checks the frontmatter, the index listings, the links and every `plans/…` path in backticks, the statuses, and that
+each task names a slice and tasks that exist. `make gates` runs it.
 
 ## Gotchas
 
 - `index.md` and `log.md` are reserved OKF files: no frontmatter, except the root `index.md`.
-- Links inside a bundle are bundle-absolute (`/tasks/s0-02-create-templates.md`). Code and files of other bundles are
-  named by their repository path in backticks.
+- Links inside a bundle are bundle-absolute (`/tasks/platform-01-drop-the-unused-listener.md`). Code and files of other
+  bundles are named by their repository path in backticks.
 - Timestamps are ISO 8601 with an explicit offset.
-- `apps/**/cmd/**` belongs to the user: describe a change there and ask for it, never make it unasked.
+- The log takes only decisions, slices and merges. A task's start and end live in its file and in git.

@@ -1,9 +1,24 @@
 # Later
 
-Work planned for later that belongs to no phase yet ([0072](holo-port/decisions/0072-later-work-in-plans-later.md)). An
-item becomes a phase, with its decisions, when the user starts it. The state of the port lives in
-[holo-port](holo-port/index.md), and the state of the game server in [server](server/index.md); [the plans'
-index](index.md) lists every plan.
+Work that was planned for later while the plans were split by project
+([0072](holo-port/decisions/0072-later-work-in-plans-later.md)). Since 2026-11-13 new work is planned by feature slice
+in [plans/reborn](reborn/index.md), and each section here belongs to a slice, which reads it. Nothing new is added here:
+a new item goes to its slice, or becomes one.
+
+| Section | Slice |
+| --- | --- |
+| The orchestrator | [Platform](reborn/slices/platform.md); reopening the installer also [Installer](reborn/slices/installer.md) |
+| r18 | [r18](reborn/slices/r18.md), parked |
+| Staff tools for groups | [Moderation](reborn/slices/moderation.md) |
+| Holo's chat commands | [Moderation](reborn/slices/moderation.md) |
+| The word filter | [Moderation](reborn/slices/moderation.md) |
+| Five badges on the site | [Badges and achievements](reborn/slices/badges-and-achievements.md) |
+| A catalogue editor in housekeeping | [Furni and the catalogue](reborn/slices/furni-and-catalogue.md) |
+| One-way doors and the fortune teller | [Furni and the catalogue](reborn/slices/furni-and-catalogue.md) |
+| A room's most post-its and rollers | [Furni and the catalogue](reborn/slices/furni-and-catalogue.md) |
+| The game server and a habbo archived on the site | [Platform](reborn/slices/platform.md) and [Presence and rooms](reborn/slices/presence-and-rooms.md) |
+| Achievements | [Badges and achievements](reborn/slices/badges-and-achievements.md) |
+| Known issues: group badge tint 15 | [Look and feel](reborn/slices/look-and-feel.md) |
 
 ## The orchestrator
 

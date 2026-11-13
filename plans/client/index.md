@@ -4,6 +4,9 @@ okf_version: "0.2"
 
 # Client
 
+**History since 2026-11-13.** New work is planned by feature slice in `plans/reborn/index.md`. Nothing is added to this
+bundle's tasks, decisions or log; its reference documents stay in use.
+
 State of how the R26 client reaches the player's browser. First the CMS's client page runs the original `.dcr` on
 LibreShockwave, then one program serves the client's files from the one binary, and later a vanilla JavaScript client
 takes LibreShockwave's place ([0002](/decisions/0002-libreshockwave-first-then-javascript.md)).
@@ -15,8 +18,9 @@ takes LibreShockwave's place ([0002](/decisions/0002-libreshockwave-first-then-j
 3. Open the [task index](/tasks/index.md): in-progress tasks first, then the todo tasks of the active phases.
 
 Active phases: none. [C0 Foundations](/phases/c0-foundations.md) is done. [C1 The client page on
-LibreShockwave](/phases/c1-client-page-on-libreshockwave.md), [C2 The client's files](/phases/c2-client-files.md)
-and [C3 The JavaScript client](/phases/c3-javascript-client.md) are planned, and each starts when the user starts it.
+LibreShockwave](/phases/c1-client-page-on-libreshockwave.md), [C2 The client's files](/phases/c2-client-files.md) and
+[C3 The JavaScript client](/phases/c3-javascript-client.md) moved to the slice `plans/reborn/slices/client.md` before
+they started.
 
 Every plan is listed in `plans/index.md`, and work that belongs to no phase in `plans/later.md`.
 

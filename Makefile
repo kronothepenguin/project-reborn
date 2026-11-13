@@ -39,6 +39,7 @@ gates: frontends
 	cd packages/store && go tool sqlc generate && \
 		git diff --exit-code -- db.go models.go '*.query.sql.go' && \
 		$(MAKE) check-docs
+	python3 -I .agents/skills/tracking-plans/scripts/check_bundle.py plans/reborn plans/holo-port plans/server plans/client
 
 # Builds everything, and runs the browser suites on a throwaway hotel.
 e2e:

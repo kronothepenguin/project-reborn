@@ -2,11 +2,15 @@
 type: Phase
 title: S6 Friends and messenger
 description: Habbos keep a friends list, send and answer friend requests, search habbos, follow friends and chat with them in the messenger.
-status: planned
-timestamp: 2026-11-05T20:57:45+00:00
+status: moved
+moved_to: plans/reborn/slices/friends.md
+timestamp: 2026-11-13T00:42:05+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s6, server]
 ---
+
+Moved on 2026-11-13: this work is the slice `plans/reborn/slices/friends.md`, and its last open question went to
+`plans/reborn/slices/presence-and-rooms.md`.
 
 # Goal
 

@@ -2,11 +2,14 @@
 type: Phase
 title: S8 Instant games
 description: Habbos create, join and play the instant games of hh_ig, from the lobby to the arena, with the Game Hall of Fame.
-status: planned
-timestamp: 2026-11-05T20:57:45+00:00
+status: moved
+moved_to: plans/reborn/slices/games.md
+timestamp: 2026-11-13T00:42:05+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s8, server]
 ---
+
+Moved on 2026-11-13: this work is the slice `plans/reborn/slices/games.md`.
 
 # Goal
 

@@ -2,11 +2,15 @@
 type: Phase
 title: S9 Changes from the site
 description: Changes the CMS and housekeeping make to what the server holds reach players who are online at once, through commands like Holo's MUS, or directly under the orchestrator.
-status: planned
-timestamp: 2026-11-05T20:57:45+00:00
+status: moved
+moved_to: plans/reborn/slices/platform.md
+timestamp: 2026-11-13T00:42:05+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s9, server, cms, housekeeping]
 ---
+
+Moved on 2026-11-13: this work is the slice `plans/reborn/slices/platform.md`, where notices between the programs take
+the place of commands like Holo's MUS.
 
 # Goal
 

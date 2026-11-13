@@ -4,6 +4,9 @@ okf_version: "0.2"
 
 # HoloCMS port
 
+**History since 2026-11-13.** New work is planned by feature slice in `plans/reborn/index.md`. Nothing is added to this
+bundle's tasks, decisions or log; its reference documents stay in use.
+
 State of the port of HoloCMS (`source/holocms/`, PHP + MySQL, 2008) to Project Reborn: Go, SQLite + sqlc, Astro,
 Svelte 5 and Tailwind 4. The public site becomes `packages/cms`, the admin panel becomes `packages/housekeeping`
 and `install.php` becomes `packages/installer`.

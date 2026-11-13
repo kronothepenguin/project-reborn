@@ -2,11 +2,15 @@
 type: Phase
 title: S7 Club, help and extras
 description: The smaller casts: club purchases and gifts, the tutorial and new-user help, guides, polls, photos, the sound machine, the room dimmer, pets, the call for help and error reports.
-status: planned
-timestamp: 2026-11-09T17:50:34+00:00
+status: moved
+moved_to: plans/reborn/slices/extras.md
+timestamp: 2026-11-13T00:42:05+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [s7, server]
 ---
+
+Moved on 2026-11-13: this work is the slice `plans/reborn/slices/extras.md`, with club in
+`plans/reborn/slices/credits-and-club.md` and the call for help in `plans/reborn/slices/moderation.md`.
 
 # Goal
 

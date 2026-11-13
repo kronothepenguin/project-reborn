@@ -2,11 +2,15 @@
 type: Phase
 title: C1 The client page on LibreShockwave
 description: A signed-in habbo opens the CMS's client page, where the R26 .dcr runs on LibreShockwave with an SSO ticket and connects to the game server, and the .dcr is decompiled into a recent R26 source.
-status: planned
-timestamp: 2026-11-07T00:12:36+00:00
+status: moved
+moved_to: plans/reborn/slices/client.md
+timestamp: 2026-11-13T00:42:05+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-06T15:50:54+00:00"}
 tags: [c1, client]
 ---
+
+Moved on 2026-11-13: this work is the slice `plans/reborn/slices/client.md`. Its scope and its open questions stand as
+written here.
 
 # Goal
 

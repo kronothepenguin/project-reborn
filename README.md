@@ -72,9 +72,11 @@ Web apps have two modes:
 
 - No agent works on `main`. Every line of work, sequential or parallel, goes on its own feature branch in its own worktree
   under `.claude/worktrees/<branch>`, so that several agents can work at once without touching each other's files.
-- When its work is done and verified, the agent merges the branch by itself: it merges `main` into the branch inside its
-  worktree, runs every gate there, and then fast-forwards `main` from the main checkout with
-  `git merge --ff-only <branch>`. If `main` moved in the meantime, it starts again. Agents never push.
+- Work is planned in `plans/reborn`, by feature slice, and each task has its own branch and worktree, named after it.
+  One session coordinates: it talks to the user and may start sub-agents, each on one task. Sub-agents never merge.
+- When work is done and verified, the coordinating session merges it: it merges every ready branch into one worktree
+  made from `main`, runs every gate there once, and then fast-forwards `main` from the main checkout with
+  `git merge --ff-only`. If the gates fail, the branch at fault goes back to its task. Agents never push.
 - Once the branch is merged, the agent cleans up from the main checkout with
   `git worktree remove .claude/worktrees/<branch>` and `git branch -d <branch>`, so that `.claude/worktrees/` and
   `git branch` hold only work in progress.

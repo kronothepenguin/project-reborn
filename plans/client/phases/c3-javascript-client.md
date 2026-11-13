@@ -2,11 +2,15 @@
 type: Phase
 title: C3 The JavaScript client
 description: The client page runs the R26 client in vanilla JavaScript, without LibreShockwave or the .dcr.
-status: planned
-timestamp: 2026-11-06T15:50:54+00:00
+status: moved
+moved_to: plans/reborn/slices/client.md
+timestamp: 2026-11-13T00:42:05+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-06T15:50:54+00:00"}
 tags: [c3, client]
 ---
+
+Moved on 2026-11-13: this work is the slice `plans/reborn/slices/client.md`. Its scope and its open questions stand as
+written here.
 
 # Goal
 

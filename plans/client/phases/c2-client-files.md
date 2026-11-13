@@ -2,11 +2,15 @@
 type: Phase
 title: C2 The client's files
 description: One program serves the client's files, the .dcr and its casts from a folder outside the binary and the external texts and variables that housekeeping edits, from inside the one binary.
-status: planned
-timestamp: 2026-11-06T15:50:54+00:00
+status: moved
+moved_to: plans/reborn/slices/client.md
+timestamp: 2026-11-13T00:42:05+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-06T15:50:54+00:00"}
 tags: [c2, client]
 ---
+
+Moved on 2026-11-13: this work is the slice `plans/reborn/slices/client.md`. Its scope and its open questions stand as
+written here.
 
 # Goal
 
