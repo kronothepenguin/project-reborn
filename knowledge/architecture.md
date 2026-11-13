@@ -19,20 +19,20 @@ every other app. `apps/reborn` is planned.
 | `apps/housekeeping` | Thin runner for `packages/housekeeping`. |
 | `apps/installer` | Thin runner for `packages/installer`. |
 | `apps/server` | Thin runner for `packages/server`. |
-| `packages/astro` | astro |
+| `packages/astro` | Turns Astro pages into Go `html/template` templates, from the embedded `dist` or the Astro dev server. |
 | `packages/auth` | Sign-in, sessions, access attributes and password resets for the CMS, housekeeping and installer. |
-| `packages/client-r26` | client-r26 |
-| `packages/cms` | Astro (Svelte + Tailwind) frontend embedded in a Go module. |
+| `packages/client-r26` | The R26 client's casts, Lingo scripts with their JavaScript translations, as a Vite app on `packages/director`. |
+| `packages/cms` | The public site: a Go module with its Astro (Svelte + Tailwind) frontend embedded. |
 | `packages/components` | The project's design system: UI components shared across the project's applications. |
 | `packages/config` | Shared configuration layer for Project Reborn. |
-| `packages/director` | director |
-| `packages/housekeeping` | Astro (Svelte + Tailwind) frontend embedded in a Go module. |
+| `packages/director` | A JavaScript reimplementation of the Shockwave (Director) player that runs Lingo movies. |
+| `packages/housekeeping` | Housekeeping, the staff panel under `/housekeeping`: a Go module with its Astro frontend embedded. |
 | `packages/installer` | Writes `config.json`, creates the database, the site settings and the first administrator. |
 | `packages/scheduler` | Runs tasks on a timer, inside the process, like a small cron. |
-| `packages/server` | A Go module without a frontend, run by `apps/server`. |
+| `packages/server` | The game server: speaks the R26 client's protocol on the `info` and `mus` WebSocket listeners. |
 | `packages/store` | Persistence: opens the SQLite file, applies the update files and provides the typed operations. |
 | `packages/virtual` | In-memory state of Project Reborn's entities, one package per entity. |
-| `tools/create` | create |
+| `tools/create` | Scaffolds a new project from the `fullstack`, `backend` or `client` template. |
 | `tools/tw-color` | Maps legacy CSS colors to the closest color in the Tailwind CSS v4 palette. |
 | `tests/e2e` | Real Chromium against the production binaries. |
 

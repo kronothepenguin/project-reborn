@@ -124,7 +124,7 @@ Holo's exact colours and with the closest Tailwind colours ([0042](/decisions/ho
 user kept the Tailwind palette ([0102](/decisions/holo-port/0102-badges-keep-the-tailwind-palette.md)).
 
 Its colours are the sRGB values of the Tailwind v4 swatches; seven lie outside sRGB and are clipped to it, as their
-usual hex values are. Tint 15, olive-500, looks grey-olive beside Holo's brown, a known issue in `plans/later.md`.
+usual hex values are. Tint 15, olive-500, looks grey-olive beside Holo's brown, a [known issue](/features/look-and-feel/later.md).
 
 | Tint | Holo | Tailwind | sRGB |
 | --- | --- | --- | --- |
