@@ -7,7 +7,8 @@ description: The session cookie, its expiry, the middleware that reads it, sign-
 # Sessions
 
 - The cookie `reborn_session` holds 32 random bytes in base64url: HttpOnly, SameSite=Lax, `Secure` from
-  `auth.secureCookies`, Path `/`. Only a remember-me cookie carries a Max-Age.
+  `auth.secureCookies`, Path `/`. Only a remember-me cookie carries a Max-Age. The name has no `__Host-` prefix,
+  because that prefix needs `Secure` and `auth.secureCookies` can be false.
 - The database keeps only the SHA-256 digest of the token, as `sessions.id`.
 - A session ends after `auth.sessionIdleMinutes` without requests, a remembered one after `auth.rememberDays`.
   `Sessions` slides the expiry forward, writing at most once a minute, and renews the cookie of a remembered session.

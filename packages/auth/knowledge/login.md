@@ -8,14 +8,18 @@ description: The steps of a sign-in by habbo name, its throttle and the ban chec
 
 `Login(w, r, db, habboName, password, remember)` takes these steps:
 
-1. It refuses with `ErrThrottled` when the IP, and then the habbo's user, reached `auth.loginMaxFailures` failed
-   attempts within `auth.loginWindowMinutes`. Throttled attempts are not recorded.
-2. It finds the habbo case-insensitively and checks the owner's password (decision holo-port/0002). An unknown habbo
-   and a wrong password both give `ErrInvalidCredentials` after the same argon2 work.
-3. Only once the password is right, it refuses an active ban on the user or the IP with a `*BanError`, which matches
+1. It refuses with `ErrThrottled` when the IP reached `auth.loginMaxFailures` failed attempts within
+   `auth.loginWindowMinutes`.
+2. It finds the habbo case-insensitively (decision holo-port/0002). An unknown habbo runs argon2 on a fixed hash and
+   gives `ErrInvalidCredentials`, as slow as a wrong password.
+3. It refuses with `ErrThrottled` when the habbo's user reached the same limit.
+4. It checks the owner's password, and a wrong one gives `ErrInvalidCredentials`.
+5. Only once the password is right, it refuses an active ban on the user or the IP with a `*BanError`, which matches
    `ErrBanned`.
-4. It records every attempt in `login_attempts`, starts the session with the named habbo active and sets the cookie.
-   It also makes an SSO ticket for the game, best-effort.
+6. It starts the session with the named habbo active, sets the cookie, and makes an SSO ticket for the game,
+   best-effort.
+
+Every attempt goes in `login_attempts`. A banned attempt counts as a failure, and a throttled one stays unrecorded.
 
 # Bans
 
