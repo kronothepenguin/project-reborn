@@ -9,7 +9,7 @@ tags: [art, homes]
 
 # What is here
 
-0061 (`knowledge/decisions/holo-port/0061-art-in-the-repository.md`) keeps the art in the repository, and the CMS binary embeds it.
+Decision holo-port/0061 keeps the art in the repository, and the CMS binary embeds it.
 
 | Folder under `packages/cms/public/c_images/` | Files | Holo's names | Came from |
 | --- | --- | --- | --- |
@@ -30,10 +30,11 @@ Five files exist nowhere that was searched: the live CDN, the Wayback Machine, o
 Six names are broken in Holo's own `assets.css`, with no file extension, so they point at nothing: `TEST4`, `TEST5`, `TEST6`,
 `anti_eco`, `pro_eco` and `xmas_gifts_bg`.
 
-P3 leaves these out of the home store.
+The home store leaves these out.
 
 # Other art
 
 - The three stickers of `upload.meth0d.org` in `assets.css` are HoloCMS's own promotion, and their host is gone.
-- The widget previews and the note images are in `source/holocms/web-gallery/images/myhabbo/`, for P3 to take.
-- Group badge parts are in `source/holocms/habbo-imaging/`, for P5.
+- The widget previews and the note images are in `packages/cms/public/myhabbo/`, taken from
+  `source/holocms/web-gallery/images/myhabbo/`.
+- Group badge parts are in `packages/cms/internal/badge/parts/`, taken from `source/holocms/habbo-imaging/`.
