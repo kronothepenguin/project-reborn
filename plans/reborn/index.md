@@ -18,22 +18,29 @@ store, the game server, the site, housekeeping, the installer and the client
 
 ## Now
 
-- [Platform](/slices/platform.md): the unused listener is gone
-  ([platform-01](/tasks/platform-01-drop-the-unused-listener.md)). The orchestrator and the notices wait for the user's
-  answers to its open questions.
+The first feature, end to end ([0010](/decisions/0010-slices-follow-the-hotels-features.md)): a habbo in a room of the
+client opened from the site, whose look and motto, changed on the site, change in the client at once.
+
+- [Habbos](/slices/habbos.md): the first service, `Habbos.SendLook`
+  ([0005](/decisions/0005-the-game-hears-live-changes-through-services.md),
+  [0013](/decisions/0013-a-habbos-look-and-motto-reach-the-game-at-once.md)).
+- [Platform](/slices/platform.md): reborn's core comes first (platform-02 and platform-03), for habbos; then the
+  installer inside reborn, settings read from the store, the stop in order, one dev server and the releases.
+- [The client](/slices/client.md): the spike and the client page, for habbos.
 
 ## Next
 
 The order is a proposal until the user confirms it. A slice starts once its open questions are answered.
 
-1. [Look and feel](/slices/look-and-feel.md) and [the installer](/slices/installer.md), which depend on nothing and
-   touch different packages, beside platform.
-2. [Friends and the messenger](/slices/friends.md), the next feature of the game.
-3. [Presence and rooms](/slices/presence-and-rooms.md), [credits and club](/slices/credits-and-club.md),
-   [moderation](/slices/moderation.md) and [furni and the catalogue](/slices/furni-and-catalogue.md), which need
-   platform's notices.
-4. [Badges and achievements](/slices/badges-and-achievements.md), [extras](/slices/extras.md), [instant
-   games](/slices/games.md) and [the client](/slices/client.md).
+1. [Assets out of the repository](/slices/assets.md), before the next push
+   ([0011](/decisions/0011-no-habbo-files-in-the-repository.md)).
+2. [Look and feel](/slices/look-and-feel.md) and [the installer](/slices/installer.md), which depend on nothing.
+3. The hotel's features, each with its service when the game must show it live: [economy](/slices/economy.md),
+   [club](/slices/club.md), [rooms](/slices/rooms.md), [navigator](/slices/navigator.md),
+   [messenger](/slices/messenger.md), [furnis](/slices/furnis.md), [presence and rooms](/slices/presence-and-rooms.md)
+   and [moderation](/slices/moderation.md).
+4. [Badges and achievements](/slices/badges-and-achievements.md), [extras](/slices/extras.md) and [instant
+   games](/slices/games.md).
 
 [r18](/slices/r18.md) is parked.
 

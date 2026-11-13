@@ -2,7 +2,8 @@
 type: Decision
 title: The game server starts while updates wait, and loads the navigator once they are applied
 description: server.New loads the navigator's shared data when no database update waits; otherwise it logs that the navigator waits, and loads it as soon as the updates are applied, checked with the settings' reload.
-status: accepted
+status: superseded
+superseded_by: "reborn/0006"
 timestamp: 2026-11-10T11:39:24+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-10T11:39:24+00:00"}
 tags: [server, updates, navigator]

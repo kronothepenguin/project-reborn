@@ -13,9 +13,9 @@ a new item goes to its slice, or becomes one.
 | Holo's chat commands | [Moderation](reborn/slices/moderation.md) |
 | The word filter | [Moderation](reborn/slices/moderation.md) |
 | Five badges on the site | [Badges and achievements](reborn/slices/badges-and-achievements.md) |
-| A catalogue editor in housekeeping | [Furni and the catalogue](reborn/slices/furni-and-catalogue.md) |
-| One-way doors and the fortune teller | [Furni and the catalogue](reborn/slices/furni-and-catalogue.md) |
-| A room's most post-its and rollers | [Furni and the catalogue](reborn/slices/furni-and-catalogue.md) |
+| A catalogue editor in housekeeping | [Furnis](reborn/slices/furnis.md) |
+| One-way doors and the fortune teller | [Furnis](reborn/slices/furnis.md) |
+| A room's most post-its and rollers | [Furnis](reborn/slices/furnis.md) |
 | The game server and a habbo archived on the site | [Platform](reborn/slices/platform.md) and [Presence and rooms](reborn/slices/presence-and-rooms.md) |
 | Achievements | [Badges and achievements](reborn/slices/badges-and-achievements.md) |
 | Known issues: group badge tint 15 | [Look and feel](reborn/slices/look-and-feel.md) |

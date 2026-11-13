@@ -1,6 +1,6 @@
 ---
 type: Slice
-title: Friends and the messenger
+title: Messenger: friends and their chat
 description: Habbos keep a friends list, send and answer friend requests, search for habbos, follow friends into rooms and chat with friends who are online, and the site shows a habbo's friends.
 status: planned
 projects: [store, virtual, server, cms]

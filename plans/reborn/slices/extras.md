@@ -13,8 +13,8 @@ tags: [extras]
 
 # Goal
 
-Every remaining cast with a protocol works. It was the server's phase S7, without club, which is [credits and
-club](/slices/credits-and-club.md)'s, and without the call for help, which is [moderation](/slices/moderation.md)'s.
+Every remaining cast with a protocol works. It was the server's phase S7, without club, which is
+[club](/slices/club.md)'s, and without the call for help, which is [moderation](/slices/moderation.md)'s.
 
 # Scope
 

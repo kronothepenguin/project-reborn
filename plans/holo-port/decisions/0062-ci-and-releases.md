@@ -2,7 +2,8 @@
 type: Decision
 title: CI and releases on GitHub Actions
 description: GitHub Actions runs every gate and the browser suites, and a version tag publishes prebuilt archives for linux amd64 and aarch64.
-status: accepted
+status: superseded
+superseded_by: "reborn/0008"
 timestamp: 2026-11-02T01:24:38+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-02T01:24:38+00:00"}
 tags: [process, ci]

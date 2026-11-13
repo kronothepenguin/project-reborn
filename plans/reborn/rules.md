@@ -49,7 +49,7 @@ type: Task
 title: Imperative title
 description: One sentence.
 status: todo            # todo | in-progress | blocked | done | dropped
-slice: credits-and-club
+slice: economy
 depends_on: [platform-04]   # task ids; [] when none
 packages: [packages/server, packages/virtual]   # what it changes, which is what it locks
 sources: []             # scripts of the client, files of Holo or other sources it reads
@@ -109,8 +109,8 @@ One session may be both, working a task itself between the others.
    Each answer becomes a decision. A slice starts when none is left.
 2. Write its exit criteria and its tasks, then set it `active` and list it under Now in `/index.md`.
 3. Split it so that sub-agents can work at once:
-   - the first task is the contract, done alone: the store's update and queries, the types of `packages/virtual`, the
-     notices other programs will get;
+   - the first task is the contract, done alone: the store's update and queries, the shared types, the contracts of
+     `packages/services` ([0005](/decisions/0005-the-game-hears-live-changes-through-services.md));
    - then one task a project (server, cms, housekeeping, installer), each naming its own `packages`;
    - the last task checks the exit criteria.
 
