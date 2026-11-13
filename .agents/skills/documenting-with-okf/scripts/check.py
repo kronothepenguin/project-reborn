@@ -11,6 +11,7 @@ import re
 import sys
 
 # -I leaves the script's folder off sys.path, so the shared module loads by its path.
+sys.dont_write_bytecode = True
 _here = os.path.dirname(os.path.abspath(__file__))
 _spec = importlib.util.spec_from_file_location("okf", os.path.join(_here, "okf.py"))
 okf = importlib.util.module_from_spec(_spec)
