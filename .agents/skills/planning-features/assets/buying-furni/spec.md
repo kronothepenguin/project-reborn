@@ -3,7 +3,7 @@ type: Spec
 title: Buying furni
 description: A habbo spends credits in the catalogue to get a furni.
 status: planned          # planned | active | done | parked
-projects: [packages/store, packages/server]   # repo folders the feature touches
+projects: [packages/store, packages/server]   # repo folders it touches or will create
 ---
 
 # What

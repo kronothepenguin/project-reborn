@@ -44,6 +44,9 @@ reason. Settle every question before work starts.
   Example: `01-store` first, then `02-server` and `03-cms` at the same time.
 - Each task names its `scope`, `depends_on` and `skills`, the knowledge under `# Context` and the commands under
   `# Checks`.
+- `depends_on` names `NN-<slug>` for a task of the same feature and `<feature>/NN-<slug>` for a task of another
+  feature.
+- `projects` in `spec.md` also names the folders the feature will create (`packages/reborn`).
 
 ## 5. Before spawning
 
