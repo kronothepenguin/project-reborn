@@ -1,7 +1,7 @@
 ---
 type: Spec
 title: "Look and feel: Holo's look at today's sizes"
-description: The site matches HoloCMS where it drifted, and is redesigned at a 16px base with a wider layout that keeps Holo's look and feel.
+description: The site has Holo's two layouts and housekeeping a look of its own; the site matches HoloCMS where it drifted and moves to a 16px base with a wider layout that keeps Holo's look and feel.
 status: planned
 projects: [packages/cms, packages/components, packages/housekeeping, packages/installer]
 ---

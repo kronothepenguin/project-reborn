@@ -38,7 +38,8 @@ err := settings.Set(ctx, db, userID, "site.maintenance", true)
 - `GetIntOr`, `GetBoolOr` and `GetStringOr(key, fallback)` return `fallback` in those cases, without a warning.
 - `Set(ctx, db, userID, key, value) error` writes one declared setting. It checks the value's type, the validator and
   the rules, then upserts the row, or deletes it when `value` equals the default. The values change at once. A
-  `userID` of 0 records no user (the installer writes settings before the first user exists).
+  `userID` of 0 records no user (the installer writes settings before the first user exists). It writes even when
+  the value is unchanged, so `updated_at` records the last call.
 - `Validate(values) error` reports why `Set` would refuse several values taken together, and writes nothing, so that a
   form can refuse all of them before it writes one. `Set` still writes one key at a time and checks the rules each
   time.
@@ -59,9 +60,9 @@ A value needed before the database opens is not a setting: it belongs to `packag
 
 # Rows
 
-- A row is ignored, and logged with `slog.Warn` (key and reason, never the value), when its key comes from
-  `config.json` or is not declared, when its value is not a JSON literal of the declared type (`null` included), or
-  when its validator rejects it.
+- A row is ignored, and logged with `slog.Warn` (key and reason, never the value, because `mail.password` is a secret),
+  when its key comes from `config.json` or is not declared, when its value is not a JSON literal of the declared type
+  (`null` included), or when its validator rejects it.
 - When rows break a rule, each of them goes back to its default and is logged, because the rule cannot tell which row
   is wrong.
 - A deleted row means the default applies again from the next `Load` or `Reload`.

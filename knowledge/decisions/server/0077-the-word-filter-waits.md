@@ -1,7 +1,7 @@
 ---
 type: Decision
 title: The word filter waits for a task of its own
-description: Chat is not filtered in S4; plans/later.md keeps Holo's word filter for one task that covers chat, room names and messages.
+description: Chat is not filtered in S4; the moderation feature's later notes keep Holo's word filter for one task that covers chat, room names and messages.
 status: accepted
 timestamp: 2026-11-10T18:05:15+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-10T18:05:15+00:00"}
@@ -11,8 +11,8 @@ tags: [server, chat, later]
 # Decision
 
 - Chat is not filtered in S4: it shows what was typed.
-- `plans/later.md` keeps Holo's word filter, a word list that housekeeping edits and whose words become `bobba`, for
-  one task that covers chat, room names and messenger messages together.
+- `knowledge/features/moderation/later.md` keeps Holo's word filter, a word list that housekeeping edits and whose words
+  become `bobba`, for one task that covers chat, room names and messenger messages together.
 
 # Context
 
@@ -23,4 +23,4 @@ that covers chat, room names and messages together. Example: in S4, chat shows e
 
 # Consequences
 
-- `plans/later.md` holds the word filter.
+- `knowledge/features/moderation/later.md` holds the word filter.

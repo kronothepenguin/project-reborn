@@ -30,4 +30,4 @@ Holo's MUS commands: `knowledge/sources/holocms/protocols.md`.
 # Consequences
 
 - The virtual state must be safe to change from the CMS and housekeeping as well as from the server.
-- `plans/later.md` records it among what is decided for the orchestrator.
+- `knowledge/features/platform/later.md` records it among what is decided for the orchestrator.

@@ -37,4 +37,4 @@ Each suite is a module in `suites/`, registered in `run.mjs`.
 | `economy` | P6 from end to end: a voucher made in housekeeping and redeemed once on the credits page, then a club month bought, counted on every page that shows it and opening the club's skins, wide playground and wardrobe until it ends |
 | `help` | The help tool: a visitor sent to sign in, the header's Help opening the Help Tool window, Holo's answers to blank, long and waiting requests, and a request picked up in housekeeping's Help Queries |
 | `updates` | A hotel installed before updates: maintenance, the update page, the copy, config.json's new keys |
-| `together` | The installer's forms, then the CMS and housekeeping side by side |
+| `together` | The installer's forms, then the CMS and housekeeping side by side, in one walk that waits for both settings it saves |

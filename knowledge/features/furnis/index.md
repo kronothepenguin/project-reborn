@@ -3,5 +3,5 @@
 # Furnis
 
 - [Furnis, with the catalogue: later](later.md) - Work set aside for furnis: a catalogue editor, one-way doors, the fortune teller, and limits for post-its and rollers.
-- [Furnis, with the catalogue: how](plan.md) - Housekeeping edits the catalogue and furni, and the game brings the furni S5 left out.
-- [Furnis, with the catalogue](spec.md) - Housekeeping edits the catalogue and a habbo's furni, and the furni left out of S5 arrives: one-way doors, the fortune teller, limits for post-its and rollers, and the pages that wait for their features.
+- [Furnis, with the catalogue: how](plan.md) - The store, virtual and the game server hold the catalogue and furni over the R26 protocol; housekeeping edits the catalogue and furni, and the game brings the furni S5 left out.
+- [Furnis, with the catalogue](spec.md) - Habbos buy, place, use, trade and recycle furni in the game and take it from the shared inventory on the site; housekeeping edits the catalogue and a habbo's furni, and the furni left out of S5 arrives.

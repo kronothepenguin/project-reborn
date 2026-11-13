@@ -23,9 +23,10 @@ tags: [server, cms, auth, security]
 
 # Context
 
-S2 asked how a test client gets a ticket before the client page exists, which `plans/client`'s C1 builds. The user
-chose "Tests insert tickets (Recommended)": "Go tests and test scripts write a row into sso_tickets themselves, the way
-the browser suites seed staff accounts. Trying the client by hand waits for C1's /client page. No new site code."
+S2 asked how a test client gets a ticket before the client page exists, which [the client
+feature](/features/client/spec.md) builds. The user chose "Tests insert tickets (Recommended)": "Go tests and test
+scripts write a row into sso_tickets themselves, the way the browser suites seed staff accounts. Trying the client by
+hand waits for C1's /client page. No new site code."
 
 Asked where the session parameters come from, the user added: "ok with settings, but we already have a cms, same for
 sso i forgot, the sso should be created when the user logs in the cms, please load cms knownledge and then extend login
@@ -47,5 +48,6 @@ CMS session it came from, and dies with it at logout."
 - `sso_tickets` changes from a digest to the ticket's text, and names the session that created it; the store's
   Session entity loses the invariant that SSO ticket ids are digests
   (s2-02).
-- `packages/auth`'s sign-in creates the ticket, and the client page of `plans/client`'s C1 reads it.
+- `packages/auth`'s sign-in creates the ticket, and the client page of [the client feature](/features/client/spec.md)
+  reads it.
 - s2-05 spends it at login.

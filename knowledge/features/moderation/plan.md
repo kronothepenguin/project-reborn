@@ -45,8 +45,6 @@ Planned:
 - [The Chat Log Viewer marks public rooms](/decisions/server/0086-the-chat-log-marks-public-rooms.md) — The Room ID
   column shows `Public 101` for a public room, and `-` for a deleted room.
 
-The user's decisions are written here when the feature is planned.
-
 # Notes
 
 - The help form keeps the text as typed, and Help Queries escapes it when it shows it.

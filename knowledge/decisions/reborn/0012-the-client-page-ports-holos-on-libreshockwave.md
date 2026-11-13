@@ -18,7 +18,7 @@ tags: [client, cms, libreshockwave]
   the wide screen) become settings.
 - A spike comes first: the `.dcr` on LibreShockwave's player logs in to the game server, which tells whether
   LibreShockwave runs the client's login-key code
-  (`plans/client/phases/c1-client-page-on-libreshockwave.md`, the last open question).
+  (the last open question of the client page's phase, C1).
 - How the hotel offers LibreShockwave's source to players waits for the [assets slice](/features/assets/spec.md).
 
 # Context
@@ -29,6 +29,6 @@ figure files are in `packages/cms/public/r26/`, which the user added
 
 # Consequences
 
-- Answers the client page's questions of `plans/client/phases/c1-client-page-on-libreshockwave.md` about where the
+- Answers the client page's questions of its phase, C1, about where the
   files live, which package serves the page, how the player is built, whether the pages are Holo's, and where its
   settings come from. Where the decompiled source goes is the assets slice's.

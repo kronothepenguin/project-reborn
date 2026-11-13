@@ -3,6 +3,6 @@
 # Installer
 
 - [Installer: a first article, optional content and more settings: later](later.md) - Work set aside for the installer: opening it again on an installed hotel.
-- [Installer: a first article, optional content and more settings: how](plan.md) - The installer gains steps for settings, optional content, a catalogue review and a first article, written once.
+- [Installer: a first article, optional content and more settings: how](plan.md) - The installer writes config.json, the database and the first administrator, and gains steps for settings, optional content, a catalogue review and a first article, written once.
 - [Research: a richer installer](research-installer.md) - How the installer works today, which seeds the code needs, and the options for a first news article, optional seeds, editing the catalogue during the installation and more settings in the wizard.
-- [Installer: a first article, optional content and more settings](spec.md) - A new hotel starts with a first news article, and its administrator chooses which content is seeded, reviews the catalogue and sets more of the hotel's settings while installing.
+- [Installer: a first article, optional content and more settings](spec.md) - The installer sets up a new hotel in three steps, and gains a first news article, a choice of seeded content, a catalogue review and more of the hotel's settings.

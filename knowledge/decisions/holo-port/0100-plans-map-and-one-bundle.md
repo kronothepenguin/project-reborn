@@ -2,7 +2,8 @@
 type: Decision
 title: plans/index.md maps the plans, and the port stays one bundle
 description: plans/index.md lists every plan, the sources each one reads and how to work on them, in OKF's index format without declaring a bundle, and this bundle is not split.
-status: accepted
+status: superseded
+superseded_by: knowledge/workflow.md
 timestamp: 2026-11-06T15:44:51+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-06T15:44:51+00:00"}
 tags: [process, plans]

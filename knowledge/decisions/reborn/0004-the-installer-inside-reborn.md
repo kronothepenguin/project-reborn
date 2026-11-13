@@ -27,7 +27,7 @@ tags: [platform, installer, orchestrator]
 - Installed at start: `/installer/` is not mounted. Installed while reborn runs: `/installer/` answers 404 from then on.
   reborn logs where `config.json` and the database are.
 - The installer runs only when nothing is installed. Reopening it on an installed hotel stays a later, secured feature
-  (`plans/later.md`).
+  (`knowledge/features/installer/later.md`).
 
 # Context
 

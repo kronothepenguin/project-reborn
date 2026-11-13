@@ -18,6 +18,8 @@ Decision holo-port/0061 keeps the art in the repository, and the CMS binary embe
 | `album1584/` | 494 | User badges by code, such as `ADM.gif` | `Misc/banksy_pack.zip` on h4bbo.net |
 | `skins/` | 45 of 45 | `skins.css`, with `girl/` as in Holo | 33 from `source/holocms`, 12 from `git-MiguelGonzalezAravena_HoloCMS.zip` |
 
+The badge archive had 507 entries: 494 badges and 13 other files, such as `Thumbs.db`, which stayed out.
+
 It is 1064 files and 7 MB. Every file was checked to be a GIF, PNG or JPEG.
 
 # What is missing

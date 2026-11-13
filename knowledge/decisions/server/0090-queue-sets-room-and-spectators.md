@@ -12,7 +12,7 @@ tags: [server, rooms, queue, client]
 
 - 259 names the room's line `room`, target 1, and the spectators' line `spectators`, target 2. The client's texts
   `queue_set.room.info` and `queue_set.spectators.info`, with `queue_current_<target>` and `queue_other_<target>`,
-  come with the client's files (`plans/client`).
+  come with the client's files ([the client feature](/features/client/spec.md)).
 - Each set holds two queues, after the club line first ([0088](/decisions/server/0088-club-members-first-in-a-queue.md)):
   `club`, the club members ahead, and the set's own name, everyone else ahead; the texts take them as `%club%` and
   `%room%` or `%spectators%`.

@@ -26,4 +26,13 @@ For the fullstack and backend templates, `validateName` refuses with a plain mes
 - the names `internal`, `testdata` and `vendor`, which the go tool treats specially as folders. The check is on the
   name: `ven-dor` gives the package `vendor` and passes (decision server/0026).
 
+`taken` holds `db`, `http`, `log`, `new` and `store` for the backend template, and those plus `astro`, `err`, `fs`,
+`httputil`, `nil`, `option`, `panic`, `proxy`, `resolver` and `url` for the fullstack one: the runners' imports and
+variables, the predeclared names they use, and `new` and `option`, whose type meets `New` or `Option`.
+`TestTakenHoldsTheNamesTheTemplatesUse` derives the list again from a generated project, so a template that starts
+using one more name fails until `taken` has it.
+
+The special folders fail as follows: only code under `packages/` imports `packages/internal`, the go tool reads
+`packages/vendor` as vendored code, and `./...` skips `testdata`, so a backend's gates fail.
+
 The client template has no Go, so it accepts these names.

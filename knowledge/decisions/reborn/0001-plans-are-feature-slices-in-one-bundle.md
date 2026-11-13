@@ -2,7 +2,8 @@
 type: Decision
 title: Plans are feature slices in one bundle
 description: New work is planned in plans/reborn by feature slice, each across every project it touches, with one folder of tasks; the bundles holo-port, server and client stay as history.
-status: accepted
+status: superseded
+superseded_by: knowledge/workflow.md
 timestamp: 2026-11-13T00:42:05+00:00
 generated: {by: claude-code/claude-fable-5-2, at: "2026-11-13T00:42:05+00:00"}
 tags: [process, plans]

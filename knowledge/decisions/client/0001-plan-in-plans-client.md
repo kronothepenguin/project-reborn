@@ -2,7 +2,8 @@
 type: Decision
 title: The client's plan lives in plans/client
 description: plans/client plans how the R26 client reaches the player's browser, as a bundle of its own beside holo-port and server, because only its client page comes from HoloCMS.
-status: accepted
+status: superseded
+superseded_by: knowledge/workflow.md
 timestamp: 2026-11-06T15:50:54+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-06T15:50:54+00:00"}
 tags: [process, plans]

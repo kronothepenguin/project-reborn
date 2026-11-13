@@ -36,8 +36,8 @@ The contract every side of the habbos feature builds on
   `Inject(s Services)`, called once after `New` and before `Mount`; their routers receive the services.
 - [ ] Until a runner injects them, a service is absent and an app skips its calls: the change is saved, as when a call
   fails.
-- [ ] `packages/services/README.md`: what a service is (only what the game must show live), the order constructors,
-  services, `Inject`, run, ids only, nothing stored.
+- [ ] A short `packages/services/README.md` (what it is, setup), and in `packages/services/knowledge/`: what a service
+  is (only what the game must show live), the order constructors, services, `Inject`, run, ids only, nothing stored.
 - [ ] Tests: `Inject` hands the service to the router; nothing is called yet.
 
 # Checks

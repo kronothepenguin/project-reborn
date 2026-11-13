@@ -20,7 +20,8 @@ Room Handler asks for ([hh_room](/r26/hh_room.md)):
   character 30: `SI`, the strip id, the place in the whole hand from 0, `S` or
   `I`, the id and the class; then for a floor furni, `S`, its length, width,
   state, colours and 1 when it is recyclable, and for a wall item, `I`, its
-  data, a poster's number, and 1 when it is recyclable. After a carriage
+  state when it has one, so a pad shows its count, else its data, a poster's number, and 1 when it is recyclable.
+  A trade lists its furni the same way. After a carriage
   return comes how many furni the hand holds, from which the client lights its
   next button. The strip id is the furni's id.
 - A slash or a control character in a value becomes a space, so no state

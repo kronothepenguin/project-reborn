@@ -12,6 +12,7 @@ for an entry of `proxy.trusted` it cannot parse. With
 client's address as its `RemoteAddr`, taken from `X-Forwarded-For`: read from the right, skipping trusted proxies,
 because entries further left come from the client and can be forged. Any other request keeps the connection's address,
 and with `proxy.enabled` false nothing changes.
+`RealIP` copies the request before it changes `RemoteAddr`.
 
 # Gotchas
 

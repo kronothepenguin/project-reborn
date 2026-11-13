@@ -32,6 +32,7 @@ The client is a JavaScript reimplementation of the Shockwave client: a director 
 ### 1. Fetch dependencies
 
 ```bash
+git submodule update --init    # vendor/LibreShockwave and vendor/HabboWidgets
 make install        # every project's folders and dependencies, and the tools
 ```
 

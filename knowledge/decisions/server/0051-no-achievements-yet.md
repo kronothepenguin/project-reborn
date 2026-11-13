@@ -12,7 +12,7 @@ tags: [server, achievements]
 
 - `GET_POSSIBLE_ACHIEVEMENTS` gets 436 with no achievement, and the server never sends 437.
 - `GETSELECTEDBADGES`, which the client sends only after a 437, gets no handler until a phase brings achievements;
-  `plans/later.md` keeps both.
+  `knowledge/features/badges-and-achievements/later.md` keeps both.
 
 # Context
 

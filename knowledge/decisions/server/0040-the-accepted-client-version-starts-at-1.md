@@ -12,7 +12,8 @@ tags: [server, settings]
 
 - The setting that holds the client version the server accepts
   ([0033](/decisions/server/0033-one-client-version-from-the-site.md)) starts at 1.
-- The external variables the site serves give the client `client.version.id=1` (`plans/client`'s C1).
+- The external variables the site serves give the client `client.version.id=1` ([the client
+  feature](/features/client/spec.md)).
 
 # Context
 

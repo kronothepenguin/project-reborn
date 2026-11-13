@@ -1,7 +1,7 @@
 ---
 type: Spec
 title: Furnis, with the catalogue
-description: "Housekeeping edits the catalogue and a habbo's furni, and the furni left out of S5 arrives: one-way doors, the fortune teller, limits for post-its and rollers, and the pages that wait for their features."
+description: Habbos buy, place, use, trade and recycle furni in the game and take it from the shared inventory on the site; housekeeping edits the catalogue and a habbo's furni, and the furni left out of S5 arrives.
 status: planned
 projects: [packages/store, packages/virtual, packages/server, packages/housekeeping, packages/cms, packages/installer]
 ---

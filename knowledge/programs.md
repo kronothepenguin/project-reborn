@@ -85,6 +85,9 @@ The installer, the CMS and housekeeping are web apps, each an Astro frontend in 
   and the runner fetches each page on every request, so a frontend change needs no Go restart.
 - **build**: Astro build, embed, Go build. The production runner embeds the Astro `dist` output into the Go binary and
   serves it with `astro.MakeFSResolver` and `http.FileServerFS`.
+- `go:embed` needs a `dist/index.html` before the first build: `make install` of each frontend writes a placeholder,
+  and `tools/create/cmd/create/templates/fullstack/packages/[[name]]/dist/index.html.tmpl` is tracked with
+  `git add -f`, because `.gitignore` hides every `dist/`.
 
 # Running alone
 

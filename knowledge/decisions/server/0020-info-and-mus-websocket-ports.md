@@ -41,5 +41,5 @@ for a native Shockwave client waits for later."
 - s0-07 serves each connection as a WebSocket listener on its own host and port.
 - The transport keeps TCP and the WebSocket handler of [0006](/decisions/server/0006-transport.md); only the WebSocket is
   served for now.
-- `plans/client`'s C1 no longer needs a path per socket: LibreShockwave reaches both ports from `connection.info.*`
+- [The client feature](/features/client/spec.md) no longer needs a path per socket: LibreShockwave reaches both ports from `connection.info.*`
   and `connection.mus.*`.

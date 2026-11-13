@@ -1,7 +1,7 @@
 ---
 type: Decision
 title: A hotel starts with Holo's catalogue, changed by database updates
-description: An update seeds Holo's English catalogue, 76 pages, 1,372 furni and 19 deals; no page edits it in S5, a change is another update, and a housekeeping editor waits in plans/later.md.
+description: An update seeds Holo's English catalogue, 76 pages, 1,372 furni and 19 deals; no page edits it in S5, a change is another update, and a housekeeping editor waits in the furnis feature's later notes.
 status: accepted
 timestamp: 2026-11-11T15:10:47+00:00
 generated: {by: claude-code/claude-fable-5-2, at: "2026-11-11T15:10:47+00:00"}
@@ -14,7 +14,7 @@ tags: [server, catalogue, data]
   are English, as [0055](/decisions/server/0055-holos-navigator-set.md) did for the navigator: its 76 pages, its 1,372 furni
   with their names, descriptions, prices, sprites, colours, sizes and flags, and its 19 deals.
 - No page edits the catalogue in S5. A new price, a new furni or a new page is another database update.
-- A catalogue editor in housekeeping waits in `plans/later.md`.
+- A catalogue editor in housekeeping waits in `knowledge/features/furnis/later.md`.
 
 # Context
 
@@ -31,4 +31,4 @@ rows that the English dump lacks or holds differently, among them those of a pag
 # Consequences
 
 - s5-01 writes the update.
-- `plans/later.md` gains "A catalogue editor in housekeeping".
+- `knowledge/features/furnis/later.md` gains "A catalogue editor in housekeeping".

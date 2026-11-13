@@ -19,6 +19,9 @@ holo-port/0041), built from `docs/hk.png` and `knowledge/colours.md`.
 `src/layouts/housekeeping.astro` has the grey bar with who is logged in and their previous login, `Log out` beside the
 clock box, the tabs over the blue strip, the left column of `box` components and the content.
 
+- `Log out` has its own route, `POST /housekeeping/logout`, and lands on `site.url`.
+- The clock shows the server's time in UTC from Go and the local time from a script.
+
 # The chrome
 
 - Page structs embed `chrome` (`internal/router/router.go`), because the layout reads its fields and rendering fails

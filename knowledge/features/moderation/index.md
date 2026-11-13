@@ -4,4 +4,4 @@
 
 - [Moderation: later](later.md) - Work set aside for moderation: staff tools for groups, Holo's chat commands and the word filter.
 - [Moderation: how](plan.md) - The game runs chat commands, the word filter and calls for help; housekeeping holds the staff pages.
-- [Moderation](spec.md) - Staff moderate the hotel from the client and from housekeeping: chat commands, the word filter, calls for help, bans and alerts that reach the game at once, and staff tools for groups.
+- [Moderation](spec.md) - Staff ban, alert, answer help requests and read the chat in housekeeping, and moderate from the client too: chat commands, the word filter, calls for help, bans and alerts that reach the game at once, and staff tools for groups.

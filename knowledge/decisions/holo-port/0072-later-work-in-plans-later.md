@@ -2,7 +2,8 @@
 type: Decision
 title: Later work is listed in plans/later.md
 description: plans/later.md, beside the port bundle, lists work planned for later that belongs to no phase, starting with the orchestrator's.
-status: accepted
+status: superseded
+superseded_by: knowledge/workflow.md
 timestamp: 2026-11-03T21:02:31+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-03T21:02:31+00:00"}
 tags: [process]

@@ -3,5 +3,5 @@
 # Badges and achievements
 
 - [Badges and achievements: later](later.md) - Work set aside for badges and achievements: five badges on the site, and achievements.
-- [Badges and achievements: how](plan.md) - The site shows five worn badges, and the game and the store bring achievements.
-- [Badges and achievements](spec.md) - The site shows a habbo's five worn badges, and habbos earn achievements.
+- [Badges and achievements: how](plan.md) - Housekeeping gives badges and the game sets the five slots; the site shows five worn badges, and the game and the store bring achievements.
+- [Badges and achievements](spec.md) - Staff give badges in housekeeping and a habbo wears five in the client; the site shows the five worn badges, and habbos earn achievements.

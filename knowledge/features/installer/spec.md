@@ -1,7 +1,7 @@
 ---
 type: Spec
 title: "Installer: a first article, optional content and more settings"
-description: A new hotel starts with a first news article, and its administrator chooses which content is seeded, reviews the catalogue and sets more of the hotel's settings while installing.
+description: The installer sets up a new hotel in three steps, and gains a first news article, a choice of seeded content, a catalogue review and more of the hotel's settings.
 status: planned
 projects: [packages/installer, apps/installer, packages/store, packages/cms, packages/housekeeping, packages/virtual, tests/e2e]
 ---

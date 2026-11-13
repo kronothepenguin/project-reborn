@@ -59,7 +59,7 @@ Holo pages are ISO-8859-1 XHTML 1.0 with a fixed 930 px layout. Every page boots
 | `club.php`, `club_*.php`, `ajax_club.php` | club info and purchase | `/club`, `POST /club/subscriptions` | P6 |
 | `wardrobestore.php` | club wardrobe slots | `POST /account/looks/wardrobe/{slot}` | P6 |
 | `iot/go.php` | help tool and post reports | `/help`, `POST /forum/posts/{id}/report` | P7 / P5 |
-| `client.php`, `clientutils.php`, `unloadclient.php` | Shockwave client | deferred | `plans/client`, C1 |
+| `client.php`, `clientutils.php`, `unloadclient.php` | Shockwave client | deferred | [The client feature](/features/client/spec.md) |
 | `minimail.php` | stub | not ported | — |
 
 # UI building blocks

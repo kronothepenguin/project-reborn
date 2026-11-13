@@ -39,5 +39,6 @@ server, one thing, and libreshockwave is client side only".
   (`vendor/LibreShockwave/cpp/src/lingo/xtra/multiuser_xtra.cpp`), which the R26 client takes from `connection.info.*`
   and `connection.mus.*`, and it adds one path, the page's `websocketPath`, to every socket
   (`vendor/LibreShockwave/web/libreshockwave-cpp-worker.js`). As shipped it cannot reach `/client/info` and
-  `/client/mus` on one host and port. How it does is a question of `plans/client`'s C1, not of the server.
+  `/client/mus` on one host and port. How it does is a question of [the client feature](/features/client/spec.md), not
+  of the server.
 - s0-04 adds the section, and s0-07 serves it.

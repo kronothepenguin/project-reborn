@@ -15,7 +15,7 @@ okf_version: "0.2"
 - [The hand](hand.md) - How the server serves a habbo's hand with GETSTRIP, read from the store each time.
 - [The handshake and the login](handshake-and-login.md) - The hh_entry_init commands that take a client from HELLO to LOGIN_OK and what the server answers to each.
 - [Keeping the session alive](keepalive.md) - How the server pings every session, closes a silent one and logs the latency reports.
-- [Layout](layout.md) - The files and folders of packages/server, what each holds and the task that brought it.
+- [Layout](layout.md) - The files and folders of packages/server and what each holds.
 - [The navigator](navigator.md) - The hh_navigator commands the server answers: categories, lists, searches, favourites and own rooms.
 - [The recycler](recycler.md) - The hh_recycler commands the server answers, from the configuration to a confirmed recycling.
 - [Rooms](rooms.md) - The hh_room commands the server answers: entering, furni, trading, chat, rights, events, queues, walking and rollers.

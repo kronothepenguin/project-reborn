@@ -1,7 +1,7 @@
 ---
 type: Plan
 title: "Look and feel: Holo's look at today's sizes: how"
-description: The site's sizes move into theme tokens, then to a 16px design, after the differences from HoloCMS.
+description: The CMS, housekeeping and components hold the layouts, and the site's sizes move into theme tokens, then to a 16px design, after the differences from HoloCMS.
 ---
 
 # Architecture
@@ -43,8 +43,6 @@ The known issue of [later](/features/look-and-feel/later.md), group badge tint 1
   Project Reborn ©` in place of Holo's line.
 - [Housekeeping components have one look each](/decisions/holo-port/0060-housekeeping-components.md) — Blue
   navigation, gold data lists, blue forms and a grey top bar, the same on every page.
-
-The user's decisions are written here when the feature is planned.
 
 # Notes
 

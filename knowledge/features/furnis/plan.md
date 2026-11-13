@@ -1,7 +1,7 @@
 ---
 type: Plan
 title: "Furnis, with the catalogue: how"
-description: Housekeeping edits the catalogue and furni, and the game brings the furni S5 left out.
+description: The store, virtual and the game server hold the catalogue and furni over the R26 protocol; housekeeping edits the catalogue and furni, and the game brings the furni S5 left out.
 ---
 
 # Architecture
@@ -31,8 +31,6 @@ sell them, in [extras](/features/extras/spec.md)
 ([server 0101](/decisions/server/0101-the-pages-of-s7s-furni-wait-for-s7.md)).
 
 # Decisions
-
-The user's decisions are written here when the feature is planned.
 
 - [Furni and rooms](/decisions/holo-port/0057-furni-and-rooms.md) — Every furni belongs to a user: in a habbo's hand,
   shared when no habbo holds it, or placed in a room; shared furni moves one way, to a habbo.

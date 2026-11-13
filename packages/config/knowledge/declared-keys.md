@@ -23,8 +23,11 @@ runs are settings, declared in `packages/virtual`.
 | `server.mus.host` | string | `localhost` | hostname or IP address, as `cms.host` |
 | `server.mus.port` | int | 30001 | 1–65535, other than `server.info.port` |
 
+`store.path` refuses `?` and `#` because `store.Open` builds a `file:` URI from it.
+
 `proxy` is for a hotel behind a reverse proxy: production enables it in its `config.json`, and `auth.RealIP` then takes
 the client IP from the `X-Forwarded-For` header of requests that come from a trusted address or range.
+`proxy.trusted` takes CIDR ranges because a pod's proxy address changes within a range.
 
 `server` is the game server's two WebSocket listeners, `info` and `mus` (decision server/0020).
 

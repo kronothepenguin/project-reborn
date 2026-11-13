@@ -23,7 +23,7 @@ tags: [server, navigator, data]
     heightmap and public furni.
 - BattleBall and SnowStorm, their categories and their lobbies, wait for S8. The pool
   triggers, `room_modeldata_triggers`, wait for the phase that serves the pools.
-- The public rooms' casts are files of the client that the user adds (`plans/client`'s C1).
+- The public rooms' casts are files of the client that the user adds ([the client feature](/features/client/spec.md)).
 
 # Context
 

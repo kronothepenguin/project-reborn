@@ -38,7 +38,8 @@ This is the feature's contract for settings: it runs alone.
 - [ ] `packages/virtual/settings` keeps its API for the programs that have not switched yet, built on the moved list.
 - [ ] Tests: defaults without rows; each type decoded; a bad row gives the default; `Set` validates, writes and deletes;
   a read through a transaction's queries inside a transaction does not wait.
-- [ ] `packages/settings/README.md`, with the rule: inside a transaction, read through the transaction's queries.
+- [ ] A short `packages/settings/README.md` (what it is, setup), and in `packages/settings/knowledge/` the rule: inside
+  a transaction, read through the transaction's queries.
 
 # Checks
 

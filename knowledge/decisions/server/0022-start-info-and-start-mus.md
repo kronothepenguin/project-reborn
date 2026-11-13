@@ -13,8 +13,8 @@ tags: [server, packages, runner]
 - `packages/server` defines `StartInfo` and `StartMus`. Each opens its listener on the host and port of `server.info`
   or `server.mus` ([0020](/decisions/server/0020-info-and-mus-websocket-ports.md)), returns an error when it cannot listen,
   and then serves in the background.
-- The standalone runner, `apps/server/cmd/server/main.go`, calls both, and the orchestrator (`plans/later.md`) will
-  later call the same two.
+- The standalone runner, `apps/server/cmd/server/main.go`, calls both, and the orchestrator
+  (`knowledge/features/platform/later.md`) will later call the same two.
 - The runner gains exactly these lines, placed after `c := server.New(db)`:
 
 ```go

@@ -392,5 +392,5 @@ veto.
 | --- | --- |
 | `My Friends`, `My Rooms` and the recommended rooms | Deferred with the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |
 | The online state of the profile widget, the community page's random habbos, the staff page and the forum's post boxes, which show offline | Deferred with the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |
-| `Chatlogs` in housekeeping | The game server's `plans/server` task s4-08 ports it: 100 lines a page with Newer and Older, public rooms marked `Public`, the lines kept 30 days |
+| `Chatlogs` in housekeeping | The game server's S4 ports it: 100 lines a page with Newer and Older, public rooms marked `Public`, the lines kept 30 days |
 | `Online Users` in housekeeping | Deferred with the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |

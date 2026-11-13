@@ -3,4 +3,4 @@
 # Rooms
 
 - [Rooms: how](plan.md) - The game server runs each loaded room in memory with its own clock, and saves rights, bans, chat, ratings and ignore lists in the store.
-- [Rooms](spec.md) - Loaded rooms, with their habbos and furni, stay in the game's memory, and a change made to a room or its furni outside the game reaches it at once.
+- [Rooms](spec.md) - Habbos enter rooms, walk, talk, and are let in, queued, kicked and banned there; loaded rooms stay in the game's memory, and a change made to a room or its furni outside the game reaches it at once.

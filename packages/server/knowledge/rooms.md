@@ -145,6 +145,9 @@ comes in once its client has built the room, at `G_STAT`, as Holo had it.
   again. Each move saves the furni's place and tells the room with 230: the
   two tiles, each furni's id and altitudes, the roller's id, and 2 with the
   habbo's index and heights when one slid along, else 0.
+- A post-it's text lives in its own table, `furni_notes`, so the room's copy of its furni carries no note text.
+- Teleports follow the client's messages: `GETDOORFLAT` answers 62 for a partner in the same room too, and
+  `GOVIADOOR` into another room answers 41 at once, where Holo answered 19.
 - A furni's state is saved, then the room's copy changes, and the room is
   told. No client sets the state of a furni the server draws or writes: a
   dice, a bottle, the wheel, the randomizer, a trophy, a present, a post-it, a

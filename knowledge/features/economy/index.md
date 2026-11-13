@@ -2,5 +2,5 @@
 
 # Economy
 
-- [Economy: how](plan.md) - An Economy service tells the game of credits, tickets and film changed by housekeeping and the site.
+- [Economy: how](plan.md) - The store keeps the purse, its ledger and the vouchers for the site and housekeeping, and an Economy service tells the game of credits, tickets and film changed by housekeeping and the site.
 - [Economy](spec.md) - Housekeeping changes credits, tickets and film, the site shows them and spends them in vouchers and purchases, and the game server shows a player its new balance at once.

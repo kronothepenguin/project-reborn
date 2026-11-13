@@ -1,7 +1,7 @@
 ---
 type: Plan
 title: "Economy: how"
-description: An Economy service tells the game of credits, tickets and film changed by housekeeping and the site.
+description: The store keeps the purse, its ledger and the vouchers for the site and housekeeping, and an Economy service tells the game of credits, tickets and film changed by housekeeping and the site.
 ---
 
 # Architecture

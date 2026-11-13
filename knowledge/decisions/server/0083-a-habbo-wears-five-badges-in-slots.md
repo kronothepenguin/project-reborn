@@ -13,7 +13,7 @@ tags: [server, badges, store, cms]
 - A habbo wears up to five badges, each in a slot 1 to 5, as the R26 client's badge window sets them (`SETBADGE`) and
   shows them (228).
 - The store keeps the slot of each worn badge, in place of one worn badge; the site's badge page, from HoloCMS, changes
-  to match (`plans/holo-port`).
+  to match (`knowledge/features/badges-and-achievements/later.md`).
 
 # Context
 

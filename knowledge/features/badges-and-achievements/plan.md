@@ -1,7 +1,7 @@
 ---
 type: Plan
 title: "Badges and achievements: how"
-description: The site shows five worn badges, and the game and the store bring achievements.
+description: Housekeeping gives badges and the game sets the five slots; the site shows five worn badges, and the game and the store bring achievements.
 ---
 
 # Architecture
@@ -24,8 +24,6 @@ Planned:
 | `packages/housekeeping` | The badge tool, with the slots |
 
 # Decisions
-
-The user's decisions are written here when the feature is planned.
 
 - [A habbo has no achievements yet](/decisions/server/0051-no-achievements-yet.md) — 436 lists no achievements and the
   server sends no 437, so `GETSELECTEDBADGES` waits for achievements.

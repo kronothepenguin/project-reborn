@@ -1,7 +1,7 @@
 ---
 type: Plan
 title: "Installer: a first article, optional content and more settings: how"
-description: The installer gains steps for settings, optional content, a catalogue review and a first article, written once.
+description: The installer writes config.json, the database and the first administrator, and gains steps for settings, optional content, a catalogue review and a first article, written once.
 ---
 
 # Architecture
@@ -48,5 +48,3 @@ starts. The place of the installer on the orchestrator's mux is [platform](/feat
 - [Inside reborn the installer lives under /installer/](/decisions/reborn/0004-the-installer-inside-reborn.md) — Run
   alone, the installer keeps its form with both ports and the Housekeeping Address; it refuses to run once an
   administrator exists, never applies updates, and its "already installed" page links to `site.url`.
-
-The user's decisions are written here when the feature is planned.

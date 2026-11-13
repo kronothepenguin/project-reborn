@@ -2,7 +2,8 @@
 type: Decision
 title: A coordinator shares tasks with sub-agents and merges in batches
 description: Tasks live in one folder and name the packages they change; a task is taken by creating its worktree; sub-agents work tasks in parallel and never decide or merge; the coordinating session merges ready branches together after one run of the gates.
-status: accepted
+status: superseded
+superseded_by: knowledge/workflow.md
 timestamp: 2026-11-13T00:42:05+00:00
 generated: {by: claude-code/claude-fable-5-2, at: "2026-11-13T00:42:05+00:00"}
 tags: [process, tasks, agents]

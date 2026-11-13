@@ -24,7 +24,7 @@ and will add dcr later to decompile them and have a recent r26 source using libr
 # Consequences
 
 - A fresh worktree runs `git submodule update --init vendor/LibreShockwave` before reading it.
-- `plans/server/tasks/s1-24-mus-framing.md` reads the Multiuser Xtra in the submodule.
+- The game server's task that framed `#mus` reads the Multiuser Xtra in the submodule.
 - Decompiling the R26 `.dcr` with LibreShockwave's asset extractor is part of
   C1, once the user has added the `.dcr`.
 - LibreShockwave is licensed under the AGPL-3.0 ([LibreShockwave](/sources/libreshockwave.md#licence)).

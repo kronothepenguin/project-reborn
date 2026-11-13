@@ -1,7 +1,7 @@
 ---
 type: Spec
 title: Navigator
-description: The navigator's categories and rooms, changed outside the game, reach it at once, and the site shows the rooms the navigator lists.
+description: The navigator lists rooms by category, searches them and creates rooms with the room-o-matic; its categories and rooms, changed outside the game, reach it at once, and the site shows the rooms it lists.
 status: planned
 projects: [packages/server, packages/cms, packages/housekeeping, packages/services, packages/virtual, packages/store]
 ---

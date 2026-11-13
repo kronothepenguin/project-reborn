@@ -26,7 +26,7 @@ reborn has its own address in `config.json` ([0003](/decisions/reborn/0003-rebor
   the section registered on `Config` as `reborn`, with the tests the skill asks for.
 - [ ] The installer's config handler (`packages/installer/internal/router/config.go`) fills the section with its
   defaults, as it does `proxy` and `server`, so `config.json` validates.
-- [ ] `packages/config/README.md` lists the section.
+- [ ] `packages/config/knowledge/declared-keys.md` lists the section.
 
 # Checks
 

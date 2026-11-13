@@ -1,7 +1,7 @@
 ---
 type: Plan
 title: "Platform: reborn runs the whole hotel: how"
-description: packages/reborn runs every program on one mux, the installer moves under /installer/, settings come from the store, and releases ship every runner.
+description: Four runners share one database, config.json and CI; packages/reborn runs every program on one mux, the installer moves under /installer/, settings come from the store, and releases ship every runner.
 ---
 
 # Architecture

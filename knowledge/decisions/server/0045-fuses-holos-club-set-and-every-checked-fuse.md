@@ -34,7 +34,7 @@ tags: [server, auth, rights]
   and `fuse_receive_calls_for_help` and the mod tool's `fuse_ban`, `fuse_superban`, `fuse_room_alert` and
   `fuse_room_kick` in S7. Holo's chat commands, behind `fuse_mute`, `fuse_room_mute`,
   `fuse_moderator_access`, `fuse_administrator_access`, `fuse_teleport`, `fuse_credits` and `fuse_freeze`, belong to no
-  phase yet and wait in `plans/later.md`.
+  phase yet and wait in `knowledge/features/moderation/later.md`.
 
 # Context
 

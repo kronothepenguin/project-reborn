@@ -2,6 +2,6 @@
 
 # Habbos
 
-- [Habbos: how](plan.md) - The services package carries a habbo's new look from the site and housekeeping to the game, in reborn and over the game's /api/.
-- [Habbos](spec.md) - A habbo stands in a room of the client opened from the site, and its look and motto, changed on the site or in housekeeping, change in the client at once, through the first service.
+- [Habbos: how](plan.md) - The CMS and housekeeping hold a habbo's pages, and the services package carries a habbo's new look from the site and housekeeping to the game, in reborn and over the game's /api/.
+- [Habbos](spec.md) - Each habbo has its Me page, motto, look and profile, edited on the site and in housekeeping, and its look and motto reach the client at once through the first service.
 - [Tasks](tasks/index.md)

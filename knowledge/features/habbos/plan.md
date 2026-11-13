@@ -1,7 +1,7 @@
 ---
 type: Plan
 title: "Habbos: how"
-description: The services package carries a habbo's new look from the site and housekeeping to the game, in reborn and over the game's /api/.
+description: The CMS and housekeeping hold a habbo's pages, and the services package carries a habbo's new look from the site and housekeeping to the game, in reborn and over the game's /api/.
 ---
 
 # Architecture

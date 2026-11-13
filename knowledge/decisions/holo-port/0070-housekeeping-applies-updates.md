@@ -41,5 +41,5 @@ can apply its updates.
 # Consequences
 
 - Housekeeping writes config.json, and [How the programs work together](/programs.md) changes with it.
-- Opening the installer again on an installed hotel waits in `plans/later.md`
+- Opening the installer again on an installed hotel waits in `knowledge/features/installer/later.md`
   ([0072](/decisions/holo-port/0072-later-work-in-plans-later.md)).

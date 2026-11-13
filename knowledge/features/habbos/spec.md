@@ -1,7 +1,7 @@
 ---
 type: Spec
 title: Habbos
-description: A habbo stands in a room of the client opened from the site, and its look and motto, changed on the site or in housekeeping, change in the client at once, through the first service.
+description: Each habbo has its Me page, motto, look and profile, edited on the site and in housekeeping, and its look and motto reach the client at once through the first service.
 status: active
 projects: [packages/services, packages/server, packages/cms, packages/housekeeping, packages/reborn, packages/store, packages/config, packages/components, tests/e2e]
 ---

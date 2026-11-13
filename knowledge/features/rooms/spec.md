@@ -1,7 +1,7 @@
 ---
 type: Spec
 title: Rooms
-description: Loaded rooms, with their habbos and furni, stay in the game's memory, and a change made to a room or its furni outside the game reaches it at once.
+description: Habbos enter rooms, walk, talk, and are let in, queued, kicked and banned there; loaded rooms stay in the game's memory, and a change made to a room or its furni outside the game reaches it at once.
 status: planned
 projects: [packages/server, packages/cms, packages/housekeeping, packages/services, packages/virtual, packages/store]
 ---

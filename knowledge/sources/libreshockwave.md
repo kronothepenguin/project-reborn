@@ -53,7 +53,7 @@ who use a modified version over a network can get its source.
 
 # Who reads it
 
-| Plan | For |
+| Reader | For |
 | --- | --- |
-| `plans/server` | The `#mus` framing only (`plans/server/tasks/s1-24-mus-framing.md`) |
-| `plans/client` | The browser player and the decompiler, in C1 |
+| The game server | The `#mus` framing only |
+| [The client feature](/features/client/spec.md) | The browser player and the decompiler |

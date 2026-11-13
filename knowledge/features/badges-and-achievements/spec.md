@@ -1,7 +1,7 @@
 ---
 type: Spec
 title: Badges and achievements
-description: The site shows a habbo's five worn badges, and habbos earn achievements.
+description: Staff give badges in housekeeping and a habbo wears five in the client; the site shows the five worn badges, and habbos earn achievements.
 status: planned
 projects: [packages/store, packages/server, packages/cms, packages/housekeeping]
 ---

@@ -1,7 +1,7 @@
 ---
 type: Spec
 title: "Platform: reborn runs the whole hotel"
-description: The orchestrator reborn runs the installer, the site, housekeeping and the game server in one process, installs a new hotel live, stops in order and ships beside the four separate programs; every program reads settings from the store.
+description: The installer, the site, housekeeping and the game server run as four programs on one SQLite file, tested and released by GitHub Actions; the orchestrator reborn runs them in one process, installs a new hotel live, stops in order and ships beside them, and every program reads settings from the store.
 status: active
 projects: [apps/server, apps/cms, apps/housekeeping, apps/installer, apps/reborn, packages/reborn, packages/server, packages/cms, packages/housekeeping, packages/installer, packages/config, packages/scheduler, packages/settings, packages/store, packages/auth, packages/virtual, tests/e2e]
 ---

@@ -36,4 +36,4 @@ example ports are illustrations, not chosen ports.
 
 - `game` never imports `r26`, so either way stays possible ([0005](/decisions/server/0005-package-layout.md)).
 - The listeners are declared in `config.json`, whose keys are startup keys (s0-04).
-- `plans/later.md` lists r18.
+- `knowledge/features/r18/later.md` lists r18.

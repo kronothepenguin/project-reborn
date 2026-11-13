@@ -32,7 +32,8 @@ Each kind is a folder of `cmd/create/templates/` (decision server/0003). `[[name
 - The fullstack package starts with a placeholder `dist/index.html`, because `go:embed` needs a file there before the
   first `pnpm build`. Its `make install` writes it again on a fresh clone.
 - Templates are Go `text/template` files with the data `Name`, `Package`, `Type`, `AppPort`, `AstroPort` and
-  `VitePort`. The `.go` output goes through `gofmt`.
+  `VitePort`. The `.go` output goes through `go/format`,
+  which sorts the imports whatever the name; a rendered Go file that does not parse stops `create`.
 
 # After writing
 

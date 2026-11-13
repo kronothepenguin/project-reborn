@@ -16,5 +16,7 @@ whose rewards and recyclings live in the store
 | `START_FURNI_RECYCLING` (225) | 306, 1 when the recycling started and 0 when not, after 101 for the hand. The habbo must be in a room and recycle nothing yet (`knowledge/decisions/server/0118-a-recycling-starts-in-a-room.md`); a reward must take exactly that many furni; and each furni must be in its hand, recyclable, on offer in no trade and old enough (`knowledge/decisions/server/0117-the-recycler-checks-a-furnis-age.md`). All of them move, or none |
 | `CONFIRM_FURNI_RECYCLING` (226) | 307, 1 when the recycling ended and 0 when nothing changed. 1 takes a ready reward: the furni given are destroyed and the reward is in the hand. 0 refuses it at any time, and the furni come back; after the time-out that is all that works (`knowledge/decisions/server/0116-a-recycling-that-waits-too-long-gives-the-furni-back.md`) |
 
+- The furni given to the recycler wait in `furni` under `recycler_avatar_id`.
+- 306 and 307 answer 1 or 0, where Holo answered with the status.
 - `APPROVE_RECYCLED_FURNI` (224) is never sent by the client, and has no
   handler.

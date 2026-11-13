@@ -2,7 +2,8 @@
 type: Decision
 title: The game server's plan lives in plans/server
 description: plans/server is an OKF bundle in the format of plans/holo-port, worked through a tracking-plans skill shared by every plan, and Claude Code loads the project skills through a .claude/skills link.
-status: accepted
+status: superseded
+superseded_by: knowledge/workflow.md
 timestamp: 2026-11-05T20:57:45+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [process]

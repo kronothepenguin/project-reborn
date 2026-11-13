@@ -15,7 +15,7 @@ tags: [groups, colours]
 - Holo's palette leaves the renderer and its tests, with the two tests that compared the renderer with `badge.php`'s
   own drawings, and those drawings. The renderer draws in the one palette, so `Draw` takes no palette.
 - Tint 15, olive-500 (`#7c7c67`), looks grey-olive beside Holo's brown `#977641`, and no Tailwind colour looks like
-  it. It is a known issue in `plans/later.md`, to be fixed later.
+  it. It is a known issue in `knowledge/features/look-and-feel/later.md`, to be fixed later.
 
 # Context
 
