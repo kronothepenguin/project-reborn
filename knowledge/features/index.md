@@ -3,6 +3,7 @@
 # Features
 
 - [Next features](next.md) - The active features, and the proposed order of the rest.
+- [Accounts](accounts/index.md)
 - [Assets](assets/index.md)
 - [Badges and achievements](badges-and-achievements/index.md)
 - [Client](client/index.md)
