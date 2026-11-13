@@ -9,6 +9,7 @@ Concepts for `packages/store`, the project's persistence infrastructure.
 ## Infrastructure
 
 - [Store](store.md) — Persistence infrastructure that opens the SQLite file, applies the update files and provides the generated typed operations.
+- [Store bundle](bundle.md) — The layout, concept types, naming and body rules of this bundle, and what make check-docs checks.
 
 ## Entities
 

@@ -1,123 +1,89 @@
 ---
 name: documenting-with-okf
-description: Writes and validates Open Knowledge Format (OKF) concept documents for the store knowledge bundle. Use when adding, updating, or reviewing concept documents under packages/store/knowledge/ or any project knowledge bundle.
+description: Writes and checks Open Knowledge Format (OKF 0.2) bundles, the knowledge/ folders of markdown concepts with YAML frontmatter, including the Spec, Plan and Task files of a feature, and generates their index.md files. Use when adding, changing or reviewing any file under a knowledge/ folder, or when checking a bundle.
 ---
 
 # Documenting with OKF
 
-## What OKF is
+A bundle is a directory named `knowledge`. A concept is one markdown file of it: YAML frontmatter, then a body.
 
-The [Open Knowledge Format](https://okf.md/spec/) is markdown plus YAML
-frontmatter: each file is one concept, and a bundle is a directory of concept
-files with `index.md` listings. It is readable by humans and agents, diffable,
-and lives next to the code it describes.
+## Where bundles live
 
-## Project bundle layout
+- The root `knowledge/` holds what crosses projects: workflow, rules, architecture, features, sources, decisions.
+- Each app or package has its own `knowledge/` beside its code.
+- Read the `index.md` of a bundle first. A bundle may hold a `Playbook` that lists its own layout and types.
 
-```text
-packages/store/knowledge/
-├── index.md            # root listing; declares okf_version: "0.2"
-├── store.md            # the Go package (type: Go Package)
-├── schemas/
-│   ├── index.md
-│   └── <feature>.md    # one concept per schema file
-├── tables/
-│   ├── index.md
-│   └── <table>.md      # one concept per declared table
-├── entities/
-│   ├── index.md
-│   └── <entity>.md     # one concept per domain entity
-├── queries/
-│   ├── index.md
-│   └── <feature>.md    # one concept per query file
-├── migrations/
-│   ├── index.md
-│   └── NNNN-<slug>.md  # one concept per update file
-└── discussions/
-    ├── index.md
-    └── <slug>.md       # one question kept for a later discussion
-```
-
-Concept types by source artifact:
-
-| Source artifact | `type` | Concept location | `resource` |
-|-----------------|--------|------------------|------------|
-| A schema file | `SQL Schema File` | `schemas/<feature>.md` | the schema file |
-| A declared table | `SQLite Table` | `tables/<table>.md` | the schema file that declares the table |
-| A domain entity | `Entity` | `entities/<entity>.md` | none: an entity is abstract |
-| A query file | `SQL Query` | `queries/<feature>.md` | the query file |
-| An update file | `SQL Update` | `migrations/NNNN-<slug>.md` | the update file |
-| The Go module | `Go Package` | `store.md` | `packages/store` |
-| A question kept for later | `Discussion` | `discussions/<slug>.md` | none: nothing is planned from it |
-
-Table concepts are named after the table (`club_subscriptions.md`); entity
-concepts after the singular entity in kebab-case (`club-subscription.md`).
-
-`index.md` and `log.md` are reserved filenames and are never concept files.
-Only the root `index.md` carries frontmatter (`okf_version: "0.2"`).
-
-## Frontmatter rules
+## Frontmatter
 
 ```yaml
 ---
-type: <Concept type>        # REQUIRED, non-empty
-title: <Display name>        # recommended
-description: <One line>      # recommended, used by index entries
-resource: <source path>      # recommended, except for entities: repo-relative path of the documented file
-tags: [store, sql]           # optional
-timestamp: <ISO 8601>        # optional; always with an explicit offset, e.g. 2026-10-27T21:00:00+00:00
+type: SQLite Table         # the kind of concept, in words a reader knows
+title: users               # display name
+description: The person behind one or more habbos.   # one sentence; index entries show it
+resource: packages/store/schema/users.schema.sql      # optional: repo path of the file it documents
+tags: [store, sql]         # optional
 ---
 ```
 
-`resource` must point at the actual file, for example
-`packages/store/schema/auth.schema.sql`. Unknown keys and missing optional
-fields are tolerated; a missing `type` is not.
+- Write these keys, plus the keys of the type.
+- Keep the extra keys of an existing file (`timestamp`, `generated`, `verified`).
+- Choose `type` as a short name of the kind of thing (`Go Package`, `Entity`). Reuse the bundle's type for that kind.
 
-## Body rules
+## Body
 
-| Concept | Sections |
-|---------|----------|
-| Schema file | `# Schema`: the tables and indexes the file declares, each table linked to `/tables/<table>.md` |
-| Table | `# Schema`: one row per column (column, type, null, default, description, key or reference); `# Keys`: primary key, unique and plain indexes; links to its entity and to the queries that touch it |
-| Entity | `# Definition`, `# Invariants`, `# Lifecycle`, `# Vocabularies` (allowed values of open `TEXT` columns), `# Relations` (links to other entities); links to its tables and queries |
-| Query file | `# Operations`: one section per operation (name, cardinality, inputs, result, tables touched) |
-| Update file | `# Update`: its title, whether it is automatic, and what it changes, each table linked to `/tables/<table>.md` |
-| Discussion | `# Status` (nothing planned, and the decision in force), `# The question`, `# What the user said` (quoted), `# Ideas raised` |
-
-- Prefer structural markdown over prose.
+- Structure over prose: headings, lists, tables, code blocks.
+- `# Schema` for the fields or columns of an asset.
 - `# Examples` for short usage snippets.
-- `# Citations` for external sources, numbered, at the end.
-- Cross-link concepts with bundle-absolute links (`/queries/ping.md`,
-  `/tables/users.md`, `/entities/user.md`). Broken links are permitted while
-  knowledge is being filled in.
+- `# Citations` at the end, numbered, for external sources.
 
-## Index and log rules
+## Reserved files
 
-- Every directory's `index.md` lists its concepts with the linked concept's
-  `description`, grouped under headings.
-- `log.md` is optional; entries go under `## YYYY-MM-DD` headings, newest first.
+- `index.md` lists the concepts of its directory, each with its `description`. Only the root `index.md` has
+  frontmatter: `okf_version: "0.2"`.
+- `log.md` holds dated entries under `## YYYY-MM-DD` headings, newest first. It has no frontmatter.
 
-## Conformance checklist
+## Links
 
-```text
-OKF bundle:
-- [ ] every schema file, query file and declared table has exactly one concept
-- [ ] every entity the tables represent has a concept that links its tables and queries
-- [ ] every concept has frontmatter with a non-empty type
-- [ ] resource points at the actual source file (repo-relative); entities have none
-- [ ] description is a single sentence
-- [ ] index.md lists every concept with its description
-- [ ] root index.md declares okf_version: "0.2"
-- [ ] cross-links and citations use markdown links
+- Inside one bundle: a markdown link with a bundle-absolute path, such as `/tables/users.md`.
+- To another bundle or to code: the repo path in backticks, `packages/store/knowledge/index.md`.
+- A numbered decision: `decision <series>/<NNNN>`, for example `decision server/0107` for
+  `knowledge/decisions/server/0107-<slug>.md`.
+
+## Workflow types
+
+A feature lives in `knowledge/features/<feature>/`.
+
+- `spec.md`, type `Spec`: what to build.
+  - Keys: `status` (`planned`, `active`, `done` or `parked`); `projects` (repo folders, existing or to create).
+  - Body: `# What`, `# Behaviours`, `# Open questions` while any remain.
+- `plan.md`, type `Plan`: how to build it. Body: `# Architecture`, `# Decisions`.
+- `tasks/NN-<slug>.md`, type `Task`: one unit of work.
+  - Keys: `scope` (repo folders); `depends_on` (task names, `[]` when none); `skills` (folders of `.agents/skills/`).
+  - `depends_on` names `NN-<slug>` for a task of the same feature, `<feature>/NN-<slug>` for a task of another.
+  - Body: `# Goal`, `# Context`, `# Steps`, `# Checks`.
+- A task file is deleted when the task is done. A `depends_on` name with no file counts as done.
+
+## Scripts
+
+Run them from the repo root with Python 3 (standard library only):
+
+```sh
+python3 -I .agents/skills/documenting-with-okf/scripts/index.py [bundle ...]
+python3 -I .agents/skills/documenting-with-okf/scripts/check.py [bundle ...]
 ```
 
-Run `make check-docs` from `packages/store` to verify the conformance rules the
-repository enforces: a non-empty `type` in every concept, and every schema and
-query file named by some concept's `resource`. Index listings and the table
-and entity concepts are not checked by it; verify them by hand.
+- With no argument, both serve every `knowledge/` folder of the repo.
+- `index.py` writes the `index.md` of each directory where it is missing or starts with
+  `<!-- generated by index.py -->`. It keeps a hand-written `index.md` as it is. Run it after adding, renaming or
+  deleting a concept.
+- `check.py` prints `path:line: message` per finding and exits 1 on any failure. A `note:` line is information.
+  Fix each failure and run it again until it exits 0.
 
-## Authoritative references
+## Checklist
 
-- [OKF annotated specification](https://okf.md/spec/)
-- [Introducing the Open Knowledge Format (Google Cloud)](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing)
-- [GoogleCloudPlatform/knowledge-catalog — okf](https://github.com/GoogleCloudPlatform/knowledge-catalog/tree/main/okf)
+```text
+- [ ] every concept has type, title and a one-sentence description
+- [ ] the keys of its workflow type are present
+- [ ] index.md lists every concept (index.py, or by hand for a hand-written index)
+- [ ] check.py exits 0
+```
