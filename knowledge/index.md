@@ -10,6 +10,8 @@ okf_version: "0.2"
 - [Holo colours mapped to Tailwind](colours.md) - The closest Tailwind colour for each Holo colour, computed with tools/tw-color, for the public site, BBCode and housekeeping.
 - [How the programs work together](programs.md) - Which programs make up Project Reborn, what each one owns, and how they interact when they run alone and when they run together in one process.
 - [Soft rules](rules.md) - Suggestions on builds, configuration, comments, runners and commits that every agent follows by default.
+- [Shared files](shared-files.md) - The files that only one task changes at a time, each with its reason.
 - [Workflow](workflow.md) - The OKF + Skills cycle: where knowledge, features and skills live, and who plans, builds and ships them.
 - [Decisions](decisions/index.md)
+- [Features](features/index.md)
 - [Sources](sources/index.md)

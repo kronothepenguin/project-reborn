@@ -41,7 +41,7 @@ reborn is easier when anyone want to test a full feature, including cms+housekee
 want to work on cms only, then i run the cms standalone only." And: "if it requires more than 1 app then reborn is the
 way to go, if we want to test communication between standalone runners, then the standalone is the way to go."
 
-The study is the orchestrator study (`plans/reborn/reference/research-orchestrator.md`).
+The study is [the orchestrator study](/features/platform/research-orchestrator.md).
 
 # Consequences
 

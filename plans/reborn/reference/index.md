@@ -1,7 +1,0 @@
-# Reference
-
-- [Research: the orchestrator, apps/reborn](/reference/research-orchestrator.md) — What the server's leftover HTTP listener is and what removing it takes, how each runner starts its package today, what was already decided about the orchestrator, the problems one mux and one process bring, and a proposal for apps/reborn.
-- [Research: how the programs tell each other of changes](/reference/research-communication.md) — Every place where a change made by the site must reach the game server or the reverse, what Holo's MUS did, and the designs weighed for a notice package, with the orchestrator first and separate programs later.
-- [Research: a richer installer](/reference/research-installer.md) — How the installer works today, which seeds the code needs, and the options for a first news article, optional seeds, editing the catalogue during the installation and more settings in the wizard.
-- [Research: the site at a 16px base](/reference/research-redesign.md) — How sizes and bitmaps are set in the site today, Holo's reference numbers, and the strategies weighed for a redesign at 16px that keeps Holo's look.
-- [Research: where the site's look differs from HoloCMS](/reference/research-holo-look.md) — HoloCMS and the site run side by side and measured: the font family that makes the navbar look plain, the tabs, the sub-navigation, the boxes, the title bars, the header and the footer, with Holo's values, ours and the file to change.

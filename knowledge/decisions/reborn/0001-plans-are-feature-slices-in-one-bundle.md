@@ -38,4 +38,4 @@ a slice such as credits split over three series of tasks and decisions.
 - The rules are the only rules for new work.
 - The `tracking-plans` skill and its checker work on this layout, and the skill `tracking-holo-port` goes, since the
   port is done.
-- The slices and where each came from are in the slice index (`plans/reborn/slices/index.md`).
+- The slices and where each came from are in [the features' index](/features/index.md).
