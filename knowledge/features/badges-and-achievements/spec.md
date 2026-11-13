@@ -24,8 +24,8 @@ The five badge slots of the client show on the site, and achievements exist
 - Staff give a badge the habbo already has: it becomes the worn one, with Holo's message.
 - Staff give a code of another length or with other characters: Holo's
   "Invalid badge. Badge codes may only be 3-4 characters long." shows.
-- Staff remove a badge of a habbo: it goes, whatever gave it, and the staff log keeps it; a badge the habbo lacks
-  answers 404.
+- Staff remove a badge of a habbo: it goes, whatever gave it, and the staff log keeps it.
+- Staff remove a badge the habbo lacks: the answer is 404.
 - Staff act on the badges of a user at or above their level: the change is refused.
 - A habbo sets its badges in the client's badge window: it wears up to five, in slots 1 to 5, its room sees them, and
   the store keeps them (decision server/0083).
