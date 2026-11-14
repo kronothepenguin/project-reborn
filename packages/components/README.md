@@ -26,5 +26,4 @@ pnpm install
 |---|---|
 | `pnpm --filter @project-reborn/components dev` | Storybook dev server (the catalogue) at http://localhost:6006 |
 | `pnpm --filter @project-reborn/components build-storybook` | Build the static catalogue |
-| `pnpm --filter @project-reborn/components test` | Run component behaviour tests (Vitest browser mode) |
-| `pnpm --filter @project-reborn/components check` | `svelte-check` type/compile check |
+| `make check`, from `packages/components` | Run the `check` script (`svelte-check`) and the `test` script (Vitest browser mode, in Playwright's chromium) |

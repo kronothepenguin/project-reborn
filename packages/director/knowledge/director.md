@@ -62,4 +62,5 @@ node scripts/generate-pack.mjs movie <movieDir>   # reads <movieDir>/Casts.csv a
 
 # Tests
 
-Vitest with jsdom runs the 52 files of `src/**/__tests__/`: `pnpm test` in `packages/director`.
+Vitest with jsdom runs the 52 files of `src/**/__tests__/`: `make check` in `packages/director`, which runs
+the `test` script.

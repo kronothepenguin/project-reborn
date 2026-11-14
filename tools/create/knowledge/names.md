@@ -33,6 +33,6 @@ variables, the predeclared names they use, and `new` and `option`, whose type me
 using one more name fails until `taken` has it.
 
 The special folders fail as follows: only code under `packages/` imports `packages/internal`, the go tool reads
-`packages/vendor` as vendored code, and `./...` skips `testdata`, so a backend's gates fail.
+`packages/vendor` as vendored code, and `./...` skips `testdata`, so a backend's `make check` fails.
 
 The client template has no Go, so it accepts these names.
