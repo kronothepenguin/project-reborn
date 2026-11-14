@@ -23,6 +23,11 @@ spec:
 - [The projects today](/features/checks/research-projects.md): what `make gates` ran, and what CI calls
 - [Workflow](/workflow.md) and [Shared files](/shared-files.md)
 - The knowledge folder of `tools/checks`: the dependants command, written by task 01
+- Facts the earlier tasks reported, for the playbook:
+  - `gofmt` reads tracked files, so a new project's Go files count once `git add` has run.
+  - `index.py` runs with no argument, or on a bundle root. Given a sub-folder it treats that folder as a root.
+  - An app has no tests: its check prints "[no test files]" and passes.
+  - `tools/tw-color` sits outside the pnpm workspace and its check runs there with nothing installed.
 
 # Steps
 
@@ -50,4 +55,8 @@ spec:
 - `make check` at the root passes. It is the full run: start it last, after `git merge main`.
 - `git grep -n -i "gates"` shows only decisions and a user's quoted words.
 - `make e2e` is unchanged: `make -n e2e` prints what it printed before.
+- One run for the two kinds of new project that task 05 could prove only in part: in your worktree,
+  `make create name=probe template=fullstack`, `pnpm install`, then `make check` in `packages/probe` and in
+  `apps/probe`; then the same with `template=client`. Remove the probe folders, restore `go.work` and
+  `pnpm-lock.yaml`, and show `git status` clean of them. Report each result.
 - `python3 -I .agents/skills/documenting-with-okf/scripts/check.py` exits 0.
