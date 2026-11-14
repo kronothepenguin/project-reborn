@@ -47,12 +47,11 @@ The functions are in [Store](/store.md).
 From `packages/store`:
 
 ```sh
-go vet ./...
-go test ./...            # make test adds -race
-make check-docs
-go tool sqlc generate
-git diff --exit-code -- db.go models.go '*.query.sql.go'
+make check
 ```
+
+It runs `go tool sqlc generate` and `git diff --exit-code -- db.go models.go '*.query.sql.go'`, then
+`make check-docs`, then the Go steps of `make/check.mk`.
 
 From the repo root, `python3 -I .agents/skills/documenting-with-okf/scripts/check.py packages/store/knowledge`.
 

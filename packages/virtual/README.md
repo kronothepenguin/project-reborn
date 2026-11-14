@@ -5,12 +5,10 @@ function that reads or writes the database receives the `*sql.DB`, and the progr
 
 How it works: `knowledge/index.md`.
 
-## Gates
+## Check
 
 From `packages/virtual`:
 
 ```sh
-gofmt -l .
-go vet ./...
-go test ./... -race
+make check
 ```

@@ -5,10 +5,8 @@ program needs before the database opens, such as the database path and the ports
 
 How it works: `knowledge/index.md`.
 
-Gates, from `packages/config`:
+Check, from `packages/config`:
 
 ```sh
-gofmt -l .
-go vet ./...
-go test ./...
+make check
 ```

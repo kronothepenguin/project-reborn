@@ -1,7 +1,7 @@
 ---
 type: Playbook
 title: Adding a section
-description: The files, registration point, test helpers and gates of packages/config that a new config.json key touches, for the adding-config-sections skill.
+description: The files, registration point, test helpers and check of packages/config that a new config.json key touches, for the adding-config-sections skill.
 ---
 
 # Skill
@@ -33,12 +33,10 @@ The `adding-config-sections` skill holds the rules. This playbook names their pl
   key; `cms_pipeline_test.go` shows one case per key. `loadWithFile(t, content)` loads a given file for a check of its
   own, such as `TestServerRefusesInfoAndMUSOnOnePort`.
 
-# Gates
+# Check
 
 From `packages/config`:
 
 ```sh
-gofmt -l .
-go vet ./...
-go test ./...
+make check
 ```

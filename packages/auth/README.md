@@ -4,10 +4,8 @@ Sign-in, sessions, access attributes and password resets, shared by the CMS, hou
 
 How it works: `knowledge/index.md`.
 
-Gates, from `packages/auth`:
+Check, from `packages/auth`:
 
 ```sh
-gofmt -l .
-go vet ./...
-go test ./... -race
+make check
 ```

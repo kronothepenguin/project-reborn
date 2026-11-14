@@ -2,7 +2,6 @@
 
 # Tasks
 
-- [Give the Go packages their make check](02-go-packages.md) - The seven Go packages without a frontend include the shared recipe, and the store adds its own two checks.
 - [Give the web packages and the apps their make check](03-web-projects.md) - The three packages that hold a frontend and a Go package, and the four apps that run the programs, include the shared recipe.
 - [Give the JavaScript projects their make check](04-javascript-projects.md) - components, director, client-r26 and tw-color include the shared recipe, and tw-color and client-r26 get scripts the recipe can run.
 - [Give new projects their make check](05-create-templates.md) - The templates of tools/create give each new project a Makefile that includes the shared recipe, and tools/create checks itself.
