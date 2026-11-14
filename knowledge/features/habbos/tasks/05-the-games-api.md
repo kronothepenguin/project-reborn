@@ -42,8 +42,10 @@ game do it ([0005](/decisions/reborn/0005-the-game-hears-live-changes-through-se
 # Checks
 
 ```sh
-cd packages/server && go vet ./... && go test ./... -race
-cd packages/config && go vet ./... && go test ./... -race
-cd packages/store && go vet ./... && go test ./... -race
-make gates
+make -C packages/server check
+make -C packages/config check
+make -C packages/store check
 ```
+
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/server`,
+`packages/config`, `packages/store`.

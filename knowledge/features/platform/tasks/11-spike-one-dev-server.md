@@ -40,5 +40,7 @@ Know whether reborn's dev runner can proxy one dev server for every site
 ```sh
 pnpm install --frozen-lockfile=false
 pnpm --filter @project-reborn/reborn dev
-make gates
+make -C packages/reborn check
 ```
+
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/reborn`.

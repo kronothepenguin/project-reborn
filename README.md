@@ -65,7 +65,7 @@ go build -o ./apps/cms/tmp/cms ./apps/cms/cmd/cms
 
 ## Releases
 
-Pushing a tag like `v0.1.0` publishes a GitHub release, once every gate has passed:
+Pushing a tag like `v0.1.0` publishes a GitHub release, once `make check` and the browser suites have passed:
 
 - `reborn-<tag>-linux-amd64.tar.gz` and `reborn-<tag>-linux-aarch64.tar.gz`, each with
   `cms`, `housekeeping` and `installer`;
@@ -82,7 +82,7 @@ same folder, which now holds `config.json` and the database.
 ## Testing
 
 ```sh
-make gates          # formatting, vet and tests of every module, frontends, generated code and docs
+make check          # make check in every project of apps/, packages/ and tools/, then the knowledge check
 make e2e            # real Chromium against the production binaries, see tests/e2e
 ```
 

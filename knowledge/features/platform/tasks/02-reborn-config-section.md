@@ -32,7 +32,9 @@ reborn has its own address in `config.json` ([0003](/decisions/reborn/0003-rebor
 # Checks
 
 ```sh
-cd packages/config && go vet ./... && go test ./... -race
-cd packages/installer && go vet ./... && go test ./... -race
-make gates
+make -C packages/config check
+make -C packages/installer check
 ```
+
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/config`,
+`packages/installer`.

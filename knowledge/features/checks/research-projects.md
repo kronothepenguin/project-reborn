@@ -1,7 +1,7 @@
 ---
 type: Reference
 title: "Checks: the projects today"
-description: What each project has, what the old gates ran, who depends on whom, and what a fresh worktree needs, read on 2026-11-13.
+description: What each project has, what the old root check ran, who depends on whom, and what a fresh worktree needs, read on 2026-11-13.
 ---
 
 # Projects
@@ -36,7 +36,7 @@ Module paths start with `github.com/kronothepenguin/project-reborn/`. Package na
 - `packages/components` runs its tests in Playwright's chromium.
 - `packages/client-r26/vitest.config.js` includes `src/director/**/__tests__/`, a folder the package lacks.
 
-# What `make gates` ran
+# What the old root check ran
 
 1. `frontends`: the `build` script of cms, installer and housekeeping.
 2. For each of the 15 Go modules: `gofmt -l` over `git ls-files '*.go'`, `go vet ./...`, `go test ./... -race`.
@@ -45,8 +45,8 @@ Module paths start with `github.com/kronothepenguin/project-reborn/`. Package na
    `make check-docs`.
 5. The knowledge check: `python3 -I .agents/skills/documenting-with-okf/scripts/check.py`.
 
-`.github/workflows/ci.yml` and `release.yml` run `make install`, `make gates`, the Playwright install and `make e2e`.
-`release` in the root Makefile needs `frontends`.
+`.github/workflows/ci.yml` and `release.yml` run `make install`, the old root check, the Playwright install and
+`make e2e`. `release` in the root Makefile needs `frontends`.
 
 # Who depends on whom
 

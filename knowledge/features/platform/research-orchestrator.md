@@ -122,7 +122,7 @@ duplicate. The backend template of `tools/create` still generates `Mount`, the r
   `base`, prefixed links, forms and redirects, and static files through `StripPrefix`; its own runners then serve
   `:17306/installer/`. The CMS and housekeeping need nothing.
 - Tests: units for `Installed`, `Done`, the prefixed routes and the cross-origin refusal; `apps/reborn` built and
-  vetted by the gates; a browser suite `reborn` from an empty folder: the installer at `/installer/`, `/` redirecting to
+  vetted by `make check`; a browser suite `reborn` from an empty folder: the installer at `/installer/`, `/` redirecting to
   it, then the CMS at `/` and housekeeping at `/housekeeping/` in one session, a WebSocket to `server.info` receiving
   `HELLO`, and no log line beyond the start-up line.
 

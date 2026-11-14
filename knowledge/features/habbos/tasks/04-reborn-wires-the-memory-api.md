@@ -33,6 +33,7 @@ Under reborn, a look saved on the site reaches the game in the same process
 # Checks
 
 ```sh
-cd packages/reborn && go vet ./... && go test ./... -race
-make gates
+make -C packages/reborn check
 ```
+
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/reborn`.

@@ -58,9 +58,9 @@ From the repo root:
 ```sh
 pnpm --filter @project-reborn/cms build          # one frontend: cms, housekeeping or installer
 make frontends                                   # the three frontends
-pnpm --filter @project-reborn/components test    # component behaviour tests
-pnpm --filter @project-reborn/components check   # svelte-check
-make gates                                       # every gate: frontends, Go tests, components, knowledge
+make -C packages/components check                # component behaviour tests and svelte-check
+make -C packages/cms check                       # one frontend's build, then its Go tests
+make check                                       # every project's check and the knowledge check
 ```
 
 The built page of a frontend is `packages/<app>/dist/<page>.html`.

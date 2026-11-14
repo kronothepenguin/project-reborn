@@ -37,8 +37,10 @@ Players are logged out and nothing is cut halfway when reborn stops
 # Checks
 
 ```sh
-cd packages/server && go vet ./... && go test ./... -race
-cd packages/scheduler && go vet ./... && go test ./... -race
-cd packages/reborn && go vet ./... && go test ./... -race
-make gates
+make -C packages/server check
+make -C packages/scheduler check
+make -C packages/reborn check
 ```
+
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/server`,
+`packages/scheduler`, `packages/reborn`.

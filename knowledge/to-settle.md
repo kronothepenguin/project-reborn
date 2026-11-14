@@ -83,5 +83,3 @@ Go:
 
 - Should `tools/create` give a new project a `knowledge/` folder and the short README (what it is, setup)?
 - Old tests that prove no behaviour of a spec: the user reviews them against the specs, and decides which go.
-- The first feature to plan with the new workflow: one `make check` in every project, with the root `make gates`
-  looping over them for CI.

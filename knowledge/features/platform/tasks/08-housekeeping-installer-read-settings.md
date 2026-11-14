@@ -32,8 +32,10 @@ Housekeeping and the installer hold no copy of the settings
 # Checks
 
 ```sh
-cd packages/housekeeping && go vet ./... && go test ./... -race
-cd packages/installer && go vet ./... && go test ./... -race
+make -C packages/housekeeping check
+make -C packages/installer check
 make e2e
-make gates
 ```
+
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/housekeeping`,
+`packages/installer`.

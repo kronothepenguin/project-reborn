@@ -60,7 +60,8 @@ the game on its two WebSocket ports ([0003](/decisions/reborn/0003-reborn-runs-t
 # Checks
 
 ```sh
-cd packages/reborn && go vet ./... && go test ./... -race
-cd apps/reborn && go vet ./... && go build ./...
-make gates
+make -C packages/reborn check
+make -C apps/reborn check
 ```
+
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/reborn`, `apps/reborn`.

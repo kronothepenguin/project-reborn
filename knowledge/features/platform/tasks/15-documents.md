@@ -34,5 +34,5 @@ Nothing written in the repository contradicts what the platform feature built.
 
 ```sh
 grep -rn 'cms.refresh\|virtual/settings' --include=*.md . | grep -v '^./knowledge/decisions/' || true
-make gates
+python3 -I .agents/skills/documenting-with-okf/scripts/check.py
 ```

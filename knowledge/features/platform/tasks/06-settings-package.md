@@ -45,6 +45,16 @@ This is the feature's contract for settings: it runs alone.
 # Checks
 
 ```sh
-for m in settings store virtual auth cms housekeeping installer server; do (cd packages/$m && go vet ./... && go test ./... -race); done
-make gates
+make -C packages/settings check
+make -C packages/store check
+make -C packages/virtual check
+make -C packages/auth check
+make -C packages/cms check
+make -C packages/housekeeping check
+make -C packages/installer check
+make -C packages/server check
 ```
+
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/settings`,
+`packages/store`, `packages/virtual`, `packages/auth`, `packages/cms`, `packages/housekeeping`, `packages/installer`,
+`packages/server`.

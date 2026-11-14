@@ -57,7 +57,7 @@ The projects and what each one is: [Monorepo architecture](/architecture.md). Th
 | `go work use ./<folder>/<name>` | the root | Adds a new module to `go.work`. |
 | `make dependants project=<folder>` | the root | Prints the projects that use the folder, directly or through another. |
 | `make check` | a project whose `Makefile` includes `make/check.mk` | Runs the shared recipe `make/check.mk`: the Go steps and the package scripts. |
-| `make gates` | the root | Builds the frontends, then runs `gofmt -l`, `go vet ./...` and `go test ./... -race` in every module, plus the components, store and knowledge checks. |
+| `make check` | the root | Runs `make check` in every project of `apps/`, `packages/` and `tools/`, one after another, then the knowledge check ([Checks](/checks.md)). |
 
 At the root, `go build ./...` fails with
 `pattern ./...: directory prefix . does not contain modules listed in go.work or their selected dependencies`.

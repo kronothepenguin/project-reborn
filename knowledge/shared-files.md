@@ -14,4 +14,5 @@ time, whatever the scopes say:
 | `packages/store/migrations`, the generated query files and the indexes of `packages/store/knowledge` | The next update's number collides |
 | `packages/virtual/settings`, and `packages/settings` once it holds the list | Every task that declares a setting changes the one list |
 | `go.work`, the `go.mod` files and `pnpm-lock.yaml` | Every module of the workspace shares them |
+| `make/check.mk`, `make/check-all.mk` and the root `Makefile` | Every project's check and the root check run them |
 | `apps/**/cmd/**` | The user's files: a task describes its change there and the master asks the user |

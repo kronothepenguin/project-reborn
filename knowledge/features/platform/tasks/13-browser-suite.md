@@ -33,5 +33,4 @@ reborn's whole path is checked in a real browser, as every program's is.
 
 ```sh
 make e2e
-make gates
 ```

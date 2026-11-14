@@ -7,6 +7,7 @@ okf_version: "0.2"
 # Knowledge
 
 - [Monorepo architecture](architecture.md) - The apps are runners and the packages hold the full applications, in one Go and one pnpm workspace.
+- [Checks](checks.md) - How to check one project, the projects that depend on it, the whole repository and the browser suites, and what a fresh worktree needs first.
 - [Holo colours mapped to Tailwind](colours.md) - The closest Tailwind colour for each Holo colour, computed with tools/tw-color, for the public site, BBCode and housekeeping.
 - [Frontend pages](frontend-pages.md) - Where the pages, layouts, components and islands of the Astro frontends live, and the commands and checks that build them.
 - [Go layout](go-layout.md) - Where this repo keeps its Go modules, runners, routes and handlers, and the commands that build and check them, for the applying-go-patterns and reviewing-effective-go skills.

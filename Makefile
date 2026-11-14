@@ -1,4 +1,4 @@
-.PHONY: install tools create dependants tw-color gates e2e frontends release
+.PHONY: install tools create dependants tw-color e2e frontends release
 
 VERSION ?= dev
 
@@ -25,21 +25,7 @@ frontends:
 	pnpm --filter @project-reborn/installer build
 	pnpm --filter @project-reborn/housekeeping build
 
-# Every gate but the browser suites: what CI runs on each push.
-gates: frontends
-	@for dir in $$(go list -m -f '{{.Dir}}'); do \
-		echo "== $$dir"; \
-		( cd "$$dir" && \
-			out=$$(gofmt -l $$(git ls-files '*.go')) && \
-			{ [ -z "$$out" ] || { echo "not formatted: $$out"; exit 1; }; } && \
-			go vet ./... && go test ./... -race ) || exit 1; \
-	done
-	pnpm --filter @project-reborn/components test
-	pnpm --filter @project-reborn/components check
-	cd packages/store && go tool sqlc generate && \
-		git diff --exit-code -- db.go models.go '*.query.sql.go' && \
-		$(MAKE) check-docs
-	python3 -I .agents/skills/documenting-with-okf/scripts/check.py
+include make/check-all.mk
 
 # Builds everything, and runs the browser suites on a throwaway hotel.
 e2e:

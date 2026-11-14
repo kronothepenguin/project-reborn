@@ -34,7 +34,9 @@ The CMS shows a setting saved in housekeeping on the next page, with nothing ref
 # Checks
 
 ```sh
-cd packages/cms && go vet ./... && go test ./... -race && go test -run '^$' -bench . ./...
+make -C packages/cms check
+cd packages/cms && go test -run '^$' -bench . ./...
 make e2e
-make gates
 ```
+
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/cms`.

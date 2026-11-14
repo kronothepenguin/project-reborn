@@ -26,6 +26,6 @@ The platform feature is done, with evidence for each behaviour of [the spec](/fe
 # Checks
 
 ```sh
-make gates
+make check
 make e2e
 ```

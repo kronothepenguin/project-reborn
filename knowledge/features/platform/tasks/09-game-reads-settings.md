@@ -39,8 +39,10 @@ Nothing polls in any program, and settings live only in the store
 # Checks
 
 ```sh
-cd packages/server && go vet ./... && go test ./... -race
-cd packages/settings && go vet ./... && go test ./... -race
-cd packages/virtual && go vet ./... && go test ./... -race
-make gates
+make -C packages/server check
+make -C packages/settings check
+make -C packages/virtual check
 ```
+
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/server`,
+`packages/settings`, `packages/virtual`.

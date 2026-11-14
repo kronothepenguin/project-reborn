@@ -59,9 +59,9 @@ first, writes the task files and spawns one slave per ready task, in parallel.
 
 A slave reads its task, the feature's `spec.md` and `plan.md` and the files under `# Context`, and loads the skills the
 task names. It works on branch `<feature>-<NN>` in `.claude/worktrees/<feature>-<NN>`, writes one test per behaviour,
-runs the checks of every project it changed and of the projects that depend on them, and updates the knowledge its
-change makes stale. Then it deletes its task file, merges into `main`, removes its worktree and branch, and reports to
-the master.
+runs the [checks](/checks.md) of every project it changed and of the projects that depend on them, and updates the
+knowledge its change makes stale. Then it deletes its task file, merges into `main`, removes its worktree and branch,
+and reports to the master.
 
 The user approves the behaviours in `spec.md` before the work and reviews the tests, each of which proves one of them.
 

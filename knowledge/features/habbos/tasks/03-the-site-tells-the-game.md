@@ -31,7 +31,9 @@ Every place that changes a habbo's look or motto tells the game
 # Checks
 
 ```sh
-cd packages/cms && go vet ./... && go test ./... -race
-cd packages/housekeeping && go vet ./... && go test ./... -race
-make gates
+make -C packages/cms check
+make -C packages/housekeeping check
 ```
+
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/cms`,
+`packages/housekeeping`.

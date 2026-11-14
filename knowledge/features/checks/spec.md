@@ -2,7 +2,7 @@
 type: Spec
 title: Checks
 description: Every project checks itself with `make check`, one command lists a project's dependants, and `make check` at the root runs every check for CI.
-status: active
+status: done
 projects: [make, tools/checks, tools/create, tools/tw-color, apps/cms, apps/housekeeping, apps/installer, apps/server, packages/astro, packages/auth, packages/client-r26, packages/cms, packages/components, packages/config, packages/director, packages/housekeeping, packages/installer, packages/scheduler, packages/server, packages/store, packages/virtual]
 ---
 
@@ -11,7 +11,7 @@ projects: [make, tools/checks, tools/create, tools/tw-color, apps/cms, apps/hous
 Every project checks itself with one command, `make check`. What it runs follows from the files the project has: a
 `go.mod` brings the Go steps, a `package.json` brings its scripts. An agent that changes a project runs `make check`
 there and in every project that depends on it. `make check` at the root runs every project's check, for CI. It
-replaces `make gates`.
+replaces the old root target.
 
 # Behaviours
 

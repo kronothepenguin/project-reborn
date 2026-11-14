@@ -10,7 +10,8 @@ projects: [apps/server, apps/cms, apps/housekeeping, apps/installer, apps/reborn
 
 The installer, the CMS, housekeeping and the game server run as four separate programs on one SQLite file. Each one
 works on an empty database, reads the root `config.json` in development, and guards its forms against other sites.
-GitHub Actions runs every gate on each push, and a version tag publishes prebuilt archives for Linux.
+GitHub Actions runs `make check` at the root and the browser suites on each push, and a version tag publishes prebuilt
+archives for Linux.
 
 Next:
 
@@ -47,10 +48,10 @@ called "reborn", this should keep installer + cms + housekeeping in the same mux
 
 ## CI and releases
 
-- A push to `main` or a pull request: GitHub Actions runs every gate and the browser suites (decision reborn/0008).
+- A push to `main` or a pull request: GitHub Actions runs `make check` at the root and the browser suites (decision reborn/0008).
 - `make e2e` runs: it builds the programs, installs a throwaway hotel and runs every browser suite on it; with port
   17306 busy, it refuses to start.
-- A tag like `v1.2.3` is pushed: the gates and the browser suites run, then a release publishes
+- A tag like `v1.2.3` is pushed: `make check` at the root and the browser suites run, then a release publishes
   `reborn-<tag>-linux-amd64.tar.gz`, `reborn-<tag>-linux-aarch64.tar.gz` and `SHA256SUMS` (decision reborn/0008).
 - An archive is unpacked: it holds static `cms`, `housekeeping` and `installer` binaries, which run with no network.
 

@@ -31,5 +31,5 @@ The habbos feature is done, with evidence for each behaviour of [the spec](/feat
 # Checks
 
 ```sh
-make gates
+make check
 ```

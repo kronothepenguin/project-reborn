@@ -32,8 +32,10 @@ skills: []
 # Checks
 
 ```sh
-cd apps/reborn && go vet ./... && go build ./...
-make gates
+make -C packages/reborn check
+make -C apps/reborn check
 ```
+
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/reborn`, `apps/reborn`.
 
 Results: written in the report once run, with `make dev` tried on a free port.

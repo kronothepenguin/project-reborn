@@ -32,7 +32,7 @@ every other app. `apps/reborn` is planned.
 | `packages/server` | The game server: speaks the R26 client's protocol on the `info` and `mus` WebSocket listeners. |
 | `packages/store` | Persistence: opens the SQLite file, applies the update files and provides the typed operations. |
 | `packages/virtual` | In-memory state of Project Reborn's entities, one package per entity. |
-| `tools/checks` | Lists the projects that depend on a project (`make dependants`), and tests the shared check recipe `make/check.mk`. |
+| `tools/checks` | Lists the projects that depend on a project (`make dependants`), and tests the shared check recipe `make/check.mk` and the root check `make/check-all.mk`. |
 | `tools/create` | Scaffolds a new project from the `fullstack`, `backend` or `client` template. |
 | `tools/tw-color` | Maps legacy CSS colors to the closest color in the Tailwind CSS v4 palette. |
 | `tests/e2e` | Real Chromium against the production binaries. |

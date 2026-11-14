@@ -17,7 +17,7 @@ Built:
 | `packages/cms`, `packages/housekeeping` | `Mount` wraps every route with `RealIP` and cross-origin protection |
 | `apps/installer` | The runners wrap the installer in cross-origin protection |
 | `packages/server`, `apps/server` | Only the game listeners on 30000 and 30001; the unused HTTP listener on 15445 is gone |
-| `.github/workflows`, `Makefile` | `ci.yml` runs `make gates` and `make e2e`; `release.yml` runs them on a tag, then `make release` |
+| `.github/workflows`, `Makefile` | `ci.yml` runs `make check` and `make e2e`; `release.yml` runs them on a tag, then `make release` |
 | `tests/e2e` | The browser suites, run by `make e2e` |
 
 Planned:

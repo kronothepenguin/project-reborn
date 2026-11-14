@@ -100,9 +100,9 @@ A 1920 laptop at Windows' 150% scaling is 1280 CSS px wide; at 125% it is 1536.
 - C. CSS `zoom`/`transform` wrapper: resamples every bitmap at 1.45x, 1382px wide, drag maths of the home editor and
   canvas widgets need re-testing; same as Ctrl-plus. Only a throwaway preview.
 
-Testing today: no visual-regression tests. `make gates` builds the three frontends, runs gofmt, vet, `go test -race`
-per module, the components' Vitest browser tests, svelte-check, sqlc and docs checks. `make e2e` (`tests/e2e`,
-Playwright, 31 suites) is functional; some checks depend on layout or classes: `homes.mjs:118-131` (drag positions),
+Testing today: no visual-regression tests. `make check` at the root builds the three frontends, runs gofmt, vet,
+`go test -race` per module, the components' Vitest browser tests, svelte-check, sqlc and docs checks. `make e2e`
+(`tests/e2e`, Playwright, 31 suites) is functional; some checks depend on layout or classes: `homes.mjs:118-131` (drag positions),
 `looks.mjs:129-312`, `credits.mjs:66` (column order), `housekeeping-news.mjs:732` (`text-[10px]`),
 `housekeeping-admin.mjs:261` (computed padding). Suggested: Playwright screenshots of every page at 1280 and 1920
 before and after each step (`toHaveScreenshot` baselines), a new kind of test the owner must approve.

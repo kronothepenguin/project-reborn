@@ -47,6 +47,10 @@ A signed-in habbo opens the site's client page and the R26 client logs in there
 # Checks
 
 ```sh
-cd packages/cms && go vet ./... && go test ./... -race
-make gates
+make -C packages/cms check
+make -C packages/virtual check
+make -C packages/settings check
 ```
+
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/cms`,
+`packages/virtual`, `packages/settings`.

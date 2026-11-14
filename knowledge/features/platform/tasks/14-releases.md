@@ -30,6 +30,6 @@ An administrator downloads one archive and runs reborn alone or the separate pro
 # Checks
 
 ```sh
+make check
 make release VERSION=test && tar -tzf release/reborn-test-linux-amd64.tar.gz
-make gates
 ```

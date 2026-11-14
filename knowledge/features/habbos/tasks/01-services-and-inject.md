@@ -43,8 +43,10 @@ The contract every side of the habbos feature builds on
 # Checks
 
 ```sh
-cd packages/services && go vet ./... && go test ./... -race
-cd packages/cms && go vet ./... && go test ./... -race
-cd packages/housekeeping && go vet ./... && go test ./... -race
-make gates
+make -C packages/services check
+make -C packages/cms check
+make -C packages/housekeeping check
 ```
+
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/services`,
+`packages/cms`, `packages/housekeeping`.

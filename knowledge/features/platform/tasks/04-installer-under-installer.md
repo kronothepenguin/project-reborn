@@ -61,8 +61,8 @@ The installer can share reborn's mux with the hotel, and can move reborn to the 
 # Checks
 
 ```sh
-cd packages/installer && go vet ./... && go test ./... -race
-pnpm --filter @project-reborn/installer build
+make -C packages/installer check
 make e2e
-make gates
 ```
+
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/installer`.

@@ -11,7 +11,7 @@ description: A shared recipe in make/check.mk gives every project its `make chec
 | `make/check.mk` | The shared recipe. A project's Makefile includes it and gets `check`: the Go steps when the folder has a `go.mod`, the package scripts when it has a `package.json` |
 | Each project's `Makefile` | One line that includes the shared recipe, plus the project's own steps: the store adds its generated-code check and its documentation check |
 | `tools/checks` | A new Go module: the `dependants` command, and the tests of the command and of the recipe |
-| Root `Makefile` | `make dependants project=<folder>` prints a project's dependants. `make check` runs every project's check, then the knowledge check. `make gates` goes |
+| Root `Makefile` | `make dependants project=<folder>` prints a project's dependants. `make check` runs every project's check, then the knowledge check, in place of the old root target |
 | `tools/create` | Its templates give a new project a Makefile that includes the shared recipe |
 | `.github/workflows` | CI and the release call `make check`, then `make e2e` |
 | Root knowledge | A new playbook, `checks.md`: how to check one project, its dependants, everything, and the browser suites |
