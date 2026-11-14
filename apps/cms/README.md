@@ -13,6 +13,7 @@ The runners of `packages/cms`: `cmd/cms` serves the embedded build, and `cmd/cms
 ```sh
 make install    # once: this project's folders and dependencies
 make dev        # Astro dev server + air hot reload → http://localhost:17387
+make check      # checks the formatting, vets and builds the runner
 ```
 
 ## Production

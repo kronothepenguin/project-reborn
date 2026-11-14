@@ -20,6 +20,7 @@ How it works: `packages/server/knowledge/index.md` and `knowledge/programs.md`.
 ```sh
 make install    # once: this project's folders and dependencies
 make dev        # air hot reload → ws://localhost:30000 and ws://localhost:30001
+make check      # checks the formatting, vets and builds the runner
 ```
 
 ## Production

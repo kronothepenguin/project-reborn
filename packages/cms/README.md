@@ -42,7 +42,7 @@ go build -o apps/cms/tmp/cms ./apps/cms/cmd/cms && ./apps/cms/tmp/cms
 ## Tests
 
 ```sh
-go test ./...
+make check     # builds the pages, then checks the formatting, vets, tests and builds the Go code
 ```
 
 How it works: `knowledge/index.md`.

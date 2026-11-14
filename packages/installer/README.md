@@ -22,7 +22,7 @@ make stop                        # stop the background astro server
 
 ```sh
 pnpm build                       # renders dist/
-go test ./... -race
+make check                       # builds the pages, then checks the formatting, vets, tests and builds the Go code
 ```
 
 From the repository root:
