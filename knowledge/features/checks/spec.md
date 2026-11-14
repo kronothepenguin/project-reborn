@@ -26,6 +26,7 @@ replaces `make gates`.
 - A project changed, the agent asks for its dependants: it gets every project that uses it, directly or through
   another project. A Go import and a pnpm workspace dependency both count as a use.
 - A project that no project uses, the agent asks for its dependants: the list is empty.
+- A folder that is no project, the agent asks for its dependants: the command refuses it.
 - A change in a project that breaks a project depending on it, `make check` runs in the dependant: it fails.
 - Every project right, `make check` runs at the root: it runs `make check` in every project and the knowledge check,
   and passes.
