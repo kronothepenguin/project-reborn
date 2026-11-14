@@ -24,7 +24,8 @@ tags: [client, protocol, r26]
 The cast folders hold 414 `.ls` scripts, each beside its `.js` translation, and the casts' media: bitmaps (`.png`),
 sounds (`.wav`) and texts (`.txt`, `.rtf`, `.htm`).
 
-Commands, from `packages/client-r26`: `pnpm dev`, `pnpm build`, `pnpm preview` and `pnpm test`.
+Commands, from `packages/client-r26`: `pnpm dev`, `pnpm build` and `pnpm preview`. `make check` runs the `build`
+script and the `test` script, `vitest run --passWithNoTests`, which passes while the folder of tests is missing.
 
 # Where it is
 
