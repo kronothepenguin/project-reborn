@@ -43,5 +43,8 @@ description: A shared recipe in make/check.mk gives every project its `make chec
   them.
 - The store's generated-code check and documentation check belong to the store's `make check`. The knowledge check
   reads every bundle, so it stays at the root.
+- The store's generated-code check regenerates, then compares with what git holds. It guards a forgotten
+  `sqlc generate` after a change to a `.sql` file. It is no test of sqlc: tools that are already tested are trusted.
+  The user chose "Keep it as it is".
 - The recipe's tests are Go tests in `tools/checks`: each builds a tiny project in a temporary folder and runs
   `make check` on it. The user chose "One Go module: tools/checks".
