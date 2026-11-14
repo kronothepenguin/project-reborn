@@ -6,6 +6,7 @@
 - [accounts/](accounts/index.md)
 - [assets/](assets/index.md)
 - [badges-and-achievements/](badges-and-achievements/index.md)
+- [checks/](checks/index.md)
 - [client/](client/index.md)
 - [club/](club/index.md)
 - [community/](community/index.md)
