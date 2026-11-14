@@ -36,6 +36,16 @@ def bundles(root, args):
     return found
 
 
+def enclosing(path):
+    """The bundle root a folder sits inside, or None when no folder above it is named knowledge."""
+    parent = os.path.dirname(os.path.abspath(path))
+    while parent != os.path.dirname(parent):
+        if os.path.basename(parent) == "knowledge":
+            return parent
+        parent = os.path.dirname(parent)
+    return None
+
+
 def walk(bundle):
     """Yields each directory of a bundle with its sorted sub-directories and .md files."""
     for dirpath, dirs, files in os.walk(bundle):

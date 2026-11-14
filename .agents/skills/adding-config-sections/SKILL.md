@@ -26,7 +26,7 @@ New config declaration:
 - [ ] 2. Root registration
 - [ ] 3. Unit tests
 - [ ] 4. Full-pipeline tests
-- [ ] 5. Gates
+- [ ] 5. The project's checks
 ```
 
 1. Create `<section>/<section>.go`. Every field has a lowerCamelCase `json` tag, a `Default<Field>()` and a
@@ -75,7 +75,7 @@ New config declaration:
 3. Add the [unit tests](#tests) in the section package.
 4. Add the [full-pipeline tests](#tests) in the root package, beside its load-state reset helper. Every case moves to
    a new temporary directory, resets the load state, and writes or omits `config.json`.
-5. Run the package's gates: format, vet and tests.
+5. Run the project's checks: format, vet and tests.
 
 ## Add a shared root key
 
@@ -83,7 +83,7 @@ New config declaration:
    `Validate<Field>()` beside it.
 2. Compose the default in `defaults()` and call `Validate<Field>(c.<Field>)` in `Config.Validate()`, prefixing the key
    in the returned error.
-3. Add the same unit and full-pipeline tests, and run the gates.
+3. Add the same unit and full-pipeline tests, and run the project's checks.
 
 ## Tests
 

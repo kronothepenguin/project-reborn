@@ -82,4 +82,5 @@ Go:
 # Open choices
 
 - Should `tools/create` give a new project a `knowledge/` folder and the short README (what it is, setup)?
-- Old tests that prove no behaviour of a spec: the user reviews them against the specs, and decides which go.
+- Old tests that prove no behaviour of a spec: the user reviews them against the specs, and decides which go. Tests
+  that only prove the database or the generator works are the first candidates to go.

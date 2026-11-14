@@ -59,16 +59,25 @@ class Checker:
                 resolved = os.path.normpath(os.path.join(os.path.dirname(path), target))
             yield m.group(1), resolved, line
 
-    def check_links(self, bundle, path, text):
+    def check_links(self, bundle, path, text, planned):
+        """planned: the file is a Task or a Plan, whose missing knowledge files a task creates."""
         for target, resolved, line in self.links(bundle, path, text):
             if target.startswith("/") and not (resolved + os.sep).startswith(bundle + os.sep):
                 self.fail(path, line, f"link {target} leaves the bundle")
-            elif not os.path.exists(resolved):
+            elif os.path.exists(resolved):
+                continue
+            elif planned and target.startswith("/"):
+                self.note(path, line, f"link {target} is not a file yet: a task creates it")
+            else:
                 self.fail(path, line, f"link {target} does not resolve")
         prose = FENCE.sub(blank, text)
         for m in REPO_PATH.finditer(prose):
-            if not os.path.exists(os.path.join(self.root, m.group(1))):
-                line = prose.count("\n", 0, m.start()) + 1
+            if os.path.exists(os.path.join(self.root, m.group(1))):
+                continue
+            line = prose.count("\n", 0, m.start()) + 1
+            if planned:
+                self.note(path, line, f"path {m.group(1)} is not a file yet: a task creates it")
+            else:
                 self.fail(path, line, f"path {m.group(1)} does not resolve from the repo root")
 
     def check_index(self, bundle, dirpath, dirs, files):
@@ -121,7 +130,9 @@ class Checker:
                 path = os.path.join(dirpath, name)
                 with open(path, encoding="utf-8") as f:
                     text = f.read()
-                self.check_links(bundle, path, text)
+                parsed = okf.frontmatter(text)
+                kind = parsed[0].get("type") if parsed else None
+                self.check_links(bundle, path, text, kind in ("Task", "Plan"))
                 if name in okf.RESERVED:
                     fields = okf.frontmatter(text)
                     if path == root_index:
@@ -130,7 +141,6 @@ class Checker:
                     elif fields is not None:
                         self.fail(path, 1, f"{name} has frontmatter: only the root index.md has it")
                     continue
-                parsed = okf.frontmatter(text)
                 if parsed is None:
                     self.fail(path, 1, "no frontmatter")
                     continue

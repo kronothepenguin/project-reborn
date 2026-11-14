@@ -7,6 +7,9 @@ description: Writes tests that each prove one expected behaviour of a feature's 
 
 A behaviour is one line of `spec.md`: a situation, an action, an outcome. A test proves one behaviour.
 
+Test your own code. Tools that are already tested, such as sqlc and SQLite, are trusted: a test checks what our code
+does with them.
+
 ## Write a test
 
 1. Name the test after the behaviour it proves.
