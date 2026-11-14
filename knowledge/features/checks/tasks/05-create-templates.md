@@ -20,7 +20,8 @@ A project made by `make create` checks itself from its first minute. This task i
 - [The projects today](/features/checks/research-projects.md)
 - `tools/create/knowledge/templates.md`: the three kinds of template and what runs after writing
 - `tools/create/knowledge/names.md` and `tools/create/knowledge/ports.md`
-- `make/check.mk`: the recipe, written by task 01
+- `tools/checks/knowledge/recipe.md`: how a project includes the recipe, what it runs, and how a project adds its own
+  steps
 
 # Steps
 

@@ -23,7 +23,8 @@ Each of the four projects checks itself. This task implements these behaviours o
 - [The projects today](/features/checks/research-projects.md): each package's scripts, and what a fresh worktree needs
 - `packages/components/knowledge/index.md`, `packages/director/knowledge/index.md`,
   `packages/client-r26/knowledge/index.md`, `tools/tw-color/knowledge/index.md`
-- `make/check.mk`: the recipe, written by task 01
+- `tools/checks/knowledge/recipe.md`: how a project includes the recipe, what it runs, and how a project adds its own
+  steps
 
 # Steps
 

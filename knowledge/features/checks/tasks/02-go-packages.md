@@ -20,7 +20,10 @@ Each of the seven packages checks itself. This task implements this behaviour of
 - [The projects today](/features/checks/research-projects.md): the Makefile targets each package has, and what the old
   gates ran in the store
 - `packages/store/knowledge/adding-persisted-data.md`: the store's generator command and its documentation check
-- `make/check.mk`: the recipe, written by task 01
+- `tools/checks/knowledge/recipe.md`: how a project includes the recipe, what it runs, and how a project adds its own
+  steps
+- The tests of `packages/server` have deadlines of a few seconds, and three other slaves run checks at the same time:
+  when one of its tests times out, run its check again alone before reviewing the code
 
 # Steps
 

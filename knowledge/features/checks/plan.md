@@ -22,10 +22,11 @@ description: A shared recipe in make/check.mk gives every project its `make chec
 - `make check` reads the project's files. The user: "no every project is go project, so you have to identify pnpm and
   go.mod to know what to do with make check."
 - The Go steps are the ones the old gates ran, plus a build: `gofmt -l` over the tracked Go files, which lists and
-  writes nothing, `go vet ./...`, `go test ./... -race` and `go build ./...`.
+  writes nothing, `go vet ./...`, `go test ./... -race` and `go build -o /dev/null ./...`, which builds and leaves no
+  program in the folder.
 - The package steps are the `build`, `check` and `test` scripts, each run when the package declares it.
-- Steps that do not need each other run in parallel. The Go tests and the Go build wait for the `build` script,
-  because a Go package embeds what its frontend builds. The user: "you can run go and package scripts in parallel if
+- Steps that do not need each other run in parallel. `go vet`, the Go tests and the Go build wait for the `build`
+  script, because a Go package embeds what its frontend builds and loading it fails without it. The user: "you can run go and package scripts in parallel if
   you can."
 - Dependants come from a command that reads the code. The `go.mod` files leave out half of the links, because the
   workspace resolves them. The user chose "A command".

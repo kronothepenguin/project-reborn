@@ -24,7 +24,10 @@ Each of the seven projects checks itself. This task implements these behaviours 
 - [Frontend pages](/frontend-pages.md): how a frontend builds and where its pages land
 - [How the programs work together](/programs.md): the runners
 - [Soft rules](/rules.md): `apps/**/cmd/**` holds the user's runners; this task leaves them as they are
-- `make/check.mk`: the recipe, written by task 01
+- `tools/checks/knowledge/recipe.md`: how a project includes the recipe, what it runs, and how a project adds its own
+  steps
+- A fresh worktree runs `pnpm install --frozen-lockfile --prefer-offline` and `make install` first: the Go packages
+  embed `dist/`, and `packages/housekeeping` imports `packages/cms`
 
 # Steps
 
