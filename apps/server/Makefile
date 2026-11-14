@@ -1,5 +1,7 @@
 .PHONY: install dev
 
+include ../../make/check.mk
+
 install:
 	$(MAKE) -C ../../packages/server install
 	mkdir -p tmp

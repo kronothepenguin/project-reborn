@@ -31,7 +31,7 @@ pnpm astro dev stop    # also: status, logs
 ## Test
 
 ```sh
-go test ./...                                         # from this directory
+make check                                            # from this directory: builds the pages, then the Go checks
 cd tests/e2e && pnpm test housekeeping-settings       # a browser suite, from the repository root
 ```
 

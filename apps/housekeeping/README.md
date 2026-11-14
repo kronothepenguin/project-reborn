@@ -18,6 +18,7 @@ make install    # once: this project's folders and dependencies
 make dev        # astro (background) + air hot reload → http://localhost:18465/housekeeping/
 make web        # astro dev server only → http://localhost:22177
 make stop       # stop the background astro server
+make check      # checks the formatting, vets and builds the runner
 ```
 
 ## Production
