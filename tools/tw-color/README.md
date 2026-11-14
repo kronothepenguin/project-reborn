@@ -45,8 +45,10 @@ printf '#c10007\n' | make tw-color
 
 ## Tests
 
+From `tools/tw-color`; it runs the `test` script of `package.json`, `node --test`:
+
 ```sh
-node --test "tools/tw-color/**/*.test.mjs"
+make check
 ```
 
 How it works: `knowledge/index.md`.
