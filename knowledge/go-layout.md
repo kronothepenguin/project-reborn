@@ -28,7 +28,8 @@ The projects and what each one is: [Monorepo architecture](/architecture.md). Th
 - `pnpm-workspace.yaml` globs `apps/*`, `packages/*` and `tests/*`.
 - `apps/<app>/cmd/<app>` is the production runner and `apps/<app>/cmd/<app>-dev` the development runner.
   `apps/server` has `cmd/server` only. `apps/**/cmd/**` belongs to the user ([Soft rules](/rules.md)).
-- `tools/create` keeps its command in `tools/create/cmd/create`.
+- `tools/create` keeps its command in `tools/create/cmd/create`, and `tools/checks` keeps its
+  command in `tools/checks/cmd/dependants`.
 
 # Web apps
 
@@ -54,6 +55,8 @@ The projects and what each one is: [Monorepo architecture](/architecture.md). Th
 | `go build ./... && go vet ./...` | a module directory | Builds and vets that module. |
 | `go work sync` | the root | Syncs the workspace; `make install` runs it. |
 | `go work use ./<folder>/<name>` | the root | Adds a new module to `go.work`. |
+| `make dependants project=<folder>` | the root | Prints the projects that use the folder, directly or through another. |
+| `make check` | a project whose `Makefile` includes `make/check.mk` | Runs the shared recipe `make/check.mk`: the Go steps and the package scripts. |
 | `make gates` | the root | Builds the frontends, then runs `gofmt -l`, `go vet ./...` and `go test ./... -race` in every module, plus the components, store and knowledge checks. |
 
 At the root, `go build ./...` fails with

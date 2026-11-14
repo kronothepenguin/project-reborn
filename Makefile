@@ -1,4 +1,4 @@
-.PHONY: install tools create tw-color gates e2e frontends release
+.PHONY: install tools create dependants tw-color gates e2e frontends release
 
 VERSION ?= dev
 
@@ -75,6 +75,10 @@ tools:
 
 create: tools
 	./tools/create/bin/create $(if $(template),-template=$(template)) $(if $(dry-run),-dry-run) $(if $(app-port),-app-port=$(app-port)) $(if $(astro-port),-astro-port=$(astro-port)) $(name)
+
+# The projects that use $(project), directly or through another project.
+dependants: tools
+	@./tools/checks/bin/dependants $(project)
 
 tw-color:
 	node tools/tw-color/tw-color.mjs

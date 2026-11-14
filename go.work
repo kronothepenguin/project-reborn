@@ -15,5 +15,6 @@ use (
 	./packages/server
 	./packages/store
 	./packages/virtual
+	./tools/checks
 	./tools/create
 )
