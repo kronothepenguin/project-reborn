@@ -10,8 +10,8 @@ an inline `<script>` included: a ticking clock is an island. An `.astro` file ho
 stays `.astro`, as `building-astro-components` says.
 
 An island lives in its feature's sub-folder of `src/components/`, next to the `.astro` components
-(`src/components/orders/order-filter.svelte`). A component that several apps need is a primitive of the shared
-components package: build it with `building-svelte-primitives`.
+(`src/components/orders/order-filter.svelte`). A piece that knows no app is a primitive of the shared components
+package from the start, also while one app uses it: `building-svelte-primitives` builds it.
 
 The project's knowledge names the folders, the commands and the checks.
 

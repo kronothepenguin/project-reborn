@@ -64,7 +64,7 @@ Row counts measured on a database built from the 21 updates:
 | 0002 home-store | home store categories and items | 20 / 298 | Categories 27 (backgrounds) and 29 (notes) are constants in `packages/cms/seed/home-store.go`. The items are content |
 | 0003 ranks | access groups and their attributes | 5 / 119 | Administrator is required (`setup.administratorsGroup` fails with `ErrNoGroup` without it). The other four are examples that can be deleted (holo-port 0054) |
 | 0004, 0009 | attributes, Holo's fuses per level | | Required |
-| 0010 navigator | categories, room models, public rooms; the file creates the tables and seeds them | 15 / 42 / 12 | Room models are required. Category 2 is `defaultRoomCategory` in `packages/server/game/rooms.go`, and the roots 3 and 4 are needed. Public rooms are content |
+| 0010 navigator | categories, room models, public rooms; the file creates the tables and seeds them | 15 / 42 / 12 | Room models are required. Category 2 is `defaultRoomCategory` in `packages/server/internal/game/rooms.go`, and the roots 3 and 4 are needed. Public rooms are content |
 | 0013 catalogue | furni definitions, pages, items; the file creates the tables and seeds them | 1,256 / 67 / 1,275 | The `present_gen*` definitions (gifts), the recycler's furni, `post.it`, wallpaper, floor and landscape, and the page with the code `Recycler`, which the client reads. The rest is content |
 | 0016 rollers | changes definitions 465 to 474 | | Changes rows by their seeded ids |
 | 0020 recycler | 4 rewards pointing at furni 463, 464, 462 and 1279 | 4 | A foreign key to `furni_definitions`: it fails its check if Holo's furni is missing |
@@ -106,7 +106,7 @@ Ways to a first article:
 - `packages/virtual/settings/catalogue.go` declares about 100 keys, each with a default and a validator, and three
   rules that tie settings together (password lengths, ping and its timeout, the recycler's session and its time-out).
   The API: `Load`, `Set`, which cannot join a transaction, `Validate(map)`, all or nothing, and `Declared()`.
-- Housekeeping's forms are in `packages/housekeeping/internal/router/sections.go`: `forms` gives each field its label
+- Housekeeping's forms are in `packages/housekeeping/internal/router/settings.go`: `forms` gives each field its label
   and help, and `sectionsOver`, `filled` and `readChanges` build and read them. Saving validates first. All of it is
   under `internal`, so the installer cannot import it today.
 

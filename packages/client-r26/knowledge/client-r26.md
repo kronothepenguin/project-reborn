@@ -18,14 +18,14 @@ tags: [client, protocol, r26]
 | `src/main.js`, `src/worker.js` | Empty files; `src/main.js` is the entry of `index.html` and of the library build |
 | `index.html` | An `<x-object>` of 720 × 540 whose `src` is `/src/game/habbo/index.js`, with `<x-param>`s `sw1` to `sw9`: the external variables, `connection.info.port=30000` and `connection.mus.port=30001` among them |
 | `vite.config.js` | Vite's library mode: `src/main.js` into `dist/main.es.js` and `dist/main.umd.js`, whose global name is `_director`; and `define`s that read `VITE_*` variables of the environment |
-| `vitest.config.js` | jsdom tests under `src/director/**/__tests__/` |
+| `vitest.config.js` | The jsdom environment and vitest's globals, with vitest's default test files |
 | `public/` | `favicon.svg` and `icons.svg` |
 
 The cast folders hold 414 `.ls` scripts, each beside its `.js` translation, and the casts' media: bitmaps (`.png`),
 sounds (`.wav`) and texts (`.txt`, `.rtf`, `.htm`).
 
 Commands, from `packages/client-r26`: `pnpm dev`, `pnpm build` and `pnpm preview`. `make check` runs the `build`
-script and the `test` script, `vitest run --passWithNoTests`, which passes while the folder of tests is missing.
+script and the `test` script, `vitest run --passWithNoTests`, which passes while the package holds no test file.
 
 # Where it is
 
