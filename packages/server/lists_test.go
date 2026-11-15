@@ -88,6 +88,21 @@ func TestSearchingRooms(t *testing.T) {
 	}
 }
 
+// A search lists at most game.searchMaxRooms rooms.
+func TestASearchListsAtMostItsLimitOfRooms(t *testing.T) {
+	setSetting(t, "game.searchMaxRooms", 2, 30)
+	owner := habboWithTickets(t, "Hunter", "hunter")
+	for _, name := range []string{"Quarry one", "Quarry two", "Quarry three"} {
+		newRoom(t, owner, 2, name, true)
+	}
+	c, _ := login(t, "hunter")
+
+	c.send(t, 17, "Quarry")
+	if id, body := c.next(t); id != 55 || len(readFlatLines(t, body)) != 2 {
+		t.Errorf("a search for Quarry got %d with %d rooms, want 55 with 2", id, len(readFlatLines(t, body)))
+	}
+}
+
 func TestThreeRecommendedRooms(t *testing.T) {
 	owner := habboWithTickets(t, "Recommender", "recommender")
 	for _, name := range []string{"One", "Two", "Three", "Four"} {

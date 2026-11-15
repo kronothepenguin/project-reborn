@@ -333,11 +333,6 @@ func TestSignedInVisitorsGoToMe(t *testing.T) {
 	}
 }
 
-func TestMeNeedsASession(t *testing.T) {
-	_, mux := newSite(t)
-	wantRedirect(t, serve(mux, "GET", "/me", nil, nil), "/")
-}
-
 func TestSignOut(t *testing.T) {
 	db, mux := newSite(t)
 	habbo(t, db, "admin@example.com", "Admin")

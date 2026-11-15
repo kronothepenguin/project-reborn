@@ -150,6 +150,20 @@ func TestNavigatingAHabboRoomsCategory(t *testing.T) {
 	}
 }
 
+// A category lists at most game.categoryMaxRooms habbo rooms.
+func TestACategoryListsAtMostItsLimitOfRooms(t *testing.T) {
+	setSetting(t, "game.categoryMaxRooms", 2, 30)
+	owner := habboWithTickets(t, "Crammer", "crammer")
+	for _, name := range []string{"Cram one", "Cram two", "Cram three"} {
+		newRoom(t, owner, 27, name, true)
+	}
+	c, _ := login(t, "crammer")
+
+	if _, nodes := navigate(t, c, 0, 27); len(nodes[0].Flats) != 2 {
+		t.Errorf("the category lists %d rooms, want 2", len(nodes[0].Flats))
+	}
+}
+
 func TestNavigatingGuestroomsListsItsCategories(t *testing.T) {
 	habboWithTickets(t, "Guest", "guest")
 	c, _ := login(t, "guest")
