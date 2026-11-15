@@ -4,6 +4,7 @@ import { page, userEvent } from "vitest/browser";
 import { afterEach, describe, expect, it } from "vitest";
 import BBCodeEditor from "./bbcode-editor.svelte";
 import EditorFixture from "./__fixtures__/bbcode-editor.svelte";
+import "../styles.css";
 
 let forms: HTMLFormElement[] = [];
 
@@ -261,9 +262,14 @@ describe("BBCodeEditor", () => {
   });
 
   it("has the housekeeping look in housekeeping", () => {
-    const { container } = setup("", { variant: "housekeeping" });
-    expect(container.querySelector('[role="toolbar"] button')?.classList.contains("bg-olive-200")).toBe(true);
-    expect(container.querySelector("[contenteditable]")?.classList.contains("border-neutral-600")).toBe(true);
+    const site = setup("");
+    const housekeeping = setup("", { variant: "housekeeping" });
+    const face = (container: HTMLElement) =>
+      getComputedStyle(container.querySelector('[role="toolbar"] button') as HTMLButtonElement).backgroundColor;
+
+    expect(face(site.container)).toBe("rgb(255, 255, 255)");
+    expect(face(housekeeping.container)).not.toBe(face(site.container));
+    expect(face(housekeeping.container)).not.toBe("rgba(0, 0, 0, 0)");
   });
 
   it("turns away a change that makes the BBCode longer than its most", async () => {

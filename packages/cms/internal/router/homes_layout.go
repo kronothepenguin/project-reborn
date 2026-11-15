@@ -21,10 +21,10 @@ type layoutBody struct {
 	Background int64        `json:"background"`
 }
 
-// HandleHomesLayout handles POST /homes/{id}/layout, savehome.php: the places of
-// the items and the background, all or nothing. A background is one the user
-// holds, or 0 for Holo's default.
-func (r *Router) HandleHomesLayout(w http.ResponseWriter, req *http.Request) {
+// HandleHomesLayoutSave handles POST /homes/{id}/layout, savehome.php: the
+// places of the items and the background, all or nothing. A background is one
+// the user holds, or 0 for Holo's default.
+func (r *Router) HandleHomesLayoutSave(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	home, ok := r.ownHome(w, req)
 	if !ok {
