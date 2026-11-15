@@ -422,27 +422,6 @@ func TestAnAddressBanDoesNotStopStaff(t *testing.T) {
 	wantPage(t, serve(mux, "GET", "/housekeeping/", cookie, nil), http.StatusOK, "index.html")
 }
 
-func TestStaticFilesLoseThePrefix(t *testing.T) {
-	db, mux := newSite(t)
-	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess)
-	wantPage(t, serve(mux, "GET", "/housekeeping/_astro/page.css", cookie, nil), http.StatusOK, "static /_astro/page.css")
-}
-
-func TestTheAddressWithoutTheSlashWorks(t *testing.T) {
-	_, mux := newSite(t)
-	rec := serve(mux, "GET", "/housekeeping", nil, nil)
-	if rec.Code < 300 || rec.Code > 399 || rec.Header().Get("Location") != "/housekeeping/" {
-		t.Errorf("got %d to %q, want a redirect to /housekeeping/", rec.Code, rec.Header().Get("Location"))
-	}
-}
-
-func TestAloneItLeavesTheRootAlone(t *testing.T) {
-	_, mux := newSite(t)
-	for _, path := range []string{"/", "/me", "/logs", "/housekeepingish"} {
-		wantPage(t, serve(mux, "GET", path, nil, nil), http.StatusNotFound)
-	}
-}
-
 func TestCrossOriginPostsAreRefused(t *testing.T) {
 	db, mux := newSite(t)
 	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess)

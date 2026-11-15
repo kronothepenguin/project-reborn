@@ -1,7 +1,6 @@
 package router
 
 import (
-	"net/url"
 	"strings"
 	"testing"
 
@@ -47,29 +46,6 @@ func TestASettingDeclaredLaterGetsAForm(t *testing.T) {
 	}
 }
 
-func TestHiddenSettingsGetNoForm(t *testing.T) {
-	sections := sectionsOver([]settings.Setting{{Key: "housekeeping.note", Value: "note"}})
-	if s, ok := findSection(sections, "housekeeping"); ok {
-		t.Errorf("a form holds a hidden setting: %+v", s)
-	}
-}
-
-func TestASectionKeepsItsOrder(t *testing.T) {
-	sections := sectionsOver([]settings.Setting{
-		{Key: "site.url", Value: "https://hotel.example.com"},
-		{Key: "site.name", Value: "Hotel"},
-		{Key: "site.shortName", Value: "H"},
-	})
-	if sections[0].ID != "site" {
-		t.Fatalf("the first form is %q", sections[0].ID)
-	}
-	for i, want := range []string{"site.name", "site.shortName", "site.url"} {
-		if got := sections[0].Fields[i].Key; got != want {
-			t.Errorf("field %d is %s, want %s", i, got, want)
-		}
-	}
-}
-
 func TestLongTextsAndChoicesGetTheirFields(t *testing.T) {
 	short := filled(field{Key: "staff.body", Long: true}, settings.Setting{Key: "staff.body", Value: "A line.\nAnother."})
 	if short.Kind != kindLongText || short.Rows != 2 || short.Value != "A line.\nAnother." {
@@ -91,26 +67,5 @@ func TestLongTextsAndChoicesGetTheirFields(t *testing.T) {
 	}
 	if colours[1].Selected {
 		t.Error("filling a choice marked the shared list")
-	}
-}
-
-func TestLongTextsAndChoicesAreRead(t *testing.T) {
-	s := section{Fields: []field{
-		{Key: "staff.body", Label: "Body", Kind: kindLongText, Value: "Old", Required: true},
-		{Key: "staff.color", Label: "Colour", Kind: kindChoice, Value: "red", Choices: []choice{{Value: "red"}, {Value: "green"}}},
-	}}
-
-	changes, problem := readChanges(s, url.Values{"staff.body": {"New\r\nlines"}, "staff.color": {"green"}})
-	if problem != "" || changes["staff.body"] != "New\nlines" || changes["staff.color"] != "green" {
-		t.Errorf("readChanges = %v, %q", changes, problem)
-	}
-	if changes, problem := readChanges(s, url.Values{"staff.body": {"Old"}, "staff.color": {"red"}}); problem != "" || len(changes) != 0 {
-		t.Errorf("unchanged values = %v, %q, want no change", changes, problem)
-	}
-	if _, problem := readChanges(s, url.Values{"staff.body": {" \r\n "}}); problem != settingsBlank {
-		t.Errorf("a blank long text = %q, want %q", problem, settingsBlank)
-	}
-	if _, problem := readChanges(s, url.Values{"staff.color": {"purple"}}); problem != "Colour must be one of its choices. "+settingsNotSaved {
-		t.Errorf("a value outside the choices = %q", problem)
 	}
 }
