@@ -40,6 +40,7 @@ func TestDifferencesFindsMissingAndUnusedKeys(t *testing.T) {
 		t.Fatalf("Differences: %v", err)
 	}
 	if got, want := paths(missing), []string{`cms.host="localhost"`, `proxy.enabled=false`, `proxy.trusted=["127.0.0.1","::1"]`,
+		`reborn.host="localhost"`, `reborn.port=16416`,
 		`server.info.host="localhost"`, `server.info.port=30000`, `server.mus.host="localhost"`, `server.mus.port=30001`}; !slices.Equal(got, want) {
 		t.Errorf("missing = %v, want %v", got, want)
 	}
@@ -51,7 +52,8 @@ func TestDifferencesFindsMissingAndUnusedKeys(t *testing.T) {
 func TestDifferencesFindsNothingInACurrentFile(t *testing.T) {
 	useConfigFile(t, `{"store":{"path":"habbo.db"},"cms":{"host":"localhost","port":17387},`+
 		`"housekeeping":{"host":"localhost","port":18465},"proxy":{"enabled":false,"trusted":["127.0.0.1"]},`+
-		`"server":{"info":{"host":"localhost","port":30000},"mus":{"host":"localhost","port":30001}}}`)
+		`"server":{"info":{"host":"localhost","port":30000},"mus":{"host":"localhost","port":30001}},`+
+		`"reborn":{"host":"localhost","port":16416}}`)
 	if missing, unused, err := Differences(); err != nil || len(missing) != 0 || len(unused) != 0 {
 		t.Errorf("Differences = %v, %v, %v, want none", paths(missing), paths(unused), err)
 	}

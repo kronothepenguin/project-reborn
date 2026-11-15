@@ -48,10 +48,14 @@ Loading is the first thing a program does. An unreadable file, invalid JSON, or 
 | `server.info.port` | int | 30000 | 1–65535 |
 | `server.mus.host` | string | `localhost` | hostname or IP address, as `cms.host` |
 | `server.mus.port` | int | 30001 | 1–65535, other than `server.info.port` |
+| `reborn.host` | string | `localhost` | hostname or IP address, as `cms.host` |
+| `reborn.port` | int | 16416 | 1–65535 |
 
 `proxy` is for a hotel behind a reverse proxy: production enables it in its `config.json`, and `auth.RealIP` then takes the client IP from the `X-Forwarded-For` header of requests that come from a trusted address or range.
 
 `server` is the game server's: the client's two connections, `info` for the game and `mus` for the Multiuser Xtra's messages, each a WebSocket listener on a host and port of its own (`plans/server/decisions/0020-info-and-mus-websocket-ports.md`). The server section reuses the rule of `cms.host` for its hosts.
+
+`reborn` is the address of the whole hotel run in one process, where one mux serves the installer, the site and housekeeping (`plans/reborn/decisions/0003-reborn-runs-the-hotel-in-one-process.md`); its port is the one `tools/create` derives for the name `reborn`. Under reborn, `cms.host`, `cms.port`, `housekeeping.host` and `housekeeping.port` go unused, and the separate programs still read them. The game server keeps its own `server.info` and `server.mus` listeners. The reborn section reuses the rule of `cms.host` for its host.
 
 The settings package (`packages/virtual/settings`) exposes these values under the same key paths (`settings.GetInt("cms.port")`; it has no getter for lists such as `proxy.trusted`), and a settings row never overrides them.
 

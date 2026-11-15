@@ -11,6 +11,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/config/cms"
 	"github.com/kronothepenguin/project-reborn/packages/config/housekeeping"
 	"github.com/kronothepenguin/project-reborn/packages/config/proxy"
+	"github.com/kronothepenguin/project-reborn/packages/config/reborn"
 	"github.com/kronothepenguin/project-reborn/packages/config/server"
 	storeconfig "github.com/kronothepenguin/project-reborn/packages/config/store"
 	"github.com/kronothepenguin/project-reborn/packages/installer/internal/setup"
@@ -75,6 +76,7 @@ func (r *Router) HandleConfigWrite(w http.ResponseWriter, req *http.Request) {
 		Housekeeping: housekeeping.Housekeeping{Host: housekeeping.DefaultHost(), Port: housekeepingPort},
 		Proxy:        proxy.Proxy{Enabled: proxy.DefaultEnabled(), Trusted: proxy.DefaultTrusted()},
 		Server:       server.Server{Info: server.DefaultInfo(), MUS: server.DefaultMUS()},
+		Reborn:       reborn.Reborn{Host: reborn.DefaultHost(), Port: reborn.DefaultPort()},
 	}
 	switch err := r.deps.Setup.Configure(req.Context(), cfg); {
 	case errors.Is(err, setup.ErrConfigured):

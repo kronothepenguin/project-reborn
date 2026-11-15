@@ -11,6 +11,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/config/cms"
 	"github.com/kronothepenguin/project-reborn/packages/config/housekeeping"
 	"github.com/kronothepenguin/project-reborn/packages/config/proxy"
+	"github.com/kronothepenguin/project-reborn/packages/config/reborn"
 	"github.com/kronothepenguin/project-reborn/packages/config/server"
 	"github.com/kronothepenguin/project-reborn/packages/config/store"
 )
@@ -31,6 +32,7 @@ type Config struct {
 	Housekeeping housekeeping.Housekeeping `json:"housekeeping"`
 	Proxy        proxy.Proxy               `json:"proxy"`
 	Server       server.Server             `json:"server"`
+	Reborn       reborn.Reborn             `json:"reborn"`
 }
 
 func defaults() *Config {
@@ -40,6 +42,7 @@ func defaults() *Config {
 		Housekeeping: housekeeping.Housekeeping{Host: housekeeping.DefaultHost(), Port: housekeeping.DefaultPort()},
 		Proxy:        proxy.Proxy{Enabled: proxy.DefaultEnabled(), Trusted: proxy.DefaultTrusted()},
 		Server:       server.Server{Info: server.DefaultInfo(), MUS: server.DefaultMUS()},
+		Reborn:       reborn.Reborn{Host: reborn.DefaultHost(), Port: reborn.DefaultPort()},
 	}
 }
 
@@ -60,6 +63,9 @@ func (c *Config) Validate() error {
 	}
 	if err := c.Server.Validate(); err != nil {
 		return fmt.Errorf("server.%w", err)
+	}
+	if err := c.Reborn.Validate(); err != nil {
+		return fmt.Errorf("reborn.%w", err)
 	}
 	return nil
 }

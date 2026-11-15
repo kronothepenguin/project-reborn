@@ -19,6 +19,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/config/cms"
 	"github.com/kronothepenguin/project-reborn/packages/config/housekeeping"
 	"github.com/kronothepenguin/project-reborn/packages/config/proxy"
+	"github.com/kronothepenguin/project-reborn/packages/config/reborn"
 	"github.com/kronothepenguin/project-reborn/packages/config/server"
 	storeconfig "github.com/kronothepenguin/project-reborn/packages/config/store"
 	"github.com/kronothepenguin/project-reborn/packages/store"
@@ -32,6 +33,7 @@ func testConfig(path string, port int) *config.Config {
 		Housekeeping: housekeeping.Housekeeping{Host: housekeeping.DefaultHost(), Port: housekeeping.DefaultPort()},
 		Proxy:        proxy.Proxy{Enabled: proxy.DefaultEnabled(), Trusted: proxy.DefaultTrusted()},
 		Server:       server.Server{Info: server.DefaultInfo(), MUS: server.DefaultMUS()},
+		Reborn:       reborn.Reborn{Host: reborn.DefaultHost(), Port: reborn.DefaultPort()},
 	}
 }
 

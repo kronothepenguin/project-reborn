@@ -12,6 +12,7 @@ import (
 	"testing"
 
 	"github.com/kronothepenguin/project-reborn/packages/config"
+	"github.com/kronothepenguin/project-reborn/packages/config/reborn"
 	"github.com/kronothepenguin/project-reborn/packages/config/server"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
@@ -139,5 +140,8 @@ func TestInstallation(t *testing.T) {
 	}
 	if written.Server.Info != server.DefaultInfo() || written.Server.MUS != server.DefaultMUS() {
 		t.Errorf("%s holds server %+v, want the defaults", config.Filename, written.Server)
+	}
+	if written.Reborn != (reborn.Reborn{Host: reborn.DefaultHost(), Port: reborn.DefaultPort()}) {
+		t.Errorf("%s holds reborn %+v, want the defaults", config.Filename, written.Reborn)
 	}
 }
