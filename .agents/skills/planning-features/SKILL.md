@@ -43,8 +43,9 @@ Read each ready task as its slave would. Ask the user every question it leaves o
 
 ## 6. Spawn
 
-Spawn one slave per ready task, all ready tasks at once, on a good model for doing the work, one step below the
-master's own: a Fable master spawns Opus slaves, an Opus master spawns Sonnet slaves. Each gets this prompt:
+Spawn one slave per ready task, all ready tasks at once. The master is the smartest model; slaves run on a cheaper
+model that is good at doing the work: a Fable master spawns Opus slaves; an Opus master spawns Sonnet slaves, or Opus
+slaves at a lower effort. Each gets this prompt:
 
 ```text
 You are a slave. Work knowledge/features/<feature>/tasks/<NN>-<slug>.md with the working-tasks skill.
@@ -56,6 +57,7 @@ You are a slave. Work knowledge/features/<feature>/tasks/<NN>-<slug>.md with the
 - Turn each finding into a question for the user as the report arrives: each place where the code contradicted a
   source, each open question, each test that proves no behaviour.
 - Write each answer into the spec, the plan or a task.
+- Write each fact of "Facts for other tasks" into the task it serves, and send it to a slave already working that task.
 - Spawn the tasks that became ready.
 
 ## 8. The master's own edits

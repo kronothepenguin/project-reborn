@@ -31,8 +31,8 @@ time changes the [shared files](/shared-files.md).
 - The master talks to the user. It writes `spec.md`, `plan.md` and the task files itself on the branch
   `<feature>-plan`, asks every question first, spawns one slave per ready task, and turns each finding of a report into
   a question for the user.
-- The master spawns slaves on a good model for doing the work, one step below its own: a Fable master spawns Opus
-  slaves, an Opus master spawns Sonnet slaves.
+- The master is the smartest model. Slaves run on a cheaper model that is good at doing the work: a Fable master
+  spawns Opus slaves; an Opus master spawns Sonnet slaves, or Opus slaves at a lower effort.
 - Work with no behaviour to test, such as a skill rewrite, a doc fix or a rename, goes to a slave as a brief in its
   prompt, with no feature folder and no task file.
 - A slave works its task or brief on its own branch and worktree, runs the [checks](/checks.md) of every project it
