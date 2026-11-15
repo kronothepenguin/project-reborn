@@ -7,7 +7,9 @@ description: Builds the primitives of a shared Svelte 5 components package, such
 
 A primitive is a piece of UI with no knowledge of any app: a button, an input, a dialog, a table. It lives in the
 shared components package from the start, also while one app uses it. A piece that knows an app, such as a member list
-or a news form, stays in that app: `building-astro-components` or `adding-svelte-interactivity` builds it.
+or a news form, stays in that app: `building-astro-components` or `adding-svelte-interactivity` builds it. A piece
+that several apps share and that knows the project's own things, such as an avatar image or a group badge, also lives
+in the shared package, built like a primitive.
 
 The project's knowledge names the package, its folders, its index file and its commands.
 
@@ -42,7 +44,8 @@ Read it before the first primitive of a session.
    [WAI-ARIA pattern](https://www.w3.org/WAI/ARIA/apg/patterns/) (tabs, menu, dialog): its roles, its keyboard and its
    focus.
 6. **Test.** Each primitive has a test file. A test proves what a visitor sees or does: a disabled button ignores a
-   press, Escape closes the dialog, the tab list exposes its roles. Attributes and prop defaults stay untested.
+   press, Escape closes the dialog, the tab list exposes its roles. A class name, an attribute and a prop default are
+   details: assert what the visitor sees.
    `testing-behaviours` owns the shape of a test.
 7. **Story.** Each primitive has a story that shows every variant and every state, such as disabled, open or invalid.
    Its description holds one sentence that says when to use the primitive.

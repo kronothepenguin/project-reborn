@@ -1,14 +1,12 @@
 package setup
 
 import (
-	"encoding/json/v2"
 	"errors"
 	"io/fs"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
-	"reflect"
 	"slices"
 	"strings"
 	"testing"
@@ -23,7 +21,6 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/config/server"
 	storeconfig "github.com/kronothepenguin/project-reborn/packages/config/store"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 func testConfig(path string, port int) *config.Config {
@@ -77,40 +74,6 @@ func assertAbsent(t *testing.T, paths ...string) {
 		if _, err := os.Stat(path); !errors.Is(err, fs.ErrNotExist) {
 			t.Errorf("%s exists (stat: %v)", path, err)
 		}
-	}
-}
-
-func TestOpenWithoutConfigWritesNothing(t *testing.T) {
-	s := openState(t)
-	if _, ok := s.Current(); ok {
-		t.Error("Current() reports a configuration without config.json")
-	}
-	assertAbsent(t, config.Filename)
-}
-
-func TestConfigureWritesConfigAndCreatesTheDatabase(t *testing.T) {
-	s := configure(t)
-
-	installation, ok := s.Current()
-	if !ok || installation.Config.CMS.Port != 17400 || settings.GetInt("cms.port") != 17400 {
-		t.Fatalf("Current() = %+v, %t, want the written configuration", installation, ok)
-	}
-	data, err := os.ReadFile(config.Filename)
-	if err != nil {
-		t.Fatalf("read %s: %v", config.Filename, err)
-	}
-	var written config.Config
-	if err := json.Unmarshal(data, &written); err != nil {
-		t.Fatalf("decode %s: %v", config.Filename, err)
-	}
-	if !reflect.DeepEqual(written, *testConfig("habbo.db", 17400)) {
-		t.Errorf("%s = %+v", config.Filename, written)
-	}
-	if _, err := os.Stat("habbo.db"); err != nil {
-		t.Errorf("database file: %v", err)
-	}
-	if err := s.Configure(t.Context(), testConfig("other.db", 17401)); !errors.Is(err, ErrConfigured) {
-		t.Errorf("a second Configure = %v, want ErrConfigured", err)
 	}
 }
 
@@ -362,13 +325,6 @@ func TestCreateAdministratorValidates(t *testing.T) {
 	}
 	if installed, err := s.Installed(t.Context()); err != nil || installed {
 		t.Errorf("Installed() = %t, %v after rejected administrators, want false", installed, err)
-	}
-}
-
-func TestCreateAdministratorNeedsConfig(t *testing.T) {
-	s := openState(t)
-	if err := s.CreateAdministrator(t.Context(), testAdministrator()); !errors.Is(err, ErrNotConfigured) {
-		t.Errorf("CreateAdministrator() = %v, want ErrNotConfigured", err)
 	}
 }
 

@@ -27,8 +27,9 @@ and Tailwind) side by side. Each frontend has:
 | `src/styles/global.css` | The global styles, imported by `document.astro`. |
 | `dist/` | The build output, embedded by `//go:embed dist/*` in `cms.go`, `housekeeping.go` and `installer.go`. |
 
-- Body layouts: `signed-out.astro`, `community.astro` and `help-tool.astro` in the CMS; `housekeeping.astro` in
-  housekeeping; `setup.astro` in the installer.
+- Body layouts: `signed-out.astro`, `community.astro`, `account.astro` and `help-tool.astro` in the CMS;
+  `housekeeping.astro` in housekeeping; `setup.astro` in the installer.
+- The CMS's account pages (`src/pages/account/`) render the `account.astro` layout, which renders `community.astro`.
 - Feature sub-folders, such as `src/components/groups/` and `src/components/header/` in the CMS and
   `src/components/news/` in housekeeping.
 - The CMS layouts `community.astro` and `help-tool.astro` render the islands of their chrome.
@@ -54,8 +55,9 @@ and Tailwind) side by side. Each frontend has:
 - The apps' `.astro` components import the primitives by name: `import { Button, Card } from
   "@project-reborn/components";`.
 - Islands use `client:only="svelte"`. How the CMS islands read Go values: `packages/cms/knowledge/islands.md`.
-- Housekeeping's `clock.astro` and `news/news-fields.astro` still carry an inline script, until the code moves it to
-  Svelte islands.
+- Housekeeping's clock (`clock.astro` with its `clock-time.svelte` islands) is the first island of every page of the
+  `housekeeping.astro` layout, and carries Astro's island script.
+- Housekeeping's pages use `Box` and the plain `Button` (`variant="plain"`) of the shared package.
 
 # Commands
 
