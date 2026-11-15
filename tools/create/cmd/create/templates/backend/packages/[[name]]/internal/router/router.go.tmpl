@@ -6,7 +6,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
-// Deps are the shared services every handler can use.
+// Deps are what the handlers share: what New received and what the package built from it.
 type Deps struct {
 	DB      *sql.DB
 	Queries *store.Queries
