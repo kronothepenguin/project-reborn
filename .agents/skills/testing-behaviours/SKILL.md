@@ -10,6 +10,14 @@ A behaviour is one line of `spec.md`: a situation, an action, an outcome. A test
 Test your own code. Tools that are already tested, such as sqlc and SQLite, are trusted: a test checks what our code
 does with them.
 
+- A test needs our logic between a tool's input and its output. Leave the rest to the tool.
+- A rule held in SQL is proven once, through the program that uses the query. Test the query alone when no program
+  shows the rule.
+- A test asserts what a user or a client observes. The shape of a struct, a JSON tag, a default that passes its own
+  validator, a class name and the exact strings of a generated file are details: leave them to the code.
+- A guard is a test over the whole repo that keeps a rule of the build true: every page wakes its islands, every seeded
+  item has its art. A guard is a valid test.
+
 ## Write a test
 
 1. Name the test after the behaviour it proves.
@@ -76,7 +84,8 @@ gets the fix. Example: a change to a components package runs the checks of the s
 
 ## Tests without a behaviour
 
-A test that proves no behaviour of a spec goes to the master in the report; the user decides whether it stays.
+A test that proves a real behaviour no spec lists stays. Report the missing spec line; the master adds it to the spec
+with the user.
 
 ## Report
 
