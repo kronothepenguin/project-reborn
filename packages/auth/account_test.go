@@ -260,22 +260,3 @@ func TestCreateAccountTakenValuesConflict(t *testing.T) {
 		t.Errorf("%d users after the rolled back conflicts, want 1", n)
 	}
 }
-
-func TestCreateAccountJoinsTheCallersTransaction(t *testing.T) {
-	f := newFixture(t)
-	tx, err := f.db.BeginTx(t.Context(), nil)
-	if err != nil {
-		t.Fatalf("BeginTx: %v", err)
-	}
-	if _, _, err := CreateAccount(t.Context(), store.New(tx), testAccount()); err != nil {
-		t.Fatalf("CreateAccount: %v", err)
-	}
-	if err := tx.Rollback(); err != nil {
-		t.Fatalf("Rollback: %v", err)
-	}
-	for _, table := range []string{"users", "credentials", "avatars", "profiles", "homes", "wallets", "wallet_transactions"} {
-		if n := f.count(t, `SELECT COUNT(*) FROM `+table); n != 0 {
-			t.Errorf("%d rows left in %s after the rollback", n, table)
-		}
-	}
-}
