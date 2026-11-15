@@ -33,7 +33,7 @@ items in housekeeping. The art ships inside the CMS.
 - A user opens Edit on the home of any habbo they own: the home editor opens, whichever habbo is active
   (decision holo-port/0065).
 - A user opens another user's home: the home shows with no Edit.
-- The owner drags, re-skins and removes items and saves: the home keeps the new places, skins and background.
+- The owner drags and re-skins items and saves: the home keeps the new places, skins and background.
 - The owner saves an item off the playground or a background it lacks: the save is refused.
 - The owner saves the home with background 0: the home has no background.
 - The owner drops an item off the playground: the item goes back to its place.
@@ -79,6 +79,8 @@ items in housekeeping. The art ships inside the CMS.
 
 ## The store in housekeeping
 
+- Anyone opens housekeeping's page of the homes catalogue: Holo's title, headings, labels and columns show, with the tab
+  or menu place marked.
 - A new hotel is installed with Holo's home store.
 - Staff with `housekeeping.homeStore` add an item from the art: it is listed as typed, with a preview from the CMS.
 - Staff add an item: its kind follows the art's folder, sticker or background, whatever the category.

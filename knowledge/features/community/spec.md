@@ -42,6 +42,8 @@ staff boxes in the settings.
 
 ## The staff page
 
+- Anyone opens the Staff page and housekeeping's Manage Site Banners with its edit and delete views: Holo's title,
+  headings, labels and columns show, with the tab or menu place marked.
 - Anyone opens `/staff`: every member of the staff-listed groups shows once, sorted by habbo name
   (decision holo-port/0076).
 - A hotel with no staff: the staff page lists nobody.

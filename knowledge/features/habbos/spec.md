@@ -46,6 +46,8 @@ It builds on [platform](/features/platform/spec.md) and [the client](/features/c
 
 ## Looks and profile
 
+- Anyone opens the Looks and Profile tabs of Account Settings and housekeeping's User Listing: Holo's title, headings,
+  labels and columns show, with the tab or menu place marked.
 - A habbo opens `/account/looks`: Save changes starts closed and opens five seconds after the editor draws a look the
   club allows (decision holo-port/0107).
 - A habbo changes its look within the first five seconds: the change counts once they end.

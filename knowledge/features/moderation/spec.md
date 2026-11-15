@@ -62,9 +62,12 @@ It builds on [platform](/features/platform/spec.md).
 
 ## Help Queries
 
+- Anyone opens housekeeping's Help Queries: Holo's title, headings, labels and columns show, with the tab or menu place
+  marked.
 - Staff with `housekeeping.help` open Help Queries: the requests not closed, newest first, in pages, with Holo's
   columns.
 - Staff refresh Help Queries: "Overview refreshed."
+- Staff read Help Queries: each habbo links to its home by its escaped name.
 - A holder of `housekeeping.help` opens the Me page: it counts the help requests not closed.
 - Staff open a request: who asked, from where and what, with the address for holders of `housekeeping.usersPrivate`.
 - Staff pick a request up, then close it: it leaves the queue and stays readable (decision holo-port/0063).

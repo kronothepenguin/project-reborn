@@ -23,6 +23,8 @@ It builds on [platform](/features/platform/spec.md) and [economy](/features/econ
 
 ## The club page
 
+- A new hotel: 1, 3 and 6 months cost 20, 50 and 80 credits, a month is 31 days, a purchase reaches at most 6 months,
+  and the wardrobe holds 5 outfits.
 - A visitor opens `/club`: Holo's club page shows under Credits with its benefits, and a guest is asked to sign in to
   see the club status.
 - A signed-in habbo without club opens `/club`: three buy buttons offer 1, 3 and 6 months at `club.price1Month`,

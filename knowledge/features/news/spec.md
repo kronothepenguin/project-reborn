@@ -17,6 +17,9 @@ unused ones.
 
 ## Reading
 
+- Anyone opens the news archive, a category listing, an article, and housekeeping's Compose News Item, its list of
+  articles, an article's edit form and Uploaded Images: Holo's title, headings, labels and columns show, with the tab or
+  menu place marked.
 - Anyone opens `/news`: the archive lists every article, newest first, with its date (decision holo-port/0017).
 - The headlines column lists the 10 newest articles and a link to the archive.
 - Anyone opens a category: it says what it lists and shows its last 25 articles; a name with `&` finds them too.

@@ -27,6 +27,8 @@ It builds on [platform](/features/platform/spec.md) and [habbos](/features/habbo
 
 ## The credits page
 
+- Anyone opens the Credits page, Account transactions and housekeeping's Vouchers page: Holo's title, headings, labels
+  and columns show, with the tab or menu place marked.
 - A visitor opens `/credits`: Holo's two boxes show in BBCode beside their pictures, and a guest is told to sign in to
   see the purse (decision holo-port/0105).
 - A visitor opens `/credits`: the green box stands in the first column, and the purse above the blue box in the second.
@@ -59,6 +61,7 @@ It builds on [platform](/features/platform/spec.md) and [habbos](/features/habbo
   "Amount is not valid or this user does not exist!" shows, and nothing changes.
 - Staff with `housekeeping.credits` open a habbo's transactions: its user's ledger shows, 100 rows a page, with the
   habbo of each row.
+- Staff open the transactions of a habbo whose user has none: the ledger is empty.
 - Staff read the credit history and the staff log: every row stays as it was written (decision holo-port/0063).
 - Staff with `housekeeping.vouchers` open Vouchers: Create Voucher offers a random code of 8 of Holo's characters, and
   the list shows the unused vouchers.

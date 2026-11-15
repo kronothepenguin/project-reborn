@@ -29,6 +29,7 @@ It builds on [habbos](/features/habbos/spec.md).
 - A habbo enters a public room or an open habbo room: it comes in at the door, sees the habbos inside, and they see it.
 - A room loads: the client shows the loading ad and the room ad that staff set in housekeeping, or none
   (decision server/0070).
+- A new hotel: a room loads with no loading ad and no room ad.
 - A habbo enters a room with a password: the right one lets it in, and a wrong one reads "Incorrect flat password"
   (decision server/0062).
 - A habbo rings a room with a closed door: the habbos with rights inside see its name and let it in or turn it away;

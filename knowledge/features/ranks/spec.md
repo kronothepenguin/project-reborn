@@ -25,9 +25,12 @@ The holders of `housekeeping.accessGroups` manage the groups in housekeeping, an
 - Staff press Log out: the session they share with the site ends.
 - Staff open, change or delete something that does not exist, or name a habbo that is not the user's: the answer is 404,
   and nothing changes.
+- A page's address asks for a message with no matching change: the page shows no message.
 
 ## Access groups
 
+- Anyone opens housekeeping's Access Groups: Holo's title, headings, labels and columns show, with the tab or menu place
+  marked.
 - A new hotel opens: it holds Holo's ranks as access groups, Administrator (level 7), Moderator (6), Gold Hobba (5),
   Silver Hobba (4) and HabboX (3), all listed on `/staff` (decision holo-port/0054).
 - The installer creates the first administrator: they join Administrator, which holds every attribute (decision

@@ -125,6 +125,7 @@ It builds on [platform](/features/platform/spec.md).
 
 ## Recycler
 
+- A new hotel: the recycler is on.
 - A habbo in a room gives the recycler as many recyclable furni as a reward takes: they leave the hand and wait in the
   recycler (decisions server/0093, server/0118).
 - A habbo gives the recycler a furni younger than 30 days, or one on offer in a trade: the recycling is refused

@@ -39,9 +39,13 @@ and sound setting. Pings keep the session alive, and a second login ends the fir
   (decision server/0049).
 - A client sends a habbo's command before LOGIN_OK: it gets no answer.
 - A client asks for the session parameters: it gets the ten that staff set in housekeeping (decision server/0034).
+- A new hotel: the session parameters set COPPA to 0, dates to dd-mm-yyyy, profile editing on, the tracking header
+  empty, and vouchers, both parent emails, direct mail, partner integration and the tutorial off.
 
 ## Packets
 
+- A client and the server exchange numbers, flags, strings and packets: each reads exactly what the other wrote, as the
+  client's own scripts do.
 - The server has a message the client would read wrongly, such as a character 1 in its body or an id past 4095: it sends
   none of it.
 - A client sends a malformed or cut-short packet: only its session closes.
@@ -50,6 +54,7 @@ and sound setting. Pings keep the session alive, and a second login ends the fir
 - A client sends commands: they run in the order it sent them, and its messages arrive in the order the server sent
   them.
 - A client stops reading its messages: it is closed.
+- A new hotel: a client is closed once 500 messages wait for it.
 - Two clients play at once: each runs at its own pace.
 
 ## The login

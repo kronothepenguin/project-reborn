@@ -61,16 +61,9 @@ like font-size: 16px. and make the layout's a little bigger to match this new fo
   (decision holo-port/0060).
 - Staff read a data list in housekeeping: its rows alternate in shade.
 
-## BBCode
+## Every page
 
-- A text holds BBCode tags in any case: each turns into its HTML.
-- A text holds line breaks: they show as line breaks.
-- A text holds an unknown or unclosed tag: it stays as typed.
-- A link tag holds an address other than http or https: it stays as typed.
-- A colour tag holds a name outside Holo's colours: it stays as typed.
-- A text holds HTML: it shows escaped.
-- A text holds a smiley: it shows as its picture, found before the text is escaped.
-- Any text is formatted: the HTML that comes out is well formed.
+- A page shows a select whose options the server fills in: it shows only the options.
 
 # Open questions
 

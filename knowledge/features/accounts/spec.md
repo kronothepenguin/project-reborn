@@ -66,6 +66,7 @@ password, show the referral link, and add, switch and archive habbos. The landin
 
 - A visitor signs in with a habbo name in any case and the owner's password: that habbo is active, on `/me` (decision
   holo-port/0002).
+- A user whose password was saved under older hash settings signs in: the sign-in succeeds.
 - A visitor signs in with a blank field, an unknown habbo or a wrong password: one Holo message shows on the landing
   page with 422, no session starts, and the name stays as typed, spaces included.
 - A signed-in visitor opens `/`: the site sends it to `/me`.
@@ -79,6 +80,7 @@ password, show the referral link, and add, switch and archive habbos. The landin
 - A session stays idle past its lifetime, or a browser sends an unknown or malformed cookie: the visitor is a guest, and
   the cookie is cleared.
 - A signed-in visitor opens a page: the session's lifetime starts again.
+- A session expires: the next scheduled run deletes it.
 - A signed-in visitor signs out with `POST /logout`: Holo's confirmation shows, and `OK` goes home.
 - A signed-in visitor opens `GET /logout`: the session stays and the site sends it to `/me`; a guest reads "You are not
   logged in".
@@ -149,6 +151,8 @@ password, show the referral link, and add, switch and archive habbos. The landin
 
 ## Landing and legal pages
 
+- Anyone opens the landing page, the registration form, the forgotten-password page, the legal pages and the Habbos tab
+  of Account Settings: Holo's title, headings, labels and columns show, with the tab or menu place marked.
 - A guest opens `/` with `features.landingPromo` on: the promo widget shows random habbos, and its button opens
   `/register` with that look.
 - A guest opens the landing's promo feed: it holds at most 10 random habbos, each with Holo's imager options, and none

@@ -49,6 +49,8 @@ section, Recycler Options among them, and close or open the site. A running CMS 
 
 ## Maintenance
 
+- Anyone opens the maintenance page and housekeeping's settings forms: Holo's title, headings, labels and columns show,
+  with the tab or menu place marked.
 - Staff choose Site Closed in Turn your site on/off: a running CMS answers every page with 503 and the maintenance
   page within `cms.refresh` seconds, with no restart.
 - The site is closed: its files, such as pictures and styles, still load.

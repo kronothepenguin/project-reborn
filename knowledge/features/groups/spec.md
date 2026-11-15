@@ -16,6 +16,8 @@ and a habbo shows its favourite group's badge on the site and in rooms.
 
 ## Buying
 
+- A new hotel: a group costs 20 credits, a user owns up to 3 groups, a habbo holds up to 10 memberships, a group
+  holds up to 500 members, and a name takes up to 25 characters and a description up to 200.
 - A habbo buys a group: it takes `groups.price`, 20 credits by default, with Holo's ledger row in one transaction.
 - A habbo opens the group purchase from the page or from the header's My Groups: Holo's form shows the price and the
   badge.
@@ -74,6 +76,7 @@ and a habbo shows its favourite group's badge on the site and in rooms.
 - An admin opens Modify page: the home editor opens on the group's home, and the Widgets tab offers Group Members.
 - An admin opens Modify page: the skins come in Holo's order, with the club and staff skins for those who may use them.
 - An admin edits a group's home: the Group information widget's menu offers its skins, without Remove.
+- A request removes the Group information widget: it stays on the home, back in its corner with the default skin.
 - An admin edits a group's home with Group Members placed: it shows greyed out in the inventory.
 - An admin removes an item another user placed: Holo's warning shows, and the item goes back to its placer
   (decision holo-port/0098).
