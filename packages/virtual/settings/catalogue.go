@@ -16,8 +16,8 @@ var catalogue = map[string]declaration{
 
 	"housekeeping.note": declare("", nil),
 
-	"site.name":        declare("Holo Hotel", length(1, 30)),
-	"site.shortName":   declare("Holo", length(1, 30)),
+	"site.name":        declare("Reborn Hotel", length(1, 30)),
+	"site.shortName":   declare("Reborn", length(1, 30)),
 	"site.url":         declare("http://localhost:17387", origin),
 	"site.maintenance": declare(false, nil),
 
@@ -306,7 +306,7 @@ var staffBoxColors = []string{"red", "blue", "white", "green"}
 
 const (
 	staffBox1 = "You can find the staff members all over the hotel -- in the public rooms, their own rooms, or that dark little corner in your room. But how can you call them if you actually need them!? Easy. If it's urgent, use the Call for Help system ingame by using the blue questionmark in the right bottom of your screen. If it isn't urgent, use the Help Tool on the website."
-	staffBox2 = "So you want that sexy staff badge next to your name in the hotel and on the site? Do you want to join Holo Hotel's moderation team? Keep your eyes focused on this section and the news -- if we're looking for staff it will be announced there, and surely you won't miss it!"
+	staffBox2 = "So you want that sexy staff badge next to your name in the hotel and on the site? Do you want to join Reborn Hotel's moderation team? Keep your eyes focused on this section and the news -- if we're looking for staff it will be announced there, and surely you won't miss it!"
 )
 
 const (

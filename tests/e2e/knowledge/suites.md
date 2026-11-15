@@ -7,8 +7,8 @@ description: The browser suites of tests/e2e and what each one covers.
 # Suites
 
 Each suite is a module in `suites/`, registered in `run.mjs`. A suite proves only what a browser shows: an island, a
-primitive working inside a page, the text and layout of the real page. What a test through a Go router proves stays
-there.
+primitive working inside a page, the text and layout of the real page, and a change made in one program that another
+program shows. What a test through a Go router proves stays there.
 
 | Suite | Covers |
 | --- | --- |
@@ -33,10 +33,10 @@ there.
 | `housekeeping-users` | Habbos and users, badges, credits, bans, alerts and the help queue, with a post's report |
 | `housekeeping-store` | The home store's items, added from the art and edited |
 | `housekeeping-news` | News composed, listed, edited and deleted, with the top-story picker, its preview and the image editor |
-| `housekeeping-images` | Uploaded pictures listed with their articles, ten a page, and deleted only once no article shows them |
+| `housekeeping-images` | Uploaded pictures listed with their articles, ten a page, and deleted only once no article shows them, after which the CMS no longer serves them |
 | `housekeeping-banners` | Banners added, listed, edited and deleted, with Holo's texts and the right messages |
 | `housekeeping-vouchers` | Holo's vouchers page, a code of dots created and deleted through its address, and a voucher deleted unless redeemed |
 | `economy` | P6 from end to end: a voucher made in housekeeping and redeemed once on the credits page, then a club month bought, counted on every page that shows it and opening the club's skins, wide playground and wardrobe until it ends |
 | `help` | The help tool: a visitor sent to sign in, the header's Help opening the Help Tool window, Holo's answers to blank, long and waiting requests, and a request picked up in housekeeping's Help Queries |
 | `updates` | A hotel installed before updates: maintenance, the update page, the copy, config.json's new keys |
-| `together` | The installer's forms, then the CMS and housekeeping side by side, in one walk that waits for both settings it saves |
+| `together` | The installer's forms, then the CMS and housekeeping side by side, in one walk that waits for both settings it saves, with the habbo limit from housekeeping stopping the CMS form and the server |

@@ -23,8 +23,8 @@ const (
 
 func siteForm() url.Values {
 	return url.Values{
-		"site.name":      {"Reborn Hotel"},
-		"site.shortName": {"Reborn"},
+		"site.name":      {"Retro Hotel"},
+		"site.shortName": {"Retro"},
 		"site.url":       {"https://hotel.example.com"},
 	}
 }
@@ -36,7 +36,7 @@ func TestSettingsTakeTheirAttribute(t *testing.T) {
 	wantPage(t, serve(mux, "GET", "/housekeeping/settings", cookie, nil), http.StatusForbidden, "access-denied.html")
 	wantPage(t, serve(mux, "POST", "/housekeeping/settings/site", cookie, siteForm()), http.StatusForbidden, "access-denied.html")
 
-	if got := settings.GetString("site.name"); got != "Holo Hotel" {
+	if got := settings.GetString("site.name"); got != "Reborn Hotel" {
 		t.Errorf("site.name = %q", got)
 	}
 	if got := len(staffLogs(t, db)); got != 0 {
@@ -125,7 +125,7 @@ func TestSavingWritesAndLogs(t *testing.T) {
 	rec := serve(mux, "POST", "/housekeeping/settings/site", cookie, siteForm())
 	wantRedirect(t, rec, "/housekeeping/settings?saved=1&section=site")
 
-	for key, want := range map[string]string{"site.name": "Reborn Hotel", "site.shortName": "Reborn", "site.url": "https://hotel.example.com"} {
+	for key, want := range map[string]string{"site.name": "Retro Hotel", "site.shortName": "Retro", "site.url": "https://hotel.example.com"} {
 		if got := settings.GetString(key); got != want {
 			t.Errorf("%s = %q, want %q", key, got, want)
 		}
@@ -143,7 +143,7 @@ func TestSavingWritesAndLogs(t *testing.T) {
 		t.Errorf("the staff log row = %+v", got)
 	}
 
-	wantPage(t, serve(mux, "GET", rec.Header().Get("Location"), cookie, nil), http.StatusOK, "Settings saved successfully.", "Value:Reborn Hotel")
+	wantPage(t, serve(mux, "GET", rec.Header().Get("Location"), cookie, nil), http.StatusOK, "Settings saved successfully.", "Value:Retro Hotel")
 }
 
 func TestAPlainPageHasNoMessage(t *testing.T) {
@@ -223,7 +223,7 @@ func TestAValueBackAtItsDefaultDeletesTheRow(t *testing.T) {
 func TestSavingTheSameValuesChangesNothing(t *testing.T) {
 	db, mux := newSite(t)
 	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
-	form := url.Values{"site.name": {"Holo Hotel"}, "site.shortName": {"Holo"}, "site.url": {"http://localhost:17387"}}
+	form := url.Values{"site.name": {"Reborn Hotel"}, "site.shortName": {"Reborn"}, "site.url": {"http://localhost:17387"}}
 
 	wantRedirect(t, serve(mux, "POST", "/housekeeping/settings/site", cookie, form), "/housekeeping/settings?saved=1&section=site")
 	if rows, err := store.New(db).ListSettings(t.Context()); err != nil || len(rows) != 0 {

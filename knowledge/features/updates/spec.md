@@ -71,3 +71,5 @@ The same page offers the keys a release added to `config.json`.
 
 - It starts on a new release: every update waits, starting with `0001-baseline.sql`, which changes nothing on it.
 - Its administrator applies them: users, habbos and homes stay, and the hotel receives Holo's home store.
+- It holds articles in "HoloCMS" or "Holograph Emulator" and applies the updates: they show under "Reborn CMS" and
+  "Reborn Server".

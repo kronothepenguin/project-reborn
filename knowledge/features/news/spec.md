@@ -36,6 +36,8 @@ unused ones.
 - Staff open the news: the articles show newest first, with title, summary, date and author.
 - Staff with `housekeeping.news` compose an article: Holo's form, labels, help and categories show, with the club of
   the site.
+- Staff open the news form: the categories offer "Reborn CMS" and "Reborn Server" in the places of Holo's HoloCMS
+  and Holograph Emulator.
 - Staff write the story: the BBCode editor shows it as the site will, with no smilies (decision holo-port/0092).
 - Staff format a selection with the toolbar: the story holds that BBCode, and an untouched story keeps its BBCode.
 - Without JavaScript the story is a plain field.

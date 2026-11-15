@@ -346,7 +346,7 @@ func TestTheLayoutSaysWhoIsLoggedIn(t *testing.T) {
 	db, mux := newSite(t)
 	userID, cookie := staff(t, db, "Admin", auth.HousekeepingAccess)
 	wantPage(t, serve(mux, "GET", "/housekeeping/", cookie, nil), http.StatusOK,
-		"Habbo:Admin", "PreviousLogin: SiteName:Holo Hotel", "SiteURL:http://localhost:17387")
+		"Habbo:Admin", "PreviousLogin: SiteName:Reborn Hotel", "SiteURL:http://localhost:17387")
 
 	err := store.New(db).CreateLoginAttempt(t.Context(), store.CreateLoginAttemptParams{
 		UserID:    sql.NullInt64{Int64: userID, Valid: true},

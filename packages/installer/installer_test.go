@@ -83,7 +83,7 @@ func TestInstallation(t *testing.T) {
 		{"config written", "GET", "/config", nil, 200, "", "Written:true"},
 		{"config shows the ports", "GET", "/config", nil, 200, "", "Port:17400 HousekeepingPort:18400"},
 		{"config again", "POST", "/config", url.Values{"path": {"other.db"}, "port": {"17401"}, "housekeepingPort": {"18401"}}, 303, "/config", ""},
-		{"site form", "GET", "/site", nil, 200, "", "Name:Holo Hotel ShortName:Holo URL:http://localhost:17387 HousekeepingURL:http://localhost:18400/housekeeping StartCredits:500 SecureCookies:true"},
+		{"site form", "GET", "/site", nil, 200, "", "Name:Reborn Hotel ShortName:Reborn URL:http://localhost:17387 HousekeepingURL:http://localhost:18400/housekeeping StartCredits:500 SecureCookies:true"},
 		{"a bad housekeeping address", "POST", "/site", with(site, "housekeepingUrl", "nowhere"), 422, "", "Housekeeping address: must be a path or an http or https URL"},
 		{"site URL with a path", "POST", "/site", with(site, "url", "https://hotel.example.com/cms"), 422, "", "Site URL: must be an http or https origin"},
 		{"start credits out of range", "POST", "/site", with(site, "startCredits", "-1"), 422, "", "Start credits: must be between 0 and 1000000"},

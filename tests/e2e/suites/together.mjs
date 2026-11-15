@@ -129,7 +129,10 @@ export default async function ({
     await page.getByText("Habbos Per User", { exact: true }).isVisible(),
   );
   await page.fill('input[name="registration.maxHabbosPerUser"]', "2");
-  await save("Save Settings");
+  check(
+    "the limit is saved",
+    (await save("Save Settings")) === "Settings saved successfully.",
+  );
 
   await page.goto(`${hk}/settings?section=features`);
   check(
@@ -178,6 +181,20 @@ export default async function ({
   );
   await page.click('button:has-text("Add habbo")');
   await page.getByText("Second is ready to use.").waitFor();
+  check(
+    "the limit from housekeeping stops the form",
+    (await page.getByText("Add a habbo").count()) === 0,
+  );
+  const third = await page.evaluate(
+    async () =>
+      (
+        await fetch("/account/habbos", {
+          method: "POST",
+          body: new URLSearchParams({ name: "Third" }),
+        })
+      ).status,
+  );
+  check("and the server refuses a third", third === 422, String(third));
 
   await page.click('li:has-text("Second") button:has-text("Switch")');
   await page.waitForURL("**/account/habbos");

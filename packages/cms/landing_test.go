@@ -99,7 +99,7 @@ func TestLandingPromoCanBeSwitchedOff(t *testing.T) {
 	db, mux := newSite(t)
 	habbo(t, db, "admin@example.com", "Admin")
 
-	wantPage(t, serve(mux, "GET", "/", nil, nil), http.StatusOK, "LandingPromo:true", "Name:Holo Hotel", "ShortName:Holo")
+	wantPage(t, serve(mux, "GET", "/", nil, nil), http.StatusOK, "LandingPromo:true", "Name:Reborn Hotel", "ShortName:Reborn")
 
 	setSetting(t, db, "features.landingPromo", false)
 	wantPage(t, serve(mux, "GET", "/", nil, nil), http.StatusOK, "LandingPromo:false")
@@ -111,7 +111,7 @@ func TestLandingPromoCanBeSwitchedOff(t *testing.T) {
 func TestFailedSignInKeepsTheLanding(t *testing.T) {
 	_, mux := newSite(t)
 	rec := serve(mux, "POST", "/", nil, credentials("Nobody", "secret123"))
-	wantPage(t, rec, http.StatusUnprocessableEntity, "LandingPromo:true", "ShortName:Holo")
+	wantPage(t, rec, http.StatusUnprocessableEntity, "LandingPromo:true", "ShortName:Reborn")
 	if !strings.Contains(rec.Body.String(), "Username:Nobody") {
 		t.Errorf("the page lost the name: %s", rec.Body)
 	}
@@ -137,7 +137,7 @@ func TestHeaderCountsRegisteredHabbos(t *testing.T) {
 	db, mux := newSite(t)
 	pages := []string{"/", "/register", "/forgot", "/reset/token", "/disclaimer", "/privacy"}
 	for _, path := range pages {
-		wantPage(t, serve(mux, "GET", path, nil, nil), http.StatusOK, "Name:Holo Hotel", "ShortName:Holo", "RegisteredUsers:0")
+		wantPage(t, serve(mux, "GET", path, nil, nil), http.StatusOK, "Name:Reborn Hotel", "ShortName:Reborn", "RegisteredUsers:0")
 	}
 
 	userID := habbo(t, db, "admin@example.com", "Admin")

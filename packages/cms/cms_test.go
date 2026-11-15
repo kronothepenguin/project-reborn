@@ -457,7 +457,7 @@ func TestMaintenance(t *testing.T) {
 		status int
 		body   string
 	}{
-		{"guest home", "GET", "/", nil, 503, "maintenance.html {ShortName:Holo"},
+		{"guest home", "GET", "/", nil, 503, "maintenance.html {ShortName:Reborn"},
 		{"guest me", "GET", "/me", nil, 503, "maintenance.html"},
 		{"guest registration", "GET", "/register", nil, 503, "maintenance.html"},
 		{"guest registration form", "POST", "/register", nil, 503, "maintenance.html"},

@@ -43,7 +43,7 @@ func TestForgotMailsAWorkingLink(t *testing.T) {
 	if message.To != "admin@example.com" {
 		t.Errorf("the mail went to %q, want the account's address", message.To)
 	}
-	for _, want := range []string{"Subject: Holo - Forgot password", "Hello Second,", "Username: Second\r\n", "Password: choose a new one", "for 60 minutes", "We hope to see you soon!"} {
+	for _, want := range []string{"Subject: Reborn - Forgot password", "Hello Second,", "Username: Second\r\n", "Password: choose a new one", "for 60 minutes", "We hope to see you soon!"} {
 		if !strings.Contains(message.Data, want) {
 			t.Errorf("the mail does not contain %q:\n%s", want, message.Data)
 		}

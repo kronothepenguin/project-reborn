@@ -123,8 +123,8 @@ func TestTheComposeFormIsHolos(t *testing.T) {
 
 	rec := serve(mux, "GET", "/housekeeping/news/new", cookie, nil)
 	wantPage(t, rec, http.StatusOK, "news/new.html",
-		"ID:0 Title: Form:{Title: Category:HoloCMS TopStory:/web-gallery/images/top-story/top_story_news.png ShortStory: Story:}",
-		"Categories:[{Name:HoloCMS Selected:true} {Name:News Selected:false} {Name:Furniture Selected:false} {Name:Updates Selected:false} {Name:Server Selected:false} {Name:Credits Selected:false} {Name:Holo Club Selected:false} {Name:Maintenance Selected:false} {Name:Technical Selected:false} {Name:Downtime Selected:false} {Name:Website Selected:false} {Name:Special Offers Selected:false} {Name:Sponsored Selected:false} {Name:Events &amp; Competitions Selected:false} {Name:Security Selected:false} {Name:Staff Selected:false} {Name:Announcements Selected:false} {Name:Tips Selected:false} {Name:Holograph Emulator Selected:false} {Name:Other Selected:false}]",
+		"ID:0 Title: Form:{Title: Category:Reborn CMS TopStory:/web-gallery/images/top-story/top_story_news.png ShortStory: Story:}",
+		"Categories:[{Name:Reborn CMS Selected:true} {Name:News Selected:false} {Name:Furniture Selected:false} {Name:Updates Selected:false} {Name:Server Selected:false} {Name:Credits Selected:false} {Name:Reborn Club Selected:false} {Name:Maintenance Selected:false} {Name:Technical Selected:false} {Name:Downtime Selected:false} {Name:Website Selected:false} {Name:Special Offers Selected:false} {Name:Sponsored Selected:false} {Name:Events &amp; Competitions Selected:false} {Name:Security Selected:false} {Name:Staff Selected:false} {Name:Announcements Selected:false} {Name:Tips Selected:false} {Name:Reborn Server Selected:false} {Name:Other Selected:false}]",
 		"TopStories:[/web-gallery/images/top-story/accessories_top.gif /web-gallery/images/top-story/top_story_news.png /web-gallery/images/top-story/top_story_newsflash.png /web-gallery/images/top-story/top_story_poll2.png /web-gallery/images/top-story/topstory_accessories2.gif]",
 		"Preview:http://localhost:17387/web-gallery/images/top-story/top_story_news.png")
 }
@@ -132,14 +132,14 @@ func TestTheComposeFormIsHolos(t *testing.T) {
 func TestTheClubIsNamedAfterTheSite(t *testing.T) {
 	db, mux := newSite(t)
 	_, cookie := newsWriter(t, db)
-	if err := settings.Set(t.Context(), db, 0, "site.shortName", "Reborn"); err != nil {
+	if err := settings.Set(t.Context(), db, 0, "site.shortName", "Retro"); err != nil {
 		t.Fatalf("settings.Set: %v", err)
 	}
 
 	rec := serve(mux, "GET", "/housekeeping/news/new", cookie, nil)
-	wantPage(t, rec, http.StatusOK, "{Name:Credits Selected:false} {Name:Reborn Club Selected:false} {Name:Maintenance Selected:false}")
-	if strings.Contains(rec.Body.String(), "Holo Club") {
-		t.Error("the club keeps Holo's name")
+	wantPage(t, rec, http.StatusOK, "{Name:Credits Selected:false} {Name:Retro Club Selected:false} {Name:Maintenance Selected:false}")
+	if strings.Contains(rec.Body.String(), "Reborn Club") {
+		t.Error("the club keeps the default name")
 	}
 }
 
@@ -213,7 +213,7 @@ func TestEditingKeepsTheAuthorAndTheDate(t *testing.T) {
 
 	wantPage(t, serve(mux, "GET", articleURL(id), cookie, nil), http.StatusOK, "news/id.html",
 		fmt.Sprintf("ID:%d Title:Old news Form:{Title:Old news Category:News TopStory:%s ShortStory:Old summary Story:Old body}", id, seed.DefaultTopStory),
-		"{Name:HoloCMS Selected:false} {Name:News Selected:true}",
+		"{Name:Reborn CMS Selected:false} {Name:News Selected:true}",
 		"Preview:http://localhost:17387/web-gallery/images/top-story/top_story_news.png")
 
 	form := articleForm("New title", "https://images.example.com/top.png")
@@ -284,7 +284,7 @@ func TestTheEditFormKeepsTheCategory(t *testing.T) {
 		{"Events & Competitions", "{Name:Events &amp; Competitions Selected:true}"},
 		{"Security", "{Name:Security Selected:true}"},
 		{"Other", "{Name:Other Selected:true}"},
-		{"Holograph Emulator", "{Name:Holograph Emulator Selected:true}"},
+		{"Reborn Server", "{Name:Reborn Server Selected:true}"},
 	} {
 		rec := serve(mux, "GET", articleURL(oldArticle(t, db, author, c.category)), cookie, nil)
 		wantPage(t, rec, http.StatusOK, c.printed)
@@ -293,9 +293,6 @@ func TestTheEditFormKeepsTheCategory(t *testing.T) {
 		}
 	}
 
-	if err := settings.Set(t.Context(), db, 0, "site.shortName", "Reborn"); err != nil {
-		t.Fatalf("settings.Set: %v", err)
-	}
 	club := oldArticle(t, db, author, "Holo Club")
 	rec := serve(mux, "GET", articleURL(club), cookie, nil)
 	wantPage(t, rec, http.StatusOK, "{Name:Reborn Club Selected:false}", "{Name:Other Selected:false} {Name:Holo Club Selected:true}]")

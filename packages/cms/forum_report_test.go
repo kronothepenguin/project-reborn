@@ -56,7 +56,7 @@ func TestTheReportWindowAsksBeforeItReports(t *testing.T) {
 	db, mux, frankPost, _ := board(t)
 	dora := login(t, db, "Dora")
 	for query, page := range map[string]int{"": 1, "?page=3": 3, "?page=x": 1, "?page=-3": 1, "?page=2.5": 1} {
-		wantPage(t, reportWindow(mux, dora, frankPost, query), http.StatusOK, "forum/posts/id/report.html", fmt.Sprintf("{ShortName:Holo ID:%d Page:%d %s}", frankPost, page, askReport))
+		wantPage(t, reportWindow(mux, dora, frankPost, query), http.StatusOK, "forum/posts/id/report.html", fmt.Sprintf("{ShortName:Reborn ID:%d Page:%d %s}", frankPost, page, askReport))
 	}
 	if n := countRows(t, db, `SELECT COUNT(*) FROM help_tickets`); n != 0 {
 		t.Errorf("asking wrote %d tickets", n)
@@ -71,7 +71,7 @@ func TestTheReportWindowAsksBeforeItReports(t *testing.T) {
 func TestAReportWritesHolosTicketForTheActiveHabbo(t *testing.T) {
 	db, mux, frankPost, _ := board(t)
 	setSetting(t, db, "site.url", "https://hotel.example.com")
-	wantPage(t, reportPost(mux, login(t, db, "Dora"), frankPost, "2"), http.StatusOK, "forum/posts/id/report.html", fmt.Sprintf("{ShortName:Holo ID:%d Page:2 %s}", frankPost, reportedPost))
+	wantPage(t, reportPost(mux, login(t, db, "Dora"), frankPost, "2"), http.StatusOK, "forum/posts/id/report.html", fmt.Sprintf("{ShortName:Reborn ID:%d Page:2 %s}", frankPost, reportedPost))
 
 	var avatar, post sql.NullInt64
 	var subject, message, ip string
