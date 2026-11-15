@@ -10,7 +10,7 @@ okf_version: "0.2"
 - [Checks](checks.md) - How to check one project, the projects that depend on it, the whole repository and the browser suites, and what a fresh worktree needs first.
 - [Holo colours mapped to Tailwind](colours.md) - The closest Tailwind colour for each Holo colour, computed with tools/tw-color, for the public site, BBCode and housekeeping.
 - [Frontend pages](frontend-pages.md) - Where the pages, layouts, components and islands of the Astro frontends live, and the commands and checks that build them.
-- [Go layout](go-layout.md) - Where this repo keeps its Go modules, runners, routes and handlers, and the commands that build and check them, for the applying-go-patterns and reviewing-effective-go skills.
+- [Go layout](go-layout.md) - Where this repo keeps its Go modules, runners, routes and handlers, and the commands that build and check them, for the applying-go-patterns skill.
 - [How the programs work together](programs.md) - Which programs make up Project Reborn, what each one owns, and how they interact when they run alone and when they run together in one process.
 - [Soft rules](rules.md) - Suggestions on builds, configuration, comments, runners and commits that every agent follows by default.
 - [Shared files](shared-files.md) - The files that only one task changes at a time, each with its reason.
