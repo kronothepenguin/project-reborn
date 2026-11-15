@@ -33,9 +33,9 @@ func (r *Router) HandleAccountPasswordView(w http.ResponseWriter, req *http.Requ
 	r.answer(w, "account/password.html", false, page)
 }
 
-// HandleAccountPassword handles the POST /account/password action. The page is
+// HandleAccountPasswordSave handles the POST /account/password action. The page is
 // built before the change, which ends the visitor's own session.
-func (r *Router) HandleAccountPassword(w http.ResponseWriter, req *http.Request) {
+func (r *Router) HandleAccountPasswordSave(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	session, _ := auth.FromContext(ctx)
 	page, err := r.newPasswordPage(ctx)

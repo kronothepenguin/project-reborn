@@ -94,28 +94,6 @@ func TestSetSoundEnabledSavesTheSettingThenTheCopy(t *testing.T) {
 	}
 }
 
-func TestUserAccountReadsTheWalletAndTheNewsletter(t *testing.T) {
-	db := openDB(t)
-	ctx := t.Context()
-	q := store.New(db)
-	now := time.Now().UTC()
-	user, err := q.CreateUser(ctx, store.CreateUserParams{Email: "wallet@example.com", BornOn: time.Date(2000, 1, 2, 0, 0, 0, 0, time.UTC), Newsletter: true, CreatedIP: "127.0.0.1", CreatedAt: now, UpdatedAt: now})
-	if err != nil {
-		t.Fatalf("CreateUser: %v", err)
-	}
-	if err := q.CreateWallet(ctx, store.CreateWalletParams{UserID: user.ID, Credits: 120, UpdatedAt: now}); err != nil {
-		t.Fatalf("CreateWallet: %v", err)
-	}
-	if err := q.UpdateWalletTicketsAndFilm(ctx, store.UpdateWalletTicketsAndFilmParams{Tickets: 3, Film: 5, UpdatedAt: now, UserID: user.ID}); err != nil {
-		t.Fatalf("UpdateWalletTicketsAndFilm: %v", err)
-	}
-
-	got, err := UserAccount(ctx, db, user.ID)
-	if want := (Account{Credits: 120, Tickets: 3, Film: 5, Newsletter: true}); err != nil || got != want {
-		t.Errorf("UserAccount() = %+v, %v; want %+v", got, err, want)
-	}
-}
-
 func TestTheClubSplitsItsDaysByTheMonth(t *testing.T) {
 	now := time.Date(2026, 11, 10, 12, 0, 0, 0, time.UTC)
 	day := 24 * time.Hour

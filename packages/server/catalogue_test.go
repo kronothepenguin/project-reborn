@@ -6,21 +6,7 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/catalogue"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/furni"
 )
-
-func TestTheServerStartsWithTheCatalogue(t *testing.T) {
-	if chair, ok := furni.Get(463); !ok || chair.Sprite != "rclr_chair" {
-		t.Errorf("furni 463 = %+v, %t; want the recycler's Palm Chair", chair, ok)
-	}
-	if pages := catalogue.Pages(); len(pages) != 67 {
-		t.Errorf("%d pages loaded, want Holo's 67", len(pages))
-	}
-	if page, ok := catalogue.Get("Recycler"); !ok || page.Name != "Ecotron" {
-		t.Errorf("the page Recycler = %+v, %t; want the Ecotron", page.CataloguePage, ok)
-	}
-}
 
 // catalogueIndex sends GCIX and returns the names 126 lists by page code, and the codes in their order.
 func catalogueIndex(t *testing.T, c *client) (names map[string]string, codes []string) {

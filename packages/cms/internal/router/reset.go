@@ -20,8 +20,8 @@ func (r *Router) HandleResetView(w http.ResponseWriter, req *http.Request) {
 	astro.WriteTemplate(w, r.deps.Resolver, "reset/token.html", resetPage{hotelStatus: r.hotelStatus(req.Context())})
 }
 
-// HandleReset handles the POST /reset/{token} action.
-func (r *Router) HandleReset(w http.ResponseWriter, req *http.Request) {
+// HandleResetSave handles the POST /reset/{token} action.
+func (r *Router) HandleResetSave(w http.ResponseWriter, req *http.Request) {
 	status := r.hotelStatus(req.Context())
 	password := req.PostFormValue("password")
 	if password != req.PostFormValue("passwordConfirm") {

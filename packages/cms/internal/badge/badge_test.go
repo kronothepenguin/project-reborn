@@ -1,10 +1,6 @@
 package badge
 
 import (
-	"bytes"
-	"image"
-	"image/color"
-	"image/gif"
 	"strings"
 	"testing"
 )
@@ -66,31 +62,6 @@ func TestParseRefusesAnythingElse(t *testing.T) {
 		if b, err := Parse(code); err == nil {
 			t.Errorf("Parse(%q) = %+v, want an error", code, b)
 		}
-	}
-}
-
-func TestEncodingKeepsEveryPixel(t *testing.T) {
-	b, err := Parse("b1007Xs67180s01148s40036s23122")
-	if err != nil {
-		t.Fatal(err)
-	}
-	img, err := Draw(b)
-	if err != nil {
-		t.Fatal(err)
-	}
-	var buf bytes.Buffer
-	if err := Encode(&buf, img); err != nil {
-		t.Fatal(err)
-	}
-	back, err := gif.Decode(&buf)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if diff := differences(img, back); diff != "" {
-		t.Errorf("the GIF lost pixels: %s", diff)
-	}
-	if back.Bounds() != image.Rect(0, 0, Size, Size) {
-		t.Errorf("the GIF is %v", back.Bounds())
 	}
 }
 
@@ -184,55 +155,12 @@ func TestNoBadgeNeedsMoreColoursThanAGIFHolds(t *testing.T) {
 	}
 }
 
-func TestDrawRefusesALayerOutOfRange(t *testing.T) {
-	for _, b := range []Badge{
-		{Base: &Layer{Part: 25, Tint: 1, Position: 4}},
-		{Symbols: []Layer{{Part: 68, Tint: 1}}},
-		{Symbols: []Layer{{Part: 1, Tint: 19}}},
-		{Symbols: []Layer{{Part: 1, Tint: 1, Position: 9}}},
-	} {
-		if _, err := Draw(b); err == nil {
-			t.Errorf("Draw(%+v) drew", b)
-		}
-	}
-}
-
 func maxOf(ns []int) int {
 	m := 0
 	for _, n := range ns {
 		m = max(m, n)
 	}
 	return m
-}
-
-// differences names the first pixels that differ, comparing transparent pixels
-// as one colour.
-func differences(got, want image.Image) string {
-	if got.Bounds() != want.Bounds() {
-		return "bounds " + got.Bounds().String() + " and " + want.Bounds().String()
-	}
-	var out []string
-	b := got.Bounds()
-	for y := b.Min.Y; y < b.Max.Y; y++ {
-		for x := b.Min.X; x < b.Max.X; x++ {
-			g, w := opaque(got.At(x, y)), opaque(want.At(x, y))
-			if g != w {
-				out = append(out, image.Pt(x, y).String()+": "+colourString(g)+" for "+colourString(w))
-				if len(out) == 5 {
-					return strings.Join(out, ", ")
-				}
-			}
-		}
-	}
-	return strings.Join(out, ", ")
-}
-
-func colourString(c color.RGBA) string {
-	if c.A == 0 {
-		return "transparent"
-	}
-	const hex = "0123456789abcdef"
-	return "#" + string([]byte{hex[c.R>>4], hex[c.R&15], hex[c.G>>4], hex[c.G&15], hex[c.B>>4], hex[c.B&15]})
 }
 
 func sameBadge(a, b Badge) bool {

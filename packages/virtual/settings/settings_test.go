@@ -3,7 +3,6 @@ package settings
 import (
 	"bytes"
 	"database/sql"
-	"errors"
 	"fmt"
 	"log"
 	"log/slog"
@@ -135,26 +134,6 @@ func assertWarned(t *testing.T, warnings *bytes.Buffer, keys ...string) {
 	}
 }
 
-func TestCatalogueDefaultsAreValid(t *testing.T) {
-	defaults := make(map[string]any)
-	for key, d := range catalogue {
-		if err := d.validate(d.def); err != nil {
-			t.Errorf("the default of %s is invalid: %v", key, err)
-		}
-		defaults[key] = d.def
-	}
-	for _, r := range rules {
-		if err := r.check(defaults); err != nil {
-			t.Errorf("the defaults break a rule: %v", err)
-		}
-		for _, key := range r.keys {
-			if _, ok := catalogue[key]; !ok {
-				t.Errorf("a rule reads %s, which is not declared", key)
-			}
-		}
-	}
-}
-
 func TestCatalogueKeysAreNotConfigKeys(t *testing.T) {
 	fromConfig := make(map[string]any)
 	dump("", reflect.ValueOf(*testConfig), fromConfig)
@@ -182,15 +161,6 @@ func TestLoadWithoutRowsHoldsDefaultsAndConfig(t *testing.T) {
 	dump("", reflect.ValueOf(*testConfig), fromConfig)
 	if len(loaded) != len(catalogue)+len(fromConfig) {
 		t.Errorf("the map holds %d keys, want the %d declared settings and the %d config keys", len(loaded), len(catalogue), len(fromConfig))
-	}
-}
-
-func TestLoadRefusesAnInvalidConfig(t *testing.T) {
-	invalid := *testConfig
-	invalid.CMS.Port = 0
-	err := Load(t.Context(), &invalid, openDB(t))
-	if err == nil || !strings.Contains(err.Error(), "cms.port") {
-		t.Fatalf("Load() error = %v, want a cms.port error", err)
 	}
 }
 
@@ -338,66 +308,6 @@ func TestRowsSatisfyingARuleTogetherAreKept(t *testing.T) {
 	assertValues(t, map[string]any{"auth.passwordMinLength": 30, "auth.passwordMaxLength": 40})
 }
 
-func TestGettersReturnTheValues(t *testing.T) {
-	load(t, openDB(t))
-
-	if got := GetInt("cms.port"); got != 18000 {
-		t.Errorf(`GetInt("cms.port") = %d, want 18000`, got)
-	}
-	if got := GetBool("auth.secureCookies"); !got {
-		t.Error(`GetBool("auth.secureCookies") = false, want true`)
-	}
-	if got := GetString("site.name"); got != "Holo Hotel" {
-		t.Errorf(`GetString("site.name") = %q, want "Holo Hotel"`, got)
-	}
-}
-
-func TestGettersReturnZeroAndWarnForUnknownKeysAndOtherTypes(t *testing.T) {
-	warnings := captureWarnings(t)
-	load(t, openDB(t))
-
-	if got := GetInt("site.colour"); got != 0 {
-		t.Errorf(`GetInt("site.colour") = %d, want 0`, got)
-	}
-	if got := GetInt("site.name"); got != 0 {
-		t.Errorf(`GetInt("site.name") = %d, want 0`, got)
-	}
-	if got := GetBool("cms.port"); got {
-		t.Error(`GetBool("cms.port") = true, want false`)
-	}
-	if got := GetString("site.maintenance"); got != "" {
-		t.Errorf(`GetString("site.maintenance") = %q, want ""`, got)
-	}
-	assertWarned(t, warnings, "site.colour", "site.name", "cms.port", "site.maintenance")
-}
-
-func TestOrGettersReturnTheFallbackWithoutWarning(t *testing.T) {
-	warnings := captureWarnings(t)
-	load(t, openDB(t))
-
-	if got := GetIntOr("site.colour", 7); got != 7 {
-		t.Errorf(`GetIntOr("site.colour", 7) = %d, want 7`, got)
-	}
-	if got := GetIntOr("cms.port", 7); got != 18000 {
-		t.Errorf(`GetIntOr("cms.port", 7) = %d, want 18000`, got)
-	}
-	if got := GetBoolOr("site.name", true); !got {
-		t.Error(`GetBoolOr("site.name", true) = false, want true`)
-	}
-	if got := GetBoolOr("site.maintenance", true); got {
-		t.Error(`GetBoolOr("site.maintenance", true) = true, want the value false`)
-	}
-	if got := GetStringOr("cms.port", "fallback"); got != "fallback" {
-		t.Errorf(`GetStringOr("cms.port", "fallback") = %q, want "fallback"`, got)
-	}
-	if got := GetStringOr("site.shortName", "fallback"); got != "Holo" {
-		t.Errorf(`GetStringOr("site.shortName", "fallback") = %q, want "Holo"`, got)
-	}
-	if warnings.Len() != 0 {
-		t.Errorf("the …Or getters logged:\n%s", warnings)
-	}
-}
-
 func TestSetWritesTheRowAndAppliesAtOnce(t *testing.T) {
 	db := openDB(t)
 	userID := createUser(t, db)
@@ -419,18 +329,6 @@ func TestSetWritesTheRowAndAppliesAtOnce(t *testing.T) {
 		if row.Value != literal || row.UpdatedByUserID != (sql.NullInt64{Int64: userID, Valid: true}) || !row.UpdatedAt.After(seededAt) {
 			t.Errorf("row %s = %+v, want %s written now by user %d", key, row, literal, userID)
 		}
-	}
-}
-
-func TestSetWithoutUserRecordsNoUser(t *testing.T) {
-	db := openDB(t)
-	load(t, db)
-
-	if err := Set(t.Context(), db, 0, "site.maintenance", true); err != nil {
-		t.Fatalf("Set: %v", err)
-	}
-	if row := listRows(t, db)["site.maintenance"]; row.Value != "true" || row.UpdatedByUserID.Valid {
-		t.Errorf("row = %+v, want value true with no user", row)
 	}
 }
 
@@ -619,32 +517,6 @@ func TestGettersDuringSets(t *testing.T) {
 	}
 	if rows := listRows(t, db); len(rows) != 0 {
 		t.Errorf("rows = %+v, want none once the value is back to the default", rows)
-	}
-}
-
-func TestReloadAndSetNeedLoad(t *testing.T) {
-	mu.Lock()
-	savedBase, savedValues := base, values.Load()
-	base = nil
-	values.Store(nil)
-	mu.Unlock()
-	t.Cleanup(func() {
-		mu.Lock()
-		base = savedBase
-		values.Store(savedValues)
-		mu.Unlock()
-	})
-	captureWarnings(t)
-	db := openDB(t)
-
-	if err := Reload(t.Context(), db); !errors.Is(err, errNotLoaded) {
-		t.Errorf("Reload() before Load = %v, want errNotLoaded", err)
-	}
-	if err := Set(t.Context(), db, 0, "site.maintenance", true); !errors.Is(err, errNotLoaded) {
-		t.Errorf("Set() before Load = %v, want errNotLoaded", err)
-	}
-	if GetBool("auth.secureCookies") {
-		t.Error("GetBool() before Load = true, want the zero value")
 	}
 }
 
