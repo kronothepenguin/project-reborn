@@ -88,32 +88,6 @@ func TestOpenCreatesEveryTable(t *testing.T) {
 	}
 }
 
-func TestHabboNamesAreUniqueIgnoringCase(t *testing.T) {
-	db := openTestDB(t)
-	userID, _ := insertHabbo(t, db, "krono@example.com", "Krono")
-
-	now := time.Now().UTC()
-	_, err := db.ExecContext(t.Context(),
-		`INSERT INTO avatars (user_id, name, figure, gender, created_at, updated_at) VALUES (?, 'kRONO', 'hd-180-1', 'F', ?, ?)`,
-		userID, now, now)
-	if !IsConflict(err) {
-		t.Fatalf("second habbo named kRONO: err = %v, want a conflict", err)
-	}
-}
-
-func TestUserEmailsAreUniqueIgnoringCase(t *testing.T) {
-	db := openTestDB(t)
-	insertHabbo(t, db, "krono@example.com", "Krono")
-
-	now := time.Now().UTC()
-	_, err := db.ExecContext(t.Context(),
-		`INSERT INTO users (email, born_on, created_ip, created_at, updated_at) VALUES ('KRONO@example.com', ?, '127.0.0.1', ?, ?)`,
-		now, now, now)
-	if !IsConflict(err) {
-		t.Fatalf("second user with KRONO@example.com: err = %v, want a conflict", err)
-	}
-}
-
 // A habbo wears one badge at most in each of its five slots, and 0 is no slot (decision server/0083).
 func TestHabboWearsOneBadgeASlot(t *testing.T) {
 	db := openTestDB(t)

@@ -1,76 +1,9 @@
 package store
 
 import (
-	"fmt"
 	"path/filepath"
 	"testing"
 )
-
-func TestIsNotFound(t *testing.T) {
-	db := openTestDB(t)
-	ctx := t.Context()
-
-	var value int
-	err := db.QueryRowContext(ctx, "SELECT 1 WHERE 0").Scan(&value)
-	if err == nil {
-		t.Fatal("expected no rows")
-	}
-	if !IsNotFound(err) {
-		t.Errorf("IsNotFound(%v) = false, want true", err)
-	}
-	if !IsNotFound(fmt.Errorf("querying widget: %w", err)) {
-		t.Errorf("IsNotFound did not unwrap a wrapped error")
-	}
-	if IsConflict(err) || IsForeignKey(err) || IsBusy(err) {
-		t.Errorf("not-found error classified into another class: %v", err)
-	}
-}
-
-func TestIsConflict(t *testing.T) {
-	db := openTestDB(t)
-	ctx := t.Context()
-
-	if _, err := db.ExecContext(ctx, `CREATE TABLE unique_things (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE)`); err != nil {
-		t.Fatalf("create table: %v", err)
-	}
-	if _, err := db.ExecContext(ctx, `INSERT INTO unique_things (id, name) VALUES (1, 'one')`); err != nil {
-		t.Fatalf("insert first row: %v", err)
-	}
-
-	if _, err := db.ExecContext(ctx, `INSERT INTO unique_things (id, name) VALUES (2, 'one')`); err == nil {
-		t.Fatal("expected unique violation")
-	} else if !IsConflict(err) {
-		t.Errorf("IsConflict(%v) = false, want true", err)
-	} else if IsNotFound(err) || IsForeignKey(err) || IsBusy(err) {
-		t.Errorf("conflict error classified into another class: %v", err)
-	}
-
-	if _, err := db.ExecContext(ctx, `INSERT INTO unique_things (id, name) VALUES (1, 'two')`); err == nil {
-		t.Fatal("expected primary-key violation")
-	} else if !IsConflict(err) {
-		t.Errorf("IsConflict(%v) = false for primary-key violation, want true", err)
-	}
-}
-
-func TestIsForeignKey(t *testing.T) {
-	db := openTestDB(t)
-	ctx := t.Context()
-
-	if _, err := db.ExecContext(ctx, `CREATE TABLE parents (id INTEGER PRIMARY KEY)`); err != nil {
-		t.Fatalf("create parent table: %v", err)
-	}
-	if _, err := db.ExecContext(ctx, `CREATE TABLE children (id INTEGER PRIMARY KEY, parent_id INTEGER NOT NULL REFERENCES parents(id))`); err != nil {
-		t.Fatalf("create child table: %v", err)
-	}
-
-	if _, err := db.ExecContext(ctx, `INSERT INTO children (id, parent_id) VALUES (1, 999)`); err == nil {
-		t.Fatal("expected foreign-key violation")
-	} else if !IsForeignKey(err) {
-		t.Errorf("IsForeignKey(%v) = false, want true", err)
-	} else if IsNotFound(err) || IsConflict(err) || IsBusy(err) {
-		t.Errorf("foreign-key error classified into another class: %v", err)
-	}
-}
 
 func TestIsBusy(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "store.db")

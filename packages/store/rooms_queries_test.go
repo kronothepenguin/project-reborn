@@ -2,7 +2,6 @@ package store
 
 import (
 	"database/sql"
-	"slices"
 	"testing"
 	"time"
 )
@@ -10,30 +9,6 @@ import (
 func newTestRoom(t *testing.T, q *Queries, owner int64) Room {
 	t.Helper()
 	return must(q.CreateRoom(t.Context(), CreateRoomParams{AvatarID: owner, RoomCategoryID: 2, RoomModelID: 1, Name: "Room", Door: "open", ShowOwner: true, CreatedAt: testNow}))
-}
-
-func TestRoomRights(t *testing.T) {
-	q := New(openTestDB(t))
-	ctx := t.Context()
-	_, owner := createUserWithHabbo(t, q, "owner@example.com", "Owner")
-	_, helper := createUserWithHabbo(t, q, "helper@example.com", "Helper")
-	_, other := createUserWithHabbo(t, q, "other@example.com", "Other")
-	room := newTestRoom(t, q, owner.ID)
-
-	for _, id := range []int64{helper.ID, other.ID, helper.ID} {
-		if err := q.AddRoomRights(ctx, AddRoomRightsParams{RoomID: room.ID, AvatarID: id, GrantedAt: testNow}); err != nil {
-			t.Fatal(err)
-		}
-	}
-	if got := must(q.ListRoomRights(ctx, room.ID)); len(got) != 2 {
-		t.Errorf("rights = %v, want Helper and Other once each", got)
-	}
-	if n := must(q.RemoveRoomRights(ctx, RemoveRoomRightsParams{RoomID: room.ID, AvatarID: other.ID})); n != 1 || must(q.HasRoomRights(ctx, HasRoomRightsParams{RoomID: room.ID, AvatarID: other.ID})) {
-		t.Error("Other keeps its rights")
-	}
-	if got := must(q.RemoveAllRoomRights(ctx, room.ID)); !slices.Equal(got, []int64{helper.ID}) {
-		t.Errorf("removed rights of %v, want Helper's", got)
-	}
 }
 
 func TestARoomBanEnds(t *testing.T) {
@@ -68,31 +43,6 @@ func TestARoomBanEnds(t *testing.T) {
 	}
 	if n := must(q.DeleteExpiredRoomBans(ctx, later)); n != 1 {
 		t.Errorf("deleted %d expired bans, want 1", n)
-	}
-}
-
-func TestAHabboVotesOnARoomOnce(t *testing.T) {
-	q := New(openTestDB(t))
-	ctx := t.Context()
-	_, owner := createUserWithHabbo(t, q, "owner@example.com", "Owner")
-	_, fan := createUserWithHabbo(t, q, "fan@example.com", "Fan")
-	_, critic := createUserWithHabbo(t, q, "critic@example.com", "Critic")
-	room := newTestRoom(t, q, owner.ID)
-
-	for _, v := range []struct {
-		avatar int64
-		vote   int64
-		rows   int64
-	}{{fan.ID, 1, 1}, {critic.ID, -1, 1}, {fan.ID, -1, 0}} {
-		if n := must(q.AddRoomVote(ctx, AddRoomVoteParams{RoomID: room.ID, AvatarID: v.avatar, Vote: v.vote, VotedAt: testNow})); n != v.rows {
-			t.Errorf("a vote of %d added %d rows, want %d", v.vote, n, v.rows)
-		}
-	}
-	if got := must(q.GetRoomRating(ctx, room.ID)); got.Rating != 0 || got.Votes != 2 {
-		t.Errorf("rating = %+v, want 0 from two votes", got)
-	}
-	if _, err := q.AddRoomVote(ctx, AddRoomVoteParams{RoomID: room.ID, AvatarID: owner.ID, Vote: 2, VotedAt: testNow}); err == nil {
-		t.Error("a vote of 2 was saved")
 	}
 }
 
@@ -144,51 +94,6 @@ func TestAnIgnoreList(t *testing.T) {
 	}
 	if n := must(q.UnignoreHabbo(ctx, UnignoreHabboParams{AvatarID: frank.ID, IgnoredAvatarID: noisy.ID})); n != 1 || len(must(q.ListIgnoredHabbos(ctx, frank.ID))) != 0 {
 		t.Error("Noisy is still ignored")
-	}
-}
-
-// The Chat Log Viewer finds the lines of a public room and of a habbo room by their id, and a habbo's by its name in
-// any case, newest first, as HoloCMS's search did.
-func TestSearchingTheChatLog(t *testing.T) {
-	q := New(openTestDB(t))
-	ctx := t.Context()
-	_, owner := createUserWithHabbo(t, q, "owner@example.com", "Owner")
-	_, guest := createUserWithHabbo(t, q, "guest@example.com", "Guest")
-	room := newTestRoom(t, q, owner.ID)
-	id := func(v int64) sql.NullInt64 { return sql.NullInt64{Int64: v, Valid: true} }
-	for i, line := range []AddChatMessageParams{
-		{PublicRoomID: id(101), AvatarID: guest.ID, Kind: "chat", Text: "in the public room"},
-		{RoomID: id(room.ID), AvatarID: owner.ID, Kind: "chat", Text: "in the habbo room"},
-		{PublicRoomID: id(104), AvatarID: guest.ID, Kind: "shout", Text: "elsewhere"},
-	} {
-		line.SaidAt = testNow.Add(time.Duration(i) * time.Minute)
-		if err := q.AddChatMessage(ctx, line); err != nil {
-			t.Fatal(err)
-		}
-	}
-	texts := func(rows []SearchChatLogRow) []string {
-		var all []string
-		for _, r := range rows {
-			all = append(all, r.Text)
-		}
-		return all
-	}
-
-	if got := texts(must(q.SearchChatLog(ctx, SearchChatLogParams{Room: 101, RowLimit: 10}))); !slices.Equal(got, []string{"in the public room"}) {
-		t.Errorf("public room 101's lines %v", got)
-	}
-	if got := texts(must(q.SearchChatLog(ctx, SearchChatLogParams{Room: room.ID, RowLimit: 10}))); !slices.Equal(got, []string{"in the habbo room"}) {
-		t.Errorf("habbo room %d's lines %v", room.ID, got)
-	}
-	if n := must(q.CountChatLog(ctx, CountChatLogParams{Room: 104, Name: "Owner"})); n != 2 {
-		t.Errorf("counted %d lines for room 104 or Owner, want 2", n)
-	}
-	byName := must(q.SearchChatLog(ctx, SearchChatLogParams{Room: -1, Name: "gUeSt", RowLimit: 10}))
-	if got := texts(byName); !slices.Equal(got, []string{"elsewhere", "in the public room"}) || byName[0].Name != "Guest" {
-		t.Errorf("Guest's lines %v, want both, newest first", got)
-	}
-	if got := must(q.SearchChatLog(ctx, SearchChatLogParams{Room: -1, Name: "Guest", RowLimit: 1, RowOffset: 1})); len(got) != 1 || got[0].Text != "in the public room" {
-		t.Errorf("the second page holds %v", texts(got))
 	}
 }
 

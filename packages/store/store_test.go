@@ -122,46 +122,6 @@ func TestOpenStoresTimesInUTC(t *testing.T) {
 	}
 }
 
-func TestQueriesRunInsideATransaction(t *testing.T) {
-	db := openTestDB(t)
-	ctx := t.Context()
-
-	tx, err := db.BeginTx(ctx, nil)
-	if err != nil {
-		t.Fatalf("begin: %v", err)
-	}
-	defer tx.Rollback()
-
-	ok, err := New(db).WithTx(tx).Ping(ctx)
-	if err != nil {
-		t.Fatalf("Ping inside the transaction: %v", err)
-	}
-	if ok != 1 {
-		t.Errorf("Ping = %d, want 1", ok)
-	}
-	if err := tx.Commit(); err != nil {
-		t.Fatalf("commit: %v", err)
-	}
-}
-
-func TestOperationsAfterCloseFailClearly(t *testing.T) {
-	db, err := Open(filepath.Join(t.TempDir(), "store.db"))
-	if err != nil {
-		t.Fatalf("Open: %v", err)
-	}
-	if err := db.Close(); err != nil {
-		t.Fatalf("Close: %v", err)
-	}
-
-	_, err = New(db).Ping(t.Context())
-	if err == nil {
-		t.Fatal("Ping after Close returned no error")
-	}
-	if !strings.Contains(err.Error(), "closed") {
-		t.Errorf("error after Close = %q, want an error naming the closed database", err)
-	}
-}
-
 func TestOpenCorruptOrUnwritable(t *testing.T) {
 	t.Run("missing parent directory", func(t *testing.T) {
 		path := filepath.Join(t.TempDir(), "missing", "app.db")

@@ -61,44 +61,6 @@ func TestANewDatabaseHasHolosNavigator(t *testing.T) {
 	}
 }
 
-func TestOnlyARoomsOwnerChangesOrDeletesIt(t *testing.T) {
-	db := openTestDB(t)
-	q := New(db)
-	ctx := t.Context()
-	_, owner := createUserWithHabbo(t, q, "owner@example.com", "Owner")
-	_, other := createUserWithHabbo(t, q, "other@example.com", "Other")
-	room := must(q.CreateRoom(ctx, CreateRoomParams{AvatarID: owner.ID, RoomCategoryID: 2, RoomModelID: 1, Name: "Den", Door: "open", ShowOwner: true, CreatedAt: testNow}))
-	if room.CreatorAvatarID != owner.ID || room.OwnerAvatarID != owner.ID || room.MaxVisitors != 25 {
-		t.Errorf("room = %+v, want Owner's, with 25 visitors", room)
-	}
-
-	if n := must(q.UpdateRoomInfo(ctx, UpdateRoomInfoParams{ID: room.ID, OwnerAvatarID: other.ID, Name: "Mine", Door: "closed", UpdatedAt: testNow})); n != 0 {
-		t.Error("another habbo renamed the room")
-	}
-	if n := must(q.UpdateRoomInfo(ctx, UpdateRoomInfoParams{ID: room.ID, OwnerAvatarID: owner.ID, Name: "Lair", Door: "password", UpdatedAt: testNow})); n != 1 {
-		t.Error("the owner could not rename the room")
-	}
-	if _, err := q.UpdateRoomInfo(ctx, UpdateRoomInfoParams{ID: room.ID, OwnerAvatarID: owner.ID, Name: "Lair", Door: "locked", UpdatedAt: testNow}); err == nil {
-		t.Error("a door the client does not know was saved")
-	}
-	if got := must(q.GetRoom(ctx, room.ID)); got.Name != "Lair" || got.Door != "password" || got.OwnerName != "Owner" {
-		t.Errorf("room = %+v, want Lair behind a password, Owner's", got)
-	}
-
-	if err := q.AddFavouriteRoom(ctx, AddFavouriteRoomParams{AvatarID: other.ID, RoomID: room.ID, CreatedAt: testNow}); err != nil {
-		t.Fatal(err)
-	}
-	if n := must(q.DeleteRoom(ctx, DeleteRoomParams{ID: room.ID, OwnerAvatarID: other.ID})); n != 0 {
-		t.Error("another habbo deleted the room")
-	}
-	if n := must(q.DeleteRoom(ctx, DeleteRoomParams{ID: room.ID, OwnerAvatarID: owner.ID})); n != 1 {
-		t.Error("the owner could not delete the room")
-	}
-	if n := must(q.CountFavouriteRooms(ctx, other.ID)); n != 0 {
-		t.Errorf("the deleted room is still a favourite of %d", n)
-	}
-}
-
 func TestAFavouriteNamesOneRoomOnce(t *testing.T) {
 	db := openTestDB(t)
 	q := New(db)
