@@ -19,7 +19,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Use Table for rows of data, and for forms laid out as a label column and an input column. It renders a native <table> that fills its container, with its header cells on a grey bar and every second row shaded. Pass <thead> and <tbody> as children.",
+          "Use Table for rows of data, and for forms laid out as a label column and an input column. It renders a native <table> that fills its container, with its header cells on a grey bar and every second row shaded. The plain variant draws none of that and leaves the cells, the header and the row colours to the page. Pass <thead> and <tbody> as children.",
       },
     },
   },
@@ -34,4 +34,8 @@ export const List: Story = {
 
 export const Form: Story = {
   args: { variant: "form", children: rows },
+};
+
+export const Plain: Story = {
+  args: { variant: "plain", children: rows },
 };

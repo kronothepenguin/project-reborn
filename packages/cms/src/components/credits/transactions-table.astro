@@ -1,6 +1,8 @@
 ---
 // transactions.php's tx-log: its words, and the table of the ledger with the
 // Habbo column of 0104.
+import { Table } from "@project-reborn/components";
+
 const cell = "px-[15px] py-0.5";
 const heading = `${cell} text-[10px] font-normal text-neutral-400`;
 ---
@@ -9,7 +11,7 @@ const heading = `${cell} text-[10px] font-normal text-neutral-400`;
   This is an overview of your credit transaction history. They are updated as soon as the transaction is made. You can
   see up to 50 records.
 </div>
-<table class="w-full border-collapse">
+<Table variant="plain">
   <thead>
     <tr>
       <th class:list={[heading, "text-left whitespace-nowrap"]}>Date</th>
@@ -28,4 +30,4 @@ const heading = `${cell} text-[10px] font-normal text-neutral-400`;
     </tr>
     [[ end ]]
   </tbody>
-</table>
+</Table>

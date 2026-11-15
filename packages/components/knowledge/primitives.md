@@ -44,6 +44,12 @@ Holo used. It joins the values without encoding, because at build time they can 
 `Box` is housekeeping's titled section: a `title` heading in a `blue` (`sky-700`, white text) or `gold` (`amber-300`,
 black text) bar above its children (decision holo-port/0060). `title` is the heading text, never a tooltip.
 
+# Table
+
+- `list` shades the header `amber-300` and every second body row `amber-100`, and pads every cell.
+- `form` pads every cell and aligns it to the top, with no colours.
+- `plain` gives only `w-full border-collapse`: the page styles its cells, its header and its rows.
+
 # PaginationItem
 
 `PaginationItem` gives its other attributes to the link. The current page is a plain `<span>` with none of them.

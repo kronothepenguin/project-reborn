@@ -56,10 +56,15 @@ export default async function (t) {
     (await page.inputValue('input[name="description"]')) ===
       'They <moderate> & "care"',
   );
-  const boxes = await page.locator('input[name="attribute"]').count();
+  // The fuse list beside it posts the same name; the router test proves it.
+  const boxes = await page
+    .locator("table")
+    .filter({ has: page.getByRole("columnheader", { name: "Attribute", exact: true }) })
+    .locator('input[name="attribute"]')
+    .count();
   check(
     "every attribute of the catalogue has a checkbox",
-    boxes === 20,
+    boxes === 21,
     String(boxes),
   );
 
