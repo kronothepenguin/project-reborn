@@ -61,7 +61,7 @@ func TestWriteGeneratesTheBackendShape(t *testing.T) {
 		"packages/probe/probe.go": {
 			"func New(db *sql.DB) *Probe {",
 			"func (c *Probe) Mount(mux *http.ServeMux) {",
-			`mux.HandleFunc("GET /{$}", r.HandleIndexView)`,
+			`mux.HandleFunc("GET /{$}", r.HandleIndexText)`,
 		},
 		"packages/probe/internal/router/router.go": {"DB      *sql.DB"},
 		"packages/probe/Makefile":                  {"include ../../make/check.mk\n", "go mod download"},

@@ -40,7 +40,7 @@ func (i *Installer) Mount(mux *http.ServeMux) {
 
 	mux.HandleFunc("GET /{$}", r.HandleIndexView)
 	mux.HandleFunc("GET /config", r.HandleConfigView)
-	mux.HandleFunc("POST /config", r.HandleConfigWrite)
+	mux.HandleFunc("POST /config", r.HandleConfigSave)
 	mux.HandleFunc("GET /site", r.HandleSiteView)
 	mux.HandleFunc("POST /site", r.HandleSiteSave)
 	mux.HandleFunc("GET /admin", r.HandleAdminView)

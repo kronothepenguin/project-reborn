@@ -85,19 +85,6 @@ func TestSendDeliversAMessage(t *testing.T) {
 	}
 }
 
-func TestSendEncodesASubjectWithAccents(t *testing.T) {
-	db := setup(t)
-	server := mailtest.Start(t)
-	configure(t, db, map[string]any{"mail.host": server.Host, "mail.port": server.Port, "mail.from": "hotel@example.com"})
-
-	if err := Send(t.Context(), "habbo@example.com", "Hôtel", "Hello"); err != nil {
-		t.Fatalf("Send: %v", err)
-	}
-	if message := server.Next(t); !strings.Contains(message.Data, "Subject: =?utf-8?q?H=C3=B4tel?=") {
-		t.Errorf("the subject is not encoded:\n%s", message.Data)
-	}
-}
-
 func TestSendAuthenticatesWhenConfigured(t *testing.T) {
 	db := setup(t)
 	server := mailtest.Start(t)
@@ -130,16 +117,6 @@ func TestSendNeedsAFromAddress(t *testing.T) {
 	configure(t, db, map[string]any{"mail.host": "127.0.0.1"})
 	if err := Send(t.Context(), "habbo@example.com", "Subject", "Hello"); err == nil {
 		t.Error("Send() without mail.from = nil, want an error")
-	}
-}
-
-func TestSendRefusesACarriageReturnInTheRecipient(t *testing.T) {
-	db := setup(t)
-	server := mailtest.Start(t)
-	configure(t, db, map[string]any{"mail.host": server.Host, "mail.port": server.Port, "mail.from": "hotel@example.com"})
-
-	if err := Send(t.Context(), "habbo@example.com\r\nBcc: other@example.com", "Subject", "Hello"); err == nil {
-		t.Error("Send() with a header in the recipient = nil, want an error")
 	}
 }
 

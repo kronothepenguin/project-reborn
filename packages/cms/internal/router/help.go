@@ -38,9 +38,9 @@ func (r *Router) HandleHelpView(w http.ResponseWriter, req *http.Request) {
 	astro.WriteTemplate(w, r.deps.Resolver, "help.html", helpPage{ShortName: settings.GetString("site.shortName"), Form: true})
 }
 
-// HandleHelp handles POST /help: the active habbo's help request, unless go.php
+// HandleHelpSend handles POST /help: the active habbo's help request, unless go.php
 // or 0109 refuses it. A refused form comes back empty, as go.php's did.
-func (r *Router) HandleHelp(w http.ResponseWriter, req *http.Request) {
+func (r *Router) HandleHelpSend(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	session, _ := auth.FromContext(ctx)
 	view := helpPage{ShortName: settings.GetString("site.shortName"), Result: helpSent}
