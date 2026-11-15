@@ -22,23 +22,6 @@ Frontend:
 - `building-astro-components`: layouts stay `.astro`. They do, and the CMS layouts `community.astro` and
   `help-tool.astro` render Svelte islands: may a layout host islands?
 
-Data and config:
-
-- `adding-data-persistence`: mutations use the `:exec` forms. Many use `:one` with `RETURNING` (`CreateUser`,
-  `SpendSSOTicket`, `RedeemVoucher`).
-- `adding-data-persistence`: every list read has `ORDER BY`. `RemoveAllRoomRights :many` is a `DELETE … RETURNING`
-  without one.
-- `adding-data-persistence`: table names are plural. `furni`, `home_inventory` and `avatar_game_data` are mass nouns.
-- `adding-data-persistence`: a foreign key is named `<table>_id`. `room_categories.parent_id` is shorter.
-- `adding-data-persistence`: `CHECK` is for closed sets. The schema also checks across columns
-  (`ends_at > starts_at`) and ranges.
-- `adding-data-persistence`: times come from Go. Update files write times with `strftime(…, 'now')`, as
-  `packages/store/knowledge/database-updates.md` prescribes.
-- `adding-config-sections`: `config.json` is written only when absent. `config.Rewrite` rewrites it from
-  housekeeping's update page.
-- `adding-config-sections`: every field has `Default<Field>()` and `Validate<Field>()`. `packages/config/server`
-  nests a `Connection` and reuses `cms.ValidateHost`.
-
 # Found in the code
 
 - `packages/store/schema/auth.schema.sql`: the comment on `sso_tickets` says its id is a SHA-256 digest. The code
@@ -78,3 +61,6 @@ Data and config:
   and `HandleNewsImagesView` (images). The user names the form of each new name.
 - `packages/server`: its public folders `game`, `encoding`, `transport` and `r26`. The official layout puts supporting
   packages in `internal/` first. The master asks the user which of them other modules may import.
+- The tables `furni` and `home_inventory` are renamed `furnis` and `home_inventories`, each through an update file that
+  rebuilds the table, with every query, generated type and caller that names it. `avatar_game_data` stays: `data` is a
+  plural. Rule: `adding-data-persistence`.
