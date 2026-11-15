@@ -1,5 +1,5 @@
 -- A teleport knows the other teleport of its pair.
--- plans/server decision 0111.
+-- decision server/0111.
 
 ALTER TABLE furni ADD COLUMN partner_furni_id INTEGER REFERENCES furni(id) ON DELETE SET NULL;
 

@@ -32,7 +32,7 @@ timestamp: 2026-11-11T15:49:58+00:00
 - Several definitions share a sprite: the five colours of `bed_budgetb` are five definitions. Nothing makes a sprite
   unique.
 - The update [0013-catalogue.sql](/migrations/0013-catalogue.md) seeds Holo's 1,256 furni
-  (`plans/server/decisions/0091-holos-catalogue-changed-by-updates.md`).
+  (`knowledge/decisions/server/0091-holos-catalogue-changed-by-updates.md`).
 
 # Related
 

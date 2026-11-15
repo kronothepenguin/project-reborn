@@ -10,7 +10,7 @@ timestamp: 2026-11-11T15:49:58+00:00
 
 A furni definition says what a furni is. Every piece of furni a habbo owns is of one definition, and the catalogue's
 items, the recycler's rewards and the present boxes name definitions
-(`plans/server/decisions/0097-furni-definitions-and-catalogue-items-apart.md`).
+(`knowledge/decisions/server/0097-furni-definitions-and-catalogue-items-apart.md`).
 
 # Invariants
 
@@ -23,7 +23,7 @@ items, the recycler's rewards and the present boxes name definitions
 
 - The update [0013-catalogue.sql](/migrations/0013-catalogue.md) seeds Holo's definitions, one for the rows of Holo's
   catalogue that repeat a furni. Another update adds or changes one; no page edits them
-  (`plans/server/decisions/0091-holos-catalogue-changed-by-updates.md`).
+  (`knowledge/decisions/server/0091-holos-catalogue-changed-by-updates.md`).
 
 # Vocabularies
 

@@ -15,7 +15,7 @@ import (
 )
 
 // Rating is a habbo room's rating as a habbo sees it: -1 until it votes, then the sum of the room's votes, never below
-// 0, and the share of +1 votes, 0 to 100 (plans/server decision 0082).
+// 0, and the share of +1 votes, 0 to 100 (decision server/0082).
 type Rating struct {
 	Value   int
 	Percent int
@@ -101,7 +101,7 @@ const eventTimeLayout = "15:04"
 // EventTime writes when an event started, as the client shows it.
 func EventTime(e room.Event) string { return e.Started.UTC().Format(eventTimeLayout) }
 
-// EventTypes returns how many room event types there are (plans/server decision 0081).
+// EventTypes returns how many room event types there are (decision server/0081).
 func EventTypes() int { return settings.GetIntOr("game.roomEventTypes", 11) }
 
 // CanHostEvent reports whether the viewer may host an event where it is (CAN_CREATE_ROOMEVENT): in a habbo room it
@@ -188,7 +188,7 @@ func Events(eventType int) []EventInfo {
 }
 
 // GroupBadges returns the favourite groups the habbos in the viewer's room show, by id (GET_GROUP_BADGES), as their
-// user lines name them (plans/server decision 0068).
+// user lines name them (decision server/0068).
 func GroupBadges(viewer habbo.Habbo) []habbo.Group {
 	r, ok := room.In(viewer.ID)
 	if !ok {
@@ -264,7 +264,7 @@ type BadgesChanged struct {
 
 // SetBadges wears the viewer's badges in the five slots its client's badge window sets (SETBADGE), each a badge it
 // has, once, in the first slot that names it, or none: saved, then the online habbo's copy, and the room it is in gets
-// BadgesChanged (plans/server decision 0083).
+// BadgesChanged (decision server/0083).
 func SetBadges(ctx context.Context, db *sql.DB, viewer habbo.Habbo, slots [5]string) error {
 	var worn [5]string
 	for i, code := range slots {

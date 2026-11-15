@@ -65,7 +65,7 @@ func TestAWayGoesAroundAWallWithoutCuttingItsCorner(t *testing.T) {
 	}
 }
 
-// A habbo steps up or down at most 1 height (plans/server decision 0065).
+// A habbo steps up or down at most 1 height (decision server/0065).
 func TestAStepGoesUpOrDownAtMostOneHeight(t *testing.T) {
 	floor := floorOf(t, "", "000", "020", "000")
 	o := habboAt(1, 0, 1, 2, 1)

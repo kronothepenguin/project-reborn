@@ -37,7 +37,7 @@ func TestValidateName(t *testing.T) {
 }
 
 // A name is refused by the templates whose Go it cannot compile in, and only
-// by them (plans/server decision 0025): a client has no Go, and nil, for one,
+// by them (decision server/0025): a client has no Go, and nil, for one,
 // compiles in a backend, whose runner never compares with nil.
 func TestValidateNameRefusesNamesWhoseGoPackageCannotCompile(t *testing.T) {
 	withGo := []string{backend, fullstack}
@@ -101,7 +101,7 @@ func TestValidateNameRefusesNamesWhoseGoPackageCannotCompile(t *testing.T) {
 }
 
 // The go tool's special folders are refused by the templates with Go and only
-// by them (plans/server decision 0026). The check is on the name, which names
+// by them (decision server/0026). The check is on the name, which names
 // the folders: ven-dor's Go package is vendor, and it compiles.
 func TestValidateNameRefusesNamesTheGoToolTreatsSpecially(t *testing.T) {
 	for _, name := range []string{"internal", "testdata", "vendor"} {

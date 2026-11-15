@@ -364,7 +364,7 @@ func TestAnyCodeCanBeDeleted(t *testing.T) {
 }
 
 // A voucher of the type Item gives the furni whose sprite the amount names, the first of several that share it
-// (plans/server decision 0120), and is listed with the sprite where the credits go, as Holo's column showed it.
+// (decision server/0120), and is listed with the sprite where the credits go, as Holo's column showed it.
 func TestCreatingAnItemVoucher(t *testing.T) {
 	db, mux := newSite(t)
 	actor, cookie := treasurer(t, db)

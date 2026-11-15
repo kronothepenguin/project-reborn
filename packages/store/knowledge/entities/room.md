@@ -9,20 +9,20 @@ timestamp: 2026-11-10T16:46:21+00:00
 # Definition
 
 A room a habbo created. Its creator never changes; its owner is a habbo of the same user
-(`plans/holo-port/decisions/0057-furni-and-rooms.md`).
+(`knowledge/decisions/holo-port/0057-furni-and-rooms.md`).
 
 # Invariants
 
-- A habbo owns up to `game.maxRoomsPerHabbo` rooms (`plans/server/decisions/0056-own-rooms-follow-holos-rules.md`).
-- The password is stored as a hash (`plans/server/decisions/0062-room-passwords-are-hashed.md`).
+- A habbo owns up to `game.maxRoomsPerHabbo` rooms (`knowledge/decisions/server/0056-own-rooms-follow-holos-rules.md`).
+- The password is stored as a hash (`knowledge/decisions/server/0062-room-passwords-are-hashed.md`).
 - Only its owner changes or deletes it.
 - When its owner is archived, it becomes the user's active habbo's, with its furni in place
-  (`plans/server/decisions/0124-an-archived-habbos-rooms-move-to-the-active-habbo.md`).
+  (`knowledge/decisions/server/0124-an-archived-habbos-rooms-move-to-the-active-habbo.md`).
 
 # Lifecycle
 
 - The game server creates it, changes it at its owner's request, and deletes it with its favourites. Its furni then
-  goes to the owner's hand (`plans/server/decisions/0059-a-deleted-rooms-furni-goes-to-its-owner.md`).
+  goes to the owner's hand (`knowledge/decisions/server/0059-a-deleted-rooms-furni-goes-to-its-owner.md`).
 
 # Vocabularies
 

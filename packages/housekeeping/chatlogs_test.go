@@ -27,7 +27,7 @@ func TestChatLogsNeedTheirAttribute(t *testing.T) {
 }
 
 // The viewer searches by a room's id, public or habbo room, or a habbo's name, as HoloCMS's did, newest first; the
-// Room ID column marks public rooms, and a deleted room's lines show - (plans/server decisions 0085 and 0086).
+// Room ID column marks public rooms, and a deleted room's lines show - (decisions server/0085 and server/0086).
 func TestChatLogsFindARoomOrAHabbo(t *testing.T) {
 	db, mux := newSite(t)
 	_, cookie := staff(t, db, "Moderator", auth.HousekeepingAccess, auth.HousekeepingChatLogs)

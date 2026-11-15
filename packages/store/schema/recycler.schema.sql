@@ -1,4 +1,4 @@
--- The recycler, which gives a furni for many (plans/server decision 0093).
+-- The recycler, which gives a furni for many (decision server/0093).
 
 -- What the recycler gives: the furni a habbo gets for recycling furni_count pieces at once.
 CREATE TABLE IF NOT EXISTS recycler_rewards (

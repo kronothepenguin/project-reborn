@@ -1,7 +1,7 @@
 package room
 
 // Heading is the room a habbo is on its way into, from choosing it until it comes in, and whether the room's door let
-// it through. It lives only in memory, as the doorbell does (plans/server decision 0069).
+// it through. It lives only in memory, as the doorbell does (decision server/0069).
 type Heading struct {
 	Ref      Ref
 	Admitted bool

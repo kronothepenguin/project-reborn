@@ -16,7 +16,7 @@ timestamp: 2026-11-10T03:49:03+00:00
 
 Creates [room_categories](/tables/room_categories.md), [room_models](/tables/room_models.md),
 [public_rooms](/tables/public_rooms.md), [rooms](/tables/rooms.md) and [favourite_rooms](/tables/favourite_rooms.md),
-and seeds, with fixed ids, what a new hotel's navigator shows (`plans/server/decisions/0055-holos-navigator-set.md`):
+and seeds, with fixed ids, what a new hotel's navigator shows (`knowledge/decisions/server/0055-holos-navigator-set.md`):
 
 - the 15 categories of `source/holoemu/Resources/holodb.sql` that are not BattleBall or SnowStorm, with English names:
   Holo's rank 1 is level 0, and "No category" takes the id 2 for Holo's 0 and sits under Guestrooms;

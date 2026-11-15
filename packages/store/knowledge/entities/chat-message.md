@@ -18,7 +18,7 @@ What a habbo said in a public room or a habbo room, whispered to another habbo, 
 # Lifecycle
 
 - The game server saves each line as it reaches the room; housekeeping's chat logs read them; lines older than
-  `game.chatHistoryDays` are deleted (`plans/server/decisions/0066-staff-read-the-chat-history-30-days.md`).
+  `game.chatHistoryDays` are deleted (`knowledge/decisions/server/0066-staff-read-the-chat-history-30-days.md`).
 
 # Vocabularies
 

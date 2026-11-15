@@ -10,7 +10,7 @@ timestamp: 2026-11-12T01:11:06+00:00
 
 A recycling is a habbo's exchange of many [furni](/entities/furni.md) for one: the furni it gave wait in the recycler,
 and after a time the habbo takes the [reward](/entities/recycler-reward.md)
-(`plans/server/decisions/0093-a-recycling-is-saved.md`).
+(`knowledge/decisions/server/0093-a-recycling-is-saved.md`).
 
 # Invariants
 
@@ -23,11 +23,11 @@ and after a time the habbo takes the [reward](/entities/recycler-reward.md)
 
 - Starting it moves the furni from the habbo's hand into the recycler, in one transaction with the recycling's row. Each
   furni must be recyclable and at least `recycler.minOwnedMinutes` old
-  (`plans/server/decisions/0117-the-recycler-checks-a-furnis-age.md`).
+  (`knowledge/decisions/server/0117-the-recycler-checks-a-furnis-age.md`).
 - It runs for `recycler.sessionMinutes`. Then the reward is ready until `recycler.timeoutMinutes` after the start.
 - Taking the ready reward destroys the furni given and creates the reward in the habbo's hand.
 - Refusing it, at any time, gives the furni back; after the time-out that is all the habbo can do
-  (`plans/server/decisions/0116-a-recycling-that-waits-too-long-gives-the-furni-back.md`).
+  (`knowledge/decisions/server/0116-a-recycling-that-waits-too-long-gives-the-furni-back.md`).
 
 # Relations
 

@@ -37,9 +37,9 @@ type voucherAnswer struct {
 // HandleCreditsVouchersRedeem handles POST /credits/vouchers, redeemvoucher.php:
 // the active habbo claims an unused voucher, and its credits go to the user's
 // purse with a ledger row, in one transaction. An item voucher puts its furni in
-// the active habbo's hand, as a purchase would give it (plans/server decision
-// 0125), and its ledger row holds 0 credits and the furni's name (plans/server
-// decision 0121).
+// the active habbo's hand, as a purchase would give it (decision
+// server/0125), and its ledger row holds 0 credits and the furni's name (decision
+// server/0121).
 func (r *Router) HandleCreditsVouchersRedeem(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	var body voucherBody

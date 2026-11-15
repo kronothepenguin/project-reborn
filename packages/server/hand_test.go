@@ -38,8 +38,8 @@ func hand(t *testing.T, c *client, mode string) (items []string, count string) {
 	return items, count
 }
 
-// The hand comes nine furni at a time, the oldest first, read from the database each time (plans/server decision
-// 0096): a floor furni with its size, state and colours, and a wall item with its data.
+// The hand comes nine furni at a time, the oldest first, read from the database each time (decision
+// server/0096): a floor furni with its size, state and colours, and a wall item with its data.
 func TestTheHandComesAPageAtATime(t *testing.T) {
 	carrier := habboWithTickets(t, "Carrier", "carrier")
 	chair := giveFurni(t, carrier, 463, "")

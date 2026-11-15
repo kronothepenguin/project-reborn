@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-// Holo's navigator, as the update 0010-navigator.sql seeds it (plans/server decision 0055).
+// Holo's navigator, as the update 0010-navigator.sql seeds it (decision server/0055).
 func TestANewDatabaseHasHolosNavigator(t *testing.T) {
 	db := openTestDB(t)
 	q := New(db)

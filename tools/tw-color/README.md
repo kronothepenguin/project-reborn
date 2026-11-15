@@ -43,38 +43,12 @@ comment. The make target only supports stdin:
 printf '#c10007\n' | make tw-color
 ```
 
-## Accepted input
-
-- `#rgb`, `#rgba`, `#rrggbb`, `#rrggbbaa`
-- `rgb(r, g, b)` and `rgba(r, g, b, a)` with channels 0-255 and alpha 0-1
-
-Blank lines are ignored. Alpha below 1 is rounded to a whole percentage and
-printed as a Tailwind opacity modifier (`black/50`); alpha is ignored when
-matching.
-
-## Matching
-
-Colors are converted from sRGB to OKLCH and matched by Euclidean distance in
-OKLab, so the result is the perceptually closest swatch. The distance shown by
-`-d` is that Euclidean distance (ΔE OKLab, rounded to 4 decimals). Because the
-match is purely nearest, grays can land on any of Tailwind's neutral families,
-e.g. `#1f1f1f` becomes `olive-900`.
-
-The palette is the Tailwind CSS v4 palette from
-https://tailwindcss.com/docs/colors: 26 families with 11 shades each, plus
-`black` and `white`.
-
-## Errors and exit codes
-
-| Condition        | Behavior                                          |
-| ---------------- | ------------------------------------------------- |
-| Invalid color    | warning on stderr, processing continues, exit `1` |
-| Unknown option   | usage on stderr, exit `2`                         |
-| Stdin unreadable | error on stderr, exit `2`                         |
-| All inputs valid | exit `0`                                          |
-
 ## Tests
 
+From `tools/tw-color`; it runs the `test` script of `package.json`, `node --test`:
+
 ```sh
-node --test "tools/tw-color/**/*.test.mjs"
+make check
 ```
+
+How it works: `knowledge/index.md`.

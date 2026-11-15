@@ -24,7 +24,7 @@ func TestTheServerStartsWithTheNavigator(t *testing.T) {
 }
 
 // While the update with the navigator's tables waits, nothing loads; once every update is applied, the navigator and
-// the catalogue do (decisions 0064 and 0098).
+// the catalogue do (decisions server/0064 and server/0098).
 func TestTheNavigatorWaitsForTheUpdates(t *testing.T) {
 	db, err := store.Connect(filepath.Join(t.TempDir(), "waiting.db"))
 	if err != nil {

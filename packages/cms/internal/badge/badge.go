@@ -100,7 +100,7 @@ type Palette [tints]color.RGBA
 // Tailwind is the closest Tailwind colour to each of Holo's tints, by
 // tools/tw-color, in sRGB: amber-300, amber-600, lime-400, lime-600, sky-400,
 // sky-600, pink-300, pink-500, red-500, red-700, white, mauve-300, taupe-700,
-// amber-100, olive-500, sky-200, yellow-200 and lime-300 (decision 0102). Seven
+// amber-100, olive-500, sky-200, yellow-200 and lime-300 (decision holo-port/0102). Seven
 // of them lie outside sRGB and are clipped to it, as their usual hex values are.
 var Tailwind = Palette{
 	rgb(0xffd230), rgb(0xe17100), rgb(0x9ae600), rgb(0x5ea500), rgb(0x00bcff), rgb(0x0084d1),

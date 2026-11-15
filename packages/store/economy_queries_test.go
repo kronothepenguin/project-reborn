@@ -348,7 +348,7 @@ func TestAnOutfitReplacesItsSlots(t *testing.T) {
 	}
 }
 
-// A voucher gives credits or one furni, never both and never neither (plans/server decision 0120). An item voucher is
+// A voucher gives credits or one furni, never both and never neither (decision server/0120). An item voucher is
 // listed with its furni's sprite, and its redemption names the furni.
 func TestAVoucherGivesCreditsOrAFurni(t *testing.T) {
 	db := openTestDB(t)

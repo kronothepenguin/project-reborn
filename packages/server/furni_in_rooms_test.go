@@ -38,7 +38,7 @@ func (c *client) walkTo(t *testing.T, index string, x, y int) (tiles []string, l
 }
 
 // A habbo room sends the furni that stands in it, floor furni as 32 and wall items as 45, and habbos walk around a
-// solid, sit on a seat, lie on a bed and walk over a rug (plans/server/reference/r26/hh_room.md).
+// solid, sit on a seat, lie on a bed and walk over a rug (packages/server/knowledge/r26/hh_room.md).
 func TestARoomShowsItsFurniAndHabbosUseIt(t *testing.T) {
 	owner := habboWithTickets(t, "Furnisher", "furnisher")
 	flat := newRoom(t, owner, 2, "Showroom", true)

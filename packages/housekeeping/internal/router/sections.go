@@ -43,7 +43,7 @@ type field struct {
 	Long    bool
 	Rows    int
 	Choices []choice
-	// BBCode gives a long text the BBCode editor (decision 0092).
+	// BBCode gives a long text the BBCode editor (decision holo-port/0092).
 	BBCode bool
 }
 
@@ -198,7 +198,7 @@ var forms = []section{
 		},
 	},
 	{
-		// HoloCMS's Recycler Options, with its labels and its help (plans/server decision 0119). Holo kept the three
+		// HoloCMS's Recycler Options, with its labels and its help (decision server/0119). Holo kept the three
 		// times in minutes and did not say so.
 		ID: "recycler", Menu: "Recycler Options", Title: "Recycler Options", Button: defaultButton,
 		Fields: []field{

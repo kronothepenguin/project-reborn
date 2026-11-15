@@ -12,7 +12,7 @@ import (
 func TestFuseCatalogue(t *testing.T) {
 	entries := FuseCatalogue()
 	if len(entries) != 31 {
-		t.Errorf("the fuse catalogue has %d fuses, want the 29 the client or Holo's server checks and the two club ones of decision 0045", len(entries))
+		t.Errorf("the fuse catalogue has %d fuses, want the 29 the client or Holo's server checks and the two club ones of decision server/0045", len(entries))
 	}
 	seen := make(map[Fuse]bool)
 	for _, entry := range entries {
@@ -110,7 +110,7 @@ func TestAccessGroupsGrantFuses(t *testing.T) {
 	}
 }
 
-// The update of decision 0046 gives level 7 every fuse it grants, so a new
+// The update of decision server/0046 gives level 7 every fuse it grants, so a new
 // hotel's Administrator holds the whole catalogue and nothing outside it.
 func TestANewHotelsAdministratorHoldsEveryFuse(t *testing.T) {
 	f := newFixture(t)

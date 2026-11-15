@@ -1,5 +1,7 @@
 .PHONY: install dev web stop
 
+include ../../make/check.mk
+
 install:
 	$(MAKE) -C ../../packages/installer install
 	mkdir -p tmp

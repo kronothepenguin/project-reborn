@@ -19,7 +19,7 @@ func gift(t *testing.T, c *client, page, item, receiver, note string) (id int, b
 
 // A present waits in its receiver's hand, online or not, in one of the six boxes with its note, cut at 200
 // characters; the buyer pays, and its credit history names the furni and the receiver. A name that no habbo has
-// charges nothing (plans/server decisions 0094 and 0106).
+// charges nothing (decisions server/0094 and server/0106).
 func TestAPresentWaitsInItsReceiversHand(t *testing.T) {
 	santa := habboWithTickets(t, "Santa", "santa")
 	rudolph := habboWithTickets(t, "Rudolph", "rudolph")
@@ -61,7 +61,7 @@ func TestAPresentWaitsInItsReceiversHand(t *testing.T) {
 }
 
 // Only the room's owner opens a box that stands in its room: the furni inside goes to its hand and the box goes
-// (plans/server decision 0105). A habbo in a room hears of a present that arrives.
+// (decision server/0105). A habbo in a room hears of a present that arrives.
 func TestOpeningAPresent(t *testing.T) {
 	giver := habboWithTickets(t, "Grinch", "grinch")
 	owner := habboWithTickets(t, "Cindy", "cindy")

@@ -30,7 +30,7 @@ func TestPorts(t *testing.T) {
 	}
 }
 
-// The example the user chose the vite range by, in plans/server decision 0017.
+// The example the user chose the vite range by, in decision server/0017.
 func TestVitePortOfTheDecisionExample(t *testing.T) {
 	if got := VitePort("client-r18"); got != 30050 {
 		t.Errorf("VitePort(%q) = %d; want 30050", "client-r18", got)

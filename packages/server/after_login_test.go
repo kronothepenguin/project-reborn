@@ -111,7 +111,7 @@ func TestTheSoundSettingIsSaved(t *testing.T) {
 	}
 }
 
-// 40 days left are 9 days of the running period and 1 prepaid period of 31 days (decision 0052).
+// 40 days left are 9 days of the running period and 1 prepaid period of 31 days (decision server/0052).
 func TestTheClubStatus(t *testing.T) {
 	habboWithTickets(t, "Plebeian", "plebeian")
 	c, _ := login(t, "plebeian")

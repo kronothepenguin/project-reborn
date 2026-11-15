@@ -31,7 +31,7 @@ type Hand struct {
 	Total int
 }
 
-// HandPage reads a page of viewer's hand from the store, where the hand lives (plans/server decision 0096), the oldest
+// HandPage reads a page of viewer's hand from the store, where the hand lives (decision server/0096), the oldest
 // furni first, as Holo listed them. A page before the first gives the first, and one past the last gives the last.
 func HandPage(ctx context.Context, db *sql.DB, viewer habbo.Habbo, page int) (Hand, error) {
 	q := store.New(db)

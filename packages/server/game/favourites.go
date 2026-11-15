@@ -13,7 +13,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
-// ErrTooManyFavourites is returned for a favourite past game.maxFavouriteRooms (plans/server decision 0058).
+// ErrTooManyFavourites is returned for a favourite past game.maxFavouriteRooms (decision server/0058).
 var ErrTooManyFavourites = errors.New("game: too many favourite rooms")
 
 // Favourites returns viewer's favourite public rooms and habbo rooms, oldest first.

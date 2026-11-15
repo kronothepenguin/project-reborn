@@ -28,7 +28,7 @@ func face(t *testing.T, body string, id int64) int {
 
 // Anyone changes a furni's state, a lamp on; only a habbo that controls the room opens a gate, which closes only
 // while nobody stands in it; and nobody sets what the server draws: a dice, the wheel and the randomizer show their
-// number after Holo's waits (plans/server/reference/r26/hh_room.md).
+// number after Holo's waits (packages/server/knowledge/r26/hh_room.md).
 func TestUsingFurni(t *testing.T) {
 	owner := habboWithTickets(t, "Croupier", "croupier")
 	habboWithTickets(t, "Punter", "punter")

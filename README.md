@@ -2,7 +2,7 @@
 
 Project Reborn is a remake of Habbo Hotel as it was around 2008 — the classic Shockwave (Macromedia Director) era (R26): rooms, navigator, friends, catalogue, clubs, and the rest.
 
-The client is a JavaScript reimplementation of the Shockwave client: a director runtime (shockwave player) that runs the translated Lingo movies. The server, CMS, housekeeping, installer, and orchestrator are Go.
+The client is a JavaScript reimplementation of the Shockwave client: a director runtime (shockwave player) that runs the translated Lingo movies. The server, CMS, housekeeping and installer are Go. An orchestrator, `apps/reborn`, which runs them all from one binary, is planned.
 
 > Early development. Most systems are incomplete or not yet started.
 
@@ -10,36 +10,20 @@ The client is a JavaScript reimplementation of the Shockwave client: a director 
 
 ## Stack
 
-- [Go 1.26.4+](https://go.dev/dl/) — Go workspace, no root module
+- [Go 1.27+](https://go.dev/dl/) — Go workspace, no root module
 - [SQLite](https://www.sqlite.org/) + [sqlc](https://sqlc.dev/) — type-safe generated queries
 - [pnpm](https://pnpm.io/) — all JavaScript, including the Vite client
 - [Astro](https://astro.build/) + [Tailwind](https://tailwindcss.com/) — static HTML for CMS/housekeeping, embedded into the Go binaries
 - [Director runtime](packages/director/) — Shockwave player reimplementation (`@project-reborn/director`)
 
-`air`, `sqlc`, and Astro are declared as `tool` directives in the relevant `go.mod` files — no global installs needed.
+`air` and `sqlc` are declared as `tool` directives in the relevant `go.mod` files, and Astro is a pnpm dependency, so no global installs are needed.
 
 ---
 
-## Project Layout
+## Documentation
 
-```
-project-reborn/
-├── go.work                        # Go workspace (committed)
-├── pnpm-workspace.yaml            # pnpm workspace
-├── packages/                      # implementation (models, logic, handlers)
-│   ├── client/                    # JavaScript client (@project-reborn/client-r26)
-│   ├── director/                  # director runtime (@project-reborn/director)
-│   ├── store/                     # persistence infrastructure: SQLite + sqlc-generated DB layer (Go)
-│   ├── scheduler/                 # runs timed tasks inside a process (Go)
-│   ├── virtual/                   # domain types (Go)
-│   └── shared/                    # ansi, dotenv, httpx, tmpl utilities (Go)
-├── apps/                          # thin executables (process, port, entrypoint)
-│   ├── reborn/                    # orchestrator, planned: one binary running every app
-│   └── ...
-└── Makefile                       # generic workspace targets
-```
-
-Packages own the implementation — including the app packages (cms, housekeeping, installer, server). Apps are thin runners: they import a package and execute it as a singleton. For an HTTP app, the package exposes `Mount`/`Routes` against an `http.ServeMux` and the app creates the `http.Server`. `apps/reborn`, the orchestrator, will import every app and serve all of them on one HTTP server. Its old implementation was removed and the new one is not planned yet; for now each app runs in isolation on its own port.
+- `AGENTS.md` holds the hard rules of working in this repository.
+- `knowledge/index.md` is the start of the knowledge: the workflow, the architecture, the features and how the programs work together.
 
 ---
 
@@ -48,6 +32,7 @@ Packages own the implementation — including the app packages (cms, housekeepin
 ### 1. Fetch dependencies
 
 ```bash
+git submodule update --init    # vendor/LibreShockwave and vendor/HabboWidgets
 make install        # every project's folders and dependencies, and the tools
 ```
 
@@ -61,25 +46,7 @@ Each app owns its own `Makefile` with app-specific targets.
 cd apps/cms && make dev
 ```
 
-Web apps have two modes:
-
-- **dev** — `/packages/<app>/cmd/dev` starts the Go HTTP server and the Astro dev server; the Go server reverse-proxies HTML and scripts from the Astro dev server.
-- **build** — `Astro build → embed → Go build`; the web app embeds its Astro `dist` output into the Go binary.
-
----
-
-## Workflow
-
-- No agent works on `main`. Every line of work, sequential or parallel, goes on its own feature branch in its own worktree
-  under `.claude/worktrees/<branch>`, so that several agents can work at once without touching each other's files.
-- Work is planned in `plans/reborn`, by feature slice, and each task has its own branch and worktree, named after it.
-  One session coordinates: it talks to the user and may start sub-agents, each on one task. Sub-agents never merge.
-- When work is done and verified, the coordinating session merges it: it merges every ready branch into one worktree
-  made from `main`, runs every gate there once, and then fast-forwards `main` from the main checkout with
-  `git merge --ff-only`. If the gates fail, the branch at fault goes back to its task. Agents never push.
-- Once the branch is merged, the agent cleans up from the main checkout with
-  `git worktree remove .claude/worktrees/<branch>` and `git branch -d <branch>`, so that `.claude/worktrees/` and
-  `git branch` hold only work in progress.
+The dev and build modes of the web apps are in `knowledge/programs.md`.
 
 ---
 
@@ -92,11 +59,13 @@ pnpm --filter @project-reborn/cms build
 go build -o ./apps/cms/tmp/cms ./apps/cms/cmd/cms
 ```
 
+`make frontends` builds the three frontends at once.
+
 ---
 
 ## Releases
 
-Pushing a tag like `v0.1.0` publishes a GitHub release, once every gate has passed:
+Pushing a tag like `v0.1.0` publishes a GitHub release, once `make check` and the browser suites have passed:
 
 - `reborn-<tag>-linux-amd64.tar.gz` and `reborn-<tag>-linux-aarch64.tar.gz`, each with
   `cms`, `housekeeping` and `installer`;
@@ -113,23 +82,11 @@ same folder, which now holds `config.json` and the database.
 ## Testing
 
 ```sh
-make gates          # formatting, vet and tests of every module, frontends, generated code and docs
+make check          # make check in every project of apps/, packages/ and tools/, then the knowledge check
 make e2e            # real Chromium against the production binaries, see tests/e2e
 ```
 
 GitHub Actions runs both on every push to `main` and on pull requests.
-
----
-
-## Database
-
-The persistence infrastructure lives in `packages/store/`: it owns the SQLite file, gives a new database every update in `packages/store/migrations/`, and exposes typed operations generated from SQL with sqlc. Run the generator after changing any `.sql` files.
-
-```bash
-cd packages/store && go tool sqlc generate
-```
-
-New persisted data is added with the `adding-data-persistence` skill and documented in the OKF bundle under `packages/store/knowledge/` with the `documenting-with-okf` skill.
 
 ---
 

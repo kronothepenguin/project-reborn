@@ -29,9 +29,9 @@ type chatLogRow struct {
 }
 
 // HandleChatLogsView renders GET /housekeeping/chatlogs, HoloCMS's Chat Log Viewer. A room's id or a habbo's name
-// finds the lines said there or by it, newest first, 100 a page where HoloCMS showed every line (plans/server
-// decision 0085); the id finds a public room's lines and a habbo room's, which the Room ID column tells apart
-// (plans/server decision 0086).
+// finds the lines said there or by it, newest first, 100 a page where HoloCMS showed every line (decision
+// server/0085); the id finds a public room's lines and a habbo room's, which the Room ID column tells apart
+// (decision server/0086).
 func (r *Router) HandleChatLogsView(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	page := chatLogsPage{chrome: r.chrome(req)}

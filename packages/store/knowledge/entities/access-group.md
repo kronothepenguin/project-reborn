@@ -61,7 +61,7 @@ it to. Attributes cover security and the permission to modify things; club perks
 | `homes.staffItems` | the staff store category and the staff skin |
 
 R26 fuses (`fuse_*`) are a separate catalogue in `packages/auth`, which access groups grant through the same table
-(`plans/server/decisions/0045-fuses-holos-club-set-and-every-checked-fuse.md`): the 31 the client or Holo's server
+(`knowledge/decisions/server/0045-fuses-holos-club-set-and-every-checked-fuse.md`): the 31 the client or Holo's server
 checks, each with what it allows in the game. Every habbo also holds `fuse_trade` and `fuse_buy_credits`, and a club
 member `fuse_use_club_dance`, `fuse_use_special_room_layouts`, `fuse_habbo_chooser` and `fuse_furni_chooser`, without a
 row here. Users are not given fuses directly.

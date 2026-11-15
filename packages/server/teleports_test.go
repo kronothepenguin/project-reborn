@@ -10,7 +10,7 @@ import (
 
 // A teleport is bought as a pair whose two name each other. A habbo steps into one from the tile in front of it and
 // comes out of the other: in the same room at once, and in another room past its closed door, its ban and its last
-// place (plans/server decisions 0110 and 0111). A teleport whose partner stands in no room leads nowhere.
+// place (decisions server/0110 and server/0111). A teleport whose partner stands in no room leads nowhere.
 func TestTeleports(t *testing.T) {
 	ownerID := habboWithTickets(t, "Beamer", "beamer")
 	travellerID := habboWithTickets(t, "Traveller", "traveller")

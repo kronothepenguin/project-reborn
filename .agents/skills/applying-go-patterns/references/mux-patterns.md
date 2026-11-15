@@ -8,43 +8,50 @@
 - Handler files
 - Route registration
 - Route to file mapping
-- Naming rules
+- Naming
 - Verification
 
 ## Rules
 
-1. Registration is centralized in the package root's `<pkg>.go` `Mount(mux)`; handler files only define methods on `*Router`.
-2. Handler files are named after the registration route with dynamic segments dropped (`GET /rooms/{id}` → `rooms.go`).
-3. `Handle<Resource>View` renders the page for a GET. `Handle<Resource><Action>` handles a mutating action and may re-render after a failure. Never use `View` on a non-GET handler.
-4. Handlers are methods on `*Router`. Shared services live in `router.Deps` and are reached through `r.deps`. No package-level globals.
+1. The package root's `Mount(mux)` registers every route. Handler files define methods on `*Router` and leave the mux
+   to `Mount`.
+2. A handler file is named after its route, with the dynamic segments dropped: `GET /orders/{id}` → `orders.go`.
+   Handler names follow [Naming](#naming).
+3. Handlers are methods on `*Router`. Shared services are fields of `router.Deps`, reached as `r.deps.<Field>`, in
+   place of package-level variables.
+4. One `Router` serves every request. Keep request state in the handler's local variables.
 
 ## Package layout
 
-`internal/router/` contains one `router.go` plus one file per route group. The package root only wires things together.
+`internal/router/` holds `router.go` plus one file per route group. The package root only wires things together.
 
 ```text
 <module>/
-├── <pkg>.go                    # public API: struct, New, Mount, options
+├── app.go                      # public API: App, New, Mount, options
 └── internal/router/
-    ├── router.go               # Deps + Router constructor
+    ├── router.go               # Deps, Router, New
     ├── index.go                # GET /{$}, POST /{$}
     ├── me.go                   # GET /me, POST /me
-    ├── rooms.go                # GET /rooms, GET /rooms/{id}
-    └── users-rooms.go          # GET /users/{id}/rooms
+    ├── orders.go               # GET /orders, GET /orders/{id}
+    └── users-orders.go         # GET /users/{id}/orders
 ```
 
 ## Deps and Router
 
-Shared services are named fields on `Deps`. Add a field when a handler needs it; keep field types narrow (interfaces at the consumer).
+Shared services are named fields of `Deps`. Add a field when a handler needs one. Keep field types narrow: an interface
+declared by the router.
 
 ```go
 package router
 
-import "github.com/kronothepenguin/project-reborn/packages/astro"
+// Renderer writes the named page with its data.
+type Renderer interface {
+	Render(w http.ResponseWriter, name string, data any)
+}
 
 // Deps are the shared services every handler can use.
 type Deps struct {
-	Resolver astro.Resolver
+	Pages Renderer
 }
 
 type Router struct {
@@ -56,134 +63,93 @@ func New(deps Deps) *Router {
 }
 ```
 
-Handlers access services as `r.deps.Resolver`. Never store request state on `Router`; `Router` is shared across all requests.
-
 ## Handler files
 
-Each file defines the data structs and methods for its routes.
+Each file holds the data structs and the handlers of its routes.
 
 `index.go`:
 
 ```go
-package router
-
-import (
-	"net/http"
-
-	"github.com/kronothepenguin/project-reborn/packages/astro"
-)
-
 type page struct {
 	Title string
 }
 
 // HandleIndexView renders GET /{$}.
 func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
-	astro.WriteTemplate(w, r.deps.Resolver, "index.html", page{Title: "Welcome"})
+	r.deps.Pages.Render(w, "index.html", page{Title: "Welcome"})
 }
 
 // HandleIndexLogin handles the POST /{$} login action.
 func (r *Router) HandleIndexLogin(w http.ResponseWriter, req *http.Request) {
-	_ = req.ParseForm()
-	astro.WriteTemplate(w, r.deps.Resolver, "index.html", page{Title: "Welcome"})
+	r.deps.Pages.Render(w, "index.html", page{Title: "Welcome"})
 }
 ```
 
 `me.go`:
 
 ```go
-package router
-
-import (
-	"net/http"
-
-	"github.com/kronothepenguin/project-reborn/packages/astro"
-)
-
 type mePage struct {
 	Username string
 }
 
 // HandleMeView renders GET /me.
 func (r *Router) HandleMeView(w http.ResponseWriter, req *http.Request) {
-	astro.WriteTemplate(w, r.deps.Resolver, "me.html", mePage{Username: "admin"})
+	r.deps.Pages.Render(w, "me.html", mePage{Username: "admin"})
 }
 
 // HandleMeMotto handles the POST /me motto update.
 func (r *Router) HandleMeMotto(w http.ResponseWriter, req *http.Request) {
-	_ = req.ParseForm()
 	http.Redirect(w, req, "/me", http.StatusSeeOther)
 }
 ```
 
-`rooms.go` covers both the collection and one member:
+`orders.go` covers the collection and one member:
 
 ```go
-package router
-
-import (
-	"net/http"
-
-	"github.com/kronothepenguin/project-reborn/packages/astro"
-)
-
-// HandleRoomsView renders GET /rooms.
-func (r *Router) HandleRoomsView(w http.ResponseWriter, req *http.Request) {
-	astro.WriteTemplate(w, r.deps.Resolver, "rooms.html", page{Title: "Rooms"})
+// HandleOrdersView renders GET /orders.
+func (r *Router) HandleOrdersView(w http.ResponseWriter, req *http.Request) {
+	r.deps.Pages.Render(w, "orders.html", page{Title: "Orders"})
 }
 
-// HandleRoomView renders GET /rooms/{id}.
-func (r *Router) HandleRoomView(w http.ResponseWriter, req *http.Request) {
-	astro.WriteTemplate(w, r.deps.Resolver, "rooms/id.html", page{
-		Title: req.PathValue("id"),
-	})
+// HandleOrderView renders GET /orders/{id}.
+func (r *Router) HandleOrderView(w http.ResponseWriter, req *http.Request) {
+	r.deps.Pages.Render(w, "orders/id.html", page{Title: req.PathValue("id")})
 }
 ```
 
-`users-rooms.go` combines two resource names with a hyphen:
+`users-orders.go` joins two resource names with a hyphen:
 
 ```go
-package router
-
-import (
-	"net/http"
-
-	"github.com/kronothepenguin/project-reborn/packages/astro"
-)
-
-// HandleUsersRoomsView renders GET /users/{id}/rooms.
-func (r *Router) HandleUsersRoomsView(w http.ResponseWriter, req *http.Request) {
-	astro.WriteTemplate(w, r.deps.Resolver, "users/id/rooms.html", page{
-		Title: req.PathValue("id"),
-	})
+// HandleUsersOrdersView renders GET /users/{id}/orders.
+func (r *Router) HandleUsersOrdersView(w http.ResponseWriter, req *http.Request) {
+	r.deps.Pages.Render(w, "users/id/orders.html", page{Title: req.PathValue("id")})
 }
 ```
 
 ## Route registration
 
-Registration stays in the package root (for example `web.go`), not in the router package:
+The package root registers the routes, in `app.go`:
 
 ```go
-func (web *Web) Mount(mux *http.ServeMux) {
-	r := router.New(router.Deps{Resolver: web.resolve})
+func (a *App) Mount(mux *http.ServeMux) {
+	r := router.New(router.Deps{Pages: a.pages})
 
 	mux.HandleFunc("GET /{$}", r.HandleIndexView)
 	mux.HandleFunc("POST /{$}", r.HandleIndexLogin)
 	mux.HandleFunc("GET /me", r.HandleMeView)
 	mux.HandleFunc("POST /me", r.HandleMeMotto)
-	mux.HandleFunc("GET /rooms", r.HandleRoomsView)
-	mux.HandleFunc("GET /rooms/{id}", r.HandleRoomView)
-	mux.HandleFunc("GET /users/{id}/rooms", r.HandleUsersRoomsView)
+	mux.HandleFunc("GET /orders", r.HandleOrdersView)
+	mux.HandleFunc("GET /orders/{id}", r.HandleOrderView)
+	mux.HandleFunc("GET /users/{id}/orders", r.HandleUsersOrdersView)
 
-	mux.Handle("/", web.static)
+	mux.Handle("/", a.static)
 }
 ```
 
-Rules:
-
-- Method patterns (`GET /me`) require Go 1.22+ `http.ServeMux`; always include the method.
-- Register every route in `Mount`. Handler files never touch the mux.
-- The static handler is registered last with `/`; more specific patterns win automatically.
+- Every pattern names its method: `GET /me`.
+- The static handler comes last, on `/`. More specific patterns win.
+- `{$}` matches the root path only. Keep it on the root page, since `/` matches every path and belongs to the static
+  handler.
 
 ## Route to file mapping
 
@@ -193,31 +159,28 @@ Rules:
 | `POST /{$}` | `index.go` | `HandleIndexLogin` |
 | `GET /me` | `me.go` | `HandleMeView` |
 | `POST /me` | `me.go` | `HandleMeMotto` |
-| `GET /rooms` | `rooms.go` | `HandleRoomsView` |
-| `GET /rooms/{id}` | `rooms.go` | `HandleRoomView` |
-| `GET /users/{id}/rooms` | `users-rooms.go` | `HandleUsersRoomsView` |
+| `GET /orders` | `orders.go` | `HandleOrdersView` |
+| `GET /orders/{id}` | `orders.go` | `HandleOrderView` |
+| `GET /users/{id}/orders` | `users-orders.go` | `HandleUsersOrdersView` |
 
-Derivation: lower-case the static path segments, join them with `-`, drop dynamic `{...}` segments, and append `.go`. Root `/` becomes `index`.
+To name the file, lower-case the static segments, join them with `-`, drop the dynamic `{...}` segments and append
+`.go`. The root `/` is `index`.
 
-## Naming rules
+## Naming
 
-- `Handle<Resource>View` — the handler whose job is rendering the GET page. Exactly one per page.
-- `Handle<Resource><Action>` — any other handler (`HandleIndexLogin`, `HandleMeMotto`). It may re-render on validation failure, but the `View` suffix stays out of action names.
-- Action names use the action, not the HTTP verb: `HandleMeMotto`, not `HandleMePost`.
-- One `page` struct per file when the shape is shared across its handlers; otherwise name it for the route (`mePage`).
-- Several routes intentionally share one file (`GET /rooms` and `GET /rooms/{id}` are both `rooms.go`). Give the handlers distinct names.
-- `{$}` matches the root path only. Never replace it with `/`, which matches everything and is owned by the static handler.
+- `Handle<Resource>View` renders the page of a GET: one per page. `View` names GET handlers only.
+- `Handle<Resource><Action>` names every other handler (`HandleIndexLogin`, `HandleMeMotto`). It handles an action and
+  may re-render the page after a failure.
+- An action name says the action, in place of the HTTP verb: `HandleMeMotto` over `HandleMePost`.
+- A file has one `page` struct when its handlers share the shape. Otherwise name the struct for the route (`mePage`).
+- Routes that share a file (`GET /orders` and `GET /orders/{id}`) get distinct handler names.
 
 ## Verification
 
-```sh
-cd <module-directory> && go build ./... && go vet ./...
-```
-
-Then run the app and hit each changed route, including one dynamic value:
+Build and vet the module, then run the program and request each changed route, with one dynamic value and each action:
 
 ```sh
-curl -i http://localhost:8080/me
-curl -i http://localhost:8080/rooms/42
-curl -i -X POST http://localhost:8080/me -d 'motto=hi'
+curl -i http://localhost:<port>/me
+curl -i http://localhost:<port>/orders/42
+curl -i -X POST http://localhost:<port>/me -d 'motto=hi'
 ```

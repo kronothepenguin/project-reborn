@@ -1,4 +1,4 @@
-.PHONY: install tools create tw-color gates e2e frontends release
+.PHONY: install tools create dependants tw-color e2e frontends release
 
 VERSION ?= dev
 
@@ -25,21 +25,7 @@ frontends:
 	pnpm --filter @project-reborn/installer build
 	pnpm --filter @project-reborn/housekeeping build
 
-# Every gate but the browser suites: what CI runs on each push.
-gates: frontends
-	@for dir in $$(go list -m -f '{{.Dir}}'); do \
-		echo "== $$dir"; \
-		( cd "$$dir" && \
-			out=$$(gofmt -l $$(git ls-files '*.go')) && \
-			{ [ -z "$$out" ] || { echo "not formatted: $$out"; exit 1; }; } && \
-			go vet ./... && go test ./... -race ) || exit 1; \
-	done
-	pnpm --filter @project-reborn/components test
-	pnpm --filter @project-reborn/components check
-	cd packages/store && go tool sqlc generate && \
-		git diff --exit-code -- db.go models.go '*.query.sql.go' && \
-		$(MAKE) check-docs
-	python3 -I .agents/skills/tracking-plans/scripts/check_bundle.py plans/reborn plans/holo-port plans/server plans/client
+include make/check-all.mk
 
 # Builds everything, and runs the browser suites on a throwaway hotel.
 e2e:
@@ -75,6 +61,10 @@ tools:
 
 create: tools
 	./tools/create/bin/create $(if $(template),-template=$(template)) $(if $(dry-run),-dry-run) $(if $(app-port),-app-port=$(app-port)) $(if $(astro-port),-astro-port=$(astro-port)) $(name)
+
+# The projects that use $(project), directly or through another project.
+dependants: tools
+	@./tools/checks/bin/dependants $(project)
 
 tw-color:
 	node tools/tw-color/tw-color.mjs

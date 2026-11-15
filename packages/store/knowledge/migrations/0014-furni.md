@@ -14,5 +14,5 @@ timestamp: 2026-11-11T16:24:23+00:00
 | Title | The furni habbos own, each piece in a hand, in a room or in its user's shared inventory. |
 | Automatic | no |
 
-Creates [furni](/tables/furni.md) with its three indexes (`plans/holo-port/decisions/0057-furni-and-rooms.md`,
-`plans/server/decisions/0096-the-hand-is-read-from-the-database.md`). It seeds nothing: a hotel starts with no furni.
+Creates [furni](/tables/furni.md) with its three indexes (`knowledge/decisions/holo-port/0057-furni-and-rooms.md`,
+`knowledge/decisions/server/0096-the-hand-is-read-from-the-database.md`). It seeds nothing: a hotel starts with no furni.

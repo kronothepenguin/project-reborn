@@ -103,7 +103,7 @@ type RecycleFurniParams struct {
 }
 
 // Out of the habbo's hand and into its recycler: no row changes when the hand does not hold the furni, or when the
-// furni was made after made_before (plans/server decision 0117).
+// furni was made after made_before (decision server/0117).
 func (q *Queries) RecycleFurni(ctx context.Context, arg RecycleFurniParams) (int64, error) {
 	result, err := q.db.ExecContext(ctx, recycleFurni, arg.AvatarID, arg.ID, arg.MadeBefore)
 	if err != nil {

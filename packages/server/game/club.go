@@ -12,7 +12,7 @@ import (
 )
 
 // Club is a user's club as the client shows it: the days left of the running period, the whole periods of club the
-// user has had, and the whole periods prepaid after the running one (plans/server decision 0052).
+// user has had, and the whole periods prepaid after the running one (decision server/0052).
 type Club struct {
 	DaysLeft, ElapsedPeriods, PrepaidPeriods int
 }

@@ -9,7 +9,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 )
 
-// stripInfo is hh_room's 140, the hand (plans/server/reference/r26/hh_room.md#the-hand).
+// stripInfo is hh_room's 140, the hand (packages/server/knowledge/r26/hh_room.md#the-hand).
 const stripInfo = 140
 
 // handleGetStrip sends a page of the habbo's hand: the first for new, the one after or before for next and prev, and

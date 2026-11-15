@@ -10,7 +10,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 )
 
-// The messages of hh_recycler the server sends (plans/server/reference/r26/hh_recycler.md).
+// The messages of hh_recycler the server sends (packages/server/knowledge/r26/hh_recycler.md).
 const (
 	recyclerConfiguration  = 303
 	recyclerStatus         = 304

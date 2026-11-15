@@ -43,7 +43,7 @@ type (
 )
 
 // OpenTrade opens a trade between viewer and the habbo that has index in viewer's room (TRADE_OPEN), in any room, as
-// Holo did (plans/server decision 0112): both show the status trd and see the empty trade. A habbo trades with one
+// Holo did (decision server/0112): both show the status trd and see the empty trade. A habbo trades with one
 // habbo at a time, and both must hold fuse_trade.
 func OpenTrade(ctx context.Context, db *sql.DB, viewer habbo.Habbo, index int) (TradeOpening, error) {
 	r, ok := room.In(viewer.ID)
@@ -72,8 +72,8 @@ func OpenTrade(ctx context.Context, db *sql.DB, viewer habbo.Habbo, index int) (
 
 // OfferFurni puts the furni id of viewer's hand on its side of the trade (TRADE_ADDITEM), which takes both accepts
 // away, and shows both the trade. Only a tradeable furni is offered, once, and a side offers game.maxTradeFurni at
-// most (plans/server decision 0113). The furni stays in the hand, locked, until the trade ends (plans/server
-// decision 0114).
+// most (decision server/0113). The furni stays in the hand, locked, until the trade ends (decision
+// server/0114).
 func OfferFurni(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64) error {
 	r, ok := room.In(viewer.ID)
 	if !ok {
@@ -100,7 +100,7 @@ func OfferFurni(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64) e
 }
 
 // AcceptTrade accepts viewer's trade (TRADE_ACCEPT), and both see it. Once both have accepted, every furni on offer
-// changes hands in one transaction (plans/server decision 0092) and the trade ends; when a furni is no longer in its
+// changes hands in one transaction (decision server/0092) and the trade ends; when a furni is no longer in its
 // habbo's hand, nothing changes hands and the trade ends all the same.
 func AcceptTrade(ctx context.Context, db *sql.DB, viewer habbo.Habbo) error {
 	r, ok := room.In(viewer.ID)
@@ -147,8 +147,8 @@ func CloseTrade(viewer habbo.Habbo) {
 	}
 }
 
-// onOffer reports whether the furni id is on viewer's side of an open trade, where it is locked (plans/server
-// decision 0114).
+// onOffer reports whether the furni id is on viewer's side of an open trade, where it is locked (decision
+// server/0114).
 func onOffer(viewer habbo.Habbo, id int64) bool {
 	r, ok := room.In(viewer.ID)
 	if !ok {

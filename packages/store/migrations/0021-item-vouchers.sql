@@ -1,5 +1,5 @@
 -- A voucher gives credits or one furni.
--- plans/server decision 0120. Every voucher there is gives credits, and keeps them.
+-- decision server/0120. Every voucher there is gives credits, and keeps them.
 
 CREATE TABLE vouchers_new (
     code TEXT NOT NULL COLLATE NOCASE PRIMARY KEY,

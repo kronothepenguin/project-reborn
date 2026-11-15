@@ -15,4 +15,4 @@ timestamp: 2026-11-11T18:14:38+00:00
 | Automatic | no |
 
 Adds `partner_furni_id` to [furni](/tables/furni.md), empty for every furni there is, with the index
-`idx_furni_partner_furni_id` (`plans/server/decisions/0111-a-teleport-keeps-its-partner.md`).
+`idx_furni_partner_furni_id` (`knowledge/decisions/server/0111-a-teleport-keeps-its-partner.md`).

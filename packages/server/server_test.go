@@ -106,7 +106,7 @@ func TestInfoReadsPacketsWhateverTheFrames(t *testing.T) {
 }
 
 // TRY_LOGIN carries the typed password, SSO the ticket, and an unhandled command what a player typed: none of them
-// reaches the log (decision 0021).
+// reaches the log (decision server/0021).
 func TestInfoNeverLogsABody(t *testing.T) {
 	c := dial(t, infoPort)
 	c.receive(t)
@@ -140,7 +140,7 @@ func TestInfoClosesOnlyTheSessionWithAMalformedLength(t *testing.T) {
 	logged.wait(t, "r26 "+good.addr+" unhandled GET_PASSWORD (47), 0 bytes")
 }
 
-// Until S7 frames MUS, the mus listener logs what a client sends and never answers (decision 0023).
+// Until S7 frames MUS, the mus listener logs what a client sends and never answers (decision server/0023).
 func TestMusLogsWhatItReceivesAndNeverAnswers(t *testing.T) {
 	c := dial(t, musPort)
 	logged.wait(t, "mus "+c.addr+" connected")

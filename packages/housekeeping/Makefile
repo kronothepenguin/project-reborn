@@ -1,5 +1,7 @@
 .PHONY: install
 
+include ../../make/check.mk
+
 # go:embed needs a file in dist/ before the first pnpm build, which replaces it.
 install:
 	go mod download

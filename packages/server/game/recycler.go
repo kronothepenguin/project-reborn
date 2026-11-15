@@ -25,7 +25,7 @@ const (
 	RecyclerInProgress
 	// RecyclerReady: the reward may be taken.
 	RecyclerReady
-	// RecyclerTimedOut: the reward waited too long, and only the furni come back (plans/server decision 0116).
+	// RecyclerTimedOut: the reward waited too long, and only the furni come back (decision server/0116).
 	RecyclerTimedOut
 )
 
@@ -72,7 +72,7 @@ func Recycler(ctx context.Context, db *sql.DB) (RecyclerSetup, error) {
 }
 
 // Recycling returns where viewer's recycling stands, counted from its saved start, so that a restart changes nothing
-// (plans/server decision 0093): in progress for recycler.sessionMinutes, then ready until recycler.timeoutMinutes
+// (decision server/0093): in progress for recycler.sessionMinutes, then ready until recycler.timeoutMinutes
 // after its start, then timed out. A habbo with no recycling, and any habbo while the recycler is off, has it open.
 func Recycling(ctx context.Context, db *sql.DB, viewer habbo.Habbo) (RecyclerStatus, error) {
 	if !settings.GetBoolOr("recycler.enabled", true) {
@@ -105,10 +105,10 @@ func recyclingStatus(row store.Recycling, now time.Time) RecyclerStatus {
 }
 
 // StartRecycling moves the furni ids from viewer's hand into its recycler (START_FURNI_RECYCLING), and reports
-// whether it did. The habbo must be in a room, as Holo asked (plans/server decision 0118), and recycle nothing yet;
+// whether it did. The habbo must be in a room, as Holo asked (decision server/0118), and recycle nothing yet;
 // the recycler must give a reward for exactly that many furni; and every furni must be in viewer's hand, recyclable,
-// on offer in no trade (plans/server decision 0114) and at least recycler.minOwnedMinutes old (plans/server decision
-// 0117). The recycling and every furni are saved in one transaction, or nothing is.
+// on offer in no trade (decision server/0114) and at least recycler.minOwnedMinutes old (decision
+// server/0117). The recycling and every furni are saved in one transaction, or nothing is.
 func StartRecycling(ctx context.Context, db *sql.DB, viewer habbo.Habbo, ids []int64) (bool, error) {
 	if _, ok := room.In(viewer.ID); !ok || !settings.GetBoolOr("recycler.enabled", true) {
 		return false, nil
@@ -169,7 +169,7 @@ func StartRecycling(ctx context.Context, db *sql.DB, viewer habbo.Habbo, ids []i
 // EndRecycling ends viewer's recycling (CONFIRM_FURNI_RECYCLING), and reports whether it did. Taking the reward, once
 // the recycling is ready, destroys the furni given and puts the reward in viewer's hand; refusing it, at any time,
 // gives the furni back. A reward that is not ready, or that waited too long, is not taken, and nothing is destroyed
-// (plans/server decision 0116). It all happens in one transaction.
+// (decision server/0116). It all happens in one transaction.
 func EndRecycling(ctx context.Context, db *sql.DB, viewer habbo.Habbo, take bool) (bool, error) {
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {

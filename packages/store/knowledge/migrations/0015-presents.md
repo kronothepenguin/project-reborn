@@ -15,4 +15,4 @@ timestamp: 2026-11-11T17:28:49+00:00
 | Automatic | no |
 
 Adds `box_furni_id` to [furni](/tables/furni.md), with its index
-(`plans/server/decisions/0094-any-habbo-sends-a-present-to-any-habbo.md`). No row changes: nothing waits in a box yet.
+(`knowledge/decisions/server/0094-any-habbo-sends-a-present-to-any-habbo.md`). No row changes: nothing waits in a box yet.

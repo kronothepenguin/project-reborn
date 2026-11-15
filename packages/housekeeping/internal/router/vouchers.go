@@ -146,8 +146,8 @@ func (r *Router) refuseVoucher(w http.ResponseWriter, req *http.Request, status 
 // amount names. Holo took any amount, and a taken code stopped the page with MySQL's
 // error. It looked an item up only when the voucher was redeemed; here the first
 // furni of the sprite is found now, and a name that gives nothing is refused, as a
-// wallpaper, a floor and a landscape are, whose pattern nobody chose (plans/server
-// decisions 0120 and 0125).
+// wallpaper, a floor and a landscape are, whose pattern nobody chose (decisions
+// server/0120 and server/0125).
 func (r *Router) HandleVouchersCreate(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	form := voucherForm{

@@ -17,14 +17,14 @@ credits, and the [furni](/entities/furni-definition.md) it gives.
 - Its `code` is unique: the client buys an item by its code. Holo's code, the sprite, named several items at once, so a
   furni bought there was always the first of them.
 - A deal is an item that gives more than one piece: Holo's four pet food packs give six of a furni each
-  (`plans/server/decisions/0097-furni-definitions-and-catalogue-items-apart.md`).
+  (`knowledge/decisions/server/0097-furni-definitions-and-catalogue-items-apart.md`).
 - Its price is never negative.
 
 # Lifecycle
 
 - The update [0013-catalogue.sql](/migrations/0013-catalogue.md) seeds Holo's items, each with the id, the name, the
   description and the price of Holo's row. Another update adds or changes one; no page of the site edits them
-  (`plans/server/decisions/0091-holos-catalogue-changed-by-updates.md`).
+  (`knowledge/decisions/server/0091-holos-catalogue-changed-by-updates.md`).
 
 # Relations
 

@@ -99,7 +99,7 @@ func TestASilentClientIsClosedAndItsHabboLoggedOut(t *testing.T) {
 	})
 }
 
-// The bytes of plans/server/reference/r26/hh_entry_init.md for the test with id 1.
+// The bytes of packages/server/knowledge/r26/hh_entry_init.md for the test with id 1.
 func TestTheLatencyTestInBytes(t *testing.T) {
 	c := dial(t, infoPort)
 	c.expect(t, "@@\x01")

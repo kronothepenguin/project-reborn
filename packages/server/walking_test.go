@@ -37,7 +37,7 @@ func statusLines(body string) map[string]string {
 }
 
 // Each tick of a room's clock, 500 ms apart, takes every walking habbo a step and sends one 34 with all of them to
-// everyone in the room (plans/server decisions 0065 and 0072).
+// everyone in the room (decisions server/0065 and server/0072).
 func TestHabbosWalkAStepEvery500Milliseconds(t *testing.T) {
 	ownerID := habboWithTickets(t, "Strider", "strider")
 	habboWithTickets(t, "Ambler", "ambler")

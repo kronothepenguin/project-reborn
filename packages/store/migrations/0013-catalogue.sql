@@ -1,13 +1,13 @@
 -- The furni definitions and the catalogue's pages and items, with Holo's catalogue.
--- The catalogue comes from source/holoemu/Resources/holodb.sql, the dump whose names are English (plans/server
--- decisions 0091 and 0097). Each row of its catalogue_items is split into what the furni is, a definition that the
+-- The catalogue comes from source/holoemu/Resources/holodb.sql, the dump whose names are English (decisions
+-- server/0091 and server/0097). Each row of its catalogue_items is split into what the furni is, a definition that the
 -- rows repeating it share, and what a page sells, a catalogue item that keeps Holo's id. A sprite of two words, such
 -- as "poster 44", is the sprite and a wall item's data. An item's code is its id, since Holo's, the sprite, named
 -- several items, and a deal keeps Holo's code, for which the client has a picture. A Holo rank of 1 is level 0,
--- everyone; rank 7 is level 7; and rank 2, Holo's club rank, is level 2 and open to club members (decision 0100). Six
--- page names that the dump keeps in Dutch or misspells take the page's code (decision 0099), and Club Furni sells only
--- to club members (decision 0102).
--- Left out until S7 builds what they sell (decision 0101): the pages Pets, Camera, the five Trax pages and Club Shop,
+-- everyone; rank 7 is level 7; and rank 2, Holo's club rank, is level 2 and open to club members (decision server/0100). Six
+-- page names that the dump keeps in Dutch or misspells take the page's code (decision server/0099), and Club Furni sells only
+-- to club members (decision server/0102).
+-- Left out until S7 builds what they sell (decision server/0101): the pages Pets, Camera, the five Trax pages and Club Shop,
 -- whose only furni is the Mood Light, with their furni; the sound sets and the jukebox of other pages; and the song
 -- disk. Also left out: the Offers page, whose three deals give furni that their names do not say, and the three deals
 -- Holo sold on no page. A page's numbered texts are rows of their own, without the line feeds Holo left before them,

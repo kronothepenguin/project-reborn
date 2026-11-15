@@ -16,8 +16,8 @@ timestamp: 2026-11-09T22:45:00+00:00
 
 Creates [avatar_game_data](/tables/avatar_game_data.md), a row per habbo for its last time online, the machine id
 of its last game login and its sound setting, which the game server writes
-(`plans/server/decisions/0035-the-machine-id-is-saved-per-habbo.md`,
-`plans/server/decisions/0037-last-online-at-login-and-logout.md` and
-`plans/server/decisions/0038-the-sound-setting-is-saved.md`). It is a table of its own, so nothing that reads
+(`knowledge/decisions/server/0035-the-machine-id-is-saved-per-habbo.md`,
+`knowledge/decisions/server/0037-last-online-at-login-and-logout.md` and
+`knowledge/decisions/server/0038-the-sound-setting-is-saved.md`). It is a table of its own, so nothing that reads
 [avatars](/tables/avatars.md) fails while the update waits
-(`plans/server/decisions/0044-game-login-data-has-its-own-table.md`).
+(`knowledge/decisions/server/0044-game-login-data-has-its-own-table.md`).

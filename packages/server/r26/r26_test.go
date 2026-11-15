@@ -209,7 +209,7 @@ func TestServeClosesTheSessionOnAPacketCutShort(t *testing.T) {
 	logged.wait(t, "r26 "+t.Name()+" closed: unexpected EOF")
 }
 
-// The outbox keeps the order of the messages, which one goroutine writes (plans/server decision 0073).
+// The outbox keeps the order of the messages, which one goroutine writes (decision server/0073).
 func TestTheOutboxKeepsTheOrderOfTheMessages(t *testing.T) {
 	client, _ := start(t, t.Name(), map[int]handler{315: func(s *session, _ []byte) {
 		for i := range 300 {

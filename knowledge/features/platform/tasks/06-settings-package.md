@@ -1,0 +1,60 @@
+---
+type: Task
+title: packages/settings reads each setting from the store
+description: A new packages/settings holds the list of settings and reads each one with a sqlc query, returning its default when no row exists; auth reads through it; virtual/settings keeps working on top of it until every program has switched.
+scope: [packages/settings, packages/store, packages/virtual, packages/auth, packages/cms, packages/housekeeping, packages/installer, packages/server, go.work]
+depends_on: []
+skills: [adding-data-persistence, documenting-with-okf]
+---
+
+# Goal
+
+One way to read settings, from the store, on use ([0006](/decisions/reborn/0006-settings-are-read-from-the-store.md)).
+This is the feature's contract for settings: it runs alone.
+
+# Context
+
+- [Spec](/features/platform/spec.md)
+- [Plan](/features/platform/plan.md)
+- `packages/store/knowledge/adding-persisted-data.md`: the playbook of `adding-data-persistence`.
+- [Every program reads settings from the store, and nothing
+  refreshes](/decisions/reborn/0006-settings-are-read-from-the-store.md)
+- Runs alone: it touches `go.work`, the store's generated queries and `virtual/settings`.
+- A value of `config.json` is read from `config`, not through `settings`.
+
+# Steps
+
+- [ ] A new module `packages/settings` (`go work use`). The list of settings with their defaults, checks and the rules
+  that tie two together moves there from `packages/virtual/settings/catalogue.go`.
+- [ ] `packages/store`: a sqlc query `GetSetting(key)`, its generated code and its OKF document
+  (`adding-data-persistence`, `documenting-with-okf`).
+- [ ] `settings.String`, `settings.Int` and `settings.Bool(ctx, q *store.Queries, key)`: run `GetSetting`, decode the
+  row's JSON, and return the declared default when there is no row or the row is bad (a bad row is logged once, as
+  today, never with its value). A key that is not declared is logged and returns the zero value.
+- [ ] `settings.Set(ctx, q, userID, key, value)` and `settings.Validate(candidates)`: today's checks and rules, reading
+  the other keys of a rule through `q`; the row is deleted when the value is the default, as today. `Declared()` stays.
+- [ ] `packages/auth` reads its eight settings through `packages/settings`; the functions that need one take the
+  queries they read with, and their callers in the CMS, housekeeping, the installer and the game pass them, the
+  transaction's queries inside a transaction.
+- [ ] `packages/virtual/settings` keeps its API for the programs that have not switched yet, built on the moved list.
+- [ ] Tests: defaults without rows; each type decoded; a bad row gives the default; `Set` validates, writes and deletes;
+  a read through a transaction's queries inside a transaction does not wait.
+- [ ] A short `packages/settings/README.md` (what it is, setup), and in `packages/settings/knowledge/` the rule: inside
+  a transaction, read through the transaction's queries.
+
+# Checks
+
+```sh
+make -C packages/settings check
+make -C packages/store check
+make -C packages/virtual check
+make -C packages/auth check
+make -C packages/cms check
+make -C packages/housekeeping check
+make -C packages/installer check
+make -C packages/server check
+```
+
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/settings`,
+`packages/store`, `packages/virtual`, `packages/auth`, `packages/cms`, `packages/housekeeping`, `packages/installer`,
+`packages/server`.

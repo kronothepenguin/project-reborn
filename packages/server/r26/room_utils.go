@@ -10,7 +10,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 )
 
-// The messages of hh_room_utils' Chat Manager (plans/server/reference/r26/hh_room_utils.md): a chat, a whisper and a
+// The messages of hh_room_utils' Chat Manager (packages/server/knowledge/r26/hh_room_utils.md): a chat, a whisper and a
 // shout, by game.ChatKind.
 var chatMessages = [...]int{game.ChatSay: 24, game.ChatWhisper: 25, game.ChatShout: 26}
 
@@ -21,7 +21,7 @@ var roomUtilsHandlers = map[int]handler{
 	56: loggedIn(handleWhisper),
 }
 
-// handleChat says a line to the room: those near read it, the others see a bubble (plans/server decision 0074).
+// handleChat says a line to the room: those near read it, the others see a bubble (decision server/0074).
 func handleChat(s *session, me habbo.Habbo, body []byte) {
 	text, ok := chatText(s, 52, body)
 	if ok {

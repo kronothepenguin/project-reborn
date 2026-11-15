@@ -14,7 +14,7 @@ import (
 func TestCatalogue(t *testing.T) {
 	entries := Catalogue()
 	if len(entries) != 21 {
-		t.Errorf("the catalogue has %d attributes, want the 18 of decision 0015, housekeeping.usersPrivate, housekeeping.database and housekeeping.chatLogs", len(entries))
+		t.Errorf("the catalogue has %d attributes, want the 18 of decision holo-port/0015, housekeeping.usersPrivate, housekeeping.database and housekeeping.chatLogs", len(entries))
 	}
 	seen := make(map[Attribute]bool)
 	for _, entry := range entries {

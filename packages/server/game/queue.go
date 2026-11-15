@@ -10,14 +10,14 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
-// The targets of a full room's two lines, as 259 and ROOM_QUEUE_CHANGE name them (plans/server decision 0090).
+// The targets of a full room's two lines, as 259 and ROOM_QUEUE_CHANGE name them (decision server/0090).
 const (
 	targetRoom       = 1
 	targetSpectators = 2
 )
 
 // QueueSet is one of a full room's lines as 259 shows it to a habbo: its name and target, and how many club members
-// and others would come in before the habbo (plans/server decisions 0088 and 0090).
+// and others would come in before the habbo (decisions server/0088 and server/0090).
 type QueueSet struct {
 	Name   string
 	Target int
@@ -40,7 +40,7 @@ type QueueAdmitted struct {
 type SpectatorsRemoved struct{}
 
 // joinQueue puts the habbo, heading for the full room r, at the end of its queue, club members' lines kept apart
-// (plans/server decisions 0087 and 0088), and tells everyone waiting their places.
+// (decisions server/0087 and server/0088), and tells everyone waiting their places.
 func joinQueue(ctx context.Context, db *sql.DB, viewer habbo.Habbo, r *room.Room) error {
 	club, err := ClubStatus(ctx, db, viewer.UserID)
 	if err != nil {
@@ -57,7 +57,7 @@ func joinQueue(ctx context.Context, db *sql.DB, viewer habbo.Habbo, r *room.Room
 
 // serveLines lets the queue's next habbos in while the room has places, keeping their places on their way, and the
 // spectators' queue's while fewer than game.maxSpectators watch, club members first; then everyone still waiting
-// learns its place (plans/server decisions 0088 and 0089).
+// learns its place (decisions server/0088 and server/0089).
 func serveLines(r *room.Room) {
 	ref := r.Ref()
 	model := ""
@@ -132,7 +132,7 @@ func queueSets(r *room.Room, w room.Waiting, own room.Line) []QueueSet {
 }
 
 // ChangeQueue moves the habbo to the line target names, the room's or the spectators' (ROOM_QUEUE_CHANGE), at its end
-// (plans/server decision 0089).
+// (decision server/0089).
 func ChangeQueue(viewer habbo.Habbo, target int) {
 	to, ok := map[int]room.Line{targetRoom: room.Queue, targetSpectators: room.SpectatorQueue}[target]
 	h, heading := room.HeadingOf(viewer.ID)
@@ -179,7 +179,7 @@ func watching(avatarID int64) (*room.Room, bool) {
 }
 
 // audience returns the sessions of everyone who sees what happens in the room: its habbos and its spectators
-// (plans/server decision 0089).
+// (decision server/0089).
 func audience(r *room.Room) []habbo.Session {
 	var all []habbo.Session
 	for _, o := range r.Occupants() {

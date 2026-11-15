@@ -17,4 +17,4 @@ timestamp: 2026-11-11T17:51:13+00:00
 Rebuilds [furni_definitions](/tables/furni_definitions.md), whose `kind` now also takes `roller`: a new table with every
 row copied, the old one dropped, the new one renamed, and its index made again. The ten rollers of Holo's catalogue, the
 definitions 465 to 474, were solids there and become rollers
-(`plans/server/decisions/0107-rollers-roll-every-two-seconds.md`).
+(`knowledge/decisions/server/0107-rollers-roll-every-two-seconds.md`).

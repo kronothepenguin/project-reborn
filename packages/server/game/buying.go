@@ -24,7 +24,7 @@ import (
 var (
 	// ErrNotForSale: the page does not exist, the buyer does not see it, or it sells no such item.
 	ErrNotForSale = errors.New("game: the catalogue does not sell that")
-	// ErrClubOnly: the page sells only to club members (plans/server decision 0102).
+	// ErrClubOnly: the page sells only to club members (decision server/0102).
 	ErrClubOnly = errors.New("game: the page sells only to club members")
 	// ErrNotEnoughCredits: the user's wallet does not hold the price.
 	ErrNotEnoughCredits = errors.New("game: not enough credits")
@@ -40,7 +40,7 @@ type HandChanged struct{}
 
 // Order is what a habbo asks the catalogue for: a page and one of its items, by their codes, and the extra value the
 // page's layout adds, a trophy's inscription or the pattern of a wallpaper, a floor or a landscape. A gift goes to the
-// habbo named Receiver, in a box with Note on it (plans/server decision 0094).
+// habbo named Receiver, in a box with Note on it (decision server/0094).
 type Order struct {
 	Page, Item, Extra string
 	Gift              bool
@@ -172,7 +172,7 @@ func Buy(ctx context.Context, db *sql.DB, buyer habbo.Habbo, order Order) (credi
 	return wallet.Credits, nil
 }
 
-// note cuts a present's note at game.presentNoteMaxLength characters (plans/server decision 0106), its control
+// note cuts a present's note at game.presentNoteMaxLength characters (decision server/0106), its control
 // characters turned into spaces.
 func note(text string) string {
 	clean := []rune(strings.Map(func(r rune) rune {
@@ -188,7 +188,7 @@ func note(text string) string {
 }
 
 // OpenPresent opens the box id that stands in the room viewer is in, and returns the last furni that waited in it,
-// which the box's card shows. Only the room's owner opens a box (plans/server decision 0105): what waited in it goes
+// which the box's card shows. Only the room's owner opens a box (decision server/0105): what waited in it goes
 // to the owner's hand, and the box goes. It reports false for a box that may not be opened, or that held nothing.
 func OpenPresent(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64) (store.FurniDefinition, bool, error) {
 	r, ok := room.In(viewer.ID)

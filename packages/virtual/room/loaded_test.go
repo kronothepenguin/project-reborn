@@ -176,7 +176,7 @@ func TestAFullRoomRefusesTheNextHabbo(t *testing.T) {
 	}
 }
 
-// A habbo room's rights and bans load with it (plans/server decision 0009), and changes reach the copy until it unloads.
+// A habbo room's rights and bans load with it (decision server/0009), and changes reach the copy until it unloads.
 func TestAHabboRoomLoadsItsRightsAndBans(t *testing.T) {
 	db := openHotel(t)
 	q := store.New(db)
@@ -225,8 +225,8 @@ func TestAHabboRoomLoadsItsRightsAndBans(t *testing.T) {
 	}
 }
 
-// Those at the doorbell, in the queue and among the spectators wait in memory until the room unloads (plans/server
-// decision 0069), and are handed back then.
+// Those at the doorbell, in the queue and among the spectators wait in memory until the room unloads (decision
+// server/0069), and are handed back then.
 func TestTheLinesLastUntilTheRoomUnloads(t *testing.T) {
 	openHotel(t)
 	ann := &session{"Ann"}

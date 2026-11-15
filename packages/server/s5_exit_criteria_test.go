@@ -82,7 +82,7 @@ func TestAHabboShopsInHolosCatalogue(t *testing.T) {
 
 // S5's third exit criterion, where it speaks of what stays: furni that a habbo placed, moved, turned and switched on
 // is in the store, so it comes back as it was after the room unloads, which is all a restart leaves of a room too
-// (plans/server decision 0010).
+// (decision server/0010).
 func TestFurniAndItsStateComeBackWithTheRoom(t *testing.T) {
 	owner := habboWithTickets(t, "Homemaker", "homemaker")
 	flat := newRoom(t, owner, 2, "Bungalow", true)

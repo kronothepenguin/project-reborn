@@ -1,5 +1,5 @@
 -- Rollers are a kind of furni of their own, which habbos walk onto and which carries what stands on it.
--- plans/server decision 0107. The ten rollers of Holo's catalogue, 465 to 474, were solids there, and take the kind.
+-- decision server/0107. The ten rollers of Holo's catalogue, 465 to 474, were solids there, and take the kind.
 
 CREATE TABLE furni_definitions_new (
     id INTEGER PRIMARY KEY,

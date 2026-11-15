@@ -16,7 +16,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
-// The messages of hh_entry_init the server sends (plans/server/reference/r26/hh_entry_init.md). hello opens every
+// The messages of hh_entry_init the server sends (packages/server/knowledge/r26/hh_entry_init.md). hello opens every
 // session, and the client sends nothing before it.
 const (
 	hello                = 0
@@ -35,7 +35,7 @@ const (
 	possibleAchievements = 436
 )
 
-// purse is hh_cat_code's message, which GET_CREDITS asks for (plans/server/reference/r26/hh_cat_code.md).
+// purse is hh_cat_code's message, which GET_CREDITS asks for (packages/server/knowledge/r26/hh_cat_code.md).
 const purse = 6
 
 // The texts of 33 the client acts on, and the reason of 287 on which it opens url_logout_concurrent.
@@ -46,8 +46,8 @@ const (
 )
 
 // entryInitHandlers handles the commands of the handshake, the login and what the client asks after it. GENERATEKEY has
-// no handler: it comes after ENDOFCRYPTOPARAMS, changes nothing, and is logged as unhandled (plans/server decision
-// 0027). GETSELECTEDBADGES waits for achievements (plans/server decision 0051).
+// no handler: it comes after ENDOFCRYPTOPARAMS, changes nothing, and is logged as unhandled (decision
+// server/0027). GETSELECTEDBADGES waits for achievements (decision server/0051).
 var entryInitHandlers = map[int]handler{
 	7:    loggedIn(handleGetInfo),
 	8:    loggedIn(handleGetCredits),
@@ -67,15 +67,15 @@ var entryInitHandlers = map[int]handler{
 }
 
 // handleInitCrypto answers CRYPTOPARAMETERS 0 and ENDOFCRYPTOPARAMS at once, so that the client sends plain bytes
-// (plans/server decisions 0012 and 0027).
+// (decisions server/0012 and server/0027).
 func handleInitCrypto(s *session, _ []byte) {
 	s.reply(cryptoParameters, vl64(0))
 	s.reply(endOfCryptoParams, nil)
 }
 
 // handleVersionCheck lets the client log in when it carries the version game.clientVersion holds and two URLs that are
-// empty or on site.url; any other client gets 33 Version not correct and is closed (plans/server decisions 0033, 0041
-// and 0049).
+// empty or on site.url; any other client gets 33 Version not correct and is closed (decisions server/0033, server/0041
+// and server/0049).
 func handleVersionCheck(s *session, body []byte) {
 	if !versionPasses(body) {
 		s.turnAway()
@@ -113,7 +113,7 @@ func (s *session) turnAway() {
 	s.end()
 }
 
-// handleUniqueID keeps the machine id until the login saves it with the habbo (plans/server decision 0035).
+// handleUniqueID keeps the machine id until the login saves it with the habbo (decision server/0035).
 func handleUniqueID(s *session, body []byte) {
 	id, err := encoding.ReadB64String(bytes.NewReader(body))
 	if err != nil {
@@ -124,7 +124,7 @@ func handleUniqueID(s *session, body []byte) {
 }
 
 // handleGetSessionParameters sends the ten session parameters, ids 0 to 9, from their settings; a flag goes out as 0
-// or 1 (plans/server decision 0034).
+// or 1 (decision server/0034).
 func handleGetSessionParameters(s *session, _ []byte) {
 	values := []any{
 		settings.GetInt("game.coppa"),
@@ -158,8 +158,8 @@ func handleGetSessionParameters(s *session, _ []byte) {
 }
 
 // handleSSO logs in the habbo of the ticket through game and answers its fuses, then LOGIN_OK, as Holo did, so that the
-// listeners of LOGIN_OK find the rights in place; or 33 login incorrect for a ticket that is not valid (plans/server
-// decisions 0028, 0030 and 0045). A session logs in once, and only after its version check.
+// listeners of LOGIN_OK find the rights in place; or 33 login incorrect for a ticket that is not valid (decisions
+// server/0028, server/0030 and server/0045). A session logs in once, and only after its version check.
 func handleSSO(s *session, body []byte) {
 	if s.habbo != 0 {
 		return
@@ -235,8 +235,8 @@ func handleGetCredits(s *session, me habbo.Habbo, _ []byte) {
 	s.reply(purse, []byte(strconv.FormatInt(account.Credits, 10)))
 }
 
-// handleGetAvailableBadges sends the habbo's badges, then those it wears, each with its slot, 1 to 5 (plans/server
-// decision 0083).
+// handleGetAvailableBadges sends the habbo's badges, then those it wears, each with its slot, 1 to 5 (decision
+// server/0083).
 func handleGetAvailableBadges(s *session, me habbo.Habbo, _ []byte) {
 	var b bytes.Buffer
 	b.Write(vl64(len(me.Badges)))
@@ -279,12 +279,12 @@ func handleSetSoundSetting(s *session, me habbo.Habbo, body []byte) {
 	}
 }
 
-// handleGetPossibleAchievements sends no achievement: the hotel has none yet (plans/server decision 0051).
+// handleGetPossibleAchievements sends no achievement: the hotel has none yet (decision server/0051).
 func handleGetPossibleAchievements(s *session, _ habbo.Habbo, _ []byte) {
 	s.reply(possibleAchievements, vl64(0))
 }
 
-// handlePong keeps the session alive (plans/server decision 0042).
+// handlePong keeps the session alive (decision server/0042).
 func handlePong(s *session, _ []byte) {
 	s.lastPong.Store(time.Now().UnixNano())
 }
@@ -299,7 +299,7 @@ func handleTestLatency(s *session, body []byte) {
 	s.reply(latencyTest, vl64(int(id)))
 }
 
-// handleReportLatency writes the client's latency to the log, and saves nothing (plans/server decision 0036): the mean
+// handleReportLatency writes the client's latency to the log, and saves nothing (decision server/0036): the mean
 // of every round trip, the mean of those below twice it, and how many answers both count.
 func handleReportLatency(s *session, body []byte) {
 	r := bytes.NewReader(body)
@@ -332,7 +332,7 @@ func (s *session) fail(err error) {
 	s.end()
 }
 
-// handleTryLogin refuses every name and password: a habbo logs in only with SSO (plans/server decision 0028).
+// handleTryLogin refuses every name and password: a habbo logs in only with SSO (decision server/0028).
 func handleTryLogin(s *session, _ []byte) {
 	s.reply(errorText, []byte(loginIncorrect))
 }
@@ -364,7 +364,7 @@ func flag(v bool) int {
 }
 
 // entryInitCommands names the commands of hh_entry_init by id, as its Login Handler and Opening Hours Handler register
-// them (plans/server/reference/r26/hh_entry_init.md).
+// them (packages/server/knowledge/r26/hh_entry_init.md).
 var entryInitCommands = map[int]string{
 	7:    "GET_INFO",
 	8:    "GET_CREDITS",
