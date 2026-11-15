@@ -19,7 +19,7 @@ func TestRollersCarryFurniAndHabbos(t *testing.T) {
 	}
 	lamp := giveFurni(t, owner, 1279, "")
 	standFurni(t, lamp, flat, 6, 6, 0)
-	if _, err := testDB.ExecContext(t.Context(), `UPDATE furni SET altitude = 0.5 WHERE id = ?`, lamp); err != nil {
+	if _, err := testDB.ExecContext(t.Context(), `UPDATE furnis SET altitude = 0.5 WHERE id = ?`, lamp); err != nil {
 		t.Fatal(err)
 	}
 	wall := giveFurni(t, owner, 101, "")

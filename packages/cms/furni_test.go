@@ -69,10 +69,10 @@ func TestArchivingSharesFurniAndTheFurniPageTakesIt(t *testing.T) {
 	if n := count(t, db, `SELECT COUNT(*) FROM rooms WHERE id = ? AND owner_avatar_id = ? AND creator_avatar_id = ?`, room, active, second.ID); n != 1 {
 		t.Error("the archived habbo's room is not the active habbo's, with its creator kept")
 	}
-	if n := count(t, db, `SELECT COUNT(*) FROM furni WHERE id = ? AND room_id = ? AND x = 5`, placed.ID, room); n != 1 {
+	if n := count(t, db, `SELECT COUNT(*) FROM furnis WHERE id = ? AND room_id = ? AND x = 5`, placed.ID, room); n != 1 {
 		t.Error("the furni of the archived habbo's room did not stay in place")
 	}
-	if n := count(t, db, `SELECT COUNT(*) FROM furni WHERE avatar_id = ? OR recycler_avatar_id = ?`, second.ID, second.ID); n != 0 {
+	if n := count(t, db, `SELECT COUNT(*) FROM furnis WHERE avatar_id = ? OR recycler_avatar_id = ?`, second.ID, second.ID); n != 0 {
 		t.Errorf("%d furni are still the archived habbo's", n)
 	}
 
@@ -95,7 +95,7 @@ func TestArchivingSharesFurniAndTheFurniPageTakesIt(t *testing.T) {
 	if len(hand) != 5 || !slices.ContainsFunc(hand, func(f store.Furni) bool { return f.ID == own.ID }) {
 		t.Errorf("the active habbo's hand holds %d furni, want its own, the three lamps and the throne: %+v", len(hand), hand)
 	}
-	if n := count(t, db, `SELECT COUNT(*) FROM furni WHERE id = ? AND avatar_id IS NULL`, theirs.ID); n != 1 {
+	if n := count(t, db, `SELECT COUNT(*) FROM furnis WHERE id = ? AND avatar_id IS NULL`, theirs.ID); n != 1 {
 		t.Error("another user's shared furni was taken")
 	}
 }

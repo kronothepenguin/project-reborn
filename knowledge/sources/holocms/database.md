@@ -27,7 +27,7 @@ foreign keys, no transactions and no secondary indexes.
 | `cms_forum_threads`, `cms_forum_posts` | site-wide discussion board | `forum_threads`, `forum_posts` |
 | `cms_help` | help tickets and post reports | `help_tickets` |
 | `cms_homes_catalouge` [sic] | home store catalogue (303 seed rows) | `home_store_categories`, `home_store_items` |
-| `cms_homes_inventory` | bought, unplaced items | `home_inventory` |
+| `cms_homes_inventory` | bought, unplaced items | `home_inventories` |
 | `cms_homes_stickers` | every item on user and group homes (polymorphic) | `homes`, `home_items` |
 | `cms_homes_group_linker` | "currently editing group X" per user, no PK | not stored: the edit target is the `home_id` in the URL |
 | `cms_minimail` | defined, never written | not ported |
@@ -142,7 +142,7 @@ or a non-owner role, gets a role prefix; `ON DELETE CASCADE` for owned data and 
 | | `home_items` | id, home_id, kind (sticker/note/widget), home_store_item_id NULL, widget NULL, skin, body, x, y, z, created_by_avatar_id, created_at, updated_at | `idx_home_items_home_id` |
 | `home-store` | `home_store_categories` | id, name, staff_only BOOLEAN, position | |
 | | `home_store_items` | id, home_store_category_id, kind (sticker/note/background), asset, name, price ≥ 0, quantity ≥ 1, enabled BOOLEAN | `idx_home_store_items_home_store_category_id` |
-| | `home_inventory` | user_id, home_store_item_id, quantity ≥ 0 | PK (user_id, home_store_item_id) |
+| | `home_inventories` | user_id, home_store_item_id, quantity ≥ 0 | PK (user_id, home_store_item_id) |
 | `groups` | `groups` | id, avatar_id (owner), name `NOCASE`, description, badge, access (open/moderated/closed), created_at, updated_at | `idx_groups_name` UNIQUE, `idx_groups_avatar_id` |
 | | `group_members` | group_id, avatar_id, role (member/admin), favourite BOOLEAN, requested_at, joined_at NULL (= pending) | PK (group_id, avatar_id), `idx_group_members_avatar_id`, UNIQUE (avatar_id) WHERE favourite |
 | `economy` | `wallets` | user_id PK, credits ≥ 0, tickets ≥ 0, film ≥ 0, updated_at | |

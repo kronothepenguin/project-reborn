@@ -12,7 +12,7 @@ import (
 )
 
 const countFurni = `-- name: CountFurni :one
-SELECT COUNT(*) FROM furni
+SELECT COUNT(*) FROM furnis
 `
 
 // Every piece there is, wherever it is.
@@ -24,7 +24,7 @@ func (q *Queries) CountFurni(ctx context.Context) (int64, error) {
 }
 
 const countHandFurni = `-- name: CountHandFurni :one
-SELECT COUNT(*) FROM furni WHERE avatar_id = CAST(?1 AS INTEGER)
+SELECT COUNT(*) FROM furnis WHERE avatar_id = CAST(?1 AS INTEGER)
 `
 
 func (q *Queries) CountHandFurni(ctx context.Context, avatarID int64) (int64, error) {
@@ -35,7 +35,7 @@ func (q *Queries) CountHandFurni(ctx context.Context, avatarID int64) (int64, er
 }
 
 const createFurni = `-- name: CreateFurni :one
-INSERT INTO furni (furni_definition_id, user_id, avatar_id, box_furni_id, state, created_at)
+INSERT INTO furnis (furni_definition_id, user_id, avatar_id, box_furni_id, state, created_at)
 VALUES (
     ?1, ?2, ?3, ?4, ?5,
     ?6
@@ -83,7 +83,7 @@ func (q *Queries) CreateFurni(ctx context.Context, arg CreateFurniParams) (Furni
 }
 
 const deleteHandFurni = `-- name: DeleteHandFurni :execrows
-DELETE FROM furni WHERE id = ?1 AND avatar_id = CAST(?2 AS INTEGER)
+DELETE FROM furnis WHERE id = ?1 AND avatar_id = CAST(?2 AS INTEGER)
 `
 
 type DeleteHandFurniParams struct {
@@ -101,7 +101,7 @@ func (q *Queries) DeleteHandFurni(ctx context.Context, arg DeleteHandFurniParams
 }
 
 const deleteRoomFurni = `-- name: DeleteRoomFurni :execrows
-DELETE FROM furni WHERE id = ?1 AND room_id = CAST(?2 AS INTEGER)
+DELETE FROM furnis WHERE id = ?1 AND room_id = CAST(?2 AS INTEGER)
 `
 
 type DeleteRoomFurniParams struct {
@@ -118,7 +118,7 @@ func (q *Queries) DeleteRoomFurni(ctx context.Context, arg DeleteRoomFurniParams
 }
 
 const deleteRoomPostIts = `-- name: DeleteRoomPostIts :exec
-DELETE FROM furni
+DELETE FROM furnis
 WHERE room_id = CAST(?1 AS INTEGER)
     AND furni_definition_id IN (SELECT id FROM furni_definitions WHERE sprite LIKE 'post.it%')
 `
@@ -130,7 +130,7 @@ func (q *Queries) DeleteRoomPostIts(ctx context.Context, roomID int64) error {
 }
 
 const getFurni = `-- name: GetFurni :one
-SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id, partner_furni_id, recycler_avatar_id FROM furni WHERE id = ?1
+SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id, partner_furni_id, recycler_avatar_id FROM furnis WHERE id = ?1
 `
 
 func (q *Queries) GetFurni(ctx context.Context, id int64) (Furni, error) {
@@ -168,7 +168,7 @@ func (q *Queries) GetFurniNote(ctx context.Context, furniID int64) (string, erro
 }
 
 const listBoxFurni = `-- name: ListBoxFurni :many
-SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id, partner_furni_id, recycler_avatar_id FROM furni WHERE box_furni_id = CAST(?1 AS INTEGER) ORDER BY id
+SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id, partner_furni_id, recycler_avatar_id FROM furnis WHERE box_furni_id = CAST(?1 AS INTEGER) ORDER BY id
 `
 
 func (q *Queries) ListBoxFurni(ctx context.Context, boxFurniID int64) ([]Furni, error) {
@@ -211,7 +211,7 @@ func (q *Queries) ListBoxFurni(ctx context.Context, boxFurniID int64) ([]Furni, 
 }
 
 const listHandFurni = `-- name: ListHandFurni :many
-SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id, partner_furni_id, recycler_avatar_id FROM furni
+SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id, partner_furni_id, recycler_avatar_id FROM furnis
 WHERE avatar_id = CAST(?1 AS INTEGER)
 ORDER BY id
 LIMIT ?3 OFFSET ?2
@@ -263,7 +263,7 @@ func (q *Queries) ListHandFurni(ctx context.Context, arg ListHandFurniParams) ([
 }
 
 const listRoomFurni = `-- name: ListRoomFurni :many
-SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id, partner_furni_id, recycler_avatar_id FROM furni WHERE room_id = CAST(?1 AS INTEGER) ORDER BY id
+SELECT id, furni_definition_id, user_id, avatar_id, room_id, x, y, altitude, direction, wall_position, state, created_at, box_furni_id, partner_furni_id, recycler_avatar_id FROM furnis WHERE room_id = CAST(?1 AS INTEGER) ORDER BY id
 `
 
 func (q *Queries) ListRoomFurni(ctx context.Context, roomID int64) ([]Furni, error) {
@@ -307,25 +307,25 @@ func (q *Queries) ListRoomFurni(ctx context.Context, roomID int64) ([]Furni, err
 
 const listSharedFurni = `-- name: ListSharedFurni :many
 SELECT
-    furni.furni_definition_id,
+    furnis.furni_definition_id,
     CAST(COALESCE((
         SELECT catalogue_items.name
         FROM catalogue_items
-        JOIN catalogue_item_furni ON catalogue_item_furni.catalogue_item_id = catalogue_items.id
-        WHERE catalogue_item_furni.furni_definition_id = furni.furni_definition_id
-            AND catalogue_item_furni.amount = 1
-            AND (SELECT COUNT(*) FROM catalogue_item_furni AS given WHERE given.catalogue_item_id = catalogue_items.id) = 1
+        JOIN catalogue_item_furnis ON catalogue_item_furnis.catalogue_item_id = catalogue_items.id
+        WHERE catalogue_item_furnis.furni_definition_id = furnis.furni_definition_id
+            AND catalogue_item_furnis.amount = 1
+            AND (SELECT COUNT(*) FROM catalogue_item_furnis AS given WHERE given.catalogue_item_id = catalogue_items.id) = 1
         ORDER BY catalogue_items.id
         LIMIT 1
     ), furni_definitions.sprite) AS TEXT) AS name,
     COUNT(*) AS amount
-FROM furni
-JOIN furni_definitions ON furni_definitions.id = furni.furni_definition_id
-WHERE furni.user_id = ?1
-    AND furni.avatar_id IS NULL AND furni.room_id IS NULL
-    AND furni.box_furni_id IS NULL AND furni.recycler_avatar_id IS NULL
-GROUP BY furni.furni_definition_id
-ORDER BY name, furni.furni_definition_id
+FROM furnis
+JOIN furni_definitions ON furni_definitions.id = furnis.furni_definition_id
+WHERE furnis.user_id = ?1
+    AND furnis.avatar_id IS NULL AND furnis.room_id IS NULL
+    AND furnis.box_furni_id IS NULL AND furnis.recycler_avatar_id IS NULL
+GROUP BY furnis.furni_definition_id
+ORDER BY name, furnis.furni_definition_id
 `
 
 type ListSharedFurniRow struct {
@@ -361,7 +361,7 @@ func (q *Queries) ListSharedFurni(ctx context.Context, userID int64) ([]ListShar
 }
 
 const moveFurni = `-- name: MoveFurni :execrows
-UPDATE furni
+UPDATE furnis
 SET x = ?1, y = ?2, altitude = ?3, direction = ?4
 WHERE id = ?5 AND room_id = CAST(?6 AS INTEGER)
 `
@@ -391,7 +391,7 @@ func (q *Queries) MoveFurni(ctx context.Context, arg MoveFurniParams) (int64, er
 }
 
 const moveRoomFurniToHand = `-- name: MoveRoomFurniToHand :exec
-UPDATE furni
+UPDATE furnis
 SET user_id = ?1, avatar_id = CAST(?2 AS INTEGER), room_id = NULL,
     x = 0, y = 0, altitude = 0, direction = 0, wall_position = ''
 WHERE room_id = CAST(?3 AS INTEGER)
@@ -410,7 +410,7 @@ func (q *Queries) MoveRoomFurniToHand(ctx context.Context, arg MoveRoomFurniToHa
 }
 
 const pickUpFurni = `-- name: PickUpFurni :execrows
-UPDATE furni
+UPDATE furnis
 SET user_id = ?1, avatar_id = CAST(?2 AS INTEGER), room_id = NULL,
     x = 0, y = 0, altitude = 0, direction = 0, wall_position = ''
 WHERE id = ?3 AND room_id = CAST(?4 AS INTEGER)
@@ -439,7 +439,7 @@ func (q *Queries) PickUpFurni(ctx context.Context, arg PickUpFurniParams) (int64
 }
 
 const placeFurni = `-- name: PlaceFurni :execrows
-UPDATE furni
+UPDATE furnis
 SET avatar_id = NULL, room_id = CAST(?1 AS INTEGER), x = ?2, y = ?3,
     altitude = ?4, direction = ?5, wall_position = ?6
 WHERE id = ?7 AND avatar_id = CAST(?8 AS INTEGER)
@@ -490,7 +490,7 @@ func (q *Queries) SetFurniNote(ctx context.Context, arg SetFurniNoteParams) erro
 }
 
 const setFurniPartner = `-- name: SetFurniPartner :exec
-UPDATE furni SET partner_furni_id = CAST(?1 AS INTEGER) WHERE id = ?2
+UPDATE furnis SET partner_furni_id = CAST(?1 AS INTEGER) WHERE id = ?2
 `
 
 type SetFurniPartnerParams struct {
@@ -505,7 +505,7 @@ func (q *Queries) SetFurniPartner(ctx context.Context, arg SetFurniPartnerParams
 }
 
 const setHandFurniState = `-- name: SetHandFurniState :execrows
-UPDATE furni SET state = ?1 WHERE id = ?2 AND avatar_id = CAST(?3 AS INTEGER)
+UPDATE furnis SET state = ?1 WHERE id = ?2 AND avatar_id = CAST(?3 AS INTEGER)
 `
 
 type SetHandFurniStateParams struct {
@@ -524,7 +524,7 @@ func (q *Queries) SetHandFurniState(ctx context.Context, arg SetHandFurniStatePa
 }
 
 const setRoomFurniState = `-- name: SetRoomFurniState :execrows
-UPDATE furni SET state = ?1 WHERE id = ?2 AND room_id = CAST(?3 AS INTEGER)
+UPDATE furnis SET state = ?1 WHERE id = ?2 AND room_id = CAST(?3 AS INTEGER)
 `
 
 type SetRoomFurniStateParams struct {
@@ -542,7 +542,7 @@ func (q *Queries) SetRoomFurniState(ctx context.Context, arg SetRoomFurniStatePa
 }
 
 const shareAvatarFurni = `-- name: ShareAvatarFurni :exec
-UPDATE furni
+UPDATE furnis
 SET avatar_id = NULL, recycler_avatar_id = NULL
 WHERE avatar_id = CAST(?1 AS INTEGER) OR recycler_avatar_id = CAST(?1 AS INTEGER)
 `
@@ -554,7 +554,7 @@ func (q *Queries) ShareAvatarFurni(ctx context.Context, avatarID int64) error {
 }
 
 const takeAllSharedFurni = `-- name: TakeAllSharedFurni :execrows
-UPDATE furni
+UPDATE furnis
 SET avatar_id = CAST(?1 AS INTEGER)
 WHERE user_id = ?2
     AND avatar_id IS NULL AND room_id IS NULL AND box_furni_id IS NULL AND recycler_avatar_id IS NULL
@@ -574,7 +574,7 @@ func (q *Queries) TakeAllSharedFurni(ctx context.Context, arg TakeAllSharedFurni
 }
 
 const takeSharedFurni = `-- name: TakeSharedFurni :execrows
-UPDATE furni
+UPDATE furnis
 SET avatar_id = CAST(?1 AS INTEGER)
 WHERE user_id = ?2 AND furni_definition_id = ?3
     AND avatar_id IS NULL AND room_id IS NULL AND box_furni_id IS NULL AND recycler_avatar_id IS NULL
@@ -596,7 +596,7 @@ func (q *Queries) TakeSharedFurni(ctx context.Context, arg TakeSharedFurniParams
 }
 
 const tradeFurni = `-- name: TradeFurni :execrows
-UPDATE furni
+UPDATE furnis
 SET user_id = ?1, avatar_id = CAST(?2 AS INTEGER)
 WHERE id = ?3 AND avatar_id = CAST(?4 AS INTEGER)
 `
@@ -624,7 +624,7 @@ func (q *Queries) TradeFurni(ctx context.Context, arg TradeFurniParams) (int64, 
 }
 
 const unboxFurni = `-- name: UnboxFurni :exec
-UPDATE furni
+UPDATE furnis
 SET user_id = ?1, avatar_id = CAST(?2 AS INTEGER), box_furni_id = NULL
 WHERE box_furni_id = CAST(?3 AS INTEGER)
 `

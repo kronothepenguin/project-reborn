@@ -332,7 +332,7 @@ func TestArchivingReturnsTheHomesStickersAndNotes(t *testing.T) {
 		t.Fatalf("ArchiveHabbo: %v", err)
 	}
 	for item, want := range map[int64]int{sticker: 2, note: 1, background: 1} {
-		if n := f.count(t, `SELECT quantity FROM home_inventory WHERE user_id = ? AND home_store_item_id = ?`, userID, item); n != want {
+		if n := f.count(t, `SELECT quantity FROM home_inventories WHERE user_id = ? AND home_store_item_id = ?`, userID, item); n != want {
 			t.Errorf("item %d: %d in the inventory, want %d", item, n, want)
 		}
 	}

@@ -116,7 +116,7 @@ func TestADeletedRoomsPostItsGo(t *testing.T) {
 	ownerID := habboWithTickets(t, "Eraser", "eraser")
 	flat := newRoom(t, ownerID, 2, "Blackboard", true)
 	note := giveFurni(t, ownerID, 97, "FFFF33")
-	if _, err := testDB.ExecContext(t.Context(), `UPDATE furni SET avatar_id = NULL, room_id = ?, wall_position = ':w=3,2 l=9,63 l' WHERE id = ?`, flat, note); err != nil {
+	if _, err := testDB.ExecContext(t.Context(), `UPDATE furnis SET avatar_id = NULL, room_id = ?, wall_position = ':w=3,2 l=9,63 l' WHERE id = ?`, flat, note); err != nil {
 		t.Fatal(err)
 	}
 	c, _ := login(t, "eraser")

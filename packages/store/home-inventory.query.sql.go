@@ -10,9 +10,9 @@ import (
 )
 
 const addHomeInventory = `-- name: AddHomeInventory :exec
-INSERT INTO home_inventory (user_id, home_store_item_id, quantity)
+INSERT INTO home_inventories (user_id, home_store_item_id, quantity)
 VALUES (?1, ?2, ?3)
-ON CONFLICT (user_id, home_store_item_id) DO UPDATE SET quantity = home_inventory.quantity + excluded.quantity
+ON CONFLICT (user_id, home_store_item_id) DO UPDATE SET quantity = home_inventories.quantity + excluded.quantity
 `
 
 type AddHomeInventoryParams struct {
@@ -27,7 +27,7 @@ func (q *Queries) AddHomeInventory(ctx context.Context, arg AddHomeInventoryPara
 }
 
 const getHomeInventoryQuantity = `-- name: GetHomeInventoryQuantity :one
-SELECT quantity FROM home_inventory
+SELECT quantity FROM home_inventories
 WHERE user_id = ?1 AND home_store_item_id = ?2
 `
 
@@ -44,10 +44,10 @@ func (q *Queries) GetHomeInventoryQuantity(ctx context.Context, arg GetHomeInven
 }
 
 const listHomeInventory = `-- name: ListHomeInventory :many
-SELECT home_store_items.id, home_store_items.kind, home_store_items.asset, home_store_items.name, home_inventory.quantity
-FROM home_inventory
-JOIN home_store_items ON home_store_items.id = home_inventory.home_store_item_id
-WHERE home_inventory.user_id = ?1 AND home_inventory.quantity > 0
+SELECT home_store_items.id, home_store_items.kind, home_store_items.asset, home_store_items.name, home_inventories.quantity
+FROM home_inventories
+JOIN home_store_items ON home_store_items.id = home_inventories.home_store_item_id
+WHERE home_inventories.user_id = ?1 AND home_inventories.quantity > 0
 ORDER BY home_store_items.id
 `
 
@@ -89,7 +89,7 @@ func (q *Queries) ListHomeInventory(ctx context.Context, userID int64) ([]ListHo
 }
 
 const takeHomeInventory = `-- name: TakeHomeInventory :execrows
-UPDATE home_inventory SET quantity = quantity - ?1
+UPDATE home_inventories SET quantity = quantity - ?1
 WHERE user_id = ?2 AND home_store_item_id = ?3 AND quantity >= ?1
 `
 

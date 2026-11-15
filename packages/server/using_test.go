@@ -10,7 +10,7 @@ import (
 // setState writes the state of a furni that stands in a room, as it would be saved.
 func setState(t *testing.T, id int64, state string) {
 	t.Helper()
-	if _, err := testDB.ExecContext(t.Context(), `UPDATE furni SET state = ? WHERE id = ?`, state, id); err != nil {
+	if _, err := testDB.ExecContext(t.Context(), `UPDATE furnis SET state = ? WHERE id = ?`, state, id); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -43,7 +43,7 @@ func TestUsingFurni(t *testing.T) {
 	standFurni(t, dice, flat, 5, 6, 0)
 	standFurni(t, randomizer, flat, 8, 11, 0)
 	setState(t, gate, "C")
-	if _, err := testDB.ExecContext(t.Context(), `UPDATE furni SET avatar_id = NULL, room_id = ?, wall_position = ':w=3,2 l=9,63 l' WHERE id = ?`, flat, wheel); err != nil {
+	if _, err := testDB.ExecContext(t.Context(), `UPDATE furnis SET avatar_id = NULL, room_id = ?, wall_position = ':w=3,2 l=9,63 l' WHERE id = ?`, flat, wheel); err != nil {
 		t.Fatal(err)
 	}
 	c, _ := login(t, "croupier")

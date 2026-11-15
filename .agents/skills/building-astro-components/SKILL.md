@@ -28,7 +28,7 @@ The project's knowledge names the folders, the shared components package, the co
    about, whoever renders it: a tag cloud is about tags, also when four pages show it. Put a component about no
    feature, such as a frame, a form error or the menus of the chrome, at the root of `src/components/`.
 3. Reuse first: a primitive of the shared package, then a component of the app. Add a component for a real call site,
-   and extract repeated markup on its second use. Build only the variants a call site uses.
+   and extract repeated markup on its second use. `building-svelte-primitives` owns the variants of a primitive.
 4. Declare `interface Props`, destructure `Astro.props` and give defaults.
 5. Compose: a component renders primitives and other components, and holds the app's own markup. Slots pass content;
    named slots (`<span slot="header">`) pass regions.

@@ -77,7 +77,7 @@ func TestOpenCreatesEveryTable(t *testing.T) {
 		"avatar_badges", "avatars", "credentials", "login_attempts", "password_resets",
 		"referrals", "sessions", "settings", "sso_tickets", "users", "wardrobe_outfits",
 		"profiles", "profile_tags", "homes", "home_items",
-		"home_store_categories", "home_store_items", "home_inventory",
+		"home_store_categories", "home_store_items", "home_inventories",
 		"groups", "group_members", "wallets", "wallet_transactions", "vouchers", "club_subscriptions",
 		"forum_threads", "forum_posts", "news_articles",
 		"bans", "alerts", "help_tickets", "staff_logs", "banners",

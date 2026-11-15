@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS home_store_items (
 
 CREATE INDEX IF NOT EXISTS idx_home_store_items_home_store_category_id ON home_store_items(home_store_category_id);
 
-CREATE TABLE IF NOT EXISTS home_inventory (
+CREATE TABLE IF NOT EXISTS home_inventories (
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     home_store_item_id INTEGER NOT NULL REFERENCES home_store_items(id),
     quantity INTEGER NOT NULL CHECK (quantity >= 0),

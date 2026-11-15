@@ -462,7 +462,7 @@ func TestDeletingAGroupReturnsItsHomesItemsToThoseWhoPlacedThem(t *testing.T) {
 		{adminUser, note, 1},
 		{ownerUser, note, 0},
 	} {
-		if n := f.count(`SELECT COALESCE(SUM(quantity), 0) FROM home_inventory WHERE user_id = ? AND home_store_item_id = ?`, c.user, c.item); n != c.want {
+		if n := f.count(`SELECT COALESCE(SUM(quantity), 0) FROM home_inventories WHERE user_id = ? AND home_store_item_id = ?`, c.user, c.item); n != c.want {
 			t.Errorf("user %d holds %d of item %d, want %d", c.user, n, c.item, c.want)
 		}
 	}

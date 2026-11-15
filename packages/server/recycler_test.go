@@ -56,12 +56,12 @@ func TestRecycling(t *testing.T) {
 		lamps = append(lamps, giveFurni(t, me, 1279, ""))
 	}
 	ctx := t.Context()
-	if _, err := testDB.ExecContext(ctx, `UPDATE furni SET created_at = ? WHERE avatar_id = ?`, time.Now().UTC().AddDate(0, 0, -60), me); err != nil {
+	if _, err := testDB.ExecContext(ctx, `UPDATE furnis SET created_at = ? WHERE avatar_id = ?`, time.Now().UTC().AddDate(0, 0, -60), me); err != nil {
 		t.Fatal(err)
 	}
 	fresh := giveFurni(t, me, 1279, "")
 	box := giveFurni(t, me, 1372, "")
-	if _, err := testDB.ExecContext(ctx, `UPDATE furni SET created_at = ? WHERE id = ?`, time.Now().UTC().AddDate(0, 0, -60), box); err != nil {
+	if _, err := testDB.ExecContext(ctx, `UPDATE furnis SET created_at = ? WHERE id = ?`, time.Now().UTC().AddDate(0, 0, -60), box); err != nil {
 		t.Fatal(err)
 	}
 	q := store.New(testDB)
@@ -74,7 +74,7 @@ func TestRecycling(t *testing.T) {
 	waiting := func() int {
 		t.Helper()
 		var n int
-		if err := testDB.QueryRowContext(ctx, `SELECT COUNT(*) FROM furni WHERE recycler_avatar_id = ? AND avatar_id IS NULL`, me).Scan(&n); err != nil {
+		if err := testDB.QueryRowContext(ctx, `SELECT COUNT(*) FROM furnis WHERE recycler_avatar_id = ? AND avatar_id IS NULL`, me).Scan(&n); err != nil {
 			t.Fatal(err)
 		}
 		return n

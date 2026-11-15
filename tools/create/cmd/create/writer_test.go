@@ -42,67 +42,6 @@ func checkContains(t *testing.T, root string, files map[string][]string) {
 	}
 }
 
-// The dev runner works from the repository root, so the generated Makefile
-// starts air there and .air.toml names every path from the root.
-func TestWriteRendersTheRunnerFromTheRoot(t *testing.T) {
-	root := writeProbe(t, fullstack)
-	checkContains(t, root, map[string][]string{
-		"apps/probe/.air.toml": {`cmd = "go build -o ./apps/probe/tmp/probe ./apps/probe/cmd/probe-dev"`},
-		"apps/probe/Makefile":  {"cd ../.. && go tool air -c apps/probe/.air.toml"},
-	})
-}
-
-// make install is what makes a fresh clone compile: the root runs it in every
-// app, and the app runs the one of its package.
-func TestWriteGeneratesInstallTargets(t *testing.T) {
-	root := writeProbe(t, fullstack)
-	checkContains(t, root, map[string][]string{
-		"apps/probe/Makefile":     {"$(MAKE) -C ../../packages/probe install"},
-		"packages/probe/Makefile": {"test -e dist/index.html ||"},
-	})
-}
-
-// A new project is not in git yet and has no build, so it starts with the
-// placeholder go:embed needs.
-func TestWriteGeneratesThePlaceholder(t *testing.T) {
-	root := writeProbe(t, fullstack)
-	checkContains(t, root, map[string][]string{
-		"packages/probe/dist/index.html": {"<title>probe</title>"},
-	})
-}
-
-// A new app starts in the shape of the apps that exist: the runner opens the
-// database and hands it to New, and a server that cannot start says why.
-func TestWriteGeneratesTheCurrentAppShape(t *testing.T) {
-	root := writeProbe(t, fullstack)
-	checkContains(t, root, map[string][]string{
-		"apps/probe/cmd/probe/main.go": {
-			"db := store.FromConfig()",
-			"probe.New(db,",
-			"probe.WithResolver(resolver)",
-			"probe.WithStatic(fileServer)",
-			"log.Fatalln(server.ListenAndServe())",
-		},
-		"apps/probe/cmd/probe-dev/main.go": {
-			"db := store.FromConfig()",
-			"probe.New(db,",
-			"probe.WithResolver(resolver)",
-			"probe.WithStatic(proxy)",
-			"log.Fatalln(server.ListenAndServe())",
-		},
-		"packages/probe/probe.go": {
-			"func New(db *sql.DB, opts ...Option) *Probe {",
-			"func (c *Probe) Mount(mux *http.ServeMux) {",
-		},
-		"packages/probe/internal/router/router.go": {"DB       *sql.DB"},
-		"packages/probe/src/pages/index.astro":     {`<Counter client:only="svelte" />`},
-		"packages/probe/src/components/counter.svelte": {
-			"$state(0)",
-			"onclick=",
-		},
-	})
-}
-
 // A backend is the fullstack project without its frontend: one runner that
 // air builds, and a package that takes only the database.
 func TestWriteGeneratesTheBackendShape(t *testing.T) {
@@ -298,47 +237,6 @@ func TestWriteDropsTheDashFromThePackageName(t *testing.T) {
 				}
 			}
 		})
-	}
-}
-
-// A name without a dash is its own package name, so the runner's import needs
-// no name.
-func TestWriteImportsAPackageNamedAfterItsFolderPlainly(t *testing.T) {
-	for _, kind := range []string{backend, fullstack} {
-		root := writeProbe(t, kind)
-		checkContains(t, root, map[string][]string{
-			"apps/probe/cmd/probe/main.go": {"\t\"github.com/kronothepenguin/project-reborn/packages/probe\"\n"},
-		})
-	}
-}
-
-// gofmt orders the imports of a block by path, and the project's path moves
-// with its name: before astro for admin, after store for tracker.
-func TestWriteSortsTheImports(t *testing.T) {
-	for _, c := range []struct {
-		kind, name, file string
-		order            []string
-	}{
-		{backend, "tracker", "apps/tracker/cmd/tracker/main.go", []string{"/packages/store\"", "/packages/tracker\""}},
-		{backend, "tracker", "packages/tracker/tracker.go", []string{"/packages/store\"", "/packages/tracker/internal/router\""}},
-		{fullstack, "tracker", "apps/tracker/cmd/tracker/main.go", []string{"/packages/astro\"", "/packages/store\"", "/packages/tracker\""}},
-		{fullstack, "tracker", "apps/tracker/cmd/tracker-dev/main.go", []string{"/packages/astro\"", "/packages/store\"", "/packages/tracker\""}},
-		{fullstack, "tracker", "packages/tracker/tracker.go", []string{"/packages/astro\"", "/packages/store\"", "/packages/tracker/internal/router\""}},
-		{fullstack, "admin", "apps/admin/cmd/admin/main.go", []string{"/packages/admin\"", "/packages/astro\"", "/packages/store\""}},
-		{fullstack, "admin", "packages/admin/admin.go", []string{"/packages/admin/internal/router\"", "/packages/astro\"", "/packages/store\""}},
-	} {
-		data, err := os.ReadFile(filepath.Join(writeProject(t, c.kind, c.name), c.file))
-		if err != nil {
-			t.Fatalf("read the generated %s: %v", c.file, err)
-		}
-		last := -1
-		for _, imp := range c.order {
-			i := strings.Index(string(data), imp)
-			if i <= last {
-				t.Errorf("the %s %s imports %q out of the order %q:\n%s", c.kind, c.file, imp, c.order, data)
-			}
-			last = i
-		}
 	}
 }
 

@@ -12,7 +12,7 @@ import (
 // standFurni takes a furni out of its hand and stands it in the habbo room, on a tile and turned, as placing will.
 func standFurni(t *testing.T, id, flat int64, x, y, direction int) {
 	t.Helper()
-	_, err := testDB.ExecContext(t.Context(), `UPDATE furni SET avatar_id = NULL, room_id = ?, x = ?, y = ?, direction = ? WHERE id = ?`, flat, x, y, direction, id)
+	_, err := testDB.ExecContext(t.Context(), `UPDATE furnis SET avatar_id = NULL, room_id = ?, x = ?, y = ?, direction = ? WHERE id = ?`, flat, x, y, direction, id)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -52,7 +52,7 @@ func TestARoomShowsItsFurniAndHabbosUseIt(t *testing.T) {
 	standFurni(t, chair, flat, 7, 5, 4)
 	standFurni(t, bed, flat, 8, 8, 0)
 	standFurni(t, rug, flat, 5, 8, 0)
-	if _, err := testDB.ExecContext(t.Context(), `UPDATE furni SET avatar_id = NULL, room_id = ?, wall_position = ':w=3,2 l=9,63 l' WHERE id = ?`, flat, poster); err != nil {
+	if _, err := testDB.ExecContext(t.Context(), `UPDATE furnis SET avatar_id = NULL, room_id = ?, wall_position = ':w=3,2 l=9,63 l' WHERE id = ?`, flat, poster); err != nil {
 		t.Fatal(err)
 	}
 
@@ -101,7 +101,7 @@ func TestARoomShowsItsFurniAndHabbosUseIt(t *testing.T) {
 	}
 
 	var stored store.Furni
-	if err := testDB.QueryRowContext(t.Context(), `SELECT id, x, y FROM furni WHERE id = ?`, chair).Scan(&stored.ID, &stored.X, &stored.Y); err != nil || stored.X != 7 || stored.Y != 5 {
+	if err := testDB.QueryRowContext(t.Context(), `SELECT id, x, y FROM furnis WHERE id = ?`, chair).Scan(&stored.ID, &stored.X, &stored.Y); err != nil || stored.X != 7 || stored.Y != 5 {
 		t.Errorf("the chair is stored at %d,%d: %v", stored.X, stored.Y, err)
 	}
 }

@@ -424,14 +424,14 @@ func (q *Queries) MoveHomeItem(ctx context.Context, arg MoveHomeItemParams) (int
 }
 
 const returnHomeItemsToPlacers = `-- name: ReturnHomeItemsToPlacers :exec
-INSERT INTO home_inventory (user_id, home_store_item_id, quantity)
+INSERT INTO home_inventories (user_id, home_store_item_id, quantity)
 SELECT avatars.user_id, home_items.home_store_item_id, COUNT(*)
 FROM home_items
 JOIN avatars ON avatars.id = home_items.created_by_avatar_id
 WHERE home_items.home_id = ?1 AND home_items.kind IN ('sticker', 'note')
   AND home_items.home_store_item_id IS NOT NULL
 GROUP BY avatars.user_id, home_items.home_store_item_id
-ON CONFLICT (user_id, home_store_item_id) DO UPDATE SET quantity = home_inventory.quantity + excluded.quantity
+ON CONFLICT (user_id, home_store_item_id) DO UPDATE SET quantity = home_inventories.quantity + excluded.quantity
 `
 
 // Every sticker and note of the home goes back to the user whose habbo placed it,
