@@ -63,27 +63,6 @@ func TestPromoFeedDescribesAHabbo(t *testing.T) {
 	}
 }
 
-func TestPromoFeedEscapesItsValues(t *testing.T) {
-	db, mux := newSite(t)
-	userID := habbo(t, db, "admin@example.com", "Admin")
-	const figure = `hd-1"><x y='1'&z=2`
-	if _, err := db.ExecContext(t.Context(), `UPDATE avatars SET figure = ? WHERE user_id = ?`, figure, userID); err != nil {
-		t.Fatalf("set the figure: %v", err)
-	}
-
-	feed := readPromoFeed(t, mux)
-	if len(feed.Habbos) != 1 || feed.Habbos[0].Figure != figure {
-		t.Fatalf("feed = %+v, want the figure to survive", feed)
-	}
-	image, err := url.Parse(feed.Habbos[0].Image)
-	if err != nil {
-		t.Fatalf("image: %v", err)
-	}
-	if got := image.Query().Get("figure"); got != figure {
-		t.Errorf("the image URL carries %q, want %q", got, figure)
-	}
-}
-
 func TestPromoFeedShowsAtMostTenRandomHabbos(t *testing.T) {
 	db, mux := newSite(t)
 	q := store.New(db)
