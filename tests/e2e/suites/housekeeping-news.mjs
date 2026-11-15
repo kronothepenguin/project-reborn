@@ -381,10 +381,17 @@ export default async function (t) {
   await page.keyboard.type("Welcome to the hotel.");
   await page.keyboard.press("Enter");
   await page.keyboard.type("See you there!");
-  await story.evaluate((area) => {
-    const text = area.firstChild;
-    document.getSelection().setBaseAndExtent(text, 0, text, "Welcome".length);
-  });
+  // The toolbar acts on the selection the editor kept at the last
+  // selectionchange, so a selection made by script waits for that event, as a
+  // reader's selection has it long before the click.
+  await story.evaluate(
+    (area) =>
+      new Promise((resolve) => {
+        document.addEventListener("selectionchange", resolve, { once: true });
+        const text = area.firstChild;
+        document.getSelection().setBaseAndExtent(text, 0, text, "Welcome".length);
+      }),
+  );
   await page.getByRole("button", { name: "Bold" }).click();
   check(
     "the toolbar makes the selection bold where it is written",
@@ -530,8 +537,10 @@ export default async function (t) {
       for (let node = walker.nextNode(); node; node = walker.nextNode()) {
         const at = node.data.indexOf(word);
         if (at >= 0) {
-          document.getSelection().setBaseAndExtent(node, at, node, at + word.length);
-          return;
+          return new Promise((resolve) => {
+            document.addEventListener("selectionchange", resolve, { once: true });
+            document.getSelection().setBaseAndExtent(node, at, node, at + word.length);
+          });
         }
       }
     }, word);

@@ -12,5 +12,5 @@ description: How a run of the browser suites keeps clear of development servers 
 - The runner passes everything to the suites as arguments, the helpers of their default export.
 - Each suite gets a fresh copy of the installed hotel.
 - The suites read the database with `node:sqlite`.
-- A suite fails if a program logs anything beyond its start-up line.
+- A suite fails if a program logs anything beyond its start-up line and the lines its `logs` export expects.
 - Screenshots and server logs stay in `.run/`, which is git-ignored.

@@ -35,3 +35,5 @@ The default export takes the run's helpers:
 - `programs`: what to start, `["cms"]` by default.
 - `prepare`: runs on the copy of the hotel before the programs start.
 - `emptyFolder`: `true` to start with no hotel at all.
+- `logs`: the regular expressions of the log lines a program writes by design in this suite, matched against
+  `<program>: <line>`. Each names the decision that makes the program log it.

@@ -21,7 +21,7 @@ export const prepare = ({ sql }) => {
     const [[id]] = sql(`SELECT id FROM access_groups WHERE name = '${group}'`);
     sql(`INSERT INTO access_group_members (access_group_id, user_id, granted_at) VALUES (${id}, ${frank}, '${at}')`);
   }
-  sql(`INSERT INTO avatar_badges (avatar_id, code, worn, granted_at) VALUES (${frankHabbo}, 'ADM', TRUE, '${at}')`);
+  sql(`INSERT INTO avatar_badges (avatar_id, code, slot, granted_at) VALUES (${frankHabbo}, 'ADM', 1, '${at}')`);
   sql(`INSERT INTO groups (avatar_id, name, description, badge, access, created_at, updated_at)
     VALUES (${frankHabbo}, 'Helpers', '', 'b0503Xs01124', 'open', '${at}', '${at}')`);
   const [[helpers]] = sql("SELECT id FROM groups WHERE name = 'Helpers'");
