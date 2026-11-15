@@ -153,3 +153,21 @@ func TestNewProjectIncludesTheRecipeAndDeclaresItsScripts(t *testing.T) {
 		})
 	}
 }
+
+// A new project starts with a knowledge bundle that the repository's knowledge
+// check accepts.
+func TestNewProjectKnowledgePassesTheKnowledgeCheck(t *testing.T) {
+	script := filepath.Join(repoRoot(t), ".agents", "skills", "documenting-with-okf", "scripts", "check.py")
+	for _, kind := range kinds {
+		t.Run(kind, func(t *testing.T) {
+			root := writeProbe(t, kind)
+			bundle := filepath.Join(root, "packages", "probe", "knowledge")
+			if _, err := os.Stat(filepath.Join(bundle, "index.md")); err != nil {
+				t.Fatalf("the generated project has no knowledge/index.md: %v", err)
+			}
+			if out, err := runIn(t, root, "python3", "-I", script, bundle); err != nil {
+				t.Errorf("check.py on the generated knowledge: %v\n%s", err, out)
+			}
+		})
+	}
+}

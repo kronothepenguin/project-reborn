@@ -1,7 +1,5 @@
 ---
-import { Table } from "@project-reborn/components";
-import Box from "../components/box.astro";
-import Submit from "../components/submit.astro";
+import { Box, Button, Table } from "@project-reborn/components";
 import Housekeeping from "../layouts/housekeeping.astro";
 ---
 
@@ -60,7 +58,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
           aria-label="Housekeeping Notes"
           class="w-full border border-neutral-300 bg-yellow-200 p-1"
         >[[ .Note ]]</textarea>
-        <Submit>Save Admin Notes</Submit>
+        <Button variant="plain" size="compact" type="submit">Save Admin Notes</Button>
       </form>
     </Box>
   </div>

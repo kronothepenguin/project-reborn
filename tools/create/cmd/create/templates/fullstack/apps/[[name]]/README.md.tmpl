@@ -1,17 +1,11 @@
 # {{.Name}} — app runner
 
-Thin runner for `packages/{{.Name}}`. The app code (Go struct + Astro frontend)
-lives entirely in the package; this module only serves it.
-
-| cmd             | mode        | resolver / static                     |
-| --------------- | ----------- | ------------------------------------- |
-| `./cmd/{{.Name}}`     | production | `astro.MakeFSResolver` (embedded dist) + `http.FileServerFS` |
-| `./cmd/{{.Name}}-dev` | development | `astro.MakeServerResolver` + reverse proxy to the astro dev server |
+Thin runner for `packages/{{.Name}}`: `./cmd/{{.Name}}` for production, `./cmd/{{.Name}}-dev` for development.
 
 ## Ports
 
-- App (Go HTTP server): **{{.AppPort}}** — baked in both runners
-- Astro dev server: **{{.AstroPort}}** — baked in `packages/{{.Name}}/astro.config.mjs`
+- App (Go HTTP server): **{{.AppPort}}**, in both runners
+- Astro dev server: **{{.AstroPort}}**, in `packages/{{.Name}}/astro.config.mjs`
 
 ## Run
 
@@ -20,6 +14,7 @@ make install    # once: this project's folders and dependencies
 make dev        # astro (background) + air hot reload → http://localhost:{{.AppPort}}
 make web        # astro dev server only → http://localhost:{{.AstroPort}}
 make stop       # stop the background astro server
+make check      # checks the formatting, vets and builds the runner
 ```
 
 ## Production
@@ -32,15 +27,4 @@ go build -o ./apps/{{.Name}}/tmp/{{.Name}} ./apps/{{.Name}}/cmd/{{.Name}}
 ./apps/{{.Name}}/tmp/{{.Name}}   # → http://localhost:{{.AppPort}}, reads ./config.json
 ```
 
-## Dev-mode notes
-
-- `make dev` starts air from the repository root, so the runner reads and
-  writes the root `config.json`.
-- Air watches the `.go` files of `apps/{{.Name}}`, `packages/astro`, `packages/{{.Name}}`
-  and the packages it imports (`config`, `store`), and rebuilds the dev runner on Go
-  changes.
-- The runners open the database with `store.FromConfig()`, which creates it when
-  it does not exist.
-- Astro page edits are hot-reloaded by the astro dev server; the runner
-  re-fetches pages on every request, so no Go restart is needed for
-  frontend-only changes.
+How it works: `packages/{{.Name}}/knowledge/index.md`.

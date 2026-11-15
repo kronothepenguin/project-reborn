@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"testing"
@@ -369,5 +370,44 @@ func TestPlanFollowsTheTemplate(t *testing.T) {
 				t.Errorf("the %s plan has %q:\n%s", kind, s, plan.String())
 			}
 		}
+	}
+}
+
+// Every folder a template writes starts with the short README of the repo: its
+// title, what it is, how to set it up, and the knowledge it points to, which
+// the project has.
+func TestNewProjectHasAShortReadme(t *testing.T) {
+	howItWorks := regexp.MustCompile("(?m)^How it works: `([^`]+)`\\.$")
+	for _, kind := range kinds {
+		t.Run(kind, func(t *testing.T) {
+			p := newProject(kind, "probe", 10001, 20001)
+			root := writeProbe(t, kind)
+			for _, dir := range p.dirs() {
+				data, err := os.ReadFile(filepath.Join(root, dir, "README.md"))
+				if err != nil {
+					t.Fatalf("read the generated %s/README.md: %v", dir, err)
+				}
+				readme := string(data)
+				if !strings.HasPrefix(readme, "# probe — ") {
+					t.Errorf("the generated %s/README.md does not start with its title:\n%s", dir, readme)
+				}
+				if !strings.Contains(readme, "install") {
+					t.Errorf("the generated %s/README.md does not say how to set it up:\n%s", dir, readme)
+				}
+				m := howItWorks.FindStringSubmatch(readme)
+				if m == nil {
+					t.Errorf("the generated %s/README.md does not point to its knowledge:\n%s", dir, readme)
+					continue
+				}
+				// A path names a file of the folder, or a repository path.
+				target := filepath.Join(root, dir, m[1])
+				if strings.HasPrefix(m[1], "packages/") {
+					target = filepath.Join(root, m[1])
+				}
+				if _, err := os.Stat(target); err != nil {
+					t.Errorf("the generated %s/README.md points to %s, which the project lacks", dir, m[1])
+				}
+			}
+		})
 	}
 }

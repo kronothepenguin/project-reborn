@@ -28,6 +28,18 @@ Each kind is a folder of `cmd/create/templates/` (decision server/0003). `[[name
 Each folder a template writes has a `Makefile` whose first line includes the shared recipe, `../../make/check.mk`, so
 `make check` runs in it from the start.
 
+# What a new project starts with
+
+- A short `README.md` in each folder, in the shape of the repo's READMEs: what it is, its ports, how to set it up and
+  run it, how to check it, and `How it works:` pointing to the package's knowledge.
+- `packages/<name>/knowledge/index.md`: the root index that `index.py` writes for a bundle with no concept yet, with
+  `okf_version: "0.2"`. `apps/<name>` has no knowledge, as the repo's runners have none.
+- The template file is `knowledge/index.md`, with no `.tmpl`, so the knowledge check reads each template's bundle as a
+  bundle of the repo and passes on it.
+- A fullstack package: the document layout in `src/layouts/document.astro`, the page `src/pages/index.astro` that
+  renders it, and a counter island built on the `Button` of `@project-reborn/components`, whose styles
+  `src/styles/global.css` imports. The handler file `internal/router/index.go` holds `HandleIndexView` for `GET /{$}`.
+
 - The fullstack and backend runners serve the package on an HTTP server of their own. The backend template keeps it as
   a generic starter; a package that needs no HTTP server deletes it (decision reborn/0014).
 - `.air.toml` paths are relative to the repository root, and `make dev` starts air from there
@@ -48,6 +60,8 @@ Each folder a template writes has a `Makefile` whose first line includes the sha
   the pnpm workspace, so the tests prove only that its `Makefile` includes the recipe and its `package.json` declares
   `build`.
 - A client: the same as the fullstack package.
+- Every kind: each folder has a README that starts with its title, says how to set it up and points to knowledge the
+  project has, and `check.py` passes on `packages/<name>/knowledge`.
 
 # After writing
 
