@@ -47,7 +47,6 @@ Each entry is removed by the task that settles it.
   (Button's "forwards native attributes to the element"), 10 that keep a prop off the element ("does not forward
   variant as an attribute") and 10 that check a prop's default (Button's "defaults type to button"). Each primitive
   keeps the tests of what a visitor sees or does. Rule: `building-svelte-primitives`.
-
 - Housekeeping's `box.astro` and `submit.astro` move to the shared components package: a `Box` primitive with the
   `blue` and `gold` title bars and a `plain` variant of `Button`, each with a test and a story. The user chose "In the
   shared package". Rule: `building-svelte-primitives`.
