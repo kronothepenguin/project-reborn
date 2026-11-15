@@ -22,6 +22,9 @@ For the client page:
 
 - A signed-in habbo opens the site's client page, and the R26 client runs there on LibreShockwave's player and logs in
   to the game server with the page's SSO ticket.
+- A client connects over TCP or a WebSocket: bytes travel both ways, text frames carry their bytes, and a close on
+  either side ends the session.
+- A WebSocket without an Origin header connects: it is refused.
 - The player is built from `vendor/LibreShockwave` by a make target, into a folder git ignores.
 
 The client's files and the JavaScript client get theirs when they start.

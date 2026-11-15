@@ -38,14 +38,18 @@ It builds on [habbos](/features/habbos/spec.md).
 - A habbo opens its own rooms: it sees them, or a note that it has none.
 - A habbo searches: it sees up to 30 rooms whose name holds the words or whose owner it names, or a note that none
   matches (decision server/0061).
+- A habbo searches for `%` or `_`: the rooms whose name holds that character come up.
 - A habbo opens the recommended rooms: it sees three habbo rooms drawn at random (decision server/0057).
 - An owner hides its name on a room: others see `-` as its owner, and a search by its name skips the room.
 - A staff member with `fuse_see_all_roomowners` reads a room that hides its owner: it sees the owner.
+- An owner, or staff with `fuse_see_all_roomowners`, searches by the owner's name: the room that hides its owner comes
+  up.
 
 ## Favourites
 
 - A habbo adds a public room or a habbo room to its favourites: it stays there at its next login
   (decision server/0058).
+- A habbo adds a room it already holds to its favourites: the room is listed once.
 - A habbo removes a favourite: it leaves the list.
 - A habbo with 30 favourites adds one more: it reads "Only 10 favorite rooms allowed!" (decision server/0058).
 

@@ -21,11 +21,13 @@ and sound setting. Pings keep the session alive, and a second login ends the fir
 - A user signs out of the site: the session's ticket dies with it (decision server/0030).
 - The sign-in fails to make a ticket: the sign-in succeeds, and a ticket is made when one is asked for
   (decision server/0043).
+- A guest asks for a ticket: none is made.
 
 ## The handshake
 
 - A client connects: the server answers its encryption request at once, and every byte stays plain
   (decision server/0027).
+- A client connects: it gets HELLO first.
 - A client sends text with accents: the server reads and writes it as UTF-8 (decision server/0014).
 - A client with the accepted version and its links on the site's address checks its version: it goes on to the login
   (decision server/0033).
@@ -35,7 +37,20 @@ and sound setting. Pings keep the session alive, and a second login ends the fir
   (decision server/0049).
 - A client logs in before its version check passed: it gets "Version not correct" and is closed
   (decision server/0049).
+- A client sends a habbo's command before LOGIN_OK: it gets no answer.
 - A client asks for the session parameters: it gets the ten that staff set in housekeeping (decision server/0034).
+
+## Packets
+
+- The server has a message the client would read wrongly, such as a character 1 in its body or an id past 4095: it sends
+  none of it.
+- A client sends a malformed or cut-short packet: only its session closes.
+- A client sends a command no handler takes: the server logs its name and goes on.
+- A client sends any packet: the log leaves its body out (decision server/0021).
+- A client sends commands: they run in the order it sent them, and its messages arrive in the order the server sent
+  them.
+- A client stops reading its messages: it is closed.
+- Two clients play at once: each runs at its own pace.
 
 ## The login
 
@@ -58,4 +73,7 @@ and sound setting. Pings keep the session alive, and a second login ends the fir
 - A client answers the server's ping, sent every 30 seconds: its session stays open (decision server/0042).
 - A client stays silent for 90 seconds: it is closed, and its habbo logged out (decision server/0042).
 - A client reports its latency: the server writes it to its log (decision server/0036).
+- A client sends a latency test: it gets its id back.
+- A client asks for the server's date: it gets today's date.
 - Staff change the ping times in housekeeping: each session takes them at its next ping (decision server/0042).
+- Staff set the ping timeout no longer than the ping interval: the value is refused.

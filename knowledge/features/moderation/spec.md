@@ -30,6 +30,7 @@ It builds on [platform](/features/platform/spec.md).
 - Staff ban an unknown user, with a bad length or a bad address: Holo's message refuses it.
 - Staff lift a ban: it leaves the list, stays in the table as history, and the user signs in again (decision
   holo-port/0063).
+- Staff open Bans: the active bans show, and an expired or lifted ban leaves the list.
 - Staff lift the bans of users below their level, and any ban on an address alone (decision holo-port/0055).
 
 ## Alerts
@@ -47,11 +48,15 @@ It builds on [platform](/features/platform/spec.md).
 - A habbo sends a blank field: "Please do not leave any fields blank", and the form again, empty.
 - A habbo sends a subject over 50 characters, or a question over `help.messageMaxLength`, 65535 by default: the
   request is refused, with the form again (decision holo-port/0109).
+- Staff save Question Length in the Help settings form: it takes 1 to 65535 characters, the forum's post limit (decision
+  holo-port/0109).
 - A habbo presses Proceed: the request waits for staff, and the window offers Close.
+- A habbo presses Close in the Help Tool window: it shuts.
 - A habbo with a request staff have not picked up opens `/help`: the form shows, and sending it answers Holo's refusal
   and writes nothing (decision holo-port/0090).
 - A habbo reports a forum post: the Help Tool window asks first, and Proceed sends a request with the post's text and
   its address, then answers "Thank you for reporting this post." (decision holo-port/0090).
+- A habbo clicks another report flag while the Help Tool window is open: the window moves to the new report.
 - A waiting help request or report stops the next one, help and reports alike, per habbo (decision holo-port/0090).
 - Staff pick a request up: the habbo can ask again.
 
@@ -59,12 +64,16 @@ It builds on [platform](/features/platform/spec.md).
 
 - Staff with `housekeeping.help` open Help Queries: the requests not closed, newest first, in pages, with Holo's
   columns.
+- Staff refresh Help Queries: "Overview refreshed."
+- A holder of `housekeeping.help` opens the Me page: it counts the help requests not closed.
 - Staff open a request: who asked, from where and what, with the address for holders of `housekeeping.usersPrivate`.
 - Staff pick a request up, then close it: it leaves the queue and stays readable (decision holo-port/0063).
+- Staff pick up a closed request: it is refused with "already picked up".
 - Staff close a request nobody picked up: "Invalid ID specified or not picked up yet. Please note that all queries must
   be picked up before they can be closed."
 - Staff with `housekeeping.alerts` press Quick Reply: the request is picked up, and the alert form opens with Holo's
   text.
+- Staff without `housekeeping.help` open the alert form for a request: the form opens without the request.
 
 ## Chat Log Viewer
 

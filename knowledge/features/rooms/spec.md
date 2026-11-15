@@ -33,13 +33,17 @@ It builds on [habbos](/features/habbos/spec.md).
   (decision server/0062).
 - A habbo rings a room with a closed door: the habbos with rights inside see its name and let it in or turn it away;
   with nobody to answer, it is turned away at once (decision server/0069).
+- A habbo heads for another room before a door answers: the late answer leaves it outside.
 - A banned habbo tries a room: it stays outside (decision server/0067).
+- A room ban reaches its end: the habbo enters again, and a second ban sets the new end.
 - The owner or a staff member with `fuse_enter_locked_rooms` tries a room: it passes any door and any ban.
 - A habbo enters its own room: it gets the owner's controls; a habbo with rights gets the furniture controls.
 - A habbo leaves, enters another room or logs out: the others see it go (decision server/0071).
 
 ## Moving and talking
 
+- A room's height map marks each tile: `x` blocks it, and a digit or `A` to `H` gives its height; a habbo walks only on
+  open tiles.
 - A habbo clicks a tile: it walks there a step every 500 ms by the shortest way, around walls and other habbos,
   without cutting corners, up or down at most 1 height (decision server/0065).
 - A habbo walks to a seat or a bed: it sits or lies there, facing the furni's way.
@@ -52,6 +56,7 @@ It builds on [habbos](/features/habbos/spec.md).
 - A habbo talks: it moves its mouth, and a smiley shows its face for 5 seconds (decision server/0075).
 - A habbo ignores another: it reads none of its lines; past 100 ignored habbos the oldest one drops
   (decision server/0076).
+- A habbo ignores a habbo it already ignores: the list holds it once.
 - A habbo dances: it dances, and a club dance needs the club's fuse; a seated or lying habbo stays still.
 - A habbo waves: it waves for 1.5 seconds and stops dancing (decision server/0075).
 - A habbo talks: staff read the line in housekeeping for 30 days (decision server/0066).

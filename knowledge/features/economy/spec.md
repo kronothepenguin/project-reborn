@@ -29,10 +29,13 @@ It builds on [platform](/features/platform/spec.md) and [habbos](/features/habbo
 
 - A visitor opens `/credits`: Holo's two boxes show in BBCode beside their pictures, and a guest is told to sign in to
   see the purse (decision holo-port/0105).
+- A visitor opens `/credits`: the green box stands in the first column, and the purse above the blue box in the second.
 - A signed-in habbo opens `/credits`: the purse shows the balance all the user's habbos share, the link to the
   transactions and the code field (decision holo-port/0064).
 - A habbo redeems a credit voucher: its credits reach the purse with a ledger row for the active habbo, and the voucher
   is kept as redeemed, in one transaction.
+- A habbo redeems a code: the purse shows the new balance and Holo's answer, green on success, in place of the field,
+  without a reload.
 - A habbo types a code in another case or with spaces after it: the voucher redeems, as Holo's MySQL found it.
 - A habbo types a used or unknown code: Holo's "Your redeem code could not be found." shows in red, and the purse and
   the ledger stay as they were.
@@ -59,6 +62,7 @@ It builds on [platform](/features/platform/spec.md) and [habbos](/features/habbo
 - Staff read the credit history and the staff log: every row stays as it was written (decision holo-port/0063).
 - Staff with `housekeeping.vouchers` open Vouchers: Create Voucher offers a random code of 8 of Holo's characters, and
   the list shows the unused vouchers.
+- A Moderator opens Vouchers: they create and delete vouchers.
 - Staff create a credit voucher: it is saved with its credits and its creator, unused, and the log keeps it.
 - Staff leave a field blank, type an amount outside 1 to 2147483647, a code over 20 characters or a code a voucher has
   in any case: the voucher is refused with 422, and the form keeps what was typed.
@@ -70,6 +74,7 @@ It builds on [platform](/features/platform/spec.md) and [habbos](/features/habbo
   is 404 (decision holo-port/0063).
 - Staff without `housekeeping.vouchers` open Vouchers: they get Access Denied.
 - Staff save the Credits Page settings: the headings and BBCode bodies of the two boxes change on `/credits`.
+- Staff save a Credits Page box outside its bounds: the value is refused.
 
 ## The game
 

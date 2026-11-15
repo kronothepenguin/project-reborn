@@ -17,8 +17,11 @@ and a habbo shows its favourite group's badge on the site and in rooms.
 ## Buying
 
 - A habbo buys a group: it takes `groups.price`, 20 credits by default, with Holo's ledger row in one transaction.
+- A habbo opens the group purchase from the page or from the header's My Groups: Holo's form shows the price and the
+  badge.
 - A habbo with too few credits opens the purchase: the dialog opens on Holo's refusal, with its link to the credits.
 - A blank form is refused with Holo's `Please fill in all fields!`.
+- A habbo presses Back after a refused purchase: the form comes back empty.
 - A name takes 1 to 25 characters and a description up to 200; a name another group has is refused, ignoring case
   (decision holo-port/0084).
 - A user owns at most 3 groups across all their habbos, and each habbo holds at most 10 memberships, requests included
@@ -30,12 +33,18 @@ and a habbo shows its favourite group's badge on the site and in rooms.
 
 - A group is Regular, Exclusive, Private or Unlimited (decision holo-port/0081).
 - A habbo joins a Regular group with fewer than 500 members, or an Unlimited group: it becomes a member.
+- A habbo joins a full Regular group: "This group is full.", and archived members leave the count.
+- A habbo with `groups.maxMemberships` memberships and requests joins any group, one it is in included: Holo's limit
+  message shows before any other answer.
 - A habbo joins an Exclusive group: a request waits for an admin, and the group offers nothing more.
+- A habbo with a waiting request is archived: its request leaves the count and the list of requests.
 - A habbo opens a Private group: it offers neither Join nor a request.
 - A member leaves a group: Holo's dialog asks first, and the membership and the favourite go.
 - The owner leaves its own group: it is refused.
 - A member makes a group its favourite: Holo's dialog asks first, and the old favourite stops being one.
+- A habbo makes a group its favourite, or leaves a group, while it is not a member: it is refused.
 - Joining, leaving and the favourite act for the active habbo only (decision holo-port/0086).
+- A habbo cancels one of Holo's group dialogs: nothing changes.
 
 ## Running a group
 
@@ -44,6 +53,8 @@ and a habbo shows its favourite group's badge on the site and in rooms.
   Unlimited group's types stay locked (decision holo-port/0081).
 - The owner changes an Exclusive group's type: its waiting requests go at once.
 - An admin opens Members: the owner, who cannot be ticked, and the members show, with Holo's counts and pages.
+- An admin ticks members: Give rights turns on for members, Revoke rights for admins and Remove for anyone; with nobody
+  ticked, every action is off.
 - An admin accepts a request, gives or revokes rights, or removes a member: Holo's dialog asks first.
 - An admin demotes or removes the owner: it is refused.
 - The owner deletes the group: Holo's warning asks first, the group goes, and every item on its home goes back to the
@@ -54,12 +65,19 @@ and a habbo shows its favourite group's badge on the site and in rooms.
 
 - Anyone opens a group's home: it shows the Group information and Group Members widgets on the 922-pixel playground
   (decision holo-port/0017).
+- Anyone opens a group's home: it writes nothing, and a waiting request stays.
+- Anyone opens an Exclusive group's home: it shows Holo's Exclusive icon.
 - A missing group answers 404 with Holo's page and its search.
 - `GET /groups?name=` opens the group with that name, ignoring case, or says that nothing was found
   (decision holo-port/0095).
+- An admin opens Edit on a group's home: Holo's menu offers Settings, Members, Badge and Modify page.
 - An admin opens Modify page: the home editor opens on the group's home, and the Widgets tab offers Group Members.
+- An admin opens Modify page: the skins come in Holo's order, with the club and staff skins for those who may use them.
+- An admin edits a group's home: the Group information widget's menu offers its skins, without Remove.
+- An admin edits a group's home with Group Members placed: it shows greyed out in the inventory.
 - An admin removes an item another user placed: Holo's warning shows, and the item goes back to its placer
   (decision holo-port/0098).
+- An admin edits a group's home: Holo's warning marks only the items another user placed.
 - A user archives a habbo: its stickers and notes on group homes stay (decision holo-port/0096).
 
 ## Badges
@@ -74,4 +92,5 @@ and a habbo shows its favourite group's badge on the site and in rooms.
 - The header's My Groups lists the memberships before the owned groups, with Holo's marks; a guest has no My Groups.
 - A habbo's profile and the staff page show its favourite group's badge, linking to the group.
 - A click on a group in a MY GROUPS widget opens Holo's info box in its place.
+- A habbo presses the minus of the info box in a MY GROUPS widget: the list comes back.
 - In a room a habbo shows its favourite group's badge, or none (decision server/0068).

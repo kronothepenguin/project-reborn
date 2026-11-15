@@ -48,6 +48,8 @@ It builds on [platform](/features/platform/spec.md).
 
 - A habbo opens its hand: it shows nine furni a page, the oldest first.
 - The site or another habbo gives a habbo furni: it shows the next time the hand opens (decision server/0096).
+- A furni's name, description or text holds a character the client reads as a separator: it shows with a space in its
+  place, and the rest of the message stays whole.
 
 ## In the room
 
@@ -56,12 +58,16 @@ It builds on [platform](/features/platform/spec.md).
   (decision server/0103).
 - A habbo places a furni on a tile that takes no furni, or where a habbo stands: it stays in the hand.
 - A habbo places a furni on a solid that has a height: it stands on its top, up to 20 high.
+- A habbo places a furni on a rug: it stands on it; on a seat, a bed or a flat solid, it stays in the hand.
 - A room holds 500 furni, a habbo places one more: it is refused and stays in the hand (decision server/0104).
 - The owner or a habbo with rights moves or turns a furni: everyone sees it in its new place.
+- A furni faces east or west: its length and width swap on the floor.
 - The room's owner, or staff with `fuse_any_room_controller`, picks a furni up: it goes to the picker's hand and becomes
   the picker's, whoever placed it (decision server/0103).
 - A room is deleted: its furni goes to its owner's hand (decision server/0059).
 - Habbos walk in a furnished room: they walk around a solid, sit on a seat, lie on a bed and walk over a rug.
+- Furni stand stacked on a tile: the highest, and of two as high the newer, decides whether a habbo walks, sits or lies
+  there.
 - A habbo in the room switches a furni, a lamp on: everyone sees its new state.
 - A habbo who controls the room opens a gate: it opens, and it closes only while nobody stands in it.
 - A habbo rolls a dice, spins the wheel or starts the love randomizer: its number shows after 2, 4.25 or 5 seconds.

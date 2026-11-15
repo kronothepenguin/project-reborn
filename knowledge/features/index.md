@@ -3,6 +3,7 @@
 # Features
 
 - [Next features](next.md) - The active features, and the proposed order of the rest.
+- [Proposed spec lines](proposed-lines.md) - The spec lines proposed from the test reports, each with the tests that prove it, for the user to review.
 - [accounts/](accounts/index.md)
 - [assets/](assets/index.md)
 - [badges-and-achievements/](badges-and-achievements/index.md)
