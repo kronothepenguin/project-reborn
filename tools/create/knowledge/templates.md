@@ -39,6 +39,8 @@ Each folder a template writes has a `Makefile` whose first line includes the sha
 - A fullstack package: the document layout in `src/layouts/document.astro`, the page `src/pages/index.astro` that
   renders it, and a counter island built on the `Button` of `@project-reborn/components`, whose styles
   `src/styles/global.css` imports. The handler file `internal/router/index.go` holds `HandleIndexView` for `GET /{$}`.
+- A backend package: the handler file `internal/router/index.go` holds `HandleIndexText`, which answers `GET /{$}`
+  with plain text.
 
 - The fullstack and backend runners serve the package on an HTTP server of their own. The backend template keeps it as
   a generic starter; a package that needs no HTTP server deletes it (decision reborn/0014).

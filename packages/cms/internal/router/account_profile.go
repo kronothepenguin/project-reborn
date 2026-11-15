@@ -42,8 +42,8 @@ func (r *Router) HandleAccountProfileView(w http.ResponseWriter, req *http.Reque
 	r.answer(w, "account/profile.html", false, page)
 }
 
-// HandleAccountProfile handles the POST /account/profile action.
-func (r *Router) HandleAccountProfile(w http.ResponseWriter, req *http.Request) {
+// HandleAccountProfileSave handles the POST /account/profile action.
+func (r *Router) HandleAccountProfileSave(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	session, _ := auth.FromContext(ctx)
 	motto := req.PostFormValue("motto")

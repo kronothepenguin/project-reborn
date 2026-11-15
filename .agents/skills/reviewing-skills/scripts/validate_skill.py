@@ -32,7 +32,7 @@ CLAUDE_CODE_FIELDS = {
     "when_to_use", "argument-hint", "arguments", "disable-model-invocation", "user-invocable",
     "disallowed-tools", "model", "effort", "context", "agent", "background", "hooks", "paths", "shell",
 }
-REPO_ROOTS = ("apps", "packages", "tools", "tests", "knowledge")
+REPO_ROOTS = ("apps", "packages", "tools", "tests")
 
 NAME_RE = re.compile(r"^[a-z0-9-]+$")
 XML_TAG_RE = re.compile(r"<[^>]+>")

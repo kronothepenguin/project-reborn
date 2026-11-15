@@ -62,8 +62,8 @@ func (r *Router) HandleAccountEmailView(w http.ResponseWriter, req *http.Request
 	r.answer(w, "account/email.html", false, page)
 }
 
-// HandleAccountEmail handles the POST /account/email action.
-func (r *Router) HandleAccountEmail(w http.ResponseWriter, req *http.Request) {
+// HandleAccountEmailSave handles the POST /account/email action.
+func (r *Router) HandleAccountEmailSave(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	session, _ := auth.FromContext(ctx)
 	email, newsletter := req.PostFormValue("email"), req.PostFormValue("newsletter") != ""

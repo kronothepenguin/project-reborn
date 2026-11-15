@@ -12,10 +12,10 @@ type badgeBody struct {
 	Code string `json:"code"`
 }
 
-// HandleGroupsBadge handles POST /groups/{id}/badge, save_group_badge.php: an admin
+// HandleGroupsBadgeSave handles POST /groups/{id}/badge, save_group_badge.php: an admin
 // stores the code the badge editor wrote. A code the editor would not write is
 // refused, where Holo stored anything it was sent.
-func (r *Router) HandleGroupsBadge(w http.ResponseWriter, req *http.Request) {
+func (r *Router) HandleGroupsBadgeSave(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	group, ok := r.adminGroup(w, req)
 	if !ok {

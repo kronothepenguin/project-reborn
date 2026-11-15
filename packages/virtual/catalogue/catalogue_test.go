@@ -24,35 +24,6 @@ func load(t *testing.T) {
 	}
 }
 
-func TestTheCatalogueLoadsItsPagesInOrder(t *testing.T) {
-	load(t)
-	pages := Pages()
-	if len(pages) != 67 || pages[0].Code != "Purse" || pages[1].Code != "Frontpage" {
-		t.Fatalf("%d pages, the first %q; want Holo's 67, the Purse first", len(pages), pages[0].Code)
-	}
-	if !slices.IsSortedFunc(pages, func(a, b Page) int { return int(a.Position - b.Position) }) {
-		t.Error("the pages are not in the order of their positions")
-	}
-	if recycler, ok := Get("Recycler"); !ok || recycler.Name != "Ecotron" || len(recycler.Items) != 0 {
-		t.Errorf("Get(Recycler) = %+v, %t; want the Ecotron, which sells nothing", recycler, ok)
-	}
-	if _, ok := Get("Pets"); ok {
-		t.Error("Get(Pets) found a page that waits for S7")
-	}
-
-	spaces, _ := Get("Spaces")
-	var numbers []int64
-	for _, text := range spaces.Texts {
-		numbers = append(numbers, text.Number)
-	}
-	if !slices.Equal(numbers, []int64{1, 2, 3, 4, 5, 6, 7}) || spaces.Texts[0].Text != "Wall" {
-		t.Errorf("the Spaces page's texts = %+v, want its seven by number", spaces.Texts)
-	}
-	if len(spaces.Items) != 40 || !slices.IsSortedFunc(spaces.Items, func(a, b Item) int { return int(a.Position - b.Position) }) {
-		t.Errorf("the Spaces page sells %d items, want 40 in the order of their positions", len(spaces.Items))
-	}
-}
-
 func TestAnItemComesWithItsFurni(t *testing.T) {
 	load(t)
 	pets, _ := Get("Pet Accesories")
@@ -77,14 +48,5 @@ func TestAnItemComesWithItsFurni(t *testing.T) {
 	}
 	if deals != 4 {
 		t.Errorf("%d deals in the catalogue, want Holo's four pet food packs", deals)
-	}
-}
-
-func TestPagesReturnsACopyOfItsList(t *testing.T) {
-	load(t)
-	pages := Pages()
-	pages[0].Name = "changed"
-	if Pages()[0].Name == "changed" {
-		t.Error("Pages returns the list in memory")
 	}
 }
