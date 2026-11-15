@@ -3,24 +3,15 @@ package router
 import (
 	"context"
 	"database/sql"
-	"encoding/json/v2"
 	"math"
 	"net/http"
 	"strconv"
 	"time"
-	"unicode/utf8"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
-)
-
-const (
-	// maxMottoLength is the limit of Holo's inline editor. Its profile form
-	// allows fewer characters, as maxProfileMottoLength says.
-	maxMottoLength = 38
-	maxMottoBody   = 4096
 )
 
 // meAlert is what the feed shows of an alert. A sender makes it a staff message,
@@ -182,60 +173,4 @@ func ordinal(n int) string {
 		}
 	}
 	return strconv.Itoa(n) + suffix
-}
-
-type mottoBody struct {
-	Motto string `json:"motto"`
-}
-
-// HandleMeMotto handles POST /me/motto: it saves a motto and answers with the
-// habbo's motto, which stays the old one when the new one is too long.
-func (r *Router) HandleMeMotto(w http.ResponseWriter, req *http.Request) {
-	ctx := req.Context()
-	var body mottoBody
-	if err := json.UnmarshalRead(http.MaxBytesReader(w, req.Body, maxMottoBody), &body); err != nil {
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
-	}
-	session, _ := auth.FromContext(ctx)
-	if utf8.RuneCountInString(body.Motto) > maxMottoLength {
-		avatar, err := r.deps.Queries.GetAvatar(ctx, session.AvatarID)
-		if err != nil {
-			r.fail(w, err)
-			return
-		}
-		body.Motto = avatar.Motto
-	} else {
-		err := r.deps.Queries.UpdateAvatarMotto(ctx, store.UpdateAvatarMottoParams{ID: session.AvatarID, Motto: body.Motto, UpdatedAt: time.Now().UTC()})
-		if err != nil {
-			r.fail(w, err)
-			return
-		}
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.MarshalWrite(w, body); err != nil {
-		r.fail(w, err)
-	}
-}
-
-// HandleMeAlertDismiss handles POST /me/alerts/{id}/dismiss. Another habbo's
-// alert changes nothing.
-func (r *Router) HandleMeAlertDismiss(w http.ResponseWriter, req *http.Request) {
-	ctx := req.Context()
-	id, err := strconv.ParseInt(req.PathValue("id"), 10, 64)
-	if err != nil {
-		http.NotFound(w, req)
-		return
-	}
-	session, _ := auth.FromContext(ctx)
-	_, err = r.deps.Queries.DismissAlert(ctx, store.DismissAlertParams{
-		ID:          id,
-		AvatarID:    session.AvatarID,
-		DismissedAt: sql.NullTime{Time: time.Now().UTC(), Valid: true},
-	})
-	if err != nil {
-		r.fail(w, err)
-		return
-	}
-	http.Redirect(w, req, "/me", http.StatusSeeOther)
 }

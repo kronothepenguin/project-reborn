@@ -10,8 +10,8 @@ okf_version: "0.2"
 - [How the server is built](architecture.md) - The packages of the game server and what each one does, the path of a connection from a listener to the state, and how the server runs alone and under the orchestrator.
 - [The catalogue](catalogue.md) - The hh_cat_code commands the server answers: the index, the pages, purchases and presents.
 - [A connection](connection.md) - How the info and mus listeners serve a client, from HELLO through the dispatch by id and the outbox to the close.
-- [Encoding](encoding.md) - How packages/server/encoding reads and writes the values of the R26 wire format.
-- [Game](game.md) - The rules of packages/server/game, the events they send sessions and the functions each protocol calls.
+- [Encoding](encoding.md) - How packages/server/internal/encoding reads and writes the values of the R26 wire format.
+- [Game](game.md) - The rules of packages/server/internal/game, the events they send sessions and the functions each protocol calls.
 - [The hand](hand.md) - How the server serves a habbo's hand with GETSTRIP, read from the store each time.
 - [The handshake and the login](handshake-and-login.md) - The hh_entry_init commands that take a client from HELLO to LOGIN_OK and what the server answers to each.
 - [Keeping the session alive](keepalive.md) - How the server pings every session, closes a silent one and logs the latency reports.
@@ -20,5 +20,5 @@ okf_version: "0.2"
 - [The recycler](recycler.md) - The hh_recycler commands the server answers, from the configuration to a confirmed recycling.
 - [Rooms](rooms.md) - The hh_room commands the server answers: entering, furni, trading, chat, rights, events, queues, walking and rollers.
 - [Tests](tests.md) - How the tests of packages/server run, and what each test file and exit criterion proves.
-- [Transport](transport.md) - How packages/server/transport carries a client's bytes over TCP or a WebSocket as a Conn.
+- [Transport](transport.md) - How packages/server/internal/transport carries a client's bytes over TCP or a WebSocket as a Conn.
 - [r26/](r26/index.md)

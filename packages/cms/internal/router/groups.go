@@ -3,19 +3,18 @@ package router
 import (
 	"context"
 	"database/sql"
-	"errors"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
 	"unicode/utf8"
+
+	"strconv"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/cms/internal/badge"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
-	"strconv"
 )
 
 const (
@@ -330,9 +329,9 @@ func (r *Router) HandleGroupsView(w http.ResponseWriter, req *http.Request) {
 	astro.WriteTemplate(w, r.deps.Resolver, "groups/id.html", page)
 }
 
-// HandleGroupsSearch handles GET /groups?name=, the Search for group of a
+// HandleGroupsSearchView handles GET /groups?name=, the Search for group of a
 // missing group's page (0095): the group with exactly that name, ignoring case.
-func (r *Router) HandleGroupsSearch(w http.ResponseWriter, req *http.Request) {
+func (r *Router) HandleGroupsSearchView(w http.ResponseWriter, req *http.Request) {
 	query := req.URL.Query()
 	if !query.Has("name") {
 		r.groupMissing(w, req, false, "")
@@ -501,148 +500,6 @@ func (r *Router) actedGroup(w http.ResponseWriter, req *http.Request) (store.Gro
 	return group, true
 }
 
-// HandleGroupsJoin handles POST /groups/{id}/join, joingroup.php, for the active
-// habbo: it joins a Regular or Unlimited group or asks to join an Exclusive one,
-// with Holo's checks in Holo's order. Every answer is a message for the dialog.
-func (r *Router) HandleGroupsJoin(w http.ResponseWriter, req *http.Request) {
-	ctx := req.Context()
-	group, ok := r.actedGroup(w, req)
-	if !ok {
-		return
-	}
-	session, _ := auth.FromContext(ctx)
-	message := ""
-	now := time.Now().UTC()
-	err := r.inTx(ctx, func(q *store.Queries) error {
-		held, err := q.CountAvatarMemberships(ctx, session.AvatarID)
-		if err != nil {
-			return err
-		}
-		if limit := settings.GetInt("groups.maxMemberships"); held >= int64(limit) {
-			message = fmt.Sprintf(joinLimit, limit)
-			return nil
-		}
-		switch _, err := q.GetGroupMember(ctx, store.GetGroupMemberParams{GroupID: group.ID, AvatarID: session.AvatarID}); {
-		case err == nil:
-			message = joinAlready
-			return nil
-		case !store.IsNotFound(err):
-			return err
-		}
-		row := store.AddGroupMemberParams{GroupID: group.ID, AvatarID: session.AvatarID, Role: roleMember, RequestedAt: now}
-		switch group.Access {
-		case accessRegular:
-			members, err := q.CountGroupMembers(ctx, group.ID)
-			if err != nil {
-				return err
-			}
-			if members >= int64(settings.GetInt("groups.maxMembers")) {
-				message = joinFull
-				return nil
-			}
-			fallthrough
-		case accessUnlimited:
-			row.JoinedAt = sql.NullTime{Time: now, Valid: true}
-			message = joinJoined
-		case accessExclusive:
-			message = joinRequested
-		default:
-			message = joinClosed
-			return nil
-		}
-		return q.AddGroupMember(ctx, row)
-	})
-	if err != nil {
-		r.fail(w, err)
-		return
-	}
-	r.answerJSON(w, http.StatusOK, groupAnswer{Message: message})
-}
-
-// HandleGroupsLeave handles POST /groups/{id}/leave, leavegroup.php: the active
-// habbo leaves the group, or withdraws its request. The owner never leaves.
-func (r *Router) HandleGroupsLeave(w http.ResponseWriter, req *http.Request) {
-	ctx := req.Context()
-	group, ok := r.actedGroup(w, req)
-	if !ok {
-		return
-	}
-	session, _ := auth.FromContext(ctx)
-	n, err := r.deps.Queries.LeaveGroup(ctx, store.LeaveGroupParams{GroupID: group.ID, AvatarID: session.AvatarID})
-	switch {
-	case err != nil:
-		r.fail(w, err)
-	case n == 0:
-		r.answerJSON(w, http.StatusUnprocessableEntity, groupAnswer{Error: "notLeaving"})
-	default:
-		r.answerJSON(w, http.StatusOK, groupAnswer{Message: leftGroup})
-	}
-}
-
-// HandleGroupsFavourite handles POST /groups/{id}/favourite,
-// groups_select_favorite.php: the group becomes the active habbo's one
-// favourite. Holo let a habbo with a waiting request choose it too.
-func (r *Router) HandleGroupsFavourite(w http.ResponseWriter, req *http.Request) {
-	ctx := req.Context()
-	group, ok := r.actedGroup(w, req)
-	if !ok {
-		return
-	}
-	session, _ := auth.FromContext(ctx)
-	changed := int64(0)
-	err := r.inTx(ctx, func(q *store.Queries) error {
-		if err := q.ClearFavouriteGroup(ctx, session.AvatarID); err != nil {
-			return err
-		}
-		var err error
-		changed, err = q.SetFavouriteGroup(ctx, store.SetFavouriteGroupParams{GroupID: group.ID, AvatarID: session.AvatarID})
-		if err != nil {
-			return err
-		}
-		if changed == 0 {
-			return errNotMember
-		}
-		return nil
-	})
-	switch {
-	case errors.Is(err, errNotMember):
-		r.answerJSON(w, http.StatusUnprocessableEntity, groupAnswer{Error: "notMember"})
-	case err != nil:
-		r.fail(w, err)
-	default:
-		r.answerJSON(w, http.StatusOK, groupAnswer{})
-	}
-}
-
-// errNotMember rolls back a change that only a member may make.
-var errNotMember = errors.New("not a member")
-
-// HandleGroupsUnfavourite handles POST /groups/{id}/unfavourite,
-// groups_deselect_favorite.php: the group is no longer the active habbo's
-// favourite.
-func (r *Router) HandleGroupsUnfavourite(w http.ResponseWriter, req *http.Request) {
-	ctx := req.Context()
-	group, ok := r.actedGroup(w, req)
-	if !ok {
-		return
-	}
-	session, _ := auth.FromContext(ctx)
-	row, err := r.deps.Queries.GetGroupMember(ctx, store.GetGroupMemberParams{GroupID: group.ID, AvatarID: session.AvatarID})
-	switch {
-	case store.IsNotFound(err) || (err == nil && !row.JoinedAt.Valid):
-		r.answerJSON(w, http.StatusUnprocessableEntity, groupAnswer{Error: "notMember"})
-		return
-	case err != nil:
-		r.fail(w, err)
-		return
-	}
-	if _, err := r.deps.Queries.UnfavouriteGroup(ctx, store.UnfavouriteGroupParams{GroupID: group.ID, AvatarID: session.AvatarID}); err != nil {
-		r.fail(w, err)
-		return
-	}
-	r.answerJSON(w, http.StatusOK, groupAnswer{})
-}
-
 // The answers of update_group_settings.php, with 0084's taken name.
 const (
 	settingsSaved     = "Editing group settings successful"
@@ -653,12 +510,6 @@ const (
 	settingsNameBlank = "Please give a name"
 	groupDeleted      = "The group has been deleted successfully."
 )
-
-type settingsBody struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Access      string `json:"access"`
-}
 
 // ownedGroup is the group of the path when the active habbo owns it; anyone else
 // gets 403, as only the owner had group_settings.php.
@@ -673,121 +524,4 @@ func (r *Router) ownedGroup(w http.ResponseWriter, req *http.Request) (store.Gro
 		return group, false
 	}
 	return group, true
-}
-
-// HandleGroupsSettings handles POST /groups/{id}/settings,
-// update_group_settings.php: the owner renames the group, rewrites its text and
-// changes its type, with Holo's checks in Holo's order. An Unlimited group keeps
-// its type, and leaving Exclusive removes the waiting requests at once.
-func (r *Router) HandleGroupsSettings(w http.ResponseWriter, req *http.Request) {
-	ctx := req.Context()
-	group, ok := r.ownedGroup(w, req)
-	if !ok {
-		return
-	}
-	var body settingsBody
-	if !readEdit(w, req, &body) {
-		return
-	}
-	name := strings.TrimSpace(body.Name)
-	description := strings.TrimSpace(body.Description)
-	refusal := ""
-	switch {
-	case group.Access == accessUnlimited && body.Access != accessUnlimited:
-		refusal = settingsLocked
-	case body.Access != accessRegular && body.Access != accessExclusive && body.Access != accessPrivate && body.Access != accessUnlimited:
-		refusal = settingsBadType
-	case utf8.RuneCountInString(name) > settings.GetInt("groups.nameMaxLength"):
-		refusal = settingsNameLong
-	case utf8.RuneCountInString(description) > settings.GetInt("groups.descriptionMaxLength"):
-		refusal = settingsDescLong
-	case name == "":
-		refusal = settingsNameBlank
-	}
-	if refusal != "" {
-		r.answerJSON(w, http.StatusUnprocessableEntity, groupAnswer{Error: refusal})
-		return
-	}
-	err := r.inTx(ctx, func(q *store.Queries) error {
-		switch other, err := q.GetGroupByName(ctx, name); {
-		case err == nil && other.ID != group.ID:
-			refusal = purchaseTakenText
-			return nil
-		case err != nil && !store.IsNotFound(err):
-			return err
-		}
-		err := q.UpdateGroup(ctx, store.UpdateGroupParams{ID: group.ID, Name: name, Description: description, Access: body.Access, UpdatedAt: time.Now().UTC()})
-		if err != nil {
-			return err
-		}
-		if group.Access == accessExclusive && body.Access != accessExclusive {
-			return q.DeleteGroupRequests(ctx, group.ID)
-		}
-		return nil
-	})
-	switch {
-	case store.IsConflict(err):
-		r.answerJSON(w, http.StatusUnprocessableEntity, groupAnswer{Error: purchaseTakenText})
-	case err != nil:
-		r.fail(w, err)
-	case refusal != "":
-		r.answerJSON(w, http.StatusUnprocessableEntity, groupAnswer{Error: refusal})
-	default:
-		r.answerJSON(w, http.StatusOK, groupAnswer{Message: settingsSaved})
-	}
-}
-
-// HandleGroupsDelete handles POST /groups/{id}/delete, groups_delete_group.php:
-// the owner deletes the group. Its home's stickers and notes go back to the users
-// whose habbos placed them (0083), and its memberships and home go with it.
-func (r *Router) HandleGroupsDelete(w http.ResponseWriter, req *http.Request) {
-	ctx := req.Context()
-	group, ok := r.ownedGroup(w, req)
-	if !ok {
-		return
-	}
-	err := r.inTx(ctx, func(q *store.Queries) error {
-		home, err := q.GetGroupHome(ctx, group.ID)
-		if err != nil {
-			return err
-		}
-		if err := q.ReturnHomeItemsToPlacers(ctx, home.ID); err != nil {
-			return err
-		}
-		_, err = q.DeleteGroup(ctx, group.ID)
-		return err
-	})
-	if err != nil {
-		r.fail(w, err)
-		return
-	}
-	r.answerJSON(w, http.StatusOK, groupAnswer{Message: groupDeleted})
-}
-
-type badgeBody struct {
-	Code string `json:"code"`
-}
-
-// HandleGroupsBadge handles POST /groups/{id}/badge, save_group_badge.php: an admin
-// stores the code the badge editor wrote. A code the editor would not write is
-// refused, where Holo stored anything it was sent.
-func (r *Router) HandleGroupsBadge(w http.ResponseWriter, req *http.Request) {
-	ctx := req.Context()
-	group, ok := r.adminGroup(w, req)
-	if !ok {
-		return
-	}
-	var body badgeBody
-	if !readEdit(w, req, &body) {
-		return
-	}
-	if _, err := badge.Parse(body.Code); err != nil {
-		r.answerJSON(w, http.StatusUnprocessableEntity, groupAnswer{Error: "badCode"})
-		return
-	}
-	if err := r.deps.Queries.SetGroupBadge(ctx, store.SetGroupBadgeParams{ID: group.ID, Badge: body.Code, UpdatedAt: time.Now().UTC()}); err != nil {
-		r.fail(w, err)
-		return
-	}
-	r.answerJSON(w, http.StatusOK, groupAnswer{})
 }
