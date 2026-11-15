@@ -41,8 +41,8 @@ The projects and what each one is: [Monorepo architecture](/architecture.md). Th
 | `packages/housekeeping` | `housekeeping.go`, `func (h *Housekeeping) Mount` | `internal/router` |
 | `packages/installer` | `installer.go`, `func (i *Installer) Mount` | `internal/router` |
 
-- `router.Deps` of the CMS and housekeeping: `Resolver astro.Resolver`, `DB *sql.DB`, `Queries *store.Queries`,
-  `Updates *store.UpdateCheck`, and `Habbos services.Habbos`, handed over with `Inject`. The installer's:
+- `router.Deps` of the CMS and housekeeping: `Resolver astro.Resolver`, `DB *sql.DB`, `Queries *store.Queries`, built
+  from `DB`, `Updates *store.UpdateCheck`, and `Habbos services.Habbos`, handed over with `Inject`. The installer's:
   `Resolver astro.Resolver`, `Setup *setup.State`.
 - The CMS and housekeeping `Mount` wrap each route in middleware with `mux.Handle`:
   `packages/cms/knowledge/runtime.md`.
@@ -50,6 +50,8 @@ The projects and what each one is: [Monorepo architecture](/architecture.md). Th
   prefix, so its handler files leave it out (`/housekeeping/news` → `news.go`), as `applying-go-patterns` says.
 - The handler files still carry hyphens (`account-looks.go`), and 36 action routes still share their resource's file
   (`/groups/{id}/join` in `groups.go`), until the code is changed ([To settle](/to-settle.md), `# Code to change`).
+- The CMS data GETs still end in `View`, `HandleXMLPromoHabbos` and the redirect `HandleAccountView` keep their old
+  names, until the code is changed ([To settle](/to-settle.md), `# Code to change`).
 - Each web app embeds its Astro build with `//go:embed dist/*` in its root file.
 - Behaviour tests of a web app sit at its package root (`packages/cms/*_test.go`).
 

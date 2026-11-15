@@ -17,8 +17,7 @@
    to `Mount`.
 2. One handler file per route path, named as [Route to file mapping](#route-to-file-mapping) says. The methods of one
    path share its file. Handler names follow [Naming](#naming).
-3. Handlers are methods on `*Router`. `router.Deps` holds what the package received through `New` and `Inject`,
-   reached as `r.deps.<Field>`.
+3. Handlers are methods on `*Router`. `router.Deps` holds what the handlers share, reached as `r.deps.<Field>`.
 4. Shared helper packages, such as settings and sign-in, are package-level functions. Handlers call them directly.
 5. One `Router` serves every request. Keep request state in the handler's local variables.
 
@@ -92,7 +91,7 @@ func (a *App) Mount(mux *http.ServeMux) {
 	mux.HandleFunc("GET /orders/{id}", r.HandleOrderView)
 	mux.HandleFunc("GET /users/{id}/orders", r.HandleUsersOrdersView)
 	mux.HandleFunc("POST /groups/{id}/join", r.HandleGroupsJoin)
-	mux.HandleFunc("GET /xml/orders.xml", r.HandleXMLOrders)
+	mux.HandleFunc("GET /xml/orders.xml", r.HandleOrdersXML)
 
 	mux.Handle("/", a.static)
 }
@@ -105,13 +104,13 @@ func (a *App) Mount(mux *http.ServeMux) {
 
 ## Deps and Router
 
-`Deps` holds what `New` received, as concrete types: the database, the generated queries, the page templates. It also
-holds the injected services. Add a field when a handler needs one.
+`Deps` holds what the handlers share, as concrete types: what `New` received (the database, the page templates), what
+the package built from it (the bound queries) and the injected services. Add a field when a handler needs one.
 
 ```go
 package router
 
-// Deps are what the package received through New and Inject.
+// Deps are what the handlers share: what New and Inject received and what the package built from it.
 type Deps struct {
 	DB      *sql.DB
 	Queries *data.Queries
@@ -199,13 +198,18 @@ To name the file, take the route path:
 | `POST /account/looks` | `account_looks.go` | `HandleAccountLooksSave` |
 | `POST /groups/{id}/join` | `groups_join.go` | `HandleGroupsJoin` |
 | `POST /home-store/items/{id}/purchase` | `home_store_items_purchase.go` | `HandleHomeStoreItemsPurchase` |
-| `GET /xml/orders.xml` | `xml_orders.go` | `HandleXMLOrders` |
+| `GET /xml/orders.xml` | `xml_orders.go` | `HandleOrdersXML` |
+| `GET /orders.json` | `orders.go` | `HandleOrdersJSON` |
+| `GET /avatars/{id}/image` | `avatars_image.go` | `HandleAvatarImage` |
+| `GET /account` | `account.go` | `HandleAccountRedirect` |
 | `GET /tools/test` | `tools_test_route.go` | `HandleToolsTestView` |
 
 ## Naming
 
-- `View` means a page. A GET that renders a page is `Handle<Resource>View`: one per page.
-- A GET that returns data (XML, JSON, an image) is named for what it returns: `HandleXMLOrders`.
+- A GET that renders a page ends in `View`: `HandleOrdersView`. One per page.
+- A GET that returns data ends in its format: `Handle<Resource>JSON`, `Handle<Resource>XML`, `Handle<Resource>Image`
+  (`HandleOrdersJSON`, `HandleOrdersXML`, `HandleAvatarImage`).
+- A GET that only redirects is `Handle<Resource>Redirect`: `HandleAccountRedirect`.
 - `Handle<Resource><Action>` names every other handler (`HandleIndexLogin`, `HandleMeMotto`). It handles an action and
   may re-render the page after a failure.
 - An action name says the action, in place of the HTTP verb: `HandleMeMotto` over `HandleMePost`.

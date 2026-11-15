@@ -55,10 +55,20 @@ Frontend:
   `applying-go-patterns`.
 - `HandleHomeSearch` → `HandleHomeSearchView` and `HandleGroupsSearch` → `HandleGroupsSearchView`. Rule:
   `applying-go-patterns`, `View` means a page.
-- These CMS GET handlers return data and take the name of what they return: `HandleForumThreadsSettingsView`,
-  `HandleGroupsInfoView`, `HandleGroupsMembersView`, `HandleGroupsRandomView`, `HandleHomeStoreView`,
-  `HandleHomeStoreCategoryView`, `HandleMeGroupsView`, `HandleMeInventoryView` (JSON), `HandleHabboImagingBadgeView`
-  and `HandleNewsImagesView` (images). The user names the form of each new name.
+- These CMS GET handlers take the name of what they return. Rule: `applying-go-patterns`, a data GET ends in its
+  format and a redirect ends in `Redirect`.
+  - `HandleForumThreadsSettingsView` → `HandleForumThreadsSettingsJSON`
+  - `HandleGroupsInfoView` → `HandleGroupsInfoJSON`
+  - `HandleGroupsMembersView` → `HandleGroupsMembersJSON`
+  - `HandleGroupsRandomView` → `HandleGroupsRandomJSON`
+  - `HandleHomeStoreView` → `HandleHomeStoreJSON`
+  - `HandleHomeStoreCategoryView` → `HandleHomeStoreCategoryJSON`
+  - `HandleMeGroupsView` → `HandleMeGroupsJSON`
+  - `HandleMeInventoryView` → `HandleMeInventoryJSON`
+  - `HandleHabboImagingBadgeView` → `HandleHabboImagingBadgeImage`
+  - `HandleNewsImagesView` → `HandleNewsImagesImage`
+  - `HandleXMLPromoHabbos` → `HandlePromoHabbosXML`
+  - `HandleAccountView` → `HandleAccountRedirect`
 - `packages/server`: its public folders `game`, `encoding`, `transport` and `r26`. The official layout puts supporting
   packages in `internal/` first. The master asks the user which of them other modules may import.
 - The tables `furni` and `home_inventory` are renamed `furnis` and `home_inventories`, each through an update file that
