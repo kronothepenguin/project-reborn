@@ -181,7 +181,7 @@ func TestStoreItemsInUseCannotBeDeleted(t *testing.T) {
 	if _, err := db.ExecContext(ctx, `INSERT INTO home_store_items (id, home_store_category_id, kind, asset, name, price) VALUES (1000, 1, 'sticker', 'sticker_star', 'Star', 2)`); err != nil {
 		t.Fatalf("insert item: %v", err)
 	}
-	if _, err := db.ExecContext(ctx, `INSERT INTO home_inventory (user_id, home_store_item_id, quantity) VALUES (?, 1000, 3)`, userID); err != nil {
+	if _, err := db.ExecContext(ctx, `INSERT INTO home_inventories (user_id, home_store_item_id, quantity) VALUES (?, 1000, 3)`, userID); err != nil {
 		t.Fatalf("insert inventory: %v", err)
 	}
 

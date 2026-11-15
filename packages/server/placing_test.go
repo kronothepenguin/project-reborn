@@ -174,7 +174,7 @@ func TestADeletedRoomsFurniGoesToItsOwner(t *testing.T) {
 	own := giveFurni(t, ownerID, 463, "")
 	guests := giveFurni(t, guestID, 105, "")
 	standFurni(t, own, flat, 6, 6, 2)
-	if _, err := testDB.ExecContext(t.Context(), `UPDATE furni SET avatar_id = NULL, room_id = ?, wall_position = ':w=3,2 l=9,63 l' WHERE id = ?`, flat, guests); err != nil {
+	if _, err := testDB.ExecContext(t.Context(), `UPDATE furnis SET avatar_id = NULL, room_id = ?, wall_position = ':w=3,2 l=9,63 l' WHERE id = ?`, flat, guests); err != nil {
 		t.Fatal(err)
 	}
 

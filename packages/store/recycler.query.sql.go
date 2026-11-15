@@ -28,7 +28,7 @@ func (q *Queries) CreateRecycling(ctx context.Context, arg CreateRecyclingParams
 }
 
 const deleteRecycledFurni = `-- name: DeleteRecycledFurni :execrows
-DELETE FROM furni WHERE recycler_avatar_id = CAST(?1 AS INTEGER)
+DELETE FROM furnis WHERE recycler_avatar_id = CAST(?1 AS INTEGER)
 `
 
 // What the habbo gave its recycler is destroyed, for the reward.
@@ -91,7 +91,7 @@ func (q *Queries) ListRecyclerRewards(ctx context.Context) ([]RecyclerReward, er
 }
 
 const recycleFurni = `-- name: RecycleFurni :execrows
-UPDATE furni
+UPDATE furnis
 SET avatar_id = NULL, recycler_avatar_id = CAST(?1 AS INTEGER)
 WHERE id = ?2 AND created_at <= ?3 AND avatar_id = CAST(?1 AS INTEGER)
 `
@@ -113,7 +113,7 @@ func (q *Queries) RecycleFurni(ctx context.Context, arg RecycleFurniParams) (int
 }
 
 const returnRecycledFurni = `-- name: ReturnRecycledFurni :exec
-UPDATE furni
+UPDATE furnis
 SET avatar_id = recycler_avatar_id, recycler_avatar_id = NULL
 WHERE recycler_avatar_id = CAST(?1 AS INTEGER)
 `
