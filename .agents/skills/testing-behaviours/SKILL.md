@@ -77,6 +77,7 @@ Prove a behaviour once, at the lowest level that shows its outcome.
   redirects.
 - A browser suite: for the text and layout of a real page, which only the browser draws, and for an island or a
   primitive working inside a page.
+- A browser suite also proves what crosses programs: a change made in one program that another program shows.
 
 ## A failing test
 

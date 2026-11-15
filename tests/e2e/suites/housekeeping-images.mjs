@@ -135,6 +135,17 @@ export default async function (t) {
 
   await deleteButton(page, unused).click();
   await page.waitForURL(/deleted=1/);
+  const [[left]] = sql("SELECT COUNT(*) FROM images");
+  const gone = await fetch(`${base}${unused}`);
+  check(
+    "an unused picture is deleted, and the CMS no longer serves it",
+    (await page.getByRole("status").innerText()) ===
+      "Image deleted successfully." &&
+      Number(left) === 1 &&
+      (await page.locator("main tbody tr").count()) === 1 &&
+      gone.status === 404,
+    `${left} ${gone.status}`,
+  );
 
   await page
     .getByRole("link", { name: `Red Letter Day (ID: ${article})` })
