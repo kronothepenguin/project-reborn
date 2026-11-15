@@ -22,7 +22,7 @@ A skill holds how the user likes to build and works in any repo of theirs. Repo 
 (its OKF bundles), and a task links them.
 
 - [ ] One finding per repo fact the skill hard-codes: a repo path, a package name, a command, a make target.
-- [ ] The validator flags backticked paths under the apps, packages, tools, tests and knowledge folders; read the rest.
+- [ ] The validator flags backticked paths under the apps, packages, tools and tests folders; read the rest.
 - [ ] The fix moves the fact to the project's knowledge and keeps the rule in the skill.
 
 ## Small and simple

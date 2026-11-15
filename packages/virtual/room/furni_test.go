@@ -113,8 +113,8 @@ func TestAHabboRoomLoadsItsFurni(t *testing.T) {
 	poster := must[store.Furni](t)(q.CreateFurni(ctx, store.CreateFurniParams{FurniDefinitionID: 105, UserID: avatar.UserID, AvatarID: hand, CreatedAt: now}))
 	must[store.Furni](t)(q.CreateFurni(ctx, store.CreateFurniParams{FurniDefinitionID: 465, UserID: avatar.UserID, AvatarID: hand, CreatedAt: now}))
 	for _, placed := range []string{
-		`UPDATE furni SET avatar_id = NULL, room_id = ?, x = 6, y = 6, direction = 2 WHERE id = ?`,
-		`UPDATE furni SET avatar_id = NULL, room_id = ?, wall_position = ':w=3,2 l=9,63 l' WHERE id = ?`,
+		`UPDATE furnis SET avatar_id = NULL, room_id = ?, x = 6, y = 6, direction = 2 WHERE id = ?`,
+		`UPDATE furnis SET avatar_id = NULL, room_id = ?, wall_position = ':w=3,2 l=9,63 l' WHERE id = ?`,
 	} {
 		id := chair.ID
 		if strings.Contains(placed, "wall_position") {

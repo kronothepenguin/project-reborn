@@ -62,11 +62,11 @@ CREATE TABLE IF NOT EXISTS catalogue_items (
 CREATE INDEX IF NOT EXISTS idx_catalogue_items_catalogue_page_id ON catalogue_items (catalogue_page_id);
 
 -- The furni a catalogue item gives: one piece of one furni, or a deal's several.
-CREATE TABLE IF NOT EXISTS catalogue_item_furni (
+CREATE TABLE IF NOT EXISTS catalogue_item_furnis (
     catalogue_item_id INTEGER NOT NULL REFERENCES catalogue_items(id) ON DELETE CASCADE,
     furni_definition_id INTEGER NOT NULL REFERENCES furni_definitions(id),
     amount INTEGER NOT NULL DEFAULT 1 CHECK (amount > 0),
     PRIMARY KEY (catalogue_item_id, furni_definition_id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_catalogue_item_furni_furni_definition_id ON catalogue_item_furni (furni_definition_id);
+CREATE INDEX IF NOT EXISTS idx_catalogue_item_furnis_furni_definition_id ON catalogue_item_furnis (furni_definition_id);

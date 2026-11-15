@@ -107,7 +107,7 @@ The home store sells stickers, note packs and backgrounds for homes.
 | --- | --- | --- |
 | home_store_categories | The store's categories, ordered by position, some for staff only | home-store.schema.sql |
 | home_store_items | The items for sale, with kind, asset, price, quantity and an enabled flag | home-store.schema.sql |
-| home_inventory | The bought items a user has not placed yet, with their quantity | home-store.schema.sql |
+| home_inventories | The bought items a user has not placed yet, with their quantity | home-store.schema.sql |
 
 # Groups
 
@@ -291,7 +291,7 @@ A catalogue item is what a catalogue page sells for credits: one furni or, as a 
 | Table | Holds | Schema file |
 | --- | --- | --- |
 | catalogue_items | Items with page, position, code, name and price | catalogue.schema.sql |
-| catalogue_item_furni | The furni definitions an item gives, with their amount | catalogue.schema.sql |
+| catalogue_item_furnis | The furni definitions an item gives, with their amount | catalogue.schema.sql |
 
 # Furni
 
@@ -299,7 +299,7 @@ A furni is a piece a user owns: in a habbo's hand, in a room, in a present, or i
 
 | Table | Holds | Schema file |
 | --- | --- | --- |
-| furni | Each piece: definition, user, hand or room with its place, state, box, teleport partner, recycler | furni.schema.sql |
+| furnis | Each piece: definition, user, hand or room with its place, state, box, teleport partner, recycler | furni.schema.sql |
 | furni_notes | The text of each post-it that was written on | furni.schema.sql |
 
 # Recycler
@@ -334,7 +334,7 @@ The recycler gives one furni for many, after a time.
 - A new club period starts at the later of now and the end of the user's last period.
 - `news_articles.image_id` names the uploaded image `image_url` shows, set in the same statement.
 - A furni in no hand, no room and no box is in its user's shared inventory. A hand lists its furni by id.
-- The furni a recycling took are the rows of `furni` whose `recycler_avatar_id` is the habbo.
+- The furni a recycling took are the rows of `furnis` whose `recycler_avatar_id` is the habbo.
 - A `settings` row equal to the declared default is deleted.
 - `staff_logs` rows stay as written.
 - Archived habbos (`avatars.archived_at`) keep their rows; lists and counts of members and requests leave them out.

@@ -15,16 +15,16 @@ DELETE FROM recyclings WHERE avatar_id = sqlc.arg(avatar_id);
 -- Out of the habbo's hand and into its recycler: no row changes when the hand does not hold the furni, or when the
 -- furni was made after made_before (decision server/0117).
 -- name: RecycleFurni :execrows
-UPDATE furni
+UPDATE furnis
 SET avatar_id = NULL, recycler_avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER)
 WHERE id = sqlc.arg(id) AND created_at <= sqlc.arg(made_before) AND avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER);
 
 -- What the habbo gave its recycler comes back to its hand.
 -- name: ReturnRecycledFurni :exec
-UPDATE furni
+UPDATE furnis
 SET avatar_id = recycler_avatar_id, recycler_avatar_id = NULL
 WHERE recycler_avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER);
 
 -- What the habbo gave its recycler is destroyed, for the reward.
 -- name: DeleteRecycledFurni :execrows
-DELETE FROM furni WHERE recycler_avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER);
+DELETE FROM furnis WHERE recycler_avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER);

@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS password_resets (
 
 CREATE INDEX IF NOT EXISTS idx_password_resets_user_id ON password_resets(user_id);
 
--- id is the SHA-256 digest of the ticket handed to the game client.
+-- id is the ticket handed to the game client, as text (decision server/0030).
 CREATE TABLE IF NOT EXISTS sso_tickets (
     id TEXT PRIMARY KEY,
     session_id TEXT NOT NULL REFERENCES sessions(id) ON DELETE CASCADE,

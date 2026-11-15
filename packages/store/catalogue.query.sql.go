@@ -60,10 +60,10 @@ func (q *Queries) GetFurniDefinitionBySprite(ctx context.Context, sprite string)
 const getFurniName = `-- name: GetFurniName :one
 SELECT catalogue_items.name
 FROM catalogue_items
-JOIN catalogue_item_furni ON catalogue_item_furni.catalogue_item_id = catalogue_items.id
-WHERE catalogue_item_furni.furni_definition_id = ?1
-    AND catalogue_item_furni.amount = 1
-    AND (SELECT COUNT(*) FROM catalogue_item_furni AS pieces WHERE pieces.catalogue_item_id = catalogue_items.id) = 1
+JOIN catalogue_item_furnis ON catalogue_item_furnis.catalogue_item_id = catalogue_items.id
+WHERE catalogue_item_furnis.furni_definition_id = ?1
+    AND catalogue_item_furnis.amount = 1
+    AND (SELECT COUNT(*) FROM catalogue_item_furnis AS pieces WHERE pieces.catalogue_item_id = catalogue_items.id) = 1
 ORDER BY catalogue_items.id
 LIMIT 1
 `
@@ -77,7 +77,7 @@ func (q *Queries) GetFurniName(ctx context.Context, furniDefinitionID int64) (st
 }
 
 const listCatalogueItemFurni = `-- name: ListCatalogueItemFurni :many
-SELECT catalogue_item_id, furni_definition_id, amount FROM catalogue_item_furni ORDER BY catalogue_item_id, furni_definition_id
+SELECT catalogue_item_id, furni_definition_id, amount FROM catalogue_item_furnis ORDER BY catalogue_item_id, furni_definition_id
 `
 
 func (q *Queries) ListCatalogueItemFurni(ctx context.Context) ([]CatalogueItemFurni, error) {

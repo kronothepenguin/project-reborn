@@ -176,11 +176,11 @@ func TestDeletingAGroupReturnsItsItems(t *testing.T) {
 		t.Errorf("the group is still there: %v", err)
 	}
 	for user, want := range map[int64]int64{ownerUser: 1, memberUser: 2} {
-		if n := countRows(t, db, "SELECT COALESCE(SUM(quantity), 0) FROM home_inventory WHERE user_id = ? AND home_store_item_id = ?", user, sticker); n != want {
+		if n := countRows(t, db, "SELECT COALESCE(SUM(quantity), 0) FROM home_inventories WHERE user_id = ? AND home_store_item_id = ?", user, sticker); n != want {
 			t.Errorf("user %d got %d stickers back, want %d", user, n, want)
 		}
 	}
-	if n := countRows(t, db, "SELECT COUNT(*) FROM home_inventory JOIN home_store_items ON home_store_items.id = home_inventory.home_store_item_id WHERE user_id = ? AND kind = 'note'", memberUser); n != 1 {
+	if n := countRows(t, db, "SELECT COUNT(*) FROM home_inventories JOIN home_store_items ON home_store_items.id = home_inventories.home_store_item_id WHERE user_id = ? AND kind = 'note'", memberUser); n != 1 {
 		t.Errorf("the member's note did not come back: %d", n)
 	}
 	if n := countRows(t, db, "SELECT COUNT(*) FROM group_members WHERE group_id = ?", club.ID) + countRows(t, db, "SELECT COUNT(*) FROM homes WHERE group_id = ?", club.ID); n != 0 {
