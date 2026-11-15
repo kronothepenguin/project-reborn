@@ -66,6 +66,7 @@ section, Recycler Options among them, and close or open the site. A running CMS 
 - Staff change `cms.refresh`: the new value applies when the program restarts.
 - Staff save a setting and the program restarts: the change stays.
 - A hotel without setting rows: every setting holds its default.
+- A new hotel: the site is named "Reborn Hotel", with the short name "Reborn".
 - A stored setting holds a bad value, a key nothing declares, or a `config.json` key: it is ignored, the default or the
   config value applies, and the log names it once per reason.
 - Stored settings break a rule together: those rows go back to their defaults, and the log names them.
