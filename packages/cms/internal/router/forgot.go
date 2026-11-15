@@ -25,11 +25,11 @@ func (r *Router) HandleForgotView(w http.ResponseWriter, req *http.Request) {
 	r.writeForgot(w, req, forgotPage{})
 }
 
-// HandleForgot handles the POST /forgot action. Unlike Holo it answers the same
+// HandleForgotSend handles the POST /forgot action. Unlike Holo it answers the same
 // way for every name and address, so that the page does not tell a stranger
 // which of them belong together, and the reset runs in the background so that
 // the response time does not either.
-func (r *Router) HandleForgot(w http.ResponseWriter, req *http.Request) {
+func (r *Router) HandleForgotSend(w http.ResponseWriter, req *http.Request) {
 	if _, ok := auth.FromContext(req.Context()); ok {
 		r.writeForgot(w, req, forgotPage{})
 		return
