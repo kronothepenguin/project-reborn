@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/kronothepenguin/project-reborn/packages/server/encoding"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/encoding"
 )
 
 // readPacket reads a packet as the client's send writes one: 3 B64 characters of length, then 2 of the command id and

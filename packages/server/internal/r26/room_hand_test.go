@@ -3,7 +3,7 @@ package r26
 import (
 	"testing"
 
-	"github.com/kronothepenguin/project-reborn/packages/server/game"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/game"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 

@@ -1,7 +1,7 @@
 ---
 type: Go Package
 title: Transport
-description: How packages/server/transport carries a client's bytes over TCP or a WebSocket as a Conn.
+description: How packages/server/internal/transport carries a client's bytes over TCP or a WebSocket as a Conn.
 tags: [server]
 ---
 

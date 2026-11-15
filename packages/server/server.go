@@ -13,9 +13,9 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/scheduler"
-	"github.com/kronothepenguin/project-reborn/packages/server/game"
-	"github.com/kronothepenguin/project-reborn/packages/server/r26"
-	"github.com/kronothepenguin/project-reborn/packages/server/transport"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/game"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/r26"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/transport"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/catalogue"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/category"
