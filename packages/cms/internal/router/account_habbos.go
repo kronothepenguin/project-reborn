@@ -60,9 +60,9 @@ func (r *Router) HandleAccountHabbosView(w http.ResponseWriter, req *http.Reques
 	r.answer(w, "account/habbos.html", false, page)
 }
 
-// HandleAccountHabbos handles the POST /account/habbos action, which adds a habbo
+// HandleAccountHabbosAdd handles the POST /account/habbos action, which adds a habbo
 // to the user. It shares the user's wallet.
-func (r *Router) HandleAccountHabbos(w http.ResponseWriter, req *http.Request) {
+func (r *Router) HandleAccountHabbosAdd(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	session, _ := auth.FromContext(ctx)
 	name, figure, gender := req.PostFormValue("name"), req.PostFormValue("figure"), req.PostFormValue("gender")

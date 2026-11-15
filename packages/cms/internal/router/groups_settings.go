@@ -16,11 +16,11 @@ type settingsBody struct {
 	Access      string `json:"access"`
 }
 
-// HandleGroupsSettings handles POST /groups/{id}/settings,
+// HandleGroupsSettingsSave handles POST /groups/{id}/settings,
 // update_group_settings.php: the owner renames the group, rewrites its text and
 // changes its type, with Holo's checks in Holo's order. An Unlimited group keeps
 // its type, and leaving Exclusive removes the waiting requests at once.
-func (r *Router) HandleGroupsSettings(w http.ResponseWriter, req *http.Request) {
+func (r *Router) HandleGroupsSettingsSave(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	group, ok := r.ownedGroup(w, req)
 	if !ok {

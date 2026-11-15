@@ -45,9 +45,9 @@ func (r *Router) HandleConfigView(w http.ResponseWriter, req *http.Request) {
 	astro.WriteTemplate(w, r.deps.Resolver, "config.html", page)
 }
 
-// HandleConfigWrite handles POST /config: it creates the database and writes
+// HandleConfigSave handles POST /config: it creates the database and writes
 // config.json.
-func (r *Router) HandleConfigWrite(w http.ResponseWriter, req *http.Request) {
+func (r *Router) HandleConfigSave(w http.ResponseWriter, req *http.Request) {
 	if _, ok := r.step(w, req, false); !ok {
 		return
 	}

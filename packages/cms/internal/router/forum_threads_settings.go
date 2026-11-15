@@ -69,11 +69,11 @@ func (r *Router) HandleForumThreadsSettingsJSON(w http.ResponseWriter, req *http
 	r.answerJSON(w, http.StatusOK, threadSettings{Title: thread.Title, Closed: thread.Locked, Sticky: thread.Sticky})
 }
 
-// HandleForumThreadsSettings handles POST /forum/threads/{id}/settings,
+// HandleForumThreadsSettingsSave handles POST /forum/threads/{id}/settings,
 // savetopicsettings.php: a moderator renames the thread, opens or closes it, and
 // makes it sticky or normal. The answer leads to the thread's last page, as
 // Holo's Proceed did.
-func (r *Router) HandleForumThreadsSettings(w http.ResponseWriter, req *http.Request) {
+func (r *Router) HandleForumThreadsSettingsSave(w http.ResponseWriter, req *http.Request) {
 	thread, ok := r.moderatedThread(w, req)
 	if !ok {
 		return
