@@ -52,6 +52,9 @@ The same page offers the keys a release added to `config.json`.
   to the last automatic one (decision holo-port/0071).
 - An automatic update fails at start: the error goes to the log, every page answers with an error page and status
   503, and the next start tries again (decision holo-port/0071).
+- A hotel stands at its last automatic update: staff sign in, and the update page lists the waiting updates.
+- The game server starts with an update waiting: it loads the navigator and the catalogue once every update is applied
+  (decisions server/0064, server/0098).
 
 ## config.json
 
@@ -59,6 +62,8 @@ The same page offers the keys a release added to `config.json`.
   more (decision reborn/0004).
 - The administrator saves `config.json`: it gains the new keys, keeps the others as they are and loses the unused
   ones; the values apply at the next restart (decision reborn/0004).
+- `config.json` holds every current key: the update page lists nothing to add or drop, and saving leaves the file as it
+  was.
 - A new key gets a bad value: `config.json` stays as it was.
 - `config.json` differs from the release: the hotel stays open (decision reborn/0004).
 

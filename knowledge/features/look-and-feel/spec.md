@@ -27,8 +27,9 @@ like font-size: 16px. and make the layout's a little bigger to match this new fo
 
 ## Signed-out layout
 
-- A visitor opens a signed-out page: the title reads `<short name> ~ Home`, and `/register` reads `<short name> ~
-  Register`.
+- A visitor opens a signed-out page other than the maintenance page: the title reads `<short name> ~ Home`, and
+  `/register` reads `<short name> ~ Register`.
+- A visitor opens the maintenance page: the title is the bare short name.
 - A visitor opens a signed-out page: the header shows `N users online now` and `N registered users`, counting habbos,
   and the logo links to `/`.
 - A visitor opens a signed-out page: it carries Holo's `description` and `keywords` meta tags.
@@ -38,6 +39,7 @@ like font-size: 16px. and make the layout's a little bigger to match this new fo
 
 ## Community layout
 
+- A signed-in habbo opens a page: the title reads `<short name> ~ <habbo name>`.
 - A signed-in habbo opens a page: the main tabs show its name, Community and Credits, over Holo's sub-tabs.
 - A guest opens a page: the main tab reads `Register now!`, and the header shows the mini login.
 - A habbo with `housekeeping.access` opens a page: a Housekeeping tab shows, linking to `site.housekeepingUrl`.
@@ -49,10 +51,19 @@ like font-size: 16px. and make the layout's a little bigger to match this new fo
 
 - Staff open housekeeping: a grey top bar shows who is logged in, their previous login, `Log out` and the clock box
   (decision holo-port/0060).
+- Staff read their previous login: it is their last successful sign-in before the newest, and failed sign-ins do not
+  count.
+- Staff read the clock box: the local and server times tick each second.
 - Staff read a page: navy tabs, the active one `sky-700`, over a blue strip, and a left column of boxes with `sky-700`
   titles (decision holo-port/0060).
+- Staff follow any link of housekeeping's tabs and menu boxes: the page opens.
 - Staff read a data list: an `amber-300` header over `amber-100` rows; a form has a `sky-700` title and plain rows
   (decision holo-port/0060).
+- Staff read a data list in housekeeping: its rows alternate in shade.
+
+## Every page
+
+- A page shows a select whose options the server fills in: it shows only the options.
 
 # Open questions
 

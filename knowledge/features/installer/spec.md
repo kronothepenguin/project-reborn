@@ -34,7 +34,9 @@ installation."
 - The config step gets a database path, a hotel port and a housekeeping port: the database is created with every update,
   `config.json` is written, and the site step follows (decision holo-port/0068).
 - A port is not a number or is out of range: the form is refused with its message.
+- The config step gets a bad value, such as a port out of range: no `config.json` and no database are written.
 - The database path cannot be opened: the form is refused and no `config.json` is written.
+- The config step meets a `config.json` that already exists: it is refused, and nothing is written.
 - `/site` or `/admin` is opened before the config step: the browser goes to `/config`.
 - The installer restarts halfway: it continues from the `config.json` it wrote.
 
@@ -53,8 +55,14 @@ installation."
 - A habbo name has a space or more than 24 characters: the form is refused with "Habbo names are 1 to 24 letters,
   digits or - = ? ! @ : . ," (decision holo-port/0026).
 - The two passwords differ: the form is refused.
+- The administrator step gets a password shorter than 6 characters: the form is refused with "Passwords are 6 to 25
+  characters."
+- The administrator step gets a malformed email, an email with a display name, no birth date, or a birth date in the
+  future or before 1920: the form is refused.
 - A new hotel is installed: Administrator, Moderator, Gold Hobba, Silver Hobba and HabboX are access groups at levels 7
   to 3, and the administrator is in Administrator (decision holo-port/0054).
+- The hotel holds several access groups that manage access: the administrator joins the highest of them, Administrator.
+- No access group can manage access: the administrator step is refused, and no user is created.
 - The site created the database first and habbos registered: the installer changes the defaults and creates the
   administrator beside them (decision holo-port/0068).
 

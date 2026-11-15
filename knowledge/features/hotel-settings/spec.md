@@ -26,22 +26,34 @@ section, Recycler Options among them, and close or open the site. A running CMS 
 - Staff save a form with one bad value: nothing is saved, and the form comes back with Holo's refusal and what was
   typed.
 - A form saves the keys of its own section only.
+- Staff save an address setting: an ad takes nothing or an absolute http or https URL, the housekeeping address a path
+  or such a URL, and the imager a URL with a path and no query; anything else is refused.
 - Staff set a value back to its default: its row goes, and the default applies.
 - Staff save a form unchanged: nothing is written.
 - Staff open the Mail form: the password field is blank. A blank password keeps the current one, and a checkbox clears
   it.
+- Mail has a host and a from address: mails go through that server, signed in with `mail.username` when it is set.
+- Mail has no host or no from address: no mail goes out.
+- The mail server does not answer: the mail is given up.
 - Staff raise or lower both password limits in one save: both are saved.
 - A setting without a label of its own: it gets a form field, with its key as its label.
+- Staff open any settings form: it offers the settings, without the startup keys of `config.json` or the hidden
+  settings.
 - Staff open the Game form: it holds the ten session parameters of the game client and the game server's numbers
   (decision server/0034).
 - Staff open Recycler Options: it holds the recycler's four settings, saved and logged like the other forms (decision
   server/0119).
 - A post from another site: it is refused, and nothing changes.
+- Staff write a BBCode box in the settings: the editor shows it as the site will; without JavaScript it is a plain
+  field.
 
 ## Maintenance
 
+- Anyone opens the maintenance page and housekeeping's settings forms: Holo's title, headings, labels and columns show,
+  with the tab or menu place marked.
 - Staff choose Site Closed in Turn your site on/off: a running CMS answers every page with 503 and the maintenance
   page within `cms.refresh` seconds, with no restart.
+- The site is closed: its files, such as pictures and styles, still load.
 - Staff choose Site Open: the row goes, and the running CMS opens again.
 - A guest opens the closed site: Frank's maintenance page, with a sign-in form.
 - A holder of `site.maintenanceBypass` signs in on it: they use the site, with "The site is currently turned off!"
@@ -53,6 +65,10 @@ section, Recycler Options among them, and close or open the site. A running CMS 
 - A CMS or a game server runs alone: it reads the settings again every `cms.refresh` seconds, 1 by default.
 - Staff change `cms.refresh`: the new value applies when the program restarts.
 - Staff save a setting and the program restarts: the change stays.
+- A hotel without setting rows: every setting holds its default.
+- A stored setting holds a bad value, a key nothing declares, or a `config.json` key: it is ignored, the default or the
+  config value applies, and the log names it once per reason.
+- Stored settings break a rule together: those rows go back to their defaults, and the log names them.
 
 ## The dashboard
 

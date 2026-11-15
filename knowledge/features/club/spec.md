@@ -23,6 +23,8 @@ It builds on [platform](/features/platform/spec.md) and [economy](/features/econ
 
 ## The club page
 
+- A new hotel: 1, 3 and 6 months cost 20, 50 and 80 credits, a month is 31 days, a purchase reaches at most 6 months,
+  and the wardrobe holds 5 outfits.
 - A visitor opens `/club`: Holo's club page shows under Credits with its benefits, and a guest is asked to sign in to
   see the club status.
 - A signed-in habbo without club opens `/club`: three buy buttons offer 1, 3 and 6 months at `club.price1Month`,
@@ -30,8 +32,11 @@ It builds on [platform](/features/platform/spec.md) and [economy](/features/econ
 - A habbo whose purse holds less than a month's price opens `/club`: Holo's notice leads to the credits page in place
   of the buttons.
 - A habbo presses a buy button: Holo's dialog asks first and shows the purse; Cancel buys nothing.
+- A habbo buys months, then presses another buy button: the dialog counts the purse after the purchase, without a
+  reload.
 - A habbo buys months: the purse pays, a `club` ledger row is written and a period of `club.daysPerMonth` days a month
   is added, in one transaction.
+- A habbo asks for a number of months other than 1, 3 or 6: one month is bought.
 - A habbo buys during the club: the new period starts at the end of the last one.
 - A purchase would pass `club.maxMonths` months, the month under way counted whole: the purchase is refused with
   Holo's words; 0 lifts the limit.
@@ -44,6 +49,7 @@ It builds on [platform](/features/platform/spec.md) and [economy](/features/econ
   in place of the badge it wore (decision holo-port/0103).
 - The club ends and a page reads it: `HC1` leaves every habbo of the user, and they keep their other badges (decision
   holo-port/0103).
+- A user with no club period wears `HC1` that staff gave: the badge stays.
 
 ## Days and perks
 
@@ -53,10 +59,18 @@ It builds on [platform](/features/platform/spec.md) and [economy](/features/econ
 - A club member edits its home: the editor offers the club skins.
 - A member opens Looks: the wardrobe keeps up to `homes.wardrobeSlots` outfits for each habbo, and a green arrow puts
   an outfit in the editor.
+- A member hovers over the wardrobe: Holo's instructions show the number of slots, and leaving hides them.
+- A member presses a red arrow over a stored outfit: Holo's question asks first; Cancel keeps the outfit, and OK
+  replaces it.
+- A member presses a green arrow: the outfit the editor already shows changes nothing, and one pressed while the editor
+  loads is applied once the editor has drawn.
 - A habbo without club, a bad slot or a bad look posts to the wardrobe: the outfit is refused.
+- A habbo without the club opens Looks: a Join box shows in place of the wardrobe.
 - The club ends: its days, skins, wide playground and wardrobe go.
 - Staff save housekeeping's Club form: the prices and the days of a month change; `HC Months Limit`, among the
   content options, sets the month limit.
+- Staff save a club price, the days of a month, the months limit or the wardrobe slots outside its bounds: the value is
+  refused.
 
 ## In the game
 

@@ -23,13 +23,19 @@ The holders of `housekeeping.accessGroups` manage the groups in housekeeping, an
 - A banned user opens housekeeping: they go to `site.url`, where the CMS ends the session and shows Holo's ban message
   (decision holo-port/0055).
 - Staff press Log out: the session they share with the site ends.
+- Staff open, change or delete something that does not exist, or name a habbo that is not the user's: the answer is 404,
+  and nothing changes.
+- A page's address asks for a message with no matching change: the page shows no message.
 
 ## Access groups
 
+- Anyone opens housekeeping's Access Groups: Holo's title, headings, labels and columns show, with the tab or menu place
+  marked.
 - A new hotel opens: it holds Holo's ranks as access groups, Administrator (level 7), Moderator (6), Gold Hobba (5),
   Silver Hobba (4) and HabboX (3), all listed on `/staff` (decision holo-port/0054).
 - The installer creates the first administrator: they join Administrator, which holds every attribute (decision
   holo-port/0054).
+- A holder of `housekeeping.accessGroups` opens Access Groups: every staff member shows with their group.
 - A holder of `housekeeping.accessGroups` creates a group with a free name: its page opens. A taken name is refused.
 - The group page saves a checkbox for each attribute and each fuse, the `/staff` flag and a level from 0 to 99.
 - A manager adds a user, found by a habbo's name or a user's id, under one of the user's own habbos as display habbo:
@@ -42,6 +48,8 @@ The holders of `housekeeping.accessGroups` manage the groups in housekeeping, an
 - A user holds the attributes of their groups and the attributes given to them directly (decision holo-port/0053).
 - A manager ticks attributes on a user's page: the ticks replace the user's direct attributes, and their groups stay as
   they are. Fuses come from groups only (decision holo-port/0053).
+- A manager gives a group or a user an attribute outside the catalogue, or a user a fuse directly: "Only the attributes
+  of the catalogue can be given.", and nothing changes.
 - Emails and IP history show to holders of `housekeeping.usersPrivate` only (decision holo-port/0053).
 
 ## Staff levels
@@ -71,6 +79,9 @@ The holders of `housekeeping.accessGroups` manage the groups in housekeeping, an
 
 - Staff change anything in housekeeping: one staff log row records who, the target user or habbo, the action, the
   detail, the address and the time.
+- Staff save anything unchanged: nothing is written, and the staff log gains no row.
+- Staff read a staff log row: it names the user by its first habbo, and the target by the habbo it names.
 - A holder of `housekeeping.logs` opens Staff Logs: the rows, newest first, 100 a page, with Newer and Older links.
+- Staff open an empty Staff Logs: one empty page shows, with no Newer or Older link.
 - An account goes: its log rows stay (decision holo-port/0063).
 - The staff log only grows: staff read it, and every row stays for good (decision holo-port/0063).

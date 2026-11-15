@@ -28,9 +28,11 @@ staff boxes in the settings.
 ## Banners in housekeeping
 
 - Staff with `housekeeping.banners` add a banner: it starts disabled, with Holo's texts and lengths.
+- Staff add a banner with no text: it is saved.
 - A banner takes an image address and a link address, each an http(s) address or a path of the site.
 - An empty banner, a blank address or a script for a link is refused with 422, and the form keeps what was typed.
 - Staff save a banner with status enabled: it appears on the community page.
+- Staff save a banner with any status other than 1: it is disabled.
 - Staff edit a banner: Holo's answer shows on the edit view.
 - Staff delete a banner: Holo's question asks about its text first, and the banner goes.
 - A banner that is gone answers Holo's failure with 404.
@@ -40,11 +42,17 @@ staff boxes in the settings.
 
 ## The staff page
 
+- Anyone opens the Staff page and housekeeping's Manage Site Banners with its edit and delete views: Holo's title,
+  headings, labels and columns show, with the tab or menu place marked.
 - Anyone opens `/staff`: every member of the staff-listed groups shows once, sorted by habbo name
   (decision holo-port/0076).
+- A hotel with no staff: the staff page lists nobody.
 - Each member shows the habbo chosen for its highest listed group, with that group as rank (decision holo-port/0019).
+- A member's chosen habbo is archived: the staff page shows the member's first habbo.
+- Every habbo of a member is archived: the staff page leaves the member out.
 - Each member shows its avatar, its worn badge, its favourite group's badge, the offline state, its motto or
   `No motto`, and `Last Visit:`.
+- Anyone reads a staff member's Last Visit: it is the last time a session saw the habbo, else its last sign-in.
 - A name links to the habbo's home.
 - The two boxes show their headings and BBCode bodies without smilies, each in its colour (decision holo-port/0077).
 - A white box shows its heading in black on white.

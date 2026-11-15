@@ -27,6 +27,7 @@ habbos carry them. The tags page finds the habbos of a tag, lets a habbo tag its
 
 - Anyone opens `/tags`: Holo's title, the Tags sub-tab and the cloud show (decision holo-port/0017).
 - The cloud shows 20 random tags in use, sized 100% to 200% by how many habbos carry them.
+- A visitor opens the landing, or fails to sign in there: the tag cloud shows.
 - Anyone opens `/tags` without a search: Holo's `No results` shows.
 - Anyone searches a tag: the tag is lowered and matched exactly, and up to 20 habbos show, in the order they took it.
 - Each habbo found shows its avatar, its motto and its tags, and links to its home.

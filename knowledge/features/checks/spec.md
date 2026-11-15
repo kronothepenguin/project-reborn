@@ -22,7 +22,10 @@ replaces the old root target.
 - A project with both, `make check` runs: the `build` script runs first, so the Go tests and the Go build see what it
   made.
 - A Go file left unformatted, `make check` runs in its project: it fails and names the file.
+- A Go project that fails vet, `make check` runs: it fails and names the file.
+- A Go project that does not build, `make check` runs: it fails and shows the build error.
 - A test that fails, `make check` runs in its project: it fails and shows the test.
+- A package script that fails, `make check` runs: it fails.
 - A project changed, the agent asks for its dependants: it gets every project that uses it, directly or through
   another project. A Go import and a pnpm workspace dependency both count as a use.
 - A project that no project uses, the agent asks for its dependants: the list is empty.
@@ -30,5 +33,6 @@ replaces the old root target.
 - A change in a project that breaks a project depending on it, `make check` runs in the dependant: it fails.
 - Every project right, `make check` runs at the root: it runs `make check` in every project and the knowledge check,
   and passes.
+- `make check` runs at the root: it leaves out the browser suites.
 - One project wrong, `make check` runs at the root: it fails and names the project.
-- A new project made by `make create`, `make check` runs in it: it passes.
+- One project wrong, `make check` runs at the root: it stops before the knowledge check.
