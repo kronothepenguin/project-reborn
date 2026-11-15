@@ -18,6 +18,8 @@ Every place that changes a habbo's look or motto tells the game
 - [Plan](/features/habbos/plan.md)
 - [A habbo's look and motto reach the game at once, from wherever they
   change](/decisions/reborn/0013-a-habbos-look-and-motto-reach-the-game-at-once.md)
+- An app reads its injected service as `router.Deps.Habbos`. It is nil until a runner injects it. The router calls it
+  after the save and skips the call when it is nil.
 
 # Steps
 

@@ -19,10 +19,10 @@ The user's words:
 ## Rules in skills, facts in knowledge
 
 A skill holds how the user likes to build and works in any repo of theirs. Repo facts live in the project's knowledge
-(OKF files in `knowledge/` folders), and a task links them.
+(its OKF bundles), and a task links them.
 
 - [ ] One finding per repo fact the skill hard-codes: a repo path, a package name, a command, a make target.
-- [ ] The validator flags backticked paths under the apps, packages, tools, tests and plans folders; read the rest.
+- [ ] The validator flags backticked paths under the apps, packages, tools, tests and knowledge folders; read the rest.
 - [ ] The fix moves the fact to the project's knowledge and keeps the rule in the skill.
 
 ## Small and simple

@@ -13,6 +13,7 @@ Built:
 | `apps/cms`, `apps/housekeeping`, `apps/installer`, `apps/server` | Four runners, each its own process and port, from the repository root in development |
 | `packages/store` | `store.Open` creates a new database with every update; `store.FromConfig` opens the one `config.json` names |
 | `packages/config` | `cms.host`, `housekeeping.host` and the `proxy` section, read at start |
+| `packages/config`, `packages/installer`, `packages/housekeeping` | The `reborn` section: `config.Reborn.Host` and `Port`, defaults `localhost` and 16416; the installer writes it; housekeeping's update page offers the two keys to an older `config.json` |
 | `packages/auth` | `RealIP`, in front of the CMS and housekeeping |
 | `packages/cms`, `packages/housekeeping` | `Mount` wraps every route with `RealIP` and cross-origin protection |
 | `apps/installer` | The runners wrap the installer in cross-origin protection |
@@ -25,7 +26,6 @@ Planned:
 | Project | Part |
 | --- | --- |
 | `apps/server`, `packages/server` | The unused HTTP listener on 15445 is gone (done) |
-| `packages/config` | The `reborn` section: `localhost:16416` |
 | `packages/reborn`, `apps/reborn` | The orchestrator: one mux, one database handle, the game's listeners ([0003](/decisions/reborn/0003-reborn-runs-the-hotel-in-one-process.md)); installing a new hotel ([0004](/decisions/reborn/0004-the-installer-inside-reborn.md)); stopping in order ([0007](/decisions/reborn/0007-reborn-stops-in-order.md)); one dev server ([0009](/decisions/reborn/0009-one-dev-server-for-reborn.md)) |
 | `packages/installer` | Under `/installer/`, its two forms, `Listener`, no done page ([0004](/decisions/reborn/0004-the-installer-inside-reborn.md)) |
 | `packages/settings` and every program | Settings read from the store, no refresh, `virtual/settings` gone ([0006](/decisions/reborn/0006-settings-are-read-from-the-store.md)) |

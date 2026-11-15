@@ -15,7 +15,8 @@ The project's knowledge names the folders, the shared components package, the co
 
 - **Document layout**: the outer shell with `<html>`, `<head>` and `<body>`. It imports the global styles once.
 - **Body layout**: the chrome inside `<body>`, such as navigation and columns. It renders the document layout, passes
-  its slot through, and renders the islands of its chrome, such as a header menu.
+  its slot through, and renders the islands of its chrome, such as a header menu. A body layout may render another
+  body layout, such as a settings frame inside the site layout.
 - **Primitive**: a button, card, input, table or dialog. It is a Svelte component of the project's shared components
   package; `building-svelte-primitives` builds one.
 - **Component**: the app's own markup, such as a form, a section or a list. It composes primitives.
@@ -23,9 +24,9 @@ The project's knowledge names the folders, the shared components package, the co
 ## Rules
 
 1. Name files in lowercase kebab-case: `order-list.astro`.
-2. Put every layout flat in `src/layouts/`. Put a component that one feature uses in that feature's sub-folder of
-   `src/components/` (`src/components/orders/order-list.astro`). Put a component that several features use at the root
-   of `src/components/`.
+2. Put every layout flat in `src/layouts/`. Put a component in the sub-folder of `src/components/` of the feature it is
+   about, whoever renders it: a tag cloud is about tags, also when four pages show it. Put a component about no
+   feature, such as a frame, a form error or the menus of the chrome, at the root of `src/components/`.
 3. Reuse first: a primitive of the shared package, then a component of the app. Add a component for a real call site,
    and extract repeated markup on its second use. Build only the variants a call site uses.
 4. Declare `interface Props`, destructure `Astro.props` and give defaults.
@@ -99,7 +100,7 @@ import App from "../layouts/app.astro";
 
 ## Components
 
-A component of one feature, `src/components/orders/order-summary.astro`, composes primitives of the shared package:
+A component about orders, `src/components/orders/order-summary.astro`, composes primitives of the shared package:
 
 ```astro
 ---
@@ -122,21 +123,22 @@ const { number, total } = Astro.props;
 </Card>
 ```
 
-A component of several features, `src/components/sign-in-card.astro`, forwards its slot:
+A component about no feature, `src/components/frame.astro`, forwards its slot:
 
 ```astro
 ---
-import { Button, Card, Input } from "@acme/components";
+import { Card } from "@acme/components";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
 ---
 
 <Card>
-  <span slot="header">Sign in</span>
-  <form method="post" class="flex flex-col gap-2">
-    <Input name="username" />
-    <Input name="password" type="password" />
-    <slot />
-    <Button type="submit">Sign in</Button>
-  </form>
+  <span slot="header">{title}</span>
+  <slot />
 </Card>
 ```
 
@@ -146,7 +148,7 @@ Build the frontend and check that the built page holds the component's markup.
 
 ## Gotchas
 
-- A layout lives in `src/layouts/`, also when a component renders a full section.
+- A layout lives in `src/layouts/`, also when a component renders a full section or another layout renders it.
 - A named slot goes on the element itself: `<span slot="header">Sign in</span>`. A Svelte primitive receives it as
   the snippet of the same name.
 - Astro forwards `class` and other attributes to the root element only through props. To let callers extend styles,

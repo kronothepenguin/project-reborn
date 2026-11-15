@@ -17,6 +17,9 @@ does with them.
 3. Perform the action the user or the client performs.
 4. Assert the outcome the user can observe.
 
+A component's test proves what a visitor sees or does: a disabled button stays unpressed, Escape closes the dialog, the
+tab list exposes its roles.
+
 Both sides of a rule get a test: the case that succeeds and the case that is refused.
 
 ```go
@@ -54,6 +57,13 @@ func TestUserWithoutCreditsIsRefused(t *testing.T) {
 
 A frontend test has the same shape: render the page in the situation, click as the user clicks, and assert what the
 page shows.
+
+## Level
+
+Prove a behaviour once, at the lowest level that shows its outcome.
+
+- A page or an action of a web app: a test through the HTTP router. A request goes in, a page or a redirect comes out.
+- A browser suite: only for what needs a real browser, such as an island or a primitive working inside a page.
 
 ## A failing test
 

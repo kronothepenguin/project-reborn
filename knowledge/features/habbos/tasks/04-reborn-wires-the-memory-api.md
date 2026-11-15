@@ -20,6 +20,7 @@ Under reborn, a look saved on the site reaches the game in the same process
   services](/decisions/reborn/0005-the-game-hears-live-changes-through-services.md)
 - If [platform 05](/features/platform/tasks/05-reborn-installs-a-new-hotel.md) is merged first, the hotel built after
   an install is injected the same way.
+- `Inject` runs before `Mount` on the CMS and housekeeping: `Mount` hands the router the services held at that moment.
 
 # Steps
 
