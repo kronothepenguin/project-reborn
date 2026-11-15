@@ -1,12 +1,18 @@
 ---
 type: Playbook
 title: Adding persisted data
-description: Where new persisted data goes in packages/store, the generator, the checks and tests that guard it, and the helpers a consumer calls, for the adding-data-persistence skill.
+description: Where new persisted data goes in packages/store: the table list, the files, the generator, the checks and tests that guard it, and the helpers a consumer calls, for the adding-data-persistence skill.
 ---
 
 # Skill
 
 The `adding-data-persistence` skill holds the rules. This playbook names their places in this repo.
+
+# Tables
+
+Read [Tables](/tables.md) first, and use a table or an entity that exists. A new table gets its row in `tables.md`
+under its entity. A new entity gets its heading and one sentence saying what it is. `make check` in `packages/store`
+verifies the list.
 
 # Files
 
@@ -17,7 +23,7 @@ The `adding-data-persistence` skill holds the rules. This playbook names their p
 | Query file | `packages/store/queries/<feature>.query.sql` |
 | Generated operations | `packages/store/<feature>.query.sql.go`, `db.go` and `models.go` |
 | Generator settings | `packages/store/sqlc.yaml` |
-| Concepts | the layout and bodies of the [store bundle](/bundle.md) |
+| Table list | [Tables](/tables.md), laid out as the [store bundle](/bundle.md) says |
 
 How updates apply and how to write one: [How database updates work](/database-updates.md).
 
@@ -51,7 +57,8 @@ make check
 ```
 
 It runs `go tool sqlc generate` and `git diff --exit-code -- db.go models.go '*.query.sql.go'`, then
-`make check-docs`, then the Go steps of `make/check.mk`.
+`make check-docs`, which checks that `tables.md` and the schema files name the same tables, then the Go steps of
+`make/check.mk`.
 
 From the repo root, `python3 -I .agents/skills/documenting-with-okf/scripts/check.py packages/store/knowledge`.
 

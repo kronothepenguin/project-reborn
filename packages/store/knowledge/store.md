@@ -11,7 +11,7 @@ timestamp: 2026-11-09T23:20:00+00:00
 
 `packages/store` is the project's persistence infrastructure. `Open` returns a
 `*sql.DB` for the deployment's SQLite file, and gives a new database every
-[update](/migrations/index.md). The sqlc-generated `New` binds the typed
+[update](/database-updates.md). The sqlc-generated `New` binds the typed
 operations from `packages/store/queries/` to that database or to a
 transaction. It owns no domain tables: features contribute schema, update and
 query files.
@@ -28,9 +28,9 @@ query files.
 | `(*Queries).WithTx(tx *sql.Tx) *Queries` | Generated; the same operations inside a transaction. |
 | `IsNotFound`, `IsConflict`, `IsForeignKey`, `IsBusy` | Classify the errors the operations return. |
 | `Updates() ([]Update, error)` | The updates the program carries, from `packages/store/migrations/`, in version order. |
-| `ParseUpdates(fsys fs.FS) ([]Update, error)` | Reads the [update](/entities/update.md) files `NNNN-<name>.sql` at the root of `fsys`: versions from 0001 without a gap, a `-- ` title on the first line, and the `-- automatic` mark among the first comments. |
+| `ParseUpdates(fsys fs.FS) ([]Update, error)` | Reads the update files `NNNN-<name>.sql` at the root of `fsys`: versions from 0001 without a gap, a `-- ` title on the first line, and the `-- automatic` mark among the first comments. |
 | `WaitingUpdates(ctx, db, updates) ([]Update, error)` | The updates `db` has not applied, in version order. It only reads. |
-| `AppliedUpdates(ctx, db) ([]Migration, error)` | The rows of [migrations](/tables/migrations.md) in version order, and none before the table exists. |
+| `AppliedUpdates(ctx, db) ([]Migration, error)` | The rows of `migrations` in version order, and none before the table exists. |
 | `ApplyUpdates(ctx, db, updates) ([]Update, error)` | Applies the updates in order and returns those it applied; see the guarantees. A failure is an `*UpdateError` naming the update. |
 | `NewUpdateCheck(db, updates) *UpdateCheck` | A running program's view of the updates it carries. `ApplyAutomatic(ctx)` saves a copy and applies the waiting updates up to the last automatic one, keeping a failure for `Failed()`. `Waiting(ctx)` reads `migrations` until nothing waits, then stops reading, since a running program never gains updates. `WhenCurrent(task)` wraps a scheduled task to do nothing while updates wait. |
 | `Backup(ctx, db) (string, error)` | Saves a copy beside the database file as `<file>.backup-<YYYYMMDD-HHMMSS>` (UTC) with `VACUUM INTO`, adding `-2`, `-3`… when another copy took that second, and returns its path. |
@@ -86,15 +86,14 @@ query files.
 # Operations
 
 Typed operations are generated from the files under `packages/store/queries/`:
-the [`Ping`](/queries/ping.md) smoke query and every future feature operation.
+the `Ping` smoke query and every future feature operation.
 Regenerate with `go tool sqlc generate` after changing SQL; generated files are
 committed and never edited by hand. Generated Go names upper-case the
 initialisms `ID`, `IP`, `SSO` and `URL` (`initialisms` in `sqlc.yaml`), so the
 `created_ip` column becomes `CreatedIP` and `sso_tickets` becomes `SSOTicket`. Table names become singular, except
 `avatar_game_data` (`inflection_exclude_table_names`), whose struct is `AvatarGameData`.
 
-The schema is documented per [entity](/entities/index.md), per
-[table](/tables/index.md) and per [schema file](/schemas/index.md).
+Every table, grouped by entity: [Tables](/tables.md).
 How Holo's tables map to this schema: `knowledge/sources/holocms/database.md`.
 
 # Examples

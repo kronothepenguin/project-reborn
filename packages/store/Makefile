@@ -13,11 +13,13 @@ check-generated: generate
 
 check-docs:
 	@status=0; \
-	for f in $$(find knowledge -name '*.md' ! -name 'index.md' ! -name 'log.md'); do \
-		grep -q '^type:' "$$f" || { echo "missing type: $$f"; status=1; }; \
+	tables=$$(sed -nE 's/^CREATE TABLE (IF NOT EXISTS )?([a-z_]+).*/\2/p' schema/*.schema.sql); \
+	listed=$$(sed -nE 's/^\| ([a-z_]+) \|.*/\1/p' knowledge/tables.md); \
+	for t in $$tables; do \
+		echo "$$listed" | grep -qx "$$t" || { echo "missing from knowledge/tables.md: $$t"; status=1; }; \
 	done; \
-	for f in schema/*.schema.sql queries/*.query.sql migrations/*.sql; do \
-		grep -rq "resource:.*$$f" knowledge || { echo "undocumented: $$f"; status=1; }; \
+	for t in $$listed; do \
+		echo "$$tables" | grep -qx "$$t" || { echo "not in schema/*.schema.sql: $$t"; status=1; }; \
 	done; \
 	exit $$status
 

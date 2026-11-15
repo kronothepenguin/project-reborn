@@ -2,7 +2,8 @@
 type: Decision
 title: Store knowledge documents entities and tables
 description: The store's OKF bundle adds entities/ and tables/ concepts next to the required schemas/ and queries/ concepts.
-status: accepted
+status: superseded
+superseded_by: packages/store/knowledge/tables.md
 timestamp: 2026-10-27T20:48:19+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [store, okf]
