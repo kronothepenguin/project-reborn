@@ -7,7 +7,7 @@ import (
 	"log/slog"
 	"strconv"
 
-	"github.com/kronothepenguin/project-reborn/packages/server/transport"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/transport"
 )
 
 // serveMus serves a client of the mus connection until the server frames MUS: it logs the connect, the size of each

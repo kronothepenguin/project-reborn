@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/kronothepenguin/project-reborn/packages/server/encoding"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/encoding"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )

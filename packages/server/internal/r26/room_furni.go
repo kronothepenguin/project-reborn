@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/kronothepenguin/project-reborn/packages/server/encoding"
-	"github.com/kronothepenguin/project-reborn/packages/server/game"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/encoding"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/game"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
 )

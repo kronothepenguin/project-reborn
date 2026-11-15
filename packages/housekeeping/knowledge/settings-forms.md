@@ -8,7 +8,7 @@ description: How GET /settings and POST /settings/{section} lay the declared set
 
 `GET /settings` and `POST /settings/{section}` are forms over `settings.Declared()`.
 
-- `forms` in `internal/router/sections.go` gives them Holo's texts. A setting it leaves unnamed still gets a form,
+- `forms` in `internal/router/settings.go` gives them Holo's texts. A setting it leaves unnamed still gets a form,
   with its key as its label, so a setting declared later is editable at once.
 - `hiddenSettings` keeps `housekeeping.note` for the dashboard.
 - A field's kind comes from its declaration: toggle, number, text, a choice from a list, or a long text. A long text

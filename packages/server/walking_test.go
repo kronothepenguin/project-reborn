@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kronothepenguin/project-reborn/packages/server/encoding"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/encoding"
 )
 
 func b64Short(t *testing.T, v int) string {

@@ -16,8 +16,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/kronothepenguin/project-reborn/packages/server/game"
-	"github.com/kronothepenguin/project-reborn/packages/server/transport"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/game"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/transport"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 

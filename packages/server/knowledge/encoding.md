@@ -1,7 +1,7 @@
 ---
 type: Go Package
 title: Encoding
-description: How packages/server/encoding reads and writes the values of the R26 wire format.
+description: How packages/server/internal/encoding reads and writes the values of the R26 wire format.
 tags: [server]
 ---
 

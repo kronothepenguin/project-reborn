@@ -6,7 +6,7 @@ description: How writeLog writes one staff_logs row for every mutation, inside i
 
 # writeLog
 
-Every mutation writes one `staff_logs` row through `writeLog` in `internal/router/staff-log.go`, in the mutation's
+Every mutation writes one `staff_logs` row through `writeLog` in `internal/router/router.go`, in the mutation's
 transaction when it has one, so the row and the change commit or roll back together. The actor, the address and the
 time come from the request, and the mutation gives the action, the detail and the target user or habbo. The actions
 are the constants of that file.

@@ -240,19 +240,6 @@ func (r *Router) refuseNews(w http.ResponseWriter, req *http.Request, name strin
 	astro.WriteTemplate(w, r.deps.Resolver, name, page)
 }
 
-// HandleNewsComposeView renders GET /housekeeping/news/new, Holo's news_compose.
-// A browser selected Holo's first category, and the picture starts as the
-// default local one.
-func (r *Router) HandleNewsComposeView(w http.ResponseWriter, req *http.Request) {
-	form := newsForm{Category: newsCategories()[0], TopStory: seed.DefaultTopStory}
-	page, err := r.newNewsArticlePage(req, 0, "", form)
-	if err != nil {
-		r.fail(w, err)
-		return
-	}
-	astro.WriteTemplate(w, r.deps.Resolver, "news/new.html", page)
-}
-
 // HandleNewsCreate handles POST /housekeeping/news. The author is the staff
 // member's active habbo, and the date is now.
 func (r *Router) HandleNewsCreate(w http.ResponseWriter, req *http.Request) {
@@ -392,34 +379,5 @@ func (r *Router) HandleNewsArticleSave(w http.ResponseWriter, req *http.Request)
 		r.fail(w, err)
 	default:
 		http.Redirect(w, req, "/housekeeping/news?updated=1", http.StatusSeeOther)
-	}
-}
-
-// HandleNewsArticleDelete handles POST /housekeeping/news/{id}/delete. Holo
-// deleted on a link, with no question asked.
-func (r *Router) HandleNewsArticleDelete(w http.ResponseWriter, req *http.Request) {
-	ctx := req.Context()
-	id, err := strconv.ParseInt(req.PathValue("id"), 10, 64)
-	if err != nil {
-		r.newsMissing(w, req, newsDeleteMissing)
-		return
-	}
-	err = r.inTx(ctx, func(q *store.Queries) error {
-		article, err := q.GetNewsArticle(ctx, id)
-		if err != nil {
-			return err
-		}
-		if _, err := q.DeleteNewsArticle(ctx, id); err != nil {
-			return err
-		}
-		return writeLog(req, q, staffLog{action: actionNewsDelete, detail: fmt.Sprintf("%s (ID: %d)", article.Title, id)})
-	})
-	switch {
-	case store.IsNotFound(err):
-		r.newsMissing(w, req, newsDeleteMissing)
-	case err != nil:
-		r.fail(w, err)
-	default:
-		http.Redirect(w, req, "/housekeeping/news?deleted=1", http.StatusSeeOther)
 	}
 }

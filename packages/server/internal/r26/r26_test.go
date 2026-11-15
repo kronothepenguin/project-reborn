@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kronothepenguin/project-reborn/packages/server/encoding"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/encoding"
 )
 
 const timeout = 5 * time.Second

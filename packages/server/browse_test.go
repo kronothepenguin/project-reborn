@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kronothepenguin/project-reborn/packages/server/encoding"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/encoding"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
 )

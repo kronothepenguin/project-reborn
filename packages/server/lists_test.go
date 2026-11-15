@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/kronothepenguin/project-reborn/packages/server/encoding"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/encoding"
 )
 
 // readFlatLines reads 16 and 55 as the client's handle_flat_results does: a line per room, nine items separated by
