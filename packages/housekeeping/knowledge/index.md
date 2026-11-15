@@ -8,7 +8,7 @@ okf_version: "0.2"
 
 - [Access group editing](access-groups.md) - How /access-groups changes groups, members and direct attributes in one transaction with its log row and the keepManager guard.
 - [The design system and the chrome](design-system.md) - How housekeeping's components and layout are built, and the chrome every page struct embeds.
-- [housekeeping](package.md) - The Go package of the staff panel, an Astro frontend embedded in Go, and what its New does.
+- [housekeeping](package.md) - The Go package of the staff panel, an Astro frontend embedded in Go, what its New does, and how Inject hands it its services.
 - [Under /housekeeping](prefix.md) - How housekeeping lives under the /housekeeping prefix, alone on its own port and on one mux with the CMS, and what each runner serves.
 - [The settings forms](settings-forms.md) - How GET /settings and POST /settings/{section} lay the declared settings out as forms and save a section all or nothing.
 - [The staff guard](staff-guard.md) - How router.Staff and RequireAttribute decide who enters housekeeping and who opens each page.

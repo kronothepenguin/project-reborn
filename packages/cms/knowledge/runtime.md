@@ -1,7 +1,7 @@
 ---
 type: Go Package
 title: Runtime
-description: How cms.New starts the CMS and how Mount wraps every route in its middleware chain.
+description: How cms.New starts the CMS, how Inject hands it its services, and how Mount wraps every route in its middleware chain.
 resource: packages/cms/cms.go
 ---
 
@@ -15,6 +15,12 @@ resource: packages/cms/cms.go
   - the settings reload every `cms.refresh` seconds, because housekeeping is the single writer of settings;
   - expired reset links are deleted every minute;
   - expired sessions are deleted every minute.
+
+# Inject
+
+- `Inject(cms.Services{Habbos: …})`, once after `New` and before `Mount`, hands the CMS the services that tell the game
+  server of the changes it must show live (`packages/services/knowledge/index.md`). `Mount` gives them to the router.
+- A service no runner injected is nil, and the CMS skips its calls.
 
 # Mount and the middleware chain
 

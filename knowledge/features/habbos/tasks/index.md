@@ -2,7 +2,6 @@
 
 # Tasks
 
-- [The services package, the Habbos contract and Inject](01-services-and-inject.md) - packages/services holds the first contract, Habbos.SendLook(ctx, avatarID), and the CMS and housekeeping take their services through Inject.
 - [The game sends a habbo's new look and motto](02-the-game-sends-a-new-look.md) - (*server.Server).SendLook reads a habbo again and, when it is online, updates the copy the game holds and shows the new figure, gender and motto to the habbo and to everyone in its room, with the client's own messages.
 - [The site and housekeeping tell the game of a new look or motto](03-the-site-tells-the-game.md) - The CMS's looks, profile and motto pages and housekeeping's habbo editor call Habbos.SendLook after they commit, give up after 2 seconds and log a failure.
 - [reborn passes the game to the site and housekeeping](04-reborn-wires-the-memory-api.md) - packages/reborn builds the memory API around the game's instance and injects it into the CMS and housekeeping, in the order constructors, services, Inject, run.
