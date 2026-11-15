@@ -18,6 +18,11 @@ description: How Go page structs feed the Astro pages, and how a page answers a 
 
 - A form that fails answers 422 with the page it came from (`Router.invalid`).
 
+# Failures
+
+- A store error answers 500 (`Router.fail`). `logError` in `internal/router/router.go` logs it, and every other error
+  of the router, unless it is `context.Canceled`: a request the visitor abandoned ends quietly.
+
 # Astro
 
 - Astro's HTML compression drops a line break between two tags, so a page writes a needed space between two tags as

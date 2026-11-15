@@ -1,7 +1,9 @@
 package auth
 
 import (
+	"context"
 	"database/sql"
+	"errors"
 	"log/slog"
 	"net/http"
 	"slices"
@@ -33,7 +35,7 @@ func RequireAttribute(db *sql.DB, attr Attribute) func(http.Handler) http.Handle
 			session, _ := FromContext(r.Context())
 			attributes, err := Attributes(r.Context(), db, session.UserID)
 			if err != nil {
-				slog.Error("auth: attributes", "err", err)
+				logError("auth: attributes", err)
 				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 				return
 			}
@@ -44,4 +46,13 @@ func RequireAttribute(db *sql.DB, attr Attribute) func(http.Handler) http.Handle
 			next.ServeHTTP(w, r)
 		}))
 	}
+}
+
+// logError logs err under msg, unless the visitor abandoned the request: its
+// error is then context.Canceled, and the request ends quietly.
+func logError(msg string, err error) {
+	if errors.Is(err, context.Canceled) {
+		return
+	}
+	slog.Error(msg, "err", err)
 }

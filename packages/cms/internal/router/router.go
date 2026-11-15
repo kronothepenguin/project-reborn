@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json/v2"
+	"errors"
 	"log/slog"
 	"net/http"
 	"slices"
@@ -49,7 +50,7 @@ type hotelStatus struct {
 func (r *Router) hotelStatus(ctx context.Context) hotelStatus {
 	registered, err := r.deps.Queries.CountAvatars(ctx)
 	if err != nil {
-		slog.Error("cms: count habbos", "err", err)
+		logError("cms: count habbos", err)
 	}
 	return hotelStatus{
 		Name:            settings.GetString("site.name"),
@@ -68,7 +69,7 @@ func (r *Router) holds(ctx context.Context, attribute auth.Attribute) bool {
 	}
 	attributes, err := auth.Attributes(ctx, r.deps.DB, session.UserID)
 	if err != nil {
-		slog.Error("cms: attributes", "err", err)
+		logError("cms: attributes", err)
 		return false
 	}
 	return slices.Contains(attributes, attribute)
@@ -90,8 +91,17 @@ func (r *Router) invalid(w http.ResponseWriter, name string, data any) {
 	astro.WriteTemplate(w, r.deps.Resolver, name, data)
 }
 
+// logError logs err under msg, unless the visitor abandoned the request: its
+// error is then context.Canceled, and the request ends quietly.
+func logError(msg string, err error) {
+	if errors.Is(err, context.Canceled) {
+		return
+	}
+	slog.Error(msg, "err", err)
+}
+
 func (r *Router) fail(w http.ResponseWriter, err error) {
-	slog.Error("cms", "err", err)
+	logError("cms", err)
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }
 

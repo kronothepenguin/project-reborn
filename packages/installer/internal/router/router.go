@@ -1,6 +1,8 @@
 package router
 
 import (
+	"context"
+	"errors"
 	"log/slog"
 	"net/http"
 
@@ -48,7 +50,11 @@ func (r *Router) invalid(w http.ResponseWriter, name string, data any) {
 	astro.WriteTemplate(w, r.deps.Resolver, name, data)
 }
 
+// fail answers 500 and logs err, unless the visitor abandoned the request: its
+// error is then context.Canceled, and the request ends quietly.
 func (r *Router) fail(w http.ResponseWriter, err error) {
-	slog.Error("installer", "err", err)
+	if !errors.Is(err, context.Canceled) {
+		slog.Error("installer", "err", err)
+	}
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }

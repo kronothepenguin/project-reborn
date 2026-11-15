@@ -28,6 +28,7 @@ embedded `dist/`. Handlers live in `internal/router`, the installation itself in
 - The site step offers housekeeping on the port chosen in the config step, while `site.housekeepingUrl` holds its
   default.
 - The site step saves each key on its own and stops at the first error.
+- A failure answers 500 and is logged, unless the visitor abandoned the request (`context.Canceled`): it ends quietly.
 - Holo's ranks come from update `0003-ranks.sql`. On a new hotel the administrator joins Administrator; without a group
   holding `housekeeping.accessGroups`, the step fails with `setup.ErrNoGroup`.
 - The administrator's first credits get a ledger row with the reason `registration` and the detail `installer`.

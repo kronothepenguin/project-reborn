@@ -1,6 +1,7 @@
 package router
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json/v2"
 	"errors"
@@ -130,7 +131,7 @@ func (r *Router) chrome(req *http.Request) chrome {
 
 	avatar, err := r.deps.Queries.GetAvatar(ctx, session.AvatarID)
 	if err != nil {
-		slog.Error("housekeeping: habbo", "err", err)
+		logError("housekeeping: habbo", err)
 	}
 	page.Habbo = avatar.Name
 
@@ -140,13 +141,22 @@ func (r *Router) chrome(req *http.Request) chrome {
 	case err == nil:
 		page.PreviousLogin = previous.CreatedAt.UTC().Format(dateFormat) + " from " + previous.IP
 	case !errors.Is(err, sql.ErrNoRows):
-		slog.Error("housekeeping: previous login", "err", err)
+		logError("housekeeping: previous login", err)
 	}
 	return page
 }
 
+// logError logs err under msg, unless the visitor abandoned the request: its
+// error is then context.Canceled, and the request ends quietly.
+func logError(msg string, err error) {
+	if errors.Is(err, context.Canceled) {
+		return
+	}
+	slog.Error(msg, "err", err)
+}
+
 func (r *Router) fail(w http.ResponseWriter, err error) {
-	slog.Error("housekeeping", "err", err)
+	logError("housekeeping", err)
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }
 

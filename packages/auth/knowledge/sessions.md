@@ -19,8 +19,10 @@ description: The session cookie, its expiry, the middleware that reads it, sign-
 - `RequireAttribute(db, attr)` answers 403 to a user without `attr`.
 - `DeleteExpiredSessions(ctx, db)` removes the sessions past their expiry. Every program that serves sessions runs it on
   the scheduler (decision holo-port/0050).
-- `Logout(w, r, db)` ends the cookie's session, `LogoutEverywhere(ctx, db, userID)` every session of a user, and
-  `SwitchHabbo(ctx, db, avatarID)` changes the active habbo (`ErrNotOwner` for another user's habbo).
+- `Logout(w, r, db)` ends the cookie's session, and `SwitchHabbo(ctx, db, avatarID)` changes the active habbo
+  (`ErrNotOwner` for another user's habbo).
+- `Sessions` and `RequireAttribute` answer 500 when the store fails, and log the error unless it is `context.Canceled`:
+  a request the visitor abandoned ends quietly.
 - `SSOTicket(r, db)` returns the SSO ticket of the session's active habbo, making one when it holds none. The game
   server spends a ticket at login, and `SwitchHabbo` drops the session's tickets (decision server/0030).
 

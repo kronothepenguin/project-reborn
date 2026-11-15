@@ -3,7 +3,6 @@ package router
 import (
 	"context"
 	"fmt"
-	"log/slog"
 	"net/http"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
@@ -38,7 +37,7 @@ func (r *Router) HandleForgotSend(w http.ResponseWriter, req *http.Request) {
 	ctx := context.WithoutCancel(req.Context())
 	go func() {
 		if err := r.sendReset(ctx, username, email); err != nil {
-			slog.Error("cms: password reset", "err", err)
+			logError("cms: password reset", err)
 		}
 	}()
 	r.writeForgot(w, req, forgotPage{Username: username, Email: email, Sent: true})
