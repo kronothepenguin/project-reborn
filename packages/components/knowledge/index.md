@@ -7,5 +7,6 @@ okf_version: "0.2"
 # Knowledge
 
 - [BBCode editor](bbcode-editor.md) - The WYSIWYG editor of every field that takes BBCode, and the reader and writer it stands on.
+- [Building a primitive](building-a-primitive.md) - Where a primitive, its test and its story live in packages/components, the index that exports it, and the commands that check it, for the building-svelte-primitives skill.
 - [Packaging and Tailwind](packaging.md) - How the components ship as Svelte source and how an app picks up their Tailwind classes.
 - [Primitives](primitives.md) - Facts about the primitives that the pages rely on, from the Icon sprite to the Select marker.

@@ -60,3 +60,7 @@ Each entry is settled by the user, then removed from this file.
   caller that names it. `avatar_game_data` stays: `data` is a plural. Rule: `adding-data-persistence`.
 - Housekeeping's `clock.astro` and `news/news-fields.astro` become Svelte islands: an `.astro` file holds markup only.
   Rules: `building-astro-components`, `adding-svelte-interactivity`.
+- The 34 tests of `packages/components` that prove attributes and defaults go: 14 that forward native attributes
+  (Button's "forwards native attributes to the element"), 10 that keep a prop off the element ("does not forward
+  variant as an attribute") and 10 that check a prop's default (Button's "defaults type to button"). Each primitive
+  keeps the tests of what a visitor sees or does. Rule: `building-svelte-primitives`.
