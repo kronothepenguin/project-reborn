@@ -52,8 +52,8 @@ tags: [db, sql]            # optional
 ## Feature files
 
 A feature lives in `knowledge/features/<feature>/`: `spec.md` (type `Spec`), `plan.md` (type `Plan`) and
-`tasks/NN-<slug>.md` (type `Task`). Before writing one, read their keys and sections in
-[references/feature-files.md](references/feature-files.md).
+`tasks/NN-<slug>.md` (type `Task`). Before writing one, read their keys, their sections and when a task is ready,
+taken or done in [references/feature-files.md](references/feature-files.md).
 
 ## Scripts
 
