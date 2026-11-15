@@ -15,6 +15,10 @@ serves the built frontend from the embedded `dist/`.
 - `housekeeping.New(db, WithResolver(…), WithStatic(…))` takes the db the runner
   opened with `store.FromConfig()` and loads the settings (`virtual/settings`),
   panicking when it cannot. Only the resolver and the static handler are options.
+- `Inject(housekeeping.Services{Habbos: …})`, once after `New` and before `Mount`,
+  hands housekeeping the services that tell the game server of the changes it must
+  show live (`packages/services`). A service no runner injected is nil, and
+  housekeeping skips its calls.
 - `Mount` registers only `/housekeeping/...`, and `/housekeeping/` for the static
   files through `http.StripPrefix`, so it runs alone on its own port and on one mux
   with the CMS. `base: "/housekeeping"` in `astro.config.mjs` gives the same prefix

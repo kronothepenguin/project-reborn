@@ -16,6 +16,10 @@ serves the built frontend from the embedded `dist/`.
   with `store.FromConfig()` and loads the settings (`virtual/settings`),
   panicking when it cannot. Only the resolver and the static handler are
   options, because they differ between the production and development runners.
+- `Inject(cms.Services{Habbos: …})`, once after `New` and before `Mount`, hands
+  the CMS the services that tell the game server of the changes it must show live
+  (`packages/services`). A service no runner injected is nil, and the CMS skips
+  its calls.
 - `Mount` wraps every CMS route with `auth.RealIP`, cross-origin protection and
   `auth.Sessions`, so the CMS stays protected on a mux it shares with other apps.
 - While `site.maintenance` is on, every page route serves

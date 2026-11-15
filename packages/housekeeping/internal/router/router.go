@@ -12,6 +12,7 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/services"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
@@ -25,6 +26,9 @@ type Deps struct {
 	DB       *sql.DB
 	Queries  *store.Queries
 	Updates  *store.UpdateCheck
+	// Habbos is nil until a runner injects it, and while it is nil its calls are
+	// skipped.
+	Habbos services.Habbos
 }
 
 type Router struct {
