@@ -1,40 +1,46 @@
 ---
 name: adding-data-persistence
-description: Takes a feature from needing persisted data to working typed operations in a Go project's SQLite store built with sqlc, covering schema files, numbered update files, named queries, generation, documentation and consumption. Use when an app or feature needs new persisted data, a new table, column, index or seed rows, or a new query in the shared store.
+description: Takes a feature from needing persisted data to working typed operations in a Go project's SQLite store built with sqlc, covering the table list, schema files, numbered update files, named queries, generation and consumption. Use when an app or feature needs new persisted data, a new table, column, index or seed rows, or a new query in the shared store.
 ---
 
 # Adding data persistence
 
-The project's knowledge names the folders, the commands and the checks. Read its playbook for persisted data first.
+The project's knowledge names the folders, the commands, the checks and the table list. Read its playbook for
+persisted data first.
 
 ## Workflow
 
 ```text
 New persisted data:
-- [ ] 1. Schema file
-- [ ] 2. Update file
-- [ ] 3. Query file
-- [ ] 4. Generate
-- [ ] 5. Document
-- [ ] 6. Consume
-- [ ] 7. Check
+- [ ] 1. Read the table list
+- [ ] 2. Schema file
+- [ ] 3. Update file
+- [ ] 4. Query file
+- [ ] 5. Generate
+- [ ] 6. Add the table to the list
+- [ ] 7. Consume
+- [ ] 8. Check
 ```
 
-1. **Schema file.** Name it after the feature in lowercase kebab-case: `orders.schema.sql`. It describes the database
+1. **Read the table list.** It holds every table, grouped by entity, with one line saying what it holds. Use a table
+   or an entity that exists, or learn that the feature adds one.
+2. **Schema file.** Name it after the feature in lowercase kebab-case: `orders.schema.sql`. It describes the database
    as it is now. Use `CREATE TABLE IF NOT EXISTS` and `CREATE [UNIQUE] INDEX IF NOT EXISTS`, and edit a table in
    place when it changes. Follow the [schema rules](#schema-rules).
-2. **Update file.** Add `NNNN-<slug>.sql` with the next free number, in the same commit, holding the same change. It
-   is how an existing database gets the change. Follow the [update rules](#update-rules).
-3. **Query file.** Add the operations to `<feature>.query.sql`.
+3. **Update file.** Add `NNNN-<slug>.sql` with the next free number, in the same commit, holding the same change.
+   Follow the [update rules](#update-rules).
+4. **Query file.** Add the operations to `<feature>.query.sql`.
    - Start every statement with `-- name: <Operation> :one|:many|:exec|:execrows|:execlastid`.
-   - Reads use `:one` or `:many`; mutations use the `:exec*` forms.
-   - Every list read has an explicit `ORDER BY`.
+   - Reads use `:one` or `:many`.
+   - A write that hands back what it wrote uses `:one` or `:many` with `RETURNING`; every other write uses the
+     `:exec` forms.
+   - Every `SELECT` that returns a list has an explicit `ORDER BY`.
    - Every time arrives as a parameter from Go.
-4. **Generate** the typed operations with sqlc and commit the generated files. Change them through the SQL and
+5. **Generate** the typed operations with sqlc and commit the generated files. Change them through the SQL and
    regenerate.
-5. **Document** with the `documenting-with-okf` skill: one concept per schema file, query file, update file and table,
-   and one per entity the tables represent, laid out as the store bundle's playbook says.
-6. **Consume.** Applications reach the database through the store and its generated operations only.
+6. **Add the table to the list.** A new table gets its line under its entity. A new entity gets its heading with one
+   sentence saying what it is.
+7. **Consume.** Applications reach the database through the store and its generated operations only.
    - Open the database once per process through the store. A new database gets every update; an existing one changes
      only through updates.
    - Bind the operations with the generated `New(db)`.
@@ -54,23 +60,26 @@ New persisted data:
      ```
 
    - Classify errors with the store's helpers: not found, conflict, foreign key, busy.
-7. **Check.** Vet and tests pass, the docs check exits 0, and regenerating leaves the generated files unchanged.
+8. **Check.** Vet and tests pass, the docs check exits 0, and regenerating leaves the generated files unchanged.
 
 ## Schema rules
 
 | Rule | Convention |
 | --- | --- |
-| Names | `snake_case`; tables plural; indexes `idx_<table>_<columns>` |
-| Foreign keys | `<referenced_table_singular>_id`: `user_id`; a second reference to the same table, or a non-owner role, takes a role prefix: `edited_by_user_id` |
+| Names | `snake_case`; indexes `idx_<table>_<columns>` |
+| Table names | plural, always; a word with no plural form takes one: `equipments`, `luggages` |
+| Foreign keys | `<referenced_table_singular>_id`: `user_id`; a second reference to the same table, or a non-owner role, takes a role prefix: `edited_by_user_id`; a table's link to itself is `parent_id` |
 | Deletion | `ON DELETE CASCADE` for owned rows; `ON DELETE SET NULL` for authorship |
 | Instants | `DATETIME`, written from Go as a UTC `time.Time` |
 | Calendar dates | `DATE` |
 | Time columns | `DATETIME` or `DATE`; sqlc maps `TIME` to no Go type |
 | Flags | `BOOLEAN` with `TRUE`/`FALSE` |
 | Text | UTF-8 `TEXT`, stored raw; escape when rendering |
-| `CHECK` | closed sets only (`'M'`/`'F'`, quantities ≥ 0); open vocabularies are `TEXT` validated by Go constants |
+| `CHECK` | closed sets (`'M'`/`'F'`), ranges (quantities ≥ 0) and relations between columns of one row (`ends_at > starts_at`); open vocabularies are `TEXT` validated by Go constants |
 
 ## Update rules
+
+Updates bring every existing database to the new shape with its rows kept.
 
 | Part | Rule |
 | --- | --- |
@@ -80,8 +89,10 @@ New persisted data:
 | New column | `ALTER TABLE ... ADD COLUMN` with the column's text from the schema file |
 | Any other table change | rebuild the table: create the new one, copy the rows, drop the old one, rename the new one, create its indexes again |
 | Seed rows | fixed ids and `INSERT OR IGNORE`, so rows an administrator changed stay |
+| Times | `strftime` in the store's format, the expression the project's knowledge gives |
 | New permission attribute | an update that grants it to the holders of the attribute that manages access |
 
+- An existing database changes only through updates.
 - An update runs in one transaction with foreign keys off, and `PRAGMA foreign_key_check` finds nothing before the
   commit. Delete child rows in the update itself: `ON DELETE CASCADE` stays silent there.
 - Select rows by the values the program fixes, such as ids; an administrator can change the rest, such as a group's
@@ -96,7 +107,7 @@ New persisted data:
 - Declare every table a foreign key references before code writes the child: SQLite answers `no such table` even for
   a `NULL` key.
 - `CURRENT_TIMESTAMP` writes `YYYY-MM-DD HH:MM:SS` with no offset, and the store writes
-  `YYYY-MM-DD HH:MM:SS.fffffffff+00:00`; the two break comparisons and ordering. Pass times from Go.
+  `YYYY-MM-DD HH:MM:SS.fffffffff+00:00`; the two break comparisons and ordering. A query takes its times from Go.
 - sqlc gives a parameter the nullability of the column it meets, even with `sqlc.arg`. Wrap integer and text
   parameters in `CAST(sqlc.arg(x) AS INTEGER)` or `CAST(sqlc.arg(x) AS TEXT)` to get `int64` or `string`.
 - sqlc types a parameter from its first use. Type a time parameter by comparing it first with a `NOT NULL` column;

@@ -6,39 +6,6 @@ description: Lists what the move to OKF + Skills found, for the user to decide.
 
 Each entry is settled by the user, then removed from this file.
 
-# Skill rules the code departs from
-
-For each rule, the user says whether the rule changes or the code does.
-
-Frontend:
-
-- `building-astro-components`: `src/components` stays flat. The CMS and housekeeping use a sub-folder per feature.
-- `building-astro-components`: a page imports its body layout. `maintenance.astro` of the CMS and `update-failed.astro`
-  of the CMS and housekeeping import the document layout.
-- `building-astro-components`: an `.astro` file holds no client behaviour. Housekeeping's `clock.astro` and
-  `news/news-fields.astro` carry inline scripts.
-- `templating-astro-pages`: pages exist for GET routes. Some pages are templates other handlers answer with:
-  `maintenance`, `update-failed`, `not-found`, `banned`.
-- `building-astro-components`: layouts stay `.astro`. They do, and the CMS layouts `community.astro` and
-  `help-tool.astro` render Svelte islands: may a layout host islands?
-
-Data and config:
-
-- `adding-data-persistence`: mutations use the `:exec` forms. Many use `:one` with `RETURNING` (`CreateUser`,
-  `SpendSSOTicket`, `RedeemVoucher`).
-- `adding-data-persistence`: every list read has `ORDER BY`. `RemoveAllRoomRights :many` is a `DELETE … RETURNING`
-  without one.
-- `adding-data-persistence`: table names are plural. `furni`, `home_inventory` and `avatar_game_data` are mass nouns.
-- `adding-data-persistence`: a foreign key is named `<table>_id`. `room_categories.parent_id` is shorter.
-- `adding-data-persistence`: `CHECK` is for closed sets. The schema also checks across columns
-  (`ends_at > starts_at`) and ranges.
-- `adding-data-persistence`: times come from Go. Update files write times with `strftime(…, 'now')`, as
-  `packages/store/knowledge/database-updates.md` prescribes.
-- `adding-config-sections`: `config.json` is written only when absent. `config.Rewrite` rewrites it from
-  housekeeping's update page.
-- `adding-config-sections`: every field has `Default<Field>()` and `Validate<Field>()`. `packages/config/server`
-  nests a `Connection` and reuses `cms.ValidateHost`.
-
 # Found in the code
 
 - `packages/store/schema/auth.schema.sql`: the comment on `sso_tickets` says its id is a SHA-256 digest. The code
@@ -72,9 +39,24 @@ Data and config:
   `applying-go-patterns`.
 - `HandleHomeSearch` → `HandleHomeSearchView` and `HandleGroupsSearch` → `HandleGroupsSearchView`. Rule:
   `applying-go-patterns`, `View` means a page.
-- These CMS GET handlers return data and take the name of what they return: `HandleForumThreadsSettingsView`,
-  `HandleGroupsInfoView`, `HandleGroupsMembersView`, `HandleGroupsRandomView`, `HandleHomeStoreView`,
-  `HandleHomeStoreCategoryView`, `HandleMeGroupsView`, `HandleMeInventoryView` (JSON), `HandleHabboImagingBadgeView`
-  and `HandleNewsImagesView` (images). The user names the form of each new name.
+- These CMS GET handlers take the name of what they return. Rule: `applying-go-patterns`, a data GET ends in its
+  format and a redirect ends in `Redirect`.
+  - `HandleForumThreadsSettingsView` → `HandleForumThreadsSettingsJSON`
+  - `HandleGroupsInfoView` → `HandleGroupsInfoJSON`
+  - `HandleGroupsMembersView` → `HandleGroupsMembersJSON`
+  - `HandleGroupsRandomView` → `HandleGroupsRandomJSON`
+  - `HandleHomeStoreView` → `HandleHomeStoreJSON`
+  - `HandleHomeStoreCategoryView` → `HandleHomeStoreCategoryJSON`
+  - `HandleMeGroupsView` → `HandleMeGroupsJSON`
+  - `HandleMeInventoryView` → `HandleMeInventoryJSON`
+  - `HandleHabboImagingBadgeView` → `HandleHabboImagingBadgeImage`
+  - `HandleNewsImagesView` → `HandleNewsImagesImage`
+  - `HandleXMLPromoHabbos` → `HandlePromoHabbosXML`
+  - `HandleAccountView` → `HandleAccountRedirect`
 - `packages/server`: its public folders `game`, `encoding`, `transport` and `r26`. The official layout puts supporting
   packages in `internal/` first. The master asks the user which of them other modules may import.
+- The tables `furni`, `home_inventory` and `catalogue_item_furni` are renamed `furnis`, `home_inventories` and
+  `catalogue_item_furnis`, each through an update file that rebuilds the table, with every query, generated type and
+  caller that names it. `avatar_game_data` stays: `data` is a plural. Rule: `adding-data-persistence`.
+- Housekeeping's `clock.astro` and `news/news-fields.astro` become Svelte islands: an `.astro` file holds markup only.
+  Rules: `building-astro-components`, `adding-svelte-interactivity`.

@@ -51,6 +51,30 @@ New config declaration:
    }
    ```
 
+   A section may nest a struct. The nested struct has its own defaults and its own `Validate()`, and the section's
+   `Validate()` prefixes its key:
+
+   ```go
+   type Mail struct {
+       Relay Relay `json:"relay"`
+   }
+
+   func DefaultRelay() Relay { return Relay{Host: "localhost", Port: 25} }
+
+   func (m Mail) Validate() error {
+       if err := m.Relay.Validate(); err != nil {
+           return fmt.Errorf("relay.%w", err)
+       }
+       return nil
+   }
+   ```
+
+   A section that shares a rule with another section wraps that section's validator under its own name:
+
+   ```go
+   func ValidateHost(value string) error { return web.ValidateHost(value) }
+   ```
+
 2. Register the section on the root in exactly three places: the `Config` field, the `defaults()` composition and the
    `Config.Validate()` aggregation. The section prefix makes each error name the full key path (`mail.port`), the same
    path the settings use for the value.
@@ -105,12 +129,13 @@ Unit tests, in the section package:
 
 ## Rules
 
-- Write `config.json` only when it is absent; an existing file keeps its missing and unknown keys as written.
+- Write `config.json` when it is absent, and rewrite it when an administrator asks for it: the rewrite adds the
+  missing keys and removes the unused ones. An existing file otherwise keeps its keys as written.
 - Decode with the default decoder, which skips unknown keys.
 - Each default satisfies its own validator; the tests catch a bad default as a programming error.
 - Keys are lowerCamelCase, for section names and field tags alike.
 - One declaration per key: every consumer uses the same `Default<Field>` and `Validate<Field>`.
-- Imports go from the root package to its sections.
+- Imports go from the root package to its sections. A section imports another section only to wrap its validator.
 - A new declaration leaves every existing declaration, default and rule as it is.
 - Loading happens once per process through `sync.Once`; only the root package's tests reset that state, with its
   helper.
