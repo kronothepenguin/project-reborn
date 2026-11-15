@@ -13,9 +13,9 @@ The `adding-config-sections` skill holds the rules. This playbook names their pl
 | File | Place |
 | --- | --- |
 | Section package | `packages/config/<section>/<section>.go`, imported as `github.com/kronothepenguin/project-reborn/packages/config/<section>` |
-| Unit tests | `packages/config/<section>/<section>_test.go` |
 | Root registration | `packages/config/config.go`: the `Config` struct, `defaults()` and `Config.Validate()` |
 | Full-pipeline tests | `packages/config/<section>_pipeline_test.go`, `package config` |
+| Validator tests, for the rules the pipeline leaves unproven | `packages/config/<section>/<section>_test.go` |
 
 - The file's contract: [The file's behaviour](/file-behaviour.md). `Differences` and `Rewrite` read the declared keys
   from `defaults()`, so the registration there reaches housekeeping's update page.

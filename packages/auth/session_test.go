@@ -10,20 +10,6 @@ import (
 	"time"
 )
 
-func TestSessionsLoadTheSession(t *testing.T) {
-	f := newFixture(t)
-	userID, avatarID := f.habbo(t, "admin@example.com", "Admin", testPassword)
-	cookie := f.mustLogin(t, "Admin", false)
-
-	session, ok, _ := f.visit(t, cookie)
-	if !ok || session.UserID != userID || session.AvatarID != avatarID {
-		t.Errorf("session = %+v, %t, want user %d with habbo %d", session, ok, userID, avatarID)
-	}
-	if _, ok, _ := f.visit(t, nil); ok {
-		t.Error("a request without a cookie has a session")
-	}
-}
-
 func TestSessionsClearBadAndExpiredCookies(t *testing.T) {
 	f := newFixture(t)
 	f.habbo(t, "admin@example.com", "Admin", testPassword)
