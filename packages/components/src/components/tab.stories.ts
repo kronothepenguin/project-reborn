@@ -23,3 +23,14 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = { args: { tabs, value: "one" } };
+
+export const Disabled: Story = {
+  args: {
+    tabs: [
+      { value: "one", label: "One" },
+      { value: "two", label: "Two", disabled: true },
+    ],
+    value: "one",
+  },
+  parameters: { docs: { description: { story: "A disabled tab stays unselected and the arrow keys skip it." } } },
+};

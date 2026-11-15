@@ -64,3 +64,8 @@ export const Invalid: Story = {
     },
   },
 };
+
+export const Disabled: Story = {
+  args: { placeholder: "you@example.com", disabled: true },
+  parameters: { docs: { description: { story: "A disabled field shows its value and takes no typing." } } },
+};

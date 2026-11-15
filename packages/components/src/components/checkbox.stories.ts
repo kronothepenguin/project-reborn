@@ -41,3 +41,8 @@ export const Checked: Story = {
     },
   },
 };
+
+export const Disabled: Story = {
+  args: { children: content, name: "remember", disabled: true },
+  parameters: { docs: { description: { story: "A disabled checkbox keeps its state; a click on it or its label changes nothing." } } },
+};

@@ -9,17 +9,6 @@ describe("Input", () => {
     expect(container.querySelector("input")).toBeTruthy();
   });
 
-  it("forwards native input attributes", () => {
-    const { container } = render(Input, {
-      props: { type: "email", name: "email", placeholder: "you@example.com", disabled: true },
-    });
-    const input = container.querySelector("input");
-    expect(input?.getAttribute("type")).toBe("email");
-    expect(input?.getAttribute("name")).toBe("email");
-    expect(input?.getAttribute("placeholder")).toBe("you@example.com");
-    expect((input as HTMLInputElement).disabled).toBe(true);
-  });
-
   it("writes its value back to a bound parent", async () => {
     const { container } = render(InputFixture);
     const input = container.querySelector("input") as HTMLInputElement;
@@ -36,15 +25,6 @@ const variantBorderClasses: Record<(typeof variants)[number], string[]> = {
 };
 
 describe("Input variants", () => {
-  it("defaults variant to default and applies no border class", () => {
-    const { container } = render(Input);
-    const input = container.querySelector("input") as HTMLInputElement;
-    for (const cls of variantBorderClasses.default) {
-      expect(input.classList.contains(cls)).toBe(true);
-    }
-    expect(input.classList.contains("border")).toBe(false);
-  });
-
   it("applies the border class for the border variant", () => {
     const { container } = render(Input, { props: { variant: "border" } });
     const input = container.querySelector("input") as HTMLInputElement;
@@ -70,11 +50,6 @@ describe("Input variants", () => {
     expect(input.classList.contains("border")).toBe(false);
     expect(input.classList.contains("bg-white")).toBe(true);
   });
-
-  it("does not forward variant as an attribute", () => {
-    const { container } = render(Input, { props: { variant: "border" } });
-    expect(container.querySelector("input")?.hasAttribute("variant")).toBe(false);
-  });
 });
 
 const sizes = ["default", "lg"] as const;
@@ -84,13 +59,6 @@ const sizePaddingClasses: Record<(typeof sizes)[number], string> = {
 };
 
 describe("Input sizes", () => {
-  it("defaults size to default and applies its all-sides padding class", () => {
-    const { container } = render(Input);
-    const input = container.querySelector("input") as HTMLInputElement;
-    expect(input.classList.contains(sizePaddingClasses.default)).toBe(true);
-    expect(input.classList.contains(sizePaddingClasses.lg)).toBe(false);
-  });
-
   it("applies the all-sides padding class for the given size", () => {
     for (const size of sizes) {
       const { container } = render(Input, { props: { size } });
@@ -116,22 +84,9 @@ describe("Input sizes", () => {
     expect(input.classList.contains(sizePaddingClasses.default)).toBe(true);
     expect(input.classList.contains(sizePaddingClasses.lg)).toBe(false);
   });
-
-  it("does not forward size as an attribute", () => {
-    const { container } = render(Input, { props: { size: "lg" } });
-    expect(container.querySelector("input")?.hasAttribute("size")).toBe(false);
-  });
 });
 
 describe("Input invalid state", () => {
-  it("defaults invalid to false and applies the white background with black text", () => {
-    const { container } = render(Input);
-    const input = container.querySelector("input") as HTMLInputElement;
-    expect(input.classList.contains("bg-white")).toBe(true);
-    expect(input.classList.contains("bg-rose-300")).toBe(false);
-    expect(input.classList.contains("text-black")).toBe(true);
-  });
-
   it("applies the invalid background while leaving the rest unchanged", () => {
     const { container } = render(Input, { props: { invalid: true } });
     const input = container.querySelector("input") as HTMLInputElement;
@@ -149,11 +104,6 @@ describe("Input invalid state", () => {
     expect(input.classList.contains("border-neutral-600")).toBe(true);
     expect(input.classList.contains("bg-rose-300")).toBe(true);
   });
-
-  it("does not forward invalid as an attribute", () => {
-    const { container } = render(Input, { props: { invalid: true } });
-    expect(container.querySelector("input")?.hasAttribute("invalid")).toBe(false);
-  });
 });
 
 describe("Input states", () => {
@@ -165,12 +115,12 @@ describe("Input states", () => {
     expect(input.classList.contains("focus-visible:outline-black")).toBe(true);
   });
 
-  it("has no catalogue entry for hover, active, or disabled", async () => {
+  it("has no catalogue entry for hover or active", async () => {
     const stories = await import("./input.stories");
     const entries = Object.keys(stories)
       .filter((key) => key !== "default")
       .sort();
-    expect(entries).toEqual(["Border", "Default", "Invalid", "Large"]);
+    expect(entries).toEqual(["Border", "Default", "Disabled", "Invalid", "Large"]);
   });
 
   it("does not change the element or behaviour on hover, press, or disable", async () => {

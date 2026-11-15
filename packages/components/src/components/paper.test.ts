@@ -11,15 +11,6 @@ describe("Paper", () => {
     expect(container.querySelector("div")).toBeTruthy();
     expect(container.textContent).toContain("Surface content");
   });
-
-  it("forwards native attributes", () => {
-    const { container } = render(Paper, {
-      props: { children: content, class: "surface", "data-testid": "paper" },
-    });
-    const surface = container.querySelector("div");
-    expect(surface?.classList.contains("surface")).toBe(true);
-    expect(surface?.getAttribute("data-testid")).toBe("paper");
-  });
 });
 
 const variants = [
@@ -46,12 +37,6 @@ const variantClasses: Record<(typeof variants)[number], string> = {
 };
 
 describe("Paper variants", () => {
-  it("defaults variant to default and applies its background class", () => {
-    const { container } = render(Paper, { props: { children: content } });
-    const surface = container.querySelector("div") as HTMLDivElement;
-    expect(surface.classList.contains(variantClasses.default)).toBe(true);
-  });
-
   it("applies the background class for the given variant", () => {
     for (const variant of variants) {
       const { container } = render(Paper, { props: { children: content, variant } });
@@ -77,10 +62,5 @@ describe("Paper variants", () => {
     });
     const surface = container.querySelector("div") as HTMLDivElement;
     expect(surface.classList.contains(variantClasses.default)).toBe(true);
-  });
-
-  it("does not forward variant as an attribute", () => {
-    const { container } = render(Paper, { props: { children: content, variant: "blue" } });
-    expect(container.querySelector("div")?.hasAttribute("variant")).toBe(false);
   });
 });

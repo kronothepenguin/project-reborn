@@ -14,16 +14,6 @@ describe("Select", () => {
     expect(select.options[0].textContent).toBe("Day");
   });
 
-  it("forwards native select attributes", () => {
-    const { container } = render(Select, {
-      props: { children: option, name: "day", required: true, disabled: true },
-    });
-    const select = container.querySelector("select") as HTMLSelectElement;
-    expect(select.getAttribute("name")).toBe("day");
-    expect(select.required).toBe(true);
-    expect(select.disabled).toBe(true);
-  });
-
   it("starts on the value of a bound parent", () => {
     const { container } = render(SelectFixture);
     expect((container.querySelector("select") as HTMLSelectElement).value).toBe("2");

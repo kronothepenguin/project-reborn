@@ -33,3 +33,8 @@ export const Default: Story = {
     },
   },
 };
+
+export const Disabled: Story = {
+  args: { children: months, name: "month", disabled: true },
+  parameters: { docs: { description: { story: "A disabled select shows its value and opens no list." } } },
+};

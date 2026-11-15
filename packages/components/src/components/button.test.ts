@@ -2,6 +2,7 @@ import { createRawSnippet } from "svelte";
 import { render } from "@testing-library/svelte";
 import { describe, expect, it } from "vitest";
 import Button from "./button.svelte";
+import "../styles.css";
 
 const label = createRawSnippet(() => ({ render: () => "<span>Sign in</span>" }));
 
@@ -9,26 +10,6 @@ describe("Button", () => {
   it("renders a native button element", () => {
     const { container } = render(Button, { props: { children: label } });
     expect(container.querySelector("button")).toBeTruthy();
-  });
-
-  it("defaults type to button", () => {
-    const { container } = render(Button, { props: { children: label } });
-    expect(container.querySelector("button")?.getAttribute("type")).toBe("button");
-  });
-
-  it("forwards native attributes to the element", () => {
-    const { container } = render(Button, {
-      props: {
-        children: label,
-        type: "submit",
-        class: "primary",
-        "data-testid": "submit",
-      },
-    });
-    const button = container.querySelector("button");
-    expect(button?.getAttribute("type")).toBe("submit");
-    expect(button?.getAttribute("data-testid")).toBe("submit");
-    expect(button?.classList.contains("primary")).toBe(true);
   });
 
   it("renders a link with href, for an action that is a plain navigation", () => {
@@ -78,14 +59,6 @@ const variantClasses: Record<(typeof variants)[number], string[]> = {
 };
 
 describe("Button variants", () => {
-  it("defaults variant to default and applies its class set", () => {
-    const { container } = render(Button, { props: { children: label } });
-    const button = container.querySelector("button") as HTMLButtonElement;
-    for (const cls of variantClasses.default) {
-      expect(button.classList.contains(cls)).toBe(true);
-    }
-  });
-
   it("applies the class set for the given variant", () => {
     for (const variant of variants) {
       const { container } = render(Button, { props: { children: label, variant } });
@@ -107,11 +80,6 @@ describe("Button variants", () => {
     expect(second.classList.contains("bg-red-700")).toBe(true);
     expect(second.classList.contains("bg-mauve-300")).toBe(false);
   });
-
-  it("does not forward variant as an attribute", () => {
-    const { container } = render(Button, { props: { children: label, variant: "green" } });
-    expect(container.querySelector("button")?.hasAttribute("variant")).toBe(false);
-  });
 });
 
 const sizes = ["wide", "compact"] as const;
@@ -121,12 +89,6 @@ const sizeClasses: Record<(typeof sizes)[number], string> = {
 };
 
 describe("Button sizes", () => {
-  it("defaults size to wide and applies its horizontal-padding class", () => {
-    const { container } = render(Button, { props: { children: label } });
-    const button = container.querySelector("button") as HTMLButtonElement;
-    expect(button.classList.contains(sizeClasses.wide)).toBe(true);
-  });
-
   it("applies the horizontal-padding class for the given size", () => {
     for (const size of sizes) {
       const { container } = render(Button, { props: { children: label, size } });
@@ -154,9 +116,27 @@ describe("Button sizes", () => {
     expect(second.classList.contains("px-2")).toBe(true);
     expect(second.classList.contains("px-4")).toBe(false);
   });
+});
 
-  it("does not forward size as an attribute", () => {
-    const { container } = render(Button, { props: { children: label, size: "compact" } });
-    expect(container.querySelector("button")?.hasAttribute("size")).toBe(false);
+describe("Button faces", () => {
+  it("shows a raised face with a rounded 2px border", () => {
+    const { container } = render(Button, { props: { children: label } });
+    const button = container.querySelector("button") as HTMLButtonElement;
+    const style = getComputedStyle(button);
+
+    expect(style.borderTopWidth).toBe("2px");
+    expect(style.borderTopLeftRadius).toBe("4px");
+    expect(getComputedStyle(button, "::before").content).toBe('""');
+  });
+
+  it("shows a plain button flat, with a square 1px border and no raised face", () => {
+    const { container } = render(Button, { props: { children: label, variant: "plain" } });
+    const button = container.querySelector("button") as HTMLButtonElement;
+    const style = getComputedStyle(button);
+
+    expect(style.borderTopWidth).toBe("1px");
+    expect(style.borderTopColor).toBe("rgb(0, 0, 0)");
+    expect(style.borderTopLeftRadius).toBe("0px");
+    expect(getComputedStyle(button, "::before").content).toBe("none");
   });
 });

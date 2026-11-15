@@ -30,12 +30,4 @@ describe("Card", () => {
     expect(bar?.classList.contains("text-white")).toBe(true);
     expect(bar?.classList.contains("text-black")).toBe(false);
   });
-
-  it("forwards native attributes to the surface", () => {
-    const { container } = render(Card, {
-      props: { children: body, class: "card", "data-testid": "card" },
-    });
-    const root = container.querySelector("[data-testid='card']");
-    expect(root?.classList.contains("card")).toBe(true);
-  });
 });

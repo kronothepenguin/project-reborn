@@ -11,7 +11,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "One page of a Pagination. It links to `href`, or with `current` it shows the number as plain text, marked as the current page.",
+          "Use PaginationItem for each page number inside a Pagination. It links to `href`, or with `current` it shows the number as plain text, marked as the current page.",
       },
     },
   },

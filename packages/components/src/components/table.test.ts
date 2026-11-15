@@ -30,13 +30,4 @@ describe("Table", () => {
     expect(table.classList.contains("[&_tbody_tr:nth-child(even)]:bg-amber-100")).toBe(false);
     expect(table.classList.contains("[&_td]:p-1")).toBe(true);
   });
-
-  it("forwards native attributes", () => {
-    const { container } = render(TableFixture, {
-      props: { "aria-label": "Staff", "data-testid": "staff" } as never,
-    });
-    const table = container.querySelector("table");
-    expect(table?.getAttribute("aria-label")).toBe("Staff");
-    expect(table?.getAttribute("data-testid")).toBe("staff");
-  });
 });

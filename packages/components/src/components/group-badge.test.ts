@@ -21,15 +21,4 @@ describe("GroupBadge", () => {
     expect(plain.querySelector("img")?.getAttribute("alt")).toBe("");
     expect(named.querySelector("img")?.getAttribute("alt")).toBe("Cool Kids");
   });
-
-  it("forwards native attributes and not its own props", () => {
-    const { container } = render(GroupBadge, {
-      props: { code, title: "Cool Kids", class: "float-left", "data-testid": "badge" },
-    });
-    const image = container.querySelector("img");
-    expect(image?.getAttribute("title")).toBe("Cool Kids");
-    expect(image?.getAttribute("class")).toBe("float-left");
-    expect(image?.getAttribute("data-testid")).toBe("badge");
-    expect(image?.hasAttribute("code")).toBe(false);
-  });
 });

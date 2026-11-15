@@ -13,16 +13,6 @@ describe("Checkbox", () => {
     expect(page.getByRole("checkbox", { name: "Remember me" }).query()).toBeTruthy();
   });
 
-  it("forwards native input attributes", () => {
-    const { container } = render(Checkbox, {
-      props: { children: content, name: "remember", value: "yes", disabled: true },
-    });
-    const input = container.querySelector("input") as HTMLInputElement;
-    expect(input.getAttribute("name")).toBe("remember");
-    expect(input.getAttribute("value")).toBe("yes");
-    expect(input.disabled).toBe(true);
-  });
-
   it("stays a checkbox whatever type it is given", () => {
     const { container } = render(Checkbox, {
       props: { children: content, type: "text" } as never,

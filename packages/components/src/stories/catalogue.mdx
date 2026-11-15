@@ -14,8 +14,9 @@ black border, and a 4px radius, with visible hover, focus, active, and disabled 
 four variants — **Default**, **Green**, **Dark**, and **Red** — each shown as its own catalogue
 entry. In the surface theme it uses 4px vertical padding and 12px bold text, and its two sizes —
 **Wide** (16px horizontal padding, the default) and **Compact** (8px) — each have their own
-catalogue entry. The remaining components are still functional and unstyled; their variants and
-the `flat` theme arrive in a later slice.
+catalogue entry. A fifth variant, **Plain**, is housekeeping's flat submit button: a 1px black
+border, square corners and no raised face. The remaining components are still functional and
+unstyled; their variants and the `flat` theme arrive in a later slice.
 
 **Paper** now carries the `surface` theme too: a flat surface with no elevation — a 1px `black/20`
 border, an 8px radius, and a 3px `black/20` bottom border. It has nine variants — **Default**,
@@ -50,6 +51,9 @@ its input and its text in one label; Select takes its options as children.
 the button icon sprite: **Search**, **Envelope**, **Save**, **Cancel**, **Edit**, **Purse**, or
 **New Topic**.
 
+**Box** frames a section of a back-office page under a title bar: **Blue** for navigation and
+forms, **Gold** for data lists.
+
 **Table** shows rows of data as `list`, with a gold header and rows, or a form as `form`, with a
 label column and an input column and plain rows. It fills its
 container, with its header cells on a grey bar and every second row shaded.
@@ -59,18 +63,19 @@ container, with its header cells on a grey bar and every second row shaded.
 Browse **Components** in the sidebar. Every baseline component appears with one story per
 documented state:
 
-- **Button** (Default, Green, Dark, Red, Wide, Compact), **Link** (Default, White, Personal Info,
-  Nav, Settings, Yellow), **Paper** (Default, Login, Gray, Black, HC, Yellow, Light Green, Blue,
-  Room Pattern), **Card**
-- **Input** (Default, Border, Large, Invalid), **Form field**, **Checkbox** (Default, Checked),
-  **Select**
+- **Button** (Default, Green, Dark, Red, Plain, Disabled, Wide, Compact), **Link** (Default, White,
+  Personal Info, Nav, Settings, Yellow), **Paper** (Default, Login, Gray, Black, HC, Yellow, Light
+  Green, Blue, Room Pattern), **Card**, **Box** (Blue, Gold)
+- **Input** (Default, Border, Large, Invalid, Disabled), **Form field**, **Checkbox** (Default,
+  Checked, Disabled), **Select** (Default, Disabled)
 - **Bubble** (Tail Down, Tail Up)
 - **Spinner**
 - **Notice** (Red, Green, Orange, Blue, Dark Gray)
 - **Avatar** (Default, Small, Direction), **Icon** (Search, Envelope, Save, Cancel, Edit, Purse,
   New Topic)
-- **Menu**, **Menu item**
-- **Tabs**, **Tab**, **Tab panel**
+- **Menu** (Default, Disabled), **Menu item** (Default, Disabled)
+- **Tabs**, **Tab** (Default, Disabled), **Tab panel**
+- **Pagination**, **Pagination item** (Link, Current)
 - **Table**
 - **Dialog**
 

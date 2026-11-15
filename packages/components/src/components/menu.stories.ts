@@ -24,3 +24,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = { args: { label: "Account", items } };
+
+export const Disabled: Story = {
+  args: { label: "Account", items, disabled: true },
+  parameters: { docs: { description: { story: "A disabled menu's trigger opens no list." } } },
+};

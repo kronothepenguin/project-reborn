@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import type { HTMLAttributes } from "svelte/elements";
   import { address as linkAddress, colours, faces, flatten, measure, offset, pointAt, quoteClass, read, sizes, smileyBase, write } from "../bbcode";
 
   // A WYSIWYG editor of the BBCode the CMS renders (decision holo-port/0092). The area
@@ -11,7 +12,8 @@
   // its form and stays the plain field without JavaScript; without a label and
   // rows of its own, it takes the field's. With maxLength, a change that makes
   // the BBCode longer is turned away, as a textarea's maxlength turns it away.
-  interface Props {
+  // The rest of the attributes go to the editor's outer box.
+  interface Props extends HTMLAttributes<HTMLDivElement> {
     value?: string;
     field?: string;
     smilies?: boolean;
@@ -21,7 +23,7 @@
     maxLength?: number;
   }
 
-  let { value = $bindable(""), field, smilies = false, variant = "site", label, rows, maxLength }: Props = $props();
+  let { value = $bindable(""), field, smilies = false, variant = "site", label, rows, maxLength, ...rest }: Props = $props();
 
   type Toggle = "bold" | "italic" | "underline" | "strikeThrough";
   type State = { value: string; start: number; end: number };
@@ -432,7 +434,7 @@
   });
 </script>
 
-<div class="flex flex-col gap-1">
+<div class="flex flex-col gap-1" {...rest}>
   <div role="toolbar" aria-label="Formatting" class="flex flex-wrap items-center gap-1">
     {#each toggles as t (t.command)}
       <button

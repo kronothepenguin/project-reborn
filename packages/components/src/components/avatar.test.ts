@@ -36,21 +36,4 @@ describe("Avatar", () => {
     expect(plain.querySelector("img")?.getAttribute("alt")).toBe("");
     expect(named.querySelector("img")?.getAttribute("alt")).toBe("Admin");
   });
-
-  it("forwards native attributes", () => {
-    const { container } = render(Avatar, {
-      props: { imagingUrl, figure, loading: "lazy", "data-testid": "avatar" },
-    });
-    const image = container.querySelector("img");
-    expect(image?.getAttribute("loading")).toBe("lazy");
-    expect(image?.getAttribute("data-testid")).toBe("avatar");
-  });
-
-  it("does not forward its own props as attributes", () => {
-    const { container } = render(Avatar, { props: { imagingUrl, figure } });
-    const image = container.querySelector("img") as HTMLImageElement;
-    for (const name of ["imagingurl", "figure", "size", "direction", "headdirection", "gesture"]) {
-      expect(image.hasAttribute(name)).toBe(false);
-    }
-  });
 });

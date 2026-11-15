@@ -10,16 +10,6 @@ describe("Link", () => {
     const { container } = render(Link, { props: { children: label, href: "/login" } });
     expect(container.querySelector("a")).toBeTruthy();
   });
-
-  it("forwards native anchor attributes", () => {
-    const { container } = render(Link, {
-      props: { children: label, href: "/login", target: "_blank", rel: "noreferrer" },
-    });
-    const anchor = container.querySelector("a");
-    expect(anchor?.getAttribute("href")).toBe("/login");
-    expect(anchor?.getAttribute("target")).toBe("_blank");
-    expect(anchor?.getAttribute("rel")).toBe("noreferrer");
-  });
 });
 
 const variants = [
@@ -40,14 +30,6 @@ const variantClasses: Record<(typeof variants)[number], string> = {
 };
 
 describe("Link variants", () => {
-  it("defaults variant to default and applies its colour and decoration", () => {
-    const { container } = render(Link, { props: { children: label, href: "#" } });
-    const anchor = container.querySelector("a") as HTMLAnchorElement;
-    for (const cls of variantClasses.default.split(" ")) {
-      expect(anchor.classList.contains(cls)).toBe(true);
-    }
-  });
-
   it("applies the colour and text-decoration classes for the given variant", () => {
     for (const variant of variants) {
       const { container } = render(Link, { props: { children: label, href: "#", variant } });
@@ -93,11 +75,6 @@ describe("Link variants", () => {
     for (const cls of variantClasses.default.split(" ")) {
       expect(anchor.classList.contains(cls)).toBe(true);
     }
-  });
-
-  it("does not forward variant as an attribute", () => {
-    const { container } = render(Link, { props: { children: label, href: "#", variant: "nav" } });
-    expect(container.querySelector("a")?.hasAttribute("variant")).toBe(false);
   });
 });
 

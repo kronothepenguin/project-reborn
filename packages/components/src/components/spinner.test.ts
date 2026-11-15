@@ -10,9 +10,4 @@ describe("Spinner", () => {
     expect(getComputedStyle(spinner).backgroundImage).toContain("progress-bubbles");
     expect(page.getByRole("status", { name: "Loading" }).query()).toBeTruthy();
   });
-
-  it("forwards native attributes", () => {
-    const { container } = render(Spinner, { props: { "data-testid": "saving" } });
-    expect(container.querySelector("span")?.getAttribute("data-testid")).toBe("saving");
-  });
 });

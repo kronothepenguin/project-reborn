@@ -31,3 +31,19 @@ Holo used. It joins the values without encoding, because at build time they can 
 # Bubble
 
 `Bubble` carries `relative` for its tail, so a caller positions it through a wrapper.
+
+# Button
+
+- `Button` draws its raised face, its 2px border and its radius in every variant but `plain`. `plain` is housekeeping's
+  submit button: a 1px black border, square corners and an `olive-200` face that turns white on hover.
+- `plain` with `size="compact"` matches housekeeping's `submit.astro` in every computed style and in its size.
+- `Button` defaults `type` to `button`, so a submit button passes `type="submit"`.
+
+# Box
+
+`Box` is housekeeping's titled section: a `title` heading in a `blue` (`sky-700`, white text) or `gold` (`amber-300`,
+black text) bar above its children (decision holo-port/0060). `title` is the heading text, never a tooltip.
+
+# PaginationItem
+
+`PaginationItem` gives its other attributes to the link. The current page is a plain `<span>` with none of them.

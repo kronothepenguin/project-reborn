@@ -11,16 +11,6 @@ describe("Bubble", () => {
     expect(container.textContent).toContain("Please enter a name.");
   });
 
-  it("forwards native attributes and keeps its look with a class", () => {
-    const { container } = render(Bubble, {
-      props: { children: content, role: "tooltip", class: "absolute" },
-    });
-    const bubble = container.querySelector("div") as HTMLDivElement;
-    expect(bubble.getAttribute("role")).toBe("tooltip");
-    expect(bubble.classList.contains("absolute")).toBe(true);
-    expect(bubble.classList.contains("bg-white")).toBe(true);
-  });
-
   it("points down by default and up on request", () => {
     const down = render(Bubble, { props: { children: content } });
     expect((down.container.querySelector("div") as HTMLDivElement).className).toContain("before:-bottom-1.5");

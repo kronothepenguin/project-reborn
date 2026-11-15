@@ -16,7 +16,8 @@ holo-port/0092).
   address must start with http:// or https://.".
 - Pasting keeps bold, italic, underline, strike, links, quotes and line breaks, and drops other formatting to its text.
 - Props: `value`, `field` (the textarea it stands in for, which keeps the BBCode for its form and stays the plain field
-  without JavaScript), `smilies`, `variant` (`site` or `housekeeping`), `label`, `rows` and `maxLength`.
+  without JavaScript), `smilies`, `variant` (`site` or `housekeeping`), `label`, `rows` and `maxLength`. Every other
+  attribute goes to the editor's outer box.
 
 # Reader and writer
 

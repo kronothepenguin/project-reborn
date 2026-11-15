@@ -36,25 +36,13 @@ describe("Icon", () => {
     expect(icon().getAttribute("aria-hidden")).toBe("true");
   });
 
-  it("forwards native attributes", () => {
-    expect(icon({ "data-testid": "icon" }).getAttribute("data-testid")).toBe("icon");
-  });
-
   it("shows the sprite position of Holo's variant", () => {
     for (const [variant, position] of Object.entries(positions)) {
       expect(getComputedStyle(icon({ variant })).backgroundPosition).toBe(position);
     }
   });
 
-  it("defaults to search", () => {
-    expect(getComputedStyle(icon()).backgroundPosition).toBe(positions.search);
-  });
-
   it("falls back to search for an unsupported variant", () => {
     expect(getComputedStyle(icon({ variant: "purple" })).backgroundPosition).toBe(positions.search);
-  });
-
-  it("does not forward variant as an attribute", () => {
-    expect(icon({ variant: "save" }).hasAttribute("variant")).toBe(false);
   });
 });

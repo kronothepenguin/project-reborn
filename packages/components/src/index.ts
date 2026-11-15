@@ -1,5 +1,6 @@
 export { default as Avatar } from "./components/avatar.svelte";
 export { default as BBCodeEditor } from "./components/bbcode-editor.svelte";
+export { default as Box } from "./components/box.svelte";
 export { default as Bubble } from "./components/bubble.svelte";
 export { default as Button } from "./components/button.svelte";
 export { default as Card } from "./components/card.svelte";

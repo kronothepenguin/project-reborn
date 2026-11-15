@@ -79,6 +79,29 @@ export const Red: Story = {
   },
 };
 
+export const Plain: Story = {
+  args: { children: label, variant: "plain", size: "compact" },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Use the plain variant for a back-office form's submit button. A flat olive face with a 1px black border and square corners, white on hover. With `size` compact it is housekeeping's submit button.",
+      },
+    },
+  },
+};
+
+export const Disabled: Story = {
+  args: { children: label, disabled: true },
+  parameters: {
+    docs: {
+      description: {
+        story: "A disabled button is faded, shows no raised face and ignores a press.",
+      },
+    },
+  },
+};
+
 export const Wide: Story = {
   args: { children: label, size: "wide" },
   parameters: {
