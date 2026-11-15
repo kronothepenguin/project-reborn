@@ -12,26 +12,6 @@ describe("Table", () => {
     expect(table.textContent).toContain("Frank");
   });
 
-  it("fills its container", () => {
-    const { container } = render(TableFixture);
-    expect(container.querySelector("table")?.classList.contains("w-full")).toBe(true);
-  });
-
-  it("marks a list's header and every second row in gold", () => {
-    const { container } = render(TableFixture);
-    const table = container.querySelector("table") as HTMLTableElement;
-    expect(table.classList.contains("[&_th]:bg-amber-300")).toBe(true);
-    expect(table.classList.contains("[&_tbody_tr:nth-child(even)]:bg-amber-100")).toBe(true);
-  });
-
-  it("leaves a form's rows plain", () => {
-    const { container } = render(TableFixture, { props: { variant: "form" } as never });
-    const table = container.querySelector("table") as HTMLTableElement;
-    expect(table.classList.contains("[&_th]:bg-amber-300")).toBe(false);
-    expect(table.classList.contains("[&_tbody_tr:nth-child(even)]:bg-amber-100")).toBe(false);
-    expect(table.classList.contains("[&_td]:p-1")).toBe(true);
-  });
-
   it("draws a plain table as a frame only, with the cells, the header and the rows unstyled", () => {
     const { container } = render(TableFixture, { props: { variant: "plain" } as never });
     const table = container.querySelector("table") as HTMLTableElement;

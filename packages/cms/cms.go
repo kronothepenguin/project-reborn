@@ -143,7 +143,7 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /bbcode/preview", page(auth.RequireSession(http.HandlerFunc(r.HandleBBCodePreview))))
 	mux.Handle("POST /me/tags", page(auth.RequireSession(http.HandlerFunc(r.HandleMeTagsAdd))))
 	mux.Handle("POST /me/tags/{tag}/delete", page(auth.RequireSession(http.HandlerFunc(r.HandleMeTagsDelete))))
-	mux.Handle("POST /homes/{id}/layout", page(auth.RequireSession(http.HandlerFunc(r.HandleHomesLayout))))
+	mux.Handle("POST /homes/{id}/layout", page(auth.RequireSession(http.HandlerFunc(r.HandleHomesLayoutSave))))
 	mux.Handle("POST /homes/{id}/items", page(auth.RequireSession(http.HandlerFunc(r.HandleHomesItemsPlace))))
 	mux.Handle("POST /homes/{id}/items/{item}/skin", page(auth.RequireSession(http.HandlerFunc(r.HandleHomesItemsSkin))))
 	mux.Handle("POST /homes/{id}/items/{item}/delete", page(auth.RequireSession(http.HandlerFunc(r.HandleHomesItemsDelete))))

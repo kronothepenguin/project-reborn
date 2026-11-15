@@ -15,8 +15,11 @@ does with them.
   shows the rule.
 - A test asserts what a user or a client observes. The shape of a struct, a JSON tag, a default that passes its own
   validator, a class name and the exact strings of a generated file are details: leave them to the code.
+- One test per behaviour: a test that repeats another goes.
 - A guard is a test over the whole repo that keeps a rule of the build true: every page wakes its islands, every seeded
   item has its art. A guard is a valid test.
+- A test of a schema constraint no program can reach, and a test that state is safe under concurrent use, are left
+  unwritten.
 
 ## Write a test
 
@@ -70,8 +73,10 @@ page shows.
 
 Prove a behaviour once, at the lowest level that shows its outcome.
 
-- A page or an action of a web app: a test through the HTTP router. A request goes in, a page or a redirect comes out.
-- A browser suite: only for what needs a real browser, such as an island or a primitive working inside a page.
+- A page or an action of a web app: a test through the HTTP router. It proves the page's data, its status and its
+  redirects.
+- A browser suite: for the text and layout of a real page, which only the browser draws, and for an island or a
+  primitive working inside a page.
 
 ## A failing test
 

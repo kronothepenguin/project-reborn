@@ -1,30 +1,54 @@
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { DatabaseSync } from "node:sqlite";
 import path from "node:path";
 import { root } from "../lib/hotel.mjs";
 import { seedStaff, session } from "../lib/staff.mjs";
 
 export const programs = ["cms", "housekeeping"];
 
+// Signing in makes its SSO ticket only once update 0008 gave sso_tickets its new
+// form, and logs the failure while it waits (decision server/0043).
+export const logs = [/^cms: \S+ \S+ WARN auth: login: no SSO ticket err=".*sso_tickets has no column named session_id/];
+
 // Every update of the release, which waits on a hotel from before updates.
 const updates = readdirSync(path.join(root, "packages/store/migrations")).filter((name) => name.endsWith(".sql")).length;
 
-// The hotel is made like one installed before updates existed: no migrations
-// table, none of the tables and columns later updates add, an empty home store
-// and no housekeeping.database, with a config.json that lacks its proxy
-// section. SQLite cannot drop the column 0006 adds, which refers to images, but
-// news_articles is empty, so the baseline makes it again without that column.
+// The hotel is made like one installed before updates existed: its tables are
+// the baseline's, with no migrations table and none of the tables and columns
+// later updates add, and they hold the installed hotel's rows in the columns the
+// baseline has. Its home store is empty, nobody holds housekeeping.database, and
+// config.json lacks its proxy section.
 export const prepare = ({ dir, sql }) => {
   seedStaff(sql);
-  sql("DROP TABLE migrations");
-  sql("DROP TABLE news_articles");
-  sql("DROP TABLE images");
-  sql("DELETE FROM home_store_items");
-  sql("DELETE FROM home_store_categories");
-  sql("DELETE FROM access_group_attributes WHERE attribute = 'housekeeping.database'");
-  const file = `${dir}/config.json`;
-  const config = JSON.parse(readFileSync(file, "utf8"));
+  const file = path.join(dir, "habbo.db");
+  const before = `${file}.before-updates`;
+  const db = new DatabaseSync(before);
+  db.exec(readFileSync(path.join(root, "packages/store/migrations/0001-baseline.sql"), "utf8"));
+  db.exec("PRAGMA foreign_keys = OFF");
+  db.prepare("ATTACH DATABASE ? AS installed").run(file);
+  const tables = db
+    .prepare("SELECT name FROM main.sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'")
+    .all()
+    .map(({ name }) => name);
+  const columns = (table, schema) =>
+    db.prepare("SELECT name FROM pragma_table_info(?, ?)").all(table, schema).map(({ name }) => name);
+  for (const table of tables) {
+    const installed = columns(table, "installed");
+    const shared = columns(table, "main").filter((column) => installed.includes(column));
+    if (shared.length === 0) continue;
+    const list = shared.map((column) => `"${column}"`).join(", ");
+    db.exec(`INSERT INTO main."${table}" (${list}) SELECT ${list} FROM installed."${table}"`);
+  }
+  db.exec("DETACH DATABASE installed");
+  db.exec("DELETE FROM home_store_items");
+  db.exec("DELETE FROM home_store_categories");
+  db.exec("DELETE FROM access_group_attributes WHERE attribute = 'housekeeping.database'");
+  db.close();
+  for (const suffix of ["", "-wal", "-shm"]) rmSync(file + suffix, { force: true });
+  renameSync(before, file);
+  const config = JSON.parse(readFileSync(path.join(dir, "config.json"), "utf8"));
   delete config.proxy;
-  writeFileSync(file, `${JSON.stringify(config, null, 2)}\n`);
+  writeFileSync(path.join(dir, "config.json"), `${JSON.stringify(config, null, 2)}\n`);
 };
 
 export default async function (t) {

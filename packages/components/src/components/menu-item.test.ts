@@ -1,4 +1,5 @@
 import { fireEvent, render } from "@testing-library/svelte";
+import { userEvent } from "vitest/browser";
 import { describe, expect, it, vi } from "vitest";
 import MenuFixture from "./__fixtures__/menu.svelte";
 
@@ -23,10 +24,13 @@ describe("Menu item", () => {
     expect(item(container).getAttribute("aria-checked")).toBe("true");
   });
 
-  it("disables a disabled item", () => {
+  it("ignores a press on a disabled item", async () => {
+    const onselect = vi.fn();
     const { container } = render(MenuFixture, {
-      props: { items: [{ value: "a", label: "Alpha", disabled: true }] },
+      props: { items: [{ value: "a", label: "Alpha", disabled: true }], onselect },
     });
-    expect(item(container).disabled).toBe(true);
+    await fireEvent.click(container.querySelector("button") as HTMLButtonElement);
+    await userEvent.click(item(container), { force: true });
+    expect(onselect).not.toHaveBeenCalled();
   });
 });

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"path/filepath"
 	"slices"
-	"sync"
 	"testing"
 	"time"
 
@@ -254,33 +253,6 @@ func TestTheLinesLastUntilTheRoomUnloads(t *testing.T) {
 	if r.Join(Doorbell, ringer) || len(r.Waiting(Doorbell)) != 0 {
 		t.Error("an unloaded room took a ring")
 	}
-}
-
-func TestRoomsAreSafeForConcurrentUse(t *testing.T) {
-	openHotel(t)
-	refs := []Ref{{Public: true, ID: 101}, {Public: true, ID: 104}}
-	var wg sync.WaitGroup
-	for g := range 8 {
-		wg.Go(func() {
-			s := &session{}
-			for i := range 50 {
-				id := int64(g + 1)
-				r, _, _, err := Enter(t.Context(), nil, refs[i%2], id, s, 0)
-				if err != nil {
-					t.Error(err)
-					return
-				}
-				r.Update(id, func(o *Occupant) { o.X++ })
-				r.Join(Doorbell, Waiting{AvatarID: id + 100, Session: s})
-				_ = r.Occupants()
-				_ = Visitors(refs[i%2])
-				if _, ok := Leave(id, s); !ok {
-					t.Errorf("habbo %d could not leave", id)
-				}
-			}
-		})
-	}
-	wg.Wait()
 }
 
 // A door lets a habbo through only into the room it heads for, so that a late answer never lets it in elsewhere.

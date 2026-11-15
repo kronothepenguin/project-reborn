@@ -29,10 +29,10 @@ export default async function (t) {
     sql(`SELECT credits, reason, detail, avatar_id FROM wallet_transactions
       WHERE user_id = ${frank} ORDER BY id`);
   const badges = () =>
-    sql(`SELECT avatars.name, avatar_badges.code, avatar_badges.worn FROM avatar_badges
+    sql(`SELECT avatars.name, avatar_badges.code, avatar_badges.slot FROM avatar_badges
       JOIN avatars ON avatars.id = avatar_badges.avatar_id WHERE avatars.user_id = ${frank}
       ORDER BY avatars.name, avatar_badges.code`)
-      .map(([name, code, worn]) => `${name} ${code}${worn ? " worn" : ""}`)
+      .map(([name, code, slot]) => `${name} ${code}${slot === 1 ? " worn" : ""}`)
       .join(", ");
 
   const staff = await session(t, "Admin-1");

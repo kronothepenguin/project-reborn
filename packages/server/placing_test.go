@@ -5,8 +5,10 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/store"
+	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
 )
 
 // object writes a floor furni as 32, 93 and 95 carry one, with no state.
@@ -188,5 +190,63 @@ func TestADeletedRoomsFurniGoesToItsOwner(t *testing.T) {
 		if row := furniRow(t, id); row.UserID != userOf(t, ownerID) || row.AvatarID.Int64 != ownerID || row.RoomID.Valid || row.X != 0 || row.WallPosition != "" {
 			t.Errorf("the furni %d is stored as %+v, want it in the owner's hand, with no place", id, row)
 		}
+	}
+}
+
+// Furni that a habbo placed, moved, turned and switched on is in the store, so it comes back as it was after the room
+// unloads, which is all a restart leaves of a room too (decision server/0010).
+func TestFurniAndItsStateComeBackWithTheRoom(t *testing.T) {
+	owner := habboWithTickets(t, "Homemaker", "homemaker")
+	flat := newRoom(t, owner, 2, "Bungalow", true)
+	lamp := giveFurni(t, owner, 1279, "")
+	poster := giveFurni(t, owner, 105, "")
+	ref := room.Ref{ID: flat}
+
+	c, _ := login(t, "homemaker")
+	c.enterFlat(t, flat, 47, 42)
+	c.send(t, 90, fmt.Sprintf("%d 6 6 0", lamp))
+	c.expectChat(t, 93, object(t, lamp, "rclr_lamp", 6, 6, 1, 1, 0, "0", "0,0,0"))
+	c.send(t, 73, fmt.Sprintf("%d 7 7 2", lamp))
+	c.expectChat(t, 95, object(t, lamp, "rclr_lamp", 7, 7, 1, 1, 2, "0", "0,0,0"))
+	c.send(t, 74, b64String(t, fmt.Sprint(lamp))+b64String(t, "ON"))
+	if id, body := c.nextSkipping(t, 34); id != 88 || !strings.Contains(body, "ON") {
+		t.Fatalf("switching the lamp on answered %d %q, want its new state, 88", id, body)
+	}
+	c.send(t, 90, fmt.Sprintf("%d :w=3,2 l=9,63 l", poster))
+	c.expectChat(t, 83, fmt.Sprintf("%d\tposter\t \t:w=3,2 l=9,63 l\t44\r", poster))
+
+	c.send(t, 53, "")
+	for wait := 0; ; wait++ {
+		if _, loaded := room.Loaded(ref); !loaded {
+			break
+		}
+		if wait > 100 {
+			t.Fatal("the room did not unload after its last habbo left")
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+	if row := furniRow(t, lamp); row.RoomID.Int64 != flat || row.X != 7 || row.Y != 7 || row.Direction != 2 || row.State != "ON" {
+		t.Errorf("the lamp is stored as %+v, want it in the room at 7,7, turned to 2 and on", row)
+	}
+
+	c.extendDeadline(t)
+	c.knock(t, flat, "")
+	c.expectNext(t, 41, "\x02")
+	c.goToFlat(t, flat, 47, 42)
+	c.send(t, 60, "")
+	c.nextBody(t, 31)
+	c.send(t, 61, "")
+	c.nextBody(t, 28)
+	c.send(t, 62, "")
+	c.nextBody(t, 30)
+	objects := c.nextBody(t, 32)
+	placed := fmt.Sprintf("%d\x02rclr_lamp\x02%s", lamp, vl64String(t, 7, 7, 1, 1, 2))
+	_, after, found := strings.Cut(objects, placed)
+	if !strings.HasPrefix(objects, vl64String(t, 1)) || !found || !strings.Contains(after, "ON\x02") {
+		t.Errorf("the room's floor furni, 32 = %q; want the lamp alone, at 7,7 turned to 2 and on", objects)
+	}
+	c.send(t, 63, "")
+	if items, want := c.nextBody(t, 45), fmt.Sprintf("%d\tposter\t \t:w=3,2 l=9,63 l\t44\r", poster); items != want {
+		t.Errorf("the room's wall items, 45 = %q, want %q", items, want)
 	}
 }

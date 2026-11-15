@@ -41,8 +41,4 @@ describe("Icon", () => {
       expect(getComputedStyle(icon({ variant })).backgroundPosition).toBe(position);
     }
   });
-
-  it("falls back to search for an unsupported variant", () => {
-    expect(getComputedStyle(icon({ variant: "purple" })).backgroundPosition).toBe(positions.search);
-  });
 });

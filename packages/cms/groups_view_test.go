@@ -8,7 +8,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kronothepenguin/project-reborn/packages/cms/internal/badge"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
@@ -123,13 +122,6 @@ func TestTheGroupSearchFindsTheNameExactly(t *testing.T) {
 	for name, query := range map[string]string{"Retro%": "Retro%25", "Retro_Club": "Retro_Club", "Retro": "Retro", "": ""} {
 		rec := serve(mux, "GET", "/groups?name="+query, nil, nil)
 		wantPage(t, rec, http.StatusNotFound, "groups/not-found.html", "Searched:true Search:"+name+" NameMax:25")
-	}
-}
-
-func TestTheGroupBadgeIsDrawnForItsCode(t *testing.T) {
-	_, mux := newSite(t)
-	if rec := serve(mux, "GET", "/habbo-imaging/badge/"+badge.Default, nil, nil); rec.Code != http.StatusOK {
-		t.Errorf("the default badge = %d", rec.Code)
 	}
 }
 

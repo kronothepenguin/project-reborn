@@ -160,7 +160,8 @@ async function runSuite(name, suite) {
     await hotel.stopAll();
   }
 
-  for (const line of hotel.logProblems()) {
+  const expected = suite.logs ?? [];
+  for (const line of hotel.logProblems().filter((line) => !expected.some((log) => log.test(line)))) {
     failures.push(line);
     console.log(`FAIL ${name}: server log: ${line}`);
   }

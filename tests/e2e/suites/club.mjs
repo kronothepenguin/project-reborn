@@ -19,7 +19,7 @@ export const prepare = ({ sql }) => {
     sql(`INSERT INTO profiles (avatar_id, created_at, updated_at) VALUES (${avatar}, '${at}', '${at}')`);
     const [[profile]] = sql(`SELECT id FROM profiles WHERE avatar_id = ${avatar}`);
     sql(`INSERT INTO homes (profile_id, updated_at) VALUES (${profile}, '${at}')`);
-    sql(`INSERT INTO avatar_badges (avatar_id, code, worn, granted_at) VALUES (${avatar}, '${badge}', TRUE, '${at}')`);
+    sql(`INSERT INTO avatar_badges (avatar_id, code, slot, granted_at) VALUES (${avatar}, '${badge}', 1, '${at}')`);
   }
 };
 
@@ -27,9 +27,9 @@ export default async function ({ base, browser, check, shot, sql }) {
   const [[frank]] = sql("SELECT id FROM users WHERE email = 'frank@example.com'");
   const badges = () =>
     Object.fromEntries(
-      sql(`SELECT avatars.name, avatar_badges.code, avatar_badges.worn FROM avatar_badges
+      sql(`SELECT avatars.name, avatar_badges.code, avatar_badges.slot FROM avatar_badges
         JOIN avatars ON avatars.id = avatar_badges.avatar_id WHERE avatars.user_id = ${frank}
-        ORDER BY avatars.name, avatar_badges.code`).map(([name, code, worn]) => [`${name} ${code}`, worn === 1]),
+        ORDER BY avatars.name, avatar_badges.code`).map(([name, code, slot]) => [`${name} ${code}`, slot === 1]),
     );
   const credits = () => sql(`SELECT credits FROM wallets WHERE user_id = ${frank}`)[0][0];
   const periods = () => sql(`SELECT starts_at, ends_at FROM club_subscriptions WHERE user_id = ${frank} ORDER BY starts_at`);

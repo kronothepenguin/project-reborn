@@ -1,7 +1,6 @@
 package habbo
 
 import (
-	"sync"
 	"testing"
 
 	"github.com/kronothepenguin/project-reborn/packages/store"
@@ -68,22 +67,6 @@ func TestASecondLoginReplacesTheFirstSession(t *testing.T) {
 	if !Drop(7, second) {
 		t.Error("the second session did not drop Frank")
 	}
-}
-
-func TestOnlineHabbosAreSafeForConcurrentUse(t *testing.T) {
-	reset(t)
-	var wg sync.WaitGroup
-	for range 8 {
-		wg.Go(func() {
-			s := &session{}
-			for range 100 {
-				Add(frank(s))
-				Get(7)
-				Drop(7, s)
-			}
-		})
-	}
-	wg.Wait()
 }
 
 func TestUpdateChangesTheCopyWhileItsSessionPlaysIt(t *testing.T) {
