@@ -30,7 +30,7 @@ type (
 var wallPosition = regexp.MustCompile(`^:w=(\d{1,3}),(\d{1,3}) l=(\d{1,3}),(\d{1,3}) ([lr])$`)
 
 // furnished returns the habbo room viewer is in, when viewer may place and move furni there: its owner, a habbo with
-// rights in it, or a holder of fuse_any_room_controller (plans/server decision 0103).
+// rights in it, or a holder of fuse_any_room_controller (decision server/0103).
 func furnished(viewer habbo.Habbo) (*room.Room, bool) {
 	r, ok := room.In(viewer.ID)
 	if !ok || !controls(r, viewer) {
@@ -41,7 +41,7 @@ func furnished(viewer habbo.Habbo) (*room.Room, bool) {
 
 // PlaceFurni stands the floor furni id of viewer's hand on the tile x, y of the room it is in, turned to direction,
 // and reports whether it did. The furni must fit there (fit), and the room must hold fewer than game.maxRoomFurni
-// (plans/server decision 0104). The row is written before the room's copy changes (plans/server decision 0010).
+// (decision server/0104). The row is written before the room's copy changes (decision server/0010).
 func PlaceFurni(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64, x, y, direction int) (bool, error) {
 	r, ok := furnished(viewer)
 	if !ok || direction < 0 || direction > 7 {
@@ -100,7 +100,7 @@ func PlaceWallItem(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64
 }
 
 // fromHand reads the furni id from the store while viewer's hand holds it and the room takes one more. A furni on
-// offer in a trade stays in the hand (plans/server decision 0114).
+// offer in a trade stays in the hand (decision server/0114).
 func fromHand(ctx context.Context, db *sql.DB, r *room.Room, viewer habbo.Habbo, id int64) (room.Furni, bool, error) {
 	if len(r.Furni()) >= settings.GetIntOr("game.maxRoomFurni", 500) || onOffer(viewer, id) {
 		return room.Furni{}, false, nil
@@ -180,7 +180,7 @@ func MoveFurni(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64, x,
 
 // PickUpFurni takes the furni id out of the room viewer is in and into viewer's hand, and reports whether it did.
 // Only the room's owner or a holder of fuse_any_room_controller picks furni up, and what it picks up becomes its
-// user's, whoever placed it (plans/server decision 0103). A post-it is never picked up.
+// user's, whoever placed it (decision server/0103). A post-it is never picked up.
 func PickUpFurni(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64) (bool, error) {
 	r, ok := room.In(viewer.ID)
 	if !ok || r.Ref().Public || !owns(r, viewer) {

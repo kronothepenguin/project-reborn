@@ -122,7 +122,7 @@ func equalNodes(a, b node) bool {
 		a.Queue == b.Queue && a.Visible == b.Visible && slices.Equal(a.Flats, b.Flats)
 }
 
-// A habbo room that hides its owner shows "-", except to its owner (decision 0045 lets fuse_see_all_roomowners see
+// A habbo room that hides its owner shows "-", except to its owner (decision server/0045 lets fuse_see_all_roomowners see
 // it too).
 func TestNavigatingAHabboRoomsCategory(t *testing.T) {
 	trader := habboWithTickets(t, "Trader", "trader")
@@ -214,7 +214,7 @@ func readCategories(t *testing.T, body string) []int32 {
 	return ids
 }
 
-// Staff's Rooms takes level 7 and Moderators Rooms level 6 (decision 0055).
+// Staff's Rooms takes level 7 and Moderators Rooms level 6 (decision server/0055).
 func TestTheCategoriesAHabboMayUse(t *testing.T) {
 	habboWithTickets(t, "Builder", "builder")
 	admin := habboWithTickets(t, "Overseer", "overseer")

@@ -1,5 +1,5 @@
 -- What a room keeps between visits: rights, bans, votes and the chat history, and the habbos' ignore lists
--- (plans/server decision 0011). The rooms themselves are navigator.schema.sql's.
+-- (decision server/0011). The rooms themselves are navigator.schema.sql's.
 
 -- A habbo with rights in a room: it moves the room's furni and answers its doorbell.
 CREATE TABLE IF NOT EXISTS room_rights (

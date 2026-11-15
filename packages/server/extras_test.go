@@ -10,7 +10,7 @@ import (
 )
 
 // A room's rating is -1 until the habbo votes, then the sum of its votes and the share of +1, which reaches everyone
-// in the room who has voted (plans/server decision 0082).
+// in the room who has voted (decision server/0082).
 func TestRatingARoom(t *testing.T) {
 	ownerID := habboWithTickets(t, "Critic", "critic")
 	habboWithTickets(t, "Rater", "rater")
@@ -80,7 +80,7 @@ func eventLine(t *testing.T, hostID int64, host string, flat int64, eventType in
 }
 
 // Only the room's owner hosts an event there, of a type 1 to 11, which the room and the navigator's list show, and
-// which ends when its host leaves (plans/server decision 0081).
+// which ends when its host leaves (decision server/0081).
 func TestHostingARoomEvent(t *testing.T) {
 	hostID := habboWithTickets(t, "Organizer", "organizer")
 	habboWithTickets(t, "Attendee", "attendee")
@@ -139,7 +139,7 @@ func TestHostingARoomEvent(t *testing.T) {
 }
 
 // A habbo shows its favourite group in its user lines, with its status in it, 1 owner, 2 admin, 3 member; the room
-// lists the groups' badges and details (plans/server decision 0068). Tags come from the site's profile.
+// lists the groups' badges and details (decision server/0068). Tags come from the site's profile.
 func TestGroupsAndTags(t *testing.T) {
 	founderID := habboWithTickets(t, "Founder", "founder")
 	officerID := habboWithTickets(t, "Officer", "officer")

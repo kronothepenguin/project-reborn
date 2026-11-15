@@ -41,7 +41,7 @@ func soldAs(d store.FurniDefinition) string {
 
 // RedeemFurni turns the credit furni id that stands in the room viewer is in back into credits
 // (CONVERT_FURNI_TO_CREDITS), and returns the new balance of viewer's user. Only the room's owner redeems, as Holo had
-// it (plans/server decision 0115). In one transaction the furni is destroyed, the wallet gets its worth and the
+// it (decision server/0115). In one transaction the furni is destroyed, the wallet gets its worth and the
 // credit history a line; then the room's copy changes and the room is told. It reports false for a furni that is not
 // redeemed.
 func RedeemFurni(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64) (int64, bool, error) {

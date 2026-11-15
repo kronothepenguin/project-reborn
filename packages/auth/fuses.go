@@ -9,9 +9,9 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
-// Fuse is a right of the R26 game client, kept by its exact name (plans/holo-port
-// decision 0015). Access groups grant fuses as they grant attributes, through the
-// same table (plans/server decision 0045).
+// Fuse is a right of the R26 game client, kept by its exact name (decision
+// holo-port/0015). Access groups grant fuses as they grant attributes, through the
+// same table (decision server/0045).
 type Fuse string
 
 const (

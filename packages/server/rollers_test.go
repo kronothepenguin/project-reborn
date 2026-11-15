@@ -8,7 +8,7 @@ import (
 )
 
 // Every 2 seconds a roller carries the furni and the habbo that stand on it one tile the way it points: onto the
-// next roller, then onto the floor, and never onto a tile that holds something (plans/server decision 0107).
+// next roller, then onto the floor, and never onto a tile that holds something (decision server/0107).
 func TestRollersCarryFurniAndHabbos(t *testing.T) {
 	owner := habboWithTickets(t, "Conveyor", "conveyor")
 	flat := newRoom(t, owner, 2, "Factory", true)

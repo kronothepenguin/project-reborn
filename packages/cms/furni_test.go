@@ -18,9 +18,9 @@ func TestTheFurniPageNeedsASession(t *testing.T) {
 }
 
 // Archiving a habbo sends the furni of its hand and of its recycler to the user's shared inventory, ends its
-// recycling and gives its rooms to the active habbo, furni in place (plans/server decision 0124). The Furni page lists
-// the shared furni a row a kind, and Take moves a kind, or all of it, to the active habbo's hand (plans/server
-// decisions 0122 and 0123).
+// recycling and gives its rooms to the active habbo, furni in place (decision server/0124). The Furni page lists
+// the shared furni a row a kind, and Take moves a kind, or all of it, to the active habbo's hand (decisions
+// server/0122 and server/0123).
 func TestArchivingSharesFurniAndTheFurniPageTakesIt(t *testing.T) {
 	db, mux := newSite(t)
 	cookie, second := habboWithSecond(t, db, mux)

@@ -335,7 +335,7 @@ type ListSharedFurniRow struct {
 }
 
 // A user's shared inventory, a row for each kind of furni: the furni that no habbo holds, no room has, no present
-// holds and no recycler keeps (plans/holo-port decision 0057). A kind goes by the name of the first catalogue item
+// holds and no recycler keeps (decision holo-port/0057). A kind goes by the name of the first catalogue item
 // that sells it alone, or by its sprite.
 func (q *Queries) ListSharedFurni(ctx context.Context, userID int64) ([]ListSharedFurniRow, error) {
 	rows, err := q.db.QueryContext(ctx, listSharedFurni, userID)
@@ -403,7 +403,7 @@ type MoveRoomFurniToHandParams struct {
 	RoomID   int64
 }
 
-// Everything that stands in the room goes to one habbo's hand, before the room goes (plans/server decision 0059).
+// Everything that stands in the room goes to one habbo's hand, before the room goes (decision server/0059).
 func (q *Queries) MoveRoomFurniToHand(ctx context.Context, arg MoveRoomFurniToHandParams) error {
 	_, err := q.db.ExecContext(ctx, moveRoomFurniToHand, arg.UserID, arg.AvatarID, arg.RoomID)
 	return err
@@ -423,8 +423,8 @@ type PickUpFurniParams struct {
 	RoomID   int64
 }
 
-// Out of the room and into the hand of the habbo that picks it up, whose user it then belongs to (plans/server
-// decision 0103).
+// Out of the room and into the hand of the habbo that picks it up, whose user it then belongs to (decision
+// server/0103).
 func (q *Queries) PickUpFurni(ctx context.Context, arg PickUpFurniParams) (int64, error) {
 	result, err := q.db.ExecContext(ctx, pickUpFurni,
 		arg.UserID,
@@ -547,7 +547,7 @@ SET avatar_id = NULL, recycler_avatar_id = NULL
 WHERE avatar_id = CAST(?1 AS INTEGER) OR recycler_avatar_id = CAST(?1 AS INTEGER)
 `
 
-// The hand of a habbo that goes, and what waits in its recycler, become shared (plans/server decision 0124).
+// The hand of a habbo that goes, and what waits in its recycler, become shared (decision server/0124).
 func (q *Queries) ShareAvatarFurni(ctx context.Context, avatarID int64) error {
 	_, err := q.db.ExecContext(ctx, shareAvatarFurni, avatarID)
 	return err
@@ -586,7 +586,7 @@ type TakeSharedFurniParams struct {
 	FurniDefinitionID int64
 }
 
-// Every shared furni of one kind goes to a habbo's hand (plans/server decision 0123).
+// Every shared furni of one kind goes to a habbo's hand (decision server/0123).
 func (q *Queries) TakeSharedFurni(ctx context.Context, arg TakeSharedFurniParams) (int64, error) {
 	result, err := q.db.ExecContext(ctx, takeSharedFurni, arg.AvatarID, arg.UserID, arg.FurniDefinitionID)
 	if err != nil {

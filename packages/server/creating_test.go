@@ -91,7 +91,7 @@ func TestCreatingARoomWithTheRoomOMatic(t *testing.T) {
 	}
 }
 
-// A habbo owns up to game.maxRoomsPerHabbo rooms (decision 0056).
+// A habbo owns up to game.maxRoomsPerHabbo rooms (decision server/0056).
 func TestTheRoomLimit(t *testing.T) {
 	setSetting(t, "game.maxRoomsPerHabbo", 1, 50)
 	habboWithTickets(t, "Hoarder", "hoarder")

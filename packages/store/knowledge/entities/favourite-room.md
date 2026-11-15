@@ -13,7 +13,7 @@ A room a habbo keeps in the navigator's favourites.
 # Invariants
 
 - It names a public room or a habbo room, never both, and each at most once.
-- A habbo keeps up to `game.maxFavouriteRooms` (`plans/server/decisions/0058-favourites-saved-up-to-30.md`).
+- A habbo keeps up to `game.maxFavouriteRooms` (`knowledge/decisions/server/0058-favourites-saved-up-to-30.md`).
 
 # Lifecycle
 

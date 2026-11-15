@@ -12,7 +12,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
 )
 
-// rollTime is how often rollers carry what stands on them (plans/server decision 0107).
+// rollTime is how often rollers carry what stands on them (decision server/0107).
 const rollTime = 2 * time.Second
 
 // FurniRolled tells a room that a roller carried what stood on it from its tile to the next: each furni from its
@@ -38,7 +38,7 @@ type RolledRider struct {
 }
 
 // roll lets every roller of the room carry what stands on it one tile the way the roller points, by the rules the
-// real hotel's rollers had (plans/server decision 0107):
+// real hotel's rollers had (decision server/0107):
 //
 //   - a roller carries the furni of one tile that stand on it, and the habbo that stands still on it, together;
 //   - the next tile must be on the floor and take what comes: no habbo on it, and no furni but a roller, onto which
@@ -46,7 +46,7 @@ type RolledRider struct {
 //   - a roller ahead moves its load first, so that a line of rollers passes a row of things along in one go;
 //   - what cannot move stays, and tries again the next time.
 //
-// Each furni's new place is saved before the room's copy changes (plans/server decision 0010).
+// Each furni's new place is saved before the room's copy changes (decision server/0010).
 func roll(ctx context.Context, db *sql.DB, r *room.Room) error {
 	return r.Furnish(func() error {
 		rollers := map[[2]int]room.Furni{}

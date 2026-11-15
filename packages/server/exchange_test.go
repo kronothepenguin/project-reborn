@@ -10,7 +10,7 @@ import (
 
 // The room's owner turns a credit furni that stands in the room back into credits: the furni goes, the wallet gets
 // its worth, read from its name, and the credit history a line. Nobody else redeems, and no other furni is redeemed
-// (plans/server decision 0115).
+// (decision server/0115).
 func TestRedeemingCreditFurni(t *testing.T) {
 	ownerID := habboWithTickets(t, "Banker", "banker")
 	habboWithTickets(t, "Cashier", "cashier")

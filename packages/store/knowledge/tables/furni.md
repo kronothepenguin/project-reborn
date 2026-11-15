@@ -38,7 +38,7 @@ timestamp: 2026-11-11T16:24:23+00:00
 
 - A habbo that goes leaves its hand to the shared inventory, and a room that goes leaves its furni there too: both keys
   set null. The game server moves a deleted room's furni to its owner's hand first
-  (`plans/server/decisions/0059-a-deleted-rooms-furni-goes-to-its-owner.md`).
+  (`knowledge/decisions/server/0059-a-deleted-rooms-furni-goes-to-its-owner.md`).
 - The place of a furni that stands in no room means nothing.
 
 # Related

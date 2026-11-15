@@ -86,12 +86,12 @@ var taken = map[string][]string{
 // specialFolders compile as Go package names but not as the folders a project
 // makes: only code under packages may import packages/internal, the go tool
 // reads packages/vendor as vendored code, and ./... skips folders named
-// testdata, so a backend's gates would fail.
+// testdata, so a backend's make check would fail.
 var specialFolders = []string{"internal", "testdata", "vendor"}
 
 // validateName refuses a name the folders cannot hold and, in a template with
-// Go, a name whose Go package cannot compile there (plans/server decision
-// 0025) or whose folders the go tool treats specially (0026).
+// Go, a name whose Go package cannot compile there (decision
+// server/0025) or whose folders the go tool treats specially (0026).
 func validateName(kind, name string) error {
 	if name == "" {
 		return errors.New("name is required")

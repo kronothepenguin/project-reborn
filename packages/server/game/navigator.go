@@ -52,7 +52,7 @@ type Browsed struct {
 
 // Browse returns what viewer sees of categoryID, without the full rooms when hideFull, and false for a category that
 // does not exist or that hides itself from the viewer's level. A category lists at most game.categoryMaxRooms habbo
-// rooms (plans/server decision 0061), the busiest first.
+// rooms (decision server/0061), the busiest first.
 func Browse(ctx context.Context, db *sql.DB, viewer habbo.Habbo, categoryID int64, hideFull bool) (Browsed, bool, error) {
 	c, ok := category.Get(categoryID)
 	if !ok {
@@ -141,7 +141,7 @@ func listCategory(ctx context.Context, q *store.Queries, c store.RoomCategory) (
 }
 
 // listFlat lists a habbo room for viewer, who sees a hidden owner when it is that owner or holds
-// fuse_see_all_roomowners (plans/server decision 0045).
+// fuse_see_all_roomowners (decision server/0045).
 func listFlat(viewer habbo.Habbo, r store.GetRoomRow) FlatListing {
 	owner := r.OwnerName
 	if !r.ShowOwner && r.OwnerAvatarID != viewer.ID && !seesHiddenOwners(viewer) {

@@ -19,7 +19,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
-// The rules of a habbo's rooms (plans/server decision 0056), and the description's size, that of Holo's column.
+// The rules of a habbo's rooms (decision server/0056), and the description's size, that of Holo's column.
 const (
 	maxRoomName        = 50
 	maxRoomDescription = 125
@@ -117,7 +117,7 @@ type RoomSettings struct {
 }
 
 // SetRoomSettings changes viewer's room. A description loses its control characters and is cut at 125 characters, as
-// Holo's column cut it; a password of 1 to 32 characters is stored hashed (plans/server decision 0062); the visitors
+// Holo's column cut it; a password of 1 to 32 characters is stored hashed (decision server/0062); the visitors
 // are 10 to 25.
 func SetRoomSettings(ctx context.Context, db *sql.DB, viewer habbo.Habbo, roomID int64, change RoomSettings) error {
 	if change.Password != nil && !inRange(utf8.RuneCountInString(*change.Password), 1, maxRoomPassword) ||
@@ -263,8 +263,8 @@ func UpdateRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo, roomID int6
 }
 
 // DeleteRoom deletes viewer's room and the favourites that name it, and sends the habbos in it out, as Holo did. The
-// furni that stands in it goes to the owner's hand first, in the same transaction, whoever placed it (plans/server
-// decisions 0059 and 0103).
+// furni that stands in it goes to the owner's hand first, in the same transaction, whoever placed it (decisions
+// server/0059 and server/0103).
 func DeleteRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo, roomID int64) error {
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {

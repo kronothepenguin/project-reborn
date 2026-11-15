@@ -1,10 +1,15 @@
-.PHONY: install generate check-docs test
+.PHONY: install generate check-generated check-docs
 
 install:
 	go mod download
 
 generate:
 	go tool sqlc generate
+
+check: check-generated check-docs
+
+check-generated: generate
+	git diff --exit-code -- db.go models.go '*.query.sql.go'
 
 check-docs:
 	@status=0; \
@@ -16,5 +21,4 @@ check-docs:
 	done; \
 	exit $$status
 
-test:
-	go vet ./... && go test ./... -race
+include ../../make/check.mk

@@ -14,7 +14,7 @@ import (
 )
 
 // olderConfigJSON stands in for the config.json of an older release: it lacks
-// cms.host and the proxy and server sections, and holds a key that nothing reads
+// cms.host and the proxy, server and reborn sections, and holds a key that nothing reads
 // any more.
 const olderConfigJSON = `{
   "store": {"path": "habbo.db"},
@@ -41,10 +41,12 @@ func useOlderConfig(t *testing.T) {
 	}
 }
 
-// serverKeys fills the server section, which olderConfigJSON lacks, in a form.
+// serverKeys fills the server and reborn sections, which olderConfigJSON lacks,
+// in a form.
 var serverKeys = url.Values{
 	"key.server.info.host": {"localhost"}, "key.server.info.port": {"31000"},
 	"key.server.mus.host": {"localhost"}, "key.server.mus.port": {"31001"},
+	"key.reborn.host": {"localhost"}, "key.reborn.port": {"16416"},
 }
 
 func readConfig(t *testing.T) map[string]any {
@@ -67,7 +69,7 @@ func TestTheUpdatePageOffersConfigJsonsNewKeys(t *testing.T) {
 
 	wantPage(t, serve(mux, "GET", "/housekeeping/updates", keeper, nil), http.StatusOK,
 		html.EscapeString(`NewKeys:[{Path:cms.host Value:localhost} {Path:proxy.enabled Value:false} {Path:proxy.trusted Value:["127.0.0.1","::1"]} `+
-			`{Path:server.info.host Value:localhost} {Path:server.info.port Value:30000} {Path:server.mus.host Value:localhost} `+
+			`{Path:reborn.host Value:localhost} {Path:reborn.port Value:16416} {Path:server.info.host Value:localhost} {Path:server.info.port Value:30000} {Path:server.mus.host Value:localhost} `+
 			`{Path:server.mus.port Value:30001}] OldKeys:[{Path:theme Value:"dark"}]`))
 }
 
@@ -92,7 +94,7 @@ func TestSavingConfigJsonWritesTheNewKeys(t *testing.T) {
 		t.Errorf("config.json holds server %v", server)
 	}
 	logs := staffLogs(t, db)
-	if len(logs) != 1 || logs[0].Action != "config.update" || logs[0].Detail != "added cms.host, proxy.enabled, proxy.trusted, server.info.host, server.info.port, server.mus.host, server.mus.port; removed theme" {
+	if len(logs) != 1 || logs[0].Action != "config.update" || logs[0].Detail != "added cms.host, proxy.enabled, proxy.trusted, reborn.host, reborn.port, server.info.host, server.info.port, server.mus.host, server.mus.port; removed theme" {
 		t.Errorf("staff logs = %+v", logs)
 	}
 	wantPage(t, serve(mux, "GET", "/housekeeping/updates?config=1", keeper, nil), http.StatusOK,

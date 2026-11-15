@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-// Holo's catalogue, as the update 0013-catalogue.sql seeds it (plans/server decisions 0091, 0097 and 0099 to 0102).
+// Holo's catalogue, as the update 0013-catalogue.sql seeds it (decisions server/0091, server/0097 and server/0099 to 0102).
 func TestANewDatabaseHasHolosCatalogue(t *testing.T) {
 	db := openTestDB(t)
 	q := New(db)
@@ -127,7 +127,7 @@ func TestANewDatabaseHasHolosCatalogue(t *testing.T) {
 		}
 	}
 	if rollers != 10 || definition[465].Kind != "roller" || definition[465].Height != 0.5 {
-		t.Errorf("%d rollers, and the White Habbo Roller is %+v; want Holo's ten, half a tile high (plans/server decision 0107)", rollers, definition[465])
+		t.Errorf("%d rollers, and the White Habbo Roller is %+v; want Holo's ten, half a tile high (decision server/0107)", rollers, definition[465])
 	}
 
 	throne := slices.IndexFunc(items, func(i CatalogueItem) bool { return i.Name == "Throne" })

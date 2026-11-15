@@ -11,7 +11,7 @@ import (
 // SSOTicket returns the SSO ticket the request's session holds for its active
 // habbo, making one when it holds none: the game server spends a ticket at login,
 // and a switch of habbo drops it. A ticket is kept as text, so the client page can
-// show it, and dies with its session (plans/server decision 0030).
+// show it, and dies with its session (decision server/0030).
 func SSOTicket(r *http.Request, db *sql.DB) (string, error) {
 	session, ok := FromContext(r.Context())
 	if !ok {

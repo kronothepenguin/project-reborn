@@ -27,7 +27,7 @@ motto. A user can own several habbos, which share the user's wallet, club member
   lists and the limit of `registration.maxHabbosPerUser`, and keeps its rows and its name. The stickers and notes on its
   home go back to the user's inventory, notes without their text. The furni in its hand and in its recycler goes to
   the user's shared inventory, its recycling ends, and its rooms become the active habbo's
-  (`plans/server/decisions/0124-an-archived-habbos-rooms-move-to-the-active-habbo.md`).
+  (`knowledge/decisions/server/0124-an-archived-habbos-rooms-move-to-the-active-habbo.md`).
 - The game server writes its last time online at each login and logout, the machine id of each login, and its sound
   setting when the game client changes it.
 - Deleting a habbo deletes its badges, outfits, the sessions where it is active and its SSO tickets, and clears it

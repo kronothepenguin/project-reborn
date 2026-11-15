@@ -9,8 +9,8 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 )
 
-// SetSoundEnabled saves the sound setting of avatarID, then that of its online copy while s plays it (plans/server
-// decisions 0038 and 0053).
+// SetSoundEnabled saves the sound setting of avatarID, then that of its online copy while s plays it (decisions
+// server/0038 and server/0053).
 func SetSoundEnabled(ctx context.Context, db *sql.DB, s Session, avatarID int64, on bool) error {
 	err := store.New(db).SetAvatarSoundEnabled(ctx, store.SetAvatarSoundEnabledParams{AvatarID: avatarID, SoundEnabled: on})
 	if err != nil {

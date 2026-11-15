@@ -8,8 +8,8 @@ timestamp: 2026-11-03T21:02:31+00:00
 
 # Status
 
-Nothing is planned from this page. Every waiting update closes the hotel, as decision 0069 of the port says
-(`plans/holo-port/decisions/0069-waiting-updates-close-the-hotel.md`). The page keeps the discussion for when it comes
+Nothing is planned from this page. Every waiting update closes the hotel, as decision holo-port/0069 says
+(`knowledge/decisions/holo-port/0069-waiting-updates-close-the-hotel.md`). The page keeps the discussion for when it comes
 back.
 
 # The question

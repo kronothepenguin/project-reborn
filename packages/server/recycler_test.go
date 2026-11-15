@@ -47,7 +47,7 @@ func confirm(t *testing.T, c *client, take int32) string {
 
 // A habbo in a room gives the recycler as many old, recyclable furni of its hand as a reward takes. The furni wait in
 // the store, the time counts from the saved start, and the habbo takes the reward once it is ready, or its furni back
-// once it waited too long (plans/server decisions 0093, 0116, 0117 and 0118).
+// once it waited too long (decisions server/0093, server/0116, server/0117 and server/0118).
 func TestRecycling(t *testing.T) {
 	me := habboWithTickets(t, "Ecologist", "ecologist")
 	flat := newRoom(t, me, 2, "Compost", true)

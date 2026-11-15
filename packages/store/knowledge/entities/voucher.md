@@ -16,13 +16,13 @@ the purse of the credits page, which adds its credits to the user's shared [wall
 
 - The code is unique ignoring case, and redeeming and deleting match it ignoring case.
 - A voucher is worth more than 0 credits, or one [furni definition](/entities/furni-definition.md), never both: an
-  item voucher has 0 credits (`plans/server/decisions/0120-an-item-voucher-gives-the-first-furni-of-its-sprite.md`).
+  item voucher has 0 credits (`knowledge/decisions/server/0120-an-item-voucher-gives-the-first-furni-of-its-sprite.md`).
 - A voucher is redeemed at most once: one statement claims an unused code and returns its credits, so of two
   redemptions of one code only the first finds it unused.
 - Redeeming claims the voucher, adds its credits to the wallet and writes a `voucher` ledger row in one transaction.
   An item voucher creates its furni there, as a purchase gives it, and its ledger row holds 0 credits
-  (`plans/server/decisions/0121-an-item-voucher-leaves-a-line-of-no-credits.md`,
-  `plans/server/decisions/0125-an-item-voucher-gives-what-buying-gives.md`).
+  (`knowledge/decisions/server/0121-an-item-voucher-leaves-a-line-of-no-credits.md`,
+  `knowledge/decisions/server/0125-an-item-voucher-gives-what-buying-gives.md`).
 
 # Lifecycle
 

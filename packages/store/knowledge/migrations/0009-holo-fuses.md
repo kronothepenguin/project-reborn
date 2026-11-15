@@ -18,7 +18,7 @@ Adds rows to [access_group_attributes](/tables/access_group_attributes.md) for t
 `packages/auth`, keeping the rows already there. Each fuse goes to every group whose level reaches the `minrank` it has
 in `system_fuserights` of Holo's newest dump, `source/holoemu/database.sql`, since a group's level is Holo's rank
 number; the fuses that dump does not rank go to level 7
-(`plans/server/decisions/0046-the-first-fuses-follow-holos-ranks.md`).
+(`knowledge/decisions/server/0046-the-first-fuses-follow-holos-ranks.md`).
 
 | Level | Fuses it adds |
 |---|---|

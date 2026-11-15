@@ -10,8 +10,8 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 )
 
-// CataloguePages returns the catalogue's pages that viewer sees, in the catalogue's order (plans/server decision
-// 0100).
+// CataloguePages returns the catalogue's pages that viewer sees, in the catalogue's order (decision
+// server/0100).
 func CataloguePages(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]catalogue.Page, error) {
 	level, member, err := levelAndClub(ctx, db, viewer.UserID)
 	if err != nil {

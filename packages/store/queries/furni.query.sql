@@ -33,15 +33,15 @@ UPDATE furni
 SET x = sqlc.arg(x), y = sqlc.arg(y), altitude = sqlc.arg(altitude), direction = sqlc.arg(direction)
 WHERE id = sqlc.arg(id) AND room_id = CAST(sqlc.arg(room_id) AS INTEGER);
 
--- Out of the room and into the hand of the habbo that picks it up, whose user it then belongs to (plans/server
--- decision 0103).
+-- Out of the room and into the hand of the habbo that picks it up, whose user it then belongs to (decision
+-- server/0103).
 -- name: PickUpFurni :execrows
 UPDATE furni
 SET user_id = sqlc.arg(user_id), avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER), room_id = NULL,
     x = 0, y = 0, altitude = 0, direction = 0, wall_position = ''
 WHERE id = sqlc.arg(id) AND room_id = CAST(sqlc.arg(room_id) AS INTEGER);
 
--- Everything that stands in the room goes to one habbo's hand, before the room goes (plans/server decision 0059).
+-- Everything that stands in the room goes to one habbo's hand, before the room goes (decision server/0059).
 -- name: MoveRoomFurniToHand :exec
 UPDATE furni
 SET user_id = sqlc.arg(user_id), avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER), room_id = NULL,
@@ -96,7 +96,7 @@ SET user_id = sqlc.arg(user_id), avatar_id = CAST(sqlc.arg(to_avatar_id) AS INTE
 WHERE id = sqlc.arg(id) AND avatar_id = CAST(sqlc.arg(from_avatar_id) AS INTEGER);
 
 -- A user's shared inventory, a row for each kind of furni: the furni that no habbo holds, no room has, no present
--- holds and no recycler keeps (plans/holo-port decision 0057). A kind goes by the name of the first catalogue item
+-- holds and no recycler keeps (decision holo-port/0057). A kind goes by the name of the first catalogue item
 -- that sells it alone, or by its sprite.
 -- name: ListSharedFurni :many
 SELECT
@@ -120,7 +120,7 @@ WHERE furni.user_id = sqlc.arg(user_id)
 GROUP BY furni.furni_definition_id
 ORDER BY name, furni.furni_definition_id;
 
--- Every shared furni of one kind goes to a habbo's hand (plans/server decision 0123).
+-- Every shared furni of one kind goes to a habbo's hand (decision server/0123).
 -- name: TakeSharedFurni :execrows
 UPDATE furni
 SET avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER)
@@ -133,7 +133,7 @@ SET avatar_id = CAST(sqlc.arg(avatar_id) AS INTEGER)
 WHERE user_id = sqlc.arg(user_id)
     AND avatar_id IS NULL AND room_id IS NULL AND box_furni_id IS NULL AND recycler_avatar_id IS NULL;
 
--- The hand of a habbo that goes, and what waits in its recycler, become shared (plans/server decision 0124).
+-- The hand of a habbo that goes, and what waits in its recycler, become shared (decision server/0124).
 -- name: ShareAvatarFurni :exec
 UPDATE furni
 SET avatar_id = NULL, recycler_avatar_id = NULL

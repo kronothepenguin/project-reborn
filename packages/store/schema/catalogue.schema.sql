@@ -1,4 +1,4 @@
--- The catalogue: what each furni is, the catalogue's pages and what they sell (plans/server decisions 0091 and 0097).
+-- The catalogue: what each furni is, the catalogue's pages and what they sell (decisions server/0091 and server/0097).
 
 -- What a furni is. sprite names its class to the client, which reads a variant after a *. kind says where it stands:
 -- on a wall, or on the floor as a solid, a seat, a bed, a rug or a roller, which carries what stands on it. length,

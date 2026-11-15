@@ -10,7 +10,7 @@ timestamp: 2026-11-11T16:24:23+00:00
 
 A piece of furni is one thing a habbo bought, was given or took: a chair, a poster. What it is comes from its
 [definition](/entities/furni-definition.md). It belongs to a user, and it is in one of three places
-(`plans/holo-port/decisions/0057-furni-and-rooms.md`):
+(`knowledge/decisions/holo-port/0057-furni-and-rooms.md`):
 
 | Place | `avatar_id` | `room_id` |
 |-------|-------------|-----------|
@@ -25,29 +25,29 @@ A piece of furni is one thing a habbo bought, was given or took: a chair, a post
 - A furni that waits in a present names its box, `box_furni_id`, and is in no hand and no room until the box is
   opened; one with no habbo, no room and no box is in the shared inventory.
 - The hand lives only here: the game server keeps no copy, and reads it each time
-  (`plans/server/decisions/0096-the-hand-is-read-from-the-database.md`).
+  (`knowledge/decisions/server/0096-the-hand-is-read-from-the-database.md`).
 - A hand lists its furni the oldest first, by id.
 
 # Lifecycle
 
 - Created in a hand, or with no habbo in the shared inventory.
 - Placing takes it from a hand into a room, and picking up from a room into the hand of the habbo that picks it up,
-  whose user it then belongs to, whoever placed it (`plans/server/decisions/0103-whoever-picks-a-furni-up-keeps-it.md`).
+  whose user it then belongs to, whoever placed it (`knowledge/decisions/server/0103-whoever-picks-a-furni-up-keeps-it.md`).
   A deleted room's furni goes to its owner's hand the same way.
 - A pad of post-its is never placed: each of its notes becomes a furni of its own on a wall, and the pad, which
   counts its notes in its state, goes with the last. A post-it is never picked up, only deleted, and its text is in
   [furni_notes](/tables/furni_notes.md).
 - A trade moves it from one habbo's hand to another's, whose user it then belongs to, every piece of the trade in
-  one transaction (`plans/server/decisions/0092-a-trade-lives-only-in-memory.md`).
+  one transaction (`knowledge/decisions/server/0092-a-trade-lives-only-in-memory.md`).
 - A [recycling](/entities/recycling.md) takes it out of the hand to wait in the recycler, and ends by destroying it
   or giving it back.
 - A furni that no habbo holds, no room has, no present holds and no recycler keeps is shared: the account page
   Furni lists it, and Take moves a kind of it, or all of it, to the active habbo's hand, one way
-  (`plans/server/decisions/0122-the-shared-inventory-is-an-account-page.md`,
-  `plans/server/decisions/0123-take-moves-a-kind-of-furni-or-all.md`). Archiving a habbo shares the furni of its hand
+  (`knowledge/decisions/server/0122-the-shared-inventory-is-an-account-page.md`,
+  `knowledge/decisions/server/0123-take-moves-a-kind-of-furni-or-all.md`). Archiving a habbo shares the furni of its hand
   and of its recycler.
-- Trading and the site's Take move it between hands; the tasks of `plans/server/phases/s5-furni-catalogue.md` bring
-  them.
+- Trading and the site's Take move it between hands; the tasks of the server plan's phase S5, furni and
+  catalogue, bring them.
 
 # Relations
 
@@ -55,7 +55,7 @@ A piece of furni is one thing a habbo bought, was given or took: a chair, a post
 - Belongs to a [user](/entities/user.md); held by a [habbo](/entities/habbo.md) or standing in a
   [room](/entities/room.md).
 - A teleport names the other teleport of its pair, which names it back. The two are bought together and stay a pair
-  whoever holds either (`plans/server/decisions/0111-a-teleport-keeps-its-partner.md`).
+  whoever holds either (`knowledge/decisions/server/0111-a-teleport-keeps-its-partner.md`).
 
 # Tables
 

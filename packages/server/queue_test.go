@@ -10,7 +10,7 @@ import (
 )
 
 // queueData writes 259 as the server sends it: the habbo's own set first, each with its club line and its own, and
-// how many of each come in before the habbo (plans/server decision 0090).
+// how many of each come in before the habbo (decision server/0090).
 func queueData(t *testing.T, own string, ownClub, ownOthers int32, other string, otherClub, otherOthers int32) string {
 	t.Helper()
 	targets := map[string]int32{"room": 1, "spectators": 2}
@@ -21,7 +21,7 @@ func queueData(t *testing.T, own string, ownClub, ownOthers int32, other string,
 }
 
 // A full room queues its arrivals; a place that frees lets the first one in, and a habbo in line can switch to watch
-// as a spectator, who sees the room and its chat until the room empties (plans/server decisions 0087 and 0089).
+// as a spectator, who sees the room and its chat until the room empties (decisions server/0087 and server/0089).
 func TestAFullRoomQueuesAndTakesSpectators(t *testing.T) {
 	ownerID := habboWithTickets(t, "Gatekeeper", "gatekeeper")
 	sitterID := habboWithTickets(t, "Sitter", "sitter")
@@ -86,7 +86,7 @@ func TestAFullRoomQueuesAndTakesSpectators(t *testing.T) {
 }
 
 // Club members come first in a queue: the next turn is the first club member's, and a club member has nobody but club
-// members ahead (plans/server decision 0088).
+// members ahead (decision server/0088).
 func TestClubMembersComeFirstInAQueue(t *testing.T) {
 	library, _ := room.Public(104)
 	ref := room.Ref{Public: true, ID: 104}

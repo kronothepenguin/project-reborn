@@ -23,7 +23,7 @@ placing an item on a home takes it out again.
 - The update [0002-home-store.sql](/migrations/0002-home-store.md) writes Holo's categories and items with Holo's ids, keeping rows already there; housekeeping adds and edits items.
 - A purchase debits the wallet, writes a `store` ledger row and adds to the inventory in one transaction.
 - A background is bought once and stays in the inventory, however many homes show it
-  ([0064](/decisions/0064-backgrounds-are-unlocks.md)).
+  (`knowledge/decisions/holo-port/0064-backgrounds-are-unlocks.md`).
 
 # Vocabularies
 

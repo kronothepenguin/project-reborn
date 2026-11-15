@@ -28,7 +28,7 @@ const (
 )
 
 // Chat tells a habbo a line said in its room: the speaker's index and the text, empty for a chat too far away to
-// read (plans/server decision 0074).
+// read (decision server/0074).
 type Chat struct {
 	Index int
 	Kind  ChatKind
@@ -41,7 +41,7 @@ type Typing struct {
 	On    bool
 }
 
-// The timed statuses of plans/server decision 0075.
+// The timed statuses of decision server/0075.
 const (
 	gestureTime = 5 * time.Second
 	waveTime    = 1500 * time.Millisecond
@@ -60,7 +60,7 @@ var gestures = []struct {
 }
 
 // Say says text in the habbo's room (CHAT): those within game.chatRange tiles each way read it, and the others see a
-// bubble without the words (plans/server decision 0074).
+// bubble without the words (decision server/0074).
 func Say(ctx context.Context, db *sql.DB, viewer habbo.Habbo, text string) error {
 	return speak(ctx, db, viewer, ChatSay, "", text)
 }
@@ -76,8 +76,8 @@ func Whisper(ctx context.Context, db *sql.DB, viewer habbo.Habbo, to, text strin
 	return speak(ctx, db, viewer, ChatWhisper, to, text)
 }
 
-// speak cuts the line at game.chatMaxLength characters (plans/server decision 0078), saves it for staff (plans/server
-// decision 0066), shows the speaker talking, and a smiley's face for a chat or a shout (plans/server decision 0075),
+// speak cuts the line at game.chatMaxLength characters (decision server/0078), saves it for staff (decision
+// server/0066), shows the speaker talking, and a smiley's face for a chat or a shout (decision server/0075),
 // ends its typing, and sends the line to those who read it. A habbo never gets the lines of a habbo it ignores.
 func speak(ctx context.Context, db *sql.DB, viewer habbo.Habbo, kind ChatKind, to, text string) error {
 	r, ok := room.In(viewer.ID)
@@ -136,7 +136,7 @@ func speak(ctx context.Context, db *sql.DB, viewer habbo.Habbo, kind ChatKind, t
 		}
 		o.Session.Notify(line)
 	}
-	// Spectators watch the whole room, so they read every chat and shout (plans/server decision 0089).
+	// Spectators watch the whole room, so they read every chat and shout (decision server/0089).
 	if kind != ChatWhisper {
 		for _, w := range r.Waiting(room.Spectators) {
 			if listener, ok := habbo.Get(w.AvatarID); ok && !slices.Contains(listener.Ignored, viewer.ID) {
@@ -238,8 +238,8 @@ func StopDancing(viewer habbo.Habbo) {
 	})
 }
 
-// Wave makes the habbo wave for 1.5 s, which stops its dance (WAVE), unless it waves already (plans/server decision
-// 0075).
+// Wave makes the habbo wave for 1.5 s, which stops its dance (WAVE), unless it waves already (decision
+// server/0075).
 func Wave(viewer habbo.Habbo) {
 	until := time.Now().Add(waveTime)
 	changeStatuses(viewer, func(o *room.Occupant) {
@@ -272,7 +272,7 @@ const (
 )
 
 // Ignore puts the habbo name on the viewer's ignore list (IGNOREUSER), whose lines the viewer no longer gets. A list
-// that holds game.maxIgnoredHabbos habbos drops its oldest first (plans/server decision 0076). Nobody ignores itself,
+// that holds game.maxIgnoredHabbos habbos drops its oldest first (decision server/0076). Nobody ignores itself,
 // or a habbo that does not exist.
 func Ignore(ctx context.Context, db *sql.DB, viewer habbo.Habbo, name string) (IgnoreResult, error) {
 	q := store.New(db)
@@ -358,8 +358,8 @@ func IgnoreList(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]string, 
 	return names, nil
 }
 
-// PruneChat deletes the lines of the chat history older than game.chatHistoryDays at now (plans/server decisions 0066
-// and 0084), and logs how many went.
+// PruneChat deletes the lines of the chat history older than game.chatHistoryDays at now (decisions server/0066
+// and server/0084), and logs how many went.
 func PruneChat(ctx context.Context, db *sql.DB, now time.Time) error {
 	days := settings.GetIntOr("game.chatHistoryDays", 30)
 	n, err := store.New(db).DeleteChatMessagesBefore(ctx, now.UTC().AddDate(0, 0, -days))

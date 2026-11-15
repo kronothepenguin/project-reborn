@@ -30,8 +30,8 @@ func IsDecoration(sprite string) bool { return slices.Contains(decorations, spri
 func IsPostIt(sprite string) bool { return strings.HasPrefix(sprite, "post.it") }
 
 // Create creates what a habbo gets for one furni of the sprite, as a purchase, a voucher or any other gift gives it
-// (plans/server decision 0125): piece as it is for most furni; a pad of post-its with its notes when piece has no
-// state; and a teleport with the other of its pair, the two naming each other (plans/server decision 0111). q writes
+// (decision server/0125): piece as it is for most furni; a pad of post-its with its notes when piece has no
+// state; and a teleport with the other of its pair, the two naming each other (decision server/0111). q writes
 // them, inside the caller's transaction.
 func Create(ctx context.Context, q *store.Queries, sprite string, piece store.CreateFurniParams) error {
 	if piece.State == "" && IsPostIt(sprite) {

@@ -18,7 +18,7 @@ func trade(me, meAccepted, meItems, other, otherAccepted, otherItems string) str
 
 // Two habbos in a room offer furni from their hands and accept; when both have, every furni changes hands at once.
 // A furni on offer is locked in its hand, a furni that is not tradeable is never offered, and adding a furni takes
-// the accepts away (plans/server decisions 0092, 0113 and 0114).
+// the accepts away (decisions server/0092, server/0113 and server/0114).
 func TestTrading(t *testing.T) {
 	merchantID := habboWithTickets(t, "Merchant", "merchant")
 	hagglerID := habboWithTickets(t, "Haggler", "haggler")

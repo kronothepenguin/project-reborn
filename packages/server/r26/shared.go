@@ -2,7 +2,7 @@ package r26
 
 import "time"
 
-// serverDate is hh_shared's message with the server's date (plans/server/reference/r26/hh_shared.md).
+// serverDate is hh_shared's message with the server's date (packages/server/knowledge/r26/hh_shared.md).
 const serverDate = 163
 
 // sharedHandlers handles hh_shared's commands.

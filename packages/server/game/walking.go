@@ -13,16 +13,16 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
 )
 
-// stepTime is how long a step takes: the time the client's Human class animates one (plans/server decision 0065).
+// stepTime is how long a step takes: the time the client's Human class animates one (decision server/0065).
 const stepTime = 500 * time.Millisecond
 
 // Statuses tells the habbos in a room the statuses that changed on one tick of its clock, in one message.
 type Statuses struct{ Occupants []room.Occupant }
 
-// startClock runs a loaded room's clock until the room unloads (plans/server decision 0072): every stepTime, the
-// statuses whose time is up end (plans/server decision 0075), each habbo that carries a drink sips it in its time,
+// startClock runs a loaded room's clock until the room unloads (decision server/0072): every stepTime, the
+// statuses whose time is up end (decision server/0075), each habbo that carries a drink sips it in its time,
 // each walking habbo takes a step, and the statuses that changed go to the room in one message. Every rollTime, the
-// room's rollers carry what stands on them (plans/server decision 0107).
+// room's rollers carry what stands on them (decision server/0107).
 func startClock(db *sql.DB, r *room.Room) {
 	go func() {
 		t := time.NewTicker(stepTime)
@@ -71,7 +71,7 @@ func tick(r *room.Room) {
 	if len(sent) > 0 {
 		broadcast(r, Statuses{Occupants: sent})
 	}
-	// A kicked habbo that stopped, at the door or with no way to it, leaves the room there (plans/server decision 0079).
+	// A kicked habbo that stopped, at the door or with no way to it, leaves the room there (decision server/0079).
 	for _, o := range leaving {
 		o.Session.Notify(Kicked{})
 		LeaveRoom(o.AvatarID, o.Session)

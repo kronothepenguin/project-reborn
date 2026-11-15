@@ -1,5 +1,5 @@
 // Package category holds the navigator's categories, which every player shares: loaded when the server starts, and
-// kept (plans/server decisions 0009 and 0060).
+// kept (decisions server/0009 and server/0060).
 package category
 
 import (

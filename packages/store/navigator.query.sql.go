@@ -658,8 +658,8 @@ type MoveRoomsToAvatarParams struct {
 	FromAvatarID int64
 }
 
-// The rooms of a habbo that goes are another habbo's, their furni in place and their creator kept (plans/server
-// decision 0124).
+// The rooms of a habbo that goes are another habbo's, their furni in place and their creator kept (decision
+// server/0124).
 func (q *Queries) MoveRoomsToAvatar(ctx context.Context, arg MoveRoomsToAvatarParams) error {
 	_, err := q.db.ExecContext(ctx, moveRoomsToAvatar, arg.ToAvatarID, arg.UpdatedAt, arg.FromAvatarID)
 	return err

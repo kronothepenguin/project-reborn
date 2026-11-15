@@ -1,10 +1,12 @@
 # server — app runner
 
-Thin runner for `packages/server`. The app code (a Go struct, without a
-frontend) lives entirely in the package; this module only serves it.
+Thin runner for `packages/server`, the game server. The app code lives entirely
+in the package; this module only serves it.
 
-| cmd               | mode                       |
-| ----------------- | -------------------------- |
+How it works: `packages/server/knowledge/index.md` and `knowledge/programs.md`.
+
+| cmd            | mode                       |
+| -------------- | -------------------------- |
 | `./cmd/server` | production and development |
 
 ## Port
@@ -18,6 +20,7 @@ frontend) lives entirely in the package; this module only serves it.
 ```sh
 make install    # once: this project's folders and dependencies
 make dev        # air hot reload → ws://localhost:30000 and ws://localhost:30001
+make check      # checks the formatting, vets and builds the runner
 ```
 
 ## Production
@@ -27,12 +30,3 @@ cd ../..
 go build -o ./apps/server/tmp/server ./apps/server/cmd/server
 ./apps/server/tmp/server   # → ws://localhost:30000 and ws://localhost:30001, reads ./config.json
 ```
-
-## Dev-mode notes
-
-- `make dev` starts air from the repository root, so the runner reads and
-  writes the root `config.json`.
-- Air watches the `.go` files of `apps/server`, `packages/server` and the
-  packages it imports (`config`, `store`), and rebuilds the runner on Go changes.
-- The runner opens the database with `store.FromConfig()`, which creates it when
-  it does not exist.

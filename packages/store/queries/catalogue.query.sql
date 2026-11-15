@@ -16,8 +16,8 @@ SELECT * FROM catalogue_item_furni ORDER BY catalogue_item_id, furni_definition_
 -- name: GetFurniDefinition :one
 SELECT * FROM furni_definitions WHERE id = sqlc.arg(id);
 
--- Of the definitions that share a sprite, the one with the lowest id, as Holo took the first (plans/server decision
--- 0120).
+-- Of the definitions that share a sprite, the one with the lowest id, as Holo took the first (decision
+-- server/0120).
 -- name: GetFurniDefinitionBySprite :one
 SELECT * FROM furni_definitions WHERE sprite = sqlc.arg(sprite) ORDER BY id LIMIT 1;
 

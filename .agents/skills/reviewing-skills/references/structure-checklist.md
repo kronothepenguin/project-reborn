@@ -1,8 +1,6 @@
 # Structure checklist
 
-Sources: agentskills.io best practices; Claude platform agent-skills best practices.
-
-Items the validator (`scripts/validate_skill.py`) cannot decide mechanically. Run the validator first; do not duplicate its errors here.
+Frontmatter, naming, description and layout. Run the validator first and report its findings once.
 
 ## Contents
 
@@ -15,56 +13,52 @@ Items the validator (`scripts/validate_skill.py`) cannot decide mechanically. Ru
 
 ## Frontmatter
 
-- [ ] `SKILL.md` starts with YAML frontmatter.
-- [ ] Only documented fields are used (`name`, `description`); no app-specific metadata is required by the runtime.
-- [ ] Frontmatter parses cleanly; no tabs, unquoted colons, or broken block scalars.
+- [ ] `SKILL.md` starts with YAML frontmatter on its first line, and the YAML parses.
+- [ ] Spec fields: `name` and `description` (required), `license`, `compatibility` (up to 500 chars), `metadata` (a
+      map of strings), `allowed-tools` (experimental).
+- [ ] Claude Code fields (`when_to_use`, `argument-hint`, `disable-model-invocation`, `user-invocable`, `context`,
+      `agent`, `paths` and the rest) appear only in skills used by Claude Code. Uploads to claude.ai or the API accept
+      the spec fields only.
+- [ ] `compatibility` appears only for real environment needs: product, system packages, network.
 
 ## Name
 
-- [ ] At most 64 characters, lowercase letters, numbers, and hyphens only.
-- [ ] Contains no XML tags.
-- [ ] Contains no reserved words (`anthropic`, `claude`).
-- [ ] Matches the skill directory name.
-- [ ] Uses the gerund form (`processing-pdfs`) or another recognized pattern (`pdf-processing`, `process-pdfs`).
-- [ ] Is specific: no `helper`, `utils`, `tools`.
-- [ ] Is not overly generic: no `documents`, `data`, `files`.
-- [ ] Follows the same naming pattern as the rest of the collection.
+- [ ] 1–64 characters: lowercase letters, numbers and single hyphens, with a letter or number at each end.
+- [ ] Equals the directory name.
+- [ ] Free of XML tags and of the reserved words `anthropic` and `claude`.
+- [ ] Gerund form (`processing-pdfs`) or another clear pattern (`pdf-processing`, `process-pdfs`), the same pattern
+      across the collection.
+- [ ] Specific: a named activity, in place of `helper`, `utils`, `tools`, `documents`, `data` or `files`.
 
 ## Description
 
-- [ ] Non-empty and at most 1,024 characters.
-- [ ] Contains no XML tags.
-- [ ] Written in third person, not "I can" or "You can".
-- [ ] States what the skill does.
-- [ ] States when to use it, with concrete triggers and contexts.
-- [ ] Includes the key terms a user or agent would say (`PDF`, `forms`, `spreadsheets`, file extensions).
-- [ ] Is specific; avoids "Helps with documents" and "Processes data".
+- [ ] 1–1,024 characters, free of XML tags; angle brackets become square brackets.
+- [ ] Third person, saying what the skill does and when to use it ("Use when …").
+- [ ] Describes the user's intent and the contexts where the skill applies, including requests that skip its keywords.
+- [ ] Holds the key terms a user says: file types, tools, domain words.
+- [ ] Leads with the key use case; Claude Code cuts `description` plus `when_to_use` at 1,536 characters.
+- [ ] Narrow enough to stay quiet on near-miss requests that share its keywords.
 
 ## SKILL.md body
 
-- [ ] Body is under 500 lines.
-- [ ] Body stays within a reasonable token budget (roughly 5,000 tokens).
-- [ ] Body reads as an overview and table of contents, not as exhaustive documentation.
-- [ ] Content that only matters for some tasks is not inlined.
+- [ ] Under 500 lines and about 5,000 tokens.
+- [ ] Reads as an overview with steps, pointing to references for detail.
+- [ ] The most important instructions sit near the top; after compaction Claude Code keeps the first 5,000 tokens.
+- [ ] Instructions hold for the whole task: Claude Code loads the body once and keeps it, without re-reading.
+- [ ] A rule that has to hold on every action lives in a hook, in the skill's `hooks` frontmatter.
 
 ## Progressive disclosure
 
-- [ ] Detailed material lives in separate files (`references/`, `FORMS.md`, `EXAMPLES.md`).
-- [ ] Every reference is linked directly from `SKILL.md` (one level deep).
-- [ ] No reference links to another reference.
-- [ ] `SKILL.md` says when to read each reference, not just "see references/".
-- [ ] Reference files longer than 100 lines have a table of contents.
-- [ ] Reference filenames describe their content (`form_validation_rules.md`, not `doc2.md`).
-- [ ] Files are organized by domain when multiple domains exist.
-- [ ] Advanced or optional details are separated from basic usage.
-- [ ] Comprehensive resources (complete API docs, large datasets) are bundled rather than summarized away; they cost no context until read.
-- [ ] Nested references are avoided; agents may read partial files when chasing chains.
+- [ ] Detail that only some tasks need lives in `references/`, templates in `assets/`.
+- [ ] `SKILL.md` links every reference directly, one level deep, and says when to read each one.
+- [ ] References link only to outside sources, each standing on its own.
+- [ ] References over 100 lines open with a table of contents.
+- [ ] Filenames name their content (`form-validation-rules.md`); folders split by domain when there are several.
+- [ ] Large resources (full API docs, datasets) are bundled whole; they cost nothing until read.
 
 ## Bundle and paths
 
-- [ ] All paths use forward slashes.
-- [ ] Every relative link resolves to an existing file.
-- [ ] No link escapes the skill directory.
-- [ ] Scripts live in `scripts/`, reference material in `references/`, and static assets in `assets/` unless the collection uses another convention.
-- [ ] File references from instructions are relative, not absolute.
-- [ ] No machine-specific paths, credentials, or environment secrets are embedded.
+- [ ] Paths use forward slashes and are relative to the skill root.
+- [ ] Every relative link resolves inside the skill directory.
+- [ ] Scripts sit in `scripts/`, references in `references/`, static files in `assets/`, evals in `evals/`.
+- [ ] The bundle stays free of machine-specific paths, credentials and secrets.

@@ -1,79 +1,12 @@
 # config
 
-Shared configuration layer for Project Reborn. `config.json` in the process working directory is the project's only configuration source; environment variables are never consulted. It holds only the values a program needs before the database opens, such as the database path and the ports. Values that can change while a program runs (site name, maintenance, limits) are settings: they are declared in `packages/virtual` and stored in the database, never here.
+Shared configuration layer for Project Reborn. `config.json` in the process working directory holds only the values a
+program needs before the database opens, such as the database path and the ports.
 
-## Usage
+How it works: `knowledge/index.md`.
 
-```go
-package main
-
-import "github.com/kronothepenguin/project-reborn/packages/config"
-
-func main() {
-	cfg := config.Get() // or config.Load() for the error
-	_ = cfg.CMS.Port
-}
-```
-
-- `Load() (*Config, error)` reads or creates `config.json` once per process and caches the result.
-- `Must() *Config` returns the loaded configuration or panics with the load error, like `template.Must`.
-- `Get() *Config` is the singleton accessor; the first call goes through `Must()`.
-- `Filename` is `config.json`. A program that must not create the file, such as the installer, checks for it before calling `Load`.
-- `Create(cfg *Config) error` validates `cfg` and writes it as `config.json`, failing with an error that wraps `fs.ErrExist` when the file already exists. Only the installer calls it, and it must do so before anything calls `Load`, which would create the file with the defaults.
-- `Differences() (missing, unused []Key, err error)` compares `config.json` with the declared keys: the keys the file lacks, with their defaults, and the keys nothing reads, with the file's values. A `Key` is a dotted key path, such as `cms.port`, and its JSON value.
-- `Rewrite(values map[string]json.RawMessage) error` writes `config.json` again with its keys as they are, the keys it lacks with the values given (their defaults otherwise), and without the keys nothing reads. Only missing keys may be given values (`ErrNotNew`), the result must pass `Validate`, and a temporary file is renamed over `config.json`. With nothing missing or unused, the file stays as it is. Housekeeping calls it when a release adds keys.
-
-Loading is the first thing a program does. An unreadable file, invalid JSON, or a wrong value stops the program before it runs, with an error naming `config.json` and the full key path, for example `config: config.json: cms.port: must be between 1 and 65535, got 70000`.
-
-## File behavior
-
-- Absent `config.json`: created with the declared defaults (pretty-printed JSON plus a trailing newline, mode `0644`).
-- Key missing from an existing file: the declared default is returned; the file is not modified.
-- Key present: the file's value wins over the default.
-- Existing files are rewritten only by `Rewrite`, when an administrator saves a release's new keys from housekeeping; that rewrite drops the keys nothing reads. Otherwise formatting, ordering, and unrecognized keys stay as written, and `Create` writes only when the file is absent.
-- Keys are lowerCamelCase.
-
-## Declared keys
-
-| Key | Type | Default | Allowed |
-| --- | --- | --- | --- |
-| `store.path` | string | `habbo.db` | non-empty, no `?` or `#` |
-| `cms.host` | string | `localhost` | hostname or IP address; `0.0.0.0` listens on every IPv4 interface, as a pod needs |
-| `cms.port` | int | 17387 | 1–65535 |
-| `housekeeping.host` | string | `localhost` | hostname or IP address, as `cms.host` |
-| `housekeeping.port` | int | 18465 | 1–65535 |
-| `proxy.enabled` | bool | false | |
-| `proxy.trusted` | []string | `["127.0.0.1", "::1"]` | IP addresses or CIDR ranges, at least one when `proxy.enabled` |
-| `server.info.host` | string | `localhost` | hostname or IP address, as `cms.host` |
-| `server.info.port` | int | 30000 | 1–65535 |
-| `server.mus.host` | string | `localhost` | hostname or IP address, as `cms.host` |
-| `server.mus.port` | int | 30001 | 1–65535, other than `server.info.port` |
-| `reborn.host` | string | `localhost` | hostname or IP address, as `cms.host` |
-| `reborn.port` | int | 16416 | 1–65535 |
-
-`proxy` is for a hotel behind a reverse proxy: production enables it in its `config.json`, and `auth.RealIP` then takes the client IP from the `X-Forwarded-For` header of requests that come from a trusted address or range.
-
-`server` is the game server's: the client's two connections, `info` for the game and `mus` for the Multiuser Xtra's messages, each a WebSocket listener on a host and port of its own (`plans/server/decisions/0020-info-and-mus-websocket-ports.md`). The server section reuses the rule of `cms.host` for its hosts.
-
-`reborn` is the address of the whole hotel run in one process, where one mux serves the installer, the site and housekeeping (`plans/reborn/decisions/0003-reborn-runs-the-hotel-in-one-process.md`); its port is the one `tools/create` derives for the name `reborn`. Under reborn, `cms.host`, `cms.port`, `housekeeping.host` and `housekeeping.port` go unused, and the separate programs still read them. The game server keeps its own `server.info` and `server.mus` listeners. The reborn section reuses the rule of `cms.host` for its host.
-
-The settings package (`packages/virtual/settings`) exposes these values under the same key paths (`settings.GetInt("cms.port")`; it has no getter for lists such as `proxy.trusted`), and a settings row never overrides them.
-
-## Declaring keys
-
-A key belongs here only when a program reads it before the database opens. Components add sections and shared root keys, one declaration at a time, each with its own default and validation rule. The step-by-step workflow, worked example, tests, and gotchas live in the `adding-config-sections` skill at `.agents/skills/adding-config-sections/SKILL.md`.
-
-Conventions:
-
-- Default per field: `func Default<Field>() <Type>`.
-- Validation per field: `func Validate<Field>(value <Type>) error`; the section's `Validate()` prefixes the field key and `Config.Validate()` prefixes the section key, so errors carry the full key path.
-- A section lives in its own package under `packages/config/<section>` and registers on `Config` in `config.go`; a shared key is declared directly on `Config`.
-- Defaults must satisfy their own validators.
-
-Gates, from `packages/config`:
+Check, from `packages/config`:
 
 ```sh
-gofmt -l .
-go vet ./...
-go test ./...
+make check
 ```

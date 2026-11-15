@@ -67,7 +67,7 @@ func TestKeepingFavouriteRooms(t *testing.T) {
 	}
 }
 
-// Past game.maxFavouriteRooms, a favourite gets 33, whatever number the client's text says (decision 0058).
+// Past game.maxFavouriteRooms, a favourite gets 33, whatever number the client's text says (decision server/0058).
 func TestTheFavouritesHaveALimit(t *testing.T) {
 	set := func(value int) {
 		if err := settings.Set(context.Background(), testDB, 0, "game.maxFavouriteRooms", value); err != nil {

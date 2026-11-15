@@ -24,6 +24,10 @@ timestamp: 2026-11-06T22:56:10+00:00
 - Primary key `code`.
 - CHECK: credits above 0 or a furni, never both and never neither.
 
+# Notes
+
+- `code` compares ignoring case, as Holo's MySQL compared voucher codes.
+
 # Related
 
 - Entity: [Voucher](/entities/voucher.md).

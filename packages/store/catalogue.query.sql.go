@@ -36,8 +36,8 @@ const getFurniDefinitionBySprite = `-- name: GetFurniDefinitionBySprite :one
 SELECT id, sprite, kind, length, width, height, colours, data, door, tradeable, recyclable FROM furni_definitions WHERE sprite = ?1 ORDER BY id LIMIT 1
 `
 
-// Of the definitions that share a sprite, the one with the lowest id, as Holo took the first (plans/server decision
-// 0120).
+// Of the definitions that share a sprite, the one with the lowest id, as Holo took the first (decision
+// server/0120).
 func (q *Queries) GetFurniDefinitionBySprite(ctx context.Context, sprite string) (FurniDefinition, error) {
 	row := q.db.QueryRowContext(ctx, getFurniDefinitionBySprite, sprite)
 	var i FurniDefinition

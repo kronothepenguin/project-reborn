@@ -12,7 +12,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 )
 
-// The messages of hh_cat_code the server sends (plans/server/reference/r26/hh_cat_code.md).
+// The messages of hh_cat_code the server sends (packages/server/knowledge/r26/hh_cat_code.md).
 const (
 	purchaseError      = 65
 	purchaseOK         = 67

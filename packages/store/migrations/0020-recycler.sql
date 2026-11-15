@@ -1,5 +1,5 @@
 -- The recycler gives a furni for many: its rewards, each habbo's recycling, and the furni that wait in it.
--- plans/server decision 0093. The rewards are Holo's four.
+-- decision server/0093. The rewards are Holo's four.
 
 -- What the recycler gives: the furni a habbo gets for recycling furni_count pieces at once.
 CREATE TABLE IF NOT EXISTS recycler_rewards (

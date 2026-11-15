@@ -11,7 +11,7 @@ import (
 )
 
 // A pad's post-its go on a wall one at a time. Anyone reads a note, a habbo with rights writes it, and the room's
-// owner or a holder of fuse_remove_stickies deletes it (plans/server decisions 0108 and 0109).
+// owner or a holder of fuse_remove_stickies deletes it (decisions server/0108 and server/0109).
 func TestPostIts(t *testing.T) {
 	ownerID := habboWithTickets(t, "Scribbler", "scribbler")
 	habboWithTickets(t, "Notetaker", "notetaker")

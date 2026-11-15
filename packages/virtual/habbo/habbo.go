@@ -1,6 +1,6 @@
 // Package habbo holds the habbos online in the game, each with the session that
 // plays it: added at login and dropped at logout. Nothing here reads or writes
-// the database (plans/server decisions 0009, 0047 and 0048).
+// the database (decisions server/0009, server/0047 and server/0048).
 package habbo
 
 import (
@@ -17,19 +17,19 @@ type Session interface {
 	Notify(event any)
 }
 
-// Habbo is an online habbo: what the login read of it, and its session (plans/server decision 0053). A change writes
+// Habbo is an online habbo: what the login read of it, and its session (decision server/0053). A change writes
 // the store first, then Update changes the copy.
 type Habbo struct {
 	store.Avatar
 	// Badges are the codes of the habbo's badges, and Worn those it wears in its five slots, by slot, empty for none
-	// (plans/server decision 0083).
+	// (decision server/0083).
 	Badges       []string
 	Worn         [5]string
 	SoundEnabled bool
 	Fuses        []string
 	// Ignored are the avatar ids of the habbos whose chat it does not see, oldest first.
 	Ignored []int64
-	// Group is the habbo's favourite group, which it shows in rooms (plans/server decision 0068); its ID is 0 when it
+	// Group is the habbo's favourite group, which it shows in rooms (decision server/0068); its ID is 0 when it
 	// has none.
 	Group   Group
 	Session Session
