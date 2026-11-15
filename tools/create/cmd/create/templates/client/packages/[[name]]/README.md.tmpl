@@ -1,0 +1,28 @@
+# {{.Name}} — client package
+
+A plain Vite app: `index.html` loads `src/main.js`.
+
+## Port
+
+- Vite dev server: **{{.VitePort}}**, in `vite.config.js`
+
+## Setup
+
+```sh
+pnpm --filter '@project-reborn/{{.Name}}...' install    # once: pnpm dependencies
+```
+
+## Development
+
+```sh
+pnpm dev        # vite dev server → http://localhost:{{.VitePort}}
+pnpm build      # renders dist/
+```
+
+## Check
+
+```sh
+make check      # runs the build script
+```
+
+How it works: `knowledge/index.md`.

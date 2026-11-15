@@ -1,6 +1,7 @@
 ---
 import { BBCodeEditor, Input, Select } from "@project-reborn/components";
 import ImageEditor from "./image-editor.svelte";
+import TopstoryPreview from "./topstory-preview.svelte";
 
 // The preview is a 300x187 box that shows the picture at its own size, as the
 // news promo of Holo's CMS shows a top story.
@@ -42,6 +43,7 @@ import ImageEditor from "./image-editor.svelte";
     <div class="mt-1 box-content h-[187px] w-[300px] overflow-hidden border border-neutral-600 bg-olive-300">
       <img id="news-topstory-preview" src="[[ .Preview ]]" data-site="[[ .SiteURL ]]" alt="Preview" class="max-w-none" />
     </div>
+    <TopstoryPreview client:only="svelte" field="news-topstory" preview="news-topstory-preview" />
   </td>
 </tr>
 <tr>
@@ -75,13 +77,3 @@ import ImageEditor from "./image-editor.svelte";
     <BBCodeEditor client:only="svelte" field="news-story" variant="housekeeping" label="Story" rows={5} />
   </td>
 </tr>
-
-<script>
-  const field = document.getElementById("news-topstory") as HTMLInputElement;
-  const preview = document.getElementById("news-topstory-preview") as HTMLImageElement;
-  // A path is the CMS's, so it loads from site.url: housekeeping may run on another port.
-  field.addEventListener("input", () => {
-    const address = field.value.trim();
-    preview.src = address.startsWith("/") ? `${preview.dataset.site}${address}` : address;
-  });
-</script>

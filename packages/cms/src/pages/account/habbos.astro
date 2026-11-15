@@ -1,10 +1,10 @@
 ---
 import { Avatar, Button, Input } from "@project-reborn/components";
-import SettingsFrame from "../../components/account/settings-frame.astro";
+import Account from "../../layouts/account.astro";
 import AvatarEditor from "../../components/habbo/avatar-editor.svelte";
 ---
 
-<SettingsFrame active="Habbos" heading="Your Habbos">
+<Account active="Habbos" heading="Your Habbos">
   <ul class="flex flex-col divide-y divide-gray-200">
     [[ range .Habbos ]]
     <li class="flex items-center gap-3 py-1">
@@ -74,4 +74,4 @@ import AvatarEditor from "../../components/habbo/avatar-editor.svelte";
     <div><Button type="submit">Add habbo</Button></div>
   </form>
   [[ end ]]
-</SettingsFrame>
+</Account>

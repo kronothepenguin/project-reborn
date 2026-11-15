@@ -58,18 +58,27 @@ export default async function (t) {
     await page.title(),
   );
   const form = await createBox.innerText();
+  const type = createBox.getByLabel("Type");
+  const types = await type
+    .locator("option")
+    .evaluateAll((options) =>
+      options.map((o) => `${o.value}:${o.textContent}`).join("|"),
+    );
   check(
-    "Create Voucher has Holo's heading, labels and help, and no Type",
+    "Create Voucher has Holo's heading, labels and help, and a Type of Credits or Item",
     [
       "Create Voucher",
       "Redemption Code",
       "The voucher code the user must enter to recieve the credits.",
+      "Type",
+      "The type of voucher that can be redeemed, there are two options; Credits or Item, Credits will be a normal credit voucher, Item will be a furniture redemption voucher.",
       "Amount",
-      "The amount of credits a user will recieve upon entering the redemption code.",
+      "The amount of credits/item a user will recieve upon entering the redemption code. For Item purchases input the correct item CCT name.",
     ].every((text) => form.includes(text)) &&
-      !form.includes("Type") &&
-      (await createBox.locator("select").count()) === 0,
-    form,
+      (await type.getAttribute("name")) === "type" &&
+      types === "credits:Credits|item:Item" &&
+      (await type.inputValue()) === "credits",
+    `${form} :: ${types}`,
   );
   const offered = await page.inputValue("#voucher-code");
   check(

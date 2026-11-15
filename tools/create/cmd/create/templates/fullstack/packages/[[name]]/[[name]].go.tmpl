@@ -30,7 +30,7 @@ func New(db *sql.DB, opts ...Option) *{{.Type}} {
 }
 
 func (c *{{.Type}}) Mount(mux *http.ServeMux) {
-	r := router.New(router.Deps{Resolver: c.resolve, DB: c.db, Queries: store.New(c.db)})
+	r := router.New(router.Deps{DB: c.db, Queries: store.New(c.db), Resolver: c.resolve})
 
 	mux.HandleFunc("GET /{$}", r.HandleIndexView)
 

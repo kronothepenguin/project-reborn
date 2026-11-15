@@ -1,8 +1,6 @@
 ---
-import { Input, Table } from "@project-reborn/components";
-import Box from "../components/box.astro";
+import { Box, Button, Input, Table } from "@project-reborn/components";
 import Message from "../components/message.astro";
-import Submit from "../components/submit.astro";
 import Housekeeping from "../layouts/housekeeping.astro";
 ---
 
@@ -23,7 +21,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
           </tbody>
         </Table>
         <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
-          <Submit>Retrive logs</Submit>
+          <Button variant="plain" size="compact" type="submit">Retrive logs</Button>
         </div>
       </Box>
     </form>

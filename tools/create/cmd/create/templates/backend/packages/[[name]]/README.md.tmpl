@@ -1,23 +1,31 @@
 # {{.Name}} — Go package
 
-A Go module without a frontend. The app struct (`{{.Type}}` struct) takes the
-database in `New(db)` and registers its routes on a mux in `Mount(mux)`;
+A Go module without a frontend. `{{.Package}}.New(db)` builds the app, and `Mount` serves its routes.
 `apps/{{.Name}}` runs it.
 
 ## Port
 
-- App (Go HTTP server): **{{.AppPort}}** — baked in `apps/{{.Name}}/cmd/{{.Name}}`
+- App (Go HTTP server): **{{.AppPort}}**, in `apps/{{.Name}}/cmd/{{.Name}}`
+
+## Setup
+
+```sh
+make install    # once: Go modules
+```
 
 ## Development
 
 Run it through the app runner in `apps/{{.Name}}`:
 
 ```sh
-cd apps/{{.Name}}
-make dev    # air hot reload → http://localhost:{{.AppPort}}
+cd ../../apps/{{.Name}}
+make dev        # air hot reload → http://localhost:{{.AppPort}}
 ```
 
-## Production build
+## Check
 
-From the repository root:
-`go build -o apps/{{.Name}}/tmp/{{.Name}} ./apps/{{.Name}}/cmd/{{.Name}} && ./apps/{{.Name}}/tmp/{{.Name}}`
+```sh
+make check      # checks the formatting, vets, tests and builds the Go code
+```
+
+How it works: `knowledge/index.md`.

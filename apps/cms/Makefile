@@ -1,4 +1,4 @@
-.PHONY: install dev web stop
+.PHONY: install dev
 
 include ../../make/check.mk
 

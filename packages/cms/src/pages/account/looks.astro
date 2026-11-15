@@ -1,12 +1,12 @@
 ---
 import { Button, Notice } from "@project-reborn/components";
 import clubSymbol from "../../assets/community/hc_mini.png";
-import SettingsFrame from "../../components/account/settings-frame.astro";
+import Account from "../../layouts/account.astro";
 import Wardrobe from "../../components/account/wardrobe.svelte";
 import AvatarEditor from "../../components/habbo/avatar-editor.svelte";
 ---
 
-<SettingsFrame active="Looks" heading="Change your looks">
+<Account active="Looks" heading="Change your looks">
   <div class="flex items-start justify-between">
     <AvatarEditor
       client:only="svelte"
@@ -58,4 +58,4 @@ import AvatarEditor from "../../components/habbo/avatar-editor.svelte";
     <input type="hidden" id="settings-state" name="editorState" />
     <Button id="settings-submit" type="submit" disabled>Save changes</Button>
   </form>
-</SettingsFrame>
+</Account>

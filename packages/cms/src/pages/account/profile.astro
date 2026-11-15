@@ -1,9 +1,9 @@
 ---
 import { Button, Input, Link } from "@project-reborn/components";
-import SettingsFrame from "../../components/account/settings-frame.astro";
+import Account from "../../layouts/account.astro";
 ---
 
-<SettingsFrame active="Motto & Preferences" heading="Change Your Profile">
+<Account active="Motto & Preferences" heading="Change Your Profile">
   <form method="post" action="/account/profile" class="flex flex-col gap-2">
     <h3 class="text-xs font-bold">Your motto</h3>
     <p>Your motto is seen by everyone, so think carefully!</p>
@@ -19,4 +19,4 @@ import SettingsFrame from "../../components/account/settings-frame.astro";
 
     <div><Button type="submit">Save changes</Button></div>
   </form>
-</SettingsFrame>
+</Account>
