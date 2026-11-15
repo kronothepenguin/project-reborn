@@ -12,10 +12,10 @@ tags: [server, architecture]
 | Package | Holds | Decisions |
 | --- | --- | --- |
 | `packages/server` | `New(db)`, which loads the settings and reloads them, and `StartInfo` and `StartMus`, which start a WebSocket listener on the host and port of `server.info` and of `server.mus` | 0002 (`knowledge/decisions/server/0002-server-app.md`), 0005 (`knowledge/decisions/server/0005-package-layout.md`), 0020 (`knowledge/decisions/server/0020-info-and-mus-websocket-ports.md`), 0022 (`knowledge/decisions/server/0022-start-info-and-start-mus.md`), 0023 (`knowledge/decisions/server/0023-mus-listener-before-s7.md`), 0050 (`knowledge/decisions/server/0050-the-server-loads-and-reloads-the-settings.md`) |
-| `packages/server/transport` | `Conn` (receive, send, close), TCP and the WebSocket on `golang.org/x/net/websocket` | 0006 (`knowledge/decisions/server/0006-transport.md`) |
-| `packages/server/encoding` | B64, VL64 and strings, shared by every protocol | 0005 (`knowledge/decisions/server/0005-package-layout.md`) |
-| `packages/server/r26` | The R26 ids, framing and handshake, the dispatch by id, and one file per client cast | 0007 (`knowledge/decisions/server/0007-protocols-per-listener.md`), 0012 (`knowledge/decisions/server/0012-no-encryption.md`), 0021 (`knowledge/decisions/server/0021-unhandled-packets-logged-by-id-name-and-size.md`), 0027 (`knowledge/decisions/server/0027-endofcryptoparams-right-after-cryptoparameters.md`), 0028 (`knowledge/decisions/server/0028-sso-only.md`), 0049 (`knowledge/decisions/server/0049-a-wrong-version-is-closed.md`) |
-| `packages/server/game` | The rules of the hotel, with no protocol in them, and the events they send sessions | 0005 (`knowledge/decisions/server/0005-package-layout.md`), 0039 (`knowledge/decisions/server/0039-rules-notify-sessions-through-an-interface.md`), 0048 (`knowledge/decisions/server/0048-sessions-through-an-interface-virtual-declares.md`) |
+| `packages/server/internal/transport` | `Conn` (receive, send, close), TCP and the WebSocket on `golang.org/x/net/websocket` | 0006 (`knowledge/decisions/server/0006-transport.md`) |
+| `packages/server/internal/encoding` | B64, VL64 and strings, shared by every protocol | 0005 (`knowledge/decisions/server/0005-package-layout.md`) |
+| `packages/server/internal/r26` | The R26 ids, framing and handshake, the dispatch by id, and one file per client cast | 0007 (`knowledge/decisions/server/0007-protocols-per-listener.md`), 0012 (`knowledge/decisions/server/0012-no-encryption.md`), 0021 (`knowledge/decisions/server/0021-unhandled-packets-logged-by-id-name-and-size.md`), 0027 (`knowledge/decisions/server/0027-endofcryptoparams-right-after-cryptoparameters.md`), 0028 (`knowledge/decisions/server/0028-sso-only.md`), 0049 (`knowledge/decisions/server/0049-a-wrong-version-is-closed.md`) |
+| `packages/server/internal/game` | The rules of the hotel, with no protocol in them, and the events they send sessions | 0005 (`knowledge/decisions/server/0005-package-layout.md`), 0039 (`knowledge/decisions/server/0039-rules-notify-sessions-through-an-interface.md`), 0048 (`knowledge/decisions/server/0048-sessions-through-an-interface-virtual-declares.md`) |
 | `packages/virtual` | The state: hot data and temporary data, one package per entity | 0009 (`knowledge/decisions/server/0009-virtual-holds-the-server-state.md`) |
 | `packages/virtual/habbo` | The habbos online in the game, each with its session | 0047 (`knowledge/decisions/server/0047-online-habbos-in-virtual-habbo.md`), 0048 (`knowledge/decisions/server/0048-sessions-through-an-interface-virtual-declares.md`) |
 | `packages/virtual/category`, `model` and `room` | The navigator's categories, the room models and the public rooms, loaded at start; the loaded rooms, with their floors, habbos, rights, bans, lines, events and kept places, and the way each habbo heads into a room | 0060 (`knowledge/decisions/server/0060-virtual-category-model-and-room.md`), 0064 (`knowledge/decisions/server/0064-the-navigator-loads-once-the-updates-are-applied.md`), 0069 (`knowledge/decisions/server/0069-doorbell-queue-and-spectators-in-memory.md`), 0071 (`knowledge/decisions/server/0071-an-empty-room-unloads-at-once.md`) |
@@ -32,15 +32,15 @@ delete rooms. A session that ends logs its habbo out. `server.New` loads the nav
 `virtual/category`, `virtual/model` and `virtual/room` (s3-02), and prunes the chat
 history every hour (0084 (`knowledge/decisions/server/0084-the-game-server-prunes-the-chat-hourly.md`)).
 
-S4 brought the rooms: `r26/room.go` and `r26/room_utils.go` serve hh_room's entry, walking,
+S4 brought the rooms: `internal/r26/room.go` and `internal/r26/room_utils.go` serve hh_room's entry, walking,
 chat, rights, ratings, events, badges, groups, the queue and the spectators, through `game`'s rules on the loaded rooms
 of `virtual/room`. A room loads with its first habbo and unloads with its last
 (0071 (`knowledge/decisions/server/0071-an-empty-room-unloads-at-once.md`)); while loaded, a goroutine of `game`, its clock, ticks every
 500 ms, walking its habbos, ending timed statuses and sending what changed in one message
 (0065 (`knowledge/decisions/server/0065-walking-500-ms-by-holos-rules.md`), 0072 (`knowledge/decisions/server/0072-each-loaded-room-runs-its-own-clock.md`)).
 
-S5 brought the furni: `r26/cat_code.go`, `r26/room_hand.go`, `r26/room_furni.go` and
-`r26/recycler.go` serve the catalogue, the hand, the furni of a room, trades and the recycler. `server.New` loads the
+S5 brought the furni: `internal/r26/cat_code.go`, `internal/r26/room_hand.go`, `internal/r26/room_furni.go` and
+`internal/r26/recycler.go` serve the catalogue, the hand, the furni of a room, trades and the recycler. `server.New` loads the
 furni definitions and the catalogue into `virtual/furni` and `virtual/catalogue`
 (0098 (`knowledge/decisions/server/0098-virtual-furni-and-catalogue.md`)). A piece of furni lives in the store, where the hand is read
 each time (0096 (`knowledge/decisions/server/0096-the-hand-is-read-from-the-database.md`)); a loaded room keeps a copy of what stands in

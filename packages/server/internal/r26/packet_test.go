@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/kronothepenguin/project-reborn/packages/server/encoding"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/encoding"
 )
 
 // The bytes come from packages/server/knowledge/r26/hh_entry_init.md, which computed them with literal ports of the

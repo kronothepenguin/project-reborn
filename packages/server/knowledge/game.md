@@ -1,7 +1,7 @@
 ---
 type: Go Package
 title: Game
-description: The rules of packages/server/game, the events they send sessions and the functions each protocol calls.
+description: The rules of packages/server/internal/game, the events they send sessions and the functions each protocol calls.
 tags: [server]
 ---
 

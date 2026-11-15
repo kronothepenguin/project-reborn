@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"context"
 
-	"github.com/kronothepenguin/project-reborn/packages/server/encoding"
-	"github.com/kronothepenguin/project-reborn/packages/server/game"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/encoding"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/game"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 )
