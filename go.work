@@ -13,6 +13,7 @@ use (
 	./packages/installer
 	./packages/scheduler
 	./packages/server
+	./packages/services
 	./packages/store
 	./packages/virtual
 	./tools/checks

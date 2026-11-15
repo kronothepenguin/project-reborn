@@ -1,6 +1,6 @@
 # Module layout
 
-Source: https://go.dev/doc/modules/layout
+Source: https://go.dev/doc/modules/layout. Follow this layout only.
 
 ## Contents
 
@@ -27,14 +27,15 @@ A `go.work` workspace holds the Go modules, and a pnpm workspace holds the front
 │   ├── go.mod
 │   └── cmd/
 │       ├── <app>/main.go       # production
-│       └── <app>-dev/main.go   # development server
+│       └── <app>-dev/main.go   # development, when the package ships a frontend
 ├── <packages>/<pkg>/
 │   ├── go.mod
-│   ├── <pkg>.go                # public API: struct, New, Mount, options
+│   ├── <pkg>.go                # the public package
+│   ├── <topic>/                # optional: a public package per topic
+│   ├── internal/               # packages only this module imports
 │   ├── package.json            # when the package ships a frontend
 │   ├── src/                    # frontend pages, layouts, components
-│   ├── dist/                   # frontend build, gitignored, embedded
-│   └── internal/
+│   └── dist/                   # frontend build, gitignored, embedded
 └── <tools>/<tool>/
     ├── go.mod
     └── cmd/<tool>/main.go
@@ -48,20 +49,24 @@ A `go.work` workspace holds the Go modules, and a pnpm workspace holds the front
 
 ## Inside a module
 
-- `cmd/<binary>/main.go`: one directory per executable. `main.go` holds wiring only.
-- `<pkg>.go` at the module root: the public API, next to `internal/`.
-- `internal/`: code only this module imports. The rest of the module is public.
-- One package per directory. The package name is the directory name: short, lowercase, one word.
-- Name each folder for what it holds, in place of `pkg/` or `util/`.
+- The module root exports what is public. Its package name is the last element of the module path.
+- A sub-folder is a public package for one topic, imported as `<module>/<topic>`. Sub-folders may nest.
+- `internal/` holds the packages only this module imports. Put a supporting package there first, and keep packages
+  there as much as possible.
+- `cmd/<binary>/main.go` holds each binary. `main.go` holds wiring only.
+- One package per directory. The package name is the directory name.
+- A web app keeps its handlers in `internal/router`, and the root's `Mount` registers them
+  (`mux-patterns.md`).
 
 ## Where new code goes
 
 | You are adding | Location |
 | --- | --- |
-| A reusable library used by runners | `<packages>/<pkg>/`, with a public root package |
-| An implementation detail of one module | `<packages>/<pkg>/internal/<subpkg>/` |
+| A reusable library used by runners | `<packages>/<pkg>/`, the public package at its root |
+| A public topic of that library | `<packages>/<pkg>/<topic>/` |
+| A supporting package of one module | `<packages>/<pkg>/internal/<subpkg>/` |
 | A runnable application | `<runners>/<app>/cmd/<app>/main.go` |
-| Its development server | `<runners>/<app>/cmd/<app>-dev/main.go` |
+| Its development runner, when its package ships a frontend | `<runners>/<app>/cmd/<app>-dev/main.go` |
 | A code generator or CLI | `<tools>/<tool>/cmd/<tool>/main.go` |
 | A frontend page, layout or component | `<packages>/<pkg>/src/`, with `templating-astro-pages` and `building-astro-components` |
 

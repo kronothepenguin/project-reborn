@@ -13,6 +13,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/cms/internal/router"
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/scheduler"
+	"github.com/kronothepenguin/project-reborn/packages/services"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
@@ -21,13 +22,20 @@ import (
 var DistFS embed.FS
 
 type CMS struct {
-	db      *sql.DB
-	updates *store.UpdateCheck
-	static  http.Handler
-	resolve astro.Resolver
+	db       *sql.DB
+	updates  *store.UpdateCheck
+	static   http.Handler
+	resolve  astro.Resolver
+	services Services
 	// protect wraps every CMS route with RealIP, cross-origin protection and
 	// the session, so that the CMS stays protected on a mux it shares.
 	protect func(http.Handler) http.Handler
+}
+
+// Services tell the game server of the changes it must show live. A service
+// left nil is absent, and the CMS skips its calls.
+type Services struct {
+	Habbos services.Habbos
 }
 
 type Option func(*CMS)
@@ -78,8 +86,18 @@ func New(db *sql.DB, opts ...Option) *CMS {
 	return c
 }
 
+// Inject hands the CMS its services, once, after New and before Mount: Mount
+// gives the router the services the CMS holds then.
+func (c *CMS) Inject(s Services) {
+	c.services = s
+}
+
+func (c *CMS) deps() router.Deps {
+	return router.Deps{Resolver: c.resolve, DB: c.db, Queries: store.New(c.db), Updates: c.updates, Habbos: c.services.Habbos}
+}
+
 func (c *CMS) Mount(mux *http.ServeMux) {
-	r := router.New(router.Deps{Resolver: c.resolve, DB: c.db, Queries: store.New(c.db), Updates: c.updates})
+	r := router.New(c.deps())
 	guard := func(h http.Handler) http.Handler { return r.UpdateFailed(c.protect(h)) }
 	page := func(h http.Handler) http.Handler { return guard(r.Banned(r.Maintenance(h))) }
 	guestPage := func(h http.HandlerFunc) http.Handler { return page(router.Guest(h)) }

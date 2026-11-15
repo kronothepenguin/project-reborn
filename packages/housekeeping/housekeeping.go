@@ -13,6 +13,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/housekeeping/internal/router"
 	"github.com/kronothepenguin/project-reborn/packages/scheduler"
+	"github.com/kronothepenguin/project-reborn/packages/services"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
@@ -21,13 +22,20 @@ import (
 var DistFS embed.FS
 
 type Housekeeping struct {
-	db      *sql.DB
-	updates *store.UpdateCheck
-	static  http.Handler
-	resolve astro.Resolver
+	db       *sql.DB
+	updates  *store.UpdateCheck
+	static   http.Handler
+	resolve  astro.Resolver
+	services Services
 	// protect wraps every route with RealIP, cross-origin protection and the
 	// session, so that housekeeping stays protected on a mux it shares.
 	protect func(http.Handler) http.Handler
+}
+
+// Services tell the game server of the changes it must show live. A service
+// left nil is absent, and housekeeping skips its calls.
+type Services struct {
+	Habbos services.Habbos
 }
 
 type Option func(*Housekeeping)
@@ -70,11 +78,21 @@ func New(db *sql.DB, opts ...Option) *Housekeeping {
 	return h
 }
 
+// Inject hands housekeeping its services, once, after New and before Mount:
+// Mount gives the router the services housekeeping holds then.
+func (h *Housekeeping) Inject(s Services) {
+	h.services = s
+}
+
+func (h *Housekeeping) deps() router.Deps {
+	return router.Deps{Resolver: h.resolve, DB: h.db, Queries: store.New(h.db), Updates: h.updates, Habbos: h.services.Habbos}
+}
+
 // Mount registers only /housekeeping/..., because / belongs to the CMS when they
 // share a mux. Everything under the prefix is behind router.Staff, the static
 // files too: /housekeeping/ also serves the built templates.
 func (h *Housekeeping) Mount(mux *http.ServeMux) {
-	r := router.New(router.Deps{Resolver: h.resolve, DB: h.db, Queries: store.New(h.db), Updates: h.updates})
+	r := router.New(h.deps())
 	// The update page, signing out and the files stay open while updates wait;
 	// every other page waits for them.
 	staffPage := func(next http.Handler) http.Handler { return r.UpdateFailed(h.protect(r.Staff(next))) }

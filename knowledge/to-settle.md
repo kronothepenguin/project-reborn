@@ -39,26 +39,6 @@ Data and config:
 - `adding-config-sections`: every field has `Default<Field>()` and `Validate<Field>()`. `packages/config/server`
   nests a `Connection` and reuses `cms.ValidateHost`.
 
-Go:
-
-- `applying-go-patterns`: one handler file per route, its static segments joined. 36 routes that end in an action
-  live in their resource's file (`/groups/{id}/join` in `groups.go`).
-- `applying-go-patterns`: the rule is silent on a mount prefix. Housekeeping's handler files drop `/housekeeping`.
-- `applying-go-patterns`: a GET handler is named `View`. `HandleHomeSearch`, `HandleGroupsSearch` and
-  `HandleXMLPromoHabbos` are named otherwise.
-- `applying-go-patterns`: `Deps` holds narrow interfaces declared by the consumer. The apps' `Deps` hold `*sql.DB`
-  and `*store.Queries`.
-- `applying-go-patterns`: shared services go through `Deps`. Handlers call the package-level `settings` and `auth`
-  functions, by the user's earlier choice.
-- `applying-go-patterns`: a module's public API is its root `<pkg>.go`, the rest in `internal/`. `packages/astro`,
-  `auth`, `virtual`, `server` and `config` are laid out otherwise.
-- `applying-go-patterns`: every runner has `cmd/<app>-dev`. `apps/server` has `cmd/server` only.
-- `reviewing-effective-go`: library code returns errors in place of panics. `New` panics in the CMS and housekeeping,
-  as `store.Must` does, on purpose.
-- `reviewing-effective-go`: a web server takes its address from `flag`. Ports come from `config.json`.
-- `reviewing-effective-go`: names a review flags: `cms.CMS`, `housekeeping.Housekeeping`, `installer.Installer`, and
-  the `Get` prefix of `config.Get`, `settings.GetInt` and the generated queries.
-
 # Found in the code
 
 - `packages/store/schema/auth.schema.sql`: the comment on `sso_tickets` says its id is a SHA-256 digest. The code
@@ -84,3 +64,17 @@ Go:
 - Should `tools/create` give a new project a `knowledge/` folder and the short README (what it is, setup)?
 - Old tests that prove no behaviour of a spec: the user reviews them against the specs, and decides which go. Tests
   that only prove the database or the generator works are the first candidates to go.
+
+# Code to change
+
+- Every handler file of `packages/cms`, `packages/housekeeping` and `packages/installer` is renamed with underscores,
+  and each of the 36 action routes moves to the file of its own path (`/groups/{id}/join` → `groups_join.go`). Rule:
+  `applying-go-patterns`.
+- `HandleHomeSearch` → `HandleHomeSearchView` and `HandleGroupsSearch` → `HandleGroupsSearchView`. Rule:
+  `applying-go-patterns`, `View` means a page.
+- These CMS GET handlers return data and take the name of what they return: `HandleForumThreadsSettingsView`,
+  `HandleGroupsInfoView`, `HandleGroupsMembersView`, `HandleGroupsRandomView`, `HandleHomeStoreView`,
+  `HandleHomeStoreCategoryView`, `HandleMeGroupsView`, `HandleMeInventoryView` (JSON), `HandleHabboImagingBadgeView`
+  and `HandleNewsImagesView` (images). The user names the form of each new name.
+- `packages/server`: its public folders `game`, `encoding`, `transport` and `r26`. The official layout puts supporting
+  packages in `internal/` first. The master asks the user which of them other modules may import.

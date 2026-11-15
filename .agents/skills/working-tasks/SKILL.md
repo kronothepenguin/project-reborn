@@ -1,11 +1,16 @@
 ---
 name: working-tasks
-description: Works one task file of a feature under knowledge/features/ as a slave, in its own worktree and branch named after the feature and the task number, with behaviour tests, the checks of every project changed and of its dependants, updated knowledge, a merge into main and a report to the master. Use when a master hands over a task file or asks a slave to work a planned task.
+description: Works one task file of a feature under knowledge/features/, or one brief of work without behaviours, as a slave, in its own worktree and branch, with behaviour tests, the checks of every project changed and of its dependants, updated knowledge, a merge into main and a report to the master. Use when a master hands over a task file or a brief, or asks a slave to work a planned task.
 ---
 
 # Working tasks
 
 A slave works one task and reports to its master. The master and the user decide.
+
+A task is a task file, or a brief in the slave's prompt for work without behaviours. The brief stands in for the task
+file: its goal for `# Goal` and `# Steps`, its scope for `scope`, its skills for `skills`, its checks for `# Checks`, and
+its slug for `<feature>-<NN>`. With a brief, step 1 reads the brief and loads its skills, and steps 4 and 7.1 are
+skipped.
 
 ## 1. Read
 
@@ -74,4 +79,5 @@ Open questions:
 
 ## Open questions
 
-A question that the task, the spec and the plan leave open stops the work: report it, and the master asks the user.
+A question that the task or the brief, the spec and the plan leave open stops the work: report it, and the master
+asks the user.
