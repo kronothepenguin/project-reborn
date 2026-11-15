@@ -1,53 +1,34 @@
 # {{.Name}} — web app package
 
-Astro (Svelte + Tailwind) frontend embedded in a Go module. The Go app struct
-(`{{.Type}}` struct) registers a router over `packages/astro` resolvers and
-serves the built frontend from the embedded `dist/`.
+An Astro (Svelte + Tailwind) frontend embedded in a Go module. `{{.Package}}.New` builds the app, and `Mount` serves
+its routes and the built `dist/`. `apps/{{.Name}}` runs it.
 
 ## Ports
 
-- App (Go HTTP server): **{{.AppPort}}** — baked in `apps/{{.Name}}/cmd/{{.Name}}`
-  and `apps/{{.Name}}/cmd/{{.Name}}-dev`
-- Astro dev server: **{{.AstroPort}}** — baked in `astro.config.mjs`
+- App (Go HTTP server): **{{.AppPort}}**, in `apps/{{.Name}}/cmd/{{.Name}}` and `apps/{{.Name}}/cmd/{{.Name}}-dev`
+- Astro dev server: **{{.AstroPort}}**, in `astro.config.mjs`
+
+## Setup
+
+```sh
+make install    # once: Go modules, pnpm dependencies and a placeholder dist/index.html
+```
 
 ## Development
 
-Recommended: run through the app runner in `apps/{{.Name}}`:
+Run it through the app runner in `apps/{{.Name}}`:
 
 ```sh
-cd apps/{{.Name}}
-make dev    # astro (background) + air hot reload → http://localhost:{{.AppPort}}
-make web    # astro dev server only → http://localhost:{{.AstroPort}}
-make stop   # stop the background astro server
+cd ../../apps/{{.Name}}
+make dev        # astro (background) + air hot reload → http://localhost:{{.AppPort}}
+make web        # astro dev server only → http://localhost:{{.AstroPort}}
+make stop       # stop the background astro server
 ```
 
-Or run the astro dev server directly from this directory:
+## Check
 
+```sh
+make check      # builds the pages, then checks the formatting, vets, tests and builds the Go code
 ```
-astro dev --background
-```
 
-Manage the background server with `astro dev stop`, `astro dev status`, and
-`astro dev logs`. Astro page edits are hot-reloaded; the Go router fetches
-the rendered page fresh on every request in dev mode.
-
-## Production build
-
-1. `pnpm build` — renders `dist/`
-2. From the repository root:
-   `go build -o apps/{{.Name}}/tmp/{{.Name}} ./apps/{{.Name}}/cmd/{{.Name}} && ./apps/{{.Name}}/tmp/{{.Name}}`
-
-`tools/create` starts the package with a placeholder `dist/index.html`, because
-`go:embed` needs a file there before the first `pnpm build`. `dist/` is ignored by
-git, so on a fresh clone `make install` writes the placeholder again.
-
-## Documentation
-
-Full documentation: https://docs.astro.build
-
-Consult these guides before working on related tasks:
-
-- [Adding pages, dynamic routes, or middleware](https://docs.astro.build/en/guides/routing/)
-- [Working with Astro components](https://docs.astro.build/en/basics/astro-components/)
-- [Using React, Vue, Svelte, or other framework components](https://docs.astro.build/en/guides/framework-components/)
-- [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
+How it works: `knowledge/index.md`.
