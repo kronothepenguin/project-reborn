@@ -110,7 +110,7 @@ func TestAFailedStartClosesEveryPage(t *testing.T) {
 		{"GET", "/home/Admin"}, {"POST", "/home-store/items/1/purchase"}, {"GET", "/register"}, {"POST", "/register/check-name"},
 		{"GET", "/forgot"}, {"GET", "/reset/token"}, {"GET", "/disclaimer"}, {"GET", "/xml/promo-habbos.xml"},
 	} {
-		wantPage(t, serve(mux, route.method, route.path, nil, nil), http.StatusServiceUnavailable, "update-failed.html {ShortName:Holo}")
+		wantPage(t, serve(mux, route.method, route.path, nil, nil), http.StatusServiceUnavailable, "update-failed.html {ShortName:Reborn}")
 	}
 	wantPage(t, serve(mux, "GET", "/web-gallery/styles.css", nil, nil), http.StatusOK, "static")
 }

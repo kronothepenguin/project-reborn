@@ -163,6 +163,12 @@ func TestLoadWithoutRowsHoldsDefaultsAndConfig(t *testing.T) {
 	}
 }
 
+func TestANewHotelIsNamedReborn(t *testing.T) {
+	load(t, openDB(t))
+
+	assertValues(t, map[string]any{"site.name": "Reborn Hotel", "site.shortName": "Reborn"})
+}
+
 func TestRowsOverrideDefaults(t *testing.T) {
 	db := openDB(t)
 	putRows(t, db, map[string]string{
@@ -178,7 +184,7 @@ func TestRowsOverrideDefaults(t *testing.T) {
 		"site.name":         "Row Hotel",
 		"auth.rememberDays": 7,
 		"cms.refresh":       5,
-		"site.shortName":    "Holo",
+		"site.shortName":    "Reborn",
 	})
 }
 
@@ -193,7 +199,7 @@ func TestDeletedRowRestoresTheDefault(t *testing.T) {
 	if err := Reload(t.Context(), db); err != nil {
 		t.Fatalf("Reload: %v", err)
 	}
-	assertValues(t, map[string]any{"site.name": "Holo Hotel"})
+	assertValues(t, map[string]any{"site.name": "Reborn Hotel"})
 }
 
 func TestInvalidRowsAreIgnoredAndLogged(t *testing.T) {
@@ -202,7 +208,7 @@ func TestInvalidRowsAreIgnoredAndLogged(t *testing.T) {
 	putRows(t, db, map[string]string{
 		"auth.rememberDays":       `"7"`,
 		"auth.sessionIdleMinutes": `1`,
-		"site.shortName":          `Reborn`,
+		"site.shortName":          `Retro`,
 		"site.maintenance":        `null`,
 		"site.url":                `"https://hotel.example.com"`,
 	})
@@ -211,7 +217,7 @@ func TestInvalidRowsAreIgnoredAndLogged(t *testing.T) {
 	assertValues(t, map[string]any{
 		"auth.rememberDays":       100,
 		"auth.sessionIdleMinutes": 30,
-		"site.shortName":          "Holo",
+		"site.shortName":          "Reborn",
 		"site.maintenance":        false,
 		"site.url":                "https://hotel.example.com",
 	})
@@ -256,7 +262,7 @@ func TestUndeclaredAndConfigRowsAreIgnoredAndLogged(t *testing.T) {
 	})
 	load(t, db)
 
-	assertValues(t, map[string]any{"site.name": "Holo Hotel", "store.path": "habbo.db", "cms.port": 18000})
+	assertValues(t, map[string]any{"site.name": "Reborn Hotel", "store.path": "habbo.db", "cms.port": 18000})
 	for _, key := range []string{"site.colour", "site"} {
 		if _, ok := current()[key]; ok {
 			t.Errorf("the undeclared %s row was loaded", key)
@@ -312,18 +318,18 @@ func TestSetWritesTheRowAndAppliesAtOnce(t *testing.T) {
 	userID := createUser(t, db)
 	load(t, db)
 
-	for key, value := range map[string]any{"site.maintenance": true, "site.name": "Reborn Hotel", "auth.rememberDays": 7} {
+	for key, value := range map[string]any{"site.maintenance": true, "site.name": "Holo Hotel", "auth.rememberDays": 7} {
 		if err := Set(t.Context(), db, userID, key, value); err != nil {
 			t.Fatalf("Set %s: %v", key, err)
 		}
 	}
 
-	assertValues(t, map[string]any{"site.maintenance": true, "site.name": "Reborn Hotel", "auth.rememberDays": 7})
+	assertValues(t, map[string]any{"site.maintenance": true, "site.name": "Holo Hotel", "auth.rememberDays": 7})
 	rows := listRows(t, db)
 	if len(rows) != 3 {
 		t.Errorf("rows = %+v, want the 3 settings that were set", rows)
 	}
-	for key, literal := range map[string]string{"site.maintenance": `true`, "site.name": `"Reborn Hotel"`, "auth.rememberDays": `7`} {
+	for key, literal := range map[string]string{"site.maintenance": `true`, "site.name": `"Holo Hotel"`, "auth.rememberDays": `7`} {
 		row := rows[key]
 		if row.Value != literal || row.UpdatedByUserID != (sql.NullInt64{Int64: userID, Valid: true}) || !row.UpdatedAt.After(seededAt) {
 			t.Errorf("row %s = %+v, want %s written now by user %d", key, row, literal, userID)
@@ -336,7 +342,7 @@ func TestSetToTheDefaultDeletesTheRow(t *testing.T) {
 	putRows(t, db, map[string]string{"site.name": `"Row Hotel"`, "site.maintenance": `true`})
 	load(t, db)
 
-	if err := Set(t.Context(), db, 0, "site.name", "Holo Hotel"); err != nil {
+	if err := Set(t.Context(), db, 0, "site.name", "Reborn Hotel"); err != nil {
 		t.Fatalf("Set: %v", err)
 	}
 
@@ -347,7 +353,7 @@ func TestSetToTheDefaultDeletesTheRow(t *testing.T) {
 	if _, ok := rows["site.maintenance"]; !ok {
 		t.Error("the untouched site.maintenance row was deleted")
 	}
-	assertValues(t, map[string]any{"site.name": "Holo Hotel", "site.maintenance": true})
+	assertValues(t, map[string]any{"site.name": "Reborn Hotel", "site.maintenance": true})
 }
 
 func TestSetRefusals(t *testing.T) {

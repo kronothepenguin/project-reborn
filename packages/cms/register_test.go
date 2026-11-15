@@ -79,7 +79,7 @@ func TestRegisterCreatesTheAccountAndSignsIn(t *testing.T) {
 	if n := count(t, db, `SELECT COUNT(*) FROM wallets WHERE user_id = ? AND credits = 500`, user.ID); n != 1 {
 		t.Errorf("%d wallets with the start credits, want 1", n)
 	}
-	if n := count(t, db, `SELECT COUNT(*) FROM wallet_transactions WHERE avatar_id = ? AND credits = 500 AND reason = 'registration' AND detail = 'Welcome to Holo Hotel!'`, avatar.ID); n != 1 {
+	if n := count(t, db, `SELECT COUNT(*) FROM wallet_transactions WHERE avatar_id = ? AND credits = 500 AND reason = 'registration' AND detail = 'Welcome to Reborn Hotel!'`, avatar.ID); n != 1 {
 		t.Errorf("%d welcome ledger rows, want 1", n)
 	}
 	if n := count(t, db, `SELECT COUNT(*) FROM homes JOIN profiles ON homes.profile_id = profiles.id WHERE avatar_id = ?`, avatar.ID); n != 1 {
@@ -360,8 +360,8 @@ func TestRegisterPageHasTheShortNameForItsTitle(t *testing.T) {
 	form := registration()
 	form.Del("terms")
 
-	wantPage(t, serve(mux, "GET", "/register", nil, nil), http.StatusOK, "ShortName:Holo")
-	wantPage(t, serve(mux, "POST", "/register", nil, form), http.StatusUnprocessableEntity, "ShortName:Holo")
+	wantPage(t, serve(mux, "GET", "/register", nil, nil), http.StatusOK, "ShortName:Reborn")
+	wantPage(t, serve(mux, "POST", "/register", nil, form), http.StatusUnprocessableEntity, "ShortName:Reborn")
 }
 
 func TestRegisterPageOffersTheDates(t *testing.T) {

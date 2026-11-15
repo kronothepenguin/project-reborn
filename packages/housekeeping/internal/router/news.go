@@ -33,10 +33,10 @@ const newsDateFormat = "2006-01-02"
 // newsCategories are the choices of Holo's form, in its order.
 func newsCategories() []string {
 	return []string{
-		"HoloCMS", "News", "Furniture", "Updates", "Server", "Credits",
+		"Reborn CMS", "News", "Furniture", "Updates", "Server", "Credits",
 		settings.GetString("site.shortName") + " Club",
 		"Maintenance", "Technical", "Downtime", "Website", "Special Offers", "Sponsored",
-		"Events & Competitions", "Security", "Staff", "Announcements", "Tips", "Holograph Emulator", "Other",
+		"Events & Competitions", "Security", "Staff", "Announcements", "Tips", "Reborn Server", "Other",
 	}
 }
 

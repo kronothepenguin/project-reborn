@@ -85,7 +85,7 @@ func badgesOf(t *testing.T, db *sql.DB, avatarID int64) map[string]bool {
 
 func TestGuestsReadTheClubPage(t *testing.T) {
 	_, mux := newSite(t)
-	wantPage(t, serve(mux, "GET", "/club", nil, nil), http.StatusOK, "club.html", "SignedIn:false", "ShortName:Holo",
+	wantPage(t, serve(mux, "GET", "/club", nil, nil), http.StatusOK, "club.html", "SignedIn:false", "ShortName:Reborn",
 		"Price1Month:20 Price3Months:50 Price6Months:80 DaysPerMonth:31")
 }
 

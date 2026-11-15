@@ -85,6 +85,6 @@ func TestAFailedStartClosesHousekeeping(t *testing.T) {
 		if strings.HasPrefix(route.path, "/housekeeping/_astro/") || strings.HasSuffix(route.path, ".html") {
 			continue
 		}
-		wantPage(t, serve(mux, route.method, route.path, nil, nil), http.StatusServiceUnavailable, "update-failed.html {SiteName:Holo Hotel}")
+		wantPage(t, serve(mux, route.method, route.path, nil, nil), http.StatusServiceUnavailable, "update-failed.html {SiteName:Reborn Hotel}")
 	}
 }

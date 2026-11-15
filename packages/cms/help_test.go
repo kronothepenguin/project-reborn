@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	helpForm    = "help.html {ShortName:Holo Result: Form:true}"
+	helpForm    = "help.html {ShortName:Reborn Result: Form:true}"
 	helpSent    = "Result:Ticket submitted. We will get back to you shortly, please be patient as this might take a while. Note that you cannot send any more support requests until this support ticket is picked up. Form:false"
 	helpWaiting = "Result:Unable to submit support request: you still have a pending support request. Please try again later. Form:false"
 	helpBlank   = "Result:Please do not leave any fields blank Form:true"
@@ -40,7 +40,7 @@ func TestAHelpRequestWritesTheActiveHabbosTicket(t *testing.T) {
 	db, mux := newSite(t)
 	userID := habbo(t, db, "dora@example.com", "Dora")
 	secondHabbo(t, db, userID, "DoraToo")
-	wantPage(t, askHelp(mux, login(t, db, "DoraToo"), "Lost my sofa", "It went <away>.\r\nWhere is it?"), http.StatusOK, "help.html {ShortName:Holo "+helpSent+"}")
+	wantPage(t, askHelp(mux, login(t, db, "DoraToo"), "Lost my sofa", "It went <away>.\r\nWhere is it?"), http.StatusOK, "help.html {ShortName:Reborn "+helpSent+"}")
 
 	var avatar, post sql.NullInt64
 	var subject, message, ip string
