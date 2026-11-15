@@ -9,6 +9,8 @@ description: How Go page structs feed the Astro pages, and how a page answers a 
 - A Go handler fills a page struct, and the Astro page reads it through `[[ ]]` templates.
 - Page structs on the `signed-out` layout embed `hotelStatus`, because the layout reads its names and counts and
   rendering fails without them.
+- The seven account pages render the `account` layout (`src/layouts/account.astro`), which renders `community`. Their
+  page structs embed `accountPage`, because the layout reads `ClubDays`, `Result` and `Failed`.
 - A page's field must keep a name apart from the layout's fields: a field named like the layout's hides it.
   `TestNoPageHidesAFieldOfTheLayout` in `internal/router/pages_test.go` guards every CMS page.
 
