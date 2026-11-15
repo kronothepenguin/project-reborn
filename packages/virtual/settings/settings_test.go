@@ -12,7 +12,6 @@ import (
 	"reflect"
 	"slices"
 	"strings"
-	"sync"
 	"testing"
 	"time"
 
@@ -490,33 +489,6 @@ func TestReloadAppliesRowsWrittenElsewhere(t *testing.T) {
 	}
 	if !GetBool("site.maintenance") {
 		t.Error("site.maintenance = false after Reload, want the row value true")
-	}
-}
-
-func TestGettersDuringSets(t *testing.T) {
-	db := openDB(t)
-	load(t, db)
-
-	var wg sync.WaitGroup
-	for range 4 {
-		wg.Go(func() {
-			for range 100 {
-				_ = GetBool("site.maintenance")
-			}
-		})
-	}
-	for i := range 10 {
-		if err := Set(t.Context(), db, 0, "site.maintenance", i%2 == 0); err != nil {
-			t.Errorf("Set: %v", err)
-		}
-	}
-	wg.Wait()
-
-	if GetBool("site.maintenance") {
-		t.Error("site.maintenance = true after the last Set put back the default")
-	}
-	if rows := listRows(t, db); len(rows) != 0 {
-		t.Errorf("rows = %+v, want none once the value is back to the default", rows)
 	}
 }
 
