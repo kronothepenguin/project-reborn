@@ -1,12 +1,17 @@
 ---
 name: adding-svelte-interactivity
-description: Builds Svelte 5 islands, and promotes Astro components to Svelte, when UI needs client state, events, browser APIs or fetch, hydrated with client:only="svelte". Use when a component must react to the user in the browser, call a Go endpoint, or move from .astro to .svelte.
+description: Builds the Svelte 5 islands of an app, in its feature folders, and promotes Astro components to Svelte, when UI needs client state, events, browser APIs or fetch, hydrated with client:only="svelte". Use when a component must react to the user in the browser, call a Go endpoint, or move from .astro to .svelte.
 ---
 
 # Adding Svelte interactivity
 
-Svelte holds the UI that runs in the browser. Static markup and every layout stay `.astro`, as
-`building-astro-components` says. Interactive `.svelte` files live in `src/components/`, next to the `.astro` ones.
+An island is a Svelte component of an app that runs in the browser. Code that runs in the browser lives in an island,
+an inline `<script>` included: a ticking clock is an island. An `.astro` file holds markup only, and every layout
+stays `.astro`, as `building-astro-components` says.
+
+An island lives in its feature's sub-folder of `src/components/`, next to the `.astro` components
+(`src/components/orders/order-filter.svelte`). A component that several apps need is a primitive of the shared
+components package: build it with `building-svelte-primitives`.
 
 The project's knowledge names the folders, the commands and the checks.
 
@@ -26,32 +31,33 @@ The project's knowledge names the folders, the commands and the checks.
 
 Do every step in one change:
 
-1. Rename `button.astro` to `button.svelte`.
+1. Rename `orders/order-row.astro` to `orders/order-row.svelte`.
 2. Port the frontmatter to runes: `Astro.props` → `let { ... } = $props()`, mutable values → `$state(...)`, computed
    values → `$derived(...)`, side effects → `$effect(...)`.
 3. Port the template: `class:list` → a `class` value; `<slot />` → `let { children } = $props()` and
    `{@render children?.()}`.
-4. Update every import to `./button.svelte` and add `client:only="svelte"` at each usage.
-5. Delete the `.astro` file.
+4. Port an inline `<script>`: DOM lookups → state and markup, timers and listeners → `$effect(...)` with a cleanup.
+5. Update every import to `order-row.svelte` and add `client:only="svelte"` at each usage.
+6. Delete the `.astro` file.
 
 ```svelte
-<!-- interactive-button.svelte -->
+<!-- src/components/orders/poke-button.svelte -->
 <script lang="ts">
+  import { Button } from "@acme/components";
+
   let { label = "Click me" } = $props();
   let count = $state(0);
 </script>
 
-<button class="rounded bg-sky-600 px-4 py-1.5 text-sm font-bold text-white" onclick={() => count++}>
-  {label} ({count})
-</button>
+<Button onclick={() => count++}>{label} ({count})</Button>
 ```
 
 ```astro
 ---
-import InteractiveButton from "../components/interactive-button.svelte";
+import PokeButton from "../components/orders/poke-button.svelte";
 ---
 
-<InteractiveButton client:only="svelte" label="Poke" />
+<PokeButton client:only="svelte" label="Poke" />
 ```
 
 ## Svelte 5
@@ -68,8 +74,10 @@ from the page's markup as `templating-astro-pages` says. The endpoint is an ordi
 answers 2xx; `applying-go-patterns` owns it.
 
 ```svelte
-<!-- message-sender.svelte -->
+<!-- src/components/messages/message-sender.svelte -->
 <script lang="ts">
+  import { Button, Input } from "@acme/components";
+
   let { endpoint = "/messages" } = $props();
 
   let message = $state("");
@@ -98,8 +106,8 @@ answers 2xx; `applying-go-patterns` owns it.
     send();
   }}
 >
-  <input class="rounded border border-zinc-500 px-2 py-1" bind:value={message} />
-  <button type="submit" disabled={status === "sending"}>Send</button>
+  <Input bind:value={message} />
+  <Button type="submit" disabled={status === "sending"}>Send</Button>
 </form>
 
 {#if status === "sent"}

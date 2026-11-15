@@ -6,22 +6,6 @@ description: Lists what the move to OKF + Skills found, for the user to decide.
 
 Each entry is settled by the user, then removed from this file.
 
-# Skill rules the code departs from
-
-For each rule, the user says whether the rule changes or the code does.
-
-Frontend:
-
-- `building-astro-components`: `src/components` stays flat. The CMS and housekeeping use a sub-folder per feature.
-- `building-astro-components`: a page imports its body layout. `maintenance.astro` of the CMS and `update-failed.astro`
-  of the CMS and housekeeping import the document layout.
-- `building-astro-components`: an `.astro` file holds no client behaviour. Housekeeping's `clock.astro` and
-  `news/news-fields.astro` carry inline scripts.
-- `templating-astro-pages`: pages exist for GET routes. Some pages are templates other handlers answer with:
-  `maintenance`, `update-failed`, `not-found`, `banned`.
-- `building-astro-components`: layouts stay `.astro`. They do, and the CMS layouts `community.astro` and
-  `help-tool.astro` render Svelte islands: may a layout host islands?
-
 # Found in the code
 
 - `packages/store/schema/auth.schema.sql`: the comment on `sso_tickets` says its id is a SHA-256 digest. The code
@@ -71,6 +55,8 @@ Frontend:
   - `HandleAccountView` → `HandleAccountRedirect`
 - `packages/server`: its public folders `game`, `encoding`, `transport` and `r26`. The official layout puts supporting
   packages in `internal/` first. The master asks the user which of them other modules may import.
-- The tables `furni` and `home_inventory` are renamed `furnis` and `home_inventories`, each through an update file that
-  rebuilds the table, with every query, generated type and caller that names it. `avatar_game_data` stays: `data` is a
-  plural. Rule: `adding-data-persistence`.
+- The tables `furni`, `home_inventory` and `catalogue_item_furni` are renamed `furnis`, `home_inventories` and
+  `catalogue_item_furnis`, each through an update file that rebuilds the table, with every query, generated type and
+  caller that names it. `avatar_game_data` stays: `data` is a plural. Rule: `adding-data-persistence`.
+- Housekeeping's `clock.astro` and `news/news-fields.astro` become Svelte islands: an `.astro` file holds markup only.
+  Rules: `building-astro-components`, `adding-svelte-interactivity`.

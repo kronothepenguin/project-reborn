@@ -1,6 +1,6 @@
 ---
 name: templating-astro-pages
-description: Names Astro page files after the Go routes that serve them and injects server data with [[ ]] html/template delimiters. Use when adding a page served by a Go handler, naming or moving an Astro page, or passing Go data into a page or an island.
+description: Names Astro page files after the Go routes that serve them, and state pages after what they show, and injects server data with [[ ]] html/template delimiters. Use when adding a page served by a Go handler, naming or moving an Astro page, or passing Go data into a page or an island.
 ---
 
 # Templating Astro pages for Go
@@ -22,8 +22,13 @@ after the parameter. Give parameters lowercase names (`{id}`, in place of `{room
 | `GET /rooms/{id}` | `src/pages/rooms/id.astro` | `rooms/id.html` |
 | `GET /users/{id}/rooms` | `src/pages/users/id/rooms.astro` | `users/id/rooms.html` |
 
-- A page exists for each GET route. A POST handler answers with its GET page's template; `applying-go-patterns` owns
-  the handler files and their registration.
+- A page exists for each GET route that renders one. A POST handler answers with its GET page's template;
+  `applying-go-patterns` owns the handler files and their registration.
+- A state page answers for several routes, such as not found, banned or maintenance. Name it for what it shows and put
+  it in the folder of the routes it answers for: `groups/not-found.astro` for the `/groups/...` routes,
+  `maintenance.astro` for the whole app.
+- Leave out a prefix that every route of the app shares, the Astro `base`: an app mounted under `/admin` keeps
+  `GET /admin/settings` in `src/pages/settings.astro`.
 - Set `build: { format: "file" }` in `astro.config.mjs`, so `rooms.astro` builds to `rooms.html`.
 
 ## Inject server data
