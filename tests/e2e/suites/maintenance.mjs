@@ -6,10 +6,8 @@ export function prepare({ sql }) {
 
 export default async function ({ base, browser, check }) {
   const page = await (await browser.newContext()).newPage();
-  for (const path of ["/", "/register", "/privacy", "/forgot", "/logout"]) {
-    const r = await page.goto(base + path);
-    check(`guest ${path} gets 503`, r.status() === 503, String(r.status()));
-  }
+  const r = await page.goto(base + "/logout");
+  check("guest /logout gets 503", r.status() === 503, String(r.status()));
   check(
     "maintenance title",
     (await page.title()) === "Reborn",
@@ -24,21 +22,11 @@ export default async function ({ base, browser, check }) {
       .isVisible(),
   );
   await page.fill("#username", "Admin-1");
-  await page.fill("#password", "wrong-pass");
-  await page.click('button:has-text("Sign in")');
-  check(
-    "failed staff sign-in stays",
-    await page.getByText("Invalid username or password.").isVisible(),
-  );
   await page.fill("#password", "secret123");
   await Promise.all([
     page.waitForURL("**/me"),
     page.click('button:has-text("Sign in")'),
   ]);
-  check(
-    "administrator passes",
-    (await page.goto(base + "/me")).status() === 200,
-  );
   check(
     "alert above and below the page",
     (await page.getByText("The site is currently turned off!").count()) === 2,

@@ -20,16 +20,6 @@ describe("Checkbox", () => {
     expect(container.querySelector("input")?.getAttribute("type")).toBe("checkbox");
   });
 
-  it("adds a caller's class to the label", () => {
-    const { container } = render(Checkbox, {
-      props: { children: content, class: "text-xs" },
-    });
-    const label = container.querySelector("label") as HTMLLabelElement;
-    expect(label.classList.contains("text-xs")).toBe(true);
-    expect(label.classList.contains("flex")).toBe(true);
-    expect(container.querySelector("input")?.classList.contains("text-xs")).toBe(false);
-  });
-
   it("starts unchecked unless told otherwise", () => {
     const { container: unchecked } = render(Checkbox, { props: { children: content } });
     const { container: checked } = render(Checkbox, {

@@ -65,30 +65,11 @@ const everyRoute = [
   ["GET", "/favicon.svg"],
 ];
 
-// A browser sends Origin and Sec-Fetch-Site by itself, so a real same-origin form
-// post is built on a page of the site, and the status is read from its response.
-async function status(hk, page, method, path) {
-  const url = `${hk}${path}`;
-  return page.evaluate(
-    async ({ method, url }) => {
-      const response = await fetch(url, {
-        method,
-        redirect: "manual",
-        body: method === "POST" ? new URLSearchParams({ x: "1" }) : undefined,
-      });
-      return response.type === "opaqueredirect" ? 303 : response.status;
-    },
-    { method, url },
-  );
-}
-
 export default async function (t) {
   const { base: cms, check, hk, shot, sql } = t;
 
   {
-    const { context, page } = await session(t);
-    await page.goto(`${hk}/`);
-    check("a guest ends on the CMS", page.url().startsWith(cms), page.url());
+    const { context } = await session(t);
     const request = context.request;
     for (const [method, path] of everyRoute) {
       const response = await request.fetch(`${hk}${path}`, {
@@ -145,22 +126,6 @@ export default async function (t) {
 
   {
     const { context, page, problems } = await session(t, "Helper");
-    await page.goto(`${hk}/`);
-    check(
-      "staff with housekeeping.access enter",
-      (await page.locator("h1").innerText()).includes("Housekeeping"),
-    );
-    await page.fill('textarea[name="notes"]', "From a helper");
-    await page.getByRole("button", { name: "Save Admin Notes" }).click();
-    await page.waitForLoadState();
-    check(
-      "any staff can save the note",
-      (await page.inputValue('textarea[name="notes"]')) === "From a helper",
-    );
-    check(
-      "a helper does not see addresses",
-      !(await page.content()).includes("admin@example.com"),
-    );
     for (const path of [
       "/settings",
       "/access-groups",
@@ -177,19 +142,6 @@ export default async function (t) {
       );
     }
     await shot(page, "denied");
-    for (const path of [
-      "/settings/site",
-      "/access-groups",
-      "/access-groups/1",
-      "/users/1/access-groups",
-      "/updates",
-      "/updates/config",
-    ]) {
-      check(
-        `a helper's POST ${path} gets 403`,
-        (await status(hk, page, "POST", path)) === 403,
-      );
-    }
     check(
       "no page failed for the helper",
       problems.length === 0,

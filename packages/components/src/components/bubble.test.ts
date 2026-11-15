@@ -2,6 +2,7 @@ import { createRawSnippet } from "svelte";
 import { render } from "@testing-library/svelte";
 import { describe, expect, it } from "vitest";
 import Bubble from "./bubble.svelte";
+import "../styles.css";
 
 const content = createRawSnippet(() => ({ render: () => "<p>Please enter a name.</p>" }));
 
@@ -11,10 +12,17 @@ describe("Bubble", () => {
     expect(container.textContent).toContain("Please enter a name.");
   });
 
-  it("points down by default and up on request", () => {
+  it("points its tail down by default and up on request", () => {
     const down = render(Bubble, { props: { children: content } });
-    expect((down.container.querySelector("div") as HTMLDivElement).className).toContain("before:-bottom-1.5");
     const up = render(Bubble, { props: { children: content, tail: "top" } });
-    expect((up.container.querySelector("div") as HTMLDivElement).className).toContain("before:-top-1.5");
+    const downBox = down.container.querySelector("div") as HTMLDivElement;
+    const upBox = up.container.querySelector("div") as HTMLDivElement;
+    const downTail = getComputedStyle(downBox, "::before");
+    const upTail = getComputedStyle(upBox, "::before");
+
+    expect(parseFloat(downTail.bottom)).toBeLessThan(0);
+    expect(parseFloat(downTail.top)).toBeGreaterThan(0);
+    expect(parseFloat(upTail.top)).toBeLessThan(0);
+    expect(parseFloat(upTail.bottom)).toBeGreaterThan(0);
   });
 });
