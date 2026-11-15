@@ -1,8 +1,6 @@
 ---
-import { BBCodeEditor, Checkbox, Input, Select, Table } from "@project-reborn/components";
-import Box from "../components/box.astro";
+import { BBCodeEditor, Box, Button, Checkbox, Input, Select, Table } from "@project-reborn/components";
 import Message from "../components/message.astro";
-import Submit from "../components/submit.astro";
 import Housekeeping from "../layouts/housekeeping.astro";
 ---
 
@@ -59,7 +57,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
         </tbody>
       </Table>
       <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
-        <Submit>[[ .Section.Button ]]</Submit>
+        <Button variant="plain" size="compact" type="submit">[[ .Section.Button ]]</Button>
       </div>
     </Box>
   </form>

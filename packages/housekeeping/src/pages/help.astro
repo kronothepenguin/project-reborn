@@ -1,8 +1,6 @@
 ---
-import { Table } from "@project-reborn/components";
-import Box from "../components/box.astro";
+import { Box, Button, Table } from "@project-reborn/components";
 import Message from "../components/message.astro";
-import Submit from "../components/submit.astro";
 import Housekeeping from "../layouts/housekeeping.astro";
 ---
 
@@ -34,7 +32,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
               Yes
               [[ else ]]
               <form method="post" action="/housekeeping/help/[[ .ID ]]/pick">
-                No <Submit>Pick up</Submit>
+                No <Button variant="plain" size="compact" type="submit">Pick up</Button>
               </form>
               [[ end ]]
             </td>
@@ -42,13 +40,13 @@ import Housekeeping from "../layouts/housekeeping.astro";
             <td>
               <form method="post" action="/housekeeping/help/[[ .ID ]]/pick">
                 <input type="hidden" name="reply" value="1" />
-                <Submit>Reply</Submit>
+                <Button variant="plain" size="compact" type="submit">Reply</Button>
               </form>
             </td>
             [[ end ]]
             <td>
               <form method="post" action="/housekeeping/help/[[ .ID ]]/close">
-                <Submit>Close</Submit>
+                <Button variant="plain" size="compact" type="submit">Close</Button>
               </form>
             </td>
           </tr>

@@ -1,8 +1,6 @@
 ---
-import { Input, Select, Table } from "@project-reborn/components";
-import Box from "../components/box.astro";
+import { Box, Button, Input, Select, Table } from "@project-reborn/components";
 import Message from "../components/message.astro";
-import Submit from "../components/submit.astro";
 import Housekeeping from "../layouts/housekeeping.astro";
 ---
 
@@ -57,7 +55,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
           </tbody>
         </Table>
         <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
-          <Submit>Create Voucher</Submit>
+          <Button variant="plain" size="compact" type="submit">Create Voucher</Button>
         </div>
       </Box>
     </form>
@@ -78,7 +76,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
             <td>[[ .Credits ]]</td>
             <td>
               <form method="post" action="/housekeeping/vouchers/[[ .Path ]]/delete">
-                <Submit>Delete</Submit>
+                <Button variant="plain" size="compact" type="submit">Delete</Button>
               </form>
             </td>
           </tr>

@@ -1,7 +1,5 @@
 ---
-import { Input, Table } from "@project-reborn/components";
-import Box from "../components/box.astro";
-import Submit from "../components/submit.astro";
+import { Box, Button, Input, Table } from "@project-reborn/components";
 import Housekeeping from "../layouts/housekeeping.astro";
 ---
 
@@ -16,7 +14,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
               <Input id="habbo-query" name="q" value="[[ .Query ]]" variant="border" />
             </div>
           </div>
-          <Submit>Search</Submit>
+          <Button variant="plain" size="compact" type="submit">Search</Button>
         </div>
       </Box>
     </form>

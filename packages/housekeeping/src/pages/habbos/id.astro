@@ -1,8 +1,6 @@
 ---
-import { Checkbox, Input, Select, Table } from "@project-reborn/components";
-import Box from "../../components/box.astro";
+import { Box, Button, Checkbox, Input, Select, Table } from "@project-reborn/components";
 import Message from "../../components/message.astro";
-import Submit from "../../components/submit.astro";
 import Housekeeping from "../../layouts/housekeeping.astro";
 ---
 
@@ -47,7 +45,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
         </Table>
         [[ if .CanEdit ]]
         <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
-          <Submit>Save Habbo</Submit>
+          <Button variant="plain" size="compact" type="submit">Save Habbo</Button>
         </div>
         [[ end ]]
       </Box>
@@ -58,7 +56,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
       <Box title="Archived Habbo">
         <p class="p-1">The owner archived this habbo, so it cannot sign in.</p>
         <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
-          <Submit>Restore Habbo</Submit>
+          <Button variant="plain" size="compact" type="submit">Restore Habbo</Button>
         </div>
       </Box>
     </form>
@@ -119,7 +117,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
         </Table>
         [[ if .CanEdit ]]
         <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
-          <Submit>Save User</Submit>
+          <Button variant="plain" size="compact" type="submit">Save User</Button>
         </div>
         [[ end ]]
         [[ if .CanBan ]]
@@ -145,7 +143,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
           </tbody>
         </Table>
         <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
-          <Submit>Give Credits</Submit>
+          <Button variant="plain" size="compact" type="submit">Give Credits</Button>
         </div>
       </Box>
     </form>
@@ -178,7 +176,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
           </tbody>
         </Table>
         <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
-          <Submit>Save Attributes</Submit>
+          <Button variant="plain" size="compact" type="submit">Save Attributes</Button>
         </div>
       </Box>
     </form>
@@ -201,7 +199,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
             [[ if $.CanEdit ]]
             <td>
               <form method="post" action="/housekeeping/habbos/[[ $.Target.ID ]]/badges/[[ .Code ]]/delete">
-                <Submit>Remove</Submit>
+                <Button variant="plain" size="compact" type="submit">Remove</Button>
               </form>
             </td>
             [[ end ]]
@@ -230,7 +228,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
           </tbody>
         </Table>
         <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
-          <Submit>Give badge</Submit>
+          <Button variant="plain" size="compact" type="submit">Give badge</Button>
         </div>
       </Box>
     </form>

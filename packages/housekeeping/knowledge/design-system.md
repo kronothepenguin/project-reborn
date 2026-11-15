@@ -11,16 +11,20 @@ holo-port/0041), built from `docs/hk.png` and `knowledge/colours.md`.
 
 - Blue navigation and forms, gold data lists through `Box color="gold"` and `Table`, and plain form rows through
   `Table variant="form"`.
-- `Table` comes from `packages/components`. A class with `&` in a Svelte component that takes a spread belongs in a
+- `Box`, `Table` and the submit button, `Button variant="plain" size="compact" type="submit"`, come from
+  `packages/components`. A class with `&` in a Svelte component that takes a spread belongs in a
   script constant, because the server renderer escapes a literal class twice.
 
 # The layout
 
 `src/layouts/housekeeping.astro` has the grey bar with who is logged in and their previous login, `Log out` beside the
-clock box, the tabs over the blue strip, the left column of `box` components and the content.
+clock box, the tabs over the blue strip, the left column of `Box` sections and the content.
 
 - `Log out` has its own route, `POST /housekeeping/logout`, and lands on `site.url`.
-- The clock shows the server's time in UTC from Go and the local time from a script.
+- The clock, `src/components/clock.astro`, shows the server's time in UTC and the local time. Its island
+  `clock-time.svelte` ticks both; Go's server date and time stand in its fallback until the island starts.
+- The clock's island is the first island of every page, so it carries Astro's script that wakes the page's other
+  islands, those inside `[[ if ]]` included.
 
 # The chrome
 

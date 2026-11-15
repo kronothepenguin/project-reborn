@@ -1,9 +1,7 @@
 ---
-import { Table } from "@project-reborn/components";
-import Box from "../components/box.astro";
+import { Box, Button, Table } from "@project-reborn/components";
 import ImagePages from "../components/images/image-pages.svelte";
 import Message from "../components/message.astro";
-import Submit from "../components/submit.astro";
 import Housekeeping from "../layouts/housekeeping.astro";
 ---
 
@@ -38,7 +36,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
           </td>
           <td>
             <form method="post" action="/housekeeping/images/[[ .ID ]]/delete">
-              <Submit>Delete</Submit>
+              <Button variant="plain" size="compact" type="submit">Delete</Button>
             </form>
           </td>
         </tr>

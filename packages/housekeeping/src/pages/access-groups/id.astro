@@ -1,9 +1,7 @@
 ---
-import { Checkbox, Input, Select, Table } from "@project-reborn/components";
-import Box from "../../components/box.astro";
-import GroupFields from "../../components/group-fields.astro";
+import { Box, Button, Checkbox, Input, Select, Table } from "@project-reborn/components";
+import GroupFields from "../../components/access-groups/group-fields.astro";
 import Message from "../../components/message.astro";
-import Submit from "../../components/submit.astro";
 import Housekeeping from "../../layouts/housekeeping.astro";
 ---
 
@@ -64,7 +62,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
           </tbody>
         </Table>
         <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
-          <Submit>Save Group</Submit>
+          <Button variant="plain" size="compact" type="submit">Save Group</Button>
         </div>
       </Box>
     </form>
@@ -91,7 +89,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
                   <option value="[[ .ID ]]">[[ .Name ]]</option>
                   [[ end ]][[ end ]]
                 </Select>
-                <Submit>Save</Submit>
+                <Button variant="plain" size="compact" type="submit">Save</Button>
                 <button
                   type="submit"
                   name="remove"
@@ -119,7 +117,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
           <div class="text-neutral-500">The name of one of their habbos, or their user id.</div>
           <Input id="habbo-search" name="habbo" value="[[ .Search ]]" variant="border" />
         </div>
-        <Submit>Find User</Submit>
+        <Button variant="plain" size="compact" type="submit">Find User</Button>
       </form>
       [[ if .Found.UserID ]]
       <form method="post" action="/housekeeping/users/[[ .Found.UserID ]]/access-groups" class="flex flex-wrap items-end gap-2 border-t-2 border-black p-1">
@@ -135,7 +133,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
             [[ end ]][[ end ]]
           </Select>
         </div>
-        <Submit>Add To Group</Submit>
+        <Button variant="plain" size="compact" type="submit">Add To Group</Button>
       </form>
       [[ end ]]
     </Box>
@@ -143,7 +141,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
     <Box title="Delete Group">
       <form method="post" action="/housekeeping/access-groups/[[ .Group.ID ]]/delete" class="flex flex-wrap items-center gap-2 p-1">
         <Checkbox name="confirm" value="1">Delete this group and take its attributes from its members</Checkbox>
-        <Submit>Delete Group</Submit>
+        <Button variant="plain" size="compact" type="submit">Delete Group</Button>
       </form>
     </Box>
   </div>
