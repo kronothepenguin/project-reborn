@@ -72,6 +72,11 @@ func New(db *sql.DB) *Server {
 		slog.Error(err.Error())
 	}
 	scheduler.Every(1, scheduler.Hour, prune)
+	// Room bans end, and the game server, which writes them, deletes the ended ones every minute, as expired
+	// sessions go.
+	scheduler.Every(1, scheduler.Minute, updates.WhenCurrent(func(ctx context.Context) error {
+		return game.DeleteEndedRoomBans(ctx, db, time.Now())
+	}))
 	return &Server{db: db}
 }
 

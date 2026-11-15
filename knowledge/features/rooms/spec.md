@@ -37,6 +37,7 @@ It builds on [habbos](/features/habbos/spec.md).
 - A habbo heads for another room before a door answers: the late answer leaves it outside.
 - A banned habbo tries a room: it stays outside (decision server/0067).
 - A room ban reaches its end: the habbo enters again, and a second ban sets the new end.
+- A room ban ends: the next scheduled run deletes it.
 - The owner or a staff member with `fuse_enter_locked_rooms` tries a room: it passes any door and any ban.
 - A habbo enters its own room: it gets the owner's controls; a habbo with rights gets the furniture controls.
 - A habbo leaves, enters another room or logs out: the others see it go (decision server/0071).

@@ -60,6 +60,8 @@ tasks in its `New`, written as `scheduler.Every(1, scheduler.Hour, task)`.
 | --- | --- | --- |
 | Delete expired reset links ([0044](/decisions/holo-port/0044-expired-reset-links-deleted.md)) | CMS | 1 minute |
 | Delete expired sessions ([0050](/decisions/holo-port/0050-expired-sessions-deleted.md)) | CMS, housekeeping | 1 minute |
+| Prune the chat history ([0084](/decisions/server/0084-the-game-server-prunes-the-chat-hourly.md)) | Game server | 1 hour |
+| Delete ended room bans | Game server | 1 minute |
 
 No task runs while updates wait, because its code may need them.
 

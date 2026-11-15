@@ -30,7 +30,8 @@ So far `packages/server` holds the listeners, `transport`, `encoding`, `r26`, wh
 and `game`, whose rules log a habbo in and out (s2-05) and list, create, change and
 delete rooms. A session that ends logs its habbo out. `server.New` loads the navigator's shared data into
 `virtual/category`, `virtual/model` and `virtual/room` (s3-02), and prunes the chat
-history every hour (0084 (`knowledge/decisions/server/0084-the-game-server-prunes-the-chat-hourly.md`)).
+history every hour (0084 (`knowledge/decisions/server/0084-the-game-server-prunes-the-chat-hourly.md`)) and deletes the
+ended room bans every minute.
 
 S4 brought the rooms: `internal/r26/room.go` and `internal/r26/room_utils.go` serve hh_room's entry, walking,
 chat, rights, ratings, events, badges, groups, the queue and the spectators, through `game`'s rules on the loaded rooms

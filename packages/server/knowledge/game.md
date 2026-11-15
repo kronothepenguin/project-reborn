@@ -46,6 +46,9 @@ client through its `Session` (`knowledge/decisions/server/0039-rules-notify-sess
   the database updates are applied
   (`knowledge/decisions/server/0084-the-game-server-prunes-the-chat-hourly.md`).
   Housekeeping's Chat Log Viewer reads the lines.
+- `DeleteEndedRoomBans(ctx, db, now)` deletes the room bans that ended;
+  `server.New` runs it every minute, once the database updates are applied, as
+  the CMS and housekeeping delete expired sessions.
 - Chat: `Say`, `Shout` and `Whisper` send `Chat` events; `SetTyping` sends
   `Typing`; `Dance`, `StopDancing` and `Wave` change statuses; `Ignore`,
   `Unignore` and `IgnoreList` keep the ignore list, saved and in the online

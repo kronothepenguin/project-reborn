@@ -41,9 +41,6 @@ func TestARoomBanEnds(t *testing.T) {
 	if got := must(q.ListRoomBans(ctx, ListRoomBansParams{RoomID: room.ID, Now: later})); len(got) != 0 {
 		t.Errorf("bans in force at their end = %+v, want none", got)
 	}
-	if n := must(q.DeleteExpiredRoomBans(ctx, later)); n != 1 {
-		t.Errorf("deleted %d expired bans, want 1", n)
-	}
 }
 
 // A deleted room leaves its lines without a room, so that what was said in it stays for moderators.

@@ -119,6 +119,15 @@ func Ban(ctx context.Context, db *sql.DB, viewer habbo.Habbo, name string) error
 	return nil
 }
 
+// DeleteEndedRoomBans deletes the room bans that ended at now. An ended ban no longer holds, so this only keeps
+// room_bans small; server.New runs it every minute, as the programs that serve sessions delete the expired ones.
+func DeleteEndedRoomBans(ctx context.Context, db *sql.DB, now time.Time) error {
+	if _, err := store.New(db).DeleteExpiredRoomBans(ctx, now.UTC()); err != nil {
+		return fmt.Errorf("game: delete ended room bans: %w", err)
+	}
+	return nil
+}
+
 func walkOut(r *room.Room, avatarID int64) {
 	door := r.Model()
 	r.Update(avatarID, func(o *room.Occupant) {
