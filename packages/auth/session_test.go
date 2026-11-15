@@ -104,27 +104,6 @@ func TestLogoutEndsTheSession(t *testing.T) {
 	}
 }
 
-func TestLogoutEverywhereEndsEverySessionOfTheUser(t *testing.T) {
-	f := newFixture(t)
-	userID, _ := f.habbo(t, "admin@example.com", "Admin", testPassword)
-	f.habbo(t, "other@example.com", "Other", testPassword)
-	first := f.mustLogin(t, "Admin", false)
-	second := f.mustLogin(t, "Admin", true)
-	other := f.mustLogin(t, "Other", false)
-
-	if err := LogoutEverywhere(t.Context(), f.db, userID); err != nil {
-		t.Fatalf("LogoutEverywhere: %v", err)
-	}
-	for name, cookie := range map[string]*http.Cookie{"first": first, "second": second} {
-		if _, ok, _ := f.visit(t, cookie); ok {
-			t.Errorf("the %s session of the user survived", name)
-		}
-	}
-	if _, ok, _ := f.visit(t, other); !ok {
-		t.Error("the session of another user ended")
-	}
-}
-
 func TestSwitchHabbo(t *testing.T) {
 	f := newFixture(t)
 	userID, _ := f.habbo(t, "admin@example.com", "Admin", testPassword)

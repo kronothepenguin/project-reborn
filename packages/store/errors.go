@@ -8,8 +8,6 @@ import (
 )
 
 const (
-	sqliteBusy                 = 5
-	sqliteLocked               = 6
 	sqliteConstraintPrimaryKey = 1555
 	sqliteConstraintUnique     = 2067
 	sqliteConstraintForeignKey = 787
@@ -38,15 +36,4 @@ func IsForeignKey(err error) bool {
 		return false
 	}
 	return serr.Code() == sqliteConstraintForeignKey
-}
-
-// IsBusy reports whether err means the database was busy or locked past the
-// busy timeout.
-func IsBusy(err error) bool {
-	var serr *sqlite.Error
-	if !errors.As(err, &serr) {
-		return false
-	}
-	primary := serr.Code() & 0xff
-	return primary == sqliteBusy || primary == sqliteLocked
 }

@@ -26,7 +26,7 @@ query files.
 | `FromConfig() *sql.DB` | Opens the database that `config.json` names (`config.Get().Store.Path`) through `Must`; runners use it to get the db they pass to the apps. |
 | `New(db DBTX) *Queries` | Generated; binds the typed operations to a `*sql.DB` or a `*sql.Tx`. |
 | `(*Queries).WithTx(tx *sql.Tx) *Queries` | Generated; the same operations inside a transaction. |
-| `IsNotFound`, `IsConflict`, `IsForeignKey`, `IsBusy` | Classify the errors the operations return. |
+| `IsNotFound`, `IsConflict`, `IsForeignKey` | Classify the errors the operations return. |
 | `Updates() ([]Update, error)` | The updates the program carries, from `packages/store/migrations/`, in version order. |
 | `ParseUpdates(fsys fs.FS) ([]Update, error)` | Reads the update files `NNNN-<name>.sql` at the root of `fsys`: versions from 0001 without a gap, a `-- ` title on the first line, and the `-- automatic` mark among the first comments. |
 | `WaitingUpdates(ctx, db, updates) ([]Update, error)` | The updates `db` has not applied, in version order. It only reads. |
@@ -50,7 +50,7 @@ query files.
   `time.Time`.
 - **Multi-application safety.** Several connections and processes may share one
   database file. Readers see committed data only; conflicting writers wait up
-  to the busy timeout, then fail with a busy error for which `IsBusy` is true.
+  to the busy timeout, then fail with a busy error.
   A failed write never leaves a partial change behind.
 - **Schema files and updates agree.** The schema files describe the database
   as it is now, for sqlc and the docs. The update files are how a database gets
@@ -72,7 +72,7 @@ query files.
   changes visible only on `Commit`; a process exit before commit leaves no
   partial change.
 - **Classified failures.** Consumers classify raw errors with
-  `IsNotFound`, `IsConflict`, `IsForeignKey`, and `IsBusy`.
+  `IsNotFound`, `IsConflict` and `IsForeignKey`.
 
 # Gotchas
 

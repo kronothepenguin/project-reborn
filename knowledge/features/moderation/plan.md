@@ -12,7 +12,7 @@ Built:
 | --- | --- |
 | `packages/housekeeping` | `/bans`, `/alerts`, `/help` (Help Queries) and `/chatlogs`, each behind its attribute, with a staff log row for every change (`packages/housekeeping/knowledge/index.md`) |
 | `packages/cms` | `GET` and `POST /help`, the report of a forum post, the Help Tool window `layouts/help-tool`, and the ban message at sign-in |
-| `packages/auth` | `ActiveBan`, which passes holders of `housekeeping.access` on a banned address, and `LogoutEverywhere`, which ends a banned user's sessions |
+| `packages/auth` | `ActiveBan`, which passes holders of `housekeeping.access` on a banned address |
 | `packages/store` | The bans, the alerts, the help tickets with their post reports, and the saved chat |
 | `packages/server` | Saves what habbos say in rooms, and deletes the lines older than `game.chatHistoryDays` every hour |
 

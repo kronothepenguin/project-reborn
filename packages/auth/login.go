@@ -202,13 +202,6 @@ func Logout(w http.ResponseWriter, r *http.Request, db *sql.DB) error {
 	return nil
 }
 
-func LogoutEverywhere(ctx context.Context, db *sql.DB, userID int64) error {
-	if err := store.New(db).DeleteUserSessions(ctx, userID); err != nil {
-		return fmt.Errorf("auth: logout everywhere: %w", err)
-	}
-	return nil
-}
-
 // SwitchHabbo makes avatarID the active habbo of the session in ctx; the habbo
 // must belong to the session's user. The session's SSO tickets go with the habbo
 // it leaves, and SSOTicket makes one for the new habbo.

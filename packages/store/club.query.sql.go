@@ -73,17 +73,6 @@ func (q *Queries) GetLatestClubEnd(ctx context.Context, userID int64) (time.Time
 	return ends_at, err
 }
 
-const hasClubSubscription = `-- name: HasClubSubscription :one
-SELECT EXISTS (SELECT 1 FROM club_subscriptions WHERE user_id = ?1)
-`
-
-func (q *Queries) HasClubSubscription(ctx context.Context, userID int64) (bool, error) {
-	row := q.db.QueryRowContext(ctx, hasClubSubscription, userID)
-	var exists bool
-	err := row.Scan(&exists)
-	return exists, err
-}
-
 const listClubSubscriptions = `-- name: ListClubSubscriptions :many
 SELECT starts_at, ends_at FROM club_subscriptions
 WHERE user_id = ?1

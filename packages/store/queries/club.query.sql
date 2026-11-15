@@ -23,9 +23,6 @@ SELECT starts_at, ends_at FROM club_subscriptions
 WHERE user_id = sqlc.arg(user_id)
 ORDER BY starts_at;
 
--- name: HasClubSubscription :one
-SELECT EXISTS (SELECT 1 FROM club_subscriptions WHERE user_id = sqlc.arg(user_id));
-
 -- name: CreateClubSubscription :exec
 INSERT INTO club_subscriptions (user_id, starts_at, ends_at, created_at)
 VALUES (sqlc.arg(user_id), sqlc.arg(starts_at), sqlc.arg(ends_at), sqlc.arg(created_at));

@@ -46,7 +46,7 @@ The functions are in [Store](/store.md).
 
 - Open: `store.Open(path)` or `store.Must(store.Open(path))`; a runner calls `store.FromConfig()`.
 - Bind: `store.New(db)`, and `q.WithTx(tx)` inside a transaction.
-- Classify errors: `store.IsNotFound`, `store.IsConflict`, `store.IsForeignKey` and `store.IsBusy`.
+- Classify errors: `store.IsNotFound`, `store.IsConflict` and `store.IsForeignKey`.
 
 # Checks
 
