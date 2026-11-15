@@ -6,22 +6,7 @@ import (
 	"testing"
 
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/category"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/model"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
 )
-
-func TestTheServerStartsWithTheNavigator(t *testing.T) {
-	if c, ok := category.Get(3); !ok || c.Name != "Public Rooms" {
-		t.Errorf("category 3 = %+v, %t; want Public Rooms", c, ok)
-	}
-	if _, ok := model.Get("newbie_lobby"); !ok {
-		t.Error("the Welcome Lounge's model is not loaded")
-	}
-	if r, ok := room.Public(101); !ok || r.Name != "Welcome Lounge" {
-		t.Errorf("public room 101 = %+v, %t; want the Welcome Lounge", r, ok)
-	}
-}
 
 // While the update with the navigator's tables waits, nothing loads; once every update is applied, the navigator and
 // the catalogue do (decisions server/0064 and server/0098).

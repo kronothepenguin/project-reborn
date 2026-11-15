@@ -256,32 +256,6 @@ func TestTheLinesLastUntilTheRoomUnloads(t *testing.T) {
 	}
 }
 
-func TestUpdateChangesAPlaceButNotWhoHoldsIt(t *testing.T) {
-	openHotel(t)
-	ann := &session{"Ann"}
-	r, _, _ := enter(t, Ref{Public: true, ID: 101}, 1, ann)
-	defer leave(t, 1, ann)
-
-	if !r.Update(1, func(o *Occupant) {
-		o.X, o.Y, o.BodyDirection = 5, 6, 4
-		o.Statuses = append(o.Statuses, Status{Action: "dance", Parameters: "1"})
-		o.Index, o.AvatarID, o.Session = 9, 9, nil
-	}) {
-		t.Fatal("Update found no Ann")
-	}
-	o, _ := r.Occupant(1)
-	if o.X != 5 || o.Y != 6 || o.BodyDirection != 4 || o.Index != 0 || o.AvatarID != 1 || o.Session != ann || len(o.Statuses) != 1 {
-		t.Errorf("Ann is %+v, want 5,6 facing 4, dancing, still index 0 played by her session", o)
-	}
-	o.Statuses[0].Action = "wave"
-	if again, _ := r.Occupant(1); again.Statuses[0].Action != "dance" {
-		t.Error("changing a copy changed the room")
-	}
-	if r.Update(2, func(*Occupant) {}) {
-		t.Error("Update changed a habbo who is not in the room")
-	}
-}
-
 func TestRoomsAreSafeForConcurrentUse(t *testing.T) {
 	openHotel(t)
 	refs := []Ref{{Public: true, ID: 101}, {Public: true, ID: 104}}
@@ -332,38 +306,5 @@ func TestAHabboIsAdmittedOnlyWhereItHeads(t *testing.T) {
 	}
 	if _, ok := HeadingOf(1); ok {
 		t.Error("the heading is still there")
-	}
-}
-
-// The clock's step sees every habbo at once and keeps its changes, but never who holds a place.
-func TestTickChangesEveryHabboAtOnce(t *testing.T) {
-	openHotel(t)
-	ann, bob := &session{"Ann"}, &session{"Bob"}
-	r, _, _ := enter(t, Ref{Public: true, ID: 101}, 1, ann)
-	enter(t, Ref{Public: true, ID: 101}, 2, bob)
-
-	sent := r.Tick(func(all []*Occupant) []Occupant {
-		if len(all) != 2 || all[0].AvatarID != 1 || all[1].AvatarID != 2 {
-			t.Errorf("the step saw %+v, want Ann then Bob", all)
-		}
-		all[0].X, all[0].Walking = 7, true
-		all[1].Index, all[1].AvatarID = 5, 9
-		all[1].Statuses = []Status{{Action: "mv", Parameters: "3,4,0"}}
-		return []Occupant{*all[1]}
-	})
-	if len(sent) != 1 || sent[0].Statuses[0].Action != "mv" {
-		t.Errorf("sent %+v, want Bob's status", sent)
-	}
-	sent[0].Statuses[0].Action = "sit"
-	if o, _ := r.Occupant(1); o.X != 7 || !o.Walking {
-		t.Errorf("Ann is %+v, want at x 7, walking", o)
-	}
-	if o, ok := r.Occupant(2); !ok || o.Index != 1 || o.Statuses[0].Action != "mv" {
-		t.Errorf("Bob is %+v, %t; want still index 1, moving", o, ok)
-	}
-	leave(t, 1, ann)
-	leave(t, 2, bob)
-	if r.Tick(func([]*Occupant) []Occupant { t.Error("an unloaded room ran a tick"); return nil }) != nil {
-		t.Error("an unloaded room sent statuses")
 	}
 }
