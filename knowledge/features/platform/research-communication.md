@@ -16,7 +16,7 @@ Nothing here is decided: the feature lists the questions the user answers before
   separate programs later. The package's interface is written now so that the transport is only a new implementation.
 - The site should not change `packages/virtual` directly, even inside the orchestrator, which
   [server 0013](/decisions/server/0013-site-changes-like-mus.md) says it should. Most changes for a habbo that is online
-  must reach its client, a protocol message, a "poof" or a disconnect, which the rules of `packages/server/game` and
+  must reach its client, a protocol message, a "poof" or a disconnect, which the rules of `packages/server/internal/game` and
   `r26`'s `Session.Notify` do; the site would have to copy them, and run alone it would write to an empty `virtual` in
   its own process, silently.
 - A notice is a hint, not data: "the badges of avatar 12 changed", and the server reads the store again. A lost notice
@@ -27,7 +27,7 @@ Nothing here is decided: the feature lists the questions the user answers before
 
 # Inventory
 
-"Next login" means `game.Login` (`packages/server/game/login.go:25`) reads fresh.
+"Next login" means `game.Login` (`packages/server/internal/game/login.go:25`) reads fresh.
 
 ## The site tells the game server
 
@@ -212,7 +212,7 @@ func Connect(t Transport)
 | `OnlineCount`, `Places` | asked by CMS pages, housekeeping's dashboard and Online Users | Answered from `virtual/habbo` and `room.In` |
 
 How `packages/server` delivers them: `server.New` subscribes beside its `scheduler.Every` calls and calls
-`bus.Answer`. The rules go in a new file of `packages/server/game`: `RefreshBadges`, for one, gets the habbo, returns
+`bus.Answer`. The rules go in a new file of `packages/server/internal/game`: `RefreshBadges`, for one, gets the habbo, returns
 when it is offline, reads the store, calls `habbo.Update(id, h.Session, …)`, which is false when a second login took the
 session and read fresh data, and notifies the habbo and its room. New `game` events (`CreditsChanged`, `ClubChanged`,
 `LookChanged`, `FusesChanged`, `Alert`, `Banned`) get their message ids from the client's `.ls` scripts. `Notify` only
