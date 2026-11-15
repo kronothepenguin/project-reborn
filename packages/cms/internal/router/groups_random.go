@@ -15,9 +15,9 @@ type hotGroupsAnswer struct {
 	Groups []hotGroup `json:"groups"`
 }
 
-// HandleGroupsRandomView handles GET /groups/random, randomgroups.php: twelve
+// HandleGroupsRandomJSON handles GET /groups/random, randomgroups.php: twelve
 // groups in random order for the Hot Groups tab.
-func (r *Router) HandleGroupsRandomView(w http.ResponseWriter, req *http.Request) {
+func (r *Router) HandleGroupsRandomJSON(w http.ResponseWriter, req *http.Request) {
 	rows, err := r.deps.Queries.ListRandomGroups(req.Context(), hotGroups)
 	if err != nil {
 		r.fail(w, err)

@@ -59,9 +59,9 @@ func (r *Router) moderatedThread(w http.ResponseWriter, req *http.Request) (stor
 	return thread, true
 }
 
-// HandleForumThreadsSettingsView handles GET /forum/threads/{id}/settings,
+// HandleForumThreadsSettingsJSON handles GET /forum/threads/{id}/settings,
 // opentopicsettings.php: the Moderation Tools open on the thread as it is now.
-func (r *Router) HandleForumThreadsSettingsView(w http.ResponseWriter, req *http.Request) {
+func (r *Router) HandleForumThreadsSettingsJSON(w http.ResponseWriter, req *http.Request) {
 	thread, ok := r.moderatedThread(w, req)
 	if !ok {
 		return

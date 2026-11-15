@@ -39,10 +39,10 @@ type quickMenu struct {
 	Purchase purchaseLimits `json:"purchase"`
 }
 
-// HandleMeGroupsView handles GET /me/groups, quickmenu.php?key=groups: the active
+// HandleMeGroupsJSON handles GET /me/groups, quickmenu.php?key=groups: the active
 // habbo's groups for the header's My Groups, the members' rows before the
 // admins' as Holo's ORDER BY member_rank put them, at most ten.
-func (r *Router) HandleMeGroupsView(w http.ResponseWriter, req *http.Request) {
+func (r *Router) HandleMeGroupsJSON(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	session, _ := auth.FromContext(ctx)
 	rows, err := r.deps.Queries.ListAvatarGroups(ctx, session.AvatarID)

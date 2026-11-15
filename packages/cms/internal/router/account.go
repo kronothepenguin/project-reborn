@@ -40,7 +40,7 @@ func (r *Router) answer(w http.ResponseWriter, name string, failed bool, data an
 	astro.WriteTemplate(w, r.deps.Resolver, name, data)
 }
 
-// HandleAccountView handles GET /account: Holo opens on the first tab.
-func (r *Router) HandleAccountView(w http.ResponseWriter, req *http.Request) {
+// HandleAccountRedirect handles GET /account: Holo opens on the first tab.
+func (r *Router) HandleAccountRedirect(w http.ResponseWriter, req *http.Request) {
 	http.Redirect(w, req, "/account/looks", http.StatusSeeOther)
 }

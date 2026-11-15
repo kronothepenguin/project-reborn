@@ -88,9 +88,9 @@ type homeMissingPage struct {
 	community
 }
 
-// HandleHomeSearch handles GET /home, the header's habbo search: it opens the
+// HandleHomeSearchView handles GET /home, the header's habbo search: it opens the
 // home of the habbo named, and without a name the page Holo showed for no habbo.
-func (r *Router) HandleHomeSearch(w http.ResponseWriter, req *http.Request) {
+func (r *Router) HandleHomeSearchView(w http.ResponseWriter, req *http.Request) {
 	name := strings.TrimSpace(req.URL.Query().Get("name"))
 	if name == "" {
 		r.homeMissing(w, req)
@@ -275,66 +275,6 @@ func (r *Router) profileWidget(ctx context.Context, avatar store.Avatar, profile
 type skinOption struct {
 	Value string
 	Label string
-}
-
-// skinLabels are the skins in the order and words of Holo's edit menu.
-var skinLabels = []skinOption{
-	{"defaultskin", "Default"},
-	{"goldenskin", "Golden"},
-	{"metalskin", "Metal"},
-	{"notepadskin", "Notepad"},
-	{"speechbubbleskin", "Speech Bubble"},
-	{"noteitskin", "Stickie Note"},
-	{"hc_pillowskin", "HC Bling"},
-	{"hc_machineskin", "HC Scifi"},
-	{"nakedskin", "Staff - Naked Skin"},
-}
-
-type homeEditPage struct {
-	homePage
-	Skins   []skinOption
-	NoteMax int
-	Smilies bool
-	// NewGroups is the MY GROUPS widget where widget_add.php put it, which the
-	// editor copies when the owner places it.
-	NewGroups homeItem
-}
-
-// HandleHomeEditView handles GET /home/{name}/edit, Holo's edit mode, for the
-// owner of the habbo whichever habbo is active (0065). Anyone else goes to the
-// home, as Holo bounced them.
-func (r *Router) HandleHomeEditView(w http.ResponseWriter, req *http.Request) {
-	ctx := req.Context()
-	session, _ := auth.FromContext(ctx)
-	name := req.PathValue("name")
-	avatar, err := r.deps.Queries.GetAvatarByName(ctx, name)
-	switch {
-	case store.IsNotFound(err) || (err == nil && avatar.ArchivedAt.Valid):
-		r.homeMissing(w, req)
-		return
-	case err != nil:
-		r.fail(w, err)
-		return
-	case avatar.UserID != session.UserID:
-		http.Redirect(w, req, "/home/"+url.PathEscape(avatar.Name), http.StatusSeeOther)
-		return
-	}
-	home, err := r.newHomePage(ctx, avatar)
-	if err != nil {
-		r.fail(w, err)
-		return
-	}
-	page := homeEditPage{
-		homePage:  home,
-		NoteMax:   settings.GetInt("homes.noteMaxLength"),
-		Smilies:   settings.GetBool("features.smilies"),
-		NewGroups: homeItem{Kind: "widget", Widget: widgetGroups, Skin: "defaultskin", X: widgetX, Y: widgetY},
-	}
-	if page.Skins, err = r.skinOptions(ctx, skinLabels); err != nil {
-		r.fail(w, err)
-		return
-	}
-	astro.WriteTemplate(w, r.deps.Resolver, "home/name/edit.html", page)
 }
 
 // skinOptions are the skins of labels the user making the request may pick.

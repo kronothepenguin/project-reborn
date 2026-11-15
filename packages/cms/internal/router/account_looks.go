@@ -55,8 +55,8 @@ func (r *Router) HandleAccountLooksView(w http.ResponseWriter, req *http.Request
 	r.answer(w, "account/looks.html", false, page)
 }
 
-// HandleAccountLooks handles the POST /account/looks action.
-func (r *Router) HandleAccountLooks(w http.ResponseWriter, req *http.Request) {
+// HandleAccountLooksSave handles the POST /account/looks action.
+func (r *Router) HandleAccountLooksSave(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	session, _ := auth.FromContext(ctx)
 	figure, gender := req.PostFormValue("figure"), req.PostFormValue("gender")

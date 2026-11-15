@@ -79,22 +79,6 @@ func (r *Router) addProfileTag(ctx context.Context, profileID int64, tag string)
 	return refusal, err
 }
 
-// HandleMeTagsDelete handles POST /me/tags/{tag}/delete.
-func (r *Router) HandleMeTagsDelete(w http.ResponseWriter, req *http.Request) {
-	ctx := req.Context()
-	session, _ := auth.FromContext(ctx)
-	profile, err := r.deps.Queries.GetAvatarProfile(ctx, session.AvatarID)
-	if err != nil {
-		r.fail(w, err)
-		return
-	}
-	if _, err := r.deps.Queries.DeleteProfileTag(ctx, store.DeleteProfileTagParams{ProfileID: profile.ID, Tag: req.PathValue("tag")}); err != nil {
-		r.fail(w, err)
-		return
-	}
-	r.answerTags(w, req, profile.ID, "")
-}
-
 // answerTags answers with the profile's tags, as Holo's panel showed them again
 // after every change.
 func (r *Router) answerTags(w http.ResponseWriter, req *http.Request, profileID int64, refusal string) {

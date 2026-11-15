@@ -7,11 +7,11 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/cms/internal/badge"
 )
 
-// HandleHabboImagingBadgeView serves GET /habbo-imaging/badge/{code}, Holo's
+// HandleHabboImagingBadgeImage serves GET /habbo-imaging/badge/{code}, Holo's
 // habbo-imaging/badge.php: a group badge drawn in the Tailwind palette. A code
 // that the badge editor would not write is not found. A code always draws the
 // same, so browsers keep it.
-func (r *Router) HandleHabboImagingBadgeView(w http.ResponseWriter, req *http.Request) {
+func (r *Router) HandleHabboImagingBadgeImage(w http.ResponseWriter, req *http.Request) {
 	b, err := badge.Parse(req.PathValue("code"))
 	if err != nil {
 		http.NotFound(w, req)

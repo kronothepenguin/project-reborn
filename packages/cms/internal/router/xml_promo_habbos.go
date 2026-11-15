@@ -24,9 +24,9 @@ type promoHabbo struct {
 	Gender string `xml:"gender,attr"`
 }
 
-// HandleXMLPromoHabbos renders GET /xml/promo-habbos.xml, the random habbos of the
+// HandlePromoHabbosXML renders GET /xml/promo-habbos.xml, the random habbos of the
 // landing widget.
-func (r *Router) HandleXMLPromoHabbos(w http.ResponseWriter, req *http.Request) {
+func (r *Router) HandlePromoHabbosXML(w http.ResponseWriter, req *http.Request) {
 	if !settings.GetBool("features.landingPromo") {
 		http.NotFound(w, req)
 		return

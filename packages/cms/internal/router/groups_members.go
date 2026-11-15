@@ -62,10 +62,10 @@ func (r *Router) isGroupAdmin(ctx context.Context, groupID, avatarID int64) (boo
 	return err == nil && row.JoinedAt.Valid && row.Role == roleAdmin, err
 }
 
-// HandleGroupsMembersView handles GET /groups/{id}/members, groups_memberlist.php:
+// HandleGroupsMembersJSON handles GET /groups/{id}/members, groups_memberlist.php:
 // a page of the members, admins first, or with pending=true of the waiting
 // requests. A page out of range is the first, as in Holo.
-func (r *Router) HandleGroupsMembersView(w http.ResponseWriter, req *http.Request) {
+func (r *Router) HandleGroupsMembersJSON(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	group, ok := r.adminGroup(w, req)
 	if !ok {
