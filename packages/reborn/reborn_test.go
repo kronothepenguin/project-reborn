@@ -114,11 +114,11 @@ func run(m *testing.M) (int, error) {
 }
 
 // build builds the programs on db and injects them as the runner does, with
-// pages that print their names.
+// pages and static files that print their names.
 func build(ctx context.Context, db *sql.DB) (*Reborn, error) {
-	c := cms.New(db, cms.WithResolver(printPage("cms")), cms.WithStatic(http.NotFoundHandler()))
-	h := housekeeping.New(db, housekeeping.WithResolver(printPage("housekeeping")), housekeeping.WithStatic(http.NotFoundHandler()))
-	i, err := installer.New(ctx, db, installer.WithResolver(printPage("installer")), installer.WithStatic(http.NotFoundHandler()))
+	c := cms.New(db, cms.WithResolver(printPage("cms")), cms.WithStatic(printFile("cms")))
+	h := housekeeping.New(db, housekeeping.WithResolver(printPage("housekeeping")), housekeeping.WithStatic(printFile("housekeeping")))
+	i, err := installer.New(ctx, db, installer.WithResolver(printPage("installer")), installer.WithStatic(printFile("installer")))
 	if err != nil {
 		return nil, fmt.Errorf("installer.New: %w", err)
 	}
@@ -205,6 +205,14 @@ func printPage(program string) func(string) (*template.Template, error) {
 	return func(name string) (*template.Template, error) {
 		return template.New(name).Parse(program + " " + name)
 	}
+}
+
+// printFile stands in for a program's static handler: it answers every path
+// with the program's name and the path, so a test can tell who served it.
+func printFile(program string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		io.WriteString(w, program+" file "+r.URL.Path)
+	})
 }
 
 // freePorts holds every port it takes until it has n, so that none repeats,

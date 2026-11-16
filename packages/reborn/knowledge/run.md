@@ -21,7 +21,10 @@ and injects reborn into the installer as its `Listener` ([Programs](programs.md)
 
 A middleware in front of the mux reads `Done()` on each request:
 
-- Before the administrator exists, every path outside `/installer/` redirects to `/installer/` with 303.
+- Before the administrator exists, a request outside `/installer/` asks the mux which pattern takes it
+  (`(*http.ServeMux).Handler`). A route a program registered redirects to `/installer/` with 303. A request that falls
+  to a static handler, the CMS's `/` or housekeeping's `/housekeeping/`, is served: the sites' files, and the dev
+  server's own paths under `reborn-dev`.
 - From then on, `/installer` and every path under `/installer/` answer 404, from the first request on an installed hotel
   and from the request after "Create administrator" on a new one.
 
