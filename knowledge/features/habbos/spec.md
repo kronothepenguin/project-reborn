@@ -95,7 +95,16 @@ It builds on [platform](/features/platform/spec.md) and [the client](/features/c
 ## Next
 
 - Under reborn, a signed-in habbo opens the client from the site, enters a room and sees its habbo.
-- A look saved on the site's looks page shows in the client at once, for the habbo and for another habbo in the room; so
-  does a motto saved on the motto or profile pages, and a look or motto saved in housekeeping's habbo editor.
+- A habbo in a room has its look or motto changed outside the game: it and every habbo in the room see the new look
+  and motto at once.
+- A habbo is online and in no room when its look changes: it sees the new look wherever the client shows its own
+  figure, and enters its next room with it.
+- A habbo is offline when its look changes: the game sends nothing, and the habbo logs in with the new look.
+- A habbo logged in again elsewhere: a change shows in the new session, and the session it replaced gets nothing.
+- A habbo saves a look on the looks page, or a motto on the Me page or the profile page: the site tells the game once,
+  after the save.
+- Staff save a habbo's look or motto in housekeeping: housekeeping tells the game once, after the save.
+- A save is refused: the game is told nothing.
+- The game fails, or gives no answer within 2 seconds: the page answers as it does today, and the failure is logged.
 - With the separate programs, the same changes reach the game through its `/api/`, and the `/api/` answers 404 without
   the secret.
