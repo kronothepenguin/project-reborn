@@ -94,3 +94,34 @@ func TestRightsKicksAndBans(t *testing.T) {
 	steward.send(t, 52, b64String(t, "still here "+strconv.FormatInt(flat, 10)))
 	steward.expectChat(t, 24, chatLine(t, 1, "still here "+strconv.FormatInt(flat, 10)))
 }
+
+// A room ban reaches its end: the habbo enters again, through the door of the room on its own and of the room loaded
+// with others in it, and the owner's second ban sets the new end.
+func TestARoomBanReachesItsEnd(t *testing.T) {
+	ownerID := habboWithTickets(t, "Warden", "warden")
+	paroledID := habboWithTickets(t, "Paroled", "paroled")
+	flat := newRoom(t, ownerID, 2, "Cell", true)
+	q := store.New(testDB)
+	if err := q.BanFromRoom(t.Context(), store.BanFromRoomParams{RoomID: flat, AvatarID: paroledID, ExpiresAt: time.Now().UTC().Add(-time.Minute)}); err != nil {
+		t.Fatal(err)
+	}
+	owner, _ := login(t, "warden")
+	paroled, _ := login(t, "paroled")
+
+	paroled.knock(t, flat, "")
+	paroled.expectNext(t, 41, "\x02")
+	owner.enterFlat(t, flat, 47, 42)
+	paroled.enterFlat(t, flat)
+	owner.nextBody(t, 28)
+	owner.nextBody(t, 34)
+
+	owner.send(t, 320, "Paroled")
+	paroled.expectChat(t, 18, "")
+	owner.expectChat(t, 29, "1")
+	paroled.knock(t, flat, "")
+	paroled.expectNext(t, 224, vl64String(t, 4))
+	end, err := q.GetRoomBanEnd(t.Context(), store.GetRoomBanEndParams{RoomID: flat, AvatarID: paroledID, Now: time.Now().UTC()})
+	if err != nil || time.Until(end) < 14*time.Minute || time.Until(end) > 15*time.Minute {
+		t.Errorf("the second ban ends at %v, %v; want in 15 minutes", end, err)
+	}
+}

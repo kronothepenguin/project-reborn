@@ -99,6 +99,21 @@ func TestACategoryListsItsLast25(t *testing.T) {
 	wantPage(t, rec, http.StatusOK, "InCategory:true Category: Articles:[]")
 }
 
+// A category's old name, HoloCMS or Holograph Emulator, sends the visitor to its
+// new name, Reborn CMS or Reborn Server, with the rest of the query kept.
+func TestAnOldCategoryNameSendsToItsNewName(t *testing.T) {
+	_, mux := newSite(t)
+	for old, want := range map[string]string{
+		"/news?category=HoloCMS&page=2":     "/news?category=Reborn+CMS&page=2",
+		"/news?category=Holograph+Emulator": "/news?category=Reborn+Server",
+	} {
+		rec := serve(mux, "GET", old, nil, nil)
+		if rec.Code != http.StatusMovedPermanently || rec.Header().Get("Location") != want {
+			t.Errorf("%s answers %d to %q, want %d to %q", old, rec.Code, rec.Header().Get("Location"), http.StatusMovedPermanently, want)
+		}
+	}
+}
+
 func TestAnArticleShowsItsTextAndAuthor(t *testing.T) {
 	db, mux := newSite(t)
 	habbo(t, db, "writer@example.com", "Writer")

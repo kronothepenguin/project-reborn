@@ -36,7 +36,7 @@ description: packages/store applies numbered update files with a copy first, the
 
 # Notes
 
-- No update up to `0022` is marked `-- automatic`.
+- No update up to `0024` is marked `-- automatic`.
 - The guard of a failed automatic update stands outside the session reader, because the new code's sessions may need
   the update that failed. Housekeeping's static files stay outside the guard, so its error page finds its styles.
 - The copy's path goes in the staff log and in the page that reports a failure, never in a URL.

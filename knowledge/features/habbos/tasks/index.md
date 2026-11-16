@@ -2,7 +2,6 @@
 
 # Tasks
 
-- [Send a habbo's new look and motto from the game](02-the-game-sends-a-new-look.md) - (*server.Server).SendLook reads a habbo again and, when it is online, updates the copy the game holds and shows the new figure, gender and motto to the habbo and to everyone in its room, with the client's own messages.
 - [reborn passes the game to the site and housekeeping](04-reborn-wires-the-memory-api.md) - packages/reborn builds the memory API around the game's instance and injects it into the CMS and housekeeping, in the order constructors, services, Inject, run.
 - [The game's /api/ for programs run apart](05-the-games-api.md) - Run alone, the game server serves /api/ on server.api, secured by a secret in X-Reborn-Secret that a database update generates; packages/server/api is its client, and the runners' changes are proposed to the user.
 - [Check the habbos feature's behaviours](06-exit-check.md) - The user's demonstration is run under reborn and with the separate programs, and its evidence written in the report.

@@ -59,7 +59,7 @@ New persisted data:
      return tx.Commit()
      ```
 
-   - Classify errors with the store's helpers: not found, conflict, foreign key, busy.
+   - Classify errors with the store's helpers: not found, conflict and foreign key.
 8. **Check.** Vet and tests pass, the docs check exits 0, and regenerating leaves the generated files unchanged.
 
 ## Schema rules

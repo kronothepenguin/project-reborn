@@ -77,7 +77,7 @@ rating, events and ignoring.
 | 28 | `handle_users` | `#info` (room) | raw: [user lines](#a-user) | The answer to `G_USRS`, and users coming in. A body with no user says there is none |
 | 29 | `handle_logout` | `#info` (room) | raw: the user's room index, the first word | The user leaves, unless it is the user themselves |
 | 34 | `handle_status` | `#info` (room) | raw: [status lines](#status) | The answer to `G_STAT`, and every move |
-| 266 | `handle_figure_change` | `#info` (room) | int user's room index; string figure; string sex; string custom | |
+| 266 | `handle_figure_change` | `#info` (room) | int user's room index; string figure; string sex; string custom | [A new look](#a-new-look) |
 | 228 | `handle_userbadge` | `#info` (room) | string web id; int count; per badge: int slot, string badge | |
 | 210 | `handle_petstat` | `#info` (room) | int pet's room index; int age; int hunger; int thirst; int happiness; int energy; int friendliness | The answer to `GETPETSTAT`. The last five pick the texts `pet_hung_<n>`, `pet_thir_<n>`, `pet_mood_<n>`, `pet_enrg_<n>` and `pet_frnd_<n>` |
 | 361 | `handle_user_typing_status` | `#info` (room) | int user index; int state | |
@@ -336,6 +336,20 @@ again with `GETSTRIP new`. 102 and 103 refuse it.
 `GETSTRIP` opens the hand (`new`), refreshes it (`update`), or turns its pages (`next`, `prev`), answered by 140. 98
 adds one item, 99 removes one, and 101 makes the client ask again. Furniture is placed with `PLACESTUFF`, a wallpaper,
 a floor or a landscape with `FLATPROPBYITEM`, and picked up with `ADDSTRIPITEM`.
+
+## A new look
+
+266 calls the Room Component's `updateCharacterFigure`. It parses the figure, and when the index is the user's own
+`user_index`, or -1, it sets `user_figure`, `user_sex` and `user_customData` in the session; `user_figure_string` stays.
+Then:
+
+- with `lastroom` `Entry` and index -1, it executes `#updateFigureData`, which redraws the hotel view's entry bar
+  ([hh_entry_init](/r26/hh_entry_init.md#the-user-object));
+- in a room, with an index of 0 or more, it redraws that user with the new figure, sex and motto, plays the change
+  clothes effect on it and refreshes its infostand (`#updateInfostandAvatar`). An index nobody holds changes nothing.
+
+The sex is kept as sent, not read as `F` or `M` as 5 reads it. Holo's `UPRA` sent 266 to the room (`DJ`) and 5 to the
+user.
 
 # Notes
 
