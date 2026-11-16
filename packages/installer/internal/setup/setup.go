@@ -14,6 +14,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/kronothepenguin/project-reborn/packages/assets/dcr"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/config/reborn"
@@ -221,6 +222,12 @@ func (s *State) CreateAdministrator(ctx context.Context, admin Administrator) er
 	}
 	defer tx.Rollback()
 	if err := createAdministrator(ctx, q.WithTx(tx), admin, hash, now); err != nil {
+		return fmt.Errorf("setup: %w", err)
+	}
+	// A folder without the two files leaves the tables empty; housekeeping
+	// imports them later.
+	files := os.DirFS(filepath.Join(s.installation.Config.Assets.Path, "dcr"))
+	if err := dcr.Import(ctx, q.WithTx(tx), files); err != nil && !errors.Is(err, fs.ErrNotExist) {
 		return fmt.Errorf("setup: %w", err)
 	}
 	if err := tx.Commit(); err != nil {
