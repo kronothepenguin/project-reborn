@@ -30,10 +30,12 @@ type Listener interface {
 	Move(w http.ResponseWriter, r *http.Request, host string, port int) error
 }
 
-// New continues the installation found in the working directory: when
-// config.json is there, it opens the database the file names.
-func New(ctx context.Context, opts ...Option) (*Installer, error) {
-	state, err := setup.Open(ctx)
+// New continues the installation found in the working directory. With db, as
+// reborn hands it, the installer works on db and creates no database. With
+// nil, run alone, it opens the database an existing config.json names, or
+// creates it in the config step.
+func New(ctx context.Context, db *sql.DB, opts ...Option) (*Installer, error) {
+	state, err := setup.Open(ctx, db)
 	if err != nil {
 		return nil, err
 	}

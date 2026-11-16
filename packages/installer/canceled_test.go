@@ -14,7 +14,7 @@ import (
 // A visitor abandons a request before its answer: the program ends it quietly, and the log gains no error line.
 func TestAnAbandonedRequestStaysOutOfTheLog(t *testing.T) {
 	t.Chdir(t.TempDir())
-	i, err := New(t.Context(), WithResolver(printData), WithStatic(http.NotFoundHandler()))
+	i, err := New(t.Context(), nil, WithResolver(printData), WithStatic(http.NotFoundHandler()))
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}

@@ -27,7 +27,7 @@ func printData(name string) (*template.Template, error) {
 // the steps with the site's port, housekeeping's port and housekeeping's address.
 func TestInstallation(t *testing.T) {
 	t.Chdir(t.TempDir())
-	i, err := New(t.Context(), WithResolver(printData), WithStatic(http.NotFoundHandler()))
+	i, err := New(t.Context(), nil, WithResolver(printData), WithStatic(http.NotFoundHandler()))
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}

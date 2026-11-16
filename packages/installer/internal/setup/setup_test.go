@@ -47,7 +47,7 @@ func testAdministrator() Administrator {
 func openState(t *testing.T) *State {
 	t.Helper()
 	t.Chdir(t.TempDir())
-	s, err := Open(t.Context())
+	s, err := Open(t.Context(), nil)
 	if err != nil {
 		t.Fatalf("Open: %v", err)
 	}
@@ -335,7 +335,7 @@ func TestOpenContinuesAnInstallation(t *testing.T) {
 	installation, _ := s.Current()
 	installation.DB.Close()
 
-	reopened, err := Open(t.Context())
+	reopened, err := Open(t.Context(), nil)
 	if err != nil {
 		t.Fatalf("Open: %v", err)
 	}

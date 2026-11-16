@@ -1,6 +1,7 @@
 package installer
 
 import (
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"io"
@@ -14,6 +15,7 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/config/reborn"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
@@ -38,7 +40,7 @@ func (l *fakeListener) Move(w http.ResponseWriter, r *http.Request, host string,
 func mounted(t *testing.T, opts ...Option) (*Installer, *http.ServeMux) {
 	t.Helper()
 	t.Chdir(t.TempDir())
-	return build(t, nil, opts...)
+	return build(t, nil, nil, opts...)
 }
 
 // rebornConfig is the config.json reborn's runner writes before the installer
@@ -46,26 +48,32 @@ func mounted(t *testing.T, opts ...Option) (*Installer, *http.ServeMux) {
 // writes the same one.
 const rebornConfig = `{"store": {"path": "habbo.db"}, "reborn": {"host": "localhost", "port": 16416}}`
 
-// inReborn returns an installer as reborn builds it: config.json exists, and
-// the listener comes through Inject.
+// inReborn returns an installer as reborn builds it: config.json exists, the
+// database it names is open and handed to New, and the listener comes through
+// Inject.
 func inReborn(t *testing.T, l Listener) (*Installer, *http.ServeMux) {
 	t.Helper()
 	t.Chdir(t.TempDir())
 	if err := os.WriteFile(config.Filename, []byte(rebornConfig), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	return build(t, l)
+	db, err := store.Open("habbo.db")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { db.Close() })
+	return build(t, db, l)
 }
 
-func build(t *testing.T, l Listener, opts ...Option) (*Installer, *http.ServeMux) {
+func build(t *testing.T, db *sql.DB, l Listener, opts ...Option) (*Installer, *http.ServeMux) {
 	t.Helper()
 	opts = append([]Option{WithResolver(printData), WithStatic(http.NotFoundHandler())}, opts...)
-	i, err := New(t.Context(), opts...)
+	i, err := New(t.Context(), db, opts...)
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
 	t.Cleanup(func() {
-		if installation, ok := i.setup.Current(); ok {
+		if installation, ok := i.setup.Current(); ok && db == nil {
 			installation.DB.Close()
 		}
 	})
@@ -197,6 +205,13 @@ func TestOneAddressMovesTheHotel(t *testing.T) {
 		t.Error("the config step created the database the form named")
 	}
 	expect(t, send(t, mux, "GET", "/installer/config", nil), 200, "", "Host:localhost Port:16417")
+
+	// At the new address, the saved address goes on to the site.
+	expect(t, send(t, mux, "POST", "/installer/config", url.Values{"host": {"localhost"}, "port": {"16417"}}),
+		303, "/installer/site", "")
+	if len(listener.moves) != 1 {
+		t.Errorf("moves %q, want only the first", listener.moves)
+	}
 }
 
 // Inside reborn, the config step asks one host and one port: the address the browser used moves nothing, is saved,
@@ -251,6 +266,24 @@ func TestAFailedMoveSavesNothing(t *testing.T) {
 		303, "http://localhost:16417/installer/config", "")
 	if cfg := written(t); cfg.Reborn != (reborn.Reborn{Host: "localhost", Port: 16417}) {
 		t.Errorf("%s holds reborn %+v, want the second address", config.Filename, cfg.Reborn)
+	}
+}
+
+// Inside reborn, the database stays the one config.json names: the installer
+// works on the handle reborn opened, and the administrator lands in it.
+func TestInsideRebornTheInstallerWorksOnRebornsDatabase(t *testing.T) {
+	_, mux := inReborn(t, &fakeListener{})
+	expect(t, send(t, mux, "POST", "/installer/config", url.Values{"host": {"localhost"}, "port": {"16416"}}),
+		303, "/installer/site", "")
+	expect(t, send(t, mux, "POST", "/installer/admin", adminForm), 303, "/", "")
+
+	db, err := store.Open("habbo.db")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	if installed, err := Installed(t.Context(), db); err != nil || !installed {
+		t.Errorf("Installed on reborn's database = %t, %v, want true", installed, err)
 	}
 }
 

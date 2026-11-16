@@ -27,11 +27,12 @@ not wrapped by its runner.
   which moves the running hotel to a new address. reborn injects one; the runners of the installer alone inject
   nothing. With it, `config.json` exists when the installer opens and its database is open, so the config step asks
   only a host and a port, with the values of the `reborn` section, and shows the database `config.json` names. It
-  validates them with the `reborn` section's validators. When the host or the port differs from `r.Host`, where the
-  browser sent the request, it calls `Move` first, which redirects the browser to the same path on the new address,
-  and then saves the address into the `reborn` section with `config.Save`. A failed `Move` saves nothing and shows its
-  error in the form, with status 422, and the form takes another address. An address the browser already used moves
-  nothing, is saved, and the step goes on to `/installer/site`. A save that fails after a move is logged, since the
+  validates them with the `reborn` section's validators. When the host or the port differs from the `reborn` section,
+  where the hotel listens, it calls `Move` first, which redirects the browser to the same path on the new address,
+  and then saves the address into the `reborn` section with `config.SaveReborn`. A failed `Move` saves nothing and shows its
+  error in the form, with status 422, and the form takes another address. The address where the hotel listens moves
+  nothing, is saved, and the step goes on to `/installer/site`: after a move, the browser lands on the form at the new
+  address, and "Save address" goes on. A save that fails after a move is logged, since the
   browser has left.
   The site step asks no housekeeping address, saves `site.housekeepingUrl` as the site address plus `/housekeeping`,
   and suggests `http://<host>:<port>` as the site address while `site.url` holds its default.
@@ -57,6 +58,8 @@ not wrapped by its runner.
 - Holo's ranks come from update `0003-ranks.sql`. On a new hotel the administrator joins Administrator; without a group
   holding `housekeeping.accessGroups`, the step fails with `setup.ErrNoGroup`.
 - The administrator's first credits get a ledger row with the reason `registration` and the detail `installer`.
-- A restarted installer continues: `New` opens the database named by an existing `config.json`. That also covers a
+- `New(ctx, db, opts...)` takes the database. reborn passes the one it opened, and the installer works on it and
+  creates none. The runners of the installer alone pass `nil`, and the config step creates it.
+- A restarted installer continues: with `nil`, `New` opens the database named by an existing `config.json`. That also covers a
   database another program created: the installer then changes its default values and creates the administrator, once.
 - The installer never applies database updates.

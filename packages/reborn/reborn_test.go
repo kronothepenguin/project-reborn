@@ -12,6 +12,7 @@ import (
 	"net/http/cookiejar"
 	"net/url"
 	"os"
+	"os/signal"
 	"strconv"
 	"strings"
 	"testing"
@@ -38,7 +39,21 @@ var hotel struct {
 	info int
 }
 
+// newHotelEnv makes the test binary run reborn in its working directory
+// instead of the tests, until an interrupt: a test that installs a new hotel
+// starts it so, because config.Get loads config.json once per process.
+const newHotelEnv = "REBORN_TEST_NEW_HOTEL"
+
 func TestMain(m *testing.M) {
+	if os.Getenv(newHotelEnv) != "" {
+		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+		defer stop()
+		if err := runHotel(ctx); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		os.Exit(0)
+	}
 	code, err := run(m)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -75,22 +90,16 @@ func run(m *testing.M) (int, error) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	cfg := config.Get()
 	db := store.FromConfig()
 	defer db.Close()
-	c := cms.New(db, cms.WithResolver(printPage("cms")), cms.WithStatic(http.NotFoundHandler()))
-	h := housekeeping.New(db, housekeeping.WithResolver(printPage("housekeeping")), housekeeping.WithStatic(http.NotFoundHandler()))
-	i, err := installer.New(ctx, installer.WithResolver(printPage("installer")), installer.WithStatic(http.NotFoundHandler()))
+	r, err := build(ctx, db)
 	if err != nil {
-		return 0, fmt.Errorf("installer.New: %w", err)
+		return 0, err
 	}
-	g := server.New(db)
-	c.Inject(cms.Services{Habbos: g})
-	h.Inject(housekeeping.Services{Habbos: g})
 
 	release()
 	stopped := make(chan error, 1)
-	go func() { stopped <- New(cfg, db, c, h, i, g).Run(ctx) }()
+	go func() { stopped <- r.Run(ctx) }()
 	hotel.db, hotel.site, hotel.info = db, "http://127.0.0.1:"+strconv.Itoa(site), info
 	if err := waitForSite(hotel.site+"/", stopped); err != nil {
 		return 0, err
@@ -102,6 +111,35 @@ func run(m *testing.M) (int, error) {
 		return code, fmt.Errorf("Run: %w", err)
 	}
 	return code, nil
+}
+
+// build builds the programs on db and injects them as the runner does, with
+// pages that print their names.
+func build(ctx context.Context, db *sql.DB) (*Reborn, error) {
+	c := cms.New(db, cms.WithResolver(printPage("cms")), cms.WithStatic(http.NotFoundHandler()))
+	h := housekeeping.New(db, housekeeping.WithResolver(printPage("housekeeping")), housekeeping.WithStatic(http.NotFoundHandler()))
+	i, err := installer.New(ctx, db, installer.WithResolver(printPage("installer")), installer.WithStatic(http.NotFoundHandler()))
+	if err != nil {
+		return nil, fmt.Errorf("installer.New: %w", err)
+	}
+	g := server.New(db)
+	c.Inject(cms.Services{Habbos: g})
+	h.Inject(housekeeping.Services{Habbos: g})
+	r := New(config.Get(), db, c, h, i, g)
+	i.Inject(installer.Services{Listener: r})
+	return r, nil
+}
+
+// runHotel runs reborn in the working directory until ctx ends, as the runner
+// does.
+func runHotel(ctx context.Context) error {
+	db := store.FromConfig()
+	defer db.Close()
+	r, err := build(ctx, db)
+	if err != nil {
+		return err
+	}
+	return r.Run(ctx)
 }
 
 // The behaviour: reborn starts in the folder of an installed hotel, and the

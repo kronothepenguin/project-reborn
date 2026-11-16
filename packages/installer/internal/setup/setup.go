@@ -40,8 +40,8 @@ type Installation struct {
 	DB     *sql.DB
 }
 
-// State holds the installation once config.json exists. The database only
-// appears during the config step, so State opens it instead of receiving it.
+// State holds the installation once config.json exists. Run alone, the
+// database only appears during the config step, so State opens it there.
 type State struct {
 	mu           sync.Mutex
 	installation Installation
@@ -49,27 +49,37 @@ type State struct {
 	done chan struct{}
 }
 
-// Open continues an installation: with a config.json in the working directory
-// it opens the database the file names. Without one it must not call
+// Open continues an installation. With db, config.json exists and the
+// installation uses db, as reborn hands it. Without db, a config.json in the
+// working directory names the database it opens; without one it must not call
 // config.Load, which would write a config.json with the defaults.
-func Open(ctx context.Context) (*State, error) {
-	if _, err := os.Stat(config.Filename); errors.Is(err, fs.ErrNotExist) {
-		return &State{done: make(chan struct{})}, nil
-	} else if err != nil {
-		return nil, fmt.Errorf("setup: %w", err)
+func Open(ctx context.Context, db *sql.DB) (*State, error) {
+	if db == nil {
+		if _, err := os.Stat(config.Filename); errors.Is(err, fs.ErrNotExist) {
+			return &State{done: make(chan struct{})}, nil
+		} else if err != nil {
+			return nil, fmt.Errorf("setup: %w", err)
+		}
 	}
 	cfg, err := config.Load()
 	if err != nil {
 		return nil, err
 	}
-	installation, err := open(ctx, cfg)
+	var installation Installation
+	if db != nil {
+		installation, err = use(ctx, cfg, db)
+	} else {
+		installation, err = open(ctx, cfg)
+	}
 	if err != nil {
 		return nil, err
 	}
 	s := &State{installation: installation, done: make(chan struct{})}
 	done, err := Installed(ctx, installation.DB)
 	if err != nil {
-		installation.DB.Close()
+		if db == nil {
+			installation.DB.Close()
+		}
 		return nil, err
 	}
 	if done {
@@ -78,13 +88,21 @@ func Open(ctx context.Context) (*State, error) {
 	return s, nil
 }
 
+// open creates the database cfg names, or opens it when it exists.
 func open(ctx context.Context, cfg *config.Config) (Installation, error) {
 	db, err := store.Open(cfg.Store.Path)
 	if err != nil {
 		return Installation{}, fmt.Errorf("setup: %w", err)
 	}
-	if err := settings.Load(ctx, cfg, db); err != nil {
+	installation, err := use(ctx, cfg, db)
+	if err != nil {
 		db.Close()
+	}
+	return installation, err
+}
+
+func use(ctx context.Context, cfg *config.Config, db *sql.DB) (Installation, error) {
+	if err := settings.Load(ctx, cfg, db); err != nil {
 		return Installation{}, fmt.Errorf("setup: %w", err)
 	}
 	return Installation{Config: cfg, DB: db}, nil
@@ -138,7 +156,7 @@ func (s *State) SaveReborn(address reborn.Reborn) error {
 	if s.installation.Config == nil {
 		return ErrNotConfigured
 	}
-	if err := config.Save("reborn", address); err != nil {
+	if err := config.SaveReborn(address); err != nil {
 		return err
 	}
 	cfg := *s.installation.Config
