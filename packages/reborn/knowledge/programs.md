@@ -29,7 +29,8 @@ if err := r.Run(ctx); err != nil {
 ```
 
 - Each pair of pages and files comes from the package's `DistFS`: `astro.MakeFSResolver` and `http.FileServerFS` of its
-  `dist/`.
+  `dist/`. `apps/reborn/cmd/reborn-dev` builds the programs the same way, with each pair from the dev server of
+  [Dev server](dev-server.md).
 - The CMS is built first, so its automatic updates run before the game reads the database.
 - The runner injects the game server, which satisfies `services.Habbos`, into the CMS and housekeeping, after the
   constructors and before `reborn.New`: a look or motto saved on the site or in housekeeping reaches the game in the same

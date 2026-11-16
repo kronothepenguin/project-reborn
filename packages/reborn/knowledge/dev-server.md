@@ -12,7 +12,7 @@ resource: packages/reborn/astro.config.mjs
 server, so that a dev runner proxies one server for all of them.
 
 ```sh
-pnpm --filter @project-reborn/reborn dev   # http://localhost:16417
+pnpm --filter @project-reborn/reborn dev   # http://localhost:22448
 ```
 
 # What it serves
@@ -34,9 +34,20 @@ pnpm --filter @project-reborn/reborn dev   # http://localhost:16417
 
 # For a Go runner
 
-- `astro.MakeServerResolver` takes the site's base address: `http://localhost:16417/` for the CMS,
-  `http://localhost:16417/housekeeping/` and `http://localhost:16417/installer/`. It answers with the parsed page,
-  also for a missing page, whose 404 body it parses as the template.
-- One `httputil.NewSingleHostReverseProxy` of `http://localhost:16417/` serves every site's static files and Vite's
-  own paths (`/@vite/client`, `/@fs/...`): requests keep their `/housekeeping/` or `/installer/` prefix. A proxy whose
-  base address has a path, such as `/installer/`, prefixes it again and gets 404.
+`apps/reborn/cmd/reborn-dev` serves each site from the dev server under the site's base address:
+`http://localhost:22448/` for the CMS, `http://localhost:22448/housekeeping` and `http://localhost:22448/installer`.
+The root address ends in `/`, so `JoinPath` keeps the leading slash.
+
+- `astro.MakeServerResolver` of the base address resolves the site's pages. It answers with the parsed page, also for a
+  missing page, whose 404 body it parses as the template.
+- `httputil.NewSingleHostReverseProxy` of the base address serves the site's static files. Housekeeping and the
+  installer mount their static handler behind `http.StripPrefix`, so `/housekeeping/favicon.svg` reaches the proxy as
+  `/favicon.svg` and the proxy puts the base path back. A proxy of the root would answer with the CMS's
+  `favicon.svg`.
+- Vite's own paths (`/@vite/client`, `/@fs/...`, `/@id/...`) are at the root: the CMS's proxy serves them.
+- The page's HMR WebSocket at `ws://localhost:16416/` meets the CMS's own `/` route, and Vite's client falls back to a
+  direct connection to the dev server. Live reload works through that fallback.
+- Before the administrator exists, reborn redirects every path outside `/installer/` to the installer, Vite's paths
+  included: the installer's pages render with their styles, and an edit shows on the next load.
+- Run by an AI agent, `astro dev` starts the server in the background; `astro dev stop` stops it. In a terminal it stays
+  in the foreground.

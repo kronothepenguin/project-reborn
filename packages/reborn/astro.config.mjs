@@ -77,7 +77,7 @@ export default defineConfig({
   publicDir: resolve(root, "packages/cms/public"),
 
   server: {
-    port: 16417,
+    port: 22448,
   },
 
   vite: {

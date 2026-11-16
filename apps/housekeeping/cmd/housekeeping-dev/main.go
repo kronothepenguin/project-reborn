@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	astroURL, err := url.Parse("http://localhost:22177")
+	astroURL, err := url.Parse("http://localhost:22177/")
 	if err != nil {
 		panic(err)
 	}

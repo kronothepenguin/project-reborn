@@ -1,4 +1,4 @@
-.PHONY: install build tools create dependants tw-color e2e frontends release
+.PHONY: install dev build tools create dependants tw-color e2e frontends release
 
 VERSION ?= dev
 
@@ -8,11 +8,10 @@ install:
 	@for project in apps/*/ packages/store/; do $(MAKE) -C "$$project" install || exit 1; done
 	$(MAKE) tools
 
-# apps/reborn runs the whole hotel in one process. Its dev target waits for
-# reborn-dev (platform 12).
-#
-# dev:
-# 	cd apps/reborn && go tool air
+# The whole hotel in one process, with live reload of every page and of the Go
+# code.
+dev:
+	$(MAKE) -C apps/reborn dev
 
 build:
 	go build -o ./bin/reborn ./apps/reborn/cmd/reborn
