@@ -5,6 +5,12 @@ database handle. `apps/reborn` is its runner.
 
 How it works: `knowledge/index.md`.
 
+Its dev-only Astro project serves every site's pages from one dev server (`knowledge/dev-server.md`):
+
+```sh
+pnpm --filter @project-reborn/reborn dev
+```
+
 Check, from `packages/reborn`, after `make install` in `apps/reborn`, which gives the frontends their `dist/`:
 
 ```sh
