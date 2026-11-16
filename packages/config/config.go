@@ -8,6 +8,7 @@ import (
 	"os"
 	"sync"
 
+	"github.com/kronothepenguin/project-reborn/packages/config/assets"
 	"github.com/kronothepenguin/project-reborn/packages/config/cms"
 	"github.com/kronothepenguin/project-reborn/packages/config/housekeeping"
 	"github.com/kronothepenguin/project-reborn/packages/config/proxy"
@@ -33,6 +34,7 @@ type Config struct {
 	Proxy        proxy.Proxy               `json:"proxy"`
 	Server       server.Server             `json:"server"`
 	Reborn       reborn.Reborn             `json:"reborn"`
+	Assets       assets.Assets             `json:"assets"`
 }
 
 func defaults() *Config {
@@ -43,6 +45,7 @@ func defaults() *Config {
 		Proxy:        proxy.Proxy{Enabled: proxy.DefaultEnabled(), Trusted: proxy.DefaultTrusted()},
 		Server:       server.Server{Info: server.DefaultInfo(), MUS: server.DefaultMUS(), API: server.DefaultAPI()},
 		Reborn:       reborn.Reborn{Host: reborn.DefaultHost(), Port: reborn.DefaultPort()},
+		Assets:       assets.Assets{Path: assets.DefaultPath()},
 	}
 }
 
@@ -66,6 +69,9 @@ func (c *Config) Validate() error {
 	}
 	if err := c.Reborn.Validate(); err != nil {
 		return fmt.Errorf("reborn.%w", err)
+	}
+	if err := c.Assets.Validate(); err != nil {
+		return fmt.Errorf("assets.%w", err)
 	}
 	return nil
 }

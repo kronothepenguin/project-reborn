@@ -158,6 +158,18 @@ type Credential struct {
 	UpdatedAt    time.Time
 }
 
+type DCRText struct {
+	ID    int64
+	Key   string
+	Value string
+}
+
+type DCRVariable struct {
+	ID    int64
+	Key   string
+	Value string
+}
+
 type FavouriteRoom struct {
 	AvatarID     int64
 	PublicRoomID sql.NullInt64

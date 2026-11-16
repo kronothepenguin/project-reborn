@@ -6,6 +6,7 @@ use (
 	./apps/installer
 	./apps/reborn
 	./apps/server
+	./packages/assets
 	./packages/astro
 	./packages/auth
 	./packages/cms

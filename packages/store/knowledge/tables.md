@@ -319,6 +319,16 @@ The recycler gives one furni for many, after a time.
 | recycler_rewards | The furni definition given for each number of pieces recycled at once | recycler.schema.sql |
 | recyclings | A habbo's running recycling, one at a time: start and reward | recycler.schema.sql |
 
+# Client files
+
+The client's external variables and texts, which the CMS writes out as `external_variables.txt` and
+`external_texts.txt`.
+
+| Table | Holds | Schema file |
+| --- | --- | --- |
+| dcr_variables | One key and value per line of `external_variables.txt`, in the file's order | dcr.schema.sql |
+| dcr_texts | One key and value per line of `external_texts.txt`, in the file's order | dcr.schema.sql |
+
 # Notes
 
 - `sso_tickets.id` holds the ticket itself as text, as update `0008-sso-tickets-as-text.sql` made it.

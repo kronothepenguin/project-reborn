@@ -39,7 +39,7 @@ func TestDifferencesFindsMissingAndUnusedKeys(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Differences: %v", err)
 	}
-	if got, want := paths(missing), []string{`cms.host="localhost"`, `proxy.enabled=false`, `proxy.trusted=["127.0.0.1","::1"]`,
+	if got, want := paths(missing), []string{`assets.path="assets"`, `cms.host="localhost"`, `proxy.enabled=false`, `proxy.trusted=["127.0.0.1","::1"]`,
 		`reborn.host="localhost"`, `reborn.port=16416`, `server.api.host="localhost"`, `server.api.port=15445`,
 		`server.info.host="localhost"`, `server.info.port=30000`, `server.mus.host="localhost"`, `server.mus.port=30001`}; !slices.Equal(got, want) {
 		t.Errorf("missing = %v, want %v", got, want)
@@ -54,7 +54,7 @@ func TestDifferencesFindsNothingInACurrentFile(t *testing.T) {
 		`"housekeeping":{"host":"localhost","port":18465},"proxy":{"enabled":false,"trusted":["127.0.0.1"]},`+
 		`"server":{"info":{"host":"localhost","port":30000},"mus":{"host":"localhost","port":30001},`+
 		`"api":{"host":"localhost","port":15445}},`+
-		`"reborn":{"host":"localhost","port":16416}}`)
+		`"reborn":{"host":"localhost","port":16416},"assets":{"path":"assets"}}`)
 	if missing, unused, err := Differences(); err != nil || len(missing) != 0 || len(unused) != 0 {
 		t.Errorf("Differences = %v, %v, %v, want none", paths(missing), paths(unused), err)
 	}

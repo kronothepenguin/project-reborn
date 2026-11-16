@@ -26,6 +26,7 @@ runs are settings, declared in `packages/virtual`.
 | `server.api.port` | int | 15445 | 1–65535, other than `server.info.port` and `server.mus.port` |
 | `reborn.host` | string | `localhost` | hostname or IP address, as `cms.host` |
 | `reborn.port` | int | 16416 | 1–65535 |
+| `assets.path` | string | `assets` | non-empty |
 
 `store.path` refuses `?` and `#` because `store.Open` builds a `file:` URI from it.
 
@@ -49,6 +50,9 @@ derives for the name `reborn`.
 - The game server keeps its own `server.info` and `server.mus` listeners.
 - `reborn.ValidateHost` calls `cms.ValidateHost`.
 - The installer writes the section's defaults.
+
+`assets.path` is the assets folder, beside `config.json` by default. The client's folder is `<assets.path>/dcr/`,
+which the CMS serves at `/dcr/`.
 
 The settings package (`packages/virtual/settings`) exposes these values under the same key paths
 (`settings.GetInt("cms.port")`; it has no getter for lists such as `proxy.trusted`), and a settings row never overrides

@@ -7,5 +7,5 @@ sql:
       go:
         package: store
         out: .
-        initialisms: ["id", "ip", "sso", "url"]
+        initialisms: ["id", "ip", "sso", "url", "dcr"]
         inflection_exclude_table_names: ["avatar_game_data"]
