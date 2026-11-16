@@ -4,5 +4,4 @@
 
 - [Serve the client's folder from the CMS](04-serve-the-clients-files.md) - The CMS serves assets/dcr/ of the folder config.json names at /dcr/, and writes external_variables.txt and external_texts.txt there from the database.
 - [Import the client's files from housekeeping](05-import-in-housekeeping.md) - Housekeeping gains an "Import client files" action, open to the new attribute housekeeping.dcr, which copies the variables and texts of the assets folder into the database.
-- [Write the hotel's name for the word Habbo only](07-whole-words-only.md) - dcr.Texts writes the hotel's short name for "Habbo", "Habbos" and "Habbo's", and leaves a longer word that starts with it as it is.
 - [Open the client from the site](08-enter-the-hotel.md) - The site's "Enter <short name>" button, ported from Holo's header, opens the client page in a window of its own for a signed-in habbo.
