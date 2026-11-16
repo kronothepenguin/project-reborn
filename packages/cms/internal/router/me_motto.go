@@ -44,6 +44,7 @@ func (r *Router) HandleMeMotto(w http.ResponseWriter, req *http.Request) {
 			r.fail(w, err)
 			return
 		}
+		r.sendLook(ctx, session.AvatarID)
 	}
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.MarshalWrite(w, body); err != nil {

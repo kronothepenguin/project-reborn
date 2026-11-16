@@ -22,6 +22,10 @@ Astro (Svelte + Tailwind) frontend embedded in a Go module. The `Housekeeping` s
   tell the game server of the changes it must show live (`packages/services/knowledge/index.md`). `Mount` gives them to
   the router.
 - A service no runner injected is nil, and housekeeping skips its calls.
+- The habbo editor (`POST /housekeeping/habbos/{id}`) calls `Habbos.SendLook` once after its transaction commits, and
+  never after a refused save.
+- The call has a context of its own of 2 seconds, apart from the request's, so a request the visitor abandons still
+  tells the game. A failure is logged, and the page answers as it would without the game.
 
 # Layout
 
