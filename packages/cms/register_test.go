@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 const newFigure = "hd-180-1.ch-215-82.lg-270-82"
@@ -44,7 +44,7 @@ func count(t *testing.T, db *sql.DB, query string, args ...any) int {
 
 func setSetting(t *testing.T, db *sql.DB, key string, value any) {
 	t.Helper()
-	if err := settings.Set(t.Context(), db, 0, key, value); err != nil {
+	if err := settings.Set(t.Context(), store.New(db), 0, key, value); err != nil {
 		t.Fatalf("set %s: %v", key, err)
 	}
 }

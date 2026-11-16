@@ -6,8 +6,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // skinLabels are the skins in the order and words of Holo's edit menu.
@@ -59,8 +59,8 @@ func (r *Router) HandleHomeEditView(w http.ResponseWriter, req *http.Request) {
 	}
 	page := homeEditPage{
 		homePage:  home,
-		NoteMax:   settings.GetInt("homes.noteMaxLength"),
-		Smilies:   settings.GetBool("features.smilies"),
+		NoteMax:   settings.Int(ctx, r.deps.Queries, "homes.noteMaxLength"),
+		Smilies:   settings.Bool(ctx, r.deps.Queries, "features.smilies"),
 		NewGroups: homeItem{Kind: "widget", Widget: widgetGroups, Skin: "defaultskin", X: widgetX, Y: widgetY},
 	}
 	if page.Skins, err = r.skinOptions(ctx, skinLabels); err != nil {

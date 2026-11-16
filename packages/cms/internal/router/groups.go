@@ -13,8 +13,8 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/cms/internal/badge"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 const (
@@ -79,12 +79,12 @@ func (r *Router) groupPurchase(ctx context.Context, userID int64) (groupPurchase
 		return groupPurchase{}, err
 	}
 	return groupPurchase{
-		Enabled:        settings.GetBool("features.groupPurchase"),
-		Price:          settings.GetInt("groups.price"),
+		Enabled:        settings.Bool(ctx, r.deps.Queries, "features.groupPurchase"),
+		Price:          settings.Int(ctx, r.deps.Queries, "groups.price"),
 		Owned:          owned,
-		MaxOwned:       settings.GetInt("groups.maxOwned"),
-		NameMax:        settings.GetInt("groups.nameMaxLength"),
-		DescriptionMax: settings.GetInt("groups.descriptionMaxLength"),
+		MaxOwned:       settings.Int(ctx, r.deps.Queries, "groups.maxOwned"),
+		NameMax:        settings.Int(ctx, r.deps.Queries, "groups.nameMaxLength"),
+		DescriptionMax: settings.Int(ctx, r.deps.Queries, "groups.descriptionMaxLength"),
 	}, nil
 }
 
@@ -117,8 +117,8 @@ func (r *Router) HandleGroupsPurchase(w http.ResponseWriter, req *http.Request) 
 	var created store.Group
 	now := time.Now().UTC()
 	err := r.inTx(ctx, func(q *store.Queries) error {
-		price := settings.GetInt("groups.price")
-		if !settings.GetBool("features.groupPurchase") {
+		price := settings.Int(ctx, q, "groups.price")
+		if !settings.Bool(ctx, q, "features.groupPurchase") {
 			refusal = purchaseDisabled
 			return nil
 		}
@@ -135,16 +135,16 @@ func (r *Router) HandleGroupsPurchase(w http.ResponseWriter, req *http.Request) 
 			return err
 		}
 		switch {
-		case owned >= int64(settings.GetInt("groups.maxOwned")):
+		case owned >= int64(settings.Int(ctx, q, "groups.maxOwned")):
 			refusal = purchaseOwned
 			return nil
 		case name == "" || description == "":
 			refusal = purchaseBlank
 			return nil
-		case utf8.RuneCountInString(name) > settings.GetInt("groups.nameMaxLength"):
+		case utf8.RuneCountInString(name) > settings.Int(ctx, q, "groups.nameMaxLength"):
 			refusal = purchaseNameLong
 			return nil
-		case utf8.RuneCountInString(description) > settings.GetInt("groups.descriptionMaxLength"):
+		case utf8.RuneCountInString(description) > settings.Int(ctx, q, "groups.descriptionMaxLength"):
 			refusal = purchaseDescriptionLong
 			return nil
 		}
@@ -360,7 +360,7 @@ func (r *Router) groupMissing(w http.ResponseWriter, req *http.Request, searched
 		community: page,
 		Searched:  searched,
 		Search:    search,
-		NameMax:   settings.GetInt("groups.nameMaxLength"),
+		NameMax:   settings.Int(req.Context(), r.deps.Queries, "groups.nameMaxLength"),
 	})
 }
 
@@ -374,16 +374,16 @@ func (r *Router) newGroupPage(ctx context.Context, group store.Group, editor int
 	}
 	page := groupPage{
 		community:  shared,
-		ImagingURL: settings.GetString("imaging.avatarUrl"),
+		ImagingURL: settings.String(ctx, r.deps.Queries, "imaging.avatarUrl"),
 		GroupID:    group.ID,
 		Group:      group.Name,
 		Exclusive:  group.Access == accessExclusive,
 		Private:    group.Access == accessPrivate,
 		Access:     group.Access,
 
-		NameMax:        settings.GetInt("groups.nameMaxLength"),
-		DescriptionMax: settings.GetInt("groups.descriptionMaxLength"),
-		MaxMembers:     settings.GetInt("groups.maxMembers"),
+		NameMax:        settings.Int(ctx, r.deps.Queries, "groups.nameMaxLength"),
+		DescriptionMax: settings.Int(ctx, r.deps.Queries, "groups.descriptionMaxLength"),
+		MaxMembers:     settings.Int(ctx, r.deps.Queries, "groups.maxMembers"),
 		Wide:           true,
 	}
 	home, err := q.GetGroupHome(ctx, group.ID)

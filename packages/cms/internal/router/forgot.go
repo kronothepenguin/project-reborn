@@ -8,7 +8,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/cms/internal/mail"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 )
 
 type forgotPage struct {
@@ -56,7 +56,7 @@ func (r *Router) sendReset(ctx context.Context, username, email string) error {
 	if err != nil || reset == nil {
 		return err
 	}
-	subject := settings.GetString("site.shortName") + " - Forgot password"
+	subject := settings.String(ctx, r.deps.Queries, "site.shortName") + " - Forgot password"
 	body := fmt.Sprintf(`Hello %[1]s,
 This is a password reminder you or someone else requested. If you did not request a password reminder, don't worry, just delete and ignore this e-mail, as no changes will be made that may affect you.
 
@@ -64,6 +64,6 @@ Username: %[1]s
 Password: choose a new one at %[2]s/reset/%[3]s (this link works once, for %[4]d minutes)
 
 We hope to see you soon!
-`, reset.Name, settings.GetString("site.url"), reset.Token, settings.GetInt("auth.resetTokenMinutes"))
-	return mail.Send(ctx, reset.Email, subject, body)
+`, reset.Name, settings.String(ctx, r.deps.Queries, "site.url"), reset.Token, settings.Int(ctx, r.deps.Queries, "auth.resetTokenMinutes"))
+	return mail.Send(ctx, r.deps.Queries, reset.Email, subject, body)
 }

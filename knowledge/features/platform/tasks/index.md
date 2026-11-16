@@ -2,7 +2,6 @@
 
 # Tasks
 
-- [The CMS reads its settings from the store](07-cms-reads-settings.md) - The CMS's settings reads go through packages/settings on each use, cms.New loads and refreshes nothing, and a benchmark of its pages before and after is recorded.
 - [The game reads settings from the store and checks for waiting updates on use](09-game-reads-settings.md) - The game server reads each setting through packages/settings, loads what it caches the first time no database update waits when a player needs it, refreshes nothing, and virtual/settings and cms.refresh are gone.
 - [reborn stops in order](10-reborn-stops-in-order.md) - On Ctrl-C or SIGTERM reborn stops taking requests, logs every player out and closes the game's listeners, stops the scheduled tasks and closes the database, with new Shutdown and Stop functions.
 - [The browser suite reborn](13-browser-suite.md) - A browser suite builds reborn and checks, from an empty folder, the installer, the move to a new port, the hotel after the install, the game's first message, and a stop in order.

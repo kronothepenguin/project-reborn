@@ -14,8 +14,8 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/services"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // Deps are the shared services every handler can use.
@@ -55,11 +55,11 @@ func (r *Router) hotelStatus(ctx context.Context) hotelStatus {
 		logError("cms: count habbos", err)
 	}
 	return hotelStatus{
-		Name:            settings.GetString("site.name"),
-		ShortName:       settings.GetString("site.shortName"),
+		Name:            settings.String(ctx, r.deps.Queries, "site.name"),
+		ShortName:       settings.String(ctx, r.deps.Queries, "site.shortName"),
 		RegisteredUsers: registered,
 		Staff:           r.holds(ctx, auth.HousekeepingAccess),
-		HousekeepingURL: settings.GetString("site.housekeepingUrl"),
+		HousekeepingURL: settings.String(ctx, r.deps.Queries, "site.housekeepingUrl"),
 	}
 }
 

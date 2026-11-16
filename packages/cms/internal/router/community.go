@@ -6,7 +6,7 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 )
 
 // community holds what the community layout reads. Only users who pass
@@ -20,7 +20,7 @@ type community struct {
 }
 
 func (r *Router) community(ctx context.Context) (community, error) {
-	page := community{hotelStatus: r.hotelStatus(ctx), SiteClosed: settings.GetBool("site.maintenance")}
+	page := community{hotelStatus: r.hotelStatus(ctx), SiteClosed: settings.Bool(ctx, r.deps.Queries, "site.maintenance")}
 	session, ok := auth.FromContext(ctx)
 	if !ok {
 		return page, nil
@@ -85,7 +85,7 @@ func (r *Router) HandleCommunityView(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
-	page := communityPage{community: shared, ImagingURL: settings.GetString("imaging.avatarUrl")}
+	page := communityPage{community: shared, ImagingURL: settings.String(ctx, r.deps.Queries, "imaging.avatarUrl")}
 	avatars, err := r.deps.Queries.ListRandomAvatars(ctx, randomHabbosShown)
 	if err != nil {
 		r.fail(w, err)

@@ -7,8 +7,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // clubBadge is Holo's club badge, which every habbo of a member holds (0103).
@@ -36,10 +36,10 @@ func (r *Router) HandleClubView(w http.ResponseWriter, req *http.Request) {
 	}
 	page := clubPage{
 		community:    layout,
-		Price1Month:  settings.GetInt("club.price1Month"),
-		Price3Months: settings.GetInt("club.price3Months"),
-		Price6Months: settings.GetInt("club.price6Months"),
-		DaysPerMonth: settings.GetInt("club.daysPerMonth"),
+		Price1Month:  settings.Int(ctx, r.deps.Queries, "club.price1Month"),
+		Price3Months: settings.Int(ctx, r.deps.Queries, "club.price3Months"),
+		Price6Months: settings.Int(ctx, r.deps.Queries, "club.price6Months"),
+		DaysPerMonth: settings.Int(ctx, r.deps.Queries, "club.daysPerMonth"),
 	}
 	if session, ok := auth.FromContext(ctx); ok {
 		if page.ClubDays, err = r.clubDays(ctx, session.UserID, time.Now().UTC()); err != nil {

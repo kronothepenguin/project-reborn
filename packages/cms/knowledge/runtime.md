@@ -1,20 +1,28 @@
 ---
 type: Go Package
 title: Runtime
-description: How cms.New starts the CMS, how Inject hands it its services, and how Mount wraps every route in its middleware chain.
+description: How cms.New starts the CMS, how it reads its settings, how Inject hands it its services, and how Mount wraps every route in its middleware chain.
 resource: packages/cms/cms.go
 ---
 
 # New
 
 - `cms.New(db, WithResolver(…), WithStatic(…))` takes the db the runner opened with `store.FromConfig()`, applies the
-  automatic database updates and loads the settings (`virtual/settings`), panicking when it cannot.
+  automatic database updates, and panics when the list of updates or the `proxy` section of `config.json` is broken.
 - Only the resolver and the static handler are options, because they differ between the production and development
   runners.
-- `New` schedules three tasks on `packages/scheduler`, each run only while the database is current:
-  - the settings reload every `cms.refresh` seconds, because housekeeping is the single writer of settings;
+- `New` schedules two tasks on `packages/scheduler`, each run only while the database is current:
   - expired reset links are deleted every minute;
   - expired sessions are deleted every minute.
+
+# Settings
+
+- A handler reads each setting from the store when it uses it, with `settings.String`, `Int` or `Bool(ctx, q, key)` of
+  `packages/settings` (`packages/settings/knowledge/settings.md`). A setting staff save shows on the next page, and
+  nothing refreshes.
+- `q` is the router's queries, or the transaction's inside `inTx` or `WithTx`: the store has one connection, so a read
+  through the router's queries while a transaction is open blocks forever.
+- `internal/mail.Send` takes the queries too, and reads the `mail.*` settings on each send.
 
 # Inject
 

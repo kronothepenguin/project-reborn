@@ -1,6 +1,7 @@
 package router
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"net/http"
@@ -8,8 +9,8 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 const reasonClub = "club"
@@ -36,14 +37,14 @@ type subscriptionAnswer struct {
 
 // clubOption is club_subscribe.php's choice: 1, 3 or 6 months at their price, and
 // one month for any other number.
-func clubOption(months int) (int, int) {
+func (r *Router) clubOption(ctx context.Context, months int) (int, int) {
 	switch months {
 	case 3:
-		return 3, settings.GetInt("club.price3Months")
+		return 3, settings.Int(ctx, r.deps.Queries, "club.price3Months")
 	case 6:
-		return 6, settings.GetInt("club.price6Months")
+		return 6, settings.Int(ctx, r.deps.Queries, "club.price6Months")
 	}
-	return 1, settings.GetInt("club.price1Month")
+	return 1, settings.Int(ctx, r.deps.Queries, "club.price1Month")
 }
 
 // HandleClubSubscriptionsPurchase handles POST /club/subscriptions,
@@ -57,9 +58,9 @@ func (r *Router) HandleClubSubscriptionsPurchase(w http.ResponseWriter, req *htt
 		return
 	}
 	session, _ := auth.FromContext(ctx)
-	months, price := clubOption(body.Months)
-	daysPerMonth := settings.GetInt("club.daysPerMonth")
-	maxMonths := settings.GetInt("club.maxMonths")
+	months, price := r.clubOption(ctx, body.Months)
+	daysPerMonth := settings.Int(ctx, r.deps.Queries, "club.daysPerMonth")
+	maxMonths := settings.Int(ctx, r.deps.Queries, "club.maxMonths")
 	now := time.Now().UTC()
 
 	var answer subscriptionAnswer

@@ -10,8 +10,8 @@ import (
 	"testing"
 
 	"github.com/kronothepenguin/project-reborn/packages/cms/internal/badge"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 type purchased struct {
@@ -110,7 +110,7 @@ func TestAPurchaseRefusedWritesNothing(t *testing.T) {
 		want        string
 	}{
 		{name: "switched off", credits: 50, before: func(t *testing.T, db *sql.DB, _ int64) {
-			if err := settings.Set(t.Context(), db, 0, "features.groupPurchase", false); err != nil {
+			if err := settings.Set(t.Context(), store.New(db), 0, "features.groupPurchase", false); err != nil {
 				t.Fatal(err)
 			}
 		}, group: "Club", description: "Ours", want: "disabled"},
@@ -163,7 +163,7 @@ func TestAPurchaseRefusedWritesNothing(t *testing.T) {
 func TestTheLimitsComeFromTheSettings(t *testing.T) {
 	db, mux, cookie, userID := buyer(t, 10)
 	for key, value := range map[string]any{"groups.price": 10, "groups.nameMaxLength": 30, "groups.descriptionMaxLength": 5} {
-		if err := settings.Set(t.Context(), db, 0, key, value); err != nil {
+		if err := settings.Set(t.Context(), store.New(db), 0, key, value); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -177,10 +177,10 @@ func TestTheLimitsComeFromTheSettings(t *testing.T) {
 	if got := walletOf(t, db, userID); got != 0 {
 		t.Errorf("the wallet holds %d, want 10 - 10", got)
 	}
-	if err := settings.Set(t.Context(), db, 0, "groups.maxOwned", 1); err != nil {
+	if err := settings.Set(t.Context(), store.New(db), 0, "groups.maxOwned", 1); err != nil {
 		t.Fatal(err)
 	}
-	if err := settings.Set(t.Context(), db, 0, "groups.price", 0); err != nil {
+	if err := settings.Set(t.Context(), store.New(db), 0, "groups.price", 0); err != nil {
 		t.Fatal(err)
 	}
 	if got := decode[purchased](t, purchase(mux, cookie, "Second", "Two")); got.Error != "owned" {

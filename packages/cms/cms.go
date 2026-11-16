@@ -15,7 +15,6 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/scheduler"
 	"github.com/kronothepenguin/project-reborn/packages/services"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 //go:embed dist/*
@@ -40,8 +39,9 @@ type Services struct {
 
 type Option func(*CMS)
 
-// New loads the settings from config.json and db, and panics when it cannot,
-// like store.Must: the CMS cannot serve without them.
+// New applies the automatic updates and schedules the clean-up of expired
+// resets and sessions. It panics when the list of updates or the proxy section
+// of config.json is broken: the CMS cannot serve without them.
 func New(db *sql.DB, opts ...Option) *CMS {
 	cfg := config.Get()
 	list, err := store.Updates()
@@ -51,9 +51,6 @@ func New(db *sql.DB, opts ...Option) *CMS {
 	updates := store.NewUpdateCheck(db, list)
 	if err := updates.ApplyAutomatic(context.Background()); err != nil {
 		slog.Error("cms: the database could not be updated", "err", err)
-	}
-	if err := settings.Load(context.Background(), cfg, db); err != nil {
-		panic(fmt.Errorf("cms: %w", err))
 	}
 	realIP, err := auth.RealIP(cfg.Proxy)
 	if err != nil {
@@ -72,11 +69,6 @@ func New(db *sql.DB, opts ...Option) *CMS {
 	for _, opt := range opts {
 		opt(c)
 	}
-	// Housekeeping is the single writer of settings, so this is how a CMS running
-	// alone learns of a change.
-	scheduler.Every(settings.GetInt("cms.refresh"), scheduler.Second, updates.WhenCurrent(func(ctx context.Context) error {
-		return settings.Reload(ctx, db)
-	}))
 	scheduler.Every(1, scheduler.Minute, updates.WhenCurrent(func(ctx context.Context) error {
 		return auth.DeleteExpiredResets(ctx, db)
 	}))

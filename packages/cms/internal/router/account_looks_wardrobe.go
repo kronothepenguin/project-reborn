@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // outfitRefused answers every outfit the wardrobe does not keep, which the page
@@ -36,8 +36,8 @@ type outfitAnswer struct {
 
 // outfitPicture is the picture Holo's wardrobe showed of an outfit: small, facing
 // the front and smiling.
-func outfitPicture(figure string) string {
-	return settings.GetString("imaging.avatarUrl") + "?figure=" + url.QueryEscape(figure) + "&size=s&direction=4&head_direction=4&gesture=sml"
+func outfitPicture(imager, figure string) string {
+	return imager + "?figure=" + url.QueryEscape(figure) + "&size=s&direction=4&head_direction=4&gesture=sml"
 }
 
 // wardrobeOutfits lists the habbo's outfits in the first slots of the wardrobe.
@@ -48,10 +48,11 @@ func (r *Router) wardrobeOutfits(ctx context.Context, avatarID int64, slots int)
 	if err != nil {
 		return nil, err
 	}
+	imager := settings.String(ctx, r.deps.Queries, "imaging.avatarUrl")
 	var outfits []wardrobeOutfit
 	for _, outfit := range stored {
 		if outfit.Slot <= int64(slots) {
-			outfits = append(outfits, wardrobeOutfit{Slot: outfit.Slot, Figure: outfit.Figure, Gender: outfit.Gender, Picture: outfitPicture(outfit.Figure)})
+			outfits = append(outfits, wardrobeOutfit{Slot: outfit.Slot, Figure: outfit.Figure, Gender: outfit.Gender, Picture: outfitPicture(imager, outfit.Figure)})
 		}
 	}
 	return outfits, nil
@@ -69,7 +70,7 @@ func (r *Router) HandleAccountLooksWardrobeStore(w http.ResponseWriter, req *htt
 		return
 	}
 	slot, err := strconv.ParseInt(req.PathValue("slot"), 10, 64)
-	if err != nil || slot < 1 || slot > int64(settings.GetInt("homes.wardrobeSlots")) || auth.ValidateLook(body.Figure, body.Gender) != nil {
+	if err != nil || slot < 1 || slot > int64(settings.Int(ctx, r.deps.Queries, "homes.wardrobeSlots")) || auth.ValidateLook(body.Figure, body.Gender) != nil {
 		r.answerJSON(w, http.StatusUnprocessableEntity, outfitAnswer{Error: outfitRefused})
 		return
 	}
@@ -94,5 +95,5 @@ func (r *Router) HandleAccountLooksWardrobeStore(w http.ResponseWriter, req *htt
 		r.fail(w, err)
 		return
 	}
-	r.answerJSON(w, http.StatusOK, outfitAnswer{Picture: outfitPicture(body.Figure)})
+	r.answerJSON(w, http.StatusOK, outfitAnswer{Picture: outfitPicture(settings.String(ctx, r.deps.Queries, "imaging.avatarUrl"), body.Figure)})
 }

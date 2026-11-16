@@ -6,8 +6,8 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 type settingsBody struct {
@@ -38,9 +38,9 @@ func (r *Router) HandleGroupsSettingsSave(w http.ResponseWriter, req *http.Reque
 		refusal = settingsLocked
 	case body.Access != accessRegular && body.Access != accessExclusive && body.Access != accessPrivate && body.Access != accessUnlimited:
 		refusal = settingsBadType
-	case utf8.RuneCountInString(name) > settings.GetInt("groups.nameMaxLength"):
+	case utf8.RuneCountInString(name) > settings.Int(ctx, r.deps.Queries, "groups.nameMaxLength"):
 		refusal = settingsNameLong
-	case utf8.RuneCountInString(description) > settings.GetInt("groups.descriptionMaxLength"):
+	case utf8.RuneCountInString(description) > settings.Int(ctx, r.deps.Queries, "groups.descriptionMaxLength"):
 		refusal = settingsDescLong
 	case name == "":
 		refusal = settingsNameBlank

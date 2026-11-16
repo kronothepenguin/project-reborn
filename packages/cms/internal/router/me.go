@@ -10,8 +10,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // meAlert is what the feed shows of an alert. A sender makes it a staff message,
@@ -88,7 +88,7 @@ func (r *Router) newMePage(ctx context.Context, session auth.Session) (mePage, e
 	page = mePage{
 		community:  layout,
 		Figure:     avatar.Figure,
-		ImagingURL: settings.GetString("imaging.avatarUrl"),
+		ImagingURL: settings.String(ctx, r.deps.Queries, "imaging.avatarUrl"),
 		Motto:      avatar.Motto,
 		Credits:    wallet.Credits,
 		ClubDays:   days,
@@ -106,7 +106,7 @@ func (r *Router) newMePage(ctx context.Context, session auth.Session) (mePage, e
 	case !store.IsNotFound(err):
 		return page, err
 	}
-	if settings.GetBool("features.birthdayNotifications") && user.BornOn.Month() == now.Month() && user.BornOn.Day() == now.Day() {
+	if settings.Bool(ctx, r.deps.Queries, "features.birthdayNotifications") && user.BornOn.Month() == now.Month() && user.BornOn.Day() == now.Day() {
 		page.Birthday = ordinal(now.Year() - user.BornOn.Year())
 	}
 	switch at, err := q.GetLastSignIn(ctx, sql.NullInt64{Int64: session.AvatarID, Valid: true}); {
@@ -122,7 +122,7 @@ func (r *Router) newMePage(ctx context.Context, session auth.Session) (mePage, e
 	if page.MyTags, err = q.ListProfileTags(ctx, profile.ID); err != nil {
 		return page, err
 	}
-	page.MaxTags = settings.GetInt("homes.maxTags")
+	page.MaxTags = settings.Int(ctx, r.deps.Queries, "homes.maxTags")
 	if page.Groups, err = r.myGroups(ctx, session.AvatarID); err != nil {
 		return page, err
 	}

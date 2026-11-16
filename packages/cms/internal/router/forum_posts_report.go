@@ -10,8 +10,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // iot/go.php's answers to a report, and the subject of the ticket a report writes.
@@ -87,7 +87,7 @@ func (r *Router) HandleForumPostsReportView(w http.ResponseWriter, req *http.Req
 		return
 	}
 	view := reportPage{
-		ShortName: settings.GetString("site.shortName"),
+		ShortName: settings.String(ctx, r.deps.Queries, "site.shortName"),
 		ID:        post.ID,
 		Page:      reportedPage(req.URL.Query().Get("page")),
 		Result:    refusal,
@@ -107,7 +107,7 @@ func (r *Router) HandleForumPostsReport(w http.ResponseWriter, req *http.Request
 	ctx := req.Context()
 	session, _ := auth.FromContext(ctx)
 	view := reportPage{
-		ShortName: settings.GetString("site.shortName"),
+		ShortName: settings.String(ctx, r.deps.Queries, "site.shortName"),
 		Page:      reportedPage(req.PostFormValue("page")),
 		Result:    reportThanks,
 	}
@@ -123,7 +123,7 @@ func (r *Router) HandleForumPostsReport(w http.ResponseWriter, req *http.Request
 			AvatarID:    session.AvatarID,
 			ForumPostID: sql.NullInt64{Int64: post.ID, Valid: true},
 			Subject:     reportSubject,
-			Message:     fmt.Sprintf(reportMessage, post.ID, post.ForumThreadID, post.Body, settings.GetString("site.url"), post.ForumThreadID, view.Page, post.ID),
+			Message:     fmt.Sprintf(reportMessage, post.ID, post.ForumThreadID, post.Body, settings.String(ctx, q, "site.url"), post.ForumThreadID, view.Page, post.ID),
 			IP:          auth.ClientIP(req),
 			CreatedAt:   time.Now().UTC(),
 		})
