@@ -158,6 +158,12 @@ func (c *CMS) Mount(mux *http.ServeMux) {
 	mux.Handle("GET /client/utils", page(http.HandlerFunc(r.HandleClientUtilsView)))
 	mux.Handle("POST /client/unload", page(http.HandlerFunc(r.HandleClientUnload)))
 
+	// The client's folder stands outside the chain, as the static files do; the
+	// two written files read the database, so they keep the guard.
+	mux.Handle("GET /dcr/external_variables.txt", guard(http.HandlerFunc(r.HandleExternalVariablesText)))
+	mux.Handle("GET /dcr/external_texts.txt", guard(http.HandlerFunc(r.HandleExternalTextsText)))
+	mux.HandleFunc("GET /dcr/", r.HandleDCRFile)
+
 	mux.Handle("GET /credits", page(http.HandlerFunc(r.HandleCreditsView)))
 	mux.Handle("POST /credits/vouchers", page(auth.RequireSession(http.HandlerFunc(r.HandleCreditsVouchersRedeem))))
 	mux.Handle("GET /credits/transactions", page(auth.RequireSession(http.HandlerFunc(r.HandleCreditsTransactionsView))))

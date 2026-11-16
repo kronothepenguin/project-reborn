@@ -1,7 +1,7 @@
 ---
 type: Reference
 title: The client page
-description: How the CMS serves Holo's client.php, clientutils.php and unloadclient.php, with LibreShockwave's player built by make player in place of Adobe's plugin.
+description: How the CMS serves Holo's client.php, clientutils.php and unloadclient.php, with LibreShockwave's player built by make player in place of Adobe's plugin, and the client's folder at /dcr/.
 ---
 
 # Routes
@@ -11,6 +11,9 @@ description: How the CMS serves Holo's client.php, clientutils.php and unloadcli
 | `GET /client` | `client.php` | `HandleClientView` in `internal/router/client.go` |
 | `GET /client/utils?key=` | `clientutils.php` | `HandleClientUtilsView` in `internal/router/client_utils.go` |
 | `POST /client/unload` | `unloadclient.php` | `HandleClientUnload` in `internal/router/client_unload.go` |
+| `GET /dcr/external_variables.txt` | | `HandleExternalVariablesText` in `internal/router/dcr_external_variables.go` |
+| `GET /dcr/external_texts.txt` | | `HandleExternalTextsText` in `internal/router/dcr_external_texts.go` |
+| `GET /dcr/` | | `HandleDCRFile` in `internal/router/dcr.go` |
 
 - A guest who opens `/client` goes to `/client/utils?key=LogInPlease`. `/client/utils` shows a guest the sign-in page
   whatever the key.
@@ -53,3 +56,16 @@ description: How the CMS serves Holo's client.php, clientutils.php and unloadcli
 - It writes `public/libreshockwave/source.txt`, the address of the commit it built. `client.astro` reads it at build
   time and links the page's LibreShockwave line to it, or to the repository before the player is built.
 - Astro copies `public/` into `dist/`, so the CMS embeds the player once it is built.
+
+# The client's files
+
+- `/dcr/` serves `<assets.path>/dcr/` of `config.json` (`packages/assets/knowledge/assets.md`) with `http.FileServerFS`.
+  The handler opens the folder as an `os.Root` on each request, so a path or a link never leaves it, and files added
+  while the CMS runs are served at once.
+- A missing file, a folder, a link out of the folder and a missing assets folder answer 404. No folder is listed.
+- The folder stands outside the middleware chain, as the static files do.
+- `/dcr/external_variables.txt` and `/dcr/external_texts.txt` are written from the database by `dcr.Variables` and
+  `dcr.Texts` (`packages/assets/knowledge/dcr.md`), with `site.url`, `site.shortName` and `game.clientVersion` read on
+  each request. They answer `text/plain; charset=utf-8`, and files of those names in the folder are never served.
+- The two written files keep `router.UpdateFailed` and the session layers of the chain, and skip the ban and
+  maintenance checks.
