@@ -145,14 +145,14 @@ func TestTheDatabaseAttributeReachesThoseWhoManageAccess(t *testing.T) {
 
 	applyEveryUpdate(t, db)
 	q := New(db)
-	if got := must(q.ListAccessGroupAttributes(ctx, 1)); !slices.Contains(got, "housekeeping.database") || !slices.Contains(got, "housekeeping.chatLogs") {
-		t.Errorf("Owners holds %v, want housekeeping.database and housekeeping.chatLogs", got)
+	if got := must(q.ListAccessGroupAttributes(ctx, 1)); !slices.Contains(got, "housekeeping.database") || !slices.Contains(got, "housekeeping.chatLogs") || !slices.Contains(got, "housekeeping.dcr") {
+		t.Errorf("Owners holds %v, want housekeeping.database, housekeeping.chatLogs and housekeeping.dcr", got)
 	}
 	if got := must(q.ListAccessGroupAttributes(ctx, 2)); slices.Contains(got, "housekeeping.database") {
 		t.Errorf("Helpers holds %v, want no housekeeping.database", got)
 	}
-	if got := must(q.ListDirectUserAttributes(ctx, userID)); !slices.Contains(got, "housekeeping.database") || !slices.Contains(got, "housekeeping.chatLogs") {
-		t.Errorf("Keeper holds %v directly, want housekeeping.database and housekeeping.chatLogs", got)
+	if got := must(q.ListDirectUserAttributes(ctx, userID)); !slices.Contains(got, "housekeeping.database") || !slices.Contains(got, "housekeeping.chatLogs") || !slices.Contains(got, "housekeeping.dcr") {
+		t.Errorf("Keeper holds %v directly, want housekeeping.database, housekeeping.chatLogs and housekeeping.dcr", got)
 	}
 	if got := must(q.ListDirectUserAttributes(ctx, playerID)); slices.Contains(got, "housekeeping.database") {
 		t.Errorf("Player holds %v directly, want no housekeeping.database", got)

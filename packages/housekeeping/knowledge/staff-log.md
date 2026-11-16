@@ -26,3 +26,8 @@ pool has one connection ([access group editing](/access-groups.md)).
 
 `GET /logs` reads the rows newest first, `logsPerPage` (100) a page. The table only grows, so the page splits it with
 Older and Newer links (`paging` in `logs.go`).
+
+# The client files
+
+The import of the client files runs in `inTx` as well: its row commits with the rows it wrote
+([The client files](/client-files.md)).

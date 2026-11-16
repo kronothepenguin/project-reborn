@@ -3,5 +3,4 @@
 # Tasks
 
 - [Serve the client's folder from the CMS](04-serve-the-clients-files.md) - The CMS serves assets/dcr/ of the folder config.json names at /dcr/, and writes external_variables.txt and external_texts.txt there from the database.
-- [Import the client's files from housekeeping](05-import-in-housekeeping.md) - Housekeeping gains an "Import client files" action, open to the new attribute housekeeping.dcr, which copies the variables and texts of the assets folder into the database.
 - [Import the client's files when a hotel is installed](06-import-in-the-installer.md) - The installer copies the variables and texts of the assets folder into the database of a new hotel when the folder holds the two files.

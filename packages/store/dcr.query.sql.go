@@ -9,6 +9,28 @@ import (
 	"context"
 )
 
+const countDCRTexts = `-- name: CountDCRTexts :one
+SELECT COUNT(*) FROM dcr_texts
+`
+
+func (q *Queries) CountDCRTexts(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countDCRTexts)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const countDCRVariables = `-- name: CountDCRVariables :one
+SELECT COUNT(*) FROM dcr_variables
+`
+
+func (q *Queries) CountDCRVariables(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countDCRVariables)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const deleteDCRTexts = `-- name: DeleteDCRTexts :exec
 DELETE FROM dcr_texts
 `

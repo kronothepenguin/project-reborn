@@ -7,6 +7,7 @@ okf_version: "0.2"
 # Knowledge
 
 - [Access group editing](access-groups.md) - How /access-groups changes groups, members and direct attributes in one transaction with its log row and the keepManager guard.
+- [The client files](client-files.md) - How GET /dcr shows the client's variables and texts in the database, and how POST /dcr/import copies them from the assets folder in one transaction with its log row.
 - [The design system and the chrome](design-system.md) - How housekeeping's components and layout are built, and the chrome every page struct embeds.
 - [housekeeping](package.md) - The Go package of the staff panel, an Astro frontend embedded in Go, what its New does, and how Inject hands it its services.
 - [Under /housekeeping](prefix.md) - How housekeeping lives under the /housekeeping prefix, alone on its own port and on one mux with the CMS, and what each runner serves.

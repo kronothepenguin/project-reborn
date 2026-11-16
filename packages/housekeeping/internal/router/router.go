@@ -232,6 +232,7 @@ const (
 	actionVouchersDelete        = "vouchers.delete"
 	actionDatabaseUpdate        = "database.update"
 	actionConfigUpdate          = "config.update"
+	actionDCRImport             = "dcr.import"
 )
 
 // staffLog is what a mutation records about itself; the actor, the address and

@@ -105,6 +105,9 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	mux.Handle("GET /housekeeping/settings", holding(auth.HousekeepingSettings, r.HandleSettingsView))
 	mux.Handle("POST /housekeeping/settings/{section}", holding(auth.HousekeepingSettings, r.HandleSettingsSave))
 
+	mux.Handle("GET /housekeeping/dcr", holding(auth.HousekeepingDCR, r.HandleDCRView))
+	mux.Handle("POST /housekeeping/dcr/import", holding(auth.HousekeepingDCR, r.HandleDCRImport))
+
 	mux.Handle("GET /housekeeping/home-store", holding(auth.HousekeepingHomeStore, r.HandleHomeStoreView))
 	mux.Handle("POST /housekeeping/home-store", holding(auth.HousekeepingHomeStore, r.HandleHomeStoreCreate))
 	mux.Handle("POST /housekeeping/home-store/{id}", holding(auth.HousekeepingHomeStore, r.HandleHomeStoreItemSave))
