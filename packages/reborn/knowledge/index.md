@@ -6,5 +6,5 @@ okf_version: "0.2"
 
 # Knowledge
 
-- [Options](options.md) - The Site type and the options that hand reborn each program's resolver and static files.
-- [Run](run.md) - What reborn.Run serves, in which order it builds the programs, and when it refuses to start.
+- [Programs](programs.md) - The runner builds the CMS, housekeeping, the installer and the game with their own constructors, and reborn.New takes them as arguments.
+- [Run](run.md) - What reborn.Run serves, and when it refuses to start.

@@ -1,7 +1,7 @@
 # reborn — app runner
 
-The runner of `packages/reborn`: the whole hotel in one process. `cmd/reborn` serves the embedded builds of the CMS,
-housekeeping and the installer.
+The runner of `packages/reborn`: the whole hotel in one process. `cmd/reborn` opens the database, builds the CMS,
+housekeeping, the installer and the game with their embedded builds, and hands them to `reborn.New`.
 
 How it works: `packages/reborn/knowledge/index.md` and `knowledge/programs.md`.
 
