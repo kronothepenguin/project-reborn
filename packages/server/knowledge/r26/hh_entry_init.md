@@ -92,6 +92,12 @@ The handlers are in `8_Login Handler Class.ls`, except those of 290 to 294, in `
 Every 5 updates the session and executes `#updateFigureData`. Only the first one also hides the login box and
 executes `#userlogin` ([After the login](#after-the-login)).
 
+`#updateFigureData` reaches `hh_entry_base`'s Entry Interface while the hotel view shows its entry bar: `updateEntryBar`
+shows `user_customData` as the motto and draws the habbo's head from `user_figure` through `Figure_Preview`. It is the
+one place outside a room that shows the habbo's own figure at once; `Figure_Preview` and `hh_ig`'s game list read
+`user_figure` when they next draw. In a room the entry bar is hidden and the message changes nothing. So a 5 sent
+again shows a new look and motto in the hotel view, and keeps them in the session for the next room.
+
 ## Rights
 
 Each 2 replaces the session's `user_rights` with the strings it carries, up to the first empty one. No command asks

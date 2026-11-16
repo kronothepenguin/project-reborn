@@ -24,6 +24,7 @@ var (
 	logged            = newRecorder()
 	infoPort, musPort int
 	testDB            *sql.DB
+	testServer        *Server
 )
 
 // config.Load reads config.json once per process, so the whole package shares one file. It puts info and mus on ports
@@ -50,6 +51,7 @@ func TestMain(m *testing.M) {
 	}
 	defer testDB.Close()
 	s := New(testDB)
+	testServer = s
 	if err := s.StartInfo(); err != nil {
 		log.Fatal(err)
 	}

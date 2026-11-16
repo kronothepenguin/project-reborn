@@ -17,6 +17,9 @@ says, and each uses habbos of its own.
   the doorbell, bans, full rooms, a deletion, a logout and the ads.
 - `chat_test.go` chats near and far, shouts, whispers, types, ignores up to the
   limit, dances and waves.
+- `look_test.go` changes a habbo's look and motto outside the game, through
+  `SendLook`: in a room, in the hotel view, while offline and after a second
+  login.
 - `extras_test.go` rates a room, hosts an event and lists it, and shows groups
   and tags.
 - `rights_test.go` gives and takes rights, kicks a habbo that walks out, bans
