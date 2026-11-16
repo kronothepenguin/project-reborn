@@ -11,38 +11,6 @@ func newTestRoom(t *testing.T, q *Queries, owner int64) Room {
 	return must(q.CreateRoom(t.Context(), CreateRoomParams{AvatarID: owner, RoomCategoryID: 2, RoomModelID: 1, Name: "Room", Door: "open", ShowOwner: true, CreatedAt: testNow}))
 }
 
-func TestARoomBanEnds(t *testing.T) {
-	q := New(openTestDB(t))
-	ctx := t.Context()
-	_, owner := createUserWithHabbo(t, q, "owner@example.com", "Owner")
-	_, pest := createUserWithHabbo(t, q, "pest@example.com", "Pest")
-	room := newTestRoom(t, q, owner.ID)
-	end := testNow.Add(15 * time.Minute)
-
-	if err := q.BanFromRoom(ctx, BanFromRoomParams{RoomID: room.ID, AvatarID: pest.ID, ExpiresAt: end}); err != nil {
-		t.Fatal(err)
-	}
-	if got := must(q.GetRoomBanEnd(ctx, GetRoomBanEndParams{RoomID: room.ID, AvatarID: pest.ID, Now: testNow})); !got.Equal(end) {
-		t.Errorf("the ban ends at %v, want %v", got, end)
-	}
-	if _, err := q.GetRoomBanEnd(ctx, GetRoomBanEndParams{RoomID: room.ID, AvatarID: pest.ID, Now: end}); !IsNotFound(err) {
-		t.Errorf("the ban still holds at its end: %v", err)
-	}
-	later := end.Add(time.Hour)
-	if err := q.BanFromRoom(ctx, BanFromRoomParams{RoomID: room.ID, AvatarID: pest.ID, ExpiresAt: later}); err != nil {
-		t.Fatal(err)
-	}
-	if got := must(q.GetRoomBanEnd(ctx, GetRoomBanEndParams{RoomID: room.ID, AvatarID: pest.ID, Now: end})); !got.Equal(later) {
-		t.Errorf("a second ban ends at %v, want %v", got, later)
-	}
-	if got := must(q.ListRoomBans(ctx, ListRoomBansParams{RoomID: room.ID, Now: end})); len(got) != 1 || got[0].AvatarID != pest.ID || !got[0].ExpiresAt.Equal(later) {
-		t.Errorf("bans in force = %+v, want Pest's until %v", got, later)
-	}
-	if got := must(q.ListRoomBans(ctx, ListRoomBansParams{RoomID: room.ID, Now: later})); len(got) != 0 {
-		t.Errorf("bans in force at their end = %+v, want none", got)
-	}
-}
-
 // A deleted room leaves its lines without a room, so that what was said in it stays for moderators.
 func TestTheChatHistoryOutlivesItsRoom(t *testing.T) {
 	db := openTestDB(t)

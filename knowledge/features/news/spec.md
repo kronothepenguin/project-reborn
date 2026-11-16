@@ -23,6 +23,8 @@ unused ones.
 - Anyone opens `/news`: the archive lists every article, newest first, with its date (decision holo-port/0017).
 - The headlines column lists the 10 newest articles and a link to the archive.
 - Anyone opens a category: it says what it lists and shows its last 25 articles; a name with `&` finds them too.
+- A visitor opens the news of a category under its old name, HoloCMS or Holograph Emulator: the site sends it to
+  Reborn CMS or Reborn Server.
 - Anyone opens an article: its heading, its date as `YYYY-MM-DD` and its category show.
 - An article's summary keeps its line breaks and shows its text as typed.
 - An article's body shows its BBCode, links included, with no smilies and no HTML (decision holo-port/0020).
