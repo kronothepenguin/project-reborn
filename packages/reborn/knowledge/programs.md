@@ -1,7 +1,7 @@
 ---
 type: Go Package
 title: Programs
-description: The runner builds the CMS, housekeeping, the installer and the game with their own constructors, and reborn.New takes them as arguments.
+description: The runner builds the CMS, housekeeping, the installer and the game with their own constructors, injects the game into the CMS and housekeeping, and reborn.New takes them as arguments.
 ---
 
 # Programs
@@ -18,6 +18,9 @@ h := housekeeping.New(db, housekeeping.WithResolver(hkPages), housekeeping.WithS
 i, err := installer.New(ctx, installer.WithResolver(inPages), installer.WithStatic(inFiles))
 g := server.New(db)
 
+c.Inject(cms.Services{Habbos: g})
+h.Inject(housekeeping.Services{Habbos: g})
+
 r := reborn.New(cfg, db, c, h, i, g)
 log.Fatalln(r.Run(ctx))
 ```
@@ -25,5 +28,15 @@ log.Fatalln(r.Run(ctx))
 - Each pair of pages and files comes from the package's `DistFS`: `astro.MakeFSResolver` and `http.FileServerFS` of its
   `dist/`.
 - The CMS is built first, so its automatic updates run before the game reads the database.
+- The runner injects the game server, which satisfies `services.Habbos`, into the CMS and housekeeping, after the
+  constructors and before `reborn.New`: a look or motto saved on the site or in housekeeping reaches the game in the same
+  process. `Run` mounts them, and `Mount` hands the router the services they hold then.
 - `reborn.New(cfg, db, c, h, i, g)` takes what it requires as arguments. reborn has no option of its own.
 - `installer.New` takes a context and returns an error, and opens the database `config.json` names on its own handle.
+
+# Tests
+
+`TestMain` starts one installed hotel for the whole package, on free ports in a folder of its own, with the programs built
+and injected as the runner does: `config.Get` loads `config.json` once per process. Each test makes habbos with names of
+its own. `habbos_test.go` speaks R26 to the game over a WebSocket with a small client of its own, since the game's test
+client lives in the tests of `packages/server`.

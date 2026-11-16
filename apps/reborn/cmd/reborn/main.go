@@ -48,6 +48,9 @@ func main() {
 	}
 	g := server.New(db)
 
+	c.Inject(cms.Services{Habbos: g})
+	h.Inject(housekeeping.Services{Habbos: g})
+
 	r := reborn.New(cfg, db, c, h, i, g)
 	log.Fatalln(r.Run(ctx))
 }
