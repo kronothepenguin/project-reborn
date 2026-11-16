@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // HandleHabboRestore handles POST /housekeeping/habbos/{id}/restore. An archived
@@ -32,7 +32,7 @@ func (r *Router) HandleHabboRestore(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	limit := settings.GetInt("registration.maxHabbosPerUser")
+	limit := settings.Int(ctx, r.deps.Queries, "registration.maxHabbosPerUser")
 	var restored int64
 	err = r.inTx(ctx, func(q *store.Queries) error {
 		habbos, err := q.ListUserAvatars(ctx, avatar.UserID)

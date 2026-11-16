@@ -19,8 +19,8 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/cms"
 	"github.com/kronothepenguin/project-reborn/packages/config"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 var testNow = time.Date(2026, time.October, 27, 21, 0, 0, 0, time.UTC)
@@ -305,7 +305,7 @@ func wantPage(t *testing.T, rec *httptest.ResponseRecorder, status int, texts ..
 
 func TestGuestsGoToTheCMSToSignIn(t *testing.T) {
 	db, mux := newSite(t)
-	if err := settings.Set(t.Context(), db, 0, "site.url", "https://hotel.example.com"); err != nil {
+	if err := settings.Set(t.Context(), store.New(db), 0, "site.url", "https://hotel.example.com"); err != nil {
 		t.Fatalf("set site.url: %v", err)
 	}
 	for _, route := range routes {
@@ -383,7 +383,7 @@ func TestLogOutEndsTheSharedSession(t *testing.T) {
 func TestTheClockNamesTheServer(t *testing.T) {
 	db, mux := newSite(t)
 	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess)
-	if err := settings.Set(t.Context(), db, 0, "site.url", "https://hotel.example.com"); err != nil {
+	if err := settings.Set(t.Context(), store.New(db), 0, "site.url", "https://hotel.example.com"); err != nil {
 		t.Fatalf("settings.Set: %v", err)
 	}
 	wantPage(t, serve(mux, "GET", "/housekeeping/", cookie, nil), http.StatusOK, "ServerName:hotel.example.com", "(UTC)")
@@ -471,4 +471,14 @@ func TestItSharesAMuxWithTheCMS(t *testing.T) {
 	wantPage(t, serve(mux, "GET", "/me", admin, nil), http.StatusOK, "me.html", "Habbo:Admin")
 	wantPage(t, serve(mux, "GET", "/", nil, nil), http.StatusOK, "index.html")
 	wantPage(t, serve(mux, "GET", "/page.css", nil, nil), http.StatusOK, "cms /page.css")
+}
+
+// declared lists the declared settings with their values in db.
+func declared(t *testing.T, db *sql.DB) []settings.Setting {
+	t.Helper()
+	list, err := settings.Declared(t.Context(), store.New(db))
+	if err != nil {
+		t.Fatalf("settings.Declared: %v", err)
+	}
+	return list
 }

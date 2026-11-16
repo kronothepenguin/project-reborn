@@ -5,7 +5,7 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 )
 
 type maintenancePage struct {
@@ -38,20 +38,20 @@ func (r *Router) closed(req *http.Request) (bool, error) {
 	if err != nil || waiting {
 		return waiting, err
 	}
-	return settings.GetBool("site.maintenance") && !r.holds(req.Context(), auth.SiteMaintenanceBypass), nil
+	return settings.Bool(req.Context(), r.deps.Queries, "site.maintenance") && !r.holds(req.Context(), auth.SiteMaintenanceBypass), nil
 }
 
 // writeMaintenance shows those who may apply waiting updates, once signed in,
 // the way to housekeeping's update page instead of the sign-in box.
 func (r *Router) writeMaintenance(w http.ResponseWriter, req *http.Request, page maintenancePage) {
-	page.ShortName = settings.GetString("site.shortName")
+	page.ShortName = settings.String(req.Context(), r.deps.Queries, "site.shortName")
 	waiting, err := r.deps.Updates.Waiting(req.Context())
 	if err != nil {
 		r.fail(w, err)
 		return
 	}
 	if waiting && (r.holds(req.Context(), auth.HousekeepingDatabase) || r.holds(req.Context(), auth.HousekeepingAccessGroups)) {
-		page.UpdatesURL = settings.GetString("site.housekeepingUrl") + "/updates"
+		page.UpdatesURL = settings.String(req.Context(), r.deps.Queries, "site.housekeepingUrl") + "/updates"
 	}
 	w.WriteHeader(http.StatusServiceUnavailable)
 	astro.WriteTemplate(w, r.deps.Resolver, "maintenance.html", page)
@@ -71,6 +71,6 @@ func (r *Router) UpdateFailed(next http.Handler) http.Handler {
 			return
 		}
 		w.WriteHeader(http.StatusServiceUnavailable)
-		astro.WriteTemplate(w, r.deps.Resolver, "update-failed.html", updateFailedPage{ShortName: settings.GetString("site.shortName")})
+		astro.WriteTemplate(w, r.deps.Resolver, "update-failed.html", updateFailedPage{ShortName: settings.String(req.Context(), r.deps.Queries, "site.shortName")})
 	})
 }

@@ -8,7 +8,13 @@ export const programs = ["cms", "housekeeping"];
 
 // Signing in makes its SSO ticket only once update 0008 gave sso_tickets its new
 // form, and logs the failure while it waits (decision server/0043).
-export const logs = [/^cms: \S+ \S+ WARN auth: login: no SSO ticket err=".*sso_tickets has no column named session_id/];
+// The game server loads the navigator and the catalogue only once the updates
+// are applied, and says so at both ends (decisions server/0064 and server/0098).
+export const logs = [
+  /^cms: \S+ \S+ WARN auth: login: no SSO ticket err=".*sso_tickets has no column named session_id/,
+  /^server: \S+ \S+ WARN server: the navigator and the catalogue wait for the database updates$/,
+  /^server: \S+ \S+ INFO server: the navigator and the catalogue are loaded$/,
+];
 
 // Every update of the release, which waits on a hotel from before updates.
 const updates = readdirSync(path.join(root, "packages/store/migrations")).filter((name) => name.endsWith(".sql")).length;

@@ -15,7 +15,6 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/scheduler"
 	"github.com/kronothepenguin/project-reborn/packages/services"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 //go:embed dist/*
@@ -40,8 +39,9 @@ type Services struct {
 
 type Option func(*Housekeeping)
 
-// New loads the settings from config.json and db, and panics when it cannot,
-// like store.Must: housekeeping cannot serve without them.
+// New applies the automatic database updates and panics when it cannot read the
+// list of updates or the proxy section, like store.Must: housekeeping cannot
+// serve without them.
 func New(db *sql.DB, opts ...Option) *Housekeeping {
 	cfg := config.Get()
 	list, err := store.Updates()
@@ -51,9 +51,6 @@ func New(db *sql.DB, opts ...Option) *Housekeeping {
 	updates := store.NewUpdateCheck(db, list)
 	if err := updates.ApplyAutomatic(context.Background()); err != nil {
 		slog.Error("housekeeping: the database could not be updated", "err", err)
-	}
-	if err := settings.Load(context.Background(), cfg, db); err != nil {
-		panic(fmt.Errorf("housekeeping: %w", err))
 	}
 	realIP, err := auth.RealIP(cfg.Proxy)
 	if err != nil {

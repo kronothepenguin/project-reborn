@@ -12,4 +12,4 @@ okf_version: "0.2"
 - [Under /housekeeping](prefix.md) - How housekeeping lives under the /housekeeping prefix, alone on its own port and on one mux with the CMS, and what each runner serves.
 - [The settings forms](settings-forms.md) - How GET /settings and POST /settings/{section} lay the declared settings out as forms and save a section all or nothing.
 - [The staff guard](staff-guard.md) - How router.Staff and RequireAttribute decide who enters housekeeping and who opens each page.
-- [The staff log](staff-log.md) - How writeLog writes one staff_logs row for every mutation, inside its transaction or before a settings write.
+- [The staff log](staff-log.md) - How writeLog writes one staff_logs row for every mutation, inside its transaction, settings writes included.

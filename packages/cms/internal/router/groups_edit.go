@@ -6,8 +6,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // groupSkinLabels are the skins in the order of group_profile.php's edit menu,
@@ -70,8 +70,8 @@ func (r *Router) HandleGroupsEditView(w http.ResponseWriter, req *http.Request) 
 	}
 	edit := groupEditPage{
 		groupPage:  page,
-		NoteMax:    settings.GetInt("homes.noteMaxLength"),
-		Smilies:    settings.GetBool("features.smilies"),
+		NoteMax:    settings.Int(ctx, r.deps.Queries, "homes.noteMaxLength"),
+		Smilies:    settings.Bool(ctx, r.deps.Queries, "features.smilies"),
 		NewMembers: homeItem{Kind: "widget", Widget: widgetMembers, Skin: "defaultskin", X: widgetX, Y: widgetY},
 	}
 	if edit.Skins, err = r.skinOptions(ctx, groupSkinLabels); err != nil {

@@ -12,8 +12,9 @@ Astro (Svelte + Tailwind) frontend embedded in a Go module. The `Housekeeping` s
 # New
 
 - `housekeeping.New(db, WithResolver(…), WithStatic(…))` takes the db the runner opened with `store.FromConfig()` and
-  loads the settings (`virtual/settings`), panicking when it cannot. Only the resolver and the static handler are
-  options.
+  applies the automatic database updates. Only the resolver and the static handler are options.
+- Housekeeping keeps no copy of the settings: each page reads the ones it shows with `packages/settings`, through the
+  router's queries, or the transaction's inside a transaction. A saved setting shows on the next page.
 - A task on `packages/scheduler` deletes expired sessions every minute.
 
 # Inject

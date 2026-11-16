@@ -17,8 +17,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/config"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 var testNow = time.Date(2026, time.October, 27, 21, 0, 0, 0, time.UTC)
@@ -46,7 +46,7 @@ func printPage(name string) (*template.Template, error) {
 	return template.New(name).Delims("[[", "]]").Parse(name + ` [[ printf "%+v" . ]]`)
 }
 
-func habbo(t *testing.T, db *sql.DB, email, name string) int64 {
+func habbo(t testing.TB, db *sql.DB, email, name string) int64 {
 	t.Helper()
 	q := store.New(db)
 	user, err := q.CreateUser(t.Context(), store.CreateUserParams{
@@ -71,7 +71,7 @@ func habbo(t *testing.T, db *sql.DB, email, name string) int64 {
 }
 
 // secondHabbo makes a habbo with its profile and home, as every habbo has.
-func secondHabbo(t *testing.T, db *sql.DB, userID int64, name string) {
+func secondHabbo(t testing.TB, db *sql.DB, userID int64, name string) {
 	t.Helper()
 	q := store.New(db)
 	avatar, err := q.CreateAvatar(t.Context(), store.CreateAvatarParams{UserID: userID, Name: name, Figure: "hd-180-1", Gender: "M", CreatedAt: testNow, UpdatedAt: testNow})
@@ -102,7 +102,7 @@ func grant(t *testing.T, db *sql.DB, userID int64, attribute auth.Attribute) {
 	}
 }
 
-func login(t *testing.T, db *sql.DB, name string) *http.Cookie {
+func login(t testing.TB, db *sql.DB, name string) *http.Cookie {
 	t.Helper()
 	rec := httptest.NewRecorder()
 	if _, err := auth.Login(rec, httptest.NewRequest(http.MethodPost, "/", nil), db, name, "secret123", false); err != nil {
@@ -136,7 +136,7 @@ var freshDatabase = sync.OnceValues(func() ([]byte, error) {
 })
 
 // openDB gives the test a new database of its own, a copy of freshDatabase.
-func openDB(t *testing.T) *sql.DB {
+func openDB(t testing.TB) *sql.DB {
 	t.Helper()
 	content, err := freshDatabase()
 	if err != nil {
@@ -155,7 +155,7 @@ func openDB(t *testing.T) *sql.DB {
 }
 
 // newSite mounts a CMS with printPage's pages on a new database.
-func newSite(t *testing.T) (*sql.DB, *http.ServeMux) {
+func newSite(t testing.TB) (*sql.DB, *http.ServeMux) {
 	t.Helper()
 	db := openDB(t)
 	mux := http.NewServeMux()
@@ -193,7 +193,7 @@ func credentials(name, password string) url.Values {
 
 func setMaintenance(t *testing.T, db *sql.DB, on bool) {
 	t.Helper()
-	if err := settings.Set(t.Context(), db, 0, "site.maintenance", on); err != nil {
+	if err := settings.Set(t.Context(), store.New(db), 0, "site.maintenance", on); err != nil {
 		t.Fatalf("set site.maintenance to %t: %v", on, err)
 	}
 }
@@ -304,7 +304,7 @@ func TestSignInIsThrottled(t *testing.T) {
 	db, mux := newSite(t)
 	habbo(t, db, "admin@example.com", "Admin")
 
-	for range settings.GetInt("auth.loginMaxFailures") {
+	for range settings.Int(t.Context(), store.New(db), "auth.loginMaxFailures") {
 		wantPage(t, serve(mux, "POST", "/", nil, credentials("Admin", "wrong-secret")),
 			http.StatusUnprocessableEntity, "Invalid username or password.")
 	}

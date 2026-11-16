@@ -14,8 +14,8 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/cms/seed"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 const (
@@ -30,11 +30,12 @@ const (
 // newsDateFormat is the date Holo's news pages show.
 const newsDateFormat = "2006-01-02"
 
-// newsCategories are the choices of Holo's form, in its order.
-func newsCategories() []string {
+// newsCategories are the choices of Holo's form, in its order. shortName names
+// the club's category.
+func newsCategories(shortName string) []string {
 	return []string{
 		"Reborn CMS", "News", "Furniture", "Updates", "Server", "Credits",
-		settings.GetString("site.shortName") + " Club",
+		shortName + " Club",
 		"Maintenance", "Technical", "Downtime", "Website", "Special Offers", "Sponsored",
 		"Events & Competitions", "Security", "Staff", "Announcements", "Tips", "Reborn Server", "Other",
 	}
@@ -101,8 +102,8 @@ type newsCategory struct {
 // HoloCMS for Other and Events & Competitions, so saving moved them there; and a
 // category that is not offered, such as the club of an older short name, stays
 // as a choice of its own.
-func newsCategoryOptions(selected string) []newsCategory {
-	categories := newsCategories()
+func newsCategoryOptions(shortName, selected string) []newsCategory {
+	categories := newsCategories(shortName)
 	options := make([]newsCategory, 0, len(categories)+1)
 	for _, name := range categories {
 		options = append(options, newsCategory{Name: name, Selected: name == selected})
@@ -131,10 +132,10 @@ func (r *Router) topStory(ctx context.Context, address string) (image sql.NullIn
 }
 
 // sitePicture is the address housekeeping loads a picture from. A path is the
-// CMS's, at site.url, because housekeeping may run on another port.
-func sitePicture(address string) string {
+// CMS's, at siteURL, because housekeeping may run on another port.
+func sitePicture(siteURL, address string) string {
 	if strings.HasPrefix(address, "/") {
-		return settings.GetString("site.url") + address
+		return siteURL + address
 	}
 	return address
 }
@@ -163,9 +164,9 @@ func (r *Router) newNewsArticlePage(req *http.Request, id int64, title string, f
 		ID:         id,
 		Title:      title,
 		Form:       form,
-		Categories: newsCategoryOptions(form.Category),
+		Categories: newsCategoryOptions(settings.String(req.Context(), r.deps.Queries, "site.shortName"), form.Category),
 		TopStories: seed.TopStories(),
-		Preview:    sitePicture(form.TopStory),
+		Preview:    sitePicture(settings.String(req.Context(), r.deps.Queries, "site.url"), form.TopStory),
 	}
 	images, err := r.deps.Queries.ListImages(req.Context())
 	if err != nil {

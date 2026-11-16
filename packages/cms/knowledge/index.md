@@ -15,4 +15,4 @@ okf_version: "0.2"
 - [mail](mail.md) - Sends the hotel's mail through the SMTP server in the mail.* settings.
 - [Pages](pages.md) - How Go page structs feed the Astro pages, and how a page answers a form that fails.
 - [Runners](runners.md) - The two runners of apps/cms, how each serves the frontend, and how the development runner reloads.
-- [Runtime](runtime.md) - How cms.New starts the CMS, how Inject hands it its services, and how Mount wraps every route in its middleware chain.
+- [Runtime](runtime.md) - How cms.New starts the CMS, how it reads its settings, how Inject hands it its services, and how Mount wraps every route in its middleware chain.

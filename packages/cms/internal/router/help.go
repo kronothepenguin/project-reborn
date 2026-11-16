@@ -1,6 +1,7 @@
 package router
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strings"
@@ -9,8 +10,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // iot/go.php's answers to a help request, and the two lengths of 0109. Holo's
@@ -35,7 +36,7 @@ type helpPage struct {
 // HandleHelpView handles GET /help, iot/go.php's form. As in go.php, a waiting
 // request only answers once the form is sent.
 func (r *Router) HandleHelpView(w http.ResponseWriter, req *http.Request) {
-	astro.WriteTemplate(w, r.deps.Resolver, "help.html", helpPage{ShortName: settings.GetString("site.shortName"), Form: true})
+	astro.WriteTemplate(w, r.deps.Resolver, "help.html", helpPage{ShortName: settings.String(req.Context(), r.deps.Queries, "site.shortName"), Form: true})
 }
 
 // HandleHelpSend handles POST /help: the active habbo's help request, unless go.php
@@ -43,9 +44,9 @@ func (r *Router) HandleHelpView(w http.ResponseWriter, req *http.Request) {
 func (r *Router) HandleHelpSend(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	session, _ := auth.FromContext(ctx)
-	view := helpPage{ShortName: settings.GetString("site.shortName"), Result: helpSent}
+	view := helpPage{ShortName: settings.String(ctx, r.deps.Queries, "site.shortName"), Result: helpSent}
 	subject, message := req.PostFormValue("subject"), req.PostFormValue("message")
-	if refusal := helpRefusal(subject, message); refusal != "" {
+	if refusal := helpRefusal(ctx, r.deps.Queries, subject, message); refusal != "" {
 		view.Result, view.Form = refusal, true
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		astro.WriteTemplate(w, r.deps.Resolver, "help.html", view)
@@ -81,8 +82,8 @@ func (r *Router) HandleHelpSend(w http.ResponseWriter, req *http.Request) {
 // helpRefusal is the answer that refuses a request's subject and question, or
 // empty. Spaces alone are blank, as in the forum's posts, and 0 is not, where
 // PHP's empty read it so.
-func helpRefusal(subject, message string) string {
-	limit := settings.GetInt("help.messageMaxLength")
+func helpRefusal(ctx context.Context, q *store.Queries, subject, message string) string {
+	limit := settings.Int(ctx, q, "help.messageMaxLength")
 	switch {
 	case strings.TrimSpace(subject) == "" || strings.TrimSpace(message) == "":
 		return helpBlank

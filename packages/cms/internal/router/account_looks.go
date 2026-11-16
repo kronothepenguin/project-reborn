@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // looksPage gives club members the wardrobe: WardrobeSlots slots, with the
@@ -37,7 +37,7 @@ func (r *Router) newLooksPage(ctx context.Context) (looksPage, error) {
 	}
 	page := looksPage{accountPage: account, Figure: avatar.Figure, Gender: avatar.Gender, Club: club}
 	if club {
-		page.WardrobeSlots = settings.GetInt("homes.wardrobeSlots")
+		page.WardrobeSlots = settings.Int(ctx, r.deps.Queries, "homes.wardrobeSlots")
 		if page.Outfits, err = r.wardrobeOutfits(ctx, session.AvatarID, page.WardrobeSlots); err != nil {
 			return looksPage{}, err
 		}

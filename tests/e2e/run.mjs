@@ -98,7 +98,13 @@ if (await portBusy(installerPort)) {
 
 if (!flags.includes("--skip-build")) build();
 
-const ports = { cms: await freePort(), housekeeping: await freePort() };
+const ports = {
+  cms: await freePort(),
+  housekeeping: await freePort(),
+  info: await freePort(),
+  mus: await freePort(),
+  api: await freePort(),
+};
 const mail = await startMail();
 const installed = await install(emptyFolder("installed"), ports, mail.port);
 
@@ -150,6 +156,9 @@ async function runSuite(name, suite) {
 
   try {
     suite.prepare?.(t);
+    // The game server runs beside every installed hotel, as the CMS and
+    // housekeeping tell it of a saved look through its /api/.
+    if (!suite.emptyFolder) await hotel.start("server");
     for (const program of suite.programs ?? ["cms"]) await hotel.start(program);
     await suite.default(t);
   } catch (error) {

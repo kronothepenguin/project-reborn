@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 )
 
 // P2 and later phases declare settings of their own, and each must get a form

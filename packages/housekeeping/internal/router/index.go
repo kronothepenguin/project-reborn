@@ -8,8 +8,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // administratorsShown is Holo's limit on the dashboard's list.
@@ -60,7 +60,7 @@ func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
 
 func (r *Router) newIndexPage(ctx context.Context) (indexPage, error) {
 	q := r.deps.Queries
-	page := indexPage{Note: settings.GetString("housekeeping.note")}
+	page := indexPage{Note: settings.String(ctx, q, noteKey)}
 	var err error
 	if page.Habbos, err = q.CountAvatars(ctx); err != nil {
 		return page, err

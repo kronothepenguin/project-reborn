@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // tagFormat is tags_ajax.php's rule, after it lowered the tag: letters and digits,
@@ -66,7 +66,7 @@ func (r *Router) addProfileTag(ctx context.Context, profileID int64, tag string)
 		if err != nil {
 			return err
 		}
-		if count >= int64(settings.GetInt("homes.maxTags")) {
+		if count >= int64(settings.Int(ctx, q, "homes.maxTags")) {
 			refusal = tagLimit
 			return nil
 		}

@@ -1,6 +1,7 @@
 package router
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -10,8 +11,8 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/installer/internal/setup"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 type adminPage struct {
@@ -24,23 +25,25 @@ type adminPage struct {
 
 // HandleAdminView renders GET /installer/admin.
 func (r *Router) HandleAdminView(w http.ResponseWriter, req *http.Request) {
-	if _, ok := r.step(w, req, true); !ok {
+	installation, ok := r.step(w, req, true)
+	if !ok {
 		return
 	}
-	astro.WriteTemplate(w, r.deps.Resolver, "admin.html", adminPage{PasswordHelp: passwordHelp()})
+	astro.WriteTemplate(w, r.deps.Resolver, "admin.html", adminPage{PasswordHelp: passwordHelp(req.Context(), installation)})
 }
 
 // HandleAdminCreate handles POST /installer/admin: it creates the
 // administrator, then sends the browser to the site at /.
 func (r *Router) HandleAdminCreate(w http.ResponseWriter, req *http.Request) {
-	if _, ok := r.step(w, req, true); !ok {
+	installation, ok := r.step(w, req, true)
+	if !ok {
 		return
 	}
 	page := adminPage{
 		Name:         strings.TrimSpace(req.PostFormValue("name")),
 		Email:        strings.TrimSpace(req.PostFormValue("email")),
 		BornOn:       strings.TrimSpace(req.PostFormValue("bornOn")),
-		PasswordHelp: passwordHelp(),
+		PasswordHelp: passwordHelp(req.Context(), installation),
 	}
 	password := req.PostFormValue("password")
 	if password != req.PostFormValue("passwordConfirm") {
@@ -86,6 +89,7 @@ func (r *Router) HandleAdminCreate(w http.ResponseWriter, req *http.Request) {
 	r.invalid(w, "admin.html", page)
 }
 
-func passwordHelp() string {
-	return fmt.Sprintf("%d to %d characters", settings.GetInt("auth.passwordMinLength"), settings.GetInt("auth.passwordMaxLength"))
+func passwordHelp(ctx context.Context, installation setup.Installation) string {
+	q := store.New(installation.DB)
+	return fmt.Sprintf("%d to %d characters", settings.Int(ctx, q, "auth.passwordMinLength"), settings.Int(ctx, q, "auth.passwordMaxLength"))
 }

@@ -15,8 +15,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/config/reborn"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // fakeListener records the moves asked of it, and answers like reborn: a
@@ -289,7 +289,7 @@ func TestInsideRebornTheInstallerWorksOnRebornsDatabase(t *testing.T) {
 
 // Inside reborn, the site step asks no housekeeping address: it saves the site address plus /housekeeping.
 func TestOneAddressSavesHousekeepingUnderTheSite(t *testing.T) {
-	_, mux := inReborn(t, &fakeListener{})
+	i, mux := inReborn(t, &fakeListener{})
 	expect(t, send(t, mux, "POST", "/installer/config", url.Values{"host": {"localhost"}, "port": {"16416"}}),
 		303, "/installer/site", "")
 
@@ -299,7 +299,8 @@ func TestOneAddressSavesHousekeepingUnderTheSite(t *testing.T) {
 		"name": {"Reborn Hotel"}, "shortName": {"Reborn"}, "url": {"https://hotel.example.com"}, "startCredits": {"500"},
 	}), 303, "/installer/admin", "")
 
-	if got := settings.GetString("site.housekeepingUrl"); got != "https://hotel.example.com/housekeeping" {
+	installation, _ := i.setup.Current()
+	if got := settings.String(t.Context(), store.New(installation.DB), "site.housekeepingUrl"); got != "https://hotel.example.com/housekeeping" {
 		t.Errorf("site.housekeepingUrl = %q, want the site address plus /housekeeping", got)
 	}
 }

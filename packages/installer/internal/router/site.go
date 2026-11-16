@@ -1,6 +1,7 @@
 package router
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net"
@@ -12,7 +13,8 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/config/cms"
 	"github.com/kronothepenguin/project-reborn/packages/config/housekeeping"
 	"github.com/kronothepenguin/project-reborn/packages/config/reborn"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 // sitePage asks no housekeeping address with OneAddress: housekeeping then
@@ -34,8 +36,8 @@ func addressOn(port int) string {
 
 // housekeepingAddress is the saved address, or while the default stands, the one
 // on the port chosen in the step before.
-func housekeepingAddress(port int) string {
-	saved := settings.GetString("site.housekeepingUrl")
+func housekeepingAddress(ctx context.Context, q *store.Queries, port int) string {
+	saved := settings.String(ctx, q, "site.housekeepingUrl")
 	if saved == addressOn(housekeeping.DefaultPort()) {
 		return addressOn(port)
 	}
@@ -44,8 +46,8 @@ func housekeepingAddress(port int) string {
 
 // siteAddress is the saved site address, or while the default stands, the
 // hotel's own address from the step before.
-func siteAddress(hotel reborn.Reborn) string {
-	saved := settings.GetString("site.url")
+func siteAddress(ctx context.Context, q *store.Queries, hotel reborn.Reborn) string {
+	saved := settings.String(ctx, q, "site.url")
 	if saved == fmt.Sprintf("http://localhost:%d", cms.DefaultPort()) {
 		return "http://" + net.JoinHostPort(hotel.Host, strconv.Itoa(hotel.Port))
 	}
@@ -58,18 +60,19 @@ func (r *Router) HandleSiteView(w http.ResponseWriter, req *http.Request) {
 	if !ok {
 		return
 	}
+	ctx, q := req.Context(), store.New(installation.DB)
 	page := sitePage{
 		OneAddress:    r.deps.Move != nil,
-		Name:          settings.GetString("site.name"),
-		ShortName:     settings.GetString("site.shortName"),
-		StartCredits:  strconv.Itoa(settings.GetInt("registration.startCredits")),
-		SecureCookies: settings.GetBool("auth.secureCookies"),
+		Name:          settings.String(ctx, q, "site.name"),
+		ShortName:     settings.String(ctx, q, "site.shortName"),
+		StartCredits:  strconv.Itoa(settings.Int(ctx, q, "registration.startCredits")),
+		SecureCookies: settings.Bool(ctx, q, "auth.secureCookies"),
 	}
 	if page.OneAddress {
-		page.URL = siteAddress(installation.Config.Reborn)
+		page.URL = siteAddress(ctx, q, installation.Config.Reborn)
 	} else {
-		page.URL = settings.GetString("site.url")
-		page.HousekeepingURL = housekeepingAddress(installation.Config.Housekeeping.Port)
+		page.URL = settings.String(ctx, q, "site.url")
+		page.HousekeepingURL = housekeepingAddress(ctx, q, installation.Config.Housekeeping.Port)
 	}
 	astro.WriteTemplate(w, r.deps.Resolver, "site.html", page)
 }
@@ -102,6 +105,7 @@ func (r *Router) HandleSiteSave(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	q := store.New(installation.DB)
 	for _, field := range []struct {
 		label string
 		key   string
@@ -114,7 +118,7 @@ func (r *Router) HandleSiteSave(w http.ResponseWriter, req *http.Request) {
 		{"Start credits", "registration.startCredits", credits},
 		{"Secure cookies", "auth.secureCookies", page.SecureCookies},
 	} {
-		if err := settings.Set(req.Context(), installation.DB, 0, field.key, field.value); err != nil {
+		if err := settings.Set(req.Context(), q, 0, field.key, field.value); err != nil {
 			page.Error = field.label + ": " + reason(err)
 			r.invalid(w, "site.html", page)
 			return

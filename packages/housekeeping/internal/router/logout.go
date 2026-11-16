@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 )
 
 // HandleLogout handles POST /housekeeping/logout. The session is the CMS's too, so
@@ -14,5 +14,5 @@ func (r *Router) HandleLogout(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
-	http.Redirect(w, req, settings.GetString("site.url"), http.StatusSeeOther)
+	http.Redirect(w, req, settings.String(req.Context(), r.deps.Queries, "site.url"), http.StatusSeeOther)
 }

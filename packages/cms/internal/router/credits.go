@@ -7,7 +7,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/cms/internal/bbcode"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 )
 
 // creditsPage is credits.php: box 2 in the first column, and the purse and box 1
@@ -32,10 +32,10 @@ func (r *Router) HandleCreditsView(w http.ResponseWriter, req *http.Request) {
 	}
 	page := creditsPage{
 		community:   shared,
-		Box1Heading: settings.GetString("creditsPage.box1Heading"),
-		Box1Body:    bbcode.Format(settings.GetString("creditsPage.box1Body"), false),
-		Box2Heading: settings.GetString("creditsPage.box2Heading"),
-		Box2Body:    bbcode.Format(settings.GetString("creditsPage.box2Body"), false),
+		Box1Heading: settings.String(ctx, r.deps.Queries, "creditsPage.box1Heading"),
+		Box1Body:    bbcode.Format(settings.String(ctx, r.deps.Queries, "creditsPage.box1Body"), false),
+		Box2Heading: settings.String(ctx, r.deps.Queries, "creditsPage.box2Heading"),
+		Box2Body:    bbcode.Format(settings.String(ctx, r.deps.Queries, "creditsPage.box2Body"), false),
 	}
 	if session, ok := auth.FromContext(ctx); ok {
 		wallet, err := r.deps.Queries.GetWallet(ctx, session.UserID)

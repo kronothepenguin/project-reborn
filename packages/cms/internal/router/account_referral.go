@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 )
 
 type referralPage struct {
@@ -15,14 +15,15 @@ type referralPage struct {
 
 // HandleAccountReferralView renders GET /account/referral.
 func (r *Router) HandleAccountReferralView(w http.ResponseWriter, req *http.Request) {
-	account, err := r.newAccountPage(req.Context())
+	ctx := req.Context()
+	account, err := r.newAccountPage(ctx)
 	if err != nil {
 		r.fail(w, err)
 		return
 	}
 	r.answer(w, "account/referral.html", false, referralPage{
 		accountPage:  account,
-		ReferralLink: settings.GetString("site.url") + "/register?refer=" + url.QueryEscape(account.Habbo),
-		Reward:       settings.GetInt("referral.reward"),
+		ReferralLink: settings.String(ctx, r.deps.Queries, "site.url") + "/register?refer=" + url.QueryEscape(account.Habbo),
+		Reward:       settings.Int(ctx, r.deps.Queries, "referral.reward"),
 	})
 }

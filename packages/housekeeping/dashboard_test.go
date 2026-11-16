@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 func staffLogs(t *testing.T, db *sql.DB) []store.ListStaffLogsRow {
@@ -156,7 +156,7 @@ func TestTheNoteIsSavedAndLogged(t *testing.T) {
 
 	rec := serve(mux, "POST", "/housekeeping/note", cookie, url.Values{"notes": {note}})
 	wantRedirect(t, rec, "/housekeeping/")
-	if got := settings.GetString("housekeeping.note"); got != note {
+	if got := settings.String(t.Context(), store.New(db), "housekeeping.note"); got != note {
 		t.Errorf("the note is %q, want %q", got, note)
 	}
 	row, ok := settingRow(t, db, "housekeeping.note")
@@ -209,7 +209,7 @@ func TestACrossOriginNoteChangesNothing(t *testing.T) {
 	r := postFrom("https://evil.example.com", "/housekeeping/note", cookie, url.Values{"notes": {"Hacked"}})
 	rec := record(mux, r)
 	wantPage(t, rec, http.StatusForbidden)
-	if got := settings.GetString("housekeeping.note"); got != "" {
+	if got := settings.String(t.Context(), store.New(db), "housekeeping.note"); got != "" {
 		t.Errorf("the note is %q", got)
 	}
 	if got := len(staffLogs(t, db)); got != 0 {
