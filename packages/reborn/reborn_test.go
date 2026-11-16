@@ -19,7 +19,11 @@ import (
 	"golang.org/x/net/websocket"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/cms"
 	"github.com/kronothepenguin/project-reborn/packages/config"
+	"github.com/kronothepenguin/project-reborn/packages/housekeeping"
+	"github.com/kronothepenguin/project-reborn/packages/installer"
+	"github.com/kronothepenguin/project-reborn/packages/server"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
@@ -32,23 +36,29 @@ func TestItRunsAnInstalledHotel(t *testing.T) {
 	t.Chdir(t.TempDir())
 	ports := freePorts(t, 3)
 	site, info, mus := ports[0], ports[1], ports[2]
-	cfg := fmt.Sprintf(`{
+	file := fmt.Sprintf(`{
 		"reborn": {"host": "127.0.0.1", "port": %d},
 		"server": {"info": {"host": "127.0.0.1", "port": %d}, "mus": {"host": "127.0.0.1", "port": %d}}
 	}`, site, info, mus)
-	if err := os.WriteFile(config.Filename, []byte(cfg), 0o644); err != nil {
+	if err := os.WriteFile(config.Filename, []byte(file), 0o644); err != nil {
 		t.Fatal(err)
 	}
 	install(t)
 
 	ctx, cancel := context.WithCancel(context.Background())
+	cfg := config.Get()
+	db := store.FromConfig()
+	t.Cleanup(func() { db.Close() })
+	c := cms.New(db, cms.WithResolver(printPage("cms")), cms.WithStatic(http.NotFoundHandler()))
+	h := housekeeping.New(db, housekeeping.WithResolver(printPage("housekeeping")), housekeeping.WithStatic(http.NotFoundHandler()))
+	i, err := installer.New(ctx, installer.WithResolver(printPage("installer")), installer.WithStatic(http.NotFoundHandler()))
+	if err != nil {
+		t.Fatalf("installer.New: %v", err)
+	}
+	g := server.New(db)
+
 	stopped := make(chan error, 1)
-	go func() {
-		stopped <- New(
-			WithCMS(Site{Resolver: printPage("cms"), Static: http.NotFoundHandler()}),
-			WithHousekeeping(Site{Resolver: printPage("housekeeping"), Static: http.NotFoundHandler()}),
-		).Run(ctx)
-	}()
+	go func() { stopped <- New(cfg, db, c, h, i, g).Run(ctx) }()
 	t.Cleanup(func() {
 		cancel()
 		if err := <-stopped; err != nil {

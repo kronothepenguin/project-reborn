@@ -23,7 +23,7 @@ Planned:
 | `packages/services` | The contracts' package and its first contract, `Habbos.SendLook(ctx, avatarID)` |
 | `packages/server` | `SendLook`: reads the habbo again and shows its look and motto to it and its room; its `/api/` for programs run apart |
 | `packages/cms`, `packages/housekeeping` | `Inject`; the looks, profile and motto pages and the habbo editor call the service after they save |
-| `packages/reborn` | The memory API: the game's instance injected into the site and housekeeping |
+| `apps/reborn` | The runner injects the game server, which satisfies `services.Habbos`, into the site and housekeeping |
 | `packages/store`, `packages/config` | The `api_secret` table and its query; `server.api` |
 
 Reborn's core comes from [platform](/features/platform/spec.md), and the client page from [the
