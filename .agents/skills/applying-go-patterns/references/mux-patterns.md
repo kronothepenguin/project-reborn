@@ -42,9 +42,9 @@
 
 ## Package root
 
-`New` takes what the package requires as arguments. Options set what a runner injects by mode, the pages and the
-static handler ([Design](../SKILL.md#design)). `Inject` hands over a service another program implements, after `New`
-and before `Mount`.
+`New` takes what the package requires as arguments. Options set what a runner chooses: the pages, the static handler,
+or a part only one runner switches on ([Design](../SKILL.md#design)). `Inject` hands over a service another program
+implements, after `New` and before `Mount`.
 
 ```go
 type App struct {
