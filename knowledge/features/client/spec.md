@@ -42,6 +42,13 @@ The client page:
 - The client asks to reload: the page opens again with a fresh ticket.
 - Anyone opens the client page: it names LibreShockwave with its licence and links to the source of the exact build.
 - The player is built from `vendor/LibreShockwave` by a make target, into a folder git ignores.
+- The client asks the site whether its cache is good: the site answers `true`.
+- A visitor on the game's own machine opens the client page: the client connects to `127.0.0.1`.
+- The client's window closes: it tells the site.
+- On a screen taller than 600 pixels the client page shows its top bar, with the members online and Close Hotel, and a
+  window the site opened fits itself to the client.
+- The site is closed, or the habbo's user is banned: the client pages show the maintenance or the ban page.
+- A signed-in habbo presses "Enter <short name>" on the site: the client opens in a window of its own, as Holo's did.
 
 The client's files:
 
@@ -49,8 +56,8 @@ The client's files:
   of the folder `config.json` names, at `/dcr/`.
 - The client asks for `/dcr/external_variables.txt`: it gets the stored variables, with the nine addresses pointing at
   this hotel and the client version equal to the game's setting.
-- The client asks for `/dcr/external_texts.txt`: it gets the stored texts, with every "Habbo" written as the hotel's
-  short name.
+- The client asks for `/dcr/external_texts.txt`: it gets the stored texts, with the word "Habbo", its plural and its
+  possessive written as the hotel's short name; a longer word that starts with it, such as "Habboween", stays.
 
 Importing:
 
