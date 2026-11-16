@@ -60,8 +60,9 @@ goes at the end:
 The client stalls unless the nine addresses point at files that exist, and the game refuses a client version other
 than its own.
 
-`Texts` writes the rows with every `Habbo`, a capital H wherever it stands in a value, as `hotel.ShortName`:
-`Habbos` becomes `<short name>s` and `Habboween` becomes `<short name>ween`. Keys and lowercase `habbo` stay.
+`Texts` writes the word `Habbo` in a value as `hotel.ShortName`: alone, as `Habbos`, as `Habbo's`, and before a
+hyphen or punctuation. A letter right after it, other than the plural's `s`, keeps the word: `Habboween` and
+`Habbosphere` stay. Keys and lowercase `habbo` stay.
 
 # Examples
 

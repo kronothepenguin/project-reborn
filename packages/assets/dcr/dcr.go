@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -143,6 +144,20 @@ func generatedVariables(hotel Hotel) []line {
 	}
 }
 
+// habboWord matches "Habbo" with the letters that follow it.
+var habboWord = regexp.MustCompile(`Habbo\pL*`)
+
+// shortName writes the hotel's short name for the word Habbo, its plural and
+// its possessive, and keeps a longer word such as Habboween.
+func shortName(value, name string) string {
+	return habboWord.ReplaceAllStringFunc(value, func(word string) string {
+		if word == "Habbo" || word == "Habbos" {
+			return name + word[len("Habbo"):]
+		}
+		return word
+	})
+}
+
 // Texts writes external_texts.txt for the client.
 func Texts(ctx context.Context, q *store.Queries, hotel Hotel) ([]byte, error) {
 	rows, err := q.ListDCRTexts(ctx)
@@ -152,7 +167,7 @@ func Texts(ctx context.Context, q *store.Queries, hotel Hotel) ([]byte, error) {
 	var b bytes.Buffer
 	b.WriteString(bom)
 	for _, row := range rows {
-		b.WriteString(row.Key + "=" + strings.ReplaceAll(row.Value, "Habbo", hotel.ShortName) + lineEnd)
+		b.WriteString(row.Key + "=" + shortName(row.Value, hotel.ShortName) + lineEnd)
 	}
 	return b.Bytes(), nil
 }

@@ -57,6 +57,9 @@ not wrapped by its runner.
 - A failure answers 500 and is logged, unless the visitor abandoned the request (`context.Canceled`): it ends quietly.
 - Holo's ranks come from update `0003-ranks.sql`. On a new hotel the administrator joins Administrator; without a group
   holding `housekeeping.accessGroups`, the step fails with `setup.ErrNoGroup`.
+- The administrator's transaction also imports the client's files with `dcr.Import` from `<assets.path>/dcr/`, alone and
+  inside reborn. A folder without `external_variables.txt` and `external_texts.txt` leaves the tables empty, and
+  housekeeping imports them later.
 - The administrator's first credits get a ledger row with the reason `registration` and the detail `installer`.
 - `New(ctx, db, opts...)` takes the database. reborn passes the one it opened, and the installer works on it and
   creates none. The runners of the installer alone pass `nil`, and the config step creates it.

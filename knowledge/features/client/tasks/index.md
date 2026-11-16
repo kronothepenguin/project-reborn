@@ -2,5 +2,4 @@
 
 # Tasks
 
-- [Serve the client's folder from the CMS](04-serve-the-clients-files.md) - The CMS serves assets/dcr/ of the folder config.json names at /dcr/, and writes external_variables.txt and external_texts.txt there from the database.
-- [Import the client's files when a hotel is installed](06-import-in-the-installer.md) - The installer copies the variables and texts of the assets folder into the database of a new hotel when the folder holds the two files.
+- [Open the client from the site](08-enter-the-hotel.md) - The site's "Enter <short name>" button, ported from Holo's header, opens the client page in a window of its own for a signed-in habbo.
