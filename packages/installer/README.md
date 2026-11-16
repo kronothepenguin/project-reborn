@@ -13,7 +13,7 @@ It is an Astro (Svelte + Tailwind) frontend embedded in a Go module.
 ```sh
 make install                     # once: dependencies and a placeholder dist/index.html
 cd ../../apps/installer
-make dev                         # astro (background) + air hot reload → http://localhost:17306
+make dev                         # astro (background) + air hot reload → http://localhost:17306/installer/
 make web                         # astro dev server only → http://localhost:25050
 make stop                        # stop the background astro server
 ```

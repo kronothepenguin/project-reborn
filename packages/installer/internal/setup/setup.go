@@ -44,6 +44,8 @@ type Installation struct {
 type State struct {
 	mu           sync.Mutex
 	installation Installation
+	// done is closed once the administrator exists.
+	done chan struct{}
 }
 
 // Open continues an installation: with a config.json in the working directory
@@ -51,7 +53,7 @@ type State struct {
 // config.Load, which would write a config.json with the defaults.
 func Open(ctx context.Context) (*State, error) {
 	if _, err := os.Stat(config.Filename); errors.Is(err, fs.ErrNotExist) {
-		return &State{}, nil
+		return &State{done: make(chan struct{})}, nil
 	} else if err != nil {
 		return nil, fmt.Errorf("setup: %w", err)
 	}
@@ -63,7 +65,16 @@ func Open(ctx context.Context) (*State, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &State{installation: installation}, nil
+	s := &State{installation: installation, done: make(chan struct{})}
+	done, err := Installed(ctx, installation.DB)
+	if err != nil {
+		installation.DB.Close()
+		return nil, err
+	}
+	if done {
+		close(s.done)
+	}
+	return s, nil
 }
 
 func open(ctx context.Context, cfg *config.Config) (Installation, error) {
@@ -125,7 +136,18 @@ func (s *State) Installed(ctx context.Context) (bool, error) {
 	if !ok {
 		return false, nil
 	}
-	return installed(ctx, store.New(installation.DB))
+	return Installed(ctx, installation.DB)
+}
+
+// Installed reports whether db has an administrator: someone holds
+// housekeeping.accessGroups.
+func Installed(ctx context.Context, db *sql.DB) (bool, error) {
+	return installed(ctx, store.New(db))
+}
+
+// Done is closed once the administrator exists.
+func (s *State) Done() <-chan struct{} {
+	return s.done
 }
 
 func installed(ctx context.Context, q *store.Queries) (bool, error) {
@@ -180,6 +202,7 @@ func (s *State) CreateAdministrator(ctx context.Context, admin Administrator) er
 	if err := tx.Commit(); err != nil {
 		return fmt.Errorf("setup: %w", err)
 	}
+	close(s.done)
 	return nil
 }
 

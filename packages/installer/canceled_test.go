@@ -26,7 +26,7 @@ func TestAnAbandonedRequestStaysOutOfTheLog(t *testing.T) {
 	mux := http.NewServeMux()
 	i.Mount(mux)
 	form := url.Values{"path": {"habbo.db"}, "port": {"17400"}, "housekeepingPort": {"18400"}}
-	r := httptest.NewRequest("POST", "/config", strings.NewReader(form.Encode()))
+	r := httptest.NewRequest("POST", "/installer/config", strings.NewReader(form.Encode()))
 	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, r)
@@ -41,7 +41,7 @@ func TestAnAbandonedRequestStaysOutOfTheLog(t *testing.T) {
 	ctx, abandon := context.WithCancel(t.Context())
 	abandon()
 	rec = httptest.NewRecorder()
-	mux.ServeHTTP(rec, httptest.NewRequestWithContext(ctx, "GET", "/site", nil))
+	mux.ServeHTTP(rec, httptest.NewRequestWithContext(ctx, "GET", "/installer/site", nil))
 
 	if rec.Code != http.StatusInternalServerError {
 		t.Fatalf("status %d, want the request to end unanswered with 500", rec.Code)

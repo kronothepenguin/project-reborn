@@ -18,7 +18,7 @@ The default export takes the run's helpers:
 | `base` | The CMS's address |
 | `hk` | Housekeeping's address, with `/housekeeping` |
 | `hkOrigin` | Housekeeping's origin |
-| `installer` | The installer's address |
+| `installer` | The installer's address, with `/installer` |
 | `ports` | The ports of the CMS and housekeeping |
 | `dir` | The folder of the suite's hotel |
 | `browser` | The Chromium browser |

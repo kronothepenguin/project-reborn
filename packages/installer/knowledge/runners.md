@@ -14,9 +14,10 @@ description: How apps/installer serves the installer, where config.json lands, a
 | `./cmd/installer-dev` | development | `astro.MakeServerResolver` + reverse proxy to the astro dev server |
 
 - Both runners listen on `localhost:17306`, a fixed address, because the installer runs before `config.json` exists
-  (decision holo-port/0037).
-- Both runners wrap the mux in `http.NewCrossOriginProtection`, so a page on another site cannot post the forms, such as
-  the administrator form, to the installer on localhost.
+  (decision holo-port/0037). The installer answers at `/installer/`.
+- `Mount` wraps its own routes in `http.NewCrossOriginProtection`, so a page on another site cannot post the forms,
+  such as the administrator form, to the installer on localhost.
+- The runners pass no `Listener`, so the installer shows the form for programs run apart.
 - Both runners exit with the error when the server cannot start.
 
 # Working directory

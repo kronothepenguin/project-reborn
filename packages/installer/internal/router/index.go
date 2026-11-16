@@ -15,7 +15,7 @@ type indexPage struct {
 	SiteURL    string
 }
 
-// HandleIndexView renders GET /{$}, the state of the installation.
+// HandleIndexView renders GET /installer/{$}, the state of the installation.
 func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
 	installed, err := r.deps.Setup.Installed(req.Context())
 	if err != nil {

@@ -115,7 +115,7 @@ async function runSuite(name, suite) {
     base: `http://localhost:${ports.cms}`,
     hkOrigin: `http://localhost:${ports.housekeeping}`,
     hk: `http://localhost:${ports.housekeeping}/housekeeping`,
-    installer: `http://localhost:${installerPort}`,
+    installer: `http://localhost:${installerPort}/installer`,
     ports,
     dir: hotel.dir,
     browser,

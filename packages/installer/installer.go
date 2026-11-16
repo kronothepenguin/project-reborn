@@ -2,6 +2,7 @@ package installer
 
 import (
 	"context"
+	"database/sql"
 	"embed"
 	"net/http"
 
@@ -14,12 +15,20 @@ import (
 var DistFS embed.FS
 
 type Installer struct {
-	static  http.Handler
-	resolve astro.Resolver
-	setup   *setup.State
+	static   http.Handler
+	resolve  astro.Resolver
+	listener Listener
+	setup    *setup.State
 }
 
 type Option func(*Installer)
+
+// Listener moves the running hotel to a new address: it opens host:port, redirects
+// the browser to the same path there, and closes the old server right after.
+// When it fails, it leaves w untouched and returns the error.
+type Listener interface {
+	Move(w http.ResponseWriter, r *http.Request, host string, port int) error
+}
 
 // New continues the installation found in the working directory: when
 // config.json is there, it opens the database the file names.
@@ -35,19 +44,40 @@ func New(ctx context.Context, opts ...Option) (*Installer, error) {
 	return i, nil
 }
 
+// Installed reports whether db has an administrator: someone holds
+// housekeeping.accessGroups.
+func Installed(ctx context.Context, db *sql.DB) (bool, error) {
+	return setup.Installed(ctx, db)
+}
+
+// Done is closed once the administrator exists.
+func (i *Installer) Done() <-chan struct{} {
+	return i.setup.Done()
+}
+
+// Mount registers only /installer/..., so that the installer can share a mux
+// with the site. Every route is behind cross-origin protection, since a shared
+// mux is not wrapped by its runner.
 func (i *Installer) Mount(mux *http.ServeMux) {
-	r := router.New(router.Deps{Resolver: i.resolve, Setup: i.setup})
+	deps := router.Deps{Resolver: i.resolve, Setup: i.setup}
+	if i.listener != nil {
+		deps.Move = i.listener.Move
+	}
+	r := router.New(deps)
+	protect := http.NewCrossOriginProtection().Handler
+	route := func(pattern string, handle http.HandlerFunc) {
+		mux.Handle(pattern, protect(handle))
+	}
 
-	mux.HandleFunc("GET /{$}", r.HandleIndexView)
-	mux.HandleFunc("GET /config", r.HandleConfigView)
-	mux.HandleFunc("POST /config", r.HandleConfigSave)
-	mux.HandleFunc("GET /site", r.HandleSiteView)
-	mux.HandleFunc("POST /site", r.HandleSiteSave)
-	mux.HandleFunc("GET /admin", r.HandleAdminView)
-	mux.HandleFunc("POST /admin", r.HandleAdminCreate)
-	mux.HandleFunc("GET /done", r.HandleDoneView)
+	route("GET /installer/{$}", r.HandleIndexView)
+	route("GET /installer/config", r.HandleConfigView)
+	route("POST /installer/config", r.HandleConfigSave)
+	route("GET /installer/site", r.HandleSiteView)
+	route("POST /installer/site", r.HandleSiteSave)
+	route("GET /installer/admin", r.HandleAdminView)
+	route("POST /installer/admin", r.HandleAdminCreate)
 
-	mux.Handle("/", i.static)
+	mux.Handle("/installer/", protect(http.StripPrefix("/installer", i.static)))
 }
 
 func WithStatic(h http.Handler) Option {
@@ -59,5 +89,14 @@ func WithStatic(h http.Handler) Option {
 func WithResolver(r astro.Resolver) Option {
 	return func(i *Installer) {
 		i.resolve = r
+	}
+}
+
+// WithListener asks one host and port for the whole hotel in the config step,
+// and moves the hotel there through l. Without it, the config step asks the
+// site's port and housekeeping's port, for programs run apart.
+func WithListener(l Listener) Option {
+	return func(i *Installer) {
+		i.listener = l
 	}
 }

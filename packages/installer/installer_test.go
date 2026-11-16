@@ -23,6 +23,8 @@ func printData(name string) (*template.Template, error) {
 	return template.New(name).Delims("[[", "]]").Parse(`[[ printf "%+v" . ]]`)
 }
 
+// Run alone, the installer keeps both forms as they are today: the walk through
+// the steps with the site's port, housekeeping's port and housekeeping's address.
 func TestInstallation(t *testing.T) {
 	t.Chdir(t.TempDir())
 	i, err := New(t.Context(), WithResolver(printData), WithStatic(http.NotFoundHandler()))
@@ -69,38 +71,36 @@ func TestInstallation(t *testing.T) {
 		location string
 		body     string
 	}{
-		{"status before configuring", "GET", "/", nil, 200, "", "Configured:false Installed:false"},
-		{"status links nowhere before installing", "GET", "/", nil, 200, "", "SiteURL:}"},
-		{"site before configuring", "GET", "/site", nil, 303, "/config", ""},
-		{"admin before configuring", "POST", "/admin", admin, 303, "/config", ""},
-		{"done before installing", "GET", "/done", nil, 303, "/", ""},
-		{"config form", "GET", "/config", nil, 200, "", "Path:habbo.db Port:17387 HousekeepingPort:18465"},
-		{"port that is not a number", "POST", "/config", url.Values{"path": {"habbo.db"}, "port": {"abc"}, "housekeepingPort": {"18400"}}, 422, "", "The hotel port must be a number."},
-		{"housekeeping port that is not a number", "POST", "/config", url.Values{"path": {"habbo.db"}, "port": {"17400"}, "housekeepingPort": {"abc"}}, 422, "", "The housekeeping port must be a number."},
-		{"port out of range", "POST", "/config", url.Values{"path": {"habbo.db"}, "port": {"70000"}, "housekeepingPort": {"18400"}}, 422, "", "cms.port: must be between 1 and 65535"},
-		{"housekeeping port out of range", "POST", "/config", url.Values{"path": {"habbo.db"}, "port": {"17400"}, "housekeepingPort": {"70000"}}, 422, "", "housekeeping.port: must be between 1 and 65535"},
-		{"write config", "POST", "/config", url.Values{"path": {"habbo.db"}, "port": {"17400"}, "housekeepingPort": {"18400"}}, 303, "/site", ""},
-		{"config written", "GET", "/config", nil, 200, "", "Written:true"},
-		{"config shows the ports", "GET", "/config", nil, 200, "", "Port:17400 HousekeepingPort:18400"},
-		{"config again", "POST", "/config", url.Values{"path": {"other.db"}, "port": {"17401"}, "housekeepingPort": {"18401"}}, 303, "/config", ""},
-		{"site form", "GET", "/site", nil, 200, "", "Name:Reborn Hotel ShortName:Reborn URL:http://localhost:17387 HousekeepingURL:http://localhost:18400/housekeeping StartCredits:500 SecureCookies:true"},
-		{"a bad housekeeping address", "POST", "/site", with(site, "housekeepingUrl", "nowhere"), 422, "", "Housekeeping address: must be a path or an http or https URL"},
-		{"site URL with a path", "POST", "/site", with(site, "url", "https://hotel.example.com/cms"), 422, "", "Site URL: must be an http or https origin"},
-		{"start credits out of range", "POST", "/site", with(site, "startCredits", "-1"), 422, "", "Start credits: must be between 0 and 1000000"},
-		{"save site", "POST", "/site", site, 303, "/admin", ""},
-		{"admin form", "GET", "/admin", nil, 200, "", "PasswordHelp:6 to 25 characters"},
-		{"passwords differ", "POST", "/admin", with(admin, "passwordConfirm", "secret124"), 422, "", "The passwords do not match."},
-		{"missing birth date", "POST", "/admin", with(admin, "bornOn", ""), 422, "", "Enter the birth date."},
-		{"habbo name with a space", "POST", "/admin", with(admin, "name", "Admin One"), 422, "", "Habbo names are 1 to 24 letters"},
-		{"short password", "POST", "/admin", with(with(admin, "password", "short"), "passwordConfirm", "short"), 422, "", "Passwords are 6 to 25 characters."},
-		{"create administrator", "POST", "/admin", admin, 303, "/done", ""},
-		{"done", "GET", "/done", nil, 200, "", "habbo.db"},
-		{"done links to the hotel", "GET", "/done", nil, 200, "", "SiteURL:https://hotel.example.com}"},
-		{"status after installing", "GET", "/", nil, 200, "", "Installed:true ConfigPath:"},
-		{"status links to the hotel", "GET", "/", nil, 200, "", "SiteURL:https://hotel.example.com}"},
-		{"config after installing", "GET", "/config", nil, 303, "/", ""},
-		{"site after installing", "POST", "/site", site, 303, "/", ""},
-		{"admin after installing", "POST", "/admin", admin, 303, "/", ""},
+		{"status before configuring", "GET", "/installer/", nil, 200, "", "Configured:false Installed:false"},
+		{"status links nowhere before installing", "GET", "/installer/", nil, 200, "", "SiteURL:}"},
+		{"site before configuring", "GET", "/installer/site", nil, 303, "/installer/config", ""},
+		{"admin before configuring", "POST", "/installer/admin", admin, 303, "/installer/config", ""},
+		{"config form", "GET", "/installer/config", nil, 200, "", "OneAddress:false Written:false ConfigPath:"},
+		{"config form has both ports", "GET", "/installer/config", nil, 200, "", "Path:habbo.db Host: Port:17387 HousekeepingPort:18465"},
+		{"port that is not a number", "POST", "/installer/config", url.Values{"path": {"habbo.db"}, "port": {"abc"}, "housekeepingPort": {"18400"}}, 422, "", "The hotel port must be a number."},
+		{"housekeeping port that is not a number", "POST", "/installer/config", url.Values{"path": {"habbo.db"}, "port": {"17400"}, "housekeepingPort": {"abc"}}, 422, "", "The housekeeping port must be a number."},
+		{"port out of range", "POST", "/installer/config", url.Values{"path": {"habbo.db"}, "port": {"70000"}, "housekeepingPort": {"18400"}}, 422, "", "cms.port: must be between 1 and 65535"},
+		{"housekeeping port out of range", "POST", "/installer/config", url.Values{"path": {"habbo.db"}, "port": {"17400"}, "housekeepingPort": {"70000"}}, 422, "", "housekeeping.port: must be between 1 and 65535"},
+		{"write config", "POST", "/installer/config", url.Values{"path": {"habbo.db"}, "port": {"17400"}, "housekeepingPort": {"18400"}}, 303, "/installer/site", ""},
+		{"config written", "GET", "/installer/config", nil, 200, "", "Written:true"},
+		{"config shows the ports", "GET", "/installer/config", nil, 200, "", "Port:17400 HousekeepingPort:18400"},
+		{"config again", "POST", "/installer/config", url.Values{"path": {"other.db"}, "port": {"17401"}, "housekeepingPort": {"18401"}}, 303, "/installer/config", ""},
+		{"site form", "GET", "/installer/site", nil, 200, "", "Name:Reborn Hotel ShortName:Reborn URL:http://localhost:17387 HousekeepingURL:http://localhost:18400/housekeeping StartCredits:500 SecureCookies:true"},
+		{"a bad housekeeping address", "POST", "/installer/site", with(site, "housekeepingUrl", "nowhere"), 422, "", "Housekeeping address: must be a path or an http or https URL"},
+		{"site URL with a path", "POST", "/installer/site", with(site, "url", "https://hotel.example.com/cms"), 422, "", "Site URL: must be an http or https origin"},
+		{"start credits out of range", "POST", "/installer/site", with(site, "startCredits", "-1"), 422, "", "Start credits: must be between 0 and 1000000"},
+		{"save site", "POST", "/installer/site", site, 303, "/installer/admin", ""},
+		{"admin form", "GET", "/installer/admin", nil, 200, "", "PasswordHelp:6 to 25 characters"},
+		{"passwords differ", "POST", "/installer/admin", with(admin, "passwordConfirm", "secret124"), 422, "", "The passwords do not match."},
+		{"missing birth date", "POST", "/installer/admin", with(admin, "bornOn", ""), 422, "", "Enter the birth date."},
+		{"habbo name with a space", "POST", "/installer/admin", with(admin, "name", "Admin One"), 422, "", "Habbo names are 1 to 24 letters"},
+		{"short password", "POST", "/installer/admin", with(with(admin, "password", "short"), "passwordConfirm", "short"), 422, "", "Passwords are 6 to 25 characters."},
+		{"create administrator", "POST", "/installer/admin", admin, 303, "/", ""},
+		{"status after installing", "GET", "/installer/", nil, 200, "", "Installed:true ConfigPath:"},
+		{"status links to the hotel", "GET", "/installer/", nil, 200, "", "SiteURL:https://hotel.example.com}"},
+		{"config after installing", "GET", "/installer/config", nil, 303, "/installer/", ""},
+		{"site after installing", "POST", "/installer/site", site, 303, "/installer/", ""},
+		{"admin after installing", "POST", "/installer/admin", admin, 303, "/installer/", ""},
 	} {
 		var body io.Reader
 		if c.form != nil {
