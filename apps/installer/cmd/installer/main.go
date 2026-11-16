@@ -19,7 +19,7 @@ func main() {
 	resolver := astro.MakeFSResolver(distFS)
 	fileServer := http.FileServerFS(distFS)
 
-	i, err := installer.New(context.Background(),
+	i, err := installer.New(context.Background(), nil,
 		installer.WithResolver(resolver),
 		installer.WithStatic(fileServer),
 	)

@@ -2,7 +2,6 @@
 
 # Tasks
 
-- [reborn installs a new hotel](05-reborn-installs-a-new-hotel.md) - Started in an empty folder, reborn serves the installer under /installer/ on the reborn defaults, redirects every other path there, moves to the address the administrator chooses, builds the hotel once the administrator exists, and answers 404 under /installer/ from then on.
 - [Read each setting from the store in packages/settings](06-settings-package.md) - A new packages/settings holds the list of settings and reads each one with a sqlc query, returning its default when no row exists; auth reads through it; virtual/settings keeps working on top of it until every program has switched.
 - [The CMS reads its settings from the store](07-cms-reads-settings.md) - The CMS's settings reads go through packages/settings on each use, cms.New loads and refreshes nothing, and a benchmark of its pages before and after is recorded.
 - [Housekeeping and the installer read their settings from the store](08-housekeeping-installer-read-settings.md) - Housekeeping's and the installer's settings reads and writes go through packages/settings, and neither loads settings at start.

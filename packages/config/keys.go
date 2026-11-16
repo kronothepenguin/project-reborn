@@ -9,6 +9,8 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+
+	"github.com/kronothepenguin/project-reborn/packages/config/reborn"
 )
 
 // Key is one key path of config.json, such as cms.port, and its JSON value.
@@ -190,42 +192,20 @@ func sortedPaths(paths map[string]json.RawMessage) []string {
 	return sorted
 }
 
-// Save writes value as the section named section of the existing config.json,
-// and writes the file again as Rewrite does: the other keys with the values
-// they have, the keys it lacks with their defaults, and none of the keys
-// nothing reads. The result must pass Validate.
-func Save(section string, value any) error {
+// SaveReborn writes r as the reborn section of the existing config.json, and
+// writes the file again as Rewrite does: the other keys with the values they
+// have, the keys it lacks with their defaults, and none of the keys nothing
+// reads. The result must pass Validate.
+func SaveReborn(r reborn.Reborn) error {
 	data, err := os.ReadFile(Filename)
 	if err != nil {
 		return fmt.Errorf("config: %s: %w", Filename, err)
 	}
-	var file map[string]json.RawMessage
-	if err := json.Unmarshal(data, &file); err != nil {
-		return fmt.Errorf("config: %s: %w", Filename, jsonError(err))
-	}
-	var sections map[string]json.RawMessage
-	defaultData, err := json.Marshal(defaults())
-	if err == nil {
-		err = json.Unmarshal(defaultData, &sections)
-	}
-	if err != nil {
-		return fmt.Errorf("config: %s: %w", Filename, err)
-	}
-	if _, ok := sections[section]; !ok {
-		return fmt.Errorf("config: %s: no section %s", Filename, section)
-	}
-	if file[section], err = json.Marshal(value); err != nil {
-		return fmt.Errorf("config: %s: %w", Filename, err)
-	}
-
-	merged, err := json.Marshal(file)
-	if err != nil {
-		return fmt.Errorf("config: %s: %w", Filename, err)
-	}
 	cfg := defaults()
-	if err := json.Unmarshal(merged, cfg); err != nil {
+	if err := json.Unmarshal(data, cfg); err != nil {
 		return fmt.Errorf("config: %s: %w", Filename, jsonError(err))
 	}
+	cfg.Reborn = r
 	if err := cfg.Validate(); err != nil {
 		return fmt.Errorf("config: %s: %w", Filename, err)
 	}

@@ -3,7 +3,6 @@ package router
 import (
 	"errors"
 	"log/slog"
-	"net"
 	"net/http"
 	"strconv"
 	"strings"
@@ -112,8 +111,8 @@ func (r *Router) HandleConfigSave(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-// saveAddress moves the hotel when the request arrived elsewhere, then saves
-// the address into the reborn section of config.json. A failed move saves
+// saveAddress moves the hotel when it listens elsewhere, then saves the
+// address into the reborn section of config.json. A failed move saves
 // nothing and shows its error, so the step takes another address.
 func (r *Router) saveAddress(w http.ResponseWriter, req *http.Request, installation setup.Installation) {
 	page := configPage{
@@ -138,7 +137,7 @@ func (r *Router) saveAddress(w http.ResponseWriter, req *http.Request, installat
 		return
 	}
 
-	if arrivedAt(req, address.Host, address.Port) {
+	if installation.Config != nil && installation.Config.Reborn == address {
 		if err := r.deps.Setup.SaveReborn(address); err != nil {
 			page.Error = err.Error()
 			r.invalid(w, "config.html", page)
@@ -156,13 +155,4 @@ func (r *Router) saveAddress(w http.ResponseWriter, req *http.Request, installat
 	if err := r.deps.Setup.SaveReborn(address); err != nil {
 		slog.Error("installer", "err", err)
 	}
-}
-
-// arrivedAt reports whether req came to host:port, as the browser addressed it.
-func arrivedAt(req *http.Request, host string, port int) bool {
-	reqHost, reqPort, err := net.SplitHostPort(req.Host)
-	if err != nil {
-		return false
-	}
-	return reqHost == host && reqPort == strconv.Itoa(port)
 }

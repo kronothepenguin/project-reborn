@@ -12,11 +12,11 @@ import (
 
 // Inside reborn, the config step saves the new address into the reborn section
 // of the existing config.json, and the other sections keep their values.
-func TestSaveWritesOneSection(t *testing.T) {
+func TestSaveRebornWritesOneSection(t *testing.T) {
 	useConfigFile(t, `{"store": {"path": "custom.db"}, "cms": {"port": 8080}}`)
 
-	if err := Save("reborn", reborn.Reborn{Host: "0.0.0.0", Port: 8000}); err != nil {
-		t.Fatalf("Save: %v", err)
+	if err := SaveReborn(reborn.Reborn{Host: "0.0.0.0", Port: 8000}); err != nil {
+		t.Fatalf("SaveReborn: %v", err)
 	}
 
 	data, err := os.ReadFile(Filename)
@@ -35,29 +35,26 @@ func TestSaveWritesOneSection(t *testing.T) {
 	}
 }
 
-// A value Validate refuses, or a section no program reads, leaves config.json as it was.
-func TestSaveRefusesABadSection(t *testing.T) {
+// A value Validate refuses leaves config.json as it was.
+func TestSaveRebornRefusesABadAddress(t *testing.T) {
 	const content = `{"reborn": {"host": "localhost", "port": 16416}}`
 	useConfigFile(t, content)
 
-	if err := Save("reborn", reborn.Reborn{Host: "localhost", Port: 70000}); err == nil {
-		t.Error("Save took port 70000")
-	}
-	if err := Save("theme", "dark"); err == nil {
-		t.Error("Save took a section nothing reads")
+	if err := SaveReborn(reborn.Reborn{Host: "localhost", Port: 70000}); err == nil {
+		t.Error("SaveReborn took port 70000")
 	}
 	if data, _ := os.ReadFile(Filename); string(data) != content {
 		t.Errorf("config.json became %s", data)
 	}
 }
 
-// Save writes into an existing config.json only.
-func TestSaveNeedsConfigJSON(t *testing.T) {
+// SaveReborn writes into an existing config.json only.
+func TestSaveRebornNeedsConfigJSON(t *testing.T) {
 	t.Chdir(t.TempDir())
-	if err := Save("reborn", reborn.Reborn{Host: "localhost", Port: 16416}); !errors.Is(err, fs.ErrNotExist) {
-		t.Errorf("Save = %v, want fs.ErrNotExist", err)
+	if err := SaveReborn(reborn.Reborn{Host: "localhost", Port: 16416}); !errors.Is(err, fs.ErrNotExist) {
+		t.Errorf("SaveReborn = %v, want fs.ErrNotExist", err)
 	}
 	if _, err := os.Stat(Filename); err == nil {
-		t.Error("Save created config.json")
+		t.Error("SaveReborn created config.json")
 	}
 }

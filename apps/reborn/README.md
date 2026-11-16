@@ -20,10 +20,13 @@ make check      # checks the formatting, vets and builds the runner
 
 ## Production
 
-From the repository root, in the folder of an installed hotel:
+From the repository root:
 
 ```sh
 make frontends
 make build
 ./bin/reborn   # → http://localhost:16416, reads ./config.json
 ```
+
+In an empty folder, reborn writes `config.json`, creates the database and serves the installer at
+`http://localhost:16416/installer/`. Once the administrator exists, the hotel runs there without a restart.

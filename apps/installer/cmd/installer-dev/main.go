@@ -21,7 +21,7 @@ func main() {
 	resolver := astro.MakeServerResolver(baseURL)
 	proxy := httputil.NewSingleHostReverseProxy(baseURL)
 
-	i, err := installer.New(context.Background(),
+	i, err := installer.New(context.Background(), nil,
 		installer.WithResolver(resolver),
 		installer.WithStatic(proxy),
 	)

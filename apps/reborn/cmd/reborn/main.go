@@ -42,7 +42,7 @@ func main() {
 
 	c := cms.New(db, cms.WithResolver(cmsPages), cms.WithStatic(cmsFiles))
 	h := housekeeping.New(db, housekeeping.WithResolver(hkPages), housekeeping.WithStatic(hkFiles))
-	i, err := installer.New(ctx, installer.WithResolver(inPages), installer.WithStatic(inFiles))
+	i, err := installer.New(ctx, db, installer.WithResolver(inPages), installer.WithStatic(inFiles))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -52,5 +52,8 @@ func main() {
 	h.Inject(housekeeping.Services{Habbos: g})
 
 	r := reborn.New(cfg, db, c, h, i, g)
-	log.Fatalln(r.Run(ctx))
+	i.Inject(installer.Services{Listener: r})
+	if err := r.Run(ctx); err != nil {
+		log.Fatalln(err)
+	}
 }
