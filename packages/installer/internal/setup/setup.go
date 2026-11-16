@@ -18,7 +18,6 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/config/reborn"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // The administrator's habbo starts as the one Holo's installer created.
@@ -67,9 +66,9 @@ func Open(ctx context.Context, db *sql.DB) (*State, error) {
 	}
 	var installation Installation
 	if db != nil {
-		installation, err = use(ctx, cfg, db)
+		installation = Installation{Config: cfg, DB: db}
 	} else {
-		installation, err = open(ctx, cfg)
+		installation, err = open(cfg)
 	}
 	if err != nil {
 		return nil, err
@@ -89,20 +88,9 @@ func Open(ctx context.Context, db *sql.DB) (*State, error) {
 }
 
 // open creates the database cfg names, or opens it when it exists.
-func open(ctx context.Context, cfg *config.Config) (Installation, error) {
+func open(cfg *config.Config) (Installation, error) {
 	db, err := store.Open(cfg.Store.Path)
 	if err != nil {
-		return Installation{}, fmt.Errorf("setup: %w", err)
-	}
-	installation, err := use(ctx, cfg, db)
-	if err != nil {
-		db.Close()
-	}
-	return installation, err
-}
-
-func use(ctx context.Context, cfg *config.Config, db *sql.DB) (Installation, error) {
-	if err := settings.Load(ctx, cfg, db); err != nil {
 		return Installation{}, fmt.Errorf("setup: %w", err)
 	}
 	return Installation{Config: cfg, DB: db}, nil
@@ -136,7 +124,7 @@ func (s *State) Configure(ctx context.Context, cfg *config.Config) error {
 	if err := cfg.Validate(); err != nil {
 		return fmt.Errorf("setup: %w", err)
 	}
-	installation, err := open(ctx, cfg)
+	installation, err := open(cfg)
 	if err != nil {
 		return err
 	}

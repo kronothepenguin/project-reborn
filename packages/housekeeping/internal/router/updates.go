@@ -11,8 +11,8 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/config"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 const (
@@ -236,6 +236,6 @@ func (r *Router) UpdateFailed(next http.Handler) http.Handler {
 			return
 		}
 		w.WriteHeader(http.StatusServiceUnavailable)
-		astro.WriteTemplate(w, r.deps.Resolver, "update-failed.html", updateFailedPage{SiteName: settings.GetString("site.name")})
+		astro.WriteTemplate(w, r.deps.Resolver, "update-failed.html", updateFailedPage{SiteName: settings.String(req.Context(), r.deps.Queries, "site.name")})
 	})
 }

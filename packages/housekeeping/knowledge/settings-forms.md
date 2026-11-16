@@ -13,14 +13,14 @@ description: How GET /settings and POST /settings/{section} lay the declared set
 - `hiddenSettings` keeps `housekeeping.note` for the dashboard.
 - A field's kind comes from its declaration: toggle, number, text, a choice from a list, or a long text. A long text
   takes one row per 60 characters, from 2 to 10, as Holo's content tool sized it.
-- A setting marked `secret` in the catalogue is a password field: `Declared()` keeps its value out, a blank field
+- A setting marked `secret` in the catalogue is a password field: `settings.Declared` keeps its value out, a blank field
   keeps it, and a checkbox clears it.
 
 # A save
 
 - A post reads only the fields of its section, so a form reaches no other key.
 - It saves all of them or none: `settings.Validate` checks them together, then `setAll` writes each with
-  `settings.Set`, so a value back at its default deletes the row.
+  `settings.Set`, in one transaction with the staff log row, so a value back at its default deletes the row.
 - `setAll` lets a refused key wait for the others, because a rule across two keys, as the password limits, can refuse
   the first until the second is written. A round that writes nothing is a real failure.
 - One staff log row lists the changed keys ([the staff log](/staff-log.md)).

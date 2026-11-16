@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
@@ -41,12 +42,13 @@ func (r *Router) newImagesPage(req *http.Request) (imagesPage, error) {
 	if err != nil {
 		return page, err
 	}
+	siteURL := settings.String(ctx, r.deps.Queries, "site.url")
 	for _, image := range images {
 		path := newsImagePath(image.ID, image.Format)
 		row := imageRow{
 			ID:       image.ID,
 			Path:     path,
-			Preview:  sitePicture(path),
+			Preview:  sitePicture(siteURL, path),
 			Format:   strings.ToUpper(image.Format),
 			Size:     fmt.Sprintf("%.1f KB", float64(image.Size)/1024),
 			Uploader: named(image.Uploader, image.CreatedByUserID),

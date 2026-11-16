@@ -11,8 +11,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/cms/seed"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 const (
@@ -132,7 +132,7 @@ func TestTheComposeFormIsHolos(t *testing.T) {
 func TestTheClubIsNamedAfterTheSite(t *testing.T) {
 	db, mux := newSite(t)
 	_, cookie := newsWriter(t, db)
-	if err := settings.Set(t.Context(), db, 0, "site.shortName", "Retro"); err != nil {
+	if err := settings.Set(t.Context(), store.New(db), 0, "site.shortName", "Retro"); err != nil {
 		t.Fatalf("settings.Set: %v", err)
 	}
 

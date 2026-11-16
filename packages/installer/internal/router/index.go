@@ -5,7 +5,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/installer/internal/setup"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 type indexPage struct {
@@ -22,14 +23,14 @@ func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
-	_, configured := r.deps.Setup.Current()
+	installation, configured := r.deps.Setup.Current()
 	page := indexPage{
 		Configured: configured,
 		Installed:  installed,
 		ConfigPath: setup.ConfigPath(),
 	}
 	if installed {
-		page.SiteURL = settings.GetString("site.url")
+		page.SiteURL = settings.String(req.Context(), store.New(installation.DB), "site.url")
 	}
 	astro.WriteTemplate(w, r.deps.Resolver, "index.html", page)
 }

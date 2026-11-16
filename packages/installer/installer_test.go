@@ -14,7 +14,8 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/config/reborn"
 	"github.com/kronothepenguin/project-reborn/packages/config/server"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 // printData stands in for the built pages: it prints the page data, so the
@@ -121,10 +122,13 @@ func TestInstallation(t *testing.T) {
 		}
 	}
 
-	if settings.GetString("site.name") != "Reborn Hotel" || settings.GetString("site.url") != "https://hotel.example.com" ||
-		settings.GetInt("registration.startCredits") != 750 || settings.GetBool("auth.secureCookies") {
+	installation, _ := i.setup.Current()
+	ctx, q := t.Context(), store.New(installation.DB)
+	name, address := settings.String(ctx, q, "site.name"), settings.String(ctx, q, "site.url")
+	credits, secure := settings.Int(ctx, q, "registration.startCredits"), settings.Bool(ctx, q, "auth.secureCookies")
+	if name != "Reborn Hotel" || address != "https://hotel.example.com" || credits != 750 || secure {
 		t.Errorf("settings after the site step: name %q, url %q, start credits %d, secure cookies %t",
-			settings.GetString("site.name"), settings.GetString("site.url"), settings.GetInt("registration.startCredits"), settings.GetBool("auth.secureCookies"))
+			name, address, credits, secure)
 	}
 
 	data, err := os.ReadFile(config.Filename)

@@ -5,13 +5,14 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/cms/seed"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 )
 
 // HandleNewsComposeView renders GET /housekeeping/news/new, Holo's news_compose.
 // A browser selected Holo's first category, and the picture starts as the
 // default local one.
 func (r *Router) HandleNewsComposeView(w http.ResponseWriter, req *http.Request) {
-	form := newsForm{Category: newsCategories()[0], TopStory: seed.DefaultTopStory}
+	form := newsForm{Category: newsCategories(settings.String(req.Context(), r.deps.Queries, "site.shortName"))[0], TopStory: seed.DefaultTopStory}
 	page, err := r.newNewsArticlePage(req, 0, "", form)
 	if err != nil {
 		r.fail(w, err)
