@@ -1,4 +1,4 @@
-.PHONY: install tools create dependants tw-color e2e frontends release
+.PHONY: install build tools create dependants tw-color e2e frontends release
 
 VERSION ?= dev
 
@@ -8,16 +8,14 @@ install:
 	@for project in apps/*/ packages/store/; do $(MAKE) -C "$$project" install || exit 1; done
 	$(MAKE) tools
 
-# apps/reborn is the orchestrator: one binary running the installer, cms,
-# housekeeping and server. Its old implementation was removed and the new one is
-# not planned yet, so these targets wait for it.
+# apps/reborn runs the whole hotel in one process. Its dev target waits for
+# reborn-dev (platform 12).
 #
 # dev:
 # 	cd apps/reborn && go tool air
-#
-# build:
-# 	mkdir -p ./bin
-# 	go build -o ./bin/main ./apps/reborn/cmd
+
+build:
+	go build -o ./bin/reborn ./apps/reborn/cmd/reborn
 
 # The three frontends, which the Go programs embed.
 frontends:
