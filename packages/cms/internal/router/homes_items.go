@@ -14,8 +14,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/cms/internal/bbcode"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // The playground of a home, wide for club owners, and the most a request carries.
@@ -218,13 +218,13 @@ func (r *Router) HandleHomesItemsPlace(w http.ResponseWriter, req *http.Request)
 			r.answerJSON(w, http.StatusUnprocessableEntity, editError{homeBadSkin})
 			return
 		}
-		if utf8.RuneCountInString(body.Text) > settings.GetInt("homes.noteMaxLength") {
+		if utf8.RuneCountInString(body.Text) > settings.Int(ctx, r.deps.Queries, "homes.noteMaxLength") {
 			r.answerJSON(w, http.StatusUnprocessableEntity, editError{homeBadNote})
 			return
 		}
 	}
 
-	limit := int64(settings.GetInt("homes.maxItems"))
+	limit := int64(settings.Int(ctx, r.deps.Queries, "homes.maxItems"))
 	refusal := ""
 	var created []placed
 	now := time.Now().UTC()
@@ -272,7 +272,7 @@ func (r *Router) HandleHomesItemsPlace(w http.ResponseWriter, req *http.Request)
 			if err != nil {
 				return err
 			}
-			created = append(created, r.drawn(placedItem, item.Asset))
+			created = append(created, drawn(ctx, q, placedItem, item.Asset))
 		}
 		return nil
 	})
@@ -300,7 +300,7 @@ func (r *Router) placeWidget(w http.ResponseWriter, req *http.Request, home stor
 		r.answerJSON(w, http.StatusUnprocessableEntity, editError{homeBadPlace})
 		return
 	}
-	limit := int64(settings.GetInt("homes.maxItems"))
+	limit := int64(settings.Int(ctx, r.deps.Queries, "homes.maxItems"))
 	refusal := ""
 	var item store.HomeItem
 	now := time.Now().UTC()
@@ -341,18 +341,18 @@ func (r *Router) placeWidget(w http.ResponseWriter, req *http.Request, home stor
 	case refusal != "":
 		r.answerJSON(w, http.StatusUnprocessableEntity, editError{refusal})
 	default:
-		r.answerJSON(w, http.StatusOK, []placed{r.drawn(item, "")})
+		r.answerJSON(w, http.StatusOK, []placed{drawn(ctx, r.deps.Queries, item, "")})
 	}
 }
 
 // drawn is item as the editor draws it; asset is its store item's art.
-func (r *Router) drawn(item store.HomeItem, asset string) placed {
+func drawn(ctx context.Context, q *store.Queries, item store.HomeItem, asset string) placed {
 	out := placed{ID: item.ID, Kind: item.Kind, Widget: item.Widget.String, X: item.X, Y: item.Y, Z: item.Z, Skin: item.Skin}
 	switch item.Kind {
 	case "sticker":
 		out.Image = image(asset)
 	case "note":
-		out.HTML = bbcode.Format(item.Body, settings.GetBool("features.smilies"))
+		out.HTML = bbcode.Format(item.Body, settings.Bool(ctx, q, "features.smilies"))
 	}
 	return out
 }

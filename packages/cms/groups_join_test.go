@@ -9,8 +9,8 @@ import (
 	"testing"
 
 	"github.com/kronothepenguin/project-reborn/packages/cms/internal/badge"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 type groupAnswer struct {
@@ -95,7 +95,7 @@ func TestAFullRegularGroupTakesNoOne(t *testing.T) {
 	db, mux := newSite(t)
 	regular := ownedGroup(t, db, "Regular", "open")
 	unlimited := ownedGroup(t, db, "Unlimited", "unlimited")
-	if err := settings.Set(t.Context(), db, 0, "groups.maxMembers", 2); err != nil {
+	if err := settings.Set(t.Context(), store.New(db), 0, "groups.maxMembers", 2); err != nil {
 		t.Fatal(err)
 	}
 	q := store.New(db)
@@ -135,7 +135,7 @@ func TestTheMembershipLimitComesFirstAndCountsRequests(t *testing.T) {
 	db, mux := newSite(t)
 	exclusive := ownedGroup(t, db, "Exclusive", "moderated")
 	regular := ownedGroup(t, db, "Regular", "open")
-	if err := settings.Set(t.Context(), db, 0, "groups.maxMemberships", 1); err != nil {
+	if err := settings.Set(t.Context(), store.New(db), 0, "groups.maxMemberships", 1); err != nil {
 		t.Fatal(err)
 	}
 	habbo(t, db, "frank@example.com", "Frank")

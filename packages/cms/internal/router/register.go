@@ -14,8 +14,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // Holo's list starts at 1900, although its rule refuses years before 1920.
@@ -48,7 +48,7 @@ type registerPage struct {
 }
 
 func (r *Router) newRegisterPage(ctx context.Context) registerPage {
-	return registerPage{hotelStatus: r.hotelStatus(ctx), PasswordMinLength: settings.GetInt("auth.passwordMinLength")}
+	return registerPage{hotelStatus: r.hotelStatus(ctx), PasswordMinLength: settings.Int(ctx, r.deps.Queries, "auth.passwordMinLength")}
 }
 
 // birthDate holds the options of the birth date selects, with the given date
@@ -114,8 +114,8 @@ func (r *Router) HandleRegister(w http.ResponseWriter, req *http.Request) {
 	page.Refer = strings.TrimSpace(form.Get("refer"))
 	page.Errors = map[string]string{}
 	if page.Figure == "" {
-		page.Figure = settings.GetString("registration.defaultFigure")
-		page.Gender = settings.GetString("registration.defaultGender")
+		page.Figure = settings.String(ctx, r.deps.Queries, "registration.defaultFigure")
+		page.Gender = settings.String(ctx, r.deps.Queries, "registration.defaultGender")
 	}
 	bornOn := page.readBornOn(form)
 
@@ -190,7 +190,7 @@ func (p *registerPage) validate(ctx context.Context, q *store.Queries, form url.
 	if form.Get("password") != form.Get("passwordConfirm") {
 		p.Errors["password"] = "The passwords do not match. Please try again."
 	} else if err := auth.ValidatePassword(ctx, q, form.Get("password")); err != nil {
-		p.Errors["password"] = passwordLengthMessage(err)
+		p.Errors["password"] = passwordLengthMessage(ctx, q, err)
 	}
 	if auth.ValidateEmail(p.Email) != nil {
 		p.Errors["email"] = "Please supply a valid e-mail address."
@@ -205,15 +205,15 @@ func (p *registerPage) validate(ctx context.Context, q *store.Queries, form url.
 	}
 }
 
-func passwordLengthMessage(err error) string {
+func passwordLengthMessage(ctx context.Context, q *store.Queries, err error) string {
 	if errors.Is(err, auth.ErrPasswordTooShort) {
 		return "Your password is too short."
 	}
-	return fmt.Sprintf("Passwords may be no longer than %d characters", settings.GetInt("auth.passwordMaxLength"))
+	return fmt.Sprintf("Passwords may be no longer than %d characters", settings.Int(ctx, q, "auth.passwordMaxLength"))
 }
 
 func (r *Router) registrationAllowed(ctx context.Context, ip string) (bool, error) {
-	window := time.Duration(settings.GetInt("registration.ipWindowHours")) * time.Hour
+	window := time.Duration(settings.Int(ctx, r.deps.Queries, "registration.ipWindowHours")) * time.Hour
 	count, err := r.deps.Queries.CountUsersCreatedFromIP(ctx, store.CountUsersCreatedFromIPParams{
 		CreatedIP: ip,
 		Since:     time.Now().UTC().Add(-window),
@@ -221,7 +221,7 @@ func (r *Router) registrationAllowed(ctx context.Context, ip string) (bool, erro
 	if err != nil {
 		return false, err
 	}
-	return count < int64(settings.GetInt("registration.maxPerIp")), nil
+	return count < int64(settings.Int(ctx, r.deps.Queries, "registration.maxPerIp")), nil
 }
 
 // checkTaken reports a name that cannot be used or an email that has an account.
@@ -256,8 +256,8 @@ func (r *Router) createAccount(ctx context.Context, page registerPage, bornOn ti
 		Newsletter:   page.Newsletter,
 		IP:           ip,
 		PasswordHash: hash,
-		Credits:      int64(settings.GetInt("registration.startCredits")),
-		Detail:       "Welcome to " + settings.GetString("site.name") + "!",
+		Credits:      int64(settings.Int(ctx, q, "registration.startCredits")),
+		Detail:       "Welcome to " + settings.String(ctx, q, "site.name") + "!",
 		Habbo:        auth.Habbo{Name: page.Habbo, Figure: page.Figure, Gender: page.Gender},
 	})
 	if err != nil {
@@ -289,9 +289,9 @@ func recordReferral(ctx context.Context, q *store.Queries, refer string, userID 
 
 	now := time.Now().UTC()
 	var rewardedAt sql.NullTime
-	if settings.GetBool("referral.enabled") {
+	if settings.Bool(ctx, q, "referral.enabled") {
 		rewardedAt = sql.NullTime{Time: now, Valid: true}
-		reward := int64(settings.GetInt("referral.reward"))
+		reward := int64(settings.Int(ctx, q, "referral.reward"))
 		err := q.AddWalletCredits(ctx, store.AddWalletCreditsParams{Credits: reward, UpdatedAt: now, UserID: referrer.UserID})
 		if err != nil {
 			return err

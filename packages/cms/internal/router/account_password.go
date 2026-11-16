@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 )
 
 type passwordPage struct {
@@ -64,12 +64,13 @@ func (r *Router) changePassword(w http.ResponseWriter, req *http.Request, userID
 	if password != req.PostFormValue("confpass") {
 		return "The passwords don't match", true, nil
 	}
+	ctx := req.Context()
 	err = auth.ChangePassword(w, req, r.deps.DB, password)
 	switch {
 	case errors.Is(err, auth.ErrPasswordTooShort):
-		return fmt.Sprintf("Password is too short, %d characters minimum", settings.GetInt("auth.passwordMinLength")), true, nil
+		return fmt.Sprintf("Password is too short, %d characters minimum", settings.Int(ctx, r.deps.Queries, "auth.passwordMinLength")), true, nil
 	case errors.Is(err, auth.ErrPasswordTooLong):
-		return fmt.Sprintf("Password is too long, %d characters maximum", settings.GetInt("auth.passwordMaxLength")), true, nil
+		return fmt.Sprintf("Password is too long, %d characters maximum", settings.Int(ctx, r.deps.Queries, "auth.passwordMaxLength")), true, nil
 	case err != nil:
 		return "", false, err
 	}

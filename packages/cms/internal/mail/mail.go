@@ -14,7 +14,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 // sendTimeout bounds a whole conversation with the server, which net/smtp's
@@ -27,19 +28,19 @@ var ErrDisabled = errors.New("mail: mail.host is not set")
 // Send delivers a plain text message to one address. It upgrades to TLS when
 // the server offers it, and it authenticates when mail.username is set, which
 // net/smtp refuses to do without TLS except on localhost.
-func Send(ctx context.Context, to, subject, body string) error {
-	host := settings.GetString("mail.host")
+func Send(ctx context.Context, q *store.Queries, to, subject, body string) error {
+	host := settings.String(ctx, q, "mail.host")
 	if host == "" {
 		return ErrDisabled
 	}
-	from, err := netmail.ParseAddress(settings.GetString("mail.from"))
+	from, err := netmail.ParseAddress(settings.String(ctx, q, "mail.from"))
 	if err != nil {
 		return fmt.Errorf("mail: mail.from: %w", err)
 	}
 
 	ctx, cancel := context.WithTimeout(ctx, sendTimeout)
 	defer cancel()
-	address := net.JoinHostPort(host, strconv.Itoa(settings.GetInt("mail.port")))
+	address := net.JoinHostPort(host, strconv.Itoa(settings.Int(ctx, q, "mail.port")))
 	conn, err := (&net.Dialer{}).DialContext(ctx, "tcp", address)
 	if err != nil {
 		return fmt.Errorf("mail: %w", err)
@@ -61,8 +62,8 @@ func Send(ctx context.Context, to, subject, body string) error {
 			return fmt.Errorf("mail: %w", err)
 		}
 	}
-	if username := settings.GetString("mail.username"); username != "" {
-		auth := smtp.PlainAuth("", username, settings.GetString("mail.password"), host)
+	if username := settings.String(ctx, q, "mail.username"); username != "" {
+		auth := smtp.PlainAuth("", username, settings.String(ctx, q, "mail.password"), host)
 		if err := client.Auth(auth); err != nil {
 			return fmt.Errorf("mail: %w", err)
 		}

@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 type ownHabbo struct {
@@ -45,8 +45,8 @@ func (r *Router) newHabbosPage(ctx context.Context) (habbosPage, error) {
 	return habbosPage{
 		accountPage: account,
 		Habbos:      habbos,
-		ImagingURL:  settings.GetString("imaging.avatarUrl"),
-		CanAdd:      len(habbos) < settings.GetInt("registration.maxHabbosPerUser"),
+		ImagingURL:  settings.String(ctx, r.deps.Queries, "imaging.avatarUrl"),
+		CanAdd:      len(habbos) < settings.Int(ctx, r.deps.Queries, "registration.maxHabbosPerUser"),
 	}, nil
 }
 
@@ -67,7 +67,7 @@ func (r *Router) HandleAccountHabbosAdd(w http.ResponseWriter, req *http.Request
 	session, _ := auth.FromContext(ctx)
 	name, figure, gender := req.PostFormValue("name"), req.PostFormValue("figure"), req.PostFormValue("gender")
 	if figure == "" {
-		figure, gender = settings.GetString("registration.defaultFigure"), settings.GetString("registration.defaultGender")
+		figure, gender = settings.String(ctx, r.deps.Queries, "registration.defaultFigure"), settings.String(ctx, r.deps.Queries, "registration.defaultGender")
 	}
 
 	result, failed, err := r.addHabbo(ctx, session.UserID, name, figure, gender)
@@ -111,7 +111,7 @@ func (r *Router) addHabbo(ctx context.Context, userID int64, name, figure, gende
 	if err != nil {
 		return "", false, err
 	}
-	if limit := settings.GetInt("registration.maxHabbosPerUser"); len(avatars) >= limit {
+	if limit := settings.Int(ctx, q, "registration.maxHabbosPerUser"); len(avatars) >= limit {
 		return fmt.Sprintf("You can have %d habbos at most.", limit), true, nil
 	}
 	_, err = auth.CreateHabbo(ctx, q, userID, auth.Habbo{Name: name, Figure: figure, Gender: gender})

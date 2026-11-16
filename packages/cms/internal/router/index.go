@@ -8,7 +8,7 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 )
 
 type indexPage struct {
@@ -20,7 +20,7 @@ type indexPage struct {
 }
 
 func (r *Router) newIndexPage(ctx context.Context) (indexPage, error) {
-	page := indexPage{hotelStatus: r.hotelStatus(ctx), LandingPromo: settings.GetBool("features.landingPromo")}
+	page := indexPage{hotelStatus: r.hotelStatus(ctx), LandingPromo: settings.Bool(ctx, r.deps.Queries, "features.landingPromo")}
 	var err error
 	page.Cloud, err = r.tagCloud(ctx)
 	return page, err
@@ -79,7 +79,7 @@ func (r *Router) loginFailed(w http.ResponseWriter, req *http.Request, username,
 		r.fail(w, err)
 		return
 	}
-	if waiting || settings.GetBool("site.maintenance") {
+	if waiting || settings.Bool(req.Context(), r.deps.Queries, "site.maintenance") {
 		r.writeMaintenance(w, req, maintenancePage{Username: username, Error: message})
 		return
 	}

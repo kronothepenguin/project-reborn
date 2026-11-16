@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 )
 
 type fightBody struct {
@@ -20,7 +20,7 @@ type fightAnswer struct {
 // HandleTagsFight handles POST /tags/fight, tagfight.php: how many habbos carry
 // each tag. The island tells the winner from the counts, as Holo's page did.
 func (r *Router) HandleTagsFight(w http.ResponseWriter, req *http.Request) {
-	if !settings.GetBool("features.tagFight") {
+	if !settings.Bool(req.Context(), r.deps.Queries, "features.tagFight") {
 		http.NotFound(w, req)
 		return
 	}

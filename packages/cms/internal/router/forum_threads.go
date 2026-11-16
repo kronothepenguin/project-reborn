@@ -12,8 +12,8 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/cms/internal/bbcode"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 type forumThreadPage struct {
@@ -64,7 +64,7 @@ type forumPost struct {
 // ten posts, oldest first, counting a view on every load (0094). A thread that
 // does not exist goes to the board, as in Holo.
 func (r *Router) HandleForumThreadsView(w http.ResponseWriter, req *http.Request) {
-	if !settings.GetBool("features.forum") {
+	if !settings.Bool(req.Context(), r.deps.Queries, "features.forum") {
 		http.Redirect(w, req, "/", http.StatusSeeOther)
 		return
 	}
@@ -107,8 +107,8 @@ func (r *Router) HandleForumThreadsView(w http.ResponseWriter, req *http.Request
 	}
 	view := forumThreadPage{
 		community:  shared,
-		ImagingURL: settings.GetString("imaging.avatarUrl"),
-		Smilies:    settings.GetBool("features.smilies"),
+		ImagingURL: settings.String(ctx, r.deps.Queries, "imaging.avatarUrl"),
+		Smilies:    settings.Bool(ctx, r.deps.Queries, "features.smilies"),
 		ThreadID:   thread.ID,
 		Title:      thread.Title,
 		Locked:     thread.Locked,
@@ -189,7 +189,7 @@ func messageRefusal(message string) string {
 // spamming reports whether the habbo posted within forum.spamSeconds, which 0
 // turns off (0091).
 func spamming(ctx context.Context, q *store.Queries, avatarID int64, now time.Time) (bool, error) {
-	seconds := settings.GetInt("forum.spamSeconds")
+	seconds := settings.Int(ctx, q, "forum.spamSeconds")
 	if seconds <= 0 {
 		return false, nil
 	}
@@ -203,7 +203,7 @@ func spamming(ctx context.Context, q *store.Queries, avatarID int64, now time.Ti
 // HandleForumThreadsCreate handles POST /forum/threads, savetopic.php: the active
 // habbo opens a thread with its first post, and goes to it.
 func (r *Router) HandleForumThreadsCreate(w http.ResponseWriter, req *http.Request) {
-	if !settings.GetBool("features.forum") {
+	if !settings.Bool(req.Context(), r.deps.Queries, "features.forum") {
 		http.NotFound(w, req)
 		return
 	}
