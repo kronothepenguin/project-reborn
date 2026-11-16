@@ -23,8 +23,10 @@ client's login-key code, which the decompiled scripts show only as `-- unk26` (t
 - `vendor/LibreShockwave`
 - [The client page ports Holo's, with LibreShockwave in place of Adobe's
   plugin](/decisions/reborn/0012-the-client-page-ports-holos-on-libreshockwave.md)
-- Needs Emscripten, which is not installed: the master asks the user to install it (on Arch,
-  `sudo pacman -S emscripten`) before the task starts.
+- Emscripten is installed (`/usr/lib/emscripten/emcc`), and `habbo.dcr` with its casts is in the main checkout's
+  `packages/cms/public/r26/`.
+- The game server keeps its supporting packages under `packages/server/internal/`.
+- The slave keeps its temporary files in a folder of its own inside the scratchpad or its worktree.
 - If the client never sends `GENERATEKEY`, the slave stops and reports the findings, and the master asks the user.
 
 # Steps

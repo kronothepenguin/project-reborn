@@ -81,7 +81,16 @@ called "reborn", this should keep installer + cms + housekeeping in the same mux
   there. A new port in the config step moves the browser to it and closes the old one. After "Create administrator"
   the browser lands on the site at `/`, `/installer/` answers 404, housekeeping answers at `/housekeeping/` and the game
   on 30000 and 30001.
-- An installed folder starts straight into the hotel, and `/installer/` answers 404.
+- reborn starts in the folder of an installed hotel: the site answers at `/`, housekeeping at `/housekeeping/` and the
+  game on its two ports, on the address of the `reborn` section.
+- An installed hotel runs under reborn: `/installer/` answers 404.
+- A visitor opens the installer: its pages, forms and files are served under `/installer/`.
+- The administrator is created: the browser goes to `/`, and the done page is gone.
+- Inside reborn, the config step asks one host and one port: a new address moves the browser to it, and a failed move
+  shows in the form.
+- Inside reborn, the site step asks no housekeeping address: it saves the site address plus `/housekeeping`.
+- Run alone, the installer keeps both forms as they are today.
+- Staff save a setting: the next read in any program returns it, with no wait for a refresh.
 - Every program reads its settings from the store, nothing refreshes, `packages/virtual/settings` is gone, and the
   measurements before and after are written in their tasks.
 - Ctrl-C stops reborn in order, and the players online are logged out.

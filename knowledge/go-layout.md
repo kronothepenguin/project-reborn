@@ -66,4 +66,4 @@ The projects and what each one is: [Monorepo architecture](/architecture.md). Th
 At the root, `go build ./...` fails with
 `pattern ./...: directory prefix . does not contain modules listed in go.work or their selected dependencies`.
 
-Go programs compile into `tmp/` ([Soft rules](/rules.md)).
+A program a make target builds goes to `bin/`, and the rebuilds of `make dev` go to `tmp/` ([Soft rules](/rules.md)).
