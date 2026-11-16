@@ -5,9 +5,11 @@ import (
 	"database/sql"
 	"encoding/json/v2"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"slices"
+	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
@@ -98,6 +100,24 @@ func logError(msg string, err error) {
 		return
 	}
 	slog.Error(msg, "err", err)
+}
+
+// sendLookTimeout is how long the game has to answer a SendLook.
+const sendLookTimeout = 2 * time.Second
+
+// sendLook tells the game that the habbo's look or motto changed, after the save.
+// The call has a context of its own, apart from the request's, so a request the
+// visitor abandons still tells the game. A failure is logged, and the page
+// answers as it would without the game.
+func (r *Router) sendLook(ctx context.Context, avatarID int64) {
+	if r.deps.Habbos == nil {
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), sendLookTimeout)
+	defer cancel()
+	if err := r.deps.Habbos.SendLook(ctx, avatarID); err != nil {
+		logError("cms: send look", fmt.Errorf("habbo %d: %w", avatarID, err))
+	}
 }
 
 func (r *Router) fail(w http.ResponseWriter, err error) {

@@ -21,6 +21,10 @@ resource: packages/cms/cms.go
 - `Inject(cms.Services{Habbos: …})`, once after `New` and before `Mount`, hands the CMS the services that tell the game
   server of the changes it must show live (`packages/services/knowledge/index.md`). `Mount` gives them to the router.
 - A service no runner injected is nil, and the CMS skips its calls.
+- The looks page (`POST /account/looks`), the profile page (`POST /account/profile`) and the Me page's motto
+  (`POST /me/motto`) call `Habbos.SendLook` once after a save, and never after a refused one.
+- The call has a context of its own of 2 seconds, apart from the request's, so a request the visitor abandons still
+  tells the game. A failure is logged, and the page answers as it would without the game.
 
 # Mount and the middleware chain
 

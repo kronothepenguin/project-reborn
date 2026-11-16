@@ -79,6 +79,7 @@ func (r *Router) HandleAccountLooksSave(w http.ResponseWriter, req *http.Request
 			r.fail(w, err)
 			return
 		}
+		r.sendLook(ctx, session.AvatarID)
 		failed = false
 	}
 

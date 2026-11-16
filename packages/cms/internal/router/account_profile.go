@@ -54,6 +54,7 @@ func (r *Router) HandleAccountProfileSave(w http.ResponseWriter, req *http.Reque
 			r.fail(w, err)
 			return
 		}
+		r.sendLook(ctx, session.AvatarID)
 	}
 
 	page, err := r.newProfilePage(ctx)

@@ -469,6 +469,7 @@ func (r *Router) HandleHabboSave(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
+	r.sendLook(ctx, avatar.ID)
 	http.Redirect(w, req, habboPath(avatar.ID)+"?saved=1", http.StatusSeeOther)
 }
 
