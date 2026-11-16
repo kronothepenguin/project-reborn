@@ -12,8 +12,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/cms"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 const (
@@ -36,7 +36,7 @@ func TestSettingsTakeTheirAttribute(t *testing.T) {
 	wantPage(t, serve(mux, "GET", "/housekeeping/settings", cookie, nil), http.StatusForbidden, "access-denied.html")
 	wantPage(t, serve(mux, "POST", "/housekeeping/settings/site", cookie, siteForm()), http.StatusForbidden, "access-denied.html")
 
-	if got := settings.GetString("site.name"); got != "Reborn Hotel" {
+	if got := settings.String(t.Context(), store.New(db), "site.name"); got != "Reborn Hotel" {
 		t.Errorf("site.name = %q", got)
 	}
 	if got := len(staffLogs(t, db)); got != 0 {
@@ -80,7 +80,7 @@ func TestEverySettingHasARealLabel(t *testing.T) {
 	for _, section := range []string{"site", "maintenance", "auth", "registration", "referral", "mail", "imaging", "features"} {
 		pages.WriteString(serve(mux, "GET", "/housekeeping/settings?section="+section, cookie, nil).Body.String())
 	}
-	for _, setting := range settings.Declared() {
+	for _, setting := range declared(t, db) {
 		if setting.Key == "housekeeping.note" {
 			continue
 		}
@@ -126,7 +126,7 @@ func TestSavingWritesAndLogs(t *testing.T) {
 	wantRedirect(t, rec, "/housekeeping/settings?saved=1&section=site")
 
 	for key, want := range map[string]string{"site.name": "Retro Hotel", "site.shortName": "Retro", "site.url": "https://hotel.example.com"} {
-		if got := settings.GetString(key); got != want {
+		if got := settings.String(t.Context(), store.New(db), key); got != want {
 			t.Errorf("%s = %q, want %q", key, got, want)
 		}
 		row, ok := settingRow(t, db, key)
@@ -146,6 +146,16 @@ func TestSavingWritesAndLogs(t *testing.T) {
 	wantPage(t, serve(mux, "GET", rec.Header().Get("Location"), cookie, nil), http.StatusOK, "Settings saved successfully.", "Value:Retro Hotel")
 }
 
+func TestASavedSettingShowsOnTheNextPage(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
+	wantPage(t, serve(mux, "GET", "/housekeeping/", cookie, nil), http.StatusOK, "SiteName:Reborn Hotel ")
+
+	wantRedirect(t, serve(mux, "POST", "/housekeeping/settings/site", cookie, siteForm()), "/housekeeping/settings?saved=1&section=site")
+
+	wantPage(t, serve(mux, "GET", "/housekeeping/", cookie, nil), http.StatusOK, "SiteName:Retro Hotel ")
+}
+
 func TestAPlainPageHasNoMessage(t *testing.T) {
 	db, mux := newSite(t)
 	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
@@ -160,40 +170,52 @@ func TestEveryKindOfFieldSaves(t *testing.T) {
 		section string
 		key     string
 		typed   string
-		get     func() any
+		get     func(*testing.T, *store.Queries) any
 		want    any
 	}{
-		{"auth", "auth.loginMaxFailures", "9", func() any { return settings.GetInt("auth.loginMaxFailures") }, 9},
-		{"auth", "auth.secureCookies", "0", func() any { return settings.GetBool("auth.secureCookies") }, false},
-		{"referral", "referral.enabled", "0", func() any { return settings.GetBool("referral.enabled") }, false},
-		{"maintenance", "site.maintenance", "1", func() any { return settings.GetBool("site.maintenance") }, true},
-		{"mail", "mail.host", "smtp.example.com", func() any { return settings.GetString("mail.host") }, "smtp.example.com"},
-		{"registration", "registration.defaultGender", "F", func() any { return settings.GetString("registration.defaultGender") }, "F"},
-		{"imaging", "imaging.avatarUrl", "https://imager.example/avatar", func() any { return settings.GetString("imaging.avatarUrl") }, "https://imager.example/avatar"},
-		{"features", "features.landingPromo", "0", func() any { return settings.GetBool("features.landingPromo") }, false},
-		{"features", "features.tagFight", "0", func() any { return settings.GetBool("features.tagFight") }, false},
-		{"staffPage", "features.staffPage", "0", func() any { return settings.GetBool("features.staffPage") }, false},
-		{"staffPage", "staffPage.box1Body", "[b]Line one[/b]\r\nLine two", func() any { return settings.GetString("staffPage.box1Body") }, "[b]Line one[/b]\nLine two"},
-		{"staffPage", "staffPage.box2Color", "white", func() any { return settings.GetString("staffPage.box2Color") }, "white"},
-		{"features", "features.groupPurchase", "0", func() any { return settings.GetBool("features.groupPurchase") }, false},
-		{"groups", "groups.maxMembers", "250", func() any { return settings.GetInt("groups.maxMembers") }, 250},
-		{"forum", "features.forum", "0", func() any { return settings.GetBool("features.forum") }, false},
-		{"forum", "features.smilies", "0", func() any { return settings.GetBool("features.smilies") }, false},
-		{"forum", "forum.spamSeconds", "0", func() any { return settings.GetInt("forum.spamSeconds") }, 0},
-		{"club", "club.price6Months", "75", func() any { return settings.GetInt("club.price6Months") }, 75},
-		{"club", "club.daysPerMonth", "30", func() any { return settings.GetInt("club.daysPerMonth") }, 30},
-		{"features", "club.maxMonths", "0", func() any { return settings.GetInt("club.maxMonths") }, 0},
-		{"creditsPage", "creditsPage.box2Heading", "Earn credits!", func() any { return settings.GetString("creditsPage.box2Heading") }, "Earn credits!"},
-		{"creditsPage", "creditsPage.box2Body", "You need [b]credits[/b]:\r\n* Ask a staff member", func() any { return settings.GetString("creditsPage.box2Body") }, "You need [b]credits[/b]:\n* Ask a staff member"},
-		{"homes", "homes.wardrobeSlots", "10", func() any { return settings.GetInt("homes.wardrobeSlots") }, 10},
-		{"help", "help.messageMaxLength", "2000", func() any { return settings.GetInt("help.messageMaxLength") }, 2000},
+		{"auth", "auth.loginMaxFailures", "9", func(t *testing.T, q *store.Queries) any { return settings.Int(t.Context(), q, "auth.loginMaxFailures") }, 9},
+		{"auth", "auth.secureCookies", "0", func(t *testing.T, q *store.Queries) any { return settings.Bool(t.Context(), q, "auth.secureCookies") }, false},
+		{"referral", "referral.enabled", "0", func(t *testing.T, q *store.Queries) any { return settings.Bool(t.Context(), q, "referral.enabled") }, false},
+		{"maintenance", "site.maintenance", "1", func(t *testing.T, q *store.Queries) any { return settings.Bool(t.Context(), q, "site.maintenance") }, true},
+		{"mail", "mail.host", "smtp.example.com", func(t *testing.T, q *store.Queries) any { return settings.String(t.Context(), q, "mail.host") }, "smtp.example.com"},
+		{"registration", "registration.defaultGender", "F", func(t *testing.T, q *store.Queries) any {
+			return settings.String(t.Context(), q, "registration.defaultGender")
+		}, "F"},
+		{"imaging", "imaging.avatarUrl", "https://imager.example/avatar", func(t *testing.T, q *store.Queries) any { return settings.String(t.Context(), q, "imaging.avatarUrl") }, "https://imager.example/avatar"},
+		{"features", "features.landingPromo", "0", func(t *testing.T, q *store.Queries) any {
+			return settings.Bool(t.Context(), q, "features.landingPromo")
+		}, false},
+		{"features", "features.tagFight", "0", func(t *testing.T, q *store.Queries) any { return settings.Bool(t.Context(), q, "features.tagFight") }, false},
+		{"staffPage", "features.staffPage", "0", func(t *testing.T, q *store.Queries) any { return settings.Bool(t.Context(), q, "features.staffPage") }, false},
+		{"staffPage", "staffPage.box1Body", "[b]Line one[/b]\r\nLine two", func(t *testing.T, q *store.Queries) any { return settings.String(t.Context(), q, "staffPage.box1Body") }, "[b]Line one[/b]\nLine two"},
+		{"staffPage", "staffPage.box2Color", "white", func(t *testing.T, q *store.Queries) any {
+			return settings.String(t.Context(), q, "staffPage.box2Color")
+		}, "white"},
+		{"features", "features.groupPurchase", "0", func(t *testing.T, q *store.Queries) any {
+			return settings.Bool(t.Context(), q, "features.groupPurchase")
+		}, false},
+		{"groups", "groups.maxMembers", "250", func(t *testing.T, q *store.Queries) any { return settings.Int(t.Context(), q, "groups.maxMembers") }, 250},
+		{"forum", "features.forum", "0", func(t *testing.T, q *store.Queries) any { return settings.Bool(t.Context(), q, "features.forum") }, false},
+		{"forum", "features.smilies", "0", func(t *testing.T, q *store.Queries) any { return settings.Bool(t.Context(), q, "features.smilies") }, false},
+		{"forum", "forum.spamSeconds", "0", func(t *testing.T, q *store.Queries) any { return settings.Int(t.Context(), q, "forum.spamSeconds") }, 0},
+		{"club", "club.price6Months", "75", func(t *testing.T, q *store.Queries) any { return settings.Int(t.Context(), q, "club.price6Months") }, 75},
+		{"club", "club.daysPerMonth", "30", func(t *testing.T, q *store.Queries) any { return settings.Int(t.Context(), q, "club.daysPerMonth") }, 30},
+		{"features", "club.maxMonths", "0", func(t *testing.T, q *store.Queries) any { return settings.Int(t.Context(), q, "club.maxMonths") }, 0},
+		{"creditsPage", "creditsPage.box2Heading", "Earn credits!", func(t *testing.T, q *store.Queries) any {
+			return settings.String(t.Context(), q, "creditsPage.box2Heading")
+		}, "Earn credits!"},
+		{"creditsPage", "creditsPage.box2Body", "You need [b]credits[/b]:\r\n* Ask a staff member", func(t *testing.T, q *store.Queries) any {
+			return settings.String(t.Context(), q, "creditsPage.box2Body")
+		}, "You need [b]credits[/b]:\n* Ask a staff member"},
+		{"homes", "homes.wardrobeSlots", "10", func(t *testing.T, q *store.Queries) any { return settings.Int(t.Context(), q, "homes.wardrobeSlots") }, 10},
+		{"help", "help.messageMaxLength", "2000", func(t *testing.T, q *store.Queries) any { return settings.Int(t.Context(), q, "help.messageMaxLength") }, 2000},
 	} {
 		t.Run(c.key, func(t *testing.T) {
 			db, mux := newSite(t)
 			_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
 			rec := serve(mux, "POST", "/housekeeping/settings/"+c.section, cookie, url.Values{c.key: {c.typed}})
 			wantRedirect(t, rec, "/housekeeping/settings?saved=1&section="+c.section)
-			if got := c.get(); got != c.want {
+			if got := c.get(t, store.New(db)); got != c.want {
 				t.Errorf("%s = %v, want %v", c.key, got, c.want)
 			}
 		})
@@ -212,7 +234,7 @@ func TestAValueBackAtItsDefaultDeletesTheRow(t *testing.T) {
 	if row, ok := settingRow(t, db, "site.maintenance"); ok {
 		t.Errorf("the row is still there: %+v", row)
 	}
-	if settings.GetBool("site.maintenance") {
+	if settings.Bool(t.Context(), store.New(db), "site.maintenance") {
 		t.Error("maintenance is still on")
 	}
 	if got := len(staffLogs(t, db)); got != 2 {
@@ -309,7 +331,7 @@ func TestAFormCannotReachOtherKeys(t *testing.T) {
 	if len(rows) != 3 {
 		t.Errorf("rows = %+v, want the three of the form", rows)
 	}
-	if settings.GetBool("site.maintenance") {
+	if settings.Bool(t.Context(), store.New(db), "site.maintenance") {
 		t.Error("a post to the site form closed the site")
 	}
 }
@@ -325,7 +347,7 @@ func TestThePasswordLimitsMoveTogether(t *testing.T) {
 	for _, c := range [][2]int{{30, 40}, {8, 12}, {6, 25}} {
 		rec := serve(mux, "POST", "/housekeeping/settings/auth", cookie, limits(c[0], c[1]))
 		wantRedirect(t, rec, "/housekeeping/settings?saved=1&section=auth")
-		low, high := settings.GetInt("auth.passwordMinLength"), settings.GetInt("auth.passwordMaxLength")
+		low, high := settings.Int(t.Context(), store.New(db), "auth.passwordMinLength"), settings.Int(t.Context(), store.New(db), "auth.passwordMaxLength")
 		if low != c[0] || high != c[1] {
 			t.Errorf("the limits are %d and %d, want %d and %d", low, high, c[0], c[1])
 		}
@@ -341,7 +363,7 @@ func TestTheMailPasswordIsMasked(t *testing.T) {
 	}
 
 	wantRedirect(t, serve(mux, "POST", "/housekeeping/settings/mail", cookie, mailForm(password)), "/housekeeping/settings?saved=1&section=mail")
-	if got := settings.GetString("mail.password"); got != password {
+	if got := settings.String(t.Context(), store.New(db), "mail.password"); got != password {
 		t.Fatalf("mail.password = %q", got)
 	}
 
@@ -363,14 +385,14 @@ func TestTheMailPasswordIsMasked(t *testing.T) {
 	}
 
 	wantRedirect(t, serve(mux, "POST", "/housekeeping/settings/mail", cookie, mailForm("")), "/housekeeping/settings?saved=1&section=mail")
-	if got := settings.GetString("mail.password"); got != password {
+	if got := settings.String(t.Context(), store.New(db), "mail.password"); got != password {
 		t.Errorf("a blank field changed the password to %q", got)
 	}
 
 	form := mailForm("")
 	form.Set("mail.password.clear", "on")
 	wantRedirect(t, serve(mux, "POST", "/housekeeping/settings/mail", cookie, form), "/housekeeping/settings?saved=1&section=mail")
-	if got := settings.GetString("mail.password"); got != "" {
+	if got := settings.String(t.Context(), store.New(db), "mail.password"); got != "" {
 		t.Errorf("clearing left %q", got)
 	}
 	if row, ok := settingRow(t, db, "mail.password"); ok {
@@ -382,7 +404,7 @@ func TestACrossOriginSaveChangesNothing(t *testing.T) {
 	db, mux := newSite(t)
 	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
 	wantPage(t, record(mux, postFrom("https://evil.example.com", "/housekeeping/settings/maintenance", cookie, url.Values{"site.maintenance": {"1"}})), http.StatusForbidden)
-	if settings.GetBool("site.maintenance") {
+	if settings.Bool(t.Context(), store.New(db), "site.maintenance") {
 		t.Error("a cross-origin post closed the site")
 	}
 }
@@ -754,9 +776,9 @@ func TestRecyclerOptionsSavesTheRecyclersSettings(t *testing.T) {
 
 	form := url.Values{"recycler.enabled": {"0"}, "recycler.minOwnedMinutes": {"0"}, "recycler.sessionMinutes": {"30"}, "recycler.timeoutMinutes": {"1440"}}
 	wantRedirect(t, serve(mux, "POST", "/housekeeping/settings/recycler", cookie, form), "/housekeeping/settings?saved=1&section=recycler")
-	if settings.GetBool("recycler.enabled") || settings.GetInt("recycler.minOwnedMinutes") != 0 || settings.GetInt("recycler.sessionMinutes") != 30 || settings.GetInt("recycler.timeoutMinutes") != 1440 {
-		t.Errorf("the recycler's settings are %t, %d, %d and %d; want off, 0, 30 and 1440", settings.GetBool("recycler.enabled"),
-			settings.GetInt("recycler.minOwnedMinutes"), settings.GetInt("recycler.sessionMinutes"), settings.GetInt("recycler.timeoutMinutes"))
+	if settings.Bool(t.Context(), store.New(db), "recycler.enabled") || settings.Int(t.Context(), store.New(db), "recycler.minOwnedMinutes") != 0 || settings.Int(t.Context(), store.New(db), "recycler.sessionMinutes") != 30 || settings.Int(t.Context(), store.New(db), "recycler.timeoutMinutes") != 1440 {
+		t.Errorf("the recycler's settings are %t, %d, %d and %d; want off, 0, 30 and 1440", settings.Bool(t.Context(), store.New(db), "recycler.enabled"),
+			settings.Int(t.Context(), store.New(db), "recycler.minOwnedMinutes"), settings.Int(t.Context(), store.New(db), "recycler.sessionMinutes"), settings.Int(t.Context(), store.New(db), "recycler.timeoutMinutes"))
 	}
 	logs := staffLogs(t, db)
 	if len(logs) != 1 || logs[0].Action != "settings.update" || logs[0].UserID.Int64 != adminID ||
@@ -765,7 +787,7 @@ func TestRecyclerOptionsSavesTheRecyclersSettings(t *testing.T) {
 	}
 
 	_, plain := staff(t, db, "Clerk", auth.HousekeepingAccess)
-	if rec := serve(mux, "POST", "/housekeeping/settings/recycler", plain, url.Values{"recycler.sessionMinutes": {"45"}}); settings.GetInt("recycler.sessionMinutes") != 30 {
-		t.Errorf("staff without housekeeping.settings changed the recycler: %d, status %d", settings.GetInt("recycler.sessionMinutes"), rec.Code)
+	if rec := serve(mux, "POST", "/housekeeping/settings/recycler", plain, url.Values{"recycler.sessionMinutes": {"45"}}); settings.Int(t.Context(), store.New(db), "recycler.sessionMinutes") != 30 {
+		t.Errorf("staff without housekeeping.settings changed the recycler: %d, status %d", settings.Int(t.Context(), store.New(db), "recycler.sessionMinutes"), rec.Code)
 	}
 }

@@ -10,8 +10,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 const alertsPerPage = 100
@@ -117,7 +117,7 @@ func (r *Router) fillReply(req *http.Request, page *alertsPage) error {
 	}
 	page.Username = ticket.Habbo.String
 	page.Alert = fmt.Sprintf("Hello, my name is %s. I am sending you this message in reply to your help inquiry sent on %s, with the subject '%s'.\n\n%s\n%s Player Support",
-		page.Habbo, ticket.CreatedAt.UTC().Format(dateFormat), ticket.Subject, page.Habbo, settings.GetString("site.shortName"))
+		page.Habbo, ticket.CreatedAt.UTC().Format(dateFormat), ticket.Subject, page.Habbo, settings.String(ctx, r.deps.Queries, "site.shortName"))
 	return nil
 }
 

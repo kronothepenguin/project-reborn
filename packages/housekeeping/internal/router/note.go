@@ -4,23 +4,26 @@ import (
 	"net/http"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 const noteKey = "housekeeping.note"
 
 // HandleNoteSave handles POST /housekeeping/note, the note every staff member
-// shares. settings.Set cannot join a transaction, so the log row goes first: a
-// failed write then leaves a row for nothing, never a change without a row.
+// shares. The log row and the note commit together.
 func (r *Router) HandleNoteSave(w http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
 	note := req.PostFormValue("notes")
-	if note != settings.GetString(noteKey) {
-		if err := writeLog(req, r.deps.Queries, staffLog{action: actionNoteUpdate}); err != nil {
-			r.fail(w, err)
-			return
-		}
-		session, _ := auth.FromContext(req.Context())
-		if err := settings.Set(req.Context(), r.deps.DB, session.UserID, noteKey, note); err != nil {
+	if note != settings.String(ctx, r.deps.Queries, noteKey) {
+		session, _ := auth.FromContext(ctx)
+		err := r.inTx(ctx, func(q *store.Queries) error {
+			if err := writeLog(req, q, staffLog{action: actionNoteUpdate}); err != nil {
+				return err
+			}
+			return settings.Set(ctx, q, session.UserID, noteKey, note)
+		})
+		if err != nil {
 			r.fail(w, err)
 			return
 		}

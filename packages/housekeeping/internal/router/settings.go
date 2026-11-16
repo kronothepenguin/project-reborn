@@ -12,8 +12,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
-	stored "github.com/kronothepenguin/project-reborn/packages/settings"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 const (
@@ -32,7 +32,11 @@ type settingsPage struct {
 // HandleSettingsView renders GET /housekeeping/settings. An unknown section shows
 // the first form, as Holo's content tool fell back to its first category.
 func (r *Router) HandleSettingsView(w http.ResponseWriter, req *http.Request) {
-	sections := sectionsOver(settings.Declared())
+	sections, err := r.sections(req.Context())
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
 	current, ok := findSection(sections, req.URL.Query().Get("section"))
 	if !ok {
 		current = sections[0]
@@ -48,7 +52,13 @@ func (r *Router) HandleSettingsView(w http.ResponseWriter, req *http.Request) {
 // the fields of that section, so a form can never reach another key, and it saves
 // all of them or none, as Holo's forms did.
 func (r *Router) HandleSettingsSave(w http.ResponseWriter, req *http.Request) {
-	current, ok := findSection(sectionsOver(settings.Declared()), req.PathValue("section"))
+	ctx := req.Context()
+	sections, err := r.sections(ctx)
+	if err != nil {
+		r.fail(w, err)
+		return
+	}
+	current, ok := findSection(sections, req.PathValue("section"))
 	if !ok {
 		http.NotFound(w, req)
 		return
@@ -58,9 +68,9 @@ func (r *Router) HandleSettingsSave(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	changes, problem := readChanges(current, req.PostForm)
+	changes, problem := readChanges(ctx, r.deps.Queries, current, req.PostForm)
 	if problem == "" {
-		if err := stored.Validate(req.Context(), r.deps.Queries, changes); err != nil {
+		if err := settings.Validate(ctx, r.deps.Queries, changes); err != nil {
 			problem = strings.TrimPrefix(err.Error(), "settings: ") + ". " + settingsNotSaved
 		}
 	}
@@ -76,16 +86,17 @@ func (r *Router) HandleSettingsSave(w http.ResponseWriter, req *http.Request) {
 
 	if len(changes) > 0 {
 		keys := slices.Sorted(maps.Keys(changes))
-		// settings.Set cannot join a transaction, so the row goes first: a failed
-		// write then leaves a row for nothing, never a change without a row. The
-		// values stay out of the row, because they can be secrets.
+		// The log row and the values commit together. The values stay out of the
+		// row, because they can be secrets.
 		entry := staffLog{action: actionSettingsUpdate, detail: strings.Join(keys, ", ")}
-		if err := writeLog(req, r.deps.Queries, entry); err != nil {
-			r.fail(w, err)
-			return
-		}
-		session, _ := auth.FromContext(req.Context())
-		if err := r.setAll(req.Context(), session.UserID, keys, changes); err != nil {
+		session, _ := auth.FromContext(ctx)
+		err := r.inTx(ctx, func(q *store.Queries) error {
+			if err := writeLog(req, q, entry); err != nil {
+				return err
+			}
+			return setAll(ctx, q, session.UserID, keys, changes)
+		})
+		if err != nil {
 			r.fail(w, err)
 			return
 		}
@@ -97,17 +108,18 @@ func (r *Router) HandleSettingsSave(w http.ResponseWriter, req *http.Request) {
 
 // readChanges turns the posted fields of s into typed values, keeping those that
 // differ from the current ones, or says what is wrong with them. A field that was
-// not posted stays as it is.
-func readChanges(s section, form url.Values) (map[string]any, string) {
+// not posted stays as it is. A password is compared with its value in q, because
+// s holds none.
+func readChanges(ctx context.Context, q *store.Queries, s section, form url.Values) (map[string]any, string) {
 	changes := make(map[string]any)
 	for _, f := range s.Fields {
 		if f.Kind == kindPassword {
 			switch typed := form.Get(f.Key); {
 			case form.Has(clearField(f.Key)):
-				if settings.GetString(f.Key) != "" {
+				if settings.String(ctx, q, f.Key) != "" {
 					changes[f.Key] = ""
 				}
-			case typed != "" && typed != settings.GetString(f.Key):
+			case typed != "" && typed != settings.String(ctx, q, f.Key):
 				changes[f.Key] = typed
 			}
 			continue
@@ -180,12 +192,12 @@ func withTyped(s section, form url.Values) section {
 // can refuse the first of them until the second is written, as the password limits
 // do when both rise, so a refused key waits for the others. Validate passed, so a
 // round that writes nothing is a real failure.
-func (r *Router) setAll(ctx context.Context, userID int64, keys []string, values map[string]any) error {
+func setAll(ctx context.Context, q *store.Queries, userID int64, keys []string, values map[string]any) error {
 	for len(keys) > 0 {
 		var refused []string
 		var last error
 		for _, key := range keys {
-			if err := settings.Set(ctx, r.deps.DB, userID, key, values[key]); err != nil {
+			if err := settings.Set(ctx, q, userID, key, values[key]); err != nil {
 				refused, last = append(refused, key), err
 			}
 		}
@@ -512,6 +524,15 @@ func filled(f field, setting settings.Setting) field {
 		}
 	}
 	return f
+}
+
+// sections lays out the declared settings, with their current values, as forms.
+func (r *Router) sections(ctx context.Context) ([]section, error) {
+	declared, err := settings.Declared(ctx, r.deps.Queries)
+	if err != nil {
+		return nil, err
+	}
+	return sectionsOver(declared), nil
 }
 
 func findSection(sections []section, id string) (section, bool) {

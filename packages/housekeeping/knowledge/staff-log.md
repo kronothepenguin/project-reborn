@@ -1,7 +1,7 @@
 ---
 type: Reference
 title: The staff log
-description: How writeLog writes one staff_logs row for every mutation, inside its transaction or before a settings write.
+description: How writeLog writes one staff_logs row for every mutation, inside its transaction, settings writes included.
 ---
 
 # writeLog
@@ -13,9 +13,9 @@ are the constants of that file.
 
 # Settings and the note
 
-`settings.Set` takes the `*sql.DB` and joins no transaction, so the row of a settings change or of the note goes first:
-a failed write leaves a row for nothing, and a change always has its row. Rows hold the keys that changed and leave
-their values out, because a value can be a secret.
+A settings save and the note run in `inTx`: the row and every `settings.Set` take the transaction's queries, so they
+commit or roll back together. Rows hold the keys that changed and leave their values out, because a value can be a
+secret.
 
 # Refusals
 

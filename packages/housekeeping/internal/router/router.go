@@ -15,8 +15,8 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/services"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // dateFormat is Holo's date_full.
@@ -50,7 +50,7 @@ func (r *Router) Staff(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		session, ok := auth.FromContext(req.Context())
 		if !ok {
-			http.Redirect(w, req, settings.GetString("site.url"), http.StatusSeeOther)
+			http.Redirect(w, req, settings.String(req.Context(), r.deps.Queries, "site.url"), http.StatusSeeOther)
 			return
 		}
 		ban, err := auth.ActiveBan(req.Context(), r.deps.DB, session.UserID, auth.ClientIP(req))
@@ -59,7 +59,7 @@ func (r *Router) Staff(next http.Handler) http.Handler {
 			return
 		}
 		if ban != nil {
-			http.Redirect(w, req, settings.GetString("site.url"), http.StatusSeeOther)
+			http.Redirect(w, req, settings.String(req.Context(), r.deps.Queries, "site.url"), http.StatusSeeOther)
 			return
 		}
 		enter.ServeHTTP(w, req)
@@ -119,13 +119,17 @@ func (r *Router) chrome(req *http.Request) chrome {
 	session, _ := auth.FromContext(ctx)
 	now := time.Now().UTC()
 	page := chrome{
-		SiteName:     settings.GetString("site.name"),
-		SiteURL:      settings.GetString("site.url"),
-		Sections:     sectionsOver(settings.Declared()),
+		SiteName:     settings.String(ctx, r.deps.Queries, "site.name"),
+		SiteURL:      settings.String(ctx, r.deps.Queries, "site.url"),
 		ServerDate:   now.Format("January 2, 2006"),
 		ServerTime:   now.Format("15:04:05 GMT-0700 (MST)"),
 		ServerMillis: now.UnixMilli(),
 	}
+	sections, err := r.sections(ctx)
+	if err != nil {
+		logError("housekeeping: settings", err)
+	}
+	page.Sections = sections
 	if site, err := url.Parse(page.SiteURL); err == nil {
 		page.ServerName = site.Host
 	}
