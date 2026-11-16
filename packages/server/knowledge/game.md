@@ -75,6 +75,13 @@ client through its `Session` (`knowledge/decisions/server/0039-rules-notify-sess
   periods prepaid, in periods of `club.daysPerMonth` days. The days left are
   those the CMS shows: 40 of them with months of 31 days are 9 days and 1
   prepaid period.
+- `SendLook(ctx, db, avatarID)` reads the habbo again after a change outside the
+  game (decision reborn/0013). While it is online, `habbo.Update` sets the
+  figure, gender and motto of the copy the game holds; its session gets
+  `OwnLookChanged`, with the account its client shows beside them, and its room
+  gets `LookChanged`, with its index. An offline habbo gets nothing, and its
+  next login reads the store. A second login between the read and the update
+  wins: the session it replaced gets nothing.
 - `SetSoundEnabled(ctx, db, s, avatarID, on)` saves the sound setting, then that
   of the online habbo while `s` plays it.
 

@@ -231,6 +231,10 @@ func (s *session) Notify(event any) {
 		s.reply(removeSpecs, nil)
 	case game.BadgesChanged:
 		s.sendBadges(e)
+	case game.OwnLookChanged:
+		s.sendUserObject(e.Habbo, e.Account)
+	case game.LookChanged:
+		s.sendLook(e)
 	case game.RatingChanged:
 		s.sendRating(e.Rating)
 	case game.RoomEventChanged:

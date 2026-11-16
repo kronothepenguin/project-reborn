@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"log/slog"
 	"strconv"
 	"strings"
 
@@ -30,6 +31,7 @@ const (
 	roomNotController     = 43
 	roomItems             = 45
 	userBadge             = 228
+	figureChange          = 266
 	roomOwner             = 47
 	roomReady             = 69
 	doorbellRinging       = 91
@@ -826,6 +828,20 @@ func handleSetBadge(s *session, me habbo.Habbo, body []byte) {
 		}
 	}
 	s.ruled(game.SetBadges(context.Background(), s.db, me, slots))
+}
+
+// sendLook writes 266: the habbo's room index, its figure, its sex and its motto, which the client draws at once on
+// the habbo it names. A look the client cannot read is logged, and the session goes on.
+func (s *session) sendLook(c game.LookChanged) {
+	var b bytes.Buffer
+	b.Write(vl64(c.Index))
+	for _, field := range []string{c.Figure, c.Gender, c.Motto} {
+		if err := encoding.WriteString(&b, field); err != nil {
+			slog.Warn(fmt.Sprintf("r26 %s: the look of %d: %v", s.addr, c.Index, err))
+			return
+		}
+	}
+	s.reply(figureChange, b.Bytes())
 }
 
 // sendBadges writes 228: a habbo's web id, its avatar id, then the badges it wears with their slots.
