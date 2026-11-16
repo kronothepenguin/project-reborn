@@ -75,7 +75,7 @@ called "reborn", this should keep installer + cms + housekeeping in the same mux
 - A scheduled task is stopped: it runs no more, not even a tick that was already due.
 - A scheduled task is stopped during a run: that run is cancelled.
 
-## Next
+## reborn
 
 - From an empty folder, reborn serves the installer at `/installer/` on `localhost:16416` and redirects every other path
   there. A new port in the config step moves the browser to it and closes the old one. After "Create administrator"
@@ -92,10 +92,18 @@ called "reborn", this should keep installer + cms + housekeeping in the same mux
   another address.
 - Inside reborn, the site step asks no housekeeping address: it saves the site address plus `/housekeeping`.
 - Run alone, the installer keeps both forms as they are today.
+- `make dev` runs reborn with one dev server: the site, housekeeping and the installer show an edit without a restart.
+
+## Next
+
+- A hotel is not installed: every page of the site and of housekeeping sends the browser to `/installer/`, and files
+  and the dev server's own paths are served.
 - Staff save a setting: the next read in any program returns it, with no wait for a refresh.
+- A stored setting holds a bad value: a read returns its default, and the log names it once.
+- Two stored settings break a rule that ties them: each read returns its row as stored, and the rule is checked when a
+  setting is saved.
 - Every program reads its settings from the store, nothing refreshes, `packages/virtual/settings` is gone, and the
   measurements before and after are written in their tasks.
 - Ctrl-C stops reborn in order, and the players online are logged out.
-- `make dev` serves every site with live reload through `reborn-dev`, or the spike's failure is settled with the user.
 - A release holds `reborn`, `cms`, `housekeeping`, `installer` and `server`.
 - The browser suite `reborn` passes.

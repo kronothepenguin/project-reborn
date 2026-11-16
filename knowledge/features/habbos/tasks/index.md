@@ -3,3 +3,4 @@
 # Tasks
 
 - [Check the habbos feature's behaviours](06-exit-check.md) - The user's demonstration is run under reborn and with the separate programs, and its evidence written in the report.
+- [Read the game's secret on each call](07-read-the-secret-on-each-call.md) - The client of the game's /api/ takes the database and reads the secret when it calls, so the CMS and housekeeping need no restart after the update that creates it.

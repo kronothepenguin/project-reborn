@@ -98,6 +98,15 @@ How programs tell the game of a live change is
   creates the database in its config step. The user chose "An argument, nil when run alone".
 - `packages/config` saves a section through a typed function, `config.SaveReborn(r reborn.Reborn) error`, in place of
   `config.Save(section string, value any)`. The user chose "A typed function per section": config is static types.
+- `packages/settings` checks and lists with the store: `settings.Validate(ctx, q, candidates)` reads the stored
+  partner of a rule, so housekeeping keeps its "Settings not saved" form, and `settings.Declared(ctx, q)` returns every
+  setting with its current value from one query. The user chose "It reads the stored partner" and "One call that reads
+  them all". A read trusts the rows: the rules that tie two settings are checked on save
+  ([0006](/decisions/reborn/0006-settings-are-read-from-the-store.md)).
+- Before the hotel is installed, reborn sends Go's routes to the installer and lets files through. The user: "everything
+  of go routing goes to /installer/ special routes like /@vite/* and frontend stuff is passby, we can do this by
+  checking in the "/" handler the path and the mux, if mux has it registered then redirect to /installer/, if it is an
+  asset or vite then passby."
 
 # Notes
 

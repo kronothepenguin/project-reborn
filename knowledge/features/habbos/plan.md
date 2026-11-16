@@ -15,16 +15,12 @@ Built:
 | `packages/components` | `Avatar`, which builds the image address from `imaging.avatarUrl` |
 | `packages/store` | The `avatars`, `profiles` and `alerts` tables and their queries |
 | `tests/e2e` | The suites `me` and `looks` |
-
-Planned:
-
-| Project | Part |
-| --- | --- |
 | `packages/services` | The contracts' package and its first contract, `Habbos.SendLook(ctx, avatarID)` |
 | `packages/server` | `SendLook`: reads the habbo again and shows its look and motto to it and its room; its `/api/` for programs run apart |
 | `packages/cms`, `packages/housekeeping` | `Inject`; the looks, profile and motto pages and the habbo editor call the service after they save |
 | `apps/reborn` | The runner injects the game server, which satisfies `services.Habbos`, into the site and housekeeping |
 | `packages/store`, `packages/config` | The `api_secret` table and its query; `server.api` |
+
 
 Reborn's core comes from [platform](/features/platform/spec.md), and the client page from [the
 client](/features/client/spec.md).
@@ -54,6 +50,8 @@ client](/features/client/spec.md).
   change](/decisions/reborn/0013-a-habbos-look-and-motto-reach-the-game-at-once.md) — The site's looks and motto pages
   and housekeeping's habbo editor tell the game through the Habbos service, and the game shows the habbo's new look and
   motto to it and to its room at once.
+- The site reads the game's secret on each call: `api.New(baseURL, db)` in place of `api.New(baseURL, secret)`, so a
+  secret created by an update, or changed, is used with no restart. The user chose "Read it on each call".
 
 # Notes
 

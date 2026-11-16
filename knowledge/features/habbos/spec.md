@@ -92,9 +92,8 @@ It builds on [platform](/features/platform/spec.md) and [the client](/features/c
   habbos at most." (decision holo-port/0089)
 - Staff restore a habbo that is not archived: "This habbo is not archived."
 
-## Next
+## The game hears of a change
 
-- Under reborn, a signed-in habbo opens the client from the site, enters a room and sees its habbo.
 - A habbo in a room has its look or motto changed outside the game: it and every habbo in the room see the new look
   and motto at once.
 - A habbo is online and in no room when its look changes: it sees the new look wherever the client shows its own
@@ -109,3 +108,8 @@ It builds on [platform](/features/platform/spec.md) and [the client](/features/c
 - Under reborn, a look or motto saved on the site or in housekeeping reaches the game in the same process.
 - With the separate programs, the same changes reach the game through its `/api/`, and the `/api/` answers 404 without
   the secret.
+
+## Next
+
+- Under reborn, a signed-in habbo opens the client from the site, enters a room and sees its habbo.
+- The game's secret is created or changed while the site runs: the next call to the game uses it, with no restart.
