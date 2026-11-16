@@ -73,7 +73,7 @@ HK-A, HK-B, P3, P4 and P6.
 | Every page | Real online count | `0` and the offline picture | [0013](/decisions/holo-port/0013-defer-game-server-features.md) |
 | Every page | `Powered by HoloCMS © 2008 Meth0d.` | `Powered by Project Reborn ©` | [0048](/decisions/holo-port/0048-footer-names-reborn.md) |
 | After registering | `welcome.php` picks a first room | Goes to `/me` | [0013](/decisions/holo-port/0013-defer-game-server-features.md) |
-| Header | `Enter <site>` for guests | `<site> is offline` | [0013](/decisions/holo-port/0013-defer-game-server-features.md) |
+| Header | `Enter <site>` for guests, and `<site> is offline` for a habbo while the status image finds the game down | `<site> is offline` for guests, and `Enter <site>` for a habbo | [0013](/decisions/holo-port/0013-defer-game-server-features.md) |
 | Me | `Enter <site>` | `Hotel Closed` | [0013](/decisions/holo-port/0013-defer-game-server-features.md) |
 | Header | One habbo per account | `Switch habbo` with several, and `/account/habbos` | [0001](/decisions/holo-port/0001-user-owns-many-habbos.md) |
 | Account settings | No page for furniture | `Furni`, after `Habbos`: the furniture of the user that no habbo holds, with `Take` for a kind and `Take all`, which move it to the active habbo's hand | [0057](/decisions/holo-port/0057-furni-and-rooms.md), `knowledge/decisions/server/0122-the-shared-inventory-is-an-account-page.md` |

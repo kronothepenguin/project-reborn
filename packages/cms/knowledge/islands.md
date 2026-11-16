@@ -17,6 +17,8 @@ description: How the Svelte islands of the CMS read the values Go writes into th
 - `header/my-groups` is the header's `My Groups`. Like every island that stands on every page, it sits outside the
   layout's `[[ if .SignedIn ]]` and hides itself from guests, so that Astro's island script is never left out of a
   page.
+- `client/open-client` and `help/open-help` stand on every community page and act on links aimed at the windows
+  `client` and `habbohelp`.
 - The first island of a page carries Astro's script for every island of it. `groups/group-tools` stands on every
   group page and shows itself only to the owner's active habbo for the same reason.
 - `islands_test.go` checks that every built page with several islands wakes them for everyone.

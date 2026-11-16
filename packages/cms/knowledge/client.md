@@ -39,6 +39,15 @@ description: How the CMS serves Holo's client.php, clientutils.php and unloadcli
 - The island `client/hotel-client` holds what Holo's `habboclient.js` did: the top bar on a screen taller than 600
   pixels, the window fitted when the site opened it, Close Hotel, the window's name `client`, and the unload call.
 
+# Enter
+
+- The community layout's header gives a signed-in habbo Holo's `Enter <site name>`
+  (`header/enter-hotel.astro`), a link to `/client` aimed at the window named `client`. A guest's header keeps
+  `<site name> is offline`.
+- The island `client/open-client` holds Holo's `openOrFocusHabbo`: a click on a link aimed at `client` opens that
+  window with Holo's features, 980 by 597, or 740 by 597 with `wide=false` on a screen narrower than 990 pixels. A
+  window that already shows `/client` comes forward without loading again.
+
 # The player
 
 - `make player` at the root builds LibreShockwave's player from `vendor/LibreShockwave` with Emscripten, in

@@ -14,6 +14,7 @@ import {
 } from "./lib/hotel.mjs";
 import { startMail } from "./lib/mail.mjs";
 import * as art from "./suites/art.mjs";
+import * as client from "./suites/client.mjs";
 import * as club from "./suites/club.mjs";
 import * as community from "./suites/community.mjs";
 import * as credits from "./suites/credits.mjs";
@@ -75,6 +76,7 @@ const suites = {
   "housekeeping-vouchers": housekeepingVouchers,
   economy,
   help,
+  client,
   updates,
   together,
 };

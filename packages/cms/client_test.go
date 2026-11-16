@@ -8,6 +8,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
@@ -189,5 +190,34 @@ func TestTheClientPageNamesLibreShockwaveAndLinksToItsSource(t *testing.T) {
 		if !strings.Contains(string(page), want) {
 			t.Errorf("the client page does not contain %q", want)
 		}
+	}
+}
+
+// newBuiltSite mounts a CMS with the built pages on a new database.
+func newBuiltSite(t *testing.T) (*sql.DB, *http.ServeMux) {
+	t.Helper()
+	dist, err := fs.Sub(DistFS, "dist")
+	if err != nil {
+		t.Fatalf("the built pages: %v", err)
+	}
+	db := openDB(t)
+	mux := http.NewServeMux()
+	New(db, WithResolver(astro.MakeFSResolver(dist)), WithStatic(http.FileServerFS(dist))).Mount(mux)
+	return db, mux
+}
+
+// Holo's header: a signed-in habbo gets "Enter <site name>", which opens the
+// client page in the window named client; a guest's header has no Enter.
+func TestTheHeaderOffersASignedInHabboToEnterTheHotel(t *testing.T) {
+	db, mux := newBuiltSite(t)
+	habbo(t, db, "dora@example.com", "Dora")
+	cookie := login(t, db, "Dora")
+	enter := `id="enter-hotel-open-medium-link" href="/client" target="client"><span>Enter Reborn Hotel`
+
+	for _, path := range []string{"/me", "/community", "/account/looks"} {
+		wantPage(t, serve(mux, "GET", path, cookie, nil), http.StatusOK, enter)
+	}
+	if rec := serve(mux, "GET", "/community", nil, nil); strings.Contains(rec.Body.String(), "enter-hotel-open-medium-link") {
+		t.Errorf("a guest's header offers Enter: %s", rec.Body)
 	}
 }
