@@ -8,5 +8,5 @@ okf_version: "0.2"
 
 - [Adding a section](adding-a-section.md) - The files, registration point, test helpers and check of packages/config that a new config.json key touches, for the adding-config-sections skill.
 - [Declared keys](declared-keys.md) - Every key config.json holds, with its type, default and allowed values, and how a new key is declared.
-- [The file's behaviour](file-behaviour.md) - When config.json is created, read and rewritten, and how Differences and Rewrite bring it up to a release's keys.
+- [The file's behaviour](file-behaviour.md) - When config.json is created, read and rewritten, how Differences and Rewrite bring it up to a release's keys, and how Save writes one section.
 - [Usage](usage.md) - How a program loads config.json through Load, Must and Get, and how the installer creates it with Create.

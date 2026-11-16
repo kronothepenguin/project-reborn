@@ -9,10 +9,8 @@ import Setup from "../layouts/setup.astro";
   <FormError />
   <p class="text-sm">
     <span class="font-mono break-all">[[ .ConfigPath ]]</span> is written: the database
-    is <span class="font-mono break-all">[[ .Path ]]</span>, [[ if .OneAddress ]]and the
-    hotel listens on <span class="font-mono break-all">[[ .Host ]]</span> port [[ .Port ]].
-    [[ else ]]the hotel listens on port [[ .Port ]] and housekeeping on port
-    [[ .HousekeepingPort ]].[[ end ]]
+    is <span class="font-mono break-all">[[ .Path ]]</span>, the hotel listens on port
+    [[ .Port ]] and housekeeping on port [[ .HousekeepingPort ]].
   </p>
   <div class="flex justify-end text-sm">
     <Link href="/installer/site">Continue</Link>
@@ -20,20 +18,25 @@ import Setup from "../layouts/setup.astro";
   [[ else ]]
   <FormError />
   <form method="post" action="/installer/config" class="space-y-3">
-    <FormField
-      label="Database file"
-      help="Relative to the directory the hotel runs from."
-      class="flex flex-col gap-1 text-sm"
-    >
-      <Input name="path" value="[[ .Path ]]" variant="border" required />
-    </FormField>
     [[ if .OneAddress ]]
+    <p class="text-sm">
+      The database is <span class="font-mono break-all">[[ .Path ]]</span>, as
+      <span class="font-mono break-all">[[ .ConfigPath ]]</span> names it.
+    </p>
     <FormField
       label="Hotel host"
       help="0.0.0.0 listens on every interface."
       class="flex flex-col gap-1 text-sm"
     >
       <Input name="host" value="[[ .Host ]]" variant="border" required />
+    </FormField>
+    [[ else ]]
+    <FormField
+      label="Database file"
+      help="Relative to the directory the hotel runs from."
+      class="flex flex-col gap-1 text-sm"
+    >
+      <Input name="path" value="[[ .Path ]]" variant="border" required />
     </FormField>
     [[ end ]]
     <FormField label="Hotel port" class="flex flex-col gap-1 text-sm">
@@ -61,7 +64,9 @@ import Setup from "../layouts/setup.astro";
     </FormField>
     [[ end ]]
     <div class="flex justify-end">
-      <Button type="submit" variant="green">Write configuration</Button>
+      <Button type="submit" variant="green"
+        >[[ if .OneAddress ]]Save address[[ else ]]Write configuration[[ end ]]</Button
+      >
     </div>
   </form>
   [[ end ]]

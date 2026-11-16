@@ -16,6 +16,7 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/config"
+	"github.com/kronothepenguin/project-reborn/packages/config/reborn"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
@@ -126,6 +127,23 @@ func (s *State) Configure(ctx context.Context, cfg *config.Config) error {
 		return err
 	}
 	s.installation = installation
+	return nil
+}
+
+// SaveReborn saves the hotel's address into the reborn section of the existing
+// config.json, and the installation holds it from then on.
+func (s *State) SaveReborn(address reborn.Reborn) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.installation.Config == nil {
+		return ErrNotConfigured
+	}
+	if err := config.Save("reborn", address); err != nil {
+		return err
+	}
+	cfg := *s.installation.Config
+	cfg.Reborn = address
+	s.installation.Config = &cfg
 	return nil
 }
 

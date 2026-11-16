@@ -189,3 +189,48 @@ func sortedPaths(paths map[string]json.RawMessage) []string {
 	slices.Sort(sorted)
 	return sorted
 }
+
+// Save writes value as the section named section of the existing config.json,
+// and writes the file again as Rewrite does: the other keys with the values
+// they have, the keys it lacks with their defaults, and none of the keys
+// nothing reads. The result must pass Validate.
+func Save(section string, value any) error {
+	data, err := os.ReadFile(Filename)
+	if err != nil {
+		return fmt.Errorf("config: %s: %w", Filename, err)
+	}
+	var file map[string]json.RawMessage
+	if err := json.Unmarshal(data, &file); err != nil {
+		return fmt.Errorf("config: %s: %w", Filename, jsonError(err))
+	}
+	var sections map[string]json.RawMessage
+	defaultData, err := json.Marshal(defaults())
+	if err == nil {
+		err = json.Unmarshal(defaultData, &sections)
+	}
+	if err != nil {
+		return fmt.Errorf("config: %s: %w", Filename, err)
+	}
+	if _, ok := sections[section]; !ok {
+		return fmt.Errorf("config: %s: no section %s", Filename, section)
+	}
+	if file[section], err = json.Marshal(value); err != nil {
+		return fmt.Errorf("config: %s: %w", Filename, err)
+	}
+
+	merged, err := json.Marshal(file)
+	if err != nil {
+		return fmt.Errorf("config: %s: %w", Filename, err)
+	}
+	cfg := defaults()
+	if err := json.Unmarshal(merged, cfg); err != nil {
+		return fmt.Errorf("config: %s: %w", Filename, jsonError(err))
+	}
+	if err := cfg.Validate(); err != nil {
+		return fmt.Errorf("config: %s: %w", Filename, err)
+	}
+	if data, err = encode(cfg); err != nil {
+		return fmt.Errorf("config: %s: %w", Filename, err)
+	}
+	return replace(data)
+}

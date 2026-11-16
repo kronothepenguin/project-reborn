@@ -17,21 +17,27 @@ not wrapped by its runner.
 | Route | Page | Does |
 | --- | --- | --- |
 | `GET /installer/{$}` | `index.astro` | Shows the state; says the hotel is installed once an administrator exists, and links to `site.url` |
-| `GET`, `POST /installer/config` | `config.astro` | The config step: opens the database with `store.Open` (creating it with every update), then writes `config.json` with `config.Create` |
+| `GET`, `POST /installer/config` | `config.astro` | The config step: run alone, opens the database with `store.Open` (creating it with every update), then writes `config.json` with `config.Create`; inside reborn, moves the hotel and saves its address |
 | `GET`, `POST /installer/site` | `site.astro` | Site name, short name, URL, start credits and secure cookies, and housekeeping's address when run alone, saved with `settings.Set` and no user |
 | `GET`, `POST /installer/admin` | `admin.astro` | Habbo name, email, birth date and password: one transaction creates, through `auth.CreateAccount`, the user, habbo, profile, home and wallet (5000 credits), and adds the user to the highest access group holding `housekeeping.accessGroups`; then redirects to `/` |
 
 # Two forms
 
-- `WithListener(l)` gives the installer a `Listener`, which moves the running hotel to a new address. reborn passes
-  one. With it, the config step asks the database path, one host and one port, with the `reborn` section's defaults,
-  and writes them to `reborn`. When the host or the port differs from `r.Host`, where the browser sent the request, it
-  calls `Move`, which redirects the browser; a failed `Move` shows its error on the written page, with status 422.
+- `Inject(installer.Services{Listener: l})`, once after `New` and before `Mount`, gives the installer a `Listener`,
+  which moves the running hotel to a new address. reborn injects one; the runners of the installer alone inject
+  nothing. With it, `config.json` exists when the installer opens and its database is open, so the config step asks
+  only a host and a port, with the values of the `reborn` section, and shows the database `config.json` names. It
+  validates them with the `reborn` section's validators. When the host or the port differs from `r.Host`, where the
+  browser sent the request, it calls `Move` first, which redirects the browser to the same path on the new address,
+  and then saves the address into the `reborn` section with `config.Save`. A failed `Move` saves nothing and shows its
+  error in the form, with status 422, and the form takes another address. An address the browser already used moves
+  nothing, is saved, and the step goes on to `/installer/site`. A save that fails after a move is logged, since the
+  browser has left.
   The site step asks no housekeeping address, saves `site.housekeepingUrl` as the site address plus `/housekeeping`,
   and suggests `http://<host>:<port>` as the site address while `site.url` holds its default.
 - Without it, run alone, the config step asks the database path, the site's port and housekeeping's port, written to
-  `cms.port` and `housekeeping.port`. The site step asks housekeeping's address, and offers housekeeping on the port
-  chosen in the config step while `site.housekeepingUrl` holds its default.
+  `cms.port` and `housekeeping.port` with `config.Create`. The site step asks housekeeping's address, and offers
+  housekeeping on the port chosen in the config step while `site.housekeepingUrl` holds its default.
 
 # Rules
 
@@ -41,11 +47,11 @@ not wrapped by its runner.
 - After "Create administrator" the browser goes to `/`: inside reborn the site's front page, run alone the runner's
   redirect to the status page. There is no done page.
 - `/installer/site` and `/installer/admin` redirect to `/installer/config` until `config.json` exists.
-- The config step opens the database before it writes `config.json`, so a path that cannot be opened leaves no
-  `config.json`.
-- The config step writes every section it does not ask with its defaults: the CMS and housekeeping hosts as
-  `localhost`, the proxy section disabled, the game server's ports, and the ports or the `reborn` section the other
-  form asks. A pod edits `config.json` to change them.
+- Run alone, the config step opens the database before it writes `config.json`, so a path that cannot be opened leaves
+  no `config.json`.
+- Run alone, the config step writes every section it does not ask with its defaults: the CMS and housekeeping hosts as
+  `localhost`, the proxy section disabled, the game server's ports, and the `reborn` section. A pod edits
+  `config.json` to change them.
 - The site step saves each key on its own and stops at the first error.
 - A failure answers 500 and is logged, unless the visitor abandoned the request (`context.Canceled`): it ends quietly.
 - Holo's ranks come from update `0003-ranks.sql`. On a new hotel the administrator joins Administrator; without a group

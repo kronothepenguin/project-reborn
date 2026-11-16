@@ -17,7 +17,7 @@ description: How apps/installer serves the installer, where config.json lands, a
   (decision holo-port/0037). The installer answers at `/installer/`.
 - `Mount` wraps its own routes in `http.NewCrossOriginProtection`, so a page on another site cannot post the forms,
   such as the administrator form, to the installer on localhost.
-- The runners pass no `Listener`, so the installer shows the form for programs run apart.
+- The runners inject no `Listener`, so the installer shows the form for programs run apart.
 - Both runners exit with the error when the server cannot start.
 
 # Working directory

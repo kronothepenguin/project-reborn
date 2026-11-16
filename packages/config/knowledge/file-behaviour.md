@@ -1,7 +1,7 @@
 ---
 type: Reference
 title: The file's behaviour
-description: When config.json is created, read and rewritten, and how Differences and Rewrite bring it up to a release's keys.
+description: When config.json is created, read and rewritten, how Differences and Rewrite bring it up to a release's keys, and how Save writes one section.
 ---
 
 # The file
@@ -9,8 +9,8 @@ description: When config.json is created, read and rewritten, and how Difference
 - Absent `config.json`: created with the declared defaults (pretty-printed JSON plus a trailing newline, mode `0644`).
 - Key missing from an existing file: the declared default is returned; the file is not modified.
 - Key present: the file's value wins over the default.
-- Existing files are rewritten only by `Rewrite`, when an administrator saves a release's new keys from housekeeping;
-  that rewrite drops the keys nothing reads. Otherwise formatting, ordering, and unrecognized keys stay as written, and
+- Existing files are rewritten only by `Rewrite`, when an administrator saves a release's new keys from housekeeping,
+  and by `Save`, when the installer inside reborn saves the hotel's address; both drop the keys nothing reads. Otherwise formatting, ordering, and unrecognized keys stay as written, and
   `Create` writes only when the file is absent.
 - Keys are lowerCamelCase.
 
@@ -24,3 +24,12 @@ description: When config.json is created, read and rewritten, and how Difference
   given values (`ErrNotNew`), the result must pass `Validate`, and a temporary file is renamed over `config.json`. With
   nothing missing or unused, the file stays as it is.
 - Housekeeping's updates page calls both when a release adds keys (`packages/housekeeping/internal/router/updates.go`).
+
+# Save
+
+- `Save(section string, value any) error` writes `value` as the section named `section`, such as `reborn`, of the
+  existing `config.json`, and writes the file again as `Rewrite` does: the other keys with their values, the keys it
+  lacks with their defaults, and none of the keys nothing reads. A name that is no section, or a result that fails
+  `Validate`, leaves the file as it was. Without `config.json` it fails with `fs.ErrNotExist` and creates nothing.
+- The installer inside reborn calls it with the hotel's new address (`packages/installer/internal/setup`).
+- `Load` keeps what it read: `Get()` still returns the values from before the save.

@@ -92,11 +92,16 @@ func WithResolver(r astro.Resolver) Option {
 	}
 }
 
-// WithListener asks one host and port for the whole hotel in the config step,
-// and moves the hotel there through l. Without it, the config step asks the
-// site's port and housekeeping's port, for programs run apart.
-func WithListener(l Listener) Option {
-	return func(i *Installer) {
-		i.listener = l
-	}
+// Services are what reborn hands the installer. Run alone, the installer has none.
+type Services struct {
+	// Listener makes the config step ask one host and port for the whole hotel,
+	// and moves the hotel there. Without it, the config step asks the database,
+	// the site's port and housekeeping's port, for programs run apart.
+	Listener Listener
+}
+
+// Inject hands the installer its services, once, after New and before Mount:
+// Mount gives the router the services the installer holds then.
+func (i *Installer) Inject(s Services) {
+	i.listener = s.Listener
 }
