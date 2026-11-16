@@ -347,3 +347,40 @@ func TestOpenContinuesAnInstallation(t *testing.T) {
 	}
 	got.DB.Close()
 }
+
+func TestCreateAdministratorImportsTheClientsFiles(t *testing.T) {
+	s := configure(t)
+	folder := filepath.Join(assets.DefaultPath(), "dcr")
+	if err := os.MkdirAll(folder, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	os.WriteFile(filepath.Join(folder, "external_variables.txt"), []byte("site.url=http://localhost\n"), 0o644)
+	os.WriteFile(filepath.Join(folder, "external_texts.txt"), []byte("hello=Hello\n"), 0o644)
+	if err := s.CreateAdministrator(t.Context(), testAdministrator()); err != nil {
+		t.Fatalf("CreateAdministrator: %v", err)
+	}
+	installation, _ := s.Current()
+	q := store.New(installation.DB)
+	variables, err := q.ListDCRVariables(t.Context())
+	if err != nil || len(variables) != 1 {
+		t.Errorf("variables = %v, %v; want one", variables, err)
+	}
+	texts, err := q.ListDCRTexts(t.Context())
+	if err != nil || len(texts) != 1 {
+		t.Errorf("texts = %v, %v; want one", texts, err)
+	}
+}
+
+func TestCreateAdministratorWithoutTheClientsFilesLeavesTheTablesEmpty(t *testing.T) {
+	s := configure(t)
+	if err := s.CreateAdministrator(t.Context(), testAdministrator()); err != nil {
+		t.Fatalf("CreateAdministrator: %v", err)
+	}
+	installation, _ := s.Current()
+	q := store.New(installation.DB)
+	variables, _ := q.ListDCRVariables(t.Context())
+	texts, _ := q.ListDCRTexts(t.Context())
+	if len(variables) != 0 || len(texts) != 0 {
+		t.Errorf("variables = %d, texts = %d; want none", len(variables), len(texts))
+	}
+}

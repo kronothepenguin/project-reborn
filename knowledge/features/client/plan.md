@@ -69,8 +69,12 @@ The client's reference documents are [LibreShockwave](/sources/libreshockwave.md
   `figure.draworder.xml` and its `.secure`, `figure.animation.xml`, `figure.partsets.xml`, `dynamic.download.url`,
   `image.library.url`, `private.image.library.url`) from the hotel's address, and `client.version.id` from
   `game.clientVersion`. The user chose "Go always writes them".
-- Every "Habbo" of the texts is written as the hotel's short name when the file is served; the rows keep the original
-  words. The user chose "Every "Habbo"", and on the shape: "you might need hotel for Texts too, some of the texts of
+- The word "Habbo" of the texts, with "Habbos" and "Habbo's", is written as the hotel's short name when the file is
+  served; a longer word that starts with it ("Habboween", "Habbowood", "Habbolympic") stays, so the texts match the
+  pictures that carry those names. The user first chose "Every "Habbo"", saw the result on the real texts, and then
+  chose "Whole words only": "I'm ok leave as habboween, habbowood and so on, because we also have images with these
+  kind of text, but at the same time i want the system to use the hotel name the user decided". The rows keep the
+  original words. The user chose "Every "Habbo"", and on the shape: "you might need hotel for Texts too, some of the texts of
   the hotel have even "habbo" or "holo", the site name."
 - The shape of `packages/assets/dcr`, shown to the user:
 

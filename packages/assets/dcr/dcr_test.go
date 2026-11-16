@@ -103,12 +103,14 @@ func TestTheClientGetsTheImportedVariablesWithTheHotelsAddressesAndVersion(t *te
 	}
 }
 
-func TestTheClientGetsTheImportedTextsWithEveryHabboAsTheShortName(t *testing.T) {
+func TestTheClientGetsTheImportedTextsWithTheWordHabboAsTheShortName(t *testing.T) {
 	db, q := openDB(t)
 	files := clientFiles("a=b", "\xef\xbb\xbf"+crlf(
 		"welcome=Welcome to Habbo Hotel!",
 		"friends=Habbos you know, a Habbo's room",
 		"# comment=Habbo",
+		"punk=Habbo-punk: Habbo. (Habbo)",
+		"kept=Habboween, Habbowood, Habbosphere, Habbolympics",
 		"Habbo_key=habbo stays",
 		"",
 	))
@@ -122,6 +124,8 @@ func TestTheClientGetsTheImportedTextsWithEveryHabboAsTheShortName(t *testing.T)
 		"welcome=Welcome to Reborn Hotel!",
 		"friends=Reborns you know, a Reborn's room",
 		"# comment=Reborn",
+		"punk=Reborn-punk: Reborn. (Reborn)",
+		"kept=Habboween, Habbowood, Habbosphere, Habbolympics",
 		"Habbo_key=habbo stays",
 		"",
 	)
