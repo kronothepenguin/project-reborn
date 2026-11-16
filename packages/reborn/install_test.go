@@ -18,7 +18,7 @@ import (
 )
 
 // The behaviour: from an empty folder, reborn serves the installer at
-// /installer/ and redirects every other path there. A new port in the config
+// /installer/ and redirects every route of the programs there. A new port in the config
 // step moves the browser to it and closes the old one. After "Create
 // administrator" the browser lands on the site at /, /installer/ answers 404,
 // housekeeping answers at /housekeeping/ and the game on its two ports.
@@ -90,6 +90,38 @@ func TestItInstallsANewHotel(t *testing.T) {
 		t.Errorf("the info port sent %d %q first, want HELLO", id, body)
 	}
 	waitFor(t, mus, timeout)
+}
+
+// The behaviour: a hotel is not installed, every page of the site and of
+// housekeeping sends the browser to /installer/, and files and the dev
+// server's own paths are served.
+func TestFilesAreServedBeforeTheInstall(t *testing.T) {
+	ports, release, err := freePorts(3)
+	if err != nil {
+		t.Fatal(err)
+	}
+	port, info, mus := ports[0], ports[1], ports[2]
+	dir := t.TempDir()
+	file := fmt.Sprintf(`{
+		"reborn": {"host": "127.0.0.1", "port": %d},
+		"server": {"info": {"host": "127.0.0.1", "port": %d}, "mus": {"host": "127.0.0.1", "port": %d}}
+	}`, port, info, mus)
+	if err := os.WriteFile(dir+"/"+config.Filename, []byte(file), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	release()
+	startHotel(t, dir, port)
+
+	browser := &http.Client{Timeout: timeout, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
+	site := "http://127.0.0.1:" + strconv.Itoa(port)
+	for _, path := range []string{"/", "/me", "/housekeeping/", "/housekeeping/settings"} {
+		answers(t, browser, "GET", site+path, nil, http.StatusSeeOther, "/installer/", "")
+	}
+	answers(t, browser, "POST", site+"/logout", nil, http.StatusSeeOther, "/installer/", "")
+	answers(t, browser, "GET", site+"/favicon.svg", nil, http.StatusOK, "", "cms file /favicon.svg")
+	answers(t, browser, "GET", site+"/@vite/client", nil, http.StatusOK, "", "cms file /@vite/client")
+	answers(t, browser, "GET", site+"/@fs/packages/installer/src/styles/global.css", nil, http.StatusOK, "",
+		"cms file /@fs/packages/installer/src/styles/global.css")
 }
 
 // The behaviour: an installed hotel runs under reborn, and /installer/ answers

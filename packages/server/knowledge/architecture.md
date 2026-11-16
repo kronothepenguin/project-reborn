@@ -12,7 +12,7 @@ tags: [server, architecture]
 | Package | Holds | Decisions |
 | --- | --- | --- |
 | `packages/server` | `New(db, opts...)`, which loads the settings and reloads them and, with `WithAPI()`, opens the `/api/` listener, `StartInfo` and `StartMus`, which start a WebSocket listener on the host and port of `server.info` and of `server.mus`, and `SendLook`, the game's side of `services.Habbos` | 0002 (`knowledge/decisions/server/0002-server-app.md`), 0005 (`knowledge/decisions/server/0005-package-layout.md`), 0020 (`knowledge/decisions/server/0020-info-and-mus-websocket-ports.md`), 0022 (`knowledge/decisions/server/0022-start-info-and-start-mus.md`), 0023 (`knowledge/decisions/server/0023-mus-listener-before-s7.md`), 0050 (`knowledge/decisions/server/0050-the-server-loads-and-reloads-the-settings.md`) |
-| `packages/server/api` | The client of the game's `/api/`: `api.New(baseURL, secret)` implements `services.Habbos` for the programs run apart, and gives up after 2 seconds | reborn/0005 (`knowledge/decisions/reborn/0005-the-game-hears-live-changes-through-services.md`) |
+| `packages/server/api` | The client of the game's `/api/`: `api.New(baseURL, db)` implements `services.Habbos` for the programs run apart, and gives up after 2 seconds | reborn/0005 (`knowledge/decisions/reborn/0005-the-game-hears-live-changes-through-services.md`) |
 | `packages/server/internal/router` | The handlers of the game's `/api/` and the check of `X-Reborn-Secret` | reborn/0005 (`knowledge/decisions/reborn/0005-the-game-hears-live-changes-through-services.md`) |
 | `packages/server/internal/transport` | `Conn` (receive, send, close), TCP and the WebSocket on `golang.org/x/net/websocket` | 0006 (`knowledge/decisions/server/0006-transport.md`) |
 | `packages/server/internal/encoding` | B64, VL64 and strings, shared by every protocol | 0005 (`knowledge/decisions/server/0005-package-layout.md`) |
@@ -91,8 +91,9 @@ game's `/api/` (reborn/0005 (`knowledge/decisions/reborn/0005-the-game-hears-liv
   wrong secret, and every other path or method, is answered 404.
 - The game reads the secret on each request, so a hotel whose update `0025-api-secret.sql` waits answers 404 until it
   is applied.
-- The CMS's and housekeeping's runners read the secret at start and `Inject` `api.New` built from `server.api`. Without
-  the secret they log it and run without telling the game, until they start again.
+- The CMS's and housekeeping's runners `Inject` `api.New` built from `server.api` and their database. The client reads
+  the secret on each call, so a secret created or changed while they run is used on the next call. Without the secret a
+  call returns an error, which the caller logs.
 
 In development, `make dev` runs air, which watches the `.go` files of `apps/server`, `packages/server`,
 `packages/config` and `packages/store` (`apps/server/.air.toml`) and rebuilds the runner on each change.

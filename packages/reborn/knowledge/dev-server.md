@@ -47,7 +47,8 @@ The root address ends in `/`, so `JoinPath` keeps the leading slash.
 - Vite's own paths (`/@vite/client`, `/@fs/...`, `/@id/...`) are at the root: the CMS's proxy serves them.
 - The page's HMR WebSocket at `ws://localhost:16416/` meets the CMS's own `/` route, and Vite's client falls back to a
   direct connection to the dev server. Live reload works through that fallback.
-- Before the administrator exists, reborn redirects every path outside `/installer/` to the installer, Vite's paths
-  included: the installer's pages render with their styles, and an edit shows on the next load.
+- Before the administrator exists, reborn redirects the programs' routes to the installer and serves what falls to the
+  static handlers, Vite's paths included: the installer's pages load Vite's client, and an edit reloads the page through
+  the direct WebSocket fallback.
 - Run by an AI agent, `astro dev` starts the server in the background; `astro dev stop` stops it. In a terminal it stays
   in the foreground.

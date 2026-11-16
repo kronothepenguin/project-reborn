@@ -57,8 +57,8 @@ func New(cfg *config.Config, db *sql.DB, c *cms.CMS, h *housekeeping.Housekeepin
 // Run serves the hotel until ctx ends: the CMS at / and housekeeping at
 // /housekeeping/ on the address of the reborn section, and the game on
 // server.info and server.mus. A hotel that is not installed gets the installer
-// at /installer/ first, every other path redirects there, and the game waits
-// until the administrator exists.
+// at /installer/ first, every route of the programs redirects there while
+// files are served, and the game waits until the administrator exists.
 func (r *Reborn) Run(ctx context.Context) error {
 	installed, err := installer.Installed(ctx, r.db)
 	if err != nil {
@@ -104,20 +104,30 @@ func (r *Reborn) Run(ctx context.Context) error {
 }
 
 // guard keeps visitors on the installer until the administrator exists, and
-// off it from then on.
-func (r *Reborn) guard(next http.Handler) http.Handler {
+// off it from then on. Before the administrator exists, a route a program
+// registered on mux redirects to the installer, and a request that falls to a
+// static handler is served: the files of the sites, and the dev server's own
+// paths under the dev runner.
+func (r *Reborn) guard(mux *http.ServeMux) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		inInstaller := req.URL.Path == "/installer" || strings.HasPrefix(req.URL.Path, "/installer/")
 		installed := isClosed(r.installer.Done())
 		switch {
 		case installed && inInstaller:
 			http.NotFound(w, req)
-		case !installed && !inInstaller:
+		case !installed && !inInstaller && !isStatic(mux, req):
 			http.Redirect(w, req, "/installer/", http.StatusSeeOther)
 		default:
-			next.ServeHTTP(w, req)
+			mux.ServeHTTP(w, req)
 		}
 	})
+}
+
+// isStatic tells whether req falls to the static handler of the site, at /, or
+// of housekeeping, at /housekeeping/.
+func isStatic(mux *http.ServeMux, req *http.Request) bool {
+	_, pattern := mux.Handler(req)
+	return pattern == "/" || pattern == "/housekeeping/"
 }
 
 // waitForInstall starts the game once the administrator exists.
