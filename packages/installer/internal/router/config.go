@@ -9,6 +9,7 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/config"
+	"github.com/kronothepenguin/project-reborn/packages/config/assets"
 	"github.com/kronothepenguin/project-reborn/packages/config/cms"
 	"github.com/kronothepenguin/project-reborn/packages/config/housekeeping"
 	"github.com/kronothepenguin/project-reborn/packages/config/proxy"
@@ -99,6 +100,7 @@ func (r *Router) HandleConfigSave(w http.ResponseWriter, req *http.Request) {
 		Proxy:        proxy.Proxy{Enabled: proxy.DefaultEnabled(), Trusted: proxy.DefaultTrusted()},
 		Server:       server.Server{Info: server.DefaultInfo(), MUS: server.DefaultMUS(), API: server.DefaultAPI()},
 		Reborn:       reborn.Reborn{Host: reborn.DefaultHost(), Port: reborn.DefaultPort()},
+		Assets:       assets.Assets{Path: assets.DefaultPath()},
 	}
 	switch err := r.deps.Setup.Configure(req.Context(), cfg); {
 	case errors.Is(err, setup.ErrConfigured):

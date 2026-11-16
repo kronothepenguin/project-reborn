@@ -69,7 +69,7 @@ func TestTheUpdatePageOffersConfigJsonsNewKeys(t *testing.T) {
 	_, keeper := staff(t, db, "Keeper", auth.HousekeepingAccess, auth.HousekeepingDatabase)
 
 	wantPage(t, serve(mux, "GET", "/housekeeping/updates", keeper, nil), http.StatusOK,
-		html.EscapeString(`NewKeys:[{Path:cms.host Value:localhost} {Path:proxy.enabled Value:false} {Path:proxy.trusted Value:["127.0.0.1","::1"]} `+
+		html.EscapeString(`NewKeys:[{Path:assets.path Value:assets} {Path:cms.host Value:localhost} {Path:proxy.enabled Value:false} {Path:proxy.trusted Value:["127.0.0.1","::1"]} `+
 			`{Path:reborn.host Value:localhost} {Path:reborn.port Value:16416} {Path:server.api.host Value:localhost} {Path:server.api.port Value:15445} {Path:server.info.host Value:localhost} {Path:server.info.port Value:30000} {Path:server.mus.host Value:localhost} `+
 			`{Path:server.mus.port Value:30001}] OldKeys:[{Path:theme Value:"dark"}]`))
 }
@@ -79,7 +79,7 @@ func TestSavingConfigJsonWritesTheNewKeys(t *testing.T) {
 	db, mux := newSite(t)
 	_, keeper := staff(t, db, "Keeper", auth.HousekeepingAccess, auth.HousekeepingDatabase)
 
-	form := url.Values{"key.cms.host": {"0.0.0.0"}, "key.proxy.enabled": {"true"}, "key.proxy.trusted": {`["10.0.0.1"]`}}
+	form := url.Values{"key.assets.path": {"assets"}, "key.cms.host": {"0.0.0.0"}, "key.proxy.enabled": {"true"}, "key.proxy.trusted": {`["10.0.0.1"]`}}
 	maps.Copy(form, serverKeys)
 	wantRedirect(t, serve(mux, "POST", "/housekeeping/updates/config", keeper, form), "/housekeeping/updates?config=1")
 	file := readConfig(t)
@@ -95,7 +95,7 @@ func TestSavingConfigJsonWritesTheNewKeys(t *testing.T) {
 		t.Errorf("config.json holds server %v", server)
 	}
 	logs := staffLogs(t, db)
-	if len(logs) != 1 || logs[0].Action != "config.update" || logs[0].Detail != "added cms.host, proxy.enabled, proxy.trusted, reborn.host, reborn.port, server.api.host, server.api.port, server.info.host, server.info.port, server.mus.host, server.mus.port; removed theme" {
+	if len(logs) != 1 || logs[0].Action != "config.update" || logs[0].Detail != "added assets.path, cms.host, proxy.enabled, proxy.trusted, reborn.host, reborn.port, server.api.host, server.api.port, server.info.host, server.info.port, server.mus.host, server.mus.port; removed theme" {
 		t.Errorf("staff logs = %+v", logs)
 	}
 	wantPage(t, serve(mux, "GET", "/housekeeping/updates?config=1", keeper, nil), http.StatusOK,

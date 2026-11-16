@@ -20,6 +20,7 @@ every other app. A package with a frontend exports its build as `DistFS`, so `re
 | `apps/installer` | Thin runner for `packages/installer`. |
 | `apps/reborn` | Thin runner for `packages/reborn`. |
 | `apps/server` | Thin runner for `packages/server`. |
+| `packages/assets` | Everything about the hotel's assets; `dcr` keeps the client's external variables and texts in the database and writes them out for the client. |
 | `packages/astro` | Turns Astro pages into Go `html/template` templates, from the embedded `dist` or the Astro dev server. |
 | `packages/auth` | Sign-in, sessions, access attributes and password resets for the CMS, housekeeping and installer. |
 | `packages/client-r26` | The R26 client's casts, Lingo scripts with their JavaScript translations, as a Vite app on `packages/director`. |
