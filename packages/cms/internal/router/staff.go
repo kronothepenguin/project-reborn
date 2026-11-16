@@ -9,8 +9,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/cms/internal/bbcode"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // visitFormat is Holo's date_full, the format of lastvisit.
@@ -46,7 +46,7 @@ type staffBox struct {
 // (0076) and the page's two boxes. With features.staffPage off, Holo sent the
 // visitor to its index.
 func (r *Router) HandleStaffView(w http.ResponseWriter, req *http.Request) {
-	if !settings.GetBool("features.staffPage") {
+	if !settings.Bool(req.Context(), r.deps.Queries, "features.staffPage") {
 		http.Redirect(w, req, "/", http.StatusSeeOther)
 		return
 	}
@@ -56,7 +56,7 @@ func (r *Router) HandleStaffView(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
-	page := staffPage{community: shared, ImagingURL: settings.GetString("imaging.avatarUrl")}
+	page := staffPage{community: shared, ImagingURL: settings.String(ctx, r.deps.Queries, "imaging.avatarUrl")}
 	rows, err := r.deps.Queries.ListStaff(ctx)
 	if err != nil {
 		r.fail(w, err)
@@ -87,9 +87,9 @@ func (r *Router) HandleStaffView(w http.ResponseWriter, req *http.Request) {
 	}
 	for _, box := range []string{"box1", "box2"} {
 		page.Boxes = append(page.Boxes, staffBox{
-			Heading: settings.GetString("staffPage." + box + "Heading"),
-			Body:    bbcode.Format(settings.GetString("staffPage."+box+"Body"), false),
-			Color:   settings.GetString("staffPage." + box + "Color"),
+			Heading: settings.String(ctx, r.deps.Queries, "staffPage."+box+"Heading"),
+			Body:    bbcode.Format(settings.String(ctx, r.deps.Queries, "staffPage."+box+"Body"), false),
+			Color:   settings.String(ctx, r.deps.Queries, "staffPage."+box+"Color"),
 		})
 	}
 	astro.WriteTemplate(w, r.deps.Resolver, "staff.html", page)

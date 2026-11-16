@@ -53,5 +53,5 @@ func (r *Router) HandleHomesItemsSkin(w http.ResponseWriter, req *http.Request) 
 		return
 	}
 	item.Skin = body.Skin
-	r.answerJSON(w, http.StatusOK, r.drawn(item, ""))
+	r.answerJSON(w, http.StatusOK, drawn(ctx, r.deps.Queries, item, ""))
 }

@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // HandleGroupsJoin handles POST /groups/{id}/join, joingroup.php, for the active
@@ -28,7 +28,7 @@ func (r *Router) HandleGroupsJoin(w http.ResponseWriter, req *http.Request) {
 		if err != nil {
 			return err
 		}
-		if limit := settings.GetInt("groups.maxMemberships"); held >= int64(limit) {
+		if limit := settings.Int(ctx, q, "groups.maxMemberships"); held >= int64(limit) {
 			message = fmt.Sprintf(joinLimit, limit)
 			return nil
 		}
@@ -46,7 +46,7 @@ func (r *Router) HandleGroupsJoin(w http.ResponseWriter, req *http.Request) {
 			if err != nil {
 				return err
 			}
-			if members >= int64(settings.GetInt("groups.maxMembers")) {
+			if members >= int64(settings.Int(ctx, q, "groups.maxMembers")) {
 				message = joinFull
 				return nil
 			}

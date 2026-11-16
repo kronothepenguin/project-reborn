@@ -10,8 +10,8 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/cms/internal/bbcode"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // defaultBackground is the background of a home without one, as in Holo.
@@ -153,7 +153,7 @@ func (r *Router) newHomePage(ctx context.Context, avatar store.Avatar) (homePage
 	session, _ := auth.FromContext(ctx)
 	page := homePage{
 		community:  shared,
-		ImagingURL: settings.GetString("imaging.avatarUrl"),
+		ImagingURL: settings.String(ctx, r.deps.Queries, "imaging.avatarUrl"),
 		MyPage:     shared.SignedIn && session.AvatarID == avatar.ID,
 		CanEdit:    shared.SignedIn && session.UserID == avatar.UserID,
 		Owner:      avatar.Name,
@@ -227,7 +227,7 @@ func (r *Router) homeItems(ctx context.Context, homeID, editor int64) ([]homeIte
 	if err != nil {
 		return nil, err
 	}
-	smilies := settings.GetBool("features.smilies")
+	smilies := settings.Bool(ctx, r.deps.Queries, "features.smilies")
 	items := make([]homeItem, 0, len(rows))
 	for _, it := range rows {
 		item := homeItem{ID: it.ID, Kind: it.Kind, Widget: it.Widget.String, Skin: it.Skin, X: it.X, Y: it.Y, Z: it.Z}

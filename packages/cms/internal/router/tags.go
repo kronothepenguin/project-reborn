@@ -10,8 +10,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // The lengths of Holo's lists: the cloud and a search.
@@ -58,8 +58,8 @@ func (r *Router) HandleTagsView(w http.ResponseWriter, req *http.Request) {
 	}
 	page := tagsPage{
 		community:  shared,
-		ImagingURL: settings.GetString("imaging.avatarUrl"),
-		TagFight:   settings.GetBool("features.tagFight"),
+		ImagingURL: settings.String(ctx, r.deps.Queries, "imaging.avatarUrl"),
+		TagFight:   settings.Bool(ctx, r.deps.Queries, "features.tagFight"),
 		Tag:        strings.ToLower(req.URL.Query().Get("tag")),
 	}
 	if page.Cloud, err = r.tagCloud(ctx); err != nil {
@@ -147,5 +147,5 @@ func (r *Router) canTag(ctx context.Context, tag string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	return len(tags) < settings.GetInt("homes.maxTags") && !slices.Contains(tags, tag), nil
+	return len(tags) < settings.Int(ctx, r.deps.Queries, "homes.maxTags") && !slices.Contains(tags, tag), nil
 }

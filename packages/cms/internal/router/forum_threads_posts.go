@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // threadClosed answers a reply to a thread closed since the page loaded, which the
@@ -17,7 +17,7 @@ const threadClosed = "closed"
 // HandleForumThreadsPostsCreate handles POST /forum/threads/{id}/posts,
 // savepost.php: the active habbo replies, and goes to the thread's last page.
 func (r *Router) HandleForumThreadsPostsCreate(w http.ResponseWriter, req *http.Request) {
-	if !settings.GetBool("features.forum") {
+	if !settings.Bool(req.Context(), r.deps.Queries, "features.forum") {
 		http.NotFound(w, req)
 		return
 	}

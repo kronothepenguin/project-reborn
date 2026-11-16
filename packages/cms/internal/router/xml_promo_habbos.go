@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 )
 
 const promoHabboCount = 10
@@ -27,7 +27,7 @@ type promoHabbo struct {
 // HandlePromoHabbosXML renders GET /xml/promo-habbos.xml, the random habbos of the
 // landing widget.
 func (r *Router) HandlePromoHabbosXML(w http.ResponseWriter, req *http.Request) {
-	if !settings.GetBool("features.landingPromo") {
+	if !settings.Bool(req.Context(), r.deps.Queries, "features.landingPromo") {
 		http.NotFound(w, req)
 		return
 	}
@@ -37,7 +37,7 @@ func (r *Router) HandlePromoHabbosXML(w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	imager := settings.GetString("imaging.avatarUrl")
+	imager := settings.String(req.Context(), r.deps.Queries, "imaging.avatarUrl")
 	promo := promoHabbos{Habbos: make([]promoHabbo, len(avatars))}
 	for i, avatar := range avatars {
 		query := url.Values{

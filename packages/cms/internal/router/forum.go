@@ -8,8 +8,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // forumPageSize is Holo's ten threads, and ten posts, to a page.
@@ -132,7 +132,7 @@ type forumThreadRow struct {
 // then ten other threads, each list by its newest post (0088). With features.forum
 // off, Holo sent the visitor to its index.
 func (r *Router) HandleForumView(w http.ResponseWriter, req *http.Request) {
-	if !settings.GetBool("features.forum") {
+	if !settings.Bool(req.Context(), r.deps.Queries, "features.forum") {
 		http.Redirect(w, req, "/", http.StatusSeeOther)
 		return
 	}
@@ -162,8 +162,8 @@ func (r *Router) HandleForumView(w http.ResponseWriter, req *http.Request) {
 	}
 	view := forumPage{
 		community:  shared,
-		ImagingURL: settings.GetString("imaging.avatarUrl"),
-		Smilies:    settings.GetBool("features.smilies"),
+		ImagingURL: settings.String(ctx, r.deps.Queries, "imaging.avatarUrl"),
+		Smilies:    settings.Bool(ctx, r.deps.Queries, "features.smilies"),
 		Pages:      pageLinks(pages, page),
 		Empty:      count == 0 && len(stickies) == 0,
 	}

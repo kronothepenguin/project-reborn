@@ -7,8 +7,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // threadUpdated is savetopicsettings.php's answer, and topicEmpty the words of
@@ -34,7 +34,7 @@ type threadAnswer struct {
 // moderatedThread loads the thread of the path for a holder of forum.edit. Anyone
 // else gets 403, and a thread that does not exist, or a switched-off board, 404.
 func (r *Router) moderatedThread(w http.ResponseWriter, req *http.Request) (store.ForumThread, bool) {
-	if !settings.GetBool("features.forum") {
+	if !settings.Bool(req.Context(), r.deps.Queries, "features.forum") {
 		http.NotFound(w, req)
 		return store.ForumThread{}, false
 	}

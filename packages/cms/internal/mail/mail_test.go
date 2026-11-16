@@ -2,69 +2,43 @@ package mail
 
 import (
 	"context"
-	"database/sql"
 	"errors"
-	"log"
 	"net"
-	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/cms/internal/mail/mailtest"
-	"github.com/kronothepenguin/project-reborn/packages/config"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
-var testConfig *config.Config
-
-// config.Load reads config.json once per process, so the whole package shares
-// one file, created with the defaults before any test runs.
-func TestMain(m *testing.M) {
-	dir, err := os.MkdirTemp("", "mail-test-")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-	if err := os.Chdir(dir); err != nil {
-		log.Fatal(err)
-	}
-	if testConfig, err = config.Load(); err != nil {
-		log.Fatal(err)
-	}
-	m.Run()
-}
-
-func setup(t *testing.T) *sql.DB {
+func setup(t *testing.T) *store.Queries {
 	t.Helper()
 	db, err := store.Open(filepath.Join(t.TempDir(), "habbo.db"))
 	if err != nil {
 		t.Fatalf("store.Open: %v", err)
 	}
 	t.Cleanup(func() { db.Close() })
-	if err := settings.Load(t.Context(), testConfig, db); err != nil {
-		t.Fatalf("settings.Load: %v", err)
-	}
-	return db
+	return store.New(db)
 }
 
-func configure(t *testing.T, db *sql.DB, values map[string]any) {
+func configure(t *testing.T, q *store.Queries, values map[string]any) {
 	t.Helper()
 	for key, value := range values {
-		if err := settings.Set(t.Context(), db, 0, key, value); err != nil {
+		if err := settings.Set(t.Context(), q, 0, key, value); err != nil {
 			t.Fatalf("set %s: %v", key, err)
 		}
 	}
 }
 
 func TestSendDeliversAMessage(t *testing.T) {
-	db := setup(t)
+	q := setup(t)
 	server := mailtest.Start(t)
-	configure(t, db, map[string]any{"mail.host": server.Host, "mail.port": server.Port, "mail.from": "Hotel <hotel@example.com>"})
+	configure(t, q, map[string]any{"mail.host": server.Host, "mail.port": server.Port, "mail.from": "Hotel <hotel@example.com>"})
 
-	if err := Send(t.Context(), "habbo@example.com", "Forgot password", "Hello,\n.dotted line\n"); err != nil {
+	if err := Send(t.Context(), q, "habbo@example.com", "Forgot password", "Hello,\n.dotted line\n"); err != nil {
 		t.Fatalf("Send: %v", err)
 	}
 
@@ -86,9 +60,9 @@ func TestSendDeliversAMessage(t *testing.T) {
 }
 
 func TestSendAuthenticatesWhenConfigured(t *testing.T) {
-	db := setup(t)
+	q := setup(t)
 	server := mailtest.Start(t)
-	configure(t, db, map[string]any{
+	configure(t, q, map[string]any{
 		"mail.host":     server.Host,
 		"mail.port":     server.Port,
 		"mail.from":     "hotel@example.com",
@@ -96,7 +70,7 @@ func TestSendAuthenticatesWhenConfigured(t *testing.T) {
 		"mail.password": "smtp-secret",
 	})
 
-	if err := Send(t.Context(), "habbo@example.com", "Subject", "Hello"); err != nil {
+	if err := Send(t.Context(), q, "habbo@example.com", "Subject", "Hello"); err != nil {
 		t.Fatalf("Send: %v", err)
 	}
 	server.Next(t)
@@ -106,34 +80,34 @@ func TestSendAuthenticatesWhenConfigured(t *testing.T) {
 }
 
 func TestSendWithoutAHostIsDisabled(t *testing.T) {
-	setup(t)
-	if err := Send(t.Context(), "habbo@example.com", "Subject", "Hello"); !errors.Is(err, ErrDisabled) {
+	q := setup(t)
+	if err := Send(t.Context(), q, "habbo@example.com", "Subject", "Hello"); !errors.Is(err, ErrDisabled) {
 		t.Errorf("Send() = %v, want ErrDisabled", err)
 	}
 }
 
 func TestSendNeedsAFromAddress(t *testing.T) {
-	db := setup(t)
-	configure(t, db, map[string]any{"mail.host": "127.0.0.1"})
-	if err := Send(t.Context(), "habbo@example.com", "Subject", "Hello"); err == nil {
+	q := setup(t)
+	configure(t, q, map[string]any{"mail.host": "127.0.0.1"})
+	if err := Send(t.Context(), q, "habbo@example.com", "Subject", "Hello"); err == nil {
 		t.Error("Send() without mail.from = nil, want an error")
 	}
 }
 
 func TestSendGivesUpOnAServerThatDoesNotAnswer(t *testing.T) {
-	db := setup(t)
+	q := setup(t)
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		t.Fatalf("listen: %v", err)
 	}
 	defer listener.Close()
 	address := listener.Addr().(*net.TCPAddr)
-	configure(t, db, map[string]any{"mail.host": address.IP.String(), "mail.port": address.Port, "mail.from": "hotel@example.com"})
+	configure(t, q, map[string]any{"mail.host": address.IP.String(), "mail.port": address.Port, "mail.from": "hotel@example.com"})
 
 	ctx, cancel := context.WithTimeout(t.Context(), 100*time.Millisecond)
 	defer cancel()
 	started := time.Now()
-	if err := Send(ctx, "habbo@example.com", "Subject", "Hello"); err == nil {
+	if err := Send(ctx, q, "habbo@example.com", "Subject", "Hello"); err == nil {
 		t.Error("Send() to a silent server = nil, want an error")
 	}
 	if elapsed := time.Since(started); elapsed > 5*time.Second {

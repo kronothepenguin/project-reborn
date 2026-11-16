@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // mayChangePost reports whether the visitor may change a post of authorID: its
@@ -20,7 +20,7 @@ func (r *Router) mayChangePost(req *http.Request, authorID int64) bool {
 // changedPost loads the post of the path for those who may change it. Anyone else
 // gets 403, and a post that does not exist, or a switched-off board, 404.
 func (r *Router) changedPost(w http.ResponseWriter, req *http.Request) (store.ForumPost, bool) {
-	if !settings.GetBool("features.forum") {
+	if !settings.Bool(req.Context(), r.deps.Queries, "features.forum") {
 		http.NotFound(w, req)
 		return store.ForumPost{}, false
 	}

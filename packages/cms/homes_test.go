@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // owner registers a habbo with its profile, home and profile widget, and the
@@ -78,11 +78,9 @@ func hold(t *testing.T, db *sql.DB, userID, item, quantity int64) {
 
 func setting(t *testing.T, db *sql.DB, key string, value any) {
 	t.Helper()
-	before := settings.GetInt(key)
-	if err := settings.Set(t.Context(), db, 0, key, value); err != nil {
+	if err := settings.Set(t.Context(), store.New(db), 0, key, value); err != nil {
 		t.Fatalf("set %s: %v", key, err)
 	}
-	t.Cleanup(func() { settings.Set(t.Context(), db, 0, key, before) })
 }
 
 func editError(t *testing.T, rec *httptest.ResponseRecorder, want string) {

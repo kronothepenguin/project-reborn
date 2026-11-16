@@ -8,6 +8,7 @@ import {
   openSync,
   readFileSync,
   rmSync,
+  writeFileSync,
 } from "node:fs";
 import net from "node:net";
 import path from "node:path";
@@ -21,16 +22,21 @@ const bin = path.join(work, "bin");
 // The installer's runners bake this port, so a run cannot move it.
 export const installerPort = 17306;
 
-const programs = ["cms", "housekeeping", "installer"];
-const banner = /^\S+ \S+ (cms|housekeeping|installer) on http/;
+// The game server has no pages, so it has no frontend to build.
+const programs = ["cms", "housekeeping", "installer", "server"];
+const frontends = ["cms", "housekeeping", "installer"];
+const banner =
+  /^\S+ \S+ (?:(?:cms|housekeeping|installer) on http|INFO server: (?:api on http|info on ws|mus on ws):\/\/)/;
 
 export function build() {
   mkdirSync(bin, { recursive: true });
   for (const program of programs) {
-    execFileSync("pnpm", ["--filter", `@project-reborn/${program}`, "build"], {
-      cwd: root,
-      stdio: ["ignore", "ignore", "inherit"],
-    });
+    if (frontends.includes(program)) {
+      execFileSync("pnpm", ["--filter", `@project-reborn/${program}`, "build"], {
+        cwd: root,
+        stdio: ["ignore", "ignore", "inherit"],
+      });
+    }
     execFileSync(
       "go",
       [
@@ -98,15 +104,20 @@ export class Hotel {
     return `http://localhost:${installerPort}/installer/`;
   }
 
-  #port(program) {
-    return program === "installer" ? installerPort : this.ports[program];
+  // #ports lists the ports a program listens on: the game server's /api/, info
+  // and mus, or the one port of the others.
+  #ports(program) {
+    if (program === "installer") return [installerPort];
+    if (program === "server")
+      return [this.ports.api, this.ports.info, this.ports.mus];
+    return [this.ports[program]];
   }
 
   async start(program) {
-    if (await portBusy(this.#port(program))) {
-      throw new Error(
-        `port ${this.#port(program)} is busy, so ${program} cannot start`,
-      );
+    for (const port of this.#ports(program)) {
+      if (await portBusy(port)) {
+        throw new Error(`port ${port} is busy, so ${program} cannot start`);
+      }
     }
     const log = openSync(path.join(this.dir, `${program}.log`), "a");
     const child = spawn(path.join(bin, program), [], {
@@ -120,8 +131,11 @@ export class Hotel {
       if (child.exitCode !== null) {
         throw new Error(`${program} exited: ${this.log(program)}`);
       }
-      if (await portBusy(this.#port(program))) {
-        await fetch(this.#url(program), { redirect: "manual" });
+      const listening = await Promise.all(this.#ports(program).map(portBusy));
+      if (listening.every(Boolean)) {
+        if (program !== "server") {
+          await fetch(this.#url(program), { redirect: "manual" });
+        }
         return;
       }
       await sleep(100);
@@ -229,6 +243,17 @@ export async function install(dir, ports, mailPort) {
   } finally {
     await hotel.stop("installer");
   }
+
+  // The game server listens on free ports too, and the CMS and housekeeping
+  // find its /api/ in the same config.json.
+  const file = path.join(dir, "config.json");
+  const config = JSON.parse(readFileSync(file, "utf8"));
+  config.server = {
+    info: { host: "localhost", port: ports.info },
+    mus: { host: "localhost", port: ports.mus },
+    api: { host: "localhost", port: ports.api },
+  };
+  writeFileSync(file, `${JSON.stringify(config, null, 2)}\n`);
 
   hotel.sql(`INSERT INTO settings (key, value, updated_at) VALUES
     ('mail.host', '"127.0.0.1"', '2026-11-01 00:00:00'),
