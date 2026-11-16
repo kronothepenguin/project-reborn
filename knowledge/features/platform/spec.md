@@ -86,8 +86,10 @@ called "reborn", this should keep installer + cms + housekeeping in the same mux
 - An installed hotel runs under reborn: `/installer/` answers 404.
 - A visitor opens the installer: its pages, forms and files are served under `/installer/`.
 - The administrator is created: the browser goes to `/`, and the done page is gone.
-- Inside reborn, the config step asks one host and one port: a new address moves the browser to it, and a failed move
-  shows in the form.
+- Inside reborn, the config step asks one host and one port, and the database stays the one `config.json` names: a
+  new address moves the browser to it.
+- Inside reborn, the move to a new address fails: the form shows the error, nothing is saved, and the step takes
+  another address.
 - Inside reborn, the site step asks no housekeeping address: it saves the site address plus `/housekeeping`.
 - Run alone, the installer keeps both forms as they are today.
 - Staff save a setting: the next read in any program returns it, with no wait for a refresh.

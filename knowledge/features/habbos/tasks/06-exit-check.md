@@ -3,7 +3,7 @@ type: Task
 title: Check the habbos feature's behaviours
 description: The user's demonstration is run under reborn and with the separate programs, and its evidence written in the report.
 scope: []
-depends_on: [04-reborn-wires-the-memory-api, 05-the-games-api, client/02-the-client-page]
+depends_on: [04-inject-the-game-under-reborn, 05-the-games-api, client/02-the-client-page]
 skills: []
 ---
 

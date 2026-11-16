@@ -78,6 +78,21 @@ How programs tell the game of a live change is
   it](/decisions/reborn/0009-one-dev-server-for-reborn.md) — A dev-only Astro project in packages/reborn serves the
   CMS's pages at /, housekeeping's at /housekeeping/ and the installer's at /installer/ from one dev server, so that
   reborn-dev proxies it as the standalone dev runners proxy theirs; a spike proves it first.
+- reborn runs the programs its runner builds. `apps/reborn/cmd/reborn/main.go` opens the database and builds the
+  CMS, housekeeping, the installer and the game with each package's own constructor and options, as the CMS's runner
+  does; `reborn.New(cfg, db, c, h, i, g)` mounts them on one HTTP server and starts the game. reborn has no option of
+  its own. The user, on 2026-11-15, of the `WithCMS`, `WithHousekeeping` and `WithInstaller` options that task 03
+  built: "i hate 'WithCMS' and 'WithHousekeeping' looks like you took architecture decisions", "reborn just use the
+  other projects", and "Yes, that is it" to this shape.
+- Inside reborn the installer asks a host and a port only. The runner opens the database at start, so the database is
+  the one `config.json` names, `habbo.db` by default. Run alone, the installer asks the path as before. The user chose
+  "Host and port only". It replaces the database path of the one-address form in
+  [0004](/decisions/reborn/0004-the-installer-inside-reborn.md).
+- The installer gets its listener through `Inject`: `i.Inject(installer.Services{Listener: r})` after `New` and before
+  `Mount`, as the CMS gets its services. An option is only for what a runner injects by mode. The user chose "`Inject`,
+  like the services"; `WithListener` goes.
+- The installer moves first, then saves. A move that fails saves nothing, shows its error in the form, and the step
+  takes another address. The user chose "Move first, then write".
 
 # Notes
 

@@ -3,47 +3,55 @@ type: Task
 title: reborn installs a new hotel
 description: Started in an empty folder, reborn serves the installer under /installer/ on the reborn defaults, redirects every other path there, moves to the address the administrator chooses, builds the hotel once the administrator exists, and answers 404 under /installer/ from then on.
 scope: [packages/reborn]
-depends_on: [03-reborn-runs-an-installed-hotel, 04-installer-under-installer]
-skills: []
+depends_on: [17-hand-reborn-the-programs, 18-installer-inject-and-move-first]
+skills: [applying-go-patterns, testing-behaviours, documenting-with-okf, use-modern-go]
 ---
 
 # Goal
 
 A new hotel is installed live in reborn, without a restart
-([0004](/decisions/reborn/0004-the-installer-inside-reborn.md)).
+([0004](/decisions/reborn/0004-the-installer-inside-reborn.md)). The behaviours of the spec:
+
+- From an empty folder, reborn serves the installer at `/installer/` on `localhost:16416` and redirects every other path
+  there. A new port in the config step moves the browser to it and closes the old one. After "Create administrator"
+  the browser lands on the site at `/`, `/installer/` answers 404, housekeeping answers at `/housekeeping/` and the game
+  on 30000 and 30001.
+- An installed hotel runs under reborn: `/installer/` answers 404.
 
 # Context
 
 - [Spec](/features/platform/spec.md)
-- [Plan](/features/platform/plan.md)
+- [Plan](/features/platform/plan.md): reborn runs the programs its runner builds; the installer gets its listener
+  through `Inject`, asks a host and a port only, and moves before it saves.
 - [Inside reborn the installer lives under /installer/, moves the hotel to the address it is given, and goes once
   installed](/decisions/reborn/0004-the-installer-inside-reborn.md)
-- `main.go` needs no change: the installer's `Site` is already passed by
-  [platform 03](/features/platform/tasks/03-reborn-runs-an-installed-hotel.md).
+- `packages/installer/knowledge/steps.md`: `Inject`, `Installed`, `Done` and the one-address forms.
+- In an empty folder the runner's `config.Get()` writes `config.json` with its defaults and `store.FromConfig()`
+  creates the database, so every program is built before the hotel is installed.
+- With host `0.0.0.0` or `::` on the same port, the installer calls `Move`: the move binds the new address while the
+  old one is still held.
+- A successful move redirects the browser to the same path, so it lands on `GET /installer/config`.
 
 # Steps
 
-- [ ] Without `config.json`, `Run` listens on the `reborn` section's defaults and never calls `config.Load`, which
-  would write the file. With it, it loads it and asks `installer.Installed`.
-- [ ] Not installed: `installer.New` with the installer's `Site` and `WithListener`, mounted on the mux, and a
-  middleware that redirects every path outside `/installer/` to `/installer/`.
-- [ ] reborn's `Listener.Move`: listen on the new address (an error goes back to the form), serve the same handler
-  there, redirect the browser to the same path on the new address (with `0.0.0.0` or `::`, keep the browser's host
-  name), and shut the old server down right after the response, in a goroutine.
-- [ ] On `Done()`: open the hotel's database handle, build the CMS, housekeeping and the game as
-  [platform 03](/features/platform/tasks/03-reborn-runs-an-installed-hotel.md) does, mount them, start the game's
-  listeners, and turn the middleware into one that answers 404 under `/installer/`. Log where `config.json` and the
-  database are.
-- [ ] Installed at start: the installer is not mounted, and `/installer/` answers 404.
-- [ ] Tests from an empty temporary folder, on free ports: `/` and `/me` redirect to `/installer/`; the config step with
-  another port lands on the new address and the old one refuses connections; the site and administrator steps end on
-  `/` with the CMS's page; `/installer/` and `/installer/config` answer 404; `/housekeeping/` answers; a second `Run`
-  in the same folder starts straight into the hotel.
+- [ ] `apps/reborn/cmd/reborn/main.go` calls `i.Inject(installer.Services{Listener: r})` after `reborn.New`.
+- [ ] A hotel that is not installed (`installer.Installed` is false): `Run` mounts the installer with the CMS and
+  housekeeping, and a middleware redirects every path outside `/installer/` to `/installer/`. The game's listeners
+  wait. This replaces the stopgap error of task 03.
+- [ ] reborn's `Move`: listen on the new address (an error goes back to the form), serve the same handler there,
+  redirect the browser to the same path on the new address (with `0.0.0.0` or `::`, keep the browser's host name), and
+  shut the old server down right after the response.
+- [ ] On `Done()`: the middleware lets the hotel through and answers 404 under `/installer/`, and the game's listeners
+  start. Log where `config.json` and the database are.
+- [ ] Installed at start: `/installer/` answers 404 from the first request.
+- [ ] One test per behaviour of the goal, from an empty temporary folder, on free ports.
+- [ ] Update `packages/reborn/knowledge`.
 
 # Checks
 
 ```sh
 make -C packages/reborn check
+make -C apps/reborn check
 ```
 
-Then `make check` in every project that `make dependants project=<folder>` prints for `packages/reborn`.
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/reborn`, `apps/reborn`.

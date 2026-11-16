@@ -106,5 +106,6 @@ It builds on [platform](/features/platform/spec.md) and [the client](/features/c
 - Staff save a habbo's look or motto in housekeeping: housekeeping tells the game once, after the save.
 - A save is refused: the game is told nothing.
 - The game fails, or gives no answer within 2 seconds: the page answers as it does today, and the failure is logged.
+- Under reborn, a look or motto saved on the site or in housekeeping reaches the game in the same process.
 - With the separate programs, the same changes reach the game through its `/api/`, and the `/api/` answers 404 without
   the secret.

@@ -2,6 +2,6 @@
 
 # Tasks
 
-- [reborn passes the game to the site and housekeeping](04-reborn-wires-the-memory-api.md) - packages/reborn builds the memory API around the game's instance and injects it into the CMS and housekeeping, in the order constructors, services, Inject, run.
+- [Inject the game into the site and housekeeping under reborn](04-inject-the-game-under-reborn.md) - reborn's runner hands the game server, which satisfies services.Habbos, to the CMS and housekeeping through Inject, so a look saved on the site reaches the game in the same process.
 - [The game's /api/ for programs run apart](05-the-games-api.md) - Run alone, the game server serves /api/ on server.api, secured by a secret in X-Reborn-Secret that a database update generates; packages/server/api is its client, and the runners use it.
 - [Check the habbos feature's behaviours](06-exit-check.md) - The user's demonstration is run under reborn and with the separate programs, and its evidence written in the report.

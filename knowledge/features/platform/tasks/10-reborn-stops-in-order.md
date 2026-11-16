@@ -3,7 +3,7 @@ type: Task
 title: reborn stops in order
 description: On Ctrl-C or SIGTERM reborn stops taking requests, logs every player out and closes the game's listeners, stops the scheduled tasks and closes the database, with new Shutdown and Stop functions.
 scope: [packages/server, packages/scheduler, packages/reborn, apps/server]
-depends_on: [05-reborn-installs-a-new-hotel]
+depends_on: [05-reborn-installs-a-new-hotel, 17-hand-reborn-the-programs]
 skills: []
 ---
 
