@@ -77,8 +77,8 @@ called "reborn", this should keep installer + cms + housekeeping in the same mux
 
 ## reborn
 
-- From an empty folder, reborn serves the installer at `/installer/` on `localhost:16416` and redirects every other path
-  there. A new port in the config step moves the browser to it and closes the old one. After "Create administrator"
+- From an empty folder, reborn serves the installer at `/installer/` on `localhost:16416` and redirects every route of
+  the programs there, while files and the dev server's own paths are served. A new port in the config step moves the browser to it and closes the old one. After "Create administrator"
   the browser lands on the site at `/`, `/installer/` answers 404, housekeeping answers at `/housekeeping/` and the game
   on 30000 and 30001.
 - reborn starts in the folder of an installed hotel: the site answers at `/`, housekeeping at `/housekeeping/` and the
@@ -96,12 +96,7 @@ called "reborn", this should keep installer + cms + housekeeping in the same mux
 
 ## Next
 
-- A hotel is not installed: every page of the site and of housekeeping sends the browser to `/installer/`, and files
-  and the dev server's own paths are served.
 - Staff save a setting: the next read in any program returns it, with no wait for a refresh.
-- A stored setting holds a bad value: a read returns its default, and the log names it once.
-- Two stored settings break a rule that ties them: each read returns its row as stored, and the rule is checked when a
-  setting is saved.
 - Every program reads its settings from the store, nothing refreshes, `packages/virtual/settings` is gone, and the
   measurements before and after are written in their tasks.
 - Ctrl-C stops reborn in order, and the players online are logged out.

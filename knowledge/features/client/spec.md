@@ -1,50 +1,72 @@
 ---
 type: Spec
 title: The client in the browser
-description: A signed-in habbo opens the site's client page, where the R26 client runs on LibreShockwave; one program serves the client's files; and later the client runs in vanilla JavaScript.
+description: A signed-in habbo opens the site's client page, where the R26 client runs on LibreShockwave; the CMS serves the client's files from the assets folder and its variables and texts from the database; later staff edit them, and the client runs in vanilla JavaScript.
 status: active
-projects: [packages/cms, packages/housekeeping, packages/settings, packages/virtual, vendor/LibreShockwave]
+projects: [packages/cms, packages/housekeeping, packages/installer, packages/assets, packages/store, packages/config, packages/settings, packages/auth, vendor/LibreShockwave]
 ---
 
 # What
 
-The R26 client reaches the player's browser. It was the client bundle's phases C1 to C3, in their order: the `.dcr` on
-LibreShockwave in the site's client page; one program for the client's files, with the external texts and variables
-edited in housekeeping; and a client in vanilla JavaScript
-([client 0002](/decisions/client/0002-libreshockwave-first-then-javascript.md)).
+The game server takes the R26 client's connections over TCP and WebSocket.
 
-The client page comes first, for [the habbos feature](/features/habbos/spec.md)
-([0012](/decisions/reborn/0012-the-client-page-ports-holos-on-libreshockwave.md)).
+Next:
+
+The R26 client reaches the player's browser. The `.dcr` runs on LibreShockwave in the site's client page
+([0012](/decisions/reborn/0012-the-client-page-ports-holos-on-libreshockwave.md)). The CMS serves the client's files
+from the assets folder, and the client's variables and texts from the database. It comes first for
+[the habbos feature](/features/habbos/spec.md).
+
+After that staff edit the variables, the texts and the four XMLs in housekeeping, and later the client runs in vanilla
+JavaScript ([client 0002](/decisions/client/0002-libreshockwave-first-then-javascript.md)).
 
 # Behaviours
 
-For the client page:
-
-- A signed-in habbo opens the site's client page, and the R26 client runs there on LibreShockwave's player and logs in
-  to the game server with the page's SSO ticket.
 - A client connects over TCP or a WebSocket: bytes travel both ways, text frames carry their bytes, and a close on
   either side ends the session.
 - A WebSocket without an Origin header connects: it is refused.
+
+## Next
+
+The client page:
+
+- A signed-in habbo opens the client page: the R26 client runs on LibreShockwave's player and logs in to the game with
+  the page's SSO ticket.
+- A guest opens the client page: Holo's "please log in" page shows.
+- The wide-screen setting is on, or the address says `wide=true`: the client is 960 by 540; otherwise 720 by 540.
+- The loader setting is on: "opening <short name>..." shows while the client loads.
+- A habbo opens the client page with a room to go to, and the room exists: the client opens in that room; an unknown
+  room opens the hotel as usual.
+- The client cannot connect: Holo's "Connection to <site name> failed." page shows, with the game's address and port.
+- The client reports a fatal error: Holo's "Fatal Error" page shows.
+- The client asks to reload: the page opens again with a fresh ticket.
+- Anyone opens the client page: it names LibreShockwave with its licence and links to the source of the exact build.
 - The player is built from `vendor/LibreShockwave` by a make target, into a folder git ignores.
-
-The client's files and the JavaScript client get theirs when they start.
-
-# Open questions
-
-- The client's files and the JavaScript client keep the open questions of their phases: six for the client's files,
-  four for the JavaScript client.
 
 The client's files:
 
-- Whether it is a new project, a package and a runner made with `tools/create`, or a part of an existing one, and its
-  name.
-- Where the external folder is set, and what it may hold: the `.dcr`, its `.cct` casts, and whatever else the client
-  loads, such as the figure data.
-- Where housekeeping keeps the texts and the variables, in the database or as files in the folder, and what fills them
-  the first time.
-- Which housekeeping attribute lets someone edit them.
-- How it runs alone and under the orchestrator, beside the other programs.
-- Whether the binary embeds a default set of files, or serves only what the folder holds.
+- The client asks for a file of its folder (the `.dcr`, a cast, a furni, an XML): the CMS serves it from `assets/dcr/`
+  of the folder `config.json` names, at `/dcr/`.
+- The client asks for `/dcr/external_variables.txt`: it gets the stored variables, with the nine addresses pointing at
+  this hotel and the client version equal to the game's setting.
+- The client asks for `/dcr/external_texts.txt`: it gets the stored texts, with every "Habbo" written as the hotel's
+  short name.
+
+Importing:
+
+- Staff with `housekeeping.dcr` press "Import client files": the database holds exactly the variables and texts of the
+  two files in the folder.
+- The folder lacks one of the two files: the import is refused, names the missing file, and the database stays as it
+  was.
+- A new hotel is installed while the folder holds the two files: the installer imports them.
+
+# Open questions
+
+Editing in housekeeping, the step after the client page:
+
+- How the pages list, search and edit 140 variables and 5,518 texts.
+- What an import does with rows staff changed, when a newer client file arrives.
+- How the four XMLs are edited.
 
 The JavaScript client:
 
@@ -57,5 +79,5 @@ The JavaScript client:
 
 The rest:
 
-- Where the decompiled source goes, and how the hotel offers LibreShockwave's source to players, are
+- Downloading the client's files at installation, and where the decompiled source goes, are
   [the assets feature](/features/assets/spec.md)'s.
