@@ -29,12 +29,13 @@ func main() {
 
 	mux := http.NewServeMux()
 	i.Mount(mux)
+	mux.Handle("GET /{$}", http.RedirectHandler("/installer/", http.StatusSeeOther))
 
 	server := http.Server{
 		Addr:    "localhost:17306",
-		Handler: http.NewCrossOriginProtection().Handler(mux),
+		Handler: mux,
 	}
 
-	log.Println("installer on http://localhost:17306")
+	log.Println("installer on http://localhost:17306/installer/")
 	log.Fatalln(server.ListenAndServe())
 }

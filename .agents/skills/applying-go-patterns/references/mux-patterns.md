@@ -42,9 +42,9 @@
 
 ## Package root
 
-`New` takes what the package requires as arguments. Options set what differs between runners, such as the page
-templates and the static files of production and development. `Inject` hands over a service another program
-implements, after `New` and before `Mount`.
+`New` takes what the package requires as arguments. Options set what a runner injects by mode, the pages and the
+static handler ([Design](../SKILL.md#design)). `Inject` hands over a service another program implements, after `New`
+and before `Mount`.
 
 ```go
 type App struct {
@@ -61,8 +61,12 @@ type Services struct {
 
 type Option func(*App)
 
-func WithPages(pages *template.Template, static http.Handler) Option {
-	return func(a *App) { a.pages, a.static = pages, static }
+func WithPages(pages *template.Template) Option {
+	return func(a *App) { a.pages = pages }
+}
+
+func WithStatic(static http.Handler) Option {
+	return func(a *App) { a.static = static }
 }
 
 func New(db *sql.DB, opts ...Option) *App {

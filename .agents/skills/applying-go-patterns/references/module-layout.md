@@ -53,7 +53,7 @@ A `go.work` workspace holds the Go modules, and a pnpm workspace holds the front
 - A sub-folder is a public package for one topic, imported as `<module>/<topic>`. Sub-folders may nest.
 - `internal/` holds the packages only this module imports. Put a supporting package there first, and keep packages
   there as much as possible.
-- `cmd/<binary>/main.go` holds each binary. `main.go` holds wiring only.
+- `cmd/<binary>/main.go` holds each binary.
 - One package per directory. The package name is the directory name.
 - A web app keeps its handlers in `internal/router`, and the root's `Mount` registers them
   (`mux-patterns.md`).

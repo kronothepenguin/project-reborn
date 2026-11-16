@@ -29,7 +29,7 @@ The projects and what each one is: [Monorepo architecture](/architecture.md). Th
 - `pnpm-workspace.yaml` globs `apps/*`, `packages/*` and `tests/*`.
 - `apps/<app>/cmd/<app>` is the production runner. A runner whose package ships a frontend also has
   `apps/<app>/cmd/<app>-dev`, the development runner: the CMS, housekeeping and the installer. `apps/server` has
-  `cmd/server` only. `apps/**/cmd/**` belongs to the user ([Soft rules](/rules.md)).
+  `cmd/server` only.
 - `tools/create` keeps its command in `tools/create/cmd/create`, and `tools/checks` keeps its
   command in `tools/checks/cmd/dependants`.
 - `packages/server` keeps its supporting packages under `internal/`: `encoding`, `game`, `r26` and `transport`.

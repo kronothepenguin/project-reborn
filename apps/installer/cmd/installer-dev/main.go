@@ -12,10 +12,11 @@ import (
 )
 
 func main() {
-	baseURL, err := url.Parse("http://localhost:25050")
+	astroURL, err := url.Parse("http://localhost:25050/")
 	if err != nil {
 		panic(err)
 	}
+	baseURL := astroURL.JoinPath("installer")
 
 	resolver := astro.MakeServerResolver(baseURL)
 	proxy := httputil.NewSingleHostReverseProxy(baseURL)
@@ -30,12 +31,17 @@ func main() {
 
 	mux := http.NewServeMux()
 	i.Mount(mux)
+	mux.Handle("GET /{$}", http.RedirectHandler("/installer/", http.StatusSeeOther))
+
+	// Vite emits its own paths, such as /@vite/client, at the root of the dev
+	// server whatever the base, and Mount leaves / alone.
+	mux.Handle("/", httputil.NewSingleHostReverseProxy(astroURL))
 
 	server := http.Server{
 		Addr:    "localhost:17306",
-		Handler: http.NewCrossOriginProtection().Handler(mux),
+		Handler: mux,
 	}
 
-	log.Println("installer dev on http://localhost:17306")
+	log.Println("installer dev on http://localhost:17306/installer/")
 	log.Fatalln(server.ListenAndServe())
 }

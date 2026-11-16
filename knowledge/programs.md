@@ -13,11 +13,11 @@ Packages hold the code of each program, and `apps/<name>` is a thin runner aroun
 
 | Program | Package | Runner | State | Role |
 | --- | --- | --- | --- | --- |
-| Installer | `packages/installer` | `apps/installer` | built | Writes `config.json`, creates the database, the site settings and the first administrator |
+| Installer | `packages/installer` | `apps/installer` | built, under `/installer/` | Writes `config.json`, creates the database, the site settings and the first administrator |
 | CMS | `packages/cms` | `apps/cms` | being built | The public site |
 | Housekeeping | `packages/housekeeping` | `apps/housekeeping` | HK-A built | The staff panel |
 | Game server | `packages/server` | `apps/server` | being built, its next work in the [features](/features/index.md); the site's game-server features stay deferred ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) | The hotel itself |
-| Orchestrator | none | `apps/reborn` | later ([0039](/decisions/holo-port/0039-orchestrator-is-a-later-project.md)) | Runs all of the above from one binary |
+| reborn | `packages/reborn` | `apps/reborn` | runs an installed hotel; the installer inside it comes next ([0004](/decisions/reborn/0004-the-installer-inside-reborn.md)) | Runs all of the above from one binary |
 
 # What each program does with shared state
 
@@ -73,6 +73,7 @@ No task runs while updates wait, because its code may need them.
 | CMS | `apps/cms/cmd/cms` | `apps/cms/cmd/cms-dev` |
 | Housekeeping | `apps/housekeeping/cmd/housekeeping` | `apps/housekeeping/cmd/housekeeping-dev` |
 | Game server | `apps/server/cmd/server` | `apps/server/cmd/server` |
+| reborn | `apps/reborn/cmd/reborn` | to come ([0009](/decisions/reborn/0009-one-dev-server-for-reborn.md)) |
 
 - `make dev` in `apps/<app>` starts air from the repository root, so every runner reads and writes the root
   `config.json` ([0027](/decisions/holo-port/0027-runners-run-from-the-root.md)).
@@ -112,10 +113,14 @@ The programs share the SQLite file, so they run on one machine, and no IPC exist
 
 # Running together
 
-This is planned, and needs the orchestrator.
+`apps/reborn` runs an installed hotel: in a folder with no `config.json`, or with no administrator, it stops with
+`the hotel is not installed`. Serving the installer inside reborn comes next
+([0004](/decisions/reborn/0004-the-installer-inside-reborn.md)).
 
-- One process mounts every program on one mux, with one database handle
+- One process mounts the CMS at `/` and housekeeping at `/housekeeping/` on one mux, on `reborn.host` and
+  `reborn.port`, with one database handle, and starts the game's listeners
   ([0029](/decisions/holo-port/0029-package-level-settings-and-auth.md)).
+- The production runner gives each program its embedded build (`DistFS`).
 - `Mount` keeps each program's routes protected on the shared mux, and housekeeping stays under `/housekeeping`
   ([0003](/decisions/holo-port/0003-housekeeping-under-prefix.md)).
 - The settings are one process-wide singleton, so a change applies at once and the refresh does not run.

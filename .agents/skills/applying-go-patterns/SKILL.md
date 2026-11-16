@@ -20,8 +20,15 @@ Read only the reference of the task.
 - A state or entity type receives the database as an argument and holds no connection.
 - A request-based program reads the store on each use. In-memory state and caches are for real-time state only.
 - Ports and paths come from the config file. What changes at runtime is a setting.
-- A constructor is `New(db, opts...)`. What the package requires is an argument. Options are only for what differs
-  between runners (production and development).
+- A program has two runners, production and development, in place of an environment variable and an `if`. Each
+  runner injects what its mode needs: production gives the built files and the resolver of the built pages;
+  development gives the proxy to the Vite dev server and the resolver of the dev server's pages.
+- A constructor is `New(db, opts...)`. What the package requires, such as the database, is an argument.
+- An option exists only for what a runner injects by mode: the static handler and the page resolver. Ask the user
+  before adding a new option.
+- A package with a frontend exports its built files as `DistFS`, so another program that embeds the package serves the
+  same frontend.
+- A runner's `main.go` holds wiring only. Edit it like any other file.
 - A service another program implements is handed over with `Inject`, after `New` and before `Mount`.
 - `New` and `Must` helpers may panic at startup.
 

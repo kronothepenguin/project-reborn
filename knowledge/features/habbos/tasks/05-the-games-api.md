@@ -1,8 +1,8 @@
 ---
 type: Task
 title: The game's /api/ for programs run apart
-description: Run alone, the game server serves /api/ on server.api, secured by a secret in X-Reborn-Secret that a database update generates; packages/server/api is its client, and the runners' changes are proposed to the user.
-scope: [packages/server, packages/config, packages/store]
+description: Run alone, the game server serves /api/ on server.api, secured by a secret in X-Reborn-Secret that a database update generates; packages/server/api is its client, and the runners use it.
+scope: [packages/server, packages/config, packages/store, apps/server, apps/cms, apps/housekeeping]
 depends_on: [02-the-game-sends-a-new-look, 03-the-site-tells-the-game]
 skills: [adding-config-sections, adding-data-persistence, documenting-with-okf]
 ---
@@ -35,9 +35,8 @@ game do it ([0005](/decisions/reborn/0005-the-game-hears-live-changes-through-se
   after 2 seconds.
 - [ ] Tests: the `/api/` answers 404 without the secret and with a wrong one; with it, `SendLook` runs; the client
   against an `httptest` server; the update on an empty database and on one of the last release.
-- [ ] The runners are the user's files: write in the report the changes to `apps/server/cmd/server/main.go` (open the
-  API) and to the CMS's and housekeeping's runners (read the secret, build `api.New` from `server.api`, `Inject` it),
-  and stop for the master to ask.
+- [ ] The runners: `apps/server/cmd/server/main.go` opens the API; the CMS's and housekeeping's runners read the
+  secret, build `api.New` from `server.api` and `Inject` it.
 
 # Checks
 

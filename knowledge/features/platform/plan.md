@@ -16,7 +16,8 @@ Built:
 | `packages/config`, `packages/installer`, `packages/housekeeping` | The `reborn` section: `config.Reborn.Host` and `Port`, defaults `localhost` and 16416; the installer writes it; housekeeping's update page offers the two keys to an older `config.json` |
 | `packages/auth` | `RealIP`, in front of the CMS and housekeeping |
 | `packages/cms`, `packages/housekeeping` | `Mount` wraps every route with `RealIP` and cross-origin protection |
-| `apps/installer` | The runners wrap the installer in cross-origin protection |
+| `packages/installer`, `apps/installer` | Under `/installer/`, its two forms, `Listener`, no done page; `Mount` protects its routes, and the runners redirect `/` to `/installer/` |
+| `packages/reborn`, `apps/reborn` | Runs an installed hotel: one mux, one database handle, the game's listeners ([0003](/decisions/reborn/0003-reborn-runs-the-hotel-in-one-process.md)); the production runner `apps/reborn/cmd/reborn` |
 | `packages/server`, `apps/server` | Only the game listeners on 30000 and 30001; the unused HTTP listener on 15445 is gone |
 | `.github/workflows`, `Makefile` | `ci.yml` runs `make check` and `make e2e`; `release.yml` runs them on a tag, then `make release` |
 | `tests/e2e` | The browser suites, run by `make e2e` |
@@ -25,8 +26,7 @@ Planned:
 
 | Project | Part |
 | --- | --- |
-| `packages/reborn`, `apps/reborn` | The orchestrator: one mux, one database handle, the game's listeners ([0003](/decisions/reborn/0003-reborn-runs-the-hotel-in-one-process.md)); installing a new hotel ([0004](/decisions/reborn/0004-the-installer-inside-reborn.md)); stopping in order ([0007](/decisions/reborn/0007-reborn-stops-in-order.md)); one dev server ([0009](/decisions/reborn/0009-one-dev-server-for-reborn.md)) |
-| `packages/installer` | Under `/installer/`, its two forms, `Listener`, no done page ([0004](/decisions/reborn/0004-the-installer-inside-reborn.md)) |
+| `packages/reborn`, `apps/reborn` | Installing a new hotel ([0004](/decisions/reborn/0004-the-installer-inside-reborn.md)); stopping in order ([0007](/decisions/reborn/0007-reborn-stops-in-order.md)); one dev server and `reborn-dev` ([0009](/decisions/reborn/0009-one-dev-server-for-reborn.md)) |
 | `packages/settings` and every program | Settings read from the store, no refresh, `virtual/settings` gone ([0006](/decisions/reborn/0006-settings-are-read-from-the-store.md)) |
 | `packages/server`, `packages/scheduler` | `Shutdown` and `Stop` ([0007](/decisions/reborn/0007-reborn-stops-in-order.md)) |
 | `tests/e2e` | A browser suite for reborn |

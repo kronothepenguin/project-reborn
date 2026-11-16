@@ -24,8 +24,8 @@ The habbos feature is done, with evidence for each behaviour of [the spec](/feat
 - [ ] Save a new look on the site's looks page, a motto on the motto page and on the profile page, and both in
   housekeeping's habbo editor: each shows in both clients at once. Screenshots kept in the scratchpad, and the steps
   written in the report.
-- [ ] With the separate programs and the runners' changes the user accepted, the same through the game's `/api/`; a
-  request without the secret is answered 404.
+- [ ] With the separate programs and the runners of [05](/features/habbos/tasks/05-the-games-api.md), the same
+  through the game's `/api/`; a request without the secret is answered 404.
 - [ ] What fails becomes a new task of the feature.
 
 # Checks

@@ -4,5 +4,5 @@
 
 - [Tell the game of a new look or motto from the site and housekeeping](03-the-site-tells-the-game.md) - The CMS's looks, profile and motto pages and housekeeping's habbo editor call Habbos.SendLook after they save, give up after 2 seconds and log a failure.
 - [reborn passes the game to the site and housekeeping](04-reborn-wires-the-memory-api.md) - packages/reborn builds the memory API around the game's instance and injects it into the CMS and housekeeping, in the order constructors, services, Inject, run.
-- [The game's /api/ for programs run apart](05-the-games-api.md) - Run alone, the game server serves /api/ on server.api, secured by a secret in X-Reborn-Secret that a database update generates; packages/server/api is its client, and the runners' changes are proposed to the user.
+- [The game's /api/ for programs run apart](05-the-games-api.md) - Run alone, the game server serves /api/ on server.api, secured by a secret in X-Reborn-Secret that a database update generates; packages/server/api is its client, and the runners use it.
 - [Check the habbos feature's behaviours](06-exit-check.md) - The user's demonstration is run under reborn and with the separate programs, and its evidence written in the report.
