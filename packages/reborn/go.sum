@@ -14,6 +14,10 @@ github.com/kronothepenguin/project-reborn/packages/cms v0.0.0-20261115222100-913
 github.com/kronothepenguin/project-reborn/packages/cms v0.0.0-20261115222100-913bc4dc312d/go.mod h1:OwgBvgQ5wORp+LWU8DeJJ/PgkEz9w9I5viai2r/oiqI=
 github.com/kronothepenguin/project-reborn/packages/config v0.0.0-20261115222100-913bc4dc312d h1:53z8C2s6tjUB/Btvm7YnwioYHdU4HSxLMnfnSR5FRFI=
 github.com/kronothepenguin/project-reborn/packages/config v0.0.0-20261115222100-913bc4dc312d/go.mod h1:YRo97jUfmidAPc4eF779L1DBq9r4HFfKeTczXVb4hBo=
+github.com/kronothepenguin/project-reborn/packages/housekeeping v0.0.0-20261115222100-913bc4dc312d h1:9LW5Rj9azPeCSk8bDZixaWz9n9SySgO045/DI1xTEtg=
+github.com/kronothepenguin/project-reborn/packages/housekeeping v0.0.0-20261115222100-913bc4dc312d/go.mod h1:80yO9IKC5mG2ZzsjdxeNaDufWtjLAXL/xnboQXJECrE=
+github.com/kronothepenguin/project-reborn/packages/installer v0.0.0-20261115222100-913bc4dc312d h1:YzkrFM4tqbjewWEWF/VUiqBgASZuctUUgHHlWY96HgU=
+github.com/kronothepenguin/project-reborn/packages/installer v0.0.0-20261115222100-913bc4dc312d/go.mod h1:9PANYjN1ypqr/2afmqMmOP0rk+9PsZlUoAhOefmVncU=
 github.com/kronothepenguin/project-reborn/packages/scheduler v0.0.0-20261115222100-913bc4dc312d h1:aPsy7bqhhDdnhhsSynDdVdA1PL3diqy8JXqCZqy/kGw=
 github.com/kronothepenguin/project-reborn/packages/scheduler v0.0.0-20261115222100-913bc4dc312d/go.mod h1:lGuVnNsxI9Ee393BEu1igHQimFgVJocpWOrOcWRrshI=
 github.com/kronothepenguin/project-reborn/packages/server v0.0.0-20261115222100-913bc4dc312d h1:LWNzoYK0Ig30JWeQ+o64CCFzZ3CxHlBer5P1NC9WYbc=

@@ -16,9 +16,12 @@ and the app imports it after Tailwind in its own CSS entry:
 
 ```css
 /* packages/<app>/src/styles/global.css */
-@import "tailwindcss";
+@import "tailwindcss" source("../..");
 @import "@project-reborn/components/styles.css";
 ```
+
+`source("../..")` makes the app's own folder the root of Tailwind's scan, whichever dev server compiles the file: its
+own, or reborn's dev server (`packages/reborn/knowledge/dev-server.md`).
 
 The app keeps its own theme and tokens; the design system contributes the classes the app's build emits.
 
