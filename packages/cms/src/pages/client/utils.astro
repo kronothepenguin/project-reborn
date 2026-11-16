@@ -1,0 +1,45 @@
+---
+import { Card } from "@project-reborn/components";
+import Document from "../../layouts/document.astro";
+
+// clientutils.php's three pages, in templates/client/subheader.php's popup:
+// the connection failed, a fatal error, and the sign-in a guest needs first.
+---
+
+<Document
+  title="[[ .ShortName ]] ~ "
+  description="[[ .Name ]] is a virtual world where you can meet and make friends."
+  keywords="[[ .ShortName ]],virtual world,play games,enter competitions,make friends"
+>
+  <main class="flex min-h-screen items-center justify-center p-2">
+    <div class="w-full max-w-md text-sm">
+      [[ if eq .Key "connection_failed" ]]
+      <Card color="orange">
+        <h2 slot="header">Connection to [[ .Name ]] failed.</h2>
+        <p>
+          Unfortunately we are unable to connect you to [[ .Name ]]. This could be because your computer is blocking the
+          connections via a firewall. Please verify with the person responsible for your Internet connection that the
+          following addresses are permitted by the firewall: IP address: [[ .Host ]], TCP port: [[ .Port ]]
+        </p>
+      </Card>
+      [[ else if eq .Key "error" ]]
+      <Card color="orange">
+        <h2 slot="header">Fatal Error</h2>
+        <p>
+          An unknown error occurred. Please try again later in a couple of minutes. If this error is persistent, use the
+          Help Tool to request support.
+        </p>
+      </Card>
+      [[ else ]]
+      <Card color="orange">
+        <h2 slot="header">Sign in</h2>
+        <p class="text-center">
+          In order to use the game client and the complete website, please
+          <a href="/" target="_self" class="underline"><strong>sign in</strong></a>! If you forgot your username or
+          password, please click <a href="/forgot" class="underline">here</a>.
+        </p>
+      </Card>
+      [[ end ]]
+    </div>
+  </main>
+</Document>

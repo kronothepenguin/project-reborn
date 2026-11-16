@@ -1,0 +1,46 @@
+---
+type: Reference
+title: The client page
+description: How the CMS serves Holo's client.php, clientutils.php and unloadclient.php, with LibreShockwave's player built by make player in place of Adobe's plugin.
+---
+
+# Routes
+
+| Route | Holo's file | Handler |
+| --- | --- | --- |
+| `GET /client` | `client.php` | `HandleClientView` in `internal/router/client.go` |
+| `GET /client/utils?key=` | `clientutils.php` | `HandleClientUtilsView` in `internal/router/client_utils.go` |
+| `POST /client/unload` | `unloadclient.php` | `HandleClientUnload` in `internal/router/client_unload.go` |
+
+- A guest who opens `/client` goes to `/client/utils?key=LogInPlease`. `/client/utils` shows a guest the sign-in page
+  whatever the key.
+- A habbo gets `true` for the keys `cacheCheck` and `cache`, Holo's pages for `connection_failed` and `error`, and an
+  empty answer for any other key.
+- `/client/unload` answers a habbo with nothing and sends a guest to `/`. The page calls it with `sendBeacon` as it
+  closes.
+
+# The page
+
+- The page passes Holo's `sw1` to `sw9` to the player as `params`, in `#client-params`, and the movie's address in
+  `#clientembed`'s `data-movie`. The addresses start with `site.url`, and the client's files are at `/dcr/`.
+- `sw2` and `sw3` come from `config.json`'s `server.info` and `server.mus`. A visitor from `127.0.0.1` gets
+  `127.0.0.1` as the info host, as Holo's `$ip` did.
+- `sw8` carries `auth.SSOTicket`: the game spends it at login, so the reload address, `/client?x=reauthenticate`,
+  gets a fresh one.
+- `sw9`, `forward.id`, is there when the address holds `roomId` and `forwardId=2` and the room exists.
+- The client is 960 by 540 when the address says `wide=true`, or holds no `wide` while `features.clientWideScreen` is
+  on; otherwise 720 by 540. The top bar's width follows the setting alone, as Holo's `body.wide` did.
+- `features.clientLoader` shows "opening <short name>..." until the player has loaded the movie.
+- The player follows the client's connection failed, fatal error and reload addresses itself, with the window's
+  location.
+- The island `client/hotel-client` holds what Holo's `habboclient.js` did: the top bar on a screen taller than 600
+  pixels, the window fitted when the site opened it, Close Hotel, the window's name `client`, and the unload call.
+
+# The player
+
+- `make player` at the root builds LibreShockwave's player from `vendor/LibreShockwave` with Emscripten, in
+  `tmp/libreshockwave`, and copies its four files to `public/libreshockwave/`, which git ignores. It stops with a
+  message when the submodule, Emscripten or its `zlib` and `libjpeg` are missing.
+- It writes `public/libreshockwave/source.txt`, the address of the commit it built. `client.astro` reads it at build
+  time and links the page's LibreShockwave line to it, or to the repository before the player is built.
+- Astro copies `public/` into `dist/`, so the CMS embeds the player once it is built.

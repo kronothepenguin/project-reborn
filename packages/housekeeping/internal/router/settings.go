@@ -413,6 +413,8 @@ var forms = []section{
 		Fields: []field{
 			{Key: "features.landingPromo", Label: "Landing Promo Enabled", Help: "This determines whether the promo on the login page will be displayed. If disabled, the join button is shown."},
 			{Key: "features.birthdayNotifications", Label: "Birthday Notifications Enabled", Help: "This will determine whether a 'Happy birthday' message will be shown on a user's birthday."},
+			{Key: "features.clientWideScreen", Label: "Client in Widescreen", Help: "This determines whether the game client should display in widescreen mode or not."},
+			{Key: "features.clientLoader", Label: "Client Loader Enabled", Help: "This determines whether 'opening' and the site's shortname show while the game client loads."},
 			{Key: "features.tagFight", Label: "Tag Fight Enabled", Help: "This determines whether the Tag Fight will be shown on the tags page."},
 			{Key: "features.groupPurchase", Label: "Group Purchasing Enabled", Help: "This determines whether new groups can be created or not."},
 			{Key: "club.maxMonths", Label: "HC Months Limit", Help: "This will limit the allowed amount of subscribed Club months per user at once to this number. Set to '0' to have no limit."},

@@ -1,0 +1,68 @@
+---
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import HotelClient from "../components/client/hotel-client.svelte";
+import Document from "../layouts/document.astro";
+
+// client.php with templates/client/header.php: the top bar, the loader and the
+// client, which LibreShockwave's player runs in place of Adobe's plugin. The
+// top bar shows once the island has started, as habboclient.js's resizeWin did.
+// `make player` writes the address of the exact source it built from.
+const repository = "https://github.com/LibreShockwave/LibreShockwave";
+let source = repository;
+try {
+  source = readFileSync(resolve("public/libreshockwave/source.txt"), "utf8").trim() || repository;
+} catch {
+  // The player is not built: the line links to the repository.
+}
+---
+
+<Document
+  title="[[ .ShortName ]] ~ "
+  description="[[ .Name ]] is a virtual world where you can meet and make friends."
+  keywords="[[ .ShortName ]],virtual world,play games,enter competitions,make friends"
+>
+  <div id="client" class="min-h-screen bg-black text-white [[ if .WideBody ]]wide[[ end ]]">
+    <div
+      id="client-topbar"
+      hidden
+      class="mx-auto h-[29px] [[ if .WideBody ]]w-[960px][[ else ]]w-[720px][[ end ]] bg-linear-to-b from-neutral-600 to-neutral-900 text-[9px]"
+    >
+      <div class="float-left h-[19px] w-[230px] text-left">
+        <img src="/habbo.png" alt="" class="inline h-[19px] w-auto py-[5px] pl-2 box-content" />
+      </div>
+      <div class="float-left mt-1.5 h-[19px] w-[260px] overflow-hidden pt-[3px] text-center">
+        <div id="habboCountUpdateTarget">[[ .OnlineCount ]] members online now</div>
+      </div>
+      <div class="float-left w-[230px] pt-[3px] text-right leading-[19px]">
+        <a href="#" data-close class="pr-4 align-middle text-white uppercase">Close Hotel</a>
+      </div>
+    </div>
+
+    <div id="clientembed-container" class="relative text-center">
+      [[ if .Loader ]]
+      <div id="clientembed-loader" hidden class="absolute inset-x-0 top-[250px] z-10 text-center">
+        <div><b>opening [[ .ShortName ]]...</b></div>
+      </div>
+      [[ end ]]
+      <div
+        id="clientembed"
+        class="mx-auto bg-black text-center text-white"
+        style="width: [[ .Width ]]px; height: [[ .Height ]]px"
+        data-movie="[[ .Movie ]]"
+        data-short-name="[[ .ShortName ]]"
+      >
+        <canvas id="client-stage" width="[[ .Width ]]" height="[[ .Height ]]" class="block"></canvas>
+      </div>
+      <div id="client-params" hidden>[[ range .Params ]]<data value="[[ .Value ]]">[[ .Name ]]</data>[[ end ]]</div>
+    </div>
+
+    <p class="mx-auto mt-2 w-[720px] text-center text-[9px] text-neutral-400">
+      The client runs on{" "}
+      <a href={source} class="underline hover:text-white">LibreShockwave</a>,
+      free software under the{" "}
+      <a href="https://www.gnu.org/licenses/agpl-3.0.html" class="underline hover:text-white">GNU AGPL-3.0</a>.
+    </p>
+  </div>
+  <HotelClient client:only="svelte" />
+</Document>

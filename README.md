@@ -38,6 +38,15 @@ make install        # every project's folders and dependencies, and the tools
 
 Each project also has its own `make install`, the minimum needed to develop and run it.
 
+The client page runs the game on LibreShockwave's player, which `make player` builds from `vendor/LibreShockwave` into
+`packages/cms/public/libreshockwave/`. It needs [Emscripten](https://emscripten.org/) and two of its libraries, built
+once:
+
+```bash
+embuilder build zlib libjpeg
+make player         # about three minutes; EMSCRIPTEN=<folder of emcc> when emcc is not on the PATH
+```
+
 ### 2. Run an app's dev server
 
 Each app owns its own `Makefile` with app-specific targets.
