@@ -2,4 +2,4 @@
 
 # Tasks
 
-- [Check the habbos feature's behaviours](06-exit-check.md) - The user's demonstration is run under reborn and with the separate programs, and its evidence written in the report.
+- [Check the habbos feature's behaviours](06-exit-check.md) - The user's demonstration is run under reborn and with the separate programs, in real browsers, and its evidence written in the report.

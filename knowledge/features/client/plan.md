@@ -11,11 +11,6 @@ Built:
 | Project | Part |
 | --- | --- |
 | `packages/server` | The info and mus listeners take TCP and WebSocket connections |
-
-Planned:
-
-| Project | Part |
-| --- | --- |
 | `packages/assets` | A new module, the shared package for everything about assets. Its first part is `packages/assets/dcr`: it copies `external_variables.txt` and `external_texts.txt` into the database and writes them out for the client |
 | `packages/store` | The tables `dcr_variables` and `dcr_texts` and their queries |
 | `packages/config` | `assets.path`, the assets folder, `assets` by default |

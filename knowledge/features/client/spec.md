@@ -8,17 +8,16 @@ projects: [packages/cms, packages/housekeeping, packages/installer, packages/ass
 
 # What
 
-The game server takes the R26 client's connections over TCP and WebSocket.
+The R26 client reaches the player's browser. The `.dcr` runs on LibreShockwave in the site's client page
+([0012](/decisions/reborn/0012-the-client-page-ports-holos-on-libreshockwave.md)). The CMS serves the client's files
+from the assets folder, and the client's variables and texts from the database, which the installer and housekeeping
+import.
 
 Next:
 
-The R26 client reaches the player's browser. The `.dcr` runs on LibreShockwave in the site's client page
-([0012](/decisions/reborn/0012-the-client-page-ports-holos-on-libreshockwave.md)). The CMS serves the client's files
-from the assets folder, and the client's variables and texts from the database. It comes first for
-[the habbos feature](/features/habbos/spec.md).
-
-After that staff edit the variables, the texts and the four XMLs in housekeeping, and later the client runs in vanilla
-JavaScript ([client 0002](/decisions/client/0002-libreshockwave-first-then-javascript.md)).
+Staff edit the variables, the texts and the four XMLs in housekeeping, and later the client runs in vanilla JavaScript
+([client 0002](/decisions/client/0002-libreshockwave-first-then-javascript.md)). Their behaviours are written with the
+user when each is planned.
 
 # Behaviours
 
@@ -26,7 +25,6 @@ JavaScript ([client 0002](/decisions/client/0002-libreshockwave-first-then-javas
   either side ends the session.
 - A WebSocket without an Origin header connects: it is refused.
 
-## Next
 
 The client page:
 
@@ -48,7 +46,9 @@ The client page:
 - On a screen taller than 600 pixels the client page shows its top bar, with the members online and Close Hotel, and a
   window the site opened fits itself to the client.
 - The site is closed, or the habbo's user is banned: the client pages show the maintenance or the ban page.
-- A signed-in habbo presses "Enter <short name>" on the site: the client opens in a window of its own, as Holo's did.
+- A signed-in habbo presses "Enter <site name>" in the site's header: the client opens in a window of its own, 980 by
+  597, or 740 by 597 with the narrow client on a screen under 990 pixels wide.
+- A habbo presses "Enter <site name>" while the client's window is open: that window comes forward as it is.
 
 The client's files:
 
