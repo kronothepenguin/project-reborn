@@ -69,11 +69,15 @@ export default async function ({
   await page.fill('input[name="bornOn"]', "1990-05-01");
   await page.fill('input[name="password"]', "secret123");
   await page.fill('input[name="passwordConfirm"]', "secret123");
-  await Promise.all([
-    page.waitForURL("**/done"),
+  const [created] = await Promise.all([
+    page.waitForResponse((r) => r.url().endsWith("/installer/admin")),
     page.click('button:has-text("Create administrator")'),
   ]);
-  await shot(page, "installer-done");
+  check(
+    "creating the administrator sends the browser to /",
+    created.status() === 303 && created.headers()["location"] === "/",
+    `${created.status()} ${created.headers()["location"]}`,
+  );
   const config = JSON.parse(readFileSync(`${dir}/config.json`, "utf8"));
   check(
     "config.json holds both ports",

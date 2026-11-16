@@ -95,7 +95,7 @@ export class Hotel {
     if (program === "cms") return `http://localhost:${this.ports.cms}/`;
     if (program === "housekeeping")
       return `http://localhost:${this.ports.housekeeping}/housekeeping/`;
-    return `http://localhost:${installerPort}/`;
+    return `http://localhost:${installerPort}/installer/`;
   }
 
   #port(program) {
@@ -190,12 +190,15 @@ export function copyHotel(hotel, name) {
 export async function install(dir, ports, mailPort) {
   const hotel = new Hotel(dir, ports);
   const post = async (step, fields) => {
-    const response = await fetch(`http://localhost:${installerPort}${step}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams(fields),
-      redirect: "manual",
-    });
+    const response = await fetch(
+      `http://localhost:${installerPort}/installer${step}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(fields),
+        redirect: "manual",
+      },
+    );
     if (response.status !== 303) {
       throw new Error(`installer ${step} answered ${response.status}`);
     }

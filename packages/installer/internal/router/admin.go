@@ -22,7 +22,7 @@ type adminPage struct {
 	Error        string
 }
 
-// HandleAdminView renders GET /admin.
+// HandleAdminView renders GET /installer/admin.
 func (r *Router) HandleAdminView(w http.ResponseWriter, req *http.Request) {
 	if _, ok := r.step(w, req, true); !ok {
 		return
@@ -30,7 +30,8 @@ func (r *Router) HandleAdminView(w http.ResponseWriter, req *http.Request) {
 	astro.WriteTemplate(w, r.deps.Resolver, "admin.html", adminPage{PasswordHelp: passwordHelp()})
 }
 
-// HandleAdminCreate handles POST /admin: it creates the administrator.
+// HandleAdminCreate handles POST /installer/admin: it creates the
+// administrator, then sends the browser to the site at /.
 func (r *Router) HandleAdminCreate(w http.ResponseWriter, req *http.Request) {
 	if _, ok := r.step(w, req, true); !ok {
 		return
@@ -63,10 +64,10 @@ func (r *Router) HandleAdminCreate(w http.ResponseWriter, req *http.Request) {
 	})
 	switch {
 	case err == nil:
-		http.Redirect(w, req, "/done", http.StatusSeeOther)
+		http.Redirect(w, req, "/", http.StatusSeeOther)
 		return
 	case errors.Is(err, setup.ErrInstalled):
-		http.Redirect(w, req, "/", http.StatusSeeOther)
+		http.Redirect(w, req, "/installer/", http.StatusSeeOther)
 		return
 	case errors.Is(err, auth.ErrHabboName):
 		page.Error = "Habbo names are 1 to 24 letters, digits or - = ? ! @ : . ,"

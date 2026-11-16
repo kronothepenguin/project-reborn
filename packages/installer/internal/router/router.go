@@ -14,6 +14,9 @@ import (
 type Deps struct {
 	Resolver astro.Resolver
 	Setup    *setup.State
+	// Move moves the hotel to host:port, as installer.Listener does. When it is
+	// set, the config step asks one address for the whole hotel.
+	Move func(w http.ResponseWriter, r *http.Request, host string, port int) error
 }
 
 type Router struct {
@@ -34,12 +37,12 @@ func (r *Router) step(w http.ResponseWriter, req *http.Request, needConfig bool)
 		return setup.Installation{}, false
 	}
 	if installed {
-		http.Redirect(w, req, "/", http.StatusSeeOther)
+		http.Redirect(w, req, "/installer/", http.StatusSeeOther)
 		return setup.Installation{}, false
 	}
 	installation, configured := r.deps.Setup.Current()
 	if needConfig && !configured {
-		http.Redirect(w, req, "/config", http.StatusSeeOther)
+		http.Redirect(w, req, "/installer/config", http.StatusSeeOther)
 		return setup.Installation{}, false
 	}
 	return installation, true
