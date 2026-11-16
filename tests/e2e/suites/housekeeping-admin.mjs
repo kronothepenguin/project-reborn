@@ -53,7 +53,7 @@ export default async function (t) {
     .count();
   check(
     "every attribute of the catalogue has a checkbox",
-    boxes === 21,
+    boxes === 22,
     String(boxes),
   );
 

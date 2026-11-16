@@ -32,7 +32,8 @@ export default async function (t) {
   hotel.on("response", (r) => {
     if (r.status() >= 500) problems.push(`${r.status()} ${r.url()}`);
   });
-  await hotel.waitForLoadState();
+  // window.open hands back the window while it still shows about:blank.
+  await hotel.waitForURL((u) => u.pathname === "/client");
   check(
     "Enter opens the client page in the window named client",
     answer.status() === 200 &&
@@ -75,7 +76,8 @@ export default async function (t) {
     small.waitForEvent("popup"),
     small.locator("#enter-hotel-open-medium-link").click(),
   ]);
-  await narrowHotel.waitForLoadState();
+  // window.open hands back the window while it still shows about:blank.
+  await narrowHotel.waitForURL((u) => u.pathname === "/client");
   check(
     "a screen narrower than 990 pixels opens the narrow client",
     new URL(narrowHotel.url()).searchParams.get("wide") === "false",

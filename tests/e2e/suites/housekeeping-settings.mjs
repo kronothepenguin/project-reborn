@@ -105,9 +105,9 @@ export default async function ({ base, browser, check, hk, hkOrigin, shot, sql }
 
   await page.goto(`${hk}/settings?section=features`);
   check(
-    "Group Purchasing Enabled and HC Months Limit of 6 join the content options, and Smilies Enabled leaves them",
+    "the Features form holds the client and content options, with HC Months Limit at 6, and Smilies Enabled leaves it",
     (await page.locator("main label").allInnerTexts()).join("|") ===
-      "Landing Promo Enabled|Birthday Notifications Enabled|Tag Fight Enabled|Group Purchasing Enabled|HC Months Limit" &&
+      "Landing Promo Enabled|Birthday Notifications Enabled|Client in Widescreen|Client Loader Enabled|Tag Fight Enabled|Group Purchasing Enabled|HC Months Limit" &&
       (await page.inputValue('input[name="club.maxMonths"]')) === "6",
     (await page.locator("main label").allInnerTexts()).join("|"),
   );
