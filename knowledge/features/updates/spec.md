@@ -73,3 +73,5 @@ The same page offers the keys a release added to `config.json`.
 - Its administrator applies them: users, habbos and homes stay, and the hotel receives Holo's home store.
 - It holds articles in "HoloCMS" or "Holograph Emulator" and applies the updates: they show under "Reborn CMS" and
   "Reborn Server".
+- A hotel that kept the default short name holds articles in Holo Club and applies the update: they show under Reborn
+  Club. A hotel with a short name of its own keeps its articles where they are.

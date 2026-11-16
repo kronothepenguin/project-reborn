@@ -212,6 +212,12 @@ func handleGetInfo(s *session, me habbo.Habbo, _ []byte) {
 		s.fail(err)
 		return
 	}
+	s.sendUserObject(me, account)
+}
+
+// sendUserObject writes 5, the user object, which the client reads after the login and again on each change of the
+// habbo's look or motto: it keeps the figure, the sex and the motto in its session and redraws its entry bar.
+func (s *session) sendUserObject(me habbo.Habbo, account game.Account) {
 	var b bytes.Buffer
 	for _, field := range []any{
 		strconv.FormatInt(me.ID, 10), me.Name, me.Figure, me.Gender, me.Motto,

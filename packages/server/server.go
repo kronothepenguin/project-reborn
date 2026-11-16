@@ -16,6 +16,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/game"
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/r26"
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/transport"
+	"github.com/kronothepenguin/project-reborn/packages/services"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/catalogue"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/category"
@@ -28,6 +29,9 @@ import (
 type Server struct {
 	db *sql.DB
 }
+
+// Server is the game that the Habbos service tells of a habbo changed outside it.
+var _ services.Habbos = (*Server)(nil)
 
 // New loads the settings from config.json and db, and panics when it cannot, like cms.New: the handshake and the login
 // read them. Housekeeping is their only writer, so the server reloads them every cms.refresh seconds while no update
@@ -94,6 +98,12 @@ func loadShared(ctx context.Context, db *sql.DB, updates *store.UpdateCheck) (bo
 		}
 	}
 	return true, nil
+}
+
+// SendLook reads the habbo avatarID again and, while it is online, shows its saved figure, gender and motto to it and
+// to the room it is in (decision reborn/0013). An offline habbo gets nothing.
+func (c *Server) SendLook(ctx context.Context, avatarID int64) error {
+	return game.SendLook(ctx, c.db, avatarID)
 }
 
 // StartInfo opens the WebSocket listener of the client's info connection on the host and port of server.info in
