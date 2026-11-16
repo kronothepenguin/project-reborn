@@ -2,5 +2,4 @@
 
 # Tasks
 
-- [Spike: the R26 client logs in on LibreShockwave](01-spike-the-client-logs-in.md) - LibreShockwave's player, built from the submodule, runs the user's habbo.dcr in a bare page with Holo's parameters and an SSO ticket, and the spike reports whether the client reaches the game server and logs in.
 - [Port Holo's client page onto LibreShockwave](02-the-client-page.md) - The CMS serves Holo's client.php, clientutils.php and unloadclient.php ported exactly, with LibreShockwave's player built from the submodule running the R26 .dcr and an SSO ticket, the game's addresses from config.json and Holo's other client settings as settings.
