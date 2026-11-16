@@ -10,7 +10,7 @@ import (
 func main() {
 	db := store.FromConfig()
 
-	c := server.New(db)
+	c := server.New(db, server.WithAPI())
 	if err := c.StartInfo(); err != nil {
 		log.Fatalln(err)
 	}
@@ -18,6 +18,6 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// Both listeners serve in the background.
+	// The listeners serve in the background.
 	select {}
 }

@@ -22,6 +22,8 @@ runs are settings, declared in `packages/virtual`.
 | `server.info.port` | int | 30000 | 1–65535 |
 | `server.mus.host` | string | `localhost` | hostname or IP address, as `cms.host` |
 | `server.mus.port` | int | 30001 | 1–65535, other than `server.info.port` |
+| `server.api.host` | string | `localhost` | hostname or IP address, as `cms.host` |
+| `server.api.port` | int | 15445 | 1–65535, other than `server.info.port` and `server.mus.port` |
 | `reborn.host` | string | `localhost` | hostname or IP address, as `cms.host` |
 | `reborn.port` | int | 16416 | 1–65535 |
 
@@ -31,10 +33,12 @@ runs are settings, declared in `packages/virtual`.
 the client IP from the `X-Forwarded-For` header of requests that come from a trusted address or range.
 `proxy.trusted` takes CIDR ranges because a pod's proxy address changes within a range.
 
-`server` is the game server's two WebSocket listeners, `info` and `mus` (decision server/0020).
+`server` is the game server's two WebSocket listeners, `info` and `mus` (decision server/0020), and `api`, the HTTP
+listener of its `/api/`, which the game opens only when it runs apart (decision reborn/0005). The CMS's and
+housekeeping's runners call the game at `server.api`.
 
 - `server.ValidateHost` calls `cms.ValidateHost`, so its hosts follow the rule of `cms.host`.
-- `Server.Validate` compares only the `info` and `mus` ports with each other.
+- `Server.Validate` refuses two of its listeners on one port; it compares no port of another section.
 - The installer writes the section's defaults (`packages/installer/internal/router/config.go`).
 
 `reborn` is the address of the whole hotel in one process (decision reborn/0003). Its port is the one `tools/create`

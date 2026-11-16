@@ -98,7 +98,7 @@ func (r *Router) HandleConfigSave(w http.ResponseWriter, req *http.Request) {
 		CMS:          cms.CMS{Host: cms.DefaultHost(), Port: port},
 		Housekeeping: housekeeping.Housekeeping{Host: housekeeping.DefaultHost(), Port: housekeepingPort},
 		Proxy:        proxy.Proxy{Enabled: proxy.DefaultEnabled(), Trusted: proxy.DefaultTrusted()},
-		Server:       server.Server{Info: server.DefaultInfo(), MUS: server.DefaultMUS()},
+		Server:       server.Server{Info: server.DefaultInfo(), MUS: server.DefaultMUS(), API: server.DefaultAPI()},
 		Reborn:       reborn.Reborn{Host: reborn.DefaultHost(), Port: reborn.DefaultPort()},
 	}
 	switch err := r.deps.Setup.Configure(req.Context(), cfg); {

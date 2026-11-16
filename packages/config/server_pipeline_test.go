@@ -42,6 +42,24 @@ func TestServerKeys(t *testing.T) {
 		wrongType:  `{"server": {"mus": {"port": [30001]}}}`,
 		typeName:   "int",
 		outOfRange: `{"server": {"mus": {"port": 0}}}`,
+	}, {
+		key:        "server.api.host",
+		value:      func(c *Config) any { return c.Server.API.Host },
+		def:        "localhost",
+		explicit:   `{"server": {"api": {"host": "127.0.0.1"}}}`,
+		want:       "127.0.0.1",
+		wrongType:  `{"server": {"api": {"host": 15445}}}`,
+		typeName:   "string",
+		outOfRange: `{"server": {"api": {"host": "http://localhost"}}}`,
+	}, {
+		key:        "server.api.port",
+		value:      func(c *Config) any { return c.Server.API.Port },
+		def:        15445,
+		explicit:   `{"server": {"api": {"port": 16445}}}`,
+		want:       16445,
+		wrongType:  `{"server": {"api": {"port": "15445"}}}`,
+		typeName:   "int",
+		outOfRange: `{"server": {"api": {"port": 65536}}}`,
 	}})
 }
 
@@ -55,6 +73,23 @@ func TestServerRefusesInfoAndMUSOnOnePort(t *testing.T) {
 			t.Fatalf("Load(%s) error = nil, want the ports refused", content)
 		}
 		for _, want := range []string{Filename, "server.mus.port: must differ from info.port"} {
+			if !strings.Contains(err.Error(), want) {
+				t.Errorf("Load(%s) error = %q, want it to contain %q", content, err, want)
+			}
+		}
+	}
+}
+
+func TestServerRefusesTheAPIOnTheInfoOrMUSPort(t *testing.T) {
+	for _, content := range []string{
+		`{"server": {"api": {"port": 30000}}}`,
+		`{"server": {"api": {"port": 30001}}}`,
+	} {
+		_, err := loadWithFile(t, content)
+		if err == nil {
+			t.Fatalf("Load(%s) error = nil, want the port refused", content)
+		}
+		for _, want := range []string{Filename, "server.api.port: must differ from info.port and mus.port"} {
 			if !strings.Contains(err.Error(), want) {
 				t.Errorf("Load(%s) error = %q, want it to contain %q", content, err, want)
 			}

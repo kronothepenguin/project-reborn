@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/housekeeping"
+	"github.com/kronothepenguin/project-reborn/packages/server/api"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
@@ -30,6 +32,16 @@ func main() {
 		housekeeping.WithResolver(resolver),
 		housekeeping.WithStatic(proxy),
 	)
+
+	// The game runs apart and hears of a saved look through its /api/. Without
+	// the secret the housekeeping runs without telling the game.
+	secret, err := store.New(db).GetAPISecret(context.Background())
+	if err != nil {
+		log.Println("housekeeping: the game's api is off:", err)
+	} else {
+		gameURL := "http://" + net.JoinHostPort(cfg.Server.API.Host, strconv.Itoa(cfg.Server.API.Port))
+		h.Inject(housekeeping.Services{Habbos: api.New(gameURL, secret)})
+	}
 
 	mux := http.NewServeMux()
 	h.Mount(mux)

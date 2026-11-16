@@ -216,6 +216,14 @@ An update is a change a release brings to the database as an update file.
 | --- | --- | --- |
 | migrations | One row per applied update: version, name and time | migrations.schema.sql |
 
+# API secret
+
+The API secret is what a program run apart sends the game's `/api/` to be heard.
+
+| Table | Holds | Schema file |
+| --- | --- | --- |
+| api_secret | One row: the secret, random hex an update generates once per hotel | api.schema.sql |
+
 # Room categories
 
 A room category is a node of the navigator's tree, holding public rooms or habbo rooms.

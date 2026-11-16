@@ -11,7 +11,9 @@ tags: [server, architecture]
 
 | Package | Holds | Decisions |
 | --- | --- | --- |
-| `packages/server` | `New(db)`, which loads the settings and reloads them, `StartInfo` and `StartMus`, which start a WebSocket listener on the host and port of `server.info` and of `server.mus`, and `SendLook`, the game's side of `services.Habbos` | 0002 (`knowledge/decisions/server/0002-server-app.md`), 0005 (`knowledge/decisions/server/0005-package-layout.md`), 0020 (`knowledge/decisions/server/0020-info-and-mus-websocket-ports.md`), 0022 (`knowledge/decisions/server/0022-start-info-and-start-mus.md`), 0023 (`knowledge/decisions/server/0023-mus-listener-before-s7.md`), 0050 (`knowledge/decisions/server/0050-the-server-loads-and-reloads-the-settings.md`) |
+| `packages/server` | `New(db, opts...)`, which loads the settings and reloads them and, with `WithAPI()`, opens the `/api/` listener, `StartInfo` and `StartMus`, which start a WebSocket listener on the host and port of `server.info` and of `server.mus`, and `SendLook`, the game's side of `services.Habbos` | 0002 (`knowledge/decisions/server/0002-server-app.md`), 0005 (`knowledge/decisions/server/0005-package-layout.md`), 0020 (`knowledge/decisions/server/0020-info-and-mus-websocket-ports.md`), 0022 (`knowledge/decisions/server/0022-start-info-and-start-mus.md`), 0023 (`knowledge/decisions/server/0023-mus-listener-before-s7.md`), 0050 (`knowledge/decisions/server/0050-the-server-loads-and-reloads-the-settings.md`) |
+| `packages/server/api` | The client of the game's `/api/`: `api.New(baseURL, secret)` implements `services.Habbos` for the programs run apart, and gives up after 2 seconds | reborn/0005 (`knowledge/decisions/reborn/0005-the-game-hears-live-changes-through-services.md`) |
+| `packages/server/internal/router` | The handlers of the game's `/api/` and the check of `X-Reborn-Secret` | reborn/0005 (`knowledge/decisions/reborn/0005-the-game-hears-live-changes-through-services.md`) |
 | `packages/server/internal/transport` | `Conn` (receive, send, close), TCP and the WebSocket on `golang.org/x/net/websocket` | 0006 (`knowledge/decisions/server/0006-transport.md`) |
 | `packages/server/internal/encoding` | B64, VL64 and strings, shared by every protocol | 0005 (`knowledge/decisions/server/0005-package-layout.md`) |
 | `packages/server/internal/r26` | The R26 ids, framing and handshake, the dispatch by id, and one file per client cast | 0007 (`knowledge/decisions/server/0007-protocols-per-listener.md`), 0012 (`knowledge/decisions/server/0012-no-encryption.md`), 0021 (`knowledge/decisions/server/0021-unhandled-packets-logged-by-id-name-and-size.md`), 0027 (`knowledge/decisions/server/0027-endofcryptoparams-right-after-cryptoparameters.md`), 0028 (`knowledge/decisions/server/0028-sso-only.md`), 0049 (`knowledge/decisions/server/0049-a-wrong-version-is-closed.md`) |
@@ -78,6 +80,20 @@ The steps in detail, the `mus` listener and the outbox: [A connection](/connecti
 and starts the WebSocket listener of each connection, on its host and port, with `StartInfo` and `StartMus`
 (0020 (`knowledge/decisions/server/0020-info-and-mus-websocket-ports.md`), 0022 (`knowledge/decisions/server/0022-start-info-and-start-mus.md`)).
 
+It passes `WithAPI()`, so `New` also opens an HTTP listener on `server.api` (default `localhost:15445`) that serves the
+game's `/api/` (reborn/0005 (`knowledge/decisions/reborn/0005-the-game-hears-live-changes-through-services.md`)):
+
+| Route | Does |
+| --- | --- |
+| `POST /api/habbos/{id}/look` | Calls `SendLook` for the habbo and answers 204 |
+
+- Every request carries the hotel's secret, the one row of `api_secret`, in the header `X-Reborn-Secret`. A missing or
+  wrong secret, and every other path or method, is answered 404.
+- The game reads the secret on each request, so a hotel whose update `0025-api-secret.sql` waits answers 404 until it
+  is applied.
+- The CMS's and housekeeping's runners read the secret at start and `Inject` `api.New` built from `server.api`. Without
+  the secret they log it and run without telling the game, until they start again.
+
 In development, `make dev` runs air, which watches the `.go` files of `apps/server`, `packages/server`,
 `packages/config` and `packages/store` (`apps/server/.air.toml`) and rebuilds the runner on each change.
 
@@ -87,7 +103,8 @@ Under the orchestrator (`knowledge/features/platform/later.md`), one process run
 server keeps a WebSocket listener on the host and port of each connection, which the orchestrator starts with the
 same `StartInfo` and `StartMus` (0022 (`knowledge/decisions/server/0022-start-info-and-start-mus.md`)), and WebSocket paths on the
 orchestrator's mux wait for later, as TCP does (0020 (`knowledge/decisions/server/0020-info-and-mus-websocket-ports.md`)). The CMS and
-housekeeping change the virtual state directly (0013 (`knowledge/decisions/server/0013-site-changes-like-mus.md`)).
+housekeeping tell the game of a change through `services.Habbos`, which the game server itself implements in the same
+process; reborn opens no `/api/` (reborn/0005 (`knowledge/decisions/reborn/0005-the-game-hears-live-changes-through-services.md`)).
 
 # Another protocol
 

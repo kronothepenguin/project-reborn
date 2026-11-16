@@ -2,5 +2,4 @@
 
 # Tasks
 
-- [The game's /api/ for programs run apart](05-the-games-api.md) - Run alone, the game server serves /api/ on server.api, secured by a secret in X-Reborn-Secret that a database update generates; packages/server/api is its client, and the runners use it.
 - [Check the habbos feature's behaviours](06-exit-check.md) - The user's demonstration is run under reborn and with the separate programs, and its evidence written in the report.

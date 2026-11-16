@@ -46,6 +46,7 @@ func useOlderConfig(t *testing.T) {
 var serverKeys = url.Values{
 	"key.server.info.host": {"localhost"}, "key.server.info.port": {"31000"},
 	"key.server.mus.host": {"localhost"}, "key.server.mus.port": {"31001"},
+	"key.server.api.host": {"localhost"}, "key.server.api.port": {"15445"},
 	"key.reborn.host": {"localhost"}, "key.reborn.port": {"16416"},
 }
 
@@ -69,7 +70,7 @@ func TestTheUpdatePageOffersConfigJsonsNewKeys(t *testing.T) {
 
 	wantPage(t, serve(mux, "GET", "/housekeeping/updates", keeper, nil), http.StatusOK,
 		html.EscapeString(`NewKeys:[{Path:cms.host Value:localhost} {Path:proxy.enabled Value:false} {Path:proxy.trusted Value:["127.0.0.1","::1"]} `+
-			`{Path:reborn.host Value:localhost} {Path:reborn.port Value:16416} {Path:server.info.host Value:localhost} {Path:server.info.port Value:30000} {Path:server.mus.host Value:localhost} `+
+			`{Path:reborn.host Value:localhost} {Path:reborn.port Value:16416} {Path:server.api.host Value:localhost} {Path:server.api.port Value:15445} {Path:server.info.host Value:localhost} {Path:server.info.port Value:30000} {Path:server.mus.host Value:localhost} `+
 			`{Path:server.mus.port Value:30001}] OldKeys:[{Path:theme Value:"dark"}]`))
 }
 
@@ -94,7 +95,7 @@ func TestSavingConfigJsonWritesTheNewKeys(t *testing.T) {
 		t.Errorf("config.json holds server %v", server)
 	}
 	logs := staffLogs(t, db)
-	if len(logs) != 1 || logs[0].Action != "config.update" || logs[0].Detail != "added cms.host, proxy.enabled, proxy.trusted, reborn.host, reborn.port, server.info.host, server.info.port, server.mus.host, server.mus.port; removed theme" {
+	if len(logs) != 1 || logs[0].Action != "config.update" || logs[0].Detail != "added cms.host, proxy.enabled, proxy.trusted, reborn.host, reborn.port, server.api.host, server.api.port, server.info.host, server.info.port, server.mus.host, server.mus.port; removed theme" {
 		t.Errorf("staff logs = %+v", logs)
 	}
 	wantPage(t, serve(mux, "GET", "/housekeeping/updates?config=1", keeper, nil), http.StatusOK,

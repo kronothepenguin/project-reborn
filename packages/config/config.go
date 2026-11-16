@@ -41,7 +41,7 @@ func defaults() *Config {
 		CMS:          cms.CMS{Host: cms.DefaultHost(), Port: cms.DefaultPort()},
 		Housekeeping: housekeeping.Housekeeping{Host: housekeeping.DefaultHost(), Port: housekeeping.DefaultPort()},
 		Proxy:        proxy.Proxy{Enabled: proxy.DefaultEnabled(), Trusted: proxy.DefaultTrusted()},
-		Server:       server.Server{Info: server.DefaultInfo(), MUS: server.DefaultMUS()},
+		Server:       server.Server{Info: server.DefaultInfo(), MUS: server.DefaultMUS(), API: server.DefaultAPI()},
 		Reborn:       reborn.Reborn{Host: reborn.DefaultHost(), Port: reborn.DefaultPort()},
 	}
 }

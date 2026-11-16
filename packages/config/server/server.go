@@ -6,12 +6,14 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/config/cms"
 )
 
-// Server holds the client's two connections, each a WebSocket listener of the
-// game server on a host and port of its own: info for the game, mus for the
-// Multiuser Xtra's messages.
+// Server holds the game server's listeners, each on a host and port of its own:
+// the client's two WebSocket connections, info for the game and mus for the
+// Multiuser Xtra's messages, and api, the HTTP listener of /api/ that the game
+// opens when it runs apart from the site.
 type Server struct {
 	Info Connection `json:"info"`
 	MUS  Connection `json:"mus"`
+	API  Connection `json:"api"`
 }
 
 type Connection struct {
@@ -25,6 +27,10 @@ func DefaultInfo() Connection {
 
 func DefaultMUS() Connection {
 	return Connection{Host: "localhost", Port: 30001}
+}
+
+func DefaultAPI() Connection {
+	return Connection{Host: "localhost", Port: 15445}
 }
 
 // ValidateHost holds a connection's host to the rule of cms.host.
@@ -49,7 +55,7 @@ func (c Connection) Validate() error {
 	return nil
 }
 
-// Validate also refuses info and mus on the same port.
+// Validate also refuses two listeners on the same port.
 func (s Server) Validate() error {
 	if err := s.Info.Validate(); err != nil {
 		return fmt.Errorf("info.%w", err)
@@ -57,8 +63,14 @@ func (s Server) Validate() error {
 	if err := s.MUS.Validate(); err != nil {
 		return fmt.Errorf("mus.%w", err)
 	}
+	if err := s.API.Validate(); err != nil {
+		return fmt.Errorf("api.%w", err)
+	}
 	if s.MUS.Port == s.Info.Port {
 		return fmt.Errorf("mus.port: must differ from info.port, got %d", s.MUS.Port)
+	}
+	if s.API.Port == s.Info.Port || s.API.Port == s.MUS.Port {
+		return fmt.Errorf("api.port: must differ from info.port and mus.port, got %d", s.API.Port)
 	}
 	return nil
 }

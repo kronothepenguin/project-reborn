@@ -41,6 +41,11 @@ type Alert struct {
 	DismissedAt  sql.NullTime
 }
 
+type ApiSecret struct {
+	ID     int64
+	Secret string
+}
+
 type Avatar struct {
 	ID         int64
 	UserID     int64

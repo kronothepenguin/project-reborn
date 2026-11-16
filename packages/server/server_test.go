@@ -21,15 +21,15 @@ import (
 )
 
 var (
-	logged            = newRecorder()
-	infoPort, musPort int
-	testDB            *sql.DB
-	testServer        *Server
+	logged                     = newRecorder()
+	infoPort, musPort, apiPort int
+	testDB                     *sql.DB
+	testServer                 *Server
 )
 
-// config.Load reads config.json once per process, so the whole package shares one file. It puts info and mus on ports
-// of the loopback interface that were free when the tests started, and both listeners start before any test runs, on
-// one database that every test shares.
+// config.Load reads config.json once per process, so the whole package shares one file. It puts info, mus and api on
+// ports of the loopback interface that were free when the tests started, and the listeners start before any test runs,
+// on one database that every test shares.
 func TestMain(m *testing.M) {
 	dir, err := os.MkdirTemp("", "server-test-")
 	if err != nil {
@@ -39,9 +39,9 @@ func TestMain(m *testing.M) {
 	if err := os.Chdir(dir); err != nil {
 		log.Fatal(err)
 	}
-	ports := freePorts(2)
-	infoPort, musPort = ports[0], ports[1]
-	cfg := fmt.Sprintf(`{"server": {"info": {"host": "127.0.0.1", "port": %d}, "mus": {"host": "127.0.0.1", "port": %d}}}`, infoPort, musPort)
+	ports := freePorts(3)
+	infoPort, musPort, apiPort = ports[0], ports[1], ports[2]
+	cfg := fmt.Sprintf(`{"server": {"info": {"host": "127.0.0.1", "port": %d}, "mus": {"host": "127.0.0.1", "port": %d}, "api": {"host": "127.0.0.1", "port": %d}}}`, infoPort, musPort, apiPort)
 	if err := os.WriteFile(config.Filename, []byte(cfg), 0o644); err != nil {
 		log.Fatal(err)
 	}
@@ -50,7 +50,7 @@ func TestMain(m *testing.M) {
 		log.Fatal(err)
 	}
 	defer testDB.Close()
-	s := New(testDB)
+	s := New(testDB, WithAPI())
 	testServer = s
 	if err := s.StartInfo(); err != nil {
 		log.Fatal(err)

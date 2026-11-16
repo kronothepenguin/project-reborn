@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS api_secret (
+    id INTEGER PRIMARY KEY CHECK (id = 1),
+    secret TEXT NOT NULL
+);

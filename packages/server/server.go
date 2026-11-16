@@ -15,6 +15,7 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/scheduler"
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/game"
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/r26"
+	"github.com/kronothepenguin/project-reborn/packages/server/internal/router"
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/transport"
 	"github.com/kronothepenguin/project-reborn/packages/services"
 	"github.com/kronothepenguin/project-reborn/packages/store"
@@ -27,7 +28,16 @@ import (
 )
 
 type Server struct {
-	db *sql.DB
+	db  *sql.DB
+	api bool
+}
+
+type Option func(*Server)
+
+// WithAPI opens the game's /api/ on server.api in config.json, for the programs run apart from the game, which call it
+// with the hotel's secret (decision reborn/0005). reborn leaves it out: there the site calls the game in its process.
+func WithAPI() Option {
+	return func(s *Server) { s.api = true }
 }
 
 // Server is the game that the Habbos service tells of a habbo changed outside it.
@@ -37,8 +47,8 @@ var _ services.Habbos = (*Server)(nil)
 // read them. Housekeeping is their only writer, so the server reloads them every cms.refresh seconds while no update
 // waits, as the CMS does (decision server/0050). It loads what every player shares too, the navigator and the
 // catalogue, at once or, while updates wait, with the first reload after they are applied (decisions server/0064
-// and server/0098).
-func New(db *sql.DB) *Server {
+// and server/0098). With WithAPI it opens the /api/ listener too, and panics when it cannot listen.
+func New(db *sql.DB, opts ...Option) *Server {
 	list, err := store.Updates()
 	if err != nil {
 		panic(fmt.Errorf("server: %w", err))
@@ -81,7 +91,42 @@ func New(db *sql.DB) *Server {
 	scheduler.Every(1, scheduler.Minute, updates.WhenCurrent(func(ctx context.Context) error {
 		return game.DeleteEndedRoomBans(ctx, db, time.Now())
 	}))
-	return &Server{db: db}
+	s := &Server{db: db}
+	for _, opt := range opts {
+		opt(s)
+	}
+	if s.api {
+		if err := s.listenAPI(); err != nil {
+			panic(err)
+		}
+	}
+	return s
+}
+
+// listenAPI serves the game's /api/ on the host and port of server.api in config.json, in the background. Every
+// request without the hotel's secret, and every path but the API's, is answered 404.
+func (c *Server) listenAPI() error {
+	cfg, err := config.Load()
+	if err != nil {
+		return err
+	}
+	r := router.New(router.Deps{DB: c.db, Habbos: c})
+	mux := http.NewServeMux()
+	mux.HandleFunc("POST /api/habbos/{id}/look", r.HandleHabbosLook)
+	mux.HandleFunc("/", http.NotFound)
+
+	addr := net.JoinHostPort(cfg.Server.API.Host, strconv.Itoa(cfg.Server.API.Port))
+	l, err := net.Listen("tcp", addr)
+	if err != nil {
+		return fmt.Errorf("server: api: %w", err)
+	}
+	slog.Info("server: api on http://" + addr)
+	srv := &http.Server{Handler: r.Secret(mux), ReadHeaderTimeout: 5 * time.Second}
+	go func() {
+		err := srv.Serve(l)
+		slog.Error("server: api stopped", "err", err)
+	}()
+	return nil
 }
 
 // loadShared loads what every player shares once no update waits, and reports whether it did: the navigator's

@@ -6,7 +6,7 @@ tags: [server]
 ---
 
 `TestMain`, in `server_test.go`, writes a `config.json` with free ports, opens
-one database that every test shares, and starts both listeners once. `client_test.go` is a test
+one database that every test shares, and starts the info, mus and `/api/` listeners once. `client_test.go` is a test
 client that speaks R26 over a WebSocket as the client does on LibreShockwave,
 one binary frame per write. Tests insert their own users, CMS sessions and SSO
 tickets, as `knowledge/decisions/server/0030-sso-tickets-from-the-cms-sign-in.md`
@@ -20,6 +20,8 @@ says, and each uses habbos of its own.
 - `look_test.go` changes a habbo's look and motto outside the game, through
   `SendLook`: in a room, in the hotel view, while offline and after a second
   login.
+- `api_test.go` tells the game of a saved look through `packages/server/api`, and gets 404 from the `/api/`
+  without the secret, with a wrong one, and on any other path or method.
 - `extras_test.go` rates a room, hosts an event and lists it, and shows groups
   and tags.
 - `rights_test.go` gives and takes rights, kicks a habbo that walks out, bans
