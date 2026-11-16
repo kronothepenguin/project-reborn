@@ -59,6 +59,11 @@ var catalogue = map[string]declaration{
 	"features.groupPurchase":         declare(true, nil),
 	"features.forum":                 declare(true, nil),
 
+	// The client page: Holo's client-widescreen of cms_content and loader of
+	// cms_system, both on in Holo's dumps.
+	"features.clientWideScreen": declare(true, nil),
+	"features.clientLoader":     declare(true, nil),
+
 	// The boxes of the staff page, in BBCode, with Holo's texts and colours.
 	"staffPage.box1Heading": declare("Need our help?", length(1, 100)),
 	"staffPage.box1Body":    declare(staffBox1, length(0, 5000)),

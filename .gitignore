@@ -28,6 +28,9 @@ tmp/
 # this folder beside config.json.
 /assets/
 
+# LibreShockwave's player, which make player builds from vendor/LibreShockwave.
+/packages/cms/public/libreshockwave/
+
 # Every agent works in its own worktree here, never on main.
 .claude/worktrees/
 

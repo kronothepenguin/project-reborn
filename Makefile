@@ -1,4 +1,4 @@
-.PHONY: install dev build tools create dependants tw-color e2e frontends release
+.PHONY: install dev build tools create dependants tw-color e2e frontends release player
 
 VERSION ?= dev
 
@@ -21,6 +21,31 @@ frontends:
 	pnpm --filter @project-reborn/cms build
 	pnpm --filter @project-reborn/installer build
 	pnpm --filter @project-reborn/housekeeping build
+
+# LibreShockwave's browser player, built with Emscripten from the submodule into
+# the CMS's public folder, which git ignores. The client page links to
+# source.txt, the commit it was built from. EMSCRIPTEN names the folder of emcc
+# when it is not on the PATH.
+EMSCRIPTEN ?= /usr/lib/emscripten
+PLAYER_SOURCE := vendor/LibreShockwave
+PLAYER_BUILD := $(CURDIR)/tmp/libreshockwave
+PLAYER_DIR := packages/cms/public/libreshockwave
+PLAYER_FILES := libreshockwave-cpp-player.js libreshockwave-cpp-worker.js libreshockwave-cpp-wasm.js libreshockwave-cpp-wasm.wasm
+
+player: export PATH := $(EMSCRIPTEN):$(PATH)
+player:
+	@test -f $(PLAYER_SOURCE)/build.sh || { echo "make player: $(PLAYER_SOURCE) is empty. Run: git submodule update --init $(PLAYER_SOURCE)"; exit 1; }
+	@command -v emcmake >/dev/null && command -v em-config >/dev/null || { echo "make player: Emscripten is missing. Install it, or set EMSCRIPTEN to the folder of emcc."; exit 1; }
+	@libs=$$(em-config CACHE)/sysroot/lib/wasm32-emscripten; \
+	for lib in libz.a libjpeg.a; do \
+		test -f "$$libs/$$lib" || { echo "make player: Emscripten's $$lib is missing. Run: embuilder build zlib libjpeg"; exit 1; }; \
+	done
+	cd $(PLAYER_SOURCE) && ./build.sh --wasm --release --build-dir $(PLAYER_BUILD) -- -DLIBRESHOCKWAVE_REQUIRE_ZLIB=ON
+	mkdir -p $(PLAYER_DIR)
+	cd $(PLAYER_BUILD)/cpp/wasm-dist && cp $(PLAYER_FILES) $(CURDIR)/$(PLAYER_DIR)/
+	@url=$$(git config -f .gitmodules submodule.$(PLAYER_SOURCE).url); \
+	echo "$${url%.git}/tree/$$(git -C $(PLAYER_SOURCE) rev-parse HEAD)" > $(PLAYER_DIR)/source.txt
+	@echo "make player: built into $(PLAYER_DIR) from $$(cat $(PLAYER_DIR)/source.txt)"
 
 include make/check-all.mk
 

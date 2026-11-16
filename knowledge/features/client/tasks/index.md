@@ -2,7 +2,6 @@
 
 # Tasks
 
-- [Port Holo's client page onto LibreShockwave](02-the-client-page.md) - The CMS serves Holo's client page, utility page and unload page ported exactly, with LibreShockwave's player built from the submodule in place of Adobe's plugin, an SSO ticket, the game's addresses from config.json, and the wide screen and the loader as settings.
 - [Keep the client's variables and texts in the database](03-the-dcr-package.md) - A new module packages/assets with its first part, packages/assets/dcr, which copies external_variables.txt and external_texts.txt into the tables dcr_variables and dcr_texts and writes them out for the client; config.json gains assets.path.
 - [Serve the client's folder from the CMS](04-serve-the-clients-files.md) - The CMS serves assets/dcr/ of the folder config.json names at /dcr/, and writes external_variables.txt and external_texts.txt there from the database.
 - [Import the client's files from housekeeping](05-import-in-housekeeping.md) - Housekeeping gains an "Import client files" action, open to the new attribute housekeeping.dcr, which copies the variables and texts of the assets folder into the database.

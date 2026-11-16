@@ -58,6 +58,8 @@ A value needed before the database opens is not a setting: it belongs to `packag
 - `site.url` is a bare http(s) origin, because reset links add a path such as `/reset/<token>` to it.
 - Passwords keep Holo's defaults: 6 to 25 characters (`auth.passwordMinLength`, `auth.passwordMaxLength`).
 - `auth.rememberDays` keeps Holo's default of 100.
+- `features.clientWideScreen` and `features.clientLoader` keep Holo's defaults, both on: `client-widescreen` of
+  `cms_content` and `loader` of `cms_system`.
 - The site names default to Reborn: `site.name` is "Reborn Hotel" and `site.shortName` is "Reborn". A hotel that saved
   "Holo Hotel" while it was the default holds no row, so it shows "Reborn Hotel" now.
 
