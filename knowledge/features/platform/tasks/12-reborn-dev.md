@@ -20,6 +20,15 @@ skills: []
   it](/decisions/reborn/0009-one-dev-server-for-reborn.md)
 - reborn uses 16416; the user's CMS dev runner may hold 17387, which reborn does not use.
 
+- The spike of task 11 proved the dev server: `packages/reborn/knowledge/dev-server.md`. One static proxy of the
+  server's root (`http://localhost:16417/`) serves every site, because a request keeps its `/housekeeping/` or
+  `/installer/` prefix; each site has its own resolver, with the base addresses `http://localhost:16417/`,
+  `http://localhost:16417/housekeeping/` and `http://localhost:16417/installer/`.
+- `astro dev` of Astro 7 went to the background by itself in the spike (`astro dev stop`, `status` and `logs` control
+  it): check how `make dev` keeps it in the foreground with air.
+- The dev server's port: take the Astro port `tools/create` gives the name `reborn`, and say in the report when it
+  differs from the spike's 16417.
+
 # Steps
 
 - [ ] `apps/reborn/cmd/reborn-dev/main.go` builds each program as `apps/reborn/cmd/reborn/main.go` does, with the

@@ -2,7 +2,7 @@
 type: Task
 title: reborn installs a new hotel
 description: Started in an empty folder, reborn serves the installer under /installer/ on the reborn defaults, redirects every other path there, moves to the address the administrator chooses, builds the hotel once the administrator exists, and answers 404 under /installer/ from then on.
-scope: [packages/reborn]
+scope: [packages/reborn, apps/reborn, packages/installer, apps/installer, packages/config]
 depends_on: [17-hand-reborn-the-programs, 18-installer-inject-and-move-first]
 skills: [applying-go-patterns, testing-behaviours, documenting-with-okf, use-modern-go]
 ---
@@ -30,11 +30,25 @@ A new hotel is installed live in reborn, without a restart
   creates the database, so every program is built before the hotel is installed.
 - With host `0.0.0.0` or `::` on the same port, the installer calls `Move`: the move binds the new address while the
   old one is still held.
-- A successful move redirects the browser to the same path, so it lands on `GET /installer/config`.
+- A successful move redirects the browser to the same path, so it lands on `GET /installer/config`: the form at the
+  new address, with the saved values, where "Save address" goes on to the site step.
+- Saving a section leaves the result of `config.Get()` as it was until the program starts again: `Move` uses the host
+  and the port it is given.
+- `installer.New` opens its own handle on the database today (`setup.Open`), and `packages/config` has
+  `Save(section string, value any)`, which task 18 added.
+- The tests of `packages/reborn` share one hotel, started in `TestMain`, because `config.Get` loads `config.json`
+  once a process. A habbo name is unique across its test files. A test from an empty folder runs the built program,
+  or starts its hotel another way: say in the report how.
 
 # Steps
 
-- [ ] `apps/reborn/cmd/reborn/main.go` calls `i.Inject(installer.Services{Listener: r})` after `reborn.New`.
+- [ ] `installer.New(ctx, db, opts...)`: with a database the installer uses it and creates none; with `nil` it
+  creates the database in its config step, as today. reborn's runner passes the database it opened, and the
+  installer's two runners pass `nil`.
+- [ ] `config.SaveReborn(r reborn.Reborn) error` replaces `config.Save(section string, value any)`, with its tests and
+  its caller in the installer.
+- [ ] `apps/reborn/cmd/reborn/main.go` calls `i.Inject(installer.Services{Listener: r})` after `reborn.New`, and ends
+  with an error only when `Run` returns one: a Ctrl-C ends the program with status 0.
 - [ ] A hotel that is not installed (`installer.Installed` is false): `Run` mounts the installer with the CMS and
   housekeeping, and a middleware redirects every path outside `/installer/` to `/installer/`. The game's listeners
   wait. This replaces the stopgap error of task 03.

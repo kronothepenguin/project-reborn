@@ -93,6 +93,11 @@ How programs tell the game of a live change is
   like the services"; `WithListener` goes.
 - The installer moves first, then saves. A move that fails saves nothing, shows its error in the form, and the step
   takes another address. The user chose "Move first, then write".
+- The installer takes the database as an argument: `installer.New(ctx, db, opts...)`. reborn's runner passes the
+  database it opened, so the whole hotel works on one handle; the installer's own runners pass `nil`, and the installer
+  creates the database in its config step. The user chose "An argument, nil when run alone".
+- `packages/config` saves a section through a typed function, `config.SaveReborn(r reborn.Reborn) error`, in place of
+  `config.Save(section string, value any)`. The user chose "A typed function per section": config is static types.
 
 # Notes
 
