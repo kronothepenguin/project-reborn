@@ -9,7 +9,7 @@ okf_version: "0.2"
 - [The home art](art.md) - What art the repository holds under packages/cms/public/c_images, where it came from, and what is still missing.
 - [badge](badge.md) - The renderer that checks a group badge code and draws it as Holo's habbo-imaging/badge.php did, in the Tailwind palette.
 - [bbcode](bbcode.md) - The renderer that turns the BBCode of notes, news, posts and settings boxes into HTML, as HoloCMS's bbcode_format did.
-- [The client page](client.md) - How the CMS serves Holo's client.php, clientutils.php and unloadclient.php, with LibreShockwave's player built by make player in place of Adobe's plugin.
+- [The client page](client.md) - How the CMS serves Holo's client.php, clientutils.php and unloadclient.php, with LibreShockwave's player built by make player in place of Adobe's plugin, and the client's folder at /dcr/.
 - [HabboWidgets](habbo-widgets.md) - The HTML5 ports of Holo's Flash widgets, built from the vendored HabboWidgets submodule into public/habbo-widgets.
 - [Islands](islands.md) - How the Svelte islands of the CMS read the values Go writes into the page, and the islands that need care.
 - [mail](mail.md) - Sends the hotel's mail through the SMTP server in the mail.* settings.

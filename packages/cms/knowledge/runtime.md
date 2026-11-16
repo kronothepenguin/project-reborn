@@ -48,4 +48,4 @@ resource: packages/cms/cms.go
 
 - `POST /` (sign in) and `POST /logout` skip the maintenance check, so staff sign in during maintenance. A failed
   sign-in stays on the maintenance page.
-- The static files stand outside the chain.
+- The static files and the client's folder at `/dcr/` stand outside the chain ([The client page](/client.md)).
