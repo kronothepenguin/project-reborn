@@ -24,9 +24,9 @@ tmp/
 /apps/reborn/reborn
 /apps/reborn/reborn-dev
 
-# Habbo's client files are never committed (reborn 0011); until the assets tool
-# fetches them, they are copied here by hand.
-/packages/cms/public/r26/
+# Habbo's files are never committed (reborn 0011): the programs serve them from
+# this folder beside config.json.
+/assets/
 
 # Every agent works in its own worktree here, never on main.
 .claude/worktrees/

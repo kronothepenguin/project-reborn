@@ -2,6 +2,6 @@
 
 # Client
 
-- [The client in the browser: how](plan.md) - The CMS ports Holo's client page onto LibreShockwave; the client's files and the JavaScript client follow.
-- [The client in the browser](spec.md) - A signed-in habbo opens the site's client page, where the R26 client runs on LibreShockwave; one program serves the client's files; and later the client runs in vanilla JavaScript.
+- [The client in the browser: how](plan.md) - The CMS ports Holo's client page onto LibreShockwave and serves the client's folder; packages/assets/dcr keeps the variables and texts in the database; housekeeping and the installer import them.
+- [The client in the browser](spec.md) - A signed-in habbo opens the site's client page, where the R26 client runs on LibreShockwave; the CMS serves the client's files from the assets folder and its variables and texts from the database; later staff edit them, and the client runs in vanilla JavaScript.
 - [tasks/](tasks/index.md)
