@@ -18,7 +18,7 @@ the client of the `/api/` for the programs run apart.
 | `internal/transport/` | `Conn`, an `io.Reader` to receive, an `io.Writer` to send and an `io.Closer`, over TCP (`tcp.go`) and the WebSocket (`websocket.go`) |
 | `internal/encoding/` | B64, VL64 and strings |
 | `internal/r26/` | The R26 ids, and one file per client cast: `entry_init.go`, `navigator.go`, `room.go`… |
-| `api/` | `api.New(baseURL, secret)`, the client of the `/api/`, which implements `services.Habbos` |
+| `api/` | `api.New(baseURL, db)`, the client of the `/api/`, which implements `services.Habbos` |
 | `internal/router/` | The `/api/` handlers, one file per route (`habbos_look.go`), and the check of `X-Reborn-Secret` |
 | `internal/game/` | The rules: login, entering rooms, chat, walking…, with no protocol in them |
 

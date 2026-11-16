@@ -1,7 +1,9 @@
 package server
 
 import (
+	"database/sql"
 	"net/http"
+	"path/filepath"
 	"strconv"
 	"testing"
 	"time"
@@ -21,6 +23,31 @@ func apiSecret(t *testing.T) string {
 		t.Fatal(err)
 	}
 	return secret
+}
+
+// siteDB opens a database of its own, as a site run apart from the game, that holds secret, or no secret when it is
+// empty.
+func siteDB(t *testing.T, secret string) *sql.DB {
+	t.Helper()
+	db, err := store.Open(filepath.Join(t.TempDir(), "site.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { db.Close() })
+	if _, err := db.ExecContext(t.Context(), "DELETE FROM api_secret"); err != nil {
+		t.Fatal(err)
+	}
+	if secret != "" {
+		setSecret(t, db, secret)
+	}
+	return db
+}
+
+func setSecret(t *testing.T, db *sql.DB, secret string) {
+	t.Helper()
+	if _, err := db.ExecContext(t.Context(), "INSERT OR REPLACE INTO api_secret (id, secret) VALUES (1, ?)", secret); err != nil {
+		t.Fatal(err)
+	}
 }
 
 // saveLook saves a new look and motto for the habbo id, as the site or housekeeping saves them, and tells the game
@@ -47,7 +74,7 @@ func TestALookSavedApartReachesTheRoomThroughTheAPI(t *testing.T) {
 	admirer.enterFlat(t, flat)
 	saveLook(t, stylistID, "hd-620-1.hr-515-33", "F", "Sent from afar")
 
-	if err := api.New(apiURL(), apiSecret(t)).SendLook(t.Context(), stylistID); err != nil {
+	if err := api.New(apiURL(), testDB).SendLook(t.Context(), stylistID); err != nil {
 		t.Fatalf("SendLook through the api: %v", err)
 	}
 
@@ -85,7 +112,22 @@ func TestTheAPIAnswers404WithoutTheSecret(t *testing.T) {
 			t.Errorf("%s: answered %s, want 404 Not Found", c.name, res.Status)
 		}
 	}
-	if err := api.New(apiURL(), "not-the-secret").SendLook(t.Context(), 1); err == nil {
+	if err := api.New(apiURL(), siteDB(t, "not-the-secret")).SendLook(t.Context(), 1); err == nil {
 		t.Error("SendLook with a wrong secret = nil, want an error")
+	}
+}
+
+func TestASecretCreatedWhileTheSiteRunsIsUsedOnTheNextCall(t *testing.T) {
+	id := habboWithTickets(t, "Apilatecomer", "apilatecomer")
+	db := siteDB(t, "")
+	habbos := api.New(apiURL(), db)
+
+	if err := habbos.SendLook(t.Context(), id); err == nil {
+		t.Fatal("SendLook before the secret exists = nil, want an error")
+	}
+
+	setSecret(t, db, apiSecret(t))
+	if err := habbos.SendLook(t.Context(), id); err != nil {
+		t.Errorf("SendLook after the secret is created: %v", err)
 	}
 }
