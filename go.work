@@ -16,6 +16,7 @@ use (
 	./packages/scheduler
 	./packages/server
 	./packages/services
+	./packages/settings
 	./packages/store
 	./packages/virtual
 	./tools/checks

@@ -75,7 +75,7 @@ An access group is an admin-defined group of users that grants attributes and th
 
 # Settings
 
-A setting is one runtime value declared in the `packages/virtual` catalogue.
+A setting is one runtime value declared in the list of `packages/settings`.
 
 | Table | Holds | Schema file |
 | --- | --- | --- |
@@ -329,7 +329,7 @@ The recycler gives one furni for many, after a time.
   - `wallet_transactions.reason`: `registration`, `referral`, `store`, `group`, `club`, `voucher`, `staff`,
     `catalogue`, `exchange`.
   - `access_group_attributes.attribute` and `user_attributes.attribute`: the catalogues of `packages/auth`.
-  - `settings.key`: the key paths of the `packages/virtual` catalogue.
+  - `settings.key`: the key paths of the list of `packages/settings`.
 - A user's level is the highest `level` of their access groups, and each of their habbos has it; `min_level` columns
   compare with it.
 - A new user and its first habbo are written in one transaction.

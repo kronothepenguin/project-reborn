@@ -214,10 +214,10 @@ func (s *State) CreateAdministrator(ctx context.Context, admin Administrator) er
 		return ErrNotConfigured
 	}
 	now := time.Now().UTC()
-	if err := admin.validate(); err != nil {
+	q := store.New(db)
+	if err := admin.validate(ctx, q); err != nil {
 		return err
 	}
-	q := store.New(db)
 	done, err := installed(ctx, q)
 	if err != nil {
 		return err
@@ -291,7 +291,7 @@ func administratorsGroup(ctx context.Context, q *store.Queries) (int64, error) {
 	return found.ID, nil
 }
 
-func (a Administrator) validate() error {
+func (a Administrator) validate(ctx context.Context, q *store.Queries) error {
 	if err := auth.ValidateHabboName(a.Name); err != nil {
 		return err
 	}
@@ -301,5 +301,5 @@ func (a Administrator) validate() error {
 	if err := auth.ValidateBornOn(a.BornOn); err != nil {
 		return err
 	}
-	return auth.ValidatePassword(a.Password)
+	return auth.ValidatePassword(ctx, q, a.Password)
 }

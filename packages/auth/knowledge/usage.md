@@ -6,8 +6,8 @@ description: How an app wraps its routes with sessions and handles the errors of
 
 # Usage
 
-Every function is a package-level helper that receives the database, and every limit is a setting read through
-`packages/virtual/settings` (`auth.*`), so it can change while the programs run.
+Every function is a package-level helper that receives the database, and every limit is a setting (`auth.*`) read
+through `packages/settings` on each use, so a change applies on the next call.
 
 An app receives the db on creation and wraps its routes with the session middleware:
 
@@ -31,5 +31,4 @@ case errors.Is(err, auth.ErrBanned):
 
 # Gotchas
 
-- The settings must be loaded (`settings.Load`) before the helpers run; `cms.New` does it.
 - The store's pool has one connection, so calling `auth` while holding a transaction blocks forever.

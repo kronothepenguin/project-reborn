@@ -20,6 +20,22 @@ func (q *Queries) DeleteSetting(ctx context.Context, key string) error {
 	return err
 }
 
+const getSetting = `-- name: GetSetting :one
+SELECT "key", value, updated_at, updated_by_user_id FROM settings WHERE key = ?1
+`
+
+func (q *Queries) GetSetting(ctx context.Context, key string) (Setting, error) {
+	row := q.db.QueryRowContext(ctx, getSetting, key)
+	var i Setting
+	err := row.Scan(
+		&i.Key,
+		&i.Value,
+		&i.UpdatedAt,
+		&i.UpdatedByUserID,
+	)
+	return i, err
+}
+
 const listSettings = `-- name: ListSettings :many
 SELECT "key", value, updated_at, updated_by_user_id FROM settings ORDER BY key
 `

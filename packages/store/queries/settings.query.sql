@@ -11,3 +11,6 @@ ON CONFLICT (key) DO UPDATE SET
 
 -- name: DeleteSetting :exec
 DELETE FROM settings WHERE key = sqlc.arg(key);
+
+-- name: GetSetting :one
+SELECT * FROM settings WHERE key = sqlc.arg(key);

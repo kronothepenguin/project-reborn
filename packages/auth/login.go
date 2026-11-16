@@ -10,8 +10,8 @@ import (
 	"slices"
 	"time"
 
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // Login checks habboName and its owner's password and starts a session with
@@ -32,8 +32,8 @@ func Login(w http.ResponseWriter, r *http.Request, db *sql.DB, habboName, passwo
 func authenticate(ctx context.Context, db *sql.DB, habboName, password, ip string, now time.Time) (store.GetLoginByHabboNameRow, error) {
 	var none store.GetLoginByHabboNameRow
 	q := store.New(db)
-	since := now.Add(-minutes("auth.loginWindowMinutes"))
-	limit := int64(settings.GetInt("auth.loginMaxFailures"))
+	since := now.Add(-minutes(ctx, q, "auth.loginWindowMinutes"))
+	limit := int64(settings.Int(ctx, q, "auth.loginMaxFailures"))
 
 	failures, err := q.CountFailedLoginsByIP(ctx, store.CountFailedLoginsByIPParams{IP: ip, Since: since})
 	if err != nil {
@@ -118,11 +118,11 @@ func start(w http.ResponseWriter, r *http.Request, db *sql.DB, login store.GetLo
 	if NeedsRehash(login.PasswordHash) {
 		rehashed = HashPassword(password)
 	}
+	q := store.New(db)
 	token, id := newToken()
-	lifetime := sessionLifetime(remember)
+	lifetime := sessionLifetime(ctx, q, remember)
 	session := Session{id: id, UserID: login.UserID, AvatarID: login.AvatarID, Remember: remember, ExpiresAt: now.Add(lifetime)}
 
-	q := store.New(db)
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
 		return Session{}, fmt.Errorf("auth: login: %w", err)
@@ -163,7 +163,7 @@ func start(w http.ResponseWriter, r *http.Request, db *sql.DB, login store.GetLo
 		return Session{}, fmt.Errorf("auth: login: %w", err)
 	}
 
-	setCookie(w, token, remember, lifetime)
+	setCookie(ctx, q, w, token, remember, lifetime)
 
 	// The ticket is best-effort: sso_tickets keeps its old form while update 0008
 	// waits for an administrator, and the client page makes one whenever none is
@@ -187,7 +187,7 @@ func recordFailure(ctx context.Context, q *store.Queries, ip string, now time.Ti
 // Logout ends the session of the request's cookie, if any, and clears the
 // cookie.
 func Logout(w http.ResponseWriter, r *http.Request, db *sql.DB) error {
-	clearCookie(w)
+	clearCookie(r.Context(), store.New(db), w)
 	cookie, err := r.Cookie(cookieName)
 	if err != nil {
 		return nil

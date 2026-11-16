@@ -13,8 +13,8 @@ import (
 	"sync"
 	"unicode/utf8"
 
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 	"golang.org/x/crypto/argon2"
 )
 
@@ -114,13 +114,13 @@ func ChangePassword(w http.ResponseWriter, r *http.Request, db *sql.DB, password
 	if !ok {
 		return ErrNoSession
 	}
-	if err := ValidatePassword(password); err != nil {
+	if err := ValidatePassword(ctx, store.New(db), password); err != nil {
 		return err
 	}
 	hash := HashPassword(password)
 	now := clock().UTC()
 	token, id := newToken()
-	lifetime := sessionLifetime(session.Remember)
+	lifetime := sessionLifetime(ctx, store.New(db), session.Remember)
 
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
@@ -154,18 +154,19 @@ func ChangePassword(w http.ResponseWriter, r *http.Request, db *sql.DB, password
 	if err := tx.Commit(); err != nil {
 		return fmt.Errorf("auth: change password: %w", err)
 	}
-	setCookie(w, token, session.Remember, lifetime)
+	setCookie(ctx, store.New(db), w, token, session.Remember, lifetime)
 	return nil
 }
 
 // ValidatePassword checks the length of a new password against
 // auth.passwordMinLength and auth.passwordMaxLength, counted in characters.
-func ValidatePassword(password string) error {
+// Inside a transaction, q is the transaction's.
+func ValidatePassword(ctx context.Context, q *store.Queries, password string) error {
 	n := utf8.RuneCountInString(password)
 	switch {
-	case n < settings.GetInt("auth.passwordMinLength"):
+	case n < settings.Int(ctx, q, "auth.passwordMinLength"):
 		return ErrPasswordTooShort
-	case n > settings.GetInt("auth.passwordMaxLength"):
+	case n > settings.Int(ctx, q, "auth.passwordMaxLength"):
 		return ErrPasswordTooLong
 	}
 	return nil

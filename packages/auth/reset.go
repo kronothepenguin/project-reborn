@@ -6,8 +6,8 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // Reset is a started password reset, with the habbo and the address as stored.
@@ -37,8 +37,8 @@ func CreateReset(ctx context.Context, db *sql.DB, name, email string) (*Reset, e
 		ID:        id,
 		UserID:    account.UserID,
 		CreatedAt: now,
-		ExpiresAt: now.Add(minutes("auth.resetTokenMinutes")),
-		MaxActive: int64(settings.GetInt("auth.resetMaxActive")),
+		ExpiresAt: now.Add(minutes(ctx, q, "auth.resetTokenMinutes")),
+		MaxActive: int64(settings.Int(ctx, q, "auth.resetMaxActive")),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("auth: create reset: %w", err)
@@ -61,7 +61,7 @@ func DeleteExpiredResets(ctx context.Context, db *sql.DB) error {
 // ResetPassword sets password for the user of token. It works once: the token
 // and the user's other resets stop working, and every session of the user ends.
 func ResetPassword(ctx context.Context, db *sql.DB, token, password string) error {
-	if err := ValidatePassword(password); err != nil {
+	if err := ValidatePassword(ctx, store.New(db), password); err != nil {
 		return err
 	}
 	id, ok := digest(token)

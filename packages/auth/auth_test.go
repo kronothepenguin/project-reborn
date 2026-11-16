@@ -2,42 +2,19 @@ package auth
 
 import (
 	"database/sql"
-	"log"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"path/filepath"
 	"testing"
 	"time"
 
-	"github.com/kronothepenguin/project-reborn/packages/config"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 const testPassword = "secret123"
 
-var (
-	testConfig *config.Config
-	testNow    = time.Date(2026, time.October, 27, 21, 0, 0, 0, time.UTC)
-)
-
-// config.Load reads config.json once per process, so the whole package shares
-// one file, created with the defaults before any test runs.
-func TestMain(m *testing.M) {
-	dir, err := os.MkdirTemp("", "auth-test-")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-	if err := os.Chdir(dir); err != nil {
-		log.Fatal(err)
-	}
-	if testConfig, err = config.Load(); err != nil {
-		log.Fatal(err)
-	}
-	m.Run()
-}
+var testNow = time.Date(2026, time.October, 27, 21, 0, 0, 0, time.UTC)
 
 type fixture struct {
 	db  *sql.DB
@@ -51,9 +28,6 @@ func newFixture(t *testing.T) *fixture {
 		t.Fatalf("store.Open: %v", err)
 	}
 	t.Cleanup(func() { db.Close() })
-	if err := settings.Load(t.Context(), testConfig, db); err != nil {
-		t.Fatalf("settings.Load: %v", err)
-	}
 	f := &fixture{db: db, now: testNow}
 	clock = func() time.Time { return f.now }
 	t.Cleanup(func() { clock = time.Now })
@@ -66,7 +40,7 @@ func (f *fixture) advance(d time.Duration) {
 
 func (f *fixture) set(t *testing.T, key string, value any) {
 	t.Helper()
-	if err := settings.Set(t.Context(), f.db, 0, key, value); err != nil {
+	if err := settings.Set(t.Context(), store.New(f.db), 0, key, value); err != nil {
 		t.Fatalf("Set %s: %v", key, err)
 	}
 }

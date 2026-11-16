@@ -1,13 +1,13 @@
-// Package settings is the in-memory copy of the settings, one per process: the
-// declared defaults, then every config.json value, then the rows of the
-// settings table. It never keeps a database connection; the functions that use
-// the database receive it.
+// Package settings is the in-memory copy of the settings, one per process, for
+// the programs that do not read packages/settings on use yet: every config.json
+// value, then each declared setting as packages/settings reads it from the
+// store. It never keeps a database connection; the functions that use the
+// database receive it.
 package settings
 
 import (
 	"context"
 	"database/sql"
-	"encoding/json/v2"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -17,11 +17,14 @@ import (
 	"strings"
 	"sync"
 	"sync/atomic"
-	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/config"
+	stored "github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
+
+// Setting is one declared setting as a form shows it.
+type Setting = stored.Setting
 
 // Load, Reload and Set never edit the map the getters read: they build a copy
 // with the new values and swap it in with one atomic store, so a getter always
@@ -30,12 +33,10 @@ import (
 // getters would wait on that database call, and a request reading a setting
 // while it holds the store's only connection would deadlock.
 var (
-	mu     sync.Mutex
-	base   map[string]any
-	values atomic.Pointer[map[string]any]
-	// reported holds what the last merge ignored, because Reload runs every few
-	// seconds and a bad row would otherwise fill the log.
-	reported map[string]string
+	mu       sync.Mutex
+	base     map[string]any
+	declared atomic.Pointer[[]Setting]
+	values   atomic.Pointer[map[string]any]
 )
 
 var errNotLoaded = errors.New("settings: not loaded")
@@ -47,19 +48,16 @@ func Load(ctx context.Context, cfg *config.Config, db *sql.DB) error {
 		return fmt.Errorf("settings: %w", err)
 	}
 	next := make(map[string]any)
-	for key, d := range catalogue {
-		next[key] = d.def
-	}
 	dump("", reflect.ValueOf(*cfg), next)
 
 	mu.Lock()
 	defer mu.Unlock()
-	reported = nil
-	loaded, err := merge(ctx, db, next)
+	loaded, list, err := merge(ctx, db, next)
 	if err != nil {
 		return err
 	}
 	base = next
+	declared.Store(&list)
 	values.Store(&loaded)
 	return nil
 }
@@ -70,7 +68,7 @@ func Reload(ctx context.Context, db *sql.DB) error {
 	if base == nil {
 		return errNotLoaded
 	}
-	loaded, err := merge(ctx, db, base)
+	loaded, _, err := merge(ctx, db, base)
 	if err != nil {
 		return err
 	}
@@ -78,102 +76,36 @@ func Reload(ctx context.Context, db *sql.DB) error {
 	return nil
 }
 
-// Set validates value for a declared key and writes its row, or deletes the row
-// when value equals the default. A userID of 0 records no user, for writes made
-// before the first user exists.
+// Set writes one setting through packages/settings and applies it at once.
 func Set(ctx context.Context, db *sql.DB, userID int64, key string, value any) error {
 	mu.Lock()
 	defer mu.Unlock()
 	if base == nil {
 		return errNotLoaded
 	}
-
-	d, err := lookup(key)
-	if err != nil {
-		return fmt.Errorf("settings: %s: %w", key, err)
-	}
-	if err := d.validate(value); err != nil {
-		return fmt.Errorf("settings: %s: %w", key, err)
+	if err := stored.Set(ctx, store.New(db), userID, key, value); err != nil {
+		return err
 	}
 	next := maps.Clone(*values.Load())
 	next[key] = value
-	for _, r := range rules {
-		if err := r.check(next); err != nil {
-			return fmt.Errorf("settings: %w", err)
-		}
-	}
-	literal, err := json.Marshal(value)
-	if err != nil {
-		return fmt.Errorf("settings: %s: %w", key, err)
-	}
-
-	q := store.New(db)
-	if value == d.def {
-		err = q.DeleteSetting(ctx, key)
-	} else {
-		err = q.UpsertSetting(ctx, store.UpsertSettingParams{
-			Key:             key,
-			Value:           string(literal),
-			UpdatedAt:       time.Now().UTC(),
-			UpdatedByUserID: sql.NullInt64{Int64: userID, Valid: userID != 0},
-		})
-	}
-	if err != nil {
-		return fmt.Errorf("settings: %s: %w", key, err)
-	}
 	values.Store(&next)
 	return nil
 }
 
-// Validate reports why Set would refuse values taken together, and writes
-// nothing, so that a form can refuse all of its values before it writes one.
-func Validate(candidates map[string]any) error {
-	mu.Lock()
-	defer mu.Unlock()
-	if base == nil {
-		return errNotLoaded
-	}
-
-	next := maps.Clone(*values.Load())
-	for _, key := range slices.Sorted(maps.Keys(candidates)) {
-		d, err := lookup(key)
-		if err != nil {
-			return fmt.Errorf("settings: %s: %w", key, err)
-		}
-		if err := d.validate(candidates[key]); err != nil {
-			return fmt.Errorf("settings: %s: %w", key, err)
-		}
-		next[key] = candidates[key]
-	}
-	for _, r := range rules {
-		if err := r.check(next); err != nil {
-			return fmt.Errorf("settings: %w", err)
-		}
-	}
-	return nil
-}
-
-// Setting is one declared setting as a form shows it. Value is an int, a bool or
-// a string, and it is nil for a secret, which never leaves this package.
-type Setting struct {
-	Key    string
-	Value  any
-	Secret bool
-}
-
 // Declared lists the declared settings with their current values, sorted by key,
-// without the values of config.json.
+// without the values of config.json or of the secrets.
 func Declared() []Setting {
 	loaded := current()
-	declared := make([]Setting, 0, len(catalogue))
-	for _, key := range slices.Sorted(maps.Keys(catalogue)) {
-		setting := Setting{Key: key, Secret: catalogue[key].secret}
-		if !setting.Secret {
-			setting.Value = loaded[key]
-		}
-		declared = append(declared, setting)
+	var list []Setting
+	if listed := declared.Load(); listed != nil {
+		list = slices.Clone(*listed)
 	}
-	return declared
+	for i, setting := range list {
+		if !setting.Secret {
+			list[i].Value = loaded[setting.Key]
+		}
+	}
+	return list
 }
 
 func GetInt(key string) int {
@@ -200,64 +132,30 @@ func GetStringOr(key string, fallback string) string {
 	return getOr(key, fallback)
 }
 
-func merge(ctx context.Context, db *sql.DB, base map[string]any) (map[string]any, error) {
-	rows, err := store.New(db).ListSettings(ctx)
+// merge adds every declared setting, as packages/settings reads it, to base.
+// A secret comes without its value from Declared, so it is read on its own.
+func merge(ctx context.Context, db *sql.DB, base map[string]any) (map[string]any, []Setting, error) {
+	q := store.New(db)
+	list, err := stored.Declared(ctx, q)
 	if err != nil {
-		return nil, fmt.Errorf("settings: %w", err)
+		return nil, nil, err
 	}
-
 	merged := maps.Clone(base)
-	fromRows := make(map[string]bool)
-	ignored := make(map[string]string)
-	defer func() { reported = ignored }()
-	for _, row := range rows {
-		value, err := decode(row)
-		if err != nil {
-			ignore(ignored, row.Key, err)
+	for _, setting := range list {
+		merged[setting.Key] = setting.Value
+		if !setting.Secret {
 			continue
 		}
-		merged[row.Key] = value
-		fromRows[row.Key] = true
-	}
-	// A broken rule cannot tell which of its rows is wrong, so each of them goes
-	// back to its default; the defaults satisfy every rule.
-	for _, r := range rules {
-		if err := r.check(merged); err != nil {
-			for _, key := range r.keys {
-				if fromRows[key] {
-					merged[key] = base[key]
-					ignore(ignored, key, err)
-				}
-			}
+		switch setting.Default.(type) {
+		case int:
+			merged[setting.Key] = stored.Int(ctx, q, setting.Key)
+		case bool:
+			merged[setting.Key] = stored.Bool(ctx, q, setting.Key)
+		default:
+			merged[setting.Key] = stored.String(ctx, q, setting.Key)
 		}
 	}
-	return merged, nil
-}
-
-// lookup reads base, so its callers hold mu.
-func lookup(key string) (declaration, error) {
-	if d, ok := catalogue[key]; ok {
-		return d, nil
-	}
-	if _, ok := base[key]; ok {
-		return declaration{}, errors.New("comes from config.json")
-	}
-	return declaration{}, errors.New("not a declared setting")
-}
-
-func decode(row store.Setting) (any, error) {
-	d, err := lookup(row.Key)
-	if err != nil {
-		return nil, err
-	}
-	value, err := d.decode(row.Value)
-	if err != nil {
-		return nil, err
-	}
-	if err := d.validate(value); err != nil {
-		return nil, err
-	}
-	return value, nil
+	return merged, list, nil
 }
 
 func current() map[string]any {
@@ -294,14 +192,5 @@ func dump(prefix string, v reflect.Value, out map[string]any) {
 			continue
 		}
 		out[prefix+name] = value.Interface()
-	}
-}
-
-// ignore logs a row once, until its reason changes. It never logs the row's value:
-// rows can hold secrets such as passwords.
-func ignore(ignored map[string]string, key string, reason error) {
-	ignored[key] = reason.Error()
-	if reported[key] != ignored[key] {
-		slog.Warn("settings: row ignored", "key", key, "reason", reason)
 	}
 }

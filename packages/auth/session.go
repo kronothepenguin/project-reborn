@@ -12,8 +12,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 const cookieName = "reborn_session"
@@ -80,18 +80,18 @@ func loadSession(w http.ResponseWriter, r *http.Request, db *sql.DB) (Session, b
 	if err != nil {
 		return Session{}, false, nil
 	}
+	ctx := r.Context()
+	q := store.New(db)
 	id, ok := digest(cookie.Value)
 	if !ok {
-		clearCookie(w)
+		clearCookie(ctx, q, w)
 		return Session{}, false, nil
 	}
 
-	ctx := r.Context()
 	now := clock().UTC()
-	q := store.New(db)
 	row, err := q.GetActiveSession(ctx, store.GetActiveSessionParams{ID: id, Now: now})
 	if errors.Is(err, sql.ErrNoRows) {
-		clearCookie(w)
+		clearCookie(ctx, q, w)
 		return Session{}, false, nil
 	}
 	if err != nil {
@@ -99,13 +99,13 @@ func loadSession(w http.ResponseWriter, r *http.Request, db *sql.DB) (Session, b
 	}
 
 	if now.Sub(row.LastSeenAt) >= touchEvery {
-		lifetime := sessionLifetime(row.Remember)
+		lifetime := sessionLifetime(ctx, q, row.Remember)
 		row.LastSeenAt, row.ExpiresAt = now, now.Add(lifetime)
 		if err := q.TouchSession(ctx, store.TouchSessionParams{LastSeenAt: row.LastSeenAt, ExpiresAt: row.ExpiresAt, ID: id}); err != nil {
 			return Session{}, false, err
 		}
 		if row.Remember {
-			setCookie(w, cookie.Value, true, lifetime)
+			setCookie(ctx, q, w, cookie.Value, true, lifetime)
 		}
 	}
 	return Session{id: id, UserID: row.UserID, AvatarID: row.AvatarID, Remember: row.Remember, ExpiresAt: row.ExpiresAt}, true, nil
@@ -122,13 +122,13 @@ func DeleteExpiredSessions(ctx context.Context, db *sql.DB) error {
 
 // setCookie writes the session cookie. Only a remember-me cookie outlives the
 // browser, so only it carries a Max-Age.
-func setCookie(w http.ResponseWriter, token string, remember bool, lifetime time.Duration) {
+func setCookie(ctx context.Context, q *store.Queries, w http.ResponseWriter, token string, remember bool, lifetime time.Duration) {
 	cookie := &http.Cookie{
 		Name:     cookieName,
 		Value:    token,
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   settings.GetBool("auth.secureCookies"),
+		Secure:   settings.Bool(ctx, q, "auth.secureCookies"),
 		SameSite: http.SameSiteLaxMode,
 	}
 	if remember {
@@ -137,12 +137,12 @@ func setCookie(w http.ResponseWriter, token string, remember bool, lifetime time
 	http.SetCookie(w, cookie)
 }
 
-func clearCookie(w http.ResponseWriter) {
+func clearCookie(ctx context.Context, q *store.Queries, w http.ResponseWriter) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     cookieName,
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   settings.GetBool("auth.secureCookies"),
+		Secure:   settings.Bool(ctx, q, "auth.secureCookies"),
 		SameSite: http.SameSiteLaxMode,
 		MaxAge:   -1,
 	})

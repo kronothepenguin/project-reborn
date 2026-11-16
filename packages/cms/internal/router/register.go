@@ -131,7 +131,7 @@ func (r *Router) HandleRegister(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	page.validate(form)
+	page.validate(ctx, r.deps.Queries, form)
 	if err := r.checkTaken(ctx, &page); err != nil {
 		r.fail(w, err)
 		return
@@ -186,10 +186,10 @@ func ageOn(bornOn, day time.Time) int {
 }
 
 // validate checks everything but what needs the database, with Holo's texts.
-func (p *registerPage) validate(form url.Values) {
+func (p *registerPage) validate(ctx context.Context, q *store.Queries, form url.Values) {
 	if form.Get("password") != form.Get("passwordConfirm") {
 		p.Errors["password"] = "The passwords do not match. Please try again."
-	} else if err := auth.ValidatePassword(form.Get("password")); err != nil {
+	} else if err := auth.ValidatePassword(ctx, q, form.Get("password")); err != nil {
 		p.Errors["password"] = passwordLengthMessage(err)
 	}
 	if auth.ValidateEmail(p.Email) != nil {

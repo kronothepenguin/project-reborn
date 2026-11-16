@@ -4,13 +4,15 @@
 package auth
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net"
 	"net/http"
 	"time"
 
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 var (
@@ -48,15 +50,15 @@ func (e *BanError) Is(target error) bool {
 // clock is the time source; tests replace it.
 var clock = time.Now
 
-func minutes(key string) time.Duration {
-	return time.Duration(settings.GetInt(key)) * time.Minute
+func minutes(ctx context.Context, q *store.Queries, key string) time.Duration {
+	return time.Duration(settings.Int(ctx, q, key)) * time.Minute
 }
 
-func sessionLifetime(remember bool) time.Duration {
+func sessionLifetime(ctx context.Context, q *store.Queries, remember bool) time.Duration {
 	if remember {
-		return time.Duration(settings.GetInt("auth.rememberDays")) * 24 * time.Hour
+		return time.Duration(settings.Int(ctx, q, "auth.rememberDays")) * 24 * time.Hour
 	}
-	return minutes("auth.sessionIdleMinutes")
+	return minutes(ctx, q, "auth.sessionIdleMinutes")
 }
 
 // ClientIP is the address of the connection's peer. Behind a reverse proxy,

@@ -185,8 +185,8 @@ var catalogue = map[string]declaration{
 	"recycler.timeoutMinutes":  declare(10080, between(2, 5256000)),
 }
 
-// rules check settings that depend on each other. keys lists every setting a
-// rule reads, so that rows breaking the rule can go back to their defaults.
+// rules check settings that depend on each other when one of them is saved.
+// keys lists every setting a rule reads; a read trusts the rows.
 var rules = []rule{
 	{
 		keys: []string{"auth.passwordMinLength", "auth.passwordMaxLength"},

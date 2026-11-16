@@ -6,6 +6,8 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 func TestValidatePassword(t *testing.T) {
@@ -17,7 +19,7 @@ func TestValidatePassword(t *testing.T) {
 		strings.Repeat("a", 26): ErrPasswordTooLong,
 		strings.Repeat("ñ", 25): nil,
 	} {
-		err := ValidatePassword(password)
+		err := ValidatePassword(t.Context(), store.New(f.db), password)
 		if !errors.Is(err, want) {
 			t.Errorf("ValidatePassword(%d characters) = %v, want %v", len([]rune(password)), err, want)
 		}
@@ -27,7 +29,7 @@ func TestValidatePassword(t *testing.T) {
 	}
 
 	f.set(t, "auth.passwordMinLength", 8)
-	if err := ValidatePassword("1234567"); !errors.Is(err, ErrPasswordLength) {
+	if err := ValidatePassword(t.Context(), store.New(f.db), "1234567"); !errors.Is(err, ErrPasswordLength) {
 		t.Errorf("ValidatePassword() = %v after raising the minimum to 8, want ErrPasswordLength", err)
 	}
 }

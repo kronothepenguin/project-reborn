@@ -12,6 +12,7 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	stored "github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
@@ -59,7 +60,7 @@ func (r *Router) HandleSettingsSave(w http.ResponseWriter, req *http.Request) {
 
 	changes, problem := readChanges(current, req.PostForm)
 	if problem == "" {
-		if err := settings.Validate(changes); err != nil {
+		if err := stored.Validate(req.Context(), r.deps.Queries, changes); err != nil {
 			problem = strings.TrimPrefix(err.Error(), "settings: ") + ". " + settingsNotSaved
 		}
 	}
