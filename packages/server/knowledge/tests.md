@@ -23,7 +23,8 @@ says, and each uses habbos of its own.
 - `extras_test.go` rates a room, hosts an event and lists it, and shows groups
   and tags.
 - `rights_test.go` gives and takes rights, kicks a habbo that walks out, bans
-  it, and takes every right from the navigator.
+  it, lets it in again once its ban ended, and takes every right from the
+  navigator.
 - `queue_test.go` queues habbos at a full room, lets one in when a place
   frees, puts club members first and takes a spectator until the room empties.
 - `walking_test.go` walks two habbos at once, a step every 500 ms, and turns

@@ -49,10 +49,23 @@ type newsArticlePage struct {
 	Author   string
 }
 
+// renamedCategories maps Holo's category names to Reborn's, which update 0023
+// gave their articles.
+var renamedCategories = map[string]string{
+	"HoloCMS":            "Reborn CMS",
+	"Holograph Emulator": "Reborn Server",
+}
+
 // HandleNewsView handles GET /news, news.php: the archive of every article, or
-// with ?category= the last articles of that category.
+// with ?category= the last articles of that category. A category's old name
+// redirects to its new one, with the rest of the query kept.
 func (r *Router) HandleNewsView(w http.ResponseWriter, req *http.Request) {
 	query := req.URL.Query()
+	if renamed, ok := renamedCategories[query.Get("category")]; ok {
+		query.Set("category", renamed)
+		http.Redirect(w, req, "/news?"+query.Encode(), http.StatusMovedPermanently)
+		return
+	}
 	r.newsList(w, req, http.StatusOK, query.Get("category"), query.Has("category"))
 }
 
