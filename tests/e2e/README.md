@@ -1,8 +1,9 @@
 # e2e — browser suites
 
 Real Chromium against the production binaries. A run builds the frontends and the
-programs, installs a throwaway hotel through the installer, and gives each suite a
-fresh copy of it, with a mail stub standing in for the SMTP server.
+programs, the game server among them, installs a throwaway hotel through the
+installer, and gives each suite a fresh copy of it, with a mail stub standing in
+for the SMTP server.
 
 ## Run
 
