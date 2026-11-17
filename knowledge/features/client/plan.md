@@ -77,7 +77,7 @@ The client's reference documents are [LibreShockwave](/sources/libreshockwave.md
   func Import(ctx context.Context, q *store.Queries, files fs.FS) error
 
   type Hotel struct {
-      URL       string // the site's address
+      URL       string // the hotel's address as the browser used it
       ShortName string // the site's short name
       Version   int    // game.clientVersion
   }
@@ -96,3 +96,5 @@ The client's reference documents are [LibreShockwave](/sources/libreshockwave.md
   links to the commit it was built from. The user chose "A link on the client page".
 - The Emscripten libraries are a step of the setup notes; the make target fails with a clear message without them.
   The user chose "The setup notes say to run it".
+- Step one was checked in real browsers on 2026-11-16: with the site address setting left at its default, the client
+  loaded from the address in use, passed the version check, logged in and entered a room through the forward.

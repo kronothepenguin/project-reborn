@@ -2,7 +2,7 @@
 type: Spec
 title: The client in the browser
 description: A signed-in habbo opens the site's client page, where the R26 client runs on LibreShockwave; the CMS serves the client's files from the assets folder and its variables and texts from the database; later staff edit them, and the client runs in vanilla JavaScript.
-status: active
+status: done
 projects: [packages/cms, packages/housekeeping, packages/installer, packages/assets, packages/store, packages/config, packages/settings, packages/auth, vendor/LibreShockwave]
 ---
 
@@ -67,9 +67,6 @@ Importing:
 - The folder lacks one of the two files: the import is refused, names the missing file, and the database stays as it
   was.
 - A new hotel is installed while the folder holds the two files: the installer imports them.
-
-## Next
-
 - A habbo opens the client page with a habbo's room to go to: the client really enters that room, because the page
   tells it the kind of room too.
 - A habbo opens the client on any address the hotel answers on: the client loads its files, its variables and its
