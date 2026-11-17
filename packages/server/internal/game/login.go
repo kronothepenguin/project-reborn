@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
@@ -92,6 +93,7 @@ func Login(ctx context.Context, db *sql.DB, s Session, ticket, machineID string)
 		LeaveRoom(old.ID, old.Session)
 		old.Session.Notify(ConcurrentLogin{})
 	}
+	slog.Info(fmt.Sprintf("game: habbo %d %s logged in", h.ID, h.Name))
 	return h, nil
 }
 

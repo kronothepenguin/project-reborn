@@ -3,6 +3,7 @@ package server
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"io"
 	"strings"
 	"testing"
@@ -237,4 +238,12 @@ func TestASecondLoginEndsTheFirstSession(t *testing.T) {
 	if err != nil || data.LastOnlineAt.Time.Before(left) {
 		t.Errorf("last time online = %v, %v; want the time Twice left", data.LastOnlineAt, err)
 	}
+}
+
+// A habbo logs in: the game's log names the habbo.
+func TestALoginIsLogged(t *testing.T) {
+	id := habboWithTickets(t, "Logbook", "logbook")
+	login(t, "logbook")
+
+	logged.wait(t, fmt.Sprintf("game: habbo %d Logbook logged in", id))
 }
