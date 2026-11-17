@@ -55,6 +55,8 @@ called "reborn", this should keep installer + cms + housekeeping in the same mux
 - `proxy.enabled` is true and a request comes from a trusted proxy: the client's address is read from
   `X-Forwarded-For`, from the right, skipping trusted proxies; requests from other addresses keep their own
   (decision holo-port/0028).
+- `proxy.enabled` is true and a request comes from a trusted proxy: the request's host and scheme are the ones the
+  proxy forwards; a request from another address keeps its own.
 - A visitor abandons a request before its answer: the program ends it quietly, and the log gains no error line.
 
 ## CI and releases
