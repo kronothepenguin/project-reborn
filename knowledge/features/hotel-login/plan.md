@@ -76,3 +76,9 @@ description: The site's sign-in makes the SSO ticket, and the game server speaks
 - The game logs a login and a room entry, one line each, with ids and names only. The user chose "Log logins and room
   entries" after the habbos exit check had to read the network traffic to see what happened. A packet's body stays
   out of the log ([server 0021](/decisions/server/0021-unhandled-packets-logged-by-id-name-and-size.md)).
+- The version check compares the version alone. The rule that the client's addresses sit on the site address setting
+  is gone: the client reports its own addresses, so the rule protected nothing, and it turned away a good client
+  whenever the setting was not the address in use. The login's ticket is what protects the hotel. The user chose
+  "Check the version only" on 2026-11-16; it replaces the address part of
+  [server 0033](/decisions/server/0033-one-client-version-from-the-site.md) and
+  [server 0041](/decisions/server/0041-an-empty-versioncheck-url-passes.md).

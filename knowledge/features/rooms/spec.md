@@ -41,6 +41,7 @@ It builds on [habbos](/features/habbos/spec.md).
 - The owner or a staff member with `fuse_enter_locked_rooms` tries a room: it passes any door and any ban.
 - A habbo enters its own room: it gets the owner's controls; a habbo with rights gets the furniture controls.
 - A habbo leaves, enters another room or logs out: the others see it go (decision server/0071).
+- A habbo enters a room: the game's log names the habbo and the room.
 
 ## Moving and talking
 

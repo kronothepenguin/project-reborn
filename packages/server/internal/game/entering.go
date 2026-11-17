@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log/slog"
 	"slices"
 	"strings"
 	"time"
@@ -437,7 +438,24 @@ func EnterRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]Visitor, 
 			}
 		}
 	}
+	logEntry(ctx, db, viewer, h.Ref)
 	return visitors, Admitted, nil
+}
+
+// logEntry writes the line of the game's log that names the habbo and the room it entered.
+func logEntry(ctx context.Context, db *sql.DB, viewer habbo.Habbo, ref room.Ref) {
+	kind, name := "habbo room", ""
+	if ref.Public {
+		kind = "public room"
+		if p, ok := room.Public(ref.ID); ok {
+			name = p.Name
+		}
+	} else if r, err := store.New(db).GetRoom(ctx, ref.ID); err == nil {
+		name = r.Name
+	} else {
+		slog.Error(fmt.Sprintf("game: the name of habbo room %d: %v", ref.ID, err))
+	}
+	slog.Info(fmt.Sprintf("game: habbo %d %s entered %s %d %s", viewer.ID, viewer.Name, kind, ref.ID, name))
 }
 
 // flatControl returns the level of the habbo's flatctrl status in a habbo room: useradmin for its owners, and none for a

@@ -2,7 +2,7 @@
 type: Spec
 title: Hotel login
 description: A habbo signed in on the site enters the hotel with an SSO ticket, and the game server keeps its session alive until it leaves.
-status: active
+status: done
 projects: [packages/auth, packages/store, packages/server, packages/virtual, packages/housekeeping]
 ---
 
@@ -29,11 +29,9 @@ and sound setting. Pings keep the session alive, and a second login ends the fir
   (decision server/0027).
 - A client connects: it gets HELLO first.
 - A client sends text with accents: the server reads and writes it as UTF-8 (decision server/0014).
-- A client with the accepted version and its links on the site's address checks its version: it goes on to the login
-  (decision server/0033).
-- A client with empty links checks its version: it goes on to the login (decision server/0041).
+- A client with the accepted version checks its version: it goes on to the login, wherever it was loaded from.
 - A new hotel checks a client's version: version 1 passes (decision server/0040).
-- A client with another version or links elsewhere checks its version: it gets "Version not correct" and is closed
+- A client with another version checks its version: it gets "Version not correct" and is closed
   (decision server/0049).
 - A client logs in before its version check passed: it gets "Version not correct" and is closed
   (decision server/0049).
@@ -82,8 +80,4 @@ and sound setting. Pings keep the session alive, and a second login ends the fir
 - A client asks for the server's date: it gets today's date.
 - Staff change the ping times in housekeeping: each session takes them at its next ping (decision server/0042).
 - Staff set the ping timeout no longer than the ping interval: the value is refused.
-
-## Next
-
 - A habbo logs in: the game's log names the habbo.
-- A habbo enters a room: the game's log names the habbo and the room.

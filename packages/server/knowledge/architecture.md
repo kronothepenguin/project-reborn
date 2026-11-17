@@ -62,6 +62,8 @@ one, the catalogue or the site (0125 (`knowledge/decisions/server/0125-an-item-v
    id. A packet that no handler takes is logged by its id, its name and its size, never its body, and the session goes
    on (0021 (`knowledge/decisions/server/0021-unhandled-packets-logged-by-id-name-and-size.md`)).
 3. The handler reads the fields and calls a rule in `game`.
+   `game` logs a login (`game: habbo <id> <name> logged in`) and a room entry (`game: habbo <id> <name> entered
+   public room|habbo room <id> <name>`), one `Info` line each, with ids and names only.
 4. The rule reads and changes the state in `virtual`. Saved data is written to the database at once, then in memory.
 5. The protocol queues the answers in the session's outbox, which a goroutine of the session's own writes on the
    `Conn` in order, so that sending never waits for a client; a client that stops reading fills its outbox and is

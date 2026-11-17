@@ -399,3 +399,13 @@ func TestTheAdsComeFromTheSettings(t *testing.T) {
 	c.send(t, 126, "")
 	c.expectNext(t, 208, "https://example.com/room.gif\t")
 }
+
+// A habbo enters a room: the game's log names the habbo and the room.
+func TestARoomEntryIsLogged(t *testing.T) {
+	id := habboWithTickets(t, "Diarist", "diarist")
+	flat := newRoom(t, id, 2, "Journal Room", true)
+	c, _ := login(t, "diarist")
+
+	c.enterFlat(t, flat, 47, 42)
+	logged.wait(t, fmt.Sprintf("game: habbo %d Diarist entered habbo room %d Journal Room", id, flat))
+}

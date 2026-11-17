@@ -107,6 +107,10 @@ How programs tell the game of a live change is
   of go routing goes to /installer/ special routes like /@vite/* and frontend stuff is passby, we can do this by
   checking in the "/" handler the path and the mux, if mux has it registered then redirect to /installer/, if it is an
   asset or vite then passby."
+- A trusted proxy's host and scheme replace the request's own. `auth.RealIP`, which already replaces the address of a
+  request from a trusted proxy with the visitor's, also sets its host from `X-Forwarded-Host` and its scheme from
+  `X-Forwarded-Proto`, so every handler sees the request as the visitor sent it, and the client page builds its
+  addresses from it. The user chose "auth's `RealIP` fixes the request", with no new function.
 
 # Notes
 
