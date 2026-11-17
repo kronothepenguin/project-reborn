@@ -55,11 +55,15 @@ func (r *Router) dcrHotel(req *http.Request) dcr.Hotel {
 }
 
 // hotelURL is the address the browser used, its scheme and its host, so the
-// client loads its files from wherever the hotel answers.
+// client loads its files from wherever the hotel answers. Behind a trusted
+// proxy, auth.RealIP has set the scheme and host the proxy forwards.
 func hotelURL(req *http.Request) string {
-	scheme := "http"
-	if req.TLS != nil {
-		scheme = "https"
+	scheme := req.URL.Scheme
+	if scheme == "" {
+		scheme = "http"
+		if req.TLS != nil {
+			scheme = "https"
+		}
 	}
 	return scheme + "://" + req.Host
 }

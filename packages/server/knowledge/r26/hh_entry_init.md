@@ -201,6 +201,8 @@ list it goes through `sendNew` ([fuse_client](/r26/fuse_client.md#client-to-serv
   `the moviePath` differs from the path the client saved the first time it asked for it.
 - The external variables URL is the address the external variables came from.
 - Outside a browser plugin, when `the runMode` does not contain `Plugin`, both URLs are empty.
+- The server compares the version alone and reads the two URLs without checking them
+  ([The handshake and the login](/handshake-and-login.md)).
 
 # Flows
 

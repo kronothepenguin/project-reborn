@@ -142,14 +142,13 @@ func TestTheHandshakeAndTheLoginInBytes(t *testing.T) {
 	}
 }
 
-func TestTheVersionCheckTakesTheSitesURLs(t *testing.T) {
+func TestAClientWithTheAcceptedVersionGoesOnWhereverItWasLoadedFrom(t *testing.T) {
 	site := settings.GetString("site.url")
 	for name, check := range map[string]string{
-		"empty URLs":    versionCheck(t, 1, "", ""),
-		"the site":      versionCheck(t, 1, site, site),
-		"pages on it":   versionCheck(t, 1, site+"/client", site+"/external_variables.txt"),
-		"one URL empty": versionCheck(t, 1, site+"/client", ""),
-		"the other one": versionCheck(t, 1, "", site+"/external_variables.txt"),
+		"empty URLs":       versionCheck(t, 1, "", ""),
+		"the site":         versionCheck(t, 1, site+"/client", site+"/dcr/external_variables.txt"),
+		"another host":     versionCheck(t, 1, "http://hotel.example.com:8080/client", "http://hotel.example.com:8080/dcr/external_variables.txt"),
+		"another site URL": versionCheck(t, 1, site+".example.com/client", "http://example.com/external_variables.txt"),
 	} {
 		t.Run(name, func(t *testing.T) {
 			c := dial(t, infoPort)
@@ -163,13 +162,11 @@ func TestTheVersionCheckTakesTheSitesURLs(t *testing.T) {
 
 // A wrong client gets 33 Version not correct, and the server closes the connection before it answers the
 // GET_SESSION_PARAMETERS that came with the check (decision server/0049).
-func TestAWrongClientIsClosedAfterItsError(t *testing.T) {
+func TestAClientWithAnotherVersionIsClosedAfterItsError(t *testing.T) {
 	site := settings.GetString("site.url")
 	for name, check := range map[string]string{
-		"another version":              versionCheck(t, 2, "", ""),
-		"a client URL on another host": versionCheck(t, 1, site+".example.com/client", ""),
-		"a variables URL elsewhere":    versionCheck(t, 1, "", "http://example.com/external_variables.txt"),
-		"a body cut short":             "I",
+		"another version":  versionCheck(t, 2, site+"/client", site+"/dcr/external_variables.txt"),
+		"a body cut short": "I",
 	} {
 		t.Run(name, func(t *testing.T) {
 			c := dial(t, infoPort)

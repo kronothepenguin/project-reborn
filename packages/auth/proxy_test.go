@@ -51,6 +51,44 @@ func TestRealIP(t *testing.T) {
 	}
 }
 
+// forwarded sends a request from remote with the forwarding headers of a proxy
+// through RealIP, and returns the host and scheme the handler sees.
+func forwarded(t *testing.T, remote string) (host, scheme string) {
+	t.Helper()
+	middleware, err := RealIP(proxy.Proxy{Enabled: true, Trusted: []string{"127.0.0.1"}})
+	if err != nil {
+		t.Fatalf("RealIP: %v", err)
+	}
+	handler := middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		host, scheme = r.Host, r.URL.Scheme
+	}))
+	r := httptest.NewRequest(http.MethodGet, "/", nil)
+	r.Host = "localhost:17387"
+	r.RemoteAddr = remote
+	r.Header.Set("X-Forwarded-For", "198.51.100.7")
+	r.Header.Set("X-Forwarded-Host", "hotel.example.com")
+	r.Header.Set("X-Forwarded-Proto", "https")
+	handler.ServeHTTP(httptest.NewRecorder(), r)
+	if r.Host != "localhost:17387" || r.URL.Scheme != "" {
+		t.Errorf("the caller's request was changed to %s://%s", r.URL.Scheme, r.Host)
+	}
+	return host, scheme
+}
+
+func TestARequestFromATrustedProxyTakesTheForwardedHostAndScheme(t *testing.T) {
+	host, scheme := forwarded(t, "127.0.0.1:5000")
+	if host != "hotel.example.com" || scheme != "https" {
+		t.Errorf("the handler saw %s://%s, want https://hotel.example.com", scheme, host)
+	}
+}
+
+func TestARequestFromAnotherAddressKeepsItsHostAndScheme(t *testing.T) {
+	host, scheme := forwarded(t, "203.0.113.9:5000")
+	if host != "localhost:17387" || scheme != "" {
+		t.Errorf("the handler saw %s://%s, want its own localhost:17387", scheme, host)
+	}
+}
+
 func TestRealIPRejectsInvalidTrustedEntries(t *testing.T) {
 	if _, err := RealIP(proxy.Proxy{Enabled: true, Trusted: []string{"localhost"}}); err == nil {
 		t.Error("RealIP accepted localhost as a trusted proxy")

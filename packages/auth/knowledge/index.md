@@ -11,6 +11,6 @@ okf_version: "0.2"
 - [Login](login.md) - The steps of a sign-in by habbo name, its throttle and the ban check.
 - [Password reset](password-reset.md) - How a reset link is made, limited, spent and deleted.
 - [Passwords](passwords.md) - How passwords are hashed, verified, rehashed, checked for length and changed.
-- [Behind a reverse proxy](reverse-proxy.md) - How RealIP takes the client's address from X-Forwarded-For for trusted proxies.
+- [Behind a reverse proxy](reverse-proxy.md) - How RealIP takes the client's address, host and scheme from the forwarding headers of trusted proxies.
 - [Sessions](sessions.md) - The session cookie, its expiry, the middleware that reads it, sign-out, habbo switching and SSO tickets.
 - [Usage](usage.md) - How an app wraps its routes with sessions and handles the errors of a sign-in.

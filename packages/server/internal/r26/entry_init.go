@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log/slog"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/encoding"
@@ -73,9 +72,8 @@ func handleInitCrypto(s *session, _ []byte) {
 	s.reply(endOfCryptoParams, nil)
 }
 
-// handleVersionCheck lets the client log in when it carries the version game.clientVersion holds and two URLs that are
-// empty or on site.url; any other client gets 33 Version not correct and is closed (decisions server/0033, server/0041
-// and server/0049).
+// handleVersionCheck lets the client log in when it carries the version game.clientVersion holds, wherever it was
+// loaded from; any other client gets 33 Version not correct and is closed (decisions server/0033 and server/0049).
 func handleVersionCheck(s *session, body []byte) {
 	if !versionPasses(body) {
 		s.turnAway()
@@ -84,28 +82,19 @@ func handleVersionCheck(s *session, body []byte) {
 	s.checked = true
 }
 
+// versionPasses reads the whole check, the version and the client's two URLs, and compares the version alone.
 func versionPasses(body []byte) bool {
 	r := bytes.NewReader(body)
 	version, err := encoding.ReadVL64(r)
 	if err != nil {
 		return false
 	}
-	clientURL, err := encoding.ReadB64String(r)
-	if err != nil {
-		return false
+	for range 2 {
+		if _, err := encoding.ReadB64String(r); err != nil {
+			return false
+		}
 	}
-	variablesURL, err := encoding.ReadB64String(r)
-	if err != nil {
-		return false
-	}
-	return int(version) == settings.GetInt("game.clientVersion") && onSite(clientURL) && onSite(variablesURL)
-}
-
-// onSite reports whether url is empty or on the site. site.url is an origin, so a URL on it is site.url itself or
-// site.url and a slash: http://localhost:17387.example.com is not on http://localhost:17387.
-func onSite(url string) bool {
-	site := settings.GetString("site.url")
-	return url == "" || url == site || strings.HasPrefix(url, site+"/")
+	return int(version) == settings.GetInt("game.clientVersion")
 }
 
 func (s *session) turnAway() {

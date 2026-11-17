@@ -14,7 +14,7 @@ resource: packages/assets/dcr
 func Import(ctx context.Context, q *store.Queries, files fs.FS) error
 
 type Hotel struct {
-	URL       string // the site's address
+	URL       string // the hotel's address as the browser used it
 	ShortName string // the site's short name
 	Version   int    // game.clientVersion
 }

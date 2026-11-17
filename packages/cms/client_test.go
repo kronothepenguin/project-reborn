@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
+	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
@@ -135,6 +136,30 @@ func TestTheClientLoadsFromTheAddressTheBrowserUsed(t *testing.T) {
 		"external.variables.txt="+site+"dcr/external_variables.txt",
 		"external.texts.txt="+site+"dcr/external_texts.txt",
 		"client.reload.url="+site+"client?x=reauthenticate")
+}
+
+func TestTheClientLoadsFromTheAddressATrustedProxyForwards(t *testing.T) {
+	cfg := config.Get()
+	cfg.Proxy.Enabled = true
+	t.Cleanup(func() { cfg.Proxy.Enabled = false })
+	db, mux := newSite(t)
+	habbo(t, db, "dora@example.com", "Dora")
+	cookie := login(t, db, "Dora")
+	r := httptest.NewRequest("GET", "/client", nil)
+	r.RemoteAddr = "127.0.0.1:5000"
+	r.Header.Set("X-Forwarded-For", "198.51.100.7")
+	r.Header.Set("X-Forwarded-Host", "hotel.example.com")
+	r.Header.Set("X-Forwarded-Proto", "https")
+	r.AddCookie(cookie)
+	rec := httptest.NewRecorder()
+
+	mux.ServeHTTP(rec, r)
+
+	site := "https://hotel.example.com/"
+	wantPage(t, rec, http.StatusOK, "Movie:"+site+"dcr/habbo.dcr",
+		"{Name:sw4 Value:site.url="+site+";url.prefix="+site+"}",
+		"external.variables.txt="+site+"dcr/external_variables.txt",
+		"external.texts.txt="+site+"dcr/external_texts.txt;user_isp=198.51.100.7")
 }
 
 func TestAFailedConnectionNamesTheGamesAddressAndPort(t *testing.T) {
