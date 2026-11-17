@@ -3,6 +3,7 @@ package cms
 import (
 	"database/sql"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"slices"
@@ -81,16 +82,20 @@ func TestMissingClientFilesAnswerNotFound(t *testing.T) {
 	}
 }
 
-func TestExternalVariablesPointAtThisHotel(t *testing.T) {
+// The variables point at the address the browser used, whatever site.url says.
+func TestExternalVariablesPointAtTheAddressTheBrowserUsed(t *testing.T) {
 	db, mux := newSite(t)
 	importClientFiles(t, db,
 		"cast.entry.1=hh_entry\r\nclient.version.id=401\r\nimage.library.url=http://images.habbo.com/c_images/",
 		"a=b")
-	hotelSetting(t, db, "site.url", "https://hotel.example.com")
 	hotelSetting(t, db, "game.clientVersion", 26)
 	clientFile(t, "external_variables.txt", "the file on disk")
 
-	rec := serve(mux, "GET", "/dcr/external_variables.txt", nil, nil)
+	r := httptest.NewRequest("GET", "/dcr/external_variables.txt", nil)
+	r.Host = "hotel.example.com:8080"
+	rec := httptest.NewRecorder()
+
+	mux.ServeHTTP(rec, r)
 
 	if rec.Code != http.StatusOK {
 		t.Fatalf("GET = %d %q", rec.Code, rec.Body)
@@ -102,9 +107,9 @@ func TestExternalVariablesPointAtThisHotel(t *testing.T) {
 	for _, want := range []string{
 		"cast.entry.1=hh_entry",
 		"client.version.id=26",
-		"image.library.url=https://hotel.example.com/c_images/",
-		"figure.draworder.xml=https://hotel.example.com/dcr/draworder.xml",
-		"dynamic.download.url=https://hotel.example.com/dcr/hof_furni/",
+		"image.library.url=http://hotel.example.com:8080/c_images/",
+		"figure.draworder.xml=http://hotel.example.com:8080/dcr/draworder.xml",
+		"dynamic.download.url=http://hotel.example.com:8080/dcr/hof_furni/",
 	} {
 		if !slices.Contains(lines, want) {
 			t.Errorf("the variables lack %q:\n%s", want, rec.Body)

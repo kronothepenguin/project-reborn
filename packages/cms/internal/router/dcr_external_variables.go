@@ -9,7 +9,7 @@ import (
 // HandleExternalVariablesText serves GET /dcr/external_variables.txt, written
 // from the stored variables with this hotel's addresses and client version.
 func (r *Router) HandleExternalVariablesText(w http.ResponseWriter, req *http.Request) {
-	body, err := dcr.Variables(req.Context(), r.deps.Queries, r.dcrHotel(req.Context()))
+	body, err := dcr.Variables(req.Context(), r.deps.Queries, r.dcrHotel(req))
 	if err != nil {
 		r.fail(w, err)
 		return

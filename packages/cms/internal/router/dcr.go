@@ -1,7 +1,6 @@
 package router
 
 import (
-	"context"
 	"io/fs"
 	"net/http"
 	"os"
@@ -44,13 +43,25 @@ func (f filesOnly) Open(name string) (fs.File, error) {
 	return file, nil
 }
 
-// dcrHotel is what the written client files take from the hotel's settings.
-func (r *Router) dcrHotel(ctx context.Context) dcr.Hotel {
+// dcrHotel is what the written client files take from the request's address
+// and the hotel's settings.
+func (r *Router) dcrHotel(req *http.Request) dcr.Hotel {
+	ctx := req.Context()
 	return dcr.Hotel{
-		URL:       settings.String(ctx, r.deps.Queries, "site.url"),
+		URL:       hotelURL(req),
 		ShortName: settings.String(ctx, r.deps.Queries, "site.shortName"),
 		Version:   settings.Int(ctx, r.deps.Queries, "game.clientVersion"),
 	}
+}
+
+// hotelURL is the address the browser used, its scheme and its host, so the
+// client loads its files from wherever the hotel answers.
+func hotelURL(req *http.Request) string {
+	scheme := "http"
+	if req.TLS != nil {
+		scheme = "https"
+	}
+	return scheme + "://" + req.Host
 }
 
 // writeClientText answers a file the client reads as UTF-8 text.

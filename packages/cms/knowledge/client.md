@@ -25,12 +25,14 @@ description: How the CMS serves Holo's client.php, clientutils.php and unloadcli
 # The page
 
 - The page passes Holo's `sw1` to `sw9` to the player as `params`, in `#client-params`, and the movie's address in
-  `#clientembed`'s `data-movie`. The addresses start with `site.url`, and the client's files are at `/dcr/`.
+  `#clientembed`'s `data-movie`. The addresses start with the address the browser used, its scheme and its host
+  (`hotelURL` in `internal/router/dcr.go`), and the client's files are at `/dcr/`. `site.url` keeps its other uses.
 - `sw2` and `sw3` come from `config.json`'s `server.info` and `server.mus`. A visitor from `127.0.0.1` gets
   `127.0.0.1` as the info host, as Holo's `$ip` did.
 - `sw8` carries `auth.SSOTicket`: the game spends it at login, so the reload address, `/client?x=reauthenticate`,
   gets a fresh one.
-- `sw9`, `forward.id`, is there when the address holds `roomId` and `forwardId=2` and the room exists.
+- `sw9`, `forward.id` with `forward.type=2`, is there when the address holds `roomId` and `forwardId=2` and the room
+  exists. The client enters a room only when it has both; Holo's page sent `forward.id` alone.
 - The client is 960 by 540 when the address says `wide=true`, or holds no `wide` while `features.clientWideScreen` is
   on; otherwise 720 by 540. The top bar's width follows the setting alone, as Holo's `body.wide` did.
 - `features.clientLoader` shows "opening <short name>..." until the player has loaded the movie.
@@ -65,7 +67,7 @@ description: How the CMS serves Holo's client.php, clientutils.php and unloadcli
 - A missing file, a folder, a link out of the folder and a missing assets folder answer 404. No folder is listed.
 - The folder stands outside the middleware chain, as the static files do.
 - `/dcr/external_variables.txt` and `/dcr/external_texts.txt` are written from the database by `dcr.Variables` and
-  `dcr.Texts` (`packages/assets/knowledge/dcr.md`), with `site.url`, `site.shortName` and `game.clientVersion` read on
-  each request. They answer `text/plain; charset=utf-8`, and files of those names in the folder are never served.
+  `dcr.Texts` (`packages/assets/knowledge/dcr.md`), with the address the browser used, and `site.shortName` and
+  `game.clientVersion` read on each request. They answer `text/plain; charset=utf-8`, and files of those names in the folder are never served.
 - The two written files keep `router.UpdateFailed` and the session layers of the chain, and skip the ban and
   maintenance checks.

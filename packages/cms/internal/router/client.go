@@ -37,7 +37,9 @@ type clientPage struct {
 // HandleClientView renders GET /client, client.php. A guest goes to Holo's
 // "please sign in" page. The address's wide=true makes the client wide, and any
 // other wide makes it narrow; without one the wide-screen setting decides. A
-// roomId with forwardId=2 opens the client in that room when it exists.
+// roomId with forwardId=2 opens the client in that room when it exists, with
+// forward.type=2, a habbo's room, which the client needs and Holo never sent.
+// The client's addresses start with the address the browser used.
 func (r *Router) HandleClientView(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	if _, ok := auth.FromContext(ctx); !ok {
@@ -81,7 +83,7 @@ func (r *Router) HandleClientView(w http.ResponseWriter, req *http.Request) {
 	if visitor == "127.0.0.1" {
 		host = "127.0.0.1"
 	}
-	path := settings.String(ctx, q, "site.url") + "/"
+	path := hotelURL(req) + "/"
 
 	params := []clientParam{
 		{"sw6", "client.connection.failed.url=" + path + "client/utils?key=connection_failed;external.variables.txt=" + path + "dcr/external_variables.txt"},
@@ -93,7 +95,7 @@ func (r *Router) HandleClientView(w http.ResponseWriter, req *http.Request) {
 		{"sw7", "external.texts.txt=" + path + "dcr/external_texts.txt;user_isp=" + visitor},
 	}
 	if forward != "" {
-		params = append(params, clientParam{"sw9", "forward.id=" + forward + ";processlog.enabled=1"})
+		params = append(params, clientParam{"sw9", "forward.id=" + forward + ";forward.type=2;processlog.enabled=1"})
 	}
 	params = append(params, clientParam{"sw5", "client.reload.url=" + path + "client?x=reauthenticate;client.fatal.error.url=" + path + "client/utils?key=error"})
 

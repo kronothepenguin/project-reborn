@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 
@@ -13,10 +14,10 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
-// The page's parameters as printPage prints them, with the default site.url
-// and config.json's default game addresses.
+// The page's parameters as printPage prints them, with the address of serve's
+// requests and config.json's default game addresses.
 const (
-	clientSite    = "http://localhost:17387/"
+	clientSite    = "http://example.com/"
 	clientInfo    = "{Name:sw2 Value:connection.info.host=localhost;connection.info.port=30000}"
 	clientMUS     = "{Name:sw3 Value:connection.mus.host=localhost;connection.mus.port=30001}"
 	clientFailed  = "{Name:sw6 Value:client.connection.failed.url=" + clientSite + "client/utils?key=connection_failed;external.variables.txt=" + clientSite + "dcr/external_variables.txt}"
@@ -106,7 +107,7 @@ func TestTheClientOpensInARoomThatExists(t *testing.T) {
 	}
 
 	path := fmt.Sprintf("/client?roomId=%d&forwardId=2", room.ID)
-	wantPage(t, serve(mux, "GET", path, cookie, nil), http.StatusOK, fmt.Sprintf("%s%d;processlog.enabled=1}", clientForward, room.ID))
+	wantPage(t, serve(mux, "GET", path, cookie, nil), http.StatusOK, fmt.Sprintf("%s%d;forward.type=2;processlog.enabled=1}", clientForward, room.ID))
 
 	for _, path := range []string{fmt.Sprintf("/client?roomId=%d", room.ID+1) + "&forwardId=2", fmt.Sprintf("/client?roomId=%d&forwardId=1", room.ID), "/client?roomId=den&forwardId=2"} {
 		rec := serve(mux, "GET", path, cookie, nil)
@@ -115,6 +116,25 @@ func TestTheClientOpensInARoomThatExists(t *testing.T) {
 			t.Errorf("%s forwards to a room: %s", path, rec.Body)
 		}
 	}
+}
+
+func TestTheClientLoadsFromTheAddressTheBrowserUsed(t *testing.T) {
+	db, mux := newSite(t)
+	habbo(t, db, "dora@example.com", "Dora")
+	cookie := login(t, db, "Dora")
+	r := httptest.NewRequest("GET", "/client", nil)
+	r.Host = "hotel.example.com:8080"
+	r.AddCookie(cookie)
+	rec := httptest.NewRecorder()
+
+	mux.ServeHTTP(rec, r)
+
+	site := "http://hotel.example.com:8080/"
+	wantPage(t, rec, http.StatusOK, "Movie:"+site+"dcr/habbo.dcr",
+		"{Name:sw4 Value:site.url="+site+";url.prefix="+site+"}",
+		"external.variables.txt="+site+"dcr/external_variables.txt",
+		"external.texts.txt="+site+"dcr/external_texts.txt",
+		"client.reload.url="+site+"client?x=reauthenticate")
 }
 
 func TestAFailedConnectionNamesTheGamesAddressAndPort(t *testing.T) {
