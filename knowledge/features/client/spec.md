@@ -35,6 +35,7 @@ The client page:
 - The loader setting is on: "opening <short name>..." shows while the client loads.
 - A habbo opens the client page with a room to go to, and the room exists: the client opens in that room; an unknown
   room opens the hotel as usual.
+
 - The client cannot connect: Holo's "Connection to <site name> failed." page shows, with the game's address and port.
 - The client reports a fatal error: Holo's "Fatal Error" page shows.
 - The client asks to reload: the page opens again with a fresh ticket.
@@ -66,6 +67,13 @@ Importing:
 - The folder lacks one of the two files: the import is refused, names the missing file, and the database stays as it
   was.
 - A new hotel is installed while the folder holds the two files: the installer imports them.
+
+## Next
+
+- A habbo opens the client page with a habbo's room to go to: the client really enters that room, because the page
+  tells it the kind of room too.
+- A habbo opens the client on any address the hotel answers on: the client loads its files, its variables and its
+  texts from that same address.
 
 # Open questions
 

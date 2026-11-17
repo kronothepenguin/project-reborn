@@ -2,7 +2,7 @@
 type: Spec
 title: Habbos
 description: Each habbo has its Me page, motto, look and profile, edited on the site and in housekeeping, and its look and motto reach the client at once through the first service.
-status: active
+status: done
 projects: [packages/services, packages/server, packages/cms, packages/housekeeping, packages/reborn, packages/store, packages/config, packages/components, tests/e2e]
 ---
 
@@ -13,15 +13,12 @@ Each habbo has its Me page, its motto, its look and its profile
 keep outfits in a wardrobe. Avatar images come from a configurable imager. Staff find any habbo in housekeeping, edit
 it, and restore an archived one.
 
-Next:
-
-The user: "create a room where i can see my habbo and allow me to go into cms, open the client, get into a room in the
+A signed-in habbo opens the client from the site, enters a room and sees itself. Its look and motto, changed on the
+site or in housekeeping, change in the client at once, for it and for everyone in the room
+([0013](/decisions/reborn/0013-a-habbos-look-and-motto-reach-the-game-at-once.md)), through the first service
+([0005](/decisions/reborn/0005-the-game-hears-live-changes-through-services.md)). The user asked for it in these
+words: "create a room where i can see my habbo and allow me to go into cms, open the client, get into a room in the
 client, then if i modify my look in the cms, the client (server) should reflect that."
-
-A signed-in habbo opens the client from the site under reborn, enters any room, and sees itself. Its look and motto,
-changed on the site or in housekeeping, change in the client at once, for it and for everyone in the room
-([0013](/decisions/reborn/0013-a-habbos-look-and-motto-reach-the-game-at-once.md)). It is the first service
-([0005](/decisions/reborn/0005-the-game-hears-live-changes-through-services.md)).
 
 It builds on [platform](/features/platform/spec.md) and [the client](/features/client/spec.md).
 
@@ -108,8 +105,5 @@ It builds on [platform](/features/platform/spec.md) and [the client](/features/c
 - Under reborn, a look or motto saved on the site or in housekeeping reaches the game in the same process.
 - With the separate programs, the same changes reach the game through its `/api/`, and the `/api/` answers 404 without
   the secret.
-
-## Next
-
 - Under reborn, a signed-in habbo opens the client from the site, enters a room and sees its habbo.
 - The game's secret is created or changed while the site runs: the next call to the game uses it, with no restart.

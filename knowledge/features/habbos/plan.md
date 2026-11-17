@@ -6,8 +6,6 @@ description: The CMS and housekeeping hold a habbo's pages, and the services pac
 
 # Architecture
 
-Built:
-
 | Project | Part |
 | --- | --- |
 | `packages/cms` | The Me page, the looks, profile and habbos tabs, the avatar editor's wrapper `habbo/avatar-editor` and the wardrobe `account/wardrobe` |
@@ -20,7 +18,6 @@ Built:
 | `packages/cms`, `packages/housekeeping` | `Inject`; the looks, profile and motto pages and the habbo editor call the service after they save |
 | `apps/reborn` | The runner injects the game server, which satisfies `services.Habbos`, into the site and housekeeping |
 | `packages/store`, `packages/config` | The `api_secret` table and its query; `server.api` |
-
 
 Reborn's core comes from [platform](/features/platform/spec.md), and the client page from [the
 client](/features/client/spec.md).
@@ -52,6 +49,9 @@ client](/features/client/spec.md).
   motto to it and to its room at once.
 - The site reads the game's secret on each call: `api.New(baseURL, db)` in place of `api.New(baseURL, secret)`, so a
   secret created by an update, or changed, is used with no restart. The user chose "Read it on each call".
+- The exit check of 2026-11-16 ran the user's demonstration in real browsers: two habbos in one room under reborn, a
+  look and a motto saved on the site and in housekeeping shown in both clients within about three seconds, and the
+  same through the game's `/api/` with the programs run apart.
 
 # Notes
 

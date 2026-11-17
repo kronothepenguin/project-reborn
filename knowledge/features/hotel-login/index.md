@@ -4,3 +4,4 @@
 
 - [Hotel login: how](plan.md) - The site's sign-in makes the SSO ticket, and the game server speaks the handshake, the login and the pings.
 - [Hotel login](spec.md) - A habbo signed in on the site enters the hotel with an SSO ticket, and the game server keeps its session alive until it leaves.
+- [tasks/](tasks/index.md)

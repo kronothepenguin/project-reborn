@@ -86,6 +86,12 @@ The client's reference documents are [LibreShockwave](/sources/libreshockwave.md
   func Texts(ctx context.Context, q *store.Queries, hotel Hotel) ([]byte, error)
   ```
 
+- The room forward sends the room's kind. The R26 client goes to a room only when the page gives it `forward.type`
+  beside `forward.id`, which Holo's page never did, so Holo's forward did nothing. The page sends `forward.type=2`, a
+  habbo's room. The user chose "Send the room's kind too", a departure from Holo's page by one value.
+- The client's addresses come from the address the browser used. The client page and the written variables build them
+  from the request, so they are right under reborn, with the programs run apart and under `make dev`, with no setting
+  to touch. The user chose "The address the browser used"; the site address setting keeps its other uses.
 - The client page links to LibreShockwave's source: a line on the page names the player and its AGPL-3.0 licence and
   links to the commit it was built from. The user chose "A link on the client page".
 - The Emscripten libraries are a step of the setup notes; the make target fails with a clear message without them.

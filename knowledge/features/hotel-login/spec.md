@@ -2,7 +2,7 @@
 type: Spec
 title: Hotel login
 description: A habbo signed in on the site enters the hotel with an SSO ticket, and the game server keeps its session alive until it leaves.
-status: done
+status: active
 projects: [packages/auth, packages/store, packages/server, packages/virtual, packages/housekeeping]
 ---
 
@@ -82,3 +82,8 @@ and sound setting. Pings keep the session alive, and a second login ends the fir
 - A client asks for the server's date: it gets today's date.
 - Staff change the ping times in housekeeping: each session takes them at its next ping (decision server/0042).
 - Staff set the ping timeout no longer than the ping interval: the value is refused.
+
+## Next
+
+- A habbo logs in: the game's log names the habbo.
+- A habbo enters a room: the game's log names the habbo and the room.

@@ -73,3 +73,6 @@ description: The site's sign-in makes the SSO ticket, and the game server speaks
 - [The client page ports Holo's, with LibreShockwave in place of Adobe's
   plugin](/decisions/reborn/0012-the-client-page-ports-holos-on-libreshockwave.md) — The CMS's client page hands the
   ticket to the client.
+- The game logs a login and a room entry, one line each, with ids and names only. The user chose "Log logins and room
+  entries" after the habbos exit check had to read the network traffic to see what happened. A packet's body stays
+  out of the log ([server 0021](/decisions/server/0021-unhandled-packets-logged-by-id-name-and-size.md)).
