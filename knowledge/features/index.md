@@ -22,6 +22,7 @@
 - [homes/](homes/index.md)
 - [hotel-login/](hotel-login/index.md)
 - [hotel-settings/](hotel-settings/index.md)
+- [hotel-status/](hotel-status/index.md)
 - [installer/](installer/index.md)
 - [look-and-feel/](look-and-feel/index.md)
 - [messenger/](messenger/index.md)

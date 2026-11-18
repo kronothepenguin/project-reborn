@@ -95,12 +95,10 @@ called "reborn", this should keep installer + cms + housekeeping in the same mux
 - Inside reborn, the site step asks no housekeeping address: it saves the site address plus `/housekeeping`.
 - Run alone, the installer keeps both forms as they are today.
 - `make dev` runs reborn with one dev server: the site, housekeeping and the installer show an edit without a restart.
+- Staff save a setting: the next read in any program returns it, with no wait for a refresh.
 
 ## Next
 
-- Staff save a setting: the next read in any program returns it, with no wait for a refresh.
-- Every program reads its settings from the store, nothing refreshes, `packages/virtual/settings` is gone, and the
-  measurements before and after are written in their tasks.
 - Ctrl-C stops reborn in order, and the players online are logged out.
 - A release holds `reborn`, `cms`, `housekeeping`, `installer` and `server`.
 - The browser suite `reborn` passes.

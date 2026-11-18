@@ -2,7 +2,7 @@
 
 # Tasks
 
-- [reborn stops in order](10-reborn-stops-in-order.md) - On Ctrl-C or SIGTERM reborn stops taking requests, logs every player out and closes the game's listeners, stops the scheduled tasks and closes the database, with new Shutdown and Stop functions.
+- [reborn stops in order](10-reborn-stops-in-order.md) - On Ctrl-C or SIGTERM reborn stops taking requests, logs every player out and closes the game's listeners, stops the scheduled tasks and closes the database, with the game's Stop and a new scheduler stop.
 - [The browser suite reborn](13-browser-suite.md) - A browser suite builds reborn and checks, from an empty folder, the installer, the move to a new port, the hotel after the install, the game's first message, and a stop in order.
 - [Releases ship reborn and the four separate programs](14-releases.md) - make release and the release workflow build reborn, cms, housekeeping, installer and server into each archive, and CI runs the reborn suite.
 - [The documents say what reborn is](15-documents.md) - The platform feature's later notes, the READMEs and the architecture references describe reborn, the installer under /installer/, settings read from the store, the stop in order and the releases.

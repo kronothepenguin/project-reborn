@@ -21,14 +21,14 @@ Built:
 | `packages/server`, `apps/server` | Only the game listeners on 30000 and 30001; the unused HTTP listener on 15445 is gone |
 | `.github/workflows`, `Makefile` | `ci.yml` runs `make check` and `make e2e`; `release.yml` runs them on a tag, then `make release` |
 | `tests/e2e` | The browser suites, run by `make e2e` |
+| `packages/settings` and every program | Settings read from the store, no refresh, `virtual/settings` gone ([0006](/decisions/reborn/0006-settings-are-read-from-the-store.md)) |
 
 Planned:
 
 | Project | Part |
 | --- | --- |
 | `packages/reborn`, `apps/reborn` | Installing a new hotel ([0004](/decisions/reborn/0004-the-installer-inside-reborn.md)); stopping in order ([0007](/decisions/reborn/0007-reborn-stops-in-order.md)); one dev server and `reborn-dev` ([0009](/decisions/reborn/0009-one-dev-server-for-reborn.md)) |
-| `packages/settings` and every program | Settings read from the store, no refresh, `virtual/settings` gone ([0006](/decisions/reborn/0006-settings-are-read-from-the-store.md)) |
-| `packages/server`, `packages/scheduler` | `Shutdown` and `Stop` ([0007](/decisions/reborn/0007-reborn-stops-in-order.md)) |
+| `packages/scheduler` | `Stop`; the game stops with the `Stop` of [hotel status](/features/hotel-status/plan.md) ([0007](/decisions/reborn/0007-reborn-stops-in-order.md)) |
 | `tests/e2e` | A browser suite for reborn |
 | releases | reborn and the four separate programs ([0008](/decisions/reborn/0008-releases-ship-reborn-and-the-separate-programs.md)) |
 
@@ -119,3 +119,6 @@ How programs tell the game of a live change is
 - The first release built 17.5 MB for amd64 and 16.2 MB for aarch64. The aarch64 binaries were built but not run, since
   no such machine was available.
 - `actionlint` was not run on the workflows: fetching it would have run code from the internet.
+- The game reads its settings from the store since 2026-11-18. One chat line, its busiest reader, went from 0.12 ms to
+  0.21 ms (`BenchmarkChat` in `packages/server/internal/r26`), about 4,700 lines a second on one core. The user chose
+  "Fine, keep reading the database": no cache.
