@@ -2,7 +2,6 @@
 
 # Tasks
 
-- [The game starts, stops and answers who is online](01-the-game-starts-stops-and-answers.md) - The services package gains the Hotel contract and the two online questions, the game implements them with Start, Stop and Status, its /api/ and its client carry them, and the runners inject Hotel.
 - [Show the hotel status on the site](02-the-site-shows-the-status.md) - Every page of the site shows the count of habbos online and Enter or offline from the game status, the Me page shows Enter or Hotel Closed, and the client page sends a habbo back while the game is stopped.
 - [Show each habbo online or offline on the site](03-the-site-shows-habbos-online.md) - The profile widget, the community page, the staff page and the forum posts show the online picture beside a habbo that is in the hotel.
 - [Let staff start and stop the game in housekeeping](04-staff-start-and-stop-the-game.md) - The settings page gains the form Turn your hotel on/off with the game status, saving it or the site switch starts or stops the game, and the dashboard shows the habbos online.

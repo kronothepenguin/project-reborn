@@ -24,6 +24,9 @@ background, and returns an error when it cannot listen. Both runners call it,
   connection closes. `Stop` waits for every session until `ctx` ends, then
   returns `ctx`'s cause, and logs `server: the doors are closed`. With the doors
   closed, it does nothing.
+- The connection closes right after 292, so the player goes straight to the
+  fatal error page without drawing the notice; whether to hold it open is
+  asked of the user, and a later task builds the answer.
 - `http.Server.Close` leaves the hijacked WebSockets open, so each session
   watches a context of the doors, which `Stop` ends.
 - `Status` reads whether the doors are open and `habbo.Count()`; `AreOnline`

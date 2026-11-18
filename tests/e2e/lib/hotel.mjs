@@ -26,7 +26,7 @@ export const installerPort = 17306;
 const programs = ["cms", "housekeeping", "installer", "server"];
 const frontends = ["cms", "housekeeping", "installer"];
 const banner =
-  /^\S+ \S+ (?:(?:cms|housekeeping|installer) on http|INFO server: (?:api on http|info on ws|mus on ws):\/\/)/;
+  /^\S+ \S+ (?:(?:cms|housekeeping|installer) on http|INFO server: (?:api on http|info on ws|mus on ws):\/\/|INFO server: the hotel is closed, and its doors stay closed$)/;
 
 export function build() {
   mkdirSync(bin, { recursive: true });
@@ -113,6 +113,20 @@ export class Hotel {
     return [this.ports[program]];
   }
 
+  // #opened lists the ports that tell a program has started. The game server
+  // keeps info and mus closed while the hotel or the site is closed, and then
+  // listens on its /api/ alone.
+  #opened(program) {
+    if (program === "server" && this.#closed()) return [this.ports.api];
+    return this.#ports(program);
+  }
+
+  #closed() {
+    return this.sql(
+      `SELECT 1 FROM settings WHERE key IN ('game.closed', 'site.maintenance') AND value = 'true'`,
+    ).length > 0;
+  }
+
   async start(program) {
     for (const port of this.#ports(program)) {
       if (await portBusy(port)) {
@@ -131,7 +145,7 @@ export class Hotel {
       if (child.exitCode !== null) {
         throw new Error(`${program} exited: ${this.log(program)}`);
       }
-      const listening = await Promise.all(this.#ports(program).map(portBusy));
+      const listening = await Promise.all(this.#opened(program).map(portBusy));
       if (listening.every(Boolean)) {
         if (program !== "server") {
           await fetch(this.#url(program), { redirect: "manual" });

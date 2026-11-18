@@ -16,6 +16,9 @@ description: How a run of the browser suites keeps clear of development servers 
 - The runner passes everything to the suites as arguments, the helpers of their default export.
 - Each suite gets a fresh copy of the installed hotel.
 - The suites read the database with `node:sqlite`.
+- A program has started once its ports listen. The game server's are its `/api/`, `info` and `mus`; while the hotel's
+  `game.closed` or `site.maintenance` is on, the game keeps `info` and `mus` closed, and its `/api/` alone counts.
 - A suite fails if a program logs anything beyond its start-up lines and the lines its `logs` export expects. The game
-  server's start-up lines name its `/api/`, `info` and `mus` listeners.
+  server's start-up lines name its `/api/`, `info` and `mus` listeners, or say that the hotel is closed and its doors
+  stay closed.
 - Screenshots and server logs stay in `.run/`, which is git-ignored.
