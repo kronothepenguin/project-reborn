@@ -28,6 +28,8 @@ if ok {
   `Worn`, its sound setting, its ignore list, `Ignored`, its favourite `Group`, and its fuses (decision server/0053),
   and its `Session`. The wallet and the club, which the user's habbos share, stay in the store.
 - `Get(avatarID) (Habbo, bool)` returns a copy of an online habbo; changing the copy changes nothing online.
+- `Count() int` returns how many habbos are online, and `IDs() []int64` their avatar ids in ascending order: the game's
+  `Status` and `Online` read them.
 - `Update(avatarID, s, change) bool` runs `change` on the online habbo while `s` plays it, after the store has the
   change. `change` runs under the package's lock: it must not call a session or the database.
 - `Add(h) (replaced Habbo, ok bool)` puts `h` online, and returns the habbo it replaces when `h` was online already, on

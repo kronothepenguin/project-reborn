@@ -1,5 +1,6 @@
 // Package router serves the game's /api/, which programs run apart from the
-// game call to tell it of a change it must show live (decision reborn/0005).
+// game call to tell it of a change it must show live, to ask who is in the
+// hotel, and to open or close its doors (decision reborn/0005).
 package router
 
 import (
@@ -19,6 +20,7 @@ const Header = "X-Reborn-Secret"
 type Deps struct {
 	DB     *sql.DB
 	Habbos services.Habbos
+	Hotel  services.Hotel
 }
 
 type Router struct {

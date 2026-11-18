@@ -31,10 +31,12 @@ type Housekeeping struct {
 	protect func(http.Handler) http.Handler
 }
 
-// Services tell the game server of the changes it must show live. A service
+// Services reach the game server: they tell it of the changes it must show
+// live, ask who is in the hotel, and open or close its doors. A service
 // left nil is absent, and housekeeping skips its calls.
 type Services struct {
 	Habbos services.Habbos
+	Hotel  services.Hotel
 }
 
 type Option func(*Housekeeping)
@@ -82,7 +84,7 @@ func (h *Housekeeping) Inject(s Services) {
 }
 
 func (h *Housekeeping) deps() router.Deps {
-	return router.Deps{Resolver: h.resolve, DB: h.db, Queries: store.New(h.db), Updates: h.updates, Habbos: h.services.Habbos}
+	return router.Deps{Resolver: h.resolve, DB: h.db, Queries: store.New(h.db), Updates: h.updates, Habbos: h.services.Habbos, Hotel: h.services.Hotel}
 }
 
 // Mount registers only /housekeeping/..., because / belongs to the CMS when they

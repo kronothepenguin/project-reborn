@@ -2,6 +2,7 @@ package server
 
 import (
 	"bytes"
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -52,10 +53,7 @@ func TestMain(m *testing.M) {
 	defer testDB.Close()
 	s := New(testDB, WithAPI())
 	testServer = s
-	if err := s.StartInfo(); err != nil {
-		log.Fatal(err)
-	}
-	if err := s.StartMus(); err != nil {
+	if err := s.Start(context.Background()); err != nil {
 		log.Fatal(err)
 	}
 	slog.SetDefault(slog.New(logged))
@@ -170,9 +168,10 @@ func isTimeout(err error) bool {
 // The listeners of TestMain hold both ports.
 func TestStartReturnsAnErrorWhenItCannotListen(t *testing.T) {
 	s := New(testDB)
-	for name, start := range map[string]func() error{"info": s.StartInfo, "mus": s.StartMus} {
-		if err := start(); err == nil || !strings.HasPrefix(err.Error(), "server: "+name+": ") {
-			t.Errorf("starting %s on a port in use = %v, want an error", name, err)
-		}
+	if err := s.Start(t.Context()); err == nil || !strings.HasPrefix(err.Error(), "server: info: ") {
+		t.Errorf("Start on ports in use = %v, want an error", err)
+	}
+	if status, _ := s.Status(t.Context()); status.Running {
+		t.Error("a game that could not listen says its doors are open")
 	}
 }

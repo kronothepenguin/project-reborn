@@ -31,6 +31,7 @@ const (
 	cryptoParameters     = 277
 	endOfCryptoParams    = 278
 	hotelLogout          = 287
+	infoHotelClosed      = 292
 	soundSetting         = 308
 	latencyTest          = 354
 	possibleAchievements = 436
@@ -38,6 +39,10 @@ const (
 
 // purse is hh_cat_code's message, which GET_CREDITS asks for (packages/server/knowledge/r26/hh_cat_code.md).
 const purse = 6
+
+// The opening time 292 carries when the hotel closes. The hotel opens again when staff open it, at no set time, and
+// the client's notice always shows a time: 00:00 (packages/server/knowledge/r26/hh_entry_init.md#opening-hours).
+const openingHour, openingMinute = 0, 0
 
 // The texts of 33 the client acts on, and the reason of 287 on which it opens url_logout_concurrent.
 const (

@@ -56,9 +56,10 @@ func New(cfg *config.Config, db *sql.DB, c *cms.CMS, h *housekeeping.Housekeepin
 
 // Run serves the hotel until ctx ends: the CMS at / and housekeeping at
 // /housekeeping/ on the address of the reborn section, and the game on
-// server.info and server.mus. A hotel that is not installed gets the installer
-// at /installer/ first, every route of the programs redirects there while
-// files are served, and the game waits until the administrator exists.
+// server.info and server.mus, unless the hotel or the site is closed. A hotel
+// that is not installed gets the installer at /installer/ first, every route
+// of the programs redirects there while files are served, and the game waits
+// until the administrator exists.
 func (r *Reborn) Run(ctx context.Context) error {
 	installed, err := installer.Installed(ctx, r.db)
 	if err != nil {
@@ -69,7 +70,7 @@ func (r *Reborn) Run(ctx context.Context) error {
 	r.cms.Mount(mux)
 	r.housekeeping.Mount(mux)
 	if installed {
-		if err := r.startGame(); err != nil {
+		if err := r.game.Start(ctx); err != nil {
 			return err
 		}
 	} else {
@@ -137,18 +138,11 @@ func (r *Reborn) waitForInstall(ctx context.Context) {
 		return
 	case <-r.installer.Done():
 	}
-	if err := r.startGame(); err != nil {
+	if err := r.game.Start(ctx); err != nil {
 		r.fail(err)
 		return
 	}
 	slog.Info("reborn: the hotel is installed", "config", absolute(config.Filename), "database", absolute(r.cfg.Store.Path))
-}
-
-func (r *Reborn) startGame() error {
-	if err := r.game.StartInfo(); err != nil {
-		return err
-	}
-	return r.game.StartMus()
 }
 
 // Move serves the hotel on host:port, redirects the browser to the same path

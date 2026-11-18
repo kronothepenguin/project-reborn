@@ -27,6 +27,9 @@ type Deps struct {
 	// Habbos is nil until a runner injects it, and while it is nil its calls are
 	// skipped.
 	Habbos services.Habbos
+	// Hotel is nil until a runner injects it, and while it is nil the game
+	// counts as stopped.
+	Hotel services.Hotel
 }
 
 type Router struct {

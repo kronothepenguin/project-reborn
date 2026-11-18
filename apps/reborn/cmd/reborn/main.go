@@ -48,8 +48,8 @@ func main() {
 	}
 	g := server.New(db)
 
-	c.Inject(cms.Services{Habbos: g})
-	h.Inject(housekeeping.Services{Habbos: g})
+	c.Inject(cms.Services{Habbos: g, Hotel: g})
+	h.Inject(housekeeping.Services{Habbos: g, Hotel: g})
 
 	r := reborn.New(cfg, db, c, h, i, g)
 	i.Inject(installer.Services{Listener: r})

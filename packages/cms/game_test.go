@@ -37,6 +37,16 @@ func (g *game) SendLook(ctx context.Context, avatarID int64) error {
 	return g.err
 }
 
+// AreOnline and Online answer that nobody is in the hotel: the tests of the
+// status come with their own pages.
+func (g *game) AreOnline(context.Context, []int64) (map[int64]bool, error) {
+	return map[int64]bool{}, nil
+}
+
+func (g *game) Online(context.Context) ([]int64, error) {
+	return nil, nil
+}
+
 func (g *game) habbos() []int64 {
 	g.mu.Lock()
 	defer g.mu.Unlock()

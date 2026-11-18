@@ -360,6 +360,7 @@ var forms = []section{
 	{
 		ID: "game", Menu: "Game", Title: "Game", Button: defaultButton,
 		Fields: []field{
+			{Key: "game.closed", Label: "Close Hotel", Help: "If enabled, the game keeps its doors closed, also after a restart.", OnLabel: "Hotel Closed", OffLabel: "Hotel Open"},
 			{Key: "game.clientVersion", Label: "Client Version", Help: "The version the game client must send, the client.version.id of its external variables."},
 			{Key: "game.coppa", Label: "COPPA", Help: "0 off, 1 on, 2 strong."},
 			{Key: "game.vouchers", Label: "Vouchers", Help: "This tells the game client that vouchers can be redeemed."},

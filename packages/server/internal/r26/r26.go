@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"slices"
 	"strconv"
 	"strings"
 	"sync/atomic"
@@ -63,9 +64,10 @@ func sharing(cast map[int]handler) map[int]handler {
 // another. A packet that nothing handles is logged with its id, its name when r26 knows it and its size, never its
 // body, and the session goes on. Serve returns when the client leaves or sends bytes that are not a packet, and the
 // transport then closes the connection. The habbo the session logged in, if any, is logged out first. updates tells
-// the login, the navigator and the catalogue whether what every player shares may load (game.LoadShared).
-func Serve(db *sql.DB, updates *store.UpdateCheck, c transport.Conn) {
-	serve(db, updates, c, handlers)
+// the login, the navigator and the catalogue whether what every player shares may load (game.LoadShared). When closing
+// ends, the hotel closes: the client gets the notice of a hotel closed with a disconnect, and the session ends.
+func Serve(closing context.Context, db *sql.DB, updates *store.UpdateCheck, c transport.Conn) {
+	serve(closing, db, updates, c, handlers)
 }
 
 // session is one client of the info connection. Its handlers run one after another in the session's goroutine, so
@@ -93,7 +95,7 @@ type session struct {
 	lastPong atomic.Int64
 }
 
-func serve(db *sql.DB, updates *store.UpdateCheck, c transport.Conn, handlers map[int]handler) {
+func serve(closing context.Context, db *sql.DB, updates *store.UpdateCheck, c transport.Conn, handlers map[int]handler) {
 	outbox := settings.Int(context.Background(), store.New(db), "game.outboxSize")
 	s := &session{conn: c, addr: c.RemoteAddr(), db: db, updates: updates, outbox: make(chan []byte, outbox)}
 	s.lastPong.Store(time.Now().UnixNano())
@@ -109,6 +111,8 @@ func serve(db *sql.DB, updates *store.UpdateCheck, c transport.Conn, handlers ma
 		<-written
 		close(done)
 	}()
+	stop := context.AfterFunc(closing, s.closeHotel)
+	defer stop()
 	s.reply(hello, nil)
 	r := bufio.NewReader(c)
 	for {
@@ -193,6 +197,13 @@ func (s *session) end() {
 	default:
 		s.conn.Close()
 	}
+}
+
+// closeHotel shows the client that the hotel closed, with a disconnect, and ends the session: the client keeps the
+// notice in place of its disconnect window.
+func (s *session) closeHotel() {
+	s.reply(infoHotelClosed, slices.Concat(vl64(openingHour), vl64(openingMinute), vl64(1)))
+	s.end()
 }
 
 // abort ends the session at once, without writing what waits: the client stopped answering.

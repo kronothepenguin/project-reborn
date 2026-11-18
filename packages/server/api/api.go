@@ -5,9 +5,12 @@ package api
 import (
 	"context"
 	"database/sql"
+	"encoding/json/v2"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/services"
@@ -22,8 +25,12 @@ type Client struct {
 	http    *http.Client
 }
 
-// Client is the Habbos service of a program run apart from the game.
-var _ services.Habbos = (*Client)(nil)
+// Client is the Habbos and the Hotel service of a program run apart from the
+// game.
+var (
+	_ services.Habbos = (*Client)(nil)
+	_ services.Hotel  = (*Client)(nil)
+)
 
 // New returns a client of the /api/ at baseURL, such as http://localhost:15445,
 // that sends the hotel's api_secret, read from db on each call, and gives up
@@ -34,12 +41,63 @@ func New(baseURL string, db *sql.DB) *Client {
 
 // SendLook tells the game that the habbo avatarID has a new look or motto.
 func (c *Client) SendLook(ctx context.Context, avatarID int64) error {
+	return c.call(ctx, http.MethodPost, "/api/habbos/"+strconv.FormatInt(avatarID, 10)+"/look", nil)
+}
+
+// Status asks the game whether its doors are open and how many habbos are in
+// the hotel.
+func (c *Client) Status(ctx context.Context) (services.HotelStatus, error) {
+	var status struct {
+		Running bool `json:"running"`
+		Online  int  `json:"online"`
+	}
+	if err := c.call(ctx, http.MethodGet, "/api/hotel", &status); err != nil {
+		return services.HotelStatus{}, err
+	}
+	return services.HotelStatus{Running: status.Running, Online: status.Online}, nil
+}
+
+// Start tells the game to open its doors.
+func (c *Client) Start(ctx context.Context) error {
+	return c.call(ctx, http.MethodPost, "/api/hotel/start", nil)
+}
+
+// Stop tells the game to close its doors, and returns once it has.
+func (c *Client) Stop(ctx context.Context) error {
+	return c.call(ctx, http.MethodPost, "/api/hotel/stop", nil)
+}
+
+// AreOnline asks the game which of ids are in the hotel.
+func (c *Client) AreOnline(ctx context.Context, ids []int64) (map[int64]bool, error) {
+	fields := make([]string, len(ids))
+	for i, id := range ids {
+		fields[i] = strconv.FormatInt(id, 10)
+	}
+	online := map[int64]bool{}
+	query := url.Values{"ids": {strings.Join(fields, ",")}}
+	if err := c.call(ctx, http.MethodGet, "/api/habbos/online?"+query.Encode(), &online); err != nil {
+		return nil, err
+	}
+	return online, nil
+}
+
+// Online asks the game for the habbos in the hotel.
+func (c *Client) Online(ctx context.Context) ([]int64, error) {
+	var ids []int64
+	if err := c.call(ctx, http.MethodGet, "/api/habbos/online", &ids); err != nil {
+		return nil, err
+	}
+	return ids, nil
+}
+
+// call makes one call with the secret. With out nil it expects 204, and
+// otherwise 200 with JSON, which it reads into out.
+func (c *Client) call(ctx context.Context, method, path string, out any) error {
 	secret, err := store.New(c.db).GetAPISecret(ctx)
 	if err != nil {
 		return fmt.Errorf("api: the secret: %w", err)
 	}
-	url := c.baseURL + "/api/habbos/" + strconv.FormatInt(avatarID, 10) + "/look"
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, nil)
+	req, err := http.NewRequestWithContext(ctx, method, c.baseURL+path, nil)
 	if err != nil {
 		return fmt.Errorf("api: %w", err)
 	}
@@ -49,8 +107,18 @@ func (c *Client) SendLook(ctx context.Context, avatarID int64) error {
 		return fmt.Errorf("api: %w", err)
 	}
 	defer res.Body.Close()
-	if res.StatusCode != http.StatusNoContent {
-		return fmt.Errorf("api: POST %s: %s", url, res.Status)
+	want := http.StatusOK
+	if out == nil {
+		want = http.StatusNoContent
+	}
+	if res.StatusCode != want {
+		return fmt.Errorf("api: %s %s: %s", method, path, res.Status)
+	}
+	if out == nil {
+		return nil
+	}
+	if err := json.UnmarshalRead(res.Body, out); err != nil {
+		return fmt.Errorf("api: %s %s: %w", method, path, err)
 	}
 	return nil
 }

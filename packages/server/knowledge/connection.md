@@ -5,14 +5,31 @@ description: How the info and mus listeners serve a client, from HELLO through t
 tags: [server]
 ---
 
-`StartInfo` and `StartMus` each open a WebSocket listener on the host and port
-that `config.json` gives `server.info` or `server.mus`. Each returns an error
-when it cannot listen, then serves in the background until the process ends,
-and logs where it listens: `server: info on ws://localhost:30000`. There is no
-shutdown yet. The standalone runner calls both, and the orchestrator will call
-the same two (`knowledge/decisions/server/0022-start-info-and-start-mus.md`).
-`http.Server.Shutdown` leaves the hijacked WebSockets open, so whatever stops
-the server, such as the orchestrator, closes the sessions too.
+# The doors
+
+`Start(ctx)` opens the game's doors: a WebSocket listener on the host and port
+that `config.json` gives `server.info`, and one on `server.mus`. It logs where
+each listens, `server: info on ws://localhost:30000`, serves them in the
+background, and returns an error when it cannot listen. Both runners call it,
+`apps/server` and reborn (`knowledge/features/hotel-status/plan.md`).
+
+- The doors open while `game.closed` and `site.maintenance` are both false.
+  Otherwise `Start` logs `server: the hotel is closed, and its doors stay
+  closed` and returns nil; the program and its `/api/` keep running.
+- `Start` with the doors open does nothing.
+- `Stop(ctx)` closes both listeners, so a client that dials is refused. Each
+  session of `info` gets 292 with the opening time 00:00 and the disconnect
+  flag, `HHI`, and ends: its habbo is logged out by `game.Logout`, with its last
+  time online saved, and the connection closes once 292 is written. Each `mus`
+  connection closes. `Stop` waits for every session until `ctx` ends, then
+  returns `ctx`'s cause, and logs `server: the doors are closed`. With the doors
+  closed, it does nothing.
+- `http.Server.Close` leaves the hijacked WebSockets open, so each session
+  watches a context of the doors, which `Stop` ends.
+- `Status` reads whether the doors are open and `habbo.Count()`; `AreOnline`
+  reads `habbo.Get` for each id, and `Online` reads `habbo.IDs()`.
+
+# A session
 
 The transport hands each WebSocket to the handler of its connection as a
 `Conn`, in a goroutine of its own, so that no session waits on another.

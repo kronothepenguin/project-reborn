@@ -56,6 +56,8 @@ A value needed before the database opens is not a setting: it belongs to `packag
 # Values
 
 - `site.url` is a bare http(s) origin, because reset links add a path such as `/reset/<token>` to it.
+- `game.closed`, false by default, is the hotel's switch: the game keeps its doors closed while it or
+  `site.maintenance` is on, and reads both when it starts.
 - Passwords keep Holo's defaults: 6 to 25 characters (`auth.passwordMinLength`, `auth.passwordMaxLength`).
 - `auth.rememberDays` keeps Holo's default of 100.
 - `features.clientWideScreen` and `features.clientLoader` keep Holo's defaults, both on: `client-widescreen` of

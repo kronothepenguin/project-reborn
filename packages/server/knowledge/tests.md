@@ -22,6 +22,9 @@ says, and each uses habbos of its own.
   login.
 - `api_test.go` tells the game of a saved look through `packages/server/api`, and gets 404 from the `/api/`
   without the secret, with a wrong one, and on any other path or method.
+- `hotel_test.go` starts the game with the hotel and the site open or closed, stops it with habbos inside, starts it
+  again, asks its status and who is online, in the process and through the `/api/`. A test that closes the doors
+  opens them again in its cleanup, and one that sets `game.closed` or `site.maintenance` sets it back.
 - `extras_test.go` rates a room, hosts an event and lists it, and shows groups
   and tags.
 - `rights_test.go` gives and takes rights, kicks a habbo that walks out, bans

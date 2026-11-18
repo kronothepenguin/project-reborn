@@ -342,6 +342,12 @@ The first 5 executes `#userlogin`, on which `hh_entry_base` shows the entry bar,
 - 292 with disconnect not 0, and 294, set the state to 2 and show `opening_hours_text_opening_time` with the opening
   time. The client does not close `#info` itself, and when it drops, the disconnect window stays hidden
   ([A lost connection](#a-lost-connection)).
+- The server sends 292 with the opening time 00:00 and disconnect 1 to every session when the game stops
+  ([A connection](/connection.md#the-doors)). The client shows "Disconnected" and "The Hotel will open again at 00:00.
+  We look forward to welcoming you back!" while the connection stays open. Once it drops, `handleDisconnect` calls
+  `fatalError` all the same, and the player goes to the fatal error page: with the connection closed right after
+  292, LibreShockwave draws no frame of the notice (checked in Chromium on 2026-11-18). Every text of 292 and 294
+  holds a time.
 - No command asks for 290, 291, 292 or 294. `GET_AVAILABILITY_TIME`, whose name matches 293's handler, is sent only
   on `#getAvailabilityTime`, which no script executes ([Dead code](#dead-code)).
 

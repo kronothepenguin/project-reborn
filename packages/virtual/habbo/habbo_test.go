@@ -1,6 +1,7 @@
 package habbo
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/kronothepenguin/project-reborn/packages/store"
@@ -93,5 +94,23 @@ func TestUpdateChangesTheCopyWhileItsSessionPlaysIt(t *testing.T) {
 	}
 	if Update(8, s, func(*Habbo) {}) {
 		t.Error("Update changed a habbo that is not online")
+	}
+}
+
+func TestCountAndIDsListTheHabbosOnline(t *testing.T) {
+	reset(t)
+	if Count() != 0 || len(IDs()) != 0 {
+		t.Fatalf("Count() = %d, IDs() = %v before any login, want none", Count(), IDs())
+	}
+	s := &session{}
+	for _, id := range []int64{9, 1, 5} {
+		Add(Habbo{Avatar: store.Avatar{ID: id}, Session: s})
+	}
+	Drop(5, s)
+	if got := Count(); got != 2 {
+		t.Errorf("Count() = %d, want 2", got)
+	}
+	if got := IDs(); !slices.Equal(got, []int64{1, 9}) {
+		t.Errorf("IDs() = %v, want [1 9]", got)
 	}
 }

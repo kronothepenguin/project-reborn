@@ -31,10 +31,12 @@ type CMS struct {
 	protect func(http.Handler) http.Handler
 }
 
-// Services tell the game server of the changes it must show live. A service
+// Services reach the game server: they tell it of the changes it must show
+// live, ask who is in the hotel, and open or close its doors. A service
 // left nil is absent, and the CMS skips its calls.
 type Services struct {
 	Habbos services.Habbos
+	Hotel  services.Hotel
 }
 
 type Option func(*CMS)
@@ -85,7 +87,7 @@ func (c *CMS) Inject(s Services) {
 }
 
 func (c *CMS) deps() router.Deps {
-	return router.Deps{Resolver: c.resolve, DB: c.db, Queries: store.New(c.db), Updates: c.updates, Habbos: c.services.Habbos}
+	return router.Deps{Resolver: c.resolve, DB: c.db, Queries: store.New(c.db), Updates: c.updates, Habbos: c.services.Habbos, Hotel: c.services.Hotel}
 }
 
 func (c *CMS) Mount(mux *http.ServeMux) {

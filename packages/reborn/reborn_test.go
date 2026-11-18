@@ -123,8 +123,8 @@ func build(ctx context.Context, db *sql.DB) (*Reborn, error) {
 		return nil, fmt.Errorf("installer.New: %w", err)
 	}
 	g := server.New(db)
-	c.Inject(cms.Services{Habbos: g})
-	h.Inject(housekeeping.Services{Habbos: g})
+	c.Inject(cms.Services{Habbos: g, Hotel: g})
+	h.Inject(housekeeping.Services{Habbos: g, Hotel: g})
 	r := New(config.Get(), db, c, h, i, g)
 	i.Inject(installer.Services{Listener: r})
 	return r, nil

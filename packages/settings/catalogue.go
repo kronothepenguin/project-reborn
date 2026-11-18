@@ -119,6 +119,10 @@ var catalogue = map[string]declaration{
 	"game.trackingHeader":            declare("", length(0, 255)),
 	"game.tutorial":                  declare(false, nil),
 
+	// The hotel's switch: the game keeps its doors closed while it is on, and
+	// while site.maintenance is on.
+	"game.closed": declare(false, nil),
+
 	// How often the server pings each game client, and how long a client may
 	// leave the pings unanswered before the server closes it (decision
 	// server/0042).

@@ -14,8 +14,9 @@ and injects reborn into the installer as its `Listener` ([Programs](programs.md)
 1. `installer.Installed(ctx, db)` tells whether somebody holds `housekeeping.accessGroups`.
 2. One `http.ServeMux`: the CMS at `/`, housekeeping at `/housekeeping/`. A hotel that is not installed gets the
    installer at `/installer/` too; an installed one never mounts it.
-3. Installed: `StartInfo` and `StartMus` open the game on `server.info` and `server.mus`. Not installed: the game waits
-   for `(*Installer).Done()`, then starts, and reborn logs the absolute paths of `config.json` and the database.
+3. Installed: the game's `Start` opens its doors on `server.info` and `server.mus`, unless `game.closed` or
+   `site.maintenance` is on; then they stay closed, and the rest of the hotel runs. Not installed: the game waits for
+   `(*Installer).Done()`, then starts, and reborn logs the absolute paths of `config.json` and the database.
 4. An `http.Server` on `cfg.Reborn.Host:cfg.Reborn.Port`, `localhost:16416` by default, and one log line: `reborn on
    http://<addr>`, or `reborn installs a new hotel on http://<addr>/installer/`.
 

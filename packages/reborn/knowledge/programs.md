@@ -18,8 +18,8 @@ h := housekeeping.New(db, housekeeping.WithResolver(hkPages), housekeeping.WithS
 i, err := installer.New(ctx, db, installer.WithResolver(inPages), installer.WithStatic(inFiles))
 g := server.New(db)
 
-c.Inject(cms.Services{Habbos: g})
-h.Inject(housekeeping.Services{Habbos: g})
+c.Inject(cms.Services{Habbos: g, Hotel: g})
+h.Inject(housekeeping.Services{Habbos: g, Hotel: g})
 
 r := reborn.New(cfg, db, c, h, i, g)
 i.Inject(installer.Services{Listener: r})
@@ -32,9 +32,9 @@ if err := r.Run(ctx); err != nil {
   `dist/`. `apps/reborn/cmd/reborn-dev` builds the programs the same way, with each pair from the dev server of
   [Dev server](dev-server.md).
 - The CMS is built first, so its automatic updates run before the game reads the database.
-- The runner injects the game server, which satisfies `services.Habbos`, into the CMS and housekeeping, after the
-  constructors and before `reborn.New`: a look or motto saved on the site or in housekeeping reaches the game in the same
-  process. `Run` mounts them, and `Mount` hands the router the services they hold then.
+- The runner injects the game server, which satisfies `services.Habbos` and `services.Hotel`, into the CMS and
+  housekeeping, after the constructors and before `reborn.New`: a look or motto saved on the site or in housekeeping
+  reaches the game in the same process, and so do the questions of who is in the hotel and the start and the stop. `Run` mounts them, and `Mount` hands the router the services they hold then.
 - `reborn.New(cfg, db, c, h, i, g)` takes what it requires as arguments. reborn has no option of its own.
 - `installer.New` takes the runner's database, so the whole hotel works on one handle. In an empty folder
   `config.Get()` has written `config.json` with its defaults and `store.FromConfig()` has created the database, so every

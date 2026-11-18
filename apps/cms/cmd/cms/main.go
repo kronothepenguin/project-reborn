@@ -30,10 +30,12 @@ func main() {
 		cms.WithStatic(fileServer),
 	)
 
-	// The game runs apart and hears of a saved look through its /api/. The
-	// client reads the secret on each call.
+	// The game runs apart: it hears of a saved look, answers who is in the hotel
+	// and opens or closes its doors through its /api/. The client reads the
+	// secret on each call.
 	gameURL := "http://" + net.JoinHostPort(cfg.Server.API.Host, strconv.Itoa(cfg.Server.API.Port))
-	c.Inject(cms.Services{Habbos: api.New(gameURL, db)})
+	game := api.New(gameURL, db)
+	c.Inject(cms.Services{Habbos: game, Hotel: game})
 
 	mux := http.NewServeMux()
 	c.Mount(mux)

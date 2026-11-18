@@ -1,8 +1,8 @@
 # server — Go package
 
 The game server. It speaks the protocol of the R26 client: `New(db)` loads the
-settings and the shared data, and `StartInfo` and `StartMus` start the
-WebSocket listeners of the client's two connections. `apps/server` runs it.
+settings and the shared data, and `Start` and `Stop` open and close the
+WebSocket listeners of the client's two connections, the game's doors. `apps/server` runs it.
 It serves no HTTP of its own.
 
 How it works: `knowledge/index.md`.

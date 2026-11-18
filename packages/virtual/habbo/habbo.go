@@ -4,6 +4,7 @@
 package habbo
 
 import (
+	"maps"
 	"slices"
 	"sync"
 
@@ -54,6 +55,20 @@ func Get(avatarID int64) (Habbo, bool) {
 	defer mu.Unlock()
 	h, ok := online[avatarID]
 	return h.clone(), ok
+}
+
+// Count returns how many habbos are online.
+func Count() int {
+	mu.Lock()
+	defer mu.Unlock()
+	return len(online)
+}
+
+// IDs returns the avatar ids of the habbos online, in ascending order.
+func IDs() []int64 {
+	mu.Lock()
+	defer mu.Unlock()
+	return slices.Sorted(maps.Keys(online))
 }
 
 // Update runs change on the online habbo avatarID while s plays it, and reports whether it did. change runs under the

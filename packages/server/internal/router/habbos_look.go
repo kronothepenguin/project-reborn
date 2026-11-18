@@ -17,7 +17,7 @@ func (r *Router) HandleHabbosLook(w http.ResponseWriter, req *http.Request) {
 	}
 	if err := r.deps.Habbos.SendLook(req.Context(), id); err != nil {
 		slog.Error(fmt.Sprintf("server: api: send look of habbo %d: %v", id, err))
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		internalError(w)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
