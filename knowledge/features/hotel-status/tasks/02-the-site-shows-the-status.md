@@ -9,9 +9,9 @@ skills: [applying-go-patterns, templating-astro-pages, building-astro-components
 
 # Goal
 
-The first four behaviours under "The site" of the [spec](/features/hotel-status/spec.md): the count and the header
+The first five behaviours under "The site" of the [spec](/features/hotel-status/spec.md): the count and the header
 while the game runs; 0 and "is offline" while it is stopped or silent for 1 second; the Me page's button; the client
-page's redirect.
+page's redirect; and "Hotel Closed" in the client's window when it loses its connection while the game is stopped.
 
 # Context
 
@@ -22,6 +22,8 @@ page's redirect.
 - `packages/cms/src/layouts/signed-out.astro` and `community.astro`, `src/components/header/enter-hotel.astro` and
   `hotel-status.astro`, `src/components/me/personal-info.astro`.
 - Holo's pages for the wording and the guest's Enter link: `source/holocms` (Latin-1; read through `iconv`).
+- `packages/cms/knowledge/client.md` and the handler of `/client/utils`: the error page the client's window lands on
+  (`/client/utils?key=error&error=disconnect`).
 - `knowledge/sources/holocms/differences.md`: the rows "Every page", "Header" and "Me", which this task removes or
   rewrites.
 
@@ -33,6 +35,9 @@ page's redirect.
   guests and habbos; a guest's Enter leads through sign-in to the client.
 - [ ] The Me page shows Holo's Enter button while the game runs and "Hotel Closed" while it is stopped.
 - [ ] `/client` redirects a habbo to `/me` while the game is stopped.
+- [ ] `/client/utils` with the client's disconnect error, while the game is stopped, shows the same card with the
+  heading "Hotel Closed" and the text "<site name> is closed at the moment. Please come back later." While the game
+  runs it shows the error page as today.
 - [ ] One test per behaviour, through the router, with a test double of `services.Hotel`.
 - [ ] Update `packages/cms/knowledge` and the three rows of `differences.md`.
 

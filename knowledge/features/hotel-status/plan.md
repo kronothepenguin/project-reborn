@@ -6,17 +6,23 @@ description: The game implements a Hotel contract with Status, Start and Stop an
 
 # Architecture
 
+Built:
+
+| Project | Part |
+| --- | --- |
+| `packages/services` | The `Hotel` contract and `HotelStatus`; `Habbos` has `AreOnline` and `Online` |
+| `packages/settings` | The setting `game.closed`, false by default |
+| `packages/virtual` | `habbo.Count()` and `habbo.IDs()`, the two reads the questions need |
+| `packages/server` | `Start`, `Stop`, `Status`, `AreOnline`, `Online`; the five routes of `/api/`; `api` calls them for the programs run apart |
+| `packages/reborn`, the runners | `Start` opens the doors; the runners inject `Hotel` beside `Habbos` |
+
 Planned:
 
 | Project | Part |
 | --- | --- |
-| `packages/services` | The `Hotel` contract and `HotelStatus`; `Habbos` gains `AreOnline` and `Online` |
-| `packages/settings` | The setting `game.closed`, false by default |
-| `packages/virtual` | `habbo.Count()` and `habbo.IDs()`, the two reads the questions need |
-| `packages/server` | `Start`, `Stop`, `Status`, `AreOnline`, `Online`; `Start` replaces `StartInfo` and `StartMus`; the five routes of `/api/`; `api` calls them for the programs run apart |
-| `packages/cms` | The status on every page, the Me page's button, the client page's redirect, each habbo's online picture |
+| `packages/server` | `Stop` holds each connection 5 seconds after the notice |
+| `packages/cms` | The status on every page, the Me page's button, the client page's redirect, the "Hotel Closed" page of the client's window, each habbo's online picture |
 | `packages/housekeeping` | "Turn your hotel on/off" on the settings page, the stop and start after the site's switch, the dashboard's count, the Online Users page |
-| `packages/reborn`, the runners | `Start` in place of the two listeners; the runners inject `Hotel` beside `Habbos` |
 | `tests/e2e` | The suite `hotel-status` |
 
 The contract, as the user approved it:
@@ -71,7 +77,10 @@ All of 2026-11-18, each the user's choice among options put to them.
 - One `Hotel` contract holds `Status`, `Start` and `Stop`. `Start` replaces `StartInfo` and `StartMus`, and reborn's
   ordered stop on Ctrl-C uses the same `Stop` in place of a separate `Shutdown`
   ([platform](/features/platform/tasks/10-reborn-stops-in-order.md)).
-- Players see the client's own "hotel closed" notice, message 292, before they are logged out.
+- Players see the client's own "hotel closed" notice, message 292, for 5 seconds, then a "Hotel Closed" page. The
+  client draws the notice only while its connection is open, and sends its window to the site's error page the moment
+  the connection closes. So the game holds each connection 5 seconds after the notice, and the site's error page says
+  "Hotel Closed" while the game is stopped ("The notice for 5 seconds, then "Hotel Closed"").
 - The switch lives on the settings page, as a second form under Holo's "Turn your site on/off", with the same
   attribute, `housekeeping.settings`.
 - The feature also brings back the dashboard's online count, each habbo's online state and housekeeping's Online
@@ -91,3 +100,7 @@ All of 2026-11-18, each the user's choice among options put to them.
   after 1 second. An error, or no injected game, reads as stopped and offline, and is logged once per request at most.
 - Under reborn the calls stay in the process. Apart, `packages/server/api` makes them with the hotel's secret, read on
   each call.
+- Every text of message 292 names an opening time, so the notice reads "The Hotel will open again at 00:00": the game
+  sends hour 0 and minute 0.
+- `Start` replaces the `StartInfo` and `StartMus` of
+  [server 0022](/decisions/server/0022-start-info-and-start-mus.md).

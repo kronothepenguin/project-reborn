@@ -24,14 +24,12 @@ It builds on [habbos](/features/habbos/spec.md), [the client](/features/client/s
 
 # Behaviours
 
-## Next
-
-### The game
+## The game
 
 - The game starts with the hotel open and the site open: its doors open, and a client connects.
 - The game starts with the hotel closed or the site closed: its doors stay closed, and its program keeps running.
-- The game is stopped with habbos inside: each sees the client's "hotel closed" notice, is logged out with its last
-  time online saved, and its connection closes; the doors close.
+- The game is stopped with habbos inside: each is sent the client's "hotel closed" notice and logged out with its
+  last time online saved, its connection closes, and the doors close.
 - The game is started after a stop: its doors open again, and a client connects.
 - The game is started while the site is closed for maintenance: its doors stay closed.
 - A program asks the game for its status: it learns whether the doors are open and how many habbos are inside.
@@ -39,6 +37,13 @@ It builds on [habbos](/features/habbos/spec.md), [the client](/features/client/s
 - A program asks who is online: the game lists every habbo inside.
 - With the programs run apart, the same questions and commands go through the game's `/api/`, which answers 404
   without the secret.
+
+## Next
+
+### The game
+
+- The game is stopped with habbos inside: each connection stays open for 5 seconds after the notice, so the client
+  shows it, then closes.
 
 ### The site
 
@@ -48,6 +53,8 @@ It builds on [habbos](/features/habbos/spec.md), [the client](/features/client/s
   the header shows "<site name> is offline".
 - A habbo opens its Me page: the Enter button shows while the game runs, and "Hotel Closed" while it is stopped.
 - A habbo opens the client page while the game is stopped: it is sent to its Me page.
+- A habbo's client loses its connection while the game is stopped: its window shows "Hotel Closed" with the hotel's
+  name; while the game runs, it shows the error page as before.
 - A page shows a habbo that is in the hotel: the online picture shows beside it, on the profile widget, the community
   page, the staff page and the forum's posts; a habbo outside the hotel shows the offline picture.
 

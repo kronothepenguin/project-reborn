@@ -27,10 +27,10 @@ shows the status or that the game gives no answer; a save while the game is sile
 # Steps
 
 - [ ] The form "Turn your hotel on/off" under "Turn your site on/off", with the field "Close Hotel" (`game.closed`),
-  for `housekeeping.settings`. Above its field it says whether the game runs and how many habbos are inside, or "The
+  which task 01 left in the Game form, for `housekeeping.settings`. Above its field it says whether the game runs and how many habbos are inside, or "The
   game server gives no answer."
 - [ ] After either switch is saved, housekeeping calls `Hotel.Stop` when the save closed something, and `Hotel.Start`
-  when it opened something, with a context of its own of 5 seconds. A failure is logged and the save stands.
+  when it opened something, with a context of its own of 15 seconds, since a stop holds the players' connections for 5. A failure is logged and the save stands.
 - [ ] The dashboard shows the online count beside Members, as Holo's did.
 - [ ] One test per behaviour, through the router, with a test double of `services.Hotel` that records its calls.
 - [ ] Update `packages/housekeeping/knowledge`, the settings list of `knowledge/features/hotel-settings` where it

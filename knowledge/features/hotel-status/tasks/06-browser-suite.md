@@ -3,7 +3,7 @@ type: Task
 title: Prove the hotel status in a browser suite
 description: The suite hotel-status proves, across the site, housekeeping and the game, that stopping the game in housekeeping shows on the site and that starting it brings Enter back.
 scope: [tests/e2e]
-depends_on: [02-the-site-shows-the-status, 03-the-site-shows-habbos-online, 04-staff-start-and-stop-the-game, 05-online-users]
+depends_on: [02-the-site-shows-the-status, 03-the-site-shows-habbos-online, 04-staff-start-and-stop-the-game, 05-online-users, 08-hold-the-notice]
 skills: [testing-behaviours]
 ---
 
