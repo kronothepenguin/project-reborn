@@ -12,8 +12,6 @@ import (
 )
 
 var catalogue = map[string]declaration{
-	"cms.refresh": declare(1, between(1, 3600)),
-
 	"housekeeping.note": declare("", nil),
 
 	"site.name":        declare("Reborn Hotel", length(1, 30)),

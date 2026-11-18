@@ -1,7 +1,7 @@
 ---
 type: Reference
 title: After the login
-description: The commands the client asks right after LOGIN_OK, what New(db) loads, and how the server reloads the settings.
+description: The commands the client asks right after LOGIN_OK, how the server reads the settings, and when it loads what every player shares.
 tags: [server]
 ---
 
@@ -30,15 +30,20 @@ and `shared.go` for hh_shared.
 - A body that cannot be read is logged as an unhandled packet is, by the
   command's name, its id and its size, never its content:
   `r26 127.0.0.1:53422 malformed UNIQUEID (813), 3 bytes`.
-- `New(db)` loads the settings and reloads them every `cms.refresh` seconds
-  while no database update waits, as the CMS does, so that the Game form's
-  changes reach a server running alone
-  (`knowledge/decisions/server/0050-the-server-loads-and-reloads-the-settings.md`).
-- `New(db)` also loads what every player shares into `virtual`: the
+- The game reads each setting from the store when it uses it, through
+  `packages/settings`: `settings.Int(ctx, store.New(db), "game.chatRange")`,
+  or with the transaction's queries inside a transaction. A setting saved in
+  housekeeping applies on the next read, and nothing refreshes
+  (`knowledge/decisions/reborn/0006-settings-are-read-from-the-store.md`).
+- `game.LoadShared` loads what every player shares into `virtual`: the
   navigator's categories, models and public rooms, then the furni definitions
   and the catalogue that reads them
-  (`knowledge/decisions/server/0098-virtual-furni-and-catalogue.md`). While updates
-  wait, it logs
+  (`knowledge/decisions/server/0098-virtual-furni-and-catalogue.md`). It loads
+  them the first time no database update waits, once: `New(db)` calls it at
+  start, and the SSO login and every command of the navigator and of the
+  catalogue call it before they run. While updates wait, `New` logs
   `server: the navigator and the catalogue wait for the database updates`, and
-  the first reload after they are applied loads them
+  the load that comes after them logs
+  `server: the navigator and the catalogue are loaded`. The server never stops
+  for waiting updates
   (`knowledge/decisions/server/0064-the-navigator-loads-once-the-updates-are-applied.md`).

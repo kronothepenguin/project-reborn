@@ -9,7 +9,8 @@ export const programs = ["cms", "housekeeping"];
 // Signing in makes its SSO ticket only once update 0008 gave sso_tickets its new
 // form, and logs the failure while it waits (decision server/0043).
 // The game server loads the navigator and the catalogue only once the updates
-// are applied, and says so at both ends (decisions server/0064 and server/0098).
+// are applied, when a player first needs them, and says so at both ends
+// (decisions server/0064, server/0098 and reborn/0006).
 export const logs = [
   /^cms: \S+ \S+ WARN auth: login: no SSO ticket err=".*sso_tickets has no column named session_id/,
   /^server: \S+ \S+ WARN server: the navigator and the catalogue wait for the database updates$/,

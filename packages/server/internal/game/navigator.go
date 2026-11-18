@@ -8,11 +8,11 @@ import (
 	"slices"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/category"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // hiddenOwner stands for the owner of a room that hides it, as Holo wrote it.
@@ -87,7 +87,7 @@ func Browse(ctx context.Context, db *sql.DB, viewer habbo.Habbo, categoryID int6
 		}
 	}
 	if c.Kind == "rooms" {
-		rows, err := q.ListCategoryRooms(ctx, store.ListCategoryRoomsParams{RoomCategoryID: c.ID, MaxRooms: int64(settings.GetInt("game.categoryMaxRooms"))})
+		rows, err := q.ListCategoryRooms(ctx, store.ListCategoryRoomsParams{RoomCategoryID: c.ID, MaxRooms: int64(settings.Int(ctx, q, "game.categoryMaxRooms"))})
 		if err != nil {
 			return Browsed{}, false, fmt.Errorf("game: browse: %w", err)
 		}

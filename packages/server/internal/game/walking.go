@@ -32,7 +32,7 @@ func startClock(db *sql.DB, r *room.Room) {
 			case <-r.Done():
 				return
 			case <-t.C:
-				tick(r)
+				tick(context.Background(), db, r)
 				if ticks%int(rollTime/stepTime) == 0 {
 					if err := roll(context.Background(), db, r); err != nil {
 						slog.Error(err.Error())
@@ -43,7 +43,7 @@ func startClock(db *sql.DB, r *room.Room) {
 	}()
 }
 
-func tick(r *room.Room) {
+func tick(ctx context.Context, db *sql.DB, r *room.Room) {
 	floor, now := r.Floor(), time.Now()
 	var leaving []room.Occupant
 	sent := r.Tick(func(all []*room.Occupant) []room.Occupant {
@@ -74,7 +74,7 @@ func tick(r *room.Room) {
 	// A kicked habbo that stopped, at the door or with no way to it, leaves the room there (decision server/0079).
 	for _, o := range leaving {
 		o.Session.Notify(Kicked{})
-		LeaveRoom(o.AvatarID, o.Session)
+		LeaveRoom(ctx, db, o.AvatarID, o.Session)
 	}
 }
 

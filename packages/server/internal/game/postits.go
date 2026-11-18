@@ -11,11 +11,11 @@ import (
 	"unicode/utf8"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/furni"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // newPostItColour is the colour a post-it has when it leaves its pad, as Holo's did.
@@ -106,7 +106,7 @@ func WritePostIt(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64, 
 	}
 	colour = strings.ToUpper(colour)
 	text = postItText(text)
-	if !hexColour(colour) || utf8.RuneCountInString(text) > settings.GetIntOr("game.postItMaxLength", 684) {
+	if !hexColour(colour) || utf8.RuneCountInString(text) > settings.Int(ctx, store.New(db), "game.postItMaxLength") {
 		return nil
 	}
 	return r.Furnish(func() error {

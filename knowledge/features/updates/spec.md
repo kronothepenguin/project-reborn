@@ -53,8 +53,8 @@ The same page offers the keys a release added to `config.json`.
 - An automatic update fails at start: the error goes to the log, every page answers with an error page and status
   503, and the next start tries again (decision holo-port/0071).
 - A hotel stands at its last automatic update: staff sign in, and the update page lists the waiting updates.
-- The game server starts with an update waiting: it loads the navigator and the catalogue once every update is applied
-  (decisions server/0064, server/0098).
+- The game server starts with an update waiting: the first login, or the first request for the navigator or the
+  catalogue, after every update is applied loads them (decisions server/0064, server/0098, reborn/0006).
 
 ## config.json
 

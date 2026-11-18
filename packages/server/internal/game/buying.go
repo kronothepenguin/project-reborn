@@ -12,12 +12,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/catalogue"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/furni"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // Why Buy refuses an order.
@@ -137,7 +137,7 @@ func Buy(ctx context.Context, db *sql.DB, buyer habbo.Habbo, order Order) (credi
 		}
 		wrapped, err := q.CreateFurni(ctx, store.CreateFurniParams{
 			FurniDefinitionID: wrapping.ID, UserID: owner, AvatarID: sql.NullInt64{Int64: receiver.ID, Valid: true},
-			State: presentNote + note(order.Note), CreatedAt: now,
+			State: presentNote + note(ctx, q, order.Note), CreatedAt: now,
 		})
 		if err != nil {
 			return 0, fmt.Errorf("game: buy: %w", err)
@@ -174,14 +174,14 @@ func Buy(ctx context.Context, db *sql.DB, buyer habbo.Habbo, order Order) (credi
 
 // note cuts a present's note at game.presentNoteMaxLength characters (decision server/0106), its control
 // characters turned into spaces.
-func note(text string) string {
+func note(ctx context.Context, q *store.Queries, text string) string {
 	clean := []rune(strings.Map(func(r rune) rune {
 		if r < ' ' {
 			return ' '
 		}
 		return r
 	}, text))
-	if most := settings.GetIntOr("game.presentNoteMaxLength", 200); len(clean) > most {
+	if most := settings.Int(ctx, q, "game.presentNoteMaxLength"); len(clean) > most {
 		clean = clean[:most]
 	}
 	return string(clean)

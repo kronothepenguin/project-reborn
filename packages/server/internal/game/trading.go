@@ -7,11 +7,11 @@ import (
 	"slices"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/furni"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // TradeOpening is what TRADE_OPEN did.
@@ -82,7 +82,8 @@ func OfferFurni(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64) e
 	if _, ok := r.TradeOf(viewer.ID); !ok {
 		return nil
 	}
-	row, err := store.New(db).GetFurni(ctx, id)
+	q := store.New(db)
+	row, err := q.GetFurni(ctx, id)
 	if store.IsNotFound(err) {
 		return nil
 	}
@@ -92,7 +93,7 @@ func OfferFurni(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64) e
 	if d, ok := furni.Get(row.FurniDefinitionID); !ok || !d.Tradeable || !row.AvatarID.Valid || row.AvatarID.Int64 != viewer.ID {
 		return nil
 	}
-	t, ok := r.OfferFurni(viewer.ID, id, settings.GetIntOr("game.maxTradeFurni", 65))
+	t, ok := r.OfferFurni(viewer.ID, id, settings.Int(ctx, q, "game.maxTradeFurni"))
 	if !ok {
 		return nil
 	}

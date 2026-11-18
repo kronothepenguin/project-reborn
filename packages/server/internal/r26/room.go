@@ -3,6 +3,7 @@ package r26
 import (
 	"bytes"
 	"context"
+	"database/sql"
 	"fmt"
 	"log/slog"
 	"strconv"
@@ -10,9 +11,10 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/encoding"
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/game"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // The messages of hh_room the server sends (packages/server/knowledge/r26/hh_room.md), and hh_navigator's 224, which
@@ -425,7 +427,7 @@ func (s *session) sendEntered(v game.Visitor) {
 
 // handleQuit takes the habbo out of its room.
 func handleQuit(s *session, me habbo.Habbo, _ []byte) {
-	game.LeaveRoom(me.ID, s)
+	game.LeaveRoom(context.Background(), s.db, me.ID, s)
 }
 
 // handleMove sends the habbo walking to a tile of its room, two B64 shorts.
@@ -589,22 +591,23 @@ func handleLetUserIn(s *session, me habbo.Habbo, body []byte) {
 
 // handleGetInterstitial sends the ad shown while a room loads (decision server/0070).
 func handleGetInterstitial(s *session, _ habbo.Habbo, _ []byte) {
-	s.reply(interstitialData, ad("game.loadingAdImage", "game.loadingAdLink"))
+	s.reply(interstitialData, ad(s.db, "game.loadingAdImage", "game.loadingAdLink"))
 }
 
 // handleGetRoomAd sends the ad shown in a room (decision server/0070).
 func handleGetRoomAd(s *session, _ habbo.Habbo, _ []byte) {
-	s.reply(roomAdData, ad("game.roomAdImage", "game.roomAdLink"))
+	s.reply(roomAdData, ad(s.db, "game.roomAdImage", "game.roomAdLink"))
 }
 
 // ad writes an ad as 258 and 208 carry it: the image and the link, separated by a tab, or 0, a body of one character,
 // which shows none, as Holo sent it.
-func ad(imageKey, linkKey string) []byte {
-	image := settings.GetString(imageKey)
+func ad(db *sql.DB, imageKey, linkKey string) []byte {
+	ctx, q := context.Background(), store.New(db)
+	image := settings.String(ctx, q, imageKey)
 	if image == "" {
 		return []byte("0")
 	}
-	return []byte(image + "\t" + settings.GetString(linkKey))
+	return []byte(image + "\t" + settings.String(ctx, q, linkKey))
 }
 
 // writeUser writes a habbo's user lines, in the order Holo wrote them: its index, web id, name, figure, place, motto,
@@ -707,7 +710,7 @@ func roomEvent(s *session, me habbo.Habbo, id int, body []byte, edit bool) {
 		s.malformed(id, body)
 		return
 	}
-	game.HostEvent(me, int(eventType), name, description, edit)
+	game.HostEvent(context.Background(), s.db, me, int(eventType), name, description, edit)
 }
 
 // handleQuitRoomEvent ends the event the habbo hosts.
@@ -715,7 +718,7 @@ func handleQuitRoomEvent(_ *session, me habbo.Habbo, _ []byte) { game.EndEvent(m
 
 // handleGetRoomEventTypeCount answers 368 with how many event types there are.
 func handleGetRoomEventTypeCount(s *session, _ habbo.Habbo, _ []byte) {
-	s.reply(roomEventTypes, vl64(game.EventTypes()))
+	s.reply(roomEventTypes, vl64(game.EventTypes(context.Background(), s.db)))
 }
 
 // handleGetRoomEventsByType answers 369 with the events of a type: each one's room, host, name, description and
@@ -856,12 +859,12 @@ func handleRoomQueueChange(s *session, me habbo.Habbo, body []byte) {
 		s.malformed(211, body)
 		return
 	}
-	game.ChangeQueue(me, int(target))
+	game.ChangeQueue(context.Background(), s.db, me, int(target))
 }
 
 // handleGetSpectatorAmount answers 298: how many watch the habbo's room and how many may, -1 when it watches none.
 func handleGetSpectatorAmount(s *session, me habbo.Habbo, _ []byte) {
-	count, most := game.SpectatorCount(me)
+	count, most := game.SpectatorCount(context.Background(), s.db, me)
 	s.reply(spectatorAmount, append(vl64(count), vl64(most)...))
 }
 

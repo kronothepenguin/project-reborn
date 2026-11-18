@@ -8,10 +8,10 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // Rating is a habbo room's rating as a habbo sees it: -1 until it votes, then the sum of the room's votes, never below
@@ -102,7 +102,9 @@ const eventTimeLayout = "15:04"
 func EventTime(e room.Event) string { return e.Started.UTC().Format(eventTimeLayout) }
 
 // EventTypes returns how many room event types there are (decision server/0081).
-func EventTypes() int { return settings.GetIntOr("game.roomEventTypes", 11) }
+func EventTypes(ctx context.Context, db *sql.DB) int {
+	return settings.Int(ctx, store.New(db), "game.roomEventTypes")
+}
 
 // CanHostEvent reports whether the viewer may host an event where it is (CAN_CREATE_ROOMEVENT): in a habbo room it
 // owns, as owns counts owners, which hosts no event yet.
@@ -118,9 +120,9 @@ func CanHostEvent(viewer habbo.Habbo) bool {
 // HostEvent starts an event of the type, 1 to EventTypes, in the habbo room the viewer owns and is in
 // (CREATE_ROOMEVENT), with a name and a description of 3 characters or more, as the client asks them; or changes its
 // own event (EDIT_ROOMEVENT). The room learns it.
-func HostEvent(viewer habbo.Habbo, eventType int, name, description string, edit bool) {
+func HostEvent(ctx context.Context, db *sql.DB, viewer habbo.Habbo, eventType int, name, description string, edit bool) {
 	r, ok := room.In(viewer.ID)
-	if !ok || r.Ref().Public || !owns(r, viewer) || eventType < 1 || eventType > EventTypes() ||
+	if !ok || r.Ref().Public || !owns(r, viewer) || eventType < 1 || eventType > EventTypes(ctx, db) ||
 		utf8.RuneCountInString(name) < 3 || utf8.RuneCountInString(description) < 3 {
 		return
 	}

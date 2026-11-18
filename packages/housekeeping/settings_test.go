@@ -318,7 +318,7 @@ func TestAFormCannotReachOtherKeys(t *testing.T) {
 	db, mux := newSite(t)
 	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
 	form := siteForm()
-	for _, key := range []string{"site.maintenance", "auth.secureCookies", "housekeeping.note", "cms.refresh", "mail.password", "cms.port", "nonsense"} {
+	for _, key := range []string{"site.maintenance", "auth.secureCookies", "housekeeping.note", "mail.password", "cms.port", "nonsense"} {
 		form.Set(key, "1")
 	}
 

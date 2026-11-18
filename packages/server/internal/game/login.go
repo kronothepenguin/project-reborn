@@ -90,7 +90,7 @@ func Login(ctx context.Context, db *sql.DB, s Session, ticket, machineID string)
 	}
 
 	if old, ok := habbo.Add(h); ok && old.Session != s {
-		LeaveRoom(old.ID, old.Session)
+		LeaveRoom(ctx, db, old.ID, old.Session)
 		old.Session.Notify(ConcurrentLogin{})
 	}
 	slog.Info(fmt.Sprintf("game: habbo %d %s logged in", h.ID, h.Name))
@@ -105,7 +105,7 @@ func Logout(ctx context.Context, db *sql.DB, s Session, avatarID int64) error {
 	if h, ok := habbo.Get(avatarID); !ok || h.Session != s {
 		return nil
 	}
-	LeaveRoom(avatarID, s)
+	LeaveRoom(ctx, db, avatarID, s)
 	room.ClosePassage(avatarID)
 	err := store.New(db).SetAvatarLastOnline(ctx, store.SetAvatarLastOnlineParams{
 		AvatarID:     avatarID,

@@ -98,9 +98,9 @@ This is how programs run today, and how development works.
 
 - Each program has its own process and port, from its runner. The CMS and housekeeping read theirs from `config.json`.
 - Each opens the database named by `config.json` with `store.FromConfig()`.
-- Each holds its own copy of the settings, loaded when it starts (`settings.Load`).
-- A CMS re-reads the settings every `cms.refresh` seconds, so a change in housekeeping reaches it without a restart.
-  Housekeeping has no refresh, because it is the single writer ([0051](/decisions/holo-port/0051-one-machine-and-a-refresh.md)).
+- Each reads a setting from the database when it uses it, through `packages/settings`, so a change in housekeeping
+  reaches every program at the next read, and nothing refreshes
+  ([0006](/decisions/reborn/0006-settings-are-read-from-the-store.md)).
 - Housekeeping has no sign-in of its own. A guest goes to `site.url`, and the session cookie reaches housekeeping because
   cookies do not depend on the port.
 - The CMS's Housekeeping links follow `site.housekeepingUrl`, which the installer asks for. Its default is the development
@@ -123,7 +123,7 @@ The programs share the SQLite file, so they run on one machine, and no IPC exist
 - The production runner gives each program its embedded build (`DistFS`).
 - `Mount` keeps each program's routes protected on the shared mux, and housekeeping stays under `/housekeeping`
   ([0003](/decisions/holo-port/0003-housekeeping-under-prefix.md)).
-- The settings are one process-wide singleton, so a change applies at once and the refresh does not run.
+- The settings are read from the shared database, as when the programs run alone.
 
 # Comparison
 
@@ -133,6 +133,5 @@ The programs share the SQLite file, so they run on one machine, and no IPC exist
 | Ports | One per program | One |
 | Database handle | One per process | One, shared |
 | Session cookie | Shared, on one host | Shared |
-| Settings copy | One per process | One |
 | Scheduler | One per process, running that program's tasks | One, running every program's tasks |
-| A settings change reaches the CMS | Within `cms.refresh` seconds | At once |
+| A settings change reaches the CMS | At the next read | At the next read |

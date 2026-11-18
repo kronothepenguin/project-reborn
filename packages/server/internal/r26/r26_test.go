@@ -2,22 +2,41 @@ package r26
 
 import (
 	"bytes"
+	"database/sql"
 	"errors"
 	"io"
+	"log"
 	"log/slog"
 	"net"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/encoding"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 const timeout = 5 * time.Second
 
-var logged = newRecorder()
+var (
+	logged = newRecorder()
+	testDB *sql.DB
+)
 
+// The sessions read their settings from the store, so the tests share one database, with every update.
 func TestMain(m *testing.M) {
+	dir, err := os.MkdirTemp("", "r26-test-")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer os.RemoveAll(dir)
+	testDB, err = store.Open(filepath.Join(dir, "hotel.db"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer testDB.Close()
 	slog.SetDefault(slog.New(logged))
 	m.Run()
 }
@@ -38,7 +57,7 @@ func start(t *testing.T, addr string, handlers map[int]handler) (client net.Conn
 	go func() {
 		defer close(served)
 		defer server.Close()
-		serve(nil, pipeConn{server, addr}, handlers)
+		serve(testDB, nil, pipeConn{server, addr}, handlers)
 	}()
 	t.Cleanup(func() {
 		client.Close()

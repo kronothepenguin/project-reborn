@@ -11,12 +11,12 @@ import (
 	"unicode/utf8"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/category"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/model"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // The rules of a habbo's rooms (decision server/0056), and the description's size, that of Holo's column.
@@ -71,7 +71,7 @@ func CreateRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo, r NewRoom) 
 	if err != nil {
 		return store.Room{}, fmt.Errorf("game: create room: %w", err)
 	}
-	if count >= int64(settings.GetInt("game.maxRoomsPerHabbo")) {
+	if count >= int64(settings.Int(ctx, q, "game.maxRoomsPerHabbo")) {
 		return store.Room{}, ErrCannotCreateRoom
 	}
 	created, err := q.CreateRoom(ctx, store.CreateRoomParams{
@@ -173,7 +173,7 @@ func SetRoomSettings(ctx context.Context, db *sql.DB, viewer habbo.Habbo, roomID
 	// A loaded room takes the new limit, and a higher one lets its queue in.
 	if r, ok := room.Loaded(room.Ref{ID: roomID}); ok {
 		r.SetMax(int(next.MaxVisitors))
-		serveLines(r)
+		serveLines(ctx, db, r)
 	}
 	return nil
 }
@@ -296,6 +296,6 @@ func DeleteRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo, roomID int6
 	if err := tx.Commit(); err != nil {
 		return fmt.Errorf("game: delete room: %w", err)
 	}
-	emptyRoom(room.Ref{ID: roomID})
+	emptyRoom(ctx, db, room.Ref{ID: roomID})
 	return nil
 }

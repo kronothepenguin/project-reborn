@@ -7,10 +7,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // RightsChanged tells a habbo that it got rights in its room, or lost them.
@@ -109,8 +109,9 @@ func Ban(ctx context.Context, db *sql.DB, viewer habbo.Habbo, name string) error
 	if !ok || !owns(r, viewer) || owns(r, target.Habbo) {
 		return nil
 	}
-	end := time.Now().UTC().Add(time.Duration(settings.GetIntOr("game.roomBanMinutes", 15)) * time.Minute)
-	err := store.New(db).BanFromRoom(ctx, store.BanFromRoomParams{RoomID: r.Ref().ID, AvatarID: target.Habbo.ID, ExpiresAt: end})
+	q := store.New(db)
+	end := time.Now().UTC().Add(time.Duration(settings.Int(ctx, q, "game.roomBanMinutes")) * time.Minute)
+	err := q.BanFromRoom(ctx, store.BanFromRoomParams{RoomID: r.Ref().ID, AvatarID: target.Habbo.ID, ExpiresAt: end})
 	if err != nil {
 		return fmt.Errorf("game: ban: %w", err)
 	}

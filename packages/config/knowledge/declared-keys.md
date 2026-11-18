@@ -54,9 +54,8 @@ derives for the name `reborn`.
 `assets.path` is the assets folder, beside `config.json` by default. The client's folder is `<assets.path>/dcr/`,
 which the CMS serves at `/dcr/`.
 
-The settings package (`packages/virtual/settings`) exposes these values under the same key paths
-(`settings.GetInt("cms.port")`; it has no getter for lists such as `proxy.trusted`), and a settings row never overrides
-them.
+A program reads these values from `config`, never as settings: `packages/settings` refuses a key of `config.json`, and
+a settings row never overrides them.
 
 # Declaring a key
 

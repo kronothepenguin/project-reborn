@@ -9,10 +9,10 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/model"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // expectNext reads the next message that is not a PING.
@@ -372,11 +372,11 @@ func TestLoggingOutLeavesTheRoom(t *testing.T) {
 
 func setString(t *testing.T, key, value string) {
 	t.Helper()
-	if err := settings.Set(context.Background(), testDB, 0, key, value); err != nil {
+	if err := settings.Set(context.Background(), store.New(testDB), 0, key, value); err != nil {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() {
-		if err := settings.Set(context.Background(), testDB, 0, key, ""); err != nil {
+		if err := settings.Set(context.Background(), store.New(testDB), 0, key, ""); err != nil {
 			t.Error(err)
 		}
 	})

@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // createFlat sends CREATEFLAT and returns the answer.
@@ -50,11 +50,11 @@ func getRoom(t *testing.T, id int64) store.GetRoomRow {
 
 func setSetting(t *testing.T, key string, value, restore int) {
 	t.Helper()
-	if err := settings.Set(context.Background(), testDB, 0, key, value); err != nil {
+	if err := settings.Set(context.Background(), store.New(testDB), 0, key, value); err != nil {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() {
-		if err := settings.Set(context.Background(), testDB, 0, key, restore); err != nil {
+		if err := settings.Set(context.Background(), store.New(testDB), 0, key, restore); err != nil {
 			t.Error(err)
 		}
 	})

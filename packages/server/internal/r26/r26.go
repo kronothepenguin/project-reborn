@@ -18,7 +18,8 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/game"
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/transport"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 // handler handles one packet of a session, given its body.
@@ -26,7 +27,7 @@ type handler func(s *session, body []byte)
 
 // handlers holds the handler of each command id the server handles, from every cast. Every other id is logged as
 // unhandled.
-var handlers = join(entryInitHandlers, clubHandlers, sharedHandlers, navigatorHandlers, kioskRoomHandlers, roomHandlers, roomUtilsHandlers, catCodeHandlers, recyclerHandlers)
+var handlers = join(entryInitHandlers, clubHandlers, sharedHandlers, sharing(navigatorHandlers), kioskRoomHandlers, roomHandlers, roomUtilsHandlers, sharing(catCodeHandlers), recyclerHandlers)
 
 // join puts the handlers of every cast in one map. A command has one handler, even when several casts send it, as
 // hh_entry_init and hh_tutorial both send 228, so a repeated id is a mistake of the server, caught as it starts.
@@ -43,13 +44,28 @@ func join(casts ...map[int]handler) map[int]handler {
 	return all
 }
 
+// sharing makes each handler of a cast load what every player shares first, the first time no update waits (decision
+// reborn/0006): the navigator and the catalogue read it.
+func sharing(cast map[int]handler) map[int]handler {
+	wrapped := make(map[int]handler, len(cast))
+	for id, h := range cast {
+		wrapped[id] = func(s *session, body []byte) {
+			if s.loadShared() {
+				h(s, body)
+			}
+		}
+	}
+	return wrapped
+}
+
 // Serve speaks R26 with a client of the info connection. It sends HELLO, then reads the client's packets one after
 // another and runs the handler of each one's id, in the connection's own goroutine, so that no session waits on
 // another. A packet that nothing handles is logged with its id, its name when r26 knows it and its size, never its
 // body, and the session goes on. Serve returns when the client leaves or sends bytes that are not a packet, and the
-// transport then closes the connection. The habbo the session logged in, if any, is logged out first.
-func Serve(db *sql.DB, c transport.Conn) {
-	serve(db, c, handlers)
+// transport then closes the connection. The habbo the session logged in, if any, is logged out first. updates tells
+// the login, the navigator and the catalogue whether what every player shares may load (game.LoadShared).
+func Serve(db *sql.DB, updates *store.UpdateCheck, c transport.Conn) {
+	serve(db, updates, c, handlers)
 }
 
 // session is one client of the info connection. Its handlers run one after another in the session's goroutine, so
@@ -58,6 +74,8 @@ type session struct {
 	conn transport.Conn
 	addr string
 	db   *sql.DB
+	// updates tells whether the navigator and the catalogue may load.
+	updates *store.UpdateCheck
 	// checked is set once a VERSIONCHECK passes, and machineID by UNIQUEID, for the login.
 	checked   bool
 	machineID string
@@ -75,8 +93,9 @@ type session struct {
 	lastPong atomic.Int64
 }
 
-func serve(db *sql.DB, c transport.Conn, handlers map[int]handler) {
-	s := &session{conn: c, addr: c.RemoteAddr(), db: db, outbox: make(chan []byte, settings.GetIntOr("game.outboxSize", 500))}
+func serve(db *sql.DB, updates *store.UpdateCheck, c transport.Conn, handlers map[int]handler) {
+	outbox := settings.Int(context.Background(), store.New(db), "game.outboxSize")
+	s := &session{conn: c, addr: c.RemoteAddr(), db: db, updates: updates, outbox: make(chan []byte, outbox)}
 	s.lastPong.Store(time.Now().UnixNano())
 	written := make(chan struct{})
 	go s.write(written)
@@ -288,10 +307,10 @@ func (s *session) Notify(event any) {
 // without a PONG (decision server/0042). It reads both again each time it wakes, and wakes for the next PING or
 // for the timeout, whichever comes first, so a silent client is closed when its time is up, not at the next PING.
 func (s *session) keepAlive(done <-chan struct{}) {
-	next := time.Now().Add(seconds("game.pingSeconds", 30))
+	next := time.Now().Add(s.seconds("game.pingSeconds"))
 	for {
 		lastPong := time.Unix(0, s.lastPong.Load())
-		deadline := lastPong.Add(seconds("game.pongTimeoutSeconds", 90))
+		deadline := lastPong.Add(s.seconds("game.pongTimeoutSeconds"))
 		now := time.Now()
 		if !now.Before(deadline) {
 			slog.Info(fmt.Sprintf("r26 %s closed: no PONG for %s", s.addr, now.Sub(lastPong).Round(time.Second)))
@@ -302,7 +321,7 @@ func (s *session) keepAlive(done <-chan struct{}) {
 			if err := s.send(ping, nil); err != nil {
 				return
 			}
-			next = now.Add(seconds("game.pingSeconds", 30))
+			next = now.Add(s.seconds("game.pingSeconds"))
 		}
 		wake := next
 		if deadline.Before(wake) {
@@ -316,9 +335,19 @@ func (s *session) keepAlive(done <-chan struct{}) {
 	}
 }
 
-// seconds reads a setting of seconds, or fallback, its default, when the settings are not loaded.
-func seconds(key string, fallback int) time.Duration {
-	return time.Duration(settings.GetIntOr(key, fallback)) * time.Second
+// seconds reads a setting of seconds from the store.
+func (s *session) seconds(key string) time.Duration {
+	return time.Duration(settings.Int(context.Background(), store.New(s.db), key)) * time.Second
+}
+
+// loadShared loads what every player shares the first time no update waits, and reports whether the handler may go
+// on: a database that fails ends the session.
+func (s *session) loadShared() bool {
+	if _, err := game.LoadShared(context.Background(), s.db, s.updates); err != nil {
+		s.fail(err)
+		return false
+	}
+	return true
 }
 
 func (s *session) logout() {

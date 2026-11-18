@@ -8,11 +8,11 @@ import (
 	"slices"
 	"time"
 
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/furni"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // RecyclerState is where a habbo's recycling stands, numbered as the client's 304 numbers it.
@@ -53,13 +53,14 @@ type RecyclerStatus struct {
 // Recycler returns the recycler's setup, its rewards read from the store. A reward whose furni is not loaded is left
 // out.
 func Recycler(ctx context.Context, db *sql.DB) (RecyclerSetup, error) {
+	q := store.New(db)
 	setup := RecyclerSetup{
-		Enabled:         settings.GetBoolOr("recycler.enabled", true),
-		MinOwnedMinutes: settings.GetIntOr("recycler.minOwnedMinutes", 43200),
-		Minutes:         settings.GetIntOr("recycler.sessionMinutes", 60),
-		TimeoutMinutes:  settings.GetIntOr("recycler.timeoutMinutes", 10080),
+		Enabled:         settings.Bool(ctx, q, "recycler.enabled"),
+		MinOwnedMinutes: settings.Int(ctx, q, "recycler.minOwnedMinutes"),
+		Minutes:         settings.Int(ctx, q, "recycler.sessionMinutes"),
+		TimeoutMinutes:  settings.Int(ctx, q, "recycler.timeoutMinutes"),
 	}
-	rows, err := store.New(db).ListRecyclerRewards(ctx)
+	rows, err := q.ListRecyclerRewards(ctx)
 	if err != nil {
 		return RecyclerSetup{}, fmt.Errorf("game: recycler: %w", err)
 	}
@@ -75,24 +76,25 @@ func Recycler(ctx context.Context, db *sql.DB) (RecyclerSetup, error) {
 // (decision server/0093): in progress for recycler.sessionMinutes, then ready until recycler.timeoutMinutes
 // after its start, then timed out. A habbo with no recycling, and any habbo while the recycler is off, has it open.
 func Recycling(ctx context.Context, db *sql.DB, viewer habbo.Habbo) (RecyclerStatus, error) {
-	if !settings.GetBoolOr("recycler.enabled", true) {
+	q := store.New(db)
+	if !settings.Bool(ctx, q, "recycler.enabled") {
 		return RecyclerStatus{}, nil
 	}
-	row, err := store.New(db).GetRecycling(ctx, viewer.ID)
+	row, err := q.GetRecycling(ctx, viewer.ID)
 	if store.IsNotFound(err) {
 		return RecyclerStatus{}, nil
 	}
 	if err != nil {
 		return RecyclerStatus{}, fmt.Errorf("game: recycling: %w", err)
 	}
-	return recyclingStatus(row, time.Now()), nil
+	return recyclingStatus(ctx, q, row, time.Now()), nil
 }
 
-func recyclingStatus(row store.Recycling, now time.Time) RecyclerStatus {
+func recyclingStatus(ctx context.Context, q *store.Queries, row store.Recycling, now time.Time) RecyclerStatus {
 	reward, _ := furni.Get(row.FurniDefinitionID)
 	status := RecyclerStatus{Reward: reward}
-	length := time.Duration(settings.GetIntOr("recycler.sessionMinutes", 60)) * time.Minute
-	timeout := time.Duration(settings.GetIntOr("recycler.timeoutMinutes", 10080)) * time.Minute
+	length := time.Duration(settings.Int(ctx, q, "recycler.sessionMinutes")) * time.Minute
+	timeout := time.Duration(settings.Int(ctx, q, "recycler.timeoutMinutes")) * time.Minute
 	switch passed := now.Sub(row.StartedAt); {
 	case passed < length:
 		status.State, status.MinutesLeft = RecyclerInProgress, int(math.Ceil((length - passed).Minutes()))
@@ -110,7 +112,7 @@ func recyclingStatus(row store.Recycling, now time.Time) RecyclerStatus {
 // on offer in no trade (decision server/0114) and at least recycler.minOwnedMinutes old (decision
 // server/0117). The recycling and every furni are saved in one transaction, or nothing is.
 func StartRecycling(ctx context.Context, db *sql.DB, viewer habbo.Habbo, ids []int64) (bool, error) {
-	if _, ok := room.In(viewer.ID); !ok || !settings.GetBoolOr("recycler.enabled", true) {
+	if _, ok := room.In(viewer.ID); !ok || !settings.Bool(ctx, store.New(db), "recycler.enabled") {
 		return false, nil
 	}
 	sorted := slices.Sorted(slices.Values(ids))
@@ -186,7 +188,7 @@ func EndRecycling(ctx context.Context, db *sql.DB, viewer habbo.Habbo, take bool
 	}
 	now := time.Now().UTC()
 	if take {
-		if recyclingStatus(row, now).State != RecyclerReady {
+		if recyclingStatus(ctx, q, row, now).State != RecyclerReady {
 			return false, nil
 		}
 		if _, err := q.DeleteRecycledFurni(ctx, viewer.ID); err != nil {

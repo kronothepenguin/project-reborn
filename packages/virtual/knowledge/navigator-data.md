@@ -1,14 +1,15 @@
 ---
 type: Go Package
 title: category, model and room
-description: The navigator's shared data, its categories, room models and public rooms, loaded when the server starts and kept.
+description: The navigator's shared data, its categories, room models and public rooms, loaded the first time no database update waits and kept.
 resource: packages/virtual/category
 ---
 
 # What it holds
 
-The navigator's shared data, loaded when the server starts and kept (decision server/0060): `server.New` calls each
-`Load(ctx, db)`, at once or once the database updates waiting are applied (decision server/0064). A load swaps in a
+The navigator's shared data, loaded once and kept (decision server/0060): the game server's `game.LoadShared` calls
+each `Load(ctx, db)` the first time no database update waits, at start or at the first login or request for the
+navigator or the catalogue after the updates are applied (decisions server/0064 and reborn/0006). A load swaps in a
 whole new copy, so a reader never sees half of one, and the getters take no lock.
 
 # Examples

@@ -6,8 +6,9 @@ import (
 	"testing"
 
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/encoding"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // pingEvery sets how often the server pings and how long it waits for PONG, in seconds, and puts the defaults back
@@ -17,7 +18,7 @@ func pingEvery(t *testing.T, interval, timeout int) {
 	// The test's context ends before its cleanups run.
 	set := func(key string, value int) {
 		t.Helper()
-		if err := settings.Set(context.Background(), testDB, 0, key, value); err != nil {
+		if err := settings.Set(context.Background(), store.New(testDB), 0, key, value); err != nil {
 			t.Fatalf("settings.Set %s: %v", key, err)
 		}
 	}

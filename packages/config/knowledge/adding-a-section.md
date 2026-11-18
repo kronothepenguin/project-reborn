@@ -25,9 +25,8 @@ The `adding-config-sections` skill holds the rules. This playbook names their pl
 - Rewrite: housekeeping's update page calls `config.Rewrite` when an administrator saves a release's new keys.
 - Nested struct: `packages/config/server` nests a `Connection` under `info` and `mus`.
 - Shared rule: `server.ValidateHost` and `reborn.ValidateHost` wrap `cms.ValidateHost`.
-- Settings are declared in `packages/virtual/settings/catalogue.go`, described in
-  `packages/virtual/knowledge/settings.md`. They expose each config value under its key path:
-  `settings.GetInt("cms.port")`.
+- Settings are declared in `packages/settings/catalogue.go`, described in `packages/settings/knowledge/settings.md`.
+  A setting never reuses a key of `config.json`.
 
 # Test helpers
 

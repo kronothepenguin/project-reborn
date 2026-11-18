@@ -3,6 +3,7 @@ package r26
 import (
 	"bytes"
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -11,8 +12,9 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/encoding"
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/game"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // The messages of hh_entry_init the server sends (packages/server/knowledge/r26/hh_entry_init.md). hello opens every
@@ -75,7 +77,7 @@ func handleInitCrypto(s *session, _ []byte) {
 // handleVersionCheck lets the client log in when it carries the version game.clientVersion holds, wherever it was
 // loaded from; any other client gets 33 Version not correct and is closed (decisions server/0033 and server/0049).
 func handleVersionCheck(s *session, body []byte) {
-	if !versionPasses(body) {
+	if !versionPasses(s.db, body) {
 		s.turnAway()
 		return
 	}
@@ -83,7 +85,7 @@ func handleVersionCheck(s *session, body []byte) {
 }
 
 // versionPasses reads the whole check, the version and the client's two URLs, and compares the version alone.
-func versionPasses(body []byte) bool {
+func versionPasses(db *sql.DB, body []byte) bool {
 	r := bytes.NewReader(body)
 	version, err := encoding.ReadVL64(r)
 	if err != nil {
@@ -94,7 +96,7 @@ func versionPasses(body []byte) bool {
 			return false
 		}
 	}
-	return int(version) == settings.GetInt("game.clientVersion")
+	return int(version) == settings.Int(context.Background(), store.New(db), "game.clientVersion")
 }
 
 func (s *session) turnAway() {
@@ -115,17 +117,18 @@ func handleUniqueID(s *session, body []byte) {
 // handleGetSessionParameters sends the ten session parameters, ids 0 to 9, from their settings; a flag goes out as 0
 // or 1 (decision server/0034).
 func handleGetSessionParameters(s *session, _ []byte) {
+	ctx, q := context.Background(), store.New(s.db)
 	values := []any{
-		settings.GetInt("game.coppa"),
-		settings.GetBool("game.vouchers"),
-		settings.GetBool("game.parentEmailRequest"),
-		settings.GetBool("game.parentEmailReregistration"),
-		settings.GetBool("game.directMail"),
-		settings.GetString("game.dateFormat"),
-		settings.GetBool("game.partnerIntegration"),
-		settings.GetBool("game.profileEditing"),
-		settings.GetString("game.trackingHeader"),
-		settings.GetBool("game.tutorial"),
+		settings.Int(ctx, q, "game.coppa"),
+		settings.Bool(ctx, q, "game.vouchers"),
+		settings.Bool(ctx, q, "game.parentEmailRequest"),
+		settings.Bool(ctx, q, "game.parentEmailReregistration"),
+		settings.Bool(ctx, q, "game.directMail"),
+		settings.String(ctx, q, "game.dateFormat"),
+		settings.Bool(ctx, q, "game.partnerIntegration"),
+		settings.Bool(ctx, q, "game.profileEditing"),
+		settings.String(ctx, q, "game.trackingHeader"),
+		settings.Bool(ctx, q, "game.tutorial"),
 	}
 	var b bytes.Buffer
 	b.Write(vl64(len(values)))
@@ -161,6 +164,9 @@ func handleSSO(s *session, body []byte) {
 	if err != nil {
 		s.malformed(204, body)
 		s.reply(errorText, []byte(loginIncorrect))
+		return
+	}
+	if !s.loadShared() {
 		return
 	}
 	h, err := game.Login(context.Background(), s.db, s, ticket, s.machineID)

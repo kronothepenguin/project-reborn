@@ -5,9 +5,10 @@ import (
 	"database/sql"
 	"slices"
 
+	"github.com/kronothepenguin/project-reborn/packages/settings"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // The targets of a full room's two lines, as 259 and ROOM_QUEUE_CHANGE name them (decision server/0090).
@@ -51,14 +52,14 @@ func joinQueue(ctx context.Context, db *sql.DB, viewer habbo.Habbo, r *room.Room
 		room.ClearHeading(viewer.ID)
 		return nil
 	}
-	serveLines(r)
+	serveLines(ctx, db, r)
 	return nil
 }
 
 // serveLines lets the queue's next habbos in while the room has places, keeping their places on their way, and the
 // spectators' queue's while fewer than game.maxSpectators watch, club members first; then everyone still waiting
 // learns its place (decisions server/0088 and server/0089).
-func serveLines(r *room.Room) {
+func serveLines(ctx context.Context, db *sql.DB, r *room.Room) {
 	ref := r.Ref()
 	model := ""
 	if ref.Public {
@@ -76,7 +77,7 @@ func serveLines(r *room.Room) {
 			r.Unreserve(w.AvatarID)
 		}
 	}
-	for len(r.Waiting(room.Spectators)) < settings.GetIntOr("game.maxSpectators", 50) {
+	for most := settings.Int(ctx, store.New(db), "game.maxSpectators"); len(r.Waiting(room.Spectators)) < most; {
 		w, ok := nextIn(r, room.SpectatorQueue)
 		if !ok {
 			break
@@ -133,7 +134,7 @@ func queueSets(r *room.Room, w room.Waiting, own room.Line) []QueueSet {
 
 // ChangeQueue moves the habbo to the line target names, the room's or the spectators' (ROOM_QUEUE_CHANGE), at its end
 // (decision server/0089).
-func ChangeQueue(viewer habbo.Habbo, target int) {
+func ChangeQueue(ctx context.Context, db *sql.DB, viewer habbo.Habbo, target int) {
 	to, ok := map[int]room.Line{targetRoom: room.Queue, targetSpectators: room.SpectatorQueue}[target]
 	h, heading := room.HeadingOf(viewer.ID)
 	if !ok || !heading {
@@ -149,13 +150,13 @@ func ChangeQueue(viewer habbo.Habbo, target int) {
 	}
 	w, _ := r.Remove(from, viewer.ID)
 	r.Join(to, w)
-	serveLines(r)
+	serveLines(ctx, db, r)
 }
 
 // SpectatorCount returns how many watch the room the viewer watches, and how many may (GET_SPECTATOR_AMOUNT), or -1
 // when it watches none, which hides the client's count.
-func SpectatorCount(viewer habbo.Habbo) (count, most int) {
-	most = settings.GetIntOr("game.maxSpectators", 50)
+func SpectatorCount(ctx context.Context, db *sql.DB, viewer habbo.Habbo) (count, most int) {
+	most = settings.Int(ctx, store.New(db), "game.maxSpectators")
 	if r, ok := watching(viewer.ID); ok {
 		return len(r.Waiting(room.Spectators)), most
 	}

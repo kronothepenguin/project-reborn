@@ -86,7 +86,7 @@ type FlatEntry struct {
 // open: the habbo is admitted, and gets the room's model, unless the room is full and the habbo holds no
 // fuse_enter_full_rooms. A habbo room is Chosen, and its door answers TryFlat.
 func ChooseRoom(ctx context.Context, db *sql.DB, viewer habbo.Habbo, ref room.Ref) (Admission, store.RoomModel, error) {
-	LeaveRoom(viewer.ID, viewer.Session)
+	LeaveRoom(ctx, db, viewer.ID, viewer.Session)
 	if !ref.Public {
 		if _, err := store.New(db).GetRoom(ctx, ref.ID); store.IsNotFound(err) {
 			return NoRoom, store.RoomModel{}, nil
@@ -493,10 +493,10 @@ func limitFor(ctx context.Context, db *sql.DB, viewer habbo.Habbo, ref room.Ref)
 // the place kept for it, which lets the next habbo in. The others and the spectators see it go. When it was the last
 // one in, the room unloads (decision server/0071): those still ringing are turned away, its spectators let go,
 // and those in its queues let in, since it has places now.
-func LeaveRoom(avatarID int64, s Session) {
+func LeaveRoom(ctx context.Context, db *sql.DB, avatarID int64, s Session) {
 	if h, ok := room.ClearHeading(avatarID); ok {
 		if r, ok := room.Loaded(h.Ref); ok {
-			leaveLines(r, avatarID)
+			leaveLines(ctx, db, r, avatarID)
 		}
 	}
 	if r, ok := room.In(avatarID); ok {
@@ -512,7 +512,7 @@ func LeaveRoom(avatarID int64, s Session) {
 		endTrade(left.Room, left.Trade)
 	}
 	if !left.Unloaded {
-		serveLines(left.Room)
+		serveLines(ctx, db, left.Room)
 		return
 	}
 	ref := left.Room.Ref()
@@ -540,7 +540,7 @@ func LeaveRoom(avatarID int64, s Session) {
 
 // leaveLines takes the habbo off the room's doorbell, whose answerers drop it, its queues and its spectators, and
 // frees the place kept for it; a place or a spectator's seat freed lets the next habbo in.
-func leaveLines(r *room.Room, avatarID int64) {
+func leaveLines(ctx context.Context, db *sql.DB, r *room.Room, avatarID int64) {
 	freed := r.Unreserve(avatarID)
 	if l, ok := r.LineOf(avatarID); ok {
 		r.Remove(l, avatarID)
@@ -551,13 +551,13 @@ func leaveLines(r *room.Room, avatarID int64) {
 		}
 	}
 	if freed {
-		serveLines(r)
+		serveLines(ctx, db, r)
 	}
 }
 
 // emptyRoom sends every habbo in a room out of it, as Holo did when its owner deleted it, and first those waiting on it,
 // so that its queue lets nobody into a room that is gone.
-func emptyRoom(ref room.Ref) {
+func emptyRoom(ctx context.Context, db *sql.DB, ref room.Ref) {
 	r, ok := room.Loaded(ref)
 	if !ok {
 		return
@@ -574,7 +574,7 @@ func emptyRoom(ref room.Ref) {
 	}
 	for _, o := range r.Occupants() {
 		o.Session.Notify(Kicked{})
-		LeaveRoom(o.AvatarID, o.Session)
+		LeaveRoom(ctx, db, o.AvatarID, o.Session)
 	}
 }
 

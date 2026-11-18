@@ -6,7 +6,8 @@ import (
 	"testing"
 
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/encoding"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
+	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 // readFavourites reads 61: the node mask, a header node of type 2 with the habbo rooms as its flats, then the public
@@ -70,7 +71,7 @@ func TestKeepingFavouriteRooms(t *testing.T) {
 // Past game.maxFavouriteRooms, a favourite gets 33, whatever number the client's text says (decision server/0058).
 func TestTheFavouritesHaveALimit(t *testing.T) {
 	set := func(value int) {
-		if err := settings.Set(context.Background(), testDB, 0, "game.maxFavouriteRooms", value); err != nil {
+		if err := settings.Set(context.Background(), store.New(testDB), 0, "game.maxFavouriteRooms", value); err != nil {
 			t.Fatal(err)
 		}
 	}

@@ -13,7 +13,7 @@ Every session, from `HELLO` on, is pinged
 - A session that goes `game.pongTimeoutSeconds`, 90 by default, without a
   `PONG` is closed and logged, `r26 127.0.0.1:53422 closed: no PONG for 1m30s`,
   and its habbo logged out. The timeout must be longer than the interval.
-- Both settings are read again each time the session wakes, for its next
+- Both settings are read from the store each time the session wakes, for its next
   `PING` or for its timeout, whichever comes first.
 - `TEST_LATENCY` (315) gets 354 with the id it carries, and `REPORT_LATENCY`
   (316) is logged, never saved

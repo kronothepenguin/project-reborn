@@ -2,5 +2,5 @@
 
 # Hotel settings
 
-- [Hotel settings: how](plan.md) - The settings catalogue in packages/virtual holds the values, housekeeping writes them through its forms, and the CMS and the game server read them again on a schedule.
+- [Hotel settings: how](plan.md) - The settings catalogue in packages/settings declares the values, housekeeping writes them through its forms, and every program reads them from the store when it uses them.
 - [Hotel settings](spec.md) - Staff change the hotel's settings in housekeeping's forms, close the site for maintenance, and read the dashboard with its shared note.

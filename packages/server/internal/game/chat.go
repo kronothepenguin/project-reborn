@@ -12,10 +12,10 @@ import (
 	"unicode/utf8"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // ChatKind is how a line is said.
@@ -84,7 +84,8 @@ func speak(ctx context.Context, db *sql.DB, viewer habbo.Habbo, kind ChatKind, t
 	if !ok {
 		return nil
 	}
-	text = cut(text, settings.GetIntOr("game.chatMaxLength", 100))
+	q := store.New(db)
+	text = cut(text, settings.Int(ctx, q, "game.chatMaxLength"))
 	occupants := r.Occupants()
 	var target *room.Occupant
 	if kind == ChatWhisper {
@@ -117,7 +118,7 @@ func speak(ctx context.Context, db *sql.DB, viewer habbo.Habbo, kind ChatKind, t
 		broadcast(r, Typing{Index: me.Index})
 	}
 
-	reach := settings.GetIntOr("game.chatRange", 5)
+	reach := settings.Int(ctx, q, "game.chatRange")
 	for _, o := range occupants {
 		listener, ok := habbo.Get(o.AvatarID)
 		if !ok || slices.Contains(listener.Ignored, viewer.ID) {
@@ -308,7 +309,7 @@ func ignore(ctx context.Context, db *sql.DB, avatarID, targetID int64) (IgnoreRe
 	}
 	result := IgnoreAdded
 	if !slices.Contains(ids, targetID) {
-		for most := settings.GetIntOr("game.maxIgnoredHabbos", 100); len(ids) >= most; ids = ids[1:] {
+		for most := settings.Int(ctx, q, "game.maxIgnoredHabbos"); len(ids) >= most; ids = ids[1:] {
 			if _, err := q.UnignoreHabbo(ctx, store.UnignoreHabboParams{AvatarID: avatarID, IgnoredAvatarID: ids[0]}); err != nil {
 				return 0, nil, err
 			}
@@ -361,8 +362,9 @@ func IgnoreList(ctx context.Context, db *sql.DB, viewer habbo.Habbo) ([]string, 
 // PruneChat deletes the lines of the chat history older than game.chatHistoryDays at now (decisions server/0066
 // and server/0084), and logs how many went.
 func PruneChat(ctx context.Context, db *sql.DB, now time.Time) error {
-	days := settings.GetIntOr("game.chatHistoryDays", 30)
-	n, err := store.New(db).DeleteChatMessagesBefore(ctx, now.UTC().AddDate(0, 0, -days))
+	q := store.New(db)
+	days := settings.Int(ctx, q, "game.chatHistoryDays")
+	n, err := q.DeleteChatMessagesBefore(ctx, now.UTC().AddDate(0, 0, -days))
 	if err != nil {
 		return fmt.Errorf("game: prune chat: %w", err)
 	}

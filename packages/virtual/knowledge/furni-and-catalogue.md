@@ -1,14 +1,14 @@
 ---
 type: Go Package
 title: furni and catalogue
-description: What each furni is and what the catalogue sells, loaded when the server starts and kept, and the code that creates the pieces one furni gives.
+description: What each furni is and what the catalogue sells, loaded the first time no database update waits and kept, and the code that creates the pieces one furni gives.
 resource: packages/virtual/furni
 ---
 
 # What it holds
 
-What each furni is and what the catalogue sells, loaded when the server starts and kept (decision server/0098):
-`server.New` calls `furni.Load(ctx, db)` and then `catalogue.Load(ctx, db)`, with the navigator's shared data. A load
+What each furni is and what the catalogue sells, loaded once and kept (decision server/0098): the game server's
+`game.LoadShared` calls `furni.Load(ctx, db)` and then `catalogue.Load(ctx, db)`, with the navigator's shared data. A load
 swaps in a whole new copy, so a reader never sees half of one, and the getters take no lock.
 
 # Examples

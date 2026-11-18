@@ -3,14 +3,14 @@ type: Spec
 title: Hotel settings
 description: Staff change the hotel's settings in housekeeping's forms, close the site for maintenance, and read the dashboard with its shared note.
 status: done
-projects: [packages/virtual, packages/housekeeping, packages/cms, packages/server]
+projects: [packages/settings, packages/housekeeping, packages/cms, packages/server]
 ---
 
 # What
 
 Housekeeping is the single writer of the hotel's settings. Staff with `housekeeping.settings` edit them in one form per
-section, Recycler Options among them, and close or open the site. A running CMS or game server reads a change within
-`cms.refresh` seconds. Every staff member opens the dashboard, with the hotel's counts and a note they share.
+section, Recycler Options among them, and close or open the site. A running CMS or game server reads a change at its
+next read. Every staff member opens the dashboard, with the hotel's counts and a note they share.
 
 # Behaviours
 
@@ -51,8 +51,8 @@ section, Recycler Options among them, and close or open the site. A running CMS 
 
 - Anyone opens the maintenance page and housekeeping's settings forms: Holo's title, headings, labels and columns show,
   with the tab or menu place marked.
-- Staff choose Site Closed in Turn your site on/off: a running CMS answers every page with 503 and the maintenance
-  page within `cms.refresh` seconds, with no restart.
+- Staff choose Site Closed in Turn your site on/off: a running CMS answers its next page with 503 and the maintenance
+  page, with no restart.
 - The site is closed: its files, such as pictures and styles, still load.
 - Staff choose Site Open: the row goes, and the running CMS opens again.
 - A guest opens the closed site: Frank's maintenance page, with a sign-in form.
@@ -62,8 +62,7 @@ section, Recycler Options among them, and close or open the site. A running CMS 
 ## Reaching the programs
 
 - Housekeeping and a CMS share one mux: a change applies at once.
-- A CMS or a game server runs alone: it reads the settings again every `cms.refresh` seconds, 1 by default.
-- Staff change `cms.refresh`: the new value applies when the program restarts.
+- A CMS or a game server runs alone: it reads each setting from the database when it uses it, and nothing refreshes.
 - Staff save a setting and the program restarts: the change stays.
 - A hotel without setting rows: every setting holds its default.
 - A new hotel: the site is named "Reborn Hotel", with the short name "Reborn".

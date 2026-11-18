@@ -6,8 +6,7 @@ okf_version: "0.2"
 
 # Knowledge
 
-- [furni and catalogue](furni-and-catalogue.md) - What each furni is and what the catalogue sells, loaded when the server starts and kept, and the code that creates the pieces one furni gives.
+- [furni and catalogue](furni-and-catalogue.md) - What each furni is and what the catalogue sells, loaded the first time no database update waits and kept, and the code that creates the pieces one furni gives.
 - [habbo](habbo.md) - The habbos online in the game, each with the session that plays it.
 - [Loaded rooms](loaded-rooms.md) - The rooms in use, held only in memory by packages/virtual/room, with their habbos, lines, trades, events, floor and furni.
-- [category, model and room](navigator-data.md) - The navigator's shared data, its categories, room models and public rooms, loaded when the server starts and kept.
-- [settings](settings.md) - The settings held once per process, from config.json and packages/settings, for the programs that do not read packages/settings on use yet.
+- [category, model and room](navigator-data.md) - The navigator's shared data, its categories, room models and public rooms, loaded the first time no database update waits and kept.

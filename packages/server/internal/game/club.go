@@ -7,8 +7,8 @@ import (
 	"math"
 	"time"
 
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // Club is a user's club as the client shows it: the days left of the running period, the whole periods of club the
@@ -19,11 +19,12 @@ type Club struct {
 
 // ClubStatus reads the club of userID now, with periods of club.daysPerMonth days.
 func ClubStatus(ctx context.Context, db *sql.DB, userID int64) (Club, error) {
-	periods, err := store.New(db).ListClubSubscriptions(ctx, userID)
+	q := store.New(db)
+	periods, err := q.ListClubSubscriptions(ctx, userID)
 	if err != nil {
 		return Club{}, fmt.Errorf("game: club: %w", err)
 	}
-	return clubAt(periods, time.Now().UTC(), settings.GetInt("club.daysPerMonth")), nil
+	return clubAt(periods, time.Now().UTC(), settings.Int(ctx, q, "club.daysPerMonth")), nil
 }
 
 // clubAt counts the days left as the CMS does: from now to the end of the last period while a period covers now, a

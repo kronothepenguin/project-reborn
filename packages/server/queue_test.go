@@ -104,7 +104,7 @@ func TestClubMembersComeFirstInAQueue(t *testing.T) {
 			room.ClearHeading(2_000_300 + int64(i))
 		}
 	})
-	game.LeaveRoom(2_000_200, crowd)
+	game.LeaveRoom(t.Context(), testDB, 2_000_200, crowd)
 	if _, waiting := r.LineOf(2_000_301); waiting || !r.Reserved(2_000_301) {
 		t.Error("the club member did not get the freed place first")
 	}

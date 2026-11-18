@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // ErrTooManyFavourites is returned for a favourite past game.maxFavouriteRooms (decision server/0058).
@@ -65,7 +65,7 @@ func AddFavourite(ctx context.Context, db *sql.DB, viewer habbo.Habbo, r room.Re
 	if err != nil {
 		return fmt.Errorf("game: add favourite: %w", err)
 	}
-	if count >= int64(settings.GetInt("game.maxFavouriteRooms")) {
+	if count >= int64(settings.Int(ctx, q, "game.maxFavouriteRooms")) {
 		return ErrTooManyFavourites
 	}
 	now := time.Now().UTC()

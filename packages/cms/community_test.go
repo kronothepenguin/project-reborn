@@ -28,13 +28,9 @@ func TestARunningCMSReadsNewSettings(t *testing.T) {
 	if err != nil {
 		t.Fatalf("insert setting: %v", err)
 	}
-	for range 40 {
-		if serve(mux, "GET", "/privacy", nil, nil).Code == http.StatusServiceUnavailable {
-			return
-		}
-		time.Sleep(100 * time.Millisecond)
+	if rec := serve(mux, "GET", "/privacy", nil, nil); rec.Code != http.StatusServiceUnavailable {
+		t.Errorf("got %d on the next request, want the maintenance page, 503", rec.Code)
 	}
-	t.Error("the CMS did not read the row within 4 seconds, with cms.refresh at 1")
 }
 
 func TestHousekeepingLinkFollowsItsSetting(t *testing.T) {

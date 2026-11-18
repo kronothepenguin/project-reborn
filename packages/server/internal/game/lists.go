@@ -7,9 +7,9 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // recommendedRooms is how many rooms GET_RECOMMENDED_ROOMS gets (decision server/0057).
@@ -44,7 +44,7 @@ func SearchRooms(ctx context.Context, db *sql.DB, viewer habbo.Habbo, query stri
 		ViewerAvatarID:  viewer.ID,
 		SeeHiddenOwners: seeHidden,
 		NamePattern:     "%" + likeEscaper.Replace(query) + "%",
-		MaxRooms:        int64(settings.GetInt("game.searchMaxRooms")),
+		MaxRooms:        int64(settings.Int(ctx, store.New(db), "game.searchMaxRooms")),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("game: search rooms: %w", err)

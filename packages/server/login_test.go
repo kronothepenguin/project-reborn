@@ -10,9 +10,9 @@ import (
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/server/internal/encoding"
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // habboWithTickets makes a user who takes the newsletter, with an empty wallet and the habbo name, signed in to the CMS
@@ -144,7 +144,7 @@ func TestTheHandshakeAndTheLoginInBytes(t *testing.T) {
 }
 
 func TestAClientWithTheAcceptedVersionGoesOnWhereverItWasLoadedFrom(t *testing.T) {
-	site := settings.GetString("site.url")
+	site := settings.String(t.Context(), store.New(testDB), "site.url")
 	for name, check := range map[string]string{
 		"empty URLs":       versionCheck(t, 1, "", ""),
 		"the site":         versionCheck(t, 1, site+"/client", site+"/dcr/external_variables.txt"),
@@ -164,7 +164,7 @@ func TestAClientWithTheAcceptedVersionGoesOnWhereverItWasLoadedFrom(t *testing.T
 // A wrong client gets 33 Version not correct, and the server closes the connection before it answers the
 // GET_SESSION_PARAMETERS that came with the check (decision server/0049).
 func TestAClientWithAnotherVersionIsClosedAfterItsError(t *testing.T) {
-	site := settings.GetString("site.url")
+	site := settings.String(t.Context(), store.New(testDB), "site.url")
 	for name, check := range map[string]string{
 		"another version":  versionCheck(t, 2, site+"/client", site+"/dcr/external_variables.txt"),
 		"a body cut short": "I",

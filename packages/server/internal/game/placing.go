@@ -7,11 +7,11 @@ import (
 	"regexp"
 	"slices"
 
+	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/furni"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 	"github.com/kronothepenguin/project-reborn/packages/virtual/room"
-	"github.com/kronothepenguin/project-reborn/packages/virtual/settings"
 )
 
 // FurniPlaced tells the habbos in a room that a furni now stands in it, FurniMoved that a floor furni stands
@@ -54,7 +54,7 @@ func PlaceFurni(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64, x
 			return err
 		}
 		item.X, item.Y, item.Direction = int64(x), int64(y), int64(direction)
-		if item.Altitude, ok = fit(r.Floor(), standing(r), item, false); !ok {
+		if item.Altitude, ok = fit(r.Floor(), standing(r), item, false, settings.Int(ctx, store.New(db), "game.maxStackHeight")); !ok {
 			return nil
 		}
 		if placed, err = stand(ctx, db, r, viewer, item); err != nil || !placed {
@@ -102,10 +102,11 @@ func PlaceWallItem(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64
 // fromHand reads the furni id from the store while viewer's hand holds it and the room takes one more. A furni on
 // offer in a trade stays in the hand (decision server/0114).
 func fromHand(ctx context.Context, db *sql.DB, r *room.Room, viewer habbo.Habbo, id int64) (room.Furni, bool, error) {
-	if len(r.Furni()) >= settings.GetIntOr("game.maxRoomFurni", 500) || onOffer(viewer, id) {
+	q := store.New(db)
+	if len(r.Furni()) >= settings.Int(ctx, q, "game.maxRoomFurni") || onOffer(viewer, id) {
 		return room.Furni{}, false, nil
 	}
-	row, err := store.New(db).GetFurni(ctx, id)
+	row, err := q.GetFurni(ctx, id)
 	if store.IsNotFound(err) {
 		return room.Furni{}, false, nil
 	}
@@ -158,7 +159,7 @@ func MoveFurni(ctx context.Context, db *sql.DB, viewer habbo.Habbo, id int64, x,
 		}
 		moved := item
 		moved.X, moved.Y, moved.Direction = int64(x), int64(y), int64(direction)
-		altitude, ok := fit(r.FloorWithout(id), standing(r), moved, moved.Definition.Kind == "seat")
+		altitude, ok := fit(r.FloorWithout(id), standing(r), moved, moved.Definition.Kind == "seat", settings.Int(ctx, store.New(db), "game.maxStackHeight"))
 		if !ok || direction < 0 || direction > 7 {
 			return nil
 		}
@@ -223,8 +224,8 @@ func standing(r *room.Room) map[[2]int]bool {
 // fit tells how high the floor furni item would stand on floor, and whether it may stand there at all, by Holo's
 // rules. Every tile it covers must take furni: one the model allows, with nothing on it, a solid that has a height,
 // or a rug; and none may hold a habbo, unless underHabbos, for a seat that is moved. The furni stands on the highest
-// thing under it, or on the floor of its own tile, and never higher than game.maxStackHeight.
-func fit(floor room.Floor, habbos map[[2]int]bool, item room.Furni, underHabbos bool) (float64, bool) {
+// thing under it, or on the floor of its own tile, and never higher than ceiling, game.maxStackHeight.
+func fit(floor room.Floor, habbos map[[2]int]bool, item room.Furni, underHabbos bool, ceiling int) (float64, bool) {
 	own, ok := floor.At(int(item.X), int(item.Y))
 	if !ok {
 		return 0, false
@@ -237,7 +238,7 @@ func fit(floor room.Floor, habbos map[[2]int]bool, item room.Furni, underHabbos 
 		}
 		altitude = max(altitude, t.Top)
 	}
-	return min(altitude, float64(settings.GetIntOr("game.maxStackHeight", 20))), true
+	return min(altitude, float64(ceiling)), true
 }
 
 // settle puts the habbos that stand still on tiles as the floor now has them: sitting on a seat, lying on a bed, or
