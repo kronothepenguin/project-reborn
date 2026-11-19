@@ -17,12 +17,7 @@ Built:
 | `packages/reborn`, the runners | `Start` opens the doors; the runners inject `Hotel` beside `Habbos` |
 | `packages/cms` | The status on every page, the Me page's button, the client page's redirect, the "Hotel Closed" page of the client's window, each habbo's online picture |
 | `packages/housekeeping` | "Turn your hotel on/off" on the settings page, the stop and start after the site's switch, the dashboard's count, the Online Users page |
-
-Planned:
-
-| Project | Part |
-| --- | --- |
-| `tests/e2e` | The suite `hotel-status` |
+| `tests/e2e` | The suite `hotel-status`, and `lib/game.mjs`, which puts a habbo in the hotel over a WebSocket |
 
 The contract, as the user approved it:
 

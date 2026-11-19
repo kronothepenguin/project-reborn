@@ -15,8 +15,8 @@ The user sees the feature work, and the knowledge says so.
 
 - [Spec](/features/hotel-status/spec.md)
 - [Plan](/features/hotel-status/plan.md): the contract is the user's, build it exactly as written there.
-- The habbos exit check's scripts, while its folder lasts:
-  `/tmp/claude-1000/-mnt-media-Projects-habbo/5838a8a3-d542-499e-90bf-949c857d87fb/scratchpad/habbos-06/scripts/`.
+- `tests/e2e/lib/hotel.mjs` starts a hotel, and `tests/e2e/lib/game.mjs` logs a habbo in over a WebSocket. The real
+  client runs in a Playwright page opened on `/client`.
 - The client's files and the player of the main checkout (`/mnt/media/Projects/habbo/assets` and
   `packages/cms/public/libreshockwave`), read only; your hotel lives in a temporary folder on free ports.
 
