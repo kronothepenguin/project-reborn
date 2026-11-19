@@ -60,6 +60,8 @@ type randomHabbo struct {
 	Figure  string
 	Created string
 	Motto   string
+	// Online is a habbo in the hotel.
+	Online bool
 }
 
 type topStory struct {
@@ -91,12 +93,18 @@ func (r *Router) HandleCommunityView(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
+	ids := make([]int64, 0, len(avatars))
+	for _, avatar := range avatars {
+		ids = append(ids, avatar.ID)
+	}
+	online := r.online(ctx, ids)
 	for _, avatar := range avatars {
 		page.RandomHabbos = append(page.RandomHabbos, randomHabbo{
 			Name:    avatar.Name,
 			Figure:  avatar.Figure,
 			Created: avatar.CreatedAt.UTC().Format(createdFormat),
 			Motto:   avatar.Motto,
+			Online:  online[avatar.ID],
 		})
 	}
 	if page.TopStories, page.MoreNews, err = r.newsPromo(ctx); err != nil {

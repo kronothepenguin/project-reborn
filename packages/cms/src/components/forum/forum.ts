@@ -9,6 +9,7 @@ export interface Viewer {
   group: string;
   groupBadge: string;
   imaging: string;
+  online: boolean;
 }
 
 export function viewerOf(data: DOMStringMap): Viewer {
@@ -21,6 +22,7 @@ export function viewerOf(data: DOMStringMap): Viewer {
     group: data.group ?? "0",
     groupBadge: data.groupBadge ?? "",
     imaging: data.imaging ?? "",
+    online: data.online === "true",
   };
 }
 

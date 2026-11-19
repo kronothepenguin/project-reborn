@@ -58,6 +58,8 @@ type forumPost struct {
 	CanEdit   bool
 	CanReport bool
 	Even      bool
+	// Online is an author in the hotel.
+	Online bool
 }
 
 // HandleForumThreadsView handles GET /forum/threads/{id}, viewthread.php: a page of
@@ -121,6 +123,19 @@ func (r *Router) HandleForumThreadsView(w http.ResponseWriter, req *http.Request
 	}
 	view.Moderator = r.holds(ctx, auth.ForumEdit)
 	session, signedIn := auth.FromContext(ctx)
+	// One question for the page: the authors shown, and the viewer for its preview.
+	// An archived author shows offline.
+	ids := make([]int64, 0, len(rows)+1)
+	for _, row := range rows {
+		if !row.AuthorArchivedAt.Valid {
+			ids = append(ids, row.AuthorID)
+		}
+	}
+	if signedIn {
+		ids = append(ids, session.AvatarID)
+	}
+	online := r.online(ctx, ids)
+	view.Me.Online = signedIn && online[session.AvatarID]
 	for i, row := range rows {
 		post := forumPost{
 			ID:             row.ID,
@@ -141,6 +156,7 @@ func (r *Router) HandleForumThreadsView(w http.ResponseWriter, req *http.Request
 			CanEdit:        signedIn && (view.Moderator || row.AuthorID == session.AvatarID),
 			CanReport:      signedIn && row.AuthorID != session.AvatarID,
 			Even:           i%2 == 0,
+			Online:         !row.AuthorArchivedAt.Valid && online[row.AuthorID],
 		}
 		if row.Badge != "" {
 			post.Badge = image("c_images/album1584/" + row.Badge + ".gif")

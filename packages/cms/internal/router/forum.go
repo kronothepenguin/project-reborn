@@ -60,6 +60,8 @@ type forumViewer struct {
 	Badge      string
 	Group      int64
 	GroupBadge string
+	// Online is a habbo in the hotel, which the preview shows.
+	Online bool
 }
 
 // forumViewer is the signed-in visitor's box, or none for a guest.
@@ -170,6 +172,9 @@ func (r *Router) HandleForumView(w http.ResponseWriter, req *http.Request) {
 	if view.Me, err = r.forumViewer(ctx); err != nil {
 		r.fail(w, err)
 		return
+	}
+	if session, ok := auth.FromContext(ctx); ok {
+		view.Me.Online = r.online(ctx, []int64{session.AvatarID})[session.AvatarID]
 	}
 	for i, row := range append(stickies, others...) {
 		view.Threads = append(view.Threads, threadRow(row, i%2 == 0))

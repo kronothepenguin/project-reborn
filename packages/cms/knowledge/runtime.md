@@ -33,6 +33,12 @@ resource: packages/cms/cms.go
   (`POST /me/motto`) call `Habbos.SendLook` once after a save, and never after a refused one.
 - The call has a context of its own of 2 seconds, apart from the request's, so a request the visitor abandons still
   tells the game. A failure is logged, and the page answers as it would without the game.
+- A page that shows habbos asks `Habbos.AreOnline` once, through the router's `online`, about the habbos it shows: the
+  profile widget of a home, the staff page, the community page's random habbos, and a thread's post boxes with the
+  viewer for its preview; the board asks about the viewer alone. The call ends after 1 second. An error, or no
+  injected game, shows every habbo offline, and an error is logged.
+- A habbo in the hotel shows Holo's online picture, and one outside the offline picture. An archived author shows
+  offline and is left out of the question.
 
 # Mount and the middleware chain
 

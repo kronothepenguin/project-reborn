@@ -137,6 +137,7 @@ HK-A, HK-B, P3, P4 and P6.
 | Account transactions | Date, Activity and Description | A Habbo column after them names the habbo that acted, blank when none did, since all the user's habbos share the purse | [0104](/decisions/holo-port/0104-transactions-show-the-habbo.md) |
 | News | The body is HTML written by staff | BBCode, without smilies, as Holo's news had none | [0020](/decisions/holo-port/0020-news-in-bbcode.md) |
 | Tags | A tag counts for its owner whether the owner still exists or not | An archived habbo's tags leave the cloud, the search and the tag fight | [0058](/decisions/holo-port/0058-habbos-are-archived.md) |
+| Profile widget, community page, staff page, discussion board | A habbo is online after a page view of the site in the last 10 minutes, which `users.online` could not hold, so every habbo showed offline | A habbo is online while it is in the hotel, as the game answers within 1 second; one question a page | [Hotel status](/features/hotel-status/spec.md) |
 | Staff page | Every user above rank 2, with `Rank:` named after the rank | Each member of a staff-listed access group once, with `Rank:` the name of the highest of those groups and the habbo chosen for it | [0076](/decisions/holo-port/0076-one-staff-list.md) |
 
 # Holo bugs not ported
@@ -184,7 +185,7 @@ HK-A, HK-B, P3, P4 and P6.
 | Discussion board | A reply to a thread closed meanwhile vanishes | The thread shows closed, and nothing is added |
 | Discussion board | Every deleted post sends the visitor to the board | Back to the thread, unless the thread went with its last post |
 | Discussion board | A new thread the server refuses replaces the form with the refusal's text | The text shows in the form's red box |
-| Discussion board | The preview shows the habbo online, with a blank motto and a nameless avatar, from a variable the page never sets | The habbo's motto and name, offline ([0087](/decisions/holo-port/0087-online-picture-stays-offline.md)) |
+| Discussion board | The preview shows the habbo online, under the text `offline`, with a blank motto and a nameless avatar, from a variable the page never sets | The habbo's motto and name, and its online state as its post box shows it |
 | Discussion board | Quote copies the post with its HTML escaped a second time | The post as written |
 | Discussion board | Enter in the Moderation Tools' title sends their form to `#`, which reloads the page | Enter does nothing |
 | Discussion board | A Moderation Tools save the server cannot make puts whatever it answered where the post list was | The Moderation Tools open again with the reason in their red box |
@@ -390,6 +391,5 @@ veto.
 | Holo | Phase |
 | --- | --- |
 | `My Friends`, `My Rooms` and the recommended rooms | Deferred with the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |
-| The online state of the profile widget, the community page's random habbos, the staff page and the forum's post boxes, which show offline | Deferred with the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |
 | `Chatlogs` in housekeeping | The game server's S4 ports it: 100 lines a page with Newer and Older, public rooms marked `Public`, the lines kept 30 days |
 | `Online Users` in housekeeping | Deferred with the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |

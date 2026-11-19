@@ -82,6 +82,8 @@ type profileWidget struct {
 	// Group is the favourite group, 0 for none, whose badge leads to it.
 	Group      int64
 	GroupBadge string
+	// Online is a habbo in the hotel.
+	Online bool
 }
 
 type homeMissingPage struct {
@@ -250,6 +252,7 @@ func (r *Router) profileWidget(ctx context.Context, avatar store.Avatar, profile
 		Figure:  avatar.Figure,
 		Motto:   avatar.Motto,
 		Created: avatar.CreatedAt.UTC().Format(createdFormat),
+		Online:  r.online(ctx, []int64{avatar.ID})[avatar.ID],
 	}
 	badge, err := q.GetWornAvatarBadge(ctx, avatar.ID)
 	switch {
