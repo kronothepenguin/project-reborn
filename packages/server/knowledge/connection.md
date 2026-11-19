@@ -19,14 +19,19 @@ background, and returns an error when it cannot listen. Both runners call it,
 - `Start` with the doors open does nothing.
 - `Stop(ctx)` closes both listeners, so a client that dials is refused. Each
   session of `info` gets 292 with the opening time 00:00 and the disconnect
-  flag, `HHI`, and ends: its habbo is logged out by `game.Logout`, with its last
-  time online saved, and the connection closes once 292 is written. Each `mus`
-  connection closes. `Stop` waits for every session until `ctx` ends, then
-  returns `ctx`'s cause, and logs `server: the doors are closed`. With the doors
-  closed, it does nothing.
-- The connection closes right after 292, so the player goes straight to the
-  fatal error page without drawing the notice; whether to hold it open is
-  asked of the user, and a later task builds the answer.
+  flag, `HHI`, and its habbo is logged out at once by `game.Logout`, with its
+  last time online saved. The client draws the notice only while its
+  connection is open, so the connection stays open 5 seconds after 292
+  (`noticeHold`), and the session handles no packet meanwhile; then it closes,
+  and the client's window goes to the site. Each `mus` connection closes at
+  once. The sessions hold together, so `Stop` takes about 5 seconds while
+  anybody is connected, and returns at once when nobody is. `Stop` waits for
+  every session until `ctx` ends, then returns `ctx`'s cause, and logs
+  `server: the doors are closed`. With the doors closed, it does nothing.
+- The `/api/` client's `Stop` gives up after 15 seconds, its other calls after
+  2.
+- A session's handlers and the closing of the hotel each hold the session's
+  mutex, so the logout never runs beside a handler.
 - `http.Server.Close` leaves the hijacked WebSockets open, so each session
   watches a context of the doors, which `Stop` ends.
 - `Status` reads whether the doors are open and `habbo.Count()`; `AreOnline`
