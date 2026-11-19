@@ -1,0 +1,44 @@
+---
+import { Box, Table } from "@project-reborn/components";
+import Housekeeping from "../layouts/housekeeping.astro";
+---
+
+<Housekeeping title="Online Users" tab="users">
+  <Box title="Online Users ([[ len .Habbos ]])" color="gold">
+    <Table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          [[ if .Private ]]<th>E-Mail Address</th>[[ end ]]
+          <th>Join date</th>
+          <th>Last activity</th>
+          <th>Edit</th>
+        </tr>
+      </thead>
+      <tbody>
+        [[ range .Habbos ]]
+        <tr>
+          <td>[[ .ID ]]</td>
+          <td>
+            <strong>[[ .Name ]]</strong>
+            [[ if $.Private ]]
+            <div class="text-neutral-500">[[ .IP ]][[ if ne .IP "No IP Found" ]] [<a href="https://who.is/whois-ip/ip-address/[[ .IP ]]/" target="_blank" rel="noreferrer" class="text-indigo-900 underline">WHOIS</a>][[ end ]]</div>
+            [[ end ]]
+          </td>
+          [[ if $.Private ]]<td><a href="mailto:[[ .Email ]]" class="text-indigo-900 underline">[[ .Email ]]</a></td>[[ end ]]
+          <td>[[ .Joined ]]</td>
+          <td>[[ .Activity ]]</td>
+          <td><a href="/housekeeping/habbos/[[ .ID ]]" class="text-indigo-900 underline">Edit</a></td>
+        </tr>
+        [[ else ]]
+        [[ if not .Answered ]]
+        <tr>
+          <td colspan="6">The game gives no answer.</td>
+        </tr>
+        [[ end ]]
+        [[ end ]]
+      </tbody>
+    </Table>
+  </Box>
+</Housekeeping>

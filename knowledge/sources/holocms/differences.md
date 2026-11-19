@@ -368,6 +368,8 @@ veto.
 | User listing | 100 habbos a page, with `Older` and `Newer` | Holo listed every user on one page |
 | User listing | One search does the work of `Retrive IP Address`, `Retrive User ID` and the `Clone Checker`, and matches part of a name | The plan: `GET /habbos?q=` |
 | User listing | `Last Activity` reads the habbo's newest session, then its last sign-in | `online` is not kept; the column's wording is Holo's |
+| Online Users | Lists the habbos the game says are in the hotel, headed `Online Users (N)` with no `[Active in the past 600 seconds]`; with no answer from the game the table is empty and says `The game gives no answer.` | [Hotel status](/features/hotel-status/plan.md) |
+| Online Users | `Last activity` follows User Listing, and the e-mail address and the last IP take `housekeeping.usersPrivate` | The rule of User Listing |
 | Habbo page | `Restore Habbo` on an archived habbo, refused while the user has no free slot | [0058](/decisions/holo-port/0058-habbos-are-archived.md), and a user owns up to `registration.maxHabbosPerUser` ([0056](/decisions/holo-port/0056-wallet-club-and-inventory-per-user.md)) |
 | Habbo page | Holders of `housekeeping.accessGroups` tick attributes for the user alone | [0053](/decisions/holo-port/0053-attributes-on-groups-and-users.md) |
 | Habbo page | The page of one habbo, with its owner, their other habbos and the addresses they signed in from | The plan. Holo kept only the last address |
@@ -392,4 +394,3 @@ veto.
 | `My Friends`, `My Rooms` and the recommended rooms | Deferred with the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |
 | The online state of the profile widget, the community page's random habbos, the staff page and the forum's post boxes, which show offline | Deferred with the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |
 | `Chatlogs` in housekeeping | The game server's S4 ports it: 100 lines a page with Newer and Older, public rooms marked `Public`, the lines kept 30 days |
-| `Online Users` in housekeeping | Deferred with the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |
