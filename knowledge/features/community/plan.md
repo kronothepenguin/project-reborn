@@ -26,9 +26,8 @@ description: The CMS draws the community and staff pages from the store and the 
   habbo name, with its highest listed group as rank.
 - [The staff page boxes are BBCode with a colour each](/decisions/holo-port/0077-staff-boxes-in-bbcode.md) — Edited in
   a multi-line field, with one of Holo's four colours.
-- [The online picture stays offline until the game
-  server](/decisions/holo-port/0087-online-picture-stays-offline.md) — The community and staff pages show every habbo
-  offline.
+- [Hotel status](/features/hotel-status/plan.md) — The community and staff pages show each habbo in the hotel online;
+  it replaces [0087](/decisions/holo-port/0087-online-picture-stays-offline.md).
 - [A WYSIWYG BBCode editor of our own wherever BBCode is
   written](/decisions/holo-port/0092-bbcode-editor.md) — The staff boxes are written in the shared BBCode editor.
 

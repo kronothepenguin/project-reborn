@@ -29,7 +29,8 @@ It builds on [habbos](/features/habbos/spec.md), [the client](/features/client/s
 - The game starts with the hotel open and the site open: its doors open, and a client connects.
 - The game starts with the hotel closed or the site closed: its doors stay closed, and its program keeps running.
 - The game is stopped with habbos inside: each is sent the client's "hotel closed" notice and logged out with its
-  last time online saved, its connection closes, and the doors close.
+  last time online saved, and the doors close. Each connection stays open for 5 seconds after the notice, so the
+  client shows it, then closes.
 - The game is started after a stop: its doors open again, and a client connects.
 - The game is started while the site is closed for maintenance: its doors stay closed.
 - A program asks the game for its status: it learns whether the doors are open and how many habbos are inside.
@@ -38,14 +39,7 @@ It builds on [habbos](/features/habbos/spec.md), [the client](/features/client/s
 - With the programs run apart, the same questions and commands go through the game's `/api/`, which answers 404
   without the secret.
 
-## Next
-
-### The game
-
-- The game is stopped with habbos inside: each connection stays open for 5 seconds after the notice, so the client
-  shows it, then closes.
-
-### The site
+## The site
 
 - The game runs: every page shows the number of habbos online with the online picture, and the header shows "Enter
   <site name>".
@@ -58,7 +52,7 @@ It builds on [habbos](/features/habbos/spec.md), [the client](/features/client/s
 - A page shows a habbo that is in the hotel: the online picture shows beside it, on the profile widget, the community
   page, the staff page and the forum's posts; a habbo outside the hotel shows the offline picture.
 
-### Housekeeping
+## Housekeeping
 
 - Staff choose Hotel Closed in "Turn your hotel on/off": the game stops, and it stays stopped after a restart.
 - Staff open the hotel again: the game starts.

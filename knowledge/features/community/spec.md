@@ -18,7 +18,8 @@ staff boxes in the settings.
 
 - Anyone opens `/community`: Holo's title and the Community sub-tab show (decision holo-port/0017).
 - The grid holds 18 random habbos that are not archived, each with its avatar from the imager, linking to its home.
-- A habbo's tooltip shows its name, its creation date, its motto and the offline state (decision holo-port/0087).
+- A habbo's tooltip shows its name, its creation date, its motto and whether it is in the hotel
+  ([hotel status](/features/hotel-status/spec.md)).
 - The news promo shows the two newest articles' top stories, then the next two as a list, and `More news »`.
 - After 10 seconds the next story turns in; the stories wait while the pointer is over them.
 - `Users like..` holds the tag cloud, and the form under it searches the tags.
@@ -50,7 +51,7 @@ staff boxes in the settings.
 - Each member shows the habbo chosen for its highest listed group, with that group as rank (decision holo-port/0019).
 - A member's chosen habbo is archived: the staff page shows the member's first habbo.
 - Every habbo of a member is archived: the staff page leaves the member out.
-- Each member shows its avatar, its worn badge, its favourite group's badge, the offline state, its motto or
+- Each member shows its avatar, its worn badge, its favourite group's badge, its online state, its motto or
   `No motto`, and `Last Visit:`.
 - Anyone reads a staff member's Last Visit: it is the last time a session saw the habbo, else its last sign-in.
 - A name links to the habbo's home.

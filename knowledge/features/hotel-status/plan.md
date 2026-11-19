@@ -13,16 +13,15 @@ Built:
 | `packages/services` | The `Hotel` contract and `HotelStatus`; `Habbos` has `AreOnline` and `Online` |
 | `packages/settings` | The setting `game.closed`, false by default |
 | `packages/virtual` | `habbo.Count()` and `habbo.IDs()`, the two reads the questions need |
-| `packages/server` | `Start`, `Stop`, `Status`, `AreOnline`, `Online`; the five routes of `/api/`; `api` calls them for the programs run apart |
+| `packages/server` | `Start`, `Stop`, `Status`, `AreOnline`, `Online`; `Stop` holds each connection 5 seconds after the notice; the five routes of `/api/`; `api` calls them for the programs run apart |
 | `packages/reborn`, the runners | `Start` opens the doors; the runners inject `Hotel` beside `Habbos` |
+| `packages/cms` | The status on every page, the Me page's button, the client page's redirect, the "Hotel Closed" page of the client's window, each habbo's online picture |
+| `packages/housekeeping` | "Turn your hotel on/off" on the settings page, the stop and start after the site's switch, the dashboard's count, the Online Users page |
 
 Planned:
 
 | Project | Part |
 | --- | --- |
-| `packages/server` | `Stop` holds each connection 5 seconds after the notice |
-| `packages/cms` | The status on every page, the Me page's button, the client page's redirect, the "Hotel Closed" page of the client's window, each habbo's online picture |
-| `packages/housekeeping` | "Turn your hotel on/off" on the settings page, the stop and start after the site's switch, the dashboard's count, the Online Users page |
 | `tests/e2e` | The suite `hotel-status` |
 
 The contract, as the user approved it:
@@ -104,3 +103,8 @@ All of 2026-11-18, each the user's choice among options put to them.
   sends hour 0 and minute 0.
 - `Start` replaces the `StartInfo` and `StartMus` of
   [server 0022](/decisions/server/0022-start-info-and-start-mus.md).
+- Each habbo's online picture replaces
+  [holo-port 0087](/decisions/holo-port/0087-online-picture-stays-offline.md), which kept every habbo offline until
+  the game existed.
+- The site calls the game through `Router.gameStatus` and `Router.online` in `packages/cms/internal/router`, and
+  housekeeping through `hotelStatus` and `followSwitches` in `packages/housekeeping/internal/router`.

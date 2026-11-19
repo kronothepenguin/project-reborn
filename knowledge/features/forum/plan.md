@@ -18,8 +18,8 @@ description: The CMS serves the board, its forms and its Moderation Tools, the s
 - [Group roles and forum posts belong to the active
   habbo](/decisions/holo-port/0086-roles-and-posts-follow-the-active-habbo.md) — Only the active habbo's posts count as
   the user's own.
-- [The online picture stays offline until the game
-  server](/decisions/holo-port/0087-online-picture-stays-offline.md) — Forum posts show every habbo offline.
+- [Hotel status](/features/hotel-status/plan.md) — Forum posts show each habbo in the hotel online; it replaces
+  [0087](/decisions/holo-port/0087-online-picture-stays-offline.md).
 - [Sticky threads head every page of the forum](/decisions/holo-port/0088-stickies-head-every-page.md) — Then ten other
   threads, with pages counted from the other threads.
 - [Habbos are archived, and the forum shows them as

@@ -2,7 +2,8 @@
 type: Decision
 title: The online picture stays offline until the game server
 description: Forum posts, the profile widget, the community page and the staff page show every habbo offline, as Holo did in practice, until the game server exists.
-status: accepted
+status: superseded
+superseded_by: knowledge/features/hotel-status/plan.md
 timestamp: 2026-11-04T20:35:37+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-04T20:35:37+00:00"}
 tags: [forum, p5]

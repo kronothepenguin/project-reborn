@@ -22,8 +22,8 @@ delete threads. A habbo reports a post in Holo's Help Tool window.
 - A thread's row shows its pages, its opener, its last post, its replies and its views.
 - A post is deleted: its thread's row shows the post before it as the last one, with one reply less.
 - A thread's page holds ten posts, with `RE:` on all but the first.
-- A post's box shows the habbo's name, the offline picture, its messages, avatar, favourite group, worn badge and motto
-  (decision holo-port/0087).
+- A post's box shows the habbo's name, its online picture, its messages, avatar, favourite group, worn badge and motto
+  ([hotel status](/features/hotel-status/spec.md)).
 - A post of an archived habbo shows `archived` in place of its name, with no link, avatar, messages or motto
   (decision holo-port/0089).
 - An edited post says who modified it, and when.
