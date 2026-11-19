@@ -32,11 +32,18 @@ var (
 	_ services.Hotel  = (*Client)(nil)
 )
 
+// A call gives up after callTimeout, and Stop, which waits for the game to
+// hold each connection open after its notice, after stopTimeout.
+const (
+	callTimeout = 2 * time.Second
+	stopTimeout = 15 * time.Second
+)
+
 // New returns a client of the /api/ at baseURL, such as http://localhost:15445,
 // that sends the hotel's api_secret, read from db on each call, and gives up
-// after 2 seconds.
+// after 2 seconds, or 15 for Stop.
 func New(baseURL string, db *sql.DB) *Client {
-	return &Client{baseURL: baseURL, db: db, http: &http.Client{Timeout: 2 * time.Second}}
+	return &Client{baseURL: baseURL, db: db, http: &http.Client{}}
 }
 
 // SendLook tells the game that the habbo avatarID has a new look or motto.
@@ -62,9 +69,10 @@ func (c *Client) Start(ctx context.Context) error {
 	return c.call(ctx, http.MethodPost, "/api/hotel/start", nil)
 }
 
-// Stop tells the game to close its doors, and returns once it has.
+// Stop tells the game to close its doors, and returns once it has, which takes about 5 seconds while anybody is
+// connected. It gives up after 15 seconds.
 func (c *Client) Stop(ctx context.Context) error {
-	return c.call(ctx, http.MethodPost, "/api/hotel/stop", nil)
+	return c.callWithin(ctx, stopTimeout, http.MethodPost, "/api/hotel/stop", nil)
 }
 
 // AreOnline asks the game which of ids are in the hotel.
@@ -90,9 +98,16 @@ func (c *Client) Online(ctx context.Context) ([]int64, error) {
 	return ids, nil
 }
 
-// call makes one call with the secret. With out nil it expects 204, and
-// otherwise 200 with JSON, which it reads into out.
+// call makes one call with the secret, within callTimeout.
 func (c *Client) call(ctx context.Context, method, path string, out any) error {
+	return c.callWithin(ctx, callTimeout, method, path, out)
+}
+
+// callWithin makes one call with the secret, and gives up after timeout. With
+// out nil it expects 204, and otherwise 200 with JSON, which it reads into out.
+func (c *Client) callWithin(ctx context.Context, timeout time.Duration, method, path string, out any) error {
+	ctx, cancel := context.WithTimeout(ctx, timeout)
+	defer cancel()
 	secret, err := store.New(c.db).GetAPISecret(ctx)
 	if err != nil {
 		return fmt.Errorf("api: the secret: %w", err)

@@ -10,6 +10,11 @@ import Housekeeping from "../layouts/housekeeping.astro";
     <Box title="[[ .Section.Title ]]">
       <Table variant="form">
         <tbody>
+          [[ if .Hotel ]]
+          <tr>
+            <td colspan="2"><strong>[[ .Hotel ]]</strong></td>
+          </tr>
+          [[ end ]]
           [[ range .Section.Fields ]]
           <tr>
             <td class="w-2/5">

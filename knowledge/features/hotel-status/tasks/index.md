@@ -3,8 +3,6 @@
 # Tasks
 
 - [Show the hotel status on the site](02-the-site-shows-the-status.md) - Every page of the site shows the count of habbos online and Enter or offline from the game status, the Me page shows Enter or Hotel Closed, and the client page sends a habbo back while the game is stopped.
-- [Let staff start and stop the game in housekeeping](04-staff-start-and-stop-the-game.md) - The settings page gains the form Turn your hotel on/off with the game status, saving it or the site switch starts or stops the game, and the dashboard shows the habbos online.
 - [Add the Online Users page to housekeeping](05-online-users.md) - Housekeeping lists every habbo in the hotel now on Holo's Online Users page.
 - [Prove the hotel status in a browser suite](06-browser-suite.md) - The suite hotel-status proves, across the site, housekeeping and the game, that stopping the game in housekeeping shows on the site and that starting it brings Enter back.
 - [Demonstrate the hotel status on a real hotel](07-exit-check.md) - The whole feature runs on a real hotel under reborn and with the programs apart, with screenshots, and the documents say what is built.
-- [Hold each connection five seconds after the closing notice](08-hold-the-notice.md) - When the game stops, each connection stays open for 5 seconds after message 292 so the client shows its notice, and every caller of Stop waits long enough.

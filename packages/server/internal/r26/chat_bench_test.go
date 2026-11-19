@@ -61,7 +61,7 @@ func BenchmarkChat(b *testing.B) {
 	go func() {
 		defer close(served)
 		defer server.Close()
-		serve(context.Background(), db, store.NewUpdateCheck(db, list), pipeConn{server, b.Name()}, h)
+		serve(context.Background(), 0, db, store.NewUpdateCheck(db, list), pipeConn{server, b.Name()}, h)
 	}()
 	b.Cleanup(func() {
 		client.Close()

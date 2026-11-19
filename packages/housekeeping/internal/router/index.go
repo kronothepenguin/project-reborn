@@ -22,9 +22,11 @@ type indexPage struct {
 	ActiveBans int64
 	StaffLogs  int64
 	// Rooms counts every room, as Holo's one table of rooms did, PublicRooms among them.
-	Rooms          int64
-	PublicRooms    int64
-	Furni          int64
+	Rooms       int64
+	PublicRooms int64
+	Furni       int64
+	// Online counts the habbos in the hotel, 0 while the game gives no answer.
+	Online         int
 	Administrators []administrator
 	Note           string
 }
@@ -54,6 +56,8 @@ func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
 			page.Administrators[i].Email = ""
 		}
 	}
+	status, _ := r.hotelStatus(req.Context())
+	page.Online = status.Online
 	page.chrome = r.chrome(req)
 	astro.WriteTemplate(w, r.deps.Resolver, "index.html", page)
 }

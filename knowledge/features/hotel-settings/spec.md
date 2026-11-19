@@ -17,7 +17,7 @@ next read. Every staff member opens the dashboard, with the hotel's counts and a
 ## Settings forms
 
 - Staff with `housekeeping.settings` open Settings: the first form shows, and the menu lists General Configuration,
-  Turn your site on/off, Sign-in and Sessions, Registration, Referrals, Mail, Avatar Imaging, Homes, Groups, Club, Help,
+  Turn your site on/off, Turn your hotel on/off, Sign-in and Sessions, Registration, Referrals, Mail, Avatar Imaging, Homes, Groups, Club, Help,
   Game and Recycler Options, then the content forms Manage Site Content, Staff Module, Credits Page and Discussion Board
   Module.
 - Staff without `housekeeping.settings` open Settings: Holo's Access Denied page.
