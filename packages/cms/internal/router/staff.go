@@ -33,6 +33,8 @@ type staffMember struct {
 	// Group is the favourite group, 0 for none, whose badge leads to it.
 	Group      int64
 	GroupBadge string
+	// Online is a habbo in the hotel.
+	Online bool
 }
 
 type staffBox struct {
@@ -62,13 +64,18 @@ func (r *Router) HandleStaffView(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
+	ids := make([]int64, 0, len(rows))
+	for _, row := range rows {
+		ids = append(ids, row.ID)
+	}
+	online := r.online(ctx, ids)
 	for _, row := range rows {
 		visit, err := r.lastVisit(ctx, row.ID, row.CreatedAt)
 		if err != nil {
 			r.fail(w, err)
 			return
 		}
-		member := staffMember{Name: row.Name, Figure: row.Figure, Motto: row.Motto, Rank: row.GroupName, LastVisit: visit}
+		member := staffMember{Name: row.Name, Figure: row.Figure, Motto: row.Motto, Rank: row.GroupName, LastVisit: visit, Online: online[row.ID]}
 		if member.Motto == "" {
 			member.Motto = "No motto"
 		}

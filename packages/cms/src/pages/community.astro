@@ -16,7 +16,7 @@ import Community from "../layouts/community.astro";
           <span slot="header">Random Habbos - Click Us!</span>
           <ul id="random-habbos" hidden data-imaging="[[ .ImagingURL ]]">
             [[ range .RandomHabbos ]]
-            <li data-name="[[ .Name ]]" data-figure="[[ .Figure ]]" data-created="[[ .Created ]]" data-motto="[[ .Motto ]]"></li>
+            <li data-name="[[ .Name ]]" data-figure="[[ .Figure ]]" data-created="[[ .Created ]]" data-motto="[[ .Motto ]]" data-online="[[ .Online ]]"></li>
             [[ end ]]
           </ul>
           <RandomHabbos client:only="svelte" source="random-habbos" />

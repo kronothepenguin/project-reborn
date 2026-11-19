@@ -169,8 +169,8 @@ func TestTheForumPagesHoldTheViewersOwnBox(t *testing.T) {
 	}
 	th := thread(t, db, frank, "Hello", testNow, 2)
 	cookie := login(t, db, "Frank")
-	box := fmt.Sprintf("Me:{Name:Frank Figure:hd-180-1 Motto: Messages:3 Badge:/c_images/album1584/ADM.gif Group:%d GroupBadge:%s}", club.ID, club.Badge)
+	box := fmt.Sprintf("Me:{Name:Frank Figure:hd-180-1 Motto: Messages:3 Badge:/c_images/album1584/ADM.gif Group:%d GroupBadge:%s Online:false}", club.ID, club.Badge)
 	wantPage(t, serve(mux, "GET", "/forum", cookie, nil), http.StatusOK, box, "Smilies:true")
 	wantPage(t, serve(mux, "GET", fmt.Sprintf("/forum/threads/%d", th.ID), cookie, nil), http.StatusOK, box, "Smilies:true")
-	wantPage(t, serve(mux, "GET", "/forum", nil, nil), http.StatusOK, "Me:{Name: Figure: Motto: Messages:0 Badge: Group:0 GroupBadge:}")
+	wantPage(t, serve(mux, "GET", "/forum", nil, nil), http.StatusOK, "Me:{Name: Figure: Motto: Messages:0 Badge: Group:0 GroupBadge: Online:false}")
 }

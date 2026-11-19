@@ -25,7 +25,11 @@ import TagPanel from "../tag-panel.svelte";
             <span class="font-bold underline">[[ $.Profile.Name ]]</span>
           </div>
           <br class="clear-both" />
-          <img class="my-[3px]" alt="offline" src="/myhabbo/habbo_offline.gif" />
+          [[ if $.Profile.Online ]]<img class="my-[3px]" alt="online" src="/myhabbo/habbo_online_anim.gif" />[[ else ]]<img
+            class="my-[3px]"
+            alt="offline"
+            src="/myhabbo/habbo_offline.gif"
+          />[[ end ]]
           <div>Created on:</div>
           <div>[[ $.Profile.Created ]]</div>
           <div>

@@ -49,8 +49,8 @@ func TestTheStaffPageListsTheStaff(t *testing.T) {
 
 	rec := serve(mux, "GET", "/staff", nil, nil)
 	wantPage(t, rec, http.StatusOK, "staff.html {",
-		"Members:["+html.EscapeString("{Name:Amy Figure:hd-180-1 Motto:Ask <me> Rank:Moderators LastVisit:27-10-2026 21:00:00 Badge:/c_images/album1584/ADM.gif Group:0 GroupBadge:}")+
-			" {Name:Zed Figure:hd-180-1 Motto:No motto Rank:Administrators LastVisit:27-10-2026 21:00:00 Badge: Group:0 GroupBadge:}]")
+		"Members:["+html.EscapeString("{Name:Amy Figure:hd-180-1 Motto:Ask <me> Rank:Moderators LastVisit:27-10-2026 21:00:00 Badge:/c_images/album1584/ADM.gif Group:0 GroupBadge: Online:false}")+
+			" {Name:Zed Figure:hd-180-1 Motto:No motto Rank:Administrators LastVisit:27-10-2026 21:00:00 Badge: Group:0 GroupBadge: Online:false}]")
 	if strings.Contains(rec.Body.String(), "Player") {
 		t.Error("the staff page lists a player")
 	}

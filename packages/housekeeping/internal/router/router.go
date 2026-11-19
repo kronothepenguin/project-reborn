@@ -181,6 +181,26 @@ func (r *Router) sendLook(ctx context.Context, avatarID int64) {
 	}
 }
 
+// statusTimeout is how long the game has to tell its status to a page.
+const statusTimeout = time.Second
+
+// hotelStatus asks the game whether its doors are open and how many habbos are
+// inside. A game that fails, gives no answer within a second or is not injected
+// gives ok false, and the failure is logged.
+func (r *Router) hotelStatus(ctx context.Context) (status services.HotelStatus, ok bool) {
+	if r.deps.Hotel == nil {
+		return status, false
+	}
+	ctx, cancel := context.WithTimeout(ctx, statusTimeout)
+	defer cancel()
+	status, err := r.deps.Hotel.Status(ctx)
+	if err != nil {
+		logError("housekeeping: hotel status", err)
+		return services.HotelStatus{}, false
+	}
+	return status, true
+}
+
 func (r *Router) fail(w http.ResponseWriter, err error) {
 	logError("housekeeping", err)
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)

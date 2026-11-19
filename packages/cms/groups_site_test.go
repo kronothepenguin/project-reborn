@@ -206,8 +206,8 @@ func TestHomesShowTheHabbosGroupsAndFavourite(t *testing.T) {
 	alpha := groups["Alpha"]
 	wantPage(t, serve(mux, "GET", "/home/Frank", nil, nil), http.StatusOK,
 		"Groups:["+row("Alpha", true, false, false)+" "+row("Beta", false, false, true)+" "+row("Gamma", false, true, false)+" "+row("Delta", false, false, false)+"]",
-		fmt.Sprintf("Group:%d GroupBadge:%s}", alpha.ID, alpha.Badge))
-	wantPage(t, serve(mux, "GET", "/home/Other", nil, nil), http.StatusOK, "Group:0 GroupBadge:}")
+		fmt.Sprintf("Group:%d GroupBadge:%s Online:false}", alpha.ID, alpha.Badge))
+	wantPage(t, serve(mux, "GET", "/home/Other", nil, nil), http.StatusOK, "Group:0 GroupBadge: Online:false}")
 
 	wantPage(t, serve(mux, "GET", "/home/Frank/edit", login(t, db, "Frank"), nil), http.StatusOK,
 		"NewGroups:{ID:0 Kind:widget Widget:groups Skin:defaultskin X:20 Y:20 Z:0 Image: HTML: Foreign:false}")
@@ -218,7 +218,7 @@ func TestTheStaffListShowsTheFavouriteGroupsBadge(t *testing.T) {
 	amy := habbo(t, db, "amy@example.com", "Amy")
 	staffGroup(t, db, "Moderators", 5, amy)
 	club := groupOf(t, db, avatarID(t, db, "Amy"), "Club", testNow)
-	wantPage(t, serve(mux, "GET", "/staff", nil, nil), http.StatusOK, "Group:0 GroupBadge:}")
+	wantPage(t, serve(mux, "GET", "/staff", nil, nil), http.StatusOK, "Group:0 GroupBadge: Online:false}")
 	favourite(t, db, club.ID, avatarID(t, db, "Amy"))
-	wantPage(t, serve(mux, "GET", "/staff", nil, nil), http.StatusOK, fmt.Sprintf("Group:%d GroupBadge:%s}", club.ID, club.Badge))
+	wantPage(t, serve(mux, "GET", "/staff", nil, nil), http.StatusOK, fmt.Sprintf("Group:%d GroupBadge:%s Online:false}", club.ID, club.Badge))
 }
