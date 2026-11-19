@@ -44,7 +44,8 @@ New model: shared session, attributes per user ([0014](/decisions/holo-port/0014
 | vouchers | create credit or item vouchers | `GET/POST /vouchers`, `POST /vouchers/{code}/delete` (credits only) | `housekeeping.vouchers` | P6 |
 | chatlogs | search the chat log by room id or username, every row | `GET /chatlogs` (read-only, 100 a page, public rooms marked) | `housekeeping.chatLogs` | S4 of the game server |
 | recycler | the recycler's four settings | `GET /settings?section=recycler`, `POST /settings/recycler`, a settings form | `housekeeping.settings` | S5 of the game server |
-| server, wordfilter, welcomemsg, onlinelist | emulator settings and data | deferred | — | — |
+| onlinelist | users active in the past 600 seconds | `GET /online` (the habbos in the hotel now) | `housekeeping.users` | Hotel status |
+| server, wordfilter, welcomemsg | emulator settings and data | deferred | — | — |
 | dbquery, dbrepair, dboptimize, holocms, credits, help_main, help_bugs, help_svn | raw SQL, REPAIR/OPTIMIZE by GET, static pages | dropped ([0021](/decisions/holo-port/0021-dropped-and-kept-features.md)) | — | — |
 
 # Staff log

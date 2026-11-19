@@ -43,6 +43,19 @@ WHERE id = sqlc.arg(id) AND user_id = sqlc.arg(user_id) AND archived_at IS NULL;
 UPDATE avatars SET archived_at = NULL, updated_at = sqlc.arg(updated_at)
 WHERE id = sqlc.arg(id) AND archived_at IS NOT NULL;
 
+-- The habbos of ids for staff, the most recently active first, as Holo's Online
+-- Users ordered them: a live session counts before the last sign-in.
+-- name: ListHabbosByIDs :many
+SELECT avatars.id, avatars.user_id, avatars.name, avatars.created_at, users.email
+FROM avatars
+JOIN users ON users.id = avatars.user_id
+WHERE avatars.id IN (sqlc.slice(ids))
+ORDER BY COALESCE(
+    (SELECT MAX(sessions.last_seen_at) FROM sessions WHERE sessions.avatar_id = avatars.id),
+    (SELECT MAX(login_attempts.created_at) FROM login_attempts
+     WHERE login_attempts.avatar_id = avatars.id AND login_attempts.succeeded)
+) DESC, avatars.id;
+
 -- Habbos for staff, archived ones too. A query matches part of a name or a whole
 -- id; with private it also matches part of an email or an address the user used,
 -- so that a search by IP finds clones.

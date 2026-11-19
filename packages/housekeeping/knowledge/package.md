@@ -27,6 +27,9 @@ Astro (Svelte + Tailwind) frontend embedded in a Go module. The `Housekeeping` s
   never after a refused save.
 - The call has a context of its own of 2 seconds, apart from the request's, so a request the visitor abandons still
   tells the game. A failure is logged, and the page answers as it would without the game.
+- Online Users (`GET /housekeeping/online`) asks `Habbos.Online` with a context of 1 second, then reads the habbos it
+  lists from the store in one query. A failure, no answer or no game leaves the table empty and says so; a failure is
+  logged.
 
 # Layout
 

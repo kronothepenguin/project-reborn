@@ -2,10 +2,11 @@
   import { Avatar, Bubble } from "@project-reborn/components";
   import { onMount } from "svelte";
   import offline from "../../assets/offline.gif";
+  import online from "../../assets/online.gif";
   import skeleton from "../../assets/community/habbo_skeleton.gif";
   import stripes from "../../assets/community/stripepattern.gif";
 
-  type Habbo = { name: string; figure: string; created: string; motto: string };
+  type Habbo = { name: string; figure: string; created: string; motto: string; online: boolean };
 
   // source is the hidden list the page fills with the habbos and the imager.
   let { source }: { source: string } = $props();
@@ -31,6 +32,7 @@
       figure: li.dataset.figure ?? "",
       created: li.dataset.created ?? "",
       motto: li.dataset.motto ?? "",
+      online: li.dataset.online === "true",
     }));
     habbos = found;
     shown = found.map(() => false);
@@ -73,7 +75,7 @@
     <!-- Holo hooked the tip's bottom right corner to the habbo's top right one, 85 pixels right and 40 down. -->
     <div role="tooltip" class="pointer-events-none absolute z-10" style={`left: ${at.left - 107}px; bottom: ${230 - at.top - 40}px`}>
       <Bubble>
-        <div class="h-4 bg-no-repeat font-bold" style={`background-image: url(${offline.src}); background-position: 70%`}>
+        <div class="h-4 bg-no-repeat font-bold" style={`background-image: url(${habbos[tip].online ? online.src : offline.src}); background-position: 70%`}>
           {habbos[tip].name}
         </div>
         Habbo created on: {habbos[tip].created}

@@ -8,6 +8,7 @@ package store
 import (
 	"context"
 	"database/sql"
+	"strings"
 	"time"
 )
 
@@ -342,6 +343,67 @@ func (q *Queries) ListAvatarBadges(ctx context.Context, avatarID int64) ([]Avata
 			&i.Code,
 			&i.Slot,
 			&i.GrantedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listHabbosByIDs = `-- name: ListHabbosByIDs :many
+SELECT avatars.id, avatars.user_id, avatars.name, avatars.created_at, users.email
+FROM avatars
+JOIN users ON users.id = avatars.user_id
+WHERE avatars.id IN (/*SLICE:ids*/?)
+ORDER BY COALESCE(
+    (SELECT MAX(sessions.last_seen_at) FROM sessions WHERE sessions.avatar_id = avatars.id),
+    (SELECT MAX(login_attempts.created_at) FROM login_attempts
+     WHERE login_attempts.avatar_id = avatars.id AND login_attempts.succeeded)
+) DESC, avatars.id
+`
+
+type ListHabbosByIDsRow struct {
+	ID        int64
+	UserID    int64
+	Name      string
+	CreatedAt time.Time
+	Email     string
+}
+
+// The habbos of ids for staff, the most recently active first, as Holo's Online
+// Users ordered them: a live session counts before the last sign-in.
+func (q *Queries) ListHabbosByIDs(ctx context.Context, ids []int64) ([]ListHabbosByIDsRow, error) {
+	query := listHabbosByIDs
+	var queryParams []interface{}
+	if len(ids) > 0 {
+		for _, v := range ids {
+			queryParams = append(queryParams, v)
+		}
+		query = strings.Replace(query, "/*SLICE:ids*/?", strings.Repeat(",?", len(ids))[1:], 1)
+	} else {
+		query = strings.Replace(query, "/*SLICE:ids*/?", "NULL", 1)
+	}
+	rows, err := q.db.QueryContext(ctx, query, queryParams...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListHabbosByIDsRow
+	for rows.Next() {
+		var i ListHabbosByIDsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.Name,
+			&i.CreatedAt,
+			&i.Email,
 		); err != nil {
 			return nil, err
 		}

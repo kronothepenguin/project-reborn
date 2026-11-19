@@ -138,6 +138,7 @@ HK-A, HK-B, P3, P4 and P6.
 | Account transactions | Date, Activity and Description | A Habbo column after them names the habbo that acted, blank when none did, since all the user's habbos share the purse | [0104](/decisions/holo-port/0104-transactions-show-the-habbo.md) |
 | News | The body is HTML written by staff | BBCode, without smilies, as Holo's news had none | [0020](/decisions/holo-port/0020-news-in-bbcode.md) |
 | Tags | A tag counts for its owner whether the owner still exists or not | An archived habbo's tags leave the cloud, the search and the tag fight | [0058](/decisions/holo-port/0058-habbos-are-archived.md) |
+| Profile widget, community page, staff page, discussion board | A habbo is online after a page view of the site in the last 10 minutes, which `users.online` could not hold, so every habbo showed offline | A habbo is online while it is in the hotel, as the game answers within 1 second; one question a page | [Hotel status](/features/hotel-status/spec.md) |
 | Staff page | Every user above rank 2, with `Rank:` named after the rank | Each member of a staff-listed access group once, with `Rank:` the name of the highest of those groups and the habbo chosen for it | [0076](/decisions/holo-port/0076-one-staff-list.md) |
 
 # Holo bugs not ported
@@ -185,7 +186,7 @@ HK-A, HK-B, P3, P4 and P6.
 | Discussion board | A reply to a thread closed meanwhile vanishes | The thread shows closed, and nothing is added |
 | Discussion board | Every deleted post sends the visitor to the board | Back to the thread, unless the thread went with its last post |
 | Discussion board | A new thread the server refuses replaces the form with the refusal's text | The text shows in the form's red box |
-| Discussion board | The preview shows the habbo online, with a blank motto and a nameless avatar, from a variable the page never sets | The habbo's motto and name, offline ([0087](/decisions/holo-port/0087-online-picture-stays-offline.md)) |
+| Discussion board | The preview shows the habbo online, under the text `offline`, with a blank motto and a nameless avatar, from a variable the page never sets | The habbo's motto and name, and its online state as its post box shows it |
 | Discussion board | Quote copies the post with its HTML escaped a second time | The post as written |
 | Discussion board | Enter in the Moderation Tools' title sends their form to `#`, which reloads the page | Enter does nothing |
 | Discussion board | A Moderation Tools save the server cannot make puts whatever it answered where the post list was | The Moderation Tools open again with the reason in their red box |
@@ -269,7 +270,7 @@ The behaviour follows Holo's PHP ([0034](/decisions/holo-port/0034-behaviour-mat
 | Header | `Welcome Administrator Name [ Site Home · Log Out ]` | `Logged in as: Name (Previous login at … from …)` `Log out` and `Site Home`, with no rank | [0014](/decisions/holo-port/0014-attribute-based-access.md), [0003](/decisions/holo-port/0003-housekeeping-under-prefix.md), [0041](/decisions/holo-port/0041-housekeeping-design-system.md) |
 | Every page | `HoloCMS Housekeeping` and `HoloCMS v… Build …` | `Project Reborn Housekeeping` and `Powered by Project Reborn ©` | [0048](/decisions/holo-port/0048-footer-names-reborn.md) |
 | Tabs | Six | Dashboard, Site & Content, Users & Moderation; Server waits for the game server, and HoloCMS and Help are dropped | [0013](/decisions/holo-port/0013-defer-game-server-features.md), [0021](/decisions/holo-port/0021-dropped-and-kept-features.md) |
-| Dashboard | The online count beside `Members`, and `Server Setup` | They wait for the game server | [0013](/decisions/holo-port/0013-defer-game-server-features.md) |
+| Dashboard | The online count beside `Members` counts users active in the past 600 seconds; `Server Setup` | The count is the habbos in the hotel now, as the game tells it, and 0 while the game gives no answer; `Server Setup` waits for the game server | [Hotel status](/features/hotel-status/spec.md), [0013](/decisions/holo-port/0013-defer-game-server-features.md) |
 | Dashboard | The version, `HoloCMS Updater`, `Support HoloCMS`, `Need assistance?` | Not ported: they are about Holo | [0021](/decisions/holo-port/0021-dropped-and-kept-features.md) |
 | Dashboard | `Members` counts users | Counts habbos | HK-A |
 | Dashboard | Administrators are `rank > 6` | They are the holders of `housekeeping.accessGroups`, under their display habbo | [0014](/decisions/holo-port/0014-attribute-based-access.md) |
@@ -369,6 +370,8 @@ veto.
 | User listing | 100 habbos a page, with `Older` and `Newer` | Holo listed every user on one page |
 | User listing | One search does the work of `Retrive IP Address`, `Retrive User ID` and the `Clone Checker`, and matches part of a name | The plan: `GET /habbos?q=` |
 | User listing | `Last Activity` reads the habbo's newest session, then its last sign-in | `online` is not kept; the column's wording is Holo's |
+| Online Users | Lists the habbos the game says are in the hotel, headed `Online Users (N)` with no `[Active in the past 600 seconds]`; with no answer from the game the table is empty and says `The game gives no answer.` | [Hotel status](/features/hotel-status/plan.md) |
+| Online Users | `Last activity` follows User Listing, and the e-mail address and the last IP take `housekeeping.usersPrivate` | The rule of User Listing |
 | Habbo page | `Restore Habbo` on an archived habbo, refused while the user has no free slot | [0058](/decisions/holo-port/0058-habbos-are-archived.md), and a user owns up to `registration.maxHabbosPerUser` ([0056](/decisions/holo-port/0056-wallet-club-and-inventory-per-user.md)) |
 | Habbo page | Holders of `housekeeping.accessGroups` tick attributes for the user alone | [0053](/decisions/holo-port/0053-attributes-on-groups-and-users.md) |
 | Habbo page | The page of one habbo, with its owner, their other habbos and the addresses they signed in from | The plan. Holo kept only the last address |
@@ -391,6 +394,4 @@ veto.
 | Holo | Phase |
 | --- | --- |
 | `My Friends`, `My Rooms` and the recommended rooms | Deferred with the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |
-| The online state of the profile widget, the community page's random habbos, the staff page and the forum's post boxes, which show offline | Deferred with the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |
 | `Chatlogs` in housekeeping | The game server's S4 ports it: 100 lines a page with Newer and Older, public rooms marked `Public`, the lines kept 30 days |
-| `Online Users` in housekeeping | Deferred with the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) |

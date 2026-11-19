@@ -3,7 +3,7 @@ import { Avatar, GroupBadge } from "@project-reborn/components";
 
 // One of viewthread.php's post boxes inside [[ range .Posts ]], so . is the post
 // and $ the page. An archived habbo shows archived, with no link, and none of its
-// avatar, badges, motto and message count (0089). The habbo shows offline (0087).
+// avatar, badges, motto and message count (0089). The online picture shows an author in the hotel.
 // The delete button and the report flag stack in Holo's post-list-report-element,
 // with the margins of Holo's myhabbo.css and discussions.css.
 ---
@@ -13,7 +13,11 @@ import { Avatar, GroupBadge } from "@project-reborn/components";
     [[ if .AuthorArchived ]]<span class="pl-[11px] align-super text-black">archived</span>[[ else ]]<a
       class="pl-[11px] align-super text-black underline"
       href="/home?name=[[ .Author ]]">[[ .Author ]]</a
-    >[[ end ]]<br />&nbsp;<img class="inline" alt="Offline" src="/myhabbo/habbo_offline.gif" />
+    >[[ end ]]<br />&nbsp;[[ if .Online ]]<img class="inline" alt="Online" src="/myhabbo/habbo_online_anim.gif" />[[ else ]]<img
+      class="inline"
+      alt="Offline"
+      src="/myhabbo/habbo_offline.gif"
+    />[[ end ]]
     [[ if not .AuthorArchived ]]
     <div class="pl-[11px]">Messages: [[ .Messages ]]</div>
     <div class="flow-root">

@@ -50,8 +50,8 @@ func TestTheCommunityPageShowsHolosBoxes(t *testing.T) {
 	rec := serve(mux, "GET", "/community", nil, nil)
 	body := rec.Body.String()
 	wantPage(t, rec, http.StatusOK, "community.html {",
-		"{Name:Alpha Figure:hd-180-1 Created:27-10-2026 Motto:}",
-		html.EscapeString("{Name:Beta Figure:hd-180-1 Created:27-10-2026 Motto:Hi <3}"),
+		"{Name:Alpha Figure:hd-180-1 Created:27-10-2026 Motto: Online:false}",
+		html.EscapeString("{Name:Beta Figure:hd-180-1 Created:27-10-2026 Motto:Hi <3 Online:false}"),
 		fmt.Sprintf("TopStories:[{ID:%d Title:Article 5 Summary:Summary 5 Image:/web-gallery/images/top-story/5.png} {ID:%d Title:Article 4 Summary:Summary 4 Image:/web-gallery/images/top-story/4.png}]", ids[4], ids[3]),
 		fmt.Sprintf("MoreNews:[{ID:%d Title:Article 3 Date:2026-10-29} {ID:%d Title:Article 2 Date:2026-10-28}]", ids[2], ids[1]),
 		"Cloud:[{Tag:retro Size:100}]",

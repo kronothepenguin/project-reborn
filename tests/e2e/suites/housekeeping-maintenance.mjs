@@ -2,6 +2,10 @@ import { session } from "../lib/staff.mjs";
 
 export const programs = ["cms", "housekeeping"];
 
+// Closing the site stops the game, and opening it starts the game again, whose
+// start lines the run already expects.
+export const logs = [/^server: \S+ \S+ INFO server: the doors are closed$/];
+
 export default async function (t) {
   const { base, check, eventually, hk } = t;
 

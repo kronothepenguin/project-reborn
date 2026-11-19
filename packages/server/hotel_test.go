@@ -178,6 +178,32 @@ func TestStoppingTheGameLogsEveryHabboOutAndClosesTheDoors(t *testing.T) {
 	refused(t, musPort)
 }
 
+func TestStoppingTheGameHoldsEachConnectionAfterTheNotice(t *testing.T) {
+	reopen(t, testServer)
+	held := habboWithTickets(t, "Heldnotice", "heldnotice")
+	c, _ := login(t, "heldnotice")
+	eventually(t, "online", func() bool { _, ok := habbo.Get(held); return ok })
+	stopped := make(chan error, 1)
+	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), timeout)
+		defer cancel()
+		stopped <- testServer.Stop(ctx)
+	}()
+
+	c.until(t, 292)
+	noticed := time.Now()
+
+	eventually(t, "logged out", func() bool { _, ok := habbo.Get(held); return !ok })
+	c.send(t, 8, "")
+	c.expectClosed(t)
+	if open := time.Since(noticed); open < noticeHold*9/10 {
+		t.Errorf("the connection closed %v after the notice, want %v", open, noticeHold)
+	}
+	if err := <-stopped; err != nil {
+		t.Errorf("Stop: %v", err)
+	}
+}
+
 func TestTheGameStartedAfterAStopOpensItsDoorsAgain(t *testing.T) {
 	reopen(t, testServer)
 	stop(t, testServer)

@@ -163,6 +163,7 @@ func (h *Housekeeping) Mount(mux *http.ServeMux) {
 	mux.Handle("POST /housekeeping/help/{id}/close", holding(auth.HousekeepingHelp, r.HandleHelpClose))
 
 	mux.Handle("GET /housekeeping/habbos", holding(auth.HousekeepingUsers, r.HandleHabbosView))
+	mux.Handle("GET /housekeeping/online", holding(auth.HousekeepingUsers, r.HandleOnlineView))
 	mux.Handle("GET /housekeeping/habbos/{id}", holding(auth.HousekeepingUsers, r.HandleHabboView))
 	mux.Handle("POST /housekeeping/habbos/{id}", holding(auth.HousekeepingUsersEdit, r.HandleHabboSave))
 	mux.Handle("POST /housekeeping/habbos/{id}/badges", holding(auth.HousekeepingUsersEdit, r.HandleHabboBadgesGive))

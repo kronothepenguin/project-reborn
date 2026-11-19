@@ -37,6 +37,12 @@ resource: packages/cms/cms.go
 - Every page asks `Hotel.Status` once (`Router.gameStatus` in `internal/router/router.go`), through `hotelStatus`, the
   layouts' fields `Online` and `OnlineCount`. The call follows the request's context and ends after 1 second. No
   injected game, an error or no answer reads as stopped, with 0 inside; an error is logged.
+- A page that shows habbos asks `Habbos.AreOnline` once, through the router's `online`, about the habbos it shows: the
+  profile widget of a home, the staff page, the community page's random habbos, and a thread's post boxes with the
+  viewer for its preview; the board asks about the viewer alone. The call ends after 1 second. An error, or no
+  injected game, shows every habbo offline, and an error is logged.
+- A habbo in the hotel shows Holo's online picture, and one outside the offline picture. An archived author shows
+  offline and is left out of the question.
 
 # Mount and the middleware chain
 

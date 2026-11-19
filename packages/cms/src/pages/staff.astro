@@ -1,6 +1,7 @@
 ---
 import { Avatar, Card, GroupBadge } from "@project-reborn/components";
 import offline from "../assets/staff/habbo_offline.gif";
+import online from "../assets/staff/habbo_online_anim.gif";
 import Community from "../layouts/community.astro";
 
 const body = "[&_a]:text-orange-500 [&_a]:underline";
@@ -25,7 +26,7 @@ const body = "[&_a]:text-orange-500 [&_a]:underline";
                 gesture="sml"
                 alt="[[ .Name ]]"
               />
-              <b><a class="text-orange-500 underline" href="/home?name=[[ .Name ]]">[[ .Name ]]</a></b>&nbsp;<img class="inline" src={offline.src} width={offline.width} height={offline.height} title="Offline" alt="Offline" /><br />
+              <b><a class="text-orange-500 underline" href="/home?name=[[ .Name ]]">[[ .Name ]]</a></b>&nbsp;[[ if .Online ]]<img class="inline" src={online.src} width={online.width} height={online.height} title="Online now!" alt="Online now!" />[[ else ]]<img class="inline" src={offline.src} width={offline.width} height={offline.height} title="Offline" alt="Offline" />[[ end ]]<br />
               <i>[[ .Motto ]]</i><br />
               <br />
               Rank: [[ .Rank ]]<br />
