@@ -2,12 +2,14 @@ package router
 
 import (
 	"context"
+	"fmt"
 	"maps"
 	"net/http"
 	"net/url"
 	"slices"
 	"strconv"
 	"strings"
+	"time"
 	"unicode/utf8"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
@@ -27,7 +29,20 @@ type settingsPage struct {
 	Section section
 	Message string
 	Error   string
+	// Hotel says whether the game runs, on the form of the hotel's switch alone.
+	Hotel string
 }
+
+// hotelSection is the form of the hotel's switch.
+const hotelSection = "hotel"
+
+// switches close the game's doors while either is on. The game reads them when
+// it starts.
+var switches = []string{"site.maintenance", "game.closed"}
+
+// switchTimeout is how long the game has to start or stop. A stop holds the
+// players' connections for 5 seconds.
+const switchTimeout = 15 * time.Second
 
 // HandleSettingsView renders GET /housekeeping/settings. An unknown section shows
 // the first form, as Holo's content tool fell back to its first category.
@@ -41,7 +56,7 @@ func (r *Router) HandleSettingsView(w http.ResponseWriter, req *http.Request) {
 	if !ok {
 		current = sections[0]
 	}
-	page := settingsPage{chrome: r.chrome(req), Section: current}
+	page := settingsPage{chrome: r.chrome(req), Section: current, Hotel: r.hotelLine(req.Context(), current)}
 	if req.URL.Query().Has("saved") {
 		page.Message = settingsSaved
 	}
@@ -80,6 +95,7 @@ func (r *Router) HandleSettingsSave(w http.ResponseWriter, req *http.Request) {
 			chrome:  r.chrome(req),
 			Section: withTyped(current, req.PostForm),
 			Error:   problem,
+			Hotel:   r.hotelLine(ctx, current),
 		})
 		return
 	}
@@ -100,10 +116,61 @@ func (r *Router) HandleSettingsSave(w http.ResponseWriter, req *http.Request) {
 			r.fail(w, err)
 			return
 		}
+		r.followSwitches(ctx, changes)
 	}
 
 	query := url.Values{"section": {current.ID}, "saved": {"1"}}
 	http.Redirect(w, req, "/housekeeping/settings?"+query.Encode(), http.StatusSeeOther)
+}
+
+// hotelLine says whether the game runs and how many habbos are inside, on the
+// form of the hotel's switch. Other forms get no line.
+func (r *Router) hotelLine(ctx context.Context, s section) string {
+	if s.ID != hotelSection {
+		return ""
+	}
+	status, ok := r.hotelStatus(ctx)
+	switch {
+	case !ok:
+		return "The game server gives no answer."
+	case !status.Running:
+		return "The game server is stopped."
+	case status.Online == 1:
+		return "The game server is running, with 1 habbo inside."
+	default:
+		return fmt.Sprintf("The game server is running, with %d habbos inside.", status.Online)
+	}
+}
+
+// followSwitches stops the game when a saved change closed one of the switches,
+// and starts it when one opened. The game keeps its doors closed while either
+// switch is still on. The call has a context of its own, so an abandoned request
+// still reaches the game. A failure is logged and the save stands: the game
+// reads the switches when it next starts.
+func (r *Router) followSwitches(ctx context.Context, changes map[string]any) {
+	if r.deps.Hotel == nil {
+		return
+	}
+	var closed, opened bool
+	for _, key := range switches {
+		if on, ok := changes[key].(bool); ok {
+			closed, opened = closed || on, opened || !on
+		}
+	}
+	if !closed && !opened {
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), switchTimeout)
+	defer cancel()
+	if closed {
+		if err := r.deps.Hotel.Stop(ctx); err != nil {
+			logError("housekeeping: hotel stop", err)
+		}
+		return
+	}
+	if err := r.deps.Hotel.Start(ctx); err != nil {
+		logError("housekeeping: hotel start", err)
+	}
 }
 
 // readChanges turns the posted fields of s into typed values, keeping those that
@@ -275,6 +342,12 @@ var forms = []section{
 		},
 	},
 	{
+		ID: hotelSection, Menu: "Turn your hotel on/off", Title: "Turn your hotel on/off", Button: "Apply",
+		Fields: []field{
+			{Key: "game.closed", Label: "Close Hotel", Help: "If enabled, the game keeps its doors closed, also after a restart.", OnLabel: "Hotel Closed", OffLabel: "Hotel Open"},
+		},
+	},
+	{
 		ID: "auth", Menu: "Sign-in and Sessions", Title: "Sign-in and Sessions", Button: defaultButton,
 		Fields: []field{
 			{Key: "auth.secureCookies", Label: "Secure Cookies", Help: "This sends the session cookie over HTTPS only. Disable it only for a hotel without HTTPS."},
@@ -360,7 +433,6 @@ var forms = []section{
 	{
 		ID: "game", Menu: "Game", Title: "Game", Button: defaultButton,
 		Fields: []field{
-			{Key: "game.closed", Label: "Close Hotel", Help: "If enabled, the game keeps its doors closed, also after a restart.", OnLabel: "Hotel Closed", OffLabel: "Hotel Open"},
 			{Key: "game.clientVersion", Label: "Client Version", Help: "The version the game client must send, the client.version.id of its external variables."},
 			{Key: "game.coppa", Label: "COPPA", Help: "0 off, 1 on, 2 strong."},
 			{Key: "game.vouchers", Label: "Vouchers", Help: "This tells the game client that vouchers can be redeemed."},

@@ -3,6 +3,10 @@ import { readFileSync } from "node:fs";
 export const emptyFolder = true;
 export const programs = [];
 
+// The walk runs no game server, so housekeeping's dashboard finds none and says
+// so (the hotel status).
+export const logs = [/^housekeeping: \S+ \S+ ERROR housekeeping: hotel status err=.*connection refused"$/];
+
 // The walk across the three programs: the installer's forms, the session reaching
 // housekeeping on its own port, and settings saved there reaching the CMS.
 export default async function ({

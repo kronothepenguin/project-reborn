@@ -1,7 +1,7 @@
 ---
 type: Reference
 title: The settings forms
-description: How GET /settings and POST /settings/{section} lay the declared settings out as forms and save a section all or nothing.
+description: How GET /settings and POST /settings/{section} lay the declared settings out as forms, save a section all or nothing, and start or stop the game after a switch.
 ---
 
 # The forms
@@ -25,3 +25,15 @@ description: How GET /settings and POST /settings/{section} lay the declared set
   the first until the second is written. A round that writes nothing is a real failure.
 - One staff log row lists the changed keys ([the staff log](/staff-log.md)).
 - A save redirects to `?section=…&saved=1`, so a reload shows the message without posting again.
+
+# The game's switches
+
+- `site.maintenance` (Turn your site on/off) and `game.closed` (Turn your hotel on/off) close the game's doors while
+  either is on. The game reads both when it starts.
+- A save that turned one on calls `Hotel.Stop`; a save that turned one off calls `Hotel.Start`, and the game keeps its
+  doors closed while the other is still on. The call runs after the commit, with a context of its own of 15 seconds,
+  because a stop holds the players' connections for 5. A failure is logged and the save stands.
+- The form of the hotel's switch says whether the game runs and how many habbos are inside, or "The game server gives
+  no answer." when `Hotel.Status` fails, takes over a second, or no game is injected.
+- The dashboard asks `Hotel.Status` too, with the same second, and shows the habbos online beside Members, 0 while the
+  game gives no answer.
