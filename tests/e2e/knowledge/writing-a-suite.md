@@ -38,3 +38,11 @@ The default export takes the run's helpers:
 - `emptyFolder`: `true` to start with no hotel at all.
 - `logs`: the regular expressions of the log lines a program writes by design in this suite, matched against
   `<program>: <line>`. Each names the decision that makes the program log it.
+
+# Shared helpers
+
+- `lib/staff.mjs`: `seedStaff(sql)` adds the actors of the housekeeping suites, and `session(t, name)` opens a browser
+  context signed in on the CMS.
+- `lib/game.mjs`: `enter(page, base, ports.info)` brings the page's habbo into the hotel over a WebSocket, with the
+  client page's SSO ticket, as the client does. It returns `until(id)`, which waits for a message of the game, `closed`,
+  `closedAt` and `leave()`. The game logs the login, so the suite lists that line in `logs`.

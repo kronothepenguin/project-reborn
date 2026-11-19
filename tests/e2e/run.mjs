@@ -25,6 +25,7 @@ import * as groups from "./suites/groups.mjs";
 import * as habbos from "./suites/habbos.mjs";
 import * as help from "./suites/help.mjs";
 import * as homes from "./suites/homes.mjs";
+import * as hotelStatus from "./suites/hotel-status.mjs";
 import * as housekeepingAccess from "./suites/housekeeping-access.mjs";
 import * as housekeepingAdmin from "./suites/housekeeping-admin.mjs";
 import * as housekeepingImages from "./suites/housekeeping-images.mjs";
@@ -77,6 +78,7 @@ const suites = {
   economy,
   help,
   client,
+  "hotel-status": hotelStatus,
   updates,
   together,
 };
