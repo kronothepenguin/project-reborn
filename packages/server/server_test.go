@@ -51,6 +51,8 @@ func TestMain(m *testing.M) {
 		log.Fatal(err)
 	}
 	defer testDB.Close()
+	// Every stop holds each connection after its notice; a short hold keeps the tests within their deadlines.
+	noticeHold = 300 * time.Millisecond
 	s := New(testDB, WithAPI())
 	testServer = s
 	if err := s.Start(context.Background()); err != nil {

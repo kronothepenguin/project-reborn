@@ -24,6 +24,10 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/virtual/habbo"
 )
 
+// noticeHold is how long each connection of info stays open after the notice of a hotel closed, so that the client,
+// which draws it only while its connection is open, shows it. The tests shorten it.
+var noticeHold = 5 * time.Second
+
 type Server struct {
 	db      *sql.DB
 	updates *store.UpdateCheck
@@ -148,7 +152,7 @@ func (c *Server) Start(ctx context.Context) error {
 	}
 	closing, closeSessions := context.WithCancel(context.Background())
 	d := &doors{closeSessions: closeSessions}
-	err = d.listen("info", cfg.Server.Info.Host, cfg.Server.Info.Port, func(conn transport.Conn) { r26.Serve(closing, c.db, c.updates, conn) })
+	err = d.listen("info", cfg.Server.Info.Host, cfg.Server.Info.Port, func(conn transport.Conn) { r26.Serve(closing, noticeHold, c.db, c.updates, conn) })
 	if err == nil {
 		err = d.listen("mus", cfg.Server.MUS.Host, cfg.Server.MUS.Port, func(conn transport.Conn) { serveMus(closing, conn) })
 	}
@@ -161,8 +165,10 @@ func (c *Server) Start(ctx context.Context) error {
 }
 
 // Stop closes the doors: the listeners close, each client of the info connection sees the client's notice of a hotel
-// closed, its habbo is logged out with its last time online saved, and every connection closes. Stop waits for the
-// sessions to end until ctx ends, and then returns ctx's cause. With the doors closed already, Stop does nothing.
+// closed, and its habbo is logged out at once with its last time online saved. Each info connection closes 5 seconds
+// after its notice, all of them together, and each mus connection at once, so Stop takes about 5 seconds while anybody
+// is connected. Stop waits for the sessions to end until ctx ends, and then returns ctx's cause. With the doors closed
+// already, Stop does nothing.
 func (c *Server) Stop(ctx context.Context) error {
 	c.mu.Lock()
 	d := c.doors

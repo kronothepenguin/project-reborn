@@ -8,4 +8,3 @@
 - [Add the Online Users page to housekeeping](05-online-users.md) - Housekeeping lists every habbo in the hotel now on Holo's Online Users page.
 - [Prove the hotel status in a browser suite](06-browser-suite.md) - The suite hotel-status proves, across the site, housekeeping and the game, that stopping the game in housekeeping shows on the site and that starting it brings Enter back.
 - [Demonstrate the hotel status on a real hotel](07-exit-check.md) - The whole feature runs on a real hotel under reborn and with the programs apart, with screenshots, and the documents say what is built.
-- [Hold each connection five seconds after the closing notice](08-hold-the-notice.md) - When the game stops, each connection stays open for 5 seconds after message 292 so the client shows its notice, and every caller of Stop waits long enough.

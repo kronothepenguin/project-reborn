@@ -14,6 +14,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -65,17 +66,27 @@ func sharing(cast map[int]handler) map[int]handler {
 // body, and the session goes on. Serve returns when the client leaves or sends bytes that are not a packet, and the
 // transport then closes the connection. The habbo the session logged in, if any, is logged out first. updates tells
 // the login, the navigator and the catalogue whether what every player shares may load (game.LoadShared). When closing
-// ends, the hotel closes: the client gets the notice of a hotel closed with a disconnect, and the session ends.
-func Serve(closing context.Context, db *sql.DB, updates *store.UpdateCheck, c transport.Conn) {
-	serve(closing, db, updates, c, handlers)
+// ends, the hotel closes: the client gets the notice of a hotel closed with a disconnect, its habbo is logged out at
+// once, and the session handles nothing more and ends hold later, so that the client shows the notice, which it draws
+// only while its connection is open.
+func Serve(closing context.Context, hold time.Duration, db *sql.DB, updates *store.UpdateCheck, c transport.Conn) {
+	serve(closing, hold, db, updates, c, handlers)
 }
 
 // session is one client of the info connection. Its handlers run one after another in the session's goroutine, so
 // only ended, lastPong and the outbox are shared: Notify runs in the goroutine of the session that sends the event.
+// The closing of the hotel runs in a goroutine of its own, and takes mu, as each handler does.
 type session struct {
-	conn transport.Conn
-	addr string
-	db   *sql.DB
+	// mu is held by each handler and by the closing of the hotel, so that they never run at once. It guards closing
+	// and loggedOut.
+	mu sync.Mutex
+	// closing is set once the hotel closes, after which the session handles no packet.
+	closing bool
+	// loggedOut is set once the habbo of the session is logged out.
+	loggedOut bool
+	conn      transport.Conn
+	addr      string
+	db        *sql.DB
 	// updates tells whether the navigator and the catalogue may load.
 	updates *store.UpdateCheck
 	// checked is set once a VERSIONCHECK passes, and machineID by UNIQUEID, for the login.
@@ -95,7 +106,7 @@ type session struct {
 	lastPong atomic.Int64
 }
 
-func serve(closing context.Context, db *sql.DB, updates *store.UpdateCheck, c transport.Conn, handlers map[int]handler) {
+func serve(closing context.Context, hold time.Duration, db *sql.DB, updates *store.UpdateCheck, c transport.Conn, handlers map[int]handler) {
 	outbox := settings.Int(context.Background(), store.New(db), "game.outboxSize")
 	s := &session{conn: c, addr: c.RemoteAddr(), db: db, updates: updates, outbox: make(chan []byte, outbox)}
 	s.lastPong.Store(time.Now().UnixNano())
@@ -111,7 +122,7 @@ func serve(closing context.Context, db *sql.DB, updates *store.UpdateCheck, c tr
 		<-written
 		close(done)
 	}()
-	stop := context.AfterFunc(closing, s.closeHotel)
+	stop := context.AfterFunc(closing, func() { s.closeHotel(hold) })
 	defer stop()
 	s.reply(hello, nil)
 	r := bufio.NewReader(c)
@@ -133,8 +144,17 @@ func serve(closing context.Context, db *sql.DB, updates *store.UpdateCheck, c tr
 			s.closed(err)
 			return
 		}
-		if h, ok := handlers[id]; ok {
+		s.mu.Lock()
+		if s.closing {
+			s.mu.Unlock()
+			continue
+		}
+		h, ok := handlers[id]
+		if ok {
 			h(s, body)
+		}
+		s.mu.Unlock()
+		if ok {
 			// A handler that closed the session leaves the commands the client sent in the same frame unread.
 			if s.ended.Load() {
 				return
@@ -199,10 +219,16 @@ func (s *session) end() {
 	}
 }
 
-// closeHotel shows the client that the hotel closed, with a disconnect, and ends the session: the client keeps the
-// notice in place of its disconnect window.
-func (s *session) closeHotel() {
+// closeHotel shows the client that the hotel closed, with a disconnect, logs its habbo out at once, and ends the
+// session hold later. The client draws the notice only while its connection is open, and leaves for its disconnect
+// window once it closes. Meanwhile the session handles no packet.
+func (s *session) closeHotel(hold time.Duration) {
+	s.mu.Lock()
+	s.closing = true
 	s.reply(infoHotelClosed, slices.Concat(vl64(openingHour), vl64(openingMinute), vl64(1)))
+	s.logoutLocked()
+	s.mu.Unlock()
+	time.Sleep(hold)
 	s.end()
 }
 
@@ -362,9 +388,17 @@ func (s *session) loadShared() bool {
 }
 
 func (s *session) logout() {
-	if s.habbo == 0 {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.logoutLocked()
+}
+
+// logoutLocked logs the habbo of the session out, once. s.mu is held.
+func (s *session) logoutLocked() {
+	if s.habbo == 0 || s.loggedOut {
 		return
 	}
+	s.loggedOut = true
 	if err := game.Logout(context.Background(), s.db, s, s.habbo); err != nil {
 		slog.Error(fmt.Sprintf("r26 %s: %v", s.addr, err))
 	}
