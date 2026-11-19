@@ -44,12 +44,12 @@ const { title, tab, sub } = Astro.props;
             <UserMenu />
           </div>
           <div class="flex items-start justify-between px-3 pt-2.5">
-            <EnterHotel />
+            [[ if .Online ]]<EnterHotel />[[ else ]]<HotelStatus />[[ end ]]
             <HabboSearch />
           </div>
           [[ else ]]
           <div class="px-3 pt-5">
-            <HotelStatus />
+            [[ if .Online ]]<EnterHotel />[[ else ]]<HotelStatus />[[ end ]]
           </div>
           <MiniLogin />
           [[ end ]]

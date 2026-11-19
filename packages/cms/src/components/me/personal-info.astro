@@ -3,6 +3,7 @@ import { Avatar } from "@project-reborn/components";
 import bigIcons from "../../assets/me/big_icons.png";
 import closeMessage from "../../assets/me/close_msg.png";
 import enterButton from "../../assets/me/enter_button.png";
+import flashyArrow from "../../assets/me/flashy_arrow.gif";
 import hotelView from "../../assets/me/hotel-view.png";
 import infoIcons from "../../assets/me/info_icons.png";
 import orangeThing from "../../assets/me/orange_thing.png";
@@ -26,6 +27,23 @@ const feedItem = "min-h-7 border-t border-dotted border-olive-500 py-[7px] pr-[5
       class="absolute top-[15px] right-10 py-7"
       style={`background: url(${orangeThing.src}) no-repeat 50% 0`}
     >
+      [[ if .Online ]]
+      <div class="group/enter flex">
+        <a
+          href="/client"
+          target="client"
+          class="relative h-[49px] bg-no-repeat pr-[26px] pl-[19px] text-center text-sm leading-[47px] text-white no-underline [background-position:-9px_0] group-hover/enter:[background-position:-9px_-49px]"
+          style={`background-image: url(${enterButton.src})`}
+        >
+          Enter [[ .ShortName ]]<i
+            class="absolute top-[13px] right-0 h-px bg-no-repeat p-2.5 text-[1px] leading-px [background-position:0_50%]"
+            style={`background-image: url(${flashyArrow.src})`}></i>
+        </a>
+        <b
+          class="h-[49px] w-[9px] bg-no-repeat [background-position:0_0] group-hover/enter:[background-position:0_-49px]"
+          style={`background-image: url(${enterButton.src})`}></b>
+      </div>
+      [[ else ]]
       <div class="flex">
         <span
           class="h-[49px] pr-2.5 pl-[19px] text-center text-sm leading-[47px] text-white"
@@ -37,6 +55,7 @@ const feedItem = "min-h-7 border-t border-dotted border-olive-500 py-[7px] pr-[5
           class="h-[49px] w-[9px]"
           style={sprite(enterButton, "0 -98px")}></b>
       </div>
+      [[ end ]]
     </div>
   </div>
 

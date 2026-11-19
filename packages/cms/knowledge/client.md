@@ -17,6 +17,10 @@ description: How the CMS serves Holo's client.php, clientutils.php and unloadcli
 
 - A guest who opens `/client` goes to `/client/utils?key=LogInPlease`. `/client/utils` shows a guest the sign-in page
   whatever the key.
+- A habbo who opens `/client` while the game is stopped goes to `/me`, with no ticket made.
+- The client's disconnect error, `/client/utils?key=error&error=disconnect`, shows the page `closed` while the game is
+  stopped: the same orange card, with `Hotel Closed` and `<site name> is closed at the moment. Please come back
+  later.` While the game runs it shows the fatal error page.
 - A habbo gets `true` for the keys `cacheCheck` and `cache`, Holo's pages for `connection_failed` and `error`, and an
   empty answer for any other key.
 - `/client/unload` answers a habbo with nothing and sends a guest to `/`. The page calls it with `sendBeacon` as it
@@ -43,9 +47,11 @@ description: How the CMS serves Holo's client.php, clientutils.php and unloadcli
 
 # Enter
 
-- The community layout's header gives a signed-in habbo Holo's `Enter <site name>`
-  (`header/enter-hotel.astro`), a link to `/client` aimed at the window named `client`. A guest's header keeps
-  `<site name> is offline`.
+- The community layout's header shows Holo's `Enter <site name>` (`header/enter-hotel.astro`) while the game runs, a
+  link to `/client` aimed at the window named `client`, and `<site name> is offline` (`header/hotel-status.astro`)
+  while it is stopped, for guests and habbos alike. A guest's Enter leads through the client page's "please sign in".
+- The Me page shows Holo's Enter button, `Enter <short name>`, while the game runs, and `Hotel Closed` while it is
+  stopped.
 - The island `client/open-client` holds Holo's `openOrFocusHabbo`: a click on a link aimed at `client` opens that
   window with Holo's features, 980 by 597, or 740 by 597 with `wide=false` on a screen narrower than 990 pixels. A
   window that already shows `/client` comes forward without loading again.

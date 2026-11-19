@@ -11,6 +11,7 @@ import (
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/config"
+	"github.com/kronothepenguin/project-reborn/packages/services"
 	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
@@ -31,6 +32,13 @@ const (
 	clientForward = "{Name:sw9 Value:forward.id="
 )
 
+// newClientSite mounts a CMS like newSite, with a running game, which the client
+// page needs.
+func newClientSite(t *testing.T) (*sql.DB, *http.ServeMux) {
+	t.Helper()
+	return newHotelSite(t, running(0))
+}
+
 func clientSetting(t *testing.T, db *sql.DB, key string, value bool) {
 	t.Helper()
 	if err := settings.Set(t.Context(), store.New(db), 0, key, value); err != nil {
@@ -50,7 +58,7 @@ func ssoTicket(t *testing.T, db *sql.DB, name string) string {
 }
 
 func TestASignedInHabboGetsTheClientWithItsTicketAndTheGamesAddresses(t *testing.T) {
-	db, mux := newSite(t)
+	db, mux := newClientSite(t)
 	habbo(t, db, "dora@example.com", "Dora")
 	cookie := login(t, db, "Dora")
 
@@ -64,7 +72,7 @@ func TestASignedInHabboGetsTheClientWithItsTicketAndTheGamesAddresses(t *testing
 }
 
 func TestAGuestIsAskedToSignInBeforeTheClient(t *testing.T) {
-	_, mux := newSite(t)
+	_, mux := newClientSite(t)
 
 	wantRedirect(t, serve(mux, "GET", "/client", nil, nil), "/client/utils?key=LogInPlease")
 	for _, key := range []string{"LogInPlease", "error", "connection_failed", "cacheCheck"} {
@@ -73,7 +81,7 @@ func TestAGuestIsAskedToSignInBeforeTheClient(t *testing.T) {
 }
 
 func TestTheClientIsWideByTheSettingOrTheAddress(t *testing.T) {
-	db, mux := newSite(t)
+	db, mux := newClientSite(t)
 	habbo(t, db, "dora@example.com", "Dora")
 	cookie := login(t, db, "Dora")
 
@@ -88,7 +96,7 @@ func TestTheClientIsWideByTheSettingOrTheAddress(t *testing.T) {
 }
 
 func TestTheLoaderShowsWhileItsSettingIsOn(t *testing.T) {
-	db, mux := newSite(t)
+	db, mux := newClientSite(t)
 	habbo(t, db, "dora@example.com", "Dora")
 	cookie := login(t, db, "Dora")
 
@@ -99,7 +107,7 @@ func TestTheLoaderShowsWhileItsSettingIsOn(t *testing.T) {
 }
 
 func TestTheClientOpensInARoomThatExists(t *testing.T) {
-	db, mux := newSite(t)
+	db, mux := newClientSite(t)
 	habbo(t, db, "dora@example.com", "Dora")
 	cookie := login(t, db, "Dora")
 	room, err := store.New(db).CreateRoom(t.Context(), store.CreateRoomParams{AvatarID: avatarID(t, db, "Dora"), RoomCategoryID: 2, RoomModelID: 1, Name: "Den", Door: "open", CreatedAt: testNow})
@@ -120,7 +128,7 @@ func TestTheClientOpensInARoomThatExists(t *testing.T) {
 }
 
 func TestTheClientLoadsFromTheAddressTheBrowserUsed(t *testing.T) {
-	db, mux := newSite(t)
+	db, mux := newClientSite(t)
 	habbo(t, db, "dora@example.com", "Dora")
 	cookie := login(t, db, "Dora")
 	r := httptest.NewRequest("GET", "/client", nil)
@@ -142,7 +150,7 @@ func TestTheClientLoadsFromTheAddressATrustedProxyForwards(t *testing.T) {
 	cfg := config.Get()
 	cfg.Proxy.Enabled = true
 	t.Cleanup(func() { cfg.Proxy.Enabled = false })
-	db, mux := newSite(t)
+	db, mux := newClientSite(t)
 	habbo(t, db, "dora@example.com", "Dora")
 	cookie := login(t, db, "Dora")
 	r := httptest.NewRequest("GET", "/client", nil)
@@ -163,7 +171,7 @@ func TestTheClientLoadsFromTheAddressATrustedProxyForwards(t *testing.T) {
 }
 
 func TestAFailedConnectionNamesTheGamesAddressAndPort(t *testing.T) {
-	db, mux := newSite(t)
+	db, mux := newClientSite(t)
 	habbo(t, db, "dora@example.com", "Dora")
 
 	rec := serve(mux, "GET", "/client/utils?key=connection_failed", login(t, db, "Dora"), nil)
@@ -172,14 +180,14 @@ func TestAFailedConnectionNamesTheGamesAddressAndPort(t *testing.T) {
 }
 
 func TestAFatalErrorShowsHolosPage(t *testing.T) {
-	db, mux := newSite(t)
+	db, mux := newClientSite(t)
 	habbo(t, db, "dora@example.com", "Dora")
 
 	wantPage(t, serve(mux, "GET", "/client/utils?key=error", login(t, db, "Dora"), nil), http.StatusOK, "client/utils.html {Key:error ")
 }
 
 func TestTheClientsReloadGivesAFreshTicket(t *testing.T) {
-	db, mux := newSite(t)
+	db, mux := newClientSite(t)
 	habbo(t, db, "dora@example.com", "Dora")
 	cookie := login(t, db, "Dora")
 	first := ssoTicket(t, db, "Dora")
@@ -199,7 +207,7 @@ func TestTheClientsReloadGivesAFreshTicket(t *testing.T) {
 
 // What clientutils.php answered the client's other keys, and unloadclient.php.
 func TestTheClientsOtherCallsAnswerAsHolos(t *testing.T) {
-	db, mux := newSite(t)
+	db, mux := newClientSite(t)
 	habbo(t, db, "dora@example.com", "Dora")
 	cookie := login(t, db, "Dora")
 
@@ -238,8 +246,9 @@ func TestTheClientPageNamesLibreShockwaveAndLinksToItsSource(t *testing.T) {
 	}
 }
 
-// newBuiltSite mounts a CMS with the built pages on a new database.
-func newBuiltSite(t *testing.T) (*sql.DB, *http.ServeMux) {
+// newBuiltSite mounts a CMS with the built pages on a new database, with h
+// injected as the game.
+func newBuiltSite(t *testing.T, h services.Hotel) (*sql.DB, *http.ServeMux) {
 	t.Helper()
 	dist, err := fs.Sub(DistFS, "dist")
 	if err != nil {
@@ -247,22 +256,8 @@ func newBuiltSite(t *testing.T) (*sql.DB, *http.ServeMux) {
 	}
 	db := openDB(t)
 	mux := http.NewServeMux()
-	New(db, WithResolver(astro.MakeFSResolver(dist)), WithStatic(http.FileServerFS(dist))).Mount(mux)
+	site := New(db, WithResolver(astro.MakeFSResolver(dist)), WithStatic(http.FileServerFS(dist)))
+	site.Inject(Services{Hotel: h})
+	site.Mount(mux)
 	return db, mux
-}
-
-// Holo's header: a signed-in habbo gets "Enter <site name>", which opens the
-// client page in the window named client; a guest's header has no Enter.
-func TestTheHeaderOffersASignedInHabboToEnterTheHotel(t *testing.T) {
-	db, mux := newBuiltSite(t)
-	habbo(t, db, "dora@example.com", "Dora")
-	cookie := login(t, db, "Dora")
-	enter := `id="enter-hotel-open-medium-link" href="/client" target="client"><span>Enter Reborn Hotel`
-
-	for _, path := range []string{"/me", "/community", "/account/looks"} {
-		wantPage(t, serve(mux, "GET", path, cookie, nil), http.StatusOK, enter)
-	}
-	if rec := serve(mux, "GET", "/community", nil, nil); strings.Contains(rec.Body.String(), "enter-hotel-open-medium-link") {
-		t.Errorf("a guest's header offers Enter: %s", rec.Body)
-	}
 }

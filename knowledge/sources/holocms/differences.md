@@ -70,11 +70,12 @@ HK-A, HK-B, P3, P4 and P6.
 | Register, landing | Flash, with a list of 6 avatars and `Show more Habbos` when it is missing | The HTML5 ports, and no list | [0021](/decisions/holo-port/0021-dropped-and-kept-features.md) |
 | Landing | `Install Flash Player 8 or higher` | Gone with Flash; `Enable JavaScript` stays | [0021](/decisions/holo-port/0021-dropped-and-kept-features.md) |
 | Landing | Promo feed with name, motto, profile link, badge, online state and group badge | `image`, `figure` and `gender`, the attributes the HTML5 widget reads | [0021](/decisions/holo-port/0021-dropped-and-kept-features.md) |
-| Every page | Real online count | `0` and the offline picture | [0013](/decisions/holo-port/0013-defer-game-server-features.md) |
+| Every page | The online count the emulator wrote in `system` | The game's count; `0` and the offline picture while the game is stopped or gives no answer within a second | [Hotel status](/features/hotel-status/plan.md) |
 | Every page | `Powered by HoloCMS © 2008 Meth0d.` | `Powered by Project Reborn ©` | [0048](/decisions/holo-port/0048-footer-names-reborn.md) |
 | After registering | `welcome.php` picks a first room | Goes to `/me` | [0013](/decisions/holo-port/0013-defer-game-server-features.md) |
-| Header | `Enter <site>` for guests, and `<site> is offline` for a habbo while the status image finds the game down | `<site> is offline` for guests, and `Enter <site>` for a habbo | [0013](/decisions/holo-port/0013-defer-game-server-features.md) |
-| Me | `Enter <site>` | `Hotel Closed` | [0013](/decisions/holo-port/0013-defer-game-server-features.md) |
+| Header | `Enter <site>` for guests always, and `<site> is offline` for a habbo while the status image finds the game down | `Enter <site>` while the game runs and `<site> is offline` while it is stopped, for guests and habbos alike | [Hotel status](/features/hotel-status/plan.md) |
+| Client | `<site> is offline` on the client page while the status image finds the game down | The client page sends a habbo to `/me` while the game is stopped | [Hotel status](/features/hotel-status/plan.md) |
+| Client | A lost connection lands on the fatal error page | `Hotel Closed` with the site's name while the game is stopped | [Hotel status](/features/hotel-status/plan.md) |
 | Header | One habbo per account | `Switch habbo` with several, and `/account/habbos` | [0001](/decisions/holo-port/0001-user-owns-many-habbos.md) |
 | Account settings | No page for furniture | `Furni`, after `Habbos`: the furniture of the user that no habbo holds, with `Take` for a kind and `Take all`, which move it to the active habbo's hand | [0057](/decisions/holo-port/0057-furni-and-rooms.md), `knowledge/decisions/server/0122-the-shared-inventory-is-an-account-page.md` |
 | Several habbos | One habbo per account, which is never archived | Archiving a habbo sends the furniture of its hand and of its recycler to the shared inventory and gives its rooms to the active habbo | [0057](/decisions/holo-port/0057-furni-and-rooms.md), `knowledge/decisions/server/0124-an-archived-habbos-rooms-move-to-the-active-habbo.md` |

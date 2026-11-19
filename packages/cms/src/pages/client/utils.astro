@@ -3,7 +3,9 @@ import { Card } from "@project-reborn/components";
 import Document from "../../layouts/document.astro";
 
 // clientutils.php's three pages, in templates/client/subheader.php's popup:
-// the connection failed, a fatal error, and the sign-in a guest needs first.
+// the connection failed, a fatal error, and the sign-in a guest needs first;
+// and Hotel Closed, for a client that lost its connection while the game is
+// stopped.
 ---
 
 <Document
@@ -21,6 +23,11 @@ import Document from "../../layouts/document.astro";
           connections via a firewall. Please verify with the person responsible for your Internet connection that the
           following addresses are permitted by the firewall: IP address: [[ .Host ]], TCP port: [[ .Port ]]
         </p>
+      </Card>
+      [[ else if eq .Key "closed" ]]
+      <Card color="orange">
+        <h2 slot="header">Hotel Closed</h2>
+        <p>[[ .Name ]] is closed at the moment. Please come back later.</p>
       </Card>
       [[ else if eq .Key "error" ]]
       <Card color="orange">
