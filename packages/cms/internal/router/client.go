@@ -35,7 +35,7 @@ type clientPage struct {
 }
 
 // HandleClientView renders GET /client, client.php. A guest goes to Holo's
-// "please sign in" page. The address's wide=true makes the client wide, and any
+// "please sign in" page, and a habbo goes back to /me while the game is stopped. The address's wide=true makes the client wide, and any
 // other wide makes it narrow; without one the wide-screen setting decides. A
 // roomId with forwardId=2 opens the client in that room when it exists, with
 // forward.type=2, a habbo's room, which the client needs and Holo never sent.
@@ -44,6 +44,11 @@ func (r *Router) HandleClientView(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	if _, ok := auth.FromContext(ctx); !ok {
 		http.Redirect(w, req, "/client/utils?key=LogInPlease", http.StatusSeeOther)
+		return
+	}
+	game := r.gameStatus(ctx)
+	if !game.Running {
+		http.Redirect(w, req, "/me", http.StatusSeeOther)
 		return
 	}
 	q := r.deps.Queries
@@ -102,7 +107,7 @@ func (r *Router) HandleClientView(w http.ResponseWriter, req *http.Request) {
 	astro.WriteTemplate(w, r.deps.Resolver, "client.html", clientPage{
 		Name:        settings.String(ctx, q, "site.name"),
 		ShortName:   settings.String(ctx, q, "site.shortName"),
-		OnlineCount: r.hotelStatus(ctx).OnlineCount,
+		OnlineCount: game.Online,
 		WideBody:    wideSetting,
 		Width:       width,
 		Height:      540,

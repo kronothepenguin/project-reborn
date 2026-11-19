@@ -1,7 +1,17 @@
 ---
 import { Link } from "@project-reborn/components";
+import hotelOpen from "../../assets/community/hotel-open.png";
+
+// Holo's Enter, which the header shows while the game runs. A guest's click
+// leads through the client page's "please sign in".
 ---
 
-<p>
+<p class="flex items-center gap-2">
   <Link id="enter-hotel-open-medium-link" href="/client" target="client">Enter [[ .Name ]]</Link>
+  <img
+    src={hotelOpen.src}
+    width={hotelOpen.width}
+    height={hotelOpen.height}
+    alt=""
+  />
 </p>

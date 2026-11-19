@@ -2,6 +2,5 @@
 
 # Tasks
 
-- [Show the hotel status on the site](02-the-site-shows-the-status.md) - Every page of the site shows the count of habbos online and Enter or offline from the game status, the Me page shows Enter or Hotel Closed, and the client page sends a habbo back while the game is stopped.
 - [Prove the hotel status in a browser suite](06-browser-suite.md) - The suite hotel-status proves, across the site, housekeeping and the game, that stopping the game in housekeeping shows on the site and that starting it brings Enter back.
 - [Demonstrate the hotel status on a real hotel](07-exit-check.md) - The whole feature runs on a real hotel under reborn and with the programs apart, with screenshots, and the documents say what is built.

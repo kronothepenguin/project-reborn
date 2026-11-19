@@ -35,7 +35,10 @@ export default async function ({ base, browser, check, shot, sql }) {
     (await page.title()) === "Reborn ~ Admin-1",
     await page.title(),
   );
-  check("hotel closed", await page.getByText("Hotel Closed").isVisible());
+  check(
+    "the running hotel offers Enter",
+    await page.getByRole("link", { name: "Enter Reborn", exact: true }).isVisible(),
+  );
   check("club offer", await page.getByText("Join Reborn club »").isVisible());
   check(
     "staff message",

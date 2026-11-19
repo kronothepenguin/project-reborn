@@ -40,8 +40,8 @@ func New(deps Deps) *Router {
 	return &Router{deps: deps}
 }
 
-// hotelStatus holds what the signed-out layout reads. The hotel stays offline
-// until the game server exists.
+// hotelStatus holds what every layout reads: the site's names, the game's status
+// and the count of habbos in the hotel, which is 0 while the game is stopped.
 type hotelStatus struct {
 	Name            string
 	ShortName       string
@@ -57,13 +57,39 @@ func (r *Router) hotelStatus(ctx context.Context) hotelStatus {
 	if err != nil {
 		logError("cms: count habbos", err)
 	}
+	game := r.gameStatus(ctx)
 	return hotelStatus{
 		Name:            settings.String(ctx, r.deps.Queries, "site.name"),
+		Online:          game.Running,
+		OnlineCount:     game.Online,
 		ShortName:       settings.String(ctx, r.deps.Queries, "site.shortName"),
 		RegisteredUsers: registered,
 		Staff:           r.holds(ctx, auth.HousekeepingAccess),
 		HousekeepingURL: settings.String(ctx, r.deps.Queries, "site.housekeepingUrl"),
 	}
+}
+
+// statusTimeout is how long the game has to tell its status.
+const statusTimeout = time.Second
+
+// gameStatus asks the game whether its doors are open and how many habbos are
+// inside, once per request. No injected game, an error or no answer within
+// statusTimeout reads as stopped, with nobody inside; an error is logged.
+func (r *Router) gameStatus(ctx context.Context) services.HotelStatus {
+	if r.deps.Hotel == nil {
+		return services.HotelStatus{}
+	}
+	ctx, cancel := context.WithTimeout(ctx, statusTimeout)
+	defer cancel()
+	status, err := r.deps.Hotel.Status(ctx)
+	if err != nil {
+		logError("cms: hotel status", err)
+		return services.HotelStatus{}
+	}
+	if !status.Running {
+		return services.HotelStatus{}
+	}
+	return status
 }
 
 // holds reports whether the visitor's user holds attribute.
