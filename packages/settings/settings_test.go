@@ -167,7 +167,7 @@ func TestABadRowReadsAsTheDefaultAndIsLoggedOnce(t *testing.T) {
 		"auth.sessionIdleMinutes": `1`,
 		"site.shortName":          `Retro`,
 		"site.maintenance":        `null`,
-		"mail.password":           `42`,
+		"mail.password":           `4242424242`,
 		"site.url":                `"https://hotel.example.com"`,
 	})
 
@@ -190,7 +190,7 @@ func TestABadRowReadsAsTheDefaultAndIsLoggedOnce(t *testing.T) {
 	if strings.Contains(warnings.String(), "key=site.url ") {
 		t.Errorf("the valid site.url row was logged:\n%s", warnings)
 	}
-	if strings.Contains(warnings.String(), "42") {
+	if strings.Contains(warnings.String(), "4242424242") {
 		t.Errorf("the log holds a row's value:\n%s", warnings)
 	}
 }
