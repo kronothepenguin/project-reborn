@@ -23,7 +23,7 @@ Planned:
 
 | Project | Part |
 | --- | --- |
-| `packages/cms`, `packages/housekeeping` | One log line when the game stops answering and one when it answers again |
+| `packages/cms`, `packages/housekeeping` | One log line when the game stops answering and one when it answers again; the 300 millisecond wait; every habbo offline while the game is silent; Holo's text on the client's closed page |
 
 The contract, as the user approved it:
 
@@ -120,3 +120,11 @@ All of 2026-11-18, each the user's choice among options put to them.
   it sends the game passes through that memory.
 - A forum post's preview shows the writer's real state (the user, 2026-11-20: "real state, online/offline based on
   habbo's state"), where Holo always drew the online picture.
+- The wait for the game is 300 milliseconds, in place of 1 second (the user, 2026-11-20: "i think we can have a lower
+  timeout, something like 300ms", and "if game down either because of timeout or game is actually down should show
+  habbos offline"). The exit check had found pages of 2 seconds with a frozen game: one second for the status, one for
+  the habbos. A router whose memory says the game is silent skips the question about the habbos; the status question
+  of every page finds the game again.
+- Texts follow Holo where Holo has one (the user, 2026-11-20: "keep the wording as holo"): the client's closed page
+  says "Hotel Closed", the Me page's text, and "<site name> is offline", the client page's text. Housekeeping's status
+  lines are ours and stay ("for our lines in housekeeping add or keep what you did").

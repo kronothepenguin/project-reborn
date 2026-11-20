@@ -47,8 +47,8 @@ It builds on [habbos](/features/habbos/spec.md), [the client](/features/client/s
   the header shows "<site name> is offline".
 - A habbo opens its Me page: the Enter button shows while the game runs, and "Hotel Closed" while it is stopped.
 - A habbo opens the client page while the game is stopped: it is sent to its Me page.
-- A habbo's client loses its connection while the game is stopped: its window shows "Hotel Closed" with the hotel's
-  name; while the game runs, it shows the error page as before.
+- A habbo's client loses its connection while the game is stopped: its window shows "Hotel Closed"; while the game
+  runs, it shows the error page as before.
 - A page shows a habbo that is in the hotel: the online picture shows beside it, on the profile widget, the community
   page, the staff page and the forum's posts; a habbo outside the hotel shows the offline picture.
 
@@ -70,3 +70,7 @@ It builds on [habbos](/features/habbos/spec.md), [the client](/features/client/s
 
 - A program asks the game and gets no answer, page after page: its log holds one line for the moment the answers
   stopped, and one for the moment they came back.
+- The game gives no answer within 300 milliseconds: the page reads it as stopped.
+- The game gave no answer: a page shows every habbo offline, and asks the game about them again once it answers.
+- A habbo's client loses its connection while the game is stopped: its window shows "Hotel Closed" and Holo's
+  "<site name> is offline".

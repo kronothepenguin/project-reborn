@@ -2,4 +2,4 @@
 
 # Tasks
 
-- [A silent game is logged once per change](09-one-log-line-per-change.md) - The site and housekeeping log one line when the game stops answering and one when it answers again, in place of one line per page.
+- [A silent game is logged once, waited for 300 ms and shows everyone offline](09-one-log-line-per-change.md) - The site and housekeeping log one line when the game stops answering and one when it answers again, wait 300 milliseconds for it, show every habbo offline while it is silent, and the client's closed page uses Holo's text.
