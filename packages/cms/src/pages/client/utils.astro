@@ -5,7 +5,7 @@ import Document from "../../layouts/document.astro";
 // clientutils.php's three pages, in templates/client/subheader.php's popup:
 // the connection failed, a fatal error, and the sign-in a guest needs first;
 // and Hotel Closed, for a client that lost its connection while the game is
-// stopped.
+// stopped, with the Me page's heading and client.php's "<site name> is offline".
 ---
 
 <Document
@@ -27,7 +27,7 @@ import Document from "../../layouts/document.astro";
       [[ else if eq .Key "closed" ]]
       <Card color="orange">
         <h2 slot="header">Hotel Closed</h2>
-        <p>[[ .Name ]] is closed at the moment. Please come back later.</p>
+        <p>[[ .Name ]] is offline</p>
       </Card>
       [[ else if eq .Key "error" ]]
       <Card color="orange">

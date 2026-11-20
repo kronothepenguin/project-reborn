@@ -14,6 +14,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/kronothepenguin/project-reborn/packages/services"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
@@ -244,4 +245,83 @@ func TestAGameWithoutAnAnswerShowsEveryHabboOffline(t *testing.T) {
 			}
 		})
 	}
+}
+
+// silentGame answers both the status and the habbos online, or fails both with
+// err, and records each question.
+type silentGame struct {
+	inside []int64
+	err    error
+
+	mu    sync.Mutex
+	asked []string
+}
+
+func (g *silentGame) record(question string) error {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	g.asked = append(g.asked, question)
+	return g.err
+}
+
+func (g *silentGame) questions() []string {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	return slices.Clone(g.asked)
+}
+
+func (g *silentGame) Status(context.Context) (services.HotelStatus, error) {
+	if err := g.record("status"); err != nil {
+		return services.HotelStatus{}, err
+	}
+	return services.HotelStatus{Running: true, Online: len(g.inside)}, nil
+}
+
+func (g *silentGame) Start(context.Context) error { return nil }
+func (g *silentGame) Stop(context.Context) error  { return nil }
+
+func (g *silentGame) SendLook(context.Context, int64) error { return nil }
+
+func (g *silentGame) AreOnline(_ context.Context, ids []int64) (map[int64]bool, error) {
+	if err := g.record("online"); err != nil {
+		return nil, err
+	}
+	online := map[int64]bool{}
+	for _, id := range ids {
+		online[id] = slices.Contains(g.inside, id)
+	}
+	return online, nil
+}
+
+func (g *silentGame) Online(context.Context) ([]int64, error) { return g.inside, nil }
+
+// The game gave no answer: a page shows every habbo offline and sends the game
+// one question, the status; once the game answers it, the page asks about the
+// habbos again.
+func TestASilentGameIsAskedOnlyForTheStatus(t *testing.T) {
+	g := &silentGame{err: errors.New("connection refused")}
+	db := openDB(t)
+	mux := http.NewServeMux()
+	static := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { io.WriteString(w, "static") })
+	site := New(db, WithResolver(printPage), WithStatic(static))
+	site.Inject(Services{Habbos: g, Hotel: g})
+	site.Mount(mux)
+	staff := habbo(t, db, "in@example.com", "Inside")
+	staffGroup(t, db, "Moderators", 5, staff)
+	g.inside = []int64{avatarID(t, db, "Inside")}
+	captureLog(t)
+
+	presencePage(t, mux, "/staff", nil)
+	before := len(g.questions())
+	body := presencePage(t, mux, "/staff", nil)
+	wantBoxOnline(t, body, "Inside", false)
+	if got := g.questions()[before:]; !slices.Equal(got, []string{"status"}) {
+		t.Errorf("the page asked the silent game %v, want only the status", got)
+	}
+
+	g.mu.Lock()
+	g.err = nil
+	g.mu.Unlock()
+	presencePage(t, mux, "/staff", nil)
+	wantBoxOnline(t, presencePage(t, mux, "/staff", nil), "Inside", true)
 }

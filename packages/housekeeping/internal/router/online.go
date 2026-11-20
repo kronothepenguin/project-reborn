@@ -10,7 +10,7 @@ import (
 )
 
 // onlineTimeout is how long the game has to say who is in the hotel.
-const onlineTimeout = time.Second
+const onlineTimeout = 300 * time.Millisecond
 
 type onlinePage struct {
 	chrome
@@ -70,7 +70,7 @@ func (r *Router) HandleOnlineView(w http.ResponseWriter, req *http.Request) {
 
 // online asks the game who is in the hotel, with a context of its own that ends
 // after onlineTimeout. ok is false when no game is injected or it gives no answer;
-// a failed answer is logged.
+// the result goes to gameAnswered.
 func (r *Router) online(ctx context.Context) (ids []int64, ok bool) {
 	if r.deps.Habbos == nil {
 		return nil, false
@@ -78,8 +78,8 @@ func (r *Router) online(ctx context.Context) (ids []int64, ok bool) {
 	ctx, cancel := context.WithTimeout(ctx, onlineTimeout)
 	defer cancel()
 	ids, err := r.deps.Habbos.Online(ctx)
+	r.gameAnswered("online", err)
 	if err != nil {
-		logError("housekeeping: online", err)
 		return nil, false
 	}
 	return ids, true

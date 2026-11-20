@@ -19,8 +19,8 @@ description: How the CMS serves Holo's client.php, clientutils.php and unloadcli
   whatever the key.
 - A habbo who opens `/client` while the game is stopped goes to `/me`, with no ticket made.
 - The client's disconnect error, `/client/utils?key=error&error=disconnect`, shows the page `closed` while the game is
-  stopped: the same orange card, with `Hotel Closed` and `<site name> is closed at the moment. Please come back
-  later.` While the game runs it shows the fatal error page.
+  stopped: the same orange card, with the Me page's `Hotel Closed` and the text of Holo's `client.php`,
+  `<site name> is offline`. While the game runs it shows the fatal error page.
 - A habbo gets `true` for the keys `cacheCheck` and `cache`, Holo's pages for `connection_failed` and `error`, and an
   empty answer for any other key.
 - `/client/unload` answers a habbo with nothing and sends a guest to `/`. The page calls it with `sendBeacon` as it

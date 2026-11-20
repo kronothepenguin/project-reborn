@@ -141,9 +141,9 @@ export default async function (t) {
     );
     await page.goto(`${base}/client/utils?key=error&error=disconnect`);
     check(
-      `${how}: a client that lost its connection shows Hotel Closed with the hotel's name`,
+      `${how}: a client that lost its connection shows Hotel Closed and "<site name> is offline"`,
       (await page.locator("h2").innerText()) === "Hotel Closed" &&
-        (await page.getByText(`${name} is closed at the moment. Please come back later.`).count()) === 1,
+        (await page.getByText(`${name} is offline`, { exact: true }).count()) === 1,
     );
     check(`${how}: the settings form says the game is stopped`, (await hotelLine()) === "The game server is stopped.");
   };

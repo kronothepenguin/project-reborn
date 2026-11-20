@@ -32,8 +32,9 @@ description: How GET /settings and POST /settings/{section} lay the declared set
   either is on. The game reads both when it starts.
 - A save that turned one on calls `Hotel.Stop`; a save that turned one off calls `Hotel.Start`, and the game keeps its
   doors closed while the other is still on. The call runs after the commit, with a context of its own of 15 seconds,
-  because a stop holds the players' connections for 5. A failure is logged and the save stands.
+  because a stop holds the players' connections for 5. A failure goes to `Router.gameAnswered`, which logs a silent
+  game once, and the save stands.
 - The form of the hotel's switch says whether the game runs and how many habbos are inside, or "The game server gives
-  no answer." when `Hotel.Status` fails, takes over a second, or no game is injected.
-- The dashboard asks `Hotel.Status` too, with the same second, and shows the habbos online beside Members, 0 while the
-  game gives no answer.
+  no answer." when `Hotel.Status` fails, takes over 300 milliseconds, or no game is injected.
+- The dashboard asks `Hotel.Status` too, with the same 300 milliseconds, and shows the habbos online beside Members, 0
+  while the game gives no answer.

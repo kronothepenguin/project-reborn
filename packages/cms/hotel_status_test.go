@@ -219,3 +219,48 @@ func TestTheMePageShowsEnterOrHotelClosed(t *testing.T) {
 		})
 	}
 }
+
+// A program asks the game and gets no answer, page after page: its log holds one
+// line for the moment the answers stopped, and one for the moment they came back.
+func TestASilentGameIsLoggedOncePerChange(t *testing.T) {
+	h := &hotel{err: errors.New("connection refused")}
+	_, mux := newHotelSite(t, h)
+	logs := captureLog(t)
+
+	for range 10 {
+		wantPage(t, serve(mux, "GET", "/community", nil, nil), http.StatusOK, "Online:false ")
+	}
+	wantGameLines(t, logs, 1, 0)
+
+	h.err, h.status = nil, services.HotelStatus{Running: true, Online: 2}
+	wantPage(t, serve(mux, "GET", "/community", nil, nil), http.StatusOK, "Online:true OnlineCount:2 ")
+	wantGameLines(t, logs, 1, 1)
+
+	for range 10 {
+		serve(mux, "GET", "/community", nil, nil)
+	}
+	wantGameLines(t, logs, 1, 1)
+}
+
+// wantGameLines fails unless the log holds silent lines saying the game gives no
+// answer and back lines saying it answers again.
+func wantGameLines(t *testing.T, logs *lockedLog, silent, back int) {
+	t.Helper()
+	text := logs.String()
+	if got := strings.Count(text, `level=ERROR msg="cms: the game gives no answer" err="hotel status: connection refused"`); got != silent {
+		t.Errorf("the log says %d times that the game gives no answer, want %d: %q", got, silent, text)
+	}
+	if got := strings.Count(text, `level=INFO msg="cms: the game answers again"`); got != back {
+		t.Errorf("the log says %d times that the game answers again, want %d: %q", got, back, text)
+	}
+}
+
+// The client's closed page carries the Me page's "Hotel Closed" and Holo's
+// "<site name> is offline" of client.php.
+func TestTheClosedPageSaysTheHotelIsOffline(t *testing.T) {
+	db, mux := newBuiltSite(t, &hotel{})
+	habbo(t, db, "dora@example.com", "Dora")
+
+	rec := serve(mux, "GET", "/client/utils?key=error&error=disconnect", login(t, db, "Dora"), nil)
+	wantPage(t, rec, http.StatusOK, ">Hotel Closed</h2>", "<p>Reborn Hotel is offline</p>")
+}

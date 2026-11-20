@@ -17,13 +17,8 @@ Built:
 | `packages/reborn`, the runners | `Start` opens the doors; the runners inject `Hotel` beside `Habbos` |
 | `packages/cms` | The status on every page, the Me page's button, the client page's redirect, the "Hotel Closed" page of the client's window, each habbo's online picture |
 | `packages/housekeeping` | "Turn your hotel on/off" on the settings page, the stop and start after the site's switch, the dashboard's count, the Online Users page |
-| `tests/e2e` | The suite `hotel-status`, and `lib/game.mjs`, which puts a habbo in the hotel over a WebSocket |
-
-Planned:
-
-| Project | Part |
-| --- | --- |
 | `packages/cms`, `packages/housekeeping` | One log line when the game stops answering and one when it answers again; the 300 millisecond wait; every habbo offline while the game is silent; Holo's text on the client's closed page |
+| `tests/e2e` | The suite `hotel-status`, and `lib/game.mjs`, which puts a habbo in the hotel over a WebSocket |
 
 The contract, as the user approved it:
 
@@ -97,7 +92,7 @@ All of 2026-11-18, each the user's choice among options put to them.
 # Notes
 
 - A page asks the game once for the status and once for the habbos it shows, each with a context of its own that ends
-  after 1 second. An error, or no injected game, reads as stopped and offline, and is logged once per request at most.
+  after 300 milliseconds. An error, or no injected game, reads as stopped and offline.
 - Under reborn the calls stay in the process. Apart, `packages/server/api` makes them with the hotel's secret, read on
   each call.
 - Every text of message 292 names an opening time, so the notice reads "The Hotel will open again at 00:00": the game
@@ -116,8 +111,8 @@ All of 2026-11-18, each the user's choice among options put to them.
   each page answered at once with the hotel offline, and housekeeping said the game gives no answer. reborn restarted
   with the hotel closed kept the doors closed.
 - A silent game is logged once per change (the user, 2026-11-20: "ok" to "one line when the game goes silent and one
-  when it answers again"). Each router remembers whether the game's last answer failed; every question and command
-  it sends the game passes through that memory.
+  when it answers again"). Each router remembers whether the game's last answer failed, in `Router.gameAnswered`;
+  every question and command it sends the game passes through that memory.
 - A forum post's preview shows the writer's real state (the user, 2026-11-20: "real state, online/offline based on
   habbo's state"), where Holo always drew the online picture.
 - The wait for the game is 300 milliseconds, in place of 1 second (the user, 2026-11-20: "i think we can have a lower

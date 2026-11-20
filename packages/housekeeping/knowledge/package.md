@@ -26,10 +26,14 @@ Astro (Svelte + Tailwind) frontend embedded in a Go module. The `Housekeeping` s
 - The habbo editor (`POST /housekeeping/habbos/{id}`) calls `Habbos.SendLook` once after its transaction commits, and
   never after a refused save.
 - The call has a context of its own of 2 seconds, apart from the request's, so a request the visitor abandons still
-  tells the game. A failure is logged, and the page answers as it would without the game.
-- Online Users (`GET /housekeeping/online`) asks `Habbos.Online` with a context of 1 second, then reads the habbos it
-  lists from the store in one query. A failure, no answer or no game leaves the table empty and says so; a failure is
-  logged.
+  tells the game. A failure reads as no answer, and the page answers as it would without the game.
+- Online Users (`GET /housekeeping/online`) asks `Habbos.Online` with a context of 300 milliseconds, then reads the habbos it
+  lists from the store in one query. A failure, no answer or no game leaves the table empty and says so.
+- Every question and command sent to the game reports its result to `Router.gameAnswered`, which remembers whether
+  the game's last answer failed. The first failure logs `housekeeping: the game gives no answer` at ERROR, with what was
+  asked and the error; the failures after it log nothing. The first success after a failure logs
+  `housekeeping: the game answers again` at INFO. A request the visitor abandoned (`context.Canceled`) leaves the memory as it
+  is.
 
 # Layout
 

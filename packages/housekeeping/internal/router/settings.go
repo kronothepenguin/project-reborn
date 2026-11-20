@@ -145,7 +145,7 @@ func (r *Router) hotelLine(ctx context.Context, s section) string {
 // followSwitches stops the game when a saved change closed one of the switches,
 // and starts it when one opened. The game keeps its doors closed while either
 // switch is still on. The call has a context of its own, so an abandoned request
-// still reaches the game. A failure is logged and the save stands: the game
+// still reaches the game. The result goes to gameAnswered, and the save stands: the game
 // reads the switches when it next starts.
 func (r *Router) followSwitches(ctx context.Context, changes map[string]any) {
 	if r.deps.Hotel == nil {
@@ -163,14 +163,10 @@ func (r *Router) followSwitches(ctx context.Context, changes map[string]any) {
 	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), switchTimeout)
 	defer cancel()
 	if closed {
-		if err := r.deps.Hotel.Stop(ctx); err != nil {
-			logError("housekeeping: hotel stop", err)
-		}
+		r.gameAnswered("hotel stop", r.deps.Hotel.Stop(ctx))
 		return
 	}
-	if err := r.deps.Hotel.Start(ctx); err != nil {
-		logError("housekeeping: hotel start", err)
-	}
+	r.gameAnswered("hotel start", r.deps.Hotel.Start(ctx))
 }
 
 // readChanges turns the posted fields of s into typed values, keeping those that

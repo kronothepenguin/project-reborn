@@ -3,9 +3,9 @@ import { readFileSync } from "node:fs";
 export const emptyFolder = true;
 export const programs = [];
 
-// The walk runs no game server, so the site and housekeeping find none and say
-// so (the hotel status).
-export const logs = [/^(cms|housekeeping): \S+ \S+ ERROR (cms|housekeeping): hotel status err=.*connection refused"$/];
+// The walk runs no game server, so the site and housekeeping find none and each
+// says so once.
+export const logs = [/^(cms|housekeeping): \S+ \S+ ERROR (cms|housekeeping): the game gives no answer err=.*connection refused"$/];
 
 // The walk across the three programs: the installer's forms, the session reaching
 // housekeeping on its own port, and settings saved there reaching the CMS.

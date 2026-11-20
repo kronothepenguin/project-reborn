@@ -33,14 +33,20 @@ resource: packages/cms/cms.go
 - The looks page (`POST /account/looks`), the profile page (`POST /account/profile`) and the Me page's motto
   (`POST /me/motto`) call `Habbos.SendLook` once after a save, and never after a refused one.
 - The call has a context of its own of 2 seconds, apart from the request's, so a request the visitor abandons still
-  tells the game. A failure is logged, and the page answers as it would without the game.
+  tells the game. A failure reads as no answer, and the page answers as it would without the game.
 - Every page asks `Hotel.Status` once (`Router.gameStatus` in `internal/router/router.go`), through `hotelStatus`, the
-  layouts' fields `Online` and `OnlineCount`. The call follows the request's context and ends after 1 second. No
-  injected game, an error or no answer reads as stopped, with 0 inside; an error is logged.
+  layouts' fields `Online` and `OnlineCount`. The call follows the request's context and ends after 300 milliseconds. No
+  injected game, an error or no answer reads as stopped, with 0 inside.
 - A page that shows habbos asks `Habbos.AreOnline` once, through the router's `online`, about the habbos it shows: the
   profile widget of a home, the staff page, the community page's random habbos, and a thread's post boxes with the
-  viewer for its preview; the board asks about the viewer alone. The call ends after 1 second. An error, or no
-  injected game, shows every habbo offline, and an error is logged.
+  viewer for its preview; the board asks about the viewer alone. The call ends after 300 milliseconds. An error,
+  or no injected game, shows every habbo offline. While the game's last answer failed, `online` shows every habbo
+  offline without asking; the status question of the next page finds the game again.
+- Every question and command sent to the game reports its result to `Router.gameAnswered`, which remembers whether
+  the game's last answer failed. The first failure logs `cms: the game gives no answer` at ERROR, with what was
+  asked and the error; the failures after it log nothing. The first success after a failure logs
+  `cms: the game answers again` at INFO. A request the visitor abandoned (`context.Canceled`) leaves the memory as it
+  is.
 - A habbo in the hotel shows Holo's online picture, and one outside the offline picture. An archived author shows
   offline and is left out of the question.
 

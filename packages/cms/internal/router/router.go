@@ -9,6 +9,7 @@ import (
 	"log/slog"
 	"net/http"
 	"slices"
+	"sync/atomic"
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
@@ -34,6 +35,8 @@ type Deps struct {
 
 type Router struct {
 	deps Deps
+	// gameFailed remembers whether the game's last answer failed.
+	gameFailed atomic.Bool
 }
 
 func New(deps Deps) *Router {
@@ -70,11 +73,12 @@ func (r *Router) hotelStatus(ctx context.Context) hotelStatus {
 }
 
 // statusTimeout is how long the game has to tell its status.
-const statusTimeout = time.Second
+const statusTimeout = 300 * time.Millisecond
 
 // gameStatus asks the game whether its doors are open and how many habbos are
 // inside, once per request. No injected game, an error or no answer within
-// statusTimeout reads as stopped, with nobody inside; an error is logged.
+// statusTimeout reads as stopped, with nobody inside; the result goes to
+// gameAnswered.
 func (r *Router) gameStatus(ctx context.Context) services.HotelStatus {
 	if r.deps.Hotel == nil {
 		return services.HotelStatus{}
@@ -82,8 +86,8 @@ func (r *Router) gameStatus(ctx context.Context) services.HotelStatus {
 	ctx, cancel := context.WithTimeout(ctx, statusTimeout)
 	defer cancel()
 	status, err := r.deps.Hotel.Status(ctx)
+	r.gameAnswered("hotel status", err)
 	if err != nil {
-		logError("cms: hotel status", err)
 		return services.HotelStatus{}
 	}
 	if !status.Running {
@@ -131,22 +135,41 @@ func logError(msg string, err error) {
 	slog.Error(msg, "err", err)
 }
 
+// gameAnswered records the result of a question or command sent to the game, so
+// a silent game is logged once per change: the first failure logs "the game
+// gives no answer" with the error, prefixed by what was asked, and the first
+// success after it logs "the game answers again". A request the visitor
+// abandoned leaves the memory as it is.
+func (r *Router) gameAnswered(asked string, err error) {
+	switch {
+	case errors.Is(err, context.Canceled):
+	case err != nil:
+		if r.gameFailed.CompareAndSwap(false, true) {
+			slog.Error("cms: the game gives no answer", "err", fmt.Errorf("%s: %w", asked, err))
+		}
+	case r.gameFailed.CompareAndSwap(true, false):
+		slog.Info("cms: the game answers again")
+	}
+}
+
 // sendLookTimeout is how long the game has to answer a SendLook.
 const sendLookTimeout = 2 * time.Second
 
 // sendLook tells the game that the habbo's look or motto changed, after the save.
 // The call has a context of its own, apart from the request's, so a request the
-// visitor abandons still tells the game. A failure is logged, and the page
-// answers as it would without the game.
+// visitor abandons still tells the game. The result goes to gameAnswered, and
+// the page answers as it would without the game.
 func (r *Router) sendLook(ctx context.Context, avatarID int64) {
 	if r.deps.Habbos == nil {
 		return
 	}
 	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), sendLookTimeout)
 	defer cancel()
-	if err := r.deps.Habbos.SendLook(ctx, avatarID); err != nil {
-		logError("cms: send look", fmt.Errorf("habbo %d: %w", avatarID, err))
+	err := r.deps.Habbos.SendLook(ctx, avatarID)
+	if err != nil {
+		err = fmt.Errorf("habbo %d: %w", avatarID, err)
 	}
+	r.gameAnswered("send look", err)
 }
 
 func (r *Router) fail(w http.ResponseWriter, err error) {
