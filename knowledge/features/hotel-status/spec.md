@@ -2,7 +2,7 @@
 type: Spec
 title: Hotel status
 description: The site shows whether the game runs and who is in it, staff start and stop the game in housekeeping, and maintenance closes it.
-status: active
+status: done
 projects: [packages/services, packages/server, packages/settings, packages/cms, packages/housekeeping, packages/reborn, apps/reborn, apps/server, apps/cms, apps/housekeeping, tests/e2e]
 ---
 

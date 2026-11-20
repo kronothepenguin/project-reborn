@@ -103,3 +103,9 @@ All of 2026-11-18, each the user's choice among options put to them.
   the game existed.
 - The site calls the game through `Router.gameStatus` and `Router.online` in `packages/cms/internal/router`, and
   housekeeping through `hotelStatus` and `followSwitches` in `packages/housekeeping/internal/router`.
+- The exit check of 2026-11-19 ran the feature on a real hotel, with the real client in browsers. Under reborn and with
+  the programs apart: two habbos in one room showed online on the site and in Online Users; Hotel Closed sent both
+  clients the notice, and each window showed "Hotel Closed" about 5.7 seconds later; the site, the Me page, the forum
+  and Online Users showed everyone offline; opening the hotel let a habbo enter again. With the game's program ended,
+  each page answered at once with the hotel offline, and housekeeping said the game gives no answer. reborn restarted
+  with the hotel closed kept the doors closed.
