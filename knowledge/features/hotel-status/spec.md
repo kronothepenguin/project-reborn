@@ -2,7 +2,7 @@
 type: Spec
 title: Hotel status
 description: The site shows whether the game runs and who is in it, staff start and stop the game in housekeeping, and maintenance closes it.
-status: done
+status: active
 projects: [packages/services, packages/server, packages/settings, packages/cms, packages/housekeeping, packages/reborn, apps/reborn, apps/server, apps/cms, apps/housekeeping, tests/e2e]
 ---
 
@@ -65,3 +65,8 @@ It builds on [habbos](/features/habbos/spec.md), [the client](/features/client/s
 - Staff open the dashboard: the number of habbos online shows beside Members.
 - Staff with `housekeeping.users` open Online Users: Holo's table lists every habbo in the hotel, with the link to
   edit it; staff without it are refused.
+
+## Next
+
+- A program asks the game and gets no answer, page after page: its log holds one line for the moment the answers
+  stopped, and one for the moment they came back.

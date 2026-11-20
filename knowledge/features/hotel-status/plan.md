@@ -19,6 +19,12 @@ Built:
 | `packages/housekeeping` | "Turn your hotel on/off" on the settings page, the stop and start after the site's switch, the dashboard's count, the Online Users page |
 | `tests/e2e` | The suite `hotel-status`, and `lib/game.mjs`, which puts a habbo in the hotel over a WebSocket |
 
+Planned:
+
+| Project | Part |
+| --- | --- |
+| `packages/cms`, `packages/housekeeping` | One log line when the game stops answering and one when it answers again |
+
 The contract, as the user approved it:
 
 ```go
@@ -109,3 +115,8 @@ All of 2026-11-18, each the user's choice among options put to them.
   and Online Users showed everyone offline; opening the hotel let a habbo enter again. With the game's program ended,
   each page answered at once with the hotel offline, and housekeeping said the game gives no answer. reborn restarted
   with the hotel closed kept the doors closed.
+- A silent game is logged once per change (the user, 2026-11-20: "ok" to "one line when the game goes silent and one
+  when it answers again"). Each router remembers whether the game's last answer failed; every question and command
+  it sends the game passes through that memory.
+- A forum post's preview shows the writer's real state (the user, 2026-11-20: "real state, online/offline based on
+  habbo's state"), where Holo always drew the online picture.
