@@ -99,6 +99,13 @@ called "reborn", this should keep installer + cms + housekeeping in the same mux
 
 ## Next
 
-- Ctrl-C stops reborn in order, and the players online are logged out.
+- reborn gets Ctrl-C or SIGTERM: the open requests finish, each player is logged out with its last time online saved,
+  and the database closes.
+- The game's program, run alone, gets Ctrl-C or SIGTERM: each player is logged out with its last time online saved, and
+  the database closes.
+- A new hotel is installed under reborn: the installer's HTTP server closes, the site's opens on the same address, and
+  the browser lands on the site.
+- reborn serves, in development and in a release, the pages and files its own project builds for the site,
+  housekeeping and the installer.
 - A release holds `reborn`, `cms`, `housekeeping`, `installer` and `server`.
 - The browser suite `reborn` passes.

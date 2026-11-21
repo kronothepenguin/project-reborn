@@ -3,7 +3,7 @@ type: Task
 title: The browser suite reborn
 description: A browser suite builds reborn and checks, from an empty folder, the installer, the move to a new port, the hotel after the install, the game's first message, and a stop in order.
 scope: [tests/e2e]
-depends_on: [05-reborn-installs-a-new-hotel, 10-reborn-stops-in-order]
+depends_on: [05-reborn-installs-a-new-hotel, 18-reborn-builds-its-programs]
 skills: []
 ---
 

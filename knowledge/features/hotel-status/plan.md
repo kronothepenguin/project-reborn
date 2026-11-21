@@ -71,7 +71,7 @@ All of 2026-11-18, each the user's choice among options put to them.
   ([reborn 0006](/decisions/reborn/0006-settings-are-read-from-the-store.md)).
 - One `Hotel` contract holds `Status`, `Start` and `Stop`. `Start` replaces `StartInfo` and `StartMus`, and reborn's
   ordered stop on Ctrl-C uses the same `Stop` in place of a separate `Shutdown`
-  ([platform](/features/platform/tasks/10-reborn-stops-in-order.md)).
+  ([0015](/decisions/reborn/0015-the-runner-owns-reborns-http-server.md)).
 - Players see the client's own "hotel closed" notice, message 292, for 5 seconds, then a "Hotel Closed" page. The
   client draws the notice only while its connection is open, and sends its window to the site's error page the moment
   the connection closes. So the game holds each connection 5 seconds after the notice, and the site's error page says

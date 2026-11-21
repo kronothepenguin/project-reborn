@@ -2,7 +2,8 @@
 type: Decision
 title: reborn stops in order
 description: On Ctrl-C or SIGTERM reborn stops taking requests, logs every player out and closes the game's listeners, stops the scheduled tasks and closes the database, with new Shutdown and Stop functions in the game server and the scheduler.
-status: accepted
+status: superseded
+superseded_by: "0015"
 timestamp: 2026-11-13T15:20:00-05:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-13T15:20:00-05:00"}
 tags: [platform, orchestrator, server, scheduler]

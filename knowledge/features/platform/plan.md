@@ -27,10 +27,76 @@ Planned:
 
 | Project | Part |
 | --- | --- |
-| `packages/reborn`, `apps/reborn` | Installing a new hotel ([0004](/decisions/reborn/0004-the-installer-inside-reborn.md)); stopping in order ([0007](/decisions/reborn/0007-reborn-stops-in-order.md)); one dev server and `reborn-dev` ([0009](/decisions/reborn/0009-one-dev-server-for-reborn.md)) |
-| `packages/scheduler` | `Stop`; the game stops with the `Stop` of [hotel status](/features/hotel-status/plan.md) ([0007](/decisions/reborn/0007-reborn-stops-in-order.md)) |
+| `packages/reborn` | One Astro project that builds one `dist` for the three sites, after a spike; `New` builds the site, housekeeping, the installer and the game; `MountInstaller`, `Mount`, `Start`, `Stop`; `Run` and the HTTP server go ([0015](/decisions/reborn/0015-the-runner-owns-reborns-http-server.md)) |
+| `apps/reborn` | The HTTP server, its replacement after the installation and its move to a new address; the wait for the installation and for Ctrl-C |
+| `apps/server` | Ctrl-C and SIGTERM stop the game with `Stop`, then the database closes |
 | `tests/e2e` | A browser suite for reborn |
 | releases | reborn and the four separate programs ([0008](/decisions/reborn/0008-releases-ship-reborn-and-the-separate-programs.md)) |
+
+## reborn's new shape
+
+Proposed by the master from [0015](/decisions/reborn/0015-the-runner-owns-reborns-http-server.md); the user approves it
+before task 18 starts.
+
+```go
+// packages/reborn
+// New builds the site, housekeeping, the installer and the game on db, injects
+// the game into the two sites and mover into the installer.
+func New(db *sql.DB, mover installer.Listener, opts ...Option) (*Reborn, error)
+
+func WithResolver(r astro.Resolver) Option // the pages of reborn's dist, or of its dev server
+func WithStatic(h http.Handler) Option     // the files of reborn's dist, or of its dev server
+
+// Installed is closed once the administrator exists.
+func (r *Reborn) Installed() <-chan struct{}
+
+// MountInstaller registers the installer, and sends every other page to /installer/.
+func (r *Reborn) MountInstaller(mux *http.ServeMux)
+
+// Mount registers the site and housekeeping.
+func (r *Reborn) Mount(mux *http.ServeMux)
+
+func (r *Reborn) Start(ctx context.Context) error // the game opens its doors
+func (r *Reborn) Stop(ctx context.Context) error  // players out, doors closed
+```
+
+```go
+// apps/reborn/cmd/reborn/main.go
+db := store.FromConfig()
+web := web.New(cfg.Reborn.Host, cfg.Reborn.Port) // the runner's HTTP server; it implements installer.Listener
+r, err := reborn.New(db, web, reborn.WithResolver(pages), reborn.WithStatic(files))
+
+select {
+case <-r.Installed(): // an installed hotel
+default: // the first time
+    mux := http.NewServeMux()
+    r.MountInstaller(mux)
+    web.Serve(mux) // the installer's server
+    select {
+    case <-r.Installed():
+    case <-ctx.Done():
+        return
+    }
+}
+
+mux := http.NewServeMux()
+r.Mount(mux)
+web.Serve(mux) // closes the installer's server and starts the site's
+if err := r.Start(ctx); err != nil {
+    log.Fatalln(err)
+}
+<-ctx.Done() // Ctrl-C or SIGTERM
+web.Shutdown(tenSeconds)
+r.Stop(context.Background())
+db.Close()
+```
+
+- `web` lives in `apps/reborn/internal/web`, shared by `reborn` and `reborn-dev`. Run alone, the installer stays on its
+  port and moves nothing, so it shares none of this code.
+- `web.Serve` starts the new server on the open listener before it shuts the old one down, so the browser's request for
+  `/` right after "Create administrator" finds a server.
+- Before the installation, pages go to `/installer/` and files pass, the dev server's own paths included, as the user
+  asked on 2026-11-15 (see Decisions).
 
 How programs tell the game of a live change is
 [0005](/decisions/reborn/0005-the-game-hears-live-changes-through-services.md); its first service is built in
@@ -67,9 +133,14 @@ How programs tell the game of a live change is
   refreshes](/decisions/reborn/0006-settings-are-read-from-the-store.md) — The CMS, housekeeping, the installer, auth
   and the game server read each setting with a sqlc query through packages/settings, which returns the declared default
   when there is no row; virtual/settings and every refresh go, and the game checks for waiting database updates on use.
-- [reborn stops in order](/decisions/reborn/0007-reborn-stops-in-order.md) — On Ctrl-C or SIGTERM reborn stops taking
-  requests, logs every player out and closes the game's listeners, stops the scheduled tasks and closes the database,
-  with new Shutdown and Stop functions in the game server and the scheduler.
+- [The runner owns reborn's HTTP server, and reborn builds its
+  programs](/decisions/reborn/0015-the-runner-owns-reborns-http-server.md) — The runners of apps/reborn create, close
+  and replace the HTTP server; packages/reborn builds the site, housekeeping, the installer and the game, mounts them on
+  a mux it receives and has Start and Stop for the game. It replaces
+  [reborn stops in order](/decisions/reborn/0007-reborn-stops-in-order.md).
+- [Lifecycle names come in pairs, and the scheduler has no
+  stop](/decisions/reborn/0016-lifecycle-names-come-in-pairs.md) — Start with Stop, Init with Destroy, Open with Close;
+  a package that only mounts routes has neither, and the scheduler's tasks run until the process ends.
 - [Releases ship reborn and the four separate
   programs](/decisions/reborn/0008-releases-ship-reborn-and-the-separate-programs.md) — Each release archive holds
   reborn and the standalone CMS, housekeeping, installer and game server, so that an administrator chooses one binary or
@@ -78,7 +149,8 @@ How programs tell the game of a live change is
   it](/decisions/reborn/0009-one-dev-server-for-reborn.md) — A dev-only Astro project in packages/reborn serves the
   CMS's pages at /, housekeeping's at /housekeeping/ and the installer's at /installer/ from one dev server, so that
   reborn-dev proxies it as the standalone dev runners proxy theirs; a spike proves it first.
-- reborn runs the programs its runner builds. `apps/reborn/cmd/reborn/main.go` opens the database and builds the
+- Replaced on 2026-11-20 by [0015](/decisions/reborn/0015-the-runner-owns-reborns-http-server.md): reborn ran the
+  programs its runner built. `apps/reborn/cmd/reborn/main.go` opened the database and built the
   CMS, housekeeping, the installer and the game with each package's own constructor and options, as the CMS's runner
   does; `reborn.New(cfg, db, c, h, i, g)` mounts them on one HTTP server and starts the game. reborn has no option of
   its own. The user, on 2026-11-15, of the `WithCMS`, `WithHousekeeping` and `WithInstaller` options that task 03

@@ -3,7 +3,7 @@ type: Task
 title: The documents say what reborn is
 description: The platform feature's later notes, the READMEs and the architecture references describe reborn, the installer under /installer/, settings read from the store, the stop in order and the releases.
 scope: [knowledge/features/platform/later.md, README.md, apps, packages/reborn/README.md, packages/reborn/knowledge, packages/installer/README.md, packages/installer/knowledge, packages/server/README.md, packages/server/knowledge]
-depends_on: [09-game-reads-settings, 10-reborn-stops-in-order, 12-reborn-dev, 14-releases]
+depends_on: [09-game-reads-settings, 18-reborn-builds-its-programs, 12-reborn-dev, 14-releases]
 skills: []
 ---
 
