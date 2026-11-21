@@ -27,12 +27,7 @@ Built:
 | `apps/reborn` | The HTTP server, its replacement after the installation and its move to a new address; the wait for the installation and for Ctrl-C |
 | `apps/server` | Ctrl-C and SIGTERM stop the game with `Stop`, then the database closes |
 | `tests/e2e` | A browser suite for reborn |
-
-Planned:
-
-| Project | Part |
-| --- | --- |
-| releases | reborn and the four separate programs ([0008](/decisions/reborn/0008-releases-ship-reborn-and-the-separate-programs.md)) |
+| `Makefile` | `make release` builds `reborn`, `cms`, `housekeeping`, `installer` and `server` into each archive ([0008](/decisions/reborn/0008-releases-ship-reborn-and-the-separate-programs.md)) |
 
 ## reborn's new shape
 
@@ -204,6 +199,8 @@ How programs tell the game of a live change is
   variable. Publishing uses `softprops/action-gh-release`, which takes its token by itself.
 - The first release built 17.5 MB for amd64 and 16.2 MB for aarch64. The aarch64 binaries were built but not run, since
   no such machine was available.
+- The release of 2026-11-20 with all five programs packs 45.9 MB for amd64 and 43.4 MB for aarch64; `reborn` is the
+  largest binary, 26.9 MB on amd64.
 - `actionlint` was not run on the workflows: fetching it would have run code from the internet.
 - The game reads its settings from the store since 2026-11-18. One chat line, its busiest reader, went from 0.12 ms to
   0.21 ms (`BenchmarkChat` in `packages/server/internal/r26`), about 4,700 lines a second on one core. The user chose

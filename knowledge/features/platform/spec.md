@@ -67,6 +67,7 @@ called "reborn", this should keep installer + cms + housekeeping in the same mux
 - A tag like `v1.2.3` is pushed: `make check` at the root and the browser suites run, then a release publishes
   `reborn-<tag>-linux-amd64.tar.gz`, `reborn-<tag>-linux-aarch64.tar.gz` and `SHA256SUMS` (decision reborn/0008).
 - An archive is unpacked: it holds static `cms`, `housekeeping` and `installer` binaries, which run with no network.
+- A release holds `reborn`, `cms`, `housekeeping`, `installer` and `server`.
 
 ## Scheduled tasks
 
@@ -105,7 +106,3 @@ called "reborn", this should keep installer + cms + housekeeping in the same mux
 - reborn serves, in development and in a release, the pages and files its own project builds for the site,
   housekeeping and the installer.
 - The browser suite `reborn` passes.
-
-## Next
-
-- A release holds `reborn`, `cms`, `housekeeping`, `installer` and `server`.

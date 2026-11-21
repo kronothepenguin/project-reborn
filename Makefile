@@ -55,15 +55,17 @@ include make/check-all.mk
 e2e:
 	$(MAKE) -C tests/e2e test
 
-# Archives of the three programs for linux amd64 and aarch64, in release/. The
-# database driver is pure Go, so cgo stays off and the binaries are static.
+# Archives of reborn and the four separate programs for linux amd64 and
+# aarch64, in release/. frontends builds the pages each program embeds; the
+# game server embeds none. The database driver is pure Go, so cgo stays off and
+# the binaries are static.
 release: frontends
 	rm -rf release
 	@for target in amd64:amd64 arm64:aarch64; do \
 		goarch=$${target%%:*}; \
 		name=reborn-$(VERSION)-linux-$${target##*:}; \
 		mkdir -p release/$$name; \
-		for program in cms housekeeping installer; do \
+		for program in reborn cms housekeeping installer server; do \
 			CGO_ENABLED=0 GOOS=linux GOARCH=$$goarch go build -trimpath -ldflags='-s -w' \
 				-o release/$$name/$$program ./apps/$$program/cmd/$$program || exit 1; \
 		done; \
