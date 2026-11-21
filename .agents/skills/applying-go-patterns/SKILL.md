@@ -31,7 +31,11 @@ Read only the reference of the task.
 - Add an option with care. When it is unclear whether a thing is a choice of the runner, ask the user.
 - A package with a frontend exports its built files as `DistFS`, so another program that embeds the package serves the
   same frontend.
-- A runner's `main.go` holds wiring only. Edit it like any other file.
+- A runner's `main.go` holds the wiring and the `http.Server`. Edit it like any other file.
+- The runner owns the `http.Server`: it creates it, closes it and replaces it. A package receives a mux and mounts its
+  routes.
+- Lifecycle names come in pairs: `Start` with `Stop` for what runs, `Init` with `Destroy` for what is initialised,
+  `Open` with `Close` for what is opened. A package that only mounts routes has `New`, `Inject` and `Mount`.
 - A service another program implements is handed over with `Inject`, after `New` and before `Mount`.
 - `New` and `Must` helpers may panic at startup.
 

@@ -15,7 +15,7 @@ A `go.work` workspace holds the Go modules, and a pnpm workspace holds the front
 
 | Folder | Holds |
 | --- | --- |
-| Runners | Runnable applications: thin wiring around a package. |
+| Runners | Runnable applications: thin wiring around a package, plus the `http.Server`. |
 | Packages | Reusable modules that other modules import, each with its frontend when it ships one. |
 | Tools | Developer CLIs, such as generators. |
 
