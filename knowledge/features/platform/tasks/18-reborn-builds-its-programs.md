@@ -2,7 +2,7 @@
 type: Task
 title: reborn builds its programs, and the runner owns the HTTP server
 description: packages/reborn builds the site, housekeeping, the installer and the game and mounts them on a mux it receives; the runners of apps/reborn own the HTTP server, replace it after the installation, and stop in order on Ctrl-C; the game's own runner stops in order too.
-scope: [packages/reborn, apps/reborn, apps/server, tests/e2e]
+scope: [packages/reborn, packages/installer, apps/reborn, apps/server, tests/e2e]
 depends_on: []
 skills: [applying-go-patterns, testing-behaviours, use-modern-go]
 ---
@@ -26,6 +26,10 @@ skills: [applying-go-patterns, testing-behaviours, use-modern-go]
 - [ ] reborn hands each site its pages and files under the site's base: the site at the root, housekeeping under
   `housekeeping`, the installer under `installer`, from the one resolver and the one file handler it is given.
 - [ ] Before the installation the files pass, so the installer's stylesheet at `/_astro/` loads.
+- [ ] `packages/installer`: `(i *Installer) Installed() bool` and `WaitForInstall(ctx) error`, as the plan shows
+  them; `Done()` and the function `installer.Installed(ctx, db)` go. reborn's `Installed` and `WaitForInstall` pass
+  through to them. Tests: `WaitForInstall` returns once the administrator exists, and returns the context's error when
+  the context ends first.
 - [ ] `packages/reborn`: `New`, the two options, `Installed`, `WaitForInstall`, `MountInstaller`, `Mount`, `Start` and `Stop`, as the
   plan shows them. `Run`, the HTTP server and the goroutine that waits for the installation go.
 - [ ] `apps/reborn/internal/web`: the HTTP server, `Serve` that replaces the running server on the open listener,
@@ -40,6 +44,7 @@ skills: [applying-go-patterns, testing-behaviours, use-modern-go]
 # Checks
 
 ```sh
+make -C packages/installer check
 make -C packages/reborn check
 make -C apps/reborn check
 make -C apps/server check
