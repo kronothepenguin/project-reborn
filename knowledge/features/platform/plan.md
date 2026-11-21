@@ -27,7 +27,7 @@ Planned:
 
 | Project | Part |
 | --- | --- |
-| `packages/reborn` | One Astro project that builds one `dist` for the three sites, after a spike; `New` builds the site, housekeeping, the installer and the game; `MountInstaller`, `Mount`, `Start`, `Stop`; `Run` and the HTTP server go ([0015](/decisions/reborn/0015-the-runner-owns-reborns-http-server.md)) |
+| `packages/reborn` | One Astro project that builds one `dist` for the three sites; `New` builds the site, housekeeping, the installer and the game; `MountInstaller`, `Mount`, `Start`, `Stop`; `Run` and the HTTP server go ([0015](/decisions/reborn/0015-the-runner-owns-reborns-http-server.md)) |
 | `apps/reborn` | The HTTP server, its replacement after the installation and its move to a new address; the wait for the installation and for Ctrl-C |
 | `apps/server` | Ctrl-C and SIGTERM stop the game with `Stop`, then the database closes |
 | `tests/e2e` | A browser suite for reborn |
@@ -194,3 +194,13 @@ How programs tell the game of a live change is
 - The game reads its settings from the store since 2026-11-18. One chat line, its busiest reader, went from 0.12 ms to
   0.21 ms (`BenchmarkChat` in `packages/server/internal/r26`), about 4,700 lines a second on one core. The user chose
   "Fine, keep reading the database": no cache.
+- The spike of 2026-11-20 proved one `dist` for reborn (branch `reborn-dist-spike`, unmerged). `astro build` in
+  `packages/reborn` writes the 70 pages of the three sites, with the three sites unchanged. The site's pages match
+  their own build apart from hashed file names; housekeeping's and the installer's load their styles and scripts from
+  `/_astro/` at the root. The three stylesheets are byte for byte today's. The build takes about 4 seconds beside 8.4
+  for the three, and `dist` holds 9.2 MB beside 9.3. reborn's project needs the shared components as a dependency, and
+  a step after the build that copies housekeeping's and the installer's `public/` under their base and moves
+  `housekeeping.html` and `installer.html` to `index.html` in their folders.
+- The installer's pages load one file outside `/installer/`: their stylesheet under `/_astro/`. The server for the
+  installer alone serves the files too.
+- Each site keeps its own build for its own runner.
