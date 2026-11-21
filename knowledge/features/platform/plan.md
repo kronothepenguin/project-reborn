@@ -22,15 +22,15 @@ Built:
 | `.github/workflows`, `Makefile` | `ci.yml` runs `make check` and `make e2e`; `release.yml` runs them on a tag, then `make release` |
 | `tests/e2e` | The browser suites, run by `make e2e` |
 | `packages/settings` and every program | Settings read from the store, no refresh, `virtual/settings` gone ([0006](/decisions/reborn/0006-settings-are-read-from-the-store.md)) |
+| `packages/installer` | `Installed` and `WaitForInstall` on the installer, in place of `Done` and the function `Installed` |
+| `packages/reborn` | One Astro project that builds one `dist` for the three sites; `New` builds the site, housekeeping, the installer and the game; `MountInstaller`, `Mount`, `Start`, `Stop`; `Run` and the HTTP server go ([0015](/decisions/reborn/0015-the-runner-owns-reborns-http-server.md)) |
+| `apps/reborn` | The HTTP server, its replacement after the installation and its move to a new address; the wait for the installation and for Ctrl-C |
+| `apps/server` | Ctrl-C and SIGTERM stop the game with `Stop`, then the database closes |
 
 Planned:
 
 | Project | Part |
 | --- | --- |
-| `packages/installer` | `Installed` and `WaitForInstall` on the installer, in place of `Done` and the function `Installed` |
-| `packages/reborn` | One Astro project that builds one `dist` for the three sites; `New` builds the site, housekeeping, the installer and the game; `MountInstaller`, `Mount`, `Start`, `Stop`; `Run` and the HTTP server go ([0015](/decisions/reborn/0015-the-runner-owns-reborns-http-server.md)) |
-| `apps/reborn` | The HTTP server, its replacement after the installation and its move to a new address; the wait for the installation and for Ctrl-C |
-| `apps/server` | Ctrl-C and SIGTERM stop the game with `Stop`, then the database closes |
 | `tests/e2e` | A browser suite for reborn |
 | releases | reborn and the four separate programs ([0008](/decisions/reborn/0008-releases-ship-reborn-and-the-separate-programs.md)) |
 
@@ -217,3 +217,13 @@ How programs tell the game of a live change is
 - The installer's pages load one file outside `/installer/`: their stylesheet under `/_astro/`. The server for the
   installer alone serves the files too.
 - Each site keeps its own build for its own runner.
+- Task 18 built reborn's new shape on 2026-11-20. From an empty folder: the installer, "Create administrator", then the
+  site on the same connection; Ctrl-C with a habbo inside sent the closing notice, saved its last time online at the
+  signal, closed the doors 5 seconds later and closed the database. The game's own program does the same on SIGTERM.
+- `apps/reborn/internal/web` keeps one open listener and hands each connection to the current `http.Server`. A second
+  `Serve` starts the new server first and retires the old one: it takes no new connection, answers the next request of
+  each open one with `Connection: close`, and ends when none is left. `http.Server.Shutdown` right at the swap dropped
+  connections that were accepted and not yet read.
+- A listener that fails later is logged; nothing ends the program for it.
+- `run` and `shutdown` are written in both runners' `main.go`.
+- A checkout needs `pnpm install` and `make frontends` once after this change: `packages/reborn` embeds its `dist`.

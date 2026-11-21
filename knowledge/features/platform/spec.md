@@ -96,9 +96,6 @@ called "reborn", this should keep installer + cms + housekeeping in the same mux
 - Run alone, the installer keeps both forms as they are today.
 - `make dev` runs reborn with one dev server: the site, housekeeping and the installer show an edit without a restart.
 - Staff save a setting: the next read in any program returns it, with no wait for a refresh.
-
-## Next
-
 - reborn gets Ctrl-C or SIGTERM: the open requests finish, each player is logged out with its last time online saved,
   and the database closes.
 - The game's program, run alone, gets Ctrl-C or SIGTERM: each player is logged out with its last time online saved, and
@@ -107,5 +104,8 @@ called "reborn", this should keep installer + cms + housekeeping in the same mux
   the browser lands on the site.
 - reborn serves, in development and in a release, the pages and files its own project builds for the site,
   housekeeping and the installer.
+
+## Next
+
 - A release holds `reborn`, `cms`, `housekeeping`, `installer` and `server`.
 - The browser suite `reborn` passes.
