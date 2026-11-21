@@ -105,15 +105,13 @@ func (r *Reborn) WaitForInstall(ctx context.Context) error {
 // MountInstaller registers the installer, and sends every other page to
 // /installer/. A request that falls to the static files of the site or of
 // housekeeping is served: the files of reborn's dist, and the dev server's
-// own paths such as /@vite/client. Once the administrator exists, every
-// request outside /installer/ reaches the site and housekeeping, so that a
-// request this mux takes after "Create administrator" finds the site.
+// own paths such as /@vite/client.
 func (r *Reborn) MountInstaller(mux *http.ServeMux) {
 	site := http.NewServeMux()
 	r.Mount(site)
 	r.installer.Mount(mux)
 	mux.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		if r.Installed() || isStatic(site, req) {
+		if isStatic(site, req) {
 			site.ServeHTTP(w, req)
 			return
 		}

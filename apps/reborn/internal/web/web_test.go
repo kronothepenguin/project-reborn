@@ -5,8 +5,8 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"net/http/httptrace"
 	"strconv"
-	"sync"
 	"testing"
 	"time"
 )
@@ -73,53 +73,49 @@ func closed(port int) bool {
 	return err != nil
 }
 
-// The behaviour: the runner serves a new handler after the installation: a
-// new connection to the same address gets it, and no request in between
-// finds the address closed.
-func TestServeReplacesTheServerOnTheSameAddress(t *testing.T) {
+// The behaviour: the runner serves the site after the installation: the same
+// address answers with the new handler, on a new connection and on one opened
+// before.
+func TestServeAnswersWithTheNewHandlerOnTheSameAddress(t *testing.T) {
 	s, port := start(t, says("installer"))
-	if _, _, body := fetch(t, address(port)+"/"); body != "installer" {
+	open := &http.Client{Timeout: timeout, Transport: &http.Transport{}}
+	if body, _ := get(t, open, address(port)+"/"); body != "installer" {
 		t.Fatalf("GET / = %q, want the installer", body)
 	}
 
-	// Two clients open a connection per request, and two keep theirs open.
-	fresh := &http.Client{Timeout: timeout, Transport: &http.Transport{DisableKeepAlives: true}}
-	stop := make(chan struct{})
-	var wg sync.WaitGroup
-	for _, client := range []*http.Client{fresh, fresh, browser, browser} {
-		wg.Go(func() {
-			for {
-				select {
-				case <-stop:
-					return
-				default:
-				}
-				resp, err := client.Get(address(port) + "/")
-				if err != nil {
-					t.Errorf("a request while the server is replaced failed: %v", err)
-					return
-				}
-				io.Copy(io.Discard, resp.Body)
-				resp.Body.Close()
-			}
-		})
-	}
-	time.Sleep(50 * time.Millisecond)
 	if err := s.Serve(says("site")); err != nil {
 		t.Fatalf("Serve: %v", err)
 	}
-	time.Sleep(50 * time.Millisecond)
-	close(stop)
-	wg.Wait()
 
-	resp, err := fresh.Get(address(port) + "/")
+	if body, reused := get(t, open, address(port)+"/"); body != "site" || !reused {
+		t.Errorf("GET / on the open connection = %q (reused %v), want the site on the same connection", body, reused)
+	}
+	fresh := &http.Client{Timeout: timeout, Transport: &http.Transport{DisableKeepAlives: true}}
+	if body, _ := get(t, fresh, address(port)+"/"); body != "site" {
+		t.Errorf("GET / on a new connection = %q, want the site", body)
+	}
+}
+
+// get requests url with client, and returns the body and whether the request
+// went on a connection opened before.
+func get(t *testing.T, client *http.Client, url string) (string, bool) {
+	t.Helper()
+	var reused bool
+	trace := &httptrace.ClientTrace{GotConn: func(info httptrace.GotConnInfo) { reused = info.Reused }}
+	req, err := http.NewRequestWithContext(httptrace.WithClientTrace(context.Background(), trace), "GET", url, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp, err := client.Do(req)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer resp.Body.Close()
-	if body, _ := io.ReadAll(resp.Body); string(body) != "site" {
-		t.Errorf("GET / on a new connection = %q, want the site", body)
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
 	}
+	return string(body), reused
 }
 
 // moving serves a handler that moves the server to the host and the port of
@@ -162,16 +158,43 @@ func TestMoveAnswersOnTheNewPort(t *testing.T) {
 	}
 }
 
-// The behaviour: the installer moves the hotel to every interface on the same
-// port: the browser keeps its host name, and the port answers.
+// The behaviour: the installer moves the hotel to every interface on a new
+// port: the browser keeps its host name, and the new port answers.
 func TestMoveToEveryInterfaceKeepsTheHostName(t *testing.T) {
 	var s *Server
 	s, port := start(t, moving(&s))
+	next := freePort(t)
+
+	status, location, _ := fetch(t, address(port)+"/installer/config?host=0.0.0.0&port="+strconv.Itoa(next))
+
+	if status != http.StatusSeeOther || location != address(next)+"/installer/config" {
+		t.Fatalf("Move answered %d to %q, want 303 to %s/installer/config", status, location, address(next))
+	}
+	if _, _, body := fetch(t, address(next)+"/"); body != "here" {
+		t.Errorf("the new port answered %q", body)
+	}
+}
+
+// The behaviour: the installer saves the port the hotel holds, with another
+// host: the server stays, and the browser is sent to the same path on the same
+// address.
+func TestAMoveToTheSamePortKeepsTheServer(t *testing.T) {
+	var s *Server
+	s, port := start(t, moving(&s))
+	s.mu.Lock()
+	before := s.srv
+	s.mu.Unlock()
 
 	status, location, _ := fetch(t, address(port)+"/installer/config?host=0.0.0.0&port="+strconv.Itoa(port))
 
-	if status != http.StatusSeeOther || location != address(port)+"/installer/config" {
-		t.Fatalf("Move answered %d to %q, want 303 to %s/installer/config", status, location, address(port))
+	if status != http.StatusSeeOther || location != "/installer/config" {
+		t.Fatalf("Move answered %d to %q, want 303 to /installer/config", status, location)
+	}
+	s.mu.Lock()
+	after := s.srv
+	s.mu.Unlock()
+	if after != before {
+		t.Error("Move to the same port started a new server")
 	}
 	if _, _, body := fetch(t, address(port)+"/"); body != "here" {
 		t.Errorf("after the move the port answered %q", body)

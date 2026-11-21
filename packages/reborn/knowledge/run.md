@@ -44,8 +44,7 @@ func (r *Reborn) Stop(ctx context.Context) error
   (`(*http.ServeMux).Handler`). A route a program registered redirects to `/installer/` with 303. A request that falls to
   a static handler, the site's `/` or housekeeping's `/housekeeping/`, is served: the installer's stylesheet under
   `/_astro/`, and the dev server's own paths such as `/@vite/client`.
-- Once the administrator exists, the root handler serves the site and housekeeping. A request that reaches the
-  installer's server between "Create administrator" and the runner's new server finds the site.
+- Once the administrator exists, the runner serves the site's mux on the same server, and every connection gets it.
 - `Mount` registers the site and housekeeping. `/installer` and every path under `/installer/` answer 404, so the
   installer's built pages in `dist` stay out of reach.
 
@@ -63,6 +62,6 @@ func (r *Reborn) Stop(ctx context.Context) error
   `httptest` server, its game on free ports. `config.Get` loads `config.json` once per process. Each test makes habbos
   with names of its own.
 - A new hotel is built on an empty database of its own, served by an `httptest` server whose handler the test replaces,
-  as the runner replaces its server.
+  as the runner gives its server a new handler.
 - `habbos_test.go` speaks R26 to the game over a WebSocket with a small client of its own.
-- The HTTP server, its replacement and the move to a new address are tested in `apps/reborn/internal/web`.
+- The HTTP server, its new handler and the move to a new address are tested in `apps/reborn/internal/web`.

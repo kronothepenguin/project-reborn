@@ -7,30 +7,27 @@ How it works: `packages/reborn/knowledge/index.md` and `knowledge/programs.md`.
 
 ## Flow
 
-`cmd/reborn` and `cmd/reborn-dev` run the same flow (`knowledge/decisions/reborn/0015-the-runner-owns-reborns-http-server.md`):
+`cmd/reborn` and `cmd/reborn-dev` call the same flow, `web.Run`
+(`knowledge/decisions/reborn/0015-the-runner-owns-reborns-http-server.md`):
 
 1. A hotel that is not installed: `MountInstaller` on a mux, `Serve` it, and `WaitForInstall`. A Ctrl-C before the
    administrator exists shuts the server down and ends the program.
-2. `Mount` on a new mux, and `Serve` it: the site's server takes the open listener over, then the installer's shuts
-   down. `Start` opens the game's doors; its error ends the program.
+2. `Mount` on a new mux, and `Serve` it: the same server serves the site from then on, on every connection. `Start`
+   opens the game's doors; its error ends the program.
 3. Ctrl-C or SIGTERM: the open requests finish, for up to ten seconds; `Stop` logs each player out with its last time
    online saved; the database closes.
 
-`internal/web` is the HTTP server:
+`internal/web` is the HTTP server, one standard `http.Server` used the standard way:
 
-- `New(host, port)`, and `Serve(h)`: the first call opens `host:port`. One accept loop hands each connection to the
-  current `http.Server`, so a later `Serve` starts a server for its handler on the open listener first, then retires
-  the old one: it takes no new connection, answers the next request of each of its connections with `Connection:
-  close`, closes an idle one after two minutes, and closes once none is left. No request finds the address closed, and
-  every new connection gets the new handler.
-- `Move(w, r, host, port)` is the installer's `Listener`: it opens the new address, redirects the browser with 303 to
-  the same path there, closes the old listener and retires the old server. With host `0.0.0.0` or `::` the
-  browser keeps its host name. On `EADDRINUSE` with the same port, as `0.0.0.0` over `localhost`, the old listener lets
-  go first; when the new address still fails, the old one opens again. A failed move leaves the browser on the form
-  with the error.
-- `Shutdown(ctx)` closes the listener and shuts every server down, the retired ones too: the open requests finish
-  until `ctx` ends.
-- A failed accept is logged and retried after a pause.
+- `New(host, port)`, and `Serve(h)`: the first call listens on `host:port` and starts the server. Its handler calls the
+  handler given last, so every call makes `h` the handler of every connection, the open ones too.
+- `Move(w, r, host, port)` is the installer's `Listener`. On a new port it listens there, starts a second
+  `http.Server` with the same handler, redirects the browser with 303 to the same path, and shuts the first server
+  down after the response. With host `0.0.0.0` or `::` the browser keeps its host name. On the port the server holds,
+  it keeps the server and redirects to the same path; the new host, saved by the installer, applies at the next start.
+  A port in use leaves the browser on the form with the error.
+- `Shutdown(ctx)` is the `http.Server`'s `Shutdown`: the open requests finish until `ctx` ends.
+- A server that stops on an error is logged.
 
 ## Ports
 

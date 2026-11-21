@@ -19,7 +19,7 @@ import (
 
 // newHotel builds reborn on an empty database of its own, as the runner does
 // in an empty folder, and serves h on an httptest server whose handler the
-// test replaces, as the runner replaces its server on the same address.
+// test replaces, as the runner gives its server a new handler.
 func newHotel(t *testing.T) (*Reborn, *httptest.Server, *atomic.Pointer[http.Handler]) {
 	t.Helper()
 	db, err := store.Open(filepath.Join(t.TempDir(), "habbo.db"))
@@ -104,10 +104,6 @@ func TestANewHotelIsInstalledAndTheSiteAnswers(t *testing.T) {
 	if !r.Installed() {
 		t.Error("not Installed after the administrator was created")
 	}
-
-	// The browser's next request may reach the installer's server before
-	// the runner replaces it: it finds the site there too.
-	answers(t, browser, "GET", srv.URL+"/", nil, http.StatusOK, "", "page index.html")
 
 	site := http.NewServeMux()
 	r.Mount(site)
