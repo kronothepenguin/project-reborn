@@ -104,8 +104,8 @@ called "reborn", this should keep installer + cms + housekeeping in the same mux
   lands on the site.
 - reborn serves, in development and in a release, the pages and files its own project builds for the site,
   housekeeping and the installer.
+- The browser suite `reborn` passes.
 
 ## Next
 
 - A release holds `reborn`, `cms`, `housekeeping`, `installer` and `server`.
-- The browser suite `reborn` passes.

@@ -26,12 +26,12 @@ Built:
 | `packages/reborn` | One Astro project that builds one `dist` for the three sites; `New` builds the site, housekeeping, the installer and the game; `MountInstaller`, `Mount`, `Start`, `Stop`; `Run` and the HTTP server go ([0015](/decisions/reborn/0015-the-runner-owns-reborns-http-server.md)) |
 | `apps/reborn` | The HTTP server, its replacement after the installation and its move to a new address; the wait for the installation and for Ctrl-C |
 | `apps/server` | Ctrl-C and SIGTERM stop the game with `Stop`, then the database closes |
+| `tests/e2e` | A browser suite for reborn |
 
 Planned:
 
 | Project | Part |
 | --- | --- |
-| `tests/e2e` | A browser suite for reborn |
 | releases | reborn and the four separate programs ([0008](/decisions/reborn/0008-releases-ship-reborn-and-the-separate-programs.md)) |
 
 ## reborn's new shape
@@ -106,8 +106,9 @@ db.Close()
 
 - `web` lives in `apps/reborn/internal/web`, shared by `reborn` and `reborn-dev`. Run alone, the installer stays on its
   port and moves nothing, so it shares none of this code.
-- `web.Serve` gives the running server its new handler, so the browser's request for `/` right after "Create
-  administrator" finds the site.
+- `web.Serve` gives the running server its new handler. The installer's root handler serves the site's mux once the
+  administrator exists, so the browser's request for `/` right after "Create administrator" finds the site whichever
+  mux the server holds at that instant.
 - Before the installation, pages go to `/installer/` and files pass, the dev server's own paths included, as the user
   asked on 2026-11-15 (see Decisions).
 

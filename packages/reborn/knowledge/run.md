@@ -44,7 +44,9 @@ func (r *Reborn) Stop(ctx context.Context) error
   (`(*http.ServeMux).Handler`). A route a program registered redirects to `/installer/` with 303. A request that falls to
   a static handler, the site's `/` or housekeeping's `/housekeeping/`, is served: the installer's stylesheet under
   `/_astro/`, and the dev server's own paths such as `/@vite/client`.
-- Once the administrator exists, the runner serves the site's mux on the same server, and every connection gets it.
+- Once the administrator exists, the root handler serves every page outside `/installer/` with the site's mux, so the
+  browser's request for `/` right after "Create administrator" finds the site before the runner replaces the mux. The
+  runner then serves the site's mux on the same server, and every connection gets it.
 - `Mount` registers the site and housekeeping. `/installer` and every path under `/installer/` answer 404, so the
   installer's built pages in `dist` stay out of reach.
 

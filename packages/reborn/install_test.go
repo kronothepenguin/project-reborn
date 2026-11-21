@@ -104,6 +104,9 @@ func TestANewHotelIsInstalledAndTheSiteAnswers(t *testing.T) {
 	if !r.Installed() {
 		t.Error("not Installed after the administrator was created")
 	}
+	// The browser's request for / may come before the runner replaces the
+	// installer's mux: that mux answers it with the site.
+	answers(t, browser, "GET", srv.URL+"/", nil, http.StatusOK, "", "page index.html")
 
 	site := http.NewServeMux()
 	r.Mount(site)

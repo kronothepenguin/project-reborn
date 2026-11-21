@@ -2,7 +2,6 @@
 
 # Tasks
 
-- [The browser suite reborn](13-browser-suite.md) - A browser suite builds reborn and checks, from an empty folder, the installer, the move to a new port, the hotel after the install, the game's first message, and a stop in order.
 - [Releases ship reborn and the four separate programs](14-releases.md) - make release and the release workflow build reborn, cms, housekeeping, installer and server into each archive, and CI runs the reborn suite.
 - [The documents say what reborn is](15-documents.md) - The platform feature's later notes, the READMEs and the architecture references describe reborn, the installer under /installer/, settings read from the store, the stop in order and the releases.
 - [Check the platform feature's behaviours](16-exit-check.md) - Every behaviour of the platform feature is checked on main and its evidence written in the report, and the feature is closed or what is left is reported.

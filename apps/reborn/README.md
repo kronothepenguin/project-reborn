@@ -59,7 +59,8 @@ to the Go code rebuilds and restarts the runner.
 Run by an AI agent, Astro starts its dev server in the background: `make -C apps/reborn stop` stops it.
 
 Before the administrator exists, reborn sends every page outside `/installer/` to the installer and serves the files,
-Vite's own paths included: the installer's pages render with their styles.
+Vite's own paths included: the installer's pages render with their styles. Once the administrator exists, every page
+outside `/installer/` is the site's, so the browser lands on the site right after "Create administrator".
 
 ## Production
 
