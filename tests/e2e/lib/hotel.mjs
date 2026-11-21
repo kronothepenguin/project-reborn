@@ -25,8 +25,9 @@ export const installerPort = 17306;
 // The game server has no pages, so it has no frontend to build.
 const programs = ["cms", "housekeeping", "installer", "server"];
 const frontends = ["cms", "housekeeping", "installer"];
+// The lines a program logs when it starts, and the game's line when it stops.
 const banner =
-  /^\S+ \S+ (?:(?:cms|housekeeping|installer) on http|INFO server: (?:api on http|info on ws|mus on ws):\/\/|INFO server: the hotel is closed, and its doors stay closed$)/;
+  /^\S+ \S+ (?:(?:cms|housekeeping|installer) on http|INFO server: (?:api on http|info on ws|mus on ws):\/\/|INFO server: the hotel is closed, and its doors stay closed$|INFO server: the doors are closed$)/;
 
 export function build() {
   mkdirSync(bin, { recursive: true });

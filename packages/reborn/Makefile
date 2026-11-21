@@ -1,6 +1,10 @@
 .PHONY: install
 
+include ../../make/check.mk
+
+# go:embed needs a file in dist/ before the first pnpm build, which replaces it.
 install:
 	go mod download
-
-include ../../make/check.mk
+	pnpm --filter '@project-reborn/reborn...' install
+	mkdir -p dist
+	test -e dist/index.html || echo '<!DOCTYPE html><title>reborn</title><p>Frontend not built yet. Run make dev for the development server.</p>' > dist/index.html

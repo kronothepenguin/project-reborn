@@ -7,6 +7,7 @@ install:
 	$(MAKE) -C ../../packages/housekeeping install
 	$(MAKE) -C ../../packages/installer install
 	$(MAKE) -C ../../packages/server install
+	$(MAKE) -C ../../packages/reborn install
 	mkdir -p tmp
 
 # air runs from the repository root, so the runner reads the root config.json.

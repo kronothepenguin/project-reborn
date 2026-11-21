@@ -16,11 +16,13 @@ dev:
 build:
 	go build -o ./bin/reborn ./apps/reborn/cmd/reborn
 
-# The three frontends, which the Go programs embed.
+# The frontends the Go programs embed: each site's own, for its own runner, and
+# reborn's, which holds the three sites.
 frontends:
 	pnpm --filter @project-reborn/cms build
 	pnpm --filter @project-reborn/installer build
 	pnpm --filter @project-reborn/housekeeping build
+	pnpm --filter @project-reborn/reborn build
 
 # LibreShockwave's browser player, built with Emscripten from the submodule into
 # the CMS's public folder, which git ignores. The client page links to

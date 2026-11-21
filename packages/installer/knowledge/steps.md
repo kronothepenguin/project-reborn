@@ -42,9 +42,11 @@ not wrapped by its runner.
 
 # Rules
 
-- "Installed" means a user holds `housekeeping.accessGroups`. `installer.Installed(ctx, db)` answers it for a program
-  that holds the database. Once installed, every step redirects to the status page, `/installer/`.
-- `(*Installer).Done()` is closed once the administrator exists, at start already when the database has one.
+- "Installed" means a user holds `housekeeping.accessGroups`. Once installed, every step redirects to the status page,
+  `/installer/`.
+- `(*Installer).Installed()` reports whether the administrator exists, at start already when the database has one.
+  `(*Installer).WaitForInstall(ctx)` returns once the administrator exists, or with `ctx`'s error when `ctx` ends first:
+  reborn's runner waits on it.
 - After "Create administrator" the browser goes to `/`: inside reborn the site's front page, run alone the runner's
   redirect to the status page. There is no done page.
 - `/installer/site` and `/installer/admin` redirect to `/installer/config` until `config.json` exists.

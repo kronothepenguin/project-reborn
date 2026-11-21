@@ -46,18 +46,15 @@ pnpm --filter @project-reborn/reborn build   # packages/reborn/dist
 
 # For a Go runner
 
-`apps/reborn/cmd/reborn-dev` serves each site from the dev server under the site's base address:
-`http://localhost:22448/` for the CMS, `http://localhost:22448/housekeeping` and `http://localhost:22448/installer`.
-The root address ends in `/`, so `JoinPath` keeps the leading slash.
+The runners hand reborn one resolver and one file handler for the three sites, and reborn gives each site its pages
+and files under its base ([Run](run.md)).
 
-- `astro.MakeServerResolver` of the base address resolves the site's pages. It answers with the parsed page, also for a
-  missing page, whose 404 body it parses as the template.
-- `httputil.NewSingleHostReverseProxy` of the base address serves the site's static files. Housekeeping and the
-  installer mount their static handler behind `http.StripPrefix`, so `/housekeeping/favicon.svg` reaches the proxy as
-  `/favicon.svg` and the proxy puts the base path back. A proxy of the root would answer with the CMS's
-  `favicon.svg`.
-- Vite's own paths (`/@vite/client`, `/@fs/...`, `/@id/...`) are at the root: the CMS's proxy serves them.
-- The page's HMR WebSocket at `ws://localhost:16416/` meets the CMS's own `/` route, and Vite's client falls back to a
+- `apps/reborn/cmd/reborn` serves the embedded `DistFS`: `astro.MakeFSResolver` and `http.FileServerFS` of `dist/`.
+- `apps/reborn/cmd/reborn-dev` serves the dev server at `http://localhost:22448/`: `astro.MakeServerResolver` and
+  `httputil.NewSingleHostReverseProxy` of that address. The resolver answers with the parsed page, also for a missing
+  page, whose 404 body it parses as the template.
+- Vite's own paths (`/@vite/client`, `/@fs/...`, `/@id/...`) are at the root: the site's static handler serves them.
+- The page's HMR WebSocket at `ws://localhost:16416/` meets the site's own `/` route, and Vite's client falls back to a
   direct connection to the dev server. Live reload works through that fallback.
 - Before the administrator exists, reborn redirects the programs' routes to the installer and serves what falls to the
   static handlers, Vite's paths included: the installer's pages load Vite's client, and an edit reloads the page through

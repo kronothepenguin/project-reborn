@@ -1,14 +1,17 @@
 # reborn
 
-Runs the whole hotel in one process: the site and housekeeping on one mux, and the game server's two listeners, on one
-database handle. `apps/reborn` is its runner: it builds each program and hands them to `reborn.New`.
+Builds the whole hotel on one database handle: the site, housekeeping, the installer and the game. It mounts the
+installer, or the site and housekeeping, on a mux it receives, and starts and stops the game. `apps/reborn` is its
+runner and owns the HTTP server.
 
 How it works: `knowledge/index.md`.
 
-Its dev-only Astro project serves every site's pages from one dev server (`knowledge/dev-server.md`):
+Its Astro project serves every site's pages from one dev server and builds them into one `dist`
+(`knowledge/dev-server.md`):
 
 ```sh
 pnpm --filter @project-reborn/reborn dev
+pnpm --filter @project-reborn/reborn build
 ```
 
 Check, from `packages/reborn`, after `make install` in `apps/reborn`, which gives the frontends their `dist/`:

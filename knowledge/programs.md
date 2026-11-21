@@ -73,7 +73,7 @@ No task runs while updates wait, because its code may need them.
 | CMS | `apps/cms/cmd/cms` | `apps/cms/cmd/cms-dev` |
 | Housekeeping | `apps/housekeeping/cmd/housekeeping` | `apps/housekeeping/cmd/housekeeping-dev` |
 | Game server | `apps/server/cmd/server` | `apps/server/cmd/server` |
-| reborn | `apps/reborn/cmd/reborn` | to come ([0009](/decisions/reborn/0009-one-dev-server-for-reborn.md)) |
+| reborn | `apps/reborn/cmd/reborn` | `apps/reborn/cmd/reborn-dev` |
 
 - `make dev` in `apps/<app>` starts air from the repository root, so every runner reads and writes the root
   `config.json` ([0027](/decisions/holo-port/0027-runners-run-from-the-root.md)).

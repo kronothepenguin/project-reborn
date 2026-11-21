@@ -1,52 +1,68 @@
 ---
 type: Go Package
 title: Run
-description: What reborn.Run serves on an installed hotel and on a new one, how Move takes the hotel to a new address, and when the installer goes.
+description: reborn.New builds the site, housekeeping, the installer and the game; MountInstaller and Mount register them on the runner's mux; Start and Stop open and close the game's doors.
 ---
 
 # Run
 
-`reborn.New(cfg, db, c, h, i, g).Run(ctx)` serves the hotel until `ctx` ends
-(`knowledge/decisions/reborn/0003-reborn-runs-the-hotel-in-one-process.md`,
-`knowledge/decisions/reborn/0004-the-installer-inside-reborn.md`). The runner builds the programs, opens the database
-and injects reborn into the installer as its `Listener` ([Programs](programs.md)).
+`packages/reborn` builds the hotel and mounts it on a mux it receives; its runner owns the HTTP server
+(`knowledge/decisions/reborn/0015-the-runner-owns-reborns-http-server.md`).
 
-1. `installer.Installed(ctx, db)` tells whether somebody holds `housekeeping.accessGroups`.
-2. One `http.ServeMux`: the CMS at `/`, housekeeping at `/housekeeping/`. A hotel that is not installed gets the
-   installer at `/installer/` too; an installed one never mounts it.
-3. Installed: the game's `Start` opens its doors on `server.info` and `server.mus`, unless `game.closed` or
-   `site.maintenance` is on; then they stay closed, and the rest of the hotel runs. Not installed: the game waits for
-   `(*Installer).Done()`, then starts, and reborn logs the absolute paths of `config.json` and the database.
-4. An `http.Server` on `cfg.Reborn.Host:cfg.Reborn.Port`, `localhost:16416` by default, and one log line: `reborn on
-   http://<addr>`, or `reborn installs a new hotel on http://<addr>/installer/`.
+```go
+func New(db *sql.DB, mover installer.Listener, opts ...Option) (*Reborn, error)
+func WithResolver(r astro.Resolver) Option
+func WithStatic(h http.Handler) Option
 
-A middleware in front of the mux reads `Done()` on each request:
+func (r *Reborn) Installed() bool
+func (r *Reborn) WaitForInstall(ctx context.Context) error
+func (r *Reborn) MountInstaller(mux *http.ServeMux)
+func (r *Reborn) Mount(mux *http.ServeMux)
+func (r *Reborn) Start(ctx context.Context) error
+func (r *Reborn) Stop(ctx context.Context) error
+```
 
-- Before the administrator exists, a request outside `/installer/` asks the mux which pattern takes it
-  (`(*http.ServeMux).Handler`). A route a program registered redirects to `/installer/` with 303. A request that falls
-  to a static handler, the CMS's `/` or housekeeping's `/housekeeping/`, is served: the sites' files, and the dev
-  server's own paths under `reborn-dev`.
-- From then on, `/installer` and every path under `/installer/` answer 404, from the first request on an installed hotel
-  and from the request after "Create administrator" on a new one.
+# New
 
-When `ctx` ends, the HTTP server shuts down and `Run` returns nil. A listener that fails, or the game failing to start
-after the install, ends `Run` with its error. The game's listeners stay open until the process ends; stopping in order
-is platform 10. `Run` leaves `db` open: the runner owns it.
+- `New` builds the CMS first, so its automatic updates run before the game reads the database, then housekeeping, the
+  installer and the game, all on `db`.
+- It injects the game, which satisfies `services.Habbos` and `services.Hotel`, into the CMS and housekeeping, and
+  `mover` into the installer as its `Listener`.
+- It returns the installer's error when the installation in the working directory cannot be read.
+- `WithResolver` and `WithStatic` give the pages and files of reborn's one `dist`, or of its dev server
+  ([Dev server](dev-server.md)). Each site gets them under its base: the site at the root, housekeeping under
+  `housekeeping`, the installer under `installer`. Housekeeping's `index.html` resolves as `housekeeping/index.html`,
+  and its `/favicon.svg`, which it strips of `/housekeeping`, reaches the file handler as `/housekeeping/favicon.svg`.
+- `DistFS` embeds `dist/`, which `pnpm --filter @project-reborn/reborn build` writes and `make frontends` builds.
 
-Under reborn, `cms.host`, `cms.port`, `housekeeping.host` and `housekeeping.port` go unused.
+# The installation
 
-# Move
+- `Installed` and `WaitForInstall` pass through to the installer's: an administrator exists, or the wait returns once
+  one does. `WaitForInstall` logs the absolute paths of `config.json` and of the database when it returns.
+- `MountInstaller` registers the installer at `/installer/` and a root handler. Before the administrator exists, the
+  root handler asks a mux of the site and housekeeping which pattern takes the request
+  (`(*http.ServeMux).Handler`). A route a program registered redirects to `/installer/` with 303. A request that falls to
+  a static handler, the site's `/` or housekeeping's `/housekeeping/`, is served: the installer's stylesheet under
+  `/_astro/`, and the dev server's own paths such as `/@vite/client`.
+- Once the administrator exists, the root handler serves the site and housekeeping. A request that reaches the
+  installer's server between "Create administrator" and the runner's new server finds the site.
+- `Mount` registers the site and housekeeping. `/installer` and every path under `/installer/` answer 404, so the
+  installer's built pages in `dist` stay out of reach.
 
-`Move(w, r, host, port)` implements `installer.Listener`:
+# The game
 
-1. It listens on `host:port`. An error goes back to the installer's form, and the hotel stays where it was.
-2. The same handler serves the new listener.
-3. It redirects the browser with 303 to the same path on the new address. With host `0.0.0.0` or `::`, the browser
-   keeps its own host name.
-4. The old server shuts down in the background: it closes its listener at once and ends after the response.
+- `Start` opens the game's doors on `server.info` and `server.mus`, unless `game.closed` or `site.maintenance` is on.
+  It returns the game's error, such as a port in use.
+- `Stop` logs each player out with its last time online saved, and closes the doors. It takes about 5 seconds while
+  anybody is connected.
+- Under reborn, `cms.host`, `cms.port`, `housekeeping.host` and `housekeeping.port` go unused.
 
-On the same port, a new address that covers the old one, such as `0.0.0.0` over `localhost`, cannot be bound while the
-old one listens. On `EADDRINUSE` with the same port, the old server lets go of its listener first, then the new address
-is bound; when that fails, the old address is served again and the error goes back to the form.
+# Tests
 
-`config.Get()` keeps the address reborn started on; the installer saves the new one with `config.SaveReborn`.
+- `TestMain` builds one installed hotel for the package, in a folder of its own: its site and housekeeping on an
+  `httptest` server, its game on free ports. `config.Get` loads `config.json` once per process. Each test makes habbos
+  with names of its own.
+- A new hotel is built on an empty database of its own, served by an `httptest` server whose handler the test replaces,
+  as the runner replaces its server.
+- `habbos_test.go` speaks R26 to the game over a WebSocket with a small client of its own.
+- The HTTP server, its replacement and the move to a new address are tested in `apps/reborn/internal/web`.

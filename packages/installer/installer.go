@@ -46,15 +46,25 @@ func New(ctx context.Context, db *sql.DB, opts ...Option) (*Installer, error) {
 	return i, nil
 }
 
-// Installed reports whether db has an administrator: someone holds
-// housekeeping.accessGroups.
-func Installed(ctx context.Context, db *sql.DB) (bool, error) {
-	return setup.Installed(ctx, db)
+// Installed reports whether the administrator exists.
+func (i *Installer) Installed() bool {
+	select {
+	case <-i.setup.Done():
+		return true
+	default:
+		return false
+	}
 }
 
-// Done is closed once the administrator exists.
-func (i *Installer) Done() <-chan struct{} {
-	return i.setup.Done()
+// WaitForInstall returns once the administrator exists, or with ctx's error
+// when ctx ends first.
+func (i *Installer) WaitForInstall(ctx context.Context) error {
+	select {
+	case <-i.setup.Done():
+		return nil
+	case <-ctx.Done():
+		return ctx.Err()
+	}
 }
 
 // Mount registers only /installer/..., so that the installer can share a mux

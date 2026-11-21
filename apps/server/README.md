@@ -13,7 +13,12 @@ How it works: `packages/server/knowledge/index.md` and `knowledge/programs.md`.
 
 - `info` and `mus` (WebSocket listeners): the hosts and ports of `server.info`
   and `server.mus` in `config.json`, 30000 and 30001 by default, which the
-  runner starts with `StartInfo` and `StartMus`
+  runner opens with `Start`
+
+## Stop
+
+Ctrl-C or SIGTERM calls `Stop`: each player is logged out with its last time
+online saved and the doors close, then the database closes.
 
 ## Run
 

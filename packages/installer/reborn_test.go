@@ -1,6 +1,7 @@
 package installer
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
@@ -12,9 +13,11 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/config"
 	"github.com/kronothepenguin/project-reborn/packages/config/reborn"
+	"github.com/kronothepenguin/project-reborn/packages/installer/internal/setup"
 	"github.com/kronothepenguin/project-reborn/packages/settings"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
@@ -158,25 +161,68 @@ func TestTheInstallerIsServedUnderInstaller(t *testing.T) {
 func TestCreatingTheAdministratorGoesToTheSite(t *testing.T) {
 	i, mux := mounted(t)
 	expect(t, send(t, mux, "POST", "/installer/config", url.Values{"path": {"habbo.db"}, "port": {"17400"}, "housekeepingPort": {"18400"}}), 303, "/installer/site", "")
+	if i.Installed() {
+		t.Fatal("Installed before the administrator exists")
+	}
+
+	expect(t, send(t, mux, "POST", "/installer/admin", adminForm), 303, "/", "")
+
+	if !i.Installed() {
+		t.Error("not Installed after the administrator was created")
+	}
+	installation, _ := i.setup.Current()
+	if installed, err := setup.Installed(t.Context(), installation.DB); err != nil || !installed {
+		t.Errorf("Installed = %t, %v, want true", installed, err)
+	}
+	if rec := send(t, mux, "GET", "/installer/done", nil); rec.Code != http.StatusNotFound {
+		t.Errorf("GET /installer/done answered %d, want 404", rec.Code)
+	}
+}
+
+// The administrator is created while a runner waits for the installation: the wait returns.
+func TestWaitForInstallReturnsOnceTheAdministratorExists(t *testing.T) {
+	i, mux := inReborn(t, &fakeListener{})
+	expect(t, send(t, mux, "POST", "/installer/config", url.Values{"host": {"localhost"}, "port": {"16416"}}),
+		303, "/installer/site", "")
+	waited := make(chan error, 1)
+	go func() { waited <- i.WaitForInstall(t.Context()) }()
 	select {
-	case <-i.Done():
-		t.Fatal("Done is closed before the administrator exists")
-	default:
+	case err := <-waited:
+		t.Fatalf("WaitForInstall returned %v before the administrator exists", err)
+	case <-time.After(50 * time.Millisecond):
 	}
 
 	expect(t, send(t, mux, "POST", "/installer/admin", adminForm), 303, "/", "")
 
 	select {
-	case <-i.Done():
-	default:
-		t.Error("Done is open after the administrator was created")
+	case err := <-waited:
+		if err != nil {
+			t.Errorf("WaitForInstall = %v, want nil", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("WaitForInstall still waits after the administrator was created")
 	}
-	installation, _ := i.setup.Current()
-	if installed, err := Installed(t.Context(), installation.DB); err != nil || !installed {
-		t.Errorf("Installed = %t, %v, want true", installed, err)
+}
+
+// The runner stops before the installation ends: the wait returns the context's error.
+func TestWaitForInstallReturnsWhenTheContextEnds(t *testing.T) {
+	i, _ := inReborn(t, &fakeListener{})
+	ctx, cancel := context.WithCancel(t.Context())
+	waited := make(chan error, 1)
+	go func() { waited <- i.WaitForInstall(ctx) }()
+
+	cancel()
+
+	select {
+	case err := <-waited:
+		if !errors.Is(err, context.Canceled) {
+			t.Errorf("WaitForInstall = %v, want context.Canceled", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("WaitForInstall still waits after the context ended")
 	}
-	if rec := send(t, mux, "GET", "/installer/done", nil); rec.Code != http.StatusNotFound {
-		t.Errorf("GET /installer/done answered %d, want 404", rec.Code)
+	if i.Installed() {
+		t.Error("Installed without an administrator")
 	}
 }
 
@@ -282,7 +328,7 @@ func TestInsideRebornTheInstallerWorksOnRebornsDatabase(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer db.Close()
-	if installed, err := Installed(t.Context(), db); err != nil || !installed {
+	if installed, err := setup.Installed(t.Context(), db); err != nil || !installed {
 		t.Errorf("Installed on reborn's database = %t, %v, want true", installed, err)
 	}
 }

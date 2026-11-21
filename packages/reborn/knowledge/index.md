@@ -6,6 +6,5 @@ okf_version: "0.2"
 
 # Knowledge
 
-- [Dev server](dev-server.md) - The dev-only Astro project that serves the CMS's, housekeeping's and the installer's pages from one dev server, under /, /housekeeping/ and /installer/.
-- [Programs](programs.md) - The runner builds the CMS, housekeeping, the installer and the game with their own constructors, injects the game into the CMS and housekeeping, and reborn.New takes them as arguments.
-- [Run](run.md) - What reborn.Run serves on an installed hotel and on a new one, how Move takes the hotel to a new address, and when the installer goes.
+- [Dev server](dev-server.md) - The Astro project that serves the CMS's, housekeeping's and the installer's pages from one dev server, under /, /housekeeping/ and /installer/, and builds them into one dist.
+- [Run](run.md) - reborn.New builds the site, housekeeping, the installer and the game; MountInstaller and Mount register them on the runner's mux; Start and Stop open and close the game's doors.

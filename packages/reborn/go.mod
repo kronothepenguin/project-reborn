@@ -3,6 +3,7 @@ module github.com/kronothepenguin/project-reborn/packages/reborn
 go 1.27.0
 
 require (
+	github.com/kronothepenguin/project-reborn/packages/astro v0.0.0-20261115222100-913bc4dc312d
 	github.com/kronothepenguin/project-reborn/packages/auth v0.0.0-20261115222100-913bc4dc312d
 	github.com/kronothepenguin/project-reborn/packages/cms v0.0.0-20261115222100-913bc4dc312d
 	github.com/kronothepenguin/project-reborn/packages/config v0.0.0-20261115222100-913bc4dc312d
@@ -16,7 +17,6 @@ require (
 require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/kronothepenguin/project-reborn/packages/astro v0.0.0-20261115222100-913bc4dc312d // indirect
 	github.com/kronothepenguin/project-reborn/packages/scheduler v0.0.0-20261115222100-913bc4dc312d // indirect
 	github.com/kronothepenguin/project-reborn/packages/services v0.0.0-20261115222100-913bc4dc312d // indirect
 	github.com/kronothepenguin/project-reborn/packages/virtual v0.0.0-20261115222100-913bc4dc312d // indirect

@@ -10,50 +10,35 @@ import (
 	"net"
 	"net/http"
 	"net/http/cookiejar"
+	"net/http/httptest"
 	"net/url"
 	"os"
-	"os/signal"
 	"strconv"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
-	"github.com/kronothepenguin/project-reborn/packages/cms"
 	"github.com/kronothepenguin/project-reborn/packages/config"
-	"github.com/kronothepenguin/project-reborn/packages/housekeeping"
-	"github.com/kronothepenguin/project-reborn/packages/installer"
-	"github.com/kronothepenguin/project-reborn/packages/server"
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
 const timeout = 5 * time.Second
 
-// hotel is the installed hotel every test of the package visits: reborn runs it
-// on free ports, in a folder of its own, with the programs built and injected as
-// the runner does. config.Get loads config.json once per process, so the hotel
-// starts once.
+// hotel is the installed hotel every test of the package visits: reborn built
+// on a database with an administrator, in a folder of its own, its site and
+// housekeeping mounted on an httptest server and its game started on free
+// ports. config.Get loads config.json once per process, so the hotel is built
+// once.
 var hotel struct {
-	db   *sql.DB
-	site string
-	info int
+	db     *sql.DB
+	reborn *Reborn
+	site   string
+	info   int
+	port   int
 }
 
-// newHotelEnv makes the test binary run reborn in its working directory
-// instead of the tests, until an interrupt: a test that installs a new hotel
-// starts it so, because config.Get loads config.json once per process.
-const newHotelEnv = "REBORN_TEST_NEW_HOTEL"
-
 func TestMain(m *testing.M) {
-	if os.Getenv(newHotelEnv) != "" {
-		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
-		defer stop()
-		if err := runHotel(ctx); err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
-		}
-		os.Exit(0)
-	}
 	code, err := run(m)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -88,70 +73,54 @@ func run(m *testing.M) (int, error) {
 		return 0, err
 	}
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 	db := store.FromConfig()
 	defer db.Close()
-	r, err := build(ctx, db)
+	r, err := build(db)
 	if err != nil {
 		return 0, err
 	}
-
+	mux := http.NewServeMux()
+	r.Mount(mux)
+	srv := httptest.NewServer(mux)
+	defer srv.Close()
 	release()
-	stopped := make(chan error, 1)
-	go func() { stopped <- r.Run(ctx) }()
-	hotel.db, hotel.site, hotel.info = db, "http://127.0.0.1:"+strconv.Itoa(site), info
-	if err := waitForSite(hotel.site+"/", stopped); err != nil {
-		return 0, err
+	if err := r.Start(context.Background()); err != nil {
+		return 0, fmt.Errorf("Start: %w", err)
 	}
+	hotel.db, hotel.reborn, hotel.site, hotel.info, hotel.port = db, r, srv.URL, info, site
 
 	code := m.Run()
-	cancel()
-	if err := <-stopped; err != nil {
-		return code, fmt.Errorf("Run: %w", err)
+	if err := r.Stop(context.Background()); err != nil {
+		return code, fmt.Errorf("Stop: %w", err)
 	}
 	return code, nil
 }
 
-// build builds the programs on db and injects them as the runner does, with
-// pages and static files that print their names.
-func build(ctx context.Context, db *sql.DB) (*Reborn, error) {
-	c := cms.New(db, cms.WithResolver(printPage("cms")), cms.WithStatic(printFile("cms")))
-	h := housekeeping.New(db, housekeeping.WithResolver(printPage("housekeeping")), housekeeping.WithStatic(printFile("housekeeping")))
-	i, err := installer.New(ctx, db, installer.WithResolver(printPage("installer")), installer.WithStatic(printFile("installer")))
-	if err != nil {
-		return nil, fmt.Errorf("installer.New: %w", err)
-	}
-	g := server.New(db)
-	c.Inject(cms.Services{Habbos: g, Hotel: g})
-	h.Inject(housekeeping.Services{Habbos: g, Hotel: g})
-	r := New(config.Get(), db, c, h, i, g)
-	i.Inject(installer.Services{Listener: r})
-	return r, nil
+// build builds reborn on db as the runner does, with pages and files that
+// print their names, and a mover that redirects to the new address.
+func build(db *sql.DB) (*Reborn, error) {
+	return New(db, mover{}, WithResolver(printPage), WithStatic(http.HandlerFunc(printFile)))
 }
 
-// runHotel runs reborn in the working directory until ctx ends, as the runner
-// does.
-func runHotel(ctx context.Context) error {
-	db := store.FromConfig()
-	defer db.Close()
-	r, err := build(ctx, db)
-	if err != nil {
-		return err
-	}
-	return r.Run(ctx)
+// mover answers like the runner's server: a redirect to the same path on the
+// new address.
+type mover struct{}
+
+func (mover) Move(w http.ResponseWriter, r *http.Request, host string, port int) error {
+	http.Redirect(w, r, "http://"+net.JoinHostPort(host, strconv.Itoa(port))+r.URL.Path, http.StatusSeeOther)
+	return nil
 }
 
-// The behaviour: reborn starts in the folder of an installed hotel, and the
-// site answers at /, housekeeping at /housekeeping/ and the game on its two
-// ports, on the address of the reborn section.
+// The behaviour: an installed hotel serves the site at / and housekeeping at
+// /housekeeping/ from the one resolver, each site's pages under its base, and
+// the game answers on its port.
 func TestItRunsAnInstalledHotel(t *testing.T) {
-	if body := get(t, &http.Client{Timeout: timeout}, hotel.site+"/"); !strings.HasPrefix(body, "cms index.html") {
-		t.Errorf("GET / = %q, want the CMS's index.html", body)
+	if body := get(t, &http.Client{Timeout: timeout}, hotel.site+"/"); !strings.HasPrefix(body, "page index.html") {
+		t.Errorf("GET / = %q, want the site's index.html", body)
 	}
 
 	client := signIn(t, "Admin")
-	if body := get(t, client, hotel.site+"/housekeeping/"); !strings.HasPrefix(body, "housekeeping index.html") {
+	if body := get(t, client, hotel.site+"/housekeeping/"); !strings.HasPrefix(body, "page housekeeping/index.html") {
 		t.Errorf("GET /housekeeping/ = %q, want housekeeping's index.html", body)
 	}
 
@@ -199,20 +168,16 @@ func install() error {
 	return nil
 }
 
-// printPage stands in for a program's built pages: it names the program and
-// the page, so a test can tell who rendered it.
-func printPage(program string) func(string) (*template.Template, error) {
-	return func(name string) (*template.Template, error) {
-		return template.New(name).Parse(program + " " + name)
-	}
+// printPage stands in for the pages of reborn's dist: it names the page, so a
+// test can tell which one rendered.
+func printPage(name string) (*template.Template, error) {
+	return template.New(name).Parse("page " + name)
 }
 
-// printFile stands in for a program's static handler: it answers every path
-// with the program's name and the path, so a test can tell who served it.
-func printFile(program string) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		io.WriteString(w, program+" file "+r.URL.Path)
-	})
+// printFile stands in for the files of reborn's dist: it answers every path
+// with the path, so a test can tell which file was asked.
+func printFile(w http.ResponseWriter, r *http.Request) {
+	io.WriteString(w, "file "+r.URL.Path)
 }
 
 // freePorts holds every port it takes until it has n, so that none repeats,
@@ -236,27 +201,6 @@ func freePorts(n int) (ports []int, release func(), err error) {
 	return ports, release, nil
 }
 
-// waitForSite waits until reborn answers url, and fails when Run stops first.
-func waitForSite(url string, stopped <-chan error) error {
-	client := &http.Client{Timeout: timeout}
-	deadline := time.Now().Add(timeout)
-	for {
-		resp, err := client.Get(url)
-		if err == nil {
-			resp.Body.Close()
-			return nil
-		}
-		select {
-		case err := <-stopped:
-			return fmt.Errorf("Run stopped: %w", err)
-		case <-time.After(20 * time.Millisecond):
-		}
-		if time.Now().After(deadline) {
-			return fmt.Errorf("GET %s: %w", url, err)
-		}
-	}
-}
-
 // signIn signs the habbo name in on the site, with the password secret123, and
 // returns the client that holds its session.
 func signIn(t *testing.T, name string) *http.Client {
@@ -267,8 +211,8 @@ func signIn(t *testing.T, name string) *http.Client {
 	}
 	client := &http.Client{Jar: jar, Timeout: timeout}
 	post(t, client, hotel.site+"/", url.Values{"username": {name}, "password": {"secret123"}})
-	if body := get(t, client, hotel.site+"/me"); !strings.HasPrefix(body, "cms me.html") {
-		t.Fatalf("after signing in %s, GET /me = %q, want the CMS's me.html", name, body)
+	if body := get(t, client, hotel.site+"/me"); !strings.HasPrefix(body, "page me.html") {
+		t.Fatalf("after signing in %s, GET /me = %q, want the site's me.html", name, body)
 	}
 	return client
 }

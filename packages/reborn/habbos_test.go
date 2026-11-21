@@ -2,9 +2,13 @@ package reborn
 
 import (
 	"bufio"
+	"context"
+	"errors"
+	"io"
 	"net"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"testing"
@@ -39,6 +43,33 @@ func TestALookSavedOnTheSiteOrInHousekeepingReachesTheGame(t *testing.T) {
 	if body := player.until(t, 266); !strings.Contains(body, "hd-600-1.hr-500-61\x02F\x02Restyled by staff\x02") {
 		t.Errorf("the room received 266 %q, want the motto housekeeping saved", body)
 	}
+}
+
+// The behaviour: reborn stops: each player is logged out with its last time
+// online saved, and the game's doors close.
+func TestStopLogsEveryPlayerOut(t *testing.T) {
+	avatarID := habbo(t, "Lastguest")
+	player := enterRoom(t, ticket(t, avatarID), room(t, avatarID))
+	left := time.Now().UTC()
+
+	if err := hotel.reborn.Stop(t.Context()); err != nil {
+		t.Fatalf("Stop: %v", err)
+	}
+	t.Cleanup(func() {
+		if err := hotel.reborn.Start(context.Background()); err != nil {
+			t.Errorf("Start after the test: %v", err)
+		}
+	})
+
+	data, err := store.New(hotel.db).GetAvatarGameData(t.Context(), avatarID)
+	if err != nil || data.LastOnlineAt.Time.Before(left) {
+		t.Errorf("the habbo's last time online = %v, %v; want the stop", data.LastOnlineAt, err)
+	}
+	player.conn.SetReadDeadline(time.Now().Add(timeout))
+	if _, err := io.ReadAll(player.r); errors.Is(err, os.ErrDeadlineExceeded) {
+		t.Error("the player's connection stays open after Stop")
+	}
+	refuses(t, hotel.info)
 }
 
 // habbo makes a user with the habbo name, without a staff group, who signs in
