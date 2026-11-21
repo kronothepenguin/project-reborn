@@ -35,8 +35,10 @@ Planned:
 
 ## reborn's new shape
 
-Proposed by the master from [0015](/decisions/reborn/0015-the-runner-owns-reborns-http-server.md); the user approves it
-before task 18 starts.
+From [0015](/decisions/reborn/0015-the-runner-owns-reborns-http-server.md). On 2026-11-20 the user approved the two
+mount functions ("ok, if there is not a better way"), `apps/reborn/internal/web` ("ok") and the two options ("yes"),
+and asked of the wait for the installation: "is there a better alternative now that you know this is a sequential
+steps?" The master proposes the blocking `WaitForInstall` below in place of a channel the runner selects on.
 
 ```go
 // packages/reborn
@@ -47,8 +49,11 @@ func New(db *sql.DB, mover installer.Listener, opts ...Option) (*Reborn, error)
 func WithResolver(r astro.Resolver) Option // the pages of reborn's dist, or of its dev server
 func WithStatic(h http.Handler) Option     // the files of reborn's dist, or of its dev server
 
-// Installed is closed once the administrator exists.
-func (r *Reborn) Installed() <-chan struct{}
+// Installed reports whether the administrator exists.
+func (r *Reborn) Installed() bool
+
+// WaitForInstall returns once the administrator exists, or with ctx's error when ctx ends first.
+func (r *Reborn) WaitForInstall(ctx context.Context) error
 
 // MountInstaller registers the installer, and sends every other page to /installer/.
 func (r *Reborn) MountInstaller(mux *http.ServeMux)
@@ -66,16 +71,12 @@ db := store.FromConfig()
 web := web.New(cfg.Reborn.Host, cfg.Reborn.Port) // the runner's HTTP server; it implements installer.Listener
 r, err := reborn.New(db, web, reborn.WithResolver(pages), reborn.WithStatic(files))
 
-select {
-case <-r.Installed(): // an installed hotel
-default: // the first time
+if !r.Installed() { // the first time
     mux := http.NewServeMux()
     r.MountInstaller(mux)
     web.Serve(mux) // the installer's server
-    select {
-    case <-r.Installed():
-    case <-ctx.Done():
-        return
+    if err := r.WaitForInstall(ctx); err != nil {
+        return // Ctrl-C before the installation ended
     }
 }
 

@@ -9,8 +9,7 @@ skills: [applying-go-patterns, testing-behaviours, use-modern-go]
 
 # Goal
 
-`packages/reborn` follows [0015](/decisions/reborn/0015-the-runner-owns-reborns-http-server.md). It starts once the
-user has approved "reborn's new shape" in the [plan](/features/platform/plan.md).
+`packages/reborn` follows [0015](/decisions/reborn/0015-the-runner-owns-reborns-http-server.md). The shape is "reborn's new shape" in the [plan](/features/platform/plan.md).
 
 # Context
 
@@ -27,7 +26,7 @@ user has approved "reborn's new shape" in the [plan](/features/platform/plan.md)
 - [ ] reborn hands each site its pages and files under the site's base: the site at the root, housekeeping under
   `housekeeping`, the installer under `installer`, from the one resolver and the one file handler it is given.
 - [ ] Before the installation the files pass, so the installer's stylesheet at `/_astro/` loads.
-- [ ] `packages/reborn`: `New`, the two options, `Installed`, `MountInstaller`, `Mount`, `Start` and `Stop`, as the
+- [ ] `packages/reborn`: `New`, the two options, `Installed`, `WaitForInstall`, `MountInstaller`, `Mount`, `Start` and `Stop`, as the
   plan shows them. `Run`, the HTTP server and the goroutine that waits for the installation go.
 - [ ] `apps/reborn/internal/web`: the HTTP server, `Serve` that replaces the running server on the open listener,
   `Move` for the installer, and `Shutdown`.
