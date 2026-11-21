@@ -1,18 +1,19 @@
 ---
 type: Astro Project
 title: Dev server
-description: The dev-only Astro project that serves the CMS's, housekeeping's and the installer's pages from one dev server, under /, /housekeeping/ and /installer/.
+description: The Astro project that serves the CMS's, housekeeping's and the installer's pages from one dev server, under /, /housekeeping/ and /installer/, and builds them into one dist.
 resource: packages/reborn/astro.config.mjs
 ---
 
 # Dev server
 
-`packages/reborn` holds, beside its Go code, an Astro project that is never built
+`packages/reborn` holds, beside its Go code, an Astro project
 (`knowledge/decisions/reborn/0009-one-dev-server-for-reborn.md`). It serves every page of the three sites from one dev
-server, so that a dev runner proxies one server for all of them.
+server, so that a dev runner proxies one server for all of them, and builds them into one `dist`.
 
 ```sh
-pnpm --filter @project-reborn/reborn dev   # http://localhost:22448
+pnpm --filter @project-reborn/reborn dev     # http://localhost:22448
+pnpm --filter @project-reborn/reborn build   # packages/reborn/dist
 ```
 
 # What it serves
@@ -31,6 +32,17 @@ pnpm --filter @project-reborn/reborn dev   # http://localhost:22448
 - Each page keeps its site's stylesheet, Svelte islands and shared components. Tailwind scans each site's own folder
   through `source("../..")` in the site's `global.css`.
 - An edit to a page's `.astro` file reloads the page in the browser.
+- `@project-reborn/components` is a dependency of the project: the build resolves the Svelte islands of the shared
+  components from it.
+
+# What it builds
+
+- `dist/` holds the CMS's pages and `public/` at its root, housekeeping's under `dist/housekeeping/` and the
+  installer's under `dist/installer/`.
+- The integration `reborn-site-public-build` copies housekeeping's and the installer's `public/` under their base, and
+  moves `housekeeping.html` and `installer.html`, where Astro writes the route of a base, to `index.html` under it.
+- Every site's scripts and stylesheets are under `dist/_astro/`, shared: an installer page loads its stylesheet from
+  `/_astro/`.
 
 # For a Go runner
 
