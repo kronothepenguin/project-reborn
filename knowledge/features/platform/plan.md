@@ -27,6 +27,7 @@ Planned:
 
 | Project | Part |
 | --- | --- |
+| `packages/installer` | `Installed` and `WaitForInstall` on the installer, in place of `Done` and the function `Installed` |
 | `packages/reborn` | One Astro project that builds one `dist` for the three sites; `New` builds the site, housekeeping, the installer and the game; `MountInstaller`, `Mount`, `Start`, `Stop`; `Run` and the HTTP server go ([0015](/decisions/reborn/0015-the-runner-owns-reborns-http-server.md)) |
 | `apps/reborn` | The HTTP server, its replacement after the installation and its move to a new address; the wait for the installation and for Ctrl-C |
 | `apps/server` | Ctrl-C and SIGTERM stop the game with `Stop`, then the database closes |
@@ -38,7 +39,9 @@ Planned:
 From [0015](/decisions/reborn/0015-the-runner-owns-reborns-http-server.md). On 2026-11-20 the user approved the two
 mount functions ("ok, if there is not a better way"), `apps/reborn/internal/web` ("ok") and the two options ("yes"),
 and asked of the wait for the installation: "is there a better alternative now that you know this is a sequential
-steps?" The master proposes the blocking `WaitForInstall` below in place of a channel the runner selects on.
+steps?" The master proposed the blocking `WaitForInstall` below in place of a channel the runner selects on, and the
+user: "yeah, much better to use `WaitForInstall`. Is this good for standalone `packages/installer` too?" Then "yes" to
+the same pair on the installer, with reborn's two functions passing through to it.
 
 ```go
 // packages/reborn
@@ -64,6 +67,15 @@ func (r *Reborn) Mount(mux *http.ServeMux)
 func (r *Reborn) Start(ctx context.Context) error // the game opens its doors
 func (r *Reborn) Stop(ctx context.Context) error  // players out, doors closed
 ```
+
+```go
+// packages/installer
+func (i *Installer) Installed() bool                          // the administrator exists
+func (i *Installer) WaitForInstall(ctx context.Context) error // returns once it exists, or when ctx ends
+```
+
+`Done()` and the function `installer.Installed(ctx, db)` go: reborn was their only caller. The installer's own runner
+keeps serving after the installation and calls neither.
 
 ```go
 // apps/reborn/cmd/reborn/main.go
