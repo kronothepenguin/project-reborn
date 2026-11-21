@@ -1,8 +1,8 @@
 // @ts-check
-// The development server of reborn: one Astro dev server that serves the pages
-// of the CMS at /, of housekeeping at /housekeeping/ and of the installer at
-// /installer/. It is never built: each site builds its own dist/.
-import { existsSync, readdirSync, statSync } from "node:fs";
+// The Astro project of reborn: it serves and builds the pages of the CMS at /,
+// of housekeeping at /housekeeping/ and of the installer at /installer/, in one
+// dev server and one dist/.
+import { cpSync, existsSync, readdirSync, renameSync, statSync } from "node:fs";
 import { join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import svelte from "@astrojs/svelte";
@@ -53,6 +53,31 @@ function sitePages() {
 }
 
 /**
+ * Copies each site's public/ folder under its base in dist/, as the site's own
+ * build does. The CMS's public/ is the project's publicDir. Astro writes the
+ * route /housekeeping/ to housekeeping.html: it moves to housekeeping/index.html,
+ * where the site's own build puts it.
+ * @returns {import("astro").AstroIntegration}
+ */
+function sitePublicBuild() {
+  return {
+    name: "reborn-site-public-build",
+    hooks: {
+      "astro:build:done": ({ dir }) => {
+        const out = fileURLToPath(dir);
+        for (const site of sites.filter((s) => s.base)) {
+          renameSync(join(out, `${site.base}.html`), join(out, site.base, "index.html"));
+          const from = join(root, "packages", site.folder, "public");
+          if (existsSync(from) && statSync(from).isDirectory()) {
+            cpSync(from, join(out, site.base), { recursive: true });
+          }
+        }
+      },
+    },
+  };
+}
+
+/**
  * Serves each site's public/ folder under its base, as its own dev server
  * does. The CMS's public/ is the project's publicDir.
  * @returns {import("vite").Plugin}
@@ -87,5 +112,5 @@ export default defineConfig({
     },
   },
 
-  integrations: [svelte(), sitePages()],
+  integrations: [svelte(), sitePages(), sitePublicBuild()],
 });

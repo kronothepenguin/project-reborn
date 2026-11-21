@@ -7,10 +7,12 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev"
+    "dev": "astro dev",
+    "build": "astro build"
   },
   "dependencies": {
     "@astrojs/svelte": "^9.0.1",
+    "@project-reborn/components": "workspace:*",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.3.2",
     "sirv": "^3.0.2",
