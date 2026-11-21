@@ -22,12 +22,13 @@ const bin = path.join(work, "bin");
 // The installer's runners bake this port, so a run cannot move it.
 export const installerPort = 17306;
 
-// The game server has no pages, so it has no frontend to build.
-const programs = ["cms", "housekeeping", "installer", "server"];
-const frontends = ["cms", "housekeeping", "installer"];
+// The game server has no pages, so it has no frontend to build. reborn runs
+// every program in one process, with the pages its own project builds.
+const programs = ["cms", "housekeeping", "installer", "server", "reborn"];
+const frontends = ["cms", "housekeeping", "installer", "reborn"];
 // The lines a program logs when it starts, and the game's line when it stops.
 const banner =
-  /^\S+ \S+ (?:(?:cms|housekeeping|installer) on http|INFO server: (?:api on http|info on ws|mus on ws):\/\/|INFO server: the hotel is closed, and its doors stay closed$|INFO server: the doors are closed$)/;
+  /^\S+ \S+ (?:(?:cms|housekeeping|installer) on http|INFO reborn on http:\/\/|INFO server: (?:api on http|info on ws|mus on ws):\/\/|INFO server: the hotel is closed, and its doors stay closed$|INFO server: the doors are closed$)/;
 
 export function build() {
   mkdirSync(bin, { recursive: true });
@@ -98,7 +99,15 @@ export class Hotel {
     this.ports = ports;
   }
 
+  // #reborn reads the address reborn listens on from the hotel's config.json,
+  // where the suite writes it and the installer moves it.
+  #reborn() {
+    const config = JSON.parse(readFileSync(path.join(this.dir, "config.json"), "utf8"));
+    return config.reborn.port;
+  }
+
   #url(program) {
+    if (program === "reborn") return `http://localhost:${this.#reborn()}/`;
     if (program === "cms") return `http://localhost:${this.ports.cms}/`;
     if (program === "housekeeping")
       return `http://localhost:${this.ports.housekeeping}/housekeeping/`;
@@ -109,6 +118,7 @@ export class Hotel {
   // and mus, or the one port of the others.
   #ports(program) {
     if (program === "installer") return [installerPort];
+    if (program === "reborn") return [this.#reborn()];
     if (program === "server")
       return [this.ports.api, this.ports.info, this.ports.mus];
     return [this.ports[program]];
@@ -158,14 +168,18 @@ export class Hotel {
     throw new Error(`${program} did not start: ${this.log(program)}`);
   }
 
-  async stop(program) {
+  // stop sends the program SIGTERM, or signal, and waits for it to exit. It
+  // returns the exit code.
+  async stop(program, signal = "SIGTERM") {
     const child = this.#running.get(program);
-    if (!child) return;
+    if (!child) return null;
     this.#running.delete(program);
-    if (child.exitCode === null) {
-      child.kill();
-      await once(child, "exit");
+    if (child.exitCode === null && child.signalCode === null) {
+      const exited = once(child, "exit");
+      child.kill(signal);
+      await exited;
     }
+    return child.exitCode;
   }
 
   async restart(program) {

@@ -19,7 +19,7 @@ The default export takes the run's helpers:
 | `hk` | Housekeeping's address, with `/housekeeping` |
 | `hkOrigin` | Housekeeping's origin |
 | `installer` | The installer's address, with `/installer` |
-| `ports` | The ports of the CMS and housekeeping, and the game server's `info`, `mus` and `api` |
+| `ports` | The ports of the CMS and housekeeping, the game server's `info`, `mus` and `api`, and `reborn` |
 | `dir` | The folder of the suite's hotel |
 | `browser` | The Chromium browser |
 | `check(name, ok, detail)` | Records one check |
@@ -28,7 +28,7 @@ The default export takes the run's helpers:
 | `shot(page, name)` | Saves a screenshot in `.run/shots/` |
 | `wait(ms)` | Sleeps |
 | `eventually(test)` | Retries `test` for four seconds |
-| `start`, `stop`, `restart` | Start, stop or restart a program: `cms`, `housekeeping`, `installer` or `server` |
+| `start`, `stop`, `restart` | Start, stop or restart a program: `cms`, `housekeeping`, `installer`, `server` or `reborn`. `stop(program, signal)` sends `SIGTERM`, or `signal`, and returns the exit code |
 
 # Other exports
 

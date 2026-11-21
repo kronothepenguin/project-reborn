@@ -40,6 +40,7 @@ import * as looks from "./suites/looks.mjs";
 import * as maintenance from "./suites/maintenance.mjs";
 import * as me from "./suites/me.mjs";
 import * as news from "./suites/news.mjs";
+import * as reborn from "./suites/reborn.mjs";
 import * as register from "./suites/register.mjs";
 import * as signedOut from "./suites/signed-out.mjs";
 import * as staff from "./suites/staff.mjs";
@@ -81,6 +82,7 @@ const suites = {
   "hotel-status": hotelStatus,
   updates,
   together,
+  reborn,
 };
 
 const flags = process.argv.slice(2).filter((arg) => arg.startsWith("--"));
@@ -108,6 +110,7 @@ const ports = {
   info: await freePort(),
   mus: await freePort(),
   api: await freePort(),
+  reborn: await freePort(),
 };
 const mail = await startMail();
 const installed = await install(emptyFolder("installed"), ports, mail.port);
@@ -145,7 +148,7 @@ async function runSuite(name, suite) {
         fullPage: true,
       }),
     start: (program) => hotel.start(program),
-    stop: (program) => hotel.stop(program),
+    stop: (program, signal) => hotel.stop(program, signal),
     restart: (program) => hotel.restart(program),
     check(checkName, ok, detail = "") {
       checks++;
