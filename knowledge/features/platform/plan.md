@@ -94,7 +94,7 @@ if !r.Installed() { // the first time
 
 mux := http.NewServeMux()
 r.Mount(mux)
-web.Serve(mux) // closes the installer's server and starts the site's
+web.Serve(mux) // the site takes the installer's place
 if err := r.Start(ctx); err != nil {
     log.Fatalln(err)
 }
@@ -106,8 +106,8 @@ db.Close()
 
 - `web` lives in `apps/reborn/internal/web`, shared by `reborn` and `reborn-dev`. Run alone, the installer stays on its
   port and moves nothing, so it shares none of this code.
-- `web.Serve` starts the new server on the open listener before it shuts the old one down, so the browser's request for
-  `/` right after "Create administrator" finds a server.
+- `web.Serve` gives the running server its new handler, so the browser's request for `/` right after "Create
+  administrator" finds the site.
 - Before the installation, pages go to `/installer/` and files pass, the dev server's own paths included, as the user
   asked on 2026-11-15 (see Decisions).
 
@@ -220,10 +220,12 @@ How programs tell the game of a live change is
 - Task 18 built reborn's new shape on 2026-11-20. From an empty folder: the installer, "Create administrator", then the
   site on the same connection; Ctrl-C with a habbo inside sent the closing notice, saved its last time online at the
   signal, closed the doors 5 seconds later and closed the database. The game's own program does the same on SIGTERM.
-- `apps/reborn/internal/web` keeps one open listener and hands each connection to the current `http.Server`. A second
-  `Serve` starts the new server first and retires the old one: it takes no new connection, answers the next request of
-  each open one with `Connection: close`, and ends when none is left. `http.Server.Shutdown` right at the swap dropped
-  connections that were accepted and not yet read.
+- `apps/reborn/internal/web` uses plain `http.Server`s. One server serves an address, and `Serve` gives it the handler
+  it serves now: the installer's mux, then the site's. A move to a new address starts a second `http.Server` there,
+  redirects, and shuts the first down. The user, 2026-11-20, of a first version with an accept loop of its own that
+  swapped servers on one listener: "wtf, why did you create that [...] instead of just using two different http.Server
+  with Shutdown when swapping ports? just use http.Server smaller way".
+- The runners' flow is one function of `apps/reborn/internal/web`, which both `main.go` files call (the user: "shared,
+  as i understood that's why `apps/reborn/internal/web` was created").
 - A listener that fails later is logged; nothing ends the program for it.
-- `run` and `shutdown` are written in both runners' `main.go`.
 - A checkout needs `pnpm install` and `make frontends` once after this change: `packages/reborn` embeds its `dist`.
