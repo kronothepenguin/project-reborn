@@ -2,7 +2,7 @@
 type: Reference
 title: How the programs work together
 description: Which programs make up Project Reborn, what each one owns, and how they interact when they run alone and when they run together in one process.
-timestamp: 2026-11-05T20:57:45+00:00
+timestamp: 2026-11-23T12:00:00+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-01T18:13:48+00:00"}
 tags: [architecture]
 ---
@@ -17,7 +17,7 @@ Packages hold the code of each program, and `apps/<name>` is a thin runner aroun
 | CMS | `packages/cms` | `apps/cms` | being built | The public site |
 | Housekeeping | `packages/housekeeping` | `apps/housekeeping` | HK-A built | The staff panel |
 | Game server | `packages/server` | `apps/server` | being built, its next work in the [features](/features/index.md); the site's game-server features stay deferred ([0013](/decisions/holo-port/0013-defer-game-server-features.md)) | The hotel itself |
-| reborn | `packages/reborn` | `apps/reborn` | runs an installed hotel; the installer inside it comes next ([0004](/decisions/reborn/0004-the-installer-inside-reborn.md)) | Runs all of the above from one binary |
+| reborn | `packages/reborn` | `apps/reborn` | built; serves the installer under `/installer/` until the administrator exists ([0004](/decisions/reborn/0004-the-installer-inside-reborn.md)) | Runs all of the above in one process |
 
 # What each program does with shared state
 
@@ -97,6 +97,7 @@ The installer, the CMS and housekeeping are web apps, each an Astro frontend in 
 This is how programs run today, and how development works.
 
 - Each program has its own process and port, from its runner. The CMS and housekeeping read theirs from `config.json`.
+  The game listens on `server.info` and `server.mus`, and serves its `/api/` on `server.api`, 15445 by default.
 - Each opens the database named by `config.json` with `store.FromConfig()`.
 - Each reads a setting from the database when it uses it, through `packages/settings`, so a change in housekeeping
   reaches every program at the next read, and nothing refreshes
@@ -109,28 +110,44 @@ This is how programs run today, and how development works.
   Housekeeping's previews and its Uploaded Images page load every picture from `site.url`, since it may run on another
   port ([0074](/decisions/holo-port/0074-news-images.md), [0079](/decisions/holo-port/0079-uploaded-images-managed.md)).
 
-The programs share the SQLite file, so they run on one machine, and no IPC exists.
+- The site and housekeeping call the game's `/api/` on `server.api`, with the hotel's secret read from the database on
+  each call (`packages/server/api`, [hotel status](/features/hotel-status/plan.md)).
+
+The programs share the SQLite file, so they run on one machine.
 
 # Running together
 
-`apps/reborn` runs an installed hotel: in a folder with no `config.json`, or with no administrator, it stops with
-`the hotel is not installed`. Serving the installer inside reborn comes next
-([0004](/decisions/reborn/0004-the-installer-inside-reborn.md)).
+`apps/reborn` runs the whole hotel in one process
+([0003](/decisions/reborn/0003-reborn-runs-the-hotel-in-one-process.md)).
 
-- One process mounts the CMS at `/` and housekeeping at `/housekeeping/` on one mux, on `reborn.host` and
-  `reborn.port`, with one database handle, and starts the game's listeners
-  ([0029](/decisions/holo-port/0029-package-level-settings-and-auth.md)).
-- The production runner gives each program its embedded build (`DistFS`).
+- A hotel with no administrator gets the installer under `/installer/`, and every other page redirects there. In an
+  empty folder, reborn first writes `config.json` and creates the database
+  ([0004](/decisions/reborn/0004-the-installer-inside-reborn.md)).
+- Once the administrator exists, the same server serves the CMS at `/` and housekeeping at `/housekeeping/`, and
+  reborn starts the game, with no restart. `/installer/` answers 404.
+- One mux listens on `reborn.host` and `reborn.port`, `localhost` and 16416 by default. The game listens on
+  `server.info` and `server.mus`. `cms.host`, `cms.port`, `housekeeping.host` and `housekeeping.port` serve only the
+  programs run alone.
+- The runner owns the HTTP server. `packages/reborn` builds the programs on one database handle and mounts them on the
+  mux it receives ([0015](/decisions/reborn/0015-the-runner-owns-reborns-http-server.md)).
+- The production runner gives every program the pages and files of reborn's one embedded build (`DistFS`). The
+  development runner proxies one Astro dev server ([0009](/decisions/reborn/0009-one-dev-server-for-reborn.md)).
 - `Mount` keeps each program's routes protected on the shared mux, and housekeeping stays under `/housekeeping`
   ([0003](/decisions/holo-port/0003-housekeeping-under-prefix.md)).
-- The settings are read from the shared database, as when the programs run alone.
+- The site and housekeeping call the game in the process, through `services.Habbos` and `services.Hotel`. The game
+  opens no `/api/`.
+- The settings are read from the shared database, as when the programs run alone
+  ([0006](/decisions/reborn/0006-settings-are-read-from-the-store.md)).
+- On Ctrl-C or SIGTERM, the open requests finish, `Stop` logs each player out, and the database closes. The scheduler's
+  tasks run until the process ends ([0016](/decisions/reborn/0016-lifecycle-names-come-in-pairs.md)).
 
 # Comparison
 
 | | Alone | Together |
 | --- | --- | --- |
 | Processes | One per program | One |
-| Ports | One per program | One |
+| Ports | One per web program; the game's `info`, `mus` and `api` | One for the web programs; the game's `info` and `mus` |
+| The site asks the game | Over the game's `/api/`, with the secret | In the process, through `services` |
 | Database handle | One per process | One, shared |
 | Session cookie | Shared, on one host | Shared |
 | Scheduler | One per process, running that program's tasks | One, running every program's tasks |

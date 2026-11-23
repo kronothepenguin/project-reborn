@@ -7,7 +7,9 @@ description: The apps are runners and the packages hold the full applications, i
 # Apps and packages
 
 The apps are runners. The packages hold the code of the full applications, because one runner, `reborn`, embeds
-every other app. A package with a frontend exports its build as `DistFS`, so `reborn` serves the same frontend.
+every other app. A package with a frontend embeds its build as `DistFS` for its own runner. `packages/reborn` builds
+the same pages into one `dist` of its own, the CMS at `/`, housekeeping at `/housekeeping/` and the installer at
+`/installer/`, and embeds it as its `DistFS`.
 
 [How the programs work together](/programs.md)
 
@@ -30,9 +32,11 @@ every other app. A package with a frontend exports its build as `DistFS`, so `re
 | `packages/director` | A JavaScript reimplementation of the Shockwave (Director) player that runs Lingo movies. |
 | `packages/housekeeping` | Housekeeping, the staff panel under `/housekeeping`: a Go module with its Astro frontend embedded. |
 | `packages/installer` | Writes `config.json`, creates the database, the site settings and the first administrator. |
-| `packages/reborn` | Runs the whole hotel in one process: the site, housekeeping and the game server on one database handle. |
+| `packages/reborn` | Builds the site, housekeeping, the installer and the game on one database handle, mounts them on the runner's mux, and starts and stops the game. |
 | `packages/scheduler` | Runs tasks on a timer, inside the process, like a small cron. |
 | `packages/server` | The game server: speaks the R26 client's protocol on the `info` and `mus` WebSocket listeners. |
+| `packages/services` | The contracts between programs, as Go interfaces, that an app takes through `Inject`. |
+| `packages/settings` | The hotel's settings with their defaults and checks, read from the store on each use. |
 | `packages/store` | Persistence: opens the SQLite file, applies the update files and provides the typed operations. |
 | `packages/virtual` | In-memory state of Project Reborn's entities, one package per entity. |
 | `tools/checks` | Lists the projects that depend on a project (`make dependants`), and tests the shared check recipe `make/check.mk` and the root check `make/check-all.mk`. |
