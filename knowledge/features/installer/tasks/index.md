@@ -2,6 +2,5 @@
 
 # Tasks
 
-- [The settings' labels live in packages/settings](01-settings-groups.md) - packages/settings lists every setting an administrator edits in groups with labels and help, housekeeping's settings page reads them, and the mail group becomes "Password reset mail".
 - [The installer's client files step](02-the-client-files-step.md) - An optional step between the site step and the administrator step shows the client files found in the assets folder and imports them or skips, and the administrator step imports none.
 - [The installer's settings step](03-the-settings-step.md) - An optional step after the site step shows six groups of day-one settings open and every other setting folded under "More settings", saves the changed ones or skips.

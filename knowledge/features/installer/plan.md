@@ -15,13 +15,13 @@ Built:
 | `packages/store` | `store.Open` creates a new database with every update; `0003-ranks.sql` seeds Holo's ranks |
 | `packages/auth` | `CreateAccount` and the rules for habbo names, emails, birth dates and passwords |
 | `tests/e2e` | The `together` suite walks the installer's forms, then the CMS and housekeeping |
+| `packages/settings` | `Group`, `Field` and `Groups()`: the labels and help of every setting an administrator edits |
+| `packages/housekeeping` | The settings page reads `settings.Groups()`; the mail group is "Password reset mail" |
 
 Planned:
 
 | Project | Part |
 | --- | --- |
-| `packages/settings` | `Group`, `Field` and `Groups()`: the labels and help of every setting an administrator edits |
-| `packages/housekeeping` | The settings page reads `settings.Groups()`; the mail group is "Password reset mail" |
 | `packages/installer` | The optional settings step and the optional client files step, between the site step and the administrator step |
 | `packages/installer` | Later: content to keep, a review of the catalogue with pages, filters and sorting, the welcome article; one final write |
 | `packages/store` | What records the content that was kept; queries that list and edit the catalogue |

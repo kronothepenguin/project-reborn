@@ -6,4 +6,4 @@ okf_version: "0.2"
 
 # Knowledge
 
-- [settings](settings.md) - The list of the hotel's settings with their defaults, checks and rules, read from the store on each use and written with their checks.
+- [settings](settings.md) - The list of the hotel's settings with their defaults, checks, rules and the labels of their groups, read from the store on each use and written with their checks.

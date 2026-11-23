@@ -1,18 +1,24 @@
 ---
 type: Reference
 title: The settings forms
-description: How GET /settings and POST /settings/{section} lay the declared settings out as forms, save a section all or nothing, and start or stop the game after a switch.
+description: How GET /settings and POST /settings/{section} lay the groups of settings.Groups() out as forms, save a section all or nothing, and start or stop the game after a switch.
 ---
 
 # The forms
 
-`GET /settings` and `POST /settings/{section}` are forms over `settings.Declared()`.
+`GET /settings` and `POST /settings/{section}` are forms over `settings.Groups()`, one per group, with the values of
+`settings.Declared()`.
 
-- `forms` in `internal/router/settings.go` gives them Holo's texts. A setting it leaves unnamed still gets a form,
-  with its key as its label, so a setting declared later is editable at once.
-- `hiddenSettings` keeps `housekeeping.note` for the dashboard.
-- A field's kind comes from its declaration: toggle, number, text, a choice from a list, or a long text. A long text
-  takes one row per 60 characters, from 2 to 10, as Holo's content tool sized it.
+- The labels, the help, the kinds and the choices come from `settings.Groups()`, which holds every setting an
+  administrator edits. The note of the dashboard is in no group.
+- `internal/router/settings.go` keeps what is housekeeping's own. `pages` gives a group, by its id, Holo's page title,
+  menu name and button, the form's help, and its place in the Content Management box; a group it leaves out takes its
+  title as both and "Save Settings". `inputs` gives a field, by its key, the words of a switch, or a multi-line text
+  with the BBCode editor.
+- The mail group is "Password reset mail": its help says the server sends the "Forgot your password?" links and the
+  minimail needs none.
+- A field's kind: a switch is a toggle, a number, a choice from a list, or a text, a long text where `inputs` says so.
+  A long text takes one row per 60 characters, from 2 to 10, as Holo's content tool sized it.
 - A setting marked `secret` in the catalogue is a password field: `settings.Declared` keeps its value out, a blank field
   keeps it, and a checkbox clears it.
 

@@ -78,6 +78,12 @@ optional content and the catalogue review wait with the open questions.
   step leads back to it (decision reborn/0004).
 - A page on another site posts a form to the installer: it is refused with status 403.
 
+## Housekeeping
+
+- Staff open the settings page: every group shows the labels and the help it showed before.
+- Staff open the mail group: it is titled "Password reset mail", and its help says "The mail server that sends 'Forgot
+  your password?' links. The minimail needs none."
+
 ## Next
 
 ### The settings step
@@ -98,12 +104,6 @@ optional content and the catalogue review wait with the open questions.
 - The administrator skips the client files step: nothing is imported, and housekeeping imports the files later.
 - The administrator is created: the step imports no client file by itself.
 - A step is opened before the one it follows: the browser goes to the first step that waits.
-
-### Housekeeping
-
-- Staff open the settings page: every group shows the labels and the help it showed before.
-- Staff open the mail group: it is titled "Password reset mail", and its help says "The mail server that sends 'Forgot
-  your password?' links. The minimail needs none."
 
 # Open questions
 

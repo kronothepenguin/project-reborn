@@ -70,27 +70,26 @@ func TestEverySectionHasAForm(t *testing.T) {
 	}
 }
 
-// The fallback of a key as its label is for a setting declared on another branch,
-// so that a merge does not leave it without a form. It should not last.
-func TestEverySettingHasARealLabel(t *testing.T) {
+func TestEveryGroupShowsItsLabelsAndHelp(t *testing.T) {
 	db, mux := newSite(t)
 	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
 
-	var pages strings.Builder
-	for _, section := range []string{"site", "maintenance", "auth", "registration", "referral", "mail", "imaging", "features"} {
-		pages.WriteString(serve(mux, "GET", "/housekeeping/settings?section="+section, cookie, nil).Body.String())
+	for _, g := range settings.Groups() {
+		texts := []string{"ID:" + g.ID + " "}
+		for _, f := range g.Fields {
+			texts = append(texts, html.EscapeString(fmt.Sprintf("Key:%s Label:%s Help:%s Kind:", f.Key, f.Label, f.Help)))
+		}
+		wantPage(t, serve(mux, "GET", "/housekeeping/settings?section="+g.ID, cookie, nil), http.StatusOK, texts...)
 	}
-	for _, setting := range declared(t, db) {
-		if setting.Key == "housekeeping.note" {
-			continue
-		}
-		if !strings.Contains(pages.String(), "Key:"+setting.Key+" ") {
-			t.Errorf("%s has no form", setting.Key)
-		}
-		if strings.Contains(pages.String(), "Label:"+setting.Key+" ") {
-			t.Errorf("%s has its key as its label", setting.Key)
-		}
-	}
+}
+
+func TestTheMailGroupIsThePasswordResetMail(t *testing.T) {
+	db, mux := newSite(t)
+	_, cookie := staff(t, db, "Admin", auth.HousekeepingAccess, auth.HousekeepingSettings)
+
+	wantPage(t, serve(mux, "GET", "/housekeeping/settings?section=mail", cookie, nil), http.StatusOK,
+		"ID:mail Menu:Password reset mail Title:Password reset mail Button:Save Settings",
+		html.EscapeString("Help:The mail server that sends 'Forgot your password?' links. The minimail needs none."))
 }
 
 func TestSettingsOpenOnTheFirstForm(t *testing.T) {

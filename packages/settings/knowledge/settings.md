@@ -1,7 +1,7 @@
 ---
 type: Go Package
 title: settings
-description: The list of the hotel's settings with their defaults, checks and rules, read from the store on each use and written with their checks.
+description: The list of the hotel's settings with their defaults, checks, rules and the labels of their groups, read from the store on each use and written with their checks.
 resource: packages/settings
 ---
 
@@ -42,14 +42,19 @@ err := settings.Set(ctx, q, userID, "site.maintenance", true)
   among the candidates.
 - `Declared(ctx, q) ([]Setting, error)` lists every declared setting with its current value and its default, sorted by
   key, from one query. A secret comes without its value: `String` is the only way to read it.
+- `Groups() []Group` lists every group of settings an administrator edits, in housekeeping's order, each `Field` with
+  its label, its help, its kind (`text`, `number`, `switch` or `choice`), its `Choice`s and whether it is required.
+  Housekeeping and the installer show the same labels from it. Each call returns a new list.
 
 # Declaring a setting
 
-Add the key to `catalogue` in `catalogue.go` with `declare(default, validator)`. The default's Go type (`int`, `bool`
+Add the key to `catalogue` in `catalogue.go` with `declare(default, validator)`, and its field, with a label and a
+help, to one group of `Groups()` in `groups.go`. A setting no administrator edits goes into `ungrouped` instead. The default's Go type (`int`, `bool`
 or `string`) is the setting's type, and a nil validator accepts every value of that type. A rule that ties several
 settings goes into `rules` and lists every key it reads.
 
-The tests check that every default passes its validator and the rules, and that no setting reuses a `config.json` key.
+The tests check that every default passes its validator and the rules, that no setting reuses a `config.json` key, and
+that every setting is in exactly one group or in `ungrouped`.
 A value needed before the database opens is not a setting: it belongs to `packages/config`, and it is read from
 `config`.
 
