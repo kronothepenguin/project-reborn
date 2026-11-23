@@ -4,7 +4,7 @@ import "slices"
 
 // Steps are the installer's steps, in the order the administrator walks them.
 // Each is the last segment of its path under /installer/.
-var Steps = []string{"config", "site", "client", "admin"}
+var Steps = []string{"config", "site", "settings", "client", "admin"}
 
 // Waiting returns the first step that waits. The config step passes once
 // config.json is written; every other step passes in this run of the

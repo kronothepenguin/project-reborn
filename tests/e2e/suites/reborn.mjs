@@ -88,8 +88,12 @@ export default async function ({ browser, check, dir, eventually, ports, shot, s
   await page.fill('input[name="shortName"]', "Reborn");
   await page.fill('input[name="url"]', base);
   await Promise.all([
-    page.waitForURL(`${base}/installer/client`),
+    page.waitForURL(`${base}/installer/settings`),
     page.click('button:has-text("Save and continue")'),
+  ]);
+  await Promise.all([
+    page.waitForURL(`${base}/installer/client`),
+    page.click('button:has-text("Skip")'),
   ]);
   check(
     "the client files step follows the site step",

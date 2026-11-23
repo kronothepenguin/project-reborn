@@ -65,8 +65,18 @@ export default async function ({
   await page.fill('input[name="shortName"]', "Reborn");
   await page.fill('input[name="url"]', base);
   await Promise.all([
-    page.waitForURL("**/client"),
+    page.waitForURL("**/settings"),
     page.click('button:has-text("Save and continue")'),
+  ]);
+  check(
+    "the settings step follows the site step with More settings folded",
+    (await page.getByText("New players", { exact: true }).isVisible()) &&
+      !(await page.locator('input[name="homes.maxTags"]').isVisible()),
+  );
+  await page.fill('input[name="referral.reward"]', "75");
+  await Promise.all([
+    page.waitForURL("**/client"),
+    page.click('button:has-text("Save settings")'),
   ]);
   check(
     "the client files step finds no client file and offers Check again",
@@ -140,6 +150,13 @@ export default async function ({
   );
   await page.fill('input[name="site.housekeepingUrl"]', `${hk}/`);
   await save("Save Configuration");
+
+  await page.goto(`${hk}/settings?section=referral`);
+  check(
+    "housekeeping reads the referral reward saved in the installer",
+    (await page.inputValue('input[name="referral.reward"]')) === "75",
+    await page.inputValue('input[name="referral.reward"]'),
+  );
 
   await page.goto(`${hk}/settings?section=registration`);
   check(

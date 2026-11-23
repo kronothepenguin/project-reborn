@@ -2,5 +2,4 @@
 
 # Tasks
 
-- [The installer's settings step](03-the-settings-step.md) - An optional step after the site step shows six groups of day-one settings open and every other setting folded under "More settings", saves the changed ones or skips.
 - [The administrator's club and credits](04-the-administrators-club-and-credits.md) - The administrator step offers Habbo Club for 100 years with a ticked box and asks the first credits in a field filled with 5000.

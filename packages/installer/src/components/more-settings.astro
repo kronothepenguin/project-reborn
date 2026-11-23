@@ -1,0 +1,15 @@
+---
+import SettingsGroup from "./settings-group.astro";
+
+// "More settings": the groups in the template's .More, folded unless open.
+interface Props {
+  open?: boolean;
+}
+
+const { open = false } = Astro.props;
+---
+
+<details class="space-y-3" open={open}>
+  <summary class="cursor-pointer text-sm font-bold">More settings</summary>
+  [[ range .More ]]<SettingsGroup />[[ end ]]
+</details>

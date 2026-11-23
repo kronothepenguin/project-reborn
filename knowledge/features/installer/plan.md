@@ -17,12 +17,12 @@ Built:
 | `tests/e2e` | The `together` suite walks the installer's forms, then the CMS and housekeeping |
 | `packages/settings` | `Group`, `Field` and `Groups()`: the labels and help of every setting an administrator edits |
 | `packages/housekeeping` | The settings page reads `settings.Groups()`; the mail group is "Password reset mail" |
+| `packages/installer` | The optional settings step, between the site step and the client files step |
 
 Planned:
 
 | Project | Part |
 | --- | --- |
-| `packages/installer` | The optional settings step, between the site step and the client files step |
 | `packages/installer` | Later: content to keep, a review of the catalogue with pages, filters and sorting, the welcome article; one final write |
 | `packages/store` | What records the content that was kept; queries that list and edit the catalogue |
 | `packages/cms` | The first article shows on `/me`, `/community` and `/news` |

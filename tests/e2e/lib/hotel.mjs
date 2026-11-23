@@ -262,6 +262,7 @@ export async function install(dir, ports, mailPort) {
       startCredits: "500",
       secureCookies: "on",
     });
+    await post("/settings", { action: "skip" });
     await post("/client", { action: "skip" });
     await post("/admin", {
       name: "Admin-1",
