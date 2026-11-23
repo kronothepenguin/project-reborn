@@ -54,7 +54,7 @@ const rebornConfig = `{"store": {"path": "habbo.db"}, "reborn": {"host": "localh
 // inReborn returns an installer as reborn builds it: config.json exists, the
 // database it names is open and handed to New, and the listener comes through
 // Inject.
-func inReborn(t *testing.T, l Listener) (*Installer, *http.ServeMux) {
+func inReborn(t *testing.T, l Listener, opts ...Option) (*Installer, *http.ServeMux) {
 	t.Helper()
 	t.Chdir(t.TempDir())
 	if err := os.WriteFile(config.Filename, []byte(rebornConfig), 0o644); err != nil {
@@ -65,7 +65,7 @@ func inReborn(t *testing.T, l Listener) (*Installer, *http.ServeMux) {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { db.Close() })
-	return build(t, db, l)
+	return build(t, db, l, opts...)
 }
 
 func build(t *testing.T, db *sql.DB, l Listener, opts ...Option) (*Installer, *http.ServeMux) {
@@ -144,15 +144,23 @@ var siteForm = url.Values{
 	"startCredits":    {"500"},
 }
 
-// toClient saves the site step, after the config step, so that the client
-// files step waits.
-func toClient(t *testing.T, mux http.Handler) {
+// toSettings saves the site step, after the config step, so that the settings
+// step waits.
+func toSettings(t *testing.T, mux http.Handler) {
 	t.Helper()
-	expect(t, send(t, mux, "POST", "/installer/site", siteForm), 303, "/installer/client", "")
+	expect(t, send(t, mux, "POST", "/installer/site", siteForm), 303, "/installer/settings", "")
 }
 
-// toAdmin saves the site step and skips the client files step, after the
-// config step, so that the administrator step waits.
+// toClient saves the site step and skips the settings step, after the config
+// step, so that the client files step waits.
+func toClient(t *testing.T, mux http.Handler) {
+	t.Helper()
+	toSettings(t, mux)
+	expect(t, send(t, mux, "POST", "/installer/settings", url.Values{"action": {"skip"}}), 303, "/installer/client", "")
+}
+
+// toAdmin saves the site step and skips the settings and client files steps,
+// after the config step, so that the administrator step waits.
 func toAdmin(t *testing.T, mux http.Handler) {
 	t.Helper()
 	toClient(t, mux)
@@ -369,7 +377,7 @@ func TestOneAddressSavesHousekeepingUnderTheSite(t *testing.T) {
 		"OneAddress:true Name:Reborn Hotel ShortName:Reborn URL:http://localhost:16416 HousekeepingURL: ")
 	expect(t, send(t, mux, "POST", "/installer/site", url.Values{
 		"name": {"Reborn Hotel"}, "shortName": {"Reborn"}, "url": {"https://hotel.example.com"}, "startCredits": {"500"},
-	}), 303, "/installer/client", "")
+	}), 303, "/installer/settings", "")
 
 	installation, _ := i.setup.Current()
 	if got := settings.String(t.Context(), store.New(installation.DB), "site.housekeepingUrl"); got != "https://hotel.example.com/housekeeping" {

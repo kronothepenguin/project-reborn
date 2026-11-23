@@ -19,6 +19,7 @@ not wrapped by its runner.
 | `GET /installer/{$}` | `index.astro` | Shows the state; says the hotel is installed once an administrator exists, and links to `site.url` |
 | `GET`, `POST /installer/config` | `config.astro` | The config step: run alone, opens the database with `store.Open` (creating it with every update), then writes `config.json` with `config.Create`; inside reborn, moves the hotel and saves its address |
 | `GET`, `POST /installer/site` | `site.astro` | Site name, short name, URL, start credits and secure cookies, and housekeeping's address when run alone, saved with `settings.Set` and no user |
+| `GET`, `POST /installer/settings` | `settings.astro` | The settings step: six groups open with the installer's titles (New players, Password reset mail, Avatar pictures, Site features, Prices, Game ads) and every other field of `settings.Groups()` under "More settings", by its group's `Title`, less the site step's settings and the switches that close the site and the hotel. "Save settings" (`action=save`, and the Enter key) checks the changed values together with `settings.Validate` and saves them in one transaction; a refused value answers 422 with the field's label, shows what was typed with "More settings" open, and saves nothing. "Skip" (`action=skip`) saves nothing |
 | `GET`, `POST /installer/client` | `client.astro` | The client files step: names `<assets.path>/dcr/` and lists `external_variables.txt` and `external_texts.txt` with their count of lines, or as missing. "Import client files" (`action=import`) imports both with `dcr.Import` in one transaction; "Skip" (`action=skip`) imports nothing. With a file missing, the page says where to put it, offers "Check again" (a link to the same page) and "Skip", and an import answers 422 and imports nothing |
 | `GET`, `POST /installer/admin` | `admin.astro` | Habbo name, email, birth date and password: one transaction creates, through `auth.CreateAccount`, the user, habbo, profile, home and wallet (5000 credits), and adds the user to the highest access group holding `housekeeping.accessGroups`; then redirects to `/` |
 
@@ -50,7 +51,7 @@ not wrapped by its runner.
   reborn's runner waits on it.
 - After "Create administrator" the browser goes to `/`: inside reborn the site's front page, run alone the runner's
   redirect to the status page. There is no done page.
-- The order of the steps lives in `setup.Steps`: config, site, client, admin. A step that passes sends the browser to
+- The order of the steps lives in `setup.Steps`: config, site, settings, client, admin. A step that passes sends the browser to
   the next. A step opened before the one it follows redirects to the first step that waits, `(*State).Waiting()`; a
   step passed opens again. The config step passes once `config.json` exists; the others pass in memory, so a
   restarted installer continues at the site step. The status page's "Continue" links to the step that waits.
@@ -60,6 +61,10 @@ not wrapped by its runner.
   `localhost`, the proxy section disabled, the game server's ports, and the `reborn` section. A pod edits
   `config.json` to change them.
 - The site step saves each key on its own and stops at the first error.
+- The settings step draws a field by its `Kind`; the staff page's and credits page's box texts are multi-line. A
+  switch posts a hidden `0` before its box, which posts `1` when ticked, and the last value counts. A field not posted
+  keeps its value. The mail password shows empty, and an empty value keeps the saved one. The step saves a key that a
+  rule ties to another after it, as housekeeping does when both password limits rise.
 - A failure answers 500 and is logged, unless the visitor abandoned the request (`context.Canceled`): it ends quietly.
 - Holo's ranks come from update `0003-ranks.sql`. On a new hotel the administrator joins Administrator; without a group
   holding `housekeeping.accessGroups`, the step fails with `setup.ErrNoGroup`.

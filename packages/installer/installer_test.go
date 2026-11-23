@@ -93,7 +93,10 @@ func TestInstallation(t *testing.T) {
 		{"a bad housekeeping address", "POST", "/installer/site", with(site, "housekeepingUrl", "nowhere"), 422, "", "Housekeeping address: must be a path or an http or https URL"},
 		{"site URL with a path", "POST", "/installer/site", with(site, "url", "https://hotel.example.com/cms"), 422, "", "Site URL: must be an http or https origin"},
 		{"start credits out of range", "POST", "/installer/site", with(site, "startCredits", "-1"), 422, "", "Start credits: must be between 0 and 1000000"},
-		{"save site", "POST", "/installer/site", site, 303, "/installer/client", ""},
+		{"save site", "POST", "/installer/site", site, 303, "/installer/settings", ""},
+		{"client files before the settings step", "GET", "/installer/client", nil, 303, "/installer/settings", ""},
+		{"settings form", "GET", "/installer/settings", nil, 200, "", "{Title:New players Fields:[{Key:registration.defaultFigure"},
+		{"skip settings", "POST", "/installer/settings", url.Values{"action": {"skip"}}, 303, "/installer/client", ""},
 		{"admin before the client files step", "GET", "/installer/admin", nil, 303, "/installer/client", ""},
 		{"site again", "GET", "/installer/site", nil, 200, "", "Name:Reborn Hotel"},
 		{"client files form", "GET", "/installer/client", nil, 200, "", "Missing:true"},
@@ -110,6 +113,7 @@ func TestInstallation(t *testing.T) {
 		{"site after installing", "POST", "/installer/site", site, 303, "/installer/", ""},
 		{"admin after installing", "POST", "/installer/admin", admin, 303, "/installer/", ""},
 		{"client files after installing", "GET", "/installer/client", nil, 303, "/installer/", ""},
+		{"settings after installing", "POST", "/installer/settings", url.Values{"action": {"skip"}}, 303, "/installer/", ""},
 	} {
 		var body io.Reader
 		if c.form != nil {

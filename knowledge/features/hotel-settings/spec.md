@@ -30,7 +30,7 @@ next read. Every staff member opens the dashboard, with the hotel's counts and a
   or such a URL, and the imager a URL with a path and no query; anything else is refused.
 - Staff set a value back to its default: its row goes, and the default applies.
 - Staff save a form unchanged: nothing is written.
-- Staff open the Mail form: the password field is blank. A blank password keeps the current one, and a checkbox clears
+- Staff open the Password reset mail form: the password field is blank. A blank password keeps the current one, and a checkbox clears
   it.
 - Mail has a host and a from address: mails go through that server, signed in with `mail.username` when it is set.
 - Mail has no host or no from address: no mail goes out.

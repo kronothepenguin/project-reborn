@@ -8,10 +8,9 @@ projects: [packages/installer, apps/installer, packages/store, packages/cms, pac
 
 # What
 
-The installer sets up a new hotel in steps: `config.json` with the database, the site's settings, the client files as
-an optional step, and the first
-administrator. A new hotel starts with Holo's ranks as access groups. Once installed, the installer links to the hotel
-and changes nothing more.
+The installer sets up a new hotel in steps: `config.json` with the database, the site's settings, more settings and the
+client files as optional steps, and the first administrator. A new hotel starts with Holo's ranks as access groups.
+Once installed, the installer links to the hotel and changes nothing more.
 
 Next:
 
@@ -50,7 +49,7 @@ optional content and the catalogue review wait with the open questions.
 - The site step opens: it offers the Housekeeping Address on the housekeeping port chosen a step before
   (decision reborn/0004).
 - The site step gets a name, a short name, the site URL, the Housekeeping Address, start credits and secure cookies:
-  each is saved, and the client files step follows (decision holo-port/0026).
+  each is saved, and the settings step follows (decision holo-port/0026).
 - A value breaks a setting's rule, such as a bad address: the form is refused and names the field.
 
 ## The administrator step
@@ -79,6 +78,15 @@ optional content and the catalogue review wait with the open questions.
   step leads back to it (decision reborn/0004).
 - A page on another site posts a form to the installer: it is refused with status 403.
 
+## The settings step
+
+- The site step is saved: the settings step follows. It shows six groups open, each field with its current value: new
+  players, password reset mail, avatar pictures, site features, prices and game ads. Every other setting is folded
+  under "More settings", in housekeeping's groups.
+- The administrator saves the settings step: each changed setting is saved, and the client files step follows.
+- A value breaks a setting's rule: the form is refused, names the field, and saves nothing.
+- The administrator skips the settings step: every setting keeps its value, and the client files step follows.
+
 ## The client files step
 
 - The client files step opens: it names the folder it reads and each file it found there, with its count of lines.
@@ -96,15 +104,6 @@ optional content and the catalogue review wait with the open questions.
   your password?' links. The minimail needs none."
 
 ## Next
-
-### The settings step
-
-- The site step is saved: the settings step follows. It shows six groups open, each field with its current value: new
-  players, password reset mail, avatar pictures, site features, prices and game ads. Every other setting is folded
-  under "More settings", in housekeeping's groups.
-- The administrator saves the settings step: each changed setting is saved, and the client files step follows.
-- A value breaks a setting's rule: the form is refused, names the field, and saves nothing.
-- The administrator skips the settings step: every setting keeps its value, and the client files step follows.
 
 ### The administrator's club and credits
 
