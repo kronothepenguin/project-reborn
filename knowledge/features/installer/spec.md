@@ -1,14 +1,15 @@
 ---
 type: Spec
 title: "Installer: a first article, optional content and more settings"
-description: The installer sets up a new hotel in three steps, and gains a first news article, a choice of seeded content, a catalogue review and more of the hotel's settings.
+description: The installer sets up a new hotel in steps, two of them optional, and gains a first news article, a choice of seeded content, a catalogue review and more of the hotel's settings.
 status: active
 projects: [packages/installer, apps/installer, packages/store, packages/cms, packages/housekeeping, packages/virtual, tests/e2e]
 ---
 
 # What
 
-The installer sets up a new hotel in three steps: `config.json` with the database, the site's settings, and the first
+The installer sets up a new hotel in steps: `config.json` with the database, the site's settings, the client files as
+an optional step, and the first
 administrator. A new hotel starts with Holo's ranks as access groups. Once installed, the installer links to the hotel
 and changes nothing more.
 
@@ -98,6 +99,16 @@ optional content and the catalogue review wait with the open questions.
 - The administrator saves the settings step: each changed setting is saved, and the client files step follows.
 - A value breaks a setting's rule: the form is refused, names the field, and saves nothing.
 - The administrator skips the settings step: every setting keeps its value, and the client files step follows.
+
+### The administrator's club and credits
+
+- The administrator step opens: it shows "Give this habbo Habbo Club", ticked, and "Credits", filled with 5000.
+- The administrator is created with the box ticked: its habbo is a club member for 100 years.
+- The administrator is created with the box cleared: its habbo has no club.
+- The administrator is created with a number of credits: its purse starts with that number, and the ledger names the
+  installer.
+- The credits are no number, or outside 0 to 1,000,000: the form is refused and names the field.
+- The administrator reads the step: it says that the start credits of the site step go to habbos who register.
 
 ### Housekeeping
 

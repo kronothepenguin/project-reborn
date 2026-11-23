@@ -86,7 +86,7 @@ func Groups() []Group
 
 # Decisions
 
-All five of 2026-11-23, each the user's choice among options put to them.
+Of 2026-11-23, each the user's choice among options put to them.
 
 - The two steps come before the administrator step, each with "Skip" ("Before the administrator").
 - The client files step shows the folder and what it found, with "Import client files", "Skip" and, with a file
@@ -98,6 +98,13 @@ All five of 2026-11-23, each the user's choice among options put to them.
   mail server: it sends the "Forgot your password?" link, as Holo's `forgot.php` sent a mail
   ([0018](/decisions/holo-port/0018-password-reset-by-email.md)). The minimail is messages between habbos kept in the
   database, apart from it and still to build.
+- The administrator step offers Habbo Club for the administrator's habbo, ticked by default, as a period of 100 years
+  ("A tick box, club for good"). The user: "can we give habbo club to the admin in the installer?"
+- The administrator's first credits are a field of the administrator step, filled with Holo's 5000 ("A field on the
+  administrator step"). The user had asked: "the initial config was set credits to 500, but the admin starts with
+  5000, why?" The 500 is `registration.startCredits`, for habbos who register; the 5000 was fixed by
+  [0026](/decisions/holo-port/0026-installer-administrator-and-names.md), which this replaces for the number alone.
+- A step's progress lives in memory while the installer runs: a restarted installer goes on from the site step.
 
 Earlier:
 
