@@ -262,6 +262,7 @@ export async function install(dir, ports, mailPort) {
       startCredits: "500",
       secureCookies: "on",
     });
+    await post("/client", { action: "skip" });
     await post("/admin", {
       name: "Admin-1",
       email: "admin@example.com",

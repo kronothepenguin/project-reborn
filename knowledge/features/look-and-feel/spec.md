@@ -2,7 +2,7 @@
 type: Spec
 title: "Look and feel: Holo's look at today's sizes"
 description: The site has Holo's two layouts and housekeeping a look of its own; the site matches HoloCMS where it drifted and moves to a 16px base with a wider layout that keeps Holo's look and feel.
-status: planned
+status: active
 projects: [packages/cms, packages/components, packages/housekeeping, packages/installer]
 ---
 
@@ -22,6 +22,15 @@ not bold, but holo used to be bold."
 The user: "i know holo used to have font-size of 11px, but that's because screens back them used to be small compared to
 today's screens. 1360 vs 1960. i want to redesign but keep the look & feel of holo cms. my idea is use today's sizes
 like font-size: 16px. and make the layout's a little bigger to match this new font-size."
+
+The user, on 2026-11-23: "i want to enhance the installer design, maybe make it look more like habbo style. the
+community is not similar to holocms, if you see holocms it has navigation tabs with two colors, kind of
+`packages/components/src/components/button.svelte` styling, please make sure look & feel is as similar as possible. for
+the text remember that 11px back them is what regular 16px (1rem) is today. so we should replace 11px -> 16px, anything
+lower should be the smaller variants and anything bigger should be the large ones. also, the
+`packages/components/src/components/tab.svelte` has not complete style yet, please fix it and add color variants as in
+holocms." And: "in the community layout, i expect the search for user profiles to be inline the input and button, same
+height and close as possible aligned to right as a group".
 
 # Behaviours
 
@@ -65,13 +74,47 @@ like font-size: 16px. and make the layout's a little bigger to match this new fo
 
 - A page shows a select whose options the server fills in: it shows only the options.
 
+## Next
+
+### Sizes
+
+- A visitor opens a page of the site, the installer or housekeeping: its body text is 16px, in Holo's font.
+- A page shows a text Holo drew smaller than its body text: it shows in a smaller size; a text Holo drew bigger shows
+  in a bigger size.
+- A visitor opens a page of the site on a screen 1366px wide: the page is 1240px wide and centred, and nothing scrolls
+  sideways.
+- A page shows a picture, such as an avatar, a badge or an icon: it shows at its own size, sharp.
+
+### The community layout
+
+- A visitor reads the main tabs: each tab has two tones, the upper half lighter, inside a dark outline, and pointing at
+  it lightens both.
+- A visitor reads the main tabs: Housekeeping and "Register now!" are green, and the selected tab is white with bold
+  black text and opens into the sub-navigation below it.
+- A visitor reads the sub-navigation: Holo's items, separated by thin lines, the selected one bold and black, a link
+  underlined while pointed at.
+- A signed-in habbo reads the header: the habbo search shows its field and its button on one line, the same height,
+  as one group at the right edge.
+- A visitor reads a box: Holo's frame, its title bar in Holo's colour and size, and its content inset as Holo's.
+
+### Tabs inside boxes
+
+- A box shows tabs: an unselected tab is filled with the box's colour and has white text, and the selected one is
+  white with an outline in that colour and bold black text.
+- A box shows tabs: a line in the box's colour runs under the row, and the colour is blue, green or orange.
+
+### The installer
+
+- An administrator opens the installer: a page of its own, built from the site's parts: the title bars, the two-tone
+  buttons and the steps as tabs, in Holo's colours and font.
+
+### Housekeeping at today's sizes
+
+- Staff open housekeeping: its own look stays, the grey bar, the navy tabs and the gold lists, at the new sizes.
+
 # Open questions
 
-- The ten questions of [the redesign
-  study](/features/look-and-feel/research-redesign.md#questions-for-the-owner-recommended-answer-first): what is
-  redesigned, whether it replaces "exactly as Holo" for sizes only
-  ([holo-port 0034](/decisions/holo-port/0034-behaviour-matches-holo.md)), the font and its size, fixed or fluid, the
-  factor, avatars and badges, home pages, the Help Tool, screenshot baselines, the order.
-- Whether the differences from HoloCMS are fixed on today's 11px layout first, or with the redesign.
-- Of [the comparison](/features/look-and-feel/research-holo-look.md): whether Holo's tab image `tabs.png` is copied or
-  its look redrawn in CSS, and where the font is set, on the community layout alone or for the whole site.
+- Four questions of [the redesign
+  study](/features/look-and-feel/research-redesign.md#questions-for-the-owner-recommended-answer-first): avatars and
+  badges doubled or kept, home pages, the Help Tool's popup, and screenshot baselines in the browser suites. Until
+  they are answered, pictures keep their size, and home pages and the Help Tool keep their canvas.

@@ -1,14 +1,15 @@
 ---
 type: Spec
 title: "Installer: a first article, optional content and more settings"
-description: The installer sets up a new hotel in three steps, and gains a first news article, a choice of seeded content, a catalogue review and more of the hotel's settings.
+description: The installer sets up a new hotel in steps, two of them optional, and gains a first news article, a choice of seeded content, a catalogue review and more of the hotel's settings.
 status: active
 projects: [packages/installer, apps/installer, packages/store, packages/cms, packages/housekeeping, packages/virtual, tests/e2e]
 ---
 
 # What
 
-The installer sets up a new hotel in three steps: `config.json` with the database, the site's settings, and the first
+The installer sets up a new hotel in steps: `config.json` with the database, the site's settings, the client files as
+an optional step, and the first
 administrator. A new hotel starts with Holo's ranks as access groups. Once installed, the installer links to the hotel
 and changes nothing more.
 
@@ -49,7 +50,7 @@ optional content and the catalogue review wait with the open questions.
 - The site step opens: it offers the Housekeeping Address on the housekeeping port chosen a step before
   (decision reborn/0004).
 - The site step gets a name, a short name, the site URL, the Housekeeping Address, start credits and secure cookies:
-  each is saved, and the administrator step follows (decision holo-port/0026).
+  each is saved, and the client files step follows (decision holo-port/0026).
 - A value breaks a setting's rule, such as a bad address: the form is refused and names the field.
 
 ## The administrator step
@@ -78,6 +79,16 @@ optional content and the catalogue review wait with the open questions.
   step leads back to it (decision reborn/0004).
 - A page on another site posts a form to the installer: it is refused with status 403.
 
+## The client files step
+
+- The client files step opens: it names the folder it reads and each file it found there, with its count of lines.
+- The administrator imports the client files: the client's variables and texts are saved, and the administrator step
+  follows.
+- A file is missing: the step says where to put it, offers "Check again", and imports nothing.
+- The administrator skips the client files step: nothing is imported, and housekeeping imports the files later.
+- The administrator is created: the step imports no client file by itself.
+- A step is opened before the one it follows: the browser goes to the first step that waits.
+
 ## Housekeeping
 
 - Staff open the settings page: every group shows the labels and the help it showed before.
@@ -95,15 +106,15 @@ optional content and the catalogue review wait with the open questions.
 - A value breaks a setting's rule: the form is refused, names the field, and saves nothing.
 - The administrator skips the settings step: every setting keeps its value, and the client files step follows.
 
-### The client files step
+### The administrator's club and credits
 
-- The client files step opens: it names the folder it reads and each file it found there, with its count of lines.
-- The administrator imports the client files: the client's variables and texts are saved, and the administrator step
-  follows.
-- A file is missing: the step says where to put it, offers "Check again", and imports nothing.
-- The administrator skips the client files step: nothing is imported, and housekeeping imports the files later.
-- The administrator is created: the step imports no client file by itself.
-- A step is opened before the one it follows: the browser goes to the first step that waits.
+- The administrator step opens: it shows "Give this habbo Habbo Club", ticked, and "Credits", filled with 5000.
+- The administrator is created with the box ticked: its habbo is a club member for 100 years.
+- The administrator is created with the box cleared: its habbo has no club.
+- The administrator is created with a number of credits: its purse starts with that number, and the ledger names the
+  installer.
+- The credits are no number, or outside 0 to 1,000,000: the form is refused and names the field.
+- The administrator reads the step: it says that the start credits of the site step go to habbos who register.
 
 # Open questions
 

@@ -14,6 +14,8 @@ type indexPage struct {
 	Installed  bool
 	ConfigPath string
 	SiteURL    string
+	// Next is the first step that waits.
+	Next string
 }
 
 // HandleIndexView renders GET /installer/{$}, the state of the installation.
@@ -28,6 +30,7 @@ func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
 		Configured: configured,
 		Installed:  installed,
 		ConfigPath: setup.ConfigPath(),
+		Next:       r.deps.Setup.Waiting(),
 	}
 	if installed {
 		page.SiteURL = settings.String(req.Context(), store.New(installation.DB), "site.url")

@@ -88,7 +88,9 @@ func TestANewHotelIsInstalledAndTheSiteAnswers(t *testing.T) {
 		http.StatusSeeOther, "/installer/site", "")
 	answers(t, browser, "POST", srv.URL+"/installer/site", url.Values{
 		"name": {"Reborn Hotel"}, "shortName": {"Reborn"}, "url": {srv.URL}, "startCredits": {"500"},
-	}, http.StatusSeeOther, "/installer/admin", "")
+	}, http.StatusSeeOther, "/installer/client", "")
+	answers(t, browser, "POST", srv.URL+"/installer/client", url.Values{"action": {"skip"}},
+		http.StatusSeeOther, "/installer/admin", "")
 	select {
 	case err := <-waited:
 		t.Fatalf("WaitForInstall returned %v before the administrator exists", err)

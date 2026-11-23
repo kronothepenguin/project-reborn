@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"slices"
 
 	"github.com/kronothepenguin/project-reborn/packages/astro"
 	"github.com/kronothepenguin/project-reborn/packages/installer/internal/setup"
@@ -27,10 +28,10 @@ func New(deps Deps) *Router {
 	return &Router{deps: deps}
 }
 
-// step lets a step's handler run only while the hotel has no administrator
-// and, when needConfig is set, once config.json is written. Otherwise it
-// redirects to the page that applies and reports false.
-func (r *Router) step(w http.ResponseWriter, req *http.Request, needConfig bool) (setup.Installation, bool) {
+// step lets the handler of name run only while the hotel has no
+// administrator and no step before name waits. Otherwise it redirects to the
+// page that applies and reports false.
+func (r *Router) step(w http.ResponseWriter, req *http.Request, name string) (setup.Installation, bool) {
 	installed, err := r.deps.Setup.Installed(req.Context())
 	if err != nil {
 		r.fail(w, err)
@@ -40,12 +41,19 @@ func (r *Router) step(w http.ResponseWriter, req *http.Request, needConfig bool)
 		http.Redirect(w, req, "/installer/", http.StatusSeeOther)
 		return setup.Installation{}, false
 	}
-	installation, configured := r.deps.Setup.Current()
-	if needConfig && !configured {
-		http.Redirect(w, req, "/installer/config", http.StatusSeeOther)
+	if waiting := r.deps.Setup.Waiting(); slices.Index(setup.Steps, name) > slices.Index(setup.Steps, waiting) {
+		http.Redirect(w, req, "/installer/"+waiting, http.StatusSeeOther)
 		return setup.Installation{}, false
 	}
+	installation, _ := r.deps.Setup.Current()
 	return installation, true
+}
+
+// pass records that name is done and sends the browser to the step after it.
+func (r *Router) pass(w http.ResponseWriter, req *http.Request, name string) {
+	r.deps.Setup.Pass(name)
+	next := setup.Steps[slices.Index(setup.Steps, name)+1]
+	http.Redirect(w, req, "/installer/"+next, http.StatusSeeOther)
 }
 
 func (r *Router) invalid(w http.ResponseWriter, name string, data any) {

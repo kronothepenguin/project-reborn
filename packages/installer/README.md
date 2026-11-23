@@ -1,6 +1,7 @@
 # installer — web app package
 
-The installer writes `config.json`, creates the database, saves the site settings and creates the first administrator.
+The installer writes `config.json`, creates the database, saves the site settings, imports the client files when
+chosen and creates the first administrator.
 It is an Astro (Svelte + Tailwind) frontend embedded in a Go module.
 
 `packages/reborn` mounts it under `/installer/` until the administrator exists: there it asks one host and port and

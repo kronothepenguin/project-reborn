@@ -25,7 +25,7 @@ type adminPage struct {
 
 // HandleAdminView renders GET /installer/admin.
 func (r *Router) HandleAdminView(w http.ResponseWriter, req *http.Request) {
-	installation, ok := r.step(w, req, true)
+	installation, ok := r.step(w, req, "admin")
 	if !ok {
 		return
 	}
@@ -35,7 +35,7 @@ func (r *Router) HandleAdminView(w http.ResponseWriter, req *http.Request) {
 // HandleAdminCreate handles POST /installer/admin: it creates the
 // administrator, then sends the browser to the site at /.
 func (r *Router) HandleAdminCreate(w http.ResponseWriter, req *http.Request) {
-	installation, ok := r.step(w, req, true)
+	installation, ok := r.step(w, req, "admin")
 	if !ok {
 		return
 	}

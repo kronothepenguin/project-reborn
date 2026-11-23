@@ -136,6 +136,29 @@ var adminForm = url.Values{
 	"passwordConfirm": {"secret123"},
 }
 
+var siteForm = url.Values{
+	"name":            {"Reborn Hotel"},
+	"shortName":       {"Reborn"},
+	"url":             {"https://hotel.example.com"},
+	"housekeepingUrl": {"http://localhost:18400/housekeeping"},
+	"startCredits":    {"500"},
+}
+
+// toClient saves the site step, after the config step, so that the client
+// files step waits.
+func toClient(t *testing.T, mux http.Handler) {
+	t.Helper()
+	expect(t, send(t, mux, "POST", "/installer/site", siteForm), 303, "/installer/client", "")
+}
+
+// toAdmin saves the site step and skips the client files step, after the
+// config step, so that the administrator step waits.
+func toAdmin(t *testing.T, mux http.Handler) {
+	t.Helper()
+	toClient(t, mux)
+	expect(t, send(t, mux, "POST", "/installer/client", url.Values{"action": {"skip"}}), 303, "/installer/admin", "")
+}
+
 // A visitor opens the installer: its pages, forms and files are served under /installer/.
 func TestTheInstallerIsServedUnderInstaller(t *testing.T) {
 	var files []string
@@ -164,6 +187,7 @@ func TestCreatingTheAdministratorGoesToTheSite(t *testing.T) {
 	if i.Installed() {
 		t.Fatal("Installed before the administrator exists")
 	}
+	toAdmin(t, mux)
 
 	expect(t, send(t, mux, "POST", "/installer/admin", adminForm), 303, "/", "")
 
@@ -184,6 +208,7 @@ func TestWaitForInstallReturnsOnceTheAdministratorExists(t *testing.T) {
 	i, mux := inReborn(t, &fakeListener{})
 	expect(t, send(t, mux, "POST", "/installer/config", url.Values{"host": {"localhost"}, "port": {"16416"}}),
 		303, "/installer/site", "")
+	toAdmin(t, mux)
 	waited := make(chan error, 1)
 	go func() { waited <- i.WaitForInstall(t.Context()) }()
 	select {
@@ -321,6 +346,7 @@ func TestInsideRebornTheInstallerWorksOnRebornsDatabase(t *testing.T) {
 	_, mux := inReborn(t, &fakeListener{})
 	expect(t, send(t, mux, "POST", "/installer/config", url.Values{"host": {"localhost"}, "port": {"16416"}}),
 		303, "/installer/site", "")
+	toAdmin(t, mux)
 	expect(t, send(t, mux, "POST", "/installer/admin", adminForm), 303, "/", "")
 
 	db, err := store.Open("habbo.db")
@@ -343,7 +369,7 @@ func TestOneAddressSavesHousekeepingUnderTheSite(t *testing.T) {
 		"OneAddress:true Name:Reborn Hotel ShortName:Reborn URL:http://localhost:16416 HousekeepingURL: ")
 	expect(t, send(t, mux, "POST", "/installer/site", url.Values{
 		"name": {"Reborn Hotel"}, "shortName": {"Reborn"}, "url": {"https://hotel.example.com"}, "startCredits": {"500"},
-	}), 303, "/installer/admin", "")
+	}), 303, "/installer/client", "")
 
 	installation, _ := i.setup.Current()
 	if got := settings.String(t.Context(), store.New(installation.DB), "site.housekeepingUrl"); got != "https://hotel.example.com/housekeeping" {
