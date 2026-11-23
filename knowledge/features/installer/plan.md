@@ -20,9 +20,11 @@ Planned:
 
 | Project | Part |
 | --- | --- |
-| `packages/installer` | New steps: settings in groups, content to keep, a review of the catalogue with pages, filters and sorting, the welcome article; one final write |
+| `packages/settings` | `Group`, `Field` and `Groups()`: the labels and help of every setting an administrator edits |
+| `packages/housekeeping` | The settings page reads `settings.Groups()`; the mail group is "Password reset mail" |
+| `packages/installer` | The optional settings step and the optional client files step, between the site step and the administrator step |
+| `packages/installer` | Later: content to keep, a review of the catalogue with pages, filters and sorting, the welcome article; one final write |
 | `packages/store` | What records the content that was kept; queries that list and edit the catalogue |
-| `packages/virtual`, `packages/housekeeping` | The settings' labels and help shared with the installer, where housekeeping's forms hold them today |
 | `packages/cms` | The first article shows on `/me`, `/community` and `/news` |
 | `packages/server` | A hotel with optional content removed still starts and works |
 
@@ -35,7 +37,69 @@ A first article replaces [holo-port 0075](/decisions/holo-port/0075-no-news-or-b
 amends [holo-port 0068](/decisions/holo-port/0068-seeds-are-updates.md): each needs its decision when the feature
 starts. The place of the installer on the orchestrator's mux is [platform](/features/platform/spec.md)'s.
 
+## The two optional steps
+
+The steps run in this order: address, site, settings, client files, administrator. "Create administrator" stays the
+last click, since the hotel counts as installed once the administrator exists and reborn then serves the site.
+
+The shape the user approved on 2026-11-23:
+
+```go
+// packages/settings
+
+// Group is a set of settings an administrator edits together.
+type Group struct {
+    ID     string // "registration"
+    Title  string // "Registration"
+    Fields []Field
+}
+
+type Field struct {
+    Key      string // "registration.maxPerIp"
+    Label    string // "Habbos Per Address"
+    Help     string
+    Kind     string // text, number, switch, choice
+    Choices  []Choice
+    Required bool
+}
+
+// Groups lists every group, in housekeeping's order.
+func Groups() []Group
+```
+
+- Housekeeping keeps what is its own, by group and by key: Holo's page titles, menu names and button texts, the words
+  of a switch, a multi-line text and the BBCode editor.
+- The settings step shows these keys open, in six groups:
+  - New players: `registration.defaultFigure`, `registration.defaultGender`, `referral.enabled`, `referral.reward`.
+  - Password reset mail: `mail.host`, `mail.port`, `mail.username`, `mail.password`, `mail.from`.
+  - Avatar pictures: `imaging.avatarUrl`.
+  - Site features: the `features.*` switches and `recycler.enabled`.
+  - Prices: `club.price1Month`, `club.price3Months`, `club.price6Months`, `groups.price`.
+  - Game ads: `game.loadingAdImage`, `game.loadingAdLink`, `game.roomAdImage`, `game.roomAdLink`.
+- "More settings" holds every other field of `settings.Groups()`, folded, under its group's title. The settings of the
+  site step stay there and are left out: the names, the addresses, the start credits and secure cookies. The switches
+  that close the site and the hotel are left out too.
+- The step saves the changed settings together, after `settings.Validate` accepts them all.
+- The client files step reads `<assets.path>/dcr/`, as the administrator step did, and imports with `dcr.Import`.
+  Downloading the files joins this step with [assets](/features/assets/spec.md).
+
 # Decisions
+
+All five of 2026-11-23, each the user's choice among options put to them.
+
+- The two steps come before the administrator step, each with "Skip" ("Before the administrator").
+- The client files step shows the folder and what it found, with "Import client files", "Skip" and, with a file
+  missing, "Check again" ("Import or skip").
+- The settings step shows the day-one groups open and the rest folded ("Day-one groups, plus the rest folded"). It
+  answers question 10 of [the study](/features/installer/research-installer.md#questions-for-the-user).
+- The labels and help live in `packages/settings` ("In packages/settings"). It answers question 11 of the study.
+- Housekeeping's "Mail" form becomes "Password reset mail" ("Rename it"). The user had asked why housekeeping holds a
+  mail server: it sends the "Forgot your password?" link, as Holo's `forgot.php` sent a mail
+  ([0018](/decisions/holo-port/0018-password-reset-by-email.md)). The minimail is messages between habbos kept in the
+  database, apart from it and still to build.
+
+Earlier:
+
 
 - [Installer administrator, start credits and habbo
   names](/decisions/holo-port/0026-installer-administrator-and-names.md) — The site step sets

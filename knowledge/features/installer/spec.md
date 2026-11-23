@@ -2,7 +2,7 @@
 type: Spec
 title: "Installer: a first article, optional content and more settings"
 description: The installer sets up a new hotel in three steps, and gains a first news article, a choice of seeded content, a catalogue review and more of the hotel's settings.
-status: planned
+status: active
 projects: [packages/installer, apps/installer, packages/store, packages/cms, packages/housekeeping, packages/virtual, tests/e2e]
 ---
 
@@ -24,6 +24,10 @@ pagination, filters and sorting) the catalogue or furnis during installation as 
 database. admin can skip or modify as they want. as well as some settings during installation, currenlty we have hotel
 name and site only, but would be cool to allow the admin to show up other settings and modify them during the
 installation."
+
+The user, on 2026-11-23, after installing a hotel under reborn: "can we add an optional step to the installer for the
+dcr and another for modifying initial settings". These two steps are built first, under `## Next`; the article, the
+optional content and the catalogue review wait with the open questions.
 
 # Behaviours
 
@@ -68,15 +72,43 @@ installation."
 
 ## Installed
 
-- The administrator is created: the done page shows where `config.json` and the database are, and "Go to the hotel"
-  leads to `site.url`, where the administrator signs in.
+- The administrator is created: the browser goes to `/`, the site's front page inside reborn and the status page run
+  alone (decision reborn/0004).
 - An installed hotel opens the installer: the status page says it is installed and links to `site.url`, and every
   step leads back to it (decision reborn/0004).
 - A page on another site posts a form to the installer: it is refused with status 403.
 
+## Next
+
+### The settings step
+
+- The site step is saved: the settings step follows. It shows six groups open, each field with its current value: new
+  players, password reset mail, avatar pictures, site features, prices and game ads. Every other setting is folded
+  under "More settings", in housekeeping's groups.
+- The administrator saves the settings step: each changed setting is saved, and the client files step follows.
+- A value breaks a setting's rule: the form is refused, names the field, and saves nothing.
+- The administrator skips the settings step: every setting keeps its value, and the client files step follows.
+
+### The client files step
+
+- The client files step opens: it names the folder it reads and each file it found there, with its count of lines.
+- The administrator imports the client files: the client's variables and texts are saved, and the administrator step
+  follows.
+- A file is missing: the step says where to put it, offers "Check again", and imports nothing.
+- The administrator skips the client files step: nothing is imported, and housekeeping imports the files later.
+- The administrator is created: the step imports no client file by itself.
+- A step is opened before the one it follows: the browser goes to the first step that waits.
+
+### Housekeeping
+
+- Staff open the settings page: every group shows the labels and the help it showed before.
+- Staff open the mail group: it is titled "Password reset mail", and its help says "The mail server that sends 'Forgot
+  your password?' links. The minimail needs none."
+
 # Open questions
 
-- The twelve questions of [the study](/features/installer/research-installer.md#questions-for-the-user): where choices
-  wait until "Install", what "not seeded" means, which content is optional, what a later release does for content that
-  was skipped, what can be edited, during the installation or after it, a database the site already created, who writes
-  the article, banners, which settings, where their labels live, the game server's ports.
+- Ten questions of [the study](/features/installer/research-installer.md#questions-for-the-user): where choices wait
+  until "Install", what "not seeded" means, which content is optional, what a later release does for content that was
+  skipped, what can be edited, during the installation or after it, a database the site already created, who writes
+  the article, banners, the game server's ports. Which settings and where their labels live are answered in the
+  [plan](/features/installer/plan.md).
