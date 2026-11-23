@@ -86,6 +86,8 @@ func (i *Installer) Mount(mux *http.ServeMux) {
 	route("POST /installer/config", r.HandleConfigSave)
 	route("GET /installer/site", r.HandleSiteView)
 	route("POST /installer/site", r.HandleSiteSave)
+	route("GET /installer/client", r.HandleClientView)
+	route("POST /installer/client", r.HandleClientSave)
 	route("GET /installer/admin", r.HandleAdminView)
 	route("POST /installer/admin", r.HandleAdminCreate)
 

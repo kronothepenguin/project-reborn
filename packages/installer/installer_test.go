@@ -73,7 +73,8 @@ func TestInstallation(t *testing.T) {
 		body     string
 	}{
 		{"status before configuring", "GET", "/installer/", nil, 200, "", "Configured:false Installed:false"},
-		{"status links nowhere before installing", "GET", "/installer/", nil, 200, "", "SiteURL:}"},
+		{"status starts at the config step", "GET", "/installer/", nil, 200, "", "Next:config}"},
+		{"status links nowhere before installing", "GET", "/installer/", nil, 200, "", "SiteURL: Next:"},
 		{"site before configuring", "GET", "/installer/site", nil, 303, "/installer/config", ""},
 		{"admin before configuring", "POST", "/installer/admin", admin, 303, "/installer/config", ""},
 		{"config form", "GET", "/installer/config", nil, 200, "", "OneAddress:false Written:false ConfigPath:"},
@@ -84,13 +85,19 @@ func TestInstallation(t *testing.T) {
 		{"housekeeping port out of range", "POST", "/installer/config", url.Values{"path": {"habbo.db"}, "port": {"17400"}, "housekeepingPort": {"70000"}}, 422, "", "housekeeping.port: must be between 1 and 65535"},
 		{"write config", "POST", "/installer/config", url.Values{"path": {"habbo.db"}, "port": {"17400"}, "housekeepingPort": {"18400"}}, 303, "/installer/site", ""},
 		{"config written", "GET", "/installer/config", nil, 200, "", "Written:true"},
+		{"client files before the site step", "GET", "/installer/client", nil, 303, "/installer/site", ""},
+		{"admin before the site step", "POST", "/installer/admin", admin, 303, "/installer/site", ""},
 		{"config shows the ports", "GET", "/installer/config", nil, 200, "", "Port:17400 HousekeepingPort:18400"},
 		{"config again", "POST", "/installer/config", url.Values{"path": {"other.db"}, "port": {"17401"}, "housekeepingPort": {"18401"}}, 303, "/installer/config", ""},
 		{"site form", "GET", "/installer/site", nil, 200, "", "Name:Reborn Hotel ShortName:Reborn URL:http://localhost:17387 HousekeepingURL:http://localhost:18400/housekeeping StartCredits:500 SecureCookies:true"},
 		{"a bad housekeeping address", "POST", "/installer/site", with(site, "housekeepingUrl", "nowhere"), 422, "", "Housekeeping address: must be a path or an http or https URL"},
 		{"site URL with a path", "POST", "/installer/site", with(site, "url", "https://hotel.example.com/cms"), 422, "", "Site URL: must be an http or https origin"},
 		{"start credits out of range", "POST", "/installer/site", with(site, "startCredits", "-1"), 422, "", "Start credits: must be between 0 and 1000000"},
-		{"save site", "POST", "/installer/site", site, 303, "/installer/admin", ""},
+		{"save site", "POST", "/installer/site", site, 303, "/installer/client", ""},
+		{"admin before the client files step", "GET", "/installer/admin", nil, 303, "/installer/client", ""},
+		{"site again", "GET", "/installer/site", nil, 200, "", "Name:Reborn Hotel"},
+		{"client files form", "GET", "/installer/client", nil, 200, "", "Missing:true"},
+		{"skip client files", "POST", "/installer/client", url.Values{"action": {"skip"}}, 303, "/installer/admin", ""},
 		{"admin form", "GET", "/installer/admin", nil, 200, "", "PasswordHelp:6 to 25 characters"},
 		{"passwords differ", "POST", "/installer/admin", with(admin, "passwordConfirm", "secret124"), 422, "", "The passwords do not match."},
 		{"missing birth date", "POST", "/installer/admin", with(admin, "bornOn", ""), 422, "", "Enter the birth date."},
@@ -98,10 +105,11 @@ func TestInstallation(t *testing.T) {
 		{"short password", "POST", "/installer/admin", with(with(admin, "password", "short"), "passwordConfirm", "short"), 422, "", "Passwords are 6 to 25 characters."},
 		{"create administrator", "POST", "/installer/admin", admin, 303, "/", ""},
 		{"status after installing", "GET", "/installer/", nil, 200, "", "Installed:true ConfigPath:"},
-		{"status links to the hotel", "GET", "/installer/", nil, 200, "", "SiteURL:https://hotel.example.com}"},
+		{"status links to the hotel", "GET", "/installer/", nil, 200, "", "SiteURL:https://hotel.example.com Next:"},
 		{"config after installing", "GET", "/installer/config", nil, 303, "/installer/", ""},
 		{"site after installing", "POST", "/installer/site", site, 303, "/installer/", ""},
 		{"admin after installing", "POST", "/installer/admin", admin, 303, "/installer/", ""},
+		{"client files after installing", "GET", "/installer/client", nil, 303, "/installer/", ""},
 	} {
 		var body io.Reader
 		if c.form != nil {

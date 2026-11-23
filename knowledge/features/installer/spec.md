@@ -49,7 +49,7 @@ optional content and the catalogue review wait with the open questions.
 - The site step opens: it offers the Housekeeping Address on the housekeeping port chosen a step before
   (decision reborn/0004).
 - The site step gets a name, a short name, the site URL, the Housekeeping Address, start credits and secure cookies:
-  each is saved, and the administrator step follows (decision holo-port/0026).
+  each is saved, and the client files step follows (decision holo-port/0026).
 - A value breaks a setting's rule, such as a bad address: the form is refused and names the field.
 
 ## The administrator step
@@ -78,6 +78,16 @@ optional content and the catalogue review wait with the open questions.
   step leads back to it (decision reborn/0004).
 - A page on another site posts a form to the installer: it is refused with status 403.
 
+## The client files step
+
+- The client files step opens: it names the folder it reads and each file it found there, with its count of lines.
+- The administrator imports the client files: the client's variables and texts are saved, and the administrator step
+  follows.
+- A file is missing: the step says where to put it, offers "Check again", and imports nothing.
+- The administrator skips the client files step: nothing is imported, and housekeeping imports the files later.
+- The administrator is created: the step imports no client file by itself.
+- A step is opened before the one it follows: the browser goes to the first step that waits.
+
 ## Next
 
 ### The settings step
@@ -88,16 +98,6 @@ optional content and the catalogue review wait with the open questions.
 - The administrator saves the settings step: each changed setting is saved, and the client files step follows.
 - A value breaks a setting's rule: the form is refused, names the field, and saves nothing.
 - The administrator skips the settings step: every setting keeps its value, and the client files step follows.
-
-### The client files step
-
-- The client files step opens: it names the folder it reads and each file it found there, with its count of lines.
-- The administrator imports the client files: the client's variables and texts are saved, and the administrator step
-  follows.
-- A file is missing: the step says where to put it, offers "Check again", and imports nothing.
-- The administrator skips the client files step: nothing is imported, and housekeeping imports the files later.
-- The administrator is created: the step imports no client file by itself.
-- A step is opened before the one it follows: the browser goes to the first step that waits.
 
 ### Housekeeping
 

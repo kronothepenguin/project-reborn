@@ -10,7 +10,7 @@ Built:
 
 | Project | Part |
 | --- | --- |
-| `packages/installer` | The status, config, site, administrator and done pages; `internal/setup` writes `config.json`, creates the database and the administrator (`packages/installer/knowledge/steps.md`) |
+| `packages/installer` | The status, config, site, client files and administrator pages; `internal/setup` writes `config.json`, creates the database and the administrator (`packages/installer/knowledge/steps.md`) |
 | `apps/installer` | The runners on `localhost:17306`, with cross-origin protection |
 | `packages/store` | `store.Open` creates a new database with every update; `0003-ranks.sql` seeds Holo's ranks |
 | `packages/auth` | `CreateAccount` and the rules for habbo names, emails, birth dates and passwords |
@@ -22,7 +22,7 @@ Planned:
 | --- | --- |
 | `packages/settings` | `Group`, `Field` and `Groups()`: the labels and help of every setting an administrator edits |
 | `packages/housekeeping` | The settings page reads `settings.Groups()`; the mail group is "Password reset mail" |
-| `packages/installer` | The optional settings step and the optional client files step, between the site step and the administrator step |
+| `packages/installer` | The optional settings step, between the site step and the client files step |
 | `packages/installer` | Later: content to keep, a review of the catalogue with pages, filters and sorting, the welcome article; one final write |
 | `packages/store` | What records the content that was kept; queries that list and edit the catalogue |
 | `packages/cms` | The first article shows on `/me`, `/community` and `/news` |
@@ -80,7 +80,8 @@ func Groups() []Group
   site step stay there and are left out: the names, the addresses, the start credits and secure cookies. The switches
   that close the site and the hotel are left out too.
 - The step saves the changed settings together, after `settings.Validate` accepts them all.
-- The client files step reads `<assets.path>/dcr/`, as the administrator step did, and imports with `dcr.Import`.
+- Built: the client files step reads `<assets.path>/dcr/`, as the administrator step did, and imports with `dcr.Import`;
+  the administrator step imports none. `setup.Steps` holds the order of the steps.
   Downloading the files joins this step with [assets](/features/assets/spec.md).
 
 # Decisions

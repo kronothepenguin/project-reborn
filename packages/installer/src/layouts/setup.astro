@@ -2,7 +2,7 @@
 import { Paper } from "@project-reborn/components";
 import Document from "./document.astro";
 
-type Step = "status" | "config" | "site" | "admin";
+type Step = "status" | "config" | "site" | "client" | "admin";
 
 interface Props {
   title: string;
@@ -14,7 +14,8 @@ const { title, step } = Astro.props;
 const steps: { id: Step; label: string }[] = [
   { id: "config", label: "1. Configuration" },
   { id: "site", label: "2. Site" },
-  { id: "admin", label: "3. Administrator" },
+  { id: "client", label: "3. Client files" },
+  { id: "admin", label: "4. Administrator" },
 ];
 ---
 
