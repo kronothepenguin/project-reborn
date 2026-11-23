@@ -2,5 +2,4 @@
 
 # Tasks
 
-- [The documents say what reborn is](15-documents.md) - The platform feature's later notes, the READMEs and the architecture references describe reborn, the installer under /installer/, settings read from the store, the stop in order and the releases.
 - [Check the platform feature's behaviours](16-exit-check.md) - Every behaviour of the platform feature is checked on main and its evidence written in the report, and the feature is closed or what is left is reported.

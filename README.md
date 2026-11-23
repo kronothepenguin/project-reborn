@@ -2,7 +2,7 @@
 
 Project Reborn is a remake of Habbo Hotel as it was around 2008 — the classic Shockwave (Macromedia Director) era (R26): rooms, navigator, friends, catalogue, clubs, and the rest.
 
-The client is a JavaScript reimplementation of the Shockwave client: a director runtime (shockwave player) that runs the translated Lingo movies. The server, CMS, housekeeping and installer are Go. An orchestrator, `apps/reborn`, which runs them all from one binary, is planned.
+The client is a JavaScript reimplementation of the Shockwave client: a director runtime (shockwave player) that runs the translated Lingo movies. The server, CMS, housekeeping and installer are Go. `reborn` runs them all from one binary.
 
 > Early development. Most systems are incomplete or not yet started.
 
@@ -47,9 +47,22 @@ embuilder build zlib libjpeg
 make player         # about three minutes; EMSCRIPTEN=<folder of emcc> when emcc is not on the PATH
 ```
 
-### 2. Run an app's dev server
+### 2. Build the frontends
 
-Each app owns its own `Makefile` with app-specific targets.
+```bash
+make frontends      # once: the Go programs embed their builds, reborn's dist among them
+```
+
+### 3. Run the hotel
+
+```bash
+make dev            # reborn with live reload → http://localhost:16416
+```
+
+From an empty folder, reborn serves the installer at `/installer/`, then the site at `/` and housekeeping at
+`/housekeeping/`. `apps/reborn/README.md` has the details.
+
+Run a program alone to work on that program, or to test how the programs talk. Each app owns its own `Makefile`:
 
 ```bash
 cd apps/cms && make dev
@@ -61,14 +74,12 @@ The dev and build modes of the web apps are in `knowledge/programs.md`.
 
 ## Building
 
-Each app builds on its own; its `README.md` has the steps.
-
 ```bash
-pnpm --filter @project-reborn/cms build
-go build -o ./apps/cms/tmp/cms ./apps/cms/cmd/cms
+make frontends      # every frontend the Go programs embed
+make build          # → ./bin/reborn
 ```
 
-`make frontends` builds the three frontends at once.
+Each app also builds on its own; its `README.md` has the steps.
 
 ---
 
@@ -77,12 +88,14 @@ go build -o ./apps/cms/tmp/cms ./apps/cms/cmd/cms
 Pushing a tag like `v0.1.0` publishes a GitHub release, once `make check` and the browser suites have passed:
 
 - `reborn-<tag>-linux-amd64.tar.gz` and `reborn-<tag>-linux-aarch64.tar.gz`, each with
-  `cms`, `housekeeping` and `installer`;
+  `reborn`, `cms`, `housekeeping`, `installer` and `server`;
 - `SHA256SUMS`.
 
-To try one, unpack it in an empty folder, run `./installer` and follow it at
-`http://localhost:17306`. Then stop it and run `./cms` and `./housekeeping` from the
-same folder, which now holds `config.json` and the database.
+To try one, unpack it in an empty folder, run `./reborn` and follow the installer at
+`http://localhost:16416/installer/`. Once the administrator exists, the hotel runs there.
+
+To run the programs apart instead, run `./installer` and follow it at `http://localhost:17306/installer/`. Then stop it
+and run `./cms`, `./housekeeping` and `./server` from the same folder, which now holds `config.json` and the database.
 
 `make release VERSION=v0.1.0` builds the same archives into `release/`.
 

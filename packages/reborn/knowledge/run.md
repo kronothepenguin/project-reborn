@@ -57,6 +57,24 @@ func (r *Reborn) Stop(ctx context.Context) error
 - `Stop` logs each player out with its last time online saved, and closes the doors. It takes about 5 seconds while
   anybody is connected.
 - Under reborn, `cms.host`, `cms.port`, `housekeeping.host` and `housekeeping.port` go unused.
+- The game opens no `/api/`: the site and housekeeping call it in the process, through `services.Habbos` and
+  `services.Hotel`. Run alone, the game serves its `/api/` on `server.api`
+  (`knowledge/features/hotel-status/plan.md`).
+
+# Settings and caches
+
+- Every program reads each setting from the store on `db` when it uses it. A save in housekeeping reaches the site,
+  the installer and the game at their next read, and nothing refreshes
+  (`knowledge/decisions/reborn/0006-settings-are-read-from-the-store.md`).
+- The game keeps what every player shares in memory once no database update waits: the navigator and the catalogue
+  (`packages/server/knowledge/architecture.md`, "Settings and caches").
+
+# Stop
+
+- The runner stops reborn on Ctrl-C or SIGTERM: the HTTP server finishes the open requests, `Stop` logs the players
+  out, and the database closes (`apps/reborn/README.md`).
+- The scheduler has no `Start` and no `Stop`: its tasks run until the process ends
+  (`knowledge/decisions/reborn/0016-lifecycle-names-come-in-pairs.md`).
 
 # Tests
 

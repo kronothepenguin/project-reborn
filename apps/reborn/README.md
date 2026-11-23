@@ -15,7 +15,7 @@ How it works: `packages/reborn/knowledge/index.md` and `knowledge/programs.md`.
 2. `Mount` on a new mux, and `Serve` it: the same server serves the site from then on, on every connection. `Start`
    opens the game's doors; its error ends the program.
 3. Ctrl-C or SIGTERM: the open requests finish, for up to ten seconds; `Stop` logs each player out with its last time
-   online saved; the database closes.
+   online saved; the database closes. The scheduler's tasks run until the process ends.
 
 `internal/web` is the HTTP server, one standard `http.Server` used the standard way:
 
@@ -67,10 +67,14 @@ outside `/installer/` is the site's, so the browser lands on the site right afte
 From the repository root:
 
 ```sh
-make frontends
+make install    # once: pnpm install and every project's dependencies
+make frontends  # packages/reborn embeds its dist, so reborn builds after it
 make build
-./bin/reborn   # → http://localhost:16416, reads ./config.json
+./bin/reborn    # → http://localhost:16416, reads ./config.json
 ```
+
+A release archive holds `reborn` beside `cms`, `housekeeping`, `installer` and `server`
+(`knowledge/decisions/reborn/0008-releases-ship-reborn-and-the-separate-programs.md`).
 
 In an empty folder, reborn writes `config.json`, creates the database and serves the installer at
 `http://localhost:16416/installer/`. Once the administrator exists, the hotel runs there without a restart.

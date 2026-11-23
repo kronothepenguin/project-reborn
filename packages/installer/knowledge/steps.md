@@ -68,3 +68,6 @@ not wrapped by its runner.
 - A restarted installer continues: with `nil`, `New` opens the database named by an existing `config.json`. That also covers a
   database another program created: the installer then changes its default values and creates the administrator, once.
 - The installer never applies database updates.
+- The installer reads each setting from the store when it uses it, with `settings.String`, `Int` and `Bool`, and saves
+  with `settings.Set`. A setting with no row reads as its declared default
+  (`knowledge/decisions/reborn/0006-settings-are-read-from-the-store.md`).

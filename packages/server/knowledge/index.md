@@ -7,7 +7,7 @@ okf_version: "0.2"
 # Knowledge
 
 - [After the login](after-login.md) - The commands the client asks right after LOGIN_OK, how the server reads the settings, and when it loads what every player shares.
-- [How the server is built](architecture.md) - The packages of the game server and what each one does, the path of a connection from a listener to the state, and how the server runs alone and under the orchestrator.
+- [How the server is built](architecture.md) - The packages of the game server and what each one does, the path of a connection from a listener to the state, what it reads from the store and what it keeps in memory, and how it runs alone and under reborn.
 - [The catalogue](catalogue.md) - The hh_cat_code commands the server answers: the index, the pages, purchases and presents.
 - [A connection](connection.md) - How the info and mus listeners serve a client, from HELLO through the dispatch by id and the outbox to the close.
 - [Encoding](encoding.md) - How packages/server/internal/encoding reads and writes the values of the R26 wire format.

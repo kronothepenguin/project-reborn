@@ -3,17 +3,22 @@
 Thin runner for `packages/server`, the game server. The app code lives entirely
 in the package; this module only serves it.
 
+`apps/reborn` runs the whole hotel, the game included. Run the game alone to work on it, or to test how the
+programs talk to it.
+
 How it works: `packages/server/knowledge/index.md` and `knowledge/programs.md`.
 
 | cmd            | mode                       |
 | -------------- | -------------------------- |
 | `./cmd/server` | production and development |
 
-## Port
+## Ports
 
 - `info` and `mus` (WebSocket listeners): the hosts and ports of `server.info`
   and `server.mus` in `config.json`, 30000 and 30001 by default, which the
   runner opens with `Start`
+- The game's `/api/` (HTTP): `server.api` in `config.json`, `localhost:15445` by
+  default. The CMS and housekeeping, run alone, call it with the hotel's secret.
 
 ## Stop
 

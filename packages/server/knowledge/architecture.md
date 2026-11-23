@@ -1,7 +1,7 @@
 ---
 type: Reference
 title: How the server is built
-description: The packages of the game server and what each one does, the path of a connection from a listener to the state, and how the server runs alone and under the orchestrator.
+description: The packages of the game server and what each one does, the path of a connection from a listener to the state, what it reads from the store and what it keeps in memory, and how it runs alone and under reborn.
 timestamp: 2026-11-10T21:11:34+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-11-05T20:57:45+00:00"}
 tags: [server, architecture]
@@ -76,11 +76,26 @@ session's protocol turns into its messages (0039 (`knowledge/decisions/server/00
 
 The steps in detail, the `mus` listener and the outbox: [A connection](/connection.md).
 
+# Settings and caches
+
+- The game reads each setting from the store when it uses it, through `packages/settings`. A save in housekeeping
+  reaches the game at its next read, and nothing refreshes
+  (reborn/0006 (`knowledge/decisions/reborn/0006-settings-are-read-from-the-store.md`)).
+- `game.LoadShared` loads what every player shares once, the first time no database update waits: the navigator's
+  categories, the room models, the public rooms, the furni definitions and the catalogue, into `virtual`. Nothing
+  loads them again while the process runs (0064 (`knowledge/decisions/server/0064-the-navigator-loads-once-the-updates-are-applied.md`),
+  0098 (`knowledge/decisions/server/0098-virtual-furni-and-catalogue.md`)).
+- The habbos online and the loaded rooms live in `virtual` while they are in use. Saved data is written to the store
+  first (0010 (`knowledge/decisions/server/0010-hot-data-written-at-once.md`)).
+- The hand is read from the store each time (0096 (`knowledge/decisions/server/0096-the-hand-is-read-from-the-database.md`)).
+
 # Running alone
 
 `apps/server` runs the server on its own, as each program runs today: it opens the database named by `config.json`
 and opens the WebSocket listener of each connection, on its host and port, with `Start`
 (0020 (`knowledge/decisions/server/0020-info-and-mus-websocket-ports.md`), `knowledge/features/hotel-status/plan.md`).
+Ctrl-C or SIGTERM calls `Stop`, which logs each player out with its last time online saved and closes the doors, then
+the database closes.
 
 It passes `WithAPI()`, so `New` also opens an HTTP listener on `server.api` (default `localhost:15445`) that serves the
 game's `/api/` (reborn/0005 (`knowledge/decisions/reborn/0005-the-game-hears-live-changes-through-services.md`)):
@@ -102,18 +117,19 @@ game's `/api/` (reborn/0005 (`knowledge/decisions/reborn/0005-the-game-hears-liv
   the secret on each call, so a secret created or changed while they run is used on the next call. Without the secret a
   call returns an error, which the caller logs.
 
-In development, `make dev` runs air, which watches the `.go` files of `apps/server`, `packages/server`,
-`packages/config` and `packages/store` (`apps/server/.air.toml`) and rebuilds the runner on each change.
+In development, `make dev` runs air, which watches the `.go` files of `apps/server`, `packages/server` and the
+packages it imports, `auth`, `config`, `scheduler`, `services`, `settings`, `store` and `virtual`
+(`apps/server/.air.toml`), and rebuilds the runner on each change.
 
 # Running together
 
-Under the orchestrator (`knowledge/features/platform/later.md`), one process runs the installer, the CMS, housekeeping and the server. The
-server keeps a WebSocket listener on the host and port of each connection, which the orchestrator opens with the
-same `Start`, and WebSocket paths on the
-orchestrator's mux wait for later, as TCP does (0020 (`knowledge/decisions/server/0020-info-and-mus-websocket-ports.md`)). The CMS and
-housekeeping tell the game of a change and ask who is in the hotel through `services.Habbos`, and open and close its
-doors through `services.Hotel`, which the game server itself implements in the same
-process; reborn opens no `/api/` (reborn/0005 (`knowledge/decisions/reborn/0005-the-game-hears-live-changes-through-services.md`)).
+Under reborn (`packages/reborn/knowledge/run.md`), one process runs the installer, the site, housekeeping and the game
+on one database handle. `reborn.New` builds the game with `server.New(db)`, without `WithAPI()`, and reborn's `Start`
+and `Stop` call the game's. The game keeps a WebSocket listener on the host and port of each connection, and WebSocket
+paths on reborn's mux wait for later, as TCP does (0020 (`knowledge/decisions/server/0020-info-and-mus-websocket-ports.md`)).
+The site and housekeeping tell the game of a change and ask who is in the hotel through `services.Habbos`, and open and
+close its doors through `services.Hotel`, which the game itself implements in the same process; reborn opens no
+`/api/` (reborn/0005 (`knowledge/decisions/reborn/0005-the-game-hears-live-changes-through-services.md`)).
 
 # Another protocol
 

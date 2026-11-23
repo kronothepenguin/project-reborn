@@ -25,4 +25,6 @@ the client of the `/api/` for the programs run apart.
 - `encoding` stands apart from `r26`, so that another protocol can reuse it.
 - `game` never knows the protocol. It is its own package so that `r26` can call
   it without an import cycle.
+- Settings are read from the store on use; `game.LoadShared` keeps the navigator and the catalogue in
+  `packages/virtual` once loaded: [How the server is built](/architecture.md), "Settings and caches".
 - The packages around it, the state in `packages/virtual` among them: [How the server is built](/architecture.md).

@@ -3,6 +3,10 @@
 Thin runner for `packages/housekeeping`: `./cmd/housekeeping` for production and `./cmd/housekeeping-dev` for
 development.
 
+`apps/reborn` runs the whole hotel, housekeeping included. Run housekeeping alone to work on it, or to test how it
+talks to the game. Run alone, it tells the game of a change, and opens and closes its doors, through the game's
+`/api/` on `server.api`, `localhost:15445` by default.
+
 How it works: `packages/housekeeping/knowledge/index.md` and `knowledge/programs.md`.
 
 ## Ports

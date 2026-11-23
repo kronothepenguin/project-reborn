@@ -3,6 +3,9 @@
 The installer writes `config.json`, creates the database, saves the site settings and creates the first administrator.
 It is an Astro (Svelte + Tailwind) frontend embedded in a Go module.
 
+`packages/reborn` mounts it under `/installer/` until the administrator exists: there it asks one host and port and
+moves the hotel to them. `apps/installer` runs it alone, for programs run apart.
+
 ## Ports
 
 - App (Go HTTP server): **17306**, in `apps/installer/cmd/installer` and `apps/installer/cmd/installer-dev`

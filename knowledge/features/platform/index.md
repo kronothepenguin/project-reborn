@@ -2,7 +2,7 @@
 
 # Platform
 
-- [Platform: reborn runs the whole hotel: later](later.md) - Work set aside for the platform: the orchestrator, and the game server learning of a habbo archived on the site.
+- [Platform: reborn runs the whole hotel: later](later.md) - Work set aside for the platform: what is left of reborn, opening the installer again, and the game server learning of a habbo archived on the site.
 - [Platform: reborn runs the whole hotel: how](plan.md) - Four runners share one database, config.json and CI; packages/reborn runs every program on one mux, the installer moves under /installer/, settings come from the store, and releases ship every runner.
 - [Research: how the programs tell each other of changes](research-communication.md) - Every place where a change made by the site must reach the game server or the reverse, what Holo's MUS did, and the designs weighed for a notice package, with the orchestrator first and separate programs later.
 - [Research: the orchestrator, apps/reborn](research-orchestrator.md) - What the server's leftover HTTP listener is and what removing it takes, how each runner starts its package today, what was already decided about the orchestrator, the problems one mux and one process bring, and a proposal for apps/reborn.

@@ -6,7 +6,8 @@ description: How apps/installer serves the installer, where config.json lands, a
 
 # Runners
 
-`apps/installer` is a thin runner: the app code lives in `packages/installer`.
+`apps/installer` is a thin runner: the app code lives in `packages/installer`. Inside reborn, `apps/reborn` serves
+the installer instead (`packages/reborn/knowledge/run.md`).
 
 | cmd | mode | resolver / static |
 | --- | --- | --- |
@@ -29,7 +30,7 @@ and database, both gitignored (decision holo-port/0027).
 # Dev mode
 
 - Air watches the `.go` files of `apps/installer`, `packages/astro`, `packages/installer` and the packages the
-  installer imports (`auth`, `config`, `store`, `virtual`), and rebuilds the dev runner on Go changes.
+  installer imports (`assets`, `auth`, `config`, `settings`, `store`), and rebuilds the dev runner on Go changes.
 - `exclude_dir` lists `packages/installer/node_modules` and `packages/installer/dist`: air matches excluded paths
   exactly from the root, and would otherwise walk `node_modules`.
 - Astro page edits are hot-reloaded by the astro dev server. The runner fetches the rendered page on every request, so

@@ -2,6 +2,10 @@
 
 Thin runner for `packages/installer`: `./cmd/installer` for production, `./cmd/installer-dev` for development.
 
+`apps/reborn` serves the installer under `/installer/` until the administrator exists. Run the installer alone to
+work on it, or to install a hotel whose programs run apart: it asks the database path and a port for the site and
+for housekeeping.
+
 ## Ports
 
 - App (Go HTTP server): **17306**, in both runners
