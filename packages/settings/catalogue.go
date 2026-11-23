@@ -307,9 +307,8 @@ func mailbox(value string) error {
 	return nil
 }
 
-// staffBoxColors are the colours a box of the staff page takes, as Holo's
-// content tool offered them.
-var staffBoxColors = []string{"red", "blue", "white", "green"}
+// staffBoxColors are the values of staffBoxChoices.
+var staffBoxColors = choiceValues(staffBoxChoices)
 
 const (
 	staffBox1 = "You can find the staff members all over the hotel -- in the public rooms, their own rooms, or that dark little corner in your room. But how can you call them if you actually need them!? Easy. If it's urgent, use the Call for Help system ingame by using the blue questionmark in the right bottom of your screen. If it isn't urgent, use the Help Tool on the website."
