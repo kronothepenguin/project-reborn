@@ -52,4 +52,11 @@ describe("Button faces", () => {
     expect(style.borderTopLeftRadius).toBe("0px");
     expect(getComputedStyle(button, "::before").content).toBe("none");
   });
+
+  it("writes its label bold at the body size, as Holo's 11px buttons", () => {
+    render(Button, { props: { children: label } });
+    const button = getComputedStyle(page.getByRole("button", { name: "Sign in" }).element());
+    expect(button.fontSize).toBe("16px");
+    expect(button.fontWeight).toBe("700");
+  });
 });

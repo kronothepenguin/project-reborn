@@ -26,3 +26,17 @@ describe("Paper variants", () => {
     expect(blackStyle.backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
   });
 });
+
+describe("Paper frame", () => {
+  it("draws Holo's frame: a 1px edge and a 3px bottom of 20% black over the page, with 4px corners", () => {
+    const { container } = render(Paper, { props: { children: content } });
+    const frame = getComputedStyle(container.querySelector("div") as HTMLDivElement);
+
+    expect(frame.borderTopWidth).toBe("1px");
+    expect(frame.borderBottomWidth).toBe("3px");
+    expect(frame.borderTopColor).toBe("oklab(0 0 0 / 0.2)");
+    // The page shows through the translucent edge, as #b5b5af on Holo's #e3e3db.
+    expect(frame.backgroundClip).toBe("padding-box");
+    expect(frame.borderTopLeftRadius).toBe("4px");
+  });
+});

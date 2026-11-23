@@ -1,6 +1,8 @@
 import { fireEvent, render } from "@testing-library/svelte";
 import { describe, expect, it } from "vitest";
+import { hexHue, hue, hueDistance } from "./__fixtures__/hue";
 import TabsFixture from "./__fixtures__/tabs.svelte";
+import "../styles.css";
 
 const tabs = [
   { value: "a", label: "Alpha" },
@@ -35,5 +37,34 @@ describe("Tab", () => {
     await fireEvent.click(elements[1]);
     expect(elements[1].getAttribute("aria-selected")).toBe("false");
     expect(elements[0].getAttribute("aria-selected")).toBe("true");
+  });
+});
+describe("Tab colours", () => {
+  // Holo's inner-tabs.png: the fill of an unselected tab in each colour.
+  it.each([
+    ["blue", "#528dc9"],
+    ["green", "#3ba800"],
+    ["orange", "#ff9900"],
+  ] as const)(
+    "in a %s box, an unselected tab is filled with the colour in white text, and the selected one is white with an outline in it and bold black text",
+    (color, holo) => {
+      const { container } = render(TabsFixture, { props: { tabs, value: "a", color } });
+      const [selected, unselected] = tabElements(container).map((tab) => getComputedStyle(tab));
+
+      expect(hueDistance(hue(unselected.backgroundColor), hexHue(holo))).toBeLessThan(12);
+      expect(unselected.color).toBe("rgb(255, 255, 255)");
+      expect(unselected.fontWeight).toBe("400");
+
+      expect(selected.backgroundColor).toBe("rgb(255, 255, 255)");
+      expect(selected.borderTopColor).toBe(unselected.backgroundColor);
+      expect(selected.borderTopWidth).toBe("1px");
+      expect(selected.color).toBe("rgb(0, 0, 0)");
+      expect(selected.fontWeight).toBe("700");
+    },
+  );
+
+  it("writes its label at the body size, as Holo's 11px tabs", () => {
+    const { container } = render(TabsFixture, { props: { tabs } });
+    expect(getComputedStyle(tabElements(container)[0]).fontSize).toBe("16px");
   });
 });

@@ -100,7 +100,7 @@
 >
   {#if tip}
     <!-- Holo's bubble stood 585 pixels from the content's left, which is 95 left of the slots, and ended 6 above them. -->
-    <div id="wardrobe-instructions" role="tooltip" class="pointer-events-none absolute bottom-[calc(100%+17px)] left-[-95px] z-10">
+    <div id="wardrobe-instructions" role="tooltip" class="pointer-events-none absolute bottom-[calc(100%+17px)] left-[-87px] z-10">
       <Bubble>
         Press red arrows to save up to {slots.length} outfits to your wardrobe. Press green arrow to select an outfit and
         save changes to take it into use.

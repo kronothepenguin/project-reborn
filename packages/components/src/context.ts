@@ -6,9 +6,14 @@ export interface TabRegistration {
   element(): HTMLElement | undefined;
 }
 
+// The colour of a group of tabs: Holo's blue, green or orange inner tabs.
+export type TabsColor = "blue" | "green" | "orange";
+
 export interface TabsContext {
   readonly value: string | undefined;
+  readonly color: TabsColor;
   select(value: string): void;
+  keydown(event: KeyboardEvent): void;
   registerTab(registration: TabRegistration): void;
   unregisterTab(registration: TabRegistration): void;
 }
@@ -28,7 +33,7 @@ export function setTabsContext(context: TabsContext): void {
 export function useTabsContext(): TabsContext {
   const context = getContext<TabsContext>(TABS_CONTEXT);
   if (!context) {
-    throw new Error("Tab and Tab panel must be used inside a Tabs component.");
+    throw new Error("Tab list, Tab and Tab panel must be used inside a Tabs component.");
   }
   return context;
 }

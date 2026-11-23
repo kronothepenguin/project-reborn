@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button, Spinner, Tab, Tabs } from "@project-reborn/components";
+  import { Button, Spinner, Tab, TabList, Tabs } from "@project-reborn/components";
   import { onMount } from "svelte";
   import GroupPurchase, { type Limits } from "../groups/group-purchase.svelte";
 
@@ -87,9 +87,11 @@
 
 <div class="relative">
   <h2 class="absolute top-0 left-0 pt-[3px] pl-2.5 text-sm font-bold text-sky-500">Groups</h2>
-  <Tabs bind:value={tab} class="flex h-[25px] flex-row-reverse gap-1 border-b border-cyan-600 px-[5px]">
-    <Tab value="hot">Hot Groups</Tab>
-    <Tab value="mine">My Groups</Tab>
+  <Tabs bind:value={tab} color="blue">
+    <TabList>
+      <Tab value="mine">My Groups</Tab>
+      <Tab value="hot">Hot Groups</Tab>
+    </TabList>
   </Tabs>
 </div>
 <div role="tabpanel" aria-label="My Groups" hidden={tab !== "mine"}>

@@ -1,6 +1,7 @@
 import { createRawSnippet } from "svelte";
 import { render } from "@testing-library/svelte";
 import { describe, expect, it } from "vitest";
+import { hexHue, hue, hueDistance } from "./__fixtures__/hue";
 import Card from "./card.svelte";
 import "../styles.css";
 
@@ -27,5 +28,39 @@ describe("Card", () => {
     expect(whiteBar.color).toBe("rgb(0, 0, 0)");
     expect(greenBar.color).toBe("rgb(255, 255, 255)");
     expect(greenBar.backgroundColor).not.toBe(whiteBar.backgroundColor);
+  });
+
+  // Holo's h2.title colours (style.css), each with a hue of its own.
+  it.each([
+    ["blue", "#2767a7"],
+    ["activehomes", "#51a5d5"],
+    ["green", "#4ab501"],
+    ["red", "#d64242"],
+    ["hcred", "#d64242"],
+    ["darkred", "#c73c3c"],
+    ["brown", "#a67a3e"],
+    ["lightbrown", "#cf9c44"],
+    ["rooms", "#225e6a"],
+    ["orange", "#f66200"],
+    ["promogray", "#9c350f"],
+  ] as const)("draws a %s title bar in Holo's hue", (color, holo) => {
+    const { container } = render(Card, { props: { header, children: body, color } });
+    const bar = getComputedStyle(container.querySelector("header") as HTMLElement);
+    expect(hueDistance(hue(bar.backgroundColor), hexHue(holo))).toBeLessThan(12);
+  });
+
+  it("writes its title bold and bigger than its body, as Holo's 14px titles over 11px text", () => {
+    const { container } = render(Card, { props: { header, children: body, color: "blue" } });
+    const bar = getComputedStyle(container.querySelector("header") as HTMLElement);
+    expect(bar.fontSize).toBe("20px");
+    expect(bar.fontWeight).toBe("700");
+    expect(getComputedStyle(container.querySelector("p") as HTMLElement).fontSize).toBe("16px");
+  });
+
+  it("insets its content as Holo's box-content, 8px 15px scaled by 4/3", () => {
+    const { container } = render(Card, { props: { children: body } });
+    const content = getComputedStyle(container.querySelector("p")?.parentElement as HTMLElement);
+    expect(content.paddingTop).toBe("10px");
+    expect(content.paddingLeft).toBe("20px");
   });
 });

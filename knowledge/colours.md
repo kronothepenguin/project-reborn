@@ -2,7 +2,7 @@
 type: Reference
 title: Holo colours mapped to Tailwind
 description: The closest Tailwind colour for each Holo colour, computed with tools/tw-color, for the public site, BBCode and housekeeping.
-timestamp: 2026-11-07T00:36:29+00:00
+timestamp: 2026-11-23T00:00:00+00:00
 generated: {by: claude-code/claude-opus-5-5, at: "2026-10-27T20:48:19+00:00"}
 tags: [colours, tailwind]
 ---
@@ -10,7 +10,8 @@ tags: [colours, tailwind]
 # How to use
 
 Use these classes instead of Holo's hex values. For a colour that is not listed, run
-`node tools/tw-color/tw-color.mjs -d "#rrggbb"` and add the result here.
+`node tools/tw-color/tw-color.mjs -d "#rrggbb"` and add the result here. Where the closest class has another hue, take
+the closest class of Holo's hue.
 
 # Box title bars and bodies
 
@@ -19,7 +20,8 @@ Use these classes instead of Holo's hex values. For a colour that is not listed,
 | default / orange title | #fc6204 / #f66200 | orange-500 |
 | blue title | #2767a7 | sky-700 |
 | green title | #4ab501 | lime-600 |
-| red / hcred / darkred title | #d64242 / #c73c3c | orange-700 |
+| red / hcred title | #d64242 | red-600 |
+| darkred title | #c73c3c | red-700 |
 | brown title | #a67a3e | yellow-700 |
 | lightbrown title | #cf9c44 | yellow-600 |
 | settings title | #595959 | mist-600 |
@@ -30,6 +32,22 @@ Use these classes instead of Holo's hex values. For a colour that is not listed,
 | rooms title / body | #225e6a / #4596a9 | cyan-800 / cyan-600 |
 | hcred body | #ffe8b7 | amber-100 |
 | lightgreen body | #d5e7d8 | mist-200 |
+| box frame | #b5b5af, 20% black on #e3e3db | black/20 |
+
+The red titles' nearest class, `orange-700`, has another hue, so they take the nearest red.
+
+# Tabs inside boxes
+
+The fills of Holo's `inner-tabs.png`. Its line, the tab's outline and an unselected tab's fill share one colour; the
+selected tab is white.
+
+| Colour | Fill and line | Hover | Tailwind | Hover class |
+| --- | --- | --- | --- | --- |
+| blue | #528dc9 | #66ade4 | sky-600 | sky-400 |
+| green | #3ba800 | #49c700 | lime-600 | green-500 |
+| orange | #ff9900 | #ffba00 | amber-500 | amber-400 |
+
+The blue's nearest class, `cyan-600`, has another hue, so it takes the nearest sky.
 
 # Page and status
 

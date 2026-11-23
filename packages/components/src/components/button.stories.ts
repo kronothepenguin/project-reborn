@@ -11,7 +11,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Use Button to trigger an action. It renders a native <button> in the surface theme: a base colour with a lighter raised face, a 2px black border, and a 4px radius. Set `variant` to change only its colours; hover, focus, active, and disabled are visible states.",
+          "Use Button to trigger an action. It renders a native <button> in the surface theme: a base colour with a lighter raised face, a 2px black border, a 4px radius and a bold label at the body size, as Holo's 11px buttons. Set `variant` to change only its colours; hover, focus, active, and disabled are visible states.",
       },
     },
   },
