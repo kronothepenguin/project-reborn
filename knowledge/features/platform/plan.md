@@ -18,7 +18,7 @@ Built:
 | `packages/cms`, `packages/housekeeping` | `Mount` wraps every route with `RealIP` and cross-origin protection |
 | `packages/installer`, `apps/installer` | Under `/installer/`, its two forms, `Listener`, no done page; `Mount` protects its routes, and the runners redirect `/` to `/installer/` |
 | `packages/reborn`, `apps/reborn` | Runs an installed hotel: one mux, one database handle, the game's listeners ([0003](/decisions/reborn/0003-reborn-runs-the-hotel-in-one-process.md)); the production runner `apps/reborn/cmd/reborn` |
-| `packages/server`, `apps/server` | Only the game listeners on 30000 and 30001; the unused HTTP listener on 15445 is gone |
+| `packages/server`, `apps/server` | The game listeners on 30000 and 30001; run alone, the game also serves its `/api/` on `server.api`, 15445 by default ([hotel status](/features/hotel-status/plan.md)) |
 | `.github/workflows`, `Makefile` | `ci.yml` runs `make check` and `make e2e`; `release.yml` runs them on a tag, then `make release` |
 | `tests/e2e` | The browser suites, run by `make e2e` |
 | `packages/settings` and every program | Settings read from the store, no refresh, `virtual/settings` gone ([0006](/decisions/reborn/0006-settings-are-read-from-the-store.md)) |

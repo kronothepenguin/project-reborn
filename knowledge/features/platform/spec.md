@@ -66,7 +66,8 @@ called "reborn", this should keep installer + cms + housekeeping in the same mux
   17306 busy, it refuses to start.
 - A tag like `v1.2.3` is pushed: `make check` at the root and the browser suites run, then a release publishes
   `reborn-<tag>-linux-amd64.tar.gz`, `reborn-<tag>-linux-aarch64.tar.gz` and `SHA256SUMS` (decision reborn/0008).
-- An archive is unpacked: it holds static `cms`, `housekeeping` and `installer` binaries, which run with no network.
+- An archive is unpacked: it holds static `reborn`, `cms`, `housekeeping`, `installer` and `server` binaries, which
+  run with no network.
 - A release holds `reborn`, `cms`, `housekeeping`, `installer` and `server`.
 
 ## Scheduled tasks
