@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach } from "vitest";
+import { describe, it, expect, afterEach, vi } from "vitest";
 import { the, char } from "../../../api/index.js";
 
 afterEach(() => {
@@ -146,7 +146,12 @@ describe("the proxy — unknown props throw (C6)", () => {
 
 describe("the proxy — aliases (C7)", () => {
   it("aliases resolve to the canonical value", () => {
-    expect(the.milliSeconds).toBe(the.milliseconds);
+    vi.useFakeTimers({ now: 1_000_000 });
+    try {
+      expect(the.milliSeconds).toBe(the.milliseconds);
+    } finally {
+      vi.useRealTimers();
+    }
     expect(the.maxinteger).toBe(the.maxInteger);
   });
 });
