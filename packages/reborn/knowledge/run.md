@@ -73,7 +73,7 @@ func (r *Reborn) Stop(ctx context.Context) error
 
 - The runner stops reborn on Ctrl-C or SIGTERM: the HTTP server finishes the open requests, `Stop` logs the players
   out, and the database closes (`apps/reborn/README.md`).
-- The scheduler has no `Start` and no `Stop`: its tasks run until the process ends
+- The scheduler has no package-level `Start` or `Stop`: its tasks run until the process ends
   (`knowledge/decisions/reborn/0016-lifecycle-names-come-in-pairs.md`).
 
 # Tests

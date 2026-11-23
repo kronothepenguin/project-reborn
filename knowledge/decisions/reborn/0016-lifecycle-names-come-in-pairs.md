@@ -15,8 +15,8 @@ tags: [platform, go, scheduler]
 - A thing that is opened has `Open` and `Close`: the database.
 - The site, housekeeping and the installer build a struct with `New` and mount routes. They have no `Start` and no
   `Stop`, and their runner owns the HTTP server, so three of them share one server.
-- `packages/scheduler` stays as it is: `Every` runs a task until the process ends. It gets no `Start`, no `Stop` and no
-  context.
+- `packages/scheduler` stays as it is: `Every` starts a task and returns the function that stops it. No program calls
+  that function, so the tasks run until the process ends. The package gains no `Start`, no `Stop` and no context.
 
 # Context
 

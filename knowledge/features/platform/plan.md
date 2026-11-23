@@ -227,3 +227,11 @@ How programs tell the game of a live change is
   as i understood that's why `apps/reborn/internal/web` was created").
 - A listener that fails later is logged; nothing ends the program for it.
 - A checkout needs `pnpm install` and `make frontends` once after this change: `packages/reborn` embeds its `dist`.
+- The exit check of 2026-11-23 named the evidence of every behaviour of the spec: root `make check` passed, `make e2e`
+  passed with 970 checks in 34 suites, and `make release VERSION=test` wrote two archives of five static programs
+  each, which ran with no network. Seven behaviours have evidence by hand alone: `make dev` from the root, the site
+  listening on every interface, the one dev server showing an edit, reborn's own dev build, the workflows (read, never
+  run on GitHub), the database closing at a stop, and the game's own runner stopping with a player inside.
+- With the port of `server.api` taken, the game's program ends with a panic and its stack, since `New` opens the
+  `/api/`; a taken game port ends it with a plain error.
+

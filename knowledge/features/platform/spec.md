@@ -2,7 +2,7 @@
 type: Spec
 title: "Platform: reborn runs the whole hotel"
 description: The installer, the site, housekeeping and the game server run as four programs on one SQLite file, tested and released by GitHub Actions; the orchestrator reborn runs them in one process, installs a new hotel live, stops in order and ships beside them, and every program reads settings from the store.
-status: active
+status: done
 projects: [apps/server, apps/cms, apps/housekeeping, apps/installer, apps/reborn, packages/reborn, packages/server, packages/cms, packages/housekeeping, packages/installer, packages/config, packages/scheduler, packages/settings, packages/store, packages/auth, packages/virtual, tests/e2e]
 ---
 
@@ -36,11 +36,12 @@ called "reborn", this should keep installer + cms + housekeeping in the same mux
   (decision holo-port/0068).
 - The installer runs on a database another program created: it changes the defaults and creates the administrator
   (decision holo-port/0068).
-- `make dev` starts a runner: it runs from the repository root, so every runner reads and writes the root
-  `config.json` and database (decision holo-port/0027).
+- `make dev` starts reborn, and an app's own `make dev` starts its runner: each runs from the repository root, so
+  every runner reads and writes the root `config.json` and database (decision holo-port/0027).
 - `cms.host` is set to `0.0.0.0`: the CMS listens on every interface; its default is `localhost`
   (decision holo-port/0037).
-- The game server starts: it opens only its game listeners, on `server.info` (30000) and `server.mus` (30001).
+- The game server starts: it opens its game listeners, on `server.info` (30000) and `server.mus` (30001); run alone,
+  it also serves its `/api/` on `server.api` (15445).
 - A game port is taken: the game server stops with an error.
 - A client connects to the MUS port: the server logs what it sends and never answers (decision server/0023).
 
