@@ -36,7 +36,7 @@ type configPage struct {
 
 // HandleConfigView renders GET /installer/config.
 func (r *Router) HandleConfigView(w http.ResponseWriter, req *http.Request) {
-	installation, ok := r.step(w, req, false)
+	installation, ok := r.step(w, req, "config")
 	if !ok {
 		return
 	}
@@ -66,7 +66,7 @@ func (r *Router) HandleConfigView(w http.ResponseWriter, req *http.Request) {
 // the hotel first and saves the address after; otherwise it creates the
 // database and writes config.json.
 func (r *Router) HandleConfigSave(w http.ResponseWriter, req *http.Request) {
-	installation, ok := r.step(w, req, false)
+	installation, ok := r.step(w, req, "config")
 	if !ok {
 		return
 	}
@@ -109,7 +109,7 @@ func (r *Router) HandleConfigSave(w http.ResponseWriter, req *http.Request) {
 		page.Error = err.Error()
 		r.invalid(w, "config.html", page)
 	default:
-		http.Redirect(w, req, "/installer/site", http.StatusSeeOther)
+		r.pass(w, req, "config")
 	}
 }
 
@@ -145,7 +145,7 @@ func (r *Router) saveAddress(w http.ResponseWriter, req *http.Request, installat
 			r.invalid(w, "config.html", page)
 			return
 		}
-		http.Redirect(w, req, "/installer/site", http.StatusSeeOther)
+		r.pass(w, req, "config")
 		return
 	}
 	if err := r.deps.Move(w, req, address.Host, address.Port); err != nil {

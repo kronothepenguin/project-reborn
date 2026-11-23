@@ -88,8 +88,17 @@ export default async function ({ browser, check, dir, eventually, ports, shot, s
   await page.fill('input[name="shortName"]', "Reborn");
   await page.fill('input[name="url"]', base);
   await Promise.all([
-    page.waitForURL(`${base}/installer/admin`),
+    page.waitForURL(`${base}/installer/client`),
     page.click('button:has-text("Save and continue")'),
+  ]);
+  check(
+    "the client files step follows the site step",
+    (await page.getByText("missing", { exact: true }).count()) === 2,
+    await page.locator("body").innerText(),
+  );
+  await Promise.all([
+    page.waitForURL(`${base}/installer/admin`),
+    page.click('button:has-text("Skip")'),
   ]);
   await page.fill('input[name="name"]', "Admin-1");
   await page.fill('input[name="email"]', "admin@example.com");

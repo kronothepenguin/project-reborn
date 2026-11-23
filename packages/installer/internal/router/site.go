@@ -56,7 +56,7 @@ func siteAddress(ctx context.Context, q *store.Queries, hotel reborn.Reborn) str
 
 // HandleSiteView renders GET /installer/site with the current settings.
 func (r *Router) HandleSiteView(w http.ResponseWriter, req *http.Request) {
-	installation, ok := r.step(w, req, true)
+	installation, ok := r.step(w, req, "site")
 	if !ok {
 		return
 	}
@@ -81,7 +81,7 @@ func (r *Router) HandleSiteView(w http.ResponseWriter, req *http.Request) {
 // user, since none exists yet. With one address, housekeeping's address is the
 // site's plus /housekeeping.
 func (r *Router) HandleSiteSave(w http.ResponseWriter, req *http.Request) {
-	installation, ok := r.step(w, req, true)
+	installation, ok := r.step(w, req, "site")
 	if !ok {
 		return
 	}
@@ -124,7 +124,7 @@ func (r *Router) HandleSiteSave(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 	}
-	http.Redirect(w, req, "/installer/admin", http.StatusSeeOther)
+	r.pass(w, req, "site")
 }
 
 // reason drops what settings.Set wraps around the validator's message, the

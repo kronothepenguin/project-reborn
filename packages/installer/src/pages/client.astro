@@ -1,0 +1,44 @@
+---
+import { Button } from "@project-reborn/components";
+import Setup from "../layouts/setup.astro";
+---
+
+<Setup title="Client files" step="client">
+  <p class="text-sm">
+    The client reads its variables and texts from the database. The installer
+    imports them from <span class="font-mono break-all">[[ .Folder ]]</span>.
+  </p>
+  <ul class="space-y-1 text-sm">
+    [[ range .Files ]]
+    <li class="flex justify-between gap-2 rounded border border-sky-700 p-2">
+      <span class="font-mono">[[ .Name ]]</span>
+      [[ if .Found ]]
+      <span>[[ .Lines ]] lines</span>
+      [[ else ]]
+      <span class="font-bold text-red-600">missing</span>
+      [[ end ]]
+    </li>
+    [[ end ]]
+  </ul>
+  [[ if .Missing ]]
+  <p class="rounded border border-red-600 p-2 text-sm text-red-600" role="alert">
+    Put the missing files in <span class="font-mono break-all"
+      >[[ .Folder ]]</span
+    >, then check again.
+  </p>
+  [[ end ]]
+  <p class="text-sm">
+    Skip goes on without them. Housekeeping's Client Files page imports them
+    later.
+  </p>
+  <form method="post" action="/installer/client" class="flex justify-end gap-2">
+    <Button type="submit" name="action" value="skip">Skip</Button>
+    [[ if .Missing ]]
+    <Button href="/installer/client" variant="green">Check again</Button>
+    [[ else ]]
+    <Button type="submit" name="action" value="import" variant="green"
+      >Import client files</Button
+    >
+    [[ end ]]
+  </form>
+</Setup>

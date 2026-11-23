@@ -19,6 +19,7 @@ not wrapped by its runner.
 | `GET /installer/{$}` | `index.astro` | Shows the state; says the hotel is installed once an administrator exists, and links to `site.url` |
 | `GET`, `POST /installer/config` | `config.astro` | The config step: run alone, opens the database with `store.Open` (creating it with every update), then writes `config.json` with `config.Create`; inside reborn, moves the hotel and saves its address |
 | `GET`, `POST /installer/site` | `site.astro` | Site name, short name, URL, start credits and secure cookies, and housekeeping's address when run alone, saved with `settings.Set` and no user |
+| `GET`, `POST /installer/client` | `client.astro` | The client files step: names `<assets.path>/dcr/` and lists `external_variables.txt` and `external_texts.txt` with their count of lines, or as missing. "Import client files" (`action=import`) imports both with `dcr.Import` in one transaction; "Skip" (`action=skip`) imports nothing. With a file missing, the page says where to put it, offers "Check again" (a link to the same page) and "Skip", and an import answers 422 and imports nothing |
 | `GET`, `POST /installer/admin` | `admin.astro` | Habbo name, email, birth date and password: one transaction creates, through `auth.CreateAccount`, the user, habbo, profile, home and wallet (5000 credits), and adds the user to the highest access group holding `housekeeping.accessGroups`; then redirects to `/` |
 
 # Two forms
@@ -49,7 +50,10 @@ not wrapped by its runner.
   reborn's runner waits on it.
 - After "Create administrator" the browser goes to `/`: inside reborn the site's front page, run alone the runner's
   redirect to the status page. There is no done page.
-- `/installer/site` and `/installer/admin` redirect to `/installer/config` until `config.json` exists.
+- The order of the steps lives in `setup.Steps`: config, site, client, admin. A step that passes sends the browser to
+  the next. A step opened before the one it follows redirects to the first step that waits, `(*State).Waiting()`; a
+  step passed opens again. The config step passes once `config.json` exists; the others pass in memory, so a
+  restarted installer continues at the site step. The status page's "Continue" links to the step that waits.
 - Run alone, the config step opens the database before it writes `config.json`, so a path that cannot be opened leaves
   no `config.json`.
 - Run alone, the config step writes every section it does not ask with its defaults: the CMS and housekeeping hosts as
@@ -59,9 +63,9 @@ not wrapped by its runner.
 - A failure answers 500 and is logged, unless the visitor abandoned the request (`context.Canceled`): it ends quietly.
 - Holo's ranks come from update `0003-ranks.sql`. On a new hotel the administrator joins Administrator; without a group
   holding `housekeeping.accessGroups`, the step fails with `setup.ErrNoGroup`.
-- The administrator's transaction also imports the client's files with `dcr.Import` from `<assets.path>/dcr/`, alone and
-  inside reborn. A folder without `external_variables.txt` and `external_texts.txt` leaves the tables empty, and
-  housekeeping imports them later.
+- Only the client files step imports the client's files; the administrator step imports none. A step skipped leaves
+  the tables empty, and housekeeping's Client Files page imports them later.
+- The count of lines on the client files step counts the lines that are not empty, the ones `dcr.Import` saves.
 - The administrator's first credits get a ledger row with the reason `registration` and the detail `installer`.
 - `New(ctx, db, opts...)` takes the database. reborn passes the one it opened, and the installer works on it and
   creates none. The runners of the installer alone pass `nil`, and the config step creates it.

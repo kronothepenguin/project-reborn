@@ -348,31 +348,72 @@ func TestOpenContinuesAnInstallation(t *testing.T) {
 	got.DB.Close()
 }
 
-func TestCreateAdministratorImportsTheClientsFiles(t *testing.T) {
-	s := configure(t)
+// writeClientFiles writes the client's files into the client's folder, with
+// the byte order mark, CRLF line ends and the empty last line of the real ones.
+func writeClientFiles(t *testing.T, files map[string]string) {
+	t.Helper()
 	folder := filepath.Join(assets.DefaultPath(), "dcr")
 	if err := os.MkdirAll(folder, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	os.WriteFile(filepath.Join(folder, "external_variables.txt"), []byte("site.url=http://localhost\n"), 0o644)
-	os.WriteFile(filepath.Join(folder, "external_texts.txt"), []byte("hello=Hello\n"), 0o644)
-	if err := s.CreateAdministrator(t.Context(), testAdministrator()); err != nil {
-		t.Fatalf("CreateAdministrator: %v", err)
-	}
-	installation, _ := s.Current()
-	q := store.New(installation.DB)
-	variables, err := q.ListDCRVariables(t.Context())
-	if err != nil || len(variables) != 1 {
-		t.Errorf("variables = %v, %v; want one", variables, err)
-	}
-	texts, err := q.ListDCRTexts(t.Context())
-	if err != nil || len(texts) != 1 {
-		t.Errorf("texts = %v, %v; want one", texts, err)
+	for name, content := range files {
+		if err := os.WriteFile(filepath.Join(folder, name), []byte(content), 0o644); err != nil {
+			t.Fatal(err)
+		}
 	}
 }
 
-func TestCreateAdministratorWithoutTheClientsFilesLeavesTheTablesEmpty(t *testing.T) {
+// The client files step opens: each file counts the lines the import saves.
+func TestClientFilesCountTheLinesTheImportSaves(t *testing.T) {
 	s := configure(t)
+	writeClientFiles(t, map[string]string{
+		"external_variables.txt": "site.url=http://localhost\r\n\r\nclient.version.id=26",
+		"external_texts.txt":     "\xef\xbb\xbfhello=Hello\r\nbye=Bye\r\n",
+	})
+
+	files, err := s.ClientFiles()
+	if err != nil {
+		t.Fatalf("ClientFiles: %v", err)
+	}
+	if err := s.ImportClientFiles(t.Context()); err != nil {
+		t.Fatalf("ImportClientFiles: %v", err)
+	}
+	installation, _ := s.Current()
+	q := store.New(installation.DB)
+	variables, _ := q.ListDCRVariables(t.Context())
+	texts, _ := q.ListDCRTexts(t.Context())
+	want := []ClientFile{
+		{Name: "external_variables.txt", Found: true, Lines: len(variables)},
+		{Name: "external_texts.txt", Found: true, Lines: len(texts)},
+	}
+	if !slices.Equal(files, want) || len(variables) != 2 || len(texts) != 2 {
+		t.Errorf("ClientFiles = %+v, want %+v with two of each", files, want)
+	}
+}
+
+// A file is missing: the import saves nothing.
+func TestImportClientFilesWithAFileMissingImportsNothing(t *testing.T) {
+	s := configure(t)
+	writeClientFiles(t, map[string]string{"external_variables.txt": "site.url=http://localhost\r\n"})
+
+	if err := s.ImportClientFiles(t.Context()); !errors.Is(err, fs.ErrNotExist) {
+		t.Fatalf("ImportClientFiles = %v, want fs.ErrNotExist", err)
+	}
+	installation, _ := s.Current()
+	q := store.New(installation.DB)
+	variables, _ := q.ListDCRVariables(t.Context())
+	if len(variables) != 0 {
+		t.Errorf("variables = %d, want none", len(variables))
+	}
+}
+
+// The administrator is created: the step imports no client file by itself.
+func TestCreateAdministratorImportsNoClientFile(t *testing.T) {
+	s := configure(t)
+	writeClientFiles(t, map[string]string{
+		"external_variables.txt": "site.url=http://localhost\r\n",
+		"external_texts.txt":     "hello=Hello\r\n",
+	})
 	if err := s.CreateAdministrator(t.Context(), testAdministrator()); err != nil {
 		t.Fatalf("CreateAdministrator: %v", err)
 	}
