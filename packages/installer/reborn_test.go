@@ -134,6 +134,8 @@ var adminForm = url.Values{
 	"bornOn":          {"1990-05-01"},
 	"password":        {"secret123"},
 	"passwordConfirm": {"secret123"},
+	"club":            {"on"},
+	"credits":         {"5000"},
 }
 
 var siteForm = url.Values{

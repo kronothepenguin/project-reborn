@@ -100,7 +100,7 @@ func TestANewHotelIsInstalledAndTheSiteAnswers(t *testing.T) {
 	}
 	answers(t, browser, "POST", srv.URL+"/installer/admin", url.Values{
 		"name": {"Founder"}, "email": {"founder@example.com"}, "bornOn": {"1990-05-01"},
-		"password": {"secret123"}, "passwordConfirm": {"secret123"},
+		"password": {"secret123"}, "passwordConfirm": {"secret123"}, "club": {"on"}, "credits": {"5000"},
 	}, http.StatusSeeOther, "/", "")
 	if err := <-waited; err != nil {
 		t.Fatalf("WaitForInstall = %v, want nil", err)

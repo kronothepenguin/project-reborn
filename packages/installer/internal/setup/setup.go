@@ -20,12 +20,15 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
-// The administrator's habbo starts as the one Holo's installer created.
+// The administrator's habbo starts with the look of the one Holo's installer
+// created.
 const (
-	adminFigure  = "hr-802-61.hd-190-1.ch-260-62.lg-280-110.sh-295-91.fa-1207-103"
-	adminGender  = "M"
-	adminCredits = 5000
+	adminFigure = "hr-802-61.hd-190-1.ch-260-62.lg-280-110.sh-295-91.fa-1207-103"
+	adminGender = "M"
 )
+
+// clubYears is the length of the administrator's club period.
+const clubYears = 100
 
 var (
 	ErrConfigured    = errors.New("setup: config.json is already written")
@@ -190,10 +193,15 @@ type Administrator struct {
 	BornOn   time.Time
 	Password string
 	IP       string
+	// Club gives the administrator a club period of clubYears from now.
+	Club bool
+	// Credits fill the administrator's purse; the caller checks their range.
+	Credits int64
 }
 
 // CreateAdministrator creates, in one transaction, the administrator's user,
-// credentials and habbo with its profile, home and wallet. The administrator
+// credentials and habbo with its profile, home and wallet, and its club period
+// when admin.Club is set. The administrator
 // joins the group that the ranks update made to hold every attribute, which
 // shows the habbo on the staff page.
 func (s *State) CreateAdministrator(ctx context.Context, admin Administrator) error {
@@ -238,12 +246,24 @@ func createAdministrator(ctx context.Context, q *store.Queries, admin Administra
 		BornOn:       admin.BornOn,
 		IP:           admin.IP,
 		PasswordHash: hash,
-		Credits:      adminCredits,
+		Credits:      admin.Credits,
 		Detail:       "installer",
 		Habbo:        auth.Habbo{Name: admin.Name, Figure: adminFigure, Gender: adminGender},
 	})
 	if err != nil {
 		return err
+	}
+	// The period is written as a purchase writes one, with no payment.
+	if admin.Club {
+		err := q.CreateClubSubscription(ctx, store.CreateClubSubscriptionParams{
+			UserID:    userID,
+			StartsAt:  now,
+			EndsAt:    now.AddDate(clubYears, 0, 0),
+			CreatedAt: now,
+		})
+		if err != nil {
+			return err
+		}
 	}
 	administrators, err := administratorsGroup(ctx, q)
 	if err != nil {

@@ -57,6 +57,29 @@ import Setup from "../layouts/setup.astro";
         required
       />
     </FormField>
+    <label class="flex items-center gap-2 text-sm">
+      [[ if .Club ]]
+      <input type="checkbox" name="club" value="on" checked />
+      [[ else ]]
+      <input type="checkbox" name="club" value="on" />
+      [[ end ]]
+      <span>Give this habbo Habbo Club</span>
+    </label>
+    <FormField
+      label="Credits"
+      help="Habbos who register get the start credits of the site step."
+      class="flex flex-col gap-1 text-sm"
+    >
+      <Input
+        name="credits"
+        type="number"
+        min="0"
+        max="1000000"
+        value="[[ .Credits ]]"
+        variant="border"
+        required
+      />
+    </FormField>
     <div class="flex justify-end">
       <Button type="submit" variant="green">Create administrator</Button>
     </div>
