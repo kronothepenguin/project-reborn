@@ -1,5 +1,5 @@
 ---
-import { Button, Card, FormField, Input, Link, Notice } from "@project-reborn/components";
+import { Button, Card, Input, Link, Notice } from "@project-reborn/components";
 import SignedOut from "../layouts/signed-out.astro";
 ---
 
@@ -14,50 +14,50 @@ import SignedOut from "../layouts/signed-out.astro";
     <div class="text-center"><Button href="/">Back</Button></div>
   </main>
   [[ else ]]
-  <main class="flex gap-2 py-4">
-    <div class="flex flex-1 flex-col gap-2">
+  <main class="flow-root pt-4.5">
+    <div class="float-left w-1/2 pr-2">
       [[ if .Sent ]]
-      <Card>
-        <p class="text-center text-sm font-bold">
-          If this username and e-mail address match, an e-mail is on its way.
-          Check your inbox and spam folders.
-        </p>
-      </Card>
+      <div class="mb-2">
+        <Card>
+          <p class="pb-3 text-center font-bold">
+            If this username and e-mail address match, an e-mail is on its way.
+            Check your inbox and spam folders.
+          </p>
+        </Card>
+      </div>
       [[ end ]]
       <Card color="orange">
         <span slot="header">Forgotten Your Password?</span>
 
-        <div class="flex flex-col gap-2 text-sm">
-          <p>
-            Don't panic! Please enter your account information below and we'll
-            send you an email telling you how to reset your password.
+        <p class="pb-3">
+          Don't panic! Please enter your account information below and we'll
+          send you an email telling you how to reset your password.
+        </p>
+        <form method="post" action="/forgot" class="flow-root [&_input]:w-[98%]">
+          <p class="pb-3">
+            <label class="block" for="forgottenpw-username">Username</label>
+            <Input id="forgottenpw-username" name="username" value="[[ .Username ]]" variant="border" />
           </p>
-          <form method="post" action="/forgot" class="flex flex-col gap-2">
-            <FormField label="Username" class="flex flex-col gap-1">
-              <Input name="username" value="[[ .Username ]]" variant="border" />
-            </FormField>
-            <FormField label="Email address" class="flex flex-col gap-1">
-              <Input name="email" value="[[ .Email ]]" variant="border" />
-            </FormField>
-            <div class="self-end">
-              <Button type="submit">Request information</Button>
-            </div>
-          </form>
-        </div>
+          <p class="pb-3">
+            <label class="block" for="forgottenpw-email">Email address</label>
+            <Input id="forgottenpw-email" name="email" value="[[ .Email ]]" variant="border" />
+          </p>
+          <p class="float-right pb-3">
+            <Button type="submit">Request information</Button>
+          </p>
+        </form>
       </Card>
     </div>
 
-    <div class="flex-1">
+    <div class="float-right w-[49%]">
       <Card color="orange">
         <span slot="header">False Alarm!</span>
 
-        <div class="flex flex-col gap-2 text-sm">
-          <p>
-            If you have remembered your password, or if you just came here by
-            accident, click the link below to return to the homepage.
-          </p>
-          <p><Link href="/">Back to homepage &raquo;</Link></p>
-        </div>
+        <p class="pb-3">
+          If you have remembered your password, or if you just came here by
+          accident, click the link below to return to the homepage.
+        </p>
+        <p class="pb-3"><Link href="/">Back to homepage &raquo;</Link></p>
       </Card>
     </div>
   </main>

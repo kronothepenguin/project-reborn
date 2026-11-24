@@ -1,41 +1,40 @@
 ---
-import { Button, Card, FormField, Input, Link, Notice } from "@project-reborn/components";
+import { Button, Card, Input, Link, Notice } from "@project-reborn/components";
 import SignedOut from "../../layouts/signed-out.astro";
+
+// Holo has no page of its own here: it takes the forgot page's left box.
 ---
 
 <SignedOut title="[[ .ShortName ]] ~ Home">
-  <main class="flex justify-center py-4">
-    <div class="flex w-96 flex-col gap-2 text-sm">
+  <main class="flow-root pt-4.5">
+    <div class="float-left w-1/2 pr-2">
       [[ if .Done ]]
       <Notice variant="green">Your password has been changed.</Notice>
-      <p class="text-center"><Link href="/">Sign in &raquo;</Link></p>
+      <p class="pt-2 pb-3 text-center"><Link href="/">Sign in &raquo;</Link></p>
       [[ else if .Invalid ]]
       <Notice>This link is invalid or has expired.</Notice>
-      <p class="text-center">
+      <p class="pt-2 pb-3 text-center">
         <Link href="/forgot">Request a new link &raquo;</Link>
       </p>
       [[ else ]]
       [[ with .Error ]]
-      <Notice>[[ . ]]</Notice>
+      <div class="mb-2"><Notice>[[ . ]]</Notice></div>
       [[ end ]]
       <Card color="orange">
         <span slot="header">Choose a new password</span>
 
-        <form method="post" class="flex flex-col gap-2">
-          <FormField label="My password will be:" class="flex flex-col gap-1">
-            <Input type="password" name="password" variant="border" required />
-          </FormField>
-          <FormField label="Confirm password" class="flex flex-col gap-1">
-            <Input
-              type="password"
-              name="passwordConfirm"
-              variant="border"
-              required
-            />
-          </FormField>
-          <div class="self-end">
+        <form method="post" class="flow-root [&_input]:w-[98%]">
+          <p class="pb-3">
+            <label class="block" for="reset-password">My password will be:</label>
+            <Input id="reset-password" type="password" name="password" variant="border" required />
+          </p>
+          <p class="pb-3">
+            <label class="block" for="reset-password2">Confirm password</label>
+            <Input id="reset-password2" type="password" name="passwordConfirm" variant="border" required />
+          </p>
+          <p class="float-right pb-3">
             <Button type="submit">Save</Button>
-          </div>
+          </p>
         </form>
       </Card>
       [[ end ]]
