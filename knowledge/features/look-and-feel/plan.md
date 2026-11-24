@@ -16,13 +16,8 @@ Built:
 | `packages/store` | `CountAvatars`, the header's registered count |
 | `packages/housekeeping` | Its own look at the new sizes: 16px in Verdana as the theme's `--font-sans`, widths by 1240/960, paddings and gaps by 4/3; every page fits a 1366px screen |
 | `packages/installer` | `layouts/setup.astro`: the logo over one `Card color="blue"` per step, whose first row is the `step-tabs` island; Holo's font and the 16px base |
-
-Planned:
-
-| Project | Part |
-| --- | --- |
-| `packages/cms` | Every page at the new sizes |
-| `tests/e2e` | The suites follow the pages; screenshots of every page are the exit check's evidence |
+| `packages/cms` | Every page at the new sizes: texts on the plan's table, the columns of the 930px container at 4/3 so they span the 1240px page, signed-out pages at 1240/960, pictures at their own size; homes and the Help Tool keep their canvas ([the layouts](/packages/cms/knowledge/layouts.md)) |
+| `tests/e2e` | The `sizes` suite checks every page at 1366 wide and saves its screenshot |
 
 ## The sizes
 

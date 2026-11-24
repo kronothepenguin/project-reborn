@@ -1,7 +1,7 @@
 ---
 type: Reference
 title: Layouts
-description: The site's two layouts at today's sizes, Holo's font on a 16px base, and where each of Holo's numbers went.
+description: The site's two layouts and its pages at today's sizes, Holo's font on a 16px base, and where each of Holo's numbers went.
 ---
 
 # The sizes
@@ -58,3 +58,33 @@ top bar's right edge. The field is 220px, Holo's 171.
 - The counts stand on one line under the whole `habbo.png`, each right-aligned in Holo's landing widths, 395 and 310:
   `w-127.5` and `w-100`.
 - The footer is Holo's: one line of links separated by ` | `, `text-xs text-neutral-500`, links black.
+
+# Pages
+
+Every page inside the layouts follows the same rules.
+
+- A text takes the plan's table by Holo's own size: 11px `text-base`, 10px `text-sm`, 8px and 9px `text-xs`, 12px
+  `text-lg`, 14px `text-xl`, 16px `text-2xl`, 18px `text-3xl`. A Tailwind size class written for the old design meant
+  its own pixels: an old `text-xs` was Holo's 12px and is now `text-lg`.
+- Inside the community layout, Holo's 930px container is the 1240px page, so every width, padding and gap there is
+  Holo's times 4/3, on a 2px grid. The columns span the page:
+
+| Page | Holo | Here |
+| --- | --- | --- |
+| Me, community, staff | 460 / 310 / 160 | `w-153.5` / `w-103.5` / `w-53` |
+| Credits, club, the pages not found | 460 / 310 | `w-153.5` / `w-103.5` |
+| News, an article, tags | 210 / 560 / 160 | `w-70` / `w-187` / `w-53` |
+| Account settings | 210 / 560, boxes 8px apart | `w-67.5` / `w-184.5`, `gap-2.5` |
+| Discussion board | 750 / 4 / 164 | `w-250` / `w-1.5` / `w-54.5` |
+
+- A box's margin, Holo's `0 8px 7px 0`, is `mr-2.5 mb-2.5`.
+- On a signed-out page, Holo's 766px box is 988px, so widths there are Holo's times 1240/960: the landing's columns,
+  404 and 310, are `w-130.5` and `w-100`; register's, 435 and 269, are `w-140.5` and `w-87`.
+- A picture, a sprite and the box drawn around one keep Holo's pixels: the Me page's hotel view (450x143) with its
+  enter button and plate, the top story's 177px, the wardrobe's slots and arrows, the badge editor, icon cells.
+  Where the box grew around a picture, the picture stays at its left and the box's colour fills the rest.
+- A heading beside the tabs inside a box is Holo's 14px, `text-xl`.
+- Home pages keep their canvas: the playground, its widgets, notes and stickers, and their dialogs keep Holo's pixels.
+  The Help Tool's window and the client's top bar keep theirs too.
+- BBCode's `[size=small]` is `text-sm` and `[size=large]` `text-2xl`, Holo's `<font size>` 1 and 3; the quote box is
+  `m-1 mb-3.5 p-1.5`. `src/bbcode.ts` of the components and `internal/bbcode` change together.

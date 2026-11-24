@@ -282,7 +282,6 @@ async function wardrobe({ base, page, check, shot, sql, eventually }) {
   await page.hover("#wardrobe-store-1");
   const tip = page.locator("#wardrobe-instructions");
   const tipBox = await tip.boundingBox();
-  const content = await page.locator("main").boundingBox();
   const slots = await page.locator("#wardrobe-slots").boundingBox();
   check(
     "hovering the wardrobe shows Holo's instructions with the number of slots",
@@ -292,10 +291,10 @@ async function wardrobe({ base, page, check, shot, sql, eventually }) {
     await tip.innerText(),
   );
   check(
-    "the instructions stand 585 pixels into the content, 17 above the slots",
-    Math.round(tipBox.x - content.x) === 585 &&
+    "the instructions stand 87 pixels left of the slots, 17 above them",
+    Math.round(slots.x - tipBox.x) === 87 &&
       Math.round(slots.y - tipBox.y - tipBox.height) === 17,
-    `${tipBox.x - content.x} ${slots.y - tipBox.y - tipBox.height}`,
+    `${slots.x - tipBox.x} ${slots.y - tipBox.y - tipBox.height}`,
   );
   await shot(page, "looks-wardrobe-instructions");
   await page.mouse.move(5, 5);

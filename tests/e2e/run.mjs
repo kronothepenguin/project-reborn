@@ -44,6 +44,7 @@ import * as news from "./suites/news.mjs";
 import * as reborn from "./suites/reborn.mjs";
 import * as register from "./suites/register.mjs";
 import * as signedOut from "./suites/signed-out.mjs";
+import * as sizes from "./suites/sizes.mjs";
 import * as staff from "./suites/staff.mjs";
 import * as tags from "./suites/tags.mjs";
 import * as together from "./suites/together.mjs";
@@ -52,6 +53,7 @@ import * as updates from "./suites/updates.mjs";
 const suites = {
   "signed-out": signedOut,
   layout,
+  sizes,
   register,
   me,
   looks,
