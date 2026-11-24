@@ -145,39 +145,39 @@
       menu = !menu;
     }}
   >
-    <span class="flex items-center gap-1">
+    <span class="flex items-center gap-1.5">
       <Icon variant="edit" />
       Edit
     </span>
   </Button>
   {#if menu}
-    <Bubble tail="top" class="absolute top-full left-0 z-[1000] mt-2 w-40 text-taupe-500">
-      <h3 class="mb-1 text-center text-[11px] font-bold uppercase">Edit group</h3>
+    <Bubble tail="top" class="absolute top-full left-0 z-[1000] mt-2.5 w-53.5 text-taupe-500">
+      <h3 class="mb-1.5 text-center text-base font-bold uppercase">Edit group</h3>
       <ul>
-        <li class="py-[5px]">
-          <a class="pb-[5px] pl-5 text-taupe-500 hover:underline" href={`/groups/${group}/edit`}>Modify page</a>
+        <li class="py-1.5">
+          <a class="pb-1.5 pl-6.5 text-taupe-500 hover:underline" href={`/groups/${group}/edit`}>Modify page</a>
         </li>
         {#if owner === "true"}
-          <li class="py-[5px]">
-            <button type="button" class="cursor-pointer pb-[5px] pl-5 text-taupe-500 hover:underline" onclick={openSettings}
+          <li class="py-1.5">
+            <button type="button" class="cursor-pointer pb-1.5 pl-6.5 text-taupe-500 hover:underline" onclick={openSettings}
               >Settings</button
             >
           </li>
         {/if}
-        <li class="py-[5px]">
+        <li class="py-1.5">
           <button
             type="button"
-            class="cursor-pointer pb-[5px] pl-5 text-taupe-500 hover:underline"
+            class="cursor-pointer pb-1.5 pl-6.5 text-taupe-500 hover:underline"
             onclick={() => {
               menu = false;
               badgeOpen = true;
             }}>Badge</button
           >
         </li>
-        <li class="py-[5px]">
+        <li class="py-1.5">
           <button
             type="button"
-            class="cursor-pointer pb-[5px] pl-5 text-taupe-500 hover:underline"
+            class="cursor-pointer pb-1.5 pl-6.5 text-taupe-500 hover:underline"
             onclick={() => {
               menu = false;
               membersOpen = true;
@@ -192,44 +192,44 @@
 <MemberList bind:open={membersOpen} {group} {me} />
 <BadgeEditor bind:open={badgeOpen} {group} code={badge} />
 
-<Dialog bind:open={settings} label="Group settings" class="m-auto w-[480px] bg-transparent backdrop:bg-black/40">
+<Dialog bind:open={settings} label="Group settings" class="m-auto w-160 bg-transparent backdrop:bg-black/40">
   <Card color="black">
     {#snippet header()}
       <span class="relative block">
         Group settings
-        <button type="button" class="absolute top-0 right-0 cursor-pointer px-1" aria-label="Close" onclick={() => (settings = false)}
+        <button type="button" class="absolute top-0 right-0 cursor-pointer px-1.5" aria-label="Close" onclick={() => (settings = false)}
           >X</button
         >
       </span>
     {/snippet}
     <form
-      class="text-[11px]"
+      class="text-base"
       onsubmit={(event) => {
         event.preventDefault();
         save();
       }}
     >
       <div class="flow-root">
-        <div class="float-left h-[274px] w-[224px]">
-          <div class="float-left mt-[11px] mr-4 ml-[5px]"><GroupBadge code={badge} alt={name} /></div>
-          <div class="float-left w-[164px]">
+        <div class="float-left h-91.5 w-74.5">
+          <div class="float-left mt-3.5 mr-5.5 ml-1.5"><GroupBadge code={badge} alt={name} /></div>
+          <div class="float-left w-54.5">
             {#if nameFull}<div class="text-red-600">Maximum Group name length reached</div>{/if}
             <label for="{uid}-name" class="font-bold">Edit group name:</label>
             <input
               id="{uid}-name"
-              class="w-full border border-neutral-600 bg-white px-1 text-black"
+              class="w-full border border-neutral-600 bg-white px-1.5 text-black"
               maxlength={nameMax}
               bind:value={name}
             />
           </div>
-          <div class="clear-left pt-2">
+          <div class="clear-left pt-2.5">
             {#if descriptionFull}<div class="text-red-600">Description limit reached</div>{/if}
             <label for="{uid}-description" class="font-bold">Edit text:</label>
             <span class="float-right">
               <label for="{uid}-counter">Characters left:</label>
               <input
                 id="{uid}-counter"
-                class="w-8 bg-amber-300 text-black"
+                class="w-10.5 bg-amber-300 text-black"
                 size="3"
                 readonly
                 value={Math.max(descriptionMax - description.length, 0)}
@@ -237,27 +237,27 @@
             </span>
             <textarea
               id="{uid}-description"
-              class="mt-1 h-[150px] w-[98%] border border-neutral-600 bg-white px-1 text-black"
+              class="mt-1.5 h-50 w-[98%] border border-neutral-600 bg-white px-1.5 text-black"
               maxlength={descriptionMax}
               bind:value={description}
             ></textarea>
           </div>
         </div>
-        <fieldset class="float-left h-[274px] w-[224px] pl-2.5" disabled={initial === "unlimited"}>
-          <legend class="pb-1 font-bold">Edit Group type:</legend>
+        <fieldset class="float-left h-91.5 w-74.5 pl-3.5" disabled={initial === "unlimited"}>
+          <legend class="pb-1.5 font-bold">Edit Group type:</legend>
           {#each types as type (type.value)}
-            <label class="mb-1 flow-root">
+            <label class="mb-1.5 flow-root">
               <input type="radio" class="float-left" name="group_type" value={type.value} bind:group={access} />
-              <span class="float-left block w-[198px] pl-0.5">
+              <span class="float-left block w-66 pl-0.5">
                 <span
                   class="float-left h-4 bg-[url(/web-gallery/v2/images/info_icons.png)] bg-no-repeat pr-[21px] {type.icon}"
                   >{type.label}</span
                 >
-                <span class="clear-left block text-[10px] text-taupe-500"
+                <span class="clear-left block text-sm text-taupe-500"
                   >{type.value === "open" ? `Anyone can join. ${maxMembers} members limit.` : type.text}</span
                 >
                 {#if type.value === "unlimited"}
-                  <span class="block text-[10px] text-red-700"
+                  <span class="block text-sm text-red-700"
                     >Note: If you choose the option 'unlimited' you will not be able to change the type later!</span
                   >
                 {/if}
@@ -266,9 +266,9 @@
           {/each}
         </fieldset>
       </div>
-      <div class="flex gap-1 pt-[7px]">
+      <div class="flex gap-1.5 pt-2.5">
         <Button type="submit">Save changes</Button>
-        <span class="ml-10"><Button variant="red" onclick={() => (step = { name: "confirmDelete" })}>Delete group</Button></span>
+        <span class="ml-13.5"><Button variant="red" onclick={() => (step = { name: "confirmDelete" })}>Delete group</Button></span>
         <Button onclick={() => (settings = false)}>Cancel</Button>
       </div>
     </form>
@@ -278,40 +278,40 @@
 <Dialog
   open={dialogOpen}
   label={dialogTitle || "Group"}
-  class="m-auto w-[300px] bg-transparent backdrop:bg-black/40"
+  class="m-auto w-100 bg-transparent backdrop:bg-black/40"
   onclose={() => {
     if (step.name !== "wait" && step.name !== "deleted") step = { name: "closed" };
   }}
 >
   <Card color="orange" header={dialogTitle ? titleBar : undefined}>
-    <div class="text-[11px]">
+    <div class="text-base">
       {#if step.name === "wait"}
-        <div class="py-2 text-center"><Spinner /></div>
+        <div class="py-2.5 text-center"><Spinner /></div>
       {:else if step.name === "confirmType"}
-        <p class="mb-2">
+        <p class="mb-2.5">
           Are you sure you want to change the group type to <strong>{typeWords[access]}</strong>?{access === "unlimited"
             ? " If you continue you can't change it back later!"
             : ""}
         </p>
-        <p class="flex gap-1">
+        <p class="flex gap-1.5">
           <Button onclick={update}>OK</Button>
           <Button onclick={() => (step = { name: "closed" })}>Cancel</Button>
         </p>
       {:else if step.name === "result"}
-        <p class="mb-2">{step.text}</p>
+        <p class="mb-2.5">{step.text}</p>
         <p><Button onclick={() => location.reload()}>Done</Button></p>
       {:else if step.name === "confirmDelete"}
-        <p class="mb-2">Are you sure you want to delete this Group?</p>
-        <p class="mb-2"><strong>You will lose everything currently on your group home!</strong></p>
-        <p class="flex gap-1">
+        <p class="mb-2.5">Are you sure you want to delete this Group?</p>
+        <p class="mb-2.5"><strong>You will lose everything currently on your group home!</strong></p>
+        <p class="flex gap-1.5">
           <Button onclick={() => (step = { name: "closed" })}>Cancel</Button>
           <Button onclick={remove}>OK</Button>
         </p>
       {:else if step.name === "deleted"}
-        <p class="mb-2">{step.text}</p>
+        <p class="mb-2.5">{step.text}</p>
         <p><Button href="/me">OK</Button></p>
       {:else if step.name === "failed"}
-        <p class="mb-2">{failed}</p>
+        <p class="mb-2.5">{failed}</p>
         <p><Button onclick={() => (step = { name: "closed" })}>OK</Button></p>
       {/if}
     </div>

@@ -26,7 +26,7 @@ try {
     <div
       id="client-topbar"
       hidden
-      class="mx-auto h-[29px] [[ if .WideBody ]]w-[960px][[ else ]]w-[720px][[ end ]] bg-linear-to-b from-neutral-600 to-neutral-900 text-[9px]"
+      class="mx-auto h-[29px] [[ if .WideBody ]]w-[960px][[ else ]]w-[720px][[ end ]] bg-linear-to-b from-neutral-600 to-neutral-900 text-xs"
     >
       <div class="float-left h-[19px] w-[230px] text-left">
         <img src="/habbo.png" alt="" class="inline h-[19px] w-auto py-[5px] pl-2 box-content" />
@@ -57,7 +57,7 @@ try {
       <div id="client-params" hidden>[[ range .Params ]]<data value="[[ .Value ]]">[[ .Name ]]</data>[[ end ]]</div>
     </div>
 
-    <p class="mx-auto mt-2 w-[720px] text-center text-[9px] text-neutral-400">
+    <p class="mx-auto mt-2 w-[720px] text-center text-xs text-neutral-400">
       The client runs on{" "}
       <a href={source} class="underline hover:text-white">LibreShockwave</a>,
       free software under the{" "}

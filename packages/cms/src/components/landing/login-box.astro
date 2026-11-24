@@ -17,7 +17,7 @@ const { links = true } = Astro.props;
   <form
     method="post"
     action="/"
-    class="grid grid-cols-[1fr_1fr_1fr] items-center gap-2 text-sm"
+    class="grid grid-cols-[1fr_1fr_1fr] items-center gap-2.5"
   >
     <label for="username" class="text-white">
       Username
@@ -27,7 +27,7 @@ const { links = true } = Astro.props;
       name="username"
       type="text"
       value="[[ .Username ]]"
-      class="bg-white border min-w-24 w-full border-neutral-600 px-2 py-1"
+      class="bg-white border min-w-31 w-full border-neutral-600 px-2.5 py-1.5"
     />
 
     <label for="password" class="text-white col-start-1">
@@ -37,16 +37,16 @@ const { links = true } = Astro.props;
       id="password"
       name="password"
       type="password"
-      class="border bg-white border-neutral-600 min-w-24 w-full px-2 py-1"
+      class="border bg-white border-neutral-600 min-w-31 w-full px-2.5 py-1.5"
     />
     <Button type="submit">Sign in</Button>
 
     <div class="group relative col-start-2 col-span-2">
-      <Checkbox name="remember" class="text-xs text-white">
+      <Checkbox name="remember" class="text-white">
         Remember me
       </Checkbox>
       <div
-        class="absolute top-full left-0 z-10 mt-2 hidden text-black group-has-checked:block"
+        class="absolute top-full left-0 z-10 mt-2.5 hidden text-black group-has-checked:block"
       >
         <Bubble tail="top">
           By selecting 'remember me' you will stay signed in on this computer
@@ -61,14 +61,14 @@ const { links = true } = Astro.props;
         <>
           <a
             href="/register"
-            class="col-start-2 col-span-2 underline text-xs font-bold text-olive-800 hover:text-white"
+            class="col-start-2 col-span-2 underline font-bold text-olive-800 hover:text-white"
           >
             Register
           </a>
 
           <a
             href="/forgot"
-            class="col-start-2 col-span-2 text-xs underline text-olive-800 hover:text-white"
+            class="col-start-2 col-span-2 underline text-olive-800 hover:text-white"
           >
             I forgot my username/password
           </a>

@@ -94,35 +94,35 @@
 </script>
 
 {#snippet tabs()}
-  <span class="relative flex items-end gap-1 text-left">
+  <span class="relative flex items-end gap-1.5 text-left">
     {#each [["members", titles.members], ["pending", titles.pending]] as const as [which, label] (which)}
       <button
         type="button"
         role="tab"
         aria-selected={tab === which}
-        class={["cursor-pointer rounded-t px-3 py-0.5", tab === which ? "bg-white text-black" : "text-white"]}
+        class={["cursor-pointer rounded-t px-4 py-0.5", tab === which ? "bg-white text-black" : "text-white"]}
         onclick={() => switchTo(which)}>{label}</button
       >
     {/each}
-    <button type="button" class="ml-auto cursor-pointer px-1" aria-label="Close" onclick={() => (open = false)}>X</button>
+    <button type="button" class="ml-auto cursor-pointer px-1.5" aria-label="Close" onclick={() => (open = false)}>X</button>
   </span>
 {/snippet}
 
-<Dialog bind:open label="Members" class="m-auto w-[480px] bg-transparent backdrop:bg-black/40">
+<Dialog bind:open label="Members" class="m-auto w-160 bg-transparent backdrop:bg-black/40">
   <Card color="black" header={tabs}>
-    <div class="text-[11px]" role="tabpanel" aria-label={tab === "members" ? "Members" : "Pending members"}>
-      <div class="h-[200px] overflow-auto">
+    <div class="text-base" role="tabpanel" aria-label={tab === "members" ? "Members" : "Pending members"}>
+      <div class="h-66.5 overflow-auto">
         {#if list === null}
-          <div class="py-2 text-center"><Spinner /></div>
+          <div class="py-2.5 text-center"><Spinner /></div>
         {:else}
-          <ul class="mt-2.5 flow-root">
+          <ul class="mt-3.5 flow-root">
             {#if list.rows.length === 0}
               There are no pending membership requests at this time. Please check back later.
             {/if}
             {#each list.rows as row, i (row.id)}
               <li class={["float-left w-1/2", rowClass(i)]}>
-                <div class={["pb-1 pl-[5px]", i % 2 === 1 && "border-l border-olive-300"]}>
-                  <div class="float-right mt-px h-4 w-4">
+                <div class={["pb-1.5 pl-1.5", i % 2 === 1 && "border-l border-olive-300"]}>
+                  <div class="float-right mt-px h-4 w-5.5">
                     {#if row.owner}
                       <img src="/web-gallery/images/groups/owner_icon.gif" width="15" height="15" alt="Owner" title="Owner" />
                     {:else if row.admin}
@@ -173,7 +173,7 @@
           {:else}Last{/if}
         </div>
       {/if}
-      <div class="mt-2 flex gap-1">
+      <div class="mt-2.5 flex gap-1.5">
         {#if tab === "members"}
           {#each [["promote", "Give rights"], ["demote", "Revoke rights"], ["remove", "Remove"]] as const as [action, label] (action)}
             <span class={button(enabled[action])}>
@@ -202,7 +202,7 @@
 <Dialog
   open={confirming !== null || failure}
   label="Group"
-  class="m-auto w-[300px] bg-transparent backdrop:bg-black/40"
+  class="m-auto w-100 bg-transparent backdrop:bg-black/40"
   onclose={() => {
     if (!working) {
       confirming = null;
@@ -211,18 +211,18 @@
   }}
 >
   <Card>
-    <div class="text-[11px]">
+    <div class="text-base">
       {#if working}
-        <div class="py-2 text-center"><Spinner /></div>
+        <div class="py-2.5 text-center"><Spinner /></div>
       {:else if confirming}
         {@const action = confirming.action}
-        <p class="mb-2">{confirming.text}</p>
-        <p class="flex gap-1">
+        <p class="mb-2.5">{confirming.text}</p>
+        <p class="flex gap-1.5">
           <Button onclick={() => (confirming = null)}>Cancel</Button>
           <Button onclick={() => run(action)}>OK</Button>
         </p>
       {:else if failure}
-        <p class="mb-2">An unknown error occurred. Please try again in a couple of minutes.</p>
+        <p class="mb-2.5">An unknown error occurred. Please try again in a couple of minutes.</p>
         <p><Button onclick={() => (failure = false)}>OK</Button></p>
       {/if}
     </div>

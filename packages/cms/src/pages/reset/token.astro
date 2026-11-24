@@ -4,8 +4,8 @@ import SignedOut from "../../layouts/signed-out.astro";
 ---
 
 <SignedOut title="[[ .ShortName ]] ~ Home">
-  <main class="flex justify-center py-4">
-    <div class="flex w-96 flex-col gap-2 text-sm">
+  <main class="flex justify-center py-5.5">
+    <div class="flex w-124 flex-col gap-2.5">
       [[ if .Done ]]
       <Notice variant="green">Your password has been changed.</Notice>
       <p class="text-center"><Link href="/">Sign in &raquo;</Link></p>
@@ -21,11 +21,11 @@ import SignedOut from "../../layouts/signed-out.astro";
       <Card color="orange">
         <span slot="header">Choose a new password</span>
 
-        <form method="post" class="flex flex-col gap-2">
-          <FormField label="My password will be:" class="flex flex-col gap-1">
+        <form method="post" class="flex flex-col gap-2.5">
+          <FormField label="My password will be:" class="flex flex-col gap-1.5">
             <Input type="password" name="password" variant="border" required />
           </FormField>
-          <FormField label="Confirm password" class="flex flex-col gap-1">
+          <FormField label="Confirm password" class="flex flex-col gap-1.5">
             <Input
               type="password"
               name="passwordConfirm"

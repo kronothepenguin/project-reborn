@@ -74,12 +74,12 @@
   <button
     type="button"
     onclick={() => (mode = "reading")}
-    class="absolute top-full right-2 cursor-pointer text-[9px] text-white underline"
+    class="absolute top-full right-2.5 cursor-pointer text-xs text-white underline"
   >
     Cancel
   </button>
 {:else if mode === "saving"}
-  <span class="flex h-full items-center justify-end pr-5"><Spinner /></span>
+  <span class="flex h-full items-center justify-end pr-6.5"><Spinner /></span>
 {:else}
   <button
     type="button"

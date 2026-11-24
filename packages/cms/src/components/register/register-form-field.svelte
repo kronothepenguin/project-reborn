@@ -7,6 +7,6 @@
 </script>
 
 <label class="flex flex-col">
-  <span class="text-center text-xs text-white">{label}</span>
+  <span class="text-center text-white">{label}</span>
   {@render children?.()}
 </label>

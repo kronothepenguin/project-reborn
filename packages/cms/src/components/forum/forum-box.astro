@@ -1,24 +1,25 @@
 ---
 // Holo's Discussion Board box around the board and its threads: its title and
-// tab, and the 750-pixel column beside the empty 164-pixel one.
+// tab, blue as Holo's box, and the 750-pixel column beside the empty 164-pixel
+// one, at 4/3.
 ---
 
-<div id="mypage-wrapper" class="rounded border-2 border-black bg-white p-1">
-  <div class="flow-root px-2.5 pt-1">
-    <h2 class="float-left mr-2 text-sm font-bold text-sky-500">Discussion Board</h2>
-    <ul class="h-[25px] border-b border-cyan-600 px-[5px]">
-      <li class="float-left ml-1 h-[25px]">
+<div id="mypage-wrapper" class="rounded border-2 border-black bg-white p-1.5">
+  <div class="flow-root px-3.5 pt-1.5">
+    <h2 class="float-left mr-2.5 text-xl font-bold text-sky-500">Discussion Board</h2>
+    <ul class="flex h-8 gap-1.5 border-b border-sky-600 px-1.5">
+      <li>
         <a
           href="/forum"
-          class="float-left h-[25px] rounded-t border-t border-r border-l border-cyan-600 bg-white px-3.5 pt-1.5 font-bold text-black no-underline"
+          class="relative top-px block h-8 rounded-t-[3px] border border-b-0 border-sky-600 bg-white px-4.5 pt-1.5 font-bold whitespace-nowrap text-black no-underline"
           aria-current="page">Discussion Board</a
         >
       </li>
     </ul>
   </div>
-  <div class="mt-[5px] flex">
-    <div class="w-[750px]"><slot /></div>
-    <div class="w-1"></div>
-    <div class="w-[164px]"></div>
+  <div class="mt-1.5 flex">
+    <div class="w-250"><slot /></div>
+    <div class="w-1.5"></div>
+    <div class="w-54.5"></div>
   </div>
 </div>

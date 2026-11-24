@@ -8,15 +8,15 @@ import Community from "../layouts/community.astro";
 
 <Community title="[[ .ShortName ]] ~ Tags" tab="community" sub="Tags">
   <div class="flex">
-    <div class="w-[210px]">
-      <div class="mr-2 mb-[7px]">
+    <div class="w-70">
+      <div class="mr-2.5 mb-2.5">
         <Card color="orange">
           <span slot="header">Tag Cloud</span>
           <div id="tag-related-habblet-container" class="text-center"><TagCloud /></div>
         </Card>
       </div>
       [[ if .TagFight ]]
-      <div class="mr-2 mb-[7px]">
+      <div class="mr-2.5 mb-2.5">
         <Card color="orange">
           <span slot="header">Tag Fight</span>
           <div id="tag-fight-habblet-container"><TagFight client:only="svelte" /></div>
@@ -24,14 +24,14 @@ import Community from "../layouts/community.astro";
       </div>
       [[ end ]]
     </div>
-    <div class="w-[560px]">
-      <div class="mr-2 mb-[7px]">
+    <div class="w-187">
+      <div class="mr-2.5 mb-2.5">
         <Card color="orange">
           <span slot="header">Find others with the same interests[[ if .Searched ]] ([[ len .Results ]])[[ end ]]</span>
           <TagSearch />
         </Card>
       </div>
     </div>
-    <div class="w-[160px]"></div>
+    <div class="w-53"></div>
   </div>
 </Community>

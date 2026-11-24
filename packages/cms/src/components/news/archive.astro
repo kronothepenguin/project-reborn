@@ -2,17 +2,17 @@
 import { Card, Link } from "@project-reborn/components";
 ---
 
-<div class="mr-2 mb-[7px]">
+<div class="mr-2.5 mb-2.5">
   <Card>
-    <div id="article-wrapper" class="px-2.5">
+    <div id="article-wrapper" class="px-3.5">
       [[ if .InCategory ]]
-      <h2 class="mb-1 text-base font-bold text-orange-500">Category Listing</h2>
-      <div class="mb-2 border-t border-orange-500 pt-[7px] text-zinc-400">
+      <h2 class="mb-1.5 text-2xl font-bold text-orange-500">Category Listing</h2>
+      <div class="mb-2.5 border-t border-orange-500 pt-2.5 text-zinc-400">
         This is an overview of the last 25 articles posted in the category <b>[[ .Category ]]</b>.
       </div>
       [[ else ]]
-      <h2 class="mb-1 text-base font-bold text-orange-500">[[ .ShortName ]] News Archive</h2>
-      <div class="mb-2 border-t border-orange-500 pt-[7px] text-zinc-400">
+      <h2 class="mb-1.5 text-2xl font-bold text-orange-500">[[ .ShortName ]] News Archive</h2>
+      <div class="mb-2.5 border-t border-orange-500 pt-2.5 text-zinc-400">
         This is an overview of all articles ever posted on the website, ordered by post date.
       </div>
       [[ end ]]

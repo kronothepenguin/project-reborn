@@ -13,8 +13,8 @@ import Document from "../../layouts/document.astro";
   description="[[ .Name ]] is a virtual world where you can meet and make friends."
   keywords="[[ .ShortName ]],virtual world,play games,enter competitions,make friends"
 >
-  <main class="flex min-h-screen items-center justify-center p-2">
-    <div class="w-full max-w-md text-sm">
+  <main class="flex min-h-screen items-center justify-center p-2.5">
+    <div class="w-full max-w-md">
       [[ if eq .Key "connection_failed" ]]
       <Card color="orange">
         <h2 slot="header">Connection to [[ .Name ]] failed.</h2>

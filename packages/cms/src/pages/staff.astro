@@ -9,8 +9,8 @@ const body = "[&_a]:text-orange-500 [&_a]:underline";
 
 <Community title="[[ .ShortName ]] ~ Staff Team" tab="community" sub="Staff">
   <div class="flex">
-    <div class="w-[460px]">
-      <div class="mr-2 mb-[7px]">
+    <div class="w-153.5">
+      <div class="mr-2.5 mb-2.5">
         <Card color="green">
           <span slot="header">Staff</span>
           <div id="staff-list">
@@ -42,9 +42,9 @@ const body = "[&_a]:text-orange-500 [&_a]:underline";
         </Card>
       </div>
     </div>
-    <div class="w-[310px]">
+    <div class="w-103.5">
       [[ range .Boxes ]]
-      <div class="mr-2 mb-[7px]">
+      <div class="mr-2.5 mb-2.5">
         [[ if eq .Color "red" ]]
         <Card color="red"><span slot="header">[[ .Heading ]]</span><div class={body}>[[ .Body ]]</div></Card>
         [[ else if eq .Color "blue" ]]
@@ -57,6 +57,6 @@ const body = "[&_a]:text-orange-500 [&_a]:underline";
       </div>
       [[ end ]]
     </div>
-    <div class="w-[160px]"></div>
+    <div class="w-53"></div>
   </div>
 </Community>

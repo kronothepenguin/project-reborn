@@ -22,40 +22,40 @@
 <table class="w-full border-collapse" aria-label="Preview">
   <tbody>
     <tr>
-      <td class="w-[148px] px-1 py-1.5 align-top text-neutral-500">
-        <a class="pl-[11px] align-super text-black underline" href={`/home?name=${encodeURIComponent(me.name)}`}>{me.name}</a><br />
+      <td class="w-49.5 px-1.5 py-2 align-top text-neutral-500">
+        <a class="pl-3.5 align-super text-black underline" href={`/home?name=${encodeURIComponent(me.name)}`}>{me.name}</a><br />
         &nbsp;&nbsp;{#if me.online}<img class="inline" alt="Online" src="/myhabbo/habbo_online_anim.gif" />{:else}<img
             class="inline"
             alt="Offline"
             src="/myhabbo/habbo_offline.gif"
           />{/if}
-        <div class="pl-[11px]">Messages: {me.messages}</div>
+        <div class="pl-3.5">Messages: {me.messages}</div>
         <div class="flow-root">
           <div class="float-left">
             <Avatar imagingUrl={me.imaging} figure={me.figure} size="b" direction={2} headDirection={2} gesture="sml" alt={me.name} />
           </div>
-          <div class="float-left h-10 w-[60px] pt-[23px] text-center">
+          <div class="float-left h-10 w-20 pt-7.5 text-center">
             {#if me.group !== "0"}<a href={`/groups/${me.group}`}><GroupBadge class="inline" code={me.groupBadge} /></a>{/if}
           </div>
-          <div class="float-left h-10 w-[60px] pt-1 text-center">
+          <div class="float-left h-10 w-20 pt-1.5 text-center">
             {#if me.badge}<img class="inline" src={me.badge} alt="" />{/if}
           </div>
         </div>
-        <div class="clear-both overflow-hidden pt-1 pl-[11px] break-words">{me.motto}</div>
+        <div class="clear-both overflow-hidden pt-1.5 pl-3.5 break-words">{me.motto}</div>
       </td>
-      <td class="overflow-hidden p-[9px] align-top break-words" colspan="2">
+      <td class="overflow-hidden p-3 align-top break-words" colspan="2">
         <button type="button" class="float-right cursor-pointer text-neutral-400 hover:underline" onclick={onmodify}
           >&laquo; Modify</button
         >
-        <span class="text-xs font-bold"> {title}</span><br />
-        <span class="text-[10px] text-neutral-500">{date}</span>
-        <div class="mt-2.5 w-[540px] overflow-hidden break-words">{@html html}</div>
+        <span class="text-lg font-bold"> {title}</span><br />
+        <span class="text-sm text-neutral-500">{date}</span>
+        <div class="mt-3.5 w-180 overflow-hidden break-words">{@html html}</div>
         <div>&nbsp;</div>
         <div>&nbsp;</div>
-        <div class="flex gap-1">
-          <Button variant="red" onclick={oncancel}><span class="flex items-center gap-1"><Icon variant="cancel" />Cancel</span></Button>
+        <div class="flex gap-1.5">
+          <Button variant="red" onclick={oncancel}><span class="flex items-center gap-1.5"><Icon variant="cancel" />Cancel</span></Button>
           <Button variant="green" disabled={saving} onclick={onsave}
-            ><span class="flex items-center gap-1"><Icon variant="save" />Save</span></Button
+            ><span class="flex items-center gap-1.5"><Icon variant="save" />Save</span></Button
           >
         </div>
       </td>

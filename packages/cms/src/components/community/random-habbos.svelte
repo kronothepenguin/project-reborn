@@ -79,7 +79,7 @@
           {habbos[tip].name}
         </div>
         Habbo created on: {habbos[tip].created}
-        <p class="pt-[7px] text-mist-600">{habbos[tip].motto}</p>
+        <p class="pt-2.5 text-mist-600">{habbos[tip].motto}</p>
       </Bubble>
     </div>
   {/if}

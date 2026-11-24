@@ -44,31 +44,31 @@
 </script>
 
 <form onsubmit={redeem}>
-  <ul class="pt-2.5">
+  <ul class="pt-3.5">
     <li
       class="bg-olive-200 bg-[url(/web-gallery/images/purse/purse_icon.gif)] bg-position-[22px_9px] bg-no-repeat pt-2.5 pb-[15px] pl-[60px]"
     >
       <div>You Currently Have:</div>
-      <span class="text-[1.2em] font-bold">{credits} Credits</span>
-      <div class="text-[10px]"><Link href="/credits/transactions">Account transactions</Link></div>
+      <span class="text-lg font-bold">{credits} Credits</span>
+      <div class="text-sm"><Link href="/credits/transactions">Account transactions</Link></div>
     </li>
     {#if !answer}
       <li>
-        <div class="flow-root py-2">
+        <div class="flow-root py-2.5">
           <label class="block" for="{uid}-code">Enter redemption code:</label>
-          <span class="float-left w-[155px] [&>input]:w-full">
+          <span class="float-left w-51.5 [&>input]:w-full">
             <Input id="{uid}-code" name="voucherCode" variant="border" bind:value={code} />
           </span>
-          <span class="float-left mb-[5px] ml-2.5">
+          <span class="float-left mb-1.5 ml-3.5">
             <Button type="submit" disabled={redeeming}
-              ><span class="flex items-center gap-[5px]"><Icon variant="purse" />Submit</span></Button
+              ><span class="flex items-center gap-1.5"><Icon variant="purse" />Submit</span></Button
             >
           </span>
         </div>
       </li>
     {/if}
   </ul>
-  <div class="clear-both px-[15px] pt-2 text-center">
+  <div class="clear-both px-5 pt-2.5 text-center">
     {#if answer}
       <Notice variant={answer.ok ? "green" : "red"}>{answer.message}</Notice>
     {/if}

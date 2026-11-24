@@ -6,29 +6,29 @@ import Community from "../layouts/community.astro";
 const pattern = "background-image: url(/web-gallery/v2/images/hc_pattern.gif)";
 // Holo's pictures reach the box's borders, 450 pixels apart, past the card's
 // padding.
-const flush = "-mx-3 -mt-2";
-const heading = "my-3 text-xs font-bold text-yellow-600";
+const flush = "-mx-4 -mt-2.5";
+const heading = "my-5.5 text-lg font-bold text-yellow-600";
 const pictured = "box-content bg-position-[100%_50%] bg-no-repeat pb-[1em]";
 ---
 
 <Community title="[[ .ShortName ]] ~ [[ .ShortName ]] Club" tab="credits" sub="Habbo Club">
   <div class="flex">
-    <div class="w-[460px]">
-      <div class="mr-2 mb-[7px]">
+    <div class="w-153.5">
+      <div class="mr-2.5 mb-2.5">
         <Card variant="hc" color="hcred" style={pattern}>
           <span slot="header">[[ .ShortName ]] Club: become a VIP!</span>
           <div id="habboclub-products" class={flush}>
-            <div class="flow-root pl-5">
+            <div class="flow-root pl-6.5">
               <img class="float-left mt-2.5" src="/web-gallery/v2/images/habboclub/extra.png" width="106" height="106" alt="" />
               <img class="float-right" src="/web-gallery/v2/images/habboclub/hc_clothes_items.png" width="320" height="130" alt="" />
             </div>
-            <div class="pl-[5px]">
+            <div class="pl-1.5">
               <img src="/web-gallery/v2/images/habboclub/hc_furniture_items.gif" width="440" height="138" alt="" />
             </div>
           </div>
         </Card>
       </div>
-      <div class="mr-2 mb-[7px]">
+      <div class="mr-2.5 mb-2.5">
         <Card color="lightbrown">
           <span slot="header">Benefits</span>
           <div id="habboclub-info">
@@ -50,22 +50,22 @@ const pictured = "box-content bg-position-[100%_50%] bg-no-repeat pb-[1em]";
             >
               Once a month, every month, you'll get an exclusive piece of [[ .ShortName ]] Club furni.
             </p>
-            <p class="pb-[1em] pl-5">
+            <p class="pb-[1em] pl-6.5">
               Important note: club time is cumulative. This means that if you have a break in membership, and then rejoin,
               you'll start back in the same place you left off.
             </p>
             <h3 class={heading}>3. Exclusive Room Layouts</h3>
-            <p class="pb-[1em] pl-5">
+            <p class="pb-[1em] pl-6.5">
               Special Guest Room layouts, only for [[ .ShortName ]] Club members. Perfect for showing off your new furni!
             </p>
             <p class={`${pictured} min-h-[88px] bg-[url(/web-gallery/v2/images/habboclub/hc_morerooms.gif)]`}></p>
             <h3 class={heading}>4. Access All Areas</h3>
-            <p class="pb-[1em] pl-5">
+            <p class="pb-[1em] pl-6.5">
               Jump the annoying queues when rooms are loading. And that's not all - you'll also get access to HC-only
               Public Rooms.
             </p>
             <h3 class={heading}>5. Homepage Upgrades</h3>
-            <p class="pb-[1em] pl-5">
+            <p class="pb-[1em] pl-6.5">
               Join [[ .ShortName ]] Club and say goodbye to homepage ads! And this means you can make the most of the HC
               skins and backgrounds too.
             </p>
@@ -92,8 +92,8 @@ const pictured = "box-content bg-position-[100%_50%] bg-no-repeat pb-[1em]";
         </Card>
       </div>
     </div>
-    <div class="w-[310px]">
-      <div class="mr-2 mb-[7px]">
+    <div class="w-103.5">
+      <div class="mr-2.5 mb-2.5">
         <Card variant="hc" color="hcred" style={pattern}>
           <span slot="header">My Membership</span>
           [[ if .SignedIn ]]
@@ -111,7 +111,7 @@ const pictured = "box-content bg-position-[100%_50%] bg-no-repeat pb-[1em]";
           </div>
           <Membership client:only="svelte" source="club-membership" />
           [[ else ]]
-          <p class="px-[7px]">Please sign in to see your [[ .ShortName ]] Club status.</p>
+          <p class="px-2.5">Please sign in to see your [[ .ShortName ]] Club status.</p>
           [[ end ]]
         </Card>
       </div>

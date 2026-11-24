@@ -68,13 +68,13 @@
   <table class="w-full border-collapse" aria-label="New Thread">
     <tbody>
       <tr>
-        <td class="w-[148px]"></td>
+        <td class="w-49.5"></td>
         <td></td>
         <td></td>
       </tr>
       {#if preview}
         <tr>
-          <td colspan="3" class="px-1 py-1.5">
+          <td colspan="3" class="px-1.5 py-2">
             <PostPreview
               {me}
               title={title.trim() || "Post Preview"}
@@ -91,12 +91,12 @@
         <tr class="bg-olive-200">
           <td class="text-right"><label for="new-topic-name">Topic:</label></td>
           <td colspan="2">
-            <div class="m-[5px]">
+            <div class="m-1.5">
               <input
                 id="new-topic-name"
                 type="text"
                 size="50"
-                class="mt-2.5 border border-neutral-500 bg-white px-1"
+                class="mt-3.5 border border-neutral-500 bg-white px-1.5"
                 bind:value={title}
                 bind:this={field}
               />
@@ -107,23 +107,23 @@
       <tr class="bg-olive-200">
         <td></td>
         <td colspan="2">
-          {#if error}<div class="m-[5px] w-[370px]"><Notice variant="red" role="alert">{error}</Notice></div>{/if}
+          {#if error}<div class="m-1.5 w-123.5"><Notice variant="red" role="alert">{error}</Notice></div>{/if}
         </td>
       </tr>
       {#if !preview}
         <tr class="bg-olive-200">
-          <td class="pt-[30px] text-right align-top">Post:</td>
+          <td class="pt-10 text-right align-top">Post:</td>
           <td colspan="2">
-            <div class="m-[5px]">
-              <button type="button" class="relative z-[1] float-right cursor-pointer pt-0.5 pr-2 text-neutral-400 hover:underline" onclick={showPreview}
+            <div class="m-1.5">
+              <button type="button" class="relative z-[1] float-right cursor-pointer pt-0.5 pr-2.5 text-neutral-400 hover:underline" onclick={showPreview}
                 >Preview &raquo;</button
               >
-              <div class="w-[575px]"><BBCodeEditor bind:value={message} {smilies} label="Post" rows={5} /></div>
+              <div class="w-191.5"><BBCodeEditor bind:value={message} {smilies} label="Post" rows={5} /></div>
               <br /><br />
-              <div class="flex gap-1">
-                <Button variant="red" href="/forum"><span class="flex items-center gap-1"><Icon variant="cancel" />Cancel</span></Button>
+              <div class="flex gap-1.5">
+                <Button variant="red" href="/forum"><span class="flex items-center gap-1.5"><Icon variant="cancel" />Cancel</span></Button>
                 <Button variant="green" disabled={saving} onclick={save}
-                  ><span class="flex items-center gap-1"><Icon variant="save" />Save</span></Button
+                  ><span class="flex items-center gap-1.5"><Icon variant="save" />Save</span></Button
                 >
               </div>
             </div>

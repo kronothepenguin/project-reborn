@@ -5,7 +5,7 @@ import SignedOut from "../layouts/signed-out.astro";
 
 <SignedOut title="[[ .ShortName ]] ~ Home">
   [[ if .SignedIn ]]
-  <main class="flex flex-col gap-2 py-4">
+  <main class="flex flex-col gap-2.5 py-5.5">
     <Notice>
       <form method="post" action="/logout">
         <strong>Please <button type="submit" class="cursor-pointer underline">log out</button> to use this feature.</strong>
@@ -14,11 +14,11 @@ import SignedOut from "../layouts/signed-out.astro";
     <div class="text-center"><Button href="/">Back</Button></div>
   </main>
   [[ else ]]
-  <main class="flex gap-2 py-4">
-    <div class="flex flex-1 flex-col gap-2">
+  <main class="flex gap-2.5 py-5.5">
+    <div class="flex flex-1 flex-col gap-2.5">
       [[ if .Sent ]]
       <Card>
-        <p class="text-center text-sm font-bold">
+        <p class="text-center font-bold">
           If this username and e-mail address match, an e-mail is on its way.
           Check your inbox and spam folders.
         </p>
@@ -27,16 +27,16 @@ import SignedOut from "../layouts/signed-out.astro";
       <Card color="orange">
         <span slot="header">Forgotten Your Password?</span>
 
-        <div class="flex flex-col gap-2 text-sm">
+        <div class="flex flex-col gap-2.5">
           <p>
             Don't panic! Please enter your account information below and we'll
             send you an email telling you how to reset your password.
           </p>
-          <form method="post" action="/forgot" class="flex flex-col gap-2">
-            <FormField label="Username" class="flex flex-col gap-1">
+          <form method="post" action="/forgot" class="flex flex-col gap-2.5">
+            <FormField label="Username" class="flex flex-col gap-1.5">
               <Input name="username" value="[[ .Username ]]" variant="border" />
             </FormField>
-            <FormField label="Email address" class="flex flex-col gap-1">
+            <FormField label="Email address" class="flex flex-col gap-1.5">
               <Input name="email" value="[[ .Email ]]" variant="border" />
             </FormField>
             <div class="self-end">
@@ -51,7 +51,7 @@ import SignedOut from "../layouts/signed-out.astro";
       <Card color="orange">
         <span slot="header">False Alarm!</span>
 
-        <div class="flex flex-col gap-2 text-sm">
+        <div class="flex flex-col gap-2.5">
           <p>
             If you have remembered your password, or if you just came here by
             accident, click the link below to return to the homepage.

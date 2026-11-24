@@ -19,8 +19,8 @@ const moderation =
 <Community title="[[ .ShortName ]] ~ Discussion - [[ .Title ]]" tab="community" sub="Discussion Board">
   <ForumBox>
     <div id="group-postlist-container">
-      <div class="flow-root pt-1 pr-0 pb-2 pl-2">
-        [[ if .SignedIn ]][[ if .Locked ]]<span class="float-left pr-[11px] font-bold text-neutral-700"
+      <div class="flow-root pt-1.5 pr-0 pb-2.5 pl-2.5">
+        [[ if .SignedIn ]][[ if .Locked ]]<span class="float-left pr-3.5 font-bold text-neutral-700"
           ><img class="inline" src="/web-gallery/images/groups/status_closed.gif" title="Closed Thread" alt="" /> Closed Thread</span
         >[[ else ]]<button type="button" id="create-post-message" class:list={[reply]}>Post reply</button>[[ end ]][[ end ]][[ if .Moderator ]]<button
           type="button"
@@ -39,8 +39,8 @@ const moderation =
       <ReplyForm client:only="svelte" source="forum-viewer" />
       <DeletePost client:only="svelte" />
       [[ end ]]
-      <div class="flow-root pt-1 pr-0 pb-2 pl-2">
-        [[ if .SignedIn ]][[ if .Locked ]]<span class="float-left pr-[11px] font-bold text-neutral-700"
+      <div class="flow-root pt-1.5 pr-0 pb-2.5 pl-2.5">
+        [[ if .SignedIn ]][[ if .Locked ]]<span class="float-left pr-3.5 font-bold text-neutral-700"
           ><img class="inline" src="/web-gallery/images/groups/status_closed.gif" title="Closed Thread" alt="" /> Closed Thread</span
         >[[ else ]]<button type="button" id="create-post-message-lower" class:list={[reply]}>Post reply</button>[[ end ]][[ else ]]
         You must be logged in to reply or post new threads.

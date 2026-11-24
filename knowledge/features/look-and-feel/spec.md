@@ -111,9 +111,7 @@ height and close as possible aligned to right as a group".
 - A field under a hidden tab is refused: its tab opens and the form names the field.
 - An administrator opens the settings step with scripts off: every group shows, one under the other.
 
-## Next
-
-### Sizes
+## Sizes
 
 - A visitor opens a page of the site, the installer or housekeeping: its body text is 16px, in Holo's font.
 - A page shows a text Holo drew smaller than its body text: it shows in a smaller size; a text Holo drew bigger shows
