@@ -6,7 +6,7 @@ import HomeView from "../../components/homes/home-view.astro";
 import Community from "../../layouts/community.astro";
 ---
 
-<Community title="[[ .ShortName ]] ~ [[ .Group ]]" tab="community" sub="">
+<Community title="[[ .ShortName ]] ~ [[ .Group ]]" tab="community" sub="" wide>
   <HomeView>
     <Fragment slot="header">
       <div
@@ -19,16 +19,17 @@ import Community from "../../layouts/community.astro";
         data-name-max="[[ .NameMax ]]"
         data-description-max="[[ .DescriptionMax ]]"
         data-max-members="[[ .MaxMembers ]]"
-      >
+      ></div>
+      <div class="mb-1.5 ml-2.5">
+        <GroupTools
+          client:only="svelte"
+          group="[[ .GroupID ]]"
+          admin="[[ .Viewer.Admin ]]"
+          owner="[[ .Viewer.Owner ]]"
+          me="[[ .Viewer.Me ]]"
+          source="group-settings-data"
+        />
       </div>
-      <GroupTools
-        client:only="svelte"
-        group="[[ .GroupID ]]"
-        admin="[[ .Viewer.Admin ]]"
-        owner="[[ .Viewer.Owner ]]"
-        me="[[ .Viewer.Me ]]"
-        source="group-settings-data"
-      />
       <GroupTitle />
       [[ if .SignedIn ]]
       <GroupActions

@@ -86,6 +86,13 @@ each side; the selected one is bold and black, a link underlined while pointed a
 
 Holo's: `pr-[170px] pl-1 pb-3`, two lines in `text-xs text-neutral-500`, Holo's 9px #777, links black.
 
+## Wide pages
+
+Holo's myhabbo pages, the board, a thread, a home and a group's page in view and in edit, loaded `myhabbo.css`: the
+sub-navigation is its 928px bar (`navi2-borders-wide.png`) with the items 12px further in, and the footer is centred
+under the whole page. Such a page passes `wide` to the layout: `w-[928px] px-3` for the bar and `pr-1` for the footer.
+The pages Holo drew with the plain header, a home or a group not found and a banned habbo, stay narrow.
+
 # Signed-out layout
 
 `src/layouts/signed-out.astro`, Holo's `templates/login` and `process.css`.
@@ -111,7 +118,20 @@ Holo's: `pr-[170px] pl-1 pb-3`, two lines in `text-xs text-neutral-500`, Holo's 
 - A top story is Holo's 300x187 box with its picture at its own size at the left, on Holo's olive.
 - The other pages keep Holo's pixels from before the 16px design, their texts at `text-xs`, until each is reviewed
   beside Holo's.
+- The board, a thread, a home and a group's page stand in `components/homes/mypage-box.astro`, Holo's
+  `#mypage-wrapper`: a `Paper` of the page's 930px, 4px under its frame a header row whose line, `blue-400`, runs the
+  box's width 25px down, then the content 6px under the header and 6px over the frame's bottom. The header holds the
+  page's tools 10px in with 6px under them, its title (`text-sm` bold `sky-500`, 10px in, 8px before what follows) and
+  the board's one tab, which covers the line.
+- The board and a thread: Holo's table of 758 / 4 / 166px, the rows of the topic list 446 / 166 / 73 / 73px, the
+  author's column of a post 156px.
 - Home pages keep their canvas: the playground, its widgets, notes and stickers, and their dialogs keep Holo's pixels.
+  The canvas fills the box from edge to edge, the playground 3px in. The skins' frames (`widget-corner` to
+  `widget-content`, `stickie-header` to `stickie-footer`) are `content-box`, as Holo's widths were the content's, so
+  a body is as wide as its title bar. Pictures on the playground stand in the line and its links are underlined, as
+  a browser drew them; both in `@layer base` of `homes.css`, so a class still wins. The ad keeps its own 160x623.
+- In edit, Holo's toolbar: Inventory and Webstore with their icons at the left, Save then Cancel 180px short of the
+  box's right edge; the playground's dotted frame lies outside its 752px.
   The Help Tool's window and the client's top bar keep theirs too.
 - BBCode's `[size=small]` is `text-[10px]` and `[size=large]` `text-base`, Holo's `<font size>` 1 and 3; the quote
   box is `m-[3px] mb-2.5 p-[5px]`. `src/bbcode.ts` of the components and `internal/bbcode` change together.

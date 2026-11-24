@@ -11,11 +11,11 @@ Built:
 | Project | Part |
 | --- | --- |
 | `packages/components` | The primitives every app shares, at Holo's sizes: `Button`, `Card`, `Paper`, `Tabs color` with `TabList` and `Tab` and the line under a box's tabs at the box's full width, `Stepper` and `Step`, `Table`, the inputs |
-| `packages/cms` | Both layouts as Holo's: the 930px page, the header, the two-tone main tabs, the sub-navigation, the habbo search on one line, the footer, in Holo's font; the front, community and Me pages matched beside Holo's; the other pages at Holo's sizes as they were before the bigger design |
+| `packages/cms` | Both layouts as Holo's: the 930px page, the header, the two-tone main tabs, the sub-navigation, the habbo search on one line, the footer, in Holo's font; the front, community and Me pages matched beside Holo's, and the board, a thread, a home and a group's page, in view and in edit; the other pages at Holo's sizes as they were before the bigger design |
 | `packages/housekeeping` | `layouts/housekeeping.astro`: the grey bar, the tabs, the left column of `box` components and the content; `Box color="gold"` for data lists; at 16px, until its task |
 | `packages/installer` | `layouts/setup.astro`: one `Card color="blue"` per step, on one column whose first row is the shared `Stepper`; the sticky row of buttons; the settings step's collapsible sections; at 16px, until its task |
 | `packages/store` | `CountAvatars`, the header's registered count |
-| `tests/e2e` | The `layout` and `sizes` suites check Holo's page and sizes on every page; `installer-layout` checks the installer |
+| `tests/e2e` | The `layout` and `sizes` suites check Holo's page and sizes on every page; `myhabbo` checks the board's and the homes' box, canvas and widgets; `installer-layout` checks the installer |
 
 Planned:
 
@@ -45,6 +45,11 @@ The site is Holo's, at Holo's own sizes, in Tailwind's closest common classes.
 - BBCode's small text stays 10px, under the body's 12px.
 - The live HoloCMS of the comparison differs from `source/holocms`, which the port follows: its Me page holds its
   boxes in other columns, and its community page titles the tags box "Tags" in green.
+- On the myhabbo pages the live HoloCMS shows no home (its first visit fails on "Field 'data' doesn't have a default
+  value"), no thread and no group, so they are compared with Holo's own markup of `forum.php`, `viewthread.php`,
+  `user_profile.php` and `group_profile.php` on the live stylesheets. The live one also draws the rows of the groups
+  and members widgets and the profile's tags on a raster, and another offline picture, which `source/holocms` takes
+  from Habbo's gone CDN or lacks.
 
 ## The tabs
 

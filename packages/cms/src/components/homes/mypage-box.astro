@@ -1,0 +1,19 @@
+---
+import { Paper } from "@project-reborn/components";
+
+// Holo's #mypage-wrapper, the box of the board, a home and a group's page: the
+// page's full 930px, its header row over a line that runs the box's width 25px
+// under its top, and its content 6px under the header. The header holds the
+// page's tools, title and tabs; a tab covers the line.
+---
+
+<Paper id="mypage-wrapper">
+  <div class="pt-1 pb-1.5" {...Astro.props}>
+    <div class="relative flex min-h-[26px] items-start before:absolute before:inset-x-0 before:top-[25px] before:h-px before:bg-blue-400">
+      <slot name="header" />
+    </div>
+    <div class="mt-1.5">
+      <slot />
+    </div>
+  </div>
+</Paper>

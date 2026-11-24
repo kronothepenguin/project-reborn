@@ -3,6 +3,36 @@
    data-note-skin, and the colours are Holo's mapped to the palette. The first
    rules are the notes' own, from myhabbo.css, which the skins refine. */
 
+/* Holo's widths are the content's, as browsers drew a box in 2008; Tailwind's
+   base draws padding and borders inside the width, which made a skin's body
+   narrower than its title bar. */
+.widget-corner,
+.widget-headline,
+.widget-headline h3,
+.widget-body,
+.widget-content,
+.stickie-header,
+.stickie-header h3,
+.stickie-body,
+.stickie-content,
+.stickie-footer {
+  box-sizing: content-box;
+}
+
+/* Holo's pictures on a home stand in the line, as an <img> does without
+   Tailwind's base, so a widget's badges sit side by side, and its links are
+   underlined, as a browser draws a link. */
+@layer base {
+  #playground img {
+    display: inline;
+    vertical-align: baseline;
+  }
+
+  #playground a {
+    text-decoration: underline;
+  }
+}
+
 .stickie-header {
   padding-left: 4px;
 }

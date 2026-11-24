@@ -9,7 +9,7 @@ import { Avatar, GroupBadge } from "@project-reborn/components";
 ---
 
 <tr class:list={["[[ if .Even ]] bg-olive-200 [[ end ]]"]} id="post-[[ .ID ]]">
-  <td class="w-[148px] px-1 py-1.5 align-top text-neutral-500">
+  <td class="w-[156px] px-1 py-1.5 align-top text-neutral-500">
     [[ if .AuthorArchived ]]<span class="pl-[11px] align-super text-black">archived</span>[[ else ]]<a
       class="pl-[11px] align-super text-black underline"
       href="/home?name=[[ .Author ]]">[[ .Author ]]</a
@@ -32,10 +32,10 @@ import { Avatar, GroupBadge } from "@project-reborn/components";
           alt="[[ .Author ]]"
         />
       </div>
-      <div class="float-left h-10 w-[60px] pt-[23px] text-center">
+      <div class="float-left h-[63px] w-[60px] pt-[23px] text-center">
         [[ if .Group ]]<a href="/groups/[[ .Group ]]"><GroupBadge class="inline" code="[[ .GroupBadge ]]" /></a>[[ end ]]
       </div>
-      <div class="float-left h-10 w-[60px] pt-1 text-center">
+      <div class="float-left h-11 w-[60px] pt-1 text-center">
         [[ if .Badge ]]<img class="inline" src="[[ .Badge ]]" alt="" />[[ end ]]
       </div>
     </div>

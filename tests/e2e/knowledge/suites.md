@@ -15,6 +15,7 @@ program shows. What a test through a Go router proves stays there.
 | `signed-out` | Landing, sign-in, forgot and reset, legal pages |
 | `layout` | Both layouts as Holo's: Holo's font with its 11px at 12px, the 758px process box, the 930px community page with Holo's 460 / 310 / 160 columns, the two-tone main tabs with hover, green and selected tabs, the sub-navigation, the inline habbo search, the Me page's hotel view at its own size and the line under its boxes' tabs from edge to edge; screenshots of `/`, `/register`, `/me` and `/community` at 1366 |
 | `sizes` | Every page of the site at 1366 wide, with two dialogs: text in Holo's font with its 11px at 12px, texts only in Tailwind's sizes, no sideways scroll, every community page Holo's 930px page centred, and pictures at their own size; homes and the Help Tool keep their canvas; a screenshot of every page as `pages-<name>.png` |
+| `myhabbo` | Holo's myhabbo pages, the board, a thread, a home and a group's page, in view and in edit, at 1366 wide: the box of the page's 930px under a sub-navigation as wide with the footer centred, the line under the box's title from edge to edge, a home's canvas filling its box, and every widget and note whole; a screenshot of each page as `myhabbo-<name>-1366.png` |
 | `register` | The registration form, with and without JavaScript |
 | `me`, `looks`, `details`, `habbos` | The Me page and the account tabs, with the club wardrobe on Looks |
 | `homes` | A home read by a guest, profile tags, the editor, and the Webstore and Inventory |

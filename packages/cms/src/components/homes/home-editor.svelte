@@ -38,6 +38,10 @@
   let saving = $state(false);
   let dialog = $state<"inventory" | "webstore" | null>(null);
   let failure = $state("");
+  // Holo's toolbar links: the icon of its myhabbo sprite, black, underlined
+  // while pointed at.
+  const tool =
+    "ml-1 cursor-pointer bg-[url(/web-gallery/v2/images/myhabbo_icons.png)] bg-no-repeat pb-[3px] pl-[18px] text-black hover:underline";
   let playground: HTMLElement;
 
   onMount(() => {
@@ -284,12 +288,18 @@
   }
 </script>
 
-<div class="flex items-center justify-between px-2.5 pb-[3px]">
-  <ul class="flex gap-[5px]">
-    <li><button type="button" class="cursor-pointer underline" onclick={() => (dialog = "inventory")}>Inventory</button></li>
-    <li><button type="button" class="cursor-pointer underline" onclick={() => (dialog = "webstore")}>Webstore</button></li>
+<!-- Holo's #top-toolbar: Inventory and Webstore with their icons at the left,
+     Save then Cancel at the right, 180px short of the box's edge, over the ad. -->
+<div class="flex items-start justify-between pr-[180px] pl-2.5">
+  <ul class="mt-0.5 mb-[3px] flex gap-[5px]">
+    <li>
+      <button type="button" class="{tool} bg-position-[0_0]" onclick={() => (dialog = "inventory")}>Inventory</button>
+    </li>
+    <li>
+      <button type="button" class="{tool} bg-position-[0_-47px]" onclick={() => (dialog = "webstore")}>Webstore</button>
+    </li>
   </ul>
-  <div class="flex gap-1">
+  <div class="mb-2 flex flex-row-reverse gap-2.5">
     <Button variant="red" size="compact" href={view}>
       <span class="flex items-center gap-1"><Icon variant="cancel" />Cancel</span>
     </Button>

@@ -1,5 +1,6 @@
 ---
 import { Button, Icon } from "@project-reborn/components";
+import MypageBox from "./mypage-box.astro";
 import Note from "./note.astro";
 import GroupInfoWidget from "./widgets/group-info-widget.astro";
 import GroupsWidget from "./widgets/groups-widget.astro";
@@ -15,27 +16,29 @@ interface Props {
 const { editing = false } = Astro.props;
 ---
 
-<div id="mypage-wrapper" class="rounded border-2 border-black bg-white p-1" data-mode={editing ? "edit" : "view"}>
-  <div class="flex items-center gap-2 px-2.5 pt-1">
+<MypageBox data-mode={editing ? "edit" : "view"}>
+  <Fragment slot="header">
     <slot name="header">
       {
         !editing && (
           <Fragment>
             [[ if .CanEdit ]]
-            <Button variant="dark" size="compact" href="/home/[[ .OwnerPath ]]/edit">
-              <span class="flex items-center gap-1">
-                <Icon variant="edit" />
-                Edit
-              </span>
-            </Button>
+            <div class="mb-1.5 ml-2.5">
+              <Button variant="dark" size="compact" href="/home/[[ .OwnerPath ]]/edit">
+                <span class="flex items-center gap-1">
+                  <Icon variant="edit" />
+                  Edit
+                </span>
+              </Button>
+            </div>
             [[ end ]]
           </Fragment>
         )
       }
-      <h2 class="text-sm font-bold text-sky-500">[[ .Owner ]]</h2>
+      <h2 class="mr-2 pt-1 pl-2.5 text-sm font-bold text-sky-500">[[ .Owner ]]</h2>
     </slot>
-  </div>
-  <div class="mt-[5px]">
+  </Fragment>
+  <div>
     <slot />
     <div
       id="mypage-bg"
@@ -48,7 +51,7 @@ const { editing = false } = Astro.props;
         class:list={[
           // Tailwind finds a class only between spaces, so each stands apart from the markers.
           "[[ if .Wide ]] w-[922px] [[ else ]] w-[752px] [[ end ]] relative h-[1360px] overflow-hidden",
-          editing && "border border-dotted border-black",
+          editing && "box-content border border-dotted border-black",
         ]}
       >
         [[ range .Items ]] [[ if eq .Kind "sticker" ]]
@@ -75,10 +78,10 @@ const { editing = false } = Astro.props;
       [[ if not .Wide ]]
       <div class="absolute top-0 right-0 z-[10000] w-40 text-right">
         <a href="/club">
-          <img src="/myhabbo/hc_habbohome_banner_holo.png" width="160" height="600" alt="hc habbohome banner holo" />
+          <img src="/myhabbo/hc_habbohome_banner_holo.png" width="160" height="623" alt="hc habbohome banner holo" />
         </a>
       </div>
       [[ end ]]
     </div>
   </div>
-</div>
+</MypageBox>

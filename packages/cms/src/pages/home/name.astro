@@ -4,7 +4,7 @@ import HomeView from "../../components/homes/home-view.astro";
 import Community from "../../layouts/community.astro";
 ---
 
-<Community title="[[ .ShortName ]] ~ User Profile - [[ .Owner ]]" tab="home" sub="My Page">
+<Community title="[[ .ShortName ]] ~ User Profile - [[ .Owner ]]" tab="home" sub="My Page" wide>
   <HomeView />
   <GroupInfoBoxes client:only="svelte" />
 </Community>

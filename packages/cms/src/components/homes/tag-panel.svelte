@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Button } from "@project-reborn/components";
   import { onMount } from "svelte";
   import icons from "../../assets/myhabbo_icons.png";
 
@@ -105,16 +106,13 @@
     }}
   >
     <input
-      class="w-full border border-neutral-500 px-1"
+      class="w-[216px] border border-neutral-500 bg-white px-1"
       maxlength="30"
       aria-label="New tag"
       bind:value={draft}
     />
-    <button
-      type="submit"
-      class="mt-[5px] rounded border-2 border-black bg-mauve-300 px-2 py-0.5 text-xs font-bold"
-    >
-      Add tag
-    </button>
+    <div class="mt-[5px]">
+      <Button type="submit">Add tag</Button>
+    </div>
   </form>
 {/if}

@@ -20,21 +20,22 @@ import TagPanel from "../tag-panel.svelte";
     </div>
     <div class="widget-body">
       <div class="widget-content">
-        <div class="float-left w-[90px]">
+        <div class="float-left w-[90px] [&_img]:my-[3px]">
           <div class="float-left">
             <span class="font-bold underline">[[ $.Profile.Name ]]</span>
           </div>
           <br class="clear-both" />
-          [[ if $.Profile.Online ]]<img class="my-[3px]" alt="online" src="/myhabbo/habbo_online_anim.gif" />[[ else ]]<img
-            class="my-[3px]"
+          [[ if $.Profile.Online ]]<img alt="online" src="/myhabbo/habbo_online_anim.gif" />[[ else ]]<img
             alt="offline"
             src="/myhabbo/habbo_offline.gif"
           />[[ end ]]
           <div>Created on:</div>
           <div>[[ $.Profile.Created ]]</div>
           <div>
-            [[ if $.Profile.Group ]]<a href="/groups/[[ $.Profile.Group ]]"><GroupBadge code="[[ $.Profile.GroupBadge ]]" /></a>[[ end ]]
-            [[ if $.Profile.Badge ]]<img class="my-[3px]" src="[[ $.Profile.Badge ]]" alt="" />[[ end ]]
+            [[ if $.Profile.Group ]]<a href="/groups/[[ $.Profile.Group ]]"><GroupBadge code="[[ $.Profile.GroupBadge ]]" /></a>[[ end ]][[ if $.Profile.Badge ]]<img
+              src="[[ $.Profile.Badge ]]"
+              alt=""
+            />[[ end ]]
           </div>
         </div>
         <div class="float-left ml-[5px]">

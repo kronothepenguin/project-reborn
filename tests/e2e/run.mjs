@@ -41,6 +41,7 @@ import * as installerLayout from "./suites/installer-layout.mjs";
 import * as looks from "./suites/looks.mjs";
 import * as maintenance from "./suites/maintenance.mjs";
 import * as me from "./suites/me.mjs";
+import * as myhabbo from "./suites/myhabbo.mjs";
 import * as news from "./suites/news.mjs";
 import * as reborn from "./suites/reborn.mjs";
 import * as register from "./suites/register.mjs";
@@ -55,6 +56,7 @@ const suites = {
   "signed-out": signedOut,
   layout,
   sizes,
+  myhabbo,
   register,
   me,
   looks,

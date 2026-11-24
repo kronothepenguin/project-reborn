@@ -1,24 +1,23 @@
 ---
-// Holo's Discussion Board box around the board and its threads: its title and
-// tab, and the 750-pixel column beside the empty 164-pixel one.
+import MypageBox from "../homes/mypage-box.astro";
+
+// Holo's Discussion Board box: its title and tab, then the 758-pixel column of
+// the board beside the empty 166-pixel one, as Holo's table drew its 750 and
+// 164 inside the page's 928.
 ---
 
-<div id="mypage-wrapper" class="rounded border-2 border-black bg-white p-1">
-  <div class="flow-root px-2.5 pt-1">
-    <h2 class="float-left mr-2 text-sm font-bold text-sky-500">Discussion Board</h2>
-    <ul class="h-[25px] border-b border-cyan-600 px-[5px]">
-      <li class="float-left ml-1 h-[25px]">
-        <a
-          href="/forum"
-          class="float-left h-[25px] rounded-t border-t border-r border-l border-cyan-600 bg-white px-3.5 pt-1.5 font-bold text-black no-underline"
-          aria-current="page">Discussion Board</a
-        >
-      </li>
-    </ul>
-  </div>
-  <div class="mt-[5px] flex">
-    <div class="w-[750px]"><slot /></div>
+<MypageBox>
+  <Fragment slot="header">
+    <h2 class="mr-2 pt-1 pl-2.5 text-sm font-bold text-sky-500">Discussion Board</h2>
+    <a
+      href="/forum"
+      class="relative top-px ml-1 h-[25px] rounded-t-[3px] border border-b-0 border-blue-400 bg-white pt-1.5 pr-2.5 pl-3.5 font-bold text-black no-underline"
+      aria-current="page">Discussion Board</a
+    >
+  </Fragment>
+  <div class="flex">
+    <div class="w-[758px]"><slot /></div>
     <div class="w-1"></div>
-    <div class="w-[164px]"></div>
+    <div class="w-[166px]"></div>
   </div>
-</div>
+</MypageBox>

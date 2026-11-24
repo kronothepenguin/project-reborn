@@ -8,7 +8,7 @@ import PageNumbers from "./page-numbers.astro";
 
 <div class="flow-root pt-2 pl-3.5">
   [[ if .SignedIn ]]
-  <span class="float-left">
+  <span class="float-left mb-1.5">
     <Button id="newtopic-upper">
       <span class="flex items-center gap-1"><Icon variant="newtopic" />New Thread</span>
     </Button>
@@ -29,7 +29,7 @@ import PageNumbers from "./page-numbers.astro";
   </tr>
   [[ end ]] [[ range .Threads ]] [[ $thread := .ID ]]
   <tr class="h-[53px] [[ if .Even ]] bg-olive-200 [[ end ]]">
-    <td class="w-[436px] p-1 pl-3.5 align-top">
+    <td class="w-[446px] p-1 pl-3.5 align-top">
       <div>
         [[ if .Sticky ]]<a
           class="bg-[url(/web-gallery/v2/images/discussions/forum_icons.png)] bg-position-[0_0] bg-no-repeat py-0.5 pl-[21px] text-xs leading-4 font-bold text-black underline"
@@ -47,7 +47,7 @@ import PageNumbers from "./page-numbers.astro";
         >&nbsp;<span class="text-neutral-500">[[ .Date ]]</span>{" "}<span class="text-neutral-500">([[ .Time ]])</span>
       </div>
     </td>
-    <td class="w-[149px] border-l border-olive-300 p-1 pl-3.5 align-top">
+    <td class="w-[166px] border-l border-olive-300 p-1 pl-3.5 align-top">
       <a class="text-neutral-500 underline" href="/forum/threads/[[ .ID ]]?page=[[ .LastPage ]]#page-bottom"
         ><span>[[ .LastDate ]]</span>{" "}<span>([[ .LastTime ]])</span></a
       ><br />
@@ -55,14 +55,14 @@ import PageNumbers from "./page-numbers.astro";
         >[[ .LastPoster ]]</a
       >[[ end ]]&nbsp;
     </td>
-    <td class="w-[65px] border-l border-olive-300 p-1 text-center align-top">[[ .Replies ]]</td>
-    <td class="w-[65px] border-l border-olive-300 p-1 text-center align-top">[[ .Views ]]</td>
+    <td class="w-[73px] border-l border-olive-300 p-1 text-center align-top">[[ .Replies ]]</td>
+    <td class="w-[73px] border-l border-olive-300 p-1 text-center align-top">[[ .Views ]]</td>
   </tr>
   [[ end ]]
 </table>
 <div class="flow-root pt-1 pb-2 pl-3.5">
   [[ if .SignedIn ]]
-  <span class="float-left">
+  <span class="float-left mb-1.5">
     <Button id="newtopic-lower">
       <span class="flex items-center gap-1"><Icon variant="newtopic" />New Thread</span>
     </Button>
