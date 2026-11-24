@@ -12,8 +12,8 @@ Built:
 | --- | --- |
 | `packages/components` | The primitives every app shares, at Holo's sizes: `Button`, `Card`, `Paper`, `Tabs color` with `TabList` and `Tab` and the line under a box's tabs at the box's full width, `Stepper` and `Step`, `Table`, the inputs |
 | `packages/cms` | Both layouts as Holo's: the 930px page, the header, the two-tone main tabs, the sub-navigation, the habbo search on one line, the footer, in Holo's font; the front, community and Me pages matched beside Holo's, and the board, a thread, a home and a group's page, in view and in edit; the other pages at Holo's sizes as they were before the bigger design |
-| `packages/housekeeping` | `layouts/housekeeping.astro`: the grey bar, the tabs, the left column of `box` components and the content; `Box color="gold"` for data lists; at 16px, until its task |
-| `packages/installer` | `layouts/setup.astro`: one `Card color="blue"` per step, on one column whose first row is the shared `Stepper`; the sticky row of buttons; the settings step's collapsible sections; at 16px, until its task |
+| `packages/housekeeping` | `layouts/housekeeping.astro`: the grey bar, the tabs, the left column of `box` components and the content; `Box color="gold"` for data lists; at Holo's sizes, the body `text-xs` |
+| `packages/installer` | `layouts/setup.astro`: one `Card color="blue"` per step, on one column whose first row is the shared `Stepper`; the sticky row of buttons; the settings step's collapsible sections; the body `text-xs` on a 574px column |
 | `packages/store` | `CountAvatars`, the header's registered count |
 | `tests/e2e` | The `layout` and `sizes` suites check Holo's page and sizes on every page; `myhabbo` checks the board's and the homes' box, canvas and widgets; `installer-layout` checks the installer |
 
@@ -22,7 +22,6 @@ Planned:
 | Project | Part |
 | --- | --- |
 | `packages/cms` | Every other page matched beside Holo's, as the first three |
-| `packages/housekeeping`, `packages/installer` | Their own looks at Holo's sizes, with the shared parts |
 
 ## The sizes
 
@@ -43,6 +42,9 @@ The site is Holo's, at Holo's own sizes, in Tailwind's closest common classes.
 - Pictures keep their own size and fill their box as in Holo.
 - Colours are the Tailwind classes of [the colours](/colours.md), the closest class of Holo's hue.
 - BBCode's small text stays 10px, under the body's 12px.
+- Housekeeping and the installer keep their own looks at the site's `text-xs`. Housekeeping has its widths of before
+  the bigger design: a tab `w-44`, the left column `w-46`. The installer's page is 640px (`max-w-160`), its box 608px
+  and its column 574px.
 - The live HoloCMS of the comparison differs from `source/holocms`, which the port follows: its Me page holds its
   boxes in other columns, and its community page titles the tags box "Tags" in green.
 - On the myhabbo pages the live HoloCMS shows no home (its first visit fails on "Field 'data' doesn't have a default
@@ -112,7 +114,7 @@ third of the box stood empty and the buttons ended in its middle; the settings s
 columns, which end at different heights; its buttons ended a 2000px page; the tabs island drew nothing with scripts off;
 on a phone the five tabs took three rows.
 
-- One column for every step: the box is 768px and its content one 726px column, shared by the stepper, the text, the
+- One column for every step: the box is 608px and its content one 574px column, shared by the stepper, the text, the
   fields and the buttons. Spacing is flex with `gap`.
 - The steps are the shared `Stepper` ([the stepper](#the-stepper)), drawn on the server: an ordered list of numbered
   points, each with its name and an arrow after it, so that a wrapped row breaks after an arrow. Passed steps are

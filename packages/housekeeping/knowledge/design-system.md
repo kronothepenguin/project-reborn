@@ -17,10 +17,10 @@ holo-port/0041), built from `docs/hk.png` and `knowledge/colours.md`.
 
 # The sizes
 
-Housekeeping follows the sizes of the look-and-feel plan: the body is `text-base` (16px) in the theme's `--font-sans`,
-`Verdana, Arial, Helvetica, sans-serif`, set in `src/styles/global.css`. Widths grew by 1240/960 (a tab `w-56`, the left
-column `w-60`), paddings and gaps by 4/3, on Tailwind's scale. Borders and pictures keep their sizes. Every page fits a
-1366px screen with nothing scrolling sideways.
+Housekeeping has the site's sizes (look-and-feel plan, "The sizes"): the body is `text-xs` (12px) in the theme's
+`--font-sans`, `Verdana, Arial, Helvetica, sans-serif`, set in `src/styles/global.css`. Its widths and gaps are those of
+Habbo's housekeeping on Tailwind's scale: a tab `w-44`, the left column `w-46`, the tabs `gap-x-4` apart. Every page
+fits a 1366px screen with nothing scrolling sideways.
 
 # The layout
 

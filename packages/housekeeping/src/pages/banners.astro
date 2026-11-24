@@ -6,7 +6,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
 ---
 
 <Housekeeping title="Manage Site Banners" tab="site">
-  <div class="space-y-4">
+  <div class="space-y-3">
     <form method="post" action="/housekeeping/banners">
       <Box title="Add banners">
         <Table variant="form">
@@ -19,7 +19,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
             <BannerFields />
           </tbody>
         </Table>
-        <div class="border-t-2 border-black bg-olive-200 p-1.5 text-center">
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
           <Button variant="plain" size="compact" type="submit">Add banner</Button>
         </div>
       </Box>

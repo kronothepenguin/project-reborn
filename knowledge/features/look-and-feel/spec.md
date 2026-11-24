@@ -79,9 +79,10 @@ height and close as possible aligned to right as a group".
   (decision holo-port/0060).
 - Staff read a data list in housekeeping: its rows alternate in shade.
 
-### Housekeeping at today's sizes
+### Housekeeping at Holo's sizes
 
-- Staff open housekeeping: its own look stays, the grey bar, the navy tabs and the gold lists, at the new sizes.
+- Staff open housekeeping: its own look stays, the grey bar, the navy tabs and the gold lists, at Holo's sizes, with
+  the site's 12px text.
 
 ## Every page
 
@@ -102,6 +103,7 @@ height and close as possible aligned to right as a group".
 - An administrator reads the steps: they show in one row as a stepper, each step a point with its name and an arrow to
   the next, starting at the left edge, with the current step highlighted.
 - An administrator reads the stepper: a step already passed is a link to it, and a step still to come is plain.
+- An administrator opens the installer: its text is the site's 12px, on a column fitted to it.
 - An administrator opens the installer with scripts off: the stepper shows, and its links work.
 - An administrator opens any step: its buttons sit in the same place and order, the way on and then the main button.
 - An administrator scrolls a long step: "Skip" and "Save settings" stay in sight at the bottom of the screen.
@@ -132,7 +134,6 @@ height and close as possible aligned to right as a group".
 - A page shows one of Holo's pictures: the picture keeps its own size and fills its box as in Holo, as the news
   picture and the Me page's hotel view do.
 - A box shows tabs: the line in the box's colour runs under the tabs from one edge of the box to the other.
-- Staff open housekeeping, and an administrator opens the installer: their own looks stay, at Holo's sizes.
 
 # Open questions
 

@@ -5,10 +5,10 @@ import ClockTime from "./clock-time.svelte";
 // takes over and ticks.
 ---
 
-<div id="clock" class="border-2 border-black p-1.5 text-neutral-500">
+<div id="clock" class="border-2 border-black p-1 text-neutral-500">
   <strong>Local time:</strong>
   <ClockTime client:only="svelte" />
-  <strong class="mt-2.5 block">Server time:</strong>
+  <strong class="mt-2 block">Server time:</strong>
   <p>[[ .ServerName ]]</p>
   <ClockTime client:only="svelte" now="[[ .ServerMillis ]]">
     <Fragment slot="fallback">
