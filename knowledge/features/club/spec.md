@@ -106,5 +106,5 @@ It builds on [platform](/features/platform/spec.md) and [economy](/features/econ
 
 # Open questions
 
-- What comes after the last gift of the list, and when a month counts: after [the study of the real club's
-  gifts](/features/club/research-gifts.md).
+- What comes after the last gift of the list, and when a month counts: after the study of the real club's
+  gifts, `research-gifts.md` in this folder, which is being written.
