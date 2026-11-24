@@ -68,6 +68,26 @@ The shape the user approved on 2026-11-23 for the tabs inside boxes:
 
 The row's line and every tab follow the group's colour.
 
+## The stepper
+
+The shape the user approved on 2026-11-23:
+
+```svelte
+<Stepper>
+  <Step href="/installer/config">Configuration</Step>
+  <Step href="/installer/site">Site</Step>
+  <Step current>Settings</Step>
+  <Step>Client files</Step>
+  <Step>Administrator</Step>
+</Stepper>
+```
+
+- `Stepper` is an ordered list: it numbers the steps and draws the arrows between them.
+- `Step` with `href` is a link, a step already passed; with `current` it is highlighted and carries
+  `aria-current="step"`; with neither it is plain and faded, a step still to come.
+- It holds no state, so a page the server fills chooses each step's form with its own conditions, and it is drawn on
+  the server.
+
 [The comparison](/features/look-and-feel/research-holo-look.md) ran both systems and measured them. The navbar looks
 plain because the public site never sets Holo's font, Verdana, so the browser falls back to a lighter one; the weights
 already match. After the font come the line height, the tabs' artwork, the sub-navigation, the inner tabs, the boxes'
@@ -128,8 +148,9 @@ Of 2026-11-23, each the user's words or choice among options put to them:
   shared parts stay.
 - The installer's steps are a stepper, in place of tabs. The user: "instead of tabs for the installer, an stepper would
   like much better, stepper is just links next to each other in the same row, with arrows and points/bullets also
-  highligthing the current step, as before, use claude skill." The stepper is the installer's own component, drawn on
-  the server. The `href` on the shared `Tab`, approved for the steps earlier that day, is dropped: nothing uses it.
+  highligthing the current step, as before, use claude skill." The stepper is a shared part of `packages/components`
+  ("make the stepper a shared component in packages/components"), in the shape the user chose ("Each step says what it
+  is"). The `href` on the shared `Tab`, approved for the steps earlier that day, is dropped: nothing uses it.
 
 Earlier:
 
