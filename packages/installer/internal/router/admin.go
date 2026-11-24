@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -15,11 +16,17 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
+// adminCredits fill the administrator's purse unless the form says otherwise,
+// as Holo's installer gave.
+const adminCredits = 5000
+
 type adminPage struct {
 	Name         string
 	Email        string
 	BornOn       string
 	PasswordHelp string
+	Club         bool
+	Credits      string
 	Error        string
 }
 
@@ -29,7 +36,11 @@ func (r *Router) HandleAdminView(w http.ResponseWriter, req *http.Request) {
 	if !ok {
 		return
 	}
-	astro.WriteTemplate(w, r.deps.Resolver, "admin.html", adminPage{PasswordHelp: passwordHelp(req.Context(), installation)})
+	astro.WriteTemplate(w, r.deps.Resolver, "admin.html", adminPage{
+		PasswordHelp: passwordHelp(req.Context(), installation),
+		Club:         true,
+		Credits:      strconv.Itoa(adminCredits),
+	})
 }
 
 // HandleAdminCreate handles POST /installer/admin: it creates the
@@ -44,6 +55,8 @@ func (r *Router) HandleAdminCreate(w http.ResponseWriter, req *http.Request) {
 		Email:        strings.TrimSpace(req.PostFormValue("email")),
 		BornOn:       strings.TrimSpace(req.PostFormValue("bornOn")),
 		PasswordHelp: passwordHelp(req.Context(), installation),
+		Club:         req.PostFormValue("club") != "",
+		Credits:      strings.TrimSpace(req.PostFormValue("credits")),
 	}
 	password := req.PostFormValue("password")
 	if password != req.PostFormValue("passwordConfirm") {
@@ -58,12 +71,28 @@ func (r *Router) HandleAdminCreate(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	credits, err := strconv.Atoi(page.Credits)
+	if err != nil {
+		page.Error = "Credits must be a whole number."
+		r.invalid(w, "admin.html", page)
+		return
+	}
+	// The first credits take the range of the start credits.
+	candidates := map[string]any{"registration.startCredits": credits}
+	if err := settings.Validate(req.Context(), store.New(installation.DB), candidates); err != nil {
+		page.Error = "Credits: " + reason(err)
+		r.invalid(w, "admin.html", page)
+		return
+	}
+
 	err = r.deps.Setup.CreateAdministrator(req.Context(), setup.Administrator{
 		Name:     page.Name,
 		Email:    page.Email,
 		BornOn:   bornOn,
 		Password: password,
 		IP:       auth.ClientIP(req),
+		Club:     page.Club,
+		Credits:  int64(credits),
 	})
 	switch {
 	case err == nil:

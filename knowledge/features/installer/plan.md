@@ -18,6 +18,7 @@ Built:
 | `packages/settings` | `Group`, `Field` and `Groups()`: the labels and help of every setting an administrator edits |
 | `packages/housekeeping` | The settings page reads `settings.Groups()`; the mail group is "Password reset mail" |
 | `packages/installer` | The optional settings step, between the site step and the client files step |
+| `packages/installer` | The administrator step's "Give this habbo Habbo Club", ticked, writing a club period of 100 years, and its "Credits", filled with 5000, in the range of `registration.startCredits` |
 
 Planned:
 

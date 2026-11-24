@@ -53,6 +53,8 @@ func TestInstallation(t *testing.T) {
 		"bornOn":          {"1990-05-01"},
 		"password":        {"secret123"},
 		"passwordConfirm": {"secret123"},
+		"club":            {"on"},
+		"credits":         {"1234"},
 	}
 	with := func(form url.Values, key, value string) url.Values {
 		changed := url.Values{}
@@ -102,6 +104,11 @@ func TestInstallation(t *testing.T) {
 		{"client files form", "GET", "/installer/client", nil, 200, "", "Missing:true"},
 		{"skip client files", "POST", "/installer/client", url.Values{"action": {"skip"}}, 303, "/installer/admin", ""},
 		{"admin form", "GET", "/installer/admin", nil, 200, "", "PasswordHelp:6 to 25 characters"},
+		{"admin form gives club and 5000 credits", "GET", "/installer/admin", nil, 200, "", "Club:true Credits:5000"},
+		{"credits that are no number", "POST", "/installer/admin", with(admin, "credits", "many"), 422, "", "Credits must be a whole number."},
+		{"credits below the range", "POST", "/installer/admin", with(admin, "credits", "-1"), 422, "", "Credits: must be between 0 and 1000000"},
+		{"credits above the range", "POST", "/installer/admin", with(admin, "credits", "1000001"), 422, "", "Credits: must be between 0 and 1000000"},
+		{"a refused form keeps the box as posted", "POST", "/installer/admin", with(with(admin, "credits", "-1"), "club", ""), 422, "", "Club:false Credits:-1"},
 		{"passwords differ", "POST", "/installer/admin", with(admin, "passwordConfirm", "secret124"), 422, "", "The passwords do not match."},
 		{"missing birth date", "POST", "/installer/admin", with(admin, "bornOn", ""), 422, "", "Enter the birth date."},
 		{"habbo name with a space", "POST", "/installer/admin", with(admin, "name", "Admin One"), 422, "", "Habbo names are 1 to 24 letters"},
@@ -141,6 +148,15 @@ func TestInstallation(t *testing.T) {
 	if name != "Reborn Hotel" || address != "https://hotel.example.com" || credits != 750 || secure {
 		t.Errorf("settings after the site step: name %q, url %q, start credits %d, secure cookies %t",
 			name, address, credits, secure)
+	}
+
+	var wallet int64
+	var periods int
+	err = installation.DB.QueryRowContext(ctx,
+		`SELECT wallets.credits, (SELECT COUNT(*) FROM club_subscriptions WHERE club_subscriptions.user_id = wallets.user_id)
+		 FROM wallets JOIN avatars ON avatars.user_id = wallets.user_id WHERE avatars.name = 'Admin-1'`).Scan(&wallet, &periods)
+	if err != nil || wallet != 1234 || periods != 1 {
+		t.Errorf("the administrator has %d credits and %d club periods, %v, want 1234 and 1", wallet, periods, err)
 	}
 
 	data, err := os.ReadFile(config.Filename)

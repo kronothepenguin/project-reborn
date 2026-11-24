@@ -88,7 +88,18 @@ export default async function ({
     page.waitForURL("**/admin"),
     page.click('button:has-text("Skip")'),
   ]);
+  check(
+    "the administrator step gives club and 5000 credits, and names the site step's start credits",
+    (await page.getByLabel("Give this habbo Habbo Club").isChecked()) &&
+      (await page.inputValue('input[name="credits"]')) === "5000" &&
+      (await page
+        .getByText("Habbos who register get the start credits of the site step.")
+        .isVisible()),
+    await page.locator("body").innerText(),
+  );
+  await shot(page, "together-admin");
   await page.fill('input[name="name"]', "Admin-1");
+  await page.fill('input[name="credits"]', "2500");
   await page.fill('input[name="email"]', "admin@example.com");
   await page.fill('input[name="bornOn"]', "1990-05-01");
   await page.fill('input[name="password"]', "secret123");
@@ -122,6 +133,19 @@ export default async function ({
     page.waitForURL("**/me"),
     page.click('button[type="submit"]'),
   ]);
+  await page.goto(`${base}/credits`);
+  const purse = await page.locator("main form").innerText();
+  await page.goto(`${base}/club`);
+  const club = await page.locator("main").innerText();
+  const days = Number(club.match(/You have (\d+) Club Day\(s\) left/)?.[1]);
+  check(
+    "the site reads the administrator's 2500 credits and a club of 100 years",
+    purse.includes("2500 Credits") &&
+      club.includes("You are a member of Reborn Club") &&
+      days >= 36524 && days <= 36526,
+    JSON.stringify({ purse, days }),
+  );
+  await page.goto(`${base}/me`);
   check(
     "the tab starts at the installer's address",
     (await tab().getAttribute("href")) === hk,

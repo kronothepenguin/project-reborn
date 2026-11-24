@@ -270,6 +270,7 @@ export async function install(dir, ports, mailPort) {
       bornOn: "1990-05-01",
       password: "secret123",
       passwordConfirm: "secret123",
+      credits: "5000",
     });
   } finally {
     await hotel.stop("installer");
