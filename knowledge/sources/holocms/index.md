@@ -7,4 +7,4 @@
 - [Holo housekeeping](housekeeping.md) - Holo's admin panel pages, its access model, staff log, layout and risky features, and where each part goes.
 - [Holo public site](pages.md) - Holo's public pages, layouts, navigation, UI building blocks and interactive behaviours, and the phase that ports each of them.
 - [Holo formats and protocols](protocols.md) - MUS commands, SSO tickets, group badge codes, promo habbo XML, figure strings, BBCode and the captcha as Holo used them.
-- [Two versions of HoloCMS](versions.md) - The repository's source/holocms is HoloCMS 1.3.1 of April 2008, and the user's running copy is HoloCMS 3.1.1.60 of February 2009, made for the V26 emulator; the port follows the first.
+- [Two versions of HoloCMS](versions.md) - HoloCMS 3.1.1.60 of February 2009, made for the V26 emulator, is the source reference in source/holocms; HoloCMS 1.3.1 of April 2008, which the first ported pages follow, is in source/holocms-1.3.1.

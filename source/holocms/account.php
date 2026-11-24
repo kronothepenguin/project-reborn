@@ -7,6 +7,9 @@
 |+===================================================+
 || # HoloCMS is provided "as is" and comes without
 || # warrenty of any kind. HoloCMS is free software!
+|+===================================================+
+|| # Friends Management by Yifan Lu
+|| # www.obbahhotel.com
 |+===================================================*/
 
 $allow_guests = false;
@@ -20,7 +23,7 @@ $body_id = "profile";
 $pageid = "2";
 
 if(isset($_GET['tab'])){
-	if($_GET['tab'] < 1 || $_GET['tab'] > 5 ){
+	if($_GET['tab'] < 1 || $_GET['tab'] > 8 ){
 		header("Location: account.php?tab=1");
 		$tab = 0;
 		exit;
@@ -34,28 +37,34 @@ if(isset($_GET['tab'])){
 if($tab == "1"){
 
 	if(isset($_POST['figureData'])){
-		$refer = $_SERVER['HTTP_REFERER']; $pos = strrpos($refer, "account.php"); if ($pos === false) { echo "<h1>Security check failure.</h1>"; exit; }
-		$new_figure = addslashes($_POST['figureData']);
-		$new_gender = addslashes($_POST['newGender']);
-		if($new_gender !== "M" && $new_gender !== "F"){
-			$result = "An error occured. Please try again.";
-			$error = "1";
-		} else {
-			if(empty($new_figure)){
-				$result = "An error occured trying to process your request.";
-				$error = "1";
-			} else {
-				mysql_query("UPDATE users SET figure = '".$new_figure."', sex = '".$new_gender."' WHERE name = '".$rawname."' LIMIT 1") or die(mysql_error());
-				$result = "Account settings updated successfully.";
-				$mylook1 = addslashes($_POST['figureData']);
-				$mysex1 = addslashes($_POST['newGender']);
-				@SendMUSData('UPRA' . $my_id);
-			}
-		}
-	} else {
-		$mylook1 = $myrow['figure'];
-		$mysex1 = $myrow['sex'];
-	}
+        $refer = $_SERVER['HTTP_REFERER']; $pos = strrpos($refer, "account.php"); if ($pos === false) { echo "<h1>Security check failure.</h1>"; exit; }
+        $new_figure = FilterText($_POST['figureData']);
+        $new_gender = FilterText($_POST['newGender']);
+        if($new_gender !== "M" && $new_gender !== "F"){
+            $result = "An error occured. Please try again.";
+            $error = "1";
+        } else {
+            include('mutant.php');
+            if(empty($new_figure)){
+                $result = "An error occured trying to process your request.";
+                $error = "1";
+            }elseif(!checkmutant($new_figure, $new_gender)){
+                $result = "An error occured trying to process your request."; //**** you, you damm mutant/naked habbo wannabe
+                $error = "1";
+            } else {
+                header('location: ./account.php?tab=1');
+                mysql_query("UPDATE users SET figure = '".$new_figure."', sex = '".$new_gender."' WHERE name = '".$rawname."' LIMIT 1") or die(mysql_error());
+
+                $result = "Account settings updated successfully.";
+                $mylook1 = FilterText($_POST['figureData']);
+                $mysex1 = FilterText($_POST['newGender']);
+                @SendMUSData('UPRA' . $my_id);    
+            }
+        }
+    } else {
+        $mylook1 = $myrow['figure'];
+        $mysex1 = $myrow['sex'];
+    }  
 
 	// Wardrobe handler
 	$slot1 = mysql_query("SELECT figure,gender FROM cms_wardrobe WHERE slotid = '1' AND userid = '".$my_id."' LIMIT 1") or die(mysql_error());
@@ -81,73 +90,238 @@ if($tab == "1"){
 			$error = "1";
 			$motto = $_POST['motto']; // Do not add slashes, no database communication here.
 		} else {
-			$motto = htmlspecialchars(addslashes($_POST['motto']));
+			$motto = FilterText($_POST['motto']);
 			mysql_query("UPDATE users SET mission = '".$motto."' WHERE name = '".$rawname."' and password = '".$rawpass."' LIMIT 1");
 			$result = "Changes saved successfully.";
 			$motto = $_POST['motto']; // Do not add slashes, this is for display purposes.
 			@SendMUSData('UPRA' . $my_id);
 		}
 	} else {
-		$motto = stripslashes($myrow['mission']);
+		$motto = HoloText($myrow['mission']);
 	}
 } else if($tab == "3"){
 	if(isset($_POST['save'])){
-		$pass1 = HoloHash($_POST['password']);
-		$day1 = $_POST['day'];
-		$month1 = $_POST['month'];
-		$year1 = $_POST['year'];
-		if(!is_numeric($day1) || !is_numeric($month1) || !is_numeric($year1)){ exit; }
-		$formatted_dob = $day1 . "-" . $month1 . "-" . $year1;
-		$mail1 = addslashes($_POST['email']);
-		$themail = $mail1;
-		if($pass1 == $myrow['password'] && $formatted_dob == $myrow['birth']){
+	$pass1 = $_POST['password'];
+	//Hashes and salts the first password with the user id (in lowercase) --encryption--
+	$pass1_hash = HoloHash($pass1, $myrow['name']);
+	$day1 = $_POST['day'];
+	$month1 = $_POST['month'];
+	$year1 = $_POST['year'];
+		$formatted_dob = "".$day1."-".$month1."-".$year1."";
+	$mail1 = $_POST['email'];
+	$themail = $mail1;
+	if($_POST['directemail'] == "on"){ $newsletter = "checked=\"checked\""; }else{ $newsletter = ""; }
+		//checks password --encryption--
+		if($pass1_hash == $myrow['password'] && $formatted_dob == $myrow['birth']){
 		$email_check = preg_match("/^[a-z0-9_\.-]+@([a-z0-9]+([\-]+[a-z0-9]+)*\.)+[a-z]{2,7}$/i", $mail1);
 			if($email_check == "1"){
-				mysql_query("UPDATE users SET email = '".$mail1."' WHERE name = '".$rawname."' and password = '".$rawpass."' LIMIT 1") or die(mysql_error());
-				$result = "Your e-mail address has been changed to " . stripslashes($mail1);
+			if($_POST['directemail'] == "on"){ $newsletter = "1"; }else{ $newsletter = "0"; }
+			mysql_query("UPDATE users SET email = '".$mail1."', newsletter = '".$newsletter."', email_verified = '-1' WHERE name = '".$rawname."' and password = '".$rawpass."'") or die(mysql_error());
+
+if($email_verify == true){
+$hash = "";
+$length = 8;
+$possible = "0123456789qwertyuiopasdfghjkzxcvbnm";
+$i = 0;
+while ($i < $length) {
+$char = substr($possible, mt_rand(0, strlen($possible)-1), 1);
+if (!strstr($hash, $char)) {
+  $hash .= $char;
+  $i++;
+}
+}
+$hash = sha1($hash);
+$num = $key;
+$sql = mysql_query("SELECT * FROM cms_verify WHERE id = '".$my_id."' LIMIT 1");
+if(mysql_num_rows($sql) > 0){
+	$sql1 = "UPDATE cms_verify SET key_hash = '".$hash."', email = '".$mail1."' WHERE id = '".$my_id."' LIMIT 1";
+}else{
+	$sql1 = "INSERT INTO cms_verify (id,email,key_hash) VALUES ('".$my_id."','".$mail1.",'".$hash."')";
+}
+mysql_query($sql1);
+
+$subject = "Welcome to ".$shortname;
+$from = HoloText(getContent('newsletter-3from'), true);
+$fromname = HoloText(getContent('newsletter-4fromname'), true);
+$headers  = '';
+$headers  = 'Return-Path: <'.$from.'>' . "\r\n";
+$headers  = 'From: '.$fromname.' <'.$from.'>' . "\r\n";
+$headers .= 'MIME-Version: 1.0' . "\r\n";
+$headers .= 'Content-Type: multipart/related; ' . "\r\n";
+$headers .= '	boundary="----=_Part_116200_21286957.1233466802029"' . "\r\n";
+$to = $mail1;
+$name = $myrow['name'];
+$dob = $myrow['birth'];
+$message = '------=_Part_116200_21286957.1233466802029
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_116201_12539834.1233466802029"
+
+------=_Part_116201_12539834.1233466802029
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+'.$shortname.'
+
+Welcome to '.$shortname.', '.$name.'!
+
+Please activate your account by clicking here:
+'.$path.'email.php?key='.$hash.'
+
+Here are your user details:
+'.$shortname.' name: '.$name.'
+Birthdate: '.$dob.'
+
+Keep this information safe - you need your username and birthdate to reset your password if you forget it.
+
+See you in '.$shortname.' soon!
+'.$shortname.' Staff
+'.$path.'
+
+If you did not register to '.$sitename.', please click the following link to remove your information:
+'.$path.'email.php?remove='.$hash.'
+
+Replies to this email will not be processed. If you need assistance, please visit our support pages:
+'.$path.'help.php
+
+------=_Part_116201_12539834.1233466802029
+Content-Type: text/html;charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+<html><head><style type="text/css">
+a { color: #fc6204; }
+</style></head>
+<body style="background-color: #e3e3db; margin: 0; padding: 0; font-size: 11px; font-family: Verdana, Arial, Helvetica, sans-serif; color: #000;">
+
+<div style="background-color: #bce0ee; padding: 14px; border-bottom: 3px solid #000;">
+	<img src="'.$path.'web-gallery/v2/images/habbo.png" alt="'.$shortname.'" width="160" height="66" />
+</div>
+
+<div style="padding: 14px 14px 50px 14px; background-color: #e3e3db;">
+	<div style="background-color: #fff; padding: 14px; border: 1px solid #ccc">
+<h1 style="font-size: 16px">Welcome to '.$shortname.', '.$name.'!</h1>
+
+<p>
+Please activate your account by <a href="'.$path.'email.php?key='.$hash.'">clicking here</a>.
+</p>
+
+<p>
+Here are your user details:
+</p>
+
+<blockquote>
+<p>
+<b>'.$shortname.' name:</b> '.$name.'<br>
+<b>Birthday:</b> '.$dob.'
+</p>
+</blockquote>
+
+<p>
+Keep this information safe. You will  need to know your username and birthday to reset your password if you forget it.
+</p>
+
+<p>See you in '.$shortname.'!<br><br>
+'.$shortname.' Staff<p>
+'.$path.'</p>
+
+<p>
+If you did not register at '.$shortname.', please click the following link to <a href="'.$path.'email.php?remove='.$hash.'">remove your information</a>.
+</p>
+
+<p>
+Please do no reply to this email.  If you need assistance, visit <a href="'.$path.'help.php">our support pages</a>.
+</p>
+	</div>
+</div>
+
+</body>
+</html>';
+@mail($to, $subject, $message, $headers);
+}
+			$result = "Your e-mail address has been changed to ".$mail1."";
 			} else {
-				$result = "Invalid e-mail address";
-				$error = "1";
+			$result = "Invalid e-mail address";
+			$error = "1";
 			}
 		} else {
-			$result = "The given information doesn't match what we have on record";
-			$error = "1";
+		$result = "The given information doesn't match what we have on record";
+		$error = "1";
 		}
 	} else {
-		$themail = $myrow['email'];
+	$themail = $myrow['email'];
+	if($myrow['newsletter'] == "1"){ $newsletter = "checked=\"checked\""; }else{ $newsletter = ""; }
 	}
 } else if($tab == "4"){
 	if(isset($_POST['save'])){
-		$pass1 = HoloHash($_POST['password']);
-		$day1 = $_POST['day'];
-		$month1 = $_POST['month'];
-		$year1 = $_POST['year'];
-		if(!is_numeric($day1) || !is_numeric($month1) || !is_numeric($year1)){ exit; }
-		$formatted_dob = $day1 . "-" . $month1 . "-" . $year1;
-		$newpass = addslashes($_POST['pass']);
-		$newpass_conf = addslashes($_POST['confpass']);
-		if($pass1 == $myrow['password'] && $formatted_dob == $myrow['birth']){
+	$pass1 = $_POST['password'];
+	//Hashes and salts the old password with the user id (in lowercase) --encryption--
+	$pass1_hash = HoloHash($pass1, $myrow['name']);
+	$day1 = $_POST['day'];
+	$month1 = $_POST['month'];
+	$year1 = $_POST['year'];
+		$formatted_dob = "".$day1."-".$month1."-".$year1."";
+	$newpass = $_POST['pass'];
+	//Hashes and salts the new password with the user id (in lowercase) --encryption--
+	$newpass_hash = HoloHash($newpass, $rawname);
+	$newpass_conf = $_POST['confpass'];
+		if($pass1_hash == $myrow['password'] && $formatted_dob == $myrow['birth']){
 			if($newpass == $newpass_conf){
 				if(strlen($newpass) < 6){
-					$result = "Password is too short, 6 characters minimum";
-					$error = "1";
+				$result = "Password is too short, 6 characters minimum";
+				$error = "1";
 				} else {
 					if(strlen($newpass) > 25){
-						$result = "Password is too long, 25 characters maximum";
-						$error = "1";
+					$result = "Password is too long, 25 characters maximum";
+					$error = "1";
 					} else {
-						$newpass = HoloHash(stripslashes($newpass));
-						mysql_query("UPDATE users SET password = '".$newpass."' WHERE name = '".$rawname."' and password = '".$rawpass."' LIMIT 1") or die(mysql_error());
-						$result = "Your password has been changed successfully. You will need to login again.";
+					//Updates password --encryption--
+					mysql_query("UPDATE users SET password = '".$newpass_hash."' WHERE name = '".$rawname."' and password = '".$rawpass."'") or die(mysql_error());
+					$result = "Your password has been changed successfully. You will need to login again.";
 					}
 				}
 			} else {
-				$result = "The passwords don't match";
-				$error = "1";
+			$result = "The passwords don't match";
+			$error = "1";
 			}
 		} else {
-			$result = "The given information doesn't match what we have on record";
+		$result = "The given information doesn't match what we have on record";
+		$error = "1";
+		}
+	}
+} else if($tab == "7"){
+	if(isset($_POST['save'])){
+	$pass1 = $_POST['password'];
+	//Hashes and salts the old password with the user id (in lowercase) --encryption--
+	$pass1_hash = HoloHash($pass1, $myrow['name']);
+	$day1 = $_POST['day'];
+	$month1 = $_POST['month'];
+	$year1 = $_POST['year'];
+		$formatted_dob = "".$day1."-".$month1."-".$year1."";
+	$newpass = $_POST['pass'];
+	//Hashes and salts the new password with the user id (in lowercase) --encryption--
+	$newpass_hash = HoloHash($newpass, $rawname);
+	$newpass_conf = $_POST['confpass'];
+		if($pass1_hash == $myrow['password'] && $formatted_dob == $myrow['birth']){
+			if($newpass == $newpass_conf){
+				if(strlen($newpass) < 6){
+				$result = "Password is too short, 6 characters minimum";
+				$error = "1";
+				} else {
+					if(strlen($newpass) > 25){
+					$result = "Password is too long, 25 characters maximum";
+					$error = "1";
+					} else {
+					//Updates password --encryption--
+					mysql_query("UPDATE users SET password = '".$newpass_hash."' WHERE name = '".$rawname."' and password = '".$rawpass."'") or die(mysql_error());
+					$result = "Your password has been changed successfully. You will need to login again.";
+					}
+				}
+			} else {
+			$result = "The passwords don't match";
 			$error = "1";
+			}
+		} else {
+		$result = "The given information doesn't match what we have on record";
+		$error = "1";
 		}
 	}
 }
@@ -204,21 +378,13 @@ $hc_member = IsHCMember($my_id);
                 </li>";
 		}
 
-		if($tab == "5"){
-                echo "<li class='selected'>Refer Options
-                </li>";
-		} else {
-                echo "<li><a href='account.php?tab=5'>Refer Options</a>
-                </li>";
-		}
-
-		/*if($tab == "6"){
+		if($tab == "6"){
                 echo "<li class='selected'>Friend Management
                 </li>";
 		} else {
                 echo "<li><a href='account.php?tab=6'>Friend Management</a>
                 </li>";
-		}*/
+		}
 		?>
             </ul>
             </div>
@@ -241,7 +407,7 @@ $hc_member = IsHCMember($my_id);
 
 <h2 class="title">Change your looks</h2>
 <div class="box-content">
-            
+
 <?php
 if(!empty($result)){
 	if($error == "1"){
@@ -254,7 +420,7 @@ if(!empty($result)){
 }
 ?>
 	<div>&nbsp;</div>
-            	
+
 <div id="settings-editor">
 You need to have a Flash player installed on your computer before being able to edit your Habbo character. You can download the player from here: <a target="_blank" href="http://www.adobe.com/go/getflashplayer">http://www.adobe.com/go/getflashplayer</a>
 </div>
@@ -331,7 +497,7 @@ Items marked with the Habbo Club symbol <img src="./web-gallery/v2/images/habboc
 
 <div id="settings-oldfigure" style="display: none">
 	<div class="rounded rounded-lightbrown clearfix">
-Your Habbo had clothes or colors that are not selectable anymore.  
+Your Habbo had clothes or colors that are not selectable anymore.
 Please save your new looks here.
 	</div>
 </div>
@@ -381,7 +547,7 @@ if (deconcept.SWFObjectUtil.getPlayerVersion()["major"] >= 8) {
 
             <h2 class="title">Change Your Profile</h2>
             <div class="box-content">
-            
+
 
 
 <form action="account.php?tab=2" method="post">
@@ -408,7 +574,7 @@ Your motto is seen by everyone, so think carefully!
 
 <p>
 <span class="label">Motto:</span>
-<input type="text" name="motto" size="32" maxlength="32" value="<?php echo stripslashes($motto); ?>" id="avatarmotto" />
+<input type="text" name="motto" size="32" maxlength="32" value="<?php echo HoloText($motto); ?>" id="avatarmotto" />
 </p>
 
 <?php if( IsHCMember($my_id) ){ ?>
@@ -445,7 +611,7 @@ if(!empty($result)){
 	</div><br />";
 }
 ?>
-            
+
 
 
 <form action="account.php?tab=3" method="post" id="emailform">
@@ -486,7 +652,7 @@ if(!empty($result)){
 </p>
 
 <p>
- <input name="directemail" id="directemail"  type="checkbox"> <label for="directemail">Yes, please send me <?php echo $sitename; ?> updates, including the newsletter!</label>
+ <input name="directemail" id="directemail" <?php echo $newsletter; ?> type="checkbox"> <label for="directemail">Yes, please send me <?php echo $sitename; ?> updates, including the newsletter!</label>
 </p>
 
 	</div>
@@ -521,7 +687,7 @@ if(!empty($result)){
 	</div><br />";
 }
 ?>
-            
+
 <form action="account.php?tab=4" method="post" id="passwordform">
 <input type="hidden" name="tab" value="4" />
 <input type="hidden" name="__app_key" value="HoloCMS" />
@@ -578,27 +744,6 @@ if(!empty($result)){
 
 </div>
     </div>
-<?php } else if($tab == "5"){ ?>
-    <div class="habblet-container " style="float:left; width: 560px;">
-        <div class="cbb clearfix settings">
-
-            <h2 class="title">Refer Options</h2>
-            <div class="box-content">
-		<h3>Refer users and get credits</h3>
-		<p>Out of credits again? Can't find staff that is willing to fill up your purse? Want to buy that shiney rare but just don't have the credits for it? Don't stress, just get a few friends to sign up on <?php echo $shortname; ?>! Do that, and your purse will be filled again in no time! Below are a few options you have at your disposal.</p>
-		<h3>Referal Options</h3>
-		<p>There are two ways you can use to get refers, and with that, free credits.</p>
-		<p><b>1. Send your friends a link</b><br />This option is probably as easy as it gets; it basicly does step 2, but automaticly! You just send your friends a invite with the link shown below, your friends click the link, and if they complete registration, you get free credits! This is your referal link to get some easy credits:<br /><br />
-		<input type="text" size="80%" disabled="disabled" value="<?php if(!empty($path)){ echo $path; } ?>register.php?refer=<?php echo $rawname; ?>"></p>
-		<p><b>2. Let them fill in your name during registration</b><br />During the registration process, users can manually give the username of the person that referred them to the site. If they complete registration, that person gets credits! And that person could be you, if you have some friends that are nice enough to fill in your username.
-		<h3>Today's Referal Reward</h3>
-		<p>This is the amount of credits you get per user you refer. This amount may change over time.<br />
-		<br />
-		<b><?php echo $reward; ?></b> credits <sup>per refer</sup>
-		</p>
-	    </div>
-	</div>
-    </div>
 <?php } elseif($tab == "6"){ ?>
 <div id="friend-management" class="habblet-container">
                 <div class="cbb clearfix settings">
@@ -634,7 +779,24 @@ if(!empty($result)){
             </div>
         </div>
     </div>
-    <div id="friend-list-paging">
+	<div id="friend-list-paging">
+			 1 |
+    <?php
+		$afriendscount = mysql_query("SELECT COUNT(*) FROM messenger_friendships WHERE userid = '1' OR friendid = '1'") or die(mysql_error());
+		$friendscount = mysql_result($afriendscount, 0);
+
+		$pages = ceil($friendscount / 30);
+
+		$n = 1;
+
+		while ($n < $pages) {
+			$n++;
+			echo "<a href=\"#\" class=\"friend-list-page\" id=\"page-".$n."\">".$n."</a> |";
+		}
+
+		echo "<a href=\"#\" class=\"friend-list-page\" id=\"page-2\">&gt;&gt;</a>"
+	?>
+
         </div>
     </div>
 
@@ -648,238 +810,51 @@ if(!empty($result)){
                 <td class="friend-login table-heading">Last login</td>
                 <td class="friend-remove table-heading">Remove</td>
             </tr>
-           <tr class="odd">
-               <td><input type="checkbox" name="friendList" value="21250220" /></td>
-               <td class="friend-name">
-                -Chicago,
+           <?php
+		   $i = 0;
+		   $getem = mysql_query("SELECT * FROM messenger_friendships WHERE userid = '1' OR friendid = '1' LIMIT 30") or die(mysql_error());
+
+		   while ($row = mysql_fetch_assoc($getem)) {
+		           $i++;
+
+		           if(IsEven($i)){
+		               $even = "odd";
+		           } else {
+		               $even = "even";
+		           }
+
+		           if($row['friendid'] == 1){
+		           		$friendsql = mysql_query("SELECT * FROM users WHERE id = '".$row['userid']."'");
+		           } else {
+		           		$friendsql = mysql_query("SELECT * FROM users WHERE id = '".$row['friendid']."'");
+		           }
+
+		           $friendrow = mysql_fetch_assoc($friendsql);
+
+
+
+printf("   <tr class=\"%s\">
+               <td><input type=\"checkbox\" name=\"friendList[]\" value=\"%s\" /></td>
+               <td class=\"friend-name\">
+                %s
                </td>
-               <td class="friend-login" title="15/04/08 00:29">4 weeks ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-21250220" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="even">
-               <td><input type="checkbox" name="friendList" value="21078756" /></td>
-               <td class="friend-name">
-                -kit-kat-2k8-
-               </td>
-               <td class="friend-login" title="13/03/08 16:52">1 month ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-21078756" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="odd">
-               <td><input type="checkbox" name="friendList" value="21078758" /></td>
-               <td class="friend-name">
-                @nthony841
-               </td>
-               <td class="friend-login" title="20/01/08 14:09">3 months ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-21078758" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="even">
-               <td><input type="checkbox" name="friendList" value="21054355" /></td>
-               <td class="friend-name">
-                arkonia
-               </td>
-               <td class="friend-login" title="19/01/08 16:31">3 months ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-21054355" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="odd">
-               <td><input type="checkbox" name="friendList" value="12715297" /></td>
-               <td class="friend-name">
-                BlueEyedSarah
-               </td>
-               <td class="friend-login" title="06/05/08 20:11">11 hours ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-12715297" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="even">
-               <td><input type="checkbox" name="friendList" value="21046918" /></td>
-               <td class="friend-name">
-                Cute-Sarah24
-               </td>
-               <td class="friend-login" title="20/01/08 13:38">3 months ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-21046918" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="odd">
-               <td><input type="checkbox" name="friendList" value="20970528" /></td>
-               <td class="friend-name">
-                CuTiE@BeAuTi
-               </td>
-               <td class="friend-login" title="06/05/08 19:48">11 hours ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-20970528" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="even">
-               <td><input type="checkbox" name="friendList" value="21192762" /></td>
-               <td class="friend-name">
-                Emzy313
-               </td>
-               <td class="friend-login" title="05/04/08 15:42">1 month ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-21192762" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="odd">
-               <td><input type="checkbox" name="friendList" value="21033165" /></td>
-               <td class="friend-name">
-                emzy81
-               </td>
-               <td class="friend-login" title="03/05/08 08:47">3 days ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-21033165" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="even">
-               <td><input type="checkbox" name="friendList" value="20353184" /></td>
-               <td class="friend-name">
-                Gabriiella.OX
-               </td>
-               <td class="friend-login" title="24/02/08 10:59">2 months ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-20353184" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="odd">
-               <td><input type="checkbox" name="friendList" value="21068512" /></td>
-               <td class="friend-name">
-                joewoodland
-               </td>
-               <td class="friend-login" title="06/04/08 09:48">1 month ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-21068512" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="even">
-               <td><input type="checkbox" name="friendList" value="21117541" /></td>
-               <td class="friend-name">
-                kimplusdemi
-               </td>
-               <td class="friend-login" title="27/01/08 12:08">3 months ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-21117541" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="odd">
-               <td><input type="checkbox" name="friendList" value="19969767" /></td>
-               <td class="friend-name">
-                L-G@NI
-               </td>
-               <td class="friend-login" title="23/02/08 00:42">2 months ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-19969767" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="even">
-               <td><input type="checkbox" name="friendList" value="20572923" /></td>
-               <td class="friend-name">
-                LukeYoung1993
-               </td>
-               <td class="friend-login" title="06/05/08 19:43">11 hours ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-20572923" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="odd">
-               <td><input type="checkbox" name="friendList" value="21091541" /></td>
-               <td class="friend-name">
-                michael1461
-               </td>
-               <td class="friend-login" title="22/01/08 18:36">3 months ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-21091541" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="even">
-               <td><input type="checkbox" name="friendList" value="21105912" /></td>
-               <td class="friend-name">
-                muiscmad!
-               </td>
-               <td class="friend-login" title="28/03/08 11:21">1 month ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-21105912" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="odd">
-               <td><input type="checkbox" name="friendList" value="14653691" /></td>
-               <td class="friend-name">
-                oscmay
-               </td>
-               <td class="friend-login" title="06/05/08 19:13">12 hours ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-14653691" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="even">
-               <td><input type="checkbox" name="friendList" value="21255860" /></td>
-               <td class="friend-name">
-                PAT-Hairy
-               </td>
-               <td class="friend-login" title="17/02/08 10:33">2 months ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-21255860" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="odd">
-               <td><input type="checkbox" name="friendList" value="13810994" /></td>
-               <td class="friend-name">
-                Punkeh111
-               </td>
-               <td class="friend-login" title="04/05/08 12:57">2 days ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-13810994" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="even">
-               <td><input type="checkbox" name="friendList" value="21064305" /></td>
-               <td class="friend-name">
-                rogger263
-               </td>
-               <td class="friend-login" title="31/03/08 21:19">1 month ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-21064305" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="odd">
-               <td><input type="checkbox" name="friendList" value="15691750" /></td>
-               <td class="friend-name">
-                saen16
-               </td>
-               <td class="friend-login" title="20/03/08 21:15">1 month ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-15691750" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="even">
-               <td><input type="checkbox" name="friendList" value="21019326" /></td>
-               <td class="friend-name">
-                shally112
-               </td>
-               <td class="friend-login" title="06/05/08 20:32">10 hours ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-21019326" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="odd">
-               <td><input type="checkbox" name="friendList" value="21043557" /></td>
-               <td class="friend-name">
-                SonnyGirl-x
-               </td>
-               <td class="friend-login" title="20/01/08 16:46">3 months ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-21043557" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="even">
-               <td><input type="checkbox" name="friendList" value="20249764" /></td>
-               <td class="friend-name">
-                x-stockie-x
-               </td>
-               <td class="friend-login" title="23/04/08 07:20">2 weeks ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-20249764" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="odd">
-               <td><input type="checkbox" name="friendList" value="7692780" /></td>
-               <td class="friend-name">
-                x-x-kylie-x-x
-               </td>
-               <td class="friend-login" title="01/05/08 20:32">5 days ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-7692780" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="even">
-               <td><input type="checkbox" name="friendList" value="15993314" /></td>
-               <td class="friend-name">
-                x.x-Leah-x.x
-               </td>
-               <td class="friend-login" title="02/04/08 21:36">1 month ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-15993314" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="odd">
-               <td><input type="checkbox" name="friendList" value="20924493" /></td>
-               <td class="friend-name">
-                xoREDDI
-               </td>
-               <td class="friend-login" title="29/01/08 19:18">3 months ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-20924493" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
-           <tr class="even">
-               <td><input type="checkbox" name="friendList" value="20980236" /></td>
-               <td class="friend-name">
-                xxjadexx1008
-               </td>
-               <td class="friend-login" title="11/02/08 17:20">2 months ago</td>
-               <td class="friend-remove"><div id="remove-friend-button-20980236" class="friendmanagement-small-icons friendmanagement-remove remove-friend"></div></td>
-           </tr>
+               <td class=\"friend-login\" title=\"%s\">%s</td>
+               <td class=\"friend-remove\"><div id=\"remove-friend-button-%s\" class=\"friendmanagement-small-icons friendmanagement-remove remove-friend\"></div></td>
+           </tr>", $even, $friendrow['id'], $friendrow['name'], $friendrow['lastvisit'], $friendrow['lastvisit'], $friendrow['id']);
+		   }
+		?>
         </tbody>
     </table>
     <a class="select-all" id="friends-select-all" href="#">Select all</a> |
     <a class="deselect-all" href=#" id="friends-deselect-all">Deselect all</a>
 </form>                        </div>
+    <script type="text/javascript">
+        new FriendManagement({ currentCategoryId: 0, pageListLimit: 30, pageNumber: 1});
+    </script>
                         <div id="category-options" class="clearfix">
 <select id="category-list-select" name="category-list">
     <option value="0">Friends</option>
+    <option value="1">Test Friends</option>
 </select>
 <div class="friend-del"><a class="new-button red-button cancel-icon" href="#" id="delete-friends"><b><span></span>Delete selected friends</b><i></i></a></div>
 <div class="friend-move"><a class="new-button" href="#" id="move-friend-button"><b><span></span>Move</b><i></i></a></div>                        </div>
@@ -893,8 +868,7 @@ if(!empty($result)){
         L10N.put("friendmanagement.tooltip.deletefriends", "Are you sure you want to delete these selected friends?\n<div class=\"friendmanagement-small-icons friendmanagement-save friendmanagement-tip-delete\"\>\n    <a class=\"friends-delete-button\" id=\"delete-friends-button\"\>Delete</a\>\n</div\>\n<div class=\"friendmanagement-small-icons friendmanagement-remove friendmanagement-tip-cancel\"\>\n    <a id=\"cancel-delete-friends\"\>Cancel</a\>\n</div\>\n\n");
         L10N.put("friendmanagement.tooltip.deletefriend", "Are you sure you want to delete this friend?\n<div class=\"friendmanagement-small-icons friendmanagement-save friendmanagement-tip-delete\"\>\n    <a id=\"delete-friend-%friend_id%\"\>Delete</a\>\n</div\>\n<div class=\"friendmanagement-small-icons friendmanagement-remove friendmanagement-tip-cancel\"\>\n    <a id=\"remove-friend-can-%friend_id%\"\>Cancel</a\>\n</div\>");
         L10N.put("friendmanagement.tooltip.deletecategory", "Are you sure you want to delete this category?\n<div class=\"friendmanagement-small-icons friendmanagement-save friendmanagement-tip-delete\"\>\n    <a class=\"delete-category-button\" id=\"delete-category-%category_id%\"\>Delete</a\>\n</div\>\n<div class=\"friendmanagement-small-icons friendmanagement-remove friendmanagement-tip-cancel\"\>\n    <a id=\"cancel-cat-delete-%category_id%\"\>Cancel</a\>\n</div\>");
-        new FriendManagement({ currentCategoryId: 0, pageListLimit: 30, pageNumber: 1});
-    </script>        
+    </script>
 
     </div>
     </div>

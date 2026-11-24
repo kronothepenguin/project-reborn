@@ -2,6 +2,7 @@ import { createRawSnippet } from "svelte";
 import { render } from "@testing-library/svelte";
 import { describe, expect, it } from "vitest";
 import FormField from "./form-field.svelte";
+import "../styles.css";
 
 const control = createRawSnippet(() => ({
   render: () => '<input name="email" type="email" />',
@@ -40,5 +41,17 @@ describe("Form field", () => {
     const label = container.querySelector("label");
     expect(label?.textContent).toContain("Required");
     expect(label?.getAttribute("aria-invalid")).toBe("true");
+  });
+
+  it("shows the help grey, apart from the label", () => {
+    const { container } = render(FormField, {
+      props: { label: "Email", help: "We never share it", children: control },
+    });
+    const label = container.querySelector("label > span:first-of-type") as HTMLSpanElement;
+    const help = container.querySelector("label > span:last-of-type") as HTMLSpanElement;
+    const colour = getComputedStyle(help).color;
+    expect(colour).not.toBe(getComputedStyle(label).color);
+    // A grey has no chroma: oklch(L 0 0), or equal red, green and blue.
+    expect(colour).toMatch(/^oklch\([\d.]+ 0 (?:0|none)\)$|^rgb\((\d+), \1, \1\)$/);
   });
 });

@@ -24,4 +24,10 @@ describe("Notice", () => {
     expect(greenStyle.backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
     expect(greenStyle.backgroundColor).not.toBe(redStyle.backgroundColor);
   });
+
+  it("shows its text at the page's 12px", () => {
+    const { container } = render(Notice, { props: { children: content } });
+    const notice = container.querySelector("div") as HTMLDivElement;
+    expect(getComputedStyle(notice).fontSize).toBe("12px");
+  });
 });

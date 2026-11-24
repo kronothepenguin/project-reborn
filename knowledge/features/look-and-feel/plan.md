@@ -42,10 +42,13 @@ The site is Holo's, at Holo's own sizes, in Tailwind's closest common classes.
 - Pictures keep their own size and fill their box as in Holo.
 - Colours are the classes of [the colours](/colours.md): Tailwind's within the margin, new shades beyond it.
 - BBCode's small text stays 10px, under the body's 12px.
+- The shared parts fit the 12px text: a `Step`'s numbered point is 20px (`size-5`) with a 1px border, its arrow 6px,
+  and the stepper's gaps 6px; a `Notice` reads at `text-xs`; a `FormField`'s help line is `neutral-500`, the grey of
+  housekeeping's help.
 - Housekeeping and the installer keep their own looks at the site's `text-xs`. Housekeeping has its widths of before
   the bigger design: a tab `w-44`, the left column `w-46`. The installer's page is 640px (`max-w-160`), its box 608px
   and its column 574px.
-- The live HoloCMS of the comparison differs from `source/holocms`, which the port follows: its Me page holds its
+- The live HoloCMS of the comparison differs from `source/holocms-1.3.1`, which the port follows: its Me page holds its
   boxes in other columns, and its community page titles the tags box "Tags" in green.
 - The live HoloCMS shows other staff, credits and club pages (a Collectables tab, Refer Options, a Leaderboard),
   has no Refer Options tab in the account, swaps register's columns, and asks for the password again before the
@@ -53,7 +56,7 @@ The site is Holo's, at Holo's own sizes, in Tailwind's closest common classes.
 - On the myhabbo pages the live HoloCMS shows no home (its first visit fails on "Field 'data' doesn't have a default
   value"), no thread and no group, so they are compared with Holo's own markup of `forum.php`, `viewthread.php`,
   `user_profile.php` and `group_profile.php` on the live stylesheets. The live one also draws the rows of the groups
-  and members widgets and the profile's tags on a raster, and another offline picture, which `source/holocms` takes
+  and members widgets and the profile's tags on a raster, and another offline picture, which `source/holocms-1.3.1` takes
   from Habbo's gone CDN or lacks.
 
 ## The colours
@@ -215,6 +218,10 @@ Of 2026-11-23, each the user's words or choice among options put to them:
 - Tailwind's palette gains shades for Holo's colours beyond a margin of distance, and the tool learns them (the user's
   idea, in the task's words).
 - The stepper's points, the notice and a field's help line are fitted to 12px ("yes, i think").
+- Homes and groups get the 752px canvas under the same navigation, with no advert column ("Canvas of 752px, no
+  advert column"). Holo gave club members and groups a 922px canvas; that benefit goes.
+- HoloCMS 3.1.1 becomes the source reference, its code copied into `source/` without Sulake's client files and
+  pictures ("Copy its code into source/"); see [the two versions](/sources/holocms/versions.md).
 
 Earlier:
 

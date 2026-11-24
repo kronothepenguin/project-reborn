@@ -2,7 +2,7 @@
 /*===================================================+
 || # HoloCMS - Website and Content Management System
 |+===================================================+
-|| # Copyright © 2008 Meth0d. All rights reserved.
+|| # Copyright ï¿½ 2008 Meth0d. All rights reserved.
 || # http://www.meth0d.org
 |+===================================================+
 || # HoloCMS is provided "as is" and comes without
@@ -26,7 +26,7 @@ $key = $_GET['key'];
 $starttime = explode(' ', microtime());
 $starttime = $starttime[1] + $starttime[0];
 
-	if(session_is_registered(acp)){
+	if(isset($_SESSION['acp'])){
 
 		$session = $_SESSION['acp'];
 		$admin_username = $_SESSION['hkusername'];
@@ -52,12 +52,21 @@ $starttime = $starttime[1] + $starttime[0];
 				session_destroy();
 				$notify_logout = true;
 				include('login.php');
+			} elseif($p == "recommendedm"){
+				$tab = 1;
+				include('recommendedm.php');
+			} elseif($p == "recommendede"){
+				$tab = 1;
+				include('recommendede.php');
 			} elseif($p == "dashboard"){
 				$tab = 1;
 				include('dashboard.php');
 			} elseif($p == "server"){
 				$tab = 2;
 				include('server.php');
+			} elseif($p == "massa_stuff"){
+				$tab = 5;
+				include('massa.php');
 			} elseif($p == "recycler"){
 				$tab = 2;
 				include('recycler.php');
@@ -88,9 +97,27 @@ $starttime = $starttime[1] + $starttime[0];
 			} elseif($p == "loader"){
 				$tab = 3;
 				include('loader.php');
+			} elseif($p == "editor_guestroom"){
+				$tab = 5;
+				include('guestrooms.php');
+			} elseif($p == "editguestroom"){
+				$tab = 5;
+				include('edit_guestroom.php');
+			} elseif($p == "editor_publicrooms"){
+				$tab = 5;
+				include('publicrooms.php');
+			} elseif($p == "editpublicroom"){
+				$tab = 5;
+				include('edit_publicroom.php');
+			} elseif($p == "application_edit"){
+				$tab = 5;
+				include('appforms.php');
 			} elseif($p == "news_compose"){
 				$tab = 3;
 				include('news_compose.php');
+			} elseif($p == "collectables_edit"){
+				$tab = 3;
+				include('edit_collectables.php');
 			} elseif($p == "news_manage"){
 				$tab = 3;
 				include('news_manage.php');
@@ -106,6 +133,15 @@ $starttime = $starttime[1] + $starttime[0];
 			} elseif($p == "transactions"){
 				$tab = 5;
 				include('transactions.php');
+			} elseif($p == "collectables"){
+				$tab = 3;
+				include('collectables.php');
+			} elseif($p == "faq"){
+				$tab = 3;
+				include('faq.php');
+			} elseif($p == "newsletter"){
+				$tab = 3;
+				include('newsletter.php');
 			} elseif($p == "vouchers"){
 				$tab = 5;
 				include('vouchers.php');
@@ -160,6 +196,12 @@ $starttime = $starttime[1] + $starttime[0];
 			} elseif($p == "alertlist"){
 				$tab = 5;
 				include('alertlist.php');
+			} elseif($p == "massmail"){
+				$tab = 5;
+				include('massmail.php');
+			} elseif($p == "minimail"){
+				$tab = 5;
+				include('minimail.php');
 			} elseif($p == "onlinelist"){
 				$tab = 5;
 				include('onlinelist.php');

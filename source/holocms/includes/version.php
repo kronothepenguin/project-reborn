@@ -9,9 +9,15 @@
 || # warrenty of any kind. HoloCMS is free software!
 |+===================================================*/
 
-$holocms['version'] = "1.3.1-TRUNK";
-$holocms['title'] = "The Revolution";
-$holocms['stable'] = "STABLE";
-$holocms['date'] = "18 April 2008 17:06:00 UTC";
+// HoloCMS Versioning
+$holocms['revision'] = "60";
+$holocms['version'] = "3.1.1.".$holocms['revision'];
+$holocms['title'] = "ATLANTA";
+$holocms['stable'] = "UNSTABLE";
+$holocms['date'] = "Feburuary 19, 2009 3:52PM CST";
+
+// Holograph Emulator Compatability Data
+$holograph['revision'] = "6";
+$holograph['type'] = "Eucalypt C#, HoloEMU Vista4life & Shine-Away's V26 Source";
 
 ?>

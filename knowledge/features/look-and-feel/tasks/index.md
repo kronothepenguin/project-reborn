@@ -3,4 +3,4 @@
 # Tasks
 
 - [Compare the look with HoloCMS, page by page](06-exit-check.md) - Every page of the site is set beside Holo's and beside its old self, with screenshots, and what differs is listed for the user.
-- [Three shared parts fitted to 12px text](16-the-shared-parts-at-12px.md) - The stepper's points, the notice and a field's help line take sizes and colours that suit the site's 12px text.
+- [The homes and the groups inside the navigation's width](18-the-homes-inside-the-navigation.md) - A habbo's home and a group's page get the 752px canvas under the community layout's own sub-navigation, the advert column goes, and the layout's wide form goes with it.

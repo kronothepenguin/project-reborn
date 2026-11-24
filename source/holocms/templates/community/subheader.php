@@ -5,7 +5,7 @@
 | Copyright © 2008 Meth0d
 +----------------------------------------------------+
 | HoloCMS is provided "as is" and comes without
-| warrenty of any kind. 
+| warrenty of any kind.
 +---------------------------------------------------*/
 
 if (!defined("IN_HOLOCMS")) { header("Location: ..index.php"); exit; }
@@ -19,7 +19,7 @@ $pagename = $shortname;
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title><?php echo $shortname; ?> ~ <?php echo $pagename; ?> </title>
 
 <script type="text/javascript">
@@ -32,10 +32,11 @@ var andSoItBegins = (new Date()).getTime();
 <script src="web-gallery/static/js/common.js" type="text/javascript"></script>
 <script src="web-gallery/static/js/fullcontent.js" type="text/javascript"></script>
 <script src="web-gallery/static/js/libs2.js" type="text/javascript"></script>
-<link rel="stylesheet" href="web-gallery/v2/styles/style.css" type="text/css" />
-<link rel="stylesheet" href="web-gallery/v2/styles/buttons.css" type="text/css" />
-<link rel="stylesheet" href="web-gallery/v2/styles/boxes.css" type="text/css" />
-<link rel="stylesheet" href="web-gallery/v2/styles/tooltips.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/v2/styles/style.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/v2/styles/buttons.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/v2/styles/boxes.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/v2/styles/tooltips.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="<?php $sitename; ?> News RSS" href="./rss.php"/>
 
 <script type="text/javascript">
 document.habboLoggedIn = true;
@@ -49,19 +50,17 @@ window.name = "habboMain";
 </script>
 
 <?php if($pageid == "forum"){ ?>
-<link rel="stylesheet" href="http://images.habbohotel.nl/habboweb/<?php echo $habboversion; ?>/web-gallery/styles/myhabbo/myhabbo.css" type="text/css" />
-<link rel="stylesheet" href="http://images.habbohotel.nl/habboweb/<?php echo $habboversion; ?>/web-gallery/styles/myhabbo/skins.css" type="text/css" />
-<link rel="stylesheet" href="http://images.habbohotel.nl/habboweb/<?php echo $habboversion; ?>/web-gallery/styles/myhabbo/dialogs.css" type="text/css" />
-<link rel="stylesheet" href="http://images.habbohotel.nl/habboweb/<?php echo $habboversion; ?>/web-gallery/styles/myhabbo/buttons.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/styles/myhabbo/myhabbo.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/styles/myhabbo/skins.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/styles/myhabbo/dialogs.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/styles/myhabbo/buttons.css" type="text/css" />
 <link rel="stylesheet" href="web-gallery/styles/myhabbo/control.textarea.css" type="text/css" />
-<link rel="stylesheet" href="http://images.habbohotel.nl/habboweb/<?php echo $habboversion; ?>/web-gallery/styles/myhabbo/boxes.css" type="text/css" />
-<link rel="stylesheet" href="http://images.habbohotel.nl/habboweb/<?php echo $habboversion; ?>/web-gallery/v2/styles/myhabbo.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/styles/myhabbo/boxes.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/v2/styles/myhabbo.css" type="text/css" />
 
 <script src="web-gallery/static/js/homeview.js" type="text/javascript"></script>
 <script src="web-gallery/static/js/homeauth.js" type="text/javascript"></script>
-<link rel="stylesheet" href="web-gallery/v2/styles/group.css" type="text/css" />
-<link rel="stylesheet" href="web-gallery/v2/styles/rooms.css" type="text/css" />
-	<script src="web-gallery/static/js/rooms.js" type="text/javascript"></script>
+<link rel="stylesheet" href="./web-gallery/v2/styles/group.css" type="text/css" />
 <style type="text/css">
 
     #playground, #playground-outer {
@@ -79,14 +78,15 @@ document.observe("dom:loaded", function() { initView(55918, 1478728); });
 <?php } ?>
 
 <?php if($body_id == "home" || empty($body_id)){ ?>
-<link rel="stylesheet" href="web-gallery/v2/styles/welcome.css" type="text/css">
-<link rel="stylesheet" href="web-gallery/v2/styles/personal.css" type="text/css" />	
-							
-<link rel="stylesheet" href="web-gallery/v2/styles/group.css" type="text/css" />
-<script src="web-gallery/static/js/group.js" type="text/javascript"></script>
-    
-<link rel="stylesheet" href="web-gallery/v2/styles/rooms.css" type="text/css" />
-	<script src="web-gallery/static/js/rooms.js" type="text/javascript"></script>
+<link rel="stylesheet" href="./web-gallery/v2/styles/welcome.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/v2/styles/personal.css" type="text/css" />
+
+<link rel="stylesheet" href="./web-gallery/v2/styles/group.css" type="text/css" />
+<script src="./web-gallery/static/js/group.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="./web-gallery/v2/styles/rooms.css" type="text/css" />
+<script src="./web-gallery/static/js/rooms.js" type="text/javascript"></script>
+<script src="./web-gallery/static/js/moredata.js" type="text/javascript"></script>
 <?php } ?>
 
 <?php if($pageid == "1" || $pageid == "7"){ ?>
@@ -95,12 +95,12 @@ document.observe("dom:loaded", function() { initView(55918, 1478728); });
 
 <?php if($body_id == "profile"){ ?>
 <script src="web-gallery/static/js/settings.js" type="text/javascript"></script>
-<link rel="stylesheet" href="web-gallery/v2/styles/settings.css" type="text/css" />
-<link rel="stylesheet" href="web-gallery/v2/styles/friendmanagement.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/v2/styles/settings.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/v2/styles/friendmanagement.css" type="text/css" />
 <?php } ?>
 
 <?php if($pageid == 1){ ?>
-								<link rel="stylesheet" href="http://images.habbohotel.co.uk/habboweb/<?php echo $habboversion; ?>/web-gallery/v2/styles/minimail.css" type="text/css" />
+								<link rel="stylesheet" href="./web-gallery/v2/styles/minimail.css" type="text/css" />
 <link rel="stylesheet" href="web-gallery/styles/myhabbo/control.textarea.css" type="text/css" />
 <script src="web-gallery/static/js/minimail.js" type="text/javascript"></script>
 <?php } ?>
@@ -109,10 +109,10 @@ document.observe("dom:loaded", function() { initView(55918, 1478728); });
 <meta name="keywords" content="<?php echo $sitename . "," . $shortname; ?>,virtual world,play games,enter competitions,make friends" />
 
 <!--[if lt IE 8]>
-<link rel="stylesheet" href="web-gallery/v2/styles/ie.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/v2/styles/ie.css" type="text/css" />
 <![endif]-->
 <!--[if lt IE 7]>
-<link rel="stylesheet" href="web-gallery/v2/styles/ie6.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/v2/styles/ie6.css" type="text/css" />
 <script src="web-gallery/static/js/pngfix.js" type="text/javascript"></script>
 <script type="text/javascript">
 try { document.execCommand('BackgroundImageCache', false, true); } catch(e) {}

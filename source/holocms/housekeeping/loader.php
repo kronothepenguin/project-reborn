@@ -2,7 +2,7 @@
 /*===================================================+
 || # HoloCMS - Website and Content Management System
 |+===================================================+
-|| # Copyright © 2008 Meth0d. All rights reserved.
+|| # Copyright ï¿½ 2008 Meth0d. All rights reserved.
 || # http://www.meth0d.org
 |+===================================================+
 || # HoloCMS is provided "as is" and comes without
@@ -11,17 +11,17 @@
 
 require_once('../core.php');
 if($hkzone !== true){ header("Location: index.php?throwBack=true"); exit; }
-if(!session_is_registered(acp)){ header("Location: index.php?p=login"); exit; }
+if(!isset($_SESSION['acp'])){ header("Location: index.php?p=login"); exit; }
 
 $pagename = "Loader Configuration";
 
 if(isset($_POST['ip'])){
 
-	$ip = addslashes($_POST['ip']);
-	$texts = addslashes($_POST['texts']);
-	$variables = addslashes($_POST['variables']);
-	$dcr = addslashes($_POST['dcr']);
-	$reload_url = addslashes($_POST['reload_url']);
+	$ip = FilterText($_POST['ip']);
+	$texts = FilterText($_POST['texts']);
+	$variables = FilterText($_POST['variables']);
+	$dcr = FilterText($_POST['dcr']);
+	$reload_url = FilterText($_POST['reload_url']);
 	$localhost = $_POST['localhost'];
 
 	if(!empty($ip) && !empty($texts) && !empty($variables) && !empty($dcr) && !empty($reload_url)){

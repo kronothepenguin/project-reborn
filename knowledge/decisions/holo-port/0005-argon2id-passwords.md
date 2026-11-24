@@ -18,4 +18,4 @@ tags: [auth, security]
 # Context
 
 Holo used `md5("235x17aXCaRb" . password)` with inconsistent escaping before hashing
-(`source/holocms/includes/inc.crypt.php`).
+(`source/holocms-1.3.1/includes/inc.crypt.php`).

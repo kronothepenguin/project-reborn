@@ -2,7 +2,7 @@
 /*===================================================+
 || # HoloCMS - Website and Content Management System
 |+===================================================+
-|| # Copyright © 2008 Meth0d. All rights reserved.
+|| # Copyright ï¿½ 2008 Meth0d. All rights reserved.
 || # http://www.meth0d.org
 |+===================================================+
 || # HoloCMS is provided "as is" and comes without
@@ -11,17 +11,29 @@
 
 require_once('../core.php');
 if($hkzone !== true){ header("Location: index.php?throwBack=true"); exit; }
-if(!session_is_registered(acp)){ header("Location: index.php?p=login"); exit; }
+if(!isset($_SESSION['acp'])){ header("Location: index.php?p=login"); exit; }
 
 $pagename = "User Rank Management";
 
 if(isset($_POST['rank'])){
 $rank = $_POST['rank'];
-$key = addslashes($_POST['name']);
+$key = FilterText($_POST['name']);
 
 $check = mysql_query("SELECT id FROM users WHERE name = '".$key."' OR id = '".$key."' LIMIT 1") or die(mysql_error());
 $exists = mysql_num_rows($check);
 $drow = mysql_fetch_assoc($check);
+
+if($rank == 3){
+$badge = "XXX";
+}elseif($rank == 4){
+$badge = "NWB";
+}elseif($rank == 5){
+$badge = "HBA";
+}elseif($rank == 6){
+$badge = "MOD";
+}elseif($rank == 4){
+$badge = "ADM";
+}
 
 	if($exists > 0){
 		if($rank > 0 && $rank < 8){
@@ -33,6 +45,12 @@ $drow = mysql_fetch_assoc($check);
 					mysql_query("UPDATE users SET rank = '".$rank."' WHERE name = '".$key."' LIMIT 1") or die(mysql_error()); 
 					$msg = "Rank updated successfully.";
 					mysql_query("INSERT INTO system_stafflog (action,message,note,userid,targetid,timestamp) VALUES ('Housekeeping','Changed user rank to ".$rank."','ranktool.php','".$my_id."','".$drow['id']."','".$date_full."')") or die(mysql_error());
+					mysql_query("DELETE FROM users_badges WHERE userid = '".$drow['id']."' AND badgeid = 'XXX' LIMIT 1");
+					mysql_query("DELETE FROM users_badges WHERE userid = '".$drow['id']."' AND badgeid = 'NWB' LIMIT 1");
+					mysql_query("DELETE FROM users_badges WHERE userid = '".$drow['id']."' AND badgeid = 'HBA' LIMIT 1");
+					mysql_query("DELETE FROM users_badges WHERE userid = '".$drow['id']."' AND badgeid = 'MOD' LIMIT 1");
+					mysql_query("DELETE FROM users_badges WHERE userid = '".$drow['id']."' AND badgeid = 'ADM' LIMIT 1");
+					mysql_query("INSERT INTO users_badges (userid,badgeid,iscurrent) VALUES ('".$drow['id']."','".$badge."','0')");
 				}
 			} else {
 				mysql_query("INSERT INTO system_stafflog (action,message,note,userid,targetid,timestamp) VALUES ('Housekeeping','Access Denied to Rank Tool; Only the system administrator may give out rank 7!','ranktool.php','".$my_id."','".$drow['id']."','".$date_full."')") or die(mysql_error());

@@ -16,7 +16,7 @@ require_once('includes/session.php');
 
 // Search function
 if(isset($_POST['searchString'])){
-	$searchString = addslashes($_POST['searchString']);
+	$searchString = FilterText($_POST['searchString']);
 	$check = mysql_query("SELECT id FROM groups_details WHERE name LIKE '".$searchString."' LIMIT 1") or die(mysql_error());
 	$found = mysql_num_rows($check);
 	if($found > 0){
@@ -82,11 +82,11 @@ if(isset($_GET['do']) && $_GET['do'] == "edit" && $logged_in){
 
 		if($linkers > 0){
 
-			mysql_query("UPDATE cms_homes_group_linker SET active = '1', groupid = '".$groupid."' WHERE userid = '".$my_id."' LIMIT 1") or die(mysql_error()); 
+			mysql_query("UPDATE cms_homes_group_linker SET active = '1', groupid = '".$groupid."' WHERE userid = '".$my_id."' LIMIT 1") or die(mysql_error());
 
 		} else {
 
-			mysql_query("INSERT INTO cms_homes_group_linker (userid,groupid,active) VALUES ('".$my_id."','".$groupid."','1')") or die(mysql_error());	
+			mysql_query("INSERT INTO cms_homes_group_linker (userid,groupid,active) VALUES ('".$my_id."','".$groupid."','1')") or die(mysql_error());
 
 		}
 
@@ -146,10 +146,11 @@ $bg_exists = mysql_num_rows($bg_fetch);
 		$bg = mysql_fetch_array($bg_fetch);
 		$bg = "b_" . $bg[0];
 	}
-	
+
 if(!$error){
 include('templates/community/hsubheader.php');
 include('templates/community/header.php');
+mysql_query("UPDATE groups_details SET views = views+'1' WHERE id='".$groupid."' LIMIT 1");
 ?>
 
 <div id="container">
@@ -159,12 +160,15 @@ include('templates/community/header.php');
 	<?php if($member_rank > 1 && !$edit_mode){ ?><a href="#" id="myhabbo-group-tools-button" class="new-button dark-button edit-icon" style="float:left"><b><span></span>Edit</b><i></i></a><?php } ?>
 	<?php if(!$edit_mode){ echo $viewtools; } ?>
     <h2 class="page-owner">
-<?php echo stripslashes($groupdata['name']); ?>&nbsp;
+<?php echo HoloText($groupdata['name']); ?>&nbsp;
 <?php if($groupdata['type'] == "2"){ ?><img src='./web-gallery/images/status_closed_big.gif' alt='Closed Group' title='Closed Group'><?php } ?>
 <?php if($groupdata['type'] == "1"){ ?><img src='./web-gallery/images/status_exclusive_big.gif' alt='Moderated Group' title='Moderated Group'><?php } ?></h2>
 </h2>
-    <ul class="box-tabs"></ul>
-</div>	
+    <ul class="box-tabs">
+        <li class="selected"><a href="group_profile.php?id=<?php echo $_GET['id']; ?>">Front Page</a><span class="tab-spacer"></span></li>
+        <li><a href="group_forum.php?id=<?php echo $_GET['id']; ?>">Discussion Forum <?php if($groupdata['pane'] > 0) { ?><img src="http://images.habbohotel.nl/habboweb/23_deebb3529e0d9d4e847a31e5f6fb4c5b/9/web-gallery/images/grouptabs/privatekey.png"><?php } ?></a><span class="tab-spacer"></span></li>
+    </ul>
+</div>
 	<div id="mypage-content">
 <?php 	if($edit_mode == true){ ?>
 <div id="top-toolbar" class="clearfix">
@@ -172,7 +176,7 @@ include('templates/community/header.php');
 		<li><a href="#" id="inventory-button">Inventory</a></li>
 		<li><a href="#" id="webstore-button">Webstore</a></li>
 	</ul>
-	
+
 	<form action="#" method="get" style="width: 50%;">
 		<a id="cancel-button" class="new-button red-button cancel-icon" href="#"><b><span></span>Cancel</b><i></i></a>
 		<a id="save-button" class="new-button green-button save-icon" href="#"><b><span></span>Save</b><i></i></a>
@@ -184,7 +188,7 @@ include('templates/community/header.php');
 				<div id="playground">
 
 <?php
-$get_em = mysql_query("SELECT id,type,x,y,z,data,skin,subtype FROM cms_homes_stickers WHERE groupid = '".$groupid."' and type < 4 LIMIT 200") or die(mysql_error());
+$get_em = mysql_query("SELECT id,type,x,y,z,data,skin,subtype,var FROM cms_homes_stickers WHERE groupid = '".$groupid."' and type < 4 LIMIT 200") or die(mysql_error());
 
 while ($row = mysql_fetch_array($get_em, MYSQL_NUM)) {
 
@@ -196,7 +200,7 @@ while ($row = mysql_fetch_array($get_em, MYSQL_NUM)) {
 	}
 
 	if($edit_mode == true){
-	$edit = "\n<img src=\"http://images.habbohotel.co.uk/habboweb/".$habboversion."/web-gallery/images/myhabbo/icon_edit.gif\" width=\"19\" height=\"18\" class=\"edit-button\" id=\"" . $type . "-" . $row[0] . "-edit\" />
+	$edit = "\n<img src=\"./web-gallery/images/myhabbo/icon_edit.gif\" width=\"19\" height=\"18\" class=\"edit-button\" id=\"" . $type . "-" . $row[0] . "-edit\" />
 <script language=\"JavaScript\" type=\"text/javascript\">
 Event.observe(\"".$type."-".$row[0]."-edit\", \"click\", function(e) { openEditMenu(e, ".$row[0].", \"".$type."\", \"".$type."-".$row[0]."-edit\"); }, false);
 </script>\n";
@@ -219,7 +223,7 @@ Event.observe(\"".$type."-".$row[0]."-edit\", \"click\", function(e) { openEditM
 			</div>
 		</div>
 	</div>
-</div>",$row[6],$row[2],$row[3],$row[4],$row[0],$row[6],$edit,bbcode_format(nl2br(stripslashes($row[5]))));
+</div>",$row[6],$row[2],$row[3],$row[4],$row[0],$row[6],$edit,bbcode_format(nl2br(HoloText($row[5]))));
 	} elseif($type == "sticker"){
 	printf("<div class=\"movable sticker s_%s\" style=\"left: %spx; top: %spx; z-index: %s\" id=\"sticker-%s\">\n%s\n</div>", $row[5], $row[2], $row[3], $row[4], $row[0], $edit);
 	} elseif($type == "widget"){
@@ -227,6 +231,8 @@ Event.observe(\"".$type."-".$row[0]."-edit\", \"click\", function(e) { openEditM
 		switch($row[7]){
 		case "1": $subtype = "Profilewidget"; break;
 		case "3": $subtype = "MemberWidget"; break;
+		case "4": $subtype = "GuestbookWidget"; break;
+		case "5": $subtype = "TraxPlayerWidget";
 		}
 
 		if($subtype == "Profilewidget"){
@@ -237,15 +243,15 @@ Event.observe(\"".$type."-".$row[0]."-edit\", \"click\", function(e) { openEditM
 <div class=\"w_skin_".$row[6]."\">
 	<div class=\"widget-corner\" id=\"widget-".$row[0]."-handle\">
 		<div class=\"widget-headline\"><h3><span class=\"header-left\">&nbsp;</span><span class=\"header-middle\">Group information</span><span class=\"header-right\">".$edit."</span></h3>
-		</div>	
+		</div>
 	</div>
 	<div class=\"widget-body\">
-		<div class=\"widget-content\">"; 
+		<div class=\"widget-content\">";
 			?>
 
 <div class=\"group-info-icon\"><img src='./habbo-imaging/<?php if(!isset($_GET['x'])) { echo "badge-fill/".$groupdata['badge'].".gif"; }else{ echo "badge.php?badge=".$groupdata['badge'].""; } ?>' /></div>
 <?php echo "
-<h4>".stripslashes($groupdata['name'])."</h4>
+<h4>".HoloText($groupdata['name'])."</h4>
 
 <p>
 Created: <strong>".$groupdata['created']."</strong>
@@ -253,11 +259,15 @@ Created: <strong>".$groupdata['created']."</strong>
 
 <p>
 <strong>".$members."</strong> members
-</p>\n";
+</p>";
+if($groupdata['roomid'] != 0 OR $groupdata['roomid'] != "" OR $groupdata['roomid'] != " ") {
+$sql = mysql_query("SELECT name FROM rooms WHERE id='".$groupdata['roomid']."' LIMIT 1");
+$roominfo = mysql_fetch_assoc($sql); ?>
+<?php if($groupdata['roomid'] <> 0){ ?><p><a href="client.php?forwardId=2&amp;roomId=<?php echo $groupdata['roomid']; ?>" onclick="HabboClient.roomForward(this, '<?php echo $groupdata['roomid']; ?>', 'private'); return false;" target="client" class="group-info-room"><?php echo HoloText($roominfo['name']); ?></a></p><?php } ?>
+<?php
+}
 
-// <p><a href=\"http://www.habbo.nl/client?forwardId=2&amp;roomId=13303122\" onclick=\"roomForward(this, '13303122', 'private'); return false;\" target=\"client\" class=\"group-info-room\">The church of bobbaz</a></p>
-
-echo "\n<div class=\"group-info-description\">".stripslashes($groupdata['description'])."</div>
+echo "\n<div class=\"group-info-description\">".HoloText($groupdata['description'])."</div>
 
 <script type=\"text/javascript\">
     document.observe(\"dom:loaded\", function() {
@@ -275,106 +285,24 @@ echo "\n<div class=\"group-info-description\">".stripslashes($groupdata['descrip
 <div class=\"w_skin_".$row[6]."\">
 	<div class=\"widget-corner\" id=\"widget-".$row[0]."-handle\">
 		<div class=\"widget-headline\"><h3><span class=\"header-left\">&nbsp;</span><span class=\"header-middle\">Members of this group (<span id=\"avatar-list-size\">".$members."</span>)</span><span class=\"header-right\">".$edit."</span></h3>
-		</div>	
+		</div>
 	</div>
 	<div class=\"widget-body\">
-		<div class=\"widget-content\">\n";
+		<div class=\"widget-content\">
 
-//<div id=\"avatar-list-search\">
-//<input type=\"text\" style=\"float:left;\" id=\"avatarlist-search-string\"/>
-//<a class=\"new-button\" style=\"float:left;\" id=\"avatarlist-search-button\"><b>Search</b><i></i></a>
-//</div>
-echo "<br clear=\"all\"/>
-
-<div id=\"avatarlist-content\">
-
-<div class=\"avatar-widget-list-container\">
-<ul id=\"avatar-list-list\" class=\"avatar-widget-list\">";
-
-$get_admins = mysql_query("SELECT userid,is_current,member_rank FROM groups_memberships WHERE groupid = '".$groupid."' AND is_pending = '0' AND member_rank = '2'") or die(mysql_error());
-
-while($membership = mysql_fetch_assoc($get_admins)){
-
-	$userrow = mysql_query("SELECT id,name,figure,hbirth FROM users WHERE id = '".$membership['userid']."' LIMIT 1") or die(mysql_error());
-	$found = mysql_num_rows($userrow);
-
-	if($found > 0){
-		$userrow = mysql_fetch_assoc($userrow);
-
-		echo "<li id=\"avatar-list-".$groupid."-".$userrow['id']."\" title=\"".$userrow['name']."\">
-<div class=\"avatar-list-open\">
-	<a href=\"#\" id=\"avatar-list-open-link-".$groupid."-".$userrow['id']."\" class=\"avatar-list-open-link\"></a>
+<div id=\"avatar-list-search\">
+<input type=\"text\" style=\"float:left;\" id=\"avatarlist-search-string\"/>
+<a class=\"new-button\" style=\"float:left;\" id=\"avatarlist-search-button\"><b>Search</b><i></i></a>
 </div>
-<div class=\"avatar-list-avatar\">
-	<img src=\"http://www.habbo.co.uk/habbo-imaging/avatarimage?figure=".$userrow['figure']."&size=s&direction=2&head_direction=2&gesture=sml\" alt=\"\" />
-</div>
-<h4>
-	<a href=\"user_profile.php?name=".$userrow['name']."\">".$userrow['name']."</a>
-</h4>
-<p class=\"avatar-list-birthday\">
-	".$userrow['hbirth']."
-</p>
-<p>";
-if($userrow['id'] == $ownerid){
-echo "<img src=\"http://images.habbohotel.co.uk/habboweb/".$habboversion."/web-gallery/images/groups/owner_icon.gif\" alt=\"\" class=\"avatar-list-groupstatus\" />";
-} else {
-echo "<img src=\"http://images.habbohotel.co.uk/habboweb/".$habboversion."/web-gallery/images/groups/administrator_icon.gif\" alt=\"\" class=\"avatar-list-groupstatus\" />";
-}
-if($membership['is_current'] == "1"){
-echo "<img src=\"http://images.habbohotel.co.uk/habboweb/".$habboversion."/web-gallery/images/groups/favourite_group_icon.gif\" alt=\"Favorite\" class=\"avatar-list-groupstatus\" />";
-}
-echo "</p>
-</li>";
-	}
-}
+<br clear=\"all\"/>
 
-$get_users = mysql_query("SELECT userid,is_current,member_rank FROM groups_memberships WHERE groupid = '".$groupid."' AND is_pending = '0' AND member_rank = '1'") or die(mysql_error());
+<div id=\"avatarlist-content\">\n";
 
-while($membership = mysql_fetch_assoc($get_users)){
+$bypass = true;
+$widgetid = $row['0'];
+include('./myhabbo/avatarlist_membersearchpaging.php');
 
-	$userrow = mysql_query("SELECT id,name,figure,hbirth FROM users WHERE id = '".$membership['userid']."' LIMIT 1") or die(mysql_error());
-	$found = mysql_num_rows($userrow);
-
-	if($found > 0){
-		$userrow = mysql_fetch_assoc($userrow);
-
-		echo "<li id=\"avatar-list-".$groupid."-".$userrow['id']."\" title=\"".$userrow['name']."\">
-<div class=\"avatar-list-open\">
-	<a href=\"#\" id=\"avatar-list-open-link-".$groupid."-".$userrow['id']."\" class=\"avatar-list-open-link\"></a>
-</div>
-<div class=\"avatar-list-avatar\">
-	<img src=\"http://www.habbo.co.uk/habbo-imaging/avatarimage?figure=".$userrow['figure']."&size=s&direction=2&head_direction=2&gesture=sml\" alt=\"\" />
-</div>
-<h4>
-	<a href=\"user_profile.php?name=".$userrow['name']."\">".$userrow['name']."</a>
-</h4>
-<p class=\"avatar-list-birthday\">
-	".$userrow['hbirth']."
-</p>
-<p>";
-if($membership['is_current'] == "1"){
-echo "<img src=\"http://images.habbohotel.co.uk/habboweb/".$habboversion."/web-gallery/images/groups/favourite_group_icon.gif\" alt=\"Favorite\" class=\"avatar-list-groupstatus\" />";
-}
-echo "</p>
-</li>";
-	}
-}
-
-echo "</ul>
-
-<div id=\"avatar-list-info\" class=\"avatar-list-info\">
-<div class=\"avatar-list-info-close-container\"><a href=\"#\" class=\"avatar-list-info-close\"></a></div>
-<div class=\"avatar-list-info-container\"></div>
-</div>
-
-</div>
-
-<div id=\"avatar-list-paging\">
-<input type=\"hidden\" id=\"pageNumber\" value=\"1\"/>
-<input type=\"hidden\" id=\"totalPages\" value=\"1\"/>
-</div>
-
-<script type=\"text/javascript\">
+echo "<script type=\"text/javascript\">
 document.observe(\"dom:loaded\", function() {
 	window.widget".$row[0]." = new MemberWidget('".$groupid."', '".$row[0]."');
 });
@@ -386,7 +314,140 @@ document.observe(\"dom:loaded\", function() {
 	</div>
 </div>
 </div>";
+	} elseif($subtype == "GuestbookWidget"){
+	$sql = mysql_query("SELECT * FROM cms_guestbook WHERE widget_id = '".$row['0']."' ORDER BY id DESC");
+	$count = mysql_num_rows($sql);
+	if($row['10'] == "0"){;
+		$status = "public";
+	}else{
+		$status = "private";
+	}
+	?>
+	<div class="movable widget GuestbookWidget" id="widget-<?php echo $row['0']; ?>" style=" left: <?php echo $row['2']; ?>px; top: <?php echo $row['3']; ?>px; z-index: <?php echo $row['4']; ?>;">
+<div class="w_skin_<?php echo $row['6']; ?>">
+	<div class="widget-corner" id="widget-<?php echo $row['0']; ?>-handle">
+		<div class="widget-headline"><h3>
+		<?php echo $edit; ?>
+		<span class="header-left">&nbsp;</span><span class="header-middle">My Guestbook(<span id="guestbook-size"><?php echo $count; ?></span>) <span id="guestbook-type" class="<?php echo $status; ?>"><img src="./web-gallery/images/groups/status_exclusive.gif" title="Friends only" alt="Friends only"/></span></span><span class="header-right">&nbsp;</span></h3>
+		</div>	
+	</div>
+	<div class="widget-body">
+		<div class="widget-content">
+<div id="guestbook-wrapper" class="gb-public">
+<ul class="guestbook-entries" id="guestbook-entry-container">
+	<?php if($count == 0){ ?>
+	<div id="guestbook-empty-notes">This guestbook has no entries.</div>
+	<?php } else { ?>
+			<?php 
+			$sql123 = mysql_query("SELECT * FROM groups_details WHERE id = '".$_GET['id']."' LIMIT 1");
+			$grouprrow = mysql_fetch_assoc($sql123);
+			$i = 0;
+			while ($row1 = mysql_fetch_assoc($sql)) {
+				$i++;
+				$userrow = mysql_fetch_assoc(mysql_query("SELECT * FROM users WHERE id = '".$row1['userid']."' LIMIT 1"));
+				if($my_id == $row1['userid']){
+					$owneronly = "<img src=\"./web-gallery/images/myhabbo/buttons/delete_entry_button.gif\" id=\"gbentry-delete-".$row1['id']."\" class=\"gbentry-delete\" style=\"cursor:pointer\" alt=\"\"/><br/>";
+				} elseif($grouprrow['ownerid'] == $my_id) {
+					$owneronly = "<img src=\"./web-gallery/images/myhabbo/buttons/delete_entry_button.gif\" id=\"gbentry-delete-".$row1['id']."\" class=\"gbentry-delete\" style=\"cursor:pointer\" alt=\"\"/><br/>";
+				} else {
+					$owneronly = "";
+				}
+				if(IsUserOnline($row1['userid'])){ $useronline = "online"; } else { $useronline = "offline"; }
+				printf("	<li id=\"guestbook-entry-%s\" class=\"guestbook-entry\">
+		<div class=\"guestbook-author\">
+			<img src=\"http://www.habbo.co.uk/habbo-imaging/avatarimage?figure=%s&direction=2&head_direction=2&gesture=sml&size=s\" alt=\"%s\" title=\"%s\"/>
+		</div>
+			<div class=\"guestbook-actions\">
+					$owneronly
+			</div>
+		<div class=\"guestbook-message\">
+			<div class=\"%s\">
+				<a href=\"./user_profile.php?id=%s\">%s</a>
+			</div>
+			<p>%s</p>
+		</div>
+		<div class=\"guestbook-cleaner\">&nbsp;</div>
+		<div class=\"guestbook-entry-footer metadata\">%s</div>
+	</li>",$row1['id'], $userrow['figure'], $userrow['name'], $userrow['name'], $useronline, $userrow['id'], $userrow['name'], HoloText($row1['message'],false ,true), $userrow['time']);
+			}
+	} ?>
+</ul></div>
+<?php if($edit_mode == false){ ?>
+	<div class="guestbook-toolbar clearfix">
+	<a href="#" class="new-button envelope-icon" id="guestbook-open-dialog">
+	<b><span></span>Post new message</b><i></i>
+	</a>
+	</div>
+<?php } ?>
+<script type="text/javascript">	
+	document.observe("dom:loaded", function() {
+		var gb<?php echo $row['0']; ?> = new GuestbookWidget('17570', '<?php echo $row['0']; ?>', 500);
+		var editMenuSection = $('guestbook-privacy-options');
+		if (editMenuSection) {
+			gb<?php echo $row['0']; ?>.updateOptionsList('public');
 		}
+	});
+</script>
+		<div class="clear"></div>
+		</div>
+	</div>
+</div>
+</div>
+<?php
+	} elseif($subtype == "TraxPlayerWidget"){ 
+		$sql123 = mysql_query("SELECT * FROM groups_details WHERE id = '".$_GET['id']."' LIMIT 1");
+		$grouprrow = mysql_fetch_assoc($sql123);?>
+		<div class="movable widget TraxPlayerWidget" id="widget-<?php echo $row['0']; ?>" style=" left: <?php echo $row['2']; ?>px; top: <?php echo $row['3']; ?>px; z-index: <?php echo $row['4']; ?>;">
+<div class="w_skin_<?php echo $row['6']; ?>">
+	<div class="widget-corner" id="widget-<?php echo $row['0']; ?>-handle">
+		<div class="widget-headline"><h3><?php echo $edit; ?><span class="header-left">&nbsp;</span><span class="header-middle">TRAXPLAYER</span><span class="header-right">&nbsp;</span></h3>
+		</div>	
+	</div>
+	<div class="widget-body">
+		<div class="widget-content">
+<?php 
+if($row['8'] == ""){ $songselected = false; }else{ $songselected = true; }
+if($edit_mode == true){ ?>
+<div id="traxplayer-content" style="text-align: center;">
+	<img src="./web-gallery/images/traxplayer/player.png"/>
+</div>
+
+<div id="edit-menu-trax-select-temp" style="display:none">
+    <select id="trax-select-options-temp">
+    <option value="">- Choose song -</option>
+	<?php
+	$mysql = mysql_query("SELECT * FROM furniture WHERE ownerid = '".$grouprrow['ownerid']."'");
+	$i = 0;
+	while($machinerow = mysql_fetch_assoc($mysql)){
+		$i++;
+		$sql = mysql_query("SELECT * FROM soundmachine_songs WHERE machineid = '".$machinerow['id']."'");
+		$n = 0;
+		while($songrow = mysql_fetch_assoc($sql)){
+			$n++;
+			if($songrow['id'] <> ""){ echo "		<option value=\"".$songrow['id']."\">".trim(nl2br(HoloText($songrow['title'])))."</option>\n"; }
+		}
+	} ?>
+    </select>
+
+</div>
+<?php }elseif($songselected == false){ ?>
+You do not have a selected Trax song.
+<?php }else{
+$sql1 = mysql_query("SELECT * FROM soundmachine_songs WHERE id = '".$row['8']."' LIMIT 1");
+$songrow1 = mysql_fetch_assoc($sql); ?>
+<div id="traxplayer-content" style="text-align:center;"></div>
+<embed type="application/x-shockwave-flash"
+src="<?php echo $path; ?>web-gallery/flash/traxplayer/traxplayer.swf" name="traxplayer" quality="high"
+base="<?php echo $path; ?>web-gallery/flash/traxplayer/" allowscriptaccess="always" menu="false"
+wmode="transparent" flashvars="songUrl=<?php echo $path; ?>myhabbo/trax_song.php?songId=<?php echo $row['8']; ?>&amp;sampleUrl=http://images.habbohotel.com/dcr/hof_furni//mp3/" height="66" width="210" />
+<?php } ?>
+
+		<div class="clear"></div>
+		</div>
+	</div>
+</div>
+</div><?php
+	}
 
 	}
 
@@ -400,14 +461,14 @@ if($found_profile !== true){
 <div class=\"w_skin_defaultskin\">
 	<div class=\"widget-corner\" id=\"widget-1994412-handle\">
 		<div class=\"widget-headline\"><h3><span class=\"header-left\">&nbsp;</span><span class=\"header-middle\">Group information</span><span class=\"header-right\">&nbsp;</span></h3>
-		</div>	
+		</div>
 	</div>
 	<div class=\"widget-body\">
 		<div class=\"widget-content\">
 
 <div class=\"group-info-icon\"><img src='./habbo-imaging/badge-fill/".$groupdata['badge'].".gif' /></div>
 
-<h4>".stripslashes($groupdata['name'])."</h4>
+<h4>".HoloText($groupdata['name'])."</h4>
 
 <p>
 Created: <strong>".$groupdata['created']."</strong>
@@ -419,7 +480,7 @@ Created: <strong>".$groupdata['created']."</strong>
 
 // <p><a href=\"http://www.habbo.nl/client?forwardId=2&amp;roomId=13303122\" onclick=\"roomForward(this, '13303122', 'private'); return false;\" target=\"client\" class=\"group-info-room\">The church of bobbaz</a></p>
 
-echo "\n<div class=\"group-info-description\">".stripslashes($groupdata['description'])."</div>
+echo "\n<div class=\"group-info-description\">".HoloText($groupdata['description'])."</div>
 
 <script type=\"text/javascript\">
     document.observe(\"dom:loaded\", function() {
@@ -440,7 +501,7 @@ echo "\n<div class=\"group-info-description\">".stripslashes($groupdata['descrip
 			<div id="mypage-ad">
     <div class="habblet ">
 <div class="ad-container">
-&nbsp;        
+&nbsp;
 </div>
     </div>
 			</div>
@@ -467,7 +528,7 @@ document.observe("dom:loaded", initDraggableDialogs);
 
 </div>
 
-<?php if($edit_mode){ ?>	 
+<?php if($edit_mode){ ?>
 <div id="edit-menu" class="menu">
 	<div class="menu-header">
 		<div class="menu-exit" id="edit-menu-exit"><img src="./web-gallery/images/dialogs/menu-exit.gif" alt="" width="11" height="11" /></div>
@@ -497,7 +558,7 @@ document.observe("dom:loaded", initDraggableDialogs);
 					<p>Warning! If you click 'Remove', the note will be permanently deleted.</p>
 				</div>
 				<div id="rating-edit-menu">
-					<input type="button" id="ratings-reset-link" 
+					<input type="button" id="ratings-reset-link"
 						value="Reset rating" />
 				</div>
 				<div id="highscorelist-edit-menu" style="display:none">
@@ -542,10 +603,10 @@ Event.observe("guestbook-privacy-options", "change", handleGuestbookPrivacySetti
 Event.observe("trax-select-options", "click", Event.stop, false);
 Event.observe("trax-select-options", "change", handleTraxplayerTrackChange, false);
 </script>
-<?php } else { ?>	 
+<?php } else { ?>
 <div class="cbb topdialog" id="guestbook-form-dialog">
 	<h2 class="title dialog-handle">Edit guestbook entry</h2>
-	
+
 	<a class="topdialog-exit" href="#" id="guestbook-form-dialog-exit">X</a>
 	<div class="topdialog-body" id="guestbook-form-dialog-body">
 <div id="guestbook-form-tab">
@@ -574,16 +635,16 @@ Event.observe("trax-select-options", "change", handleTraxplayerTrackChange, fals
 
 	<div class="guestbook-toolbar clearfix">
 		<a href="#" class="new-button" id="guestbook-form-cancel"><b>Cancel</b><i></i></a>
-		<a href="#" class="new-button" id="guestbook-form-preview"><b>Preview</b><i></i></a>	
+		<a href="#" class="new-button" id="guestbook-form-preview"><b>Preview</b><i></i></a>
 	</div>
 </form>
 </div>
 <div id="guestbook-preview-tab">&nbsp;</div>
 	</div>
-</div>	
+</div>
 <div class="cbb topdialog" id="guestbook-delete-dialog">
 	<h2 class="title dialog-handle">Delete entry</h2>
-	
+
 	<a class="topdialog-exit" href="#" id="guestbook-delete-dialog-exit">X</a>
 	<div class="topdialog-body" id="guestbook-delete-dialog-body">
 <form method="post" id="guestbook-delete-form">
@@ -595,7 +656,7 @@ Event.observe("trax-select-options", "change", handleTraxplayerTrackChange, fals
 	</p>
 </form>
 	</div>
-</div>	
+</div>
 <div id="group-tools" class="bottom-bubble">
 	<div class="bottom-bubble-t"><div></div></div>
 	<div class="bottom-bubble-c">
@@ -613,10 +674,12 @@ Event.observe("trax-select-options", "change", handleTraxplayerTrackChange, fals
 </div>
 
 <div class="cbb topdialog black" id="dialog-group-settings">
-	
+
 	<div class="box-tabs-container">
 <ul class="box-tabs">
 	<li class="selected" id="group-settings-link-group"><a href="#">Group settings</a><span class="tab-spacer"></span></li>
+	<li id="group-settings-link-forum"><a href="#">Forum Settings</a><span class="tab-spacer"></span></li>
+	<li id="group-settings-link-room"><a href="#">Room Settings</a><span class="tab-spacer"></span></li>
 </ul>
 </div>
 
@@ -624,7 +687,7 @@ Event.observe("trax-select-options", "change", handleTraxplayerTrackChange, fals
 	<div class="topdialog-body" id="dialog-group-settings-body">
 <p style="text-align:center"><img src="./web-gallery/images/progress_bubbles.gif" alt="" width="29" height="6" /></p>
 	</div>
-</div>	
+</div>
 
 <script language="JavaScript" type="text/javascript">
 Event.observe("dialog-group-settings-exit", "click", function(e) {
@@ -632,7 +695,7 @@ Event.observe("dialog-group-settings-exit", "click", function(e) {
     closeGroupSettings();
 }, false);
 </script><div class="cbb topdialog black" id="group-memberlist">
-	
+
 	<div class="box-tabs-container">
 <ul class="box-tabs">
 	<li class="selected" id="group-memberlist-link-members"><a href="#">Members</a><span class="tab-spacer"></span></li>
@@ -643,7 +706,7 @@ Event.observe("dialog-group-settings-exit", "click", function(e) {
 	<a class="topdialog-exit" href="#" id="group-memberlist-exit">X</a>
 	<div class="topdialog-body" id="group-memberlist-body">
 <div id="group-memberlist-members-search" class="clearfix" style="display:none">
-    
+
     <a id="group-memberlist-members-search-button" href="#" class="new-button"><b>Search</b><i></i></a>
     <input type="text" id="group-memberlist-members-search-string"/>
 </div>
@@ -661,13 +724,14 @@ Event.observe("dialog-group-settings-exit", "click", function(e) {
 	<a href="#" class="new-button group-memberlist-button" id="group-memberlist-button-close2"><b>Close</b><i></i></a>
 </div>
 	</div>
-</div>	
+</div>
 <?php } ?>
-					
+
 <script type="text/javascript">
 HabboView.run();
 </script>
 
+<?php echo $analytics; ?>
 </body>
 </html>
 
@@ -682,9 +746,9 @@ include('templates/community/header.php');
 <div id="container">
 	<div id="content" style="position: relative" class="clearfix">
     <div id="column1" class="column">
-				<div class="habblet-container ">		
+				<div class="habblet-container ">
 						<div class="cbb clearfix red ">
-	
+
 							<h2 class="title">Page not found!
 							</h2>
 						<div id="notfound-content" class="box-content">
@@ -700,17 +764,17 @@ include('templates/community/header.php');
 	</form>
     </p>
 </div>
-	
-						
+
+
 					</div>
 				</div>
 				<script type="text/javascript">if (!$(document.body).hasClassName('process-template')) { Rounder.init(); }</script>
-			 
+
 </div>
 <div id="column2" class="column">
-				<div class="habblet-container ">		
+				<div class="habblet-container ">
 						<div class="cbb clearfix green ">
-	
+
 							<h2 class="title">Were you looking for...
 							</h2>
 						<div id="notfound-looking-for" class="box-content">
@@ -726,12 +790,12 @@ include('templates/community/header.php');
      <p><b>How to get Credits?</b><br/>
     Have a look at the <a href="credits.php">Credits</a> page.</p>
 </div>
-	
-						
+
+
 					</div>
 				</div>
 				<script type="text/javascript">if (!$(document.body).hasClassName('process-template')) { Rounder.init(); }</script>
-			 
+
 </div>
 
 <?php

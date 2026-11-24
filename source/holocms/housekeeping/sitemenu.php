@@ -34,6 +34,39 @@ if($hkzone !== true){ header("Location: index.php?throwBack=true"); exit; }
 <br />
 
  <div class='menuouterwrap'>
+  <div class='menucatwrap'><img src='./images/menu_title_bullet.gif' style='vertical-align:bottom' border='0' /> Collectables</div>
+  
+<div class='menulinkwrap'>&nbsp;
+<img src='./images/item_bullet.gif' border='0' alt='' valign='absmiddle'>&nbsp;
+<a href='./index.php?p=collectables' style='text-decoration:none'>Collectables over-view</a>
+</div>
+
+<div class='menulinkwrap'>&nbsp;
+<img src='./images/item_bullet.gif' border='0' alt='' valign='absmiddle'>&nbsp;
+<a href='./index.php?p=collectables_edit&a=add' style='text-decoration:none'>Add collectables</a>
+</div>
+
+  </div>
+  
+  <br / >
+
+ <div class='menuouterwrap'>
+  <div class='menucatwrap'><img src='./images/menu_title_bullet.gif' style='vertical-align:bottom' border='0' /> Recommended Items</div>
+
+<div class='menulinkwrap'>&nbsp;
+<img src='./images/item_bullet.gif' border='0' alt='' valign='absmiddle'>&nbsp;
+<a href='./index.php?p=recommendedm' style='text-decoration:none'>Manage Recommended Items</a>
+</div>
+
+<div class='menulinkwrap'>&nbsp;
+<img src='./images/item_bullet.gif' border='0' alt='' valign='absmiddle'>&nbsp;
+<a href='./index.php?p=recommendede' style='text-decoration:none'>Add Recommended Items</a>
+</div>
+
+</div>
+<br />
+
+ <div class='menuouterwrap'>
   <div class='menucatwrap'><img src='./images/menu_title_bullet.gif' style='vertical-align:bottom' border='0' /> Content Management</div>
   
 <div class='menulinkwrap'>&nbsp;
@@ -49,6 +82,21 @@ if($hkzone !== true){ header("Location: index.php?throwBack=true"); exit; }
 <div class='menulinkwrap'>&nbsp;
 <img src='./images/item_bullet.gif' border='0' alt='' valign='absmiddle'>&nbsp;
 <a href='./index.php?p=add_homes' style='text-decoration:none'>Add stickers or backgrounds to homes catalogue</a>
+</div>
+
+<div class='menulinkwrap'>&nbsp;
+<img src='./images/item_bullet.gif' border='0' alt='' valign='absmiddle'>&nbsp;
+<a href='./index.php?p=faq' style='text-decoration:none'>Manage FAQ Items</a>
+</div>
+
+<div class='menulinkwrap'>&nbsp;
+<img src='./images/item_bullet.gif' border='0' alt='' valign='absmiddle'>&nbsp;
+<a href='./index.php?p=newsletter' style='text-decoration:none'>Compose Newsletter</a>
+</div>
+
+<div class='menulinkwrap'>&nbsp;
+<img src='./images/item_bullet.gif' border='0' alt='' valign='absmiddle'>&nbsp;
+<a href='./index.php?p=content&category=5&do=jumpCategory' style='text-decoration:none'>Newsletter settings</a>
 </div>
 
 <div class='menulinkwrap'>&nbsp;

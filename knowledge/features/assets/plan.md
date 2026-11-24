@@ -11,7 +11,7 @@ description: A tool fetches Habbo's files into ignored folders, the programs ser
 | A tool | Fetches each file, pinned by address and checksum, into ignored folders |
 | The programs | Serve Habbo's images and the client files from disk instead of embedding them |
 | The client's scripts | `packages/client-r26/src/game/`, which the game server's protocol work reads ([server 0008](/decisions/server/0008-reverse-engineer-ls-only.md)), fetched or regenerated |
-| Holo's sources | `source/holocms` and `source/holoemu`, where they carry Habbo's images |
+| Holo's sources | `source/holocms-1.3.1` and `source/holoemu`, where they carry Habbo's images |
 | The history | Rewritten once without the files, and pushed with force |
 
 # Decisions

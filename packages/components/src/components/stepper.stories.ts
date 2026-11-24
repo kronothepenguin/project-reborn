@@ -8,7 +8,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Use Stepper to show the steps of a process in one row: a Step with `href` is a step passed, `current` the one open, and a Step with neither one still to come.",
+          "Use Stepper to show the steps of a process in one row: a Step with `href` is a step passed, `current` the one open, and a Step with neither one still to come. Each point is 20px, in proportion to a 12px name.",
       },
     },
   },

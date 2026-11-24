@@ -125,6 +125,11 @@ height and close as possible aligned to right as a group".
 - A page shows a picture, such as an avatar, a badge or an icon: it shows at its own size, sharp.
 - The Me page shows its Groups and Tags boxes: the line under their tabs runs from one edge of the box to the other.
 
+### Shared parts at 12px
+
+- A page shows a stepper, a notice or a field with help: the stepper's points are in proportion to its names, the
+  notice's text is the page's size, and the help line is grey beside its label.
+
 ## Holo's colours
 
 - A page shows one of Holo's colours that Tailwind's palette holds within the margin: it uses that class.
@@ -144,10 +149,13 @@ height and close as possible aligned to right as a group".
   picture and the Me page's hotel view do.
 - A box shows tabs: the line in the box's colour runs under the tabs from one edge of the box to the other.
 
-### Shared parts at 12px
+### The homes inside the navigation
 
-- A page shows a stepper, a notice or a field with help: the stepper's points are in proportion to its names, the
-  notice's text is the page's size, and the help line is grey beside its label.
+- A visitor opens a habbo's home or a group's page: its box is as wide as the sub-navigation, which is the same as on
+  every other page.
+- A habbo or a group's owner edits the page: the canvas is 752px wide for everyone, and a widget, a sticker or a note
+  stays inside it.
+- A visitor opens a home: it shows no advert column.
 
 # Open questions
 

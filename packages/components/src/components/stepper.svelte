@@ -15,7 +15,7 @@
 <ol
   {...rest}
   class={[
-    "flex flex-wrap items-center gap-x-2 gap-y-2 [counter-reset:step] max-sm:gap-x-1.5",
+    "flex flex-wrap items-center gap-1.5 [counter-reset:step]",
     className,
   ]}
 >

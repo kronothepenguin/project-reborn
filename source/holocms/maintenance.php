@@ -5,7 +5,7 @@
 | Copyright © 2008 Meth0d
 +----------------------------------------------------+
 | HoloCMS is provided "as is" and comes without
-| warrenty of any kind. 
+| warrenty of any kind.
 +---------------------------------------------------*/
 
 $is_maintenance = true;
@@ -24,7 +24,7 @@ exit;
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="content-type" content="text/html;charset=ISO-8859-1" />
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <title><?php echo $shortname; ?></title>
 
 <link href="./web-gallery/maintenance/style.css" type="text/css" rel="stylesheet" />
@@ -92,6 +92,6 @@ exit;
 	</div>
 	<div id="footer-container"><center><a href='./housekeeping/' target='_self'>Administrator Login</a></center></div>
 </div>
+<?php echo $analytics; ?>
 </body>
 </html>
-
