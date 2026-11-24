@@ -56,6 +56,13 @@ The site is Holo's, at Holo's own sizes, in Tailwind's closest common classes.
   and members widgets and the profile's tags on a raster, and another offline picture, which `source/holocms` takes
   from Habbo's gone CDN or lacks.
 
+## The colours
+
+A colour of Holo's takes the Tailwind class closest to it, when that class lies within a margin of distance. Beyond the
+margin, the palette gains a shade: a theme colour in one shared stylesheet, named by the nearest hue's family and a
+number between its neighbours, such as `red-550` for Holo's #d64242. `tools/tw-color` measures the distance, proposes
+the shade, and knows the shades added.
+
 ## The tabs
 
 The main tabs are drawn in CSS, as `Button` draws its raised face: an outline, a lighter upper half and a darker lower
@@ -191,6 +198,12 @@ Of 2026-11-23, each the user's words or choice among options put to them:
 - The user passed the first cloned pages ("me looks good, community too") and named the next faults: the forum's box
   and a home's canvas and profile widget. Housekeeping and the installer take the site's text size ("make installer
   and reborn same text-xs font-size as the site for now"; the master reads "reborn" as housekeeping).
+- The sub-navigation is the same on every page of the community layout, and the forum shrinks to it ("i prefer to
+  shrink the content instead of growing the nav, nav must look the same for all pages of community layout"). It
+  replaces the wide sub-navigation of the forum; the homes and the groups wait for the user's word.
+- Tailwind's palette gains shades for Holo's colours beyond a margin of distance, and the tool learns them (the user's
+  idea, in the task's words).
+- The stepper's points, the notice and a field's help line are fitted to 12px ("yes, i think").
 
 Earlier:
 

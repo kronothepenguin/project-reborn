@@ -135,6 +135,23 @@ height and close as possible aligned to right as a group".
   picture and the Me page's hotel view do.
 - A box shows tabs: the line in the box's colour runs under the tabs from one edge of the box to the other.
 
+### The forum inside the navigation
+
+- A visitor opens any page of the community layout: the sub-navigation has the same width and place.
+- A visitor opens the discussion board or a thread: its box is as wide as the sub-navigation, and its rows fill it.
+
+### Shared parts at 12px
+
+- A page shows a stepper, a notice or a field with help: the stepper's points are in proportion to its names, the
+  notice's text is the page's size, and the help line is grey beside its label.
+
+### Holo's colours
+
+- A page shows one of Holo's colours that Tailwind's palette holds within the margin: it uses that class.
+- A page shows one of Holo's colours beyond the margin: it uses a new shade of the nearest family, of Holo's exact
+  colour.
+- A text stands on a coloured panel: it reads clearly, as Holo's.
+
 # Open questions
 
 - Four questions of [the redesign
