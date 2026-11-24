@@ -13,8 +13,10 @@ import Document from "../../layouts/document.astro";
   description="[[ .Name ]] is a virtual world where you can meet and make friends."
   keywords="[[ .ShortName ]],virtual world,play games,enter competitions,make friends"
 >
-  <main class="flex min-h-screen items-center justify-center p-2">
-    <div class="w-full max-w-md text-sm">
+  <!-- Habbo's habboclient.css, which Holo's page loads: a black page and the
+       box centred 88px under the top of the content. -->
+  <main class="min-h-screen bg-black pt-[90px]">
+    <div class="mx-auto w-[456px] pr-2 text-xs [&_p]:pb-3">
       [[ if eq .Key "connection_failed" ]]
       <Card color="orange">
         <h2 slot="header">Connection to [[ .Name ]] failed.</h2>
@@ -41,9 +43,7 @@ import Document from "../../layouts/document.astro";
       <Card color="orange">
         <h2 slot="header">Sign in</h2>
         <p class="text-center">
-          In order to use the game client and the complete website, please
-          <a href="/" target="_self" class="underline"><strong>sign in</strong></a>! If you forgot your username or
-          password, please click <a href="/forgot" class="underline">here</a>.
+          In order to use the game client and the complete website, please <a href="/" target="_self" class="text-orange-500 underline"><strong>sign in</strong></a>! If you forgot your username or password, please click <a href="/forgot" class="text-orange-500 underline">here</a>.
         </p>
       </Card>
       [[ end ]]
