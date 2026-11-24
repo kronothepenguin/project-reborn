@@ -1,9 +1,8 @@
 // Holo's myhabbo pages, the board, a thread, a home and a group's page, in
-// view and in edit, on a screen 1366px wide: the board and a thread stand
-// under the community layout's own sub-navigation, their box as wide and their
-// rows filling it; a home and a group's page run the page's 930px under a
-// sub-navigation as wide; the line under a box's title runs the box's width, a
-// home's canvas fills its box, and every widget and note is whole, its title
+// view and in edit, on a screen 1366px wide: each stands under the community
+// layout's own sub-navigation, its box as wide; the board's rows fill it; the
+// line under a box's title runs the box's width, a home's 752px canvas fills its
+// box, the edit toolbar spans it, and every widget and note is whole, its title
 // bar and its body the same width. Screenshots of each page, and of the board's
 // new thread form and a thread's reply form.
 import { session } from "../lib/staff.mjs";
@@ -129,29 +128,36 @@ export default async function (t) {
           const wrapper = r(document.querySelector("#mypage-wrapper"));
           const bg = r(document.querySelector("#mypage-bg"));
           const playground = r(document.querySelector("#playground"));
-          return { wrapper: [wrapper.left, wrapper.right], bg: [bg.left, bg.right], playground: [playground.left, playground.width] };
+          const toolbar = [...document.querySelectorAll("#mypage-wrapper button, #mypage-wrapper a")]
+            .filter((el) => ["Inventory", "Cancel"].includes(el.innerText.trim()))
+            .map((el) => r(el));
+          return {
+            wrapper: [wrapper.left, wrapper.right],
+            bg: [bg.left, bg.right],
+            playground: [playground.left, playground.width],
+            toolbar: toolbar.length === 2 ? [toolbar[0].left - wrapper.left, wrapper.right - toolbar[1].right] : null,
+          };
         })),
       });
     }
   }
 
   const forum = frames.filter((f) => f.name === "board" || f.name === "thread");
-  const homes = frames.filter((f) => f.name !== "board" && f.name !== "thread");
   check(
-    "the board and a thread show the community page's sub-navigation, in the same width and place",
-    forum.every((f) => JSON.stringify(f.nav) === JSON.stringify(community.nav) && f.nav.width === 761),
-    JSON.stringify({ community: community.nav, forum: forum.map(({ name, nav }) => ({ name, nav })) }),
+    "the board, a thread, a home and a group's page show the community page's sub-navigation, in the same width and place",
+    frames.every((f) => JSON.stringify(f.nav) === JSON.stringify(community.nav) && f.nav.width === 761),
+    JSON.stringify({ community: community.nav, pages: frames.map(({ name, nav }) => ({ name, nav })) }),
   );
   check(
-    "the board's and a thread's box is as wide as the sub-navigation, under its edges, with the footer of the community page",
-    forum.every(
+    "each one's box is as wide as the sub-navigation, under its edges, with the footer of the community page",
+    frames.every(
       (f) =>
         f.wrapper.left === f.nav.left &&
         f.wrapper.right === f.nav.right &&
         f.footer.left === community.footer.left &&
         f.footer.right === community.footer.right,
     ),
-    JSON.stringify(forum.map(({ name, wrapper, nav, footer }) => ({ name, wrapper, nav, footer }))),
+    JSON.stringify(frames.map(({ name, wrapper, nav, footer }) => ({ name, wrapper, nav, footer }))),
   );
   check(
     "the board's and a thread's rows fill the box from one side of its frame to the other",
@@ -159,31 +165,22 @@ export default async function (t) {
     JSON.stringify(forum.map(({ name, wrapper, table }) => ({ name, wrapper, table }))),
   );
   check(
-    "a home and a group's page stand in a box of the page's 930px, under a sub-navigation as wide, with the footer centred under both",
-    homes.every(
-      (f) =>
-        f.wrapper.width === 930 &&
-        f.wrapper.left === f.main.left &&
-        f.nav.left === f.wrapper.left + 1 &&
-        f.nav.right === f.wrapper.right - 1 &&
-        Math.abs(f.footer.left - f.wrapper.left - (f.wrapper.right - f.footer.right)) <= 1,
-    ),
-    JSON.stringify(homes.map(({ name, wrapper, nav, footer }) => ({ name, wrapper, nav, footer }))),
-  );
-  check(
     "the line under the box's title runs from one edge of the box to the other",
     frames.every((f) => f.line.height === "1px" && f.line.left === "0px" && f.line.right === "0px" && f.row.width === f.wrapper.width - 2),
     JSON.stringify(frames.map(({ name, row, line }) => ({ name, row, line }))),
   );
   check(
-    "a home's canvas fills its box from edge to edge, its playground Holo's 752px, or 922px for a group or a club member, 3px in",
+    "a home's and a group's canvas fills its box from edge to edge, its playground 752px, 3px in, in view and in edit",
     canvases.every(
-      (c) =>
-        c.bg[0] === c.wrapper[0] + 1 &&
-        c.bg[1] === c.wrapper[1] - 1 &&
-        c.playground[0] === c.bg[0] + (c.name.endsWith("edit") ? 4 : 3) &&
-        [752, 922].includes(c.playground[1] - (c.name.endsWith("edit") ? 2 : 0)),
+      (c) => c.bg[0] === c.wrapper[0] + 1 && c.bg[1] === c.wrapper[1] - 1 && c.playground[0] === c.bg[0] + 3 && c.playground[1] === 752,
     ),
+    JSON.stringify(canvases),
+  );
+  check(
+    "the edit toolbar spans the box, Inventory and Cancel as far from its edges",
+    canvases
+      .filter((c) => c.name.endsWith("edit"))
+      .every((c) => c.toolbar && c.toolbar[0] > 0 && Math.abs(c.toolbar[0] - c.toolbar[1]) <= 2),
     JSON.stringify(canvases),
   );
   check(

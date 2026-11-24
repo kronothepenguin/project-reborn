@@ -86,15 +86,11 @@ each side; the selected one is bold and black, a link underlined while pointed a
 
 Holo's: `pr-[170px] pl-1 pb-3`, two lines in `text-xs text-neutral-500`, Holo's 9px #777, links black.
 
-## Wide pages
+## One navigation
 
-Holo's myhabbo pages, a home and a group's page in view and in edit, loaded `myhabbo.css`: the sub-navigation is its
-928px bar (`navi2-borders-wide.png`) with the items 12px further in, and the footer is centred under the whole page.
-Such a page passes `wide` to the layout: `w-[928px] px-3` for the bar and `pr-1` for the footer. The pages Holo drew
-with the plain header, a home or a group not found and a banned habbo, stay narrow.
-
-The board and a thread pass no `wide`: they keep the layout's 761px sub-navigation and its footer, and the forum
-shrinks to it.
+Every page of the layout has the same 761px sub-navigation and footer, the homes and the groups too ("nav must look
+the same for all pages of community layout"). Holo's myhabbo pages drew a 928px bar; that form is gone, and the
+layout takes no `wide` prop.
 
 # Signed-out layout
 
@@ -132,8 +128,8 @@ shrinks to it.
 - The client's error pages stand on Habbo's black page, the box 448px and centred, 88px under the top of the
   content, as Habbo's `habboclient.css` that Holo's page loads.
 - The board, a thread, a home and a group's page stand in `components/homes/mypage-box.astro`, Holo's
-  `#mypage-wrapper`: a `Paper` as wide as what holds it, the page's 930px for a home and a group, 4px under its frame a header row whose line, `blue-400`, runs the
-  box's width 25px down, then the content 6px under the header and 6px over the frame's bottom. The header holds the
+  `#mypage-wrapper`: a `Paper` as wide as what holds it, 4px under its frame a header row whose line, `blue-400`, runs
+  the box's width 25px down, then the content 6px under the header and 6px over the frame's bottom. The header holds the
   page's tools 10px in with 6px under them, its title (`text-sm` bold `sky-500`, 10px in, 8px before what follows) and
   the board's one tab, which covers the line.
 - The board and a thread: `components/forum/forum-box.astro` holds the box at the sub-navigation's 761px and left
@@ -141,13 +137,19 @@ shrinks to it.
   topic list keep Holo's 446 / 166 / 73 / 73px, the last column taking the table's 759th pixel; the author's column
   of a post is 156px. The rows of New Thread, Post reply and the page numbers keep 10px from the frame's right
   (`pr-2.5`). The new thread and reply forms, a 148px label column and the 575px editor, fit inside.
-- Home pages keep their canvas: the playground, its widgets, notes and stickers, and their dialogs keep Holo's pixels.
-  The canvas fills the box from edge to edge, the playground 3px in. The skins' frames (`widget-corner` to
+- A home and a group's page: `components/homes/home-view.astro` holds the box at the sub-navigation's 761px and left
+  edge (`ml-px w-[761px]`), as the forum's. The canvas fills the box from edge to edge, the playground 752px for every
+  habbo and every group, 3px in; Holo's advert column and the club's 922px playground are gone. The playground, its
+  widgets, notes and stickers, and their dialogs keep Holo's pixels. The skins' frames (`widget-corner` to
   `widget-content`, `stickie-header` to `stickie-footer`) are `content-box`, as Holo's widths were the content's, so
   a body is as wide as its title bar. Pictures on the playground stand in the line and its links are underlined, as
-  a browser drew them; both in `@layer base` of `homes.css`, so a class still wins. The ad keeps its own 160x623.
-- In edit, Holo's toolbar: Inventory and Webstore with their icons at the left, Save then Cancel 180px short of the
-  box's right edge; the playground's dotted frame lies outside its 752px.
-  The Help Tool's window and the client's top bar keep theirs too.
+  a browser drew them; both in `@layer base` of `homes.css`, so a class still wins.
+- An item saved past the playground's right edge, from the 922px days, carries its place in `--x` too, and
+  `homes.css` moves it back with `translate: min(0px, 752px - 100% - var(--x))`, so it shows at the edge, whole. The
+  editor moves it there for real on load; the server refuses a place left of 0 or right of 752.
+- In edit, Holo's toolbar: Inventory and Webstore with their icons at the left, Save then Cancel at the right, Cancel
+  as far from the box's right edge as Inventory's icon from its left (`pr-3.5 pl-2.5`). Holo's dotted frames, white
+  around the canvas and black around the playground, are outlines, so the playground keeps its place; the canvas
+  gains 2px above and below (`py-0.5`) for them. The Help Tool's window and the client's top bar keep their sizes.
 - BBCode's `[size=small]` is `text-[10px]` and `[size=large]` `text-base`, Holo's `<font size>` 1 and 3; the quote
   box is `m-[3px] mb-2.5 p-[5px]`. `src/bbcode.ts` of the components and `internal/bbcode` change together.

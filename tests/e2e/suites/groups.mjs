@@ -343,8 +343,8 @@ async function groupPages({ base, browser, check, shot, sql }) {
     members: await members.evaluate((el) => el.style.left),
   };
   check(
-    "the widgets stand where they were placed, on the wide playground",
-    placed.playground >= 922 && placed.info === "25px" && placed.members === "320px",
+    "the widgets stand where they were placed, on the 752-pixel playground",
+    placed.playground === 752 && placed.info === "25px" && placed.members === "320px",
     JSON.stringify(placed),
   );
 

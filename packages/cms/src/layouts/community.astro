@@ -9,7 +9,9 @@ import HotelStatus from "../components/header/hotel-status.astro";
 import MainTabs from "../components/header/main-tabs.astro";
 import MiniLogin from "../components/header/mini-login.astro";
 import MyGroups from "../components/header/my-groups.svelte";
-import SubTabs, { type CommunityTab } from "../components/header/sub-tabs.astro";
+import SubTabs, {
+  type CommunityTab,
+} from "../components/header/sub-tabs.astro";
 import UserMenu from "../components/header/user-menu.astro";
 import OpenHelp from "../components/help/open-help.svelte";
 import Document from "./document.astro";
@@ -18,18 +20,15 @@ interface Props {
   title: string;
   tab: CommunityTab;
   sub: string;
-  // wide is Holo's myhabbo pages, the homes and the groups: the
-  // sub-navigation runs the page's width and the footer is centred under it.
-  wide?: boolean;
 }
 
-const { title, tab, sub, wide = false } = Astro.props;
+const { title, tab, sub } = Astro.props;
 
 // Holo's community page: the 930px page, centred, under a 104px header whose
 // parts stand where Holo's stood: the logo at 16px from the top, the white bar
 // at 190px, the users online at 781px and the main tabs on the header's black
-// bottom line. The sub-navigation is Holo's 761px bar under the tabs, or its
-// 928px bar on a wide page, with the items 12px further in.
+// bottom line. The sub-navigation is Holo's 761px bar under the tabs, the same
+// on every page.
 ---
 
 <Document
@@ -43,7 +42,10 @@ const { title, tab, sub, wide = false } = Astro.props;
   >
     <header class="border-b-2 border-black bg-sky-200 px-2.5">
       <div class="relative mx-auto h-[102px] w-[930px]">
-        <a href="/" class="absolute top-4 left-0 block h-[42px] w-[111px] overflow-hidden">
+        <a
+          href="/"
+          class="absolute top-4 left-0 block h-[42px] w-[111px] overflow-hidden"
+        >
           <img src="/habbo.png" alt="Habbo Hotel" width="111" height="54" />
         </a>
 
@@ -53,12 +55,20 @@ const { title, tab, sub, wide = false } = Astro.props;
             <UserMenu />
           </div>
           <div class="flex items-start justify-between pt-2 pr-0 pl-3">
-            [[ if .Online ]]<EnterHotel />[[ else ]]<HotelStatus />[[ end ]]
+            [[ if .Online ]]
+            <EnterHotel />
+            [[ else ]]
+            <HotelStatus />
+            [[ end ]]
             <HabboSearch />
           </div>
           [[ else ]]
           <div class="pt-4 pl-3">
-            [[ if .Online ]]<EnterHotel />[[ else ]]<HotelStatus />[[ end ]]
+            [[ if .Online ]]
+            <EnterHotel />
+            [[ else ]]
+            <HotelStatus />
+            [[ end ]]
           </div>
           <MiniLogin />
           [[ end ]]
@@ -82,12 +92,7 @@ const { title, tab, sub, wide = false } = Astro.props;
 
     <div class="px-2.5">
       <nav class="mx-auto w-[930px]">
-        <div
-          class:list={[
-            "ml-px rounded-b-md border-x border-b-[3px] border-black/20 bg-white bg-clip-padding pb-1.5",
-            wide ? "w-[928px] px-3" : "w-[761px]",
-          ]}
-        >
+        <div class="ml-px w-[761px] rounded-b-md border-x border-b-[3px] border-black/20 bg-white bg-clip-padding pb-1.5">
           <SubTabs tab={tab} active={sub} />
         </div>
       </nav>
@@ -98,12 +103,25 @@ const { title, tab, sub, wide = false } = Astro.props;
         <slot />
       </main>
 
-      <footer class:list={["mx-auto w-[930px] pb-3 pl-1 text-center text-xs text-neutral-500", wide ? "pr-1" : "pr-[170px]"]}>
-        <p class="pt-1.5"><Link variant="black" href="/">Homepage</Link> | <Link variant="black" href="/disclaimer">Terms of Service</Link> | <Link variant="black" href="/privacy">Privacy Policy</Link></p>
+      <footer class="mx-auto w-[930px] pr-[170px] pb-3 pl-1 text-center text-xs text-neutral-500">
         <p class="pt-1.5">
-          Powered by Project Reborn &copy;<br />HABBO is a registered trademark
-          of Sulake Corporation. All rights reserved to their respective
-          owner(s).
+          <Link variant="black" href="/">
+            Homepage
+          </Link>{" "}
+          |{" "}
+          <Link variant="black" href="/disclaimer">
+            Terms of Service
+          </Link>{" "}
+          |{" "}
+          <Link variant="black" href="/privacy">
+            Privacy Policy
+          </Link>
+        </p>
+        <p class="pt-1.5">
+          Powered by Project Reborn &copy;
+          <br />
+          HABBO is a registered trademark of Sulake Corporation. All rights
+          reserved to their respective owner(s).
         </p>
       </footer>
 

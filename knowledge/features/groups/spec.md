@@ -65,7 +65,7 @@ and a habbo shows its favourite group's badge on the site and in rooms.
 
 ## Group pages
 
-- Anyone opens a group's home: it shows the Group information and Group Members widgets on the 922-pixel playground
+- Anyone opens a group's home: it shows the Group information and Group Members widgets on the 752-pixel playground
   (decision holo-port/0017).
 - Anyone opens a group's home: it writes nothing, and a waiting request stays.
 - Anyone opens an Exclusive group's home: it shows Holo's Exclusive icon.

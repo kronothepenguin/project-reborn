@@ -19,6 +19,13 @@
   box-sizing: content-box;
 }
 
+/* The canvas is 752px for everyone. An item saved further right, when club
+   members and groups had 922px, stands at the canvas's right edge, whole: --x is
+   its saved left, and 100% its own width. The editor moves it there for real. */
+#playground > .movable {
+  translate: min(0px, 752px - 100% - var(--x));
+}
+
 /* Holo's pictures on a home stand in the line, as an <img> does without
    Tailwind's base, so a widget's badges sit side by side, and its links are
    underlined, as a browser draws a link. */

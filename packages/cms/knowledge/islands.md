@@ -30,6 +30,8 @@ description: How the Svelte islands of the CMS read the values Go writes into th
   `<select>`, and `data-widgets`, the widgets the Widgets tab offers.
 - For each widget the element holds `<template id="widget-NAME-template">`, the widget as the page draws it, which the
   editor copies when the widget is placed.
+- The editor keeps an item inside the 752px playground: a drop past an edge goes back. On load it moves an item saved
+  further right to the right edge, where the page shows it, so a save writes that place.
 - `homes/group-info-boxes` listens on the playground for clicks on the groups of any MY GROUPS widget, the ones the
   editor places included, and mounts `homes/group-info-box` in the widget.
 

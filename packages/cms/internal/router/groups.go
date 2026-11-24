@@ -248,13 +248,10 @@ type groupPage struct {
 	HomeID       int64
 	Background   string
 	BackgroundID int64
-	// Wide is always true: Holo gave group homes the wide playground and no club
-	// banner.
-	Wide    bool
-	Items   []homeItem
-	Info    groupInfo
-	Members []groupMember
-	Viewer  groupViewer
+	Items        []homeItem
+	Info         groupInfo
+	Members      []groupMember
+	Viewer       groupViewer
 	// The owner's settings dialog reads these.
 	Access         string
 	NameMax        int
@@ -384,7 +381,6 @@ func (r *Router) newGroupPage(ctx context.Context, group store.Group, editor int
 		NameMax:        settings.Int(ctx, r.deps.Queries, "groups.nameMaxLength"),
 		DescriptionMax: settings.Int(ctx, r.deps.Queries, "groups.descriptionMaxLength"),
 		MaxMembers:     settings.Int(ctx, r.deps.Queries, "groups.maxMembers"),
-		Wide:           true,
 	}
 	home, err := q.GetGroupHome(ctx, group.ID)
 	if err != nil {

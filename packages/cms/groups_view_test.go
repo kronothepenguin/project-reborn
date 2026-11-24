@@ -65,7 +65,7 @@ func TestAnyoneReadsAGroupsHome(t *testing.T) {
 	wantPage(t, rec, http.StatusOK,
 		"groups/id.html",
 		"Group:Retro Club Exclusive:false Private:true",
-		"Background:/c_images/backgrounds2/bg_pattern_abstract2.gif BackgroundID:0 Wide:true",
+		"Background:/c_images/backgrounds2/bg_pattern_abstract2.gif BackgroundID:0",
 		"Info:{Badge:s01010 Name:Retro Club Created:"+group.CreatedAt.UTC().Format("02-01-2006 15:04:05")+" Members:3 Description:For fans of the old days.}",
 		"Members:[{Name:Frank Figure:hd-180-1 Created:27-10-2026 Owner:true Admin:true Favourite:false} {Name:Admin Figure:hd-180-1 Created:27-10-2026 Owner:false Admin:true Favourite:false} {Name:Fan Figure:hd-180-1 Created:27-10-2026 Owner:false Admin:false Favourite:true}]",
 		"Kind:widget Widget:group_info Skin:defaultskin X:25 Y:25 Z:5",

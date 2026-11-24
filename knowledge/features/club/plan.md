@@ -11,7 +11,7 @@ Built:
 | Project | Part |
 | --- | --- |
 | `packages/store` | `club_subscriptions`, the user's periods; `wardrobe_outfits`; `HC1` given to and taken from the user's habbos |
-| `packages/cms` | `/club` and `POST /club/subscriptions`; the club days on the Me and account pages; the wardrobe on Looks; the club skins and wide home |
+| `packages/cms` | `/club` and `POST /club/subscriptions`; the club days on the Me and account pages; the wardrobe on Looks; the club skins |
 | `packages/housekeeping` | The Club settings form and `homes.wardrobeSlots` |
 | `packages/virtual` | The settings `club.*` and `homes.wardrobeSlots` |
 | `packages/auth` | The four club fuses while the club runs |

@@ -66,6 +66,11 @@ height and close as possible aligned to right as a group".
 - A visitor reads a box: Holo's frame, its title bar in Holo's colour and size, and its content inset as Holo's.
 - A visitor opens any page of the community layout: the sub-navigation has the same width and place.
 - A visitor opens the discussion board or a thread: its box is as wide as the sub-navigation, and its rows fill it.
+- A visitor opens a habbo's home or a group's page: its box is as wide as the sub-navigation, which is the same as on
+  every other page.
+- A habbo or a group's owner edits the page: the canvas is 752px wide for everyone, and a widget, a sticker or a note
+  stays inside it.
+- A visitor opens a home: it shows no advert column.
 
 ## Housekeeping
 
@@ -148,14 +153,6 @@ height and close as possible aligned to right as a group".
 - A page shows one of Holo's colours beyond the margin: it uses a new shade of the nearest family, of Holo's exact
   colour.
 - A text stands on a coloured panel: it reads clearly, as Holo's.
-
-### The homes inside the navigation
-
-- A visitor opens a habbo's home or a group's page: its box is as wide as the sub-navigation, which is the same as on
-  every other page.
-- A habbo or a group's owner edits the page: the canvas is 752px wide for everyone, and a widget, a sticker or a note
-  stays inside it.
-- A visitor opens a home: it shows no advert column.
 
 # Open questions
 

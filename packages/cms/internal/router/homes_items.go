@@ -18,9 +18,10 @@ import (
 	"github.com/kronothepenguin/project-reborn/packages/store"
 )
 
-// The playground of a home, wide for club owners, and the most a request carries.
+// The playground of every home and group, 752px for all, and the most a request
+// carries.
 const (
-	playgroundWidth  = 922
+	playgroundWidth  = 752
 	playgroundHeight = 1360
 	maxZ             = 1_000_000
 	maxEditBody      = 1 << 18

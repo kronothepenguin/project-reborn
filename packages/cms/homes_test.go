@@ -374,13 +374,13 @@ func TestSavingTheLayout(t *testing.T) {
 	path := fmt.Sprintf("/homes/%d/layout", home)
 
 	rec := edit(mux, cookie, path, map[string]any{
-		"items":      []map[string]int64{{"id": widget.ID, "x": 922, "y": 1360, "z": 40}, {"id": otherWidget.ID, "x": 1, "y": 1, "z": 1}},
+		"items":      []map[string]int64{{"id": widget.ID, "x": 752, "y": 1360, "z": 40}, {"id": otherWidget.ID, "x": 1, "y": 1, "z": 1}},
 		"background": backgrounds[0].ID,
 	})
 	if rec.Code != http.StatusOK {
 		t.Fatalf("layout = %d %s", rec.Code, rec.Body.String())
 	}
-	if got := itemsOf(t, db, home)[0]; got.X != 922 || got.Y != 1360 || got.Z != 40 {
+	if got := itemsOf(t, db, home)[0]; got.X != 752 || got.Y != 1360 || got.Z != 40 {
 		t.Errorf("widget = %+v", got)
 	}
 	if got := itemsOf(t, db, homeOf(t, db, otherAvatar).ID)[0]; got.X != otherWidget.X {
@@ -390,7 +390,7 @@ func TestSavingTheLayout(t *testing.T) {
 		t.Errorf("background = %+v", got)
 	}
 
-	for _, bad := range []layoutItemBody{{X: -1}, {X: 923}, {Y: 1361}, {Z: -1}} {
+	for _, bad := range []layoutItemBody{{X: -1}, {X: 753}, {Y: 1361}, {Z: -1}} {
 		bad.ID = widget.ID
 		editError(t, edit(mux, cookie, path, map[string]any{"items": []layoutItemBody{bad}}), "Items must stay on the playground.")
 	}
@@ -410,4 +410,29 @@ type layoutItemBody struct {
 	X  int64 `json:"x"`
 	Y  int64 `json:"y"`
 	Z  int64 `json:"z"`
+}
+
+// The canvas is 752px for every habbo and every group, whatever the club says.
+func TestAClubMemberAndAGroupKeepTheSameCanvas(t *testing.T) {
+	db, mux := storeSite(t)
+	userID, avatarID := owner(t, db, "frank@example.com", "Frank", 0)
+	now := time.Now().UTC()
+	clubPeriod(t, db, userID, now.Add(-time.Hour), now.Add(24*time.Hour))
+	home := homeOf(t, db, avatarID).ID
+	widget := itemsOf(t, db, home)[0]
+	club := ownedGroup(t, db, "Club", "open")
+	groupHome := groupHomeOf(t, db, club.ID).ID
+	sticker := placed(t, db, groupHome, "sticker", stickerItem, 0)
+
+	for _, c := range []struct {
+		habbo      string
+		home, item int64
+	}{{"Frank", home, widget.ID}, {"club-owner", groupHome, sticker}} {
+		cookie := login(t, db, c.habbo)
+		path := fmt.Sprintf("/homes/%d/layout", c.home)
+		if rec := edit(mux, cookie, path, map[string]any{"items": []layoutItemBody{{ID: c.item, X: 752, Y: 1}}}); rec.Code != http.StatusOK {
+			t.Errorf("%s saving at the canvas's edge = %d %s", c.habbo, rec.Code, rec.Body)
+		}
+		editError(t, edit(mux, cookie, path, map[string]any{"items": []layoutItemBody{{ID: c.item, X: 753, Y: 1}}}), "Items must stay on the playground.")
+	}
 }

@@ -59,6 +59,7 @@
     }));
     playground = document.getElementById("playground") as HTMLElement;
     for (const item of playground.querySelectorAll<HTMLElement>(".movable")) {
+      inside(item);
       enhance(item);
     }
     countWidgets();
@@ -68,7 +69,9 @@
   // countWidgets finds which of the home's widgets are on the playground, which the
   // inventory greys out, as store.php did.
   function countWidgets() {
-    onPlayground = widgets.filter((name) => playground.querySelector(`.${name}-widget`));
+    onPlayground = widgets.filter((name) =>
+      playground.querySelector(`.${name}-widget`),
+    );
   }
 
   function kindOf(item: HTMLElement): Kind {
@@ -94,7 +97,15 @@
     return Math.max(0, ...movables().map(zOf)) + 1;
   }
 
+  // inside moves an item saved past the canvas's right edge, which the page
+  // shows at the edge, to the edge, so a save keeps it there.
+  function inside(item: HTMLElement) {
+    item.style.left = `${Math.min(item.offsetLeft, playground.clientWidth - item.offsetWidth)}px`;
+    item.style.removeProperty("--x");
+  }
+
   function at(element: HTMLElement, item: Placed) {
+    element.style.removeProperty("--x");
     element.id = `${item.kind === "note" ? "stickie" : item.kind}-${item.id}`;
     element.style.left = `${item.x}px`;
     element.style.top = `${item.y}px`;
@@ -105,10 +116,15 @@
   function place(items: Placed[]) {
     for (const item of items) {
       if (item.kind === "widget") {
-        const template = document.getElementById(`widget-${item.widget}-template`) as HTMLTemplateElement;
-        const element = template.content.firstElementChild?.cloneNode(true) as HTMLElement;
+        const template = document.getElementById(
+          `widget-${item.widget}-template`,
+        ) as HTMLTemplateElement;
+        const element = template.content.firstElementChild?.cloneNode(
+          true,
+        ) as HTMLElement;
         at(element, item);
-        (element.querySelector(".widget-corner") as HTMLElement).id = `widget-${item.id}-handle`;
+        (element.querySelector(".widget-corner") as HTMLElement).id =
+          `widget-${item.id}-handle`;
         playground.append(element);
         enhance(element);
         countWidgets();
@@ -126,7 +142,8 @@
         element.className = "movable stickie absolute";
         element.dataset.noteSkin = item.skin;
         element.innerHTML = `<div data-note-skin="${item.skin}"><div class="stickie-header"><h3></h3><div class="clear-both"></div></div><div class="stickie-body"><div class="stickie-content"><div class="stickie-markup"></div><div class="stickie-footer"></div></div></div></div>`;
-        (element.querySelector(".stickie-markup") as HTMLElement).innerHTML = item.html ?? "";
+        (element.querySelector(".stickie-markup") as HTMLElement).innerHTML =
+          item.html ?? "";
       }
       playground.append(element);
       enhance(element);
@@ -176,14 +193,26 @@
       item.querySelector("h3")?.prepend(button);
     }
 
-    const handle = kind === "widget" ? (item.querySelector(".widget-corner") as HTMLElement) : item;
+    const handle =
+      kind === "widget"
+        ? (item.querySelector(".widget-corner") as HTMLElement)
+        : item;
     handle.addEventListener("pointerdown", (event) => drag(event, item));
   }
 
   function drag(event: PointerEvent, item: HTMLElement) {
-    if (event.button !== 0 || (event.target as HTMLElement).closest(".edit-button")) return;
+    if (
+      event.button !== 0 ||
+      (event.target as HTMLElement).closest(".edit-button")
+    )
+      return;
     event.preventDefault();
-    const start = { left: item.offsetLeft, top: item.offsetTop, x: event.clientX, y: event.clientY };
+    const start = {
+      left: item.offsetLeft,
+      top: item.offsetTop,
+      x: event.clientX,
+      y: event.clientY,
+    };
     let moved = false;
     item.setPointerCapture(event.pointerId);
     const previousZ = item.style.zIndex;
@@ -217,7 +246,9 @@
     event.stopPropagation();
     const offset = button.getBoundingClientRect();
     const kind = kindOf(item);
-    const skinned = item.querySelector<HTMLElement>("[data-widget-skin], [data-note-skin]");
+    const skinned = item.querySelector<HTMLElement>(
+      "[data-widget-skin], [data-note-skin]",
+    );
     skin = skinned?.dataset.widgetSkin ?? skinned?.dataset.noteSkin ?? "";
     chosen = {
       element: item,
@@ -235,7 +266,10 @@
   async function post(path: string, body: object) {
     const response = await fetch(path, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
       body: JSON.stringify(body),
     });
     return response;
@@ -246,9 +280,16 @@
     const { element, id } = chosen;
     const response = await post(`/homes/${home}/items/${id}/skin`, { skin });
     if (response.ok) {
-      for (const skinned of [element, ...element.querySelectorAll<HTMLElement>("[data-widget-skin], [data-note-skin]")]) {
-        if (skinned.dataset.widgetSkin !== undefined) skinned.dataset.widgetSkin = skin;
-        if (skinned.dataset.noteSkin !== undefined) skinned.dataset.noteSkin = skin;
+      for (const skinned of [
+        element,
+        ...element.querySelectorAll<HTMLElement>(
+          "[data-widget-skin], [data-note-skin]",
+        ),
+      ]) {
+        if (skinned.dataset.widgetSkin !== undefined)
+          skinned.dataset.widgetSkin = skin;
+        if (skinned.dataset.noteSkin !== undefined)
+          skinned.dataset.noteSkin = skin;
       }
     } else {
       failure = (await response.json()).error ?? "";
@@ -277,7 +318,9 @@
       y: item.offsetTop,
       z: zOf(item),
     }));
-    const background = Number(document.getElementById("mypage-bg")?.dataset.background ?? 0);
+    const background = Number(
+      document.getElementById("mypage-bg")?.dataset.background ?? 0,
+    );
     const response = await post(`/homes/${home}/layout`, { items, background });
     if (response.ok) {
       window.location.href = view;
@@ -289,19 +332,30 @@
 </script>
 
 <!-- Holo's #top-toolbar: Inventory and Webstore with their icons at the left,
-     Save then Cancel at the right, 180px short of the box's edge, over the ad. -->
-<div class="flex items-start justify-between pr-[180px] pl-2.5">
+     Save then Cancel at the right, as far from the box's right edge as Inventory's
+     icon from its left, within the canvas as Holo's. -->
+<div class="flex items-start justify-between pr-3.5 pl-2.5">
   <ul class="mt-0.5 mb-[3px] flex gap-[5px]">
     <li>
-      <button type="button" class="{tool} bg-position-[0_0]" onclick={() => (dialog = "inventory")}>Inventory</button>
+      <button
+        type="button"
+        class="{tool} bg-position-[0_0]"
+        onclick={() => (dialog = "inventory")}>Inventory</button
+      >
     </li>
     <li>
-      <button type="button" class="{tool} bg-position-[0_-47px]" onclick={() => (dialog = "webstore")}>Webstore</button>
+      <button
+        type="button"
+        class="{tool} bg-position-[0_-47px]"
+        onclick={() => (dialog = "webstore")}>Webstore</button
+      >
     </li>
   </ul>
   <div class="mb-2 flex flex-row-reverse gap-2.5">
     <Button variant="red" size="compact" href={view}>
-      <span class="flex items-center gap-1"><Icon variant="cancel" />Cancel</span>
+      <span class="flex items-center gap-1"
+        ><Icon variant="cancel" />Cancel</span
+      >
     </Button>
     <Button variant="green" size="compact" disabled={saving} onclick={save}>
       <span class="flex items-center gap-1"><Icon variant="save" />Save</span>
@@ -326,7 +380,12 @@
 {/if}
 
 {#if failure}
-  <div class="mx-2.5 mb-[3px] rounded border border-red-600 bg-white p-1 text-red-600" role="alert">{failure}</div>
+  <div
+    class="mx-2.5 mb-[3px] rounded border border-red-600 bg-white p-1 text-red-600"
+    role="alert"
+  >
+    {failure}
+  </div>
 {/if}
 
 {#if chosen}
@@ -340,25 +399,47 @@
     onclick={(event) => event.stopPropagation()}
     onkeydown={(event) => event.key === "Escape" && close()}
   >
-    <div class="mb-1.5 flex items-center border-b border-dashed border-black pb-[3px]">
+    <div
+      class="mb-1.5 flex items-center border-b border-dashed border-black pb-[3px]"
+    >
       <h3 class="flex-1 text-center text-[10px] font-bold">Edit</h3>
-      <button type="button" class="cursor-pointer px-1" aria-label="Close" onclick={close}>×</button>
+      <button
+        type="button"
+        class="cursor-pointer px-1"
+        aria-label="Close"
+        onclick={close}>×</button
+      >
     </div>
     {#if chosen.kind !== "sticker"}
-      <select class="mb-[3px] w-full border border-neutral-500" aria-label="Skin" bind:value={skin} onchange={changeSkin}>
+      <select
+        class="mb-[3px] w-full border border-neutral-500"
+        aria-label="Skin"
+        bind:value={skin}
+        onchange={changeSkin}
+      >
         {#each skins as option (option.value)}
           <option value={option.value}>{option.label}</option>
         {/each}
       </select>
     {/if}
     {#if chosen.kind === "stickie" && !group}
-      <p class="pt-[1em]">Warning! If you click 'Remove', the note will be permanently deleted.</p>
+      <p class="pt-[1em]">
+        Warning! If you click 'Remove', the note will be permanently deleted.
+      </p>
     {/if}
     {#if chosen.element.dataset.foreign === "true"}
-      <p>This item belongs to another user. If you remove it, it will return to their inventory.</p>
+      <p>
+        This item belongs to another user. If you remove it, it will return to
+        their inventory.
+      </p>
     {/if}
     {#if !chosen.element.classList.contains("profile-widget") && !chosen.element.classList.contains("group-info-widget")}
-      <input type="button" class="w-full cursor-pointer border border-black bg-mauve-300" value="Remove" onclick={remove} />
+      <input
+        type="button"
+        class="w-full cursor-pointer border border-black bg-mauve-300"
+        value="Remove"
+        onclick={remove}
+      />
     {/if}
   </div>
 {/if}

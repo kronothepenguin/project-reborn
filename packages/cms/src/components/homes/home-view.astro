@@ -14,17 +14,25 @@ interface Props {
 }
 
 const { editing = false } = Astro.props;
+
+// The box stands under the community layout's sub-navigation, as wide and at its
+// left edge, as the forum's does. The canvas is 752px for everyone, 3px in, with
+// Holo's dotted frames in edit drawn as outlines, so the canvas keeps its place.
 ---
 
-<MypageBox data-mode={editing ? "edit" : "view"}>
-  <Fragment slot="header">
-    <slot name="header">
-      {
-        !editing && (
+<div class="ml-px w-[761px]">
+  <MypageBox data-mode={editing ? "edit" : "view"}>
+    <Fragment slot="header">
+      <slot name="header">
+        {!editing && (
           <Fragment>
             [[ if .CanEdit ]]
             <div class="mb-1.5 ml-2.5">
-              <Button variant="dark" size="compact" href="/home/[[ .OwnerPath ]]/edit">
+              <Button
+                variant="dark"
+                size="compact"
+                href="/home/[[ .OwnerPath ]]/edit"
+              >
                 <span class="flex items-center gap-1">
                   <Icon variant="edit" />
                   Edit
@@ -33,55 +41,52 @@ const { editing = false } = Astro.props;
             </div>
             [[ end ]]
           </Fragment>
-        )
-      }
-      <h2 class="mr-2 pt-1 pl-2.5 text-sm font-bold text-sky-500">[[ .Owner ]]</h2>
-    </slot>
-  </Fragment>
-  <div>
-    <slot />
-    <div
-      id="mypage-bg"
-      class:list={["relative px-[3px]", editing && "border border-dotted border-white"]}
-      style="background-image: url('[[ .Background ]]')"
-      data-background="[[ .BackgroundID ]]"
-    >
+        )}
+        <h2 class="mr-2 pt-1 pl-2.5 text-sm font-bold text-sky-500">
+          [[ .Owner ]]
+        </h2>
+      </slot>
+    </Fragment>
+    <div>
+      <slot />
       <div
-        id="playground"
+        id="mypage-bg"
         class:list={[
-          // Tailwind finds a class only between spaces, so each stands apart from the markers.
-          "[[ if .Wide ]] w-[922px] [[ else ]] w-[752px] [[ end ]] relative h-[1360px] overflow-hidden",
-          editing && "box-content border border-dotted border-black",
+          "relative px-[3px]",
+          editing && "py-0.5 outline outline-dotted outline-white -outline-offset-1",
         ]}
+        style="background-image: url('[[ .Background ]]')"
+        data-background="[[ .BackgroundID ]]"
       >
-        [[ range .Items ]] [[ if eq .Kind "sticker" ]]
         <div
-          class="movable sticker absolute"
-          id="sticker-[[ .ID ]]"
-          style="left: [[ .X ]]px; top: [[ .Y ]]px; z-index: [[ .Z ]]"
-          data-foreign={editing ? "[[ .Foreign ]]" : undefined}
+          id="playground"
+          class:list={[
+            "relative h-[1360px] w-[752px] overflow-hidden",
+            editing && "outline outline-dotted outline-black",
+          ]}
         >
-          <img src="[[ .Image ]]" alt="" />
+          [[ range .Items ]] [[ if eq .Kind "sticker" ]]
+          <div
+            class="movable sticker absolute"
+            id="sticker-[[ .ID ]]"
+            style="left: [[ .X ]]px; --x: [[ .X ]]px; top: [[ .Y ]]px; z-index: [[ .Z ]]"
+            data-foreign={editing ? "[[ .Foreign ]]" : undefined}
+          >
+            <img src="[[ .Image ]]" alt="" />
+          </div>
+          [[ else if eq .Kind "note" ]]
+          <Note editing={editing} />
+          [[ else if eq .Widget "profile" ]]
+          <ProfileWidget />
+          [[ else if eq .Widget "group_info" ]]
+          <GroupInfoWidget />
+          [[ else if eq .Widget "members" ]]
+          <MembersWidget />
+          [[ else if eq .Widget "groups" ]]
+          <GroupsWidget />
+          [[ end ]] [[ end ]]
         </div>
-        [[ else if eq .Kind "note" ]]
-        <Note editing={editing} />
-        [[ else if eq .Widget "profile" ]]
-        <ProfileWidget />
-        [[ else if eq .Widget "group_info" ]]
-        <GroupInfoWidget />
-        [[ else if eq .Widget "members" ]]
-        <MembersWidget />
-        [[ else if eq .Widget "groups" ]]
-        <GroupsWidget />
-        [[ end ]] [[ end ]]
       </div>
-      [[ if not .Wide ]]
-      <div class="absolute top-0 right-0 z-[10000] w-40 text-right">
-        <a href="/club">
-          <img src="/myhabbo/hc_habbohome_banner_holo.png" width="160" height="623" alt="hc habbohome banner holo" />
-        </a>
-      </div>
-      [[ end ]]
     </div>
-  </div>
-</MypageBox>
+  </MypageBox>
+</div>

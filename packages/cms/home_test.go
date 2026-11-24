@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
-	"time"
 
 	"github.com/kronothepenguin/project-reborn/packages/auth"
 	"github.com/kronothepenguin/project-reborn/packages/store"
@@ -105,17 +104,6 @@ func TestTheProfileWidgetShowsTheBadgeAndTheTags(t *testing.T) {
 	}
 
 	wantPage(t, serve(mux, "GET", "/home/Frank", nil, nil), http.StatusOK, "Badge:/c_images/album1584/ADM.gif", "Tags:[holo retro]")
-}
-
-func TestAClubOwnersHomeIsWide(t *testing.T) {
-	db, mux := storeSite(t)
-	userID, _ := owner(t, db, "frank@example.com", "Frank", 0)
-	wantPage(t, serve(mux, "GET", "/home/Frank", nil, nil), http.StatusOK, "Wide:false")
-	if _, err := db.ExecContext(t.Context(), `INSERT INTO club_subscriptions (user_id, starts_at, ends_at, created_at) VALUES (?, ?, ?, ?)`,
-		userID, time.Now().UTC().Add(-time.Hour), time.Now().UTC().Add(24*time.Hour), testNow); err != nil {
-		t.Fatal(err)
-	}
-	wantPage(t, serve(mux, "GET", "/home/Frank", nil, nil), http.StatusOK, "Wide:true")
 }
 
 // A habbo's name may hold ?, which an address takes for the start of a query.

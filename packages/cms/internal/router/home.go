@@ -34,10 +34,8 @@ type homePage struct {
 	Background string
 	// BackgroundID is the store item of the background, 0 for Holo's default.
 	BackgroundID int64
-	// Wide is a home whose owner has club: no club banner, a wider playground.
-	Wide    bool
-	Items   []homeItem
-	Profile profileWidget
+	Items        []homeItem
+	Profile      profileWidget
 	// Groups fill the MY GROUPS widget: the habbo's groups, in the order it asked
 	// to join them, as user_profile.php listed them.
 	Groups []homeGroup
@@ -169,7 +167,8 @@ func (r *Router) newHomePage(ctx context.Context, avatar store.Avatar) (homePage
 	if page.Background, page.BackgroundID, err = r.homeBackground(ctx, home); err != nil {
 		return page, err
 	}
-	if page.Wide, err = r.inClub(ctx, avatar.UserID); err != nil {
+	// The home reads its owner's club, which ends a club that ran out, as Holo's did.
+	if _, err = r.inClub(ctx, avatar.UserID); err != nil {
 		return page, err
 	}
 	if page.Profile, err = r.profileWidget(ctx, avatar, home.ProfileID.Int64); err != nil {

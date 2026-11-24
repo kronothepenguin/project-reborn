@@ -15,8 +15,8 @@ export const prepare = ({ sql }) => {
 
 // P6 from end to end: Admin-1 makes a voucher in housekeeping, Frank redeems it on
 // the credits page and buys a month of the club, which shows wherever the site
-// counts it and opens the club's skins, the wide playground and the wardrobe
-// until it ends.
+// counts it and opens the club's skins and the wardrobe until it ends; the
+// home's playground stays 752px throughout.
 export default async function (t) {
   const { base, check, hk, shot, sql } = t;
   const [[frank]] = sql(
@@ -134,9 +134,9 @@ export default async function (t) {
 
   const before = await perks();
   check(
-    "outside the club, Frank's home is narrow with the club banner, the editor offers no club skin, and the looks have no wardrobe",
+    "outside the club, Frank's home has the 752-pixel playground with no advert, the editor offers no club skin, and the looks have no wardrobe",
     before.playground === 752 &&
-      before.banner === 1 &&
+      before.banner === 0 &&
       before.clubSkins.length === 0 &&
       before.wardrobe === 0 &&
       before.join === 1 &&
@@ -193,10 +193,10 @@ export default async function (t) {
     JSON.stringify(during),
   );
   check(
-    "in the club, the home editor offers the club skins, the playground is 922 pixels wide and the looks show the wardrobe",
+    "in the club, the home editor offers the club skins, the playground stays 752 pixels wide and the looks show the wardrobe",
     JSON.stringify(during.clubSkins) ===
       JSON.stringify(["HC Bling", "HC Scifi"]) &&
-      during.playground === 922 &&
+      during.playground === 752 &&
       during.banner === 0 &&
       during.wardrobe === 5,
     JSON.stringify(during),
@@ -216,7 +216,7 @@ export default async function (t) {
   );
   const after = await perks();
   check(
-    "once the club ends, its days, skins, wide playground and wardrobe go",
+    "once the club ends, its days, skins and wardrobe go",
     JSON.stringify(after) === JSON.stringify(before),
     JSON.stringify(after),
   );

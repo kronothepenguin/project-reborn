@@ -371,7 +371,7 @@ func TestHC1LeavesWhenTheHomeOfAnEndedClubIsRead(t *testing.T) {
 	now := time.Now().UTC()
 	clubPeriod(t, db, userID, now.AddDate(0, 0, -31), now.Add(-time.Minute))
 	wears(t, db, frank, "HC1")
-	wantPage(t, serve(mux, "GET", "/home/Frank", nil, nil), http.StatusOK, "Wide:false")
+	wantPage(t, serve(mux, "GET", "/home/Frank", nil, nil), http.StatusOK, "Owner:Frank")
 	if got := slices.Collect(maps.Keys(badgesOf(t, db, frank))); len(got) != 0 {
 		t.Errorf("the owner whose club ended has %v", got)
 	}

@@ -13,7 +13,7 @@ const { editing = false } = Astro.props;
   class="movable stickie absolute"
   id="stickie-[[ .ID ]]"
   data-note-skin="[[ .Skin ]]"
-  style="left: [[ .X ]]px; top: [[ .Y ]]px; z-index: [[ .Z ]]"
+  style="left: [[ .X ]]px; --x: [[ .X ]]px; top: [[ .Y ]]px; z-index: [[ .Z ]]"
   data-foreign={editing ? "[[ .Foreign ]]" : undefined}
 >
   <div data-note-skin="[[ .Skin ]]">

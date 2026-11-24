@@ -23,8 +23,9 @@ items in housekeeping. The art ships inside the CMS.
 - A visitor opens the home of a banned user: Holo's banned page shows.
 - A visitor searches a name in the header: the home of that habbo opens, and an empty search shows `Page not found!`.
 - A home holds a note: the note shows its BBCode formatted and its HTML escaped.
-- A home of a user without the club: the playground is 752 pixels wide, beside the club banner.
-- A home of a club member: the playground is 922 pixels wide, with no club banner.
+- A home of any habbo, a club member's too: the playground is 752 pixels wide, with no advert column.
+- A home holds an item saved past the playground's right edge: it shows at that edge, whole, and a save in the editor
+  keeps it there.
 - The active habbo's home shows under Me as `My Page`; every other home shows under Community.
 - A visitor opens a picture of the home art: the CMS binary serves it (decision holo-port/0061).
 

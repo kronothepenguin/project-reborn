@@ -9,8 +9,8 @@ projects: [packages/store, packages/server, packages/cms, packages/housekeeping,
 # What
 
 A user buys club months on the site's club page from the shared purse, and all its habbos are members. Each purchase
-gives the club badge `HC1` to the user's habbos. While the club runs, a member has the wardrobe, the club skins and the
-wide home, and in the game the club fuses, the first place in a queue and the club's catalogue pages. The game reads
+gives the club badge `HC1` to the user's habbos. While the club runs, a member has the wardrobe and the club skins, and in
+the game the club fuses, the first place in a queue and the club's catalogue pages. The game reads
 the club status from the store.
 
 Next:
@@ -55,7 +55,7 @@ It builds on [platform](/features/platform/spec.md) and [economy](/features/econ
 
 - A member opens the Me page, the account pages or `/club`: they count the days to the end of the user's last period.
 - A user has several habbos: they all share the club (decision holo-port/0064).
-- A visitor opens a club member's home: the playground is 922 pixels wide with no club banner.
+- A visitor opens a club member's home: the playground is 752 pixels wide, as every home's.
 - A club member edits its home: the editor offers the club skins.
 - A member opens Looks: the wardrobe keeps up to `homes.wardrobeSlots` outfits for each habbo, and a green arrow puts
   an outfit in the editor.
@@ -66,7 +66,7 @@ It builds on [platform](/features/platform/spec.md) and [economy](/features/econ
   loads is applied once the editor has drawn.
 - A habbo without club, a bad slot or a bad look posts to the wardrobe: the outfit is refused.
 - A habbo without the club opens Looks: a Join box shows in place of the wardrobe.
-- The club ends: its days, skins, wide playground and wardrobe go.
+- The club ends: its days, skins and wardrobe go.
 - Staff save housekeeping's Club form: the prices and the days of a month change; `HC Months Limit`, among the
   content options, sets the month limit.
 - Staff save a club price, the days of a month, the months limit or the wardrobe slots outside its bounds: the value is

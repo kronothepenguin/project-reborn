@@ -37,6 +37,11 @@ export const prepare = ({ sql }) => {
   sql(`INSERT INTO profiles (avatar_id, created_at, updated_at) VALUES (${whoAvatar}, '${now}', '${now}')`);
   const [[whoProfile]] = sql(`SELECT id FROM profiles WHERE avatar_id = ${whoAvatar}`);
   sql(`INSERT INTO homes (profile_id, updated_at) VALUES (${whoProfile}, '${now}')`);
+  // A note the club member saved on the 922px canvas Holo gave the club, past
+  // today's 752px.
+  const [[whoHome]] = sql(`SELECT id FROM homes WHERE profile_id = ${whoProfile}`);
+  sql(`INSERT INTO home_items (home_id, kind, home_store_item_id, skin, body, x, y, z, created_at, updated_at)
+    VALUES (${whoHome}, 'note', 13, 'defaultskin', 'Far right', 880, 300, 9, '${now}', '${now}')`);
   sql(`INSERT INTO club_subscriptions (user_id, starts_at, ends_at, created_at)
     VALUES (${who}, '${now}', '2099-01-01 00:00:00.000000000+00:00', '${now}')`);
 
@@ -75,8 +80,8 @@ export default async function ({ base, browser, check, shot, sql }) {
   );
   const narrow = await guest.page.locator("#playground").evaluate((el) => el.offsetWidth);
   check(
-    "a home without the club has Holo's 752-pixel playground beside the club banner",
-    narrow === 752 && (await guest.page.locator('img[alt="hc habbohome banner holo"]').isVisible()),
+    "a home without the club has the 752-pixel playground and no advert",
+    narrow === 752 && (await guest.page.locator('img[alt="hc habbohome banner holo"]').count()) === 0,
     String(narrow),
   );
   check(
@@ -309,9 +314,35 @@ export default async function ({ base, browser, check, shot, sql }) {
   check("Cancel goes back to that habbo's home", (await who.page.title()).endsWith("~ User Profile - Who?me=1"));
   const wide = await who.page.locator("#playground").evaluate((el) => el.offsetWidth);
   check(
-    "a club owner's home has Holo's 922-pixel playground and no club banner",
-    wide === 922 && (await who.page.locator('img[alt="hc habbohome banner holo"]').count()) === 0,
+    "a club owner's home has the same 752-pixel playground and no advert",
+    wide === 752 && (await who.page.locator('img[alt="hc habbohome banner holo"]').count()) === 0,
     String(wide),
+  );
+  // edge reads the far note's left and right against the playground's.
+  const edge = () =>
+    who.page.evaluate(() => {
+      const playground = document.querySelector("#playground").getBoundingClientRect();
+      const note = [...document.querySelectorAll("#playground .stickie")].find((n) => n.innerText.includes("Far right"));
+      const r = note.getBoundingClientRect();
+      return { left: r.left - playground.left, right: playground.right - r.right, width: r.width };
+    });
+  const shown = await edge();
+  await shot(who.page, "home-far-note");
+  check(
+    "a note saved past the canvas's right edge shows at that edge, whole",
+    shown.right === 0 && shown.left > 0,
+    JSON.stringify(shown),
+  );
+  await who.page.getByRole("link", { name: "Edit", exact: true }).click();
+  await who.page.waitForURL("**/home/Who%3Fme=1/edit");
+  await who.page.locator(".stickie .edit-button").first().waitFor();
+  const edited = await edge();
+  await Promise.all([who.page.waitForURL("**/home/Who%3Fme=1"), who.page.getByRole("button", { name: "Save" }).click()]);
+  const [[savedX]] = sql("SELECT x FROM home_items WHERE body = 'Far right'");
+  check(
+    "the editor shows that note at the canvas's edge, and a save keeps it there",
+    edited.right === 0 && edited.left > 0 && Number(savedX) === 752 - shown.width,
+    JSON.stringify({ edited, savedX }),
   );
   check("no page failed for that habbo", who.problems.length === 0, who.problems.join(", "));
   await who.context.close();
