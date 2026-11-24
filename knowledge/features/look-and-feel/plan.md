@@ -164,6 +164,17 @@ Of 2026-11-23, each the user's words or choice among options put to them:
   their own size, grown smooth, and grown with sharp pixels.
 - The settings step's groups are collapsible sections, in place of the tabs inside the step ("switch to collapsible
   sections"). Seven tabs wrapped onto two rows on a wide screen and five on a phone.
+- The site clones Holo's styling at Holo's own sizes; the bigger design is set aside. The user, 2026-11-24, of the
+  two pages rebuilt at 16px: "both looks horrible", and of pictures grown with the text: "it's pixel art, looks ugly if
+  rescale [...] never scale images". Then: "i got enough, just mark for now cloning pixel perfect the holo cms styling
+  but using the closest tailwind common classes, font-size becomes something like text-xs, and the margins and
+  paddings that are generally 5px or something like that, become 4px or 6px as tailwind common classes." It replaces
+  the decisions above on 16px text, the 1240px page and the sizes' table, for the site and its shared parts.
+- Housekeeping and the installer keep their own looks and go back to Holo's sizes with the shared parts, so one scale
+  holds everywhere. This is the master's reading; the user spoke of the site.
+- The line under the tabs of a box runs the box's full width ("the cards for groups and tags looks odd, compare againts
+  holocms and you will see the colored line under tabs is full width in holocms").
+- Phones and tablets wait ([later](/features/look-and-feel/later.md)).
 
 Earlier:
 
@@ -176,6 +187,13 @@ Earlier:
   navigation, gold data lists, blue forms and a grey top bar, the same on every page.
 
 # Notes
+
+- How a page is cloned: Holo's page and ours are opened at the same width, 1366px, and set side by side and one over
+  the other; each box is matched in place, size, colour and text until they agree. Sizes are Tailwind's common
+  classes closest to Holo's: `text-xs` for 11px and 10px, `text-sm` for 14px, 4px or 6px for 5px. Pictures are never
+  scaled.
+- Holo's own register page fails on the user's stack ("Unknown column 'newsletter'"), so a habbo for the Me page's
+  comparison needs the user's help.
 
 - The review's rules, from the user's words: layouts are flexbox, written new, with Holo's CSS as the measure of
   proportions alone; text is Holo's times 16/11; pictures keep their size and their boxes wrap them; every page is

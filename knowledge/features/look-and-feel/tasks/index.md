@@ -3,3 +3,4 @@
 # Tasks
 
 - [Compare the look with HoloCMS, page by page](06-exit-check.md) - Every page of the site is set beside Holo's and beside its old self, with screenshots, and what differs is listed for the user.
+- [Holo's styling, cloned on the shared parts, the layouts and three pages](11-holos-styling-on-the-first-pages.md) - The shared parts, both layouts and the front, community and Me pages match HoloCMS at Holo's own sizes, compared side by side and one over the other, with Tailwind's closest common classes.

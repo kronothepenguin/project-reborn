@@ -122,14 +122,16 @@ height and close as possible aligned to right as a group".
 
 ## Next
 
-### The site, reviewed beside HoloCMS
+### Holo's styling, cloned
 
-- A visitor opens a page of the site on a wide screen: it reads as Holo's page at a bigger scale, its text 16px where
-  Holo's is 11px, its boxes, columns and gaps in Holo's proportions around that text.
-- A page shows one of Holo's pictures: the picture keeps its own size, and its box wraps it with no empty strip.
-- A visitor opens a page on a phone: one column, each box as wide as the screen, with nothing scrolling sideways.
-- A visitor opens a page on a tablet or a wider screen: two columns.
-- A visitor reads the header on a phone: the logo, the tabs and the sub-navigation fit the screen's width.
+- A visitor opens a page of the site on a wide screen: it matches Holo's page at Holo's own sizes, box for box, in
+  its widths, its gaps, its text, its colours and its pictures.
+- A page shows a text Holo drew at 11px: it shows at 12px, Tailwind's closest common size; a gap Holo drew at 5px
+  shows at 4px or 6px.
+- A page shows one of Holo's pictures: the picture keeps its own size and fills its box as in Holo, as the news
+  picture and the Me page's hotel view do.
+- A box shows tabs: the line in the box's colour runs under the tabs from one edge of the box to the other.
+- Staff open housekeeping, and an administrator opens the installer: their own looks stay, at Holo's sizes.
 
 # Open questions
 
