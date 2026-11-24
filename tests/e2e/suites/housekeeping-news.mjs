@@ -589,8 +589,8 @@ export default async function (t) {
       (await shows("pre", "code")) &&
       (await shows('a[href="https://hotel.example/"]', "link")) &&
       (await shows("span.text-red-600", "red")) &&
-      (await shows('span[class="text-[10px]"]', "small")) &&
-      (await shows("span.text-base", "large")),
+      (await shows('span[class="text-sm"]', "small")) &&
+      (await shows("span.text-2xl", "large")),
     await article.innerHTML(),
   );
   await shot(page, "news-every-format-site");

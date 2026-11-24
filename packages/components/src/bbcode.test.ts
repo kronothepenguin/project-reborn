@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { flatten, measure, offset, pointAt, read, write } from "./bbcode";
 
-const quote = '<div class="bg-stone-300 border border-black m-[3px] mb-2.5 p-[5px]">';
+const quote = '<div class="bg-stone-300 border border-black m-1 mb-3.5 p-1.5">';
 const smiley = (image: string) =>
   `<img class="inline align-baseline" src="/smilies/${image}.gif" alt="Smiley" title="Smiley">`;
 
@@ -54,8 +54,8 @@ const cases: [string, string, boolean?][] = [
   ["[color=cyan]x[/color]", "<span class='text-teal-400'>x</span>"],
   ["[color=blue]x[/color]", "<span class='text-sky-600'>x</span>"],
   ["[color=gray]x[/color]", "<span class='text-olive-500'>x</span>"],
-  ["[size=small]x[/size]", "<span class='text-[10px]'>x</span>"],
-  ["[size=large]x[/size]", "<span class='text-base'>x</span>"],
+  ["[size=small]x[/size]", "<span class='text-sm'>x</span>"],
+  ["[size=large]x[/size]", "<span class='text-2xl'>x</span>"],
   ["[code]x[/code]", "<pre>x</pre>"],
   ["a [b]b[/b] c", "a <strong>b</strong> c"],
   ["[b]1[/b] [b]2[/b]", "<strong>1</strong> <strong>2</strong>"],
@@ -69,7 +69,7 @@ const cases: [string, string, boolean?][] = [
   ["[URL=http://example.com/]x[/Url]", "<a href='http://example.com/'>x</a>"],
   ["[url=HTTPS://EXAMPLE.COM]x[/url]", "<a href='HTTPS://EXAMPLE.COM'>x</a>"],
   ["[Color=RED]x[/COLOR]", "<span class='text-red-600'>x</span>"],
-  ["[SIZE=SMALL]x[/size]", "<span class='text-[10px]'>x</span>"],
+  ["[SIZE=SMALL]x[/size]", "<span class='text-sm'>x</span>"],
   ["[CODE]x[/Code]", "<pre>x</pre>"],
   ["[\u017f]x[/\u017f]", "[\u017f]x[/\u017f]"],
   ["[lin\u212a=http://a.example/]x[/lin\u212a]", "[lin\u212a=http://a.example/]x[/lin\u212a]"],
@@ -164,8 +164,8 @@ const cases: [string, string, boolean?][] = [
   ["[b][i]x[/i][/b]", "<strong><em>x</em></strong>"],
   ["[color=red][b]x[/b][/color]", "<span class='text-red-600'><strong>x</strong></span>"],
   ["[code][b]x[/b] :)[/code]", "<pre><strong>x</strong> " + smiley("smile") + "</pre>", true],
-  ["[size=large]a[size=small]b[/size]c[/size]", "<span class='text-base'>a<span class='text-[10px]'>b</span>c</span>"],
-  ["[size=small]a[size=large]b[/size]c[/size]", "<span class='text-[10px]'>a<span class='text-base'>b</span>c</span>"],
+  ["[size=large]a[size=small]b[/size]c[/size]", "<span class='text-2xl'>a<span class='text-sm'>b</span>c</span>"],
+  ["[size=small]a[size=large]b[/size]c[/size]", "<span class='text-sm'>a<span class='text-2xl'>b</span>c</span>"],
   ["[b]a[i]b[/b]c[/i]", "<strong>a<em>b</em></strong><em>c</em>"],
   ["[i]a[b]b[/i]c[/b]", "<em>a<strong>b</strong></em><strong>c</strong>"],
   ["[b]a[quote]b[/b]c[/quote]d", "<strong>a</strong>" + quote + "<strong>b</strong>c</div>d"],
@@ -306,7 +306,7 @@ function runs(div: HTMLDivElement): string[] {
       if (name === "a" && e.hasAttribute("href")) kinds.push(["url", e.getAttribute("href") ?? ""]);
       if (name === "pre") kinds.push(["code", ""]);
       if (name === "div") kinds.push(["quote", ""]);
-      if (name === "font" && e.className) kinds.push([e.className.startsWith("text-[") || e.className === "text-base" ? "size" : "color", e.className]);
+      if (name === "font" && e.className) kinds.push([e.className === "text-sm" || e.className === "text-2xl" ? "size" : "color", e.className]);
       for (const [kind, value] of kinds) if (!(kind in seen)) seen[kind] = value;
     }
     return JSON.stringify(Object.entries(seen).sort());

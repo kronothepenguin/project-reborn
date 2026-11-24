@@ -17,11 +17,11 @@ export const colours = [
 ] as const;
 
 export const sizes = [
-  { name: "small", label: "Small", className: "text-[10px]" },
-  { name: "large", label: "Large", className: "text-base" },
+  { name: "small", label: "Small", className: "text-sm" },
+  { name: "large", label: "Large", className: "text-2xl" },
 ] as const;
 
-export const quoteClass = "bg-stone-300 border border-black m-[3px] mb-2.5 p-[5px]";
+export const quoteClass = "bg-stone-300 border border-black m-1 mb-3.5 p-1.5";
 
 export const smileyBase = "/smilies/";
 

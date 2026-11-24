@@ -6,11 +6,11 @@ import PageNumbers from "./page-numbers.astro";
 // link of Holo's board was underlined.
 ---
 
-<div class="flow-root pt-2 pl-3.5">
+<div class="flow-root pt-2.5 pl-4.5">
   [[ if .SignedIn ]]
   <span class="float-left">
     <Button id="newtopic-upper">
-      <span class="flex items-center gap-1"><Icon variant="newtopic" />New Thread</span>
+      <span class="flex items-center gap-1.5"><Icon variant="newtopic" />New Thread</span>
     </Button>
   </span>
   [[ end ]]
@@ -18,23 +18,23 @@ import PageNumbers from "./page-numbers.astro";
 </div>
 <table class="w-full border-collapse" id="group-topiclist-list">
   <tr class="text-olive-500">
-    <td class="py-2 pr-1 pl-3.5">Topic</td>
-    <td class="py-2 pr-1 pl-3.5">Last post</td>
-    <td class="px-1 py-2 text-center">Replies</td>
-    <td class="px-1 py-2 text-center">Views</td>
+    <td class="py-2.5 pr-1.5 pl-4.5">Topic</td>
+    <td class="py-2.5 pr-1.5 pl-4.5">Last post</td>
+    <td class="px-1.5 py-2.5 text-center">Replies</td>
+    <td class="px-1.5 py-2.5 text-center">Views</td>
   </tr>
   [[ if .Empty ]]
   <tr>
-    <td class="p-1 pl-3.5 align-top">No threads to display.</td>
+    <td class="p-1.5 pl-4.5 align-top">No threads to display.</td>
   </tr>
   [[ end ]] [[ range .Threads ]] [[ $thread := .ID ]]
-  <tr class="h-[53px] [[ if .Even ]] bg-olive-200 [[ end ]]">
-    <td class="w-[436px] p-1 pl-3.5 align-top">
+  <tr class="h-17.5 [[ if .Even ]] bg-olive-200 [[ end ]]">
+    <td class="w-145.5 p-1.5 pl-4.5 align-top">
       <div>
         [[ if .Sticky ]]<a
-          class="bg-[url(/web-gallery/v2/images/discussions/forum_icons.png)] bg-position-[0_0] bg-no-repeat py-0.5 pl-[21px] text-xs leading-4 font-bold text-black underline"
+          class="bg-[url(/web-gallery/v2/images/discussions/forum_icons.png)] bg-position-[0_0] bg-no-repeat py-0.5 pl-[21px] text-lg leading-4 font-bold text-black underline"
           href="/forum/threads/[[ .ID ]]">[[ .Title ]]</a
-        >[[ else ]]<a class="text-xs text-black underline" href="/forum/threads/[[ .ID ]]">[[ .Title ]]</a>[[ end ]]
+        >[[ else ]]<a class="text-lg text-black underline" href="/forum/threads/[[ .ID ]]">[[ .Title ]]</a>[[ end ]]
         [[ if .Locked ]]&nbsp;<span
           ><img class="inline" src="/web-gallery/images/groups/status_closed.gif" title="Closed Thread" alt="Closed Thread" /></span
         >[[ end ]]&nbsp;(page [[ range .Pages ]]<a class="text-black underline" href="/forum/threads/[[ $thread ]]?page=[[ . ]]"
@@ -47,7 +47,7 @@ import PageNumbers from "./page-numbers.astro";
         >&nbsp;<span class="text-neutral-500">[[ .Date ]]</span>{" "}<span class="text-neutral-500">([[ .Time ]])</span>
       </div>
     </td>
-    <td class="w-[149px] border-l border-olive-300 p-1 pl-3.5 align-top">
+    <td class="w-49.5 border-l border-olive-300 p-1.5 pl-4.5 align-top">
       <a class="text-neutral-500 underline" href="/forum/threads/[[ .ID ]]?page=[[ .LastPage ]]#page-bottom"
         ><span>[[ .LastDate ]]</span>{" "}<span>([[ .LastTime ]])</span></a
       ><br />
@@ -55,16 +55,16 @@ import PageNumbers from "./page-numbers.astro";
         >[[ .LastPoster ]]</a
       >[[ end ]]&nbsp;
     </td>
-    <td class="w-[65px] border-l border-olive-300 p-1 text-center align-top">[[ .Replies ]]</td>
-    <td class="w-[65px] border-l border-olive-300 p-1 text-center align-top">[[ .Views ]]</td>
+    <td class="w-21.5 border-l border-olive-300 p-1.5 text-center align-top">[[ .Replies ]]</td>
+    <td class="w-21.5 border-l border-olive-300 p-1.5 text-center align-top">[[ .Views ]]</td>
   </tr>
   [[ end ]]
 </table>
-<div class="flow-root pt-1 pb-2 pl-3.5">
+<div class="flow-root pt-1.5 pb-2.5 pl-4.5">
   [[ if .SignedIn ]]
   <span class="float-left">
     <Button id="newtopic-lower">
-      <span class="flex items-center gap-1"><Icon variant="newtopic" />New Thread</span>
+      <span class="flex items-center gap-1.5"><Icon variant="newtopic" />New Thread</span>
     </Button>
   </span>
   [[ else ]] You must be logged in to reply or post new threads. [[ end ]]
