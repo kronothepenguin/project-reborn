@@ -12,9 +12,9 @@ import Community from "../layouts/community.astro";
 
 <Community title="[[ .ShortName ]] ~ [[ .Habbo ]]" tab="me" sub="Homepage">
   <div class="flex">
-    <div class="w-[460px]">
+    <div class="w-153.5">
       <PersonalInfo />
-      <div class="mr-2 mb-[7px]">
+      <div class="mr-2.5 mb-2.5">
         <Card>
           <ul
             id="my-groups"
@@ -32,7 +32,7 @@ import Community from "../layouts/community.astro";
           <GroupsHabblet client:only="svelte" source="my-groups" />
         </Card>
       </div>
-      <div class="mr-2 mb-[7px]">
+      <div class="mr-2.5 mb-2.5">
         <Card>
           <ul id="me-tags" hidden data-max="[[ .MaxTags ]]">
             [[ range .MyTags ]]<li>[[ . ]]</li>[[ end ]]
@@ -45,7 +45,7 @@ import Community from "../layouts/community.astro";
         </Card>
       </div>
     </div>
-    <div class="w-[310px]"><NewsPromo /></div>
-    <div class="w-[160px]"><Banners /></div>
+    <div class="w-103.5"><NewsPromo /></div>
+    <div class="w-53"><Banners /></div>
   </div>
 </Community>

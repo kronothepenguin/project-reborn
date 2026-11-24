@@ -92,7 +92,7 @@
 </script>
 
 <div class="relative">
-  <h2 class="absolute top-0 left-0 pt-[3px] pl-2.5 text-sm font-bold text-lime-600">Tags</h2>
+  <h2 class="absolute top-0 left-0 pt-1 pl-3.5 text-xl font-bold text-lime-600">Tags</h2>
   <Tabs bind:value={tab} color="green">
     <TabList>
       <Tab value="mine">My Tags</Tab>
@@ -101,13 +101,13 @@
   </Tabs>
 </div>
 <div role="tabpanel" aria-label="My Tags" hidden={tab !== "mine"}>
-  <div class="border-b border-dashed border-mauve-300 py-[5px] pl-[15px]">{info}</div>
-  <div class="p-2">
+  <div class="border-b border-dashed border-mauve-300 py-1.5 pl-5">{info}</div>
+  <div class="p-2.5">
     {#if tags.length > 0}
       <ul>
         {#each tags as tag (tag)}
-          <li class="mr-[5px] inline">
-            <a class="text-[10px] text-black no-underline hover:underline" href={`/tags?tag=${encodeURIComponent(tag)}`}>{tag}</a>
+          <li class="mr-1.5 inline">
+            <a class="text-sm text-black no-underline hover:underline" href={`/tags?tag=${encodeURIComponent(tag)}`}>{tag}</a>
             <button
               type="button"
               title="Remove tag"
@@ -122,29 +122,29 @@
     {/if}
     {#if tags.length < max}
       <form
-        class="mt-[1em] flex items-center gap-[5px]"
+        class="mt-[1em] flex items-center gap-1.5"
         onsubmit={(event) => {
           event.preventDefault();
           add();
         }}
       >
-        <Button type="submit" size="compact">Add tag</Button>
-        <span class="mt-[3px] flex-1 text-olive-500">{question}</span>
+        <span class="mt-1 flex-1 text-olive-500">{question}</span>
         <input
-          class="mt-[3px] mr-2.5 ml-[5px] w-[100px] border border-neutral-600 bg-white px-1 text-black"
+          class="mt-1 w-33.5 border border-neutral-600 bg-white px-1.5 text-black"
           maxlength="20"
           aria-label="New tag"
           bind:value={draft}
         />
+        <Button type="submit" size="compact">Add tag</Button>
       </form>
     {/if}
   </div>
 </div>
-<div role="tabpanel" aria-label="Others Like..." class="p-2" hidden={tab !== "others"} bind:this={panel}></div>
+<div role="tabpanel" aria-label="Others Like..." class="p-2.5" hidden={tab !== "others"} bind:this={panel}></div>
 <Dialog open={refusal !== ""} label="Tags" class="m-auto bg-transparent backdrop:bg-black/40" onclose={() => (refusal = "")}>
   <Card color="orange">
     {#snippet header()}Tags{/snippet}
-    <p class="mb-2.5">{refusal}</p>
+    <p class="mb-3.5">{refusal}</p>
     <div class="text-right"><Button onclick={() => (refusal = "")}>OK</Button></div>
   </Card>
 </Dialog>
