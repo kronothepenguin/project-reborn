@@ -109,18 +109,14 @@ height and close as possible aligned to right as a group".
   sideways.
 - A page shows a picture, such as an avatar, a badge or an icon: it shows at its own size, sharp.
 
-### Tabs that are links
-
-- A page gives a tab an address: the tab is a link, drawn as the other tabs, and opens the address with a click, the
-  keyboard or in a new browser tab.
-- An administrator opens the installer with scripts off: the steps show as tabs, and a step already passed opens
-  from its tab.
-
 ### The installer's layout
 
 - An administrator opens any step of the installer: the title, the steps, the fields and the buttons share one column
   and one left edge, and the box is as wide as its content, with no empty side.
-- An administrator reads the steps: the tabs start at the left edge of the box.
+- An administrator reads the steps: they show in one row as a stepper, each step a point with its name and an arrow to
+  the next, starting at the left edge, with the current step highlighted.
+- An administrator reads the stepper: a step already passed is a link to it, and a step still to come is plain.
+- An administrator opens the installer with scripts off: the stepper shows, and its links work.
 - An administrator opens any step: its buttons sit in the same place and order, the way on and then the main button.
 - An administrator opens the settings step: its groups show as tabs inside the step, one group at a time, with "More
   settings" last, its groups folded.
