@@ -26,12 +26,12 @@ const items = [
   tab="me"
   sub="Account Settings"
 >
-  <div class="flex items-start gap-2.5 pt-2.5">
+  <div class="flex items-start gap-2.5">
     <div class="flex w-[200px] shrink-0 flex-col gap-2">
       <Card color="settings">
         <span slot="header">Account Settings</span>
 
-        <ul class="flex flex-col gap-1 text-olive-800">
+        <ul class="flex flex-col gap-1 pb-1 text-olive-800">
           {
             items.map(({ label, href }) => (
               <li class:list={[label === active && "font-bold"]}>
@@ -52,23 +52,21 @@ const items = [
       <Card color="club">
         <span slot="header">Join [[ .ShortName ]] Club</span>
 
-        <div class="flex flex-col gap-2">
-          <img
-            class="-mx-1 max-w-none"
-            src={clubBanner.src}
-            width={clubBanner.width}
-            height={clubBanner.height}
-            alt=""
-          />
-          <p>
-            [[ .ShortName ]] Club is our VIP members-only club: absolutely no
-            riff-raff admitted! Members enjoy a wide range of benefits, including
-            exclusive clothes, free gifts and an extended Friend List.
-          </p>
-          <p class="text-center font-bold">
-            <Link variant="yellow" href="/club">Check out [[ .ShortName ]] Club &gt;&gt;</Link>
-          </p>
-        </div>
+        <img
+          class="mt-1 max-w-none"
+          src={clubBanner.src}
+          width={clubBanner.width}
+          height={clubBanner.height}
+          alt=""
+        />
+        <p class="mt-2.5 pb-3">
+          [[ .ShortName ]] Club is our VIP members-only club: absolutely no
+          riff-raff admitted! Members enjoy a wide range of benefits, including
+          exclusive clothes, free gifts and an extended Friend List.
+        </p>
+        <p class="pb-3 text-center font-bold">
+          <Link variant="yellow" href="/club">Check out [[ .ShortName ]] Club &gt;&gt;</Link>
+        </p>
       </Card>
       [[ end ]]
     </div>
@@ -77,12 +75,12 @@ const items = [
       <Card color="settings">
         <span slot="header">{heading}</span>
 
-        <div class="flex flex-col gap-2 text-olive-800">
+        <div class="text-olive-800">
           [[ if .Result ]][[ if .Failed ]]
           <Notice>[[ .Result ]]</Notice>
           [[ else ]]
           <Notice variant="green">[[ .Result ]]</Notice>
-          [[ end ]][[ end ]]
+          [[ end ]]<br />[[ end ]]
           <slot />
         </div>
       </Card>

@@ -4,6 +4,7 @@ import Account from "../../layouts/account.astro";
 ---
 
 <Account active="Furni" heading="Your Furni">
+<div class="flex flex-col gap-2">
   <p>
     Furni that none of your habbos holds waits here. Take moves it to the hand
     of the habbo you are playing, <strong>[[ .Habbo ]]</strong>, and it does not
@@ -28,4 +29,5 @@ import Account from "../../layouts/account.astro";
   [[ else ]]
   <p>No furni waits here.</p>
   [[ end ]]
+</div>
 </Account>
