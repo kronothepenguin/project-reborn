@@ -1,0 +1,16 @@
+---
+import SettingsFields from "./settings-fields.astro";
+import SettingsSection from "./settings-section.astro";
+
+// One group of the settings step, over the group in the template's dot: a
+// section with its title and its fields.
+interface Props {
+  open?: boolean;
+}
+
+const { open = false } = Astro.props;
+---
+
+<SettingsSection title="[[ .Title ]]" open={open}>
+  <SettingsFields />
+</SettingsSection>

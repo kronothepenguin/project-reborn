@@ -1,0 +1,13 @@
+---
+// The row of buttons at the bottom of every step, at the right end of the
+// column: the way on ("Skip", "Check again"), then the main button. The main
+// button comes first in the markup, so that the Enter key presses it, and
+// shows last. On a step taller than the screen the row stays in sight at the
+// bottom, on a white band with a line above it.
+---
+
+<div
+  class="sticky bottom-0 z-10 -mx-5 flex flex-row-reverse flex-wrap items-center justify-start gap-2 border-t border-gray-200 bg-white px-5 py-3"
+>
+  <slot />
+</div>

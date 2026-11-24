@@ -64,9 +64,22 @@ black text) bar above its children (decision holo-port/0060). `title` is the hea
 - `Tabs` holds the selected value and the group's `color`: `blue`, `green` or `orange`, `blue` by default.
   `TabList` and `Tab` read both from the tabs' context, so the row's line and every tab follow the group.
 - `TabList` is the `tablist`: it takes the arrow keys, draws the line under the row and keeps the tabs at its right
-  edge, in their order. `TabPanel` goes beside it, inside `Tabs`.
+  edge, in their order. It does not wrap: a page with more tabs than its width passes `flex-wrap`, and one that starts
+  them at the left `justify-start!`, as the installer's settings step does. `TabPanel` goes beside it, inside `Tabs`.
 - `Tab` is filled with the colour, in white text, and lighter while pointed at; the selected one is white with an
   outline in the colour and bold black text. It sits 1px low, so it covers the row's line.
+
+# Stepper
+
+- `Stepper` is an `<ol>` in one row that wraps: it resets a CSS counter, and each `Step` counts itself, so the steps
+  number themselves in their order. `Step` draws a chevron after itself by `::after`, hidden on the last.
+- `Step` takes `href`, a step passed, drawn as a link; `current`, the open step, with a dark point, a bold black name
+  and `aria-current="step"`; or neither, a step still to come, plain and faded. `current` wins over `href`. Its other
+  attributes go to the `<li>`.
+- The number sits in the point's `::before`, on an `aria-hidden` span, so a link's name is the step's name alone.
+- Under 640px only the current step shows its name; the others keep it for assistive technology.
+- `Stepper` holds no state and no context: a page the server fills writes its own condition around each `Step`, and
+  uses both with no client directive. The caller puts it in a `<nav>` with its own label.
 
 # Table
 

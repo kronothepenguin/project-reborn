@@ -1,6 +1,7 @@
 ---
 import { Button, FormField, Input } from "@project-reborn/components";
 import FormError from "../components/form-error.astro";
+import StepButtons from "../components/step-buttons.astro";
 import Setup from "../layouts/setup.astro";
 ---
 
@@ -12,12 +13,12 @@ import Setup from "../layouts/setup.astro";
     is <span class="font-mono break-all">[[ .Path ]]</span>, the hotel listens on port
     [[ .Port ]] and housekeeping on port [[ .HousekeepingPort ]].
   </p>
-  <div class="flex justify-end">
+  <StepButtons>
     <Button href="/installer/site" variant="green">Continue</Button>
-  </div>
+  </StepButtons>
   [[ else ]]
   <FormError />
-  <form method="post" action="/installer/config" class="space-y-3">
+  <form method="post" action="/installer/config" class="flex flex-col gap-3">
     [[ if .OneAddress ]]
     <p>
       The database is <span class="font-mono break-all">[[ .Path ]]</span>, as
@@ -63,11 +64,11 @@ import Setup from "../layouts/setup.astro";
       />
     </FormField>
     [[ end ]]
-    <div class="flex justify-end">
+    <StepButtons>
       <Button type="submit" variant="green"
         >[[ if .OneAddress ]]Save address[[ else ]]Write configuration[[ end ]]</Button
       >
-    </div>
+    </StepButtons>
   </form>
   [[ end ]]
 </Setup>

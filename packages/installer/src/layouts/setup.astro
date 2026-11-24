@@ -1,25 +1,41 @@
 ---
-import { Card } from "@project-reborn/components";
+import { Card, Step, Stepper } from "@project-reborn/components";
 import logo from "../assets/habbo.png";
-import StepTabs from "../components/step-tabs.svelte";
 import Document from "./document.astro";
 
-type Step = "status" | "config" | "site" | "settings" | "client" | "admin";
+type StepName = "status" | "config" | "site" | "settings" | "client" | "admin";
 
 // The installer's page: the hotel's logo over one box, whose blue title bar
-// names the step and whose first row is the steps as tabs. A wide step, such as
-// the settings, takes the box's whole width; the others keep a column.
+// names the step. Every step is one column, as wide as the box: the steps as
+// a Stepper drawn on the server, then the step's text, fields and its row of
+// buttons, all from one left edge.
 interface Props {
   title: string;
-  step: Step;
-  wide?: boolean;
+  step: StepName;
 }
 
-const { title, step, wide = false } = Astro.props;
+const { title, step } = Astro.props;
+
+const steps = [
+  { id: "config", label: "Configuration" },
+  { id: "site", label: "Site" },
+  { id: "settings", label: "Settings" },
+  { id: "client", label: "Client files" },
+  { id: "admin", label: "Administrator" },
+];
+
+// The Go condition that a step other than the current one is a link: the step
+// that waits, the template's .Waiting, is this one or one after it. `eq` with
+// several values is true when any matches. A step after it is still to come.
+const open = (index: number) =>
+  `[[ if eq .Waiting ${steps
+    .slice(index)
+    .map((s) => `"${s.id}"`)
+    .join(" ")} ]]`;
 ---
 
 <Document title={`${title} - Project Reborn installer`}>
-  <div class="mx-auto w-full max-w-240 px-4 py-8">
+  <div class="mx-auto w-full max-w-200 px-4 py-8">
     <header class="mb-4 flex flex-wrap items-end gap-x-4 gap-y-2">
       <img src={logo.src} width={logo.width} height={logo.height} alt="Habbo Hotel" />
       <h1 class="text-2xl font-bold text-blue-900">Project Reborn installer</h1>
@@ -27,13 +43,27 @@ const { title, step, wide = false } = Astro.props;
     <main>
       <Card color="blue">
         <h2 slot="header">{title}</h2>
-        <div class="space-y-4">
-          <div class="min-h-8">
-            <StepTabs client:only="svelte" current={step} waiting="[[ .Waiting ]]" />
-          </div>
-          <div class:list={["space-y-4 pb-2", !wide && "max-w-2xl"]}>
-            <slot />
-          </div>
+        <div class="flex flex-col gap-4 pt-2">
+          <nav aria-label="Steps">
+            <Stepper>
+              {
+                steps.map((s, index) =>
+                  s.id === step ? (
+                    <Step current>{s.label}</Step>
+                  ) : (
+                    <Fragment>
+                      <Fragment set:html={open(index)} />
+                      <Step href={`/installer/${s.id}`}>{s.label}</Step>
+                      <Fragment set:html="[[ else ]]" />
+                      <Step>{s.label}</Step>
+                      <Fragment set:html="[[ end ]]" />
+                    </Fragment>
+                  ),
+                )
+              }
+            </Stepper>
+          </nav>
+          <slot />
         </div>
       </Card>
     </main>

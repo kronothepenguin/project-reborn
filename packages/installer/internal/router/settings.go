@@ -16,19 +16,22 @@ import (
 // settingsPage shows the day-one groups open and every other group under
 // "More settings".
 type settingsPage struct {
-	stepTabs
+	stepper
 	Open  []settingsGroup
 	More  []settingsGroup
 	Error string
 }
 
+// settingsGroup is one group of fields. Refused marks the group of the field a
+// refused form names, so that its section opens.
 type settingsGroup struct {
-	Title  string
-	Fields []settingsField
+	Title   string
+	Fields  []settingsField
+	Refused bool
 }
 
 // settingsField is one setting as the form shows it. Kind is text, longtext,
-// number, switch, choice or password. A password shows no value.
+// shorttext, number, switch, choice or password. A password shows no value.
 type settingsField struct {
 	Key      string
 	Label    string
@@ -87,6 +90,9 @@ var longTexts = []string{
 	"staffPage.box1Body", "staffPage.box2Body",
 	"creditsPage.box1Body", "creditsPage.box2Body",
 }
+
+// shortTexts are the texts that hold a few letters, whose field is narrow.
+var shortTexts = []string{"registration.defaultGender", "game.dateFormat"}
 
 // settingsView lays the settings out with their current values from q.
 func settingsView(req *http.Request, q *store.Queries) (settingsPage, error) {
@@ -151,8 +157,11 @@ func filledField(f settings.Field, setting settings.Setting) settingsField {
 			out.Choices = append(out.Choices, settingsChoice{Value: c.Value, Label: c.Label, Selected: c.Value == out.Value})
 		}
 	case "text":
-		if slices.Contains(longTexts, f.Key) {
+		switch {
+		case slices.Contains(longTexts, f.Key):
 			out.Kind = "longtext"
+		case slices.Contains(shortTexts, f.Key):
+			out.Kind = "shorttext"
 		}
 	}
 	return out
@@ -180,7 +189,7 @@ func (r *Router) HandleSettingsView(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
-	page.stepTabs = r.tabs()
+	page.stepper = r.stepper()
 	astro.WriteTemplate(w, r.deps.Resolver, "settings.html", page)
 }
 
@@ -203,16 +212,17 @@ func (r *Router) HandleSettingsSave(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
-	changes, problem := settingsChanges(req, q, page)
+	changes, key, problem := settingsChanges(req, q, page)
 	if problem == "" {
 		if err := settings.Validate(ctx, q, changes); err != nil {
-			problem = namedProblem(page, err)
+			key, problem = namedProblem(page, err)
 		}
 	}
 	if problem != "" {
 		page.fields(func(f *settingsField) { typedInto(f, req.PostForm) })
+		page.refuse(key)
 		page.Error = problem
-		page.stepTabs = r.tabs()
+		page.stepper = r.stepper()
 		r.invalid(w, "settings.html", page)
 		return
 	}
@@ -224,12 +234,13 @@ func (r *Router) HandleSettingsSave(w http.ResponseWriter, req *http.Request) {
 }
 
 // settingsChanges turns the posted fields into typed values, keeping those that
-// differ from the current ones, or names the field that is wrong. A field that
-// was not posted keeps its value, and so does an empty password.
-func settingsChanges(req *http.Request, q *store.Queries, page settingsPage) (map[string]any, string) {
+// differ from the current ones, or gives the key of the field that is wrong
+// and the problem that names it. A field that was not posted keeps its value,
+// and so does an empty password.
+func settingsChanges(req *http.Request, q *store.Queries, page settingsPage) (map[string]any, string, string) {
 	form := req.PostForm
 	changes := make(map[string]any)
-	var problem string
+	var key, problem string
 	page.fields(func(f *settingsField) {
 		if problem != "" || !form.Has(f.Key) {
 			return
@@ -247,7 +258,7 @@ func settingsChanges(req *http.Request, q *store.Queries, page settingsPage) (ma
 		case "number":
 			number, err := strconv.Atoi(strings.TrimSpace(typed))
 			if err != nil {
-				problem = f.Label + ": must be a whole number"
+				key, problem = f.Key, f.Label+": must be a whole number"
 				return
 			}
 			if strconv.Itoa(number) != f.Value {
@@ -258,7 +269,7 @@ func settingsChanges(req *http.Request, q *store.Queries, page settingsPage) (ma
 				typed = strings.ReplaceAll(typed, "\r\n", "\n")
 			}
 			if f.Required && strings.TrimSpace(typed) == "" {
-				problem = f.Label + ": must not be empty"
+				key, problem = f.Key, f.Label+": must not be empty"
 				return
 			}
 			if typed != f.Value {
@@ -266,7 +277,7 @@ func settingsChanges(req *http.Request, q *store.Queries, page settingsPage) (ma
 			}
 		}
 	})
-	return changes, problem
+	return changes, key, problem
 }
 
 // posted is the field's last value: a switch posts a hidden 0 before its box,
@@ -276,13 +287,13 @@ func posted(form url.Values, key string) string {
 	return values[len(values)-1]
 }
 
-// namedProblem names the field of the key that settings' error starts with,
-// "settings: <key>: <reason>".
-func namedProblem(page settingsPage, err error) string {
+// namedProblem gives the key that settings' error starts with,
+// "settings: <key>: <reason>", and the problem that names its field.
+func namedProblem(page settingsPage, err error) (string, string) {
 	message := strings.TrimPrefix(err.Error(), "settings: ")
 	key, reason, found := strings.Cut(message, ": ")
 	if !found {
-		return message
+		return "", message
 	}
 	label := key
 	page.fields(func(f *settingsField) {
@@ -290,7 +301,18 @@ func namedProblem(page settingsPage, err error) string {
 			label = f.Label
 		}
 	})
-	return label + ": " + reason
+	return key, label + ": " + reason
+}
+
+// refuse marks the group that holds the field of key.
+func (p settingsPage) refuse(key string) {
+	for _, groups := range [][]settingsGroup{p.Open, p.More} {
+		for g := range groups {
+			if slices.ContainsFunc(groups[g].Fields, func(f settingsField) bool { return f.Key == key }) {
+				groups[g].Refused = true
+			}
+		}
+	}
 }
 
 // typedInto shows what was typed in a refused form, except a password.

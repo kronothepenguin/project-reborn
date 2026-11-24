@@ -1,0 +1,54 @@
+---
+import { Checkbox, FormField, Input, Select } from "@project-reborn/components";
+
+// The fields of the group in the template's dot, one under the other, each
+// drawn by its kind. A field that holds a short value, a number or a short
+// text, is marked data-short and takes a width that fits it; a choice takes the
+// width of its longest choice; every other field takes the column.
+---
+[[ range .Fields ]] [[ if eq .Kind "switch" ]]
+<div class="flex flex-col gap-1">
+  <input type="hidden" name="[[ .Key ]]" value="0" />
+  [[ if .On ]]
+  <Checkbox name="[[ .Key ]]" value="1" checked>[[ .Label ]]</Checkbox>
+  [[ else ]]
+  <Checkbox name="[[ .Key ]]" value="1">[[ .Label ]]</Checkbox>
+  [[ end ]]
+  [[ if .Help ]]<span>[[ .Help ]]</span>[[ end ]]
+</div>
+[[ else ]]
+<FormField
+  label="[[ .Label ]]"
+  help="[[ .Help ]]"
+  class="flex flex-col gap-1 *:data-short:w-32 [&>select]:self-start"
+>
+  [[ if eq .Kind "longtext" ]]
+  <textarea
+    name="[[ .Key ]]"
+    rows="5"
+    class="border border-neutral-600 bg-white p-0.5 text-black">[[ .Value ]]</textarea
+  >
+  [[ else if eq .Kind "choice" ]]
+  <Select name="[[ .Key ]]">
+    [[ range .Choices ]][[ if .Selected ]]
+    <option value="[[ .Value ]]" selected>[[ .Label ]]</option>
+    [[ else ]]
+    <option value="[[ .Value ]]">[[ .Label ]]</option>
+    [[ end ]][[ end ]]
+  </Select>
+  [[ else if eq .Kind "number" ]]
+  <Input name="[[ .Key ]]" type="number" value="[[ .Value ]]" variant="border" data-short />
+  [[ else if eq .Kind "shorttext" ]]
+  <Input name="[[ .Key ]]" value="[[ .Value ]]" variant="border" data-short />
+  [[ else if eq .Kind "password" ]]
+  <Input
+    name="[[ .Key ]]"
+    type="password"
+    autocomplete="new-password"
+    variant="border"
+  />
+  [[ else ]]
+  <Input name="[[ .Key ]]" value="[[ .Value ]]" variant="border" />
+  [[ end ]]
+</FormField>
+[[ end ]] [[ end ]]

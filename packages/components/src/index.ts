@@ -19,6 +19,8 @@ export { default as PaginationItem } from "./components/pagination-item.svelte";
 export { default as Paper } from "./components/paper.svelte";
 export { default as Select } from "./components/select.svelte";
 export { default as Spinner } from "./components/spinner.svelte";
+export { default as Step } from "./components/step.svelte";
+export { default as Stepper } from "./components/stepper.svelte";
 export { default as Tab } from "./components/tab.svelte";
 export { default as TabList } from "./components/tab-list.svelte";
 export { default as TabPanel } from "./components/tab-panel.svelte";

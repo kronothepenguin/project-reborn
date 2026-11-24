@@ -20,9 +20,9 @@ type Deps struct {
 	Move func(w http.ResponseWriter, r *http.Request, host string, port int) error
 }
 
-// stepTabs is what the step tabs of every page read: the first step that
-// waits. The steps up to it open; the ones after it are still to come.
-type stepTabs struct {
+// stepper is what the stepper of every page reads: the first step that waits.
+// The steps up to it are links; the ones after it are still to come.
+type stepper struct {
 	Waiting string
 }
 
@@ -34,9 +34,9 @@ func New(deps Deps) *Router {
 	return &Router{deps: deps}
 }
 
-// tabs reads the step tabs of a step's page.
-func (r *Router) tabs() stepTabs {
-	return stepTabs{Waiting: r.deps.Setup.Waiting()}
+// stepper reads the stepper of a step's page.
+func (r *Router) stepper() stepper {
+	return stepper{Waiting: r.deps.Setup.Waiting()}
 }
 
 // step lets the handler of name run only while the hotel has no

@@ -1,6 +1,7 @@
 ---
 import { Button, Checkbox, FormField, Input } from "@project-reborn/components";
 import FormError from "../components/form-error.astro";
+import StepButtons from "../components/step-buttons.astro";
 import Setup from "../layouts/setup.astro";
 ---
 
@@ -10,7 +11,7 @@ import Setup from "../layouts/setup.astro";
     You join Administrator, which holds every attribute.
   </p>
   <FormError />
-  <form method="post" action="/installer/admin" class="space-y-3">
+  <form method="post" action="/installer/admin" class="flex flex-col gap-3">
     <FormField
       label="Habbo name"
       help="1 to 24 letters, digits or - = ? ! @ : . ,"
@@ -77,8 +78,8 @@ import Setup from "../layouts/setup.astro";
         required
       />
     </FormField>
-    <div class="flex justify-end">
+    <StepButtons>
       <Button type="submit" variant="green">Create administrator</Button>
-    </div>
+    </StepButtons>
   </form>
 </Setup>

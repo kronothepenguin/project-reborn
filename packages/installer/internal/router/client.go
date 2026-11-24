@@ -12,7 +12,7 @@ import (
 
 // clientPage names the client's folder and each file found there or missing.
 type clientPage struct {
-	stepTabs
+	stepper
 	Folder  string
 	Files   []setup.ClientFile
 	Missing bool
@@ -28,7 +28,7 @@ func (r *Router) clientView() (clientPage, error) {
 	if abs, err := filepath.Abs(folder); err == nil {
 		folder = abs
 	}
-	page := clientPage{stepTabs: r.tabs(), Folder: folder + string(filepath.Separator), Files: files}
+	page := clientPage{stepper: r.stepper(), Folder: folder + string(filepath.Separator), Files: files}
 	for _, file := range files {
 		page.Missing = page.Missing || !file.Found
 	}

@@ -21,7 +21,7 @@ import (
 const adminCredits = 5000
 
 type adminPage struct {
-	stepTabs
+	stepper
 	Name         string
 	Email        string
 	BornOn       string
@@ -38,7 +38,7 @@ func (r *Router) HandleAdminView(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	astro.WriteTemplate(w, r.deps.Resolver, "admin.html", adminPage{
-		stepTabs:     r.tabs(),
+		stepper:      r.stepper(),
 		PasswordHelp: passwordHelp(req.Context(), installation),
 		Club:         true,
 		Credits:      strconv.Itoa(adminCredits),
@@ -53,7 +53,7 @@ func (r *Router) HandleAdminCreate(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	page := adminPage{
-		stepTabs:     r.tabs(),
+		stepper:      r.stepper(),
 		Name:         strings.TrimSpace(req.PostFormValue("name")),
 		Email:        strings.TrimSpace(req.PostFormValue("email")),
 		BornOn:       strings.TrimSpace(req.PostFormValue("bornOn")),

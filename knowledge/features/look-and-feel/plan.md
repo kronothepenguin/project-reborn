@@ -12,10 +12,10 @@ Built:
 | --- | --- |
 | `packages/cms` | `layouts/signed-out.astro` and `layouts/community.astro`, with the `header/*` components and the footers; Holo's font on the 16px base, the 1240px page, the two-tone main tabs, the sub-navigation, the header with its inline search, and the footer as Holo's ([the layouts](/packages/cms/knowledge/layouts.md)) |
 | `packages/housekeeping` | `layouts/housekeeping.astro`: the grey bar, the tabs, the left column of `box` components and the content; `Box color="gold"` for data lists |
-| `packages/components` | The primitives both apps share; `Table` and `Table variant="form"` give housekeeping's lists and forms; every primitive at the new sizes; `Tabs color`, with Holo's tabs inside boxes; the box's frame and the title bars as Holo's |
+| `packages/components` | The primitives both apps share; `Stepper` and `Step`; `Table` and `Table variant="form"` give housekeeping's lists and forms; every primitive at the new sizes; `Tabs color`, with Holo's tabs inside boxes; the box's frame and the title bars as Holo's |
 | `packages/store` | `CountAvatars`, the header's registered count |
 | `packages/housekeeping` | Its own look at the new sizes: 16px in Verdana as the theme's `--font-sans`, widths by 1240/960, paddings and gaps by 4/3; every page fits a 1366px screen |
-| `packages/installer` | `layouts/setup.astro`: the logo over one `Card color="blue"` per step, whose first row is the `step-tabs` island; Holo's font and the 16px base |
+| `packages/installer` | `layouts/setup.astro`: the logo over one `Card color="blue"` per step, on one column whose first row is the shared `Stepper`, drawn on the server; the sticky row of buttons; the settings step's groups as collapsible sections; Holo's font and the 16px base ([the installer's layout](#the-installers-layout)) |
 | `packages/cms` | Every page at the new sizes: texts on the plan's table, the columns of the 930px container at 4/3 so they span the 1240px page, signed-out pages at 1240/960, pictures at their own size; homes and the Help Tool keep their canvas ([the layouts](/packages/cms/knowledge/layouts.md)) |
 | `tests/e2e` | The `sizes` suite checks every page at 1366 wide and saves its screenshot |
 | `packages/cms` | Reviewed beside HoloCMS: the community layout in flexbox, at most 1352px and centred, for phones, tablets and wide screens; `site/columns.astro`, Holo's three columns in 452 / 302 / 160; the community and Me pages, their pictures at their own size in boxes that wrap them, and `?pictures=` on the community page for the three ways ([the layouts](/packages/cms/knowledge/layouts.md)) |
@@ -96,6 +96,31 @@ never scaled by a fraction. An exact 16/11 scale gives a page of about 1382px, w
 
 The known issue of [later](/features/look-and-feel/later.md), group badge tint 15 is not brown, belongs here.
 
+## The installer's layout
+
+Built after a review of the first look at 1366px and 375px. Its faults: the steps' tabs sat at the box's right edge
+(`TabList` is `justify-end`) while the text sat at the left; the box was 960px and a step kept a 672px column, so a
+third of the box stood empty and the buttons ended in its middle; the settings step took the whole box in two CSS
+columns, which end at different heights; its buttons ended a 2000px page; the tabs island drew nothing with scripts off;
+on a phone the five tabs took three rows.
+
+- One column for every step: the box is 768px and its content one 726px column, shared by the stepper, the text, the
+  fields and the buttons. Spacing is flex with `gap`.
+- The steps are the shared `Stepper` ([the stepper](#the-stepper)), drawn on the server: an ordered list of numbered
+  points, each with its name and an arrow after it, so that a wrapped row breaks after an arrow. Passed steps are
+  links, the current one is dark and bold, the ones to come faded. Under 640px only the current step shows its name.
+- One row of buttons on every step, sticky at the bottom on a white band with a top line: the way on, then the green
+  main button at the right end.
+- The settings step's groups are sections the server draws in the one form, each a native `<details>` whose
+  `<summary>` is a title row as wide as the column, with a chevron that turns when it opens. The first opens, the
+  others are closed, and "More settings" is the last, closed, with its groups as sections inside it. A closed section
+  still posts its fields, and the section of a refused field opens. The step needs no script. A field of a short value
+  is 128px; a field of an address or a figure takes the column.
+- The guidance of Claude's design skill: the project's own system first (Holo's font, colours and parts), one left
+  edge and repeated elements with the same edges, flex and `gap` for spacing, a border only where it sets a thing
+  apart (the closed sections' title rows), numbering only where the order is real (the steps), and a
+  visible focus on every link, tab and section title.
+
 # Decisions
 
 Of 2026-11-23, each the user's words or choice among options put to them:
@@ -137,6 +162,8 @@ Of 2026-11-23, each the user's words or choice among options put to them:
   whatever looks odd. holocms does not have mobile support, so just compare againts big screens."
 - How Holo's pictures are drawn waits for the user's eyes ("Show me both first"): one page built with the pictures at
   their own size, grown smooth, and grown with sharp pixels.
+- The settings step's groups are collapsible sections, in place of the tabs inside the step ("switch to collapsible
+  sections"). Seven tabs wrapped onto two rows on a wide screen and five on a phone.
 
 Earlier:
 

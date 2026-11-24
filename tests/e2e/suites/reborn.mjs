@@ -54,11 +54,10 @@ export default async function ({ browser, check, dir, eventually, ports, shot, s
       (await page.locator('input[name="port"]').count()) === 1 &&
       (await page.locator('input[name="housekeepingPort"]').count()) === 0,
   );
-  await page.getByRole("tab").first().waitFor();
   check(
-    "the config step shows its title bar and the steps as tabs",
+    "the config step shows its title bar and the stepper",
     (await page.getByRole("heading", { name: "Configuration" }).isVisible()) &&
-      (await page.getByRole("tab", { selected: true }).innerText()) === "1. Configuration",
+      (await page.locator('nav[aria-label="Steps"] [aria-current="step"]').innerText()).endsWith("Configuration"),
     await page.locator("body").innerText(),
   );
   await page.fill('input[name="port"]', String(port));

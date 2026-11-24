@@ -10,7 +10,7 @@ import (
 )
 
 type indexPage struct {
-	stepTabs
+	stepper
 	Configured bool
 	Installed  bool
 	ConfigPath string
@@ -37,7 +37,7 @@ func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
 	if installed {
 		page.SiteURL = settings.String(req.Context(), store.New(installation.DB), "site.url")
 	} else {
-		page.stepTabs = r.tabs()
+		page.stepper = r.stepper()
 	}
 	astro.WriteTemplate(w, r.deps.Resolver, "index.html", page)
 }
