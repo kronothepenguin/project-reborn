@@ -101,6 +101,7 @@ func TestInstallation(t *testing.T) {
 		{"skip settings", "POST", "/installer/settings", url.Values{"action": {"skip"}}, 303, "/installer/client", ""},
 		{"admin before the client files step", "GET", "/installer/admin", nil, 303, "/installer/client", ""},
 		{"site again", "GET", "/installer/site", nil, 200, "", "Name:Reborn Hotel"},
+		{"a step opened again names the step that waits for its tabs", "GET", "/installer/site", nil, 200, "", "{stepTabs:{Waiting:client}"},
 		{"client files form", "GET", "/installer/client", nil, 200, "", "Missing:true"},
 		{"skip client files", "POST", "/installer/client", url.Values{"action": {"skip"}}, 303, "/installer/admin", ""},
 		{"admin form", "GET", "/installer/admin", nil, 200, "", "PasswordHelp:6 to 25 characters"},

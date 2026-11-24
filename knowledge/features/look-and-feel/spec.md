@@ -80,6 +80,11 @@ height and close as possible aligned to right as a group".
   white with an outline in that colour and bold black text.
 - A box shows tabs: a line in the box's colour runs under the row, and the colour is blue, green or orange.
 
+## The installer
+
+- An administrator opens the installer: a page of its own, built from the site's parts: the title bars, the two-tone
+  buttons and the steps as tabs, in Holo's colours and font.
+
 ## Next
 
 ### Sizes
@@ -102,11 +107,6 @@ height and close as possible aligned to right as a group".
 - A signed-in habbo reads the header: the habbo search shows its field and its button on one line, the same height,
   as one group at the right edge.
 - A visitor reads a box: Holo's frame, its title bar in Holo's colour and size, and its content inset as Holo's.
-
-### The installer
-
-- An administrator opens the installer: a page of its own, built from the site's parts: the title bars, the two-tone
-  buttons and the steps as tabs, in Holo's colours and font.
 
 ### Housekeeping at today's sizes
 

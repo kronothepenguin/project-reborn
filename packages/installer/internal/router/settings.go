@@ -16,6 +16,7 @@ import (
 // settingsPage shows the day-one groups open and every other group under
 // "More settings".
 type settingsPage struct {
+	stepTabs
 	Open  []settingsGroup
 	More  []settingsGroup
 	Error string
@@ -179,6 +180,7 @@ func (r *Router) HandleSettingsView(w http.ResponseWriter, req *http.Request) {
 		r.fail(w, err)
 		return
 	}
+	page.stepTabs = r.tabs()
 	astro.WriteTemplate(w, r.deps.Resolver, "settings.html", page)
 }
 
@@ -210,6 +212,7 @@ func (r *Router) HandleSettingsSave(w http.ResponseWriter, req *http.Request) {
 	if problem != "" {
 		page.fields(func(f *settingsField) { typedInto(f, req.PostForm) })
 		page.Error = problem
+		page.stepTabs = r.tabs()
 		r.invalid(w, "settings.html", page)
 		return
 	}

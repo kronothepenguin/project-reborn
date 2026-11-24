@@ -24,6 +24,7 @@ import (
 // names. Otherwise it asks the database, the site's port and housekeeping's
 // port, for programs run apart.
 type configPage struct {
+	stepTabs
 	OneAddress       bool
 	Written          bool
 	ConfigPath       string
@@ -41,6 +42,7 @@ func (r *Router) HandleConfigView(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	page := configPage{
+		stepTabs:   r.tabs(),
 		OneAddress: r.deps.Move != nil,
 		ConfigPath: setup.ConfigPath(),
 		Path:       storeconfig.DefaultPath(),
@@ -75,6 +77,7 @@ func (r *Router) HandleConfigSave(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	page := configPage{
+		stepTabs:         r.tabs(),
 		ConfigPath:       setup.ConfigPath(),
 		Path:             strings.TrimSpace(req.PostFormValue("path")),
 		Port:             strings.TrimSpace(req.PostFormValue("port")),
@@ -118,6 +121,7 @@ func (r *Router) HandleConfigSave(w http.ResponseWriter, req *http.Request) {
 // nothing and shows its error, so the step takes another address.
 func (r *Router) saveAddress(w http.ResponseWriter, req *http.Request, installation setup.Installation) {
 	page := configPage{
+		stepTabs:   r.tabs(),
 		OneAddress: true,
 		ConfigPath: setup.ConfigPath(),
 		Host:       strings.TrimSpace(req.PostFormValue("host")),

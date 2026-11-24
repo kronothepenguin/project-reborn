@@ -54,6 +54,13 @@ export default async function ({ browser, check, dir, eventually, ports, shot, s
       (await page.locator('input[name="port"]').count()) === 1 &&
       (await page.locator('input[name="housekeepingPort"]').count()) === 0,
   );
+  await page.getByRole("tab").first().waitFor();
+  check(
+    "the config step shows its title bar and the steps as tabs",
+    (await page.getByRole("heading", { name: "Configuration" }).isVisible()) &&
+      (await page.getByRole("tab", { selected: true }).innerText()) === "1. Configuration",
+    await page.locator("body").innerText(),
+  );
   await page.fill('input[name="port"]', String(port));
   // The move redirects to the same path on the new port, so the browser lands
   // on the config step there, with the new port saved.

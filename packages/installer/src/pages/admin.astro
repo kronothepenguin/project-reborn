@@ -1,11 +1,11 @@
 ---
-import { Button, FormField, Input } from "@project-reborn/components";
+import { Button, Checkbox, FormField, Input } from "@project-reborn/components";
 import FormError from "../components/form-error.astro";
 import Setup from "../layouts/setup.astro";
 ---
 
 <Setup title="Administrator" step="admin">
-  <p class="text-sm">
+  <p>
     Creates your user, your first habbo and Reborn's staff ranks as access groups.
     You join Administrator, which holds every attribute.
   </p>
@@ -14,7 +14,7 @@ import Setup from "../layouts/setup.astro";
     <FormField
       label="Habbo name"
       help="1 to 24 letters, digits or - = ? ! @ : . ,"
-      class="flex flex-col gap-1 text-sm"
+      class="flex flex-col gap-1"
     >
       <Input
         name="name"
@@ -24,7 +24,7 @@ import Setup from "../layouts/setup.astro";
         required
       />
     </FormField>
-    <FormField label="Email" class="flex flex-col gap-1 text-sm">
+    <FormField label="Email" class="flex flex-col gap-1">
       <Input
         name="email"
         type="email"
@@ -33,7 +33,7 @@ import Setup from "../layouts/setup.astro";
         required
       />
     </FormField>
-    <FormField label="Birth date" class="flex flex-col gap-1 text-sm">
+    <FormField label="Birth date" class="flex flex-col gap-1">
       <Input
         name="bornOn"
         type="date"
@@ -45,11 +45,11 @@ import Setup from "../layouts/setup.astro";
     <FormField
       label="Password"
       help="[[ .PasswordHelp ]]"
-      class="flex flex-col gap-1 text-sm"
+      class="flex flex-col gap-1"
     >
       <Input name="password" type="password" variant="border" required />
     </FormField>
-    <FormField label="Confirm password" class="flex flex-col gap-1 text-sm">
+    <FormField label="Confirm password" class="flex flex-col gap-1">
       <Input
         name="passwordConfirm"
         type="password"
@@ -57,18 +57,15 @@ import Setup from "../layouts/setup.astro";
         required
       />
     </FormField>
-    <label class="flex items-center gap-2 text-sm">
-      [[ if .Club ]]
-      <input type="checkbox" name="club" value="on" checked />
-      [[ else ]]
-      <input type="checkbox" name="club" value="on" />
-      [[ end ]]
-      <span>Give this habbo Habbo Club</span>
-    </label>
+    [[ if .Club ]]
+    <Checkbox name="club" value="on" checked>Give this habbo Habbo Club</Checkbox>
+    [[ else ]]
+    <Checkbox name="club" value="on">Give this habbo Habbo Club</Checkbox>
+    [[ end ]]
     <FormField
       label="Credits"
       help="Habbos who register get the start credits of the site step."
-      class="flex flex-col gap-1 text-sm"
+      class="flex flex-col gap-1"
     >
       <Input
         name="credits"

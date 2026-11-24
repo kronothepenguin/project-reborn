@@ -14,6 +14,7 @@ Built:
 | `packages/housekeeping` | `layouts/housekeeping.astro`: the grey bar, the tabs, the left column of `box` components and the content; `Box color="gold"` for data lists |
 | `packages/components` | The primitives both apps share; `Table` and `Table variant="form"` give housekeeping's lists and forms; every primitive at the new sizes; `Tabs color`, with Holo's tabs inside boxes; the box's frame and the title bars as Holo's |
 | `packages/store` | `CountAvatars`, the header's registered count |
+| `packages/installer` | `layouts/setup.astro`: the logo over one `Card color="blue"` per step, whose first row is the `step-tabs` island; Holo's font and the 16px base |
 
 Planned:
 
@@ -21,7 +22,6 @@ Planned:
 | --- | --- |
 | `packages/cms` | Holo's font and the 16px base; the 1240px page; the main tabs, the sub-navigation, the header with its inline search, and the footer as Holo's; then every page |
 | `packages/housekeeping` | Its own look at the new sizes |
-| `packages/installer` | A layout of its own from the shared parts, with the steps as tabs |
 | `tests/e2e` | The suites follow the pages; screenshots of every page are the exit check's evidence |
 
 ## The sizes

@@ -9,7 +9,9 @@ interface Props {
 const { open = false } = Astro.props;
 ---
 
-<details class="space-y-3" open={open}>
-  <summary class="cursor-pointer text-sm font-bold">More settings</summary>
-  [[ range .More ]]<SettingsGroup />[[ end ]]
+<details class="group" open={open}>
+  <summary class="cursor-pointer font-bold text-blue-900 hover:underline">More settings</summary>
+  <div class="mt-4 gap-4 lg:columns-2 [&>fieldset]:mb-4 [&>fieldset]:break-inside-avoid">
+    [[ range .More ]]<SettingsGroup />[[ end ]]
+  </div>
 </details>

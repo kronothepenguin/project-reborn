@@ -10,6 +10,7 @@ import (
 )
 
 type indexPage struct {
+	stepTabs
 	Configured bool
 	Installed  bool
 	ConfigPath string
@@ -32,8 +33,11 @@ func (r *Router) HandleIndexView(w http.ResponseWriter, req *http.Request) {
 		ConfigPath: setup.ConfigPath(),
 		Next:       r.deps.Setup.Waiting(),
 	}
+	// Once installed, every step leads back here: no step tab opens.
 	if installed {
 		page.SiteURL = settings.String(req.Context(), store.New(installation.DB), "site.url")
+	} else {
+		page.stepTabs = r.tabs()
 	}
 	astro.WriteTemplate(w, r.deps.Resolver, "index.html", page)
 }

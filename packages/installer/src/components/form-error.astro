@@ -1,5 +1,7 @@
+---
+import { Notice } from "@project-reborn/components";
+---
+
 [[ if .Error ]]
-<p class="rounded border border-red-600 p-2 text-sm text-red-600" role="alert">
-  [[ .Error ]]
-</p>
+<Notice role="alert">[[ .Error ]]</Notice>
 [[ end ]]

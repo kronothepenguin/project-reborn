@@ -6,14 +6,16 @@ import SettingsGroup from "../components/settings-group.astro";
 import Setup from "../layouts/setup.astro";
 ---
 
-<Setup title="Settings" step="settings">
-  <p class="text-sm">
+<Setup title="Settings" step="settings" wide>
+  <p>
     Set what your hotel needs on its first day. Skip keeps every setting as
     it is, and housekeeping changes them later.
   </p>
   <FormError />
-  <form method="post" action="/installer/settings" class="space-y-3">
-    [[ range .Open ]]<SettingsGroup />[[ end ]]
+  <form method="post" action="/installer/settings" class="space-y-4">
+    <div class="gap-4 lg:columns-2 [&>fieldset]:mb-4 [&>fieldset]:break-inside-avoid">
+      [[ range .Open ]]<SettingsGroup />[[ end ]]
+    </div>
     {/* A refused form shows every field, so that the one it names is in sight. */}
     [[ if .Error ]]<MoreSettings open />[[ else ]]<MoreSettings />[[ end ]]
     <div class="flex flex-row-reverse justify-start gap-2">
