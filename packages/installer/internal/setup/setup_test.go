@@ -43,6 +43,7 @@ func testAdministrator() Administrator {
 		BornOn:   time.Date(1990, time.May, 1, 0, 0, 0, 0, time.UTC),
 		Password: "secret123",
 		IP:       "127.0.0.1",
+		Credits:  5000,
 	}
 }
 
@@ -188,14 +189,15 @@ func TestCreateAdministrator(t *testing.T) {
 		t.Errorf("habbo = %+v, %v", avatar, err)
 	}
 
-	var credits, ledger, homes int
+	var credits, ledger int64
+	var homes int
 	var reason, detail string
 	db := installation.DB
-	if err := db.QueryRowContext(t.Context(), `SELECT credits FROM wallets WHERE user_id = ?`, avatar.UserID).Scan(&credits); err != nil || credits != adminCredits {
-		t.Errorf("wallet credits = %d, %v, want %d", credits, err, adminCredits)
+	if err := db.QueryRowContext(t.Context(), `SELECT credits FROM wallets WHERE user_id = ?`, avatar.UserID).Scan(&credits); err != nil || credits != admin.Credits {
+		t.Errorf("wallet credits = %d, %v, want %d", credits, err, admin.Credits)
 	}
 	err = db.QueryRowContext(t.Context(), `SELECT credits, reason, detail FROM wallet_transactions WHERE avatar_id = ?`, avatar.ID).Scan(&ledger, &reason, &detail)
-	if err != nil || ledger != adminCredits || reason != "registration" || detail != "installer" {
+	if err != nil || ledger != admin.Credits || reason != "registration" || detail != "installer" {
 		t.Errorf("ledger row = %d %q %q, %v", ledger, reason, detail, err)
 	}
 	err = db.QueryRowContext(t.Context(),
@@ -217,6 +219,72 @@ func TestCreateAdministrator(t *testing.T) {
 
 	if err := s.CreateAdministrator(t.Context(), admin); !errors.Is(err, ErrInstalled) {
 		t.Errorf("a second CreateAdministrator = %v, want ErrInstalled", err)
+	}
+}
+
+// installWith creates admin on a new hotel and returns its user.
+func installWith(t *testing.T, admin Administrator) (*State, int64) {
+	t.Helper()
+	s := configure(t)
+	if err := s.CreateAdministrator(t.Context(), admin); err != nil {
+		t.Fatalf("CreateAdministrator: %v", err)
+	}
+	installation, _ := s.Current()
+	var userID int64
+	err := installation.DB.QueryRowContext(t.Context(), `SELECT user_id FROM avatars WHERE name = ?`, admin.Name).Scan(&userID)
+	if err != nil {
+		t.Fatalf("the administrator's habbo: %v", err)
+	}
+	return s, userID
+}
+
+func TestTheAdministratorWithTheBoxTickedIsAClubMemberFor100Years(t *testing.T) {
+	admin := testAdministrator()
+	admin.Club = true
+	s, userID := installWith(t, admin)
+	installation, _ := s.Current()
+	q := store.New(installation.DB)
+
+	now := time.Now().UTC()
+	end, err := q.GetClubEnd(t.Context(), store.GetClubEndParams{UserID: userID, Now: now})
+	if err != nil {
+		t.Fatalf("GetClubEnd: %v, want a running club", err)
+	}
+	if want := now.AddDate(100, 0, 0); end.Before(want.Add(-time.Minute)) || end.After(want) {
+		t.Errorf("the club ends %v, want 100 years from now, %v", end, want)
+	}
+	var ledger int
+	err = installation.DB.QueryRowContext(t.Context(), `SELECT COUNT(*) FROM wallet_transactions WHERE user_id = ?`, userID).Scan(&ledger)
+	if err != nil || ledger != 1 {
+		t.Errorf("ledger rows = %d, %v, want only the first credits", ledger, err)
+	}
+}
+
+func TestTheAdministratorWithTheBoxClearedHasNoClub(t *testing.T) {
+	s, userID := installWith(t, testAdministrator())
+	installation, _ := s.Current()
+
+	periods, err := store.New(installation.DB).ListClubSubscriptions(t.Context(), userID)
+	if err != nil || len(periods) != 0 {
+		t.Errorf("club periods = %v, %v, want none", periods, err)
+	}
+}
+
+func TestTheAdministratorsPurseStartsWithTheCreditsGiven(t *testing.T) {
+	admin := testAdministrator()
+	admin.Credits = 1234
+	s, userID := installWith(t, admin)
+	installation, _ := s.Current()
+	db := installation.DB
+
+	var credits, ledger int64
+	var reason, detail string
+	if err := db.QueryRowContext(t.Context(), `SELECT credits FROM wallets WHERE user_id = ?`, userID).Scan(&credits); err != nil || credits != 1234 {
+		t.Errorf("wallet credits = %d, %v, want 1234", credits, err)
+	}
+	err := db.QueryRowContext(t.Context(), `SELECT credits, reason, detail FROM wallet_transactions WHERE user_id = ?`, userID).Scan(&ledger, &reason, &detail)
+	if err != nil || ledger != 1234 || reason != "registration" || detail != "installer" {
+		t.Errorf("ledger row = %d %q %q, %v, want 1234 registration installer", ledger, reason, detail, err)
 	}
 }
 

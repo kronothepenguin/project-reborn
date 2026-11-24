@@ -69,6 +69,13 @@ optional content and the catalogue review wait with the open questions.
 - No access group can manage access: the administrator step is refused, and no user is created.
 - The site created the database first and habbos registered: the installer changes the defaults and creates the
   administrator beside them (decision holo-port/0068).
+- The administrator step opens: it shows "Give this habbo Habbo Club", ticked, and "Credits", filled with 5000.
+- The administrator is created with the box ticked: its habbo is a club member for 100 years.
+- The administrator is created with the box cleared: its habbo has no club.
+- The administrator is created with a number of credits: its purse starts with that number, and the ledger names the
+  installer.
+- The credits are no number, or outside 0 to 1,000,000: the form is refused and names the field.
+- The administrator reads the step: it says that the start credits of the site step go to habbos who register.
 
 ## Installed
 
@@ -104,16 +111,6 @@ optional content and the catalogue review wait with the open questions.
   your password?' links. The minimail needs none."
 
 ## Next
-
-### The administrator's club and credits
-
-- The administrator step opens: it shows "Give this habbo Habbo Club", ticked, and "Credits", filled with 5000.
-- The administrator is created with the box ticked: its habbo is a club member for 100 years.
-- The administrator is created with the box cleared: its habbo has no club.
-- The administrator is created with a number of credits: its purse starts with that number, and the ledger names the
-  installer.
-- The credits are no number, or outside 0 to 1,000,000: the form is refused and names the field.
-- The administrator reads the step: it says that the start credits of the site step go to habbos who register.
 
 # Open questions
 
