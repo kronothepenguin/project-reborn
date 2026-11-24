@@ -25,13 +25,13 @@ not wrapped by its runner.
 
 # The look
 
-`layouts/setup.astro` draws every page: the hotel's logo and "Project Reborn installer" on the hotel's blue
-(`sky-200`), over one box, `Card color="blue"`, whose title bar names the step. The theme's `--font-sans` is Holo's
-Verdana, at the 16px base. A step's main button is `Button variant="green"`, "Skip" and "Check again" the default
-variant, and an error a red `Notice` with `role="alert"`.
+`layouts/setup.astro` draws every page: the hotel's logo and "Project Reborn installer" on the hotel's blue (`sky-200`),
+over one box, `Card color="blue"`, whose title bar names the step. The theme's `--font-sans` is Holo's Verdana, and the
+body is the site's `text-xs` (12px), with the title `text-lg`. A step's main button is `Button variant="green"`, "Skip"
+and "Check again" the default variant, and an error a red `Notice` with `role="alert"`.
 
-- One column: the page is 800px wide (`max-w-200`) with a 16px gutter, the box 768px, and every step fills its
-  content, one column of 726px. The
+- One column: the page is 640px wide (`max-w-160`) with a 16px gutter (8px under 640px), the box 608px, and every
+  step fills its content, one column of 574px, where the five steps fit on one row. Fields are 12px apart. The
   stepper, the text, the fields and the row of buttons share its left and right edges. Fields sit one under the other.
   A field of an address, a figure or a text takes the column's width; a field of a short value, a number or a
   `shorttext` (`registration.defaultGender`, `game.dateFormat`, the router's `shortTexts`), carries `data-short` and is
@@ -49,7 +49,7 @@ variant, and an error a red `Notice` with `role="alert"`.
 - The settings step: its groups are sections, `components/settings/settings-section.astro`, in
   `#settings-sections`, with no script. A section is a native `<details>` whose `<summary>` is the title row, as wide
   as the column: a pointer, a chevron that turns down when it opens, and a focus ring. A closed section keeps its
-  fields in the one form, so every field posts. The six groups are `top` sections, 8px apart: a closed title row is
+  fields in the one form, so every field posts. The six groups are `top` sections, 6px apart: a closed title row is
   `sky-200` with a `sky-600` line and `blue-900` text, an open one `sky-600` with white text. "More settings" is the
   last `top` section, closed, and holds its groups as `inner` sections: rows of `sky-700` text with the chevron on the
   column's edge and a `sky-200` line between them.

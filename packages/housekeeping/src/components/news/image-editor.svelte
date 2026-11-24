@@ -18,7 +18,7 @@
   const nudgeStep = 10;
   const failure = "The picture could not be uploaded.";
   const button =
-    "cursor-pointer border border-black bg-olive-200 px-2.5 py-0.5 font-bold hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-wait disabled:opacity-50 aria-pressed:bg-sky-700 aria-pressed:text-white";
+    "cursor-pointer border border-black bg-olive-200 px-2 py-0.5 font-bold hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-wait disabled:opacity-50 aria-pressed:bg-sky-700 aria-pressed:text-white";
   const thumbnail =
     "cursor-pointer border-2 border-transparent hover:border-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black aria-pressed:border-sky-700";
 
@@ -261,7 +261,7 @@
   onDestroy(clear);
 </script>
 
-<div class="flex flex-col items-start gap-1.5">
+<div class="flex flex-col items-start gap-1">
   <input
     id="news-image-file"
     type="file"
@@ -269,7 +269,7 @@
     aria-label="Picture"
     onchange={choose}
   />
-  <div class="flex flex-wrap items-center gap-2.5">
+  <div class="flex flex-wrap items-center gap-2">
     <button
       type="button"
       aria-pressed={mode === "cut"}
@@ -289,7 +289,7 @@
       class={button}>Uploaded</button
     >
     {#if mode === "cut" && picture}
-      <label class="flex items-center gap-1.5">
+      <label class="flex items-center gap-1">
         Zoom
         <input
           type="range"
@@ -306,7 +306,7 @@
     {#if paths.length === 0}
       <p>No pictures were uploaded yet.</p>
     {:else}
-      <ul class="flex flex-wrap gap-1.5" aria-label="Uploaded pictures">
+      <ul class="flex flex-wrap gap-1" aria-label="Uploaded pictures">
         {#each paths as path (path)}
           <li>
             <button

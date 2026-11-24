@@ -12,7 +12,7 @@ interface Props {
 const { title, open = false, level = "top" } = Astro.props;
 
 const row =
-  "flex w-full cursor-pointer list-none items-center gap-2 font-bold select-none [&::-webkit-details-marker]:hidden focus-visible:outline-2 focus-visible:outline-offset-2";
+  "flex w-full cursor-pointer list-none items-center gap-1.5 font-bold select-none [&::-webkit-details-marker]:hidden focus-visible:outline-2 focus-visible:outline-offset-2";
 ---
 
 {
@@ -21,11 +21,11 @@ const row =
       <summary
         class:list={[
           row,
-          "rounded border border-sky-600 bg-sky-200 px-3 py-2 text-blue-900 hover:bg-sky-300 focus-visible:outline-blue-900 group-open/section:bg-sky-600 group-open/section:text-white group-open/section:hover:bg-sky-500",
+          "rounded border border-sky-600 bg-sky-200 px-2 py-1 text-blue-900 hover:bg-sky-300 focus-visible:outline-blue-900 group-open/section:bg-sky-600 group-open/section:text-white group-open/section:hover:bg-sky-500",
         ]}
       >
         <svg
-          class="size-4 shrink-0 transition-transform group-open/section:rotate-90 motion-reduce:transition-none"
+          class="size-3 shrink-0 transition-transform group-open/section:rotate-90 motion-reduce:transition-none"
           viewBox="0 0 16 16"
           aria-hidden="true"
         >
@@ -33,7 +33,7 @@ const row =
         </svg>
         {title}
       </summary>
-      <div class="flex flex-col gap-3 pt-3 pb-4">
+      <div class="flex flex-col gap-3 pt-2 pb-3">
         <slot />
       </div>
     </details>
@@ -42,11 +42,11 @@ const row =
       <summary
         class:list={[
           row,
-          "py-2 text-sky-700 hover:text-sky-600 hover:underline focus-visible:outline-sky-700",
+          "py-1.5 text-sky-700 hover:text-sky-600 hover:underline focus-visible:outline-sky-700",
         ]}
       >
         <svg
-          class="size-4 shrink-0 transition-transform group-open/inner:rotate-90 motion-reduce:transition-none"
+          class="size-3 shrink-0 transition-transform group-open/inner:rotate-90 motion-reduce:transition-none"
           viewBox="0 0 16 16"
           aria-hidden="true"
         >
@@ -54,7 +54,7 @@ const row =
         </svg>
         {title}
       </summary>
-      <div class="flex flex-col gap-3 pt-1 pb-4">
+      <div class="flex flex-col gap-3 pt-1 pb-3">
         <slot />
       </div>
     </details>

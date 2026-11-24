@@ -8,11 +8,11 @@ import Housekeeping from "../layouts/housekeeping.astro";
   <Message />
   <form method="post" action="/housekeeping/dcr/import">
     <Box title="Client Files">
-      <p class="px-1.5 py-0.5">
+      <p class="px-1 py-0.5">
         The database holds <strong>[[ .Variables ]]</strong> variables and <strong>[[ .Texts ]]</strong> texts of the
         client.
       </p>
-      <div class="flex items-center justify-between gap-4 p-1.5">
+      <div class="flex items-center justify-between gap-3 p-1">
         <p>
           Importing replaces them with the lines of external_variables.txt and external_texts.txt in
           <span class="font-mono">[[ .Folder ]]</span>. Both files must be there.

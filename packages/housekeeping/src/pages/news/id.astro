@@ -7,7 +7,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
 
 <Housekeeping title="Manage Existing Articles" tab="site">
   <Message />
-  <p class="mb-2.5"><a href="[[ .SiteURL ]]/news/[[ .ID ]]" class="text-indigo-900 underline">View on site</a></p>
+  <p class="mb-2"><a href="[[ .SiteURL ]]/news/[[ .ID ]]" class="text-indigo-900 underline">View on site</a></p>
   <form method="post" action="/housekeeping/news/[[ .ID ]]">
     <Box title="Edit News Article ([[ .Title ]])">
       <Table variant="form">
@@ -15,7 +15,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
           <NewsFields />
         </tbody>
       </Table>
-      <div class="border-t-2 border-black bg-olive-200 p-1.5 text-center">
+      <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
         <Button variant="plain" size="compact" type="submit">Update Article</Button>
       </div>
     </Box>
