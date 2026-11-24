@@ -16,10 +16,10 @@ const moderation =
   "float-left cursor-pointer bg-[url(/web-gallery/v2/images/myhabbo_icons.png)] bg-position-[3px_-283px] bg-no-repeat pt-0.5 pb-[3px] pl-[22px] text-neutral-700 hover:underline";
 ---
 
-<Community title="[[ .ShortName ]] ~ Discussion - [[ .Title ]]" tab="community" sub="Discussion Board" wide>
+<Community title="[[ .ShortName ]] ~ Discussion - [[ .Title ]]" tab="community" sub="Discussion Board">
   <ForumBox>
     <div id="group-postlist-container">
-      <div class="flow-root pt-1 pr-0 pb-2 pl-2">
+      <div class="flow-root pt-1 pr-2.5 pb-2 pl-2">
         [[ if .SignedIn ]][[ if .Locked ]]<span class="float-left pr-[11px] font-bold text-neutral-700"
           ><img class="inline" src="/web-gallery/images/groups/status_closed.gif" title="Closed Thread" alt="" /> Closed Thread</span
         >[[ else ]]<button type="button" id="create-post-message" class:list={[reply]}>Post reply</button>[[ end ]][[ end ]][[ if .Moderator ]]<button
@@ -39,7 +39,7 @@ const moderation =
       <ReplyForm client:only="svelte" source="forum-viewer" />
       <DeletePost client:only="svelte" />
       [[ end ]]
-      <div class="flow-root pt-1 pr-0 pb-2 pl-2">
+      <div class="flow-root pt-1 pr-2.5 pb-2 pl-2">
         [[ if .SignedIn ]][[ if .Locked ]]<span class="float-left pr-[11px] font-bold text-neutral-700"
           ><img class="inline" src="/web-gallery/images/groups/status_closed.gif" title="Closed Thread" alt="" /> Closed Thread</span
         >[[ else ]]<button type="button" id="create-post-message-lower" class:list={[reply]}>Post reply</button>[[ end ]][[ else ]]

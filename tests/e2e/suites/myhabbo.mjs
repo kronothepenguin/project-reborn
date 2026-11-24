@@ -1,8 +1,11 @@
 // Holo's myhabbo pages, the board, a thread, a home and a group's page, in
-// view and in edit, on a screen 1366px wide: the box runs the page's 930px
-// under a sub-navigation as wide, the line under its title runs the box's
-// width, a home's canvas fills its box, and every widget and note is whole,
-// its title bar and its body the same width. Screenshots of each page.
+// view and in edit, on a screen 1366px wide: the board and a thread stand
+// under the community layout's own sub-navigation, their box as wide and their
+// rows filling it; a home and a group's page run the page's 930px under a
+// sub-navigation as wide; the line under a box's title runs the box's width, a
+// home's canvas fills its box, and every widget and note is whole, its title
+// bar and its body the same width. Screenshots of each page, and of the board's
+// new thread form and a thread's reply form.
 import { session } from "../lib/staff.mjs";
 
 export const programs = ["cms"];
@@ -36,6 +39,13 @@ export const prepare = ({ sql }) => {
   sql(`INSERT INTO forum_threads (avatar_id, title, sticky, locked, created_at) VALUES (${admin}, 'Board rules', TRUE, FALSE, '${at}')`);
   const [[thread]] = sql("SELECT id FROM forum_threads WHERE title = 'Board rules'");
   sql(`INSERT INTO forum_posts (forum_thread_id, avatar_id, body, created_at) VALUES (${thread}, ${admin}, 'Be nice.', '${at}')`);
+  sql(`INSERT INTO forum_posts (forum_thread_id, avatar_id, body, created_at)
+    VALUES (${thread}, ${admin}, '[quote]Be nice.[/quote]And keep every thread about the hotel, its rooms, its games and its habbos.', '${at}')`);
+  sql(`INSERT INTO forum_threads (avatar_id, title, sticky, locked, created_at)
+    VALUES (${admin}, 'Which room has the best music in the whole hotel this week?', FALSE, FALSE, '${at}')`);
+  const [[music]] = sql("SELECT id FROM forum_threads WHERE title LIKE 'Which room%'");
+  sql(`INSERT INTO forum_posts (forum_thread_id, avatar_id, body, created_at) VALUES (${music}, ${admin}, 'Tell us yours.', '${at}')`);
+  sql(`INSERT INTO forum_posts (forum_thread_id, avatar_id, body, created_at) VALUES (${music}, ${admin}, 'The Rooftop Lounge.', '${at}')`);
 };
 
 // frame reads the page's box, its sub-navigation and its footer, and the line
@@ -54,6 +64,7 @@ const frame = (page) =>
       main: box(document.querySelector("main")),
       wrapper: box(wrapper),
       nav: box(document.querySelector("nav > div")),
+      table: box(document.querySelector("#group-topiclist-list, #group-postlist-list") ?? wrapper),
       row: box(row),
       line: { height: line.height, left: line.left, right: line.right },
       footer: box(footer),
@@ -92,6 +103,15 @@ export default async function (t) {
     ["group", `/groups/${group}`],
     ["group-edit", `/groups/${group}/edit`],
   ];
+  await page.goto(base + "/community");
+  await page.waitForLoadState("networkidle");
+  const community = await page.evaluate(() => {
+    const r = document.querySelector("nav > div").getBoundingClientRect();
+    const f = document.querySelector("footer p").getBoundingClientRect();
+    return { nav: { left: r.left, right: r.right, top: r.top, width: r.width }, footer: { left: f.left, right: f.right } };
+  });
+  await shot(page, "myhabbo-community-1366");
+
   const frames = [];
   const items = [];
   const canvases = [];
@@ -115,9 +135,32 @@ export default async function (t) {
     }
   }
 
+  const forum = frames.filter((f) => f.name === "board" || f.name === "thread");
+  const homes = frames.filter((f) => f.name !== "board" && f.name !== "thread");
   check(
-    "the board, a home and a group's page stand in a box of the page's 930px, under a sub-navigation as wide, with the footer centred under both",
-    frames.every(
+    "the board and a thread show the community page's sub-navigation, in the same width and place",
+    forum.every((f) => JSON.stringify(f.nav) === JSON.stringify(community.nav) && f.nav.width === 761),
+    JSON.stringify({ community: community.nav, forum: forum.map(({ name, nav }) => ({ name, nav })) }),
+  );
+  check(
+    "the board's and a thread's box is as wide as the sub-navigation, under its edges, with the footer of the community page",
+    forum.every(
+      (f) =>
+        f.wrapper.left === f.nav.left &&
+        f.wrapper.right === f.nav.right &&
+        f.footer.left === community.footer.left &&
+        f.footer.right === community.footer.right,
+    ),
+    JSON.stringify(forum.map(({ name, wrapper, nav, footer }) => ({ name, wrapper, nav, footer }))),
+  );
+  check(
+    "the board's and a thread's rows fill the box from one side of its frame to the other",
+    forum.every((f) => f.table.left === f.wrapper.left + 1 && f.table.right === f.wrapper.right - 1),
+    JSON.stringify(forum.map(({ name, wrapper, table }) => ({ name, wrapper, table }))),
+  );
+  check(
+    "a home and a group's page stand in a box of the page's 930px, under a sub-navigation as wide, with the footer centred under both",
+    homes.every(
       (f) =>
         f.wrapper.width === 930 &&
         f.wrapper.left === f.main.left &&
@@ -125,11 +168,11 @@ export default async function (t) {
         f.nav.right === f.wrapper.right - 1 &&
         Math.abs(f.footer.left - f.wrapper.left - (f.wrapper.right - f.footer.right)) <= 1,
     ),
-    JSON.stringify(frames.map(({ name, wrapper, nav, footer }) => ({ name, wrapper, nav, footer }))),
+    JSON.stringify(homes.map(({ name, wrapper, nav, footer }) => ({ name, wrapper, nav, footer }))),
   );
   check(
     "the line under the box's title runs from one edge of the box to the other",
-    frames.every((f) => f.line.height === "1px" && f.line.left === "0px" && f.line.right === "0px" && f.row.width === 928),
+    frames.every((f) => f.line.height === "1px" && f.line.left === "0px" && f.line.right === "0px" && f.row.width === f.wrapper.width - 2),
     JSON.stringify(frames.map(({ name, row, line }) => ({ name, row, line }))),
   );
   check(
@@ -147,6 +190,32 @@ export default async function (t) {
     "every widget and note on a home and a group's page is whole, its title bar and its body the same width",
     items.every((p) => p.items.length > 0 && p.items.every((i) => i.head === i.body)),
     JSON.stringify(items),
+  );
+  // fits reads the right edge of the box and of the form's widest parts.
+  const fits = async (form) => {
+    await page.locator(form).waitFor();
+    return page.evaluate((selector) => {
+      const right = (el) => el.getBoundingClientRect().right;
+      const wrapper = right(document.querySelector("#mypage-wrapper"));
+      const parts = [...document.querySelectorAll(`${selector}, ${selector} *`)].map(right);
+      return { wrapper, widest: Math.max(...parts) };
+    }, form);
+  };
+  const forms = [];
+  await page.goto(base + "/forum");
+  await page.waitForLoadState("networkidle");
+  await page.locator("#newtopic-upper").click();
+  forms.push({ name: "new thread", ...(await fits('table[aria-label="New Thread"]')) });
+  await shot(page, "myhabbo-new-thread-1366");
+  await page.goto(base + `/forum/threads/${thread}`);
+  await page.waitForLoadState("networkidle");
+  await page.locator("#create-post-message").click();
+  forms.push({ name: "reply", ...(await fits('table[aria-label="Reply"]')) });
+  await shot(page, "myhabbo-reply-1366");
+  check(
+    "the board's new thread form and a thread's reply form fit inside the box",
+    forms.every((f) => f.widest <= f.wrapper - 1),
+    JSON.stringify(forms),
   );
   await staff.context.close();
 }

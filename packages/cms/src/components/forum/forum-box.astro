@@ -1,23 +1,20 @@
 ---
 import MypageBox from "../homes/mypage-box.astro";
 
-// Holo's Discussion Board box: its title and tab, then the 758-pixel column of
-// the board beside the empty 166-pixel one, as Holo's table drew its 750 and
-// 164 inside the page's 928.
+// Holo's Discussion Board box, as wide as the community layout's sub-navigation
+// and under its edges: its title and tab, then the board filling the box.
 ---
 
-<MypageBox>
-  <Fragment slot="header">
-    <h2 class="mr-2 pt-1 pl-2.5 text-sm font-bold text-sky-500">Discussion Board</h2>
-    <a
-      href="/forum"
-      class="relative top-px ml-1 h-[25px] rounded-t-[3px] border border-b-0 border-blue-400 bg-white pt-1.5 pr-2.5 pl-3.5 font-bold text-black no-underline"
-      aria-current="page">Discussion Board</a
-    >
-  </Fragment>
-  <div class="flex">
-    <div class="w-[758px]"><slot /></div>
-    <div class="w-1"></div>
-    <div class="w-[166px]"></div>
-  </div>
-</MypageBox>
+<div class="ml-px w-[761px]">
+  <MypageBox>
+    <Fragment slot="header">
+      <h2 class="mr-2 pt-1 pl-2.5 text-sm font-bold text-sky-500">Discussion Board</h2>
+      <a
+        href="/forum"
+        class="relative top-px ml-1 h-[25px] rounded-t-[3px] border border-b-0 border-blue-400 bg-white pt-1.5 pr-2.5 pl-3.5 font-bold text-black no-underline"
+        aria-current="page">Discussion Board</a
+      >
+    </Fragment>
+    <slot />
+  </MypageBox>
+</div>
