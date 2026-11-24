@@ -89,15 +89,15 @@
 </script>
 
 <!-- Holo's two parts of the box reach its borders, past the card's padding. -->
-<div class="-mx-3">
-  <div class="px-[15px] pb-2">
+<div class="-mx-4">
+  <div class="px-5 pb-2.5">
     <p class="pb-[1em]">You are{days > 0 ? "" : " not"} a member of {shortName} Club</p>
     <p class="pb-[1em]">
       {#if days > 0}You have {days} Club Day(s) left{:else}&nbsp;{/if}
     </p>
   </div>
   <div class="bg-amber-100 bg-[url(/web-gallery/v2/images/hc_pattern.gif)] bg-position-[30%] px-[15px] py-2">
-    <div class="rounded-lg bg-orange-700 px-2 py-1.5">
+    <div class="rounded-lg bg-orange-700 px-2.5 py-2">
       {#if canBuy}
         <table>
           <tbody>
@@ -124,15 +124,15 @@
 {#snippet header()}
   <span class="relative block">
     {title}
-    <button type="button" class="absolute top-0 right-0 cursor-pointer px-1" aria-label="Close" onclick={close}>X</button>
+    <button type="button" class="absolute top-0 right-0 cursor-pointer px-1.5" aria-label="Close" onclick={close}>X</button>
   </span>
 {/snippet}
 
-<Dialog open={months > 0} label={title} class="m-auto w-[398px] bg-transparent backdrop:bg-black/40" onclose={() => (months = 0)}>
+<Dialog open={months > 0} label={title} class="m-auto w-132.5 bg-transparent backdrop:bg-black/40" onclose={() => (months = 0)}>
   <Card color="orange" {header}>
-    <div class="flow-root text-[11px]">
+    <div class="flow-root text-base">
       {#if sending}
-        <div class="py-2 text-center"><Spinner /></div>
+        <div class="py-2.5 text-center"><Spinner /></div>
       {:else}
         <img class="float-left m-2.5" src={piccolo} width="32" height="87" alt="" />
         <p class="pb-[1em]"><b>Confirm</b></p>
@@ -140,7 +140,7 @@
           {months} month(s) of {shortName} Club ({months * daysPerMonth} days) costs {prices[months]} Credits. You have: {credits}
           Credits.
         </p>
-        <p class="flex gap-1 pb-[1em]">
+        <p class="flex gap-1.5 pb-[1em]">
           <Button onclick={close}>Cancel</Button>
           <Button onclick={buy}>Buy</Button>
         </p>
@@ -149,9 +149,9 @@
   </Card>
 </Dialog>
 
-<Dialog open={result !== null} label={title} class="m-auto w-[398px] bg-transparent backdrop:bg-black/40" onclose={() => (result = null)}>
+<Dialog open={result !== null} label={title} class="m-auto w-132.5 bg-transparent backdrop:bg-black/40" onclose={() => (result = null)}>
   <Card color="orange" {header}>
-    <div class="flow-root text-[11px]">
+    <div class="flow-root text-base">
       {#if result?.name === "subscribe"}
         <img class="float-left m-2.5" src={piccolo} width="32" height="87" alt="" />
         <p class="pb-[1em]"><b>Subscribe</b></p>
