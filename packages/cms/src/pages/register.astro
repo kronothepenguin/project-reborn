@@ -54,125 +54,127 @@ const fieldset = "mt-2 px-[7px]";
     />
     <input type="hidden" name="refer" value="[[ .Refer ]]" />
 
-    <div id="register-column-left" class="float-left w-[435px]">
-      <div id="register-avatar-editor-title" class="rounded bg-yellow-900 text-white">
-        <h2 class="px-[5px] text-center text-lg font-bold"><span class="float-left">1.</span>Create Your Avatar</h2>
-      </div>
-      <div id="avatar-error-box">
-        [[ with .Errors.look ]]
-        <div class="pt-[7px]"><Notice>[[ . ]]</Notice></div>
-        [[ end ]]
-      </div>
-      <div id="register-avatar-editor" class="pt-[7px]">
-        <AvatarEditor
-          client:only="svelte"
-          figureInput="register-figure"
-          genderInput="register-gender"
-          stateInput="register-editor-state"
-        />
-      </div>
-    </div>
-
-    <div id="register-column-right" class="float-right w-[269px]">
-      <section id="register-section-2" class="rounded-lg bg-cyan-600 px-1 pb-1.5 text-white">
-        <h2 class="px-[5px] text-center text-lg font-bold"><span class="float-left">2.</span>CHOOSE YOUR NAME</h2>
-        <fieldset id="register-fieldset-name" class="flow-root px-[7px]">
-          <div class={label}><label for="register-name" class="text-white">Habbo name</label></div>
-          <input id="register-name" name="name" value="[[ .Habbo ]]" class={`${field} float-left w-[180px]! font-bold`} />
-          <span id="register-name-check-container" class="float-right" hidden>
-            <Button id="register-name-check" size="compact" aria-label="Click here to check your name is free."><Icon /></Button>
-          </span>
-        </fieldset>
-        <div id="name-error-box">
-          [[ with .Errors.name ]]
-          <div class="clear-both pt-[7px]"><Notice>[[ . ]]</Notice></div>
+    <div id="register-columns" class="flow-root">
+      <div id="register-column-left" class="float-left w-[435px]">
+        <div id="register-avatar-editor-title" class="rounded bg-yellow-900 text-white">
+          <h2 class="px-[5px] text-center text-lg font-bold"><span class="float-left">1.</span>Create Your Avatar</h2>
+        </div>
+        <div id="avatar-error-box">
+          [[ with .Errors.look ]]
+          <div class="pt-[7px]"><Notice>[[ . ]]</Notice></div>
           [[ end ]]
         </div>
-      </section>
+        <div id="register-avatar-editor" class="pt-[7px]">
+          <AvatarEditor
+            client:only="svelte"
+            figureInput="register-figure"
+            genderInput="register-gender"
+            stateInput="register-editor-state"
+          />
+        </div>
+      </div>
 
-      <section id="register-section-3" class="relative mt-1">
-        <div id="registration-overlay" hidden class="absolute inset-0 z-10 rounded bg-olive-400/50"></div>
-        <Paper variant="gray">
-          <div class="px-1 pt-1">
-            <h2 class="rounded bg-olive-800 px-[5px] text-center text-lg font-bold text-white"><span class="float-left">3.</span>Your Details</h2>
+      <div id="register-column-right" class="float-right w-[269px]">
+        <section id="register-section-2" class="rounded-lg bg-cyan-600 px-1 pb-1.5 text-white">
+          <h2 class="px-[5px] text-center text-lg font-bold"><span class="float-left">2.</span>CHOOSE YOUR NAME</h2>
+          <fieldset id="register-fieldset-name" class="flow-root px-[7px]">
+            <div class={label}><label for="register-name" class="text-white">Habbo name</label></div>
+            <input id="register-name" name="name" value="[[ .Habbo ]]" class={`${field} float-left w-[180px]! font-bold`} />
+            <span id="register-name-check-container" class="float-right" hidden>
+              <Button id="register-name-check" size="compact" aria-label="Click here to check your name is free."><Icon /></Button>
+            </span>
+          </fieldset>
+          <div id="name-error-box">
+            [[ with .Errors.name ]]
+            <div class="clear-both pt-[7px]"><Notice>[[ . ]]</Notice></div>
+            [[ end ]]
           </div>
-          <div class="px-[7px] pt-[7px] pb-[3px]">
-            [[ with .Errors.password ]]
-            <div class="pt-[7px]"><Notice>[[ . ]]</Notice></div>
-            [[ end ]]
-            <fieldset id="register-fieldset-password" class={fieldset}>
-              <div class={label}><label for="register-password">My password will be:</label></div>
-              <div class={label}><input id="register-password" type="password" name="password" class={field} /></div>
-              <div class={label}><label for="register-password2">Confirm password</label></div>
-              <div class={label}><input id="register-password2" type="password" name="passwordConfirm" class={field} /></div>
-            </fieldset>
+        </section>
 
-            [[ with .Errors.bornOn ]]
-            <div class="pt-[7px]"><Notice>[[ . ]]</Notice></div>
-            [[ end ]]
-            <fieldset class={fieldset}>
-              <div class={label}><label for="register-day">I was born on:</label></div>
-              <BirthDate id="register-birthday" prefix="register" class="flex justify-center gap-1" />
-            </fieldset>
-
-            <div id="email-error-box">
-              [[ with .Errors.email ]]
+        <section id="register-section-3" class="relative mt-1">
+          <div id="registration-overlay" hidden class="absolute inset-0 z-10 rounded bg-olive-400/50"></div>
+          <Paper variant="gray">
+            <div class="px-1 pt-1">
+              <h2 class="rounded bg-olive-800 px-[5px] text-center text-lg font-bold text-white"><span class="float-left">3.</span>Your Details</h2>
+            </div>
+            <div class="px-[7px] pt-[7px] pb-[3px]">
+              [[ with .Errors.password ]]
               <div class="pt-[7px]"><Notice>[[ . ]]</Notice></div>
               [[ end ]]
-            </div>
-            <fieldset class={fieldset}>
-              <div class={label}><label for="register-email">And my email address is:</label></div>
-              <div class={label}><input id="register-email" name="email" value="[[ .Email ]]" maxlength="48" class={field} /></div>
-              <div class={label}><label for="register-email2">Retype your email address</label></div>
-              <div class={label}><input id="register-email2" name="emailConfirm" maxlength="48" class={field} /></div>
-            </fieldset>
+              <fieldset id="register-fieldset-password" class={fieldset}>
+                <div class={label}><label for="register-password">My password will be:</label></div>
+                <div class={label}><input id="register-password" type="password" name="password" class={field} /></div>
+                <div class={label}><label for="register-password2">Confirm password</label></div>
+                <div class={label}><input id="register-password2" type="password" name="passwordConfirm" class={field} /></div>
+              </fieldset>
 
-            <div id="register-marketing-box">
-              [[ if .Newsletter ]]
-              <Checkbox name="newsletter" checked>
-                Yes, please send me [[ .ShortName ]] updates, including the newsletter!
-              </Checkbox>
-              [[ else ]]
-              <Checkbox name="newsletter">
-                Yes, please send me [[ .ShortName ]] updates, including the newsletter!
-              </Checkbox>
-              [[ end ]]
-            </div>
-
-            <div id="terms-error-box">
-              [[ with .Errors.terms ]]
+              [[ with .Errors.bornOn ]]
               <div class="pt-[7px]"><Notice>[[ . ]]</Notice></div>
               [[ end ]]
-            </div>
-            <fieldset id="register-fieldset-terms" class={fieldset}>
-              <div id="register-terms" class="rounded-lg bg-mist-600 px-4 text-white">
-                <div id="register-terms-content" class="[&_label]:text-white">
-                  <p class="pb-3">
-                    <a
-                      id="register-terms-link"
-                      class="bg-no-repeat pl-5 text-white underline"
-                      style={`background-image: url(${termsIcon.src})`}
-                      href="/disclaimer"
-                      target="_blank">Terms of Service</a
-                    >
-                  </p>
-                  <div class="pb-3">
-                    [[ if .Terms ]]
-                    <Checkbox id="register-terms-check" name="terms" checked>I accept the Terms of Service</Checkbox>
-                    [[ else ]]
-                    <Checkbox id="register-terms-check" name="terms">I accept the Terms of Service</Checkbox>
-                    [[ end ]]
+              <fieldset class={fieldset}>
+                <div class={label}><label for="register-day">I was born on:</label></div>
+                <BirthDate id="register-birthday" prefix="register" class="flex justify-center gap-1" />
+              </fieldset>
+
+              <div id="email-error-box">
+                [[ with .Errors.email ]]
+                <div class="pt-[7px]"><Notice>[[ . ]]</Notice></div>
+                [[ end ]]
+              </div>
+              <fieldset class={fieldset}>
+                <div class={label}><label for="register-email">And my email address is:</label></div>
+                <div class={label}><input id="register-email" name="email" value="[[ .Email ]]" maxlength="48" class={field} /></div>
+                <div class={label}><label for="register-email2">Retype your email address</label></div>
+                <div class={label}><input id="register-email2" name="emailConfirm" maxlength="48" class={field} /></div>
+              </fieldset>
+
+              <div id="register-marketing-box">
+                [[ if .Newsletter ]]
+                <Checkbox name="newsletter" checked>
+                  Yes, please send me [[ .ShortName ]] updates, including the newsletter!
+                </Checkbox>
+                [[ else ]]
+                <Checkbox name="newsletter">
+                  Yes, please send me [[ .ShortName ]] updates, including the newsletter!
+                </Checkbox>
+                [[ end ]]
+              </div>
+
+              <div id="terms-error-box">
+                [[ with .Errors.terms ]]
+                <div class="pt-[7px]"><Notice>[[ . ]]</Notice></div>
+                [[ end ]]
+              </div>
+              <fieldset id="register-fieldset-terms" class={fieldset}>
+                <div id="register-terms" class="rounded-lg bg-mist-600 px-4 text-white">
+                  <div id="register-terms-content" class="[&_label]:text-white">
+                    <p class="pb-3">
+                      <a
+                        id="register-terms-link"
+                        class="bg-no-repeat pl-5 text-white underline"
+                        style={`background-image: url(${termsIcon.src})`}
+                        href="/disclaimer"
+                        target="_blank">Terms of Service</a
+                      >
+                    </p>
+                    <div class="pb-3">
+                      [[ if .Terms ]]
+                      <Checkbox id="register-terms-check" name="terms" checked>I accept the Terms of Service</Checkbox>
+                      [[ else ]]
+                      <Checkbox id="register-terms-check" name="terms">I accept the Terms of Service</Checkbox>
+                      [[ end ]]
+                    </div>
                   </div>
                 </div>
-              </div>
-            </fieldset>
-          </div>
-        </Paper>
-      </section>
+              </fieldset>
+            </div>
+          </Paper>
+        </section>
 
-      <div id="form-validation-error-box" hidden>
-        <div class="clear-both pt-[7px]">
-          <Notice>Sorry, registration failed. Please check the information you gave in the red boxes.</Notice>
+        <div id="form-validation-error-box" hidden>
+          <div class="clear-both pt-[7px]">
+            <Notice>Sorry, registration failed. Please check the information you gave in the red boxes.</Notice>
+          </div>
         </div>
       </div>
     </div>
