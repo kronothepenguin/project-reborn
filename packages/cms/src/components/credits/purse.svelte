@@ -43,7 +43,7 @@
   }
 </script>
 
-<form onsubmit={redeem}>
+<form class="-mx-4 -mt-2 -mb-0.5" onsubmit={redeem}>
   <ul class="pt-2.5">
     <li
       class="bg-olive-200 bg-[url(/web-gallery/images/purse/purse_icon.gif)] bg-position-[22px_9px] bg-no-repeat pt-2.5 pb-[15px] pl-[60px]"
@@ -54,7 +54,7 @@
     </li>
     {#if !answer}
       <li>
-        <div class="flow-root py-2">
+        <div class="flow-root px-[15px] py-2">
           <label class="block" for="{uid}-code">Enter redemption code:</label>
           <span class="float-left w-[155px] [&>input]:w-full">
             <Input id="{uid}-code" name="voucherCode" variant="border" bind:value={code} />
