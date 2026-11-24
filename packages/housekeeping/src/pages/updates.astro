@@ -6,7 +6,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
 
 <Housekeeping title="Database Updates" tab="site">
   <Message />
-  <div class="space-y-3">
+  <div class="space-y-4">
     <form method="post" action="/housekeeping/updates">
       <Box title="Waiting Updates">
         [[ if .Waiting ]]
@@ -26,12 +26,12 @@ import Housekeeping from "../layouts/housekeeping.astro";
             [[ end ]]
           </tbody>
         </Table>
-        <div class="flex items-center justify-between gap-3 p-1">
+        <div class="flex items-center justify-between gap-4 p-1.5">
           <p>A copy of the database is saved beside it first. The updates apply in order, and the first that fails stops them.</p>
           <Button variant="plain" size="compact" type="submit">Apply Updates</Button>
         </div>
         [[ else ]]
-        <p class="px-1 py-0.5">The database has every update of this release.</p>
+        <p class="px-1.5 py-0.5">The database has every update of this release.</p>
         [[ end ]]
       </Box>
     </form>
@@ -61,7 +61,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
             [[ end ]]
           </tbody>
         </Table>
-        <div class="flex items-center justify-between gap-3 p-1">
+        <div class="flex items-center justify-between gap-4 p-1.5">
           <p>The keys already in config.json stay as they are. The new values apply when the programs restart.</p>
           <Button variant="plain" size="compact" type="submit">Save config.json</Button>
         </div>

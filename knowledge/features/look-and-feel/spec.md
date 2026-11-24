@@ -70,6 +70,10 @@ height and close as possible aligned to right as a group".
   (decision holo-port/0060).
 - Staff read a data list in housekeeping: its rows alternate in shade.
 
+### Housekeeping at today's sizes
+
+- Staff open housekeeping: its own look stays, the grey bar, the navy tabs and the gold lists, at the new sizes.
+
 ## Every page
 
 - A page shows a select whose options the server fills in: it shows only the options.
@@ -107,10 +111,6 @@ height and close as possible aligned to right as a group".
 - A signed-in habbo reads the header: the habbo search shows its field and its button on one line, the same height,
   as one group at the right edge.
 - A visitor reads a box: Holo's frame, its title bar in Holo's colour and size, and its content inset as Holo's.
-
-### Housekeeping at today's sizes
-
-- Staff open housekeeping: its own look stays, the grey bar, the navy tabs and the gold lists, at the new sizes.
 
 # Open questions
 

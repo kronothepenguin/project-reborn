@@ -123,6 +123,8 @@ async function imageEditor(t, page) {
     JSON.stringify(await pixelsOf(editor, row)),
   );
 
+  // The mouse reaches only what the screen shows.
+  await editor.scrollIntoViewIfNeeded();
   const box = await editor.boundingBox();
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   await page.mouse.down();

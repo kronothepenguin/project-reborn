@@ -57,7 +57,7 @@
 </script>
 
 {#if last > 1}
-  <p class="mt-2 text-center">
+  <p class="mt-2.5 text-center">
     {#if current > 1}<a href="{path}?page={current - 1}" class={link} onclick={(event) => turn(event, current - 1)}>Newer</a>{/if} {#if current < last}<a href="{path}?page={current + 1}" class={link} onclick={(event) => turn(event, current + 1)}>Older</a>{/if}
   </p>
 {/if}

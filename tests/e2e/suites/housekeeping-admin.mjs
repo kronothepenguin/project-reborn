@@ -171,6 +171,61 @@ export default async function (t) {
     const response = await page.goto(href);
     check(`link ${new URL(href).pathname} works`, response.status() === 200);
   }
+
+  // Today's sizes: 16px in Verdana, and every page fits a 1366px screen.
+  await page.setViewportSize({ width: 1366, height: 768 });
+  const wide = [];
+  for (const href of new Set(hrefs)) {
+    await page.goto(href);
+    const fits = await page.evaluate(
+      () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    );
+    if (!fits) wide.push(new URL(href).pathname + new URL(href).search);
+  }
+  check(
+    "staff open any page of housekeeping on a 1366px screen: nothing scrolls sideways",
+    wide.length === 0,
+    wide.join(", "),
+  );
+  await page.goto(`${hk}/`);
+  const text = await page.evaluate(() => {
+    const body = getComputedStyle(document.body);
+    return { size: body.fontSize, font: body.fontFamily };
+  });
+  check(
+    "staff open housekeeping: its text is 16px in Verdana",
+    text.size === "16px" && text.font.startsWith("Verdana"),
+    JSON.stringify(text),
+  );
+  const own = await page.evaluate(() => {
+    const color = (selector) => getComputedStyle(document.querySelector(selector)).backgroundColor;
+    return {
+      bar: color("header"),
+      tab: color('nav a:not([aria-current="page"])'),
+      active: color('nav a[aria-current="page"]'),
+      list: color("main h2"),
+      tabWidth: document.querySelector("nav a").getBoundingClientRect().width,
+    };
+  });
+  check(
+    "staff open housekeeping at the new sizes: the grey bar, the navy tabs with the active one apart, and the gold lists stay",
+    new Set([own.bar, own.tab, own.active, own.list]).size === 4 && own.tabWidth === 224,
+    JSON.stringify(own),
+  );
+  await shot(page, "dashboard-1366");
+  await page.goto(`${hk}/settings?section=site`);
+  await shot(page, "settings-1366");
+  await page.goto(`${hk}/logs`);
+  await shot(page, "logs-1366");
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await page.goto(`${hk}/`);
+  await shot(page, "dashboard-1920");
+  await page.goto(`${hk}/settings?section=site`);
+  await shot(page, "settings-1920");
+  await page.goto(`${hk}/logs`);
+  await shot(page, "logs-1920");
+  await page.setViewportSize({ width: 1000, height: 655 });
+
   await page.goto(`${hk}/`);
   const style = await page.evaluate(() => ({
     padding: getComputedStyle(document.querySelector("main td")).paddingLeft,
