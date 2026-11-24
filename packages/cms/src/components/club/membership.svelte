@@ -89,24 +89,26 @@
 </script>
 
 <!-- Holo's two parts of the box reach its borders, past the card's padding. -->
-<div class="-mx-3">
-  <div class="px-[15px] pb-2">
+<div class="-mx-4 -mt-2 -mb-0.5">
+  <div class="px-[15px] py-2">
     <p class="pb-[1em]">You are{days > 0 ? "" : " not"} a member of {shortName} Club</p>
     <p class="pb-[1em]">
       {#if days > 0}You have {days} Club Day(s) left{:else}&nbsp;{/if}
     </p>
   </div>
   <div class="bg-amber-100 bg-[url(/web-gallery/v2/images/hc_pattern.gif)] bg-position-[30%] px-[15px] py-2">
-    <div class="rounded-lg bg-orange-700 px-2 py-1.5">
+    <div class="mx-1 rounded-lg bg-red-600 p-2">
       {#if canBuy}
-        <table>
+        <table class="border-separate border-spacing-0.5">
           <tbody>
             {#each options as option (option)}
               <tr>
-                <td class="py-0.5 *:w-full">
-                  <Button onclick={() => (months = option)}>Buy {option} {option === 1 ? "month" : "months"}</Button>
+                <td class="p-px">
+                  <div class="mb-1 ml-2.5 *:w-full">
+                    <Button onclick={() => (months = option)}>Buy {option} {option === 1 ? "month" : "months"}</Button>
+                  </div>
                 </td>
-                <td>&nbsp;{prices[option]} Credits</td>
+                <td class="p-px">&nbsp;{prices[option]} Credits</td>
               </tr>
             {/each}
           </tbody>
