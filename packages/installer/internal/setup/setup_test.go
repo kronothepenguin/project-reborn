@@ -270,6 +270,53 @@ func TestTheAdministratorWithTheBoxClearedHasNoClub(t *testing.T) {
 	}
 }
 
+// adminBadges returns the slot of each badge the administrator's habbo holds.
+func adminBadges(t *testing.T, s *State, name string) map[string]int64 {
+	t.Helper()
+	installation, _ := s.Current()
+	q := store.New(installation.DB)
+	avatar, err := q.GetAvatarByName(t.Context(), name)
+	if err != nil {
+		t.Fatalf("the administrator's habbo: %v", err)
+	}
+	badges, err := q.ListAvatarBadges(t.Context(), avatar.ID)
+	if err != nil {
+		t.Fatalf("ListAvatarBadges: %v", err)
+	}
+	slots := map[string]int64{}
+	for _, badge := range badges {
+		slots[badge.Code] = badge.Slot
+	}
+	return slots
+}
+
+func TestTheAdministratorWearsTheStaffBadge(t *testing.T) {
+	s, _ := installWith(t, testAdministrator())
+
+	if slots := adminBadges(t, s, "Admin-1"); slots[staffBadge] != 1 {
+		t.Errorf("badges = %v, want %s worn in slot 1", slots, staffBadge)
+	}
+}
+
+func TestTheAdministratorWithClubWearsTheClubBadgeBesideTheStaffBadge(t *testing.T) {
+	admin := testAdministrator()
+	admin.Club = true
+	s, _ := installWith(t, admin)
+
+	slots := adminBadges(t, s, admin.Name)
+	if slots[staffBadge] != 1 || slots[clubBadge] != 2 {
+		t.Errorf("badges = %v, want %s in slot 1 and %s in slot 2", slots, staffBadge, clubBadge)
+	}
+}
+
+func TestTheAdministratorWithoutClubHoldsNoClubBadge(t *testing.T) {
+	s, _ := installWith(t, testAdministrator())
+
+	if slots := adminBadges(t, s, "Admin-1"); len(slots) != 1 {
+		t.Errorf("badges = %v, want only %s", slots, staffBadge)
+	}
+}
+
 func TestTheAdministratorsPurseStartsWithTheCreditsGiven(t *testing.T) {
 	admin := testAdministrator()
 	admin.Credits = 1234
