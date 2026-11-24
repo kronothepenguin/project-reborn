@@ -5,14 +5,14 @@ import profile from "../../assets/news/users_online.png";
 
 <div class="mr-2 mb-[7px]">
   <Card>
-    <div id="article-wrapper" class="px-2.5">
+    <div id="article-wrapper" class="-mx-1.5 -mt-1">
       <h2 class="mb-1 text-base font-bold text-orange-500">[[ .Title ]]</h2>
       <div class="mb-2 border-t border-orange-500 pt-[7px] text-zinc-400">
         Posted [[ .Date ]] <Link href="/news?category=[[ .Category ]]">[[ .Category ]]</Link>
       </div>
-      <p class="my-[1em] font-bold">[[ .Summary ]]</p>
+      <p class="pb-3 font-bold">[[ .Summary ]]</p>
       <div class="[&_a]:text-orange-500 [&_a]:underline">
-        <div class="my-[1em]">[[ .Body ]]</div>
+        <div class="pb-3">[[ .Body ]]</div>
         [[ if .Author ]]
         <div>
           <a href="/home?name=[[ .Author ]]"><img class="inline align-baseline" src={profile.src} alt="User Profile" width={profile.width} height={profile.height} /></a><b>[[ .Author ]]</b>
