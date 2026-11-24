@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button, Card, Dialog, Tab, Tabs } from "@project-reborn/components";
+  import { Button, Card, Dialog, Tab, TabList, Tabs } from "@project-reborn/components";
   import { onMount } from "svelte";
   import sprite from "../../assets/me/tags.gif";
 
@@ -93,9 +93,11 @@
 
 <div class="relative">
   <h2 class="absolute top-0 left-0 pt-[3px] pl-2.5 text-sm font-bold text-lime-600">Tags</h2>
-  <Tabs bind:value={tab} class="flex h-[25px] flex-row-reverse gap-1 border-b border-lime-600 px-[5px]">
-    <Tab value="others">Others Like...</Tab>
-    <Tab value="mine">My Tags</Tab>
+  <Tabs bind:value={tab} color="green">
+    <TabList>
+      <Tab value="mine">My Tags</Tab>
+      <Tab value="others">Others Like...</Tab>
+    </TabList>
   </Tabs>
 </div>
 <div role="tabpanel" aria-label="My Tags" hidden={tab !== "mine"}>

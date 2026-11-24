@@ -2,14 +2,17 @@
   import { untrack } from "svelte";
   import type { Snippet } from "svelte";
   import type { HTMLAttributes } from "svelte/elements";
-  import { setTabsContext, type TabRegistration } from "../context";
+  import { setTabsContext, type TabRegistration, type TabsColor } from "../context";
 
+  // A group of tabs: a TabList of Tab and a TabPanel for each. The colour is
+  // the group's, so the row's line and every tab follow it.
   interface Props extends HTMLAttributes<HTMLDivElement> {
     value?: string;
+    color?: TabsColor;
     children: Snippet;
   }
 
-  let { value = $bindable(), children, onkeydown, ...rest }: Props = $props();
+  let { value = $bindable(), color = "blue", children, ...rest }: Props = $props();
 
   let tabs = $state.raw<TabRegistration[]>([]);
 
@@ -33,7 +36,7 @@
     });
   }
 
-  function handleKeydown(event: KeyboardEvent) {
+  function keydown(event: KeyboardEvent) {
     const enabled = tabs.filter((tab) => !tab.disabled());
     if (enabled.length === 0) return;
 
@@ -65,19 +68,16 @@
     get value() {
       return selectedValue;
     },
+    get color() {
+      return color;
+    },
     select,
+    keydown,
     registerTab,
     unregisterTab,
   });
 </script>
 
-<div
-  {...rest}
-  role="tablist"
-  onkeydown={(event) => {
-    handleKeydown(event);
-    onkeydown?.(event);
-  }}
->
+<div {...rest}>
   {@render children()}
 </div>

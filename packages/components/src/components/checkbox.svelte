@@ -15,7 +15,7 @@
   }: Props = $props();
 </script>
 
-<label class={["flex items-center gap-1", className]}>
+<label class={["flex items-center gap-1.5", className]}>
   <input
     {...rest}
     bind:checked

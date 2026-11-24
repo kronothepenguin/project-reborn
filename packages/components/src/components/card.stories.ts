@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/svelte-vite";
 import { createRawSnippet } from "svelte";
 import Card from "../components/card.svelte";
+import CardColors from "./__fixtures__/card-colors.svelte";
 
 const header = createRawSnippet(() => ({ render: () => "<h2>Profile</h2>" }));
 const body = createRawSnippet(() => ({
@@ -14,7 +15,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Use Card to group related content. It sits on Paper and takes an optional header plus a body.",
+          "Use Card to group related content, as Holo's box. It sits on Paper and takes an optional title bar, bold and bigger than the body, in one of Holo's colours, over a body inset as Holo's.",
       },
     },
   },
@@ -37,4 +38,9 @@ export const WhiteHeader: Story = {
     children: body,
     color: "white",
   },
+};
+
+export const Colors: StoryObj<typeof CardColors> = {
+  render: () => ({ Component: CardColors }),
+  parameters: { docs: { description: { story: "Every title bar colour, each the closest class of Holo's hue." } } },
 };

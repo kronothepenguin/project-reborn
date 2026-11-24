@@ -38,15 +38,15 @@
   const looks = {
     site: {
       button:
-        "cursor-pointer border bg-white px-1 hover:bg-stone-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-default disabled:opacity-50 aria-pressed:bg-stone-300",
+        "cursor-pointer border bg-white px-1.5 hover:bg-stone-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-default disabled:opacity-50 aria-pressed:bg-stone-300",
       select: "border bg-white",
-      area: "w-full border border-neutral-500 bg-white p-1",
+      area: "w-full border border-neutral-500 bg-white p-1.5",
     },
     housekeeping: {
       button:
-        "cursor-pointer border border-black bg-olive-200 px-2 py-0.5 font-bold hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-default disabled:opacity-50 aria-pressed:bg-sky-700 aria-pressed:text-white",
+        "cursor-pointer border border-black bg-olive-200 px-2.5 py-0.5 font-bold hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-default disabled:opacity-50 aria-pressed:bg-sky-700 aria-pressed:text-white",
       select: "border border-black bg-white",
-      area: "w-full border border-neutral-600 bg-white p-1",
+      area: "w-full border border-neutral-600 bg-white p-1.5",
     },
   } as const;
 
@@ -434,8 +434,8 @@
   });
 </script>
 
-<div class="flex flex-col gap-1" {...rest}>
-  <div role="toolbar" aria-label="Formatting" class="flex flex-wrap items-center gap-1">
+<div class="flex flex-col gap-1.5" {...rest}>
+  <div role="toolbar" aria-label="Formatting" class="flex flex-wrap items-center gap-1.5">
     {#each toggles as t (t.command)}
       <button
         type="button"
@@ -492,11 +492,11 @@
     <button type="button" aria-pressed={source} onclick={showSource} class={look.button}>BBCode</button>
   </div>
   {#if linking}
-    <div role="group" aria-label="Link" class="flex flex-wrap items-center gap-1">
-      <label class="flex items-center gap-1"
+    <div role="group" aria-label="Link" class="flex flex-wrap items-center gap-1.5">
+      <label class="flex items-center gap-1.5"
         >Address <input
           type="text"
-          class="border border-neutral-500 bg-white px-1"
+          class="border border-neutral-500 bg-white px-1.5"
           bind:value={address}
           onkeydown={(event) => {
             if (event.key === "Enter") {

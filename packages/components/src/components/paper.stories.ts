@@ -11,7 +11,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Use Paper as the plain flat surface primitive. It renders a container with no elevation — a 1px black/20 border, an 8px radius, and a 3px black/20 bottom border. Set `variant` to change only its background colour.",
+          "Use Paper as the plain flat surface primitive. It draws Holo's box frame: a 1px black/20 border with a 3px bottom and 4px corners, through which the page shows, as Holo's #b5b5af edge on #e3e3db. Set `variant` to change only its background colour.",
       },
     },
   },

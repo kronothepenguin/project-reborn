@@ -15,7 +15,7 @@
   // The raised face: a lighter top half drawn by ::before, which moves to the
   // bottom half while pressed. Every variant but plain has it.
   const raised =
-    "relative inline-flex items-center justify-center rounded border-2 border-black py-1 text-xs font-bold whitespace-nowrap before:absolute before:inset-x-px before:top-px before:h-1/2 before:rounded-t-[3px] before:content-[''] active:before:inset-x-px active:before:top-auto active:before:bottom-px active:before:rounded-t-none active:before:rounded-b-[3px] disabled:before:hidden";
+    "relative inline-flex items-center justify-center rounded border-2 border-black py-0.5 text-base font-bold whitespace-nowrap before:absolute before:inset-x-px before:top-px before:h-1/2 before:rounded-t-[3px] before:content-[''] active:before:inset-x-px active:before:top-auto active:before:bottom-px active:before:rounded-t-none active:before:rounded-b-[3px] disabled:before:hidden";
 
   const variantClasses: Record<Variant, string> = {
     default: `${raised} text-black bg-mauve-300 hover:bg-olive-200 before:bg-olive-200 hover:before:bg-white`,
@@ -27,8 +27,8 @@
   };
 
   const sizeClasses: Record<Size, string> = {
-    wide: "px-4",
-    compact: "px-2",
+    wide: "px-6",
+    compact: "px-2.5",
   };
 
   let {

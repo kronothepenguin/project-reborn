@@ -2,7 +2,6 @@
 
 # Tasks
 
-- [The shared parts at the new sizes, with Holo's tabs and boxes](01-the-shared-parts.md) - Every primitive of packages/components takes the new sizes, Tabs gains a color and Holo's look inside boxes, and the box's frame and title bars match Holo's.
 - [The site's layouts as Holo's, at the new sizes](02-the-community-layout.md) - The site takes Holo's font and the 16px base on a 1240px page, and its main tabs, sub-navigation, header with the inline habbo search, and footer match Holo's.
 - [Every page of the site at the new sizes](03-the-sites-pages.md) - Each page and component of the site replaces its fixed sizes and widths by the plan's rules, so the whole site reads at 16px on the 1240px page.
 - [Housekeeping at the new sizes](04-housekeeping-at-the-new-sizes.md) - Housekeeping keeps its own look, the grey bar, the navy tabs and the gold lists, with every size by the plan's rules.
