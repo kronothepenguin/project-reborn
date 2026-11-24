@@ -116,6 +116,19 @@ height and close as possible aligned to right as a group".
 - An administrator opens the installer with scripts off: the steps show as tabs, and a step already passed opens
   from its tab.
 
+### The installer's layout
+
+- An administrator opens any step of the installer: the title, the steps, the fields and the buttons share one column
+  and one left edge, and the box is as wide as its content, with no empty side.
+- An administrator reads the steps: the tabs start at the left edge of the box.
+- An administrator opens any step: its buttons sit in the same place and order, the way on and then the main button.
+- An administrator opens the settings step: its groups show as tabs inside the step, one group at a time, with "More
+  settings" last, its groups folded.
+- An administrator scrolls a long step: "Skip" and "Save settings" stay in sight at the bottom of the screen.
+- An administrator changes fields under several tabs and saves: every change is saved.
+- A field under a hidden tab is refused: its tab opens and the form names the field.
+- An administrator opens the settings step with scripts off: every group shows, one under the other.
+
 # Open questions
 
 - Four questions of [the redesign

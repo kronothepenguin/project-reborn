@@ -104,6 +104,14 @@ Of 2026-11-23, each the user's words or choice among options put to them:
 - `Tabs` takes one `color` for the group ("A color on Tabs").
 - The installer keeps a page of its own, built from the shared Habbo parts ("Its own page, Habbo parts").
 - The habbo search shows its field and button on one line, the same height, as a group at the right edge.
+- The installer's layout is reviewed and rebuilt on one column. The user, 2026-11-23, of its first look: "center the
+  tabs or left-aligned, use any claude skill to make it better. for the optional step 3. settings, make sections
+  either collapsible or subtabs and make the continue/skip button visible with the save one, so the admin can easily
+  go ahead. please do a review on the installer, looks better because has colors now, but the css rules are just bad,
+  some pages are right aligned, other pages left aligned, the settings page with two columns looks horrible because
+  there are gaps either left or right." The master chose left-aligned tabs, and tabs inside the settings step with the
+  buttons kept in sight. A design skill may guide the layout, its spacing and its alignment; Holo's font, colours and
+  shared parts stay.
 
 Earlier:
 
