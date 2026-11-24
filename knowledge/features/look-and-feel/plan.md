@@ -11,11 +11,11 @@ Built:
 | Project | Part |
 | --- | --- |
 | `packages/components` | The primitives every app shares, at Holo's sizes: `Button`, `Card`, `Paper`, `Tabs color` with `TabList` and `Tab` and the line under a box's tabs at the box's full width, `Stepper` and `Step`, `Table`, the inputs |
-| `packages/cms` | Both layouts as Holo's: the 930px page, the header, the two-tone main tabs, the sub-navigation, the habbo search on one line, the footer, in Holo's font; the front, community and Me pages matched beside Holo's; news, staff, tags, credits, club, the account pages, help, register, forgot, reset and the client's pages set beside Holo's; the board, a thread, a home and a group's page, in view and in edit, set beside Holo's |
+| `packages/cms` | Both layouts as Holo's: the 930px page, the header, the two-tone main tabs, the sub-navigation, the habbo search on one line, the footer, in Holo's font; the front, community and Me pages matched beside Holo's; news, staff, tags, credits, club, the account pages, help, register, forgot, reset and the client's pages set beside Holo's; the board, a thread, a home and a group's page, in view and in edit, set beside Holo's; the board and a thread in a box of the sub-navigation's 761px, under the layout's own sub-navigation |
 | `packages/housekeeping` | `layouts/housekeeping.astro`: the grey bar, the tabs, the left column of `box` components and the content; `Box color="gold"` for data lists; at Holo's sizes, the body `text-xs` |
 | `packages/installer` | `layouts/setup.astro`: one `Card color="blue"` per step, on one column whose first row is the shared `Stepper`; the sticky row of buttons; the settings step's collapsible sections; the body `text-xs` on a 574px column |
 | `packages/store` | `CountAvatars`, the header's registered count |
-| `tests/e2e` | The `layout` and `sizes` suites check Holo's page and sizes on every page; `myhabbo` checks the board's and the homes' box, canvas and widgets; `installer-layout` checks the installer |
+| `tests/e2e` | The `layout` and `sizes` suites check Holo's page and sizes on every page; `myhabbo` checks the board's box under the sub-navigation's edges, its forms inside it, and the homes' box, canvas and widgets; `installer-layout` checks the installer |
 
 Planned:
 

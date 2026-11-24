@@ -88,10 +88,13 @@ Holo's: `pr-[170px] pl-1 pb-3`, two lines in `text-xs text-neutral-500`, Holo's 
 
 ## Wide pages
 
-Holo's myhabbo pages, the board, a thread, a home and a group's page in view and in edit, loaded `myhabbo.css`: the
-sub-navigation is its 928px bar (`navi2-borders-wide.png`) with the items 12px further in, and the footer is centred
-under the whole page. Such a page passes `wide` to the layout: `w-[928px] px-3` for the bar and `pr-1` for the footer.
-The pages Holo drew with the plain header, a home or a group not found and a banned habbo, stay narrow.
+Holo's myhabbo pages, a home and a group's page in view and in edit, loaded `myhabbo.css`: the sub-navigation is its
+928px bar (`navi2-borders-wide.png`) with the items 12px further in, and the footer is centred under the whole page.
+Such a page passes `wide` to the layout: `w-[928px] px-3` for the bar and `pr-1` for the footer. The pages Holo drew
+with the plain header, a home or a group not found and a banned habbo, stay narrow.
+
+The board and a thread pass no `wide`: they keep the layout's 761px sub-navigation and its footer, and the forum
+shrinks to it.
 
 # Signed-out layout
 
@@ -129,12 +132,15 @@ The pages Holo drew with the plain header, a home or a group not found and a ban
 - The client's error pages stand on Habbo's black page, the box 448px and centred, 88px under the top of the
   content, as Habbo's `habboclient.css` that Holo's page loads.
 - The board, a thread, a home and a group's page stand in `components/homes/mypage-box.astro`, Holo's
-  `#mypage-wrapper`: a `Paper` of the page's 930px, 4px under its frame a header row whose line, `blue-400`, runs the
+  `#mypage-wrapper`: a `Paper` as wide as what holds it, the page's 930px for a home and a group, 4px under its frame a header row whose line, `blue-400`, runs the
   box's width 25px down, then the content 6px under the header and 6px over the frame's bottom. The header holds the
   page's tools 10px in with 6px under them, its title (`text-sm` bold `sky-500`, 10px in, 8px before what follows) and
   the board's one tab, which covers the line.
-- The board and a thread: Holo's table of 758 / 4 / 166px, the rows of the topic list 446 / 166 / 73 / 73px, the
-  author's column of a post 156px.
+- The board and a thread: `components/forum/forum-box.astro` holds the box at the sub-navigation's 761px and left
+  edge (`ml-px w-[761px]`), and the board fills it, Holo's 758px column without its empty 166px one. The rows of the
+  topic list keep Holo's 446 / 166 / 73 / 73px, the last column taking the table's 759th pixel; the author's column
+  of a post is 156px. The rows of New Thread, Post reply and the page numbers keep 10px from the frame's right
+  (`pr-2.5`). The new thread and reply forms, a 148px label column and the 575px editor, fit inside.
 - Home pages keep their canvas: the playground, its widgets, notes and stickers, and their dialogs keep Holo's pixels.
   The canvas fills the box from edge to edge, the playground 3px in. The skins' frames (`widget-corner` to
   `widget-content`, `stickie-header` to `stickie-footer`) are `content-box`, as Holo's widths were the content's, so
