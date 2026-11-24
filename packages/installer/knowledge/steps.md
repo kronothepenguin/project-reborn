@@ -21,7 +21,7 @@ not wrapped by its runner.
 | `GET`, `POST /installer/site` | `site.astro` | Site name, short name, URL, start credits and secure cookies, and housekeeping's address when run alone, saved with `settings.Set` and no user |
 | `GET`, `POST /installer/settings` | `settings.astro` | The settings step: six groups open with the installer's titles (New players, Password reset mail, Avatar pictures, Site features, Prices, Game ads) and every other field of `settings.Groups()` under "More settings", by its group's `Title`, less the site step's settings and the switches that close the site and the hotel. "Save settings" (`action=save`, and the Enter key) checks the changed values together with `settings.Validate` and saves them in one transaction; a refused value answers 422 with the field's label, shows what was typed with "More settings" open, and saves nothing. "Skip" (`action=skip`) saves nothing |
 | `GET`, `POST /installer/client` | `client.astro` | The client files step: names `<assets.path>/dcr/` and lists `external_variables.txt` and `external_texts.txt` with their count of lines, or as missing. "Import client files" (`action=import`) imports both with `dcr.Import` in one transaction; "Skip" (`action=skip`) imports nothing. With a file missing, the page says where to put it, offers "Check again" (a link to the same page) and "Skip", and an import answers 422 and imports nothing |
-| `GET`, `POST /installer/admin` | `admin.astro` | Habbo name, email, birth date, password, "Give this habbo Habbo Club" (ticked) and "Credits" (5000): one transaction creates, through `auth.CreateAccount`, the user, habbo, profile, home and wallet with the credits given, writes a club period of 100 years from now when the box is ticked, and adds the user to the highest access group holding `housekeeping.accessGroups`; then redirects to `/` |
+| `GET`, `POST /installer/admin` | `admin.astro` | Habbo name, email, birth date, password, "Give this habbo Habbo Club" (ticked) and "Credits" (5000): one transaction creates, through `auth.CreateAccount`, the user, habbo, profile, home and wallet with the credits given, writes a club period of 100 years from now when the box is ticked, gives the habbo the staff badge `ADM`, and `HC1` with the club, and adds the user to the highest access group holding `housekeeping.accessGroups`; then redirects to `/` |
 
 # The look
 
@@ -88,8 +88,10 @@ disabled. Once the hotel is installed, the status page passes no step, and every
   credits get no row. The credits take the range of `registration.startCredits`, checked with `settings.Validate`: a
   value outside it, or no number, answers 422 and names "Credits".
 - The administrator's club is one `club_subscriptions` row from now to 100 years from now, as a purchase writes one,
-  with no payment, no ledger row and no `HC1` badge. The site's `GetClubEnd` and the game's `ClubStatus` read it as a
-  running club.
+  with no payment and no ledger row. The site's `GetClubEnd` and the game's `ClubStatus` read it as a running club.
+- The administrator's habbo wears the staff badge `ADM` in slot 1 and, with the club, the club badge `HC1` in slot 2.
+  A slot holds one badge and `GrantAvatarBadge` wears in slot 1, so `HC1` is granted and moved to slot 2 before `ADM`
+  is granted. The site shows `ADM`, the badge of the first slot.
 - `New(ctx, db, opts...)` takes the database. reborn passes the one it opened, and the installer works on it and
   creates none. The runners of the installer alone pass `nil`, and the config step creates it.
 - A restarted installer continues: with `nil`, `New` opens the database named by an existing `config.json`. That also covers a
