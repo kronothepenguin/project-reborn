@@ -146,6 +146,18 @@ Of 2026-11-23, each the user's words or choice among options put to them:
   highligthing the current step, as before, use claude skill." The stepper is a shared part of `packages/components`
   ("make the stepper a shared component in packages/components"), in the shape the user chose ("Each step says what it
   is"). The `href` on the shared `Tab`, approved for the steps earlier that day, is dropped: nothing uses it.
+- The site's pages are reviewed again, page by page, beside HoloCMS. The user, 2026-11-23, of the pages after the
+  first pass: "everything in the layout is broken now, look at the columns of the content, and some of the content
+  themselves... please start the holocms on docker you had before, and make a comparison pixel-perfect, i want the new
+  size bigger, but consistent with the old holocms, i want it looks like a bigger scale." And of the cause, three
+  scales at once (text 1.45, widths 1.3, pictures 1): "i want text 1.45, but use flex-box, do not use the old css holo
+  has. we can keep using the old images and make it look good, you are just growing everything without reviwing it.
+  we can wrap and force sizes to match the new font size".
+- The site gets phones and tablets: "for mobile we have one column and everything is full width, for tablet and bigger
+  screens we could have two columns. again, design it, make it looks good, compare with the original holocms and fix
+  whatever looks odd. holocms does not have mobile support, so just compare againts big screens."
+- How Holo's pictures are drawn waits for the user's eyes ("Show me both first"): one page built with the pictures at
+  their own size, grown smooth, and grown with sharp pixels.
 
 Earlier:
 
@@ -158,6 +170,13 @@ Earlier:
   navigation, gold data lists, blue forms and a grey top bar, the same on every page.
 
 # Notes
+
+- The review's rules, from the user's words: layouts are flexbox, written new, with Holo's CSS as the measure of
+  proportions alone; text is Holo's times 16/11; pictures keep their size and their boxes wrap them; every page is
+  looked at beside Holo's, on a wide screen, before it merges. The first pass applied multipliers page by page with
+  no such look, and its 1240px page with columns at 4/3 is replaced by what the review builds.
+- HoloCMS runs from the user's own Docker stack (`/mnt/media/Laboratory/habbo/holo`, `docker start holo-php-1
+  holo-nginx-1`), on `http://localhost:11300`.
 
 - The `landing-page-design` and `figma-designer` skills were installed in the project on 2026-11-23 and removed the
   same day (the user: "uninstall [...] as we do not use them really"). The installer's layout takes its guidance from

@@ -120,6 +120,17 @@ height and close as possible aligned to right as a group".
   sideways.
 - A page shows a picture, such as an avatar, a badge or an icon: it shows at its own size, sharp.
 
+## Next
+
+### The site, reviewed beside HoloCMS
+
+- A visitor opens a page of the site on a wide screen: it reads as Holo's page at a bigger scale, its text 16px where
+  Holo's is 11px, its boxes, columns and gaps in Holo's proportions around that text.
+- A page shows one of Holo's pictures: the picture keeps its own size, and its box wraps it with no empty strip.
+- A visitor opens a page on a phone: one column, each box as wide as the screen, with nothing scrolling sideways.
+- A visitor opens a page on a tablet or a wider screen: two columns.
+- A visitor reads the header on a phone: the logo, the tabs and the sub-navigation fit the screen's width.
+
 # Open questions
 
 - Four questions of [the redesign
