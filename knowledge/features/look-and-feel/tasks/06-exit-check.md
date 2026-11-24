@@ -3,7 +3,7 @@ type: Task
 title: Compare the look with HoloCMS, page by page
 description: Every page of the site is set beside Holo's and beside its old self, with screenshots, and what differs is listed for the user.
 scope: [knowledge]
-depends_on: [11-holos-styling-on-the-first-pages]
+depends_on: [12-the-forum-and-the-homes-beside-holo, 13-the-other-pages-beside-holo, 14-housekeeping-and-the-installer-at-holos-sizes]
 skills: [testing-behaviours, documenting-with-okf]
 ---
 

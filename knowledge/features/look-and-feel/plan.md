@@ -178,6 +178,9 @@ Of 2026-11-23, each the user's words or choice among options put to them:
 - The line under the tabs of a box runs the box's full width ("the cards for groups and tags looks odd, compare againts
   holocms and you will see the colored line under tabs is full width in holocms").
 - Phones and tablets wait ([later](/features/look-and-feel/later.md)).
+- The user passed the first cloned pages ("me looks good, community too") and named the next faults: the forum's box
+  and a home's canvas and profile widget. Housekeeping and the installer take the site's text size ("make installer
+  and reborn same text-xs font-size as the site for now"; the master reads "reborn" as housekeeping).
 
 Earlier:
 
