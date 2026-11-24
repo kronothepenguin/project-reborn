@@ -10,18 +10,32 @@ import { session } from "../lib/staff.mjs";
 
 export const programs = ["cms"];
 
-// lightness reads a computed colour, rgb() or oklch(), as a number from 0 to 1.
-function lightness(colour) {
-  const oklch = /oklch\(([\d.]+)(%?)/.exec(colour);
-  if (oklch) return oklch[2] ? Number(oklch[1]) / 100 : Number(oklch[1]);
-  const [r, g, b] = (colour.match(/[\d.]+/g) ?? []).map(Number);
-  return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+// oklch reads a computed colour, rgb() or oklch(), as OKLCH: Tailwind's
+// classes compute to oklch(), the new shades of Holo's colours to rgb().
+function oklch(colour) {
+  const own = /oklch\(([\d.]+)(%?) ([\d.]+) ([\d.]+)/.exec(colour);
+  if (own) return { l: own[2] ? Number(own[1]) / 100 : Number(own[1]), c: Number(own[3]), h: Number(own[4]) };
+  const [r, g, b] = (colour.match(/[\d.]+/g) ?? []).map((v) => {
+    const c = Number(v) / 255;
+    return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  const A = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s;
+  const B = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s;
+  const h = (Math.atan2(B, A) * 180) / Math.PI;
+  return { l: 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s, c: Math.hypot(A, B), h: h < 0 ? h + 360 : h };
 }
 
-// hue reads the hue of a computed oklch() colour.
+// lightness reads a computed colour's OKLCH lightness, from 0 to 1.
+function lightness(colour) {
+  return oklch(colour).l;
+}
+
+// hue reads a computed colour's OKLCH hue.
 function hue(colour) {
-  const oklch = /oklch\(\S+ \S+ ([\d.]+)/.exec(colour);
-  return oklch ? Number(oklch[1]) : NaN;
+  return oklch(colour).h;
 }
 
 // faces reads a tab's two tones, its outline and its text.
