@@ -68,10 +68,11 @@ export default async function ({
     page.waitForURL("**/settings"),
     page.click('button:has-text("Save and continue")'),
   ]);
-  await page.getByRole("tab", { name: "New players" }).waitFor();
+  const newPlayers = page.locator('summary:text-is("New players")');
+  await newPlayers.waitFor();
   check(
     "the settings step follows the site step with More settings folded",
-    (await page.getByRole("tab", { name: "New players" }).isVisible()) &&
+    (await newPlayers.isVisible()) &&
       !(await page.locator('input[name="homes.maxTags"]').isVisible()),
   );
   // The steps show as a stepper: a step passed opens from its link, and a step
