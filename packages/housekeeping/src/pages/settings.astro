@@ -42,7 +42,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
                 id="[[ .Key ]]"
                 name="[[ .Key ]]"
                 rows="[[ .Rows ]]"
-                class="w-full border border-black bg-white p-1"
+                class="w-full border border-black bg-white p-1.5"
               >[[ .Value ]]</textarea>
               [[ if .BBCode ]]<BBCodeEditor client:only="svelte" field="[[ .Key ]]" variant="housekeeping" />[[ end ]]
               [[ else if eq .Kind "choice" ]]
@@ -66,7 +66,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
           [[ end ]]
         </tbody>
       </Table>
-      <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+      <div class="border-t-2 border-black bg-olive-200 p-1.5 text-center">
         <Button variant="plain" size="compact" type="submit">[[ .Section.Button ]]</Button>
       </div>
     </Box>

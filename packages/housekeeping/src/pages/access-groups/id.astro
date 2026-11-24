@@ -7,7 +7,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
 
 <Housekeeping title="[[ .Group.Name ]]" tab="users">
   <Message />
-  <div class="space-y-3">
+  <div class="space-y-4">
     <form method="post" action="/housekeeping/access-groups/[[ .Group.ID ]]">
       <Box title="[[ .Group.Name ]]">
         <Table variant="form">
@@ -61,7 +61,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
             [[ end ]]
           </tbody>
         </Table>
-        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
+        <div class="border-t-2 border-black bg-olive-200 p-1.5 text-center">
           <Button variant="plain" size="compact" type="submit">Save Group</Button>
         </div>
       </Box>
@@ -80,7 +80,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
           <tr>
             <td class="w-2/5">[[ .Name ]] (ID: [[ .UserID ]])</td>
             <td class="w-3/5">
-              <form method="post" action="/housekeeping/users/[[ .UserID ]]/access-groups" class="flex flex-wrap gap-1">
+              <form method="post" action="/housekeeping/users/[[ .UserID ]]/access-groups" class="flex flex-wrap gap-1.5">
                 <input type="hidden" name="group" value="[[ $.Group.ID ]]" />
                 <Select name="habbo" aria-label="Display Habbo">
                   [[ range .Habbos ]][[ if .Selected ]]
@@ -94,7 +94,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
                   type="submit"
                   name="remove"
                   value="1"
-                  class="border border-black bg-olive-200 px-2 py-0.5 font-bold hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                  class="border border-black bg-olive-200 px-2.5 py-0.5 font-bold hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                 >
                   Remove
                 </button>
@@ -111,7 +111,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
     </Box>
 
     <Box title="Add Member">
-      <form method="get" action="/housekeeping/access-groups/[[ .Group.ID ]]" class="flex flex-wrap items-end gap-2 p-1">
+      <form method="get" action="/housekeeping/access-groups/[[ .Group.ID ]]" class="flex flex-wrap items-end gap-2.5 p-1.5">
         <div>
           <label for="habbo-search"><strong>Username</strong></label>
           <div class="text-neutral-500">The name of one of their habbos, or their user id.</div>
@@ -120,7 +120,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
         <Button variant="plain" size="compact" type="submit">Find User</Button>
       </form>
       [[ if .Found.UserID ]]
-      <form method="post" action="/housekeeping/users/[[ .Found.UserID ]]/access-groups" class="flex flex-wrap items-end gap-2 border-t-2 border-black p-1">
+      <form method="post" action="/housekeeping/users/[[ .Found.UserID ]]/access-groups" class="flex flex-wrap items-end gap-2.5 border-t-2 border-black p-1.5">
         <input type="hidden" name="group" value="[[ .Group.ID ]]" />
         <div>
           <label for="found-habbo"><strong>Display Habbo</strong></label>
@@ -139,7 +139,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
     </Box>
 
     <Box title="Delete Group">
-      <form method="post" action="/housekeeping/access-groups/[[ .Group.ID ]]/delete" class="flex flex-wrap items-center gap-2 p-1">
+      <form method="post" action="/housekeeping/access-groups/[[ .Group.ID ]]/delete" class="flex flex-wrap items-center gap-2.5 p-1.5">
         <Checkbox name="confirm" value="1">Delete this group and take its attributes from its members</Checkbox>
         <Button variant="plain" size="compact" type="submit">Delete Group</Button>
       </form>
