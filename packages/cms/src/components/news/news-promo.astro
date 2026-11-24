@@ -3,7 +3,7 @@ import { Paper } from "@project-reborn/components";
 import TopStories from "./top-stories.svelte";
 ---
 
-<div class="mr-2 mb-[7px]">
+<div class="mr-2.5 mb-2.5">
   <Paper>
     <div id="newspromo">
       [[ if .TopStories ]]
@@ -11,11 +11,11 @@ import TopStories from "./top-stories.svelte";
         [[ range $i, $story := .TopStories ]]
         <div
           data-story="[[ if $i ]]hidden[[ else ]]shown[[ end ]]"
-          class="topstory absolute top-0 left-0 h-[177px] w-[272px] bg-olive-300 bg-no-repeat px-[14px] py-[5px] text-white transition-[opacity,visibility] duration-800 data-[story=hidden]:invisible data-[story=hidden]:opacity-0"
+          class="topstory absolute inset-x-0 top-0 h-[177px] bg-olive-300 bg-no-repeat px-4.5 py-1.5 text-white transition-[opacity,visibility] duration-800 data-[story=hidden]:invisible data-[story=hidden]:opacity-0"
           style="background-image: url('[[ $story.Image ]]')"
         >
-          <h4 class="mb-[3px] uppercase">Latest news</h4>
-          <h3 class="mb-2.5 text-lg font-bold">
+          <h4 class="mb-1 uppercase">Latest news</h4>
+          <h3 class="mb-3.5 text-3xl font-bold">
             <a class="text-white no-underline hover:underline" href="/news/[[ $story.ID ]]">[[ $story.Title ]]</a>
           </h3>
           <p class="w-[65%]">[[ $story.Summary ]]</p>
@@ -27,12 +27,12 @@ import TopStories from "./top-stories.svelte";
       [[ end ]]
       <ul>
         [[ range $i, $item := .MoreNews ]]
-        <li class="px-[14px] py-[0.5em] [[ if not $i ]] bg-olive-200 [[ end ]]">
+        <li class="px-4.5 py-[0.5em] [[ if not $i ]] bg-olive-200 [[ end ]]">
           <a class="text-olive-800 no-underline hover:underline" href="/news/[[ $item.ID ]]">[[ $item.Title ]]</a>
-          <div class="mt-0.5 text-[10px] text-olive-500">[[ $item.Date ]]</div>
+          <div class="mt-0.5 text-sm text-olive-500">[[ $item.Date ]]</div>
         </li>
         [[ end ]]
-        <li class="px-[14px] py-[0.5em] text-right"><a class="text-orange-500 underline" href="/news">More news &raquo;</a></li>
+        <li class="px-4.5 py-[0.5em] text-right"><a class="text-orange-500 underline" href="/news">More news &raquo;</a></li>
       </ul>
     </div>
   </Paper>

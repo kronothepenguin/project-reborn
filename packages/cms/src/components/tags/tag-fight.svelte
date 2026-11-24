@@ -58,16 +58,16 @@
   </div>
 {:else}
   <div>
-    <label class="mb-[5px] block">First tag<br /><Input maxlength={30} variant="border" bind:value={tag1} /></label>
-    <label class="mb-[5px] block">Second tag<br /><Input maxlength={30} variant="border" bind:value={tag2} /></label>
+    <label class="mb-1.5 block">First tag<br /><Input maxlength={30} variant="border" bind:value={tag1} /></label>
+    <label class="mb-1.5 block">Second tag<br /><Input maxlength={30} variant="border" bind:value={tag2} /></label>
   </div>
 {/if}
-<div class="mx-[5px] my-2.5 flow-root text-center">
+<div class="mx-1.5 my-3.5 flow-root text-center">
   <img class="mx-auto" src={image.src} alt="" width={image.width} height={image.height} />
   {#if result}
-    <div class="float-right mt-[5px]"><Button size="compact" onclick={newFight}>Again?</Button></div>
+    <div class="float-right mt-1.5"><Button size="compact" onclick={newFight}>Again?</Button></div>
   {:else if !fighting}
-    <div class="float-right mt-[5px]"><Button size="compact" onclick={fight}>{again ? "Start" : "Fight!"}</Button></div>
+    <div class="float-right mt-1.5"><Button size="compact" onclick={fight}>{again ? "Start" : "Fight!"}</Button></div>
   {/if}
 </div>
 <div class="hidden">
