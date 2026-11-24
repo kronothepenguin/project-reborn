@@ -9,8 +9,8 @@ import SignedOut from "../layouts/signed-out.astro";
 ---
 
 <SignedOut title="[[ .ShortName ]] ~ Home">
-  <main class="flex gap-2 py-4">
-    <div class="flex-3 w-96">
+  <main class="flex gap-2.5 py-5.5">
+    <div class="w-130.5 shrink-0">
       [[ if .LandingPromo ]]
       <div
         id="habbos-v2-container"
@@ -19,7 +19,7 @@ import SignedOut from "../layouts/signed-out.astro";
       </div>
       <PromoWidget client:only="svelte" container="habbos-v2-container" />
       <noscript>
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-2.5">
           <JoinButton />
           <Card color="green">
             <span slot="header">To get most out of [[ .ShortName ]], do this:</span>
@@ -32,12 +32,12 @@ import SignedOut from "../layouts/signed-out.astro";
       [[ else ]]
       <JoinButton />
       [[ end ]]
-      <div id="tag-cloud-slim" class="p-2 text-[11px]">
-        <span class="text-base font-bold text-amber-500">[[ .ShortName ]]'s like</span>{" "}<TagCloud inline />
+      <div id="tag-cloud-slim" class="p-2.5 text-base">
+        <span class="text-2xl font-bold text-amber-500">[[ .ShortName ]]'s like</span>{" "}<TagCloud inline />
       </div>
     </div>
 
-    <div class="flex-2 flex flex-col gap-2 w-72">
+    <div class="flex w-100 shrink-0 flex-col gap-2.5">
       <LoginBox />
       <a href="/register">
         <img

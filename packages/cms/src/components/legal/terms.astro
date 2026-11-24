@@ -8,10 +8,10 @@ interface Props {
 const { title } = Astro.props;
 ---
 
-<main class="py-4">
+<main class="py-5.5">
   <Card color="orange">
     <span slot="header">{title}</span>
 
-    <div class="text-sm"><slot /></div>
+    <div><slot /></div>
   </Card>
 </main>
