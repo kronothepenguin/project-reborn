@@ -105,6 +105,9 @@ Of 2026-11-23, each the user's choice among options put to them.
   administrator step"). The user had asked: "the initial config was set credits to 500, but the admin starts with
   5000, why?" The 500 is `registration.startCredits`, for habbos who register; the 5000 was fixed by
   [0026](/decisions/holo-port/0026-installer-administrator-and-names.md), which this replaces for the number alone.
+- The administrator's habbo gets the staff badge `ADM`, worn in the first slot, and with Habbo Club the club badge
+  `HC1`, worn in the second. The user, of the club written without its badge: "yes to the HC1 badge, also the staff
+  badge". `ADM` is the administrator's badge of Holo's badge tool ("eg. 'ADM' or 'XM8'").
 - A step's progress lives in memory while the installer runs: a restarted installer goes on from the site step.
 
 Earlier:

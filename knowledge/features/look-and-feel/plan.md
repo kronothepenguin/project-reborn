@@ -68,6 +68,15 @@ The shape the user approved on 2026-11-23 for the tabs inside boxes:
 
 The row's line and every tab follow the group's colour.
 
+A tab takes an address, approved by the user on 2026-11-23 ("yes to ... the tab href"), as `Button` takes one:
+
+```svelte
+<Tab value="site" href="/installer/site">2. Site</Tab>
+```
+
+With `href` the tab is an `<a>`; a disabled tab stays a plain, faded tab with no link. The installer's steps use it, so
+they are drawn on the server and work with scripts off.
+
 [The comparison](/features/look-and-feel/research-holo-look.md) ran both systems and measured them. The navbar looks
 plain because the public site never sets Holo's font, Verdana, so the browser falls back to a lighter one; the weights
 already match. After the font come the line height, the tabs' artwork, the sub-navigation, the inner tabs, the boxes'

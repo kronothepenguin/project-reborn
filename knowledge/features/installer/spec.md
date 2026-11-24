@@ -112,6 +112,13 @@ optional content and the catalogue review wait with the open questions.
 
 ## Next
 
+### The administrator's badges
+
+- The administrator is created: its habbo holds the staff badge `ADM` and wears it.
+- The administrator is created with Habbo Club: its habbo also holds the club badge `HC1` and wears it beside the staff
+  badge, as a habbo who buys club holds it.
+- The administrator is created without Habbo Club: its habbo holds no `HC1`.
+
 # Open questions
 
 - Ten questions of [the study](/features/installer/research-installer.md#questions-for-the-user): where choices wait
