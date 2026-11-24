@@ -50,10 +50,10 @@ const cases: [string, string, boolean?][] = [
   ["[color=red]x[/color]", "<span class='text-red-600'>x</span>"],
   ["[color=orange]x[/color]", "<span class='text-orange-500'>x</span>"],
   ["[color=yellow]x[/color]", "<span class='text-amber-300'>x</span>"],
-  ["[color=green]x[/color]", "<span class='text-lime-500'>x</span>"],
-  ["[color=cyan]x[/color]", "<span class='text-teal-400'>x</span>"],
-  ["[color=blue]x[/color]", "<span class='text-sky-600'>x</span>"],
-  ["[color=gray]x[/color]", "<span class='text-olive-500'>x</span>"],
+  ["[color=green]x[/color]", "<span class='text-lime-525'>x</span>"],
+  ["[color=cyan]x[/color]", "<span class='text-teal-450'>x</span>"],
+  ["[color=blue]x[/color]", "<span class='text-blue-550'>x</span>"],
+  ["[color=gray]x[/color]", "<span class='text-neutral-475'>x</span>"],
   ["[size=small]x[/size]", "<span class='text-[10px]'>x</span>"],
   ["[size=large]x[/size]", "<span class='text-base'>x</span>"],
   ["[code]x[/code]", "<pre>x</pre>"],
@@ -146,7 +146,7 @@ const cases: [string, string, boolean?][] = [
   ["[color=]x[/color]", "x"],
   ["[color=redd]x[/color]", "x"],
   ["[color=re]x[/color]", "x"],
-  ["[color= blue ]x[/color]", "<span class='text-sky-600'>x</span>"],
+  ["[color= blue ]x[/color]", "<span class='text-blue-550'>x</span>"],
   ['[color=red" onmouseover="alert(1)]x[/color]', "x"],
   ["[color=red' onmouseover='alert(1)]x[/color]", "x"],
   ["[color=red;background:url(javascript:alert(1))]x[/color]", "x"],
@@ -247,7 +247,7 @@ describe("write", () => {
   });
 
   it("never writes a code inside the same code, which Holo's passes cannot read", () => {
-    const div = box('<font class="text-red-600">a<font class="text-sky-600">b</font>c</font><strong>d<b>e</b></strong>');
+    const div = box('<font class="text-red-600">a<font class="text-blue-550">b</font>c</font><strong>d<b>e</b></strong>');
     expect(write(div)).toBe("[color=red]a[/color][color=blue]b[/color][color=red]c[/color][b]de[/b]");
     const quotes = box(`${quote}a${quote}b</div></div>`);
     expect(write(quotes)).toBe("[quote]ab[/quote]");

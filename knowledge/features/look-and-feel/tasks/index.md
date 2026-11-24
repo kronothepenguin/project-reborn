@@ -3,5 +3,4 @@
 # Tasks
 
 - [Compare the look with HoloCMS, page by page](06-exit-check.md) - Every page of the site is set beside Holo's and beside its old self, with screenshots, and what differs is listed for the user.
-- [Holo's colours as new shades of the palette](17-holos-colours-as-new-shades.md) - The colour tool takes a margin of distance, proposes a new shade of the nearest family for a colour beyond it, and knows the shades added; Holo's red, brown and every other colour beyond the margin become such shades.
 - [The homes and the groups inside the navigation's width](18-the-homes-inside-the-navigation.md) - A habbo's home and a group's page get the 752px canvas under the community layout's own sub-navigation, the advert column goes, and the layout's wide form goes with it.

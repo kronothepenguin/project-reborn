@@ -74,10 +74,10 @@ height and close as possible aligned to right as a group".
 - Staff read their previous login: it is their last successful sign-in before the newest, and failed sign-ins do not
   count.
 - Staff read the clock box: the local and server times tick each second.
-- Staff read a page: navy tabs, the active one `sky-700`, over a blue strip, and a left column of boxes with `sky-700`
+- Staff read a page: navy tabs, the active one `blue-550`, over a blue strip, and a left column of boxes with `blue-550`
   titles (decision holo-port/0060).
 - Staff follow any link of housekeeping's tabs and menu boxes: the page opens.
-- Staff read a data list: an `amber-300` header over `amber-100` rows; a form has a `sky-700` title and plain rows
+- Staff read a data list: an `amber-300` header over `amber-100` rows; a form has a `blue-550` title and plain rows
   (decision holo-port/0060).
 - Staff read a data list in housekeeping: its rows alternate in shade.
 
@@ -130,6 +130,13 @@ height and close as possible aligned to right as a group".
 - A page shows a stepper, a notice or a field with help: the stepper's points are in proportion to its names, the
   notice's text is the page's size, and the help line is grey beside its label.
 
+## Holo's colours
+
+- A page shows one of Holo's colours that Tailwind's palette holds within the margin: it uses that class.
+- A page shows one of Holo's colours beyond the margin: it uses a new shade of the nearest family, of Holo's exact
+  colour.
+- A text stands on a coloured panel: it reads clearly, as Holo's.
+
 ## Next
 
 ### Holo's styling, cloned
@@ -141,13 +148,6 @@ height and close as possible aligned to right as a group".
 - A page shows one of Holo's pictures: the picture keeps its own size and fills its box as in Holo, as the news
   picture and the Me page's hotel view do.
 - A box shows tabs: the line in the box's colour runs under the tabs from one edge of the box to the other.
-
-### Holo's colours
-
-- A page shows one of Holo's colours that Tailwind's palette holds within the margin: it uses that class.
-- A page shows one of Holo's colours beyond the margin: it uses a new shade of the nearest family, of Holo's exact
-  colour.
-- A text stands on a coloured panel: it reads clearly, as Holo's.
 
 ### The homes inside the navigation
 

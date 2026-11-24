@@ -7,7 +7,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
 
 <Housekeeping title="Manage Existing Articles" tab="site">
   <Message />
-  <p class="mb-2"><a href="[[ .SiteURL ]]/news/[[ .ID ]]" class="text-indigo-900 underline">View on site</a></p>
+  <p class="mb-2"><a href="[[ .SiteURL ]]/news/[[ .ID ]]" class="text-blue-925 underline">View on site</a></p>
   <form method="post" action="/housekeeping/news/[[ .ID ]]">
     <Box title="Edit News Article ([[ .Title ]])">
       <Table variant="form">

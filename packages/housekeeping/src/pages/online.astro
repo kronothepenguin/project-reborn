@@ -23,13 +23,13 @@ import Housekeeping from "../layouts/housekeeping.astro";
           <td>
             <strong>[[ .Name ]]</strong>
             [[ if $.Private ]]
-            <div class="text-neutral-500">[[ .IP ]][[ if ne .IP "No IP Found" ]] [<a href="https://who.is/whois-ip/ip-address/[[ .IP ]]/" target="_blank" rel="noreferrer" class="text-indigo-900 underline">WHOIS</a>][[ end ]]</div>
+            <div class="text-neutral-500">[[ .IP ]][[ if ne .IP "No IP Found" ]] [<a href="https://who.is/whois-ip/ip-address/[[ .IP ]]/" target="_blank" rel="noreferrer" class="text-blue-925 underline">WHOIS</a>][[ end ]]</div>
             [[ end ]]
           </td>
-          [[ if $.Private ]]<td><a href="mailto:[[ .Email ]]" class="text-indigo-900 underline">[[ .Email ]]</a></td>[[ end ]]
+          [[ if $.Private ]]<td><a href="mailto:[[ .Email ]]" class="text-blue-925 underline">[[ .Email ]]</a></td>[[ end ]]
           <td>[[ .Joined ]]</td>
           <td>[[ .Activity ]]</td>
-          <td><a href="/housekeeping/habbos/[[ .ID ]]" class="text-indigo-900 underline">Edit</a></td>
+          <td><a href="/housekeeping/habbos/[[ .ID ]]" class="text-blue-925 underline">Edit</a></td>
         </tr>
         [[ else ]]
         [[ if not .Answered ]]

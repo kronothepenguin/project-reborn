@@ -49,6 +49,22 @@ describe("Card", () => {
     expect(hueDistance(hue(bar.backgroundColor), hexHue(holo))).toBeLessThan(12);
   });
 
+  // Holo's title colours beyond the margin of Tailwind's palette: the new
+  // shades of styles/shades.css hold them exactly.
+  it.each([
+    ["activehomes", "rgb(81, 165, 213)"],
+    ["green", "rgb(74, 181, 1)"],
+    ["red", "rgb(214, 66, 66)"],
+    ["hcred", "rgb(214, 66, 66)"],
+    ["darkred", "rgb(199, 60, 60)"],
+    ["brown", "rgb(166, 122, 62)"],
+    ["lightbrown", "rgb(207, 156, 68)"],
+    ["orange", "rgb(246, 98, 0)"],
+  ] as const)("draws a %s title bar in Holo's exact colour", (color, holo) => {
+    const { container } = render(Card, { props: { header, children: body, color } });
+    expect(getComputedStyle(container.querySelector("header") as HTMLElement).backgroundColor).toBe(holo);
+  });
+
   it("draws its title bar as Holo's: bold 14px on a 17px line, 4px above and below, inset 4px from the frame", () => {
     const { container } = render(Card, { props: { header, children: body, color: "blue" } });
     const element = container.querySelector("header") as HTMLElement;

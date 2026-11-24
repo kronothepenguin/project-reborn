@@ -11,7 +11,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
         <tbody>
           <tr>
             <td><strong>Members</strong></td>
-            <td>[[ .Habbos ]] (<a href="/housekeeping/online" class="text-indigo-900 underline">[[ .Online ]]</a> online)</td>
+            <td>[[ .Habbos ]] (<a href="/housekeeping/online" class="text-blue-925 underline">[[ .Online ]]</a> online)</td>
           </tr>
           <tr>
             <td><strong>Rooms</strong></td>
@@ -42,7 +42,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
           [[ range .Administrators ]]
           <tr>
             <td><strong>[[ .Name ]]</strong> (ID: [[ .ID ]])</td>
-            <td>[[ if .Email ]]<a href="mailto:[[ .Email ]]" class="text-indigo-900 underline">[[ .Email ]]</a>[[ end ]]</td>
+            <td>[[ if .Email ]]<a href="mailto:[[ .Email ]]" class="text-blue-925 underline">[[ .Email ]]</a>[[ end ]]</td>
           </tr>
           [[ end ]]
         </tbody>

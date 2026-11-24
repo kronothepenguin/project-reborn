@@ -28,7 +28,7 @@ import TopStories from "./top-stories.svelte";
       <ul>
         [[ range $i, $item := .MoreNews ]]
         <li class="px-3.5 py-1.5 [[ if not $i ]] bg-olive-200 [[ end ]]">
-          <a class="text-olive-800 no-underline hover:underline" href="/news/[[ $item.ID ]]">[[ $item.Title ]]</a>
+          <a class="text-neutral-750 no-underline hover:underline" href="/news/[[ $item.ID ]]">[[ $item.Title ]]</a>
           <div class="mt-0.5 text-xs text-olive-500">[[ $item.Date ]]</div>
         </li>
         [[ end ]]

@@ -40,7 +40,7 @@ The site is Holo's, at Holo's own sizes, in Tailwind's closest common classes.
 
 - The font is Holo's, `Verdana, Arial, Helvetica, sans-serif`, set once per app as the theme's `--font-sans`.
 - Pictures keep their own size and fill their box as in Holo.
-- Colours are the Tailwind classes of [the colours](/colours.md), the closest class of Holo's hue.
+- Colours are the classes of [the colours](/colours.md): Tailwind's within the margin, new shades beyond it.
 - BBCode's small text stays 10px, under the body's 12px.
 - The shared parts fit the 12px text: a `Step`'s numbered point is 20px (`size-5`) with a 1px border, its arrow 6px,
   and the stepper's gaps 6px; a `Notice` reads at `text-xs`; a `FormField`'s help line is `neutral-500`, the grey of
@@ -65,6 +65,17 @@ A colour of Holo's takes the Tailwind class closest to it, when that class lies 
 margin, the palette gains a shade: a theme colour in one shared stylesheet, named by the nearest hue's family and a
 number between its neighbours, such as `red-550` for Holo's #d64242. `tools/tw-color` measures the distance, proposes
 the shade, and knows the shades added.
+
+- The margin is an OKLab distance of 0.031, `tw-color`'s default (`-m`), in the widest gap near 0.03 between the
+  distances of Holo's colours.
+- The stylesheet is `packages/components/src/styles/shades.css`: only an `@theme` block of colours such as
+  `--color-red-550: #d64242`, each under a comment naming Holo's use. The components' `src/styles.css` imports it,
+  and every app imports that, so the shades work in the site, housekeeping, the installer, reborn's Astro project,
+  the components' tests and Storybook.
+- `tw-color` tries Tailwind's palette first: a colour within the margin keeps its class, even beside a nearer new
+  shade. Beyond it, the colour takes the closest new shade within the margin, or `tw-color` proposes one, and
+  `-w "<use>"` writes it into the stylesheet.
+- A text on a coloured panel takes Holo's colour: the club's prices are black on `red-550`, as Holo's.
 
 ## The tabs
 
