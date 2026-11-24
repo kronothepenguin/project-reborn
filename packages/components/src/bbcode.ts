@@ -9,10 +9,10 @@ export const colours = [
   { name: "red", label: "Red", className: "text-red-600" },
   { name: "orange", label: "Orange", className: "text-orange-500" },
   { name: "yellow", label: "Yellow", className: "text-amber-300" },
-  { name: "green", label: "Green", className: "text-lime-500" },
-  { name: "cyan", label: "Cyan", className: "text-teal-400" },
-  { name: "blue", label: "Blue", className: "text-sky-600" },
-  { name: "gray", label: "Grey", className: "text-olive-500" },
+  { name: "green", label: "Green", className: "text-lime-525" },
+  { name: "cyan", label: "Cyan", className: "text-teal-450" },
+  { name: "blue", label: "Blue", className: "text-blue-550" },
+  { name: "gray", label: "Grey", className: "text-neutral-475" },
   { name: "black", label: "Black", className: "text-black" },
 ] as const;
 

@@ -21,8 +21,8 @@
     white: "text-white underline",
     black: "text-black underline",
     "personal-info": "text-white no-underline",
-    nav: "text-blue-900 no-underline",
-    settings: "text-olive-800 no-underline",
+    nav: "text-blue-850 no-underline",
+    settings: "text-neutral-750 no-underline",
     yellow: "text-amber-300 underline",
   };
 

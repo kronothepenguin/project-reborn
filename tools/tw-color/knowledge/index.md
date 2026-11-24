@@ -8,4 +8,4 @@ okf_version: "0.2"
 
 - [Accepted input](accepted-input.md) - The color formats tw-color reads and how it prints alpha.
 - [Errors and exit codes](errors-and-exit-codes.md) - What tw-color prints and the status it exits with for each kind of input.
-- [Matching](matching.md) - How tw-color picks the closest Tailwind swatch, and the palette it matches against.
+- [Matching](matching.md) - How tw-color picks the closest Tailwind swatch, the margin beyond which it proposes a new shade, and the palettes it matches against.

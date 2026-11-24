@@ -12,8 +12,8 @@
   const variantClasses: Record<Variant, string> = {
     red: "bg-red-600",
     green: "bg-lime-600",
-    orange: "bg-amber-500",
-    blue: "bg-cyan-600",
+    orange: "bg-amber-550",
+    blue: "bg-sky-550",
     darkgray: "bg-mist-600",
   };
 

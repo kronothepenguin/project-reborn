@@ -1,14 +1,29 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 import { formatMatch, nearestColor, parseColor, toOklab } from "./color.mjs";
 import { palette } from "./palette.mjs";
+import { parseShades } from "./shades.mjs";
 
 const SCRIPT = fileURLToPath(new URL("./tw-color.mjs", import.meta.url));
+const NO_SHADES = join(mkdtempSync(join(tmpdir(), "tw-color-")), "none.css");
 
+// Runs the tool against a stylesheet of new shades that does not exist, unless
+// the arguments name one.
 function run(...args) {
-  return spawnSync(process.execPath, [SCRIPT, ...args], { encoding: "utf8" });
+  return spawnSync(process.execPath, [SCRIPT, "-s", NO_SHADES, ...args], {
+    encoding: "utf8",
+  });
+}
+
+function stylesheet(text) {
+  const path = join(mkdtempSync(join(tmpdir(), "tw-color-")), "shades.css");
+  if (text !== undefined) writeFileSync(path, text);
+  return path;
 }
 
 function best(text) {
@@ -135,7 +150,7 @@ test("cli accepts colors as arguments", () => {
 });
 
 test("cli reads stdin when there are no colors", () => {
-  const result = spawnSync(process.execPath, [SCRIPT], {
+  const result = spawnSync(process.execPath, [SCRIPT, "-s", NO_SHADES], {
     input: "#c10007\n\nnope\n#ffb86a\n",
     encoding: "utf8",
   });
@@ -179,4 +194,107 @@ test("cli exits cleanly for valid input", () => {
   assert.equal(result.status, 0);
   assert.equal(result.stdout, "black/50\n");
   assert.equal(result.stderr, "");
+});
+
+test("a color within the margin gets its Tailwind class", () => {
+  const result = run("-d", "#fc6204");
+
+  assert.equal(result.status, 0);
+  assert.equal(result.stdout, "orange-500 0.0279\n");
+});
+
+test("a color beyond the margin gets a proposed shade of its nearest hue's family", () => {
+  const result = run("-d", "#d64242", "#a67a3e");
+
+  assert.equal(result.status, 0);
+  assert.equal(
+    result.stdout,
+    "new red-550 #d64242 (orange-700 0.061)\nnew yellow-650 #a67a3e (yellow-700 0.071)\n",
+  );
+});
+
+test("the margin decides between a class and a new shade", () => {
+  assert.equal(run("-m", "0.07", "#d64242").stdout, "orange-700\n");
+  assert.equal(run("--margin", "0.01", "#fc6204").stdout, "new orange-550 #fc6204\n");
+
+  const invalid = run("-m", "far", "#d64242");
+  assert.equal(invalid.status, 2);
+  assert.match(invalid.stderr, /invalid margin: far/);
+});
+
+test("a grey beyond the margin gets a shade of the neutral family", () => {
+  assert.equal(run("#333").stdout, "new neutral-750 #333333\n");
+});
+
+test("a shade added once is found again by its class", () => {
+  const path = stylesheet(`@theme {
+  /* Holo's red title bar */
+  --color-red-550: #d64242;
+}
+`);
+
+  assert.equal(run("-s", path, "-d", "#d64242").stdout, "red-550 0\n");
+  assert.equal(run("-s", path, "-d", "#d44040").stdout, "red-550 0.0057\n");
+});
+
+test("a colour within the margin of Tailwind's palette keeps its class beside a nearer new shade", () => {
+  const path = stylesheet(`@theme {
+  --color-orange-550: #f66200;
+}
+`);
+
+  assert.equal(run("-s", path, "#fc6204").stdout, "orange-500\n");
+});
+
+test("a number between two shades is free when the middle one is taken", () => {
+  const path = stylesheet(`@theme {
+  --color-red-550: #d64242;
+}
+`);
+
+  assert.equal(run("-s", path, "#c73c3c").stdout, "new red-650 #c73c3c\n");
+  assert.equal(run("-s", path, "#e84a4a").stdout, "new red-525 #e84a4a\n");
+});
+
+test("-w writes the proposed shade into the stylesheet under its note", () => {
+  const path = stylesheet();
+
+  const first = run("-s", path, "-w", "Holo's red title bar", "#d64242");
+  assert.equal(first.status, 0);
+  assert.equal(first.stdout, "new red-550 #d64242\n");
+  assert.equal(
+    readFileSync(path, "utf8"),
+    `/* Holo's colours that Tailwind's palette lacks, as new shades of its families.
+   tools/tw-color proposes and writes them. */
+@theme {
+  /* Holo's red title bar */
+  --color-red-550: #d64242;
+}
+`,
+  );
+
+  run("-s", path, "--write", "Holo's darkred title bar", "#c73c3c");
+  assert.deepEqual(
+    parseShades(readFileSync(path, "utf8")).map((shade) => shade.name),
+    ["red-550", "red-650"],
+  );
+  assert.equal(run("-s", path, "#c73c3c").stdout, "red-650\n");
+});
+
+test("the stylesheet of the apps holds no shade within the margin of Tailwind's palette", () => {
+  const shades = parseShades(
+    readFileSync(
+      fileURLToPath(
+        new URL("../../packages/components/src/styles/shades.css", import.meta.url),
+      ),
+      "utf8",
+    ),
+  );
+
+  assert.ok(shades.length > 0);
+  for (const shade of shades) {
+    const hue = (shade.h * Math.PI) / 180;
+    const lab = { L: shade.l, a: shade.c * Math.cos(hue), b: shade.c * Math.sin(hue) };
+    assert.ok(nearestColor(lab).distance > 0.031, shade.name);
+  }
 });

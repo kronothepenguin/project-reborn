@@ -85,7 +85,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
               <td class="w-3/5">
                 [[ .Owner.Credits ]]
                 [[ if .CanGive ]]
-                [<a href="/housekeeping/habbos/[[ .Target.ID ]]/transactions" class="text-indigo-900 underline">Transaction logs</a>]
+                [<a href="/housekeeping/habbos/[[ .Target.ID ]]/transactions" class="text-blue-925 underline">Transaction logs</a>]
                 [[ end ]]
               </td>
             </tr>
@@ -122,7 +122,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
         [[ end ]]
         [[ if .CanBan ]]
         <p class="border-t-2 border-black p-1 text-center">
-          <a href="/housekeeping/bans?user=[[ .Target.Name ]]" class="text-indigo-900 underline">Ban this user</a>
+          <a href="/housekeeping/bans?user=[[ .Target.Name ]]" class="text-blue-925 underline">Ban this user</a>
         </p>
         [[ end ]]
       </Box>
@@ -239,7 +239,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
         <tbody>
           [[ range .Others ]]
           <tr>
-            <td><a href="/housekeeping/habbos/[[ .ID ]]" class="text-indigo-900 underline">[[ .Name ]]</a>[[ if .Archived ]] (Archived)[[ end ]]</td>
+            <td><a href="/housekeeping/habbos/[[ .ID ]]" class="text-blue-925 underline">[[ .Name ]]</a>[[ if .Archived ]] (Archived)[[ end ]]</td>
           </tr>
           [[ else ]]
           <tr>
@@ -263,7 +263,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
           [[ range .Logins ]]
           <tr>
             <td>
-              <a href="/housekeeping/habbos?q=[[ .IP ]]" class="text-indigo-900 underline">[[ .IP ]]</a> [<a href="https://who.is/whois-ip/ip-address/[[ .IP ]]/" target="_blank" rel="noreferrer" class="text-indigo-900 underline">WHOIS</a>]
+              <a href="/housekeeping/habbos?q=[[ .IP ]]" class="text-blue-925 underline">[[ .IP ]]</a> [<a href="https://who.is/whois-ip/ip-address/[[ .IP ]]/" target="_blank" rel="noreferrer" class="text-blue-925 underline">WHOIS</a>]
             </td>
             <td>[[ .Date ]]</td>
           </tr>

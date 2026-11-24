@@ -20,14 +20,14 @@
 
   const variantClasses: Record<Variant, string> = {
     default: "bg-white",
-    login: "bg-olive-400",
+    login: "bg-stone-350",
     gray: "bg-neutral-400",
     black: "bg-olive-950",
     hc: "bg-amber-100",
     yellow: "bg-amber-300",
     lightgreen: "bg-mist-200",
-    blue: "bg-sky-300",
-    "room pattern": "bg-cyan-600",
+    blue: "bg-sky-350",
+    "room pattern": "bg-cyan-550",
   };
 
   let { variant = "default", children, ...rest }: Props = $props();

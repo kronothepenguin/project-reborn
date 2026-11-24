@@ -12,7 +12,7 @@
   }
 
   const lineClasses: Record<TabsColor, string> = {
-    blue: "border-blue-400",
+    blue: "border-blue-450",
     green: "border-lime-600",
     orange: "border-amber-500",
   };

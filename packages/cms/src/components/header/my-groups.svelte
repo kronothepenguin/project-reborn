@@ -96,7 +96,7 @@
                     {#if group.favourite}<div class={[icon, "bg-position-[100%_-433px]"]} title="Favourite"></div>{/if}
                     {#if group.admin}<div class={[icon, "bg-position-[100%_-528px]"]} title="Admin"></div>{/if}
                     {#if group.owner}<div class={[icon, "bg-position-[100%_-480px]"]} title="Owner"></div>{/if}
-                    <a class="float-left overflow-hidden text-ellipsis text-olive-800 no-underline hover:underline" href={`/groups/${group.id}`}
+                    <a class="float-left overflow-hidden text-ellipsis text-neutral-750 no-underline hover:underline" href={`/groups/${group.id}`}
                       >{group.name}</a
                     >
                   </li>

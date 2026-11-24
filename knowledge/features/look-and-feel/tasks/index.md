@@ -5,4 +5,3 @@
 - [Compare the look with HoloCMS, page by page](06-exit-check.md) - Every page of the site is set beside Holo's and beside its old self, with screenshots, and what differs is listed for the user.
 - [The forum inside the navigation's width](15-the-forum-inside-the-navigation.md) - The discussion board and a thread shrink to the sub-navigation's width, and the sub-navigation is the same on every page of the community layout.
 - [Three shared parts fitted to 12px text](16-the-shared-parts-at-12px.md) - The stepper's points, the notice and a field's help line take sizes and colours that suit the site's 12px text.
-- [Holo's colours as new shades of the palette](17-holos-colours-as-new-shades.md) - The colour tool takes a margin of distance, proposes a new shade of the nearest family for a colour beyond it, and knows the shades added; Holo's red, brown and every other colour beyond the margin become such shades.

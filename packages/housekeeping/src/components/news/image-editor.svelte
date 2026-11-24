@@ -18,9 +18,9 @@
   const nudgeStep = 10;
   const failure = "The picture could not be uploaded.";
   const button =
-    "cursor-pointer border border-black bg-olive-200 px-2 py-0.5 font-bold hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-wait disabled:opacity-50 aria-pressed:bg-sky-700 aria-pressed:text-white";
+    "cursor-pointer border border-black bg-olive-200 px-2 py-0.5 font-bold hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-wait disabled:opacity-50 aria-pressed:bg-blue-550 aria-pressed:text-white";
   const thumbnail =
-    "cursor-pointer border-2 border-transparent hover:border-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black aria-pressed:border-sky-700";
+    "cursor-pointer border-2 border-transparent hover:border-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black aria-pressed:border-blue-550";
 
   let { field, uploads }: Props = $props();
 

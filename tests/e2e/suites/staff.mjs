@@ -82,7 +82,7 @@ export default async function ({ base, browser, check, shot, sql }) {
   check(
     "the two boxes carry Holo's headings in green",
     JSON.stringify(await headings.allInnerTexts()) === JSON.stringify(["Staff", "Need our help?", "Joining the Team"]) &&
-      (await headings.nth(1).getAttribute("class")).includes("bg-lime-600") &&
+      (await headings.nth(1).getAttribute("class")).includes("bg-lime-550") &&
       (await page.getByText("You can find the staff members all over the hotel").isVisible()),
   );
 

@@ -97,7 +97,7 @@
     </p>
   </div>
   <div class="bg-amber-100 bg-[url(/web-gallery/v2/images/hc_pattern.gif)] bg-position-[30%] px-[15px] py-2">
-    <div class="mx-1 rounded-lg bg-red-600 p-2">
+    <div class="mx-1 rounded-lg bg-red-550 p-2">
       {#if canBuy}
         <table class="border-separate border-spacing-0.5">
           <tbody>

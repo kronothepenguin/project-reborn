@@ -1,6 +1,7 @@
 # tw-color
 
-Maps legacy CSS colors to the closest color in the Tailwind CSS v4 palette.
+Maps legacy CSS colors to the closest color in the Tailwind CSS v4 palette. A color beyond a margin of distance gets a
+new shade of the palette instead, kept in `packages/components/src/styles/shades.css`.
 
 ## Usage
 
@@ -24,6 +25,51 @@ node tools/tw-color/tw-color.mjs -d "#ffb86a"
 ```text
 orange-300 0.0046
 ```
+
+A color farther than the margin, an OKLab distance of 0.031, from every Tailwind class takes the closest new shade of
+the stylesheet. Farther than the margin from those too, it gets a proposed shade: the family of its nearest hue, a
+number between that family's lighter and darker neighbours, and its own hex. With `-d`, the closest class and its
+distance follow in brackets:
+
+```sh
+node tools/tw-color/tw-color.mjs -d "#d64242" "#c73c3c"
+```
+
+```text
+red-550 0
+red-650 0
+```
+
+```sh
+node tools/tw-color/tw-color.mjs -d "#e69f06"
+```
+
+```text
+new yellow-525 #e69f06 (amber-550 0.0312)
+```
+
+`-m` (or `--margin`) sets another margin:
+
+```sh
+node tools/tw-color/tw-color.mjs -m 0.05 "#e69f06"
+```
+
+```text
+amber-500
+```
+
+`-w` (or `--write`) writes each proposed shade into the stylesheet, under a comment that names its use. From then on
+the color is found by its class, `bg-yellow-525` in every app:
+
+```sh
+node tools/tw-color/tw-color.mjs -w "Holo's menu link hover" "#e69f06"
+```
+
+```text
+new yellow-525 #e69f06
+```
+
+`-s` (or `--shades`) reads and writes another stylesheet.
 
 Without colors, one color per line is read from stdin:
 

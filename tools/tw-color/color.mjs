@@ -85,11 +85,11 @@ function linearize(channel) {
   return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
 }
 
-export function nearestColor({ L, a, b }) {
-  let best = palette[0];
+export function nearestColor({ L, a, b }, swatches = palette) {
+  let best = swatches[0];
   let bestDistance = Infinity;
 
-  for (const swatch of palette) {
+  for (const swatch of swatches) {
     const hue = (swatch.h * Math.PI) / 180;
     const distanceA = a - swatch.c * Math.cos(hue);
     const distanceB = b - swatch.c * Math.sin(hue);
@@ -109,4 +109,103 @@ export function nearestColor({ L, a, b }) {
 export function formatMatch(name, alpha) {
   if (alpha >= 1) return name;
   return `${name}/${Math.round(alpha * 100)}`;
+}
+
+export function toOklch({ L, a, b }) {
+  const h = (Math.atan2(b, a) * 180) / Math.PI;
+  return { l: L, c: Math.hypot(a, b), h: h < 0 ? h + 360 : h };
+}
+
+export function toHex({ r, g, b }) {
+  return `#${[r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("")}`;
+}
+
+// A colour this saturated is matched to a family by its hue; a greyer one by
+// its distance to the family's swatch at the same lightness.
+const CHROMATIC = 0.05;
+
+// The default margin: a colour farther than this from every class takes a new
+// shade.
+export const MARGIN = 0.031;
+
+function family(name) {
+  const dash = name.lastIndexOf("-");
+  return dash < 0 ? null : name.slice(0, dash);
+}
+
+function shadeNumber(name) {
+  return Number(name.slice(name.lastIndexOf("-") + 1));
+}
+
+// The family's swatches from lightest to darkest.
+function families(swatches) {
+  const groups = new Map();
+  for (const swatch of swatches) {
+    const name = family(swatch.name);
+    if (name === null) continue;
+    if (!groups.has(name)) groups.set(name, []);
+    groups.get(name).push(swatch);
+  }
+  for (const group of groups.values()) {
+    group.sort((x, y) => shadeNumber(x.name) - shadeNumber(y.name));
+  }
+  return groups;
+}
+
+// The family's colour at lightness l, between its two neighbours.
+function between(group, l) {
+  const lighter = group.findLast((swatch) => swatch.l >= l);
+  const darker = group.find((swatch) => swatch.l < l);
+  if (!lighter) return darker;
+  if (!darker) return lighter;
+  const t = (lighter.l - l) / (lighter.l - darker.l);
+  const lab = (s) => ({
+    a: s.c * Math.cos((s.h * Math.PI) / 180),
+    b: s.c * Math.sin((s.h * Math.PI) / 180),
+  });
+  const x = lab(lighter);
+  const y = lab(darker);
+  return toOklch({ L: l, a: x.a + (y.a - x.a) * t, b: x.b + (y.b - x.b) * t });
+}
+
+function hueGap(x, y) {
+  const gap = Math.abs(x - y) % 360;
+  return gap > 180 ? 360 - gap : gap;
+}
+
+// The new shade for a colour: the family of its nearest hue, and a number
+// between the family's lighter and darker neighbours by lightness.
+export function proposeShade(lab, swatches = palette) {
+  const colour = toOklch(lab);
+  const groups = families(swatches);
+  let best = null;
+  let bestScore = Infinity;
+
+  for (const [name, group] of groups) {
+    const point = between(group, colour.l);
+    let score;
+    if (colour.c >= CHROMATIC) {
+      if (point.c < CHROMATIC) continue;
+      score = hueGap(colour.h, point.h);
+    } else {
+      const ha = (point.h * Math.PI) / 180;
+      score = Math.hypot(
+        lab.a - point.c * Math.cos(ha),
+        lab.b - point.c * Math.sin(ha),
+      );
+    }
+    if (score < bestScore) {
+      best = name;
+      bestScore = score;
+    }
+  }
+
+  const group = groups.get(best);
+  const lighter = group.findLast((swatch) => swatch.l >= colour.l);
+  const darker = group.find((swatch) => swatch.l < colour.l);
+  const low = lighter ? shadeNumber(lighter.name) : 0;
+  const high = darker ? shadeNumber(darker.name) : 1000;
+  const number = Math.round((low + high) / 2);
+  if (number === low || number === high) return null;
+  return `${best}-${number}`;
 }
