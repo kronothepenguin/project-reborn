@@ -123,6 +123,11 @@ height and close as possible aligned to right as a group".
 - A page shows a picture, such as an avatar, a badge or an icon: it shows at its own size, sharp.
 - The Me page shows its Groups and Tags boxes: the line under their tabs runs from one edge of the box to the other.
 
+### Shared parts at 12px
+
+- A page shows a stepper, a notice or a field with help: the stepper's points are in proportion to its names, the
+  notice's text is the page's size, and the help line is grey beside its label.
+
 ## Next
 
 ### Holo's styling, cloned
@@ -139,11 +144,6 @@ height and close as possible aligned to right as a group".
 
 - A visitor opens any page of the community layout: the sub-navigation has the same width and place.
 - A visitor opens the discussion board or a thread: its box is as wide as the sub-navigation, and its rows fill it.
-
-### Shared parts at 12px
-
-- A page shows a stepper, a notice or a field with help: the stepper's points are in proportion to its names, the
-  notice's text is the page's size, and the help line is grey beside its label.
 
 ### Holo's colours
 

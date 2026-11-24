@@ -11,7 +11,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Use Notice for a short message in a form or above a page, such as an error after a failed sign-in. It renders centred white text on a rounded coloured box, and `variant` changes only the colour.",
+          "Use Notice for a short message in a form or above a page, such as an error after a failed sign-in. It renders centred white text at the page's 12px on a rounded coloured box, and `variant` changes only the colour.",
       },
     },
   },

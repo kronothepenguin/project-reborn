@@ -30,6 +30,9 @@ export const Default: Story = { args: { label: "Email", children: control } };
 
 export const WithHelp: Story = {
   args: { label: "Email", help: "We never share it", children: control },
+  parameters: {
+    docs: { description: { story: "The help line is grey, so it reads apart from the label." } },
+  },
 };
 
 export const WithError: Story = {

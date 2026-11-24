@@ -42,9 +42,27 @@ describe("Stepper", () => {
     expect(list.tagName).toBe("OL");
     const items = page.getByRole("listitem").elements();
     expect(items.map((li) => li.textContent?.trim())).toEqual(steps.map((step) => step.label));
-    const tops = new Set(items.map((li) => Math.round(li.getBoundingClientRect().top)));
-    expect(tops.size).toBe(1);
+    // One row: every step centred on one line, whatever its height.
+    const middles = new Set(
+      items.map((li) => {
+        const box = li.getBoundingClientRect();
+        return Math.round(box.top + box.height / 2);
+      }),
+    );
+    expect(middles.size).toBe(1);
     const arrows = items.map((li) => getComputedStyle(li, "::after").display !== "none");
     expect(arrows).toEqual([true, true, true, true, false]);
+  });
+
+  it("draws each step's point at 20px, in proportion to a 12px name", async () => {
+    render(StepperFixture, { props: { steps } });
+
+    const points = [...document.querySelectorAll('li span[aria-hidden="true"]')];
+    expect(points).toHaveLength(steps.length);
+    for (const point of points) {
+      const { width, height } = point.getBoundingClientRect();
+      expect([width, height]).toEqual([20, 20]);
+      expect(getComputedStyle(point).fontSize).toBe("12px");
+    }
   });
 });

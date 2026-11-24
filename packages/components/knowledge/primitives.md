@@ -84,8 +84,20 @@ black text) bar above its children (decision holo-port/0060). `title` is the hea
   attributes go to the `<li>`.
 - The number sits in the point's `::before`, on an `aria-hidden` span, so a link's name is the step's name alone.
 - Under 640px only the current step shows its name; the others keep it for assistive technology.
+- A point is 20px (`size-5`) with a 1px border and its number in bold `text-xs`, in proportion to a 12px name. The
+  chevron is 6px with a 2px stroke, and the steps, their points and their names stand 6px (`gap-1.5`) apart at every
+  width.
 - `Stepper` holds no state and no context: a page the server fills writes its own condition around each `Step`, and
   uses both with no client directive. The caller puts it in a `<nav>` with its own label.
+
+# Notice
+
+`Notice` writes its centred white text in `text-xs`, the page's 12px, on its coloured box.
+
+# FormField
+
+`FormField` gives its help line `neutral-500`, the grey of housekeeping's help, so it reads apart from the label. The
+label and an error keep the page's colour.
 
 # Table
 

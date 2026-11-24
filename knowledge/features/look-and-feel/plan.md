@@ -42,6 +42,9 @@ The site is Holo's, at Holo's own sizes, in Tailwind's closest common classes.
 - Pictures keep their own size and fill their box as in Holo.
 - Colours are the Tailwind classes of [the colours](/colours.md), the closest class of Holo's hue.
 - BBCode's small text stays 10px, under the body's 12px.
+- The shared parts fit the 12px text: a `Step`'s numbered point is 20px (`size-5`) with a 1px border, its arrow 6px,
+  and the stepper's gaps 6px; a `Notice` reads at `text-xs`; a `FormField`'s help line is `neutral-500`, the grey of
+  housekeeping's help.
 - Housekeeping and the installer keep their own looks at the site's `text-xs`. Housekeeping has its widths of before
   the bigger design: a tab `w-44`, the left column `w-46`. The installer's page is 640px (`max-w-160`), its box 608px
   and its column 574px.

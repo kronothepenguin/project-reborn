@@ -33,7 +33,7 @@
   <span>{label}</span>
   {@render children()}
   {#if help}
-    <span>{help}</span>
+    <span class="text-neutral-500">{help}</span>
   {/if}
   {#if error}
     <span>{error}</span>
