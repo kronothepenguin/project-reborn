@@ -15,13 +15,13 @@ Built:
 | `packages/components` | The primitives both apps share; `Table` and `Table variant="form"` give housekeeping's lists and forms; every primitive at the new sizes; `Tabs color`, with Holo's tabs inside boxes; the box's frame and the title bars as Holo's |
 | `packages/store` | `CountAvatars`, the header's registered count |
 | `packages/housekeeping` | Its own look at the new sizes: 16px in Verdana as the theme's `--font-sans`, widths by 1240/960, paddings and gaps by 4/3; every page fits a 1366px screen |
+| `packages/installer` | `layouts/setup.astro`: the logo over one `Card color="blue"` per step, whose first row is the `step-tabs` island; Holo's font and the 16px base |
 
 Planned:
 
 | Project | Part |
 | --- | --- |
 | `packages/cms` | Every page at the new sizes |
-| `packages/installer` | A layout of its own from the shared parts, with the steps as tabs |
 | `tests/e2e` | The suites follow the pages; screenshots of every page are the exit check's evidence |
 
 ## The sizes

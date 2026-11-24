@@ -1,30 +1,27 @@
 ---
-import { FormField, Input, Select } from "@project-reborn/components";
+import { Checkbox, FormField, Input, Select } from "@project-reborn/components";
 
 // One group of the settings step, over the group in the template's dot: its
 // title and its fields, each drawn by its kind.
 ---
 
-<fieldset class="space-y-3 rounded border border-sky-700 p-2">
-  <legend class="px-1 text-sm font-bold">[[ .Title ]]</legend>
+<fieldset class="min-w-0 space-y-3 rounded border border-sky-600 px-3 pt-1 pb-3">
+  <legend class="px-1 font-bold text-sky-700">[[ .Title ]]</legend>
   [[ range .Fields ]] [[ if eq .Kind "switch" ]]
-  <div class="flex flex-col gap-1 text-sm">
+  <div class="flex flex-col gap-1">
     <input type="hidden" name="[[ .Key ]]" value="0" />
-    <label class="flex items-center gap-2">
-      [[ if .On ]]
-      <input type="checkbox" name="[[ .Key ]]" value="1" checked />
-      [[ else ]]
-      <input type="checkbox" name="[[ .Key ]]" value="1" />
-      [[ end ]]
-      <span>[[ .Label ]]</span>
-    </label>
+    [[ if .On ]]
+    <Checkbox name="[[ .Key ]]" value="1" checked>[[ .Label ]]</Checkbox>
+    [[ else ]]
+    <Checkbox name="[[ .Key ]]" value="1">[[ .Label ]]</Checkbox>
+    [[ end ]]
     [[ if .Help ]]<span>[[ .Help ]]</span>[[ end ]]
   </div>
   [[ else ]]
   <FormField
     label="[[ .Label ]]"
     help="[[ .Help ]]"
-    class="flex flex-col gap-1 text-sm"
+    class="flex flex-col gap-1"
   >
     [[ if eq .Kind "longtext" ]]
     <textarea

@@ -93,6 +93,11 @@ height and close as possible aligned to right as a group".
   white with an outline in that colour and bold black text.
 - A box shows tabs: a line in the box's colour runs under the row, and the colour is blue, green or orange.
 
+## The installer
+
+- An administrator opens the installer: a page of its own, built from the site's parts: the title bars, the two-tone
+  buttons and the steps as tabs, in Holo's colours and font.
+
 ## Next
 
 ### Sizes
@@ -103,11 +108,6 @@ height and close as possible aligned to right as a group".
 - A visitor opens a page of the site on a screen 1366px wide: the page is 1240px wide and centred, and nothing scrolls
   sideways.
 - A page shows a picture, such as an avatar, a badge or an icon: it shows at its own size, sharp.
-
-### The installer
-
-- An administrator opens the installer: a page of its own, built from the site's parts: the title bars, the two-tone
-  buttons and the steps as tabs, in Holo's colours and font.
 
 # Open questions
 

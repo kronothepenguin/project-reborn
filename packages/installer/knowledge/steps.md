@@ -23,6 +23,19 @@ not wrapped by its runner.
 | `GET`, `POST /installer/client` | `client.astro` | The client files step: names `<assets.path>/dcr/` and lists `external_variables.txt` and `external_texts.txt` with their count of lines, or as missing. "Import client files" (`action=import`) imports both with `dcr.Import` in one transaction; "Skip" (`action=skip`) imports nothing. With a file missing, the page says where to put it, offers "Check again" (a link to the same page) and "Skip", and an import answers 422 and imports nothing |
 | `GET`, `POST /installer/admin` | `admin.astro` | Habbo name, email, birth date, password, "Give this habbo Habbo Club" (ticked) and "Credits" (5000): one transaction creates, through `auth.CreateAccount`, the user, habbo, profile, home and wallet with the credits given, writes a club period of 100 years from now when the box is ticked, and adds the user to the highest access group holding `housekeeping.accessGroups`; then redirects to `/` |
 
+# The look
+
+`layouts/setup.astro` draws every page: the hotel's logo and "Project Reborn installer" on the hotel's blue
+(`sky-200`), over one box, `Card color="blue"`, whose title bar names the step. The theme's `--font-sans` is Holo's
+Verdana, at the 16px base. The box is 960px wide; a step's content keeps a 672px column, and the settings step takes
+the whole box, its groups in two columns from `lg` on. A step's main button is `Button variant="green"`, "Skip" and
+"Check again" the default variant, and an error a red `Notice` with `role="alert"`.
+
+The box's first row is the island `components/step-tabs.svelte`: the steps as `Tabs color="blue"`, in the order of
+`setup.Steps`, the current one selected. Every page's data embeds `stepTabs`, whose `Waiting` is the first step that
+waits: a step up to it opens its page when its tab is chosen, by click or arrow key, and a step after it is shown
+disabled. Once the hotel is installed, the status page passes no step, and every tab is disabled.
+
 # Two forms
 
 - `Inject(installer.Services{Listener: l})`, once after `New` and before `Mount`, gives the installer a `Listener`,

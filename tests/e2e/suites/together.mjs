@@ -73,6 +73,36 @@ export default async function ({
     (await page.getByText("New players", { exact: true }).isVisible()) &&
       !(await page.locator('input[name="homes.maxTags"]').isVisible()),
   );
+  // The steps show as tabs: a step passed opens from its tab, and a step still
+  // to come is shown and cannot be opened.
+  const steps = page.getByRole("tab");
+  await steps.first().waitFor();
+  check(
+    "the steps show as tabs in their order, the current one selected",
+    JSON.stringify(await steps.allInnerTexts()) ===
+      JSON.stringify(["1. Configuration", "2. Site", "3. Settings", "4. Client files", "5. Administrator"]) &&
+      (await page.getByRole("tab", { selected: true }).innerText()) === "3. Settings",
+    JSON.stringify(await steps.allInnerTexts()),
+  );
+  check(
+    "a step still to come is shown and cannot be opened",
+    (await page.getByRole("tab", { name: "4. Client files" }).isVisible()) &&
+      (await page.getByRole("tab", { name: "4. Client files" }).isDisabled()),
+  );
+  await Promise.all([
+    page.waitForURL("**/site"),
+    page.getByRole("tab", { name: "2. Site" }).click(),
+  ]);
+  check(
+    "a step passed opens from its tab",
+    page.url().endsWith("/installer/site") &&
+      (await page.inputValue('input[name="name"]')) === "Reborn Hotel",
+    page.url(),
+  );
+  await Promise.all([
+    page.waitForURL("**/settings"),
+    page.getByRole("tab", { name: "3. Settings" }).click(),
+  ]);
   await page.fill('input[name="referral.reward"]', "75");
   await Promise.all([
     page.waitForURL("**/client"),

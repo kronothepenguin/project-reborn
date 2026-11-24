@@ -1,32 +1,32 @@
 ---
-import { Link } from "@project-reborn/components";
+import { Button } from "@project-reborn/components";
 import Setup from "../layouts/setup.astro";
 ---
 
 <Setup title="Welcome" step="status">
   [[ if .Installed ]]
-  <p class="text-sm">
+  <p>
     This hotel is already installed: <span class="font-mono break-all"
       >[[ .ConfigPath ]]</span
     > exists and its database has an administrator. The installer has nothing
     left to do.
   </p>
-  <div class="flex justify-end text-sm">
-    <Link href="[[ .SiteURL ]]">Go to the hotel</Link>
+  <div class="flex justify-end">
+    <Button href="[[ .SiteURL ]]" variant="green">Go to the hotel</Button>
   </div>
   [[ else ]]
-  <p class="text-sm">
+  <p>
     The installer writes <span class="font-mono break-all"
       >[[ .ConfigPath ]]</span
     >, creates the database it names, saves the site settings, saves more
     settings and imports the client files when you choose, and creates the first
     administrator. Run the hotel from the same directory afterwards.
   </p>
-  <div class="flex justify-end text-sm">
+  <div class="flex justify-end">
     [[ if .Configured ]]
-    <Link href="/installer/[[ .Next ]]">Continue</Link>
+    <Button href="/installer/[[ .Next ]]" variant="green">Continue</Button>
     [[ else ]]
-    <Link href="/installer/config">Start</Link>
+    <Button href="/installer/config" variant="green">Start</Button>
     [[ end ]]
   </div>
   [[ end ]]

@@ -79,7 +79,7 @@ func TestTheClientFilesStepNamesTheFolderAndItsFiles(t *testing.T) {
 			folder := clientFolder(t, bothFiles)
 
 			expect(t, send(t, mux, "GET", "/installer/client", nil), 200, "",
-				"{Folder:"+folder+" Files:[{Name:external_variables.txt Found:true Lines:2} {Name:external_texts.txt Found:true Lines:3}] Missing:false}")
+				" Folder:"+folder+" Files:[{Name:external_variables.txt Found:true Lines:2} {Name:external_texts.txt Found:true Lines:3}] Missing:false}")
 		})
 	}
 }
@@ -112,7 +112,7 @@ func TestAMissingClientFileImportsNothing(t *testing.T) {
 			folder := clientFolder(t, map[string]string{"external_variables.txt": bothFiles["external_variables.txt"]})
 
 			expect(t, send(t, mux, "GET", "/installer/client", nil), 200, "",
-				"{Folder:"+folder+" Files:[{Name:external_variables.txt Found:true Lines:2} {Name:external_texts.txt Found:false Lines:0}] Missing:true}")
+				" Folder:"+folder+" Files:[{Name:external_variables.txt Found:true Lines:2} {Name:external_texts.txt Found:false Lines:0}] Missing:true}")
 			expect(t, send(t, mux, "POST", "/installer/client", url.Values{"action": {"import"}}), 422, "", "Missing:true")
 			if variables, texts := counts(t, i); variables != 0 || texts != 0 {
 				t.Errorf("the database holds %d variables and %d texts, want none", variables, texts)
