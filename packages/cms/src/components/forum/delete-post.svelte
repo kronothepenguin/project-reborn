@@ -39,21 +39,21 @@
 <Dialog
   open={target !== null}
   label="Delete Post"
-  class="m-auto w-100 bg-transparent backdrop:bg-black/40"
+  class="m-auto w-[300px] bg-transparent backdrop:bg-black/40"
   onclose={() => {
     if (!working) target = null;
   }}
 >
   <Card color="orange" header={title}>
-    <div class="text-base">
+    <div class="text-xs">
       {#if working}
-        <div class="py-2.5 text-center"><Spinner /></div>
+        <div class="py-2 text-center"><Spinner /></div>
       {:else if failed}
-        <p class="mb-2.5">An unknown error occurred. Please try again in a couple of minutes.</p>
+        <p class="mb-2">An unknown error occurred. Please try again in a couple of minutes.</p>
         <p><Button onclick={() => (target = null)}>OK</Button></p>
       {:else}
-        <p class="mb-2.5">Are you sure you want to delete this post? This cannot be reverted.</p>
-        <p class="flex gap-1.5">
+        <p class="mb-2">Are you sure you want to delete this post? This cannot be reverted.</p>
+        <p class="flex gap-1">
           <Button onclick={() => (target = null)}>Cancel</Button>
           <Button onclick={proceed}>Proceed</Button>
         </p>

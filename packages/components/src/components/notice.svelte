@@ -21,7 +21,7 @@
 </script>
 
 <div
-  class="rounded px-2.5 py-1.5 text-center text-base text-white {variantClasses[variant] ??
+  class="rounded p-1 text-center text-sm text-white {variantClasses[variant] ??
     variantClasses.red}"
   {...rest}
 >

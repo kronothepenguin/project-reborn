@@ -34,13 +34,15 @@ Holo used. It joins the values without encoding, because at build time they can 
 
 # Sizes
 
-The primitives follow the 16px design of the look and feel (`knowledge/features/look-and-feel/plan.md`): Holo's
-11px text is `text-base`, its 14px `text-xl`, and its paddings and gaps are Holo's times 4/3 on Tailwind's scale.
-Borders, corner radii and pictures keep Holo's sizes.
+The primitives clone Holo's styling at Holo's sizes, in Tailwind's closest common classes
+(`knowledge/features/look-and-feel/plan.md`): Holo's 10px and 11px text is `text-xs`, its 14px `text-sm`; a padding
+or gap of 5px is `1` or `1.5`, of 8px `2`, of 10px to 12px `2.5` or `3`. A primitive sets no body size: it takes the
+page's, `text-xs` on the site. Borders, corner radii and pictures keep Holo's sizes.
 
 # Button
 
-- `Button` writes its label bold in `text-base`, Holo's 11px. `wide` pads it `px-6` and `compact` `px-2.5`.
+- `Button` writes its label bold in `text-xs`, Holo's 11px, `py-0.5` inside its 2px border, so it is 24px tall, Holo's
+  25. `wide` pads it `px-4` and `compact` `px-2`.
 - `Button` draws its raised face, its 2px border and its radius in every variant but `plain`. `plain` is housekeeping's
   submit button: a 1px black border, square corners and an `olive-200` face that turns white on hover.
 - `plain` with `size="compact"` matches housekeeping's `submit.astro` in every computed style and in its size.
@@ -55,19 +57,23 @@ black text) bar above its children (decision holo-port/0060). `title` is the hea
 
 - `Paper` draws Holo's frame: a 1px `black/20` edge with a 3px bottom and 4px corners. Its background stops at the
   edge (`bg-clip-padding`), so the page shows through it, as Holo's #b5b5af on #e3e3db.
-- `Card` insets its title bar `px-1.5 pt-1.5` from the frame, and its content `px-5 py-2.5`, Holo's `8px 15px`.
-- `Card`'s title bar is bold `text-xl` on `leading-6`, padded `px-3.5 py-1.5`, Holo's bold 14px on 17px with
-  `4px 10px`. Its colours are those of `knowledge/colours.md`.
+- `Card` insets its title bar `px-1 pt-1` from the frame, Holo's 4px, and its content `px-4 py-2`, Holo's `8px 15px`.
+- `Card`'s title bar is bold `text-sm` on a 17px line, padded `px-2.5 py-1`, so it is 25px tall as Holo's bold 14px on
+  17px with its rounded 4px above and below. Its colours are those of `knowledge/colours.md`.
+- A box with tabs is a `Paper` with a `TabList` at its top, as Holo's box with tabs has no inset: the line under the
+  tabs runs from one edge of the box to the other.
 
 # Tabs
 
 - `Tabs` holds the selected value and the group's `color`: `blue`, `green` or `orange`, `blue` by default.
   `TabList` and `Tab` read both from the tabs' context, so the row's line and every tab follow the group.
 - `TabList` is the `tablist`: it takes the arrow keys, draws the line under the row and keeps the tabs at its right
-  edge, in their order. It does not wrap: a page with more tabs than its width passes `flex-wrap`, and one that starts
+  edge, in their order, 4px apart and 4px from the edge. The row is Holo's 25px over its 1px line, and as wide as its
+  parent. It does not wrap: a page with more tabs than its width passes `flex-wrap`, and one that starts
   them at the left `justify-start!`, as the installer's settings step does. `TabPanel` goes beside it, inside `Tabs`.
-- `Tab` is filled with the colour, in white text, and lighter while pointed at; the selected one is white with an
-  outline in the colour and bold black text. It sits 1px low, so it covers the row's line.
+- `Tab` is 25px tall with `text-xs`, filled with the colour, in white text, and lighter while pointed at; the selected
+  one is white with an outline in the colour and bold black text. It sits 1px low, so it covers the row's line. Blue
+  is `blue-400`, Holo's #528dc9; green `lime-600`; orange `amber-500`.
 
 # Stepper
 

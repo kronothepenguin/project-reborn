@@ -61,32 +61,32 @@
 </script>
 
 {#snippet list(groups: Group[])}
-  <ul class="mt-3.5 flow-root">
+  <ul class="mt-2.5 flow-root">
     {#each groups as group, i (group.id)}
       <li
-        class={["float-left w-full bg-no-repeat sm:w-1/2", rowClass(i), i % 2 === 0 ? "bg-position-[15px_50%]" : "bg-position-[7px_50%]"]}
+        class={["float-left w-1/2 bg-no-repeat", rowClass(i), i % 2 === 0 ? "bg-position-[15px_50%]" : "bg-position-[7px_50%]"]}
         style={`background-image: url(/habbo-imaging/badge/${encodeURIComponent(group.badge)})`}
       >
         <a
           class={[
-            "mr-10 block h-[42px] py-0.5 pl-20 text-black no-underline hover:underline",
-            i % 2 === 1 && "border-olive-300 sm:border-l",
+            "mr-[30px] block h-[42px] py-0.5 pl-[60px] text-black no-underline hover:underline",
+            i % 2 === 1 && "border-l border-olive-300",
           ]}
           href={`/groups/${group.id}`}>{group.name}</a
         >
       </li>
     {/each}
     {#if groups.length % 2 === 1}
-      <li class={["float-left w-1/2 max-sm:hidden", rowClass(groups.length)]}>
-        <div class="mr-10 h-[42px] border-l border-olive-300 py-0.5 pl-17.5">&nbsp;</div>
+      <li class={["float-left w-1/2", rowClass(groups.length)]}>
+        <div class="mr-[30px] h-[42px] border-l border-olive-300 py-0.5 pl-[52px]">&nbsp;</div>
       </li>
     {/if}
   </ul>
-  <div class="flex justify-end px-5 pt-2.5"><Button onclick={() => (buying = true)}>Create/buy a Group</Button></div>
+  <div class="flex justify-end px-4 pt-2"><Button onclick={() => (buying = true)}>Create/buy a Group</Button></div>
 {/snippet}
 
-<div class="relative">
-  <h2 class="pb-1 pl-3.5 text-xl font-bold text-sky-500 sm:absolute sm:top-0 sm:left-0 sm:pt-1 sm:pb-0">Groups</h2>
+<div class="relative mt-1">
+  <h2 class="absolute top-0 left-0 pt-1 pl-2.5 text-sm font-bold text-sky-500">Groups</h2>
   <Tabs bind:value={tab} color="blue">
     <TabList>
       <Tab value="mine">My Groups</Tab>
@@ -95,16 +95,16 @@
   </Tabs>
 </div>
 <div role="tabpanel" aria-label="My Groups" hidden={tab !== "mine"}>
-  <div class="border-b border-dashed border-mauve-300 py-1.5 pl-5">
+  <div class="border-b border-dashed border-mauve-300 py-1 pl-4">
     View the groups you are in, create your own group, or get some inspiration from the 'Hot Groups'-tab!
   </div>
-  <div class="pb-3.5">{@render list(mine)}</div>
+  <div class="pb-5.5">{@render list(mine)}</div>
 </div>
 <div role="tabpanel" aria-label="Hot Groups" hidden={tab !== "hot"}>
   {#if hot === null}
-    <div class="py-2.5 text-center"><Spinner /></div>
+    <div class="py-2 text-center"><Spinner /></div>
   {:else}
-    <div class="pb-3.5">{@render list(hot)}</div>
+    <div class="pb-5.5">{@render list(hot)}</div>
   {/if}
 </div>
 <GroupPurchase bind:open={buying} bind:limits />

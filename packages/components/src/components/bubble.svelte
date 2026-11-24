@@ -19,7 +19,7 @@
 
 <div
   class={[
-    "relative w-84 rounded border border-black bg-white p-2.5 text-base text-black before:absolute before:left-4 before:size-2.5 before:rotate-45 before:border-black before:bg-white",
+    "relative w-64 rounded border border-black bg-white p-2 text-xs text-black before:absolute before:left-4 before:size-2.5 before:rotate-45 before:border-black before:bg-white",
     tailClasses[tail] ?? tailClasses.bottom,
     className,
   ]}

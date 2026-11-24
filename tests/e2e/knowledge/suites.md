@@ -13,8 +13,8 @@ program shows. What a test through a Go router proves stays there.
 | Suite | Covers |
 | --- | --- |
 | `signed-out` | Landing, sign-in, forgot and reset, legal pages |
-| `layout` | Both layouts at today's sizes: Holo's font at 16px, the 1240px page at 1366 wide, the two-tone main tabs with hover, green and selected tabs, the sub-navigation and the inline habbo search; screenshots of `/`, `/register`, `/me` and `/community` at 1366 and 1920 |
-| `sizes` | Every page of the site at 1366 wide, with two dialogs: body text at 16px in Holo's font, texts only in Tailwind's sizes, no sideways scroll, the 1240px community page with Holo's three columns spanning it, signed-out pages filling Holo's box, and pictures at their own size; homes and the Help Tool keep their canvas; a screenshot of every page as `pages-<name>.png` |
+| `layout` | Both layouts as Holo's: Holo's font with its 11px at 12px, the 758px process box, the 930px community page with Holo's 460 / 310 / 160 columns, the two-tone main tabs with hover, green and selected tabs, the sub-navigation, the inline habbo search, the Me page's hotel view at its own size and the line under its boxes' tabs from edge to edge; screenshots of `/`, `/register`, `/me` and `/community` at 1366 |
+| `sizes` | Every page of the site at 1366 wide, with two dialogs: text in Holo's font with its 11px at 12px, texts only in Tailwind's sizes, no sideways scroll, every community page Holo's 930px page centred, and pictures at their own size; homes and the Help Tool keep their canvas; a screenshot of every page as `pages-<name>.png` |
 | `register` | The registration form, with and without JavaScript |
 | `me`, `looks`, `details`, `habbos` | The Me page and the account tabs, with the club wardrobe on Looks |
 | `homes` | A home read by a guest, profile tags, the editor, and the Webstore and Inventory |

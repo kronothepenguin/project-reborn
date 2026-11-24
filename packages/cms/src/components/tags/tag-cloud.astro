@@ -11,7 +11,7 @@ const { inline = false } = Astro.props;
 [[ if .Cloud ]]
 <ul class={inline ? "inline" : undefined}>
   [[ range .Cloud ]]
-  <li class="mr-1.5 inline"><a class="text-black no-underline hover:underline" href="/tags?tag=[[ .Tag ]]" style="font-size: [[ .Size ]]%">[[ .Tag ]]</a> </li>
+  <li class="mr-1 inline"><a class="text-black no-underline hover:underline" href="/tags?tag=[[ .Tag ]]" style="font-size: [[ .Size ]]%">[[ .Tag ]]</a> </li>
   [[ end ]]
 </ul>
 [[ else ]]

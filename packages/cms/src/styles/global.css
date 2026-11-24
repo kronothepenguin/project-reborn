@@ -29,23 +29,3 @@ input[data-state="loading"] {
 #register-terms-content[data-state="error"] label {
   @apply border-2 border-rose-300;
 }
-
-/* The community page's ?pictures=smooth and ?pictures=pixelated grow its
-   pictures by 16/11, for the user to compare with the pictures at their own
-   size; the site itself shows them at their own size. */
-[data-pictures="smooth"] .picture-grow,
-[data-pictures="pixelated"] .picture-grow {
-  zoom: calc(16 / 11);
-}
-
-[data-pictures="pixelated"] .picture-grow,
-[data-pictures="pixelated"] .topstory {
-  image-rendering: pixelated;
-}
-
-/* A top story's picture is 187px tall, so grown it is 272px. */
-[data-pictures="smooth"] .topstory,
-[data-pictures="pixelated"] .topstory {
-  background-size: auto 272px;
-  min-height: 272px;
-}

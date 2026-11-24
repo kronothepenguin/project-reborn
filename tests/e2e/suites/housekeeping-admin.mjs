@@ -236,7 +236,7 @@ export default async function (t) {
   }));
   check(
     "a served table has its padding and its stripes",
-    style.padding === "6px" && style.even !== style.odd,
+    style.padding === "4px" && style.even !== style.odd,
     JSON.stringify(style),
   );
   const look = await page.evaluate(() => {

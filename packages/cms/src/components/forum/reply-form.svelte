@@ -109,19 +109,19 @@
       <table class="w-full border-collapse" aria-label="Reply">
         <tbody>
           <tr class="bg-olive-200">
-            <td class="w-49.5 pt-10 text-right align-top">Message:</td>
+            <td class="w-[148px] pt-[30px] text-right align-top">Message:</td>
             <td colspan="2">
-              <div class="m-1.5">
-                {#if error}<div class="mb-1.5 w-123.5"><Notice variant="red" role="alert">{error}</Notice></div>{/if}
-                <button type="button" class="relative z-[1] float-right cursor-pointer pt-0.5 pr-2.5 text-neutral-400 hover:underline" onclick={showPreview}
+              <div class="m-[5px]">
+                {#if error}<div class="mb-1 w-[370px]"><Notice variant="red" role="alert">{error}</Notice></div>{/if}
+                <button type="button" class="relative z-[1] float-right cursor-pointer pt-0.5 pr-2 text-neutral-400 hover:underline" onclick={showPreview}
                   >Preview &raquo;</button
                 >
-                <div class="w-191.5"><BBCodeEditor bind:value={message} {smilies} label="Message" rows={5} /></div>
+                <div class="w-[575px]"><BBCodeEditor bind:value={message} {smilies} label="Message" rows={5} /></div>
                 <br /><br />
-                <div class="flex gap-1.5">
-                  <Button variant="red" onclick={cancel}><span class="flex items-center gap-1.5"><Icon variant="cancel" />Cancel</span></Button>
+                <div class="flex gap-1">
+                  <Button variant="red" onclick={cancel}><span class="flex items-center gap-1"><Icon variant="cancel" />Cancel</span></Button>
                   <Button variant="green" disabled={saving} onclick={save}
-                    ><span class="flex items-center gap-1.5"><Icon variant="save" />Save</span></Button
+                    ><span class="flex items-center gap-1"><Icon variant="save" />Save</span></Button
                   >
                 </div>
               </div>

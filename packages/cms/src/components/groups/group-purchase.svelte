@@ -104,19 +104,19 @@
   }
 </script>
 
-<Dialog bind:open label="Create a group" class="m-auto w-94.5 bg-transparent backdrop:bg-black/40" onclose={close}>
+<Dialog bind:open label="Create a group" class="m-auto w-[284px] bg-transparent backdrop:bg-black/40" onclose={close}>
   <Card color="orange">
     {#snippet header()}
       <span class="relative block">
         Create a group
-        <button type="button" class="absolute top-0 right-0 cursor-pointer px-1.5" aria-label="Close" onclick={close}
+        <button type="button" class="absolute top-0 right-0 cursor-pointer px-1" aria-label="Close" onclick={close}
           >X</button
         >
       </span>
     {/snippet}
-    <div class="text-base">
+    <div class="text-xs">
       {#if view.name === "wait"}
-        <div class="py-2.5 text-center"><Spinner /></div>
+        <div class="py-2 text-center"><Spinner /></div>
       {:else if view.name === "form"}
         <form
           onsubmit={(event) => {
@@ -124,37 +124,37 @@
             confirm();
           }}
         >
-          <p class="mb-2.5 flow-root">
-            <GroupBadge code={newBadge} class="float-left mr-1.5" />Fill in the form below to create your own group.
+          <p class="mb-2 flow-root">
+            <GroupBadge code={newBadge} class="float-left mr-1" />Fill in the form below to create your own group.
             Creating a group will cost you <b>{limits.price}</b> credits.
           </p>
-          <p class="mb-2.5">
+          <p class="mb-2">
             <label for="{uid}-name"><b>Group Name</b></label><br />
             <input
               id="{uid}-name"
-              class="border border-neutral-600 bg-white px-1.5 text-black"
+              class="border border-neutral-600 bg-white px-1 text-black"
               maxlength={limits.nameMax}
               bind:value={name}
             />
           </p>
-          <p class="mb-2.5">
+          <p class="mb-2">
             <label for="{uid}-description"><b>Group Description</b></label><br />
             <textarea
               id="{uid}-description"
-              class="h-50 w-[98%] border border-neutral-600 bg-white px-1.5 text-black"
+              class="h-[150px] w-[98%] border border-neutral-600 bg-white px-1 text-black"
               maxlength={limits.descriptionMax}
               bind:value={description}
             ></textarea>
           </p>
-          <p class="mb-2.5">You can modify these settings at any time after creating the group.</p>
-          <p class="flex gap-1.5">
+          <p class="mb-2">You can modify these settings at any time after creating the group.</p>
+          <p class="flex gap-1">
             <Button type="submit">Purchase</Button>
             <Button onclick={close}>Cancel</Button>
           </p>
         </form>
       {:else if view.name === "failed"}
-        <p class="mb-2.5">Purchasing the group failed. Please try again later.</p>
-        <div class="mb-2.5">
+        <p class="mb-2">Purchasing the group failed. Please try again later.</p>
+        <div class="mb-2">
           <p>
             {#if view.why === "disabled"}
               Purchasing groups has been disabled by the Hotel Management. Please try again later.
@@ -167,18 +167,18 @@
         </div>
         <p><Button onclick={close}>Done</Button></p>
       {:else if view.name === "back"}
-        <p class="mb-2.5">{view.message}</p>
+        <p class="mb-2">{view.message}</p>
         <p><Button onclick={back}>Back</Button></p>
       {:else if view.name === "bought"}
-        <p class="mb-2.5 flow-root">
-          <b>Group Purchased</b><br /><br /><GroupBadge code={newBadge} class="float-left mr-1.5" />Congratulations! You are
+        <p class="mb-2 flow-root">
+          <b>Group Purchased</b><br /><br /><GroupBadge code={newBadge} class="float-left mr-1" />Congratulations! You are
           now the proud owner of <b>{view.group}</b>.<br /><br />Click
           <a class="underline" href={`/groups/${view.id}`}>here</a> to go to your group home right away, or use the button
           below to close this window.
         </p>
         <p><Button onclick={close}>Done</Button></p>
       {:else}
-        <p class="mb-2.5">An unknown error occurred. Please try again in a couple of minutes.</p>
+        <p class="mb-2">An unknown error occurred. Please try again in a couple of minutes.</p>
         <p><Button onclick={close}>OK</Button></p>
       {/if}
     </div>

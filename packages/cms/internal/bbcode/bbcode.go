@@ -128,12 +128,12 @@ var tags = []tag{
 	{"[i]", "[/i]", "em", fixed("<em>", "</em>")},
 	{"[u]", "[/u]", "u", fixed("<u>", "</u>")},
 	{"[s]", "[/s]", "s", fixed("<s>", "</s>")},
-	{"[quote]", "[/quote]", "div", fixed("<div class='bg-stone-300 border border-black m-1 mb-3.5 p-1.5'>", "</div>")},
+	{"[quote]", "[/quote]", "div", fixed("<div class='bg-stone-300 border border-black m-[3px] mb-2.5 p-[5px]'>", "</div>")},
 	{"[link=", "[/link]", "a", link},
 	{"[url=", "[/url]", "a", link},
 	{"[color=", "[/color]", "font", colour},
-	{"[size=small]", "[/size]", "font", fixed("<span class='text-sm'>", "</span>")},
-	{"[size=large]", "[/size]", "font", fixed("<span class='text-2xl'>", "</span>")},
+	{"[size=small]", "[/size]", "font", fixed("<span class='text-[10px]'>", "</span>")},
+	{"[size=large]", "[/size]", "font", fixed("<span class='text-base'>", "</span>")},
 	{"[code]", "[/code]", "pre", fixed("<pre>", "</pre>")},
 }
 

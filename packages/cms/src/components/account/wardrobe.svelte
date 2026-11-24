@@ -92,15 +92,15 @@
   id="settings-wardrobe"
   role="group"
   aria-label="Wardrobe"
-  class="relative mt-15.5 w-[67px]"
+  class="relative mt-[46px] w-[67px]"
   onmouseenter={() => (tip = true)}
   onmouseleave={() => (tip = false)}
   onfocusin={() => (tip = true)}
   onfocusout={() => (tip = false)}
 >
   {#if tip}
-    <!-- Holo's bubble stood 585 pixels from the content's left, which is 95 left of the slots, and ended 6 above them; it stays beside the slots as the columns grow. -->
-    <div id="wardrobe-instructions" role="tooltip" class="pointer-events-none absolute bottom-[calc(100%+17px)] left-[-87px] z-10">
+    <!-- Holo's bubble stood 585 pixels from the content's left, which is 95 left of the slots, and ended 6 above them. -->
+    <div id="wardrobe-instructions" role="tooltip" class="pointer-events-none absolute bottom-[calc(100%+17px)] left-[-95px] z-10">
       <Bubble>
         Press red arrows to save up to {slots.length} outfits to your wardrobe. Press green arrow to select an outfit and
         save changes to take it into use.
@@ -127,7 +127,7 @@
             <button
               id="wardrobe-dress-{i + 1}"
               type="button"
-              class="{arrow} mt-1"
+              class="{arrow} mt-[3px]"
               style:background-image="url({greenArrow.src})"
               aria-label="Select outfit {i + 1}"
               onclick={() => dress(i + 1)}
@@ -142,13 +142,13 @@
 <Dialog
   open={replacing !== null}
   label="Replace?"
-  class="m-auto w-132.5 bg-transparent backdrop:bg-black/40"
+  class="m-auto w-[398px] bg-transparent backdrop:bg-black/40"
   onclose={() => (replacing = null)}
 >
   <Card color="orange" header={title}>
-    <div class="text-base">
-      <p class="mb-2.5">Are you sure you want to replace the stored outfit with the new one?</p>
-      <p class="flex gap-1.5">
+    <div class="text-xs">
+      <p class="mb-2">Are you sure you want to replace the stored outfit with the new one?</p>
+      <p class="flex gap-1">
         <Button id="wardrobe-replace-cancel" onclick={() => (replacing = null)}>Cancel</Button>
         <Button id="wardrobe-replace-ok" onclick={replace}>OK</Button>
       </p>

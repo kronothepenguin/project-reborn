@@ -291,8 +291,8 @@ async function wardrobe({ base, page, check, shot, sql, eventually }) {
     await tip.innerText(),
   );
   check(
-    "the instructions stand 87 pixels left of the slots, 17 above them",
-    Math.round(slots.x - tipBox.x) === 87 &&
+    "the instructions stand 95 pixels left of the slots, 17 above them, as Holo's",
+    Math.round(slots.x - tipBox.x) === 95 &&
       Math.round(slots.y - tipBox.y - tipBox.height) === 17,
     `${slots.x - tipBox.x} ${slots.y - tipBox.y - tipBox.height}`,
   );

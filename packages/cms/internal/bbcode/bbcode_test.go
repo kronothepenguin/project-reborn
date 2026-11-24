@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-const quote = "<div class='bg-stone-300 border border-black m-1 mb-3.5 p-1.5'>"
+const quote = "<div class='bg-stone-300 border border-black m-[3px] mb-2.5 p-[5px]'>"
 
 func smiley(image string) string {
 	return " <img class='inline align-baseline' src='/smilies/" + image + ".gif' alt='Smiley' title='Smiley' border='0'> "
@@ -51,8 +51,8 @@ func TestFormatTags(t *testing.T) {
 		{name: "cyan", text: "[color=cyan]x[/color]", want: "<span class='text-teal-400'>x</span>"},
 		{name: "blue", text: "[color=blue]x[/color]", want: "<span class='text-sky-600'>x</span>"},
 		{name: "gray", text: "[color=gray]x[/color]", want: "<span class='text-olive-500'>x</span>"},
-		{name: "small", text: "[size=small]x[/size]", want: "<span class='text-sm'>x</span>"},
-		{name: "large", text: "[size=large]x[/size]", want: "<span class='text-2xl'>x</span>"},
+		{name: "small", text: "[size=small]x[/size]", want: "<span class='text-[10px]'>x</span>"},
+		{name: "large", text: "[size=large]x[/size]", want: "<span class='text-base'>x</span>"},
 		{name: "code", text: "[code]x[/code]", want: "<pre>x</pre>"},
 		{name: "text around a tag", text: "a [b]b[/b] c", want: "a <strong>b</strong> c"},
 		{name: "every match in the pass", text: "[b]1[/b] [b]2[/b]", want: "<strong>1</strong> <strong>2</strong>"},
@@ -71,7 +71,7 @@ func TestFormatIgnoresCase(t *testing.T) {
 		{name: "url", text: "[URL=http://example.com/]x[/Url]", want: "<a href='http://example.com/'>x</a>"},
 		{name: "scheme", text: "[url=HTTPS://EXAMPLE.COM]x[/url]", want: "<a href='HTTPS://EXAMPLE.COM'>x</a>"},
 		{name: "colour name", text: "[Color=RED]x[/COLOR]", want: "<span class='text-red-600'>x</span>"},
-		{name: "size word", text: "[SIZE=SMALL]x[/size]", want: "<span class='text-sm'>x</span>"},
+		{name: "size word", text: "[SIZE=SMALL]x[/size]", want: "<span class='text-[10px]'>x</span>"},
 		{name: "code", text: "[CODE]x[/Code]", want: "<pre>x</pre>"},
 		{name: "only ASCII letters fold, as in PCRE", text: "[ſ]x[/ſ]", want: "[ſ]x[/ſ]"},
 		{name: "kelvin sign is not k", text: "[linK=http://a.example/]x[/linK]", want: "[linK=http://a.example/]x[/linK]"},
@@ -210,8 +210,8 @@ func TestFormatFollowsHolosPasses(t *testing.T) {
 		{name: "italic in bold", text: "[b][i]x[/i][/b]", want: "<strong><em>x</em></strong>"},
 		{name: "tags in a colour", text: "[color=red][b]x[/b][/color]", want: "<span class='text-red-600'><strong>x</strong></span>"},
 		{name: "tags and smilies in code", text: "[code][b]x[/b] :)[/code]", smilies: true, want: "<pre><strong>x</strong> " + smiley("smile") + "</pre>"},
-		{name: "small in large", text: "[size=large]a[size=small]b[/size]c[/size]", want: "<span class='text-2xl'>a<span class='text-sm'>b</span>c</span>"},
-		{name: "large in small", text: "[size=small]a[size=large]b[/size]c[/size]", want: "<span class='text-sm'>a<span class='text-2xl'>b</span>c</span>"},
+		{name: "small in large", text: "[size=large]a[size=small]b[/size]c[/size]", want: "<span class='text-base'>a<span class='text-[10px]'>b</span>c</span>"},
+		{name: "large in small", text: "[size=small]a[size=large]b[/size]c[/size]", want: "<span class='text-[10px]'>a<span class='text-base'>b</span>c</span>"},
 		{name: "crossed bold and italic", text: "[b]a[i]b[/b]c[/i]", want: "<strong>a<em>b</em></strong><em>c</em>"},
 		{name: "crossed italic and bold", text: "[i]a[b]b[/i]c[/b]", want: "<em>a<strong>b</strong></em><strong>c</strong>"},
 		{name: "bold across a quote", text: "[b]a[quote]b[/b]c[/quote]d", want: "<strong>a</strong>" + quote + "<strong>b</strong>c</div>d"},

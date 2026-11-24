@@ -18,7 +18,7 @@
 
   const sizeClasses: Record<Size, string> = {
     default: "p-0.5",
-    lg: "p-1.5",
+    lg: "p-1",
   };
 
   let {

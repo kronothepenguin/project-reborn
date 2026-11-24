@@ -53,10 +53,10 @@ describe("Button faces", () => {
     expect(getComputedStyle(button, "::before").content).toBe("none");
   });
 
-  it("writes its label bold at the body size, as Holo's 11px buttons", () => {
+  it("writes its label bold at 12px, Tailwind's closest size to Holo's 11px buttons", () => {
     render(Button, { props: { children: label } });
     const button = getComputedStyle(page.getByRole("button", { name: "Sign in" }).element());
-    expect(button.fontSize).toBe("16px");
+    expect(button.fontSize).toBe("12px");
     expect(button.fontWeight).toBe("700");
   });
 });

@@ -1,7 +1,7 @@
 ---
 type: Spec
 title: "Look and feel: Holo's look at today's sizes"
-description: The site has Holo's two layouts and housekeeping a look of its own; the site matches HoloCMS where it drifted and moves to a 16px base with a wider layout that keeps Holo's look and feel.
+description: The site has Holo's two layouts and housekeeping a look of its own; the site clones HoloCMS's styling at Holo's sizes, in Tailwind's closest common classes.
 status: active
 projects: [packages/cms, packages/components, packages/housekeeping, packages/installer]
 ---
@@ -113,12 +113,13 @@ height and close as possible aligned to right as a group".
 
 ## Sizes
 
-- A visitor opens a page of the site, the installer or housekeeping: its body text is 16px, in Holo's font.
-- A page shows a text Holo drew smaller than its body text: it shows in a smaller size; a text Holo drew bigger shows
-  in a bigger size.
-- A visitor opens a page of the site on a screen 1366px wide: the page is 1240px wide and centred, and nothing scrolls
-  sideways.
+- A visitor opens a page of the site: its text is in Holo's font, Holo's 11px at 12px, Tailwind's closest common size.
+- A page shows a text Holo drew in another size: it shows in Tailwind's common size closest to Holo's.
+- A visitor opens a community page on a screen 1366px wide: it is Holo's 930px page, centred, with Holo's columns, and
+  nothing scrolls sideways.
+- A visitor opens a signed-out page: it is Holo's 758px box, 12px from the top, centred as Holo's.
 - A page shows a picture, such as an avatar, a badge or an icon: it shows at its own size, sharp.
+- The Me page shows its Groups and Tags boxes: the line under their tabs runs from one edge of the box to the other.
 
 ## Next
 

@@ -52,13 +52,13 @@
 <svelte:window onclick={() => (open = false)} />
 
 {#if signedIn === "true"}
-  <div class="relative text-base">
+  <div class="relative text-xs">
     <ul class="flow-root">
-      <li class="float-left h-8" bind:clientWidth={tabWidth}>
+      <li class="float-left h-[25px]" bind:clientWidth={tabWidth}>
         <button
           type="button"
           class={[
-            "float-left cursor-pointer px-3.5 py-1 leading-6 font-bold outline-none hover:underline",
+            "float-left cursor-pointer px-2.5 py-2 font-bold outline-none hover:underline",
             open ? "bg-[url(/web-gallery/v2/images/quickmenu.png)] bg-position-[0_0] bg-no-repeat text-black" : "text-olive-500",
           ]}
           aria-expanded={open}
@@ -73,7 +73,7 @@
         </button>
         <span
           class={[
-            "float-left h-8 w-[5px]",
+            "float-left h-[25px] w-[5px]",
             open && "bg-[url(/web-gallery/v2/images/quickmenu.png)] bg-position-[100%_0] bg-no-repeat",
           ]}
         ></span>
@@ -81,7 +81,7 @@
     </ul>
     {#if open}
       <!-- Above any home item, whose layer goes up to 1000000; Holo's 99 let items cover the menu. -->
-      <div class="absolute top-8 left-0 z-[1000001] w-[220px]" role="region" aria-label="My Groups">
+      <div class="absolute top-[25px] left-0 z-[1000001] w-[220px]" role="region" aria-label="My Groups">
         <div class="h-1 bg-[url(/web-gallery/v2/images/quickmenu_top.png)] bg-no-repeat text-[1px]">
           <div class="ml-px h-px bg-white" style={`width: ${tabWidth - 2}px`}></div>
         </div>
@@ -92,7 +92,7 @@
             {:else}
               <ul>
                 {#each groups as group, i (group.id)}
-                  <li class={["flow-root px-3.5 pt-1 pb-[3px]", i % 2 === 0 && "bg-taupe-100"]}>
+                  <li class={["flow-root px-3.5 pt-1 pb-1", i % 2 === 0 && "bg-taupe-100"]}>
                     {#if group.favourite}<div class={[icon, "bg-position-[100%_-433px]"]} title="Favourite"></div>{/if}
                     {#if group.admin}<div class={[icon, "bg-position-[100%_-528px]"]} title="Admin"></div>{/if}
                     {#if group.owner}<div class={[icon, "bg-position-[100%_-480px]"]} title="Owner"></div>{/if}
@@ -101,13 +101,13 @@
                     >
                   </li>
                 {:else}
-                  <li class="flow-root px-3.5 pt-1 pb-[3px]">You don't have any groups yet</li>
+                  <li class="flow-root px-3.5 pt-1 pb-1">You don't have any groups yet</li>
                 {/each}
               </ul>
-              <p class="m-0 border-t border-dashed border-neutral-500 px-3.5 pt-1 pb-[3px]">
+              <p class="m-0 border-t border-dashed border-neutral-500 px-3.5 pt-1 pb-1">
                 <button
                   type="button"
-                  class="cursor-pointer bg-[url(/web-gallery/v2/images/myhabbo_icons.png)] bg-position-[100%_-236px] bg-no-repeat pr-[21px] pb-0.5 underline"
+                  class="cursor-pointer bg-[url(/web-gallery/v2/images/myhabbo_icons.png)] bg-position-[100%_-236px] bg-no-repeat pr-5 pb-0.5 underline"
                   onclick={() => (buying = true)}>Create a group</button
                 >
               </p>

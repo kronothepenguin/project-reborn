@@ -1,90 +1,66 @@
 ---
 type: Reference
 title: Layouts
-description: The site's two layouts and its pages at today's sizes, Holo's font on a 16px base, the community layout in flexbox for phones, tablets and wide screens, and where each of Holo's numbers went.
+description: The site's two layouts and its pages as Holo's, at Holo's sizes in Tailwind's closest common classes, and where each of Holo's numbers went.
 ---
 
 # The sizes
 
 - `src/styles/global.css` sets Holo's font, `Verdana, Arial, Helvetica, sans-serif`, as the theme's `--font-sans`. Every
   page, island and shared part of the site takes it.
-- The body text is Tailwind's 16px `text-base`, Holo's 11px.
-- A width is Holo's times 1240/960, a padding, gap or height Holo's times 4/3, each on Tailwind's scale. Borders,
-  corner radii and pictures keep Holo's sizes.
+- Both layouts set `text-xs` at their root: Holo's 11px text is Tailwind's 12px.
+- A size is Tailwind's common class closest to Holo's pixels:
+
+| Holo | Here |
+| --- | --- |
+| 9px, 10px, 11px, 12px text | `text-xs` |
+| 14px text | `text-sm` |
+| 16px text | `text-base` |
+| 18px text | `text-lg` |
+| 3px to 5px of padding, margin or gap | `1` (4px) or `1.5` (6px) |
+| 7px, 8px | `2` (8px) |
+| 10px | `2.5` |
+| 14px, 15px, 16px | `3.5`, `4` |
+
+- Widths that set the page's grid keep Holo's pixels, as arbitrary values: the 930px page, its columns, the header's
+  parts and the fields Holo sized. So do borders, corner radii and pictures: a picture keeps its own size and fills
+  its box as Holo's.
+- Line heights are Tailwind's for the class, but where Holo set one: the title bars' 17px, the sub-navigation's 18px.
 
 # Community layout
 
-`src/layouts/community.astro`, Holo's `templates/community`, in flexbox, written new. Holo's CSS is the measure of
-proportions alone: text is Holo's times 16/11, a box, a column and a gap keep Holo's proportion around that text, and
-Holo's pictures keep their own size.
+`src/layouts/community.astro`, Holo's `templates/community/header.php` and `style.css`.
 
 ## The page
 
-- The page is Holo's 930px at 16/11: at most 1352px (`max-w-338`), centred, and as wide as the screen below that,
-  with `px-3.5` at its sides, `px-2` on a phone.
-- The header, the sub-navigation and the footer share the page. On a wide screen (`lg`, 1024px) the header's left
-  part, the sub-navigation and the footer end at 82% of it, where Holo's 762 of 930 ended, the second column's right
-  edge; the users-online box stands over the third column, 2% after, 14% wide.
-- A page passes `fluid` to the layout once it is reviewed beside Holo's: the Me and community pages. The others keep
-  `w-310`, the 1240px page, inside the new header, until the user has judged the two.
+- The page is Holo's 930px, centred, with 10px at each side (`px-2.5`) and `min-w-[950px]`.
+- `main` starts 4px under the sub-navigation (`pt-1`), Holo's `#content` 5px.
+- A page lays out its own columns, Holo's: 460 / 310 / 160 on the Me, community and staff pages, 210 / 560 / 160 on
+  news and tags. A box's margin, Holo's `0 8px 7px 0`, is `mr-2 mb-2`; a box of the last column has no right margin.
 
 ## The header
 
-| Part | Holo | Here |
-| --- | --- | --- |
-| Header | 104px: 16 above the logo, 42 of logo, 18 below, the 28px tabs | the logo's row `lg:h-27.5` (110px), the tabs 40px |
-| Logo | 111x42 of `habbo.png` in a 190px strip | the same picture, in 25% of the left part |
-| Top bar | left 190, 572 wide, 28 tall, white | the rest of the left part, `h-10 rounded-bl bg-white` |
-| Help, Sign Out | 10px | `text-sm` |
-| Habbo search | the field 171x27 | `h-9 w-62` (248px), its button as tall |
-| Mini login | 300px, 420px while pointed at; fields 120px | `w-109`, `lg:hover:w-152`; fields `w-44` |
-| Users online | 110px and 10px padding, 10px text, top 15 | 14% of the page, `p-3.5`, `text-sm`, `mt-5.5` |
-
-- The middle part may run down beside the tabs, as Holo's mini login did: the logo's row is 110px tall on a wide
-  screen, and the tabs follow it.
-- A tablet (`md`, 768px) keeps one header row: the logo, the middle part as wide as is left, the users online.
-- A phone shows the logo with the users online at its right, then the middle part as wide as the screen: the top
-  bar, the hotel's status and the search, or the mini login without its labels. The tabs share the width, each by
-  its text, and truncate.
-
-## The columns
-
-`src/components/site/columns.astro` holds Holo's three columns of the Me and community pages, 460, 310 and 160 with
-8px after each box: the boxes of each column grow in Holo's 452 / 302 / 160, 12px apart (`gap-3`), and the boxes of
-a column stand 10px apart (`gap-2.5`). Its default slot is the first column, `second` and `third` the others.
-
-| Screen | Columns |
-| --- | --- |
-| Wide, `lg` and up | three, 452 / 302 / 160 |
-| Tablet, `md` | two, 452 / 302, the third column under the second |
-| Phone | one, each box as wide as the page |
-
-## Pictures in the boxes
-
-- The Me page's hotel view keeps its 450x143. Where the column is 640px or wider (a container query), the links,
-  Change looks, the credits and the club, stand beside it in the box's olive, so the box wraps the picture; on a
-  narrower column they run under the motto as Holo's. On a phone the view shows as much of itself as fits. The motto
-  row is tall enough for the habbo's plate, which hangs 43px under the view.
-- Random Habbos: the stripes fill the box 6px inside its frame, as Holo's 4px, and Holo's 435x230 grid of habbos
-  stands at its own size in their middle; a phone cuts off its sides.
-- A top story's picture, 187px tall, stands at the left of its box as Holo's, on Holo's olive; the stories share one
-  cell of a grid, so the box is as tall as the longest story.
-- `?pictures=smooth` and `?pictures=pixelated` on the community page grow its pictures by 16/11 (`zoom`, and
-  `background-size` for the top story), for the user to compare; `styles/global.css` holds the rules, and
-  `picture-grow` marks the pictures. The site shows its pictures at their own size.
-
-## Other parts
+The header is 104px: a 102px box (`h-[102px]`) over a 2px black line (`border-b-2`), its parts placed where Holo's
+stood.
 
 | Part | Holo | Here |
 | --- | --- | --- |
-| Sub-navigation | 12px on 18px, padding `6px 0 0 20px` | `md:text-lg md:leading-7`, `pt-2 md:pl-7`; a phone `text-base`, items wrapping |
-| Footer | 9px #777, links black, under the first two columns | `text-xs text-neutral-500`, `lg:w-[82%]`, centred |
+| Logo | 111x42 of `habbo.png`, 16px from the top | `top-4`, `h-[42px] w-[111px] overflow-hidden` |
+| Top bar | left 190, 572 wide, 28 tall, white | `left-[190px] w-[572px]`, `h-7 rounded-b bg-white` |
+| Help, Sign Out | 10px | `text-xs` |
+| Habbo search | the field 171x27, at the bar's right edge | `w-[171px] p-1`, its button as tall, 4px apart |
+| Mini login | right 0, top 7, 300px, 420px while pointed at; fields 128px | `top-[7px] right-0 min-w-[300px]`, `hover:min-w-[420px]`; fields `w-32` |
+| Users online | left 781, top 15, 110 wide, 10px text, 18px and 22px around it | `left-[781px] top-[15px] w-[110px]`, `px-5.5 py-4.5`, `rounded-lg` |
+
+- The mini login's help line stays on one line in `text-xs`, so the box grows to its width, past Holo's 300px.
+- The mini login is `olive-400`, its help line `olive-500`, the closest of Holo's two greys.
 
 ## The main tabs
 
 `header/main-tabs.astro` draws Holo's `tabs.png` in CSS, as `Button` draws its raised face: the tab's background is
-the lower half, `::before` the upper half, inside a 2px outline with 4px top corners. A tab is 40px tall, Holo's 28,
-with `pt-2 md:pr-6 md:pl-8`, 18px text (`md:text-lg`) and a 6px gap; on a phone `px-2` and `text-base`.
+the lower half, `::before` the upper 12px, inside a 2px outline with 4px top corners. A tab is Holo's 28px (`h-7`),
+with `text-xs`, Holo's 12px, 22px of padding at each side (`px-5` inside the outline) and 6px above (`pt-1`), the tabs
+6px apart (`gap-1.5`), Holo's 5px.
 
 | Tab | Outline | Upper half | Lower half |
 | --- | --- | --- | --- |
@@ -94,50 +70,48 @@ with `pt-2 md:pr-6 md:pl-8`, 18px text (`md:text-lg`) and a 6px gap; on a phone 
 | Green hover | `lime-800` | `lime-400` | `lime-500` |
 | Selected | `black` | white | white |
 
-- The tabs stand 2px over the header's black line. An unselected tab's bottom border is black and lies on the line;
-  the selected tab has none, so its white covers the line and opens into the sub-navigation.
+- The tabs stand on the header's black line (`-bottom-0.5`). An unselected tab's bottom border is black and lies on
+  the line; the selected tab has none, so its white covers the line and opens into the sub-navigation.
 - Housekeeping and "Register now!" are green; Housekeeping alone is bold, in `<b>`, as Holo's.
 
-## The habbo search
+## The sub-navigation
 
-`header/habbo-search.astro`: the field, then the search button, on one line, both 36px tall, 4px apart, flush with the
-top bar's right edge. The field is 248px, Holo's 171.
+Holo's `#navi2`: a 761px white bar, 1px from the page's left, with 1px `black/20` sides and a 3px `black/20` bottom with
+rounded corners (`navi2-borders.png` and `navi2-bottom.png`): `ml-px w-[761px] rounded-b-md border-x border-b-[3px]`.
+Its items are `text-xs` on `leading-4.5`, Holo's 12px on 18px, 6px from the top and 20px from the left (`pt-1.5 pl-5`),
+with 6px of white under them (`pb-1.5`), so the bar is Holo's 33px. Items are separated by a thin line 1.3em away on
+each side; the selected one is bold and black, a link underlined while pointed at.
+
+## The footer
+
+Holo's: `pr-[170px] pl-1 pb-3`, two lines in `text-xs text-neutral-500`, Holo's 9px #777, links black.
 
 # Signed-out layout
 
 `src/layouts/signed-out.astro`, Holo's `templates/login` and `process.css`.
 
-- The page is Holo's 766px box, `w-247` (988px), centred, 16px from the top, on `bg-sky-200`, with `px-7` inside.
-- The counts stand on one line under the whole `habbo.png`, each right-aligned in Holo's landing widths, 395 and 310:
-  `w-127.5` and `w-100`.
-- The footer is Holo's: one line of links separated by ` | `, `text-xs text-neutral-500`, links black.
+- The page is Holo's 758px box (`w-[758px]` inside a centred 766px container), 12px from the top (`mt-3`), with 20px
+  inside at each side (`px-5`), Holo's 21.
+- The header is Holo's 70px: the whole `habbo.png` 16px from the top, then the counts on one line 56px from the top,
+  each right-aligned in Holo's widths, 395 and 310.
+- The footer is Holo's: one line of links separated by ` | `, `text-xs text-neutral-500`, links black, 16px above it
+  and 12px under it.
 
 # Pages
 
-Every page inside the layouts follows the same rules.
-
-- A text takes the plan's table by Holo's own size: 11px `text-base`, 10px `text-sm`, 8px and 9px `text-xs`, 12px
-  `text-lg`, 14px `text-xl`, 16px `text-2xl`, 18px `text-3xl`. A Tailwind size class written for the old design meant
-  its own pixels: an old `text-xs` was Holo's 12px and is now `text-lg`.
-- Inside the community layout, a page not yet reviewed beside Holo's keeps the 1240px page, so every width, padding
-  and gap there is Holo's times 4/3, on a 2px grid. The columns span the page:
-
-| Page | Holo | Here |
-| --- | --- | --- |
-| Staff | 460 / 310 / 160 | `w-153.5` / `w-103.5` / `w-53` |
-| Credits, club, the pages not found | 460 / 310 | `w-153.5` / `w-103.5` |
-| News, an article, tags | 210 / 560 / 160 | `w-70` / `w-187` / `w-53` |
-| Account settings | 210 / 560, boxes 8px apart | `w-67.5` / `w-184.5`, `gap-2.5` |
-| Discussion board | 750 / 4 / 164 | `w-250` / `w-1.5` / `w-54.5` |
-
-- A box's margin, Holo's `0 8px 7px 0`, is `mr-2.5 mb-2.5`.
-- On a signed-out page, Holo's 766px box is 988px, so widths there are Holo's times 1240/960: the landing's columns,
-  404 and 310, are `w-130.5` and `w-100`; register's, 435 and 269, are `w-140.5` and `w-87`.
-- A picture, a sprite and the box drawn around one keep Holo's pixels: the wardrobe's slots and arrows, the badge
-  editor, icon cells. Where the box grew around a picture, the picture stays at its left and the box's colour fills
-  the rest. The Me and community pages wrap theirs (the columns, above).
-- A heading beside the tabs inside a box is Holo's 14px, `text-xl`.
+- The front page: Holo's columns of 404 and 310px, 18px under the header (`pt-4.5`); the sign-in box with Holo's rows
+  (labels 75px, fields 99px, the rows under them from 80px); the party picture 8px under it; the tag cloud under both
+  columns, `px-4 py-2`.
+- The community page: Random Habbos in the first column, its stripes filling the box under the title as Holo's list
+  container, Holo's 435x230 grid at its left at its own size; the news and the tag cloud in the second; the banners in
+  the third.
+- The Me page: the personal info, 450px, with the hotel view filling its top at its own size, 450x143; the Groups and
+  Tags boxes are `Paper`s with the tabs at the top, 4px under the frame, so the line under their tabs runs the box's
+  full width; the news; the banners.
+- A top story is Holo's 300x187 box with its picture at its own size at the left, on Holo's olive.
+- The other pages keep Holo's pixels from before the 16px design, their texts at `text-xs`, until each is reviewed
+  beside Holo's.
 - Home pages keep their canvas: the playground, its widgets, notes and stickers, and their dialogs keep Holo's pixels.
   The Help Tool's window and the client's top bar keep theirs too.
-- BBCode's `[size=small]` is `text-sm` and `[size=large]` `text-2xl`, Holo's `<font size>` 1 and 3; the quote box is
-  `m-1 mb-3.5 p-1.5`. `src/bbcode.ts` of the components and `internal/bbcode` change together.
+- BBCode's `[size=small]` is `text-[10px]` and `[size=large]` `text-base`, Holo's `<font size>` 1 and 3; the quote
+  box is `m-[3px] mb-2.5 p-[5px]`. `src/bbcode.ts` of the components and `internal/bbcode` change together.

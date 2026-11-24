@@ -61,13 +61,13 @@
   }: Props = $props();
 </script>
 
-<!-- Holo's box: the title bar inset from the frame, bold 14px on a 17px line,
-     and the content inset 8px 15px; each scaled to the 16px design. -->
+<!-- Holo's box: the title bar inset 4px from the frame, bold 14px on a 17px
+     line with 4px above and below, and the content inset 8px 15px. -->
 <Paper {variant} {...rest}>
   {#if header}
-    <div class="px-1.5 pt-1.5">
+    <div class="px-1 pt-1">
       <header
-        class="rounded px-3.5 py-1.5 text-center text-xl leading-6 font-bold {colorClasses[
+        class="rounded px-2.5 py-1 text-center text-sm leading-[17px] font-bold {colorClasses[
           color
         ] ?? colorClasses.white}"
       >
@@ -75,5 +75,5 @@
       </header>
     </div>
   {/if}
-  <div class="px-5 py-2.5">{@render children()}</div>
+  <div class="px-4 py-2">{@render children()}</div>
 </Paper>

@@ -89,7 +89,7 @@
 </script>
 
 {#if answer}
-  <div class="pt-8.5 pb-13 text-center">
+  <div class="pt-[26px] pb-[39px] text-center">
     <b>{answer.message}</b><br /><a class="text-orange-500 underline" href={answer.location}>Proceed</a>
   </div>
 {/if}
@@ -97,27 +97,27 @@
 {#snippet settingsHeader()}
   <span class="relative block">
     Moderation Tools
-    <button type="button" class="absolute top-0 right-0 cursor-pointer px-1.5" aria-label="Close" onclick={() => (settings = false)}
+    <button type="button" class="absolute top-0 right-0 cursor-pointer px-1" aria-label="Close" onclick={() => (settings = false)}
       >X</button
     >
   </span>
 {/snippet}
 
-<Dialog open={settings} label="Moderation Tools" class="m-auto w-132.5 bg-transparent backdrop:bg-black/40" onclose={() => (settings = false)}>
+<Dialog open={settings} label="Moderation Tools" class="m-auto w-[398px] bg-transparent backdrop:bg-black/40" onclose={() => (settings = false)}>
   <Card color="orange" header={settingsHeader}>
-    <div class="text-base">
+    <div class="text-xs">
       {#if loading}
-        <div class="py-2.5 text-center"><Spinner /></div>
+        <div class="py-2 text-center"><Spinner /></div>
       {:else if unreadable}
-        <p class="mb-2.5">{unknown}</p>
+        <p class="mb-2">{unknown}</p>
         <p><Button onclick={() => (settings = false)}>OK</Button></p>
       {:else}
         <div id="topic-settings-form">
-          <div class="my-1.5"><label for="topic_name">Topic: (max 30 characters)</label></div>
-          <div class="my-1.5">
-            <input id="topic_name" type="text" size="40" maxlength="30" class="border border-neutral-500 bg-white px-1.5" bind:value={title} />
+          <div class="my-[5px]"><label for="topic_name">Topic: (max 30 characters)</label></div>
+          <div class="my-[5px]">
+            <input id="topic_name" type="text" size="40" maxlength="30" class="border border-neutral-500 bg-white px-1" bind:value={title} />
           </div>
-          {#if error}<div class="mb-1.5"><Notice variant="red" role="alert">{error}</Notice></div>{/if}
+          {#if error}<div class="mb-[5px]"><Notice variant="red" role="alert">{error}</Notice></div>{/if}
           <div class="flow-root">
             <div class="float-left">Type:</div>
             <div class="float-left">
@@ -129,7 +129,7 @@
               <label><input type="radio" name="topic_sticky" id="topic_sticky" value={true} bind:group={sticky} /> Sticky topic</label>
             </div>
           </div>
-          <div class="my-1.5 flex gap-1.5 pt-8.5">
+          <div class="my-[5px] flex gap-1 pt-[26px]">
             <Button onclick={() => (settings = false)}>Cancel</Button>
             <Button onclick={askToDelete}>Delete</Button>
             <Button onclick={save}>Save</Button>
@@ -145,21 +145,21 @@
 <Dialog
   open={confirming}
   label="Moderation Tools"
-  class="m-auto w-132.5 bg-transparent backdrop:bg-black/40"
+  class="m-auto w-[398px] bg-transparent backdrop:bg-black/40"
   onclose={() => {
     if (!deleting) confirming = false;
   }}
 >
   <Card color="orange" header={confirmHeader}>
-    <div class="text-base">
+    <div class="text-xs">
       {#if deleting}
-        <div class="py-2.5 text-center"><Spinner /></div>
+        <div class="py-2 text-center"><Spinner /></div>
       {:else if failed}
-        <p class="mb-2.5">{unknown}</p>
+        <p class="mb-2">{unknown}</p>
         <p><Button onclick={() => (confirming = false)}>OK</Button></p>
       {:else}
-        <p class="mb-2.5">You are about to delete a complete topic. Are you sure?</p>
-        <p class="flex gap-1.5">
+        <p class="mb-2">You are about to delete a complete topic. Are you sure?</p>
+        <p class="flex gap-1">
           <Button onclick={() => (confirming = false)}>Cancel</Button>
           <Button onclick={proceed}>Proceed</Button>
         </p>

@@ -6,5 +6,5 @@
 - [Look and feel: Holo's look at today's sizes: how](plan.md) - The CMS, housekeeping and components hold the layouts, and the site's sizes move into theme tokens, then to a 16px design, after the differences from HoloCMS.
 - [Research: where the site's look differs from HoloCMS](research-holo-look.md) - HoloCMS and the site run side by side and measured: the font family that makes the navbar look plain, the tabs, the sub-navigation, the boxes, the title bars, the header and the footer, with Holo's values, ours and the file to change.
 - [Research: the site at a 16px base](research-redesign.md) - How sizes and bitmaps are set in the site today, Holo's reference numbers, and the strategies weighed for a redesign at 16px that keeps Holo's look.
-- [Look and feel: Holo's look at today's sizes](spec.md) - The site has Holo's two layouts and housekeeping a look of its own; the site matches HoloCMS where it drifted and moves to a 16px base with a wider layout that keeps Holo's look and feel.
+- [Look and feel: Holo's look at today's sizes](spec.md) - The site has Holo's two layouts and housekeeping a look of its own; the site clones HoloCMS's styling at Holo's sizes, in Tailwind's closest common classes.
 - [tasks/](tasks/index.md)

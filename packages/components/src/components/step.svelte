@@ -19,7 +19,7 @@
   const item =
     "flex items-center gap-2 [counter-increment:step] max-sm:gap-1.5 after:size-2 after:shrink-0 after:rotate-45 after:border-t-2 after:border-r-2 after:border-sky-600 after:content-[''] last:after:hidden";
   const point =
-    "flex size-7 shrink-0 items-center justify-center rounded-full border-2 text-sm font-bold before:content-[counter(step)]";
+    "flex size-7 shrink-0 items-center justify-center rounded-full border-2 text-xs font-bold before:content-[counter(step)]";
 </script>
 
 <li {...rest} class={[item, className]}>

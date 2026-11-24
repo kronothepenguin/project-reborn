@@ -64,13 +64,13 @@
 
 <Dialog bind:open label="Badge editor" class="m-auto bg-transparent backdrop:bg-black/40">
   <Card>
-    <div class="relative text-base">
+    <div class="relative text-xs">
       <div id="editor-container" class="h-[366px] w-[280px]"></div>
       {#if saving}
         <div class="absolute inset-0 flex items-center justify-center bg-white/80"><Spinner /></div>
       {/if}
       {#if failed}
-        <div class="absolute inset-0 flex flex-col items-center justify-center gap-2.5 bg-white p-5.5 text-center">
+        <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-white p-4 text-center">
           <p>An unknown error occurred. Please try again in a couple of minutes.</p>
           <Button onclick={() => (failed = false)}>OK</Button>
         </div>

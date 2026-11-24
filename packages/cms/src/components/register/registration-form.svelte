@@ -521,7 +521,7 @@
     style:top="{dialogPosition.top}px"
     style:left="{dialogPosition.left}px"
   >
-    <Bubble class="flex flex-col gap-2.5">
+    <Bubble class="flex flex-col gap-2">
       {#if dialog === "age"}
         <p>
           Sorry but you cannot register, because you are too young. If you
@@ -537,7 +537,7 @@
           guidelines, we require your parent or guardian's email address.
         </p>
         <Notice variant="blue">{parentStatus}</Notice>
-        <label class="flex flex-col gap-1.5">
+        <label class="flex flex-col gap-1">
           <span class="font-bold">Parent or guardian's email address</span>
           <input
             bind:this={parentInput}

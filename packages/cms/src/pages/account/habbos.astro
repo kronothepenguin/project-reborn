@@ -7,7 +7,7 @@ import AvatarEditor from "../../components/habbo/avatar-editor.svelte";
 <Account active="Habbos" heading="Your Habbos">
   <ul class="flex flex-col divide-y divide-gray-200">
     [[ range .Habbos ]]
-    <li class="flex items-center gap-4 py-1.5">
+    <li class="flex items-center gap-3 py-1">
       <Avatar
         size="s"
         imagingUrl="[[ $.ImagingURL ]]"
@@ -24,7 +24,7 @@ import AvatarEditor from "../../components/habbo/avatar-editor.svelte";
       <form method="post" action="/account/habbos/[[ .ID ]]/switch">
         <Button type="submit" size="compact">Switch</Button>
       </form>
-      <form method="post" action="/account/habbos/[[ .ID ]]/archive" class="flex items-center gap-1.5">
+      <form method="post" action="/account/habbos/[[ .ID ]]/archive" class="flex items-center gap-1">
         <Input
           type="password"
           name="password"
@@ -41,8 +41,8 @@ import AvatarEditor from "../../components/habbo/avatar-editor.svelte";
   </ul>
 
   [[ if .CanAdd ]]
-  <h3 class="pt-2.5 text-lg font-bold">Add a habbo</h3>
-  <form method="post" action="/account/habbos" class="flex flex-col gap-2.5">
+  <h3 class="pt-2 text-xs font-bold">Add a habbo</h3>
+  <form method="post" action="/account/habbos" class="flex flex-col gap-2">
     <input
       type="hidden"
       id="habbo-figure"
@@ -61,7 +61,7 @@ import AvatarEditor from "../../components/habbo/avatar-editor.svelte";
       name="editorState"
       value="[[ .EditorState ]]"
     />
-    <label class="flex items-center gap-2.5">
+    <label class="flex items-center gap-2">
       <span>Habbo name</span>
       <Input name="name" value="[[ .NewName ]]" maxlength="24" variant="border" />
     </label>

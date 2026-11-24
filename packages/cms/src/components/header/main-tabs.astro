@@ -8,21 +8,20 @@ interface Props {
 const { active } = Astro.props;
 
 // Holo's tabs.png drawn in CSS, as Button draws its raised face: a 2px outline
-// with stepped top corners, a darker lower half and a lighter upper half drawn
+// with rounded top corners, a darker lower half and a lighter upper half drawn
 // by ::before, both lighter while pointed at. An unselected tab ends in the 2px
 // black line under the header; the selected one is white down to the line it
-// covers, and opens into the sub-navigation.
-// Holo's 28px tab with 12px text and padding 6px 16px 0 22px, at 16/11. On a
-// phone the tabs share the screen's width, each by its text.
+// covers, and opens into the sub-navigation. Holo's 28px tab with 12px text,
+// 22px of padding on each side and 6px above.
 const tab =
-  "relative isolate block h-10 max-w-105 truncate rounded-t border-2 px-2 pt-2 text-center text-base leading-6 md:pr-6 md:pl-8 md:text-left md:text-lg";
-const raised = `${tab} border-b-black text-white before:absolute before:inset-x-0 before:top-0 before:-z-10 before:h-1/2 before:rounded-t-[2px] before:content-['']`;
+  "relative isolate block h-7 max-w-[290px] truncate rounded-t border-2 px-5 pt-1 text-xs leading-4";
+const raised = `${tab} border-b-black text-white before:absolute before:inset-x-0 before:top-0 before:-z-10 before:h-3 before:rounded-t-[2px] before:content-['']`;
 const selected = `${tab} border-b-0 border-black bg-white font-bold text-black`;
 const normal = `${raised} border-blue-900 bg-sky-700 before:bg-sky-600 hover:bg-sky-600 hover:before:bg-sky-400`;
 const green = `${raised} border-lime-800 bg-lime-600 before:bg-lime-500 hover:bg-lime-500 hover:before:bg-lime-400`;
 ---
 
-<ul class="flex items-end gap-1.5 *:min-w-0 *:flex-auto md:*:flex-none">
+<ul class="flex items-end gap-1.5">
   [[ if .SignedIn ]]
   {
     active === "home" ? (

@@ -1,8 +1,9 @@
-// The site's two layouts at today's sizes: Holo's font on a 16px base, the
-// community layout in flexbox on wide screens, tablets and phones, the two-tone
-// main tabs, the sub-navigation and the header's habbo search. Screenshots of
-// the signed-out pages at 1366 and 1920 wide, and of the Me and community pages
-// at 390, 820, 1366 and 1920.
+// The site's two layouts as Holo's, at Holo's sizes in Tailwind's closest
+// classes: Holo's font with its 11px text at 12px, the 758px process box, the
+// 930px community page with Holo's columns, the two-tone main tabs, the
+// sub-navigation, the header's habbo search, and the Me page's boxes with tabs
+// whose line runs the box's full width. Screenshots of the front page,
+// register, the community page and the Me page at 1366 wide.
 import path from "node:path";
 import { work } from "../lib/hotel.mjs";
 import { session } from "../lib/staff.mjs";
@@ -48,33 +49,33 @@ export default async function (t) {
   const guest = await browser.newContext({ viewport: { width: 1366, height: 900 } });
   const page = await guest.newPage();
 
-  for (const width of [1366, 1920]) {
-    await page.setViewportSize({ width, height: 900 });
-    for (const [route, name] of [["/", "front"], ["/register", "register"]]) {
-      await page.goto(base + route);
-      await shot(page, `layout-${name}-${width}`);
-    }
+  await page.setViewportSize({ width: 1366, height: 900 });
+  for (const [route, name] of [["/", "front"], ["/register", "register"]]) {
+    await page.goto(base + route);
+    await shot(page, `layout-${name}-1366`);
   }
 
-  await page.setViewportSize({ width: 1366, height: 900 });
   await page.goto(base + "/");
-  const body = await page.evaluate(() => {
-    const style = getComputedStyle(document.body);
-    return { size: style.fontSize, family: style.fontFamily };
+  const front = await page.evaluate(() => {
+    const style = getComputedStyle(document.querySelector("main"));
+    const box = document.querySelector("main").closest(".rounded").getBoundingClientRect();
+    return {
+      size: style.fontSize,
+      family: style.fontFamily,
+      box: { left: box.left, top: box.top, width: box.width },
+      scroll: document.documentElement.scrollWidth,
+      client: document.documentElement.clientWidth,
+    };
   });
   check(
-    "a visitor reads the site in Holo's font at 16px",
-    body.size === "16px" && body.family.startsWith("Verdana, Arial, Helvetica"),
-    JSON.stringify(body),
+    "a visitor reads the site in Holo's font, its 11px text at 12px",
+    front.size === "12px" && front.family.startsWith("Verdana, Arial, Helvetica"),
+    JSON.stringify(front),
   );
-  const signedOut = await page.evaluate(() => ({
-    scroll: document.documentElement.scrollWidth,
-    client: document.documentElement.clientWidth,
-  }));
   check(
-    "a signed-out page at 1366 wide does not scroll sideways",
-    signedOut.scroll <= signedOut.client,
-    JSON.stringify(signedOut),
+    "a signed-out page is Holo's 758px process box, 12px from the top, at the left of a centred 766px container, and nothing scrolls sideways at 1366",
+    front.box.width === 758 && front.box.top === 12 && front.box.left === (front.client - 766) / 2 && front.scroll <= front.client,
+    JSON.stringify(front),
   );
 
   await page.goto(base + "/community");
@@ -82,83 +83,25 @@ export default async function (t) {
   const community = page.locator("header strong", { hasText: "Community" });
   const credits = page.locator("header").getByRole("link", { name: "Credits" });
 
-  // The page's columns: the children of main's first flex row, and of its
-  // second column's own row on a wide screen.
-  const columns = (p) =>
-    p.evaluate(() => {
-      const row = document.querySelector("main > div");
-      const box = (el) => {
-        const r = el.getBoundingClientRect();
-        return { left: r.left, top: r.top, width: r.width };
-      };
-      const [first, rest] = row.children;
-      const inner = getComputedStyle(rest).flexDirection === "row" ? [...rest.children] : [rest];
-      const main = document.querySelector("main").getBoundingClientRect();
-      return {
-        columns: [first, ...inner].map(box),
-        main: { width: main.width, left: main.left, right: document.documentElement.clientWidth - main.right },
-        scroll: document.documentElement.scrollWidth,
-        client: document.documentElement.clientWidth,
-      };
-    });
-
-  await page.setViewportSize({ width: 1920, height: 900 });
   await page.goto(base + "/community");
-  const wide = await columns(page);
-  const [c1, c2, c3] = wide.columns.map((c) => c.width);
-  check(
-    "a community page on a wide screen is Holo's page at 16/11: at most 1352px, centred, its three columns in Holo's 452 / 302 / 160",
-    wide.columns.length === 3 &&
-      wide.main.width <= 1352 &&
-      Math.abs(wide.main.left - wide.main.right) <= 1 &&
-      Math.abs(c1 / c2 - 452 / 302) < 0.05 &&
-      Math.abs(c3 / c2 - 160 / 302) < 0.05 &&
-      wide.scroll <= wide.client,
-    JSON.stringify(wide),
-  );
-
-  await page.setViewportSize({ width: 820, height: 900 });
-  await page.goto(base + "/community");
-  const tablet = await columns(page);
-  check(
-    "a community page on a tablet shows two columns side by side",
-    tablet.columns.length === 2 &&
-      tablet.columns[1].left > tablet.columns[0].left + tablet.columns[0].width &&
-      tablet.columns[0].top === tablet.columns[1].top &&
-      tablet.scroll <= tablet.client,
-    JSON.stringify(tablet),
-  );
-
-  await page.setViewportSize({ width: 390, height: 900 });
-  await page.goto(base + "/community");
-  const phone = await page.evaluate(() => {
+  const grid = await page.evaluate(() => {
     const main = document.querySelector("main").getBoundingClientRect();
-    const boxes = [...document.querySelectorAll("main .rounded.border")].map((el) => el.getBoundingClientRect()).filter((b) => b.width > 0);
-    const fits = (selector) =>
-      [...document.querySelectorAll(selector)].every((el) => el.getBoundingClientRect().right <= document.documentElement.clientWidth);
+    const row = document.querySelector("main > div");
     return {
-      main: { left: main.left, width: main.width },
-      boxes: boxes.map((b) => ({ left: b.left, width: b.width })),
-      header: { logo: fits("header a[href='/'] img"), tabs: fits("header ul li"), nav: fits("nav, nav li") },
+      main: { width: main.width, left: main.left, right: document.documentElement.clientWidth - main.right },
+      columns: [...row.children].map((el) => el.getBoundingClientRect().width),
       scroll: document.documentElement.scrollWidth,
       client: document.documentElement.clientWidth,
     };
   });
   check(
-    "a community page on a phone shows one column, each box as wide as the screen's column, and nothing scrolls sideways",
-    phone.boxes.length >= 2 &&
-      phone.boxes.every((b) => Math.abs(b.left - phone.main.left) <= 1 && Math.abs(b.width - phone.main.width) <= 1) &&
-      phone.main.width >= phone.client - 20 &&
-      phone.scroll <= phone.client,
-    JSON.stringify(phone),
+    "a community page is Holo's 930px page, centred, with Holo's columns of 460, 310 and 160px, and nothing scrolls sideways at 1366",
+    grid.main.width === 930 &&
+      Math.abs(grid.main.left - grid.main.right) <= 1 &&
+      JSON.stringify(grid.columns) === JSON.stringify([460, 310, 160]) &&
+      grid.scroll <= grid.client,
+    JSON.stringify(grid),
   );
-  check(
-    "the header on a phone fits the screen: the logo, the tabs and the sub-navigation",
-    phone.header.logo && phone.header.tabs && phone.header.nav,
-    JSON.stringify(phone.header),
-  );
-  await page.setViewportSize({ width: 1366, height: 900 });
-  await page.goto(base + "/community");
 
   const blue = await faces(credits);
   check(
@@ -284,28 +227,43 @@ export default async function (t) {
     return {
       box: box(document.querySelector("#new-personal-info")),
       picture: box(picture),
-      links: box(document.querySelector("#link-bar")),
       size: getComputedStyle(picture).backgroundSize,
     };
   });
   check(
-    "the Me page's hotel view keeps its own size, and its box wraps it with the links beside it, so no empty strip shows",
+    "the Me page's hotel view keeps its own size, 450x143, and fills the top of its box as Holo's",
     view.picture.width === 450 &&
       view.picture.height === 143 &&
       view.size === "auto" &&
-      Math.abs(view.picture.left - view.box.left) <= 1 &&
-      Math.abs(view.links.left - view.picture.right) <= 1 &&
-      Math.abs(view.links.right - view.box.right) <= 1 &&
-      Math.abs(view.links.top - view.picture.top) <= 1,
+      view.picture.left === view.box.left &&
+      view.picture.right === view.box.right &&
+      view.picture.top === view.box.top,
     JSON.stringify(view),
   );
 
-  for (const width of [390, 820, 1366, 1920]) {
-    await me.setViewportSize({ width, height: 900 });
-    for (const [route, name] of [["/me", "me"], ["/community", "community"]]) {
-      await me.goto(base + route);
-      await shot(me, `layout-${name}-${width}`);
-    }
+  const lines = await me.evaluate(() =>
+    [...document.querySelectorAll("main [role=tablist]")].map((list) => {
+      const frame = list.closest(".rounded");
+      const style = getComputedStyle(frame);
+      const box = frame.getBoundingClientRect();
+      const row = list.getBoundingClientRect();
+      return {
+        inside: { left: box.left + parseFloat(style.borderLeftWidth), right: box.right - parseFloat(style.borderRightWidth) },
+        row: { left: row.left, right: row.right },
+        line: getComputedStyle(list).borderBottomWidth,
+      };
+    }),
+  );
+  check(
+    "the line under the tabs of the Me page's Groups and Tags boxes runs from one edge of the box to the other",
+    lines.length === 2 &&
+      lines.every((l) => l.line === "1px" && l.row.left === l.inside.left && l.row.right === l.inside.right),
+    JSON.stringify(lines),
+  );
+
+  for (const [route, name] of [["/me", "me"], ["/community", "community"]]) {
+    await me.goto(base + route);
+    await shot(me, `layout-${name}-1366`);
   }
   await me.setViewportSize({ width: 1366, height: 900 });
   await me.goto(base + "/me");

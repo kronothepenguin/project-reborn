@@ -14,19 +14,14 @@ import MottoEditor from "./motto-editor.svelte";
 
 const sprite = (image: { src: string }, position: string) =>
   `background: url(${image.src}) no-repeat ${position}`;
-const linkItem = "py-0.5 pl-6.5 leading-5";
-const feedItem = "min-h-7 border-t border-dotted border-olive-500 py-2.5 pr-1.5 pl-15 first:border-t-0";
+const linkItem = "py-0.5 pl-5 leading-4";
+const feedItem = "min-h-7 border-t border-dotted border-olive-500 py-2 pr-1 pl-11 first:border-t-0";
 ---
 
-<!-- Holo's personal info: the hotel view at its own size, 450x143, the habbo's
-     plate over its corner, the motto and the links. Where the column is wider
-     than the view, the links stand beside it, so the box wraps the picture; on
-     a narrower column they run under the motto as Holo's, and on a phone the
-     view shows as much of itself as fits. -->
-<div id="new-personal-info" class="@container relative flex flex-wrap rounded-t bg-olive-500">
+<div id="new-personal-info" class="relative mr-2 mb-2 ml-0.5 w-[450px]">
   <div
     id="hotel-view"
-    class="relative h-[143px] w-full max-w-[450px] shrink-0 overflow-hidden rounded-tl"
+    class="h-[143px] rounded-t"
     style={`background: url(${hotelView.src}) no-repeat`}
   >
     <div
@@ -38,7 +33,7 @@ const feedItem = "min-h-7 border-t border-dotted border-olive-500 py-2.5 pr-1.5 
         <a
           href="/client"
           target="client"
-          class="relative h-[49px] bg-no-repeat pr-[26px] pl-[19px] text-center text-xl leading-[47px] text-white no-underline [background-position:-9px_0] group-hover/enter:[background-position:-9px_-49px]"
+          class="relative h-[49px] bg-no-repeat pr-[26px] pl-[19px] text-center text-sm leading-[47px] text-white no-underline [background-position:-9px_0] group-hover/enter:[background-position:-9px_-49px]"
           style={`background-image: url(${enterButton.src})`}
         >
           Enter [[ .ShortName ]]<i
@@ -52,7 +47,7 @@ const feedItem = "min-h-7 border-t border-dotted border-olive-500 py-2.5 pr-1.5 
       [[ else ]]
       <div class="flex">
         <span
-          class="h-[49px] pr-2.5 pl-[19px] text-center text-xl leading-[47px] text-white"
+          class="h-[49px] pr-2.5 pl-[19px] text-center text-sm leading-[47px] text-white"
           style={sprite(enterButton, "-9px -98px")}
         >
           Hotel Closed
@@ -84,9 +79,9 @@ const feedItem = "min-h-7 border-t border-dotted border-olive-500 py-2.5 pr-1.5 
     </a>
   </div>
 
-  <div class="order-3 w-full pt-3.5 pr-4 pb-1.5">
-    <div class="relative ml-30 flex h-6 max-w-117.5 items-center rounded bg-white px-1">
-      <strong class="shrink-0 px-3.5">[[ .Habbo ]]:</strong>
+  <div class="bg-olive-500 pt-2.5">
+    <div class="relative ml-[120px] flex h-6 w-[323px] items-center rounded bg-white px-1">
+      <strong class="shrink-0 px-2.5">[[ .Habbo ]]:</strong>
       <div class="min-w-0 flex-1">
         <span
           id="motto-text"
@@ -100,10 +95,7 @@ const feedItem = "min-h-7 border-t border-dotted border-olive-500 py-2.5 pr-1.5 
     </div>
   </div>
 
-  <ul
-    id="link-bar"
-    class="order-4 flex w-full flex-wrap gap-x-10 gap-y-1 px-5.5 pt-1 pb-1.5 text-white @min-[40rem]:order-2 @min-[40rem]:w-auto @min-[40rem]:flex-1 @min-[40rem]:flex-col @min-[40rem]:justify-center @min-[40rem]:gap-y-3"
-  >
+  <ul id="link-bar" class="flex gap-10 bg-olive-500 px-4 pt-2 pb-1 text-white">
     <li class={linkItem} style={sprite(infoIcons, "0 -976px")}>
       <a href="/account/looks">Change looks &raquo;</a>
     </li>
@@ -119,10 +111,10 @@ const feedItem = "min-h-7 border-t border-dotted border-olive-500 py-2.5 pr-1.5 
     </li>
   </ul>
 
-  <div class="order-5 w-full rounded-b bg-stone-400">
+  <div class="rounded-b bg-stone-400">
     <ul id="feed-items">
       [[ if .OpenHelp ]]
-      <li class={`${feedItem} text-sm`} style={sprite(smallIcons, "15px -456px")}>
+      <li class={`${feedItem} text-xs`} style={sprite(smallIcons, "15px -456px")}>
         <strong>Staff Message</strong><br />
         [[ if .OneOpenHelp ]]There is[[ else ]]There are[[ end ]] <strong><a class="text-white" href="[[ .HousekeepingURL ]]/help">[[ .OpenHelp ]]</a></strong> non-picked up help [[ if .OneOpenHelp ]]query[[ else ]]queries[[ end ]].
       </li>
@@ -137,7 +129,7 @@ const feedItem = "min-h-7 border-t border-dotted border-olive-500 py-2.5 pr-1.5 
             class="block h-[13px] w-[13px] cursor-pointer"
             style={sprite(closeMessage, "0 0")}></button>
         </form>
-        <div class="mr-5">
+        <div class="mr-4">
           <b>[[ if .Staff ]]Message from [[ $.ShortName ]] Staff[[ else ]]Notification[[ end ]]</b><br />
           <span class="whitespace-pre-line">[[ .Message ]]</span>
         </div>
@@ -152,7 +144,7 @@ const feedItem = "min-h-7 border-t border-dotted border-olive-500 py-2.5 pr-1.5 
       </li>
       [[ end ]]
       [[ if .LastSignIn ]]
-      <li class={`${feedItem} text-sm`} style={sprite(smallIcons, "15px -297px")}>
+      <li class={`${feedItem} text-xs`} style={sprite(smallIcons, "15px -297px")}>
         Last signed in: [[ .LastSignIn ]]
       </li>
       [[ end ]]

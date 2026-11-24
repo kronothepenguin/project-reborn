@@ -42,16 +42,11 @@
   });
 </script>
 
-<!-- The stripes fill the box, 6px inside its frame as Holo's 4px, and Holo's
-     grid of habbos, 435px wide, stands in their middle at its own size. On a
-     phone the grid's sides are cut off. The picture-grow class lets ?pictures=
-     grow the grid for the screenshots alone. -->
-<div
-  id="homes-habblet-list-container"
-  class="-mx-3.5 -mt-1 -mb-1 flex justify-center max-md:overflow-hidden"
-  style={`background-image: url(${stripes.src})`}
->
-<div class="picture-grow relative h-[230px] w-[435px] shrink-0">
+<!-- The stripes fill the box under its title, past the card's inset, as
+     Holo's list container; Holo's grid of habbos, 435x230, stands at its left
+     at its own size. -->
+<div id="homes-habblet-list-container" class="-mx-4 -my-2 pb-2.5" style={`background-image: url(${stripes.src})`}>
+<div class="relative h-[230px] w-[435px]">
   {#each habbos as habbo, i (i)}
     {@const at = place(i)}
     <a
@@ -88,7 +83,7 @@
           {habbos[tip].name}
         </div>
         Habbo created on: {habbos[tip].created}
-        <p class="pt-2.5 text-mist-600">{habbos[tip].motto}</p>
+        <p class="pt-2 text-mist-600">{habbos[tip].motto}</p>
       </Bubble>
     </div>
   {/if}

@@ -49,18 +49,22 @@ describe("Card", () => {
     expect(hueDistance(hue(bar.backgroundColor), hexHue(holo))).toBeLessThan(12);
   });
 
-  it("writes its title bold and bigger than its body, as Holo's 14px titles over 11px text", () => {
+  it("draws its title bar as Holo's: bold 14px on a 17px line, 4px above and below, inset 4px from the frame", () => {
     const { container } = render(Card, { props: { header, children: body, color: "blue" } });
-    const bar = getComputedStyle(container.querySelector("header") as HTMLElement);
-    expect(bar.fontSize).toBe("20px");
+    const element = container.querySelector("header") as HTMLElement;
+    const bar = getComputedStyle(element);
+    expect(bar.fontSize).toBe("14px");
     expect(bar.fontWeight).toBe("700");
-    expect(getComputedStyle(container.querySelector("p") as HTMLElement).fontSize).toBe("16px");
+    expect(element.getBoundingClientRect().height).toBe(25);
+    const inset = getComputedStyle(element.parentElement as HTMLElement);
+    expect(inset.paddingTop).toBe("4px");
+    expect(inset.paddingLeft).toBe("4px");
   });
 
-  it("insets its content as Holo's box-content, 8px 15px scaled by 4/3", () => {
+  it("insets its content as Holo's box-content, 8px 15px, at Tailwind's 8px 16px", () => {
     const { container } = render(Card, { props: { children: body } });
     const content = getComputedStyle(container.querySelector("p")?.parentElement as HTMLElement);
-    expect(content.paddingTop).toBe("10px");
-    expect(content.paddingLeft).toBe("20px");
+    expect(content.paddingTop).toBe("8px");
+    expect(content.paddingLeft).toBe("16px");
   });
 });

@@ -12,7 +12,7 @@ okf_version: "0.2"
 - [The client page](client.md) - How the CMS serves Holo's client.php, clientutils.php and unloadclient.php, with LibreShockwave's player built by make player in place of Adobe's plugin, and the client's folder at /dcr/.
 - [HabboWidgets](habbo-widgets.md) - The HTML5 ports of Holo's Flash widgets, built from the vendored HabboWidgets submodule into public/habbo-widgets.
 - [Islands](islands.md) - How the Svelte islands of the CMS read the values Go writes into the page, and the islands that need care.
-- [Layouts](layouts.md) - The site's two layouts and its pages at today's sizes, Holo's font on a 16px base, the community layout in flexbox for phones, tablets and wide screens, and where each of Holo's numbers went.
+- [Layouts](layouts.md) - The site's two layouts and its pages as Holo's, at Holo's sizes in Tailwind's closest common classes, and where each of Holo's numbers went.
 - [mail](mail.md) - Sends the hotel's mail through the SMTP server in the mail.* settings.
 - [Pages](pages.md) - How Go page structs feed the Astro pages, and how a page answers a form that fails.
 - [Runners](runners.md) - The two runners of apps/cms, how each serves the frontend, and how the development runner reloads.

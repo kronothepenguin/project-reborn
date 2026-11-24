@@ -26,4 +26,16 @@ describe("Tab list", () => {
     expect(hueDistance(hue(list.borderBottomColor), hexHue(holo))).toBeLessThan(12);
     expect(list.borderBottomColor).toBe(unselected.backgroundColor);
   });
+
+  it("runs its line from one edge of its box to the other, under 25px tabs", () => {
+    const { container } = render(TabsFixture, { props: { tabs, value: "a" } });
+    const list = container.querySelector('[role="tablist"]') as HTMLElement;
+    const box = (list.parentElement as HTMLElement).getBoundingClientRect();
+    const row = list.getBoundingClientRect();
+
+    expect(row.left).toBe(box.left);
+    expect(row.width).toBe(box.width);
+    expect(row.height).toBe(26);
+    expect((container.querySelector('[role="tab"]') as HTMLElement).getBoundingClientRect().height).toBe(25);
+  });
 });

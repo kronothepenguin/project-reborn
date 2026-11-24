@@ -17,7 +17,7 @@ import SignedOut from "../layouts/signed-out.astro";
 
 <SignedOut title="[[ .ShortName ]] ~ Register">
   [[ with .Errors.form ]]
-  <div class="pt-2.5"><Notice>[[ . ]]</Notice></div>
+  <div class="pt-2"><Notice>[[ . ]]</Notice></div>
   [[ end ]]
 
   <form
@@ -26,7 +26,7 @@ import SignedOut from "../layouts/signed-out.astro";
     action="/register"
     autocomplete="off"
     data-password-min="[[ .PasswordMinLength ]]"
-    class="flex flex-col gap-2.5 pt-2.5 pb-5.5"
+    class="flex flex-col gap-2 pt-2 pb-4"
   >
     <input
       type="hidden"
@@ -48,9 +48,9 @@ import SignedOut from "../layouts/signed-out.astro";
     />
     <input type="hidden" name="refer" value="[[ .Refer ]]" />
 
-    <div id="register-columns" class="flex justify-between">
-      <div class="w-140.5 space-y-2.5">
-        <header class="rounded bg-yellow-900 text-white text-2xl flex px-5.5 py-2.5">
+    <div id="register-columns" class="flex gap-4">
+      <div class="grow space-y-2">
+        <header class="rounded bg-yellow-900 text-white flex px-4 py-2">
           <span class="font-bold">1.</span>
           <h2 class="font-bold text-center w-full">Create Your Avatar</h2>
         </header>
@@ -66,17 +66,17 @@ import SignedOut from "../layouts/signed-out.astro";
         />
       </div>
 
-      <div class="flex w-87 flex-col gap-2.5">
-        <section id="register-section-2" class="bg-cyan-600 rounded-md px-5.5 py-2.5">
-          <header class="text-white text-2xl flex">
+      <div class="flex flex-col gap-2 flex-1">
+        <section id="register-section-2" class="bg-cyan-600 rounded-md px-4 py-2">
+          <header class="text-white flex">
             <span class="font-bold">2.</span>
             <h2 class="font-bold text-center w-full">CHOOSE YOUR NAME</h2>
           </header>
-          <div class="flex flex-col items-center gap-1.5">
-            <label for="register-name" class="text-white font-bold">
+          <div class="flex flex-col items-center gap-1">
+            <label for="register-name" class="text-xs text-white font-bold">
               Habbo name
             </label>
-            <div class="flex flex-wrap gap-2.5 items-center justify-center">
+            <div class="flex flex-wrap gap-2 items-center justify-center">
               <Input id="register-name" name="name" value="[[ .Habbo ]]" />
               <span id="register-name-check-container" hidden>
                 <Button
@@ -98,7 +98,7 @@ import SignedOut from "../layouts/signed-out.astro";
 
         <section
           id="register-section-3"
-          class="relative bg-neutral-400 rounded-md p-1.5 w-full"
+          class="relative bg-neutral-400 rounded-md p-1 w-full"
         >
           <div
             id="registration-overlay"
@@ -106,11 +106,11 @@ import SignedOut from "../layouts/signed-out.astro";
             class="absolute inset-0 z-10 rounded-md bg-olive-400/50"
           >
           </div>
-          <header class="bg-olive-800 text-white text-2xl flex font-bold rounded p-1.5">
+          <header class="bg-olive-800 text-white flex font-bold rounded p-1">
             <span>3.</span>
             <h2 class="text-center w-full">Your Details</h2>
           </header>
-          <div class="flex flex-col gap-2.5 px-4 py-2.5">
+          <div class="flex flex-col gap-2 px-3 py-2">
             [[ with .Errors.password ]]
             <Notice>[[ . ]]</Notice>
             [[ end ]]
@@ -130,8 +130,8 @@ import SignedOut from "../layouts/signed-out.astro";
             <Notice>[[ . ]]</Notice>
             [[ end ]]
             <div class="flex flex-col">
-              <span class="text-center text-white">I was born on:</span>
-              <BirthDate id="register-birthday" prefix="register" class="flex justify-center gap-1.5" />
+              <span class="text-center text-xs text-white">I was born on:</span>
+              <BirthDate id="register-birthday" prefix="register" class="flex justify-center gap-1" />
             </div>
 
             [[ with .Errors.email ]]
@@ -151,12 +151,12 @@ import SignedOut from "../layouts/signed-out.astro";
             </RegisterFormField>
 
             [[ if .Newsletter ]]
-            <Checkbox name="newsletter" checked class="text-white">
+            <Checkbox name="newsletter" checked class="text-sm text-white">
               Yes, please send me [[ .ShortName ]] updates, including the
               newsletter!
             </Checkbox>
             [[ else ]]
-            <Checkbox name="newsletter" class="text-white">
+            <Checkbox name="newsletter" class="text-sm text-white">
               Yes, please send me [[ .ShortName ]] updates, including the
               newsletter!
             </Checkbox>
@@ -167,11 +167,11 @@ import SignedOut from "../layouts/signed-out.astro";
             [[ end ]]
             <div
               id="register-terms-content"
-              class="flex flex-col gap-5.5 bg-mist-600 px-5.5 py-2.5 text-white rounded"
+              class="flex flex-col gap-4 bg-mist-600 px-4 py-2 text-white rounded"
             >
               <a
                 id="register-terms-link"
-                class="flex items-center gap-1.5"
+                class="flex items-center gap-1 text-sm"
                 href="/disclaimer"
                 target="_blank"
               >
@@ -188,11 +188,12 @@ import SignedOut from "../layouts/signed-out.astro";
                 id="register-terms-check"
                 name="terms"
                 checked
+                class="text-sm"
               >
                 I accept the Terms of Service
               </Checkbox>
               [[ else ]]
-              <Checkbox id="register-terms-check" name="terms">
+              <Checkbox id="register-terms-check" name="terms" class="text-sm">
                 I accept the Terms of Service
               </Checkbox>
               [[ end ]]
@@ -209,12 +210,12 @@ import SignedOut from "../layouts/signed-out.astro";
       </div>
     </div>
 
-    <div id="register-buttons" class="flex justify-between">
+    <div id="register-buttons" class="flex justify-between text-xs">
       <Link href="/">Exit registration</Link>
 
       <button
         id="register-button-continue"
-        class="border-2 border-b-4 rounded border-green-900 bg-lime-600 text-white font-bold px-2.5 disabled:opacity-50"
+        class="border-2 border-b-4 rounded border-green-900 bg-lime-600 text-white font-bold px-2 disabled:opacity-50"
         type="submit"
       >
         Done

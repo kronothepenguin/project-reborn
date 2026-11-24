@@ -12,8 +12,8 @@
   // In constants because the server renderer escapes a literal class twice when
   // the element also takes a spread, which breaks the & of these variants.
   const variantClasses: Record<Variant, string> = {
-    list: "w-full border-collapse text-left [&_tbody_tr:nth-child(even)]:bg-amber-100 [&_td]:p-1.5 [&_td]:align-top [&_th]:bg-amber-300 [&_th]:p-1.5 [&_th]:font-bold",
-    form: "w-full border-collapse text-left [&_td]:p-1.5 [&_td]:align-top",
+    list: "w-full border-collapse text-left [&_tbody_tr:nth-child(even)]:bg-amber-100 [&_td]:p-1 [&_td]:align-top [&_th]:bg-amber-300 [&_th]:p-1 [&_th]:font-bold",
+    form: "w-full border-collapse text-left [&_td]:p-1 [&_td]:align-top",
     // Only the frame: the page styles its cells, its header and its rows.
     plain: "w-full border-collapse",
   };

@@ -26,12 +26,12 @@ const items = [
   tab="me"
   sub="Account Settings"
 >
-  <div class="flex items-start gap-2.5 pt-3.5">
-    <div class="flex w-67.5 shrink-0 flex-col gap-2.5">
+  <div class="flex items-start gap-2.5 pt-2.5">
+    <div class="flex w-[200px] shrink-0 flex-col gap-2">
       <Card color="settings">
         <span slot="header">Account Settings</span>
 
-        <ul class="flex flex-col gap-1.5 text-olive-800">
+        <ul class="flex flex-col gap-1 text-olive-800">
           {
             items.map(({ label, href }) => (
               <li class:list={[label === active && "font-bold"]}>
@@ -52,8 +52,9 @@ const items = [
       <Card color="club">
         <span slot="header">Join [[ .ShortName ]] Club</span>
 
-        <div class="flex flex-col gap-2.5">
+        <div class="flex flex-col gap-2">
           <img
+            class="-mx-1 max-w-none"
             src={clubBanner.src}
             width={clubBanner.width}
             height={clubBanner.height}
@@ -72,11 +73,11 @@ const items = [
       [[ end ]]
     </div>
 
-    <div class="w-184.5 shrink-0">
+    <div class="w-[550px] shrink-0">
       <Card color="settings">
         <span slot="header">{heading}</span>
 
-        <div class="flex flex-col gap-2.5 text-olive-800">
+        <div class="flex flex-col gap-2 text-olive-800">
           [[ if .Result ]][[ if .Failed ]]
           <Notice>[[ .Result ]]</Notice>
           [[ else ]]

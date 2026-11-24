@@ -9,9 +9,9 @@ import { Avatar, GroupBadge } from "@project-reborn/components";
 ---
 
 <tr class:list={["[[ if .Even ]] bg-olive-200 [[ end ]]"]} id="post-[[ .ID ]]">
-  <td class="w-49.5 px-1.5 py-2 align-top text-neutral-500">
-    [[ if .AuthorArchived ]]<span class="pl-3.5 align-super text-black">archived</span>[[ else ]]<a
-      class="pl-3.5 align-super text-black underline"
+  <td class="w-[148px] px-1 py-1.5 align-top text-neutral-500">
+    [[ if .AuthorArchived ]]<span class="pl-[11px] align-super text-black">archived</span>[[ else ]]<a
+      class="pl-[11px] align-super text-black underline"
       href="/home?name=[[ .Author ]]">[[ .Author ]]</a
     >[[ end ]]<br />&nbsp;[[ if .Online ]]<img class="inline" alt="Online" src="/myhabbo/habbo_online_anim.gif" />[[ else ]]<img
       class="inline"
@@ -19,7 +19,7 @@ import { Avatar, GroupBadge } from "@project-reborn/components";
       src="/myhabbo/habbo_offline.gif"
     />[[ end ]]
     [[ if not .AuthorArchived ]]
-    <div class="pl-3.5">Messages: [[ .Messages ]]</div>
+    <div class="pl-[11px]">Messages: [[ .Messages ]]</div>
     <div class="flow-root">
       <div class="float-left">
         <Avatar
@@ -32,17 +32,17 @@ import { Avatar, GroupBadge } from "@project-reborn/components";
           alt="[[ .Author ]]"
         />
       </div>
-      <div class="float-left h-10 w-20 pt-7.5 text-center">
+      <div class="float-left h-10 w-[60px] pt-[23px] text-center">
         [[ if .Group ]]<a href="/groups/[[ .Group ]]"><GroupBadge class="inline" code="[[ .GroupBadge ]]" /></a>[[ end ]]
       </div>
-      <div class="float-left h-10 w-20 pt-1.5 text-center">
+      <div class="float-left h-10 w-[60px] pt-1 text-center">
         [[ if .Badge ]]<img class="inline" src="[[ .Badge ]]" alt="" />[[ end ]]
       </div>
     </div>
-    <div class="clear-both overflow-hidden pt-1.5 pl-3.5 break-words">[[ .Motto ]]</div>
+    <div class="clear-both overflow-hidden pt-1 pl-[11px] break-words">[[ .Motto ]]</div>
     [[ end ]]
   </td>
-  <td class="overflow-hidden p-3 align-top break-words" colspan="2">
+  <td class="overflow-hidden p-[9px] align-top break-words" colspan="2">
     [[ if and $.SignedIn (not $.Locked) ]]<button
       type="button"
       class="quote-post-link float-right cursor-pointer bg-[url(/web-gallery/v2/images/discussions/forum_icons.png)] bg-position-[3px_-77px] bg-no-repeat pt-0.5 pb-[3px] pl-[22px] text-neutral-400 hover:underline"
@@ -54,16 +54,16 @@ import { Avatar, GroupBadge } from "@project-reborn/components";
       data-edit="[[ .ID ]]">Modify</button
     >[[ end ]]
     [[ if $.SignedIn ]]<input type="hidden" id="post-raw-[[ .ID ]]" value="[[ .Body ]]" />[[ end ]]
-    <span class="text-lg font-bold">[[ if .RE ]]RE: [[ end ]][[ $.Title ]]</span><br />
-    <span class="text-sm text-neutral-500">[[ .Date ]]</span>
-    <div class="float-right mt-1.5 w-5.5">
+    <span class="text-xs font-bold">[[ if .RE ]]RE: [[ end ]][[ $.Title ]]</span><br />
+    <span class="text-xs text-neutral-500">[[ .Date ]]</span>
+    <div class="float-right mt-[5px] w-4">
       [[ if .CanEdit ]]<button
         type="button"
         class="delete-post mb-2.5 ml-1 block h-[19px] w-[17px] cursor-pointer bg-[url(/web-gallery/v2/images/myhabbo_icons.png)] bg-position-[0_-402px] bg-no-repeat hover:bg-position-[0_-432px]"
         data-delete="[[ .ID ]]"
         aria-label="Delete post"></button
       >[[ end ]]
-      [[ if .CanReport ]]<div class="float-right mt-1.5 w-5.5">
+      [[ if .CanReport ]]<div class="float-right mt-[5px] w-4">
         <a
           href="/forum/posts/[[ .ID ]]/report?page=[[ $.Page ]]"
           class="create-report-button ml-1 block h-[19px] w-[18px] bg-[url(/web-gallery/v2/images/myhabbo_icons.png)] bg-position-[0_-101px] bg-no-repeat"
@@ -71,9 +71,9 @@ import { Avatar, GroupBadge } from "@project-reborn/components";
           target="habbohelp"></a>
       </div>[[ end ]]
     </div>
-    [[ if .Edited ]]<br /><br /><strong class="text-sm"
+    [[ if .Edited ]]<br /><br /><strong class="text-xs"
       >Last modified [[ .EditedAt ]] by [[ if .EditorArchived ]]archived[[ else ]][[ .Editor ]][[ end ]]</strong
     >[[ end ]]
-    <div class="mt-3.5 w-180 overflow-hidden break-words">[[ .HTML ]]</div>
+    <div class="mt-2.5 w-[540px] overflow-hidden break-words">[[ .HTML ]]</div>
   </td>
 </tr>

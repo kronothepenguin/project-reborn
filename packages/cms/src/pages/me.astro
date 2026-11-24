@@ -1,5 +1,5 @@
 ---
-import { Card } from "@project-reborn/components";
+import { Paper } from "@project-reborn/components";
 import GroupsHabblet from "../components/me/groups-habblet.svelte";
 import PersonalInfo from "../components/me/personal-info.astro";
 import TagsHabblet from "../components/me/tags-habblet.svelte";
@@ -7,40 +7,48 @@ import NewsPromo from "../components/news/news-promo.astro";
 import Banners from "../components/site/banners.astro";
 import TagCloud from "../components/tags/tag-cloud.astro";
 import TagSearchForm from "../components/tags/tag-search-form.astro";
-import Columns from "../components/site/columns.astro";
 import Community from "../layouts/community.astro";
 ---
 
-<Community title="[[ .ShortName ]] ~ [[ .Habbo ]]" tab="me" sub="Homepage" fluid>
-  <Columns>
-    <PersonalInfo />
-    <Card>
-      <ul
-        id="my-groups"
-        hidden
-        data-enabled="[[ .Purchase.Enabled ]]"
-        data-price="[[ .Purchase.Price ]]"
-        data-credits="[[ .Credits ]]"
-        data-owned="[[ .Purchase.Owned ]]"
-        data-max-owned="[[ .Purchase.MaxOwned ]]"
-        data-name-max="[[ .Purchase.NameMax ]]"
-        data-description-max="[[ .Purchase.DescriptionMax ]]"
-      >
-        [[ range .Groups ]]<li data-id="[[ .ID ]]" data-badge="[[ .Badge ]]">[[ .Name ]]</li>[[ end ]]
-      </ul>
-      <GroupsHabblet client:only="svelte" source="my-groups" />
-    </Card>
-    <Card>
-      <ul id="me-tags" hidden data-max="[[ .MaxTags ]]">
-        [[ range .MyTags ]]<li>[[ . ]]</li>[[ end ]]
-      </ul>
-      <div id="others-like" hidden>
-        <TagCloud />
-        <TagSearchForm />
+<!-- Holo's three columns of 460, 310 and 160px. The boxes with tabs are
+     frames with no inset, so the line under their tabs runs the box's full
+     width. -->
+<Community title="[[ .ShortName ]] ~ [[ .Habbo ]]" tab="me" sub="Homepage">
+  <div class="flex">
+    <div class="w-[460px]">
+      <PersonalInfo />
+      <div class="mr-2 mb-2">
+        <Paper>
+          <ul
+            id="my-groups"
+            hidden
+            data-enabled="[[ .Purchase.Enabled ]]"
+            data-price="[[ .Purchase.Price ]]"
+            data-credits="[[ .Credits ]]"
+            data-owned="[[ .Purchase.Owned ]]"
+            data-max-owned="[[ .Purchase.MaxOwned ]]"
+            data-name-max="[[ .Purchase.NameMax ]]"
+            data-description-max="[[ .Purchase.DescriptionMax ]]"
+          >
+            [[ range .Groups ]]<li data-id="[[ .ID ]]" data-badge="[[ .Badge ]]">[[ .Name ]]</li>[[ end ]]
+          </ul>
+          <GroupsHabblet client:only="svelte" source="my-groups" />
+        </Paper>
       </div>
-      <TagsHabblet client:only="svelte" source="me-tags" others="others-like" />
-    </Card>
-    <NewsPromo slot="second" />
-    <Banners slot="third" />
-  </Columns>
+      <div class="mr-2 mb-2">
+        <Paper>
+          <ul id="me-tags" hidden data-max="[[ .MaxTags ]]">
+            [[ range .MyTags ]]<li>[[ . ]]</li>[[ end ]]
+          </ul>
+          <div id="others-like" hidden>
+            <TagCloud />
+            <TagSearchForm />
+          </div>
+          <TagsHabblet client:only="svelte" source="me-tags" others="others-like" />
+        </Paper>
+      </div>
+    </div>
+    <div class="w-[310px]"><NewsPromo /></div>
+    <div class="w-[160px]"><Banners /></div>
+  </div>
 </Community>

@@ -71,7 +71,7 @@
   const tool = "ml-1 cursor-pointer bg-[url(/web-gallery/v2/images/myhabbo_icons.png)] bg-no-repeat pb-[3px] text-black hover:underline";
 </script>
 
-<div class="mt-1.5 mr-3.5 ml-auto flex items-center">
+<div class="mt-[5px] mr-2.5 ml-auto flex items-center">
   {#if join}
     <button type="button" class="{tool} ml-2.5 bg-position-[0_-239px] pl-[15px]" onclick={joinGroup}>
       {join === "request" ? "Request membership" : "Join"}
@@ -104,28 +104,28 @@
 <Dialog
   {open}
   label="Group"
-  class="m-auto w-100 bg-transparent backdrop:bg-black/40"
+  class="m-auto w-[300px] bg-transparent backdrop:bg-black/40"
   onclose={() => {
     if (step.name !== "wait") step = { name: "closed" };
   }}
 >
   <Card>
-    <div class="text-base">
+    <div class="text-xs">
       {#if step.name === "wait"}
-        <div class="py-2.5 text-center"><Spinner /></div>
+        <div class="py-2 text-center"><Spinner /></div>
       {:else if step.name === "confirm"}
         {@const action = step.action}
-        <p class="mb-2.5">{step.text}</p>
-        <p class="flex gap-1.5">
+        <p class="mb-2">{step.text}</p>
+        <p class="flex gap-1">
           <Button onclick={() => (step = { name: "closed" })}>Cancel</Button>
           <Button onclick={() => confirmed(action)}>OK</Button>
         </p>
       {:else if step.name === "answer"}
         {@const reload = step.reload}
-        <p class="mb-2.5">{step.text}</p>
+        <p class="mb-2">{step.text}</p>
         <p><Button onclick={() => (reload ? location.reload() : (step = { name: "closed" }))}>OK</Button></p>
       {:else if step.name === "left"}
-        <p class="mb-2.5">{step.text}</p>
+        <p class="mb-2">{step.text}</p>
         <p>Please wait, you are being redirected..</p>
       {/if}
     </div>

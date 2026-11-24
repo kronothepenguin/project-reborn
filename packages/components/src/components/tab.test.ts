@@ -63,8 +63,8 @@ describe("Tab colours", () => {
     },
   );
 
-  it("writes its label at the body size, as Holo's 11px tabs", () => {
+  it("writes its label at 12px, Tailwind's closest size to Holo's 11px tabs", () => {
     const { container } = render(TabsFixture, { props: { tabs } });
-    expect(getComputedStyle(tabElements(container)[0]).fontSize).toBe("16px");
+    expect(getComputedStyle(tabElements(container)[0]).fontSize).toBe("12px");
   });
 });

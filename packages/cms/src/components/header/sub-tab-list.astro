@@ -6,17 +6,17 @@ interface Props {
 
 const { items, active } = Astro.props;
 
-// Holo's #navi2: 12px on an 18px line, padding 6px 0 0 20px, at 16/11; items
-// separated by a thin line 1.3em away on each side, the selected one bold and
-// black, a link underlined while pointed at. On a phone the items wrap, closer.
+// Holo's #navi2: 12px on an 18px line, 6px from the top and 20px from the
+// left; items separated by a thin line 1.3em away on each side, the selected
+// one bold and black, a link underlined while pointed at.
 ---
 
-<ul class="flex flex-wrap gap-y-1 px-3 pt-2 text-base leading-6 md:pr-7 md:pl-7 md:text-lg md:leading-7">
+<ul class="flex pt-1.5 pl-5 text-xs leading-4.5">
   {
     items.map(({ label, href }, index) => (
       <li
         class:list={[
-          index < items.length - 1 && "mr-[0.8em] border-r border-gray-200 pr-[0.8em] md:mr-[1.3em] md:pr-[1.3em]",
+          index < items.length - 1 && "mr-[1.3em] border-r border-gray-200 pr-[1.3em]",
           label === active && "font-bold text-black",
         ]}
       >
