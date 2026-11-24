@@ -68,15 +68,6 @@ The shape the user approved on 2026-11-23 for the tabs inside boxes:
 
 The row's line and every tab follow the group's colour.
 
-A tab takes an address, approved by the user on 2026-11-23 ("yes to ... the tab href"), as `Button` takes one:
-
-```svelte
-<Tab value="site" href="/installer/site">2. Site</Tab>
-```
-
-With `href` the tab is an `<a>`; a disabled tab stays a plain, faded tab with no link. The installer's steps use it, so
-they are drawn on the server and work with scripts off.
-
 [The comparison](/features/look-and-feel/research-holo-look.md) ran both systems and measured them. The navbar looks
 plain because the public site never sets Holo's font, Verdana, so the browser falls back to a lighter one; the weights
 already match. After the font come the line height, the tabs' artwork, the sub-navigation, the inner tabs, the boxes'
@@ -104,6 +95,18 @@ Of 2026-11-23, each the user's words or choice among options put to them:
 - `Tabs` takes one `color` for the group ("A color on Tabs").
 - The installer keeps a page of its own, built from the shared Habbo parts ("Its own page, Habbo parts").
 - The habbo search shows its field and button on one line, the same height, as a group at the right edge.
+- The installer's layout is reviewed and rebuilt on one column. The user, 2026-11-23, of its first look: "center the
+  tabs or left-aligned, use any claude skill to make it better. for the optional step 3. settings, make sections
+  either collapsible or subtabs and make the continue/skip button visible with the save one, so the admin can easily
+  go ahead. please do a review on the installer, looks better because has colors now, but the css rules are just bad,
+  some pages are right aligned, other pages left aligned, the settings page with two columns looks horrible because
+  there are gaps either left or right." The master chose left-aligned tabs, and tabs inside the settings step with the
+  buttons kept in sight. A design skill may guide the layout, its spacing and its alignment; Holo's font, colours and
+  shared parts stay.
+- The installer's steps are a stepper, in place of tabs. The user: "instead of tabs for the installer, an stepper would
+  like much better, stepper is just links next to each other in the same row, with arrows and points/bullets also
+  highligthing the current step, as before, use claude skill." The stepper is the installer's own component, drawn on
+  the server. The `href` on the shared `Tab`, approved for the steps earlier that day, is dropped: nothing uses it.
 
 Earlier:
 
@@ -117,8 +120,9 @@ Earlier:
 
 # Notes
 
-- The `landing-page-design` skill, installed in the project on 2026-11-23, stays out of this feature: its fonts,
-  spacing and sections are its own, and this look is Holo's.
+- The `landing-page-design` and `figma-designer` skills were installed in the project on 2026-11-23 and removed the
+  same day (the user: "uninstall [...] as we do not use them really"). The installer's layout takes its guidance from
+  Claude's own design skill, and keeps Holo's font, colours and shared parts.
 - The order is the shared parts first, then each app: the pages of an app look uneven between the first task and its
   own.
 
