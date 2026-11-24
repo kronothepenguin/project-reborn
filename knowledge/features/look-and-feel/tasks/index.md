@@ -3,4 +3,3 @@
 # Tasks
 
 - [Compare the look with HoloCMS, page by page](06-exit-check.md) - Every page of the site is set beside Holo's and beside its old self, with screenshots, and what differs is listed for the user.
-- [The site's other pages beside Holo's](13-the-other-pages-beside-holo.md) - News, staff, tags, credits, club, the account pages, help, register and the client page match HoloCMS box for box.

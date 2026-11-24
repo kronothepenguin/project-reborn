@@ -116,8 +116,18 @@ The pages Holo drew with the plain header, a home or a group not found and a ban
   Tags boxes are `Paper`s with the tabs at the top, 4px under the frame, so the line under their tabs runs the box's
   full width; the news; the banners.
 - A top story is Holo's 300x187 box with its picture at its own size at the left, on Holo's olive.
-- The other pages keep Holo's pixels from before the 16px design, their texts at `text-xs`, until each is reviewed
-  beside Holo's.
+- A box's content sits where Holo's does. `Card` insets its content 8px and 16px, Holo's `box-content`; where Holo
+  set no `box-content`, as in the news, tags, credits, club and transactions boxes, the content takes the inset back
+  with `-mx-4 -mt-2 -mb-0.5` and sets Holo's own padding.
+- Holo's `p` has no margin and 1em under it: a paragraph of Holo is `pb-3`.
+- News, an article, staff, tags and a tag's search, credits and the transactions, club, the account pages, register,
+  forgot and the client's error pages were set beside Holo's at 1366px. The reset page takes the forgot page's left
+  box; the account's Habbos and Furni take the account layout.
+- The account pages flow as Holo's settings forms: headings 4px apart, fields Holo's 243px (`size="32"`), steps with
+  the number floating left of the step and 1.2em between steps. Register keeps Holo's two floats, 435px and 269px,
+  centred bold labels and fields of 230px.
+- The client's error pages stand on Habbo's black page, the box 448px and centred, 88px under the top of the
+  content, as Habbo's `habboclient.css` that Holo's page loads.
 - The board, a thread, a home and a group's page stand in `components/homes/mypage-box.astro`, Holo's
   `#mypage-wrapper`: a `Paper` of the page's 930px, 4px under its frame a header row whose line, `blue-400`, runs the
   box's width 25px down, then the content 6px under the header and 6px over the frame's bottom. The header holds the

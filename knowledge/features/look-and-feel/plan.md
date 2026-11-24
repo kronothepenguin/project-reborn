@@ -11,7 +11,7 @@ Built:
 | Project | Part |
 | --- | --- |
 | `packages/components` | The primitives every app shares, at Holo's sizes: `Button`, `Card`, `Paper`, `Tabs color` with `TabList` and `Tab` and the line under a box's tabs at the box's full width, `Stepper` and `Step`, `Table`, the inputs |
-| `packages/cms` | Both layouts as Holo's: the 930px page, the header, the two-tone main tabs, the sub-navigation, the habbo search on one line, the footer, in Holo's font; the front, community and Me pages matched beside Holo's, and the board, a thread, a home and a group's page, in view and in edit; the other pages at Holo's sizes as they were before the bigger design |
+| `packages/cms` | Both layouts as Holo's: the 930px page, the header, the two-tone main tabs, the sub-navigation, the habbo search on one line, the footer, in Holo's font; the front, community and Me pages matched beside Holo's; news, staff, tags, credits, club, the account pages, help, register, forgot, reset and the client's pages set beside Holo's; the board, a thread, a home and a group's page, in view and in edit, set beside Holo's |
 | `packages/housekeeping` | `layouts/housekeeping.astro`: the grey bar, the tabs, the left column of `box` components and the content; `Box color="gold"` for data lists; at Holo's sizes, the body `text-xs` |
 | `packages/installer` | `layouts/setup.astro`: one `Card color="blue"` per step, on one column whose first row is the shared `Stepper`; the sticky row of buttons; the settings step's collapsible sections; the body `text-xs` on a 574px column |
 | `packages/store` | `CountAvatars`, the header's registered count |
@@ -21,7 +21,7 @@ Planned:
 
 | Project | Part |
 | --- | --- |
-| `packages/cms` | Every other page matched beside Holo's, as the first three |
+| `packages/cms` | The forum, the homes and the groups matched beside Holo's, as the first three |
 
 ## The sizes
 
@@ -47,6 +47,9 @@ The site is Holo's, at Holo's own sizes, in Tailwind's closest common classes.
   and its column 574px.
 - The live HoloCMS of the comparison differs from `source/holocms`, which the port follows: its Me page holds its
   boxes in other columns, and its community page titles the tags box "Tags" in green.
+- The live HoloCMS shows other staff, credits and club pages (a Collectables tab, Refer Options, a Leaderboard),
+  has no Refer Options tab in the account, swaps register's columns, and asks for the password again before the
+  client. The port follows the source.
 - On the myhabbo pages the live HoloCMS shows no home (its first visit fails on "Field 'data' doesn't have a default
   value"), no thread and no group, so they are compared with Holo's own markup of `forum.php`, `viewthread.php`,
   `user_profile.php` and `group_profile.php` on the live stylesheets. The live one also draws the rows of the groups

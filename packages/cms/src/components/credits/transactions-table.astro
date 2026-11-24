@@ -7,6 +7,7 @@ const cell = "px-[15px] py-0.5";
 const heading = `${cell} text-xs font-normal text-neutral-400`;
 ---
 
+<div id="tx-log" class="-mx-4 -mt-2 -mb-0.5">
 <div class="px-[15px] py-2">
   This is an overview of your credit transaction history. They are updated as soon as the transaction is made. You can
   see up to 50 records.
@@ -17,7 +18,7 @@ const heading = `${cell} text-xs font-normal text-neutral-400`;
       <th class:list={[heading, "text-left whitespace-nowrap"]}>Date</th>
       <th class:list={[heading, "text-center"]}>Activity</th>
       <th class:list={[heading, "w-full text-left"]}>Description</th>
-      <th class:list={[heading, "text-left"]}>Habbo</th>
+      <th class:list={[heading, "text-left whitespace-nowrap"]}>Habbo</th>
     </tr>
   </thead>
   <tbody>
@@ -26,8 +27,9 @@ const heading = `${cell} text-xs font-normal text-neutral-400`;
       <td class:list={[cell, "text-left whitespace-nowrap"]}>[[ .Date ]]</td>
       <td class:list={[cell, "text-center"]}>[[ .Activity ]]</td>
       <td class:list={[cell, "w-full text-left"]}>[[ .Description ]]</td>
-      <td class:list={[cell, "text-left"]}>[[ .Habbo ]]</td>
+      <td class:list={[cell, "text-left whitespace-nowrap"]}>[[ .Habbo ]]</td>
     </tr>
     [[ end ]]
   </tbody>
 </Table>
+</div>

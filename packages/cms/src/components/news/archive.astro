@@ -4,7 +4,7 @@ import { Card, Link } from "@project-reborn/components";
 
 <div class="mr-2 mb-[7px]">
   <Card>
-    <div id="article-wrapper" class="px-2.5">
+    <div id="article-wrapper" class="-mx-1.5 -mt-1">
       [[ if .InCategory ]]
       <h2 class="mb-1 text-base font-bold text-orange-500">Category Listing</h2>
       <div class="mb-2 border-t border-orange-500 pt-[7px] text-zinc-400">
@@ -16,7 +16,7 @@ import { Card, Link } from "@project-reborn/components";
         This is an overview of all articles ever posted on the website, ordered by post date.
       </div>
       [[ end ]]
-      <ul class="my-[1em]">
+      <ul class="py-3">
         [[ range .Articles ]]
         <li>[[ .Date ]] - <Link href="/news/[[ .ID ]]">[[ .Title ]]</Link></li>
         [[ else ]][[ if not .InCategory ]]

@@ -12,14 +12,14 @@ import Community from "../layouts/community.astro";
       <div class="mr-2 mb-[7px]">
         <Card color="orange">
           <span slot="header">Tag Cloud</span>
-          <div id="tag-related-habblet-container" class="text-center"><TagCloud /></div>
+          <div id="tag-related-habblet-container" class="-mx-4 -mt-2 -mb-0.5 p-[7px] [&_ul]:text-center"><TagCloud /></div>
         </Card>
       </div>
       [[ if .TagFight ]]
       <div class="mr-2 mb-[7px]">
         <Card color="orange">
           <span slot="header">Tag Fight</span>
-          <div id="tag-fight-habblet-container"><TagFight client:only="svelte" /></div>
+          <div id="tag-fight-habblet-container" class="-mx-4 -mt-2 -mb-0.5 p-[7px]"><TagFight client:only="svelte" /></div>
         </Card>
       </div>
       [[ end ]]

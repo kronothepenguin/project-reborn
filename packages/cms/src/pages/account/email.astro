@@ -6,24 +6,26 @@ import SettingsStep from "../../components/account/settings-step.astro";
 ---
 
 <Account active="Email" heading="Change Your Email Settings">
-  <form method="post" action="/account/email" class="flex flex-col gap-2">
+  <form method="post" action="/account/email">
     <CurrentDetails />
     <SettingsStep number={2} heading="Enter your new email address">
-      <p>Make sure you type in your email address correctly!</p>
-      <label class="flex flex-col gap-0.5">
-        <span>Email address:</span>
-        <Input name="email" value="[[ .Email ]]" maxlength="48" variant="border" />
-      </label>
-      [[ if .Newsletter ]]
-      <Checkbox name="newsletter" checked>
-        Yes, please send me [[ .Name ]] updates, including the newsletter!
-      </Checkbox>
-      [[ else ]]
-      <Checkbox name="newsletter">
-        Yes, please send me [[ .Name ]] updates, including the newsletter!
-      </Checkbox>
-      [[ end ]]
+      <p class="pb-3">Make sure you type in your email address correctly!</p>
+      <p class="pb-3 [&_input]:w-[243px]">
+        <label for="email">Email address:</label><br />
+        <Input id="email" name="email" value="[[ .Email ]]" maxlength="48" variant="border" />
+      </p>
+      <p class="pb-3">
+        [[ if .Newsletter ]]
+        <Checkbox name="newsletter" checked>
+          Yes, please send me [[ .Name ]] updates, including the newsletter!
+        </Checkbox>
+        [[ else ]]
+        <Checkbox name="newsletter">
+          Yes, please send me [[ .Name ]] updates, including the newsletter!
+        </Checkbox>
+        [[ end ]]
+      </p>
     </SettingsStep>
-    <div><Button type="submit">Save changes</Button></div>
+    <div class="clear-both pt-2"><Button type="submit">Save changes</Button></div>
   </form>
 </Account>
