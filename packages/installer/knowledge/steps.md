@@ -19,7 +19,7 @@ not wrapped by its runner.
 | `GET /installer/{$}` | `index.astro` | Shows the state; says the hotel is installed once an administrator exists, and links to `site.url` |
 | `GET`, `POST /installer/config` | `config.astro` | The config step: run alone, opens the database with `store.Open` (creating it with every update), then writes `config.json` with `config.Create`; inside reborn, moves the hotel and saves its address |
 | `GET`, `POST /installer/site` | `site.astro` | Site name, short name, URL, start credits and secure cookies, and housekeeping's address when run alone, saved with `settings.Set` and no user |
-| `GET`, `POST /installer/settings` | `settings.astro` | The settings step: six groups open with the installer's titles (New players, Password reset mail, Avatar pictures, Site features, Prices, Game ads) and every other field of `settings.Groups()` under "More settings", by its group's `Title`, less the site step's settings and the switches that close the site and the hotel. "Save settings" (`action=save`, and the Enter key) checks the changed values together with `settings.Validate` and saves them in one transaction; a refused value answers 422 with the field's label, shows what was typed with the tab of the field's group open, and saves nothing. "Skip" (`action=skip`) saves nothing |
+| `GET`, `POST /installer/settings` | `settings.astro` | The settings step: six groups open with the installer's titles (New players, Password reset mail, Avatar pictures, Site features, Prices, Game ads) and every other field of `settings.Groups()` under "More settings", by its group's `Title`, less the site step's settings and the switches that close the site and the hotel. "Save settings" (`action=save`, and the Enter key) checks the changed values together with `settings.Validate` and saves them in one transaction; a refused value answers 422 with the field's label, shows what was typed with the section of the field's group open, and saves nothing. "Skip" (`action=skip`) saves nothing |
 | `GET`, `POST /installer/client` | `client.astro` | The client files step: names `<assets.path>/dcr/` and lists `external_variables.txt` and `external_texts.txt` with their count of lines, or as missing. "Import client files" (`action=import`) imports both with `dcr.Import` in one transaction; "Skip" (`action=skip`) imports nothing. With a file missing, the page says where to put it, offers "Check again" (a link to the same page) and "Skip", and an import answers 422 and imports nothing |
 | `GET`, `POST /installer/admin` | `admin.astro` | Habbo name, email, birth date, password, "Give this habbo Habbo Club" (ticked) and "Credits" (5000): one transaction creates, through `auth.CreateAccount`, the user, habbo, profile, home and wallet with the credits given, writes a club period of 100 years from now when the box is ticked, gives the habbo the staff badge `ADM`, and `HC1` with the club, and adds the user to the highest access group holding `housekeeping.accessGroups`; then redirects to `/` |
 
@@ -32,8 +32,10 @@ variant, and an error a red `Notice` with `role="alert"`.
 
 - One column: the page is 800px wide (`max-w-200`) with a 16px gutter, the box 768px, and every step fills its
   content, one column of 726px. The
-  stepper, the text, the fields and the row of buttons share its left and right edges. Fields sit one under the other
-  at the column's width.
+  stepper, the text, the fields and the row of buttons share its left and right edges. Fields sit one under the other.
+  A field of an address, a figure or a text takes the column's width; a field of a short value, a number or a
+  `shorttext` (`registration.defaultGender`, `game.dateFormat`, the router's `shortTexts`), carries `data-short` and is
+  128px (`w-32`); a choice is as wide as its longest choice.
 - The steps are the shared `Stepper` with a `Step` each, drawn on the server in `layouts/setup.astro` with no client
   directive, in a `<nav aria-label="Steps">`, and they work with scripts off. The current step is `Step current`. Every
   page's data embeds `stepper`, whose `Waiting` is the first step that waits; around every other step the layout
@@ -44,15 +46,16 @@ variant, and an error a red `Notice` with `role="alert"`.
   ("Skip", "Check again"), then the main button. The main button comes first in the markup, so that Enter presses it,
   and the row is reversed. The row is `position: sticky` at the bottom, on a white band with a line above, so it stays
   in sight on a step taller than the screen.
-- The settings step: its groups are panels in `#settings-groups`, each with `data-tab`, its title. The island
-  `components/settings/settings-tabs.svelte` reads them and draws `Tabs color="blue"` with a `Tab` per panel, then
-  hides every panel but the selected one with `hidden`: the panels stay in the one form, so every field posts. "More
-  settings" is the last panel, its groups `<details>`, folded. The first panel holding `data-refused="true"`, the
-  group of the field a refused save names (`settingsGroup.Refused`), opens first, and that group's `<details>` is
-  open. With scripts off, every group shows framed, one under the other, then "More settings" under its heading.
-- The shared `TabPanel` renders only the selected panel, which would take the hidden fields out of the form, so the
-  settings step hides the server's panels itself. `TabList` puts its tabs at the right edge and does not wrap: the
-  step passes `flex-wrap justify-start! px-0!`.
+- The settings step: its groups are sections, `components/settings/settings-section.astro`, in
+  `#settings-sections`, with no script. A section is a native `<details>` whose `<summary>` is the title row, as wide
+  as the column: a pointer, a chevron that turns down when it opens, and a focus ring. A closed section keeps its
+  fields in the one form, so every field posts. The six groups are `top` sections, 8px apart: a closed title row is
+  `sky-200` with a `sky-600` line and `blue-900` text, an open one `sky-600` with white text. "More settings" is the
+  last `top` section, closed, and holds its groups as `inner` sections: rows of `sky-700` text with the chevron on the
+  column's edge and a `sky-200` line between them.
+- The first section opens. A refused save opens instead the section of the field it names (`settingsGroup.Refused`),
+  and "More settings" with it when that group is one of its own: `settings.astro` sets the Go variables `$refused` and
+  `$more` over `.Open` and `.More` before it draws the sections.
 
 # Two forms
 

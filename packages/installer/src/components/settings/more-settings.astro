@@ -1,12 +1,18 @@
 ---
 import MoreGroup from "./more-group.astro";
+import SettingsSection from "./settings-section.astro";
 
-// "More settings": the groups in the template's .More, each folded under its
-// title, and the one a refused form names open. It is the last panel of the
-// step's tabs; with scripts off it follows the other groups under its heading.
+// "More settings": the last section, over the groups in the template's .More,
+// each an inner section. The group a refused form names opens.
+interface Props {
+  open?: boolean;
+}
+
+const { open = false } = Astro.props;
 ---
 
-<section data-tab="More settings" class="flex flex-col">
-  <h3 class="font-bold text-blue-900 group-data-tabbed/settings:sr-only">More settings</h3>
-  [[ range .More ]][[ if .Refused ]]<MoreGroup open />[[ else ]]<MoreGroup />[[ end ]][[ end ]]
-</section>
+<SettingsSection title="More settings" open={open}>
+  <div class="-mt-3 flex flex-col">
+    [[ range .More ]][[ if .Refused ]]<MoreGroup open />[[ else ]]<MoreGroup />[[ end ]][[ end ]]
+  </div>
+</SettingsSection>

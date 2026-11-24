@@ -1,0 +1,62 @@
+---
+// A section of the settings step: a native <details> whose <summary> is the
+// title row, as wide as the column, with a mark that turns when it opens. A
+// closed section keeps its fields in the form, so they still post. A step's
+// sections are "top"; the groups inside "More settings" are "inner".
+interface Props {
+  title: string;
+  open?: boolean;
+  level?: "top" | "inner";
+}
+
+const { title, open = false, level = "top" } = Astro.props;
+
+const row =
+  "flex w-full cursor-pointer list-none items-center gap-2 font-bold select-none [&::-webkit-details-marker]:hidden focus-visible:outline-2 focus-visible:outline-offset-2";
+---
+
+{
+  level === "top" ? (
+    <details class="group/section flex flex-col" open={open}>
+      <summary
+        class:list={[
+          row,
+          "rounded border border-sky-600 bg-sky-200 px-3 py-2 text-blue-900 hover:bg-sky-300 focus-visible:outline-blue-900 group-open/section:bg-sky-600 group-open/section:text-white group-open/section:hover:bg-sky-500",
+        ]}
+      >
+        <svg
+          class="size-4 shrink-0 transition-transform group-open/section:rotate-90 motion-reduce:transition-none"
+          viewBox="0 0 16 16"
+          aria-hidden="true"
+        >
+          <path d="M5 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.5" />
+        </svg>
+        {title}
+      </summary>
+      <div class="flex flex-col gap-3 pt-3 pb-4">
+        <slot />
+      </div>
+    </details>
+  ) : (
+    <details class="group/inner flex flex-col border-b border-sky-200 last:border-b-0" open={open}>
+      <summary
+        class:list={[
+          row,
+          "py-2 text-sky-700 hover:text-sky-600 hover:underline focus-visible:outline-sky-700",
+        ]}
+      >
+        <svg
+          class="size-4 shrink-0 transition-transform group-open/inner:rotate-90 motion-reduce:transition-none"
+          viewBox="0 0 16 16"
+          aria-hidden="true"
+        >
+          <path d="M5 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.5" />
+        </svg>
+        {title}
+      </summary>
+      <div class="flex flex-col gap-3 pt-1 pb-4">
+        <slot />
+      </div>
+    </details>
+  )
+}

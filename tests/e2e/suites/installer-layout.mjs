@@ -2,8 +2,8 @@ export const emptyFolder = true;
 export const programs = [];
 
 // The installer's layout: every step on one column with the stepper, the row of
-// buttons in one place, and the settings step's groups as tabs, with and
-// without scripts.
+// buttons in one place, and the settings step's groups as sections that open
+// and close, with and without scripts.
 export default async function ({ browser, check, installer, ports, shot, sql, start }) {
   const context = await browser.newContext({ viewport: { width: 1366, height: 655 } });
   const page = await context.newPage();
@@ -14,18 +14,19 @@ export default async function ({ browser, check, installer, ports, shot, sql, st
   });
 
   // The column of a step: the left and right edges of the stepper, of each
-  // field and text, and of the row of buttons, whose last button is the main
-  // one at the right end. Each edge is the stepper's.
+  // field, text and section title, and of the row of buttons, whose last
+  // button is the main one at the right end. Each edge is the stepper's, but
+  // the right edge of a field marked data-short, which fits its short value.
   const column = (where) =>
     where.evaluate(() => {
       const box = (el) => el.getBoundingClientRect();
       const steps = box(document.querySelector('nav[aria-label="Steps"]'));
       const card = box(document.querySelector("main > div"));
-      const visible = (el) => el.getClientRects().length > 0;
-      const lefts = [...document.querySelectorAll("main p, main input:not([type=hidden]):not([type=checkbox]), main fieldset")]
+      const visible = (el) => el.checkVisibility();
+      const lefts = [...document.querySelectorAll("main p, main input:not([type=hidden]):not([type=checkbox]), main summary")]
         .filter(visible)
         .map((el) => Math.round(box(el).left - steps.left));
-      const rights = [...document.querySelectorAll("main input:not([type=hidden]):not([type=checkbox])")]
+      const rights = [...document.querySelectorAll("main input:not([type=hidden]):not([type=checkbox]):not([data-short]), main summary")]
         .filter(visible)
         .map((el) => Math.round(steps.right - box(el).right));
       const buttons = [...document.querySelectorAll("main a, main button")].filter((el) =>
@@ -107,22 +108,41 @@ export default async function ({ browser, check, installer, ports, shot, sql, st
   );
   await page.goto(`${installer}/settings`);
 
-  // The settings step: tabs, one group at a time, every field in the one form.
-  const tabs = page.getByRole("tab");
-  await tabs.first().waitFor();
-  const panels = page.locator("#settings-groups [data-tab]");
+  // The settings step: sections, the first open, every field in the one form.
+  const titles = page.locator("#settings-sections > details > summary");
+  const open = () =>
+    page.locator("#settings-sections details[open] > summary").evaluateAll((all) => all.filter((s) => s.checkVisibility()).map((s) => s.innerText.trim()));
+  const toggle = (title) => page.locator(`#settings-sections summary:text-is("${title}")`).click();
   check(
-    "the settings step shows its groups as tabs, one at a time, with More settings last and its groups folded",
-    JSON.stringify(await tabs.allInnerTexts()) ===
+    "the settings step shows its groups as sections, the first open, with More settings last and closed",
+    JSON.stringify(await titles.allInnerTexts()) ===
       JSON.stringify(["New players", "Password reset mail", "Avatar pictures", "Site features", "Prices", "Game ads", "More settings"]) &&
-      (await page.getByRole("tab", { selected: true }).innerText()) === "New players" &&
-      (await page.locator("#settings-groups [role=tabpanel]").count()) === 7 &&
-      (await panels.evaluateAll((all) => all.filter((p) => !p.hidden).length)) === 1 &&
-      (await page.locator("#settings-groups details[open]").count()) === 0 &&
-      (await page.locator('form[action="/installer/settings"] input[name="homes.maxTags"]').count()) === 1,
+      JSON.stringify(await open()) === JSON.stringify(["New players"]) &&
+      (await page.locator('input[name="referral.reward"]').isVisible()) &&
+      !(await page.locator('input[name="groups.price"]').isVisible()) &&
+      (await page.locator('form[action="/installer/settings"] input[name="homes.maxTags"]').count()) === 1 &&
+      (await page.locator("astro-island, script[src]").count()) === 0,
+    JSON.stringify(await open()),
   );
+  await toggle("Prices");
+  await toggle("New players");
+  check(
+    "a click on a section's title opens it, and another click closes it",
+    JSON.stringify(await open()) === JSON.stringify(["Prices"]) &&
+      (await page.locator('input[name="groups.price"]').isVisible()),
+    JSON.stringify(await open()),
+  );
+  await toggle("New players");
   await oneColumn("settings", ["Skip", "Save settings"]);
-  await page.getByRole("tab", { name: "Site features" }).click();
+  const short = await page.locator("main input[data-short]").evaluateAll((all) =>
+    all.filter((el) => el.checkVisibility()).map((el) => [el.name, Math.round(el.getBoundingClientRect().width), el.scrollWidth <= el.clientWidth]),
+  );
+  check(
+    "a field of a short value is narrow and shows its whole value",
+    short.length === 6 && short.every(([, width, fits]) => width < 200 && fits),
+    JSON.stringify(short),
+  );
+  await toggle("Site features");
   await page.evaluate(() => window.scrollTo(0, 0));
   const inSight = await page.evaluate(() =>
     ["Skip", "Save settings"].every((name) => {
@@ -137,37 +157,49 @@ export default async function ({ browser, check, installer, ports, shot, sql, st
   );
   await shot(page, "installer-layout-settings");
 
-  // A field under a hidden tab is refused: its tab opens and the form names it.
-  await page.getByRole("tab", { name: "Prices" }).click();
+  // A field in a closed section is refused: its section opens and the form names it.
   await page.fill('input[name="groups.price"]', "-1");
-  await page.getByRole("tab", { name: "New players" }).click();
-  const [refused] = await Promise.all([
-    page.waitForResponse((r) => r.url().endsWith("/installer/settings") && r.request().method() === "POST"),
-    page.click('button:has-text("Save settings")'),
-  ]);
-  await page.getByRole("tab").first().waitFor();
+  await toggle("Prices");
+  const save = () =>
+    Promise.all([
+      page.waitForResponse((r) => r.url().endsWith("/installer/settings") && r.request().method() === "POST"),
+      page.click('button:has-text("Save settings")'),
+    ]).then(([response]) => response);
+  let refused = await save();
+  await page.getByRole("alert").waitFor();
   check(
-    "a field refused under a hidden tab opens its tab, and the form names it",
+    "a field refused in a closed section opens its section, and the form names it",
     refused.status() === 422 &&
-      (await page.getByRole("tab", { selected: true }).innerText()) === "Prices" &&
+      JSON.stringify(await open()) === JSON.stringify(["Prices"]) &&
       (await page.locator('input[name="groups.price"]').isVisible()) &&
       (await page.getByRole("alert").innerText()).startsWith("Group Price:"),
-    await page.locator("main").innerText(),
+    JSON.stringify(await open()),
+  );
+  await page.fill('input[name="groups.price"]', "35");
+  await page.evaluate(() => (document.querySelector('input[name="homes.maxTags"]').value = "0"));
+  refused = await save();
+  await page.getByRole("alert").waitFor();
+  check(
+    "a field refused in a closed group of More settings opens More settings and that group",
+    refused.status() === 422 &&
+      JSON.stringify(await open()) === JSON.stringify(["More settings", "Homes"]) &&
+      (await page.locator('input[name="homes.maxTags"]').isVisible()),
+    JSON.stringify(await open()),
   );
 
-  // Changes under several tabs are saved together.
-  await page.fill('input[name="groups.price"]', "35");
-  await page.getByRole("tab", { name: "New players" }).click();
-  await page.fill('input[name="referral.reward"]', "75");
-  await page.getByRole("tab", { name: "More settings" }).click();
-  await page.locator("summary", { hasText: "Homes" }).click();
+  // Changes in several sections are saved together, also from closed ones.
   await page.fill('input[name="homes.maxTags"]', "9");
+  await toggle("More settings");
+  await toggle("New players");
+  await page.fill('input[name="referral.reward"]', "75");
+  await toggle("New players");
+  check("the changed sections are closed", JSON.stringify(await open()) === "[]", JSON.stringify(await open()));
   await Promise.all([page.waitForURL("**/client"), page.click('button:has-text("Save settings")')]);
   const saved = Object.fromEntries(
     sql("SELECT key, value FROM settings WHERE key IN ('groups.price', 'referral.reward', 'homes.maxTags')"),
   );
   check(
-    "changes under several tabs are all saved",
+    "changes in several sections are all saved, also from closed sections",
     String(saved["groups.price"]) === "35" &&
       String(saved["referral.reward"]) === "75" &&
       String(saved["homes.maxTags"]) === "9",
@@ -177,17 +209,21 @@ export default async function ({ browser, check, installer, ports, shot, sql, st
   await Promise.all([page.waitForURL("**/admin"), page.click('button:has-text("Skip")')]);
   await oneColumn("administrator", ["Create administrator"]);
 
-  // With scripts off, the stepper's links work and every group shows.
+  // With scripts off, the stepper's links work and the sections open and close.
   const plain = await (await browser.newContext({ javaScriptEnabled: false, viewport: { width: 1366, height: 655 } })).newPage();
   await plain.goto(`${installer}/settings`);
+  const plainOpen = () =>
+    plain.locator("#settings-sections details[open] > summary").evaluateAll((all) => all.filter((s) => s.checkVisibility()).map((s) => s.innerText.trim()));
+  const opened = await plainOpen();
+  await plain.locator('#settings-sections summary:text-is("Prices")').click();
+  const prices = await plainOpen();
+  await plain.locator('#settings-sections summary:text-is("Prices")').click();
   check(
-    "with scripts off, the settings step shows every group, one under the other, and no tabs",
-    (await plain.getByRole("tab").count()) === 0 &&
-      (await plain.locator("#settings-groups [data-tab]").evaluateAll((all) =>
-        all.every((p) => !p.hidden && p.getClientRects().length > 0) &&
-        all.every((p, i) => i === 0 || p.getBoundingClientRect().top > all[i - 1].getBoundingClientRect().bottom),
-      )) &&
-      (await plain.locator("#settings-groups legend").count()) === 6,
+    "with scripts off, the sections open and close as with scripts on",
+    JSON.stringify(opened) === JSON.stringify(["New players"]) &&
+      JSON.stringify(prices) === JSON.stringify(["New players", "Prices"]) &&
+      JSON.stringify(await plainOpen()) === JSON.stringify(["New players"]),
+    JSON.stringify([opened, prices]),
   );
   await Promise.all([plain.waitForURL("**/site"), plain.getByRole("link", { name: "Site", exact: true }).click()]);
   check(

@@ -23,7 +23,7 @@ type settingsPage struct {
 }
 
 // settingsGroup is one group of fields. Refused marks the group of the field a
-// refused form names, so that its tab opens.
+// refused form names, so that its section opens.
 type settingsGroup struct {
 	Title   string
 	Fields  []settingsField
@@ -31,7 +31,7 @@ type settingsGroup struct {
 }
 
 // settingsField is one setting as the form shows it. Kind is text, longtext,
-// number, switch, choice or password. A password shows no value.
+// shorttext, number, switch, choice or password. A password shows no value.
 type settingsField struct {
 	Key      string
 	Label    string
@@ -90,6 +90,9 @@ var longTexts = []string{
 	"staffPage.box1Body", "staffPage.box2Body",
 	"creditsPage.box1Body", "creditsPage.box2Body",
 }
+
+// shortTexts are the texts that hold a few letters, whose field is narrow.
+var shortTexts = []string{"registration.defaultGender", "game.dateFormat"}
 
 // settingsView lays the settings out with their current values from q.
 func settingsView(req *http.Request, q *store.Queries) (settingsPage, error) {
@@ -154,8 +157,11 @@ func filledField(f settings.Field, setting settings.Setting) settingsField {
 			out.Choices = append(out.Choices, settingsChoice{Value: c.Value, Label: c.Label, Selected: c.Value == out.Value})
 		}
 	case "text":
-		if slices.Contains(longTexts, f.Key) {
+		switch {
+		case slices.Contains(longTexts, f.Key):
 			out.Kind = "longtext"
+		case slices.Contains(shortTexts, f.Key):
+			out.Kind = "shorttext"
 		}
 	}
 	return out

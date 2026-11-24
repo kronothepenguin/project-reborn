@@ -1,8 +1,9 @@
 ---
 import SettingsFields from "./settings-fields.astro";
+import SettingsSection from "./settings-section.astro";
 
-// One group under "More settings", over the group in the template's dot:
-// folded under its title unless open.
+// One group under "More settings", over the group in the template's dot: an
+// inner section with its title and its fields.
 interface Props {
   open?: boolean;
 }
@@ -10,9 +11,6 @@ interface Props {
 const { open = false } = Astro.props;
 ---
 
-<details data-refused="[[ .Refused ]]" class="group/more border-b border-gray-200 last:border-b-0" open={open}>
-  <summary class="cursor-pointer py-2 font-bold text-sky-700 hover:underline">[[ .Title ]]</summary>
-  <div class="flex flex-col gap-3 pb-4">
-    <SettingsFields />
-  </div>
-</details>
+<SettingsSection title="[[ .Title ]]" open={open} level="inner">
+  <SettingsFields />
+</SettingsSection>

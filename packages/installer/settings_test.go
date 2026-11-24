@@ -182,7 +182,7 @@ func TestTheSettingsStepFollowsTheSiteStep(t *testing.T) {
 				}
 			}
 
-			if f := page.field(t, "registration.defaultGender"); f.Kind != "text" || f.Value != "F" || f.Label != "Default Gender" || f.Help != "M or F, for a habbo registered without one." {
+			if f := page.field(t, "registration.defaultGender"); f.Kind != "shorttext" || f.Value != "F" || f.Label != "Default Gender" || f.Help != "M or F, for a habbo registered without one." {
 				t.Errorf("default gender %+v", f)
 			}
 			if f := page.field(t, "features.tagFight"); f.Kind != "switch" || f.On {

@@ -3,7 +3,6 @@ import { Button } from "@project-reborn/components";
 import FormError from "../components/form-error.astro";
 import MoreSettings from "../components/settings/more-settings.astro";
 import SettingsGroup from "../components/settings/settings-group.astro";
-import SettingsTabs from "../components/settings/settings-tabs.svelte";
 import StepButtons from "../components/step-buttons.astro";
 import Setup from "../layouts/setup.astro";
 ---
@@ -15,11 +14,17 @@ import Setup from "../layouts/setup.astro";
   </p>
   <FormError />
   <form method="post" action="/installer/settings" class="flex flex-col gap-4">
-    {/* Every group is a panel of the tabs, and stays in the form while hidden. */}
-    <div id="settings-groups" class="group/settings flex flex-col gap-4">
-      <SettingsTabs client:only="svelte" for="settings-groups" />
-      [[ range .Open ]]<SettingsGroup />[[ end ]]
-      <MoreSettings />
+    {/*
+      Every group is a section, and a closed one stays in the form. The first
+      opens, or the group of a refused field, and "More settings" when one of
+      its groups holds that field.
+    */}
+    <div id="settings-sections" class="flex flex-col gap-2">
+      [[ $refused := false ]][[ $more := false ]]
+      [[ range .Open ]][[ if .Refused ]][[ $refused = true ]][[ end ]][[ end ]]
+      [[ range .More ]][[ if .Refused ]][[ $refused = true ]][[ $more = true ]][[ end ]][[ end ]]
+      [[ range $i, $group := .Open ]][[ if or .Refused (and (eq $i 0) (not $refused)) ]]<SettingsGroup open />[[ else ]]<SettingsGroup />[[ end ]][[ end ]]
+      [[ if $more ]]<MoreSettings open />[[ else ]]<MoreSettings />[[ end ]]
     </div>
     <StepButtons>
       <Button type="submit" name="action" value="save" variant="green"

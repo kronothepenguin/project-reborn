@@ -2,7 +2,9 @@
 import { Checkbox, FormField, Input, Select } from "@project-reborn/components";
 
 // The fields of the group in the template's dot, one under the other, each
-// drawn by its kind.
+// drawn by its kind. A field that holds a short value, a number or a short
+// text, is marked data-short and takes a width that fits it; a choice takes the
+// width of its longest choice; every other field takes the column.
 ---
 [[ range .Fields ]] [[ if eq .Kind "switch" ]]
 <div class="flex flex-col gap-1">
@@ -18,7 +20,7 @@ import { Checkbox, FormField, Input, Select } from "@project-reborn/components";
 <FormField
   label="[[ .Label ]]"
   help="[[ .Help ]]"
-  class="flex flex-col gap-1"
+  class="flex flex-col gap-1 *:data-short:w-32 [&>select]:self-start"
 >
   [[ if eq .Kind "longtext" ]]
   <textarea
@@ -35,7 +37,9 @@ import { Checkbox, FormField, Input, Select } from "@project-reborn/components";
     [[ end ]][[ end ]]
   </Select>
   [[ else if eq .Kind "number" ]]
-  <Input name="[[ .Key ]]" type="number" value="[[ .Value ]]" variant="border" />
+  <Input name="[[ .Key ]]" type="number" value="[[ .Value ]]" variant="border" data-short />
+  [[ else if eq .Kind "shorttext" ]]
+  <Input name="[[ .Key ]]" value="[[ .Value ]]" variant="border" data-short />
   [[ else if eq .Kind "password" ]]
   <Input
     name="[[ .Key ]]"

@@ -104,12 +104,12 @@ height and close as possible aligned to right as a group".
 - An administrator reads the stepper: a step already passed is a link to it, and a step still to come is plain.
 - An administrator opens the installer with scripts off: the stepper shows, and its links work.
 - An administrator opens any step: its buttons sit in the same place and order, the way on and then the main button.
-- An administrator opens the settings step: its groups show as tabs inside the step, one group at a time, with "More
-  settings" last, its groups folded.
 - An administrator scrolls a long step: "Skip" and "Save settings" stay in sight at the bottom of the screen.
-- An administrator changes fields under several tabs and saves: every change is saved.
-- A field under a hidden tab is refused: its tab opens and the form names the field.
-- An administrator opens the settings step with scripts off: every group shows, one under the other.
+- An administrator opens the settings step: each of its six groups is a section that opens and closes with a click on
+  its title, the first one open, and "More settings" is the last section, closed.
+- An administrator changes fields in several sections and saves: every change is saved, also from a closed section.
+- A field in a closed section is refused: its section opens and the form names the field.
+- An administrator opens the settings step with scripts off: the sections open and close as with scripts on.
 
 ## Sizes
 
@@ -121,14 +121,6 @@ height and close as possible aligned to right as a group".
 - A page shows a picture, such as an avatar, a badge or an icon: it shows at its own size, sharp.
 
 ## Next
-
-### The settings step's sections
-
-- An administrator opens the settings step: each of its six groups is a section that opens and closes with a click on
-  its title, the first one open, and "More settings" is the last section, closed.
-- An administrator changes fields in several sections and saves: every change is saved, also from a closed section.
-- A field in a closed section is refused: its section opens and the form names the field.
-- An administrator opens the settings step with scripts off: the sections open and close as with scripts on.
 
 ### The site, reviewed beside HoloCMS
 

@@ -15,7 +15,7 @@ Built:
 | `packages/components` | The primitives both apps share; `Stepper` and `Step`; `Table` and `Table variant="form"` give housekeeping's lists and forms; every primitive at the new sizes; `Tabs color`, with Holo's tabs inside boxes; the box's frame and the title bars as Holo's |
 | `packages/store` | `CountAvatars`, the header's registered count |
 | `packages/housekeeping` | Its own look at the new sizes: 16px in Verdana as the theme's `--font-sans`, widths by 1240/960, paddings and gaps by 4/3; every page fits a 1366px screen |
-| `packages/installer` | `layouts/setup.astro`: the logo over one `Card color="blue"` per step, on one column whose first row is the shared `Stepper`, drawn on the server; the sticky row of buttons; the settings step's groups as tabs; Holo's font and the 16px base ([the installer's layout](#the-installers-layout)) |
+| `packages/installer` | `layouts/setup.astro`: the logo over one `Card color="blue"` per step, on one column whose first row is the shared `Stepper`, drawn on the server; the sticky row of buttons; the settings step's groups as collapsible sections; Holo's font and the 16px base ([the installer's layout](#the-installers-layout)) |
 | `packages/cms` | Every page at the new sizes: texts on the plan's table, the columns of the 930px container at 4/3 so they span the 1240px page, signed-out pages at 1240/960, pictures at their own size; homes and the Help Tool keep their canvas ([the layouts](/packages/cms/knowledge/layouts.md)) |
 | `tests/e2e` | The `sizes` suite checks every page at 1366 wide and saves its screenshot |
 
@@ -109,13 +109,15 @@ on a phone the five tabs took three rows.
   links, the current one is dark and bold, the ones to come faded. Under 640px only the current step shows its name.
 - One row of buttons on every step, sticky at the bottom on a white band with a top line: the way on, then the green
   main button at the right end.
-- The settings step's groups are panels the server draws in the one form; an island draws the shared `Tabs` over them
-  and hides all but one with `hidden`, so every field still posts. The group of a refused field opens. With scripts
-  off every group shows, framed, one under the other.
+- The settings step's groups are sections the server draws in the one form, each a native `<details>` whose
+  `<summary>` is a title row as wide as the column, with a chevron that turns when it opens. The first opens, the
+  others are closed, and "More settings" is the last, closed, with its groups as sections inside it. A closed section
+  still posts its fields, and the section of a refused field opens. The step needs no script. A field of a short value
+  is 128px; a field of an address or a figure takes the column.
 - The guidance of Claude's design skill: the project's own system first (Holo's font, colours and parts), one left
   edge and repeated elements with the same edges, flex and `gap` for spacing, a border only where it sets a thing
-  apart (the group frames show only with scripts off), numbering only where the order is real (the steps), and a
-  visible focus on every link and tab.
+  apart (the closed sections' title rows), numbering only where the order is real (the steps), and a
+  visible focus on every link, tab and section title.
 
 # Decisions
 
