@@ -3,5 +3,6 @@
 # Club
 
 - [Club: how](plan.md) - The site and the game sell club, and the game shows a player its club at once.
+- [Research: Habbo Club's monthly gifts](research-gifts.md) - Which furni Habbo Club gave in each month from 2005 to 2009, what came after the last gift, when a gift was given, what a break changed, what Holo did, and what the hotel can start with.
 - [Club](spec.md) - Club is bought on the site and in the client, its gifts are given, and the game shows a player its club at once.
 - [tasks/](tasks/index.md)
