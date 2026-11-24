@@ -2,9 +2,9 @@
 type: Task
 title: Review the installer's layout and rebuild it on one column
 description: The installer's pages are reviewed for alignment and spacing and rebuilt on one column, with the steps as a stepper, the settings step's groups as tabs, and its buttons kept in sight.
-scope: [packages/installer, tests/e2e]
+scope: [packages/components, packages/installer, tests/e2e]
 depends_on: []
-skills: [building-astro-components, adding-svelte-interactivity, testing-behaviours]
+skills: [building-svelte-primitives, building-astro-components, adding-svelte-interactivity, testing-behaviours]
 ---
 
 # Goal
@@ -24,9 +24,11 @@ Every step of the installer lines up, and a long step is easy to pass.
   cause in the classes. The list goes in the report.
 - [ ] One column for every step: the title bar, the steps, the text, the fields and the buttons share one left edge
   and one width, and the box is as wide as that column.
-- [ ] The steps are a stepper, the installer's own component drawn on the server, in place of the tabs island: one
-  row from the left edge, each step a point with its name and an arrow to the next, the current one highlighted, a
-  passed one a link, one still to come plain. `step-tabs.svelte` goes.
+- [ ] `packages/components`: `Stepper` and `Step`, in the shape of the plan ("The stepper"), with a story and a
+  behaviour test: one row, each step a numbered point with its name and an arrow to the next, the current one
+  highlighted, a passed one a link, one still to come plain and faded.
+- [ ] The installer's steps use it, drawn on the server from the left edge, in place of the tabs island.
+  `step-tabs.svelte` goes.
 - [ ] One row of buttons at the bottom of every step, in one place and order: the way on ("Skip", "Check again"), then
   the main button.
 - [ ] The settings step: its six groups are tabs inside the step, with "More settings" as the last tab and its groups
@@ -40,8 +42,10 @@ Every step of the installer lines up, and a long step is easy to pass.
 # Checks
 
 ```sh
+make -C packages/components check
 make -C packages/installer check
 make e2e
 ```
 
-Then `make check` in every project that `make dependants project=packages/installer` prints.
+Then `make check` in every project that `make dependants project=<folder>` prints for `packages/components` and
+`packages/installer`.
