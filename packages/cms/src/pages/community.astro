@@ -5,34 +5,34 @@ import NewsPromo from "../components/news/news-promo.astro";
 import Banners from "../components/site/banners.astro";
 import TagCloud from "../components/tags/tag-cloud.astro";
 import TagSearchForm from "../components/tags/tag-search-form.astro";
+import Columns from "../components/site/columns.astro";
 import Community from "../layouts/community.astro";
 ---
 
-<Community title="[[ .ShortName ]] ~ Community" tab="community" sub="Community">
-  <div class="flex">
-    <div class="w-153.5">
-      <div class="mr-2.5 mb-2.5">
-        <Card variant="blue" color="activehomes">
-          <span slot="header">Random Habbos - Click Us!</span>
-          <ul id="random-habbos" hidden data-imaging="[[ .ImagingURL ]]">
-            [[ range .RandomHabbos ]]
-            <li data-name="[[ .Name ]]" data-figure="[[ .Figure ]]" data-created="[[ .Created ]]" data-motto="[[ .Motto ]]" data-online="[[ .Online ]]"></li>
-            [[ end ]]
-          </ul>
-          <RandomHabbos client:only="svelte" source="random-habbos" />
-        </Card>
-      </div>
-    </div>
-    <div class="w-103.5">
+<Community title="[[ .ShortName ]] ~ Community" tab="community" sub="Community" fluid>
+  <script is:inline>
+    // The page's pictures three ways, for the user to choose: ?pictures=smooth
+    // or ?pictures=pixelated grows them by 16/11 (styles/global.css).
+    document.documentElement.dataset.pictures = new URLSearchParams(location.search).get("pictures") ?? "";
+  </script>
+  <Columns>
+    <Card variant="blue" color="activehomes">
+      <span slot="header">Random Habbos - Click Us!</span>
+      <ul id="random-habbos" hidden data-imaging="[[ .ImagingURL ]]">
+        [[ range .RandomHabbos ]]
+        <li data-name="[[ .Name ]]" data-figure="[[ .Figure ]]" data-created="[[ .Created ]]" data-motto="[[ .Motto ]]" data-online="[[ .Online ]]"></li>
+        [[ end ]]
+      </ul>
+      <RandomHabbos client:only="svelte" source="random-habbos" />
+    </Card>
+    <Fragment slot="second">
       <NewsPromo />
-      <div class="mr-2.5 mb-2.5">
-        <Card color="red">
-          <span slot="header">Users like..</span>
-          <TagCloud />
-          <TagSearchForm />
-        </Card>
-      </div>
-    </div>
-    <div class="w-53"><Banners /></div>
-  </div>
+      <Card color="red">
+        <span slot="header">Users like..</span>
+        <TagCloud />
+        <TagSearchForm />
+      </Card>
+    </Fragment>
+    <Banners slot="third" />
+  </Columns>
 </Community>

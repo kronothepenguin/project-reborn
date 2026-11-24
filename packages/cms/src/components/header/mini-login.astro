@@ -1,24 +1,27 @@
 ---
 import { Bubble, Button, Checkbox } from "@project-reborn/components";
 
+// Holo's #subnavi-login at 16/11: 300px wide, 420px while pointed at or in
+// use, when the labels show; fields of 120px. On a phone it is as wide as the
+// screen, and its labels stay hidden.
 const label =
-  "hidden w-39 pr-5 text-right font-bold text-neutral-300 group-hover/login:block group-focus-within/login:block";
-const field = "w-41 border border-neutral-600 bg-white p-1 text-black";
+  "hidden w-44 shrink-0 pr-5 text-right font-bold text-neutral-300 lg:group-hover/login:block lg:group-focus-within/login:block";
+const field = "h-8 w-44 min-w-0 shrink border border-neutral-600 bg-white px-1 text-black";
 ---
 
 <div
-  class="group/login absolute top-2.5 right-0 w-97 rounded bg-olive-500 text-white hover:w-136 focus-within:w-136"
+  class="group/login w-full rounded bg-olive-500 text-white md:w-109 lg:hover:w-152 lg:focus-within:w-152"
 >
-  <form method="post" action="/" class="flex flex-col gap-0.5 px-3.5 py-2.5">
-    <div class="flex items-center">
+  <form method="post" action="/" class="flex flex-col gap-1 px-4 py-3">
+    <div class="flex items-center gap-1.5">
       <label for="login-username" class={label}>Username</label>
       <input id="login-username" type="text" name="username" class={field} />
       <Button type="submit" size="compact">Sign in</Button>
     </div>
-    <div class="flex items-center">
+    <div class="flex items-center gap-1.5">
       <label for="login-password" class={label}>Password</label>
       <input id="login-password" type="password" name="password" class={field} />
-      <div class="group/remember relative pl-1">
+      <div class="group/remember relative">
         <Checkbox name="remember">Remember me</Checkbox>
         <div
           class="absolute top-full right-0 z-10 mt-2 hidden text-black group-has-checked/remember:block"
@@ -32,7 +35,7 @@ const field = "w-41 border border-neutral-600 bg-white p-1 text-black";
       </div>
     </div>
   </form>
-  <div class="flex gap-1 rounded-b bg-olive-600 px-3.5 py-1 text-sm">
+  <div class="flex flex-wrap gap-1 rounded-b bg-olive-600 px-4 py-1 text-sm">
     <a href="/forgot" class="text-orange-300">I forgot my password/username</a>
     <span>|</span>
     <a href="/register" class="text-white">Register for free</a>

@@ -14,13 +14,19 @@ import MottoEditor from "./motto-editor.svelte";
 
 const sprite = (image: { src: string }, position: string) =>
   `background: url(${image.src}) no-repeat ${position}`;
-const linkItem = "py-0.5 pl-6.5 leading-4";
+const linkItem = "py-0.5 pl-6.5 leading-5";
 const feedItem = "min-h-7 border-t border-dotted border-olive-500 py-2.5 pr-1.5 pl-15 first:border-t-0";
 ---
 
-<div class="relative mr-2.5 mb-2.5 ml-0.5 w-150 rounded-t bg-olive-500">
+<!-- Holo's personal info: the hotel view at its own size, 450x143, the habbo's
+     plate over its corner, the motto and the links. Where the column is wider
+     than the view, the links stand beside it, so the box wraps the picture; on
+     a narrower column they run under the motto as Holo's, and on a phone the
+     view shows as much of itself as fits. -->
+<div id="new-personal-info" class="@container relative flex flex-wrap rounded-t bg-olive-500">
   <div
-    class="relative h-[143px] w-[450px] rounded-tl"
+    id="hotel-view"
+    class="relative h-[143px] w-full max-w-[450px] shrink-0 overflow-hidden rounded-tl"
     style={`background: url(${hotelView.src}) no-repeat`}
   >
     <div
@@ -78,8 +84,8 @@ const feedItem = "min-h-7 border-t border-dotted border-olive-500 py-2.5 pr-1.5 
     </a>
   </div>
 
-  <div class="bg-olive-500 pt-3.5">
-    <div class="relative ml-30 flex h-6 w-107.5 items-center rounded bg-white px-1">
+  <div class="order-3 w-full pt-3.5 pr-4 pb-1.5">
+    <div class="relative ml-30 flex h-6 max-w-117.5 items-center rounded bg-white px-1">
       <strong class="shrink-0 px-3.5">[[ .Habbo ]]:</strong>
       <div class="min-w-0 flex-1">
         <span
@@ -94,7 +100,10 @@ const feedItem = "min-h-7 border-t border-dotted border-olive-500 py-2.5 pr-1.5 
     </div>
   </div>
 
-  <ul class="flex gap-13.5 bg-olive-500 px-5.5 pt-2.5 pb-1.5 text-white">
+  <ul
+    id="link-bar"
+    class="order-4 flex w-full flex-wrap gap-x-10 gap-y-1 px-5.5 pt-1 pb-1.5 text-white @min-[40rem]:order-2 @min-[40rem]:w-auto @min-[40rem]:flex-1 @min-[40rem]:flex-col @min-[40rem]:justify-center @min-[40rem]:gap-y-3"
+  >
     <li class={linkItem} style={sprite(infoIcons, "0 -976px")}>
       <a href="/account/looks">Change looks &raquo;</a>
     </li>
@@ -110,7 +119,7 @@ const feedItem = "min-h-7 border-t border-dotted border-olive-500 py-2.5 pr-1.5 
     </li>
   </ul>
 
-  <div class="rounded-b bg-stone-400">
+  <div class="order-5 w-full rounded-b bg-stone-400">
     <ul id="feed-items">
       [[ if .OpenHelp ]]
       <li class={`${feedItem} text-sm`} style={sprite(smallIcons, "15px -456px")}>

@@ -12,15 +12,17 @@ const { active } = Astro.props;
 // by ::before, both lighter while pointed at. An unselected tab ends in the 2px
 // black line under the header; the selected one is white down to the line it
 // covers, and opens into the sub-navigation.
+// Holo's 28px tab with 12px text and padding 6px 16px 0 22px, at 16/11. On a
+// phone the tabs share the screen's width, each by its text.
 const tab =
-  "relative isolate block h-9 max-w-96 truncate rounded-t border-2 px-7 pt-1.5 text-lg leading-6";
+  "relative isolate block h-10 max-w-105 truncate rounded-t border-2 px-2 pt-2 text-center text-base leading-6 md:pr-6 md:pl-8 md:text-left md:text-lg";
 const raised = `${tab} border-b-black text-white before:absolute before:inset-x-0 before:top-0 before:-z-10 before:h-1/2 before:rounded-t-[2px] before:content-['']`;
 const selected = `${tab} border-b-0 border-black bg-white font-bold text-black`;
 const normal = `${raised} border-blue-900 bg-sky-700 before:bg-sky-600 hover:bg-sky-600 hover:before:bg-sky-400`;
 const green = `${raised} border-lime-800 bg-lime-600 before:bg-lime-500 hover:bg-lime-500 hover:before:bg-lime-400`;
 ---
 
-<ul class="flex items-end gap-1.5">
+<ul class="flex items-end gap-1.5 *:min-w-0 *:flex-auto md:*:flex-none">
   [[ if .SignedIn ]]
   {
     active === "home" ? (

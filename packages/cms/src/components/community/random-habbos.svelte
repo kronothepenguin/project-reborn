@@ -42,7 +42,16 @@
   });
 </script>
 
-<div id="homes-habblet-list-container" class="relative h-[230px]" style={`background-image: url(${stripes.src})`}>
+<!-- The stripes fill the box, 6px inside its frame as Holo's 4px, and Holo's
+     grid of habbos, 435px wide, stands in their middle at its own size. On a
+     phone the grid's sides are cut off. The picture-grow class lets ?pictures=
+     grow the grid for the screenshots alone. -->
+<div
+  id="homes-habblet-list-container"
+  class="-mx-3.5 -mt-1 -mb-1 flex justify-center max-md:overflow-hidden"
+  style={`background-image: url(${stripes.src})`}
+>
+<div class="picture-grow relative h-[230px] w-[435px] shrink-0">
   {#each habbos as habbo, i (i)}
     {@const at = place(i)}
     <a
@@ -83,4 +92,5 @@
       </Bubble>
     </div>
   {/if}
+</div>
 </div>

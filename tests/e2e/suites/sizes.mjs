@@ -1,6 +1,7 @@
 // Every page of the site at today's sizes, on a screen 1366px wide: Holo's font
 // at 16px, texts only in Tailwind's sizes, the 1240px page with its columns
-// filling it, and pictures at their own size. Admin-1 owns a group with a forum
+// filling it, or the Me and community pages' flexbox page of at most 1352px,
+// and pictures at their own size. Admin-1 owns a group with a forum
 // thread and writes one article; a screenshot of every page is saved as
 // pages-<name>.png. Home pages and the Help Tool keep Holo's canvas.
 import { session } from "../lib/staff.mjs";
@@ -91,7 +92,8 @@ export default async function (t) {
 
   // Each page: its name, its address and its kind. A "community" page is
   // 1240px wide, centred; a "columns" one has Holo's three columns, which span
-  // it. A "signed-out" page fills Holo's process box, a "box" one stands in its
+  // it. A "fluid" page, reviewed beside Holo's, is as wide as the screen up to
+  // 1352px, centred, and its columns span it. A "signed-out" page fills Holo's process box, a "box" one stands in its
   // middle. An "own" page has a layout of its own, and a "canvas" keeps Holo's,
   // as the Help Tool.
   const guestPages = [
@@ -101,7 +103,7 @@ export default async function (t) {
     ["reset", "/reset/unknown", "box"],
     ["disclaimer", "/disclaimer", "signed-out"],
     ["privacy", "/privacy", "signed-out"],
-    ["community", "/community", "columns"],
+    ["community", "/community", "fluid"],
     ["news", "/news", "columns"],
     ["news-article", `/news/${article}`, "columns"],
     ["credits", "/credits", "community"],
@@ -117,7 +119,7 @@ export default async function (t) {
     ["client-guest", "/client/utils", "own"],
   ];
   const habboPages = [
-    ["me", "/me", "columns"],
+    ["me", "/me", "fluid"],
     ["tags-search", "/tags?tag=retro", "columns"],
     ["credits-transactions", "/credits/transactions", "community"],
     ["account-looks", "/account/looks", "community"],
@@ -151,6 +153,8 @@ export default async function (t) {
       if (m.scroll > m.client) report.scroll.push({ name, scroll: m.scroll });
       if (["community", "columns"].includes(kind) && (m.main.width !== 1240 || Math.abs(m.main.left - m.main.right) > 1)) report.page.push({ name, ...m.main });
       if (kind === "columns" && m.main.span < 1236) report.fills.push({ name, columns: m.main.columns });
+      if (kind === "fluid" && (m.main.width > 1352 || Math.abs(m.main.left - m.main.right) > 1)) report.page.push({ name, ...m.main });
+      if (kind === "fluid" && m.main.span < m.main.width - 1) report.fills.push({ name, columns: m.main.columns, width: m.main.width });
       if (kind === "signed-out" && m.main && m.main.empty > 24) report.fills.push({ name, empty: m.main.empty });
       if (kind === "canvas") continue;
       const odd = m.texts.filter((text) => !sizes.has(text.size));
@@ -177,7 +181,7 @@ export default async function (t) {
   check("a visitor reads every page's body text at 16px in Holo's font", report.font.length === 0, JSON.stringify(report.font));
   check("every page shows its texts only in the sizes of the new scale", report.texts.length === 0, JSON.stringify(report.texts));
   check("no page scrolls sideways on a screen 1366px wide", report.scroll.length === 0, JSON.stringify(report.scroll));
-  check("every community page is 1240px wide and centred at 1366", report.page.length === 0, JSON.stringify(report.page));
+  check("every community page is centred at 1366, 1240px wide or, reviewed beside Holo's, at most 1352px", report.page.length === 0, JSON.stringify(report.page));
   check("the columns of a page span its 1240px as Holo's spanned its page", report.fills.length === 0, JSON.stringify(report.fills));
   check("every picture shows at its own size", report.pictures.length === 0, JSON.stringify(report.pictures));
 }

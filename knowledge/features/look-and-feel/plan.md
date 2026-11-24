@@ -18,6 +18,8 @@ Built:
 | `packages/installer` | `layouts/setup.astro`: the logo over one `Card color="blue"` per step, whose first row is the `step-tabs` island; Holo's font and the 16px base |
 | `packages/cms` | Every page at the new sizes: texts on the plan's table, the columns of the 930px container at 4/3 so they span the 1240px page, signed-out pages at 1240/960, pictures at their own size; homes and the Help Tool keep their canvas ([the layouts](/packages/cms/knowledge/layouts.md)) |
 | `tests/e2e` | The `sizes` suite checks every page at 1366 wide and saves its screenshot |
+| `packages/cms` | Reviewed beside HoloCMS: the community layout in flexbox, at most 1352px and centred, for phones, tablets and wide screens; `site/columns.astro`, Holo's three columns in 452 / 302 / 160; the community and Me pages, their pictures at their own size in boxes that wrap them, and `?pictures=` on the community page for the three ways ([the layouts](/packages/cms/knowledge/layouts.md)) |
+| `tests/e2e` | The `layout` suite checks the flexbox page on a wide screen, a tablet and a phone, the phone's header and the Me page's hotel view; `sizes` takes the Me and community pages at up to 1352px |
 
 ## The sizes
 
@@ -152,6 +154,8 @@ Earlier:
   proportions alone; text is Holo's times 16/11; pictures keep their size and their boxes wrap them; every page is
   looked at beside Holo's, on a wide screen, before it merges. The first pass applied multipliers page by page with
   no such look, and its 1240px page with columns at 4/3 is replaced by what the review builds.
+- The review's first two pages, the community page and the Me page, pass `fluid` to the community layout; the other
+  pages keep the 1240px page inside the new header until the user has judged the two, and follow them page by page.
 - HoloCMS runs from the user's own Docker stack (`/mnt/media/Laboratory/habbo/holo`, `docker start holo-php-1
   holo-nginx-1`), on `http://localhost:11300`.
 

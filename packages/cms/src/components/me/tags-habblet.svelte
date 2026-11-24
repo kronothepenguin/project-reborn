@@ -92,7 +92,7 @@
 </script>
 
 <div class="relative">
-  <h2 class="absolute top-0 left-0 pt-1 pl-3.5 text-xl font-bold text-lime-600">Tags</h2>
+  <h2 class="pb-1 pl-3.5 text-xl font-bold text-lime-600 sm:absolute sm:top-0 sm:left-0 sm:pt-1 sm:pb-0">Tags</h2>
   <Tabs bind:value={tab} color="green">
     <TabList>
       <Tab value="mine">My Tags</Tab>
@@ -122,15 +122,15 @@
     {/if}
     {#if tags.length < max}
       <form
-        class="mt-[1em] flex items-center gap-1.5"
+        class="mt-[1em] flex flex-wrap items-center gap-1.5"
         onsubmit={(event) => {
           event.preventDefault();
           add();
         }}
       >
-        <span class="mt-1 flex-1 text-olive-500">{question}</span>
+        <span class="mt-1 basis-full text-olive-500 sm:basis-0 sm:flex-1">{question}</span>
         <input
-          class="mt-1 w-33.5 border border-neutral-600 bg-white px-1.5 text-black"
+          class="mt-1 w-33.5 max-sm:flex-1 border border-neutral-600 bg-white px-1.5 text-black"
           maxlength="20"
           aria-label="New tag"
           bind:value={draft}

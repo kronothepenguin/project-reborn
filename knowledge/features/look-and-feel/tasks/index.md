@@ -4,4 +4,3 @@
 
 - [Compare the look with HoloCMS, page by page](06-exit-check.md) - Every page of the site is set beside Holo's and beside its old self, with screenshots, and what differs is listed for the user.
 - [Review the installer's layout and rebuild it on one column](08-the-installers-layout.md) - The installer's pages are reviewed for alignment and spacing and rebuilt on one column, with the steps as a stepper, the settings step's groups as tabs, and its buttons kept in sight.
-- [The layout and two pages, reviewed beside HoloCMS](09-the-first-pages-beside-holo.md) - The community layout is rebuilt in flexbox for phones, tablets and wide screens, and the community and Me pages are reviewed beside HoloCMS until they read as Holo's at a bigger scale, with one page shown three ways for its pictures.

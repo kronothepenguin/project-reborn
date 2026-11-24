@@ -7,45 +7,40 @@ import NewsPromo from "../components/news/news-promo.astro";
 import Banners from "../components/site/banners.astro";
 import TagCloud from "../components/tags/tag-cloud.astro";
 import TagSearchForm from "../components/tags/tag-search-form.astro";
+import Columns from "../components/site/columns.astro";
 import Community from "../layouts/community.astro";
 ---
 
-<Community title="[[ .ShortName ]] ~ [[ .Habbo ]]" tab="me" sub="Homepage">
-  <div class="flex">
-    <div class="w-153.5">
-      <PersonalInfo />
-      <div class="mr-2.5 mb-2.5">
-        <Card>
-          <ul
-            id="my-groups"
-            hidden
-            data-enabled="[[ .Purchase.Enabled ]]"
-            data-price="[[ .Purchase.Price ]]"
-            data-credits="[[ .Credits ]]"
-            data-owned="[[ .Purchase.Owned ]]"
-            data-max-owned="[[ .Purchase.MaxOwned ]]"
-            data-name-max="[[ .Purchase.NameMax ]]"
-            data-description-max="[[ .Purchase.DescriptionMax ]]"
-          >
-            [[ range .Groups ]]<li data-id="[[ .ID ]]" data-badge="[[ .Badge ]]">[[ .Name ]]</li>[[ end ]]
-          </ul>
-          <GroupsHabblet client:only="svelte" source="my-groups" />
-        </Card>
+<Community title="[[ .ShortName ]] ~ [[ .Habbo ]]" tab="me" sub="Homepage" fluid>
+  <Columns>
+    <PersonalInfo />
+    <Card>
+      <ul
+        id="my-groups"
+        hidden
+        data-enabled="[[ .Purchase.Enabled ]]"
+        data-price="[[ .Purchase.Price ]]"
+        data-credits="[[ .Credits ]]"
+        data-owned="[[ .Purchase.Owned ]]"
+        data-max-owned="[[ .Purchase.MaxOwned ]]"
+        data-name-max="[[ .Purchase.NameMax ]]"
+        data-description-max="[[ .Purchase.DescriptionMax ]]"
+      >
+        [[ range .Groups ]]<li data-id="[[ .ID ]]" data-badge="[[ .Badge ]]">[[ .Name ]]</li>[[ end ]]
+      </ul>
+      <GroupsHabblet client:only="svelte" source="my-groups" />
+    </Card>
+    <Card>
+      <ul id="me-tags" hidden data-max="[[ .MaxTags ]]">
+        [[ range .MyTags ]]<li>[[ . ]]</li>[[ end ]]
+      </ul>
+      <div id="others-like" hidden>
+        <TagCloud />
+        <TagSearchForm />
       </div>
-      <div class="mr-2.5 mb-2.5">
-        <Card>
-          <ul id="me-tags" hidden data-max="[[ .MaxTags ]]">
-            [[ range .MyTags ]]<li>[[ . ]]</li>[[ end ]]
-          </ul>
-          <div id="others-like" hidden>
-            <TagCloud />
-            <TagSearchForm />
-          </div>
-          <TagsHabblet client:only="svelte" source="me-tags" others="others-like" />
-        </Card>
-      </div>
-    </div>
-    <div class="w-103.5"><NewsPromo /></div>
-    <div class="w-53"><Banners /></div>
-  </div>
+      <TagsHabblet client:only="svelte" source="me-tags" others="others-like" />
+    </Card>
+    <NewsPromo slot="second" />
+    <Banners slot="third" />
+  </Columns>
 </Community>

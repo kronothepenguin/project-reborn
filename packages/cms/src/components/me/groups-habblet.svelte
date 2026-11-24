@@ -64,20 +64,20 @@
   <ul class="mt-3.5 flow-root">
     {#each groups as group, i (group.id)}
       <li
-        class={["float-left w-1/2 bg-no-repeat", rowClass(i), i % 2 === 0 ? "bg-position-[15px_50%]" : "bg-position-[7px_50%]"]}
+        class={["float-left w-full bg-no-repeat sm:w-1/2", rowClass(i), i % 2 === 0 ? "bg-position-[15px_50%]" : "bg-position-[7px_50%]"]}
         style={`background-image: url(/habbo-imaging/badge/${encodeURIComponent(group.badge)})`}
       >
         <a
           class={[
             "mr-10 block h-[42px] py-0.5 pl-20 text-black no-underline hover:underline",
-            i % 2 === 1 && "border-l border-olive-300",
+            i % 2 === 1 && "border-olive-300 sm:border-l",
           ]}
           href={`/groups/${group.id}`}>{group.name}</a
         >
       </li>
     {/each}
     {#if groups.length % 2 === 1}
-      <li class={["float-left w-1/2", rowClass(groups.length)]}>
+      <li class={["float-left w-1/2 max-sm:hidden", rowClass(groups.length)]}>
         <div class="mr-10 h-[42px] border-l border-olive-300 py-0.5 pl-17.5">&nbsp;</div>
       </li>
     {/if}
@@ -86,7 +86,7 @@
 {/snippet}
 
 <div class="relative">
-  <h2 class="absolute top-0 left-0 pt-1 pl-3.5 text-xl font-bold text-sky-500">Groups</h2>
+  <h2 class="pb-1 pl-3.5 text-xl font-bold text-sky-500 sm:absolute sm:top-0 sm:left-0 sm:pt-1 sm:pb-0">Groups</h2>
   <Tabs bind:value={tab} color="blue">
     <TabList>
       <Tab value="mine">My Groups</Tab>
