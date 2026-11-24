@@ -1,12 +1,13 @@
 ---
 import { Button, Checkbox, FormField, Input } from "@project-reborn/components";
 import FormError from "../components/form-error.astro";
+import StepButtons from "../components/step-buttons.astro";
 import Setup from "../layouts/setup.astro";
 ---
 
 <Setup title="Site" step="site">
   <FormError />
-  <form method="post" action="/installer/site" class="space-y-3">
+  <form method="post" action="/installer/site" class="flex flex-col gap-3">
     <FormField label="Site name" class="flex flex-col gap-1">
       <Input
         name="name"
@@ -76,8 +77,8 @@ import Setup from "../layouts/setup.astro";
       >Secure cookies: the site is served over HTTPS</Checkbox
     >
     [[ end ]]
-    <div class="flex justify-end">
+    <StepButtons>
       <Button type="submit" variant="green">Save and continue</Button>
-    </div>
+    </StepButtons>
   </form>
 </Setup>

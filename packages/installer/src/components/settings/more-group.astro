@@ -1,0 +1,18 @@
+---
+import SettingsFields from "./settings-fields.astro";
+
+// One group under "More settings", over the group in the template's dot:
+// folded under its title unless open.
+interface Props {
+  open?: boolean;
+}
+
+const { open = false } = Astro.props;
+---
+
+<details data-refused="[[ .Refused ]]" class="group/more border-b border-gray-200 last:border-b-0" open={open}>
+  <summary class="cursor-pointer py-2 font-bold text-sky-700 hover:underline">[[ .Title ]]</summary>
+  <div class="flex flex-col gap-3 pb-4">
+    <SettingsFields />
+  </div>
+</details>

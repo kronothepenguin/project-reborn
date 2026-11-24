@@ -19,7 +19,7 @@ not wrapped by its runner.
 | `GET /installer/{$}` | `index.astro` | Shows the state; says the hotel is installed once an administrator exists, and links to `site.url` |
 | `GET`, `POST /installer/config` | `config.astro` | The config step: run alone, opens the database with `store.Open` (creating it with every update), then writes `config.json` with `config.Create`; inside reborn, moves the hotel and saves its address |
 | `GET`, `POST /installer/site` | `site.astro` | Site name, short name, URL, start credits and secure cookies, and housekeeping's address when run alone, saved with `settings.Set` and no user |
-| `GET`, `POST /installer/settings` | `settings.astro` | The settings step: six groups open with the installer's titles (New players, Password reset mail, Avatar pictures, Site features, Prices, Game ads) and every other field of `settings.Groups()` under "More settings", by its group's `Title`, less the site step's settings and the switches that close the site and the hotel. "Save settings" (`action=save`, and the Enter key) checks the changed values together with `settings.Validate` and saves them in one transaction; a refused value answers 422 with the field's label, shows what was typed with "More settings" open, and saves nothing. "Skip" (`action=skip`) saves nothing |
+| `GET`, `POST /installer/settings` | `settings.astro` | The settings step: six groups open with the installer's titles (New players, Password reset mail, Avatar pictures, Site features, Prices, Game ads) and every other field of `settings.Groups()` under "More settings", by its group's `Title`, less the site step's settings and the switches that close the site and the hotel. "Save settings" (`action=save`, and the Enter key) checks the changed values together with `settings.Validate` and saves them in one transaction; a refused value answers 422 with the field's label, shows what was typed with the tab of the field's group open, and saves nothing. "Skip" (`action=skip`) saves nothing |
 | `GET`, `POST /installer/client` | `client.astro` | The client files step: names `<assets.path>/dcr/` and lists `external_variables.txt` and `external_texts.txt` with their count of lines, or as missing. "Import client files" (`action=import`) imports both with `dcr.Import` in one transaction; "Skip" (`action=skip`) imports nothing. With a file missing, the page says where to put it, offers "Check again" (a link to the same page) and "Skip", and an import answers 422 and imports nothing |
 | `GET`, `POST /installer/admin` | `admin.astro` | Habbo name, email, birth date, password, "Give this habbo Habbo Club" (ticked) and "Credits" (5000): one transaction creates, through `auth.CreateAccount`, the user, habbo, profile, home and wallet with the credits given, writes a club period of 100 years from now when the box is ticked, and adds the user to the highest access group holding `housekeeping.accessGroups`; then redirects to `/` |
 
@@ -27,14 +27,32 @@ not wrapped by its runner.
 
 `layouts/setup.astro` draws every page: the hotel's logo and "Project Reborn installer" on the hotel's blue
 (`sky-200`), over one box, `Card color="blue"`, whose title bar names the step. The theme's `--font-sans` is Holo's
-Verdana, at the 16px base. The box is 960px wide; a step's content keeps a 672px column, and the settings step takes
-the whole box, its groups in two columns from `lg` on. A step's main button is `Button variant="green"`, "Skip" and
-"Check again" the default variant, and an error a red `Notice` with `role="alert"`.
+Verdana, at the 16px base. A step's main button is `Button variant="green"`, "Skip" and "Check again" the default
+variant, and an error a red `Notice` with `role="alert"`.
 
-The box's first row is the island `components/step-tabs.svelte`: the steps as `Tabs color="blue"`, in the order of
-`setup.Steps`, the current one selected. Every page's data embeds `stepTabs`, whose `Waiting` is the first step that
-waits: a step up to it opens its page when its tab is chosen, by click or arrow key, and a step after it is shown
-disabled. Once the hotel is installed, the status page passes no step, and every tab is disabled.
+- One column: the page is 800px wide (`max-w-200`) with a 16px gutter, the box 768px, and every step fills its
+  content, one column of 726px. The
+  stepper, the text, the fields and the row of buttons share its left and right edges. Fields sit one under the other
+  at the column's width.
+- The stepper, `components/stepper.astro`, is drawn on the server and works with scripts off: an ordered list in one
+  row from the left edge, each step a numbered point with its name and an arrow after it. The current step has a
+  dark point, bold black name and `aria-current="step"`. A step up to the one that waits is a link; a step after it
+  is plain and faded. Every page's data embeds `stepper`, whose `Waiting` is the first step that waits; the component
+  writes one Go `[[ if eq .Waiting ... ]]` per step. Once the hotel is installed, `Waiting` is empty and every step is
+  plain. Under 640px only the current step shows its name.
+- The row of buttons, `components/step-buttons.astro`, closes every step at the right end of the column: the way on
+  ("Skip", "Check again"), then the main button. The main button comes first in the markup, so that Enter presses it,
+  and the row is reversed. The row is `position: sticky` at the bottom, on a white band with a line above, so it stays
+  in sight on a step taller than the screen.
+- The settings step: its groups are panels in `#settings-groups`, each with `data-tab`, its title. The island
+  `components/settings/settings-tabs.svelte` reads them and draws `Tabs color="blue"` with a `Tab` per panel, then
+  hides every panel but the selected one with `hidden`: the panels stay in the one form, so every field posts. "More
+  settings" is the last panel, its groups `<details>`, folded. The first panel holding `data-refused="true"`, the
+  group of the field a refused save names (`settingsGroup.Refused`), opens first, and that group's `<details>` is
+  open. With scripts off, every group shows framed, one under the other, then "More settings" under its heading.
+- The shared `TabPanel` renders only the selected panel, which would take the hidden fields out of the form, so the
+  settings step hides the server's panels itself. `TabList` puts its tabs at the right edge and does not wrap: the
+  step passes `flex-wrap justify-start! px-0!`.
 
 # Two forms
 

@@ -1,0 +1,12 @@
+---
+import MoreGroup from "./more-group.astro";
+
+// "More settings": the groups in the template's .More, each folded under its
+// title, and the one a refused form names open. It is the last panel of the
+// step's tabs; with scripts off it follows the other groups under its heading.
+---
+
+<section data-tab="More settings" class="flex flex-col">
+  <h3 class="font-bold text-blue-900 group-data-tabbed/settings:sr-only">More settings</h3>
+  [[ range .More ]][[ if .Refused ]]<MoreGroup open />[[ else ]]<MoreGroup />[[ end ]][[ end ]]
+</section>

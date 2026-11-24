@@ -37,6 +37,7 @@ import * as housekeepingSettings from "./suites/housekeeping-settings.mjs";
 import * as housekeepingStore from "./suites/housekeeping-store.mjs";
 import * as housekeepingUsers from "./suites/housekeeping-users.mjs";
 import * as housekeepingVouchers from "./suites/housekeeping-vouchers.mjs";
+import * as installerLayout from "./suites/installer-layout.mjs";
 import * as looks from "./suites/looks.mjs";
 import * as maintenance from "./suites/maintenance.mjs";
 import * as me from "./suites/me.mjs";
@@ -83,6 +84,7 @@ const suites = {
   client,
   "hotel-status": hotelStatus,
   updates,
+  "installer-layout": installerLayout,
   together,
   reborn,
 };

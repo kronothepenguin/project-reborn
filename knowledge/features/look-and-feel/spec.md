@@ -96,21 +96,7 @@ height and close as possible aligned to right as a group".
 ## The installer
 
 - An administrator opens the installer: a page of its own, built from the site's parts: the title bars, the two-tone
-  buttons and the steps as tabs, in Holo's colours and font.
-
-## Next
-
-### Sizes
-
-- A visitor opens a page of the site, the installer or housekeeping: its body text is 16px, in Holo's font.
-- A page shows a text Holo drew smaller than its body text: it shows in a smaller size; a text Holo drew bigger shows
-  in a bigger size.
-- A visitor opens a page of the site on a screen 1366px wide: the page is 1240px wide and centred, and nothing scrolls
-  sideways.
-- A page shows a picture, such as an avatar, a badge or an icon: it shows at its own size, sharp.
-
-### The installer's layout
-
+  buttons and the steps as a stepper, in Holo's colours and font.
 - An administrator opens any step of the installer: the title, the steps, the fields and the buttons share one column
   and one left edge, and the box is as wide as its content, with no empty side.
 - An administrator reads the steps: they show in one row as a stepper, each step a point with its name and an arrow to
@@ -124,6 +110,17 @@ height and close as possible aligned to right as a group".
 - An administrator changes fields under several tabs and saves: every change is saved.
 - A field under a hidden tab is refused: its tab opens and the form names the field.
 - An administrator opens the settings step with scripts off: every group shows, one under the other.
+
+## Next
+
+### Sizes
+
+- A visitor opens a page of the site, the installer or housekeeping: its body text is 16px, in Holo's font.
+- A page shows a text Holo drew smaller than its body text: it shows in a smaller size; a text Holo drew bigger shows
+  in a bigger size.
+- A visitor opens a page of the site on a screen 1366px wide: the page is 1240px wide and centred, and nothing scrolls
+  sideways.
+- A page shows a picture, such as an avatar, a badge or an icon: it shows at its own size, sharp.
 
 # Open questions
 

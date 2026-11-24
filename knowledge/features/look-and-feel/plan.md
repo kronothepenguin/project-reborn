@@ -15,7 +15,7 @@ Built:
 | `packages/components` | The primitives both apps share; `Table` and `Table variant="form"` give housekeeping's lists and forms; every primitive at the new sizes; `Tabs color`, with Holo's tabs inside boxes; the box's frame and the title bars as Holo's |
 | `packages/store` | `CountAvatars`, the header's registered count |
 | `packages/housekeeping` | Its own look at the new sizes: 16px in Verdana as the theme's `--font-sans`, widths by 1240/960, paddings and gaps by 4/3; every page fits a 1366px screen |
-| `packages/installer` | `layouts/setup.astro`: the logo over one `Card color="blue"` per step, whose first row is the `step-tabs` island; Holo's font and the 16px base |
+| `packages/installer` | `layouts/setup.astro`: the logo over one `Card color="blue"` per step, on one column whose first row is the server's `stepper`; the sticky row of buttons; the settings step's groups as tabs; Holo's font and the 16px base ([the installer's layout](#the-installers-layout)) |
 
 Planned:
 
@@ -78,6 +78,29 @@ with nothing changing on screen, then setting the tokens to a 16px design about 
 never scaled by a fraction. An exact 16/11 scale gives a page of about 1382px, which does not fit a 1366 screen.
 
 The known issue of [later](/features/look-and-feel/later.md), group badge tint 15 is not brown, belongs here.
+
+## The installer's layout
+
+Built after a review of the first look at 1366px and 375px. Its faults: the steps' tabs sat at the box's right edge
+(`TabList` is `justify-end`) while the text sat at the left; the box was 960px and a step kept a 672px column, so a
+third of the box stood empty and the buttons ended in its middle; the settings step took the whole box in two CSS
+columns, which end at different heights; its buttons ended a 2000px page; the tabs island drew nothing with scripts off;
+on a phone the five tabs took three rows.
+
+- One column for every step: the box is 768px and its content one 726px column, shared by the stepper, the text, the
+  fields and the buttons. Spacing is flex with `gap`.
+- The stepper is the installer's own Astro component, drawn on the server: an ordered list of numbered points, each
+  with its name and an arrow after it, so that a wrapped row breaks after an arrow. Passed steps are links, the current
+  one is dark and bold, the ones to come faded. Under 640px only the current step shows its name.
+- One row of buttons on every step, sticky at the bottom on a white band with a top line: the way on, then the green
+  main button at the right end.
+- The settings step's groups are panels the server draws in the one form; an island draws the shared `Tabs` over them
+  and hides all but one with `hidden`, so every field still posts. The group of a refused field opens. With scripts
+  off every group shows, framed, one under the other.
+- The guidance of Claude's design skill: the project's own system first (Holo's font, colours and parts), one left
+  edge and repeated elements with the same edges, flex and `gap` for spacing, a border only where it sets a thing
+  apart (the group frames show only with scripts off), numbering only where the order is real (the steps), and a
+  visible focus on every link and tab.
 
 # Decisions
 

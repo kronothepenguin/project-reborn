@@ -20,7 +20,7 @@ import (
 // sitePage asks no housekeeping address with OneAddress: housekeeping then
 // lives on the site, at /housekeeping.
 type sitePage struct {
-	stepTabs
+	stepper
 	OneAddress      bool
 	Name            string
 	ShortName       string
@@ -63,7 +63,7 @@ func (r *Router) HandleSiteView(w http.ResponseWriter, req *http.Request) {
 	}
 	ctx, q := req.Context(), store.New(installation.DB)
 	page := sitePage{
-		stepTabs:      r.tabs(),
+		stepper:       r.stepper(),
 		OneAddress:    r.deps.Move != nil,
 		Name:          settings.String(ctx, q, "site.name"),
 		ShortName:     settings.String(ctx, q, "site.shortName"),
@@ -88,7 +88,7 @@ func (r *Router) HandleSiteSave(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	page := sitePage{
-		stepTabs:        r.tabs(),
+		stepper:         r.stepper(),
 		OneAddress:      r.deps.Move != nil,
 		Name:            strings.TrimSpace(req.PostFormValue("name")),
 		ShortName:       strings.TrimSpace(req.PostFormValue("shortName")),

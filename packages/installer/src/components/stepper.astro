@@ -1,0 +1,76 @@
+---
+// The installer's steps as a stepper, drawn on the server: one row from the
+// left edge, each step a numbered point with its name and an arrow after it,
+// so that a wrapped row breaks after an arrow. The current step is
+// highlighted; a step up to the one that waits, the template's .Waiting, is a
+// link; a step after it is still to come, plain and faded. On a narrow screen
+// only the current step shows its name.
+type Step = "status" | "config" | "site" | "settings" | "client" | "admin";
+
+interface Props {
+  current: Step;
+}
+
+const { current } = Astro.props;
+
+const steps = [
+  { id: "config", label: "Configuration" },
+  { id: "site", label: "Site" },
+  { id: "settings", label: "Settings" },
+  { id: "client", label: "Client files" },
+  { id: "admin", label: "Administrator" },
+];
+
+// The Go condition that a step is open: the step that waits is this one or
+// one after it. `eq` with several values is true when any matches.
+const open = (index: number) =>
+  `[[ if eq .Waiting ${steps
+    .slice(index)
+    .map((step) => `"${step.id}"`)
+    .join(" ")} ]]`;
+
+const point = "flex size-7 shrink-0 items-center justify-center rounded-full border-2 text-sm font-bold";
+const name = "whitespace-nowrap";
+---
+
+<nav aria-label="Steps">
+  <ol class="flex flex-wrap items-center gap-x-2 gap-y-2 max-sm:gap-x-1.5">
+    {
+      steps.map((step, index) => (
+        <li class="flex items-center gap-2 max-sm:gap-1.5">
+          {step.id === current ? (
+            <span class="flex items-center gap-2" aria-current="step">
+              <span class:list={[point, "border-sky-700 bg-sky-700 text-white"]} aria-hidden="true">
+                {index + 1}
+              </span>
+              <span class:list={[name, "font-bold text-black"]}>{step.label}</span>
+            </span>
+          ) : (
+            <Fragment>
+              <Fragment set:html={open(index)} />
+              <a href={`/installer/${step.id}`} class="group flex items-center gap-2 rounded-full text-sky-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">
+                <span class:list={[point, "border-sky-600 bg-sky-600 text-white group-hover:border-sky-400 group-hover:bg-sky-400"]} aria-hidden="true">
+                  {index + 1}
+                </span>
+                <span class:list={[name, "underline-offset-2 group-hover:underline max-sm:sr-only"]}>{step.label}</span>
+              </a>
+              <Fragment set:html="[[ else ]]" />
+              <span class="flex items-center gap-2 text-neutral-500">
+                <span class:list={[point, "border-neutral-300 bg-white"]} aria-hidden="true">
+                  {index + 1}
+                </span>
+                <span class:list={[name, "max-sm:sr-only"]}>{step.label}</span>
+              </span>
+              <Fragment set:html="[[ end ]]" />
+            </Fragment>
+          )}
+          {index < steps.length - 1 && (
+            <svg class="size-4 shrink-0 text-sky-600" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M5 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" />
+            </svg>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>

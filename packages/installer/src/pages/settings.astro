@@ -1,28 +1,31 @@
 ---
 import { Button } from "@project-reborn/components";
 import FormError from "../components/form-error.astro";
-import MoreSettings from "../components/more-settings.astro";
-import SettingsGroup from "../components/settings-group.astro";
+import MoreSettings from "../components/settings/more-settings.astro";
+import SettingsGroup from "../components/settings/settings-group.astro";
+import SettingsTabs from "../components/settings/settings-tabs.svelte";
+import StepButtons from "../components/step-buttons.astro";
 import Setup from "../layouts/setup.astro";
 ---
 
-<Setup title="Settings" step="settings" wide>
+<Setup title="Settings" step="settings">
   <p>
     Set what your hotel needs on its first day. Skip keeps every setting as
     it is, and housekeeping changes them later.
   </p>
   <FormError />
-  <form method="post" action="/installer/settings" class="space-y-4">
-    <div class="gap-4 lg:columns-2 [&>fieldset]:mb-4 [&>fieldset]:break-inside-avoid">
+  <form method="post" action="/installer/settings" class="flex flex-col gap-4">
+    {/* Every group is a panel of the tabs, and stays in the form while hidden. */}
+    <div id="settings-groups" class="group/settings flex flex-col gap-4">
+      <SettingsTabs client:only="svelte" for="settings-groups" />
       [[ range .Open ]]<SettingsGroup />[[ end ]]
+      <MoreSettings />
     </div>
-    {/* A refused form shows every field, so that the one it names is in sight. */}
-    [[ if .Error ]]<MoreSettings open />[[ else ]]<MoreSettings />[[ end ]]
-    <div class="flex flex-row-reverse justify-start gap-2">
+    <StepButtons>
       <Button type="submit" name="action" value="save" variant="green"
         >Save settings</Button
       >
       <Button type="submit" name="action" value="skip">Skip</Button>
-    </div>
+    </StepButtons>
   </form>
 </Setup>

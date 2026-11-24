@@ -1,5 +1,6 @@
 ---
 import { Button } from "@project-reborn/components";
+import StepButtons from "../components/step-buttons.astro";
 import Setup from "../layouts/setup.astro";
 ---
 
@@ -11,9 +12,9 @@ import Setup from "../layouts/setup.astro";
     > exists and its database has an administrator. The installer has nothing
     left to do.
   </p>
-  <div class="flex justify-end">
+  <StepButtons>
     <Button href="[[ .SiteURL ]]" variant="green">Go to the hotel</Button>
-  </div>
+  </StepButtons>
   [[ else ]]
   <p>
     The installer writes <span class="font-mono break-all"
@@ -22,12 +23,12 @@ import Setup from "../layouts/setup.astro";
     settings and imports the client files when you choose, and creates the first
     administrator. Run the hotel from the same directory afterwards.
   </p>
-  <div class="flex justify-end">
+  <StepButtons>
     [[ if .Configured ]]
     <Button href="/installer/[[ .Next ]]" variant="green">Continue</Button>
     [[ else ]]
     <Button href="/installer/config" variant="green">Start</Button>
     [[ end ]]
-  </div>
+  </StepButtons>
   [[ end ]]
 </Setup>

@@ -1,5 +1,6 @@
 ---
 import { Button, Notice } from "@project-reborn/components";
+import StepButtons from "../components/step-buttons.astro";
 import Setup from "../layouts/setup.astro";
 ---
 
@@ -11,7 +12,7 @@ import Setup from "../layouts/setup.astro";
   <ul class="divide-y divide-gray-200 rounded border border-sky-600">
     [[ range .Files ]]
     <li class="flex justify-between gap-2 px-3 py-2">
-      <span class="font-mono">[[ .Name ]]</span>
+      <span class="min-w-0 font-mono break-all">[[ .Name ]]</span>
       [[ if .Found ]]
       <span>[[ .Lines ]] lines</span>
       [[ else ]]
@@ -31,14 +32,16 @@ import Setup from "../layouts/setup.astro";
     Skip goes on without them. Housekeeping's Client Files page imports them
     later.
   </p>
-  <form method="post" action="/installer/client" class="flex justify-end gap-2">
-    <Button type="submit" name="action" value="skip">Skip</Button>
-    [[ if .Missing ]]
-    <Button href="/installer/client">Check again</Button>
-    [[ else ]]
-    <Button type="submit" name="action" value="import" variant="green"
-      >Import client files</Button
-    >
-    [[ end ]]
+  <form method="post" action="/installer/client">
+    <StepButtons>
+      [[ if .Missing ]]
+      <Button href="/installer/client">Check again</Button>
+      [[ else ]]
+      <Button type="submit" name="action" value="import" variant="green"
+        >Import client files</Button
+      >
+      [[ end ]]
+      <Button type="submit" name="action" value="skip">Skip</Button>
+    </StepButtons>
   </form>
 </Setup>

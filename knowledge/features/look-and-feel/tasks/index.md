@@ -4,4 +4,3 @@
 
 - [Every page of the site at the new sizes](03-the-sites-pages.md) - Each page and component of the site replaces its fixed sizes and widths by the plan's rules, so the whole site reads at 16px on the 1240px page.
 - [Compare the look with HoloCMS, page by page](06-exit-check.md) - Every page of the site is set beside Holo's and beside its old self, with screenshots, and what differs is listed for the user.
-- [Review the installer's layout and rebuild it on one column](08-the-installers-layout.md) - The installer's pages are reviewed for alignment and spacing and rebuilt on one column, with the steps as a stepper, the settings step's groups as tabs, and its buttons kept in sight.
