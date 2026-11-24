@@ -5,7 +5,7 @@
 | Copyright © 2008 Meth0d
 +----------------------------------------------------+
 | HoloCMS is provided "as is" and comes without
-| warrenty of any kind. 
+| warrenty of any kind.
 +---------------------------------------------------*/
 
 if (!defined("IN_HOLOCMS")) { header("Location: ../../index.php"); exit; }
@@ -21,8 +21,8 @@ $pagename = "User Profile";
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
-	<title><?php echo $shortname; ?> ~ <?php echo stripslashes($pagename); ?> </title>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title><?php echo $shortname; ?> ~ <?php echo HoloText($pagename); ?> </title>
 
 <script type="text/javascript">
 var andSoItBegins = (new Date()).getTime();
@@ -37,6 +37,7 @@ var andSoItBegins = (new Date()).getTime();
 <link rel="stylesheet" href="./web-gallery/v2/styles/buttons.css" type="text/css" />
 <link rel="stylesheet" href="./web-gallery/v2/styles/boxes.css" type="text/css" />
 <link rel="stylesheet" href="./web-gallery/v2/styles/tooltips.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="<?php echo $sitename; ?> News RSS" href="./rss.php"/>
 
 <script type="text/javascript">
 document.habboLoggedIn = true;
@@ -49,18 +50,18 @@ window.name = "habboMain";
 
 </script>
 
-<link rel="stylesheet" href="http://images.habbohotel.co.uk/habboweb/<?php echo $habboversion; ?>/web-gallery/styles/myhabbo/myhabbo.css" type="text/css" />
-<link rel="stylesheet" href="http://images.habbohotel.co.uk/habboweb/<?php echo $habboversion; ?>/web-gallery/styles/myhabbo/skins.css" type="text/css" />
-<link rel="stylesheet" href="http://images.habbohotel.co.uk/habboweb/<?php echo $habboversion; ?>/web-gallery/styles/myhabbo/dialogs.css" type="text/css" />
-<link rel="stylesheet" href="http://images.habbohotel.co.uk/habboweb/<?php echo $habboversion; ?>/web-gallery/styles/myhabbo/buttons.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/styles/myhabbo/myhabbo.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/styles/myhabbo/skins.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/styles/myhabbo/dialogs.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/styles/myhabbo/buttons.css" type="text/css" />
 <link rel="stylesheet" href="./web-gallery/styles/myhabbo/control.textarea.css" type="text/css" />
-<link rel="stylesheet" href="http://images.habbohotel.co.uk/habboweb/<?php echo $habboversion; ?>/web-gallery/styles/myhabbo/boxes.css" type="text/css" />
-<link rel="stylesheet" href="http://images.habbohotel.co.uk/habboweb/<?php echo $habboversion; ?>/web-gallery/v2/styles/myhabbo.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/styles/myhabbo/boxes.css" type="text/css" />
+<link rel="stylesheet" href="./web-gallery/v2/styles/myhabbo.css" type="text/css" />
 	<link href="./web-gallery/styles/myhabbo/assets.css" type="text/css" rel="stylesheet" />
 
 <script src="./web-gallery/static/js/homeview.js" type="text/javascript"></script>
-<script src="http://images.habbohotel.co.uk/habboweb/<?php echo $habboversion; ?>/web-gallery/static/js/homeauth.js" type="text/javascript"></script>
-<link rel="stylesheet" href="http://images.habbohotel.co.uk/habboweb/<?php echo $habboversion; ?>/web-gallery/v2/styles/group.css" type="text/css" />
+<script src="./web-gallery/static/js/homeauth.js" type="text/javascript"></script>
+<link rel="stylesheet" href="./web-gallery/v2/styles/group.css" type="text/css" />
 <style type="text/css">
 
 <?php if(isset($groupid)){ ?>
@@ -88,9 +89,9 @@ window.name = "habboMain";
 
 </style>
 
- 
 
-	
+
+
 <script src="./web-gallery/static/js/homeedit.js" type="text/javascript"></script>
 <script language="JavaScript" type="text/javascript">
 <?php if(isset($groupid)){ $xid = $groupid; } else { $xid = $user_row['id']; } ?>

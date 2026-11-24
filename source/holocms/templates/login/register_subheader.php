@@ -5,7 +5,7 @@
 | Copyright © 2008 Meth0d
 +----------------------------------------------------+
 | HoloCMS is provided "as is" and comes without
-| warrenty of any kind. 
+| warrenty of any kind.
 +---------------------------------------------------*/
 
 if (!defined("IN_HOLOCMS")) { header("Location: ../../index.php"); exit; }
@@ -16,7 +16,7 @@ if (!defined("IN_HOLOCMS")) { header("Location: ../../index.php"); exit; }
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title><?php echo $shortname; ?> ~ Register </title>
 
 <script type="text/javascript">
@@ -59,7 +59,7 @@ window.name = "habboMain";
         L10N.put("register.error.retyped_email_notsame", "Emails don\'t match");
         L10N.put("register.tooltip.namecheck", "Click here to check your name is free.");
         L10N.put("register.tooltip.retypepassword", "Please re-enter your password.");
-        L10N.put("register.tooltip.personalinfo.disabled", "Please choose your Habbo (character) name first.");
+        L10N.put("register.tooltip.personalinfo.disabled", "Please choose your <?php echo $shortname; ?> (character) name first.");
         L10N.put("register.tooltip.namechecksuccess", "Congratulations! The name is available.");
         L10N.put("register.tooltip.passwordsuccess", "Your password is now secure.");
         L10N.put("register.tooltip.passwordtooshort", "The password you have chosen is too short.");
@@ -71,7 +71,7 @@ window.name = "habboMain";
         L10N.put("register.tooltip.emailsuccess", "You have provided a valid email address, thanks!");
         L10N.put("register.tooltip.emailnotsame", "Your retyped email doesn\'t match.");
         L10N.put("register.tooltip.enterpassword", "Please enter a password.");
-        L10N.put("register.tooltip.entername", "Please enter a name for your Habbo (character).");
+        L10N.put("register.tooltip.entername", "Please enter a name for your <?php echo $shortname; ?> (character).");
         L10N.put("register.tooltip.enteremail", "Please enter your email address.");
         L10N.put("register.tooltip.enterbirthday", "Please give your date of birth - you need this later to get password reminders etc.");
         L10N.put("register.tooltip.acceptterms", "Please accept the Terms and Conditions");
@@ -80,17 +80,42 @@ window.name = "habboMain";
         L10N.put("register.tooltip.entercaptcha","Enter the code.");
         L10N.put("register.tooltip.captchavalid","Invalid code.");
         L10N.put("register.tooltip.captchainvalid","Invalid code, please try again.");
+		L10N.put("register.error.parent_permission","You need to tell your parents about this service");
 
-        RegistrationForm.parentEmailAgeLimit = 12;
-        L10N.put("register.message.parent_email_js_form", "<div\>\n\t<div class=\"register-label\"\>Because you are under 12 and in accordance with industry best practice guidelines, we require your parent or guardian\'s email address.</div\>\n\t<div id=\"parentEmail-error-box\"\>\n        <div class=\"register-error\"\>\n            <div class=\"rounded rounded-blue\"  id=\"parentEmail-error-box-container\"\>\n                <div id=\"parentEmail-error-box-content\"\>\n                    Please enter your email address.\n                </div\>\n            </div\>\n        </div\>\n\t</div\>\n\t<div class=\"register-label\"\><label for=\"register-parentEmail-bubble\"\>Parent or guardian\'s email address</label\></div\>\n\t<div class=\"register-label\"\><input type=\"text\" name=\"bean.parentEmail\" id=\"register-parentEmail-bubble\" class=\"register-text-black\" size=\"15\" /\></div\>\n\n\n</div\>");
+        RegistrationForm.parentEmailAgeLimit = -1;
+        L10N.put("register.message.parent_email_js_form", "<div\>\n\t<div class=\"register-label\"\>Because you are under 16 and in accordance with industry best practice guidelines, we require your parent or guardian\'s email address.</div\>\n\t<div id=\"parentEmail-error-box\"\>\n        <div class=\"register-error\"\>\n            <div class=\"rounded rounded-blue\"  id=\"parentEmail-error-box-container\"\>\n                <div id=\"parentEmail-error-box-content\"\>\n                    Please enter your email address.\n                </div\>\n            </div\>\n        </div\>\n\t</div\>\n\t<div class=\"register-label\"\><label for=\"register-parentEmail-bubble\"\>Parent or guardian\'s email address</label\></div\>\n\t<div class=\"register-label\"\><input type=\"text\" name=\"bean.parentEmail\" id=\"register-parentEmail-bubble\" class=\"register-text-black\" size=\"15\" /\></div\>\n\n\n</div\>");
 
         RegistrationForm.isCaptchaEnabled = true;
-        L10N.put("register.message.captcha_js_form", "<div\>\n\t<div class=\"register-label\"\><img src=\"captcha/CaptchaSecurityImages.php?width=170&height=40&characters=10\" /></div\>\n\t<div class=\"register-label\"\><label for=\"register-captcha-bubble\"\>Type in the security code shown in the image above</label\></div\>\n\t<div class=\"register-input\"\><input type=\"text\" name=\"bean.captchaResponse\" id=\"register-captcha-bubble\" class=\"register-text-black\" value=\"\" size=\"15\" /\></div\>\t\n</div\>");
+        L10N.put("register.message.captcha_js_form", "<div\>\n  <div id=\"recaptcha_image\" class=\"register-label\"\>\n    <img src=\"./captcha/CaptchaSecurityImages.php?width=170&height=40&characters=10\" alt=\"\" width=\"200\" height=\"50\" /\></div\>\n\t<div class=\"register-label\"\><label for=\"register-captcha-bubble\"\>Type in the security code shown in the image above</label\></div\>\n\t<div class=\"register-input\"\><input type=\"text\" name=\"bean.captchaResponse\" id=\"register-captcha-bubble\" class=\"register-text-black\" value=\"\" size=\"15\" /\></div\>\t\n</div\>");
 
         L10N.put("register.message.age_limit_ban", "<div\>\n<p\>\nSorry but you cannot register, because you are too young. If you entered an incorrect date of birth by accident please try again in a few hours.\n</p\>\n\n<p style=\"text-align:right\"\>\n<input type=\"button\" class=\"submit\" id=\"register-parentEmail-cancel\" value=\"Cancel\" onclick=\"RegistrationForm.cancel(\'?ageLimit=true\')\" /\>\n</p\>\n</div\>");
-        RegistrationForm.ageLimit = 6;
-        HabboView.add(function() { Rounder.addCorners($("register-avatar-editor-title"), 4, 4, "rounded-container"); RegistrationForm.init(true); });
+        RegistrationForm.ageLimit = -1;
+        RegistrationForm.banHours = 24;
+        HabboView.add(function() {
+            Rounder.addCorners($("register-avatar-editor-title"), 4, 4, "rounded-container");
+            RegistrationForm.init(<?php if($error['captcha'] != "The code that you filled in isn't right, please try again."){ echo "true"; }else{ echo "false"; } ?>);
+            <?php if($refer == true){ ?>$$('#header ul.stats').each(Element.hide);<?php } ?>
+        });
+
+        HabboView.add(function() {
+            var swfobj = new SWFObject("http://www.habbo.co.uk/flash/HabboRegistration.swf", "habboreg", "435", "400", "8");
+            swfobj.addParam("base", "http://www.habbo.co.uk/flash/");
+            swfobj.addParam("wmode", "opaque");
+            swfobj.addParam("AllowScriptAccess", "always");
+            swfobj.addVariable("figuredata_url", "http://www.habbo.co.uk/gamedata/figuredata");
+            swfobj.addVariable("draworder_url", "http://www.habbo.co.uk/gamedata/figurepartconfig/draworder");
+            swfobj.addVariable("localization_url", "http://www.habbo.co.uk/figure/figure_editor_xml");
+            swfobj.addVariable("habbos_url", "http://www.habbo.co.uk/habblet/xml/promo_habbos");
+            swfobj.addVariable("figure", "<?php echo $figure; ?>");
+            swfobj.addVariable("gender", "<?php echo $gender; ?>");
+
+            swfobj.addVariable("showClubSelections", "0");
+
+            swfobj.write("register-avatar-editor");
+        });
+
     </script>
+
 
 <meta name="description" content="<?php echo $sitename; ?> is a virtual world where you can meet and make friends." />
 <meta name="keywords" content="<?php echo $shortname; ?>,<?php echo $sitename; ?>,virtual world,play games,enter competitions,make friends" />

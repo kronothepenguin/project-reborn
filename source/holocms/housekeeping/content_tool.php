@@ -2,7 +2,7 @@
 /*===================================================+
 || # HoloCMS - Website and Content Management System
 |+===================================================+
-|| # Copyright © 2008 Meth0d. All rights reserved.
+|| # Copyright ï¿½ 2008 Meth0d. All rights reserved.
 || # http://www.meth0d.org
 |+===================================================+
 || # HoloCMS is provided "as is" and comes without
@@ -11,12 +11,12 @@
 
 require_once('../core.php');
 if($hkzone !== true){ header("Location: index.php?throwBack=true"); exit; }
-if(!session_is_registered(acp)){ header("Location: index.php?p=login"); exit; }
+if(!isset($_SESSION['acp'])){ header("Location: index.php?p=login"); exit; }
 
-if(!isset($_POST['category'])){ // do not try to save when it's a category jump
+if(!isset($_POST['category']) || !isset($_GET['category'])){ // do not try to save when it's a category jump
     foreach($_POST as $key => $value){
         if(strlen($value) > 0 && strlen($key) > 0){
-            mysql_query("UPDATE cms_content SET contentvalue = '".addslashes($value)."' WHERE contentkey = '".addslashes($key)."' LIMIT 1") or die(mysql_error());
+            mysql_query("UPDATE cms_content SET contentvalue = '".FilterText($value, true)."' WHERE contentkey = '".FilterText($key, true)."' LIMIT 1") or die(mysql_error());
             $msg = "Settings saved successfully.<br />"; // I know, we shouldn't do this in a loop but meh, doesn't really matter that much, does it?
         }
     }
@@ -26,9 +26,10 @@ if(!isset($_POST['category'])){ // do not try to save when it's a category jump
 
 $pagename = "Content Management";
 
-$catId = $_POST['category'];
+$catId = HoloText($_POST['category']);
+if($catId == ""){ $catId = HoloText($_GET['category']); }
 
-if(empty($catId) || !is_numeric($catId) || $catId < 1 || $catId > 5){
+if(empty($catId) || !is_numeric($catId) || $catId < 1 || $catId > 6){
     $catId = 1;
 } else {
     $catId = $catId;
@@ -63,6 +64,7 @@ if(empty($catId) || !is_numeric($catId) || $catId < 1 || $catId > 5){
             <option value='2' <?php if($catId == "2"){ echo "selected='selected'"; } ?>>Staff Module</option>
             <option value='3' <?php if($catId == "3"){ echo "selected='selected'"; } ?>>Credits Page</option>
             <option value='4' <?php if($catId == "4"){ echo "selected='selected'"; } ?>>Discussion Board Module</option>
+            <option value='5' <?php if($catId == "5"){ echo "selected='selected'"; } ?>>Newsletter</option>
         </select>
         &nbsp;
         <input type='submit' value='Go' class='realbutton' accesskey='s'>
@@ -82,7 +84,7 @@ if(empty($catId) || !is_numeric($catId) || $catId < 1 || $catId > 5){
 
 <?php
 
-    $get_settings = mysql_query("SELECT * FROM cms_content WHERE category = '".$catId."' ORDER BY setting_title ASC") or die(mysql_error());
+    $get_settings = mysql_query("SELECT * FROM cms_content WHERE category = '".$catId."' ORDER BY contentkey ASC") or die(mysql_error());
     while($row = mysql_fetch_assoc($get_settings)){
 	if($row['contentkey'] !== "client-widescreen") {
         echo "<tr>

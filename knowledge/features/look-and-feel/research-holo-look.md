@@ -14,7 +14,7 @@ systems ran, were photographed at 1366x768 and 1920x1080, and were measured in C
 
 - The navbar looks "plain, not bold" because of the font, not the font's weight. Holo's own CSS makes unselected tabs
   `font-weight: normal` and the selected one bold, and wraps Housekeeping in `<b>`
-  (`source/holocms/web-gallery/v2/styles/style.css:362`, `:383`); ours does the same.
+  (`source/holocms-1.3.1/web-gallery/v2/styles/style.css:362`, `:383`); ours does the same.
 - Holo sets `Verdana, Arial, Helvetica, sans-serif` on `body`. The public site sets no font, so Tailwind's default
   stack applies: Roboto here, Segoe UI on Windows, San Francisco on macOS, all narrower and lighter than Verdana. With
   Holo's stack injected into `/me`, the tabs look as heavy as Holo's.
@@ -27,7 +27,7 @@ systems ran, were photographed at 1366x768 and 1920x1080, and were measured in C
 The files are in the session's scratch folder, which does not outlive the session; the steps are here so that it can
 be done again.
 
-- HoloCMS: a copy of `source/holocms`, since `install.php` writes `config.php`; `source/holoemu/Resources/holodb.sql`
+- HoloCMS: a copy of `source/holocms-1.3.1`, since `install.php` writes `config.php`; `source/holoemu/Resources/holodb.sql`
   loaded by MariaDB's init folder; a compose stack of three containers: MariaDB with `--sql-mode=` and latin1, PHP
   5.6 fpm with the mysql, mysqli and gd extensions, and nginx on `127.0.0.1:18911`. PHP 5.6 no longer has
   `session_is_registered()`, which `core.php:143` calls, so a one-function shim defines it through
@@ -44,7 +44,7 @@ be done again.
 
 # Differences, by priority
 
-Measured at 1366 wide unless the CSS is named. "style.css" is `source/holocms/web-gallery/v2/styles/style.css`.
+Measured at 1366 wide unless the CSS is named. "style.css" is `source/holocms-1.3.1/web-gallery/v2/styles/style.css`.
 
 ## 1. The font family of the whole community layout
 

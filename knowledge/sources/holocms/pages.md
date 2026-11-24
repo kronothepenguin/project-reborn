@@ -9,7 +9,8 @@ tags: [cms, holo]
 
 # Layouts
 
-Holo pages are ISO-8859-1 XHTML 1.0 with a fixed 930 px layout. Every page boots through `source/holocms/core.php`.
+Holo pages are ISO-8859-1 XHTML 1.0 with a fixed 930 px layout. Every page boots through
+`source/holocms-1.3.1/core.php`.
 
 | Holo template | Used by | New layout |
 | --- | --- | --- |

@@ -2,7 +2,7 @@
 /*===================================================+
 || # HoloCMS - Website and Content Management System
 |+===================================================+
-|| # Copyright © 2008 Meth0d. All rights reserved.
+|| # Copyright ï¿½ 2008 Meth0d. All rights reserved.
 || # http://www.meth0d.org
 |+===================================================+
 || # HoloCMS is provided "as is" and comes without
@@ -11,7 +11,7 @@
 
 require_once('../core.php');
 if($hkzone !== true){ header("Location: index.php?throwBack=true"); exit; }
-if(!session_is_registered(acp)){ header("Location: index.php?p=login"); exit; }
+if(!isset($_SESSION['acp'])){ header("Location: index.php?p=login"); exit; }
 
 $pagename = "HoloCMS";
 
@@ -36,7 +36,7 @@ $pagename = "HoloCMS";
 				</p>
 				<p>
 					<strong>Development & Coding</strong><br />
-					Sisija<br />
+					Yifan Lu<br />
 					<i>Lead Developer & coder</i>
 				</p>
 				<p>
@@ -45,12 +45,14 @@ $pagename = "HoloCMS";
 					<i>Holograph Emulator Development</i><br />
 					<i>Supporting, and providing integration with, HoloCMS</i><br />
 					<a href='#'>Kreechin (jaym)</a><br />
-					<i>Development of the Group Badge Imager Script (./habbo-imaging/badge.php) and making a new voucher system</i>
+					<i>Development of the Group Badge Imager Script (./habbo-imaging/badge.php), making a new voucher system,, stickers system.</i>
+					<a href='http://www.daneyb.com'>Roy aka Meth0d</a><br />
+					<i>Orginal HoloCMS developer and a great programmer</i>
 				</p>
 				<p>
 					<strong>Shoutouts</strong><br />
-					<a href='http://www.daneyb.com' target='_blank'>Roy aka Meth0d (EX-HoloCMS coder)</a><br />
-					<i>Roy started HoloCMS and without him, we wouldn't had a perfect HoloCMS without him.</i><br />
+					<a href='#'>Sisija</a><br />
+					<i>Continuing the project when Meth0d left.</i><br />
 					<a href='#'>All HoloCMS users and supporters</a><br />
 					<i>We wouldn't be here without you!</i>
 					<!--

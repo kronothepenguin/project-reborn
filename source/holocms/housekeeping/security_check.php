@@ -2,7 +2,7 @@
 /*---------------------------------------------------+
 | HoloCMS - Website and Content Management System
 +----------------------------------------------------+
-| Copyright © 2008 Meth0d
+| Copyright ï¿½ 2008 Meth0d
 +----------------------------------------------------+
 | HoloCMS is provided "as is" and comes without
 | warrenty of any kind. 
@@ -12,7 +12,7 @@
 
 session_start();
 
-if(session_is_registered(username)){
+if(isset($_SESSION['username'])){
 $username = $_SESSION['username'];
 $password = $_SESSION['password'];
 

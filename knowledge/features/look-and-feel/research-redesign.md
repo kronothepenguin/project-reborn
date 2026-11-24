@@ -72,7 +72,7 @@ headers, `Button`, `Bubble`, dialogs, housekeeping tabs), so it scales freely. W
 
 # Holo's reference numbers
 
-`source/holocms/web-gallery/v2/styles/style.css`: body 11px Verdana (also form fields); `#container` and `#header`
+`source/holocms-1.3.1/web-gallery/v2/styles/style.css`: body 11px Verdana (also form fields); `#container` and `#header`
 930px, outer containers add 10px padding each side, `min-width: 930px`; Me columns 460/310/160; news and tags
 210/560/160; boxes `.cb` 8px right margin, 7px bottom margin; online counter left 781 width 110; sub-navigation 572.
 Font sizes across v2 stylesheets: 11px x23, 10px x20, 12px x10, 14px x7, 18px x6, 9px x5, 16px x5.

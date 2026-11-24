@@ -2,7 +2,7 @@
 /*===================================================+
 || # HoloCMS - Website and Content Management System
 |+===================================================+
-|| # Copyright © 2008 Meth0d. All rights reserved.
+|| # Copyright ï¿½ 2008 Meth0d. All rights reserved.
 || # http://www.meth0d.org
 |+===================================================+
 || # HoloCMS is provided "as is" and comes without
@@ -11,12 +11,12 @@
 
 require_once('../core.php');
 if($hkzone !== true){ header("Location: index.php?throwBack=true"); exit; }
-if(!session_is_registered(acp)){ header("Location: index.php?p=login"); exit; }
+if(!isset($_SESSION['acp'])){ header("Location: index.php?p=login"); exit; }
 
 $pagename = "Dashboard";
 
 if(isset($_POST['notes'])){
-	$notes = addslashes($_POST['notes']);
+	$notes = FilterText($_POST['notes']);
 	mysql_query("UPDATE cms_system SET admin_notes = '".$notes."' LIMIT 1") or die(mysql_error());
 }
 
@@ -161,7 +161,7 @@ $onlineUsers = mysql_evaluate("SELECT COUNT(*) FROM users WHERE online > " . $on
 					<div class='homepage_sub_header'>Housekeeping Notes</div>
 					<br /><div align='center'>
 <form action='index.php?p=dashboard&do=save' method='post'>
-<textarea name='notes' style='background-color:#F9FFA2;border:1px solid #CCC;width:95%;font-family:verdana;font-size:10px' rows='8' cols='25'><?php echo stripslashes($system['admin_notes']); ?></textarea>
+<textarea name='notes' style='background-color:#F9FFA2;border:1px solid #CCC;width:95%;font-family:verdana;font-size:10px' rows='8' cols='25'><?php echo HoloText($system['admin_notes']); ?></textarea>
 <div><br /><input type='submit' value='Save Admin Notes' class='realbutton' /></div>
 </form>
 </div><br />
@@ -214,8 +214,18 @@ while($row = mysql_fetch_assoc($get_em)){
 		 <div class='homepage_section'>Support HoloCMS</div>
 			<div style='font-size:12px;padding:4px; text-align:center'>
 				<p>
-					HoloCMS is, always has been, and always will be, free software. To help keep the developer happy and allow him to buy a pizza <sup>every now and then</sup>, you can make a donation. This is completely optional, and if you decide not to donate, you won't miss out on any advantages, besides the developer's gratitude. All donations are processed by PayPal.<br /><br />
+					HoloCMS is, always has been, and always will be, free software. To help keep the developer happy and allow him to buy a pizza <sup>every now and then</sup>, you can make a donation. This is completely optional, and if you decide not to donate, you won't miss out on any advantages, besides the developer's gratitude. All donations are processed by PayPal. Donate to the current developer to encourage development and get faster releases (results may vary).<br /><br />
 
+					Donate to Yifan Lu (the current HoloCMS developer):<br />
+					<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+					<input type="hidden" name="cmd" value="_s-xclick">
+					<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but21.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+					<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+					<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+					">
+					</form>
+					<br /><br />
+					Donate to Meth0d (the orginal HoloCMS developer):<br /><br />
 					<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 					<input type="hidden" name="cmd" value="_donations">
 					<input type="hidden" name="business" value="meth0d@meth0d.org">
@@ -228,8 +238,7 @@ while($row = mysql_fetch_assoc($get_em)){
 					<input type="hidden" name="bn" value="PP-DonationsBF">
 					<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but21.gif" border="0" name="submit" alt="Donate to HoloCMS using PayPal - The safer, easier way to pay online.">
 					<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
-					</form>
-
+					</form><br />
 				</p>
 			</div>
 		</div>

@@ -2,7 +2,7 @@
 /*---------------------------------------------------+
 | HoloCMS - Website and Content Management System
 +----------------------------------------------------+
-| Copyright © 2008 Meth0d
+| Copyright ï¿½ 2008 Meth0d
 +----------------------------------------------------+
 | HoloCMS is provided "as is" and comes without
 | warrenty of any kind. 
@@ -53,7 +53,7 @@ include('templates/login/header.php');
 </div>
 
 <?php
-} elseif(session_is_registered(username)){
+} elseif(isset($_SESSION['username'])){
 
 session_destroy();
 

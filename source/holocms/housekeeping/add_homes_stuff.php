@@ -2,7 +2,7 @@
 /*===================================================+
 || # HoloCMS - Website and Content Management System
 |+===================================================+
-|| # Copyright © 2008 Meth0d. All rights reserved.
+|| # Copyright ï¿½ 2008 Meth0d. All rights reserved.
 || # http://www.meth0d.org
 |+===================================================+
 || # HoloCMS is provided "as is" and comes without
@@ -11,7 +11,7 @@
 
 require_once('../core.php');
 if($hkzone !== true){ header("Location: index.php?throwBack=true"); exit; }
-if(!session_is_registered(acp)){ header("Location: index.php?p=login"); exit; }
+if(!isset($_SESSION['acp'])){ header("Location: index.php?p=login"); exit; }
 
 $pagename = "Stickers & Backgrounds";
 
@@ -32,6 +32,7 @@ $stickyname = explode(" ", $name);
 $image = getimagesize ($url);
 $h = $image[0];
 $w = $image[1];
+if($type != "27" OR $type != "50") {
 $somecontent = "
 div.s_".$stickyname[0]." {
     width: ".$h."px; height: ".$w."px;
@@ -40,7 +41,15 @@ div.s_".$stickyname[0]." {
 div.s_".$stickyname[0]."_pre {
     background: url(".$url.") no-repeat 50% 50%;
 }";
-
+}else{
+$somecontent = "
+div.b_".$stickyname[0]." {
+    background-image: url(".$url.");
+}
+div.b_".$stickyname[0]."_pre {
+    background-image: url(".$url.");
+}";
+}
 
 if (is_writable($filename)) {
     if (!$handle = fopen($filename, 'a')) {
@@ -60,9 +69,12 @@ if (is_writable($filename)) {
 }
 
 
-            
+            if($type == "27" OR $type == "50") {
+			mysql_query("INSERT INTO cms_homes_catalouge (name,type,subtype,data,price,category) VALUES ('".$name."','4', '0', '".$stickyname[0]."', '".$price."', '".$type."')") or die(mysql_error());
+			}else{
             mysql_query("INSERT INTO cms_homes_catalouge (name,type,subtype,data,price,category) VALUES ('".$name."','1', '0', '".$stickyname[0]."', '".$price."', '".$type."')") or die(mysql_error());
-            mysql_query("INSERT INTO system_stafflog (action,message,note,userid,targetid,timestamp) VALUES ('Housekeeping','Created Sticker or Background ".addslashes($_POST['$name'])." worth ".$price." credits','add_homes_stuff.php','".$my_id."','','".$date_full."')") or die(mysql_error());
+            }
+			mysql_query("INSERT INTO system_stafflog (action,message,note,userid,targetid,timestamp) VALUES ('Housekeeping','Created Sticker or Background ".FilterText($_POST['$name'])." worth ".$price." credits','add_homes_stuff.php','".$my_id."','','".$date_full."')") or die(mysql_error());
 
         }
     } else {
@@ -108,7 +120,7 @@ if (is_writable($filename)) {
 <option value="5">Plastic</option>
 <option value="6">Bling</option>
 <option value="7">Borders</option>
-<option value="8">Ceazy</option>
+<option value="8">Crazy</option>
 <option value="9">Cute</option>
 <option value="10">Scary</option>
 <option value="11">Deals</option>
@@ -120,6 +132,7 @@ if (is_writable($filename)) {
 <option value="17">Habbo Club</option>
 <option value="18">Personality</option>
 <option value="20">Other</option>
+<option value="21">Alpha Wood</option>
 <option value="27">Backgrounds</option>
 </select></td>
 </tr>

@@ -8,7 +8,7 @@
 || # HoloCMS is provided "as is" and comes without
 || # warrenty of any kind. HoloCMS is free software!
 |+===================================================*/
- 
+
 if (!defined("IN_HOLOCMS")) { header("Location: index.php"); exit; }
 
 if(empty($body_id)){
@@ -39,7 +39,7 @@ $body_id = "home";
 <?php if($online == "online" && $logged_in){ ?>
 				    <a href="client.php" id="enter-hotel-open-medium-link" target="client" onclick="openOrFocusHabbo('client.php'); return false;">Enter <?php echo $sitename; ?></a>
 <?php } elseif($logged_in){ ?>
-					<div id="hotel-closed-medium"><?php echo $sitename; ?> is offline</div> 
+					<div id="hotel-closed-medium"><?php echo $sitename; ?> is offline</div>
 <?php } ?>
 			</div>
         <?php if(!$logged_in){ ?>
@@ -89,7 +89,7 @@ $body_id = "home";
 				</ul>
                 </div>
                 <form name="tag_search_form" action="user_profile.php" class="search-box clearfix">
-					<a id="search-button" class="new-button search-icon" href="#" onclick="$('search-button').up('form').submit(); return false;"><b><span></span></b><i></i></a>					
+					<a id="search-button" class="new-button search-icon" href="#" onclick="$('search-button').up('form').submit(); return false;"><b><span></span></b><i></i></a>
 					<input type="text" name="tag" id="search_query" value="User Profile.." class="search-box-query search-box-onfocus" style="float: right"/>
 				</form>
                 <script type="text/javascript">SearchBoxHelper.init();</script>
@@ -114,18 +114,18 @@ $body_id = "home";
         <li class=" "><a href="community.php">Community</a><span></span></li>
         <?php } ?>
 
-        <?php if($pageid == 6 || $pageid > 5  && $pageid < 8){ ?>
+        <?php if($pageid == 6 || $pageid > 5  && $pageid < 8 || $pageid == "collectables"){ ?>
         <li class="selected"><strong>Credits</strong><span></span></li>
         <?php } else { ?>
         <li class=" "><a href="credits.php">Credits</a><span></span></li>
         <?php } ?>
-
+		
         <?php if($user_rank > 5 && $logged_in == true){ ?>
-        <li id="tab-register-now"><a href="housekeeping.php" target="_self"><b>Housekeeping</b></a><span></span></li>
+        <li id="tab-register-now"><a href="./housekeeping/" target="_self"><b>Housekeeping</b></a><span></span></li>
         <?php } ?>
 </ul>
 
-	<div id="habbos-online"><div class="rounded"><span><?php echo $online_count; ?> users online now</span></div></div>
+	<div id="habbos-online"><div class="rounded"><span><?php echo $online_count; ?> <?php echo $shortname; ?>s online now</span></div></div>
 	</div>
 </div>
 
@@ -164,7 +164,7 @@ $body_id = "home";
     	    	</li>
 
 		<li class="last">
-				<a href="club.php">Habbo Club</a>
+				<a href="club.php"><?php echo $shortname; ?> Club</a>
 		</li>
         <?php } else if($pageid == 4 || $pageid > 3  && $pageid < 6 || $pageid == "profile" || $pageid == "com" || $pageid == "8" || $pageid == "forum"){ ?>
                 <?php if($pageid == "com"){ ?>
@@ -202,7 +202,14 @@ $body_id = "home";
                 <li class=" last">
 	    			<a href="tags.php">Tags</a>
                 <?php } ?>
-        <?php } else if($pageid == "6" || $pageid > 5 && $pageid < 8 || $pageid == "6b"){ ?>
+				<?php /* if($pageid == "applications"){ ?>
+				<li class="selected last">
+					Applications
+				<?php } else { ?>
+				<li class=" last">
+					<a href="applications.php">Applications</a>
+                <?php } */ ?>
+        <?php } else if($pageid == "6" || $pageid > 5 && $pageid < 8 || $pageid == "6b" || $pageid = "collectables"){ ?>
                 <?php if($pageid == "6"){ ?>
                 <li class="selected ">
     				Credits
@@ -211,17 +218,24 @@ $body_id = "home";
 	    			<a href="credits.php">Credits</a>
                 <?php } ?>
                 <?php if($pageid == "7"){ ?>
+                <li class="selected">
+    				<?php echo $shortname; ?> Club
+                <?php } else { ?>
+                <li class=" ">
+	    			<a href="club.php"><?php echo $shortname; ?> Club</a>
+                <?php } ?>
+                <?php if($pageid == "collectables"){ ?>
                 <li class="selected last">
-    				Habbo Club
+    				Collectables
                 <?php } else { ?>
                 <li class=" last">
-	    			<a href="club.php">Habbo Club</a>
+	    			<a href="collectables.php">Collectables</a>
                 <?php } ?>
         <?php } ?>
     	    	</li>
 </ul>
 
-	
+
 	</div>
 </div>
 

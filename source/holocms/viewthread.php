@@ -14,7 +14,7 @@ $allow_guests = true;
 include('core.php');
 include('includes/session.php');
 
-if(getContent('forum-enabled') !== "1"){ header("Location: index.php"); exit; }
+if(HoloText(getContent('forum-enabled'), true) !== "1"){ header("Location: index.php"); exit; }
 
 $threadid = $_GET['thread'];
 
@@ -45,6 +45,54 @@ $pages = ceil(($posts + 0) / 10);
 if($page > $pages || $page < 1){
 	$page = 1;
 }
+
+
+$group = mysql_query("SELECT forumid FROM cms_forum_posts WHERE threadid='".$_GET['thread']."'");
+$info = mysql_fetch_assoc($group);
+if(isset($info['forumid']) && is_numeric($info['forumid'])){
+
+	$check = mysql_query("SELECT * FROM groups_details WHERE id = '".$info['forumid']."' LIMIT 1");
+	$exists = mysql_num_rows($check);
+
+	if($exists > 0){
+
+		$groupid = $info['forumid'];
+
+		$error = false;
+		$groupdata = mysql_fetch_assoc($check);
+
+		$pagename = $groupdata['name'];
+		$ownerid = $groupdata['ownerid'];
+
+		$members = mysql_evaluate("SELECT COUNT(*) FROM groups_memberships WHERE groupid = '".$groupid."' AND is_pending = '0'");
+
+		$check = mysql_query("SELECT * FROM groups_memberships WHERE userid = '".$my_id."' AND groupid = '".$groupid."' AND is_pending = '0' LIMIT 1");
+		$is_member = mysql_num_rows($check);
+
+		if($is_member > 0 && $logged_in){
+
+			$is_member = true;
+			$my_membership = mysql_fetch_assoc($check);
+			$member_rank = $my_membership['member_rank'];
+
+		} else {
+
+			$is_member = false;
+
+		}
+
+	} else {
+
+		$error = true;
+
+	}
+
+} else {
+
+	$error = true;
+
+}
+
 
 //if($posts < 1){
 //	echo "<b>Internal Error</b><br />No posts found for this thread. Please double-check / repair your cms_forum_posts database table.";
@@ -78,13 +126,32 @@ include('templates/community/header.php');
 	<div id="content" style="position: relative" class="clearfix">
     <div id="mypage-wrapper" class="cbb blue">
 <div class="box-tabs-container box-tabs-left clearfix">
+	<?php
+	$sql = mysql_query("SELECT forumid FROM cms_forum_posts WHERE threadid='".$_GET['thread']."'");
+	$row = mysql_fetch_assoc($sql);
+	if($row['forumid'] != 0) {
+	 if($member_rank > 1 && !$edit_mode){ ?><a href="group_profile.php?id=<?php echo $groupid; ?>&do=edit" class="new-button dark-button edit-icon" style="float:left"><b><span></span>Edit</b><i></i></a><?php } ?>
+	<?php if(!$edit_mode){ echo $viewtools; }
+	} ?>
 	<div class="myhabbo-view-tools">
 	</div>
     <h2 class="page-owner">
+	<?php
+	$sql = mysql_query("SELECT forumid FROM cms_forum_posts WHERE threadid='".$_GET['thread']."'");
+	$row = mysql_fetch_assoc($sql);
+	if($row['forumid'] != 0) {
+ echo HoloText($groupdata['name']); ?>&nbsp;<?php
+ if($groupdata['type'] == "2"){ ?><img src='./web-gallery/images/status_closed_big.gif' alt='Closed Group' title='Closed Group'><?php } ?>
+<?php if($groupdata['type'] == "1"){ ?><img src='./web-gallery/images/status_exclusive_big.gif' alt='Moderated Group' title='Moderated Group'><?php } ?></h2>
+<?php }else{ ?>
     	Discussion Board
+	<?php } ?>
     </h2>
     <ul class="box-tabs">
-        <li class="selected"><a href="forum.php">Discussion Board</a><span class="tab-spacer"></span></li>
+		<?php if($row['forumid'] != 0) { ?>
+		<li><a href="group_profile.php?id=<?php echo $groupid; ?>">Front Page</a><span class="tab-spacer"></span></li>
+<?php	} ?>
+        <li class="selected"><a href="<?php if($row['forumid'] != 0) { echo "group_"; } ?>forum.php<?php if($row['forumid'] != 0) { ?>?id=<?php echo $groupid; } ?>">Discussion Board</a><span class="tab-spacer"></span></li>
     </ul>
 </div>
 	<div id="mypage-content">
@@ -95,9 +162,36 @@ include('templates/community/header.php');
 <div id="group-postlist-container">
 
     <div class="postlist-header clearfix">
-                <?php if($topic_open && $logged_in){ ?><a href="#" id="create-post-message" class="create-post-link verify-email">Post reply</a><?php } elseif($logged_in) { ?><span class="topic-closed"><img src="./web-gallery/images/groups/status_closed.gif" title="Closed Thread"> Closed Thread</span><?php } ?>
+				<?php
+				$sql = mysql_query("SELECT * FROM groups_details WHERE id='".$row['forumid']."' LIMIT 1");
+				$row = mysql_fetch_assoc($sql);
+				$asdf = "";
+				$zxcv = "";
+				if($row['topics'] == 0) {
+					$asdf = "<a href=\"#\" id=\"create-post-message\" class=\"create-post-link verify-email\">Post reply</a>";
+					$zxcv = "<a href=\"#\" class=\"quote-post-link verify-email\" id=\"quote-post-".$row['id']."-message\">Quote</a>";
+				}elseif($row['topics'] == 1) {
+					$check = mysql_query("SELECT * FROM groups_memberships WHERE userid='".$my_id."' AND groupid='".$_GET['id']."' AND is_pending <> '1' LIMIT 1");
+					if(mysql_num_rows($check) > 0) { 
+						$asdf = "<a href=\"#\" id=\"create-post-message\" class=\"create-post-link verify-email\">Post reply</a>";
+						$zxcv = "<a href=\"#\" class=\"quote-post-link verify-email\" id=\"quote-post-".$row['id']."-message\">Quote</a>";
+					}
+				}elseif($row['topics'] == 2) {
+					$check = mysql_query("SELECT * FROM groups_memberships WHERE userid='".$my_id."' AND groupid='".$_GET['id']."' AND member_rank='2' AND is_pending <> '1' LIMIT 1");
+					if(mysql_num_rows($check) > 0) { 
+						$asdf = "<a href=\"#\" id=\"create-post-message\" class=\"create-post-link verify-email\">Post reply</a>";
+						$zxcv = "<a href=\"#\" class=\"quote-post-link verify-email\" id=\"quote-post-".$row['id']."-message\">Quote</a>";
+					}
+				}
+				?>
+                <?php if($topic_open && $logged_in){ ?><?php echo $asdf ?><?php } elseif($logged_in) { ?><span class="topic-closed"><img src="./web-gallery/images/groups/status_closed.gif" title="Closed Thread"> Closed Thread</span><?php } ?>
                 <input type="hidden" id="email-verfication-ok" value="1"/>
-                <?php if($user_rank > 5){ ?><a href="#" id="edit-topic-settings" class="edit-topic-settings-link">Moderation Tools &raquo;</a>
+				<?php
+				$hid = mysql_query("SELECT * FROM groups_memberships WHERE userid='".$my_id."' AND groupid='".$groupid."' AND member_rank='2' LIMIT 1");
+				if(mysql_num_rows($hid) > 0) { ?><a href="#" id="edit-topic-settings" class="edit-topic-settings-link">Moderation Tools &raquo;</a>
+                <input type="hidden" id="settings_dialog_header" value="Moderation Tools"/>
+				<?php
+				}elseif($user_rank > 5){ ?><a href="#" id="edit-topic-settings" class="edit-topic-settings-link">Moderation Tools &raquo;</a>
                 <input type="hidden" id="settings_dialog_header" value="Moderation Tools"/><?php } ?>
         <div class="page-num-list">
 	<input type="hidden" id="current-page" value="<?php echo $page; ?>"/>
@@ -157,15 +251,15 @@ while($row = mysql_fetch_assoc($get_em)){
             echo "</div>
 		<div class=\"post-list-avatar-badge\">";
 		if(GetUserBadge($userid) !== false){
-			echo "<img src=\"http://images.habbohotel.co.uk/c_images/album1584/".GetUserBadge($userid).".gif\" />";
+			echo "<img src=\"".$cimagesurl.$badgesurl.GetUserBadge($userid).".gif\" />";
 		}
 		echo "</div>
         </div>
-        <div class=\"post-list-motto post-list-creator-info\">".trim(stripslashes($userdata['mission']))."</div>
+        <div class=\"post-list-motto post-list-creator-info\">".trim(HoloText($userdata['mission']))."</div>
 	</td>
 	<td class=\"post-list-message\" valign=\"top\" colspan=\"2\">";
 			if($topic_open == true && $logged_in){
-echo "                <a href=\"#\" class=\"quote-post-link verify-email\" id=\"quote-post-".$row['id']."-message\">Quote</a>";
+echo "                ".$zxcv;
 			}
 			if($user_rank > 5 || $my_id == $userdata['id'] && $logged_in){
 	                echo "<a href=\"#\" class=\"edit-post-link verify-email\" id=\"edit-post-".$row['id']."-message\">Modify</a>";
@@ -174,7 +268,7 @@ echo "                <a href=\"#\" class=\"quote-post-link verify-email\" id=\"
 	if($dynamic_id !== 1 || $page > 1){
 		echo "RE: ";
  	}
-	echo stripslashes($thread['title'])."</span><br />
+	echo HoloText($thread['title'])."</span><br />
         <span class=\"post-list-message-time\">".$row['date']."</span>
         <div class=\"post-list-report-element\">";
 			if($user_rank > 5 || $my_id == $userdata['id'] && $logged_in){
@@ -191,8 +285,8 @@ echo "        </div>";
 
 echo "        <div class=\"post-list-content-element\">";
 
-            echo bbcode_format(trim(nl2br(stripslashes($row['message']))))."
-                <input type=\"hidden\" id=\"".$row['id']."-message\" value=\"".stripslashes($row['message'])."\" />
+            echo bbcode_format(trim(nl2br(HoloText($row['message']))))."
+                <input type=\"hidden\" id=\"".$row['id']."-message\" value=\"".HoloText($row['message'])."\" />
         </div>
         <div>
         </div>
@@ -242,7 +336,7 @@ echo "        <div class=\"post-list-content-element\">";
 </div>
 
     <div class="postlist-footer clearfix">
-		<?php if($topic_open && $logged_in){ ?><a href="#" id="create-post-message-lower" class="create-post-link verify-email">Post reply</a><?php } elseif($logged_in){ ?><span class="topic-closed"><img src="./web-gallery/images/groups/status_closed.gif" title="Closed Thread"> Closed Thread</span><?php } else { echo "</a>You must be logged in to reply or post new threads."; } ?>
+		<?php if($topic_open && $logged_in){ ?><?php echo $asdf ?></a><?php } elseif($logged_in){ ?><span class="topic-closed"><img src="./web-gallery/images/groups/status_closed.gif" title="Closed Thread"> Closed Thread</span><?php } else { echo "</a>You must be logged in to reply or post new threads."; } ?>
     </a><div class="page-num-list">
     View page:
 <?php

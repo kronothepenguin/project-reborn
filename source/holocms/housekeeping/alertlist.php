@@ -2,7 +2,7 @@
 /*===================================================+
 || # HoloCMS - Website and Content Management System
 |+===================================================+
-|| # Copyright © 2008 Meth0d. All rights reserved.
+|| # Copyright ï¿½ 2008 Meth0d. All rights reserved.
 || # http://www.meth0d.org
 |+===================================================+
 || # HoloCMS is provided "as is" and comes without
@@ -11,7 +11,7 @@
 
 require_once('../core.php');
 if($hkzone !== true){ header("Location: index.php?throwBack=true"); exit; }
-if(!session_is_registered(acp)){ header("Location: index.php?p=login"); exit; }
+if(!isset($_SESSION['acp'])){ header("Location: index.php?p=login"); exit; }
 
 $pagename = "Alert Listing";
 
@@ -61,7 +61,7 @@ while($row = mysql_fetch_assoc($get_em)){
   <td class='tablerow1' align='center'>%s (ID: %s)</td>
   <td class='tablerow1' align='center'>%s</td>
   <td class='tablerow1' align='center'>%s</td>
-</tr>", $row['id'], $username, $row['userid'], stripslashes($row['alert']), $type);
+</tr>", $row['id'], $username, $row['userid'], HoloText($row['alert']), $type);
 }
 ?>
  

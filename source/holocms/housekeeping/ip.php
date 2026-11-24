@@ -2,7 +2,7 @@
 /*===================================================+
 || # HoloCMS - Website and Content Management System
 |+===================================================+
-|| # Copyright © 2008 Meth0d. All rights reserved.
+|| # Copyright ï¿½ 2008 Meth0d. All rights reserved.
 || # http://www.meth0d.org
 |+===================================================+
 || # HoloCMS is provided "as is" and comes without
@@ -11,13 +11,13 @@
 
 require_once('../core.php');
 if($hkzone !== true){ header("Location: index.php?throwBack=true"); exit; }
-if(!session_is_registered(acp)){ header("Location: index.php?p=login"); exit; }
+if(!isset($_SESSION['acp'])){ header("Location: index.php?p=login"); exit; }
 
 $pagename = "Retrive IP Address";
 
 if(isset($_POST['query'])){
 
-	$check = mysql_query("SELECT name,ipaddress_last,id FROM users WHERE name LIKE '" . addslashes($_POST['query']) . "' LIMIT 1") or die(mysql_error());
+	$check = mysql_query("SELECT name,ipaddress_last,id FROM users WHERE name LIKE '" . FilterText($_POST['query']) . "' LIMIT 1") or die(mysql_error());
 	$result = mysql_num_rows($check);
 
 	if($result > 0){

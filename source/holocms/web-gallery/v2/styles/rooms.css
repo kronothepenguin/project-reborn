@@ -18,12 +18,6 @@
 	cursor: pointer;
 }
 
-.room-occupancy-1 { background-image: url(../images/rooms/room_icon_1.gif);	}
-.room-occupancy-2 { background-image: url(../images/rooms/room_icon_2.gif);	}
-.room-occupancy-3 { background-image: url(../images/rooms/room_icon_3.gif);	}
-.room-occupancy-4 { background-image: url(../images/rooms/room_icon_4.gif);	}
-.room-occupancy-5 { background-image: url(../images/rooms/room_icon_5.gif);	}
-
 .recommendedrooms-lite-habblet-list-container .enter-room-link .room-enter {
 	float: right;
 	padding-right: 26px;
