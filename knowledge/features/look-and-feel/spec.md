@@ -149,6 +149,14 @@ height and close as possible aligned to right as a group".
   colour.
 - A text stands on a coloured panel: it reads clearly, as Holo's.
 
+### The homes inside the navigation
+
+- A visitor opens a habbo's home or a group's page: its box is as wide as the sub-navigation, which is the same as on
+  every other page.
+- A habbo or a group's owner edits the page: the canvas is 752px wide for everyone, and a widget, a sticker or a note
+  stays inside it.
+- A visitor opens a home: it shows no advert column.
+
 # Open questions
 
 - Four questions of [the redesign

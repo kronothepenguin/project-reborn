@@ -207,6 +207,10 @@ Of 2026-11-23, each the user's words or choice among options put to them:
 - Tailwind's palette gains shades for Holo's colours beyond a margin of distance, and the tool learns them (the user's
   idea, in the task's words).
 - The stepper's points, the notice and a field's help line are fitted to 12px ("yes, i think").
+- Homes and groups get the 752px canvas under the same navigation, with no advert column ("Canvas of 752px, no
+  advert column"). Holo gave club members and groups a 922px canvas; that benefit goes.
+- HoloCMS 3.1.1 becomes the source reference, its code copied into `source/` without Sulake's client files and
+  pictures ("Copy its code into source/"); see [the two versions](/sources/holocms/versions.md).
 
 Earlier:
 
