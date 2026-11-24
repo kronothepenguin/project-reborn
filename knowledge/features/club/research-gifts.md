@@ -187,9 +187,10 @@ All 23 furni exist in the store's furni definitions and on the Club Furni page.[
 2. How housekeeping marks the repeats.
    - A checkbox per gift. The repeats follow the main order. Recommended first: it keeps one list to drag.
    - A second list, ordered by its own drag and drop.
-3. Who receives the gift, as club belongs to the user and every habbo of it is a member.
-   - One gift per club month for the user, offered to the first of its habbos to log in. Recommended first.
-   - One gift per club month for each habbo.
+3. When the first gift comes. The spec gives a gift for each full month; Habbo gave the first on the day of joining.
+   - On the day of joining, then every 31 days. This is Habbo's rule. Recommended first. Example: a member of 1 day
+     has the Club sofa.
+   - After the first full month. Example: a member of 1 day has no gift yet.
 4. What a break does.
    - The elapsed months stay, and the next gift is the next month's. This is Habbo's rule. Recommended first.
    - The count starts again at month 1, as HoloCMS does.
