@@ -4,10 +4,10 @@ import Housekeeping from "../layouts/housekeeping.astro";
 ---
 
 <Housekeeping title="User Overview" tab="users">
-  <div class="space-y-4">
+  <div class="space-y-3">
     <form method="get" action="/housekeeping/habbos">
       <Box title="Find A User">
-        <div class="flex flex-wrap items-end gap-2.5 p-1.5">
+        <div class="flex flex-wrap items-end gap-2 p-1">
           <div>
             <label for="habbo-query"><strong>[[ if .Private ]]Name, ID, E-Mail Address or IP Address[[ else ]]Name or ID[[ end ]]</strong></label>
             <div>

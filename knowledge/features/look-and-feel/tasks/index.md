@@ -5,4 +5,3 @@
 - [Compare the look with HoloCMS, page by page](06-exit-check.md) - Every page of the site is set beside Holo's and beside its old self, with screenshots, and what differs is listed for the user.
 - [The forum, the homes and the groups beside Holo's](12-the-forum-and-the-homes-beside-holo.md) - The discussion board, a habbo's home and a group's page match HoloCMS box for box: the board's box as wide as Holo's, the home's canvas and its widgets whole.
 - [The site's other pages beside Holo's](13-the-other-pages-beside-holo.md) - News, staff, tags, credits, club, the account pages, help, register and the client page match HoloCMS box for box.
-- [Housekeeping and the installer at Holo's sizes](14-housekeeping-and-the-installer-at-holos-sizes.md) - Housekeeping and the installer keep their own looks with the site's 12px text and the shared parts' sizes.

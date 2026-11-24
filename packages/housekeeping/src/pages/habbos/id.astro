@@ -6,7 +6,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
 
 <Housekeeping title="[[ .Target.Name ]]" tab="users">
   <Message />
-  <div class="space-y-4">
+  <div class="space-y-3">
     <form method="post" action="/housekeeping/habbos/[[ .Target.ID ]]">
       <Box title="[[ .Target.Name ]] (ID: [[ .Target.ID ]])[[ if .Target.Archived ]] - Archived[[ end ]]">
         <Table variant="form">
@@ -44,7 +44,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
           </tbody>
         </Table>
         [[ if .CanEdit ]]
-        <div class="border-t-2 border-black bg-olive-200 p-1.5 text-center">
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
           <Button variant="plain" size="compact" type="submit">Save Habbo</Button>
         </div>
         [[ end ]]
@@ -54,8 +54,8 @@ import Housekeeping from "../../layouts/housekeeping.astro";
     [[ if and .Target.Archived .CanEdit ]]
     <form method="post" action="/housekeeping/habbos/[[ .Target.ID ]]/restore">
       <Box title="Archived Habbo">
-        <p class="p-1.5">The owner archived this habbo, so it cannot sign in.</p>
-        <div class="border-t-2 border-black bg-olive-200 p-1.5 text-center">
+        <p class="p-1">The owner archived this habbo, so it cannot sign in.</p>
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
           <Button variant="plain" size="compact" type="submit">Restore Habbo</Button>
         </div>
       </Box>
@@ -116,12 +116,12 @@ import Housekeeping from "../../layouts/housekeeping.astro";
           </tbody>
         </Table>
         [[ if .CanEdit ]]
-        <div class="border-t-2 border-black bg-olive-200 p-1.5 text-center">
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
           <Button variant="plain" size="compact" type="submit">Save User</Button>
         </div>
         [[ end ]]
         [[ if .CanBan ]]
-        <p class="border-t-2 border-black p-1.5 text-center">
+        <p class="border-t-2 border-black p-1 text-center">
           <a href="/housekeeping/bans?user=[[ .Target.Name ]]" class="text-indigo-900 underline">Ban this user</a>
         </p>
         [[ end ]]
@@ -142,7 +142,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
             </tr>
           </tbody>
         </Table>
-        <div class="border-t-2 border-black bg-olive-200 p-1.5 text-center">
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
           <Button variant="plain" size="compact" type="submit">Give Credits</Button>
         </div>
       </Box>
@@ -175,7 +175,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
             [[ end ]]
           </tbody>
         </Table>
-        <div class="border-t-2 border-black bg-olive-200 p-1.5 text-center">
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
           <Button variant="plain" size="compact" type="submit">Save Attributes</Button>
         </div>
       </Box>
@@ -227,7 +227,7 @@ import Housekeeping from "../../layouts/housekeeping.astro";
             </tr>
           </tbody>
         </Table>
-        <div class="border-t-2 border-black bg-olive-200 p-1.5 text-center">
+        <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
           <Button variant="plain" size="compact" type="submit">Give badge</Button>
         </div>
       </Box>

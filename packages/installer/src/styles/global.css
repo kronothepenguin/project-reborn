@@ -1,7 +1,7 @@
 @import "tailwindcss" source("../..");
 @import "@project-reborn/components/styles.css";
 
-/* Holo's font, at the 16px base of the new sizes. */
+/* Holo's font, at the site's 12px text (look-and-feel plan, "The sizes"). */
 @theme {
   --font-sans: Verdana, Arial, Helvetica, sans-serif;
 }

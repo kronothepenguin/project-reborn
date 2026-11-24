@@ -66,6 +66,17 @@ export default async function ({ browser, check, installer, ports, shot, sql, st
 
   await start("installer");
   await page.goto(`${installer}/`);
+  const text = await page.evaluate(() => {
+    const body = getComputedStyle(document.body);
+    const steps = document.querySelector('nav[aria-label="Steps"]').getBoundingClientRect();
+    return { size: body.fontSize, font: body.fontFamily, column: Math.round(steps.width) };
+  });
+  check(
+    "an administrator opens the installer: its text is 12px in Verdana, the site's size, on a column fitted to it",
+    text.size === "12px" && text.font.startsWith("Verdana") && text.column === 574,
+    JSON.stringify(text),
+  );
+  await shot(page, "installer-status-1366");
   await oneColumn("status", ["Start"]);
   await page.goto(`${installer}/config`);
   const first = await stepper();
@@ -83,10 +94,12 @@ export default async function ({ browser, check, installer, ports, shot, sql, st
       ) === JSON.stringify([true, true, true, true, false]),
     JSON.stringify(first),
   );
+  await shot(page, "installer-config-1366");
   await oneColumn("config", ["Write configuration"]);
   await page.fill('input[name="port"]', String(ports.cms));
   await page.fill('input[name="housekeepingPort"]', String(ports.housekeeping));
   await Promise.all([page.waitForURL("**/site"), page.click('button:has-text("Write configuration")')]);
+  await shot(page, "installer-site-1366");
   await oneColumn("site", ["Save and continue"]);
   await page.fill('input[name="name"]', "Reborn Hotel");
   await page.fill('input[name="shortName"]', "Reborn");
@@ -133,6 +146,8 @@ export default async function ({ browser, check, installer, ports, shot, sql, st
     JSON.stringify(await open()),
   );
   await toggle("New players");
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await shot(page, "installer-settings-1366");
   await oneColumn("settings", ["Skip", "Save settings"]);
   const short = await page.locator("main input[data-short]").evaluateAll((all) =>
     all.filter((el) => el.checkVisibility()).map((el) => [el.name, Math.round(el.getBoundingClientRect().width), el.scrollWidth <= el.clientWidth]),
@@ -205,9 +220,15 @@ export default async function ({ browser, check, installer, ports, shot, sql, st
       String(saved["homes.maxTags"]) === "9",
     JSON.stringify(saved),
   );
+  await shot(page, "installer-client-1366");
   await oneColumn("client", ["Skip", "Check again"]);
   await Promise.all([page.waitForURL("**/admin"), page.click('button:has-text("Skip")')]);
+  await shot(page, "installer-admin-1366");
   await oneColumn("administrator", ["Create administrator"]);
+  await page.setViewportSize({ width: 375, height: 667 });
+  await shot(page, "installer-admin-375");
+  await page.goto(`${installer}/settings`);
+  await shot(page, "installer-settings-375");
 
   // With scripts off, the stepper's links work and the sections open and close.
   const plain = await (await browser.newContext({ javaScriptEnabled: false, viewport: { width: 1366, height: 655 } })).newPage();

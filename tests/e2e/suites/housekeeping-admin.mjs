@@ -172,7 +172,7 @@ export default async function (t) {
     check(`link ${new URL(href).pathname} works`, response.status() === 200);
   }
 
-  // Today's sizes: 16px in Verdana, and every page fits a 1366px screen.
+  // Holo's sizes: 12px in Verdana, and every page fits a 1366px screen.
   await page.setViewportSize({ width: 1366, height: 768 });
   const wide = [];
   for (const href of new Set(hrefs)) {
@@ -193,8 +193,8 @@ export default async function (t) {
     return { size: body.fontSize, font: body.fontFamily };
   });
   check(
-    "staff open housekeeping: its text is 16px in Verdana",
-    text.size === "16px" && text.font.startsWith("Verdana"),
+    "staff open housekeeping: its text is 12px in Verdana, the site's size",
+    text.size === "12px" && text.font.startsWith("Verdana"),
     JSON.stringify(text),
   );
   const own = await page.evaluate(() => {
@@ -208,8 +208,8 @@ export default async function (t) {
     };
   });
   check(
-    "staff open housekeeping at the new sizes: the grey bar, the navy tabs with the active one apart, and the gold lists stay",
-    new Set([own.bar, own.tab, own.active, own.list]).size === 4 && own.tabWidth === 224,
+    "staff open housekeeping at Holo's sizes: the grey bar, the navy tabs with the active one apart, and the gold lists stay",
+    new Set([own.bar, own.tab, own.active, own.list]).size === 4 && own.tabWidth === 176,
     JSON.stringify(own),
   );
   await shot(page, "dashboard-1366");

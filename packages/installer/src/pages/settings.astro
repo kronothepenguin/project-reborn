@@ -13,13 +13,13 @@ import Setup from "../layouts/setup.astro";
     it is, and housekeeping changes them later.
   </p>
   <FormError />
-  <form method="post" action="/installer/settings" class="flex flex-col gap-4">
+  <form method="post" action="/installer/settings" class="flex flex-col gap-3">
     {/*
       Every group is a section, and a closed one stays in the form. The first
       opens, or the group of a refused field, and "More settings" when one of
       its groups holds that field.
     */}
-    <div id="settings-sections" class="flex flex-col gap-2">
+    <div id="settings-sections" class="flex flex-col gap-1.5">
       [[ $refused := false ]][[ $more := false ]]
       [[ range .Open ]][[ if .Refused ]][[ $refused = true ]][[ end ]][[ end ]]
       [[ range .More ]][[ if .Refused ]][[ $refused = true ]][[ $more = true ]][[ end ]][[ end ]]
