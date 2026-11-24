@@ -5,20 +5,20 @@ import Community from "../../layouts/community.astro";
 ---
 
 <Community title="[[ .ShortName ]] ~ Page not found" tab="community" sub="">
-  <div class="flex gap-2.5">
-    <div class="w-[460px]">
+  <div class="flex gap-3.5">
+    <div class="w-153.5">
       <Card color="red">
         <span slot="header">Page not found!</span>
         <p class="font-bold text-red-600">Sorry, but the page you were looking for was not found.</p>
         <img class="my-2" src="/myhabbo/error.gif" alt="" width="76" height="112" />
         <p class="font-bold text-red-600">Please use the 'Back' button to get back to where you started.</p>
-        <p class="mt-2 font-bold text-red-600">Search for group</p>
+        <p class="mt-2.5 font-bold text-red-600">Search for group</p>
         [[ if .Searched ]]
         <p class="font-bold text-red-600">Sorry, but no results were found for <strong>'[[ .Search ]]'.</strong></p>
         [[ end ]]
-        <form action="/groups" class="mt-2">
+        <form action="/groups" class="mt-2.5">
           <label for="group-search">Group Name:</label><br />
-          <span class="flex items-center gap-1">
+          <span class="flex items-center gap-1.5">
             <input
               id="group-search"
               type="text"
@@ -33,6 +33,6 @@ import Community from "../../layouts/community.astro";
         </form>
       </Card>
     </div>
-    <div class="w-[310px]"><LookingFor /></div>
+    <div class="w-103.5"><LookingFor /></div>
   </div>
 </Community>
