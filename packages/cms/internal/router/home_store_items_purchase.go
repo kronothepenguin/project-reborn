@@ -101,6 +101,7 @@ func (r *Router) HandleHomeStoreItemsPurchase(w http.ResponseWriter, req *http.R
 	case refusal != "":
 		r.answerJSON(w, http.StatusUnprocessableEntity, storeError{refusal})
 	default:
+		r.sendPurse(ctx, session.UserID)
 		r.answerJSON(w, http.StatusOK, purchase{Credits: credits})
 	}
 }

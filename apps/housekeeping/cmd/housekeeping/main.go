@@ -35,7 +35,7 @@ func main() {
 	// secret on each call.
 	gameURL := "http://" + net.JoinHostPort(cfg.Server.API.Host, strconv.Itoa(cfg.Server.API.Port))
 	game := api.New(gameURL, db)
-	h.Inject(housekeeping.Services{Habbos: game, Hotel: game})
+	h.Inject(housekeeping.Services{Habbos: game, Hotel: game, Economy: game})
 
 	mux := http.NewServeMux()
 	h.Mount(mux)

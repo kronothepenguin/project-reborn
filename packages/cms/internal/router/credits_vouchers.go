@@ -48,7 +48,7 @@ func (r *Router) HandleCreditsVouchersRedeem(w http.ResponseWriter, req *http.Re
 	}
 	session, _ := auth.FromContext(ctx)
 	now := time.Now().UTC()
-	found := false
+	found, paid := false, false
 	var answer voucherAnswer
 	err := r.inTx(ctx, func(q *store.Queries) error {
 		// MySQL compared Holo's codes in any case, which the store does, and
@@ -77,6 +77,7 @@ func (r *Router) HandleCreditsVouchersRedeem(w http.ResponseWriter, req *http.Re
 				if err != nil {
 					return err
 				}
+				paid = true
 			}
 			err = q.CreateWalletTransaction(ctx, store.CreateWalletTransactionParams{
 				UserID:    session.UserID,
@@ -101,6 +102,9 @@ func (r *Router) HandleCreditsVouchersRedeem(w http.ResponseWriter, req *http.Re
 		answer.Message = voucherNotFound
 		r.answerJSON(w, http.StatusUnprocessableEntity, answer)
 	default:
+		if paid {
+			r.sendPurse(ctx, session.UserID)
+		}
 		r.answerJSON(w, http.StatusOK, answer)
 	}
 }

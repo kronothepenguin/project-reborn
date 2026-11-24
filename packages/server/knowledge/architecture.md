@@ -11,8 +11,8 @@ tags: [server, architecture]
 
 | Package | Holds | Decisions |
 | --- | --- | --- |
-| `packages/server` | `New(db, opts...)`, which loads what every player shares once no update waits and, with `WithAPI()`, opens the `/api/` listener, `Start` and `Stop`, which open and close the WebSocket listeners on the host and port of `server.info` and of `server.mus`, `Status`, the game's side of `services.Hotel`, and `SendLook`, `AreOnline` and `Online`, its side of `services.Habbos` | 0002 (`knowledge/decisions/server/0002-server-app.md`), 0005 (`knowledge/decisions/server/0005-package-layout.md`), 0020 (`knowledge/decisions/server/0020-info-and-mus-websocket-ports.md`), 0022 (`knowledge/decisions/server/0022-start-info-and-start-mus.md`), 0023 (`knowledge/decisions/server/0023-mus-listener-before-s7.md`), reborn 0006 (`knowledge/decisions/reborn/0006-settings-are-read-from-the-store.md`) |
-| `packages/server/api` | The client of the game's `/api/`: `api.New(baseURL, db)` implements `services.Habbos` for the programs run apart, and gives up after 2 seconds, or 15 for `Stop` | reborn/0005 (`knowledge/decisions/reborn/0005-the-game-hears-live-changes-through-services.md`) |
+| `packages/server` | `New(db, opts...)`, which loads what every player shares once no update waits and, with `WithAPI()`, opens the `/api/` listener, `Start` and `Stop`, which open and close the WebSocket listeners on the host and port of `server.info` and of `server.mus`, `Status`, the game's side of `services.Hotel`, `SendLook`, `AreOnline` and `Online`, its side of `services.Habbos`, and `SendPurse`, its side of `services.Economy` | 0002 (`knowledge/decisions/server/0002-server-app.md`), 0005 (`knowledge/decisions/server/0005-package-layout.md`), 0020 (`knowledge/decisions/server/0020-info-and-mus-websocket-ports.md`), 0022 (`knowledge/decisions/server/0022-start-info-and-start-mus.md`), 0023 (`knowledge/decisions/server/0023-mus-listener-before-s7.md`), reborn 0006 (`knowledge/decisions/reborn/0006-settings-are-read-from-the-store.md`) |
+| `packages/server/api` | The client of the game's `/api/`: `api.New(baseURL, db)` implements `services.Habbos`, `services.Hotel` and `services.Economy` for the programs run apart, and gives up after 2 seconds, or 15 for `Stop` | reborn/0005 (`knowledge/decisions/reborn/0005-the-game-hears-live-changes-through-services.md`) |
 | `packages/server/internal/router` | The handlers of the game's `/api/` and the check of `X-Reborn-Secret` | reborn/0005 (`knowledge/decisions/reborn/0005-the-game-hears-live-changes-through-services.md`) |
 | `packages/server/internal/transport` | `Conn` (receive, send, close), TCP and the WebSocket on `golang.org/x/net/websocket` | 0006 (`knowledge/decisions/server/0006-transport.md`) |
 | `packages/server/internal/encoding` | B64, VL64 and strings, shared by every protocol | 0005 (`knowledge/decisions/server/0005-package-layout.md`) |
@@ -103,6 +103,7 @@ game's `/api/` (reborn/0005 (`knowledge/decisions/reborn/0005-the-game-hears-liv
 | Route | Does |
 | --- | --- |
 | `POST /api/habbos/{id}/look` | Calls `SendLook` for the habbo and answers 204 |
+| `POST /api/users/{id}/purse` | Calls `SendPurse` for the user and answers 204 |
 | `GET /api/hotel` | Answers `Status` as `{"running":true,"online":12}` |
 | `POST /api/hotel/start` | Calls `Start` and answers 204 |
 | `POST /api/hotel/stop` | Calls `Stop` with the request's context and answers 204 once the sessions ended |
@@ -127,8 +128,8 @@ Under reborn (`packages/reborn/knowledge/run.md`), one process runs the installe
 on one database handle. `reborn.New` builds the game with `server.New(db)`, without `WithAPI()`, and reborn's `Start`
 and `Stop` call the game's. The game keeps a WebSocket listener on the host and port of each connection, and WebSocket
 paths on reborn's mux wait for later, as TCP does (0020 (`knowledge/decisions/server/0020-info-and-mus-websocket-ports.md`)).
-The site and housekeeping tell the game of a change and ask who is in the hotel through `services.Habbos`, and open and
-close its doors through `services.Hotel`, which the game itself implements in the same process; reborn opens no
+The site and housekeeping tell the game of a change and ask who is in the hotel through `services.Habbos`, tell it of a
+changed purse through `services.Economy`, and open and close its doors through `services.Hotel`, which the game itself implements in the same process; reborn opens no
 `/api/` (reborn/0005 (`knowledge/decisions/reborn/0005-the-game-hears-live-changes-through-services.md`)).
 
 # Another protocol

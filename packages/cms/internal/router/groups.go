@@ -223,6 +223,7 @@ func (r *Router) HandleGroupsPurchase(w http.ResponseWriter, req *http.Request) 
 	case refusal != "":
 		r.answerJSON(w, http.StatusUnprocessableEntity, purchaseAnswer{Error: refusal})
 	default:
+		r.sendPurse(ctx, session.UserID)
 		r.answerJSON(w, http.StatusOK, purchaseAnswer{ID: created.ID, Name: created.Name})
 	}
 }

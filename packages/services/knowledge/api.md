@@ -15,6 +15,7 @@ resource: packages/services/services.go
 | `Hotel` | `Status(ctx)` | Answers `HotelStatus`: `Running`, whether the doors are open, and `Online`, how many habbos are inside |
 | `Hotel` | `Start(ctx)` | Opens the doors, unless `game.closed` or `site.maintenance` is on; with the doors open, does nothing |
 | `Hotel` | `Stop(ctx)` | Closes the doors: every habbo sees the client's "hotel closed" notice and is logged out |
+| `Economy` | `SendPurse(ctx, userID)` | Reads the user's purse again and shows its credits, tickets and film to each of its habbos in the hotel |
 
 - Each contract is a Go interface. The package imports only the standard library, so every app imports it.
 - An app holds its contracts in its own `Services` struct and takes them through `Inject`.
@@ -25,6 +26,6 @@ resource: packages/services/services.go
 
 ```go
 site := cms.New(db, opts...)
-site.Inject(cms.Services{Habbos: game, Hotel: game})
+site.Inject(cms.Services{Habbos: game, Hotel: game, Economy: game})
 site.Mount(mux)
 ```

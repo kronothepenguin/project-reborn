@@ -35,8 +35,9 @@ type CMS struct {
 // live, ask who is in the hotel, and open or close its doors. A service
 // left nil is absent, and the CMS skips its calls.
 type Services struct {
-	Habbos services.Habbos
-	Hotel  services.Hotel
+	Habbos  services.Habbos
+	Hotel   services.Hotel
+	Economy services.Economy
 }
 
 type Option func(*CMS)
@@ -87,7 +88,7 @@ func (c *CMS) Inject(s Services) {
 }
 
 func (c *CMS) deps() router.Deps {
-	return router.Deps{Resolver: c.resolve, DB: c.db, Queries: store.New(c.db), Updates: c.updates, Habbos: c.services.Habbos, Hotel: c.services.Hotel}
+	return router.Deps{Resolver: c.resolve, DB: c.db, Queries: store.New(c.db), Updates: c.updates, Habbos: c.services.Habbos, Hotel: c.services.Hotel, Economy: c.services.Economy}
 }
 
 func (c *CMS) Mount(mux *http.ServeMux) {

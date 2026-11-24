@@ -191,6 +191,9 @@ func (r *Router) HandleUserSave(w http.ResponseWriter, req *http.Request) {
 	case err != nil:
 		r.fail(w, err)
 	default:
+		if form.tickets != wallet.Tickets || form.film != wallet.Film {
+			r.sendPurse(ctx, id)
+		}
 		http.Redirect(w, req, habboPath(avatar.ID)+"?saved=1", http.StatusSeeOther)
 	}
 }

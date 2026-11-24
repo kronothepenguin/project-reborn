@@ -18,9 +18,10 @@ const Header = "X-Reborn-Secret"
 
 // Deps are what the handlers share.
 type Deps struct {
-	DB     *sql.DB
-	Habbos services.Habbos
-	Hotel  services.Hotel
+	DB      *sql.DB
+	Habbos  services.Habbos
+	Hotel   services.Hotel
+	Economy services.Economy
 }
 
 type Router struct {

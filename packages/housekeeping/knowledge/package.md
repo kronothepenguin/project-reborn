@@ -19,13 +19,16 @@ Astro (Svelte + Tailwind) frontend embedded in a Go module. The `Housekeeping` s
 
 # Inject
 
-- `Inject(housekeeping.Services{Habbos: …})`, once after `New` and before `Mount`, hands housekeeping the services that
+- `Inject(housekeeping.Services{Habbos: …, Hotel: …, Economy: …})`, once after `New` and before `Mount`, hands housekeeping the services that
   tell the game server of the changes it must show live (`packages/services/knowledge/index.md`). `Mount` gives them to
   the router.
 - A service no runner injected is nil, and housekeeping skips its calls.
 - The habbo editor (`POST /housekeeping/habbos/{id}`) calls `Habbos.SendLook` once after its transaction commits, and
   never after a refused save.
-- The call has a context of its own of 2 seconds, apart from the request's, so a request the visitor abandons still
+- Give Credits (`POST /housekeeping/habbos/{id}/credits`) calls `Economy.SendPurse` with the habbo's user once after
+  its transaction commits, and Edit User (`POST /housekeeping/users/{id}`) does when it changed the tickets or the
+  film. A refused form calls nothing.
+- Each call has a context of its own of 2 seconds, apart from the request's, so a request the visitor abandons still
   tells the game. A failure reads as no answer, and the page answers as it would without the game.
 - Online Users (`GET /housekeeping/online`) asks `Habbos.Online` with a context of 300 milliseconds, then reads the habbos it
   lists from the store in one query. A failure, no answer or no game leaves the table empty and says so.

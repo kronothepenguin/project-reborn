@@ -46,11 +46,12 @@ func WithAPI() Option {
 	return func(s *Server) { s.api = true }
 }
 
-// Server is the game that the Habbos service tells of a habbo changed outside it and asks who is in the hotel, and the
-// Hotel whose doors programs open and close.
+// Server is the game that the Habbos service tells of a habbo changed outside it and asks who is in the hotel, the
+// Hotel whose doors programs open and close, and the Economy that tells it of a purse changed outside it.
 var (
-	_ services.Habbos = (*Server)(nil)
-	_ services.Hotel  = (*Server)(nil)
+	_ services.Habbos  = (*Server)(nil)
+	_ services.Hotel   = (*Server)(nil)
+	_ services.Economy = (*Server)(nil)
 )
 
 // New loads what every player shares, the navigator and the catalogue, when no database update waits; otherwise the
@@ -102,13 +103,14 @@ func (c *Server) listenAPI() error {
 	if err != nil {
 		return err
 	}
-	r := router.New(router.Deps{DB: c.db, Habbos: c, Hotel: c})
+	r := router.New(router.Deps{DB: c.db, Habbos: c, Hotel: c, Economy: c})
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/hotel", r.HandleHotelView)
 	mux.HandleFunc("POST /api/hotel/start", r.HandleHotelStart)
 	mux.HandleFunc("POST /api/hotel/stop", r.HandleHotelStop)
 	mux.HandleFunc("GET /api/habbos/online", r.HandleHabbosOnlineView)
 	mux.HandleFunc("POST /api/habbos/{id}/look", r.HandleHabbosLook)
+	mux.HandleFunc("POST /api/users/{id}/purse", r.HandleUsersPurse)
 	mux.HandleFunc("/", http.NotFound)
 
 	addr := net.JoinHostPort(cfg.Server.API.Host, strconv.Itoa(cfg.Server.API.Port))
@@ -129,6 +131,12 @@ func (c *Server) listenAPI() error {
 // to the room it is in (decision reborn/0013). An offline habbo gets nothing.
 func (c *Server) SendLook(ctx context.Context, avatarID int64) error {
 	return game.SendLook(ctx, c.db, avatarID)
+}
+
+// SendPurse reads the purse of the user userID again and tells each of its habbos in the hotel its credits, tickets
+// and film. A user with no habbo in the hotel gets nothing.
+func (c *Server) SendPurse(ctx context.Context, userID int64) error {
+	return game.SendPurse(ctx, c.db, userID)
 }
 
 // Start opens the doors: the WebSocket listeners of the client's info and mus connections, on the hosts and ports of

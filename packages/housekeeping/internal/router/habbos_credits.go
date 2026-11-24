@@ -77,6 +77,7 @@ func (r *Router) HandleHabboCreditsGive(w http.ResponseWriter, req *http.Request
 	case !applied:
 		r.refuseHabbo(w, req, avatar, amountInvalid)
 	default:
+		r.sendPurse(ctx, avatar.UserID)
 		http.Redirect(w, req, habboPath(avatar.ID)+"?gave="+strconv.FormatInt(amount, 10), http.StatusSeeOther)
 	}
 }

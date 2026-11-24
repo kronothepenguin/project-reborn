@@ -35,6 +35,9 @@ type Deps struct {
 	// Hotel is nil until a runner injects it, and while it is nil the game
 	// counts as stopped.
 	Hotel services.Hotel
+	// Economy is nil until a runner injects it, and while it is nil its calls
+	// are skipped.
+	Economy services.Economy
 }
 
 type Router struct {
@@ -183,8 +186,9 @@ func (r *Router) gameAnswered(asked string, err error) {
 	}
 }
 
-// sendLookTimeout is how long the game has to answer a SendLook.
-const sendLookTimeout = 2 * time.Second
+// sendTimeout is how long the game has to answer a SendLook or a
+// SendPurse.
+const sendTimeout = 2 * time.Second
 
 // sendLook tells the game that the habbo's look or motto changed, after the save.
 // The call has a context of its own, apart from the request's, so a request the
@@ -194,13 +198,28 @@ func (r *Router) sendLook(ctx context.Context, avatarID int64) {
 	if r.deps.Habbos == nil {
 		return
 	}
-	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), sendLookTimeout)
+	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), sendTimeout)
 	defer cancel()
 	err := r.deps.Habbos.SendLook(ctx, avatarID)
 	if err != nil {
 		err = fmt.Errorf("habbo %d: %w", avatarID, err)
 	}
 	r.gameAnswered("send look", err)
+}
+
+// sendPurse tells the game that the user's purse changed, after the commit, as
+// sendLook does.
+func (r *Router) sendPurse(ctx context.Context, userID int64) {
+	if r.deps.Economy == nil {
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), sendTimeout)
+	defer cancel()
+	err := r.deps.Economy.SendPurse(ctx, userID)
+	if err != nil {
+		err = fmt.Errorf("user %d: %w", userID, err)
+	}
+	r.gameAnswered("send purse", err)
 }
 
 // statusTimeout is how long the game has to tell its status to a page.

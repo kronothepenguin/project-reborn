@@ -25,11 +25,12 @@ type Client struct {
 	http    *http.Client
 }
 
-// Client is the Habbos and the Hotel service of a program run apart from the
-// game.
+// Client is the Habbos, the Hotel and the Economy service of a program run
+// apart from the game.
 var (
-	_ services.Habbos = (*Client)(nil)
-	_ services.Hotel  = (*Client)(nil)
+	_ services.Habbos  = (*Client)(nil)
+	_ services.Hotel   = (*Client)(nil)
+	_ services.Economy = (*Client)(nil)
 )
 
 // A call gives up after callTimeout, and Stop, which waits for the game to
@@ -49,6 +50,11 @@ func New(baseURL string, db *sql.DB) *Client {
 // SendLook tells the game that the habbo avatarID has a new look or motto.
 func (c *Client) SendLook(ctx context.Context, avatarID int64) error {
 	return c.call(ctx, http.MethodPost, "/api/habbos/"+strconv.FormatInt(avatarID, 10)+"/look", nil)
+}
+
+// SendPurse tells the game that the purse of the user userID changed.
+func (c *Client) SendPurse(ctx context.Context, userID int64) error {
+	return c.call(ctx, http.MethodPost, "/api/users/"+strconv.FormatInt(userID, 10)+"/purse", nil)
 }
 
 // Status asks the game whether its doors are open and how many habbos are in

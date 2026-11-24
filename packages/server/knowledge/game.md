@@ -82,6 +82,12 @@ client through its `Session` (`knowledge/decisions/server/0039-rules-notify-sess
   gets `LookChanged`, with its index. An offline habbo gets nothing, and its
   next login reads the store. A second login between the read and the update
   wins: the session it replaced gets nothing.
+- `SendPurse(ctx, db, userID)` reads the user's purse again after a change
+  outside the game. Each of the user's habbos in the hotel gets `PurseChanged`,
+  with the account and the habbo, which r26 sends as the user object (5), with
+  the tickets and the film, the film (4) for the camera, and the credits (6),
+  which the client shows with its cash sound. A user with no habbo in the hotel
+  gets nothing, and its next login reads the store.
 - `SetSoundEnabled(ctx, db, s, avatarID, on)` saves the sound setting, then that
   of the online habbo while `s` plays it.
 

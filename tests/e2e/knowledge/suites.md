@@ -27,7 +27,7 @@ program shows. What a test through a Go router proves stays there.
 | `club` | The club page as a guest, buying club months with Holo's dialogs, the month limit, a short purse, and `HC1` given to the user's habbos and taken when the club ends |
 | `community` | The random habbos, the news promo turning, the tag cloud and the banners |
 | `staff` | The staff list, the two boxes and their settings, and the page switched off |
-| `credits` | The credits page as a guest reads it, vouchers redeemed in the purse with Holo's answers in place, and the account transactions page with the purse beside it |
+| `credits` | The credits page as a guest reads it, vouchers redeemed in the purse with Holo's answers in place, the last of them shown at once to the user's other habbo in the hotel, and the account transactions page with the purse beside it |
 | `art` | The home art, served by the binary |
 | `housekeeping-access` | Every route as a guest, a player and staff |
 | `housekeeping-admin` | Access groups, members, the guard and the log |

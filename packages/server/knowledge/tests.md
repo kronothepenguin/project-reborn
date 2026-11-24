@@ -20,6 +20,9 @@ says, and each uses habbos of its own.
 - `look_test.go` changes a habbo's look and motto outside the game, through
   `SendLook`: in a room, in the hotel view, while offline and after a second
   login.
+- `purse_test.go` changes a user's purse outside the game, through `SendPurse`: every habbo of the user in the hotel
+  gets it and another user's habbo gets nothing, a user outside the hotel reads it at its login, and the `/api/` passes
+  it on.
 - `api_test.go` tells the game of a saved look through `packages/server/api`, and gets 404 from the `/api/`
   without the secret, with a wrong one, and on any other path or method.
 - `hotel_test.go` starts the game with the hotel and the site open or closed, stops it with habbos inside, starts it

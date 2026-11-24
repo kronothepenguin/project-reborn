@@ -29,3 +29,10 @@ type Habbos interface {
 	// Online lists the habbos in the hotel now.
 	Online(ctx context.Context) ([]int64, error)
 }
+
+// Economy tells the game server that a user's purse changed outside the game.
+type Economy interface {
+	// SendPurse tells the game that the user's purse
+	// changed: its credits, tickets or film.
+	SendPurse(ctx context.Context, userID int64) error
+}

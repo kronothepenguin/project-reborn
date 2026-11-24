@@ -1,7 +1,12 @@
+import { enter } from "../lib/game.mjs";
+
 // The credits page, as a guest reads it and as Frank redeems vouchers into the purse
 // his two habbos share, SPRING20 worth 20 and summer50 worth 50, and reads its
-// transactions.
+// transactions. Frank waits in the hotel for the last voucher.
 export const programs = ["cms"];
+
+// The game logs Frank's login.
+export const logs = [/^server: \S+ \S+ INFO game: habbo \d+ Frank logged in$/];
 
 const at = "2026-11-01 12:00:00.000000000+00:00";
 
@@ -45,7 +50,7 @@ async function visitor(browser, base, name) {
 const picture = (page, src) =>
   page.locator(`main img[src="${src}"]`).evaluate((img) => img.complete && img.naturalWidth > 0);
 
-export default async function ({ base, browser, check, shot, sql }) {
+export default async function ({ base, browser, check, ports, shot, sql }) {
   const guest = await visitor(browser, base);
   let page = guest.page;
   await page.goto(base + "/credits");
@@ -126,10 +131,21 @@ export default async function ({ base, browser, check, shot, sql }) {
     await purse.innerText(),
   );
 
+  // Frank, the user's other habbo, is in the hotel when FrankToo redeems on the site.
+  const inside = await visitor(browser, base, "Frank");
+  const frankInside = await enter(inside.page, base, ports.info);
   await page.goto(base + "/credits");
   await purse.getByLabel("Enter redemption code:").fill("SUMMER50");
   await purse.getByRole("button", { name: "Submit" }).click();
   await purse.getByText("You have redeemed 50 credits successfully.").waitFor();
+  const credits = await frankInside.until(6).catch((error) => ({ body: error.message }));
+  check(
+    "a voucher redeemed on the site shows its credits at once to the user's habbo in the hotel",
+    credits.body === "170",
+    credits.body,
+  );
+  frankInside.leave();
+  await inside.context.close();
 
   const [[frank]] = sql("SELECT id FROM avatars WHERE name = 'Frank'");
   sql(`INSERT INTO wallet_transactions (user_id, avatar_id, credits, reason, detail, created_at)

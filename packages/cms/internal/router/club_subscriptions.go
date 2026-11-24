@@ -142,6 +142,7 @@ func (r *Router) HandleClubSubscriptionsPurchase(w http.ResponseWriter, req *htt
 	case answer.Error != "":
 		r.answerJSON(w, http.StatusUnprocessableEntity, answer)
 	default:
+		r.sendPurse(ctx, session.UserID)
 		r.answerJSON(w, http.StatusOK, answer)
 	}
 }

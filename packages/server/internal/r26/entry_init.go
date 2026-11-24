@@ -40,6 +40,10 @@ const (
 // purse is hh_cat_code's message, which GET_CREDITS asks for (packages/server/knowledge/r26/hh_cat_code.md).
 const purse = 6
 
+// film is hh_photo's message of the photos the user may still save, which sets the camera's count
+// (packages/server/knowledge/r26/hh_photo.md).
+const film = 4
+
 // The opening time 292 carries when the hotel closes. The hotel opens again when staff open it, at no set time, and
 // the client's notice always shows a time: 00:00 (packages/server/knowledge/r26/hh_entry_init.md#opening-hours).
 const openingHour, openingMinute = 0, 0
@@ -239,6 +243,14 @@ func handleGetCredits(s *session, me habbo.Habbo, _ []byte) {
 		return
 	}
 	s.reply(purse, []byte(strconv.FormatInt(account.Credits, 10)))
+}
+
+// sendPurse shows the purse of the habbo's user, changed outside the game: the user object (5) carries the tickets and
+// the film, 4 the film to the camera, and 6 the credits, which the client shows with its cash sound.
+func (s *session) sendPurse(e game.PurseChanged) {
+	s.sendUserObject(e.Habbo, e.Account)
+	s.reply(film, vl64(int(e.Account.Film)))
+	s.reply(purse, []byte(strconv.FormatInt(e.Account.Credits, 10)))
 }
 
 // handleGetAvailableBadges sends the habbo's badges, then those it wears, each with its slot, 1 to 5 (decision

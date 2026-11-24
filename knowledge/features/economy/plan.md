@@ -15,19 +15,19 @@ Built:
 | `packages/auth` | `CreateAccount` writes the start credits and their ledger row |
 | `packages/housekeeping` | Give Credits, a habbo's transactions, Voucher Management, the Credits Page settings form |
 | `packages/virtual` | The settings `registration.startCredits` and `creditsPage.*`; `furni.Create` gives an item voucher's furni |
-| `packages/server` | Reads the purse from the store when the client asks |
+| `packages/server` | Reads the purse from the store when the client asks; `SendPurse` and `POST /api/users/{id}/purse` show each of the user's habbos in the hotel its credits, tickets and film at once, with the user object (5), the film (4) and the credits (6) |
+| `packages/services` | The `Economy` service: `SendPurse(ctx, userID)` ([0005](/decisions/reborn/0005-the-game-hears-live-changes-through-services.md)) |
+| `packages/cms` | A credit voucher, the club, a group, the home store and a referral's reward call `SendPurse` after their commit |
+| `packages/housekeeping` | Give Credits, and Edit User when it changes tickets or film, call `SendPurse` after their commit |
+| `packages/reborn`, `apps/cms`, `apps/housekeeping` | Inject `Economy`: the game in reborn, `api.New` in the runners |
 
 Planned:
 
 | Project | Part |
 | --- | --- |
-| `packages/services` | The `Economy` service: `SendCredits(ctx, userID)`, and tickets and film ([0005](/decisions/reborn/0005-the-game-hears-live-changes-through-services.md)) |
-| `packages/housekeeping` | Gives and takes credits, tickets and film; tells the game |
-| `packages/cms` | Vouchers, groups and the home store spend or give credits; tells the game |
-| `packages/server` | Sends a player its new balance at once |
+| `packages/housekeeping` | Gives and takes tickets and film; tells the game |
 
-Today a change of credits on the site shows in the game at the player's next purchase or login. Club is
-[its own feature](/features/club/spec.md).
+Club is [its own feature](/features/club/spec.md).
 
 ## The purse's service
 

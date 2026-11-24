@@ -81,8 +81,8 @@ func New(db *sql.DB, mover installer.Listener, opts ...Option) (*Reborn, error) 
 	r.installer = i
 	r.game = server.New(db)
 
-	r.cms.Inject(cms.Services{Habbos: r.game, Hotel: r.game})
-	r.housekeeping.Inject(housekeeping.Services{Habbos: r.game, Hotel: r.game})
+	r.cms.Inject(cms.Services{Habbos: r.game, Hotel: r.game, Economy: r.game})
+	r.housekeeping.Inject(housekeeping.Services{Habbos: r.game, Hotel: r.game, Economy: r.game})
 	r.installer.Inject(installer.Services{Listener: mover})
 	return r, nil
 }

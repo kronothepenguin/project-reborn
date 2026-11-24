@@ -26,13 +26,17 @@ resource: packages/cms/cms.go
 
 # Inject
 
-- `Inject(cms.Services{Habbos: …, Hotel: …})`, once after `New` and before `Mount`, hands the CMS the services that
+- `Inject(cms.Services{Habbos: …, Hotel: …, Economy: …})`, once after `New` and before `Mount`, hands the CMS the services that
   tell the game server of the changes it must show live, and ask whether it runs
   (`packages/services/knowledge/index.md`). `Mount` gives them to the router.
 - A service no runner injected is nil, and the CMS skips its calls.
 - The looks page (`POST /account/looks`), the profile page (`POST /account/profile`) and the Me page's motto
   (`POST /me/motto`) call `Habbos.SendLook` once after a save, and never after a refused one.
-- The call has a context of its own of 2 seconds, apart from the request's, so a request the visitor abandons still
+- A credit voucher (`POST /credits/vouchers`), the club (`POST /club/subscriptions`), a group (`POST /groups`) and the
+  home store (`POST /home-store/items/{id}/purchase`) call `Economy.SendPurse` with the user once after their
+  transaction commits; a registration through a referral link calls it with the referrer it paid. An item voucher, a
+  refused change and a registration's start credits call nothing: the new habbo is outside the hotel.
+- Each call has a context of its own of 2 seconds, apart from the request's, so a request the visitor abandons still
   tells the game. A failure reads as no answer, and the page answers as it would without the game.
 - Every page asks `Hotel.Status` once (`Router.gameStatus` in `internal/router/router.go`), through `hotelStatus`, the
   layouts' fields `Online` and `OnlineCount`. The call follows the request's context and ends after 300 milliseconds. No

@@ -145,7 +145,7 @@ func (r *Router) HandleRegister(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = r.createAccount(ctx, page, bornOn, auth.HashPassword(password), ip)
+	referrer, err := r.createAccount(ctx, page, bornOn, auth.HashPassword(password), ip)
 	if store.IsConflict(err) {
 		// Someone took the name or the email since checkTaken.
 		if err := r.checkTaken(ctx, &page); err != nil {
@@ -158,6 +158,11 @@ func (r *Router) HandleRegister(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		r.fail(w, err)
 		return
+	}
+	// The new habbo is outside the hotel, and its start credits wait for its
+	// login; the referrer may be inside.
+	if referrer != 0 {
+		r.sendPurse(ctx, referrer)
 	}
 	r.signIn(w, req, page.Habbo, password, false)
 }
@@ -242,10 +247,12 @@ func (r *Router) checkTaken(ctx context.Context, page *registerPage) error {
 	return nil
 }
 
-func (r *Router) createAccount(ctx context.Context, page registerPage, bornOn time.Time, hash, ip string) error {
+// createAccount creates the account and its referral in one transaction, and
+// returns the user id of the referrer it paid, or 0.
+func (r *Router) createAccount(ctx context.Context, page registerPage, bornOn time.Time, hash, ip string) (int64, error) {
 	tx, err := r.deps.DB.BeginTx(ctx, nil)
 	if err != nil {
-		return err
+		return 0, err
 	}
 	defer tx.Rollback()
 	q := r.deps.Queries.WithTx(tx)
@@ -261,31 +268,34 @@ func (r *Router) createAccount(ctx context.Context, page registerPage, bornOn ti
 		Habbo:        auth.Habbo{Name: page.Habbo, Figure: page.Figure, Gender: page.Gender},
 	})
 	if err != nil {
-		return err
+		return 0, err
 	}
-	if err := recordReferral(ctx, q, page.Refer, userID, page.Habbo); err != nil {
-		return err
+	referrer, err := recordReferral(ctx, q, page.Refer, userID, page.Habbo)
+	if err != nil {
+		return 0, err
 	}
-	return tx.Commit()
+	return referrer, tx.Commit()
 }
 
 // recordReferral writes the referral of a new user when the link named a habbo,
 // and pays the referrer while referrals are enabled. Any other link is ignored,
-// since a stale link must not stop the registration.
-func recordReferral(ctx context.Context, q *store.Queries, refer string, userID int64, name string) error {
+// since a stale link must not stop the registration. It returns the user id of
+// the referrer it paid, or 0.
+func recordReferral(ctx context.Context, q *store.Queries, refer string, userID int64, name string) (int64, error) {
 	if refer == "" {
-		return nil
+		return 0, nil
 	}
 	referrer, err := q.GetAvatarByName(ctx, refer)
 	if store.IsNotFound(err) {
-		return nil
+		return 0, nil
 	}
 	if err != nil {
-		return err
+		return 0, err
 	}
 	if referrer.ArchivedAt.Valid {
-		return nil
+		return 0, nil
 	}
+	var paid int64
 
 	now := time.Now().UTC()
 	var rewardedAt sql.NullTime
@@ -294,7 +304,7 @@ func recordReferral(ctx context.Context, q *store.Queries, refer string, userID 
 		reward := int64(settings.Int(ctx, q, "referral.reward"))
 		err := q.AddWalletCredits(ctx, store.AddWalletCreditsParams{Credits: reward, UpdatedAt: now, UserID: referrer.UserID})
 		if err != nil {
-			return err
+			return 0, err
 		}
 		err = q.CreateWalletTransaction(ctx, store.CreateWalletTransactionParams{
 			UserID:    referrer.UserID,
@@ -305,13 +315,15 @@ func recordReferral(ctx context.Context, q *store.Queries, refer string, userID 
 			CreatedAt: now,
 		})
 		if err != nil {
-			return err
+			return 0, err
 		}
+		paid = referrer.UserID
 	}
-	return q.CreateReferral(ctx, store.CreateReferralParams{
+	err = q.CreateReferral(ctx, store.CreateReferralParams{
 		ReferredUserID:   userID,
 		ReferrerAvatarID: referrer.ID,
 		CreatedAt:        now,
 		RewardedAt:       rewardedAt,
 	})
+	return paid, err
 }

@@ -83,16 +83,12 @@ It builds on [platform](/features/platform/spec.md) and [habbos](/features/habbo
 
 - A habbo asks its credits in the client: the answer is the purse's balance, read from the store (decision
   server/0053).
-- Credits change on the site: the game shows them at the habbo's next purchase or login.
-
-## Next
-
-### The purse, live
-
 - The site or housekeeping changes a user's purse while one of its habbos is in the hotel: the habbo's client shows
   the new credits, tickets and film at once.
 - The purse of a user with no habbo in the hotel changes: nothing is sent, and the habbo reads it at its next login.
 - The game gives no answer: the purse is changed all the same, and the page answers as it does without the game.
+
+## Next
 
 ### Tickets and film in housekeeping
 
