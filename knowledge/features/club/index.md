@@ -4,3 +4,4 @@
 
 - [Club: how](plan.md) - The site and the game sell club, and the game shows a player its club at once.
 - [Club](spec.md) - Club is bought on the site and in the client, its gifts are given, and the game shows a player its club at once.
+- [tasks/](tasks/index.md)
