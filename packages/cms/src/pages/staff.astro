@@ -4,7 +4,7 @@ import offline from "../assets/staff/habbo_offline.gif";
 import online from "../assets/staff/habbo_online_anim.gif";
 import Community from "../layouts/community.astro";
 
-const body = "[&_a]:text-orange-500 [&_a]:underline";
+const body = "pb-3 [&_a]:text-orange-500 [&_a]:underline";
 ---
 
 <Community title="[[ .ShortName ]] ~ Staff Team" tab="community" sub="Staff">
@@ -15,7 +15,7 @@ const body = "[&_a]:text-orange-500 [&_a]:underline";
           <span slot="header">Staff</span>
           <div id="staff-list">
             [[ range .Members ]]
-            <p class="my-[1em] flow-root">
+            <p class="flow-root pb-3">
               <Avatar
                 class="float-left"
                 imagingUrl="[[ $.ImagingURL ]]"
