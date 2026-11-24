@@ -2,7 +2,7 @@
 /*===================================================+
 || # HoloCMS - Website and Content Management System
 |+===================================================+
-|| # Copyright © 2008 Meth0d. All rights reserved.
+|| # Copyright ï¿½ 2008 Meth0d. All rights reserved.
 || # http://www.meth0d.org
 |+===================================================+
 || # HoloCMS is provided "as is" and comes without
@@ -11,15 +11,15 @@
 
 require_once('../core.php');
 if($hkzone !== true){ header("Location: index.php?throwBack=true"); exit; }
-if(!session_is_registered(acp)){ header("Location: index.php?p=login"); exit; }
+if(!isset($_SESSION['acp'])){ header("Location: index.php?p=login"); exit; }
 
 $pagename = "Unban";
 
 if(isset($_POST['query'])){
-    $query = addslashes($_POST['query']);
+    $query = FilterText($_POST['query']);
     $rows = mysql_evaluate("SELECT COUNT(*) FROM users_bans WHERE userid = '".$query."' OR descr = '".$query."' OR date_expire = '".$query."' OR ipaddress = '".$query."'");
     mysql_query("DELETE FROM users_bans WHERE userid = '".$query."' OR descr = '".$query."' OR date_expire = '".$query."' OR ipaddress = '".$query."'") or die(mysql_error());
-    mysql_query("INSERT INTO system_stafflog (action,message,note,userid,targetid,timestamp) VALUES ('Housekeeping','(Mass) Unban performed [Query: ".addslashes($query)."]','unbantool.php','".$my_id."','','".$date_full."')") or die(mysql_error());
+    mysql_query("INSERT INTO system_stafflog (action,message,note,userid,targetid,timestamp) VALUES ('Housekeeping','(Mass) Unban performed [Query: ".FilterText($query)."]','unbantool.php','".$my_id."','','".$date_full."')") or die(mysql_error());
     $msg = "Operation applied successfully. Affected bans: " . $rows;
 }
 

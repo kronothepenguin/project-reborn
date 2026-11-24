@@ -59,9 +59,9 @@ include('templates/community/header.php');
 echo "<div id='container'>
 	<div id='content'>
 		<div id='column1' class='column'>
-		<div class='habblet-container '>		
+		<div class='habblet-container '>
 						<div class='cbb clearfix hcred '>
-	
+
 							<h2 class='title'>".$shortname." Club: become a VIP!</h2>
 						<div id ='habboclub-products'>
     <div id='habboclub-clothes-container'>
@@ -74,22 +74,22 @@ echo "<div id='container'>
         <div class='habboclub-furniture-image'></div>
     </div>
 </div>
-	
-						
+
+
 					</div>
 				</div>
 				<script type='text/javascript'>if (!$(document.body).hasClassName('process-template')) { Rounder.init(); }</script>
-			 
-				<div class='habblet-container '>		
+
+				<div class='habblet-container '>
 						<div class='cbb clearfix lightbrown '>
-	
+
 							<h2 class='title'>Benefits</h2>
 						<div id='habboclub-info' class='box-content'>
     <p>".$shortname." Club is our VIP members-only club - absolutely no riff-raff admitted! Members enjoy a wide range of benefits, including exclusive clothes, free gifts and an extended Friends List. See below for all the sparkly, attractive reasons to join.</p>
     <h3 class='heading'>1. Extra Clothes &amp; Accessories</h3>
     <p class='content habboclub-clothing'>Show off your new status with a variety of extra clothes and accessories, along with special hairstyles and colours.</p>
     <h3 class='heading'>2. Free Furni</h3>
-    <p class='content habboclub-furni'>Once a month, every month, you'll get an exclusive piece of ".$shortname." Club furni.</p>        
+    <p class='content habboclub-furni'>Once a month, every month, you'll get an exclusive piece of ".$shortname." Club furni.</p>
     <p class='content'>Important note: club time is cumulative. This means that if you have a break in membership, and then rejoin, you'll start back in the same place you left off.</p>
     <h3 class='heading'>3. Exclusive Room Layouts</h3>
     <p class='content'>Special Guest Room layouts, only for ".$shortname." Club members. Perfect for showing off your new furni!</p>
@@ -105,17 +105,17 @@ echo "<div id='container'>
     <br />
     <p>Use the :furni command to list all the items in a room. Everything is listed, even those sneakily hidden items.</p>
 </div>
-	
-						
+
+
 					</div>
 				</div>
 				<script type='text/javascript'>if (!$(document.body).hasClassName('process-template')) { Rounder.init(); }</script>
-			 
+
 </div>
 <div id='column2' class='column'>
-				<div class='habblet-container '>		
+				<div class='habblet-container '>
 						<div class='cbb clearfix hcred '>
-	
+
 							<h2 class='title'>My Membership</h2>
 <div id='hc-membership-info' class='box-content'>";
 if($logged_in){
@@ -163,7 +163,7 @@ if($myrow['credits'] == "20" || $myrow['credits'] > 20){ ?>
         <div id="hc-buy-buttons" class="hc-buy-buttons rounded rounded-hcred">
             <form class="subscribe-form" method="post">
                 <table width="100%">
-                  <p class="credits-notice">To join <?php echo $shortname; ?> Club you first need to buy some Credits; <?php echo $shortname; ?> Club membership starts from 20 credits</p>                  
+                  <p class="credits-notice">To join <?php echo $shortname; ?> Club you first need to buy some Credits; <?php echo $shortname; ?> Club membership starts from 20 credits</p>
                   <a class="new-button fill" href="credits.php"><b>Get some credits</b><i></i></a>
                 </table>
             </form>
@@ -173,36 +173,36 @@ if($myrow['credits'] == "20" || $myrow['credits'] > 20){ ?>
 } else {
     echo "Please sign in to see your ".$shortname." Club status.";
 }
-	
-						
+
+
 echo "					</div>
 				</div>
 				<script type='text/javascript'>if (!$(document.body).hasClassName('process-template')) { Rounder.init(); }</script>
-			 
-				<div class='habblet-container '>		
-	
-						
-	
-						
-					
+
+				<div class='habblet-container '>
+
+
+
+
+
 				</div>
 				<script type='text/javascript'>if (!$(document.body).hasClassName('process-template')) { Rounder.init(); }</script>
-			 
-"; /*				<div class='habblet-container '>		
+
+"; /*				<div class='habblet-container '>
 						<div class='cbb clearfix lightbrown '>
-	
+
 							<h2 class='title'>Discount!</h2>
 <div class='box-content'>
 Hurrah! A major discount on all ".$shortname." Club subscriptions! Buy one on this page now and save up to 15 credits!
 </div>
-	
-						
+
+
 					</div>
 				</div>
 				<script type='text/javascript'>if (!$(document.body).hasClassName('process-template')) { Rounder.init(); }</script> */ echo "
-			 
+
 </div>
-			 
+
 </div>";
 
 include('templates/community/footer.php');

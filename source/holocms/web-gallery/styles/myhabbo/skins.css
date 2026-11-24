@@ -1,13 +1,12 @@
-
 /* content sizes */
 .GuestbookWidget .widget-content, .MemberWidget .widget-content, .FriendsWidget .widget-content, .HighscoreListWidget .widget-content {
 	width: 290px;
 }
 .RatingWidget .widget-content {
-	width: 160px;	
+	width: 160px;
 }
-.GroupInfoWidget .widget-content, .ProfileWidget .widget-content, .RoomsWidget .widget-content, .GroupsWidget .widget-content, .HighScoresWidget .widget-content, .stickie-content, .HabboMoviesWidget .widget-content, .TraxPlayerWidget .widget-content {
-	width: 218px;	
+.GroupInfoWidget .widget-content, .ProfileWidget .widget-content, .RoomsWidget .widget-content, .GroupsWidget .widget-content, .HighScoresWidget .widget-content, .UserExpsWidget .widget-content, .stickie-content, .HabboMoviesWidget .widget-content, .TraxPlayerWidget .widget-content, .BadgesWidget .widget-content {
+	width: 218px;
 }
 
 /* golden skin */
@@ -17,8 +16,8 @@
 .RatingWidget .w_skin_goldenskin {
 	width: 229px;
 }
-.GroupInfoWidget .w_skin_goldenskin, .ProfileWidget .w_skin_goldenskin, .RoomsWidget .w_skin_goldenskin, .GroupsWidget .w_skin_goldenskin, .HighScoresWidget .w_skin_goldenskin, .HabboMoviesWidget .w_skin_goldenskin, .TraxPlayerWidget .w_skin_goldenskin {
-	width: 287px;	
+.GroupInfoWidget .w_skin_goldenskin, .ProfileWidget .w_skin_goldenskin, .RoomsWidget .w_skin_goldenskin, .GroupsWidget .w_skin_goldenskin, .HighScoresWidget .w_skin_goldenskin, .UserExpsWidget .w_skin_goldenskin, .HabboMoviesWidget .w_skin_goldenskin, .TraxPlayerWidget .w_skin_goldenskin, .BadgesWidget .w_skin_goldenskin {
+	width: 287px;
 }
 
 /* default skin */
@@ -28,8 +27,8 @@
 .RatingWidget .w_skin_defaultskin {
 	width: 194px;
 }
-.GroupInfoWidget .w_skin_defaultskin, .ProfileWidget .w_skin_defaultskin, .RoomsWidget .w_skin_defaultskin, .GroupsWidget .w_skin_defaultskin, .HighScoresWidget .w_skin_defaultskin, .HabboMoviesWidget .w_skin_defaultskin, .TraxPlayerWidget .w_skin_defaultskin {
-	width: 252px;	
+.GroupInfoWidget .w_skin_defaultskin, .ProfileWidget .w_skin_defaultskin, .RoomsWidget .w_skin_defaultskin, .GroupsWidget .w_skin_defaultskin, .HighScoresWidget .w_skin_defaultskin, .UserExpsWidget .w_skin_defaultskin, .HabboMoviesWidget .w_skin_defaultskin, .TraxPlayerWidget .w_skin_defaultskin, .BadgesWidget .w_skin_defaultskin {
+	width: 252px;
 }
 
 /* HC pillow skin */
@@ -39,8 +38,8 @@
 .RatingWidget .w_skin_hc_pillowskin {
 	width: 244px;
 }
-.GroupInfoWidget .w_skin_hc_pillowskin, .ProfileWidget .w_skin_hc_pillowskin, .RoomsWidget .w_skin_hc_pillowskin, .GroupsWidget .w_skin_hc_pillowskin, .HighScoresWidget .w_skin_hc_pillowskin, .HabboMoviesWidget .w_skin_hc_pillowskin, .TraxPlayerWidget .w_skin_hc_pillowskin {
-	width: 302px;	
+.GroupInfoWidget .w_skin_hc_pillowskin, .ProfileWidget .w_skin_hc_pillowskin, .RoomsWidget .w_skin_hc_pillowskin, .GroupsWidget .w_skin_hc_pillowskin, .HighScoresWidget .w_skin_hc_pillowskin, .UserExpsWidget .w_skin_hc_pillowskin, .HabboMoviesWidget .w_skin_hc_pillowskin, .TraxPlayerWidget .w_skin_hc_pillowskin, .BadgesWidget .w_skin_hc_pillowskin {
+	width: 302px;
 }
 
 /* HC scifi skin */
@@ -50,8 +49,8 @@
 .RatingWidget .w_skin_hc_machineskin {
 	width: 255px;
 }
-.GroupInfoWidget .w_skin_hc_machineskin, .ProfileWidget .w_skin_hc_machineskin, .RoomsWidget .w_skin_hc_machineskin, .GroupsWidget .w_skin_hc_machineskin, .HighScoresWidget .w_skin_hc_machineskin, .HabboMoviesWidget .w_skin_hc_machineskin, .TraxPlayerWidget .w_skin_hc_machineskin {
-	width: 313px;	
+.GroupInfoWidget .w_skin_hc_machineskin, .ProfileWidget .w_skin_hc_machineskin, .RoomsWidget .w_skin_hc_machineskin, .GroupsWidget .w_skin_hc_machineskin, .HighScoresWidget .w_skin_hc_machineskin, .UserExpsWidget .w_skin_hc_machineskin, .HabboMoviesWidget .w_skin_hc_machineskin, .TraxPlayerWidget .w_skin_hc_machineskin, .BadgesWidget .w_skin_hc_machineskin {
+	width: 313px;
 }
 
 /* metal skin */
@@ -61,8 +60,8 @@
 .RatingWidget .w_skin_metalskin {
 	width: 215px;
 }
-.GroupInfoWidget .w_skin_metalskin, .ProfileWidget .w_skin_metalskin, .RoomsWidget .w_skin_metalskin, .GroupsWidget .w_skin_metalskin, .HighScoresWidget .w_skin_metalskin, .HabboMoviesWidget .w_skin_metalskin, .TraxPlayerWidget .w_skin_metalskin {
-	width: 273px;	
+.GroupInfoWidget .w_skin_metalskin, .ProfileWidget .w_skin_metalskin, .RoomsWidget .w_skin_metalskin, .GroupsWidget .w_skin_metalskin, .HighScoresWidget .w_skin_metalskin, .UserExpsWidget .w_skin_metalskin, .HabboMoviesWidget .w_skin_metalskin, .TraxPlayerWidget .w_skin_metalskin, .BadgesWidget .w_skin_metalskin {
+	width: 273px;
 }
 
 /* notepad skin */
@@ -72,8 +71,8 @@
 .RatingWidget .w_skin_notepadskin {
 	width: 196px;
 }
-.GroupInfoWidget .w_skin_notepadskin, .ProfileWidget .w_skin_notepadskin, .RoomsWidget .w_skin_notepadskin, .GroupsWidget .w_skin_notepadskin, .HighScoresWidget .w_skin_notepadskin, .HabboMoviesWidget .w_skin_notepadskin, .TraxPlayerWidget .w_skin_notepadskin {
-	width: 254px;	
+.GroupInfoWidget .w_skin_notepadskin, .ProfileWidget .w_skin_notepadskin, .RoomsWidget .w_skin_notepadskin, .GroupsWidget .w_skin_notepadskin, .HighScoresWidget .w_skin_notepadskin, .UserExpsWidget .w_skin_notepadskin, .HabboMoviesWidget .w_skin_notepadskin, .TraxPlayerWidget .w_skin_notepadskin, .BadgesWidget .w_skin_notepadskin {
+	width: 254px;
 }
 
 /* speechbubble skin */
@@ -83,8 +82,8 @@
 .RatingWidget .w_skin_speechbubbleskin {
 	width: 180px;
 }
-.GroupInfoWidget .w_skin_speechbubbleskin, .ProfileWidget .w_skin_speechbubbleskin, .RoomsWidget .w_skin_speechbubbleskin, .GroupsWidget .w_skin_speechbubbleskin, .HighScoresWidget .w_skin_speechbubbleskin, .HabboMoviesWidget .w_skin_speechbubbleskin, .TraxPlayerWidget .w_skin_speechbubbleskin {
-	width: 238px;	
+.GroupInfoWidget .w_skin_speechbubbleskin, .ProfileWidget .w_skin_speechbubbleskin, .RoomsWidget .w_skin_speechbubbleskin, .GroupsWidget .w_skin_speechbubbleskin, .HighScoresWidget .w_skin_speechbubbleskin, .UserExpsWidget .w_skin_speechbubbleskin, .HabboMoviesWidget .w_skin_speechbubbleskin, .TraxPlayerWidget .w_skin_speechbubbleskin, .BadgesWidget .w_skin_speechbubbleskin {
+	width: 238px;
 }
 
 /* stickienote skin */
@@ -94,8 +93,8 @@
 .RatingWidget .w_skin_noteitskin {
 	width: 179px;
 }
-.GroupInfoWidget .w_skin_noteitskin, .ProfileWidget .w_skin_noteitskin, .RoomsWidget .w_skin_noteitskin, .GroupsWidget .w_skin_noteitskin, .HighScoresWidget .w_skin_noteitskin, .HabboMoviesWidget .w_skin_noteitskin, .TraxPlayerWidget .w_skin_noteitskin {
-	width: 237px;	
+.GroupInfoWidget .w_skin_noteitskin, .ProfileWidget .w_skin_noteitskin, .RoomsWidget .w_skin_noteitskin, .GroupsWidget .w_skin_noteitskin, .HighScoresWidget .w_skin_noteitskin, .UserExpsWidget .w_skin_noteitskin, .HabboMoviesWidget .w_skin_noteitskin, .TraxPlayerWidget .w_skin_noteitskin, .BadgesWidget .w_skin_noteitskin {
+	width: 237px;
 }
 
 .stickie .edit-button, .stickie .report-button {
@@ -103,6 +102,37 @@
 	right: 0;
 	top: 5px;
 }
+
+
+/*Widths for bestexps and halloffame widget. Once the design has been done, unused configuration can be removed*/
+.HallOfFameWidget .widget-content, BestExpsWidget .widget-content {
+	width: 457px;
+}
+.HallOfFameWidget .w_skin_goldenskin, .BestExpsWidget .w_skin_goldenskin {
+	width: 526px;
+}
+.HallOfFameWidget .w_skin_metalskin, .BestExpsWidget .w_skin_metalskin {
+	width: 512px;
+}
+.HallOfFameWidget .w_skin_defaultskin, .BestExpsWidget .w_skin_defaultskin {
+	width: 491px;
+}
+.HallOfFameWidget .w_skin_notepadskin, .BestExpsWidget .w_skin_notepadskin {
+	width: 493px;
+}
+.HallOfFameWidget .w_skin_noteitskin, .BestExpsWidget .w_skin_noteitskin {
+	width: 476px;
+}
+.HallOfFameWidget .w_skin_speechbubbleskin, .BestExpsWidget .w_skin_speechbubbleskin {
+	width: 477px;
+}
+.HallOfFameWidget .w_skin_hc_machineskin, .BestExpsWidget .w_skin_hc_machineskin {
+	width: 552px;
+}
+.HallOfFameWidget .w_skin_hc_pillowskin, .BestExpsWidget .w_skin_hc_pillowskin {
+	width: 543px;
+}
+
 
 /** common widget stuff */
 .widget div.widget-headline h3 {
@@ -141,7 +171,7 @@
 }
 
 .w_skin_goldenskin a {
-	color: #391c00;	
+	color: #391c00;
 }
 
 .w_skin_goldenskin div.widget-content {
@@ -205,11 +235,11 @@
 }
 
 .w_skin_metalskin a {
-	color: #41404a;	
+	color: #41404a;
 }
 
 .w_skin_metalskin .metadata {
-	color: #484848;	
+	color: #484848;
 }
 
 .w_skin_metalskin div.widget-content {
@@ -258,11 +288,11 @@
 }
 
 .w_skin_hc_machineskin a {
-	color: #163004;	
+	color: #163004;
 }
 
 .w_skin_hc_machineskin .metadata {
-	color: #5fe800;	
+	color: #5fe800;
 }
 
 .w_skin_hc_machineskin div.widget-content {
@@ -310,7 +340,7 @@
 }
 
 .w_skin_defaultskin a {
-	color: #222;	
+	color: #222;
 }
 
 .w_skin_defaultskin div.widget-content {
@@ -357,7 +387,7 @@
 }
 
 .w_skin_notepadskin a {
-	color: #2c303a;	
+	color: #2c303a;
 }
 
 .w_skin_notepadskin div.widget-content {
@@ -404,11 +434,11 @@
 }
 
 .w_skin_noteitskin a {
-	color: #000;	
+	color: #000;
 }
 
 .w_skin_noteitskin .metadata {
-	color: #475665;	
+	color: #475665;
 }
 
 .w_skin_noteitskin div.widget-content {
@@ -455,7 +485,7 @@
 }
 
 .w_skin_speechbubbleskin a {
-	color: #2D2D2D;	
+	color: #2D2D2D;
 }
 
 .w_skin_speechbubbleskin div.widget-content {
@@ -501,7 +531,7 @@ div.stickie {
 }
 
 #stickie-preview-window div.stickie  {
-	width: auto;	
+	width: auto;
 }
 
 /*** GOLDSKIN ***/
@@ -532,7 +562,7 @@ div.stickie {
 	padding:3px 30px 5px 2px;
 }
 
-.n_skin_goldenskin .stickie-content p {
+.n_skin_goldenskin .stickie-content .stickie-markup {
 	vertical-align: top;
 	margin: 0px 0px 5px 2px;
 	padding: 0 0 19px 0;
@@ -545,7 +575,7 @@ div.stickie {
 
 /*** BLUESKIN ***/
 .stickie .n_skin_defaultskin, #stickie-preview-window .n_skin_defaultskin {
-	width: 250px;	
+	width: 250px;
 }
 
 .n_skin_defaultskin .stickie-header {
@@ -577,7 +607,7 @@ div.stickie {
 	padding: 1px 15px 4px 3px;
 }
 
-.n_skin_defaultskin .stickie-content p {
+.n_skin_defaultskin .stickie-content .stickie-markup {
 	vertical-align: top;
 	margin: 0;
 	padding-bottom: 7px;
@@ -620,7 +650,7 @@ div.stickie {
 	padding: 1px 20px 1px 0;
 }
 
-.n_skin_metalskin .stickie-content p {
+.n_skin_metalskin .stickie-content .stickie-markup {
 	vertical-align: top;
 	margin: 0 0 13px 0;
 	color: #000;
@@ -629,7 +659,7 @@ div.stickie {
 /*** hc_machineskin ***/
 
 .stickie .n_skin_hc_machineskin, #stickie-preview-window .n_skin_hc_machineskin {
-	width: 293px;	
+	width: 293px;
 }
 
 .n_skin_hc_machineskin .stickie-header {
@@ -663,7 +693,7 @@ div.stickie {
 	padding:3px 28px 4px 0;
 }
 
-.n_skin_hc_machineskin .stickie-content p {
+.n_skin_hc_machineskin .stickie-content .stickie-markup {
 	vertical-align: top;
 	margin: 2px 15px 29px 4px;
 	color: #fff;
@@ -671,7 +701,7 @@ div.stickie {
 
 /*** notepadskin***/
 .stickie .n_skin_notepadskin, #stickie-preview-window .n_skin_notepadskin {
-	width: 253px;	
+	width: 253px;
 }
 
 .n_skin_notepadskin .stickie-header {
@@ -705,7 +735,7 @@ div.stickie {
 	padding:3px 5px 4px 3px;
 }
 
-.n_skin_notepadskin .stickie-content p {
+.n_skin_notepadskin .stickie-content .stickie-markup {
 	vertical-align: top;
 	margin: 2px 0 0 0;
 	color: #000;
@@ -713,7 +743,7 @@ div.stickie {
 
 /*** noteitskin***/
 .stickie .n_skin_noteitskin, #stickie-preview-window .n_skin_noteitskin {
-	width: 254px;	
+	width: 254px;
 }
 
 .n_skin_noteitskin .stickie-header {
@@ -747,7 +777,7 @@ div.stickie {
 	padding:1px 28px 23px 3px;
 }
 
-.n_skin_noteitskin .stickie-content p {
+.n_skin_noteitskin .stickie-content .stickie-markup {
 	vertical-align: top;
 	margin-top: 2px;
 	margin-bottom: 0;
@@ -756,7 +786,7 @@ div.stickie {
 
 /*** speechbubleskin***/
 .stickie .n_skin_speechbubbleskin, #stickie-preview-window .n_skin_speechbubbleskin {
-	width: 236px;	
+	width: 236px;
 }
 .n_skin_speechbubbleskin .stickie-header {
 	background: url(../../images/skins/Skin_Speechbubble_topL.png) no-repeat;
@@ -789,7 +819,7 @@ div.stickie {
 	padding:1px 5px 6px 3px;
 }
 
-.n_skin_speechbubbleskin .stickie-content p {
+.n_skin_speechbubbleskin .stickie-content .stickie-markup {
 	vertical-align: top;
 	margin-top: 2px;
 	margin-bottom: 10px;
@@ -802,11 +832,11 @@ div.stickie {
 }
 
 .w_skin_hc_pillowskin a {
-	color: #7c0065;	
+	color: #7c0065;
 }
 
 .w_skin_hc_pillowskin .metadata {
-	color: #b53f6e;	
+	color: #b53f6e;
 }
 
 .w_skin_hc_pillowskin div.widget-content {
@@ -821,7 +851,7 @@ div.stickie {
 .w_skin_hc_pillowskin div.widget-body {
 	background: url(../../images/skins/girl/Skin_HCpillow_btmL.png) no-repeat bottom left;
 	margin-left: 0px;
-	
+
 }
 
 .w_skin_hc_pillowskin div.widget-headline {
@@ -864,7 +894,7 @@ div.stickie {
 /***  Stickie note ***/
 
 .stickie .n_skin_hc_pillowskin, #stickie-preview-window .n_skin_hc_pillowskin {
-	width: 300px;	
+	width: 300px;
 }
 
 .n_skin_hc_pillowskin .stickie-header {
@@ -899,7 +929,7 @@ div.stickie {
 	margin-left: 4px;
 }
 
-.n_skin_hc_pillowskin .stickie-content p {
+.n_skin_hc_pillowskin .stickie-content .stickie-markup {
 	vertical-align: top;
 	margin-top: 0;
 	padding-left: 0;

@@ -9,7 +9,7 @@
 || # warrenty of any kind. HoloCMS is free software!
 |+===================================================*/
 
-include('core.php');
+include('./core.php');
 include('./includes/session.php');
 
 // simple check to avoid most direct access
@@ -44,11 +44,12 @@ if($ownerid !== $my_id){
     exit;
 } elseif($ownerid == $my_id){
 
-
+error_reporting(0);
 $image = "habbo-imaging/badge-fill/$groupdata[badge].gif";
 if(file_exists($image)) {
 unlink($image);
 }
+error_reporting(1);
     mysql_query("DELETE FROM groups_details WHERE id = '".$groupid."' LIMIT 1");
     mysql_query("DELETE FROM groups_memberships WHERE groupid = '".$groupid."'");
     mysql_query("DELETE FROM cms_homes_group_linker WHERE groupid = '".$groupid."'");

@@ -2,7 +2,7 @@
 /*===================================================+
 || # HoloCMS - Website and Content Management System
 |+===================================================+
-|| # Copyright © 2008 Meth0d. All rights reserved.
+|| # Copyright ï¿½ 2008 Meth0d. All rights reserved.
 || # http://www.meth0d.org
 |+===================================================+
 || # HoloCMS is provided "as is" and comes without
@@ -15,6 +15,11 @@
 * @usage	N/A
 */
 
+date_default_timezone_set('America/Bogota');
+
+// ini_set('display_errors', 1);
+// error_reporting(E_ALL);
+
 define("IN_HOLOCMS", TRUE);
 session_start();
 
@@ -26,23 +31,22 @@ session_start();
 
 // Launch the installer if needed
 if(empty($sqlpassword) || empty($sqlusername) || empty($sqldb) || empty($sqlhostname)){
-	
+
 	header("location:install.php");
 	exit;
-	
+
 } else {
-	
-	if(file_exists('install.php')){
-		
+
+	if(file_exists('install.php') || file_exists('upgrade.php') && $bypass_check != true){
+
 		echo "<h1>Security Alert</h1><hr>It appears you have already executed the installation script or written your configuration file. To start using your site, for security reasons, please delete install.php and/or upgrade.php from the HoloCMS directory to proceed. If you have not yet completed installation or wish to execute it again, please <a href='install.php'>click here</a>.<hr><i>HoloCMS</i>";
 		exit;
-		
 	} else {
-		
+
 		include('includes/mysql.php');
-		
+
 	}
-	
+
 }
 
 // Validate the langauge
@@ -54,7 +58,7 @@ if(file_exists($language_path) || file_exists($language_path_2)){
 } else {
 	$language = "en";
 	$valid_language = false;
-} 
+}
 
 // #########################################################################
 // Define the variables HoloCMS wants to use later on
@@ -96,6 +100,8 @@ $r1ow = mysql_fetch_assoc($s1ql);
 $online_count = $r1ow['onlinecount'];
 $server_on_localhost = $config['localhost'];
 $habboversion = "23_deebb3529e0d9d4e847a31e5f6fb4c5b/9";
+$forumid = $_GET['id'];
+$analytics = HoloText($config['analytics'], true)."\n";
 
 // #########################################################################
 
@@ -103,7 +109,7 @@ function FetchServerSetting($strSetting, $switch = false){
 
 	$tmp = mysql_query("SELECT sval FROM system_config WHERE skey = '".$strSetting."' LIMIT 1") or die(mysql_error());
 	$tmp = mysql_fetch_assoc($tmp);
-	
+
 	if($switch !== true){
 		return $tmp['sval'];
 	} elseif($switch == true && $tmp['sval'] == "1"){
@@ -118,7 +124,7 @@ function FetchServerSetting($strSetting, $switch = false){
 
 function getContent($strKey){
 
-	$tmp = mysql_query("SELECT contentvalue FROM cms_content WHERE contentkey = '".addslashes($strKey)."' LIMIT 1") or die(mysql_error());
+	$tmp = mysql_query("SELECT contentvalue FROM cms_content WHERE contentkey = '".FilterText($strKey)."' LIMIT 1") or die(mysql_error());
 	$tmp = mysql_fetch_assoc($tmp);
 	return $tmp['contentvalue'];
 
@@ -140,10 +146,12 @@ function FetchCMSSetting($strSetting){
 // Please do not mess with this. It is a fairly simple process, but if it doesn't work
 // properly it can cause a huge mess. Everything in this function is commented.
 
-if(!session_is_registered(username) && $_COOKIE['remember'] == "remember"){
+@include('./includes/inc.crypt.php');
+@include('../includes/inc.crypt.php');
+if(!isset($_SESSION['username']) && $_COOKIE['remember'] == "remember"){
 
 	// Get variables stored in cookies; the username and sha1 hashed password
-	$cname = addslashes($_COOKIE['rusername']);
+	$cname = FilterText($_COOKIE['rusername']);
 	$cpass_hash = $_COOKIE['rpassword'];
 
 	// Now fetch the password that belongs to this user from the database
@@ -159,7 +167,7 @@ if(!session_is_registered(username) && $_COOKIE['remember'] == "remember"){
 
 			// We found a user, now get his password and hash it
 			$crow = mysql_fetch_assoc($csql);
-			$correct_pass = sha1("zomq".$crow['password']);
+			$correct_pass = $crow['password'];
 
 			// Check if the hashed database password and hash in the cookie match
 			// If no, destroy the cookie. If yes, log the user in.
@@ -193,9 +201,9 @@ function IsEven($intNumber)
 // #########################################################################
 
 function bbcode_format($str){
-	
+
 	// Parse smilies
-	if(getContent('enable-smilies') == "1"){
+	if(HoloText(getContent('enable-smilies'), true) == "1"){
 		$str = str_replace(":)", " <img src='./web-gallery/smilies/smile.gif' alt='Smiley' title='Smiley' border='0'> ", $str);
 		$str = str_replace(";)", " <img src='./web-gallery/smilies/wink.gif' alt='Smiley' title='Smiley' border='0'> ", $str);
 		$str = str_replace(":P", " <img src='./web-gallery/smilies/tongue.gif' alt='Smiley' title='Smiley' border='0'> ", $str);
@@ -210,17 +218,20 @@ function bbcode_format($str){
 
 	// Parse BB code
         $simple_search = array(
-                                '/\[b\](.*?)\[\/b\]/is',                                
-                                '/\[i\](.*?)\[\/i\]/is',                                
-                                '/\[u\](.*?)\[\/u\]/is',                                
-                                '/\[s\](.*?)\[\/s\]/is',                                                                
+                                '/\[b\](.*?)\[\/b\]/is',
+                                '/\[i\](.*?)\[\/i\]/is',
+                                '/\[u\](.*?)\[\/u\]/is',
+                                '/\[s\](.*?)\[\/s\]/is',
                                 '/\[quote\](.*?)\[\/quote\]/is',
                                 '/\[link\=(.*?)\](.*?)\[\/link\]/is',
                                 '/\[url\=(.*?)\](.*?)\[\/url\]/is',
                                 '/\[color\=(.*?)\](.*?)\[\/color\]/is',
-                                '/\[size=small\](.*?)\[\/size\]/is',                                
+                                '/\[size=small\](.*?)\[\/size\]/is',
                                 '/\[size=large\](.*?)\[\/size\]/is',
-                                '/\[code\](.*?)\[\/code\]/is'
+                                '/\[code\](.*?)\[\/code\]/is',
+                                '/\[habbo\=(.*?)\](.*?)\[\/habbo\]/is',
+                                '/\[room\=(.*?)\](.*?)\[\/room\]/is',
+                                '/\[group\=(.*?)\](.*?)\[\/group\]/is'
                                 );
 
         $simple_replace = array(
@@ -234,7 +245,10 @@ function bbcode_format($str){
                                 "<font color='$1'>$2</font>",
                                 "<font size='1'>$1</font>",
                                 "<font size='3'>$1</font>",
-                                '<pre>$1</pre>'
+                                '<pre>$1</pre>',
+                                "<a href='./user_profile.php?id=$1'>$2</a>",
+                                "<a onclick=\"roomForward(this, '$1', 'private'); return false;\" target=\"client\" href=\"./client.php?forwardId=2&roomId=$1\">$2</a>",
+                                "<a href='./group_profile.php?id=$1'>$2</a>"
                                 );
 
         $str = preg_replace ($simple_search, $simple_replace, $str);
@@ -245,28 +259,44 @@ function bbcode_format($str){
 // #########################################################################
 
 function GenerateTicket(){
-	
+
 	$data = "ST-";
-	
+
 	for ($i=1; $i<=6; $i++){
-		$data = $data . rand(0,9);		
+		$data = $data . rand(0,9);
 	}
-	
+
 	$data = $data . "-";
-	
+
 	for ($i=1; $i<=20; $i++){
-		$data = $data . rand(0,9);	
+		$data = $data . rand(0,9);
 	}
-	
+
 	$data = $data . "-holo-fe";
 	$data = $data . rand(0,5);
-	
+
 	return $data;
 }
 
 // #########################################################################
 
-if(session_is_registered('username')){
+// Collectable check (showroom). It can be that a collectable isn't in the collectables showroom. We're gonna do that now.
+$sql = mysql_query("SELECT * FROM cms_collectables");
+
+while($row = mysql_fetch_assoc($sql)) {
+$date = (date('m') - 1);
+    if($date >= $row['month']) {
+    mysql_query("UPDATE cms_collectables SET showroom='1' WHERE id='".$row['id']."' LIMIT 1");
+    }
+
+    if(date('Y') != $row['year']) {
+    mysql_query("UPDATE cms_collectables SET showroom='1' WHERE id='".$row['id']."' LIMIT 1");
+    }
+}
+
+// #########################################################################
+
+if(isset($_SESSION['username'])){
 
 	$rawname = $_SESSION['username']; // Has slashes added and lacking proper capitals
 	$rawpass = $_SESSION['password']; // HoloHash()'ed user password
@@ -283,13 +313,13 @@ if(session_is_registered('username')){
 	$is_banned = mysql_num_rows($check);
 
 	if($password_correct !== 1){ // Invalid credentials. Possible session hijack attempt, so we log the user out.
-		
+
 		session_destroy();
 		header("location:index.php?error=1");
 		exit;
-		
+
 	} elseif($is_banned > 0){
-		
+
 		$bandata = mysql_fetch_assoc($check);
 		$reason = $bandata['descr'];
 		$expire = $bandata['date_expire'];
@@ -300,73 +330,86 @@ if(session_is_registered('username')){
 
 		$stamp_now = time();
 		$stamp_expire = mktime($xtime[0], $xtime[1], $xtime[2], $xdate[0], $xdate[1], $xdate[2]);
-	
+
 		if($stamp_now < $stamp_expire){
-			
+
 			$login_error = "You have been banned! The reason for this ban is \"" . $reason . "\". The ban will expire at " . $expire . ".";
 			include('logout.php');
 			session_destroy();
 			exit;
-			
+
 		} else {
-			
+
 			// ban expired
 			mysql_query("DELETE FROM users_bans WHERE userid = '".$my_id."' OR ipaddress = '".$remote_ip."' LIMIT 1") or die(mysql_error());
-			
+
 		}
 	}
 
 	if($enable_sso == 1 && $password_correct == 1){
-		
+
 		$myticket = $myrow['ticket_sso'];
 
-		if(empty($myticket) || $myticket == "0" || strlen($myticket) < 39){
-			$myticket = GenerateTicket();
-			mysql_query("UPDATE users SET ticket_sso = '".$myticket."', ipaddress_last = '".$remote_ip."' WHERE id = '".$my_id."' LIMIT 1") or die(mysql_error());
-		}
+		// if(empty($myticket) || $myticket == "0" || strlen($myticket) < 39){
+		// 	$myticket = GenerateTicket();
+		// 	mysql_query("UPDATE users SET ticket_sso = '".$myticket."', ipaddress_last = '".$remote_ip."' WHERE id = '".$my_id."' LIMIT 1") or die(mysql_error());
+		// }
 
 	} else {
 		$myticket = "ST-NoTicketToGenerate-holo-fe";
 	}
-	
+
 	$logged_in = true;
-	$name = stripslashes($myrow['name']);
-	
+	$name = HoloText($myrow['name']);
+
 } else {
-	
+
 	$user_rank = 0;
 	$name = "Guest";
 	$my_id = "GUEST";
 	$myticket = "ST-Guest-holo-fe";
 	$logged_in = false;
-	
+
 }
 
 // #########################################################################
-
-if($enable_status_image == 1){
-	if($server_on_localhost !== 0 || $ip == "127.0.0.1"){
-		$server = "127.0.0.1";
+// Gift check (noob/welcome stuff)
+/*
+$sql = mysql_query("SELECT noob,gift,sort,roomid,lastgift FROM users WHERE id='".$my_id."' LIMIT 1");
+$row = mysql_fetch_assoc($sql);
+if($row['gift'] < 3) {
+if($row['noob'] == 1) {
+    if($row['lastgift'] < date("d-m-Y")) {
+        mysql_query("INSERT INTO cms_noobgifts (userid,gift,read) VALUES ('".$my_id."','".$row['gift']."','0')");
+        mysql_query("UPDATE users SET lastgift='".date("d-m-Y")."',gift=gift+'1' WHERE id='".$my_id."' LIMIT 1");
+    }
+}
+}
+// #########################################################################
+*/
+if($enable_status_image == "1"){
+	if($server_on_localhost != 0 || $ip == "127.0.0.1"){
+		$fip = "127.0.0.1";
 	} else {
 		$fip = $ip;
 	}
-	
+
 	$fp = @fsockopen($fip, $fport, $errno, $errstr, 1);
-	
+
 	if($fp){
 		$online = "online";
 		fclose($fp);
 	} else {
 		$online = "offline";
 	}
-} else {
+}else{
 	$online = "online";
 }
 
 // #########################################################################
 
 if($user_rank > 5){
-	if(session_is_registered(hkusername) && session_is_registered(hkpassword)){
+	if(isset($_SESSION['hkusername']) && isset($_SESSION['hkpassword'])){
 		$rank['iAdmin'] = "1";
 	} else {
 		$rank['iAdmin'] = "0";
@@ -378,13 +421,13 @@ if($user_rank > 5){
 // #########################################################################
 
 function GetUserBadge($strName){ // supports user IDs also
-	
+
 	if(is_numeric($strName)){
 		$check = mysql_query("SELECT id FROM users WHERE id = '".$strName."' AND badge_status = '1' LIMIT 1") or die(mysql_error());
 	} else {
-		$check = mysql_query("SELECT id FROM users WHERE name = '".addslashes($strName)."' AND badge_status = '1' LIMIT 1") or die(mysql_error());
+		$check = mysql_query("SELECT id FROM users WHERE name = '".FilterText($strName)."' AND badge_status = '1' LIMIT 1") or die(mysql_error());
 	}
-	
+
 	$exists = mysql_num_rows($check);
 
 		if($exists > 0){
@@ -497,7 +540,7 @@ function HCDaysLeft($my_id){
 }
 
 // #########################################################################
- 
+
 if($maintenance == "1" && !$is_maintenance && $rank['iAdmin'] < 1){
 	header("Location: maintenance.php");
 	exit;
@@ -508,58 +551,58 @@ if($maintenance == "1" && !$is_maintenance && $rank['iAdmin'] < 1){
 // #########################################################################
 
 function IsHCMember($my_id){
-	if(HCDaysLeft($my_id) > 0 ){
-		return true;
-	} else {
-		// Make sure that HC members are _not_ rank 2 and that they do not have their gay little badge
-		$check = mysql_query("SELECT * FROM users_club WHERE userid = '".$my_id."' LIMIT 1");
-		$clubrecord = mysql_num_rows($check);
-		if($clubrecord > 0){
-			mysql_query("UPDATE users SET badge_status = '0' WHERE id = '".$my_id."' LIMIT 1") or die(mysql_error());
-			mysql_query("UPDATE users SET rank = '1' WHERE id = '".$my_id."' AND rank = '2' LIMIT 1") or die(mysql_error());
-			mysql_query("DELETE FROM users_badges WHERE badgecode = 'HC1' OR badgeid = 'HC2' AND userid = '".$my_id."' LIMIT 1");
-			mysql_query("DELETE FROM users_club WHERE userid = '".$my_id."' LIMIT 1") or die(mysql_error());
-			if(function_exists(SendMUSData) !== true){ include('includes/mus.php'); }
-			@SendMUSData('UPRS' . $my_id);
-		}
-		return false;
-	}
+    if(HCDaysLeft($my_id) > 0 ){
+        return true;
+    } else {
+        // Make sure that HC members are _not_ rank 2 and that they do not have their gay little badge
+        $check = mysql_query("SELECT * FROM users_club WHERE userid = '".$my_id."' LIMIT 1");
+        $clubrecord = mysql_num_rows($check);
+        if($clubrecord > 0){
+            mysql_query("UPDATE users SET badge_status = '0', hc_before='1' WHERE id = '".$my_id."' LIMIT 1") or die(mysql_error());
+            mysql_query("UPDATE users SET rank = '1' WHERE id = '".$my_id."' AND rank = '2' LIMIT 1") or die(mysql_error());
+            mysql_query("DELETE FROM users_badges WHERE badgecode = 'HC1' OR badgeid = 'HC2' AND userid = '".$my_id."' LIMIT 1");
+            mysql_query("DELETE FROM users_club WHERE userid = '".$my_id."' LIMIT 1") or die(mysql_error());
+            if(function_exists(SendMUSData) !== true){ include('includes/mus.php'); }
+            @SendMUSData('UPRS' . $my_id);
+        }
+        return false;
+    }
 }
 
 // #########################################################################
 
 function GiveHC($user_id, $months){
-	
+
 $sql = mysql_query("SELECT * FROM users_club WHERE userid = '".$user_id."' LIMIT 1") or die(mysql_error());
 $valid = mysql_num_rows($sql);
 
-	if($valid > 0){
-		mysql_query("UPDATE users SET rank = '2' WHERE rank = '1' AND id = '".$user_id."' LIMIT 1") or die(mysql_error());
-		mysql_query("UPDATE users_club SET months_left = months_left + ".$months." WHERE userid = '".$user_id."' LIMIT 1") or die(mysql_error());
-		$check = mysql_query("SELECT * FROM users_badges WHERE badgeid = 'HC1' AND userid = '".$user_id."' LIMIT 1") or die(mysql_error());
-		$found = mysql_num_rows($check);
-		if($found !== 1){ // No badge. Poor thing.
-			mysql_query("UPDATE users SET badge_status = '0' WHERE id = '".$user_id."' LIMIT 1") or die(mysql_error());
-			mysql_query("UPDATE users_badges SET iscurrent = '0' WHERE userid = '".$user_id."'") or die(mysql_error());
-			mysql_query("INSERT INTO users_badges (userid,badgeid,iscurrent) VALUES ('".$user_id."','HC1','1')") or die(mysql_error());
-		}
-	} else {
-		$m = date('m');
-		$d = date('d');
-		$Y = date('Y');
-		$date = date('d-m-Y', mktime($m,$d,$Y));
-		mysql_query("INSERT INTO users_club (userid,date_monthstarted,months_expired,months_left) VALUES ('".$user_id."','".$date."','0','0')") or die(mysql_error());
-		GiveHC($user_id, $months);
-	}
-	
-	if(function_exists(SendMUSData) !== true){ include('includes/mus.php'); }
-	@SendMUSData('UPRS' . $user_id);
-	@SendMUSData('UPRC' . $user_id);
+    if($valid > 0){
+        mysql_query("UPDATE users SET rank = '2' WHERE rank = '1' AND id = '".$user_id."' LIMIT 1") or die(mysql_error());
+        mysql_query("UPDATE users_club SET months_left = months_left + ".$months." WHERE userid = '".$user_id."' LIMIT 1") or die(mysql_error());
+        $check = mysql_query("SELECT * FROM users_badges WHERE badgeid = 'HC1' AND userid = '".$user_id."' LIMIT 1") or die(mysql_error());
+        $found = mysql_num_rows($check);
+        if($found !== 1){ // No badge. Poor thing.
+            mysql_query("UPDATE users SET badge_status = '0' WHERE id = '".$user_id."' LIMIT 1") or die(mysql_error());
+            mysql_query("UPDATE users_badges SET iscurrent = '0' WHERE userid = '".$user_id."'") or die(mysql_error());
+            mysql_query("INSERT INTO users_badges (userid,badgeid,iscurrent) VALUES ('".$user_id."','HC1','1')") or die(mysql_error());
+        }
+    } else {
+        $m = date('m');
+        $d = date('d');
+        $Y = date('Y');
+        $date = date('d-m-Y', mktime($m,$d,$Y));
+        mysql_query("INSERT INTO users_club (userid,date_monthstarted,months_expired,months_left) VALUES ('".$user_id."','".$date."','0','0')") or die(mysql_error());
+        GiveHC($user_id, $months);
+    }
+
+    if(function_exists(SendMUSData) !== true){ include('includes/mus.php'); }
+    @SendMUSData('UPRS' . $user_id);
+    @SendMUSData('UPRC' . $user_id);
 }
 
 // #########################################################################
 
-if(session_is_registered(username)){
+if(isset($_SESSION['username'])){
 $blob = time();
 mysql_query("UPDATE users SET online = '".$blob."', ipaddress_last = '".$remote_ip."' WHERE id = '".$my_id."' LIMIT 1") or die(mysql_error());
 	//if($phail == true){
@@ -587,16 +630,16 @@ $timeout = 600; // 10 minutes ?
 		} else {
 			return false;
 		}
-	}	
+	}
 }
 
 // #########################################################################
 
 function IsUserBanned($my_id){
-	
+
 	$check = mysql_query("SELECT * FROM users_bans WHERE userid = '".$my_id."' LIMIT 1") or die(mysql_error());
 	$is_banned = mysql_num_rows($check);
-	
+
 	if(!is_numeric($my_id)){ return false; }
 
 	if($is_banned > 0){
@@ -610,7 +653,7 @@ function IsUserBanned($my_id){
 
 		$stamp_now = time();
 		$stamp_expire = mktime($xtime[0], $xtime[1], $xtime[2], $xdate[0], $xdate[1], $xdate[2]);
-	
+
 		if($stamp_now < $stamp_expire){
 			return true;
 		} else { // ban expired
@@ -636,9 +679,22 @@ function mysql_evaluate($query, $default_value="undefined") {
 
 // #########################################################################
 
-@include('./includes/inc.crypt.php');
-@include('../includes/inc.crypt.php');
+function FilterText($str, $advanced=false) {
+	if($advanced == true){ return mysql_real_escape_string($str); }
+	$str = mysql_real_escape_string(htmlspecialchars($str));
+	return $str;
+}
+
+function HoloText($str, $advanced=false, $bbcode=false) {
+	if($advanced == true){ return stripslashes($str); }
+	$str = stripslashes(nl2br(htmlspecialchars($str)));
+	if($bbcode == true){$str = bbcode_format($str); }
+	return $str;
+}
+
+// #########################################################################
+
 @include('./includes/version.php');
-@include('../includes/version.php'); 
+@include('../includes/version.php');
 
 ?>

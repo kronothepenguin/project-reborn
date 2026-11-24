@@ -32,7 +32,7 @@
 }
 
 #settings-hc-logo {
-	background: url(../../images/habbo_club.png) top right no-repeat;
+	background: url(/images/habbo_club.png) top right no-repeat;
 	width: 49px;
 	height: 41px;
 	float: right;

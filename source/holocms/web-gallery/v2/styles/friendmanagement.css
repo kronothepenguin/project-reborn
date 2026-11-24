@@ -15,7 +15,7 @@
     margin: 0;
 }
 
-#friend-management #friends-category-title {
+#friends-category-title {
     color: #fff;
 	background-color: #999999;
     text-align: center;
@@ -84,7 +84,7 @@
 
 #friend-management #search-view input.friend-search-query {
     float: left;
-    width: 189px;
+    width: 187px;
     color: #999999;
 }
 
@@ -112,19 +112,19 @@
     padding-top: 20px;
 }
 
-#friend-management #friend-list-header-container {
+#friend-list-header-container {
     padding-top: 10px;
 }
 
-#friend-management #friend-list td.friend-name, #friend-management #friend-list td.friend-login {
+#friend-list td.friend-name, #friend-list td.friend-login {
     width: 200px;
 }
 
-#friend-management #friend-list td.friend-remove {
+#friend-list td.friend-remove, #friend-list td.friend-category {
     width: 105px;
 }
 
-#friend-management #friend-list tr.friend-list-header {
+#friend-list tr.friend-list-header {
     background-color: #4AB501;
 }
 
@@ -132,30 +132,30 @@
    background-color: #DAFDC2;
 }
 
-#friend-management #friend-list-table {
+#friend-list-table {
     width:100%;
     margin: 0;
     padding: 0;
 }
 
-#friend-management #friend-list-table td.friend-select {
+#friend-list-table td.friend-select {
     width: 30px;
 }
 
-#friend-management #friend-list-table td.table-heading {
+#friend-list-table th {
     color: #fff;
-    font-weight: bold;    
     height: 20px;
+    font-weight: normal;
 }
 
-#friend-management #friend-list-header .page-limit {
+#friend-list-header .page-limit {
     width: 50%;
     height: 40px;
     font-weight: bold;
     float: left;
 }
 
-#friend-management #friend-list-paging {
+#friend-list-paging {
     float: right;
     font-weight: bold;
 }
@@ -170,7 +170,7 @@
     margin-right: 70px;
 }
 
-#friend-management #category-list .category-default:hover, #friend-management #category-list .open-category:hover, #friend-management #friend-list-header .category-limit:hover {
+#friend-management #category-list .category-default:hover, #friend-management #category-list .open-category:hover, #friend-list-header .category-limit:hover {
     text-decoration: underline;
     cursor: pointer;
 }
@@ -188,14 +188,27 @@
     width: 200px;
 }
 
-#friend-management #friend-list-table tr.odd:hover {
+#friend-list-table tr.odd:hover {
     background-color: #ECECEC;
 }
 
-#friend-management #friend-list-table tr.even:hover {
+#friend-list-table tr.even:hover {
     background-color: #DCEAFA;
 }
 
-#friend-management #friend-list a {
+#friend-list a {
     color: #409643;
+}
+
+#friend-list-table a.sort {
+    cursor: pointer;
+    color: #FFFFFF;
+}
+
+#friend-list-table a.sorted {
+    font-weight: bold;
+}
+
+#friend-list-table a.sort:hover {
+    text-decoration: underline;
 }

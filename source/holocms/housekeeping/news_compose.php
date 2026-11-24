@@ -2,7 +2,7 @@
 /*===================================================+
 || # HoloCMS - Website and Content Management System
 |+===================================================+
-|| # Copyright © 2008 Meth0d. All rights reserved.
+|| # Copyright ï¿½ 2008 Meth0d. All rights reserved.
 || # http://www.meth0d.org
 |+===================================================+
 || # HoloCMS is provided "as is" and comes without
@@ -11,7 +11,7 @@
 
 require_once('../core.php');
 if($hkzone !== true){ header("Location: index.php?throwBack=true"); exit; }
-if(!session_is_registered(acp)){ header("Location: index.php?p=login"); exit; }
+if(!isset($_SESSION['acp'])){ header("Location: index.php?p=login"); exit; }
 
 $pagename = "Compose New Article";
 
@@ -19,11 +19,12 @@ if($do == "save" && isset($_POST['topstory'])){
 
 	$num = $key;
 
-	$title = addslashes($_POST['title']);
-	$category = addslashes($_POST['category']);
-	$topstory = addslashes($_POST['topstory']);
-	$short_story = addslashes($_POST['short_story']);
-	$story = addslashes($_POST['story']);
+	$title = $_POST['title'];
+	$category = $_POST['category'];
+	$topstory = $_POST['topstory'];
+	$short_story = $_POST['short_story'];
+	$story = $_POST['story'];
+	$name = $_POST['author'];
 
 	mysql_query("INSERT INTO cms_news (title,category,topstory,short_story,story,author,date) VALUES ('".$title."','".$category."','".$topstory."','".$short_story."','".$story."','".$name."','".$date_reversed."')") or die(mysql_error());
 
@@ -68,12 +69,17 @@ if($do == "save" && isset($_POST['topstory'])){
 
 <tr>
 <td class='tablerow1'  width='40%'  valign='middle'><b>Short Story</b><div class='graytext'>A small introduction to the article.<br />HTML is not allowed here.</div></td>
-<td class='tablerow2'  width='60%'  valign='middle'><textarea name='short_story' cols='60' rows='5' wrap='soft' id='sub_desc'   class='multitext'><?php echo stripslashes($article['short_story']); ?></textarea></td>
+<td class='tablerow2'  width='60%'  valign='middle'><textarea name='short_story' cols='60' rows='5' wrap='soft' id='sub_desc'   class='multitext'><?php echo HoloText($article['short_story']); ?></textarea></td>
 </tr>
 
 <tr>
 <td class='tablerow1'  width='40%'  valign='middle'><b>Story</b><div class='graytext'>The actual news message.<br />HTML is allowed here.</div></td>
-<td class='tablerow2'  width='60%'  valign='middle'><textarea name='story' cols='60' rows='5' wrap='soft' id='sub_desc'   class='multitext'><?php echo stripslashes($article['story']); ?></textarea></td>
+<td class='tablerow2'  width='60%'  valign='middle'><textarea name='story' cols='60' rows='5' wrap='soft' id='sub_desc'   class='multitext'><?php echo HoloText($article['story']); ?></textarea></td>
+</tr>
+
+<tr>
+<td class='tablerow1'  width='40%'  valign='middle'><b>Author</b><div class='graytext'>Who's the author of the article?</div></td>
+<td class='tablerow2'  width='60%'  valign='middle'><input type='text' name='author' value="<?php echo $article['author']; ?>" size='30' class='textinput'></td>
 </tr>
 
 <tr>

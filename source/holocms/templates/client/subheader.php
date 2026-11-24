@@ -5,7 +5,7 @@
 | Copyright © 2008 Meth0d
 +----------------------------------------------------+
 | HoloCMS is provided "as is" and comes without
-| warrenty of any kind. 
+| warrenty of any kind.
 +---------------------------------------------------*/
 
 if (!defined("IN_HOLOCMS")) { header("Location: ../../index.php"); exit; }
@@ -17,7 +17,7 @@ if (!defined("IN_HOLOCMS")) { header("Location: ../../index.php"); exit; }
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
-	<title><?php echo $shortname; ?> ~  </title>
+	<title><?php echo $shortname; ?> ~ Client</title>
 
 <script src="./web-gallery/static/js/visual.js" type="text/javascript"></script>
 <script src="./web-gallery/static/js/domready.js" type="text/javascript"></script>
@@ -40,8 +40,8 @@ window.name = "client";
 
 </script>
 
-<script src="http://images.habbohotel.co.uk/habboweb/<?php echo $habboversion; ?>/web-gallery/static/js/habboclient.js" type="text/javascript"></script>
-<link rel="stylesheet" href="http://images.habbohotel.co.uk/habboweb/<?php echo $habboversion; ?>/web-gallery/v2/styles/habboclient.css" type="text/css" />
+<script src="./web-gallery/static/js/habboclient.js" type="text/javascript"></script>
+<link rel="stylesheet" href="./web-gallery/v2/styles/habboclient.css" type="text/css" />
 <script type="text/javascript">
 var habboClient = true;
 HabboClientUtils.init();

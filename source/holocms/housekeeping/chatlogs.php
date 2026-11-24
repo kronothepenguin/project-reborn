@@ -2,7 +2,7 @@
 /*===================================================+
 || # HoloCMS - Website and Content Management System
 |+===================================================+
-|| # Copyright © 2008 Meth0d. All rights reserved.
+|| # Copyright ï¿½ 2008 Meth0d. All rights reserved.
 || # http://www.meth0d.org
 |+===================================================+
 || # HoloCMS is provided "as is" and comes without
@@ -11,13 +11,13 @@
 
 require_once('../core.php');
 if($hkzone !== true){ header("Location: index.php?throwBack=true"); exit; }
-if(!session_is_registered(acp)){ header("Location: index.php?p=login"); exit; }
+if(!isset($_SESSION['acp'])){ header("Location: index.php?p=login"); exit; }
 
 $pagename = "Chat Log Viewer";
 
 if(isset($_POST['query'])){
 
-	$query = addslashes($_POST['query']);
+	$query = FilterText($_POST['query']);
 
 	$get_logs = mysql_query("SELECT * FROM system_chatlog WHERE roomid = '".$query."' OR username = '".$query."' ORDER BY mtime DESC") or die(mysql_error());
 	$results = mysql_num_rows($get_logs);
@@ -78,7 +78,7 @@ while($row = mysql_fetch_assoc($get_logs)){
   <td class='tablerow2' align='center'>%s</td>
   <td class='tablerow2' align='center'>%s</td>
   <td class='tablerow2' align='center'>%s</td>
-</tr>", $row['username'], $row['roomid'], $row['mtime'], stripslashes($row['message']));
+</tr>", $row['username'], $row['roomid'], $row['mtime'], HoloText($row['message']));
 }
 ?>
  

@@ -16,7 +16,7 @@ What Holo did, read for the questions below: it saved friendships and requests i
 told the client 200 friends, 600 for club members, and 200 waiting requests, and enforced none; any friend who was
 online and in a room could be followed, and the follower then met that room's door like anyone; it never sent the mail
 notices 363 and 364; an instant message reached only a friend who was online; and HoloCMS read the friendships for its
-quick menu (`source/holocms/quickmenu.php`).
+quick menu (`source/holocms-1.3.1/quickmenu.php`).
 
 # Decisions
 

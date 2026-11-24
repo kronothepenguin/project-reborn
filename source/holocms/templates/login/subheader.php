@@ -5,7 +5,7 @@
 | Copyright © 2008 Meth0d
 +----------------------------------------------------+
 | HoloCMS is provided "as is" and comes without
-| warrenty of any kind. 
+| warrenty of any kind.
 +---------------------------------------------------*/
 
 if (!defined("IN_HOLOCMS")) { header("Location: ../../index.php"); exit; }
@@ -17,7 +17,7 @@ if(!isset($pagename)){ $pagename = "Home"; }
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title><?php echo $shortname; ?> ~ <?php echo $pagename; ?> </title>
 
 <script type="text/javascript">

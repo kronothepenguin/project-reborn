@@ -2,7 +2,7 @@
 /*===================================================+
 || # HoloCMS - Website and Content Management System
 |+===================================================+
-|| # Copyright © 2008 Meth0d. All rights reserved.
+|| # Copyright ï¿½ 2008 Meth0d. All rights reserved.
 || # http://www.meth0d.org
 |+===================================================+
 || # HoloCMS is provided "as is" and comes without
@@ -11,29 +11,23 @@
 
 require_once('../core.php');
 if($hkzone !== true){ header("Location: index.php?throwBack=true"); exit; }
-if(!session_is_registered(acp)){ header("Location: index.php?p=login"); exit; }
+if(!isset($_SESSION['acp'])){ header("Location: index.php?p=login"); exit; }
 
 $pagename = "Wordfilter Options";
 
-if(isset($_POST['add']) && !empty($_POST['banner']) && !empty($_POST['url']) && !empty($_POST['id'])) {
-	mysql_query("INSERT INTO cms_banners (text,banner,url,status) VALUES ('".$_POST['text']."','".$_POST['banner']."','".$_POST['url']."','".$_POST['status']."')");
-	$msg = "Succesfully added!";
-	}else{
-	$msg = "You're something forgotten!";
+if(isset($_POST['add'])) {
+	mysql_query("INSERT INTO cms_banners (text,banner,url,status,advanced,html) VALUES ('".$_POST['text']."','".$_POST['banner']."','".$_POST['url']."','".$_POST['status']."','".$_POST['advanced']."','".FilterText($_POST['html'])."')");
+	$msg = "Action succesfull!";
 	}
 	
-	if(isset($_POST['edit']) && !empty($_POST['banner']) && !empty($_POST['url']) && !empty($_POST['id'])) {
-	mysql_query("UPDATE cms_banners SET text='".$_POST['text']."',banner='".$_POST['banner']."',url='".$_POST['url']."',status='".$_POST['status']."' WHERE id='".$_POST['id']."'");
-	$msg = "Succesfully edited!";
-	}else{
-	$msg = "You're something forgotten!";
+	if(isset($_POST['edit'])) {
+	mysql_query("UPDATE cms_banners SET text='".$_POST['text']."',banner='".$_POST['banner']."',url='".$_POST['url']."',status='".$_POST['status']."',advanced='".$_POST['advanced']."',html='".FilterText($_POST['html'])."' WHERE id='".$_POST['id']."'");
+	$msg = "Action succesfull!";
 	}
 	
-	if(isset($_POST['delete']) && !empty($_POST['id'])) {
+	if(isset($_POST['delete'])) {
 	mysql_query("DELETE FROM cms_banners WHERE id='".$_POST['id']."'");
-	$msg = "Succesfully deleted!";
-	}else{
-	$msg = "Something was going wrong!";
+	$msg = "Action succesfull!";
 	}
 
 @include('subheader.php');
@@ -65,11 +59,6 @@ if(isset($_POST['add']) && !empty($_POST['banner']) && !empty($_POST['url']) && 
 <?php } ?>
 
 <tr>
-<td class='tablerow1'  width='40%'  valign='middle'><b>Add or edit banners on your site!</b></div></td>
-<td class='tablerow2'  width='60%'  valign='middle'>You're already finished in 1 minute!</td>
-</tr>
-
-<tr>
 <td class='tablerow1'  width='40%'  valign='middle'><b>Text</b><div class='graytext'>The text below your banner.</div></td>
 <td class='tablerow2'  width='60%'  valign='middle'><input type='text' name='text' value="<?php echo $_POST['text']; ?>" size='30' maxlength="50" class='textinput'></td>
 </tr>
@@ -82,6 +71,16 @@ if(isset($_POST['add']) && !empty($_POST['banner']) && !empty($_POST['url']) && 
 <tr>
 <td class='tablerow1'  width='40%'  valign='middle'><b>Url</b><div class='graytext'>To what site are they going when they click on the text/banner?</div></td>
 <td class='tablerow2'  width='60%'  valign='middle'><input type='text' name='url' value="<?php echo $_POST['url']; ?>" size='30' maxlength="255" class='textinput'></td>
+</tr>
+
+<tr>
+<td class='tablerow1'  width='40%'  valign='middle'><b>Advanced</b><div class='graytext'>Enable HTML code (overrides previous settings)</div></td>
+<td class='tablerow2'  width='60%'  valign='middle'><input type="radio"<?php if($_POST['advanced'] == 0) { echo " CHECKED"; } ?> value="0" name="advanced"> Disabled<br><input type="radio"<?php if($_POST['advanced'] == 1) { echo " CHECKED"; } ?> value="1" name="advanced"> Enabled</td>
+</tr>
+
+<tr>
+<td class='tablerow1'  width='40%'  valign='middle'><b>HTML</b><div class='graytext'>HTML code for advanced users (for placing Google Adsense or something)</div></td>
+<td class='tablerow2'  width='60%'  valign='middle'><textarea name='html' cols='61' rows='3' wrap='soft' id='sub_desc' class='multitext'><?php echo $_POST['html']; ?></textarea></td>
 </tr>
 
 <tr>
@@ -104,7 +103,7 @@ if(isset($_POST['add']) && !empty($_POST['banner']) && !empty($_POST['url']) && 
 $sql = mysql_query("SELECT * FROM cms_banners");
 while($row = mysql_fetch_assoc($sql)) { ?>
 <tr>
-<td class='tablerow1'  width='40%'  valign='middle'><b>Text</b><br> <?php echo $row['text']; ?><br><b>Banner url</b><br> <?php echo $row['banner']; ?><br><b>Linking url</b><br> <?php echo $row['url']; ?><br><b>Status</b><br> <?php if($row['status'] == "1") { echo "Enabled!"; }else{ echo "Disabled"; } ?></div></td>
+<td class='tablerow1'  width='40%'  valign='middle'><b>Text</b><br> <?php echo $row['text']; ?><br><b>Banner url</b><br> <?php echo $row['banner']; ?><br><b>Linking url</b><br> <?php echo $row['url']; ?><br><b>Status</b><br> <?php if($row['status'] == "1") { echo "Enabled!"; }else{ echo "Disabled"; } ?><br><b>Advanced</b><br> <?php if($row['advanced'] == "1") { echo "Enabled!"; }else{ echo "Disabled"; } ?></div></td>
 <td class='tablerow2'  width='60%'  valign='middle'><center><a href="index.php?p=banners&a=<?php echo $row['id']; ?>">Edit this banner!</a><br><a href="index.php?p=banners&d=<?php echo $row['id']; ?>">Delete this banner!</a></center></td>
 </tr>
 <?php } ?>
@@ -141,6 +140,16 @@ $row = mysql_fetch_assoc($sql); ?>
 <tr>
 <td class='tablerow1'  width='40%'  valign='middle'><b>Url</b><div class='graytext'>To what site are they going when they click on the text/banner?</div></td>
 <td class='tablerow2'  width='60%'  valign='middle'><input type='text' name='url' value="<?php echo $row['url']; ?>" size='30' maxlength="255" class='textinput'></td>
+</tr>
+
+<tr>
+<td class='tablerow1'  width='40%'  valign='middle'><b>Advanced</b><div class='graytext'>Enable HTML code (overrides previous settings)</div></td>
+<td class='tablerow2'  width='60%'  valign='middle'><input type="radio"<?php if($row['advanced'] == 0) { echo " CHECKED"; } ?> value="0" name="advanced"> Disabled<br><input type="radio"<?php if($row['advanced'] == 1) { echo " CHECKED"; } ?> value="1" name="advanced"> Enabled</td>
+</tr>
+
+<tr>
+<td class='tablerow1'  width='40%'  valign='middle'><b>HTML</b><div class='graytext'>HTML code for advanced users (for placing Google Adsense or something)</div></td>
+<td class='tablerow2'  width='60%'  valign='middle'><textarea name='html' cols='61' rows='3' wrap='soft' id='sub_desc' class='multitext'><?php echo HoloText($row['html']); ?></textarea></td>
 </tr>
 
 <tr>

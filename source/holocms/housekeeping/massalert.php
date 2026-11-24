@@ -2,7 +2,7 @@
 /*===================================================+
 || # HoloCMS - Website and Content Management System
 |+===================================================+
-|| # Copyright © 2008 Meth0d. All rights reserved.
+|| # Copyright ï¿½ 2008 Meth0d. All rights reserved.
 || # http://www.meth0d.org
 |+===================================================+
 || # HoloCMS is provided "as is" and comes without
@@ -11,7 +11,7 @@
 
 require_once('../core.php');
 if($hkzone !== true){ header("Location: index.php?throwBack=true"); exit; }
-if(!session_is_registered(acp)){ header("Location: index.php?p=login"); exit; }
+if(!isset($_SESSION['acp'])){ header("Location: index.php?p=login"); exit; }
 if(function_exists(SendMUSData) !== true){ include('../includes/mus.php'); }
 
 $pagename = "Alert";
@@ -19,13 +19,13 @@ $pagename = "Alert";
 if(isset($_POST['alert'])){
     if(!empty($_POST['alert'])){
         $counter = 0;
-        $alert = addslashes($_POST['alert']);
+        $alert = HoloText($_POST['alert']);
         $get_users = mysql_query("SELECT id FROM users");
         while($row = mysql_fetch_assoc($get_users)){
             $counter++;
             mysql_query("INSERT INTO cms_alerts (userid,type,alert) VALUES ('".$row['id']."','2','".$alert."')");
             if($_POST['musalert'] == "on"){
-                @SendMUSData('HKMW' . $row['id'] . chr(2) . $alert);
+                @SendMUSData('HKTM' . $row['id'] . chr(2) . $alert);
             }
         }
         mysql_query("INSERT INTO system_stafflog (action,message,note,userid,targetid,timestamp) VALUES ('Housekeeping','Mass Alert to all users on site','massalert.php','".$my_id."','','".$date_full."')") or die(mysql_error());
@@ -59,7 +59,7 @@ if(isset($_POST['alert'])){
 
 <tr>
 <td class='tablerow1'  width='40%'  valign='middle'><b>Alert</b><div class='graytext'>The actual message that will be shown to the user.</div></td>
-<td class='tablerow2'  width='60%'  valign='middle'><textarea name='alert' cols='60' rows='5' wrap='soft' id='sub_desc' class='multitext'><?php echo $_POST['alert']; ?></textarea></td>
+<td class='tablerow2'  width='60%'  valign='middle'><textarea name='alert' cols='60' rows='5' wrap='soft' id='sub_desc' class='multitext'><?php echo HoloText($_POST['alert']); ?></textarea></td>
 </tr>
 
 <tr>

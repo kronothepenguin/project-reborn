@@ -9,7 +9,7 @@ tags: [holo, protocols]
 
 # MUS
 
-`source/holocms/includes/mus.php` `SendMUSData` opened one TCP connection per command to the emulator
+`source/holocms-1.3.1/includes/mus.php` `SendMUSData` opened one TCP connection per command to the emulator
 (`cms_system.ip` and the `mus_port` key), wrote a 4-character opcode followed by fields separated by `chr(2)`, and
 closed without reading. Deferred with the game server ([0013](/decisions/holo-port/0013-defer-game-server-features.md)).
 

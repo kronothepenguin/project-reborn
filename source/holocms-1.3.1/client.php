@@ -1,0 +1,125 @@
+<?php
+/*===================================================+
+|| # HoloCMS - Website and Content Management System
+|+===================================================+
+|| # Copyright © 2008 Meth0d. All rights reserved.
+|| # http://www.meth0d.org
+|+===================================================+
+|| # HoloCMS is provided "as is" and comes without
+|| # warrenty of any kind. HoloCMS is free software!
+|+===================================================*/
+
+include('core.php');
+
+if(getContent('client-widescreen') == "1"){
+        $wide_enabled = true;
+} else {
+        $wide_enabled = false;
+}
+
+if($logged_in){
+	require_once('includes/session.php');
+} else {
+	header("Location: clientutils.php?key=LogInPlease");
+	exit;
+}
+
+if(!isset($_GET['wide']) && $wide_enabled == true){
+	$width = "960";
+	$height = "540";
+	$widemode = "true";
+} elseif($_GET['wide'] == "true"){
+	$width = "960";
+	$height = "540";
+	$widemode = "true";
+} else {
+	$width = "720";
+	$height = "540";
+	$widemode = "false";
+}
+
+include('./templates/client/subheader.php');
+include('./templates/client/header.php');
+
+if($online !== "online" && $enable_status_image == "1"){
+echo "<font color='white'><center><b>".$sitename." is offline</b></center></font>";
+exit();
+}
+
+if($remote_ip == "127.0.0.1" || $remote_ip == "localhost" && $server_on_localhost == 1){
+$ip = "127.0.0.1";
+}
+
+if(isset($_GET['roomId']) && $_GET['forwardId'] == "2"){
+$roomId = $_GET['roomId'];
+$checkSQL = mysql_query("SELECT id FROM rooms WHERE id = '".$roomId."' LIMIT 1");
+$roomExists = mysql_num_rows($checkSQL);
+	if($roomExists > 0){
+	$forward = "1";
+	echo "<!-- Forwarding to room ".$roomId." -->";
+	} else {
+	$forward = "0";
+	echo "<!-- Room doesn't exist; not forwarding -->";
+	}
+} else {
+echo "<!-- No room forward requested, normal loader -->";
+$forward = "0";
+}
+
+?>
+
+<div id="clientembed-container">
+<?php
+$sql = mysql_query("SELECT loader FROM cms_system");
+$row = mysql_fetch_assoc($sql);
+if($row['loader'] == 1) { ?>
+<div id="clientembed-loader" style="display:none"><div><b>opening <?php echo $shortname; ?>...</b></div></div><?php } ?>
+<div id="clientembed">
+<script type="text/javascript" language="javascript">
+ShockwaveInstallation.swDetectionCheck();
+HabboClientUtils.extWrite("<object classid=\"clsid:166B1BCA-3F9C-11CF-8075-444553540000\" codebase=\"http://download.macromedia.com/pub/shockwave/cabs/director/sw.cab#version=10,0,0,0\" id=\"habbo\" width=\"<?php echo $width; ?>\" height=\"<?php echo $height; ?>\"\>\n<param name=\"src\" value=\"<?php echo $dcr; ?>\"\>\n<param name=\"swRemote\" value=\"swSaveEnabled=\'true\' swVolume=\'true\' swRestart=\'false\' swPausePlay=\'false\' swFastForward=\'false\' swTitle=\'Habbo Hotel\' swContextMenu=\'true\' \"\>\n<param name=\"swStretchStyle\" value=\"stage\"\>\n<param name=\"swText\" value=\"\"\>\n<param name=\"bgColor\" value=\"#000000\"\>\n   <param name=\"sw6\" value=\"client.connection.failed.url=<?php echo $path; ?>clientutils.php?key=connection_failed;external.variables.txt=<?php echo $variables; ?>\"\>\n   <param name=\"sw8\" value=\"use.sso.ticket=1;sso.ticket=<?php echo $myticket; ?>\"\>\n   <param name=\"sw2\" value=\"connection.info.host=<?php echo $ip; ?>;connection.info.port=<?php echo $port; ?>\"\>\n   <param name=\"sw4\" value=\"site.url=<?php echo $path; ?>;url.prefix=<?php echo $path; ?>\"\>\n   <param name=\"sw3\" value=\"connection.mus.host=game.habbohotel.co.uk;connection.mus.port=30001\"\>\n   <param name=\"sw1\" value=\"client.allow.cross.domain=1;client.notify.cross.domain=0\"\>\n   <param name=\"sw7\" value=\"external.texts.txt=<?php echo $texts; ?>;user_isp=<?php echo $remote_ip; ?>\"\>\n   <param name=\"sw5\" value=\"client.reload.url=<?php echo $path; ?>client.php?x=reauthenticate;client.fatal.error.url=<?php echo $path; ?>clientutils.php?key=error\"\>\n<embed src=\"<?php echo $dcr; ?>\" bgColor=\"#000000\" width=\"<?php echo $width; ?>\" height=\"<?php echo $height; ?>\" swRemote=\"swSaveEnabled=\'true\' swVolume=\'true\' swRestart=\'false\' swPausePlay=\'false\' swFastForward=\'false\' swTitle=\'Habbo Hotel\' swContextMenu=\'true\'\" swStretchStyle=\"stage\" swText=\"\" type=\"application/x-director\" pluginspage=\"http://www.macromedia.com/shockwave/download/\" \n    sw6=\"client.connection.failed.url=<?php echo $path; ?>clientutils.php?key=connection_failed;external.variables.txt=<?php echo $variables; ?>\"  \n    sw8=\"use.sso.ticket=1;sso.ticket=<?php echo $myticket; ?>\"  \n    sw2=\"connection.info.host=<?php echo $ip; ?>;connection.info.port=<?php echo $port; ?>\"  \n    sw4=\"site.url=<?php echo $path; ?>;url.prefix=<?php echo $path; ?>\"  \n    sw3=\"connection.mus.host=game.habbohotel.co.uk;connection.mus.port=30001\"  \n    sw1=\"client.allow.cross.domain=1;client.notify.cross.domain=0\"  \n    sw7=\"external.texts.txt=<?php echo $texts; ?>;user_isp=<?php echo $remote_ip; ?>\"  \n    sw5=\"client.reload.url=<?php echo $path; ?>client.php?x=reauthenticate;client.fatal.error.url=<?php echo $path; ?>clientutils.php?key=error\" \></embed\>\n<noembed\>client.pluginerror.message</noembed\>\n</object\>");
+</script>
+<noscript>
+<object classid="clsid:166B1BCA-3F9C-11CF-8075-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/director/sw.cab#version=10,0,0,0" id="habbo" width="<?php echo $width; ?>" height="<?php echo $height; ?>">
+<param name="src" value="<?php echo $dcr; ?>">
+<param name="swRemote" value="swSaveEnabled='true' swVolume='true' swRestart='false' swPausePlay='false' swFastForward='false' swTitle='Habbo Hotel' swContextMenu='true' ">
+<param name="swStretchStyle" value="stage">
+<param name="swText" value="">
+<param name="bgColor" value="#000000">
+   <param name="sw6" value="client.connection.failed.url=<?php echo $path; ?>clientutils.php?key=connection_failed;external.variables.txt=<?php echo $variables; ?>">
+   <param name="sw8" value="use.sso.ticket=1;sso.ticket=<?php echo $myticket; ?>">
+   <param name="sw2" value="connection.info.host=<?php echo $ip; ?>;connection.info.port=<?php echo $port; ?>">
+   <param name="sw4" value="site.url=<?php echo $path; ?>;url.prefix=<?php echo $path; ?>">
+   <param name="sw3" value="connection.mus.host=game.habbohotel.co.uk;connection.mus.port=30001">
+   <param name="sw1" value="client.allow.cross.domain=1;client.notify.cross.domain=0">
+   <param name="sw7" value="external.texts.txt=<?php echo $texts; ?>;user_isp=<?php echo $remote_ip; ?>">
+   <?php if($forward == 1) { ?>
+   <param name="sw9" value="forward.id=<?php echo $roomId; ?>;processlog.enabled=1">
+   <?php } ?>
+   <param name="sw5" value="client.reload.url=<?php echo $path; ?>client.php?x=reauthenticate;client.fatal.error.url=<?php echo $path; ?>clientutils.php?key=error">
+<!--[if IE]>client.pluginerror.message<![endif]-->
+<embed src="<?php echo $dcr; ?>" bgColor="#000000" width="<?php echo $width; ?>" height="<?php echo $height; ?>" swRemote="swSaveEnabled='true' swVolume='true' swRestart='false' swPausePlay='false' swFastForward='false' swTitle='Habbo Hotel' swContextMenu='true'" swStretchStyle="stage" swText="" type="application/x-director" pluginspage="http://www.macromedia.com/shockwave/download/" 
+    sw6="client.connection.failed.url=<?php echo $path; ?>clientutils.php?key=connection_failed;external.variables.txt=<?php echo $variables; ?>"  
+    sw8="use.sso.ticket=1;sso.ticket=<?php echo $myticket; ?>"  
+    sw2="connection.info.host=<?php echo $ip; ?>;connection.info.port=<?php echo $port; ?>"  
+    sw4="site.url=<?php echo $path; ?>;url.prefix=<?php echo $path; ?>"  
+    sw3="connection.mus.host=game.habbohotel.co.uk;connection.mus.port=30001"  
+    sw1="client.allow.cross.domain=1;client.notify.cross.domain=0"  
+    sw7="external.texts.txt=<?php echo $texts; ?>;user_isp=<?php echo $remote_ip; ?>"
+	<?php if($forward == 1) { ?>
+	sw9"="forward.id=<?php echo $roomId; ?>;processlog.enabled=1"
+	<?php } ?>
+    sw5="client.reload.url=<?php echo $path; ?>client.php?x=reauthenticate;client.fatal.error.url=<?php echo $path; ?>clientutils.php?key=error" ></embed>
+<noembed>client.pluginerror.message</noembed>
+</object>
+</noscript>
+
+</div>
+<?php if($row['loader'] == 1) { ?>
+<script type="text/javascript">
+HabboClientUtils.showLoader(["opening <?php echo $shortname; ?>&nbsp;&nbsp;&nbsp;", "opening <?php echo $shortname; ?>.&nbsp;&nbsp;", "opening <?php echo $shortname; ?>..&nbsp;", "opening <?php echo $shortname; ?>..."]);
+</script><?php } ?>
+</div>
+
+</body>
+</html>

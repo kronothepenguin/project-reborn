@@ -14,7 +14,7 @@ $allow_guests = true;
 include('core.php');
 include('includes/session.php');
 
-if(getContent('forum-enabled') !== "1"){ header("Location: index.php"); exit; }
+if(HoloText(getContent('forum-enabled'), true) !== "1"){ header("Location: index.php"); exit; }
 
 $pagename = "Discussion Board";
 $pageid = "forum";
@@ -25,7 +25,7 @@ include('templates/community/header.php');
 
 $page = $_GET['page'];
 
-$threads = mysql_evaluate("SELECT COUNT(*) FROM cms_forum_threads");
+$threads = mysql_evaluate("SELECT COUNT(*) FROM cms_forum_threads WHERE forumid='0'");
 $pages = ceil(($threads + 0) / 10);
 
 if($page > $pages || $page < 1){
@@ -89,7 +89,7 @@ echo "	<tr class=\"topiclist-row-1\">
 		</tr>";
 }
 
-$sql = mysql_query("SELECT * FROM cms_forum_threads WHERE type > 2 ORDER BY unix DESC") or die(mysql_error());
+$sql = mysql_query("SELECT * FROM cms_forum_threads WHERE type > 2 AND forumid='0' ORDER BY unix DESC") or die(mysql_error());
 $stickies = mysql_num_rows($sql);
 
 $query_min = ($page * 10) - 10;
@@ -115,7 +115,7 @@ while($row = mysql_fetch_assoc($sql)){
 	echo "<tr class=\"topiclist-row-" . $x . "\">
 		<td class=\"topiclist-rowtopic\" valign=\"top\">
 			<div class=\"topiclist-row-content\">
-			<a class=\"topiclist-link icon icon-sticky\" href=\"viewthread.php?thread=".$row['id']."\">".stripslashes($row['title'])."</a>";
+			<a class=\"topiclist-link icon icon-sticky\" href=\"viewthread.php?thread=".$row['id']."\">".HoloText($row['title'])."</a>";
 
 			if($row['type'] == 4){
 			echo "&nbsp;<span class=\"topiclist-row-topicsticky\"><img src=\"./web-gallery/images/groups/status_closed.gif\" title=\"Closed Thread\" alt=\"Closed Thread\"></span>";
@@ -158,7 +158,7 @@ while($row = mysql_fetch_assoc($sql)){
 
 }
 
-$sql = mysql_query("SELECT * FROM cms_forum_threads WHERE type < 3 ORDER BY unix DESC LIMIT ".$query_min.", ".$query_max."") or die(mysql_error());
+$sql = mysql_query("SELECT * FROM cms_forum_threads WHERE type < 3 AND forumid='0' ORDER BY unix DESC LIMIT ".$query_min.", ".$query_max."") or die(mysql_error());
 
 while($row = mysql_fetch_assoc($sql)){
 
@@ -173,7 +173,7 @@ while($row = mysql_fetch_assoc($sql)){
 	echo "<tr class=\"topiclist-row-" . $x . "\">
 		<td class=\"topiclist-rowtopic\" valign=\"top\">
 			<div class=\"topiclist-row-content\">
-			<a class=\"topiclist-link \" href=\"viewthread.php?thread=".$row['id']."\">".stripslashes($row['title'])."</a>";
+			<a class=\"topiclist-link \" href=\"viewthread.php?thread=".$row['id']."\">".HoloText($row['title'])."</a>";
 
 			if($row['type'] == 2){
 			echo "&nbsp;<span class=\"topiclist-row-topicsticky\"><img src=\"./web-gallery/images/groups/status_closed.gif\" title=\"Closed Thread\" alt=\"Closed Thread\"></span>";

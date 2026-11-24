@@ -48,7 +48,7 @@ The site is Holo's, at Holo's own sizes, in Tailwind's closest common classes.
 - Housekeeping and the installer keep their own looks at the site's `text-xs`. Housekeeping has its widths of before
   the bigger design: a tab `w-44`, the left column `w-46`. The installer's page is 640px (`max-w-160`), its box 608px
   and its column 574px.
-- The live HoloCMS of the comparison differs from `source/holocms`, which the port follows: its Me page holds its
+- The live HoloCMS of the comparison differs from `source/holocms-1.3.1`, which the port follows: its Me page holds its
   boxes in other columns, and its community page titles the tags box "Tags" in green.
 - The live HoloCMS shows other staff, credits and club pages (a Collectables tab, Refer Options, a Leaderboard),
   has no Refer Options tab in the account, swaps register's columns, and asks for the password again before the
@@ -56,7 +56,7 @@ The site is Holo's, at Holo's own sizes, in Tailwind's closest common classes.
 - On the myhabbo pages the live HoloCMS shows no home (its first visit fails on "Field 'data' doesn't have a default
   value"), no thread and no group, so they are compared with Holo's own markup of `forum.php`, `viewthread.php`,
   `user_profile.php` and `group_profile.php` on the live stylesheets. The live one also draws the rows of the groups
-  and members widgets and the profile's tags on a raster, and another offline picture, which `source/holocms` takes
+  and members widgets and the profile's tags on a raster, and another offline picture, which `source/holocms-1.3.1` takes
   from Habbo's gone CDN or lacks.
 
 ## The colours

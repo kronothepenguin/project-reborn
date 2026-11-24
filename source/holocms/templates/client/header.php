@@ -5,7 +5,7 @@
 | Copyright © 2008 Meth0d
 +----------------------------------------------------+
 | HoloCMS is provided "as is" and comes without
-| warrenty of any kind. 
+| warrenty of any kind.
 +---------------------------------------------------*/
 
 if (!defined("IN_HOLOCMS")) { header("Location: ../../index.php"); exit; }
@@ -18,9 +18,9 @@ if (!defined("IN_HOLOCMS")) { header("Location: ../../index.php"); exit; }
 
 <body id="client"<?php if($wide_enabled == true){ echo " class=\"wide\""; } ?>>
 <div id="client-topbar" style="display:none">
-  <div class="logo"><img src="http://images.habbohotel.co.uk/habboweb/<?php echo $habboversion; ?>/web-gallery/images/popup/popup_topbar_habbologo.gif" alt="" align="middle"/></div>
+  <div class="logo"><img src="web-gallery/images/popup/popup_topbar_habbologo.gif" alt="" align="middle"/></div>
   <div class="habbocount"><div id="habboCountUpdateTarget">
-<?php echo $online_count; ?> members online now
+<?php echo $online_count; ?> <?php echo $shortname; ?>s online now
 </div>
 	<script language="JavaScript" type="text/javascript">
 		setTimeout(function() {

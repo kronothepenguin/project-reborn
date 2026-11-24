@@ -9,7 +9,7 @@ tags: [housekeeping, holo]
 
 # Routing and access in Holo
 
-- `source/holocms/housekeeping/index.php` routes by `?p=<page>&do=<action>&key=<id>`; unknown pages go to the
+- `source/holocms-1.3.1/housekeeping/index.php` routes by `?p=<page>&do=<action>&key=<id>`; unknown pages go to the
   dashboard.
 - Login (`login.php`) required `rank > 5` and stored `acp`, `hkusername` and the password hash in the PHP session
   shared with the site. Every request re-checked name, hash and rank.
