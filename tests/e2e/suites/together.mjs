@@ -80,8 +80,8 @@ export default async function ({
   check(
     "the steps show as a stepper in their order, the current one marked",
     JSON.stringify((await steps.allInnerTexts()).map((text) => text.replace(/\s+/g, " ").trim())) ===
-      JSON.stringify(["1 Configuration", "2 Site", "3 Settings", "4 Client files", "5 Administrator"]) &&
-      (await page.locator('nav[aria-label="Steps"] [aria-current="step"]').innerText()).endsWith("Settings"),
+      JSON.stringify(["Configuration", "Site", "Settings", "Client files", "Administrator"]) &&
+      (await page.locator('nav[aria-label="Steps"] [aria-current="step"]').innerText()) === "Settings",
     JSON.stringify(await steps.allInnerTexts()),
   );
   check(

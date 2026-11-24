@@ -12,10 +12,10 @@ Built:
 | --- | --- |
 | `packages/cms` | `layouts/signed-out.astro` and `layouts/community.astro`, with the `header/*` components and the footers; Holo's font on the 16px base, the 1240px page, the two-tone main tabs, the sub-navigation, the header with its inline search, and the footer as Holo's ([the layouts](/packages/cms/knowledge/layouts.md)) |
 | `packages/housekeeping` | `layouts/housekeeping.astro`: the grey bar, the tabs, the left column of `box` components and the content; `Box color="gold"` for data lists |
-| `packages/components` | The primitives both apps share; `Table` and `Table variant="form"` give housekeeping's lists and forms; every primitive at the new sizes; `Tabs color`, with Holo's tabs inside boxes; the box's frame and the title bars as Holo's |
+| `packages/components` | The primitives both apps share; `Stepper` and `Step`; `Table` and `Table variant="form"` give housekeeping's lists and forms; every primitive at the new sizes; `Tabs color`, with Holo's tabs inside boxes; the box's frame and the title bars as Holo's |
 | `packages/store` | `CountAvatars`, the header's registered count |
 | `packages/housekeeping` | Its own look at the new sizes: 16px in Verdana as the theme's `--font-sans`, widths by 1240/960, paddings and gaps by 4/3; every page fits a 1366px screen |
-| `packages/installer` | `layouts/setup.astro`: the logo over one `Card color="blue"` per step, on one column whose first row is the server's `stepper`; the sticky row of buttons; the settings step's groups as tabs; Holo's font and the 16px base ([the installer's layout](#the-installers-layout)) |
+| `packages/installer` | `layouts/setup.astro`: the logo over one `Card color="blue"` per step, on one column whose first row is the shared `Stepper`, drawn on the server; the sticky row of buttons; the settings step's groups as tabs; Holo's font and the 16px base ([the installer's layout](#the-installers-layout)) |
 
 Planned:
 
@@ -109,9 +109,9 @@ on a phone the five tabs took three rows.
 
 - One column for every step: the box is 768px and its content one 726px column, shared by the stepper, the text, the
   fields and the buttons. Spacing is flex with `gap`.
-- The stepper is the installer's own Astro component, drawn on the server: an ordered list of numbered points, each
-  with its name and an arrow after it, so that a wrapped row breaks after an arrow. Passed steps are links, the current
-  one is dark and bold, the ones to come faded. Under 640px only the current step shows its name.
+- The steps are the shared `Stepper` ([the stepper](#the-stepper)), drawn on the server: an ordered list of numbered
+  points, each with its name and an arrow after it, so that a wrapped row breaks after an arrow. Passed steps are
+  links, the current one is dark and bold, the ones to come faded. Under 640px only the current step shows its name.
 - One row of buttons on every step, sticky at the bottom on a white band with a top line: the way on, then the green
   main button at the right end.
 - The settings step's groups are panels the server draws in the one form; an island draws the shared `Tabs` over them

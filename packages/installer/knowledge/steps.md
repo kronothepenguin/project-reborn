@@ -34,12 +34,12 @@ variant, and an error a red `Notice` with `role="alert"`.
   content, one column of 726px. The
   stepper, the text, the fields and the row of buttons share its left and right edges. Fields sit one under the other
   at the column's width.
-- The stepper, `components/stepper.astro`, is drawn on the server and works with scripts off: an ordered list in one
-  row from the left edge, each step a numbered point with its name and an arrow after it. The current step has a
-  dark point, bold black name and `aria-current="step"`. A step up to the one that waits is a link; a step after it
-  is plain and faded. Every page's data embeds `stepper`, whose `Waiting` is the first step that waits; the component
-  writes one Go `[[ if eq .Waiting ... ]]` per step. Once the hotel is installed, `Waiting` is empty and every step is
-  plain. Under 640px only the current step shows its name.
+- The steps are the shared `Stepper` with a `Step` each, drawn on the server in `layouts/setup.astro` with no client
+  directive, in a `<nav aria-label="Steps">`, and they work with scripts off. The current step is `Step current`. Every
+  page's data embeds `stepper`, whose `Waiting` is the first step that waits; around every other step the layout
+  writes the Go condition `[[ if eq .Waiting ... ]]`, true when the step that waits is this one or one after it: then
+  it is `Step href`, a link, else a plain `Step`, still to come. Once the hotel is installed, `Waiting` is empty and
+  every step is plain.
 - The row of buttons, `components/step-buttons.astro`, closes every step at the right end of the column: the way on
   ("Skip", "Check again"), then the main button. The main button comes first in the markup, so that Enter presses it,
   and the row is reversed. The row is `position: sticky` at the bottom, on a white band with a line above, so it stays

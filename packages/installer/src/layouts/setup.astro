@@ -1,20 +1,37 @@
 ---
-import { Card } from "@project-reborn/components";
+import { Card, Step, Stepper } from "@project-reborn/components";
 import logo from "../assets/habbo.png";
-import Stepper from "../components/stepper.astro";
 import Document from "./document.astro";
 
-type Step = "status" | "config" | "site" | "settings" | "client" | "admin";
+type StepName = "status" | "config" | "site" | "settings" | "client" | "admin";
 
 // The installer's page: the hotel's logo over one box, whose blue title bar
-// names the step. Every step is one column, as wide as the box: the stepper,
-// then the step's text, fields and its row of buttons, all from one left edge.
+// names the step. Every step is one column, as wide as the box: the steps as
+// a Stepper drawn on the server, then the step's text, fields and its row of
+// buttons, all from one left edge.
 interface Props {
   title: string;
-  step: Step;
+  step: StepName;
 }
 
 const { title, step } = Astro.props;
+
+const steps = [
+  { id: "config", label: "Configuration" },
+  { id: "site", label: "Site" },
+  { id: "settings", label: "Settings" },
+  { id: "client", label: "Client files" },
+  { id: "admin", label: "Administrator" },
+];
+
+// The Go condition that a step other than the current one is a link: the step
+// that waits, the template's .Waiting, is this one or one after it. `eq` with
+// several values is true when any matches. A step after it is still to come.
+const open = (index: number) =>
+  `[[ if eq .Waiting ${steps
+    .slice(index)
+    .map((s) => `"${s.id}"`)
+    .join(" ")} ]]`;
 ---
 
 <Document title={`${title} - Project Reborn installer`}>
@@ -27,7 +44,25 @@ const { title, step } = Astro.props;
       <Card color="blue">
         <h2 slot="header">{title}</h2>
         <div class="flex flex-col gap-4 pt-2">
-          <Stepper current={step} />
+          <nav aria-label="Steps">
+            <Stepper>
+              {
+                steps.map((s, index) =>
+                  s.id === step ? (
+                    <Step current>{s.label}</Step>
+                  ) : (
+                    <Fragment>
+                      <Fragment set:html={open(index)} />
+                      <Step href={`/installer/${s.id}`}>{s.label}</Step>
+                      <Fragment set:html="[[ else ]]" />
+                      <Step>{s.label}</Step>
+                      <Fragment set:html="[[ end ]]" />
+                    </Fragment>
+                  ),
+                )
+              }
+            </Stepper>
+          </nav>
           <slot />
         </div>
       </Card>

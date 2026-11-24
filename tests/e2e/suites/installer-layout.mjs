@@ -55,7 +55,7 @@ export default async function ({ browser, check, installer, ports, shot, sql, st
   const stepper = () =>
     page.locator('nav[aria-label="Steps"] li').evaluateAll((items) =>
       items.map((li) => ({
-        name: li.innerText.replace(/^\d+\s*/, "").trim(),
+        name: li.innerText.trim(),
         link: li.querySelector("a")?.getAttribute("href") ?? null,
         current: li.querySelector('[aria-current="step"]') !== null,
         top: Math.round(li.getBoundingClientRect().top),
@@ -75,7 +75,11 @@ export default async function ({ browser, check, installer, ports, shot, sql, st
       new Set(first.map((s) => s.top)).size === 1 &&
       first.every((s, i) => i === 0 || s.left > first[i - 1].left) &&
       first.findIndex((s) => s.current) === 0 &&
-      (await page.locator('nav[aria-label="Steps"] svg').count()) === 4,
+      JSON.stringify(
+        await page.locator('nav[aria-label="Steps"] li').evaluateAll((items) =>
+          items.map((li) => getComputedStyle(li, "::after").display !== "none"),
+        ),
+      ) === JSON.stringify([true, true, true, true, false]),
     JSON.stringify(first),
   );
   await oneColumn("config", ["Write configuration"]);
