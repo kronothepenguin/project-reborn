@@ -30,6 +30,13 @@ const (
 // clubYears is the length of the administrator's club period.
 const clubYears = 100
 
+// The administrator's habbo wears the staff badge in the first slot, and with
+// Habbo Club the club badge a purchase gives in the second.
+const (
+	staffBadge = "ADM"
+	clubBadge  = "HC1"
+)
+
 var (
 	ErrConfigured    = errors.New("setup: config.json is already written")
 	ErrNotConfigured = errors.New("setup: config.json is not written yet")
@@ -200,8 +207,8 @@ type Administrator struct {
 }
 
 // CreateAdministrator creates, in one transaction, the administrator's user,
-// credentials and habbo with its profile, home and wallet, and its club period
-// when admin.Club is set. The administrator
+// credentials and habbo with its profile, home, wallet and staff badge, and its
+// club period and club badge when admin.Club is set. The administrator
 // joins the group that the ranks update made to hold every attribute, which
 // shows the habbo on the staff page.
 func (s *State) CreateAdministrator(ctx context.Context, admin Administrator) error {
@@ -264,6 +271,18 @@ func createAdministrator(ctx context.Context, q *store.Queries, admin Administra
 		if err != nil {
 			return err
 		}
+		if _, err := q.GrantAvatarBadge(ctx, store.GrantAvatarBadgeParams{AvatarID: avatarID, Code: clubBadge, GrantedAt: now}); err != nil {
+			return err
+		}
+		_, err = q.WearAvatarBadgeInSlot(ctx, store.WearAvatarBadgeInSlotParams{AvatarID: avatarID, Code: clubBadge, Slot: 2})
+		if err != nil {
+			return err
+		}
+	}
+	// A granted badge is worn in the first slot, which a slot holds once, so
+	// the staff badge comes after the club badge leaves it.
+	if _, err := q.GrantAvatarBadge(ctx, store.GrantAvatarBadgeParams{AvatarID: avatarID, Code: staffBadge, GrantedAt: now}); err != nil {
+		return err
 	}
 	administrators, err := administratorsGroup(ctx, q)
 	if err != nil {

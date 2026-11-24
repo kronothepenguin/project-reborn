@@ -76,6 +76,10 @@ optional content and the catalogue review wait with the open questions.
   installer.
 - The credits are no number, or outside 0 to 1,000,000: the form is refused and names the field.
 - The administrator reads the step: it says that the start credits of the site step go to habbos who register.
+- The administrator is created: its habbo holds the staff badge `ADM` and wears it.
+- The administrator is created with Habbo Club: its habbo also holds the club badge `HC1` and wears it beside the staff
+  badge, as a habbo who buys club holds it.
+- The administrator is created without Habbo Club: its habbo holds no `HC1`.
 
 ## Installed
 
@@ -109,15 +113,6 @@ optional content and the catalogue review wait with the open questions.
 - Staff open the settings page: every group shows the labels and the help it showed before.
 - Staff open the mail group: it is titled "Password reset mail", and its help says "The mail server that sends 'Forgot
   your password?' links. The minimail needs none."
-
-## Next
-
-### The administrator's badges
-
-- The administrator is created: its habbo holds the staff badge `ADM` and wears it.
-- The administrator is created with Habbo Club: its habbo also holds the club badge `HC1` and wears it beside the staff
-  badge, as a habbo who buys club holds it.
-- The administrator is created without Habbo Club: its habbo holds no `HC1`.
 
 # Open questions
 

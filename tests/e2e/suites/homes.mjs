@@ -98,6 +98,10 @@ export default async function ({ base, browser, check, shot, sql }) {
   await admin.page.waitForURL("**/home/Admin-1");
   await shot(admin.page, "home-own");
   check("My Page opens the own home with Edit", await admin.page.getByRole("link", { name: "Edit", exact: true }).isVisible());
+  check(
+    "the administrator the installer created wears the staff badge on its home",
+    (await admin.page.locator('.profile-widget img[src="/c_images/album1584/ADM.gif"]').count()) === 1,
+  );
   await admin.page.fill('input[aria-label="New tag"]', "Holo");
   await admin.page.getByRole("button", { name: "Add tag" }).click();
   await admin.page.getByRole("link", { name: "holo" }).waitFor();
