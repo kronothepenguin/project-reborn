@@ -16,69 +16,51 @@ const { title } = Astro.props;
   description="[[ .Name ]] is a virtual world where you can meet and make friends."
   keywords="[[ .ShortName ]],[[ .Name ]],virtual world,play games,enter competitions,make friends"
 >
-  <div class="flex min-h-screen items-center justify-center p-2">
-    <Paper>
-      <div class="w-full p-4">
-        <header class="flex items-end justify-between gap-2">
-          <a href="/"><img src="/habbo.png" alt="Habbo Hotel" /></a>
-          <ul class="text-xs">
-            <li class="flex items-center justify-end gap-1">
-              <span class="font-bold">
-                [[ if .Online ]] [[ .OnlineCount ]] [[ else ]] 0 [[ end ]]
-              </span>
-              <span class="text-orange-500">users online now</span>
-              [[ if .Online ]]
-              <img
-                src={onlineGif.src}
-                width={onlineGif.width}
-                height={onlineGif.height}
-              />
-              [[ else ]]
-              <img
-                src={offlineGif.src}
-                width={offlineGif.width}
-                height={offlineGif.height}
-              />
-              [[ end ]]
-            </li>
-            <li class="flex items-center justify-end gap-1">
-              <span class="font-bold">[[ .RegisteredUsers ]]</span>
-              <span class="text-orange-500">registered users</span>
-            </li>
-          </ul>
-        </header>
+  <div class="min-w-[1016px] px-3.5">
+    <div class="mx-auto mt-4 w-247">
+      <Paper>
+        <div class="px-7 pt-2">
+          <header>
+            <a href="/" class="block w-fit"><img src="/habbo.png" alt="Habbo Hotel" width="111" height="54" /></a>
+            <ul class="mt-0.5 flex text-orange-500">
+              <li class="flex w-127.5 items-center justify-end gap-1">
+                <span class="font-bold text-black">
+                  [[ if .Online ]] [[ .OnlineCount ]] [[ else ]] 0 [[ end ]]
+                </span>
+                <span>users online now</span>
+                [[ if .Online ]]
+                <img
+                  src={onlineGif.src}
+                  width={onlineGif.width}
+                  height={onlineGif.height}
+                />
+                [[ else ]]
+                <img
+                  src={offlineGif.src}
+                  width={offlineGif.width}
+                  height={offlineGif.height}
+                />
+                [[ end ]]
+              </li>
+              <li class="flex w-100 items-center justify-end gap-1">
+                <span class="font-bold text-black">[[ .RegisteredUsers ]]</span>
+                <span>registered users</span>
+              </li>
+            </ul>
+          </header>
 
-        <slot />
+          <slot />
 
-        <footer class="text-center text-xs space-y-2">
-          <div class="space-x-1">
-            <Link variant="black" href="/">
-              Homepage
-            </Link>
-            <span>|</span>
-            <Link variant="black" href="/disclaimer">
-              Terms of Service
-            </Link>
-            <span>|</span>
-            <Link variant="black" href="/privacy">
-              Privacy Policy
-            </Link>
-            [[ if .Staff ]]
-            <span>|</span>
-            <Link variant="black" href="[[ .HousekeepingURL ]]">
-              <b>Housekeeping</b>
-            </Link>
-            [[ end ]]
-          </div>
-          <div class="text-neutral-500">
-            <p>Powered by Project Reborn &copy;</p>
-            <p>
-              HABBO is a registered trademark of Sulake Corporation. All rights
-              reserved to their respective owner(s).
+          <footer class="pt-5 pb-4 text-center text-xs text-neutral-500">
+            <p><Link variant="black" href="/">Homepage</Link> | <Link variant="black" href="/disclaimer">Terms of Service</Link> | <Link variant="black" href="/privacy">Privacy Policy</Link>[[ if .Staff ]] | <Link variant="black" href="[[ .HousekeepingURL ]]"><b>Housekeeping</b></Link>[[ end ]]</p>
+            <p class="pt-2">
+              Powered by Project Reborn &copy;<br />HABBO is a registered
+              trademark of Sulake Corporation. All rights reserved to their
+              respective owner(s).
             </p>
-          </div>
-        </footer>
-      </div>
-    </Paper>
+          </footer>
+        </div>
+      </Paper>
+    </div>
   </div>
 </Document>

@@ -5,22 +5,24 @@ interface Props {
 }
 
 const { items, active } = Astro.props;
+
+// Holo's #navi2: items separated by a thin line 1.3em away on each side, the
+// selected one bold and black, a link underlined while pointed at.
 ---
 
-<ul class="flex border-t-2 border-black bg-white py-1.5 pl-5 text-xs">
+<ul class="flex flex-wrap pt-2 pr-58 pl-7 text-lg leading-6">
   {
     items.map(({ label, href }, index) => (
       <li
         class:list={[
-          "pr-5",
-          index > 0 && "border-l border-gray-200 pl-5",
+          index < items.length - 1 && "mr-[1.3em] border-r border-gray-200 pr-[1.3em]",
           label === active && "font-bold text-black",
         ]}
       >
         {label === active ? (
           label
         ) : (
-          <a class="text-blue-900" href={href}>
+          <a class="text-blue-900 no-underline hover:underline" href={href}>
             {label}
           </a>
         )}

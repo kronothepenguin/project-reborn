@@ -52,13 +52,13 @@
 <svelte:window onclick={() => (open = false)} />
 
 {#if signedIn === "true"}
-  <div class="relative text-[11px]">
+  <div class="relative text-base">
     <ul class="flow-root">
-      <li class="float-left h-[25px]" bind:clientWidth={tabWidth}>
+      <li class="float-left h-8" bind:clientWidth={tabWidth}>
         <button
           type="button"
           class={[
-            "float-left cursor-pointer px-2.5 py-[7px] font-bold outline-none hover:underline",
+            "float-left cursor-pointer px-3.5 py-1 leading-6 font-bold outline-none hover:underline",
             open ? "bg-[url(/web-gallery/v2/images/quickmenu.png)] bg-position-[0_0] bg-no-repeat text-black" : "text-olive-500",
           ]}
           aria-expanded={open}
@@ -73,7 +73,7 @@
         </button>
         <span
           class={[
-            "float-left h-[25px] w-[5px]",
+            "float-left h-8 w-[5px]",
             open && "bg-[url(/web-gallery/v2/images/quickmenu.png)] bg-position-[100%_0] bg-no-repeat",
           ]}
         ></span>
@@ -81,7 +81,7 @@
     </ul>
     {#if open}
       <!-- Above any home item, whose layer goes up to 1000000; Holo's 99 let items cover the menu. -->
-      <div class="absolute top-[25px] left-0 z-[1000001] w-[220px]" role="region" aria-label="My Groups">
+      <div class="absolute top-8 left-0 z-[1000001] w-[220px]" role="region" aria-label="My Groups">
         <div class="h-1 bg-[url(/web-gallery/v2/images/quickmenu_top.png)] bg-no-repeat text-[1px]">
           <div class="ml-px h-px bg-white" style={`width: ${tabWidth - 2}px`}></div>
         </div>

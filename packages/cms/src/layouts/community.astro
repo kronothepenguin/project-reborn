@@ -29,70 +29,64 @@ const { title, tab, sub } = Astro.props;
   keywords="[[ .Name ]],[[ .ShortName ]],virtual world,play games,enter competitions,make friends"
 >
   <div
-    class="min-h-screen min-w-[950px] bg-taupe-200 text-[11px]"
+    class="min-h-screen min-w-[1268px] bg-taupe-200 text-base"
     style={`background-image: url(${background.src})`}
   >
-    <header class="bg-sky-200 px-2.5">
-      <div class="relative mx-auto h-[102px] w-[930px]">
-        <a href="/" class="absolute top-4 left-2.5">
+    <header class="border-b-2 border-black bg-sky-200 px-3.5">
+      <div class="relative mx-auto h-30 w-310">
+        <a href="/" class="absolute top-5 left-0 block h-[42px] w-[111px] overflow-hidden">
           <img src="/habbo.png" alt="Habbo Hotel" width="111" height="54" />
         </a>
 
-        <div class="absolute top-0 left-[190px] w-[572px]">
+        <div class="absolute top-0 left-61 w-185">
           [[ if .SignedIn ]]
-          <div class="flex h-7 items-center justify-end rounded-b bg-white px-3">
+          <div class="flex h-9 items-center justify-end rounded-bl bg-white pr-3.5">
             <UserMenu />
           </div>
-          <div class="flex items-start justify-between px-3 pt-2.5">
+          <div class="flex items-center justify-between pt-3 pl-3.5">
             [[ if .Online ]]<EnterHotel />[[ else ]]<HotelStatus />[[ end ]]
             <HabboSearch />
           </div>
           [[ else ]]
-          <div class="px-3 pt-5">
+          <div class="px-3.5 pt-7">
             [[ if .Online ]]<EnterHotel />[[ else ]]<HotelStatus />[[ end ]]
           </div>
           <MiniLogin />
           [[ end ]]
         </div>
 
-        <div class="absolute top-0 left-[201px] z-10">
+        <div class="absolute top-0 left-65 z-10">
           <MyGroups client:only="svelte" signedIn="[[ .SignedIn ]]" />
         </div>
         <OpenHelp client:only="svelte" />
         <OpenClient client:only="svelte" />
 
-        <div class="absolute top-[15px] left-[781px] w-[110px] rounded bg-white p-2.5 text-center text-[10px]">
+        <div class="absolute top-5 left-252 w-36 rounded bg-white p-3.5 text-center text-sm">
           <span>[[ .OnlineCount ]] users online now</span>
         </div>
 
-        <div class="absolute bottom-0 left-0">
+        <div class="absolute -bottom-0.5 left-0 z-10">
           <MainTabs active={tab} />
         </div>
       </div>
     </header>
 
-    <div class="px-2.5">
-      <nav class="mx-auto w-[930px]">
-        <div class="w-[760px] rounded-b border-b-2 border-black/20">
+    <div class="px-3.5">
+      <nav class="mx-auto w-310">
+        <div class="w-246 rounded-b border-x border-b-[3px] border-black/20 bg-white bg-clip-padding pb-2">
           <SubTabs tab={tab} active={sub} />
         </div>
       </nav>
 
       <ClosedAlert />
 
-      <main class="mx-auto w-[930px] pt-[5px]">
+      <main class="mx-auto w-310 pt-1.5">
         <slot />
       </main>
 
-      <footer class="mx-auto w-[930px] pt-2 pr-[170px] pb-3 text-center">
-        <p class="flex justify-center gap-1">
-          <Link variant="black" href="/">Homepage</Link>
-          <span>|</span>
-          <Link variant="black" href="/disclaimer">Terms of Service</Link>
-          <span>|</span>
-          <Link variant="black" href="/privacy">Privacy Policy</Link>
-        </p>
-        <p class="pt-2 text-[9px] text-neutral-500">
+      <footer class="mx-auto w-310 pr-55 pb-4 pl-1 text-center text-xs text-neutral-500">
+        <p class="pt-2"><Link variant="black" href="/">Homepage</Link> | <Link variant="black" href="/disclaimer">Terms of Service</Link> | <Link variant="black" href="/privacy">Privacy Policy</Link></p>
+        <p class="pt-2">
           Powered by Project Reborn &copy;<br />HABBO is a registered trademark
           of Sulake Corporation. All rights reserved to their respective
           owner(s).

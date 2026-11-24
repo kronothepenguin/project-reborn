@@ -10,7 +10,7 @@ Built:
 
 | Project | Part |
 | --- | --- |
-| `packages/cms` | `layouts/signed-out.astro` and `layouts/community.astro`, with the `header/*` components and the footers |
+| `packages/cms` | `layouts/signed-out.astro` and `layouts/community.astro`, with the `header/*` components and the footers; Holo's font on the 16px base, the 1240px page, the two-tone main tabs, the sub-navigation, the header with its inline search, and the footer as Holo's ([the layouts](/packages/cms/knowledge/layouts.md)) |
 | `packages/housekeeping` | `layouts/housekeeping.astro`: the grey bar, the tabs, the left column of `box` components and the content; `Box color="gold"` for data lists |
 | `packages/components` | The primitives both apps share; `Table` and `Table variant="form"` give housekeeping's lists and forms; every primitive at the new sizes; `Tabs color`, with Holo's tabs inside boxes; the box's frame and the title bars as Holo's |
 | `packages/store` | `CountAvatars`, the header's registered count |
@@ -19,7 +19,7 @@ Planned:
 
 | Project | Part |
 | --- | --- |
-| `packages/cms` | Holo's font and the 16px base; the 1240px page; the main tabs, the sub-navigation, the header with its inline search, and the footer as Holo's; then every page |
+| `packages/cms` | Every page at the new sizes |
 | `packages/housekeeping` | Its own look at the new sizes |
 | `packages/installer` | A layout of its own from the shared parts, with the steps as tabs |
 | `tests/e2e` | The suites follow the pages; screenshots of every page are the exit check's evidence |

@@ -2,6 +2,11 @@
 @import "@project-reborn/components/styles.css";
 @import "./homes.css";
 
+/* Holo's font, on every page of the site and every shared part inside it. */
+@theme {
+  --font-sans: Verdana, Arial, Helvetica, sans-serif;
+}
+
 /* The states register/registration-form sets on the fields, from Holo's
    registration.css. */
 input[data-state="error"] {

@@ -49,6 +49,20 @@ selected tab is white.
 
 The blue's nearest class, `cyan-600`, has another hue, so it takes the nearest sky.
 
+# Main tabs
+
+The fills of Holo's `tabs.png`, drawn in CSS. The light blue's nearest class, `cyan-600`, has another hue, so it takes
+the nearest sky.
+
+| Tab | Hex | Tailwind |
+| --- | --- | --- |
+| blue outline | #134787 | blue-900 |
+| blue upper / lower | #408fcc / #2373b2 | sky-600 / sky-700 |
+| blue hover upper / lower | #50afe6 / #2c8fd2 | sky-400 / sky-600 |
+| green outline | #276604 | lime-800 |
+| green upper / lower | #49cf04 / #38aa00 | lime-500 / lime-600 |
+| green hover upper / lower | #5cff06 / #49cf04 | lime-400 / lime-500 |
+
 # Page and status
 
 | Use | Hex | Tailwind |
@@ -65,6 +79,7 @@ The blue's nearest class, `cyan-600`, has another hue, so it takes the nearest s
 | even rows / separators | #ececec / #e8e8e8 | olive-200 / gray-200 |
 | transaction odd rows / headings | #efefef / #999 | taupe-100 / neutral-400 |
 | footer text | #777 | neutral-500 |
+| habbo search placeholder | #8e8e8e | zinc-400 |
 | maintenance background | #083940 | cyan-950 |
 | list hover blue (odd / even) | #f1f8ff / #dceafa | sky-50 / blue-100 |
 | list hover default (odd / even) | #fff6ee / #fff0dc | orange-50 / orange-100 |

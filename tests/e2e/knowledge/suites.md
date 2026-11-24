@@ -13,6 +13,7 @@ program shows. What a test through a Go router proves stays there.
 | Suite | Covers |
 | --- | --- |
 | `signed-out` | Landing, sign-in, forgot and reset, legal pages |
+| `layout` | Both layouts at today's sizes: Holo's font at 16px, the 1240px page at 1366 wide, the two-tone main tabs with hover, green and selected tabs, the sub-navigation and the inline habbo search; screenshots of `/`, `/register`, `/me` and `/community` at 1366 and 1920 |
 | `register` | The registration form, with and without JavaScript |
 | `me`, `looks`, `details`, `habbos` | The Me page and the account tabs, with the club wardrobe on Looks |
 | `homes` | A home read by a guest, profile tags, the editor, and the Webstore and Inventory |

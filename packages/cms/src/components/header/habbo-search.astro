@@ -1,15 +1,19 @@
 ---
 import { Button, Icon } from "@project-reborn/components";
+
+// Holo's user profile search: the field and its button on one line, the same
+// height, as one group at the right edge of the header.
 ---
 
-<form method="get" action="/home" class="flex flex-col items-end gap-1">
-  <Button type="submit" size="compact" aria-label="Search">
-    <Icon />
-  </Button>
+<form method="get" action="/home" class="flex items-stretch justify-end gap-1">
   <input
     type="text"
     name="name"
     placeholder="User Profile.."
-    class="w-44 border border-neutral-500 bg-white px-1.5 py-1 text-black"
+    aria-label="User Profile"
+    class="h-8 w-55 border border-neutral-500 bg-white px-1.5 text-black placeholder:text-zinc-400"
   />
+  <Button type="submit" size="compact" aria-label="Search">
+    <Icon />
+  </Button>
 </form>

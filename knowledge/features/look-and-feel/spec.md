@@ -55,6 +55,15 @@ height and close as possible aligned to right as a group".
 - A signed-in habbo reads the header: it shows Help, Sign Out, a switch link with several habbos, and the habbo search.
 - A visitor reads the header: it shows `N users online now` and `<site> is offline`.
 - Staff pass maintenance: `Alert: The site is currently turned off!` shows above and below the page.
+- A visitor reads the main tabs: each tab has two tones, the upper half lighter, inside a dark outline, and pointing at
+  it lightens both.
+- A visitor reads the main tabs: Housekeeping and "Register now!" are green, and the selected tab is white with bold
+  black text and opens into the sub-navigation below it.
+- A visitor reads the sub-navigation: Holo's items, separated by thin lines, the selected one bold and black, a link
+  underlined while pointed at.
+- A signed-in habbo reads the header: the habbo search shows its field and its button on one line, the same height,
+  as one group at the right edge.
+- A visitor reads a box: Holo's frame, its title bar in Holo's colour and size, and its content inset as Holo's.
 
 ## Housekeeping
 
@@ -90,18 +99,6 @@ height and close as possible aligned to right as a group".
 - A visitor opens a page of the site on a screen 1366px wide: the page is 1240px wide and centred, and nothing scrolls
   sideways.
 - A page shows a picture, such as an avatar, a badge or an icon: it shows at its own size, sharp.
-
-### The community layout
-
-- A visitor reads the main tabs: each tab has two tones, the upper half lighter, inside a dark outline, and pointing at
-  it lightens both.
-- A visitor reads the main tabs: Housekeeping and "Register now!" are green, and the selected tab is white with bold
-  black text and opens into the sub-navigation below it.
-- A visitor reads the sub-navigation: Holo's items, separated by thin lines, the selected one bold and black, a link
-  underlined while pointed at.
-- A signed-in habbo reads the header: the habbo search shows its field and its button on one line, the same height,
-  as one group at the right edge.
-- A visitor reads a box: Holo's frame, its title bar in Holo's colour and size, and its content inset as Holo's.
 
 ### The installer
 
