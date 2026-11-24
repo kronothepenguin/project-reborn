@@ -64,6 +64,8 @@ height and close as possible aligned to right as a group".
 - A signed-in habbo reads the header: the habbo search shows its field and its button on one line, the same height,
   as one group at the right edge.
 - A visitor reads a box: Holo's frame, its title bar in Holo's colour and size, and its content inset as Holo's.
+- A visitor opens any page of the community layout: the sub-navigation has the same width and place.
+- A visitor opens the discussion board or a thread: its box is as wide as the sub-navigation, and its rows fill it.
 
 ## Housekeeping
 
@@ -139,11 +141,6 @@ height and close as possible aligned to right as a group".
 - A page shows one of Holo's pictures: the picture keeps its own size and fills its box as in Holo, as the news
   picture and the Me page's hotel view do.
 - A box shows tabs: the line in the box's colour runs under the tabs from one edge of the box to the other.
-
-### The forum inside the navigation
-
-- A visitor opens any page of the community layout: the sub-navigation has the same width and place.
-- A visitor opens the discussion board or a thread: its box is as wide as the sub-navigation, and its rows fill it.
 
 ### Holo's colours
 
