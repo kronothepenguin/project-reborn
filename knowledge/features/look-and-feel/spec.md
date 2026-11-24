@@ -70,6 +70,10 @@ height and close as possible aligned to right as a group".
   (decision holo-port/0060).
 - Staff read a data list in housekeeping: its rows alternate in shade.
 
+### Housekeeping at today's sizes
+
+- Staff open housekeeping: its own look stays, the grey bar, the navy tabs and the gold lists, at the new sizes.
+
 ## Every page
 
 - A page shows a select whose options the server fills in: it shows only the options.
@@ -107,10 +111,6 @@ height and close as possible aligned to right as a group".
 
 - An administrator opens the installer: a page of its own, built from the site's parts: the title bars, the two-tone
   buttons and the steps as tabs, in Holo's colours and font.
-
-### Housekeeping at today's sizes
-
-- Staff open housekeeping: its own look stays, the grey bar, the navy tabs and the gold lists, at the new sizes.
 
 # Open questions
 

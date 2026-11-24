@@ -15,6 +15,13 @@ holo-port/0041), built from `docs/hk.png` and `knowledge/colours.md`.
   `packages/components`. A class with `&` in a Svelte component that takes a spread belongs in a
   script constant, because the server renderer escapes a literal class twice.
 
+# The sizes
+
+Housekeeping follows the sizes of the look-and-feel plan: the body is `text-base` (16px) in the theme's `--font-sans`,
+`Verdana, Arial, Helvetica, sans-serif`, set in `src/styles/global.css`. Widths grew by 1240/960 (a tab `w-56`, the left
+column `w-60`), paddings and gaps by 4/3, on Tailwind's scale. Borders and pictures keep their sizes. Every page fits a
+1366px screen with nothing scrolling sideways.
+
 # The layout
 
 `src/layouts/housekeeping.astro` has the grey bar with who is logged in and their previous login, `Log out` beside the
