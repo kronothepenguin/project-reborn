@@ -31,8 +31,9 @@ repository. The two are different versions.
 - The community page: Rooms and Groups boxes, and the tags box titled "Tags" in green.
 - Credits: a "Collectables" page, "Refer Options" and "Leaderboard" boxes.
 - Register: the two columns swapped. The client: the password asked again (`reauthenticate.php`).
-- Files with no like in 1.3.1: `minimail/`, `collectables.php`, `group_forum.php`, `invite.php`, `newsletter/`,
-  `rss.php`, `locale/`, `myhabbo/`, `_upgrade.php`.
+- Files with no like in 1.3.1: `minimail/`, `myhabbo/`, `collectables.php`, `group_forum.php`, `invite.php`, `rss.php`,
+  `reauthenticate.php`, `_upgrade.php`. `locale/` is the same in both.
+- [HoloCMS 3.1.1 against 1.3.1](/sources/holocms/3.1.1-against-1.3.1.md) compares the two page by page.
 
 # Where each version lives
 

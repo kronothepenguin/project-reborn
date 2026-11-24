@@ -2,7 +2,7 @@
 type: Spec
 title: Club
 description: Club is bought on the site and in the client, its gifts are given, and the game shows a player its club at once.
-status: planned
+status: active
 projects: [packages/store, packages/server, packages/cms, packages/housekeeping, packages/auth, packages/virtual]
 ---
 
@@ -83,9 +83,28 @@ It builds on [platform](/features/platform/spec.md) and [economy](/features/econ
 - A member opens the catalogue: Greek and Advertisement show to it (decision server/0100).
 - A habbo without club buys from Club Furni or Club Shop: it gets 296 with 1 and pays nothing (decision server/0102).
 
+## Next
+
+### Club bought in the client
+
+- A habbo opens the client's club window and presses its first, second or third button: it buys 1, 3 or 6 months, at
+  the site's prices, from the purse its user's habbos share.
+- A habbo buys months in the client: the club page's rules hold: the period starts where the last one ends, the `HC1`
+  badge goes to the user's habbos, and the ledger gets its row.
+- A habbo buys months in the client: its client shows the new credits and the club's days at once, and its club
+  rights hold from then on.
+- A habbo with too few credits presses a button: the client shows its "not enough credits" notice, and nothing is
+  bought.
+- A habbo whose club would pass the limit of months presses a button: the client shows its "could not extend" notice,
+  and nothing is bought.
+
+### The club's gifts
+
+- A user has been a club member for a full month more: one gift more waits for it.
+- A habbo with gifts waiting logs in: its client offers them one by one, and each one accepted lands in its hand.
+- Staff set the order of the gifts in housekeeping, by drag and drop, each gift shown with its name and its picture.
+
 # Open questions
 
-- From the server's phase S7, as written there: "How club bought in the client meets club bought
-  on the site (the port's phase P6). The client's `SCR_BUY` sends which of its three buttons was
-  pressed, 1 to 3, not a number of months".
-- What of club's gifts is saved.
+- What comes after the last gift of the list, and when a month counts: after the study of the real club's
+  gifts, `research-gifts.md` in this folder, which is being written.

@@ -29,7 +29,41 @@ Planned:
 Today a change of credits on the site shows in the game at the player's next purchase or login. Club is
 [its own feature](/features/club/spec.md).
 
+## The purse's service
+
+The shape the user approved on 2026-11-24:
+
+```go
+// packages/services
+type Economy interface {
+    // SendPurse tells the game that the user's purse
+    // changed: its credits, tickets or film.
+    SendPurse(ctx context.Context, userID int64) error
+}
+
+// packages/reborn, where the programs are built
+c.Inject(cms.Services{Habbos: g, Hotel: g, Economy: g})
+h.Inject(housekeeping.Services{Habbos: g, Hotel: g, Economy: g})
+
+// the game's /api/, programs apart
+POST /api/users/{id}/purse -> 204
+```
+
+- The game reads the purse again and tells each habbo of that user in the hotel its credits, tickets and film.
+- Every place that changes a purse calls it once, after its transaction commits, with a context of its own, as the
+  look's call does ([habbos](/features/habbos/plan.md)): a voucher, club, a group, a home's purchase, a referral's
+  reward, housekeeping's credits, tickets and film.
+
 # Decisions
+
+Of 2026-11-24, each the user's choice among options put to them:
+
+- One call for the whole purse, `SendPurse` ("One call for the whole purse"). It answers the open question on the
+  service's names.
+- Housekeeping gains the forms for tickets and film with this work ("Add the two forms now"), under the attribute of
+  credits, `housekeeping.credits`; the attribute is the master's choice.
+
+Earlier:
 
 - [The game hears of live changes through
   services](/decisions/reborn/0005-the-game-hears-live-changes-through-services.md) — Changes the game must show at once

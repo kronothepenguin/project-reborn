@@ -2,7 +2,7 @@
 type: Spec
 title: Economy
 description: Housekeeping changes credits, tickets and film, the site shows them and spends them in vouchers and purchases, and the game server shows a player its new balance at once.
-status: planned
+status: active
 projects: [packages/store, packages/server, packages/cms, packages/housekeeping, packages/auth, packages/virtual]
 ---
 
@@ -85,6 +85,20 @@ It builds on [platform](/features/platform/spec.md) and [habbos](/features/habbo
   server/0053).
 - Credits change on the site: the game shows them at the habbo's next purchase or login.
 
-# Open questions
+## Next
 
-- The names and the calls of the `Economy` service beyond `SendCredits`, for tickets and film.
+### The purse, live
+
+- The site or housekeeping changes a user's purse while one of its habbos is in the hotel: the habbo's client shows
+  the new credits, tickets and film at once.
+- The purse of a user with no habbo in the hotel changes: nothing is sent, and the habbo reads it at its next login.
+- The game gives no answer: the purse is changed all the same, and the page answers as it does without the game.
+
+### Tickets and film in housekeeping
+
+- Staff with `housekeeping.credits` give or take tickets on a habbo of a user below them: the purse and the staff log
+  change together, and the client shows the tickets at once.
+- Staff with `housekeeping.credits` give or take film on a habbo of a user below them: the purse and the staff log
+  change together, and the client shows the film at once.
+- Staff take more tickets or film than the purse holds, or type an amount that is no whole number: the form is
+  refused, and nothing changes.
