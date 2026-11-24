@@ -2,6 +2,7 @@
 
 # Holocms
 
+- [HoloCMS 3.1.1 against 1.3.1](3.1.1-against-1.3.1.md) - What HoloCMS 3.1.1 changes against 1.3.1, page by page, feature by feature and table by table, with the questions it leaves to the user about what the port takes.
 - [Holo database and the new schema](database.md) - Holo's tables, the problems found in them, Holo's settings, and the new normalized schema that replaces them.
 - [Where the port differs from Holo](differences.md) - Every behaviour of the port that differs from HoloCMS on purpose, with the reason, so that the user can veto it.
 - [Holo housekeeping](housekeeping.md) - Holo's admin panel pages, its access model, staff log, layout and risky features, and where each part goes.
