@@ -1,6 +1,6 @@
 ---
 name: testing-behaviours
-description: Writes tests that each prove one expected behaviour of a feature's spec.md (a situation, an action, an outcome), covers both the case that succeeds and the case that is refused, reviews the code when a test fails, and runs the checks of every dependant project. Use when writing, changing, fixing or reviewing tests, or when a change to a project could break the projects that depend on it.
+description: Writes tests that each prove one expected behaviour of a feature's spec.md (a situation, an action, an outcome), covers both the case that succeeds and the case that is refused, reviews the code when a test fails, runs focused tests while building, and runs the checks of every dependant project and the whole browser run at the turn. Use when writing, changing, fixing or reviewing tests, or when a change to a project could break the projects that depend on it.
 ---
 
 # Testing behaviours
@@ -83,10 +83,17 @@ Prove a behaviour once, at the lowest level that shows its outcome.
 
 A failing test starts a review of the code: find what broke and fix it there. A test changes when the spec changes.
 
+## When tests run
+
+- While building: focused tests, those of the code that changes and the one browser suite the change touches.
+- At the slave's turn, after the rebase: the checks of every project changed and of every project that depends on it,
+  and the whole browser run once.
+- Work that changes documents alone runs the knowledge check alone.
+
 ## Dependants
 
-A change to a project runs the checks of every project that depends on it. The dependant works exactly as before, or it
-gets the fix. Example: a change to a components package runs the checks of the site that uses it.
+A change to a project runs the checks of every project that depends on it, at the turn. The dependant works exactly as
+before, or it gets the fix. Example: a change to a components package runs the checks of the site that uses it.
 
 ## Tests without a behaviour
 

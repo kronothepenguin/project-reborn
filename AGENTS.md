@@ -33,11 +33,17 @@ covers what gets built next, so parallel agents build independent tasks and veri
 ### Git
 
 8. An agent works on a feature branch in its own git worktree.
-9. An agent that finishes merges its branch into `main`, then deletes the branch and the worktree.
-10. Commits hold source files. Compiled programs stay out of git.
+9. A slave that finishes commits on its branch and reports it ready. The master sets the order of the merges and calls
+   each slave's turn.
+10. At its turn a slave rebases its branch on `main` and resolves its conflicts. The master then fast-forwards `main` to
+    the branch, and deletes the branch and the worktree.
+11. Commits hold source files. Compiled programs stay out of git.
 
 ### Tests
 
-11. A test proves one expected behaviour of the spec: a situation, an action, an outcome.
-12. A failing test starts a review of the code. Tests change when the spec changes.
-13. An agent that changes a project runs the checks of that project and of every project that depends on it.
+12. A test proves one expected behaviour of the spec: a situation, an action, an outcome.
+13. A failing test starts a review of the code. Tests change when the spec changes.
+14. While it builds, a slave runs focused tests: those of the code it changes, and the browser suite its change touches.
+15. At its turn, after the rebase, a slave runs the checks of every project it changed and of every project that depends
+    on it, and the whole browser run once. One whole browser run goes at a time.
+16. Work that changes documents alone runs the knowledge check alone.

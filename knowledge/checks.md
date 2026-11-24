@@ -1,7 +1,7 @@
 ---
 type: Playbook
 title: Checks
-description: How to check one project, the projects that depend on it, the whole repository and the browser suites, and what a fresh worktree needs first.
+description: How to check one project, the projects that depend on it, the whole repository and the browser suites, when each runs, and what a fresh worktree needs first.
 ---
 
 # One project
@@ -45,13 +45,20 @@ python3 -I .agents/skills/documenting-with-okf/scripts/check.py
 
 # The browser suites
 
-`tests/e2e` stays outside `make check`. A task runs the suites when its checks say so:
+`tests/e2e` stays outside `make check`. One suite, inside `tests/e2e`, while a change is built:
+
+```sh
+node --disable-warning=ExperimentalWarning run.mjs <suite>
+```
+
+The whole browser run, once, at a slave's turn, one run at a time:
 
 ```sh
 make e2e
 ```
 
-It builds the programs, installs a throwaway hotel and runs every suite in Chromium.
+It builds the programs, installs a throwaway hotel and runs every suite in Chromium. The suites are listed in
+`tests/e2e/knowledge/suites.md`. Work that changes documents alone runs the knowledge check alone.
 
 # A fresh worktree
 

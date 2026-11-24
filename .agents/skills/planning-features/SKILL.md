@@ -1,6 +1,6 @@
 ---
 name: planning-features
-description: Plans a feature with the user as the master session, writing spec.md with the expected behaviours, plan.md with the architecture and decisions, and one task file per unit of work in the feature's folder under knowledge/features/, then spawns one slave per ready task, or per brief for work without behaviours, and turns their reports into questions for the user. Use when the user wants to plan, change, resume or finish a feature, asks what work is left, or hands over work without behaviours such as a skill rewrite, a doc fix or a rename.
+description: Plans a feature with the user as the master session, writing spec.md with the expected behaviours, plan.md with the architecture and decisions, and one task file per unit of work in the feature's folder under knowledge/features/, then spawns one slave per ready task, or per brief for work without behaviours, turns their reports into questions for the user, and calls one slave's turn at a time to rebase and deliver before it fast-forwards main. Use when the user wants to plan, change, resume or finish a feature, asks what work is left, or hands over work without behaviours such as a skill rewrite, a doc fix or a rename.
 ---
 
 # Planning features
@@ -53,6 +53,7 @@ You are a slave. Work knowledge/features/<feature>/tasks/<NN>-<slug>.md with the
 
 ## 7. Reports
 
+- A slave reports its work ready, then delivered. Put each ready slave in the queue of turns, as in step 8.
 - Relay to the user each test beside the behaviour it proves.
 - Turn each finding into a question for the user as the report arrives: each place where the code contradicted a
   source, each open question, each test that proves no behaviour.
@@ -60,14 +61,33 @@ You are a slave. Work knowledge/features/<feature>/tasks/<NN>-<slug>.md with the
 - Write each fact of "Facts for other tasks" into the task it serves, and send it to a slave already working that task.
 - Spawn the tasks that became ready.
 
-## 8. The master's own edits
+## 8. Turns
+
+The master keeps the queue of ready slaves and calls one turn at a time.
+
+1. Pick the next slave by priority and by what unblocks other tasks. Send it a message: its turn has come.
+2. The slave rebases on `main`, runs its checks and the whole browser run, and reports the work delivered.
+3. From the main checkout, run each command on its own:
+
+   ```sh
+   git merge --ff-only <branch>
+   git worktree remove .claude/worktrees/<branch>
+   git branch -d <branch>
+   ```
+
+   Add `--force` to the remove only when `git status` in the worktree is clean and ignored files such as
+   `node_modules` block it.
+4. Send a refused fast-forward, a conflict or a failure back to its slave, which holds the context. It delivers again.
+5. Call the next turn.
+
+## 9. The master's own edits
 
 The master writes `spec.md`, `plan.md` and the task files itself, on the branch `<feature>-plan` in
-`.claude/worktrees/<feature>-plan`, and merges it into `main` before the slaves start, as in step 7 of `working-tasks`.
-A task the user drops is deleted there by the master.
-Before the merge, run the knowledge check: `python3 -I .agents/skills/documenting-with-okf/scripts/check.py`.
+`.claude/worktrees/<feature>-plan`, and delivers it before the slaves start. It runs the knowledge check,
+`python3 -I .agents/skills/documenting-with-okf/scripts/check.py`, commits, rebases on `main` between two turns, and
+fast-forwards `main` as in step 8. A task the user drops is deleted there by the master.
 
-## 9. Finish
+## 10. Finish
 
 When `tasks/` is empty, set `status: done` in `spec.md`. A later change edits `spec.md` and `plan.md`, adds tasks and
 sets `status: active` again.
@@ -86,4 +106,4 @@ Checks: <the commands to run>
 Branch and worktree: <slug>
 ```
 
-Ask the user every question the brief leaves open, spawn it as in step 6 and handle its report as in step 7.
+Ask the user every question the brief leaves open, spawn it as in step 6, handle its reports as in step 7 and call its turn as in step 8.

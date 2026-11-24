@@ -1,7 +1,7 @@
 ---
 type: Playbook
 title: Workflow
-description: The map of the OKF + Skills cycle: where knowledge, features and skills live, who does what, and which skill serves each moment.
+description: The map of the OKF + Skills cycle: where knowledge, features and skills live, who does what, how work is delivered to main, and which skill serves each moment.
 ---
 
 # Cycle
@@ -35,9 +35,29 @@ time changes the [shared files](/shared-files.md).
   spawns Opus slaves; an Opus master spawns Sonnet slaves, or Opus slaves at a lower effort.
 - Work with no behaviour to test, such as a skill rewrite, a doc fix or a rename, goes to a slave as a brief in its
   prompt, with no feature folder and no task file.
-- A slave works its task or brief on its own branch and worktree, runs the [checks](/checks.md) of every project it
-  changed and of their dependants, updates the knowledge it makes stale, merges into `main` and reports.
+- A slave works its task or brief on its own branch and worktree, updates the knowledge it makes stale, and delivers
+  its work in the five steps below.
 - The user approves the behaviours in `spec.md` before the work and reviews the tests, each of which proves one of them.
+
+# Delivery
+
+| Step | Who | What |
+| --- | --- | --- |
+| 1. Develop | Slave | Builds and runs focused tests: those of the code it changes, and the one browser suite its change touches. |
+| 2. Ready | Slave | Commits on its branch, keeps the branch and the worktree, and reports the work ready. |
+| 3. Turn | Master | Keeps the order of the merges and calls one slave's turn at a time. |
+| 4. Deliver | Slave | Rebases on `main`, resolves its conflicts, runs the [checks](/checks.md) of every project it changed and of their dependants and the whole browser run once, fixes what breaks, and reports the work delivered. |
+| 5. Merge | Master | Fast-forwards `main` to the branch, deletes the branch and the worktree, and calls the next turn. |
+
+- Ready means the work is built, its focused tests pass and it is committed on its branch.
+- A turn is the slave's slot to rebase, run the full checks and deliver. One slave holds the turn at a time, so one
+  whole browser run goes at a time.
+- The master orders the turns by priority and by what unblocks other tasks.
+- Work that changes documents alone runs the knowledge check alone, with no browser run.
+- A conflict or a failure the master meets goes back to its slave, which holds the context.
+- `main` is a straight line: branches are rebased and fast-forwarded, with no merge commits.
+- A slave writes its own lines of the spec and the plan, and resolves them at its rebase.
+- The master's own edits on `<feature>-plan` are rebased and fast-forwarded the same way.
 
 # Skills
 

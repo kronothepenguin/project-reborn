@@ -1,11 +1,13 @@
 ---
 type: Reference
 title: Rules of a run
-description: How a run of the browser suites keeps clear of development servers and what makes a suite fail.
+description: When a run of the browser suites goes, how it keeps clear of development servers and what makes a suite fail.
 ---
 
 # Rules
 
+- One whole run goes at a time: the slave that holds the turn runs it. While it builds, a slave runs the one suite
+  its change touches.
 - A run builds the CMS, housekeeping, the installer, the game server and reborn.
 - The CMS, housekeeping and the game server's `info`, `mus` and `/api/` listen on free ports, so a run does not disturb
   a development server. The run writes the game server's ports into the hotel's `config.json`, under `server.info`,
