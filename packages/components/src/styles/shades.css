@@ -1,0 +1,61 @@
+/* Holo's colours that Tailwind's palette lacks, as new shades of its families.
+   tools/tw-color proposes and writes them. */
+@theme {
+  /* Holo's red and hcred box title bars */
+  --color-red-550: #d64242;
+  /* Holo's darkred box title bar */
+  --color-red-650: #c73c3c;
+  /* Holo's brown box title bar */
+  --color-yellow-650: #a67a3e;
+  /* Holo's lightbrown box title bar */
+  --color-yellow-550: #cf9c44;
+  /* Holo's orange box title bar; the Help Tool's link (#f16100) */
+  --color-orange-550: #f66200;
+  /* Holo's green box title bar */
+  --color-lime-550: #4ab501;
+  /* Holo's gray box title bar */
+  --color-neutral-750: #333333;
+  /* Holo's activehomes box title bar */
+  --color-sky-450: #51a5d5;
+  /* Holo's activehomes box body */
+  --color-sky-350: #99cadb;
+  /* Holo's loginbox body */
+  --color-stone-350: #b4b4ae;
+  /* Holo's rooms box body */
+  --color-cyan-550: #4596a9;
+  /* Holo's blue tabs inside boxes: fill and line; the blue main tabs: upper
+     half (#408fcc), hover lower half (#2c8fd2) */
+  --color-blue-450: #528dc9;
+  /* Holo's blue tabs inside boxes: hover; the blue main tabs: hover upper half
+     (#50afe6) */
+  --color-sky-425: #66ade4;
+  /* Holo's green tabs inside boxes: hover; the green main tab: upper half,
+     hover lower half (#49cf04); BBCode green (#6cc800) */
+  --color-lime-525: #49c700;
+  /* Holo's blue main tabs: outline; the sub-navigation links */
+  --color-blue-850: #134787;
+  /* Holo's blue main tabs: lower half */
+  --color-sky-650: #2373b2;
+  /* Holo's green main tab: hover upper half */
+  --color-lime-350: #5cff06;
+  /* Holo's success border */
+  --color-lime-925: #194800;
+  /* Holo's warning orange */
+  --color-amber-550: #f29400;
+  /* Holo's rounded-blue */
+  --color-sky-550: #3399cc;
+  /* Holo's habbo search placeholder */
+  --color-neutral-450: #8e8e8e;
+  /* The Help Tool: behind the portlet */
+  --color-cyan-650: #47839d;
+  /* The Help Tool: footer text */
+  --color-slate-450: #7295aa;
+  /* BBCode cyan */
+  --color-teal-450: #00c6c4;
+  /* BBCode blue; housekeeping's active tab, strip and box title bars (#0066cc) */
+  --color-blue-550: #0070d7;
+  /* BBCode gray */
+  --color-neutral-475: #828282;
+  /* Housekeeping: inactive tabs, links (#000099 / #000094) */
+  --color-blue-925: #000099;
+}

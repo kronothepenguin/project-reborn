@@ -26,13 +26,13 @@ const tabs: { id: Tab; label: string; href: string }[] = [
       <div class="flex flex-wrap gap-1">
         <p>Logged in as: <strong>[[ .Habbo ]]</strong>[[ if .PreviousLogin ]] (Previous login at [[ .PreviousLogin ]])[[ end ]]</p>
         <form method="post" action="/housekeeping/logout">
-          <button type="submit" class="cursor-pointer text-indigo-900 underline">Log out</button>
+          <button type="submit" class="cursor-pointer text-blue-925 underline">Log out</button>
         </form>
       </div>
-      <a href="[[ .SiteURL ]]" class="text-indigo-900 underline">Site Home</a>
+      <a href="[[ .SiteURL ]]" class="text-blue-925 underline">Site Home</a>
     </header>
 
-    <nav class="mt-6 border-b-[7px] border-sky-700">
+    <nav class="mt-6 border-b-[7px] border-blue-550">
       <ul class="flex flex-wrap justify-center gap-x-4">
         {
           tabs.map(({ id, label, href }) => (
@@ -42,7 +42,7 @@ const tabs: { id: Tab; label: string; href: string }[] = [
                 aria-current={id === tab ? "page" : undefined}
                 class:list={[
                   "block w-44 pt-0.5 pb-1 text-center font-bold text-white underline",
-                  id === tab ? "bg-sky-700" : "bg-indigo-900",
+                  id === tab ? "bg-blue-550" : "bg-blue-925",
                 ]}
               >
                 {label}

@@ -13,7 +13,7 @@
   }
 
   const colorClasses: Record<Color, string> = {
-    blue: "bg-sky-700 text-white",
+    blue: "bg-blue-550 text-white",
     gold: "bg-amber-300 text-black",
   };
 

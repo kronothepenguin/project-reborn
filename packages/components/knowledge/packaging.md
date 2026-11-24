@@ -25,6 +25,11 @@ own, or reborn's dev server (`packages/reborn/knowledge/dev-server.md`).
 
 The app keeps its own theme and tokens; the design system contributes the classes the app's build emits.
 
+`src/styles.css` imports `src/styles/shades.css`, the new shades of Tailwind's palette that hold Holo's colours beyond
+the margin, such as `--color-red-550: #d64242`. Every app, the components' tests and Storybook get them through that
+import, so `bg-red-550` works everywhere. `tools/tw-color` proposes and writes the shades
+(`knowledge/colours.md`).
+
 # Use
 
 ```svelte

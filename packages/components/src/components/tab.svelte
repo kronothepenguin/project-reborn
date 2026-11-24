@@ -17,11 +17,11 @@
 
   const colorClasses: Record<TabsColor, { idle: string; selected: string }> = {
     blue: {
-      idle: "border-blue-400 bg-blue-400 text-white enabled:hover:bg-blue-300",
-      selected: "border-blue-400 bg-white font-bold text-black",
+      idle: "border-blue-450 bg-blue-450 text-white enabled:hover:bg-sky-425",
+      selected: "border-blue-450 bg-white font-bold text-black",
     },
     green: {
-      idle: "border-lime-600 bg-lime-600 text-white enabled:hover:bg-green-500",
+      idle: "border-lime-600 bg-lime-600 text-white enabled:hover:bg-lime-525",
       selected: "border-lime-600 bg-white font-bold text-black",
     },
     orange: {

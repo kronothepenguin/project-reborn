@@ -10,7 +10,7 @@
 
   const perPage = 10;
   const path = "/housekeeping/images";
-  const link = "text-indigo-900 underline";
+  const link = "text-blue-925 underline";
 
   let { list }: Props = $props();
 

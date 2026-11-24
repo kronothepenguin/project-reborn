@@ -24,9 +24,9 @@ import Housekeeping from "../layouts/housekeeping.astro";
           [[ range .Tickets ]]
           <tr>
             <td>[[ .ID ]]</td>
-            <td><a href="/housekeeping/help/[[ .ID ]]" class="text-indigo-900 underline"><strong>[[ .Subject ]]</strong></a></td>
+            <td><a href="/housekeeping/help/[[ .ID ]]" class="text-blue-925 underline"><strong>[[ .Subject ]]</strong></a></td>
             <td>[[ .Date ]]</td>
-            <td>[[ if .Habbo ]]<a href="[[ $.SiteURL ]]/home/[[ .HabboPath ]]" target="_blank" rel="noreferrer" class="text-indigo-900 underline">[[ .Habbo ]]</a>[[ end ]]</td>
+            <td>[[ if .Habbo ]]<a href="[[ $.SiteURL ]]/home/[[ .HabboPath ]]" target="_blank" rel="noreferrer" class="text-blue-925 underline">[[ .Habbo ]]</a>[[ end ]]</td>
             <td>
               [[ if .PickedUp ]]
               Yes
@@ -58,9 +58,9 @@ import Housekeeping from "../layouts/housekeeping.astro";
         </tbody>
       </Table>
       <div class="border-t-2 border-black bg-olive-200 p-1 text-center">
-        <a href="/housekeeping/help?refreshed=1" class="text-indigo-900 underline">Refresh overview</a>
+        <a href="/housekeeping/help?refreshed=1" class="text-blue-925 underline">Refresh overview</a>
       </div>
     </Box>
-    <p class="text-center">[[ if .Newer ]]<a href="/housekeeping/help?page=[[ .Newer ]]" class="text-indigo-900 underline">Newer</a>[[ end ]] [[ if .Older ]]<a href="/housekeeping/help?page=[[ .Older ]]" class="text-indigo-900 underline">Older</a>[[ end ]]</p>
+    <p class="text-center">[[ if .Newer ]]<a href="/housekeeping/help?page=[[ .Newer ]]" class="text-blue-925 underline">Newer</a>[[ end ]] [[ if .Older ]]<a href="/housekeeping/help?page=[[ .Older ]]" class="text-blue-925 underline">Older</a>[[ end ]]</p>
   </div>
 </Housekeeping>

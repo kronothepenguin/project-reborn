@@ -25,7 +25,45 @@ Planned:
 | `packages/server` | Sends a player its club and its rights at once; sells club and its gifts in the client (`hh_club`, `packages/server/knowledge/r26/hh_club.md`) |
 | `packages/store` | What club bought in the client needs |
 
+## Buying, shared by the site and the game
+
+The shape the user approved on 2026-11-24:
+
+```go
+// packages/virtual/club
+
+// Buy buys months of club for the user from its purse,
+// in the caller's transaction: the debit, its ledger
+// row, the period and the HC1 badge of its habbos.
+func Buy(ctx context.Context, q *store.Queries,
+    userID, avatarID int64, months int,
+    now time.Time) (Result, error)
+
+type Result struct {
+    Refused   Reason // none, too few credits, over the limit
+    Days      int    // days of club left after the purchase
+    Credits   int64  // the purse after the purchase
+    MaxMonths int    // the limit, when it refused
+}
+```
+
+- The site's club page and the game's answer to the client's `SCR_BUY` both call it.
+- The client's buttons 1, 2 and 3 buy 1, 3 and 6 months at `club.price1Month`, `club.price3Months` and
+  `club.price6Months`.
+
 # Decisions
+
+Of 2026-11-24, each the user's choice among options put to them:
+
+- The client's three buttons are the site's three offers ("The site's three offers"). It answers the open question of
+  the server's phase S7.
+- The rule of a purchase lives in `packages/virtual/club`, beside `packages/virtual/furni` ("packages/virtual/club").
+- One gift waits for each full month of club, offered at login and landing in the habbo's hand. The user: "as
+  recommended, but instead of following club furni page order, create an interface in the housekeeping that allows
+  drag and drop to reorder furnis with name an maybe an image of the furni. please also make a research of what to
+  expect after a year of habbo club, do the list restart or give more furnis?" The gifts' tasks follow the study.
+
+Earlier:
 
 - [Slices follow the hotel's own features, and habbos comes
   first](/decisions/reborn/0010-slices-follow-the-hotels-features.md) — The economy and club are separate slices, furni

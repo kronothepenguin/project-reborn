@@ -159,10 +159,10 @@ var colours = []struct{ name, class string }{
 	{"red", "text-red-600"},
 	{"orange", "text-orange-500"},
 	{"yellow", "text-amber-300"},
-	{"green", "text-lime-500"},
-	{"cyan", "text-teal-400"},
-	{"blue", "text-sky-600"},
-	{"gray", "text-olive-500"},
+	{"green", "text-lime-525"},
+	{"cyan", "text-teal-450"},
+	{"blue", "text-blue-550"},
+	{"gray", "text-neutral-475"},
 	{"black", "text-black"},
 }
 

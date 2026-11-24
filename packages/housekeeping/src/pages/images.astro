@@ -32,7 +32,7 @@ import Housekeeping from "../layouts/housekeeping.astro";
           <td class="whitespace-nowrap">[[ .Uploader ]]</td>
           <td class="whitespace-nowrap">[[ .Date ]]</td>
           <td>
-            [[ range .Articles ]]<a href="/housekeeping/news/[[ .ID ]]" class="text-indigo-900 underline">[[ .Title ]] (ID: [[ .ID ]])</a><br />[[ else ]]None[[ end ]]
+            [[ range .Articles ]]<a href="/housekeeping/news/[[ .ID ]]" class="text-blue-925 underline">[[ .Title ]] (ID: [[ .ID ]])</a><br />[[ else ]]None[[ end ]]
           </td>
           <td>
             <form method="post" action="/housekeeping/images/[[ .ID ]]/delete">

@@ -31,7 +31,7 @@ const items = [
       <Card color="settings">
         <span slot="header">Account Settings</span>
 
-        <ul class="flex flex-col gap-1 pb-1 text-olive-800">
+        <ul class="flex flex-col gap-1 pb-1 text-neutral-750">
           {
             items.map(({ label, href }) => (
               <li class:list={[label === active && "font-bold"]}>
@@ -75,7 +75,7 @@ const items = [
       <Card color="settings">
         <span slot="header">{heading}</span>
 
-        <div class="text-olive-800">
+        <div class="text-neutral-750">
           [[ if .Result ]][[ if .Failed ]]
           <Notice>[[ .Result ]]</Notice>
           [[ else ]]

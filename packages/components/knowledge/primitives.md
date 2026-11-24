@@ -50,7 +50,7 @@ page's, `text-xs` on the site. Borders, corner radii and pictures keep Holo's si
 
 # Box
 
-`Box` is housekeeping's titled section: a `title` heading in a `blue` (`sky-700`, white text) or `gold` (`amber-300`,
+`Box` is housekeeping's titled section: a `title` heading in a `blue` (`blue-550`, white text) or `gold` (`amber-300`,
 black text) bar above its children (decision holo-port/0060). `title` is the heading text, never a tooltip.
 
 # Paper and Card
@@ -73,7 +73,8 @@ black text) bar above its children (decision holo-port/0060). `title` is the hea
   them at the left `justify-start!`, as the installer's settings step does. `TabPanel` goes beside it, inside `Tabs`.
 - `Tab` is 25px tall with `text-xs`, filled with the colour, in white text, and lighter while pointed at; the selected
   one is white with an outline in the colour and bold black text. It sits 1px low, so it covers the row's line. Blue
-  is `blue-400`, Holo's #528dc9; green `lime-600`; orange `amber-500`.
+  is `blue-450`, Holo's #528dc9, `sky-425` while pointed at; green `lime-600`, `lime-525` while pointed at; orange
+  `amber-500`, `amber-400` while pointed at.
 
 # Stepper
 

@@ -64,10 +64,10 @@ with `text-xs`, Holo's 12px, 22px of padding at each side (`px-5` inside the out
 
 | Tab | Outline | Upper half | Lower half |
 | --- | --- | --- | --- |
-| Normal | `blue-900` | `sky-600` | `sky-700` |
-| Hover | `blue-900` | `sky-400` | `sky-600` |
-| Green | `lime-800` | `lime-500` | `lime-600` |
-| Green hover | `lime-800` | `lime-400` | `lime-500` |
+| Normal | `blue-850` | `blue-450` | `sky-650` |
+| Hover | `blue-850` | `sky-425` | `blue-450` |
+| Green | `lime-800` | `lime-525` | `lime-600` |
+| Green hover | `lime-800` | `lime-350` | `lime-525` |
 | Selected | `black` | white | white |
 
 - The tabs stand on the header's black line (`-bottom-0.5`). An unselected tab's bottom border is black and lies on

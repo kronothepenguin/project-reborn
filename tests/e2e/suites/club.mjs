@@ -50,8 +50,8 @@ export default async function ({ base, browser, check, shot, sql }) {
     (await page.title()) === "Reborn ~ Reborn Club" &&
       (await page.locator("nav li.font-bold").innerText()) === "Habbo Club" &&
       JSON.stringify(await headings.allInnerTexts()) === JSON.stringify(["Reborn Club: become a VIP!", "Benefits", "My Membership"]) &&
-      (await headings.nth(0).getAttribute("class")).includes("bg-red-600") &&
-      (await headings.nth(1).getAttribute("class")).includes("bg-yellow-600"),
+      (await headings.nth(0).getAttribute("class")).includes("bg-red-550") &&
+      (await headings.nth(1).getAttribute("class")).includes("bg-yellow-550"),
     JSON.stringify(await headings.allInnerTexts()),
   );
   check(

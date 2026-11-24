@@ -60,8 +60,8 @@ export default async function ({ base, browser, check, shot, sql }) {
   check(
     "the green box stands in the first column, the brown purse and the blue box in the second",
     JSON.stringify(await headings.allInnerTexts()) === JSON.stringify(["Get credits!", "Your purse", "What are credits?"]) &&
-      (await headings.nth(0).getAttribute("class")).includes("bg-lime-600") &&
-      (await headings.nth(1).getAttribute("class")).includes("bg-yellow-700") &&
+      (await headings.nth(0).getAttribute("class")).includes("bg-lime-550") &&
+      (await headings.nth(1).getAttribute("class")).includes("bg-yellow-650") &&
       (await headings.nth(2).getAttribute("class")).includes("bg-sky-700") &&
       (await headings.nth(0).boundingBox()).x < (await headings.nth(1).boundingBox()).x &&
       (await headings.nth(1).boundingBox()).y < (await headings.nth(2).boundingBox()).y,
