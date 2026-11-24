@@ -122,6 +122,14 @@ height and close as possible aligned to right as a group".
 
 ## Next
 
+### The settings step's sections
+
+- An administrator opens the settings step: each of its six groups is a section that opens and closes with a click on
+  its title, the first one open, and "More settings" is the last section, closed.
+- An administrator changes fields in several sections and saves: every change is saved, also from a closed section.
+- A field in a closed section is refused: its section opens and the form names the field.
+- An administrator opens the settings step with scripts off: the sections open and close as with scripts on.
+
 ### The site, reviewed beside HoloCMS
 
 - A visitor opens a page of the site on a wide screen: it reads as Holo's page at a bigger scale, its text 16px where

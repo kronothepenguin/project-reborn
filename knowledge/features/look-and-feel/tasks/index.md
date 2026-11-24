@@ -4,3 +4,4 @@
 
 - [Compare the look with HoloCMS, page by page](06-exit-check.md) - Every page of the site is set beside Holo's and beside its old self, with screenshots, and what differs is listed for the user.
 - [The layout and two pages, reviewed beside HoloCMS](09-the-first-pages-beside-holo.md) - The community layout is rebuilt in flexbox for phones, tablets and wide screens, and the community and Me pages are reviewed beside HoloCMS until they read as Holo's at a bigger scale, with one page shown three ways for its pictures.
+- [The settings step's groups as collapsible sections](10-the-settings-steps-sections.md) - The installer's settings step shows its six groups and More settings as sections that open and close, in place of the tabs inside the step.

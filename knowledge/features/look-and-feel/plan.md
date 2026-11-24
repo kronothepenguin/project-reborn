@@ -158,6 +158,8 @@ Of 2026-11-23, each the user's words or choice among options put to them:
   whatever looks odd. holocms does not have mobile support, so just compare againts big screens."
 - How Holo's pictures are drawn waits for the user's eyes ("Show me both first"): one page built with the pictures at
   their own size, grown smooth, and grown with sharp pixels.
+- The settings step's groups are collapsible sections, in place of the tabs inside the step ("switch to collapsible
+  sections"). Seven tabs wrapped onto two rows on a wide screen and five on a phone.
 
 Earlier:
 
