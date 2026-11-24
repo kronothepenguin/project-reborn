@@ -10,38 +10,41 @@ Built:
 
 | Project | Part |
 | --- | --- |
-| `packages/cms` | `layouts/signed-out.astro` and `layouts/community.astro`, with the `header/*` components and the footers; Holo's font on the 16px base, the 1240px page, the two-tone main tabs, the sub-navigation, the header with its inline search, and the footer as Holo's ([the layouts](/packages/cms/knowledge/layouts.md)) |
-| `packages/housekeeping` | `layouts/housekeeping.astro`: the grey bar, the tabs, the left column of `box` components and the content; `Box color="gold"` for data lists |
-| `packages/components` | The primitives both apps share; `Stepper` and `Step`; `Table` and `Table variant="form"` give housekeeping's lists and forms; every primitive at the new sizes; `Tabs color`, with Holo's tabs inside boxes; the box's frame and the title bars as Holo's |
+| `packages/components` | The primitives every app shares, at Holo's sizes: `Button`, `Card`, `Paper`, `Tabs color` with `TabList` and `Tab` and the line under a box's tabs at the box's full width, `Stepper` and `Step`, `Table`, the inputs |
+| `packages/cms` | Both layouts as Holo's: the 930px page, the header, the two-tone main tabs, the sub-navigation, the habbo search on one line, the footer, in Holo's font; the front, community and Me pages matched beside Holo's; the other pages at Holo's sizes as they were before the bigger design |
+| `packages/housekeeping` | `layouts/housekeeping.astro`: the grey bar, the tabs, the left column of `box` components and the content; `Box color="gold"` for data lists; at 16px, until its task |
+| `packages/installer` | `layouts/setup.astro`: one `Card color="blue"` per step, on one column whose first row is the shared `Stepper`; the sticky row of buttons; the settings step's collapsible sections; at 16px, until its task |
 | `packages/store` | `CountAvatars`, the header's registered count |
-| `packages/housekeeping` | Its own look at the new sizes: 16px in Verdana as the theme's `--font-sans`, widths by 1240/960, paddings and gaps by 4/3; every page fits a 1366px screen |
-| `packages/installer` | `layouts/setup.astro`: the logo over one `Card color="blue"` per step, on one column whose first row is the shared `Stepper`, drawn on the server; the sticky row of buttons; the settings step's groups as collapsible sections; Holo's font and the 16px base ([the installer's layout](#the-installers-layout)) |
-| `packages/cms` | Every page at the new sizes: texts on the plan's table, the columns of the 930px container at 4/3 so they span the 1240px page, signed-out pages at 1240/960, pictures at their own size; homes and the Help Tool keep their canvas ([the layouts](/packages/cms/knowledge/layouts.md)) |
-| `tests/e2e` | The `sizes` suite checks every page at 1366 wide and saves its screenshot |
-| `packages/cms` | Reviewed beside HoloCMS: the community layout in flexbox, at most 1352px and centred, for phones, tablets and wide screens; `site/columns.astro`, Holo's three columns in 452 / 302 / 160; the community and Me pages, their pictures at their own size in boxes that wrap them, and `?pictures=` on the community page for the three ways ([the layouts](/packages/cms/knowledge/layouts.md)) |
-| `tests/e2e` | The `layout` suite checks the flexbox page on a wide screen, a tablet and a phone, the phone's header and the Me page's hotel view; `sizes` takes the Me and community pages at up to 1352px |
+| `tests/e2e` | The `layout` and `sizes` suites check Holo's page and sizes on every page; `installer-layout` checks the installer |
+
+Planned:
+
+| Project | Part |
+| --- | --- |
+| `packages/cms` | Every other page matched beside Holo's, as the first three |
+| `packages/housekeeping`, `packages/installer` | Their own looks at Holo's sizes, with the shared parts |
 
 ## The sizes
 
-The user's rule: Holo's 11px is today's 16px, a smaller text takes a smaller variant and a bigger one a larger variant.
+The site is Holo's, at Holo's own sizes, in Tailwind's closest common classes.
 
-| Holo | Now | Tailwind |
-| --- | --- | --- |
-| 8px, 9px | 12px | `text-xs` |
-| 10px | 14px | `text-sm` |
-| 11px | 16px | `text-base` |
-| 12px | 18px | `text-lg` |
-| 14px | 20px | `text-xl` |
-| 16px and more | 24px and more | `text-2xl` and up, one step per Holo size |
+| Holo | Ours |
+| --- | --- |
+| 9px to 12px text | `text-xs` |
+| 14px text | `text-sm` |
+| 16px, 18px text | `text-base`, `text-lg` |
+| 3px to 5px | `1` (4px) or `1.5` (6px) |
+| 7px, 8px | `2` |
+| 10px | `2.5` |
+| 15px | `4` |
+| The page's grid: 930, 460 / 310 / 160, 404 / 310, 758, 761 | Holo's pixels |
 
-- A fixed size class, such as `text-[11px]`, becomes the class of this table. Line heights follow Tailwind's for the
-  class, and Holo's own where Holo set one, scaled.
 - The font is Holo's, `Verdana, Arial, Helvetica, sans-serif`, set once per app as the theme's `--font-sans`.
-- The page is 1240px wide, Holo's 960px times about 1.29. A width becomes Holo's width times 1240/960, and a padding
-  or a gap Holo's times 4/3, each rounded to Tailwind's scale.
-- Borders, corner radii and pictures keep Holo's sizes: a picture is never scaled by a fraction.
-- Colours are the Tailwind classes of [the colours](/colours.md). Where a class has another hue than Holo's colour,
-  as the red title bar has today, the closest class of Holo's hue takes its place and the table there is corrected.
+- Pictures keep their own size and fill their box as in Holo.
+- Colours are the Tailwind classes of [the colours](/colours.md), the closest class of Holo's hue.
+- BBCode's small text stays 10px, under the body's 12px.
+- The live HoloCMS of the comparison differs from `source/holocms`, which the port follows: its Me page holds its
+  boxes in other columns, and its community page titles the tags box "Tags" in green.
 
 ## The tabs
 
