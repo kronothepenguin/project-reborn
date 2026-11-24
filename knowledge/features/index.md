@@ -35,4 +35,5 @@
 - [ranks/](ranks/index.md)
 - [rooms/](rooms/index.md)
 - [tags/](tags/index.md)
+- [task-queue/](task-queue/index.md)
 - [updates/](updates/index.md)
